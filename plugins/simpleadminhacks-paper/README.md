@@ -27,17 +27,7 @@ Type `hacks <hackname>` to see a readout of that particular hack's status or con
 Type `hacks <hackname> get <configitem>` to see the current configuration setting for that config element in that hack.
 
 Type `hacks <hackname> set <configitem> <new value>` to set a new configuratoin value for that config element in that 
-hack. Not all hacks support this. 
-
-### AutoRespawn
-
-This hack allows administrators to enforce a limit on how long players can stay dead, preventing zombie scouting and
-safe bots.
-
-### EventHandlerList
-
-This hack lets you search for all the events *currently* being listened for with your current plugin setup and those
-listeners' class names.
+hack. Not all hacks support this.
 
 ### AntiFastBreak
 
@@ -46,6 +36,15 @@ This hack offers some defence against insta-break / fast-break client hacks by d
 ### ArthropodEggHack
 
 Allows players to occasionally pick up spawn eggs of mobs they kill with Bane of Arthropods.
+
+### AttrHider
+
+Stops clients from receiving extraneous entity and item data that could be exploited custom clients.
+
+### AutoRespawn
+
+This hack allows administrators to enforce a limit on how long players can stay dead, preventing zombie scouting and
+safe bots.
 
 ### BuffSpanker
 
@@ -61,6 +60,11 @@ debug information.
 This hack allows administrators to inspect an event as it passes through the stages of priority, what listeners are
 handling the event at what stage, and if applicable when exactly the even is cancelled.
 
+### EventHandlerList
+
+This hack lets you search for all the events *currently* being listened for with your current plugin setup and those
+listeners' class names.
+
 ### HumbugBatchOne
 
 A new BasicHack (thanks Maxopoly) which encompasses a number of previously unincluded Humbug gameplay modifications. 
@@ -70,6 +74,10 @@ Dragon, disabling iron farms, disabling Ender Crystal damage, disable mining fat
 ### ItemMetaConverterHack
 
 Passively upgrades the lore and display name text under the hood from legacy strings to components.
+
+### OldEnchanting
+
+This hack allows admins to regulate XP and enchantments in particular ways.
 
 ### PhantomMenace
 

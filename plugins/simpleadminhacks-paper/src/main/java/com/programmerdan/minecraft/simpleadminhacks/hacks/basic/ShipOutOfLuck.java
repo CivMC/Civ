@@ -41,10 +41,21 @@ public final class ShipOutOfLuck extends BasicHack {
 
 	public ShipOutOfLuck(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
+	}
+
+	@Override
+	public void onEnable() {
+		super.onEnable();
 		// Just in case it's auto loaded to null.
 		if (this.boatBreakers == null) {
 			this.boatBreakers = new ArrayList<>();
 		}
+	}
+
+	@Override
+	public void onDisable() {
+		this.boatBreakers.clear();
+		super.onDisable();
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)

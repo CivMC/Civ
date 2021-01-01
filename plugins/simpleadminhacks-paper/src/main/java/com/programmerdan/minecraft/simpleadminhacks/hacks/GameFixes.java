@@ -1,18 +1,18 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
 import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.destroystokyo.paper.PaperConfig;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameFixesConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
-
-import net.minecraft.server.v1_16_R1.NBTTagList;
-
+import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
+import net.minecraft.server.v1_16_R1.ItemStack;
+import net.minecraft.server.v1_16_R1.PacketPlayInBEdit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -27,10 +27,10 @@ import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.block.data.type.Hopper;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -49,46 +49,60 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.InventoryHolder;
+import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
+
 	public static final String NAME = "GameFixes";
+
+	private final PacketManager protocol = new PacketManager();
 
 	public GameFixes(SimpleAdminHacks plugin, GameFixesConfig config) {
 		super(plugin, config);
 	}
 
 	@Override
-	public void registerListeners() {
-		if (config != null && config.isEnabled()) {
-			plugin().log("Registering GameFixes listeners");
-			plugin().registerListener(this);
-			if (config.hardLimitBookPageSize()) {
-				registerBookEditListener();
-			}
+	public void onEnable() {
+		super.onEnable();
+		this.plugin.registerListener(this);
+		if (this.config.hardLimitBookPageSize()) {
+			this.protocol.addAdapter(new PacketAdapter(this.plugin, PacketType.Play.Client.B_EDIT) {
+				@Override
+				public void onPacketReceiving(final PacketEvent event) {
+					final PacketContainer packet = event.getPacket();
+					final Player player = event.getPlayer();
+					final String errorMessage = "DUPE ALERT! " + player.getName() + " sent an over sized book packet!";
+					final int maxBookPageSize = PaperConfig.maxBookPageSize;
+					final int maxBookPageLength = 256 * 4;
+					// NMS ItemStack, not Bukkit
+					final ItemStack item = ((PacketPlayInBEdit) packet.getHandle()).b();
+					final NBTCompound nbt = new NBTCompound(item.getTag());
+					final String[] pages = nbt.getStringArray("pages");
+					if (pages.length > maxBookPageSize) {
+						plugin().warning(errorMessage);
+						plugin().warning("- Too many pages! [" + pages.length + "/" + maxBookPageSize + "]");
+						event.setCancelled(true);
+						return;
+					}
+					for (final String page : pages) {
+						final byte[] raw = page.getBytes(StandardCharsets.UTF_8);
+						if (raw.length > maxBookPageLength) {
+							plugin().warning(errorMessage);
+							plugin().warning("- Page too long! [" + raw.length + "/" + maxBookPageLength + "]");
+							event.setCancelled(true);
+							return;
+						}
+					}
+				}
+			});
 		}
 	}
 
 	@Override
-	public void registerCommands() {
-	}
-
-	@Override
-	public void dataBootstrap() {
-	}
-
-	@Override
-	public void unregisterListeners() {
-		//Bukkit does this for us (why is this a method then?)
-		// incase your listener semantics include things beyond the default
-		//  like maybe alerting bungee of a connected listener to disable, etc.
-	}
-
-	@Override
-	public void unregisterCommands() {
-	}
-
-	@Override
-	public void dataCleanup() {
+	public void onDisable() {
+		this.protocol.removeAllAdapters();
+		HandlerList.unregisterAll(this);
+		super.onDisable();
 	}
 
 	@Override
@@ -570,31 +584,9 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			}
 		}
 	}
-	
-	private void registerBookEditListener() {
-		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-		manager.addPacketListener(new PacketAdapter(SimpleAdminHacks.instance(), PacketType.Play.Client.B_EDIT) {
-			@Override
-			public void onPacketReceiving(PacketEvent event) {
-				PacketContainer packet = event.getPacket();
-				CraftItemStack is = (CraftItemStack) packet.getItemModifier().read(0);
-				if (is == null) {
-					return;
-				}
-				net.minecraft.server.v1_16_R1.ItemStack nmsIs = CraftItemStack.asNMSCopy(is);
-				if (nmsIs.isEmpty() || nmsIs.getTag() == null) {
-					return;
-				}
-				NBTTagList pageList = nmsIs.getTag().getList("pages", 8);
-				if (pageList.size() > 100) {
-					plugin().getLogger().warning("  DUPE ALERT for " + event.getPlayer().getName() + ". Tried to send oversized book packet");
-					event.setCancelled(true);
-				}
-			}
-		});
-	}
 
 	public static GameFixesConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new GameFixesConfig(plugin, config);
 	}
+
 }

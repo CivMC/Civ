@@ -9,21 +9,6 @@ hacks:
   ############################################################
   ## Basic Hacks
   ############################################################
-  AutoRespawn:
-    enabled: true
-    # Delay in MS
-    # Default: 300000 (five minutes)
-    respawnDelay: 300000
-    # The respawn delay (in MS) if someone logs in dead
-    # Default 0 (instant)
-    loginRespawnDelay: 0
-    # Jokey joke messages sent to the player if auto-respawned
-    # Deactivate by removing all the quotes below
-    respawnQuotes:
-      - <gold>Wait... how did I get here?
-      - <gold>Must've been a rough night o.o
-      - <gold>Why does my entire body ache?
-      - <gold>That <it>really<gold> hurt!
   AntiFastBreak:
     enabled: true
     breakDenyDuration: 3000
@@ -53,6 +38,29 @@ hacks:
       - SALMON
       - TURTLE
       - DOLPHIN
+  AttrHider:
+    enabled: true
+    # Hide item data like enchantments, firework effects, book data, potion, etc..
+    hideItemMeta: true
+    # Hide potion effects on entities, except for particles
+    hideEffects: true
+    # Hide the health of entities
+    hideHealth: true
+  AutoRespawn:
+    enabled: true
+    # Delay in MS
+    # Default: 300000 (five minutes)
+    respawnDelay: 300000
+    # The respawn delay (in MS) if someone logs in dead
+    # Default 0 (instant)
+    loginRespawnDelay: 0
+    # Jokey joke messages sent to the player if auto-respawned
+    # Deactivate by removing all the quotes below
+    respawnQuotes:
+      - <gold>Wait... how did I get here?
+      - <gold>Must've been a rough night o.o
+      - <gold>Why does my entire body ache?
+      - <gold>That <it>really<gold> hurt!
   BuffSpanker:
     enabled: true
     # The list of PotionEffectType's that you do not wish players to receive.
@@ -85,6 +93,49 @@ hacks:
     disablePiglins: true
   ItemMetaConverterHack:
     enabled: true
+  OldEnchanting:
+    enabled: true
+    # Hides what enchantment will be granted within the Enchanting Table
+    hideEnchants: true
+    # Automatically fills the consumable slot with the Enchanting Table with Lapis Lazuli that cannot be taken
+    fillLapis: true
+    # Randomises the enchantment offers each time the item is placed in an Enchanting Table
+    randomiseEnchants: true
+    # Force enchantments to cost what they appear in the Enchanting Table
+    fixEnchantCosts: true
+    # Experience modifier, all experience drops will be multiplied by this (does not apply to player exp)
+    # NOTE: Modifier must be 0 or greater
+    experienceModifier: 0.2
+    # Loot modifier, multiply the amount of exp dropped from each level of Looting (does not apply to player exp)
+    # NOTE: Modifier must be 0 or greater
+    lootModifier: 1.5
+    # Enables xp bottles to be crafted from emeralds and vice versa
+    emeraldCrafting: true
+    # Enables gaining xp from emeralds directly if emeraldCrafting is enabled
+    emeraldLeveling: true
+    # Disables exp from mobs, fishing, mining, breeding, furnace extracting, etc
+    disableGrindExp: true
+    # Prevents exp orbs from granting xp
+    preventOrbExp: true
+    # Ensures that the player who threw the xp bottle is the one to get the xp (experienceModifier does not apply)
+    directBottleExp: true
+    # Defines the maximum repair cost of an item
+    # NOTE: Value must be 2 or greater, or -1 to disable
+    maxRepairCost: 33
+    # Defines the set amount of xp that xp bottles will produce
+    # NOTE: Value must be a 0 or greater, or -1 for vanilla random
+    expPerBottle: 10
+    # Allows player's to store their levels in bottles if expPerBottle has a value higher than 0
+    allowExpRecovery: true
+    # Disallows players from creating enchanted books
+    disableEnchantedBookCreation: true
+    # Disallows players from using enchanted books
+    disableEnchantedBookUsage: true
+    # Modifies the exp drops for specific mob types, which will be used in lieu of experienceModifier
+    # NOTE: Players have an implicit modifier of 1.0
+    # NOTE: Modifiers must be 0 or greater
+    entityExpDropModifiers:
+      ENDER_DRAGON: 0.1
   PhantomMenace:
     enabled: true
     # Players have a statistic called TIME_SINCE_REST. If a player's value is above 72k (3 days minecraft time) then
