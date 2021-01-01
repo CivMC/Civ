@@ -1,6 +1,6 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				 xmlns="http://maven.apache.org/POM/4.0.0"
-				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -12,30 +12,30 @@
 
 	<groupId>com.untamedears</groupId>
 	<artifactId>itemexchange</artifactId>
-	<version>1.4.3</version>
+	<version>1.4.4</version>
 	<name>ItemExchange</name>
 
 	<packaging>jar</packaging>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>1.16.1-R0.1-SNAPSHOT</version>
+			<groupId>com.destroystokyo.paper</groupId>
+			<artifactId>paper-api</artifactId>
+			<version>1.16.4-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.8.0</version>
+			<version>1.8.1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
-			<id>civclassic-repo</id>
-			<url>https://repo.civclassic.com/repository/internal/</url>
+			<id>civ-github-repo</id>
+			<url>https://raw.githubusercontent.com/CivClassic/artifacts/master/</url>
 		</repository>
 	</repositories>
 
