@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore;
 
 import java.sql.SQLException;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
@@ -72,7 +73,7 @@ public final class CivModCorePlugin extends ACivMod {
 			warning("Cannot get database from config.", error);
 			this.database = null;
 		}
-		String scoreboardHeader = getConfig().getString("scoreboardHeader","  Info  ");
+		String scoreboardHeader = ChatColor.translateAlternateColorCodes('&', getConfig().getString("scoreboardHeader","  Info  "));
 		ScoreBoardAPI.setDefaultHeader(scoreboardHeader);
 		// Register listeners
 		registerListener(new ClickableInventoryListener());
