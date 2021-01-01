@@ -1,6 +1,7 @@
 name: ${project.name}
 main: vg.civcraft.mc.civchat2.CivChat2
 version: ${project.version}
+api-version: 1.16
 authors:
 - jjj5311
 - Maxopoly
