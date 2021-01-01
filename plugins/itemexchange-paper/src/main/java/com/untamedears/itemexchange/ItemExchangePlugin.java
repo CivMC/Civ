@@ -5,7 +5,6 @@ import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ModifierRegistrar;
 import com.untamedears.itemexchange.rules.modifiers.BookModifier;
-import com.untamedears.itemexchange.rules.modifiers.CustomItemModifier;
 import com.untamedears.itemexchange.rules.modifiers.DamageableModifier;
 import com.untamedears.itemexchange.rules.modifiers.DisplayNameModifier;
 import com.untamedears.itemexchange.rules.modifiers.EnchantModifier;
@@ -40,9 +39,8 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
 		config = new ItemExchangeConfig(this);
 		config.parse();
 		commands = new CommandRegistrar(this);
-		commands.register();
+		commands.init();
 		modifiers = new ModifierRegistrar();
-		modifiers.registerModifier(CustomItemModifier.TEMPLATE); // 0
 		modifiers.registerModifier(DisplayNameModifier.TEMPLATE); // 100
 		modifiers.registerModifier(EnchantModifier.TEMPLATE); // 200
 		modifiers.registerModifier(EnchantStorageModifier.TEMPLATE); // 201
