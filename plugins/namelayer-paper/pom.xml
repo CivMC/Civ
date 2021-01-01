@@ -84,7 +84,7 @@
     <distributionManagement>
     <repository>
       <id>civ-jenkins</id>
-      <url>https://build.devotedmc.com/plugin/repository/everything/</url>
+      <url>file:///var/jenkins_home/repoStaging</url>
     </repository>
   </distributionManagement>
 </project>
