@@ -1,14 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
-  <parent>
-    <groupId>com.github.civclassic</groupId>
-    <artifactId>civclassic-parent</artifactId>
-    <version>1.0.0</version>
-  </parent>
-	
+
+	<parent>
+		<groupId>com.github.civclassic</groupId>
+		<artifactId>civclassic-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
 	<groupId>sh.okx.railswitch</groupId>
 	<artifactId>RailSwitch</artifactId>
 	<packaging>jar</packaging>
@@ -45,8 +46,8 @@
 
 	<repositories>
 		<repository>
-			<id>civ-jenkins</id>
-			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
+			<id>civ-github-repo</id>
+			<url>https://raw.githubusercontent.com/CivClassic/artifacts/master/</url>
 		</repository>
 	</repositories>
 </project>
