@@ -76,7 +76,7 @@ public class PlayerListener implements Listener {
 
 			double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 			@SuppressWarnings("resource")
-			double spigotRegenExhaustion = ((org.bukkit.craftbukkit.v1_16_R1.CraftWorld) p
+			double spigotRegenExhaustion = ((org.bukkit.craftbukkit.v1_16_R3.CraftWorld) p
 					.getWorld()).getHandle().spigotConfig.regenExhaustion;
 			float newExhaustion = (float) (p.getExhaustion() - e.getAmount() * spigotRegenExhaustion);
 

@@ -17,7 +17,7 @@ public class EnchantmentDisableListener implements Listener {
 	private Set<Enchantment> disabledEnchants;
 
 	public EnchantmentDisableListener(Collection<Enchantment> disabledEnchants) {
-		this.disabledEnchants = new HashSet<Enchantment>(disabledEnchants);
+		this.disabledEnchants = new HashSet<>(disabledEnchants);
 	}
 
 	public boolean isDisabledEnchantment(Enchantment enchant) {

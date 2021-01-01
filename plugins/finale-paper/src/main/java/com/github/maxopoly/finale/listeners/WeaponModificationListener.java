@@ -1,8 +1,6 @@
 package com.github.maxopoly.finale.listeners;
 
 
-import com.github.maxopoly.finale.misc.WeaponModifier;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -11,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.misc.ArmourModifier;
 import com.github.maxopoly.finale.misc.ItemUtil;
+import com.github.maxopoly.finale.misc.WeaponModifier;
 
 public class WeaponModificationListener implements Listener {
 	

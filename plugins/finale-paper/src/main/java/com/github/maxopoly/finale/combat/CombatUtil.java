@@ -3,8 +3,8 @@ package com.github.maxopoly.finale.combat;
 import java.util.Iterator;
 import java.util.List;
 
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
@@ -15,31 +15,31 @@ import org.bukkit.util.Vector;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.combat.event.CritHitEvent;
 
-import net.minecraft.server.v1_16_R1.DamageSource;
-import net.minecraft.server.v1_16_R1.EnchantmentManager;
-import net.minecraft.server.v1_16_R1.Entity;
-import net.minecraft.server.v1_16_R1.EntityArmorStand;
-import net.minecraft.server.v1_16_R1.EntityComplexPart;
-import net.minecraft.server.v1_16_R1.EntityHuman;
-import net.minecraft.server.v1_16_R1.EntityLiving;
-import net.minecraft.server.v1_16_R1.EntityPlayer;
-import net.minecraft.server.v1_16_R1.EnumHand;
-import net.minecraft.server.v1_16_R1.EnumMonsterType;
-import net.minecraft.server.v1_16_R1.GenericAttributes;
-import net.minecraft.server.v1_16_R1.ItemStack;
-import net.minecraft.server.v1_16_R1.ItemSword;
-import net.minecraft.server.v1_16_R1.MathHelper;
-import net.minecraft.server.v1_16_R1.MobEffects;
-import net.minecraft.server.v1_16_R1.PacketPlayOutEntityVelocity;
-import net.minecraft.server.v1_16_R1.PacketPlayOutNamedSoundEffect;
-import net.minecraft.server.v1_16_R1.Particles;
-import net.minecraft.server.v1_16_R1.SoundCategory;
-import net.minecraft.server.v1_16_R1.SoundEffect;
-import net.minecraft.server.v1_16_R1.SoundEffects;
-import net.minecraft.server.v1_16_R1.StatisticList;
-import net.minecraft.server.v1_16_R1.Vec3D;
-import net.minecraft.server.v1_16_R1.World;
-import net.minecraft.server.v1_16_R1.WorldServer;
+import net.minecraft.server.v1_16_R3.DamageSource;
+import net.minecraft.server.v1_16_R3.EnchantmentManager;
+import net.minecraft.server.v1_16_R3.Entity;
+import net.minecraft.server.v1_16_R3.EntityArmorStand;
+import net.minecraft.server.v1_16_R3.EntityComplexPart;
+import net.minecraft.server.v1_16_R3.EntityHuman;
+import net.minecraft.server.v1_16_R3.EntityLiving;
+import net.minecraft.server.v1_16_R3.EntityPlayer;
+import net.minecraft.server.v1_16_R3.EnumHand;
+import net.minecraft.server.v1_16_R3.EnumMonsterType;
+import net.minecraft.server.v1_16_R3.GenericAttributes;
+import net.minecraft.server.v1_16_R3.ItemStack;
+import net.minecraft.server.v1_16_R3.ItemSword;
+import net.minecraft.server.v1_16_R3.MathHelper;
+import net.minecraft.server.v1_16_R3.MobEffects;
+import net.minecraft.server.v1_16_R3.PacketPlayOutEntityVelocity;
+import net.minecraft.server.v1_16_R3.PacketPlayOutNamedSoundEffect;
+import net.minecraft.server.v1_16_R3.Particles;
+import net.minecraft.server.v1_16_R3.SoundCategory;
+import net.minecraft.server.v1_16_R3.SoundEffect;
+import net.minecraft.server.v1_16_R3.SoundEffects;
+import net.minecraft.server.v1_16_R3.StatisticList;
+import net.minecraft.server.v1_16_R3.Vec3D;
+import net.minecraft.server.v1_16_R3.World;
+import net.minecraft.server.v1_16_R3.WorldServer;
 
 public class CombatUtil {
 	
@@ -64,7 +64,7 @@ public class CombatUtil {
 	//see EntityHuman#attack(Entity) to update this
 	public static void attack(EntityHuman attacker, Entity entity) {
 		CombatConfig config = Finale.getPlugin().getManager().getCombatConfig();
-        if (entity.bH()) {
+        if (entity.bL()) {
             if (!entity.t(attacker)) {
                 float f = (float) attacker.getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).getValue();
                 float f1;
@@ -114,7 +114,7 @@ public class CombatUtil {
                     boolean flag3 = false;
                     double d0 = (double) (attacker.A - attacker.z);
 
-                    if (!flag2 && !attacker.isSprinting() && attacker.isOnGround() && d0 < (double) attacker.dM()) {
+                    if (!flag2 && !attacker.isSprinting() && attacker.isOnGround() && d0 < (double) attacker.dN()) {
                         ItemStack itemstack = attacker.b(EnumHand.MAIN_HAND);
 
                         if (itemstack.getItem() instanceof ItemSword) {
@@ -176,7 +176,7 @@ public class CombatUtil {
                         if (flag3 && config.isSweepEnabled()) {
                             float f4 = 1.0F + EnchantmentManager.a((EntityLiving) attacker) * f;
                             List<EntityLiving> list = attacker.world.a(EntityLiving.class, entity.getBoundingBox().grow(1.0D, 0.25D, 1.0D));
-                            Iterator iterator = list.iterator();
+                            Iterator<EntityLiving> iterator = list.iterator();
 
                             while (iterator.hasNext()) {
                                 EntityLiving entityliving = (EntityLiving) iterator.next();
@@ -191,7 +191,7 @@ public class CombatUtil {
                             }
 
                             attacker.world.playSound(attacker, attacker.locX(), attacker.locY(), attacker.locZ(), SoundEffects.ENTITY_PLAYER_ATTACK_SWEEP, attacker.getSoundCategory(), 1.0F, 1.0F); // Paper - send while respecting visibility
-                            attacker.dE();
+                            attacker.ex();
                         }
 
                         if (entity instanceof EntityPlayer && entity.velocityChanged) {

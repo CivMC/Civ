@@ -10,7 +10,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -121,7 +121,7 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 				}
 				
 				float strength = ((CraftWorld) block.getWorld()).getHandle()
-						.getType(new net.minecraft.server.v1_16_R1.BlockPosition(position.getX(), position.getY(), position.getZ()))
+						.getType(new net.minecraft.server.v1_16_R3.BlockPosition(position.getX(), position.getY(), position.getZ()))
 						.getBlock().getDurability();
 				
 				long lastStartBreak = lastStartBreaks.getOrDefault(attacker.getUniqueId(), 0L);

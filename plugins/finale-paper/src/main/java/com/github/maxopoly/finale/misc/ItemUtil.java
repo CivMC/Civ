@@ -5,18 +5,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.maxopoly.finale.misc.ArmourModifier.ArmourConfig;
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.server.v1_16_R1.NBTBase;
-import net.minecraft.server.v1_16_R1.NBTTagCompound;
-import net.minecraft.server.v1_16_R1.NBTTagDouble;
-import net.minecraft.server.v1_16_R1.NBTTagInt;
-import net.minecraft.server.v1_16_R1.NBTTagList;
-import net.minecraft.server.v1_16_R1.NBTTagString;
+import net.minecraft.server.v1_16_R3.NBTBase;
+import net.minecraft.server.v1_16_R3.NBTTagCompound;
+import net.minecraft.server.v1_16_R3.NBTTagDouble;
+import net.minecraft.server.v1_16_R3.NBTTagInt;
+import net.minecraft.server.v1_16_R3.NBTTagList;
+import net.minecraft.server.v1_16_R3.NBTTagString;
 
 public class ItemUtil {
 	
@@ -84,8 +84,8 @@ public class ItemUtil {
 		return isHelmet(is) || isChestplate(is) || isLeggings(is) || isBoots(is);
 	}
 	
-	public static net.minecraft.server.v1_16_R1.ItemStack getNMSStack(ItemStack is) {
-		net.minecraft.server.v1_16_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
+	public static net.minecraft.server.v1_16_R3.ItemStack getNMSStack(ItemStack is) {
+		net.minecraft.server.v1_16_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
 		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
 		if (!compound.hasKey("AttributeModifiers")) {
 			compound.set("AttributeModifiers", new NBTTagList());
@@ -111,7 +111,7 @@ public class ItemUtil {
 	}
 	
 	public static ItemStack modifyAttribute(ItemStack is, AttributeModifier attribute) {
-		net.minecraft.server.v1_16_R1.ItemStack nmsStack = getNMSStack(is);
+		net.minecraft.server.v1_16_R3.ItemStack nmsStack = getNMSStack(is);
 		NBTTagCompound compound = nmsStack.getTag();
 		NBTTagList modifiers = compound.getList("AttributeModifiers", 10); // 10 for compound
 		
