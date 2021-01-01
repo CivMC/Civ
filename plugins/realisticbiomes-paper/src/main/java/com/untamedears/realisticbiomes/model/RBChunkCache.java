@@ -1,7 +1,6 @@
 package com.untamedears.realisticbiomes.model;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.world.ChunkUnloadEvent;
 
 import com.untamedears.realisticbiomes.RealisticBiomes;
 

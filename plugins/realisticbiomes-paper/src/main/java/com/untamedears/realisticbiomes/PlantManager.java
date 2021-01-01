@@ -1,7 +1,5 @@
 package com.untamedears.realisticbiomes;
 
-import java.util.function.Consumer;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
