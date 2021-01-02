@@ -1,5 +1,7 @@
 package com.programmerdan.minecraft.banstick.data;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.lang.ref.WeakReference;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,9 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 public class BSBan {
 
@@ -261,7 +260,7 @@ public class BSBan {
 	}
 	
 	public static List<BSBan> byIP(BSIP exactIP, boolean includeExpired) {
-		List<BSBan> results = new ArrayList<BSBan>();
+		List<BSBan> results = new ArrayList<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement findBans = connection.prepareStatement(
 						includeExpired?"SELECT * FROM bs_ban WHERE ip_ban = ? ORDER BY ban_time":
@@ -285,7 +284,7 @@ public class BSBan {
 	}
 
 	public static List<BSBan> byProxy(BSIPData data, boolean includeExpired) {
-		List<BSBan> results = new ArrayList<BSBan>();
+		List<BSBan> results = new ArrayList<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement findBans = connection.prepareStatement(
 						includeExpired?"SELECT * FROM bs_ban WHERE proxy_ban = ? ORDER BY ban_time":
@@ -309,7 +308,7 @@ public class BSBan {
 	}
 
 	public static List<BSBan> byShare(BSShare data, boolean includeExpired) {
-		List<BSBan> results = new ArrayList<BSBan>();
+		List<BSBan> results = new ArrayList<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement findBans = connection.prepareStatement(
 						includeExpired?"SELECT * FROM bs_ban WHERE share_ban = ? ORDER BY ban_time":
@@ -560,7 +559,7 @@ public class BSBan {
 	}
 	
 	public String toFullString(boolean showIPs) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (showIPs) {
 			if (getIPBan() != null) {
 				sb.append("IP Ban: ").append(ipBan.toString());

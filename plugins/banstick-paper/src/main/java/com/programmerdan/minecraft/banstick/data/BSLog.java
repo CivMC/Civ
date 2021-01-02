@@ -1,16 +1,14 @@
 package com.programmerdan.minecraft.banstick.data;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Date;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 /**
  * TODO: Make accessors
@@ -48,7 +46,7 @@ public class BSLog extends BukkitRunnable{
 		return period;
 	}
 	
-	static enum Action {
+	enum Action {
 		BAN,
 		UNBAN,
 		CHANGE
@@ -68,7 +66,7 @@ public class BSLog extends BukkitRunnable{
 		}
 	}
 	
-	private static ConcurrentLinkedQueue<LogEntry> toSave = new ConcurrentLinkedQueue<LogEntry>();
+	private static ConcurrentLinkedQueue<LogEntry> toSave = new ConcurrentLinkedQueue<>();
 
 	@Override
 	public void run() {

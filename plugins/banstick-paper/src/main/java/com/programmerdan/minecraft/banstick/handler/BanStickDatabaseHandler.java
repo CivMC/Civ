@@ -148,10 +148,8 @@ public class BanStickDatabaseHandler {
 		if (config != null && config.getBoolean("enabled")) {
 			long period = 5*60*50l;
 			long delay = 5*60*50l;
-			if (config != null) {
-				period = config.getLong("period", period);
-				delay = config.getLong("delay", delay);
-			}
+			period = config.getLong("period", period);
+			delay = config.getLong("delay", delay);
 			final int batchsize = config.getInt("batch", 100);
 
 			BanStick.getPlugin().debug("Preload Period {0} Delay {1} batch {2}", period, delay, batchsize);
@@ -324,6 +322,11 @@ public class BanStickDatabaseHandler {
                 + "first_pid BIGINT NOT NULL REFERENCES bs_player(pid),"
                 + "second_pid BIGINT NOT NULL REFERENCES bs_player(pid),"
                 + " INDEX bs_exclusion_pid (first_pid, second_pid)"
+		        + ");");
+		data.registerMigration(2,  false, "CREATE TABLE IF NOT EXISTS bs_banned_registrars ("
+		        + "rid BIGINT AUTO_INCREMENT PRIMARY KEY,"
+	            + "create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+                + "registered_as text"
 		        + ");");
 
 	}

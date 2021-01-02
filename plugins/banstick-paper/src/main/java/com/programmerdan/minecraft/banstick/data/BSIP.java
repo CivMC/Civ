@@ -1,5 +1,11 @@
 package com.programmerdan.minecraft.banstick.data;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
+import inet.ipaddr.IPAddress;
+import inet.ipaddr.IPAddressString;
+import inet.ipaddr.ipv4.IPv4Address;
+import inet.ipaddr.ipv6.IPv6Address;
 import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,17 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
-
-import inet.ipaddr.IPAddress;
-import inet.ipaddr.IPAddressString;
-import inet.ipaddr.ipv4.IPv4Address;
-import inet.ipaddr.ipv6.IPv6Address;
-
 public class BSIP {
-	private static Map<IPAddress, BSIP> allIPNA = new HashMap<IPAddress, BSIP>();
-	private static Map<Long, BSIP> allIPId = new HashMap<Long, BSIP>();
+	private static Map<IPAddress, BSIP> allIPNA = new HashMap<>();
+	private static Map<Long, BSIP> allIPId = new HashMap<>();
 	
 	private long iid;
 	private Timestamp createTime;
@@ -89,7 +87,7 @@ public class BSIP {
 	 * @return All the IP records contained in the given subnet
 	 */
 	public static List<BSIP> allContained(IPAddress lookup, int CIDR) {
-		List<BSIP> returns = new ArrayList<BSIP>();
+		List<BSIP> returns = new ArrayList<>();
 		IPAddress newBase = lookup.toSubnet(CIDR);
 		StringBuilder sb = new StringBuilder("SELECT * FROM bs_ip WHERE ");
 		if (newBase.isIPv4()) {
@@ -165,7 +163,7 @@ public class BSIP {
 	 * @return All matching subnet records
 	 */
 	public static List<BSIP> allMatching(IPAddress lookup) {
-		List<BSIP> matches = new ArrayList<BSIP>();
+		List<BSIP> matches = new ArrayList<>();
 		if (lookup.isIPv4()) {
 			fillFromCIDRs(lookup, 32, matches);
 		} else if (lookup.isIPv6()) {

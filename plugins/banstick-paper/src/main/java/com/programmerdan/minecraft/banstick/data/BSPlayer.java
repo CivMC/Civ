@@ -299,7 +299,7 @@ public class BSPlayer {
 	 */
 	public static BSPlayer create(final Player player) {
 		if (allPlayersUUID.containsKey(player.getUniqueId())) {
-			return allPlayersUUID.get(player);
+			return allPlayersUUID.get(player.getUniqueId());
 		}
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
 			BSPlayer newPlayer = new BSPlayer();

@@ -1,5 +1,10 @@
 package com.programmerdan.minecraft.banstick.handler;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.data.BSBan;
+import com.programmerdan.minecraft.banstick.data.BSIP;
+import com.programmerdan.minecraft.banstick.data.BSIPData;
+import inet.ipaddr.IPAddressString;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,18 +13,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.data.BSBan;
-import com.programmerdan.minecraft.banstick.data.BSIP;
-import com.programmerdan.minecraft.banstick.data.BSIPData;
-
-import inet.ipaddr.IPAddressString;
 
 public class BanStickTorUpdater {
 	
@@ -41,8 +38,8 @@ tor:
 
 	private boolean banNewNodes = false;
 	
-	private List<TorList> torLists = new ArrayList<TorList>();
-	private List<BukkitTask> torListUpdaters = new ArrayList<BukkitTask>();
+	private List<TorList> torLists = new ArrayList<>();
+	private List<BukkitTask> torListUpdaters = new ArrayList<>();
 
 	public BanStickTorUpdater(FileConfiguration config) {
 		if (!configureTor(config.getConfigurationSection("tor"))) {
@@ -124,7 +121,7 @@ tor:
 									if (dataMatch == null) {
 										dataMatch = BSIPData.create(found, null, null, null, null, 
 												null, null, null, null, null, null, null,
-												1.9f, torSave.address, "Tor exit node");
+												2.5f, torSave.address, "Tor exit node");
 									}
 								}
 								

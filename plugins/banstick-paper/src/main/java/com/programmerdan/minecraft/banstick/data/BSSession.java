@@ -1,5 +1,7 @@
 package com.programmerdan.minecraft.banstick.data;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.lang.ref.WeakReference;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,13 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
-
 public class BSSession {
 
-	private static Map<Long, BSSession> allSessionID = new HashMap<Long, BSSession>();
-	private static ConcurrentLinkedQueue<WeakReference<BSSession>> dirtySessions = new ConcurrentLinkedQueue<WeakReference<BSSession>>();
+	private static Map<Long, BSSession> allSessionID = new HashMap<>();
+	private static ConcurrentLinkedQueue<WeakReference<BSSession>> dirtySessions = new ConcurrentLinkedQueue<>();
 	private boolean dirty;
 	
 	private long sid;
@@ -198,7 +197,7 @@ public class BSSession {
 	}
 	
 	public static List<BSSession> byIP(BSIP iid) {
-		ArrayList<BSSession> sessions = new ArrayList<BSSession>();
+		ArrayList<BSSession> sessions = new ArrayList<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement getIds = connection.prepareStatement("SELECT * FROM bs_session WHERE iid = ?");) {
 			getIds.setLong(1, iid.getId());
@@ -312,7 +311,7 @@ public class BSSession {
 	 * @return the display string
 	 */
 	public String toFullString(boolean showIP) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getPlayer().getName()).append(" [");
 		if (showIP) {
 			sb.append(getIP().toString());

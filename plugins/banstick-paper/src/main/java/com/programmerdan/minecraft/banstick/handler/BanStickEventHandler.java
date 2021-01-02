@@ -28,6 +28,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import vg.civcraft.mc.civmodcore.playersettings.AltRequestEvent;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 /**
@@ -48,7 +49,10 @@ public class BanStickEventHandler implements Listener {
 	private int shareThreshold = 0;
 	private String shareBanMessage = null;
 	private boolean transitiveBans = false;
+	private boolean loveTapNewJoins = true;
 
+	private boolean proxyCheckRegistrar = true;
+	
 	public BanStickEventHandler(FileConfiguration config) {
 		// setup.
 		configureEvents(config.getConfigurationSection("events"));
@@ -67,6 +71,8 @@ public class BanStickEventHandler implements Listener {
 		this.shareThreshold = config.getInt("share.threshold", shareThreshold);
 		this.shareBanMessage = config.getString("share.banMessage", null);
 		this.transitiveBans = config.getBoolean("enable.transitiveBans");
+		this.loveTapNewJoins = config.getBoolean("enable.lovetapOnJoin", loveTapNewJoins);
+		this.proxyCheckRegistrar = config.getBoolean("enable.proxyCheckRegistrar", proxyCheckRegistrar);
 	}
 
 	private void registerEvents() {
@@ -320,6 +326,14 @@ public class BanStickEventHandler implements Listener {
 							List<BSIPData> proxyChecks = BSIPData.allByIP(bsPlayer.getLatestSession().getIP());
 							if (proxyChecks != null) {
 								for (BSIPData proxyCheck : proxyChecks) {
+									//check if entire provider is banned
+									if (BanStick.getPlugin().getRegistrarHandler().isBanned(proxyCheck)) {
+										BanHandler.doUUIDBan(player.getUniqueId(), true);
+										BanStick.getPlugin().info("Banning " + player.getName() + " for "
+												+ "blacklisted provider " + proxyCheck.getRegisteredAs());
+										doKickWithCheckup(player.getUniqueId(), bsPlayer.getBan());
+										return;
+									}
 									BanStick.getPlugin().debug("Check for bans on Proxy: {0}", proxyCheck.getId());
 									List<BSBan> proxyBans = BSBan.byProxy(proxyCheck, false);
 									for (int i = proxyBans.size() - 1 ; i >= 0; i-- ) {
@@ -343,6 +357,8 @@ public class BanStickEventHandler implements Listener {
 										BSBan newBan = BSBan.create(proxyCheck, proxyBanMessage, null, false);
 
 										if (enableProxyBans) {
+											BanStick.getPlugin().info("Banning " + player.getName() + " for "
+													+ "proxy score " + proxyCheck.getProxy() + " for registrar " + proxyCheck.getRegisteredAs());
 											bsPlayer.setBan(newBan);
 										}
 
@@ -352,7 +368,19 @@ public class BanStickEventHandler implements Listener {
 
 										return;
 									}
-								}
+									if (proxyCheckRegistrar) {
+										double registrarScore =  proxyCheck.getAverageForRegistrar();
+										if (registrarScore > proxyThreshold) {
+											BSBan newBan = BSBan.create(proxyCheck, proxyBanMessage, null, false);
+											bsPlayer.setBan(newBan);
+											if (enableProxyKicks) {
+												doKickWithCheckup(player.getUniqueId(), newBan);
+											}
+											BanStick.getPlugin().info("Banning " + player.getName() + " for "
+													+ "proxy registrar score " + registrarScore + " for registrar " + proxyCheck.getRegisteredAs());
+										}
+										}
+									}
 							}
 						}
 					} catch (Exception e) {
@@ -360,6 +388,9 @@ public class BanStickEventHandler implements Listener {
 					}
 				}
 				// etc.
+				if (loveTapNewJoins && !joinEvent.getPlayer().hasPlayedBefore()) {
+					Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "lovetap " + joinEvent.getPlayer().getName());
+				}
 			}
 
 		});
@@ -372,7 +403,7 @@ public class BanStickEventHandler implements Listener {
 		if (proxyCheck.getProxy() >= proxyThreshold && enableNewProxyBans) {
 			List<BSBan> proxyBans = BSBan.byProxy(proxyCheck, false);
 			BSBan newBan = null;
-			if (proxyBans != null && proxyBans.size() > 0) {
+			if (proxyBans != null && !proxyBans.isEmpty()) {
 				for (BSBan checkBan : proxyBans) {
 					if (checkBan.getBanEndTime() != null && checkBan.getBanEndTime().after(new Date())) {
 						newBan = checkBan;
@@ -380,7 +411,7 @@ public class BanStickEventHandler implements Listener {
 					}
 				}
 			}
-			if (newBan == null && (proxyBans == null || proxyBans.size() == 0)) {
+			if (newBan == null && (proxyBans == null || proxyBans.isEmpty())) {
 				newBan = BSBan.create(proxyCheck, proxyBanMessage, null, false);
 			}
 
@@ -403,13 +434,11 @@ public class BanStickEventHandler implements Listener {
 				}
 			}
 
-
-			return;
 		}
 
 	}
 
-	private void doKickWithCheckup(final UUID puuid, final BSBan picked) {
+	public void doKickWithCheckup(final UUID puuid, final BSBan picked) {
 		// now schedule a task to kick out the trash.
 		Bukkit.getScheduler().runTask(BanStick.getPlugin(), new Runnable() {
 
@@ -437,7 +466,7 @@ public class BanStickEventHandler implements Listener {
 								this.cancel();
 							}
 						}
-					}.runTaskTimer(BanStick.getPlugin(), 10l, 10l);
+					}.runTaskTimer(BanStick.getPlugin(), 10L, 10L);
 				} else {
 					BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
 					Bukkit.broadcast("On return, banning " + puuid + " due to " + picked.toString(), "banstick.ips");
@@ -464,6 +493,23 @@ public class BanStickEventHandler implements Listener {
 	@EventHandler(priority=EventPriority.MONITOR)
 	public void kickMonitor(PlayerKickEvent kickEvent) {
 		disconnectEvent(kickEvent.getPlayer());
+	}
+	
+	@EventHandler
+	public void altRequest(AltRequestEvent event) {
+		BSPlayer bsPlayer = BSPlayer.byUUID(event.getAccountToGetMainFor());
+		if (bsPlayer == null) {
+			return;
+		}
+		long minID = bsPlayer.getId();
+		BSPlayer ogAcc = bsPlayer;
+		for (BSPlayer alt : bsPlayer.getTransitiveSharedPlayers(true)) {
+			if (alt.getId() < minID) {
+				minID = alt.getId();
+				ogAcc = alt;
+			}
+		}
+		event.setMain(ogAcc.getUUID());
 	}
 
 	/**

@@ -1,8 +1,5 @@
 package com.programmerdan.minecraft.banstick.commands;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.containers.BanResult;
 import com.programmerdan.minecraft.banstick.data.BSIP;
@@ -10,24 +7,22 @@ import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSSession;
 import com.programmerdan.minecraft.banstick.data.BSShare;
 import com.programmerdan.minecraft.banstick.handler.BanHandler;
-
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import inet.ipaddr.IPAddressStringException;
 import inet.ipaddr.IPAddressTypeException;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
-
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 /**

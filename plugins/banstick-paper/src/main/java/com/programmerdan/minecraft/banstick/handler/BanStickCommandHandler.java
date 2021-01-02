@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.banstick.handler;
 
 import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.commands.BanRegistrarCommand;
 import com.programmerdan.minecraft.banstick.commands.BanSaveCommand;
 import com.programmerdan.minecraft.banstick.commands.BanStickCommand;
 import com.programmerdan.minecraft.banstick.commands.DoubleTapCommand;
@@ -36,6 +37,7 @@ public class BanStickCommandHandler {
 		BanStick.getPlugin().getCommand(DrillDownCommand.name).setExecutor(new DrillDownCommand());
 		BanStick.getPlugin().getCommand(UntangleCommand.name).setExecutor(new UntangleCommand());
 		BanStick.getPlugin().getCommand(GetAltsCommand.name).setExecutor(new GetAltsCommand());
+		BanStick.getPlugin().getCommand(BanRegistrarCommand.name).setExecutor(new BanRegistrarCommand());
 	}
 
 }

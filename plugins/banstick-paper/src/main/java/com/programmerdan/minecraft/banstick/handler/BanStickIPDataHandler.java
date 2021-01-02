@@ -1,5 +1,12 @@
 package com.programmerdan.minecraft.banstick.handler;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.data.BSIP;
+import com.programmerdan.minecraft.banstick.data.BSIPData;
+import inet.ipaddr.IPAddress;
+import inet.ipaddr.IPAddressString;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -15,21 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.data.BSIP;
-import com.programmerdan.minecraft.banstick.data.BSIPData;
-
-import inet.ipaddr.IPAddress;
-import inet.ipaddr.IPAddressString;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  * This class deals with scheduling a constrained lookup / update of data from IP data reporting service(s).
@@ -69,7 +66,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 			return false;
 		}
 		
-		this.toCheck = new ConcurrentLinkedQueue<WeakReference<BSIP>>();
+		this.toCheck = new ConcurrentLinkedQueue<>();
 		
 		this.maxBatch = config.getInt("maxBatch", 50);
 		this.period = config.getLong("period", 20);
@@ -122,8 +119,8 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 		}
 		if (this.toCheck.isEmpty()) return;
 		try {
-			Set<Long> hardStaged = new HashSet<Long>();
-			List<Map<String, String>> source = new ArrayList<Map<String, String>>();
+			Set<Long> hardStaged = new HashSet<>();
+			List<Map<String, String>> source = new ArrayList<>();
 			
 			int cBatch = 0;
 			while (cBatch < this.maxBatch && !this.toCheck.isEmpty()) {
@@ -140,7 +137,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 					address = address.getLower(); // strip cidr
 				}
 				
-				Map<String, String> newEntry = new HashMap<String, String>();
+				Map<String, String> newEntry = new HashMap<>();
 				newEntry.put("query", address.toString());
 				source.add(newEntry);
 				cBatch ++;
@@ -212,6 +209,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 				dataMatch = BSIPData.create(ipMatch, continent, reply.getCountry(), reply.getRegionName(), reply.getCity(), 
 						reply.getZip(), reply.getLat(), reply.getLon(), domain, reply.getOrg(), reply.getAs(), reply.getIsp(),
 						proxy, sauce, comment);
+				BanStick.getPlugin().getRegistrarHandler().checkAndCleanup(dataMatch);
 			}
 		} catch (MalformedURLException mue) {
 			enabled = false;

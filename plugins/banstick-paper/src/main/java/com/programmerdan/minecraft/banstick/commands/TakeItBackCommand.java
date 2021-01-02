@@ -1,21 +1,17 @@
 package com.programmerdan.minecraft.banstick.commands;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import com.programmerdan.minecraft.banstick.data.BSShare;
 import java.util.Arrays;
-
 import java.util.List;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.data.BSPlayer;
-import com.programmerdan.minecraft.banstick.data.BSShare;
-
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class TakeItBackCommand implements CommandExecutor {
@@ -147,7 +143,7 @@ public class TakeItBackCommand implements CommandExecutor {
 			BSPlayer player2 = BSPlayer.byUUID(secondPlayerId);
 			List<BSShare> shares = player.sharesWith(player2);
 			int pardonsRevoked = 0;
-			if (shares != null && shares.size() > 0) {
+			if (shares != null && !shares.isEmpty()) {
 				for (BSShare share : shares) {
 					if (share.isPardoned()) {
 						share.setPardonTime(null);

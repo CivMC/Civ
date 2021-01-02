@@ -234,7 +234,7 @@ public class BSExclusion {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+    	StringBuilder sb = new StringBuilder();
         sb.append(ChatColor.DARK_PURPLE).append("Exclusion between ").append(ChatColor.WHITE)
                 .append(getFirstPlayer().getName()).append(ChatColor.DARK_PURPLE).append(" and ")
                 .append(ChatColor.WHITE).append(getSecondPlayer().getName());
@@ -242,7 +242,7 @@ public class BSExclusion {
     }
 
     public String toFullString() {
-        StringBuffer sb = new StringBuffer();
+    	StringBuilder sb = new StringBuilder();
         sb.append(ChatColor.DARK_PURPLE).append("Exclusion between ").append(ChatColor.WHITE)
                 .append(getFirstPlayer().getName()).append(ChatColor.DARK_PURPLE).append(" and ")
                 .append(ChatColor.WHITE).append(getSecondPlayer().getName()).append(ChatColor.DARK_PURPLE);

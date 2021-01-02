@@ -25,7 +25,7 @@ public abstract class ImportWorker implements Runnable {
 	
 	@Override
 	public void run() {
-		if (enable == true) {
+		if (enable) {
 			doImport();
 		}
 	}

@@ -1,18 +1,5 @@
 package com.programmerdan.minecraft.banstick.commands;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
@@ -20,14 +7,24 @@ import com.programmerdan.minecraft.banstick.data.BSIPData;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSSession;
 import com.programmerdan.minecraft.banstick.data.BSShare;
-
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import inet.ipaddr.IPAddressStringException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class LoveTapCommand  implements CommandExecutor {
@@ -67,11 +64,11 @@ public class LoveTapCommand  implements CommandExecutor {
 							for (BSIP bsip : contains) {
 								List<BSBan> bans = BSBan.byIP(bsip, false);
 								List<BSSession> sessions = BSSession.byIP(bsip);
-								Set<Long> playerIds = new HashSet<Long>();
-								List<BSPlayer> players = new ArrayList<BSPlayer>();
-								List<BSBan> playerBans = new ArrayList<BSBan>();
-								StringBuffer playerList = new StringBuffer();
-								StringBuffer playerBanList = new StringBuffer();
+								Set<Long> playerIds = new HashSet<>();
+								List<BSPlayer> players = new ArrayList<>();
+								List<BSBan> playerBans = new ArrayList<>();
+								StringBuilder playerList = new StringBuilder();
+								StringBuilder playerBanList = new StringBuilder();
 								for (BSSession session : sessions) {
 									BSPlayer player = session.getPlayer();
 									if (playerIds.contains(player.getId())) {
@@ -91,7 +88,7 @@ public class LoveTapCommand  implements CommandExecutor {
 									ipBase.setColor(net.md_5.bungee.api.ChatColor.BLUE);
 								TextComponent ipStr = new TextComponent(bsip.toString());
 									ipStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-									ipStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to lovetap this IP").create()));
+									ipStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to lovetap this IP")));
 									ipStr.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/lovetap " + bsip.toString()));
 								ipBase.addExtra(ipStr);
 										// TODO: Add a hover and clickable that issues a lovetap for this IP specifically. 
@@ -118,8 +115,8 @@ public class LoveTapCommand  implements CommandExecutor {
 									playerBase.setColor(net.md_5.bungee.api.ChatColor.AQUA);
 								TextComponent playerStr = new TextComponent(Integer.toString(players == null ? 0 : players.size()));
 									playerStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-									if (players.size() > 0) {
-										playerStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(playerList.substring(0, playerList.length() - 2).toString()).create()));
+									if (!players.isEmpty()) {
+										playerStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text((playerList.substring(0, playerList.length() - 2)))));
 									}
 								playerBase.addExtra(playerStr);
 								ipBase.addExtra(playerBase);
@@ -129,8 +126,8 @@ public class LoveTapCommand  implements CommandExecutor {
 									pBanBase.setColor(net.md_5.bungee.api.ChatColor.AQUA);
 								TextComponent pBanStr = new TextComponent(Integer.toString(playerBans == null ? 0 : playerBans.size()));
 									pBanStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-									if (playerBans.size() > 0) {
-										pBanStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(playerBanList.substring(0,  playerBanList.length() - 2).toString()).create()));
+									if (!playerBans.isEmpty()) {
+										pBanStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text((playerBanList.substring(0,  playerBanList.length() - 2)))));
 									}
 								pBanBase.addExtra(pBanStr);
 								ipBase.addExtra(pBanBase);
@@ -140,7 +137,7 @@ public class LoveTapCommand  implements CommandExecutor {
 								if (proxy != null) {
 									TextComponent proxyBase = new TextComponent("\n   " + proxy.toString());
 										proxyBase.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-										proxyBase.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("View other players in same city").create()));
+										proxyBase.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(("View other players in same city"))));
 										proxyBase.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/drilldown PLAYER country \"" + proxy.getCountry() + "\" region \"" + proxy.getRegion() + "\" city \"" + proxy.getCity() + "\""));
 									ipBase.addExtra(proxyBase);
 								}
@@ -269,7 +266,7 @@ public class LoveTapCommand  implements CommandExecutor {
 				
 				List<BSShare> shares = player.getAllShares();
 				
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				if (history != null) {
 					sb.append(ChatColor.BLUE).append("Session History: ").append(ChatColor.DARK_AQUA).append("(First Join: ")
 						.append(ChatColor.WHITE).append(player.getFirstAdd()).append(ChatColor.DARK_AQUA).append(")\n");

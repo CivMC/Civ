@@ -1,5 +1,8 @@
 package com.programmerdan.minecraft.banstick.data;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
+import inet.ipaddr.IPAddress;
 import java.lang.ref.WeakReference;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,16 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
-
-import inet.ipaddr.IPAddress;
 import net.md_5.bungee.api.ChatColor;
 
 public class BSIPData {
-	private static Map<Long, BSIPData> allIPDataID = new HashMap<Long, BSIPData>();
-	private static ConcurrentLinkedQueue<WeakReference<BSIPData>> dirtyIPData = new ConcurrentLinkedQueue<WeakReference<BSIPData>>();
+	private static Map<Long, BSIPData> allIPDataID = new HashMap<>();
+	private static ConcurrentLinkedQueue<WeakReference<BSIPData>> dirtyIPData = new ConcurrentLinkedQueue<>();
 	private boolean dirty;
 	
 	private BSIPData() {}
@@ -228,7 +226,7 @@ public class BSIPData {
 	 * @return A list of IPDatas in the same region, or nothing if none found.
 	 */
 	public static List<BSIPData> bySameCity(BSIPData source) {
-		List<BSIPData> found = new ArrayList<BSIPData>();
+		List<BSIPData> found = new ArrayList<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement getSame = connection.prepareStatement("SELECT * FROM bs_ip_data WHERE country = ? and region = ? and city = ? and idid != ? and valid = true ORDER BY create_time");) {
 			getSame.setString(1, source.getCountry());
@@ -285,6 +283,23 @@ public class BSIPData {
 		return null;
 	}
 	
+	public double getAverageForRegistrar() {
+		if (this.registeredAs == null) {
+			return 0;
+		}
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement getSame = connection.prepareStatement("SELECT avg(proxy) FROM bs_ip_data WHERE registered_as = ?");) {
+			getSame.setString(1, this.registeredAs);
+			try (ResultSet rs = getSame.executeQuery();) {
+				rs.next();
+				return rs.getDouble(1); //returns 0 for no matches
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Failed to load average proxy score for registrar " + this.registeredAs, se);
+			return 0;
+		}
+	}
+	
 	/**
 	 * Finds the first subnet that fully contains the given BSIP's IP/CIDR, if any.
 	 * 
@@ -330,7 +345,7 @@ public class BSIPData {
 	 * @return a list; empty if nothing found.
 	 */
 	public static List<BSIPData> allByIP(BSIP ip) {
-		List<BSIPData> returns = new ArrayList<BSIPData>();
+		List<BSIPData> returns = new ArrayList<>();
 		try {
 			if (ip == null) {
 				BanStick.getPlugin().warning("Weird failure, allByIP with null IP");
@@ -613,7 +628,7 @@ public class BSIPData {
 	
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(ChatColor.WHITE).append(getIP().toString()).append(" - ");
 		if (!valid) {
 			sb.append(ChatColor.RED).append("[Invalid] ").append(ChatColor.WHITE);
@@ -678,7 +693,7 @@ public class BSIPData {
 		if (showIPs) {
 			return toString();
 		}
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(ChatColor.WHITE).append(getIP().toFullString(showIPs)).append(" - ");
 		if (!valid) {
 			sb.append(ChatColor.RED).append("[Invalid] ").append(ChatColor.WHITE);
