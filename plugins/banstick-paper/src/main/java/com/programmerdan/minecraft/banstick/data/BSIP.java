@@ -21,7 +21,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BSIP {
+/**
+ * Internal IP address representation and lookups, can be a v4 or v6 IP.
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ *
+ */
+public final class BSIP {
 	private static Map<IPAddress, BSIP> allIPNA = new HashMap<>();
 	private static Map<Long, BSIP> allIPId = new HashMap<>();
 	
@@ -31,7 +37,7 @@ public class BSIP {
 	private IPv4Address basev4;
 	private IPv6Address basev6;
 	
-	private BSIP() {}
+	private BSIP() { }
 	
 	public long getId() {
 		return iid;
@@ -78,22 +84,55 @@ public class BSIP {
 	}
 	
 	/**
+	 * @param lookup The IP address to look up
+	 * @return All matching subnet records
+	 * @see #allMatching(InetAddress)
+	 */
+	public static List<BSIP> allMatching(IPAddress lookup) {
+		List<BSIP> matches = new ArrayList<>();
+		if (lookup.isIPv4()) {
+			fillFromCIDRs(lookup, 32, matches);
+		} else if (lookup.isIPv6()) {
+			fillFromCIDRs(lookup, 128, matches);
+		}
+		return matches;
+	}
+	
+	/**
+	 * Expands CIDR restrictions for subnet matching -- find all networks containing this network
+	 * 
+	 * @param lookup The ipaddress as root of the subnet
+	 * @param cidr The CIDR to begin as smallest subnet
+	 * @return The subnet records containing this subnet
+	 * @see #allMatching(InetAddress)
+	 */
+	public static List<BSIP> allMatching(IPAddress lookup, int cidr) {
+		List<BSIP> matches = new ArrayList<BSIP>();
+		if (lookup.isIPv4()) {
+			fillFromCIDRs(lookup, cidr, matches);
+		} else if (lookup.isIPv6()) {
+			fillFromCIDRs(lookup, cidr, matches);
+		}
+		return matches;
+	}	
+
+	/**
 	 * SLOW!!!
 	 * 
-	 * This method finds all records, CIDR and exact, that are members of this subnet.
+	 * <p>This method finds all records, CIDR and exact, that are members of this subnet.
 	 * 
 	 * @param lookup The base IP address to use
-	 * @param CIDR The largest subnet to consider.
+	 * @param cidr The largest subnet to consider.
 	 * @return All the IP records contained in the given subnet
 	 */
-	public static List<BSIP> allContained(IPAddress lookup, int CIDR) {
+	public static List<BSIP> allContained(IPAddress lookup, int cidr) {
 		List<BSIP> returns = new ArrayList<>();
-		IPAddress newBase = lookup.toSubnet(CIDR);
+		IPAddress newBase = lookup.toSubnet(cidr);
 		StringBuilder sb = new StringBuilder("SELECT * FROM bs_ip WHERE ");
 		if (newBase.isIPv4()) {
 			sb.append("ip4 LIKE \"").append(newBase.toSQLWildcardString()).append("\"");
 		} else {
-			newBase.getNetworkSection(CIDR).getStartsWithSQLClause(sb, "ip6");
+			newBase.getNetworkSection(cidr).getStartsWithSQLClause(sb, "ip6");
 		}
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement getIP = connection.prepareStatement(sb.toString());
@@ -109,11 +148,15 @@ public class BSIP {
 				bsip.createTime = rs.getTimestamp(2);
 				String ipv4 = rs.getString(3);
 				int ipv4cidr = rs.getInt(4);
-				if (rs.wasNull()) ipv4cidr = 32;
+				if (rs.wasNull()) {
+					ipv4cidr = 32;
+				}
 				
 				String ipv6 = rs.getString(5);
 				int ipv6cidr = rs.getInt(6);
-				if (rs.wasNull()) ipv6cidr = 128;
+				if (rs.wasNull()) {
+					ipv6cidr = 128;
+				}
 				
 				if (ipv4 != null) { // ipv4 specific entry. Typical for player-entries.
 					IPAddressString ips = new IPAddressString(ipv4 + "/" + ipv4cidr);
@@ -123,7 +166,8 @@ public class BSIP {
 							BSIP.allIPNA.put(bsip.basev4, bsip);
 						}
 					} else {
-						BanStick.getPlugin().warning("Conversion of ipv4 address to ipv4 failed??: " + bsip.iid + " - " + ipv4);
+						BanStick.getPlugin().warning("Conversion of ipv4 address to ipv4 failed??: "
+								+ bsip.iid + " - " + ipv4);
 						continue;
 						// TODO: exception
 					}
@@ -135,7 +179,8 @@ public class BSIP {
 							BSIP.allIPNA.put(bsip.basev6, bsip);
 						}
 					} else {
-						BanStick.getPlugin().warning("Conversion of ipv6 address to ipv6 failed??: " + bsip.iid + " - " + ipv6);
+						BanStick.getPlugin().warning("Conversion of ipv6 address to ipv6 failed??: " 
+								+ bsip.iid + " - " + ipv6);
 						continue;
 						// TODO: exception
 					}
@@ -152,86 +197,53 @@ public class BSIP {
 			}
 
 		} catch (SQLException e) {
-			BanStick.getPlugin().severe("Failed during search for IPs contained by " + newBase.toCanonicalString(), e);
+			BanStick.getPlugin().severe("Failed during search for IPs contained by "
+					+ newBase.toCanonicalString(), e);
 		}
 		return returns;
 	}
 	
 	/**
-	 * @see #allMatching(InetAddress)
-	 * @param lookup The IP address to look up
-	 * @return All matching subnet records
-	 */
-	public static List<BSIP> allMatching(IPAddress lookup) {
-		List<BSIP> matches = new ArrayList<>();
-		if (lookup.isIPv4()) {
-			fillFromCIDRs(lookup, 32, matches);
-		} else if (lookup.isIPv6()) {
-			fillFromCIDRs(lookup, 128, matches);
-		}
-		return matches;
-	}
-	
-	/**
-	 * Expands CIDR restrictions for subnet matching -- find all networks containing this network
-	 * 
-	 * @see #allMatching(InetAddress)
-	 * 
-	 * @param lookup The ipaddress as root of the subnet
-	 * @param CIDR The CIDR to begin as smallest subnet
-	 * @return The subnet records containing this subnet
-	 */
-	public static List<BSIP> allMatching(IPAddress lookup, int CIDR) {
-		List<BSIP> matches = new ArrayList<BSIP>();
-		if (lookup.isIPv4()) {
-			fillFromCIDRs(lookup, CIDR, matches);
-		} else if (lookup.isIPv6()) {
-			fillFromCIDRs(lookup, CIDR, matches);
-		}
-		return matches;
-	}	
-	/**
 	 * Starting at max CIDR passed in and moving towards largest, check for host matches.
 	 * These can then be used to check for bans on those matching host networks.
 	 * 
-	 * Shorthand: Looks to find host networks for the specified IP/subnet that have IP table entries
+	 * <p>Shorthand: Looks to find host networks for the specified IP/subnet that have IP table entries
 	 * to use for ban-lookups.
 	 * 
-	 * I recommend this be non-synchronous!
+	 * <p>I recommend this be non-synchronous!
 	 * 
 	 * @param lookup The IPAddress to lookup from (root, smallest subnet base IP)
 	 * @param maxCIDR The smallest CIDR to consider
 	 * @param matches The List to fill with foud matches
 	 */
 	private static void fillFromCIDRs(IPAddress lookup, int maxCIDR, List<BSIP> matches) {
-		for (int cCIDR = maxCIDR; cCIDR > 0; cCIDR--) {
-			BSIP prospect = byCIDR(lookup.toSubnet(cCIDR).getLower().toString(), cCIDR);
+		for (int curCIDR = maxCIDR; curCIDR > 0; curCIDR--) {
+			BSIP prospect = byCIDR(lookup.toSubnet(curCIDR).getLower().toString(), curCIDR);
 			if (prospect != null) {
 				matches.add(prospect);
 			}
 		}
 	}
 	
-	
 	/**
 	 * Exact lookup of netAddress by CIDR (InetAddress version)
 	 * 
 	 * @param netAddress The IP Address to lookup from (root, smallest subnet base IP)
-	 * @param CIDR The CIDR to match
+	 * @param cidr The CIDR to match
 	 * @return The IPAddress/CIDR match, if found.
 	 */
-	public static BSIP byCIDR(InetAddress netAddress, int CIDR) {
-		return BSIP.byCIDR(netAddress.getHostAddress(), CIDR);
+	public static BSIP byCIDR(InetAddress netAddress, int cidr) {
+		return BSIP.byCIDR(netAddress.getHostAddress(), cidr);
 	}
 	
 	/**
 	 * Exact lookup of netAddress by CIDR
 	 * @param netAddress The IPAddress as a string to match
-	 * @param CIDR The subnet CIDR to match
+	 * @param cidr The subnet CIDR to match
 	 * @return The exact matching IP record or null if not found.
 	 */
-	public static BSIP byCIDR(String netAddress, int CIDR) {
-		IPAddressString ips = new IPAddressString(netAddress + "/" + CIDR);
+	public static BSIP byCIDR(String netAddress, int cidr) {
+		IPAddressString ips = new IPAddressString(netAddress + "/" + cidr);
 		//BanStick.getPlugin().debug("Check for CIDR IP: {0}", ips.toString());
 		IPAddress lookup = ips.getAddress();
 		if (allIPNA.containsKey(lookup)) {
@@ -247,8 +259,8 @@ public class BSIP {
 				BanStick.getPlugin().severe("Unknown Inet address type: " + netAddress.toString());
 				return null;
 			}
-			getIP.setString(1, lookup.toSubnet(CIDR).getLower().toString());
-			getIP.setInt(2, CIDR);
+			getIP.setString(1, lookup.toSubnet(cidr).getLower().toString());
+			getIP.setInt(2, cidr);
 			
 			BSIP bsip = null;
 			try (ResultSet rs = getIP.executeQuery();) {
@@ -257,7 +269,7 @@ public class BSIP {
 			getIP.close();
 			return bsip;
 		} catch (SQLException se) {
-			BanStick.getPlugin().severe("Unable to retrieve BPID: " + netAddress + "/" + CIDR, se);
+			BanStick.getPlugin().severe("Unable to retrieve BPID: " + netAddress + "/" + cidr, se);
 		}
 		return null;
 	}
@@ -273,6 +285,11 @@ public class BSIP {
 		return byIPAddress(lookup);
 	}
 	
+	/**
+	 * Get IP by a v4 or v6 IPAddress
+	 * @param lookup the IP address to match 
+	 * @return the matching IP or null
+	 */
 	public static BSIP byIPAddress(IPAddress lookup) {
 		//BanStick.getPlugin().debug("Check for IP: {0}", lookup.toString());
 		if (allIPNA.containsKey(lookup)) {
@@ -325,6 +342,12 @@ public class BSIP {
 		return null; // TODO: exception
 	}
 	
+	/**
+	 * Leverages a ResultSet to construct an IP
+	 * @param rs the ResultSet
+	 * @return the internal BSIP, or null if retrieval failed.
+	 * @throws SQLException If something goes wrong.
+	 */
 	private static BSIP internalGetResult(ResultSet rs) throws SQLException {
 		if (rs.next()) {
 			// found
@@ -336,11 +359,15 @@ public class BSIP {
 			bsip.createTime = rs.getTimestamp(2);
 			String ipv4 = rs.getString(3);
 			int ipv4cidr = rs.getInt(4);
-			if (rs.wasNull()) ipv4cidr = 32;
+			if (rs.wasNull()) {
+				ipv4cidr = 32;
+			}
 			
 			String ipv6 = rs.getString(5);
 			int ipv6cidr = rs.getInt(6);
-			if (rs.wasNull()) ipv6cidr = 128;
+			if (rs.wasNull()) {
+				ipv6cidr = 128;
+			}
 			
 			if (ipv4 != null) { // ipv4 specific entry. Typical for player-entries.
 				IPAddressString ips = new IPAddressString(ipv4 + "/" + ipv4cidr);
@@ -374,11 +401,21 @@ public class BSIP {
 		}
 	}
 
+	/**
+	 * Creates a BSIP from an InetAddress object
+	 * @param netAddress the InetAddress object
+	 * @return a BSIP object, or null if failure.
+	 */
 	public static BSIP create(InetAddress netAddress) {
 		IPAddress lookup = IPAddress.from(netAddress);
 		return create(lookup);
 	}
 	
+	/**
+	 * Creates a BSIP from an IPAddress object
+	 * @param lookup the IPAddress object
+	 * @return a BSIP object, or null if failure.
+	 */
 	public static BSIP create(IPAddress lookup) {
 		if (allIPNA.containsKey(lookup)) {
 			return allIPNA.get(lookup);
@@ -430,12 +467,24 @@ public class BSIP {
 		return null;
 	}
 	
-	public static BSIP create(InetAddress netAddress, int CIDR) {
-		IPAddress lookup = IPAddress.from(netAddress).toSubnet(CIDR).getLower();
-		return create(lookup, CIDR);
+	/**
+	 * Creates a CIDR IP address from an InetAddress and a CIDR
+	 * @param netAddress the InetAddress
+	 * @param cidr the CIDR mask
+	 * @return a new BSIP or null if failed
+	 */
+	public static BSIP create(InetAddress netAddress, int cidr) {
+		IPAddress lookup = IPAddress.from(netAddress).toSubnet(cidr).getLower();
+		return create(lookup, cidr);
 	}
 	
-	public static BSIP create(IPAddress lookup, int CIDR) {
+	/**
+	 * Creates a CIDR IP address from an IPAddress object and a CIDR
+	 * @param lookup the IPAddress
+	 * @param cidr the CIDR mask
+	 * @return
+	 */
+	public static BSIP create(IPAddress lookup, int cidr) {
 		// TODO: reconsider the CIDR handling in the caching and saving and such.
 		//   might not be necessary to separate out the CIDR like I am here.
 		if (allIPNA.containsKey(lookup)) {
@@ -450,13 +499,13 @@ public class BSIP {
 				statement.setNull(3, Types.CHAR);
 				statement.setNull(4, Types.SMALLINT);
 				statement.setString(1, lookup.toString());
-				statement.setInt(2, CIDR);
+				statement.setInt(2, cidr);
 				newIP.basev4 = lookup.toIPv4();
 			} else {
 				statement.setNull(1, Types.CHAR);
 				statement.setNull(2, Types.SMALLINT);
 				statement.setString(3, lookup.toString());
-				statement.setInt(4, CIDR);
+				statement.setInt(4, cidr);
 				newIP.basev6 = lookup.toIPv6();
 			}
 			newIP.createTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
@@ -464,7 +513,8 @@ public class BSIP {
 			
 			int ins = statement.executeUpdate();
 			if (ins < 1) {
-				BanStick.getPlugin().warning("Insert reported nothing inserted? " + lookup.toString() + "/" + CIDR);
+				BanStick.getPlugin().warning("Insert reported nothing inserted? "
+						+ lookup.toString() + "/" + cidr);
 			}
 			
 			try (ResultSet rs = statement.getGeneratedKeys()) {
@@ -473,43 +523,58 @@ public class BSIP {
 					newIP.iid = iid;
 					BSIP.allIPId.put(iid, newIP);
 					BSIP.allIPNA.put((newIP.basev4 == null ? newIP.basev6 : newIP.basev4), newIP);
-					if (BanStick.getPlugin().getIPDataHandler() != null && (newIP.basev4 == null ? CIDR == 128 : CIDR == 32)) {
+					if (BanStick.getPlugin().getIPDataHandler() != null
+							&& (newIP.basev4 == null ? cidr == 128 : cidr == 32)) {
 						BanStick.getPlugin().getIPDataHandler().offer(newIP);
 					}
 					return newIP;
 				} else {
-					BanStick.getPlugin().severe("Failed to get ID from inserted record!? " + lookup.toString() + "/" + CIDR);
+					BanStick.getPlugin().severe("Failed to get ID from inserted record!? "
+							+ lookup.toString() + "/" + cidr);
 					return null;
 				}
 			}
 		} catch (SQLException se) {
-			BanStick.getPlugin().severe("Failed to create IP from " + lookup.toString() + "/" + CIDR, se);
+			BanStick.getPlugin().severe("Failed to create IP from " + lookup.toString() + "/" + cidr, se);
 		}
 		return null;
 	}
 	
+	/**
+	 * Preloads a chunk of BSIPs.
+	 * @param offset starting offset for load
+	 * @param limit how many to load in this chunk of preload
+	 * @return How many were actually loaded
+	 */
 	public static long preload(long offset, int limit) {
 		long maxId = -1;
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadIPs = connection.prepareStatement("SELECT * FROM bs_ip WHERE iid > ? ORDER BY iid LIMIT ?");) {
+				PreparedStatement loadIPs = connection.prepareStatement(
+						"SELECT * FROM bs_ip WHERE iid > ? ORDER BY iid LIMIT ?");) {
 			loadIPs.setLong(1, offset);
 			loadIPs.setInt(2, limit);
 			try (ResultSet rs = loadIPs.executeQuery()) {
 				while (rs.next()) {
 					BSIP bsip = new BSIP();
 					bsip.iid = rs.getLong(1);
-					if (bsip.iid > maxId) maxId = bsip.iid;
+					if (bsip.iid > maxId) {
+						maxId = bsip.iid;
+					}
 					if (BSIP.allIPId.containsKey(bsip.iid)) { // already cached.
 						continue;
 					}
 					bsip.createTime = rs.getTimestamp(2);
 					String ipv4 = rs.getString(3);
 					int ipv4cidr = rs.getInt(4);
-					if (rs.wasNull()) ipv4cidr = 32;
+					if (rs.wasNull()) {
+						ipv4cidr = 32;
+					}
 					
 					String ipv6 = rs.getString(5);
 					int ipv6cidr = rs.getInt(6);
-					if (rs.wasNull()) ipv6cidr = 128;
+					if (rs.wasNull()) {
+						ipv6cidr = 128;
+					}
 					
 					if (ipv4 != null) { // ipv4 specific entry. Typical for player-entries.
 						IPAddressString ips = new IPAddressString(ipv4 + "/" + ipv4cidr);
@@ -519,7 +584,8 @@ public class BSIP {
 								BSIP.allIPNA.put(bsip.basev4, bsip);
 							}
 						} else {
-							BanStick.getPlugin().warning("Conversion of ipv4 address to ipv4 failed??: " + bsip.iid + " - " + ipv4);
+							BanStick.getPlugin().warning("Conversion of ipv4 address to ipv4 failed??: "
+									+ bsip.iid + " - " + ipv4);
 							continue;
 							// TODO: exception
 						}
@@ -531,7 +597,8 @@ public class BSIP {
 								BSIP.allIPNA.put(bsip.basev6, bsip);
 							}
 						} else {
-							BanStick.getPlugin().warning("Conversion of ipv6 address to ipv6 failed??: " + bsip.iid + " - " + ipv6);
+							BanStick.getPlugin().warning("Conversion of ipv6 address to ipv6 failed??: "
+									+ bsip.iid + " - " + ipv6);
 							continue;
 							// TODO: exception
 						}
@@ -547,7 +614,8 @@ public class BSIP {
 				}
 			}
 		} catch (SQLException se) {
-			BanStick.getPlugin().severe("Failed during IP preload, offset " + offset + " limit " + limit, se);
+			BanStick.getPlugin().severe("Failed during IP preload, offset " + offset
+					+ " limit " + limit, se);
 		}
 		return maxId;
 	}
@@ -561,6 +629,11 @@ public class BSIP {
 		}
 	}
 	
+	/**
+	 * Full details of IP
+	 * @param showIPs do we show the IP?
+	 * @return a String
+	 */
 	public String toFullString(boolean showIPs) {
 		return showIPs ? toString() : String.valueOf(this.iid);
 	}
