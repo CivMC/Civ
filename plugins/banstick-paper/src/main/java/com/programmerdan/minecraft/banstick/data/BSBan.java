@@ -91,6 +91,12 @@ public class BSBan {
 	public Date getBanEndTime() {
 		return banEnd;
 	}
+
+	public void clearBanEndTime() {
+		this.banEnd = null;
+		this.dirty = true;
+		dirtyBans.offer(new WeakReference<BSBan>(this));
+	}
 	
 	public void setBanEndTime(Date banEnd) {
 		setBanEndTime(new Timestamp(banEnd.getTime()));

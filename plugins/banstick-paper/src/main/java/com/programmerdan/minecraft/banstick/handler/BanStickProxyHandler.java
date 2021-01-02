@@ -36,8 +36,8 @@ public class BanStickProxyHandler {
 
 			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses("com.programmerdan.minecraft.banstick.proxy")) {
 				Class<?> clazz = clsInfo.load();
-				BanStick.getPlugin().info("Found a proxy loader class {0}, attempting to find a suitable constructor", clazz.getName());
 				if (clazz != null && ProxyLoader.class.isAssignableFrom(clazz)) {
+					BanStick.getPlugin().info("Found a proxy loader class {0}, attempting to find a suitable constructor", clazz.getName());
 					ProxyLoader loader = null;
 					try {
 						Constructor<?> constructBasic = clazz.getConstructor(ConfigurationSection.class);

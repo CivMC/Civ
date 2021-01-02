@@ -47,8 +47,8 @@ public class BanStickScrapeHandler {
 
 			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses("com.programmerdan.minecraft.banstick.scraper")) {
 				Class<?> clazz = clsInfo.load();
-				BanStick.getPlugin().info("Found a scraper worker class {0}, attempting to find a suitable constructor", clazz.getName());
 				if (clazz != null && ScraperWorker.class.isAssignableFrom(clazz)) {
+					BanStick.getPlugin().info("Found a scraper worker class {0}, attempting to find a suitable constructor", clazz.getName());
 					ScraperWorker loader = null;
 					try {
 						Constructor<?> constructBasic = clazz.getConstructor(ConfigurationSection.class);

@@ -15,6 +15,7 @@ import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class BanStick extends ACivMod {
 	private static BanStick instance;
+	@SuppressWarnings("unused")
 	private BanStickCommandHandler commandHandler;
 	private BanStickEventHandler eventHandler;
 	private BanStickDatabaseHandler databaseHandler;

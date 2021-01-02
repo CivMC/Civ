@@ -22,7 +22,10 @@ import vg.civcraft.mc.namelayer.NameAPI;
  *
  */
 public class BanHandler {
-	private static SimpleDateFormat endTimeFormat = new SimpleDateFormat("MM/dd/yyyy HH:mms:ss");
+	private static SimpleDateFormat getEndTimeFormat() {
+		return new SimpleDateFormat("MM/dd/yyyy HH:mms:ss");
+	}
+	
 	private BanHandler() {}
 
 	/**
@@ -127,7 +130,7 @@ public class BanHandler {
 			
 			if (spigotPlayer != null) {
 				if (banEnd != null) {
-					spigotPlayer.kickPlayer(message + ". Ends " + BanHandler.endTimeFormat.format(banEnd));
+					spigotPlayer.kickPlayer(message + ". Ends " + BanHandler.getEndTimeFormat().format(banEnd));
 				} else {
 					spigotPlayer.kickPlayer(message);
 				}
@@ -178,7 +181,7 @@ public class BanHandler {
 					banPlayer.setBan(ban);
 					result.addPlayer(banPlayer);
 					if (banEnd != null) {
-						player.kickPlayer(message + ". Ends " + BanHandler.endTimeFormat.format(banEnd));
+						player.kickPlayer(message + ". Ends " + BanHandler.getEndTimeFormat().format(banEnd));
 					} else {
 						player.kickPlayer(message);
 					}
@@ -252,7 +255,7 @@ public class BanHandler {
 					banPlayer.setBan(ban);
 					result.addPlayer(banPlayer);
 					if (banEnd != null) {
-						player.kickPlayer(message + ". Ends " + BanHandler.endTimeFormat.format(banEnd));
+						player.kickPlayer(message + ". Ends " + BanHandler.getEndTimeFormat().format(banEnd));
 					} else {
 						player.kickPlayer(message);
 					}

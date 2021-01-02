@@ -3,6 +3,8 @@ package com.programmerdan.minecraft.banstick.data;
 import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.lang.ref.WeakReference;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -137,10 +139,16 @@ public class BSPlayer {
 		if (latest != null && !latest.isEnded()) {
 			latest.setLeaveTime(sessionStart);
 		}
-		BSIP ip = BanStickDatabaseHandler.getInstance().getOrCreateIP(player.getAddress().getAddress());
-		this.allIPs.setLatest(ip);
-		latest = this.allSessions.startNew(ip, sessionStart);
-		this.allShares.check(latest);
+		InetSocketAddress isa = player.getAddress();
+		InetAddress ina = isa != null ? isa.getAddress() : null;
+		if (ina != null) {
+			BSIP ip = BanStickDatabaseHandler.getInstance().getOrCreateIP(ina);
+			this.allIPs.setLatest(ip);
+			latest = this.allSessions.startNew(ip, sessionStart);
+			this.allShares.check(latest);
+		} else {
+			BanStick.getPlugin().severe("Start session of BSPlayer failed, no IP retrievable! Player: " + player);
+		}
 	}
 
 	/**

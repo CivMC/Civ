@@ -18,6 +18,7 @@ public class TakeItBackCommand implements CommandExecutor {
 
 	public static String name = "takeitback";
 	
+	// TODO: Unsafe command structure as player could have name of IP or PROXY or SHARED and that would break this command.
 	/**
 	 *  <b>takeitback [name/uuid] [IP] [PROXY] [SHARED]</b>
 	 *    IP - Allows new bans on this player due to IP matches
@@ -33,7 +34,7 @@ public class TakeItBackCommand implements CommandExecutor {
 		
 		String toRevoke = arguments[0];
 		String secRevoke = arguments[1];
-		List<String> revokes = (arguments.length > 1) ? Arrays.asList(Arrays.copyOfRange(arguments, 1, arguments.length)) : null;
+		List<String> revokes = Arrays.asList(Arrays.copyOfRange(arguments, 1, arguments.length));
 
 		BanStick.getPlugin().debug("toRevoke: {0}, secRevoke: {1}, revokes: {2}", 
 				toRevoke, secRevoke, revokes);

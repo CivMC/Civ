@@ -120,13 +120,15 @@ public class ForgiveCommand implements CommandExecutor {
 					
 					try {
 						Player underlyingUnban = Bukkit.getPlayer(playerId);
-						if (underlyingUnban.isBanned()) {
+						if (underlyingUnban != null && underlyingUnban.isBanned()) {
 							//underlyingUnban.setBanned(false); // REMOVED 1.12
 							BanList legacyBans = Bukkit.getBanList(Type.NAME);
 							legacyBans.pardon(playerId.toString());
 							legacyBans.pardon(player.getName());
+							BanStick.getPlugin().debug("Also forgave any underlying bukkit ban on uuid / player name");
+						} else {
+							BanStick.getPlugin().debug("Unable to forgive any underlying bukkit ban on uuid / player name");
 						}
-						BanStick.getPlugin().debug("Also forgave any underlying bukkit ban on uuid / player name");
 					} catch (Exception q) {
 						BanStick.getPlugin().debug("Failed to forgive any underlying bukkit ban on uuid / player name");
 					}
@@ -145,13 +147,15 @@ public class ForgiveCommand implements CommandExecutor {
 
 							try {
 								Player underlyingUnban = Bukkit.getPlayer(playerId);
-								if (underlyingUnban.isBanned()) {
+								if (underlyingUnban != null && underlyingUnban.isBanned()) {
 									//underlyingUnban.setBanned(false); // REMOVED 1.12
 									BanList legacyBans = Bukkit.getBanList(Type.NAME);
 									legacyBans.pardon(playerId.toString());
 									legacyBans.pardon(player.getName());
+									BanStick.getPlugin().debug("Also forgave any underlying bukkit ban on uuid / player name");
+								} else {
+									BanStick.getPlugin().debug("Unable to forgive any underlying bukkit ban on uuid / player name");
 								}
-								BanStick.getPlugin().debug("Also forgave any underlying bukkit ban on uuid / player name");
 							} catch (Exception q) {
 								BanStick.getPlugin().debug("Failed to forgive any underlying bukkit ban on uuid / player name");
 							}

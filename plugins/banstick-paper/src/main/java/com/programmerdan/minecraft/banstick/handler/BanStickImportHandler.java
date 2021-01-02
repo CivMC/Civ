@@ -43,8 +43,8 @@ public class BanStickImportHandler {
 
 			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses("com.programmerdan.minecraft.banstick.importer")) {
 				Class<?> clazz = clsInfo.load();
-				BanStick.getPlugin().info("Found an import worker class {0}, attempting to find a suitable constructor", clazz.getName());
 				if (clazz != null && ImportWorker.class.isAssignableFrom(clazz)) {
+					BanStick.getPlugin().info("Found an import worker class {0}, attempting to find a suitable constructor", clazz.getName());
 					ImportWorker loader = null;
 					try {
 						Constructor<?> constructBasic = clazz.getConstructor(ConfigurationSection.class);

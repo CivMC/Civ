@@ -98,6 +98,7 @@ public class UntangleCommand implements CommandExecutor {
               if (match != null) {
                   return match.getUniqueId();
               } else {
+            	  @SuppressWarnings("deprecation")
                   OfflinePlayer offPlay = Bukkit.getOfflinePlayer(input);
                   if (offPlay != null) {
                       return offPlay.getUniqueId();

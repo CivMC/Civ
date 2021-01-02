@@ -55,8 +55,13 @@ public class BanStickEventHandler implements Listener {
 	
 	public BanStickEventHandler(FileConfiguration config) {
 		// setup.
-		configureEvents(config.getConfigurationSection("events"));
-		registerEvents();
+		ConfigurationSection internal = config.getConfigurationSection("events");
+		if (internal != null) {
+			configureEvents(internal);
+			registerEvents();
+		} else {
+			throw new RuntimeException("Failed to set up Event Handler for BanStick, no events section in config.");
+		}
 	}
 
 	private void configureEvents(ConfigurationSection config) {
@@ -146,9 +151,13 @@ public class BanStickEventHandler implements Listener {
 					if (player != null) {
 						// associate!
 						player.setBan(pickOne); // get most recent matching IP ban and use it.
+						
+						BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
+						Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + pickOne.toString(), "banstick.ips");
+					} else {
+						BanStick.getPlugin().info("Preventing login due to " + pickOne.toString());
+						Bukkit.broadcast("Preventing login due to " + pickOne.toString(), "banstick.ips");
 					}
-					BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
-					Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + pickOne.toString(), "banstick.ips");
 					asyncEvent.disallow(Result.KICK_BANNED, pickOne.getMessage());
 					return;
 				}
@@ -170,9 +179,12 @@ public class BanStickEventHandler implements Listener {
 					if (player != null) {
 						// associate!
 						player.setBan(pickOne); // get most recent matching subnet ban and use it.
+						BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
+						Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + pickOne.toString(), "banstick.ips");
+					} else {
+						BanStick.getPlugin().info("Preventing login due to " + pickOne.toString());
+						Bukkit.broadcast("Preventing login due to " + pickOne.toString(), "banstick.ips");
 					}
-					BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
-					Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + pickOne.toString(), "banstick.ips");
 					asyncEvent.disallow(Result.KICK_BANNED, pickOne.getMessage());
 					return;
 				}

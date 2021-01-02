@@ -129,7 +129,11 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 									BSBan pickOne = ban.get(i);
 									if (pickOne.isAdminBan()) continue; // skip admin entered bans.
 									if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().after(new Date())) {
-										pickOne.setBanEndTime(this.banLength < 0 ? null : new Date(System.currentTimeMillis() + this.banLength));
+										if (this.banLength < 0) { // endless
+											pickOne.clearBanEndTime();
+										} else {
+											pickOne.setBanEndTime(new Date(System.currentTimeMillis() + this.banLength));
+										}
 										wasmatch = true;
 										break;
 									}

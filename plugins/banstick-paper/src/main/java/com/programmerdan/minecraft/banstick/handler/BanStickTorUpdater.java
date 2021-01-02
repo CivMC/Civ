@@ -5,6 +5,8 @@ import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSIPData;
 import inet.ipaddr.IPAddressString;
+import inet.ipaddr.IPAddressStringException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,17 +60,19 @@ tor:
 		try {
 			banNewNodes = config.getBoolean("autoban", false);
 			ConfigurationSection lists = config.getConfigurationSection("lists");
+			if (lists == null) return true; // all done quickly.
 			for (String listName : lists.getKeys(false)) {
 				ConfigurationSection list = lists.getConfigurationSection(listName);
-				
-				torLists.add(new TorList(
-							list.getString("address"),
-							list.getLong("period"),
-							list.getLong("delay"),
-							list.getBoolean("cidr"),
-							list.getString("ban.message"),
-							list.getLong("ban.length")
-						));
+				if (list != null) {
+					torLists.add(new TorList(
+								list.getString("address"),
+								list.getLong("period"),
+								list.getLong("delay"),
+								list.getBoolean("cidr"),
+								list.getString("ban.message"),
+								list.getLong("ban.length")
+							));
+				}
 			}
 			return true;
 		} catch (Exception e) {
@@ -135,7 +139,11 @@ tor:
 											BSBan pickOne = ban.get(i);
 											if (pickOne.isAdminBan()) continue; // skip admin entered bans.
 											if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().after(new Date())) {
-												pickOne.setBanEndTime(torSave.endlessBan ? null : new Date(System.currentTimeMillis() + torSave.banLength));
+												if (torSave.endlessBan) {
+													pickOne.clearBanEndTime(); // no end.
+												} else {
+													pickOne.setBanEndTime(new Date(System.currentTimeMillis() + torSave.banLength));
+												}
 												wasmatch = true;
 												break;
 											}
@@ -147,7 +155,7 @@ tor:
 									}
 								}
 								
-							} catch (Exception e) {
+							} catch (NullPointerException | IPAddressStringException e) {
 								// quiet.
 								errors ++;
 							}

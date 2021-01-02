@@ -8,6 +8,7 @@ import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import inet.ipaddr.IPAddressStringException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -144,21 +145,24 @@ public class BanStickCommand implements CommandExecutor {
 			if (playerId != null) {
 				BanResult result = null;
 				
-				if (hasCIDR) {
+				if (hasCIDR) { // we only do an IP ban for a player if with CIDR, and then a CIDR on their current IP.
 					Player target = Bukkit.getPlayer(playerId);
 					
 					if (target != null) {
-						InetAddress na = target.getAddress().getAddress();
+						InetSocketAddress isa = target.getAddress();
+						InetAddress na = isa != null ? isa.getAddress() : null;
 						
-						BSIP exact = hasCIDR ? BSIP.byCIDR(na, CIDR) : BSIP.byInetAddress(na);
-						if (exact == null) {
-							// new IP record.
-							exact = hasCIDR ? BSIP.create(na, CIDR) : BSIP.create(na);
+						// target's address is @nullable so we need to explicitly handle that.
+						if (na != null) {
+							BSIP exact = BSIP.byCIDR(na, CIDR);
+							if (exact == null) {
+								// new IP record.
+								exact =BSIP.create(na, CIDR);
+							}
+							
+							result = BanHandler.doCIDRBan(exact, message, banEnd, true, false);
+							result.informCommandSender(sender);
 						}
-						
-						result = hasCIDR ? BanHandler.doCIDRBan(exact, message, banEnd, true, false) : 
-								BanHandler.doIPBan(exact, message, banEnd, true, false);
-						result.informCommandSender(sender);
 					}
 				}
 				

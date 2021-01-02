@@ -70,11 +70,15 @@ public class ScrapeFreeProxyList extends ScraperWorker {
 				String country = null;
 				try {
 					country = tds.get(3).text();
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					// intentionally ignore errors.
+				}
 				String port = null;
 				try {
 					port = tds.get(1).text();
-				} catch (Exception e) {}
+				} catch (Exception e) {
+					// intentionally ignore errors.
+				}
 				try {
 					IPAddressString addressS = new IPAddressString(IP);
 					addressS.validate();
@@ -100,7 +104,11 @@ public class ScrapeFreeProxyList extends ScraperWorker {
 								BSBan pickOne = ban.get(i);
 								if (pickOne.isAdminBan()) continue; // skip admin entered bans.
 								if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().after(new Date())) {
-									pickOne.setBanEndTime(this.banLength < 0 ? null : new Date(System.currentTimeMillis() + this.banLength));
+									if (this.banLength < 0) {
+										pickOne.clearBanEndTime();
+									} else {
+										pickOne.setBanEndTime(new Date(System.currentTimeMillis() + this.banLength));
+									}
 									wasmatch = true;
 									break;
 								}

@@ -43,7 +43,8 @@ public class BanStickDatabaseHandler {
 	}
 
 	public BanStickDatabaseHandler(FileConfiguration config) {
-		if (!configureData(config.getConfigurationSection("database"))) {
+		ConfigurationSection internal = config.getConfigurationSection("database");
+		if (internal == null || !configureData(internal)) {
 			throw new RuntimeException("Failed to configure Database for BanStick!");
 		}
 		BanStickDatabaseHandler.instance = this;

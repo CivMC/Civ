@@ -120,14 +120,18 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 				if (nextCheck != null) {
 					nextIP = nextCheck.get();
 				}
-				address = nextIP.getIPAddress();
-				Integer mask = address.getNetworkPrefixLength();
-				if (!(mask == null || mask == (address.isIPv4() ? 32 : 128))) {
-					address = null;
-					continue; // only cidr-less ips allowed.
+				if (nextIP != null) {
+					address = nextIP.getIPAddress();
 				}
-				if (mask != null) {
-					address = address.getLower(); // strip cidr
+				if (address != null) {
+					Integer mask = address.getNetworkPrefixLength();
+					if (!(mask == null || mask == (address.isIPv4() ? 32 : 128))) {
+						address = null;
+						continue; // only cidr-less ips allowed.
+					}
+					if (mask != null) {
+						address = address.getLower(); // strip cidr
+					}
 				}
 			} // found
 			

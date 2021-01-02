@@ -30,8 +30,15 @@ public class IpCheckImportWorker extends ImportWorker {
 
 	@Override
 	public boolean internalSetup(ConfigurationSection config) {
-		if (config == null) return false;
-		return provisionDatabase(config.getConfigurationSection("database"));
+		if (config == null) {
+			return false;
+		}
+		ConfigurationSection internal = config.getConfigurationSection("database");
+		if (internal != null) {
+			return provisionDatabase(internal);
+		} else {
+			return false;
+		}
 	}
 	
 	private boolean provisionDatabase(ConfigurationSection config) {
@@ -103,11 +110,12 @@ public class IpCheckImportWorker extends ImportWorker {
 				try (ResultSet rs = getIPs.executeQuery();) {
 					int thisCycle = 0;
 					while (rs.next()) {
+						// only ip and ban state is leveraged here.
 						String ip = rs.getString(1);
-						Timestamp firstUse = rs.getTimestamp(2);
+						//Timestamp firstUse = rs.getTimestamp(2);
 						boolean isBanned = rs.getBoolean(3);
-						boolean isJoinExempt = rs.getBoolean(4);
-						boolean isWarnExempt = rs.getBoolean(5);
+						//boolean isJoinExempt = rs.getBoolean(4);
+						//boolean isWarnExempt = rs.getBoolean(5);
 						
 						try {
 							IPAddressString address = new IPAddressString(ip);
@@ -162,12 +170,13 @@ public class IpCheckImportWorker extends ImportWorker {
 				try (ResultSet rs = getIPs.executeQuery();) {
 					int thisCycle = 0;
 					while (rs.next()) {
+						// ignore fields not used in import.
 						String username = rs.getString(1);
-						Timestamp firstJoin = rs.getTimestamp(2);
+						//Timestamp firstJoin = rs.getTimestamp(2);
 						String banMessage = rs.getString(3);
 						boolean isBanned = rs.getBoolean(4);
 						boolean isJoinExempt = rs.getBoolean(5);
-						boolean isWarnExempt = rs.getBoolean(6);
+						//boolean isWarnExempt = rs.getBoolean(6);
 						boolean isProtected = rs.getBoolean(7);
 						
 						UUID uuid = null;
@@ -195,7 +204,13 @@ public class IpCheckImportWorker extends ImportWorker {
 							BanStick.getPlugin().warning("Failure making player with UUID {0} and name {1}", uuid, username);
 						}
 						if (isBanned) {
-							BSBan ban = BSBan.create("Banned for Multiaccounting", null, true);
+							BSBan ban = null;
+							if (banMessage != null && banMessage.length() > 0) {
+								ban = BSBan.create(banMessage, null, true);								
+							} else {
+								ban = BSBan.create("Banned for Multiaccounting", null, true);
+							}
+							
 							player.setBan(ban);
 						}
 						if (isJoinExempt) {
@@ -268,10 +283,10 @@ public class IpCheckImportWorker extends ImportWorker {
 							BSIP exactIP = BSIP.byIPAddress(exactAddress);
 							if (player == null || exactIP == null) {
 								BanStick.getPlugin().warning("Failed to find Player {0} or IP {1} from import, unable to import session time {2}", username, ip, sessionStart);
+							} else {
+								player.startSession(exactIP, sessionStart);
+								player.endSession(new Date(sessionStart.getTime() + 1000l)); // default of 1 second.
 							}
-
-							player.startSession(exactIP, sessionStart);
-							player.endSession(new Date(sessionStart.getTime() + 1000l)); // default of 1 second.
 						} catch (Exception e) {
 							BanStick.getPlugin().warning("Found invalid data username {0} ip {1} in IP-Check database", username, ip);
 						}

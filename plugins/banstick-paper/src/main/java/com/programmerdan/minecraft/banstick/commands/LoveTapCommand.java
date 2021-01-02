@@ -262,7 +262,7 @@ public class LoveTapCommand  implements CommandExecutor {
 				List<BSSession> history = player.getAllSessions();
 				BSSession latest = player.getLatestSession();
 				
-				BSIPData latestProxy = BSIPData.byContainsIP(latest.getIP());
+				BSIPData latestProxy = latest != null ? BSIPData.byContainsIP(latest.getIP()) : null;
 				
 				List<BSShare> shares = player.getAllShares();
 				

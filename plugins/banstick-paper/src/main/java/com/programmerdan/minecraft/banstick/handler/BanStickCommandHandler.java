@@ -12,6 +12,9 @@ import com.programmerdan.minecraft.banstick.commands.GetAltsCommand;
 import com.programmerdan.minecraft.banstick.commands.LoveTapCommand;
 import com.programmerdan.minecraft.banstick.commands.TakeItBackCommand;
 import com.programmerdan.minecraft.banstick.commands.UntangleCommand;
+
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 
 /**
@@ -27,17 +30,26 @@ public class BanStickCommandHandler {
 	}
 
 	private void registerCommands() {
-		BanStick.getPlugin().getCommand(BanStickCommand.name).setExecutor(new BanStickCommand());
-		BanStick.getPlugin().getCommand(DoubleTapCommand.name).setExecutor(new DoubleTapCommand());
-		BanStick.getPlugin().getCommand(ForgiveCommand.name).setExecutor(new ForgiveCommand());
-		BanStick.getPlugin().getCommand(BanSaveCommand.name).setExecutor(new BanSaveCommand());
-		BanStick.getPlugin().getCommand(LoveTapCommand.name).setExecutor(new LoveTapCommand());
-		BanStick.getPlugin().getCommand(TakeItBackCommand.name).setExecutor(new TakeItBackCommand());
-		BanStick.getPlugin().getCommand(DowsingRodCommand.name).setExecutor(new DowsingRodCommand());
-		BanStick.getPlugin().getCommand(DrillDownCommand.name).setExecutor(new DrillDownCommand());
-		BanStick.getPlugin().getCommand(UntangleCommand.name).setExecutor(new UntangleCommand());
-		BanStick.getPlugin().getCommand(GetAltsCommand.name).setExecutor(new GetAltsCommand());
-		BanStick.getPlugin().getCommand(BanRegistrarCommand.name).setExecutor(new BanRegistrarCommand());
+		safeRegisterCommand(BanStickCommand.name, new BanStickCommand());
+		safeRegisterCommand(DoubleTapCommand.name, new DoubleTapCommand());
+		safeRegisterCommand(ForgiveCommand.name, new ForgiveCommand());
+		safeRegisterCommand(BanSaveCommand.name, new BanSaveCommand());
+		safeRegisterCommand(LoveTapCommand.name, new LoveTapCommand());
+		safeRegisterCommand(TakeItBackCommand.name, new TakeItBackCommand());
+		safeRegisterCommand(DowsingRodCommand.name, new DowsingRodCommand());
+		safeRegisterCommand(DrillDownCommand.name, new DrillDownCommand());
+		safeRegisterCommand(UntangleCommand.name, new UntangleCommand());
+		safeRegisterCommand(GetAltsCommand.name, new GetAltsCommand());
+		safeRegisterCommand(BanRegistrarCommand.name, new BanRegistrarCommand());
+	}
+	
+	private void safeRegisterCommand(String name, CommandExecutor executor) {
+		PluginCommand command = BanStick.getPlugin().getCommand(name);
+		if (command != null) {
+			command.setExecutor(executor);
+		} else {
+			BanStick.getPlugin().severe("Failed to register command: " + name);
+		}
 	}
 
 }
