@@ -240,6 +240,7 @@ hacks:
     minecartTeleport: true
     obsidianGenerators: true
     personalDeathMessages: true
+    disableNetheriteCrafting: true
     goldBlockTeleport: false
   GameFixes:
     enabled: true
