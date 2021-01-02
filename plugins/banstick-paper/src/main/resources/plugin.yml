@@ -5,6 +5,8 @@ depend: [CivModCore]
 softdepend: [IP-Check, NameLayer]
 main: com.programmerdan.minecraft.banstick.BanStick
 description: A plugin focused on better IP / VPN / CIDR tracking and justice delivery
+website: ${project.url}
+api-version: 1.16
 commands:
  banstick:
   description: Swing that banstick, send nerds flying.
@@ -87,11 +89,27 @@ commands:
      SHARED - Allows new bans on this player due to Share connection ban matches
    /<command> [name/uuid] [name/uuid]
      Immediately unpardons all shares between these two players.
+ banprovider:
+  description: (Un-)Bans the entire provider of the last connection used by a player based on what its registered as
+  permission: banstick.banprovider
+  usage: banprovider <playerName> [undo]
  bansave:
   description: Flush cached changes straight to DB.
   alias: bsbs
   permission: banstick.ips
   usage: /<command>
+ untangle:
+  description: Reassigns alt groups
+  permission: banstick.alts.modify
+  usage: |
+   /<command> [name/uuid] [name/uuid] [name/uuid] ...
+     Merges all of these accounts into a new alt group
+ getalts:
+  description: Gets alts for a player
+  permission: banstick.alts.view
+  usage: |
+   /<command> <name/uuid>
+     Gets alts for this account
 permissions:
  banstick.ban:
   description: Allows delivery of justice
@@ -99,12 +117,25 @@ permissions:
  banstick.lovetap:
   description: Basic info on a user
   default: op
+ banstick.banprovider:
+  description: Allows banning providers
+  default: op
  banstick.forgive:
   description: Allows delivery of mercy
   default: op
  banstick.ips:
   description: Allows full investigation of all data
   default: op
+ banstick.alts.view:
+  description: Allows viewing player alts
+  default: op
+ banstick.alts.modify:
+  description: Allows viewing player alts
+  default: op
+ banstick.alts:
+  children:
+   banstick.alts.modify: true
+   banstick.alts.view: true
  banstick.*:
   description: Superpowered justice
   default: op
@@ -113,3 +144,4 @@ permissions:
    banstick.lovetap: true
    banstick.forgive: true
    banstick.ips: true
+   banstick.alts: true

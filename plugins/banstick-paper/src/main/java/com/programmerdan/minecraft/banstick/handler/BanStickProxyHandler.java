@@ -1,16 +1,13 @@
 package com.programmerdan.minecraft.banstick.handler;
 
+import com.google.common.reflect.ClassPath;
+import com.programmerdan.minecraft.banstick.BanStick;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitTask;
-
-import com.google.common.reflect.ClassPath;
-import com.programmerdan.minecraft.banstick.BanStick;
 
 public class BanStickProxyHandler {
 
@@ -27,8 +24,8 @@ public class BanStickProxyHandler {
 			return;
 		}
 		
-		loaders = new ArrayList<ProxyLoader>();
-		loaderTasks = new ArrayList<BukkitTask>();
+		loaders = new ArrayList<>();
+		loaderTasks = new ArrayList<>();
 		
 		
 		// now load all configured proxy list loaders.

@@ -1,35 +1,31 @@
 package com.programmerdan.minecraft.banstick.commands;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.BanList;
-import org.bukkit.BanList.Type;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSShare;
-
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import inet.ipaddr.IPAddressStringException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
+import org.bukkit.BanList;
+import org.bukkit.BanList.Type;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class ForgiveCommand implements CommandExecutor {
 
 	public static String name = "forgive";
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
 		if (arguments.length < 1) return false;
@@ -195,7 +191,7 @@ public class ForgiveCommand implements CommandExecutor {
 					}
 					if (match) {
 						return true;
-					} else if (pardons.size() > 0) {
+					} else if (!pardons.isEmpty()) {
 						toForgive = pardons.get(0);
 						UUID playerId2 = null;
 						if (toForgive.length() <= 16) {
@@ -229,7 +225,7 @@ public class ForgiveCommand implements CommandExecutor {
 							List<BSShare> shares = player.sharesWith(player2);
 							int banLifted = 0;
 							int pardonsGranted = 0;
-							if (shares != null && shares.size() > 0) {
+							if (shares != null && !shares.isEmpty()) {
 								sender.sendMessage(ChatColor.GREEN + "Checking " + shares.size() + " shared sessions for ones needing pardon");
 								boolean alsoUnban = pardons.size() > 1 && "ALL".equalsIgnoreCase(pardons.get(1));
 								for (BSShare share : shares) {

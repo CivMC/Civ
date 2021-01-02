@@ -1,5 +1,7 @@
 package com.programmerdan.minecraft.banstick.data;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,9 +10,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 public class BSShares {
 	
@@ -52,9 +51,9 @@ public class BSShares {
 			fill();
 		}
 		
-		List<BSShare> all = new ArrayList<BSShare>();
+		List<BSShare> all = new ArrayList<>();
 		
-		if (shareList != null && shareList.size() > 0) {
+		if (shareList != null && !shareList.isEmpty()) {
 			for (Long sid : shareList) {
 				all.add(BSShare.byId(sid));
 			}
@@ -66,9 +65,9 @@ public class BSShares {
 	public List<BSShare> getUnpardoned() {
 		if (shareList == null) { fill(); }
 		
-		List<BSShare> unpardoned = new ArrayList<BSShare>();
+		List<BSShare> unpardoned = new ArrayList<>();
 		
-		if (unpardonedList != null && unpardonedList.size() > 0) {
+		if (unpardonedList != null && !unpardonedList.isEmpty()) {
 			for (Long sid : unpardonedList) {
 				unpardoned.add(BSShare.byId(sid));
 			}
@@ -80,8 +79,8 @@ public class BSShares {
 	public List<BSPlayer> getSharesWith() {
 		if (shareList == null) { fill(); }
 		
-		List<BSPlayer> players = new ArrayList<BSPlayer>();
-		if (overlaps != null && overlaps.size() > 0) {
+		List<BSPlayer> players = new ArrayList<>();
+		if (overlaps != null && !overlaps.isEmpty()) {
 			for (Long pid : overlaps) {
 				players.add(BSPlayer.byId(pid));
 			}
@@ -97,7 +96,7 @@ public class BSShares {
 	
 	public List<BSShare> getSharesWith(BSPlayer player) {
 		if (shareList == null) { fill(); }
-		List<BSShare> returns = new ArrayList<BSShare>();
+		List<BSShare> returns = new ArrayList<>();
 		if (shareList == null || shareList.isEmpty()) return returns;
 		for (Long id : shareList) {
 			BSShare share = BSShare.byId(id);
@@ -108,18 +107,21 @@ public class BSShares {
 		return returns;
 	}
 	
-	private void fill() {
+	private synchronized void fill() {
+		if (shareList != null) {
+			return;
+		}
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement getIDs = connection.prepareStatement( // Get all ids only, order by create time.
 					"SELECT sid, first_pid, second_pid, pardon FROM bs_share WHERE first_pid = ? OR second_pid = ? ORDER BY create_time;");) {
 			getIDs.setLong(1, forPlayer.getId());
 			getIDs.setLong(2, forPlayer.getId());
 			try (ResultSet rs = getIDs.executeQuery()) {
-				shareList = new ArrayList<Long>();
-				overlaps = new HashSet<Long>();
-				unpardonedList = new HashSet<Long>();
+				List <Long> localShareList = new ArrayList<>();
+				overlaps = new HashSet<>();
+				unpardonedList = new HashSet<>();
 				while (rs.next()) {
-					shareList.add(rs.getLong(1));
+					localShareList.add(rs.getLong(1));
 					long fpid = rs.getLong(2);
 					long spid = rs.getLong(3);
 					boolean pardon = rs.getBoolean(4);
@@ -132,9 +134,10 @@ public class BSShares {
 						unpardonedList.add(rs.getLong(1));
 					}
 				}
-				if (shareList.size() == 0) {
+				if (localShareList.isEmpty()) {
 					BanStick.getPlugin().info("No Shares for {0}", forPlayer.getName());
 				}
+				shareList = localShareList;
 			}
 		} catch (SQLException se) {
 			BanStick.getPlugin().severe("Failed to get list of Share ids", se);
@@ -218,7 +221,7 @@ public class BSShares {
 
 	public BSShare getLatest() {
 		if (shareList == null) { fill(); }
-		if (shareList.size() > 0) {
+		if (!shareList.isEmpty()) {
 			return BSShare.byId(shareList.get(shareList.size() - 1));
 		}
 		return null;

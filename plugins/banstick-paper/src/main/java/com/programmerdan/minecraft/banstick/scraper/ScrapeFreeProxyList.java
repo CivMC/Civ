@@ -1,24 +1,21 @@
 package com.programmerdan.minecraft.banstick.scraper;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-import org.jsoup.nodes.Element;
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSIPData;
 import com.programmerdan.minecraft.banstick.handler.ScraperWorker;
-
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import inet.ipaddr.IPAddressStringException;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import org.bukkit.configuration.ConfigurationSection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 public class ScrapeFreeProxyList extends ScraperWorker {
 
@@ -97,7 +94,7 @@ public class ScrapeFreeProxyList extends ScraperWorker {
 						boolean wasmatch = false;
 
 						List<BSBan> ban = BSBan.byProxy(dataMatch, true);
-						if (!(ban == null || ban.size() == 0)) {
+						if (!(ban == null || ban.isEmpty())) {
 							// look for match; if unexpired, extend.
 							for (int i = ban.size() - 1 ; i >= 0; i-- ) {
 								BSBan pickOne = ban.get(i);

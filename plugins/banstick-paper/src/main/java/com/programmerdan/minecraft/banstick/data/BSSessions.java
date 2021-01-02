@@ -1,5 +1,7 @@
 package com.programmerdan.minecraft.banstick.data;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,9 +9,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 public class BSSessions {
 
@@ -38,7 +37,7 @@ public class BSSessions {
 		if (sessionList == null) {
 			fill();
 		}
-		if (sessionList.size() == 0) return null;
+		if (sessionList.isEmpty()) return null;
 		return BSSession.byId(sessionList.get(sessionList.size() - 1));
 	}
 	
@@ -47,9 +46,9 @@ public class BSSessions {
 			fill();
 		}
 		
-		List<BSSession> all = new ArrayList<BSSession>();
+		List<BSSession> all = new ArrayList<>();
 		
-		if (sessionList != null && sessionList.size() > 0) {
+		if (sessionList != null && !sessionList.isEmpty()) {
 			for (Long sid : sessionList) {
 				all.add(BSSession.byId(sid));
 			}
@@ -65,11 +64,11 @@ public class BSSessions {
 				// TODO: replace statement w/ view.
 			getIDs.setLong(1, forPlayer.getId());
 			try (ResultSet rs = getIDs.executeQuery()) {
-				sessionList = new ArrayList<Long>();
+				sessionList = new ArrayList<>();
 				while (rs.next()) {
 					sessionList.add(rs.getLong(1));
 				}
-				if (sessionList.size() == 0) {
+				if (sessionList.isEmpty()) {
 					BanStick.getPlugin().warning("No Sessions for " + forPlayer.getName());
 				}
 			}

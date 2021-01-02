@@ -1,37 +1,24 @@
 package com.programmerdan.minecraft.banstick.handler;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.data.BSIP;
+import com.programmerdan.minecraft.banstick.data.BSIPData;
+import inet.ipaddr.IPAddress;
+import inet.ipaddr.IPAddressString;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.data.BSBan;
-import com.programmerdan.minecraft.banstick.data.BSIP;
-import com.programmerdan.minecraft.banstick.data.BSIPData;
-import com.programmerdan.minecraft.banstick.data.BSSession;
-
-import inet.ipaddr.IPAddress;
-import inet.ipaddr.IPAddressString;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  * This class deals with scheduling a constrained lookup / update of data from IP proxy data key-locked services.
@@ -55,7 +42,7 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 	
 	private String key;
 	
-	private final String target = "http://v2.api.iphub.info/ip/";
+	private final String target = "http://v2.api.iphub.info/ip";
 	
 	public BanStickIPHubHandler(FileConfiguration config) {
 		if (!configure(config.getConfigurationSection("iphub"))) {
@@ -72,7 +59,7 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 			return false;
 		}
 		
-		this.toCheck = new ConcurrentLinkedQueue<WeakReference<BSIP>>();
+		this.toCheck = new ConcurrentLinkedQueue<>();
 		
 		this.key = config.getString("key");
 		this.period = config.getLong("period", 40);
@@ -340,7 +327,7 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 		
 		@Override
 		public String toString() {
-			StringBuffer sb = new StringBuffer("Reply: ");
+			StringBuilder sb = new StringBuilder("Reply: ");
 			sb.append(ip).append(" ").append(hostname).append(" ").append(countryCode).append(" ").append(countryName).append(" ")
 					.append(isp).append("-").append(asn).append(" = ").append(block);
 			return sb.toString();

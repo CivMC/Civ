@@ -1,5 +1,13 @@
 package com.programmerdan.minecraft.banstick.proxy;
 
+import com.google.common.math.BigIntegerMath;
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.data.BSBan;
+import com.programmerdan.minecraft.banstick.data.BSIP;
+import com.programmerdan.minecraft.banstick.data.BSIPData;
+import com.programmerdan.minecraft.banstick.handler.ProxyLoader;
+import inet.ipaddr.IPAddress;
+import inet.ipaddr.IPAddressString;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,19 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import org.bukkit.configuration.ConfigurationSection;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.data.BSBan;
-import com.programmerdan.minecraft.banstick.data.BSIP;
-import com.programmerdan.minecraft.banstick.data.BSIPData;
-import com.programmerdan.minecraft.banstick.handler.ProxyLoader;
-
-import com.google.common.math.BigIntegerMath;
-
-import inet.ipaddr.IPAddress;
-import inet.ipaddr.IPAddressString;
 
 public final class Cloud9ProxyLoader extends ProxyLoader {
 
@@ -65,7 +61,7 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 				}
 				if (errors > 10) break;
 				try {
-					ArrayList<IPAddress> cidrFromRange = new ArrayList<IPAddress>();
+					ArrayList<IPAddress> cidrFromRange = new ArrayList<>();
 					String[] fields = line.split(",");
 					IPAddressString lowbound = new IPAddressString(fields[0]);
 					IPAddressString highbound = new IPAddressString(fields[1]);
@@ -127,7 +123,7 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 							boolean wasmatch = false;
 	
 							List<BSBan> ban = BSBan.byProxy(data, true);
-							if (!(ban == null || ban.size() == 0)) {
+							if (!(ban == null || ban.isEmpty())) {
 								// look for match; if unexpired, extend.
 								for (int i = ban.size() - 1 ; i >= 0; i-- ) {
 									BSBan pickOne = ban.get(i);
