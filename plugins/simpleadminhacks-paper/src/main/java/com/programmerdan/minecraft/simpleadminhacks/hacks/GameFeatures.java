@@ -51,6 +51,7 @@ import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 
 /**
  * This is a grab-bag class to hold any _features_ related configurations that impact the
@@ -579,10 +580,30 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (!config.isEnabled() || !config.isDisableNetheriteCrafting()) {
 			return;
 		}
-		SmithingInventory smithingtable = event.getInventory();
-		smithingtable.setResult(new ItemStack(Material.AIR));
-		for (Player player : InventoryAPI.getViewingPlayers(smithingtable)) {
-			player.updateInventory();
+		//This purely disables vanilla netherite crafting in smithing tables ONLY
+		SmithingInventory smithingTable = event.getInventory();
+		ItemStack result = smithingTable.getResult();
+		if (!ItemAPI.isValidItem(result)) {
+			return;
+		}
+		switch (result.getType()) {
+			case NETHERITE_HELMET:
+			case NETHERITE_CHESTPLATE:
+			case NETHERITE_LEGGINGS:
+			case NETHERITE_BOOTS:
+			case NETHERITE_PICKAXE:
+			case NETHERITE_SHOVEL:
+			case NETHERITE_AXE:
+			case NETHERITE_HOE:
+			case NETHERITE_SWORD:
+				event.setResult(new ItemStack(Material.AIR));
+				Bukkit.getScheduler().runTask(this.plugin, () -> {
+					for (Player player : InventoryAPI.getViewingPlayers(smithingTable)) {
+						player.updateInventory();
+						player.sendMessage(ChatColor.RED + "Vanilla netherite crafting is disabled!");
+					}
+				});
+				break;
 		}
 	}
 
