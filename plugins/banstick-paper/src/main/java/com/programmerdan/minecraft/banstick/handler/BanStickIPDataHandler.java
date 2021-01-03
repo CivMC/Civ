@@ -31,17 +31,16 @@ import org.bukkit.scheduler.BukkitTask;
 /**
  * This class deals with scheduling a constrained lookup / update of data from IP data reporting service(s).
  * 
- * Initially supports ip-api.com tl;dr free and decent request limits.
+ * <p>Initially supports ip-api.com tl;dr free and decent request limits.
  * 
- * Configurable, slightly.
+ * <p>Configurable, slightly.
  * 
- * @author ProgrammerDan
- *
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  */
 public class BanStickIPDataHandler extends BukkitRunnable {
 	private BukkitTask selfTask;
-	private ConcurrentLinkedQueue<WeakReference<BSIP>> toCheck = null;
-	private boolean enabled = false;
+	private ConcurrentLinkedQueue<WeakReference<BSIP>> toCheck;
+	private boolean enabled;
 	
 	private int maxBatch;
 	private long period;
@@ -50,7 +49,11 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 	private long cooldownToReenable;
 	
 	private final String target = "http://ip-api.com/batch";
-	
+
+	/**
+	 * Sets up an IPData handler from a config section.
+	 * @param config the config
+	 */
 	public BanStickIPDataHandler(FileConfiguration config) {
 		if (!configure(config.getConfigurationSection("iplookup"))) {
 			BanStick.getPlugin().warning("IP Data lookup is disabled. This will reduce the quality of information on player's connections.");
@@ -59,6 +62,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 		
 		begin();
 	}
+	
 	private boolean configure(ConfigurationSection config) {
 		if (config != null && config.getBoolean("enable", false)) {
 			enabled = true;
@@ -71,7 +75,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 		this.maxBatch = config.getInt("maxBatch", 50);
 		this.period = config.getLong("period", 20);
 		this.disableOnFailures = config.getInt("failureCap", 10);
-		this.cooldownToReenable = config.getLong("cooldownTicks", 72000l);
+		this.cooldownToReenable = config.getLong("cooldownTicks", 72000L);
 		this.currentFailures = 0;
 		
 		return true;
@@ -85,21 +89,32 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 		}
 	}
 	
+	/**
+	 * Shuts down this IPData Handler
+	 */
 	public void end() {
 		this.enabled = false;
-		if (this.selfTask == null) return;
+		if (this.selfTask == null) {
+			return;
+		}
 		this.selfTask.cancel();
 	}
 	
-	public void offer(BSIP toCheck) {
+	/**
+	 * Asks this IPData handler to check on a specific IP when possible.
+	 * @param check the IP to check eventually.
+	 */
+	public void offer(BSIP check) {
 		if (enabled) {
-			this.toCheck.offer(new WeakReference<BSIP>(toCheck));
+			this.toCheck.offer(new WeakReference<BSIP>(check));
 		}
 	}
 	
 	@Override
 	public void run() {
-		if (!enabled) return;
+		if (!enabled) {
+			return;
+		}
 		if (disableOnFailures <= currentFailures) {
 			enabled = false;
 			if (this.cooldownToReenable > 0) {
@@ -117,22 +132,32 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 			}
 			return;
 		}
-		if (this.toCheck.isEmpty()) return;
+		if (this.toCheck.isEmpty()) {
+			return;
+		}
 		try {
 			Set<Long> hardStaged = new HashSet<>();
 			List<Map<String, String>> source = new ArrayList<>();
 			
-			int cBatch = 0;
-			while (cBatch < this.maxBatch && !this.toCheck.isEmpty()) {
+			int curBatch = 0;
+			while (curBatch < this.maxBatch && !this.toCheck.isEmpty()) {
 				WeakReference<BSIP> nextCheck = this.toCheck.poll();
-				if (nextCheck == null) break; // we're somehow empty already
+				if (nextCheck == null) {
+					break; // we're somehow empty already
+				}
 				BSIP nextIP = nextCheck.get();
-				if (nextIP == null) continue; // it's not available anymore.
-				if (hardStaged.contains(nextIP.getId())) continue; // we've already staged it.
+				if (nextIP == null) {
+					continue; // it's not available anymore.
+				}
+				if (hardStaged.contains(nextIP.getId())) {
+					continue; // we've already staged it.
+				}
 				
 				IPAddress address = nextIP.getIPAddress();
 				Integer mask = address.getNetworkPrefixLength();
-				if (!(mask == null || mask == (address.isIPv4() ? 32 : 128))) continue; // only cidr-less ips allowed.
+				if (!(mask == null || mask == (address.isIPv4() ? 32 : 128))) {
+					continue; // only cidr-less ips allowed.
+				}
 				if (mask != null) {
 					address = address.getLower(); // strip cidr
 				}
@@ -140,10 +165,12 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 				Map<String, String> newEntry = new HashMap<>();
 				newEntry.put("query", address.toString());
 				source.add(newEntry);
-				cBatch ++;
+				curBatch ++;
 			}
 			
-			if (source.size() == 0) return;
+			if (source.size() == 0) {
+				return;
+			}
 			
 			IpData[] replies = null;
 			
@@ -176,14 +203,19 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 			
 			for (IpData reply : replies) {
 				if (reply.getMessage() != null) {
-					BanStick.getPlugin().debug("Failure during IPData lookup for {0}: {1}", reply.getQuery(), reply.getMessage());
+					BanStick.getPlugin().debug("Failure during IPData lookup for {0}: {1}", 
+							reply.getQuery(), reply.getMessage());
 					continue;
 				}
 				IPAddressString replyAddress = new IPAddressString(reply.getQuery());
 				IPAddress address = replyAddress.getAddress();
-				if (address == null) continue;
+				if (address == null) {
+					continue;
+				}
 				BSIP ipMatch = BSIP.byIPAddress(address);
-				if (ipMatch == null) continue;
+				if (ipMatch == null) {
+					continue;
+				}
 				BSIPData dataMatch = BSIPData.byExactIP(ipMatch);
 				String continent = null;
 				String domain = null;
@@ -200,15 +232,16 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 						if (dataMatch.getSource() != null && dataMatch.getSource().contains(sauce)) {
 							sauce = dataMatch.getSource();
 						} else {
-							sauce = dataMatch.getSource() != null ? dataMatch.getSource() + " aug. by IP-API batch" : "IP-API batch";
+							sauce = dataMatch.getSource() != null ? dataMatch.getSource() + " aug. by IP-API batch"
+									: "IP-API batch";
 						}
 					} else {
 						continue; // just move on, no changes.
 					}
 				}
-				dataMatch = BSIPData.create(ipMatch, continent, reply.getCountry(), reply.getRegionName(), reply.getCity(), 
-						reply.getZip(), reply.getLat(), reply.getLon(), domain, reply.getOrg(), reply.getAs(), reply.getIsp(),
-						proxy, sauce, comment);
+				dataMatch = BSIPData.create(ipMatch, continent, reply.getCountry(), reply.getRegionName(), 
+						reply.getCity(), reply.getZip(), reply.getLat(), reply.getLon(), domain, 
+						reply.getOrg(), reply.getAs(), reply.getIsp(), proxy, sauce, comment);
 				BanStick.getPlugin().getRegistrarHandler().checkAndCleanup(dataMatch);
 			}
 		} catch (MalformedURLException mue) {
@@ -240,7 +273,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 		private String org;
 		private String as;
 		
-		public IpData() {}
+		IpData() { }
 
 		public String getStatus() {
 			return status;
@@ -363,23 +396,23 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 		}
 		
 		public boolean hasChanged(BSIPData data) {
-			if (isEqual(data.getCountry(), this.country) &&
-				isEqual(data.getRegion(), this.regionName) &&
-				isEqual(data.getCity(), this.city) &&
-				isEqual(data.getPostal(), this.zip) &&
-				isEqual(data.getLat(), this.lat) &&
-				isEqual(data.getLon(), this.lon) &&
-				isEqual(data.getConnection(), this.isp) &&
-				isEqual(data.getProvider(), this.org) &&
-				isEqual(data.getRegisteredAs(), this.as)) {
+			if (isEqual(data.getCountry(), this.country) && isEqual(data.getRegion(), this.regionName) 
+					&& isEqual(data.getCity(), this.city) && isEqual(data.getPostal(), this.zip)
+					&& isEqual(data.getLat(), this.lat) && isEqual(data.getLon(), this.lon)
+					&& isEqual(data.getConnection(), this.isp) && isEqual(data.getProvider(), this.org)
+					&& isEqual(data.getRegisteredAs(), this.as)) {
 				return false;
 			}
 			return true;
 		}
 		
 		private boolean isEqual(Object a, Object b) {
-			if (a == null && b == null) return true;
-			if (a != null) return a.equals(b);
+			if (a == null && b == null) {
+				return true;
+			}
+			if (a != null) {
+				return a.equals(b);
+			}
 			return b.equals(a);
 		}
 	}
