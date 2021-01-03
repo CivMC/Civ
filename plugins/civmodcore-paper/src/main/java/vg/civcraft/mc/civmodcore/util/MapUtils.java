@@ -10,7 +10,10 @@ import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 
 /**
  * Class of Map utilities.
+ *
+ * @deprecated Use {@link MoreMapUtils} instead.
  */
+@Deprecated
 public final class MapUtils {
 
 	/**
@@ -23,7 +26,10 @@ public final class MapUtils {
 	 * @param <V> The type of values.
 	 * @param map The map to check.
 	 * @return Returns true if the map exists and at least one key-value pair.
+	 *
+	 * @deprecated Use {@link org.apache.commons.collections4.MapUtils#isEmpty(Map)} instead.
 	 */
+	@Deprecated
 	public static <K, V> boolean isNullOrEmpty(Map<K, V> map) {
 		return map == null || map.isEmpty();
 	}
@@ -37,7 +43,10 @@ public final class MapUtils {
 	 * @param map The map to retrieve the key from.
 	 * @param value The value to based the search on.
 	 * @return Returns the key, or null.
+	 *
+	 * @deprecated Use {@link MoreMapUtils#getKeyFromValue(Map, Object)} instead.
 	 */
+	@Deprecated
 	public static <K, V> K getKeyFromValue(final Map<K, V> map, final V value) {
 		if (isNullOrEmpty(map)) {
 			return null;
@@ -63,7 +72,10 @@ public final class MapUtils {
 	 * @param fallback The value that should be returned if none of the keys return a [valid] value.
 	 * @param keys The keys to check.
 	 * @return Returns a value, either from the keys or the fallback, both of which may be null.
+	 *
+	 * @deprecated Use {@link MoreMapUtils#attemptGet(Map, Object, Object[])} instead.
 	 */
+	@Deprecated
 	@SafeVarargs
 	public static <K, V, R> R attemptGet(Map<K, V> map, R fallback, K... keys) {
 		return attemptGet(map, null, fallback, keys);
@@ -80,7 +92,10 @@ public final class MapUtils {
 	 * @param fallback The value that should be returned if none of the keys return a [valid] value.
 	 * @param keys The keys to check.
 	 * @return Returns a value, either from the keys or the fallback, both of which may be null.
+	 *
+	 * @deprecated Use {@link MoreMapUtils#attemptGet(Map, Function, Object, Object[])} instead.
 	 */
+	@Deprecated
 	@SafeVarargs
 	@SuppressWarnings("unchecked")
 	public static <K, V, R> R attemptGet(Map<K, V> map, Function<V, R> parser, R fallback, K... keys) {

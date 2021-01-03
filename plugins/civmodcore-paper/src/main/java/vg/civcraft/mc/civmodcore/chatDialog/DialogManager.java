@@ -6,6 +6,10 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
+/**
+ * @deprecated Use {@link vg.civcraft.mc.civmodcore.chat.dialog.DialogManager} instead.
+ */
+@Deprecated
 public class DialogManager {
 
 	private static Map<UUID, Dialog> dialogs = new TreeMap<>();

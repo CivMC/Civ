@@ -2,27 +2,22 @@ package vg.civcraft.mc.civmodcore.api;
 
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Spliterator;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import org.apache.commons.lang.ArrayUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.ClonedInventory;
+import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
+/**
+ * @deprecated Use {@link InventoryUtils} instead.
+ */
+@Deprecated
 public final class InventoryAPI {
 
 	/**
@@ -30,7 +25,10 @@ public final class InventoryAPI {
 	 *
 	 * @param inventory The inventory to test.
 	 * @return Returns true if it's more likely than not valid.
+	 *
+	 * @deprecated Use {@link InventoryUtils#isValidInventory(Inventory)} instead.
 	 */
+	@Deprecated
 	public static boolean isValidInventory(Inventory inventory) {
 		if (inventory == null) {
 			return false;
@@ -46,7 +44,10 @@ public final class InventoryAPI {
 	 *
 	 * @param inventory The inventory to get the viewers of.
 	 * @return Returns a list of players. Returns an empty list if the inventory is null.
-	 * */
+	 *
+	 * @deprecated Use {@link InventoryUtils#isValidInventory(Inventory)} instead.
+	 */
+	@Deprecated
 	public static List<Player> getViewingPlayers(Inventory inventory) {
 		if (!isValidInventory(inventory)) {
 			return new ArrayList<>();
@@ -66,7 +67,10 @@ public final class InventoryAPI {
 	 *     the return value is -1 it may still be <i>possible</i> to add the item stack to the inventory, as this
 	 *     function attempts to find the first slot that the given item stack can fit into wholly; that if it can
 	 * 	   technically fit but has to be distributed then there's no "first empty".
+	 *
+	 * @deprecated Use {@link InventoryUtils#firstEmpty(Inventory, ItemStack)} instead.
 	 */
+	@Deprecated
 	public static int firstEmpty(Inventory inventory, ItemStack item) {
 		if (inventory == null) {
 			return -1;
@@ -98,7 +102,10 @@ public final class InventoryAPI {
 	 * Clears an inventory of items.
 	 *
 	 * @param inventory The inventory to clear of items.
+	 *
+	 * @deprecated Use {@link InventoryUtils#clearInventory(Inventory)} instead.
 	 */
+	@Deprecated
 	public static void clearInventory(Inventory inventory) {
 		Preconditions.checkArgument(isValidInventory(inventory));
 		inventory.setContents(Iteration.fill(inventory.getContents(), null));
@@ -109,7 +116,10 @@ public final class InventoryAPI {
 	 *
 	 * @param inventory The inventory to check.
 	 * @return Returns true if an inventory has multiple viewers.
+	 *
+	 * @deprecated Use {@link InventoryUtils#hasOtherViewers(Inventory)} instead.
 	 */
+	@Deprecated
 	public static boolean hasOtherViewers(Inventory inventory) {
 		if (!isValidInventory(inventory)) {
 			return false;
@@ -122,7 +132,10 @@ public final class InventoryAPI {
 	 *
 	 * @param slots The slot amount to check.
 	 * @return Returns true if the slot count is or between 1-6 multiples of 9.
+	 *
+	 * @deprecated Use {@link InventoryUtils#isValidChestSize(int)} instead.
 	 */
+	@Deprecated
 	public static boolean isValidChestSize(int slots) {
 		if (slots <= 0 || slots > 54) {
 			return false;
@@ -139,7 +152,10 @@ public final class InventoryAPI {
 	 * @param inventory The inventory to add the items to.
 	 * @param items The items to add to the inventory.
 	 * @return Returns true if the items were safely added.
+	 *
+	 * @deprecated Use {@link InventoryUtils#safelyAddItemsToInventory(Inventory, ItemStack[])} instead.
 	 */
+	@Deprecated
 	public static boolean safelyAddItemsToInventory(Inventory inventory, ItemStack[] items) {
 		Preconditions.checkArgument(isValidInventory(inventory));
 		if (ArrayUtils.isEmpty(items)) {
@@ -165,7 +181,10 @@ public final class InventoryAPI {
 	 * @param inventory The inventory to remove the items from.
 	 * @param items The items to remove to the inventory.
 	 * @return Returns true if the items were safely removed.
+	 *
+	 * @deprecated Use {@link InventoryUtils#safelyRemoveItemsFromInventory(Inventory, ItemStack[])} instead.
 	 */
+	@Deprecated
 	public static boolean safelyRemoveItemsFromInventory(Inventory inventory, ItemStack[] items) {
 		Preconditions.checkArgument(isValidInventory(inventory));
 		if (ArrayUtils.isEmpty(items)) {
@@ -189,7 +208,11 @@ public final class InventoryAPI {
 	 * @param items The items to transact.
 	 * @param to The inventory to move the given items to.
 	 * @return Returns true if the items were successfully transacted.
+	 *
+	 * @deprecated Use {@link InventoryUtils#safelyTransactBetweenInventories(Inventory, Inventory, ItemStack[])}
+	 *     instead.
 	 */
+	@Deprecated
 	public static boolean safelyTransactBetweenInventories(Inventory from, ItemStack[] items, Inventory to) {
 		Preconditions.checkArgument(isValidInventory(from));
 		Preconditions.checkArgument(isValidInventory(to));
@@ -217,7 +240,11 @@ public final class InventoryAPI {
 	 * @param latterInventory The second inventory.
 	 * @param latterItems The items to trade from the second inventory to give to the first inventory.
 	 * @return Returns true if the trade succeeded.
+	 *
+	 * @deprecated Use
+	 *     {@link InventoryUtils#safelyTradeBetweenInventories(Inventory, Inventory, ItemStack[], ItemStack[])} instead.
 	 */
+	@Deprecated
 	public static boolean safelyTradeBetweenInventories(Inventory formerInventory, ItemStack[] formerItems,
 														Inventory latterInventory, ItemStack[] latterItems) {
 		Preconditions.checkArgument(isValidInventory(formerInventory));
@@ -242,239 +269,11 @@ public final class InventoryAPI {
 	}
 
 	/**
-	 * <p>Clones the given inventory for the purpose of test manipulating its contents.</p>
-	 *
-	 * <p>Note: Do not type check the inventory, it's JUST a contents copy within an inventory wrapper to provide the
-	 * relevant and useful methods.</p>
-	 *
-	 * @param inventory The inventory to clone.
-	 * @return Returns a clone of the given inventory.
+	 * @deprecated Use {@link ClonedInventory#cloneInventory(Inventory)} instead.
 	 */
+	@Deprecated
 	public static Inventory cloneInventory(Inventory inventory) {
-		if (inventory == null) {
-			return null;
-		}
-		if (inventory instanceof ClonedInventory) {
-			return inventory;
-		}
-		Inventory clone;
-		if (inventory.getType() == InventoryType.CHEST) {
-			clone = Bukkit.createInventory(inventory.getHolder(), inventory.getSize());
-		}
-		else {
-			clone = Bukkit.createInventory(inventory.getHolder(), inventory.getType());
-		}
-		ItemStack[] origin = inventory.getContents();
-		ItemStack[] copied = new ItemStack[origin.length];
-		for (int i = 0; i < origin.length; i++) {
-			copied[i] = origin[i] == null ? null : origin[i].clone();
-		}
-		clone.setContents(copied);
-		return new ClonedInventory(clone);
-	}
-
-	/**
-	 * Wrapper for cloned inventories intended to ensure that ClonedInventories aren't themselves cloned.
-	 */
-	public static final class ClonedInventory implements Inventory {
-
-		private final Inventory inventory;
-
-		private ClonedInventory(Inventory inventory) {
-			this.inventory = inventory;
-		}
-
-		@Override
-		public int getSize() {
-			return this.inventory.getSize();
-		}
-
-		@Override
-		public int getMaxStackSize() {
-			return this.inventory.getMaxStackSize();
-		}
-
-		@Override
-		public void setMaxStackSize(int size) {
-			this.inventory.setMaxStackSize(size);
-		}
-
-		@Override
-		public ItemStack getItem(int index) {
-			return this.inventory.getItem(index);
-		}
-
-		@Override
-		public void setItem(int index, ItemStack item) {
-			this.inventory.setItem(index, item);
-		}
-
-		@Override
-		public HashMap<Integer, ItemStack> addItem(ItemStack... items) throws IllegalArgumentException {
-			return this.inventory.addItem(items);
-		}
-
-		@Nonnull
-		@Override
-		public HashMap<Integer, ItemStack> removeItem(ItemStack... items) throws IllegalArgumentException {
-			return this.inventory.removeItem(items);
-		}
-
-		@Override
-		public HashMap<Integer, ItemStack> removeItemAnySlot(ItemStack... items) throws IllegalArgumentException {
-			return this.inventory.removeItemAnySlot(items);
-		}
-
-		@Override
-		public ItemStack[] getContents() {
-			return this.inventory.getContents();
-		}
-
-		@Override
-		public void setContents(ItemStack[] items) throws IllegalArgumentException {
-			this.inventory.setContents(items);
-		}
-
-		@Override
-		public ItemStack[] getStorageContents() {
-			return this.inventory.getStorageContents();
-		}
-
-		@Override
-		public void setStorageContents(ItemStack[] items) throws IllegalArgumentException {
-			this.inventory.setStorageContents(items);
-		}
-
-		@Override
-		public boolean contains(Material material) throws IllegalArgumentException {
-			return this.inventory.contains(material);
-		}
-
-		@Override
-		public boolean contains(ItemStack item) {
-			return this.inventory.contains(item);
-		}
-
-		@Override
-		public boolean contains(Material material, int amount) throws IllegalArgumentException {
-			return this.inventory.contains(material, amount);
-		}
-
-		@Override
-		public boolean contains(ItemStack item, int amount) {
-			return this.inventory.contains(item, amount);
-		}
-
-		@Override
-		public boolean containsAtLeast(ItemStack item, int amount) {
-			return this.inventory.containsAtLeast(item, amount);
-		}
-
-		@Override
-		public HashMap<Integer, ? extends ItemStack> all(Material material) throws IllegalArgumentException {
-			return this.inventory.all(material);
-		}
-
-		@Override
-		public HashMap<Integer, ? extends ItemStack> all(ItemStack item) {
-			return this.inventory.all(item);
-		}
-
-		@Override
-		public int first(Material material) throws IllegalArgumentException {
-			return this.inventory.first(material);
-		}
-
-		@Override
-		public int first(ItemStack item) {
-			return this.inventory.first(item);
-		}
-
-		@Override
-		public int firstEmpty() {
-			return this.inventory.firstEmpty();
-		}
-
-		@Override
-		public boolean isEmpty() {
-			return this.inventory.isEmpty();
-		}
-
-		@Override
-		public void remove(Material material) throws IllegalArgumentException {
-			this.inventory.remove(material);
-		}
-
-		@Override
-		public void remove(ItemStack item) {
-			this.inventory.remove(item);
-		}
-
-		@Override
-		public void clear(int index) {
-			this.inventory.clear(index);
-		}
-
-		@Override
-		public void clear() {
-			this.inventory.clear();
-		}
-
-		@Override
-		public List<HumanEntity> getViewers() {
-			return this.inventory.getViewers();
-		}
-
-		@Override
-		public InventoryType getType() {
-			return this.inventory.getType();
-		}
-
-		@Override
-		public InventoryHolder getHolder() {
-			return this.inventory.getHolder();
-		}
-
-		@Override
-		public InventoryHolder getHolder(boolean useSnapshot) {
-			return this.inventory.getHolder(useSnapshot);
-		}
-
-		@Nonnull
-		@Override
-		public ListIterator<ItemStack> iterator() {
-			return this.inventory.iterator();
-		}
-
-		@Override
-		public void forEach(Consumer<? super ItemStack> action) {
-			this.inventory.forEach(action);
-		}
-
-		@Override
-		public Spliterator<ItemStack> spliterator() {
-			return this.inventory.spliterator();
-		}
-
-		@Override
-		public ListIterator<ItemStack> iterator(int index) {
-			return this.inventory.iterator(index);
-		}
-
-		@Override
-		public Location getLocation() {
-			return this.inventory.getLocation();
-		}
-
-		/**
-		 * Gets the underlying inventory that was cloned.
-		 *
-		 * @return Returns the underlying inventory.
-		 */
-		public Inventory getInventory() {
-			return this.inventory;
-		}
-
+		return ClonedInventory.cloneInventory(inventory);
 	}
 
 }

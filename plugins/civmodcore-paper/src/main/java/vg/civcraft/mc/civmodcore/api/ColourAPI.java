@@ -5,12 +5,19 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import net.md_5.bungee.api.ChatColor;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
+/**
+ * @deprecated Use {@link ChatUtils} instead.
+ */
 public class ColourAPI {
 
 	/**
 	 * This is necessary as {@link ChatColor#values()} has all colours <i>and</i> all formats.
+	 *
+	 * @deprecated Use {@link ChatUtils#COLOURS} instead.
 	 */
+	@Deprecated
 	public static final List<ChatColor> COLOURS = Collections.unmodifiableList(Arrays.asList(
 			ChatColor.BLACK,
 			ChatColor.DARK_BLUE,
@@ -36,7 +43,10 @@ public class ColourAPI {
 	 * @param g The green value.
 	 * @param b The blue value.
 	 * @return Returns a valid Bungee ChatColor.
+	 *
+	 * @deprecated Use {@link ChatUtils#fromRGB(byte, byte, byte)} instead.
 	 */
+	@Deprecated
 	public static ChatColor fromRGB(final byte r, final byte g, final byte b) {
 		return ChatColor.of(new Color(r, g, b));
 	}
@@ -46,7 +56,10 @@ public class ColourAPI {
 	 *
 	 * @param colour The given RGB colour.
 	 * @return Returns the closest Minecraft match, or null.
+	 *
+	 * @deprecated Use {@link ChatUtils#collapseColour(ChatColor)} instead.
 	 */
+	@Deprecated
 	public static ChatColor collapseColour(final ChatColor colour) {
 		if (colour == null) {
 			return null;

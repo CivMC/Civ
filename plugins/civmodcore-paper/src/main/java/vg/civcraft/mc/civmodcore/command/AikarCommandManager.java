@@ -22,7 +22,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
@@ -94,6 +97,11 @@ public class AikarCommandManager {
 	 *     {@link CustomBukkitManager#getCommandCompletions()}.
 	 */
     public void registerCompletions(CommandCompletions<BukkitCommandCompletionContext> completions) {
+		completions.registerAsyncCompletion("allplayers", context ->
+				Arrays.stream(Bukkit.getOfflinePlayers())
+						.map(OfflinePlayer::getName)
+						.filter(name -> StringUtils.startsWithIgnoreCase(name, context.getInput()))
+						.collect(Collectors.toCollection(ArrayList::new)));
 		completions.registerAsyncCompletion("materials", context ->
 				Arrays.stream(Material.values()).
 						map(Enum::name).

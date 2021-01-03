@@ -11,7 +11,7 @@
 
   <groupId>vg.civcraft.mc.civmodcore</groupId>
   <artifactId>CivModCore</artifactId>
-  <version>1.8.1</version>
+  <version>1.8.2</version>
   <name>CivModCore</name>
   <url>https://github.com/Civclassic/CivModCore/</url>
 
@@ -41,6 +41,16 @@
       <version>3.4.2</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.11</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.4</version>
+    </dependency>
+    <dependency>
       <!--
       Remove this in time since it's included in Paper but
       this may be used elsewhere.
@@ -53,6 +63,11 @@
       <groupId>co.aikar</groupId>
       <artifactId>acf-bukkit</artifactId>
       <version>0.5.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>20.1.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.findbugs</groupId>

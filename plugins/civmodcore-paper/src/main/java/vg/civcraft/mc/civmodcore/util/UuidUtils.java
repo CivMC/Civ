@@ -4,6 +4,11 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 import org.apache.commons.lang.ArrayUtils;
 
+/**
+ * Class of utilities relating to UUIDs
+ *
+ * @author Protonull
+ */
 public final class UuidUtils {
 
 	public static final UUID IDENTITY = new UUID(0L, 0L);

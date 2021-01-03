@@ -18,7 +18,7 @@ public interface Validation {
 	 * @param validation The extended validation class to test.
 	 * @return Returns true if the given instance is valid.
 	 */
-	static boolean checkValidity(Validation validation) {
+	static boolean checkValidity(final Validation validation) {
 		return validation != null && validation.isValid();
 	}
 

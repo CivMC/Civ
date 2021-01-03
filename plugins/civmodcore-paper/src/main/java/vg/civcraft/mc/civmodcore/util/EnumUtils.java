@@ -6,7 +6,10 @@ import org.apache.commons.lang.reflect.MethodUtils;
 
 /**
  * Class of enum utilities.
+ *
+ * @deprecated Use {@link org.apache.commons.lang3.EnumUtils} instead.
  */
+@Deprecated
 public class EnumUtils {
 
 	/**
@@ -17,7 +20,11 @@ public class EnumUtils {
 	 * @param slug The slug of the intended enum element.
 	 * @param caseInsensitive Set to true if you want to check to not care about case sensitivity.
 	 * @return Returns the matched enum element, or null.
+	 *
+	 * @deprecated Use {@link org.apache.commons.lang3.EnumUtils#getEnum(Class, String)} or
+	 *     {@link org.apache.commons.lang3.EnumUtils#getEnumIgnoreCase(Class, String)} instead.
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T extends Enum<T>> T fromSlug(Class<T> clazz, String slug, boolean caseInsensitive) {
 		if (clazz == null || Strings.isNullOrEmpty(slug)) {
@@ -51,7 +58,10 @@ public class EnumUtils {
 	 *
 	 * @param element The enum element to get the name of.
 	 * @return Return an element's name or null.
+	 *
+	 * @deprecated Use {@link Chainer} instead.
 	 */
+	@Deprecated
 	public static String getSlug(Enum<?> element) {
 		if (element == null) {
 			return null;

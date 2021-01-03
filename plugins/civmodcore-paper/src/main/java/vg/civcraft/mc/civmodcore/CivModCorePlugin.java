@@ -5,14 +5,18 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
-import vg.civcraft.mc.civmodcore.api.EnchantNames;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.civmodcore.api.PotionNames;
+import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
-import vg.civcraft.mc.civmodcore.custom.items.CustomItems;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.events.CustomEventMapper;
+import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
+import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.inventorygui.paged.PagedGUIManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
@@ -27,7 +31,6 @@ import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardListener;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
 import vg.civcraft.mc.civmodcore.world.operations.ChunkOperationManager;
 
@@ -49,8 +52,8 @@ public final class CivModCorePlugin extends ACivMod {
 		this.useNewCommandHandler = true;
 		ConfigurationSerialization.registerClass(ManagedDatasource.class);
 		// Save default resources
-		saveDefaultResource("enchantments.csv");
-		saveDefaultResource("materials.csv");
+		saveDefaultResource("enchants.yml");
+		saveDefaultResource("materials.yml");
 		saveDefaultResource("potions.csv");
 		saveDefaultConfig();
 		super.onEnable();
@@ -78,6 +81,7 @@ public final class CivModCorePlugin extends ACivMod {
 		// Register listeners
 		registerListener(new ClickableInventoryListener());
 		registerListener(new PagedGUIManager());
+		registerListener(DialogManager.INSTANCE);
 		registerListener(new ChatListener());
 		registerListener(new ScoreBoardListener());
 		registerListener(new CustomEventMapper());
@@ -92,20 +96,22 @@ public final class CivModCorePlugin extends ACivMod {
 			}
 		};
 		// Load APIs
-		ItemNames.loadItemNames(this);
-		EnchantNames.loadEnchantmentNames();
-		PotionNames.loadPotionNames();
+		EnchantUtils.loadEnchantAbbreviations(this);
+		ItemUtils.loadItemNames(this);
+		MoreTags.init();
+		PotionUtils.init();
+		SpawnEggUtils.init();
+		TreeTypeUtils.init();
 		BottomLineAPI.init();
 		newCommandHandler.registerCommand(new ConfigSetAnyCommand());
 		newCommandHandler.registerCommand(new ConfigGetAnyCommand());
+		// Deprecated
+		PotionNames.loadPotionNames();
 	}
 
 	@Override
 	public void onDisable() {
 		Bukkit.getOnlinePlayers().forEach(HumanEntity::closeInventory);
-		ItemNames.resetItemNames();
-		CustomItems.clearRegistrations();
-		EnchantNames.resetEnchantmentNames();
 		PotionNames.resetPotionNames();
 		ChunkMetaAPI.saveAll();
 		this.chunkMetaManager = null;
@@ -123,7 +129,10 @@ public final class CivModCorePlugin extends ACivMod {
 		PlayerSettingAPI.saveAll();
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
 		NBTSerialization.clearAllRegistrations();
-		NullCoalescing.exists(this.manager, AikarCommandManager::reset);
+		if (this.manager != null) {
+			this.manager.reset();
+			this.manager = null;
+		}
 		super.onDisable();
 		instance = null;
 	}

@@ -5,10 +5,14 @@ import com.google.common.collect.ImmutableBiMap;
 import javax.annotation.Nullable;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 
 /**
  * Class of static APIs for Spawn Eggs.
- * */
+ *
+ * @deprecated Use {@link SpawnEggUtils} instead.
+ */
+@Deprecated
 public final class SpawnEggAPI {
 	
 	private SpawnEggAPI() {}
@@ -84,7 +88,10 @@ public final class SpawnEggAPI {
 	 *
 	 * @param material The material to test.
 	 * @return Returns true if the material is that of a spawn egg.
-	 * */
+	 *
+	 * @deprecated Use {@link SpawnEggUtils#isSpawnEgg(Material)} instead.
+	 */
+	@Deprecated
 	public static boolean isSpawnEgg(Material material) {
 		if (material == null) {
 			return false;
@@ -97,7 +104,10 @@ public final class SpawnEggAPI {
 	 *
 	 * @param material The material, must be a spawn egg otherwise it's a guaranteed null.
 	 * @return Returns the entity type that will be spawned from the spawn egg, or null.
-	 * */
+	 *
+	 * @deprecated Use {@link SpawnEggUtils#getEntityType(Material)} instead.
+	 */
+	@Deprecated
 	@Nullable
 	public static EntityType getEntityType(Material material) {
 		if (material == null) {
@@ -111,7 +121,10 @@ public final class SpawnEggAPI {
 	 *
 	 * @param entityType The type of entity to match to the spawn egg.
 	 * @return Returns a spawn egg material, or null.
+	 *
+	 * @deprecated Use {@link SpawnEggUtils#getSpawnEgg(EntityType)} instead.
 	 */
+	@Deprecated
 	@Nullable
 	public static Material getSpawnEgg(EntityType entityType) {
 		if (entityType == null) {
