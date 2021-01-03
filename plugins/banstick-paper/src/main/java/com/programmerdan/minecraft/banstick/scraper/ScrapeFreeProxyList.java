@@ -17,6 +17,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+/**
+ * There are a number of free proxy lists we'd found. Some may no longer
+ * be valid. This scrapes those.
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ *
+ */
 public class ScrapeFreeProxyList extends ScraperWorker {
 
 	private String banMessage;
@@ -30,6 +37,7 @@ public class ScrapeFreeProxyList extends ScraperWorker {
 			"http://www.socks-proxy.net/",
 			"http://free-proxy-list.net/anonymous-proxy.html"
 	};
+	
 	public ScrapeFreeProxyList(ConfigurationSection config) {
 		super(config);
 	}
@@ -52,21 +60,28 @@ public class ScrapeFreeProxyList extends ScraperWorker {
 		}
 	}
 	
+	/**
+	 * Does the work of "scraping" a single passed url.
+	 * @param url
+	 */
 	public void scrapeOne(String url) {
 		try {
 			BanStick.getPlugin().debug("Scraping {0}", url);
-			Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko/20100101 Firefox/24.0").get();
+			Document doc = Jsoup.connect(url).userAgent(
+					"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko/20100101 Firefox/24.0").get();
 			Elements iptable = doc.select("table#proxylisttable");
 			
 			Elements body = iptable.select("tbody");
 			Elements trs = body.select("tr");
 			BanStick.getPlugin().debug("Found {0} proxy IPs to scrape", trs.size());
-			for(Element tr : trs) {
+			for (Element tr : trs) {
 				Elements tds = tr.select("td");
-				String IP = null;
+				String ip = null;
 				try {
-					IP = tds.first().text();
-				} catch (Exception e) { continue; }
+					ip = tds.first().text();
+				} catch (Exception e) {
+					continue;
+				}
 				String country = null;
 				try {
 					country = tds.get(3).text();
@@ -80,7 +95,7 @@ public class ScrapeFreeProxyList extends ScraperWorker {
 					// intentionally ignore errors.
 				}
 				try {
-					IPAddressString addressS = new IPAddressString(IP);
+					IPAddressString addressS = new IPAddressString(ip);
 					addressS.validate();
 					IPAddress address = addressS.toAddress();
 					BSIP found = BSIP.byIPAddress(address);
@@ -100,9 +115,11 @@ public class ScrapeFreeProxyList extends ScraperWorker {
 						List<BSBan> ban = BSBan.byProxy(dataMatch, true);
 						if (!(ban == null || ban.isEmpty())) {
 							// look for match; if unexpired, extend.
-							for (int i = ban.size() - 1 ; i >= 0; i-- ) {
+							for (int i = ban.size() - 1 ; i >= 0; i--) {
 								BSBan pickOne = ban.get(i);
-								if (pickOne.isAdminBan()) continue; // skip admin entered bans.
+								if (pickOne.isAdminBan()) {
+									continue; // skip admin entered bans.
+								}
 								if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().after(new Date())) {
 									if (this.banLength < 0) {
 										pickOne.clearBanEndTime();
@@ -115,8 +132,8 @@ public class ScrapeFreeProxyList extends ScraperWorker {
 							}
 						}
 						if (!wasmatch) {
-							BSBan.create(dataMatch, this.banMessage, 
-									this.banLength < 0 ? null : new Date(System.currentTimeMillis() + this.banLength), false);
+							BSBan.create(dataMatch, this.banMessage, this.banLength < 0 ? null 
+									: new Date(System.currentTimeMillis() + this.banLength), false);
 						}
 					}
 				} catch (IPAddressStringException iase) {
