@@ -234,11 +234,11 @@ public class ModeListener implements Listener {
 			}
 			if (rein.isInsecure()) {
 				sb.append(ChatColor.AQUA);
-				sb.append("(Insecure)");
+				sb.append("(Insecure) ");
 			}
 			if (ReinforcementLogic.getDecayDamage(rein) != 1) {
 				String ctiDecayAmountFormat = commaFormat.format(ReinforcementLogic.getDecayDamage(rein));
-				sb.append(String.format("%s (Decayed x%s)", ChatColor.LIGHT_PURPLE, ctiDecayAmountFormat));
+				sb.append(String.format("%s(Decayed x%s) ", ChatColor.LIGHT_PURPLE, ctiDecayAmountFormat));
 			}
 			AcidManager acidMan = Citadel.getInstance().getAcidManager();
 			if (acidMan.isPossibleAcidBlock(e.getClickedBlock())) {
@@ -247,7 +247,7 @@ public class ModeListener implements Listener {
 				if (remainingTime == 0) {
 					sb.append("Acid ready");
 				} else {
-					sb.append(formatProgress(rein.getCreationTime(), rein.getType().getAcidTime(), "acid timer"));
+					sb.append(String.format("%sAcid block mature in %s", ChatColor.YELLOW, TextUtil.formatDuration(remainingTime, TimeUnit.MILLISECONDS)));
 				}
 			}
 			CitadelUtility.sendAndLog(player, ChatColor.GREEN, sb.toString().trim());

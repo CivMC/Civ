@@ -6,8 +6,11 @@ import java.util.TreeSet;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 
+import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 
 public class AcidManager {
 
@@ -37,7 +40,16 @@ public class AcidManager {
 	 * @return Remaining time in milli seconds or 0 if the acid is ready
 	 */
 	public long getRemainingAcidMaturationTime(Reinforcement rein) {
-		long totalTime = rein.getType().getAcidTime();
+		Block acidBlock = rein.getLocation().getBlock();
+		Block targetBlock = acidBlock.getRelative(BlockFace.UP);
+		double decayMultiplier = 1;
+		if (!MaterialAPI.isAir(targetBlock.getType())) {
+			Reinforcement targetBlockRein = ReinforcementLogic.getReinforcementAt(targetBlock.getLocation());
+			if (targetBlockRein != null) {
+				decayMultiplier = ReinforcementLogic.getDecayDamage(targetBlockRein);
+			}
+		}
+		long totalTime = Math.round(rein.getType().getAcidTime() / decayMultiplier);
 		return Math.max(0, totalTime - rein.getAge());
 	}
 
