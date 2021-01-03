@@ -26,13 +26,27 @@ import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
  */
 public class BanStickDatabaseHandler {
 
+	private static BanStickDatabaseHandler instance;
+
 	private ManagedDatasource data;
+
+	/**
+	 * Creates the core DAO handler from a config.
+	 * 
+	 * @param config the config to use
+	 * @throws RuntimeException if database config is missing or invalid.
+	 */
+	public BanStickDatabaseHandler(FileConfiguration config) {
+		ConfigurationSection internal = config.getConfigurationSection("database");
+		if (internal == null || !configureData(internal)) {
+			throw new RuntimeException("Failed to configure Database for BanStick!");
+		}
+		BanStickDatabaseHandler.instance = this;
+	}
 
 	public ManagedDatasource getData() {
 		return this.data;
 	}
-
-	private static BanStickDatabaseHandler instance;
 
 	public static BanStickDatabaseHandler getInstance() {
 		return BanStickDatabaseHandler.instance;
@@ -42,14 +56,6 @@ public class BanStickDatabaseHandler {
 		return BanStickDatabaseHandler.instance.data;
 	}
 
-	public BanStickDatabaseHandler(FileConfiguration config) {
-		ConfigurationSection internal = config.getConfigurationSection("database");
-		if (internal == null || !configureData(internal)) {
-			throw new RuntimeException("Failed to configure Database for BanStick!");
-		}
-		BanStickDatabaseHandler.instance = this;
-	}
-
 	private boolean configureData(ConfigurationSection config) {
 		String host = config.getString("host", "localhost");
 		int port = config.getInt("port", 3306);
@@ -57,9 +63,9 @@ public class BanStickDatabaseHandler {
 		String username = config.getString("user");
 		String password = config.getString("password");
 		int poolsize = config.getInt("poolsize", 5);
-		long connectionTimeout = config.getLong("connection_timeout", 10000l);
-		long idleTimeout = config.getLong("idle_timeout", 600000l);
-		long maxLifetime = config.getLong("max_lifetime", 7200000l);
+		long connectionTimeout = config.getLong("connection_timeout", 10000L);
+		long idleTimeout = config.getLong("idle_timeout", 600000L);
+		long maxLifetime = config.getLong("max_lifetime", 7200000L);
 		try {
 			data = new ManagedDatasource(BanStick.getPlugin(), username, password, host, port, dbname,
 					poolsize, connectionTimeout, idleTimeout, maxLifetime);
@@ -73,12 +79,12 @@ public class BanStickDatabaseHandler {
 		initializeTables();
 		stageUpdates();
 
-		long begin_time = System.currentTimeMillis();
+		long beginTime = System.currentTimeMillis();
 
 		try {
 			BanStick.getPlugin().info("Update prepared, starting database update.");
 			if (!data.updateDatabase()) {
-				BanStick.getPlugin().info( "Update failed, disabling plugin.");
+				BanStick.getPlugin().info("Update failed, disabling plugin.");
 				return false;
 			}
 		} catch (Exception e) {
@@ -86,7 +92,8 @@ public class BanStickDatabaseHandler {
 			return false;
 		}
 
-		BanStick.getPlugin().info(String.format("Database update took %d seconds", (System.currentTimeMillis() - begin_time) / 1000));
+		BanStick.getPlugin().info(String.format("Database update took %d seconds", 
+				(System.currentTimeMillis() - beginTime) / 1000));
 
 		activatePreload(config.getConfigurationSection("preload"));
 		activateDirtySave(config.getConfigurationSection("dirtysave"));
@@ -94,8 +101,8 @@ public class BanStickDatabaseHandler {
 	}
 
 	private void activateDirtySave(ConfigurationSection config) {
-		long period = 5*60*50l;
-		long delay = 5*60*50l;
+		long period = 5 * 60 * 50L;
+		long delay = 5 * 60 * 50L;
 		if (config != null) {
 			period = config.getLong("period", period);
 			delay = config.getLong("delay", delay);
@@ -147,8 +154,8 @@ public class BanStickDatabaseHandler {
 
 	private void activatePreload(ConfigurationSection config) {
 		if (config != null && config.getBoolean("enabled")) {
-			long period = 5*60*50l;
-			long delay = 5*60*50l;
+			long period = 5 * 60 * 50L;
+			long delay = 5 * 60 * 50L;
 			period = config.getLong("period", period);
 			delay = config.getLong("delay", delay);
 			final int batchsize = config.getInt("batch", 100);
@@ -156,62 +163,74 @@ public class BanStickDatabaseHandler {
 			BanStick.getPlugin().debug("Preload Period {0} Delay {1} batch {2}", period, delay, batchsize);
 
 			new BukkitRunnable() {
-				private long lastId = 0l;
+				private long lastId;
 				@Override
 				public void run() {
 					BanStick.getPlugin().debug("IP preload {0}, lim {1}", lastId, batchsize);
 					lastId = BSIP.preload(lastId, batchsize);
-					if (lastId < 0) this.cancel();
+					if (lastId < 0) {
+						this.cancel();
+					}
 				}
 			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay, period);
 
 			new BukkitRunnable() {
-				private long lastId = 0l;
+				private long lastId;
 				@Override
 				public void run() {
 					BanStick.getPlugin().debug("Proxy preload {0}, lim {1}", lastId, batchsize);
 					lastId = BSIPData.preload(lastId, batchsize);
-					if (lastId < 0) this.cancel();
+					if (lastId < 0) {
+						this.cancel();
+					}
 				}
 			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + (period / 6), period);
 
 			new BukkitRunnable() {
-				private long lastId = 0l;
+				private long lastId;
 				@Override
 				public void run() {
 					BanStick.getPlugin().debug("Ban preload {0}, lim {1}", lastId, batchsize);
 					lastId = BSBan.preload(lastId, batchsize, false);
-					if (lastId < 0) this.cancel();
+					if (lastId < 0) {
+						this.cancel();
+					}
 				}
 			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + ((period * 2) / 6), period);
 
 			new BukkitRunnable() {
-				private long lastId = 0l;
+				private long lastId;
 				@Override
 				public void run() {
 					BanStick.getPlugin().debug("Player preload {0}, lim {1}", lastId, batchsize);
 					lastId = BSPlayer.preload(lastId, batchsize);
-					if (lastId < 0) this.cancel();
+					if (lastId < 0) {
+						this.cancel();
+					}
 				}
 			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + ((period * 3) / 6), period);
 
 			new BukkitRunnable() {
-				private long lastId = 0l;
+				private long lastId;
 				@Override
 				public void run() {
 					BanStick.getPlugin().debug("Session preload {0}, lim {1}", lastId, batchsize);
 					lastId = BSSession.preload(lastId, batchsize);
-					if (lastId < 0) this.cancel();
+					if (lastId < 0) {
+						this.cancel();
+					}
 				}
 			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + ((period * 4) / 6), period);
 
 			new BukkitRunnable() {
-				private long lastId = 0l;
+				private long lastId;
 				@Override
 				public void run() {
 					BanStick.getPlugin().debug("Share preload {0}, lim {1}", lastId, batchsize);
 					lastId = BSShare.preload(lastId, batchsize);
-					if (lastId < 0) this.cancel();
+					if (lastId < 0) {
+						this.cancel();
+					}
 				}
 			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + ((period * 5) / 6), period);
 		} else {
@@ -316,7 +335,7 @@ public class BanStickDatabaseHandler {
 					" INDEX bs_ip_data_valid (valid, create_time DESC)," +
 					" INDEX bs_ip_data_proxy (proxy)" +
 					");"
-				);
+		);
 		data.registerMigration(1,  false, "CREATE TABLE IF NOT EXISTS bs_exclusion ("
 		        + "eid BIGINT AUTO_INCREMENT PRIMARY KEY,"
 	            + "create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
@@ -339,6 +358,9 @@ public class BanStickDatabaseHandler {
 
 	}
 
+	/**
+	 * Handles shutdown and proper postprocess of dirty data.
+	 */
 	public void doShutdown() {
 
 		BanStick.getPlugin().info("Player dirty save");
@@ -358,11 +380,18 @@ public class BanStickDatabaseHandler {
 
 		BanStick.getPlugin().info("Ban Log save");
 		BSLog log = BanStick.getPlugin().getLogHandler();
-		if (log != null) log.disable();
+		if (log != null) {
+			log.disable();
+		}
 	}
 
 	// ============ QUERIES =============
 
+	/**
+	 * For a given Bukkit player, get or create a BSPlayer for them.
+	 * @param player the player
+	 * @return the BSPlayer created or retrieved. Null on failure only.
+	 */
 	public BSPlayer getOrCreatePlayer(final Player player) {
 		// TODO: use exception
 		BSPlayer bsPlayer = getPlayer(player.getUniqueId());
@@ -377,6 +406,11 @@ public class BanStickDatabaseHandler {
 		return BSPlayer.byUUID(uuid); // TODO: exception
 	}
 
+	/**
+	 * For an Inet Address, get or create an IP for it.
+	 * @param netAddress the InetAddress
+	 * @return the BSIP created or retrieved. Null on failure only.
+	 */
 	public BSIP getOrCreateIP(final InetAddress netAddress) {
 		BSIP bsIP = getIP(netAddress);
 		if (bsIP == null) {
