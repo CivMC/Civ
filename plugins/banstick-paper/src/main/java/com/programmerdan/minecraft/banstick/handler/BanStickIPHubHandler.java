@@ -23,17 +23,17 @@ import org.bukkit.scheduler.BukkitTask;
 /**
  * This class deals with scheduling a constrained lookup / update of data from IP proxy data key-locked services.
  * 
- * Initially supports iphub.info. Can be used for paid services.
+ * <p>Initially supports iphub.info. Can be used for paid services.
  * 
- * Configurable, slightly.
+ * <p>Configurable, slightly.
  * 
- * @author ProgrammerDan
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public class BanStickIPHubHandler extends BukkitRunnable {
 	private BukkitTask selfTask;
-	private ConcurrentLinkedQueue<WeakReference<BSIP>> toCheck = null;
-	private boolean enabled = false;
+	private ConcurrentLinkedQueue<WeakReference<BSIP>> toCheck;
+	private boolean enabled;
 	
 	private long period;
 	private int currentFailures;
@@ -44,6 +44,10 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 	
 	private final String target = "http://v2.api.iphub.info/ip";
 	
+	/**
+	 * Sets up an IPHub info lookup task from a config
+	 * @param config the config.
+	 */
 	public BanStickIPHubHandler(FileConfiguration config) {
 		if (!configure(config.getConfigurationSection("iphub"))) {
 			BanStick.getPlugin().warning("IP Hub Proxy (iphub.info) lookup is disabled. This will reduce the quality of information on player's connections.");
@@ -52,6 +56,7 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 		
 		begin();
 	}
+	
 	private boolean configure(ConfigurationSection config) {
 		if (config != null && config.getBoolean("enable", false)) {
 			enabled = true;
@@ -64,7 +69,7 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 		this.key = config.getString("key");
 		this.period = config.getLong("period", 40);
 		this.disableOnFailures = config.getInt("failureCap", 5);
-		this.cooldownToReenable = config.getLong("cooldownTicks", 72000l);
+		this.cooldownToReenable = config.getLong("cooldownTicks", 72000L);
 		this.currentFailures = 0;
 		
 		return true;
@@ -78,21 +83,32 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 		}
 	}
 	
+	/**
+	 * Shuts down this IPHub handler.
+	 */
 	public void end() {
 		this.enabled = false;
-		if (this.selfTask == null) return;
+		if (this.selfTask == null) {
+			return;
+		}
 		this.selfTask.cancel();
 	}
 	
-	public void offer(BSIP toCheck) {
+	/**
+	 * Offers a specific IP to be checked later.
+	 * @param check the IP
+	 */
+	public void offer(BSIP check) {
 		if (enabled) {
-			this.toCheck.offer(new WeakReference<BSIP>(toCheck));
+			this.toCheck.offer(new WeakReference<BSIP>(check));
 		}
 	}
 	
 	@Override
 	public void run() {
-		if (!enabled) return;
+		if (!enabled) {
+			return;
+		}
 		if (disableOnFailures <= currentFailures) {
 			enabled = false;
 			if (this.cooldownToReenable > 0) {
@@ -110,7 +126,9 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 			}
 			return;
 		}
-		if (this.toCheck.isEmpty()) return;
+		if (this.toCheck.isEmpty()) {
+			return;
+		}
 		try {
 			WeakReference<BSIP> nextCheck = null;
 			BSIP nextIP = null;
@@ -163,19 +181,22 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 				}
 
 				if (reply.getBlock() == null) {
-					BanStick.getPlugin().debug("Failure during IPHub lookup for {0}: {1}", address.toString(), reply.toString());
+					BanStick.getPlugin().debug("Failure during IPHub lookup for {0}: {1}", 
+							address.toString(), reply.toString());
 					return;
 				}
 
 				IPAddressString replyAddress = new IPAddressString(reply.getIp());
 				IPAddress naddress = replyAddress.getAddress();
 				if (naddress == null) {
-					BanStick.getPlugin().debug("Failure during IPHub lookup for {0}: failed to parse {1} as IP?", address.toString(), reply.getIp());
+					BanStick.getPlugin().debug("Failure during IPHub lookup for {0}: failed to parse {1} as IP?", 
+							address.toString(), reply.getIp());
 					return;
 				}
 				BSIP ipMatch = BSIP.byIPAddress(naddress);
 				if (ipMatch == null) {
-					BanStick.getPlugin().debug("Failure during IPHub lookup for {0}: returned {1} instead?", address.toString(), reply.getIp());
+					BanStick.getPlugin().debug("Failure during IPHub lookup for {0}: returned {1} instead?",
+							address.toString(), reply.getIp());
 					return;
 				}
 				BSIPData dataMatch = BSIPData.byExactIP(ipMatch);
@@ -198,7 +219,8 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 						comment = dataMatch.getComment();
 						region = dataMatch.getRegion();
 						city = dataMatch.getCity();
-						proxy = Math.max(dataMatch.getProxy(), reply.transformBlock()); // prefer highest resolved violation
+						proxy = Math.max(dataMatch.getProxy(), reply.transformBlock());
+						// prefer highest resolved violation
 						postal = dataMatch.getPostal();
 						lat = dataMatch.getLat();
 						lon = dataMatch.getLon();
@@ -207,7 +229,8 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 						if (dataMatch.getSource() != null && dataMatch.getSource().contains(sauce)) {
 							sauce = dataMatch.getSource();
 						} else {
-							sauce = dataMatch.getSource() != null ? dataMatch.getSource() + " aug. by IPHub.info" : "IPHub.info";
+							sauce = dataMatch.getSource() != null ? dataMatch.getSource() 
+									+ " aug. by IPHub.info" : "IPHub.info";
 						}
 					} else {
 						return; // just move on, no changes.
@@ -243,13 +266,13 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 		private String isp;
 		private Integer block;
 		
-		public IpData() {}
+		IpData() { }
 
 		public String getIp() {
 			return ip;
 		}
 
-		public void setStatus(String ip) {
+		public void setIp(String ip) {
 			this.ip = ip;
 		}
 
@@ -295,12 +318,14 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 		
 		public float transformBlock() {
 			switch (block) {
-			case 0:
-				return 0.0f; // residential IP // safe
-			case 1:
-				return 3.0f; // non-residential IP / host / proxy / vpn
-			case 2:
-				return 1.5f; // non-residential  AND  residential IP
+				case 0:
+					return 0.0f; // residential IP // safe
+				case 1:
+					return 3.0f; // non-residential IP / host / proxy / vpn
+				case 2:
+					return 1.5f; // non-residential  AND  residential IP
+				default:
+					break;
 			}
 			return 0.0f;
 		}
@@ -314,26 +339,28 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 		}
 		
 		public boolean hasChanged(BSIPData data) {
-			if (isEqual(data.getCountry(), this.countryName) &&
-				isEqual(data.getRegisteredAs(), this.asn.toString()) &&
-				isEqual(data.getConnection(), this.isp) &&
-				isEqual(data.getProxy(), this.transformBlock())) {
+			if (isEqual(data.getCountry(), this.countryName) && isEqual(data.getRegisteredAs(), this.asn.toString()) 
+					&& isEqual(data.getConnection(), this.isp) && isEqual(data.getProxy(), this.transformBlock())) {
 				return false;
 			}
 			return true;
 		}
 		
 		private boolean isEqual(Object a, Object b) {
-			if (a == null && b == null) return true;
-			if (a != null) return a.equals(b);
+			if (a == null && b == null) {
+				return true;
+			}
+			if (a != null) {
+				return a.equals(b);
+			}
 			return b.equals(a);
 		}
 		
 		@Override
 		public String toString() {
 			StringBuilder sb = new StringBuilder("Reply: ");
-			sb.append(ip).append(" ").append(hostname).append(" ").append(countryCode).append(" ").append(countryName).append(" ")
-					.append(isp).append("-").append(asn).append(" = ").append(block);
+			sb.append(ip).append(" ").append(hostname).append(" ").append(countryCode).append(" ")
+				.append(countryName).append(" ").append(isp).append("-").append(asn).append(" = ").append(block);
 			return sb.toString();
 		}
 	}
