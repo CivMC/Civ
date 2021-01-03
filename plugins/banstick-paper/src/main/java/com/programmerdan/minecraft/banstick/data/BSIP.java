@@ -375,7 +375,8 @@ public final class BSIP {
 					bsip.basev4 = ips.getAddress().toIPv4();
 					BSIP.allIPNA.put(bsip.basev4, bsip);
 				} else {
-					BanStick.getPlugin().warning("Conversion of ipv4 address to ipv4 failed??: " + bsip.iid + " - " + ipv4);
+					BanStick.getPlugin().warning("Conversion of ipv4 address to ipv4 failed??: "
+							+ bsip.iid + " - " + ipv4);
 					return null; // TODO: exception
 				}
 			} else if (ipv6 != null) { //ipv6 specific entry.
@@ -384,7 +385,8 @@ public final class BSIP {
 					bsip.basev6 = ips.getAddress().toIPv6();
 					BSIP.allIPNA.put(bsip.basev6, bsip);
 				} else {
-					BanStick.getPlugin().warning("Conversion of ipv6 address to ipv6 failed??: " + bsip.iid + " - " + ipv6);
+					BanStick.getPlugin().warning("Conversion of ipv6 address to ipv6 failed??: "
+							+ bsip.iid + " - " + ipv6);
 					return null; // TODO: exception
 				}
 			} else {

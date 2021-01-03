@@ -454,7 +454,8 @@ public final class BSIPData {
 			newData.comment = comment;
 			
 			try (PreparedStatement insertData = connection.prepareStatement(
-					"INSERT INTO bs_ip_data(iid, continent, country, region, city, postal, lat, lon, domain, provider, registered_as, connection, proxy, source, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
+					"INSERT INTO bs_ip_data(iid, continent, country, region, city, postal, lat, lon, domain, provider, registered_as, connection, proxy, source, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+						Statement.RETURN_GENERATED_KEYS)) {
 				insertData.setLong(1, newData.iid.getId());
 				if (newData.continent == null) {
 					insertData.setNull(2, Types.VARCHAR);
