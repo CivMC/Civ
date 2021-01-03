@@ -30,6 +30,10 @@ public class BanResult {
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	}
 
+	/**
+	 * Let the command sender know the result of the ban(s) and player(s).
+	 * @param sender the sender of commands.
+	 */
 	public void informCommandSender(CommandSender sender) {
 		if (bans.isEmpty() && playerBans.isEmpty()) {
 			sender.sendMessage("No bans issued.");
