@@ -1,5 +1,6 @@
 package com.untamedears.realisticbiomes;
 
+import com.untamedears.realisticbiomes.growth.FungusGrower;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
