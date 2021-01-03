@@ -28,7 +28,7 @@ public class BanStick extends ACivMod {
 	private BSLog logHandler;
 	private BSRegistrars bannedRegistrars;
 
-	private boolean slaveMode = false;
+	private boolean slaveMode;
 
 	@Override
 	public void onEnable() {
@@ -39,7 +39,9 @@ public class BanStick extends ACivMod {
 
 		BanStick.instance = this;
 		connectDatabase();
-		if (!this.isEnabled()) return;
+		if (!this.isEnabled()) {
+			return;
+		}
 
 		if (getConfig().getBoolean("slaveMode", false)) {
 			slaveMode = true;
@@ -61,15 +63,33 @@ public class BanStick extends ACivMod {
 	public void onDisable() {
 		super.onDisable();
 
-		if (this.eventHandler != null) this.eventHandler.shutdown();
-		if (this.proxyHandler != null) this.proxyHandler.shutdown();
-		if (this.scrapeHandler != null) this.scrapeHandler.shutdown();
-		if (this.ipdataUpdater != null) this.ipdataUpdater.end();
-		if (this.ipHubUpdater != null) this.ipHubUpdater.end();
-		if (this.torUpdater != null) this.torUpdater.shutdown();
-		if (this.importHandler != null) this.importHandler.shutdown();
-		if (this.logHandler != null) this.logHandler.disable();
-		if (this.databaseHandler != null) this.databaseHandler.doShutdown();
+		if (this.eventHandler != null) {
+			this.eventHandler.shutdown();
+		}
+		if (this.proxyHandler != null) {
+			this.proxyHandler.shutdown();
+		}
+		if (this.scrapeHandler != null) {
+			this.scrapeHandler.shutdown();
+		}
+		if (this.ipdataUpdater != null) {
+			this.ipdataUpdater.end();
+		}
+		if (this.ipHubUpdater != null) {
+			this.ipHubUpdater.end();
+		}
+		if (this.torUpdater != null) {
+			this.torUpdater.shutdown();
+		}
+		if (this.importHandler != null) {
+			this.importHandler.shutdown();
+		}
+		if (this.logHandler != null) {
+			this.logHandler.disable();
+		}
+		if (this.databaseHandler != null) {
+			this.databaseHandler.doShutdown();
+		}
 	}
 
 	private void connectDatabase() {
@@ -94,7 +114,9 @@ public class BanStick extends ACivMod {
 	}
 
 	private void registerCommandHandler() {
-		if (!this.isEnabled()) return;
+		if (!this.isEnabled()) {
+			return;
+		}
 		try {
 			this.commandHandler = new BanStickCommandHandler(getConfig());
 		} catch (Exception e) {
@@ -104,7 +126,9 @@ public class BanStick extends ACivMod {
 	}
 
 	private void registerEventHandler() {
-		if (!this.isEnabled()) return;
+		if (!this.isEnabled()) {
+			return;
+		}
 		try {
 			this.eventHandler = new BanStickEventHandler(getConfig());
 		} catch (Exception e) {
@@ -114,7 +138,9 @@ public class BanStick extends ACivMod {
 	}
 
 	private void registerTorHandler() {
-		if (!this.isEnabled()) return;
+		if (!this.isEnabled()) {
+			return;
+		}
 		try {
 			this.torUpdater = new BanStickTorUpdater(getConfig());
 		} catch (Exception e) {
@@ -123,7 +149,9 @@ public class BanStick extends ACivMod {
 	}
 
 	private void registerProxyHandler() {
-		if (!this.isEnabled()) return;
+		if (!this.isEnabled()) {
+			return;
+		}
 		try {
 			this.proxyHandler = new BanStickProxyHandler(getConfig(), getPlugin().getClassLoader());
 		} catch (Exception e) {
@@ -132,7 +160,9 @@ public class BanStick extends ACivMod {
 	}
 
 	private void registerIPDataHandler() {
-		if (!this.isEnabled()) return;
+		if (!this.isEnabled()) {
+			return;
+		}
 		try {
 			this.ipdataUpdater = new BanStickIPDataHandler(getConfig());
 		} catch (Exception e) {
@@ -141,7 +171,9 @@ public class BanStick extends ACivMod {
 	}
 
 	private void registerIPHubHandler() {
-		if (!this.isEnabled()) return;
+		if (!this.isEnabled()) {
+			return;
+		}
 		try {
 			this.ipHubUpdater = new BanStickIPHubHandler(getConfig());
 		} catch (Exception e) {
@@ -150,7 +182,9 @@ public class BanStick extends ACivMod {
 	}
 
 	private void registerScrapeHandler() {
-		if (!this.isEnabled()) return;
+		if (!this.isEnabled()) {
+			return;
+		}
 		try {
 			this.scrapeHandler = new BanStickScrapeHandler(getConfig(), getPlugin().getClassLoader());
 		} catch (Exception e) {
@@ -159,7 +193,9 @@ public class BanStick extends ACivMod {
 	}
 
 	private void registerImportHandler() {
-		if (!this.isEnabled()) return;
+		if (!this.isEnabled()) {
+			return;
+		}
 		try {
 			this.importHandler = new BanStickImportHandler(getConfig(), getPlugin().getClassLoader());
 		} catch (Exception e) {
@@ -168,7 +204,9 @@ public class BanStick extends ACivMod {
 	}
 
 	private void registerLogHandler() {
-		if (!this.isEnabled()) return;
+		if (!this.isEnabled()) {
+			return;
+		}
 		try {
 			this.logHandler = new BSLog(getConfig());
 			this.logHandler.runTaskTimerAsynchronously(this, this.logHandler.getDelay(), this.logHandler.getPeriod());
@@ -178,7 +216,9 @@ public class BanStick extends ACivMod {
 	}
 	
 	private void registerRegistrarHandler() {
-		if (!this.isEnabled()) return;
+		if (!this.isEnabled()) {
+			return;
+		}
 		try {
 			this.bannedRegistrars = new BSRegistrars();
 		} catch (Exception e) {
