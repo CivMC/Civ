@@ -6,7 +6,6 @@ import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSIPData;
 import inet.ipaddr.IPAddressString;
 import inet.ipaddr.IPAddressStringException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +19,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+/**
+ * A handler for Tor-based scrapers, which is a bit specialized. Handles Tor Endpoint monitoring.
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ */
 public class BanStickTorUpdater {
 	
 	/*
@@ -38,11 +42,15 @@ tor:
    cidr: false
 	 */
 
-	private boolean banNewNodes = false;
+	private boolean banNewNodes;
 	
 	private List<TorList> torLists = new ArrayList<>();
 	private List<BukkitTask> torListUpdaters = new ArrayList<>();
 
+	/**
+	 * Given a file config, sets up tor monitors. If no tor setion? no tor.
+	 * @param config the tor config section.
+	 */
 	public BanStickTorUpdater(FileConfiguration config) {
 		if (!configureTor(config.getConfigurationSection("tor"))) {
 			return;
@@ -60,7 +68,9 @@ tor:
 		try {
 			banNewNodes = config.getBoolean("autoban", false);
 			ConfigurationSection lists = config.getConfigurationSection("lists");
-			if (lists == null) return true; // all done quickly.
+			if (lists == null) {
+				return true; // all done quickly.
+			}
 			for (String listName : lists.getKeys(false)) {
 				ConfigurationSection list = lists.getConfigurationSection(listName);
 				if (list != null) {
@@ -94,12 +104,13 @@ tor:
 						InputStream readIn = connection.openStream();
 						BufferedReader in = new BufferedReader(new InputStreamReader(readIn));
 						String line = in.readLine();
-						long lines = 0l;
+						long lines = 0L;
 						int errors = 0;
 						while (line != null) {
 							lines ++;
 							if (lines % 50 == 0) {
-								BanStick.getPlugin().info("Processed {0} records from {1} so far", lines, torSave.address);
+								BanStick.getPlugin().info("Processed {0} records from {1} so far", 
+										lines, torSave.address);
 							}
 							if (errors > 10) {
 								BanStick.getPlugin().warning("Cancelling this Tor capture run, too many errors.");
@@ -110,13 +121,15 @@ tor:
 								address.validate();
 								BSIP found = null;
 								if (torSave.cidr) {
-									found = BSIP.byCIDR(address.toAddress().getLower().toString(), address.getNetworkPrefixLength());
+									found = BSIP.byCIDR(address.toAddress().getLower().toString(), 
+											address.getNetworkPrefixLength());
 								} else {
 									found = BSIP.byIPAddress(address.toAddress());
 								}
 								if (found == null) {
 									if (torSave.cidr) {
-										found = BSIP.create(address.toAddress().getLower(), address.getNetworkPrefixLength());
+										found = BSIP.create(address.toAddress().getLower(), 
+												address.getNetworkPrefixLength());
 									} else {
 										found = BSIP.create(address.toAddress());
 									}
@@ -135,14 +148,18 @@ tor:
 									
 									if (!(ban == null || ban.size() == 0)) { 
 										// look for match; if unexpired, extend.
-										for (int i = ban.size() - 1 ; i >= 0; i-- ) {
+										for (int i = ban.size() - 1 ; i >= 0; i--) {
 											BSBan pickOne = ban.get(i);
-											if (pickOne.isAdminBan()) continue; // skip admin entered bans.
-											if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().after(new Date())) {
+											if (pickOne.isAdminBan()) {
+												continue; // skip admin entered bans.
+											}
+											if (pickOne.getBanEndTime() != null 
+													&& pickOne.getBanEndTime().after(new Date())) {
 												if (torSave.endlessBan) {
 													pickOne.clearBanEndTime(); // no end.
 												} else {
-													pickOne.setBanEndTime(new Date(System.currentTimeMillis() + torSave.banLength));
+													pickOne.setBanEndTime(new Date(System.currentTimeMillis() 
+															+ torSave.banLength));
 												}
 												wasmatch = true;
 												break;
@@ -151,7 +168,8 @@ tor:
 									}
 									if (!wasmatch) {
 										BSBan.create(found, torSave.banMessage, 
-												torSave.endlessBan ? null : new Date(System.currentTimeMillis() + torSave.banLength), false);
+												torSave.endlessBan ? null : new Date(System.currentTimeMillis() 
+														+ torSave.banLength), false);
 									}
 								}
 								
@@ -172,12 +190,17 @@ tor:
 		}
 	}
 	
+	/**
+	 * Shuts down this TOR manager.
+	 */
 	public void shutdown() {
-		if (torListUpdaters == null) return;
+		if (torListUpdaters == null) {
+			return;
+		}
 		for (BukkitTask task : torListUpdaters) {
 			try {
 				task.cancel();
-			} catch (Exception e) {}
+			} catch (Exception e) { }
 		}
 	}
 
@@ -190,7 +213,7 @@ tor:
 		public long banLength;
 		public boolean endlessBan;
 		
-		public TorList(String address, long period, long delay, boolean cidr, String banMessage, long banLength) {
+		TorList(String address, long period, long delay, boolean cidr, String banMessage, long banLength) {
 			this.address = address;
 			this.period = period;
 			this.delay = delay;
