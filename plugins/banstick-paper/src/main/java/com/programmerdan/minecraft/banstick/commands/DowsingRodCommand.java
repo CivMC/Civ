@@ -16,6 +16,15 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * This command is complex, but basically allows you to investigate the current
+ * data known to the server live as an admin.
+ * 
+ * <p>This gives you great investigative power and also clickthroughs for deep dives.
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ *
+ */
 public class DowsingRodCommand  implements CommandExecutor {
 
 	public static String name = "dowsingrod";
@@ -23,7 +32,8 @@ public class DowsingRodCommand  implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
 		/*
-		 * /dowsingrod [CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] page# perpage
+		 * /dowsingrod [CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] 
+		 * page# perpage
 		 * up to three of the above; page#, perpage self-explain.
 		 * if none, defaults to provider / 0 / 20
 		 * always does largest >>> smallest in ordering.
@@ -60,7 +70,8 @@ public class DowsingRodCommand  implements CommandExecutor {
 				toAdd = "region"; 
 			} else if (arg.equalsIgnoreCase("CITY")) {
 				toAdd = "city";
-			} else if (arg.equalsIgnoreCase("POSTAL") || arg.equalsIgnoreCase("ZIP") || arg.equalsIgnoreCase("ZIPCODE")) {
+			} else if (arg.equalsIgnoreCase("POSTAL") || arg.equalsIgnoreCase("ZIP") 
+					|| arg.equalsIgnoreCase("ZIPCODE")) {
 				toAdd = "postal";
 			} else if (arg.equalsIgnoreCase("DOMAIN")) {
 				toAdd = "domain";
@@ -100,14 +111,15 @@ public class DowsingRodCommand  implements CommandExecutor {
 		for (String sort : sorts) {
 			subString.append(sort).append(", ");
 		}
-		queryString.append(subString).append("count(*) FROM bs_ip_data GROUP BY ").append(subString.substring(0, subString.length() - 2))
+		queryString.append(subString).append("count(*) FROM bs_ip_data GROUP BY ")
+			.append(subString.substring(0, subString.length() - 2))
 			.append(" ORDER BY count(*) DESC LIMIT ").append(page * perpage).append(',').append(perpage);
 		BanStick.getPlugin().debug("Running query: " + queryString.toString());
 		long requestLen = System.currentTimeMillis();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection(); 
 				PreparedStatement complex = connection.prepareStatement(queryString.toString());
 				ResultSet results = complex.executeQuery()) {
-			while(results.next()) {
+			while (results.next()) {
 				String[] storage = new String[sorts.size() + 2];
 				StringBuilder detailCmd = new StringBuilder("/drilldown SUMMARY ");
 				for (int i = 0; i <= sorts.size(); i++) {
@@ -144,22 +156,21 @@ public class DowsingRodCommand  implements CommandExecutor {
 			@SuppressWarnings("unchecked")
 			ArrayList<String> headers = (ArrayList<String>) sorts.clone();
 			headers.add("Count");
-			sender.sendMessage(ChatColor.BOLD.toString() + ChatColor.DARK_AQUA.toString() + 
-					String.format(formatString.toString(), headers.toArray()) + ChatColor.RESET.toString());
+			sender.sendMessage(ChatColor.BOLD.toString() + ChatColor.DARK_AQUA.toString() 
+					+ String.format(formatString.toString(), headers.toArray()) + ChatColor.RESET.toString());
 			for (String[] data : toDisplay) {
 				TextComponent line = new TextComponent(String.format(formatString.toString(), 
 						(Object[]) Arrays.copyOfRange(data, 0, data.length - 1)));
 				line.setColor(net.md_5.bungee.api.ChatColor.WHITE);
 				line.setBold(true);
 				if (sender instanceof Player) {
-					line.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, data[data.length - 1]));
+					line.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, data[data.length - 1]));
 					((Player) sender).spigot().sendMessage(line);
 				} else {
 					sender.sendMessage(line.toLegacyText());
 				}
 			} 
 			if (sender instanceof Player) {
-				Player player = (Player) sender;
 				TextComponent controls = new TextComponent("Controls ");
 				controls.setColor(net.md_5.bungee.api.ChatColor.DARK_AQUA);
 				if (page > 0) {
@@ -167,7 +178,8 @@ public class DowsingRodCommand  implements CommandExecutor {
 					@SuppressWarnings("unchecked")
 					ArrayList<String> cmdH = (ArrayList<String>) sorts.clone();
 					cmdH.add((page - 1) + " " + perpage);
-					priorPage.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/dowsingrod " + String.format(formatString.toString(), cmdH.toArray())));
+					priorPage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, 
+							"/dowsingrod " + String.format(formatString.toString(), cmdH.toArray())));
 					priorPage.setColor(net.md_5.bungee.api.ChatColor.GOLD);
 					controls.addExtra(priorPage);
 				}
@@ -176,10 +188,12 @@ public class DowsingRodCommand  implements CommandExecutor {
 					@SuppressWarnings("unchecked")
 					ArrayList<String> cmdH = (ArrayList<String>) sorts.clone();
 					cmdH.add((page + 1) + " " + perpage);
-					nextPage.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, "/dowsingrod " + String.format(formatString.toString(), cmdH.toArray())));
+					nextPage.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, 
+							"/dowsingrod " + String.format(formatString.toString(), cmdH.toArray())));
 					nextPage.setColor(net.md_5.bungee.api.ChatColor.GOLD);
 					controls.addExtra(nextPage);
 				}
+				Player player = (Player) sender;
 				player.spigot().sendMessage(controls);
 			}
 			sender.sendMessage(ChatColor.DARK_GRAY + "query took " + requestLen + " ms");
