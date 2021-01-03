@@ -9,6 +9,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitTask;
 
+/**
+ * Handles loading all proxy type workers.
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ */
 public class BanStickProxyHandler {
 
 	ArrayList<ProxyLoader> loaders;
@@ -34,10 +39,12 @@ public class BanStickProxyHandler {
 		try {
 			ClassPath getSamplersPath = ClassPath.from(classes);
 
-			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses("com.programmerdan.minecraft.banstick.proxy")) {
+			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses(
+					"com.programmerdan.minecraft.banstick.proxy")) {
 				Class<?> clazz = clsInfo.load();
 				if (clazz != null && ProxyLoader.class.isAssignableFrom(clazz)) {
-					BanStick.getPlugin().info("Found a proxy loader class {0}, attempting to find a suitable constructor", clazz.getName());
+					BanStick.getPlugin().info("Found a proxy loader class {0}, attempting to find" 
+							+ " a suitable constructor", clazz.getName());
 					ProxyLoader loader = null;
 					try {
 						Constructor<?> constructBasic = clazz.getConstructor(ConfigurationSection.class);
@@ -51,10 +58,12 @@ public class BanStickProxyHandler {
 
 					if (loader != null) {
 						try {
-							BukkitTask loaderTask = loader.runTaskTimerAsynchronously(BanStick.getPlugin(), loader.getDelay(), loader.getPeriod());
+							BukkitTask loaderTask = loader.runTaskTimerAsynchronously(BanStick.getPlugin(), 
+									loader.getDelay(), loader.getPeriod());
 							loaderTasks.add(loaderTask);
 						} catch (Exception e) {
-							BanStick.getPlugin().warning("Failed to activate proxy loader of type {0}", clazz.getName());
+							BanStick.getPlugin().warning("Failed to activate proxy loader of type {0}", 
+									clazz.getName());
 							BanStick.getPlugin().warning("  Failure message: ", e);
 						}
 					}
@@ -65,12 +74,17 @@ public class BanStickProxyHandler {
 		}
 	}
 	
+	/**
+	 * Shuts down this proxy handler
+	 */
 	public void shutdown() {
-		if (loaderTasks == null) return;
+		if (loaderTasks == null) {
+			return;
+		}
 		for (BukkitTask task : loaderTasks) {
 			try {
 				task.cancel();
-			} catch (Exception e) {}
+			} catch (Exception e) { }
 		}
 	}
 }
