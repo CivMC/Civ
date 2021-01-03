@@ -12,7 +12,7 @@ public class BambooGrower extends ColumnPlantGrower {
 	protected static final int LARGE_LEAVES_START_HEIGHT = 5;
 
 	public BambooGrower(int maxHeight) {
-		super(maxHeight, Material.BAMBOO, false);
+		super(maxHeight, Material.BAMBOO, BlockFace.UP ,false);
 	}
 
 	@Override

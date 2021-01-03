@@ -47,6 +47,10 @@ public class RBUtils {
 			return TreeType.DARK_OAK;
 		case SPRUCE_SAPLING:
 			return TreeType.REDWOOD;
+		case CRIMSON_FUNGUS:
+			return TreeType.CRIMSON_FUNGUS;
+		case WARPED_FUNGUS:
+			return TreeType.WARPED_FUNGUS;
 		default:
 			throw new IllegalArgumentException();
 		}
@@ -64,7 +68,7 @@ public class RBUtils {
 	}
 
 	public static boolean isColumnPlant(Material mat) {
-		return mat == Material.CACTUS || mat == Material.SUGAR_CANE  || mat == Material.BAMBOO;
+		return mat == Material.CACTUS || mat == Material.SUGAR_CANE  || mat == Material.BAMBOO || mat == Material.TWISTING_VINES || mat == Material.WEEPING_VINES;
 	}
 
 	public static boolean isCrop(Material material) {
@@ -75,7 +79,8 @@ public class RBUtils {
 	public static boolean isSapling(Material material) {
 		return material == Material.ACACIA_SAPLING || material == Material.BIRCH_SAPLING
 				|| material == Material.DARK_OAK_SAPLING || material == Material.JUNGLE_SAPLING
-				|| material == Material.OAK_SAPLING || material == Material.SPRUCE_SAPLING;
+				|| material == Material.OAK_SAPLING || material == Material.SPRUCE_SAPLING
+				|| material == Material.CRIMSON_FUNGUS || material == Material.WARPED_FUNGUS;
 	}
 
 	public static boolean isStem(Material mat) {

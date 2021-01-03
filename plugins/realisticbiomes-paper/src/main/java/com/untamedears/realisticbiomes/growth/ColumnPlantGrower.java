@@ -5,8 +5,8 @@ import org.bukkit.block.BlockFace;
 
 public class ColumnPlantGrower extends VerticalGrower {
 	
-	public ColumnPlantGrower(int maxHeight, Material material, boolean instaBreakTouching) {
-		super(maxHeight, material, BlockFace.UP, instaBreakTouching);
+	public ColumnPlantGrower(int maxHeight, Material material, BlockFace direction, boolean instaBreakTouching) {
+		super(maxHeight, material, direction, instaBreakTouching);
 	}
 	
 
