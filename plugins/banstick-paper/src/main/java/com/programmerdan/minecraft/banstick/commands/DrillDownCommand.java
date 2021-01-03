@@ -27,6 +27,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * A command to delve deep into available data on a particular player.
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ *
+ */
 public class DrillDownCommand  implements CommandExecutor {
 
 	public enum Action {
@@ -36,11 +42,17 @@ public class DrillDownCommand  implements CommandExecutor {
 		IPDATA,
 		IP;
 		
+		/**
+		 * Check if a string matches one of these actions.
+		 * @param value
+		 * @return
+		 */
 		public static Action match(String value) {
 			if (value != null && value.length() > 0) {
 				for (Action action : Action.values()) {
-					if (value.toLowerCase().contains(action.name().toLowerCase()))
+					if (value.toLowerCase().contains(action.name().toLowerCase())) {
 						return action;
+					}
 				}
 			}
 			throw new IllegalArgumentException("Could not find Action match with " + value);
@@ -51,9 +63,14 @@ public class DrillDownCommand  implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
-		if (arguments.length < 3) return false;
+		if (arguments.length < 3) {
+			return false;
+		}
+		
 		/*
-		 * /drilldown [SUMMARY|PLAYER|IP|IPDATA|IPDATASUMMARY] [[CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] "value"]x3
+		 * /drilldown [SUMMARY|PLAYER|IP|IPDATA|IPDATASUMMARY] 
+		 *    [[CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] 
+		 *    "value"]x3
 		 * up to three of the above; unpaginated, so this could get very long
 		 * 
 		 * 
@@ -95,55 +112,64 @@ public class DrillDownCommand  implements CommandExecutor {
 					values.add(nextValue.toString());
 					nextValue = new StringBuilder();
 				}
-				toAdd = "continent"; foundAnchor = true;
+				toAdd = "continent";
+				foundAnchor = true;
 			} else if (arg.equals("country")) {
 				if (foundAnchor) { 
 					values.add(nextValue.toString());
 					nextValue = new StringBuilder();
 				}
-				toAdd = "country"; foundAnchor = true;
+				toAdd = "country"; 
+				foundAnchor = true;
 			} else if (arg.equalsIgnoreCase("region")) {
 				if (foundAnchor) { 
 					values.add(nextValue.toString());
 					nextValue = new StringBuilder();
 				}
-				toAdd = "region";  foundAnchor = true;
+				toAdd = "region"; 
+				foundAnchor = true;
 			} else if (arg.equalsIgnoreCase("city")) {
 				if (foundAnchor) { 
 					values.add(nextValue.toString());
 					nextValue = new StringBuilder();
 				}
-				toAdd = "city"; foundAnchor = true;
+				toAdd = "city"; 
+				foundAnchor = true;
 			} else if (arg.equalsIgnoreCase("postal")) {
 				if (foundAnchor) { 
 					values.add(nextValue.toString());
 					nextValue = new StringBuilder();
 				}
-				toAdd = "postal"; foundAnchor = true;
+				toAdd = "postal";
+				foundAnchor = true;
 			} else if (arg.equalsIgnoreCase("domain")) {
 				if (foundAnchor) { 
 					values.add(nextValue.toString());
 					nextValue = new StringBuilder();
 				}
-				toAdd = "domain"; foundAnchor = true;
+				toAdd = "domain"; 
+				foundAnchor = true;
 			} else if (arg.equalsIgnoreCase("provider")) {
 				if (foundAnchor) { 
 					values.add(nextValue.toString());
 					nextValue = new StringBuilder();
 				}
-				toAdd = "provider"; foundAnchor = true;
+				toAdd = "provider"; 
+				foundAnchor = true;
 			} else if (arg.equalsIgnoreCase("registered_as")) {
 				if (foundAnchor) { 
 					values.add(nextValue.toString());
 					nextValue = new StringBuilder();
 				}
-				toAdd = "registered_as"; foundAnchor = true;
+				toAdd = "registered_as"; 
+				foundAnchor = true;
 			} else if (arg.equalsIgnoreCase("connection")) {
 				if (foundAnchor) { 
 					values.add(nextValue.toString());
 					nextValue = new StringBuilder();
 				}
-				toAdd = "connection"; foundAnchor = true;
+				toAdd = "connection"; 
+				foundAnchor = true;
 			} else {
 				nextValue.append(" ").append(arg);
 			}
@@ -165,7 +191,7 @@ public class DrillDownCommand  implements CommandExecutor {
 				StringBuilder subString = new StringBuilder();
 				StringBuilder queryString = new StringBuilder();
 				for (int i = 0; i < values.size(); i += 2) {
-					if (values.get(i+1).contains("\"NULL\"")) {
+					if (values.get(i + 1).contains("\"NULL\"")) {
 						subString.append(values.get(i)).append(" IS NULL");
 					} else {
 						subString.append(values.get(i)).append(" = ?");
@@ -210,7 +236,7 @@ public class DrillDownCommand  implements CommandExecutor {
 						dataPlayers = new HashMap<>();
 					}
 					try (ResultSet results = complex.executeQuery()) {
-						while(results.next()) {
+						while (results.next()) {
 							BSIPData data = BSIPData.byId(results.getLong(1));
 							BSIP ip = BSIP.byId(results.getLong(2));
 							
@@ -218,11 +244,13 @@ public class DrillDownCommand  implements CommandExecutor {
 								StringBuilder detailCmd = new StringBuilder("/lovetap ");
 								detailCmd.append(ip.toString());
 								
-								TextComponent line = new TextComponent("  " + data.toFullString(sender.hasPermission("banstick.ips")));
+								TextComponent line = new TextComponent("  " 
+										+ data.toFullString(sender.hasPermission("banstick.ips")));
 								line.setColor(net.md_5.bungee.api.ChatColor.WHITE);
 								line.setBold(true);
 								if (sender instanceof Player && sender.hasPermission("banstick.ips")) {
-									line.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, detailCmd.toString()));
+									line.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, 
+											detailCmd.toString()));
 									((Player) sender).spigot().sendMessage(line);
 								} else {
 									sender.sendMessage(line.toLegacyText());
@@ -241,7 +269,8 @@ public class DrillDownCommand  implements CommandExecutor {
 								datas.add(data);
 								ips.add(ip);
 							} 
-							if (Action.SUMMARY.equals(action) || Action.IPDATASUMMARY.equals(action) || Action.PLAYER.equals(action)) {
+							if (Action.SUMMARY.equals(action) || Action.IPDATASUMMARY.equals(action) 
+									|| Action.PLAYER.equals(action)) {
 								List<BSSession> sessions = BSSession.byIP(ip);
 								if (sessions != null) {
 									for (BSSession session : sessions) {
@@ -268,21 +297,25 @@ public class DrillDownCommand  implements CommandExecutor {
 						}
 						TextComponent summary = new TextComponent("Found ");
 							summary.setColor(net.md_5.bungee.api.ChatColor.AQUA);
-						TextComponent pExt = new TextComponent(players.size() + " players, ");
-							pExt.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-							pExt.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/drilldown PLAYER" + sb.toString()));
-						TextComponent dExt = new TextComponent(datas.size() + " subnet records, ");
-							dExt.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-							dExt.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/drilldown IPDATA" + sb.toString()));
-						TextComponent iExt = new TextComponent(ips.size() + " ips ");
-							iExt.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-							iExt.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/drilldown IP" + sb.toString()));
-						summary.addExtra(pExt);
-						summary.addExtra(dExt);
-						summary.addExtra(iExt);
+						TextComponent plExt = new TextComponent(players.size() + " players, ");
+							plExt.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+							plExt.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, 
+									"/drilldown PLAYER" + sb.toString()));
+						TextComponent daExt = new TextComponent(datas.size() + " subnet records, ");
+							daExt.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+							daExt.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, 
+									"/drilldown IPDATA" + sb.toString()));
+						TextComponent ipExt = new TextComponent(ips.size() + " ips ");
+							ipExt.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+							ipExt.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, 
+									"/drilldown IP" + sb.toString()));
+						summary.addExtra(plExt);
+						summary.addExtra(daExt);
+						summary.addExtra(ipExt);
 						TextComponent orDetail = new TextComponent("  [get breakdown by subnet/proxy]");
 							orDetail.setColor(net.md_5.bungee.api.ChatColor.GOLD);
-							orDetail.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/drilldown IPDATASUMMARY" + sb.toString()));
+							orDetail.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, 
+									"/drilldown IPDATASUMMARY" + sb.toString()));
 						
 						if (sender instanceof Player) {
 							((Player) sender).spigot().sendMessage(summary, orDetail);
@@ -294,10 +327,12 @@ public class DrillDownCommand  implements CommandExecutor {
 							StringBuilder detailCmd = new StringBuilder("/lovetap ");
 							detailCmd.append(ip.toString());
 							
-							TextComponent line = new TextComponent("  " + ip.toFullString(sender.hasPermission("banstick.ips")));
+							TextComponent line = new TextComponent("  " 
+									+ ip.toFullString(sender.hasPermission("banstick.ips")));
 							line.setColor(net.md_5.bungee.api.ChatColor.WHITE);
 							if (sender instanceof Player && sender.hasPermission("banstick.ips")) {
-								line.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, detailCmd.toString()));
+								line.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, 
+										detailCmd.toString()));
 								((Player) sender).spigot().sendMessage(line);
 							} else {
 								sender.sendMessage(line.toLegacyText());
@@ -311,7 +346,8 @@ public class DrillDownCommand  implements CommandExecutor {
 							TextComponent line = new TextComponent("  " + player.toString());
 							line.setColor(net.md_5.bungee.api.ChatColor.WHITE);
 							if (sender instanceof Player) {
-								line.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, detailCmd.toString()));
+								line.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, 
+										detailCmd.toString()));
 								((Player) sender).spigot().sendMessage(line);
 							} else {
 								sender.sendMessage(line.toLegacyText());
@@ -319,8 +355,8 @@ public class DrillDownCommand  implements CommandExecutor {
 						}
 					} else if (Action.IPDATASUMMARY.equals(action)) {
 						for (BSIPData data : datas) {
-							
-							BaseComponent[] preline = TextComponent.fromLegacyText(data.toFullString(sender.hasPermission("banstick.ips")));
+							BaseComponent[] preline = TextComponent.fromLegacyText(
+									data.toFullString(sender.hasPermission("banstick.ips")));
 							TextComponent bline = new TextComponent("Subnet Record: ");
 							bline.setColor(net.md_5.bungee.api.ChatColor.AQUA);
 							bline.setBold(true);
@@ -336,10 +372,12 @@ public class DrillDownCommand  implements CommandExecutor {
 									StringBuilder detailCmd = new StringBuilder("/lovetap ");
 									detailCmd.append(ip.toString());
 									
-									TextComponent line = new TextComponent("  " + ip.toFullString(sender.hasPermission("banstick.ips")));
+									TextComponent line = new TextComponent("  "
+											+ ip.toFullString(sender.hasPermission("banstick.ips")));
 									line.setColor(net.md_5.bungee.api.ChatColor.WHITE);
 									if (sender instanceof Player && sender.hasPermission("banstick.ips")) {
-										line.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, detailCmd.toString()));
+										line.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, 
+												detailCmd.toString()));
 										((Player) sender).spigot().sendMessage(line);
 									} else {
 										sender.sendMessage(line.toLegacyText());
@@ -355,7 +393,8 @@ public class DrillDownCommand  implements CommandExecutor {
 									TextComponent line = new TextComponent("  " + player.toString());
 									line.setColor(net.md_5.bungee.api.ChatColor.WHITE);
 									if (sender instanceof Player) {
-										line.setClickEvent( new ClickEvent( ClickEvent.Action.RUN_COMMAND, detailCmd.toString()));
+										line.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, 
+												detailCmd.toString()));
 										((Player) sender).spigot().sendMessage(line);
 									} else {
 										sender.sendMessage(line.toLegacyText());
@@ -373,9 +412,11 @@ public class DrillDownCommand  implements CommandExecutor {
 				}
 				
 				if (found == 0) {
-					sender.sendMessage(ChatColor.YELLOW + "No results. " + ChatColor.DARK_GRAY + " took " + requestLen + " ms");
+					sender.sendMessage(ChatColor.YELLOW + "No results. " + ChatColor.DARK_GRAY 
+							+ " took " + requestLen + " ms");
 				} else {
-					sender.sendMessage(ChatColor.DARK_GRAY + Integer.toString(found) + " results in " + requestLen + " ms");
+					sender.sendMessage(ChatColor.DARK_GRAY + Integer.toString(found) 
+							+ " results in " + requestLen + " ms");
 				}
 			}
 		});
