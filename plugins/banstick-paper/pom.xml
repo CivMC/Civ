@@ -12,7 +12,7 @@
 
 	<groupId>com.programmerdan.minecraft</groupId>
 	<artifactId>banstick</artifactId>
-	<version>1.2.1</version>
+	<version>1.2.2</version>
 	<packaging>jar</packaging>
 	<name>BanStick</name>
 	<url>https://github.com/Civclassic/BanStick</url>
