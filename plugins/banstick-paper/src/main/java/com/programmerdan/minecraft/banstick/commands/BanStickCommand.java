@@ -36,10 +36,11 @@ public class BanStickCommand implements CommandExecutor {
 	 * Behavior: If given a name or uuid, bans that uuid with a new ban if none exists for that uuid.
 	 *   Returns ban details.
 	 *   
-	 *   If name or uuid with a CIDR postfix, bans that uuid, AND issues a ban against their IP address / subnet.
+	 *   <p>If name or uuid with a CIDR postfix, bans that uuid, AND issues a ban against their IP address / subnet.
 	 *   
-	 *   If IP, bans that IP and all players who have used it.
-	 *   If IP/CIDR, bans that IP subnet and all players who have used it.
+	 *   <p>If IP, bans that IP and all players who have used it.
+	 *   
+	 *   <p>If IP/CIDR, bans that IP subnet and all players who have used it.
 	 *   
 	 */
 	@Override
@@ -51,12 +52,14 @@ public class BanStickCommand implements CommandExecutor {
    - /<command> [name/uuid]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
 		 */
 		// Check if name. Check if uuid. Check if ip-ipv4 vs. ipv6.
-		if (arguments.length < 1) return false;
+		if (arguments.length < 1) {
+			return false;
+		}
 		
 		String preBan = arguments[0];
 		int locCIDR = preBan.indexOf('/');
 		Boolean hasCIDR = locCIDR > -1; 
-		Integer CIDR = (hasCIDR) ? Integer.valueOf(preBan.substring(locCIDR + 1)) : null;
+		Integer cidr = (hasCIDR) ? Integer.valueOf(preBan.substring(locCIDR + 1)) : null;
 		String toBan = (hasCIDR) ? preBan.substring(0, locCIDR) : preBan;
 		String endDate = (arguments.length >= 2 ? arguments[1] : null);
 		String endTime = (arguments.length >= 3 ? arguments[2] : null);
@@ -65,16 +68,16 @@ public class BanStickCommand implements CommandExecutor {
 		Date banEndDate = null;
 		Date banEndTime = null;
 		Date banEnd = null;
-		int mStart = 1;
+		int messageStart = 1;
 
 		BanStick.getPlugin().debug("preBan: {0}, CIDR? {1}, toBan: {2}, endDate: {3}, endTime: {4}", 
-				preBan, CIDR, toBan, endDate, endTime);
+				preBan, cidr, toBan, endDate, endTime);
 		
 		if (endDate != null) {
 			try {
 				banEndDate = dateFormat.parse(endDate); 
 				banEnd = banEndDate;
-				mStart ++;
+				messageStart ++;
 			} catch (ParseException pe) {
 				banEndDate = null;
 			}
@@ -83,14 +86,15 @@ public class BanStickCommand implements CommandExecutor {
 				try {
 					banEndTime = combinedFormat.parse(endDate + " " + endTime); 
 					banEnd = banEndTime;
-					mStart ++;
+					messageStart ++;
 				} catch (ParseException pe) {
 					banEndTime = null;
 				}
 			}
 		}
 		
-		String message = (arguments.length >= mStart ? String.join(" ", Arrays.copyOfRange(arguments, mStart, arguments.length)) : null);
+		String message = (arguments.length >= messageStart 
+				? String.join(" ", Arrays.copyOfRange(arguments, messageStart, arguments.length)) : null);
 		
 		BanStick.getPlugin().debug("message: {0}", message);
 		
@@ -101,10 +105,10 @@ public class BanStickCommand implements CommandExecutor {
 				return true;
 			}
 						
-			BSIP exact = !hasCIDR ? BSIP.byIPAddress(ipcheck) : BSIP.byCIDR(ipcheck.toString(), CIDR);
+			BSIP exact = !hasCIDR ? BSIP.byIPAddress(ipcheck) : BSIP.byCIDR(ipcheck.toString(), cidr);
 			if (exact == null) {
 				// new IP record.
-				exact = hasCIDR ? BSIP.create(ipcheck, CIDR) : BSIP.create(ipcheck);
+				exact = hasCIDR ? BSIP.create(ipcheck, cidr) : BSIP.create(ipcheck);
 			}
 			
 			BanResult result = hasCIDR ? BanHandler.doCIDRBan(exact, message, banEnd, true, false) : 
@@ -154,10 +158,10 @@ public class BanStickCommand implements CommandExecutor {
 						
 						// target's address is @nullable so we need to explicitly handle that.
 						if (na != null) {
-							BSIP exact = BSIP.byCIDR(na, CIDR);
+							BSIP exact = BSIP.byCIDR(na, cidr);
 							if (exact == null) {
 								// new IP record.
-								exact =BSIP.create(na, CIDR);
+								exact = BSIP.create(na, cidr);
 							}
 							
 							result = BanHandler.doCIDRBan(exact, message, banEnd, true, false);

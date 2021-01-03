@@ -12,7 +12,6 @@ import com.programmerdan.minecraft.banstick.commands.GetAltsCommand;
 import com.programmerdan.minecraft.banstick.commands.LoveTapCommand;
 import com.programmerdan.minecraft.banstick.commands.TakeItBackCommand;
 import com.programmerdan.minecraft.banstick.commands.UntangleCommand;
-
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
