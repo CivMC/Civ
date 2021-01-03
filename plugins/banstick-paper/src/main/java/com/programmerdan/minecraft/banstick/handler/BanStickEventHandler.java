@@ -32,28 +32,47 @@ import vg.civcraft.mc.civmodcore.playersettings.AltRequestEvent;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 /**
- * Base handler for setting up event captures. Like people logging in who are about to get BanSticked.
+ * Base handler for setting up event captures. Like people logging in who are
+ * about to get BanSticked.
  *
  * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public class BanStickEventHandler implements Listener {
-	private float proxyThreshold = 2.0f;
-	private boolean enableIPBans = true;
-	private boolean enableSubnetBans = true;
-	private boolean enableProxyKicks = true;
-	private boolean enableProxyBans = false;
-	private boolean enableNewProxyBans = false;
-	private boolean enableShareBans = false;
-	private String proxyBanMessage = null;
-	private int shareThreshold = 0;
-	private String shareBanMessage = null;
-	private boolean transitiveBans = false;
-	private boolean loveTapNewJoins = true;
+	private float proxyThreshold;
+	private boolean enableIPBans;
+	private boolean enableSubnetBans;
+	private boolean enableProxyKicks;
+	private boolean enableProxyBans;
+	private boolean enableNewProxyBans;
+	private boolean enableShareBans;
+	private String proxyBanMessage;
+	private int shareThreshold;
+	private String shareBanMessage;
+	private boolean transitiveBans;
+	private boolean loveTapNewJoins;
+	private boolean proxyCheckRegistrar;
 
-	private boolean proxyCheckRegistrar = true;
-	
+	/**
+	 * Sets up a new EventHandler from a config.
+	 * 
+	 * @param config the config to use
+	 * @throws RuntimeException if the config is not found or is invalid.
+	 */
 	public BanStickEventHandler(FileConfiguration config) {
+		proxyThreshold = 2.0f;
+		enableIPBans = true;
+		enableSubnetBans = true;
+		enableProxyKicks = true;
+		enableProxyBans = false;
+		enableNewProxyBans = false;
+		enableShareBans = false;
+		proxyBanMessage = null;
+		shareThreshold = 0;
+		shareBanMessage = null;
+		transitiveBans = false;
+		loveTapNewJoins = true;
+		proxyCheckRegistrar = true;
 		// setup.
 		ConfigurationSection internal = config.getConfigurationSection("events");
 		if (internal != null) {
@@ -84,7 +103,12 @@ public class BanStickEventHandler implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, BanStick.getPlugin());
 	}
 
-	@EventHandler(priority=EventPriority.LOWEST)
+	/**
+	 * Handles before a player has fully joined the server
+	 * 
+	 * @param asyncEvent the event to process.
+	 */
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void asyncPreJoinLowest(AsyncPlayerPreLoginEvent asyncEvent) {
 		final InetAddress preJoinAddress = asyncEvent.getAddress();
 		final UUID preJoinUUID = asyncEvent.getUniqueId();
@@ -97,7 +121,8 @@ public class BanStickEventHandler implements Listener {
 			String name = null;
 			try {
 				name = NameAPI.getCurrentName(preJoinUUID);
-			} catch (NoClassDefFoundError ncde) { } // no namelayer
+			} catch (NoClassDefFoundError ncde) {
+			} // no namelayer
 			if (name == null) {
 				name = preJoinName;
 			}
@@ -112,25 +137,28 @@ public class BanStickEventHandler implements Listener {
 					player.setBan(null);
 				} else {
 					BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + ban.toString());
-					Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + ban.toString(), "banstick.ips");
+					Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + ban.toString(),
+							"banstick.ips");
 					asyncEvent.disallow(Result.KICK_BANNED, ban.getMessage());
 					return;
 				}
 			}
 			if (transitiveBans) {
-			    for(BSPlayer alt : player.getTransitiveSharedPlayers(true)) {
-			        ban = alt.getBan();
-		            if (ban != null) {
-		                if (ban.getBanEndTime() != null && ban.getBanEndTime().before(new Date())) { // ban has ended.
-		                    alt.setBan(null);
-		                } else {
-		                    BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + ban.toString() + " transitively applied from " + alt.getName());
-		                    Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + ban.toString() + " on " + alt.getName(), "banstick.ips");
-		                    asyncEvent.disallow(Result.KICK_BANNED, ban.getMessage());
-		                    return;
-		                }
-		            }
-			    }
+				for (BSPlayer alt : player.getTransitiveSharedPlayers(true)) {
+					ban = alt.getBan();
+					if (ban != null) {
+						if (ban.getBanEndTime() != null && ban.getBanEndTime().before(new Date())) { // ban has ended.
+							alt.setBan(null);
+						} else {
+							BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to "
+									+ ban.toString() + " transitively applied from " + alt.getName());
+							Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + ban.toString()
+									+ " on " + alt.getName(), "banstick.ips");
+							asyncEvent.disallow(Result.KICK_BANNED, ban.getMessage());
+							return;
+						}
+					}
+				}
 			}
 			if (player.getIPPardonTime() != null) {
 				BanStick.getPlugin().info("Skipping IP checks due to pardon for player " + player.getName());
@@ -142,8 +170,8 @@ public class BanStickEventHandler implements Listener {
 			// Second, trigger an exact IP based lookup.
 			if (ip != null) {
 				List<BSBan> ipBans = BSBan.byIP(ip, false);
-				for (int i = ipBans.size() - 1 ; i >= 0; i-- ) {
-					//TODO: Can I have better selectivity here? What are the rules?
+				for (int i = ipBans.size() - 1; i >= 0; i--) {
+					// TODO: Can I have better selectivity here? What are the rules?
 					BSBan pickOne = ipBans.get(i);
 					if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().before(new Date())) {
 						continue; // skip expired ban.
@@ -151,9 +179,11 @@ public class BanStickEventHandler implements Listener {
 					if (player != null) {
 						// associate!
 						player.setBan(pickOne); // get most recent matching IP ban and use it.
-						
-						BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
-						Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + pickOne.toString(), "banstick.ips");
+
+						BanStick.getPlugin()
+								.info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
+						Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + pickOne.toString(),
+								"banstick.ips");
 					} else {
 						BanStick.getPlugin().info("Preventing login due to " + pickOne.toString());
 						Bukkit.broadcast("Preventing login due to " + pickOne.toString(), "banstick.ips");
@@ -165,13 +195,14 @@ public class BanStickEventHandler implements Listener {
 		}
 
 		if (this.enableSubnetBans) {
-			// Third, trigger a CIDR lookup. This will continue until done; it does not tie into login or async join events.
+			// Third, trigger a CIDR lookup. This will continue until done; it does not tie
+			// into login or async join events.
 			List<BSIP> subnets = BSIP.allMatching(preJoinAddress);
 			for (BSIP sip : subnets) {
 				BanStick.getPlugin().debug("Check for bans on IP: {0}", sip.getId());
 				List<BSBan> sipBans = BSBan.byIP(sip, false);
-				for (int i = sipBans.size() - 1 ; i >= 0; i-- ) {
-					//TODO: Can I have better selectivity here? What are the rules?
+				for (int i = sipBans.size() - 1; i >= 0; i--) {
+					// TODO: Can I have better selectivity here? What are the rules?
 					BSBan pickOne = sipBans.get(i);
 					if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().before(new Date())) {
 						continue; // skip expired ban.
@@ -179,8 +210,10 @@ public class BanStickEventHandler implements Listener {
 					if (player != null) {
 						// associate!
 						player.setBan(pickOne); // get most recent matching subnet ban and use it.
-						BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
-						Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + pickOne.toString(), "banstick.ips");
+						BanStick.getPlugin()
+								.info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
+						Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + pickOne.toString(),
+								"banstick.ips");
 					} else {
 						BanStick.getPlugin().info("Preventing login due to " + pickOne.toString());
 						Bukkit.broadcast("Preventing login due to " + pickOne.toString(), "banstick.ips");
@@ -192,25 +225,23 @@ public class BanStickEventHandler implements Listener {
 		}
 	}
 
-	@EventHandler(priority=EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void asyncPreJoinHighest(AsyncPlayerPreLoginEvent asyncEvent) {
 		// TODO: idea is we'd poll futures for results here
 	}
 
-
-	@EventHandler(priority=EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void loginHighest(PlayerLoginEvent loginEvent) {
 
 	}
 
 	/**
-	 * This handler deals with registering the player if they are new, starting their session, and triggering
-	 * session sharing and vpn warning checks.
+	 * This handler deals with registering the player if they are new, starting
+	 * their session, and triggering session sharing and vpn warning checks.
 	 *
-	 * @param joinEvent
-	 * 	The PlayerJoin event.
+	 * @param joinEvent The PlayerJoin event.
 	 */
-	@EventHandler(priority=EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void joinMonitor(PlayerJoinEvent joinEvent) {
 		final Player player = joinEvent.getPlayer();
 		final Date playerNow = new Date();
@@ -229,7 +260,8 @@ public class BanStickEventHandler implements Listener {
 				String nowName = null;
 				try {
 					nowName = NameAPI.getCurrentName(player.getUniqueId());
-				} catch (NoClassDefFoundError cnfe) {} // no namelayer
+				} catch (NoClassDefFoundError cnfe) {
+				} // no namelayer
 
 				if (nowName == null) {
 					nowName = player.getDisplayName();
@@ -239,20 +271,26 @@ public class BanStickEventHandler implements Listener {
 				}
 				bsPlayer.startSession(player, playerNow);
 				// The above does all the Shared Session checks, so check result here:
-				if (enableShareBans && bsPlayer.getSharedPardonTime() == null ) { // no blank check
+				if (enableShareBans && bsPlayer.getSharedPardonTime() == null) { // no blank check
 					try {
-						// New approach: unpardoned shares count against your shareThreshold. If you're above shareThreshold,
-						// order accounts by join date and ban all unbanned accounts using Share Ban assignments that are newest
+						// New approach: unpardoned shares count against your shareThreshold. If you're
+						// above shareThreshold,
+						// order accounts by join date and ban all unbanned accounts using Share Ban
+						// assignments that are newest
 						// and that exceed the shareThreshold.
 
 						// Don't apply share bans bidirectionally / automatically.
 						List<BSShare> shares = bsPlayer.getUnpardonedShares();
 
 						int cardinality = shares.size();
-						if (cardinality > shareThreshold && shareThreshold > -1) { // are we multiaccount banning & are we above threshold?
-							// Find the Shares above the threshold for newest accounts by create age. Ban them (might be this one).
+						if (cardinality > shareThreshold && shareThreshold > -1) { 
+							// are we multiaccount banning & are we above threshold?
+							// Find the Shares above the threshold for newest accounts by create age. Ban
+							// them (might be this one).
 							// For each you ban, check if online / kick.
-							BanStick.getPlugin().info("Player {0} has exceeding the shared account threshold. Banning the newest accounts that exceed the Threshold.", bsPlayer.getName());
+							BanStick.getPlugin().info(
+									"Player {0} has exceeding the shared account threshold. Banning the newest accounts that exceed the Threshold.",
+									bsPlayer.getName());
 							int bansIssued = 0;
 
 							Set<Long> joinNoted = new HashSet<>();
@@ -271,13 +309,15 @@ public class BanStickEventHandler implements Listener {
 
 							}
 
-							// A shareThreshold of 0 means you can't Alt; so we ban all but the oldest account.
-							// Similarly a shareThreshold of 2 means you can have 2 alts; we ban all but the 3 oldest accounts.
+							// A shareThreshold of 0 means you can't Alt; so we ban all but the oldest
+							// account.
+							// Similarly a shareThreshold of 2 means you can have 2 alts; we ban all but the
+							// 3 oldest accounts.
 							// TreeMaps naturally order smallest to largest, so:
 							int skips = shareThreshold + 1;
 							for (BSPlayer banPlayer : joinTimes.values()) {
 								if (skips > 0) {
-									skips --;
+									skips--;
 									continue;
 								}
 								if (banPlayer.getBan() != null || banPlayer.getSharedPardonTime() != null) {
@@ -289,7 +329,9 @@ public class BanStickEventHandler implements Listener {
 									useForBan = bsPlayer.getLatestShare();
 								} else {
 									List<BSShare> banShares = bsPlayer.sharesWith(banPlayer);
-									if (banShares == null) continue;
+									if (banShares == null) {
+										continue;
+									}
 									Collections.reverse(banShares); // by default list is oldest to newest
 									for (BSShare testShare : banShares) { // we want newest to oldest
 										if (!testShare.isPardoned()) {
@@ -298,7 +340,9 @@ public class BanStickEventHandler implements Listener {
 										}
 									}
 									if (useForBan == null) {
-										BanStick.getPlugin().warning("Something went wrong! Claim was that the connection of {0} shared with {1} unpardoned, yet only pardoned shares found.", banPlayer.getName(), bsPlayer.getName());
+										BanStick.getPlugin().warning(
+												"Something went wrong! Claim was that the connection of {0} shared with {1} unpardoned, yet only pardoned shares found.",
+												banPlayer.getName(), bsPlayer.getName());
 										continue;
 									}
 								}
@@ -308,7 +352,9 @@ public class BanStickEventHandler implements Listener {
 
 								doKickWithCheckup(banPlayer.getUUID(), doTheBan);
 							}
-							BanStick.getPlugin().info("Player {0} exceeding the shared account threshold resulted in {1} bans.", bsPlayer.getName(), bansIssued);
+							BanStick.getPlugin().info(
+									"Player {0} exceeding the shared account threshold resulted in {1} bans.",
+									bsPlayer.getName(), bansIssued);
 						}
 					} catch (Exception e) {
 						BanStick.getPlugin().warning("Failure during Share checks: ", e);
@@ -338,7 +384,7 @@ public class BanStickEventHandler implements Listener {
 							List<BSIPData> proxyChecks = BSIPData.allByIP(bsPlayer.getLatestSession().getIP());
 							if (proxyChecks != null) {
 								for (BSIPData proxyCheck : proxyChecks) {
-									//check if entire provider is banned
+									// check if entire provider is banned
 									if (BanStick.getPlugin().getRegistrarHandler().isBanned(proxyCheck)) {
 										BanHandler.doUUIDBan(player.getUniqueId(), true);
 										BanStick.getPlugin().info("Banning " + player.getName() + " for "
@@ -348,9 +394,10 @@ public class BanStickEventHandler implements Listener {
 									}
 									BanStick.getPlugin().debug("Check for bans on Proxy: {0}", proxyCheck.getId());
 									List<BSBan> proxyBans = BSBan.byProxy(proxyCheck, false);
-									for (int i = proxyBans.size() - 1 ; i >= 0; i-- ) {
+									for (int i = proxyBans.size() - 1; i >= 0; i--) {
 										BSBan pickOne = proxyBans.get(i);
-										if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().before(new Date())) {
+										if (pickOne.getBanEndTime() != null
+												&& pickOne.getBanEndTime().before(new Date())) {
 											continue; // skip expired ban.
 										}
 
@@ -364,13 +411,16 @@ public class BanStickEventHandler implements Listener {
 
 										return;
 									}
-									// no ban yet; check if proxy meets /exceeds threshold for banning and new proxy bans are enabled.
+									// no ban yet; check if proxy meets /exceeds threshold for banning and new proxy
+									// bans are enabled.
 									if (proxyCheck.getProxy() >= proxyThreshold && enableNewProxyBans) {
 										BSBan newBan = BSBan.create(proxyCheck, proxyBanMessage, null, false);
 
 										if (enableProxyBans) {
-											BanStick.getPlugin().info("Banning " + player.getName() + " for "
-													+ "proxy score " + proxyCheck.getProxy() + " for registrar " + proxyCheck.getRegisteredAs());
+											BanStick.getPlugin()
+													.info("Banning " + player.getName() + " for " + "proxy score "
+															+ proxyCheck.getProxy() + " for registrar "
+															+ proxyCheck.getRegisteredAs());
 											bsPlayer.setBan(newBan);
 										}
 
@@ -381,18 +431,20 @@ public class BanStickEventHandler implements Listener {
 										return;
 									}
 									if (proxyCheckRegistrar) {
-										double registrarScore =  proxyCheck.getAverageForRegistrar();
+										double registrarScore = proxyCheck.getAverageForRegistrar();
 										if (registrarScore > proxyThreshold) {
 											BSBan newBan = BSBan.create(proxyCheck, proxyBanMessage, null, false);
 											bsPlayer.setBan(newBan);
 											if (enableProxyKicks) {
 												doKickWithCheckup(player.getUniqueId(), newBan);
 											}
-											BanStick.getPlugin().info("Banning " + player.getName() + " for "
-													+ "proxy registrar score " + registrarScore + " for registrar " + proxyCheck.getRegisteredAs());
-										}
+											BanStick.getPlugin()
+													.info("Banning " + player.getName() + " for "
+															+ "proxy registrar score " + registrarScore
+															+ " for registrar " + proxyCheck.getRegisteredAs());
 										}
 									}
+								}
 							}
 						}
 					} catch (Exception e) {
@@ -401,13 +453,23 @@ public class BanStickEventHandler implements Listener {
 				}
 				// etc.
 				if (loveTapNewJoins && !joinEvent.getPlayer().hasPlayedBefore()) {
-					Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "lovetap " + joinEvent.getPlayer().getName());
+					Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(),
+							"lovetap " + joinEvent.getPlayer().getName());
 				}
 			}
 
 		});
 	}
 
+	/**
+	 * Given a particular IP and a proxy, check if anyone online needs a'kickin
+	 * This is only really used in the deferred situation where a delayed task looks up 
+	 * deep IP information (the proxy) and we then want to identify bans that should be 
+	 * applied based on this new information.
+	 * 
+	 * @param proxySource the IP address to check against
+	 * @param proxyCheck the proxy to check against
+	 */
 	public void manageDeferredProxyKick(final BSIP proxySource, final BSIPData proxyCheck) {
 		BanStick.getPlugin().debug("Deferred check for bans on Proxy: {0}", proxyCheck.getId());
 
@@ -450,6 +512,13 @@ public class BanStickEventHandler implements Listener {
 
 	}
 
+	/**
+	 * This is an aggressive kick. It issues a kick, then starts a task to ensure
+	 * that the individual in question is truly gone. Keeps checking until they are.
+	 * 
+	 * @param puuid The person to kick
+	 * @param picked The ban being applied
+	 */
 	public void doKickWithCheckup(final UUID puuid, final BSBan picked) {
 		// now schedule a task to kick out the trash.
 		Bukkit.getScheduler().runTask(BanStick.getPlugin(), new Runnable() {
@@ -460,16 +529,19 @@ public class BanStickEventHandler implements Listener {
 				if (player != null) {
 					player.kickPlayer(picked.getMessage());
 					BanStick.getPlugin().info("Removing " + player.getDisplayName() + " due to " + picked.toString());
-					Bukkit.broadcast("Removing " + player.getDisplayName() + " due to " + picked.toString(), "banstick.ips");
+					Bukkit.broadcast("Removing " + player.getDisplayName() + " due to " + picked.toString(),
+							"banstick.ips");
 
 					new BukkitRunnable() {
-						private int recheck = 0;
+						private int recheck;
+
 						@Override
 						public void run() {
 							// let's keep checking to make sure they are gone
-							recheck ++;
+							recheck++;
 							if (recheck % 10 == 9) {
-								BanStick.getPlugin().warning("Trying to kick {0} due to {1}, on {2}th retry.", puuid, picked, recheck);
+								BanStick.getPlugin().warning("Trying to kick {0} due to {1}, on {2}th retry.", puuid,
+										picked, recheck);
 							}
 							Player player = Bukkit.getPlayer(puuid);
 							if (player != null) {
@@ -487,26 +559,34 @@ public class BanStickEventHandler implements Listener {
 
 		});
 	}
+
 	/**
 	 * Calls {@link #disconnectEvent(Player)}
-	 * @param quitEvent
-	 * 	The PlayerQuitEvent
+	 * 
+	 * @param quitEvent The PlayerQuitEvent
 	 */
-	@EventHandler(priority=EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void quitMonitor(PlayerQuitEvent quitEvent) {
 		disconnectEvent(quitEvent.getPlayer());
 	}
 
 	/**
 	 * Calls {@link #disconnectEvent(Player)}
-	 * @param kickEvent
-	 * 	The PlayerKickEvent
+	 * 
+	 * @param kickEvent The PlayerKickEvent
 	 */
-	@EventHandler(priority=EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void kickMonitor(PlayerKickEvent kickEvent) {
 		disconnectEvent(kickEvent.getPlayer());
 	}
-	
+
+	/**
+	 * Special custom event handler for AltRequest from civmodcore.
+	 * Uses transitive share data to determine the first in a cluster of 
+	 * alts to join the server, and sets that as "main" on the event.
+	 * 
+	 * @param event the request event.
+	 */
 	@EventHandler
 	public void altRequest(AltRequestEvent event) {
 		BSPlayer bsPlayer = BSPlayer.byUUID(event.getAccountToGetMainFor());
@@ -537,7 +617,6 @@ public class BanStickEventHandler implements Listener {
 	}
 
 	/**
-	 *
 	 * Attempts to ensure that regardless of shutdown order, captures session end.
 	 */
 	public void shutdown() {
