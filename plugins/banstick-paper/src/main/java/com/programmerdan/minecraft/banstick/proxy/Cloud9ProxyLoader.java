@@ -21,6 +21,12 @@ import java.util.Date;
 import java.util.List;
 import org.bukkit.configuration.ConfigurationSection;
 
+/**
+ * Implementation of ProxyLoader, for Cloud9 data. Had been able to find some published
+ * lists that were easy to implement at the time, so this captures that effort.
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ */
 public final class Cloud9ProxyLoader extends ProxyLoader {
 
 	private String loadUrl;
@@ -59,7 +65,9 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 				if (lines % 50 == 0) {
 					BanStick.getPlugin().info("Checked {0} entries from Cloud9 so far", lines);
 				}
-				if (errors > 10) break;
+				if (errors > 10) {
+					break;
+				}
 				try {
 					ArrayList<IPAddress> cidrFromRange = new ArrayList<>();
 					String[] fields = line.split(",");
@@ -88,21 +96,24 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 
 						int mask = lowboundAddr.isIPv4() ? 32 : 128;
 						while (mask > 0) {
-							IPAddress maskAddr = lowboundAddr.toSubnet(mask - 1	);
-							if ( maskAddr.getLower().compareTo(lowboundAddr) != 0) break;
+							IPAddress maskAddr = lowboundAddr.toSubnet(mask - 1);
+							if (maskAddr.getLower().compareTo(lowboundAddr) != 0) {
+								break;
+							}
 							mask --;
 						}
 						int x = BigIntegerMath.log2(end.subtract(start).add(BigInteger.ONE), RoundingMode.FLOOR);
 						int maxd = (lowboundAddr.isIPv4() ? 32 : 128) - x;
-						if ( mask < maxd) {
+						if (mask < maxd) {
 							mask = maxd;
 						}
 						
-						BanStick.getPlugin().debug("  Found sub-CIDR: {0}", lowboundAddr.toSubnet(mask).toCanonicalString());
+						BanStick.getPlugin().debug("  Found sub-CIDR: {0}", 
+								lowboundAddr.toSubnet(mask).toCanonicalString());
 						cidrFromRange.add(lowboundAddr.toSubnet(mask));
 						
 						BigInteger migrate = BigInteger.valueOf(2).pow((lowboundAddr.isIPv4() ? 32 : 128) - mask);
-						start = start.add( migrate );
+						start = start.add(migrate);
 					}
 
 					String registeredAs = fields[2];
@@ -116,7 +127,8 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 						
 						BSIPData data = BSIPData.byExactIP(found);
 						if (data == null) {
-							data = BSIPData.create(found, null, null, null, null, null, null, null, domain, null, registeredAs, null, proxyScore, "Cloud9 Proxy Loader", null);
+							data = BSIPData.create(found, null, null, null, null, null, null, null, 
+									domain, null, registeredAs, null, proxyScore, "Cloud9 Proxy Loader", null);
 						}
 						
 						if (autoBan) {
@@ -125,14 +137,17 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 							List<BSBan> ban = BSBan.byProxy(data, true);
 							if (!(ban == null || ban.isEmpty())) {
 								// look for match; if unexpired, extend.
-								for (int i = ban.size() - 1 ; i >= 0; i-- ) {
+								for (int i = ban.size() - 1 ; i >= 0; i--) {
 									BSBan pickOne = ban.get(i);
-									if (pickOne.isAdminBan()) continue; // skip admin entered bans.
+									if (pickOne.isAdminBan()) {
+										continue; // skip admin entered bans.
+									}
 									if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().after(new Date())) {
 										if (this.banLength < 0) { // endless
 											pickOne.clearBanEndTime();
 										} else {
-											pickOne.setBanEndTime(new Date(System.currentTimeMillis() + this.banLength));
+											pickOne.setBanEndTime(new Date(System.currentTimeMillis() 
+													+ this.banLength));
 										}
 										wasmatch = true;
 										break;
@@ -141,7 +156,8 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 							}
 							if (!wasmatch) {
 								BSBan.create(data, this.banMessage, 
-										this.banLength < 0 ? null : new Date(System.currentTimeMillis() + this.banLength), false);
+										this.banLength < 0 ? null : new Date(System.currentTimeMillis() 
+												+ this.banLength), false);
 							}
 						}
 					}
@@ -168,7 +184,7 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 		this.proxyScore = (float) config.getDouble("defaultScore", 3.0d);
 		this.autoBan = config.isConfigurationSection("ban");
 		if (this.autoBan) {
-			this.banLength = config.getLong("ban.length", -1l);
+			this.banLength = config.getLong("ban.length", -1L);
 			this.banMessage = config.getString("ban.message", null);
 		}
 	}
