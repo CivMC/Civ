@@ -48,7 +48,9 @@ public class DoubleTapCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
 		// Check if name. Check if uuid. Check if ip-ipv4 vs. ipv6.
-		if (arguments.length < 1) return false;
+		if (arguments.length < 1) {
+			return false;
+		}
 		
 		String preBan = arguments[0];
 		boolean doBan = preBan.indexOf('+') > -1;
@@ -64,7 +66,9 @@ public class DoubleTapCommand implements CommandExecutor {
 		} catch (IPAddressStringException | IPAddressTypeException e) {
 			ipcheck = null;
 
-			if (arguments.length < 2) return false;
+			if (arguments.length < 2) {
+				return false;
+			}
 
 			offset = 1;
 			secondDoBan = arguments[1].indexOf('+') > -1;
@@ -78,16 +82,17 @@ public class DoubleTapCommand implements CommandExecutor {
 		Date banEndDate = null;
 		Date banEndTime = null;
 		Date banEnd = null;
-		int mStart = 1 + offset;
+		int messageStart = 1 + offset;
 
-		BanStick.getPlugin().debug("preBan: {0}, doBan? {1}, toBan: {2}, sDoBan? {3}, sBan: {4}, endDate: {5}, endTime: {6}", 
+		BanStick.getPlugin().debug(
+				"preBan: {0}, doBan? {1}, toBan: {2}, sDoBan? {3}, sBan: {4}, endDate: {5}, endTime: {6}", 
 				preBan, doBan, toBan, secondDoBan, secondBan, endDate, endTime);
 		
 		if (endDate != null) {
 			try {
 				banEndDate = dateFormat.parse(endDate); 
 				banEnd = banEndDate;
-				mStart ++;
+				messageStart ++;
 			} catch (ParseException pe) {
 				banEndDate = null;
 			}
@@ -96,14 +101,15 @@ public class DoubleTapCommand implements CommandExecutor {
 				try {
 					banEndTime = combinedFormat.parse(endDate + " " + endTime); 
 					banEnd = banEndTime;
-					mStart ++;
+					messageStart ++;
 				} catch (ParseException pe) {
 					banEndTime = null;
 				}
 			}
 		}
 		
-		String message = (arguments.length >= mStart ? String.join(" ", Arrays.copyOfRange(arguments, mStart, arguments.length)) : null);
+		String message = (arguments.length >= messageStart ? String.join(" ", 
+				Arrays.copyOfRange(arguments, messageStart, arguments.length)) : null);
 		
 		BanStick.getPlugin().debug("message: {0}", message);
 		
@@ -134,7 +140,8 @@ public class DoubleTapCommand implements CommandExecutor {
 					if (share.isPardoned()) {
 						share.setPardonTime(null);
 						unpardoned ++;
-						sender.sendMessage(ChatColor.GREEN + "Unpardoned Shared session: " + share.toFullString(sender.hasPermission("banstick.ips")));
+						sender.sendMessage(ChatColor.GREEN + "Unpardoned Shared session: " 
+								+ share.toFullString(sender.hasPermission("banstick.ips")));
 					}
 					if (doBan) {
 						BanResult result = BanHandler.doShareBan(share, null, message, banEnd, true);
@@ -143,7 +150,8 @@ public class DoubleTapCommand implements CommandExecutor {
 					}
 				}
 			}
-			sender.sendMessage(ChatColor.GREEN + "Unpardoned " + unpardoned + " shared and attempted " + banned + " share bans.");
+			sender.sendMessage(ChatColor.GREEN + "Unpardoned " + unpardoned + " shared and attempted " 
+					+ banned + " share bans.");
 
 			return true;
 		} else {
@@ -219,7 +227,8 @@ public class DoubleTapCommand implements CommandExecutor {
 					for (BSShare share : shares) {
 						if (share.isPardoned()) {
 							share.setPardonTime(null);
-							sender.sendMessage(ChatColor.GREEN + "Unpardoned Shared session: " + share.toFullString(sender.hasPermission("banstick.ips")));
+							sender.sendMessage(ChatColor.GREEN + "Unpardoned Shared session: " 
+									+ share.toFullString(sender.hasPermission("banstick.ips")));
 						}	
 					}
 					if (doBan || secondDoBan) {
