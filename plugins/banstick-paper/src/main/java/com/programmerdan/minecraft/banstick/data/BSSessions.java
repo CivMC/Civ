@@ -10,14 +10,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class BSSessions {
+/**
+ * BSSessions management DAO for BSSession.
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ */
+public final class BSSessions {
 
-	private BSSessions() {}
-	
 	private BSPlayer forPlayer;
-	
 	private List<Long> sessionList;
 	
+	private BSSessions() { }
+	
+	/**
+	 * Get a BSSessions DAO for a specific player.
+	 * 
+	 * @param newPlayer the player to get a Sessions DAO for.
+	 * @return the BSessions.
+	 */
 	public static BSSessions onlyFor(BSPlayer newPlayer) {
 		BSSessions sessions = new BSSessions();
 		sessions.forPlayer = newPlayer;
@@ -25,6 +35,9 @@ public class BSSessions {
 		return sessions;
 	}
 	
+	/**
+	 * @param session When called, releases this BSSessions DAO.
+	 */
 	public static void release(BSSessions session) {
 		if (session != null) {
 			session.sessionList.clear();
@@ -33,14 +46,22 @@ public class BSSessions {
 		}
 	}
 	
+	/**
+	 * @return the latest session in this BSSessions set. Null if no sessions.
+	 */
 	public BSSession getLatest() {
 		if (sessionList == null) {
 			fill();
 		}
-		if (sessionList.isEmpty()) return null;
+		if (sessionList.isEmpty()) {
+			return null;
+		}
 		return BSSession.byId(sessionList.get(sessionList.size() - 1));
 	}
 	
+	/**
+	 * @return the list of sessions from this BSSession set. Empty List if no sessions.
+	 */
 	public List<BSSession> getAll() {
 		if (sessionList == null) {
 			fill();
@@ -59,9 +80,9 @@ public class BSSessions {
 	
 	private void fill() {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getIDs = connection.prepareStatement( // Get all ids only, order by join time.
-					"SELECT sid FROM bs_session WHERE pid = ? ORDER BY join_time;");) {
-				// TODO: replace statement w/ view.
+				PreparedStatement getIDs = connection.prepareStatement(// Get all ids only, order by join time.
+						"SELECT sid FROM bs_session WHERE pid = ? ORDER BY join_time;");) {
+			// TODO: replace statement w/ view.
 			getIDs.setLong(1, forPlayer.getId());
 			try (ResultSet rs = getIDs.executeQuery()) {
 				sessionList = new ArrayList<>();
@@ -92,6 +113,11 @@ public class BSSessions {
 		return session;
 	}
 
+	/**
+	 * Helper that safely ends the latest session if not already ended.
+	 * 
+	 * @param sessionEnd the Date to use for ending the latest session.
+	 */
 	public void endLatest(Date sessionEnd) {
 		BSSession session = getLatest();
 		if (session != null) {

@@ -3,12 +3,23 @@ package com.programmerdan.minecraft.banstick.handler;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitTask;
 
+/**
+ * ImportWorker definition, used elsewhere
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ *
+ */
 public abstract class ImportWorker implements Runnable {
 
-	private BukkitTask importTask = null;
-	private long delay = 100l;
-	private boolean enable = false;
+	private BukkitTask importTask;
+	private long delay = 100L;
+	private boolean enable;
 	
+	/**
+	 * Set up an import worker, using its name.
+	 * 
+	 * @param config the config to load.
+	 */
 	public ImportWorker(ConfigurationSection config) {
 		if (config != null && setup(config.getConfigurationSection(name()))) {
 			enable = internalSetup(config.getConfigurationSection(name()));
@@ -18,7 +29,9 @@ public abstract class ImportWorker implements Runnable {
 	}
 	
 	private boolean setup(ConfigurationSection config) {
-		if (config == null) return false;
+		if (config == null) {
+			return false;
+		}
 		delay = config.getLong("delay", delay);
 		return config.getBoolean("enable", enable);
 	}
@@ -31,7 +44,9 @@ public abstract class ImportWorker implements Runnable {
 	}
 	
 	public abstract boolean internalSetup(ConfigurationSection config);
+
 	public abstract void doImport();
+	
 	public abstract String name();
 
 	public long getDelay() {
@@ -42,6 +57,9 @@ public abstract class ImportWorker implements Runnable {
 		importTask = task;
 	}
 
+	/**
+	 * Attempt to shut this worker down.
+	 */
 	public void shutdown() {
 		try {
 			if (enable && importTask != null) {

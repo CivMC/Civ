@@ -20,6 +20,12 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.NameAPI;
 
+/**
+ * Worker for IpCheck plugin's import.
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ *
+ */
 public class IpCheckImportWorker extends ImportWorker {
 
 	private ManagedDatasource internalDatabase;
@@ -30,8 +36,15 @@ public class IpCheckImportWorker extends ImportWorker {
 
 	@Override
 	public boolean internalSetup(ConfigurationSection config) {
-		if (config == null) return false;
-		return provisionDatabase(config.getConfigurationSection("database"));
+		if (config == null) {
+			return false;
+		}
+		ConfigurationSection internal = config.getConfigurationSection("database");
+		if (internal != null) {
+			return provisionDatabase(internal);
+		} else {
+			return false;
+		}
 	}
 	
 	private boolean provisionDatabase(ConfigurationSection config) {
@@ -41,9 +54,9 @@ public class IpCheckImportWorker extends ImportWorker {
 		String username = config.getString("user");
 		String password = config.getString("password");
 		int poolsize = config.getInt("poolsize", 3);
-		long connectionTimeout = config.getLong("connection_timeout", 10000l);
-		long idleTimeout = config.getLong("idle_timeout", 600000l);
-		long maxLifetime = config.getLong("max_lifetime", 7200000l);
+		long connectionTimeout = config.getLong("connection_timeout", 10000L);
+		long idleTimeout = config.getLong("idle_timeout", 600000L);
+		long maxLifetime = config.getLong("max_lifetime", 7200000L);
 		try {
 			internalDatabase = new ManagedDatasource(BanStick.getPlugin(), username, password, host, port, dbname,
 					poolsize, connectionTimeout, idleTimeout, maxLifetime);
@@ -60,8 +73,10 @@ public class IpCheckImportWorker extends ImportWorker {
 	public void doImport() {
 	
 		// plan will be, create IP records; establish bans if ban is indicated.
-		// So, first, ipcheck_ip -- create any IP records not already known. If known, do nothing. If banned, make a ban record for that IP
-		// Second, ipcheck_user -- create any Users not already known. If known and not banned, but marked banned, ban w/ message.
+		// So, first, ipcheck_ip -- create any IP records not already known. If known, do nothing.
+		//		If banned, make a ban record for that IP
+		// Second, ipcheck_user -- create any Users not already known. If known and not banned, 
+		//		but marked banned, ban w/ message.
 		//   If exempted, rejoined exempted, or protected, provide pardons as appropriate
 		// Third, ipcheck_log -- create sessions for users + ips for the times given.
 		try {
@@ -83,7 +98,8 @@ public class IpCheckImportWorker extends ImportWorker {
 	
 	private void doImportIPs() {
 		try (Connection connection = internalDatabase.getConnection();
-				PreparedStatement getIPs = connection.prepareStatement("SELECT * FROM ipcheck_ip ORDER BY `timestamp` LIMIT ?, ?");) {
+				PreparedStatement getIPs = connection.prepareStatement(
+						"SELECT * FROM ipcheck_ip ORDER BY `timestamp` LIMIT ?, ?");) {
 			/*
 			 * CREATE TABLE `ipcheck_ip` (
 	  `ip` varchar(15) NOT NULL,
@@ -103,11 +119,12 @@ public class IpCheckImportWorker extends ImportWorker {
 				try (ResultSet rs = getIPs.executeQuery();) {
 					int thisCycle = 0;
 					while (rs.next()) {
+						// only ip and ban state is leveraged here.
 						String ip = rs.getString(1);
-						Timestamp firstUse = rs.getTimestamp(2);
+						//Timestamp firstUse = rs.getTimestamp(2);
 						boolean isBanned = rs.getBoolean(3);
-						boolean isJoinExempt = rs.getBoolean(4);
-						boolean isWarnExempt = rs.getBoolean(5);
+						//boolean isJoinExempt = rs.getBoolean(4);
+						//boolean isWarnExempt = rs.getBoolean(5);
 						
 						try {
 							IPAddressString address = new IPAddressString(ip);
@@ -131,7 +148,7 @@ public class IpCheckImportWorker extends ImportWorker {
 						offset += limit;
 					}
 				}
-				Thread.sleep(0l);
+				Thread.sleep(0L);
 			}
 		} catch (SQLException | InterruptedException se) {
 			BanStick.getPlugin().severe("Failed to import IPs from IP-Check, potentially incomplete import: ", se);
@@ -140,7 +157,8 @@ public class IpCheckImportWorker extends ImportWorker {
 	
 	private void doImportPlayers() {
 		try (Connection connection = internalDatabase.getConnection();
-				PreparedStatement getIPs = connection.prepareStatement("SELECT * FROM ipcheck_user ORDER BY `timestamp` LIMIT ?, ?");) {
+				PreparedStatement getIPs = connection.prepareStatement(
+						"SELECT * FROM ipcheck_user ORDER BY `timestamp` LIMIT ?, ?");) {
 			/*
 			 *  CREATE TABLE `ipcheck_user` (
 	  `username` varchar(255) NOT NULL,
@@ -162,13 +180,11 @@ public class IpCheckImportWorker extends ImportWorker {
 				try (ResultSet rs = getIPs.executeQuery();) {
 					int thisCycle = 0;
 					while (rs.next()) {
+						// ignore fields not used in import.
 						String username = rs.getString(1);
-						Timestamp firstJoin = rs.getTimestamp(2);
+						//Timestamp firstJoin = rs.getTimestamp(2);
 						String banMessage = rs.getString(3);
-						boolean isBanned = rs.getBoolean(4);
-						boolean isJoinExempt = rs.getBoolean(5);
-						boolean isWarnExempt = rs.getBoolean(6);
-						boolean isProtected = rs.getBoolean(7);
+						//boolean isWarnExempt = rs.getBoolean(6);
 						
 						UUID uuid = null;
 						try {
@@ -182,7 +198,8 @@ public class IpCheckImportWorker extends ImportWorker {
 							}
 						}
 						if (uuid == null) {
-							BanStick.getPlugin().warning("Unable to find UUID for player {0} while importing IPCheck", username);
+							BanStick.getPlugin().warning(
+									"Unable to find UUID for player {0} while importing IPCheck", username);
 							continue;
 						}
 						BSPlayer player = BSPlayer.byUUID(uuid);
@@ -192,15 +209,27 @@ public class IpCheckImportWorker extends ImportWorker {
 						}
 						
 						if (player == null) {
-							BanStick.getPlugin().warning("Failure making player with UUID {0} and name {1}", uuid, username);
+							BanStick.getPlugin().warning(
+									"Failure making player with UUID {0} and name {1}", uuid, username);
 						}
+						
+						boolean isBanned = rs.getBoolean(4);
 						if (isBanned) {
-							BSBan ban = BSBan.create("Banned for Multiaccounting", null, true);
+							BSBan ban = null;
+							if (banMessage != null && banMessage.length() > 0) {
+								ban = BSBan.create(banMessage, null, true);								
+							} else {
+								ban = BSBan.create("Banned for Multiaccounting", null, true);
+							}
+							
 							player.setBan(ban);
 						}
+						
+						boolean isJoinExempt = rs.getBoolean(5);
 						if (isJoinExempt) {
 							player.setSharedPardonTime(new Date());
 						}
+						boolean isProtected = rs.getBoolean(7);
 						if (isProtected) {
 							player.setIPPardonTime(new Date());
 							player.setSharedPardonTime(new Date());
@@ -214,7 +243,7 @@ public class IpCheckImportWorker extends ImportWorker {
 						offset += limit;
 					}
 				}
-				Thread.sleep(0l);
+				Thread.sleep(0L);
 			}
 		} catch (SQLException | InterruptedException se) {
 			BanStick.getPlugin().severe("Failed to import Players from IP-Check, potentially incomplete import: ", se);
@@ -223,7 +252,8 @@ public class IpCheckImportWorker extends ImportWorker {
 	
 	private void doImportSessions() {
 		try (Connection connection = internalDatabase.getConnection();
-				PreparedStatement getIPs = connection.prepareStatement("SELECT * FROM ipcheck_log ORDER BY `timestamp` LIMIT ?, ?");) {
+				PreparedStatement getIPs = connection.prepareStatement(
+						"SELECT * FROM ipcheck_log ORDER BY `timestamp` LIMIT ?, ?");) {
 			/*
 			 * CREATE TABLE `ipcheck_log` (
 	  `ip` varchar(15) NOT NULL,
@@ -246,9 +276,6 @@ public class IpCheckImportWorker extends ImportWorker {
 						Timestamp sessionStart = rs.getTimestamp(3);
 						
 						try {
-							IPAddressString address = new IPAddressString(ip);
-							IPAddress exactAddress = address.toAddress();
-							
 							UUID uuid = null;
 							try {
 								uuid = NameAPI.getUUID(username);
@@ -261,19 +288,25 @@ public class IpCheckImportWorker extends ImportWorker {
 								}
 							}
 							if (uuid == null) {
-								BanStick.getPlugin().warning("Unable to find UUID for player {0} while importing IPCheck", username);
+								BanStick.getPlugin().warning(
+										"Unable to find UUID for player {0} while importing IPCheck", username);
 								continue;
 							}
 							BSPlayer player = BSPlayer.byUUID(uuid);
+							IPAddressString address = new IPAddressString(ip);
+							IPAddress exactAddress = address.toAddress();
 							BSIP exactIP = BSIP.byIPAddress(exactAddress);
 							if (player == null || exactIP == null) {
-								BanStick.getPlugin().warning("Failed to find Player {0} or IP {1} from import, unable to import session time {2}", username, ip, sessionStart);
+								BanStick.getPlugin().warning(
+										"Failed to find Player {0} or IP {1} from import, unable to import session time {2}",
+										username, ip, sessionStart);
+							} else {
+								player.startSession(exactIP, sessionStart);
+								player.endSession(new Date(sessionStart.getTime() + 1000L)); // default of 1 second.
 							}
-
-							player.startSession(exactIP, sessionStart);
-							player.endSession(new Date(sessionStart.getTime() + 1000l)); // default of 1 second.
 						} catch (Exception e) {
-							BanStick.getPlugin().warning("Found invalid data username {0} ip {1} in IP-Check database", username, ip);
+							BanStick.getPlugin().warning("Found invalid data username {0} ip {1} in IP-Check database", 
+									username, ip);
 						}
 						thisCycle++;
 					}
@@ -283,7 +316,7 @@ public class IpCheckImportWorker extends ImportWorker {
 						offset += limit;
 					}
 				}
-				Thread.sleep(0l);
+				Thread.sleep(0L);
 			}
 		} catch (SQLException | InterruptedException se) {
 			BanStick.getPlugin().severe("Failed to import IPs from IP-Check, potentially incomplete import: ", se);

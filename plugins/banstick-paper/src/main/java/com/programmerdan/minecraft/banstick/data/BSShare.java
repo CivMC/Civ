@@ -17,9 +17,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
 
-public class BSShare {
+/**
+ * Defines an explicit 1 to 1 relationship between two players
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ *
+ */
+public final class BSShare {
 
 	private static Map<Long, BSShare> allShareID = new HashMap<>();
 	private static ConcurrentLinkedQueue<WeakReference<BSShare>> dirtyShares = new ConcurrentLinkedQueue<>();
@@ -39,7 +45,7 @@ public class BSShare {
 	private Timestamp createTime;
 	private Timestamp pardonTime;
 	
-	private BSShare() {}
+	private BSShare() { }
 	
 	public long getId() {
 		return this.sid;
@@ -52,12 +58,33 @@ public class BSShare {
 	public Date getPardonTime() {
 		return pardonTime;
 	}
-	
-	public void setPardonTime(Date pardonTime) {
+
+	/**
+	 * If a pradon was granted incorrectly, this safely clears it.
+	 */
+	public void clearPardonTime() {
+		this.pardonTime = null;
+		this.dirty = true;
+		dirtyShares.offer(new WeakReference<BSShare>(this));
+		firstPlayer.unpardonShare(this);
+		secondPlayer.unpardonShare(this);
+	}
+
+	/**
+	 * Individual relationships can be pardoned. This sets the time of that pardon.
+	 * 
+	 * @param pardonTime The Java Date to pardon on.
+	 */
+	public void setPardonTime(@Nonnull Date pardonTime) {
 		setPardonTime(new Timestamp(pardonTime.getTime()));
 	}
 	
-	public void setPardonTime(Timestamp pardonTime) {
+	/**
+	 * Individual relationships can be pardoned. This sets the time of that pardon.
+	 * 
+	 * @param pardonTime The SQL Date to pardon on.
+	 */
+	public void setPardonTime(@Nonnull Timestamp pardonTime) {
 		this.pardonTime = pardonTime;
 		this.dirty = true;
 		dirtyShares.offer(new WeakReference<BSShare>(this));
@@ -74,6 +101,9 @@ public class BSShare {
 		return this.pardonTime != null && this.pardonTime.compareTo(new Date()) <= 0;
 	}
 	
+	/**
+	 * @return the first player of this share.
+	 */
 	public BSPlayer getFirstPlayer() {
 		if (firstPlayer == null && deferFirstPlayer != null) {
 			firstPlayer = BSPlayer.byId(deferFirstPlayer);
@@ -81,6 +111,9 @@ public class BSShare {
 		return firstPlayer;
 	}
 	
+	/**
+	 * @return the second player of this share.
+	 */
 	public BSPlayer getSecondPlayer() {
 		if (secondPlayer == null && deferSecondPlayer != null) {
 			secondPlayer = BSPlayer.byId(deferSecondPlayer);
@@ -88,6 +121,9 @@ public class BSShare {
 		return secondPlayer;
 	}
 
+	/**
+	 * @return the first session of this share (generally for first player).
+	 */
 	public BSSession getFirstSession() {
 		if (firstSession == null && deferFirstSession != null) {
 			firstSession = BSSession.byId(deferFirstSession);
@@ -95,6 +131,9 @@ public class BSShare {
 		return firstSession;
 	}
 	
+	/**
+	 * @return the second session of this share (generally for second player).
+	 */
 	public BSSession getSecondSession() {
 		if (secondSession == null && deferSecondSession != null) {
 			secondSession = BSSession.byId(deferSecondSession);
@@ -102,6 +141,12 @@ public class BSShare {
 		return secondSession;
 	}
 	
+	/**
+	 * Gets a BSShare by database ID.
+	 * 
+	 * @param sid the Share to retrieve's ID
+	 * @return the BSShare if already loaded or found in DB, or null if not found.
+	 */
 	public static BSShare byId(long sid) {
 		if (allShareID.containsKey(sid)) {
 			return allShareID.get(sid);
@@ -111,9 +156,9 @@ public class BSShare {
 			getId.setLong(1, sid);
 			try (ResultSet rs = getId.executeQuery();) {
 				if (rs.next()) {
-					BSShare nS = internalGetShare(rs);
-					allShareID.put(sid, nS);
-					return nS;
+					BSShare internal = internalGetShare(rs);
+					allShareID.put(sid, internal);
+					return internal;
 				} else {
 					BanStick.getPlugin().warning("Failed to retrieve Share by id: " + sid + " - not found");
 				}
@@ -125,21 +170,28 @@ public class BSShare {
 		return null;
 	}
 
+	/**
+	 * Gets all BSShares for a particular player. Does not matter if player is first or second on the share.
+	 * 
+	 * @param player The BSPlayer to investigate
+	 * @return a list of Shares for this player, could be empty if no shares found.
+	 */
 	public static List<BSShare> byPlayer(BSPlayer player) {
 		List<BSShare> shares = new ArrayList<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_share WHERE first_pid = ? OR second_pid = ?");) {
+				PreparedStatement getId = connection.prepareStatement(
+						"SELECT * FROM bs_share WHERE first_pid = ? OR second_pid = ?");) {
 			getId.setLong(1, player.getId());
 			getId.setLong(2, player.getId());
 			try (ResultSet rs = getId.executeQuery();) {
-				while(rs.next()) {
+				while (rs.next()) {
 					if (allShareID.containsKey(rs.getLong(1))) {
 						shares.add(allShareID.get(rs.getLong(1)));
 						continue;
 					}
-					BSShare nS = internalGetShare(rs);
-					allShareID.put(rs.getLong(1), nS);
-					shares.add(nS);
+					BSShare internal = internalGetShare(rs);
+					allShareID.put(rs.getLong(1), internal);
+					shares.add(internal);
 				}
 			}
 		} catch (SQLException se) {
@@ -148,21 +200,29 @@ public class BSShare {
 		return shares;
 	}
 	
+	/**
+	 * Gets all BSShares for a particular session. Gets all shares for all players involved in the session as
+	 * either first or second session.
+	 * 
+	 * @param session the BSSession to investigate
+	 * @return a list of BSShare related to the session. List may be empty if no session are found.
+	 */
 	public static List<BSShare> bySession(BSSession session) {
 		List<BSShare> shares = new ArrayList<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_share WHERE first_sid = ? OR second_sid = ?");) {
+				PreparedStatement getId = connection.prepareStatement(
+						"SELECT * FROM bs_share WHERE first_sid = ? OR second_sid = ?");) {
 			getId.setLong(1, session.getId());
 			getId.setLong(2, session.getId());
 			try (ResultSet rs = getId.executeQuery();) {
-				while(rs.next()) {
+				while (rs.next()) {
 					if (allShareID.containsKey(rs.getLong(1))) {
 						shares.add(allShareID.get(rs.getLong(1)));
 						continue;
 					}
-					BSShare nS = internalGetShare(rs);
-					allShareID.put(rs.getLong(1), nS);
-					shares.add(nS);
+					BSShare internal = internalGetShare(rs);
+					allShareID.put(rs.getLong(1), internal);
+					shares.add(internal);
 				}
 			}
 		} catch (SQLException se) {
@@ -172,36 +232,41 @@ public class BSShare {
 	}
 	
 	private static BSShare internalGetShare(ResultSet rs) throws SQLException {
-		BSShare nS = new BSShare();
-		nS.sid = rs.getLong(1);
-		nS.dirty = false;
-		nS.createTime = rs.getTimestamp(2);
-		nS.deferFirstPlayer = rs.getLong(3);
+		BSShare internal = new BSShare();
+		internal.sid = rs.getLong(1);
+		internal.dirty = false;
+		internal.createTime = rs.getTimestamp(2);
+		internal.deferFirstPlayer = rs.getLong(3);
 		//nS.firstPlayer = BSPlayer.byId(rs.getLong(3));
-		nS.deferSecondPlayer = rs.getLong(4);
+		internal.deferSecondPlayer = rs.getLong(4);
 		//nS.secondPlayer = BSPlayer.byId(rs.getLong(4));
-		nS.deferFirstSession = rs.getLong(5);
+		internal.deferFirstSession = rs.getLong(5);
 		//nS.firstSession = BSSession.byId(rs.getLong(5));
-		nS.deferSecondSession = rs.getLong(6);
+		internal.deferSecondSession = rs.getLong(6);
 		//nS.secondSession = BSSession.byId(rs.getLong(6));
 		if (rs.getBoolean(7)) {
 			try {
-				nS.pardonTime = rs.getTimestamp(8);
+				internal.pardonTime = rs.getTimestamp(8);
 			} catch (SQLException se) {
-				nS.pardonTime = null; // data is inconsistent.
-				nS.dirty = true;
-				dirtyShares.offer(new WeakReference<BSShare>(nS));
+				internal.pardonTime = null; // data is inconsistent.
+				internal.dirty = true;
+				dirtyShares.offer(new WeakReference<BSShare>(internal));
 			}
 		} else {
-			nS.pardonTime = null;
+			internal.pardonTime = null;
 		}
-		return nS;
+		return internal;
 	}
 	
+	/**
+	 * Forces a save of all Shares marked dirty.
+	 * 
+	 */
 	public static void saveDirty() {
 		int batchSize = 0;
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement("UPDATE bs_share SET pardon = ?, pardon_time = ? WHERE sid = ?");) {
+				PreparedStatement save = connection.prepareStatement(
+						"UPDATE bs_share SET pardon = ?, pardon_time = ? WHERE sid = ?");) {
 			while (!dirtyShares.isEmpty()) {
 				WeakReference<BSShare> rshare = dirtyShares.poll();
 				BSShare share = rshare.get();
@@ -214,7 +279,8 @@ public class BSShare {
 				if (batchSize > 0 && batchSize % 100 == 0) {
 					int[] batchRun = save.executeBatch();
 					if (batchRun.length != batchSize) {
-						BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
+						BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? "
+								+ batchSize + " vs " + batchRun.length);
 					} else {
 						BanStick.getPlugin().debug("Share batch: {0} saves", batchRun.length);
 					}
@@ -224,7 +290,8 @@ public class BSShare {
 			if (batchSize > 0 && batchSize % 100 > 0) {
 				int[] batchRun = save.executeBatch();
 				if (batchRun.length != batchSize) {
-					BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
+					BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? "
+							+ batchSize + " vs " + batchRun.length);
 				} else {
 					BanStick.getPlugin().debug("Share batch: {0} saves", batchRun.length);
 				}
@@ -238,10 +305,13 @@ public class BSShare {
 	 * Saves the BSShare; only for internal use. Outside code must use Flush();
 	 */
 	private void save() {
-		if (!dirty) return;
+		if (!dirty) {
+			return;
+		}
 		this.dirty = false; // don't let anyone else in!
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement("UPDATE bs_share SET pardon = ?, pardon_time = ? WHERE sid = ?");) {
+				PreparedStatement save = connection.prepareStatement(
+						"UPDATE bs_share SET pardon = ?, pardon_time = ? WHERE sid = ?");) {
 			saveToStatement(save);
 			int effects = save.executeUpdate();
 			if (effects == 0) {
@@ -281,15 +351,26 @@ public class BSShare {
 		this.secondSession = null;
 	}
 
+	/**
+	 * Preloads a segment of share data. Offset indicates lowbound exclusive to begin, 
+	 * with limit constraining size of batch.
+	 *
+	 * @param offset (not included) low bound on ID of record to load.
+	 * @param limit how many to load
+	 * @return last ID encountered, or -1 is none/no more
+	 */
 	public static long preload(long offset, int limit) {
 		long maxId = -1;
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadShares = connection.prepareStatement("SELECT * FROM bs_share WHERE sid > ? ORDER BY sid LIMIT ?");) {
+				PreparedStatement loadShares = connection.prepareStatement(
+						"SELECT * FROM bs_share WHERE sid > ? ORDER BY sid LIMIT ?");) {
 			loadShares.setLong(1, offset);
 			loadShares.setInt(2, limit);
 			try (ResultSet rs = loadShares.executeQuery()) {
 				while (rs.next()) {
-					if (rs.getLong(1) > maxId) maxId = rs.getLong(1);
+					if (rs.getLong(1) > maxId) {
+						maxId = rs.getLong(1);
+					}
 					if (allShareID.containsKey(rs.getLong(1))) {
 						continue;
 					}
@@ -318,6 +399,11 @@ public class BSShare {
 		return sb.toString();
 	}
 	
+	/**
+	 * Print the full Share, and optionally show IPs
+	 * @param showIPs true to show the IPs
+	 * @return a Stirng with all the data.
+	 */
 	public String toFullString(boolean showIPs) {
 		if (showIPs) {
 			return toString();
@@ -327,14 +413,24 @@ public class BSShare {
 				sb.append(ChatColor.GREEN).append("[Pardoned] ");
 			}
 			sb.append(ChatColor.DARK_PURPLE).append("Share by ")
-				.append(ChatColor.WHITE).append(getFirstPlayer().getName()).append(ChatColor.DARK_PURPLE).append(" and ")
-				.append(ChatColor.WHITE).append(getSecondPlayer().getName()).append(ChatColor.DARK_PURPLE).append(" via ")
-				.append(ChatColor.WHITE).append(getFirstSession().toFullString(showIPs)).append(ChatColor.DARK_PURPLE).append(" with ")
+				.append(ChatColor.WHITE).append(getFirstPlayer().getName())
+				.append(ChatColor.DARK_PURPLE).append(" and ")
+				.append(ChatColor.WHITE).append(getSecondPlayer().getName())
+				.append(ChatColor.DARK_PURPLE).append(" via ")
+				.append(ChatColor.WHITE).append(getFirstSession().toFullString(showIPs))
+				.append(ChatColor.DARK_PURPLE).append(" with ")
 				.append(ChatColor.WHITE).append(getSecondSession().toFullString(showIPs));
 			return sb.toString();
 		}
 	}
 
+	/**
+	 * Create a new Share
+	 * 
+	 * @param overlap First player's session
+	 * @param session Second player's session
+	 * @return a new BSShare linking these sessions
+	 */
 	public static BSShare create(BSSession overlap, BSSession session) {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement newShare = connection.prepareStatement(
@@ -372,7 +468,8 @@ public class BSShare {
 					allShareID.put(sid, share);
 					return share;
 				} else {
-					BanStick.getPlugin().severe("Failed to get ID from inserted share!? " + overlap.getId() + " - " + session.getId());
+					BanStick.getPlugin().severe("Failed to get ID from inserted share!? "
+							+ overlap.getId() + " - " + session.getId());
 					return null;
 				}
 			}

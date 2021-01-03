@@ -26,8 +26,14 @@ public class BanResult {
 		bans = new HashSet<>();
 	}
 	
-	public static SimpleDateFormat usualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public static SimpleDateFormat getUsualDateTime() {
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	}
 
+	/**
+	 * Let the command sender know the result of the ban(s) and player(s).
+	 * @param sender the sender of commands.
+	 */
 	public void informCommandSender(CommandSender sender) {
 		if (bans.isEmpty() && playerBans.isEmpty()) {
 			sender.sendMessage("No bans issued.");
@@ -40,7 +46,7 @@ public class BanResult {
 			BSBan ban = banned.getBan();
 			sb.append(" Banned ").append(banned.getName()).append(" for ").append(ban.getMessage());
 			if (ban.getBanEndTime() != null) {
-				sb.append(" until ").append(usualDateTime.format(ban.getBanEndTime())).append("\n");
+				sb.append(" until ").append(getUsualDateTime().format(ban.getBanEndTime())).append("\n");
 			} else {
 				sb.append(" forever\n");
 			}	
@@ -63,7 +69,7 @@ public class BanResult {
 				sb.append(" Share ").append(sid.toFullString(sender.hasPermission("banstick.ips")));
 			}
 			if (banned.getBanEndTime() != null) {
-				sb.append(" until ").append(usualDateTime.format(banned.getBanEndTime())).append("\n");
+				sb.append(" until ").append(getUsualDateTime().format(banned.getBanEndTime())).append("\n");
 			} else {
 				sb.append(" forever\n");
 			}

@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 /**
  * Represents a set of banned registrars
  *
+ * @author Maxopoly
  */
 public class BSRegistrars {
 
@@ -25,6 +26,12 @@ public class BSRegistrars {
 		BanStick.getPlugin().getLogger().info("Loaded " + registrars + " banned registrars from database");
 	}
 	
+	/**
+	 * Checks if a particular Proxy's Registrar has been banned.
+	 * 
+	 * @param data the Proxy to check
+	 * @return true if banned, false if not banned.
+	 */
 	public boolean isBanned(BSIPData data) {
 		if (data == null) {
 			return false;
@@ -32,6 +39,10 @@ public class BSRegistrars {
 		return registrars.contains(data.getRegisteredAs());
 	}
 	
+	/**
+	 * Ban the registrar of a particular Proxy.
+	 * @param data the Proxy whose registrar to ban.
+	 */
 	public void banRegistrar(BSIPData data) {
 		if (registrars.contains(data.getRegisteredAs())) {
 			return;
@@ -50,6 +61,10 @@ public class BSRegistrars {
 		}
 	}
 	
+	/**
+	 * Given a particular Proxy, unban its registrar
+	 * @param data the Proxy whose registrar to unban.
+	 */
 	public void unbanRegistrar(BSIPData data) {
 		if (data.getRegisteredAs() == null) {
 			return;
@@ -68,13 +83,18 @@ public class BSRegistrars {
 	/**
 	 * After creating an IP data entry this method checks whether the 
 	 * registrar is banned and removes all active players with this registrar if neccessary
+	 * 
+	 * <p>Note that this will create a unique UUID ban for online players, in addition to the
+	 * Registrar ban, so if you're "undoing" this later, you'll have to manually unban players 
+	 * who use this Registrar.
+	 * 
 	 * @param data IP data created just now
 	 */
 	public void checkAndCleanup(BSIPData data) {
 		if (!registrars.contains(data.getRegisteredAs())) {
 			return;
 		}
-		for(BSSession session : BSSession.byIP(data.getIP())) {
+		for (BSSession session : BSSession.byIP(data.getIP())) {
 			if (!session.isEnded()) {
 				//dont always reban people who logged in on a vpn once in the past
 				Player player = Bukkit.getPlayer(session.getPlayer().getUUID());
@@ -86,13 +106,14 @@ public class BSRegistrars {
 				BanHandler.doUUIDBan(player.getUniqueId(), true);
 				BanStick.getPlugin().info("Banning " + player.getName() + " for "
 						+ "blacklisted provider " + data.getRegisteredAs());
-				BanStick.getPlugin().getEventHandler().doKickWithCheckup(player.getUniqueId(), session.getPlayer().getBan());
+				BanStick.getPlugin().getEventHandler().doKickWithCheckup(player.getUniqueId(),
+						session.getPlayer().getBan());
 			}
 		}
 	}
 
 	private Set<String> loadRegistrarsFromDB() {
-		Set <String> result = new HashSet<>();
+		Set<String> result = new HashSet<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement loadSet = connection
 						.prepareStatement("SELECT registered_as FROM bs_banned_registrars;");) {

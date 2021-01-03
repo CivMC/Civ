@@ -14,10 +14,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameAPI;
 
+/**
+ * TakeItBackCommand, for when you pardoned someone but regretted it
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ *
+ */
 public class TakeItBackCommand implements CommandExecutor {
 
 	public static String name = "takeitback";
 	
+	// TODO: Unsafe command structure as player could have name of IP or PROXY or SHARED 
+	//    and that would break this command.
 	/**
 	 *  <b>takeitback [name/uuid] [IP] [PROXY] [SHARED]</b>
 	 *    IP - Allows new bans on this player due to IP matches
@@ -29,11 +37,13 @@ public class TakeItBackCommand implements CommandExecutor {
 	 */
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
-		if (arguments.length < 2) return false;
+		if (arguments.length < 2) {
+			return false;
+		}
 		
 		String toRevoke = arguments[0];
 		String secRevoke = arguments[1];
-		List<String> revokes = (arguments.length > 1) ? Arrays.asList(Arrays.copyOfRange(arguments, 1, arguments.length)) : null;
+		List<String> revokes = Arrays.asList(Arrays.copyOfRange(arguments, 1, arguments.length));
 
 		BanStick.getPlugin().debug("toRevoke: {0}, secRevoke: {1}, revokes: {2}", 
 				toRevoke, secRevoke, revokes);
@@ -104,9 +114,11 @@ public class TakeItBackCommand implements CommandExecutor {
 				if ("IP".equalsIgnoreCase(pardon)) {
 					if (player.getIPPardonTime() != null) {
 						player.setIPPardonTime(null);
-						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is exposed to future IP bans. Existing bans aren't impacted.");
+						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() 
+								+ " is exposed to future IP bans. Existing bans aren't impacted.");
 					} else {
-						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is already exposed to IP bans.");
+						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() 
+								+ " is already exposed to IP bans.");
 					}
 					match = true;
 				}
@@ -114,9 +126,11 @@ public class TakeItBackCommand implements CommandExecutor {
 				if ("PROXY".equalsIgnoreCase(pardon)) {
 					if (player.getProxyPardonTime() != null) {
 						player.setProxyPardonTime(null);
-						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is exposed to future Proxy bans. Existing warnings aren't impacted.");
+						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() 
+								+ " is exposed to future Proxy bans. Existing warnings aren't impacted.");
 					} else {
-						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is already exposed to Proxy bans.");
+						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() 
+								+ " is already exposed to Proxy bans.");
 					}
 					match = true;
 				}
@@ -124,9 +138,11 @@ public class TakeItBackCommand implements CommandExecutor {
 				if ("SHARED".equalsIgnoreCase(pardon)) {
 					if (player.getSharedPardonTime() != null) {
 						player.setSharedPardonTime(null);
-						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is exposed to future Share warnings/bans. Existing warning/bans aren't impacted.");
+						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() 
+								+ " is exposed to future Share warnings/bans. Existing warning/bans aren't impacted.");
 					} else {
-						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is already exposed to Share warnings/bans.");
+						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() 
+								+ " is already exposed to Share warnings/bans.");
 					}
 					match = true;
 				}
@@ -156,7 +172,8 @@ public class TakeItBackCommand implements CommandExecutor {
 					sender.sendMessage(ChatColor.YELLOW + "Found no shared sessions needing pardon revocation");
 				}
 			} else {
-				sender.sendMessage(ChatColor.YELLOW + "Player " + player.getName() + " does not share any connections with " + player2.getName());
+				sender.sendMessage(ChatColor.YELLOW + "Player " + player.getName() 
+						+ " does not share any connections with " + player2.getName());
 			}
 			return true;
 		}

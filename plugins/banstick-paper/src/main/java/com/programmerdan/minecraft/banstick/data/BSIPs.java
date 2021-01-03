@@ -11,15 +11,27 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class BSIPs {
+/**
+ * BSIPs management structure. Helper / support methods.
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ *
+ */
+public final class BSIPs {
 
-	private BSIPs() {}
-	
 	private BSPlayer forPlayer;
 	
 	private List<Long> ipList;
 	private Set<Long> ipSet;
 	
+	private BSIPs() { }
+	
+	/**
+	 * Get a BSIPs for a specific player, which provides access to an IP list for a player.
+	 * 
+	 * @param newPlayer 
+	 * @return
+	 */
 	public static BSIPs onlyFor(BSPlayer newPlayer) {
 		BSIPs bsips = new BSIPs();
 		bsips.forPlayer = newPlayer;
@@ -28,6 +40,10 @@ public class BSIPs {
 		return bsips;
 	}
 	
+	/**
+	 * Release (perhaps on logout) all the ips for a particular BSIPs object.
+	 * @param bsips the BSIPs to release.
+	 */
 	public static void release(BSIPs bsips) {
 		if (bsips != null) {
 			if (bsips.ipList != null) {
@@ -42,14 +58,22 @@ public class BSIPs {
 		}
 	}
 	
+	/**
+	 * @return the latest BSIP from this BSIPs
+	 */
 	public BSIP getLatest() {
 		if (ipList == null) {
 			fill();
 		}
-		if (ipList.isEmpty()) return null;
+		if (ipList.isEmpty()) {
+			return null;
+		}
 		return BSIP.byId(ipList.get(ipList.size() - 1));
 	}
 	
+	/**
+	 * @return the full set of BSIP for a particular individual.
+	 */
 	public List<BSIP> getAll() {
 		if (ipList == null) {
 			fill();
@@ -76,12 +100,15 @@ public class BSIPs {
 		} else {
 			// find and move.
 			int idp = ipList.indexOf(ip.getId());
-			if (idp < ipList.size() - 1 ) { // not last elem already
+			if (idp < ipList.size() - 1) { // not last elem already
 				ipList.add(ipList.remove(idp));
 			}
 		}
 	}
-	
+
+	/**
+	 * Internal fill of BSIP for a particular player.
+	 */
 	private void fill() {
 		if (ipList == null) {
 			ipList = new ArrayList<>();
@@ -91,9 +118,9 @@ public class BSIPs {
 		}
 
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getIDs = connection.prepareStatement( // Get all ids only, order by join time.
-					"SELECT DISTINCT i.iid FROM bs_ip i JOIN bs_session s ON i.iid = s.iid WHERE s.pid = ? ORDER BY s.join_time;");) {
-				// TODO: replace statement w/ view.
+				PreparedStatement getIDs = connection.prepareStatement(// Get all ids only, order by join time.
+						"SELECT DISTINCT i.iid FROM bs_ip i JOIN bs_session s ON i.iid = s.iid WHERE s.pid = ? ORDER BY s.join_time;");) {
+			// TODO: replace statement w/ view.
 			getIDs.setLong(1, forPlayer.getId());
 			BanStick.getPlugin().debug("Filling IPs for {0}", forPlayer.getUUID());
 			try (ResultSet rs = getIDs.executeQuery()) {
