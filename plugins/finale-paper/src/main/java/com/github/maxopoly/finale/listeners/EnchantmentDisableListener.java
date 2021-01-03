@@ -1,58 +1,60 @@
 package com.github.maxopoly.finale.listeners;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
-
+import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.api.EnchantNames;
 
 public class EnchantmentDisableListener implements Listener {
 
-	private Set<Enchantment> disabledEnchants;
+	private final Set<Enchantment> disabledEnchants;
 
-	public EnchantmentDisableListener(Collection<Enchantment> disabledEnchants) {
-		this.disabledEnchants = new HashSet<>(disabledEnchants);
+	public EnchantmentDisableListener(final Collection<Enchantment> disabledEnchants) {
+		this.disabledEnchants = Set.copyOf(disabledEnchants);
 	}
 
-	public boolean isDisabledEnchantment(Enchantment enchant) {
-		return disabledEnchants.contains(enchant);
-	}
-
-	@EventHandler
-	public void itemClick(InventoryClickEvent e) {
-		ItemStack is = e.getCurrentItem();
-		if (is == null || is.getEnchantments().size() == 0) {
+	private void removeEnchants(final ItemStack item, final Entity owner) {
+		if (item == null || owner == null) {
 			return;
 		}
-		ItemMeta im = is.getItemMeta();
-		for (Enchantment ench : im.getEnchants().keySet()) {
-			if (isDisabledEnchantment(ench)) {
-				is.removeEnchantment(ench);
+		final Map<Enchantment, Integer> enchants = item.getEnchantments();
+		for (final Enchantment enchant : enchants.keySet()) {
+			if (!this.disabledEnchants.contains(enchant)) {
+				continue;
 			}
+			item.removeEnchantment(enchant);
+			owner.sendMessage(ChatColor.RED + "The enchantment "
+					+ EnchantNames.findByEnchantment(enchant).getDisplayName() + " is disabled and has "
+					+ "been removed from your item!");
 		}
 	}
 
-	@EventHandler
-	public void pickUp(PlayerPickupItemEvent e) {
-		if (e.getItem() == null) {
-			return;
+	@EventHandler(ignoreCancelled = true)
+	public void openInventoryOpen(final InventoryOpenEvent event) {
+		final HumanEntity viewer = event.getPlayer();
+		for (final ItemStack item : event.getInventory()) {
+			removeEnchants(item, viewer);
 		}
-		ItemStack is = e.getItem().getItemStack();
-		if (is == null || is.getEnchantments().size() == 0) {
-			return;
-		}
-		ItemMeta im = is.getItemMeta();
-		for (Enchantment ench : im.getEnchants().keySet()) {
-			if (isDisabledEnchantment(ench)) {
-				is.removeEnchantment(ench);
-			}
-		}
+	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void onInventoryInteraction(final InventoryClickEvent event) {
+		removeEnchants(event.getCurrentItem(), event.getWhoClicked());
+	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void onItemPickup(final EntityPickupItemEvent event) {
+		removeEnchants(event.getItem().getItemStack(), event.getEntity());
 	}
 
 }
