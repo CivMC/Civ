@@ -40,7 +40,7 @@ public class EnchantmentDisableListener implements Listener {
 	}
 
 	@EventHandler(ignoreCancelled = true)
-	public void openInventoryOpen(final InventoryOpenEvent event) {
+	public void onInventoryOpen(final InventoryOpenEvent event) {
 		final HumanEntity viewer = event.getPlayer();
 		for (final ItemStack item : event.getInventory()) {
 			removeEnchants(item, viewer);
