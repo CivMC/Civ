@@ -7,15 +7,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 /**
  * Lightweight wrapper. Put implementations into banstick.proxy classpath for autoloading.
  * 
- * 
- * @author ProgrammerDan
+ * @author <a href="programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public abstract class ProxyLoader extends BukkitRunnable {
 
-	private boolean enabled = false;
-	private long delay = 4200l;
-	private long period = 576000l;
+	private boolean enabled;
+	private long delay = 4200L;
+	private long period = 576000L;
 	
 	/**
 	 * Basic constructor handles unified enabled/ disabled control, delay and period loading.
@@ -41,7 +40,7 @@ public abstract class ProxyLoader extends BukkitRunnable {
 	/**
 	 * Get delay before first pull of data / execution of proxy loader.
 	 * 
-	 * Default of 4200, or whatever is configured as delay.
+	 * <p>Default of 4200, or whatever is configured as delay.
 	 * 
 	 * @return Number of ticks until first pull
 	 */
@@ -52,7 +51,7 @@ public abstract class ProxyLoader extends BukkitRunnable {
 	/**
 	 * Get period inbetween pulls.
 	 * 
-	 * Default of 576000 (8 hours). 
+	 * <p>Default of 576000 (8 hours). 
 	 * 
 	 * @return Number of ticks until next pull
 	 */
@@ -64,16 +63,14 @@ public abstract class ProxyLoader extends BukkitRunnable {
 	 * Subclasses should use this in preference to overriding the constructor, use it to configure
 	 * the instantiation.
 	 * 
-	 * @param config 
-	 * The config to use to set up the proxy loader
+	 * @param config The config to use to set up the proxy loader
 	 */
 	public abstract void setup(ConfigurationSection config);
 	
 	/**
 	 * Give it a unique name / identity within the config.yml
 	 * 
-	 * @return the unique name of this proxy loader; it is used to pick a branch along
-	 * the config.
+	 * @return the unique name of this proxy loader; it is used to pick a branch along the config.
 	 */
 	public abstract String name();
 }
