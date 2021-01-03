@@ -19,35 +19,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import net.md_5.bungee.api.ChatColor;
 
-public class BSIPData {
+/**
+ * Static storage and management of Proxy data as BSIPData.
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ */
+public final class BSIPData {
 	private static Map<Long, BSIPData> allIPDataID = new HashMap<>();
 	private static ConcurrentLinkedQueue<WeakReference<BSIPData>> dirtyIPData = new ConcurrentLinkedQueue<>();
 	private boolean dirty;
-	
-	private BSIPData() {}
-	/*
-	 * bs_ip_data
-	 * 
-	 * 					" idid BIGINT AUT_INCREMENT PRIMARY KEY," +
-					" iid BIGINT NOT NULL REFERENCE bs_ip(iid)," +
-					" create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-					" valid BOOLEAN," +
-					" continent TEXT," + 
-					" country TEXT," +
-					" region TEXT," +
-					" city TEXT," +
-					" postal TEXT," +
-					" lat DOUBLE," +
-					" lon DOUBLE," +
-					" domain TEXT," +
-					" provider TEXT," +
-					" registered_as TEXT," +
-					" connection TEXT," +
-					" proxy FLOAT," +
-					" source TEXT," +
-					" comment TEXT," + 
-	 */
-	
+
 	private long idid;
 	private Long deferIid;
 	private BSIP iid;
@@ -68,10 +49,16 @@ public class BSIPData {
 	private String source; // mutable
 	private String comment; // mutable
 	
+	private BSIPData() { }
+
 	public long getId() {
 		return this.idid;
 	}
 	
+	/**
+	 * Marks this proxy data as invalid, triggers that the backing data should be
+	 * updated.
+	 */
 	public void invalidate() {
 		if (this.valid) {
 			this.valid = false;
@@ -87,6 +74,9 @@ public class BSIPData {
 		return this.createTime;
 	}
 	
+	/**
+	 * @return the BSIP associated with this Proxy (usually a CIDR address).
+	 */
 	public BSIP getIP() {
 		if (this.iid == null && this.deferIid != null) {
 			this.iid = BSIP.byId(this.deferIid);
@@ -142,6 +132,12 @@ public class BSIPData {
 		return this.proxy;
 	}
 	
+	/**
+	 * Updates the proxy "level", based on threshold could trigger bans.
+	 * Triggers a dirty flag update.
+	 * 
+	 * @param proxy the new proxy value.
+	 */
 	public void setProxy(float proxy) {
 		this.proxy = proxy;
 		dirtyIPData.offer(new WeakReference<BSIPData>(this));
@@ -151,6 +147,12 @@ public class BSIPData {
 		return this.source;
 	}
 	
+	/**
+	 * Sets the string-value "source" of this proxy. Can be updated using
+	 * this method, triggers a dirty flag update.
+	 * 
+	 * @param source The new source.
+	 */
 	public void setSource(String source) {
 		this.source = source;
 		dirtyIPData.offer(new WeakReference<BSIPData>(this));
@@ -161,17 +163,30 @@ public class BSIPData {
 		return this.comment;
 	}
 	
+	/**
+	 * Sets the string-value "comment" for this proxy. Can be updated using
+	 * this method, triggers a dirty flag update.
+	 * 
+	 * @param comment The new comment
+	 */
 	public void setComment(String comment) {
 		this.comment = comment;
 		dirtyIPData.offer(new WeakReference<BSIPData>(this));
 	}
 
+	/**
+	 * Retrieve a specific Proxy by its identifier.
+	 * 
+	 * @param idid the ID of the Proxy to retrieve
+	 * @return the BSIPData object with that ID if found, otherwise null.
+	 */
 	public static BSIPData byId(long idid) {
 		if (allIPDataID.containsKey(idid)) {
 			return allIPDataID.get(idid);
 		}
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_ip_data WHERE idid = ?");) {
+				PreparedStatement getId = connection.prepareStatement(
+						"SELECT * FROM bs_ip_data WHERE idid = ?");) {
 			getId.setLong(1, idid);
 			try (ResultSet rs = getId.executeQuery();) {
 				if (rs.next()) {
@@ -188,6 +203,12 @@ public class BSIPData {
 		return null;
 	}
 	
+	/**
+	 * Internal tool to create a BSIPData object from a ResultSet
+	 * @param rs the ResultSet to unpack
+	 * @return a BSIPData from that ResultSet
+	 * @throws SQLException if something goes wrong
+	 */
 	private static BSIPData extractData(ResultSet rs) throws SQLException {
 		BSIPData data = new BSIPData();
 		data.idid = rs.getLong(1);
@@ -220,7 +241,8 @@ public class BSIPData {
 	}
 	
 	/**
-	 * As described in method header; finds the other non-same IPData records that geolocate to the same country/region/city pairing.
+	 * As described in method header; finds the other non-same IPData records that 
+	 * geolocate to the same country/region/city pairing.
 	 * 
 	 * @param source The IPData to use to seed the search
 	 * @return A list of IPDatas in the same region, or nothing if none found.
@@ -228,7 +250,8 @@ public class BSIPData {
 	public static List<BSIPData> bySameCity(BSIPData source) {
 		List<BSIPData> found = new ArrayList<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getSame = connection.prepareStatement("SELECT * FROM bs_ip_data WHERE country = ? and region = ? and city = ? and idid != ? and valid = true ORDER BY create_time");) {
+				PreparedStatement getSame = connection.prepareStatement(
+						"SELECT * FROM bs_ip_data WHERE country = ? and region = ? and city = ? and idid != ? and valid = true ORDER BY create_time");) {
 			getSame.setString(1, source.getCountry());
 			getSame.setString(2, source.getRegion());
 			getSame.setString(3, source.getCity());
@@ -263,7 +286,8 @@ public class BSIPData {
 			return null;
 		}
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_ip_data WHERE iid = ? and valid = true ORDER BY create_time DESC LIMIT 1");) {
+				PreparedStatement getId = connection.prepareStatement(
+						"SELECT * FROM bs_ip_data WHERE iid = ? and valid = true ORDER BY create_time DESC LIMIT 1");) {
 			getId.setLong(1, ip.getId());
 			try (ResultSet rs = getId.executeQuery();) {
 				if (rs.next()) {
@@ -283,19 +307,24 @@ public class BSIPData {
 		return null;
 	}
 	
+	/**
+	 * @return the average proxy value for BSIPData entries having the same registeredAs.
+	 */
 	public double getAverageForRegistrar() {
 		if (this.registeredAs == null) {
 			return 0;
 		}
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getSame = connection.prepareStatement("SELECT avg(proxy) FROM bs_ip_data WHERE registered_as = ?");) {
+				PreparedStatement getSame = connection.prepareStatement(
+						"SELECT avg(proxy) FROM bs_ip_data WHERE registered_as = ?");) {
 			getSame.setString(1, this.registeredAs);
 			try (ResultSet rs = getSame.executeQuery();) {
 				rs.next();
 				return rs.getDouble(1); //returns 0 for no matches
 			}
 		} catch (SQLException se) {
-			BanStick.getPlugin().severe("Failed to load average proxy score for registrar " + this.registeredAs, se);
+			BanStick.getPlugin().severe("Failed to load average proxy score for registrar "
+					+ this.registeredAs, se);
 			return 0;
 		}
 	}
@@ -393,13 +422,16 @@ public class BSIPData {
 	 * @param domain The domain that maps to this IP / range
 	 * @param provider The provider for this IP / range
 	 * @param registeredAs Any registration information for this IP / range
-	 * @param _connection The connection source for this IP / range
-	 * @param proxy The likelihood this is a proxy -- higher number for more likelihood. Assumes 0 - no, 3 - likely, 4 - definite
+	 * @param connectionSource The connection source for this IP / range
+	 * @param proxy The likelihood this is a proxy -- higher number for more likelihood.
+	 *     Assumes 0 - no, 3 - likely, 4 - definite
 	 * @param source The source of this record (Cloud9? Tor? IP-API?)
 	 * @param comment Any comments recorded against the BSIPData.
 	 * @return The new BSIPData if successful
 	 */
-	public static BSIPData create(BSIP ip, String continent, String country, String region, String city, String postal, Double lat, Double lon, String domain, String provider, String registeredAs, String _connection, float proxy, String source, String comment) {
+	public static BSIPData create(BSIP ip, String continent, String country, String region, 
+			String city, String postal, Double lat, Double lon, String domain, String provider, 
+			String registeredAs, String connectionSource, float proxy, String source, String comment) {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
 			BSIPData newData = new BSIPData();
 			newData.valid = true;
@@ -416,12 +448,13 @@ public class BSIPData {
 			newData.domain = domain;
 			newData.provider = provider;
 			newData.registeredAs = registeredAs;
-			newData.connection = _connection;
+			newData.connection = connectionSource;
 			newData.proxy = proxy;
 			newData.source = source;
 			newData.comment = comment;
 			
-			try (PreparedStatement insertData = connection.prepareStatement("INSERT INTO bs_ip_data(iid, continent, country, region, city, postal, lat, lon, domain, provider, registered_as, connection, proxy, source, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
+			try (PreparedStatement insertData = connection.prepareStatement(
+					"INSERT INTO bs_ip_data(iid, continent, country, region, city, postal, lat, lon, domain, provider, registered_as, connection, proxy, source, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
 				insertData.setLong(1, newData.iid.getId());
 				if (newData.continent == null) {
 					insertData.setNull(2, Types.VARCHAR);
@@ -512,10 +545,13 @@ public class BSIPData {
 	 * Saves the BSBan; only for internal use. Outside code must use Flush();
 	 */
 	private void save() {
-		if (!dirty) return;
+		if (!dirty) {
+			return;
+		}
 		this.dirty = false; // don't let anyone else in!
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement("UPDATE bs_ip_data SET valid = ?, proxy = ?, source = ?, comment = ? WHERE idid = ?");) {
+				PreparedStatement save = connection.prepareStatement(
+						"UPDATE bs_ip_data SET valid = ?, proxy = ?, source = ?, comment = ? WHERE idid = ?");) {
 			saveToStatement(save);
 			int effects = save.executeUpdate();
 			if (effects == 0) {
@@ -526,6 +562,11 @@ public class BSIPData {
 		}
 	}
 	
+	/**
+	 * Internal helper to map this BSIPData to a PreparedStatement for upsert
+	 * @param save the PreparedStatement to fill
+	 * @throws SQLException if something goes wrong.
+	 */
 	private void saveToStatement(PreparedStatement save) throws SQLException {
 		save.setBoolean(1, this.valid);
 		save.setFloat(2, this.proxy);
@@ -543,7 +584,7 @@ public class BSIPData {
 	}
 	
 	/**
-	 * Cleanly saves this player if necessary, and removes it from the references lists.
+	 * Cleanly saves this IPData if necessary, and removes it from the references lists.
 	 */
 	public void flush() {
 		if (dirty) {
@@ -555,14 +596,16 @@ public class BSIPData {
 	}
 
 	/**
-	 * Pulls from the dirty queue and commits updates to the backing DB in batches. Allows for high volume changes w/o swamping the DB with churn.
+	 * Pulls from the dirty queue and commits updates to the backing DB in batches. 
+	 * Allows for high volume changes w/o swamping the DB with churn.
 	 * 
-	 * Note that inserts are direct, to ensure IDs and relationship consistency is upheld
+	 * <p>Note that inserts are direct, to ensure IDs and relationship consistency is upheld
 	 */
 	public static void saveDirty() {
 		int batchSize = 0;
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement("UPDATE bs_ip_data SET valid = ?, proxy = ?, source = ?, comment = ? WHERE idid = ?");) {
+				PreparedStatement save = connection.prepareStatement(
+						"UPDATE bs_ip_data SET valid = ?, proxy = ?, source = ?, comment = ? WHERE idid = ?");) {
 			while (!dirtyIPData.isEmpty()) {
 				WeakReference<BSIPData> rdata = dirtyIPData.poll();
 				BSIPData data = rdata.get();
@@ -575,7 +618,8 @@ public class BSIPData {
 				if (batchSize > 0 && batchSize % 100 == 0) {
 					int[] batchRun = save.executeBatch();
 					if (batchRun.length != batchSize) {
-						BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
+						BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " 
+								+ batchSize + " vs " + batchRun.length);
 					} else {
 						BanStick.getPlugin().debug("IP Data batch: {0} saves", batchRun.length);
 					}
@@ -585,7 +629,8 @@ public class BSIPData {
 			if (batchSize > 0 && batchSize % 100 > 0) {
 				int[] batchRun = save.executeBatch();
 				if (batchRun.length != batchSize) {
-					BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
+					BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? "
+							+ batchSize + " vs " + batchRun.length);
 				} else {
 					BanStick.getPlugin().debug("IP Data batch: {0} saves", batchRun.length);
 				}
@@ -616,11 +661,14 @@ public class BSIPData {
 					if (!allIPDataID.containsKey(data.idid)) {
 						allIPDataID.put(data.idid, data);
 					}
-					if (data.idid > maxId) maxId = data.idid;
+					if (data.idid > maxId) {
+						maxId = data.idid;
+					}
 				}
 			}
 		} catch (SQLException se) {
-			BanStick.getPlugin().severe("Failed during IPData preload, offset " + offset + " limit " + limit, se);
+			BanStick.getPlugin().severe("Failed during IPData preload, offset " + offset
+					+ " limit " + limit, se);
 		}
 		return maxId;
 
@@ -633,7 +681,8 @@ public class BSIPData {
 		if (!valid) {
 			sb.append(ChatColor.RED).append("[Invalid] ").append(ChatColor.WHITE);
 		}
-		if (continent != null || country != null || region != null || city != null || postal != null || lat != null || lon != null) {
+		if (continent != null || country != null || region != null || city != null
+				|| postal != null || lat != null || lon != null) {
 			sb.append(ChatColor.AQUA).append("Location: ").append(ChatColor.WHITE);
 		}
 		if (continent != null) {
@@ -657,22 +706,27 @@ public class BSIPData {
 				.append(ChatColor.GRAY).append("] ").append(ChatColor.WHITE);
 		}
 		if (connection != null) {
-			sb.append(ChatColor.GRAY).append("Connection: ").append(ChatColor.WHITE).append(connection).append(" ");
+			sb.append(ChatColor.GRAY).append("Connection: ").append(ChatColor.WHITE)
+				.append(connection).append(" ");
 		}
 		if (domain != null) {
 			sb.append("(").append(domain).append(") ");
 		}
 		if (provider != null) {
-			sb.append(ChatColor.GRAY).append("Provider: ").append(ChatColor.WHITE).append(provider).append(" ");
+			sb.append(ChatColor.GRAY).append("Provider: ").append(ChatColor.WHITE)
+				.append(provider).append(" ");
 		}
 		if (registeredAs != null) {
-			sb.append(ChatColor.GRAY).append("Reg. As: ").append(ChatColor.WHITE).append(registeredAs).append(" ");
+			sb.append(ChatColor.GRAY).append("Reg. As: ").append(ChatColor.WHITE)
+				.append(registeredAs).append(" ");
 		}
 		if (source != null) {
-			sb.append(ChatColor.DARK_PURPLE).append("from ").append(ChatColor.WHITE).append(source).append(" ");
+			sb.append(ChatColor.DARK_PURPLE).append("from ").append(ChatColor.WHITE)
+				.append(source).append(" ");
 		}
 		if (comment != null) {
-			sb.append(ChatColor.GRAY).append("Comments:").append(ChatColor.WHITE).append(comment).append(" ");
+			sb.append(ChatColor.GRAY).append("Comments:").append(ChatColor.WHITE)
+				.append(comment).append(" ");
 		}
 		sb.append(ChatColor.DARK_AQUA).append("[pli: ");
 		if (proxy < 1.0) {
@@ -689,6 +743,11 @@ public class BSIPData {
 		return sb.toString();
 	}
 
+	/**
+	 * Generates a larger string of full details for this proxy
+	 * @param showIPs indicate if IPs should be shown
+	 * @return the String
+	 */
 	public String toFullString(boolean showIPs) {
 		if (showIPs) {
 			return toString();
