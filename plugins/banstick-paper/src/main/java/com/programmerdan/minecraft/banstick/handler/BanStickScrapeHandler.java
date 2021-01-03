@@ -16,11 +16,11 @@ import org.bukkit.scheduler.BukkitTask;
  * and add them to our banlists for a time; similar to Tor, but with more scraping magic instead of the
  * pretty lists that Tor publishes.
  * 
- * This is set up to be auto-loading modular like BanStickProxyHandler, so if you want to register
+ * <p>This is set up to be auto-loading modular like BanStickProxyHandler, so if you want to register
  * more scrapers just code 'm up and add them to the .scraper package. Be sure they extend
  * {@link com.programmerdan.minecraft.banstick.handler.ScraperWorker} class.
  * 
- * @author ProgrammerDan
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public class BanStickScrapeHandler {
@@ -45,10 +45,12 @@ public class BanStickScrapeHandler {
 		try {
 			ClassPath getSamplersPath = ClassPath.from(classes);
 
-			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses("com.programmerdan.minecraft.banstick.scraper")) {
+			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses(
+					"com.programmerdan.minecraft.banstick.scraper")) {
 				Class<?> clazz = clsInfo.load();
 				if (clazz != null && ScraperWorker.class.isAssignableFrom(clazz)) {
-					BanStick.getPlugin().info("Found a scraper worker class {0}, attempting to find a suitable constructor", clazz.getName());
+					BanStick.getPlugin().info("Found a scraper worker class {0}, attempting to find"
+							+ " a suitable constructor", clazz.getName());
 					ScraperWorker loader = null;
 					try {
 						Constructor<?> constructBasic = clazz.getConstructor(ConfigurationSection.class);
@@ -62,10 +64,12 @@ public class BanStickScrapeHandler {
 
 					if (loader != null) {
 						try {
-							BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(BanStick.getPlugin(), loader, loader.getDelay());
+							BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(BanStick.getPlugin(), 
+									loader, loader.getDelay());
 							loader.setTask(task);
 						} catch (Exception e) {
-							BanStick.getPlugin().warning("Failed to activate scraper worker of type {0}", clazz.getName());
+							BanStick.getPlugin().warning("Failed to activate scraper worker of type {0}", 
+									clazz.getName());
 							BanStick.getPlugin().warning("  Failure message: ", e);
 						}
 					}
@@ -76,12 +80,17 @@ public class BanStickScrapeHandler {
 		}
 	}
 	
+	/**
+	 * Shuts down this scrape manager.
+	 */
 	public void shutdown() {
-		if (this.workers == null) return;
+		if (this.workers == null) {
+			return;
+		}
 		for (ScraperWorker task : workers) {
 			try {
 				task.shutdown();
-			} catch (Exception e) {}
+			} catch (Exception e) { }
 		}
 	}
 }
