@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -57,7 +58,7 @@ public class RBConfigManager extends CoreConfigManager {
 	private Set<PlantGrowthConfig> plantConfigs;
 	private Map<String, RBSchematic> schematics;
 	private List<LTree> lTrees;
-	
+
 	private List<Material> bonemealPreventedBlocks;
 
 	public RBConfigManager(ACivMod plugin) {
@@ -157,7 +158,7 @@ public class RBConfigManager extends CoreConfigManager {
 	}
 
 	private Set<PlantGrowthConfig> parsePlantGrowthConfig(ConfigurationSection config,
-			Map<String, List<Biome>> biomeAliases) {
+														  Map<String, List<Biome>> biomeAliases) {
 		Set<PlantGrowthConfig> result = new HashSet<>();
 		if (config == null) {
 			logger.warning("No plant growth configs found");
@@ -263,56 +264,58 @@ public class RBConfigManager extends CoreConfigManager {
 			material = item.getType();
 		}
 		switch (section.getString("type").toLowerCase()) {
-		case "bamboo":
-			int maxHeight = section.getInt("max_height", 12);
-			return new BambooGrower(maxHeight);
-		case "column":
-			int maxHeight2 = section.getInt("max_height", 3);
-			boolean instaBreakTouching = section.getBoolean("insta_break_toching", false);
-			return new ColumnPlantGrower(maxHeight2, material, instaBreakTouching);
-		case "fruit":
-			Material stemMat = MaterialAPI.getMaterial(section.getString("stem_type"));
-			if (stemMat == null) {
-				logger.warning("No stem material specified at " + section.getCurrentPath());
-				return null;
-			}
-			Material attachedStemMat = MaterialAPI.getMaterial(section.getString("attached_stem_type"));
-			if (attachedStemMat == null) {
-				logger.warning("No attached stem material specified at " + section.getCurrentPath());
-				return null;
-			}
-			return new FruitGrower(material, attachedStemMat, stemMat);
+			case "bamboo":
+				int maxHeight = section.getInt("max_height", 12);
+				return new BambooGrower(maxHeight);
+			case "column":
+				int maxHeight2 = section.getInt("max_height", 3);
+				boolean instaBreakTouching = section.getBoolean("insta_break_toching", false);
+				BlockFace direction = BlockFace.valueOf(section.getString("direction", "UP"));
+				return new ColumnPlantGrower(maxHeight2, material, direction, instaBreakTouching);
+			case "fruit":
+				Material stemMat = MaterialAPI.getMaterial(section.getString("stem_type"));
+				if (stemMat == null) {
+					logger.warning("No stem material specified at " + section.getCurrentPath());
+					return null;
+				}
+				Material attachedStemMat = MaterialAPI.getMaterial(section.getString("attached_stem_type"));
+				if (attachedStemMat == null) {
+					logger.warning("No attached stem material specified at " + section.getCurrentPath());
+					return null;
+				}
+				return new FruitGrower(material, attachedStemMat, stemMat);
 			case "fungus":
 				return new FungusGrower(material);
-		case "ageable":
-			int maxStage = section.getInt("max_stage", 7);
-			int increment = section.getInt("increment", 1);
-			return new AgeableGrower(material, maxStage, increment);
-		case "stem":
-			String fruitConfig = section.getString("fruit_config", null);
-			return new StemGrower(material, fruitConfig);
-		case "tree":
-			return new TreeGrower(material);
-		case "horizontalspread":
-			int maxAmount = section.getInt("max_amount");
-			int horRange = section.getInt("max_range");
-			List <Material> replaceableBlocks = parseMaterialList(section, "replaceable_blocks");
-			List<Material> validSoil = parseMaterialList(section, "valid_soil");
-			return new HorizontalBlockSpreadGrower(material, maxAmount, horRange, replaceableBlocks, validSoil);
-		case "seapickle":
-			return new SeaPickleGrower();
-		case "schematic":
-			String name = section.getString("schematic", "default");
-			RBSchematic schem = schematics.get(name.toLowerCase());
-			if (schem == null) {
-				logger.warning("Schematic " + name + " specified at " + section.getCurrentPath() + " was not found");
+			case "ageable":
+				int maxStage = section.getInt("max_stage", 7);
+				int increment = section.getInt("increment", 1);
+				return new AgeableGrower(material, maxStage, increment);
+			case "stem":
+				String fruitConfig = section.getString("fruit_config", null);
+				return new StemGrower(material, fruitConfig);
+			case "tree":
+				return new TreeGrower(material);
+			case "horizontalspread":
+				int maxAmount = section.getInt("max_amount");
+				int horRange = section.getInt("max_range");
+				List<Material> replaceableBlocks = parseMaterialList(section, "replaceable_blocks");
+				List<Material> validSoil = parseMaterialList(section, "valid_soil");
+				return new HorizontalBlockSpreadGrower(material, maxAmount, horRange, replaceableBlocks, validSoil);
+			case "seapickle":
+				return new SeaPickleGrower();
+			case "schematic":
+				String name = section.getString("schematic", "default");
+				RBSchematic schem = schematics.get(name.toLowerCase());
+				if (schem == null) {
+					logger.warning(
+							"Schematic " + name + " specified at " + section.getCurrentPath() + " was not found");
+					return null;
+				}
+				Location offSet = section.getLocation("offset", new Location(null, 0, 0, 0));
+				return new SchematicGrower(schem, offSet);
+			default:
+				logger.warning(section.getString("type") + " is not a valid grower type");
 				return null;
-			}
-			Location offSet = section.getLocation("offset", new Location(null, 0, 0, 0));
-			return new SchematicGrower(schem, offSet);
-		default:
-			logger.warning(section.getString("type") + " is not a valid grower type");
-			return null;
 		}
 	}
 
@@ -378,7 +381,7 @@ public class RBConfigManager extends CoreConfigManager {
 	public List<LTree> getLTrees() {
 		return lTrees;
 	}
-	
+
 	public List<Material> getBonemealPreventedBlocks() {
 		return bonemealPreventedBlocks;
 	}
