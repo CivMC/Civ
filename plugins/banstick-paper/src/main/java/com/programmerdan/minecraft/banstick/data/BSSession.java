@@ -16,8 +16,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import javax.annotation.Nonnull;
 
-public class BSSession {
+/**
+ * Represents a single playtime of a player. 
+ * 
+ * <p>Although technically connective tissue for IPs and Players, this also
+ * does double duty by showing IP / geo movement over time. Investigating this
+ * data can provide great insight into players using VPN or Proxy even without
+ * the proxy datasets as their physical geolocation from IP will jump around
+ * irregularly. It can also help prove out other common unban requests, for instance
+ * players frequently locate in multiple geographic / IP locations (for instance, 
+ * separated parents, friend groups, school vs. home, work vs. home, etc.)
+ * 
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
+ *
+ */
+public final class BSSession {
 
 	private static Map<Long, BSSession> allSessionID = new HashMap<>();
 	private static ConcurrentLinkedQueue<WeakReference<BSSession>> dirtySessions = new ConcurrentLinkedQueue<>();
@@ -26,14 +41,12 @@ public class BSSession {
 	private long sid;
 	private Long deferPid;
 	private BSPlayer pid;
-	
 	private Timestamp joinTime;
 	private Timestamp leaveTime;
-
 	private Long deferIid;
 	private BSIP iid;
 	
-	private BSSession() {}
+	private BSSession() { }
 
 	public Date getJoinTime() {
 		return joinTime;
@@ -43,11 +56,30 @@ public class BSSession {
 		return leaveTime;
 	}
 	
-	public void setLeaveTime(Date leaveTime) {
+	/**
+	 * If leave time was set incorrectly and needs to be cleared, use this method.
+	 */
+	public void clearLeaveTime() {
+		this.leaveTime = null;
+		this.dirty = true;
+		dirtySessions.offer(new WeakReference<BSSession>(this));
+	}
+	
+	/**
+	 * Java Date leaveTime setter.
+	 * 
+	 * @param leaveTime the departure / end time of the session.
+	 */
+	public void setLeaveTime(@Nonnull Date leaveTime) {
 		setLeaveTime(new Timestamp(leaveTime.getTime()));
 	}
 	
-	public void setLeaveTime(Timestamp leaveTime) {
+	/**
+	 * SQL Date leaveTime setter.
+	 * 
+	 * @param leaveTime the departure / end time of the session.
+	 */
+	public void setLeaveTime(@Nonnull Timestamp leaveTime) {
 		this.leaveTime = leaveTime;
 		this.dirty = true;
 		dirtySessions.offer(new WeakReference<BSSession>(this));
@@ -56,14 +88,20 @@ public class BSSession {
 	public boolean isEnded() {
 		return this.leaveTime != null;
 	}
-	
+
+	/**
+	 * @return the BSPlayer related to this session.
+	 */
 	public BSPlayer getPlayer() {
 		if (pid == null && deferPid != null) {
 			pid = BSPlayer.byId(deferPid);
 		}
 		return pid;
 	}
-	
+
+	/**
+	 * @return the BSIP related to this session
+	 */
 	public BSIP getIP() {
 		if (iid == null && deferIid != null) {
 			iid = BSIP.byId(deferIid);
@@ -76,14 +114,16 @@ public class BSSession {
 	}
 	
 	/**
-	 * This leverages a fun queue of WeakReferences, where if a player is forcibly flush()'d we don't care, or if a player is in the queue more then once
-	 * we don't care, b/c we only save a dirty player once; and since we all store references and no copies, everything is nice and synchronized.
+	 * This leverages a fun queue of WeakReferences, where if a session is forcibly flush()'d we don't care, 
+	 * or if a session is in the queue more then once we don't care b/c we only save a dirty session once; and 
+	 * since we all store references and no copies, everything is nice and synchronized.
 	 * 
 	 */
 	public static void saveDirty() {
 		int batchSize = 0;
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement("UPDATE bs_session SET leave_time = ? WHERE sid = ?");) {
+				PreparedStatement save = connection.prepareStatement(
+						"UPDATE bs_session SET leave_time = ? WHERE sid = ?");) {
 			while (!dirtySessions.isEmpty()) {
 				WeakReference<BSSession> rsession = dirtySessions.poll();
 				BSSession session = rsession.get();
@@ -96,7 +136,8 @@ public class BSSession {
 				if (batchSize > 0 && batchSize % 100 == 0) {
 					int[] batchRun = save.executeBatch();
 					if (batchRun.length != batchSize) {
-						BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
+						BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? "
+								+ batchSize + " vs " + batchRun.length);
 					} else {
 						BanStick.getPlugin().debug("Session batch: {0} saves", batchRun.length);
 					}
@@ -106,7 +147,8 @@ public class BSSession {
 			if (batchSize > 0 && batchSize % 100 > 0) {
 				int[] batchRun = save.executeBatch();
 				if (batchRun.length != batchSize) {
-					BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
+					BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " 
+							+ batchSize + " vs " + batchRun.length);
 				} else {
 					BanStick.getPlugin().debug("Session batch: {0} saves", batchRun.length);
 				}
@@ -120,10 +162,13 @@ public class BSSession {
 	 * Saves the BSSession; only for internal use. Outside code must use Flush();
 	 */
 	private void save() {
-		if (!dirty) return;
+		if (!dirty) {
+			return;
+		}
 		this.dirty = false; // don't let anyone else in!
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement("UPDATE bs_session SET leave_time = ? WHERE sid = ?");) {
+				PreparedStatement save = connection.prepareStatement(
+						"UPDATE bs_session SET leave_time = ? WHERE sid = ?");) {
 			saveToStatement(save);
 			int effects = save.executeUpdate();
 			if (effects == 0) {
@@ -157,6 +202,11 @@ public class BSSession {
 		this.deferIid = null;
 	}
 	
+	/**
+	 * Gets a BSSession directly by its database ID.
+	 * @param sid the Session ID
+	 * @return the BSSession if found in cache or loaded, otherwise null on failure to load or other failure.
+	 */
 	public static BSSession byId(long sid) {
 		if (allSessionID.containsKey(sid)) {
 			return allSessionID.get(sid);
@@ -166,9 +216,9 @@ public class BSSession {
 			getId.setLong(1, sid);
 			try (ResultSet rs = getId.executeQuery();) {
 				if (rs.next()) {
-					BSSession nS = internalGetSession(rs);
-					allSessionID.put(sid, nS);
-					return nS;
+					BSSession newS = internalGetSession(rs);
+					allSessionID.put(sid, newS);
+					return newS;
 				} else {
 					BanStick.getPlugin().warning("Failed to retrieve Session by id: " + sid + " - not found");
 				}
@@ -180,22 +230,28 @@ public class BSSession {
 	}
 
 	private static BSSession internalGetSession(ResultSet rs) throws SQLException {
-		BSSession nS = new BSSession();
-		nS.sid = rs.getLong(1);
-		nS.deferPid = rs.getLong(2);
+		BSSession newS = new BSSession();
+		newS.sid = rs.getLong(1);
+		newS.deferPid = rs.getLong(2);
 		//nS.pid = BSPlayer.byId(rs.getLong(2));
-		nS.joinTime = rs.getTimestamp(3);
+		newS.joinTime = rs.getTimestamp(3);
 		try {
-			nS.leaveTime = rs.getTimestamp(4);
+			newS.leaveTime = rs.getTimestamp(4);
 		} catch (SQLException se) {
-			nS.leaveTime = null;
+			newS.leaveTime = null;
 		}
-		nS.deferIid = rs.getLong(5);
+		newS.deferIid = rs.getLong(5);
 		//nS.iid = BSIP.byId(rs.getLong(5));
-		nS.dirty = false;
-		return nS;
+		newS.dirty = false;
+		return newS;
 	}
 	
+	/**
+	 * Gets all sessions that have used a specific IP. Sessions returned may span multiple players.
+	 * 
+	 * @param iid The IP to investigate
+	 * @return a list of BSSessions related to this IP. The list may be empty.
+	 */
 	public static List<BSSession> byIP(BSIP iid) {
 		ArrayList<BSSession> sessions = new ArrayList<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
@@ -209,9 +265,9 @@ public class BSSession {
 						continue;
 					}
 					
-					BSSession nS = internalGetSession(rs);
-					sessions.add(nS);
-					allSessionID.put(nS.sid, nS);
+					BSSession internal = internalGetSession(rs);
+					sessions.add(internal);
+					allSessionID.put(internal.sid, internal);
 				}
 			}
 		} catch (SQLException se) {
@@ -220,10 +276,19 @@ public class BSSession {
 		return sessions;
 	}
 
+	/**
+	 * Attempts to create a session from a player, session start time, and IP address
+	 * 
+	 * @param pid the Player whose session we are starting
+	 * @param sessionStart the Date of the session begin
+	 * @param iid the IP address
+	 * @return the newly created BSSession
+	 */
 	public static BSSession create(BSPlayer pid, Date sessionStart, BSIP iid) {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement newSession = connection.prepareStatement(
-						"INSERT INTO bs_session(pid, join_time, iid) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);) {
+						"INSERT INTO bs_session(pid, join_time, iid) VALUES (?, ?, ?)",
+						Statement.RETURN_GENERATED_KEYS);) {
 			BSSession session = new BSSession();
 			session.pid = pid;
 			session.deferPid = pid.getId();
@@ -267,7 +332,8 @@ public class BSSession {
 	public static long preload(long offset, int limit) {
 		long maxId = -1;
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadSessions = connection.prepareStatement("SELECT * FROM bs_session WHERE sid > ? ORDER BY sid LIMIT ?");) {
+				PreparedStatement loadSessions = connection.prepareStatement(
+						"SELECT * FROM bs_session WHERE sid > ? ORDER BY sid LIMIT ?");) {
 			loadSessions.setLong(1, offset);
 			loadSessions.setInt(2, limit);
 			try (ResultSet rs = loadSessions.executeQuery()) {
@@ -290,7 +356,9 @@ public class BSSession {
 						allSessionID.put(session.sid, session);
 					}
 					
-					if (session.sid > maxId) maxId = session.sid;
+					if (session.sid > maxId) {
+						maxId = session.sid;
+					}
 				}
 			}
 		} catch (SQLException se) {
@@ -305,7 +373,7 @@ public class BSSession {
 	}
 	
 	/**
-	 * Shows IP
+	 * Shows Session details (player / start / stop / IP if set)
 	 * 
 	 * @param showIP determines if to show IP or not
 	 * @return the display string
