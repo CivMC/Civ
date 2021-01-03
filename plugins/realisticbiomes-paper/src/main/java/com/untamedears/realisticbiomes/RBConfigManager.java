@@ -281,6 +281,8 @@ public class RBConfigManager extends CoreConfigManager {
 				return null;
 			}
 			return new FruitGrower(material, attachedStemMat, stemMat);
+			case "fungus":
+				return new FungusGrower(material);
 		case "ageable":
 			int maxStage = section.getInt("max_stage", 7);
 			int increment = section.getInt("increment", 1);
