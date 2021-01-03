@@ -21,28 +21,29 @@ import vg.civcraft.mc.namelayer.NameAPI;
  * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
-public class BanHandler {
+public final class BanHandler {
+
+	private static final String AUTO_BAN = "Automatic Ban";
+	private static final String ADMIN_BAN = "Administrative Ban";
+
+	private BanHandler() { }
+
 	private static SimpleDateFormat getEndTimeFormat() {
 		return new SimpleDateFormat("MM/dd/yyyy HH:mms:ss");
 	}
 	
-	private BanHandler() {}
-
 	/**
 	 * Issues a ban against a specific UUID.
 	 * 
-	 * If the player is online, kicks them.
+	 * <p>If the player is online, kicks them.
 	 * 
-	 * This uses the default message. See {@link #doUUIDBan(UUID, String, boolean)} for custom message,
+	 * <p>This uses the default message. See {@link #doUUIDBan(UUID, String, boolean)} for custom message,
 	 * or {@link #doUUIDBan(UUID, Date, boolean)} for end time, or {@link #doUUIDBan(UUID, String, Date, boolean)} for
 	 * both.
 	 * 
-	 * @param playerId
-	 *  The UUID of the player to ban.
-	 * @param adminBan
-	 *  Was this admin ban or automatic?
-	 * @return
-	 *  A summary of who was banned.
+	 * @param playerId The UUID of the player to ban.
+	 * @param adminBan Was this admin ban or automatic?
+	 * @return A summary of who was banned.
 	 */
 	public static BanResult doUUIDBan(UUID playerId, boolean adminBan) {
 		return doUUIDBan(playerId, null, null, adminBan);
@@ -51,18 +52,14 @@ public class BanHandler {
 	/**
 	 * Issues a ban against a specific UUID.
 	 * 
-	 * If the player is online, kicks them.
+	 * <p>If the player is online, kicks them.
 	 * 
-	 * This uses the default message but a custom end time.
+	 * <p>This uses the default message but a custom end time.
 	 * 
-	 * @param playerId
-	 *  The UUID of the player to ban.
-	 * @param banEnd
-	 *  The time the ban should end.
-	 * @param adminBan
-	 *  Was this admin ban or automatic?
-	 * @return
-	 *  A summary of who was banned.
+	 * @param playerId The UUID of the player to ban.
+	 * @param banEnd The time the ban should end.
+	 * @param adminBan Was this admin ban or automatic?
+	 * @return A summary of who was banned.
 	 */
 	public static BanResult doUUIDBan(UUID playerId, Date banEnd, boolean adminBan) {
 		return doUUIDBan(playerId, null, banEnd, adminBan);
@@ -71,18 +68,14 @@ public class BanHandler {
 	/**
 	 * Issues a ban against a specific UUID.
 	 * 
-	 * If the player is online, kicks them.
+	 * <p>If the player is online, kicks them.
 	 * 
-	 * This uses a custom message.
+	 * <p>This uses a custom message.
 	 * 
-	 * @param playerId
-	 *  The UUID of the player to ban.
-	 * @param message
-	 *  The message to display when a player attempts to rejoin.
-	 * @param adminBan
-	 *  Was this admin ban or automatic?
-	 * @return
-	 *  A summary of who was banned.
+	 * @param playerId The UUID of the player to ban.
+	 * @param message The message to display when a player attempts to rejoin.
+	 * @param adminBan Was this admin ban or automatic?
+	 * @return A summary of who was banned.
 	 */
 	public static BanResult doUUIDBan(UUID playerId, String message, boolean adminBan) {
 		return doUUIDBan(playerId, message, null, adminBan);
@@ -91,25 +84,20 @@ public class BanHandler {
 	/**
 	 * Issues a ban against a specific UUID.
 	 * 
-	 * If the player is online, kicks them.
+	 * <p>If the player is online, kicks them.
 	 * 
-	 * This uses a custom message and end time.
+	 * <p>This uses a custom message and end time.
 	 * 
-	 * @param playerId
-	 *  The UUID of the player to ban.
-	 * @param message
-	 *  The message to display when a player attempts to rejoin.
-	 * @param banEnd
-	 *  The time the ban should end.
-	 * @param adminBan
-	 *  Was this admin ban or automatic?
-	 * @return
-	 *  A summary of who was banned.
+	 * @param playerId The UUID of the player to ban.
+	 * @param message The message to display when a player attempts to rejoin.
+	 * @param banEnd The time the ban should end.
+	 * @param adminBan Was this admin ban or automatic?
+	 * @return A summary of who was banned.
 	 */
 	public static BanResult doUUIDBan(UUID playerId, String message, Date banEnd, boolean adminBan) {
 		try {
 			if (message == null || message.trim().equals("")) {
-				message = adminBan ? "Administrative Ban" : "Automatic Ban"; // TODO: config!
+				message = adminBan ? ADMIN_BAN : AUTO_BAN; // TODO: config!
 			}
 			Player spigotPlayer = Bukkit.getPlayer(playerId);
 			BSPlayer player = BSPlayer.byUUID(playerId);
@@ -150,23 +138,19 @@ public class BanHandler {
 	 * After the ban is created, finds all accounts that are using the IP address and bans them, unless
 	 * already banned or pardoned.
 	 * 
-	 * @param exactIP
-	 * 	The IP address to ban.
-	 * @param message
-	 * 	The message to use as a ban message; is also sent to all players who are online and caught in the ban.
-	 * @param banEnd
-	 * 	When does the ban end?
-	 * @param adminBan
-	 *  Was this an administrative ban?
-	 * @param includeHistoric
-	 *  Ban everyone who has ever used this IP address?
-	 * @return
-	 *  A BanResult object describing who was banned.
+	 * @param exactIP The IP address to ban.
+	 * @param message The message to use as a ban message; is also sent to all players who are 
+	 *     online and caught in the ban.
+	 * @param banEnd When does the ban end?
+	 * @param adminBan Was this an administrative ban?
+	 * @param includeHistoric Ban everyone who has ever used this IP address?
+	 * @return A BanResult object describing who was banned.
 	 */
-	public static BanResult doIPBan(BSIP exactIP, String message, Date banEnd, boolean adminBan, boolean includeHistoric) {
+	public static BanResult doIPBan(BSIP exactIP, String message, Date banEnd,
+			boolean adminBan, boolean includeHistoric) {
 		try {
 			if (message == null || message.trim().equals("")) {
-				message = adminBan ? "Administrative Ban" : "Automatic Ban"; // TODO: config!
+				message = adminBan ? ADMIN_BAN : AUTO_BAN; // TODO: config!
 			}
 			// TODO: match with existing ban for this IP.
 			BSBan ban = BSBan.create(exactIP, message, banEnd, adminBan); // general ban.
@@ -175,9 +159,12 @@ public class BanHandler {
 			
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				BSPlayer banPlayer = BSPlayer.byUUID(player.getUniqueId());
-				if (banPlayer.getIPPardonTime() != null) continue; // pardoned from IP match bans.
+				if (banPlayer.getIPPardonTime() != null) {
+					continue; // pardoned from IP match bans.
+				}
 				BSSession active = banPlayer.getLatestSession();
-				if (active.getIP().getId() == exactIP.getId() && banPlayer.getBan() == null) { // TODO replace with equality check.
+				if (active.getIP().getId() == exactIP.getId() && banPlayer.getBan() == null) {
+					// TODO replace with equality check.
 					banPlayer.setBan(ban);
 					result.addPlayer(banPlayer);
 					if (banEnd != null) {
@@ -192,7 +179,9 @@ public class BanHandler {
 				List<BSSession> sessions = BSSession.byIP(exactIP);
 				for (BSSession session : sessions) {
 					BSPlayer banPlayer = session.getPlayer();
-					if (banPlayer.getIPPardonTime() != null) continue; // pardoned from IP match bans.
+					if (banPlayer.getIPPardonTime() != null) {
+						continue; // pardoned from IP match bans.
+					}
 					if (session.getPlayer().getBan() == null) {
 						banPlayer.setBan(ban);
 						result.addPlayer(banPlayer);
@@ -210,23 +199,18 @@ public class BanHandler {
 	/**
 	 * Does a ban against a CIDR range.
 	 * 
-	 * @param cidrIP
-	 * 	cidr IP range to ban
-	 * @param message
-	 *  Message to record as ban reason
-	 * @param banEnd
-	 *  The time to end the ban
-	 * @param adminBan
-	 *  Is this an administrative ban?
-	 * @param includeHistoric
-	 *  Should we include all historic occurrences of this IP in the ban? (TODO)
-	 * @return
-	 *  A BanResult with the bans issued, if any
+	 * @param cidrIP cidr IP range to ban
+	 * @param message Message to record as ban reason
+	 * @param banEnd The time to end the ban
+	 * @param adminBan Is this an administrative ban?
+	 * @param includeHistoric Should we include all historic occurrences of this IP in the ban?
+	 * @return A BanResult with the bans issued, if any
 	 */
-	public static BanResult doCIDRBan(BSIP cidrIP, String message, Date banEnd, boolean adminBan, boolean includeHistoric) {
+	public static BanResult doCIDRBan(BSIP cidrIP, String message, Date banEnd, 
+			boolean adminBan, boolean includeHistoric) {
 		try {
 			if (message == null || message.trim().equals("")) {
-				message = adminBan ? "Administrative Ban" : "Automatic Ban"; // TODO: config!
+				message = adminBan ? ADMIN_BAN : AUTO_BAN; // TODO: config!
 			}
 			BSBan ban = BSBan.create(cidrIP, message, banEnd, adminBan); // general ban.
 			BanResult result = new BanResult();
@@ -234,8 +218,12 @@ public class BanHandler {
 			
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				BSPlayer banPlayer = BSPlayer.byUUID(player.getUniqueId());
-				if (banPlayer.getBan() != null) continue; // already banned.
-				if (banPlayer.getIPPardonTime() != null) continue; // pardoned from IP match bans.
+				if (banPlayer.getBan() != null) {
+					continue; // already banned.
+				}
+				if (banPlayer.getIPPardonTime() != null) {
+					continue; // pardoned from IP match bans.
+				}
 				
 				BSSession active = banPlayer.getLatestSession();
 				BSIP activeIP = active.getIP();
@@ -263,12 +251,15 @@ public class BanHandler {
 			}
 				
 			if (includeHistoric) {
-				List<BSIP> ipsIn = BSIP.allContained(cidrIP.getIPAddress().getLower(), cidrIP.getIPAddress().getNetworkPrefixLength());
+				List<BSIP> ipsIn = BSIP.allContained(cidrIP.getIPAddress().getLower(), 
+						cidrIP.getIPAddress().getNetworkPrefixLength());
 				for (BSIP exactIP : ipsIn) {
 					List<BSSession> sessions = BSSession.byIP(exactIP);
 					for (BSSession session : sessions) {
 						BSPlayer banPlayer = session.getPlayer();
-						if (banPlayer.getIPPardonTime() != null) continue; // pardoned from IP match bans.
+						if (banPlayer.getIPPardonTime() != null) {
+							continue; // pardoned from IP match bans.
+						}
 						if (session.getPlayer().getBan() == null) {
 							banPlayer.setBan(ban);
 							result.addPlayer(banPlayer);
@@ -284,10 +275,20 @@ public class BanHandler {
 		}	
 	}
 
-	public static BanResult doShareBan(BSShare share, BSPlayer limitBanTo, String message, Date banEnd, boolean adminBan) {
+	/**
+	 * Given a share, ban both (or if limitBanTo is set, just one) with a specified message / end / admin flag
+	 * @param share The share to ban
+	 * @param limitBanTo optional player to limit to
+	 * @param message the ban message
+	 * @param banEnd the end of the ban
+	 * @param adminBan is this an admin ban?
+	 * @return the result of the ban as a BanResult
+	 */
+	public static BanResult doShareBan(BSShare share, BSPlayer limitBanTo, String message, 
+			Date banEnd, boolean adminBan) {
 		try {
 			if (message == null || message.trim().equals("")) {
-				message = adminBan ? "Administrative Ban" : "Automatic Ban"; // TODO: config!
+				message = adminBan ? ADMIN_BAN : AUTO_BAN; // TODO: config!
 			}
 			BSBan ban = BSBan.create(share, message, banEnd, adminBan); // share ban
 			BanResult result = new BanResult();
@@ -302,13 +303,15 @@ public class BanHandler {
 					result.addPlayer(share.getSecondPlayer());
 				}
 			} else {
-				if (share.getFirstPlayer().getId() == limitBanTo.getId() &&
-						share.getFirstPlayer().getSharedPardonTime() == null && share.getFirstPlayer().getBan() == null) {
+				if (share.getFirstPlayer().getId() == limitBanTo.getId() 
+						&& share.getFirstPlayer().getSharedPardonTime() == null
+						&& share.getFirstPlayer().getBan() == null) {
 					share.getFirstPlayer().setBan(ban);
 					result.addPlayer(share.getFirstPlayer());
 				}
-				if (share.getSecondPlayer().getId() == limitBanTo.getId() &&
-						share.getSecondPlayer().getSharedPardonTime() == null && share.getSecondPlayer().getBan() == null) {
+				if (share.getSecondPlayer().getId() == limitBanTo.getId() 
+						&& share.getSecondPlayer().getSharedPardonTime() == null
+						&& share.getSecondPlayer().getBan() == null) {
 					share.getSecondPlayer().setBan(ban);
 					result.addPlayer(share.getSecondPlayer());
 				}
