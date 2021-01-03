@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.util;
 
 import com.google.common.collect.BiMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Function;
 import org.apache.commons.collections4.MapUtils;
@@ -51,9 +52,9 @@ public final class MoreMapUtils {
             return ((BiMap<K, V>) map).inverse().get(value);
         }
         for (final Map.Entry<K, V> entry : map.entrySet()) {
-            if (NullUtils.equals(value, entry.getValue())) {
-                return entry.getKey();
-            }
+			if (Objects.equals(value, entry.getValue())) {
+				return entry.getKey();
+			}
         }
         return null;
     }

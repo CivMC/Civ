@@ -27,26 +27,6 @@ public final class NullUtils {
         return null;
     }
 
-	/**
-     * Determines if two objects objects are equal.
-     *
-     * @param former The former object.
-     * @param latter The latter object.
-     * @return Returns true if the values equal each other.
-     */
-    public static boolean equals(final Object former, final Object latter) {
-        if (former == latter) {
-            return true;
-        }
-        if (former != null && former.equals(latter)) {
-            return true;
-        }
-        if (latter != null && latter.equals(former)) {
-            return true;
-        }
-        return false;
-    }
-
     /**
      * Determines if two objects objects are equal, except that null values are disallowed.
      *
@@ -58,13 +38,7 @@ public final class NullUtils {
         if (former == null || latter == null) {
             return false;
         }
-        if (former.equals(latter)) {
-            return true;
-        }
-        if (latter.equals(former)) {
-            return true;
-        }
-        return false;
+        return former.equals(latter);
     }
 
     /**
