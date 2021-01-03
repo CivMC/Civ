@@ -97,7 +97,7 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 		this.personalDeathMessages = config.getBoolean("personalDeathMessages", false);
 		if (this.personalDeathMessages) plugin().log("  Personal death messages enabled.");
 
-		this.disableNetheriteCrafting = config.getBoolean("disableNetheriteCrafting", false);
+		this.disableNetheriteCrafting = config.getBoolean("disableNetheriteCrafting", true);
 		if (this.disableNetheriteCrafting) plugin().log("  Disable Netherite Crafting enabled.");
 		
 		this.goldBlockTeleport = config.getBoolean("goldBlockTeleport", false);
