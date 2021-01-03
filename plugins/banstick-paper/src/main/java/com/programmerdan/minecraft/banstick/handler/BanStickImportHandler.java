@@ -14,11 +14,11 @@ import org.bukkit.scheduler.BukkitTask;
  * Many folks might be migrating from an existing ban management system to BanStick; this is meant
  * to enable such migration easily.
  * 
- * This is set up to be auto-loading modular like BanStickProxyHandler, so if you want to register
+ * <p>This is set up to be auto-loading modular like BanStickProxyHandler, so if you want to register
  * more importers just code 'm up and add them to the .importer package. Be sure they extend
  * {@link com.programmerdan.minecraft.banstick.handler.ImportWorker} class.
  * 
- * @author ProgrammerDan
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public class BanStickImportHandler {
@@ -37,14 +37,15 @@ public class BanStickImportHandler {
 		
 		workers = new ArrayList<>();
 		
-
 		try {
 			ClassPath getSamplersPath = ClassPath.from(classes);
 
-			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses("com.programmerdan.minecraft.banstick.importer")) {
+			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses(
+					"com.programmerdan.minecraft.banstick.importer")) {
 				Class<?> clazz = clsInfo.load();
 				if (clazz != null && ImportWorker.class.isAssignableFrom(clazz)) {
-					BanStick.getPlugin().info("Found an import worker class {0}, attempting to find a suitable constructor", clazz.getName());
+					BanStick.getPlugin().info("Found an import worker class {0}, attempting to find a "
+							+ " suitable constructor", clazz.getName());
 					ImportWorker loader = null;
 					try {
 						Constructor<?> constructBasic = clazz.getConstructor(ConfigurationSection.class);
@@ -58,10 +59,12 @@ public class BanStickImportHandler {
 
 					if (loader != null) {
 						try {
-							BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(BanStick.getPlugin(), loader, loader.getDelay());
+							BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(
+									BanStick.getPlugin(), loader, loader.getDelay());
 							loader.setTask(task);
 						} catch (Exception e) {
-							BanStick.getPlugin().warning("Failed to activate scraper worker of type {0}", clazz.getName());
+							BanStick.getPlugin().warning("Failed to activate scraper worker of type {0}", 
+									clazz.getName());
 							BanStick.getPlugin().warning("  Failure message: ", e);
 						}
 					}
@@ -72,12 +75,17 @@ public class BanStickImportHandler {
 		}
 	}
 	
+	/**
+	 * Shuts this import handler down.
+	 */
 	public void shutdown() {
-		if (this.workers == null) return;
+		if (this.workers == null) {
+			return;
+		}
 		for (ImportWorker task : workers) {
 			try {
 				task.shutdown();
-			} catch (Exception e) {}
+			} catch (Exception e) { }
 		}
 	}
 }
