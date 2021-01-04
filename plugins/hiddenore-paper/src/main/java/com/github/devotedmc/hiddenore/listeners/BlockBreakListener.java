@@ -297,10 +297,22 @@ public class BlockBreakListener implements Listener {
 			}
 			
 			if (Config.isAlertUser()) {
-				for (ItemStack item : hoe.getDrops()) {
-					String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? 
-							item.getItemMeta().getDisplayName() : Config.getPrettyName(item.getType().name());
-					alertUser(player, blockConfig, dropName, item.getAmount(), name);
+				if (blockConfig.hasCustomPrefix(dropName)) {
+					// Custom prefix items are immediately reported to a player
+					StringBuilder customAlerts = new StringBuilder(blockConfig.getPrefix(dropName));
+
+					for (ItemStack item : hoe.getDrops()) {
+						buildAlert(customAlerts, item, null, item.getAmount(), null);
+					}
+					player.sendMessage(ChatColor.GOLD + customAlerts.toString());
+				} else {
+					// otherwise, if list drops are enabled we aggregate and report items when done everything
+					if (Config.isListDrops()) {
+						for (ItemStack item : hoe.getDrops()) {
+							buildAlert(alertBuffer, item, null, item.getAmount(), ",");
+
+						}
+					}
 				}
 			}
 		} else {
@@ -378,25 +390,37 @@ public class BlockBreakListener implements Listener {
 				
 				// Anything to tell anyone about?
 				if (placed > 0 && Config.isAlertUser()) {
-					alertUser(player, blockConfig, dropName, placed, name);
+					if (blockConfig.hasCustomPrefix(dropName)) {
+						// if this block has a custom prefix we alert immediately
+						StringBuilder customAlerts = new StringBuilder(blockConfig.getPrefix(dropName));
+						
+						buildAlert(customAlerts, null, name, placed, " nearby");
+
+						player.sendMessage(ChatColor.GOLD + customAlerts.toString());
+					} else {
+						// otherwise, we aggregate our notices and send them after all drop / gen is done.
+						if (Config.isListDrops()) {
+							buildAlert(alertBuffer, null, name, placed, " nearby,");
+						}
+					}
 				}
 			}
 		}
 	}
 	
-	private boolean alertUser(Player player, BlockConfig blockConfig, String dropName, int amount, String itemName){
-		if (blockConfig.hasCustomPrefix(dropName)) {
-			StringBuilder customAlert = new StringBuilder(blockConfig.getPrefix(dropName));
-		
-			if(Config.isListDrops()){
-				customAlert.append(" ").append(amount).append(" ").append(itemName);
-			}
-			player.sendMessage(ChatColor.GOLD + customAlert.toString());
-			return true;
+	private void buildAlert(StringBuilder alertBuilder, ItemStack item, String nameOverride, int amount, String postfix) {
+		String name = nameOverride;
+		if (name == null && item != null) {
+			name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? 
+					item.getItemMeta().getDisplayName() : Config.getPrettyName(item.getType().name());
 		}
-		return false;
+		
+		alertBuilder.append(" ").append(amount).append(" ").append(name);
+		if (postfix != null) {
+			alertBuilder.append(postfix);
+		}
 	}
-	
+
 	private static BlockFace[] visibleFaces = new BlockFace[] {
 				BlockFace.DOWN, BlockFace.UP, BlockFace.EAST, BlockFace.WEST, BlockFace.NORTH, BlockFace.SOUTH
 			};
