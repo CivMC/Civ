@@ -25,14 +25,22 @@ import org.bukkit.block.data.type.Switch;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
 import org.bukkit.util.BlockIterator;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
  * Class of utility functions for Blocks, and BlockFaces referencing Blocks around a Block.
+ *
+ * @deprecated Use {@link WorldUtils} and {@link vg.civcraft.mc.civmodcore.world.BlockProperties} instead.
  */
+@Deprecated
 public final class BlockAPI {
 	
 	private BlockAPI() { }
 
+	/**
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#ALL_SIDES} instead.
+	 */
+	@Deprecated
 	public static final List<BlockFace> ALL_SIDES = ImmutableList.of(
 			BlockFace.UP,
 			BlockFace.DOWN,
@@ -41,6 +49,10 @@ public final class BlockAPI {
 			BlockFace.WEST,
 			BlockFace.EAST);
 
+	/**
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#PLANAR_SIDES} instead.
+	 */
+	@Deprecated
 	public static final List<BlockFace> PLANAR_SIDES = ImmutableList.of(
 			BlockFace.NORTH,
 			BlockFace.SOUTH,
@@ -76,7 +88,10 @@ public final class BlockAPI {
 	 *
 	 * @param block The block to check.
 	 * @return Returns true if the block is valid.
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#isValidBlock(Block)} instead.
 	 */
+	@Deprecated
 	public static boolean isValidBlock(Block block) {
 		if (block == null) {
 			return false;
@@ -93,7 +108,11 @@ public final class BlockAPI {
 	 * @param block The block to get the relatives of.
 	 * @param faces An array of the faces, which will be the keys of the returned map.
 	 * @return Returns an immutable map of the block's relatives.
+	 *
+	 * @deprecated Use
+	 *     {@link vg.civcraft.mc.civmodcore.world.WorldUtils#getBlockSidesMapped(Block, Collection, boolean)} instead.
 	 */
+	@Deprecated
 	public static Map<BlockFace, Block> getBlockSidesMapped(Block block, BlockFace... faces) {
 		if (faces == null || faces.length < 1) {
 			return Collections.unmodifiableMap(new EnumMap<>(BlockFace.class));
@@ -109,7 +128,11 @@ public final class BlockAPI {
 	 * @param block The block to get the relatives of.
 	 * @param faces A collection of the faces, which will be the keys of the returned map.
 	 * @return Returns an immutable map of the block's relatives.
+	 *
+	 * @deprecated Use
+	 *     {@link vg.civcraft.mc.civmodcore.world.WorldUtils#getBlockSidesMapped(Block, Collection, boolean)} instead.
 	 */
+	@Deprecated
 	public static Map<BlockFace, Block> getBlockSidesMapped(Block block, Collection<BlockFace> faces) {
 		EnumMap<BlockFace, Block> results = new EnumMap<>(BlockFace.class);
 		if (block != null && faces != null) {
@@ -124,7 +147,11 @@ public final class BlockAPI {
 	 * @param block The block to get the relatives of.
 	 * @param faces A collection of the faces, which will be the keys of the returned map.
 	 * @return Returns an immutable map of the block's relatives.
+	 *
+	 * @deprecated Use
+	 *     {@link vg.civcraft.mc.civmodcore.world.WorldUtils#getBlockSides(Block, Collection, boolean)} instead.
 	 */
+	@Deprecated
 	public static List<Block> getBlockSides(Block block, Collection<BlockFace> faces) {
 		if (block == null || faces == null) {
             throw new IllegalArgumentException("One of the args passed was null");
@@ -140,7 +167,11 @@ public final class BlockAPI {
 	 *
 	 * @param block The block to get all the relatives of.
 	 * @return Returns an immutable map of all the block's relatives.
+	 *
+	 * @deprecated Use
+	 *     {@link vg.civcraft.mc.civmodcore.world.WorldUtils#getAllBlockSidesMapped(Block, boolean)} instead.
 	 */
+	@Deprecated
 	public static Map<BlockFace, Block> getAllSidesMapped(Block block) {
 		return getBlockSidesMapped(block, ALL_SIDES);
 	}
@@ -150,7 +181,10 @@ public final class BlockAPI {
 	 *
 	 * @param block The block to get all the relatives of.
 	 * @return Returns an immutable list of all the block's relatives.
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#getAllBlockSides(Block, boolean)} instead.
 	 */
+	@Deprecated
 	public static List<Block> getAllSides(Block block) {
 		return getBlockSides(block, ALL_SIDES);
 	}
@@ -160,7 +194,11 @@ public final class BlockAPI {
 	 *
 	 * @param block The block to get the planar relatives of.
 	 * @return Returns an immutable map of all the block's planar relatives.
+	 *
+	 * @deprecated Use
+	 *     {@link vg.civcraft.mc.civmodcore.world.WorldUtils#getPlanarBlockSidesMapped(Block, boolean)} instead.
 	 */
+	@Deprecated
 	public static Map<BlockFace, Block> getPlanarSidesMapped(Block block) {
 		return getBlockSidesMapped(block, PLANAR_SIDES);
 	}
@@ -170,7 +208,11 @@ public final class BlockAPI {
 	 *
 	 * @param block The block to get the planar relatives of.
 	 * @return Returns an immutable list of all the block's planar relatives.
+	 *
+	 * @deprecated Use
+	 *     {@link vg.civcraft.mc.civmodcore.world.WorldUtils#getPlanarBlockSides(Block, boolean)} instead.
 	 */
+	@Deprecated
 	public static List<Block> getPlanarSides(Block block) {
 		return getBlockSides(block, PLANAR_SIDES);
 	}
@@ -182,7 +224,10 @@ public final class BlockAPI {
 	 * @return Returns the next planar face in a clockwise direction.
 	 *
 	 * @exception IllegalArgumentException Throws if the given face is null or non-planar.
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#turnClockwise(BlockFace)} instead.
 	 */
+	@Deprecated
 	public static BlockFace turnClockwise(BlockFace face) {
 		Preconditions.checkArgument(face != null);
 		Preconditions.checkArgument(PLANAR_SIDES.contains(face));
@@ -206,7 +251,10 @@ public final class BlockAPI {
 	 * @return Returns the next planar face in a anti-clockwise direction.
 	 *
 	 * @exception IllegalArgumentException Throws if the given face is null or non-planar.
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#turnAntiClockwise(BlockFace)} instead.
 	 */
+	@Deprecated
 	public static BlockFace turnAntiClockwise(BlockFace face) {
 		Preconditions.checkArgument(face != null);
 		Preconditions.checkArgument(PLANAR_SIDES.contains(face));
@@ -230,7 +278,10 @@ public final class BlockAPI {
 	 *
 	 * @param attachable The Switch, which is an instance of {@link BlockData}. So do your own checks beforehand.
 	 * @return Returns the block face the given attachable is attached to, or null.
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#getAttachedFace(Switch)} instead.
 	 */
+	@Deprecated
 	public static BlockFace getAttachedFace(Switch attachable) {
 		if (attachable == null) {
 			return null;
@@ -252,7 +303,11 @@ public final class BlockAPI {
 	 *
 	 * @param block The block that represents the double chest block you already have.
 	 * @return Returns the other block or null if none can be found, or if the given block isn't that of a double chest.
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#getOtherDoubleChestBlock(Block, boolean)}
+	 *     instead.
 	 */
+	@Deprecated
 	public static Block getOtherDoubleChestBlock(Block block) {
 		if (!isValidBlock(block)) {
 			return null;
@@ -280,7 +335,11 @@ public final class BlockAPI {
 	 * @param face The direction at which the iterator should iterate.
 	 * @param range The distance the iterator should iterate.
 	 * @return Returns a new instance of an BlockIterator.
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#getBlockIterator(Block, BlockFace, int)}
+	 *     instead.
 	 */
+	@Deprecated
 	public static BlockIterator getBlockIterator(Block block, BlockFace face, int range) {
 		if (!BlockAPI.isValidBlock(block)) {
 			throw new IllegalArgumentException("Cannot create a block iterator from a null block.");
@@ -294,12 +353,22 @@ public final class BlockAPI {
 		return new BlockIterator(block.getWorld(), block.getLocation().toVector(), face.getDirection(), 0, range);
 	}
 
+	/**
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.BlockProperties#setBlockProperty(Block, String, String)}
+	 *     instead.
+	 */
+	@Deprecated
 	public static boolean setBlockProperty(Block block, String key, String value) {
 		//we need this wrapper method to trick the java generics
 		return innerSetBlockProperty(block, key, value);
 	}
 
 	// WHY IS THIS PUBLIC IF IT'S INNER?
+	/**
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.BlockProperties#setBlockProperty(Block, String, String)}
+	 *     instead.
+	 */
+	@Deprecated
 	public static <V extends Comparable<V>> boolean innerSetBlockProperty(Block block, String key, String value) {
 		@SuppressWarnings("unchecked")
 		IBlockState<V> state = (IBlockState<V>) blockStateByIdentifier.get(key);

@@ -6,16 +6,24 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.Tag;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
+import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
 
 /**
  * <p>See <a href="https://github.com/Protonull/BukkitReport/tree/master/reports">BukkitReports</a>.</p>
  *
  * <ul>
  *     <label>See also:</label>
- *     <li>{@link SpawnEggAPI SpawnEggAPI}</li>
- *     <li>{@link TreeTypeAPI TreeTypeAPI}</li>
+ *     <li>{@link SpawnEggUtils SpawnEggAPI}</li>
+ *     <li>{@link TreeTypeUtils TreeTypeAPI}</li>
  * </ul>
+ *
+ * @deprecated Use {@link MaterialUtils}, {@link ItemUtils}, and {@link MoreTags} instead.
  */
+@Deprecated
 public final class MaterialAPI {
 
 	private static final List<Material> hashMaterials = new ArrayList<>();
@@ -77,7 +85,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material would be considered a valid item.
+	 *
+	 * @deprecated Use {@link ItemUtils#isValidItemMaterial(Material)} instead.
 	 */
+	@Deprecated
 	public static boolean isValidItemMaterial(Material material) {
 		if (material == null) {
 			return false;
@@ -96,7 +107,10 @@ public final class MaterialAPI {
 	 *
 	 * @param value The value to search for a matching material by.
 	 * @return Returns a matched material or null.
+	 *
+	 * @deprecated Use {@link MaterialUtils#getMaterial(String)} instead.
 	 */
+	@Deprecated
 	public static Material getMaterial(String value) {
 		if (Strings.isNullOrEmpty(value)) {
 			return null;
@@ -110,7 +124,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is air.
+	 *
+	 * @deprecated Use {@link MaterialUtils#isAir(Material)} instead.
 	 */
+	@Deprecated
 	public static boolean isAir(Material material) {
 		if (material == null) {
 			return true;
@@ -123,7 +140,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a log.
+	 *
+	 * @deprecated Please use {@code MoreTags.LOGS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isLog(Material material) {
 		if (material == null) {
 			return false;
@@ -157,7 +177,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a stripped log or wood plank.
+	 *
+	 * @deprecated Please use {@code MoreTags.STRIPPED_ALL.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isStripped(Material material) {
 		if (material == null) {
 			return false;
@@ -176,7 +199,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a stripped log.
+	 *
+	 * @deprecated Please use {@code MoreTags.STRIPPED_LOGS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isStrippedLog(Material material) {
 		if (material == null) {
 			return false;
@@ -199,7 +225,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a stripped plank.
+	 *
+	 * @deprecated Please use {@code MoreTags.STRIPPED_PLANKS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isStrippedPlank(Material material) {
 		if (material == null) {
 			return false;
@@ -222,7 +251,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material can be potted.
+	 *
+	 * @deprecated Please use {@code MoreTags.POTTABLE.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isPottable(Material material) {
 		if (material == null) {
 			return false;
@@ -271,7 +303,10 @@ public final class MaterialAPI {
 	 *
 	 * @see org.bukkit.block.data.Ageable Check if the Block's data is an instance of this Ageable, though be aware that
 	 * {@link Material#FIRE fire} and {@link Material#FROSTED_ICE frosted ice} also implement Ageable.
+	 *
+	 * @deprecated Please use {@code MoreTags.CROPS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isCrop(Material material) {
 		if (material == null) {
 			return false;
@@ -303,7 +338,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a skull/head.
+	 *
+	 * @deprecated Please use {@code MaterialTags.SKULLS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isSkull(Material material) {
 		if (material == null) {
 			return false;
@@ -331,7 +369,10 @@ public final class MaterialAPI {
 	 *
 	 * @see Tag#IMPERMEABLE This functionally fulfils glass checking, however the name doesn't incidate that the tag
 	 *     is specific to glass, thus the switch remains.
+	 *
+	 * @deprecated Please use {@code MaterialTags.GLASS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isGlassBlock(Material material) {
 		if (material == null) {
 			return false;
@@ -365,7 +406,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a glass pane.
+	 *
+	 * @deprecated Please use {@code MaterialTags.GLASS_PANES.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isGlassPane(Material material) {
 		if (material == null) {
 			return false;
@@ -423,7 +467,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is infested.
+	 *
+	 * @deprecated Please use {@code MaterialTags.INFESTED_BLOCKS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isInfested(Material material) {
 		if (material == null) {
 			return false;
@@ -456,7 +503,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is dirty.
+	 *
+	 * @deprecated Please use {@code MoreTags.DIRT.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isDirt(Material material) {
 		if (material == null) {
 			return false;
@@ -479,7 +529,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a potion.
+	 *
+	 * @deprecated Please use {@code MoreTags.POTIONS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isPotion(Material material) {
 		if (material == null) {
 			return false;
@@ -499,7 +552,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a sword.
+	 *
+	 * @deprecated Please use {@code MaterialTags.SWORDS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isSword(Material material) {
 		if (material == null) {
 			return false;
@@ -521,7 +577,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a pick axe.
+	 *
+	 * @deprecated Please use {@code MaterialTags.PICKAXES.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isPickaxe(Material material) {
 		if (material == null) {
 			return false;
@@ -543,7 +602,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a axe.
+	 *
+	 * @deprecated Please use {@code MaterialTags.AXES.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isAxe(Material material) {
 		if (material == null) {
 			return false;
@@ -565,7 +627,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a spade.
+	 *
+	 * @deprecated Please use {@code MaterialTags.SHOVELS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isShovel(Material material) {
 		if (material == null) {
 			return false;
@@ -587,7 +652,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a hoe.
+	 *
+	 * @deprecated Please use {@code MaterialTags.HOES.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isHoe(Material material) {
 		if (material == null) {
 			return false;
@@ -609,7 +677,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a helmet.
+	 *
+	 * @deprecated Please use {@code MaterialTags.HELMETS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isHelmet(Material material) {
 		if (material == null) {
 			return false;
@@ -632,7 +703,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a chest plate.
+	 *
+	 * @deprecated Please use {@code MaterialTags.CHESTPLATES.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isChestplate(Material material) {
 		if (material == null) {
 			return false;
@@ -654,7 +728,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a pair of leggings.
+	 *
+	 * @deprecated Please use {@code MaterialTags.LEGGINGS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean areLeggings(Material material) {
 		if (material == null) {
 			return false;
@@ -676,7 +753,10 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a pair of boots.
+	 *
+	 * @deprecated Please use {@code MaterialTags.BOOTS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean areBoots(Material material) {
 		if (material == null) {
 			return false;
@@ -698,7 +778,10 @@ public final class MaterialAPI {
 	 *
 	 * @param object Object to base returned material on
 	 * @return Material hash of the given object
+	 *
+	 * @deprecated Use {@link MaterialUtils#getMaterialHash(Object)} instead.
 	 */
+	@Deprecated
 	public static Material getMaterialHash(Object object) {
 		if (object == null) {
 			return hashMaterials.get(0);

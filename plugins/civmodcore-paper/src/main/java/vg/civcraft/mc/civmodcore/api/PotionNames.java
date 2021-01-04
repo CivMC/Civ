@@ -13,11 +13,15 @@ import org.bukkit.potion.PotionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 /**
  * Class that loads and store potion names.
+ *
+ * @deprecated Use {@link PotionUtils} instead.
  * */
+@Deprecated
 public final class PotionNames {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PotionNames.class.getSimpleName());
@@ -36,7 +40,6 @@ public final class PotionNames {
 	 * */
 	public static void loadPotionNames() {
 		resetPotionNames();
-		// Load enchantment names from enchantments.csv
 		InputStream enchantmentsCSV = CivModCorePlugin.class.getResourceAsStream("/potions.csv");
 		if (enchantmentsCSV != null) {
 			try {
@@ -83,9 +86,6 @@ public final class PotionNames {
 					}
 					// Put the enchantment and name into the system
 					POTION_DETAILS.add(new SearchResult(type, effectType, name));
-					LOGGER.info(String.format("[Config] Potion parsed: %s = %s = %s", type.name(),
-							effectType == null ? "NULL" : effectType.getName(),
-							name));
 					line = reader.readLine();
 				}
 				reader.close();

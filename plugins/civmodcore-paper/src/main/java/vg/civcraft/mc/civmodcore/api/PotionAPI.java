@@ -4,7 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.potion.PotionEffectType;
+import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 
+/**
+ * @deprecated Use {@link PotionUtils} instead.
+ */
+@Deprecated
 public final class PotionAPI {
 
 	private PotionAPI() {
@@ -49,7 +54,11 @@ public final class PotionAPI {
 		potionEffectNameMapping.put(PotionEffectType.WEAKNESS, "Weakness");
 		potionEffectNameMapping.put(PotionEffectType.WITHER, "Wither");
 	}
-	
+
+	/**
+	 * @deprecated Use {@link PotionUtils#getEffectNiceName(PotionEffectType)} instead.
+	 */
+	@Deprecated
 	public static String getNiceName(PotionEffectType pet) {
 		return potionEffectNameMapping.get(pet);
 	}

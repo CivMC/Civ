@@ -8,8 +8,10 @@ import java.util.concurrent.TimeUnit;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 public class TextUtil {
 
@@ -55,6 +57,10 @@ public class TextUtil {
 	// Color parsing
 	// -------------------------------------------- //
 
+	/**
+	 * @deprecated Use {@link ChatUtils#parseColor(String)} instead.
+	 */
+	@Deprecated
 	public static String parseColor(String string) {
 		string = parseColorAmp(string);
 		string = parseColorAcc(string);
@@ -62,12 +68,20 @@ public class TextUtil {
 		return string;
 	}
 
+	/**
+	 * @deprecated Use {@link ChatUtils#parseColorAmp(String)} instead.
+	 */
+	@Deprecated
 	public static String parseColorAmp(String string) {
 		string = string.replace("&&", "&");
 		string = string.replaceAll("&([a-zA-Z0-9])", "§$1");
 		return string;
 	}
 
+	/**
+	 * @deprecated Use {@link ChatUtils#parseColorAcc(String)} instead.
+	 */
+	@Deprecated
 	public static String parseColorAcc(String string) {
 		return string.
 				replace("`0", ChatColor.BLACK.toString()).
@@ -104,6 +118,10 @@ public class TextUtil {
 				replace("`r", ChatColor.RESET.toString());
 	}
 
+	/**
+	 * @deprecated Use {@link ChatUtils#parseColorTags(String)} instead.
+	 */
+	@Deprecated
 	public static String parseColorTags(String string) {
 		return string.
 				replace("<black>", ChatColor.BLACK.toString()).
@@ -153,6 +171,9 @@ public class TextUtil {
 				replace("<lp>", ChatColor.LIGHT_PURPLE.toString());
 	}
 
+	/**
+	 * @deprecated Use {@link ChatUtils#parseColorTags(String)} instead.
+	 */
 	@Deprecated
 	public static String parseTags(String sting) {
 		return parseColorTags(sting);
@@ -167,6 +188,10 @@ public class TextUtil {
 		return string.substring(0, 1).toUpperCase() + string.substring(1);
 	}
 
+	/**
+	 * @deprecated Use {@link StringUtils#repeat(String, int)} instead.
+	 */
+	@Deprecated
 	public static String repeat(String string, int times) {
 		Preconditions.checkArgument(string != null);
 		if (times <= 0) {
@@ -177,6 +202,10 @@ public class TextUtil {
 		}
 	}
 
+	/**
+	 * @deprecated Use {@link StringUtils#join(Object[], String)} instead.
+	 */
+	@Deprecated
 	public static String implode(List<String> list, String glue) {
 		Preconditions.checkArgument(list != null);
 		Preconditions.checkArgument(glue != null);
@@ -301,7 +330,10 @@ public class TextUtil {
 	 * @param former The first value.
 	 * @param latter The second value.
 	 * @return Returns true if the first and second values match.
+	 *
+	 * @deprecated Use {@link StringUtils#equals(CharSequence, CharSequence)} instead.
 	 */
+	@Deprecated
 	public static boolean stringEquals(String former, String latter) {
 		if (former == latter) { // Don't change this to .equals(), this is a null and pointer check
 			return true;
@@ -322,7 +354,10 @@ public class TextUtil {
 	 * @param former The first value.
 	 * @param latter The second value.
 	 * @return Returns true if the first and second values match regardless of case.
+	 *
+	 * @deprecated Use {@link StringUtils#equalsIgnoreCase(CharSequence, CharSequence)} instead.
 	 */
+	@Deprecated
 	public static boolean stringEqualsIgnoreCase(String former, String latter) {
 		if (former == latter) { // Don't change this to .equals(), this is a null and pointer check
 			return true;
@@ -342,7 +377,10 @@ public class TextUtil {
 	 * @param container The string to check the start of.
 	 * @param contained The string to search for.
 	 * @return Returns true if the contained is contained within the container.
+	 *
+	 * @deprecated Use {@link StringUtils#startsWithIgnoreCase(CharSequence, CharSequence)} instead.
 	 */
+	@Deprecated
 	public static boolean startsWith(String container, String contained) {
 		if (contained == null || contained.isEmpty()) {
 			return true;
@@ -361,7 +399,10 @@ public class TextUtil {
 	 *
 	 * @param component The component to test if null or empty.
 	 * @return Returns true if the component is null or has no visible content.
+	 *
+	 * @deprecated Use {@link ChatUtils#isNullOrEmpty(BaseComponent)} instead.
 	 */
+	@Deprecated
 	public static boolean isNullOrEmpty(BaseComponent component) {
 		if (component == null) {
 			return true;
@@ -375,7 +416,10 @@ public class TextUtil {
 	 * @param value The value of the text. (Objects will be stringified)
 	 * @param formats The colour formats.
 	 * @return Returns the created component, so you <i>can</i> do more stuff to it.
+	 *
+	 * @deprecated Use {@link ChatUtils#textComponent(Object, net.md_5.bungee.api.ChatColor...)} instead.
 	 */
+	@Deprecated
 	public static TextComponent textComponent(final Object value, final net.md_5.bungee.api.ChatColor... formats) {
 		final TextComponent component = new TextComponent(value == null ? "<null>" : value.toString());
 		if (!ArrayUtils.isEmpty(formats)) {

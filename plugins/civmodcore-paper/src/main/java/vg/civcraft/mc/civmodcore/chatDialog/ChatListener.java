@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.TabCompleteEvent;
 
+@Deprecated
 public class ChatListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)

@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.api;
 
 import org.bukkit.Material;
 
+@Deprecated(forRemoval = true)
 public final class ToolAPI {
 
 	/**

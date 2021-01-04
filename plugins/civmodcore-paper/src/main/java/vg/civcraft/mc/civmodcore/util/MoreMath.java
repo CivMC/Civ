@@ -2,10 +2,11 @@ package vg.civcraft.mc.civmodcore.util;
 
 /**
  * General math utility class that <i>may</i> exist elsewhere, but I have none the foggiest where. If any of y'all
- * figure out where, feel free to lodge an official complaint
- * <a href="https://github.com/CivClassic/CivModCore/issues/new">here</a>.
+ * figure out where, feel free to lodge an official complaint.
+ *
+ * @author Protonull
  */
-public class Maths {
+public final class MoreMath {
 
 	/**
 	 * Limits a value between and including two values.

@@ -6,7 +6,10 @@ import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 
 /**
  * Class of utility functions for Locations.
+ *
+ * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils} instead.
  */
+@Deprecated
 public final class LocationAPI {
 
 	/**
@@ -14,7 +17,10 @@ public final class LocationAPI {
 	 *
 	 * @param location The location to retrieve the world from.
 	 * @return Returns the world if loaded, or null.
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#getLocationWorld(Location)} instead.
 	 */
+	@Deprecated
 	public static World getLocationWorld(Location location) {
 		if (location == null) {
 			return null;
@@ -32,7 +38,10 @@ public final class LocationAPI {
 	 *
 	 * @param location The location to check.
 	 * @return Returns true if the location exists, is valid, and safe to use.
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#isValidLocation(Location)} instead.
 	 */
+	@Deprecated
 	public static boolean isValidLocation(Location location) {
 		if (location == null) {
 			return false;
@@ -48,7 +57,10 @@ public final class LocationAPI {
 	 *
 	 * @param location The location to convert.
 	 * @return Returns a block location, or null if the given location was null.
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#getBlockLocation(Location)} instead.
 	 */
+	@Deprecated
 	public static Location getBlockLocation(Location location) {
 		if (location == null) {
 			return null;
@@ -64,7 +76,10 @@ public final class LocationAPI {
 	 *
 	 * @param location The location to convert.
 	 * @return Returns a block's mid point, or null if the given location was null.
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#getMidBlockLocation(Location)} instead.
 	 */
+	@Deprecated
 	public static Location getMidBlockLocation(Location location) {
 		if (location == null) {
 			return null;
@@ -78,7 +93,11 @@ public final class LocationAPI {
 	 * @param former The first location.
 	 * @param latter The second location.
 	 * @return Returns true if the two locations are not null and share the same world.
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#doLocationsHaveSameWorld(Location, Location)}
+	 *     instead.
 	 */
+	@Deprecated
 	public static boolean areLocationsSameWorld(Location former, Location latter) {
 		if (former == null || latter == null) {
 			return false;
@@ -94,7 +113,11 @@ public final class LocationAPI {
 	 * @param consider2D Whether only the X and Z axis should be considered. (true if yes)
 	 * @return Returns the largest axis distance, or -1 if there's a problem,
 	 *     like the two locations being in two different worlds.
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#blockDistance(Location, Location, boolean)}
+	 *     instead.
 	 */
+	@Deprecated
 	public static int blockDistance(final Location former, final Location latter, final boolean consider2D) {
 		if (!LocationAPI.areLocationsSameWorld(former, latter)) {
 			return -1;
@@ -115,7 +138,10 @@ public final class LocationAPI {
 	 *
 	 * @param location The location to check.
 	 * @return Returns true if the Y coordinate is a valid block location. (False if given location is null!)
+	 *
+	 * @deprecated Use {@link vg.civcraft.mc.civmodcore.world.WorldUtils#isWithinBounds(Location)} instead.
 	 */
+	@Deprecated
 	public static boolean isWithinBounds(final Location location) {
 		if (location == null) {
 			return false;

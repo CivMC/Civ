@@ -10,8 +10,13 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 
+/**
+ * @deprecated Use {@link MoreArrayUtils}, {@link MoreCollectionUtils}, and {@link MoreMapUtils} instead.
+ */
+@Deprecated
 public final class Iteration {
 
 	@FunctionalInterface
@@ -31,8 +36,8 @@ public final class Iteration {
 	 *
 	 * @deprecated Use {@link ArrayUtils#isEmpty(Object[])} instead.
 	 */
-	@SafeVarargs
 	@Deprecated
+	@SafeVarargs
 	public static <T> boolean isNullOrEmpty(T... array) {
 		return ArrayUtils.isEmpty(array);
 	}
@@ -46,7 +51,10 @@ public final class Iteration {
 	 * @param <T> The type of collection.
 	 * @param collection The collection to check.
 	 * @return Returns true if the collection exists and at least one item.
+	 *
+	 * @deprecated Use {@link CollectionUtils#isEmpty(Collection)} instead.
 	 */
+	@Deprecated
     public static <T> boolean isNullOrEmpty(Collection<T> collection) {
 		return collection == null || collection.isEmpty();
 	}
@@ -59,7 +67,10 @@ public final class Iteration {
 	 * @param base The object to match.
 	 * @param values An array of items to match against.
 	 * @return Returns true if the base is found within the values.
+	 *
+	 * @deprecated Use {@link org.apache.commons.lang3.ArrayUtils#contains(Object[], Object)} instead.
 	 */
+	@Deprecated
 	@SafeVarargs
     public static <T> boolean contains(T base, T... values) {
 		if (ArrayUtils.isEmpty(values)) {
@@ -79,7 +90,10 @@ public final class Iteration {
 	 * @param <T> The generic type of the collection.
 	 * @param collection The collection to iterate and clear.
 	 * @param processor The iteration processor which will be called for each item in the collection.
+	 *
+	 * @deprecated Use {@link Collection#forEach(Consumer)} and {@link Collection#clear()} instead.
 	 */
+	@Deprecated
     public static <T> void iterateThenClear(Collection<T> collection, Consumer<T> processor) {
 		if (isNullOrEmpty(collection) || processor == null) {
 			return;
@@ -96,7 +110,10 @@ public final class Iteration {
 	 * @param <T> The generic type of the collection.
 	 * @param collection The collection to iterate.
 	 * @param processor The iteration processor which will be called for each item in the collection.
+	 *
+	 * @deprecated Use {@link Collection#iterator()} instead.
 	 */
+	@Deprecated
     public static <T> void iterateHasNext(Collection<T> collection, ElementAndBoolConsumer<T> processor) {
 		if (isNullOrEmpty(collection) || processor == null) {
 			return;
@@ -114,7 +131,10 @@ public final class Iteration {
 	 * @param array The array to fill.
 	 * @param value The value to fill the array with.
 	 * @return Returns the given array with the filled values.
+	 *
+	 * @deprecated Use {@link MoreArrayUtils#fill(Object[], Object)} instead.
 	 */
+	@Deprecated
     public static <T> T[] fill(T[] array, T value) {
 		if (ArrayUtils.isEmpty(array)) {
 			return array;
@@ -123,7 +143,7 @@ public final class Iteration {
 		return array;
 	}
 
-	/** @deprecated Use {@link #anyMatch(Object[], Predicate)} instead. */
+	/** @deprecated Use {@link MoreArrayUtils#anyMatch(Object[], Predicate)} instead. */
 	@Deprecated
 	public static <T> boolean some(T[] array, Predicate<T> predicate) {
 		return anyMatch(array, predicate);
@@ -140,7 +160,10 @@ public final class Iteration {
 	 * @param predicate The element tester.
 	 * @return Returns true if at least one element passes the predicate test. Or false if the array fails the
 	 * {@link ArrayUtils#isEmpty(Object[]) isNullOrEmpty()} test, or true if the give predicate is null.
+	 *
+	 * @deprecated Use {@link MoreArrayUtils#anyMatch(Object[], Predicate)} instead.
 	 */
+	@Deprecated
 	public static <T> boolean anyMatch(T[] array, Predicate<T> predicate) {
 		if (ArrayUtils.isEmpty(array)) {
 			return false;
@@ -156,7 +179,7 @@ public final class Iteration {
 		return false;
 	}
 
-	/** @deprecated Use {@link #allMatch(Object[], Predicate)} instead. */
+	/** @deprecated Use {@link MoreArrayUtils#allMatch(Object[], Predicate)} instead. */
 	@Deprecated
 	public static <T> boolean every(T[] array, Predicate<T> predicate) {
 		return allMatch(array, predicate);
@@ -172,7 +195,10 @@ public final class Iteration {
 	 * @param predicate The element tester.
 	 * @return Returns true if no element fails the predicate test, or if the array fails the
 	 * {@link ArrayUtils#isEmpty(Object[]) isNullOrEmpty()} test, or if the give predicate is null.
+	 *
+	 * @deprecated Use {@link MoreArrayUtils#allMatch(Object[], Predicate)} instead.
 	 */
+	@Deprecated
 	public static <T> boolean allMatch(T[] array, Predicate<T> predicate) {
 		if (ArrayUtils.isEmpty(array)) {
 			return true;
@@ -193,7 +219,10 @@ public final class Iteration {
 	 *
 	 * @param entry The map entry itself.
 	 * @return Returns true if the entry is considered valid.
+	 *
+	 * @deprecated Use {@link MoreMapUtils#validEntry(Map.Entry)} instead.
 	 */
+	@Deprecated
 	public static boolean validEntry(Map.Entry<?, ?> entry) {
 		if (entry == null) {
 			return false;
@@ -215,7 +244,10 @@ public final class Iteration {
 	 * @param elements The elements to add to the collection.
 	 * @return Returns a new collection, or null if no constructor was given, or the constructor didn't produce a new
 	 * collection.
+	 *
+	 * @deprecated Use {@link CollectionUtils#addAll(Collection, Object[])} instead.
 	 */
+	@Deprecated
 	@SafeVarargs
 	public static <T, K extends Collection<T>> K collect(Supplier<K> constructor, T... elements) {
 		if (constructor == null) {
@@ -240,7 +272,10 @@ public final class Iteration {
 	 * @param <T> The type of the elements of the collection and to add.
 	 * @param collection The collection to add the values to.
 	 * @param values The values to add to the collection.
+	 *
+	 * @deprecated Use {@link CollectionUtils#addAll(Collection, Object[])} instead.
 	 */
+	@Deprecated
 	@SafeVarargs
 	public static <T> void addAll(Collection<T> collection, T... values) {
 		if (collection == null || ArrayUtils.isEmpty(values)) {
@@ -259,7 +294,10 @@ public final class Iteration {
 	 * @param <T> The type of the list's elements.
 	 * @param list The list to remove the last element from.
 	 * @return Returns the element removed.
+	 *
+	 * @deprecated Use {@link MoreCollectionUtils#removeLastElement(List)} instead.
 	 */
+	@Deprecated
 	public static <T> T removeLastElement(List<T> list) {
 		if (isNullOrEmpty(list)) {
 			return null;
@@ -273,7 +311,10 @@ public final class Iteration {
 	 * @param <T> The type of element.
 	 * @param array The array to retrieve a value from.
 	 * @return Returns a random element, or null.
+	 *
+	 * @deprecated Use {@link MoreArrayUtils#randomElement(Object[])} instead.
 	 */
+	@Deprecated
 	@SafeVarargs
 	public static <T> T randomElement(final T... array) {
 		if (ArrayUtils.isEmpty(array)) {
@@ -291,7 +332,10 @@ public final class Iteration {
 	 * @param <T> The type of element.
 	 * @param list The list to retrieve a value from.
 	 * @return Returns a random element, or null.
+	 *
+	 * @deprecated Use {@link MoreCollectionUtils#randomElement(List)} instead.
 	 */
+	@Deprecated
 	public static <T> T randomElement(final List<T> list) {
 		if (isNullOrEmpty(list)) {
 			return null;

@@ -3,6 +3,10 @@ package vg.civcraft.mc.civmodcore.util;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * @deprecated Use {@link NullUtils} instead.
+ */
+@Deprecated
 public final class NullCoalescing {
 
     @FunctionalInterface
@@ -19,7 +23,10 @@ public final class NullCoalescing {
      * @param <T> Any non-primitive type.
      * @param items The list of parameters to find a non-null value from.
      * @return Returns the first non-null value found, or null.
-     */
+	 *
+	 * @deprecated Use {@link NullUtils#firstNonNull(Object[])} instead.
+	 */
+	@Deprecated
     @SafeVarargs
 	public static <T> T coalesce(T... items) {
         for (T item : items) {
@@ -38,7 +45,10 @@ public final class NullCoalescing {
      * @param <T> Any non-primitive type.
      * @param statement Function that throws an exception to call the chained statement within.
      * @return Returns the result of the chained statement, or null if the chain failed.
-     */
+	 *
+	 * @deprecated Use {@link Chainer} instead.
+	 */
+	@Deprecated
     public static <T> T chain(NullChecker<T> statement) {
         return chain(statement, null);
     }
@@ -53,7 +63,10 @@ public final class NullCoalescing {
      * @param statement Function that throws an exception to call the chained statement within.
      * @param fallback The value that will be fallen back upon if something goes wrong.
      * @return Returns the result of the chained statement, or the fallback if the chain failed.
-     */
+	 *
+	 * @deprecated Use {@link Chainer} instead.
+	 */
+	@Deprecated
     public static <T> T chain(NullChecker<T> statement, T fallback) {
         if (statement == null) {
             return fallback;
@@ -72,7 +85,10 @@ public final class NullCoalescing {
 	 * @param <T> The type of the given parameter.
 	 * @param value The given parameter.
 	 * @param handler The handler to run if the given parameter exists.
+	 *
+	 * @deprecated Just use an if statement.
 	 */
+	@Deprecated
     public static <T> void exists(T value, Consumer<T> handler) {
     	if (value != null && handler != null) {
     		handler.accept(value);
@@ -86,7 +102,10 @@ public final class NullCoalescing {
 	 * @param value The given value.
 	 * @param handler The supplier that will be run should the given value be null.
 	 * @return Returns the given value or the result of the handler.
+	 *
+	 * @deprecated Just use an if statement.
 	 */
+	@Deprecated
     public static <T> T notExists(T value, Supplier<T> handler) {
     	if (value == null && handler != null) {
     		value = handler.get();
@@ -101,7 +120,10 @@ public final class NullCoalescing {
 	 * @param clazz The class of the type.
 	 * @param value The value to attempt to cast.
 	 * @return Returns the value cast to the given type, nor null.
+	 *
+	 * @deprecated Use {@link MoreClassUtils#castOrNull(Class, Object)} instead.
 	 */
+	@Deprecated
 	@SuppressWarnings("unchecked")
 	public static <T> T castOrNull(Class<T> clazz, Object value) {
 		if (clazz == null || value == null) {
@@ -119,7 +141,10 @@ public final class NullCoalescing {
 	 * @param former The former object.
 	 * @param latter The latter object.
 	 * @return Returns true if the values equal each other.
+	 *
+	 * @deprecated Use {@link NullUtils#equals(Object, Object)} instead.
 	 */
+	@Deprecated
 	public static boolean equals(Object former, Object latter) {
 		if (former == latter) {
 			return true;
@@ -139,7 +164,10 @@ public final class NullCoalescing {
 	 * @param former The former object.
 	 * @param latter The latter object.
 	 * @return Returns true only if both objects are not null and pass an equals test.
+	 *
+	 * @deprecated Use {@link NullUtils#equalsNotNull(Object, Object)} instead.
 	 */
+	@Deprecated
     public static boolean equalsNotNull(Object former, Object latter) {
     	if (former == null || latter == null) {
     		return false;

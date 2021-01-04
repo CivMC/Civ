@@ -4,11 +4,15 @@ import java.util.Iterator;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.inventory.Recipe;
+import vg.civcraft.mc.civmodcore.inventory.RecipeManager;
 import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 
 /**
  * Class of utility functions for Recipes.
+ *
+ * @deprecated Use {@link RecipeManager} instead.
  */
+@Deprecated
 public final class RecipeAPI {
 
 	/**
@@ -20,7 +24,10 @@ public final class RecipeAPI {
 	 * @param base The base recipe to base the matching upon.
 	 * @param other The other recipe, the unknown.
 	 * @return Returns true if the other recipe matches the base.
+	 *
+	 * @deprecated Use {@link RecipeManager#matchRecipe(Recipe, Recipe)} instead.
 	 */
+	@Deprecated
 	public static boolean matchRecipe(Recipe base, Recipe other) {
 		if (base == null) {
 			return false;
@@ -43,7 +50,10 @@ public final class RecipeAPI {
 	 *
 	 * @param recipe The recipe to register.
 	 * @return Returns true if the recipe was registered.
+	 *
+	 * @deprecated Use {@link RecipeManager#registerRecipe(Recipe)} instead.
 	 */
+	@Deprecated
 	public static boolean registerRecipe(Recipe recipe) {
 		if (recipe == null) {
 			return false;
@@ -61,7 +71,10 @@ public final class RecipeAPI {
 	 *
 	 * @param recipe The shaped recipe to deregister.
 	 * @return Returns true if the recipe was de-registered, or wasn't ever registered.
+	 *
+	 * @deprecated Use {@link RecipeManager#registerRecipe(Recipe)} instead.
 	 */
+	@Deprecated
 	public static boolean removeRecipe(Recipe recipe) {
 		if (recipe == null) {
 			return false;
