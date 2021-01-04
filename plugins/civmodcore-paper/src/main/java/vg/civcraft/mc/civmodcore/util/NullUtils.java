@@ -13,12 +13,12 @@ public final class NullUtils {
      * <p>Emulates:
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator</p>
      *
-     * @param <T>   Any non-primitive type.
+     * @param <T> Any non-primitive type.
      * @param items The list of parameters to find a non-null value from.
      * @return Returns the first non-null value found, or null.
      */
     @SafeVarargs
-    public static <T> T coalesce(final T... items) {
+    public static <T> T firstNonNull(final T... items) {
         for (final T item : items) {
             if (item != null) {
                 return item;

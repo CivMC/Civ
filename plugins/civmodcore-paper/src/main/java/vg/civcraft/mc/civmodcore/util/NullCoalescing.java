@@ -24,7 +24,7 @@ public final class NullCoalescing {
      * @param items The list of parameters to find a non-null value from.
      * @return Returns the first non-null value found, or null.
 	 *
-	 * @deprecated Use {@link NullUtils#coalesce(Object[])} instead.
+	 * @deprecated Use {@link NullUtils#firstNonNull(Object[])} instead.
 	 */
 	@Deprecated
     @SafeVarargs
