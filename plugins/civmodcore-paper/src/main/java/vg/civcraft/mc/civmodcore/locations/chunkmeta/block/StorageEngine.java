@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta.block;
 
 import java.util.Collection;
-
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.XZWCoord;
 
 public interface StorageEngine {

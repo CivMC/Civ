@@ -3,7 +3,6 @@ package vg.civcraft.mc.civmodcore.playersettings.impl;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 
 public class LongSetting extends PlayerSetting<Long> {

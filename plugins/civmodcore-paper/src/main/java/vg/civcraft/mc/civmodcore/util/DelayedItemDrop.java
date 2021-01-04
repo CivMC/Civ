@@ -2,13 +2,11 @@ package vg.civcraft.mc.civmodcore.util;
 
 import java.util.Collections;
 import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 public final class DelayedItemDrop {

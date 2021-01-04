@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table;
 
 import org.bukkit.Location;
-
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockDataObject;
 

@@ -6,15 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
+import vg.civcraft.mc.civmodcore.chat.dialog.Dialog;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
@@ -168,7 +166,7 @@ public abstract class AbstractCollectionSetting<C extends Collection<T>, T> exte
 		for (T element : value) {
 			elementSetting.setValue(player, element);
 			ItemStack is = elementSetting.getGuiRepresentation(player.getUniqueId());
-			ItemAPI.setDisplayName(is, ChatColor.GOLD + elementSetting.toText(element));
+			ItemUtils.setDisplayName(is, ChatColor.GOLD + elementSetting.toText(element));
 			clickables.add(new Clickable(is) {
 
 				@Override
@@ -182,7 +180,7 @@ public abstract class AbstractCollectionSetting<C extends Collection<T>, T> exte
 		}
 		MultiPageView pageView = new MultiPageView(player, clickables, getNiceName(), true);
 		ItemStack parentItem = new ItemStack(Material.ARROW);
-		ItemAPI.setDisplayName(parentItem, ChatColor.AQUA + "Go back to " + menu.getName());
+		ItemUtils.setDisplayName(parentItem, ChatColor.AQUA + "Go back to " + menu.getName());
 		pageView.setMenuSlot(new Clickable(parentItem) {
 
 			@Override
@@ -191,7 +189,7 @@ public abstract class AbstractCollectionSetting<C extends Collection<T>, T> exte
 			}
 		}, 0);
 		ItemStack addItemStack = new ItemStack(Material.GREEN_CONCRETE);
-		ItemAPI.setDisplayName(addItemStack, ChatColor.GOLD + "Add new entry");
+		ItemUtils.setDisplayName(addItemStack, ChatColor.GOLD + "Add new entry");
 		pageView.setMenuSlot(new Clickable(addItemStack) {
 
 			@Override

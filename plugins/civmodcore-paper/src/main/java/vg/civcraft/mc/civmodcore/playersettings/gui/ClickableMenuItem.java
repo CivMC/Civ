@@ -1,9 +1,7 @@
 package vg.civcraft.mc.civmodcore.playersettings.gui;
 
 import java.util.function.Function;
-
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 
 public class ClickableMenuItem extends MenuItem {

@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
 
 public abstract class StandaloneCommand {

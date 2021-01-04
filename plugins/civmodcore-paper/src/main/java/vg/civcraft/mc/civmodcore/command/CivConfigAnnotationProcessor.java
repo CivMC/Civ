@@ -8,7 +8,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.RoundEnvironment;

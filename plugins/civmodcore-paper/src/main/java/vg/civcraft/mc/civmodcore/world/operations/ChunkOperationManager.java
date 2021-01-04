@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -18,12 +19,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import vg.civcraft.mc.civmodcore.api.LocationAPI;
-import vg.civcraft.mc.civmodcore.api.WorldAPI;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
-import vg.civcraft.mc.civmodcore.util.Iteration;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 import vg.civcraft.mc.civmodcore.world.WorldXZ;
 
 public class ChunkOperationManager extends AikarCommand implements Listener {
@@ -38,7 +37,7 @@ public class ChunkOperationManager extends AikarCommand implements Listener {
 		final World world = chunk.getWorld();
 		final WorldXZ wxz = new WorldXZ(world.getUID(), chunk.getX(), chunk.getZ());
 		final List<ChunkOperation> operations = STORAGE.remove(wxz);
-		if (Iteration.isNullOrEmpty(operations)) {
+		if (CollectionUtils.isEmpty(operations)) {
 			return;
 		}
 		for (final ChunkOperation operation : operations) {
@@ -60,10 +59,10 @@ public class ChunkOperationManager extends AikarCommand implements Listener {
 			// First line: " WorldName: 22 operations"
 			final TextComponent textComponent = new TextComponent(" ");
 			if (world == null) {
-				textComponent.addExtra(TextUtil.textComponent("{NOT LOADED}", ChatColor.RED));
+				textComponent.addExtra(ChatUtils.textComponent("{NOT LOADED}", ChatColor.RED));
 			}
 			else {
-				textComponent.addExtra(TextUtil.textComponent(world.getName(), ChatColor.GREEN));
+				textComponent.addExtra(ChatUtils.textComponent(world.getName(), ChatColor.GREEN));
 			}
 			textComponent.addExtra(": ");
 			if (operationCount == 0) {
@@ -106,11 +105,11 @@ public class ChunkOperationManager extends AikarCommand implements Listener {
 		if (location == null) {
 			throw new IllegalArgumentException("Location cannot be null!");
 		}
-		final World world = LocationAPI.getLocationWorld(location);
+		final World world = WorldUtils.getLocationWorld(location);
 		if (world == null) {
 			throw new IllegalArgumentException("Location's world must not be null!");
 		}
-		final Chunk chunk = WorldAPI.getLoadedChunk(world, location.getBlockX(), location.getBlockZ());
+		final Chunk chunk = WorldUtils.getLoadedChunk(world, location.getBlockX(), location.getBlockZ());
 		if (chunk == null) {
 			final WorldXZ wxz = new WorldXZ(location);
 			STORAGE.computeIfAbsent(wxz, l -> new ArrayList<>()).add(operation);

@@ -6,9 +6,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-
 import org.bukkit.World;
-
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaViewTracker;
 

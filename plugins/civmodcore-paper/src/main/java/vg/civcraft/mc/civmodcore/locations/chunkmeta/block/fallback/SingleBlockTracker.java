@@ -6,9 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.bukkit.Location;
-
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.XZWCoord;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockDataObject;

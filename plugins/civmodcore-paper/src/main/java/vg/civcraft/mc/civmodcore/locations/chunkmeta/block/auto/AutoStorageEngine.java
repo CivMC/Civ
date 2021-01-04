@@ -10,10 +10,8 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.bukkit.Location;
 import org.bukkit.World;
-
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkCoord;

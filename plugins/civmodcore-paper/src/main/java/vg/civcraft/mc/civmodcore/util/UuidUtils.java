@@ -2,7 +2,7 @@ package vg.civcraft.mc.civmodcore.util;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Class of utilities relating to UUIDs

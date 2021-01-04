@@ -1,9 +1,7 @@
 package vg.civcraft.mc.civmodcore.playersettings.impl;
 
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
-
 import vg.civcraft.mc.civmodcore.playersettings.AltRequestEvent;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 

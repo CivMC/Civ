@@ -4,8 +4,6 @@ import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.server.v1_16_R3.BlockProperties;
-import net.minecraft.server.v1_16_R3.IBlockState;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import net.minecraft.server.v1_16_R3.BlockProperties;
+import net.minecraft.server.v1_16_R3.IBlockState;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

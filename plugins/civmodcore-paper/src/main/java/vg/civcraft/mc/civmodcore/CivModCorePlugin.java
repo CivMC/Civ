@@ -24,9 +24,9 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
 import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
-import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigSetAnyCommand;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigGetAnyCommand;
+import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigSetAnyCommand;
 import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardListener;
@@ -34,6 +34,7 @@ import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
 import vg.civcraft.mc.civmodcore.world.operations.ChunkOperationManager;
 
+@SuppressWarnings("deprecation")
 public final class CivModCorePlugin extends ACivMod {
 
 	private static CivModCorePlugin instance;
@@ -60,7 +61,7 @@ public final class CivModCorePlugin extends ACivMod {
 		// Load Database
 		try {
 			this.database = (ManagedDatasource) getConfig().get("database");
-			if (database != null) {
+			if (this.database != null) {
 				CMCWorldDAO dao = new CMCWorldDAO(this.database, this);
 				if (dao.updateDatabase()) {
 					this.worldIdManager = new WorldIDManager(dao);
@@ -125,6 +126,7 @@ public final class CivModCorePlugin extends ACivMod {
 			}
 			this.database = null;
 		}
+		DialogManager.resetDialogs();
 		WorldTracker.reset();
 		PlayerSettingAPI.saveAll();
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
@@ -134,7 +136,6 @@ public final class CivModCorePlugin extends ACivMod {
 			this.manager = null;
 		}
 		super.onDisable();
-		instance = null;
 	}
 
 	public static CivModCorePlugin getInstance() {
@@ -150,7 +151,7 @@ public final class CivModCorePlugin extends ACivMod {
 	}
 	
 	public ManagedDatasource getDatabase() {
-		return database;
+		return this.database;
 	}
 
 }

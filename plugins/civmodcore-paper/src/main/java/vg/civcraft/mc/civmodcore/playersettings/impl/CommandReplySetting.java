@@ -4,12 +4,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
-
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class CommandReplySetting extends StringSetting {
 	
@@ -63,10 +61,10 @@ public class CommandReplySetting extends StringSetting {
 	@Override
 	public ItemStack getGuiRepresentation(UUID player) {
 		ItemStack item = super.getGuiRepresentation(player);
-		ItemAPI.addLore(item, ChatColor.GOLD + "Example: " + ChatColor.RESET + getExampleReply(player));
+		ItemUtils.addLore(item, ChatColor.GOLD + "Example: " + ChatColor.RESET + getExampleReply(player));
 		for(CommandArgument cArg : exampleArguments.values()) {
-			ItemAPI.addLore(item, ChatColor.BLACK + "-------");
-			ItemAPI.addLore(item, ChatColor.YELLOW + "%%" + cArg.identifier + "%% will be replaced with "  + cArg.description);
+			ItemUtils.addLore(item, ChatColor.BLACK + "-------");
+			ItemUtils.addLore(item, ChatColor.YELLOW + "%%" + cArg.identifier + "%% will be replaced with "  + cArg.description);
 		}
 		return item;
 	}

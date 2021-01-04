@@ -1,9 +1,7 @@
 package vg.civcraft.mc.civmodcore.inventorygui.components;
 
 import java.util.List;
-
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 

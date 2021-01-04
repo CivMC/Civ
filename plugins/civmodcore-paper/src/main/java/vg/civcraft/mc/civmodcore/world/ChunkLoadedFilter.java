@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import net.minecraft.server.v1_16_R3.BlockPosition;
 import org.bukkit.World;
-import vg.civcraft.mc.civmodcore.api.WorldAPI;
 
 /**
  * Utility to use with {@link java.util.stream.Stream} to efficiently remove elements from unloaded chunks.
@@ -20,7 +19,7 @@ public class ChunkLoadedFilter {
 	 * @return Returns a new filter function.
 	 */
 	public static Predicate<BlockPosition> create(final World world) {
-		Preconditions.checkArgument(WorldAPI.isWorldLoaded(world));
+		Preconditions.checkArgument(WorldUtils.isWorldLoaded(world));
 		final List<Long> loadedChunks = new ArrayList<>();
 		return (position) -> {
 			if (position == null) {

@@ -3,7 +3,6 @@ package vg.civcraft.mc.civmodcore.inventorygui.components;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntPredicate;
-
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 
 public class ComponableSection extends InventoryComponent {

@@ -3,7 +3,6 @@ package vg.civcraft.mc.civmodcore.locations.global;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 

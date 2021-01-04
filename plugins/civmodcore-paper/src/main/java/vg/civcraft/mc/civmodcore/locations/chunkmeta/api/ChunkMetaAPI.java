@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-
 import org.bukkit.plugin.java.JavaPlugin;
-
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMetaFactory;

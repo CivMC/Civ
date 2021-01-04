@@ -3,10 +3,8 @@ package vg.civcraft.mc.civmodcore.playersettings.gui;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
@@ -26,7 +24,7 @@ public class ConfigGetAnyCommand extends StandaloneCommand {
 			return false;
 		}
 		String settingName = args [1];
-		PlayerSetting<? extends Object> setting = PlayerSettingAPI.getSetting(settingName);
+		PlayerSetting<?> setting = PlayerSettingAPI.getSetting(settingName);
 		if (setting == null) {
 			sender.sendMessage(ChatColor.RED + "Could not find setting with identifier " + args[1]);
 			return true;

@@ -2,9 +2,10 @@ package vg.civcraft.mc.civmodcore.dao;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.collections4.MapUtils;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.util.NumberConversions;
-import vg.civcraft.mc.civmodcore.util.MapUtils;
+import vg.civcraft.mc.civmodcore.util.MoreMapUtils;
 
 /**
  * This is a data class representing a set of credentials used for connecting to databases.
@@ -95,21 +96,21 @@ public class DatabaseCredentials implements ConfigurationSerializable {
 
 	// This must be kept compatible with ManagedDatasource's deserialization
 	public static DatabaseCredentials deserialize(Map<String, Object> data) {
-		if (MapUtils.isNullOrEmpty(data)) {
+		if (MapUtils.isEmpty(data)) {
 			return null;
 		}
-		String user = MapUtils.attemptGet(data, "root", "username", "user");
-		String pass = MapUtils.attemptGet(data, "", "password", "pass");
-		String host = MapUtils.attemptGet(data, "localhost", "hostname", "host");
-		int port = MapUtils.attemptGet(data, NumberConversions::toInt, 3306, "port");
-		String driver = MapUtils.attemptGet(data, "mysql", "driver");
-		String database = MapUtils.attemptGet(data, "minecraft", "database", "dbname", "db");
-		int poolSize = MapUtils.attemptGet(data, NumberConversions::toInt, 10, "poolSize", "poolsize");
-		long connectionTimeout = MapUtils.attemptGet(data, NumberConversions::toLong, 10_000L,
+		String user = MoreMapUtils.attemptGet(data, "root", "username", "user");
+		String pass = MoreMapUtils.attemptGet(data, "", "password", "pass");
+		String host = MoreMapUtils.attemptGet(data, "localhost", "hostname", "host");
+		int port = MoreMapUtils.attemptGet(data, NumberConversions::toInt, 3306, "port");
+		String driver = MoreMapUtils.attemptGet(data, "mysql", "driver");
+		String database = MoreMapUtils.attemptGet(data, "minecraft", "database", "dbname", "db");
+		int poolSize = MoreMapUtils.attemptGet(data, NumberConversions::toInt, 10, "poolSize", "poolsize");
+		long connectionTimeout = MoreMapUtils.attemptGet(data, NumberConversions::toLong, 10_000L,
 				"connectionTimeout", "connection_timeout");
-		long idleTimeout = MapUtils.attemptGet(data, NumberConversions::toLong, 600_000L,
+		long idleTimeout = MoreMapUtils.attemptGet(data, NumberConversions::toLong, 600_000L,
 				"idleTimeout", "idle_timeout");
-		long maxLifetime = MapUtils.attemptGet(data, NumberConversions::toLong, 7_200_000L,
+		long maxLifetime = MoreMapUtils.attemptGet(data, NumberConversions::toLong, 7_200_000L,
 				"maxLifetime", "max_lifetime");
 		return new DatabaseCredentials(user, pass, host, port, driver, database,
 				poolSize, connectionTimeout, idleTimeout, maxLifetime);

@@ -16,11 +16,10 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import vg.civcraft.mc.civmodcore.api.InventoryAPI;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
-import vg.civcraft.mc.civmodcore.util.Iteration;
 
 /**
  * Class that represents a proverbial slideshow of pages that can be switched to efficiently.
@@ -42,11 +41,11 @@ public final class PagedGUI {
 	/**
 	 * Creates a paged GUI based on an amount of slots and a name.
 	 *
-	 * @param slots The amount of slots, which must pass a {@link InventoryAPI#isValidChestSize(int)} test.
+	 * @param slots The amount of slots, which must pass a {@link InventoryUtils#isValidChestSize(int)} test.
 	 * @param name The name for the GUI, which should be relevant across each page as it cannot be changed.
 	 */
 	public PagedGUI(int slots, String name) {
-		Preconditions.checkArgument(InventoryAPI.isValidChestSize(slots));
+		Preconditions.checkArgument(InventoryUtils.isValidChestSize(slots));
 		this.slots = slots;
 		this.uuid = UUID.randomUUID();
 		this.inventory = new LegacyInventory(slots, name);
@@ -60,10 +59,10 @@ public final class PagedGUI {
 	 * @return Returns true if the paged GUI was reset.
 	 */
 	public boolean reset() {
-		if (InventoryAPI.hasOtherViewers(this.inventory.getInventory())) {
+		if (InventoryUtils.hasOtherViewers(this.inventory.getInventory())) {
 			return false;
 		}
-		InventoryAPI.clearInventory(this.inventory.getInventory());
+		InventoryUtils.clearInventory(this.inventory.getInventory());
 		this.history.clear();
 		this.currentPage = null;
 		return true;
@@ -189,7 +188,7 @@ public final class PagedGUI {
 			}
 		}
 		this.currentPage = null;
-		InventoryAPI.clearInventory(this.inventory.getInventory());
+		InventoryUtils.clearInventory(this.inventory.getInventory());
 		updateGUI();
 	}
 
@@ -238,7 +237,7 @@ public final class PagedGUI {
 					continue;
 				}
 				ItemStack button = clickable.getItemStack();
-				if (!ItemAPI.isValidItem(button)) {
+				if (!ItemUtils.isValidItem(button)) {
 					inventory.setItem(null, i);
 					continue;
 				}
@@ -248,7 +247,8 @@ public final class PagedGUI {
 		}
 
 		private void hidden() {
-			Iteration.iterateThenClear(this.tasks, BukkitTask::cancel);
+			this.tasks.forEach(BukkitTask::cancel);
+			this.tasks.clear();
 		}
 
 		/**
@@ -346,7 +346,7 @@ public final class PagedGUI {
 
 		@Override
 		public void updateInventory() {
-			for (Player viewer : InventoryAPI.getViewingPlayers(getInventory())) {
+			for (Player viewer : InventoryUtils.getViewingPlayers(getInventory())) {
 				viewer.updateInventory();
 			}
 		}

@@ -1,8 +1,7 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta.block.auto;
 
-import org.bukkit.Location;
-
 import com.google.gson.JsonObject;
+import org.bukkit.Location;
 
 public abstract class JsonableDataObject<D extends JsonableDataObject<D>> extends SerializableDataObject<D> {
 	

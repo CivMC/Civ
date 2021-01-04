@@ -2,12 +2,13 @@ package vg.civcraft.mc.civmodcore.api;
 
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
 
+import com.google.common.base.Objects;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -79,7 +80,7 @@ public final class ItemAPI {
 	 *
 	 * @see ItemStack#equals(Object)
 	 *
-	 * @deprecated Use {@link ItemUtils#areItemsEqual(ItemStack, ItemStack)} instead.
+	 * @deprecated Use {@link Objects#equal(Object, Object)} instead.
 	 */
 	@Deprecated
 	public static boolean areItemsEqual(ItemStack former, ItemStack latter) {

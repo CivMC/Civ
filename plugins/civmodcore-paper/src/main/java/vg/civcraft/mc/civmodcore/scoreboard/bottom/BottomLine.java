@@ -6,11 +6,9 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.BiFunction;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 public class BottomLine implements Comparable<BottomLine>{

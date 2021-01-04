@@ -9,7 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 
 /**
  * This is a config parsing class intended to make handling configs a little easier, and automatically parse commonly
@@ -100,7 +100,7 @@ public class CoreConfigManager {
 	 */
 	protected final List<Material> parseMaterialList(ConfigurationSection config, String key) {
 		return parseList(config, key, slug -> {
-			Material found = MaterialAPI.getMaterial(slug);
+			Material found = MaterialUtils.getMaterial(slug);
 			if (found == null) {
 				this.logger.warning("Could not parse material \"" + slug + "\" at: " + config.getCurrentPath());
 				return null;

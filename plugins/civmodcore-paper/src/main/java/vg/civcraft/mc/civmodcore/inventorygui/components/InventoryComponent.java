@@ -3,7 +3,6 @@ package vg.civcraft.mc.civmodcore.inventorygui.components;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 
 public abstract class InventoryComponent {

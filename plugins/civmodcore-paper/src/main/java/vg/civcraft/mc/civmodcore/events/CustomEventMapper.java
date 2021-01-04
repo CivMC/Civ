@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-import vg.civcraft.mc.civmodcore.api.LocationAPI;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class CustomEventMapper implements Listener {
 
@@ -19,7 +19,7 @@ public class CustomEventMapper implements Listener {
 		Location formerLocation = event.getFrom();
 		Location latterLocation = event.getTo();
 		// If no block movement has occurred, exit out
-		if (!LocationAPI.areLocationsSameWorld(formerLocation, latterLocation)
+		if (!WorldUtils.doLocationsHaveSameWorld(formerLocation, latterLocation)
 				|| formerLocation.getBlockX() != latterLocation.getBlockX()
 				|| formerLocation.getBlockY() != latterLocation.getBlockY()
 				|| formerLocation.getBlockZ() != latterLocation.getBlockZ()) {

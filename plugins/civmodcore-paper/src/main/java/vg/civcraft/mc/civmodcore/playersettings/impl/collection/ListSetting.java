@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.playersettings.impl.collection;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 

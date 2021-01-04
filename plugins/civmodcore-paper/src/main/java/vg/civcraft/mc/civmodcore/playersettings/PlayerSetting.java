@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.playersettings;
 
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,16 +8,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.google.common.base.Preconditions;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 
 /**
@@ -49,10 +46,10 @@ public abstract class PlayerSetting<T> {
 	}
 
 	protected void applyInfoToItemStack(ItemStack item, UUID player) {
-		ItemAPI.setDisplayName(item, niceName);
-		ItemAPI.addLore(item, ChatColor.LIGHT_PURPLE + "Value: " + ChatColor.RESET + toText(getValue(player)));
+		ItemUtils.setDisplayName(item, niceName);
+		ItemUtils.addLore(item, ChatColor.LIGHT_PURPLE + "Value: " + ChatColor.RESET + toText(getValue(player)));
 		if (description != null) {
-			ItemAPI.addLore(item, description);
+			ItemUtils.addLore(item, description);
 		}
 	}
 
@@ -89,7 +86,7 @@ public abstract class PlayerSetting<T> {
 	public ItemStack getGuiRepresentation(UUID player) {
 		ItemStack copy;
 		if (visualization == null) {
-			copy = new ItemStack(MaterialAPI.getMaterialHash(getValue(player)));
+			copy = new ItemStack(MaterialUtils.getMaterialHash(getValue(player)));
 		}
 		else {
 			copy = visualization.clone();

@@ -21,14 +21,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.apache.commons.lang.reflect.FieldUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 /**
  * Command registration class wrapper around {@link BukkitCommandManager}.
@@ -103,16 +102,16 @@ public class AikarCommandManager {
 						.filter(name -> StringUtils.startsWithIgnoreCase(name, context.getInput()))
 						.collect(Collectors.toCollection(ArrayList::new)));
 		completions.registerAsyncCompletion("materials", context ->
-				Arrays.stream(Material.values()).
-						map(Enum::name).
-						filter((name) -> TextUtil.startsWith(name, context.getInput())).
-						collect(Collectors.toCollection(ArrayList::new)));
+				Arrays.stream(Material.values())
+						.map(Enum::name)
+						.filter((name) -> StringUtils.startsWithIgnoreCase(name, context.getInput()))
+						.collect(Collectors.toCollection(ArrayList::new)));
 		completions.registerAsyncCompletion("itemMaterials", context ->
-				Arrays.stream(Material.values()).
-						filter(MaterialAPI::isValidItemMaterial).
-						map(Enum::name).
-						filter((name) -> TextUtil.startsWith(name, context.getInput())).
-						collect(Collectors.toCollection(ArrayList::new)));
+				Arrays.stream(Material.values())
+						.filter(ItemUtils::isValidItemMaterial)
+						.map(Enum::name)
+						.filter((name) -> StringUtils.startsWithIgnoreCase(name, context.getInput()))
+						.collect(Collectors.toCollection(ArrayList::new)));
 	}
 
 	/**

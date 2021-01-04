@@ -3,9 +3,7 @@ package vg.civcraft.mc.civmodcore.chatDialog;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 /**

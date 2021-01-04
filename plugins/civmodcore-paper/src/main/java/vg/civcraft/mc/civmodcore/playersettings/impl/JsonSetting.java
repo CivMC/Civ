@@ -1,13 +1,11 @@
 package vg.civcraft.mc.civmodcore.playersettings.impl;
 
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 
 public class JsonSetting extends PlayerSetting <JsonObject> {

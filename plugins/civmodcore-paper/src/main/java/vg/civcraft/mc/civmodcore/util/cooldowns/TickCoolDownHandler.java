@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.util.cooldowns;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 

@@ -1,11 +1,9 @@
 package vg.civcraft.mc.civmodcore.playersettings;
 
+import com.google.common.base.Preconditions;
 import java.util.UUID;
-
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.google.common.base.Preconditions;
 
 public class AltRequestEvent extends Event {
 	

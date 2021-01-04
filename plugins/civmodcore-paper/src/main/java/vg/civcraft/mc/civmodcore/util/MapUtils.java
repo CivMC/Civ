@@ -4,9 +4,9 @@ import com.google.common.collect.BiMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 
 /**
  * Class of Map utilities.
@@ -156,7 +156,7 @@ public final class MapUtils {
 			return (Material) value;
 		}
 		if (value instanceof String) {
-			return MaterialAPI.getMaterial((String) value);
+			return MaterialUtils.getMaterial((String) value);
 		}
 		return null;
 	}

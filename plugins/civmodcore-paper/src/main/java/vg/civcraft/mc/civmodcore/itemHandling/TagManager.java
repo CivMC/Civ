@@ -5,12 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemStack;
-
 import net.minecraft.server.v1_16_R3.NBTBase;
 import net.minecraft.server.v1_16_R3.NBTTagByte;
 import net.minecraft.server.v1_16_R3.NBTTagByteArray;
@@ -23,6 +17,10 @@ import net.minecraft.server.v1_16_R3.NBTTagList;
 import net.minecraft.server.v1_16_R3.NBTTagLong;
 import net.minecraft.server.v1_16_R3.NBTTagShort;
 import net.minecraft.server.v1_16_R3.NBTTagString;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.inventory.ItemStack;
 
 @Deprecated
 public class TagManager {
