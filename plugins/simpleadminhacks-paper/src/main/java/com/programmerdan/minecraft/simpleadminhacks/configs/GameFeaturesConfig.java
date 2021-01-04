@@ -32,6 +32,7 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 	private boolean minecartTeleport;
 	private boolean obsidianGenerators;
 	private boolean personalDeathMessages;
+	private boolean disableNetheriteCrafting;
 	
 	private boolean goldBlockTeleport;
 
@@ -95,6 +96,9 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 
 		this.personalDeathMessages = config.getBoolean("personalDeathMessages", false);
 		if (this.personalDeathMessages) plugin().log("  Personal death messages enabled.");
+
+		this.disableNetheriteCrafting = config.getBoolean("disableNetheriteCrafting", true);
+		if (this.disableNetheriteCrafting) plugin().log("  Disable Netherite Crafting enabled.");
 		
 		this.goldBlockTeleport = config.getBoolean("goldBlockTeleport", false);
 		if (this.personalDeathMessages) plugin().log("  Gold block teleporter enabled.");
@@ -175,6 +179,10 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 
 	public boolean isPersonalDeathMessages() {
 		return this.personalDeathMessages;
+	}
+
+	public boolean isDisableNetheriteCrafting() {
+		return this.disableNetheriteCrafting;
 	}
 	
 	public boolean isGoldblockTeleport() {
