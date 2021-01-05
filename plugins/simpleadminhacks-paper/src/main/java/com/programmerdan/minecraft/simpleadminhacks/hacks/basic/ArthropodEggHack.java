@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.api.SpawnEggAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 
 public class ArthropodEggHack extends BasicHack {
 
@@ -78,7 +78,7 @@ public class ArthropodEggHack extends BasicHack {
 
 		// Check if egg should be spawned
 		if (randomNum < targetPercentage) {
-			ItemStack item = new ItemStack(SpawnEggAPI.getSpawnEgg(event.getEntityType()), 1);
+			ItemStack item = new ItemStack(SpawnEggUtils.getSpawnEgg(event.getEntityType()), 1);
 			if (removeDrops) {
 				event.getDrops().clear();
 				event.setDroppedExp(0);

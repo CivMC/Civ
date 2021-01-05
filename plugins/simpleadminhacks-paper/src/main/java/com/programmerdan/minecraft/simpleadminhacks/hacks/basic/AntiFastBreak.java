@@ -32,7 +32,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
@@ -42,7 +42,7 @@ import vg.civcraft.mc.civmodcore.util.cooldowns.MilliSecCoolDownHandler;
 /**
  * Prevents "CivBreak" by denying continuous block break packets.
  */
-public class AntiFastBreak extends BasicHack {
+public final class AntiFastBreak extends BasicHack {
 
 	private final PacketManager packets;
 	private final Map<UUID, Map<Location, Long>> miningLocations;
@@ -198,7 +198,7 @@ public class AntiFastBreak extends BasicHack {
 
 	private static int getTicksToBreak(final Block block, final Player player) {
 		final Material material = block.getType();
-		if (!material.isBlock() || MaterialAPI.isAir(material)) {
+		if (!material.isBlock() || MaterialUtils.isAir(material)) {
 			// lagg, player is breaking a block already gone
 			return 0;
 		}

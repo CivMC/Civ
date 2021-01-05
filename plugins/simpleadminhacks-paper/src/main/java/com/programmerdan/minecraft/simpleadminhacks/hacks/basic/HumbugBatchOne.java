@@ -39,8 +39,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class HumbugBatchOne extends BasicHack {
 
@@ -305,7 +304,7 @@ public class HumbugBatchOne extends BasicHack {
 		// teleport your feet INTO the gate, thus bypassing the gate until you leave
 		// that block.
 		Material belowMat = belowBlock.getType();
-		if (MaterialAPI.isWoodenFenceGate(belowMat) || Tag.FENCES.isTagged(belowMat) || Tag.WALLS.isTagged(belowMat)) {
+		if (Tag.FENCE_GATES.isTagged(belowMat) || Tag.FENCES.isTagged(belowMat) || Tag.WALLS.isTagged(belowMat)) {
 			height = 0.5;
 		}
 
@@ -363,7 +362,7 @@ public class HumbugBatchOne extends BasicHack {
 			return;
 		}
 		boolean foundWater = false;
-		for (Block block : BlockAPI.getAllSides(e.getBlock())) {
+		for (Block block : WorldUtils.getAllBlockSides(e.getBlock(), true)) {
 			if (block.getType() == Material.WATER) {
 				foundWater = true;
 				break;
@@ -385,7 +384,7 @@ public class HumbugBatchOne extends BasicHack {
 			// source block
 			return true;
 		}
-		for (Block relative : BlockAPI.getAllSides(block)) {
+		for (Block relative : WorldUtils.getAllBlockSides(block, true)) {
 			if (isLavaSourceNear(relative, ttl - 1)) {
 				return true;
 			}

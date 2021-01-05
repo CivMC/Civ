@@ -9,11 +9,13 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Syntax;
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Statistic;
@@ -22,8 +24,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
-import vg.civcraft.mc.civmodcore.util.EnumUtils;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public final class PlayerStatistics extends BasicHack {
 
@@ -76,7 +76,7 @@ public final class PlayerStatistics extends BasicHack {
 				sender.sendMessage(ChatColor.RED + "Could not find that player.");
 				return;
 			}
-			final Statistic statistic = EnumUtils.fromSlug(Statistic.class, statName, true);
+			final Statistic statistic = EnumUtils.getEnumIgnoreCase(Statistic.class, statName);
 			if (statistic == null) {
 				sender.sendMessage(ChatColor.RED + "Could not find that statistic.");
 				return;
@@ -98,7 +98,7 @@ public final class PlayerStatistics extends BasicHack {
 				sender.sendMessage(ChatColor.RED + "Could not find that player.");
 				return;
 			}
-			final Statistic statistic = EnumUtils.fromSlug(Statistic.class, statName, true);
+			final Statistic statistic = EnumUtils.getEnumIgnoreCase(Statistic.class, statName);
 			if (statistic == null) {
 				sender.sendMessage(ChatColor.RED + "Could not find that statistic.");
 				return;
@@ -113,7 +113,7 @@ public final class PlayerStatistics extends BasicHack {
 			final List<String> results = new ArrayList<>();
 			for (final Statistic statistic : Statistic.values()) {
 				final String slug = statistic.name();
-				if (!TextUtil.startsWith(slug, context.getInput())) {
+				if (!StringUtils.startsWith(slug, context.getInput())) {
 					continue;
 				}
 				results.add(slug);

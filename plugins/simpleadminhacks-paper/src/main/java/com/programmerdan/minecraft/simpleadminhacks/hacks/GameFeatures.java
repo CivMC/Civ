@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

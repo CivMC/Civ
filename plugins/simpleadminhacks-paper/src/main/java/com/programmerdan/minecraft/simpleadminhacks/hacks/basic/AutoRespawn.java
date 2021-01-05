@@ -23,7 +23,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public final class AutoRespawn extends BasicHack {
@@ -115,7 +115,7 @@ public final class AutoRespawn extends BasicHack {
 
 	private void autoRespawnPlayer(final Player player) {
 		player.spigot().respawn();
-		final String message = Iteration.randomElement(this.respawnQuotes);
+		final String message = MoreCollectionUtils.randomElement(this.respawnQuotes);
 		if (Strings.isNullOrEmpty(message)) {
 			return;
 		}

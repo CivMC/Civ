@@ -11,9 +11,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
-import org.apache.commons.lang.reflect.MethodUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.configuration.ConfigurationSection;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public final class HackManager {
 
@@ -187,7 +187,7 @@ public final class HackManager {
 			return null;
 		}
 		for (final SimpleHack<? extends SimpleHackConfig> candidate : this.hacks) {
-			if (TextUtil.stringEqualsIgnoreCase(name, candidate.getClass().getSimpleName())) {
+			if (StringUtils.equalsIgnoreCase(name, candidate.getClass().getSimpleName())) {
 				return candidate;
 			}
 		}

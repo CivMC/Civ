@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -93,7 +94,7 @@ public final class EventHandlerList extends BasicHack {
 			sender.sendMessage(ChatColor.GOLD + "Getting handlers for: " + ChatColor.WHITE + handler);
 			for (final Map.Entry<Class<? extends Event>, Map<Plugin, Set<Class<? extends Listener>>>> entry :
 					this.handlers.getHandlerCache().entrySet()) {
-				if (!TextUtil.stringEquals(entry.getKey().getName(), handler)) {
+				if (!StringUtils.equals(entry.getKey().getName(), handler)) {
 					continue;
 				}
 				for (final Map.Entry<Plugin, Set<Class<? extends Listener>>> details : entry.getValue().entrySet()) {

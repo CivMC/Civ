@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.minecraft.server.v1_16_R3.BlockPosition;
+import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.World;
@@ -28,8 +29,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.world.ChunkLoadedFilter;
 
 public final class ShipOutOfLuck extends BasicHack {
@@ -66,7 +66,7 @@ public final class ShipOutOfLuck extends BasicHack {
 		final Block placedOn = Objects.requireNonNull(event.getClickedBlock());
 		final ItemStack placed = event.getItem();
 		if (!this.boatBreakers.contains(placedOn.getType())
-				|| !ItemAPI.isValidItem(placed)
+				|| !ItemUtils.isValidItem(placed)
 				|| !Tag.ITEMS_BOATS.isTagged(placed.getType())) {
 			return;
 		}
@@ -97,7 +97,7 @@ public final class ShipOutOfLuck extends BasicHack {
 				.filter(this.boatBreakers::contains)
 				.distinct()
 				.collect(Collectors.toCollection(ArrayList::new));
-		if (Iteration.isNullOrEmpty(illegalBlocks)) {
+		if (CollectionUtils.isEmpty(illegalBlocks)) {
 			return;
 		}
 		vehicle.eject();
