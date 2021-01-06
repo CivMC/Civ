@@ -119,4 +119,25 @@ public final class MoreCollectionUtils {
         return list.get(ThreadLocalRandom.current().nextInt(size));
     }
 
+	/**
+	 * Calculates the number of elements that fulfill a given condition.
+	 *
+	 * @param <T> The type of element.
+	 * @param collection The collection to match the elements of.
+	 * @param matcher The matcher function itself.
+	 * @return Returns the number of elements that match.
+	 */
+	public static <T> int numberOfMatches(final Collection<T> collection, final Predicate<T> matcher) {
+		if (CollectionUtils.isEmpty(collection) || matcher == null) {
+			return 0;
+		}
+		int counter = 0;
+		for (final T element : collection) {
+			if (matcher.test(element)) {
+				counter++;
+			}
+		}
+		return counter;
+	}
+
 }

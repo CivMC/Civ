@@ -116,4 +116,25 @@ public final class MoreArrayUtils {
 		}
 	}
 
+	/**
+	 * Calculates the number of elements that fulfill a given condition.
+	 *
+	 * @param <T> The type of element.
+	 * @param array The array to match the elements of.
+	 * @param matcher The matcher function itself.
+	 * @return Returns the number of elements that match.
+	 */
+	public static <T> int numberOfMatches(final T[] array, final Predicate<T> matcher) {
+		if (ArrayUtils.isEmpty(array) || matcher == null) {
+			return 0;
+		}
+		int counter = 0;
+		for (final T element : array) {
+			if (matcher.test(element)) {
+				counter++;
+			}
+		}
+		return counter;
+	}
+
 }
