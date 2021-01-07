@@ -63,6 +63,14 @@ hacks:
       - <gold>That <it>really<gold> hurt!
   BeeKeeping:
     enabled: true
+    # This is a value between 0 and 1 that determines the percentage chance a Bee will replace
+    # the natural spawning of another neutral creature should certain conditions be met.
+    # Default: 0.2 (20%)
+    spawnChange: 0.2
+    # This is a value between 0 and 1 that determines the percentage chance that a Bee will lose
+    # its stinger and thus die when successfully attacking an entity.
+    # Default: 1.0 (100%)
+    severStingerChance: 1.0
   BuffSpanker:
     enabled: true
     # The list of PotionEffectType's that you do not wish players to receive.

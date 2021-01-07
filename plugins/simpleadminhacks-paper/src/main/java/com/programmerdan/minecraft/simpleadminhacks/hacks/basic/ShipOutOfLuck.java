@@ -92,7 +92,7 @@ public final class ShipOutOfLuck extends BasicHack {
 		this.ignoredBoatCounter = 0;
 		final World world = vehicle.getWorld();
 		final List<Material> illegalBlocks = getCollidingBlocks(vehicle.getBoundingBox())
-				.filter(ChunkLoadedFilter.create(world))
+				.filter(ChunkLoadedFilter.blockPosition(world))
 				.map(loc -> world.getBlockAt(loc.getX(), loc.getY(), loc.getZ()).getType())
 				.filter(this.boatBreakers::contains)
 				.distinct()
