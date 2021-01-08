@@ -25,9 +25,8 @@ public class StriderBreeding extends BasicHack {
 		if (event.getEntity().getType() != EntityType.STRIDER) {
 			return;
 		}
-		LivingEntity strider = event.getEntity();
-		rollSpeedStat(strider);
-		rollHealthStat(strider);
+		rollSpeedStat(event.getEntity());
+		rollHealthStat(event.getEntity());
 	}
 
 	public void rollSpeedStat(LivingEntity strider) {

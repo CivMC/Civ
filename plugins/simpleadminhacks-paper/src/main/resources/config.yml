@@ -387,3 +387,8 @@ hacks:
   ToggleLamp:
     enabled: false
     cooldownTime: 100
+  #Currently changes a striders speed to be between 0.175 (Default) and 0.3375 (Horse max speed)
+  #aswell as default health to between 20 (Default) and 50 (2.5 heart bars)
+  #Only works on newly spawned striders, not pre-existing mobs
+  StriderBreeding:
+    enabled: true
