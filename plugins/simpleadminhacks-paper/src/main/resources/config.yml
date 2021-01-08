@@ -392,3 +392,11 @@ hacks:
   #Only works on newly spawned striders, not pre-existing mobs
   StriderBreeding:
     enabled: true
+    #Default strider speed is 0.175
+    minSpeed: 0.175
+    #Max horse speed is 0.3375
+    maxSpeed: 0.3375
+    #10 Hearts
+    minHealth: 20
+    #25 Hearts
+    maxHealth: 50
