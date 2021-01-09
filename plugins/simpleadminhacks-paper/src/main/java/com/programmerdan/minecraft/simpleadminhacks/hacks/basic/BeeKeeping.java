@@ -18,7 +18,6 @@ import javax.annotation.Nonnull;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
-import net.minecraft.server.v1_16_R3.BlockPosition;
 import net.minecraft.server.v1_16_R3.EntityBee;
 import net.minecraft.server.v1_16_R3.IEntityAngerable;
 import net.minecraft.server.v1_16_R3.TileEntity;
@@ -27,7 +26,6 @@ import net.minecraft.server.v1_16_R3.WorldServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -49,8 +47,6 @@ import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
-import vg.civcraft.mc.civmodcore.world.ChunkLoadedFilter;
-import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public final class BeeKeeping extends BasicHack {
 
@@ -86,41 +82,10 @@ public final class BeeKeeping extends BasicHack {
 				|| RANDOM.nextDouble() > this.spawnChance) {
 			return;
 		}
-		final Entity entity = event.getEntity();
-		final World world = entity.getWorld();
-		final int maxHeight = world.getMaxHeight();
-		final Block flowerBlock = generateSpawnArea(entity.getLocation())
-				.filter(pos -> isWithinBounds(pos, maxHeight)) // Remove locations outside of the world
-				.filter(ChunkLoadedFilter.blockPosition(world)) // Remove locations not loaded
-				.map(pos -> world.getBlockAt(pos.getX(), pos.getY(), pos.getZ()))
-				.filter(block -> isSpawnableBlock(block.getType())) // Remove non-bee spawning blocks
-				.findFirst().orElse(null);
-		if (flowerBlock == null) {
-			return;
-		}
-		world.spawnEntity(WorldUtils.getMidBlockLocation(flowerBlock.getLocation()), EntityType.BEE);
+		final Location location = event.getLocation();
+		final World world = location.getWorld();
+		world.spawnEntity(location, EntityType.BEE);
 		event.setCancelled(true);
-	}
-
-	private static boolean isSpawnableBlock(final Material material) {
-		return Tag.FLOWERS.isTagged(material)
-				|| material == Material.GRASS
-				|| material == Material.TALL_GRASS;
-	}
-
-	private static boolean isWithinBounds(final BlockPosition position, final int maxHeight) {
-		final int y = position.getY();
-		return y >= 0 && y < maxHeight;
-	}
-
-	private static Stream<BlockPosition> generateSpawnArea(@Nonnull final Location location) {
-		final int minX = (int) Math.floor(location.getX() - 6);
-		final int maxX = (int) Math.floor(location.getX() + 6);
-		final int minY = (int) Math.floor(location.getY() - 2);
-		final int maxY = (int) Math.floor(location.getY() + 2);
-		final int minZ = (int) Math.floor(location.getZ() - 6);
-		final int maxZ = (int) Math.floor(location.getZ() + 6);
-		return BlockPosition.a(minX, minY, minZ, maxX, maxY, maxZ);
 	}
 
 	// ------------------------------------------------------------
