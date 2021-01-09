@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.api;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.potion.PotionEffectType;
 import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 

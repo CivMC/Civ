@@ -1,12 +1,10 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta.api;
 
 import java.util.function.Supplier;
-
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;

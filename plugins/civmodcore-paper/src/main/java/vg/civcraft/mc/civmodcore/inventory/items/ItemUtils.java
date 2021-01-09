@@ -3,7 +3,6 @@ package vg.civcraft.mc.civmodcore.inventory.items;
 import com.google.common.base.Strings;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,15 +12,12 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.util.Chainer;
-import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
 
 /**
  * Class of static APIs for Items. Replaces ISUtils.
@@ -150,25 +146,6 @@ public final class ItemUtils {
 	}
 
 	/**
-	 * Determines whether two item stacks are functionally identical. (Will check both items against the other)
-	 *
-	 * @param former The first item.
-	 * @param latter The second item.
-	 * @return Returns true if both items are equal and not null.
-	 *
-	 * @see ItemStack#equals(Object)
-	 */
-	public static boolean areItemsEqual(final ItemStack former, final ItemStack latter) {
-		if (former != null && former.equals(latter)) {
-			return true;
-		}
-		if (latter != null && latter.equals(former)) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * Determines whether two item stacks are similar. (Will check both items against the other)
 	 *
 	 * @param former The first item.
@@ -275,11 +252,7 @@ public final class ItemUtils {
 	 * @return Returns the lore, which is never null.
 	 */
 	public static List<String> getLore(final ItemStack item) {
-		final List<String> lore = Chainer.from(getItemMeta(item)).then(ItemMeta::getLore).get();
-		if (lore == null) {
-			return new ArrayList<>();
-		}
-		return lore;
+		return MetaUtils.getLore(getItemMeta(item));
 	}
 
 	/**
@@ -326,9 +299,7 @@ public final class ItemUtils {
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
 	public static void addLore(final ItemStack item, final String... lines) {
-		final List<String> lore = new ArrayList<>();
-		CollectionUtils.addAll(lore, lines);
-		addLore(item, lore);
+		addLore(item, false, lines);
 	}
 
 	/**
@@ -353,9 +324,10 @@ public final class ItemUtils {
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
 	public static void addLore(final ItemStack item, final boolean prepend, final String... lines) {
-		final List<String> lore = new ArrayList<>();
-		CollectionUtils.addAll(lore, lines);
-		addLore(item, prepend, lore);
+		handleItemMeta(item, (ItemMeta meta) -> {
+			MetaUtils.addLore(meta, prepend, lines);
+			return true;
+		});
 	}
 
 	/**
@@ -368,20 +340,10 @@ public final class ItemUtils {
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
 	public static void addLore(final ItemStack item, final boolean prepend, final List<String> lines) {
-		if (CollectionUtils.isEmpty(lines)) {
-			return;
-		}
-		final List<String> lore = getLore(item);
-		if (prepend) {
-			Collections.reverse(lines);
-			for (final String line : lines) {
-				lore.add(0, line);
-			}
-		}
-		else {
-			lore.addAll(lines);
-		}
-		setLore(item, lore);
+		handleItemMeta(item, (ItemMeta meta) -> {
+			MetaUtils.addLore(meta, prepend, lines);
+			return true;
+		});
 	}
 
 	/**
@@ -414,7 +376,11 @@ public final class ItemUtils {
 		if (material.getMaxDurability() <= 0) {
 			return null;
 		}
-		return MoreClassUtils.castOrNull(Damageable.class, item.getItemMeta());
+		final ItemMeta meta = item.getItemMeta();
+		if (!(meta instanceof Damageable)) {
+			return null;
+		}
+		return (Damageable) meta;
 	}
 
 	/**
@@ -427,13 +393,10 @@ public final class ItemUtils {
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
 	public static void addGlow(final ItemStack item) {
-		final ItemMeta meta = getItemMeta(item);
-		if (meta == null) {
-			throw new IllegalArgumentException("Cannot add that glow: item has no meta.");
-		}
-		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		item.setItemMeta(meta);
-		item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+		handleItemMeta(item, (ItemMeta meta) -> {
+			MetaUtils.addGlow(meta);
+			return true;
+		});
 	}
 
 	/**

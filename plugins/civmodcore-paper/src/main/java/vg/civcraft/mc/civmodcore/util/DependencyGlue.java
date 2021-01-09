@@ -3,6 +3,7 @@ package vg.civcraft.mc.civmodcore.util;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -110,7 +111,7 @@ public abstract class DependencyGlue implements Listener {
 			if (plugin == null || !plugin.isEnabled()) {
 				continue;
 			}
-			if (!TextUtil.stringEqualsIgnoreCase(plugin.getName(), this.pluginName)) {
+			if (!StringUtils.equalsIgnoreCase(plugin.getName(), this.pluginName)) {
 				continue;
 			}
 			this.plugin = plugin;
@@ -122,7 +123,7 @@ public abstract class DependencyGlue implements Listener {
 
 	@EventHandler
 	public final void onPluginEnable(PluginEnableEvent event) {
-		if (TextUtil.stringEqualsIgnoreCase(event.getPlugin().getName(), this.pluginName)) {
+		if (StringUtils.equalsIgnoreCase(event.getPlugin().getName(), this.pluginName)) {
 			this.plugin = event.getPlugin();
 			this.logger = this.plugin.getLogger();
 			onGlueEnabled();
@@ -131,7 +132,7 @@ public abstract class DependencyGlue implements Listener {
 
 	@EventHandler
 	public final void onPluginDisable(PluginDisableEvent event) {
-		if (TextUtil.stringEqualsIgnoreCase(event.getPlugin().getName(), this.pluginName)) {
+		if (StringUtils.equalsIgnoreCase(event.getPlugin().getName(), this.pluginName)) {
 			onGlueDisabled();
 			this.plugin = null;
 			this.logger = null;

@@ -1,12 +1,10 @@
 package vg.civcraft.mc.civmodcore.playersettings.impl;
 
 import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 

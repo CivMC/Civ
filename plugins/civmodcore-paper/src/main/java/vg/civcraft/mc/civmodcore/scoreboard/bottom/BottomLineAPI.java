@@ -6,14 +6,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 public final class BottomLineAPI {
@@ -60,7 +56,7 @@ public final class BottomLineAPI {
 				sb.append(entry);
 			}
 		}
-		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(sb.toString()));
+		player.sendActionBar(sb.toString());
 	}
 
 	private static void refreshAll() {
@@ -79,7 +75,7 @@ public final class BottomLineAPI {
 		for (Entry<UUID, StringBuilder> entry : texts.entrySet()) {
 			Player player = Bukkit.getPlayer(entry.getKey());
 			if (player != null) {
-				player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(entry.getValue().toString()));
+				player.sendActionBar(entry.getValue().toString());
 			}
 		}
 	}

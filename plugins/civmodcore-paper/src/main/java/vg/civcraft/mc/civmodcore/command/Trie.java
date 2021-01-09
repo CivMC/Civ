@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public final class Trie {
 

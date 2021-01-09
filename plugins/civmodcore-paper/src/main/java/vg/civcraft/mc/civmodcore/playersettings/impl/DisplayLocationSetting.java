@@ -3,14 +3,12 @@ package vg.civcraft.mc.civmodcore.playersettings.impl;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.LClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
@@ -60,9 +58,9 @@ public class DisplayLocationSetting extends LimitedStringSetting {
 
 	private IClickable genLocationClick(Material mat, String infoText, DisplayLocation location, MenuSection menu, DisplayLocation currentlySelect) {
 		ItemStack sideStack = new ItemStack(mat);
-		ItemAPI.setDisplayName(sideStack, String.format(infoText, ChatColor.GOLD, displayName));
+		ItemUtils.setDisplayName(sideStack, String.format(infoText, ChatColor.GOLD, displayName));
 		if (location == currentlySelect) {
-			ItemAPI.addGlow(sideStack);
+			ItemUtils.addGlow(sideStack);
 		}
 		return new LClickable(sideStack, p -> {
 			setValue(p, location.toString());

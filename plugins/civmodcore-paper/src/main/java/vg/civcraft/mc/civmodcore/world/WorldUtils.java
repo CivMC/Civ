@@ -22,6 +22,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.Switch;
 import org.bukkit.util.BlockIterator;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.util.NullUtils;
 
 /**
@@ -279,12 +280,16 @@ public final class WorldUtils {
 															final boolean forceLoad) {
 		final EnumMap<BlockFace, Block> results = new EnumMap<>(BlockFace.class);
 		if (isValidBlock(block) && !CollectionUtils.isEmpty(faces)) {
-			faces.removeIf(face -> face == null || face == BlockFace.SELF);
-			if (forceLoad) {
-				faces.forEach(face -> results.put(face, block.getRelative(face)));
-			}
-			else {
-				faces.forEach(face -> results.put(face, safeBlockRelative(block, face, 1)));
+			for (final BlockFace face : faces) {
+				if (face == null || face == BlockFace.SELF) {
+					continue;
+				}
+				if (forceLoad) {
+					results.put(face, block.getRelative(face));
+				}
+				else {
+					results.put(face, safeBlockRelative(block, face, 1));
+				}
 			}
 		}
 		return Collections.unmodifiableMap(results);
@@ -302,12 +307,16 @@ public final class WorldUtils {
 											final boolean forceLoad) {
 		final List<Block> results = new ArrayList<>();
 		if (isValidBlock(block) && !CollectionUtils.isEmpty(faces)) {
-			faces.removeIf(face -> face == null || face == BlockFace.SELF);
-			if (forceLoad) {
-				faces.forEach(face -> results.add(block.getRelative(face)));
-			}
-			else {
-				faces.forEach(face -> results.add(safeBlockRelative(block, face, 1)));
+			for (final BlockFace face : faces) {
+				if (face == null || face == BlockFace.SELF) {
+					continue;
+				}
+				if (forceLoad) {
+					results.add(block.getRelative(face));
+				}
+				else {
+					results.add(safeBlockRelative(block, face, 1));
+				}
 			}
 		}
 		return Collections.unmodifiableList(results);

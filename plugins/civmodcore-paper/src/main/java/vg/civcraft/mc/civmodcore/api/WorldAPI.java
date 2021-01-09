@@ -1,11 +1,10 @@
 package vg.civcraft.mc.civmodcore.api;
 
+import java.util.Objects;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
-
-import java.util.Objects;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**

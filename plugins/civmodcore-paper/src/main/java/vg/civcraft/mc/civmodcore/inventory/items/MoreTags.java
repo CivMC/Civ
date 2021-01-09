@@ -19,7 +19,7 @@ import vg.civcraft.mc.civmodcore.util.KeyedUtils;
 /**
  * Fills in the gaps between {@link Tag} and {@link MaterialTags}.
  */
-public class MoreTags {
+public final class MoreTags {
 
 	/**
 	 * This differs from {@link Tag#LOGS} as that includes every type of wood,

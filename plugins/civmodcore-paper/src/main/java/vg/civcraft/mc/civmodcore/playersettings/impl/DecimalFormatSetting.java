@@ -2,12 +2,10 @@ package vg.civcraft.mc.civmodcore.playersettings.impl;
 
 import java.text.DecimalFormat;
 import java.util.UUID;
-
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 
 public class DecimalFormatSetting extends PlayerSetting<DecimalFormat> {
@@ -48,7 +46,7 @@ public class DecimalFormatSetting extends PlayerSetting<DecimalFormat> {
 	@Override
 	public ItemStack getGuiRepresentation(UUID player) {
 		ItemStack item = super.getGuiRepresentation(player);
-		ItemAPI.addLore(item, ChatColor.GOLD + "Example: " + ChatColor.RESET + getValue(player).format(exampleValue));
+		ItemUtils.addLore(item, ChatColor.GOLD + "Example: " + ChatColor.RESET + getValue(player).format(exampleValue));
 		return item;
 	}
 

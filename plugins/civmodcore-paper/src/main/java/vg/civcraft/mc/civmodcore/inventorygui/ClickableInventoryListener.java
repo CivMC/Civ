@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import vg.civcraft.mc.civmodcore.api.EntityAPI;
+import vg.civcraft.mc.civmodcore.entities.EntityUtils;
 
 /**
  * The listener which makes ClickableInventories work. To use this either register it as a listener in your plugin or
@@ -18,7 +18,7 @@ public class ClickableInventoryListener implements Listener {
 
 	@EventHandler
 	public void inventoryClick(InventoryClickEvent event) {
-		if (!EntityAPI.isPlayer(event.getWhoClicked())) {
+		if (!EntityUtils.isPlayer(event.getWhoClicked())) {
 			return;
 		}
 		Player player = (Player) event.getWhoClicked();
@@ -31,7 +31,7 @@ public class ClickableInventoryListener implements Listener {
 
 	@EventHandler
 	public void inventoryClose(InventoryCloseEvent event) {
-		if (!EntityAPI.isPlayer(event.getPlayer())) { // Despite the name, it's not necessarily a player
+		if (!EntityUtils.isPlayer(event.getPlayer())) { // Despite the name, it's not necessarily a player
 			return;
 		}
 		ClickableInventory.inventoryWasClosed((Player) event.getPlayer());

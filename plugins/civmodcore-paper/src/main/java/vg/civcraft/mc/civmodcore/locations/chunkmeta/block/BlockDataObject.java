@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta.block;
 
 import org.bukkit.Location;
-
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 
 public abstract class BlockDataObject<D extends BlockDataObject<D>> {

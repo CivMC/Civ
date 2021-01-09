@@ -2,10 +2,8 @@ package vg.civcraft.mc.civmodcore.inventorygui.components;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.LClickable;
 

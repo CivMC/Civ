@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.util;
 
+import com.google.common.base.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -142,7 +143,7 @@ public final class NullCoalescing {
 	 * @param latter The latter object.
 	 * @return Returns true if the values equal each other.
 	 *
-	 * @deprecated Use {@link NullUtils#equals(Object, Object)} instead.
+	 * @deprecated Use {@link Objects#equal(Object, Object)} instead.
 	 */
 	@Deprecated
 	public static boolean equals(Object former, Object latter) {

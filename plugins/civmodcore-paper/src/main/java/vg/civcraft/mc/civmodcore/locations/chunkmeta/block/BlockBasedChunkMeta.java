@@ -1,10 +1,8 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta.block;
 
 import java.util.function.Consumer;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
 

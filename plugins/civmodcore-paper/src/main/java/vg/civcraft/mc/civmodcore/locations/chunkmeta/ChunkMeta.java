@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
 import org.bukkit.World;
-
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.StorageEngine;
 
 /**

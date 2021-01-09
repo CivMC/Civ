@@ -20,12 +20,12 @@ import net.minecraft.server.v1_16_R3.NBTTagList;
 import net.minecraft.server.v1_16_R3.NBTTagLong;
 import net.minecraft.server.v1_16_R3.NBTTagShort;
 import net.minecraft.server.v1_16_R3.NBTTagString;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.util.NullUtils;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
 /**
@@ -885,7 +885,7 @@ public class NBTCompound implements Cloneable, Validation {
 		if (!(other instanceof NBTCompound)) {
 			return false;
 		}
-		return NullCoalescing.equalsNotNull(this.tag, ((NBTCompound) other).tag);
+		return NullUtils.equalsNotNull(this.tag, ((NBTCompound) other).tag);
 	}
 
 	@Override
@@ -936,7 +936,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * @return Returns the given item with the processed NBT, or null if it could not be successfully processed.
 	 */
 	public static ItemStack processItem(ItemStack item, Consumer<NBTCompound> processor) {
-		Preconditions.checkArgument(ItemAPI.isValidItem(item));
+		Preconditions.checkArgument(ItemUtils.isValidItem(item));
 		Preconditions.checkArgument(processor != null);
 		net.minecraft.server.v1_16_R3.ItemStack craftItem = CraftItemStack.asNMSCopy(item);
 		if (craftItem == null) {

@@ -9,9 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
-/**
- *
- */
 public final class NBTSerialization {
 
 	private static final String NBT_CLASS_PATH_KEY = "==";
@@ -161,7 +158,7 @@ public final class NBTSerialization {
 			return null;
 		}
 		try {
-			NBTSerializable instance = clazz.newInstance();
+			NBTSerializable instance = clazz.getConstructor().newInstance();
 			NBTCompound clone = nbt.clone();
 			clone.remove(NBT_CLASS_PATH_KEY);
 			instance.deserialize(clone);

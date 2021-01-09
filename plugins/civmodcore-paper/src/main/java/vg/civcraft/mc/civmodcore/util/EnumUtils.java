@@ -1,8 +1,8 @@
 package vg.civcraft.mc.civmodcore.util;
 
 import com.google.common.base.Strings;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.reflect.MethodUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 
 /**
  * Class of enum utilities.

@@ -4,7 +4,6 @@ import com.google.common.base.Objects;
 import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.World;
-import vg.civcraft.mc.civmodcore.api.LocationAPI;
 
 public class WorldXZ {
 
@@ -13,7 +12,7 @@ public class WorldXZ {
 	private final int z;
 
 	public WorldXZ(final Location location) {
-		if (!LocationAPI.isValidLocation(location)) {
+		if (!WorldUtils.isValidLocation(location)) {
 			throw new IllegalArgumentException("Location must not be valid!");
 		}
 		final World world = location.getWorld();
@@ -72,7 +71,7 @@ public class WorldXZ {
 	}
 
 	public static WorldXZ fromLocation(final Location location) {
-		if (!LocationAPI.isValidLocation(location)) {
+		if (!WorldUtils.isValidLocation(location)) {
 			throw new IllegalArgumentException("Location cannot be null!");
 		}
 		final World world = location.getWorld();

@@ -1,14 +1,12 @@
 package vg.civcraft.mc.civmodcore.scoreboard.side;
 
+import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import com.google.common.base.Preconditions;
 
 public class ScoreBoardAPI {
 	

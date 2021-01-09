@@ -22,12 +22,13 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.collections4.MapUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.util.Iteration;
-import vg.civcraft.mc.civmodcore.util.MapUtils;
+import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
+import vg.civcraft.mc.civmodcore.util.MoreMapUtils;
 
 /**
  * Plugins should replace their custom Database handlers with an instance of ManagedDatasource.
@@ -549,7 +550,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 		public boolean ignoreErrors;
 		public Callable<Boolean> postMigration;
 		public Migration(boolean ignoreErrors, Callable<Boolean> postMigration, String... migrations) {
-			this.migrations = Iteration.collect(ArrayList::new, migrations);
+			this.migrations = MoreCollectionUtils.collect(ArrayList::new, migrations);
 			this.ignoreErrors = ignoreErrors;
 			this.postMigration = postMigration;
 		}
@@ -564,11 +565,11 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	}
 
 	public static ManagedDatasource deserialize(Map<String, Object> data) {
-		if (MapUtils.isNullOrEmpty(data)) {
+		if (MapUtils.isEmpty(data)) {
 			LOGGER.info("Database not defined.");
 			return null;
 		}
-		String pluginName = MapUtils.attemptGet(data, "", "plugin");
+		String pluginName = MoreMapUtils.attemptGet(data, "", "plugin");
 		if (Strings.isNullOrEmpty(pluginName)) {
 			LOGGER.warning("Config defined ManagedDatasource did not specify a plugin, which is required.");
 			return null;

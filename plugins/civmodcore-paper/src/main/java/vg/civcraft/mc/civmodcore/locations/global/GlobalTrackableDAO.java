@@ -2,9 +2,7 @@ package vg.civcraft.mc.civmodcore.locations.global;
 
 import java.util.function.Consumer;
 import java.util.logging.Logger;
-
 import org.bukkit.Location;
-
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 

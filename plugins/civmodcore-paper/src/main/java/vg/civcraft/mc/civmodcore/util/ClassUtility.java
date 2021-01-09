@@ -1,10 +1,8 @@
 package vg.civcraft.mc.civmodcore.util;
 
+import com.google.common.reflect.ClassPath;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import com.google.common.reflect.ClassPath;
-
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class ClassUtility {
@@ -20,6 +18,7 @@ public class ClassUtility {
 			if (pack == null) {
 				plugin.info("Package name REQUIRED for annotation loading");
 			} else {
+
 
 				String packageName = pack.getName();
 				ClassLoader classloader = plugin.getClass().getClassLoader();

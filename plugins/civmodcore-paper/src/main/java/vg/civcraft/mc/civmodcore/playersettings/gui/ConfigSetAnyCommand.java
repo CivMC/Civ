@@ -1,17 +1,14 @@
 package vg.civcraft.mc.civmodcore.playersettings.gui;
 
 import java.util.Arrays;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
@@ -51,7 +48,7 @@ public class ConfigSetAnyCommand extends StandaloneCommand {
 			return UUID.fromString(name);
 		}
 		catch (IllegalArgumentException e) {
-			OfflinePlayer offline = Bukkit.getOfflinePlayer(name);
+			OfflinePlayer offline = Bukkit.getOfflinePlayerIfCached(name);
 			if (offline == null) {
 				return null;
 			}

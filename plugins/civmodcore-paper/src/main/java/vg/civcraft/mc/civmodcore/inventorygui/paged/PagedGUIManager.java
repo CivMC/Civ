@@ -8,22 +8,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
-import vg.civcraft.mc.civmodcore.api.EntityAPI;
-import vg.civcraft.mc.civmodcore.api.InventoryAPI;
+import vg.civcraft.mc.civmodcore.entities.EntityUtils;
+import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 
-/**
- *
- */
 public final class PagedGUIManager implements Listener {
 
 	static final Map<Inventory, PagedGUI> GUIs = new HashMap<>();
 
-	/**
-	 *
-	 */
 	public static void closeAllGUIs() {
 		for (Map.Entry<Inventory, PagedGUI> entry : GUIs.entrySet()) {
-			for (Player player : InventoryAPI.getViewingPlayers(entry.getKey())) {
+			for (Player player : InventoryUtils.getViewingPlayers(entry.getKey())) {
 				player.closeInventory();
 			}
 			entry.getValue().reset();
@@ -38,7 +32,7 @@ public final class PagedGUIManager implements Listener {
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		if (!EntityAPI.isPlayer(event.getWhoClicked())) {
+		if (!EntityUtils.isPlayer(event.getWhoClicked())) {
 			return;
 		}
 		Player viewer = (Player) event.getWhoClicked();

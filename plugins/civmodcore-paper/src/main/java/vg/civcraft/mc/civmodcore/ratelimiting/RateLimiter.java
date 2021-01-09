@@ -3,7 +3,6 @@ package vg.civcraft.mc.civmodcore.ratelimiting;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-
 import org.bukkit.entity.Player;
 
 public class RateLimiter {

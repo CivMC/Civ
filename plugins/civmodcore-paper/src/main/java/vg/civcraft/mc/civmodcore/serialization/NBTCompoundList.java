@@ -7,7 +7,7 @@ import java.util.Objects;
 import net.minecraft.server.v1_16_R3.NBTBase;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import net.minecraft.server.v1_16_R3.NBTTagList;
-import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
 /**
@@ -20,6 +20,7 @@ import vg.civcraft.mc.civmodcore.util.Validation;
  *     <li>{@link NBTSerialization#deserialize(NBTCompound)}</li>
  * </ul>
  */
+@Deprecated
 public class NBTCompoundList<T extends NBTSerializable> extends ArrayList<T> {
 
 	/**

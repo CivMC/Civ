@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table;
 
 import java.util.function.Consumer;
 import java.util.logging.Logger;
-
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.XZWCoord;

@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.playersettings.impl.collection;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 

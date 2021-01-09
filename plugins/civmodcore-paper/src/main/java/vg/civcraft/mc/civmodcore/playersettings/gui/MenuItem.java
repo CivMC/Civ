@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmodcore.playersettings.gui;
 
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 
 public abstract class MenuItem {

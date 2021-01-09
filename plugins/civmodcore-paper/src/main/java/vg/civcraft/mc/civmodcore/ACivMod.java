@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -21,12 +22,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
-import vg.civcraft.mc.civmodcore.util.Iteration;
 
+@SuppressWarnings("deprecation")
 public abstract class ACivMod extends JavaPlugin {
 
 	private final List<Class<? extends NBTSerializable>> serializableClasses = Lists.newArrayList();
@@ -52,7 +54,7 @@ public abstract class ACivMod extends JavaPlugin {
 				String pluginName = event.getPlugin().getName();
 				if (getDescription().getDepend().contains(pluginName)) {
 					warning("Plugin [" + pluginName + "] has been disabled, disabling this plugin.");
-					getPluginLoader().disablePlugin(ACivMod.this);
+					disable();
 				}
 			}
 		});
@@ -65,7 +67,8 @@ public abstract class ACivMod extends JavaPlugin {
 			this.newCommandHandler.reset();
 			this.newCommandHandler = null;
 		}
-		Iteration.iterateThenClear(this.serializableClasses, NBTSerialization::unregisterNBTSerializable);
+		this.serializableClasses.forEach(NBTSerialization::unregisterNBTSerializable);
+		this.serializableClasses.clear();
 		HandlerList.unregisterAll(this);
 		Bukkit.getMessenger().unregisterIncomingPluginChannel(this);
 		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
@@ -92,7 +95,12 @@ public abstract class ACivMod extends JavaPlugin {
 	 *
 	 * @param <T> The type of the serializable.
 	 * @param serializable The serializable class.
+	 *
+	 * @deprecated This is no longer necessary and was added to ease usage of serializables,
+	 *     but {@link List#of(Object[])} and {@link java.util.Collection#forEach(Consumer)}
+	 *     has made this largely redundant.
 	 */
+	@Deprecated
 	public <T extends NBTSerializable> void registerSerializable(Class<T> serializable) {
 		NBTSerialization.registerNBTSerializable(serializable);
 		this.serializableClasses.add(serializable);
@@ -158,7 +166,10 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] arguments) {
+	public boolean onCommand(@NotNull CommandSender sender,
+							 @NotNull Command command,
+							 @NotNull String label,
+							 String[] arguments) {
 		if (this.handle != null) {
 			return this.handle.execute(sender, command, arguments);
 		}
@@ -169,7 +180,10 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] arguments) {
+	public List<String> onTabComplete(@NotNull CommandSender sender,
+									  @NotNull Command command,
+									  @NotNull String label,
+									  String[] arguments) {
 		if (this.handle != null) {
 			return this.handle.complete(sender, command, arguments);
 		}
@@ -320,29 +334,32 @@ public abstract class ACivMod extends JavaPlugin {
 	 *     just because an instance has been returned does not mean that instance is enabled.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends JavaPlugin> T getInstance(Class<T> clazz) {
+	public static <T extends JavaPlugin> T getInstance(final Class<T> clazz) {
 		if (clazz == null) {
 			return null;
 		}
-		for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+		for (final Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
 			if (clazz.isAssignableFrom(plugin.getClass())) {
 				return (T) plugin;
 			}
 		}
 		try {
-			Method method = clazz.getDeclaredMethod("getInstance");
-			if (Modifier.isPublic(method.getModifiers()) && Modifier.isStatic(method.getModifiers()) && clazz.isAssignableFrom(method.getReturnType())) {
+			final Method method = clazz.getDeclaredMethod("getInstance");
+			if (Modifier.isPublic(method.getModifiers())
+					&& Modifier.isStatic(method.getModifiers())
+					&& clazz.isAssignableFrom(method.getReturnType())) {
 				return (T) method.invoke(null);
 			}
 		}
-		catch (Exception ignored) { }
+		catch (final Exception ignored) { }
 		try {
-			Field field = clazz.getField("instance");
-			if (Modifier.isStatic(field.getModifiers()) && clazz.isAssignableFrom(field.getType())) {
+			final Field field = clazz.getField("instance");
+			if (Modifier.isStatic(field.getModifiers())
+					&& clazz.isAssignableFrom(field.getType())) {
 				return (T) field.get(null);
 			}
 		}
-		catch (Exception ignored) { }
+		catch (final Exception ignored) { }
 		// Otherwise there's no instance of the plugin, or it's stored in an unusual way
 		return null;
 	}
