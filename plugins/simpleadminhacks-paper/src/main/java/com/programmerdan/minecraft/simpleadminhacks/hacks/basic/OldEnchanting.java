@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import net.minecraft.server.v1_16_R3.ContainerEnchantTable;
-import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -64,12 +64,12 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.projectiles.ProjectileSource;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.EntityAPI;
-import vg.civcraft.mc.civmodcore.api.InventoryAPI;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.RecipeAPI;
+import vg.civcraft.mc.civmodcore.entities.EntityUtils;
+import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
+import vg.civcraft.mc.civmodcore.inventory.RecipeManager;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public final class OldEnchanting extends BasicHack {
 
@@ -191,7 +191,7 @@ public final class OldEnchanting extends BasicHack {
 			final ConfigurationSection modifiers = base.getConfigurationSection("entityExpDropModifiers");
 			if (modifiers != null) {
 				for (final String key : modifiers.getKeys(false)) {
-					final EntityType type = EntityAPI.getEntityType(key);
+					final EntityType type = EntityUtils.getEntityType(key);
 					if (type == null) {
 						this.plugin.warning("[OldEnchanting] EntityType [" + key + "] does not exist, skipping.");
 						continue;
@@ -227,8 +227,8 @@ public final class OldEnchanting extends BasicHack {
 			});
 		}
 		if (this.emeraldCrafting) {
-			RecipeAPI.registerRecipe(this.emeraldToExp);
-			RecipeAPI.registerRecipe(this.expToEmerald);
+			RecipeManager.registerRecipe(this.emeraldToExp);
+			RecipeManager.registerRecipe(this.expToEmerald);
 		}
 	}
 
@@ -246,8 +246,8 @@ public final class OldEnchanting extends BasicHack {
 		this.entityExpDropModifiers.clear();
 		this.packets.removeAllAdapters();
 		if (this.emeraldCrafting) {
-			RecipeAPI.removeRecipe(this.emeraldToExp);
-			RecipeAPI.removeRecipe(this.expToEmerald);
+			RecipeManager.removeRecipe(this.emeraldToExp);
+			RecipeManager.removeRecipe(this.expToEmerald);
 		}
 		super.onDisable();
 	}
@@ -271,7 +271,7 @@ public final class OldEnchanting extends BasicHack {
 			final Player killer = entity.getKiller();
 			if (killer != null) {
 				final ItemStack held = killer.getInventory().getItemInMainHand();
-				if (ItemAPI.isValidItem(held) && held.hasItemMeta()) {
+				if (ItemUtils.isValidItem(held) && held.hasItemMeta()) {
 					final ItemMeta meta = held.getItemMeta();
 					if (meta.hasEnchant(Enchantment.LOOT_BONUS_MOBS)) {
 						final double modifier = this.lootModifier * meta.getEnchantLevel(Enchantment.LOOT_BONUS_MOBS);
@@ -385,8 +385,8 @@ public final class OldEnchanting extends BasicHack {
 		final PlayerInventory inventory = player.getInventory();
 		final EquipmentSlot slot = Objects.requireNonNull(event.getHand());
 		final ItemStack held = inventory.getItem(slot);
-		if (!ItemAPI.isValidItem(held)
-				|| !ItemAPI.areItemsSimilar(held, EMERALD_ITEM)) {
+		if (!ItemUtils.isValidItem(held)
+				|| !ItemUtils.areItemsSimilar(held, EMERALD_ITEM)) {
 			return;
 		}
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -412,7 +412,7 @@ public final class OldEnchanting extends BasicHack {
 			}
 		}
 		player.giveExp(experience);
-		inventory.setItem(slot, ItemAPI.decrementItem(held));
+		inventory.setItem(slot, ItemUtils.decrementItem(held));
 		event.setCancelled(true); // Give the emerald leveling precedence
 	}
 
@@ -425,7 +425,7 @@ public final class OldEnchanting extends BasicHack {
 			return;
 		}
 		final Block block = event.getClickedBlock();
-		if (!BlockAPI.isValidBlock(block)
+		if (!WorldUtils.isValidBlock(block)
 				|| block.getType() != Material.ENCHANTING_TABLE) {
 			return;
 		}
@@ -448,7 +448,7 @@ public final class OldEnchanting extends BasicHack {
 			return;
 		}
 		final ItemStack item = event.getItem();
-		if (!ItemAPI.isValidItem(item)
+		if (!ItemUtils.isValidItem(item)
 				|| item.getType() != Material.BOOK) {
 			return;
 		}
@@ -466,7 +466,7 @@ public final class OldEnchanting extends BasicHack {
 				event.setResult(null);
 				// This is needed because of client side shenanigans
 				Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-					for (final Player viewer : InventoryAPI.getViewingPlayers(inventory)) {
+					for (final Player viewer : InventoryUtils.getViewingPlayers(inventory)) {
 						viewer.updateInventory();
 					}
 				}, 1L);
@@ -494,10 +494,10 @@ public final class OldEnchanting extends BasicHack {
 			return;
 		}
 		final ItemStack result = event.getResult();
-		if (!ItemAPI.isValidItem(result)) {
+		if (!ItemUtils.isValidItem(result)) {
 			return;
 		}
-		ItemAPI.handleItemMeta(result, (Repairable meta) -> {
+		ItemUtils.handleItemMeta(result, (Repairable meta) -> {
 			final int newRepairCost = this.maxRepairCost - 2;
 			if (meta.getRepairCost() < newRepairCost) {
 				return false;
@@ -541,11 +541,11 @@ public final class OldEnchanting extends BasicHack {
 			return;
 		}
 		final Inventory inventory = event.getClickedInventory();
-		if (!InventoryAPI.isValidInventory(inventory) || inventory.getType() != InventoryType.ENCHANTING) {
+		if (!InventoryUtils.isValidInventory(inventory) || inventory.getType() != InventoryType.ENCHANTING) {
 			return;
 		}
 		final ItemStack currentItem = event.getCurrentItem();
-		if (!ItemAPI.isValidItem(currentItem) || !currentItem.isSimilar(LAPIS_ITEM)) {
+		if (!ItemUtils.isValidItem(currentItem) || !currentItem.isSimilar(LAPIS_ITEM)) {
 			return;
 		}
 		event.setCancelled(true);

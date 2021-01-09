@@ -21,9 +21,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 public final class DebugWand extends BasicHack {
@@ -32,7 +32,7 @@ public final class DebugWand extends BasicHack {
 	private static final ItemStack WAND = new ItemStack(Material.BLAZE_ROD);
 
 	static {
-		ItemAPI.setDisplayName(WAND, ChatColor.GOLD + "Block Wand");
+		ItemUtils.setDisplayName(WAND, ChatColor.GOLD + "Block Wand");
 	}
 
 	private final AikarCommandManager commands;
@@ -79,7 +79,7 @@ public final class DebugWand extends BasicHack {
 			return;
 		}
 		final ItemStack held = event.getItem();
-		if (!ItemAPI.isValidItem(held) || !ItemAPI.areItemsSimilar(held, WAND)) {
+		if (!ItemUtils.isValidItem(held) || !ItemUtils.areItemsSimilar(held, WAND)) {
 			return;
 		}
 		final Block block = Objects.requireNonNull(event.getClickedBlock());
@@ -104,7 +104,7 @@ public final class DebugWand extends BasicHack {
 			return;
 		}
 		final ItemStack held = player.getInventory().getItem(event.getHand());
-		if (!ItemAPI.isValidItem(held) || !ItemAPI.areItemsSimilar(held, WAND)) {
+		if (!ItemUtils.isValidItem(held) || !ItemUtils.areItemsSimilar(held, WAND)) {
 			return;
 		}
 		final Entity entity = event.getRightClicked();

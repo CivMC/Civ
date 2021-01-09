@@ -1,7 +1,7 @@
 package com.programmerdan.minecraft.simpleadminhacks.framework.autoload;
 
 import org.bukkit.potion.PotionEffectType;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 
 public enum DataParser {
 
@@ -10,7 +10,7 @@ public enum DataParser {
 	MATERIAL {
 		@Override
 		public Object parse(final Object value) {
-			return MaterialAPI.getMaterial(stringify(value));
+			return MaterialUtils.getMaterial(stringify(value));
 		}
 	},
 

@@ -8,12 +8,11 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.NumberConversions;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 /**
  * Baseline structure for a managed hack.
@@ -164,7 +163,7 @@ public abstract class SimpleHack<T extends SimpleHackConfig> {
 	public boolean equals(final Object object) {
 		if (object instanceof SimpleHack) {
 			final SimpleHack<?> other = (SimpleHack<?>) object;
-			if (TextUtil.stringEquals(getName(), other.getName())) {
+			if (StringUtils.equals(getName(), other.getName())) {
 				return true;
 			}
 		}

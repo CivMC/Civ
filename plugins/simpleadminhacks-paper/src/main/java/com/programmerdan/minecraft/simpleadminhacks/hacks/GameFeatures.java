@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -50,8 +50,8 @@ import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.SmithingInventory;
-import vg.civcraft.mc.civmodcore.api.InventoryAPI;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 /**
  * This is a grab-bag class to hold any _features_ related configurations that impact the
@@ -583,7 +583,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		//This purely disables vanilla netherite crafting in smithing tables ONLY
 		SmithingInventory smithingTable = event.getInventory();
 		ItemStack result = smithingTable.getResult();
-		if (!ItemAPI.isValidItem(result)) {
+		if (!ItemUtils.isValidItem(result)) {
 			return;
 		}
 		switch (result.getType()) {
@@ -598,7 +598,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			case NETHERITE_SWORD:
 				event.setResult(new ItemStack(Material.AIR));
 				Bukkit.getScheduler().runTask(this.plugin, () -> {
-					for (Player player : InventoryAPI.getViewingPlayers(smithingTable)) {
+					for (Player player : InventoryUtils.getViewingPlayers(smithingTable)) {
 						player.updateInventory();
 						player.sendMessage(ChatColor.RED + "Vanilla netherite crafting is disabled!");
 					}

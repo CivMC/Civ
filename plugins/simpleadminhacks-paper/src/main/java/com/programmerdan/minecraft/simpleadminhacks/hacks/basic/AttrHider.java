@@ -5,6 +5,8 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
+import com.comphenix.protocol.wrappers.EnumWrappers;
+import com.comphenix.protocol.wrappers.Pair;
 import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 import com.destroystokyo.paper.MaterialTags;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
@@ -55,36 +57,41 @@ public final class AttrHider extends BasicHack {
 					if (event.getPlayer().hasPermission(BYPASS_PERMISSION)) {
 						return;
 					}
-					final ItemStack item = packet.getItemModifier().read(0);
-					if (item == null || !shouldBeObfuscated(item.getType())) {
-						return;
+					final var slots = packet.getSlotStackPairLists();
+					final var slotItemPairs = slots.read(0);
+					for (final Pair<EnumWrappers.ItemSlot, ItemStack> slotItemPair : slotItemPairs) {
+						final ItemStack item = slotItemPair.getSecond();
+						if (item == null || !shouldBeObfuscated(item.getType())) {
+							continue;
+						}
+						final ItemMeta meta = item.getItemMeta();
+						final ItemStack fakeItem = item.clone();
+						if (meta != null) {
+							final ItemMeta fakeMeta = fakeItem.getItemMeta();
+							if (meta instanceof LeatherArmorMeta) {
+								final LeatherArmorMeta baseLeatherMeta = (LeatherArmorMeta) meta;
+								final LeatherArmorMeta fakeLeatherMeta = (LeatherArmorMeta) fakeMeta;
+								fakeLeatherMeta.setColor(baseLeatherMeta.getColor());
+							}
+							if (meta instanceof PotionMeta) {
+								final PotionMeta basePotionMeta = (PotionMeta) meta;
+								final PotionMeta fakePotionMeta = (PotionMeta) fakeMeta;
+								final PotionData basePotion = basePotionMeta.getBasePotionData();
+								final PotionData fakePotion = new PotionData(basePotion.getType());
+								fakePotionMeta.setBasePotionData(fakePotion);
+							}
+							if (meta instanceof Damageable) {
+								final Damageable fakeDamageable = (Damageable) fakeMeta;
+								fakeDamageable.setDamage(0);
+							}
+							if (meta.hasEnchants()) {
+								fakeMeta.addEnchant(Enchantment.DURABILITY, 1, true);
+							}
+							fakeItem.setItemMeta(fakeMeta);
+							slotItemPair.setSecond(fakeItem); // Set item
+						}
 					}
-					final ItemMeta meta = item.getItemMeta();
-					final ItemStack fakeItem = item.clone();
-					if (meta != null) {
-						final ItemMeta fakeMeta = fakeItem.getItemMeta();
-						if (meta instanceof LeatherArmorMeta) {
-							final LeatherArmorMeta leatherMeta = (LeatherArmorMeta) meta;
-							final LeatherArmorMeta fakeLeatherMeta = (LeatherArmorMeta) fakeMeta;
-							fakeLeatherMeta.setColor(leatherMeta.getColor());
-						}
-						if (meta instanceof PotionMeta) {
-							final PotionMeta potionMeta = (PotionMeta) meta;
-							final PotionMeta fakePotionMeta = (PotionMeta) fakeMeta;
-							final PotionData basePotion = potionMeta.getBasePotionData();
-							final PotionData fakePotion = new PotionData(basePotion.getType());
-							fakePotionMeta.setBasePotionData(fakePotion);
-						}
-						if (meta instanceof Damageable) {
-							final Damageable damageable = (Damageable) fakeMeta;
-							damageable.setDamage(0);
-						}
-						if (meta.hasEnchants()) {
-							fakeMeta.addEnchant(Enchantment.DURABILITY, 1, true);
-						}
-						fakeItem.setItemMeta(fakeMeta);
-					}
-					packet.getItemModifier().write(0, fakeItem);
+					slots.write(0, slotItemPairs);
 				}
 			});
 		}
@@ -97,14 +104,18 @@ public final class AttrHider extends BasicHack {
 					if (player.hasPermission(BYPASS_PERMISSION)) {
 						return;
 					}
-					final StructureModifier<Integer> ints = packet.getIntegers();
+					final PacketContainer cloned = packet.deepClone();
+					final StructureModifier<Integer> ints = cloned.getIntegers();
 					if (player.getEntityId() == ints.read(0)) {
 						return;
 					}
 					// set amplifier to 0
-					packet.getBytes().write(1, (byte) 0);
+					cloned.getBytes().write(1, (byte) 0);
 					// set duration to 0
 					ints.write(1, 0);
+					// The packet data is shared between events, but the event
+					// instance is exclusive to THIS sending of the packet
+					event.setPacket(cloned);
 				}
 			});
 		}

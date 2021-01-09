@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
-import vg.civcraft.mc.civmodcore.api.WorldAPI;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public final class PhantomMenace extends BasicHack {
 
@@ -79,7 +79,7 @@ public final class PhantomMenace extends BasicHack {
 			final Entity target = Bukkit.getEntity(targetUUID);
 			if (target != null) {
 				final Location targetLocation = target.getLocation();
-				if (WorldAPI.isBlockLoaded(targetLocation)) {
+				if (WorldUtils.isBlockLoaded(targetLocation)) {
 					final Block targetBlock = targetLocation.getBlock();
 					final int lightLevel = targetBlock.getLightLevel();
 					if (lightLevel > this.maximumLightSpawn) {
