@@ -47,6 +47,7 @@ public class StriderBreeding extends BasicHack {
 		double randomHealth = Math.random() * (this.maxHealth - this.minHealth) + this.minHealth;
 		double newStriderHealth = Math.round(((float) avgParentHealth + (float) randomHealth) / 2);
 		event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(newStriderHealth);
+		event.getEntity().setHealth(newStriderHealth);
 		plugin.getLogger().log(Level.INFO, "Strider breed to have speed: " + newStriderSpeed
 				+ " and health: " + newStriderHealth);
 	}
