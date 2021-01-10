@@ -14,6 +14,7 @@ import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -556,7 +557,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				return;
 			}
 		}
-		event.getPlayer().sendMessage(ChatColor.RED + "No suitable destination was found");
+		event.getPlayer().sendMessage(ChatColor.RED + "No gold block to teleport you to");
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -565,12 +566,15 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (below.getType() != Material.GOLD_BLOCK) {
 			return;
 		}
-		for(int y = 0; y < below.getY(); y++) {
+		if (!event.isSneaking()) {
+			return;
+		}
+		for(int y = (below.getY() - 1); y > 0; y--) {
 			if (doTeleport(below, event.getPlayer(), y)) {
 				return;
 			}
 		}
-		event.getPlayer().sendMessage(ChatColor.RED + "No suitable destination was found");
+		event.getPlayer().sendMessage(ChatColor.RED + "No gold block to teleport you to");
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -613,10 +617,12 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (!TeleportUtil.checkForTeleportSpace(target.getRelative(BlockFace.UP).getLocation())) {
 			return false;
 		}
+		source.getWorld().playSound(source.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 8.0F);
 		Location adjustedLocation = target.getLocation().clone();
 		adjustedLocation.add(0.5, 1.02, 0.5);
 		adjustedLocation.setYaw(player.getLocation().getYaw());
 		adjustedLocation.setPitch(player.getLocation().getPitch());
+		player.playSound(adjustedLocation, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 8.0F);
 		player.teleport(adjustedLocation);
 		return true;
 	}
