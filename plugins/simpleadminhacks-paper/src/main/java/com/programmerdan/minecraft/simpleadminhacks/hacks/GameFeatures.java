@@ -1,5 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameFeaturesConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
@@ -46,6 +47,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -542,33 +544,29 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		dead.sendMessage(ChatColor.RED + String.format("You were slain by %s at [%s %d, %d, %d]",
 				killer, loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void hitGoldBlock(PlayerInteractEvent event) {
-		if (event.getAction() != Action.LEFT_CLICK_BLOCK) {
+	public void goldBlockJump(PlayerJumpEvent event) {
+		Block below = event.getFrom().getBlock().getRelative(BlockFace.DOWN);
+		if (below.getType() != Material.GOLD_BLOCK) {
 			return;
 		}
-		Block block = event.getClickedBlock();
-		if (block == null) {
-			return;
-		}
-		if (block.getType() != Material.GOLD_BLOCK) {
-			return;
-		}
-		if (event.getPlayer().isSneaking()) {
-			return;
-		}
-		//require player to stand on block
-		if (!event.getPlayer().getLocation().getBlock().getLocation().equals(block.getRelative(BlockFace.UP).getLocation())) {
-			return;
-		}
-		for(int y = block.getY() + 1; y <= 255; y++) {
-			if (doTeleport(block, event.getPlayer(), y)) {
+		for(int y = below.getY() + 1; y <= 255; y++) {
+			if (doTeleport(below, event.getPlayer(), y)) {
 				return;
 			}
 		}
-		for(int y = 0; y < block.getY(); y++) {
-			if (doTeleport(block, event.getPlayer(), y)) {
+		event.getPlayer().sendMessage(ChatColor.RED + "No suitable destination was found");
+	}
+
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void goldBlockSneak(PlayerToggleSneakEvent event) {
+		Block below = event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
+		if (below.getType() != Material.GOLD_BLOCK) {
+			return;
+		}
+		for(int y = 0; y < below.getY(); y++) {
+			if (doTeleport(below, event.getPlayer(), y)) {
 				return;
 			}
 		}
