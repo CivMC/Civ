@@ -36,16 +36,15 @@ public class StriderBreeding extends BasicHack {
 		}
 		double dadSpeed = event.getFather().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
 		double mumSpeed = event.getMother().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
-		double avgParentSpeed = (dadSpeed + mumSpeed) / 2;
 		double randomSpeed = Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
-		double newStriderSpeed = (avgParentSpeed + randomSpeed) / 2;
+		double bellCurve = (0.44999998807907104 + randomSpeed * 0.3 + randomSpeed * 0.3 + randomSpeed * 0.3) * 0.25;
+		double newStriderSpeed = (dadSpeed + mumSpeed + bellCurve) / 3;
 		event.getEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(newStriderSpeed);
 
 		double dadHealth = event.getFather().getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
 		double mumHealth = event.getFather().getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
-		double avgParentHealth = Math.round(((float) dadHealth + (float) mumHealth) / 2);
 		double randomHealth = Math.random() * (this.maxHealth - this.minHealth) + this.minHealth;
-		double newStriderHealth = Math.round(((float) avgParentHealth + (float) randomHealth) / 2);
+		double newStriderHealth = Math.round(((float) dadHealth + (float) mumHealth + (float) randomHealth) / 3);
 		event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(newStriderHealth);
 		event.getEntity().setHealth(newStriderHealth);
 		plugin.getLogger().log(Level.INFO, "Strider breed to have speed: " + newStriderSpeed
