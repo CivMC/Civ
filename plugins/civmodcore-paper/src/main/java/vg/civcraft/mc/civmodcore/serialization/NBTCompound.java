@@ -349,12 +349,29 @@ public class NBTCompound implements Cloneable, Validation {
 	 * @param value The value to set to the key.
 	 */
 	public void setUUID(String key, UUID value) {
+		setUUID(key, value, false);
+	}
+
+	/**
+	 * Sets a UUID value to a key.
+	 *
+	 * @param key The key to set to value to.
+	 * @param value The value to set to the key.
+	 * @param useMojangFormat Whether to save as Mojang's least+most, or the updated int array.
+	 */
+	public void setUUID(String key, UUID value, boolean useMojangFormat) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (value == null) {
 			removeUUID(key);
 		}
 		else {
-			this.tag.a(key, value);
+			if (useMojangFormat) {
+				this.tag.setLong(key + "Most", value.getMostSignificantBits());
+				this.tag.setLong(key + "Least", value.getLeastSignificantBits());
+			}
+			else {
+				this.tag.a(key, value);
+			}
 		}
 	}
 
