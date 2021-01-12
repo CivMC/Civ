@@ -68,9 +68,10 @@ public class StriderBreeding extends BasicHack {
 		if (moveSpeed == null) {
 			return;
 		}
-		double newValue = Math.random() * (maxSpeed - minSpeed) + minSpeed;
-		moveSpeed.setBaseValue(newValue);
-		plugin.getLogger().log(Level.INFO, "Setting Strider Speed to: " + newValue);
+		double random = Math.random() * (maxSpeed - minSpeed) + minSpeed;
+		double bellCurve = (0.44999998807907104 + random * 0.3 + random * 0.3 + random * 0.3) * 0.25;
+		moveSpeed.setBaseValue(bellCurve);
+		plugin.getLogger().log(Level.INFO, "Setting Strider Speed to: " + bellCurve);
 	}
 
 	public void rollHealthStat(LivingEntity strider, int minHealth, int maxHealth) {
