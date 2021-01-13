@@ -9,6 +9,7 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Strider;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -31,17 +32,26 @@ public class HorseStats extends SimpleHack<HorseStatsConfig> implements Listener
 			return;
 		}
 		Entity entity = event.getRightClicked();
-		if (!(entity instanceof AbstractHorse)) {
+		if (entity instanceof AbstractHorse) {
+			AbstractHorse horse = (AbstractHorse)entity;
+			AttributeInstance attrHealth = horse.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+			AttributeInstance attrSpeed = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+			event.getPlayer().sendMessage(String.format("%sHealth = %f, Speed = %f, Jump height = %f",
+					ChatColor.YELLOW,
+					attrHealth.getBaseValue(),
+					attrSpeed.getBaseValue(),
+					horse.getJumpStrength()));
+		} else if (entity instanceof Strider) {
+			Strider strider = (Strider) entity;
+			AttributeInstance attrHealth = strider.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+			AttributeInstance attrSpeed = strider.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+			event.getPlayer().sendMessage(String.format("%sHealth = %f, Speed = %f",
+					ChatColor.YELLOW,
+					attrHealth.getBaseValue(),
+					attrSpeed.getBaseValue()));
+		} else {
 			return;
 		}
-		AbstractHorse horse = (AbstractHorse)entity;
-		AttributeInstance attrHealth = horse.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-		AttributeInstance attrSpeed = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
-		event.getPlayer().sendMessage(String.format("%sHealth = %f, Speed = %f, Jump height = %f",
-				ChatColor.YELLOW,
-				attrHealth.getBaseValue(),
-				attrSpeed.getBaseValue(),
-				horse.getJumpStrength()));
 	}
 
 	@Override
