@@ -37,6 +37,8 @@ public class StriderBreeding extends BasicHack {
 		double dadSpeed = event.getFather().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
 		double mumSpeed = event.getMother().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
 		double randomSpeed = Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
+		//the 0.44.... number, I was given this number by Okx#5481, apparently it is the horse speed generation number
+		//Also worth noting he told me it is not exactly a bell curve even if I did name it bellCurve
 		double bellCurve = (0.44999998807907104 + randomSpeed * 0.3 + randomSpeed * 0.3 + randomSpeed * 0.3) * 0.25;
 		double newStriderSpeed = (dadSpeed + mumSpeed + bellCurve) / 3;
 		event.getEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(newStriderSpeed);
