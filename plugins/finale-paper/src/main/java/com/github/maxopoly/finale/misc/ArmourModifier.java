@@ -11,10 +11,12 @@ public class ArmourModifier {
 
 		private double toughness;
 		private double armour;
+		private double knockbackResistance;
 
-		public ArmourConfig(double toughness, double armour) {
+		public ArmourConfig(double toughness, double armour, double knockbackResistance) {
 			this.toughness = toughness;
 			this.armour = armour;
+			this.knockbackResistance = knockbackResistance;
 		}
 
 		public double getToughness() {
@@ -24,10 +26,14 @@ public class ArmourModifier {
 		public double getArmour() {
 			return armour;
 		}
-		
+
+		public double getKnockbackResistance() {
+			return knockbackResistance;
+		}
+
 		@Override
 		public String toString() {
-			return "Armour [toughness=" + toughness + ", armour=" + armour + "]";
+			return "Armour [toughness=" + toughness + ", armour=" + armour + ", kb_resistance=" + knockbackResistance + "]";
 		}
 		
 	}
@@ -38,8 +44,8 @@ public class ArmourModifier {
 		this.armour = new HashMap<Material, ArmourConfig>();
 	}
 
-	public void addArmour(Material m, double toughness, double armour) {
-		this.armour.put(m, new ArmourConfig(toughness, armour));
+	public void addArmour(Material m, double toughness, double armour, double knockbackResistance) {
+		this.armour.put(m, new ArmourConfig(toughness, armour, knockbackResistance));
 	}
 
 	public double getToughness(Material m) {
@@ -58,5 +64,12 @@ public class ArmourModifier {
 		return config.getArmour();
 	}
 
+	public double getKnockbackResistance(Material m) {
+		ArmourConfig config = armour.get(m);
+		if (config == null) {
+			return -1;
+		}
+		return config.getKnockbackResistance();
+	}
 	
 }
