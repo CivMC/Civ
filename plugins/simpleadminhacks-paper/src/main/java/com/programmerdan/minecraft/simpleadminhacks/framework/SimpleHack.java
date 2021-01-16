@@ -2,6 +2,7 @@ package com.programmerdan.minecraft.simpleadminhacks.framework;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.primitives.Primitives;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import java.lang.reflect.Array;
@@ -22,9 +23,7 @@ import org.bukkit.util.NumberConversions;
 public abstract class SimpleHack<T extends SimpleHackConfig> {
 
 	protected final SimpleAdminHacks plugin;
-
 	protected final T config;
-
 	private boolean enabled;
 
 	public SimpleHack(final SimpleAdminHacks plugin, final T config) {
@@ -54,11 +53,12 @@ public abstract class SimpleHack<T extends SimpleHackConfig> {
 	 * @return Returns true if this hack should be enabled automatically due to its `enabled` config option.
 	 */
 	public boolean shouldEnable() {
-		return this.config.isEnabled();
+		return this.config.shouldEnable();
 	}
 
 	public final void enable() {
 		this.enabled = true;
+		this.config.setEnabled(true); // Needed for legacy hacks that rely on their config for current states
 		populateAutoLoadFields();
 		onEnable();
 		dataBootstrap();
@@ -72,6 +72,7 @@ public abstract class SimpleHack<T extends SimpleHackConfig> {
 		unregisterCommands();
 		dataCleanup();
 		onDisable();
+		this.config.setEnabled(false); // Needed for legacy hacks that rely on their config for current states
 		this.enabled = false;
 		this.plugin.info(ChatColor.AQUA + getName() + " disabled!");
 	}

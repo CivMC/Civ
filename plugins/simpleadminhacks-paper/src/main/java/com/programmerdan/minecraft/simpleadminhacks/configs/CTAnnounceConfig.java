@@ -57,7 +57,7 @@ public class CTAnnounceConfig extends SimpleHackConfig {
 		this.broadcast.clear();
 
 		if (broadcastTo == null) {
-			this.setEnabled(false); // disable if no broadcasters.
+			setShouldEnable(false); // disable if no broadcasters.
 		}
 
 		for (String type : broadcastTo) {
