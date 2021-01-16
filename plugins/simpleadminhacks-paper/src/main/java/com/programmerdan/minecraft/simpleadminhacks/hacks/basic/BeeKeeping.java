@@ -79,7 +79,7 @@ public final class BeeKeeping extends BasicHack {
 		if (!NEUTRAL_MOBS.contains(event.getEntityType())
 				|| event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.NATURAL
 				|| this.spawnChance <= 0.0d
-				|| RANDOM.nextDouble() > this.spawnChance) {
+				|| (this.spawnChance < 1.0d && RANDOM.nextDouble() > this.spawnChance)) {
 			return;
 		}
 		final Location location = event.getLocation();
