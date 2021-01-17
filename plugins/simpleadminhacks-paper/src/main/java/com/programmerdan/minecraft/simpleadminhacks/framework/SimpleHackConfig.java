@@ -15,7 +15,8 @@ public abstract class SimpleHackConfig {
 	private final SimpleAdminHacks plugin;
 	private final ConfigurationSection base;
 	private final Map<String, Object> data;
-	private boolean enabled;
+	private boolean shouldEnable;
+	private boolean enabled; // Legacy support
 
 	/**
 	 * Constructor that sets the internal config section. That base config is not visible
@@ -29,9 +30,9 @@ public abstract class SimpleHackConfig {
 		this.plugin = plugin;
 		this.base = base;
 		this.data = base.getValues(true);
-		this.enabled = base.getBoolean("enabled", false);
+		this.shouldEnable = this.enabled = base.getBoolean("enabled", false);
 		this.plugin.info("Config for \"" + base.getName() + "\"; " +
-				"is " + (this.enabled ? "enabled" : "disabled") + "; " +
+				"is " + (this.shouldEnable ? "enabled" : "disabled") + "; " +
 				"instance [" + toString() + "]");
 		wireup(base);
 	}
@@ -58,10 +59,34 @@ public abstract class SimpleHackConfig {
 		}
 	}
 
+	/**
+	 * @return Returns whether the represented hack should be enabled after being loaded.
+	 */
+	public boolean shouldEnable() {
+		return this.shouldEnable;
+	}
+
+	/**
+	 * Allows configs to prevent / re-allow the represented hack to be enabled after load.
+	 *
+	 * @param shouldEnable Whether to load the represented hack after being loaded.
+	 */
+	protected void setShouldEnable(final boolean shouldEnable) {
+		this.shouldEnable = shouldEnable;
+	}
+
+	/**
+	 * @deprecated Use {@link SimpleHack#isEnabled()} instead.
+	 */
+	@Deprecated
 	public boolean isEnabled() {
 		return enabled;
 	}
 
+	/**
+	 * @deprecated Use {@link HackManager#enableHack(SimpleHack)} or
+	 *             {@link HackManager#disableHack(SimpleHack)} instead.
+	 */
 	public void setEnabled(final boolean enabled) {
 		this.enabled = enabled;
 	}

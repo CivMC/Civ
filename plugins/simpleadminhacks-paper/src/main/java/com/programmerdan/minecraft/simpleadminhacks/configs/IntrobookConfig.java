@@ -54,7 +54,7 @@ public class IntrobookConfig extends SimpleHackConfig {
 		if (this.title != null) {
 			this.title = ChatColor.translateAlternateColorCodes('&', this.title);
 		} else {
-			this.setEnabled(false);
+			setShouldEnable(false);
 			plugin().log("Introbook disabled, no title given");
 			return;
 		}
@@ -69,7 +69,7 @@ public class IntrobookConfig extends SimpleHackConfig {
 				this.pages.add(ChatColor.translateAlternateColorCodes('&', page));
 			}
 		} else {
-			this.setEnabled(false);
+			setShouldEnable(false);
 			plugin().log("Introbook disabled, no pages");
 			return;
 		}

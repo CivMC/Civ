@@ -264,7 +264,13 @@ hacks:
     stopBedBombingInHellBiomes: true
     stopAnchorBombing: true
     preventTreeWraparound: true
+    maintainFlatBedrock: false
     fixPearlGlitch: true
+    preventLongSigns: true
+    signLengthLimit: 100
+    preventLongSignsAbsolute: true
+    cancelLongSignEvent: false
+    hardLimitBookPageCount: true
   GameTuning:
     enabled: true
     chunkLimits:
