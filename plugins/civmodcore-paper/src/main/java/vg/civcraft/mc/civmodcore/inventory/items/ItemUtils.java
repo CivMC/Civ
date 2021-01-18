@@ -146,22 +146,47 @@ public final class ItemUtils {
 	}
 
 	/**
-	 * Determines whether two item stacks are similar. (Will check both items against the other)
+	 * Determines whether two item stacks are functionally identical.
 	 *
 	 * @param former The first item.
 	 * @param latter The second item.
-	 * @return Returns true if both items are similar and not null.
+	 * @return Returns true if both items are functionally identical.
+	 *
+	 * @see ItemStack#isSimilar(ItemStack)
+	 */
+	public static boolean areItemsEqual(final ItemStack former, final ItemStack latter) {
+		if (former == latter) {
+			return true;
+		}
+		if ((former == null || latter == null)
+				|| former.getAmount() != latter.getAmount()
+				|| !areItemsSimilar(former, latter)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Determines whether two item stacks are similar.
+	 *
+	 * @param former The first item.
+	 * @param latter The second item.
+	 * @return Returns true if both items are similar.
 	 *
 	 * @see ItemStack#isSimilar(ItemStack)
 	 */
 	public static boolean areItemsSimilar(final ItemStack former, final ItemStack latter) {
-		if (former != null && former.isSimilar(latter)) {
+		if (former == latter) {
 			return true;
 		}
-		if (latter != null && latter.isSimilar(former)) {
-			return true;
+		if ((former == null || latter == null)
+				|| former.getType() != latter.getType()
+				// I know this is deprecated, but it's present within item.isSimilar() so it's here too.
+				|| former.getDurability() != latter.getDurability()
+				|| former.hasItemMeta() != latter.hasItemMeta()) {
+			return false;
 		}
-		return false;
+		return MetaUtils.areMetasEqual(getItemMeta(former), getItemMeta(latter));
 	}
 
 	/**

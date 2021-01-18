@@ -1,16 +1,20 @@
 package vg.civcraft.mc.civmodcore.inventory.items;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import net.md_5.bungee.api.chat.BaseComponent;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.util.NullUtils;
 
 /**
  * Class of static utilities for when you already have an instance of {@link ItemMeta}, such as
@@ -18,6 +22,54 @@ import org.bukkit.inventory.meta.ItemMeta;
  * methods defined below will assume the presence of a valid meta instance.
  */
 public final class MetaUtils {
+
+	/**
+	 * Determines whether two item metas are functionally identical.
+	 *
+	 * @param former The first item meta.
+	 * @param latter The second item meta.
+	 * @return Returns true if both item metas are functionally identical.
+	 */
+	public static boolean areMetasEqual(final ItemMeta former, final ItemMeta latter) {
+		if (former == latter) {
+			return true;
+		}
+		if (former == null || latter == null) {
+			return false;
+		}
+		// Create a version of the items that do not have display names or lore, since those are the pain points
+		final ItemMeta fakeFormer = former.clone();
+		final ItemMeta fakeLatter = latter.clone();
+		fakeFormer.setDisplayName(null);
+		fakeFormer.setLore(null);
+		fakeLatter.setDisplayName(null);
+		fakeLatter.setLore(null);
+		if (!Bukkit.getItemFactory().equals(fakeFormer, fakeLatter)) {
+			return false;
+		}
+		// And compare the display name and lore manually
+		if (former.hasDisplayName() != latter.hasDisplayName()) {
+			return false;
+		}
+		if (former.hasDisplayName()) {
+			final BaseComponent[] formerDisplayName = former.getDisplayNameComponent();
+			final BaseComponent[] latterDisplayName = latter.getDisplayNameComponent();
+			if (!Arrays.equals(formerDisplayName, latterDisplayName)) {
+				return false;
+			}
+		}
+		if (former.hasLore() != latter.hasLore()) {
+			return false;
+		}
+		if (former.hasLore()) {
+			final List<BaseComponent[]> formerLore = NullUtils.isNotNull(former.getLoreComponents());
+			final List<BaseComponent[]> latterLore = NullUtils.isNotNull(latter.getLoreComponents());
+			if (!formerLore.equals(latterLore)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	/**
 	 * Retrieves the lore from a given item meta.
