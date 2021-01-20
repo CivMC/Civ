@@ -241,6 +241,8 @@ public final class ReinforcementLogic {
 			case IRON_DOOR:
 			case SPRUCE_DOOR:
 			case JUNGLE_DOOR:
+			case WARPED_DOOR:
+			case CRIMSON_DOOR:
 			case OAK_DOOR: {
 				if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
 					// block is upper half of a door
