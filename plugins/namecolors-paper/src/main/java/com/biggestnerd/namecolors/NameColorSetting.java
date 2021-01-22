@@ -6,15 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
@@ -71,7 +69,7 @@ public class NameColorSetting extends PlayerSetting<ChatColor> {
 		applyInfoToItemStack(item, player);
 		Player play = Bukkit.getPlayer(player);
 		if (play != null && !play.hasPermission(COLOR_PERMISSION) && !play.hasPermission(RAINBOW_PERMISSION)) {
-			ItemAPI.addLore(item, ChatColor.RED + "You do not have permission to do this");
+			ItemUtils.addLore(item, ChatColor.RED + "You do not have permission to do this");
 		}
 		return item;
 	}
@@ -83,7 +81,7 @@ public class NameColorSetting extends PlayerSetting<ChatColor> {
 
 			for (Entry<ChatColor, Material> entry : colorToGui.entrySet()) {
 				ItemStack is = new ItemStack(entry.getValue());
-				ItemAPI.setDisplayName(is,
+				ItemUtils.setDisplayName(is,
 						"Change to color of your name to " + entry.getKey() + entry.getKey().name());
 				clicks.add(new Clickable(is) {
 
@@ -98,7 +96,7 @@ public class NameColorSetting extends PlayerSetting<ChatColor> {
 		}
 		if (player.hasPermission(RAINBOW_PERMISSION)) {
 			ItemStack is = new ItemStack(Material.YELLOW_STAINED_GLASS);
-			ItemAPI.setDisplayName(is, "Change to color of your name to " + NameColors.rainbowify("rainbow"));
+			ItemUtils.setDisplayName(is, "Change to color of your name to " + NameColors.rainbowify("rainbow"));
 			clicks.add(new Clickable(is) {
 
 				@Override
@@ -114,7 +112,7 @@ public class NameColorSetting extends PlayerSetting<ChatColor> {
 		}
 		MultiPageView view = new MultiPageView(player, clicks, "Select a name color", true);
 		ItemStack returnStack = new ItemStack(Material.BOOK);
-		ItemAPI.setDisplayName(returnStack, "Return to previous menu");
+		ItemUtils.setDisplayName(returnStack, "Return to previous menu");
 		view.setMenuSlot(new Clickable(returnStack) {
 
 			@Override
