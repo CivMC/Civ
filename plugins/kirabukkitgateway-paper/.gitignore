@@ -3,3 +3,4 @@
 .settings/**
 .project
 dependency-reduced-pom.xml
+*.iml
