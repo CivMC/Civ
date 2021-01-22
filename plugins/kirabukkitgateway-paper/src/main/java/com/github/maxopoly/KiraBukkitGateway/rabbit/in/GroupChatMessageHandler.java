@@ -1,15 +1,12 @@
 package com.github.maxopoly.KiraBukkitGateway.rabbit.in;
 
-import java.util.UUID;
-import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import com.github.maxopoly.KiraBukkitGateway.impersonation.PseudoPlayer;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitInput;
 import com.google.gson.JsonObject;
-
+import java.util.UUID;
+import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;

@@ -1,14 +1,12 @@
 package com.github.maxopoly.KiraBukkitGateway.rabbit.request;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import com.github.maxopoly.KiraBukkitGateway.impersonation.PseudoPlayer;
 import com.google.gson.JsonObject;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 
 public class IngameCommandHandler extends AbstractRequestHandler {
 

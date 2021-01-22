@@ -1,7 +1,6 @@
 package com.github.maxopoly.KiraBukkitGateway.impersonation;
 
 import java.util.UUID;
-
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.cacheddata.CachedPermissionData;

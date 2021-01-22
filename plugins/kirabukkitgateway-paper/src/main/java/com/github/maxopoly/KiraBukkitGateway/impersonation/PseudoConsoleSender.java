@@ -1,10 +1,10 @@
 package com.github.maxopoly.KiraBukkitGateway.impersonation;
 
+import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
@@ -13,8 +13,8 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
-
-import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PseudoConsoleSender implements ConsoleCommandSender {
 
@@ -64,6 +64,16 @@ public class PseudoConsoleSender implements ConsoleCommandSender {
 		for (String s : arg0) {
 			handleReply(s);
 		}
+	}
+
+	@Override
+	public void sendMessage(@Nullable final UUID uuid, @NotNull final String message) {
+		this.actualSender.sendMessage(uuid, message);
+	}
+
+	@Override
+	public void sendMessage(@Nullable final UUID uuid, @NotNull final String[] messages) {
+		this.actualSender.sendMessage(uuid, messages);
 	}
 
 	@Override
@@ -165,6 +175,11 @@ public class PseudoConsoleSender implements ConsoleCommandSender {
 	@Override
 	public void sendRawMessage(String arg0) {
 		handleReply(arg0);
+	}
+
+	@Override
+	public void sendRawMessage(@Nullable final UUID uuid, @NotNull final String s) {
+
 	}
 
 }

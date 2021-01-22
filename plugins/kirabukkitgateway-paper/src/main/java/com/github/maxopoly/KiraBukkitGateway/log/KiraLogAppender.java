@@ -1,13 +1,11 @@
 package com.github.maxopoly.KiraBukkitGateway.log;
 
+import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
+import com.github.maxopoly.KiraBukkitGateway.KiraUtil;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-
-import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
-import com.github.maxopoly.KiraBukkitGateway.KiraUtil;
 
 public class KiraLogAppender extends AbstractAppender {
 

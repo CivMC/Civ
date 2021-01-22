@@ -1,16 +1,14 @@
 package com.github.maxopoly.KiraBukkitGateway.rabbit;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
-
-import org.bukkit.scheduler.BukkitRunnable;
-
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class RabbitHandler {
 

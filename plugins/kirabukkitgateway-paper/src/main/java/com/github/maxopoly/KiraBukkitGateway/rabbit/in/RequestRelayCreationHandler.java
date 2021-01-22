@@ -1,13 +1,11 @@
 package com.github.maxopoly.KiraBukkitGateway.rabbit.in;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.UUID;
-
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitInput;
 import com.google.gson.JsonObject;
-
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.UUID;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
