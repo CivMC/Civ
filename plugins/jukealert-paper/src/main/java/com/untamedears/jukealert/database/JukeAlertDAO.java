@@ -1,5 +1,16 @@
 package com.untamedears.jukealert.database;
 
+import com.untamedears.jukealert.JukeAlert;
+import com.untamedears.jukealert.SnitchManager;
+import com.untamedears.jukealert.model.Snitch;
+import com.untamedears.jukealert.model.SnitchFactoryType;
+import com.untamedears.jukealert.model.SnitchTypeManager;
+import com.untamedears.jukealert.model.actions.ActionCacheState;
+import com.untamedears.jukealert.model.actions.LoggedActionFactory;
+import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
+import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
+import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
+import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,26 +27,12 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
-
-import com.untamedears.jukealert.JukeAlert;
-import com.untamedears.jukealert.SnitchManager;
-import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.SnitchFactoryType;
-import com.untamedears.jukealert.model.SnitchTypeManager;
-import com.untamedears.jukealert.model.actions.ActionCacheState;
-import com.untamedears.jukealert.model.actions.LoggedActionFactory;
-import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
-import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
-import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
-import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
-
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;

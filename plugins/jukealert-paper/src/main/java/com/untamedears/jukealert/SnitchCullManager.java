@@ -1,9 +1,7 @@
 package com.untamedears.jukealert;
 
-import org.bukkit.Bukkit;
-
 import com.untamedears.jukealert.model.appender.DormantCullingAppender;
-
+import org.bukkit.Bukkit;
 import vg.civcraft.mc.civmodcore.util.progress.ProgressTracker;
 
 public class SnitchCullManager {

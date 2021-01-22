@@ -1,12 +1,5 @@
 package com.untamedears.jukealert.model.actions;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
@@ -26,6 +19,11 @@ import com.untamedears.jukealert.model.actions.impl.LeaveFieldAction;
 import com.untamedears.jukealert.model.actions.impl.LoginAction;
 import com.untamedears.jukealert.model.actions.impl.LogoutAction;
 import com.untamedears.jukealert.model.actions.impl.MountEntityAction;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import org.bukkit.Location;
+import org.bukkit.Material;
 
 public class LoggedActionFactory {
 

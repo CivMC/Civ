@@ -1,18 +1,15 @@
 package com.untamedears.jukealert;
 
+import com.untamedears.jukealert.model.Snitch;
+import com.untamedears.jukealert.model.SnitchQTEntry;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-
-import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.SnitchQTEntry;
-
 import vg.civcraft.mc.civmodcore.locations.SparseQuadTree;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.SingleBlockAPIView;
 

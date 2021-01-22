@@ -1,19 +1,16 @@
 package com.untamedears.jukealert.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
-
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.gui.SnitchOverviewGUI;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.GroupManager;

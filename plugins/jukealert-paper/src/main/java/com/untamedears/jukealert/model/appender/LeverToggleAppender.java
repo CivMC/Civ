@@ -1,15 +1,14 @@
 package com.untamedears.jukealert.model.appender;
 
+import com.untamedears.jukealert.JukeAlert;
+import com.untamedears.jukealert.model.Snitch;
+import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
+import com.untamedears.jukealert.model.appender.config.LeverToggleConfig;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.configuration.ConfigurationSection;
-
-import com.untamedears.jukealert.JukeAlert;
-import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
-import com.untamedears.jukealert.model.appender.config.LeverToggleConfig;
 
 public class LeverToggleAppender extends ConfigurableSnitchAppender<LeverToggleConfig> {
 	

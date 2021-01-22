@@ -1,10 +1,9 @@
 package com.untamedears.jukealert.events;
 
+import com.untamedears.jukealert.model.Snitch;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
-
-import com.untamedears.jukealert.model.Snitch;
 
 /**
  * Called when a player logs out next to a snitch and triggers a notification

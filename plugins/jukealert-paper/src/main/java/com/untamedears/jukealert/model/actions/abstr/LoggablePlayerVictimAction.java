@@ -1,11 +1,9 @@
 package com.untamedears.jukealert.model.actions.abstr;
 
-import java.util.UUID;
-
-import org.bukkit.Location;
-
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
+import java.util.UUID;
+import org.bukkit.Location;
 
 public abstract class LoggablePlayerVictimAction extends LoggablePlayerAction {
 	

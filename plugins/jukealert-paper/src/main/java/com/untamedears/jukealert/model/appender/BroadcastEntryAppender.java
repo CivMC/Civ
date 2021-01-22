@@ -1,21 +1,19 @@
 package com.untamedears.jukealert.model.appender;
 
-import java.util.UUID;
-
-import com.untamedears.jukealert.util.JAUtility;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
-
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
 import com.untamedears.jukealert.model.appender.config.LimitedActionTriggerConfig;
 import com.untamedears.jukealert.util.JASettingsManager;
+import com.untamedears.jukealert.util.JAUtility;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
+import java.util.UUID;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 public class BroadcastEntryAppender extends ConfigurableSnitchAppender<LimitedActionTriggerConfig> {
 

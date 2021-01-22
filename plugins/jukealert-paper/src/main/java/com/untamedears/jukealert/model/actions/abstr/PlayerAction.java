@@ -1,12 +1,10 @@
 package com.untamedears.jukealert.model.actions.abstr;
 
+import com.untamedears.jukealert.model.Snitch;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
-
-import com.untamedears.jukealert.model.Snitch;
-
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public abstract class PlayerAction extends SnitchAction {

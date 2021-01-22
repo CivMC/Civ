@@ -1,12 +1,10 @@
 package com.untamedears.jukealert.model.actions.impl;
 
-import java.util.UUID;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggableBlockAction;
+import java.util.UUID;
+import org.bukkit.Location;
+import org.bukkit.Material;
 
 public class EmptyBucketAction extends LoggableBlockAction {
 	

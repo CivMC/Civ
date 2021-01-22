@@ -1,13 +1,11 @@
 package com.untamedears.jukealert.model.appender.config;
 
+import com.untamedears.jukealert.JukeAlert;
+import com.untamedears.jukealert.model.actions.LoggedActionFactory;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.bukkit.configuration.ConfigurationSection;
-
-import com.untamedears.jukealert.JukeAlert;
-import com.untamedears.jukealert.model.actions.LoggedActionFactory;
 
 public class LimitedActionTriggerConfig implements AppenderConfig {
 

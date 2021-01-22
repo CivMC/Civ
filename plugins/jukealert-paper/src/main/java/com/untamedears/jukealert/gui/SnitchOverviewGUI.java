@@ -1,18 +1,15 @@
 package com.untamedears.jukealert.gui;
 
+import com.untamedears.jukealert.model.Snitch;
+import com.untamedears.jukealert.model.appender.DormantCullingAppender;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.appender.DormantCullingAppender;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
@@ -38,11 +35,11 @@ public class SnitchOverviewGUI {
 		List<IClickable> clicks = new LinkedList<>();
 		for (final Snitch snitch : snitches) {
 			ItemStack is = new ItemStack(Material.JUKEBOX);
-			ItemAPI.setDisplayName(is, ChatColor.GOLD + snitch.getName());
+			ItemUtils.setDisplayName(is, ChatColor.GOLD + snitch.getName());
 			Location loc = snitch.getLocation();
-			ItemAPI.addLore(is,
+			ItemUtils.addLore(is,
 					ChatColor.AQUA + "Located at " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
-			ItemAPI.addLore(is, ChatColor.YELLOW + "Group: " + snitch.getGroup().getName());
+			ItemUtils.addLore(is, ChatColor.YELLOW + "Group: " + snitch.getGroup().getName());
 			if (snitch.hasAppender(DormantCullingAppender.class)) {
 				DormantCullingAppender cull = (DormantCullingAppender) snitch.getAppender(DormantCullingAppender.class);
 				String timeInfo;
@@ -55,10 +52,10 @@ public class SnitchOverviewGUI {
 					// dead
 					continue;
 				}
-				ItemAPI.addLore(is, ChatColor.AQUA + timeInfo);
+				ItemUtils.addLore(is, ChatColor.AQUA + timeInfo);
 			}
 			if (canShowDetails) {
-				ItemAPI.addLore(is, ChatColor.GREEN + "Click to show details");
+				ItemUtils.addLore(is, ChatColor.GREEN + "Click to show details");
 				clicks.add(new Clickable(is) {
 					@Override
 					public void clicked(Player p) {

@@ -1,7 +1,5 @@
 package com.untamedears.jukealert.model.appender;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
@@ -10,7 +8,7 @@ import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction;
 import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction.Cause;
 import com.untamedears.jukealert.model.appender.config.DormantCullingConfig;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
-
+import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.util.BukkitComparators;
 import vg.civcraft.mc.civmodcore.util.progress.ProgressTrackable;
 

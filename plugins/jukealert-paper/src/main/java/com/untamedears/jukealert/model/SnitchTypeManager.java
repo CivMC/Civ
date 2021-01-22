@@ -1,5 +1,12 @@
 package com.untamedears.jukealert.model;
 
+import com.untamedears.jukealert.JukeAlert;
+import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
+import com.untamedears.jukealert.model.appender.BroadcastEntryAppender;
+import com.untamedears.jukealert.model.appender.DormantCullingAppender;
+import com.untamedears.jukealert.model.appender.LeverToggleAppender;
+import com.untamedears.jukealert.model.appender.ShowOwnerOnDestroyAppender;
+import com.untamedears.jukealert.model.appender.SnitchLogAppender;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -8,17 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Logger;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-
-import com.untamedears.jukealert.JukeAlert;
-import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
-import com.untamedears.jukealert.model.appender.BroadcastEntryAppender;
-import com.untamedears.jukealert.model.appender.DormantCullingAppender;
-import com.untamedears.jukealert.model.appender.LeverToggleAppender;
-import com.untamedears.jukealert.model.appender.ShowOwnerOnDestroyAppender;
-import com.untamedears.jukealert.model.appender.SnitchLogAppender;
 
 public class SnitchTypeManager {
 

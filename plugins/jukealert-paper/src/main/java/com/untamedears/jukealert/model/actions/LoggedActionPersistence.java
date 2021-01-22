@@ -1,7 +1,6 @@
 package com.untamedears.jukealert.model.actions;
 
 import java.util.UUID;
-
 import org.bukkit.Location;
 
 /**

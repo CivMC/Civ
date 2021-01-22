@@ -1,7 +1,6 @@
 package com.untamedears.jukealert.model;
 
 import org.bukkit.Location;
-
 import vg.civcraft.mc.civmodcore.locations.QTBoxImpl;
 
 public class SnitchQTEntry extends QTBoxImpl {

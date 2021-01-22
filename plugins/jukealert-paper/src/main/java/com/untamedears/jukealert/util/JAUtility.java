@@ -1,24 +1,20 @@
 package com.untamedears.jukealert.util;
 
+import com.untamedears.jukealert.JukeAlert;
+import com.untamedears.jukealert.SnitchManager;
+import com.untamedears.jukealert.model.Snitch;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.UUID;
-
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
-
-import com.untamedears.jukealert.JukeAlert;
-import com.untamedears.jukealert.SnitchManager;
-import com.untamedears.jukealert.model.Snitch;
-
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 // Static methods only

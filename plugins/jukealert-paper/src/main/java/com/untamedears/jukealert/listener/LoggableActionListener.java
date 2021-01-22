@@ -1,5 +1,26 @@
 package com.untamedears.jukealert.listener;
 
+import com.untamedears.jukealert.SnitchManager;
+import com.untamedears.jukealert.model.Snitch;
+import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
+import com.untamedears.jukealert.model.actions.impl.BlockBreakAction;
+import com.untamedears.jukealert.model.actions.impl.BlockPlaceAction;
+import com.untamedears.jukealert.model.actions.impl.DestroyVehicleAction;
+import com.untamedears.jukealert.model.actions.impl.DismountEntityAction;
+import com.untamedears.jukealert.model.actions.impl.EmptyBucketAction;
+import com.untamedears.jukealert.model.actions.impl.EnterFieldAction;
+import com.untamedears.jukealert.model.actions.impl.EnterVehicleAction;
+import com.untamedears.jukealert.model.actions.impl.ExitVehicleAction;
+import com.untamedears.jukealert.model.actions.impl.FillBucketAction;
+import com.untamedears.jukealert.model.actions.impl.IgniteBlockAction;
+import com.untamedears.jukealert.model.actions.impl.KillLivingEntityAction;
+import com.untamedears.jukealert.model.actions.impl.KillPlayerAction;
+import com.untamedears.jukealert.model.actions.impl.LeaveFieldAction;
+import com.untamedears.jukealert.model.actions.impl.LoginAction;
+import com.untamedears.jukealert.model.actions.impl.LogoutAction;
+import com.untamedears.jukealert.model.actions.impl.MountEntityAction;
+import com.untamedears.jukealert.model.actions.impl.OpenContainerAction;
+import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -9,7 +30,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Function;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -39,29 +59,6 @@ import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.InventoryHolder;
 import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
-
-import com.untamedears.jukealert.SnitchManager;
-import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
-import com.untamedears.jukealert.model.actions.impl.BlockBreakAction;
-import com.untamedears.jukealert.model.actions.impl.BlockPlaceAction;
-import com.untamedears.jukealert.model.actions.impl.DestroyVehicleAction;
-import com.untamedears.jukealert.model.actions.impl.DismountEntityAction;
-import com.untamedears.jukealert.model.actions.impl.EmptyBucketAction;
-import com.untamedears.jukealert.model.actions.impl.EnterFieldAction;
-import com.untamedears.jukealert.model.actions.impl.EnterVehicleAction;
-import com.untamedears.jukealert.model.actions.impl.ExitVehicleAction;
-import com.untamedears.jukealert.model.actions.impl.FillBucketAction;
-import com.untamedears.jukealert.model.actions.impl.IgniteBlockAction;
-import com.untamedears.jukealert.model.actions.impl.KillLivingEntityAction;
-import com.untamedears.jukealert.model.actions.impl.KillPlayerAction;
-import com.untamedears.jukealert.model.actions.impl.LeaveFieldAction;
-import com.untamedears.jukealert.model.actions.impl.LoginAction;
-import com.untamedears.jukealert.model.actions.impl.LogoutAction;
-import com.untamedears.jukealert.model.actions.impl.MountEntityAction;
-import com.untamedears.jukealert.model.actions.impl.OpenContainerAction;
-import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
-
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class LoggableActionListener implements Listener {
