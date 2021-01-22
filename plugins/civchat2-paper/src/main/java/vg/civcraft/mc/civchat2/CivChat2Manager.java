@@ -1,5 +1,7 @@
 package vg.civcraft.mc.civchat2;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,14 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
 import vg.civcraft.mc.civchat2.event.GroupChatEvent;
@@ -23,7 +22,6 @@ import vg.civcraft.mc.civchat2.event.PrivateMessageEvent;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.utility.ScoreboardHUD;
-import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -81,7 +79,7 @@ public class CivChat2Manager {
 	 */
 	public UUID getChannel(Player player) {
 
-		Guard.ArgumentNotNull(player, "player");
+		Preconditions.checkNotNull(player, "player");
 
 		return chatChannels.get(player.getUniqueId());
 	}
@@ -94,7 +92,7 @@ public class CivChat2Manager {
 	 */
 	public void removeChannel(Player player) {
 
-		Guard.ArgumentNotNull(player, "player");
+		Preconditions.checkNotNull(player, "player");
 
 		chatChannels.remove(player.getUniqueId());
 		scoreboardHUD.updateScoreboardHUD(player);
@@ -109,8 +107,8 @@ public class CivChat2Manager {
 	 */
 	public void addChatChannel(Player player1, Player player2) {
 
-		Guard.ArgumentNotNull(player1, "player1");
-		Guard.ArgumentNotNull(player2, "player2");
+		Preconditions.checkNotNull(player1, "player1");
+		Preconditions.checkNotNull(player2, "player2");
 
 		if (getChannel(player1) != null) {
 			chatChannels.put(player1.getUniqueId(), player2.getUniqueId());
@@ -175,10 +173,10 @@ public class CivChat2Manager {
 	 */
 	public void broadcastMessage(Player sender, String chatMessage, String messageFormat, Set<Player> recipients) {
 
-		Guard.ArgumentNotNull(sender, "sender");
-		Guard.ArgumentNotNull(chatMessage, "chatMessage");
-		Guard.ArgumentNotNullOrEmpty(messageFormat, "messageFormat");
-		Guard.ArgumentNotNull(recipients, "recipients");
+		Preconditions.checkNotNull(sender, "sender");
+		Preconditions.checkNotNull(chatMessage, "chatMessage");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(messageFormat), "messageFormat");
+		Preconditions.checkNotNull(recipients, "recipients");
 
 		GlobalChatEvent event = new GlobalChatEvent(sender, chatMessage, messageFormat);
 		Bukkit.getPluginManager().callEvent(event);
@@ -223,7 +221,7 @@ public class CivChat2Manager {
 							newColor = net.md_5.bungee.api.ChatColor.of(new Color(comp, comp, comp));
 						}
 						else {
-							newColor = net.md_5.bungee.api.ChatColor.valueOf(config.getColorAtDistance(receiverDistance));
+							newColor = net.md_5.bungee.api.ChatColor.of(config.getColorAtDistance(receiverDistance));
 						}
 						newColor = newColor != null ? newColor : net.md_5.bungee.api.ChatColor.of(defaultColor);
 
@@ -250,7 +248,7 @@ public class CivChat2Manager {
 	 * @return true if the player is AFK
 	 */
 	public boolean isPlayerAfk(Player player) {
-		Guard.ArgumentNotNull(player, "player");
+		Preconditions.checkNotNull(player, "player");
 		return afkPlayers.contains(player.getUniqueId());
 	}
 
@@ -261,7 +259,7 @@ public class CivChat2Manager {
 	 * @return The player AFK status
 	 */
 	public boolean setPlayerAfk(Player player, boolean afkStatus) {
-		Guard.ArgumentNotNull(player, "player");
+		Preconditions.checkNotNull(player, "player");
 
 		if (afkStatus) {
 			afkPlayers.add(player.getUniqueId());
@@ -278,7 +276,7 @@ public class CivChat2Manager {
 	 * @return Whether afk is turned on afterwards
 	 */
 	public boolean togglePlayerAfk(Player player) {
-		Guard.ArgumentNotNull(player, "player");
+		Preconditions.checkNotNull(player, "player");
 		if (afkPlayers.contains(player.getUniqueId())) {
 			afkPlayers.remove(player.getUniqueId());
 			return false;
@@ -294,7 +292,7 @@ public class CivChat2Manager {
 	 * @return the UUID of the person to reply to, null if none
 	 */
 	public UUID getPlayerReply(Player sender) {
-		Guard.ArgumentNotNull(sender, "sender");
+		Preconditions.checkNotNull(sender, "sender");
 		return replyList.get(sender.getUniqueId());
 	}
 
@@ -306,8 +304,8 @@ public class CivChat2Manager {
 	 */
 	public void addPlayerReply(Player player, Player replyPlayer) {
 
-		Guard.ArgumentNotNull(player, "player");
-		Guard.ArgumentNotNull(replyPlayer, "replyPlayer");
+		Preconditions.checkNotNull(player, "player");
+		Preconditions.checkNotNull(replyPlayer, "replyPlayer");
 
 		replyList.put(player.getUniqueId(), replyPlayer.getUniqueId());
 	}
@@ -320,8 +318,8 @@ public class CivChat2Manager {
 	 */
 	public void addGroupChat(Player player, Group group) {
 
-		Guard.ArgumentNotNull(player, "player");
-		Guard.ArgumentNotNull(group, "group");
+		Preconditions.checkNotNull(player, "player");
+		Preconditions.checkNotNull(group, "group");
 
 		groupChatChannels.put(player.getUniqueId(), group);
 		scoreboardHUD.updateScoreboardHUD(player);
@@ -336,9 +334,9 @@ public class CivChat2Manager {
 	 */
 	public void sendGroupMsg(Player sender, Group group, String message) {
 
-		Guard.ArgumentNotNull(sender, "sender");
-		Guard.ArgumentNotNull(group, "group");
-		Guard.ArgumentNotNullOrEmpty(message, "message");
+		Preconditions.checkNotNull(sender, "sender");
+		Preconditions.checkNotNull(group, "group");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(message), "message");
 
 		if (group.getName().equals(config.getGlobalChatGroupName())) {
 			long mutedUntil = instance.getCivChat2SettingsManager().getGlobalChatMuteSetting().getValue(sender);
@@ -393,7 +391,7 @@ public class CivChat2Manager {
 	 */
 	public void removeGroupChat(Player player) {
 
-		Guard.ArgumentNotNull(player, "player");
+		Preconditions.checkNotNull(player, "player");
 
 		groupChatChannels.remove(player.getUniqueId());
 		scoreboardHUD.updateScoreboardHUD(player);
@@ -407,7 +405,7 @@ public class CivChat2Manager {
 	 */
 	public Group getGroupChatting(Player player) {
 
-		Guard.ArgumentNotNull(player, "player");
+		Preconditions.checkNotNull(player, "player");
 
 		return groupChatChannels.get(player.getUniqueId());
 	}

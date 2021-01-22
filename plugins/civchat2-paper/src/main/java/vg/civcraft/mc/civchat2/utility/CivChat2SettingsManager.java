@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civchat2.utility;
 
+import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -8,8 +9,6 @@ import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.LongSetting;
-
-import java.util.UUID;
 
 public class CivChat2SettingsManager {
 

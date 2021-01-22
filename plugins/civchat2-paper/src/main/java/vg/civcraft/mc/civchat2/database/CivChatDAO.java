@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 

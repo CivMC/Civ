@@ -1,9 +1,7 @@
 package vg.civcraft.mc.civchat2.utility;
 
 import java.util.logging.Logger;
-
 import org.bukkit.plugin.java.JavaPlugin;
-
 import vg.civcraft.mc.civchat2.CivChat2;
 
 public class CivChat2Log {

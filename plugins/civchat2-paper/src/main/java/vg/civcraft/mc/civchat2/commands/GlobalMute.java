@@ -5,15 +5,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
-
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.civmodcore.playersettings.impl.LongSetting;
 import vg.civcraft.mc.civmodcore.util.ConfigParsing;
