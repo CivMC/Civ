@@ -17,7 +17,6 @@
 	<name>Citadel</name>
 	<url>https://github.com/civclassic/Citadel</url>
 
-
 	<dependencies>
 		<dependency>
 			<groupId>com.destroystokyo.paper</groupId>
@@ -55,4 +54,5 @@
 			<url>https://raw.githubusercontent.com/CivClassic/artifacts/master/</url>
 		</repository>
 	</repositories>
+
 </project>

@@ -17,6 +17,7 @@ depend:
 softdepend:
 - HolographicDisplays
 description: Citadel allows you to make blocks difficult to break. When a block is reinforced, it must be broken many times before it is destroyed.
+api-version: 1.16
 commands:
   ctr:
     aliases:
@@ -133,4 +134,3 @@ commands:
 permissions:
   citadel.admin:
     default: op
-api-version: 1.16
