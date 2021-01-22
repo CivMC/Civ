@@ -2,7 +2,7 @@ name: ${project.name}
 version: ${project.version}
 authors: [gmlaxfanatic, Protonull]
 main: com.untamedears.itemexchange.ItemExchangePlugin
-api-version: 1.14
+api-version: 1.16
 depend: [CivModCore]
 permissions:
   itemexchange.reload:
