@@ -1,11 +1,10 @@
 package isaac.bastion.event;
 
+import isaac.bastion.BastionBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
-
-import isaac.bastion.BastionBlock;
 
 /**
  * Event that gets fired when a bastion is created

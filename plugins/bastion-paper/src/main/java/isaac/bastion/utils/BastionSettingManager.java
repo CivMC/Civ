@@ -1,12 +1,10 @@
 package isaac.bastion.utils;
 
-import java.util.UUID;
-
+import isaac.bastion.Bastion;
 import isaac.bastion.BastionType;
+import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import isaac.bastion.Bastion;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;

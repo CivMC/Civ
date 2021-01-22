@@ -1,5 +1,11 @@
 package isaac.bastion.manager;
 
+import isaac.bastion.Bastion;
+import isaac.bastion.BastionBlock;
+import isaac.bastion.BastionType;
+import isaac.bastion.event.BastionDamageEvent;
+import isaac.bastion.event.BastionDamageEvent.Cause;
+import isaac.bastion.storage.BastionBlockStorage;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -10,7 +16,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,14 +26,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
-
-import isaac.bastion.Bastion;
-import isaac.bastion.BastionBlock;
-import isaac.bastion.BastionType;
-import isaac.bastion.event.BastionDamageEvent;
-import isaac.bastion.event.BastionDamageEvent.Cause;
-import isaac.bastion.storage.BastionBlockStorage;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class ElytraManager {
 
@@ -285,7 +283,7 @@ public class ElytraManager {
 			inv.setChestplate(new ItemStack(Material.AIR));
 		} else if (damageElytra){
 			ItemStack elytra = inv.getChestplate();
-			Damageable dmgable = ItemAPI.getDamageable(elytra);
+			Damageable dmgable = ItemUtils.getDamageable(elytra);
 			dmgable.setDamage(432);
 			elytra.setItemMeta((ItemMeta) dmgable);
 			inv.setChestplate(elytra);

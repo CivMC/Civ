@@ -8,7 +8,6 @@ package isaac.bastion.utils;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.bukkit.ChatColor;
 
 public class ChatFiller {

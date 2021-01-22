@@ -1,5 +1,10 @@
 package isaac.bastion.listeners;
 
+import isaac.bastion.Bastion;
+import isaac.bastion.BastionBlock;
+import isaac.bastion.Permissions;
+import isaac.bastion.manager.BastionBlockManager;
+import isaac.bastion.manager.EnderPearlManager;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -7,7 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -30,13 +34,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
-
-import isaac.bastion.Bastion;
-import isaac.bastion.BastionBlock;
-import isaac.bastion.Permissions;
-import isaac.bastion.manager.BastionBlockManager;
-import isaac.bastion.manager.EnderPearlManager;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -66,7 +64,7 @@ public final class BastionDamageListener implements Listener {
 					blockManager.erodeFromPlace(event.getPlayer(), blocking);
 				} else {
 					event.getPlayer().sendMessage(String.format("%s%s cannot be used to damage bastions", ChatColor.RED,
-							ItemNames.getItemName(mat)));
+							ItemUtils.getItemName(mat)));
 				}
 				return;
 			}

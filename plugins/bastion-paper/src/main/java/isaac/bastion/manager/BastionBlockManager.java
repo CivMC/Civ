@@ -1,5 +1,12 @@
 package isaac.bastion.manager;
 
+import isaac.bastion.Bastion;
+import isaac.bastion.BastionBlock;
+import isaac.bastion.BastionType;
+import isaac.bastion.Permissions;
+import isaac.bastion.event.BastionDamageEvent;
+import isaac.bastion.event.BastionDamageEvent.Cause;
+import isaac.bastion.storage.BastionBlockStorage;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,25 +18,16 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
+import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-
-import isaac.bastion.Bastion;
-import isaac.bastion.BastionBlock;
-import isaac.bastion.BastionType;
-import isaac.bastion.Permissions;
-import isaac.bastion.event.BastionDamageEvent;
-import isaac.bastion.event.BastionDamageEvent.Cause;
-import isaac.bastion.storage.BastionBlockStorage;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -204,7 +202,7 @@ public class BastionBlockManager {
 
 	public Set<BastionBlock> getBlockingBastions(Location loc, Predicate<BastionBlock> filter) {
 		Set<BastionBlock> boxes = storage.forLocation(loc);
-		if (Iteration.isNullOrEmpty(boxes)) {
+		if (CollectionUtils.isEmpty(boxes)) {
 			return Collections.emptySet();
 		}
 		Set<BastionBlock> result = new HashSet<>();

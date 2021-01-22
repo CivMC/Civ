@@ -4,12 +4,11 @@
 
 package isaac.bastion;
 
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class CommonSettings {
 	private boolean cancelReinforcementModeInBastionField;

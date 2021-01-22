@@ -1,16 +1,14 @@
 package isaac.bastion.listeners;
 
-import java.util.Set;
-
-import org.bukkit.ChatColor;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
 import isaac.bastion.Permissions;
 import isaac.bastion.manager.BastionBlockManager;
+import java.util.Set;
+import org.bukkit.ChatColor;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
