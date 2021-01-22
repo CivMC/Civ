@@ -1,5 +1,6 @@
 package me.josvth.randomspawn.listeners;
 
+import me.josvth.randomspawn.RandomSpawn;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -14,8 +15,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.metadata.FixedMetadataValue;
-
-import me.josvth.randomspawn.RandomSpawn;
 
 public class SignListener implements Listener {
 	private RandomSpawn plugin;

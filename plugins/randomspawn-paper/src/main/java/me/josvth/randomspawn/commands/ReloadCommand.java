@@ -1,9 +1,7 @@
 package me.josvth.randomspawn.commands;
 
 import java.util.List;
-
 import me.josvth.randomspawn.RandomSpawn;
-
 import org.bukkit.command.CommandSender;
 
 public class ReloadCommand extends AbstractCommand {

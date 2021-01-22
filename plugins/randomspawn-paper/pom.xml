@@ -23,36 +23,33 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot</artifactId>
-			<version>1.16.1-R0.1-SNAPSHOT</version>
+			<groupId>com.destroystokyo.paper</groupId>
+			<artifactId>paper-api</artifactId>
+			<version>1.16.4-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.wimbli.WorldBorder</groupId>
 			<artifactId>WorldBorder</artifactId>
-			<version>1.10.0</version>
-			<type>jar</type>
+			<version>1.10.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>isaac</groupId>
 			<artifactId>Bastion</artifactId>
-			<version>2.4.0</version>
-			<type>jar</type>
+			<version>2.4.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.programmerdan.minecraft</groupId>
 			<artifactId>banstick</artifactId>
-			<version>1.2.0</version>
-			<type>jar</type>
+			<version>1.2.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.8.0</version>
+			<version>1.8.2</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
