@@ -1,5 +1,7 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import java.util.List;
+import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -10,9 +12,6 @@ import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
-
-import java.util.List;
-import java.util.UUID;
 
 public class JoinGroup extends PlayerCommandMiddle{
 

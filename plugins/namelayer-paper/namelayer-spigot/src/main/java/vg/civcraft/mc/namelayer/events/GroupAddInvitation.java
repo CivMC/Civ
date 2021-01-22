@@ -1,11 +1,9 @@
 package vg.civcraft.mc.namelayer.events;
 
 import java.util.UUID;
-
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 
 public class GroupAddInvitation extends Event implements Cancellable{

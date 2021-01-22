@@ -2,9 +2,7 @@ package vg.civcraft.mc.namelayer.command.commands;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.bukkit.command.CommandSender;
-
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 

@@ -2,13 +2,12 @@ package vg.civcraft.mc.namelayer.command;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public abstract class PlayerCommandMiddle extends PlayerCommand{
+public abstract class PlayerCommandMiddle extends PlayerCommand {
 
 	public PlayerCommandMiddle(String name) {
 		super(name);

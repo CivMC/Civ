@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,9 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
+import vg.civcraft.mc.civmodcore.chat.dialog.Dialog;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
@@ -97,7 +95,7 @@ public class GUIGroupOverview {
 		// previous button
 		if (currentPage > 0) {
 			ItemStack back = new ItemStack(Material.ARROW);
-			ItemAPI.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
+			ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
 			Clickable baCl = new Clickable(back) {
 
 				@Override
@@ -113,7 +111,7 @@ public class GUIGroupOverview {
 		// next button
 		if ((45 * (currentPage + 1)) <= groups.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
-			ItemAPI.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
+			ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
 
 				@Override
@@ -129,7 +127,7 @@ public class GUIGroupOverview {
 
 		// close button
 		ItemStack backToOverview = AbstractGroupGUI.goBackStack(); 
-		ItemAPI.setDisplayName(backToOverview, ChatColor.GOLD + "Close");
+		ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Close");
 		ci.setSlot(new Clickable(backToOverview) {
 
 			@Override
@@ -162,23 +160,23 @@ public class GUIGroupOverview {
 			switch (pType) {
 			case MEMBERS:
 				is = new ItemStack(Material.LEATHER_CHESTPLATE);
-				ItemAPI.addLore(is, ChatColor.AQUA + "Your rank: Member");
+				ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Member");
 				break;
 			case MODS:
 				is = AbstractGroupGUI.modStack();
-				ItemAPI.addLore(is, ChatColor.AQUA + "Your rank: Mod");
+				ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Mod");
 				break;
 			case ADMINS:
 				is = new ItemStack(Material.IRON_CHESTPLATE);
-				ItemAPI.addLore(is, ChatColor.AQUA + "Your rank: Admin");
+				ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Admin");
 				break;
 			case OWNER:
 				is = new ItemStack(Material.DIAMOND_CHESTPLATE);
 				if (g.isOwner(p.getUniqueId())) {
-					ItemAPI.addLore(is, ChatColor.AQUA
+					ItemUtils.addLore(is, ChatColor.AQUA
 							+ "Your rank: Primary owner");
 				} else {
-					ItemAPI.addLore(is, ChatColor.AQUA + "Your rank: Owner");
+					ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Owner");
 				}
 				break;
 			}
@@ -196,14 +194,14 @@ public class GUIGroupOverview {
 			is.setItemMeta(im);
 			if (gm.hasAccess(g, p.getUniqueId(),
 					PermissionType.getPermission("GROUPSTATS"))) {
-				ItemAPI.addLore(
+				ItemUtils.addLore(
 						is,
 						ChatColor.AQUA
 								+ String.valueOf(g.getAllMembers().size())
 								+ " member"
 								+ (g.getAllMembers().size() > 1 ? "s" : ""));
 			}
-			ItemAPI.setDisplayName(is, ChatColor.GOLD + g.getName());
+			ItemUtils.setDisplayName(is, ChatColor.GOLD + g.getName());
 			if (gm.hasAccess(g, p.getUniqueId(),
 					PermissionType.getPermission("OPEN_GUI"))) {
 				c = new Clickable(is) {
@@ -214,7 +212,7 @@ public class GUIGroupOverview {
 					}
 				};
 			} else {
-				ItemAPI.addLore(is, ChatColor.RED
+				ItemUtils.addLore(is, ChatColor.RED
 						+ "You aren't permitted to open", ChatColor.RED
 						+ "the GUI for this group");
 				c = new DecorationStack(is);
@@ -227,7 +225,7 @@ public class GUIGroupOverview {
 
 	private Clickable getCreateGroupClickable() {
 		ItemStack is = new ItemStack(Material.APPLE);
-		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Create group");
+		ItemUtils.setDisplayName(is, ChatColor.GOLD + "Create group");
 		Clickable c = new Clickable(is) {
 
 			@Override
@@ -341,7 +339,7 @@ public class GUIGroupOverview {
 	
 	private Clickable getJoinGroupClickable() {
 		ItemStack is = new ItemStack(Material.CHEST);
-		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Join password protected group");
+		ItemUtils.setDisplayName(is, ChatColor.GOLD + "Join password protected group");
 		Clickable c = new Clickable(is) {
 			
 			@Override

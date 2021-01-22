@@ -15,7 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.scheduler.BukkitTask;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.MapUtils;
+import vg.civcraft.mc.civmodcore.util.MoreMapUtils;
 import vg.civcraft.mc.namelayer.listeners.AssociationListener;
 
 public final class MojangNames {
@@ -103,7 +103,7 @@ public final class MojangNames {
 		if (uuid == null) {
 			return null;
 		}
-		return MapUtils.getKeyFromValue(PROFILES, uuid);
+		return MoreMapUtils.getKeyFromValue(PROFILES, uuid);
 	}
 
 	/**

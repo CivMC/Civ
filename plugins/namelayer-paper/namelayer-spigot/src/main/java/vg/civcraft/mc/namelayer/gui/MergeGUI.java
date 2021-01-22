@@ -2,20 +2,16 @@ package vg.civcraft.mc.namelayer.gui;
 
 import java.util.List;
 import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.command.commands.MergeGroups;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -34,13 +30,13 @@ public class MergeGUI extends AbstractGroupGUI {
 	public void showScreen() {
 		ClickableInventory ci = new ClickableInventory(27, g.getName());
 		ItemStack mergeThisIntoOtherStack = new ItemStack(Material.MINECART);
-		ItemAPI.setDisplayName(mergeThisIntoOtherStack, ChatColor.GOLD + "Merge this group into a different one");
-		ItemAPI.addLore(mergeThisIntoOtherStack, ChatColor.AQUA
+		ItemUtils.setDisplayName(mergeThisIntoOtherStack, ChatColor.GOLD + "Merge this group into a different one");
+		ItemUtils.addLore(mergeThisIntoOtherStack, ChatColor.AQUA
 				+ "This action will transfer all members, reinforcements, snitches of this group to the one you chose next. "
 				+ "This group will be deleted in the process");
 		ItemStack mergeOtherIntoThisStack = mergeStack();
-		ItemAPI.setDisplayName(mergeOtherIntoThisStack, ChatColor.GOLD + "Merge a different group into this one");
-		ItemAPI.addLore(mergeOtherIntoThisStack, ChatColor.AQUA
+		ItemUtils.setDisplayName(mergeOtherIntoThisStack, ChatColor.GOLD + "Merge a different group into this one");
+		ItemUtils.addLore(mergeOtherIntoThisStack, ChatColor.AQUA
 				+ "This action will transfer all members, reinforcements and snitches of the group you chose next to this group. "
 				+ "The group chosen will be deleted in the process");
 		ci.setSlot(new Clickable(mergeOtherIntoThisStack) {
@@ -61,7 +57,7 @@ public class MergeGUI extends AbstractGroupGUI {
 		}, 15);
 		// exit button
 		ItemStack backToOverview = goBackStack();
-		ItemAPI.setDisplayName(backToOverview, ChatColor.GOLD + "Go back to previous menu");
+		ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Go back to previous menu");
 		ci.setSlot(new Clickable(backToOverview) {
 
 			@Override
@@ -91,7 +87,7 @@ public class MergeGUI extends AbstractGroupGUI {
 				continue;
 			}
 			ItemStack is = new ItemStack(Material.MAGMA_CREAM);
-			ItemAPI.setDisplayName(is, ChatColor.GOLD + currentName);
+			ItemUtils.setDisplayName(is, ChatColor.GOLD + currentName);
 			ci.setSlot(new Clickable(is) {
 
 				@Override
@@ -103,7 +99,7 @@ public class MergeGUI extends AbstractGroupGUI {
 		// back button
 		if (currentPage > 0) {
 			ItemStack back = new ItemStack(Material.ARROW);
-			ItemAPI.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
+			ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
 			Clickable baCl = new Clickable(back) {
 
 				@Override
@@ -119,7 +115,7 @@ public class MergeGUI extends AbstractGroupGUI {
 		// next button
 		if ((45 * (currentPage + 1)) <= gName.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
-			ItemAPI.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
+			ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
 
 				@Override
@@ -135,7 +131,7 @@ public class MergeGUI extends AbstractGroupGUI {
 
 		// exit button
 		ItemStack backToOverview = goBackStack();
-		ItemAPI.setDisplayName(backToOverview, ChatColor.GOLD + "Exit selection");
+		ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Exit selection");
 		ci.setSlot(new Clickable(backToOverview) {
 
 			@Override
@@ -151,15 +147,15 @@ public class MergeGUI extends AbstractGroupGUI {
 		String fromGroup = mergeIntoThisGroup ? groupName : g.getName();
 		String targetGroup = mergeIntoThisGroup ? g.getName() : groupName;
 		ItemStack info = new ItemStack(Material.PAPER);
-		ItemAPI.setDisplayName(info, ChatColor.GOLD + "Merge group");
-		ItemAPI.addLore(info, ChatColor.RED + "Are you sure that you want to merge " + fromGroup + " into "
+		ItemUtils.setDisplayName(info, ChatColor.GOLD + "Merge group");
+		ItemUtils.addLore(info, ChatColor.RED + "Are you sure that you want to merge " + fromGroup + " into "
 				+ targetGroup + "? You can not undo this!");
-		ItemAPI.addLore(info, ChatColor.AQUA + "This will transfer all members, reinforcements, snitches etc. from "
+		ItemUtils.addLore(info, ChatColor.AQUA + "This will transfer all members, reinforcements, snitches etc. from "
 				+ fromGroup + " to " + targetGroup + ". " + fromGroup + " will be deleted in the process");
 		ItemStack yes = yesStack();
-		ItemAPI.setDisplayName(yes, ChatColor.GOLD + "Yes, merge " + fromGroup + " into " + targetGroup);
+		ItemUtils.setDisplayName(yes, ChatColor.GOLD + "Yes, merge " + fromGroup + " into " + targetGroup);
 		ItemStack no = noStack();
-		ItemAPI.setDisplayName(no, ChatColor.GOLD + "No, don't merge " + g.getName());
+		ItemUtils.setDisplayName(no, ChatColor.GOLD + "No, don't merge " + g.getName());
 		confirmInv.setSlot(new Clickable(yes) {
 
 			@Override
