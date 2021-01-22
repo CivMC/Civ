@@ -1,5 +1,19 @@
 package com.devotedmc.ExilePearl.core;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.PearlType;
+import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
+import com.devotedmc.ExilePearl.event.PearlMovedEvent;
+import com.devotedmc.ExilePearl.holder.BlockHolder;
+import com.devotedmc.ExilePearl.holder.EntityHolder;
+import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
+import com.devotedmc.ExilePearl.holder.ItemHolder;
+import com.devotedmc.ExilePearl.holder.PearlHolder;
+import com.devotedmc.ExilePearl.holder.PlayerHolder;
+import com.devotedmc.ExilePearl.storage.PearlUpdateStorage;
+import com.google.common.base.Preconditions;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -7,8 +21,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
-
-import com.devotedmc.ExilePearl.holder.EntityHolder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
@@ -23,21 +35,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.Lang;
-import com.devotedmc.ExilePearl.PearlType;
-import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
-import com.devotedmc.ExilePearl.event.PearlMovedEvent;
-import com.devotedmc.ExilePearl.holder.BlockHolder;
-import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
-import com.devotedmc.ExilePearl.holder.ItemHolder;
-import com.devotedmc.ExilePearl.holder.PearlHolder;
-import com.devotedmc.ExilePearl.holder.PlayerHolder;
-import com.devotedmc.ExilePearl.storage.PearlUpdateStorage;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 /**
@@ -76,11 +73,11 @@ final class CoreExilePearl implements ExilePearl {
 	 */
 	public CoreExilePearl(final ExilePearlApi pearlApi, final PearlUpdateStorage storage, 
 			final UUID playerId, final UUID killedBy, int pearlId, final PearlHolder holder) {
-		Guard.ArgumentNotNull(pearlApi, "pearlApi");
-		Guard.ArgumentNotNull(storage, "storage");
-		Guard.ArgumentNotNull(playerId, "playerId");
-		Guard.ArgumentNotNull(killedBy, "killedBy");
-		Guard.ArgumentNotNull(holder, "holder");
+		Preconditions.checkNotNull(pearlApi, "pearlApi");
+		Preconditions.checkNotNull(storage, "storage");
+		Preconditions.checkNotNull(playerId, "playerId");
+		Preconditions.checkNotNull(killedBy, "killedBy");
+		Preconditions.checkNotNull(holder, "holder");
 
 		this.pearlApi = pearlApi;
 		this.storage = storage;
@@ -139,7 +136,7 @@ final class CoreExilePearl implements ExilePearl {
 
 	@Override
 	public void setPearledOn(Date pearledOn) {
-		Guard.ArgumentNotNull(pearledOn, "pearledOn");
+		Preconditions.checkNotNull(pearledOn, "pearledOn");
 		checkPearlValid();
 
 		this.pearledOn = pearledOn;
@@ -163,33 +160,33 @@ final class CoreExilePearl implements ExilePearl {
 
 
 	public void setHolder(PearlHolder holder) {
-		Guard.ArgumentNotNull(holder, "holder");
+		Preconditions.checkNotNull(holder, "holder");
 		setHolderInternal(holder);
 	}
 
 
 	@Override
 	public void setHolder(Player player) {
-		Guard.ArgumentNotNull(player, "player");
+		Preconditions.checkNotNull(player, "player");
 		setHolderInternal(new PlayerHolder(player));
 	}
 
 
 	@Override
 	public void setHolder(Block block) {
-		Guard.ArgumentNotNull(block, "block");
+		Preconditions.checkNotNull(block, "block");
 		setHolderInternal(new BlockHolder(block));
 	}
 
 	@Override
 	public void setHolder(Entity entity) {
-		Guard.ArgumentNotNull(entity, "entity");
+		Preconditions.checkNotNull(entity, "entity");
 		setHolderInternal(new EntityHolder(entity));
 	}
 
 	@Override
 	public void setHolder(Item item) {
-		Guard.ArgumentNotNull(item, "item");
+		Preconditions.checkNotNull(item, "item");
 		setHolderInternal(new ItemHolder(item));
 	}
 
@@ -243,7 +240,7 @@ final class CoreExilePearl implements ExilePearl {
     
     /**
      * Sets the pearl heatlh value
-     * @param The strength value
+     * @param health The health value
      */
 	@Override
     public void setHealth(int health) {
@@ -363,7 +360,7 @@ final class CoreExilePearl implements ExilePearl {
 	 * @return true if it checks out
 	 */
 	public boolean validateItemStack(ItemStack is) {
-		Guard.ArgumentNotNull(is, "is");
+		Preconditions.checkNotNull(is, "is");
 
 		int pearlId = pearlApi.getLoreProvider().getPearlIdFromItemStack(is);
 

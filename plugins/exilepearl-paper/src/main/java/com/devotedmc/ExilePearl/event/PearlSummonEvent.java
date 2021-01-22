@@ -1,13 +1,11 @@
 package com.devotedmc.ExilePearl.event;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.google.common.base.Preconditions;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 public class PearlSummonEvent extends Event implements Cancellable {
 
@@ -24,8 +22,8 @@ public class PearlSummonEvent extends Event implements Cancellable {
 	 * @param summoner The one summoning the pearl
 	 */
 	public PearlSummonEvent(final ExilePearl pearl, final Player summoner) {
-		Guard.ArgumentNotNull(pearl, "pearl");
-		Guard.ArgumentNotNull(summoner, "summoner");
+		Preconditions.checkNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(summoner, "summoner");
 
 		this.pearl = pearl;
 		this.summoner = summoner;

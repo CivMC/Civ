@@ -1,15 +1,14 @@
 package com.devotedmc.ExilePearl.listener;
 
+import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.PearlFreeReason;
+import com.devotedmc.ExilePearl.event.PearlDecayEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-
-import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
-import com.devotedmc.ExilePearl.PearlFreeReason;
-import com.devotedmc.ExilePearl.event.PearlDecayEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class WorldBorderListener extends RuleListener {

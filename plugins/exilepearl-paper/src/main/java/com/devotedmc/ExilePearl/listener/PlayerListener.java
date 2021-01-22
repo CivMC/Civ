@@ -2,6 +2,20 @@ package com.devotedmc.ExilePearl.listener;
 
 import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.ExileRule;
+import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.PearlFreeReason;
+import com.devotedmc.ExilePearl.PearlType;
+import com.devotedmc.ExilePearl.RepairMaterial;
+import com.devotedmc.ExilePearl.config.Configurable;
+import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.event.PearlMovedEvent;
+import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
+import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
+import com.devotedmc.ExilePearl.util.SpawnUtil;
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,7 +26,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
-
+import net.minelink.ctplus.compat.api.NpcIdentity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -47,10 +61,10 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -79,24 +93,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.ExileRule;
-import com.devotedmc.ExilePearl.Lang;
-import com.devotedmc.ExilePearl.PearlFreeReason;
-import com.devotedmc.ExilePearl.PearlType;
-import com.devotedmc.ExilePearl.RepairMaterial;
-import com.devotedmc.ExilePearl.config.Configurable;
-import com.devotedmc.ExilePearl.config.PearlConfig;
-import com.devotedmc.ExilePearl.event.PearlMovedEvent;
-import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
-import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
-import com.devotedmc.ExilePearl.util.SpawnUtil;
-
-import net.minelink.ctplus.compat.api.NpcIdentity;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 /**
@@ -120,7 +117,7 @@ public class PlayerListener implements Listener, Configurable {
 	 * @param pearlApi The pearlApi instance
 	 */
 	public PlayerListener(final ExilePearlApi pearlApi) {
-		Guard.ArgumentNotNull(pearlApi, "pearlApi");
+		Preconditions.checkNotNull(pearlApi, "pearlApi");
 
 		this.pearlApi = pearlApi;
 	}

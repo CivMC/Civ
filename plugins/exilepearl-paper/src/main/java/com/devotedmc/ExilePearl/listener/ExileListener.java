@@ -2,9 +2,17 @@ package com.devotedmc.ExilePearl.listener;
 
 import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
 
+import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.ExileRule;
+import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.PearlType;
+import com.devotedmc.ExilePearl.config.Configurable;
+import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
+import com.devotedmc.ExilePearl.util.EntityCombustEventWrapper;
+import com.devotedmc.ExilePearl.util.EntityDamageEventWrapper;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.bukkit.Material;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Dropper;
@@ -16,8 +24,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -35,16 +43,6 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-
-import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.ExileRule;
-import com.devotedmc.ExilePearl.Lang;
-import com.devotedmc.ExilePearl.PearlType;
-import com.devotedmc.ExilePearl.config.PearlConfig;
-import com.devotedmc.ExilePearl.config.Configurable;
-import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
-import com.devotedmc.ExilePearl.util.EntityCombustEventWrapper;
-import com.devotedmc.ExilePearl.util.EntityDamageEventWrapper;
 
 /**
  * Listener for disallowing certain actions of exiled players

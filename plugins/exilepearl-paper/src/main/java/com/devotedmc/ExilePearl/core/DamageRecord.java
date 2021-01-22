@@ -1,13 +1,10 @@
 package com.devotedmc.ExilePearl.core;
 
+import com.devotedmc.ExilePearl.util.Clock;
+import com.google.common.base.Preconditions;
 import java.util.UUID;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import com.devotedmc.ExilePearl.util.Clock;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * Tracks damage dealt from a player.
@@ -23,12 +20,12 @@ final class DamageRecord {
 
 	/**
 	 * Creates a new DamageRecord instance
+	 * @param clock The clock instance
 	 * @param damager The damager Id
-	 * @param amount the damage amount
 	 */
 	public DamageRecord(final Clock clock, final UUID damager) {
-		Guard.ArgumentNotNull(clock, "clock");
-		Guard.ArgumentNotNull(damager, "damager");
+		Preconditions.checkNotNull(clock, "clock");
+		Preconditions.checkNotNull(damager, "damager");
 
 		this.clock = clock;
 		this.damager = damager;
@@ -88,7 +85,7 @@ final class DamageRecord {
 
 	/**
 	 * Decays the damage by an amount
-	 * @param amount The damage amount to decay
+	 * @param decayAmount The damage amount to decay
 	 * @return true if the record is still valid
 	 */
 	public boolean decayDamage(double decayAmount) {

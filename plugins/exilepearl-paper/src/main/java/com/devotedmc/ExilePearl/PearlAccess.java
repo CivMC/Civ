@@ -1,13 +1,11 @@
 package com.devotedmc.ExilePearl;
 
+import com.devotedmc.ExilePearl.holder.PearlHolder;
 import java.util.Collection;
 import java.util.UUID;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import com.devotedmc.ExilePearl.holder.PearlHolder;
 
 /**
  * Interface for exiling players and checking exile statuses

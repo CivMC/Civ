@@ -1,13 +1,11 @@
 package com.devotedmc.ExilePearl.listener;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
-
 import isaac.bastion.event.BastionCreateEvent;
 import isaac.bastion.event.BastionDamageEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 
 public class BastionListener extends RuleListener {
 

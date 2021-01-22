@@ -1,9 +1,8 @@
 package com.devotedmc.ExilePearl.util;
 
+import isaac.bastion.BastionBlock;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
-
-import isaac.bastion.BastionBlock;
 
 public class BastionWrapper {
 	private BastionBlock bastion;

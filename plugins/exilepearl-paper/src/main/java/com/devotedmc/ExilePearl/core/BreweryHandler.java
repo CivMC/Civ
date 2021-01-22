@@ -1,9 +1,8 @@
 package com.devotedmc.ExilePearl.core;
 
-import org.bukkit.inventory.ItemStack;
-
 import com.devotedmc.ExilePearl.BrewHandler;
 import com.dre.brewery.Brew;
+import org.bukkit.inventory.ItemStack;
 
 public class BreweryHandler implements BrewHandler {
 

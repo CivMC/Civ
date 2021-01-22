@@ -1,17 +1,15 @@
 package com.devotedmc.ExilePearl;
 
+import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
+import com.devotedmc.ExilePearl.holder.PearlHolder;
 import java.util.Date;
 import java.util.UUID;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
-import com.devotedmc.ExilePearl.holder.PearlHolder;
 
 /**
  * Interface for a player who is imprisoned in an exile pearl

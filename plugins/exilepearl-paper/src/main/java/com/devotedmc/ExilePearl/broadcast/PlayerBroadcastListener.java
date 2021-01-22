@@ -1,15 +1,12 @@
 package com.devotedmc.ExilePearl.broadcast;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.Lang;
+import com.google.common.base.Preconditions;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.Lang;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class PlayerBroadcastListener implements BroadcastListener {
@@ -17,7 +14,7 @@ public class PlayerBroadcastListener implements BroadcastListener {
 	private final UUID playerId;
 
 	public PlayerBroadcastListener(final Player player) {
-		Guard.ArgumentNotNull(player, "player");
+		Preconditions.checkNotNull(player, "player");
 
 		this.playerId = player.getUniqueId();
 	}

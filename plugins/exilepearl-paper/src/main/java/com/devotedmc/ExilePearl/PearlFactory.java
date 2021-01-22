@@ -1,11 +1,9 @@
 package com.devotedmc.ExilePearl;
 
-import java.util.UUID;
-
-import org.bukkit.entity.Player;
-
 import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
+import java.util.UUID;
+import org.bukkit.entity.Player;
 
 /**
  * Factory interface for creating concrete pearl classes

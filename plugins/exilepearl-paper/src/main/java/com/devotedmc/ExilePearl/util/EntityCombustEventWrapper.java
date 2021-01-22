@@ -1,11 +1,10 @@
 package com.devotedmc.ExilePearl.util;
 
+import com.google.common.base.Preconditions;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * Helper class for entity cbust event
@@ -17,7 +16,7 @@ public class EntityCombustEventWrapper {
 	private final EntityCombustByEntityEvent event;
 
 	public EntityCombustEventWrapper(final EntityCombustByEntityEvent event) {
-		Guard.ArgumentNotNull(event, "event");
+		Preconditions.checkNotNull(event, "event");
 
 		this.event = event;
 	}

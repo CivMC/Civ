@@ -1,5 +1,10 @@
 package com.devotedmc.ExilePearl.storage;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.PearlFactory;
+import com.devotedmc.ExilePearl.PearlLogger;
+import com.devotedmc.ExilePearl.config.Document;
+import com.google.common.base.Preconditions;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,16 +13,8 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
-
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.PearlFactory;
-import com.devotedmc.ExilePearl.PearlLogger;
-import com.devotedmc.ExilePearl.config.Document;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * File storage for pearls. Not done yet
@@ -34,9 +31,9 @@ class FileStorage implements PluginStorage {
 	private Document pearlDoc;
 
 	public FileStorage(final File file, final PearlFactory pearlFactory, final PearlLogger logger) {
-		Guard.ArgumentNotNull(file, "file");
-		Guard.ArgumentNotNull(pearlFactory, "pearlFactory");
-		Guard.ArgumentNotNull(logger, "logger");
+		Preconditions.checkNotNull(file, "file");
+		Preconditions.checkNotNull(pearlFactory, "pearlFactory");
+		Preconditions.checkNotNull(logger, "logger");
 
 		this.pearlFile = file;
 		this.pearlFactory = pearlFactory;

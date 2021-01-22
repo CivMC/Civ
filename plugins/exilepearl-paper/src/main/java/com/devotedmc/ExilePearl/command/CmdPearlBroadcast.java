@@ -1,13 +1,11 @@
 package com.devotedmc.ExilePearl.command;
 
-import com.devotedmc.ExilePearl.util.NameLayerPermissions;
-import org.bukkit.entity.Player;
-
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.broadcast.NLGroupBroadcastListener;
-
+import com.devotedmc.ExilePearl.util.NameLayerPermissions;
+import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;

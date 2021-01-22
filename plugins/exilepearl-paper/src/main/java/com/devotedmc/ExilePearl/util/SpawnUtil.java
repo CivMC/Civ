@@ -1,13 +1,11 @@
 package com.devotedmc.ExilePearl.util;
 
+import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import me.josvth.randomspawn.RandomSpawn;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
-
-import me.josvth.randomspawn.RandomSpawn;
 
 public class SpawnUtil {
 

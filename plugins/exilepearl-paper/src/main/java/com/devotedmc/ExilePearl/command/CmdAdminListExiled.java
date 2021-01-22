@@ -1,11 +1,9 @@
 package com.devotedmc.ExilePearl.command;
 
-import java.util.Collection;
-
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.util.Permission;
-
+import java.util.Collection;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class CmdAdminListExiled extends PearlCommand {

@@ -1,11 +1,9 @@
 package com.devotedmc.ExilePearl;
 
+import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import java.util.UUID;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-
-import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 
 public interface SuicideHandler extends ExilePearlRunnable, Listener {
 

@@ -1,6 +1,7 @@
 package com.devotedmc.ExilePearl.holder;
 
-import vg.civcraft.mc.civmodcore.util.Guard;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 /**
  * Validation result for checking an exile pearl
@@ -33,7 +34,7 @@ public enum HolderVerifyResult
 	 * @param isValid whether the result is valid
 	 */
 	private HolderVerifyResult(final String text, final boolean isValid) {
-		Guard.ArgumentNotNullOrEmpty(text, "text");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(text), "text");
 
 		this.text = text;
 		this.isValid = isValid;

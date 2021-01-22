@@ -1,14 +1,11 @@
 package com.devotedmc.ExilePearl.core;
 
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
-
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
+import com.google.common.base.Preconditions;
+import java.util.logging.Level;
+import org.bukkit.Bukkit;
 
 abstract class ExilePearlTask implements ExilePearlRunnable {
 
@@ -21,7 +18,7 @@ abstract class ExilePearlTask implements ExilePearlRunnable {
 	protected int taskId = 0;
 
 	public ExilePearlTask(final ExilePearlApi pearlApi) {
-		Guard.ArgumentNotNull(pearlApi, "pearlApi");
+		Preconditions.checkNotNull(pearlApi, "pearlApi");
 
 		this.pearlApi = pearlApi;
 	}

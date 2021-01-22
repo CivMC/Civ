@@ -1,10 +1,9 @@
 package com.devotedmc.ExilePearl.storage;
 
+import com.devotedmc.ExilePearl.ExilePearl;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
-
-import com.devotedmc.ExilePearl.ExilePearl;
 
 class RamStorage implements PluginStorage {
 

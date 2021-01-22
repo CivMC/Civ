@@ -1,13 +1,11 @@
 package com.devotedmc.ExilePearl.listener;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.ExilePearlApi;
+import me.josvth.randomspawn.events.NewPlayerSpawn;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlApi;
-
-import me.josvth.randomspawn.events.NewPlayerSpawn;
 
 public class RandomSpawnListener extends RuleListener {
 

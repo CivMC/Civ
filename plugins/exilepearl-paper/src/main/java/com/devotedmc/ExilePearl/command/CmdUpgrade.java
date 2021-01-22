@@ -6,9 +6,8 @@ import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.util.SpawnUtil;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
 import java.util.Set;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 
 /**

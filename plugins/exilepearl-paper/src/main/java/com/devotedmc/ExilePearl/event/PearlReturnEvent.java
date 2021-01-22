@@ -1,12 +1,10 @@
 package com.devotedmc.ExilePearl.event;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.google.common.base.Preconditions;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 public class PearlReturnEvent extends Event implements Cancellable {
 
@@ -17,7 +15,7 @@ public class PearlReturnEvent extends Event implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
 
 	public PearlReturnEvent(final ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 
 		this.pearl = pearl;
 	}

@@ -1,5 +1,7 @@
 package com.devotedmc.ExilePearl.core;
 
+import com.devotedmc.ExilePearl.util.Clock;
+import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -8,14 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.entity.Player;
-
-import com.devotedmc.ExilePearl.util.Clock;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * Logs damage dealt to a player by other players.
@@ -32,8 +29,8 @@ class DamageLog {
 	 * @param playerId The player Id
 	 */
 	public DamageLog(Clock clock, UUID playerId) {
-		Guard.ArgumentNotNull(clock, "clock");
-		Guard.ArgumentNotNull(playerId, "playerId");
+		Preconditions.checkNotNull(clock, "clock");
+		Preconditions.checkNotNull(playerId, "playerId");
 
 		this.clock = clock;
 		this.playerId = playerId;
@@ -72,7 +69,7 @@ class DamageLog {
 	 * When there are no longer any players being tracked, then
 	 * this method returns false to indicate that it can be removed.
 	 * 
-	 * @param amount The damage amount to decay
+	 * @param decayAmount The damage amount to decay
 	 * @return true if there are still damagers being tracked
 	 */
 	public boolean decayDamage(double decayAmount) {		

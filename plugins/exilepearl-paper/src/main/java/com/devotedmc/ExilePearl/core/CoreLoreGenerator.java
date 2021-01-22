@@ -1,5 +1,13 @@
 package com.devotedmc.ExilePearl.core;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.LoreProvider;
+import com.devotedmc.ExilePearl.PearlType;
+import com.devotedmc.ExilePearl.RepairMaterial;
+import com.devotedmc.ExilePearl.command.CmdExilePearl;
+import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.holder.PearlHolder;
+import com.google.common.base.Preconditions;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,22 +16,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.LoreProvider;
-import com.devotedmc.ExilePearl.PearlType;
-import com.devotedmc.ExilePearl.RepairMaterial;
-import com.devotedmc.ExilePearl.command.CmdExilePearl;
-import com.devotedmc.ExilePearl.config.PearlConfig;
-import com.devotedmc.ExilePearl.holder.PearlHolder;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 /**
@@ -41,7 +38,7 @@ final class CoreLoreGenerator implements LoreProvider {
 	private final SimpleDateFormat dateFormat;
 
 	public CoreLoreGenerator(final PearlConfig config) {
-		Guard.ArgumentNotNull(config, "config");
+		Preconditions.checkNotNull(config, "config");
 
 		this.config = config;
 		this.dateFormat = new SimpleDateFormat("MM/dd/yyyy");

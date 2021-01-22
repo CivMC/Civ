@@ -1,6 +1,6 @@
 package com.devotedmc.ExilePearl.command;
 
-import vg.civcraft.mc.civmodcore.util.Guard;
+import com.google.common.base.Preconditions;
 
 /**
  * A command argument item that is used to automatically generate
@@ -14,7 +14,7 @@ final class AutoTab {
 	private final String help;
 
 	public AutoTab(final String name, final String help) {
-		Guard.ArgumentNotNull(name, "name");
+		Preconditions.checkNotNull(name, "name");
 
 		this.name = name;
 		this.help = help;

@@ -1,15 +1,13 @@
 package com.devotedmc.ExilePearl;
 
+import com.devotedmc.ExilePearl.core.CorePluginFactory;
 import java.io.File;
 import java.util.List;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
-
-import com.devotedmc.ExilePearl.core.CorePluginFactory;
 
 /**
  * The plugin class for ExilePearl

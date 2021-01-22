@@ -1,10 +1,9 @@
 package com.devotedmc.ExilePearl.command;
 
-import java.util.UUID;
-
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.util.Permission;
+import java.util.UUID;
 
 public class CmdAdminSetKiller extends PearlCommand {
 

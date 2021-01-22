@@ -1,12 +1,10 @@
 package com.devotedmc.ExilePearl.event;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.google.common.base.Preconditions;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * Event that is called when a player is being exiled
@@ -27,7 +25,7 @@ public class PlayerPearledEvent extends Event implements Cancellable {
 	 * @param pearl The pearl instance
 	 */
 	public PlayerPearledEvent(final ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 
 		this.pearl = pearl;
 	}

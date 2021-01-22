@@ -2,7 +2,6 @@ package com.devotedmc.ExilePearl;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.bukkit.inventory.ItemStack;
 
 public interface LoreProvider {

@@ -1,13 +1,11 @@
 package com.devotedmc.ExilePearl.event;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.PearlFreeReason;
+import com.google.common.base.Preconditions;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.PearlFreeReason;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * Event that is called when an exiled player is being freed
@@ -30,8 +28,8 @@ public class PlayerFreedEvent extends Event implements Cancellable {
 	 * @param reason The reason for being freed
 	 */
 	public PlayerFreedEvent(final ExilePearl pearl, final PearlFreeReason reason) {
-		Guard.ArgumentNotNull(pearl, "pearl");
-		Guard.ArgumentNotNull(reason, "reason");
+		Preconditions.checkNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(reason, "reason");
 
 		this.pearl = pearl;
 		this.reason = reason;

@@ -1,8 +1,7 @@
 package com.devotedmc.ExilePearl.storage;
 
-import java.util.Collection;
-
 import com.devotedmc.ExilePearl.ExilePearl;
+import java.util.Collection;
 
 public interface PearlStorage extends PearlUpdateStorage {
 
