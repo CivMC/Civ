@@ -1,7 +1,5 @@
 package com.untamedears.itemexchange.rules;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
-
 import com.google.common.collect.Lists;
 import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
@@ -10,13 +8,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
-import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
 
 public final class BulkExchangeRule implements ExchangeData {
 
@@ -28,7 +27,7 @@ public final class BulkExchangeRule implements ExchangeData {
 
 	@Override
 	public boolean isBroken() {
-		return Iteration.isNullOrEmpty(this.rules);
+		return CollectionUtils.isEmpty(this.rules);
 	}
 
 	@Override
@@ -42,7 +41,7 @@ public final class BulkExchangeRule implements ExchangeData {
 	@Override
 	public void deserialize(NBTCompound nbt) {
 		setRules(Arrays.stream(nbt.getCompoundArray(RULES_KEY))
-				.map(raw -> castOrNull(ExchangeRule.class, NBTSerialization.deserialize(raw)))
+				.map(raw -> MoreClassUtils.castOrNull(ExchangeRule.class, NBTSerialization.deserialize(raw)))
 				.filter(Objects::nonNull)
 				.collect(Collectors.toCollection(ArrayList::new)));
 	}
@@ -70,14 +69,14 @@ public final class BulkExchangeRule implements ExchangeData {
 	public ItemStack toItem() {
 		ItemStack item = NBTCompound.processItem(ItemExchangeConfig.getRuleItem(), (nbt) ->
 				nbt.setCompound(BULK_KEY, NBTSerialization.serialize(this)));
-		ItemAPI.setDisplayName(item, ChatColor.RED + "Bulk Rule Block");
-		ItemAPI.setLore(item, String.format("This rule block holds %s exchange rule%s.",
+		ItemUtils.setDisplayName(item, ChatColor.RED + "Bulk Rule Block");
+		ItemUtils.setLore(item, String.format("This rule block holds %s exchange rule%s.",
 				rules.size(), rules.size() == 1 ? "" : "s"));
 		return item;
 	}
 
 	public static BulkExchangeRule fromItem(ItemStack item) {
-		if (!ItemAPI.isValidItem(item)) {
+		if (!ItemUtils.isValidItem(item)) {
 			return null;
 		}
 		if (item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {

@@ -1,8 +1,5 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
-
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
@@ -19,12 +16,13 @@ import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ModifierHandler;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Repairable;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
 
 /**
  * <p>This additional represents a repair level condition.</p>
@@ -49,7 +47,7 @@ public final class RepairModifier extends ModifierData {
 		if (!ItemExchangeConfig.canRepairItem(item.getType())) {
 			return null;
 		}
-		Repairable meta = castOrNull(Repairable.class, item.getItemMeta());
+		Repairable meta = MoreClassUtils.castOrNull(Repairable.class, item.getItemMeta());
 		if (meta == null) {
 			return null;
 		}
@@ -65,7 +63,7 @@ public final class RepairModifier extends ModifierData {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		Repairable meta = castOrNull(Repairable.class, item.getItemMeta());
+		Repairable meta = MoreClassUtils.castOrNull(Repairable.class, item.getItemMeta());
 		if (meta == null) {
 			return false;
 		}
@@ -128,17 +126,25 @@ public final class RepairModifier extends ModifierData {
 			}
 			RepairModifier modifier = handler.ensureModifier();
 			if (value.startsWith("@")) {
-				int repairLevel = chain(() -> Integer.parseInt(value.substring(1)), (int) ExchangeRule.ERROR);
+				int repairLevel = ExchangeRule.ERROR;
+				try {
+					repairLevel = Integer.parseInt(value.substring(1));
+				}
+				catch (final NumberFormatException ignored) { }
 				if (repairLevel < 2) {
 					throw new InvalidCommandArgument("You must enter a valid value, e.g: @9");
 				}
 				modifier.setRepairCost(repairLevel - 2);
 			}
-			else if (TextUtil.stringEqualsIgnoreCase(value, "NEW") || TextUtil.stringEqualsIgnoreCase(value, "MINT")) {
+			else if (StringUtils.equalsIgnoreCase(value, "NEW") || StringUtils.equalsIgnoreCase(value, "MINT")) {
 				modifier.setRepairCost(0);
 			}
 			else {
-				int repairLevel = chain(() -> Integer.parseInt(value), (int) ExchangeRule.ERROR);
+				int repairLevel = ExchangeRule.ERROR;
+				try {
+					repairLevel = Integer.parseInt(value);
+				}
+				catch (final NumberFormatException ignored) { }
 				if (repairLevel < 2) {
 					throw new InvalidCommandArgument("You must enter a valid value, e.g: 9");
 				}

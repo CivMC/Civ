@@ -1,7 +1,5 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
-
 import co.aikar.commands.annotation.CommandAlias;
 import com.google.common.base.Strings;
 import com.untamedears.itemexchange.commands.SetCommand;
@@ -10,14 +8,15 @@ import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializationException;
-import vg.civcraft.mc.civmodcore.util.EnumUtils;
-import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "BOOK", order = 1000)
@@ -47,7 +46,7 @@ public final class BookModifier extends ModifierData {
 
 	@Override
 	public BookModifier construct(ItemStack item) {
-		BookMeta meta = castOrNull(BookMeta.class, item.getItemMeta());
+		BookMeta meta = MoreClassUtils.castOrNull(BookMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return null;
 		}
@@ -75,7 +74,7 @@ public final class BookModifier extends ModifierData {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		BookMeta meta = castOrNull(BookMeta.class, item.getItemMeta());
+		BookMeta meta = MoreClassUtils.castOrNull(BookMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return false;
 		}
@@ -105,7 +104,7 @@ public final class BookModifier extends ModifierData {
 	public void serialize(NBTCompound nbt) throws NBTSerializationException {
 		nbt.setString(TITLE_KEY, this.title);
 		nbt.setString(AUTHOR_KEY, this.author);
-		nbt.setString(GENERATION_KEY, EnumUtils.getSlug(this.generation));
+		nbt.setString(GENERATION_KEY, this.generation.name());
 		nbt.setBoolean(HAS_PAGES_KEY, this.hasPages);
 		nbt.setInteger(BOOK_HASH_KEY, this.bookHash);
 	}
@@ -114,7 +113,7 @@ public final class BookModifier extends ModifierData {
 	public void deserialize(NBTCompound nbt) throws NBTSerializationException {
 		this.title = nbt.getString(TITLE_KEY);
 		this.author = nbt.getString(AUTHOR_KEY);
-		this.generation = EnumUtils.fromSlug(Generation.class, nbt.getString(GENERATION_KEY), false);
+		this.generation = EnumUtils.getEnum(Generation.class, nbt.getString(GENERATION_KEY));
 		this.hasPages = nbt.getBoolean(HAS_PAGES_KEY);
 		this.bookHash = nbt.getInteger(BOOK_HASH_KEY);
 	}
@@ -205,7 +204,7 @@ public final class BookModifier extends ModifierData {
 	}
 
 	private static int bookHash(List<String> pages) {
-		if (Iteration.isNullOrEmpty(pages)) {
+		if (CollectionUtils.isEmpty(pages)) {
 			return 0;
 		}
 		return String.join("/r", pages).hashCode();

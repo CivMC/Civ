@@ -4,9 +4,9 @@ import com.untamedears.itemexchange.rules.ExchangeRule.Type;
 import java.util.Objects;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
-import vg.civcraft.mc.civmodcore.api.InventoryAPI;
-import vg.civcraft.mc.civmodcore.api.LocationAPI;
+import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.util.Validation;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
  * This class represents a specific trade within a shop, an input and output pair, or a donation.
@@ -42,10 +42,10 @@ public final class TradeRule implements Validation {
 				return false;
 			}
 		}
-		if (!InventoryAPI.isValidInventory(this.inventory)) {
+		if (!InventoryUtils.isValidInventory(this.inventory)) {
 			return false;
 		}
-		if (!LocationAPI.isValidLocation(this.inventory.getLocation())) {
+		if (!WorldUtils.isValidLocation(this.inventory.getLocation())) {
 			return false;
 		}
 		return true;

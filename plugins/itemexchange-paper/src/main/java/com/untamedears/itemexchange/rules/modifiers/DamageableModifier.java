@@ -1,7 +1,5 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
-
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
@@ -21,8 +19,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
+import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "DAMAGE", order = 500)
@@ -36,7 +35,7 @@ public final class DamageableModifier extends ModifierData {
 
 	@Override
 	public DamageableModifier construct(ItemStack item) {
-		Damageable meta = ItemAPI.getDamageable(item);
+		Damageable meta = ItemUtils.getDamageable(item);
 		if (meta == null) {
 			return null;
 		}
@@ -61,7 +60,7 @@ public final class DamageableModifier extends ModifierData {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		Damageable meta = castOrNull(Damageable.class, item.getItemMeta());
+		Damageable meta = MoreClassUtils.castOrNull(Damageable.class, item.getItemMeta());
 		if (meta == null) {
 			return false;
 		}

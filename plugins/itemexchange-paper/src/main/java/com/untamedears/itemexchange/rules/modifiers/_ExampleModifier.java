@@ -8,7 +8,7 @@ import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import java.util.List;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializationException;
 import vg.civcraft.mc.civmodcore.util.Validation;
@@ -24,7 +24,7 @@ public final class _ExampleModifier extends ModifierData {
 	 * Constructs a new instance of a modifier.
 	 *
 	 * @param item The item to base this exchange data on. You can assume that the item has passed a
-	 *         {@link ItemAPI#isValidItem(ItemStack)} check.
+	 *         {@link ItemUtils#isValidItem(ItemStack)} check.
 	 * @return Returns a new instance of the extended class.
 	 */
 	@Override
@@ -48,7 +48,7 @@ public final class _ExampleModifier extends ModifierData {
 	 * Checks if an arbitrary item conforms to this exchange data's requirements.
 	 *
 	 * @param item The arbitrary item to check. You can assume that the item has passed a
-	 *         {@link ItemAPI#isValidItem(ItemStack)} check.
+	 *         {@link ItemUtils#isValidItem(ItemStack)} check.
 	 * @return Returns true if the given item conforms.
 	 */
 	@Override

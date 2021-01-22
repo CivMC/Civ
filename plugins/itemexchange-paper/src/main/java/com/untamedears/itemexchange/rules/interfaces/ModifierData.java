@@ -1,11 +1,13 @@
 package com.untamedears.itemexchange.rules.interfaces;
 
 import com.untamedears.itemexchange.rules.ExchangeRule;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang.IllegalClassException;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
 
@@ -46,9 +48,9 @@ public abstract class ModifierData extends AikarCommand
 	 */
 	public final ModifierData construct() {
 		try {
-			return getClass().newInstance();
+			return getClass().getConstructor().newInstance();
 		}
-		catch (IllegalAccessException | InstantiationException error) {
+		catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException error) {
 			throw new IllegalClassException("That Modifier cannot be constructed... please make sure it has a " +
 					"public, zero argument constructor.");
 		}
@@ -58,7 +60,7 @@ public abstract class ModifierData extends AikarCommand
 	 * Constructs a new instance of a modifier.
 	 *
 	 * @param item The item to base this exchange data on. You can assume that the item has passed a
-	 *     {@link vg.civcraft.mc.civmodcore.api.ItemAPI#isValidItem(ItemStack)} check.
+	 *     {@link ItemUtils#isValidItem(ItemStack)} check.
 	 * @return Returns a new instance of the extended class.
 	 */
 	public abstract ModifierData construct(ItemStack item);
@@ -78,7 +80,7 @@ public abstract class ModifierData extends AikarCommand
 	 * Checks if an arbitrary item conforms to this exchange data's requirements.
 	 *
 	 * @param item The arbitrary item to check. You can assume that the item has passed a
-	 *     {@link vg.civcraft.mc.civmodcore.api.ItemAPI#isValidItem(ItemStack)} check.
+	 *     {@link ItemUtils#isValidItem(ItemStack)} check.
 	 * @return Returns true if the given item conforms.
 	 */
 	public abstract boolean conforms(ItemStack item);

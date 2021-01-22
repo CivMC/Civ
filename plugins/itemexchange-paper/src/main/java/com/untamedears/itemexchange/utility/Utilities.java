@@ -1,9 +1,5 @@
 package com.untamedears.itemexchange.utility;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
-
 import co.aikar.commands.InvalidCommandArgument;
 import com.google.common.base.Preconditions;
 import com.untamedears.itemexchange.ItemExchangeConfig;
@@ -14,6 +10,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Tag;
 import org.bukkit.World;
@@ -27,11 +26,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.InventoryAPI;
-import vg.civcraft.mc.civmodcore.api.LocationAPI;
-import vg.civcraft.mc.civmodcore.api.NamespaceAPI;
-import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
+import vg.civcraft.mc.civmodcore.util.Chainer;
+import vg.civcraft.mc.civmodcore.util.KeyedUtils;
+import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
+import vg.civcraft.mc.civmodcore.util.NullUtils;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
  * A series of Utilities of ItemExchange
@@ -65,11 +65,11 @@ public final class Utilities {
 	 */
 	public static void givePlayerExchangeRule(Player player, ExchangeRule rule) {
 		RuntimeException error = new InvalidCommandArgument("Could not create that rule.");
-		Inventory inventory = chain(player::getInventory);
+		Inventory inventory = Chainer.from(player).then(Player::getInventory).get();
 		if (inventory == null || rule == null) {
 			throw error;
 		}
-		if (!InventoryAPI.safelyAddItemsToInventory(inventory, new ItemStack[] { rule.toItem() })) {
+		if (!InventoryUtils.safelyAddItemsToInventory(inventory, new ItemStack[] { rule.toItem() })) {
 			throw error;
 		}
 	}
@@ -81,9 +81,9 @@ public final class Utilities {
 	 * @param items The items to give to the inventory.
 	 */
 	public static void giveItemsOrDrop(Inventory inventory, ItemStack... items) {
-		Preconditions.checkArgument(InventoryAPI.isValidInventory(inventory));
-		Preconditions.checkArgument(LocationAPI.isValidLocation(inventory.getLocation()));
-		Preconditions.checkArgument(!Iteration.isNullOrEmpty(items));
+		Preconditions.checkArgument(InventoryUtils.isValidInventory(inventory));
+		Preconditions.checkArgument(WorldUtils.isValidLocation(inventory.getLocation()));
+		Preconditions.checkArgument(ArrayUtils.isNotEmpty(items));
 		for (Map.Entry<Integer, ItemStack> entry : inventory.addItem(items).entrySet()) {
 			World world = inventory.getLocation().getWorld();
 			assert world != null;
@@ -102,16 +102,15 @@ public final class Utilities {
 	public static boolean conformsRequiresEnchants(Map<Enchantment, Integer> ruleEnchants,
 												   Map<Enchantment, Integer> metaEnchants,
 												   boolean allowUnlistedEnchants) {
-		if (Iteration.isNullOrEmpty(ruleEnchants)) {
-			if (allowUnlistedEnchants || Iteration.isNullOrEmpty(metaEnchants)) {
+		if (MapUtils.isEmpty(ruleEnchants)) {
+			if (allowUnlistedEnchants || MapUtils.isEmpty(metaEnchants)) {
 				return true;
 			}
 			return false;
 		}
-		if (Iteration.isNullOrEmpty(metaEnchants)) {
+		if (MapUtils.isEmpty(metaEnchants)) {
 			return false;
 		}
-		assert ruleEnchants != null && metaEnchants != null;
 		if (allowUnlistedEnchants && metaEnchants.size() < ruleEnchants.size()) {
 			return false;
 		}
@@ -123,7 +122,7 @@ public final class Utilities {
 				return false;
 			}
 			if (entry.getValue() != ExchangeRule.ANY) {
-				if (!equalsNotNull(metaEnchants.get(entry.getKey()), entry.getValue())) {
+				if (!NullUtils.equalsNotNull(metaEnchants.get(entry.getKey()), entry.getValue())) {
 					return false;
 				}
 			}
@@ -137,33 +136,33 @@ public final class Utilities {
 	 * @param shop The block representing the shop.
 	 */
 	public static void successfulTransactionButton(Block shop) {
-		Stream.of(shop, BlockAPI.getOtherDoubleChestBlock(shop))
-				.filter(BlockAPI::isValidBlock)
+		Stream.of(shop, WorldUtils.getOtherDoubleChestBlock(shop, true))
+				.filter(WorldUtils::isValidBlock)
 				.filter(block -> ItemExchangeConfig.hasSuccessButtonBlock(block.getType()))
 				.distinct()
 				.forEach(block -> {
-					Directional directional = castOrNull(Directional.class, block.getBlockData());
+					Directional directional = MoreClassUtils.castOrNull(Directional.class, block.getBlockData());
 					if (directional == null) {
 						return;
 					}
 					BlockFace backFace = directional.getFacing().getOppositeFace();
 					Block behindBlock = block.getRelative(backFace);
-					if (!BlockAPI.isValidBlock(behindBlock) || !behindBlock.getType().isOccluding()) {
+					if (!WorldUtils.isValidBlock(behindBlock) || !behindBlock.getType().isOccluding()) {
 						return;
 					}
-					for (BlockFace face : BlockAPI.ALL_SIDES) {
+					for (BlockFace face : WorldUtils.ALL_SIDES) {
 						if (face.getOppositeFace() == backFace) {
 							continue;
 						}
 						Block buttonBlock = behindBlock.getRelative(face);
-						if (!BlockAPI.isValidBlock(buttonBlock) || !Tag.BUTTONS.isTagged(buttonBlock.getType())) {
+						if (!WorldUtils.isValidBlock(buttonBlock) || !Tag.BUTTONS.isTagged(buttonBlock.getType())) {
 							continue;
 						}
-						Switch button = castOrNull(Switch.class, buttonBlock.getBlockData());
+						Switch button = MoreClassUtils.castOrNull(Switch.class, buttonBlock.getBlockData());
 						if (button == null) {
 							continue;
 						}
-						if (BlockAPI.getAttachedFace(button) != face.getOppositeFace()) {
+						if (WorldUtils.getAttachedFace(button) != face.getOppositeFace()) {
 							continue;
 						}
 						button.setPowered(true);
@@ -171,7 +170,7 @@ public final class Utilities {
 						// Wait to depower the block
 						Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.getInstance(), () -> {
 							Block newBlock = buttonBlock.getLocation().getBlock(); // Refresh block
-							Switch newButton = castOrNull(Switch.class, newBlock.getBlockData());
+							Switch newButton = MoreClassUtils.castOrNull(Switch.class, newBlock.getBlockData());
 							if (!button.matches(newButton)) {
 								return;
 							}
@@ -187,23 +186,23 @@ public final class Utilities {
 	// ------------------------------------------------------------
 
 	public static String leveledEnchantsToString(Map<Enchantment, Integer> leveledEnchants) {
-		if (Iteration.isNullOrEmpty(leveledEnchants)) {
+		if (MapUtils.isEmpty(leveledEnchants)) {
 			return "[]";
 		}
 		return "[" +
 				leveledEnchants.entrySet().stream()
-						.map(entry -> NamespaceAPI.getString(entry.getKey()) + ":" + entry.getValue())
+						.map(entry -> KeyedUtils.getString(entry.getKey()) + ":" + entry.getValue())
 						.collect(Collectors.joining(",")) +
 				"]";
 	}
 
 	public static String enchantsToString(Collection<Enchantment> enchants) {
-		if (Iteration.isNullOrEmpty(enchants)) {
+		if (CollectionUtils.isEmpty(enchants)) {
 			return "[]";
 		}
 		return "[" +
 				enchants.stream()
-						.map(entry -> NamespaceAPI.getString(entry.getKey()))
+						.map(entry -> KeyedUtils.getString(entry.getKey()))
 						.collect(Collectors.joining(",")) +
 				"]";
 	}
@@ -220,7 +219,7 @@ public final class Utilities {
 	}
 
 	public static String potionEffectsToString(Collection<PotionEffect> effects) {
-		if (Iteration.isNullOrEmpty(effects)) {
+		if (CollectionUtils.isEmpty(effects)) {
 			return "[]";
 		}
 		return "[" +

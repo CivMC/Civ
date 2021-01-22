@@ -1,7 +1,6 @@
 package com.untamedears.itemexchange.rules;
 
 import static com.untamedears.itemexchange.rules.ExchangeRule.Type;
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.exists;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -11,6 +10,7 @@ import com.untamedears.itemexchange.events.BlockInventoryRequestEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -18,10 +18,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.InventoryAPI;
-import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.util.Validation;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
  * Class that represents an entire shop.
@@ -36,7 +35,7 @@ public final class ShopRule implements Validation {
 
 	@Override
 	public boolean isValid() {
-		if (Iteration.isNullOrEmpty(this.trades)) {
+		if (CollectionUtils.isEmpty(this.trades)) {
 			return false;
 		}
 		return true;
@@ -113,7 +112,10 @@ public final class ShopRule implements Validation {
 			PLUGIN.debug("[RELAY] Found shop block. (Total: " + found.size() + ")");
 			BlockInventoryRequestEvent event = BlockInventoryRequestEvent.emit(block, null,
 					BlockInventoryRequestEvent.Purpose.INSPECTION);
-			exists(event.getInventory(), found::add);
+			final Inventory inventory = event.getInventory();
+			if (inventory != null) {
+				found.add(inventory);
+			}
 			return;
 		}
 		if (ItemExchangeConfig.hasRelayCompatibleBlock(block.getType())) {
@@ -127,12 +129,12 @@ public final class ShopRule implements Validation {
 				PLUGIN.debug("[RELAY] Relay recursion limit reached.");
 				return;
 			}
-			for (BlockFace face : BlockAPI.ALL_SIDES) {
+			for (BlockFace face : WorldUtils.ALL_SIDES) {
 				if (face.equals(cameFrom)) {
 					continue;
 				}
 				PLUGIN.debug("[RELAY] Emitting relay ray trace: " + face.name());
-				BlockIterator iterator = BlockAPI.getBlockIterator(block.getRelative(face), face, reach);
+				BlockIterator iterator = WorldUtils.getBlockIterator(block.getRelative(face), face, reach);
 				while (iterator.hasNext()) {
 					Block current = iterator.next();
 					if (ItemExchangeConfig.hasRelayPermeableBlock(current.getType())) {
@@ -211,7 +213,7 @@ public final class ShopRule implements Validation {
 	}
 
 	public static ShopRule resolveShop(Block block) {
-		if (!BlockAPI.isValidBlock(block)) {
+		if (!WorldUtils.isValidBlock(block)) {
 			return null;
 		}
 		ShopRule shop = new ShopRule();
@@ -222,7 +224,7 @@ public final class ShopRule implements Validation {
 				ItemExchangeConfig.getRelayRecursionLimit(),
 				BlockFace.SELF);
 		inventories.stream()
-				.filter(InventoryAPI::isValidInventory)
+				.filter(InventoryUtils::isValidInventory)
 				.map(shop::extractTradesFromInventory)
 				.forEachOrdered(shop.trades::addAll);
 		return shop;

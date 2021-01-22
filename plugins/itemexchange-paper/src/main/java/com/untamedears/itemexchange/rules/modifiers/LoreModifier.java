@@ -15,13 +15,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 @CommandAlias(SetCommand.ALIAS)
@@ -37,7 +38,7 @@ public final class LoreModifier extends ModifierData {
 	@Override
 	public LoreModifier construct(ItemStack item) {
 		LoreModifier modifier = new LoreModifier();
-		modifier.lore = ItemAPI.getLore(item);
+		modifier.lore = ItemUtils.getLore(item);
 		return modifier;
 	}
 
@@ -68,7 +69,7 @@ public final class LoreModifier extends ModifierData {
 
 	@Override
 	public void deserialize(NBTCompound nbt) {
-		setLore(Iteration.collect(ArrayList::new, nbt.getStringArray(LORE_KEY)));
+		setLore(MoreCollectionUtils.collect(ArrayList::new, nbt.getStringArray(LORE_KEY)));
 	}
 
 	@Override
@@ -123,7 +124,7 @@ public final class LoreModifier extends ModifierData {
 	// ------------------------------------------------------------
 
 	public boolean hasLore() {
-		return !Iteration.isNullOrEmpty(this.lore);
+		return CollectionUtils.isNotEmpty(this.lore);
 	}
 
 	public List<String> getLore() {

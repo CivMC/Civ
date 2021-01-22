@@ -1,7 +1,5 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
-
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
@@ -12,6 +10,7 @@ import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ModifierHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -52,7 +51,7 @@ public final class DisplayNameModifier extends ModifierData {
 		if (hasDisplayName() != meta.hasDisplayName()) {
 			return false;
 		}
-		if (hasDisplayName() && !equalsNotNull(getDisplayName(), meta.getDisplayName())) {
+		if (hasDisplayName() && !StringUtils.equals(getDisplayName(), meta.getDisplayName())) {
 			return false;
 		}
 		return true;

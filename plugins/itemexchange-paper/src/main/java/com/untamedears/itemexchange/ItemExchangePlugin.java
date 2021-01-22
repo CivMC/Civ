@@ -21,11 +21,8 @@ import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
 
 	private static ItemExchangePlugin instance;
-
 	private static ItemExchangeConfig config;
-
 	private static AikarCommandManager commands;
-
 	private static ModifierRegistrar modifiers;
 
 	@Override

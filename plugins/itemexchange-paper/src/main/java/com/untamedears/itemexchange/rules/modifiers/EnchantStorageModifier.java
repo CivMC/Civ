@@ -1,7 +1,5 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
-
 import co.aikar.commands.annotation.CommandAlias;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -13,14 +11,15 @@ import com.untamedears.itemexchange.utility.NBTEncodings;
 import com.untamedears.itemexchange.utility.Utilities;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections4.MapUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import vg.civcraft.mc.civmodcore.api.EnchantAPI;
-import vg.civcraft.mc.civmodcore.api.EnchantNames;
+import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
+import vg.civcraft.mc.civmodcore.util.MoreMapUtils;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "BOOKCHANTS", order = 201)
@@ -34,7 +33,7 @@ public final class EnchantStorageModifier extends ModifierData {
 
 	@Override
 	public EnchantStorageModifier construct(ItemStack item) {
-		EnchantmentStorageMeta meta = castOrNull(EnchantmentStorageMeta.class, item.getItemMeta());
+		EnchantmentStorageMeta meta = MoreClassUtils.castOrNull(EnchantmentStorageMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return null;
 		}
@@ -46,13 +45,13 @@ public final class EnchantStorageModifier extends ModifierData {
 	@Override
 	public boolean isBroken() {
 		for (Map.Entry<Enchantment, Integer> entry : getEnchants().entrySet()) {
-			if (!Iteration.validEntry(entry)) {
+			if (!MoreMapUtils.validEntry(entry)) {
 				return true;
 			}
 			if (entry.getValue() == ExchangeRule.ANY) {
 				continue;
 			}
-			if (!EnchantAPI.isSafeEnchantment(entry.getKey(), entry.getValue())) {
+			if (!EnchantUtils.isSafeEnchantment(entry.getKey(), entry.getValue())) {
 				return true;
 			}
 		}
@@ -61,7 +60,7 @@ public final class EnchantStorageModifier extends ModifierData {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		EnchantmentStorageMeta meta = castOrNull(EnchantmentStorageMeta.class, item.getItemMeta());
+		EnchantmentStorageMeta meta = MoreClassUtils.castOrNull(EnchantmentStorageMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return false;
 		}
@@ -88,12 +87,12 @@ public final class EnchantStorageModifier extends ModifierData {
 	public List<String> getDisplayInfo() {
 		List<String> info = Lists.newArrayList();
 		for (Map.Entry<Enchantment, Integer> entry : getEnchants().entrySet()) {
-			EnchantNames.SearchResult result = EnchantNames.findByEnchantment(entry.getKey());
+			String name = EnchantUtils.getEnchantNiceName(entry.getKey());
 			if (entry.getValue() == ExchangeRule.ANY) {
-				info.add(ChatColor.AQUA + result.getDisplayName() + " %");
+				info.add(ChatColor.AQUA + name + " %");
 			}
 			else {
-				info.add(ChatColor.AQUA + result.getDisplayName() + " " + entry.getValue());
+				info.add(ChatColor.AQUA + name + " " + entry.getValue());
 			}
 		}
 		return info;
@@ -112,7 +111,7 @@ public final class EnchantStorageModifier extends ModifierData {
 	// ------------------------------------------------------------
 
 	public boolean hasEnchants() {
-		return !Iteration.isNullOrEmpty(this.enchants);
+		return MapUtils.isNotEmpty(this.enchants);
 	}
 
 	public Map<Enchantment, Integer> getEnchants() {

@@ -13,8 +13,8 @@ import com.untamedears.itemexchange.utility.RuleHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 @CommandAlias(SetCommand.ALIAS)
 public final class SetCommand extends AikarCommand {
@@ -35,7 +35,7 @@ public final class SetCommand extends AikarCommand {
 	public void setMaterial(Player player, @Single String slug) {
 		try (RuleHandler handler = new RuleHandler(player)) {
 			Material material = Material.getMaterial(slug.toUpperCase());
-			if (!MaterialAPI.isValidItemMaterial(material)) {
+			if (!ItemUtils.isValidItemMaterial(material)) {
 				throw new InvalidCommandArgument("You must enter a valid item material.");
 			}
 			handler.getRule().setMaterial(material);
