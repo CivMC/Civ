@@ -1,6 +1,6 @@
 name: ${project.name}
 version: ${project.version}
-author: [ProgrammerDan]
+author: ProgrammerDan
 depend: [CivModCore]
 softdepend: [IP-Check, NameLayer]
 main: com.programmerdan.minecraft.banstick.BanStick
