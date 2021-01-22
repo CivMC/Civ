@@ -3,7 +3,6 @@ package vg.civcraft.mc.citadel.events;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
-
 import vg.civcraft.mc.citadel.model.Reinforcement;
 
 /**

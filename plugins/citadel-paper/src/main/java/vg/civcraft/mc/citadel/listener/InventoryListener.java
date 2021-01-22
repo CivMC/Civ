@@ -10,10 +10,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.WorldAPI;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class InventoryListener implements Listener {
 
@@ -27,7 +26,7 @@ public class InventoryListener implements Listener {
 		if (isFromBlock) {
 			fromLocation = fromInventory.getLocation();
 			fromAtChunkBorder = isAtChunkBorder(fromLocation);
-			if (fromAtChunkBorder && !WorldAPI.isBlockLoaded(fromLocation)) {
+			if (fromAtChunkBorder && !WorldUtils.isBlockLoaded(fromLocation)) {
 				event.setCancelled(true);
 				return;
 			}
@@ -41,7 +40,7 @@ public class InventoryListener implements Listener {
 		if (isDestBlock) {
 			destLocation = destInventory.getLocation();
 			destAtChunkBorder = isAtChunkBorder(destLocation);
-			if (destAtChunkBorder && !WorldAPI.isBlockLoaded(destLocation)) {
+			if (destAtChunkBorder && !WorldUtils.isBlockLoaded(destLocation)) {
 				event.setCancelled(true);
 				return;
 			}
@@ -64,7 +63,7 @@ public class InventoryListener implements Listener {
 				// [LagFix] without necessarily loading the chunk to check against reinforcement
 				// logic, therefore this
 				// [LagFix] should err on the side of caution and prevent the transfer.
-				if (!WorldAPI.isBlockLoaded(chestLocation) || !WorldAPI.isBlockLoaded(otherLocation)) {
+				if (!WorldUtils.isBlockLoaded(chestLocation) || !WorldUtils.isBlockLoaded(otherLocation)) {
 					event.setCancelled(true);
 					return;
 				}
@@ -83,7 +82,7 @@ public class InventoryListener implements Listener {
 				// [LagFix] without necessarily loading the chunk to check against reinforcement
 				// logic, therefore this
 				// [LagFix] should err on the side of caution and prevent the transfer.
-				if (!WorldAPI.isBlockLoaded(chestLocation) || !WorldAPI.isBlockLoaded(otherLocation)) {
+				if (!WorldUtils.isBlockLoaded(chestLocation) || !WorldUtils.isBlockLoaded(otherLocation)) {
 					event.setCancelled(true);
 					return;
 				}

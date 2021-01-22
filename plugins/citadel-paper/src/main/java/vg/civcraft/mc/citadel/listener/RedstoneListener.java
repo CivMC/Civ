@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,12 +28,11 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class RedstoneListener implements Listener {
 
@@ -169,7 +167,7 @@ public class RedstoneListener implements Listener {
 	}
 
 	private void setupAdjacentDoors(Player player, Block block, BlockFace skip) {
-		for (Entry<BlockFace, Block> entry : BlockAPI.getAllSidesMapped(block).entrySet()) {
+		for (Entry<BlockFace, Block> entry : WorldUtils.getAllBlockSidesMapped(block, true).entrySet()) {
 			if (entry.getKey() == skip) {
 				continue;
 			}

@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.bukkit.inventory.ItemStack;
 
 public class ReinforcementTypeManager {

@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel.listener;
 
+import com.destroystokyo.paper.MaterialTags;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -22,15 +23,15 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.util.DoubleInteractFixer;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class BlockListener implements Listener {
 
@@ -209,7 +210,7 @@ public class BlockListener implements Listener {
 		if (mat != Material.CHEST && mat != Material.TRAPPED_CHEST) {
 			return;
 		}
-		for (Block rel : BlockAPI.getPlanarSides(e.getBlock())) {
+		for (Block rel : WorldUtils.getPlanarBlockSides(e.getBlock(), true)) {
 			if (rel.getType() == mat && ReinforcementLogic.isPreventingBlockAccess(e.getPlayer(), rel)) {
 				e.setCancelled(true);
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
@@ -221,7 +222,7 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void removeReinforcedAir(BlockPlaceEvent e) {
-		if (!MaterialAPI.isAir(e.getBlockReplacedState().getType())) {
+		if (!MaterialUtils.isAir(e.getBlockReplacedState().getType())) {
 			return;
 		}
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(e.getBlock());
@@ -239,7 +240,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 		Block block = pie.getClickedBlock();
-		if (!MaterialAPI.isLog(block.getType())) {
+		if (!MoreTags.LOGS.isTagged(block.getType())) {
 			return;
 		}
 		EquipmentSlot hand = pie.getHand();
@@ -253,7 +254,7 @@ public class BlockListener implements Listener {
 		} else {
 			relevant = p.getInventory().getItemInOffHand();
 		}
-		if (!MaterialAPI.isAxe(relevant.getType())) {
+		if (!MaterialTags.AXES.isTagged(relevant.getType())) {
 			return;
 		}
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
@@ -289,7 +290,7 @@ public class BlockListener implements Listener {
 		} else {
 			relevant = p.getInventory().getItemInOffHand();
 		}
-		if (!MaterialAPI.isShovel(relevant.getType())) {
+		if (!MaterialTags.SHOVELS.isTagged(relevant.getType())) {
 			return;
 		}
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
@@ -327,7 +328,7 @@ public class BlockListener implements Listener {
 		} else {
 			relevant = p.getInventory().getItemInOffHand();
 		}
-		if (!MaterialAPI.isHoe(relevant.getType())) {
+		if (!MaterialTags.HOES.isTagged(relevant.getType())) {
 			return;
 		}
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);

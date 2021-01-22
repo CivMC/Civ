@@ -3,7 +3,6 @@ package vg.civcraft.mc.citadel.reinforcementtypes;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

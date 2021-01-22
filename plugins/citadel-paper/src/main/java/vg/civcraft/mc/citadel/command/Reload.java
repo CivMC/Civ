@@ -2,10 +2,8 @@ package vg.civcraft.mc.citadel.command;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;

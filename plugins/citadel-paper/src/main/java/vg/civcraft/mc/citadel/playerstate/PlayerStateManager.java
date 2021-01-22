@@ -3,11 +3,9 @@ package vg.civcraft.mc.citadel.playerstate;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.events.ReinforcementModeSwitchEvent;
 

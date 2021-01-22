@@ -3,7 +3,6 @@ package vg.civcraft.mc.citadel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 

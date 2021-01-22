@@ -2,7 +2,6 @@ package vg.civcraft.mc.citadel;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-
 import vg.civcraft.mc.citadel.model.CitadelChunkData;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.BlockBasedChunkMetaView;
