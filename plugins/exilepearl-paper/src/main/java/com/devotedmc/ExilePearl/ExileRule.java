@@ -38,7 +38,7 @@ public enum ExileRule {
 
 	private ExileRule(final String text, final String actionText) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(text), "text");
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(text), "actionText");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(actionText), "actionText");
 
 		this.text = text;
 		this.actionText = actionText;
