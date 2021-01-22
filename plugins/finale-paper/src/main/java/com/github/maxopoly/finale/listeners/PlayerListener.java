@@ -1,5 +1,7 @@
 package com.github.maxopoly.finale.listeners;
 
+import com.github.maxopoly.finale.Finale;
+import com.github.maxopoly.finale.FinaleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
@@ -13,9 +15,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.player.PlayerJoinEvent;
-
-import com.github.maxopoly.finale.Finale;
-import com.github.maxopoly.finale.FinaleManager;
 
 public class PlayerListener implements Listener {
 

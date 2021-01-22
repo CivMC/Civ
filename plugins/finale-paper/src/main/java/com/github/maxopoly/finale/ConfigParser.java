@@ -2,23 +2,6 @@ package com.github.maxopoly.finale;
 
 import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.potion.PotionType;
-
 import com.github.maxopoly.finale.combat.CombatConfig;
 import com.github.maxopoly.finale.combat.CombatSoundConfig;
 import com.github.maxopoly.finale.misc.ArmourModifier;
@@ -30,6 +13,21 @@ import com.github.maxopoly.finale.misc.velocity.VelocityConfig;
 import com.github.maxopoly.finale.misc.velocity.VelocityHandler;
 import com.github.maxopoly.finale.potion.PotionHandler;
 import com.github.maxopoly.finale.potion.PotionModification;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.potion.PotionType;
 
 public class ConfigParser {
 	private Finale plugin;

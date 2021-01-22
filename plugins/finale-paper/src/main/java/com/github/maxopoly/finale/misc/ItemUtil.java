@@ -1,22 +1,19 @@
 package com.github.maxopoly.finale.misc;
 
+import com.github.maxopoly.finale.misc.ArmourModifier.ArmourConfig;
+import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemStack;
-
-import com.github.maxopoly.finale.misc.ArmourModifier.ArmourConfig;
-import com.google.common.collect.ImmutableMap;
-
 import net.minecraft.server.v1_16_R3.NBTBase;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import net.minecraft.server.v1_16_R3.NBTTagDouble;
 import net.minecraft.server.v1_16_R3.NBTTagInt;
 import net.minecraft.server.v1_16_R3.NBTTagList;
 import net.minecraft.server.v1_16_R3.NBTTagString;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.inventory.ItemStack;
 
 public class ItemUtil {
 	

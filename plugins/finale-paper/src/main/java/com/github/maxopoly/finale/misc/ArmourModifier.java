@@ -2,7 +2,6 @@ package com.github.maxopoly.finale.misc;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.Material;
 
 public class ArmourModifier {

@@ -1,11 +1,10 @@
 package com.github.maxopoly.finale.listeners;
 
+import com.github.maxopoly.finale.misc.velocity.VelocityHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-
-import com.github.maxopoly.finale.misc.velocity.VelocityHandler;
 
 public class VelocityFixListener implements Listener {
 

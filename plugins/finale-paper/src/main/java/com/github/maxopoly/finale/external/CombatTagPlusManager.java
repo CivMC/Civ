@@ -1,10 +1,9 @@
 package com.github.maxopoly.finale.external;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.TagManager;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class CombatTagPlusManager {
 

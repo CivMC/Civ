@@ -1,11 +1,12 @@
 package com.github.maxopoly.finale.overlay;
 
+import com.github.maxopoly.finale.Finale;
+import com.github.maxopoly.finale.external.FinaleSettingManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -19,12 +20,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import com.github.maxopoly.finale.Finale;
-import com.github.maxopoly.finale.external.FinaleSettingManager;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.PotionAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.playersettings.SettingChangeListener;
 import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
@@ -178,7 +175,7 @@ public class ScoreboardHUD implements Listener {
 			if (seconds.length() == 1) {
 				seconds = "0" + seconds;
 			}
-			String name = PotionAPI.getNiceName(pot.getType());
+			String name = PotionUtils.getEffectNiceName(pot.getType());
 			String formatted = String.format("%s %s%s %d | %d:%s", sortingPrefix, effectColor, name, level, minutes,
 					seconds);
 			scoreBoards.get(boardIndex).set(p, formatted);
@@ -241,7 +238,7 @@ public class ScoreboardHUD implements Listener {
 		if (is == null) {
 			return null;
 		}
-		Damageable damageable = ItemAPI.getDamageable(is);
+		Damageable damageable = ItemUtils.getDamageable(is);
 		if (damageable == null) {
 			return null;
 		}

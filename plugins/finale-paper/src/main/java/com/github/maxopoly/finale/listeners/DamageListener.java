@@ -1,5 +1,8 @@
 package com.github.maxopoly.finale.listeners;
 
+import com.github.maxopoly.finale.Finale;
+import com.github.maxopoly.finale.combat.event.CritHitEvent;
+import com.github.maxopoly.finale.misc.DamageModificationConfig;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -7,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -26,10 +28,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import com.github.maxopoly.finale.Finale;
-import com.github.maxopoly.finale.combat.event.CritHitEvent;
-import com.github.maxopoly.finale.misc.DamageModificationConfig;
 
 public class DamageListener implements Listener {
 
