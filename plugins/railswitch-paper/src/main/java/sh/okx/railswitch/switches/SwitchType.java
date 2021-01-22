@@ -1,6 +1,6 @@
 package sh.okx.railswitch.switches;
 
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Switch type matcher, will match a type to a tag.
@@ -33,7 +33,7 @@ public enum SwitchType {
             return null;
         }
         for (SwitchType type : values()) {
-            if (TextUtil.stringEqualsIgnoreCase(tag, type.tag)) {
+            if (StringUtils.equalsIgnoreCase(tag, type.tag)) {
                 return type;
             }
         }

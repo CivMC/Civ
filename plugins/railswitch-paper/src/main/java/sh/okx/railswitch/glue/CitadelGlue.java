@@ -4,9 +4,9 @@ import org.bukkit.block.Block;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.util.DependencyGlue;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
+import vg.civcraft.mc.civmodcore.util.NullUtils;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
  * Glue for Citadel.
@@ -48,7 +48,7 @@ public final class CitadelGlue extends DependencyGlue {
      * @return Returns true both blocks share the same reinforcement group, or if both are un-reinforced.
      */
     public boolean doSignAndRailHaveSameReinforcement(Block sign, Block rail) {
-        if (!isSafeToUse() || !BlockAPI.isValidBlock(sign) || !BlockAPI.isValidBlock(rail)) {
+        if (!isSafeToUse() || !WorldUtils.isValidBlock(sign) || !WorldUtils.isValidBlock(rail)) {
             return false;
         }
         Reinforcement signReinforcement = this.manager.getReinforcement(sign);
@@ -59,7 +59,7 @@ public final class CitadelGlue extends DependencyGlue {
         if (signReinforcement == null || railReinforcement == null) {
             return false;
         }
-        return NullCoalescing.equalsNotNull(
+        return NullUtils.equalsNotNull(
                 signReinforcement.getGroup(),
                 railReinforcement.getGroup());
     }

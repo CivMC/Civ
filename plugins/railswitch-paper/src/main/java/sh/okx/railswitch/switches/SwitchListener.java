@@ -16,8 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import sh.okx.railswitch.glue.CitadelGlue;
 import sh.okx.railswitch.settings.SettingsManager;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.EntityAPI;
+import vg.civcraft.mc.civmodcore.entities.EntityUtils;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
  * Switch listener that implements switch functionality.
@@ -39,7 +39,7 @@ public class SwitchListener implements Listener {
     public void onSwitchTrigger(BlockRedstoneEvent event) {
         Block block = event.getBlock();
         // Block must be a detector rail being triggered
-        if (!BlockAPI.isValidBlock(block)
+        if (!WorldUtils.isValidBlock(block)
                 || block.getType() != Material.DETECTOR_RAIL
                 || event.getNewCurrent() != 15) {
             return;
@@ -62,7 +62,7 @@ public class SwitchListener implements Listener {
         Player player = null; {
             double searchDistance = Double.MAX_VALUE;
             for (Entity entity : block.getWorld().getNearbyEntities(block.getLocation(), 3, 3, 3)) {
-                if (!EntityAPI.isPlayer(entity)) {
+                if (!EntityUtils.isPlayer(entity)) {
                     continue;
                 }
                 Entity vehicle = entity.getVehicle();
