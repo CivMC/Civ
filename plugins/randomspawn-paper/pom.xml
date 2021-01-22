@@ -2,11 +2,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>me.josvth.randomspawn.randomspawn</groupId>
-	<artifactId>RandomSpawn</artifactId>
-	<version>2.9.0</version>
-	<name>RandomSpawn</name>
-	<url>https://github.com/Civclassic/random-spawn</url>
 
 	<parent>
 		<groupId>com.github.civclassic</groupId>
@@ -14,12 +9,11 @@
 		<version>1.0.0</version>
 	</parent>
 
-	<repositories>
-		<repository>
-			<id>civ-jenkins</id>
-			<url>https://repo.civclassic.com/repository/internal/</url>
-		</repository>
-	</repositories>
+	<groupId>me.josvth.randomspawn.randomspawn</groupId>
+	<artifactId>RandomSpawn</artifactId>
+	<version>2.9.1</version>
+	<name>RandomSpawn</name>
+	<url>https://github.com/Civclassic/random-spawn</url>
 
 	<dependencies>
 		<dependency>
@@ -53,5 +47,12 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
+  <repositories>
+    <repository>
+      <id>civ-github-repo</id>
+      <url>https://raw.githubusercontent.com/CivClassic/artifacts/master/</url>
+    </repository>
+  </repositories>
 
 </project>
