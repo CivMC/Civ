@@ -1,18 +1,15 @@
 package com.untamedears.realisticbiomes.growth;
 
+import com.untamedears.realisticbiomes.model.Plant;
 import java.util.Arrays;
 import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
-
-import com.untamedears.realisticbiomes.model.Plant;
-
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class FruitGrower extends IArtificialGrower {
 
@@ -74,7 +71,7 @@ public class FruitGrower extends IArtificialGrower {
 	}
 
 	private void growFruit(Block block) {
-		for (BlockFace face : BlockAPI.PLANAR_SIDES) {
+		for (BlockFace face : WorldUtils.PLANAR_SIDES) {
 			Block fruitBlock = block.getRelative(face);
 			if (fruitBlock.getType() != Material.AIR) {
 				continue;

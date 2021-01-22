@@ -1,11 +1,10 @@
 package com.untamedears.realisticbiomes.growth;
 
+import com.untamedears.realisticbiomes.model.Plant;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Bamboo;
-
-import com.untamedears.realisticbiomes.model.Plant;
 
 public class BambooGrower extends ColumnPlantGrower {
 	protected static final int LEAVES_AMOUNT = 3;

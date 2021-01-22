@@ -1,7 +1,6 @@
 package com.untamedears.realisticbiomes.growthconfig.inner;
 
 import java.util.Map;
-
 import org.bukkit.block.Biome;
 
 public abstract class BiomeGrowthConfig {

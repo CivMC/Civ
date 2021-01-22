@@ -1,9 +1,8 @@
 package com.untamedears.realisticbiomes.growthconfig;
 
+import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
-
-import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
 
 public class AnimalMateConfig extends AbstractGrowthConfig {
 

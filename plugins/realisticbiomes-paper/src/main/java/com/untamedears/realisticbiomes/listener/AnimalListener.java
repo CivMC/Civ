@@ -1,5 +1,7 @@
 package com.untamedears.realisticbiomes.listener;
 
+import com.untamedears.realisticbiomes.AnimalConfigManager;
+import com.untamedears.realisticbiomes.growthconfig.AnimalMateConfig;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -9,9 +11,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.ItemSpawnEvent;
-
-import com.untamedears.realisticbiomes.AnimalConfigManager;
-import com.untamedears.realisticbiomes.growthconfig.AnimalMateConfig;
 
 public class AnimalListener implements Listener {
 

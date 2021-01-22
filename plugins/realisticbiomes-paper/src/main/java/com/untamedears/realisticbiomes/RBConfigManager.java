@@ -1,30 +1,10 @@
 package com.untamedears.realisticbiomes;
 
-import com.untamedears.realisticbiomes.growth.FungusGrower;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Biome;
-import org.bukkit.block.BlockFace;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
-
 import com.untamedears.realisticbiomes.growth.AgeableGrower;
 import com.untamedears.realisticbiomes.growth.BambooGrower;
 import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 import com.untamedears.realisticbiomes.growth.FruitGrower;
+import com.untamedears.realisticbiomes.growth.FungusGrower;
 import com.untamedears.realisticbiomes.growth.HorizontalBlockSpreadGrower;
 import com.untamedears.realisticbiomes.growth.IArtificialGrower;
 import com.untamedears.realisticbiomes.growth.SchematicGrower;
@@ -41,11 +21,28 @@ import com.untamedears.realisticbiomes.model.ltree.LStepConfig;
 import com.untamedears.realisticbiomes.model.ltree.LTree;
 import com.untamedears.realisticbiomes.model.ltree.SpreadRule;
 import com.untamedears.realisticbiomes.utils.SchematicUtils;
-
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Biome;
+import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.CoreConfigManager;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.util.ConfigParsing;
 
 public class RBConfigManager extends CoreConfigManager {
@@ -255,7 +252,7 @@ public class RBConfigManager extends CoreConfigManager {
 			logger.warning("No grower type specified at " + section.getCurrentPath());
 			return null;
 		}
-		Material material = MaterialAPI.getMaterial(section.getString("material"));
+		Material material = MaterialUtils.getMaterial(section.getString("material"));
 		if (material == null) {
 			if (item == null) {
 				logger.warning("Neither an item nor a material specified for grower at " + section.getCurrentPath());
@@ -273,12 +270,12 @@ public class RBConfigManager extends CoreConfigManager {
 				BlockFace direction = BlockFace.valueOf(section.getString("direction", "UP"));
 				return new ColumnPlantGrower(maxHeight2, material, direction, instaBreakTouching);
 			case "fruit":
-				Material stemMat = MaterialAPI.getMaterial(section.getString("stem_type"));
+				Material stemMat = MaterialUtils.getMaterial(section.getString("stem_type"));
 				if (stemMat == null) {
 					logger.warning("No stem material specified at " + section.getCurrentPath());
 					return null;
 				}
-				Material attachedStemMat = MaterialAPI.getMaterial(section.getString("attached_stem_type"));
+				Material attachedStemMat = MaterialUtils.getMaterial(section.getString("attached_stem_type"));
 				if (attachedStemMat == null) {
 					logger.warning("No attached stem material specified at " + section.getCurrentPath());
 					return null;

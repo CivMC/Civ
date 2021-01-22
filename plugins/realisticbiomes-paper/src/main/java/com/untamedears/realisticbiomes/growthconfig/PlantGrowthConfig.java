@@ -1,11 +1,16 @@
 package com.untamedears.realisticbiomes.growthconfig;
 
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.growth.IArtificialGrower;
+import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
+import com.untamedears.realisticbiomes.growthconfig.inner.PersistentGrowthConfig;
+import com.untamedears.realisticbiomes.model.Plant;
+import com.untamedears.realisticbiomes.utils.RBUtils;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,17 +19,9 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Waterlogged;
 import org.bukkit.event.Cancellable;
 import org.bukkit.inventory.ItemStack;
-
-import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.growth.IArtificialGrower;
-import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
-import com.untamedears.realisticbiomes.growthconfig.inner.PersistentGrowthConfig;
-import com.untamedears.realisticbiomes.model.Plant;
-import com.untamedears.realisticbiomes.utils.RBUtils;
-
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class PlantGrowthConfig extends AbstractGrowthConfig {
 
@@ -84,7 +81,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		double lightMultiplier = getLightMultiplier(b);
 		StringBuilder sb = new StringBuilder();
 		sb.append(ChatColor.GOLD);
-		sb.append(ItemNames.getItemName(item));
+		sb.append(ItemUtils.getItemName(item));
 		if (biomeGrowthConfig instanceof PersistentGrowthConfig) {
 			long time = getPersistentGrowthTime(b);
 			if (time == -1) {
@@ -142,7 +139,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		double naturalRate = Math.pow((double) naturalLight / (double) MAX_LIGHT, 2);
 		double greenHouseRate = 0.0;
 		if (block.getLightFromBlocks() >= 12) {
-			for (BlockFace face : BlockAPI.ALL_SIDES) {
+			for (BlockFace face : WorldUtils.ALL_SIDES) {
 				Block adjacent = block.getRelative(face);
 				Double multiplier = greenHouseRates.get(adjacent.getType());
 				if (multiplier != null) {

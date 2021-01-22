@@ -2,15 +2,13 @@ package com.untamedears.realisticbiomes.model.ltree;
 
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Leaves;
-
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
+import vg.civcraft.mc.civmodcore.world.BlockProperties;
 
 public class BlockTransformation {
 	private Material material;
@@ -36,7 +34,7 @@ public class BlockTransformation {
 		if (block.getY() > 255) {
 			return false;
 		}
-		if (!MaterialAPI.isAir(block.getType())) {
+		if (!MaterialUtils.isAir(block.getType())) {
 			return false;
 		}
 		block.setType(material);
@@ -45,7 +43,7 @@ public class BlockTransformation {
 			leaves.setPersistent(true);
 		}
 		for (Entry<String, String> data : blockData.entrySet()) {
-			BlockAPI.setBlockProperty(block, data.getKey(), data.getValue());
+			BlockProperties.setBlockProperty(block, data.getKey(), data.getValue());
 		}
 		return true;
 	}

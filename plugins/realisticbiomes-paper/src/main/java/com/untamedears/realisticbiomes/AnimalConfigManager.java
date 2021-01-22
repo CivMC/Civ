@@ -1,10 +1,8 @@
 package com.untamedears.realisticbiomes;
 
-import java.util.HashMap;
-
-import org.bukkit.entity.EntityType;
-
 import com.untamedears.realisticbiomes.growthconfig.AnimalMateConfig;
+import java.util.HashMap;
+import org.bukkit.entity.EntityType;
 
 public class AnimalConfigManager {
 	private HashMap<EntityType, AnimalMateConfig> entityMap;

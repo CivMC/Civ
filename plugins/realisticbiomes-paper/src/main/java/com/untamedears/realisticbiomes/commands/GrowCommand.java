@@ -1,9 +1,7 @@
 package com.untamedears.realisticbiomes.commands;
 
 import java.util.List;
-
 import org.bukkit.command.CommandSender;
-
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 

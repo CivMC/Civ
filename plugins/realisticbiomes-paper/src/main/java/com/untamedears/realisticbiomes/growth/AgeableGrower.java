@@ -1,10 +1,9 @@
 package com.untamedears.realisticbiomes.growth;
 
+import com.untamedears.realisticbiomes.model.Plant;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
-
-import com.untamedears.realisticbiomes.model.Plant;
 
 /**
  * Handles growing of anything implementing Ageable (Crops, Cocoa etc.)

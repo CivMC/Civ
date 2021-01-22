@@ -1,5 +1,11 @@
 package com.untamedears.realisticbiomes.listener;
 
+import com.untamedears.realisticbiomes.PlantLogicManager;
+import com.untamedears.realisticbiomes.PlantManager;
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
+import com.untamedears.realisticbiomes.model.Plant;
+import com.untamedears.realisticbiomes.utils.RBUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -16,13 +22,6 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
-
-import com.untamedears.realisticbiomes.PlantLogicManager;
-import com.untamedears.realisticbiomes.PlantManager;
-import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
-import com.untamedears.realisticbiomes.model.Plant;
-import com.untamedears.realisticbiomes.utils.RBUtils;
 
 public class PlantListener implements Listener {
 

@@ -1,26 +1,22 @@
 package com.untamedears.realisticbiomes.utils;
 
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
+import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
+import com.untamedears.realisticbiomes.growthconfig.inner.PersistentGrowthConfig;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
-import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
-import com.untamedears.realisticbiomes.growthconfig.inner.PersistentGrowthConfig;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.components.ComponableInventory;
@@ -77,7 +73,7 @@ public class RealisticBiomesGUI {
 				representation = Material.BARRIER;
 			}
 			ItemStack is = new ItemStack(representation);
-			ItemAPI.setDisplayName(is, ChatColor.DARK_GREEN + plant.getName());
+			ItemUtils.setDisplayName(is, ChatColor.DARK_GREEN + plant.getName());
 			List<String> lore = new ArrayList<>();
 			BiomeGrowthConfig config = plant.getBiomeGrowthConfig();
 			double biomeMultiplier = config.getBiomeMultiplier(currentBiome);
@@ -88,7 +84,7 @@ public class RealisticBiomesGUI {
 				} else {
 					lore.add(ChatColor.DARK_AQUA + "Time: "
 							+ ChatColor.GRAY + TextUtil.formatDuration(timeNeeded, TimeUnit.MILLISECONDS));
-					ItemAPI.addGlow(is);
+					ItemUtils.addGlow(is);
 				}
 			} else {
 				double baseMultiplier = config.getNaturalProgressChance(currentBiome);
@@ -97,7 +93,7 @@ public class RealisticBiomesGUI {
 				} else {
 					lore.add(ChatColor.DARK_AQUA + "% chance: "
 							+ ChatColor.GRAY + decimalFormat.format(baseMultiplier * 100));
-					ItemAPI.addGlow(is);
+					ItemUtils.addGlow(is);
 				}
 			}
 			lore.add(ChatColor.DARK_AQUA + "Biome Multiplier: " + ChatColor.GRAY + biomeMultiplier);
@@ -114,7 +110,7 @@ public class RealisticBiomesGUI {
 			}
 			for (Map.Entry<Material, Double> entry : plant.getSoilBoniPerLevel().entrySet()) {
 				lore.add(String.format("%sSoil Bonus: %s%s (%.2f)", ChatColor.DARK_AQUA,
-						ChatColor.GRAY, ItemNames.getItemName(entry.getKey()), entry.getValue()));
+						ChatColor.GRAY, ItemUtils.getItemName(entry.getKey()), entry.getValue()));
 			}
 			if (plant.getMaximumSoilLayers() != 0) {
 				lore.add(String.format("%sMax Soil Layers: %s%d", ChatColor.DARK_AQUA,
@@ -126,9 +122,9 @@ public class RealisticBiomesGUI {
 			}
 			for (Map.Entry<Material, Double> entry : plant.getGreenHouseRates().entrySet()) {
 				lore.add(String.format("%sGreen House Rate: %s%s (%.2f)", ChatColor.DARK_AQUA,
-						ChatColor.GRAY, ItemNames.getItemName(entry.getKey()), entry.getValue()));
+						ChatColor.GRAY, ItemUtils.getItemName(entry.getKey()), entry.getValue()));
 			}
-			ItemAPI.addLore(is, lore);
+			ItemUtils.addLore(is, lore);
 			IClickable click = new DecorationStack(is);
 			clicks.add(click);
 		}

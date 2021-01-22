@@ -1,18 +1,16 @@
 package com.untamedears.realisticbiomes.growth;
 
+import com.google.common.base.Preconditions;
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.model.Plant;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Random;
 import java.util.Set;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-
-import com.google.common.base.Preconditions;
-import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.model.Plant;
 
 public class HorizontalBlockSpreadGrower extends IArtificialGrower {
 

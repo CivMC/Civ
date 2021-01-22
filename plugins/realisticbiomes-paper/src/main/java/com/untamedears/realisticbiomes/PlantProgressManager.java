@@ -1,9 +1,7 @@
 package com.untamedears.realisticbiomes;
 
-import org.bukkit.Bukkit;
-
 import com.untamedears.realisticbiomes.model.RBChunkCache;
-
+import org.bukkit.Bukkit;
 import vg.civcraft.mc.civmodcore.util.progress.ProgressTracker;
 
 /**

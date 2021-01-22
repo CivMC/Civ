@@ -1,20 +1,17 @@
 package com.untamedears.realisticbiomes;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.inventory.ItemStack;
-
 import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 import com.untamedears.realisticbiomes.growth.FruitGrower;
 import com.untamedears.realisticbiomes.growth.VerticalGrower;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
-
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import java.util.HashSet;
+import java.util.Set;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class PlantLogicManager {
 
@@ -71,7 +68,7 @@ public class PlantLogicManager {
 			}
 		}
 		if (fruitBlocks != null && fruitBlocks.contains(block.getType())) {
-			for(BlockFace face : BlockAPI.PLANAR_SIDES) {
+			for(BlockFace face : WorldUtils.PLANAR_SIDES) {
 				Block possibleStem = block.getRelative(face);
 				Plant stem = plantManager.getPlant(possibleStem);
 				if (stem == null) {
