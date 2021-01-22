@@ -1,15 +1,14 @@
 package com.github.igotyou.FactoryMod.factories;
 
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Furnace;
-import org.bukkit.entity.Player;
-
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Furnace;
+import org.bukkit.entity.Player;
 
 /**
  * Super class for any sort of factory created by this plugin

@@ -1,7 +1,10 @@
 package com.github.igotyou.FactoryMod.listeners;
 
+import com.github.igotyou.FactoryMod.FactoryModManager;
+import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
+import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import java.util.List;
-
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,13 +26,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.FactoryModManager;
-import com.github.igotyou.FactoryMod.factories.Factory;
-import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
-import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
-
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class FactoryModListener implements Listener {
 	private FactoryModManager manager;
@@ -66,7 +63,7 @@ public class FactoryModListener implements Listener {
 		if (e.getOldCurrent() == e.getNewCurrent()) {
 			return;
 		}
-		for (BlockFace face : BlockAPI.ALL_SIDES) {
+		for (BlockFace face : WorldUtils.ALL_SIDES) {
 			Factory f = manager.getFactoryAt(e.getBlock().getRelative(face));
 			if (f != null) {
 				f.getInteractionManager().redStoneEvent(e, e.getBlock().getRelative(face));

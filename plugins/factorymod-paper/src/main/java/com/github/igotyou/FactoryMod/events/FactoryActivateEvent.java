@@ -1,11 +1,10 @@
 package com.github.igotyou.FactoryMod.events;
 
+import com.github.igotyou.FactoryMod.factories.Factory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.github.igotyou.FactoryMod.factories.Factory;
 
 /**
  * Event called when any type of factory is being activated. Cancelling this

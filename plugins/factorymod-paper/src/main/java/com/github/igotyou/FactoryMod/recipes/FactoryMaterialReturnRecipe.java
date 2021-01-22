@@ -1,10 +1,11 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -15,11 +16,7 @@ import org.bukkit.block.DoubleChest;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.FactoryMod;
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class FactoryMaterialReturnRecipe extends InputRecipe {
@@ -44,8 +41,8 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			ItemStack is = new ItemStack(Material.PAPER);
-			ItemAPI.setDisplayName(is, "Total setupcost");
-			ItemAPI.addLore(is, ChatColor.AQUA + "All the materials invested into setting up and upgrading this factory");
+			ItemUtils.setDisplayName(is, "Total setupcost");
+			ItemUtils.addLore(is, ChatColor.AQUA + "All the materials invested into setting up and upgrading this factory");
 			List <ItemStack> stacks = new LinkedList<>();
 			stacks.add(is);
 			return stacks;

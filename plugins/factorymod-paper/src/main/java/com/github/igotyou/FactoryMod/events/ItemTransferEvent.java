@@ -1,11 +1,10 @@
 package com.github.igotyou.FactoryMod.events;
 
+import com.github.igotyou.FactoryMod.factories.Factory;
 import org.bukkit.block.Block;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.factories.Factory;
 
 /**
  * Event called when any factory is moving around items. This will (hopefully)

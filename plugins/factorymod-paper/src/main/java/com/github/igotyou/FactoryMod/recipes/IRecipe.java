@@ -1,8 +1,7 @@
 package com.github.igotyou.FactoryMod.recipes;
 
-import org.bukkit.inventory.Inventory;
-
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import org.bukkit.inventory.Inventory;
 
 /**
  * Encapsulates a specific functionality for a FurnCraftChest factory. Each

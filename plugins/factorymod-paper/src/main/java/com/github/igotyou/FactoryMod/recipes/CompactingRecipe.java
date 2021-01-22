@@ -1,17 +1,14 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.FactoryMod;
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
@@ -151,7 +148,7 @@ public class CompactingRecipe extends InputRecipe {
 	 * Applies the lore and set the amount to 1. Dont call this directly if you want to compact items for players
 	 */
 	private void compactStack(ItemStack is) {
-		ItemAPI.addLore(is,compactedLore);
+		ItemUtils.addLore(is,compactedLore);
 		is.setAmount(1);
 	}
 

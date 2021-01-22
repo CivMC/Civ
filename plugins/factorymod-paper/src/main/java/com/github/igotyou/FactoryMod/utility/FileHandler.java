@@ -1,24 +1,5 @@
 package com.github.igotyou.FactoryMod.utility;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.BlockFace;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.ItemStack;
-
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
@@ -31,9 +12,25 @@ import com.github.igotyou.FactoryMod.factories.Pipe;
 import com.github.igotyou.FactoryMod.factories.Sorter;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
-
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class FileHandler {
 	private FactoryMod plugin;
@@ -118,7 +115,7 @@ public class FileHandler {
 					Sorter s = (Sorter) f;
 					config.set(current + ".runtime", s.getRunTime());
 					config.set(current + ".type", "SORTER");
-					for (BlockFace face : BlockAPI.ALL_SIDES) {
+					for (BlockFace face : WorldUtils.ALL_SIDES) {
 						config.set(current + ".faces." + face.toString(), s
 								.getItemsForSide(face)
 								.getItemStackRepresentation().toArray());

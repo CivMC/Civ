@@ -1,24 +1,20 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.github.igotyou.FactoryMod.factories.Factory;
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-import com.github.igotyou.FactoryMod.utility.LoggingUtils;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
@@ -203,7 +199,7 @@ public abstract class InputRecipe implements IRecipe {
 			}
 		}
 		for (ItemStack is : input.getItemStackRepresentation()) {
-			ItemAPI.addLore(is, ChatColor.GREEN + "Enough materials for " + String.valueOf(possibleRuns.getAmount(is))
+			ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for " + String.valueOf(possibleRuns.getAmount(is))
 					+ " runs");
 			result.add(is);
 		}
@@ -228,9 +224,9 @@ public abstract class InputRecipe implements IRecipe {
 		for(Entry <ItemStack, Integer> entry : ingredients.getEntrySet()) {
 			if (entry.getValue() > 0) {
 				if (!entry.getKey().hasItemMeta()) {
-					result.add(entry.getValue() + " " + ItemNames.getItemName(entry.getKey()));
+					result.add(entry.getValue() + " " + ItemUtils.getItemName(entry.getKey()));
 				} else {
-					String lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ItemNames.getItemName(entry.getKey()));
+					String lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ItemUtils.getItemName(entry.getKey()));
 					if (entry.getKey().getItemMeta().hasDisplayName()) {
 						lore += String.format("%s [%s]", ChatColor.DARK_AQUA, StringUtils.abbreviate(entry.getKey().getItemMeta().getDisplayName(), 20));
 					}

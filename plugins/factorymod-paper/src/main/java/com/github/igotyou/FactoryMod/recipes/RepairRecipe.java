@@ -1,19 +1,16 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
+import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
-import com.github.igotyou.FactoryMod.utility.LoggingUtils;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
@@ -34,7 +31,7 @@ public class RepairRecipe extends InputRecipe {
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List<ItemStack> result = new LinkedList<>();
 		ItemStack furn = new ItemStack(Material.FURNACE);
-		ItemAPI.setLore(furn, "+" + String.valueOf(healthPerRun) + " health");
+		ItemUtils.setLore(furn, "+" + String.valueOf(healthPerRun) + " health");
 		result.add(furn);
 		return result;
 	}

@@ -1,14 +1,5 @@
 package com.github.igotyou.FactoryMod.utility;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
@@ -16,9 +7,14 @@ import com.github.igotyou.FactoryMod.recipes.CompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.LClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.components.ComponableInventory;
@@ -84,14 +80,14 @@ public class ItemUseGUI {
 		}
 		if (itemAsInput.isEmpty()) {
 			ItemStack noItems = new ItemStack(Material.BARRIER);
-			ItemAPI.setDisplayName(noItems, String.format("%sNo recipes take input %s%s", ChatColor.RED, ChatColor.BOLD,
-					ItemNames.getItemName(item)));
+			ItemUtils.setDisplayName(noItems, String.format("%sNo recipes take input %s%s", ChatColor.RED, ChatColor.BOLD,
+					ItemUtils.getItemName(item)));
 			itemAsInput.add(new LClickable(noItems, p -> { }));
 		}
 		if (itemAsOutput.isEmpty()) {
 			ItemStack noItems = new ItemStack(Material.BARRIER);
-			ItemAPI.setDisplayName(noItems, String.format("%sNo recipes output %s%s", ChatColor.RED, ChatColor.BOLD,
-					ItemNames.getItemName(item)));
+			ItemUtils.setDisplayName(noItems, String.format("%sNo recipes output %s%s", ChatColor.RED, ChatColor.BOLD,
+					ItemUtils.getItemName(item)));
 			itemAsOutput.add(new LClickable(noItems, p -> { }));
 		}
 		Scrollbar itemAsInputBar = new Scrollbar(itemAsInput, 24, 8, ContentAligners.getCenteredInOrder(itemAsInput.size(), 24, 4));
@@ -109,7 +105,7 @@ public class ItemUseGUI {
 
 	private IClickable getDividerClick() {
 		ItemStack is = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-		ItemAPI.setDisplayName(is, "Divider");
+		ItemUtils.setDisplayName(is, "Divider");
 		return new LClickable(is, p -> { });
 	}
 
@@ -136,7 +132,7 @@ public class ItemUseGUI {
 		}
 		if (recipe instanceof CompactingRecipe) {
 			CompactingRecipe output = (CompactingRecipe) recipe;
-			if (String.join("", ItemAPI.getLore(item)).equals(output.getCompactedLore())) {
+			if (String.join("", ItemUtils.getLore(item)).equals(output.getCompactedLore())) {
 				return getItemRecipeStack(fccEgg, recipe, item);
 			}
 		}
@@ -145,7 +141,7 @@ public class ItemUseGUI {
 
 	private ItemStack getItemRecipeStack(FurnCraftChestEgg fccEgg, InputRecipe recipe, ItemStack item) {
 		ItemStack is = new ItemStack(recipe.getRecipeRepresentationMaterial());
-		ItemAPI.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
+		ItemUtils.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
 		List<String> lore = new ArrayList<>();
 		lore.add(ChatColor.DARK_AQUA + recipe.getName());
 		lore.add(ChatColor.GOLD + "input:");
@@ -156,25 +152,25 @@ public class ItemUseGUI {
 		for (String output : recipe.getTextualOutputRepresentation(null, null)) {
 			lore.add(formatIngredient(output, item));
 		}
-		ItemAPI.addLore(is, lore);
+		ItemUtils.addLore(is, lore);
 		return is;
 	}
 
 	private ItemStack getItemSetupStack(FurnCraftChestEgg fccEgg, ItemStack item) {
 		ItemStack is = new ItemStack(Material.CRAFTING_TABLE);
-		ItemAPI.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
+		ItemUtils.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
 		List<String> lore = new ArrayList<>();
 		lore.add(ChatColor.GOLD + "Setup cost:");
 		for (Map.Entry<ItemStack, Integer> entry : fccEgg.getSetupCost().getEntrySet()) {
-			String recipeRepresentation = entry.getValue() + " "  + ItemNames.getItemName(entry.getKey());
+			String recipeRepresentation = entry.getValue() + " "  + ItemUtils.getItemName(entry.getKey());
 			lore.add(formatIngredient(recipeRepresentation, item));
 		}
-		ItemAPI.addLore(is, lore);
+		ItemUtils.addLore(is, lore);
 		return is;
 	}
 
 	private String formatIngredient(String recipeRepresentation, ItemStack is) {
-		if (recipeRepresentation.matches("\\d+ " + ItemNames.getItemName(is))) {
+		if (recipeRepresentation.matches("\\d+ " + ItemUtils.getItemName(is))) {
 			return String.format("%s - %s%s%s", ChatColor.GRAY, ChatColor.AQUA, ChatColor.BOLD, recipeRepresentation);
 		} else {
 			return String.format("%s - %s%s", ChatColor.GRAY, ChatColor.AQUA, recipeRepresentation);

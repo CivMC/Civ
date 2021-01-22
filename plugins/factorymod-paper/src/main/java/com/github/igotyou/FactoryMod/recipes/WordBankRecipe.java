@@ -1,5 +1,7 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -10,19 +12,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.FactoryMod;
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class WordBankRecipe extends InputRecipe {
@@ -53,16 +49,16 @@ public class WordBankRecipe extends InputRecipe {
 	@Override
 	public boolean applyEffect(Inventory inventory, FurnCraftChestFactory factory) {
 		ItemStack toApply = inventory.getItem(0);
-		if (!ItemAPI.isValidItem(toApply)) {
+		if (!ItemUtils.isValidItem(toApply)) {
 			return false;
 		}
-		if (ItemAPI.getDisplayName(toApply) != null) {
+		if (ItemUtils.getDisplayName(toApply) != null) {
 			return false;
 		}
 		ItemMap input = new ItemMap();
 		for (int i = 1; i < inventory.getSize(); i++) {
 			ItemStack is = inventory.getItem(i);
-			if (!ItemAPI.isValidItem(is)) {
+			if (!ItemUtils.isValidItem(is)) {
 				continue;
 			}
 			input.addItemStack(is);
@@ -75,12 +71,12 @@ public class WordBankRecipe extends InputRecipe {
 		for (Entry<ItemStack, Integer> entry : input.getEntrySet()) {
 			sb.append(entry.getValue());
 			sb.append(" ");
-			sb.append(ItemNames.getItemName(entry.getKey()));
+			sb.append(ItemUtils.getItemName(entry.getKey()));
 			sb.append(", ");
 		}
 		String result = sb.substring(0, sb.length() - 2);
 		String name = getHash(input);
-		ItemAPI.setDisplayName(toApply, name);
+		ItemUtils.setDisplayName(toApply, name);
 		if (factory.getActivator() != null) {
 			Player player = Bukkit.getPlayer(factory.getActivator());
 			if (player != null) {
@@ -99,7 +95,7 @@ public class WordBankRecipe extends InputRecipe {
 	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemStack is = new ItemStack(Material.RED_WOOL);
-		ItemAPI.addLore(is, ChatColor.GOLD + "A tool or piece of armor and any other random amount of items");
+		ItemUtils.addLore(is, ChatColor.GOLD + "A tool or piece of armor and any other random amount of items");
 		return Collections.singletonList(is);
 	}
 
@@ -115,7 +111,7 @@ public class WordBankRecipe extends InputRecipe {
 			}
 			output.append(word);
 		}
-		ItemAPI.setDisplayName(is, output.toString());
+		ItemUtils.setDisplayName(is, output.toString());
 		return Collections.singletonList(is);
 	}
 
@@ -127,15 +123,15 @@ public class WordBankRecipe extends InputRecipe {
 	@Override
 	public boolean enoughMaterialAvailable(Inventory inventory) {
 		ItemStack toApply = inventory.getItem(0);
-		if (!ItemAPI.isValidItem(toApply)) {
+		if (!ItemUtils.isValidItem(toApply)) {
 			return false;
 		}
-		if (ItemAPI.getDisplayName(toApply) != null) {
+		if (ItemUtils.getDisplayName(toApply) != null) {
 			return false;
 		}
 		for (int i = 1; i < inventory.getSize(); i++) {
 			ItemStack is = inventory.getItem(i);
-			if (!ItemAPI.isValidItem(is)) {
+			if (!ItemUtils.isValidItem(is)) {
 				continue;
 			}
 			return true;

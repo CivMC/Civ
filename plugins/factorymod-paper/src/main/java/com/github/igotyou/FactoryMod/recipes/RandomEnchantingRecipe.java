@@ -1,20 +1,17 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
-import vg.civcraft.mc.civmodcore.api.EnchantNames;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class RandomEnchantingRecipe extends InputRecipe {
@@ -58,7 +55,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		}
 		List<ItemStack> returns = createLoredStacksForInfo(i);
 		ItemStack toSt = new ItemStack(tool);
-		ItemAPI.addLore(toSt, ChatColor.GREEN + "Enough materials for "
+		ItemUtils.addLore(toSt, ChatColor.GREEN + "Enough materials for "
 				+ new ItemMap(toSt).getMultiplesContainedIn(i) + " runs");
 		returns.add(toSt);
 		return returns;
@@ -71,7 +68,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 			is.addEnchantment(re.enchant, re.level);
 		}
 		if (i != null) {
-			ItemAPI.addLore(
+			ItemUtils.addLore(
 					is,
 					ChatColor.GREEN
 							+ "Enough materials for "
@@ -81,12 +78,12 @@ public class RandomEnchantingRecipe extends InputRecipe {
 									.getMultiplesContainedIn(i))) + " runs");
 		}
 		for (RandomEnchant re : enchants) {
-			ItemAPI.addLore(is,
+			ItemUtils.addLore(is,
 					ChatColor.YELLOW + String.valueOf(re.chance * 100)
-							+ " % chance for " + EnchantNames.findByEnchantment(re.enchant).getDisplayName()
+							+ " % chance for " + EnchantUtils.getEnchantNiceName(re.enchant)
 							+ " " + re.level);
 		}
-		ItemAPI.addLore(is, ChatColor.LIGHT_PURPLE
+		ItemUtils.addLore(is, ChatColor.LIGHT_PURPLE
 				+ "At least one guaranteed");
 		List<ItemStack> stacks = new LinkedList<>();
 		stacks.add(is);

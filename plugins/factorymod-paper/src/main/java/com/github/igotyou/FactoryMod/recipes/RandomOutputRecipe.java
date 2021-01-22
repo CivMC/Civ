@@ -1,20 +1,17 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.FactoryMod;
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class RandomOutputRecipe extends InputRecipe {
@@ -111,7 +108,7 @@ public class RandomOutputRecipe extends InputRecipe {
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List <ItemStack> items = lowestChanceMap.getItemStackRepresentation();
 		for (ItemStack is : items) {
-			ItemAPI.addLore(is, ChatColor.LIGHT_PURPLE + "Randomized output");
+			ItemUtils.addLore(is, ChatColor.LIGHT_PURPLE + "Randomized output");
 		}
 		return items;
 	}

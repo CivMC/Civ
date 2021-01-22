@@ -1,11 +1,10 @@
 package com.github.igotyou.FactoryMod.events;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 
 /**
  * Event called when executing a recipe in a FurnCraftChestFactory
