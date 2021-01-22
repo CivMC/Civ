@@ -127,14 +127,14 @@
 		<dependency>
 			<groupId>com.aleksey</groupId>
 			<artifactId>castlegates</artifactId>
-			<version>1.0.22-SNAPSHOT</version>
+			<version>1.0.23-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-		<!--  Note: RecipeManager isn't distributed in POM form.
-					For this to build successfully, use install:install-file with
-					attributes as below. 
-					 mvn install:install-file -Dfile=RecipeManager.jar -DgroupId=haveric -DartifactId=recipeManager -Dversion=2.18 -Dpackaging=jar
-					-->
+		<!--
+		Note: RecipeManager isn't distributed in POM form. For this to build successfully, use install:install-file
+		with attributes as below:
+		mvn install:install-file -Dfile=RecipeManager.jar -DgroupId=haveric -DartifactId=recipeManager -Dversion=2.18 -Dpackaging=jar
+		-->
 		<dependency>
 			<groupId>haveric</groupId>
 			<artifactId>recipeManager</artifactId>
@@ -154,4 +154,5 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
 </project>
