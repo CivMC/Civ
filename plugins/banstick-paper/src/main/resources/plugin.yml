@@ -1,147 +1,147 @@
 name: ${project.name}
 version: ${project.version}
-author: ProgrammerDan
-depend: [CivModCore]
-softdepend: [IP-Check, NameLayer]
 main: com.programmerdan.minecraft.banstick.BanStick
+author: ProgrammerDan
 description: A plugin focused on better IP / VPN / CIDR tracking and justice delivery
 website: ${project.url}
 api-version: 1.16
+depend: [CivModCore]
+softdepend: [IP-Check, NameLayer]
 commands:
- banstick:
-  description: Swing that banstick, send nerds flying.
-  aliases: [bst, stickofdoom, banhammer]
-  permission: banstick.ban
-  usage: |
-   /<command> [ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
-   /<command> [ip]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
-   /<command> [name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
-   /<command> [name/uuid]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
-    For all, optionally include a date and time of unban using the format indicated, and optionally a message to display to player on ban
- doubletap:
-  description: Handle unpardoning shares between two players; optionally ban one or both
-  aliases: [bdt, doublebladedaxe]
-  permission: banstick.ban
-  usage: |
-   /<command> [+][ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
-     Finds all sessions that use this IP, finds all Shares connected to those Sessions, unpardons any pardoned shares.
-     If [+] before the IP, also Share-bans all non-pardoned players.
-   /<command> [+][name/uuid] [+][name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
-     Finds all Shares between the two named players, unpardons them if pardoned.
-     If [+] before a name, also Share-bans that player, removing any Share pardons if they existed.
- lovetap:
-  description: Investigate a user / show history / log information. Also give banstick.ips to show IP info during check.
-  alias: bstl
-  permission: banstick.lovetap
-  usage: |
-   /<command> [name/uuid]
-   /<command> [name/uuid]/[CIDR]
-   /<command> [ip]
-   /<command> [ip]/[CIDR]
- dowsingrod:
-  description: Investigate breakdown of networks by up to three attributes
-  aliases: [bsdr, diviningrod]
-  permission: banstick.lovetap
-  usage: |
-   /<command> [CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] pagenum perpage
-    Up to three of the above; pagenum, perpage self-explain.
-    If none, defaults to provider / 0 / 20
-    Always does largest >>> smallest in ordering.
-    Use with care, can be Database intensive.
- drilldown:
-  description: Investigate the IPs and IP Networks based on specific values (like, find all networks in China)
-  aliases: [bsdd, deepdive]
-  permission: banstick.lovetap
-  useage: |
-   /<command> SUMMARY|PLAYER|IP|IPDATA|IPDATASUMMARY [[CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] "value"]x3
-    Up to three of the above; unpaginated, so this could get very long
-    SUMMARY just shows a top-level summary
-    PLAYER shows all players using IPs in the IPs and Networks captured
-    IP shows all IPs in the IPs and Networks captured
-    IPDATA shows all IP/IPData records matching
-    IPDATASUMMARY shows all IPData records, all IPs in them, and all Players that use them. It will be slow probably.
- forgive:
-  description: Remove specific IP / CIDR bans, unban specific individuals, or grant exemptions/ignores for a user
-  aliases: [bstf, showmercy]
-  permission: banstick.forgive
-  usage: |
-   /<command> [ip]
-     Immediately expires all bans for this IP
-   /<command> [ip]/[CIDR]
-     Immediately expires all bans for this specific subnet
-   /<command> [name/uuid]
-     Unlinks this player from any active bans. Does not expire the ban.
-   /<command> [name/uuid] [BAN] [IP] [PROXY] [SHARED]
-     BAN - Unlinks this player from active bans.
-     IP - Prevents new bans on this player due to IP matches
-     PROXY - Prevents new bans on this player due to IPData ban matches
-     SHARED - Prevents new bans on this player due to Share connection ban matches
-   /<command> [name/uuid] [name/uuid] [ALL]
-     Immediately pardons all shares between these two players. If ALL also expires all bans for all shares between these two players.
- takeitback:
-  description: Remove exemptions/ignores with this command.
-  aliases: [unforgive, buryhim]
-  permission: banstick.forgive
-  usage: |
-   /<command> [name/uuid] [IP] [PROXY] [SHARED]
-     IP - Allows new bans on this player due to IP matches
-     PROXY - Allows new bans on this player due to IPData ban matches
-     SHARED - Allows new bans on this player due to Share connection ban matches
-   /<command> [name/uuid] [name/uuid]
-     Immediately unpardons all shares between these two players.
- banprovider:
-  description: (Un-)Bans the entire provider of the last connection used by a player based on what its registered as
-  permission: banstick.banprovider
-  usage: banprovider <playerName> [undo]
- bansave:
-  description: Flush cached changes straight to DB.
-  alias: bsbs
-  permission: banstick.ips
-  usage: /<command>
- untangle:
-  description: Reassigns alt groups
-  permission: banstick.alts.modify
-  usage: |
-   /<command> [name/uuid] [name/uuid] [name/uuid] ...
-     Merges all of these accounts into a new alt group
- getalts:
-  description: Gets alts for a player
-  permission: banstick.alts.view
-  usage: |
-   /<command> <name/uuid>
-     Gets alts for this account
+  banstick:
+    description: Swing that banstick, send nerds flying.
+    aliases: [bst, stickofdoom, banhammer]
+    permission: banstick.ban
+    usage: |
+      /<command> [ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+      /<command> [ip]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+      /<command> [name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+      /<command> [name/uuid]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+       For all, optionally include a date and time of unban using the format indicated, and optionally a message to display to player on ban
+  doubletap:
+    description: Handle unpardoning shares between two players; optionally ban one or both
+    aliases: [bdt, doublebladedaxe]
+    permission: banstick.ban
+    usage: |
+      /<command> [+][ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+        Finds all sessions that use this IP, finds all Shares connected to those Sessions, unpardons any pardoned shares.
+        If [+] before the IP, also Share-bans all non-pardoned players.
+      /<command> [+][name/uuid] [+][name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+        Finds all Shares between the two named players, unpardons them if pardoned.
+        If [+] before a name, also Share-bans that player, removing any Share pardons if they existed.
+  lovetap:
+    description: Investigate a user / show history / log information. Also give banstick.ips to show IP info during check.
+    alias: bstl
+    permission: banstick.lovetap
+    usage: |
+      /<command> [name/uuid]
+      /<command> [name/uuid]/[CIDR]
+      /<command> [ip]
+      /<command> [ip]/[CIDR]
+  dowsingrod:
+    description: Investigate breakdown of networks by up to three attributes
+    aliases: [bsdr, diviningrod]
+    permission: banstick.lovetap
+    usage: |
+      /<command> [CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] pagenum perpage
+       Up to three of the above; pagenum, perpage self-explain.
+       If none, defaults to provider / 0 / 20
+       Always does largest >>> smallest in ordering.
+       Use with care, can be Database intensive.
+  drilldown:
+    description: Investigate the IPs and IP Networks based on specific values (like, find all networks in China)
+    aliases: [bsdd, deepdive]
+    permission: banstick.lovetap
+    useage: |
+      /<command> SUMMARY|PLAYER|IP|IPDATA|IPDATASUMMARY [[CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] "value"]x3
+       Up to three of the above; unpaginated, so this could get very long
+       SUMMARY just shows a top-level summary
+       PLAYER shows all players using IPs in the IPs and Networks captured
+       IP shows all IPs in the IPs and Networks captured
+       IPDATA shows all IP/IPData records matching
+       IPDATASUMMARY shows all IPData records, all IPs in them, and all Players that use them. It will be slow probably.
+  forgive:
+    description: Remove specific IP / CIDR bans, unban specific individuals, or grant exemptions/ignores for a user
+    aliases: [bstf, showmercy]
+    permission: banstick.forgive
+    usage: |
+      /<command> [ip]
+        Immediately expires all bans for this IP
+      /<command> [ip]/[CIDR]
+        Immediately expires all bans for this specific subnet
+      /<command> [name/uuid]
+        Unlinks this player from any active bans. Does not expire the ban.
+      /<command> [name/uuid] [BAN] [IP] [PROXY] [SHARED]
+        BAN - Unlinks this player from active bans.
+        IP - Prevents new bans on this player due to IP matches
+        PROXY - Prevents new bans on this player due to IPData ban matches
+        SHARED - Prevents new bans on this player due to Share connection ban matches
+      /<command> [name/uuid] [name/uuid] [ALL]
+        Immediately pardons all shares between these two players. If ALL also expires all bans for all shares between these two players.
+  takeitback:
+    description: Remove exemptions/ignores with this command.
+    aliases: [unforgive, buryhim]
+    permission: banstick.forgive
+    usage: |
+      /<command> [name/uuid] [IP] [PROXY] [SHARED]
+        IP - Allows new bans on this player due to IP matches
+        PROXY - Allows new bans on this player due to IPData ban matches
+        SHARED - Allows new bans on this player due to Share connection ban matches
+      /<command> [name/uuid] [name/uuid]
+        Immediately unpardons all shares between these two players.
+  banprovider:
+    description: (Un-)Bans the entire provider of the last connection used by a player based on what its registered as
+    permission: banstick.banprovider
+    usage: banprovider <playerName> [undo]
+  bansave:
+    description: Flush cached changes straight to DB.
+    alias: bsbs
+    permission: banstick.ips
+    usage: /<command>
+  untangle:
+    description: Reassigns alt groups
+    permission: banstick.alts.modify
+    usage: |
+      /<command> [name/uuid] [name/uuid] [name/uuid] ...
+        Merges all of these accounts into a new alt group
+  getalts:
+    description: Gets alts for a player
+    permission: banstick.alts.view
+    usage: |
+      /<command> <name/uuid>
+        Gets alts for this account
 permissions:
- banstick.ban:
-  description: Allows delivery of justice
-  default: op
- banstick.lovetap:
-  description: Basic info on a user
-  default: op
- banstick.banprovider:
-  description: Allows banning providers
-  default: op
- banstick.forgive:
-  description: Allows delivery of mercy
-  default: op
- banstick.ips:
-  description: Allows full investigation of all data
-  default: op
- banstick.alts.view:
-  description: Allows viewing player alts
-  default: op
- banstick.alts.modify:
-  description: Allows viewing player alts
-  default: op
- banstick.alts:
-  children:
-   banstick.alts.modify: true
-   banstick.alts.view: true
- banstick.*:
-  description: Superpowered justice
-  default: op
-  children:
-   banstick.ban: true
-   banstick.lovetap: true
-   banstick.forgive: true
-   banstick.ips: true
-   banstick.alts: true
+  banstick.ban:
+    description: Allows delivery of justice
+    default: op
+  banstick.lovetap:
+    description: Basic info on a user
+    default: op
+  banstick.banprovider:
+    description: Allows banning providers
+    default: op
+  banstick.forgive:
+    description: Allows delivery of mercy
+    default: op
+  banstick.ips:
+    description: Allows full investigation of all data
+    default: op
+  banstick.alts.view:
+    description: Allows viewing player alts
+    default: op
+  banstick.alts.modify:
+    description: Allows viewing player alts
+    default: op
+  banstick.alts:
+    children:
+      banstick.alts.modify: true
+      banstick.alts.view: true
+  banstick.*:
+    description: Superpowered justice
+    default: op
+    children:
+      banstick.ban: true
+      banstick.lovetap: true
+      banstick.forgive: true
+      banstick.ips: true
+      banstick.alts: true

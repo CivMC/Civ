@@ -4,11 +4,11 @@
 #  idleTimeout: In milliseconds, how long to let a connection stay open, idle
 #  maxLifetime: In milliseconds, how long to keep a connection in the pool
 database:
-  host:
-  port:
-  database:
-  user:
-  password:
+  host: localhost
+  port: 3306
+  database: minecraft
+  user: username
+  password: password
   poolsize: 15
   connectionTimeout: 3000
   idleTimeout: 600000
