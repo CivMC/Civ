@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import vg.civcraft.mc.civmodcore.bukkit.PseudoServer;
+import org.bukkit.pseudo.PseudoServer;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;

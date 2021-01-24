@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.bukkit;
+package org.bukkit.pseudo;
 
 import com.destroystokyo.paper.entity.ai.MobGoals;
 import com.destroystokyo.paper.profile.PlayerProfile;
@@ -72,7 +72,7 @@ public class PseudoServer implements Server {
 
 	public static void setup() {
 		final var previousLevel = LOGGER.getLevel();
-		LOGGER.setLevel(Level.OFF);
+		LOGGER.setLevel(Level.OFF); // This is to prevent unnecessary logging
 		Bukkit.setServer(INSTANCE);
 		LOGGER.setLevel(previousLevel);
 	}
