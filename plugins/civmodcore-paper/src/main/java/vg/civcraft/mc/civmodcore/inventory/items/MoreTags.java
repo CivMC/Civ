@@ -108,6 +108,8 @@ public final class MoreTags {
 					.add(Material.PUMPKIN_STEM)
 					.add(Material.SUGAR_CANE)
 					.add(Material.SWEET_BERRY_BUSH)
+					.add(Material.TWISTING_VINES)
+					.add(Material.WEEPING_VINES)
 					.add(Material.WHEAT)
 					.build());
 
