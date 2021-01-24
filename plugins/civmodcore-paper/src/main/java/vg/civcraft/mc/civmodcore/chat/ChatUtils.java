@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.chat;
 
 import com.google.common.base.Strings;
 import java.awt.Color;
+import java.util.Arrays;
 import java.util.List;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -218,6 +219,52 @@ public final class ChatUtils {
 			}
 		}
 		return component;
+	}
+
+	/**
+	 * Converts a given text component into a composite array of base components.
+	 *
+	 * @param component The text component to convert.
+	 * @return Returns a composite array of base components.
+	 */
+	public static BaseComponent[] toBaseComponents(final TextComponent component) {
+		if (component == null) {
+			return null;
+		}
+		final var text = component.getText();
+		if (!Strings.isNullOrEmpty(text) || component.hasFormatting()) {
+			return new BaseComponent[] { component };
+		}
+		return component.getExtra().toArray(new BaseComponent[0]);
+	}
+
+	/**
+	 * Converts a given base component array into a text component.
+	 *
+	 * @param components The base components to convert.
+	 * @return Returns a representative text component.
+	 */
+	public static TextComponent fromBaseComponents(final BaseComponent... components) {
+		if (ArrayUtils.isEmpty(components)) {
+			return null;
+		}
+		if (components.length == 1) {
+			final var component = components[0];
+			if (component instanceof TextComponent) {
+				return (TextComponent) component;
+			}
+			final var text = new TextComponent();
+			text.copyFormatting(component);
+			text.setExtra(component.getExtra());
+			return text;
+		}
+		return new TextComponent(components);
+	}
+
+	public static boolean areComponentsEqual(final TextComponent former, final TextComponent latter) {
+		return Arrays.equals(
+				toBaseComponents(former),
+				toBaseComponents(latter));
 	}
 
 }

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,7 +19,6 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
-import vg.civcraft.mc.civmodcore.util.Chainer;
 
 /**
  * Class of static APIs for Items. Replaces ISUtils.
@@ -73,7 +74,7 @@ public final class ItemUtils {
 		if (material == null) {
 			throw new IllegalArgumentException("Cannot retrieve name of invalid material.");
 		}
-		return MATERIAL_NAMES.computeIfAbsent(material, (_material) -> material.name());
+		return MATERIAL_NAMES.computeIfAbsent(material, (ignored) -> material.name());
 	}
 
 	/**
@@ -83,7 +84,10 @@ public final class ItemUtils {
 	 * @return Returns the item's name.
 	 */
 	public static String getItemName(final ItemStack item) {
-		return getItemName(Chainer.from(item).then(ItemStack::getType).get());
+		if (item == null) {
+			return null;
+		}
+		return getItemName(item.getType());
 	}
 
 	/**
@@ -95,16 +99,9 @@ public final class ItemUtils {
 	 * @return Returns true if the item is valid.
 	 */
 	public static boolean isValidItem(final ItemStack item) {
-		if (item == null) {
-			return false;
-		}
-		if (!isValidItemMaterial(item.getType())) {
-			return false;
-		}
-		if (!isValidItemAmount(item)) {
-			return false;
-		}
-		return true;
+		return item != null
+				&& isValidItemMaterial(item.getType())
+				&& isValidItemAmount(item);
 	}
 
 	/**
@@ -114,16 +111,9 @@ public final class ItemUtils {
 	 * @return Returns true if the item has a valid amount.
 	 */
 	public static boolean isValidItemAmount(ItemStack item) {
-		if (item == null) {
-			return false;
-		}
-		if (item.getAmount() <= 0) {
-			return false;
-		}
-		if (item.getAmount() > item.getMaxStackSize()) {
-			return false;
-		}
-		return true;
+		return item != null
+				&& item.getAmount() > 0
+				&& item.getAmount() <= item.getMaxStackSize();
 	}
 
 	/**
@@ -133,16 +123,9 @@ public final class ItemUtils {
 	 * @return Returns true if the material would be considered a valid item.
 	 */
 	public static boolean isValidItemMaterial(final Material material) {
-		if (material == null) {
-			return false;
-		}
-		if (material.isAir()) {
-			return false;
-		}
-		if (!material.isItem()) {
-			return false;
-		}
-		return true;
+		return material != null
+				&& !material.isAir()
+				&& material.isItem();
 	}
 
 	/**
@@ -158,12 +141,9 @@ public final class ItemUtils {
 		if (former == latter) {
 			return true;
 		}
-		if ((former == null || latter == null)
-				|| former.getAmount() != latter.getAmount()
-				|| !areItemsSimilar(former, latter)) {
-			return false;
-		}
-		return true;
+		return (former != null && latter != null)
+				&& former.getAmount() == latter.getAmount()
+				&& areItemsSimilar(former, latter);
 	}
 
 	/**
@@ -186,7 +166,7 @@ public final class ItemUtils {
 				|| former.hasItemMeta() != latter.hasItemMeta()) {
 			return false;
 		}
-		return MetaUtils.areMetasEqual(getItemMeta(former), getItemMeta(latter));
+		return MetaUtils.areMetasEqual(former.getItemMeta(), latter.getItemMeta());
 	}
 
 	/**
@@ -225,7 +205,10 @@ public final class ItemUtils {
 	 * @return Returns the item meta.
 	 */
 	public static ItemMeta getItemMeta(final ItemStack item) {
-		return Chainer.from(item).then(ItemStack::getItemMeta).get();
+		if (item == null) {
+			return null;
+		}
+		return item.getItemMeta();
 	}
 
 	/**
@@ -235,7 +218,8 @@ public final class ItemUtils {
 	 * @return Returns true if the item has a display name.
 	 */
 	public static boolean hasDisplayName(final ItemStack item) {
-		return Strings.isNullOrEmpty(getDisplayName(item));
+		final var meta = getItemMeta(item);
+		return meta != null && meta.hasDisplayName();
 	}
 
 	/**
@@ -245,7 +229,25 @@ public final class ItemUtils {
 	 * @return Returns the display name of an item.
 	 */
 	public static String getDisplayName(final ItemStack item) {
-		return Chainer.from(getItemMeta(item)).then(ItemMeta::getDisplayName).get();
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			return null;
+		}
+		return meta.getDisplayName();
+	}
+
+	/**
+	 * Retrieves the display name from an item.
+	 *
+	 * @param item The item to retrieve the display name from.
+	 * @return Returns the display name of an item.
+	 */
+	public static TextComponent getComponentDisplayName(final ItemStack item) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			return null;
+		}
+		return MetaUtils.getComponentDisplayName(meta);
 	}
 
 	/**
@@ -257,7 +259,7 @@ public final class ItemUtils {
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
 	public static void setDisplayName(final ItemStack item, final String name) {
-		final ItemMeta meta = getItemMeta(item);
+		final var meta = getItemMeta(item);
 		if (meta == null) {
 			throw new IllegalArgumentException("Cannot set that display name: item has no meta.");
 		}
@@ -271,13 +273,49 @@ public final class ItemUtils {
 	}
 
 	/**
+	 * Sets a display name to an item. A null or empty name will remove the display name from the item.
+	 *
+	 * @param item The item to set the display name to.
+	 * @param name The display name to set on the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 */
+	public static void setComponentDisplayName(final ItemStack item, final TextComponent name) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot set that display name: item has no meta.");
+		}
+		MetaUtils.setComponentDisplayName(meta, name);
+		item.setItemMeta(meta);
+	}
+
+	/**
 	 * Retrieves the lore from an item.
 	 *
 	 * @param item The item to retrieve the lore from.
 	 * @return Returns the lore, which is never null.
 	 */
 	public static List<String> getLore(final ItemStack item) {
-		return MetaUtils.getLore(getItemMeta(item));
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			return new ArrayList<>();
+		}
+		return MetaUtils.getLore(meta);
+	}
+
+	/**
+	 * Retrieves the lore from an item.
+	 *
+	 * @param item The item to retrieve the lore from.
+	 * @return Returns the lore, which is never null.
+	 */
+	@Nonnull
+	public static List<TextComponent> getComponentLore(final ItemStack item) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			return new ArrayList<>();
+		}
+		return MetaUtils.getComponentLore(meta);
 	}
 
 	/**
@@ -307,11 +345,49 @@ public final class ItemUtils {
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
 	public static void setLore(final ItemStack item, final List<String> lines) {
-		final ItemMeta meta = getItemMeta(item);
+		final var meta = getItemMeta(item);
 		if (meta == null) {
 			throw new IllegalArgumentException("Cannot set that lore: item has no meta.");
 		}
 		meta.setLore(lines);
+		item.setItemMeta(meta);
+	}
+
+	/**
+	 * Sets the lore for an item, replacing any lore that may have already been set.
+	 *
+	 * @param item The item to set the lore to.
+	 * @param lines The lore to set to the item.
+	 *
+	 * @see ItemUtils#clearLore(ItemStack)
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 */
+	public static void setComponentLore(final ItemStack item, final TextComponent... lines) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot set that lore: item has no meta.");
+		}
+		MetaUtils.setComponentLore(meta, lines);
+		item.setItemMeta(meta);
+	}
+
+	/**
+	 * Sets the lore for an item, replacing any lore that may have already been set.
+	 *
+	 * @param item The item to set the lore to.
+	 * @param lines The lore to set to the item.
+	 *
+	 * @see ItemUtils#clearLore(ItemStack)
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 */
+	public static void setComponentLore(final ItemStack item, final List<TextComponent> lines) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot set that lore: item has no meta.");
+		}
+		MetaUtils.setComponentLore(meta, lines);
 		item.setItemMeta(meta);
 	}
 
@@ -349,10 +425,12 @@ public final class ItemUtils {
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
 	public static void addLore(final ItemStack item, final boolean prepend, final String... lines) {
-		handleItemMeta(item, (ItemMeta meta) -> {
-			MetaUtils.addLore(meta, prepend, lines);
-			return true;
-		});
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
+		}
+		MetaUtils.addLore(meta, prepend, lines);
+		item.setItemMeta(meta);
 	}
 
 	/**
@@ -365,10 +443,12 @@ public final class ItemUtils {
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
 	public static void addLore(final ItemStack item, final boolean prepend, final List<String> lines) {
-		handleItemMeta(item, (ItemMeta meta) -> {
-			MetaUtils.addLore(meta, prepend, lines);
-			return true;
-		});
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
+		}
+		MetaUtils.addLore(meta, prepend, lines);
+		item.setItemMeta(meta);
 	}
 
 	/**
@@ -380,6 +460,70 @@ public final class ItemUtils {
 	 */
 	public static void clearLore(final ItemStack item) {
 		setLore(item, (List<String>) null);
+	}
+
+	/**
+	 * Appends lore to an item.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 */
+	public static void addComponentLore(final ItemStack item, final TextComponent... lines) {
+		addComponentLore(item, false, lines);
+	}
+
+	/**
+	 * Appends lore to an item.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 */
+	public static void addComponentLore(final ItemStack item, final List<TextComponent> lines) {
+		addComponentLore(item, false, lines);
+	}
+
+	/**
+	 * Adds lore to an item, either by appending or prepending.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param prepend If set to true, the lore will be prepended instead of appended.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 */
+	public static void addComponentLore(final ItemStack item,
+										final boolean prepend,
+										final TextComponent... lines) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
+		}
+		MetaUtils.addComponentLore(meta, prepend, lines);
+		item.setItemMeta(meta);
+	}
+
+	/**
+	 * Adds lore to an item, either by appending or prepending.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param prepend If set to true, the lore will be prepended instead of appended.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 */
+	public static void addComponentLore(final ItemStack item,
+										final boolean prepend,
+										final List<TextComponent> lines) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
+		}
+		MetaUtils.addComponentLore(meta, prepend, lines);
+		item.setItemMeta(meta);
 	}
 
 	/**
@@ -395,13 +539,11 @@ public final class ItemUtils {
 			return null;
 		}
 		final Material material = item.getType();
-		if (!isValidItemMaterial(material)) {
+		if (!isValidItemMaterial(material)
+				|| material.getMaxDurability() <= 0) {
 			return null;
 		}
-		if (material.getMaxDurability() <= 0) {
-			return null;
-		}
-		final ItemMeta meta = item.getItemMeta();
+		final var meta = getItemMeta(item);
 		if (!(meta instanceof Damageable)) {
 			return null;
 		}
@@ -448,7 +590,7 @@ public final class ItemUtils {
 				return item.setItemMeta((ItemMeta) meta);
 			}
 		}
-		catch (ClassCastException ignored) {}
+		catch (ClassCastException ignored) { }
 		return false;
 	}
 

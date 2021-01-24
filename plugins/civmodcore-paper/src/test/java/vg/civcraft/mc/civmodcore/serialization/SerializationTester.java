@@ -7,7 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
-public class Tester {
+public class SerializationTester {
 
 	@BeforeClass
 	public static void beforeAll() {

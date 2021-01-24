@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import vg.civcraft.mc.civmodcore.util.UuidUtils;
 
-public class Tester {
+public class UuidTester {
 
 	@Test
 	public void testUuidSerialization() {
