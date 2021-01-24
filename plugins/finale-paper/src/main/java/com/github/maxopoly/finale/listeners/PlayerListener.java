@@ -36,6 +36,9 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void damageEntity(EntityDamageEvent e) {
+		if (!manager.isInvulTicksEnabled()){
+			return;
+		}
 		if (!(e.getEntity() instanceof LivingEntity)) {
 			return;
 		}
