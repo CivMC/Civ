@@ -5,10 +5,10 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.pseudo.PseudoServer;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.bukkit.pseudo.PseudoServer;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
@@ -24,15 +24,7 @@ public class ItemMetaTester {
 	}
 
 	/**
-	 * <p>Sometimes components will be stored out in different orders.</p>
-	 *
-	 * <p>
-	 *     For example:
-	 *     <ul>
-	 *         <li>{@code {"text":"","extra":[{"text":"Test!"}]}}</li>
-	 *         <li>{@code {"extra":[{"text":"Test!"}],"text":""}}</li>
-	 *     </ul>
-	 * </p>
+	 * Tests whether two components of different order can match.
 	 */
 	@Test
 	public void testComponentOrderEquality() {
@@ -47,7 +39,7 @@ public class ItemMetaTester {
 	}
 
 	/**
-	 *
+	 * Tests whether a primitive display name can match with a component.
 	 */
 	@Test
 	public void testBasicDisplayNameEquality() {
@@ -66,7 +58,7 @@ public class ItemMetaTester {
 	}
 
 	/**
-	 *
+	 * How do different API methods of setting the display name fare?
 	 */
 	@Test
 	public void testAdvancedDisplayNameEquality() {
@@ -82,7 +74,7 @@ public class ItemMetaTester {
 	}
 
 	/**
-	 *
+	 * Tries a full item similarity check.
 	 */
 	@Test
 	public void testCustomItemStackSimilarity() {
