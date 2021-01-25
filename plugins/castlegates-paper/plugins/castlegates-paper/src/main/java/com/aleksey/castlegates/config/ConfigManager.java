@@ -32,13 +32,11 @@ public class ConfigManager {
 
 	private static class ItemMaterial {
 		public Material material;
-		public Short damage;
 		public Integer amount;
 		public String lore;
 
-		public ItemMaterial(Material material, Short damage, Integer amount, String lore) {
+		public ItemMaterial(Material material, Integer amount, String lore) {
 			this.material = material;
-			this.damage = damage;
 			this.amount = amount;
 			this.lore = lore;
 
@@ -109,10 +107,6 @@ public class ConfigManager {
 		if(this.creationConsumeItem.amount == null) {
 			this.creationConsumeItem.amount = 1;
 		}
-
-		if(this.creationConsumeItem.damage == null) {
-			this.creationConsumeItem.damage = 0;
-		}
 	}
 
 	public boolean isTimerEnabled() {
@@ -148,7 +142,6 @@ public class ConfigManager {
 	public boolean isStickItem(ItemStack item) {
 		if(item == null
 				|| item.getType() != this.stickItem.material
-				|| this.stickItem.damage != null && item.getDurability() != this.stickItem.damage
 				|| this.stickItem.amount != null && item.getAmount() != this.stickItem.amount
 				)
 		{
@@ -171,7 +164,6 @@ public class ConfigManager {
 	public boolean isCreationConsumeItem(ItemStack item) {
 		if(item == null
 				|| item.getType() != this.creationConsumeItem.material
-				|| this.creationConsumeItem.damage != null && item.getDurability() != this.creationConsumeItem.damage
 				)
 		{
 			return false;
@@ -189,8 +181,7 @@ public class ConfigManager {
 	public ItemStack getCreationConsumeItem() {
 		ItemStack item = new ItemStack(
 				this.creationConsumeItem.material,
-				this.creationConsumeItem.amount,
-				this.creationConsumeItem.damage
+				this.creationConsumeItem.amount
 				);
 
 		Helper.setLore(item, this.creationConsumeItem.lore);
@@ -306,7 +297,7 @@ public class ConfigManager {
     		if(material == null || material.length() == 0) continue;
 
     		if(Character.isDigit(material.charAt(0))) {
-    			result.add(DeprecatedMethods.getMaterial(Integer.parseInt(material)));
+    			result.add(Material.getMaterial(material));
     		} else {
     			result.add(Material.getMaterial(material.toUpperCase()));
     		}
@@ -317,28 +308,18 @@ public class ConfigManager {
 
     private ItemMaterial getItemMaterial(String path, Material defaultMaterial, Integer defaultAmount) {
     	String material = this.file.getString(path + ".material");
-    	Short damage;
     	Integer amount;
     	String lore;
 
     	if(material == null) {
     		material = defaultMaterial.name();
-    		damage = null;
     		amount = defaultAmount != null ? defaultAmount: null;
     		lore = "";
 
     		this.file.set(path + ".material", material);
-    		this.file.set(path + ".damage", damage);
     		this.file.set(path + ".amount", amount);
     		this.file.set(path + ".lore", lore);
     	} else {
-    		if(this.file.get(path + ".damage") != null) {
-        		damage = (short)this.file.getInt(path + ".damage");
-    		} else {
-    			damage = null;
-    			this.file.set(path + ".damage", damage);
-    		}
-
     		if(this.file.get(path + ".amount") != null) {
     			amount = this.file.getInt(path + ".amount");
     		} else {
@@ -356,6 +337,6 @@ public class ConfigManager {
 
     	Material materialObj = Material.getMaterial(material);
 
-    	return new ItemMaterial(materialObj, damage, amount, lore);
+    	return new ItemMaterial(materialObj, amount, lore);
     }
 }

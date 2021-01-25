@@ -5,11 +5,12 @@
 
 package com.aleksey.castlegates.database;
 
+import org.bukkit.Material;
+
 public class ReinforcementInfo {
 	public int link_id;
 	public int block_no;
-	public int material_id;
-	public int durability;
+	public Material material;
 	public boolean insecure;
 	public int group_id;
 	public int maturation_time;

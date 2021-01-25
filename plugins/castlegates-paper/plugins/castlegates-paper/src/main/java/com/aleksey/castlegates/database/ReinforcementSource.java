@@ -11,10 +11,11 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import org.bukkit.Material;
 
 public class ReinforcementSource {
 	private static final String selectAllScript = "SELECT * FROM cg_reinforcement ORDER BY link_id, block_no";
-	private static final String insertScript = "INSERT INTO cg_reinforcement (link_id, block_no, material_id, durability, insecure, group_id, maturation_time, lore, acid_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String insertScript = "INSERT INTO cg_reinforcement (link_id, block_no, material, insecure, group_id, maturation_time, lore, acid_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String deleteScript = "DELETE FROM cg_reinforcement WHERE link_id = ?";
 
 	private SqlDatabase db;
@@ -34,8 +35,7 @@ public class ReinforcementSource {
 				ReinforcementInfo info = new ReinforcementInfo();
 				info.link_id = rs.getInt("link_id");
 				info.block_no = rs.getInt("block_no");
-				info.material_id = rs.getInt("material_id");
-				info.durability = rs.getInt("durability");
+				info.material = (Material) rs.getObject("material");
 				info.insecure = rs.getBoolean("insecure");
 				info.group_id = rs.getInt("group_id");
 				info.maturation_time = rs.getInt("maturation_time");
@@ -55,19 +55,18 @@ public class ReinforcementSource {
 		PreparedStatement sql = this.db.prepareStatement(insertScript);
 		sql.setInt(1, info.link_id);
 		sql.setInt(2, info.block_no);
-		sql.setInt(3, info.material_id);
-		sql.setInt(4, info.durability);
-		sql.setBoolean(5, info.insecure);
-		sql.setInt(6, info.group_id);
-		sql.setInt(7, info.maturation_time);
+		sql.setObject(3, info.material);
+		sql.setBoolean(4, info.insecure);
+		sql.setInt(5, info.group_id);
+		sql.setInt(6, info.maturation_time);
 
 		if(info.lore == null || info.lore.length() == 0) {
-			sql.setNull(8, Types.VARCHAR);
+			sql.setNull(7, Types.VARCHAR);
 		} else {
-			sql.setString(8, info.lore);
+			sql.setString(7, info.lore);
 		}
 
-		sql.setInt(9, info.acid_time);
+		sql.setInt(8, info.acid_time);
 
 		sql.executeUpdate();
 	}

@@ -161,8 +161,7 @@ public class ChangeLogger {
 			writer.print(lineDate);
 			writer.print(prefix + ".REIN:");
 			writer.print("block_no=" + rein.block_no);
-			writer.print(",material_id=" + rein.material_id);
-			writer.print(",durability=" + rein.durability);
+			writer.print(",material=" + rein.material);
 			writer.print(",insecure=" + rein.insecure);
 			writer.print(",group_id=" + rein.group_id);
 			writer.print(",maturation_time=" + rein.maturation_time);
