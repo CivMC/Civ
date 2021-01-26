@@ -41,12 +41,22 @@ public class StriderBreeding extends BasicHack {
 		//Also worth noting he told me it is not exactly a bell curve even if I did name it bellCurve
 		double bellCurve = (0.44999998807907104 + randomSpeed * 0.3 + randomSpeed * 0.3 + randomSpeed * 0.3) * 0.25;
 		double newStriderSpeed = (dadSpeed + mumSpeed + bellCurve) / 3;
+		if (newStriderSpeed < minSpeed) {
+			newStriderSpeed = minSpeed;
+		} else if (newStriderSpeed > maxSpeed) {
+			newStriderSpeed = maxSpeed;
+		}
 		event.getEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(newStriderSpeed);
 
 		double dadHealth = event.getFather().getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
 		double mumHealth = event.getFather().getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
 		double randomHealth = Math.random() * (this.maxHealth - this.minHealth) + this.minHealth;
 		double newStriderHealth = Math.round(((float) dadHealth + (float) mumHealth + (float) randomHealth) / 3);
+		if (newStriderHealth < minHealth) {
+			newStriderHealth = minHealth;
+		} else if (newStriderHealth > maxHealth) {
+			newStriderHealth = maxHealth;
+		}
 		event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(newStriderHealth);
 		event.getEntity().setHealth(newStriderHealth);
 		plugin.getLogger().log(Level.INFO, "Strider breed to have speed: " + newStriderSpeed
@@ -72,6 +82,11 @@ public class StriderBreeding extends BasicHack {
 		}
 		double random = Math.random() * (maxSpeed - minSpeed) + minSpeed;
 		double bellCurve = (0.44999998807907104 + random * 0.3 + random * 0.3 + random * 0.3) * 0.25;
+		if (bellCurve < minSpeed) {
+			bellCurve = minSpeed;
+		} else if (bellCurve > maxSpeed) {
+			bellCurve = maxSpeed;
+		}
 		moveSpeed.setBaseValue(bellCurve);
 		plugin.getLogger().log(Level.INFO, "Setting Strider Speed to: " + bellCurve);
 	}
@@ -82,6 +97,11 @@ public class StriderBreeding extends BasicHack {
 			return;
 		}
 		int newValue = Math.round((float) Math.random() * (maxHealth - minHealth) + minHealth);
+		if (newValue < minHealth) {
+			newValue = minHealth;
+		} else if (newValue > maxHealth) {
+			newValue = maxHealth;
+		}
 		moveSpeed.setBaseValue(newValue);
 		//We set the health to the new value since when we update the health, they dont auto heal
 		strider.setHealth(newValue);
