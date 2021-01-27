@@ -107,6 +107,7 @@ public class ConfigParser {
 		plugin.info("Ender pearl additions: " + pearlEnabled);
 		WeaponModifier weapMod = parseWeaponModification(config.getConfigurationSection("weaponModification"));
 		ArmourModifier armourMod = parseArmourModification(config.getConfigurationSection("armourModification"));
+		boolean invulTicksEnabled = config.getBoolean("invulTicksEnabled", false);
 		Map<EntityDamageEvent.DamageCause, Integer> invulnerableTicks = parseInvulnerabilityTicks(config.getConfigurationSection("invulnerableTicks"));
 
 		disabledEnchants = parseDisableEnchantments(config);
@@ -116,7 +117,7 @@ public class ConfigParser {
 		combatConfig = parseCombatConfig(config.getConfigurationSection("cleanerCombat"));
 
 		// Initialize the manager
-		manager = new FinaleManager(debug, attackEnabled, attackSpeed, invulnerableTicks, regenEnabled, ctpOnLogin, regenhandler, weapMod, armourMod,
+		manager = new FinaleManager(debug, attackEnabled, attackSpeed,invulTicksEnabled, invulnerableTicks, regenEnabled, ctpOnLogin, regenhandler, weapMod, armourMod,
 				potionHandler, combatConfig);
 		plugin.info("Successfully parsed config");
 		return manager;
