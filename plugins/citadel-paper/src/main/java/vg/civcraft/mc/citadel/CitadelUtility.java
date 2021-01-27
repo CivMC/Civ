@@ -49,7 +49,7 @@ public class CitadelUtility {
 			case PUMPKIN_STEM:
 			case ATTACHED_MELON_STEM:
 			case ATTACHED_PUMPKIN_STEM:
-			case NETHER_WART_BLOCK:
+			case NETHER_WART:
 			case SUGAR_CANE:
 			case CACTUS:
 			case SUNFLOWER:
