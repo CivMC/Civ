@@ -29,13 +29,13 @@ public class DogFacts extends BasicHack {
 
 	public DogFacts(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
-		initSettings();
 	}
 
 	@Override
 	public void onEnable() {
 		super.onEnable();
 		startRunnable(announcements, interval);
+		initSettings();
 	}
 
 	public void startRunnable(List<String> announcements, long interval){
