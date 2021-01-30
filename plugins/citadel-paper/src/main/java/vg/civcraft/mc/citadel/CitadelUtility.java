@@ -55,6 +55,12 @@ public class CitadelUtility {
 			case SUNFLOWER:
 			case LILAC:
 			case PEONY:
+			case TWISTING_VINES:
+			case TWISTING_VINES_PLANT:
+			case WEEPING_VINES:
+			case WEEPING_VINES_PLANT:
+			case KELP:
+			case KELP_PLANT:
 				return true;
 			default:
 				return false;
