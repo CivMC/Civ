@@ -6,6 +6,7 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -38,7 +39,7 @@ public class DogFacts extends BasicHack {
 	}
 
 	public void startRunnable(List<String> announcements){
-		long interval = ConfigParsing.parseTime(intervalTime);
+		long interval = ConfigParsing.parseTimeAsTicks(intervalTime);
 		int tickOffset = (int) (Math.random() * (interval));
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin ,() -> {
 			if (announcements.isEmpty()) {

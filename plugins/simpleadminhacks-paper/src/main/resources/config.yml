@@ -83,8 +83,7 @@ hacks:
     enabled: true
   DogFacts:
     enabled: false
-    #In Mins
-    interval: 30
+    intervalTime: 30m
     announcements:
       - "Buy &4$DOGE"
       - "Very &cWOW"
