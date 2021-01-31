@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Bed;
@@ -172,7 +173,6 @@ public final class ReinforcementLogic {
 			case WARPED_FUNGUS:
 			case CRIMSON_FUNGUS:
 			case BAMBOO_SAPLING:
-			case TWISTING_VINES:
 			case WHEAT:
 			case CARROTS:
 			case POTATOES:
@@ -213,8 +213,16 @@ public final class ReinforcementLogic {
 			case DEAD_FIRE_CORAL_FAN:
 			case DEAD_HORN_CORAL:
 			case DEAD_HORN_CORAL_FAN:
-			case NETHER_WART_BLOCK: {
+			case NETHER_WART: {
 				return block.getRelative(BlockFace.DOWN);
+			}
+			case TWISTING_VINES: {
+				// scan downwards for first different block
+				Block below = block.getRelative(BlockFace.DOWN);
+				while (below.getType() == block.getType() || below.getType() == Material.TWISTING_VINES_PLANT) {
+					below = below.getRelative(BlockFace.DOWN);
+				}
+				return below;
 			}
 			case SUGAR_CANE:
 			case BAMBOO:
@@ -241,6 +249,8 @@ public final class ReinforcementLogic {
 			case IRON_DOOR:
 			case SPRUCE_DOOR:
 			case JUNGLE_DOOR:
+			case WARPED_DOOR:
+			case CRIMSON_DOOR:
 			case OAK_DOOR: {
 				if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
 					// block is upper half of a door
@@ -284,7 +294,12 @@ public final class ReinforcementLogic {
 				return block.getRelative(cwf.getFacing().getOppositeFace());
 			}
 			case WEEPING_VINES: {
-				block.getRelative(BlockFace.UP);
+				// scan upwards
+				Block above = block.getRelative(BlockFace.UP);
+				while (above.getType() == block.getType() || above.getType() == Material.WEEPING_VINES_PLANT) {
+					above = above.getRelative(BlockFace.UP);
+				}
+				return above;
 			}
 			case WEEPING_VINES_PLANT: {
 				// scan upwards
