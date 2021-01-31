@@ -15,33 +15,36 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
+import vg.civcraft.mc.civmodcore.util.ConfigParsing;
 
 public class DogFacts extends BasicHack {
 
 	@AutoLoad
 	private List<String> announcements;
 	@AutoLoad
+	private String intervalTime;
 	private long interval;
-
 	private BooleanSetting disableAnnouncements;
-
 	private int counter = 0;
+	private int tickOffset;
 
 	public DogFacts(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
+		this.interval = ConfigParsing.parseTime(intervalTime);
+		this.tickOffset = (int) (Math.random() * (interval));
 	}
 
 	@Override
 	public void onEnable() {
 		super.onEnable();
-		startRunnable(announcements, interval);
+		startRunnable(announcements);
 		initSettings();
 	}
 
-	public void startRunnable(List<String> announcements, long interval){
+	public void startRunnable(List<String> announcements){
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin ,() -> {
 			if (announcements.isEmpty()) {
-				throw new IllegalArgumentException("No announcements loaded");
+				return;
 			}
 			if (counter >= announcements.size()) {
 				counter = 0;
@@ -54,7 +57,7 @@ public class DogFacts extends BasicHack {
 				player.spigot().sendMessage(messageComp);
 			}
 			counter++;
-		},1200, interval * 1200);
+		},tickOffset, interval);
 	}
 
 	private void initSettings() {
