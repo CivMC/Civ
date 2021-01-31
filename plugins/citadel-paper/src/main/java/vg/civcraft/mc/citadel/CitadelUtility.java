@@ -55,6 +55,8 @@ public class CitadelUtility {
 			case SUNFLOWER:
 			case LILAC:
 			case PEONY:
+			case TALL_GRASS:
+			case GRASS:
 				return true;
 			default:
 				return false;
