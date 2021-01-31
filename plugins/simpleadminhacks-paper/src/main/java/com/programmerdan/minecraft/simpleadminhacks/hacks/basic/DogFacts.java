@@ -23,15 +23,11 @@ public class DogFacts extends BasicHack {
 	private List<String> announcements;
 	@AutoLoad
 	private String intervalTime;
-	private long interval;
 	private BooleanSetting disableAnnouncements;
 	private int counter = 0;
-	private int tickOffset;
 
 	public DogFacts(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
-		this.interval = ConfigParsing.parseTime(intervalTime);
-		this.tickOffset = (int) (Math.random() * (interval));
 	}
 
 	@Override
@@ -42,6 +38,8 @@ public class DogFacts extends BasicHack {
 	}
 
 	public void startRunnable(List<String> announcements){
+		long interval = ConfigParsing.parseTime(intervalTime);
+		int tickOffset = (int) (Math.random() * (interval));
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin ,() -> {
 			if (announcements.isEmpty()) {
 				return;
@@ -57,7 +55,7 @@ public class DogFacts extends BasicHack {
 				player.spigot().sendMessage(messageComp);
 			}
 			counter++;
-		},tickOffset, interval);
+		}, tickOffset, interval);
 	}
 
 	private void initSettings() {
