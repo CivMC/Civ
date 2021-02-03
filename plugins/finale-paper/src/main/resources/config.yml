@@ -36,7 +36,7 @@ cleanerCombat:
     x: 1.0
     y: 1.0
     z: 1.0
-  attackMotion: # modifies motion of attacker upon attacking.
+  attackerMotion: # modifies motion of attacker upon attacking.
     x: 0.6
     y: 1.0
     z: 0.6
