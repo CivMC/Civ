@@ -377,7 +377,7 @@ public class ConfigParser {
 		Vector airKnockbackMultiplier = parseVector(config, "airKnockbackMultiplier", new Vector(1, 1, 1));
 		Vector victimMotion = parseVector(config, "victimMotion", new Vector(0.5, 0.5, 0.5));
 		Vector maxVictimMotion = parseVector(config, "maxVictimMotion", new Vector(10, 1, 10));
-		Vector attackerMotion = parseVector(config, "airKnockbackMultiplier", new Vector(0.6, 1, 0.6));
+		Vector attackerMotion = parseVector(config, "attackerMotion", new Vector(0.6, 1, 0.6));
 		plugin.info("Setting knockbackMultiplier to " + knockbackMultiplier);
 		plugin.info("Setting sprintMultiplier to " + sprintMultiplier);
 		plugin.info("Setting waterKnockbackMultiplier to " + waterKnockbackMultiplier);
