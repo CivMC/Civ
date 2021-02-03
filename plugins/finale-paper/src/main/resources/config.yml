@@ -69,6 +69,9 @@ pearls:
   
 #allows adjusting the attack damage of any item by its spigot material identifier
 weaponModification:
+  netheriteAxe:
+    material: NETHERITE_AXE
+    damage: 6
   diamondAxe:
     material: DIAMOND_AXE
     damage: 5
@@ -84,6 +87,9 @@ weaponModification:
   woodAxe:
     material: WOODEN_AXE
     damage: 1
+  netheriteSword:
+    material: NETHERITE_SWORD
+    damage: 7
   diamondSword:
     material: DIAMOND_SWORD
     damage: 6
