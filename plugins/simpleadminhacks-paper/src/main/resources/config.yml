@@ -81,6 +81,12 @@ hacks:
       - SLOW_FALLING
   DebugWand:
     enabled: true
+  DogFacts:
+    enabled: false
+    intervalTime: 30m
+    announcements:
+      - "Buy &4$DOGE"
+      - "Very &cWOW"
   EventDebugHack:
     enabled: true
   EventHandlerList:
