@@ -19,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -126,6 +127,37 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 			}
 		}
 
+	}
+
+	/**
+	 * Expanding the usage of this class to allow us to give RandomSpawning players a kit on each respawn.
+	 * This method checks if the respawn event is a bed or anchor respawn and if not, gives them the introkit.
+	 * @param event PlayerRespawnEvent
+	 */
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onRespawn(PlayerRespawnEvent event) {
+		if (!config.giveToRandomSpawners()) {
+			return;
+		}
+		if (event.isAnchorSpawn()) {
+			return;
+		}
+		if (event.isBedSpawn()) {
+			return;
+		}
+		//Checking here if the player hasn't played before so we don't double spawn a starter kit
+		if (!event.getPlayer().hasPlayedBefore()) {
+			return;
+		}
+		if (config.isIntroKitEnabled()) {
+			ItemStack[] introKit = config.getIntroKit();
+			if (introKit != null && introKit.length > 0) {
+				Inventory inv = event.getPlayer().getInventory();
+				inv.addItem(introKit);
+				plugin().log(Level.INFO, "  Gave randomspawner kit to {0}", event.getPlayer().getDisplayName());
+			}
+		}
 	}
 
 	private String cleanMessage(PlayerJoinEvent event) {

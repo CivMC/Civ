@@ -360,6 +360,7 @@ hacks:
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'
+    giveIntroKitToRandomSpawners: true
     broadcast: [PERM, CONSOLE]
     helptips: on
     helptips_end: 20m
