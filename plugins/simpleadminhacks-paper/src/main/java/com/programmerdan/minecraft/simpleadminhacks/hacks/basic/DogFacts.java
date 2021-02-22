@@ -52,7 +52,6 @@ public class DogFacts extends BasicHack {
 				if (getDisableAnnouncements(player.getUniqueId())){
 					continue;
 				}
-				plugin.info("Broadcasting DogFact: " + messageComp.getText());
 				player.spigot().sendMessage(messageComp);
 			}
 			counter++;
