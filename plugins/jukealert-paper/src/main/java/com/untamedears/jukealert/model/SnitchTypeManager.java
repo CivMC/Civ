@@ -91,7 +91,7 @@ public class SnitchTypeManager {
 					return false;
 				}
 				ConfigurationSection entrySection = appenderSection.getConfigurationSection(key);
-				Function<Snitch, AbstractSnitchAppender> instanciation = getAppenderInstanciation(
+				Function<Snitch, AbstractSnitchAppender> instanciation = getAppenderInstantiation(
 						appenderClass, entrySection);
 				appenderInstanciations.add(instanciation);
 				sb.append(appenderClass.getSimpleName());
@@ -116,7 +116,7 @@ public class SnitchTypeManager {
 	 * @return Function to instanciate appenders of the given class or null if the
 	 *         appender has no appropriate constructor
 	 */
-	private Function<Snitch, AbstractSnitchAppender> getAppenderInstanciation(
+	private Function<Snitch, AbstractSnitchAppender> getAppenderInstantiation(
 			Class<? extends AbstractSnitchAppender> clazz, ConfigurationSection config) {
 		try {
 			Constructor<? extends AbstractSnitchAppender> constructor = clazz
