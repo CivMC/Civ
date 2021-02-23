@@ -87,8 +87,9 @@ public class Snitch extends LocationTrackable {
 	 * @param appenderClass Type of the appender to retrieve
 	 * @return Appender of this instance of null if no such appender is held
 	 */
-	public AbstractSnitchAppender getAppender(Class<? extends AbstractSnitchAppender> appenderClass) {
-		return appenders.get(appenderClass);
+	@SuppressWarnings("unchecked")
+	public <T extends AbstractSnitchAppender> T getAppender(Class<T> appenderClass) {
+		return (T) appenders.get(appenderClass);
 	}
 
 	/**
