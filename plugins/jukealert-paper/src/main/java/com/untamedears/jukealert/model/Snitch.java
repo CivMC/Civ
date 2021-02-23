@@ -1,23 +1,20 @@
 package com.untamedears.jukealert.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
 import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction;
 import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction.Cause;
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 import com.untamedears.jukealert.model.field.FieldManager;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
@@ -90,8 +87,9 @@ public class Snitch extends LocationTrackable {
 	 * @param appenderClass Type of the appender to retrieve
 	 * @return Appender of this instance of null if no such appender is held
 	 */
-	public AbstractSnitchAppender getAppender(Class<? extends AbstractSnitchAppender> appenderClass) {
-		return appenders.get(appenderClass);
+	@SuppressWarnings("unchecked")
+	public <T extends AbstractSnitchAppender> T getAppender(Class<T> appenderClass) {
+		return (T) appenders.get(appenderClass);
 	}
 
 	/**

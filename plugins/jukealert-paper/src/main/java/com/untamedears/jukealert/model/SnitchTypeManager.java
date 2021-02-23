@@ -1,5 +1,12 @@
 package com.untamedears.jukealert.model;
 
+import com.untamedears.jukealert.JukeAlert;
+import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
+import com.untamedears.jukealert.model.appender.BroadcastEntryAppender;
+import com.untamedears.jukealert.model.appender.DormantCullingAppender;
+import com.untamedears.jukealert.model.appender.LeverToggleAppender;
+import com.untamedears.jukealert.model.appender.ShowOwnerOnDestroyAppender;
+import com.untamedears.jukealert.model.appender.SnitchLogAppender;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -8,17 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Logger;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-
-import com.untamedears.jukealert.JukeAlert;
-import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
-import com.untamedears.jukealert.model.appender.BroadcastEntryAppender;
-import com.untamedears.jukealert.model.appender.DormantCullingAppender;
-import com.untamedears.jukealert.model.appender.LeverToggleAppender;
-import com.untamedears.jukealert.model.appender.ShowOwnerOnDestroyAppender;
-import com.untamedears.jukealert.model.appender.SnitchLogAppender;
 
 public class SnitchTypeManager {
 
@@ -93,7 +91,7 @@ public class SnitchTypeManager {
 					return false;
 				}
 				ConfigurationSection entrySection = appenderSection.getConfigurationSection(key);
-				Function<Snitch, AbstractSnitchAppender> instanciation = getAppenderInstanciation(
+				Function<Snitch, AbstractSnitchAppender> instanciation = getAppenderInstantiation(
 						appenderClass, entrySection);
 				appenderInstanciations.add(instanciation);
 				sb.append(appenderClass.getSimpleName());
@@ -118,7 +116,7 @@ public class SnitchTypeManager {
 	 * @return Function to instanciate appenders of the given class or null if the
 	 *         appender has no appropriate constructor
 	 */
-	private Function<Snitch, AbstractSnitchAppender> getAppenderInstanciation(
+	private Function<Snitch, AbstractSnitchAppender> getAppenderInstantiation(
 			Class<? extends AbstractSnitchAppender> clazz, ConfigurationSection config) {
 		try {
 			Constructor<? extends AbstractSnitchAppender> constructor = clazz

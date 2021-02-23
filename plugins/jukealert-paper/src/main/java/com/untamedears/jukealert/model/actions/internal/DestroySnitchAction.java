@@ -1,9 +1,8 @@
 package com.untamedears.jukealert.model.actions.internal;
 
-import java.util.UUID;
-
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.PlayerAction;
+import java.util.UUID;
 
 public class DestroySnitchAction extends PlayerAction {
 	

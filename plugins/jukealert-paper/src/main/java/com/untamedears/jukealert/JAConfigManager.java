@@ -1,9 +1,7 @@
 package com.untamedears.jukealert;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.untamedears.jukealert.model.SnitchTypeManager;
-
+import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.CoreConfigManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;

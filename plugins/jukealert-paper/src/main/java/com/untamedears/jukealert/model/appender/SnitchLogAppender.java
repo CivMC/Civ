@@ -1,11 +1,5 @@
 package com.untamedears.jukealert.model.appender;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.database.JukeAlertDAO;
 import com.untamedears.jukealert.model.Snitch;
@@ -16,6 +10,10 @@ import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
 import com.untamedears.jukealert.model.appender.config.LimitedActionTriggerConfig;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionTriggerConfig> {
 

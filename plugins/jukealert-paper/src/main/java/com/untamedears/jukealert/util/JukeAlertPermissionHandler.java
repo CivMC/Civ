@@ -3,7 +3,6 @@ package com.untamedears.jukealert.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 

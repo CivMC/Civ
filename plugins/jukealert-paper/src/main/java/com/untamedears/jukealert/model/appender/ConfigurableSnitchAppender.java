@@ -1,15 +1,13 @@
 package com.untamedears.jukealert.model.appender;
 
+import com.untamedears.jukealert.JukeAlert;
+import com.untamedears.jukealert.model.Snitch;
+import com.untamedears.jukealert.model.appender.config.AppenderConfig;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.bukkit.configuration.ConfigurationSection;
-
-import com.untamedears.jukealert.JukeAlert;
-import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.appender.config.AppenderConfig;
 
 public abstract class ConfigurableSnitchAppender<C extends AppenderConfig> extends AbstractSnitchAppender {
 

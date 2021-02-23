@@ -1,14 +1,11 @@
 package com.untamedears.jukealert.model.actions.impl;
 
+import com.untamedears.jukealert.model.Snitch;
+import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerVictimAction;
 import java.util.UUID;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerVictimAction;
-
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 

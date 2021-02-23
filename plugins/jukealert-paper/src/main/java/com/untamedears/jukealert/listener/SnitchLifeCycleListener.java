@@ -1,10 +1,15 @@
 package com.untamedears.jukealert.listener;
 
+import com.untamedears.jukealert.SnitchManager;
+import com.untamedears.jukealert.model.Snitch;
+import com.untamedears.jukealert.model.SnitchFactoryType;
+import com.untamedears.jukealert.model.SnitchTypeManager;
+import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction.Cause;
+import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -15,14 +20,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
-
-import com.untamedears.jukealert.SnitchManager;
-import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.SnitchFactoryType;
-import com.untamedears.jukealert.model.SnitchTypeManager;
-import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction.Cause;
-import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
-
 import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDestructionEvent;

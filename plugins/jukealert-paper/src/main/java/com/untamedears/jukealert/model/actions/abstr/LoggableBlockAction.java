@@ -1,18 +1,14 @@
 package com.untamedears.jukealert.model.actions.abstr;
 
+import com.untamedears.jukealert.model.Snitch;
+import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
+import com.untamedears.jukealert.util.JAUtility;
 import java.util.UUID;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
-import com.untamedears.jukealert.util.JAUtility;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 
@@ -53,11 +49,11 @@ public abstract class LoggableBlockAction extends LoggablePlayerAction {
 			is = new ItemStack(getMaterial());
 		} catch (Exception e) {
 			is = new ItemStack(Material.STONE);
-			ItemAPI.addLore(is,
-					String.format("%sMaterial: %s%s", ChatColor.GOLD, ChatColor.AQUA, ItemNames.getItemName(getMaterial())));
+			ItemUtils.addLore(is,
+					String.format("%sMaterial: %s%s", ChatColor.GOLD, ChatColor.AQUA, ItemUtils.getItemName(getMaterial())));
 		}
 		super.enrichGUIItem(is);
-		ItemAPI.addLore(is, ChatColor.GOLD + JAUtility.formatLocation(location, false));
+		ItemUtils.addLore(is, ChatColor.GOLD + JAUtility.formatLocation(location, false));
 		return new DecorationStack(is);
 	}
 	

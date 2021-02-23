@@ -1,13 +1,11 @@
 package com.untamedears.jukealert.model;
 
-import java.util.List;
-import java.util.function.Function;
-
-import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
-
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 import com.untamedears.jukealert.model.field.SingleCuboidRangeManager;
+import java.util.List;
+import java.util.function.Function;
+import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 
 public class SnitchFactoryType {
 

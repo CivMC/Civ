@@ -1,12 +1,9 @@
 package com.untamedears.jukealert.util;
 
+import com.untamedears.jukealert.JukeAlert;
 import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import com.untamedears.jukealert.JukeAlert;
-
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;

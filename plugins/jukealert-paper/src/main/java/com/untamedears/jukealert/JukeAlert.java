@@ -1,8 +1,5 @@
 package com.untamedears.jukealert;
 
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
-
 import com.untamedears.jukealert.database.JukeAlertDAO;
 import com.untamedears.jukealert.listener.LoggableActionListener;
 import com.untamedears.jukealert.listener.SnitchLifeCycleListener;
@@ -11,7 +8,8 @@ import com.untamedears.jukealert.model.SnitchTypeManager;
 import com.untamedears.jukealert.model.actions.LoggedActionFactory;
 import com.untamedears.jukealert.util.JASettingsManager;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
-
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.SingleBlockAPIView;

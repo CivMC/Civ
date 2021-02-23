@@ -1,17 +1,14 @@
 package com.untamedears.jukealert.model.actions.impl;
 
+import com.untamedears.jukealert.model.Snitch;
+import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerVictimAction;
 import java.util.UUID;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
-
-import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerVictimAction;
-
-import vg.civcraft.mc.civmodcore.api.ItemNames;
-import vg.civcraft.mc.civmodcore.api.SpawnEggAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 
@@ -37,7 +34,7 @@ public class EnterVehicleAction extends LoggablePlayerVictimAction {
 		try {
 			return Material.valueOf(victim);
 		} catch (IllegalArgumentException e) {
-			return SpawnEggAPI.getSpawnEgg(EntityType.valueOf(victim));
+			return SpawnEggUtils.getSpawnEgg(EntityType.valueOf(victim));
 		}
 	}
 
@@ -48,7 +45,7 @@ public class EnterVehicleAction extends LoggablePlayerVictimAction {
 
 	@Override
 	protected String getChatRepresentationIdentifier() {
-		return "Entered " + ItemNames.getItemName(getVehicle());
+		return "Entered " + ItemUtils.getItemName(getVehicle());
 	}
 
 }

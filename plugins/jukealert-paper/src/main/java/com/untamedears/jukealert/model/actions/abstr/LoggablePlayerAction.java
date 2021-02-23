@@ -1,21 +1,18 @@
 package com.untamedears.jukealert.model.actions.abstr;
 
+import com.untamedears.jukealert.model.Snitch;
+import com.untamedears.jukealert.model.actions.ActionCacheState;
+import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
+import com.untamedears.jukealert.util.JAUtility;
 import java.util.UUID;
-
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-
-import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.actions.ActionCacheState;
-import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
-import com.untamedears.jukealert.util.JAUtility;
-
-import net.md_5.bungee.api.chat.TextComponent;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public abstract class LoggablePlayerAction extends PlayerAction implements LoggableAction {
@@ -83,9 +80,9 @@ public abstract class LoggablePlayerAction extends PlayerAction implements Logga
 	}
 	
 	protected void enrichGUIItem(ItemStack item) {
-		ItemAPI.addLore(item, String.format("%sPlayer: %s", ChatColor.GOLD, getPlayerName()),
+		ItemUtils.addLore(item, String.format("%sPlayer: %s", ChatColor.GOLD, getPlayerName()),
 				String.format("%sTime: %s", ChatColor.LIGHT_PURPLE,getFormattedTime()));
-		ItemAPI.setDisplayName(item, ChatColor.GOLD + getGUIName());
+		ItemUtils.setDisplayName(item, ChatColor.GOLD + getGUIName());
 	}
 	
 	protected String getGUIName() {
