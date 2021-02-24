@@ -59,6 +59,7 @@ public class SnitchOverviewGUI {
 				if (this.canShowDetails) {
 					MetaUtils.addLore(meta, ChatColor.GREEN + "Click to show details");
 				}
+				MetaUtils.addLore(meta, ChatColor.GOLD + "Right click to send waypoint");
 				return true;
 			});
 			clickables.add(new Clickable(icon) {
@@ -67,6 +68,17 @@ public class SnitchOverviewGUI {
 					if (canShowDetails) {
 						new SnitchLogGUI(clicker, snitch).showScreen();
 					}
+				}
+				@Override
+				protected void onRightClick(final Player clicker) {
+					final var location = snitch.getLocation();
+					clicker.sendMessage("["
+							+ "name:" + snitch.getName() + ","
+							+ "x:" + location.getBlockX() + ","
+							+ "y:" + location.getBlockY() + ","
+							+ "z:" + location.getBlockZ() + ","
+							+ "world:" + location.getWorld().getEnvironment().name()
+							+ "]");
 				}
 			});
 		}
