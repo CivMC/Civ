@@ -13,6 +13,7 @@ import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class SnitchOverviewGUI {
 
@@ -72,12 +73,15 @@ public class SnitchOverviewGUI {
 				@Override
 				protected void onRightClick(final Player clicker) {
 					final var location = snitch.getLocation();
+					if (!WorldUtils.doLocationsHaveSameWorld(location, clicker.getLocation())) {
+						clicker.sendMessage(ChatColor.RED + "That snitch is in a different world!");
+						return;
+					}
 					clicker.sendMessage("["
 							+ "name:" + snitch.getName() + ","
 							+ "x:" + location.getBlockX() + ","
 							+ "y:" + location.getBlockY() + ","
-							+ "z:" + location.getBlockZ() + ","
-							+ "world:" + location.getWorld().getEnvironment().name()
+							+ "z:" + location.getBlockZ()
 							+ "]");
 				}
 			});
