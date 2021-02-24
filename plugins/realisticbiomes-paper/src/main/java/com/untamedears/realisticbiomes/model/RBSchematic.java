@@ -1,11 +1,10 @@
 package com.untamedears.realisticbiomes.model;
 
-import org.bukkit.Location;
-import org.bukkit.block.data.BlockData;
-
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.math.BlockVector3;
+import org.bukkit.Location;
+import org.bukkit.block.data.BlockData;
 
 public class RBSchematic {
 

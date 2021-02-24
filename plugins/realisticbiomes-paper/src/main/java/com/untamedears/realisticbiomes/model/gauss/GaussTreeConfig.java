@@ -1,8 +1,7 @@
 package com.untamedears.realisticbiomes.model.gauss;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.untamedears.realisticbiomes.model.ltree.BlockTransformation;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class GaussTreeConfig {
 	

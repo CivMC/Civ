@@ -1,10 +1,9 @@
 package com.untamedears.realisticbiomes.growth;
 
-import org.bukkit.Material;
-
 import com.google.common.base.Preconditions;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
+import org.bukkit.Material;
 
 public class StemGrower extends AgeableGrower {
 

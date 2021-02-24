@@ -2,11 +2,9 @@ package com.untamedears.realisticbiomes.model.gauss.drop;
 
 import java.util.Arrays;
 import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.auto.YamlDataObject;
 
 public class BlockDrop extends YamlDataObject<BlockDrop>{

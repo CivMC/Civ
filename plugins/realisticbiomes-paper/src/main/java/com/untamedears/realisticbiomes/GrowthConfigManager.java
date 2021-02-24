@@ -1,18 +1,16 @@
 package com.untamedears.realisticbiomes;
 
+import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
+import com.untamedears.realisticbiomes.model.Plant;
+import com.untamedears.realisticbiomes.utils.RBUtils;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
-
-import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
-import com.untamedears.realisticbiomes.model.Plant;
-import com.untamedears.realisticbiomes.utils.RBUtils;
 
 public class GrowthConfigManager {
 

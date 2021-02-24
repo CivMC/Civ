@@ -1,22 +1,19 @@
 package com.untamedears.realisticbiomes.model.gauss;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
-
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.Vector2;
 import com.sk89q.worldedit.regions.CylinderRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.untamedears.realisticbiomes.model.ltree.BlockTransformation;
-
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class GaussTree {
 
@@ -112,7 +109,7 @@ public class GaussTree {
 
 	private void recursiveLeafGeneration(Block sourceBlock, double chance) {
 		if (chance >= 1.0 || Math.random() < chance) {
-			for (Block innerBlock : BlockAPI.getAllSides(sourceBlock)) {
+			for (Block innerBlock : WorldUtils.getAllBlockSides(sourceBlock, true)) {
 				if (leafTransform.applyAt(innerBlock.getLocation())) {
 					recursiveLeafGeneration(innerBlock, chance - 1);
 				}

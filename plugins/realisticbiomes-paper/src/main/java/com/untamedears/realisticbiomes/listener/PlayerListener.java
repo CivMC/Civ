@@ -1,7 +1,14 @@
 package com.untamedears.realisticbiomes.listener;
 
+import com.untamedears.realisticbiomes.AnimalConfigManager;
+import com.untamedears.realisticbiomes.GrowthConfigManager;
+import com.untamedears.realisticbiomes.PlantManager;
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.growthconfig.AnimalMateConfig;
+import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
+import com.untamedears.realisticbiomes.model.Plant;
+import com.untamedears.realisticbiomes.utils.RBUtils;
 import java.text.DecimalFormat;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,15 +21,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-
-import com.untamedears.realisticbiomes.AnimalConfigManager;
-import com.untamedears.realisticbiomes.GrowthConfigManager;
-import com.untamedears.realisticbiomes.PlantManager;
-import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.growthconfig.AnimalMateConfig;
-import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
-import com.untamedears.realisticbiomes.model.Plant;
-import com.untamedears.realisticbiomes.utils.RBUtils;
 
 public class PlayerListener implements Listener {
 

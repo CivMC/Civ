@@ -1,15 +1,13 @@
 package com.untamedears.realisticbiomes.model;
 
-import org.bukkit.Bukkit;
-
 import com.untamedears.realisticbiomes.RealisticBiomes;
-
-import vg.civcraft.mc.civmodcore.api.WorldAPI;
+import org.bukkit.Bukkit;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
 import vg.civcraft.mc.civmodcore.util.progress.ProgressTrackable;
 import vg.civcraft.mc.civmodcore.util.progress.ProgressTracker;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements ProgressTrackable {
 
@@ -65,7 +63,7 @@ public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements Pro
 
 	@Override
 	public void updateState() {
-		if (!WorldAPI.isChunkLoaded(getWorld(), chunkCoord.getX(), chunkCoord.getZ())) {
+		if (!WorldUtils.isChunkLoaded(getWorld(), chunkCoord.getX(), chunkCoord.getZ())) {
 			this.nextUpdate = Long.MAX_VALUE;
 			return;
 		}

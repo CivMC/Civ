@@ -1,10 +1,9 @@
 package com.untamedears.realisticbiomes.growth;
 
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-
 import com.untamedears.realisticbiomes.model.Plant;
 import com.untamedears.realisticbiomes.model.RBSchematic;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 public class SchematicGrower extends IArtificialGrower {
 	

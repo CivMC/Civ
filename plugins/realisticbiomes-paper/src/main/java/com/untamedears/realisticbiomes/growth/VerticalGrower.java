@@ -1,16 +1,14 @@
 package com.untamedears.realisticbiomes.growth;
 
+import com.untamedears.realisticbiomes.model.Plant;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
-
-import com.untamedears.realisticbiomes.model.Plant;
-
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class VerticalGrower extends IArtificialGrower {
 	
@@ -98,9 +96,9 @@ public class VerticalGrower extends IArtificialGrower {
 			Material topMaterial = onTop.getType();
 			if (topMaterial == Material.AIR) {
 				if (instaBreakTouching) {
-					for(BlockFace face : BlockAPI.PLANAR_SIDES) {
+					for(BlockFace face : WorldUtils.PLANAR_SIDES) {
 						Block side = onTop.getRelative(face);
-						if (!MaterialAPI.isAir(side.getType())) {
+						if (!MaterialUtils.isAir(side.getType())) {
 							ItemStack toDrop = plant.getGrowthConfig().getItem().clone();
 							toDrop.setAmount(howMany);
 							Location loc = block.getLocation();

@@ -1,10 +1,9 @@
 package com.untamedears.realisticbiomes.growth;
 
+import com.untamedears.realisticbiomes.model.Plant;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.SeaPickle;
-
-import com.untamedears.realisticbiomes.model.Plant;
 
 public class SeaPickleGrower extends IArtificialGrower {
 

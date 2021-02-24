@@ -1,11 +1,9 @@
 package com.untamedears.realisticbiomes.model;
 
-import org.bukkit.Location;
-import org.bukkit.block.Block;
-
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
-
+import org.bukkit.Location;
+import org.bukkit.block.Block;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.civmodcore.util.BukkitComparators;

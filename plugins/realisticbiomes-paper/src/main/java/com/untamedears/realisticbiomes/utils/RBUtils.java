@@ -1,11 +1,10 @@
 package com.untamedears.realisticbiomes.utils;
 
+import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-
-import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 
 public class RBUtils {
 

@@ -1,7 +1,6 @@
 package com.untamedears.realisticbiomes.events;
 
 import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.TreeType;
 import org.bukkit.block.BlockState;

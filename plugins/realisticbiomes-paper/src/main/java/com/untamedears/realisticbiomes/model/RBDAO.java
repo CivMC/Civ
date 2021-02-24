@@ -1,5 +1,9 @@
 package com.untamedears.realisticbiomes.model;
 
+import com.untamedears.realisticbiomes.GrowthConfigManager;
+import com.untamedears.realisticbiomes.PlantLogicManager;
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,16 +16,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-
-import com.untamedears.realisticbiomes.GrowthConfigManager;
-import com.untamedears.realisticbiomes.PlantLogicManager;
-import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
-
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.XZWCoord;

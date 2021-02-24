@@ -1,7 +1,6 @@
 package com.untamedears.realisticbiomes.model.ltree;
 
 import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 

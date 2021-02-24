@@ -1,15 +1,12 @@
 package com.untamedears.realisticbiomes.commands;
 
+import com.untamedears.realisticbiomes.utils.RealisticBiomesGUI;
 import java.util.Arrays;
 import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.block.Biome;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import com.untamedears.realisticbiomes.utils.RealisticBiomesGUI;
-
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
