@@ -62,7 +62,7 @@ public class ListCommand extends StandaloneCommand {
 			sender.sendMessage(ChatColor.GREEN + "You do not have access to any group's snitches.");
 			return true;
 		}
-		sender.sendMessage(ChatColor.GREEN + "Retrieving snitches for a total of " + groupIds.size()
+		sender.sendMessage(ChatColor.GREEN + "Retrieving snitches for a total of " + groupNames.size()
 				+ " group instances. This may take a moment.");
 		new BukkitRunnable() {
 			@Override

@@ -13,6 +13,7 @@ import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class SnitchOverviewGUI {
 
@@ -59,6 +60,7 @@ public class SnitchOverviewGUI {
 				if (this.canShowDetails) {
 					MetaUtils.addLore(meta, ChatColor.GREEN + "Click to show details");
 				}
+				MetaUtils.addLore(meta, ChatColor.GOLD + "Right click to send waypoint");
 				return true;
 			});
 			clickables.add(new Clickable(icon) {
@@ -67,6 +69,20 @@ public class SnitchOverviewGUI {
 					if (canShowDetails) {
 						new SnitchLogGUI(clicker, snitch).showScreen();
 					}
+				}
+				@Override
+				protected void onRightClick(final Player clicker) {
+					final var location = snitch.getLocation();
+					if (!WorldUtils.doLocationsHaveSameWorld(location, clicker.getLocation())) {
+						clicker.sendMessage(ChatColor.RED + "That snitch is in a different world!");
+						return;
+					}
+					clicker.sendMessage("["
+							+ "name:" + snitch.getName() + ","
+							+ "x:" + location.getBlockX() + ","
+							+ "y:" + location.getBlockY() + ","
+							+ "z:" + location.getBlockZ()
+							+ "]");
 				}
 			});
 		}
