@@ -97,7 +97,9 @@ public class PlantListener implements Listener {
 				plant.setGrowthConfig(growthConfig);
 			}
 		}
-		plantLogicManager.updateGrowthTime(plant, sourceBlock);
+		if (growthConfig.isPersistent()) {
+			plantLogicManager.updateGrowthTime(plant, sourceBlock);
+		}
 		growthConfig.handleAttemptedGrowth(event, sourceBlock);
 	}
 
