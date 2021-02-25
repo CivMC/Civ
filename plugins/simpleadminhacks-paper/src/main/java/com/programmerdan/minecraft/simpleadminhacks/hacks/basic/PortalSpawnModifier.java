@@ -44,10 +44,6 @@ public class PortalSpawnModifier extends BasicHack {
 		if (event.getSpawnReason() != SpawnReason.NETHER_PORTAL) {
 			return;
 		}
-		if (event.getEntityType() == EntityType.WITHER_SKELETON) {
-			event.setCancelled(roll(witherSkeletonChance));
-			return;
-		}
 		if (event.getEntityType() == EntityType.ZOMBIFIED_PIGLIN) {
 			if (!roll(pigManChance)) {
 				event.setCancelled(true);
@@ -57,12 +53,20 @@ public class PortalSpawnModifier extends BasicHack {
 				event.setCancelled(true);
 				spawnGhast(event.getLocation());
 			}
+			else if (roll(witherSkeletonChance)) {
+				event.setCancelled(true));
+				spawnWitherSkeleton(event.getLocation());
+			}
 		}
 	}
 	
 	private void spawnGhast(Location loc) {
 		//TODO check for space?
 		loc.getWorld().spawnEntity(loc.add(0, 2, 0), EntityType.GHAST);
+	}
+	
+	private void spawnWitherSkeleton(Location loc) {
+		loc.getWorld().spawnEntity(loc, EntityType.WITHER_SKELETON);
 	}
 	
 	private boolean roll(double chance) {
