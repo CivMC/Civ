@@ -54,7 +54,7 @@ public class PortalSpawnModifier extends BasicHack {
 				spawnGhast(event.getLocation());
 			}
 			else if (roll(witherSkeletonChance)) {
-				event.setCancelled(true));
+				event.setCancelled(true);
 				spawnWitherSkeleton(event.getLocation());
 			}
 		}
