@@ -23,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDestructionEvent;
+import vg.civcraft.mc.citadel.events.ReinforcementGroupChangeEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 
 public class SnitchLifeCycleListener implements Listener {
@@ -122,4 +123,18 @@ public class SnitchLifeCycleListener implements Listener {
 		}
 	}
 
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void changeReinforcement(ReinforcementGroupChangeEvent e) {
+		Location location = e.getReinforcement().getLocation();
+		Snitch snitch = snitchManager.getSnitchAt(location);
+		Player p = e.getPlayer();
+		logger.info(String.format("Group change for snitch of type %s at %s by %s", snitch.getType().getName(),
+				snitch.getLocation().toString(), p != null ? p.getName() : "null"));
+		if (p != null) {
+			p.sendMessage(String.format("%sChanged from group %s to group %s at [%d %d %d]", ChatColor.GREEN,
+					e.getReinforcement().getGroup().getName(), e.getNewGroup().getName(), location.getBlockX(),
+					location.getBlockY(), location.getBlockZ()));
+		}
+		snitch.setGroup(e.getNewGroup());
+	}
 }
