@@ -75,8 +75,8 @@ public class ListCommand extends StandaloneCommand {
 					final var thatAppender = rhs.getAppender(DormantCullingAppender.class);
 					// Since the time decreases the closer a snitch gets to culling, the values are flipped
 					return Long.compare(
-							thatAppender.getTimeUntilCulling(),
-							thisAppender.getTimeUntilCulling());
+							thisAppender.getTimeUntilCulling(),
+							thatAppender.getTimeUntilCulling());
 				});
 				new BukkitRunnable() {
 					@Override
