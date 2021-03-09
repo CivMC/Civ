@@ -23,6 +23,9 @@ commands:
     description: Modify any player inventory, online or not.
     usage: /<command> [playername|UUID]
     permission: simpleadmin.invmod
+  chunklimits:
+    description: Displays block chunklimits.
+    usage: /<command>
   serialize:
     description: Print to console the object held as serialized yaml
     usage: /<command>
