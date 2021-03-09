@@ -48,7 +48,7 @@ public class ContentAligners {
 		if (contentAmount % rowLength == 0) {
 			offset = 1;
 		}
-		int lastElementLastCompleteRow = ((contentAmount / rowLength) + offset) * rowLength - 1;
+		int lastElementLastCompleteRow = (((contentAmount / rowLength) + offset) * rowLength - 1) + rowLength;
 
 		return new Counter(i -> {
 			// just increment until we reach the last element in the last full row
@@ -56,10 +56,10 @@ public class ContentAligners {
 				return i + 1;
 			} else {
 				// jump to offset start of last row
-				int lengthLastRow = contentAmount - lastElementLastCompleteRow - 1;
+				int lengthLastRow = (contentAmount + rowLength) - lastElementLastCompleteRow - 1;
 				int emptySlots = rowLength - lengthLastRow;
 				int leftOffset = Math.max(1, emptySlots / 2);
-				return i + leftOffset;
+				return (i + 1) + leftOffset;
 			}
 		}, defaultNum);
 	}
