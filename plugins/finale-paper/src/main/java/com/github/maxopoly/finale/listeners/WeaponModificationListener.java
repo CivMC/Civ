@@ -42,7 +42,9 @@ public class WeaponModificationListener implements Listener {
 		
 		double toughness = armourMod.getToughness(is.getType());
 		double armour = armourMod.getArmour(is.getType());
-		if (toughness == -1 && armour == -1) {
+		double knockbackResistance = armourMod.getKnockbackResistance(is.getType());
+
+		if (toughness == -1 && armour == -1 && knockbackResistance == -1) {
 			return;
 		}
 		if (toughness == -1) {
@@ -51,8 +53,11 @@ public class WeaponModificationListener implements Listener {
 		if (armour == -1) {
 			armour = ItemUtil.getDefaultArmour(is);
 		}
-		
-		ItemStack result = ItemUtil.setArmour(ItemUtil.setArmourToughness(is, toughness), armour);
+		if (knockbackResistance == -1) {
+			knockbackResistance = ItemUtil.getDefaultKnockbackResistance(is);
+		}
+
+		ItemStack result = ItemUtil.setArmour(ItemUtil.setArmourToughness(ItemUtil.setArmourKnockbackResistance(is, knockbackResistance), toughness), armour);
 		e.setCurrentItem(result);
 	}
 
