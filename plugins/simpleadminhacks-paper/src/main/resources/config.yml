@@ -107,6 +107,7 @@ hacks:
     preventPearlGlitching: true
     preventUsingEyeOfEnder: true
     disablePiglins: true
+    disableGapples: true
   ItemMetaConverterHack:
     enabled: true
   OldEnchanting:
