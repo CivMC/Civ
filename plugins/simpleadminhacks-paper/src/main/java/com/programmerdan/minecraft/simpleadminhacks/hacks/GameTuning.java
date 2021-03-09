@@ -90,7 +90,9 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 	@Override
 	public void registerCommands() {
-		plugin.registerCommand("chunklimits", this);
+		if (config.isEnabled()) {
+			plugin.registerCommand("chunklimits", this);
+		}
 	}
 
 	@Override
