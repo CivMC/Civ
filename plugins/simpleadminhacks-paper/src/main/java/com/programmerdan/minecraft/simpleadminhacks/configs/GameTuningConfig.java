@@ -335,4 +335,7 @@ public class GameTuningConfig extends SimpleHackConfig {
 		return !noPlace.contains(mat);
 	}
 
+	public Map<Material, Integer> getBlockEntityLimits() {
+		return blockEntityLimits;
+	}
 }
