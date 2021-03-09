@@ -129,6 +129,7 @@ public class HumbugBatchOne extends BasicHack {
 		}
 		if(event.getItem().getType() == Material.ENCHANTED_GOLDEN_APPLE) {
 			event.setCancelled(true);
+			event.getPlayer().sendMessage(ChatColor.RED + "You are not allowed to eat Golden Apples.");
 		}
 	}
 
