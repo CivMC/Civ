@@ -33,6 +33,7 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.SheepDyeWoolEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
@@ -45,6 +46,9 @@ public class HumbugBatchOne extends BasicHack {
 
 	@AutoLoad
 	private boolean allowSheepDying;
+
+	@AutoLoad
+	private boolean disableGapples;
 
 	@AutoLoad
 	private boolean allowUsingAnvils;
@@ -114,6 +118,16 @@ public class HumbugBatchOne extends BasicHack {
 			return;
 		}
 		if (!allowUsingEnchantingTables && mat == Material.ENCHANTING_TABLE) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void disableGapples(PlayerItemConsumeEvent event) {
+		if(!disableGapples) {
+			return;
+		}
+		if(event.getItem().getType() == Material.ENCHANTED_GOLDEN_APPLE) {
 			event.setCancelled(true);
 		}
 	}
