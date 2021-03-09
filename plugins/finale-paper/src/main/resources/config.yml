@@ -110,30 +110,38 @@ armourModification:
    diamondHelmet:
       material: DIAMOND_HELMET
       toughness: 3
+      extraDurabilityHits: 2 # how many extra hits a player needs to take for the durability of the piece to fall
    diamondChestplate:
       material: DIAMOND_CHESTPLATE
       toughness: 3
+      extraDurabilityHits: 2
    diamondLeggings:
       material: DIAMOND_LEGGINGS
       toughness: 3
+      extraDurabilityHits: 2
    diamondBoots:
       material: DIAMOND_BOOTS
       toughness: 3
+      extraDurabilityHits: 2
    netheriteHelmet:
      material: NETHERITE_HELMET
      toughness: 4
+     extraDurabilityHits: 2
      knockbackResistance: 0.1 # knockback resistance is a value between 0 and 1.
    netheriteChestplate:
      material: NETHERITE_CHESTPLATE
      toughness: 4
+     extraDurabilityHits: 2
      knockbackResistance: 0.1
    netheriteLeggings:
      material: NETHERITE_LEGGINGS
      toughness: 4
+     extraDurabilityHits: 2
      knockbackResistance: 0.1
    netheriteBoots:
      material: NETHERITE_BOOTS
      toughness: 4
+     extraDurabilityHits: 2
      knockbackResistance: 0.1
 
 #allows disabling enchantments. Use official spigot identifiers from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html

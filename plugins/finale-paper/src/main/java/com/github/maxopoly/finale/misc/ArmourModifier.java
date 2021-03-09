@@ -12,11 +12,16 @@ public class ArmourModifier {
 		private double toughness;
 		private double armour;
 		private double knockbackResistance;
+		private int extraDurabilityHits;
 
 		public ArmourConfig(double toughness, double armour, double knockbackResistance) {
+			this(toughness, armour, knockbackResistance, 0);
+		}
+		public ArmourConfig(double toughness, double armour, double knockbackResistance, int extraDurabilityHits) {
 			this.toughness = toughness;
 			this.armour = armour;
 			this.knockbackResistance = knockbackResistance;
+			this.extraDurabilityHits = extraDurabilityHits;
 		}
 
 		public double getToughness() {
@@ -31,21 +36,27 @@ public class ArmourModifier {
 			return knockbackResistance;
 		}
 
+		public int getExtraDurabilityHits() {
+			return extraDurabilityHits;
+		}
+
 		@Override
 		public String toString() {
 			return "Armour [toughness=" + toughness + ", armour=" + armour + ", kb_resistance=" + knockbackResistance + "]";
 		}
 		
 	}
-	
+
+	private ExtraDurabilityTracker extraDurabilityTracker;
 	private Map<Material, ArmourConfig> armour;
 
 	public ArmourModifier() {
+		this.extraDurabilityTracker = new ExtraDurabilityTracker(this);
 		this.armour = new HashMap<Material, ArmourConfig>();
 	}
 
-	public void addArmour(Material m, double toughness, double armour, double knockbackResistance) {
-		this.armour.put(m, new ArmourConfig(toughness, armour, knockbackResistance));
+	public void addArmour(Material m, double toughness, double armour, double knockbackResistance, int extraDurabilityHits) {
+		this.armour.put(m, new ArmourConfig(toughness, armour, knockbackResistance, extraDurabilityHits));
 	}
 
 	public double getToughness(Material m) {
@@ -71,5 +82,17 @@ public class ArmourModifier {
 		}
 		return config.getKnockbackResistance();
 	}
-	
+
+	public int getExtraDurabilityHits(Material m) {
+		ArmourConfig config = armour.get(m);
+		if (config == null) {
+			return -1;
+		}
+
+		return config.getExtraDurabilityHits();
+	}
+
+	public ExtraDurabilityTracker getExtraDurabilityTracker() {
+		return extraDurabilityTracker;
+	}
 }

@@ -363,8 +363,10 @@ public class ConfigParser {
 			double toughness = current.getDouble("toughness", -1);
 			double armour = current.getDouble("armour", -1);
 			double knockbackResistance = current.getDouble("knockbackResistance", -1);
-			plugin.info("Modifying " + matString + ": toughness: " + toughness + ", armour: " + armour + ", knockbackResistance: " + knockbackResistance);
-			am.addArmour(mat, toughness, armour, knockbackResistance);
+			int extraDurabilityHits = current.getInt("extraDurabilityHits", 0);
+			plugin.info("Modifying " + matString + ": toughness: " + toughness + ", armour: " + armour
+					+ ", knockbackResistance: " + knockbackResistance, ", extraDurabilityHits: " + extraDurabilityHits);
+			am.addArmour(mat, toughness, armour, knockbackResistance, extraDurabilityHits);
 		}
 		return am;
 	}
