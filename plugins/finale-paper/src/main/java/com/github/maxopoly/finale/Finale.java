@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
 import com.github.maxopoly.finale.external.FinaleSettingManager;
 import com.github.maxopoly.finale.overlay.ScoreboardHUD;
@@ -50,6 +51,7 @@ public class Finale extends ACivMod {
 	@Override
 	public void onDisable() {
 		HandlerList.unregisterAll(this);
+		ProtocolLibrary.getProtocolManager().removePacketListeners(this);
 		Bukkit.getScheduler().cancelTasks(this);
 	}
 

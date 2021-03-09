@@ -240,6 +240,7 @@ damageModifiers:
     mode: DIRECT
     multiplier: 0.8
     
+invulTicksEnabled: false
 invulnerableTicks:
   POISON: 1
   PROJECTILE: 1
