@@ -411,6 +411,7 @@ public class ConfigParser {
 		boolean sprintResetEnabled = config.getBoolean("sprintResetEnabled", true);
 		boolean waterSprintResetEnabled = config.getBoolean("waterSprintResetEnabled", false);
 		boolean sweepEnabled = config.getBoolean("sweepEnabled", false);
+		double knockbackLevelMultiplier = config.getDouble("knockbackLevelMultiplier", 0.6);
 		int cpsLimit = 9;
 		long cpsCounterInterval = 1000;
 		if (config.isConfigurationSection("cps")) {
@@ -420,7 +421,7 @@ public class ConfigParser {
 		}
 
 		return new CombatConfig(attackCooldownEnabled, knockbackSwordsEnabled, sprintResetEnabled, waterSprintResetEnabled, cpsLimit, cpsCounterInterval, maxReach, sweepEnabled, combatSounds,
-				knockbackMultiplier, sprintMultiplier, waterKnockbackMultiplier, airKnockbackMultiplier, victimMotion, maxVictimMotion, attackerMotion);
+				knockbackLevelMultiplier, knockbackMultiplier, sprintMultiplier, waterKnockbackMultiplier, airKnockbackMultiplier, victimMotion, maxVictimMotion, attackerMotion);
 	}
 
 	private Vector parseVector(ConfigurationSection config, String name, Vector def) {

@@ -22,18 +22,40 @@ public class WeaponModificationListener implements Listener {
 		if (is == null) {
 			return;
 		}
+
+		is = ItemUtil.newModifiers(is); // there was a bug where modifiers weren't changing for items with already changed modifiers.
+
+		ArmourModifier armourMod = Finale.getPlugin().getManager().getArmourModifier();
+
+		double toughness = armourMod.getToughness(is.getType());
+		double armour = armourMod.getArmour(is.getType());
+		double knockbackResistance = armourMod.getKnockbackResistance(is.getType());
+
+		if (toughness != -1 || armour != -1 || knockbackResistance != -1) {
+			if (toughness == -1) {
+				toughness = ItemUtil.getDefaultArmourToughness(is);
+			}
+			if (armour == -1) {
+				armour = ItemUtil.getDefaultArmour(is);
+			}
+			if (knockbackResistance == -1) {
+				knockbackResistance = ItemUtil.getDefaultKnockbackResistance(is);
+			}
+			is = ItemUtil.setArmour(ItemUtil.setArmourToughness(ItemUtil.setArmourKnockbackResistance(is, knockbackResistance), toughness), armour);
+		}
+
 		WeaponModifier weaponMod = Finale.getPlugin().getManager().getWeaponModifer();
-		
+
 		double adjustedDamage = weaponMod.getDamage(is.getType());
 		double adjustedAttackSpeed = weaponMod.getAttackSpeed(is.getType());
-		if (adjustedAttackSpeed == -1.0 && adjustedDamage == -1) {
-			return;
+
+		if (adjustedAttackSpeed != -1.0 || adjustedDamage != -1) {
+			is = ItemUtil.setDamage(ItemUtil.setAttackSpeed(is, adjustedAttackSpeed), adjustedDamage);
 		}
-		ItemStack result = ItemUtil.setDamage(ItemUtil.setAttackSpeed(is, adjustedAttackSpeed), adjustedDamage);
-		e.setCurrentItem(result);
+		e.setCurrentItem(is);
 	}
 	
-	@EventHandler
+	/*@EventHandler
 	public void armourMod(InventoryClickEvent e) {
 		ItemStack is = e.getCurrentItem();
 		if (is == null) {
@@ -58,8 +80,9 @@ public class WeaponModificationListener implements Listener {
 			knockbackResistance = ItemUtil.getDefaultKnockbackResistance(is);
 		}
 
+		is = ItemUtil.newModifiers(is);
 		ItemStack result = ItemUtil.setArmour(ItemUtil.setArmourToughness(ItemUtil.setArmourKnockbackResistance(is, knockbackResistance), toughness), armour);
 		e.setCurrentItem(result);
-	}
+	}*/
 
 }

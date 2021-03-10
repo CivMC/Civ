@@ -82,8 +82,8 @@ public class CombatUtil {
 			World world = attacker.getWorld();
 			if (damage > 0.0F || f1 > 0.0F) {
 				boolean dealtExtraKnockback = false;
-				byte b0 = 1;
-				int knockbackLevel = b0 + EnchantmentManager.b((EntityLiving) attacker);
+				byte baseKnockbackLevel = 0;
+				int knockbackLevel = baseKnockbackLevel + EnchantmentManager.b((EntityLiving) attacker);
 
 				if (attacker.isSprinting() && shouldKnockback) {
 					if (config.getCombatSounds().isKnockbackEnabled()) {
@@ -143,14 +143,12 @@ public class CombatUtil {
 						EntityLiving livingVictim = (EntityLiving) victim;
 						double kbResistance = livingVictim.b(GenericAttributes.KNOCKBACK_RESISTANCE);
 						double knockbackModifier = (1.0 - kbResistance);
-						if (config.isKnockbackSwordsEnabled() && knockbackLevel > 1) {
-							knockbackModifier *= (knockbackLevel * 0.6f);
-						}
+						double knockbackLevelModifier = 1 + (knockbackLevel * config.getKnockbackLevelMultiplier());
 
 						if (knockbackModifier > 0) {
-							double dx = -MathHelper.sin(attacker.yaw * 0.01745329251f) * 0.3f * knockbackModifier;
+							double dx = -MathHelper.sin(attacker.yaw * 0.01745329251f) * 0.3f;
 							double dy = 0.35;
-							double dz = MathHelper.cos(attacker.yaw * 0.01745329251f) * 0.3f * knockbackModifier;
+							double dz = MathHelper.cos(attacker.yaw * 0.01745329251f) * 0.3f;
 
 							Vector knockbackMultiplier = config.getKnockbackMultiplier();
 							Vector waterKnockbackMultiplier = config.getWaterKnockbackMultiplier();
@@ -176,6 +174,15 @@ public class CombatUtil {
 								dy *= airKnockbackMultiplier.getY();
 								dz *= airKnockbackMultiplier.getZ();
 							}
+
+							if (config.isKnockbackSwordsEnabled() && knockbackLevel > 1) {
+								dx *= knockbackLevelModifier;
+								dz *= knockbackLevelModifier;
+							}
+
+							dx *= knockbackModifier;
+							dy *= knockbackModifier;
+							dz *= knockbackModifier;
 
 							victim.impulse = true;
 
