@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -47,6 +48,18 @@ public class CompactItemListener implements Listener {
 				break;
 			}
 		}
+	}
+
+	/**
+	 * Prevents players from eating compacted items
+	 */
+	@EventHandler
+	public void itemConsumeEvent(PlayerItemConsumeEvent e) {
+		if (isCompacted(e.getItem())) {
+			e.setCancelled(true);
+			e.getPlayer().sendMessage("You can not eat compacted food");
+		}
+
 	}
 
 	private boolean isCompacted(ItemStack is) {
