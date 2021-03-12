@@ -47,7 +47,7 @@ public class JASettingsManager {
 		PlayerSettingAPI.registerSetting(showNearbySnitchCount, menu);
 		
 		ignoredGroupAlerts = new SetSetting<>(JukeAlert.getInstance(), "Ignored group alerts", "jaIgnoredSnitchGroups",
-				new ItemStack(Material.BELL), "Groups you have muted, meaning you won't receive snitch alers from them",
+				new ItemStack(Material.BELL), "Groups you have muted, meaning you won't receive snitch alerts from them",
 				String.class);
 		PlayerSettingAPI.registerSetting(ignoredGroupAlerts, menu);
 
@@ -58,6 +58,10 @@ public class JASettingsManager {
 		monoColorAlerts = new BooleanSetting(JukeAlert.getInstance(), false, "Show snitch alerts in a single color", "jaMonoColorNotifications",
 				"Shows snitch notifications in only a single color");
 		PlayerSettingAPI.registerSetting(monoColorAlerts, menu);
+	}
+
+	public SetSetting<String> getIgnoredGroupAlerts() {
+		return ignoredGroupAlerts;
 	}
 
 	public boolean doesIgnoreAlert(String groupName, UUID uuid) {
