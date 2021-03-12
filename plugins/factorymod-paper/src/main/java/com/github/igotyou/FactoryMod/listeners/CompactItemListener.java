@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod.listeners;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,7 +27,7 @@ public class CompactItemListener implements Listener {
 	public void blockPlaceEvent(BlockPlaceEvent e) {
 		if (isCompacted(e.getItemInHand())) {
 			e.setCancelled(true);
-			e.getPlayer().sendMessage("You can not place compacted blocks");
+			e.getPlayer().sendMessage(ChatColor.RED + "You can not place compacted blocks");
 		}
 
 	}
@@ -43,7 +44,7 @@ public class CompactItemListener implements Listener {
 				HumanEntity h = e.getWhoClicked();
 				if (h instanceof Player) {
 					((Player) h)
-							.sendMessage("You can not craft with compacted items");
+							.sendMessage(ChatColor.RED + "You can not craft with compacted items");
 				}
 				break;
 			}
@@ -57,7 +58,7 @@ public class CompactItemListener implements Listener {
 	public void itemConsumeEvent(PlayerItemConsumeEvent e) {
 		if (isCompacted(e.getItem())) {
 			e.setCancelled(true);
-			e.getPlayer().sendMessage("You can not eat compacted food");
+			e.getPlayer().sendMessage(ChatColor.RED + "You can not eat compacted food");
 		}
 
 	}
