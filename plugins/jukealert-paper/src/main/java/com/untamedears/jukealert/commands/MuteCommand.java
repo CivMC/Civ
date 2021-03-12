@@ -19,6 +19,9 @@ public class MuteCommand extends StandaloneCommand {
 			sender.sendMessage(ChatColor.RED + "Players only");
 			return true;
 		}
+		if (args.length == 0) {
+			return false;
+		}
 		Player player = (Player) sender;
 		Group group = GroupManager.getGroup(args[0]);
 		if (group == null) {
@@ -28,7 +31,7 @@ public class MuteCommand extends StandaloneCommand {
 		JASettingsManager settingsManager = JukeAlert.getInstance().getSettingsManager();
 		if (settingsManager.doesIgnoreAlert(group.getName(), player.getUniqueId())) {
 			settingsManager.getIgnoredGroupAlerts().removeElement(player.getUniqueId(), group.getName());
-			player.sendMessage(ChatColor.GREEN + "You have unmuted " + group);
+			player.sendMessage(ChatColor.GREEN + "You have unmuted " + group.getName());
 			return true;
 		}
 		settingsManager.getIgnoredGroupAlerts().addElement(player.getUniqueId(), group.getName());
