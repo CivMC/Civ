@@ -8,8 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
-import vg.civcraft.mc.namelayer.core.Group;
-import vg.civcraft.mc.namelayer.mc.GroupAPI;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.group.Group;
 
 @CivCommand(id = "jamute")
 public class MuteCommand extends StandaloneCommand {
@@ -20,7 +20,7 @@ public class MuteCommand extends StandaloneCommand {
 			return true;
 		}
 		Player player = (Player) sender;
-		Group group = GroupAPI.getGroup(args[0]);
+		Group group = GroupManager.getGroup(args[0]);
 		if (group == null) {
 			player.sendMessage(ChatColor.RED + "The group " + args[0] + " does not exist");
 			return true;
@@ -28,11 +28,11 @@ public class MuteCommand extends StandaloneCommand {
 		JASettingsManager settingsManager = JukeAlert.getInstance().getSettingsManager();
 		if (settingsManager.doesIgnoreAlert(group.getName(), player.getUniqueId())) {
 			settingsManager.getIgnoredGroupAlerts().removeElement(player.getUniqueId(), group.getName());
-			player.sendMessage(ChatColor.GREEN + "You have unmuted " + group.getColoredName());
+			player.sendMessage(ChatColor.GREEN + "You have unmuted " + group);
 			return true;
 		}
 		settingsManager.getIgnoredGroupAlerts().addElement(player.getUniqueId(), group.getName());
-		player.sendMessage(ChatColor.GREEN + "You have muted " + group.getColoredName());
+		player.sendMessage(ChatColor.GREEN + "You have muted " + group.getName());
 		return true;
 	}
 
