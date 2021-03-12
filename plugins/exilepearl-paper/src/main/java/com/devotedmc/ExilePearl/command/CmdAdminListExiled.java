@@ -14,7 +14,7 @@ public class CmdAdminListExiled extends PearlCommand {
 		super(pearlApi);
 		this.aliases.add("list");
 
-		this.setHelpShort("Lists all the exiled players.");
+		this.setHelpShort("Lists all the pearled players.");
 
 		this.permission = Permission.LIST.node;
 		this.visibility = CommandVisibility.SECRET;

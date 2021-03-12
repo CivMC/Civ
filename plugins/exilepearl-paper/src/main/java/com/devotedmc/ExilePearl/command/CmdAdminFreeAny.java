@@ -14,7 +14,7 @@ public class CmdAdminFreeAny extends PearlCommand {
 		super(pearlApi);
 		this.aliases.add("freeany");
 
-		this.setHelpShort("Frees any exiled player.");
+		this.setHelpShort("Frees any pearled player.");
 
 		this.commandArgs.add(requiredPearlPlayer());
 

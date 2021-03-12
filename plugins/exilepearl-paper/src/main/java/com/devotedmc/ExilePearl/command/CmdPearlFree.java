@@ -15,7 +15,7 @@ public class CmdPearlFree extends PearlCommand {
 		this.aliases.add("free");
 
 		this.senderMustBePlayer = true;
-		this.setHelpShort("Free an exile pearl");
+		this.setHelpShort("Free a pearl");
 	}
 
 	@Override

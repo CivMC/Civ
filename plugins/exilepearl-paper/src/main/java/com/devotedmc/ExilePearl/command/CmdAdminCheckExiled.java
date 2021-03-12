@@ -13,7 +13,7 @@ public class CmdAdminCheckExiled extends PearlCommand {
 		super(pearlApi);
 		this.aliases.add("check");
 
-		this.setHelpShort("Checks if a player is exiled");
+		this.setHelpShort("Checks if a player is Pearled");
 
 		this.commandArgs.add(requiredPearlPlayer());
 
