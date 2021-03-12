@@ -86,6 +86,7 @@ hacks:
     intervalTime: 30m
     #Since we use the tellraw command to dispatch dogfacts now, all our announcements **MUST** be in JSON format
     #YAML also doesn't like JSON's usage of "" so we have to add escape characters (\) to counteract that.
+    #Here's the site I used to make these ones: https://minecraft.tools/en/json_text.php
     announcements:
       - "[\"\",{\"text\":\"Buy \"},{\"text\":\"Dogecoin\",\"color\":\"dark_red\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.coindesk.com/price/dogecoin\"}},{\"text\":\"!\"}]"
       - "[\"\",{\"text\":\"Very \"},{\"text\":\"Wow!\",\"italic\":true,\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Wow!\"}}]"
