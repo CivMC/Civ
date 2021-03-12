@@ -28,7 +28,7 @@ public class MuteCommand extends StandaloneCommand {
 		JASettingsManager settingsManager = JukeAlert.getInstance().getSettingsManager();
 		if (settingsManager.doesIgnoreAlert(group.getName(), player.getUniqueId())) {
 			settingsManager.getIgnoredGroupAlerts().removeElement(player.getUniqueId(), group.getName());
-			player.sendMessage(ChatColor.GREEN + "You have unmuted " + group);
+			player.sendMessage(ChatColor.GREEN + "You have unmuted " + group.getName());
 			return true;
 		}
 		settingsManager.getIgnoredGroupAlerts().addElement(player.getUniqueId(), group.getName());
