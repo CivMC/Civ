@@ -84,9 +84,11 @@ hacks:
   DogFacts:
     enabled: false
     intervalTime: 30m
+    #Since we use the tellraw command to dispatch dogfacts now, all our announcements **MUST** be in JSON format
+    #YAML also doesn't like JSON's usage of "" so we have to add escape characters (\) to counteract that.
     announcements:
-      - "Buy &4$DOGE"
-      - "Very &cWOW"
+      - "[\"\",{\"text\":\"Buy \"},{\"text\":\"Dogecoin\",\"color\":\"dark_red\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.coindesk.com/price/dogecoin\"}},{\"text\":\"!\"}]"
+      - "[\"\",{\"text\":\"Very \"},{\"text\":\"Wow!\",\"italic\":true,\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Wow!\"}}]"
   EventDebugHack:
     enabled: true
   EventHandlerList:

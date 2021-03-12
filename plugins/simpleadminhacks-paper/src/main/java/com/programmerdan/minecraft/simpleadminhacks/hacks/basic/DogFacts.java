@@ -6,8 +6,6 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import java.util.List;
 import java.util.UUID;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -47,13 +45,13 @@ public class DogFacts extends BasicHack {
 			if (counter >= announcements.size()) {
 				counter = 0;
 			}
-			TextComponent messageComp = new TextComponent(ChatColor.translateAlternateColorCodes('&', announcements.get(counter)));
-			plugin.info("Broadcasting DogFact: " + messageComp.getText());
+			String message = announcements.get(counter);
+			plugin.info("Broadcasting DogFact #" + counter);
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				if (getDisableAnnouncements(player.getUniqueId())){
 					continue;
 				}
-				player.spigot().sendMessage(messageComp);
+				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player.getDisplayName() + " " + message);
 			}
 			counter++;
 		}, tickOffset, interval);
