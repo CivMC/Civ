@@ -19,6 +19,9 @@ public class MuteCommand extends StandaloneCommand {
 			sender.sendMessage(ChatColor.RED + "Players only");
 			return true;
 		}
+		if (args.length == 0) {
+			return false;
+		}
 		Player player = (Player) sender;
 		Group group = GroupManager.getGroup(args[0]);
 		if (group == null) {
