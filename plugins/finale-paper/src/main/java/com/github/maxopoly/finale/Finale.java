@@ -1,9 +1,5 @@
 package com.github.maxopoly.finale;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.PluginManager;
-
 import com.comphenix.protocol.ProtocolLibrary;
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
 import com.github.maxopoly.finale.external.FinaleSettingManager;
@@ -16,7 +12,9 @@ import com.github.maxopoly.finale.listeners.ToolProtectionListener;
 import com.github.maxopoly.finale.listeners.VelocityFixListener;
 import com.github.maxopoly.finale.listeners.WeaponModificationListener;
 import com.github.maxopoly.finale.overlay.ScoreboardHUD;
-
+import org.bukkit.Bukkit;
+import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.PluginManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class Finale extends ACivMod {
@@ -59,6 +57,7 @@ public class Finale extends ACivMod {
 	public void onDisable() {
 		HandlerList.unregisterAll(this);
 		ProtocolLibrary.getProtocolManager().removePacketListeners(this);
+		ProtocolLibrary.getProtocolManager().getAsynchronousManager().unregisterAsyncHandlers(this);
 		Bukkit.getScheduler().cancelTasks(this);
 	}
 
