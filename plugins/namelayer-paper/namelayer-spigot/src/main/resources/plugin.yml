@@ -35,8 +35,8 @@ commands:
     aliases: [nllistpermissions, nllistperms, listpermissions]
    nlpp:
     aliases: [nlpromoteplayer, nlpromote, promoteplayer, ctpromote, ctaddmod, ctam, addmod]
-   nlmg:
-    aliases: [nlmergegroups, nlmerge, mergegroup, mergegroups, merge]
+   #nlmg:
+    #aliases: [nlmergegroups, nlmerge, mergegroup, mergegroups, merge]
    nlmp:
     aliases: [nlmodifyperms, nlmodifypermissions, nlmodperms, modifypermissions]
    nlrm:
