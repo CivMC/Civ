@@ -64,7 +64,7 @@ public final class Trie {
 			return matches;
 		}
 		int elementsToRemove = args.length - 1;
-		for (int i = 0; i < args.length; i++) {
+		for (int i = 0; i < matches.size(); i++) {
 			String mod = matches.get(i);
 			int startingSpot = StringUtils.ordinalIndexOf(mod, " ", elementsToRemove) + 1;
 			matches.set(i, mod.substring(startingSpot));
