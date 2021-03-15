@@ -13,6 +13,14 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExileRule;
+import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.PearlFreeReason;
+import com.devotedmc.ExilePearl.PearlType;
+import com.devotedmc.ExilePearl.RepairMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -59,6 +67,7 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -69,6 +78,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.FurnaceInventory;
@@ -80,13 +90,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.ExileRule;
-import com.devotedmc.ExilePearl.Lang;
-import com.devotedmc.ExilePearl.PearlFreeReason;
-import com.devotedmc.ExilePearl.PearlType;
-import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.config.Configurable;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
@@ -95,6 +98,8 @@ import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.util.SpawnUtil;
 
 import net.minelink.ctplus.compat.api.NpcIdentity;
+import vg.civcraft.mc.civmodcore.api.InventoryAPI;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
@@ -125,6 +130,25 @@ public class PlayerListener implements Listener, Configurable {
 		this.pearlApi = pearlApi;
 	}
 
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void disablePearlAnvil(final PrepareAnvilEvent event) {
+		final AnvilInventory inventory = event.getInventory();
+		for (final ItemStack item : inventory.all(Material.ENDER_PEARL).values()) {
+			if (!ItemAPI.isValidItem(item)
+					|| item.getType() != Material.ENDER_PEARL
+					|| this.pearlApi.getPearlFromItemStack(item) == null) {
+				continue;
+			}
+			event.setResult(null);
+			// This is needed because of client side shenanigans
+			Bukkit.getScheduler().runTaskLater(ExilePearlPlugin.getInstance(), () -> {
+				for (final Player viewer : InventoryAPI.getViewingPlayers(inventory)) {
+					viewer.updateInventory();
+				}
+			}, 1L);
+			break;
+		}
+	}
 
 	/**
 	 * Announce the person in a pearl when a player holds it
@@ -538,6 +562,7 @@ public class PlayerListener implements Listener, Configurable {
 				// ShiftClicking into a furnace will not move the pearl into the furnace so the pearlHolder should not be updated
 				if (event.getClick().isShiftClick() && holder != null && holder.getInventory() instanceof FurnaceInventory) {
 					event.setCancelled(true);
+					event.getWhoClicked().sendMessage(ChatColor.RED + "You can not shift-click this pearl into a furnace.");
 					return;
 				}
 
