@@ -128,8 +128,15 @@ public class SnitchLifeCycleListener implements Listener {
 		Location location = e.getReinforcement().getLocation();
 		Snitch snitch = snitchManager.getSnitchAt(location);
 		Player p = e.getPlayer();
+		//Whoever thought not to check if its actually a snitch, I don't know who you are. I don't know what you want.
+		// But I have a very particular set of skills. Skills I have acquired over a very short career. Skills that make me a nightmare for people like you.
+		// If you let my code go now that'll be the end of it. I will not look for you, I will not pursue you, but if you don't, I will look for you,
+		// I will find you and I will kill you.
+		if(snitch == null) {
+			return;
+		}
 		logger.info(String.format("Group change for snitch of type %s at %s by %s", snitch.getType().getName(),
-				snitch.getLocation().toString(), p != null ? p.getName() : "null"));
+				snitch.getLocation(), p != null ? p.getName() : "null"));
 		if (p != null) {
 			p.sendMessage(String.format("%sChanged from group %s to group %s at [%d %d %d]", ChatColor.GREEN,
 					e.getReinforcement().getGroup().getName(), e.getNewGroup().getName(), location.getBlockX(),
