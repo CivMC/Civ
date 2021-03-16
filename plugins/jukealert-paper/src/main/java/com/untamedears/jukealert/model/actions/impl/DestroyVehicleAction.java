@@ -2,6 +2,7 @@ package com.untamedears.jukealert.model.actions.impl;
 
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerVictimAction;
+import com.untamedears.jukealert.util.JAUtility;
 import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,7 +30,7 @@ public class DestroyVehicleAction extends LoggablePlayerVictimAction {
 	 * @return Material of the vehicle destroyed
 	 */
 	public Material getVehicle() {
-		return Material.valueOf(victim);
+		return JAUtility.getVehicle(victim);
 	}
 
 	@Override
