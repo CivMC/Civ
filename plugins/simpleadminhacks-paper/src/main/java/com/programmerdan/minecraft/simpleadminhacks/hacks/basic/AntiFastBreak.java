@@ -148,7 +148,7 @@ public final class AntiFastBreak extends BasicHack {
 		final long msToBreak = ticksToBreak * 50L;
 		final long now = System.currentTimeMillis();
 		final long timePassed = now - timeStarted;
-		this.plugin.debug("Measured " + timePassed + " for allowed time of " + TextUtil.formatDuration(msToBreak));
+		//this.plugin.debug("Measured " + timePassed + " for allowed time of " + TextUtil.formatDuration(msToBreak));
 		miningLocs.put(location, now);
 		if ((timePassed * this.lagLeniency) < msToBreak) {
 			punish(player);

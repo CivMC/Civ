@@ -33,6 +33,10 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 	 * What is the newbie kit composed of.
 	 */
 	private ItemStack[] newbieKit;
+	/**
+	 * Should we give a kit to people who respawn without a bed/anchor?
+	 */
+	private boolean giveToRandomSpawners;
 
 	//private List<HelpTips> helps; // TODO
 
@@ -78,6 +82,7 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 		} else {
 			plugin().log(Level.INFO, " introkit disabled");
 		}
+		this.giveToRandomSpawners = config.getBoolean("giveIntroKitToRandomSpawners", true);
 	}
 
 	public List<BroadcastLevel> getAnnounceBroadcast() {
@@ -94,5 +99,9 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 
 	public ItemStack[] getIntroKit() {
 		return newbieKit;
+	}
+
+	public boolean giveToRandomSpawners() {
+		return giveToRandomSpawners;
 	}
 }

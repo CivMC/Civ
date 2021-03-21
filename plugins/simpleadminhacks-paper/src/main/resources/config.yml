@@ -81,6 +81,15 @@ hacks:
       - SLOW_FALLING
   DebugWand:
     enabled: true
+  DogFacts:
+    enabled: false
+    intervalTime: 30m
+    #Since we use the tellraw command to dispatch dogfacts now, all our announcements **MUST** be in JSON format
+    #YAML also doesn't like JSON's usage of "" so we have to add escape characters (\) to counteract that.
+    #Here's the site I used to make these ones: https://minecraft.tools/en/json_text.php
+    announcements:
+      - "[\"\",{\"text\":\"Buy \"},{\"text\":\"Dogecoin\",\"color\":\"dark_red\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.coindesk.com/price/dogecoin\"}},{\"text\":\"!\"}]"
+      - "[\"\",{\"text\":\"Very \"},{\"text\":\"Wow!\",\"italic\":true,\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Wow!\"}}]"
   EventDebugHack:
     enabled: true
   EventHandlerList:
@@ -101,6 +110,7 @@ hacks:
     preventPearlGlitching: true
     preventUsingEyeOfEnder: true
     disablePiglins: true
+    disableGapples: true
   ItemMetaConverterHack:
     enabled: true
   OldEnchanting:
@@ -360,6 +370,7 @@ hacks:
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'
+    giveIntroKitToRandomSpawners: true
     broadcast: [PERM, CONSOLE]
     helptips: on
     helptips_end: 20m
@@ -398,6 +409,19 @@ hacks:
     trackPlace: true
     trackBreak: true
     belowYLevel: 7
+  #Currently changes a striders speed to be between 0.175 (Default) and 0.3375 (Horse max speed)
+  #aswell as default health to between 20 (Default) and 50 (2.5 heart bars)
+  #Only works on newly spawned striders, not pre-existing mobs
+  StriderBreeding:
+    enabled: true
+    #Default strider speed is 0.175
+    minSpeed: 0.175
+    #Max horse speed is 0.3375
+    maxSpeed: 0.3375
+    #10 Hearts
+    minHealth: 20
+    #25 Hearts
+    maxHealth: 50
   TimingsHack:
     enabled: true
   ToggleLamp:
