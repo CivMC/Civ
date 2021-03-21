@@ -144,11 +144,6 @@ public class ItemUtil {
 		NBTBase valueTag = (value instanceof Double) ? NBTTagDouble.a((Double) value) : NBTTagInt.a((Integer) value);
 		
 		Slot slot = attribute.getSlot();
-
-		/*Optional<NBTTagCompound> existingModifier = modifiers.stream().filter((base) -> base instanceof NBTTagCompound)
-				.map((base) -> (NBTTagCompound) base)
-				.filter((attributeTag) -> attributeTag.getString("AttributeName").equals(attribute.getName())).findFirst();
-		existingModifier.ifPresent(modifiers::remove);*/
 		
 		NBTTagCompound attributeTag = new NBTTagCompound();
 		attributeTag.set("AttributeName", NBTTagString.a(attribute.getName()));

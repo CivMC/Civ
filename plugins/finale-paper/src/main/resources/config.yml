@@ -47,7 +47,7 @@ cleanerCombat:
     z: 0.5
   maxVictimMotion: # maximum motion of victim upon getting hit.
     x: 10.0
-    y: 1.0
+    y: 0.3
     z: 10.0
     
 # gives full control over health / regen, default is full reversion to 1.8 mechanics
@@ -111,45 +111,45 @@ armourModification:
    diamondHelmet:
       material: DIAMOND_HELMET
       armour: 3
-      toughness: 3
+      toughness: 2
       extraDurabilityHits: 1 # how many extra hits a player needs to take for the durability of the piece to fall
    diamondChestplate:
       material: DIAMOND_CHESTPLATE
       armour: 8
-      toughness: 3
+      toughness: 2
       extraDurabilityHits: 1
    diamondLeggings:
       material: DIAMOND_LEGGINGS
       armour: 6
-      toughness: 3
+      toughness: 2
       extraDurabilityHits: 1
    diamondBoots:
       material: DIAMOND_BOOTS
       armour: 3
-      toughness: 3
+      toughness: 2
       extraDurabilityHits: 1
    netheriteHelmet:
      material: NETHERITE_HELMET
      armour: 4
-     toughness: 5
+     toughness: 2
      extraDurabilityHits: 1
-     knockbackResistance: 0.1 # knockback resistance is a value between 0 and 1.
+     knockbackResistance: 0 # knockback resistance is a value between 0 and 1.
    netheriteChestplate:
      material: NETHERITE_CHESTPLATE
      armour: 8
-     toughness: 5
+     toughness: 2
      extraDurabilityHits: 1
      knockbackResistance: 0
    netheriteLeggings:
      material: NETHERITE_LEGGINGS
      armour: 6
-     toughness: 5
+     toughness: 2
      extraDurabilityHits: 1
      knockbackResistance: 0
    netheriteBoots:
      material: NETHERITE_BOOTS
      armour: 4
-     toughness: 5
+     toughness: 2
      extraDurabilityHits: 1
      knockbackResistance: 0
 

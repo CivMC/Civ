@@ -54,35 +54,5 @@ public class WeaponModificationListener implements Listener {
 		}
 		e.setCurrentItem(is);
 	}
-	
-	/*@EventHandler
-	public void armourMod(InventoryClickEvent e) {
-		ItemStack is = e.getCurrentItem();
-		if (is == null) {
-			return;
-		}
-		ArmourModifier armourMod = Finale.getPlugin().getManager().getArmourModifier();
-		
-		double toughness = armourMod.getToughness(is.getType());
-		double armour = armourMod.getArmour(is.getType());
-		double knockbackResistance = armourMod.getKnockbackResistance(is.getType());
-
-		if (toughness == -1 && armour == -1 && knockbackResistance == -1) {
-			return;
-		}
-		if (toughness == -1) {
-			toughness = ItemUtil.getDefaultArmourToughness(is);
-		}
-		if (armour == -1) {
-			armour = ItemUtil.getDefaultArmour(is);
-		}
-		if (knockbackResistance == -1) {
-			knockbackResistance = ItemUtil.getDefaultKnockbackResistance(is);
-		}
-
-		is = ItemUtil.newModifiers(is);
-		ItemStack result = ItemUtil.setArmour(ItemUtil.setArmourToughness(ItemUtil.setArmourKnockbackResistance(is, knockbackResistance), toughness), armour);
-		e.setCurrentItem(result);
-	}*/
 
 }
