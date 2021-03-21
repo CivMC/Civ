@@ -403,3 +403,19 @@ hacks:
   ToggleLamp:
     enabled: false
     cooldownTime: 100
+  UnblockingHack:
+    enabled: true
+    # Block materials that turn into 9 item materials
+    # Example => NETHER_WART_BLOCK: NETHER_WART
+    9block:
+      NETHER_WART_BLOCK: NETHER_WART
+    # Block materials that turn into 4 item materials
+    # Example => CLAY: CLAY_BALL
+    4block:
+      CLAY: CLAY_BALL
+    # Item materials, 9 of which combine into a block material
+    # Example => NETHER_WART: NETHER_WART_BLOCK
+    9items:
+    # Item materials, 4 of which combine into a block material
+    # Example => CLAY_BALL: CLAY
+    4items:
