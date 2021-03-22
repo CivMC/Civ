@@ -84,6 +84,13 @@ public class SimpleAdminHacks extends ACivMod {
 	}
 
 	/**
+	 * @return Returns the command registrar
+	 */
+	public CommandRegistrar getCommands() {
+		return this.commands;
+	}
+
+	/**
 	 * @return Returns the pseudo-singleton instance of this plugin.
 	 */
 	public static SimpleAdminHacks instance() {
