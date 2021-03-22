@@ -409,11 +409,6 @@ hacks:
     trackPlace: true
     trackBreak: true
     belowYLevel: 7
-  TimingsHack:
-    enabled: true
-  ToggleLamp:
-    enabled: false
-    cooldownTime: 100
   #Currently changes a striders speed to be between 0.175 (Default) and 0.3375 (Horse max speed)
   #aswell as default health to between 20 (Default) and 50 (2.5 heart bars)
   #Only works on newly spawned striders, not pre-existing mobs
@@ -427,3 +422,24 @@ hacks:
     minHealth: 20
     #25 Hearts
     maxHealth: 50
+  TimingsHack:
+    enabled: true
+  ToggleLamp:
+    enabled: false
+    cooldownTime: 100
+  UnblockingHack:
+    enabled: true
+    # Block materials that turn into 9 item materials
+    # Example => NETHER_WART_BLOCK: NETHER_WART
+    9block:
+      NETHER_WART_BLOCK: NETHER_WART
+    # Block materials that turn into 4 item materials
+    # Example => CLAY: CLAY_BALL
+    4block:
+      CLAY: CLAY_BALL
+    # Item materials, 9 of which combine into a block material
+    # Example => NETHER_WART: NETHER_WART_BLOCK
+    9items:
+    # Item materials, 4 of which combine into a block material
+    # Example => CLAY_BALL: CLAY
+    4items:
