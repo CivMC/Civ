@@ -55,7 +55,7 @@ public class CommandHandler {
 		addCommands(new ListGroups("ListGroups"));
 		addCommands(new ListMembers("ListMembers"));
 		addCommands(new ListPermissions("ListPermissions"));
-		addCommands(new MergeGroups("MergeGroups"));
+		//addCommands(new MergeGroups("MergeGroups")); Disabled as it's currently semi broken
 		addCommands(new ModifyPermissions("ModifyPermissions"));
 		addCommands(new RemoveMember("RemoveMember"));
 		addCommands(new SetPassword("SetPassword"));
