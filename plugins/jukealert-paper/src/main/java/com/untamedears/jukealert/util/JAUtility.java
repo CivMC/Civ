@@ -135,4 +135,45 @@ public final class JAUtility {
 		}
 		return String.format("[%d %d %d]", location.getBlockX(), location.getBlockY(), location.getBlockZ());
 	}
+
+	public static Material getVehicle(String vehicle) {
+		switch (vehicle) {
+			case "DONKEY":
+				return Material.DONKEY_SPAWN_EGG;
+			case "LLAMA":
+				return Material.LLAMA_SPAWN_EGG;
+			case "PIG":
+				return Material.PIG_SPAWN_EGG;
+			case "HORSE":
+				return Material.HORSE_SPAWN_EGG;
+			case "MINECART":
+				return Material.MINECART;
+			case "MINECART_CHEST":
+				return Material.CHEST_MINECART;
+			case "MINECART_FURNACE":
+				return Material.FURNACE_MINECART;
+			case "MINECART_TNT":
+				return Material.TNT_MINECART;
+			case "MINECART_HOPPER":
+				return Material.HOPPER_MINECART;
+			case "STRIDER":
+				return Material.STRIDER_SPAWN_EGG;
+			case "BOAT":
+			case "OAK_BOAT":
+				return Material.OAK_BOAT;
+			case "BIRCH_BOAT":
+				return Material.BIRCH_BOAT;
+			case "SPRUCE_BOAT":
+				return Material.SPRUCE_BOAT;
+			case "JUNGLE_BOAT":
+				return Material.JUNGLE_BOAT;
+			case "ACACIA_BOAT":
+				return Material.ACACIA_BOAT;
+			case "DARK_OAK_BOAT":
+				return Material.DARK_OAK_BOAT;
+			default:
+				JukeAlert.getInstance().getLogger().info("Failed to parse vehicle into material: " + vehicle);
+				return Material.STONE;
+		}
+	}
 }

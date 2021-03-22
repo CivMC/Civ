@@ -1,5 +1,6 @@
 package com.untamedears.jukealert.model.actions.abstr;
 
+import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.ActionCacheState;
 import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
@@ -80,6 +81,10 @@ public abstract class LoggablePlayerAction extends PlayerAction implements Logga
 	}
 	
 	protected void enrichGUIItem(ItemStack item) {
+		if (item.getType().isAir()) {
+			JukeAlert.getInstance().getLogger().info("Tried to enrich air");
+			item = new ItemStack(Material.STONE);
+		}
 		ItemUtils.addLore(item, String.format("%sPlayer: %s", ChatColor.GOLD, getPlayerName()),
 				String.format("%sTime: %s", ChatColor.LIGHT_PURPLE,getFormattedTime()));
 		ItemUtils.setDisplayName(item, ChatColor.GOLD + getGUIName());
