@@ -15,6 +15,7 @@ public class CombatConfig {
 	private double maxReach;
 	private boolean sweepEnabled;
 	private CombatSoundConfig combatSounds;
+	private double knockbackLevelMultiplier;
 	private Vector knockbackMultiplier;
 	private Vector sprintMultiplier;
 	private Vector waterKnockbackMultiplier;
@@ -24,7 +25,7 @@ public class CombatConfig {
 	private Vector attackerMotion;
 
 	public CombatConfig(boolean attackCooldownEnabled, boolean knockbackSwordsEnabled, boolean sprintResetEnabled, boolean waterSprintResetEnabled, int cpsLimit, long cpsCounterInterval, double maxReach, boolean sweepEnabled, CombatSoundConfig combatSounds,
-						Vector knockbackMultiplier, Vector sprintMultiplier, Vector waterKnockbackMultiplier, Vector airKnockbackMultiplier, Vector victimMotion, Vector maxVictimMotion,
+						double knockbackLevelMultiplier, Vector knockbackMultiplier, Vector sprintMultiplier, Vector waterKnockbackMultiplier, Vector airKnockbackMultiplier, Vector victimMotion, Vector maxVictimMotion,
 						Vector attackerMotion) {
 		this.attackCooldownEnabled = attackCooldownEnabled;
 		this.knockbackSwordsEnabled = knockbackSwordsEnabled;
@@ -35,6 +36,7 @@ public class CombatConfig {
 		this.maxReach = maxReach;
 		this.sweepEnabled = sweepEnabled;
 		this.combatSounds = combatSounds;
+		this.knockbackLevelMultiplier = knockbackLevelMultiplier;
 		this.knockbackMultiplier = knockbackMultiplier;
 		this.sprintMultiplier = sprintMultiplier;
 		this.waterKnockbackMultiplier = waterKnockbackMultiplier;
@@ -61,6 +63,10 @@ public class CombatConfig {
 		setVector(config, "clearCombat.attackerMotion", this.attackerMotion);
 		config.options().copyDefaults(true);
 		Finale.getPlugin().saveConfig();
+	}
+
+	public double getKnockbackLevelMultiplier() {
+		return knockbackLevelMultiplier;
 	}
 
 	public Vector getKnockbackMultiplier() {

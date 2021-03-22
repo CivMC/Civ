@@ -3,6 +3,7 @@ package com.github.maxopoly.finale.misc;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
@@ -95,6 +96,14 @@ public class ItemUtil {
 	public static boolean isArmour(ItemStack is) {
 		return isHelmet(is) || isChestplate(is) || isLeggings(is) || isBoots(is);
 	}
+
+	public static ItemStack newModifiers(ItemStack is) {
+		net.minecraft.server.v1_16_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
+		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
+		compound.set("AttributeModifiers", new NBTTagList());
+		nmsStack.setTag(compound);
+		return CraftItemStack.asBukkitCopy(nmsStack);
+	}
 	
 	public static net.minecraft.server.v1_16_R3.ItemStack getNMSStack(ItemStack is) {
 		net.minecraft.server.v1_16_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
@@ -136,15 +145,15 @@ public class ItemUtil {
 		
 		Slot slot = attribute.getSlot();
 		
-		NBTTagCompound damage = new NBTTagCompound();
-		damage.set("AttributeName", NBTTagString.a(attribute.getName()));
-		damage.set("Name", NBTTagString.a(attribute.getName()));
-		damage.set("Operation", NBTTagInt.a(0));
-		damage.set("Amount", valueTag);
-		damage.set("Slot", NBTTagString.a(slot.getName()));
-		damage.set("UUIDLeast", NBTTagInt.a(slot.getUuidLeast()));
-		damage.set("UUIDMost", NBTTagInt.a(slot.getUuidMost()));
-		modifiers.add(damage);
+		NBTTagCompound attributeTag = new NBTTagCompound();
+		attributeTag.set("AttributeName", NBTTagString.a(attribute.getName()));
+		attributeTag.set("Name", NBTTagString.a(attribute.getName()));
+		attributeTag.set("Operation", NBTTagInt.a(0));
+		attributeTag.set("Amount", valueTag);
+		attributeTag.set("Slot", NBTTagString.a(slot.getName()));
+		attributeTag.set("UUIDLeast", NBTTagInt.a(slot.getUuidLeast()));
+		attributeTag.set("UUIDMost", NBTTagInt.a(slot.getUuidMost()));
+		modifiers.add(attributeTag);
 		
 		compound.set("AttributeModifiers", modifiers);
 		nmsStack.setTag(compound);

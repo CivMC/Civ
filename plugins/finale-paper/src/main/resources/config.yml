@@ -20,21 +20,22 @@ cleanerCombat:
     strong: false
     knockback: false
     crit: false
+  knockbackLevelMultiplier: 0.6 # a constant to control the knockback sword level
   sprintMultiplier: # modifies knockback if the attacker is sprinting.
-    x: 3.0
+    x: 2.3
     y: 1.0
-    z: 3.0
+    z: 2.3
   knockbackMultiplier: # modifies knockback in general.
+    x: 1.2
+    y: 0.9
+    z: 1.2
+  waterKnockbackMultiplier: # modifies knockback if the victim is in water.
     x: 1.0
     y: 1.0
     z: 1.0
-  waterKnockbackMultiplier: # modifies knockback if the victim is in water.
-    x: 0.7
-    y: 0.7
-    z: 0.7
   airKnockbackMultiplier: # modifies knockback if the victim is in the air
     x: 1.0
-    y: 1.0
+    y: 1.05
     z: 1.0
   attackerMotion: # modifies motion of attacker upon attacking.
     x: 0.6
@@ -46,7 +47,7 @@ cleanerCombat:
     z: 0.5
   maxVictimMotion: # maximum motion of victim upon getting hit.
     x: 10.0
-    y: 1.0
+    y: 0.3
     z: 10.0
     
 # gives full control over health / regen, default is full reversion to 1.8 mechanics
@@ -69,6 +70,9 @@ pearls:
   
 #allows adjusting the attack damage of any item by its spigot material identifier
 weaponModification:
+  netheriteAxe:
+    material: NETHERITE_AXE
+    damage: 6
   diamondAxe:
     material: DIAMOND_AXE
     damage: 5
@@ -84,6 +88,9 @@ weaponModification:
   woodAxe:
     material: WOODEN_AXE
     damage: 1
+  netheriteSword:
+    material: NETHERITE_SWORD
+    damage: 7
   diamondSword:
     material: DIAMOND_SWORD
     damage: 6
@@ -103,32 +110,48 @@ weaponModification:
 armourModification:
    diamondHelmet:
       material: DIAMOND_HELMET
-      toughness: 3
+      armour: 3
+      toughness: 2
+      extraDurabilityHits: 1 # how many extra hits a player needs to take for the durability of the piece to fall
    diamondChestplate:
       material: DIAMOND_CHESTPLATE
-      toughness: 3
+      armour: 8
+      toughness: 2
+      extraDurabilityHits: 1
    diamondLeggings:
       material: DIAMOND_LEGGINGS
-      toughness: 3
+      armour: 6
+      toughness: 2
+      extraDurabilityHits: 1
    diamondBoots:
       material: DIAMOND_BOOTS
-      toughness: 3
+      armour: 3
+      toughness: 2
+      extraDurabilityHits: 1
    netheriteHelmet:
      material: NETHERITE_HELMET
-     toughness: 4
-     knockbackResistance: 0.1 # knockback resistance is a value between 0 and 1.
+     armour: 4
+     toughness: 2
+     extraDurabilityHits: 1
+     knockbackResistance: 0 # knockback resistance is a value between 0 and 1.
    netheriteChestplate:
      material: NETHERITE_CHESTPLATE
-     toughness: 4
-     knockbackResistance: 0.1
+     armour: 8
+     toughness: 2
+     extraDurabilityHits: 1
+     knockbackResistance: 0
    netheriteLeggings:
      material: NETHERITE_LEGGINGS
-     toughness: 4
-     knockbackResistance: 0.1
+     armour: 6
+     toughness: 2
+     extraDurabilityHits: 1
+     knockbackResistance: 0
    netheriteBoots:
      material: NETHERITE_BOOTS
-     toughness: 4
-     knockbackResistance: 0.1
+     armour: 4
+     toughness: 2
+     extraDurabilityHits: 1
+     knockbackResistance: 0
 
 #allows disabling enchantments. Use official spigot identifiers from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
 #This will not remove them from enchanting, but simply remove the enchant as soon as the item is touched
@@ -185,7 +208,7 @@ velocity:
 #of projectiles to the list to revert their behavior regarding initial velocity to 1.7
   ENDER_PEARL:
      type: REVERTED
-     power: 1.2
+     power: 1.4
   SPLASH_POTION:
      type: REVERTED
      power: 0.5

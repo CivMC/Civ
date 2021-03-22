@@ -364,8 +364,10 @@ public class ConfigParser {
 			double toughness = current.getDouble("toughness", -1);
 			double armour = current.getDouble("armour", -1);
 			double knockbackResistance = current.getDouble("knockbackResistance", -1);
-			plugin.info("Modifying " + matString + ": toughness: " + toughness + ", armour: " + armour + ", knockbackResistance: " + knockbackResistance);
-			am.addArmour(mat, toughness, armour, knockbackResistance);
+			int extraDurabilityHits = current.getInt("extraDurabilityHits", 0);
+			plugin.info("Modifying " + matString + ": toughness: " + toughness + ", armour: " + armour
+					+ ", knockbackResistance: " + knockbackResistance, ", extraDurabilityHits: " + extraDurabilityHits);
+			am.addArmour(mat, toughness, armour, knockbackResistance, extraDurabilityHits);
 		}
 		return am;
 	}
@@ -409,6 +411,7 @@ public class ConfigParser {
 		boolean sprintResetEnabled = config.getBoolean("sprintResetEnabled", true);
 		boolean waterSprintResetEnabled = config.getBoolean("waterSprintResetEnabled", false);
 		boolean sweepEnabled = config.getBoolean("sweepEnabled", false);
+		double knockbackLevelMultiplier = config.getDouble("knockbackLevelMultiplier", 0.6);
 		int cpsLimit = 9;
 		long cpsCounterInterval = 1000;
 		if (config.isConfigurationSection("cps")) {
@@ -418,7 +421,7 @@ public class ConfigParser {
 		}
 
 		return new CombatConfig(attackCooldownEnabled, knockbackSwordsEnabled, sprintResetEnabled, waterSprintResetEnabled, cpsLimit, cpsCounterInterval, maxReach, sweepEnabled, combatSounds,
-				knockbackMultiplier, sprintMultiplier, waterKnockbackMultiplier, airKnockbackMultiplier, victimMotion, maxVictimMotion, attackerMotion);
+				knockbackLevelMultiplier, knockbackMultiplier, sprintMultiplier, waterKnockbackMultiplier, airKnockbackMultiplier, victimMotion, maxVictimMotion, attackerMotion);
 	}
 
 	private Vector parseVector(ConfigurationSection config, String name, Vector def) {
