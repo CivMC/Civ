@@ -54,6 +54,12 @@
 			<version>4.6.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.programmerdan.minecraft</groupId>
+			<artifactId>banstick</artifactId>
+			<version>1.2.2</version>
+			<scope>provided</scope>
+		</dependency>
 		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>junit</groupId>

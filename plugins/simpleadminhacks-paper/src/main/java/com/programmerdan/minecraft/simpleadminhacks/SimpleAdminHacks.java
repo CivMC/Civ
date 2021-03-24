@@ -38,14 +38,14 @@ public class SimpleAdminHacks extends ACivMod {
 			setEnabled(false);
 			return;
 		}
-		this.manager.loadAllHacks();
 		this.commands.init();
+		this.manager.loadAllHacks();
 	}
 
 	@Override
 	public void onDisable() {
-		this.commands.reset();
 		this.manager.disableAllHacks();
+		this.commands.reset();
 		this.config.reset();
 		super.onDisable();
 	}
@@ -81,6 +81,13 @@ public class SimpleAdminHacks extends ACivMod {
 	 */
 	public HackManager getHackManager() {
 		return this.manager;
+	}
+
+	/**
+	 * @return Returns the command registrar
+	 */
+	public CommandRegistrar getCommands() {
+		return this.commands;
 	}
 
 	/**
