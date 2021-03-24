@@ -17,7 +17,6 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 public final class StrayStats extends BasicHack {
 
@@ -39,7 +38,6 @@ public final class StrayStats extends BasicHack {
 	public void onEnable() {
 		super.onEnable();
 		BanStick.getPlugin();
-		NameLayerPlugin.getInstance();
 		this.plugin.getCommands().registerCommand(this.statsCommand);
 	}
 
