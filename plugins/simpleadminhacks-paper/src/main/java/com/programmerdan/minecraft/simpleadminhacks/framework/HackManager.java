@@ -5,7 +5,6 @@ import com.google.common.base.Strings;
 import com.google.common.reflect.ClassPath;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.exceptions.InvalidConfigException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -37,27 +36,22 @@ public final class HackManager {
 		}
 		try {
 			final ClassPath getSamplersPath = ClassPath.from(plugin.exposeClassLoader());
-			for (final ClassPath.ClassInfo hackClass : getSamplersPath.getTopLevelClassesRecursive(HACKS_PATH)) {
+			for (final var classInfo : getSamplersPath.getTopLevelClassesRecursive(HACKS_PATH)) {
 				try {
-					final Class<?> clazz = hackClass.load();
-					if (clazz == null) {
-						continue;
-					}
-					if (!SimpleHack.class.isAssignableFrom(clazz)) {
+					final Class<?> clazz = classInfo.load();
+					if (clazz == null || !SimpleHack.class.isAssignableFrom(clazz)) {
 						continue;
 					}
 					this.plugin.info("Found hack class [" + clazz.getName() + "]");
 					loadHack((Class<SimpleHack<?>>) clazz, hackConfigs.getConfigurationSection(clazz.getSimpleName()));
 				}
 				catch (final NoClassDefFoundError exception) {
-					this.plugin.warning("Unable to load hack \"" + hackClass.getSimpleName() + "\" probably due to a " +
-							"dependency / import error.");
-					exception.printStackTrace();
+					this.plugin.warning("Unable to load hack \"" + classInfo.getSimpleName() + "\" probably due to a " +
+							"dependency / import error.", exception);
 					//continue;
 				}
 				catch (final Exception exception) {
-					this.plugin.warning("Failed to complete hack discovery of: " + hackClass.getName());
-					exception.printStackTrace();
+					this.plugin.warning("Failed to complete hack discovery of: " + classInfo.getName(), exception);
 					//continue;
 				}
 			}
@@ -110,30 +104,32 @@ public final class HackManager {
 			this.plugin.warning("Config generator for \"" + hackName + "\" returned nothing, skipping.");
 			return null;
 		}
+		final var configClass = hackConfig.getClass();
+		if (configClass.isAnonymousClass()) {
+			this.plugin.warning("Config for \"" + hackName + "\" is anonymous, skipping.");
+			return null;
+		}
 		this.plugin.info("Config for \"" + hackName + "\" found; instance [" + hackConfig.toString() + "]");
 		SimpleHack<?> hack;
 		try {
-			Constructor<?> constructor = hackClass.getConstructor(SimpleAdminHacks.class, hackConfig.getClass());
-			hack = (SimpleHack<?>) constructor.newInstance(this.plugin, hackConfig);
+			hack = hackClass.getConstructor(SimpleAdminHacks.class, configClass).newInstance(this.plugin, hackConfig);
 		}
 		catch (final InvalidConfigException exception) {
-			this.plugin.warning("Failed to initialise \"" + hackName + "\"'s configuration");
-			exception.printStackTrace();
+			this.plugin.warning("Failed to initialise \"" + hackName + "\"'s configuration", exception);
 			return null;
 		}
 		catch (final Exception exception) {
-			this.plugin.warning("Failed to initialise \"" + hackName + "\"");
-			exception.printStackTrace();
+			this.plugin.warning("Failed to initialise \"" + hackName + "\"", exception);
 			return null;
 		}
+		register(hack);
+		this.plugin.info("Registered hack: " + hackName);
 		interactWithHack(hack, (finalHack) -> {
 			finalHack.onLoad();
 			if (finalHack.shouldEnable()) {
 				finalHack.enable();
 			}
 		});
-		register(hack);
-		this.plugin.info("Registered hack: " + hackName);
 		return hack;
 	}
 
@@ -202,12 +198,10 @@ public final class HackManager {
 		}
 		catch (final NoClassDefFoundError exception) {
 			this.plugin.warning("Unable to interact with hack \"" + hack.getClass().getSimpleName() + "\" probably " +
-					"due to a dependency / import error.");
-			exception.printStackTrace();
+					"due to a dependency / import error.", exception);
 		}
 		catch (final Exception exception) {
-			this.plugin.warning("Unable to deactivate hack \"" + hack.getClass().getSimpleName() + "\"");
-			exception.printStackTrace();
+			this.plugin.warning("Unable to deactivate hack \"" + hack.getClass().getSimpleName() + "\"", exception);
 		}
 	}
 
