@@ -3,20 +3,17 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.UUID;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
@@ -61,19 +58,18 @@ public final class StrayStats extends BasicHack {
 	private class StatsCommand extends AikarCommand {
 		@CommandAlias("compile_player_join_statistics")
 		@CommandPermission("simpleadmin.stats")
-		@SuppressWarnings("unchecked")
-		public void compileStatistics(final CommandSender sender) throws IOException, IllegalAccessException {
+		public void compileStatistics(final CommandSender sender) throws IOException, SQLException {
 			sender.sendMessage(ChatColor.GOLD + "Starting to compile player join statistics!");
-			BSPlayer.preload(0, Integer.MAX_VALUE); // Just load everything
-			final var cache = (Map<UUID, BSPlayer>) FieldUtils.readDeclaredStaticField(BSPlayer.class, "allPlayersUUID", true);
-			final var builder = new StringBuilder();
-			cache.values()
-					.parallelStream()
-					.sorted(Comparator.comparing(BSPlayer::getFirstAdd))
-					.map(entry -> entry.getName() + "," + DATE_FORMAT.format(entry.getFirstAdd()))
-					.forEachOrdered(entry -> builder.append(entry).append("\n"));
-			try (final var test = new FileWriter(new File(plugin().getDataFolder(), "playerJoinStats.csv"))) {
-				test.write(builder.toString());
+			try (final var file = new FileWriter(new File(plugin().getDataFolder(), "playerJoinStats.csv"))) {
+				try (final var connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+					 final var statement = connection.prepareStatement(
+							 "SELECT name, first_add FROM bs_player ORDER BY first_add ASC");
+					 final var query = statement.executeQuery();) {
+
+					while (query.next()) {
+						file.write(query.getString(1) + "," + DATE_FORMAT.format(query.getTimestamp(2)) + "\n");
+					}
+				}
 			}
 			sender.sendMessage(ChatColor.GREEN + "Finished compiling player join statistics!");
 		}
