@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
@@ -56,20 +57,27 @@ public final class StrayStats extends BasicHack {
 	private class StatsCommand extends AikarCommand {
 		@CommandAlias("compile_player_join_statistics")
 		@CommandPermission("simpleadmin.stats")
-		public void compileStatistics(final CommandSender sender) throws IOException, SQLException {
+		public void compileStatistics(final CommandSender sender) {
 			sender.sendMessage(ChatColor.GOLD + "Starting to compile player join statistics!");
-			try (final var file = new FileWriter(new File(plugin().getDataFolder(), "playerJoinStats.csv"))) {
-				try (final var connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-					 final var statement = connection.prepareStatement(
-							 "SELECT name, first_add FROM bs_player ORDER BY first_add ASC");
-					 final var query = statement.executeQuery();) {
+			Bukkit.getScheduler().runTaskAsynchronously(plugin(), () -> {
+				try (final var file = new FileWriter(new File(plugin().getDataFolder(), "playerJoinStats.csv"))) {
+					try (final var connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+						 final var statement = connection.prepareStatement(
+								 "SELECT name, first_add FROM bs_player ORDER BY first_add ASC");
+						 final var query = statement.executeQuery();) {
 
-					while (query.next()) {
-						file.write(query.getString(1) + "," + DATE_FORMAT.format(query.getTimestamp(2)) + "\n");
+						while (query.next()) {
+							file.write(query.getString(1) + "," + DATE_FORMAT.format(query.getTimestamp(2)) + "\n");
+						}
 					}
 				}
-			}
-			sender.sendMessage(ChatColor.GREEN + "Finished compiling player join statistics!");
+				catch (final IOException | SQLException exception) {
+					plugin().warning("Could not complete compilation!", exception);
+					sender.sendMessage(ChatColor.RED + "Could not complete compilation!");
+					return;
+				}
+				sender.sendMessage(ChatColor.GREEN + "Finished compiling player join statistics!");
+			});
 		}
 	}
 
