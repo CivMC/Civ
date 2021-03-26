@@ -9,13 +9,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2SettingsManager;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 
 public class KillListener implements Listener {
 
@@ -41,13 +39,13 @@ public class KillListener implements Listener {
 		}
 		String itemDescriptor;
 		ItemStack item = killer.getInventory().getItemInMainHand();
-		if (item == null || MaterialAPI.isAir(item.getType())) {
+		if (item == null || MaterialUtils.isAir(item.getType())) {
 			itemDescriptor = "by hand";
 		}
 		else {
-			String displayName = ItemAPI.getDisplayName(item);
+			String displayName = ItemUtils.getDisplayName(item);
 			if (displayName == null) {
-				itemDescriptor = "with " + ItemNames.getItemName(item);
+				itemDescriptor = "with " + ItemUtils.getItemName(item);
 			}
 			else {
 				itemDescriptor = "with " + displayName;

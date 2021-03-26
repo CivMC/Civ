@@ -1,5 +1,8 @@
 package vg.civcraft.mc.civchat2;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
 import vg.civcraft.mc.civchat2.listeners.KillListener;
@@ -10,10 +13,6 @@ import vg.civcraft.mc.civchat2.utility.CivChat2SettingsManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author jjj5311

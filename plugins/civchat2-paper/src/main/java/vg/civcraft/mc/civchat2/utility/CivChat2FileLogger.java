@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civchat2.utility;
 
 import java.util.Set;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Location;

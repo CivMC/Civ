@@ -2,8 +2,6 @@ package vg.civcraft.mc.civchat2.utility;
 
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
