@@ -1,8 +1,5 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
-
 import co.aikar.commands.annotation.CommandAlias;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -22,9 +19,10 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
-import vg.civcraft.mc.civmodcore.api.PotionNames;
-import vg.civcraft.mc.civmodcore.api.PotionNames.SearchResult;
+import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
+import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
+import vg.civcraft.mc.civmodcore.util.NullUtils;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "POTION", order = 400)
@@ -41,7 +39,7 @@ public final class PotionModifier extends ModifierData {
 
 	@Override
 	public PotionModifier construct(ItemStack item) {
-		PotionMeta meta = castOrNull(PotionMeta.class, item.getItemMeta());
+		PotionMeta meta = MoreClassUtils.castOrNull(PotionMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return null;
 		}
@@ -61,11 +59,11 @@ public final class PotionModifier extends ModifierData {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		PotionMeta meta = castOrNull(PotionMeta.class, item.getItemMeta());
+		PotionMeta meta = MoreClassUtils.castOrNull(PotionMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return false;
 		}
-		if (!equalsNotNull(this.base, meta.getBasePotionData())) {
+		if (!NullUtils.equalsNotNull(this.base, meta.getBasePotionData())) {
 			return false;
 		}
 		List<PotionEffect> heldEffects = getEffects();
@@ -126,11 +124,7 @@ public final class PotionModifier extends ModifierData {
 		if (this.base == null) {
 			return null;
 		}
-		SearchResult found = PotionNames.findByType(this.base.getType());
-		if (found == null) {
-			return null;
-		}
-		return found.getName();
+		return PotionUtils.getPotionNiceName(this.base.getType());
 	}
 
 	public PotionData getPotionData() {

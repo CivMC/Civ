@@ -1,7 +1,5 @@
 package com.untamedears.itemexchange;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
-
 import com.untamedears.itemexchange.events.BrowseOrPurchaseEvent;
 import com.untamedears.itemexchange.events.SuccessfulPurchaseEvent;
 import com.untamedears.itemexchange.rules.BulkExchangeRule;
@@ -36,11 +34,12 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.InventoryAPI;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.RecipeAPI;
+import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
+import vg.civcraft.mc.civmodcore.inventory.RecipeManager;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.util.NullUtils;
 import vg.civcraft.mc.civmodcore.util.Validation;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
  * Listener class that handles shop and rule interactions.
@@ -77,7 +76,7 @@ public final class ItemExchangeListener implements Listener {
 		}
 		//
 		Block clicked = event.getClickedBlock();
-		if (!BlockAPI.isValidBlock(clicked)) {
+		if (!WorldUtils.isValidBlock(clicked)) {
 			return;
 		}
 		// Allow an interaction to pass through a sign attached to a shop
@@ -116,7 +115,7 @@ public final class ItemExchangeListener implements Listener {
 		boolean justBrowsing = false;
 		boolean shouldCycle = true;
 		if (!this.shopRecord.containsKey(player)
-				|| !equalsNotNull(clicked.getLocation(), this.shopRecord.get(player))
+				|| !NullUtils.equalsNotNull(clicked.getLocation(), this.shopRecord.get(player))
 				|| !this.ruleIndex.containsKey(player)) {
 			this.shopRecord.put(player, clicked.getLocation());
 			this.ruleIndex.put(player, 0);
@@ -131,7 +130,7 @@ public final class ItemExchangeListener implements Listener {
 			PLUGIN.debug("[Shop] Interaction timed out. Browsing.");
 		}
 		// If the player is holding nothing, just browse
-		if (!ItemAPI.isValidItem(event.getItem())) {
+		if (!ItemUtils.isValidItem(event.getItem())) {
 			justBrowsing = true;
 			PLUGIN.debug("[Shop] Buyer is not holding an input item. Browsing.");
 		}
@@ -191,17 +190,17 @@ public final class ItemExchangeListener implements Listener {
 		// Attempt to transfer the items between the shop and the buyer
 		boolean successfulTransfer;
 		if (trade.hasOutput()) {
-			successfulTransfer = InventoryAPI.safelyTradeBetweenInventories(
+			successfulTransfer = InventoryUtils.safelyTradeBetweenInventories(
 					player.getInventory(),
-					inputItems,
 					trade.getInventory(),
+					inputItems,
 					outputItems);
 		}
 		else {
-			successfulTransfer = InventoryAPI.safelyTransactBetweenInventories(
+			successfulTransfer = InventoryUtils.safelyTransactBetweenInventories(
 					player.getInventory(),
-					inputItems,
-					trade.getInventory());
+					trade.getInventory(),
+					inputItems);
 		}
 		if (!successfulTransfer) {
 			PLUGIN.debug("[Shop] Could not complete that transaction.");
@@ -225,7 +224,7 @@ public final class ItemExchangeListener implements Listener {
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void onBulkRuleCraftPrepare(PrepareItemCraftEvent event) {
-		if (!RecipeAPI.matchRecipe(ItemExchangeConfig.getBulkItemRecipe(), event.getRecipe())) {
+		if (!RecipeManager.matchRecipe(ItemExchangeConfig.getBulkItemRecipe(), event.getRecipe())) {
 			return;
 		}
 		CraftingInventory inventory = event.getInventory();
@@ -233,7 +232,7 @@ public final class ItemExchangeListener implements Listener {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.getInstance(), () -> {
 			List<ExchangeRule> rules = new ArrayList<>();
 			for (ItemStack item : inventory.getMatrix()) {
-				if (!ItemAPI.isValidItem(item)) {
+				if (!ItemUtils.isValidItem(item)) {
 					continue;
 				}
 				ExchangeRule exchangeRule = ExchangeRule.fromItem(item);
@@ -251,7 +250,7 @@ public final class ItemExchangeListener implements Listener {
 			BulkExchangeRule rule = new BulkExchangeRule();
 			rule.setRules(rules);
 			inventory.setResult(rule.toItem());
-			InventoryAPI.getViewingPlayers(inventory).forEach(Player::updateInventory);
+			InventoryUtils.getViewingPlayers(inventory).forEach(Player::updateInventory);
 		});
 	}
 

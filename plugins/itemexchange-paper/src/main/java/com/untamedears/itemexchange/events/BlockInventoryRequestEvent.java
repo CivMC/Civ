@@ -11,7 +11,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.Inventory;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
  * <p>Event that's emitted to show ItemExchange's interest in accessing a block's inventory.</p>
@@ -37,7 +37,7 @@ public class BlockInventoryRequestEvent extends Event implements Cancellable {
 	private boolean cancelled;
 
 	private BlockInventoryRequestEvent(Block block, Player requester, Purpose purpose) {
-		Preconditions.checkArgument(BlockAPI.isValidBlock(block), "Block must be valid!");
+		Preconditions.checkArgument(WorldUtils.isValidBlock(block), "Block must be valid!");
 		Preconditions.checkArgument(purpose != null, "Access request must have a purpose!");
 		Preconditions.checkArgument(!(purpose == Purpose.ACCESS && requester == null),
 				"Access requests must have a requester!");

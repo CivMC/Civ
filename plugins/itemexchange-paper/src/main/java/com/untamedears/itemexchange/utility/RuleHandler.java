@@ -8,7 +8,7 @@ import java.io.Closeable;
 import java.util.List;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 /**
  * This is a utility to be used within the default commands.
@@ -75,7 +75,7 @@ public class RuleHandler implements Closeable {
 	@Override
 	public void close() {
 		ItemStack item = this.rule.toItem();
-		if (!ItemAPI.isValidItem(item)) {
+		if (!ItemUtils.isValidItem(item)) {
 			throw new InvalidCommandArgument("Could not replace that rule.", false);
 		}
 		if (this.saveChanges) {

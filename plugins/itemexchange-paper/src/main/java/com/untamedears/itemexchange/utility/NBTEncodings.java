@@ -3,16 +3,16 @@ package com.untamedears.itemexchange.utility;
 import com.google.common.collect.Maps;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-import vg.civcraft.mc.civmodcore.api.EnchantAPI;
-import vg.civcraft.mc.civmodcore.api.NamespaceAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.EnumUtils;
-import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.util.KeyedUtils;
+import vg.civcraft.mc.civmodcore.util.MoreMapUtils;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
 public final class NBTEncodings {
@@ -41,10 +41,10 @@ public final class NBTEncodings {
 			return nbt;
 		}
 		for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
-			if (!Iteration.validEntry(entry)) {
+			if (!MoreMapUtils.validEntry(entry)) {
 				continue;
 			}
-			nbt.setInteger(NamespaceAPI.getString(entry.getKey()), entry.getValue());
+			nbt.setInteger(KeyedUtils.getString(entry.getKey()), entry.getValue());
 		}
 		return nbt;
 	}
@@ -55,7 +55,7 @@ public final class NBTEncodings {
 			return enchants;
 		}
 		for (String slug : nbt.getKeys()) {
-			Enchantment enchantment = EnchantAPI.getEnchantment(slug);
+			Enchantment enchantment = EnchantUtils.getEnchantment(slug);
 			if (enchantment == null) {
 				continue;
 			}
@@ -84,7 +84,7 @@ public final class NBTEncodings {
 			return null;
 		}
 		return new PotionData(
-				EnumUtils.fromSlug(PotionType.class, nbt.getString(TYPE_KEY), false),
+				EnumUtils.getEnum(PotionType.class, nbt.getString(TYPE_KEY)),
 				nbt.getBoolean(EXTENDED_KEY),
 				nbt.getBoolean(UPGRADED_KEY));
 	}

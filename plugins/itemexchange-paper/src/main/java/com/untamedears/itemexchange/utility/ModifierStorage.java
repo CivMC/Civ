@@ -1,7 +1,5 @@
 package com.untamedears.itemexchange.utility;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
-
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,6 +9,7 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
 
 /**
  * A storage method for modifiers that puts significance on the modifier's class.
@@ -77,7 +76,7 @@ public final class ModifierStorage implements Iterable<ModifierData> {
 		if (clazz == null) {
 			return null;
 		}
-		return castOrNull(clazz, this.map.get(clazz));
+		return MoreClassUtils.castOrNull(clazz, this.map.get(clazz));
 	}
 
 	/**
@@ -176,7 +175,7 @@ public final class ModifierStorage implements Iterable<ModifierData> {
 		if (object == this) {
 			return true;
 		}
-		ModifierStorage other = castOrNull(ModifierStorage.class, object);
+		ModifierStorage other = MoreClassUtils.castOrNull(ModifierStorage.class, object);
 		if (other == null) {
 			return false;
 		}

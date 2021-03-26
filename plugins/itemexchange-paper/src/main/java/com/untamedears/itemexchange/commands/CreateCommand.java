@@ -19,10 +19,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
  * Commands class involved in creating shop exchange rules
@@ -52,7 +52,7 @@ public final class CreateCommand extends AikarCommand {
 		BlockIterator ray = new BlockIterator(player, 6);
 		while (ray.hasNext()) {
 			Block block = ray.next();
-			if (!BlockAPI.isValidBlock(block)) {
+			if (!WorldUtils.isValidBlock(block)) {
 				continue;
 			}
 			if (!ItemExchangeConfig.hasCompatibleShopBlock(block.getType())) {
@@ -73,7 +73,7 @@ public final class CreateCommand extends AikarCommand {
 			ItemStack inputItem = null;
 			ItemStack outputItem = null;
 			for (ItemStack item : inventory.getContents()) {
-				if (!ItemAPI.isValidItem(item)) {
+				if (!ItemUtils.isValidItem(item)) {
 					continue;
 				}
 				if (inputItem == null) {
@@ -123,7 +123,7 @@ public final class CreateCommand extends AikarCommand {
 
 	private void createFromHeld(Player player, Type type) {
 		ItemStack held = player.getInventory().getItemInMainHand();
-		if (!ItemAPI.isValidItem(held)) {
+		if (!ItemUtils.isValidItem(held)) {
 			throw new InvalidCommandArgument("You must be holding an item to do that.");
 		}
 		if (Utilities.isExchangeRule(held)) {
@@ -156,8 +156,8 @@ public final class CreateCommand extends AikarCommand {
 	public static final String DETAILS_COMPLETION = "@itemMaterials";
 
 	private void createFromDetails(Player player, Type type, String slug, int amount) {
-		Material material = MaterialAPI.getMaterial(slug);
-		if (!MaterialAPI.isValidItemMaterial(material)) {
+		Material material = MaterialUtils.getMaterial(slug);
+		if (!ItemUtils.isValidItemMaterial(material)) {
 			throw new InvalidCommandArgument("You must enter a valid item material.");
 		}
 		ExchangeRule rule = new ExchangeRule();

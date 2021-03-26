@@ -12,8 +12,8 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.CoreConfigManager;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
-import vg.civcraft.mc.civmodcore.api.RecipeAPI;
+import vg.civcraft.mc.civmodcore.inventory.RecipeManager;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 
 public final class ItemExchangeConfig extends CoreConfigManager {
 
@@ -65,14 +65,14 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		RELAY_REACH_DISTANCE = 0;
 		RELAY_PERMEABLE_BLOCKS.clear();
 		if (BULK_RULE_RECIPE != null) {
-			RecipeAPI.removeRecipe(BULK_RULE_RECIPE);
+			RecipeManager.removeRecipe(BULK_RULE_RECIPE);
 			BULK_RULE_RECIPE = null;
 		}
 	}
 
 	private void parseShopCompatibleBlocks(List<String> config) {
 		for (String raw : config) {
-			Material material = MaterialAPI.getMaterial(raw);
+			Material material = MaterialUtils.getMaterial(raw);
 			if (material == null) {
 				LOGGER.warn("Could not parse material for supported block: " + raw);
 				continue;
@@ -96,7 +96,7 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	private void parseSuccessButtonBlocks(List<String> config) {
 		for (String raw : config) {
-			Material material = MaterialAPI.getMaterial(raw);
+			Material material = MaterialUtils.getMaterial(raw);
 			if (material == null) {
 				LOGGER.warn("Could not parse material for success button block: " + raw);
 				continue;
@@ -118,7 +118,7 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 	}
 
 	private void parseRuleItem(String config) {
-		Material material = MaterialAPI.getMaterial(config);
+		Material material = MaterialUtils.getMaterial(config);
 		String defaultWarning = "\tDefaulting to STONE_BUTTON.";
 		if (material == null) {
 			LOGGER.warn("Could not parse material for rule item.");
@@ -134,7 +134,7 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		RULE_ITEM.setType(material);
 		BULK_RULE_RECIPE = new ShapelessRecipe(NamespacedKey.minecraft("bulk_exchange_rule"), RULE_ITEM);
 		BULK_RULE_RECIPE.addIngredient(2, material);
-		RecipeAPI.registerRecipe(BULK_RULE_RECIPE);
+		RecipeManager.registerRecipe(BULK_RULE_RECIPE);
 	}
 
 	private void parseCreateFromShop(boolean config) {
@@ -144,7 +144,7 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	private void parseRepairableItems(List<String> config) {
 		for (String raw : config) {
-			Material material = MaterialAPI.getMaterial(raw);
+			Material material = MaterialUtils.getMaterial(raw);
 			if (material == null) {
 				LOGGER.warn("Could not parse repairable material: " + raw);
 				continue;
@@ -168,7 +168,7 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 			return;
 		}
 		for (String raw : config.getStringList("relayBlocks")) {
-			Material material = MaterialAPI.getMaterial(raw);
+			Material material = MaterialUtils.getMaterial(raw);
 			if (material == null) {
 				LOGGER.warn("Could not parse relay block material: " + raw);
 				continue;
@@ -201,7 +201,7 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		RELAY_REACH_DISTANCE = Math.max(config.getInt("reachDistance"), 0);
 		LOGGER.info("Relay reach distance parsed: " + RELAY_REACH_DISTANCE);
 		for (String raw : config.getStringList("permeable")) {
-			Material material = MaterialAPI.getMaterial(raw);
+			Material material = MaterialUtils.getMaterial(raw);
 			if (material == null) {
 				LOGGER.warn("Could not parse relay permeable material: " + raw);
 				continue;

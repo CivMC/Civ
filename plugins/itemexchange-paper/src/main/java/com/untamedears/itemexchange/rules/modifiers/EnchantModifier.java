@@ -31,12 +31,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.api.EnchantAPI;
-import vg.civcraft.mc.civmodcore.api.EnchantNames;
-import vg.civcraft.mc.civmodcore.api.EnchantNames.SearchResult;
-import vg.civcraft.mc.civmodcore.api.NamespaceAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.util.KeyedUtils;
+import vg.civcraft.mc.civmodcore.util.MoreMapUtils;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "ENCHANTS", order = 200)
@@ -66,13 +64,13 @@ public final class EnchantModifier extends ModifierData {
 	@Override
 	public boolean isBroken() {
 		for (Map.Entry<Enchantment, Integer> entry : getRequiredEnchants().entrySet()) {
-			if (!Iteration.validEntry(entry)) {
+			if (!MoreMapUtils.validEntry(entry)) {
 				return true;
 			}
 			if (entry.getValue() == ExchangeRule.ANY) {
 				continue;
 			}
-			if (!EnchantAPI.isSafeEnchantment(entry.getKey(), entry.getValue())) {
+			if (!EnchantUtils.isSafeEnchantment(entry.getKey(), entry.getValue())) {
 				return true;
 			}
 		}
@@ -95,7 +93,7 @@ public final class EnchantModifier extends ModifierData {
 	public void serialize(NBTCompound nbt) {
 		nbt.setCompound(REQUIRED_KEY, NBTEncodings.encodeLeveledEnchants(getRequiredEnchants()));
 		nbt.setStringArray(EXCLUDED_KEY, getExcludedEnchants().stream()
-				.map(NamespaceAPI::getString)
+				.map(KeyedUtils::getString)
 				.filter(Objects::nonNull)
 				.toArray(String[]::new));
 		nbt.setBoolean(UNLISTED_KEY, isAllowingUnlistedEnchants());
@@ -105,7 +103,7 @@ public final class EnchantModifier extends ModifierData {
 	public void deserialize(NBTCompound nbt) {
 		setRequiredEnchants(NBTEncodings.decodeLeveledEnchants(nbt.getCompound(REQUIRED_KEY)));
 		setExcludedEnchants(Arrays.stream(nbt.getStringArray(EXCLUDED_KEY))
-				.map(EnchantAPI::getEnchantment)
+				.map(EnchantUtils::getEnchantment)
 				.filter(Objects::nonNull)
 				.collect(Collectors.toCollection(HashSet::new)));
 		setAllowUnlistedEnchants(nbt.getBoolean(UNLISTED_KEY));
@@ -115,17 +113,16 @@ public final class EnchantModifier extends ModifierData {
 	public List<String> getDisplayInfo() {
 		List<String> info = Lists.newArrayList();
 		for (Map.Entry<Enchantment, Integer> requiredEnchant : getRequiredEnchants().entrySet()) {
-			SearchResult result = EnchantNames.findByEnchantment(requiredEnchant.getKey());
+			String name = EnchantUtils.getEnchantNiceName(requiredEnchant.getKey());
 			if (requiredEnchant.getValue() == ExchangeRule.ANY) {
-				info.add(ChatColor.AQUA + result.getDisplayName());
+				info.add(ChatColor.AQUA + name);
 			}
 			else {
-				info.add(ChatColor.AQUA + result.getDisplayName() + " " + requiredEnchant.getValue());
+				info.add(ChatColor.AQUA + name + " " + requiredEnchant.getValue());
 			}
 		}
 		for (Enchantment excludedEnchant : getExcludedEnchants()) {
-			SearchResult result = EnchantNames.findByEnchantment(excludedEnchant);
-			info.add(ChatColor.RED + "!" + result.getDisplayName());
+			info.add(ChatColor.RED + "!" + EnchantUtils.getEnchantNiceName(excludedEnchant));
 		}
 		if (isAllowingUnlistedEnchants()) {
 			info.add(ChatColor.GREEN + "Other enchantments allowed");
@@ -187,7 +184,7 @@ public final class EnchantModifier extends ModifierData {
 			if (!matcher.matches()) {
 				throw new InvalidCommandArgument("You must enter a valid instruction.");
 			}
-			Enchantment enchantment = EnchantAPI.getEnchantment(matcher.group(2));
+			Enchantment enchantment = EnchantUtils.getEnchantment(matcher.group(2));
 			if (enchantment == null) {
 				throw new InvalidCommandArgument("You must enter a valid enchantment.");
 			}
