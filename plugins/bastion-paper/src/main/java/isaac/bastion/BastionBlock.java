@@ -380,10 +380,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		hoverText.append(getLocationText());
 		hoverText.append("\n");
 
-		hoverText.append("Strength: ");
-		hoverText.append(getStrengthText());
-		hoverText.append("\n");
-
 		hoverText.append("Group: ");
 		hoverText.append(getGroupName());
 		hoverText.append("\n");
