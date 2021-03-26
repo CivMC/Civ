@@ -3,7 +3,6 @@ package com.github.maxopoly.finale.misc;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;

@@ -1,7 +1,6 @@
 package com.github.maxopoly.finale.misc.velocity;
 
 import java.util.Map;
-
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;

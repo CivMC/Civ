@@ -1,5 +1,6 @@
 package com.github.maxopoly.finale.listeners;
 
+import com.github.maxopoly.finale.external.FinaleSettingManager;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -9,10 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import com.github.maxopoly.finale.external.FinaleSettingManager;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class ToolProtectionListener implements Listener {
 	
@@ -31,7 +29,7 @@ public class ToolProtectionListener implements Listener {
 		if (is.getEnchantments().isEmpty()) {
 			return;
 		}
-		Damageable meta = ItemAPI.getDamageable(is);
+		Damageable meta = ItemUtils.getDamageable(is);
 		if (meta == null) {
 			return;
 		}

@@ -1,9 +1,11 @@
 package com.github.maxopoly.finale.listeners;
 
+import com.github.maxopoly.finale.Finale;
+import com.github.maxopoly.finale.external.CombatTagPlusManager;
+import com.github.maxopoly.finale.external.FinaleSettingManager;
 import java.text.DecimalFormat;
 import java.util.UUID;
 import java.util.function.BiFunction;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,11 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-
-import com.github.maxopoly.finale.Finale;
-import com.github.maxopoly.finale.external.CombatTagPlusManager;
-import com.github.maxopoly.finale.external.FinaleSettingManager;
-
 import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.CivScoreBoard;

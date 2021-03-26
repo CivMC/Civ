@@ -1,13 +1,10 @@
 package com.github.maxopoly.finale.command;
 
+import com.github.maxopoly.finale.Finale;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-
-import com.github.maxopoly.finale.Finale;
-
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 

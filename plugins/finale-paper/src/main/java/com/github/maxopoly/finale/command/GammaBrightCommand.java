@@ -1,13 +1,10 @@
 package com.github.maxopoly.finale.command;
 
+import com.github.maxopoly.finale.Finale;
 import java.util.Collections;
 import java.util.List;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import com.github.maxopoly.finale.Finale;
-
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 

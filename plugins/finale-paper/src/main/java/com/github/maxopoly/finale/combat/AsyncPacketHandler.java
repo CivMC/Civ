@@ -1,10 +1,22 @@
 package com.github.maxopoly.finale.combat;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.reflect.StructureModifier;
+import com.comphenix.protocol.wrappers.BlockPosition;
+import com.comphenix.protocol.wrappers.EnumWrappers.EntityUseAction;
+import com.comphenix.protocol.wrappers.EnumWrappers.Hand;
+import com.comphenix.protocol.wrappers.EnumWrappers.PlayerDigType;
+import com.github.maxopoly.finale.Finale;
+import com.google.common.collect.Sets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -18,21 +30,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.reflect.StructureModifier;
-import com.comphenix.protocol.wrappers.BlockPosition;
-import com.comphenix.protocol.wrappers.EnumWrappers.EntityUseAction;
-import com.comphenix.protocol.wrappers.EnumWrappers.Hand;
-import com.comphenix.protocol.wrappers.EnumWrappers.PlayerDigType;
-import com.github.maxopoly.finale.Finale;
-import com.google.common.collect.Sets;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class AsyncPacketHandler extends PacketAdapter implements Listener {
 	

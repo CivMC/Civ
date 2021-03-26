@@ -1,10 +1,5 @@
 package com.github.maxopoly.finale;
 
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.event.entity.EntityDamageEvent;
-
 import com.comphenix.protocol.ProtocolLibrary;
 import com.github.maxopoly.finale.combat.AsyncPacketHandler;
 import com.github.maxopoly.finale.combat.CPSHandler;
@@ -13,6 +8,9 @@ import com.github.maxopoly.finale.misc.ArmourModifier;
 import com.github.maxopoly.finale.misc.SaturationHealthRegenHandler;
 import com.github.maxopoly.finale.misc.WeaponModifier;
 import com.github.maxopoly.finale.potion.PotionHandler;
+import java.util.Map;
+import org.bukkit.Bukkit;
+import org.bukkit.event.entity.EntityDamageEvent;
 
 public class FinaleManager {
 

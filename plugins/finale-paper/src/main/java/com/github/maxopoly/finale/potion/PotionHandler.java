@@ -2,7 +2,6 @@ package com.github.maxopoly.finale.potion;
 
 import java.util.List;
 import java.util.Map;
-
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionType;
 

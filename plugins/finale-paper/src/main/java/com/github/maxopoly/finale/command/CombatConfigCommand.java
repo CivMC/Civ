@@ -1,17 +1,14 @@
 package com.github.maxopoly.finale.command;
 
+import com.github.maxopoly.finale.Finale;
+import com.github.maxopoly.finale.combat.CombatConfig;
 import java.util.LinkedList;
 import java.util.List;
-
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.NumberConversions;
-
-import com.github.maxopoly.finale.Finale;
-import com.github.maxopoly.finale.combat.CombatConfig;
-
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.util.Vector;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;

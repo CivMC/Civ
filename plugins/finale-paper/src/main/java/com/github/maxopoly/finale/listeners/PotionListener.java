@@ -1,5 +1,8 @@
 package com.github.maxopoly.finale.listeners;
 
+import com.github.maxopoly.finale.potion.PotionHandler;
+import com.github.maxopoly.finale.potion.PotionModification;
+import java.util.function.Consumer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -14,12 +17,6 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import com.github.maxopoly.finale.Finale;
-import com.github.maxopoly.finale.potion.PotionHandler;
-import com.github.maxopoly.finale.potion.PotionModification;
-
-import java.util.function.Consumer;
 
 public class PotionListener implements Listener {
 

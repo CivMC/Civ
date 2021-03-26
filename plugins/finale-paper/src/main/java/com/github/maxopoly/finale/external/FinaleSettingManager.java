@@ -1,12 +1,9 @@
 package com.github.maxopoly.finale.external;
 
+import com.github.maxopoly.finale.Finale;
 import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.maxopoly.finale.Finale;
-
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
