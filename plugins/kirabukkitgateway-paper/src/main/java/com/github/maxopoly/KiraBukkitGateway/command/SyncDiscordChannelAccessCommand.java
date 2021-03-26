@@ -1,16 +1,13 @@
 package com.github.maxopoly.KiraBukkitGateway.command;
 
+import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
-
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.GroupManager;

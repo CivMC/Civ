@@ -1,12 +1,10 @@
 package com.github.maxopoly.KiraBukkitGateway.rabbit.request;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;

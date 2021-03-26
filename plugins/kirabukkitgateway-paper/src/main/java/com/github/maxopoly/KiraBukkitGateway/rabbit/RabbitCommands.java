@@ -1,16 +1,14 @@
 package com.github.maxopoly.KiraBukkitGateway.rabbit;
 
-import java.util.Collection;
-import java.util.UUID;
-
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
 import com.github.maxopoly.KiraBukkitGateway.KiraUtil;
 import com.github.maxopoly.KiraBukkitGateway.listener.SnitchHitType;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.util.Collection;
+import java.util.UUID;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 public class RabbitCommands {
 

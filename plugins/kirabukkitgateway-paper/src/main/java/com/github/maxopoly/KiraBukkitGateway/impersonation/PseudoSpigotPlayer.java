@@ -1,9 +1,8 @@
 package com.github.maxopoly.KiraBukkitGateway.impersonation;
 
-import org.bukkit.entity.Player;
-
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
+import org.bukkit.entity.Player;
 
 public class PseudoSpigotPlayer extends Player.Spigot {
 	

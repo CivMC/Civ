@@ -1,12 +1,5 @@
 package com.github.maxopoly.KiraBukkitGateway;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Logger;
-import org.bukkit.Bukkit;
-
 import com.github.maxopoly.KiraBukkitGateway.auth.AuthcodeManager;
 import com.github.maxopoly.KiraBukkitGateway.impersonation.KiraLuckPermsWrapper;
 import com.github.maxopoly.KiraBukkitGateway.listener.CivChatListener;
@@ -15,7 +8,11 @@ import com.github.maxopoly.KiraBukkitGateway.listener.SkynetListener;
 import com.github.maxopoly.KiraBukkitGateway.log.KiraLogAppender;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitCommands;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitHandler;
-
+import java.util.LinkedList;
+import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
+import org.bukkit.Bukkit;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;

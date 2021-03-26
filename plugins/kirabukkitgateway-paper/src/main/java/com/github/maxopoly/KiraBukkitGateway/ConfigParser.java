@@ -1,16 +1,14 @@
 package com.github.maxopoly.KiraBukkitGateway;
 
+import com.github.maxopoly.KiraBukkitGateway.log.KiraLogAppender;
+import com.rabbitmq.client.ConnectionFactory;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import com.github.maxopoly.KiraBukkitGateway.log.KiraLogAppender;
-import com.rabbitmq.client.ConnectionFactory;
 
 public class ConfigParser {
 

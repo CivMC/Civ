@@ -1,8 +1,5 @@
 package com.github.maxopoly.KiraBukkitGateway.rabbit.in;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitInput;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.request.AbstractRequestHandler;
@@ -11,6 +8,8 @@ import com.github.maxopoly.KiraBukkitGateway.rabbit.request.ConsoleCommandHandle
 import com.github.maxopoly.KiraBukkitGateway.rabbit.request.IngameCommandHandler;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.request.PermissionCheckHandler;
 import com.google.gson.JsonObject;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class RequestSessionHandler extends RabbitInput {
 

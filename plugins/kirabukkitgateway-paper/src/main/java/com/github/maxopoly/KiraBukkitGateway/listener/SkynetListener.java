@@ -1,12 +1,11 @@
 package com.github.maxopoly.KiraBukkitGateway.listener;
 
+import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 
 public class SkynetListener implements Listener {
 

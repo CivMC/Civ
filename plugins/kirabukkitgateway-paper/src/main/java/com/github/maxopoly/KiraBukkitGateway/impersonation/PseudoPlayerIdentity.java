@@ -1,16 +1,13 @@
 package com.github.maxopoly.KiraBukkitGateway.impersonation;
 
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
-
 import com.mojang.authlib.GameProfile;
-
-import net.minecraft.server.v1_16_R1.EntityPlayer;
-import net.minecraft.server.v1_16_R1.MinecraftServer;
-import net.minecraft.server.v1_16_R1.PlayerInteractManager;
-import net.minecraft.server.v1_16_R1.WorldServer;
+import java.util.UUID;
+import net.minecraft.server.v1_16_R3.EntityPlayer;
+import net.minecraft.server.v1_16_R3.MinecraftServer;
+import net.minecraft.server.v1_16_R3.PlayerInteractManager;
+import net.minecraft.server.v1_16_R3.WorldServer;
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 
 public class PseudoPlayerIdentity extends EntityPlayer {
 

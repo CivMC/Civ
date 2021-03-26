@@ -1,15 +1,13 @@
 package com.github.maxopoly.KiraBukkitGateway.rabbit.request;
 
-import java.util.UUID;
-import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import com.github.maxopoly.KiraBukkitGateway.KiraUtil;
 import com.github.maxopoly.KiraBukkitGateway.impersonation.PseudoConsoleSender;
 import com.google.gson.JsonObject;
+import java.util.UUID;
+import java.util.logging.Logger;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 public class ConsoleCommandHandler extends AbstractRequestHandler {
 

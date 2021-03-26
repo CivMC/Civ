@@ -1,9 +1,5 @@
 package com.github.maxopoly.KiraBukkitGateway.rabbit;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Logger;
-
 import com.github.maxopoly.KiraBukkitGateway.rabbit.in.GroupChatMessageHandler;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.in.RequestRelayCreationHandler;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.in.RequestSessionHandler;
@@ -11,6 +7,9 @@ import com.github.maxopoly.KiraBukkitGateway.rabbit.in.SendMessageHandler;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class RabbitInputHandler {
 
