@@ -3,7 +3,6 @@ package vg.civcraft.mc.namelayer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import vg.civcraft.mc.namelayer.database.AssociationList;
 
 public class NameAPI {

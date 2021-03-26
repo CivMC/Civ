@@ -2,11 +2,6 @@ package vg.civcraft.mc.namelayer.command.commands;
 
 import java.util.List;
 import java.util.UUID;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,9 +11,6 @@ import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
-
-import java.util.List;
-import java.util.UUID;
 
 public class RejectInvite extends PlayerCommandMiddle {
 

@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -14,8 +13,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
@@ -61,7 +59,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 				produceSelectionClickable(Material.DIAMOND_CHESTPLATE,
 						PlayerType.OWNER), 17);
 		ItemStack backStack = new ItemStack(Material.ARROW);
-		ItemAPI.setDisplayName(backStack, ChatColor.GOLD
+		ItemUtils.setDisplayName(backStack, ChatColor.GOLD
 				+ "Go back to member management");
 		ci.setSlot(new Clickable(backStack) {
 
@@ -80,11 +78,11 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		is.setItemMeta(im);
 		Clickable c;
-		ItemAPI.setDisplayName(is, ChatColor.GOLD + "View and edit permissions for "
+		ItemUtils.setDisplayName(is, ChatColor.GOLD + "View and edit permissions for "
 				+ PlayerType.getNiceRankName(pType));
 		if (!gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("LIST_PERMS"))) {
-			ItemAPI.addLore(is, ChatColor.RED + "You are not allowed to list",
+			ItemUtils.addLore(is, ChatColor.RED + "You are not allowed to list",
 					ChatColor.RED + "permissions for this group");
 			c = new DecorationStack(is);
 		} else {
@@ -125,7 +123,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 
 			if (hasPerm) {
 				is = yesStack();
-				ItemAPI.addLore(
+				ItemUtils.addLore(
 						is,
 						ChatColor.DARK_AQUA
 								+ PlayerType.getNiceRankName(pType)
@@ -133,14 +131,14 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 								+ "this permission");
 			} else {
 				is = noStack();
-				ItemAPI.addLore(
+				ItemUtils.addLore(
 						is,
 						ChatColor.DARK_AQUA
 								+ PlayerType.getNiceRankName(pType)
 								+ "s currently don't have", ChatColor.DARK_AQUA
 								+ "this permission");
 			}
-			ItemAPI.setDisplayName(is, perm.getName());
+			ItemUtils.setDisplayName(is, perm.getName());
 			String desc = perm.getDescription();
 			if (desc != null) {
 				final int MAX_CHARS = 35;
@@ -149,7 +147,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 				for  (int i = 0; i < words.length; i++) {
 					line.append(words[i]).append(" ");
 					if (line.length() >= MAX_CHARS || i == words.length - 1){
-						ItemAPI.addLore(is, ChatColor.GREEN + line.toString().trim());
+						ItemUtils.addLore(is, ChatColor.GREEN + line.toString().trim());
 						line = new StringBuilder();
 					}
 				}
@@ -157,7 +155,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 			if (pType == PlayerType.NOT_BLACKLISTED && !perm.getCanBeBlacklisted()) {
 				canEdit = false;
 
-				ItemAPI.addLore(
+				ItemUtils.addLore(
 						is,
 						ChatColor.AQUA
 								+ "This permission cannot be toggled for "
@@ -166,7 +164,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 			}
 
 			if (canEdit) {
-				ItemAPI.addLore(is, ChatColor.AQUA + "Click to toggle");
+				ItemUtils.addLore(is, ChatColor.AQUA + "Click to toggle");
 				c = new Clickable(is) {
 
 					@Override
@@ -204,7 +202,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 
 		if (currentPage > 0) {
 			ItemStack back = new ItemStack(Material.ARROW);
-			ItemAPI.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
+			ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
 			Clickable baCl = new Clickable(back) {
 
 				@Override
@@ -220,7 +218,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		// next button
 		if ((45 * (currentPage + 1)) < clicks.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
-			ItemAPI.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
+			ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
 
 				@Override
@@ -235,7 +233,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		}
 
 		ItemStack backToOverview = goBackStack(); 
-		ItemAPI.setDisplayName(backToOverview, ChatColor.GOLD + "Go back");
+		ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Go back");
 		ci.setSlot(new Clickable(backToOverview) {
 
 			@Override

@@ -2,7 +2,6 @@ package vg.civcraft.mc.namelayer.group;
 
 import java.util.Set;
 import java.util.UUID;
-
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 public class AutoAcceptHandler {

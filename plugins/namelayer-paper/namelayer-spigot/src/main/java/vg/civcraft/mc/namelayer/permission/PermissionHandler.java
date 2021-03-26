@@ -2,7 +2,6 @@ package vg.civcraft.mc.namelayer.permission;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class PermissionHandler {

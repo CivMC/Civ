@@ -2,9 +2,7 @@ package vg.civcraft.mc.namelayer.group;
 
 import java.util.Map;
 import java.util.UUID;
-
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 

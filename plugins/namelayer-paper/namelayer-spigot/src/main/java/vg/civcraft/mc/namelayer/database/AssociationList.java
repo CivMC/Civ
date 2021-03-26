@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
 public class AssociationList {

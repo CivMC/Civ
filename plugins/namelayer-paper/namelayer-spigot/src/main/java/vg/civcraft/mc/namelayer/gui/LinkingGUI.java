@@ -3,13 +3,11 @@ package vg.civcraft.mc.namelayer.gui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
@@ -48,7 +46,7 @@ public class LinkingGUI extends AbstractGroupGUI {
 		// previous button
 		if (subGroupSelectingPage > 0) {
 			ItemStack back = new ItemStack(Material.ARROW);
-			ItemAPI.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
+			ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
 			Clickable baCl = new Clickable(back) {
 
 				@Override
@@ -64,7 +62,7 @@ public class LinkingGUI extends AbstractGroupGUI {
 		// next button
 		if ((45 * (subGroupSelectingPage + 1)) <= clicks.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
-			ItemAPI.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
+			ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
 
 				@Override
@@ -80,7 +78,7 @@ public class LinkingGUI extends AbstractGroupGUI {
 
 		// back button
 		ItemStack backToOverview = goBackStack(); 
-		ItemAPI.setDisplayName(backToOverview, ChatColor.GOLD + "Back to overview");
+		ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Back to overview");
 		ci.setSlot(new Clickable(backToOverview) {
 
 			@Override
@@ -95,10 +93,10 @@ public class LinkingGUI extends AbstractGroupGUI {
 		List<Clickable> clicks = new ArrayList<Clickable>();
 		for (final Group sub : g.getSubgroups()) {
 			ItemStack is = new ItemStack(Material.MAGMA_CREAM);
-			ItemAPI.setDisplayName(is, ChatColor.GOLD + sub.getName());
-			ItemAPI.addLore(is, ChatColor.AQUA + "This group has "
+			ItemUtils.setDisplayName(is, ChatColor.GOLD + sub.getName());
+			ItemUtils.addLore(is, ChatColor.AQUA + "This group has "
 					+ sub.getSubgroups().size() + "sub groups itself");
-			ItemAPI.addLore(is, ChatColor.DARK_AQUA
+			ItemUtils.addLore(is, ChatColor.DARK_AQUA
 					+ "Click to remove this sub group");
 			Clickable c = new Clickable(is) {
 
@@ -141,8 +139,8 @@ public class LinkingGUI extends AbstractGroupGUI {
 
 	private Clickable getAddSubClickable() {
 		ItemStack makeSuper = new ItemStack(Material.LEATHER);
-		ItemAPI.setDisplayName(makeSuper, ChatColor.GOLD + "Add a new subgroup");
-		ItemAPI.addLore(
+		ItemUtils.setDisplayName(makeSuper, ChatColor.GOLD + "Add a new subgroup");
+		ItemUtils.addLore(
 				makeSuper,
 				ChatColor.AQUA
 						+ "This option means that the additional group you chose will inherit all members of "
@@ -161,14 +159,14 @@ public class LinkingGUI extends AbstractGroupGUI {
 
 	private Clickable getInfoClickable() {
 		ItemStack is = new ItemStack(Material.PAPER);
-		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Linking stats for " + g.getName());
+		ItemUtils.setDisplayName(is, ChatColor.GOLD + "Linking stats for " + g.getName());
 		if (g.hasSuperGroup()) {
-			ItemAPI.addLore(is, ChatColor.AQUA + "Current super group: "
+			ItemUtils.addLore(is, ChatColor.AQUA + "Current super group: "
 					+ g.getSuperGroup().getName());
 		} else {
-			ItemAPI.addLore(is, ChatColor.AQUA + "No current super group");
+			ItemUtils.addLore(is, ChatColor.AQUA + "No current super group");
 		}
-		ItemAPI.addLore(is, ChatColor.DARK_AQUA + "Currently "
+		ItemUtils.addLore(is, ChatColor.DARK_AQUA + "Currently "
 				+ g.getSubgroups().size() + " sub group"
 				+ ((g.getSubgroups().size() == 1) ? "" : "s")
 				+ ", which are listed below");
@@ -177,10 +175,10 @@ public class LinkingGUI extends AbstractGroupGUI {
 
 	private Clickable getRemoveSuperClickable() {
 		ItemStack is = new ItemStack(Material.DIAMOND);
-		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Remove current super group");
-		ItemAPI.addLore(is, ChatColor.AQUA + g.getSuperGroup().getName()
+		ItemUtils.setDisplayName(is, ChatColor.GOLD + "Remove current super group");
+		ItemUtils.addLore(is, ChatColor.AQUA + g.getSuperGroup().getName()
 				+ " is the super group of " + g.getName());
-		ItemAPI.addLore(is, ChatColor.DARK_AQUA + "Click to remove this link");
+		ItemUtils.addLore(is, ChatColor.DARK_AQUA + "Click to remove this link");
 		Clickable c = new Clickable(is) {
 
 			@Override
@@ -221,8 +219,8 @@ public class LinkingGUI extends AbstractGroupGUI {
 
 	private Clickable getAddSuperClickable() {
 		ItemStack makeSub = new ItemStack(Material.BEACON);
-		ItemAPI.setDisplayName(makeSub, ChatColor.GOLD + "Add super group");
-		ItemAPI.addLore(
+		ItemUtils.setDisplayName(makeSub, ChatColor.GOLD + "Add super group");
+		ItemUtils.addLore(
 				makeSub,
 				ChatColor.AQUA
 						+ "This option means that "
@@ -249,16 +247,16 @@ public class LinkingGUI extends AbstractGroupGUI {
 				continue;
 			}
 			ItemStack is = new ItemStack(Material.MAGMA_CREAM);
-			ItemAPI.setDisplayName(is, g.getName());
+			ItemUtils.setDisplayName(is, g.getName());
 			Clickable c;
 			if (!gm.hasAccess(g, p.getUniqueId(),
 					PermissionType.getPermission("LINKING"))) {
 				if (!makingSubGroup && g.hasSuperGroup()) {
 					// making a supergroup, but this one already has one
-					ItemAPI.addLore(is, ChatColor.RED
+					ItemUtils.addLore(is, ChatColor.RED
 							+ "This group already has a super group");
 				} else {
-					ItemAPI.addLore(is, ChatColor.RED
+					ItemUtils.addLore(is, ChatColor.RED
 							+ "You don't have permission to link this group");
 				}
 				c = new DecorationStack(is);
@@ -287,7 +285,7 @@ public class LinkingGUI extends AbstractGroupGUI {
 		// previous button
 		if (linkSelectingPage > 0) {
 			ItemStack back = new ItemStack(Material.ARROW);
-			ItemAPI.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
+			ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
 			Clickable baCl = new Clickable(back) {
 
 				@Override
@@ -303,7 +301,7 @@ public class LinkingGUI extends AbstractGroupGUI {
 		// next button
 		if ((45 * (linkSelectingPage + 1)) <= clicks.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
-			ItemAPI.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
+			ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
 
 				@Override
@@ -319,7 +317,7 @@ public class LinkingGUI extends AbstractGroupGUI {
 
 		// close button
 		ItemStack backToOverview = goBackStack(); 
-		ItemAPI.setDisplayName(backToOverview, ChatColor.GOLD + "Back to overview");
+		ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Back to overview");
 		ci.setSlot(new Clickable(backToOverview) {
 
 			@Override

@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
 public class BlackList {
