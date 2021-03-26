@@ -6,11 +6,9 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
 
@@ -26,7 +24,7 @@ public abstract class PrintingPressRecipe extends InputRecipe {
 
 		res = tag.enrichWithNBT(res);
 
-		ItemAPI.setDisplayName(res, name);
+		ItemUtils.setDisplayName(res, name);
 
 		return res;
 	}

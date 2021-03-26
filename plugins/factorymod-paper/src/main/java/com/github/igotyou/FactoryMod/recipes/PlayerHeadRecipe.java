@@ -1,20 +1,17 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /***
@@ -36,7 +33,7 @@ public class PlayerHeadRecipe extends InputRecipe {
 	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemStack is = new ItemStack(Material.PLAYER_HEAD, 1);
-		ItemAPI.addLore(is,"The player head of a randomly chosen online player");
+		ItemUtils.addLore(is,"The player head of a randomly chosen online player");
 		return Collections.singletonList(is);
 	}
 

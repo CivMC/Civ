@@ -1,17 +1,14 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
@@ -82,7 +79,7 @@ public class DecompactingRecipe extends InputRecipe {
 		List<ItemStack> result = new LinkedList<>();
 		if (i == null) {
 			ItemStack is = new ItemStack(Material.STONE, 64);
-			ItemAPI.addLore(is, compactedLore);
+			ItemUtils.addLore(is, compactedLore);
 			is.setAmount(1);
 			result.add(is);
 			return result;

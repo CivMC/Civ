@@ -1,23 +1,5 @@
 package com.github.igotyou.FactoryMod.factories;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.block.Furnace;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.FurnaceInventory;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
 import com.github.igotyou.FactoryMod.events.RecipeExecuteEvent;
@@ -34,10 +16,25 @@ import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Furnace;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.FurnaceInventory;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -169,7 +166,7 @@ public class FurnCraftChestFactory extends Factory {
 			if (p != null) {
 				ItemStack fuel = ((FurnacePowerManager) pm).getFuel().clone();
 				if (fuel != null) {
-					p.sendMessage(ChatColor.RED + "Failed to activate factory, there is no fuel (" + ItemNames.getItemName(fuel) + ") in the furnace");
+					p.sendMessage(ChatColor.RED + "Failed to activate factory, there is no fuel (" + ItemUtils.getItemName(fuel) + ") in the furnace");
 				}else{
 					p.sendMessage(ChatColor.RED + "Failed to activate factory, there is no fuel in the furnace");
 				}

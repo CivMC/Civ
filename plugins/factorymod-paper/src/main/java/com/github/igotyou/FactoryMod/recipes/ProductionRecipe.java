@@ -1,19 +1,16 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
@@ -87,13 +84,13 @@ public class ProductionRecipe extends InputRecipe {
 			double additionalChance = (((double) entry.getValue()) * factor) - currentOut.getAmount(entry.getKey());
 			if (Math.abs(additionalChance) > 0.00000001) {
 				ItemStack is = entry.getKey().clone();
-				ItemAPI.addLore(is, ChatColor.GOLD + decimalFormatting.format(additionalChance) + " chance for additional item");
+				ItemUtils.addLore(is, ChatColor.GOLD + decimalFormatting.format(additionalChance) + " chance for additional item");
 				stacks.add(is);
 			}
 		}
 		int possibleRuns = input.getMultiplesContainedIn(i);
 		for (ItemStack is : stacks) {
-			ItemAPI.addLore(is, ChatColor.GREEN + "Enough materials for " + String.valueOf(possibleRuns) + " runs");
+			ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for " + String.valueOf(possibleRuns) + " runs");
 		}
 		return stacks;
 	}

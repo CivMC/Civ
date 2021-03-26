@@ -1,13 +1,10 @@
 package com.github.igotyou.FactoryMod.repairManager;
 
-import java.util.Map.Entry;
-
-import org.bukkit.inventory.ItemStack;
-
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
-
+import java.util.Map.Entry;
+import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class PercentageHealthRepairManager implements IRepairManager {

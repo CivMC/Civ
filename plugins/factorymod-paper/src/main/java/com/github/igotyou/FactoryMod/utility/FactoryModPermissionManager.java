@@ -2,7 +2,6 @@ package com.github.igotyou.FactoryMod.utility;
 
 import java.util.Arrays;
 import java.util.List;
-
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 

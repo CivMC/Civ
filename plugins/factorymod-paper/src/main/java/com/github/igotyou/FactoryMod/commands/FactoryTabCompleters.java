@@ -1,7 +1,6 @@
 package com.github.igotyou.FactoryMod.commands;
 
 import java.util.List;
-
 import vg.civcraft.mc.civmodcore.command.Trie;
 
 public class FactoryTabCompleters {

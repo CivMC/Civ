@@ -4,7 +4,6 @@ import com.github.igotyou.FactoryMod.listeners.CitadelListener;
 import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.utility.FactoryModPermissionManager;
-
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class FactoryMod extends ACivMod {

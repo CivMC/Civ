@@ -1,16 +1,13 @@
 package com.github.igotyou.FactoryMod.commands;
 
+import com.github.igotyou.FactoryMod.utility.ItemUseGUI;
 import java.util.Arrays;
 import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.utility.ItemUseGUI;
-
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 

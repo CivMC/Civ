@@ -1,13 +1,10 @@
 package com.github.igotyou.FactoryMod.utility;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
 import java.util.logging.Level;
-
 import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-
-import com.github.igotyou.FactoryMod.FactoryMod;
-
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class LoggingUtils {

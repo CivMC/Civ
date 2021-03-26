@@ -1,20 +1,16 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class PylonRecipe extends InputRecipe {
@@ -61,7 +57,7 @@ public class PylonRecipe extends InputRecipe {
 		ItemMap currOut = getCurrentOutput();
 		List<ItemStack> res = new LinkedList<ItemStack>();
 		for (ItemStack is : currOut.getItemStackRepresentation()) {
-			ItemAPI.setLore(is, ChatColor.GOLD + "Currently there are "
+			ItemUtils.setLore(is, ChatColor.GOLD + "Currently there are "
 					+ FurnCraftChestFactory.getPylonFactories() == null ? "0"
 					: FurnCraftChestFactory.getPylonFactories().size()
 							+ " pylons on the map", ChatColor.RED
@@ -145,7 +141,7 @@ public class PylonRecipe extends InputRecipe {
 		List<String> result = new ArrayList<>();
 		for(Entry <ItemStack, Integer> entry : output.getEntrySet()) {
 			if (entry.getValue() > 0) {
-				result.add(entry.getValue() + " " + ItemNames.getItemName(entry.getKey()));
+				result.add(entry.getValue() + " " + ItemUtils.getItemName(entry.getKey()));
 			}
 		}
 		return result;

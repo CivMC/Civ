@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod.listeners;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -11,8 +12,6 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.github.igotyou.FactoryMod.FactoryMod;
 
 /**
  * Used to handle events related to items with compacted lore

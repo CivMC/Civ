@@ -1,9 +1,16 @@
 package com.github.igotyou.FactoryMod.factories;
 
+import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
+import com.github.igotyou.FactoryMod.events.ItemTransferEvent;
+import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
+import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
+import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
+import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
+import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
+import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,18 +20,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
-import com.github.igotyou.FactoryMod.events.ItemTransferEvent;
-import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
-import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
-import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
-import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
-import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
-import com.github.igotyou.FactoryMod.utility.LoggingUtils;
-
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class Sorter extends Factory {
 	private Map<BlockFace, ItemMap> assignedMaterials;
@@ -41,7 +38,7 @@ public class Sorter extends Factory {
 		this.sortAmount = sortAmount;
 		runTime = 0;
 		this.matsPerSide = matsPerSide;
-		for (BlockFace bf : BlockAPI.ALL_SIDES) {
+		for (BlockFace bf : WorldUtils.ALL_SIDES) {
 			assignedMaterials.put(bf, new ItemMap());
 		}
 	}
@@ -170,7 +167,7 @@ public class Sorter extends Factory {
 		Block center = mbs.getCenter().getBlock();
 		Inventory inv = getCenterInventory();
 		int leftToSort = sortAmount;
-		for (BlockFace bf : BlockAPI.ALL_SIDES) {
+		for (BlockFace bf : WorldUtils.ALL_SIDES) {
 			if (center.getRelative(bf).getState() instanceof InventoryHolder) {
 				Block b = center.getRelative(bf);
 				if (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST) {

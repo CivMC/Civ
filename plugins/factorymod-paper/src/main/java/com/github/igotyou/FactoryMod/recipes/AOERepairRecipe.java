@@ -1,11 +1,14 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,13 +16,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.FactoryMod;
-import com.github.igotyou.FactoryMod.factories.Factory;
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class AOERepairRecipe extends InputRecipe {
@@ -65,7 +62,7 @@ public class AOERepairRecipe extends InputRecipe {
 		List<ItemStack> bla = imp.getItemStackRepresentation();
 		for (ItemStack item : bla) {
 			item.setAmount(new ItemMap(i).getAmount(essence) - essenceCount);
-			ItemAPI.addLore(item, ChatColor.YELLOW + "Will repair "
+			ItemUtils.addLore(item, ChatColor.YELLOW + "Will repair "
 					+ facCounter + " nearby factories total");
 		}
 		return bla;
@@ -111,7 +108,7 @@ public class AOERepairRecipe extends InputRecipe {
 					.getRepairManager();
 			int diff = 100 - rm.getRawHealth();
 			if (diff >= repairPerEssence) {
-				ItemAPI.addLore(
+				ItemUtils.addLore(
 						is,
 						ChatColor.LIGHT_PURPLE
 								+ "Will repair "

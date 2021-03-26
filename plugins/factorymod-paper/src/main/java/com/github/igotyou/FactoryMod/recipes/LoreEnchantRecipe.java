@@ -1,20 +1,16 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class LoreEnchantRecipe extends InputRecipe {
@@ -33,11 +29,11 @@ public class LoreEnchantRecipe extends InputRecipe {
 		this.tool = tool;
 		exampleInput = tool.getItemStackRepresentation().get(0);
 		for (String s : overwritenLore) {
-			ItemAPI.addLore(exampleInput, s);
+			ItemUtils.addLore(exampleInput, s);
 		}
 		exampleOutput = tool.getItemStackRepresentation().get(0);
 		for (String s : appliedLore) {
-			ItemAPI.addLore(exampleOutput, s);
+			ItemUtils.addLore(exampleOutput, s);
 		}
 	}
 
@@ -63,7 +59,7 @@ public class LoreEnchantRecipe extends InputRecipe {
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemStack is = exampleOutput.clone();
 		if (i != null) {
-			ItemAPI.addLore(
+			ItemUtils.addLore(
 					is,
 					ChatColor.GREEN
 							+ "Enough materials for "
@@ -83,9 +79,9 @@ public class LoreEnchantRecipe extends InputRecipe {
 		List<ItemStack> returns = createLoredStacksForInfo(i);
 		ItemStack toSt = tool.getItemStackRepresentation().get(0);
 		for (String s : overwritenLore) {
-			ItemAPI.addLore(toSt, s);
+			ItemUtils.addLore(toSt, s);
 		}
-		ItemAPI.addLore(toSt, ChatColor.GREEN + "Enough materials for " + new ItemMap(toSt).getMultiplesContainedIn(i)
+		ItemUtils.addLore(toSt, ChatColor.GREEN + "Enough materials for " + new ItemMap(toSt).getMultiplesContainedIn(i)
 				+ " runs");
 		returns.add(toSt);
 		return returns;
@@ -163,11 +159,11 @@ public class LoreEnchantRecipe extends InputRecipe {
 
 	@Override
 	public List<String> getTextualInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		return Arrays.asList("1 " + ItemNames.getItemName(exampleInput));
+		return Arrays.asList("1 " + ItemUtils.getItemName(exampleInput));
 	}
 
 	@Override
 	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		return Arrays.asList("1 " + ItemNames.getItemName(exampleOutput));
+		return Arrays.asList("1 " + ItemUtils.getItemName(exampleOutput));
 	}
 }

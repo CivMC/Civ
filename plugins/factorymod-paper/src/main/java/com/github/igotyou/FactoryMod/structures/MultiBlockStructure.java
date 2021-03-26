@@ -1,18 +1,15 @@
 package com.github.igotyou.FactoryMod.structures;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-
-import com.github.igotyou.FactoryMod.FactoryMod;
-
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
  * Physical representation of a factory. This may be any shape as long as the
@@ -34,7 +31,7 @@ public abstract class MultiBlockStructure {
 	 */
 	public static List<Block> searchForBlockOnAllSides(Block b, Material m) {
 		LinkedList<Block> result = new LinkedList<>();
-		for (BlockFace face : BlockAPI.ALL_SIDES) {
+		for (BlockFace face : WorldUtils.ALL_SIDES) {
 			Block side = b.getRelative(face);
 			if (side.getType() == m) {
 				result.add(side);
@@ -54,7 +51,7 @@ public abstract class MultiBlockStructure {
 	 */
 	public static List<Block> searchForBlockOnSides(Block b, Material m) {
 		LinkedList<Block> result = new LinkedList<>();
-		for (BlockFace face : BlockAPI.PLANAR_SIDES) {
+		for (BlockFace face : WorldUtils.PLANAR_SIDES) {
 			Block side = b.getRelative(face);
 			if (side.getType() == m) {
 				result.add(side);
@@ -98,7 +95,7 @@ public abstract class MultiBlockStructure {
 
 	public static List<Block> getAdjacentBlocks(Block b) {
 		List<Block> blocks = new LinkedList<>();
-		for (BlockFace face : BlockAPI.ALL_SIDES) {
+		for (BlockFace face : WorldUtils.ALL_SIDES) {
 			blocks.add(b.getRelative(face));
 		}
 		return blocks;
@@ -123,7 +120,7 @@ public abstract class MultiBlockStructure {
 			return true;
 		}
 		int prGID = rein.getGroup().getGroupId();
-		for (BlockFace face : BlockAPI.ALL_SIDES) {
+		for (BlockFace face : WorldUtils.ALL_SIDES) {
 			Block rel = here.getRelative(face);
 			if (here.isBlockFacePowered(face)) {
 				Reinforcement relRein = ReinforcementLogic.getReinforcementProtecting(rel);
