@@ -1,20 +1,16 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class DeterministicEnchantingRecipe extends InputRecipe {
@@ -57,7 +53,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		im.addEnchant(enchant, level, true);
 		is.setItemMeta(im);
 		if (i != null) {
-			ItemAPI.addLore(is,
+			ItemUtils.addLore(is,
 					ChatColor.GREEN + "Enough materials for "
 							+ String.valueOf(
 									Math.min(tool.getMultiplesContainedIn(i), input.getMultiplesContainedIn(i)))
@@ -77,7 +73,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		}
 		List<ItemStack> returns = createLoredStacksForInfo(i);
 		ItemStack toSt = tool.getItemStackRepresentation().get(0);
-		ItemAPI.addLore(toSt,
+		ItemUtils.addLore(toSt,
 				ChatColor.GREEN + "Enough materials for " + new ItemMap(toSt).getMultiplesContainedIn(i) + " runs");
 		returns.add(toSt);
 		return returns;
@@ -123,13 +119,13 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 	@Override
 	public List<String> getTextualInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List<String> res = super.getTextualInputRepresentation(i, fccf);
-		res.add(1 + " " + ItemNames.getItemName(tool.getItemStackRepresentation().get(0)));
+		res.add("1 " + ItemUtils.getItemName(tool.getItemStackRepresentation().get(0)));
 		return res;
 	}
 
 	@Override
 	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		return Arrays.asList(1 + " " + ItemNames.getItemName(tool.getItemStackRepresentation().get(0)) + " with "
+		return Arrays.asList("1 " + ItemUtils.getItemName(tool.getItemStackRepresentation().get(0)) + " with "
 				+ enchant.toString() + " " + level);
 	}
 }

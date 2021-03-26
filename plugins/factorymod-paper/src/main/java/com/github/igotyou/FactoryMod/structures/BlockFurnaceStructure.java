@@ -2,7 +2,6 @@ package com.github.igotyou.FactoryMod.structures;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

@@ -1,17 +1,5 @@
 package com.github.igotyou.FactoryMod.interactionManager;
 
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.inventory.ItemStack;
-
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
@@ -22,10 +10,19 @@ import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.utility.FactoryModGUI;
-
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.List;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
@@ -205,17 +202,17 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				InputRecipe recipe = (InputRecipe) (rec);
 				ItemStack recStack = recipe.getRecipeRepresentation();
 				int runcount = fccf.getRunCount(recipe);
-				ItemAPI.addLore(recStack, "",ChatColor.AQUA + "Ran " + String.valueOf(runcount) + " times");
+				ItemUtils.addLore(recStack, "",ChatColor.AQUA + "Ran " + String.valueOf(runcount) + " times");
 				if (rec == fccf.getCurrentRecipe()) {
-					ItemAPI.addLore(recStack, ChatColor.GREEN + "Currently selected");
-					ItemAPI.addGlow(recStack);
+					ItemUtils.addLore(recStack, ChatColor.GREEN + "Currently selected");
+					ItemUtils.addGlow(recStack);
 				}
 				if (recipe instanceof ProductionRecipe) {
 					ProductionRecipe prod = (ProductionRecipe) recipe;
 					if (prod.getModifier() != null) {
-						ItemAPI.addLore(recStack, ChatColor.BOLD + "   " + ChatColor.GOLD
+						ItemUtils.addLore(recStack, ChatColor.BOLD + "   " + ChatColor.GOLD
 								+ fccf.getRecipeLevel(recipe) + " ★");
-						ItemAPI.addLore(recStack, ChatColor.GREEN + "Current output multiplier: " + decimalFormatting
+						ItemUtils.addLore(recStack, ChatColor.GREEN + "Current output multiplier: " + decimalFormatting
 								.format(prod.getModifier().getFactor(fccf.getRecipeLevel(recipe), runcount)));
 					}
 				}
@@ -236,8 +233,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				ci.addSlot(c);
 			}
 			ItemStack autoSelectStack = new ItemStack(Material.REDSTONE_BLOCK);
-			ItemAPI.setDisplayName(autoSelectStack, "Toggle auto select");
-			ItemAPI.addLore(autoSelectStack,
+			ItemUtils.setDisplayName(autoSelectStack, "Toggle auto select");
+			ItemUtils.addLore(autoSelectStack,
 					ChatColor.GOLD + "Make the factory automatically select any",
 					ChatColor.GOLD + "recipe it can run whenever you activate it",
 					ChatColor.AQUA + "Click to turn it " + (fccf.isAutoSelect() ? "off" : "on"));
@@ -252,8 +249,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			};
 			ci.setSlot(autoClick, (rows * 9) - 2);
 			ItemStack menuStack = new ItemStack(Material.PAINTING);
-			ItemAPI.setDisplayName(menuStack, "Open menu");
-			ItemAPI.addLore(menuStack, ChatColor.LIGHT_PURPLE + "Click to open a detailed menu");
+			ItemUtils.setDisplayName(menuStack, "Open menu");
+			ItemUtils.addLore(menuStack, ChatColor.LIGHT_PURPLE + "Click to open a detailed menu");
 			Clickable menuC = new Clickable(menuStack) {
 				@Override
 				public void clicked(Player p) {

@@ -1,21 +1,20 @@
 package com.github.igotyou.FactoryMod.interactionManager;
 
+import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.FactoryModManager;
+import com.github.igotyou.FactoryMod.factories.Sorter;
+import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
+import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.igotyou.FactoryMod.FactoryMod;
-import com.github.igotyou.FactoryMod.FactoryModManager;
-import com.github.igotyou.FactoryMod.factories.Sorter;
-import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
-import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
-
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+
 public class SorterInteractionManager implements IInteractionManager {
 	
 	private Sorter sorter;
@@ -75,11 +74,11 @@ public class SorterInteractionManager implements IInteractionManager {
 			BlockFace side = sorter.getSide(is);
 			if (side == null) {
 				sorter.addAssignment(bf, is);
-				p.sendMessage(ChatColor.GREEN + "Added " + ItemNames.getItemName(is) + " to " + bf.toString());
+				p.sendMessage(ChatColor.GREEN + "Added " + ItemUtils.getItemName(is) + " to " + bf.toString());
 			} else {
 				if (side == bf) {
 					sorter.removeAssignment(is);
-					p.sendMessage(ChatColor.GOLD + "Removed " + ItemNames.getItemName(is) + " from " + side.toString());
+					p.sendMessage(ChatColor.GOLD + "Removed " + ItemUtils.getItemName(is) + " from " + side.toString());
 				} else {
 					p.sendMessage(ChatColor.RED + "This item is already associated with " + side.toString());
 				}

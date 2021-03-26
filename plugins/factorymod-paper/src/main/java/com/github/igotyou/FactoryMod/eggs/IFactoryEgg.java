@@ -1,9 +1,8 @@
 package com.github.igotyou.FactoryMod.eggs;
 
-import org.bukkit.entity.Player;
-
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
+import org.bukkit.entity.Player;
 
 /**
  * This represents the design pattern "Factory", but because that word was

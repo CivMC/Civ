@@ -5,7 +5,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
-
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**

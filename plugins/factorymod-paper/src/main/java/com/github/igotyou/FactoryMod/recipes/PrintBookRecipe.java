@@ -1,19 +1,16 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
 
@@ -113,7 +110,7 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 		int possibleRuns = input.getMultiplesContainedIn(i);
 
 		for (ItemStack is : stacks) {
-			ItemAPI.addLore(is, ChatColor.GREEN + "Enough materials for "
+			ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
 					+ String.valueOf(possibleRuns) + " runs");
 		}
 
