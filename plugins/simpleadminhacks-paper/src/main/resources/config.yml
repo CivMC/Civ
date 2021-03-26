@@ -187,6 +187,8 @@ hacks:
       - PACKED_ICE
       - FROSTED_ICE
       - BLUE_ICE
+  StrayStats:
+    enabled: true
   TestConfigHack:
     enabled: true
     # Please do not change any of the values below, otherwise it will undermine the test.
