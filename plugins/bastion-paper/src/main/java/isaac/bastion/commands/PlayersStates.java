@@ -1,13 +1,11 @@
 package isaac.bastion.commands;
 
+import isaac.bastion.Bastion;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import isaac.bastion.Bastion;
 
 public class PlayersStates {
 	static public enum Mode {

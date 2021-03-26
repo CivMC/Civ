@@ -1,9 +1,14 @@
 package isaac.bastion.listeners;
 
+import isaac.bastion.Bastion;
+import isaac.bastion.BastionBlock;
+import isaac.bastion.BastionType;
+import isaac.bastion.manager.BastionBlockManager;
+import isaac.bastion.storage.BastionBlockStorage;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.logging.Level;
-
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,13 +26,6 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import isaac.bastion.Bastion;
-import isaac.bastion.BastionBlock;
-import isaac.bastion.BastionType;
-import isaac.bastion.manager.BastionBlockManager;
-import isaac.bastion.storage.BastionBlockStorage;
-import net.md_5.bungee.api.chat.TextComponent;
 
 public class BastionBreakListener implements Listener {
 
