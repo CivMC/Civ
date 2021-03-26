@@ -1,9 +1,11 @@
 package com.github.maxopoly.finale;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
 import com.github.maxopoly.finale.external.FinaleSettingManager;
 import com.github.maxopoly.finale.listeners.DamageListener;
 import com.github.maxopoly.finale.listeners.EnchantmentDisableListener;
+import com.github.maxopoly.finale.listeners.ExtraDurabilityListener;
 import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
 import com.github.maxopoly.finale.listeners.PlayerListener;
 import com.github.maxopoly.finale.listeners.PotionListener;
@@ -55,6 +57,8 @@ public class Finale extends ACivMod {
 	@Override
 	public void onDisable() {
 		HandlerList.unregisterAll(this);
+		ProtocolLibrary.getProtocolManager().removePacketListeners(this);
+		ProtocolLibrary.getProtocolManager().getAsynchronousManager().unregisterAsyncHandlers(this);
 		Bukkit.getScheduler().cancelTasks(this);
 	}
 
@@ -75,6 +79,7 @@ public class Finale extends ACivMod {
 							ctpManager), this);
 		}
 		Bukkit.getPluginManager().registerEvents(new WeaponModificationListener(), this);
+		Bukkit.getPluginManager().registerEvents(new ExtraDurabilityListener(), this);
 		Bukkit.getPluginManager().registerEvents(new EnchantmentDisableListener(config.getDisabledEnchants()), this);
 		Bukkit.getPluginManager().registerEvents(new PotionListener(config.getPotionHandler()), this);
 		Bukkit.getPluginManager().registerEvents(new VelocityFixListener(config.getVelocityHandler()), this);

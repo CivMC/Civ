@@ -23,13 +23,14 @@ public class FinaleManager {
 	private WeaponModifier weaponModifier;
 	private ArmourModifier armourModifier;
 	private PotionHandler potionHandler;
+	private boolean invulTicksEnabled;
 	private Map<EntityDamageEvent.DamageCause, Integer> invulnerableTicks;
 	
 	private CPSHandler cpsHandler;
 	private CombatConfig combatConfig;
 	private AsyncPacketHandler combatHandler;
 
-	public FinaleManager(boolean debug, boolean attackSpeedEnabled, double attackSpeed, Map<EntityDamageEvent.DamageCause, Integer> invulnerableTicks, boolean regenHandlerEnabled,
+	public FinaleManager(boolean debug, boolean attackSpeedEnabled, double attackSpeed, boolean invulTicksEnabled, Map<EntityDamageEvent.DamageCause, Integer> invulnerableTicks, boolean regenHandlerEnabled,
 			boolean ctpOnLogin, SaturationHealthRegenHandler regenHandler, WeaponModifier weaponModifier, ArmourModifier armourModifier, PotionHandler potionHandler, CombatConfig combatConfig) {
 		this.debug = debug;
 		this.attackSpeedEnabled = attackSpeedEnabled;
@@ -40,6 +41,7 @@ public class FinaleManager {
 		this.armourModifier = armourModifier;
 		this.potionHandler = potionHandler;
 		this.combatConfig = combatConfig;
+		this.invulTicksEnabled = invulTicksEnabled;
 		this.invulnerableTicks = invulnerableTicks;
 		this.ctpOnLogin = ctpOnLogin;
 		
@@ -57,6 +59,10 @@ public class FinaleManager {
 	
 	public AsyncPacketHandler getCombatHandler() {
 		return combatHandler;
+	}
+
+	public boolean isInvulTicksEnabled() {
+		return invulTicksEnabled;
 	}
 	
 	public Map<EntityDamageEvent.DamageCause, Integer> getInvulnerableTicks() {

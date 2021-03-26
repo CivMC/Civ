@@ -40,4 +40,8 @@ public class AttributeModifier {
 		return new AttributeModifier("generic.armorToughness", toughness, slot);
 	}
 	
+	public static AttributeModifier knockbackResistance(double kbResistance, Slot slot) {
+		return new AttributeModifier("generic.knockbackResistance", kbResistance, slot);
+	}
+	
 }

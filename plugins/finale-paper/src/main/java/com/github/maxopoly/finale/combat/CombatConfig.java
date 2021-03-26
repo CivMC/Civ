@@ -1,164 +1,175 @@
 package com.github.maxopoly.finale.combat;
 
+import com.github.maxopoly.finale.Finale;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.util.Vector;
+
 public class CombatConfig {
 
 	private int cpsLimit;
 	private long cpsCounterInterval;
-	private boolean noCooldown;
+	private boolean attackCooldownEnabled;
+	private boolean knockbackSwordsEnabled;
+	private boolean sprintResetEnabled;
+	private boolean waterSprintResetEnabled;
 	private double maxReach;
 	private boolean sweepEnabled;
 	private CombatSoundConfig combatSounds;
-	private double horizontalKb;
-	private double verticalKb;
-	private double sprintHorizontal;
-	private double sprintVertical;
-	private double airHorizontal;
-	private double airVertical;
-	private double waterHorizontal;
-	private double waterVertical;
-	private double attackMotionModifier;
-	private boolean stopSprinting;
-	private double potionCutOffDistance;
+	private double knockbackLevelMultiplier;
+	private Vector knockbackMultiplier;
+	private Vector sprintMultiplier;
+	private Vector waterKnockbackMultiplier;
+	private Vector airKnockbackMultiplier;
+	private Vector victimMotion;
+	private Vector maxVictimMotion;
+	private Vector attackerMotion;
 
-	public CombatConfig(boolean noCooldown, int cpsLimit, long cpsCounterInterval, double maxReach, boolean sweepEnabled, CombatSoundConfig combatSounds,
-			double horizontalKb, double verticalKb, double sprintHorizontal, double sprintVertical, double airHorizontal, double airVertical,
-			double waterHorizontal, double waterVertical, double attackMotionModifier, boolean stopSprinting, double potionCutOffDistance) {
-		this.noCooldown = noCooldown;
+	public CombatConfig(boolean attackCooldownEnabled, boolean knockbackSwordsEnabled, boolean sprintResetEnabled, boolean waterSprintResetEnabled, int cpsLimit, long cpsCounterInterval, double maxReach, boolean sweepEnabled, CombatSoundConfig combatSounds,
+						double knockbackLevelMultiplier, Vector knockbackMultiplier, Vector sprintMultiplier, Vector waterKnockbackMultiplier, Vector airKnockbackMultiplier, Vector victimMotion, Vector maxVictimMotion,
+						Vector attackerMotion) {
+		this.attackCooldownEnabled = attackCooldownEnabled;
+		this.knockbackSwordsEnabled = knockbackSwordsEnabled;
+		this.sprintResetEnabled = sprintResetEnabled;
+		this.waterSprintResetEnabled = waterSprintResetEnabled;
 		this.cpsLimit = cpsLimit;
 		this.cpsCounterInterval = cpsCounterInterval;
 		this.maxReach = maxReach;
 		this.sweepEnabled = sweepEnabled;
 		this.combatSounds = combatSounds;
-		this.horizontalKb = horizontalKb;
-		this.verticalKb = verticalKb;
-		this.sprintHorizontal = sprintHorizontal;
-		this.sprintVertical = sprintVertical;
-		this.airHorizontal = airHorizontal;
-		this.airVertical = airVertical;
-		this.waterHorizontal = waterHorizontal;
-		this.waterVertical = waterVertical;
-		this.attackMotionModifier = attackMotionModifier;
-		this.stopSprinting = stopSprinting;
-		this.potionCutOffDistance = potionCutOffDistance;
-	}
-	
-	public void setPotionCutOffDistance(double potionCutOffDistance) {
-		this.potionCutOffDistance = potionCutOffDistance;
-	}
-	
-	public double getPotionCutOffDistance() {
-		return potionCutOffDistance;
-	}
-	
-	public void setHorizontalKb(double horizontalKb) {
-		this.horizontalKb = horizontalKb;
-	}
-	
-	public void setVerticalKb(double verticalKb) {
-		this.verticalKb = verticalKb;
-	}
-	
-	public void setSprintHorizontal(double sprintHorizontal) {
-		this.sprintHorizontal = sprintHorizontal;
-	}
-	
-	public void setSprintVertical(double sprintVertical) {
-		this.sprintVertical = sprintVertical;
+		this.knockbackLevelMultiplier = knockbackLevelMultiplier;
+		this.knockbackMultiplier = knockbackMultiplier;
+		this.sprintMultiplier = sprintMultiplier;
+		this.waterKnockbackMultiplier = waterKnockbackMultiplier;
+		this.airKnockbackMultiplier = airKnockbackMultiplier;
+		this.victimMotion = victimMotion;
+		this.maxVictimMotion = maxVictimMotion;
+		this.attackerMotion = attackerMotion;
 	}
 
-	public void setAirHorizontal(double airHorizontal) {
-		this.airHorizontal = airHorizontal;
+	private void setVector(FileConfiguration config, String name, Vector vec) {
+		config.set(name + ".x", vec.getX());
+		config.set(name + ".y", vec.getY());
+		config.set(name + ".z", vec.getZ());
 	}
-	
-	public void setAirVertical(double airVertical) {
-		this.airVertical = airVertical;
+
+	public void save() {
+		FileConfiguration config = Finale.getPlugin().getConfig();
+		setVector(config, "clearCombat.knockbackMultiplier", this.knockbackMultiplier);
+		setVector(config, "clearCombat.sprintMultiplier", this.sprintMultiplier);
+		setVector(config, "clearCombat.waterKnockbackMultiplier", this.waterKnockbackMultiplier);
+		setVector(config, "clearCombat.airKnockbackMultiplier", this.airKnockbackMultiplier);
+		setVector(config, "clearCombat.victimMotion", this.victimMotion);
+		setVector(config, "clearCombat.maxVictimMotion", this.maxVictimMotion);
+		setVector(config, "clearCombat.attackerMotion", this.attackerMotion);
+		config.options().copyDefaults(true);
+		Finale.getPlugin().saveConfig();
 	}
-	
-	public void setWaterHorizontal(double waterHorizontal) {
-		this.waterHorizontal = waterHorizontal;
+
+	public double getKnockbackLevelMultiplier() {
+		return knockbackLevelMultiplier;
 	}
-	
-	public void setWaterVertical(double waterVertical) {
-		this.waterVertical = waterVertical;
+
+	public Vector getKnockbackMultiplier() {
+		return knockbackMultiplier;
 	}
-	
-	public void setAttackMotionModifier(double attackMotionModifier) {
-		this.attackMotionModifier = attackMotionModifier;
+
+	public Vector getSprintMultiplier() {
+		return sprintMultiplier;
 	}
-	
-	public void setStopSprinting(boolean stopSprinting) {
-		this.stopSprinting = stopSprinting;
+
+	public Vector getAirKnockbackMultiplier() {
+		return airKnockbackMultiplier;
 	}
-	
-	public double getAirHorizontal() {
-		return airHorizontal;
+
+	public Vector getWaterKnockbackMultiplier() {
+		return waterKnockbackMultiplier;
 	}
-	
-	public double getAirVertical() {
-		return airVertical;
+
+	public Vector getVictimMotion() {
+		return victimMotion;
 	}
-	
-	public double getWaterHorizontal() {
-		return waterHorizontal;
+
+	public Vector getMaxVictimMotion() {
+		return maxVictimMotion;
 	}
-	
-	public double getWaterVertical() {
-		return waterVertical;
+
+	public Vector getAttackerMotion() {
+		return attackerMotion;
 	}
-	
-	public boolean isStopSprinting() {
-		return stopSprinting;
+
+	public boolean isSprintResetEnabled() {
+		return sprintResetEnabled;
 	}
-	
-	public double getHorizontalKb() {
-		return horizontalKb;
+
+	public boolean isWaterSprintResetEnabled() {
+		return waterSprintResetEnabled;
 	}
-	
-	public double getVerticalKb() {
-		return verticalKb;
-	}
-	
-	public double getSprintHorizontal() {
-		return sprintHorizontal;
-	}
-	
-	public double getSprintVertical() {
-		return sprintVertical;
-	}
-	
-	public double getAttackMotionModifier() {
-		return attackMotionModifier;
-	}
-	
+
 	public int getCPSLimit() {
 		return cpsLimit;
 	}
-	
+
 	public long getCpsCounterInterval() {
 		return cpsCounterInterval;
 	}
-	
-	public boolean isNoCooldown() {
-		return noCooldown;
+
+	public boolean isKnockbackSwordsEnabled() {
+		return knockbackSwordsEnabled;
 	}
-	
+
+	public boolean isAttackCooldownEnabled() {
+		return attackCooldownEnabled;
+	}
+
 	public double getMaxReach() {
 		return maxReach;
 	}
-	
+
 	public boolean isSweepEnabled() {
 		return sweepEnabled;
 	}
-	
+
 	public CombatSoundConfig getCombatSounds() {
 		return combatSounds;
 	}
-	
-	public double getHorizontalKB() {
-		return horizontalKb;
+
+	public void setKnockbackMultiplier(Vector knockbackMultiplier) {
+		this.knockbackMultiplier = knockbackMultiplier;
 	}
-	
-	public double getVerticalKB() {
-		return verticalKb;
+
+	public void setSprintMultiplier(Vector sprintMultiplier) {
+		this.sprintMultiplier = sprintMultiplier;
+	}
+
+	public void setAirKnockbackMultiplier(Vector airKnockbackMultiplier) {
+		this.airKnockbackMultiplier = airKnockbackMultiplier;
+	}
+
+	public void setWaterKnockbackMultiplier(Vector waterKnockbackMultiplier) {
+		this.waterKnockbackMultiplier = waterKnockbackMultiplier;
+	}
+
+	public void setVictimMotion(Vector victimMotion) {
+		this.victimMotion = victimMotion;
+	}
+
+	public void setMaxVictimMotion(Vector maxVictimMotion) {
+		this.maxVictimMotion = maxVictimMotion;
+	}
+
+	public void setAttackerMotion(Vector attackerMotion) {
+		this.attackerMotion = attackerMotion;
+	}
+
+	public void setSprintResetEnabled(boolean sprintResetEnabled) {
+		this.sprintResetEnabled = sprintResetEnabled;
+	}
+
+	public void setWaterSprintResetEnabled(boolean waterSprintResetEnabled) {
+		this.waterSprintResetEnabled = waterSprintResetEnabled;
+	}
+
+	public void setKnockbackSwordsEnabled(boolean knockbackSwordsEnabled) {
+		this.knockbackSwordsEnabled = knockbackSwordsEnabled;
 	}
 }

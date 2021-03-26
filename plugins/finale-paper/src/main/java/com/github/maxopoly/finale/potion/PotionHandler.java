@@ -8,11 +8,15 @@ import org.bukkit.potion.PotionType;
 public class PotionHandler {
 
 	private double healthPotionMultiplier;
+	private double minIntensityCutOff;
+	private double minIntensityImpact;
 	private Map<PotionType, List<PotionModification>> potionMods;
 
-	public PotionHandler(Map<PotionType, List<PotionModification>> potionMods, double healthPotionMultiplier) {
+	public PotionHandler(Map<PotionType, List<PotionModification>> potionMods, double healthPotionMultiplier, double minIntensityCutOff, double minIntensityImpact) {
 		this.potionMods = potionMods;
 		this.healthPotionMultiplier = healthPotionMultiplier;
+		this.minIntensityCutOff = minIntensityCutOff;
+		this.minIntensityImpact = minIntensityImpact;
 	}
 
 	public PotionModification getApplyingModifications(PotionType pot, ItemStack is) {
@@ -33,6 +37,14 @@ public class PotionHandler {
 
 	public double getHealthPotionMultiplier() {
 		return healthPotionMultiplier;
+	}
+
+	public double getMinIntensityCutOff() {
+		return minIntensityCutOff;
+	}
+
+	public double getMinIntensityImpact() {
+		return minIntensityImpact;
 	}
 
 }

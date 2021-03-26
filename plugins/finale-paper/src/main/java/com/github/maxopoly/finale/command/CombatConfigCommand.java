@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.NumberConversions;
+import org.bukkit.util.Vector;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
@@ -24,63 +25,80 @@ public class CombatConfigCommand extends StandaloneCommand {
 		CombatConfig cc = Finale.getPlugin().getManager().getCombatConfig();
 		
 		if (arg1.length == 0) {
-			arg0.sendMessage(ChatColor.WHITE + "horizontal: " + ChatColor.RED + cc.getHorizontalKb());
-			arg0.sendMessage(ChatColor.WHITE + "vertical: " + ChatColor.RED + cc.getVerticalKb());
-			arg0.sendMessage(ChatColor.WHITE + "sprintHorizontal: " + ChatColor.RED + cc.getSprintHorizontal());
-			arg0.sendMessage(ChatColor.WHITE + "sprintVertical: " + ChatColor.RED + cc.getSprintVertical());
-			arg0.sendMessage(ChatColor.WHITE + "airHorizontal: " + ChatColor.RED + cc.getAirHorizontal());
-			arg0.sendMessage(ChatColor.WHITE + "airVertical: " + ChatColor.RED + cc.getAirVertical());
-			arg0.sendMessage(ChatColor.WHITE + "attackMotion: " + ChatColor.RED + cc.getAttackMotionModifier());
-			arg0.sendMessage(ChatColor.WHITE + "stopSprinting: " + ChatColor.RED + cc.isStopSprinting());
+			arg0.sendMessage(ChatColor.WHITE + "knockback: " + ChatColor.RED + cc.getKnockbackMultiplier());
+			arg0.sendMessage(ChatColor.WHITE + "sprint: " + ChatColor.RED + cc.getSprintMultiplier());
+			arg0.sendMessage(ChatColor.WHITE + "water: " + ChatColor.RED + cc.getWaterKnockbackMultiplier());
+			arg0.sendMessage(ChatColor.WHITE + "air: " + ChatColor.RED + cc.getAirKnockbackMultiplier());
+			arg0.sendMessage(ChatColor.WHITE + "victim: " + ChatColor.RED + cc.getVictimMotion());
+			arg0.sendMessage(ChatColor.WHITE + "maxVictim: " + ChatColor.RED + cc.getMaxVictimMotion());
+			arg0.sendMessage(ChatColor.WHITE + "attacker: " + ChatColor.RED + cc.getAttackerMotion());
+			arg0.sendMessage(ChatColor.WHITE + "sprintReset: " + ChatColor.RED + cc.isSprintResetEnabled());
 			arg0.sendMessage(ChatColor.WHITE + "noDamageTicks: " + ChatColor.RED + Finale.getPlugin().getManager().getInvulnerableTicks().get(DamageCause.ENTITY_ATTACK));
-			arg0.sendMessage(ChatColor.WHITE + "potionCutOffDistance: " + ChatColor.RED + cc.getPotionCutOffDistance());
+			return true;
+		}
+
+		if (arg1.length == 1 && arg1[0].equalsIgnoreCase("save")) {
+			cc.save();
+			arg0.sendMessage(ChatColor.GREEN + "You have saved the combat config.");
+			return true;
+		}
+
+		if (arg1.length < 2) {
+			arg0.sendMessage(ChatColor.RED + "USAGE: /combatconfig <property> <value>");
 			return true;
 		}
 		
 		String propName = arg1[0];
 		String value = arg1[1];
 		
-		if (propName.equalsIgnoreCase("stopSprinting")) {
-			boolean stopSprinting = value.equalsIgnoreCase("true");
-			cc.setStopSprinting(stopSprinting);
-			arg0.sendMessage(ChatColor.GREEN + "Set stop sprinting to " + stopSprinting);
+		if (propName.equalsIgnoreCase("sprintReset")) {
+			boolean sprintReset = value.equalsIgnoreCase("true");
+			cc.setSprintResetEnabled(sprintReset);
+			arg0.sendMessage(ChatColor.GREEN + "Set sprintReset to " + sprintReset);
 			return true;
 		}
-		
-		double num = NumberConversions.toDouble(value);
-		
+
+		if (propName.equalsIgnoreCase("noDamageTicks")) {
+			int invulnTicks = NumberConversions.toInt(value);
+			Finale.getPlugin().getManager().getInvulnerableTicks().put(DamageCause.ENTITY_ATTACK, invulnTicks);
+			arg0.sendMessage(ChatColor.GREEN + "Set noDamageTicks to " + invulnTicks);
+			return true;
+		}
+
+		if (arg1.length < 4) {
+			arg0.sendMessage(ChatColor.RED + "USAGE: /combatconfig <property> <x> <y> <z>");
+			return true;
+		}
+
+		double x = NumberConversions.toDouble(arg1[1]);
+		double y = NumberConversions.toDouble(arg1[2]);
+		double z = NumberConversions.toDouble(arg1[3]);
+		Vector vec = new Vector(x, y, z);
 		switch(propName) {
-			case "horizontal":
-				cc.setHorizontalKb(num);
+			case "knockback":
+				cc.setKnockbackMultiplier(vec);
 				break;
-			case "vertical":
-				cc.setVerticalKb(num);
+			case "sprint":
+				cc.setSprintMultiplier(vec);
 				break;
-			case "sprintHorizontal":
-				cc.setSprintHorizontal(num);
+			case "water":
+				cc.setWaterKnockbackMultiplier(vec);
 				break;
-			case "sprintVertical":
-				cc.setSprintVertical(num);
+			case "air":
+				cc.setAirKnockbackMultiplier(vec);
 				break;
-			case "airHorizontal":
-				cc.setAirHorizontal(num);
+			case "victim":
+				cc.setVictimMotion(vec);
 				break;
-			case "airVertical":
-				cc.setAirVertical(num);
+			case "maxVictim":
+				cc.setMaxVictimMotion(vec);
 				break;
-			case "attackMotion":
-				cc.setAttackMotionModifier(num);
-				break;
-			case "noDamageTicks":
-				int invulnTicks = (int) num;
-				Finale.getPlugin().getManager().getInvulnerableTicks().put(DamageCause.ENTITY_ATTACK, invulnTicks);
-				break;
-			case "potionCutOffDistance":
-				cc.setPotionCutOffDistance(num);
+			case "attacker":
+				cc.setAttackerMotion(vec);
 				break;
 		}
 		
-		arg0.sendMessage(ChatColor.GREEN + "Set " + propName + " to " + num);
+		arg0.sendMessage(ChatColor.GREEN + "Set " + propName + " to " + vec);
 		return true;
 	}
 
