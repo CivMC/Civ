@@ -1,7 +1,6 @@
 package com.devotedmc.ExilePearl;
 
 import java.util.UUID;
-
 import org.bukkit.entity.Player;
 
 /**

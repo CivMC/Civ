@@ -1,15 +1,13 @@
 package com.devotedmc.ExilePearl.holder;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.google.common.base.Preconditions;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * A player holding an exile pearl
@@ -25,7 +23,7 @@ public class PlayerHolder implements PearlHolder {
 	 * @param player The player holding the pearl
 	 */
 	public PlayerHolder(final Player player) {
-		Guard.ArgumentNotNull(player, "player");
+		Preconditions.checkNotNull(player, "player");
 
 		this.player = player;
 	}

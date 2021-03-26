@@ -1,8 +1,7 @@
 package com.devotedmc.ExilePearl.holder;
 
-import org.bukkit.Location;
-
 import com.devotedmc.ExilePearl.ExilePearl;
+import org.bukkit.Location;
 import org.bukkit.World;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 

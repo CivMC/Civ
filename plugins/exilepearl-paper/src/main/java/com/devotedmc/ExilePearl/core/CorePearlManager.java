@@ -1,29 +1,5 @@
 package com.devotedmc.ExilePearl.core;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFactory;
@@ -40,9 +16,31 @@ import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.util.SpawnUtil;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.util.cooldowns.ICoolDownHandler;
 import vg.civcraft.mc.civmodcore.util.cooldowns.MilliSecCoolDownHandler;
 
@@ -64,14 +62,14 @@ final class CorePearlManager implements PearlManager {
 
 	/**
 	 * Creates a new PearlManager instance
-	 * @param logger The logging instance
-	 * @param factory The pearl factory
+	 * @param pearlApi The api instance
+	 * @param pearlFactory The pearl factory
 	 * @param storage The database storage provider
 	 */
 	public CorePearlManager(final ExilePearlApi pearlApi, final PearlFactory pearlFactory, final StorageProvider storage) {
-		Guard.ArgumentNotNull(pearlApi, "pearlApi");
-		Guard.ArgumentNotNull(pearlFactory, "pearlFactory");
-		Guard.ArgumentNotNull(storage, "storage");
+		Preconditions.checkNotNull(pearlApi, "pearlApi");
+		Preconditions.checkNotNull(pearlFactory, "pearlFactory");
+		Preconditions.checkNotNull(storage, "storage");
 
 		this.pearlApi = pearlApi;
 		this.pearlFactory = pearlFactory;
@@ -104,9 +102,9 @@ final class CorePearlManager implements PearlManager {
 
 	@Override
 	public ExilePearl exilePlayer(final UUID exiledId, final UUID killerId, Location location) {
-		Guard.ArgumentNotNull(exiledId, "exiledId");
-		Guard.ArgumentNotNull(killerId, "killerId");
-		Guard.ArgumentNotNull(location, "location");
+		Preconditions.checkNotNull(exiledId, "exiledId");
+		Preconditions.checkNotNull(killerId, "killerId");
+		Preconditions.checkNotNull(location, "location");
 
 		final Block block = location.getBlock();
 		final BlockState bs = block.getState();
@@ -119,8 +117,8 @@ final class CorePearlManager implements PearlManager {
 
 	@Override
 	public ExilePearl exilePlayer(UUID exiledId, Player killer) {
-		Guard.ArgumentNotNull(exiledId, "exiledId");
-		Guard.ArgumentNotNull(killer, "killer");
+		Preconditions.checkNotNull(exiledId, "exiledId");
+		Preconditions.checkNotNull(killer, "killer");
 
 		if (!killer.isOnline()) {
 			return null;
@@ -131,9 +129,9 @@ final class CorePearlManager implements PearlManager {
 
 	@Override
 	public ExilePearl exilePlayer(UUID exiledId, UUID killerId, PearlHolder holder) {
-		Guard.ArgumentNotNull(exiledId, "exiledId");
-		Guard.ArgumentNotNull(killerId, "killerId");
-		Guard.ArgumentNotNull(holder, "holder");
+		Preconditions.checkNotNull(exiledId, "exiledId");
+		Preconditions.checkNotNull(killerId, "killerId");
+		Preconditions.checkNotNull(holder, "holder");
 
 		if (pearlApi.isPlayerExiled(exiledId)) {
 			ExilePearl pearl = pearlApi.getPearl(exiledId);
@@ -165,8 +163,8 @@ final class CorePearlManager implements PearlManager {
 	 */
 	@Override
 	public boolean freePearl(ExilePearl pearl, PearlFreeReason reason) {
-		Guard.ArgumentNotNull(pearl, "pearl");
-		Guard.ArgumentNotNull(reason, "reason");
+		Preconditions.checkNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(reason, "reason");
 
 		// Don't call the event if the pearl was already freed while they were offline
 		if (!pearl.getFreedOffline()) {
@@ -204,7 +202,7 @@ final class CorePearlManager implements PearlManager {
 
 	@Override
 	public ExilePearl getPearl(String name) {
-		Guard.ArgumentNotNullOrEmpty(name, "name");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(name), "name");
 
 		for(ExilePearl pearl :pearls.values()) {
 			if (pearl.getPlayerName().equalsIgnoreCase(name)) {
@@ -217,14 +215,14 @@ final class CorePearlManager implements PearlManager {
 
 	@Override
 	public ExilePearl getPearl(UUID uid) {
-		Guard.ArgumentNotNull(uid, "uid");
+		Preconditions.checkNotNull(uid, "uid");
 		return pearls.get(uid);
 	}
 
 
 	@Override
 	public boolean isPlayerExiled(Player player) {
-		Guard.ArgumentNotNull(player, "player");
+		Preconditions.checkNotNull(player, "player");
 		ExilePearl pearl = pearls.get(player.getUniqueId());
 		return pearl != null && !pearl.getFreedOffline();
 	}
@@ -232,7 +230,7 @@ final class CorePearlManager implements PearlManager {
 
 	@Override
 	public boolean isPlayerExiled(UUID uid) {
-		Guard.ArgumentNotNull(uid, "uid");
+		Preconditions.checkNotNull(uid, "uid");
 		return pearls.get(uid) != null;
 	}
 

@@ -1,10 +1,9 @@
 package com.devotedmc.ExilePearl.command;
 
-import org.bukkit.entity.Player;
-
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
+import org.bukkit.entity.Player;
 
 public class CmdPearlBroadcastSilence extends PearlCommand {
 

@@ -1,22 +1,20 @@
 package com.devotedmc.ExilePearl.core;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map.Entry;
-import java.util.UUID;
-
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerMoveEvent;
+import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.SuicideHandler;
 import com.devotedmc.ExilePearl.config.PearlConfig;
-
-import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.UUID;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 /**
  * Lets exiled players kill themselves with a timer

@@ -1,13 +1,11 @@
 package com.devotedmc.ExilePearl;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
-
 import com.devotedmc.ExilePearl.config.Configurable;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
+import java.util.List;
+import java.util.UUID;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
 public interface DamageLogger extends Configurable, Listener, ExilePearlRunnable {
 

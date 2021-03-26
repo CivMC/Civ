@@ -1,20 +1,17 @@
 package com.devotedmc.ExilePearl.listener;
 
-import java.util.UUID;
-
-import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Listener;
+import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.config.PearlConfig;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
-
-import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
+import com.google.common.base.Preconditions;
+import java.util.UUID;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Listener;
 
 public class RuleListener implements Listener {
 
@@ -26,7 +23,7 @@ public class RuleListener implements Listener {
 	 * @param pearlApi The PearlApi instance
 	 */
 	public RuleListener(final ExilePearlApi pearlApi) {
-		Guard.ArgumentNotNull(pearlApi, "pearlApi");
+		Preconditions.checkNotNull(pearlApi, "pearlApi");
 
 		this.pearlApi = pearlApi;
 		this.config = pearlApi.getPearlConfig();

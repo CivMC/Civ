@@ -1,5 +1,11 @@
 package com.devotedmc.ExilePearl.core;
 
+import com.devotedmc.ExilePearl.DamageLogger;
+import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
+import com.devotedmc.ExilePearl.util.EntityDamageEventWrapper;
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,7 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
+import net.minelink.ctplus.compat.api.NpcIdentity;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -21,15 +27,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
-
-import com.devotedmc.ExilePearl.DamageLogger;
-import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.config.PearlConfig;
-import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
-import com.devotedmc.ExilePearl.util.EntityDamageEventWrapper;
-
-import net.minelink.ctplus.compat.api.NpcIdentity;
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * This class tracks damage dealt between players for the purpose
@@ -96,8 +93,8 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 
 	@Override
 	public void recordDamage(UUID playerId, Player damager, double amount) {
-		Guard.ArgumentNotNull(playerId, "playerId");
-		Guard.ArgumentNotNull(damager, "damager");
+		Preconditions.checkNotNull(playerId, "playerId");
+		Preconditions.checkNotNull(damager, "damager");
 
 		DamageLog rec = damageLogs.get(playerId);
 		if (rec == null) {
@@ -112,14 +109,14 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 
 	@Override
 	public void recordDamage(Player player, Player damager, double amount) {
-		Guard.ArgumentNotNull(player, "player");
-		Guard.ArgumentNotNull(damager, "damager");
+		Preconditions.checkNotNull(player, "player");
+		Preconditions.checkNotNull(damager, "damager");
 		recordDamage(player.getUniqueId(), damager, amount);
 	}
 
 	@Override
 	public List<Player> getSortedDamagers(UUID playerId) {
-		Guard.ArgumentNotNull(playerId, "playerId");
+		Preconditions.checkNotNull(playerId, "playerId");
 
 		final List<Player> players = new ArrayList<Player>();
 		final DamageLog log = damageLogs.get(playerId);
@@ -150,7 +147,7 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 
 	@Override
 	public List<Player> getSortedDamagers(Player player) {
-		Guard.ArgumentNotNull(player, "player");
+		Preconditions.checkNotNull(player, "player");
 		return getSortedDamagers(player.getUniqueId());
 	}
 
@@ -197,7 +194,7 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 
 	/**
 	 * Remove tracking for players who quit
-	 * @param event The event args
+	 * @param e The event args
 	 */
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerQuit(PlayerQuitEvent e) {

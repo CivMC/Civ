@@ -1,14 +1,12 @@
 package com.devotedmc.ExilePearl;
 
+import com.devotedmc.ExilePearl.config.Document;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.devotedmc.ExilePearl.config.Document;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 public class RepairMaterial {
 
@@ -23,8 +21,8 @@ public class RepairMaterial {
 	 * @param repairAmount The repair amount
 	 */
 	public RepairMaterial(final String name, final ItemStack stack, final int repairAmount) {
-		Guard.ArgumentNotNullOrEmpty(name, "name");
-		Guard.ArgumentNotNull(stack, "stack");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(name), "name");
+		Preconditions.checkNotNull(stack, "stack");
 
 		this.name = name;
 		this.stack = stack;
@@ -63,7 +61,7 @@ public class RepairMaterial {
 	 * @return The repair material instance
 	 */
 	public static RepairMaterial fromDocument(String name, Document doc) {
-		Guard.ArgumentNotNull(doc, "doc");
+		Preconditions.checkNotNull(doc, "doc");
 
 		try {
 			Material m = Material.getMaterial(doc.getString("material"));

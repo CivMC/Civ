@@ -33,9 +33,9 @@ import com.devotedmc.ExilePearl.util.BastionWrapper;
 import com.devotedmc.ExilePearl.util.Clock;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.devotedmc.ExilePearl.util.NameLayerPermissions;
+import com.google.common.base.Preconditions;
 import com.wimbli.WorldBorder.BorderData;
 import com.wimbli.WorldBorder.WorldBorder;
-
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
@@ -67,7 +67,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
-import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -115,7 +114,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	private CombatTagPlus combatTag;
 
 	public ExilePearlCore(final Plugin plugin) {
-		Guard.ArgumentNotNull(plugin, "plugin");
+		Preconditions.checkNotNull(plugin, "plugin");
 
 		this.plugin = plugin;
 

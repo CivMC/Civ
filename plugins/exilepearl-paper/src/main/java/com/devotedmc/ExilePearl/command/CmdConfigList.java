@@ -3,7 +3,6 @@ package com.devotedmc.ExilePearl.command;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.config.PearlConfig;
-
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class CmdConfigList extends PearlCommand {

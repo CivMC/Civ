@@ -1,12 +1,10 @@
 package com.devotedmc.ExilePearl.event;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
+import com.google.common.base.Preconditions;
+import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
 
 /**
  * Event that is called when a pearl is moved
@@ -29,9 +27,9 @@ public class PearlMovedEvent extends Event {
 	 * @param to The destination holder
 	 */
 	public PearlMovedEvent(final ExilePearl pearl, final PearlHolder from, final PearlHolder to) {
-		Guard.ArgumentNotNull(pearl, "pearl");
-		Guard.ArgumentNotNull(from, "from");
-		Guard.ArgumentNotNull(to, "to");
+		Preconditions.checkNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(from, "from");
+		Preconditions.checkNotNull(to, "to");
 
 		this.pearl = pearl;
 		this.from = from;

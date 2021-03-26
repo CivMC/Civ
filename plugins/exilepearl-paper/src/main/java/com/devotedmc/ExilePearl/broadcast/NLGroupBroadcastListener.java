@@ -1,16 +1,13 @@
 package com.devotedmc.ExilePearl.broadcast;
 
-import java.util.UUID;
-
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.util.NameLayerPermissions;
+import com.google.common.base.Preconditions;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.Lang;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -22,7 +19,7 @@ public class NLGroupBroadcastListener implements BroadcastListener {
 	private final Group group;
 
 	public NLGroupBroadcastListener(final Group group) {
-		Guard.ArgumentNotNull(group, "group");
+		Preconditions.checkNotNull(group, "group");
 
 		this.group = group;
 	}

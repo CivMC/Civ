@@ -2,6 +2,14 @@ package com.devotedmc.ExilePearl.core;
 
 import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
 
+import com.devotedmc.ExilePearl.BorderHandler;
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
+import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
+import com.devotedmc.ExilePearl.util.BastionWrapper;
+import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -9,7 +17,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import org.bukkit.Chunk;
 import org.bukkit.EntityEffect;
 import org.bukkit.GameMode;
@@ -25,15 +32,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
-
-import com.devotedmc.ExilePearl.BorderHandler;
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.config.PearlConfig;
-import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
-import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
-import com.devotedmc.ExilePearl.util.BastionWrapper;
-import com.google.common.collect.ImmutableList;
 
 /**
  * This class tracks the pearls players that are online and prevents them
@@ -123,7 +121,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 
 	/**
 	 * Checks whether a player needs to be snapped back
-	 * @param player The player to check
+	 * @param playerId The player to check
 	 */
 	private void checkPlayer(UUID playerId) {
 		Player player = pearlApi.getPlayer(playerId);

@@ -1,16 +1,14 @@
 package com.devotedmc.ExilePearl.storage;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.PearlLogger;
+import com.devotedmc.ExilePearl.storage.AsyncPearlRecord.WriteType;
+import com.google.common.base.Preconditions;
 import java.nio.channels.NotYetConnectedException;
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.PearlLogger;
-import com.devotedmc.ExilePearl.storage.AsyncPearlRecord.WriteType;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * Wrapper class for PluginStorage that performs asynchronous writes
@@ -25,8 +23,8 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	private boolean isEnabled;
 
 	public AsyncStorageWriter(final PluginStorage storage, final PearlLogger logger) {
-		Guard.ArgumentNotNull(storage, "storage");
-		Guard.ArgumentNotNull(logger, "logger");
+		Preconditions.checkNotNull(storage, "storage");
+		Preconditions.checkNotNull(logger, "logger");
 
 		this.storage = storage;
 		this.logger = logger;
@@ -63,7 +61,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 
 	@Override
 	public void pearlInsert(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 		checkRunning();
 
 		queue.add(new AsyncPearlRecord(pearl, WriteType.INSERT));
@@ -71,7 +69,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 
 	@Override
 	public void pearlRemove(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 		checkRunning();
 
 		queue.add(new AsyncPearlRecord(pearl, WriteType.REMOVE));
@@ -79,7 +77,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 
 	@Override
 	public void updatePearlLocation(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 		checkRunning();
 
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_LOCATION));
@@ -87,7 +85,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 
 	@Override
 	public void updatePearlHealth(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 		checkRunning();
 
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_HEALTH));
@@ -95,7 +93,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 
 	@Override
 	public void updatePearlFreedOffline(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 		checkRunning();
 
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_FREED_OFFLINE));
@@ -103,7 +101,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 
 	@Override
 	public void updatePearlType(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 		checkRunning();
 
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_TYPE));
@@ -111,7 +109,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 
 	@Override
 	public void updatePearlKiller(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 		checkRunning();
 
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_KILLER));
@@ -119,7 +117,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 
 	@Override
 	public void updatePearlLastOnline(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 		checkRunning();
 
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_LAST_SEEN));
@@ -127,7 +125,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 
 	@Override
 	public void updatePearlSummoned(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 		checkRunning();
 
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_SUMMONED));
@@ -136,7 +134,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 
 	@Override
 	public void updateReturnLocation(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 		checkRunning();
 
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_RETURN_LOCATION));

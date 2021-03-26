@@ -1,13 +1,11 @@
 package com.devotedmc.ExilePearl.holder;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.google.common.base.Preconditions;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * A item holding an exile pearl
@@ -23,7 +21,7 @@ public class ItemHolder implements PearlHolder {
 	 * @param item The item
 	 */
 	public ItemHolder(final Item item) {
-		Guard.ArgumentNotNull(item, "item");
+		Preconditions.checkNotNull(item, "item");
 
 		this.item = item;
 	}

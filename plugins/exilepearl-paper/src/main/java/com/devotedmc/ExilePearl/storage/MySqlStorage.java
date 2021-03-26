@@ -1,5 +1,11 @@
 package com.devotedmc.ExilePearl.storage;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.PearlFactory;
+import com.devotedmc.ExilePearl.PearlLogger;
+import com.devotedmc.ExilePearl.config.Document;
+import com.devotedmc.ExilePearl.config.MySqlConfig;
+import com.google.common.base.Preconditions;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -11,18 +17,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Level;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.PearlFactory;
-import com.devotedmc.ExilePearl.PearlLogger;
-import com.devotedmc.ExilePearl.config.Document;
-import com.devotedmc.ExilePearl.config.MySqlConfig;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
 
 class MySqlStorage implements PluginStorage {
@@ -75,9 +72,9 @@ class MySqlStorage implements PluginStorage {
 	 * @param pearlFactory The pearl factory
 	 */
 	public MySqlStorage(final PearlFactory pearlFactory, final PearlLogger logger, final MySqlConfig config) {
-		Guard.ArgumentNotNull(pearlFactory, "pearlFactory");
-		Guard.ArgumentNotNull(logger, "logger");
-		Guard.ArgumentNotNull(config, "config");
+		Preconditions.checkNotNull(pearlFactory, "pearlFactory");
+		Preconditions.checkNotNull(logger, "logger");
+		Preconditions.checkNotNull(config, "config");
 
 		this.pearlFactory = pearlFactory;
 		this.logger = logger;
@@ -86,11 +83,12 @@ class MySqlStorage implements PluginStorage {
 
 	@Override
 	public boolean connect() {
-		db = new ConnectionPool(logger.getPluginLogger(), 
+		db = new ConnectionPool(
 				config.getMySqlUsername(), 
 				config.getMySqlPassword(), 
 				config.getMySqlHost(), 
-				config.getMySqlPort(), 
+				config.getMySqlPort(),
+				"mysql",
 				config.getMySqlDatabaseName(), 
 				config.getMySqlPoolSize(), 
 				config.getMySqlConnectionTimeout(), 
@@ -256,7 +254,7 @@ class MySqlStorage implements PluginStorage {
 
 	@Override
 	public void pearlInsert(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
 				PreparedStatement ps = connection.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"); ) {
@@ -286,7 +284,7 @@ class MySqlStorage implements PluginStorage {
 
 	@Override
 	public void pearlRemove(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
 				PreparedStatement ps = connection.prepareStatement("DELETE FROM exilepearls WHERE uid = ?"); ) {
@@ -300,7 +298,7 @@ class MySqlStorage implements PluginStorage {
 
 	@Override
 	public void updatePearlLocation(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
 				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET world = ?, x = ?, y = ?, z = ? WHERE uid = ?"); ) {
@@ -320,7 +318,7 @@ class MySqlStorage implements PluginStorage {
 
 	@Override
 	public void updatePearlHealth(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
 				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET health = ? WHERE uid = ?"); ) {
@@ -336,7 +334,7 @@ class MySqlStorage implements PluginStorage {
 
 	@Override
 	public void updatePearlFreedOffline(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
 				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET freed_offline = ? WHERE uid = ?"); ) {
@@ -352,7 +350,7 @@ class MySqlStorage implements PluginStorage {
 
 	@Override
 	public void updatePearlType(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
 				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET ptype = ? WHERE uid = ?"); ) {
@@ -368,7 +366,7 @@ class MySqlStorage implements PluginStorage {
 
 	@Override
 	public void updatePearlKiller(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
 				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET killer_id = ? WHERE uid = ?"); ) {
@@ -384,7 +382,7 @@ class MySqlStorage implements PluginStorage {
 
 	@Override
 	public void updatePearlLastOnline(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
 				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET last_seen = ? WHERE uid = ?"); ) {
@@ -400,7 +398,7 @@ class MySqlStorage implements PluginStorage {
 
 	@Override
 	public void updatePearlSummoned(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
 				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET summoned = ? WHERE uid = ?"); ) {
@@ -414,7 +412,7 @@ class MySqlStorage implements PluginStorage {
 
 	@Override
 	public void updateReturnLocation(ExilePearl pearl) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();) {
 			if(pearl.getReturnLocation() != null) {
@@ -448,11 +446,12 @@ class MySqlStorage implements PluginStorage {
 	private void migratePrisonPearl() {
 		logger.log(Level.WARNING, "Attempting to perform PrisonPearl data migration.");
 
-		ConnectionPool migrateDb = new ConnectionPool(logger.getPluginLogger(), 
+		ConnectionPool migrateDb = new ConnectionPool(
 				config.getMySqlUsername(), 
 				config.getMySqlPassword(), 
 				config.getMySqlHost(), 
-				config.getMySqlPort(), 
+				config.getMySqlPort(),
+				"mysql",
 				config.getMySqlMigrateDatabaseName(), 
 				config.getMySqlPoolSize(), 
 				config.getMySqlConnectionTimeout(), 

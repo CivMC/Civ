@@ -1,21 +1,12 @@
 package com.devotedmc.ExilePearl.core;
 
-import java.util.Date;
-import java.util.UUID;
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
 import com.devotedmc.ExilePearl.BorderHandler;
 import com.devotedmc.ExilePearl.BrewHandler;
 import com.devotedmc.ExilePearl.DamageLogger;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.LoreProvider;
+import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.SuicideHandler;
@@ -25,8 +16,14 @@ import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
+import com.google.common.base.Preconditions;
+import java.util.Date;
+import java.util.UUID;
+import java.util.logging.Level;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 /**
  * Factory class for creating new core class instances
@@ -45,15 +42,15 @@ public final class CorePluginFactory implements PearlFactory {
 	 * @param plugin The plugin instance
 	 */
 	public CorePluginFactory(final ExilePearlApi plugin) {
-		Guard.ArgumentNotNull(plugin, "plugin");
+		Preconditions.checkNotNull(plugin, "plugin");
 
 		this.pearlApi = plugin;
 	}
 
 	@Override
 	public ExilePearl createExilePearl(UUID uid, Document doc) {
-		Guard.ArgumentNotNull(uid, "uid");
-		Guard.ArgumentNotNull(doc, "doc");
+		Preconditions.checkNotNull(uid, "uid");
+		Preconditions.checkNotNull(doc, "doc");
 
 		try {
 			UUID killedBy = UUID.fromString(doc.getString("killer_id"));
@@ -85,8 +82,8 @@ public final class CorePluginFactory implements PearlFactory {
 
 	@Override
 	public ExilePearl createExilePearl(UUID uid, Player killedBy, int pearlId) {
-		Guard.ArgumentNotNull(uid, "uid");
-		Guard.ArgumentNotNull(killedBy, "killedBy");
+		Preconditions.checkNotNull(uid, "uid");
+		Preconditions.checkNotNull(killedBy, "killedBy");
 
 		ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedBy.getUniqueId(), pearlId, new PlayerHolder(killedBy));
 		pearl.enableStorage();
@@ -95,9 +92,9 @@ public final class CorePluginFactory implements PearlFactory {
 
 	@Override
 	public ExilePearl createExilePearl(UUID uid, UUID killedById, int pearlId, PearlHolder holder) {
-		Guard.ArgumentNotNull(uid, "uid");
-		Guard.ArgumentNotNull(killedById, "killedById");
-		Guard.ArgumentNotNull(holder, "holder");
+		Preconditions.checkNotNull(uid, "uid");
+		Preconditions.checkNotNull(killedById, "killedById");
+		Preconditions.checkNotNull(holder, "holder");
 
 		ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedById, pearlId, holder);
 		pearl.enableStorage();
@@ -106,8 +103,8 @@ public final class CorePluginFactory implements PearlFactory {
 
 	@Override
 	public ExilePearl createdMigratedPearl(UUID uid, Document doc) {
-		Guard.ArgumentNotNull(uid, "uid");
-		Guard.ArgumentNotNull(doc, "doc");
+		Preconditions.checkNotNull(uid, "uid");
+		Preconditions.checkNotNull(doc, "doc");
 
 		doc.append("health", pearlApi.getPearlConfig().getPearlHealthMaxValue() / 2); // set health to half max health
 		return createExilePearl(uid, doc);

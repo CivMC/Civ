@@ -1,15 +1,13 @@
 package com.devotedmc.ExilePearl.command;
 
-import java.util.UUID;
-
-import org.bukkit.entity.Player;
-
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.util.Permission;
 import com.devotedmc.ExilePearl.util.SpawnUtil;
+import java.util.UUID;
+import org.bukkit.entity.Player;
 
 public class CmdAdminSetType extends PearlCommand {
 

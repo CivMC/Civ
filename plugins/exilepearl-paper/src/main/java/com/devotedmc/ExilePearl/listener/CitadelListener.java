@@ -1,11 +1,9 @@
 package com.devotedmc.ExilePearl.listener;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
-
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import vg.civcraft.mc.citadel.events.ReinforcementAcidBlockedEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 

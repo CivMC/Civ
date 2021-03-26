@@ -1,13 +1,11 @@
 package com.devotedmc.ExilePearl.storage;
 
-import java.io.File;
-import java.util.logging.Level;
-
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.StorageProvider;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
+import com.google.common.base.Preconditions;
+import java.io.File;
+import java.util.logging.Level;
 
 public class CoreStorageProvider implements StorageProvider {
 
@@ -17,8 +15,8 @@ public class CoreStorageProvider implements StorageProvider {
 	private PluginStorage storage;
 
 	public CoreStorageProvider(final ExilePearlApi pearlApi, final PearlFactory pearlFactory) {
-		Guard.ArgumentNotNull(pearlApi, "pearlApi");
-		Guard.ArgumentNotNull(pearlFactory, "pearlFactory");
+		Preconditions.checkNotNull(pearlApi, "pearlApi");
+		Preconditions.checkNotNull(pearlFactory, "pearlFactory");
 
 		this.pearlApi = pearlApi;
 		this.pearlFactory = pearlFactory;

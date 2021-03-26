@@ -1,6 +1,7 @@
 package com.devotedmc.ExilePearl;
 
-import vg.civcraft.mc.civmodcore.util.Guard;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 public enum ExileRule {
 	PEARL_RADIUS("PEARL_RADIUS", "pearl radius"),
@@ -36,8 +37,8 @@ public enum ExileRule {
 	private final String actionText;
 
 	private ExileRule(final String text, final String actionText) {
-		Guard.ArgumentNotNullOrEmpty(text, "text");
-		Guard.ArgumentNotNullOrEmpty(actionText, "actionText");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(text), "text");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(actionText), "actionText");
 
 		this.text = text;
 		this.actionText = actionText;

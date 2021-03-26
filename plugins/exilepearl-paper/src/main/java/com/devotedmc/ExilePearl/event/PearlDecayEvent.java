@@ -1,12 +1,10 @@
 package com.devotedmc.ExilePearl.event;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.google.common.base.Preconditions;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * Event that is called whenever a single pearl is devayed
@@ -32,7 +30,7 @@ public class PearlDecayEvent extends Event implements Cancellable {
 	 * @param amount Health amount the pearl health is reduced by
 	 */
 	public PearlDecayEvent(ExilePearl pearl, int amount) {
-		Guard.ArgumentNotNull(pearl, "pearl");
+		Preconditions.checkNotNull(pearl, "pearl");
 		this.pearl = pearl;
 		this.amount = amount;
 	}

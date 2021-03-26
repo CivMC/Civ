@@ -9,6 +9,7 @@ import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.DocumentConfig;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.storage.StorageType;
+import com.google.common.base.Preconditions;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,7 +17,6 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
-import vg.civcraft.mc.civmodcore.util.Guard;
 
 final class CorePearlConfig implements DocumentConfig, PearlConfig {
 
@@ -26,8 +26,8 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	private Set<Configurable> configurables = new HashSet<>();
 
 	public CorePearlConfig(final Plugin plugin, final PearlLogger logger) {
-		Guard.ArgumentNotNull(plugin, "plugin");
-		Guard.ArgumentNotNull(logger, "logger");
+		Preconditions.checkNotNull(plugin, "plugin");
+		Preconditions.checkNotNull(logger, "logger");
 
 		this.plugin = plugin;
 		this.logger = logger;

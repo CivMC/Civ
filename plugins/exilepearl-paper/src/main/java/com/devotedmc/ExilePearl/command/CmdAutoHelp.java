@@ -1,9 +1,7 @@
 package com.devotedmc.ExilePearl.command;
 
-import java.util.ArrayList;
-
 import com.devotedmc.ExilePearl.ExilePearlApi;
-
+import java.util.ArrayList;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class CmdAutoHelp extends PearlCommand

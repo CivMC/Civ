@@ -1,19 +1,18 @@
 package com.devotedmc.ExilePearl.command;
 
+import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.util.StringListIgnoresCase;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-
-import com.devotedmc.ExilePearl.Lang;
-import com.devotedmc.ExilePearl.util.StringListIgnoresCase;
-
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public abstract class BaseCommand<T extends Plugin> {
@@ -484,7 +483,7 @@ public abstract class BaseCommand<T extends Plugin> {
 		if (args.size() > this.commandArgs.size() && this.errorOnToManyArgs) {
 			// Get the to many string slice
 			List<String> theToMany = args.subList(this.commandArgs.size(), args.size());
-			msg(Lang.commandToManyArgs, TextUtil.implode(theToMany, " "));
+			msg(Lang.commandToManyArgs, StringUtils.join(theToMany, " "));
 			msg(this.getUsageTemplate());
 		}
 	}
@@ -520,15 +519,15 @@ public abstract class BaseCommand<T extends Plugin> {
 	 */
 	public String getUseageTemplate(List<BaseCommand<? extends Plugin>> commandChain, boolean addShortHelp) {
 		StringBuilder ret = new StringBuilder();
-		ret.append(TextUtil.parseTags("<c>"));
+		ret.append(ChatUtils.parseColorTags("<c>"));
 		ret.append('/');
 
 		for (BaseCommand<? extends Plugin> mc : commandChain) {
-			ret.append(TextUtil.implode(mc.aliases, ","));
+			ret.append(StringUtils.join(mc.aliases, ","));
 			ret.append(' ');
 		}
 
-		ret.append(TextUtil.implode(this.aliases, ","));
+		ret.append(StringUtils.join(this.aliases, ","));
 
 		if (commandArgs.size() > 0) {
 			for (CommandArg a : this.commandArgs) {
@@ -538,7 +537,7 @@ public abstract class BaseCommand<T extends Plugin> {
 		}
 
 		if (addShortHelp) {
-			ret.append(TextUtil.parseTags(" <i>"));
+			ret.append(ChatUtils.parseColorTags(" <i>"));
 			ret.append(this.getHelpShort());
 		}
 

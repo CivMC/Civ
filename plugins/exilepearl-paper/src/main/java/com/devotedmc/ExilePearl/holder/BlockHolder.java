@@ -1,8 +1,9 @@
 package com.devotedmc.ExilePearl.holder;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,12 +15,8 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-
-import com.devotedmc.ExilePearl.ExilePearl;
-
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
-import vg.civcraft.mc.civmodcore.util.Guard;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
  * A block holding an exile pearl
@@ -35,7 +32,7 @@ public class BlockHolder implements PearlHolder {
 	 * @param block The block containing the pearl
 	 */
 	public BlockHolder(final Block block) {
-		Guard.ArgumentNotNull(block, "block");
+		Preconditions.checkNotNull(block, "block");
 
 		this.block = block;
 	}
@@ -49,7 +46,7 @@ public class BlockHolder implements PearlHolder {
 				customNameString = String.format(" %scalled %s", ChatColor.RESET, customName);
 			}
 		}
-		return String.format("a %s%s", ItemNames.getItemName(block.getType()), customNameString);
+		return String.format("a %s%s", ItemUtils.getItemName(block.getType()), customNameString);
 	}
 
 	@Override
@@ -92,7 +89,7 @@ public class BlockHolder implements PearlHolder {
 		//double chests sometimes don't load their inventories properly if the chunk has just been loaded.
 		//To fix this, we have to manually check for the other chest half adjacent to this one
 		if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
-			for(Block relative : BlockAPI.getPlanarSides(block)) {
+			for(Block relative : WorldUtils.getPlanarBlockSides(block, true)) {
 				if (relative.getType() != block.getType()) {
 					continue;
 				}
