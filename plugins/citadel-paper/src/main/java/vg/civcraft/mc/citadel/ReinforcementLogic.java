@@ -1,7 +1,6 @@
 package vg.civcraft.mc.citadel;
 
 import java.util.Objects;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,7 +16,7 @@ import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDestructionEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public final class ReinforcementLogic {
@@ -97,7 +96,7 @@ public final class ReinforcementLogic {
 	}
 
 	public static Reinforcement getReinforcementProtecting(Block block) {
-		if (!BlockAPI.isValidBlock(block)) {
+		if (!WorldUtils.isValidBlock(block)) {
 			return null;
 		}
 		Reinforcement reinforcement = getReinforcementAt(block.getLocation());
@@ -118,11 +117,11 @@ public final class ReinforcementLogic {
 				BlockFace facing = chest.getFacing();
 				switch (chest.getType()) {
 					case LEFT: {
-						BlockFace face = BlockAPI.turnClockwise(facing);
+						BlockFace face = WorldUtils.turnClockwise(facing);
 						return getReinforcementAt(block.getLocation().add(face.getDirection()));
 					}
 					case RIGHT: {
-						BlockFace face = BlockAPI.turnAntiClockwise(facing);
+						BlockFace face = WorldUtils.turnAntiClockwise(facing);
 						return getReinforcementAt(block.getLocation().add(face.getDirection()));
 					}
 					default: {

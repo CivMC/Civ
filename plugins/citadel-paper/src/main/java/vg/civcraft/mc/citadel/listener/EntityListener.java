@@ -1,7 +1,5 @@
 package vg.civcraft.mc.citadel.listener;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -35,7 +33,8 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -206,7 +205,7 @@ public class EntityListener implements Listener {
 			case EXPLOSION:
 				return;
 			case ENTITY: {
-				Player player = castOrNull(Player.class, event.getRemover());
+				Player player = MoreClassUtils.castOrNull(Player.class, event.getRemover());
 				if (player == null) {
 					break;
 				}
@@ -254,11 +253,11 @@ public class EntityListener implements Listener {
 		if (!Citadel.getInstance().getConfigManager().doHangersInheritReinforcements()) {
 			return;
 		}
-		Hanging entity = castOrNull(Hanging.class, event.getEntity());
+		Hanging entity = MoreClassUtils.castOrNull(Hanging.class, event.getEntity());
 		if (entity == null) {
 			return;
 		}
-		Player player = castOrNull(Player.class, event.getDamager());
+		Player player = MoreClassUtils.castOrNull(Player.class, event.getDamager());
 		if (player == null) {
 			event.setCancelled(true);
 			return;
@@ -269,7 +268,7 @@ public class EntityListener implements Listener {
 			return;
 		}
 		if (entity instanceof ItemFrame) {
-			if (ItemAPI.isValidItem(((ItemFrame) entity).getItem())) {
+			if (ItemUtils.isValidItem(((ItemFrame) entity).getItem())) {
 				if (reinforcement.isInsecure()) {
 					return;
 				}
@@ -287,7 +286,7 @@ public class EntityListener implements Listener {
 		if (!Citadel.getInstance().getConfigManager().doHangersInheritReinforcements()) {
 			return;
 		}
-		Hanging entity = castOrNull(Hanging.class, event.getRightClicked());
+		Hanging entity = MoreClassUtils.castOrNull(Hanging.class, event.getRightClicked());
 		if (entity == null) {
 			return;
 		}
@@ -302,7 +301,7 @@ public class EntityListener implements Listener {
 				return;
 			}
 			// If the Item Frame already has an item, then the only possible action is rotation
-			if (ItemAPI.isValidItem(((ItemFrame) entity).getItem())) {
+			if (ItemUtils.isValidItem(((ItemFrame) entity).getItem())) {
 				if (reinforcement.hasPermission(player, CitadelPermissionHandler.getItemFrameRotate())) {
 					return;
 				}

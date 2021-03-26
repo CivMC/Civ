@@ -1,11 +1,14 @@
 package vg.civcraft.mc.citadel.command;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
 import org.bukkit.block.Container;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,16 +21,10 @@ import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.events.ReinforcementAcidBlockedEvent;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 @CivCommand(id = "ctacid")
 public class Acid extends StandaloneCommand {
@@ -40,7 +37,7 @@ public class Acid extends StandaloneCommand {
 		boolean foundAny = false;
 		while (itr.hasNext()) {
 			Block block = itr.next();
-			if (MaterialAPI.isAir(block.getType()) || !(block.getType().isSolid()) || !(block.getType().isOccluding())) {
+			if (MaterialUtils.isAir(block.getType()) || !(block.getType().isSolid()) || !(block.getType().isOccluding())) {
 				continue;
 			}
 			if (!acidMan.isPossibleAcidBlock(block)) {
@@ -66,7 +63,7 @@ public class Acid extends StandaloneCommand {
 				return true;
 			}
 			Block topFace = block.getRelative(BlockFace.UP);
-			if (MaterialAPI.isAir(topFace.getType())) {
+			if (MaterialUtils.isAir(topFace.getType())) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED, "There is no block above to acid block.");
 				return true;
 			}

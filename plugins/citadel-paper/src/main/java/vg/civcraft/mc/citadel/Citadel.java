@@ -1,14 +1,12 @@
 package vg.civcraft.mc.citadel;
 
 import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
-
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.listener.EntityListener;
-import vg.civcraft.mc.citadel.listener.ModeListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
+import vg.civcraft.mc.citadel.listener.ModeListener;
 import vg.civcraft.mc.citadel.listener.RedstoneListener;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.CitadelChunkData;

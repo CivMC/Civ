@@ -2,7 +2,6 @@ package vg.civcraft.mc.citadel.reinforcementtypes;
 
 import org.bukkit.Location;
 import org.bukkit.Particle;
-
 import vg.civcraft.mc.citadel.model.Reinforcement;
 
 public class ReinforcementEffect {

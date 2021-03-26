@@ -2,10 +2,8 @@ package vg.civcraft.mc.citadel.model;
 
 import java.util.Random;
 import java.util.UUID;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.namelayer.GroupManager;

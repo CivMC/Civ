@@ -14,11 +14,9 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementTypeManager;

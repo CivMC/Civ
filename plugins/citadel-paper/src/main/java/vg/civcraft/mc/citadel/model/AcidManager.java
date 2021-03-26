@@ -3,14 +3,12 @@ package vg.civcraft.mc.citadel.model;
 import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 
 public class AcidManager {
 
@@ -43,7 +41,7 @@ public class AcidManager {
 		Block acidBlock = rein.getLocation().getBlock();
 		Block targetBlock = acidBlock.getRelative(BlockFace.UP);
 		double decayMultiplier = 1;
-		if (!MaterialAPI.isAir(targetBlock.getType())) {
+		if (!MaterialUtils.isAir(targetBlock.getType())) {
 			Reinforcement targetBlockRein = ReinforcementLogic.getReinforcementAt(targetBlock.getLocation());
 			if (targetBlockRein != null) {
 				decayMultiplier = ReinforcementLogic.getDecayDamage(targetBlockRein);

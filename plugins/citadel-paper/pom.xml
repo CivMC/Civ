@@ -17,7 +17,6 @@
 	<name>Citadel</name>
 	<url>https://github.com/civclassic/Citadel</url>
 
-
 	<dependencies>
 		<dependency>
 			<groupId>com.destroystokyo.paper</groupId>
@@ -28,7 +27,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.8.1</version>
+			<version>1.8.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -55,4 +54,5 @@
 			<url>https://raw.githubusercontent.com/CivClassic/artifacts/master/</url>
 		</repository>
 	</repositories>
+
 </project>
