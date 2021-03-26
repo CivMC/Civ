@@ -2,11 +2,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>me.josvth.randomspawn.randomspawn</groupId>
-	<artifactId>RandomSpawn</artifactId>
-	<version>2.9.1</version>
-	<name>RandomSpawn</name>
-	<url>https://github.com/Civclassic/random-spawn</url>
 
 	<parent>
 		<groupId>com.github.civclassic</groupId>
@@ -14,12 +9,11 @@
 		<version>1.0.0</version>
 	</parent>
 
-	<repositories>
-		<repository>
-			<id>civ-github-repo</id>
-			<url>https://raw.githubusercontent.com/CivClassic/artifacts/master/</url>
-		</repository>
-	</repositories>
+	<groupId>me.josvth.randomspawn.randomspawn</groupId>
+	<artifactId>RandomSpawn</artifactId>
+	<version>2.9.1</version>
+	<name>RandomSpawn</name>
+	<url>https://github.com/Civclassic/random-spawn</url>
 
 	<dependencies>
 		<dependency>
@@ -32,29 +26,33 @@
 			<groupId>com.wimbli.WorldBorder</groupId>
 			<artifactId>WorldBorder</artifactId>
 			<version>1.10.1</version>
-			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>isaac</groupId>
 			<artifactId>Bastion</artifactId>
 			<version>2.4.1</version>
-			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.programmerdan.minecraft</groupId>
 			<artifactId>banstick</artifactId>
-			<version>1.2.1</version>
-			<type>jar</type>
+			<version>1.2.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.8.1</version>
+			<version>1.8.2</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
+  <repositories>
+    <repository>
+      <id>civ-github-repo</id>
+      <url>https://raw.githubusercontent.com/CivClassic/artifacts/master/</url>
+    </repository>
+  </repositories>
 
 </project>

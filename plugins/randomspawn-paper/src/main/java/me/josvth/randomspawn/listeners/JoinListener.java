@@ -1,9 +1,10 @@
 package me.josvth.randomspawn.listeners;
 
+import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import java.util.List;
 import java.util.Set;
-
-import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import me.josvth.randomspawn.RandomSpawn;
+import me.josvth.randomspawn.events.NewPlayerSpawn;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -15,9 +16,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.metadata.FixedMetadataValue;
-
-import me.josvth.randomspawn.RandomSpawn;
-import me.josvth.randomspawn.events.NewPlayerSpawn;
 
 /**
  * Handle joins. 

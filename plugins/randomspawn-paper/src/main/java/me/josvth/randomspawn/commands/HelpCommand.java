@@ -2,9 +2,7 @@ package me.josvth.randomspawn.commands;
 
 
 import java.util.List;
-
 import me.josvth.randomspawn.RandomSpawn;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

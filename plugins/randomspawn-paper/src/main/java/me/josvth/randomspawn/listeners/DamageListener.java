@@ -1,7 +1,6 @@
 package me.josvth.randomspawn.listeners;
 
 import me.josvth.randomspawn.RandomSpawn;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

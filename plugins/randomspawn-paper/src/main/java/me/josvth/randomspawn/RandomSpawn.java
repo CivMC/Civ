@@ -1,13 +1,20 @@
 package me.josvth.randomspawn;
 
+import com.wimbli.WorldBorder.BorderData;
+import com.wimbli.WorldBorder.WorldBorder;
 import isaac.bastion.Bastion;
 import isaac.bastion.manager.BastionBlockManager;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
+import me.josvth.randomspawn.handlers.CommandHandler;
+import me.josvth.randomspawn.handlers.YamlHandler;
+import me.josvth.randomspawn.listeners.DamageListener;
+import me.josvth.randomspawn.listeners.JoinListener;
+import me.josvth.randomspawn.listeners.RespawnListener;
+import me.josvth.randomspawn.listeners.SignListener;
+import me.josvth.randomspawn.listeners.WorldChangeListener;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,14 +23,7 @@ import org.bukkit.World.Environment;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.wimbli.WorldBorder.BorderData;
-import com.wimbli.WorldBorder.WorldBorder;
-
-import me.josvth.randomspawn.handlers.CommandHandler;
-import me.josvth.randomspawn.handlers.YamlHandler;
-import me.josvth.randomspawn.listeners.*;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 
 public class RandomSpawn extends JavaPlugin {
 
@@ -223,7 +223,7 @@ public class RandomSpawn extends JavaPlugin {
 		if (world.getEnvironment() == Environment.NETHER) {
 			Material blockYMat = world.getBlockAt((int)x,(int) y,(int) z).getType();
 			Material blockY2Mat = world.getBlockAt((int)x,(int) y+1,(int) z).getType();
-			while (y < 128 && !(MaterialAPI.isAir(blockYMat) && MaterialAPI.isAir(blockY2Mat))) {
+			while (y < 128 && !(MaterialUtils.isAir(blockYMat) && MaterialUtils.isAir(blockY2Mat))) {
 				y++;
 				blockYMat = blockY2Mat;
 				blockY2Mat = world.getBlockAt((int)x,(int) y+1,(int) z).getType();
@@ -232,7 +232,7 @@ public class RandomSpawn extends JavaPlugin {
 				return -1;
 		} else {
 			y = 257;
-			while (y >= 0 && MaterialAPI.isAir(blockMat)) {
+			while (y >= 0 && MaterialUtils.isAir(blockMat)) {
 				y--;
 				blockMat = world.getBlockAt((int)x,(int) y,(int) z).getType();
 			}

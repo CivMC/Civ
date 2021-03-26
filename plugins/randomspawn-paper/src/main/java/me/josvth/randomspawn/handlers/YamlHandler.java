@@ -2,10 +2,7 @@ package me.josvth.randomspawn.handlers;
 
 import java.io.File;
 import java.io.IOException;
-
-
 import me.josvth.randomspawn.RandomSpawn;
-
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

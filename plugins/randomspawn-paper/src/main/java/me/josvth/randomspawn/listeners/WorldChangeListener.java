@@ -1,7 +1,7 @@
 package me.josvth.randomspawn.listeners;
 
 import java.util.List;
-
+import me.josvth.randomspawn.RandomSpawn;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -10,8 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.metadata.FixedMetadataValue;
-
-import me.josvth.randomspawn.RandomSpawn;
 
 public class WorldChangeListener implements Listener {
 

@@ -3,14 +3,27 @@ package me.josvth.randomspawn.handlers;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
+import me.josvth.randomspawn.RandomSpawn;
+import me.josvth.randomspawn.commands.AbstractCommand;
+import me.josvth.randomspawn.commands.AddSpawnPointCommand;
+import me.josvth.randomspawn.commands.BedsCommand;
+import me.josvth.randomspawn.commands.DisableCommand;
+import me.josvth.randomspawn.commands.EnableCommand;
+import me.josvth.randomspawn.commands.FirstJoinCommand;
+import me.josvth.randomspawn.commands.HelpCommand;
+import me.josvth.randomspawn.commands.InfoCommand;
+import me.josvth.randomspawn.commands.KeepSpawnsCommand;
+import me.josvth.randomspawn.commands.ReloadCommand;
+import me.josvth.randomspawn.commands.RemoveSpawnPointCommand;
+import me.josvth.randomspawn.commands.SetAreaCommand;
+import me.josvth.randomspawn.commands.SetFirstSpawnCommand;
+import me.josvth.randomspawn.commands.SpawnCommand;
+import me.josvth.randomspawn.commands.TpFirstSpawnCommand;
+import me.josvth.randomspawn.commands.UnsetFirstSpawnCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import me.josvth.randomspawn.RandomSpawn;
-import me.josvth.randomspawn.commands.*;
 
 public class CommandHandler implements CommandExecutor{
 
