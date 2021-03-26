@@ -18,7 +18,6 @@ Ban 'em, investigate and ban their providers, breath easy again.
 * Automatic multi-account support and banning: Set a valid limit of multi-accounts with auto-banning of new accounts that exceed that limit.
 * Easily manage existing bans, exemptions by ban class (IP / Proxy / Share)
 * Import data from IP-Check (room for expansion to other tools) including preserving pardons / exclusions
-* 
 
 How to
 ====
@@ -44,12 +43,3 @@ How to
 **Revoke a forgiveness** Use /takeitback xXsickVPNsXx PROXY
 
 **Pardon clear a share ban** Use /forgive XxalterxX XyMyAltsXy BAN
-
-Compiling
-====
-
-This uses the IPAddress library: https://seancfoley.github.io/IPAddress/
-
-As of this writing it lacks a Maven resource, so I'm installing it manually like so:
-
-mvn install:install-file -Dfile=IPAddress.jar -Dpackaging=jar -DgroupId=inet.ipaddr -DartifactId=IPAddress -Dversion=1.0.0
