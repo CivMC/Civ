@@ -59,7 +59,9 @@ public class LeverToggleAppender extends ConfigurableSnitchAppender<LeverToggleC
 	
 	public void switchState() {
 		shouldToggle = !shouldToggle;
-		snitch.setDirty();
+		if (snitch.getId() != -1) {
+			JukeAlert.getInstance().getDAO().setToggleLever(snitch.getId(), shouldToggle);
+		}
 	}
 
 	@Override
