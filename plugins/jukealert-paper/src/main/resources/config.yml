@@ -12,13 +12,55 @@
 #  max_lifetime: 7200000
 
 snitchConfigs:
+  note:
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: NOTE_BLOCK
+      amount: 1
+    id: 0
+    name: Snitch
+    range: 11
+    appender:
+      broadcast:
+        trigger:
+          - ENTRY
+          - LOGIN
+          - LOGOUT
+      dormantcull:
+        lifeTime: 2 weeks
+        dormantTime: 2 weeks
+      showownerondestroy: {}
   juke:
-    item: 
+    item:
       ==: org.bukkit.inventory.ItemStack
       type: JUKEBOX
-    range: 10
-    softDeleteTimer: 2 weeks
-    lifeTime: 1 month
-    dormantTime: 2 months
-    displayOwnerOnBreak: true
-    triggerLevers: true
+      amount: 1
+    id: 1
+    name: Logsnitch
+    range: 11
+    appender:
+      broadcast:
+        trigger:
+          - ENTRY
+          - LOGIN
+          - LOGOUT
+      dormantcull:
+        lifeTime: 4 weeks
+        dormantTime: 4 weeks
+      showownerondestroy: {}
+      levertoggle:
+        NORTH:
+          trigger:
+            - ENTRY
+            - LOGIN
+        SOUTH:
+          trigger:
+            - OPEN_CONTAINER
+        EAST:
+          trigger:
+            - BLOCK_PLACE
+        WEST:
+          trigger:
+            - BLOCK_BREAK
+      log:
+        acceptAll: true

@@ -4,6 +4,7 @@ import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
 import com.untamedears.jukealert.model.appender.config.LeverToggleConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Directional;
@@ -44,6 +45,11 @@ public class LeverToggleAppender extends ConfigurableSnitchAppender<LeverToggleC
 			}
 			Powerable power = (Powerable) leverBlock.getBlockData();
 			power.setPowered(true);
+			leverBlock.setBlockData(power);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(JukeAlert.getInstance(), () -> {
+				power.setPowered(false);
+				leverBlock.setBlockData(power);
+			}, 20L);
 		}
 	}
 	
