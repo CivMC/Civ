@@ -27,6 +27,8 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.untamedears.jukealert.model.appender.LeverToggleAppender;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -270,6 +272,9 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to insert new snitch: ", e);
 		}
+		if (snitch.hasAppender(LeverToggleAppender.class)) {
+			setToggleLever(snitch.getId(), false);
+		}
 		snitch.persistAppenders();
 	}
 
@@ -293,6 +298,10 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 			updateSnitch.execute();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update snitch: ", e);
+		}
+		if (snitch.hasAppender(LeverToggleAppender.class)) {
+			LeverToggleAppender lever = (LeverToggleAppender) snitch.getAppender(LeverToggleAppender.class);
+			setToggleLever(snitch.getId(), lever.shouldToggle());
 		}
 		snitch.persistAppenders();
 	}
