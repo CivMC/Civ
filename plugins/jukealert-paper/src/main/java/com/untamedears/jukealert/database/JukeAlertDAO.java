@@ -272,9 +272,6 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to insert new snitch: ", e);
 		}
-		if (snitch.hasAppender(LeverToggleAppender.class)) {
-			setToggleLever(snitch.getId(), false);
-		}
 		snitch.persistAppenders();
 	}
 
