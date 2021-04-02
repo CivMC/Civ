@@ -3,16 +3,16 @@ package com.untamedears.jukealert.commands;
 import static com.untamedears.jukealert.util.JAUtility.findLookingAtOrClosestSnitch;
 
 
-import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.appender.LeverToggleAppender;
+import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import java.util.List;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
-import vg.civcraft.mc.namelayer.core.PermissionType;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 @CivCommand(id = "jatogglelevers")
 public class ToggleLeverCommand extends StandaloneCommand {
@@ -26,7 +26,7 @@ public class ToggleLeverCommand extends StandaloneCommand {
 		if (args.length >= 1) {
 			return false;
 		}
-		PermissionType togglePerm = JukeAlert.getInstance().getPermissionHandler().getToggleLevers();
+		PermissionType togglePerm = JukeAlertPermissionHandler.getToggleLevers();
 		Snitch snitch = findLookingAtOrClosestSnitch(player, togglePerm);
 		if (snitch == null) {
 			player.sendMessage(
