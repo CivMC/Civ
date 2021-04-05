@@ -46,16 +46,21 @@ public class RBDAO extends TableStorageEngine<Plant> {
 	}
 
 	public void cleanupBatches() {
+		long currentTime = System.currentTimeMillis();
 		try (Connection conn = db.getConnection();
 				PreparedStatement deletePlant = conn.prepareStatement(
 						"delete from rb_plants where chunk_x = ? and chunk_z = ? and world_id = ? and "
 								+ "x_offset = ? and y = ? and z_offset = ?;");) {
+			conn.setAutoCommit(false);
 			for (PlantTuple tuple : batches.get(2)) {
 				setDeleteDataStatement(deletePlant, tuple.plant, tuple.coord);
 				deletePlant.addBatch();
 			}
+			System.out.println("Batch 2: " + (System.currentTimeMillis() - currentTime) + " ms");
 			batches.get(2).clear();
 			deletePlant.executeBatch();
+			conn.setAutoCommit(true);
+			System.out.println("Batch 2 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to delete plant from db: ", e);
 		}
@@ -63,24 +68,32 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				PreparedStatement insertPlant = conn.prepareStatement(
 						"insert ignore into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time, type) "
 								+ "values(?,?,?, ?,?,?, ?,?);");) {
+			conn.setAutoCommit(false);
 			for (PlantTuple tuple : batches.get(0)) {
 				setInsertDataStatement(insertPlant, tuple.plant, tuple.coord);
 				insertPlant.addBatch();
 			}
+			System.out.println("Batch 0: " + (System.currentTimeMillis() - currentTime) + " ms");
 			batches.get(0).clear();
 			insertPlant.executeBatch();
+			conn.setAutoCommit(true);
+			System.out.println("Batch 0 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to insert plant into db: ", e);
 		}
 		try (Connection conn = db.getConnection();
 				PreparedStatement updatePlant = conn.prepareStatement("update rb_plants set creation_time = ?, type = ? where "
 						+ "chunk_x = ? and chunk_z = ? and world_id = ? and x_offset = ? and y = ? and z_offset = ?;");) {
+			conn.setAutoCommit(false);
 			for (PlantTuple tuple : batches.get(1)) {
 				setUpdateDataStatement(updatePlant, tuple.plant, tuple.coord);
 				updatePlant.addBatch();
 			}
+			System.out.println("Batch 1: " + (System.currentTimeMillis() - currentTime) + " ms");
 			batches.get(1).clear();
 			updatePlant.executeBatch();
+			conn.setAutoCommit(true);
+			System.out.println("Batch 1 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update plant in db: ", e);
 		}
