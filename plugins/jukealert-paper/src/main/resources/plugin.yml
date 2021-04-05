@@ -47,8 +47,8 @@ commands:
       description: Adds or removes from a snitch notification ignore list.
       usage: /jamute <group>
    jatogglelevers:
-      description: Sets flag that indicates if a juke should trigger a lever.
-      usage: /jatogglelevers <0|1>
+      description: Toggles flag that indicates if a juke should trigger a lever.
+      usage: /jatogglelevers
 permissions:
    jukealert.admin.jagroup:
       description: Use /jagroup even when not the owner
