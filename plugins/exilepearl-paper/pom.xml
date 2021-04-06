@@ -71,7 +71,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.dre</groupId>
+			<groupId>com.github.DieReicheErethons</groupId>
 			<artifactId>Brewery</artifactId>
 			<version>3.0</version>
 			<scope>provided</scope>
@@ -91,6 +91,10 @@
 		<repository>
 			<id>byteflux-repo</id>
 			<url>http://repo.byteflux.net/repository/maven-releases/</url>
+		</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
 		</repository>
 	</repositories>
 </project>

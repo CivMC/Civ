@@ -12,6 +12,7 @@ public enum Permission
 	SET_HEALTH("sethealth"),
 	SET_TYPE("settype"),
 	SET_KILLER("setkiller"),
+	SET_DATE("setdate"),
 	CONFIG("config")
 	;
 
