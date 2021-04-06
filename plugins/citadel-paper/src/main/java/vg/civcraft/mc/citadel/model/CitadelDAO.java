@@ -49,57 +49,57 @@ public class CitadelDAO extends TableStorageEngine<Reinforcement> {
 	public void cleanupBatches() {
 		long currentTime = System.currentTimeMillis();
 		try (Connection conn = db.getConnection();
-			 PreparedStatement deletePlant = conn.prepareStatement(
+			 PreparedStatement deleteRein = conn.prepareStatement(
 					 "delete from ctdl_reinforcements where chunk_x = ? and chunk_z = ? and world_id = ? and "
 							 + "x_offset = ? and y = ? and z_offset = ?;");) {
 			conn.setAutoCommit(false);
 			for (ReinforcementTuple rein : batches.get(2)) {
-				setDeleteDataStatement(deletePlant, rein.rein, rein.coord);
-				deletePlant.addBatch();
+				setDeleteDataStatement(deleteRein, rein.rein, rein.coord);
+				deleteRein.addBatch();
 			}
 			logger.info("Batch 2: " + (System.currentTimeMillis() - currentTime) + " ms");
 			logger.info("Batch 2 Size: " + batches.get(2).size());
 			batches.get(2).clear();
-			deletePlant.executeBatch();
+			deleteRein.executeBatch();
 			conn.setAutoCommit(true);
 			logger.info("Batch 2 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to delete plant from db: ", e);
+			logger.log(Level.SEVERE, "Failed to delete reinforcement from db: ", e);
 		}
 		try (Connection conn = db.getConnection();
-			 PreparedStatement insertPlant = conn.prepareStatement(
+			 PreparedStatement insertRein = conn.prepareStatement(
 					 "insert into ctdl_reinforcements (chunk_x, chunk_z, world_id, x_offset, y, z_offset, type_id, "
 							 + "health, group_id, insecure, creation_time) values(?,?,?, ?,?,?, ?,?,?,?,?);");) {
 			conn.setAutoCommit(false);
 			for (ReinforcementTuple rein : batches.get(0)) {
-				setInsertDataStatement(insertPlant, rein.rein, rein.coord);
-				insertPlant.addBatch();
+				setInsertDataStatement(insertRein, rein.rein, rein.coord);
+				insertRein.addBatch();
 			}
 			logger.info("Batch 0: " + (System.currentTimeMillis() - currentTime) + " ms");
 			logger.info("Batch 0 Size: " + batches.get(0).size());
 			batches.get(0).clear();
-			insertPlant.executeBatch();
+			insertRein.executeBatch();
 			conn.setAutoCommit(true);
 			logger.info("Batch 0 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to insert plant into db: ", e);
+			logger.log(Level.SEVERE, "Failed to insert reinforcement into db: ", e);
 		}
 		try (Connection conn = db.getConnection();
-			 PreparedStatement updatePlant = conn.prepareStatement("update ctdl_reinforcements set type_id = ?, health = ?, group_id = ?, insecure = ?, creation_time = ? where "
+			 PreparedStatement updateRein = conn.prepareStatement("update ctdl_reinforcements set type_id = ?, health = ?, group_id = ?, insecure = ?, creation_time = ? where "
 					 + "chunk_x = ? and chunk_z = ? and world_id = ? and x_offset = ? and y = ? and z_offset = ?;");) {
 			conn.setAutoCommit(false);
 			for (ReinforcementTuple rein : batches.get(1)) {
-				setUpdateDataStatement(updatePlant, rein.rein, rein.coord);
-				updatePlant.addBatch();
+				setUpdateDataStatement(updateRein, rein.rein, rein.coord);
+				updateRein.addBatch();
 			}
 			logger.info("Batch 1: " + (System.currentTimeMillis() - currentTime) + " ms");
 			logger.info("Batch 1 Size: " + batches.get(1).size());
 			batches.get(1).clear();
-			updatePlant.executeBatch();
+			updateRein.executeBatch();
 			conn.setAutoCommit(true);
 			logger.info("Batch 1 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to update plant in db: ", e);
+			logger.log(Level.SEVERE, "Failed to update reinforcement in db: ", e);
 		}
 	}
 
