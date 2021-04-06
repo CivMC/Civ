@@ -56,11 +56,12 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				setDeleteDataStatement(deletePlant, tuple.plant, tuple.coord);
 				deletePlant.addBatch();
 			}
-			System.out.println("Batch 2: " + (System.currentTimeMillis() - currentTime) + " ms");
+			logger.info("Batch 2: " + (System.currentTimeMillis() - currentTime) + " ms");
+			logger.info("Batch 2 Size: " + batches.get(2).size());
 			batches.get(2).clear();
 			deletePlant.executeBatch();
 			conn.setAutoCommit(true);
-			System.out.println("Batch 2 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
+			logger.info("Batch 2 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to delete plant from db: ", e);
 		}
@@ -73,11 +74,12 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				setInsertDataStatement(insertPlant, tuple.plant, tuple.coord);
 				insertPlant.addBatch();
 			}
-			System.out.println("Batch 0: " + (System.currentTimeMillis() - currentTime) + " ms");
+			logger.info("Batch 0: " + (System.currentTimeMillis() - currentTime) + " ms");
+			logger.info("Batch 0 Size: " + batches.get(0).size());
 			batches.get(0).clear();
 			insertPlant.executeBatch();
 			conn.setAutoCommit(true);
-			System.out.println("Batch 0 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
+			logger.info("Batch 0 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to insert plant into db: ", e);
 		}
@@ -89,11 +91,12 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				setUpdateDataStatement(updatePlant, tuple.plant, tuple.coord);
 				updatePlant.addBatch();
 			}
-			System.out.println("Batch 1: " + (System.currentTimeMillis() - currentTime) + " ms");
+			logger.info("Batch 1: " + (System.currentTimeMillis() - currentTime) + " ms");
+			logger.info("Batch 1 Size: " + batches.get(1).size());
 			batches.get(1).clear();
 			updatePlant.executeBatch();
 			conn.setAutoCommit(true);
-			System.out.println("Batch 1 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
+			logger.info("Batch 1 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update plant in db: ", e);
 		}
