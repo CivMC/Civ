@@ -130,7 +130,7 @@ public class CmdShowAllPearls extends PearlCommand {
 			contents.add(new DecorationStack(item));
 		}
 
-		new MultiPageView(player, contents, "All Snitches", true).showScreen();
+		new MultiPageView(player, contents, "All Pearls", true).showScreen();
 	}
 
 	private boolean isPlayerBanned(final UUID player) {
