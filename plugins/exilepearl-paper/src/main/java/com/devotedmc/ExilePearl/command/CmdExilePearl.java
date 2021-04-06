@@ -41,6 +41,7 @@ public class CmdExilePearl extends PearlCommand {
 		addSubCommand(cmdDowngrade);
 		addSubCommand(new CmdSummon(plugin));
 		addSubCommand(new CmdReturn(plugin));
+		addSubCommand(new CmdShowAllPearls(plugin));
 		addSubCommand(new CmdSummonConfirm(plugin));
 		addSubCommand(new CmdUpgrade(plugin));
 
