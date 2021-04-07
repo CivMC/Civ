@@ -63,8 +63,8 @@ public class TreeGrower extends AgeableGrower {
 	 */
 	private static Block findNWSapling(Block block, Material mat) {
 		Block northwest = null;
-		for (Block nwCandidate : new Block[] { block, block.getRelative(-1, 0, -1), block.getRelative(0, 0, -1),
-				block.getRelative(-1, 0, 0) }) {
+		for (Block nwCandidate : new Block[] { block, block.getRelative(1, 0, 1), block.getRelative(0, 0, 1),
+				block.getRelative(1, 0, 0) }) {
 			if (adjacentSaplingCheck(mat, nwCandidate)) {
 				northwest = nwCandidate;
 				break;
