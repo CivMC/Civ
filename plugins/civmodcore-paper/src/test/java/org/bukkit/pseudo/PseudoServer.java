@@ -13,6 +13,8 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -62,6 +64,7 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.CachedServerIcon;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -325,6 +328,11 @@ public class PseudoServer implements Server {
 		throw new NotImplementedException();
 	}
 
+	@Override
+	public @Nullable World getWorld(@NotNull final NamespacedKey namespacedKey) {
+		throw new NotImplementedException();
+	}
+
 	@Nullable
 	@Override
 	public MapView getMap(final int i) {
@@ -454,6 +462,11 @@ public class PseudoServer implements Server {
 		throw new NotImplementedException();
 	}
 
+	@Override
+	public int broadcast(@NotNull final Component component, @NotNull final String s) {
+		throw new NotImplementedException();
+	}
+
 	@NotNull
 	@Override
 	public OfflinePlayer getOfflinePlayer(@NotNull final String s) {
@@ -553,6 +566,11 @@ public class PseudoServer implements Server {
 		throw new NotImplementedException();
 	}
 
+	@Override
+	public @NotNull Inventory createInventory(@Nullable final InventoryHolder inventoryHolder, @NotNull final InventoryType inventoryType, @NotNull final Component component) {
+		throw new NotImplementedException();
+	}
+
 	@NotNull
 	@Override
 	public Inventory createInventory(@Nullable final InventoryHolder inventoryHolder, @NotNull final InventoryType inventoryType, @NotNull final String s) {
@@ -565,9 +583,19 @@ public class PseudoServer implements Server {
 		throw new NotImplementedException();
 	}
 
+	@Override
+	public @NotNull Inventory createInventory(@Nullable final InventoryHolder inventoryHolder, final int i, @NotNull final Component component) throws IllegalArgumentException {
+		throw new NotImplementedException();
+	}
+
 	@NotNull
 	@Override
 	public Inventory createInventory(@Nullable final InventoryHolder inventoryHolder, final int i, @NotNull final String s) throws IllegalArgumentException {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull Merchant createMerchant(@Nullable final Component component) {
 		throw new NotImplementedException();
 	}
 
@@ -607,9 +635,19 @@ public class PseudoServer implements Server {
 		throw new NotImplementedException();
 	}
 
+	@Override
+	public @NotNull Component motd() {
+		throw new NotImplementedException();
+	}
+
 	@NotNull
 	@Override
 	public String getMotd() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @Nullable Component shutdownMessage() {
 		throw new NotImplementedException();
 	}
 
@@ -863,6 +901,11 @@ public class PseudoServer implements Server {
 	@NotNull
 	@Override
 	public Set<String> getListeningPluginChannels() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NonNull Iterable<? extends Audience> audiences() {
 		throw new NotImplementedException();
 	}
 
