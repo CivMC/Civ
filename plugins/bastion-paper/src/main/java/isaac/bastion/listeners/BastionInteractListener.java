@@ -55,7 +55,8 @@ public class BastionInteractListener implements Listener {
 
 		//Stop boat places in bastions
 		Material isBoat = player.getInventory().getItemInMainHand().getType();
-		if(Tag.ITEMS_BOATS.isTagged(isBoat) && event.getClickedBlock() != null) {
+		Material offhand = player.getInventory().getItemInOffHand().getType();
+		if(Tag.ITEMS_BOATS.isTagged(isBoat) || Tag.ITEMS_BOATS.isTagged(offhand) && event.getClickedBlock() != null) {
 			Set<Block> blocks = new CopyOnWriteArraySet<>();
 			blocks.add(event.getClickedBlock());
 			Set<BastionBlock> blocking = blockManager.getBlockingBastionsWithoutPermission(event.getClickedBlock().getLocation(),
