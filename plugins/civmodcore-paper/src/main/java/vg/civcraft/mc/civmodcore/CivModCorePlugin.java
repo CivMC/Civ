@@ -40,12 +40,9 @@ public final class CivModCorePlugin extends ACivMod {
 	private static CivModCorePlugin instance;
 
 	private GlobalChunkMetaManager chunkMetaManager;
-
 	private ManagedDatasource database;
-
 	private WorldIDManager worldIdManager;
-
-	private AikarCommandManager manager;
+	private AikarCommandManager commands;
 
 	@Override
 	public void onEnable() {
@@ -89,13 +86,10 @@ public final class CivModCorePlugin extends ACivMod {
 		registerListener(new WorldTracker());
 		registerListener(ChunkOperationManager.INSTANCE);
 		// Register commands
-		this.manager = new AikarCommandManager(this) {
-			@Override
-			public void registerCommands() {
-				registerCommand(new ConfigCommand());
-				registerCommand(ChunkOperationManager.INSTANCE);
-			}
-		};
+		this.commands = new AikarCommandManager(this, false);
+		this.commands.registerCommand(new ConfigCommand());
+		this.commands.registerCommand(ChunkOperationManager.INSTANCE);
+		this.commands.init();
 		// Load APIs
 		EnchantUtils.loadEnchantAbbreviations(this);
 		ItemUtils.loadItemNames(this);
@@ -131,9 +125,9 @@ public final class CivModCorePlugin extends ACivMod {
 		PlayerSettingAPI.saveAll();
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
 		NBTSerialization.clearAllRegistrations();
-		if (this.manager != null) {
-			this.manager.reset();
-			this.manager = null;
+		if (this.commands != null) {
+			this.commands.reset();
+			this.commands = null;
 		}
 		super.onDisable();
 	}
