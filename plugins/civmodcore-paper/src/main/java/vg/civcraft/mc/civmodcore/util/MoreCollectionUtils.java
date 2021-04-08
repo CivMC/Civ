@@ -26,7 +26,10 @@ public final class MoreCollectionUtils {
 	 */
 	@SafeVarargs
 	public static <T, K extends Collection<T>> K collect(final Supplier<K> constructor, final T... elements) {
-		final K collection = Chainer.from(constructor).then(Supplier::get).get();
+		if (constructor == null) {
+			return null;
+		}
+		final K collection = constructor.get();
 		if (collection == null) {
 			return null;
 		}

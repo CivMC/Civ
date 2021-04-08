@@ -5,8 +5,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableMap;
 import java.io.File;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +18,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import vg.civcraft.mc.civmodcore.util.Chainer;
 import vg.civcraft.mc.civmodcore.util.KeyedUtils;
 
 /**
@@ -187,7 +186,10 @@ public final class EnchantUtils {
 	 * @return Returns the item's enchantments, which are never null.
 	 */
 	public static Map<Enchantment, Integer> getEnchantments(final ItemStack item) {
-		return Chainer.from(item).then(ItemStack::getEnchantments).getOrGenerate(HashMap::new);
+		if (item == null) {
+			return ImmutableMap.of();
+		}
+		return item.getEnchantments();
 	}
 
 	/**
