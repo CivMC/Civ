@@ -19,6 +19,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
+import vg.civcraft.mc.civmodcore.util.CivLogger;
 
 /**
  * Class of static APIs for Items. Replaces ISUtils.
@@ -33,33 +34,34 @@ public final class ItemUtils {
 	 * @param plugin The CivModCore instance plugin.
 	 */
 	public static void loadItemNames(final CivModCorePlugin plugin) {
+		final var logger = CivLogger.getLogger(ItemUtils.class);
 		MATERIAL_NAMES.clear();
 		final File materialsFile = plugin.getResourceFile("materials.yml");
 		final YamlConfiguration materialsConfig = YamlConfiguration.loadConfiguration(materialsFile);
 		for (final String key : materialsConfig.getKeys(false)) {
 			if (Strings.isNullOrEmpty(key)) {
-				plugin.warning("[ItemUtils] Material key was empty.");
+				logger.warning("Material key was empty.");
 				continue;
 			}
 			final Material material = Material.getMaterial(key);
 			if (material == null) {
-				plugin.warning("[ItemUtils] Could not find material: " + key);
+				logger.warning("Could not find material: " + key);
 				return;
 			}
 			final String name = materialsConfig.getString(key);
 			if (Strings.isNullOrEmpty(name)) {
-				plugin.warning("[ItemUtils] Name for [" + key + "] was empty.");
+				logger.warning("Name for [" + key + "] was empty.");
 				continue;
 			}
 			MATERIAL_NAMES.put(material, ChatUtils.parseColor(name));
 		}
-		plugin.info("[ItemUtils] Loaded a total of " + MATERIAL_NAMES.size() + " item names from materials.yml");
+		logger.info("Loaded a total of " + MATERIAL_NAMES.size() + " item names from materials.yml");
 		// Determine if there's any materials missing
 		final Set<Material> missing = new HashSet<>();
 		CollectionUtils.addAll(missing, Material.values());
 		missing.removeIf(MATERIAL_NAMES::containsKey);
 		if (!missing.isEmpty()) {
-			plugin.warning("[ItemUtils] The following materials are missing from materials.yml: " +
+			logger.warning("The following materials are missing from materials.yml: " +
 					missing.stream().map(Enum::name).collect(Collectors.joining(",")) + ".");
 		}
 	}

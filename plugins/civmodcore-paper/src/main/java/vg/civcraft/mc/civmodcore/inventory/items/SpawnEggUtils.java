@@ -7,9 +7,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import vg.civcraft.mc.civmodcore.util.CivLogger;
 
 /**
  * Class of static APIs for Spawn Eggs.
@@ -84,12 +84,13 @@ public final class SpawnEggUtils {
 			.build();
 
 	public static void init() {
+		final var logger = CivLogger.getLogger(SpawnEggUtils.class);
 		// Determine if there's any enchants missing names
 		final Set<Material> missing = new HashSet<>();
 		CollectionUtils.addAll(missing, Material.values());
 		missing.removeIf(material -> !material.name().endsWith("_SPAWN_EGG") || SPAWN_EGGS.containsKey(material));
 		if (!missing.isEmpty()) {
-			Bukkit.getLogger().warning("[SpawnEggUtils] The following spawn eggs are missing: " +
+			logger.warning("The following spawn eggs are missing: " +
 					missing.stream().map(Enum::name).collect(Collectors.joining(",")) + ".");
 		}
 	}

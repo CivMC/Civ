@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.util.Chainer;
+import vg.civcraft.mc.civmodcore.util.CivLogger;
 import vg.civcraft.mc.civmodcore.util.KeyedUtils;
 
 /**
@@ -96,34 +97,35 @@ public final class EnchantUtils {
 	 * Loads enchantment names and initials from the config.
 	 */
 	public static void loadEnchantAbbreviations(final CivModCorePlugin plugin) {
+		final var logger = CivLogger.getLogger(EnchantUtils.class);
 		ENCHANT_ABBR.clear();
 		final File enchantsFile = plugin.getResourceFile("enchants.yml");
 		final YamlConfiguration enchantsConfig = YamlConfiguration.loadConfiguration(enchantsFile);
 		for (final String key : enchantsConfig.getKeys(false)) {
 			if (Strings.isNullOrEmpty(key)) {
-				plugin.warning("[EnchantUtils] Enchantment key was empty.");
+				logger.warning("Enchantment key was empty.");
 				continue;
 			}
 			final Enchantment enchant = EnchantUtils.getEnchantment(key);
 			if (enchant == null) {
-				plugin.warning("[EnchantUtils] Could not find enchantment: " + key);
+				logger.warning("Could not find enchantment: " + key);
 				return;
 			}
 			final String abbreviation = enchantsConfig.getString(key);
 			if (Strings.isNullOrEmpty(abbreviation)) {
-				plugin.warning("[EnchantUtils] Abbreviation for [" + key + "] was empty.");
+				logger.warning("Abbreviation for [" + key + "] was empty.");
 				continue;
 			}
 			ENCHANT_ABBR.put(enchant, abbreviation);
 		}
-		plugin.info("[EnchantUtils] Loaded a total of " + ENCHANT_ABBR.size() + " abbreviations from enchants.yml");
+		logger.info("Loaded a total of " + ENCHANT_ABBR.size() + " abbreviations from enchants.yml");
 		// Determine if there's any enchants missing abbreviations
 		final Set<Enchantment> missing = new HashSet<>();
 		CollectionUtils.addAll(missing, Enchantment.values());
 		missing.removeIf(ENCHANT_ABBR::containsKey);
 		if (!missing.isEmpty()) {
 			//noinspection deprecation
-			plugin.warning("[EnchantUtils] The following enchants are missing from enchants.yml: " +
+			logger.warning("The following enchants are missing from enchants.yml: " +
 					missing.stream().map(Enchantment::getName).collect(Collectors.joining(",")) + ".");
 		}
 	}
