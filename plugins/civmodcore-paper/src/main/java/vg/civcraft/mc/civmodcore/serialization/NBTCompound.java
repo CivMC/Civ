@@ -38,11 +38,8 @@ public class NBTCompound implements Cloneable, Validation {
 	public static final String NULL_STRING = "\u0000";
 
 	private static final String INTERNAL_MAP_KEY = "map";
-
 	private static final String UUID_MOST_SUFFIX = "Most";
-
 	private static final String UUID_LEAST_SUFFIX = "Least";
-
 	private static final String UUID_KEY = "uuid";
 
 	private NBTTagCompound tag;
@@ -839,36 +836,6 @@ public class NBTCompound implements Cloneable, Validation {
 				list.add(value.tag);
 			}
 			this.tag.set(key, list);
-		}
-	}
-
-	/**
-	 * Gets a list value from a key.
-	 *
-	 * @param key The key to get the value of.
-	 * @return The value of the key, default: empty list
-	 */
-	public <T extends NBTSerializable> NBTCompoundList<T> getSerializableList(String key) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (!this.tag.hasKeyOfType(key, 9)) {
-			return new NBTCompoundList<>();
-		}
-		return NBTCompoundList.deserialize(this.tag.getList(key, 10));
-	}
-
-	/**
-	 * Sets a list value to a key.
-	 *
-	 * @param key The key to set to value to.
-	 * @param value The value to set to the key.
-	 */
-	public void setSerializableList(String key, NBTCompoundList<?> value) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (value == null) {
-			this.tag.remove(key);
-		}
-		else {
-			this.tag.set(key, value.serialize());
 		}
 	}
 
