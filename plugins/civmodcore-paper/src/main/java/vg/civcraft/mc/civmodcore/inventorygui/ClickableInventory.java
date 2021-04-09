@@ -3,9 +3,9 @@ package vg.civcraft.mc.civmodcore.inventorygui;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 /**
  * Represents an inventory filled with Clickables. Whenever one of those is
@@ -172,13 +173,32 @@ public class ClickableInventory {
 
 	/**
 	 * Shows a player the inventory of this instance with all of its clickables
+	 * Same as calling {@code showInventory(p, true)}
 	 *
 	 * @param p Player to show the inventory to
 	 */
 	public void showInventory(Player p) {
+		showInventory(p, true);
+	}
+
+	/**
+	 * Shows a player the inventory of this instance with all of its clickables
+	 * Same as calling {@code showInventory(p, true)}
+	 *
+	 * @param p Player to show the inventory to
+	 * @param eventSafe should be true if called in any code triggered by an InventoryEvent
+	 */
+	public void showInventory(Player p, boolean eventSafe) {
 		if (p != null) {
-			p.openInventory(inventory);
-			openInventories.put(p.getUniqueId(), this);
+			if (eventSafe) {
+				Bukkit.getScheduler().runTask(CivModCorePlugin.getInstance(), () -> {
+					p.openInventory(inventory);
+					openInventories.put(p.getUniqueId(), this);
+				});
+			} else {
+				p.openInventory(inventory);
+				openInventories.put(p.getUniqueId(), this);
+			}
 			applyCooldown(p);
 		}
 	}
@@ -188,7 +208,7 @@ public class ClickableInventory {
 	 * currently open and syncs it with the internal representation.
 	 */
 	public void updateInventory() {
-		for (Map.Entry<UUID, ClickableInventory> c : openInventories.entrySet()) {
+		for (var c : new ArrayList<>(openInventories.entrySet())) {
 			if (c.getValue() == this) {
 				Player p = Bukkit.getPlayer(c.getKey());
 				p.updateInventory();
