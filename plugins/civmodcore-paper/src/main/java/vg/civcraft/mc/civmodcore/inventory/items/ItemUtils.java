@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -230,26 +230,12 @@ public final class ItemUtils {
 	 * @param item The item to retrieve the display name from.
 	 * @return Returns the display name of an item.
 	 */
-	public static String getDisplayName(final ItemStack item) {
+	public static Component getComponentDisplayName(final ItemStack item) {
 		final var meta = getItemMeta(item);
 		if (meta == null) {
 			return null;
 		}
-		return meta.getDisplayName();
-	}
-
-	/**
-	 * Retrieves the display name from an item.
-	 *
-	 * @param item The item to retrieve the display name from.
-	 * @return Returns the display name of an item.
-	 */
-	public static TextComponent getComponentDisplayName(final ItemStack item) {
-		final var meta = getItemMeta(item);
-		if (meta == null) {
-			return null;
-		}
-		return MetaUtils.getComponentDisplayName(meta);
+		return meta.displayName();
 	}
 
 	/**
@@ -260,49 +246,13 @@ public final class ItemUtils {
 	 *
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
-	public static void setDisplayName(final ItemStack item, final String name) {
+	public static void setComponentDisplayName(final ItemStack item, final Component name) {
 		final var meta = getItemMeta(item);
 		if (meta == null) {
 			throw new IllegalArgumentException("Cannot set that display name: item has no meta.");
 		}
-		if (Strings.isNullOrEmpty(name)) {
-			meta.setDisplayName(null);
-		}
-		else {
-			meta.setDisplayName(name);
-		}
+		meta.displayName(name);
 		item.setItemMeta(meta);
-	}
-
-	/**
-	 * Sets a display name to an item. A null or empty name will remove the display name from the item.
-	 *
-	 * @param item The item to set the display name to.
-	 * @param name The display name to set on the item.
-	 *
-	 * @throws IllegalArgumentException Throws when the given item has no meta.
-	 */
-	public static void setComponentDisplayName(final ItemStack item, final TextComponent name) {
-		final var meta = getItemMeta(item);
-		if (meta == null) {
-			throw new IllegalArgumentException("Cannot set that display name: item has no meta.");
-		}
-		MetaUtils.setComponentDisplayName(meta, name);
-		item.setItemMeta(meta);
-	}
-
-	/**
-	 * Retrieves the lore from an item.
-	 *
-	 * @param item The item to retrieve the lore from.
-	 * @return Returns the lore, which is never null.
-	 */
-	public static List<String> getLore(final ItemStack item) {
-		final var meta = getItemMeta(item);
-		if (meta == null) {
-			return new ArrayList<>();
-		}
-		return MetaUtils.getLore(meta);
 	}
 
 	/**
@@ -312,10 +262,10 @@ public final class ItemUtils {
 	 * @return Returns the lore, which is never null.
 	 */
 	@Nonnull
-	public static List<TextComponent> getComponentLore(final ItemStack item) {
+	public static List<Component> getComponentLore(final ItemStack item) {
 		final var meta = getItemMeta(item);
 		if (meta == null) {
-			return new ArrayList<>();
+			return new ArrayList<>(0);
 		}
 		return MetaUtils.getComponentLore(meta);
 	}
@@ -330,42 +280,7 @@ public final class ItemUtils {
 	 *
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
-	public static void setLore(final ItemStack item, final String... lines) {
-		final List<String> lore = new ArrayList<>();
-		CollectionUtils.addAll(lore, lines);
-		setLore(item, lore);
-	}
-
-	/**
-	 * Sets the lore for an item, replacing any lore that may have already been set.
-	 *
-	 * @param item The item to set the lore to.
-	 * @param lines The lore to set to the item.
-	 *
-	 * @see ItemUtils#clearLore(ItemStack)
-	 *
-	 * @throws IllegalArgumentException Throws when the given item has no meta.
-	 */
-	public static void setLore(final ItemStack item, final List<String> lines) {
-		final var meta = getItemMeta(item);
-		if (meta == null) {
-			throw new IllegalArgumentException("Cannot set that lore: item has no meta.");
-		}
-		meta.setLore(lines);
-		item.setItemMeta(meta);
-	}
-
-	/**
-	 * Sets the lore for an item, replacing any lore that may have already been set.
-	 *
-	 * @param item The item to set the lore to.
-	 * @param lines The lore to set to the item.
-	 *
-	 * @see ItemUtils#clearLore(ItemStack)
-	 *
-	 * @throws IllegalArgumentException Throws when the given item has no meta.
-	 */
-	public static void setComponentLore(final ItemStack item, final TextComponent... lines) {
+	public static void setComponentLore(final ItemStack item, final Component... lines) {
 		final var meta = getItemMeta(item);
 		if (meta == null) {
 			throw new IllegalArgumentException("Cannot set that lore: item has no meta.");
@@ -384,72 +299,12 @@ public final class ItemUtils {
 	 *
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
-	public static void setComponentLore(final ItemStack item, final List<TextComponent> lines) {
+	public static void setComponentLore(final ItemStack item, final List<Component> lines) {
 		final var meta = getItemMeta(item);
 		if (meta == null) {
 			throw new IllegalArgumentException("Cannot set that lore: item has no meta.");
 		}
 		MetaUtils.setComponentLore(meta, lines);
-		item.setItemMeta(meta);
-	}
-
-	/**
-	 * Appends lore to an item.
-	 *
-	 * @param item The item to append the lore to.
-	 * @param lines The lore to append to the item.
-	 *
-	 * @throws IllegalArgumentException Throws when the given item has no meta.
-	 */
-	public static void addLore(final ItemStack item, final String... lines) {
-		addLore(item, false, lines);
-	}
-
-	/**
-	 * Appends lore to an item.
-	 *
-	 * @param item The item to append the lore to.
-	 * @param lines The lore to append to the item.
-	 *
-	 * @throws IllegalArgumentException Throws when the given item has no meta.
-	 */
-	public static void addLore(final ItemStack item, final List<String> lines) {
-		addLore(item, false, lines);
-	}
-
-	/**
-	 * Adds lore to an item, either by appending or prepending.
-	 *
-	 * @param item The item to append the lore to.
-	 * @param prepend If set to true, the lore will be prepended instead of appended.
-	 * @param lines The lore to append to the item.
-	 *
-	 * @throws IllegalArgumentException Throws when the given item has no meta.
-	 */
-	public static void addLore(final ItemStack item, final boolean prepend, final String... lines) {
-		final var meta = getItemMeta(item);
-		if (meta == null) {
-			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
-		}
-		MetaUtils.addLore(meta, prepend, lines);
-		item.setItemMeta(meta);
-	}
-
-	/**
-	 * Adds lore to an item, either by appending or prepending.
-	 *
-	 * @param item The item to append the lore to.
-	 * @param prepend If set to true, the lore will be prepended instead of appended.
-	 * @param lines The lore to append to the item.
-	 *
-	 * @throws IllegalArgumentException Throws when the given item has no meta.
-	 */
-	public static void addLore(final ItemStack item, final boolean prepend, final List<String> lines) {
-		final var meta = getItemMeta(item);
-		if (meta == null) {
-			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
-		}
-		MetaUtils.addLore(meta, prepend, lines);
 		item.setItemMeta(meta);
 	}
 
@@ -472,7 +327,7 @@ public final class ItemUtils {
 	 *
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
-	public static void addComponentLore(final ItemStack item, final TextComponent... lines) {
+	public static void addComponentLore(final ItemStack item, final Component... lines) {
 		addComponentLore(item, false, lines);
 	}
 
@@ -484,7 +339,7 @@ public final class ItemUtils {
 	 *
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
-	public static void addComponentLore(final ItemStack item, final List<TextComponent> lines) {
+	public static void addComponentLore(final ItemStack item, final List<Component> lines) {
 		addComponentLore(item, false, lines);
 	}
 
@@ -499,7 +354,7 @@ public final class ItemUtils {
 	 */
 	public static void addComponentLore(final ItemStack item,
 										final boolean prepend,
-										final TextComponent... lines) {
+										final Component... lines) {
 		final var meta = getItemMeta(item);
 		if (meta == null) {
 			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
@@ -519,7 +374,7 @@ public final class ItemUtils {
 	 */
 	public static void addComponentLore(final ItemStack item,
 										final boolean prepend,
-										final List<TextComponent> lines) {
+										final List<Component> lines) {
 		final var meta = getItemMeta(item);
 		if (meta == null) {
 			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
@@ -594,6 +449,186 @@ public final class ItemUtils {
 		}
 		catch (ClassCastException ignored) { }
 		return false;
+	}
+
+	// ------------------------------------------------------------
+	// Deprecated Functions
+	// ------------------------------------------------------------
+
+	/**
+	 * Retrieves the display name from an item.
+	 *
+	 * @param item The item to retrieve the display name from.
+	 * @return Returns the display name of an item.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #getComponentDisplayName(ItemStack)} instead.
+	 */
+	@Deprecated
+	public static String getDisplayName(final ItemStack item) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			return null;
+		}
+		return meta.getDisplayName();
+	}
+
+	/**
+	 * Sets a display name to an item.
+	 *
+	 * @param item The item to set the display name to.
+	 * @param name The display name to set on the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #setComponentDisplayName(ItemStack, Component)} instead.
+	 */
+	@Deprecated
+	public static void setDisplayName(final ItemStack item, final String name) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot set that display name: item has no meta.");
+		}
+		meta.setDisplayName(name);
+		item.setItemMeta(meta);
+	}
+
+	/**
+	 * Retrieves the lore from an item.
+	 *
+	 * @param item The item to retrieve the lore from.
+	 * @return Returns the lore, which is never null.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #getComponentLore(ItemStack)} instead.
+	 */
+	@Deprecated
+	public static List<String> getLore(final ItemStack item) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			return new ArrayList<>(0);
+		}
+		return MetaUtils.getLore(meta);
+	}
+
+	/**
+	 * Sets the lore for an item, replacing any lore that may have already been set.
+	 *
+	 * @param item The item to set the lore to.
+	 * @param lines The lore to set to the item.
+	 *
+	 * @see ItemUtils#clearLore(ItemStack)
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #setComponentLore(ItemStack, Component...)} instead.
+	 */
+	@Deprecated
+	public static void setLore(final ItemStack item, final String... lines) {
+		final List<String> lore = new ArrayList<>();
+		CollectionUtils.addAll(lore, lines);
+		setLore(item, lore);
+	}
+
+	/**
+	 * Sets the lore for an item, replacing any lore that may have already been set.
+	 *
+	 * @param item The item to set the lore to.
+	 * @param lines The lore to set to the item.
+	 *
+	 * @see ItemUtils#clearLore(ItemStack)
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #setComponentLore(ItemStack, List)} instead.
+	 */
+	@Deprecated
+	public static void setLore(final ItemStack item, final List<String> lines) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot set that lore: item has no meta.");
+		}
+		meta.setLore(lines);
+		item.setItemMeta(meta);
+	}
+
+	/**
+	 * Appends lore to an item.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #addComponentLore(ItemStack, Component...)} instead.
+	 */
+	@Deprecated
+	public static void addLore(final ItemStack item, final String... lines) {
+		addLore(item, false, lines);
+	}
+
+	/**
+	 * Appends lore to an item.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #addComponentLore(ItemStack, List)} instead.
+	 */
+	@Deprecated
+	public static void addLore(final ItemStack item, final List<String> lines) {
+		addLore(item, false, lines);
+	}
+
+	/**
+	 * Adds lore to an item, either by appending or prepending.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param prepend If set to true, the lore will be prepended instead of appended.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #addComponentLore(ItemStack, boolean, Component...)} instead.
+	 */
+	@Deprecated
+	public static void addLore(final ItemStack item, final boolean prepend, final String... lines) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
+		}
+		MetaUtils.addLore(meta, prepend, lines);
+		item.setItemMeta(meta);
+	}
+
+	/**
+	 * Adds lore to an item, either by appending or prepending.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param prepend If set to true, the lore will be prepended instead of appended.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #addComponentLore(ItemStack, boolean, List)} instead.
+	 */
+	@Deprecated
+	public static void addLore(final ItemStack item, final boolean prepend, final List<String> lines) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
+		}
+		MetaUtils.addLore(meta, prepend, lines);
+		item.setItemMeta(meta);
 	}
 
 }

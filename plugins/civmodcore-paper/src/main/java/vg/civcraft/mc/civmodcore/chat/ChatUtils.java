@@ -2,12 +2,15 @@ package vg.civcraft.mc.civmodcore.chat;
 
 import com.google.common.base.Strings;
 import java.awt.Color;
-import java.util.Arrays;
 import java.util.List;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public final class ChatUtils {
 
@@ -152,28 +155,31 @@ public final class ChatUtils {
 	 *
 	 * @param component The component to test if null or empty.
 	 * @return Returns true if the component is null or has no visible content.
+	 * 
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
 	 */
+	@Deprecated
 	public static boolean isNullOrEmpty(final BaseComponent component) {
 		if (component == null) {
 			return true;
 		}
-		final TextComponent text = fromLegacyText(component.toPlainText());
-		return Strings.isNullOrEmpty(text.toPlainText());
+		return Strings.isNullOrEmpty(component.toPlainText());
 	}
 
 	/**
-	 * <p>Converts a string containing Minecraft's legacy colour codes into a text component.</p>
+	 * <p>Determines whether a given base component is null or empty.</p>
 	 *
-	 * <p>Note: This does not work on Civ's colour code equivalents, make sure to parse those before using this.</p>
+	 * <p>This is determined by converting the component into plain text, so a non-null component filled with
+	 * nothing but colour codes and hover text will likely return true.</p>
 	 *
-	 * @param text The legacy text to parse.
-	 * @return Returns a text component of the legacy text.
+	 * @param component The component to test if null or empty.
+	 * @return Returns true if the component is null or has no visible content.
 	 */
-	public static TextComponent fromLegacyText(final String text) {
-		if (Strings.isNullOrEmpty(text)) {
-			return new TextComponent(text);
+	public static boolean isNullOrEmpty(final Component component) {
+		if (component == null) {
+			return true;
 		}
-		return new TextComponent(TextComponent.fromLegacyText(text, ChatColor.RESET));
+		return Strings.isNullOrEmpty(LegacyComponentSerializer.legacyAmpersand().serialize(component));
 	}
 
 	/**
@@ -182,7 +188,10 @@ public final class ChatUtils {
 	 * @param value The value of the text. (Objects will be stringified)
 	 * @param formats The colour formats.
 	 * @return Returns the created component, so you <i>can</i> do more stuff to it.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use {@link Component#text()} instead.
 	 */
+	@Deprecated
 	public static TextComponent textComponent(final Object value, final ChatColor... formats) {
 		final TextComponent component = new TextComponent(value == null ? "<null>" : value.toString());
 		if (!ArrayUtils.isEmpty(formats)) {
@@ -221,50 +230,18 @@ public final class ChatUtils {
 		return component;
 	}
 
-	/**
-	 * Converts a given text component into a composite array of base components.
-	 *
-	 * @param component The text component to convert.
-	 * @return Returns a composite array of base components.
-	 */
-	public static BaseComponent[] toBaseComponents(final TextComponent component) {
-		if (component == null) {
-			return null;
+	public static boolean areComponentsEqual(final Component former, final Component latter) {
+		if (StringUtils.equals(
+				MiniMessage.get().serialize(former),
+				MiniMessage.get().serialize(latter))) {
+			return true;
 		}
-		final var text = component.getText();
-		if (!Strings.isNullOrEmpty(text) || component.hasFormatting()) {
-			return new BaseComponent[] { component };
+		if (StringUtils.equals(
+				LegacyComponentSerializer.legacyAmpersand().serialize(former),
+				LegacyComponentSerializer.legacyAmpersand().serialize(latter))) {
+			return true;
 		}
-		return component.getExtra().toArray(new BaseComponent[0]);
-	}
-
-	/**
-	 * Converts a given base component array into a text component.
-	 *
-	 * @param components The base components to convert.
-	 * @return Returns a representative text component.
-	 */
-	public static TextComponent fromBaseComponents(final BaseComponent... components) {
-		if (ArrayUtils.isEmpty(components)) {
-			return null;
-		}
-		if (components.length == 1) {
-			final var component = components[0];
-			if (component instanceof TextComponent) {
-				return (TextComponent) component;
-			}
-			final var text = new TextComponent();
-			text.copyFormatting(component);
-			text.setExtra(component.getExtra());
-			return text;
-		}
-		return new TextComponent(components);
-	}
-
-	public static boolean areComponentsEqual(final TextComponent former, final TextComponent latter) {
-		return Arrays.equals(
-				toBaseComponents(former),
-				toBaseComponents(latter));
+		return false;
 	}
 
 }

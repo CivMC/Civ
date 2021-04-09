@@ -1,10 +1,9 @@
 package vg.civcraft.mc.civmodcore.items;
 
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.pseudo.PseudoServer;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -14,28 +13,13 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.util.NullUtils;
 
-public class ItemMetaTester {
+public class ItemMetaTests {
 
 	private static final ItemStack TEMPLATE_ITEM = new ItemStack(Material.STICK);
 
 	@BeforeClass
 	public static void setupBukkit() {
 		PseudoServer.setup();
-	}
-
-	/**
-	 * Tests whether two components of different order can match.
-	 */
-	@Test
-	public void testComponentOrderEquality() {
-		// Setup
-		final String formerMessage = "{\"text\":\"\",\"extra\":[{\"text\":\"Test!\"}]}";
-		final String latterMessage = "{\"extra\":[{\"text\":\"Test!\"}],\"text\":\"\"}";
-		// Process
-		final BaseComponent[] formerParsed = ComponentSerializer.parse(formerMessage);
-		final BaseComponent[] latterParsed = ComponentSerializer.parse(latterMessage);
-		// Check
-		Assert.assertArrayEquals(formerParsed, latterParsed);
 	}
 
 	/**
@@ -50,7 +34,7 @@ public class ItemMetaTester {
 			nbt.setCompound("display", display);
 		}));
 		final var latterItem = TEMPLATE_ITEM.clone();
-		ItemUtils.setDisplayName(latterItem, "Hello!");
+		ItemUtils.setComponentDisplayName(latterItem, Component.text("Hello!"));
 		// Check
 		Assert.assertTrue(ChatUtils.areComponentsEqual(
 				ItemUtils.getComponentDisplayName(formerItem),
@@ -61,29 +45,20 @@ public class ItemMetaTester {
 	 * How do different API methods of setting the display name fare?
 	 */
 	@Test
+	@SuppressWarnings("deprecation")
 	public void testAdvancedDisplayNameEquality() {
 		// Setup
 		final var formerItem = TEMPLATE_ITEM.clone();
-		ItemUtils.setDisplayName(formerItem, "Hello!");
+		ItemUtils.handleItemMeta(formerItem, (ItemMeta meta) -> {
+			meta.setDisplayName("Hello!");
+			return true;
+		});
 		final var latterItem = TEMPLATE_ITEM.clone();
-		ItemUtils.setComponentDisplayName(latterItem, new TextComponent("Hello!"));
+		ItemUtils.setComponentDisplayName(latterItem, Component.text("Hello!"));
 		// Check
 		Assert.assertTrue(ChatUtils.areComponentsEqual(
 				ItemUtils.getComponentDisplayName(formerItem),
 				ItemUtils.getComponentDisplayName(latterItem)));
-	}
-
-	/**
-	 * Tries a full item similarity check.
-	 */
-	@Test
-	public void testCustomItemStackSimilarity() {
-		// Setup
-		final var formerItem = TEMPLATE_ITEM.clone();
-		ItemUtils.setDisplayName(formerItem, "Hello!");
-		final var latterItem = TEMPLATE_ITEM.clone();
-		ItemUtils.setComponentDisplayName(latterItem, new TextComponent("Hello!"));
-		// Check
 		Assert.assertTrue(ItemUtils.areItemsSimilar(formerItem, latterItem));
 	}
 

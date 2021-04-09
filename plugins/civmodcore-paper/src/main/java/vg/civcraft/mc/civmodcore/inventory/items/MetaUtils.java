@@ -1,15 +1,13 @@
 package vg.civcraft.mc.civmodcore.inventory.items;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Bukkit;
@@ -43,10 +41,10 @@ public final class MetaUtils {
 		// Create a version of the items that do not have display names or lore, since those are the pain points
 		final ItemMeta fakeFormer = former.clone();
 		final ItemMeta fakeLatter = latter.clone();
-		fakeFormer.setDisplayName(null);
-		fakeFormer.setLore(null);
-		fakeLatter.setDisplayName(null);
-		fakeLatter.setLore(null);
+		fakeFormer.displayName(null);
+		fakeFormer.lore(null);
+		fakeLatter.displayName(null);
+		fakeLatter.lore(null);
 		if (!Bukkit.getItemFactory().equals(fakeFormer, fakeLatter)) {
 			return false;
 		}
@@ -56,8 +54,8 @@ public final class MetaUtils {
 		}
 		if (former.hasDisplayName()) {
 			if (!ChatUtils.areComponentsEqual(
-					getComponentDisplayName(former),
-					getComponentDisplayName(latter))) {
+					former.displayName(),
+					latter.displayName())) {
 				return false;
 			}
 		}
@@ -75,75 +73,32 @@ public final class MetaUtils {
 	}
 
 	/**
-	 * Retrieves the display name from a given meta.
-	 *
-	 * @param meta The meta to retrieve the display name from.
-	 * @return Returns the display name of an item.
-	 */
-	public static TextComponent getComponentDisplayName(@Nonnull final ItemMeta meta) {
-		return ChatUtils.fromBaseComponents(meta.getDisplayNameComponent());
-	}
-
-	/**
-	 * Sets a given display name to a given meta.
-	 * @param meta The meta to set the display name to.
-	 * @param component The display name to set.
-	 */
-	public static void setComponentDisplayName(@Nonnull final ItemMeta meta, final TextComponent component) {
-		if (ChatUtils.isNullOrEmpty(component)) {
-			meta.setDisplayName(null);
-			return;
-		}
-		meta.setDisplayNameComponent(ChatUtils.toBaseComponents(component));
-	}
-
-	/**
 	 * Retrieves the lore from a given item meta.
 	 *
 	 * @param meta The item meta to retrieve the lore from.
 	 * @return Returns the lore, which is never null.
 	 */
 	@Nonnull
-	public static List<String> getLore(@Nonnull final ItemMeta meta) {
-		final List<String> lore = meta.getLore();
-		if (lore == null) {
-			return new ArrayList<>();
+	public static List<Component> getComponentLore(@Nonnull final ItemMeta meta) {
+		final List<Component> lore = meta.lore();
+		if (CollectionUtils.isEmpty(lore)) {
+			return new ArrayList<>(0);
 		}
 		return lore;
 	}
 
-
-	/**
-	 * Retrieves the lore from a given item meta.
-	 *
-	 * @param meta The item meta to retrieve the lore from.
-	 * @return Returns the lore, which is never null.
-	 */
-	@Nonnull
-	public static List<TextComponent> getComponentLore(@Nonnull final ItemMeta meta) {
-		final List<BaseComponent[]> lore = meta.getLoreComponents();
-		if (CollectionUtils.isEmpty(lore)) {
-			return new ArrayList<>();
-		}
-		return lore.stream()
-				.map(ChatUtils::fromBaseComponents)
-				.collect(Collectors.toCollection(ArrayList::new));
-	}
-
 	/**
 	 * Sets the lore to a given item meta.
 	 *
 	 * @param meta The meta to set the lore to.
 	 * @param lines The lore lines to set.
 	 */
-	public static void setComponentLore(@Nonnull final ItemMeta meta, final TextComponent... lines) {
+	public static void setComponentLore(@Nonnull final ItemMeta meta, final Component... lines) {
 		if (ArrayUtils.isEmpty(lines)) {
-			meta.setLore(null);
+			meta.lore(null);
 			return;
 		}
-		meta.setLoreComponents(Stream.of(lines)
-				.map(ChatUtils::toBaseComponents)
-				.collect(Collectors.toList()));
+		meta.lore(Arrays.asList(lines));
 	}
 
 	/**
@@ -152,14 +107,21 @@ public final class MetaUtils {
 	 * @param meta The meta to set the lore to.
 	 * @param lines The lore lines to set.
 	 */
-	public static void setComponentLore(@Nonnull final ItemMeta meta, final List<TextComponent> lines) {
+	public static void setComponentLore(@Nonnull final ItemMeta meta, final List<Component> lines) {
 		if (CollectionUtils.isEmpty(lines)) {
-			meta.setLore(null);
+			meta.lore(null);
 			return;
 		}
-		meta.setLoreComponents(lines.stream()
-				.map(ChatUtils::toBaseComponents)
-				.collect(Collectors.toList()));
+		meta.lore(lines);
+	}
+
+	/**
+	 * Clears the lore from an item meta.
+	 *
+	 * @param meta The item meta to clear the lore of.
+	 */
+	public static void clearLore(@Nonnull final ItemMeta meta) {
+		meta.lore(null);
 	}
 
 	/**
@@ -168,6 +130,117 @@ public final class MetaUtils {
 	 * @param meta The item meta to append the lore to.
 	 * @param lines The lore to append to the item meta.
 	 */
+	public static void addComponentLore(@Nonnull final ItemMeta meta, final Component... lines) {
+		addComponentLore(meta, false, lines);
+	}
+
+	/**
+	 * Appends lore to an item meta.
+	 *
+	 * @param meta The item meta to append the lore to.
+	 * @param lines The lore to append to the item meta.
+	 */
+	public static void addComponentLore(@Nonnull final ItemMeta meta, final List<Component> lines) {
+		addComponentLore(meta, false, lines);
+	}
+
+	/**
+	 * Adds lore to an item meta, either by appending or prepending.
+	 *
+	 * @param meta The item meta to append the lore to.
+	 * @param prepend If set to true, the lore will be prepended instead of appended.
+	 * @param lines The lore to append to the item meta.
+	 */
+	public static void addComponentLore(@Nonnull final ItemMeta meta,
+										final boolean prepend,
+										final Component... lines) {
+		if (ArrayUtils.isEmpty(lines)) {
+			return;
+		}
+		final List<Component> lore = getComponentLore(meta);
+		if (prepend) {
+			ArrayUtils.reverse(lines);
+			for (final Component line : lines) {
+				lore.add(0, line);
+			}
+		}
+		else {
+			CollectionUtils.addAll(lore, lines);
+		}
+		setComponentLore(meta, lore);
+	}
+
+	/**
+	 * Adds lore to an item meta, either by appending or prepending.
+	 *
+	 * @param meta The item meta to append the lore to.
+	 * @param prepend If set to true, the lore will be prepended instead of appended.
+	 * @param lines The lore to append to the item meta.
+	 */
+	public static void addComponentLore(@Nonnull final ItemMeta meta,
+										final boolean prepend,
+										final List<Component> lines) {
+		if (CollectionUtils.isEmpty(lines)) {
+			return;
+		}
+		final List<Component> lore = getComponentLore(meta);
+		if (prepend) {
+			Collections.reverse(lines);
+			for (final Component line : lines) {
+				lore.add(0, line);
+			}
+		}
+		else {
+			lore.addAll(lines);
+		}
+		setComponentLore(meta, lore);
+	}
+
+	/**
+	 * Makes an item glow by adding an enchantment and the flag for hiding enchantments,
+	 * so it has the enchantment glow without an enchantment being visible. Note that this
+	 * does actually apply an enchantment to an item.
+	 *
+	 * @param meta Item meta to apply glow to.
+	 */
+	public static void addGlow(@Nonnull final ItemMeta meta) {
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		meta.addEnchant(Enchantment.DURABILITY, 1, true); // true = ignoreLevelRestriction
+	}
+
+	// ------------------------------------------------------------
+	// Deprecated Functions
+	// ------------------------------------------------------------
+
+	/**
+	 * Retrieves the lore from a given item meta.
+	 *
+	 * @param meta The item meta to retrieve the lore from.
+	 * @return Returns the lore, which is never null.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #getComponentLore(ItemMeta)} instead.
+	 */
+	@Deprecated
+	@Nonnull
+	public static List<String> getLore(@Nonnull final ItemMeta meta) {
+		final List<String> lore = meta.getLore();
+		if (lore == null) {
+			return new ArrayList<>(0);
+		}
+		return lore;
+	}
+
+	/**
+	 * Appends lore to an item meta.
+	 *
+	 * @param meta The item meta to append the lore to.
+	 * @param lines The lore to append to the item meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #addComponentLore(ItemMeta, Component...)} instead.
+	 */
+	@Deprecated
 	public static void addLore(@Nonnull final ItemMeta meta, final String... lines) {
 		addLore(meta, false, lines);
 	}
@@ -177,7 +250,11 @@ public final class MetaUtils {
 	 *
 	 * @param meta The item meta to append the lore to.
 	 * @param lines The lore to append to the item meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #addComponentLore(ItemMeta, List)} instead.
 	 */
+	@Deprecated
 	public static void addLore(@Nonnull final ItemMeta meta, final List<String> lines) {
 		addLore(meta, false, lines);
 	}
@@ -188,7 +265,11 @@ public final class MetaUtils {
 	 * @param meta The item meta to append the lore to.
 	 * @param prepend If set to true, the lore will be prepended instead of appended.
 	 * @param lines The lore to append to the item meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #addComponentLore(ItemMeta, boolean, Component...)} instead.
 	 */
+	@Deprecated
 	public static void addLore(@Nonnull final ItemMeta meta, final boolean prepend, final String... lines) {
 		if (ArrayUtils.isEmpty(lines)) {
 			return;
@@ -212,7 +293,11 @@ public final class MetaUtils {
 	 * @param meta The item meta to append the lore to.
 	 * @param prepend If set to true, the lore will be prepended instead of appended.
 	 * @param lines The lore to append to the item meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #addComponentLore(ItemMeta, boolean, List)} instead.
 	 */
+	@Deprecated
 	public static void addLore(@Nonnull final ItemMeta meta, final boolean prepend, final List<String> lines) {
 		if (CollectionUtils.isEmpty(lines)) {
 			return;
@@ -228,99 +313,6 @@ public final class MetaUtils {
 			lore.addAll(lines);
 		}
 		meta.setLore(lore);
-	}
-
-	/**
-	 * Clears the lore from an item meta.
-	 *
-	 * @param meta The item meta to clear the lore of.
-	 */
-	public static void clearLore(@Nonnull final ItemMeta meta) {
-		meta.setLore(null);
-	}
-
-	/**
-	 * Appends lore to an item meta.
-	 *
-	 * @param meta The item meta to append the lore to.
-	 * @param lines The lore to append to the item meta.
-	 */
-	public static void addComponentLore(@Nonnull final ItemMeta meta, final TextComponent... lines) {
-		addComponentLore(meta, false, lines);
-	}
-
-	/**
-	 * Appends lore to an item meta.
-	 *
-	 * @param meta The item meta to append the lore to.
-	 * @param lines The lore to append to the item meta.
-	 */
-	public static void addComponentLore(@Nonnull final ItemMeta meta, final List<TextComponent> lines) {
-		addComponentLore(meta, false, lines);
-	}
-
-	/**
-	 * Adds lore to an item meta, either by appending or prepending.
-	 *
-	 * @param meta The item meta to append the lore to.
-	 * @param prepend If set to true, the lore will be prepended instead of appended.
-	 * @param lines The lore to append to the item meta.
-	 */
-	public static void addComponentLore(@Nonnull final ItemMeta meta,
-										final boolean prepend,
-										final TextComponent... lines) {
-		if (ArrayUtils.isEmpty(lines)) {
-			return;
-		}
-		final List<TextComponent> lore = getComponentLore(meta);
-		if (prepend) {
-			ArrayUtils.reverse(lines);
-			for (final TextComponent line : lines) {
-				lore.add(0, line);
-			}
-		}
-		else {
-			CollectionUtils.addAll(lore, lines);
-		}
-		setComponentLore(meta, lore);
-	}
-
-	/**
-	 * Adds lore to an item meta, either by appending or prepending.
-	 *
-	 * @param meta The item meta to append the lore to.
-	 * @param prepend If set to true, the lore will be prepended instead of appended.
-	 * @param lines The lore to append to the item meta.
-	 */
-	public static void addComponentLore(@Nonnull final ItemMeta meta,
-										final boolean prepend,
-										final List<TextComponent> lines) {
-		if (CollectionUtils.isEmpty(lines)) {
-			return;
-		}
-		final List<TextComponent> lore = getComponentLore(meta);
-		if (prepend) {
-			Collections.reverse(lines);
-			for (final TextComponent line : lines) {
-				lore.add(0, line);
-			}
-		}
-		else {
-			lore.addAll(lines);
-		}
-		setComponentLore(meta, lore);
-	}
-
-	/**
-	 * Makes an item glow by adding an enchantment and the flag for hiding enchantments,
-	 * so it has the enchantment glow without an enchantment being visible. Note that this
-	 * does actually apply an enchantment to an item.
-	 *
-	 * @param meta Item meta to apply glow to.
-	 */
-	public static void addGlow(@Nonnull final ItemMeta meta) {
-		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		meta.addEnchant(Enchantment.DURABILITY, 1, true); // true = ignoreLevelRestriction
 	}
 
 }
