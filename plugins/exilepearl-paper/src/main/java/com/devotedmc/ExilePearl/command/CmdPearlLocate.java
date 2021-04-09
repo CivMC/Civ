@@ -12,7 +12,7 @@ public class CmdPearlLocate extends PearlCommand {
 		this.aliases.add("locate");
 
 		this.senderMustBePlayer = true;
-		this.setHelpShort("Locates your exile pearl");
+		this.setHelpShort("Locates your pearl");
 	}
 
 	@Override
