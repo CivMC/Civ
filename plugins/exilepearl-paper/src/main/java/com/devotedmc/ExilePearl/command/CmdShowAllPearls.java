@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import net.md_5.bungee.api.ChatColor;
+import org.apache.commons.collections4.ComparatorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -67,14 +68,13 @@ public class CmdShowAllPearls extends PearlCommand {
 		this.isBanStickEnabled = this.plugin.isBanStickEnabled();
 
 		final List<IClickable> contents = this.plugin.getPearls().stream()
-				.sorted(Comparator.comparing(ExilePearl::getPearledOn))
-				.sorted(Collections.reverseOrder())
+				.sorted(ComparatorUtils.reversedComparator(Comparator.comparing(ExilePearl::getPearledOn)))
 				.map(pearl -> {
 					final Location pearlLocation = pearl.getLocation();
 					final boolean isPlayerBanned = isPlayerBanned(pearl.getPlayerId());
 
 					final var item = isPlayerBanned ?
-							new ItemStack(Material.BARRIER) :
+							new ItemStack(Material.ARMOR_STAND) :
 							getSkullForPlayer(pearl.getPlayerId());
 
 					ItemUtils.handleItemMeta(item, (SkullMeta meta) -> {
