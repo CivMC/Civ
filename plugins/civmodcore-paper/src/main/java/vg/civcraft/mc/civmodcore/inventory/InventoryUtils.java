@@ -38,7 +38,7 @@ public final class InventoryUtils {
 	 */
 	public static List<Player> getViewingPlayers(final Inventory inventory) {
 		if (!isValidInventory(inventory)) {
-			return new ArrayList<>();
+			return new ArrayList<>(0);
 		}
 		return inventory.getViewers().stream()
 				.filter(entity -> entity instanceof Player)
