@@ -11,7 +11,7 @@ import org.bukkit.World;
 /**
  * Utility to use with {@link java.util.stream.Stream} to efficiently remove elements from unloaded chunks.
  */
-public class ChunkLoadedFilter {
+public final class ChunkLoadedFilter {
 
 	/**
 	 * Creates a new filter function for a given world to remove elements representing blocks in unloaded chunks.

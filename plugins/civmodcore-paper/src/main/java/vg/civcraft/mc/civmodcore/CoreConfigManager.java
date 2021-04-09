@@ -37,7 +37,6 @@ public class CoreConfigManager {
 	public final boolean parse() {
 		this.plugin.info(ChatColor.BLUE + "Parsing config.");
 		this.plugin.saveDefaultConfig();
-		this.plugin.reloadConfig();
 		FileConfiguration config = this.plugin.getConfig();
 		// Parse debug value
 		this.debug = config.getBoolean("debug", false);
