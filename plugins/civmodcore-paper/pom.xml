@@ -91,12 +91,12 @@
 
   <repositories>
     <repository>
-      <id>aikar</id>
-      <url>https://repo.aikar.co/content/groups/aikar/</url>
-    </repository>
-    <repository>
       <id>civ-github-repo</id>
       <url>https://raw.githubusercontent.com/CivClassic/artifacts/master/</url>
+    </repository>
+    <repository>
+      <id>aikar</id>
+      <url>https://repo.aikar.co/content/groups/aikar/</url>
     </repository>
   </repositories>
 
