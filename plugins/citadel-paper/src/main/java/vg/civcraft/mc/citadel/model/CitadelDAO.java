@@ -30,8 +30,77 @@ import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 
 public class CitadelDAO extends TableStorageEngine<Reinforcement> {
 
+	private boolean batchMode;
+	private List<List<ReinforcementTuple>> batches;
+
 	public CitadelDAO(Logger logger, ManagedDatasource db) {
 		super(logger, db);
+		this.batchMode = false;
+	}
+
+	public void setBatchMode(boolean batch) {
+		this.batchMode = batch;
+		batches = new ArrayList<>();
+		for (int i = 0; i < 3; i++) {
+			batches.add(new ArrayList<>());
+		}
+	}
+
+	public void cleanupBatches() {
+		long currentTime = System.currentTimeMillis();
+		try (Connection conn = db.getConnection();
+			 PreparedStatement deleteRein = conn.prepareStatement(
+					 "delete from ctdl_reinforcements where chunk_x = ? and chunk_z = ? and world_id = ? and "
+							 + "x_offset = ? and y = ? and z_offset = ?;");) {
+			conn.setAutoCommit(false);
+			for (ReinforcementTuple rein : batches.get(2)) {
+				setDeleteDataStatement(deleteRein, rein.rein, rein.coord);
+				deleteRein.addBatch();
+			}
+			logger.info("Batch 2: " + (System.currentTimeMillis() - currentTime) + " ms");
+			logger.info("Batch 2 Size: " + batches.get(2).size());
+			batches.get(2).clear();
+			deleteRein.executeBatch();
+			conn.setAutoCommit(true);
+			logger.info("Batch 2 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to delete reinforcement from db: ", e);
+		}
+		try (Connection conn = db.getConnection();
+			 PreparedStatement insertRein = conn.prepareStatement(
+					 "insert into ctdl_reinforcements (chunk_x, chunk_z, world_id, x_offset, y, z_offset, type_id, "
+							 + "health, group_id, insecure, creation_time) values(?,?,?, ?,?,?, ?,?,?,?,?);");) {
+			conn.setAutoCommit(false);
+			for (ReinforcementTuple rein : batches.get(0)) {
+				setInsertDataStatement(insertRein, rein.rein, rein.coord);
+				insertRein.addBatch();
+			}
+			logger.info("Batch 0: " + (System.currentTimeMillis() - currentTime) + " ms");
+			logger.info("Batch 0 Size: " + batches.get(0).size());
+			batches.get(0).clear();
+			insertRein.executeBatch();
+			conn.setAutoCommit(true);
+			logger.info("Batch 0 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to insert reinforcement into db: ", e);
+		}
+		try (Connection conn = db.getConnection();
+			 PreparedStatement updateRein = conn.prepareStatement("update ctdl_reinforcements set type_id = ?, health = ?, group_id = ?, insecure = ?, creation_time = ? where "
+					 + "chunk_x = ? and chunk_z = ? and world_id = ? and x_offset = ? and y = ? and z_offset = ?;");) {
+			conn.setAutoCommit(false);
+			for (ReinforcementTuple rein : batches.get(1)) {
+				setUpdateDataStatement(updateRein, rein.rein, rein.coord);
+				updateRein.addBatch();
+			}
+			logger.info("Batch 1: " + (System.currentTimeMillis() - currentTime) + " ms");
+			logger.info("Batch 1 Size: " + batches.get(1).size());
+			batches.get(1).clear();
+			updateRein.executeBatch();
+			conn.setAutoCommit(true);
+			logger.info("Batch 1 Finish: " + (System.currentTimeMillis() - currentTime) + " ms");
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to update reinforcement in db: ", e);
+		}
 	}
 
 	@Override
@@ -198,66 +267,90 @@ public class CitadelDAO extends TableStorageEngine<Reinforcement> {
 
 	@Override
 	public void insert(Reinforcement data, XZWCoord coord) {
+		if (batchMode) {
+			batches.get(0).add(new ReinforcementTuple(data, coord));
+			return;
+		}
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement insertRein = insertConn.prepareStatement(
 						"insert into ctdl_reinforcements (chunk_x, chunk_z, world_id, x_offset, y, z_offset, type_id, "
 								+ "health, group_id, insecure, creation_time) values(?,?,?, ?,?,?, ?,?,?,?,?);");) {
-			insertRein.setInt(1, coord.getX());
-			insertRein.setInt(2, coord.getZ());
-			insertRein.setShort(3, coord.getWorldID());
-			insertRein.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
-			insertRein.setShort(5, (short) data.getLocation().getBlockY());
-			insertRein.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
-			insertRein.setShort(7, data.getType().getID());
-			insertRein.setFloat(8, data.getHealth());
-			insertRein.setInt(9, data.getGroupId());
-			insertRein.setBoolean(10, data.isInsecure());
-			insertRein.setTimestamp(11, new Timestamp(data.getCreationTime()));
+			setInsertDataStatement(insertRein, data, coord);
 			insertRein.execute();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to insert reinforcement into db: ", e);
 		}
 	}
 
+	private static void setInsertDataStatement(PreparedStatement insertRein, Reinforcement data, XZWCoord coord) throws SQLException {
+		insertRein.setInt(1, coord.getX());
+		insertRein.setInt(2, coord.getZ());
+		insertRein.setShort(3, coord.getWorldID());
+		insertRein.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
+		insertRein.setShort(5, (short) data.getLocation().getBlockY());
+		insertRein.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
+		insertRein.setShort(7, data.getType().getID());
+		insertRein.setFloat(8, data.getHealth());
+		insertRein.setInt(9, data.getGroupId());
+		insertRein.setBoolean(10, data.isInsecure());
+		insertRein.setTimestamp(11, new Timestamp(data.getCreationTime()));
+	}
+
 	@Override
 	public void update(Reinforcement data, XZWCoord coord) {
+		if (batchMode) {
+			batches.get(1).add(new ReinforcementTuple(data, coord));
+			return;
+		}
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement updateRein = insertConn.prepareStatement(
 						"update ctdl_reinforcements set type_id = ?, health = ?, group_id = ?, insecure = ?, creation_time = ? where "
 								+ "chunk_x = ? and chunk_z = ? and world_id = ? and x_offset = ? and y = ? and z_offset = ?;");) {
-			updateRein.setShort(1, data.getType().getID());
-			updateRein.setFloat(2, data.getHealth());
-			updateRein.setInt(3, data.getGroupId());
-			updateRein.setBoolean(4, data.isInsecure());
-			updateRein.setTimestamp(5, new Timestamp(data.getCreationTime()));
-			updateRein.setInt(6, coord.getX());
-			updateRein.setInt(7, coord.getZ());
-			updateRein.setShort(8, coord.getWorldID());
-			updateRein.setByte(9, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
-			updateRein.setShort(10, (short) data.getLocation().getBlockY());
-			updateRein.setByte(11, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
+			setUpdateDataStatement(updateRein, data, coord);
 			updateRein.execute();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update reinforcement in db: ", e);
 		}
 	}
 
+	private static void setUpdateDataStatement(PreparedStatement updateRein, Reinforcement data, XZWCoord coord) throws SQLException {
+		updateRein.setShort(1, data.getType().getID());
+		updateRein.setFloat(2, data.getHealth());
+		updateRein.setInt(3, data.getGroupId());
+		updateRein.setBoolean(4, data.isInsecure());
+		updateRein.setTimestamp(5, new Timestamp(data.getCreationTime()));
+		updateRein.setInt(6, coord.getX());
+		updateRein.setInt(7, coord.getZ());
+		updateRein.setShort(8, coord.getWorldID());
+		updateRein.setByte(9, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
+		updateRein.setShort(10, (short) data.getLocation().getBlockY());
+		updateRein.setByte(11, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
+	}
+
 	@Override
 	public void delete(Reinforcement data, XZWCoord coord) {
+		if (batchMode) {
+			batches.get(2).add(new ReinforcementTuple(data, coord));
+			return;
+		}
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement deleteRein = insertConn.prepareStatement(
 						"delete from ctdl_reinforcements where chunk_x = ? and chunk_z = ? and world_id = ? and "
 								+ "x_offset = ? and y = ? and z_offset = ?;");) {
-			deleteRein.setInt(1, coord.getX());
-			deleteRein.setInt(2, coord.getZ());
-			deleteRein.setShort(3, coord.getWorldID());
-			deleteRein.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
-			deleteRein.setShort(5, (short) data.getLocation().getBlockY());
-			deleteRein.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
+			setDeleteDataStatement(deleteRein, data, coord);
 			deleteRein.execute();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to delete reinforcement from db: ", e);
 		}
+	}
+
+	private static void setDeleteDataStatement(PreparedStatement deleteRein, Reinforcement data, XZWCoord coord) throws SQLException {
+		deleteRein.setInt(1, coord.getX());
+		deleteRein.setInt(2, coord.getZ());
+		deleteRein.setShort(3, coord.getWorldID());
+		deleteRein.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
+		deleteRein.setShort(5, (short) data.getLocation().getBlockY());
+		deleteRein.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
 	}
 
 	@Override
@@ -323,5 +416,15 @@ public class CitadelDAO extends TableStorageEngine<Reinforcement> {
 	@Override
 	public boolean stayLoaded() {
 		return false;
+	}
+
+	private class ReinforcementTuple {
+		private Reinforcement rein;
+		private XZWCoord coord;
+
+		ReinforcementTuple(Reinforcement rein, XZWCoord coord) {
+			this.rein = rein;
+			this.coord = coord;
+		}
 	}
 }
