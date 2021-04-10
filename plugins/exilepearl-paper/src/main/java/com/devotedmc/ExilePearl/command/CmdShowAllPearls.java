@@ -2,18 +2,15 @@ package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import net.md_5.bungee.api.ChatColor;
@@ -21,7 +18,6 @@ import org.apache.commons.collections4.ComparatorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -36,9 +32,6 @@ public class CmdShowAllPearls extends PearlCommand {
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
 	private static final Map<UUID, Long> COOLDOWNS = new HashMap<>();
 	private static final long COOLDOWN = 10_000; // 10 seconds
-
-	private Set<UUID> bannedPlayers = new HashSet<>(0);
-	private boolean isBanStickEnabled = false;
 
 	public CmdShowAllPearls(final ExilePearlApi pearlApi) {
 		super(pearlApi);
@@ -61,27 +54,19 @@ public class CmdShowAllPearls extends PearlCommand {
 		}
 		COOLDOWNS.put(player.getUniqueId(), now);
 
-		this.bannedPlayers = Bukkit.getBannedPlayers().stream()
-				.map(OfflinePlayer::getUniqueId)
-				.collect(Collectors.toSet());
-		this.isBanStickEnabled = this.plugin.isBanStickEnabled();
-
 		final List<IClickable> contents = this.plugin.getPearls().stream()
 				.sorted(ComparatorUtils.reversedComparator(Comparator.comparing(ExilePearl::getPearledOn)))
 				.map(pearl -> {
 					final Location pearlLocation = pearl.getLocation();
-					final boolean isPlayerBanned = isPlayerBanned(pearl.getPlayerId());
 
-					final var item = isPlayerBanned ?
-							new ItemStack(Material.ARMOR_STAND) :
-							getSkullForPlayer(pearl.getPlayerId());
+					final var item = new ItemStack(Material.PLAYER_HEAD);
+					ItemUtils.handleItemMeta(item, (SkullMeta skull) -> {
+						skull.setOwningPlayer(Bukkit.getOfflinePlayer(pearl.getPlayerId()));
 
-					ItemUtils.handleItemMeta(item, (SkullMeta meta) -> {
 						// Pearled player's name
-						meta.setDisplayName(ChatColor.AQUA + pearl.getPlayerName() +
-								(isPlayerBanned ? ChatColor.RED + " <banned>" : ""));
+						skull.setDisplayName(ChatColor.AQUA + pearl.getPlayerName());
 
-						meta.setLore(Arrays.asList(
+						skull.setLore(Arrays.asList(
 								// Pearl type
 								ChatColor.GREEN + pearl.getItemName(),
 								// Pearled player's name and hash
@@ -130,25 +115,6 @@ public class CmdShowAllPearls extends PearlCommand {
 		}
 
 		new MultiPageView(player, contents, "All Pearls", true).showScreen();
-	}
-
-	private boolean isPlayerBanned(final UUID player) {
-		if (this.bannedPlayers.contains(player)) {
-			return true;
-		}
-		if (!this.isBanStickEnabled) {
-			return false;
-		}
-		return BSPlayer.byUUID(player) != null;
-	}
-
-	public static ItemStack getSkullForPlayer(final UUID player) {
-		final var item = new ItemStack(Material.PLAYER_HEAD);
-		ItemUtils.handleItemMeta(item, (SkullMeta meta) -> {
-			meta.setOwningPlayer(Bukkit.getOfflinePlayer(player));
-			return true;
-		});
-		return item;
 	}
 
 }
