@@ -624,4 +624,9 @@ public class BanStickEventHandler implements Listener {
 			disconnectEvent(player); // ensure some kind of session end is captured on orderly shutdown.
 		}
 	}
+
+	public boolean areTransitiveBansEnabled() {
+		return this.transitiveBans;
+	}
+
 }

@@ -134,9 +134,9 @@ public final class BSIP {
 		} else {
 			newBase.getNetworkSection(cidr).getStartsWithSQLClause(sb, "ip6");
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getIP = connection.prepareStatement(sb.toString());
-				ResultSet rs = getIP.executeQuery();) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getIP = connection.prepareStatement(sb.toString());
+			 ResultSet rs = getIP.executeQuery();) {
 			while (rs.next()) {
 				BSIP bsip = new BSIP();
 				bsip.iid = rs.getLong(1);
@@ -249,7 +249,7 @@ public final class BSIP {
 		if (allIPNA.containsKey(lookup)) {
 			return allIPNA.get(lookup);
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();) {
 			PreparedStatement getIP = null;
 			if (lookup.isIPv4()) {
 				getIP = connection.prepareStatement("SELECT * FROM bs_ip WHERE ip4 = ? and ip4cidr = ?");
@@ -295,7 +295,7 @@ public final class BSIP {
 		if (allIPNA.containsKey(lookup)) {
 			return allIPNA.get(lookup);
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();) {
 			PreparedStatement getIP = null;
 			if (lookup.isIPv4()) {
 				getIP = connection.prepareStatement("SELECT * FROM bs_ip WHERE ip4 = ? and ip4cidr = 32");
@@ -330,8 +330,8 @@ public final class BSIP {
 		if (allIPId.containsKey(iid)) {
 			return allIPId.get(iid);
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getIP = connection.prepareStatement("SELECT * FROM bs_ip WHERE iid = ?");) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getIP = connection.prepareStatement("SELECT * FROM bs_ip WHERE iid = ?");) {
 			getIP.setLong(1, iid);
 			try (ResultSet rs = getIP.executeQuery();) {
 				return internalGetResult(rs);
@@ -422,8 +422,8 @@ public final class BSIP {
 		if (allIPNA.containsKey(lookup)) {
 			return allIPNA.get(lookup);
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement statement = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement statement = connection.prepareStatement(
 						"INSERT INTO bs_ip(ip4, ip4cidr, ip6, ip6cidr, create_time) VALUES (?, ?, ?, ?, ?);",
 						Statement.RETURN_GENERATED_KEYS);) {
 			BSIP newIP = new BSIP();
@@ -492,8 +492,8 @@ public final class BSIP {
 		if (allIPNA.containsKey(lookup)) {
 			return allIPNA.get(lookup);
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement statement = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement statement = connection.prepareStatement(
 						"INSERT INTO bs_ip(ip4, ip4cidr, ip6, ip6cidr, create_time) VALUES (?, ?, ?, ?, ?);",
 						Statement.RETURN_GENERATED_KEYS);) {
 			BSIP newIP = new BSIP();
@@ -550,8 +550,8 @@ public final class BSIP {
 	 */
 	public static long preload(long offset, int limit) {
 		long maxId = -1;
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadIPs = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement loadIPs = connection.prepareStatement(
 						"SELECT * FROM bs_ip WHERE iid > ? ORDER BY iid LIMIT ?");) {
 			loadIPs.setLong(1, offset);
 			loadIPs.setInt(2, limit);

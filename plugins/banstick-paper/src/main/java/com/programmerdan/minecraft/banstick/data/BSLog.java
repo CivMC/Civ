@@ -56,8 +56,8 @@ public class BSLog extends BukkitRunnable {
 		if (toSave.isEmpty()) {
 			return;
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement saveEm = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement saveEm = connection.prepareStatement(
 						"INSERT INTO bs_ban_log (pid, bid, action) VALUES (?, ?, ?);");) {
 			int curBatch = 0;
 			while (curBatch < this.maxBatch && !toSave.isEmpty()) {
