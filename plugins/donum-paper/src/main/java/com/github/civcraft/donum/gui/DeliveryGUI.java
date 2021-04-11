@@ -1,27 +1,23 @@
 package com.github.civcraft.donum.gui;
 
+import com.github.civcraft.donum.Donum;
+import com.github.civcraft.donum.inventories.DeliveryInventory;
 import java.util.List;
 import java.util.UUID;
-
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-
-import com.github.civcraft.donum.Donum;
-import com.github.civcraft.donum.inventories.DeliveryInventory;
-
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class DeliveryGUI {
@@ -52,8 +48,8 @@ public class DeliveryGUI {
 		if (stacks.size() == 0) {
 			//item to indicate that there is nothing to claim
 			ItemStack noClaim = new ItemStack(Material.BARRIER);
-			ISUtils.setName(noClaim, ChatColor.GOLD + "No items available");
-			ISUtils.addLore(noClaim, ChatColor.RED + "You currently have no items you could claim");
+			ItemUtils.setDisplayName(noClaim, ChatColor.GOLD + "No items available");
+			ItemUtils.addLore(noClaim, ChatColor.RED + "You currently have no items you could claim");
 			ci.setSlot(new DecorationStack(noClaim), 4);
 		} else {
 			for (int i = 45 * currentPage; i < 45 * (currentPage + 1) && i < stacks.size(); i++) {
@@ -63,7 +59,7 @@ public class DeliveryGUI {
 		// previous button
 		if (currentPage > 0) {
 			ItemStack back = new ItemStack(Material.ARROW);
-			ISUtils.setName(back, ChatColor.GOLD + "Go to previous page");
+			ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
 			Clickable baCl = new Clickable(back) {
 
 				@Override
@@ -79,7 +75,7 @@ public class DeliveryGUI {
 		// next button
 		if ((45 * (currentPage + 1)) <= stacks.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
-			ISUtils.setName(forward, ChatColor.GOLD + "Go to next page");
+			ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
 
 				@Override
@@ -93,8 +89,8 @@ public class DeliveryGUI {
 			ci.setSlot(forCl, 53);
 		}
 		// exit button
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
-		ISUtils.setName(backToOverview, ChatColor.GOLD + "Close");
+		ItemStack backToOverview = new ItemStack(Material.OAK_DOOR);
+		ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Close");
 		ci.setSlot(new Clickable(backToOverview) {
 
 			@Override
@@ -104,9 +100,9 @@ public class DeliveryGUI {
 		}, 49);
 
 		// complain button
-		ItemStack gibStuffBack = new ItemStack(Material.SIGN);
-		ISUtils.setName(gibStuffBack, ChatColor.GOLD + "Request item return");
-		ISUtils.addLore(gibStuffBack, ChatColor.AQUA + "If you think you lost items due to a glitch", ChatColor.AQUA
+		ItemStack gibStuffBack = new ItemStack(Material.OAK_SIGN);
+		ItemUtils.setDisplayName(gibStuffBack, ChatColor.GOLD + "Request item return");
+		ItemUtils.addLore(gibStuffBack, ChatColor.AQUA + "If you think you lost items due to a glitch", ChatColor.AQUA
 				+ "you can send us a message", ChatColor.AQUA + "to get your items back", ChatColor.GREEN
 				+ "Click here to do so");
 		Clickable openComplaintForm = new Clickable(gibStuffBack) {
@@ -127,8 +123,8 @@ public class DeliveryGUI {
 
 		// claim all button
 		ItemStack gibAll = new ItemStack(Material.BLAZE_POWDER);
-		ISUtils.setName(gibAll, ChatColor.GOLD + "Claim all items");
-		ISUtils.addLore(gibAll, ChatColor.AQUA
+		ItemUtils.setDisplayName(gibAll, ChatColor.GOLD + "Claim all items");
+		ItemUtils.addLore(gibAll, ChatColor.AQUA
 				+ "Click to automatically claim items until your inventory is full or your delivery inventory is empty");
 		Clickable autoClaimClick = new Clickable(gibAll) {
 
