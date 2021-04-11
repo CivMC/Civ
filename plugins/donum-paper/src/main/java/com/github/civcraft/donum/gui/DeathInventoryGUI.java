@@ -1,25 +1,21 @@
 package com.github.civcraft.donum.gui;
 
+import com.github.civcraft.donum.Donum;
+import com.github.civcraft.donum.inventories.DeathInventory;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
-
 import net.md_5.bungee.api.ChatColor;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.namelayer.NameAPI;
-
-import com.github.civcraft.donum.Donum;
-import com.github.civcraft.donum.inventories.DeathInventory;
 
 public class DeathInventoryGUI {
 	private UUID viewer;
@@ -52,7 +48,7 @@ public class DeathInventoryGUI {
 		// previous button
 		if (currentPage > 0) {
 			ItemStack back = new ItemStack(Material.ARROW);
-			ISUtils.setName(back, ChatColor.GOLD + "Go to previous page");
+			ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
 			Clickable baCl = new Clickable(back) {
 
 				@Override
@@ -68,7 +64,7 @@ public class DeathInventoryGUI {
 		// next button
 		if ((45 * (currentPage + 1)) <= inventories.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
-			ISUtils.setName(forward, ChatColor.GOLD + "Go to next page");
+			ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
 
 				@Override
@@ -82,8 +78,8 @@ public class DeathInventoryGUI {
 			ci.setSlot(forCl, 53);
 		}
 		// exit button
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
-		ISUtils.setName(backToOverview, ChatColor.GOLD + "Close");
+		ItemStack backToOverview = new ItemStack(Material.OAK_DOOR);
+		ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Close");
 		ci.setSlot(new Clickable(backToOverview) {
 
 			@Override
@@ -97,13 +93,13 @@ public class DeathInventoryGUI {
 
 	private Clickable createInventoryClickable(final DeathInventory i) {
 		ItemStack is = new ItemStack(Material.BOOK);
-		ISUtils.addLore(is, ChatColor.GREEN + "Owner: " + NameAPI.getCurrentName(i.getOwner()));
-		ISUtils.addLore(is, ChatColor.GOLD + "Died at " + dateFormat.format(i.getDeathTime()));
-		ISUtils.addLore(is, ChatColor.LIGHT_PURPLE + "Unique ID: " + i.getID());
+		ItemUtils.addLore(is, ChatColor.GREEN + "Owner: " + NameAPI.getCurrentName(i.getOwner()));
+		ItemUtils.addLore(is, ChatColor.GOLD + "Died at " + dateFormat.format(i.getDeathTime()));
+		ItemUtils.addLore(is, ChatColor.LIGHT_PURPLE + "Unique ID: " + i.getID());
 		if (i.wasReturned()) {
-			ISUtils.addLore(is, ChatColor.RED + "This inventory was already returned");
+			ItemUtils.addLore(is, ChatColor.RED + "This inventory was already returned");
 		} else {
-			ISUtils.addLore(is, ChatColor.AQUA + "This inventory was not returned yet");
+			ItemUtils.addLore(is, ChatColor.AQUA + "This inventory was not returned yet");
 		}
 
 		return new Clickable(is) {
@@ -115,8 +111,8 @@ public class DeathInventoryGUI {
 					ci.addSlot(new DecorationStack(is));
 				}
 				// back button
-				ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
-				ISUtils.setName(backToOverview, ChatColor.GOLD + "Go back to overview");
+				ItemStack backToOverview = new ItemStack(Material.OAK_DOOR);
+				ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Go back to overview");
 				ci.setSlot(new Clickable(backToOverview) {
 
 					@Override
@@ -125,12 +121,12 @@ public class DeathInventoryGUI {
 					}
 				}, 49);
 				ItemStack returnStack = new ItemStack(Material.ANVIL);
-				ISUtils.setName(returnStack, ChatColor.GOLD + "Return items");
-				ISUtils.addLore(
+				ItemUtils.setDisplayName(returnStack, ChatColor.GOLD + "Return items");
+				ItemUtils.addLore(
 						returnStack,
 						ChatColor.GOLD
 								+ "This inventory was already returned previously. You may return it again, if you know what you are doing");
-				ISUtils.addLore(returnStack, ChatColor.RED + "You can not undo this!");
+				ItemUtils.addLore(returnStack, ChatColor.RED + "You can not undo this!");
 				ci.setSlot(new Clickable(returnStack) {
 
 					@Override

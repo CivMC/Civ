@@ -317,7 +317,7 @@ public class DonumDAO {
 	 * 
 	 * @param uuid
 	 *            UUID of the player
-	 * @param items
+	 * @param inventory
 	 *            ItemMap representing the players inventory when dying
 	 */
 	public void insertDeathInventory(UUID uuid, ItemMap inventory) {

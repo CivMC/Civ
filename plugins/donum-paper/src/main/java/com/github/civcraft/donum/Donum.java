@@ -39,11 +39,6 @@ public class Donum extends ACivMod {
 		Bukkit.getPluginManager().registerEvents(new BukkitListener(), this);
 	}
 
-	@Override
-	protected String getPluginName() {
-		return "Donum";
-	}
-
 	public static Donum getInstance() {
 		return instance;
 	}

@@ -3,6 +3,7 @@ main: com.github.civcraft.donum.Donum
 author: Maxopoly
 version: ${project.version}
 depend: [CivModCore, NameLayer]
+api-version: 1.16
 commands:
   present:
   deliver:
