@@ -23,7 +23,9 @@ import net.minecraft.server.v1_16_R3.NBTTagString;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.persistence.CraftPersistentDataContainer;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.util.NullUtils;
 import vg.civcraft.mc.civmodcore.util.Validation;
@@ -38,11 +40,8 @@ public class NBTCompound implements Cloneable, Validation {
 	public static final String NULL_STRING = "\u0000";
 
 	private static final String INTERNAL_MAP_KEY = "map";
-
 	private static final String UUID_MOST_SUFFIX = "Most";
-
 	private static final String UUID_LEAST_SUFFIX = "Least";
-
 	private static final String UUID_KEY = "uuid";
 
 	private NBTTagCompound tag;
@@ -61,6 +60,15 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public NBTCompound(NBTTagCompound tag) {
 		this.tag = tag == null ? new NBTTagCompound() : tag;
+	}
+
+	/**
+	 * Creates a new NBTCompound by wrapping an existing PersistentDataContainer.
+	 *
+	 * @param container The PersistentDataContainer to wrap.
+	 */
+	public NBTCompound(final PersistentDataContainer container) {
+		this(container == null ? null : new NBTTagCompound(((CraftPersistentDataContainer) container).getRaw()) {});
 	}
 
 	/**
@@ -848,6 +856,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * @param key The key to get the value of.
 	 * @return The value of the key, default: empty list
 	 */
+	@Deprecated
 	public <T extends NBTSerializable> NBTCompoundList<T> getSerializableList(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (!this.tag.hasKeyOfType(key, 9)) {
@@ -862,6 +871,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * @param key The key to set to value to.
 	 * @param value The value to set to the key.
 	 */
+	@Deprecated
 	public void setSerializableList(String key, NBTCompoundList<?> value) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (value == null) {
