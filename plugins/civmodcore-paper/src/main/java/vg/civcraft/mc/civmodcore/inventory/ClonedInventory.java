@@ -231,10 +231,24 @@ public final class ClonedInventory implements Inventory {
 	 * @return Returns a clone of the given inventory.
 	 */
 	public static ClonedInventory cloneInventory(final Inventory inventory) {
+		return cloneInventory(inventory, false);
+	}
+
+	/**
+	 * <p>Clones the given inventory for the purpose of test manipulating its contents.</p>
+	 *
+	 * <p>Note: Do not type check the inventory, it's JUST a contents copy within an inventory wrapper to provide the
+	 * relevant and useful methods.</p>
+	 *
+	 * @param inventory The inventory to clone.
+	 * @param forceClone Determines whether the inventory should be cloned even if it's an already cloned inventory.
+	 * @return Returns a clone of the given inventory.
+	 */
+	public static ClonedInventory cloneInventory(final Inventory inventory, final boolean forceClone) {
 		if (inventory == null) {
 			return null;
 		}
-		if (inventory instanceof ClonedInventory) {
+		if (!forceClone && inventory instanceof ClonedInventory) {
 			return (ClonedInventory) inventory;
 		}
 		Inventory clone;
