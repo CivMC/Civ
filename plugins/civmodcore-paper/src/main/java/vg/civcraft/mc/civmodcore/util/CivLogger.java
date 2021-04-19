@@ -3,6 +3,8 @@ package vg.civcraft.mc.civmodcore.util;
 import com.google.common.base.Strings;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.plugin.java.PluginClassLoader;
 
 public final class CivLogger extends Logger {
@@ -30,16 +32,22 @@ public final class CivLogger extends Logger {
 	 * @param clazz The class to base the logger on.
 	 * @return Returns a new civ logger.
 	 */
-	public static CivLogger getLogger(final Class<?> clazz) {
-		if (clazz == null) {
-			return new CivLogger(Logger.getLogger(CivLogger.class.getSimpleName()), null);
-		}
+	public static CivLogger getLogger(@Nonnull final Class<?> clazz) {
 		final ClassLoader classLoader = clazz.getClassLoader();
-		if (!(classLoader instanceof PluginClassLoader)) {
-			return new CivLogger(Logger.getLogger(CivLogger.class.getSimpleName()), clazz.getSimpleName());
+		if (classLoader instanceof PluginClassLoader) {
+			final var plugin = ((PluginClassLoader) classLoader).getPlugin();
+			if (plugin != null) {
+				return new CivLogger(plugin.getLogger(), clazz.getSimpleName());
+			}
+			// Plugin has been constructed but not initialised yet
+			final var loaderLoggerField = FieldUtils.getDeclaredField(PluginClassLoader.class, "logger", true);
+			try {
+				final var loaderLogger = (Logger) loaderLoggerField.get(classLoader);
+				return new CivLogger(loaderLogger, clazz.getSimpleName());
+			}
+			catch (final IllegalAccessException ignored) {}
 		}
-		final var plugin = ((PluginClassLoader) classLoader).getPlugin();
-		return new CivLogger(plugin.getLogger(), clazz.getSimpleName());
+		return new CivLogger(Logger.getLogger(CivLogger.class.getSimpleName()), clazz.getSimpleName());
 	}
 
 }
