@@ -1,16 +1,26 @@
 package vg.civcraft.mc.civmodcore.serialization;
 
-import java.util.Objects;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.pseudo.PseudoServer;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
 public class SerializationTests {
 
 	@BeforeClass
 	public static void beforeAll() {
+		PseudoServer.setup();
 		NBTSerialization.registerNBTSerializable(ExampleSerializable.class);
 	}
 
@@ -126,31 +136,33 @@ public class SerializationTests {
 	}
 
 	@Test
-	public void testListValues() {
+	public void testLocationSerialisation() {
 		// Setup
-		String LIST_KEY = "tester";
-		ExampleSerializable expected = new ExampleSerializable();
-		String expectedString = "Porttitor massa id neque aliquam. Libero enim sed faucibus turpis in eu mi. " +
-				"Dignissim sodales ut eu sem integer vitae justo. Adipiscing elit duis tristique sollicitudin " +
-				"nibh. Elit ullamcorper dignissim cras tincidunt lobortis feugiat. Viverra adipiscing at in " +
-				"tellus integer feugiat scelerisque varius morbi. Auctor augue mauris augue neque gravida. Sed " +
-				"viverra tellus in hac habitasse platea dictumst. Fermentum posuere urna nec tincidunt praesent " +
-				"semper. Tristique magna sit amet purus gravida. Orci eu lobortis elementum nibh tellus molestie " +
-				"nunc non. Tincidunt eget nullam non nisi est sit amet facilisis magna. Sit amet nisl suscipit " +
-				"adipiscing bibendum. Justo donec enim diam vulputate ut. Magna ac placerat vestibulum lectus " +
-				"mauris ultrices eros.";
-		expected.setMessage(expectedString);
-		NBTCompoundList<ExampleSerializable> list = new NBTCompoundList<>();
-		list.add(expected);
+		final var location = new Location(null,
+				123.456d, 789.654d, 321.098d,
+				1.12344f, 123.234f);
 		// Process
-		NBTCompound beforeNBT = new NBTCompound();
-		beforeNBT.setSerializableList(LIST_KEY, list);
-		byte[] data = NBTCompound.toBytes(beforeNBT);
-		NBTCompound afterNBT = NBTCompound.fromBytes(data);
+		final var nbt = NBTHelper.locationToNBT(location);
+		final var parsed = NBTHelper.locationFromNBT(nbt);
 		// Check
-		Assert.assertNotNull(afterNBT);
-		Assert.assertEquals(expectedString, Objects.requireNonNull(
-				afterNBT.<ExampleSerializable>getSerializableList(LIST_KEY).get(0)).getMessage());
+		Assert.assertEquals(location, parsed);
+	}
+
+	@Test
+	public void testItemStackSerialisation() {
+		// Setup
+		final var item = new ItemStack(Material.STONE);
+		ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
+			meta.displayName(Component.text("Hello World!"));
+			MetaUtils.setComponentLore(meta, Component.text("Testing!",
+					NamedTextColor.YELLOW, TextDecoration.UNDERLINED));
+			return true;
+		});
+		// Process
+		final var nbt = NBTHelper.itemStackToNBT(item);
+		final var parsed = NBTHelper.itemStackFromNBT(nbt);
+		// Check
+		Assert.assertEquals(item, parsed);
 	}
 
 }
