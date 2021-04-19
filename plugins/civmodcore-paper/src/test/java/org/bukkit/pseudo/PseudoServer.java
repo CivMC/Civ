@@ -74,10 +74,12 @@ public class PseudoServer implements Server {
 	private static final Logger LOGGER = Logger.getLogger(PseudoServer.class.getSimpleName());
 
 	public static void setup() {
-		final var previousLevel = LOGGER.getLevel();
-		LOGGER.setLevel(Level.OFF); // This is to prevent unnecessary logging
-		Bukkit.setServer(INSTANCE);
-		LOGGER.setLevel(previousLevel);
+		if (Bukkit.getServer() == null) { // Ignore highlighter
+			final var previousLevel = LOGGER.getLevel();
+			LOGGER.setLevel(Level.OFF); // This is to prevent unnecessary logging
+			Bukkit.setServer(INSTANCE);
+			LOGGER.setLevel(previousLevel);
+		}
 	}
 
 	@NotNull
