@@ -86,10 +86,9 @@ public final class CivModCorePlugin extends ACivMod {
 		registerListener(new WorldTracker());
 		registerListener(ChunkOperationManager.INSTANCE);
 		// Register commands
-		this.commands = new AikarCommandManager(this, false);
+		this.commands = new AikarCommandManager(this);
 		this.commands.registerCommand(new ConfigCommand());
 		this.commands.registerCommand(ChunkOperationManager.INSTANCE);
-		this.commands.init();
 		// Load APIs
 		EnchantUtils.loadEnchantAbbreviations(this);
 		ItemUtils.loadItemNames(this);
