@@ -67,7 +67,7 @@ public final class NBTHelper {
 			return null;
 		}
 		final var nbt = new NBTCompound();
-		((CraftItemStack) item).getHandle().save(nbt.getRAW());
+		CraftItemStack.asNMSCopy(item).save(nbt.getRAW());
 		return nbt;
 	}
 
