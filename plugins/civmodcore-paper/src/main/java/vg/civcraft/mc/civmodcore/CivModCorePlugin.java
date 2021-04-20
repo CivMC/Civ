@@ -5,9 +5,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
-import vg.civcraft.mc.civmodcore.api.PotionNames;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
-import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.events.CustomEventMapper;
@@ -35,7 +33,6 @@ import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
 import vg.civcraft.mc.civmodcore.world.operations.ChunkOperationManager;
 
-@SuppressWarnings("deprecation")
 public final class CivModCorePlugin extends ACivMod {
 
 	private static CivModCorePlugin instance;
@@ -87,7 +84,6 @@ public final class CivModCorePlugin extends ACivMod {
 		registerListener(new ClickableInventoryListener());
 		registerListener(new PagedGUIManager());
 		registerListener(DialogManager.INSTANCE);
-		registerListener(new ChatListener());
 		registerListener(new ScoreBoardListener());
 		registerListener(new CustomEventMapper());
 		registerListener(new WorldTracker());
@@ -104,18 +100,15 @@ public final class CivModCorePlugin extends ACivMod {
 		SpawnEggUtils.init();
 		TreeTypeUtils.init();
 		BottomLineAPI.init();
-		newCommandHandler.registerCommand(new ConfigSetAnyCommand());
-		newCommandHandler.registerCommand(new ConfigGetAnyCommand());
+		this.newCommandHandler.registerCommand(new ConfigSetAnyCommand());
+		this.newCommandHandler.registerCommand(new ConfigGetAnyCommand());
 		this.selfGUIManager.init();
-		// Deprecated
-		PotionNames.loadPotionNames();
 	}
 
 	@Override
 	public void onDisable() {
 		this.selfGUIManager.reset();
 		Bukkit.getOnlinePlayers().forEach(HumanEntity::closeInventory);
-		PotionNames.resetPotionNames();
 		ChunkMetaAPI.saveAll();
 		this.chunkMetaManager = null;
 		// Disconnect database
