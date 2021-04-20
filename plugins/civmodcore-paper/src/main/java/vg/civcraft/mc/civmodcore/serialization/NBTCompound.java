@@ -437,8 +437,22 @@ public class NBTCompound implements Cloneable, Validation {
 	 * @return The value of the key, default: NULL
 	 */
 	public NBTCompound getCompound(String key) {
+		return getCompound(key, false);
+	}
+
+	/**
+	 * Gets a tag compound value from a key.
+	 *
+	 * @param key The key to get the value of.
+	 * @param forceNonNull Whether to force the returned value to be non-null.
+	 * @return The value of the key, which is never null.
+	 */
+	public NBTCompound getCompound(final String key, final boolean forceNonNull) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (!this.tag.hasKeyOfType(key, 10)) {
+			if (forceNonNull) {
+				return new NBTCompound();
+			}
 			return null;
 		}
 		return new NBTCompound(this.tag.getCompound(key));
