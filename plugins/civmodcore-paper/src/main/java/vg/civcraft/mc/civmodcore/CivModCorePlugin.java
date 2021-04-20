@@ -11,6 +11,7 @@ import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.events.CustomEventMapper;
+import vg.civcraft.mc.civmodcore.inventory.gui.self.SelfGUIManager;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
@@ -42,7 +43,13 @@ public final class CivModCorePlugin extends ACivMod {
 	private GlobalChunkMetaManager chunkMetaManager;
 	private ManagedDatasource database;
 	private WorldIDManager worldIdManager;
-	private AikarCommandManager commands;
+	private final AikarCommandManager commands;
+	private final SelfGUIManager selfGUIManager;
+
+	public CivModCorePlugin() {
+		this.commands = new AikarCommandManager(this, false);
+		this.selfGUIManager = new SelfGUIManager(this);
+	}
 
 	@Override
 	public void onEnable() {
@@ -86,7 +93,7 @@ public final class CivModCorePlugin extends ACivMod {
 		registerListener(new WorldTracker());
 		registerListener(ChunkOperationManager.INSTANCE);
 		// Register commands
-		this.commands = new AikarCommandManager(this);
+		this.commands.init();
 		this.commands.registerCommand(new ConfigCommand());
 		this.commands.registerCommand(ChunkOperationManager.INSTANCE);
 		// Load APIs
@@ -99,12 +106,14 @@ public final class CivModCorePlugin extends ACivMod {
 		BottomLineAPI.init();
 		newCommandHandler.registerCommand(new ConfigSetAnyCommand());
 		newCommandHandler.registerCommand(new ConfigGetAnyCommand());
+		this.selfGUIManager.init();
 		// Deprecated
 		PotionNames.loadPotionNames();
 	}
 
 	@Override
 	public void onDisable() {
+		this.selfGUIManager.reset();
 		Bukkit.getOnlinePlayers().forEach(HumanEntity::closeInventory);
 		PotionNames.resetPotionNames();
 		ChunkMetaAPI.saveAll();
@@ -124,10 +133,7 @@ public final class CivModCorePlugin extends ACivMod {
 		PlayerSettingAPI.saveAll();
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
 		NBTSerialization.clearAllRegistrations();
-		if (this.commands != null) {
-			this.commands.reset();
-			this.commands = null;
-		}
+		this.commands.reset();
 		super.onDisable();
 	}
 
