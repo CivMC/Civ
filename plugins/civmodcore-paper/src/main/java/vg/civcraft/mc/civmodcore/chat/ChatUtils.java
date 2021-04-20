@@ -3,7 +3,9 @@ package vg.civcraft.mc.civmodcore.chat;
 import com.google.common.base.Strings;
 import java.awt.Color;
 import java.util.List;
+import java.util.Objects;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -180,6 +182,25 @@ public final class ChatUtils {
 			return true;
 		}
 		return Strings.isNullOrEmpty(LegacyComponentSerializer.legacyAmpersand().serialize(component));
+	}
+
+	/**
+	 * @return Generates a new text component that's specifically <i>NOT</i> italicised. Use this for item names and
+	 *         lore.
+	 */
+	public static net.kyori.adventure.text.TextComponent newComponent() {
+		return newComponent("");
+	}
+
+	/**
+	 * Generates a new text component that's specifically <i>NOT</i> italicised. Use this for item names and lore.
+	 *
+	 * @param content The text content for the component.
+	 * @return Returns the generated text component.
+	 */
+	public static net.kyori.adventure.text.TextComponent newComponent(final String content) {
+		return Component.text(Objects.requireNonNull(content))
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
 	}
 
 	/**
