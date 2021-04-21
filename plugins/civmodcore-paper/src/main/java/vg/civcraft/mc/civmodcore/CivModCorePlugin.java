@@ -9,7 +9,6 @@ import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.events.CustomEventMapper;
-import vg.civcraft.mc.civmodcore.inventory.gui.self.SelfGUIManager;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
@@ -41,11 +40,9 @@ public final class CivModCorePlugin extends ACivMod {
 	private ManagedDatasource database;
 	private WorldIDManager worldIdManager;
 	private final AikarCommandManager commands;
-	private final SelfGUIManager selfGUIManager;
 
 	public CivModCorePlugin() {
 		this.commands = new AikarCommandManager(this, false);
-		this.selfGUIManager = new SelfGUIManager(this);
 	}
 
 	@Override
@@ -102,12 +99,10 @@ public final class CivModCorePlugin extends ACivMod {
 		BottomLineAPI.init();
 		this.newCommandHandler.registerCommand(new ConfigSetAnyCommand());
 		this.newCommandHandler.registerCommand(new ConfigGetAnyCommand());
-		this.selfGUIManager.init();
 	}
 
 	@Override
 	public void onDisable() {
-		this.selfGUIManager.reset();
 		Bukkit.getOnlinePlayers().forEach(HumanEntity::closeInventory);
 		ChunkMetaAPI.saveAll();
 		this.chunkMetaManager = null;
