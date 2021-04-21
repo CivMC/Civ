@@ -2,18 +2,22 @@ package vg.civcraft.mc.civmodcore.entities.merchant;
 
 import io.papermc.paper.event.player.PlayerTradeEvent;
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import net.minecraft.server.v1_16_R3.Entity;
 import net.minecraft.server.v1_16_R3.EntityExperienceOrb;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
+import net.minecraft.server.v1_16_R3.EntityTypes;
+import net.minecraft.server.v1_16_R3.EntityVillager;
 import net.minecraft.server.v1_16_R3.EntityVillagerAbstract;
 import net.minecraft.server.v1_16_R3.EntityVillagerTrader;
 import net.minecraft.server.v1_16_R3.MerchantRecipe;
 import net.minecraft.server.v1_16_R3.MerchantRecipeList;
+import net.minecraft.server.v1_16_R3.World;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftVillager;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftMerchantCustom;
-import org.bukkit.entity.AbstractVillager;
 import org.bukkit.entity.ExperienceOrb;
 
 public class CustomNMSMerchant extends CraftMerchantCustom.MinecraftMerchant {
@@ -50,13 +54,15 @@ public class CustomNMSMerchant extends CraftMerchantCustom.MinecraftMerchant {
 	public void a(final MerchantRecipe trade) {
 		if (getTrader() instanceof EntityPlayer) {
 			final var trader = (EntityPlayer) getTrader();
+			final var villager = createDisposableVillager(trader.getWorld());
 			final var event = new PlayerTradeEvent(
 					trader.getBukkitEntity(),
-					(AbstractVillager) getCraftMerchant(),
+					villager, // Have to spawn a useless villager because this is @Nonnull
 					trade.asBukkit(),
-					true,	// reward xp?
-					true);	// should increase uses?
+					true,  // reward xp?
+					true); // should increase uses?
 			event.callEvent();
+			killDisposableVillager(villager);
 			if (event.isCancelled()) {
 				return;
 			}
@@ -75,6 +81,29 @@ public class CustomNMSMerchant extends CraftMerchantCustom.MinecraftMerchant {
 			return;
 		}
 		super.a(trade);
+	}
+
+	// ------------------------------------------------------------
+	// Unfortunate but necessary villager management
+	// ------------------------------------------------------------
+
+	private static CraftVillager createDisposableVillager(final World world) {
+		final var villager = new CraftVillager(world.getServer(),
+				new EntityVillager(EntityTypes.VILLAGER, world));
+		villager.setAI(false);
+		villager.setGravity(false);
+		villager.setCanPickupItems(false);
+		villager.setSilent(true);
+		villager.setVillagerExperience(0);
+		villager.setInvisible(true);
+		villager.setRecipes(Collections.emptyList());
+		return villager;
+	}
+
+	private static void killDisposableVillager(final CraftVillager villager) {
+		villager.getHandle().dead = true;
+		villager.getHandle().setHealth(0);
+		villager.getHandle().shouldBeRemoved = true;
 	}
 
 }
