@@ -6,6 +6,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.PluginClassLoader;
 
@@ -50,7 +51,7 @@ public final class CivLogger extends Logger {
 			}
 			catch (final IllegalAccessException ignored) {}
 		}
-		return new CivLogger(Logger.getLogger(CivLogger.class.getSimpleName()), clazz.getSimpleName());
+		return new CivLogger(Bukkit.getLogger(), clazz.getSimpleName());
 	}
 
 }
