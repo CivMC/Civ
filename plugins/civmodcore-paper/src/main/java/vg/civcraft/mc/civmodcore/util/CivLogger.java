@@ -1,10 +1,12 @@
 package vg.civcraft.mc.civmodcore.util;
 
+import com.destroystokyo.paper.utils.PaperPluginLogger;
 import com.google.common.base.Strings;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.PluginClassLoader;
 
 public final class CivLogger extends Logger {
@@ -40,10 +42,11 @@ public final class CivLogger extends Logger {
 				return new CivLogger(plugin.getLogger(), clazz.getSimpleName());
 			}
 			// Plugin has been constructed but not initialised yet
-			final var loaderLoggerField = FieldUtils.getDeclaredField(PluginClassLoader.class, "logger", true);
+			final var descriptionField = FieldUtils.getDeclaredField(PluginClassLoader.class, "description", true);
 			try {
-				final var loaderLogger = (Logger) loaderLoggerField.get(classLoader);
-				return new CivLogger(loaderLogger, clazz.getSimpleName());
+				final var description = (PluginDescriptionFile) descriptionField.get(classLoader);
+				final var logger = PaperPluginLogger.getLogger(description);
+				return new CivLogger(logger, clazz.getSimpleName());
 			}
 			catch (final IllegalAccessException ignored) {}
 		}
