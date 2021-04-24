@@ -192,7 +192,7 @@ public class AikarCommandManager {
         return this.manager;
     }
 
-    public final ACivMod getPlugin() {
+    public ACivMod getPlugin() {
     	return this.plugin;
 	}
 
