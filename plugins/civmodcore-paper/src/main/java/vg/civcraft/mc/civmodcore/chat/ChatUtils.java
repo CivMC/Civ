@@ -7,6 +7,7 @@ import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -202,6 +203,20 @@ public final class ChatUtils {
 	public static net.kyori.adventure.text.TextComponent newComponent(final String content) {
 		return Component.text(Objects.requireNonNull(content))
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+	}
+
+	/**
+	 * Clones a component.
+	 *
+	 * @param component The component to clone.
+	 * @return Returns a clone of the given component.
+	 */
+	public static Component cloneComponent(final Component component) {
+		if (component == null) {
+			return null;
+		}
+		final var raw = GsonComponentSerializer.gson().serialize(component);
+		return GsonComponentSerializer.gson().deserialize(raw);
 	}
 
 	/**
