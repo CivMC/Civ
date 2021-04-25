@@ -21,6 +21,7 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
 import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
+import vg.civcraft.mc.civmodcore.maps.MapColours;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigGetAnyCommand;
@@ -97,6 +98,7 @@ public final class CivModCorePlugin extends ACivMod {
 		SpawnEggUtils.init();
 		TreeTypeUtils.init();
 		BottomLineAPI.init();
+		MapColours.init();
 		this.newCommandHandler.registerCommand(new ConfigSetAnyCommand());
 		this.newCommandHandler.registerCommand(new ConfigGetAnyCommand());
 	}
