@@ -16,7 +16,6 @@ import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
-import vg.civcraft.mc.civmodcore.inventorygui.paged.PagedGUIManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
@@ -80,7 +79,6 @@ public final class CivModCorePlugin extends ACivMod {
 		ScoreBoardAPI.setDefaultHeader(scoreboardHeader);
 		// Register listeners
 		registerListener(new ClickableInventoryListener());
-		registerListener(new PagedGUIManager());
 		registerListener(DialogManager.INSTANCE);
 		registerListener(new ScoreBoardListener());
 		registerListener(new CustomEventMapper());
