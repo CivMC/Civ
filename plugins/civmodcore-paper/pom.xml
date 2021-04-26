@@ -52,6 +52,11 @@
       <version>3.7.2</version>
     </dependency>
     <dependency>
+      <groupId>com.github.IPVP-MC</groupId>
+      <artifactId>canvas</artifactId>
+      <version>91ec97f076</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.11</version>
@@ -109,6 +114,10 @@
     <repository>
       <id>aikar</id>
       <url>https://repo.aikar.co/content/groups/aikar/</url>
+    </repository>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
     </repository>
   </repositories>
 
