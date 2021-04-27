@@ -52,7 +52,7 @@ public class BanStickDatabaseHandler {
 		return BanStickDatabaseHandler.instance;
 	}
 
-	public static ManagedDatasource getinstanceData() {
+	public static ManagedDatasource getInstanceData() {
 		return BanStickDatabaseHandler.instance.data;
 	}
 

@@ -163,8 +163,8 @@ public final class BSShares {
 		if (shareList != null) {
 			return;
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getIDs = connection.prepareStatement(// Get all ids only, order by create time.
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getIDs = connection.prepareStatement(// Get all ids only, order by create time.
 						"SELECT sid, first_pid, second_pid, pardon FROM bs_share WHERE first_pid = ? OR second_pid = ? ORDER BY create_time;");) {
 			getIDs.setLong(1, forPlayer.getId());
 			getIDs.setLong(2, forPlayer.getId());

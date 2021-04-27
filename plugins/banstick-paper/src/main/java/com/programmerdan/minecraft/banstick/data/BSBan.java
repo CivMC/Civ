@@ -111,7 +111,14 @@ public final class BSBan {
 		this.dirty = true;
 		dirtyBans.offer(new WeakReference<BSBan>(this));
 	}
-	
+
+	/**
+	 * @return Returns true if this ban's expiry date has passed based on the current time.
+	 */
+	public boolean hasBanExpired() {
+		return this.banEnd == null || this.banEnd.before(new Date());
+	}
+
 	/**
 	 * Gets the end time of this ban, if any.
 	 * @return ban time, null if none set.
@@ -175,8 +182,8 @@ public final class BSBan {
 	 */
 	public static void saveDirty() {
 		int batchSize = 0;
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement save = connection.prepareStatement(
 						"UPDATE bs_ban SET admin_ban = ?, message = ?, ban_end = ? WHERE bid = ?");) {
 			while (!dirtyBans.isEmpty()) {
 				WeakReference<BSBan> rban = dirtyBans.poll();
@@ -220,8 +227,8 @@ public final class BSBan {
 			return;
 		}
 		this.dirty = false; // don't let anyone else in!
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement save = connection.prepareStatement(
 						"UPDATE bs_ban SET admin_ban = ?, message = ?, ban_end = ? WHERE bid = ?");) {
 			saveToStatement(save);
 			int effects = save.executeUpdate();
@@ -274,8 +281,8 @@ public final class BSBan {
 		if (allBanID.containsKey(bid)) {
 			return allBanID.get(bid);
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getId = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getId = connection.prepareStatement(
 						"SELECT * FROM bs_ban WHERE bid = ?");) {
 			getId.setLong(1, bid);
 			try (ResultSet rs = getId.executeQuery();) {
@@ -302,8 +309,8 @@ public final class BSBan {
 	 */
 	public static List<BSBan> byIP(BSIP exactIP, boolean includeExpired) {
 		List<BSBan> results = new ArrayList<>();
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement findBans = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement findBans = connection.prepareStatement(
 						includeExpired ? "SELECT * FROM bs_ban WHERE ip_ban = ? ORDER BY ban_time" :
 						"SELECT * FROM bs_ban WHERE ip_ban = ? AND (ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP) ORDER BY ban_time");) {
 			findBans.setLong(1, exactIP.getId());
@@ -333,8 +340,8 @@ public final class BSBan {
 	 */
 	public static List<BSBan> byProxy(BSIPData data, boolean includeExpired) {
 		List<BSBan> results = new ArrayList<>();
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement findBans = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement findBans = connection.prepareStatement(
 						includeExpired ? "SELECT * FROM bs_ban WHERE proxy_ban = ? ORDER BY ban_time" :
 						"SELECT * FROM bs_ban WHERE proxy_ban = ? AND (ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP) ORDER BY ban_time");) {
 			findBans.setLong(1, data.getId());
@@ -364,8 +371,8 @@ public final class BSBan {
 	 */
 	public static List<BSBan> byShare(BSShare data, boolean includeExpired) {
 		List<BSBan> results = new ArrayList<>();
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement findBans = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement findBans = connection.prepareStatement(
 						includeExpired ? "SELECT * FROM bs_ban WHERE share_ban = ? ORDER BY ban_time" :
 						"SELECT * FROM bs_ban WHERE share_ban = ? AND (ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP) ORDER BY ban_time");) {
 			findBans.setLong(1, data.getId());
@@ -395,7 +402,7 @@ public final class BSBan {
 	 * @return the newly created ban, or null if something went wrong.
 	 */
 	public static BSBan create(String message, Date banEnd, boolean adminBan) {
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
 			BSBan newBan = new BSBan();
 			newBan.dirty = false;
 			newBan.banTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
@@ -447,7 +454,7 @@ public final class BSBan {
 	 */
 	public static BSBan create(BSIP exactIP, String message, Date banEnd, boolean adminBan) {
 		// TODO: Check if this IP is already actively banned!
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
 			BSBan newBan = new BSBan();
 			newBan.dirty = false;
 			newBan.deferIpBan = exactIP.getId();
@@ -503,7 +510,7 @@ public final class BSBan {
 	 */
 	public static BSBan create(BSIPData proxy, String message, Date banEnd, boolean adminBan) {
 		// TODO: Check if this IP is already actively banned!
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
 			BSBan newBan = new BSBan();
 			newBan.dirty = false;
 			newBan.deferProxyBan = proxy.getId();
@@ -559,7 +566,7 @@ public final class BSBan {
 	 */
 	public static BSBan create(BSShare share, String message, Date banEnd, boolean adminBan) {
 		// TODO: Check if this share is already actively banned!
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
 			BSBan newBan = new BSBan();
 			newBan.dirty = false;
 			newBan.deferShareBan = share.getId();
@@ -649,8 +656,8 @@ public final class BSBan {
 	 */
 	public static long preload(long offset, int limit, boolean includeExpired) {
 		long maxId = -1;
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadBans = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement loadBans = connection.prepareStatement(
 						includeExpired ? "SELECT * FROM bs_ban WHERE bid > ? ORDER BY bid LIMIT ?" :
 						"SELECT * FROM bs_ban WHERE bid > ? AND (ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP ) ORDER BY bid LIMIT ? ");) {
 			loadBans.setLong(1, offset);

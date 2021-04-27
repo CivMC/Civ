@@ -116,9 +116,9 @@ public class DowsingRodCommand  implements CommandExecutor {
 			.append(" ORDER BY count(*) DESC LIMIT ").append(page * perpage).append(',').append(perpage);
 		BanStick.getPlugin().debug("Running query: " + queryString.toString());
 		long requestLen = System.currentTimeMillis();
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection(); 
-				PreparedStatement complex = connection.prepareStatement(queryString.toString());
-				ResultSet results = complex.executeQuery()) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+             PreparedStatement complex = connection.prepareStatement(queryString.toString());
+             ResultSet results = complex.executeQuery()) {
 			while (results.next()) {
 				String[] storage = new String[sorts.size() + 2];
 				StringBuilder detailCmd = new StringBuilder("/drilldown SUMMARY ");

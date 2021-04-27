@@ -51,8 +51,8 @@ public class BSRegistrars {
 			return;
 		}
 		registrars.add(data.getRegisteredAs());
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement insertRegistrar = connection
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement insertRegistrar = connection
 						.prepareStatement("insert into bs_banned_registrars (registered_as) values(?);");) {
 			insertRegistrar.setString(1, data.getRegisteredAs());
 			insertRegistrar.execute();
@@ -70,8 +70,8 @@ public class BSRegistrars {
 			return;
 		}
 		registrars.remove(data.getRegisteredAs());
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement insertRegistrar = connection
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement insertRegistrar = connection
 						.prepareStatement("delete from bs_banned_registrars where registered_as = ?");) {
 			insertRegistrar.setString(1, data.getRegisteredAs());
 			insertRegistrar.execute();
@@ -114,8 +114,8 @@ public class BSRegistrars {
 
 	private Set<String> loadRegistrarsFromDB() {
 		Set<String> result = new HashSet<>();
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadSet = connection
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement loadSet = connection
 						.prepareStatement("SELECT registered_as FROM bs_banned_registrars;");) {
 			try (ResultSet rs = loadSet.executeQuery();) {
 				while (rs.next()) {

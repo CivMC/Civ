@@ -184,8 +184,8 @@ public final class BSIPData {
 		if (allIPDataID.containsKey(idid)) {
 			return allIPDataID.get(idid);
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getId = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getId = connection.prepareStatement(
 						"SELECT * FROM bs_ip_data WHERE idid = ?");) {
 			getId.setLong(1, idid);
 			try (ResultSet rs = getId.executeQuery();) {
@@ -249,8 +249,8 @@ public final class BSIPData {
 	 */
 	public static List<BSIPData> bySameCity(BSIPData source) {
 		List<BSIPData> found = new ArrayList<>();
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getSame = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getSame = connection.prepareStatement(
 						"SELECT * FROM bs_ip_data WHERE country = ? and region = ? and city = ? and idid != ? and valid = true ORDER BY create_time");) {
 			getSame.setString(1, source.getCountry());
 			getSame.setString(2, source.getRegion());
@@ -285,8 +285,8 @@ public final class BSIPData {
 			BanStick.getPlugin().warning("Weird failure, byExactIP with null IP");
 			return null;
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getId = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getId = connection.prepareStatement(
 						"SELECT * FROM bs_ip_data WHERE iid = ? and valid = true ORDER BY create_time DESC LIMIT 1");) {
 			getId.setLong(1, ip.getId());
 			try (ResultSet rs = getId.executeQuery();) {
@@ -314,8 +314,8 @@ public final class BSIPData {
 		if (this.registeredAs == null) {
 			return 0;
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getSame = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getSame = connection.prepareStatement(
 						"SELECT avg(proxy) FROM bs_ip_data WHERE registered_as = ?");) {
 			getSame.setString(1, this.registeredAs);
 			try (ResultSet rs = getSame.executeQuery();) {
@@ -432,7 +432,7 @@ public final class BSIPData {
 	public static BSIPData create(BSIP ip, String continent, String country, String region, 
 			String city, String postal, Double lat, Double lon, String domain, String provider, 
 			String registeredAs, String connectionSource, float proxy, String source, String comment) {
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
 			BSIPData newData = new BSIPData();
 			newData.valid = true;
 			newData.dirty = false;
@@ -550,8 +550,8 @@ public final class BSIPData {
 			return;
 		}
 		this.dirty = false; // don't let anyone else in!
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement save = connection.prepareStatement(
 						"UPDATE bs_ip_data SET valid = ?, proxy = ?, source = ?, comment = ? WHERE idid = ?");) {
 			saveToStatement(save);
 			int effects = save.executeUpdate();
@@ -604,8 +604,8 @@ public final class BSIPData {
 	 */
 	public static void saveDirty() {
 		int batchSize = 0;
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement save = connection.prepareStatement(
 						"UPDATE bs_ip_data SET valid = ?, proxy = ?, source = ?, comment = ? WHERE idid = ?");) {
 			while (!dirtyIPData.isEmpty()) {
 				WeakReference<BSIPData> rdata = dirtyIPData.poll();
@@ -651,8 +651,8 @@ public final class BSIPData {
 	 */
 	public static long preload(long offset, int limit) {
 		long maxId = -1;
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadData = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement loadData = connection.prepareStatement(
 						"SELECT * FROM bs_ip_data WHERE valid = true AND idid > ? ORDER BY idid LIMIT ?");) {
 			loadData.setLong(1, offset);
 			loadData.setInt(2, limit);
