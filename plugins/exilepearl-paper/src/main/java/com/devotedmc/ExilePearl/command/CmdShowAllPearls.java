@@ -39,8 +39,6 @@ public class CmdShowAllPearls extends PearlCommand {
 	private static final Map<UUID, Long> COOLDOWNS = new HashMap<>();
 	private static final long COOLDOWN = 10_000; // 10 seconds
 
-	private boolean isBanStickEnabled = false;
-
 	public CmdShowAllPearls(final ExilePearlApi pearlApi) {
 		super(pearlApi);
 		this.aliases.add("showall");
@@ -62,20 +60,18 @@ public class CmdShowAllPearls extends PearlCommand {
 		}
 		COOLDOWNS.put(player.getUniqueId(), now);
 
-		this.isBanStickEnabled = this.plugin.isBanStickEnabled();
-
 		final Location playerLocation = player.getLocation();
-		final int pearlExclusionRadius = this.plugin.getPearlConfig().getRulePearlRadius();
+		final double pearlExclusionRadius = this.plugin.getPearlConfig().getRulePearlRadius() * 1.2;
 
 		final List<IClickable> contents = this.plugin.getPearls().stream()
 				.sorted(ComparatorUtils.reversedComparator(Comparator.comparing(ExilePearl::getPearledOn)))
-				.map(pearl -> {
+				.map((pearl) -> {
 					final Location pearlLocation = pearl.getLocation();
-					final boolean isPlayerBanned = isPlayerBanned(pearl.getPlayerId());
+					final boolean isPlayerBanned = this.plugin.isBanStickEnabled()
+							&& BanHandler.isPlayerBanned(player);
 					final boolean showLocation = WorldUtils.blockDistance(
 							playerLocation, pearlLocation, true) <= pearlExclusionRadius;
-
-					final var item = isPlayerBanned ?
+					final ItemStack item = isPlayerBanned ?
 							new ItemStack(Material.ARMOR_STAND) :
 							getSkullForPlayer(pearl.getPlayerId());
 
@@ -143,12 +139,12 @@ public class CmdShowAllPearls extends PearlCommand {
 									clicker.sendMessage(ChatColor.RED + "That pearl is in a different world!");
 									return;
 								}
-								clicker.sendMessage("["
+								clicker.sendMessage('['
 										+ "name:" + pearl.getPlayerName() + "'s pearl,"
-										+ "x:" + location.getBlockX() + ","
-										+ "y:" + location.getBlockY() + ","
+										+ "x:" + location.getBlockX() + ','
+										+ "y:" + location.getBlockY() + ','
 										+ "z:" + location.getBlockZ()
-										+ "]");
+										+ ']');
 							}
 						}
 					};
@@ -164,13 +160,6 @@ public class CmdShowAllPearls extends PearlCommand {
 		}
 
 		new MultiPageView(player, contents, "All Pearls", true).showScreen();
-	}
-
-	private boolean isPlayerBanned(final UUID player) {
-		if (!this.isBanStickEnabled) {
-			return false;
-		}
-		return BanHandler.isPlayerBanned(player);
 	}
 
 	public static ItemStack getSkullForPlayer(final UUID player) {
