@@ -62,12 +62,13 @@ public class CmdShowAllPearls extends PearlCommand {
 
 		final Location playerLocation = player.getLocation();
 		final double pearlExclusionRadius = this.plugin.getPearlConfig().getRulePearlRadius() * 1.2;
+		final boolean isBanStickEnabled = this.plugin.isBanStickEnabled();
 
 		final List<IClickable> contents = this.plugin.getPearls().stream()
 				.sorted(ComparatorUtils.reversedComparator(Comparator.comparing(ExilePearl::getPearledOn)))
 				.map((pearl) -> {
 					final Location pearlLocation = pearl.getLocation();
-					final boolean isPlayerBanned = this.plugin.isBanStickEnabled()
+					final boolean isPlayerBanned = isBanStickEnabled
 							&& BanHandler.isPlayerBanned(player);
 					final boolean showLocation = WorldUtils.blockDistance(
 							playerLocation, pearlLocation, true) <= pearlExclusionRadius;
