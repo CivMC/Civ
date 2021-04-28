@@ -170,9 +170,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				if (plant.getCacheState() == CacheState.DELETED) {
 					continue;
 				}
-				RealisticBiomes.getInstance().addTask(() -> {
-					logicMan.updateGrowthTime(plant, plant.getLocation().getBlock());
-				});
+				logicMan.updateGrowthTime(plant, plant.getLocation().getBlock());
 			}
 		});
 	}
