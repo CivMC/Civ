@@ -7,8 +7,11 @@ import com.untamedears.realisticbiomes.listener.PlayerListener;
 import com.untamedears.realisticbiomes.model.Plant;
 import com.untamedears.realisticbiomes.model.RBChunkCache;
 import com.untamedears.realisticbiomes.model.RBDAO;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.scheduler.BukkitTask;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.BlockBasedChunkMetaView;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
@@ -29,6 +32,8 @@ public class RealisticBiomes extends ACivMod {
 	private AnimalConfigManager animalManager;
 	private PlantLogicManager plantLogicManager;
 	private PlantProgressManager plantProgressManager;
+	private Queue<Runnable> rbTaskQueue;
+	private BukkitTask taskQueueTask;
 
 	private RBDAO dao;
 
@@ -58,6 +63,15 @@ public class RealisticBiomes extends ACivMod {
 
 	@Override
 	public void onDisable() {
+		taskQueueTask.cancel();
+		getLogger().info("Running remaining tasks");
+		while (!rbTaskQueue.isEmpty()) {
+			try {
+				rbTaskQueue.poll().run();
+			} catch (Exception e) {
+				getLogger().warning("Exception thrown by task while disabling plugin" + e);
+			}
+		}
 		dao.setBatchMode(true);
 		if (plantManager != null) {
 			plantManager.shutDown();
@@ -96,6 +110,14 @@ public class RealisticBiomes extends ACivMod {
 		}
 		plantLogicManager = new PlantLogicManager(plantManager, growthConfigManager);
 		registerListeners();
+
+		rbTaskQueue = new LinkedBlockingQueue<>();
+		taskQueueTask = Bukkit.getScheduler().runTaskTimer(RealisticBiomes.getInstance(), () -> {
+			long end = System.currentTimeMillis() + 20;
+			while (!rbTaskQueue.isEmpty() && System.currentTimeMillis() < end) {
+				rbTaskQueue.poll().run();
+			}
+		}, 1L, 1L);
 	}
 
 	private void registerListeners() {
@@ -106,4 +128,7 @@ public class RealisticBiomes extends ACivMod {
 		pm.registerEvents(new BonemealListener(configManager.getBonemealPreventedBlocks()), this);
 	}
 
+	public void addTask(Runnable runnable) {
+		rbTaskQueue.add(runnable);
+	}
 }
