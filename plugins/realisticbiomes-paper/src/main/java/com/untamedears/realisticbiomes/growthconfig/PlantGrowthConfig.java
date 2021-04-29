@@ -262,7 +262,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			long totalTime = getPersistentGrowthTime(block);
 			long passedTime = System.currentTimeMillis() - plant.getCreationTime();
 			long timeRemaining = Math.max(0, totalTime - passedTime);
-			if (timeRemaining >= INFINITE_TIME) {
+			if (timeRemaining >= INFINITE_TIME || totalTime == -1) {
 				sb.append(" will never grow here");
 			} else {
 				sb.append(" will grow to full size ");
