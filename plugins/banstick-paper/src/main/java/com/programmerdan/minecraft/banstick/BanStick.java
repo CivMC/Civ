@@ -14,14 +14,16 @@ import com.programmerdan.minecraft.banstick.handler.BanStickTorUpdater;
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class BanStick extends ACivMod {
+
 	private static BanStick instance;
+
 	@SuppressWarnings("unused")
 	private BanStickCommandHandler commandHandler;
 	private BanStickEventHandler eventHandler;
 	private BanStickDatabaseHandler databaseHandler;
 	private BanStickTorUpdater torUpdater;
 	private BanStickProxyHandler proxyHandler;
-	private BanStickIPDataHandler ipdataUpdater;
+	private BanStickIPDataHandler ipDataUpdater;
 	private BanStickIPHubHandler ipHubUpdater;
 	private BanStickScrapeHandler scrapeHandler;
 	private BanStickImportHandler importHandler;
@@ -32,19 +34,19 @@ public class BanStick extends ACivMod {
 
 	@Override
 	public void onEnable() {
+		instance = this;
+		this.useNewCommandHandler = false;
 		super.onEnable();
 
 		saveDefaultConfig();
-		reloadConfig();
 
-		BanStick.instance = this;
 		connectDatabase();
-		if (!this.isEnabled()) {
+		if (!isEnabled()) {
 			return;
 		}
 
 		if (getConfig().getBoolean("slaveMode", false)) {
-			slaveMode = true;
+			this.slaveMode = true;
 		}
 
 		registerEventHandler();
@@ -61,8 +63,6 @@ public class BanStick extends ACivMod {
 
 	@Override
 	public void onDisable() {
-		super.onDisable();
-
 		if (this.eventHandler != null) {
 			this.eventHandler.shutdown();
 		}
@@ -72,8 +72,8 @@ public class BanStick extends ACivMod {
 		if (this.scrapeHandler != null) {
 			this.scrapeHandler.shutdown();
 		}
-		if (this.ipdataUpdater != null) {
-			this.ipdataUpdater.end();
+		if (this.ipDataUpdater != null) {
+			this.ipDataUpdater.end();
 		}
 		if (this.ipHubUpdater != null) {
 			this.ipHubUpdater.end();
@@ -90,19 +90,21 @@ public class BanStick extends ACivMod {
 		if (this.databaseHandler != null) {
 			this.databaseHandler.doShutdown();
 		}
+
+		super.onDisable();
 	}
 
 	private void connectDatabase() {
 		try {
 			this.databaseHandler = new BanStickDatabaseHandler(getConfig());
 		} catch (Exception e) {
-			this.severe("Failed to establish database", e);
-			this.setEnabled(false);
+			severe("Failed to establish database", e);
+			setEnabled(false);
 		}
 	}
 
 	public BanStickIPDataHandler getIPDataHandler() {
-		return this.ipdataUpdater;
+		return this.ipDataUpdater;
 	}
 
 	public BanStickIPHubHandler getIPHubHandler() {
@@ -114,115 +116,115 @@ public class BanStick extends ACivMod {
 	}
 
 	private void registerCommandHandler() {
-		if (!this.isEnabled()) {
+		if (!isEnabled()) {
 			return;
 		}
 		try {
 			this.commandHandler = new BanStickCommandHandler(getConfig());
 		} catch (Exception e) {
-			this.severe("Failed to set up command handling", e);
-			this.setEnabled(false);
+			severe("Failed to set up command handling", e);
+			setEnabled(false);
 		}
 	}
 
 	private void registerEventHandler() {
-		if (!this.isEnabled()) {
+		if (!isEnabled()) {
 			return;
 		}
 		try {
 			this.eventHandler = new BanStickEventHandler(getConfig());
 		} catch (Exception e) {
-			this.severe("Failed to set up event capture / handling", e);
-			this.setEnabled(false);
+			severe("Failed to set up event capture / handling", e);
+			setEnabled(false);
 		}
 	}
 
 	private void registerTorHandler() {
-		if (!this.isEnabled()) {
+		if (!isEnabled()) {
 			return;
 		}
 		try {
 			this.torUpdater = new BanStickTorUpdater(getConfig());
 		} catch (Exception e) {
-			this.severe("Failed to set up TOR updater!", e);
+			severe("Failed to set up TOR updater!", e);
 		}
 	}
 
 	private void registerProxyHandler() {
-		if (!this.isEnabled()) {
+		if (!isEnabled()) {
 			return;
 		}
 		try {
-			this.proxyHandler = new BanStickProxyHandler(getConfig(), getPlugin().getClassLoader());
+			this.proxyHandler = new BanStickProxyHandler(getConfig(), getClassLoader());
 		} catch (Exception e) {
-			this.severe("Failed to set up Proxy updaters!", e);
+			severe("Failed to set up Proxy updaters!", e);
 		}
 	}
 
 	private void registerIPDataHandler() {
-		if (!this.isEnabled()) {
+		if (!isEnabled()) {
 			return;
 		}
 		try {
-			this.ipdataUpdater = new BanStickIPDataHandler(getConfig());
+			this.ipDataUpdater = new BanStickIPDataHandler(getConfig());
 		} catch (Exception e) {
-			this.severe("Failed to set up dynamic IPData updater!", e);
+			severe("Failed to set up dynamic IPData updater!", e);
 		}
 	}
 
 	private void registerIPHubHandler() {
-		if (!this.isEnabled()) {
+		if (!isEnabled()) {
 			return;
 		}
 		try {
 			this.ipHubUpdater = new BanStickIPHubHandler(getConfig());
 		} catch (Exception e) {
-			this.severe("Failed to set up dynamic IPHub.info updater!", e);
+			severe("Failed to set up dynamic IPHub.info updater!", e);
 		}
 	}
 
 	private void registerScrapeHandler() {
-		if (!this.isEnabled()) {
+		if (!isEnabled()) {
 			return;
 		}
 		try {
-			this.scrapeHandler = new BanStickScrapeHandler(getConfig(), getPlugin().getClassLoader());
+			this.scrapeHandler = new BanStickScrapeHandler(getConfig(), getClassLoader());
 		} catch (Exception e) {
-			this.severe("Failed to set up anonymous proxy scrapers", e);
+			severe("Failed to set up anonymous proxy scrapers", e);
 		}
 	}
 
 	private void registerImportHandler() {
-		if (!this.isEnabled()) {
+		if (!isEnabled()) {
 			return;
 		}
 		try {
-			this.importHandler = new BanStickImportHandler(getConfig(), getPlugin().getClassLoader());
+			this.importHandler = new BanStickImportHandler(getConfig(), getClassLoader());
 		} catch (Exception e) {
-			this.severe("Failed to set up data imports", e);
+			severe("Failed to set up data imports", e);
 		}
 	}
 
 	private void registerLogHandler() {
-		if (!this.isEnabled()) {
+		if (!isEnabled()) {
 			return;
 		}
 		try {
 			this.logHandler = new BSLog(getConfig());
 			this.logHandler.runTaskTimerAsynchronously(this, this.logHandler.getDelay(), this.logHandler.getPeriod());
 		} catch (Exception e) {
-			this.severe("Failed to set up ban log handler", e);
+			severe("Failed to set up ban log handler", e);
 		}
 	}
 	
 	private void registerRegistrarHandler() {
-		if (!this.isEnabled()) {
+		if (!isEnabled()) {
 			return;
 		}
 		try {
 			this.bannedRegistrars = new BSRegistrars();
 		} catch (Exception e) {
-			this.severe("Failed to set up registrar ban handler", e);
+			severe("Failed to set up registrar ban handler", e);
 		}
 	}
 	
@@ -235,11 +237,10 @@ public class BanStick extends ACivMod {
 	}
 
 	/**
-	 *
 	 * @return the static global instance. Not my fav pattern, but whatever.
 	 */
 	public static BanStick getPlugin() {
-		return BanStick.instance;
+		return instance;
 	}
 
 	public void saveCache() {
@@ -247,6 +248,7 @@ public class BanStick extends ACivMod {
 	}
 
 	public static boolean slave() {
-		return BanStick.instance.slaveMode;
+		return instance.slaveMode;
 	}
+
 }

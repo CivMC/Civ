@@ -117,8 +117,8 @@ public final class BSIPs {
 			ipSet = new HashSet<>();
 		}
 
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getIDs = connection.prepareStatement(// Get all ids only, order by join time.
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getIDs = connection.prepareStatement(// Get all ids only, order by join time.
 						"SELECT DISTINCT i.iid FROM bs_ip i JOIN bs_session s ON i.iid = s.iid WHERE s.pid = ? ORDER BY s.join_time;");) {
 			// TODO: replace statement w/ view.
 			getIDs.setLong(1, forPlayer.getId());

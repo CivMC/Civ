@@ -204,8 +204,8 @@ public class DrillDownCommand  implements CommandExecutor {
 				BanStick.getPlugin().debug("Running query: " + queryString.toString());
 				int found = 0;
 				long requestLen = System.currentTimeMillis();
-				try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection(); 
-						PreparedStatement complex = connection.prepareStatement(queryString.toString());) {
+				try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+                     PreparedStatement complex = connection.prepareStatement(queryString.toString());) {
 					for (int i = 1, j = 1; i < values.size(); i += 2, j ++) {
 						String searchTerm = values.get(i).trim();
 						if (searchTerm.startsWith("\"") && searchTerm.endsWith("\"")) {

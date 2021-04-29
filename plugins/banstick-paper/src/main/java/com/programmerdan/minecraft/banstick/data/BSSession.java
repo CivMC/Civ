@@ -121,8 +121,8 @@ public final class BSSession {
 	 */
 	public static void saveDirty() {
 		int batchSize = 0;
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement save = connection.prepareStatement(
 						"UPDATE bs_session SET leave_time = ? WHERE sid = ?");) {
 			while (!dirtySessions.isEmpty()) {
 				WeakReference<BSSession> rsession = dirtySessions.poll();
@@ -166,8 +166,8 @@ public final class BSSession {
 			return;
 		}
 		this.dirty = false; // don't let anyone else in!
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement save = connection.prepareStatement(
 						"UPDATE bs_session SET leave_time = ? WHERE sid = ?");) {
 			saveToStatement(save);
 			int effects = save.executeUpdate();
@@ -211,8 +211,8 @@ public final class BSSession {
 		if (allSessionID.containsKey(sid)) {
 			return allSessionID.get(sid);
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_session WHERE sid = ?");) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_session WHERE sid = ?");) {
 			getId.setLong(1, sid);
 			try (ResultSet rs = getId.executeQuery();) {
 				if (rs.next()) {
@@ -254,8 +254,8 @@ public final class BSSession {
 	 */
 	public static List<BSSession> byIP(BSIP iid) {
 		ArrayList<BSSession> sessions = new ArrayList<>();
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getIds = connection.prepareStatement("SELECT * FROM bs_session WHERE iid = ?");) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getIds = connection.prepareStatement("SELECT * FROM bs_session WHERE iid = ?");) {
 			getIds.setLong(1, iid.getId());
 			try (ResultSet rs = getIds.executeQuery();) {
 				while (rs.next()) {
@@ -285,8 +285,8 @@ public final class BSSession {
 	 * @return the newly created BSSession
 	 */
 	public static BSSession create(BSPlayer pid, Date sessionStart, BSIP iid) {
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement newSession = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement newSession = connection.prepareStatement(
 						"INSERT INTO bs_session(pid, join_time, iid) VALUES (?, ?, ?)",
 						Statement.RETURN_GENERATED_KEYS);) {
 			BSSession session = new BSSession();
@@ -331,8 +331,8 @@ public final class BSSession {
 	 */
 	public static long preload(long offset, int limit) {
 		long maxId = -1;
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadSessions = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement loadSessions = connection.prepareStatement(
 						"SELECT * FROM bs_session WHERE sid > ? ORDER BY sid LIMIT ?");) {
 			loadSessions.setLong(1, offset);
 			loadSessions.setInt(2, limit);

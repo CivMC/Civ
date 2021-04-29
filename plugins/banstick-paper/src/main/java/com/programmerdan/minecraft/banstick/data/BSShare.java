@@ -151,8 +151,8 @@ public final class BSShare {
 		if (allShareID.containsKey(sid)) {
 			return allShareID.get(sid);
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_share WHERE sid = ?");) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_share WHERE sid = ?");) {
 			getId.setLong(1, sid);
 			try (ResultSet rs = getId.executeQuery();) {
 				if (rs.next()) {
@@ -178,8 +178,8 @@ public final class BSShare {
 	 */
 	public static List<BSShare> byPlayer(BSPlayer player) {
 		List<BSShare> shares = new ArrayList<>();
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getId = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getId = connection.prepareStatement(
 						"SELECT * FROM bs_share WHERE first_pid = ? OR second_pid = ?");) {
 			getId.setLong(1, player.getId());
 			getId.setLong(2, player.getId());
@@ -209,8 +209,8 @@ public final class BSShare {
 	 */
 	public static List<BSShare> bySession(BSSession session) {
 		List<BSShare> shares = new ArrayList<>();
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getId = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getId = connection.prepareStatement(
 						"SELECT * FROM bs_share WHERE first_sid = ? OR second_sid = ?");) {
 			getId.setLong(1, session.getId());
 			getId.setLong(2, session.getId());
@@ -264,8 +264,8 @@ public final class BSShare {
 	 */
 	public static void saveDirty() {
 		int batchSize = 0;
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement save = connection.prepareStatement(
 						"UPDATE bs_share SET pardon = ?, pardon_time = ? WHERE sid = ?");) {
 			while (!dirtyShares.isEmpty()) {
 				WeakReference<BSShare> rshare = dirtyShares.poll();
@@ -309,8 +309,8 @@ public final class BSShare {
 			return;
 		}
 		this.dirty = false; // don't let anyone else in!
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement save = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement save = connection.prepareStatement(
 						"UPDATE bs_share SET pardon = ?, pardon_time = ? WHERE sid = ?");) {
 			saveToStatement(save);
 			int effects = save.executeUpdate();
@@ -361,8 +361,8 @@ public final class BSShare {
 	 */
 	public static long preload(long offset, int limit) {
 		long maxId = -1;
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadShares = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement loadShares = connection.prepareStatement(
 						"SELECT * FROM bs_share WHERE sid > ? ORDER BY sid LIMIT ?");) {
 			loadShares.setLong(1, offset);
 			loadShares.setInt(2, limit);
@@ -432,8 +432,8 @@ public final class BSShare {
 	 * @return a new BSShare linking these sessions
 	 */
 	public static BSShare create(BSSession overlap, BSSession session) {
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement newShare = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement newShare = connection.prepareStatement(
 						"INSERT INTO bs_share(create_time, first_pid, second_pid, first_sid, second_sid, pardon, pardon_time) VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);) {
 			BSShare share = new BSShare();
 			share.createTime =  new Timestamp(Calendar.getInstance().getTimeInMillis());

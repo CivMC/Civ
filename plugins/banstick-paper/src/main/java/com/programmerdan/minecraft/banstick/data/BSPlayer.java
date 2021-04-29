@@ -236,8 +236,8 @@ public final class BSPlayer {
 	 */
 	public static void saveDirty() {
 		int batchSize = 0;
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement savePlayer = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement savePlayer = connection.prepareStatement(
 						"UPDATE bs_player SET ip_pardon_time = ?, proxy_pardon_time = ?, shared_pardon_time = ?, bid = ?, name = ? WHERE pid = ?");) {
 			while (!dirtyPlayers.isEmpty()) {
 				WeakReference<BSPlayer> rplayer = dirtyPlayers.poll();
@@ -281,8 +281,8 @@ public final class BSPlayer {
 			return;
 		}
 		this.dirty = false; // don't let anyone else in!
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement savePlayer = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement savePlayer = connection.prepareStatement(
 						"UPDATE bs_player SET ip_pardon_time = ?, proxy_pardon_time = ?, shared_pardon_time = ?, bid = ?, name = ? WHERE pid = ?");) {
 			saveToStatement(savePlayer);
 			int effects = savePlayer.executeUpdate();
@@ -349,8 +349,8 @@ public final class BSPlayer {
 			return allPlayersUUID.get(uuid);
 		}
 
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getPlayer = connection.prepareStatement("SELECT * FROM bs_player WHERE uuid = ?");) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getPlayer = connection.prepareStatement("SELECT * FROM bs_player WHERE uuid = ?");) {
 			getPlayer.setString(1, uuid.toString());
 			try (ResultSet rs = getPlayer.executeQuery();) {
 				if (rs.next()) {
@@ -418,8 +418,8 @@ public final class BSPlayer {
 			return allPlayersID.get(pid);
 		}
 
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getPlayer = connection.prepareStatement("SELECT * FROM bs_player WHERE pid = ?");) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getPlayer = connection.prepareStatement("SELECT * FROM bs_player WHERE pid = ?");) {
 			getPlayer.setLong(1, pid);
 			try (ResultSet rs = getPlayer.executeQuery();) {
 				if (rs.next()) {
@@ -480,7 +480,7 @@ public final class BSPlayer {
 		if (allPlayersUUID.containsKey(player.getUniqueId())) {
 			return allPlayersUUID.get(player.getUniqueId());
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
 			BSPlayer newPlayer = new BSPlayer();
 			newPlayer.dirty = false;
 			newPlayer.name = player.getDisplayName();
@@ -539,7 +539,7 @@ public final class BSPlayer {
 		if (allPlayersUUID.containsKey(playerId)) {
 			return allPlayersUUID.get(playerId);
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
 			BSPlayer newPlayer = new BSPlayer();
 			newPlayer.dirty = false;
 			newPlayer.name = name;
@@ -591,8 +591,8 @@ public final class BSPlayer {
 	 */
 	public static long preload(long offset, int limit) {
 		long maxId = -1;
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadPlayers = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement loadPlayers = connection.prepareStatement(
 						"SELECT * FROM bs_player WHERE pid > ? ORDER BY pid LIMIT ?");) {
 			loadPlayers.setLong(1, offset);
 			loadPlayers.setInt(2, limit);

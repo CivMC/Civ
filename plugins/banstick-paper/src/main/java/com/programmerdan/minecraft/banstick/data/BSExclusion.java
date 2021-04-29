@@ -105,8 +105,8 @@ public final class BSExclusion {
 	 */
 	public void delete() {
 		allExclussionsID.remove(this.eid);
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement ps = connection.prepareStatement("DELETE FROM bs_exclusion WHERE eid = ?");) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement ps = connection.prepareStatement("DELETE FROM bs_exclusion WHERE eid = ?");) {
 			ps.setLong(1, eid);
 			ps.execute();
 		} catch (SQLException se) {
@@ -129,8 +129,8 @@ public final class BSExclusion {
 		if (allExclussionsID.containsKey(eid)) {
 			return allExclussionsID.get(eid);
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_exclusion WHERE eid = ?");) {
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_exclusion WHERE eid = ?");) {
 			getId.setLong(1, eid);
 			try (ResultSet rs = getId.executeQuery();) {
 				if (rs.next()) {
@@ -161,8 +161,8 @@ public final class BSExclusion {
 	 */
 	static Map<Long, BSExclusion> byPlayer(BSPlayer player) {
 		Map<Long, BSExclusion> exclusions = new HashMap<>();
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getId = connection
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getId = connection
 						.prepareStatement("SELECT * FROM bs_exclusion WHERE first_pid = ? OR second_pid = ?");) {
 			getId.setLong(1, player.getId());
 			getId.setLong(2, player.getId());
@@ -214,8 +214,8 @@ public final class BSExclusion {
 	 */
 	public static long preload(long offset, int limit) {
 		long maxId = -1;
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadExclusions = connection
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement loadExclusions = connection
 						.prepareStatement("SELECT * FROM bs_exclusion WHERE eid > ? ORDER BY eid LIMIT ?");) {
 			loadExclusions.setLong(1, offset);
 			loadExclusions.setInt(2, limit);
@@ -269,8 +269,8 @@ public final class BSExclusion {
 		if (first == null || second == null) {
 			throw new IllegalArgumentException("Can not create exclusion based on player null");
 		}
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement ps = connection.prepareStatement(
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement ps = connection.prepareStatement(
 						"INSERT INTO bs_exclusion(create_time, first_pid, second_pid) VALUES (?, ?, ?)",
 						Statement.RETURN_GENERATED_KEYS);) {
 			BSExclusion exclusion = new BSExclusion();

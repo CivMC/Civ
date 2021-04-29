@@ -79,8 +79,8 @@ public final class BSSessions {
 	}
 	
 	private void fill() {
-		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement getIDs = connection.prepareStatement(// Get all ids only, order by join time.
+		try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+			 PreparedStatement getIDs = connection.prepareStatement(// Get all ids only, order by join time.
 						"SELECT sid FROM bs_session WHERE pid = ? ORDER BY join_time;");) {
 			// TODO: replace statement w/ view.
 			getIDs.setLong(1, forPlayer.getId());
