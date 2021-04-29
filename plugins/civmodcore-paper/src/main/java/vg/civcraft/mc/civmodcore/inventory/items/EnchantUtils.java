@@ -5,8 +5,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.ImmutableMap;
 import java.io.File;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +18,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import vg.civcraft.mc.civmodcore.util.CivLogger;
+import vg.civcraft.mc.civmodcore.util.Chainer;
 import vg.civcraft.mc.civmodcore.util.KeyedUtils;
 
 /**
@@ -96,35 +96,34 @@ public final class EnchantUtils {
 	 * Loads enchantment names and initials from the config.
 	 */
 	public static void loadEnchantAbbreviations(final CivModCorePlugin plugin) {
-		final var logger = CivLogger.getLogger(EnchantUtils.class);
 		ENCHANT_ABBR.clear();
 		final File enchantsFile = plugin.getResourceFile("enchants.yml");
 		final YamlConfiguration enchantsConfig = YamlConfiguration.loadConfiguration(enchantsFile);
 		for (final String key : enchantsConfig.getKeys(false)) {
 			if (Strings.isNullOrEmpty(key)) {
-				logger.warning("Enchantment key was empty.");
+				plugin.warning("[EnchantUtils] Enchantment key was empty.");
 				continue;
 			}
 			final Enchantment enchant = EnchantUtils.getEnchantment(key);
 			if (enchant == null) {
-				logger.warning("Could not find enchantment: " + key);
+				plugin.warning("[EnchantUtils] Could not find enchantment: " + key);
 				return;
 			}
 			final String abbreviation = enchantsConfig.getString(key);
 			if (Strings.isNullOrEmpty(abbreviation)) {
-				logger.warning("Abbreviation for [" + key + "] was empty.");
+				plugin.warning("[EnchantUtils] Abbreviation for [" + key + "] was empty.");
 				continue;
 			}
 			ENCHANT_ABBR.put(enchant, abbreviation);
 		}
-		logger.info("Loaded a total of " + ENCHANT_ABBR.size() + " abbreviations from enchants.yml");
+		plugin.info("[EnchantUtils] Loaded a total of " + ENCHANT_ABBR.size() + " abbreviations from enchants.yml");
 		// Determine if there's any enchants missing abbreviations
 		final Set<Enchantment> missing = new HashSet<>();
 		CollectionUtils.addAll(missing, Enchantment.values());
 		missing.removeIf(ENCHANT_ABBR::containsKey);
 		if (!missing.isEmpty()) {
 			//noinspection deprecation
-			logger.warning("The following enchants are missing from enchants.yml: " +
+			plugin.warning("[EnchantUtils] The following enchants are missing from enchants.yml: " +
 					missing.stream().map(Enchantment::getName).collect(Collectors.joining(",")) + ".");
 		}
 	}
@@ -188,10 +187,7 @@ public final class EnchantUtils {
 	 * @return Returns the item's enchantments, which are never null.
 	 */
 	public static Map<Enchantment, Integer> getEnchantments(final ItemStack item) {
-		if (item == null) {
-			return ImmutableMap.of();
-		}
-		return item.getEnchantments();
+		return Chainer.from(item).then(ItemStack::getEnchantments).getOrGenerate(HashMap::new);
 	}
 
 	/**

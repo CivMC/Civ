@@ -5,7 +5,9 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
+import vg.civcraft.mc.civmodcore.api.PotionNames;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
+import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.events.CustomEventMapper;
@@ -16,11 +18,11 @@ import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
+import vg.civcraft.mc.civmodcore.inventorygui.paged.PagedGUIManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
 import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
-import vg.civcraft.mc.civmodcore.maps.MapColours;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigGetAnyCommand;
@@ -32,18 +34,18 @@ import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
 import vg.civcraft.mc.civmodcore.world.operations.ChunkOperationManager;
 
+@SuppressWarnings("deprecation")
 public final class CivModCorePlugin extends ACivMod {
 
 	private static CivModCorePlugin instance;
 
 	private GlobalChunkMetaManager chunkMetaManager;
-	private ManagedDatasource database;
-	private WorldIDManager worldIdManager;
-	private final AikarCommandManager commands;
 
-	public CivModCorePlugin() {
-		this.commands = new AikarCommandManager(this, false);
-	}
+	private ManagedDatasource database;
+
+	private WorldIDManager worldIdManager;
+
+	private AikarCommandManager manager;
 
 	@Override
 	public void onEnable() {
@@ -79,15 +81,21 @@ public final class CivModCorePlugin extends ACivMod {
 		ScoreBoardAPI.setDefaultHeader(scoreboardHeader);
 		// Register listeners
 		registerListener(new ClickableInventoryListener());
+		registerListener(new PagedGUIManager());
 		registerListener(DialogManager.INSTANCE);
+		registerListener(new ChatListener());
 		registerListener(new ScoreBoardListener());
 		registerListener(new CustomEventMapper());
 		registerListener(new WorldTracker());
 		registerListener(ChunkOperationManager.INSTANCE);
 		// Register commands
-		this.commands.init();
-		this.commands.registerCommand(new ConfigCommand());
-		this.commands.registerCommand(ChunkOperationManager.INSTANCE);
+		this.manager = new AikarCommandManager(this) {
+			@Override
+			public void registerCommands() {
+				registerCommand(new ConfigCommand());
+				registerCommand(ChunkOperationManager.INSTANCE);
+			}
+		};
 		// Load APIs
 		EnchantUtils.loadEnchantAbbreviations(this);
 		ItemUtils.loadItemNames(this);
@@ -96,14 +104,16 @@ public final class CivModCorePlugin extends ACivMod {
 		SpawnEggUtils.init();
 		TreeTypeUtils.init();
 		BottomLineAPI.init();
-		MapColours.init();
-		this.newCommandHandler.registerCommand(new ConfigSetAnyCommand());
-		this.newCommandHandler.registerCommand(new ConfigGetAnyCommand());
+		newCommandHandler.registerCommand(new ConfigSetAnyCommand());
+		newCommandHandler.registerCommand(new ConfigGetAnyCommand());
+		// Deprecated
+		PotionNames.loadPotionNames();
 	}
 
 	@Override
 	public void onDisable() {
 		Bukkit.getOnlinePlayers().forEach(HumanEntity::closeInventory);
+		PotionNames.resetPotionNames();
 		ChunkMetaAPI.saveAll();
 		this.chunkMetaManager = null;
 		// Disconnect database
@@ -121,7 +131,10 @@ public final class CivModCorePlugin extends ACivMod {
 		PlayerSettingAPI.saveAll();
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
 		NBTSerialization.clearAllRegistrations();
-		this.commands.reset();
+		if (this.manager != null) {
+			this.manager.reset();
+			this.manager = null;
+		}
 		super.onDisable();
 	}
 

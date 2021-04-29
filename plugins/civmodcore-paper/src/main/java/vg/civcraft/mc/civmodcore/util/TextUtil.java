@@ -1,11 +1,13 @@
 package vg.civcraft.mc.civmodcore.util;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -60,7 +62,10 @@ public class TextUtil {
 	 */
 	@Deprecated
 	public static String parseColor(String string) {
-		return ChatUtils.parseColor(string);
+		string = parseColorAmp(string);
+		string = parseColorAcc(string);
+		string = parseColorTags(string);
+		return string;
 	}
 
 	/**
@@ -68,7 +73,9 @@ public class TextUtil {
 	 */
 	@Deprecated
 	public static String parseColorAmp(String string) {
-		return ChatUtils.parseColorAmp(string);
+		string = string.replace("&&", "&");
+		string = string.replaceAll("&([a-zA-Z0-9])", "§$1");
+		return string;
 	}
 
 	/**
@@ -76,7 +83,39 @@ public class TextUtil {
 	 */
 	@Deprecated
 	public static String parseColorAcc(String string) {
-		return ChatUtils.parseColorAcc(string);
+		return string.
+				replace("`0", ChatColor.BLACK.toString()).
+				replace("`1", ChatColor.DARK_BLUE.toString()).
+				replace("`2", ChatColor.DARK_GREEN.toString()).
+				replace("`3", ChatColor.DARK_AQUA.toString()).
+				replace("`4", ChatColor.DARK_RED.toString()).
+				replace("`5", ChatColor.DARK_PURPLE.toString()).
+				replace("`6", ChatColor.GOLD.toString()).
+				replace("`7", ChatColor.GRAY.toString()).
+				replace("`8", ChatColor.DARK_GRAY.toString()).
+				replace("`9", ChatColor.BLUE.toString()).
+				replace("`A", ChatColor.GREEN.toString()).
+				replace("`a", ChatColor.GREEN.toString()).
+				replace("`B", ChatColor.AQUA.toString()).
+				replace("`b", ChatColor.AQUA.toString()).
+				replace("`C", ChatColor.RED.toString()).
+				replace("`c", ChatColor.RED.toString()).
+				replace("`D", ChatColor.LIGHT_PURPLE.toString()).
+				replace("`d", ChatColor.LIGHT_PURPLE.toString()).
+				replace("`E", ChatColor.YELLOW.toString()).
+				replace("`e", ChatColor.YELLOW.toString()).
+				replace("`F", ChatColor.WHITE.toString()).
+				replace("`f", ChatColor.WHITE.toString()).
+				replace("`L", ChatColor.BOLD.toString()).
+				replace("`l", ChatColor.BOLD.toString()).
+				replace("`M", ChatColor.STRIKETHROUGH.toString()).
+				replace("`m", ChatColor.STRIKETHROUGH.toString()).
+				replace("`N", ChatColor.UNDERLINE.toString()).
+				replace("`n", ChatColor.UNDERLINE.toString()).
+				replace("`O", ChatColor.ITALIC.toString()).
+				replace("`o", ChatColor.ITALIC.toString()).
+				replace("`R", ChatColor.RESET.toString()).
+				replace("`r", ChatColor.RESET.toString());
 	}
 
 	/**
@@ -84,7 +123,52 @@ public class TextUtil {
 	 */
 	@Deprecated
 	public static String parseColorTags(String string) {
-		return ChatUtils.parseColorTags(string);
+		return string.
+				replace("<black>", ChatColor.BLACK.toString()).
+				replace("<dblue>", ChatColor.DARK_BLUE.toString()).
+				replace("<dgreen>", ChatColor.DARK_GREEN.toString()).
+				replace("<daqua>", ChatColor.DARK_AQUA.toString()).
+				replace("<dred>", ChatColor.DARK_RED.toString()).
+				replace("<dpurple>", ChatColor.DARK_PURPLE.toString()).
+				replace("<gold>", ChatColor.GOLD.toString()).
+				replace("<lgray>", ChatColor.GRAY.toString()). // This has to be lgray because gray is already claimed.
+				replace("<dgray>", ChatColor.DARK_GRAY.toString()).
+				replace("<blue>", ChatColor.BLUE.toString()).
+				replace("<green>", ChatColor.GREEN.toString()).
+				replace("<aqua>", ChatColor.AQUA.toString()).
+				replace("<red>", ChatColor.RED.toString()).
+				replace("<lpurple>", ChatColor.LIGHT_PURPLE.toString()).
+				replace("<yellow>", ChatColor.YELLOW.toString()).
+				replace("<white>", ChatColor.WHITE.toString()).
+				replace("<s>", ChatColor.STRIKETHROUGH.toString()).
+				replace("<u>", ChatColor.UNDERLINE.toString()).
+				replace("<ul>", ChatColor.UNDERLINE.toString()).
+				replace("<r>", ChatColor.RESET.toString()).
+				replace("<strike>", ChatColor.STRIKETHROUGH.toString()).
+				replace("<italic>", ChatColor.ITALIC.toString()).
+				replace("<bold>", ChatColor.BOLD.toString()).
+				replace("<reset>", ChatColor.RESET.toString()).
+				// Legacy support
+				replace("<empty>", ""). // Just... why?
+				replace("<navy>", ChatColor.DARK_BLUE.toString()).
+				replace("<teal>", ChatColor.DARK_AQUA.toString()).
+				replace("<silver>", ChatColor.GRAY.toString()).
+				replace("<gray>", ChatColor.DARK_GRAY.toString()). // REEE why name this gray?
+				replace("<lime>", ChatColor.GREEN.toString()).
+				replace("<rose>", ChatColor.RED.toString()).
+				replace("<pink>", ChatColor.LIGHT_PURPLE.toString()).
+				replace("<it>", ChatColor.ITALIC.toString()).
+				replace("<g>", ChatColor.GREEN.toString()). // Good
+				replace("<b>", ChatColor.RED.toString()). // Bad
+				replace("<i>", ChatColor.WHITE.toString()). // Info
+				replace("<a>", ChatColor.GOLD.toString()). // Art
+				replace("<l>", ChatColor.GREEN.toString()). // Logo
+				replace("<n>", ChatColor.GRAY.toString()). // Notice
+				replace("<h>", ChatColor.LIGHT_PURPLE.toString()). // Highlight
+				replace("<c>", ChatColor.AQUA.toString()). // Parameter
+				replace("<p>", ChatColor.DARK_AQUA.toString()). // Parameter
+				replace("<w>", ChatColor.WHITE.toString()). // Parameter
+				replace("<lp>", ChatColor.LIGHT_PURPLE.toString());
 	}
 
 	/**
@@ -110,7 +194,12 @@ public class TextUtil {
 	@Deprecated
 	public static String repeat(String string, int times) {
 		Preconditions.checkArgument(string != null);
-		return StringUtils.repeat(string, times);
+		if (times <= 0) {
+			return "";
+		}
+		else {
+			return string + repeat(string, times - 1);
+		}
 	}
 
 	/**
@@ -246,7 +335,16 @@ public class TextUtil {
 	 */
 	@Deprecated
 	public static boolean stringEquals(String former, String latter) {
-		return StringUtils.equals(former, latter);
+		if (former == latter) { // Don't change this to .equals(), this is a null and pointer check
+			return true;
+		}
+		if (former == null || latter == null) {
+			return false;
+		}
+		if (former.equals(latter)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -261,7 +359,16 @@ public class TextUtil {
 	 */
 	@Deprecated
 	public static boolean stringEqualsIgnoreCase(String former, String latter) {
-		return StringUtils.equalsIgnoreCase(former, latter);
+		if (former == latter) { // Don't change this to .equals(), this is a null and pointer check
+			return true;
+		}
+		if (former == null || latter == null) {
+			return false;
+		}
+		if (former.equalsIgnoreCase(latter)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -275,7 +382,13 @@ public class TextUtil {
 	 */
 	@Deprecated
 	public static boolean startsWith(String container, String contained) {
-		return StringUtils.startsWithIgnoreCase(container, contained);
+		if (contained == null || contained.isEmpty()) {
+			return true;
+		}
+		if (container == null || container.isEmpty()) {
+			return false;
+		}
+		return container.toLowerCase().startsWith(contained.toLowerCase());
 	}
 
 	/**
@@ -291,7 +404,10 @@ public class TextUtil {
 	 */
 	@Deprecated
 	public static boolean isNullOrEmpty(BaseComponent component) {
-		return ChatUtils.isNullOrEmpty(component);
+		if (component == null) {
+			return true;
+		}
+		return Strings.isNullOrEmpty(component.toPlainText());
 	}
 
 	/**
@@ -305,7 +421,41 @@ public class TextUtil {
 	 */
 	@Deprecated
 	public static TextComponent textComponent(final Object value, final net.md_5.bungee.api.ChatColor... formats) {
-		return ChatUtils.textComponent(value, formats);
+		final TextComponent component = new TextComponent(value == null ? "<null>" : value.toString());
+		if (!ArrayUtils.isEmpty(formats)) {
+			for (final net.md_5.bungee.api.ChatColor format : formats) {
+				if (format == null) {
+					//continue;
+				}
+				else if (format.getColor() != null) {
+					component.setColor(format);
+				}
+				else if (format == net.md_5.bungee.api.ChatColor.RESET) {
+					component.setColor(format);
+					component.setBold(false);
+					component.setItalic(false);
+					component.setUnderlined(false);
+					component.setStrikethrough(false);
+					component.setObfuscated(false);
+				}
+				else if (format == net.md_5.bungee.api.ChatColor.BOLD) {
+					component.setBold(true);
+				}
+				else if (format == net.md_5.bungee.api.ChatColor.ITALIC) {
+					component.setItalic(true);
+				}
+				else if (format == net.md_5.bungee.api.ChatColor.UNDERLINE) {
+					component.setUnderlined(true);
+				}
+				else if (format == net.md_5.bungee.api.ChatColor.STRIKETHROUGH) {
+					component.setStrikethrough(true);
+				}
+				else if (format == net.md_5.bungee.api.ChatColor.MAGIC) {
+					component.setObfuscated(true);
+				}
+			}
+		}
+		return component;
 	}
 
 }

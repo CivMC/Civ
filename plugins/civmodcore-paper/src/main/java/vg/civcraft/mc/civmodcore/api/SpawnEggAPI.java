@@ -1,22 +1,23 @@
-package vg.civcraft.mc.civmodcore.inventory.items;
+package vg.civcraft.mc.civmodcore.api;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import org.apache.commons.collections4.CollectionUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 
 /**
  * Class of static APIs for Spawn Eggs.
+ *
+ * @deprecated Use {@link SpawnEggUtils} instead.
  */
-public final class SpawnEggUtils {
+@Deprecated
+public final class SpawnEggAPI {
+	
+	private SpawnEggAPI() {}
 
-	private static final BiMap<Material, EntityType> SPAWN_EGGS = ImmutableBiMap.<Material, EntityType>builder().
+	private static final BiMap<Material, EntityType> spawnEggs = ImmutableBiMap.<Material, EntityType>builder().
 			put(Material.BAT_SPAWN_EGG, EntityType.BAT).
 			put(Material.BEE_SPAWN_EGG, EntityType.BEE).
 			put(Material.BLAZE_SPAWN_EGG, EntityType.BLAZE).
@@ -76,34 +77,26 @@ public final class SpawnEggUtils {
 			put(Material.WITHER_SKELETON_SPAWN_EGG, EntityType.WITHER_SKELETON).
 			put(Material.WOLF_SPAWN_EGG, EntityType.WOLF).
 			put(Material.ZOGLIN_SPAWN_EGG, EntityType.ZOGLIN).
-			put(Material.ZOMBIE_SPAWN_EGG, EntityType.ZOMBIE).
 			put(Material.ZOMBIE_HORSE_SPAWN_EGG, EntityType.ZOMBIE_HORSE).
-			put(Material.ZOMBIFIED_PIGLIN_SPAWN_EGG, EntityType.ZOMBIFIED_PIGLIN).
+			put(Material.ZOMBIE_SPAWN_EGG, EntityType.ZOMBIE).
 			put(Material.ZOMBIE_VILLAGER_SPAWN_EGG, EntityType.ZOMBIE_VILLAGER).
+			put(Material.ZOMBIFIED_PIGLIN_SPAWN_EGG, EntityType.ZOMBIFIED_PIGLIN).
 			build();
-
-	public static void init() {
-		// Determine if there's any enchants missing names
-		final Set<Material> missing = new HashSet<>();
-		CollectionUtils.addAll(missing, Material.values());
-		missing.removeIf(material -> !material.name().endsWith("_SPAWN_EGG") || SPAWN_EGGS.containsKey(material));
-		if (!missing.isEmpty()) {
-			Bukkit.getLogger().warning("[SpawnEggUtils] The following spawn eggs are missing: " +
-					missing.stream().map(Enum::name).collect(Collectors.joining(",")) + ".");
-		}
-	}
 
 	/**
 	 * Tests if a material is that of a spawn egg.
 	 *
 	 * @param material The material to test.
 	 * @return Returns true if the material is that of a spawn egg.
+	 *
+	 * @deprecated Use {@link SpawnEggUtils#isSpawnEgg(Material)} instead.
 	 */
-	public static boolean isSpawnEgg(final Material material) {
+	@Deprecated
+	public static boolean isSpawnEgg(Material material) {
 		if (material == null) {
 			return false;
 		}
-		return SPAWN_EGGS.containsKey(material);
+		return spawnEggs.containsKey(material);
 	}
 
 	/**
@@ -111,27 +104,33 @@ public final class SpawnEggUtils {
 	 *
 	 * @param material The material, must be a spawn egg otherwise it's a guaranteed null.
 	 * @return Returns the entity type that will be spawned from the spawn egg, or null.
+	 *
+	 * @deprecated Use {@link SpawnEggUtils#getEntityType(Material)} instead.
 	 */
+	@Deprecated
 	@Nullable
-	public static EntityType getEntityType(final Material material) {
+	public static EntityType getEntityType(Material material) {
 		if (material == null) {
 			return null;
 		}
-		return SPAWN_EGGS.get(material);
+		return spawnEggs.get(material);
 	}
 
 	/**
 	 * Gets the spawn egg material from an entity type.
 	 *
-	 * @param type The type of entity to match to the spawn egg.
+	 * @param entityType The type of entity to match to the spawn egg.
 	 * @return Returns a spawn egg material, or null.
+	 *
+	 * @deprecated Use {@link SpawnEggUtils#getSpawnEgg(EntityType)} instead.
 	 */
+	@Deprecated
 	@Nullable
-	public static Material getSpawnEgg(final EntityType type) {
-		if (type == null) {
+	public static Material getSpawnEgg(EntityType entityType) {
+		if (entityType == null) {
 			return null;
 		}
-		return SPAWN_EGGS.inverse().get(type);
+		return spawnEggs.inverse().get(entityType);
 	}
 
 }

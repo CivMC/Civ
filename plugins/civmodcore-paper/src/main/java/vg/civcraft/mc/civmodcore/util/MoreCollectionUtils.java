@@ -1,8 +1,6 @@
 package vg.civcraft.mc.civmodcore.util;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
@@ -28,39 +26,11 @@ public final class MoreCollectionUtils {
 	 */
 	@SafeVarargs
 	public static <T, K extends Collection<T>> K collect(final Supplier<K> constructor, final T... elements) {
-		if (constructor == null) {
-			return null;
-		}
-		final K collection = constructor.get();
+		final K collection = Chainer.from(constructor).then(Supplier::get).get();
 		if (collection == null) {
 			return null;
 		}
 		CollectionUtils.addAll(collection, elements);
-		return collection;
-	}
-
-	/**
-	 * Creates a new collection with the exact size of a given set of predefined elements, if any are given.
-	 *
-	 * @param <T> The type of the elements to store in the collection.
-	 * @param constructor The constructor for the collection.
-	 * @param elements The elements to add to the collection.
-	 * @return Returns a new collection, or null if no constructor was given, or the constructor didn't produce a new
-	 * collection.
-	 */
-	@SafeVarargs
-	public static <T, K extends Collection<T>> K collectExact(final Int2ObjectFunction<K> constructor,
-															  final T... elements) {
-		if (constructor == null) {
-			return null;
-		}
-		if (elements == null) {
-			return constructor.get(0);
-		}
-		final K collection = constructor.get(elements.length);
-		if (collection != null) {
-			Collections.addAll(collection, elements);
-		}
 		return collection;
 	}
 
