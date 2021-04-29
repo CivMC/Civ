@@ -11,7 +11,7 @@ public class ListSetting <T> extends AbstractCollectionSetting<List<T>, T> {
 			String description, Class<T> elementClass) {
 		super(owningPlugin, defaultValue, name, identifier, gui, description, elementClass, (c) -> {
 			if (c == null) {
-				return new ArrayList<>();
+				return new ArrayList<>(0);
 			}
 			return new ArrayList<>(c);
 		});

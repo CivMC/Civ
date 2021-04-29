@@ -3,10 +3,18 @@ package vg.civcraft.mc.civmodcore.chat;
 import com.google.common.base.Strings;
 import java.awt.Color;
 import java.util.List;
+import java.util.Objects;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public final class ChatUtils {
 
@@ -151,28 +159,64 @@ public final class ChatUtils {
 	 *
 	 * @param component The component to test if null or empty.
 	 * @return Returns true if the component is null or has no visible content.
+	 * 
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
 	 */
+	@Deprecated
 	public static boolean isNullOrEmpty(final BaseComponent component) {
 		if (component == null) {
 			return true;
 		}
-		final TextComponent text = fromLegacyText(component.toPlainText());
-		return Strings.isNullOrEmpty(text.toPlainText());
+		return Strings.isNullOrEmpty(component.toPlainText());
 	}
 
 	/**
-	 * <p>Converts a string containing Minecraft's legacy colour codes into a text component.</p>
+	 * <p>Determines whether a given base component is null or empty.</p>
 	 *
-	 * <p>Note: This does not work on Civ's colour code equivalents, make sure to parse those before using this.</p>
+	 * <p>This is determined by converting the component into plain text, so a non-null component filled with
+	 * nothing but colour codes and hover text will likely return true.</p>
 	 *
-	 * @param text The legacy text to parse.
-	 * @return Returns a text component of the legacy text.
+	 * @param component The component to test if null or empty.
+	 * @return Returns true if the component is null or has no visible content.
 	 */
-	public static TextComponent fromLegacyText(final String text) {
-		if (Strings.isNullOrEmpty(text)) {
-			return new TextComponent(text);
+	public static boolean isNullOrEmpty(final Component component) {
+		if (component == null) {
+			return true;
 		}
-		return new TextComponent(TextComponent.fromLegacyText(text, ChatColor.RESET));
+		return StringUtils.isBlank(PlainComponentSerializer.plain().serialize(component));
+	}
+
+	/**
+	 * @return Generates a new text component that's specifically <i>NOT</i> italicised. Use this for item names and
+	 *         lore.
+	 */
+	public static net.kyori.adventure.text.TextComponent newComponent() {
+		return newComponent("");
+	}
+
+	/**
+	 * Generates a new text component that's specifically <i>NOT</i> italicised. Use this for item names and lore.
+	 *
+	 * @param content The text content for the component.
+	 * @return Returns the generated text component.
+	 */
+	public static net.kyori.adventure.text.TextComponent newComponent(final String content) {
+		return Component.text(Objects.requireNonNull(content))
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+	}
+
+	/**
+	 * Clones a component.
+	 *
+	 * @param component The component to clone.
+	 * @return Returns a clone of the given component.
+	 */
+	public static Component cloneComponent(final Component component) {
+		if (component == null) {
+			return null;
+		}
+		final var raw = GsonComponentSerializer.gson().serialize(component);
+		return GsonComponentSerializer.gson().deserialize(raw);
 	}
 
 	/**
@@ -181,7 +225,10 @@ public final class ChatUtils {
 	 * @param value The value of the text. (Objects will be stringified)
 	 * @param formats The colour formats.
 	 * @return Returns the created component, so you <i>can</i> do more stuff to it.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use {@link Component#text()} instead.
 	 */
+	@Deprecated
 	public static TextComponent textComponent(final Object value, final ChatColor... formats) {
 		final TextComponent component = new TextComponent(value == null ? "<null>" : value.toString());
 		if (!ArrayUtils.isEmpty(formats)) {
@@ -218,6 +265,20 @@ public final class ChatUtils {
 			}
 		}
 		return component;
+	}
+
+	public static boolean areComponentsEqual(final Component former, final Component latter) {
+		if (StringUtils.equals(
+				MiniMessage.get().serialize(former),
+				MiniMessage.get().serialize(latter))) {
+			return true;
+		}
+		if (StringUtils.equals(
+				LegacyComponentSerializer.legacyAmpersand().serialize(former),
+				LegacyComponentSerializer.legacyAmpersand().serialize(latter))) {
+			return true;
+		}
+		return false;
 	}
 
 }
