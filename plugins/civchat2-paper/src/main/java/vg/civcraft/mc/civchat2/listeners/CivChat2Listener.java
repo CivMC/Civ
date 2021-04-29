@@ -82,7 +82,7 @@ public class CivChat2Listener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerKick(PlayerKickEvent playerKickEvent) {
-		playerKickEvent.setLeaveMessage(null);
+		playerKickEvent.setLeaveMessage("You have been kicked");
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
