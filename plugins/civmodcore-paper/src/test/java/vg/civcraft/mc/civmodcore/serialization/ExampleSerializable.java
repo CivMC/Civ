@@ -3,11 +3,9 @@ package vg.civcraft.mc.civmodcore.serialization;
 /**
  * Class to be used during testing as an example serializable.
  */
-public final class ExampleSerializable implements NBTSerializable {
+public final class ExampleSerializable extends NBTCache {
 
 	private static final String MESSAGE_KEY = "message";
-
-	private final NBTCompound nbt = new NBTCompound();
 
 	/**
 	 * Gets the message stored within the NBT directly.
@@ -25,16 +23,6 @@ public final class ExampleSerializable implements NBTSerializable {
 	 */
 	public void setMessage(String message) {
 		this.nbt.setString(MESSAGE_KEY, message);
-	}
-
-	@Override
-	public void serialize(final NBTCompound nbt) {
-		nbt.adopt(this.nbt);
-	}
-
-	@Override
-	public void deserialize(final NBTCompound nbt) {
-		this.nbt.adopt(nbt);
 	}
 
 }

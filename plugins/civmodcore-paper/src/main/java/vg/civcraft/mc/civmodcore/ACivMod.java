@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -36,7 +35,9 @@ public abstract class ACivMod extends JavaPlugin {
 
 	@Deprecated
 	protected CommandHandler handle = null;
+
 	protected StandaloneCommandHandler newCommandHandler;
+
 	protected boolean useNewCommandHandler = true;
 
 	@Override
@@ -337,36 +338,28 @@ public abstract class ACivMod extends JavaPlugin {
 		if (clazz == null) {
 			return null;
 		}
-		try {
-			return JavaPlugin.getPlugin(clazz);
-		}
-		catch (final IllegalArgumentException | IllegalStateException ignored) { }
 		for (final Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-			if (clazz.equals(plugin.getClass())) {
+			if (clazz.isAssignableFrom(plugin.getClass())) {
 				return (T) plugin;
 			}
 		}
-		for (final String methodName : Arrays.asList("getInstance", "getPlugin")) {
-			try {
-				final Method method = clazz.getDeclaredMethod(methodName);
-				if (Modifier.isPublic(method.getModifiers())
-						&& Modifier.isStatic(method.getModifiers())
-						&& clazz.isAssignableFrom(method.getReturnType())) {
-					return (T) method.invoke(null);
-				}
+		try {
+			final Method method = clazz.getDeclaredMethod("getInstance");
+			if (Modifier.isPublic(method.getModifiers())
+					&& Modifier.isStatic(method.getModifiers())
+					&& clazz.isAssignableFrom(method.getReturnType())) {
+				return (T) method.invoke(null);
 			}
-			catch (final Exception ignored) { }
 		}
-		for (final String fieldName : Arrays.asList("instance", "plugin")) {
-			try {
-				final Field field = clazz.getField(fieldName);
-				if (Modifier.isStatic(field.getModifiers())
-						&& clazz.isAssignableFrom(field.getType())) {
-					return (T) field.get(null);
-				}
+		catch (final Exception ignored) { }
+		try {
+			final Field field = clazz.getField("instance");
+			if (Modifier.isStatic(field.getModifiers())
+					&& clazz.isAssignableFrom(field.getType())) {
+				return (T) field.get(null);
 			}
-			catch (final Exception ignored) { }
 		}
+		catch (final Exception ignored) { }
 		// Otherwise there's no instance of the plugin, or it's stored in an unusual way
 		return null;
 	}

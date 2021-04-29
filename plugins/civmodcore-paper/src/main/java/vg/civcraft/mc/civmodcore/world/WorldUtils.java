@@ -150,7 +150,7 @@ public final class WorldUtils {
 		if (world == null) {
 			return false;
 		}
-		return location.getY() >= world.getMinHeight() && location.getY() < world.getMaxHeight();
+		return location.getY() >= 0 && location.getY() < world.getMaxHeight();
 	}
 
 

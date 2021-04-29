@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
-import vg.civcraft.mc.civmodcore.util.CivLogger;
 
 public final class TreeTypeUtils {
 
@@ -109,7 +109,6 @@ public final class TreeTypeUtils {
 			.build();
 
 	public static void init() {
-		final var logger = CivLogger.getLogger(TreeTypeUtils.class);
 		// Determine if there's any tree types missing
 		{
 			final Set<TreeType> missing = new HashSet<>();
@@ -119,7 +118,7 @@ public final class TreeTypeUtils {
 			CollectionUtils.addAll(missing, TreeType.values());
 			missing.removeIf(type -> exclude.contains(type) || TREE_MATERIALS.containsValue(type));
 			if (!missing.isEmpty()) {
-				logger.warning("The following tree types are missing: " +
+				Bukkit.getLogger().warning("[TreeTypeUtils] The following tree types are missing: " +
 						missing.stream().map(Enum::name).collect(Collectors.joining(",")) + ".");
 			}
 		}
@@ -129,7 +128,7 @@ public final class TreeTypeUtils {
 			CollectionUtils.addAll(missing, TreeType.values());
 			missing.removeIf(SAPLING_MATERIALS::containsKey);
 			if (!missing.isEmpty()) {
-				logger.warning("The following sapling types are missing: " +
+				Bukkit.getLogger().warning("[TreeTypeUtils] The following sapling types are missing: " +
 						missing.stream().map(Enum::name).collect(Collectors.joining(",")) + ".");
 			}
 		}

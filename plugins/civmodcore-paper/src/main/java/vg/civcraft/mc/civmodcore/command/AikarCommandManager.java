@@ -35,6 +35,7 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 public class AikarCommandManager {
 
     private final ACivMod plugin;
+
     private CustomBukkitManager manager;
 
     /**
@@ -42,7 +43,7 @@ public class AikarCommandManager {
 	 *
 	 * @param plugin The plugin to bind this manager to.
 	 */
-    public AikarCommandManager(final ACivMod plugin) {
+    public AikarCommandManager(ACivMod plugin) {
     	this(plugin, true);
     }
 
@@ -54,7 +55,7 @@ public class AikarCommandManager {
 	 *     {@link AikarCommandManager#registerCommands()} and
 	 *     {@link AikarCommandManager#registerCompletions(CommandCompletions)}.
 	 */
-	public AikarCommandManager(final ACivMod plugin, final boolean autoInit) {
+	public AikarCommandManager(ACivMod plugin, boolean autoInit) {
 		this.plugin = plugin;
 		if (autoInit) {
 			init();
@@ -62,9 +63,17 @@ public class AikarCommandManager {
 	}
 
 	/**
+	 * @deprecated Use {@link #init()} instead as it's more indicative of what's happening.
+	 */
+	@Deprecated
+	public final void register() {
+		init();
+	}
+
+	/**
 	 * Will initialise the manager and register both commands and completions. You should only really use this if
-	 * you've used {@link AikarCommandManager#reset()} or both {@link AikarCommandManager#resetCommands()} and
-	 * {@link AikarCommandManager#resetCompletions()}, otherwise there may be issues.
+	 * you've used {@link AikarCommandManager#reset()} or both {@link AikarCommandManager#deregisterCommands()} and
+	 * {@link AikarCommandManager#deregisterCompletions()}, otherwise there may be issues.
 	 */
     public final void init() {
 		this.manager = new CustomBukkitManager(plugin);
@@ -74,19 +83,19 @@ public class AikarCommandManager {
 	}
 
 	/**
-	 * This is called as part of {@link AikarCommandManager#init()} and should be overridden by an extending class to
-	 * register all (or as many) commands at once.
+	 * This is called as part of {@link AikarCommandManager#register()} and should be overridden by an extending class
+	 * to register all (or as many) commands at once.
 	 */
     public void registerCommands() { }
 
     /**
-	 * This is called as part of {@link AikarCommandManager#init()} and should be overridden by an extending class to
-	 * register all (or as many) completions at once, though make sure to call super.
+	 * This is called as part of {@link AikarCommandManager#register()} and should be overridden by an extending class
+	 * to register all (or as many) completions at once, though make sure to call super.
 	 *
 	 * @param completions The completion manager is given. It is the same manager that can be reached via
 	 *     {@link CustomBukkitManager#getCommandCompletions()}.
 	 */
-    public void registerCompletions(final CommandCompletions<BukkitCommandCompletionContext> completions) {
+    public void registerCompletions(CommandCompletions<BukkitCommandCompletionContext> completions) {
 		completions.registerAsyncCompletion("allplayers", context ->
 				Arrays.stream(Bukkit.getOfflinePlayers())
 						.map(OfflinePlayer::getName)
@@ -106,24 +115,24 @@ public class AikarCommandManager {
 	}
 
 	/**
-	 * This is called as part of {@link AikarCommandManager#init()} and should be overridden by an extending class
+	 * This is called as part of {@link AikarCommandManager#register()} and should be overridden by an extending class
 	 * to register all (or as many) contexts at once.
 	 *
 	 * @param contexts The context manager is given. It is the same manager that can be reached via
 	 *     {@link CustomBukkitManager#getCommandContexts()}.
 	 */
-	public void registerContexts(final CommandContexts<BukkitCommandExecutionContext> contexts) { }
+	public void registerContexts(CommandContexts<BukkitCommandExecutionContext> contexts) { }
 
 	/**
 	 * Registers a new command and any attached tab completions.
 	 *
 	 * @param command The command instance to register.
 	 */
-    public final void registerCommand(final AikarCommand command) {
+    public final void registerCommand(AikarCommand command) {
 		Preconditions.checkArgument(command != null, "Could not register that command: the command was null.");
         this.manager.registerCommand(command);
 		this.plugin.info("Command [" + command.getClass().getSimpleName() + "] registered.");
-		for (final var entry : getTabCompletions(command.getClass()).entrySet()) {
+		for (Map.Entry<Method, TabComplete> entry : getTabCompletions(command.getClass()).entrySet()) {
 			if (entry.getValue().async()) {
 				this.manager.getCommandCompletions().registerAsyncCompletion(entry.getValue().value(), (context) ->
 						runCommandCompletion(context, command, entry.getValue().value(), entry.getKey()));
@@ -142,7 +151,7 @@ public class AikarCommandManager {
 	 * @param command The command instance to register.
 	 */
 	@SuppressWarnings("unchecked")
-    public final void deregisterCommand(final AikarCommand command) {
+    public final void deregisterCommand(AikarCommand command) {
 		Preconditions.checkArgument(command != null, "Could not deregister that command: the command was null.");
 		this.manager.unregisterCommand(command);
 		this.plugin.info("Command [" + command.getClass().getSimpleName() + "] deregistered.");
@@ -161,16 +170,16 @@ public class AikarCommandManager {
 	}
 
 	/**
-	 * Resets all commands.
+	 * Deregisters all commands.
 	 */
-	public final void resetCommands() {
+	public final void deregisterCommands() {
 		this.manager.unregisterCommands();
 	}
 
 	/**
-	 * Resets all command completions.
+	 * Deregisters all command completions.
 	 */
-	public final void resetCompletions() {
+	public final void deregisterCompletions() {
 		this.manager.unregisterCompletions();
 	}
 
@@ -178,8 +187,8 @@ public class AikarCommandManager {
 	 * Resets the manager, resetting all commands and completions.
 	 */
     public final void reset() {
-    	resetCommands();
-    	resetCompletions();
+        this.manager.unregisterCommands();
+		this.manager.unregisterCompletions();
 		this.manager = null;
 	}
 
@@ -191,10 +200,6 @@ public class AikarCommandManager {
     public final CustomBukkitManager getInternalManager() {
         return this.manager;
     }
-
-    public ACivMod getPlugin() {
-    	return this.plugin;
-	}
 
 	// ------------------------------------------------------------
 	// Utilities
