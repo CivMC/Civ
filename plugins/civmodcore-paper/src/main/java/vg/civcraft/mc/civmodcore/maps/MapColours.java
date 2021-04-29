@@ -89,9 +89,10 @@ public enum MapColours {
 		final Set<MaterialMapColor> coreMapColours = Set.of(Stream.of(values())
 				.map(MapColours::asNMS)
 				.toArray(MaterialMapColor[]::new));
-		final Set<MaterialMapColor> baseMapColours = Set.of(MaterialMapColor.a);
+		final Set<MaterialMapColor> baseMapColours = Set.of(Stream.of(MaterialMapColor.a)
+				.filter(Objects::nonNull)
+				.toArray(MaterialMapColor[]::new));
 		final Collection<MaterialMapColor> missing = CollectionUtils.disjunction(coreMapColours, baseMapColours);
-		missing.removeIf(Objects::isNull); // Remove all empty colors from baseMapColors
 		if (!missing.isEmpty()) {
 			final CivLogger logger = CivLogger.getLogger(MapColours.class);
 			logger.warning("The following map colours are missing: " + missing.stream()
