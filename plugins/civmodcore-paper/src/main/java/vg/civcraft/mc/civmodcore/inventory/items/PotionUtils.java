@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import vg.civcraft.mc.civmodcore.util.CivLogger;
 
 public final class PotionUtils {
 
@@ -83,13 +83,14 @@ public final class PotionUtils {
 	}};
 
 	public static void init() {
+		final var logger = CivLogger.getLogger(PotionUtils.class);
 		// Determine if there's any missing potion types
 		{
 			final Set<PotionType> missing = new HashSet<>();
 			CollectionUtils.addAll(missing, PotionType.values());
 			missing.removeIf(POTIONS::containsKey);
 			if (!missing.isEmpty()) {
-				Bukkit.getLogger().warning("[PotionUtils] The following potion types are missing: " +
+				logger.warning("The following potion types are missing: " +
 						missing.stream().map(Enum::name).collect(Collectors.joining(",")) + ".");
 			}
 		}
@@ -99,7 +100,7 @@ public final class PotionUtils {
 			CollectionUtils.addAll(missing, PotionEffectType.values());
 			missing.removeIf(EFFECTS::containsKey);
 			if (!missing.isEmpty()) {
-				Bukkit.getLogger().warning("[PotionUtils] The following potion effects are missing: " +
+				logger.warning("The following potion effects are missing: " +
 						missing.stream().map(PotionEffectType::getName).collect(Collectors.joining(",")) + ".");
 			}
 		}

@@ -24,6 +24,24 @@ public final class UuidUtils {
 	}
 
 	/**
+	 * Attempts to parse a UUID from a given string.
+	 *
+	 * @param value The string to parse.
+	 * @return Returns a valid UUID, or null.
+	 */
+	public static UUID fromString(final String value) {
+		if (value == null) {
+			return null;
+		}
+		try {
+			return UUID.fromString(value);
+		}
+		catch (final Exception ignored) {
+			return null;
+		}
+	}
+
+	/**
 	 * Converts a UUID to a byte array.
 	 *
 	 * @param uuid The UUID to convert, can be null.

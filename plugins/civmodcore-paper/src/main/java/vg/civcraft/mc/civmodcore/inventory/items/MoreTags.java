@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.data.Ageable;
+import vg.civcraft.mc.civmodcore.util.CivLogger;
 import vg.civcraft.mc.civmodcore.util.KeyedUtils;
 
 /**
@@ -108,6 +109,8 @@ public final class MoreTags {
 					.add(Material.PUMPKIN_STEM)
 					.add(Material.SUGAR_CANE)
 					.add(Material.SWEET_BERRY_BUSH)
+					.add(Material.TWISTING_VINES)
+					.add(Material.WEEPING_VINES)
 					.add(Material.WHEAT)
 					.build());
 
@@ -214,6 +217,7 @@ public final class MoreTags {
 	// ------------------------------------------------------------
 
 	public static void init() {
+		final var logger = CivLogger.getLogger(MoreTags.class);
 		// Determine if there's any crops missing
 		{
 			final Set<Material> missing = new HashSet<>();
@@ -224,7 +228,7 @@ public final class MoreTags {
 			missing.removeIf(Tag.FIRE::isTagged);
 			missing.removeIf(CROPS::isTagged);
 			if (!missing.isEmpty()) {
-				Bukkit.getLogger().warning("[MoreTags] The following crops are missing: " +
+				logger.warning("The following crops are missing: " +
 						missing.stream().map(Material::name).collect(Collectors.joining(",")) + ".");
 			}
 		}

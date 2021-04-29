@@ -19,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 
 /**
  * Allows the storage and comparison of itemstacks while ignoring their maximum
@@ -302,7 +303,7 @@ public class ItemMap {
 		int amount = 0;
 		for (Entry<ItemStack, Integer> entry : matSubMap.getEntrySet()) {
 			ItemStack current = entry.getKey();
-			if (is.getItemMeta().equals(current.getItemMeta())) {
+			if (MetaUtils.areMetasEqual(is.getItemMeta(), current.getItemMeta())) {
 				amount += entry.getValue();
 			}
 		}
