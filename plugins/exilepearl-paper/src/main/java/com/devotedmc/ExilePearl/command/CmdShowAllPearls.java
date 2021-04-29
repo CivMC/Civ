@@ -2,43 +2,42 @@ package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import com.programmerdan.minecraft.banstick.handler.BanHandler;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.collections4.ComparatorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class CmdShowAllPearls extends PearlCommand {
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
 	private static final Map<UUID, Long> COOLDOWNS = new HashMap<>();
 	private static final long COOLDOWN = 10_000; // 10 seconds
-
-	private Set<UUID> bannedPlayers = new HashSet<>(0);
-	private boolean isBanStickEnabled = false;
 
 	public CmdShowAllPearls(final ExilePearlApi pearlApi) {
 		super(pearlApi);
@@ -61,63 +60,93 @@ public class CmdShowAllPearls extends PearlCommand {
 		}
 		COOLDOWNS.put(player.getUniqueId(), now);
 
-		this.bannedPlayers = Bukkit.getBannedPlayers().stream()
-				.map(OfflinePlayer::getUniqueId)
-				.collect(Collectors.toSet());
-		this.isBanStickEnabled = this.plugin.isBanStickEnabled();
+		final Location playerLocation = player.getLocation();
+		final double pearlExclusionRadius = this.plugin.getPearlConfig().getRulePearlRadius() * 1.2;
+		final boolean isBanStickEnabled = this.plugin.isBanStickEnabled();
 
 		final List<IClickable> contents = this.plugin.getPearls().stream()
 				.sorted(ComparatorUtils.reversedComparator(Comparator.comparing(ExilePearl::getPearledOn)))
-				.map(pearl -> {
+				.map((pearl) -> {
 					final Location pearlLocation = pearl.getLocation();
-					final boolean isPlayerBanned = isPlayerBanned(pearl.getPlayerId());
-
-					final var item = isPlayerBanned ?
+					final boolean isPlayerBanned = isBanStickEnabled
+							&& BanHandler.isPlayerBanned(player);
+					final boolean showLocation = WorldUtils.blockDistance(
+							playerLocation, pearlLocation, true) <= pearlExclusionRadius;
+					final ItemStack item = isPlayerBanned ?
 							new ItemStack(Material.ARMOR_STAND) :
 							getSkullForPlayer(pearl.getPlayerId());
 
-					ItemUtils.handleItemMeta(item, (SkullMeta meta) -> {
+					ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
 						// Pearled player's name
-						meta.setDisplayName(ChatColor.AQUA + pearl.getPlayerName() +
-								(isPlayerBanned ? ChatColor.RED + " <banned>" : ""));
+						meta.displayName(ChatUtils.newComponent(pearl.getPlayerName())
+								.color(NamedTextColor.AQUA)
+								.append(isPlayerBanned ?
+										Component.text(" <banned>")
+												.color(NamedTextColor.RED) :
+										Component.empty()));
 
-						meta.setLore(Arrays.asList(
+						meta.lore(List.of(
 								// Pearl type
-								ChatColor.GREEN + pearl.getItemName(),
+								ChatUtils.newComponent(pearl.getItemName())
+										.color(NamedTextColor.GREEN),
 								// Pearled player's name and hash
-								ChatColor.GOLD + "Player: " + ChatColor.GRAY + pearl.getPlayerName() + " " +
-										ChatColor.DARK_GRAY + Integer.toString(pearl.getPearlId(), 36).toUpperCase(),
+								ChatUtils.newComponent("Player: ")
+										.color(NamedTextColor.GOLD)
+										.append(Component.text(pearl.getPlayerName())
+												.color(NamedTextColor.GRAY))
+										.append(Component.space())
+										.append(Component.text(Integer.toString(pearl.getPearlId(), 36).toUpperCase())
+												.color(NamedTextColor.DARK_GRAY)),
 								// Pearled Date
-								ChatColor.GOLD + "Pearled: " + ChatColor.GRAY + DATE_FORMAT.format(pearl.getPearledOn()),
+								ChatUtils.newComponent("Pearled: ")
+										.color(NamedTextColor.GOLD)
+										.append(Component.text(DATE_FORMAT.format(pearl.getPearledOn()))
+												.color(NamedTextColor.GRAY)),
 								// Killer's name
-								ChatColor.GOLD + "Killed by: " + ChatColor.GRAY + pearl.getKillerName(),
-								// Pearl location
-								ChatColor.GOLD + "Location: " +
-										ChatColor.WHITE + pearlLocation.getWorld().getName() + " " +
-										ChatColor.RED + pearlLocation.getBlockX() + " " +
-										ChatColor.GREEN + pearlLocation.getBlockY() + " " +
-										ChatColor.BLUE + pearlLocation.getBlockZ(),
+								ChatUtils.newComponent("Killed by: ")
+										.color(NamedTextColor.GOLD)
+										.append(Component.text(pearl.getKillerName())
+												.color(NamedTextColor.GRAY))));
 
-								// Waypoint
-								"", ChatColor.GREEN + "Click to receive a waypoint"
-						));
+						if (showLocation) {
+							MetaUtils.addComponentLore(meta,
+									// Pearl location
+									ChatUtils.newComponent("Location: ")
+											.color(NamedTextColor.GOLD)
+											.append(Component.text(pearlLocation.getWorld().getName())
+													.color(NamedTextColor.WHITE))
+											.append(Component.space())
+											.append(Component.text(pearlLocation.getBlockX())
+													.color(NamedTextColor.RED))
+											.append(Component.space())
+											.append(Component.text(pearlLocation.getBlockY())
+													.color(NamedTextColor.GREEN))
+											.append(Component.space())
+											.append(Component.text(pearlLocation.getBlockZ())
+													.color(NamedTextColor.BLUE)),
+									// Waypoint
+									Component.space(),
+									ChatUtils.newComponent("Click to receive a waypoint")
+											.color(NamedTextColor.GREEN));
+						}
 						return true;
 					});
-
 					return new Clickable(item) {
 						@Override
 						protected void clicked(final Player clicker) {
-							final var location = pearl.getLocation();
-							if (!Objects.equals(location.getWorld(), clicker.getWorld())) {
-								clicker.sendMessage(ChatColor.RED + "That pearl is in a different world!");
-								return;
+							if (showLocation) {
+								final var location = pearl.getLocation();
+								if (!Objects.equals(location.getWorld(), clicker.getWorld())) {
+									clicker.sendMessage(ChatColor.RED + "That pearl is in a different world!");
+									return;
+								}
+								clicker.sendMessage('['
+										+ "name:" + pearl.getPlayerName() + "'s pearl,"
+										+ "x:" + location.getBlockX() + ','
+										+ "y:" + location.getBlockY() + ','
+										+ "z:" + location.getBlockZ()
+										+ ']');
 							}
-							clicker.sendMessage("["
-									+ "name:" + pearl.getPlayerName() + "'s pearl,"
-									+ "x:" + location.getBlockX() + ","
-									+ "y:" + location.getBlockY() + ","
-									+ "z:" + location.getBlockZ()
-									+ "]");
 						}
 					};
 				})
@@ -125,21 +154,13 @@ public class CmdShowAllPearls extends PearlCommand {
 
 		if (contents.isEmpty()) {
 			final var item = new ItemStack(Material.BARRIER);
-			ItemUtils.setDisplayName(item, ChatColor.RED + "There are currently no pearls.");
+			ItemUtils.setComponentDisplayName(item,
+					ChatUtils.newComponent("There are currently no pearls.")
+							.color(NamedTextColor.RED));
 			contents.add(new DecorationStack(item));
 		}
 
 		new MultiPageView(player, contents, "All Pearls", true).showScreen();
-	}
-
-	private boolean isPlayerBanned(final UUID player) {
-		if (this.bannedPlayers.contains(player)) {
-			return true;
-		}
-		if (!this.isBanStickEnabled) {
-			return false;
-		}
-		return BSPlayer.byUUID(player) != null;
 	}
 
 	public static ItemStack getSkullForPlayer(final UUID player) {
