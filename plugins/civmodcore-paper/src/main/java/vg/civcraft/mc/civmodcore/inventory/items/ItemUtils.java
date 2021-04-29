@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import net.kyori.adventure.text.Component;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,7 +19,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
-import vg.civcraft.mc.civmodcore.util.Chainer;
+import vg.civcraft.mc.civmodcore.util.CivLogger;
 
 /**
  * Class of static APIs for Items. Replaces ISUtils.
@@ -32,33 +34,34 @@ public final class ItemUtils {
 	 * @param plugin The CivModCore instance plugin.
 	 */
 	public static void loadItemNames(final CivModCorePlugin plugin) {
+		final var logger = CivLogger.getLogger(ItemUtils.class);
 		MATERIAL_NAMES.clear();
 		final File materialsFile = plugin.getResourceFile("materials.yml");
 		final YamlConfiguration materialsConfig = YamlConfiguration.loadConfiguration(materialsFile);
 		for (final String key : materialsConfig.getKeys(false)) {
 			if (Strings.isNullOrEmpty(key)) {
-				plugin.warning("[ItemUtils] Material key was empty.");
+				logger.warning("Material key was empty.");
 				continue;
 			}
 			final Material material = Material.getMaterial(key);
 			if (material == null) {
-				plugin.warning("[ItemUtils] Could not find material: " + key);
+				logger.warning("Could not find material: " + key);
 				return;
 			}
 			final String name = materialsConfig.getString(key);
 			if (Strings.isNullOrEmpty(name)) {
-				plugin.warning("[ItemUtils] Name for [" + key + "] was empty.");
+				logger.warning("Name for [" + key + "] was empty.");
 				continue;
 			}
 			MATERIAL_NAMES.put(material, ChatUtils.parseColor(name));
 		}
-		plugin.info("[ItemUtils] Loaded a total of " + MATERIAL_NAMES.size() + " item names from materials.yml");
+		logger.info("Loaded a total of " + MATERIAL_NAMES.size() + " item names from materials.yml");
 		// Determine if there's any materials missing
 		final Set<Material> missing = new HashSet<>();
 		CollectionUtils.addAll(missing, Material.values());
 		missing.removeIf(MATERIAL_NAMES::containsKey);
 		if (!missing.isEmpty()) {
-			plugin.warning("[ItemUtils] The following materials are missing from materials.yml: " +
+			logger.warning("The following materials are missing from materials.yml: " +
 					missing.stream().map(Enum::name).collect(Collectors.joining(",")) + ".");
 		}
 	}
@@ -73,7 +76,7 @@ public final class ItemUtils {
 		if (material == null) {
 			throw new IllegalArgumentException("Cannot retrieve name of invalid material.");
 		}
-		return MATERIAL_NAMES.computeIfAbsent(material, (_material) -> material.name());
+		return MATERIAL_NAMES.computeIfAbsent(material, (ignored) -> material.name());
 	}
 
 	/**
@@ -83,7 +86,10 @@ public final class ItemUtils {
 	 * @return Returns the item's name.
 	 */
 	public static String getItemName(final ItemStack item) {
-		return getItemName(Chainer.from(item).then(ItemStack::getType).get());
+		if (item == null) {
+			return null;
+		}
+		return getItemName(item.getType());
 	}
 
 	/**
@@ -95,16 +101,9 @@ public final class ItemUtils {
 	 * @return Returns true if the item is valid.
 	 */
 	public static boolean isValidItem(final ItemStack item) {
-		if (item == null) {
-			return false;
-		}
-		if (!isValidItemMaterial(item.getType())) {
-			return false;
-		}
-		if (!isValidItemAmount(item)) {
-			return false;
-		}
-		return true;
+		return item != null
+				&& isValidItemMaterial(item.getType())
+				&& isValidItemAmount(item);
 	}
 
 	/**
@@ -114,16 +113,9 @@ public final class ItemUtils {
 	 * @return Returns true if the item has a valid amount.
 	 */
 	public static boolean isValidItemAmount(ItemStack item) {
-		if (item == null) {
-			return false;
-		}
-		if (item.getAmount() <= 0) {
-			return false;
-		}
-		if (item.getAmount() > item.getMaxStackSize()) {
-			return false;
-		}
-		return true;
+		return item != null
+				&& item.getAmount() > 0
+				&& item.getAmount() <= item.getMaxStackSize();
 	}
 
 	/**
@@ -133,35 +125,50 @@ public final class ItemUtils {
 	 * @return Returns true if the material would be considered a valid item.
 	 */
 	public static boolean isValidItemMaterial(final Material material) {
-		if (material == null) {
-			return false;
-		}
-		if (material.isAir()) {
-			return false;
-		}
-		if (!material.isItem()) {
-			return false;
-		}
-		return true;
+		return material != null
+				&& !material.isAir()
+				&& material.isItem();
 	}
 
 	/**
-	 * Determines whether two item stacks are similar. (Will check both items against the other)
+	 * Determines whether two item stacks are functionally identical.
 	 *
 	 * @param former The first item.
 	 * @param latter The second item.
-	 * @return Returns true if both items are similar and not null.
+	 * @return Returns true if both items are functionally identical.
+	 *
+	 * @see ItemStack#isSimilar(ItemStack)
+	 */
+	public static boolean areItemsEqual(final ItemStack former, final ItemStack latter) {
+		if (former == latter) {
+			return true;
+		}
+		return (former != null && latter != null)
+				&& former.getAmount() == latter.getAmount()
+				&& areItemsSimilar(former, latter);
+	}
+
+	/**
+	 * Determines whether two item stacks are similar.
+	 *
+	 * @param former The first item.
+	 * @param latter The second item.
+	 * @return Returns true if both items are similar.
 	 *
 	 * @see ItemStack#isSimilar(ItemStack)
 	 */
 	public static boolean areItemsSimilar(final ItemStack former, final ItemStack latter) {
-		if (former != null && former.isSimilar(latter)) {
+		if (former == latter) {
 			return true;
 		}
-		if (latter != null && latter.isSimilar(former)) {
-			return true;
+		if ((former == null || latter == null)
+				|| former.getType() != latter.getType()
+				// I know this is deprecated, but it's present within item.isSimilar() so it's here too.
+				|| former.getDurability() != latter.getDurability()
+				|| former.hasItemMeta() != latter.hasItemMeta()) {
+			return false;
 		}
-		return false;
+		return MetaUtils.areMetasEqual(former.getItemMeta(), latter.getItemMeta());
 	}
 
 	/**
@@ -200,7 +207,10 @@ public final class ItemUtils {
 	 * @return Returns the item meta.
 	 */
 	public static ItemMeta getItemMeta(final ItemStack item) {
-		return Chainer.from(item).then(ItemStack::getItemMeta).get();
+		if (item == null) {
+			return null;
+		}
+		return item.getItemMeta();
 	}
 
 	/**
@@ -210,7 +220,8 @@ public final class ItemUtils {
 	 * @return Returns true if the item has a display name.
 	 */
 	public static boolean hasDisplayName(final ItemStack item) {
-		return Strings.isNullOrEmpty(getDisplayName(item));
+		final var meta = getItemMeta(item);
+		return meta != null && meta.hasDisplayName();
 	}
 
 	/**
@@ -219,8 +230,12 @@ public final class ItemUtils {
 	 * @param item The item to retrieve the display name from.
 	 * @return Returns the display name of an item.
 	 */
-	public static String getDisplayName(final ItemStack item) {
-		return Chainer.from(getItemMeta(item)).then(ItemMeta::getDisplayName).get();
+	public static Component getComponentDisplayName(final ItemStack item) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			return null;
+		}
+		return meta.displayName();
 	}
 
 	/**
@@ -231,17 +246,12 @@ public final class ItemUtils {
 	 *
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
-	public static void setDisplayName(final ItemStack item, final String name) {
-		final ItemMeta meta = getItemMeta(item);
+	public static void setComponentDisplayName(final ItemStack item, final Component name) {
+		final var meta = getItemMeta(item);
 		if (meta == null) {
 			throw new IllegalArgumentException("Cannot set that display name: item has no meta.");
 		}
-		if (Strings.isNullOrEmpty(name)) {
-			meta.setDisplayName(null);
-		}
-		else {
-			meta.setDisplayName(name);
-		}
+		meta.displayName(name);
 		item.setItemMeta(meta);
 	}
 
@@ -251,8 +261,13 @@ public final class ItemUtils {
 	 * @param item The item to retrieve the lore from.
 	 * @return Returns the lore, which is never null.
 	 */
-	public static List<String> getLore(final ItemStack item) {
-		return MetaUtils.getLore(getItemMeta(item));
+	@Nonnull
+	public static List<Component> getComponentLore(final ItemStack item) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			return new ArrayList<>(0);
+		}
+		return MetaUtils.getComponentLore(meta);
 	}
 
 	/**
@@ -265,85 +280,32 @@ public final class ItemUtils {
 	 *
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
-	public static void setLore(final ItemStack item, final String... lines) {
-		final List<String> lore = new ArrayList<>();
-		CollectionUtils.addAll(lore, lines);
-		setLore(item, lore);
-	}
-
-	/**
-	 * Sets the lore for an item, replacing any lore that may have already been set.
-	 *
-	 * @param item The item to set the lore to.
-	 * @param lines The lore to set to the item.
-	 *
-	 * @see ItemUtils#clearLore(ItemStack)
-	 *
-	 * @throws IllegalArgumentException Throws when the given item has no meta.
-	 */
-	public static void setLore(final ItemStack item, final List<String> lines) {
-		final ItemMeta meta = getItemMeta(item);
+	public static void setComponentLore(final ItemStack item, final Component... lines) {
+		final var meta = getItemMeta(item);
 		if (meta == null) {
 			throw new IllegalArgumentException("Cannot set that lore: item has no meta.");
 		}
-		meta.setLore(lines);
+		MetaUtils.setComponentLore(meta, lines);
 		item.setItemMeta(meta);
 	}
 
 	/**
-	 * Appends lore to an item.
+	 * Sets the lore for an item, replacing any lore that may have already been set.
 	 *
-	 * @param item The item to append the lore to.
-	 * @param lines The lore to append to the item.
+	 * @param item The item to set the lore to.
+	 * @param lines The lore to set to the item.
 	 *
-	 * @throws IllegalArgumentException Throws when the given item has no meta.
-	 */
-	public static void addLore(final ItemStack item, final String... lines) {
-		addLore(item, false, lines);
-	}
-
-	/**
-	 * Appends lore to an item.
-	 *
-	 * @param item The item to append the lore to.
-	 * @param lines The lore to append to the item.
+	 * @see ItemUtils#clearLore(ItemStack)
 	 *
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
-	public static void addLore(final ItemStack item, final List<String> lines) {
-		addLore(item, false, lines);
-	}
-
-	/**
-	 * Adds lore to an item, either by appending or prepending.
-	 *
-	 * @param item The item to append the lore to.
-	 * @param prepend If set to true, the lore will be prepended instead of appended.
-	 * @param lines The lore to append to the item.
-	 *
-	 * @throws IllegalArgumentException Throws when the given item has no meta.
-	 */
-	public static void addLore(final ItemStack item, final boolean prepend, final String... lines) {
-		handleItemMeta(item, (ItemMeta meta) -> {
-			MetaUtils.addLore(meta, prepend, lines);
-			return true;
-		});
-	}
-
-	/**
-	 * Adds lore to an item, either by appending or prepending.
-	 *
-	 * @param item The item to append the lore to.
-	 * @param prepend If set to true, the lore will be prepended instead of appended.
-	 * @param lines The lore to append to the item.
-	 *
-	 * @throws IllegalArgumentException Throws when the given item has no meta.
-	 */
-	public static void addLore(final ItemStack item, final boolean prepend, final List<String> lines) {
-		handleItemMeta(item, (ItemMeta meta) -> {
-			MetaUtils.addLore(meta, prepend, lines);
-			return true;
-		});
+	public static void setComponentLore(final ItemStack item, final List<Component> lines) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot set that lore: item has no meta.");
+		}
+		MetaUtils.setComponentLore(meta, lines);
+		item.setItemMeta(meta);
 	}
 
 	/**
@@ -355,6 +317,70 @@ public final class ItemUtils {
 	 */
 	public static void clearLore(final ItemStack item) {
 		setLore(item, (List<String>) null);
+	}
+
+	/**
+	 * Appends lore to an item.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 */
+	public static void addComponentLore(final ItemStack item, final Component... lines) {
+		addComponentLore(item, false, lines);
+	}
+
+	/**
+	 * Appends lore to an item.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 */
+	public static void addComponentLore(final ItemStack item, final List<Component> lines) {
+		addComponentLore(item, false, lines);
+	}
+
+	/**
+	 * Adds lore to an item, either by appending or prepending.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param prepend If set to true, the lore will be prepended instead of appended.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 */
+	public static void addComponentLore(final ItemStack item,
+										final boolean prepend,
+										final Component... lines) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
+		}
+		MetaUtils.addComponentLore(meta, prepend, lines);
+		item.setItemMeta(meta);
+	}
+
+	/**
+	 * Adds lore to an item, either by appending or prepending.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param prepend If set to true, the lore will be prepended instead of appended.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 */
+	public static void addComponentLore(final ItemStack item,
+										final boolean prepend,
+										final List<Component> lines) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
+		}
+		MetaUtils.addComponentLore(meta, prepend, lines);
+		item.setItemMeta(meta);
 	}
 
 	/**
@@ -370,13 +396,11 @@ public final class ItemUtils {
 			return null;
 		}
 		final Material material = item.getType();
-		if (!isValidItemMaterial(material)) {
+		if (!isValidItemMaterial(material)
+				|| material.getMaxDurability() <= 0) {
 			return null;
 		}
-		if (material.getMaxDurability() <= 0) {
-			return null;
-		}
-		final ItemMeta meta = item.getItemMeta();
+		final var meta = getItemMeta(item);
 		if (!(meta instanceof Damageable)) {
 			return null;
 		}
@@ -423,8 +447,188 @@ public final class ItemUtils {
 				return item.setItemMeta((ItemMeta) meta);
 			}
 		}
-		catch (ClassCastException ignored) {}
+		catch (ClassCastException ignored) { }
 		return false;
+	}
+
+	// ------------------------------------------------------------
+	// Deprecated Functions
+	// ------------------------------------------------------------
+
+	/**
+	 * Retrieves the display name from an item.
+	 *
+	 * @param item The item to retrieve the display name from.
+	 * @return Returns the display name of an item.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #getComponentDisplayName(ItemStack)} instead.
+	 */
+	@Deprecated
+	public static String getDisplayName(final ItemStack item) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			return null;
+		}
+		return meta.getDisplayName();
+	}
+
+	/**
+	 * Sets a display name to an item.
+	 *
+	 * @param item The item to set the display name to.
+	 * @param name The display name to set on the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #setComponentDisplayName(ItemStack, Component)} instead.
+	 */
+	@Deprecated
+	public static void setDisplayName(final ItemStack item, final String name) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot set that display name: item has no meta.");
+		}
+		meta.setDisplayName(name);
+		item.setItemMeta(meta);
+	}
+
+	/**
+	 * Retrieves the lore from an item.
+	 *
+	 * @param item The item to retrieve the lore from.
+	 * @return Returns the lore, which is never null.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #getComponentLore(ItemStack)} instead.
+	 */
+	@Deprecated
+	public static List<String> getLore(final ItemStack item) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			return new ArrayList<>(0);
+		}
+		return MetaUtils.getLore(meta);
+	}
+
+	/**
+	 * Sets the lore for an item, replacing any lore that may have already been set.
+	 *
+	 * @param item The item to set the lore to.
+	 * @param lines The lore to set to the item.
+	 *
+	 * @see ItemUtils#clearLore(ItemStack)
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #setComponentLore(ItemStack, Component...)} instead.
+	 */
+	@Deprecated
+	public static void setLore(final ItemStack item, final String... lines) {
+		final List<String> lore = new ArrayList<>();
+		CollectionUtils.addAll(lore, lines);
+		setLore(item, lore);
+	}
+
+	/**
+	 * Sets the lore for an item, replacing any lore that may have already been set.
+	 *
+	 * @param item The item to set the lore to.
+	 * @param lines The lore to set to the item.
+	 *
+	 * @see ItemUtils#clearLore(ItemStack)
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #setComponentLore(ItemStack, List)} instead.
+	 */
+	@Deprecated
+	public static void setLore(final ItemStack item, final List<String> lines) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot set that lore: item has no meta.");
+		}
+		meta.setLore(lines);
+		item.setItemMeta(meta);
+	}
+
+	/**
+	 * Appends lore to an item.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #addComponentLore(ItemStack, Component...)} instead.
+	 */
+	@Deprecated
+	public static void addLore(final ItemStack item, final String... lines) {
+		addLore(item, false, lines);
+	}
+
+	/**
+	 * Appends lore to an item.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #addComponentLore(ItemStack, List)} instead.
+	 */
+	@Deprecated
+	public static void addLore(final ItemStack item, final List<String> lines) {
+		addLore(item, false, lines);
+	}
+
+	/**
+	 * Adds lore to an item, either by appending or prepending.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param prepend If set to true, the lore will be prepended instead of appended.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #addComponentLore(ItemStack, boolean, Component...)} instead.
+	 */
+	@Deprecated
+	public static void addLore(final ItemStack item, final boolean prepend, final String... lines) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
+		}
+		MetaUtils.addLore(meta, prepend, lines);
+		item.setItemMeta(meta);
+	}
+
+	/**
+	 * Adds lore to an item, either by appending or prepending.
+	 *
+	 * @param item The item to append the lore to.
+	 * @param prepend If set to true, the lore will be prepended instead of appended.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException Throws when the given item has no meta.
+	 *
+	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
+	 *             Use {@link #addComponentLore(ItemStack, boolean, List)} instead.
+	 */
+	@Deprecated
+	public static void addLore(final ItemStack item, final boolean prepend, final List<String> lines) {
+		final var meta = getItemMeta(item);
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot add that lore: item has no meta.");
+		}
+		MetaUtils.addLore(meta, prepend, lines);
+		item.setItemMeta(meta);
 	}
 
 }

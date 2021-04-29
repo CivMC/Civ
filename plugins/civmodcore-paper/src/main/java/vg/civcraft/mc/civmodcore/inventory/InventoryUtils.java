@@ -14,6 +14,13 @@ import vg.civcraft.mc.civmodcore.util.MoreArrayUtils;
 
 public final class InventoryUtils {
 
+	public static final int CHEST_1_ROW = 9;
+	public static final int CHEST_2_ROWS = 9 * 2;
+	public static final int CHEST_3_ROWS = 9 * 3;
+	public static final int CHEST_4_ROWS = 9 * 4;
+	public static final int CHEST_5_ROWS = 9 * 5;
+	public static final int CHEST_6_ROWS = 9 * 6;
+
 	/**
 	 * Tests an inventory to see if it's valid.
 	 *
@@ -38,7 +45,7 @@ public final class InventoryUtils {
 	 */
 	public static List<Player> getViewingPlayers(final Inventory inventory) {
 		if (!isValidInventory(inventory)) {
-			return new ArrayList<>();
+			return new ArrayList<>(0);
 		}
 		return inventory.getViewers().stream()
 				.filter(entity -> entity instanceof Player)
