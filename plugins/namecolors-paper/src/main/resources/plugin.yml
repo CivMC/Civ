@@ -3,6 +3,8 @@ main: com.biggestnerd.namecolors.NameColors
 version: ${project.version}
 authors: [biggestnerd, Maxopoly]
 depend: [CivModCore, CivChat2]
+softdepend:
+  - TAB
 api-version: 1.14
 commands:
   namecolor:
