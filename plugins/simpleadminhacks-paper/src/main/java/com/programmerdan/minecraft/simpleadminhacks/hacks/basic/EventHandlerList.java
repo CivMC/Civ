@@ -34,7 +34,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public final class EventHandlerList extends BasicHack {
 
@@ -112,7 +111,7 @@ public final class EventHandlerList extends BasicHack {
 			final List<String> results = new ArrayList<>();
 			for (final Class<? extends Event> clazz : this.handlers.getHandlerCache().keySet()) {
 				final String path = clazz.getName();
-				if (!TextUtil.startsWith(path, context.getInput())) {
+				if (!StringUtils.startsWith(path, context.getInput())) {
 					continue;
 				}
 				results.add(path);
