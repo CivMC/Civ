@@ -61,7 +61,7 @@ public final class StrayStats extends BasicHack {
 			sender.sendMessage(ChatColor.GOLD + "Starting to compile player join statistics!");
 			Bukkit.getScheduler().runTaskAsynchronously(plugin(), () -> {
 				try (final var file = new FileWriter(new File(plugin().getDataFolder(), "playerJoinStats.csv"))) {
-					try (final var connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+					try (final var connection = BanStickDatabaseHandler.getInstanceData().getConnection();
 						 final var statement = connection.prepareStatement(
 								 "SELECT name, first_add FROM bs_player ORDER BY first_add ASC");
 						 final var query = statement.executeQuery();) {
