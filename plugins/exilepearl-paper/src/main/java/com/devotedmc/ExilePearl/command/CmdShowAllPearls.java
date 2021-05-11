@@ -165,10 +165,6 @@ public class CmdShowAllPearls extends PearlCommand {
 
 	public static ItemStack getSkullForPlayer(final UUID player) {
 		final var item = new ItemStack(Material.PLAYER_HEAD);
-		ItemUtils.handleItemMeta(item, (SkullMeta meta) -> {
-			meta.setOwningPlayer(Bukkit.getOfflinePlayer(player));
-			return true;
-		});
 		return item;
 	}
 
