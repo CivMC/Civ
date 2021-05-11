@@ -491,4 +491,32 @@ final class CorePearlManager implements PearlManager {
         }
         return 0;
 	}
+
+	@Override
+	public ExilePearl getPrimaryPearl(UUID player) {
+		if(pearlApi.isBanStickEnabled()) {
+			BSPlayer bsPlayer = BSPlayer.byUUID(player);
+			//If BSPlayer is invalid, we would be unable to find what alts are linked anyway.
+			//So we just make an attempt to see if the player logging in themself is a pearled player.
+			if(bsPlayer == null) {
+				if(isPlayerExiled(player)) {
+					return pearlApi.getPearl(player);
+				}
+				return null;
+			}
+			//So we cycle through alts until we find a pearl.
+			for(BSPlayer alt : bsPlayer.getTransitiveSharedPlayers(true)) {
+				ExilePearl primPearl = pearlApi.getPearl(alt.getUUID());
+				if(primPearl != null) {
+					if(!alt.getUUID().equals(bsPlayer.getUUID())) {
+						return primPearl;
+					}
+				}
+			}
+		}
+
+		//Banstick isn't enabled, return null since we cannot see associated accounts.
+		//If Banstick is enabled, the player is not pearled.
+		return null;
+	}
 }

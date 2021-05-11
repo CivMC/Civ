@@ -723,4 +723,9 @@ final class ExilePearlCore implements ExilePearlApi {
 	public int getExiledAlts(UUID player, boolean includeSelf) {
 		return pearlManager.getExiledAlts(player, includeSelf);
 	}
+
+	@Override
+	public ExilePearl getPrimaryPearl(UUID player) {
+		return pearlManager.getPrimaryPearl(player);
+	}
 }

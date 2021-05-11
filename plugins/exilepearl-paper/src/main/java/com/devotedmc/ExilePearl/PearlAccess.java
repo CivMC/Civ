@@ -166,4 +166,13 @@ public interface PearlAccess {
 	 * @return Count of exiled alts
 	 */
 	int getExiledAlts(UUID player, boolean includeSelf);
+
+	/**
+	 * Gets the primary account/pearl a player is pearled on. If banstick isn't enabled then it will simply return null.
+	 * @param player UUID of the player to fetch a primary pearl for
+	 * @return The primary pearl of whatever account they are linked to, if multiple whichever one comes first.
+	 * Note: Will ALSO return null if there is no pearled accounts linked to the alt.
+	 * TODO Make an alternative method that returns a list of all pearled accounts that a player is linked to.
+	 */
+	ExilePearl getPrimaryPearl(UUID player);
 }
