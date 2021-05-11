@@ -20,10 +20,33 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
         <configuration>
           <!-- Needed to compile, because of the annotation processor -->
           <compilerArgument>-proc:none</compilerArgument>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.4</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <!-- Psuedo Provided -->
+                  <exclude>it.unimi.dsi:fastutil</exclude>
+                  <exclude>co.aikar:cleaner</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -32,13 +55,33 @@
     <dependency>
       <groupId>com.destroystokyo.paper</groupId>
       <artifactId>paper</artifactId>
-      <version>1.16.4-R0.1-SNAPSHOT</version>
+      <version>1.16.5-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
       <version>3.4.2</version>
+    </dependency>
+    <dependency>
+      <groupId>net.kyori</groupId>
+      <artifactId>adventure-text-minimessage</artifactId>
+      <version>4.1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>co.aikar</groupId>
+      <artifactId>acf-bukkit</artifactId>
+      <version>0.5.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>co.aikar</groupId>
+      <artifactId>taskchain-bukkit</artifactId>
+      <version>3.7.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.IPVP-MC</groupId>
+      <artifactId>canvas</artifactId>
+      <version>91ec97f076</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -51,20 +94,6 @@
       <version>4.4</version>
     </dependency>
     <dependency>
-      <!--
-      Remove this in time since it's included in Paper but
-      this may be used elsewhere.
-      -->
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.26</version>
-    </dependency>
-    <dependency>
-      <groupId>co.aikar</groupId>
-      <artifactId>acf-bukkit</artifactId>
-      <version>0.5.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>org.jetbrains</groupId>
       <artifactId>annotations</artifactId>
       <version>20.1.0</version>
@@ -74,23 +103,38 @@
       <artifactId>jsr305</artifactId>
       <version>3.0.2</version>
     </dependency>
+    <!-- Shaded into Paper -->
+    <dependency>
+      <groupId>it.unimi.dsi</groupId>
+      <artifactId>fastutil</artifactId>
+      <version>8.2.2</version> <!-- https://github.com/PaperMC/Paper/blob/master/Paper-MojangAPI/pom.xml#L68 -->
+    </dependency>
+    <dependency>
+      <groupId>co.aikar</groupId>
+      <artifactId>cleaner</artifactId>
+      <version>1.0-SNAPSHOT</version> <!-- https://github.com/PaperMC/Paper/blob/master/Spigot-Server-Patches/0001-POM-Changes.patch#L108 -->
+    </dependency>
     <!-- For Testing -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <repositories>
     <repository>
+      <id>civ-github-repo</id>
+      <url>https://raw.githubusercontent.com/CivClassic/artifacts/master/</url>
+    </repository>
+    <repository>
       <id>aikar</id>
       <url>https://repo.aikar.co/content/groups/aikar/</url>
     </repository>
     <repository>
-      <id>civ-github-repo</id>
-      <url>https://raw.githubusercontent.com/CivClassic/artifacts/master/</url>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
     </repository>
   </repositories>
 
