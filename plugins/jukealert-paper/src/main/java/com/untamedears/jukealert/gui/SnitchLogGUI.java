@@ -9,6 +9,9 @@ import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
+
+import org.apache.commons.collections4.list.LazyList;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -70,23 +73,27 @@ public class SnitchLogGUI {
 	}
 
 	private List<IClickable> constructContent() {
-		List<IClickable> clicks = new ArrayList<>();
+		List<Supplier<IClickable>> clicks = new ArrayList<>();
 		if (actions != null) {
 			for (LoggableAction action : actions) {
-				clicks.add(action.getGUIRepresentation());
+				clicks.add(action::getGUIRepresentation);
 			}
 			if (actions.isEmpty()) {
 				ItemStack is = new ItemStack(Material.BARRIER);
 				ItemUtils.setDisplayName(is, ChatColor.RED + "This snitch has no logs currently");
-				clicks.add(new DecorationStack(is));
+				clicks.add(() -> new DecorationStack(is));
 			}
 		} else {
 			ItemStack is = new ItemStack(Material.BARRIER);
 			ItemUtils.setDisplayName(is, ChatColor.RED + "This snitch can not create logs");
-			clicks.add(new DecorationStack(is));
+			clicks.add(() -> new DecorationStack(is));
 		}
 		Collections.reverse(clicks);
-		return clicks;
+
+		LazyList<IClickable> lazyClicks = LazyList.lazyList(new ArrayList<>(clicks.size()), index -> clicks.get(index).get());
+		// By default LazyList is empty, must call get() to set its size, all other elements will still be lazy-loaded.
+		lazyClicks.get(clicks.size() - 1);
+		return lazyClicks;
 	}
 
 	private IClickable constructInfoStack() {
