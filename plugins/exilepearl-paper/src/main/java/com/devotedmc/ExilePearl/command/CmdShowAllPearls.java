@@ -37,6 +37,7 @@ import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
+import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class CmdShowAllPearls extends PearlCommand {
@@ -185,11 +186,7 @@ public class CmdShowAllPearls extends PearlCommand {
 			contentSuppliers.add(() -> new DecorationStack(item));
 		}
 
-		LazyList<IClickable> lazyContents = LazyList.lazyList(
-				new ArrayList<>(contentSuppliers.size()),
-				(index) -> contentSuppliers.get(index).get());
-		// By default LazyList is empty, must call get() to set its size, all other elements will still be lazy-loaded.
-		lazyContents.get(contentSuppliers.size() - 1);
+		LazyList<IClickable> lazyContents = MoreCollectionUtils.lazyList(contentSuppliers);
 		new MultiPageView(player, lazyContents, "All Pearls", true).showScreen();
 	}
 }
