@@ -24,6 +24,7 @@ import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
+import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
 
 public class SnitchLogGUI {
 
@@ -90,9 +91,7 @@ public class SnitchLogGUI {
 		}
 		Collections.reverse(clicks);
 
-		LazyList<IClickable> lazyClicks = LazyList.lazyList(new ArrayList<>(clicks.size()), index -> clicks.get(index).get());
-		// By default LazyList is empty, must call get() to set its size, all other elements will still be lazy-loaded.
-		lazyClicks.get(clicks.size() - 1);
+		LazyList<IClickable> lazyClicks = MoreCollectionUtils.lazyList(clicks);
 		return lazyClicks;
 	}
 
