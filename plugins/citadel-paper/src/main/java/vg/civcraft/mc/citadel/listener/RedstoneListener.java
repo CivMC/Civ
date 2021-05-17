@@ -20,6 +20,7 @@ import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Switch;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -27,6 +28,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
@@ -195,19 +197,34 @@ public class RedstoneListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void stepPressurePlate(PlayerInteractEvent e) {
+	public void playerStepPressurePlate(PlayerInteractEvent e) {
 		if (e.getAction() != Action.PHYSICAL) {
 			return;
 		}
 		Material mat = e.getClickedBlock().getType();
-		if (mat != Material.STONE_PRESSURE_PLATE && mat != Material.POLISHED_BLACKSTONE_PRESSURE_PLATE &&
-				mat != Material.LIGHT_WEIGHTED_PRESSURE_PLATE && mat != Material.HEAVY_WEIGHTED_PRESSURE_PLATE
-				&& !Tag.WOODEN_PRESSURE_PLATES.isTagged(mat)) {
+		if (!Tag.PRESSURE_PLATES.isTagged(mat)) {
 			return;
 		}
 		setupAdjacentDoors(e.getPlayer(), e.getClickedBlock(), BlockFace.EAST_SOUTH_EAST);
-		// block below
 		setupAdjacentDoors(e.getPlayer(), e.getClickedBlock().getRelative(BlockFace.DOWN), BlockFace.UP);
+	}
+
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void entityStepPressurePlate(EntityInteractEvent e) {
+		if (!(e.getEntity() instanceof Vehicle)){
+			return;
+		}
+		Material mat = e.getBlock().getType();
+		if (!Tag.PRESSURE_PLATES.isTagged(mat)) {
+			return;
+		}
+		for (Entity p : e.getEntity().getPassengers()) {
+			if (p instanceof Player) {
+				setupAdjacentDoors((Player) p, e.getBlock(), BlockFace.EAST_SOUTH_EAST);
+				setupAdjacentDoors((Player) p, e.getBlock().getRelative(BlockFace.DOWN), BlockFace.UP);
+			}
+		}
 	}
 
 }
