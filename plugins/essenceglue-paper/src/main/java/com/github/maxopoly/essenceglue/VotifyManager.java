@@ -94,6 +94,9 @@ public class VotifyManager implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onLogin(PlayerLoginEvent event) {
 		Player p = event.getPlayer();
+		if (!EssenceGluePlugin.instance().getStreakManager().getShowSitesOnLogin(p.getUniqueId())) {
+			return;
+		}
 		for (VotingSite site : EssenceGluePlugin.instance().getConfigManager().getVotingCooldowns().values()) {
 			UUID trueUUID = StreakManager.getTrueUUID(p.getUniqueId());
 			long lastVote = getLastVote(site.getInternalKey(), trueUUID);
