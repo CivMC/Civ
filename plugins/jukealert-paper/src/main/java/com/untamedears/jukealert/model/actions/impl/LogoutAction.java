@@ -3,12 +3,11 @@ package com.untamedears.jukealert.model.actions.impl;
 import com.untamedears.jukealert.events.PlayerLogoutSnitchEvent;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
-import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
+
+import java.util.UUID;
 
 public class LogoutAction extends LoggablePlayerAction {
 
@@ -25,9 +24,7 @@ public class LogoutAction extends LoggablePlayerAction {
 
 	@Override
 	public IClickable getGUIRepresentation() {
-		ItemStack is = getSkullFor(getPlayer());
-		super.enrichGUIItem(is);
-		return new DecorationStack(is);
+		return getEnrichedClickableSkullFor(getPlayer());
 	}
 	
 	@Override

@@ -5,16 +5,20 @@ import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.ActionCacheState;
 import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
 import com.untamedears.jukealert.util.JAUtility;
-import java.util.UUID;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
+import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
+import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.namelayer.NameAPI;
+
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class LoggablePlayerAction extends PlayerAction implements LoggableAction {
 	
@@ -99,13 +103,23 @@ public abstract class LoggablePlayerAction extends PlayerAction implements Logga
 	}
 	
 	protected abstract String getChatRepresentationIdentifier();
-	
-	protected ItemStack getSkullFor(UUID uuid) {
-		ItemStack is = new ItemStack(Material.PLAYER_HEAD);
-		SkullMeta skullMeta = (SkullMeta) is.getItemMeta();
-		skullMeta.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
-		is.setItemMeta(skullMeta);
-		return is;
-	}
 
+	protected IClickable getEnrichedClickableSkullFor(UUID uuid) {
+		CompletableFuture<ItemStack> itemReadyFuture = new CompletableFuture<>();
+		ItemStack is = CivModCorePlugin.getInstance().getSkinCache().getHeadItem(getPlayer(),
+				() -> new ItemStack(Material.PLAYER_HEAD),
+				itemReadyFuture::complete);
+		enrichGUIItem(is);
+		return new DecorationStack(is) {
+			@Override
+			public void addedToInventory(ClickableInventory inv, int slot) {
+				itemReadyFuture.thenAccept(newItem -> {
+					LoggablePlayerAction.this.enrichGUIItem(newItem);
+					this.item = newItem;
+					inv.setItem(newItem, slot);
+				});
+				super.addedToInventory(inv, slot);
+			}
+		};
+	}
 }
