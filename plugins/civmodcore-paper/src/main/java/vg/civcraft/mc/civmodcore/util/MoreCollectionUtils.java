@@ -1,6 +1,8 @@
 package vg.civcraft.mc.civmodcore.util;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.list.LazyList;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -170,4 +173,12 @@ public final class MoreCollectionUtils {
 		return counter;
 	}
 
+	public static <T> LazyList<T> lazyList(List<Supplier<T>> supplierList) {
+		LazyList<T> lazyList = LazyList.lazyList(new ArrayList<>(supplierList.size()), i -> supplierList.get(i).get());
+		// initialize size of LazyList if size > 0
+		if (!supplierList.isEmpty()) {
+			lazyList.get(supplierList.size() - 1);
+		}
+		return lazyList;
+	}
 }

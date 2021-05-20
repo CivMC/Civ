@@ -11,7 +11,7 @@
 
   <groupId>vg.civcraft.mc.civmodcore</groupId>
   <artifactId>CivModCore</artifactId>
-  <version>1.8.2</version>
+  <version>1.8.3</version>
   <name>CivModCore</name>
   <url>https://github.com/Civclassic/CivModCore/</url>
 
@@ -57,6 +57,12 @@
       <artifactId>paper</artifactId>
       <version>1.16.5-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.papermc</groupId>
+          <artifactId>minecraft-server</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>

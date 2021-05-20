@@ -29,6 +29,7 @@ import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardListener;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
+import vg.civcraft.mc.civmodcore.util.SkinCache;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
 import vg.civcraft.mc.civmodcore.world.operations.ChunkOperationManager;
 
@@ -40,6 +41,7 @@ public final class CivModCorePlugin extends ACivMod {
 	private ManagedDatasource database;
 	private WorldIDManager worldIdManager;
 	private final AikarCommandManager commands;
+	private SkinCache skinCache;
 
 	public CivModCorePlugin() {
 		this.commands = new AikarCommandManager(this, false);
@@ -99,6 +101,7 @@ public final class CivModCorePlugin extends ACivMod {
 		MapColours.init();
 		this.newCommandHandler.registerCommand(new ConfigSetAnyCommand());
 		this.newCommandHandler.registerCommand(new ConfigGetAnyCommand());
+		this.skinCache = new SkinCache(this, getConfig().getInt("skin-download-threads", Runtime.getRuntime().availableProcessors() / 2));
 	}
 
 	@Override
@@ -122,6 +125,7 @@ public final class CivModCorePlugin extends ACivMod {
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
 		NBTSerialization.clearAllRegistrations();
 		this.commands.reset();
+		this.skinCache.shutdown();
 		super.onDisable();
 	}
 
@@ -139,6 +143,10 @@ public final class CivModCorePlugin extends ACivMod {
 	
 	public ManagedDatasource getDatabase() {
 		return this.database;
+	}
+
+	public SkinCache getSkinCache() {
+		return this.skinCache;
 	}
 
 }
