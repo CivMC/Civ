@@ -10,8 +10,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class ActivityListener implements Listener {
 
@@ -49,7 +52,6 @@ public class ActivityListener implements Listener {
 		doUpdate(event.getPlayer().getLocation(), event.getPlayer());
 	}
 
-
 	private void doUpdate(Location location, Player player) {
 		int sx = location.getBlockX() / resolution;
 		int sz = location.getBlockZ() / resolution;
@@ -60,7 +62,10 @@ public class ActivityListener implements Listener {
 					.getAllGroupNames(player.getUniqueId());
 			List<Integer> groupIds = new ArrayList<>();
 			for (String groupName : groupNames) {
-				groupIds.add(GroupManager.getGroup(groupName).getGroupId());
+				Group group = GroupManager.getGroup(groupName);
+				if (NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(), CitadelPermissionHandler.getBypass())) {
+					groupIds.add(group.getGroupId());
+				}
 			}
 
 			map.update(location.getWorld(), groupIds, sx, sz);
