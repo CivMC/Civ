@@ -3,6 +3,8 @@ package vg.civcraft.mc.citadel;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
+import vg.civcraft.mc.citadel.activity.ActivityListener;
+import vg.civcraft.mc.citadel.activity.ActivityMap;
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.listener.EntityListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
@@ -38,6 +40,7 @@ public class Citadel extends ACivMod {
 	private HologramManager holoManager;
 	private CitadelSettingManager settingManager;
 	private CitadelDAO dao;
+	private ActivityMap activityMap;
 
 	private PlayerStateManager stateManager;
 
@@ -71,7 +74,11 @@ public class Citadel extends ACivMod {
 	public HologramManager getHologramManager() {
 		return holoManager;
 	}
-	
+
+	public ActivityMap getActivityMap() {
+		return activityMap;
+	}
+
 	CitadelDAO getDAO() {
 		return dao;
 	}
@@ -114,6 +121,7 @@ public class Citadel extends ACivMod {
 			Bukkit.shutdown();
 			return;
 		}
+		activityMap = new ActivityMap(config.getDatabase());
 		BlockBasedChunkMetaView<CitadelChunkData, TableBasedDataObject, TableStorageEngine<Reinforcement>> chunkMetaData = 
 				ChunkMetaAPI.registerBlockBasedPlugin(this, () -> new CitadelChunkData(false, dao),dao, true);
 		if (chunkMetaData == null) {
@@ -146,5 +154,6 @@ public class Citadel extends ACivMod {
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 		getServer().getPluginManager().registerEvents(new ModeListener(this), this);
 		getServer().getPluginManager().registerEvents(new RedstoneListener(config.getMaxRedstoneDistance()), this);
+		getServer().getPluginManager().registerEvents(new ActivityListener(activityMap), this);
 	}
 }

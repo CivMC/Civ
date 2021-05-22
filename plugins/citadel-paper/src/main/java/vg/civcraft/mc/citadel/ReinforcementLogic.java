@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel;
 
+import java.time.Instant;
 import java.util.Objects;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,6 +13,7 @@ import org.bukkit.block.data.type.CoralWallFan;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
+import vg.civcraft.mc.citadel.activity.ActivityMap;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDestructionEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
@@ -84,8 +86,12 @@ public final class ReinforcementLogic {
 
 	public static double getDecayDamage(Reinforcement reinforcement) {
 		if (reinforcement.getGroup() != null) {
-			long lastRefresh = reinforcement.getGroup().getActivityTimeStamp();
-			return reinforcement.getType().getDecayDamageMultipler(lastRefresh);
+			//long lastRefresh = reinforcement.getGroup().getActivityTimeStamp();
+			ActivityMap map = Citadel.getInstance().getActivityMap();
+			return map.getLastActivityTime(reinforcement.getGroup(), reinforcement.getLocation())
+					.map(Instant::toEpochMilli)
+					.map(lastRefresh -> reinforcement.getType().getDecayDamageMultipler(lastRefresh))
+					.orElse(1d);
 		} else {
 			return reinforcement.getType().getDeletedGroupMultiplier();
 		}
