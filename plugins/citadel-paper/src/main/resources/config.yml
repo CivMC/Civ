@@ -210,6 +210,9 @@ reinforcement_damageMultiplier: 365
 #  idle_timeout: 600000
 #  max_lifetime: 7200000  
 
+activity-map-worlds:
+  - world
+
 # Ideally should be a power of two
 activity-map-resolution: 512
 # Radius around each area to also refresh

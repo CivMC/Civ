@@ -32,7 +32,7 @@ public class ActivityListener implements Listener {
 		Location to = event.getTo();
 		// IDE says this is never true but it's wrong
 		//noinspection ConstantConditions
-		if (to == null || from == null) {
+		if (to == null || from == null || !map.isEnabled(to.getWorld())) {
 			return;
 		}
 
@@ -49,7 +49,10 @@ public class ActivityListener implements Listener {
 
 	@EventHandler
 	public void on(PlayerJoinEvent event) {
-		doUpdate(event.getPlayer().getLocation(), event.getPlayer());
+		Location location = event.getPlayer().getLocation();
+		if (map.isEnabled(location.getWorld())) {
+			doUpdate(location, event.getPlayer());
+		}
 	}
 
 	private void doUpdate(Location location, Player player) {

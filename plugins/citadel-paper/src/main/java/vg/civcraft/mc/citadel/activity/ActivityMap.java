@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
@@ -21,7 +22,6 @@ import org.bukkit.World;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.locations.QTBoxImpl;
 import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 import vg.civcraft.mc.namelayer.group.Group;
 
@@ -43,6 +43,7 @@ public class ActivityMap {
 	private final Map<Short, LoadingCache<Integer, SparseArray<Instant>>> activityTimes;
 	private final Queue<Update> updates = new LinkedBlockingQueue<>();
 
+	private final List<String> worlds;
 	private final int resolution;
 	private final int radius;
 	private final Instant defaultActivity;
@@ -56,6 +57,7 @@ public class ActivityMap {
 
 		resolution = Citadel.getInstance().getConfigManager().getActivityMapResolution();
 		radius = Citadel.getInstance().getConfigManager().getActivityMapRadius();
+		worlds = Citadel.getInstance().getConfigManager().getActivityWorlds();
 		defaultActivity = Instant
 				.ofEpochMilli(Citadel.getInstance().getConfigManager().getActivityDefault());
 
@@ -153,6 +155,10 @@ public class ActivityMap {
 	}
 
 	public Optional<Instant> getLastActivityTime(Group group, Location location) {
+		if (!isEnabled(location.getWorld())) {
+			return Optional.of(Instant.ofEpochMilli(group.getActivityTimeStamp()));
+		}
+
 		try {
 			SparseArray<Instant> activities = getCache(location.getWorld()).get(group.getGroupId());
 
@@ -203,4 +209,8 @@ public class ActivityMap {
 			this.instant = instant;
 		}
 	}*/
+
+	public boolean isEnabled(World world) {
+		return world != null && this.worlds.contains(world.getName());
+	}
 }

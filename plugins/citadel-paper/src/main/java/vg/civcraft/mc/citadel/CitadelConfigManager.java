@@ -39,6 +39,7 @@ public class CitadelConfigManager extends CoreConfigManager {
 	private int activityMapResolution;
 	private int activityMapRadius;
 	private long activityDefault;
+	private List<String> activityWorlds;
 
 	public CitadelConfigManager(ACivMod plugin) {
 		super(plugin);
@@ -58,6 +59,10 @@ public class CitadelConfigManager extends CoreConfigManager {
 
 	public long getActivityDefault() {
 		return activityDefault;
+	}
+
+	public List<String> getActivityWorlds() {
+		return activityWorlds;
 	}
 
 	public List<Material> getBlacklistedMaterials() {
@@ -151,6 +156,7 @@ public class CitadelConfigManager extends CoreConfigManager {
 		activityMapRadius = config.getInt("activity-map-radius", 1);
 		activityMapResolution = config.getInt("activity-map-resolution", 512);
 		activityDefault = config.getLong("activity-default", System.currentTimeMillis());
+		activityWorlds = config.getStringList("activity-map-worlds");
 
 		return true;
 	}
