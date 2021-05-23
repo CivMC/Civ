@@ -162,7 +162,7 @@ public final class ChatUtils {
 	 * 
 	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static boolean isNullOrEmpty(final BaseComponent component) {
 		if (component == null) {
 			return true;
@@ -228,7 +228,7 @@ public final class ChatUtils {
 	 *
 	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use {@link Component#text()} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static TextComponent textComponent(final Object value, final ChatColor... formats) {
 		final TextComponent component = new TextComponent(value == null ? "<null>" : value.toString());
 		if (!ArrayUtils.isEmpty(formats)) {
