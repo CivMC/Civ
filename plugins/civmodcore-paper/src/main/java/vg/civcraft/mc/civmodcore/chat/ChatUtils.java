@@ -285,7 +285,20 @@ public final class ChatUtils {
 		return component;
 	}
 
+	/**
+	 * Determines whether two given components are equal to each other.
+	 *
+	 * @param former The left hand side component.
+	 * @param latter The right hand side component.
+	 * @return Returns whether the two given components are equal.
+	 */
 	public static boolean areComponentsEqual(final Component former, final Component latter) {
+		if (Objects.equals(former, latter)) {
+			return true;
+		}
+		if (former == null || latter == null) {
+			return false;
+		}
 		if (StringUtils.equals(
 				MiniMessage.get().serialize(former),
 				MiniMessage.get().serialize(latter))) {
