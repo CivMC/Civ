@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -23,10 +22,6 @@ public class ItemMetaConverterHack extends BasicHack {
 
 	public ItemMetaConverterHack(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
-	}
-
-	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)

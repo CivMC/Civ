@@ -11,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.Statistic;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Phantom;
@@ -107,10 +106,6 @@ public final class PhantomMenace extends BasicHack {
 		}
 		player.setStatistic(Statistic.TIME_SINCE_REST, Math.min(event.getNewValue(), cap));
 		event.setCancelled(true); // Prevent the increment
-	}
-
-	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
 	}
 
 }

@@ -16,17 +16,12 @@ import java.text.SimpleDateFormat;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 
 public final class StrayStats extends BasicHack {
 
 	public StrayStats(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
-	}
-
-	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
 	}
 
 	// ------------------------------------------------------------

@@ -29,7 +29,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
@@ -55,10 +54,6 @@ public final class BeeKeeping extends BasicHack {
 
 	public BeeKeeping(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
-	}
-
-	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
 	}
 
 	// ------------------------------------------------------------

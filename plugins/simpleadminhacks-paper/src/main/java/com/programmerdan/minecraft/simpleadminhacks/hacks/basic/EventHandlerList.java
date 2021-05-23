@@ -23,7 +23,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -63,10 +62,6 @@ public final class EventHandlerList extends BasicHack {
 		HandlerList.unregisterAll(this.handlers);
 		this.commands.reset();
 		super.onDisable();
-	}
-
-	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
 	}
 
 	// ------------------------------------------------------------
