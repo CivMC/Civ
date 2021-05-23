@@ -316,7 +316,7 @@ public final class ItemUtils {
 	 * @throws IllegalArgumentException Throws when the given item has no meta.
 	 */
 	public static void clearLore(final ItemStack item) {
-		setLore(item, (List<String>) null);
+		setComponentLore(item, (List<Component>) null);
 	}
 
 	/**
