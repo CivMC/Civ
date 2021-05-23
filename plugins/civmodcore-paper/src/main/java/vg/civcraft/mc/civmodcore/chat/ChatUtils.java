@@ -187,6 +187,24 @@ public final class ChatUtils {
 	}
 
 	/**
+	 * Determines whether a given component is a {@code {"text":"","extra":[...]}} component.
+	 *
+	 * @param component The component to test.
+	 * @return Returns whether the given component is a base / container component.
+	 */
+	public static boolean isBaseComponent(final Component component) {
+		if (component == null) {
+			return false;
+		}
+		final var content = component instanceof net.kyori.adventure.text.TextComponent ?
+				((net.kyori.adventure.text.TextComponent) component).content() : null;
+		return StringUtils.isEmpty(content)
+				&& component.clickEvent() == null
+				&& component.hoverEvent() == null
+				&& !component.hasStyling();
+	}
+
+	/**
 	 * @return Generates a new text component that's specifically <i>NOT</i> italicised. Use this for item names and
 	 *         lore.
 	 */
