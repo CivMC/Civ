@@ -163,8 +163,6 @@ public final class ItemUtils {
 		}
 		if ((former == null || latter == null)
 				|| former.getType() != latter.getType()
-				// I know this is deprecated, but it's present within item.isSimilar() so it's here too.
-				|| former.getDurability() != latter.getDurability()
 				|| former.hasItemMeta() != latter.hasItemMeta()) {
 			return false;
 		}
