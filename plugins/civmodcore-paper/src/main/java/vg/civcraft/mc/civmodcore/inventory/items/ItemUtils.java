@@ -176,11 +176,7 @@ public final class ItemUtils {
 	 * @return Returns the given item with a decremented amount, or null.
 	 */
 	public static ItemStack decrementItem(final ItemStack item) {
-		if (item == null || item.getAmount() <= 1) {
-			return null;
-		}
-		item.setAmount(item.getAmount() - 1);
-		return item;
+		return item == null ? null : item.subtract().getAmount() == 0 ? null : item;
 	}
 
 	/**
@@ -190,12 +186,7 @@ public final class ItemUtils {
 	 * @return The normalized item.
 	 */
 	public static ItemStack normalizeItem(ItemStack item) {
-		if (item == null) {
-			return null;
-		}
-		item = item.clone();
-		item.setAmount(1);
-		return item;
+		return item == null ? null : item.clone().asOne();
 	}
 
 	/**
@@ -205,10 +196,7 @@ public final class ItemUtils {
 	 * @return Returns the item meta.
 	 */
 	public static ItemMeta getItemMeta(final ItemStack item) {
-		if (item == null) {
-			return null;
-		}
-		return item.getItemMeta();
+		return item == null ? null : item.getItemMeta();
 	}
 
 	/**
@@ -230,10 +218,7 @@ public final class ItemUtils {
 	 */
 	public static Component getComponentDisplayName(final ItemStack item) {
 		final var meta = getItemMeta(item);
-		if (meta == null) {
-			return null;
-		}
-		return meta.displayName();
+		return meta == null ? null : meta.displayName();
 	}
 
 	/**
@@ -262,10 +247,7 @@ public final class ItemUtils {
 	@Nonnull
 	public static List<Component> getComponentLore(final ItemStack item) {
 		final var meta = getItemMeta(item);
-		if (meta == null) {
-			return new ArrayList<>(0);
-		}
-		return MetaUtils.getComponentLore(meta);
+		return meta == null ? new ArrayList<>(0) : MetaUtils.getComponentLore(meta);
 	}
 
 	/**
