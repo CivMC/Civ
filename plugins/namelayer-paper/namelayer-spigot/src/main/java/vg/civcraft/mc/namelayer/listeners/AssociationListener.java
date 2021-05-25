@@ -72,6 +72,6 @@ public class AssociationListener implements Listener {
 		}
 
 		if (game != null)
-			game.setPlayerProfle(player, name);
+			game.setPlayerProfile(player, name);
 	}
 }

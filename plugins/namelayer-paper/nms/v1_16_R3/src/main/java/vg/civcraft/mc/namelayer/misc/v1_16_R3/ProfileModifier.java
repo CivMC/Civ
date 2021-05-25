@@ -20,7 +20,7 @@ public class ProfileModifier implements ProfileInterface {
 	private static final Logger log = Logger.getLogger(ProfileModifier.class.getSimpleName());
 
 	@Override
-	public void setPlayerProfle(Player player, String name) {
+	public void setPlayerProfile(Player player, String name) {
 		String oldName = player.getName();
 		if (name.length() > 16) {
 			log.info(String.format("The player %s (%s) was kicked from the server due to his "
