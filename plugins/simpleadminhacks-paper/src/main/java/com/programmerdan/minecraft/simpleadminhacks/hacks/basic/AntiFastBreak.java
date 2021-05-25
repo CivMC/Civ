@@ -20,7 +20,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
 import org.bukkit.enchantments.Enchantment;
@@ -217,10 +216,6 @@ public final class AntiFastBreak extends BasicHack {
 			return null;
 		}
 		return nmsBlock.getBlockData();
-	}
-
-	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
 	}
 
 }

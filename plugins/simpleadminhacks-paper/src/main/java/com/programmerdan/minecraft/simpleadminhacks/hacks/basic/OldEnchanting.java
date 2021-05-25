@@ -656,8 +656,4 @@ public final class OldEnchanting extends BasicHack {
 		}
 	}
 
-	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
-	}
-
 }

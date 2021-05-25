@@ -16,17 +16,12 @@ import java.text.SimpleDateFormat;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 
 public final class StrayStats extends BasicHack {
 
 	public StrayStats(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
-	}
-
-	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
 	}
 
 	// ------------------------------------------------------------
@@ -61,7 +56,7 @@ public final class StrayStats extends BasicHack {
 			sender.sendMessage(ChatColor.GOLD + "Starting to compile player join statistics!");
 			Bukkit.getScheduler().runTaskAsynchronously(plugin(), () -> {
 				try (final var file = new FileWriter(new File(plugin().getDataFolder(), "playerJoinStats.csv"))) {
-					try (final var connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+					try (final var connection = BanStickDatabaseHandler.getInstanceData().getConnection();
 						 final var statement = connection.prepareStatement(
 								 "SELECT name, first_add FROM bs_player ORDER BY first_add ASC");
 						 final var query = statement.executeQuery();) {

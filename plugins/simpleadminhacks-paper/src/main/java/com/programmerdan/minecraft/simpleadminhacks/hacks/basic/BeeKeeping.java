@@ -15,9 +15,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import net.minecraft.server.v1_16_R3.EntityBee;
 import net.minecraft.server.v1_16_R3.IEntityAngerable;
 import net.minecraft.server.v1_16_R3.TileEntity;
@@ -28,7 +29,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
@@ -54,10 +54,6 @@ public final class BeeKeeping extends BasicHack {
 
 	public BeeKeeping(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
-	}
-
-	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
 	}
 
 	// ------------------------------------------------------------
@@ -156,40 +152,41 @@ public final class BeeKeeping extends BasicHack {
 		final int numberOfUnnamed = MoreCollectionUtils.numberOfMatches(bees, BeeData::isNameless);
 		bees.removeIf(BeeData::isNameless);
 		// Start building response
-		final BaseComponent response = ChatUtils.textComponent("", ChatColor.GOLD);
+		final var response = Component.text().color(NamedTextColor.GOLD);
 		final Iterator<BeeData> nameIterator = bees.iterator();
 		boolean doneFirstElement = false;
 		while (nameIterator.hasNext()) {
 			final BeeData bee = nameIterator.next();
 			if (nameIterator.hasNext() || numberOfUnnamed > 0) {
 				if (doneFirstElement) {
-					response.addExtra(", ");
+					response.append(Component.text(", "));
 				}
 			}
 			else if (numberOfUnnamed == 0) {
-				response.addExtra(", and ");
+				response.append(Component.text(", and "));
 			}
-			response.addExtra(bee.name);
+			assert bee.name != null;
+			response.append(bee.name);
 			doneFirstElement = true;
 		}
 		if (numberOfUnnamed > 0) {
 			if (bees.isEmpty()) {
-				response.addExtra("There are " + numberOfUnnamed + " bees");
+				response.append(Component.text("There are " + numberOfUnnamed + " bees"));
 			}
 			else {
-				response.addExtra(", and " + numberOfUnnamed + " others are");
+				response.append(Component.text(", and " + numberOfUnnamed + " others are"));
 			}
 		}
 		else {
-			response.addExtra(" are");
+			response.append(Component.text(" are"));
 		}
 		if (beehive.isSedated()) {
-			response.addExtra(" sedated");
+			response.append(Component.text(" sedated"));
 		}
 		else {
-			response.addExtra(" happily buzzing");
+			response.append(Component.text(" happily buzzing"));
 		}
-		response.addExtra(" in that hive.");
+		response.append(Component.text(" in that hive."));
 		player.sendMessage(response);
 	}
 
@@ -212,7 +209,7 @@ public final class BeeKeeping extends BasicHack {
 
 	private static final class BeeData {
 
-		public final BaseComponent name;
+		public final Component name;
 
 		public BeeData(@Nonnull final NBTCompound nbt) {
 			// Parse name
@@ -221,7 +218,7 @@ public final class BeeKeeping extends BasicHack {
 				this.name = null;
 			}
 			else {
-				final BaseComponent componentName = ComponentSerializer.parse(rawName)[0];
+				final var componentName = GsonComponentSerializer.gson().deserialize(rawName);
 				this.name = ChatUtils.isNullOrEmpty(componentName) ? null : componentName;
 			}
 		}

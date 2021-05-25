@@ -5,7 +5,6 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 
 public final class TestConfigHack extends BasicHack {
 
@@ -106,10 +105,6 @@ public final class TestConfigHack extends BasicHack {
 		else {
 			this.plugin.info(ChatColor.RED + "Char value failed: " + this.charValue);
 		}
-	}
-
-	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
 	}
 
 }
