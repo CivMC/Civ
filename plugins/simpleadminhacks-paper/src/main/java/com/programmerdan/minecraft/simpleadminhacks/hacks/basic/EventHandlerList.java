@@ -23,7 +23,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -34,7 +33,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public final class EventHandlerList extends BasicHack {
 
@@ -64,10 +62,6 @@ public final class EventHandlerList extends BasicHack {
 		HandlerList.unregisterAll(this.handlers);
 		this.commands.reset();
 		super.onDisable();
-	}
-
-	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
 	}
 
 	// ------------------------------------------------------------
@@ -112,7 +106,7 @@ public final class EventHandlerList extends BasicHack {
 			final List<String> results = new ArrayList<>();
 			for (final Class<? extends Event> clazz : this.handlers.getHandlerCache().keySet()) {
 				final String path = clazz.getName();
-				if (!TextUtil.startsWith(path, context.getInput())) {
+				if (!StringUtils.startsWith(path, context.getInput())) {
 					continue;
 				}
 				results.add(path);

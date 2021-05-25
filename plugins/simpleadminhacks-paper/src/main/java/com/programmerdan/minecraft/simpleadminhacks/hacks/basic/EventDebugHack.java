@@ -25,7 +25,6 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.ClassUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.Event;
@@ -48,10 +47,6 @@ public class EventDebugHack extends BasicHack {
 		super(plugin, config);
 		classToListeners = new HashMap<>();
 		classToHandler = new HashMap<>();
-	}
-
-	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
 	}
 
 	@Override

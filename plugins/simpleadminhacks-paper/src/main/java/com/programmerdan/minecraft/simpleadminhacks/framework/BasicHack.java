@@ -23,7 +23,7 @@ public abstract class BasicHack extends SimpleHack<BasicHackConfig> implements L
 		HandlerList.unregisterAll(this);
 	}
 
-	// MAKE SURE TO COPY THIS TO YOUR HACK!!
+	// YOU DON'T HAVE TO COPY THIS! It's inherited.
 	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
 		return new BasicHackConfig(plugin, config);
 	}

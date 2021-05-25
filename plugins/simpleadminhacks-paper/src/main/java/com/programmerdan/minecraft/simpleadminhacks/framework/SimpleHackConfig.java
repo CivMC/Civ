@@ -27,14 +27,28 @@ public abstract class SimpleHackConfig {
 	 * Calls {@link #wireup(ConfigurationSection)}
 	 */
 	public SimpleHackConfig(final SimpleAdminHacks plugin, final ConfigurationSection base) {
+		this(plugin, base, true);
+	}
+
+	/**
+	 * Constructor that sets the internal config section. That base config is not visible
+	 * outside of this class or its subclasses.
+	 *
+	 * Also extracts the one shared element of all hack configs, the "name" of the hack.
+	 *
+	 * Calls {@link #wireup(ConfigurationSection)}
+	 */
+	public SimpleHackConfig(final SimpleAdminHacks plugin, final ConfigurationSection base, final boolean wireup) {
 		this.plugin = plugin;
 		this.base = base;
 		this.data = base.getValues(true);
 		this.shouldEnable = this.enabled = base.getBoolean("enabled", false);
 		this.plugin.info("Config for \"" + base.getName() + "\"; " +
 				"is " + (this.shouldEnable ? "enabled" : "disabled") + "; " +
-				"instance [" + toString() + "]");
-		wireup(base);
+				"instance [" + this + "]");
+		if (wireup) {
+			wireup(base);
+		}
 	}
 
 	/**

@@ -18,7 +18,6 @@ import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Vehicle;
@@ -118,10 +117,6 @@ public final class ShipOutOfLuck extends BasicHack {
 		final int minZ = (int) Math.floor(bounds.getMinZ() + 0.06);
 		final int maxZ = (int) Math.floor(bounds.getMaxZ() - 0.06);
 		return BlockPosition.a(minX, valY, minZ, maxX, valY, maxZ);
-	}
-
-	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
 	}
 
 }
