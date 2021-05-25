@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -19,7 +20,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
@@ -57,26 +57,26 @@ public class ChunkOperationManager extends AikarCommand implements Listener {
 			final int operationCount = operations == null ? 0 : operations.size();
 			final World world = WorldTracker.getLoadedWorld(wxz.getWorld());
 			// First line: " WorldName: 22 operations"
-			final TextComponent textComponent = new TextComponent(" ");
+			final var component = Component.text().content(" ");
 			if (world == null) {
-				textComponent.addExtra(ChatUtils.textComponent("{NOT LOADED}", ChatColor.RED));
+				component.append(Component.text("{NOT LOADED}").color(NamedTextColor.RED));
 			}
 			else {
-				textComponent.addExtra(ChatUtils.textComponent(world.getName(), ChatColor.GREEN));
+				component.append(Component.text(world.getName()).color(NamedTextColor.GREEN));
 			}
-			textComponent.addExtra(": ");
+			component.append(Component.text(": "));
 			if (operationCount == 0) {
-				textComponent.addExtra("0 operations");
-				sender.spigot().sendMessage(textComponent);
+				component.append(Component.text("0 operations"));
+				sender.sendMessage(component);
 				continue;
 			}
 			else if (operationCount == 1) {
-				textComponent.addExtra("1 operation");
+				component.append(Component.text("1 operation"));
 			}
 			else {
-				textComponent.addExtra(operationCount + " operations");
+				component.append(Component.text(operationCount + " operations"));
 			}
-			sender.spigot().sendMessage(textComponent);
+			sender.sendMessage(component);
 			// Other lines: " - PluginName: 1 operation"
 			final Map<Plugin, Integer> pluginCount = new HashMap<>();
 			for (final ChunkOperation operation : operations) {

@@ -6,9 +6,9 @@ CivModCore is derived from Humbug.
 
 ## Versions
 
-* 1.8.2 - Spigot 1.16.4
+* 1.8.2 - Paper 1.16.5
 
-* [1.8.0](https://github.com/CivClassic/CivModCore/tree/08ad95297eb041cf99bd0eb0aaffc70ca87af4f2) - Spigot 1.16.1
+* [1.8.0](https://github.com/CivClassic/CivModCore/tree/08ad95297eb041cf99bd0eb0aaffc70ca87af4f2) - Paper 1.16.1
 
 * [1.7.9](https://github.com/CivClassic/CivModCore/tree/306b4f7268a3c5d3bd551fe66992f2a4335e86f7) - Spigot 1.14.4
 
