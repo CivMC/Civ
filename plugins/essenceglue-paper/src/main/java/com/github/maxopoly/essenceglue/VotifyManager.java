@@ -112,12 +112,6 @@ public class VotifyManager implements Listener {
 				Bukkit.getScheduler().runTaskLater(EssenceGluePlugin.instance(), () -> {
 					p.sendMessage(text);
 				}, 20L);
-			} else {
-				long remaining = site.getVotingCooldown() - (System.currentTimeMillis() - lastVote);
-				Bukkit.getScheduler().runTaskLater(EssenceGluePlugin.instance(), () -> {
-					p.sendMessage(ChatColor.YELLOW + "You already voted on " + site.getName() + " and may vote there again in "
-							+ TextUtil.formatDuration(remaining));
-				}, 20L);
 			}
 		}
 	}
