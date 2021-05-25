@@ -23,10 +23,29 @@ public class ItemMetaTests {
 	}
 
 	/**
-	 * Tests whether a primitive display name can match with a component.
+	 * Tests whether a basic string display name can match with a component.
 	 */
 	@Test
 	public void testBasicDisplayNameEquality() {
+		// Setup
+		final var formerItem = NullUtils.isNotNull(NBTCompound.processItem(TEMPLATE_ITEM, (nbt) -> {
+			final var display = new NBTCompound();
+			display.setString("Name", "Hello!");
+			nbt.setCompound("display", display);
+		}));
+		final var latterItem = TEMPLATE_ITEM.clone();
+		ItemUtils.setComponentDisplayName(latterItem, Component.text("Hello!"));
+		// Check
+		Assert.assertTrue(ChatUtils.areComponentsEqual(
+				ItemUtils.getComponentDisplayName(formerItem),
+				ItemUtils.getComponentDisplayName(latterItem)));
+	}
+
+	/**
+	 * Tests whether a json primitive display name can match with a component.
+	 */
+	@Test
+	public void testBasicJsonPrimitiveDisplayNameEquality() {
 		// Setup
 		final var formerItem = NullUtils.isNotNull(NBTCompound.processItem(TEMPLATE_ITEM, (nbt) -> {
 			final var display = new NBTCompound();
@@ -34,7 +53,10 @@ public class ItemMetaTests {
 			nbt.setCompound("display", display);
 		}));
 		final var latterItem = TEMPLATE_ITEM.clone();
-		ItemUtils.setComponentDisplayName(latterItem, Component.text("Hello!"));
+		ItemUtils.handleItemMeta(latterItem, (ItemMeta meta) -> {
+			meta.displayName(Component.text("Hello!"));
+			return true;
+		});
 		// Check
 		Assert.assertTrue(ChatUtils.areComponentsEqual(
 				ItemUtils.getComponentDisplayName(formerItem),
@@ -54,12 +76,39 @@ public class ItemMetaTests {
 			return true;
 		});
 		final var latterItem = TEMPLATE_ITEM.clone();
-		ItemUtils.setComponentDisplayName(latterItem, Component.text("Hello!"));
+		ItemUtils.handleItemMeta(latterItem, (ItemMeta meta) -> {
+			meta.displayName(Component.text("Hello!"));
+			return true;
+		});
 		// Check
 		Assert.assertTrue(ChatUtils.areComponentsEqual(
 				ItemUtils.getComponentDisplayName(formerItem),
 				ItemUtils.getComponentDisplayName(latterItem)));
 		Assert.assertTrue(ItemUtils.areItemsSimilar(formerItem, latterItem));
+	}
+
+	/**
+	 * Tests whether {@link ChatUtils#isBaseComponent(Component)} works.
+	 */
+	@Test
+	@SuppressWarnings("deprecation")
+	public void testBaseComponent() {
+		// Setup
+		final var formerItem = TEMPLATE_ITEM.clone();
+		ItemUtils.handleItemMeta(formerItem, (ItemMeta meta) -> {
+			meta.setDisplayName("Hello!");
+			return true;
+		});
+		final var latterItem = TEMPLATE_ITEM.clone();
+		ItemUtils.handleItemMeta(latterItem, (ItemMeta meta) -> {
+			meta.displayName(Component.text("Hello!"));
+			return true;
+		});
+		// Check
+		Assert.assertTrue(ChatUtils.isBaseComponent(
+				ItemUtils.getComponentDisplayName(formerItem)));
+		Assert.assertFalse(ChatUtils.isBaseComponent(
+				ItemUtils.getComponentDisplayName(latterItem)));
 	}
 
 }
