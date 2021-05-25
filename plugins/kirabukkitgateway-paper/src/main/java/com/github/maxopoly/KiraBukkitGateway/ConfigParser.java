@@ -24,7 +24,6 @@ public class ConfigParser {
 
 	public void reload() {
 		plugin.saveDefaultConfig();
-		plugin.reloadConfig();
 		config = plugin.getConfig();
 	}
 
