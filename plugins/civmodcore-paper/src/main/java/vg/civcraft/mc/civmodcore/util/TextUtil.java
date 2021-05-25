@@ -58,7 +58,7 @@ public class TextUtil {
 	/**
 	 * @deprecated Use {@link ChatUtils#parseColor(String)} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static String parseColor(String string) {
 		return ChatUtils.parseColor(string);
 	}
@@ -66,7 +66,7 @@ public class TextUtil {
 	/**
 	 * @deprecated Use {@link ChatUtils#parseColorAmp(String)} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static String parseColorAmp(String string) {
 		return ChatUtils.parseColorAmp(string);
 	}
@@ -74,7 +74,7 @@ public class TextUtil {
 	/**
 	 * @deprecated Use {@link ChatUtils#parseColorAcc(String)} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static String parseColorAcc(String string) {
 		return ChatUtils.parseColorAcc(string);
 	}
@@ -82,7 +82,7 @@ public class TextUtil {
 	/**
 	 * @deprecated Use {@link ChatUtils#parseColorTags(String)} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static String parseColorTags(String string) {
 		return ChatUtils.parseColorTags(string);
 	}
@@ -90,7 +90,7 @@ public class TextUtil {
 	/**
 	 * @deprecated Use {@link ChatUtils#parseColorTags(String)} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static String parseTags(String sting) {
 		return parseColorTags(sting);
 	}
@@ -107,7 +107,7 @@ public class TextUtil {
 	/**
 	 * @deprecated Use {@link StringUtils#repeat(String, int)} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static String repeat(String string, int times) {
 		Preconditions.checkArgument(string != null);
 		return StringUtils.repeat(string, times);
@@ -116,7 +116,7 @@ public class TextUtil {
 	/**
 	 * @deprecated Use {@link StringUtils#join(Object[], String)} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static String implode(List<String> list, String glue) {
 		Preconditions.checkArgument(list != null);
 		Preconditions.checkArgument(glue != null);
@@ -209,7 +209,7 @@ public class TextUtil {
 	 * @param player The player
 	 * @param message The message
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static void msg(Player player, String message) {
 		if (player != null && player.isOnline()) {
 			player.sendMessage(parse(message));
@@ -244,7 +244,7 @@ public class TextUtil {
 	 *
 	 * @deprecated Use {@link StringUtils#equals(CharSequence, CharSequence)} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static boolean stringEquals(String former, String latter) {
 		return StringUtils.equals(former, latter);
 	}
@@ -259,7 +259,7 @@ public class TextUtil {
 	 *
 	 * @deprecated Use {@link StringUtils#equalsIgnoreCase(CharSequence, CharSequence)} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static boolean stringEqualsIgnoreCase(String former, String latter) {
 		return StringUtils.equalsIgnoreCase(former, latter);
 	}
@@ -273,7 +273,7 @@ public class TextUtil {
 	 *
 	 * @deprecated Use {@link StringUtils#startsWithIgnoreCase(CharSequence, CharSequence)} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static boolean startsWith(String container, String contained) {
 		return StringUtils.startsWithIgnoreCase(container, contained);
 	}
@@ -289,7 +289,7 @@ public class TextUtil {
 	 *
 	 * @deprecated Use {@link ChatUtils#isNullOrEmpty(BaseComponent)} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static boolean isNullOrEmpty(BaseComponent component) {
 		return ChatUtils.isNullOrEmpty(component);
 	}
@@ -303,7 +303,7 @@ public class TextUtil {
 	 *
 	 * @deprecated Use {@link ChatUtils#textComponent(Object, net.md_5.bungee.api.ChatColor...)} instead.
 	 */
-	@Deprecated
+	@Deprecated(forRemoval = true)
 	public static TextComponent textComponent(final Object value, final net.md_5.bungee.api.ChatColor... formats) {
 		return ChatUtils.textComponent(value, formats);
 	}
