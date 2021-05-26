@@ -108,6 +108,7 @@ permissions:
       simpleadmin.stats: true
       simpleadmin.revive: true
       simpleadmin.debugwand: true
+      simpleadmin.bedlocator: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
@@ -150,3 +151,6 @@ permissions:
     simpleadmin.debugwand:
       description: Gives the ability to create and use debug wands
       default: op
+    simpleadmin.bedlocator:
+      description: Gives the ability to locate your own bed
+      default: true

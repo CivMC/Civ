@@ -61,6 +61,8 @@ hacks:
       - <gold>Must've been a rough night o.o
       - <gold>Why does my entire body ache?
       - <gold>That <it>really<gold> hurt!
+  BedLocator:
+    enabled: true
   BeeKeeping:
     enabled: true
     # Value between 0 and 1 that determines the percentage chance that a bee will replace
