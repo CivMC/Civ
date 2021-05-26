@@ -199,6 +199,7 @@ public final class ChatUtils {
 		final var content = component instanceof net.kyori.adventure.text.TextComponent ?
 				((net.kyori.adventure.text.TextComponent) component).content() : null;
 		return StringUtils.isEmpty(content)
+				&& !component.children().isEmpty()
 				&& component.clickEvent() == null
 				&& component.hoverEvent() == null
 				&& !component.hasStyling();
