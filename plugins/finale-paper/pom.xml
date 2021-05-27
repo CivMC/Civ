@@ -21,7 +21,7 @@
 		<dependency>
 			<groupId>com.destroystokyo.paper</groupId>
 			<artifactId>paper</artifactId>
-			<version>1.16.4-R0.1-SNAPSHOT</version>
+			<version>1.16.5-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
 			<artifactId>ProtocolLib</artifactId>
-			<version>4.6.0-SNAPSHOT</version>
+			<version>4.6.0</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
