@@ -14,6 +14,7 @@
 #  idle_timeout: 600000
 #  max_lifetime: 7200000
 
+# Your RabbitMQ credentials
 rabbitmq:
   user: username
   password: password
@@ -21,3 +22,14 @@ rabbitmq:
   port: 5672
   incomingQueue: kira-to-gateway
   outgoingQueue: gateway-to-kira
+
+# This will relay particular messages emitted to the console to specified relays
+# "key"   = the name of the relay config
+# "regex" = pattern to match console messages against, which, if true, will be relayed
+console:
+  foo:
+    key: aac
+    regex: '.* moved too quickly.*'
+  bar:
+    key: ip
+    regex: '.*is brand new!.*'
