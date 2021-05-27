@@ -3,7 +3,6 @@ package com.devotedmc.ExilePearl.command;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.programmerdan.minecraft.banstick.handler.BanHandler;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.ChatColor;
@@ -56,47 +54,42 @@ public class CmdShowAllPearls extends PearlCommand {
 
 	@Override
 	public void perform() {
-		final Player player = player();
+		final Player sender = player();
 
 		final long now = System.currentTimeMillis();
-		final long previousUseTime = COOLDOWNS.compute(player.getUniqueId(),
+		final long previousUseTime = COOLDOWNS.compute(sender.getUniqueId(),
 				(uuid, value) -> value == null ? 0L : value); // This is better than getOrDefault()
 		if (previousUseTime > (now - COOLDOWN)) {
-			player.sendMessage(ChatColor.RED + "You can't do that yet.");
+			sender.sendMessage(ChatColor.RED + "You can't do that yet.");
 			return;
 		}
-		COOLDOWNS.put(player.getUniqueId(), now);
+		COOLDOWNS.put(sender.getUniqueId(), now);
 
-		final Location playerLocation = player.getLocation();
+		final Location senderLocation = sender.getLocation();
 		final double pearlExclusionRadius = this.plugin.getPearlConfig().getRulePearlRadius() * 1.2;
 		final boolean isBanStickEnabled = this.plugin.isBanStickEnabled();
 
 		final List<Supplier<IClickable>> contentSuppliers = this.plugin.getPearls().stream()
+				// Sort pearls from newest to oldest
 				.sorted(ComparatorUtils.reversedComparator(Comparator.comparing(ExilePearl::getPearledOn)))
+				// Filter out banned pearls
+				.filter((pearl) -> !isBanStickEnabled || !BanHandler.isPlayerBanned(pearl.getPlayerId()))
 				.<Supplier<IClickable>>map((pearl) -> () -> {
 					final Location pearlLocation = pearl.getLocation();
-					final boolean isPlayerBanned = isBanStickEnabled
-							&& BanHandler.isPlayerBanned(player);
 					final boolean showLocation = WorldUtils.blockDistance(
-							playerLocation, pearlLocation, true) <= pearlExclusionRadius;
+							senderLocation, pearlLocation, true) <= pearlExclusionRadius;
 
 					CompletableFuture<ItemStack> itemReadyFuture = new CompletableFuture<>();
-					final ItemStack item = isPlayerBanned
-							? new ItemStack(Material.ARMOR_STAND)
-							: CivModCorePlugin.getInstance().getSkinCache().getHeadItem(
+					final ItemStack item = CivModCorePlugin.getInstance().getSkinCache().getHeadItem(
 									pearl.getPlayerId(),
-									() -> new ItemStack(Material.ARMOR_STAND),
+									() -> new ItemStack(Material.ENDER_PEARL),
 									itemReadyFuture::complete);
 
 					Consumer<ItemStack> itemMetaMod = itemToMod ->
 							ItemUtils.handleItemMeta(itemToMod, (ItemMeta meta) -> {
 								// Pearled player's name
 								meta.displayName(ChatUtils.newComponent(pearl.getPlayerName())
-										.color(NamedTextColor.AQUA)
-										.append(isPlayerBanned ?
-												Component.text(" <banned>")
-														.color(NamedTextColor.RED) :
-												Component.empty()));
+										.color(NamedTextColor.AQUA));
 
 								meta.lore(List.of(
 										// Pearl type
@@ -187,6 +180,7 @@ public class CmdShowAllPearls extends PearlCommand {
 		}
 
 		LazyList<IClickable> lazyContents = MoreCollectionUtils.lazyList(contentSuppliers);
-		new MultiPageView(player, lazyContents, "All Pearls", true).showScreen();
+		new MultiPageView(sender, lazyContents, "All Pearls", true).showScreen();
 	}
+
 }

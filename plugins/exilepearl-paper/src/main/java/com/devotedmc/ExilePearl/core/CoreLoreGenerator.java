@@ -1,6 +1,7 @@
 package com.devotedmc.ExilePearl.core;
 
 import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.LoreProvider;
 import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.RepairMaterial;
@@ -8,6 +9,7 @@ import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.google.common.base.Preconditions;
+import com.programmerdan.minecraft.banstick.handler.BanHandler;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,6 +76,9 @@ final class CoreLoreGenerator implements LoreProvider {
 		lore.add(parse("<a>Health: <n>%s%%", healthPercent.toString()));
 		lore.add(parse("<a>Exiled on: <n>%s", dateFormat.format(pearl.getPearledOn())));
 		lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
+		if (ExilePearlPlugin.getApi().isBanStickEnabled() && BanHandler.isPlayerBanned(pearl.getPlayerId())) {
+			lore.add(parse("<b>Player is banned."));
+		}
 		Set<RepairMaterial> repair = config.getRepairMaterials(pearl.getPearlType());
 		if (repair != null) {
 			for (RepairMaterial rep : repair) {
