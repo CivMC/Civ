@@ -229,6 +229,14 @@ hacks:
     delay: 10000
     message: '%Victim% was combat tagged by %Attacker%'
     broadcast: [OP, CONSOLE]
+  DisableAI:
+    enabled: true
+    # Specify below the living entities and their spawning circumstances you want to disable the AI for.
+    # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/entity/EntityType.html
+    # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html
+    # Note: You can also just state "ALL" for all spawn circumstances
+    VILLAGER: ALL
+    ENDERMITE: [DISPENSE_EGG, EGG, SPAWNER_EGG]
   Experimental:
     enabled: true
     combatspy: false
