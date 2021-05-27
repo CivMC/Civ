@@ -234,6 +234,7 @@ hacks:
     # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html
     # Note: You can also just state "ALL" for all spawn circumstances
     VILLAGER: ALL
+    ENDERMITE: [DISPENSE_EGG, EGG, SPAWNER_EGG]
   Experimental:
     enabled: true
     combatspy: false
