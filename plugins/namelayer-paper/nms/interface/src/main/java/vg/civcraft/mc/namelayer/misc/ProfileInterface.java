@@ -4,6 +4,6 @@ import org.bukkit.entity.Player;
 
 public interface ProfileInterface {
 
-	void setPlayerProfle(Player player, String name);
+	void setPlayerProfile(Player player, String name);
 
 }
