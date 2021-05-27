@@ -72,15 +72,17 @@ public class CmdShowAllPearls extends PearlCommand {
 		final List<Supplier<IClickable>> contentSuppliers = this.plugin.getPearls().stream()
 				// Sort pearls from newest to oldest
 				.sorted(ComparatorUtils.reversedComparator(Comparator.comparing(ExilePearl::getPearledOn)))
-				// Filter out banned pearls
-				.filter((pearl) -> !isBanStickEnabled || !BanHandler.isPlayerBanned(pearl.getPlayerId()))
 				.<Supplier<IClickable>>map((pearl) -> () -> {
 					final Location pearlLocation = pearl.getLocation();
+					final boolean isPlayerBanned = isBanStickEnabled
+							&& BanHandler.isPlayerBanned(pearl.getPlayerId());
 					final boolean showLocation = WorldUtils.blockDistance(
 							senderLocation, pearlLocation, true) <= pearlExclusionRadius;
 
 					CompletableFuture<ItemStack> itemReadyFuture = new CompletableFuture<>();
-					final ItemStack item = CivModCorePlugin.getInstance().getSkinCache().getHeadItem(
+					final ItemStack item = isPlayerBanned
+							? new ItemStack(Material.ARMOR_STAND)
+							: CivModCorePlugin.getInstance().getSkinCache().getHeadItem(
 									pearl.getPlayerId(),
 									() -> new ItemStack(Material.ENDER_PEARL),
 									itemReadyFuture::complete);
@@ -89,7 +91,11 @@ public class CmdShowAllPearls extends PearlCommand {
 							ItemUtils.handleItemMeta(itemToMod, (ItemMeta meta) -> {
 								// Pearled player's name
 								meta.displayName(ChatUtils.newComponent(pearl.getPlayerName())
-										.color(NamedTextColor.AQUA));
+										.color(NamedTextColor.AQUA)
+										.append(isPlayerBanned ?
+												Component.text(" <banned>")
+														.color(NamedTextColor.RED) :
+												Component.empty()));
 
 								meta.lore(List.of(
 										// Pearl type
