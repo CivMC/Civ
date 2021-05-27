@@ -140,9 +140,13 @@ public final class EnchantUtils {
 		if (Strings.isNullOrEmpty(value)) {
 			return null;
 		}
-		Enchantment enchantment = Enchantment.getByKey(KeyedUtils.fromString(value));
-		if (enchantment != null) {
-			return enchantment;
+		Enchantment enchantment;
+		final var enchantmentKey = KeyedUtils.fromString(value);
+		if (enchantmentKey != null) {
+			enchantment = Enchantment.getByKey(enchantmentKey);
+			if (enchantment != null) {
+				return enchantment;
+			}
 		}
 		enchantment = Enchantment.getByName(value.toUpperCase()); // deprecated
 		if (enchantment != null) {
