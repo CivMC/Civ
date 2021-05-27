@@ -139,11 +139,13 @@ public abstract class PlayerCommand implements Command {
 		this.tabCompletionRateLimiter = RateLimiting.createRateLimiter("COMMAND_" + identifier, 
 				limit, limit, refillAmount, ((long) refillIntervallInSeconds) * 1000);
 	}
-	
+
+	@Override
 	public RateLimiter getRateLimiter() {
 		return rateLimiter;
 	}
-	
+
+	@Override
 	public RateLimiter getTabCompletionRateLimiter() {
 		return tabCompletionRateLimiter;
 	}

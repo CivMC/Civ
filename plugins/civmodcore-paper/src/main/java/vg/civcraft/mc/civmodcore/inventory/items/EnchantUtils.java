@@ -135,16 +135,20 @@ public final class EnchantUtils {
 	 * @param value The value to search for a matching enchantment by.
 	 * @return Returns a matched enchantment or null.
 	 */
+	@SuppressWarnings("deprecation")
 	public static Enchantment getEnchantment(final String value) {
 		if (Strings.isNullOrEmpty(value)) {
 			return null;
 		}
-		Enchantment enchantment = Enchantment.getByKey(KeyedUtils.fromString(value));
-		if (enchantment != null) {
-			return enchantment;
+		Enchantment enchantment;
+		final var enchantmentKey = KeyedUtils.fromString(value);
+		if (enchantmentKey != null) {
+			enchantment = Enchantment.getByKey(enchantmentKey);
+			if (enchantment != null) {
+				return enchantment;
+			}
 		}
-		//noinspection deprecation
-		enchantment = Enchantment.getByName(value.toUpperCase());
+		enchantment = Enchantment.getByName(value.toUpperCase()); // deprecated
 		if (enchantment != null) {
 			return enchantment;
 		}

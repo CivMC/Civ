@@ -44,6 +44,7 @@ public class XZWCoord implements Comparable<XZWCoord> {
 		return z;
 	}
 
+	@Override
 	public String toString() {
 		return String.format("(%d, %d):%d", x, z, worldID);
 	}

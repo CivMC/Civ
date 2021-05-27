@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.util;
 
 import com.google.common.base.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 
@@ -22,7 +23,7 @@ public final class KeyedUtils {
 		if (Strings.isNullOrEmpty(key)) {
 			return null;
 		}
-		final String[] parts = key.split(":");
+		final String[] parts = StringUtils.split(key, ":");
 		if (parts.length != 2) {
 			return null;
 		}
