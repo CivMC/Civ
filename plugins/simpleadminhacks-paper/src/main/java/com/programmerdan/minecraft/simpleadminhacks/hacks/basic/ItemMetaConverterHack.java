@@ -3,86 +3,62 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
-import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
-import java.util.ArrayList;
-import java.util.List;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 public class ItemMetaConverterHack extends BasicHack {
 
-	@AutoLoad
-	private boolean enabled;
-
-	public ItemMetaConverterHack(SimpleAdminHacks plugin, BasicHackConfig config) {
+	public ItemMetaConverterHack(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void invOpen(InventoryOpenEvent event) {
-		if (!enabled) {
-			return;
-		}
-		if (event.getInventory().getHolder() == null) {
+	public void convertOnInventoryOpen(final InventoryOpenEvent event) {
+		final var inventory = event.getInventory();
+		if (inventory.getHolder() == null) {
 			return; // GUI
 		}
-		Inventory inv = event.getInventory();
-		for (ItemStack item : inv.getStorageContents()) {
-			if (item == null) {
-				continue;
-			}
-			if (!item.hasItemMeta()) {
-				continue;
-			}
-			ItemMeta meta = item.getItemMeta();
-			if (meta == null) {
-				continue;
-			}
-			if (meta.hasLore()) {
-				List<BaseComponent[]> componentList = meta.getLoreComponents();
-				for (BaseComponent[] componentArray : componentList) {
-					for (BaseComponent component : componentArray) {
-						cleanseComponent(component);
-					}
-				}
-				meta.setLoreComponents(componentList);
-			}
-			if (meta.hasDisplayName()) {
-				BaseComponent[] name = meta.getDisplayNameComponent();
-				for (BaseComponent component : name) {
-					cleanseComponent(component);
-				}
-				meta.setDisplayNameComponent(name);
-			}
-			item.setItemMeta(meta);
+		for (final ItemStack item : inventory.getStorageContents()) {
+			processItem(item);
 		}
 	}
 
-	private static void cleanseComponent(BaseComponent component) {
-		if (!(component instanceof TextComponent)) {
+	public static void processItem(final ItemStack item) {
+		final var meta = item.getItemMeta();
+		if (meta == null) {
 			return;
 		}
-		TextComponent text = (TextComponent) component;
-		if (text.getText() == null || text.getText().length() == 0) {
-			return;
+		boolean displayNameWasChanged = false;
+		if (meta.hasDisplayName()) {
+			final var currentDisplayName = meta.displayName();
+			assert currentDisplayName != null;
+			if (!ChatUtils.isBaseComponent(currentDisplayName)) {
+				meta.displayName(Component.text().append(currentDisplayName).build());
+				displayNameWasChanged = true;
+			}
 		}
-		TextComponent copy = text.duplicate();
-		if (copy.getExtra() != null) {
-			copy.getExtra().clear();
+		boolean loreWasChanged = false;
+		if (meta.hasLore()) {
+			final var currentLore = meta.lore();
+			assert currentLore != null;
+			for (int i = 0, l = currentLore.size(); i < l; i++) {
+				final var loreLine = currentLore.get(i);
+				if (!ChatUtils.isBaseComponent(loreLine)) {
+					currentLore.set(i, Component.text().append(loreLine).build());
+					loreWasChanged = true;
+				}
+			}
+			if (loreWasChanged) {
+				meta.lore(currentLore);
+			}
 		}
-		List<BaseComponent> extra = text.getExtra();
-		if (extra == null) {
-			extra = new ArrayList<>();
-			text.setExtra(extra);
+		if (displayNameWasChanged || loreWasChanged) {
+			item.setItemMeta(meta);
 		}
-		extra.add(0, copy);
-		text.setText("");
 	}
 
 }
