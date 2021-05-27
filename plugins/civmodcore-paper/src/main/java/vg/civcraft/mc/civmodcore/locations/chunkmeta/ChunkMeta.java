@@ -32,7 +32,8 @@ public abstract class ChunkMeta<S extends StorageEngine> {
 		this.cacheState = isNew ? CacheState.NEW : CacheState.NORMAL;
 		this.storage = storage;
 	}
-	
+
+	@Override
 	public String toString() {
 		return String.format("%s %s Plugin: %d", chunkCoord, world, pluginID);
 	}

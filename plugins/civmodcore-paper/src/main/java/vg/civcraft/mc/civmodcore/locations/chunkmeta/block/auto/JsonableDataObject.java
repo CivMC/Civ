@@ -11,6 +11,7 @@ public abstract class JsonableDataObject<D extends JsonableDataObject<D>> extend
 
 	public abstract void concreteSerialize(JsonObject base);
 
+	@Override
 	public String serialize() {
 		JsonObject json = new JsonObject();
 		concreteSerialize(json);
