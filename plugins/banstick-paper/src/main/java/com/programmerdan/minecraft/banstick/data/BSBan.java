@@ -116,7 +116,7 @@ public final class BSBan {
 	 * @return Returns true if this ban's expiry date has passed based on the current time.
 	 */
 	public boolean hasBanExpired() {
-		return this.banEnd == null || this.banEnd.before(new Date());
+		return this.banEnd != null && this.banEnd.before(new Date());
 	}
 
 	/**
