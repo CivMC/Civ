@@ -135,6 +135,7 @@ public final class EnchantUtils {
 	 * @param value The value to search for a matching enchantment by.
 	 * @return Returns a matched enchantment or null.
 	 */
+	@SuppressWarnings("deprecation")
 	public static Enchantment getEnchantment(final String value) {
 		if (Strings.isNullOrEmpty(value)) {
 			return null;
@@ -143,8 +144,7 @@ public final class EnchantUtils {
 		if (enchantment != null) {
 			return enchantment;
 		}
-		//noinspection deprecation
-		enchantment = Enchantment.getByName(value.toUpperCase());
+		enchantment = Enchantment.getByName(value.toUpperCase()); // deprecated
 		if (enchantment != null) {
 			return enchantment;
 		}

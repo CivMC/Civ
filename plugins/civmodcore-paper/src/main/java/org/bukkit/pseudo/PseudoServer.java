@@ -68,6 +68,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("deprecation")
 public class PseudoServer implements Server {
 
 	public static final PseudoServer INSTANCE = new PseudoServer();
