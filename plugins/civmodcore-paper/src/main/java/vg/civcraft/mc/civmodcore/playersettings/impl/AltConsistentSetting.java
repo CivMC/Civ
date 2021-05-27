@@ -46,7 +46,7 @@ public class AltConsistentSetting<C extends PlayerSetting<T>, T> extends PlayerS
 
 	@Override
 	public void setValue(UUID uuid, T value) {
-		setValue(getMain(uuid), value);
+		super.setValue(getMain(uuid), value);
 	}
 
 	private static UUID getMain(UUID account) {
