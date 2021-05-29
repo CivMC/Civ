@@ -6,12 +6,12 @@
   <parent>
     <groupId>com.github.civclassic</groupId>
     <artifactId>civclassic-parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
   </parent>
 
   <groupId>vg.civcraft.mc.civmodcore</groupId>
   <artifactId>CivModCore</artifactId>
-  <version>1.8.3</version>
+  <version>1.8.4</version>
   <name>CivModCore</name>
   <url>https://github.com/Civclassic/CivModCore/</url>
 
@@ -29,7 +29,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.4</version>
+        <version>3.3.0-SNAPSHOT</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -40,10 +40,17 @@
               <artifactSet>
                 <excludes>
                   <!-- Psuedo Provided -->
-                  <exclude>it.unimi.dsi:fastutil</exclude>
-                  <exclude>co.aikar:cleaner</exclude>
+                  <exclude>com.destroystokyo.paper:paper</exclude>
                 </excludes>
               </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/**/*</exclude>
+                  </excludes>
+                </filter>
+              </filters>
             </configuration>
           </execution>
         </executions>
@@ -56,7 +63,6 @@
       <groupId>com.destroystokyo.paper</groupId>
       <artifactId>paper</artifactId>
       <version>1.16.5-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>io.papermc</groupId>
@@ -85,6 +91,7 @@
       <version>3.7.2</version>
     </dependency>
     <dependency>
+      <!-- https://jitpack.io/#IPVP-MC/canvas -->
       <groupId>com.github.IPVP-MC</groupId>
       <artifactId>canvas</artifactId>
       <version>91ec97f076</version>
@@ -108,17 +115,6 @@
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
       <version>3.0.2</version>
-    </dependency>
-    <!-- Shaded into Paper -->
-    <dependency>
-      <groupId>it.unimi.dsi</groupId>
-      <artifactId>fastutil</artifactId>
-      <version>8.2.2</version> <!-- https://github.com/PaperMC/Paper/blob/master/Paper-MojangAPI/pom.xml#L68 -->
-    </dependency>
-    <dependency>
-      <groupId>co.aikar</groupId>
-      <artifactId>cleaner</artifactId>
-      <version>1.0-SNAPSHOT</version> <!-- https://github.com/PaperMC/Paper/blob/master/Spigot-Server-Patches/0001-POM-Changes.patch#L108 -->
     </dependency>
     <!-- For Testing -->
     <dependency>

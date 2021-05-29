@@ -6,7 +6,7 @@ CivModCore is derived from Humbug.
 
 ## Versions
 
-* 1.8.2 - Paper 1.16.5
+* 1.8.4 - Paper 1.16.5
 
 * [1.8.0](https://github.com/CivClassic/CivModCore/tree/08ad95297eb041cf99bd0eb0aaffc70ca87af4f2) - Paper 1.16.1
 
@@ -57,6 +57,6 @@ Include the following in your dependency list in your plugin's POM file:
     <dependency>
         <groupId>vg.civcraft.mc.civmodcore</groupId>
         <artifactId>CivModCore</artifactId>
-        <version>1.8.2</version>
+        <version>1.8.4</version>
         <scope>provided</scope>
     </dependency>
