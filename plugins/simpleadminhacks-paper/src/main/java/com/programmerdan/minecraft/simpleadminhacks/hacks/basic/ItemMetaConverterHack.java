@@ -28,6 +28,9 @@ public class ItemMetaConverterHack extends BasicHack {
 	}
 
 	public static void processItem(final ItemStack item) {
+		if (item == null) {
+			return;
+		}
 		final var meta = item.getItemMeta();
 		if (meta == null) {
 			return;
