@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -19,12 +20,15 @@ import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.locations.global.LocationTrackable;
+import vg.civcraft.mc.civmodcore.util.CivLogger;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class Snitch extends LocationTrackable {
+
+	private static final CivLogger LOGGER = CivLogger.getLogger(Snitch.class);
 
 	private int snitchId;
 	private String name;
@@ -220,13 +224,19 @@ public class Snitch extends LocationTrackable {
 	 * Checks whether both the block and the reinforcement of the snitch still exist and deletes it if not
 	 */
 	public boolean checkPhysicalIntegrity() {
-		Reinforcement rein = ReinforcementLogic.getReinforcementAt(getLocation());
+		final Reinforcement rein = ReinforcementLogic.getReinforcementAt(getLocation());
 		if (rein == null) {
-			//no reinforcement at all
+			// has no reinforcement at all
 			destroy(null, Cause.CLEANUP);
 			return false;
 		}
-		if (!rein.getGroup().getGroupIds().contains(this.groupID)) {
+		final Group group = rein.getGroup();
+		if (group == null) {
+			LOGGER.log(Level.WARNING, "Snitch [" + this + "] [name:" + this.name + "] " +
+					"cannot find group with id [" + this.groupID + "]");
+			return false;
+		}
+		if (!group.getGroupIds().contains(this.groupID)) {
 			//different group
 			destroy(null, Cause.CLEANUP);
 			return false;
