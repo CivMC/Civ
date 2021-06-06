@@ -132,7 +132,9 @@ public class ActivityMap {
 						int nz = scaledZ + j;
 						int cantor = integerCantor(nx, nz);
 						Instant now = Instant.now();
-						list.put(cantor, now);
+						synchronized (list) {
+							list.put(cantor, now);
+						}
 
 						this.updates.add(new Update(worldIdManager.getInternalWorldId(world),
 								group, nx, nz, now));
