@@ -167,18 +167,20 @@ public class ActivityMap {
 			int scaledX = location.getBlockX() / resolution;
 			int scaledZ = location.getBlockZ() / resolution;
 
-			Instant get = activities.get(integerCantor(scaledX, scaledZ));
-			if (get == null) {
-				Instant activity = Instant.ofEpochMilli(group.getActivityTimeStamp());
-				if (activity.compareTo(defaultActivity) <= 0) {
-					// If the group was last active before activity map was added, use that time for decay
-					get = activity;
-				} else {
-					// If the group has been active since, use the activity map decay
-					get = defaultActivity;
+			synchronized (activities) {
+				Instant get = activities.get(integerCantor(scaledX, scaledZ));
+				if (get == null) {
+					Instant activity = Instant.ofEpochMilli(group.getActivityTimeStamp());
+					if (activity.compareTo(defaultActivity) <= 0) {
+						// If the group was last active before activity map was added, use that time for decay
+						get = activity;
+					} else {
+						// If the group has been active since, use the activity map decay
+						get = defaultActivity;
+					}
 				}
+				return Optional.of(get);
 			}
-			return Optional.of(get);
 		} catch (ExecutionException e) {
 			e.printStackTrace();
 			return Optional.empty();
