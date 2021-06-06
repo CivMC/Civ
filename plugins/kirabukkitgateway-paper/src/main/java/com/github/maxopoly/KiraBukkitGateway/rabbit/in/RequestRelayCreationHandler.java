@@ -3,12 +3,10 @@ package com.github.maxopoly.KiraBukkitGateway.rabbit.in;
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitInput;
 import com.google.gson.JsonObject;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class RequestRelayCreationHandler extends RabbitInput {
@@ -19,28 +17,43 @@ public class RequestRelayCreationHandler extends RabbitInput {
 
 	@Override
 	public void handle(JsonObject input) {
-		UUID sender = UUID.fromString(input.get("sender").getAsString());
-		String groupName = input.get("group").getAsString();
-		Group group = GroupManager.getGroup(groupName);
-		long channelID = input.get("channelID").getAsLong();
-		long guildID = input.get("guildID").getAsLong();
-		if (group == null) {
-			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(sender,
+		final var senderUUID = UUID.fromString(input.get("sender").getAsString());
+		final var groupName = input.get("group").getAsString();
+		final long channelID = input.get("channelID").getAsLong();
+		final long guildID = input.get("guildID").getAsLong();
+
+		final var foundGroup = GroupManager.getGroup(groupName);
+		if (foundGroup == null) {
+			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(senderUUID,
 					"The group " + groupName + " does not exist", -1);
 			return;
 		}
-		if (!NameAPI.getGroupManager().hasAccess(group, sender, PermissionType.getPermission("KIRA_MANAGE_CHANNEL"))) {
-			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(sender,
-					"You don't have the required permission KIRA_MANAGE_CHANNEL for the group " + group.getName(), -1);
+		if (foundGroup.isDisciplined()) {
+			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(senderUUID,
+					"You cannot relay that group, it's disciplined.", -1);
 			return;
 		}
-		GroupManager gm = NameAPI.getGroupManager();
-		PermissionType perm = PermissionType.getPermission("READ_CHAT");
-		Collection<UUID> members = new HashSet<>();
-		group.getAllMembers().stream().filter(m -> gm.hasAccess(group, m, perm)).forEach(m -> members.add(m));
-		KiraBukkitGatewayPlugin.getInstance().getRabbit().createGroupChatChannel(group.getName(), members, sender,
-				guildID, channelID);
-		KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(sender,
+
+		final var groupManager = NameAPI.getGroupManager();
+		final var kiraManagePermission = PermissionType.getPermission("KIRA_MANAGE_CHANNEL");
+		if (!groupManager.hasAccess(foundGroup, senderUUID, kiraManagePermission)) {
+			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(senderUUID,
+					"You don't have the required permission KIRA_MANAGE_CHANNEL " +
+							"for the group " + foundGroup.getName(), -1);
+			return;
+		}
+
+		final var readChatPermission = PermissionType.getPermission("READ_CHAT");
+		final var recipients = new HashSet<UUID>();
+
+		foundGroup.getAllMembers().stream()
+				.filter(member -> groupManager.hasAccess(foundGroup, member, readChatPermission))
+				.forEach(recipients::add);
+
+		KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(senderUUID,
 				"Confirmed permissions, proceeding with channel setup...", -1);
+
+		KiraBukkitGatewayPlugin.getInstance().getRabbit().createGroupChatChannel(
+				foundGroup.getName(), recipients, senderUUID, guildID, channelID);
 	}
 }
