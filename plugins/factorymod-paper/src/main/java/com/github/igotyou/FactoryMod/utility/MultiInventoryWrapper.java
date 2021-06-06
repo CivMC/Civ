@@ -93,14 +93,14 @@ public class MultiInventoryWrapper implements Inventory {
 	@Override
 	public @NotNull HashMap<Integer, ItemStack> addItem(@NotNull ItemStack... itemStacks) throws IllegalArgumentException {
 		HashMap<Integer, ItemStack> result = null;
-		for (int i = 0; i < wrapped.length; i++) {
-			result = wrapped[i].addItem(itemStacks);
+		for (int invi = 0; invi < wrapped.length; invi++) {
+			result = wrapped[invi].addItem(itemStacks);
 			itemStacks = new ItemStack[result.size()];
-			int index = 0;
+			int itemi = 0;
 			Iterator<Map.Entry<Integer, ItemStack>> eit = result.entrySet().iterator();
-			for (; eit.hasNext() && index < itemStacks.length; index++) {
+			for (; eit.hasNext() && itemi < itemStacks.length; itemi++) {
 				Map.Entry<Integer, ItemStack> entry = eit.next();
-				itemStacks[i] = entry.getValue();
+				itemStacks[itemi] = entry.getValue();
 			}
 		}
 		return result == null ? new HashMap<>() : result;
@@ -109,14 +109,14 @@ public class MultiInventoryWrapper implements Inventory {
 	@Override
 	public @NotNull HashMap<Integer, ItemStack> removeItem(@NotNull ItemStack... itemStacks) throws IllegalArgumentException {
 		HashMap<Integer, ItemStack> result = null;
-		for (int i = 0; i < wrapped.length; i++) {
-			result = wrapped[i].removeItem(itemStacks);
+		for (int invi = 0; invi < wrapped.length; invi++) {
+			result = wrapped[invi].removeItem(itemStacks);
 			itemStacks = new ItemStack[result.size()];
-			int index = 0;
+			int itemi = 0;
 			Iterator<Map.Entry<Integer, ItemStack>> eit = result.entrySet().iterator();
-			for (; eit.hasNext() && index < itemStacks.length; index++) {
+			for (; eit.hasNext() && itemi < itemStacks.length; itemi++) {
 				Map.Entry<Integer, ItemStack> entry = eit.next();
-				itemStacks[i] = entry.getValue();
+				itemStacks[itemi] = entry.getValue();
 			}
 		}
 		return result == null ? new HashMap<>() : result;
