@@ -27,7 +27,7 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public class ActivityMap {
 
-	private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS activity_map ("
+	private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ctdl_activity_map ("
 			+ "group_id INT, "
 			+ "world SMALLINT, "
 			+ "x INT, "
@@ -35,8 +35,8 @@ public class ActivityMap {
 			+ "resolution INT, "
 			+ "activity TIMESTAMP, "
 			+ "PRIMARY KEY(group_id, world, x, z, resolution))";
-	private static final String GET_ACTIVITY = "SELECT x, z, activity FROM activity_map WHERE group_id = ? AND world = ? AND resolution = ?";
-	private static final String UPDATE_ACTIVITY = "INSERT INTO activity_map (group_id, world, x, z, resolution, activity) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE activity = ?";
+	private static final String GET_ACTIVITY = "SELECT x, z, activity FROM ctdl_activity_map WHERE group_id = ? AND world = ? AND resolution = ?";
+	private static final String UPDATE_ACTIVITY = "INSERT INTO ctdl_activity_map (group_id, world, x, z, resolution, activity) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE activity = ?";
 
 	private final WorldIDManager worldIdManager;
 	// Must be array list so we can resize it
