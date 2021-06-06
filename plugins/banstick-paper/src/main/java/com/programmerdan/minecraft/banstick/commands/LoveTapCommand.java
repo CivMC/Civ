@@ -49,12 +49,11 @@ public class LoveTapCommand  implements CommandExecutor {
 		Boolean hasCIDR = locCIDR > -1; 
 		Integer cidr = (hasCIDR) ? Integer.valueOf(preTap.substring(locCIDR + 1)) : null;
 		String toTap = (hasCIDR) ? preTap.substring(0, locCIDR) : preTap;
-		Integer sessionLimit;
+		Integer sessionLimit = Integer.MAX_VALUE;
 		try {
 			sessionLimit = Integer.valueOf(arguments[1]);
 		} catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
-			sessionLimit = 25;
-			sender.sendMessage(ChatColor.RED + "You didn't enter a number of sessions properly, defaulting to 25");
+			sender.sendMessage(ChatColor.RED + "You didn't enter a number of sessions properly, defaulting to all");
 		}
 
 		BanStick.getPlugin().debug("preTap: {0}, CIDR? {1}, toTap: {2}", 
@@ -216,7 +215,11 @@ public class LoveTapCommand  implements CommandExecutor {
 				sb.append(ChatColor.AQUA).append("  None.\n");
 			} else {
 				for (int i = 0; i <= sessionLimit - 1; i++) {
-					sb.append(ChatColor.WHITE).append("  ").append(sessions.get(i).toString()).append('\n');
+					try {
+						sb.append(ChatColor.WHITE).append("  ").append(sessions.get(i).toString()).append('\n');
+					} catch (IndexOutOfBoundsException exception) {
+						break;
+					}
 				}
 			}
 			
@@ -303,8 +306,12 @@ public class LoveTapCommand  implements CommandExecutor {
 						.append("(First Join: ").append(ChatColor.WHITE).append(player.getFirstAdd())
 						.append(ChatColor.DARK_AQUA).append(")\n");
 					for (int i = 0; i <= sessionLimit - 1; i++) {
-						sb.append(ChatColor.WHITE + "  " + history.get(i).toFullString(
-								sender.hasPermission("banstick.ips")) + "\n");
+						try {
+							sb.append(ChatColor.WHITE + "  " + history.get(i).toFullString(
+									sender.hasPermission("banstick.ips")) + "\n");
+						} catch (IndexOutOfBoundsException exception) {
+							break;
+						}
 					}
 					sb.append("\n");
 				}
