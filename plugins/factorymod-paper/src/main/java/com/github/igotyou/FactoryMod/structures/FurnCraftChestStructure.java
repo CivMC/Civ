@@ -30,10 +30,10 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 				BlockFace chestFace = center.getFace(b);
 				if (chestFace == null) continue; // fricc off nullcheck
 				BlockFace furnaceFace = chestFace.getOppositeFace();
-				if (center.getRelative(furnaceFace).getType() == Material.FURNACE) {
+				Block furnaceBlock = center.getRelative(furnaceFace);
+				if (furnaceBlock.getType() == Material.FURNACE) {
 					chest = b.getLocation();
-					furnace = center.getRelative(BlockFace.UP)
-							.getLocation();
+					furnace = furnaceBlock.getLocation();
 					break;
 				}
 			}
