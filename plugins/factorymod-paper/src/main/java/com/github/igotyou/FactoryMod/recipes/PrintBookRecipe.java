@@ -1,9 +1,12 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -33,35 +36,34 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 			ItemMap input,
 			ItemMap printingPlate,
 			int outputAmount
-			) 
-	{
+	) {
 		super(identifier, name, productionTime, input);
 		this.printingPlate = printingPlate;
 		this.outputAmount = outputAmount;
-	}	
-
-	@Override
-	public boolean enoughMaterialAvailable(Inventory i) {
-		return this.input.isContainedIn(i) && getPrintingPlateItemStack(i, this.printingPlate) != null;
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		logBeforeRecipeRun(i, fccf);
+	public boolean enoughMaterialAvailable(Inventory inputInv) {
+		return this.input.isContainedIn(inputInv) && getPrintingPlateItemStack(inputInv, this.printingPlate) != null;
+	}
 
-		ItemStack printingPlateStack = getPrintingPlateItemStack(i, this.printingPlate);
+	@Override
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
+
+		ItemStack printingPlateStack = getPrintingPlateItemStack(inputInv, this.printingPlate);
 		ItemMap toRemove = this.input.clone();
 
 		if (printingPlateStack != null
-				&& toRemove.isContainedIn(i)
-				&& toRemove.removeSafelyFrom(i)
-				)
-		{
-			ItemStack book = createBook(printingPlateStack, this.outputAmount);			
-			i.addItem(book);
+				&& toRemove.isContainedIn(inputInv)
+				&& toRemove.removeSafelyFrom(inputInv)
+		) {
+			ItemStack book = createBook(printingPlateStack, this.outputAmount);
+			outputInv.addItem(book);
 		}
 
-		logAfterRecipeRun(i, fccf);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 
@@ -90,7 +92,7 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 
 		ItemStack printingPlateStack = getPrintingPlateItemStack(i, this.printingPlate);
 
-		if(printingPlateStack != null) {
+		if (printingPlateStack != null) {
 			result.add(printingPlateStack.clone());
 		}
 
@@ -125,13 +127,12 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 	protected ItemStack getPrintingPlateItemStack(Inventory i, ItemMap printingPlate) {
 		ItemMap items = new ItemMap(i).getStacksByMaterial(printingPlate.getItemStackRepresentation().get(0).getType());
 
-		for(ItemStack is : items.getItemStackRepresentation()) {
+		for (ItemStack is : items.getItemStackRepresentation()) {
 			ItemMeta itemMeta = is.getItemMeta();
 
-			if(itemMeta.getDisplayName().equals(PrintingPlateRecipe.itemName)
+			if (itemMeta.getDisplayName().equals(PrintingPlateRecipe.itemName)
 					&& itemMeta.hasEnchant(Enchantment.DURABILITY)
-					)
-			{
+			) {
 				return is;
 			}
 		}
@@ -143,7 +144,7 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 	public String getTypeIdentifier() {
 		return "PRINTBOOK";
 	}
-	
+
 	@Override
 	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemStack is = new ItemStack(Material.WRITTEN_BOOK, outputAmount);

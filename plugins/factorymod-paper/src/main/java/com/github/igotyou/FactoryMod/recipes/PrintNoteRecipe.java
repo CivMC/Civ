@@ -1,13 +1,15 @@
 /**
  * @author Aleksey Terzi
- *
  */
 
 package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -42,36 +44,35 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 			String identifier,
 			String name,
 			int productionTime,
-			ItemMap input, 
+			ItemMap input,
 			ItemMap printingPlate,
 			int outputAmount,
 			boolean secureNote,
 			String title
-			)
-	{
+	) {
 		super(identifier, name, productionTime, input, printingPlate, outputAmount);
 
 		this.secureNote = secureNote;
 
-		if(title != null && title.length() > 0) {
+		if (title != null && title.length() > 0) {
 			this.title = title;
 		} else {
-			this.title = secureNote ? secureNoteName: pamphletName;
+			this.title = secureNote ? secureNoteName : pamphletName;
 		}
-	}	
+	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		logBeforeRecipeRun(i, fccf);
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
 
-		ItemStack printingPlateStack = getPrintingPlateItemStack(i, getPrintingPlate());
+		ItemStack printingPlateStack = getPrintingPlateItemStack(inputInv, getPrintingPlate());
 		ItemMap toRemove = this.input.clone();
 
 		if (printingPlateStack != null
-				&& toRemove.isContainedIn(i)
-				&& toRemove.removeSafelyFrom(i)
-				)
-		{
+				&& toRemove.isContainedIn(inputInv)
+				&& toRemove.removeSafelyFrom(inputInv)
+		) {
 			BookInfo info = getBookInfo(printingPlateStack);
 			ItemStack paper = new ItemStack(Material.PAPER, getOutputAmount());
 
@@ -80,21 +81,21 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 			paperMeta.setLore(info.lines);
 			paper.setItemMeta(paperMeta);
 
-			i.addItem(paper);
+			outputInv.addItem(paper);
 		}
 
-		logAfterRecipeRun(i, fccf);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 
 	private BookInfo getBookInfo(ItemStack printingPlateStack) {
 		ItemStack book = createBook(printingPlateStack, 1);
-		BookMeta bookMeta = (BookMeta)book.getItemMeta();
-		String text = bookMeta.getPageCount() > 0 ? bookMeta.getPage(1): "";
+		BookMeta bookMeta = (BookMeta) book.getItemMeta();
+		String text = bookMeta.getPageCount() > 0 ? bookMeta.getPage(1) : "";
 		String[] lines = text.split("\n");
 		List<String> fixedLines = new ArrayList<>();
 
-		for(String line : lines) {
+		for (String line : lines) {
 			fixedLines.add(ChatColor.GRAY + line
 					.replaceAll(ChatColor.BLACK.toString(), ChatColor.GRAY.toString())
 					.replaceAll(ChatColor.RESET.toString(), ChatColor.GRAY.toString()));
@@ -104,9 +105,9 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 
 		BookInfo info = new BookInfo();
 		info.lines = fixedLines;
-		info.title = bookTitle != null && bookTitle.length() > 0 ? bookTitle: this.title;
+		info.title = bookTitle != null && bookTitle.length() > 0 ? bookTitle : this.title;
 
-		if(this.secureNote) {
+		if (this.secureNote) {
 			TagManager printingPlateTag = new TagManager(printingPlateStack);
 			String serialNumber = printingPlateTag.getString("SN");
 			info.lines.add(serialNumber);

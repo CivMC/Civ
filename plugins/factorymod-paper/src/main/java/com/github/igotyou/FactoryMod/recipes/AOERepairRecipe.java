@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -133,11 +135,10 @@ public class AOERepairRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		Chest c = (Chest) i.getHolder();
-		Location loc = c.getLocation();
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		Location loc = fccf.getChest().getLocation();
 		List<FurnCraftChestFactory> facs = getNearbyFactoriesSortedByDistance(loc);
-		int essenceCount = new ItemMap(i).getAmount(essence);
+		int essenceCount = new ItemMap(inputInv).getAmount(essence);
 		for (FurnCraftChestFactory fac : facs) {
 			PercentageHealthRepairManager rm = (PercentageHealthRepairManager) fac
 					.getRepairManager();
@@ -154,7 +155,7 @@ public class AOERepairRecipe extends InputRecipe {
 				Inventory targetInv = ((InventoryHolder) (fac.getChest()
 						.getState())).getInventory();
 				if (remMap.fitsIn(targetInv)) {
-					if (remMap.removeSafelyFrom(i)) {
+					if (remMap.removeSafelyFrom(inputInv)) {
 						targetInv.addItem(remStack);
 						for (IRecipe rec : fac.getRecipes()) {
 							if (rec instanceof RepairRecipe) {

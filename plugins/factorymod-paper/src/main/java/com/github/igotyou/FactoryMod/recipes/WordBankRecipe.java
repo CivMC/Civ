@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -47,8 +49,9 @@ public class WordBankRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory inventory, FurnCraftChestFactory factory) {
-		ItemStack toApply = inventory.getItem(0);
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		ItemStack toApply = inputInv.getItem(0);
 		if (!ItemUtils.isValidItem(toApply)) {
 			return false;
 		}
@@ -56,13 +59,13 @@ public class WordBankRecipe extends InputRecipe {
 			return false;
 		}
 		ItemMap input = new ItemMap();
-		for (int i = 1; i < inventory.getSize(); i++) {
-			ItemStack is = inventory.getItem(i);
+		for (int i = 1; i < inputInv.getSize(); i++) {
+			ItemStack is = inputInv.getItem(i);
 			if (!ItemUtils.isValidItem(is)) {
 				continue;
 			}
 			input.addItemStack(is);
-			inventory.setItem(i, null);
+			inputInv.setItem(i, null);
 		}
 		//tell player what the recipe consumed
 		StringBuilder sb = new StringBuilder();
@@ -77,8 +80,8 @@ public class WordBankRecipe extends InputRecipe {
 		String result = sb.substring(0, sb.length() - 2);
 		String name = getHash(input);
 		ItemUtils.setDisplayName(toApply, name);
-		if (factory.getActivator() != null) {
-			Player player = Bukkit.getPlayer(factory.getActivator());
+		if (fccf.getActivator() != null) {
+			Player player = Bukkit.getPlayer(fccf.getActivator());
 			if (player != null) {
 				player.sendMessage(result + " into " + name);
 			}
@@ -121,16 +124,16 @@ public class WordBankRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean enoughMaterialAvailable(Inventory inventory) {
-		ItemStack toApply = inventory.getItem(0);
+	public boolean enoughMaterialAvailable(Inventory inputInv) {
+		ItemStack toApply = inputInv.getItem(0);
 		if (!ItemUtils.isValidItem(toApply)) {
 			return false;
 		}
 		if (ItemUtils.getDisplayName(toApply) != null) {
 			return false;
 		}
-		for (int i = 1; i < inventory.getSize(); i++) {
-			ItemStack is = inventory.getItem(i);
+		for (int i = 1; i < inputInv.getSize(); i++) {
+			ItemStack is = inputInv.getItem(i);
 			if (!ItemUtils.isValidItem(is)) {
 				continue;
 			}

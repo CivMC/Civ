@@ -99,6 +99,8 @@ public class FileHandler {
 						config.set(current + ".runcounts." + i.getName(), fccf.getRunCount(i));
 						config.set(current + ".recipeLevels." + i.getName(), fccf.getRecipeLevel(i));
 					}
+					config.set(current + ".furnace-io-mask", fccf.getFurnaceIOSelector().toShortMask());
+					config.set(current + ".table-io-mask", fccf.getTableIOSelector().toShortMask());
 				} else if (f instanceof Pipe) {
 					Pipe p = (Pipe) f;
 					config.set(current + ".type", "PIPE");
@@ -258,9 +260,6 @@ public class FileHandler {
 				}
 
 				boolean autoSelect = current.getBoolean("autoSelect", false);
-				if (recipes == null) {
-					recipes = new LinkedList<>();
-				}
 				FurnCraftChestFactory fac = (FurnCraftChestFactory) egg.revive(blocks, health, selectedRecipe,
 						runtime, breakTime, recipes);
 				String activator = current.getString("activator", "null");
@@ -297,6 +296,10 @@ public class FileHandler {
 					}
 				}
 				fac.setAutoSelect(autoSelect);
+				IOSelector furnaceIoSelector = IOSelector.fromShortMask((short) current.getInt("furnace-io-mask", 0));
+				fac.setFurnaceIOSelector(furnaceIoSelector);
+				IOSelector tableIoSelector = IOSelector.fromShortMask((short) current.getInt("table-io-mask", 0));
+				fac.setTableIOSelector(tableIoSelector);
 				manager.addFactory(fac);
 				counter++;
 				break;

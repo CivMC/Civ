@@ -15,6 +15,7 @@ import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
+import com.github.igotyou.FactoryMod.utility.IOSelector;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,10 +23,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
@@ -53,6 +57,8 @@ public class FurnCraftChestFactory extends Factory {
 	private UUID activator;
 	private double citadelBreakReduction;
 	private boolean autoSelect;
+	private IOSelector furnaceIoSelector;
+	private IOSelector tableIoSelector;
 
 	private static HashSet<FurnCraftChestFactory> pylonFactories;
 
@@ -66,6 +72,8 @@ public class FurnCraftChestFactory extends Factory {
 		this.recipes = new ArrayList<>();
 		this.citadelBreakReduction = citadelBreakReduction;
 		this.autoSelect = false;
+		this.furnaceIoSelector = new IOSelector();
+		this.tableIoSelector = new IOSelector();
 		for (IRecipe rec : recipes) {
 			addRecipe(rec);
 		}
@@ -90,6 +98,90 @@ public class FurnCraftChestFactory extends Factory {
 		}
 		Chest chestBlock = (Chest) (getChest().getState());
 		return chestBlock.getInventory();
+	}
+
+	public Inventory getInputInventory() {
+		if (!furnaceIoSelector.hasInputs() && !tableIoSelector.hasInputs()) {
+			return getInventory();
+		}
+		FurnCraftChestStructure fccs = (FurnCraftChestStructure) getMultiBlockStructure();
+		ArrayList<Inventory> invs = new ArrayList<>(12);
+		Block fblock = getFurnace();
+		if (fblock.getType() != Material.FURNACE) {
+			return null;
+		}
+		Furnace fstate = (Furnace) fblock.getState();
+		org.bukkit.block.data.type.Furnace fdata = (org.bukkit.block.data.type.Furnace) fstate.getBlockData();
+		BlockFace facing = fdata.getFacing();
+		for (BlockFace relativeFace : furnaceIoSelector.getInputs(facing)) {
+			Block relBlock = fblock.getRelative(relativeFace);
+			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
+				invs.add(((Chest) relBlock.getState()).getInventory());
+			}
+		}
+		Block tblock = fccs.getCraftingTable();
+		for (BlockFace relativeFace : tableIoSelector.getInputs(facing)) {
+			Block relBlock = tblock.getRelative(relativeFace);
+			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
+				invs.add(((Chest) relBlock.getState()).getInventory());
+			}
+		}
+		MultiInventoryWrapper wrapper = new MultiInventoryWrapper(invs);
+		if (wrapper.getSize() == 0) {
+			return getInventory();
+		} else {
+			return wrapper;
+		}
+	}
+
+	public Inventory getOutputInventory() {
+		if (!furnaceIoSelector.hasOutputs() && !tableIoSelector.hasOutputs()) {
+			return getInventory();
+		}
+		FurnCraftChestStructure fccs = (FurnCraftChestStructure) getMultiBlockStructure();
+		ArrayList<Inventory> invs = new ArrayList<>(12);
+		Block fblock = getFurnace();
+		if (fblock.getType() != Material.FURNACE) {
+			return null;
+		}
+		Furnace fstate = (Furnace) fblock.getState();
+		org.bukkit.block.data.type.Furnace fdata = (org.bukkit.block.data.type.Furnace) fstate.getBlockData();
+		BlockFace facing = fdata.getFacing();
+		for (BlockFace relativeFace : furnaceIoSelector.getOutputs(facing)) {
+			Block relBlock = fblock.getRelative(relativeFace);
+			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
+				invs.add(((Chest) relBlock.getState()).getInventory());
+			}
+		}
+		Block tblock = fccs.getCraftingTable();
+		for (BlockFace relativeFace : tableIoSelector.getOutputs(facing)) {
+			Block relBlock = tblock.getRelative(relativeFace);
+			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
+				invs.add(((Chest) relBlock.getState()).getInventory());
+			}
+		}
+		MultiInventoryWrapper wrapper = new MultiInventoryWrapper(invs);
+		if (wrapper.getSize() == 0) {
+			return getInventory();
+		} else {
+			return wrapper;
+		}
+	}
+
+	public void setFurnaceIOSelector(IOSelector ioSelector) {
+		this.furnaceIoSelector = ioSelector;
+	}
+
+	public IOSelector getFurnaceIOSelector() {
+		return furnaceIoSelector;
+	}
+
+	public void setTableIOSelector(IOSelector ioSelector) {
+		this.tableIoSelector = ioSelector;
+	}
+
+	public IOSelector getTableIOSelector() {
+		return tableIoSelector;
 	}
 
 	/**
@@ -362,11 +454,11 @@ public class FurnCraftChestFactory extends Factory {
 						// this if else might look a bit weird, but because
 						// upgrading changes the current recipe and a lot of
 						// other stuff, this is needed
-						currentRecipe.applyEffect(getInventory(), this);
+						currentRecipe.applyEffect(getInputInventory(), getOutputInventory(), this);
 						deactivate();
 						return;
 					} else {
-						if (currentRecipe.applyEffect(getInventory(), this)) {
+						if (currentRecipe.applyEffect(getInputInventory(), getOutputInventory(), this)) {
 							runCount.put(currentRecipe, runCount.get(currentRecipe) + 1);
 						} else {
 							sendActivatorMessage(ChatColor.RED + currentRecipe.getName() + " in " + name + " deactivated because it ran out of storage space");
@@ -506,12 +598,12 @@ public class FurnCraftChestFactory extends Factory {
 	 *         selected recipe at least once
 	 */
 	public boolean hasInputMaterials() {
-		return currentRecipe.enoughMaterialAvailable(getInventory());
+		return currentRecipe.enoughMaterialAvailable(getInputInventory());
 	}
 
 	public IRecipe getAutoSelectRecipe() {
 		for (IRecipe rec : recipes) {
-			if (rec.enoughMaterialAvailable(getInventory())) {
+			if (rec.enoughMaterialAvailable(getInputInventory())) {
 				return rec;
 			}
 		}
