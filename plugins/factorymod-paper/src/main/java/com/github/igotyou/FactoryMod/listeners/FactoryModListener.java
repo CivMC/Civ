@@ -9,7 +9,10 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -59,14 +62,28 @@ public class FactoryModListener implements Listener {
 	}
 
 	@EventHandler
-	public void redstoneChange(BlockRedstoneEvent e) {
-		if (e.getOldCurrent() == e.getNewCurrent()) {
+	public void redstoneChange(BlockRedstoneEvent evt) {
+		if (evt.getOldCurrent() == evt.getNewCurrent()) {
 			return;
 		}
-		for (BlockFace face : WorldUtils.ALL_SIDES) {
-			Factory f = manager.getFactoryAt(e.getBlock().getRelative(face));
+		Block powerSource = evt.getBlock();
+		Material psType = powerSource.getType();
+		if (psType == Material.REPEATER || psType == Material.COMPARATOR) {
+			BlockData psData = powerSource.getState().getBlockData();
+			BlockFace direction = ((Directional) psData).getFacing();
+			// repeaters "face" their input apparently
+			Block poweredBlock = powerSource.getRelative(direction.getOppositeFace());
+			Factory f = manager.getFactoryAt(poweredBlock);
 			if (f != null) {
-				f.getInteractionManager().redStoneEvent(e, e.getBlock().getRelative(face));
+				f.getInteractionManager().redStoneEvent(evt, poweredBlock);
+			}
+		} else {
+			for (BlockFace direction : WorldUtils.ALL_SIDES) {
+				Block poweredBlock = powerSource.getRelative(direction);
+				Factory f = manager.getFactoryAt(poweredBlock);
+				if (f != null) {
+					f.getInteractionManager().redStoneEvent(evt, poweredBlock);
+				}
 			}
 		}
 	}
