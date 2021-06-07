@@ -11,6 +11,7 @@ import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import inet.ipaddr.IPAddressStringException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,6 +49,12 @@ public class LoveTapCommand  implements CommandExecutor {
 		Boolean hasCIDR = locCIDR > -1; 
 		Integer cidr = (hasCIDR) ? Integer.valueOf(preTap.substring(locCIDR + 1)) : null;
 		String toTap = (hasCIDR) ? preTap.substring(0, locCIDR) : preTap;
+		Integer sessionLimit = Integer.MAX_VALUE;
+		try {
+			sessionLimit = Integer.valueOf(arguments[1]);
+		} catch (NumberFormatException | ArrayIndexOutOfBoundsException ex) {
+			sender.sendMessage(ChatColor.RED + "You didn't enter a number of sessions properly, defaulting to all");
+		}
 
 		BanStick.getPlugin().debug("preTap: {0}, CIDR? {1}, toTap: {2}", 
 				preTap, cidr, toTap);
@@ -207,8 +214,12 @@ public class LoveTapCommand  implements CommandExecutor {
 			if (sessions == null || sessions.isEmpty()) {
 				sb.append(ChatColor.AQUA).append("  None.\n");
 			} else {
-				for (BSSession session : sessions) {
-					sb.append(ChatColor.WHITE).append("  ").append(session.toString()).append('\n');
+				for (int i = 0; i <= sessionLimit - 1; i++) {
+					try {
+						sb.append(ChatColor.WHITE).append("  ").append(sessions.get(i).toString()).append('\n');
+					} catch (IndexOutOfBoundsException exception) {
+						break;
+					}
 				}
 			}
 			
@@ -290,12 +301,17 @@ public class LoveTapCommand  implements CommandExecutor {
 				
 				StringBuilder sb = new StringBuilder();
 				if (history != null) {
+					Collections.reverse(history);
 					sb.append(ChatColor.BLUE).append("Session History: ").append(ChatColor.DARK_AQUA)
 						.append("(First Join: ").append(ChatColor.WHITE).append(player.getFirstAdd())
 						.append(ChatColor.DARK_AQUA).append(")\n");
-					for (BSSession histRecord : history) {
-						sb.append(ChatColor.WHITE + "  " + histRecord.toFullString(
-								sender.hasPermission("banstick.ips")) + "\n");
+					for (int i = 0; i <= sessionLimit - 1; i++) {
+						try {
+							sb.append(ChatColor.WHITE + "  " + history.get(i).toFullString(
+									sender.hasPermission("banstick.ips")) + "\n");
+						} catch (IndexOutOfBoundsException exception) {
+							break;
+						}
 					}
 					sb.append("\n");
 				}

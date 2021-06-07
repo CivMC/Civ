@@ -34,10 +34,10 @@ commands:
     alias: bstl
     permission: banstick.lovetap
     usage: |
-      /<command> [name/uuid]
-      /<command> [name/uuid]/[CIDR]
-      /<command> [ip]
-      /<command> [ip]/[CIDR]
+      /<command> [name/uuid] [number of sessions]
+      /<command> [name/uuid]/[CIDR] [number of sessions]
+      /<command> [ip] [number of sessions]
+      /<command> [ip]/[CIDR] [number of sessions]
   dowsingrod:
     description: Investigate breakdown of networks by up to three attributes
     aliases: [bsdr, diviningrod]
