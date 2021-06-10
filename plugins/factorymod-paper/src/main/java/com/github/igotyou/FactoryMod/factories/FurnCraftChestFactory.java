@@ -60,6 +60,7 @@ public class FurnCraftChestFactory extends Factory {
 	private boolean autoSelect;
 	private IOSelector furnaceIoSelector;
 	private IOSelector tableIoSelector;
+	private UiMenuMode uiMenuMode;
 
 	private static HashSet<FurnCraftChestFactory> pylonFactories;
 
@@ -157,6 +158,14 @@ public class FurnCraftChestFactory extends Factory {
 
 	public IOSelector getTableIOSelector() {
 		return tableIoSelector;
+	}
+
+	public void setUiMenuMode(UiMenuMode uiMenuMode) {
+		this.uiMenuMode = uiMenuMode;
+	}
+
+	public UiMenuMode getUiMenuMode() {
+		return uiMenuMode;
 	}
 
 	/**
@@ -642,5 +651,18 @@ public class FurnCraftChestFactory extends Factory {
 
 	public double getCitadelBreakReduction() {
 		return citadelBreakReduction;
+	}
+
+	public enum UiMenuMode {
+		SIMPLE(Material.PAPER, "Show simple menu"),
+		IOCONFIG(Material.HOPPER, "Show IO config menu");
+
+		public final Material uiMaterial;
+		public final String uiDescription;
+
+		private UiMenuMode(Material uiMaterial, String uiDescription) {
+			this.uiMaterial = uiMaterial;
+			this.uiDescription = uiDescription;
+		}
 	}
 }

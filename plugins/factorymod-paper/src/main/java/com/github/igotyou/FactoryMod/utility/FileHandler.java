@@ -101,6 +101,7 @@ public class FileHandler {
 					}
 					config.set(current + ".furnace-io-mask", fccf.getFurnaceIOSelector().toShortMask());
 					config.set(current + ".table-io-mask", fccf.getTableIOSelector().toShortMask());
+					config.set(current + ".ui-menu-mode", fccf.getUiMenuMode().name());
 				} else if (f instanceof Pipe) {
 					Pipe p = (Pipe) f;
 					config.set(current + ".type", "PIPE");
@@ -319,6 +320,18 @@ public class FileHandler {
 						}
 					}
 				}
+				String menuModeRaw = current.getString("ui-menu-mode");
+				FurnCraftChestFactory.UiMenuMode menuMode;
+				if (menuModeRaw == null) {
+					menuMode = FurnCraftChestFactory.UiMenuMode.SIMPLE;
+				} else {
+					try {
+						menuMode = FurnCraftChestFactory.UiMenuMode.valueOf(menuModeRaw);
+					} catch (IllegalArgumentException iae) {
+						menuMode = FurnCraftChestFactory.UiMenuMode.SIMPLE;
+					}
+				}
+				fac.setUiMenuMode(menuMode);
 				manager.addFactory(fac);
 				counter++;
 				break;
