@@ -1,7 +1,9 @@
 package com.github.igotyou.FactoryMod.utility;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -45,7 +47,10 @@ public class IOConfigSection extends StaticDisplaySection {
 		ItemStack display;
 		if (hasChest) {
 			display = new ItemStack(Material.BARRIER);
-			ItemUtils.addComponentLore(display, Component.text("<no chest>").color(TextColor.color(255, 0, 0)));
+			ItemUtils.addComponentLore(display, Component
+					.text("<no chest>")
+					.style(Style.style(TextDecoration.BOLD))
+					.color(TextColor.color(255, 0, 0)));
 		} else {
 			display = dirState.getUIVisual();
 		}
@@ -57,6 +62,7 @@ public class IOConfigSection extends StaticDisplaySection {
 						.asComponent());
 		ItemUtils.addComponentLore(display,
 				Component.text("Click to cycle IO mode").color(TextColor.color(192, 192, 192)));
+
 		return new Clickable(display) {
 			private ClickableInventory inventory;
 			private int slot;
