@@ -55,6 +55,7 @@ public class FactoryModManager {
 	private int redstoneRecipeChange;
 	private Set<String> compactLore;
 	private Set<String> forceInclude;
+	private FactoryModPlayerSettings playerSettings;
 
 	public FactoryModManager(FactoryMod plugin, Material factoryInteractionMaterial, boolean citadelEnabled,
 			boolean nameLayerEnabled, int redstonePowerOn, int redstoneRecipeChange, boolean logInventories,
@@ -76,6 +77,7 @@ public class FactoryModManager {
 		recipes = new HashMap<>();
 		compactLore = new HashSet<>();
 		forceInclude = new HashSet<>();
+		playerSettings = new FactoryModPlayerSettings(plugin);
 
 		// Normal furnace, craftingtable, chest factories
 		possibleCenterBlocks.add(Material.CRAFTING_TABLE);
@@ -544,5 +546,9 @@ public class FactoryModManager {
 	
 	public Collection<IFactoryEgg> getAllFactoryEggs() {
 		return eggs.values();
+	}
+
+	public FactoryModPlayerSettings getPlayerSettings() {
+		return playerSettings;
 	}
 }
