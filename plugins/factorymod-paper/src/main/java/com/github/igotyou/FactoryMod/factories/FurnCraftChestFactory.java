@@ -36,6 +36,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
@@ -101,18 +102,10 @@ public class FurnCraftChestFactory extends Factory {
 	}
 
 	public Inventory getInputInventory() {
-		if (!furnaceIoSelector.hasInputs() && !tableIoSelector.hasInputs()) {
-			return getInventory();
-		}
 		FurnCraftChestStructure fccs = (FurnCraftChestStructure) getMultiBlockStructure();
 		ArrayList<Inventory> invs = new ArrayList<>(12);
 		Block fblock = getFurnace();
-		if (fblock.getType() != Material.FURNACE) {
-			return null;
-		}
-		Furnace fstate = (Furnace) fblock.getState();
-		org.bukkit.block.data.type.Furnace fdata = (org.bukkit.block.data.type.Furnace) fstate.getBlockData();
-		BlockFace facing = fdata.getFacing();
+		BlockFace facing = getFacing();
 		for (BlockFace relativeFace : furnaceIoSelector.getInputs(facing)) {
 			Block relBlock = fblock.getRelative(relativeFace);
 			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
@@ -126,27 +119,14 @@ public class FurnCraftChestFactory extends Factory {
 				invs.add(((Chest) relBlock.getState()).getInventory());
 			}
 		}
-		MultiInventoryWrapper wrapper = new MultiInventoryWrapper(invs);
-		if (wrapper.getSize() == 0) {
-			return getInventory();
-		} else {
-			return wrapper;
-		}
+		return new MultiInventoryWrapper(invs);
 	}
 
 	public Inventory getOutputInventory() {
-		if (!furnaceIoSelector.hasOutputs() && !tableIoSelector.hasOutputs()) {
-			return getInventory();
-		}
 		FurnCraftChestStructure fccs = (FurnCraftChestStructure) getMultiBlockStructure();
 		ArrayList<Inventory> invs = new ArrayList<>(12);
 		Block fblock = getFurnace();
-		if (fblock.getType() != Material.FURNACE) {
-			return null;
-		}
-		Furnace fstate = (Furnace) fblock.getState();
-		org.bukkit.block.data.type.Furnace fdata = (org.bukkit.block.data.type.Furnace) fstate.getBlockData();
-		BlockFace facing = fdata.getFacing();
+		BlockFace facing = getFacing();
 		for (BlockFace relativeFace : furnaceIoSelector.getOutputs(facing)) {
 			Block relBlock = fblock.getRelative(relativeFace);
 			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
@@ -160,12 +140,7 @@ public class FurnCraftChestFactory extends Factory {
 				invs.add(((Chest) relBlock.getState()).getInventory());
 			}
 		}
-		MultiInventoryWrapper wrapper = new MultiInventoryWrapper(invs);
-		if (wrapper.getSize() == 0) {
-			return getInventory();
-		} else {
-			return wrapper;
-		}
+		return new MultiInventoryWrapper(invs);
 	}
 
 	public void setFurnaceIOSelector(IOSelector ioSelector) {
@@ -182,6 +157,20 @@ public class FurnCraftChestFactory extends Factory {
 
 	public IOSelector getTableIOSelector() {
 		return tableIoSelector;
+	}
+
+	/**
+	 * @return the direction the furnace (and thus this factory) is facing.
+	 */
+	public @Nullable BlockFace getFacing() {
+		Block fblock = getFurnace();
+		if (fblock.getType() != Material.FURNACE) {
+			return null;
+		}
+		Furnace fstate = (Furnace) fblock.getState();
+		org.bukkit.block.data.type.Furnace fdata = (org.bukkit.block.data.type.Furnace) fstate.getBlockData();
+		BlockFace facing = fdata.getFacing();
+		return facing;
 	}
 
 	/**
@@ -348,6 +337,13 @@ public class FurnCraftChestFactory extends Factory {
 	 */
 	public Block getFurnace() {
 		return ((FurnCraftChestStructure) mbs).getFurnace();
+	}
+
+	/**
+	 * @return The crafting table of this factory
+	 */
+	public Block getCraftingTable() {
+		return ((FurnCraftChestStructure) mbs).getCraftingTable();
 	}
 
 	/**

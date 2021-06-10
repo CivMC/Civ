@@ -28,6 +28,11 @@ public class IOSelector {
 		return IOState.fromIO(inputs.isSet(direction), outputs.isSet(direction));
 	}
 
+	public void setState(DirectionMask.Direction direction, IOState state) {
+		inputs.set(direction, state.isIn());
+		outputs.set(direction, state.isOut());
+	}
+
 	public boolean hasInputs() {
 		return inputs.getMask() != 0;
 	}

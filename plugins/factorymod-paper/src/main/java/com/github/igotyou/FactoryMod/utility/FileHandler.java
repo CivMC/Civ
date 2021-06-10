@@ -296,10 +296,29 @@ public class FileHandler {
 					}
 				}
 				fac.setAutoSelect(autoSelect);
-				IOSelector furnaceIoSelector = IOSelector.fromShortMask((short) current.getInt("furnace-io-mask", 0));
-				fac.setFurnaceIOSelector(furnaceIoSelector);
-				IOSelector tableIoSelector = IOSelector.fromShortMask((short) current.getInt("table-io-mask", 0));
-				fac.setTableIOSelector(tableIoSelector);
+				{
+					int mask = current.getInt("furnace-io-mask", -1);
+					if (mask != -1) {
+						IOSelector furnaceIoSelector = IOSelector.fromShortMask((short) mask);
+						fac.setFurnaceIOSelector(furnaceIoSelector);
+					} else {
+						// Nothing I guess, the furnace has no default state.
+					}
+					mask = current.getInt("table-io-mask", -1);
+					if (mask != -1) {
+						IOSelector tableIoSelector = IOSelector.fromShortMask((short) mask);
+						fac.setTableIOSelector(tableIoSelector);
+					} else {
+						BlockFace chestDir = fac.getFurnace().getFace(fac.getCraftingTable());
+						BlockFace front = fac.getFacing();
+						if (chestDir != null && front != null) {
+							IOSelector tableIoSelector = new IOSelector();
+							DirectionMask.Direction defaultDir = DirectionMask.Direction.getDirection(front, chestDir);
+							tableIoSelector.setState(defaultDir, IOSelector.IOState.BOTH);
+							fac.setTableIOSelector(tableIoSelector);
+						}
+					}
+				}
 				manager.addFactory(fac);
 				counter++;
 				break;
