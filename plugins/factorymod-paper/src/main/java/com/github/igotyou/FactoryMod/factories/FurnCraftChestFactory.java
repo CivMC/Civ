@@ -76,6 +76,7 @@ public class FurnCraftChestFactory extends Factory {
 		this.autoSelect = false;
 		this.furnaceIoSelector = new IOSelector();
 		this.tableIoSelector = new IOSelector();
+		this.uiMenuMode = UiMenuMode.SIMPLE;
 		for (IRecipe rec : recipes) {
 			addRecipe(rec);
 		}
