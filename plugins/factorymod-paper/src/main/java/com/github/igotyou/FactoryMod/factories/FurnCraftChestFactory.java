@@ -15,6 +15,7 @@ import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
+import com.github.igotyou.FactoryMod.utility.DirectionMask;
 import com.github.igotyou.FactoryMod.utility.IOSelector;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 import java.util.ArrayList;
@@ -58,8 +59,8 @@ public class FurnCraftChestFactory extends Factory {
 	private UUID activator;
 	private double citadelBreakReduction;
 	private boolean autoSelect;
-	private IOSelector furnaceIoSelector;
-	private IOSelector tableIoSelector;
+	private @Nullable IOSelector furnaceIoSelector;
+	private @Nullable IOSelector tableIoSelector;
 	private UiMenuMode uiMenuMode;
 
 	private static HashSet<FurnCraftChestFactory> pylonFactories;
@@ -74,8 +75,7 @@ public class FurnCraftChestFactory extends Factory {
 		this.recipes = new ArrayList<>();
 		this.citadelBreakReduction = citadelBreakReduction;
 		this.autoSelect = false;
-		this.furnaceIoSelector = new IOSelector();
-		this.tableIoSelector = new IOSelector();
+		// TODO initialize furnace/table io selectors
 		this.uiMenuMode = UiMenuMode.SIMPLE;
 		for (IRecipe rec : recipes) {
 			addRecipe(rec);
@@ -108,14 +108,14 @@ public class FurnCraftChestFactory extends Factory {
 		ArrayList<Inventory> invs = new ArrayList<>(12);
 		Block fblock = getFurnace();
 		BlockFace facing = getFacing();
-		for (BlockFace relativeFace : furnaceIoSelector.getInputs(facing)) {
+		for (BlockFace relativeFace : getFurnaceIOSelector().getInputs(facing)) {
 			Block relBlock = fblock.getRelative(relativeFace);
 			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
 				invs.add(((Chest) relBlock.getState()).getInventory());
 			}
 		}
 		Block tblock = fccs.getCraftingTable();
-		for (BlockFace relativeFace : tableIoSelector.getInputs(facing)) {
+		for (BlockFace relativeFace : getTableIOSelector().getInputs(facing)) {
 			Block relBlock = tblock.getRelative(relativeFace);
 			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
 				invs.add(((Chest) relBlock.getState()).getInventory());
@@ -129,14 +129,14 @@ public class FurnCraftChestFactory extends Factory {
 		ArrayList<Inventory> invs = new ArrayList<>(12);
 		Block fblock = getFurnace();
 		BlockFace facing = getFacing();
-		for (BlockFace relativeFace : furnaceIoSelector.getOutputs(facing)) {
+		for (BlockFace relativeFace : getFurnaceIOSelector().getOutputs(facing)) {
 			Block relBlock = fblock.getRelative(relativeFace);
 			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
 				invs.add(((Chest) relBlock.getState()).getInventory());
 			}
 		}
 		Block tblock = fccs.getCraftingTable();
-		for (BlockFace relativeFace : tableIoSelector.getOutputs(facing)) {
+		for (BlockFace relativeFace : getTableIOSelector().getOutputs(facing)) {
 			Block relBlock = tblock.getRelative(relativeFace);
 			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
 				invs.add(((Chest) relBlock.getState()).getInventory());
@@ -150,6 +150,9 @@ public class FurnCraftChestFactory extends Factory {
 	}
 
 	public IOSelector getFurnaceIOSelector() {
+		if (furnaceIoSelector == null) {
+			furnaceIoSelector = new IOSelector();
+		}
 		return furnaceIoSelector;
 	}
 
@@ -158,6 +161,15 @@ public class FurnCraftChestFactory extends Factory {
 	}
 
 	public IOSelector getTableIOSelector() {
+		if (tableIoSelector == null) {
+			tableIoSelector = new IOSelector();
+			BlockFace front = getFacing();
+			BlockFace chestDir = getFurnace().getFace(getCraftingTable());
+			if (chestDir != null && front != null) {
+				DirectionMask.Direction defaultDir = DirectionMask.Direction.getDirection(front, chestDir);
+				tableIoSelector.setState(defaultDir, IOSelector.IOState.BOTH);
+			}
+		}
 		return tableIoSelector;
 	}
 

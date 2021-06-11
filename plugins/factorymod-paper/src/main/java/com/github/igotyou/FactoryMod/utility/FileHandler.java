@@ -310,14 +310,7 @@ public class FileHandler {
 						IOSelector tableIoSelector = IOSelector.fromShortMask((short) mask);
 						fac.setTableIOSelector(tableIoSelector);
 					} else {
-						BlockFace chestDir = fac.getFurnace().getFace(fac.getCraftingTable());
-						BlockFace front = fac.getFacing();
-						if (chestDir != null && front != null) {
-							IOSelector tableIoSelector = new IOSelector();
-							DirectionMask.Direction defaultDir = DirectionMask.Direction.getDirection(front, chestDir);
-							tableIoSelector.setState(defaultDir, IOSelector.IOState.BOTH);
-							fac.setTableIOSelector(tableIoSelector);
-						}
+						// Default table-side IO moved to FCCF.getTableIoSelector() lazy init
 					}
 				}
 				String menuModeRaw = current.getString("ui-menu-mode");
