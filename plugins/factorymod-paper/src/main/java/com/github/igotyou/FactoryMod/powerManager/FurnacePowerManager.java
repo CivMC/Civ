@@ -1,9 +1,11 @@
 package com.github.igotyou.FactoryMod.powerManager;
 
+import com.github.igotyou.FactoryMod.utility.IIOFInventoryProvider;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.inventory.FurnaceInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
@@ -17,6 +19,7 @@ public class FurnacePowerManager implements IPowerManager {
 	private int powerCounter;
 	private int fuelConsumptionIntervall;
 	private Block furnace;
+	private IIOFInventoryProvider iofProvider;
 
 	public FurnacePowerManager(Block furnace, ItemStack fuel,
 			int fuelConsumptionIntervall) {
@@ -30,11 +33,27 @@ public class FurnacePowerManager implements IPowerManager {
 		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
 	}
 
+	public void setIofProvider(IIOFInventoryProvider iofProvider) {
+		this.iofProvider = iofProvider;
+	}
+
+	public IIOFInventoryProvider getIofProvider() {
+		return iofProvider;
+	}
+
 	public int getPowerCounter() {
 		return powerCounter;
 	}
 
 	public boolean powerAvailable(int fuelCount) {
+		if (iofProvider != null) {
+			Inventory fuelInv = iofProvider.getFuelInventory();
+			if (fuelInv != null) {
+				ItemMap im = new ItemMap(fuelInv);
+				return im.getAmount(fuel) >= fuelCount;
+			}
+		}
+
 		if (furnace.getType() != Material.FURNACE) {
 			return false;
 		}
@@ -62,6 +81,13 @@ public class FurnacePowerManager implements IPowerManager {
 	}
 
 	public void consumePower(int fuelCount) {
+		if (iofProvider != null) {
+			Inventory fuelInv = iofProvider.getFuelInventory();
+			if (fuelInv != null) {
+				fuelInv.removeItem(fuel);
+			}
+		}
+
 		FurnaceInventory fi = ((Furnace) furnace.getState()).getInventory();
 
 		for(int i = 0; i < fuelCount; i++)
@@ -69,6 +95,13 @@ public class FurnacePowerManager implements IPowerManager {
 	}
 
 	public int getFuelAmountAvailable() {
+		if (iofProvider != null) {
+			Inventory fuelInv = iofProvider.getFuelInventory();
+			if (fuelInv != null) {
+				ItemMap im = new ItemMap(fuelInv);
+				return im.getAmount(fuel);
+			}
+		}
 		return new ItemMap(((Furnace) furnace.getState()).getInventory()).getAmount(fuel);
 	}
 

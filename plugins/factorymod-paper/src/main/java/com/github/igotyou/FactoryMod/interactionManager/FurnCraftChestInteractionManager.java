@@ -235,13 +235,15 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 							fccf.getFurnaceIOSelector(),
 							Material.FURNACE,
 							fblock,
-							facing);
+							facing,
+							fccf);
 					IOConfigSection tableConfigSection = new IOConfigSection(
 							p,
 							fccf.getTableIOSelector(),
 							Material.CRAFTING_TABLE,
 							((FurnCraftChestStructure) fccf.getMultiBlockStructure()).getCraftingTable(),
-							facing);
+							facing,
+							fccf);
 					compInv.addComponent(furnaceConfigSection, SlotPredicates.offsetRectangle(3, 3, 3, 0));
 					compInv.addComponent(tableConfigSection, SlotPredicates.offsetRectangle(3, 3, 3, 4));
 				}

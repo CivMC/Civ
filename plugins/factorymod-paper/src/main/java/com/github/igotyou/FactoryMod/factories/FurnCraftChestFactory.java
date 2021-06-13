@@ -5,6 +5,7 @@ import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
 import com.github.igotyou.FactoryMod.events.RecipeExecuteEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
+import com.github.igotyou.FactoryMod.utility.IIOFInventoryProvider;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
@@ -50,7 +51,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
  * which is used as inventory holder
  *
  */
-public class FurnCraftChestFactory extends Factory {
+public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvider {
 	protected int currentProductionTimer = 0;
 	protected List<IRecipe> recipes;
 	protected IRecipe currentRecipe;
@@ -69,13 +70,15 @@ public class FurnCraftChestFactory extends Factory {
 			FurnCraftChestStructure mbs, int updateTime, String name, List<IRecipe> recipes,
 			double citadelBreakReduction) {
 		super(im, rm, ipm, mbs, updateTime, name);
+		if (ipm instanceof FurnacePowerManager) {
+			((FurnacePowerManager) ipm).setIofProvider(this);
+		}
 		this.active = false;
 		this.runCount = new HashMap<>();
 		this.recipeLevel = new HashMap<>();
 		this.recipes = new ArrayList<>();
 		this.citadelBreakReduction = citadelBreakReduction;
 		this.autoSelect = false;
-		// TODO initialize furnace/table io selectors
 		this.uiMenuMode = UiMenuMode.SIMPLE;
 		for (IRecipe rec : recipes) {
 			addRecipe(rec);
@@ -143,6 +146,46 @@ public class FurnCraftChestFactory extends Factory {
 			}
 		}
 		return new MultiInventoryWrapper(invs);
+	}
+
+	public Inventory getFuelInventory() {
+		if (!getFurnaceIOSelector().hasFuel() && !getTableIOSelector().hasFuel()) {
+			return getFurnaceInventory();
+		}
+		FurnCraftChestStructure fccs = (FurnCraftChestStructure) getMultiBlockStructure();
+		ArrayList<Inventory> invs = new ArrayList<>(13);
+		invs.add(getFurnaceInventory());
+		Block fblock = getFurnace();
+		BlockFace facing = getFacing();
+		for (BlockFace relativeFace : getFurnaceIOSelector().getFuel(facing)) {
+			Block relBlock = fblock.getRelative(relativeFace);
+			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
+				invs.add(((Chest) relBlock.getState()).getInventory());
+			}
+		}
+		Block tblock = fccs.getCraftingTable();
+		for (BlockFace relativeFace : getTableIOSelector().getFuel(facing)) {
+			Block relBlock = tblock.getRelative(relativeFace);
+			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
+				invs.add(((Chest) relBlock.getState()).getInventory());
+			}
+		}
+		return new MultiInventoryWrapper(invs);
+	}
+
+	@Override
+	public int getInputCount() {
+		return furnaceIoSelector.getInputCount() + tableIoSelector.getInputCount();
+	}
+
+	@Override
+	public int getOutputCount() {
+		return furnaceIoSelector.getOutputCount() + tableIoSelector.getOutputCount();
+	}
+
+	@Override
+	public int getFuelCount() {
+		return furnaceIoSelector.getFuelCount() + tableIoSelector.getFuelCount();
 	}
 
 	public void setFurnaceIOSelector(IOSelector ioSelector) {

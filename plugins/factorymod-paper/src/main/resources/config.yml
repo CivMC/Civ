@@ -194,6 +194,13 @@ use_recipe_yamlidentifiers: false
 #How often factory data is saved automatically. Recommended value and default is 15 minutes. Set to -1 to disable
 saving_intervall: 15m
 
+# Maximum number of input, output, fuel, and total IOF chests. If a chest is used for multiple settings, it is counted
+# multiple times.
+max_input_chests: 10
+max_output_chests: 10
+max_fuel_chests: 10
+max_iof_chests: 15
+
 
 #----------------------------------------------------------------------------------------------------------------------
 #Factories

@@ -53,18 +53,27 @@ public class FactoryModManager {
 	private boolean logInventories;
 	private int redstonePowerOn;
 	private int redstoneRecipeChange;
+	private int maxInputChests;
+	private int maxOutputChests;
+	private int maxFuelChests;
+	private int maxTotalIOFChests;
 	private Set<String> compactLore;
 	private Set<String> forceInclude;
 	private FactoryModPlayerSettings playerSettings;
 
 	public FactoryModManager(FactoryMod plugin, Material factoryInteractionMaterial, boolean citadelEnabled,
 			boolean nameLayerEnabled, int redstonePowerOn, int redstoneRecipeChange, boolean logInventories,
+			int maxInputChests, int maxOutputChests, int maxFuelChests, int maxTotalIOFChests,
 			Map<String, String> factoryRenames) {
 		this.plugin = plugin;
 		this.factoryInteractionMaterial = factoryInteractionMaterial;
 		this.citadelEnabled = citadelEnabled;
 		this.redstonePowerOn = redstonePowerOn;
 		this.redstoneRecipeChange = redstoneRecipeChange;
+		this.maxInputChests = maxInputChests;
+		this.maxOutputChests = maxOutputChests;
+		this.maxFuelChests = maxFuelChests;
+		this.maxTotalIOFChests = maxTotalIOFChests;
 		this.fileHandler = new FileHandler(this, factoryRenames);
 
 		factoryCreationRecipes = new HashMap<>();
@@ -149,6 +158,26 @@ public class FactoryModManager {
 	 */
 	public boolean isCitadelEnabled() {
 		return citadelEnabled;
+	}
+
+	public int getMaxInputChests() {
+		return maxInputChests;
+	}
+
+	public int getMaxOutputChests() {
+		return maxOutputChests;
+	}
+
+	public int getMaxFuelChests() {
+		return maxFuelChests;
+	}
+
+	/**
+	 * @return The maximum total number of inputs, outputs, and fuel inputs a factory has. A chest with multiple IOF
+	 * settings enabled is counted for each.
+	 */
+	public int getMaxTotalIOFChests() {
+		return maxTotalIOFChests;
 	}
 
 	/**

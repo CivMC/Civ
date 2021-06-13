@@ -99,8 +99,8 @@ public class FileHandler {
 						config.set(current + ".runcounts." + i.getName(), fccf.getRunCount(i));
 						config.set(current + ".recipeLevels." + i.getName(), fccf.getRecipeLevel(i));
 					}
-					config.set(current + ".furnace-io-mask", fccf.getFurnaceIOSelector().toShortMask());
-					config.set(current + ".table-io-mask", fccf.getTableIOSelector().toShortMask());
+					config.set(current + ".furnace-io-mask", fccf.getFurnaceIOSelector().toIntMask());
+					config.set(current + ".table-io-mask", fccf.getTableIOSelector().toIntMask());
 					config.set(current + ".ui-menu-mode", fccf.getUiMenuMode().name());
 				} else if (f instanceof Pipe) {
 					Pipe p = (Pipe) f;
@@ -300,14 +300,14 @@ public class FileHandler {
 				{
 					int mask = current.getInt("furnace-io-mask", -1);
 					if (mask != -1) {
-						IOSelector furnaceIoSelector = IOSelector.fromShortMask((short) mask);
+						IOSelector furnaceIoSelector = IOSelector.fromIntMask(mask);
 						fac.setFurnaceIOSelector(furnaceIoSelector);
 					} else {
 						// Nothing I guess, the furnace has no default state.
 					}
 					mask = current.getInt("table-io-mask", -1);
 					if (mask != -1) {
-						IOSelector tableIoSelector = IOSelector.fromShortMask((short) mask);
+						IOSelector tableIoSelector = IOSelector.fromIntMask(mask);
 						fac.setTableIOSelector(tableIoSelector);
 					} else {
 						// Default table-side IO moved to FCCF.getTableIoSelector() lazy init
