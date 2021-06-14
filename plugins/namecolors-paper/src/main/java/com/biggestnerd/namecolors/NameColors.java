@@ -51,7 +51,6 @@ public class NameColors extends ACivMod implements Listener {
 	}
 
 	public void updatePlayerName(Player player, ChatColor color) {
-
 		if (color == null || color == ChatColor.RESET) {
 			CivChat2.getInstance().getCivChat2Manager().removeCustomName(player.getUniqueId());
 			if(getServer().getPluginManager().isPluginEnabled("TAB")) {
