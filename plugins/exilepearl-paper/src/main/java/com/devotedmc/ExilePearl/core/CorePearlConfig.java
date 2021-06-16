@@ -531,4 +531,9 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	public int pearlCostMultiplicationTimerDays() {
 		return doc.getInteger("pearls.cost_multiplier_days", 0);
 	}
+
+	@Override
+	public boolean canElytraWithPearls() {
+		return doc.getBoolean("general.can_elytra_with_pearls", true);
+	}
 }

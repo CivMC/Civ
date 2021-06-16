@@ -27,6 +27,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minelink.ctplus.compat.api.NpcIdentity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -63,6 +65,7 @@ import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -76,6 +79,7 @@ import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
@@ -1174,6 +1178,44 @@ public class PlayerListener implements Listener, Configurable {
 			}
 			pearlApi.log("The pearl for player %s was upgraded to a Prison Pearl.", pearl.getPlayerName());
 		}
+	}
+
+	@EventHandler
+	public void onPlayerFly(EntityToggleGlideEvent event) {
+		if (pearlApi.getPearlConfig().canElytraWithPearls()) {
+			return;
+		}
+
+		if (!(event.getEntity() instanceof Player)) {
+			return;
+		}
+		Player player = (Player) event.getEntity();
+		for (ItemStack item : player.getInventory().getContents()) {
+			if (item == null) {
+				continue;
+			}
+			if (pearlApi.getPearlFromItemStack(item) == null) {
+				continue;
+			}
+			event.setCancelled(true);
+			player.sendMessage(Component.text("You cannot fly with imprisoned players!").color(NamedTextColor.RED));
+			break;
+		}
+	}
+
+	@EventHandler
+	public void flyingPlayerPickupPearl(PlayerAttemptPickupItemEvent event) {
+		if (pearlApi.getPearlConfig().canElytraWithPearls()) {
+			return;
+		}
+		if (!event.getPlayer().isGliding()) {
+			return;
+		}
+		if (pearlApi.getPearlFromItemStack(event.getItem().getItemStack()) == null) {
+			return;
+		}
+		event.setCancelled(true);
+		event.getPlayer().sendMessage(Component.text("You cannot fly with imprisoned players!").color(NamedTextColor.RED));
 	}
 
 	@EventHandler

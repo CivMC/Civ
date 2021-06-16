@@ -189,4 +189,10 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	String altBanMessage();
 	
 	int pearlCostMultiplicationTimerDays();
+
+	/**
+	 * Gets whether people should be allowed to deploy an elytra with a pearl in their inventory
+	 * @return true if they should be able to fly
+	 */
+	boolean canElytraWithPearls();
 }

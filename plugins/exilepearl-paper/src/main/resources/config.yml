@@ -256,6 +256,7 @@ general:
   suicide_time_seconds: 180
   max_pearled_alts: 1
   max_pearled_message: 'You have too many imprisoned alts'
+  can_elytra_with_pearls: true
 pearls:
   autofree_worldborder: true
   free_by_throwing: false
