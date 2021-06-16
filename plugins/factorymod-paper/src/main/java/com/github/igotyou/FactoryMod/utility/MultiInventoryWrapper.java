@@ -64,6 +64,14 @@ public class MultiInventoryWrapper implements Inventory {
 	}
 
 	@Override
+	public int close() {
+		List<HumanEntity> viewers = getViewers();
+		int num = viewers.size();
+		viewers.forEach(HumanEntity::closeInventory);
+		return num;
+	}
+
+	@Override
 	public int getSize() {
 		return size;
 	}
