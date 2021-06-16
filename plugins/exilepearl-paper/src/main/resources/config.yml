@@ -30,7 +30,10 @@
 #
 # general.max_pearled_message  
 #  - Message shown to altbanned accounts when they attempt to login
-# 
+#
+# general.can_elytra_with_pearls
+#  - Will prevent players opening an elytra with a pearl in their inventory, also disables picking up a pearl item
+#    while they are gliding.
 # 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
 #                                PEARL SETTINGS                               #
