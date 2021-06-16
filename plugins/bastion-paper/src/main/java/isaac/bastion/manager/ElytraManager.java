@@ -241,39 +241,44 @@ public class ElytraManager {
 		return false;
 	}
 	
-	private boolean hasCollisionPointsSquare(Location startLoc, Location endLoc, Location squareLoc, double radius) {
-		double zl = (endLoc.getZ() - startLoc.getZ());
-		double xl = (endLoc.getX() - startLoc.getX());
-		double r2 = radius * 2.0;
-		double ba = squareLoc.getX() - startLoc.getX();
-		double bb = squareLoc.getZ() - startLoc.getZ();
-		
-		double s = 0.0d;
-		if (xl != 0){
-			s = zl * (ba + radius) / ( xl * r2 ) - bb / r2 + .5d; //bottom
-			if (s >= 0.0 && s <= 1.0) {
-				return true;
-			}
-			
-			s = zl * (ba - radius) / ( xl * r2 ) - bb / r2 + .5d; //top
-			if (s >= 0.0 && s <= 1.0) {
-				return true;
-			}
-		}
-		
-		if (zl != 0){
-			s = xl * (bb + radius) / ( zl * r2 ) - ba / r2 + .5d; //right
-			if (s >= 0.0 && s <= 1.0) {
-				return true;
-			}
-			
-			s = xl * (bb - radius) / ( zl * r2 ) - ba / r2 + .5d; //leftt
-			if (s >= 0.0 && s <= 1.0) {
-				return true;
-			}
-		}
-		return false;
-	}
+    private boolean hasCollisionPointsSquare(Location startLoc, Location endLoc, Location squareLoc, double radius) {
+        double zl = (endLoc.getZ() - startLoc.getZ());
+        double xl = (endLoc.getX() - startLoc.getX());
+        double r2 = radius * 2.0;
+        double ba = squareLoc.getX() - startLoc.getX();
+        double bb = squareLoc.getZ() - startLoc.getZ();
+        
+        double s = 0.0d;
+        double t = 0.0d;
+        if (xl != 0){
+            s = zl * (ba + radius) / ( xl * r2 ) - bb / r2 + .5d; //bottom
+            t = (ba + radius) / xl;
+            if (s >= 0.0 && s <= 1.0 && t >= 0.0 && t <= 1.0) {
+                return true;
+            }
+            
+            s = zl * (ba - radius) / ( xl * r2 ) - bb / r2 + .5d; //top
+            t = (ba - radius) / xl;
+            if (s >= 0.0 && s <= 1.0 && t >= 0.0 && t <= 1.0) {
+                return true;
+            }
+        }
+        
+        if (zl != 0){
+            s = xl * (bb + radius) / ( zl * r2 ) - ba / r2 + .5d; //right
+            t = (bb + radius) / zl;
+            if (s >= 0.0 && s <= 1.0 && t >= 0.0 && t <= 1.0) {
+                return true;
+            }
+            
+            s = xl * (bb - radius) / ( zl * r2 ) - ba / r2 + .5d; //leftt
+            t = (bb - radius) / zl;
+            if (s >= 0.0 && s <= 1.0 && t >= 0.0 && t <= 1.0) {
+                return true;
+            }
+        }
+        return false;
+    }
 	
 	private void doImpact(Player p, boolean breakElytra, boolean damageElytra, double explosionStrength) {
 		p.sendMessage(ChatColor.RED+"Elytra flight blocked by Bastion Block");
