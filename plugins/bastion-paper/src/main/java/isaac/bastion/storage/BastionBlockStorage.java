@@ -262,24 +262,26 @@ public class BastionBlockStorage {
 		double maxDistanceSquared = maxDistance * maxDistance;
 		double maxBoxDistanceSquared = maxDistanceSquared * 2.0;
 		
-		for (Location loc: locs) {
-			boxes = blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ(), true);
-			
-			for (QTBox box : boxes) {
-				if (box instanceof BastionBlock) {
-					BastionBlock bastion = (BastionBlock)box;
-					BastionType type = bastion.getType();
-					// Don't add bastions that don't block flight
-					if (!type.isBlockElytra()) continue;
-					// Fixed for square field nearness, using diagonal distance as max -- (radius * sqrt(2)) ^ 2
-					if (((type.isSquare() && bastion.getLocation().distanceSquared(loc) <= maxBoxDistanceSquared) ||   
-								(!type.isSquare() && bastion.getLocation().distanceSquared(loc) <= maxDistanceSquared)) &&
-								(!type.isElytraRequireMature() || bastion.isMature())) {
-						result.add(bastion);
-					}
-				}
-			}
-		}
+        for (Location loc: locs) {
+            boxes = blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ(), true);
+            Location yLoc = loc.clone();
+            
+            for (QTBox box : boxes) {
+                if (box instanceof BastionBlock) {
+                    BastionBlock bastion = (BastionBlock)box;
+                    BastionType type = bastion.getType();
+                    // Don't add bastions that don't block flight
+                    if (!type.isBlockElytra()) continue;
+                    yLoc.setY(bastion.getLocation().getY());
+                    // Fixed for square field nearness, using diagonal distance as max -- (radius * sqrt(2)) ^ 2
+                    if (((type.isSquare() && bastion.getLocation().distanceSquared(yLoc) <= maxBoxDistanceSquared) ||   
+                                (!type.isSquare() && bastion.getLocation().distanceSquared(yLoc) <= maxDistanceSquared)) &&
+                                (!type.isElytraRequireMature() || bastion.isMature())) {
+                        result.add(bastion);
+                    }
+                }
+            }
+        }
 		return result;
 	}
 	
