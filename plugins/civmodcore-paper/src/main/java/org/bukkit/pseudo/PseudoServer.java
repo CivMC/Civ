@@ -13,6 +13,8 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import io.papermc.paper.datapack.DatapackManager;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.NotImplementedException;
@@ -466,6 +468,11 @@ public class PseudoServer implements Server {
 	}
 
 	@Override
+	public int broadcast(@NotNull Component component) {
+		throw new NotImplementedException();
+	}
+
+	@Override
 	public int broadcast(@NotNull final Component component, @NotNull final String s) {
 		throw new NotImplementedException();
 	}
@@ -894,6 +901,11 @@ public class PseudoServer implements Server {
 	@Override
 	public MobGoals getMobGoals() {
 		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull DatapackManager getDatapackManager() {
+		return null;
 	}
 
 	@Override
