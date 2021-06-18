@@ -30,7 +30,10 @@
 #
 # general.max_pearled_message  
 #  - Message shown to altbanned accounts when they attempt to login
-# 
+#
+# general.can_elytra_with_pearls
+#  - Will prevent players opening an elytra with a pearl in their inventory, also disables picking up a pearl item
+#    while they are gliding.
 # 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
 #                                PEARL SETTINGS                               #
@@ -256,6 +259,7 @@ general:
   suicide_time_seconds: 180
   max_pearled_alts: 1
   max_pearled_message: 'You have too many imprisoned alts'
+  can_elytra_with_pearls: true
 pearls:
   autofree_worldborder: true
   free_by_throwing: false
