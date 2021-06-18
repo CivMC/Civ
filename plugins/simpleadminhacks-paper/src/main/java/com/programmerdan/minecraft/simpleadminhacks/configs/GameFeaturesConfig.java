@@ -20,7 +20,6 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 	private boolean enderChestUse;
 	private boolean shulkerBoxUse;
 	private boolean totemPowers;
-	private boolean elytraUse;
 	private boolean chorusFruitUse;
 
 	private boolean weepingAngel;
@@ -68,9 +67,6 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 
 		this.totemPowers = config.getBoolean("totemPower", false);
 		if (!this.totemPowers) plugin().log("  Undeath via totems is disabled");
-
-		this.elytraUse = config.getBoolean("elytraUse", true);
-		if (!this.elytraUse) plugin().log("  Elytra use is disabled");
 
 		this.chorusFruitUse = config.getBoolean("chorusFruitTeleportation", false);
 		if (!this.chorusFruitUse) {
@@ -143,10 +139,6 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 
 	public boolean isTotemPowers() {
 		return this.totemPowers;
-	}
-
-	public boolean isElytraUse() {
-		return this.elytraUse;
 	}
 
 	public boolean isChorusFruitTeleportation() {

@@ -109,6 +109,7 @@ permissions:
       simpleadmin.revive: true
       simpleadmin.debugwand: true
       simpleadmin.bedlocator: true
+      simpleadmin.elytrabypass: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
@@ -154,3 +155,6 @@ permissions:
     simpleadmin.bedlocator:
       description: Gives the ability to locate your own bed
       default: true
+    simpleadmin.elytrabypass:
+      description: Gives the ability to bypass elytra restrictions
+      default: op
