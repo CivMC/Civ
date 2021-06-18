@@ -55,7 +55,7 @@ public class NameColors extends ACivMod implements Listener {
 			CivChat2.getInstance().getCivChat2Manager().removeCustomName(player.getUniqueId());
 			if(getServer().getPluginManager().isPluginEnabled("TAB")) {
 				//TAB is enabled, so lets reset the player name.
-				getPlayer(player.getUniqueId()).removeTemporaryValue(EnumProperty.CUSTOMTABNAME);
+				Bukkit.getScheduler().runTaskLater(this, () -> getPlayer(player.getUniqueId()).removeTemporaryValue(EnumProperty.CUSTOMTABNAME), 20l );
 			}
 		} else {
 			if (color == NameColorSetting.RAINBOW_COLOR) {
