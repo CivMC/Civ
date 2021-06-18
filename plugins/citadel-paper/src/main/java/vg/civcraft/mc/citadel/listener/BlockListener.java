@@ -9,6 +9,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Comparator;
+import org.bukkit.block.data.type.Lectern;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -411,12 +412,16 @@ public class BlockListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void preventLecternPutBook(final PlayerInteractEvent event) {
-		if (!event.hasBlock() || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
-		final var clickedBlock = event.getClickedBlock(); assert clickedBlock != null;
-		final var clickedBlockMaterial = clickedBlock.getType();
-		if (clickedBlockMaterial != Material.LECTERN) {
+		final var clickedBlock = event.getClickedBlock();
+		if (clickedBlock == null || clickedBlock.getType() != Material.LECTERN) {
+			return;
+		}
+		// if the lectern has a book, then the person is right clicking to read that book, not place in a new book
+		final var clickedBlockData = (Lectern) clickedBlock.getBlockData();
+		if (clickedBlockData.hasBook()) {
 			return;
 		}
 		INTERNAL_checkLecternModificationPermission(event, event.getPlayer(), clickedBlock.getLocation());
