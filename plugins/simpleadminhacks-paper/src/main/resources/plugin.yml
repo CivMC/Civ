@@ -109,6 +109,7 @@ permissions:
       simpleadmin.revive: true
       simpleadmin.debugwand: true
       simpleadmin.bedlocator: true
+      simpleadmin.elytrabypass: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
