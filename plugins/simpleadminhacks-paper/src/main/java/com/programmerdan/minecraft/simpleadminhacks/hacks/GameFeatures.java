@@ -36,7 +36,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityResurrectEvent;
-import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -63,7 +62,7 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
  * It's part of a series of focused hacks.
  *
  * {@link GameFixes} is focused on things that are broken or don't work, and attempts to fix them.
- * {@link GameFeatures} focuses on enabling and disabling features, like elytra, various potion states.
+ * {@link GameFeatures} focuses on enabling and disabling features, like ender chests, various potion states.
  * {@link GameTuning} neither fixes nor disables, but rather adjusts and reconfigures.
  *
  * Currently you can control the following:
@@ -169,13 +168,6 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 
 			genStatus.append("  Totem of Undying effects are ");
 			if (config.isTotemPowers()) {
-				genStatus.append("enabled\n");
-			} else {
-				genStatus.append("disabled\n");
-			}
-
-			genStatus.append("  Elytra use is ");
-			if (config.isElytraUse()) {
 				genStatus.append("enabled\n");
 			} else {
 				genStatus.append("disabled\n");
@@ -363,13 +355,6 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT.equals(event.getCause())) {
 			event.setCancelled(true);
 		}
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void disableElytraUse(EntityToggleGlideEvent event) {
-		if (!config.isEnabled() || config.isElytraUse()) return;
-
-		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
