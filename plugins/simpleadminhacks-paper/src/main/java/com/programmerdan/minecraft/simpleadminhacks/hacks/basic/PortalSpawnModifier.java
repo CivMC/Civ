@@ -9,10 +9,12 @@ import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class PortalSpawnModifier extends BasicHack {
@@ -56,12 +58,13 @@ public class PortalSpawnModifier extends BasicHack {
 	}
 	
 	private void spawnGhast(Location loc) {
-		//TODO check for space?
-		loc.getWorld().spawnEntity(loc.add(0, 2, 0), EntityType.GHAST);
+		PigZombie pigZombie = (PigZombie) loc.getWorld().spawnEntity(loc, EntityType.ZOMBIFIED_PIGLIN);
+		pigZombie.getEquipment().setItemInOffHand(new ItemStack(Material.GHAST_TEAR));
 	}
 	
 	private void spawnWitherSkeleton(Location loc) {
-		loc.getWorld().spawnEntity(loc, EntityType.WITHER_SKELETON);
+		PigZombie pigZombie = (PigZombie) loc.getWorld().spawnEntity(loc, EntityType.ZOMBIFIED_PIGLIN);
+		pigZombie.getEquipment().setHelmet(new ItemStack(Material.WITHER_SKELETON_SKULL));
 	}
 	
 	private boolean roll(double chance) {
@@ -69,22 +72,66 @@ public class PortalSpawnModifier extends BasicHack {
 	}
 	
 	@EventHandler
-	public void witherSkeleDeath(EntityDeathEvent e) {
-		if (e.getEntityType() != EntityType.WITHER_SKELETON) {
+	public void onEntityPickupItem(EntityPickupItemEvent e) {
+		if (e.getEntityType() == EntityType.ZOMBIFIED_PIGLIN) {
+			e.setCancelled(true); // Prevents giving piglins items to change what they drop
+		}
+	}
+
+	@EventHandler
+	public void zombiePiglinDeath(EntityDeathEvent e) {
+		if (e.getEntityType() != EntityType.ZOMBIFIED_PIGLIN) { // If the death is not a piglin, we can disregard.
 			return;
 		}
+
+		EntityType type = EntityType.ZOMBIFIED_PIGLIN; // Default type is piglin
+
+		//Iterating through the drops to remove the added wither skull & ghast tear, if present.
 		Iterator<ItemStack> iter = e.getDrops().iterator();
 		while(iter.hasNext()) {
 			ItemStack is = iter.next();
 			if (is.getType() == Material.WITHER_SKELETON_SKULL) {
 				iter.remove();
+			} else if (is.getType() == Material.GHAST_TEAR) {
+				iter.remove();
 			}
 		}
-		if (roll(witherHeadDropChance)) {
-			e.getDrops().add(new ItemStack(Material.WITHER_SKELETON_SKULL));
+
+		if (e.getEntity().getEquipment().getHelmet().getType() == Material.WITHER_SKELETON_SKULL) {
+			type = EntityType.WITHER_SKELETON;
+		} else if (e.getEntity().getEquipment().getItemInOffHand().getType() == Material.GHAST_TEAR) {
+			type = EntityType.GHAST;
+		}
+
+		if (type != EntityType.ZOMBIFIED_PIGLIN) { // Type is a mock-wither or mock-ghast
+			e.getDrops().clear(); // Clear piglin drops
+
+			if (type == EntityType.GHAST) {
+				int amount = rng.nextInt(2); // Random drop of 0 or 1 Ghast Tear
+				if (amount > 0) {
+					e.getDrops().add(new ItemStack(Material.GHAST_TEAR, amount));
+				}
+
+				amount = rng.nextInt(3); // Random drop of 0, 1, or 2 Gunpowder
+				if (amount > 0) {
+					e.getDrops().add(new ItemStack(Material.GUNPOWDER, amount));
+				}
+			}
+			else { //WITHER
+				int amount = rng.nextInt(3); // Random drop of 0, 1, or 2 Bones
+				if (amount > 0) {
+					e.getDrops().add(new ItemStack(Material.BONE, amount));
+				}
+
+				amount = rng.nextInt(3) -1; // Random drop of -1, 0, or 1 Coal. (1/3 chance for a single coal)
+				if (amount > 0) {
+					e.getDrops().add(new ItemStack(Material.COAL, amount));
+				}
+
+				if (roll(witherHeadDropChance)) { // Standard role for wither skull chance.
+					e.getDrops().add(new ItemStack(Material.WITHER_SKELETON_SKULL));
+				}
+			}
 		}
 	}
-	
-
-
 }
