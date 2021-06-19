@@ -49,6 +49,7 @@ public class MobCondenser extends BasicHack
 					modifier = 1.0d;
 				}
 				this.mobSpawnModifiers.put(type, modifier);
+				this.plugin.info("[" + getClass().getSimpleName() + "] Registered Mob Spawn Modifier: [" + type + ": " + modifier + "]");
 			}
 		}
 	}
