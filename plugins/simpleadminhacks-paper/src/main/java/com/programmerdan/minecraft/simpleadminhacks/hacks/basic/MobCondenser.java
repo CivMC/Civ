@@ -3,12 +3,15 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.entities.EntityUtils;
 
@@ -70,9 +73,26 @@ public class MobCondenser extends BasicHack
 	public void onCreatureSpawn(CreatureSpawnEvent e) {
 		if (mobSpawnModifiers.containsKey(e.getEntityType())) {
 			if (!roll(mobSpawnModifiers.get(e.getEntityType()))) {
-				e.setCancelled(true);
-				return;
+				if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.SPAWNER_EGG) {
+					e.setCancelled(true);
+				}
 			}
+		}
+	}
+
+	@EventHandler
+	public void onMobEggUse(PlayerInteractEvent e) {
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getItem() != null) {
+			try {
+				EntityType type = EntityType.valueOf(e.getItem().getType().toString().replace("_SPAWN_EGG", ""));
+
+				if (mobSpawnModifiers.containsKey(type)) {
+					if (!roll(mobSpawnModifiers.get(type))) {
+						e.setCancelled(true);
+						e.getItem().setAmount(e.getItem().getAmount() -1);
+					}
+				}
+			} catch (IllegalArgumentException ignored) {}
 		}
 	}
 
