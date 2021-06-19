@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.entities.EntityUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -84,7 +85,7 @@ public class MobCondenser extends BasicHack
 	public void onMobEggUse(PlayerInteractEvent e) {
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getItem() != null) {
 			try {
-				EntityType type = EntityType.valueOf(e.getItem().getType().toString().replace("_SPAWN_EGG", ""));
+				EntityType type = SpawnEggUtils.getEntityType(e.getItem().getType());
 
 				if (mobSpawnModifiers.containsKey(type)) {
 					if (!roll(mobSpawnModifiers.get(type))) {
