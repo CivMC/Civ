@@ -2,13 +2,16 @@ package vg.civcraft.mc.citadel.listener;
 
 import com.destroystokyo.paper.MaterialTags;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Comparator;
+import org.bukkit.block.data.type.Lectern;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -20,6 +23,7 @@ import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -401,4 +405,46 @@ public class BlockListener implements Listener {
 			CitadelUtility.sendAndLog(pie.getPlayer(), ChatColor.RED, msg);
 		}
 	}
+
+	// ------------------------------------------------------------
+	// Lecterns
+	// ------------------------------------------------------------
+
+	@EventHandler(ignoreCancelled = true)
+	public void preventLecternPutBook(final PlayerInteractEvent event) {
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
+		final var clickedBlock = event.getClickedBlock();
+		if (clickedBlock == null || clickedBlock.getType() != Material.LECTERN) {
+			return;
+		}
+		// if the lectern has a book, then the person is right clicking to read that book, not place in a new book
+		final var clickedBlockData = (Lectern) clickedBlock.getBlockData();
+		if (clickedBlockData.hasBook()) {
+			return;
+		}
+		INTERNAL_checkLecternModificationPermission(event, event.getPlayer(), clickedBlock.getLocation());
+	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void preventLecternTakeBook(final PlayerTakeLecternBookEvent event) {
+		INTERNAL_checkLecternModificationPermission(event, event.getPlayer(), event.getLectern().getLocation());
+	}
+
+	private void INTERNAL_checkLecternModificationPermission(final Cancellable event,
+															 final Player clicker,
+															 final Location lecternLocation) {
+		// We already know that a lectern is a single block, thus the additional logic
+		// of ReinforcementLogic.getReinforcementProtecting(block) is unnecessary
+		final var reinforcement = ReinforcementLogic.getReinforcementAt(lecternLocation);
+		if (reinforcement == null
+				|| reinforcement.isInsecure()
+				|| reinforcement.hasPermission(clicker.getUniqueId(), CitadelPermissionHandler.getChests())) {
+			return;
+		}
+		event.setCancelled(true);
+		CitadelUtility.sendAndLog(clicker, ChatColor.RED, "You cannot modify that lectern.");
+	}
+
 }
