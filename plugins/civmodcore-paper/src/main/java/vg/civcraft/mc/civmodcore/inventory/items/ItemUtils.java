@@ -37,7 +37,7 @@ public final class ItemUtils {
 	public static void loadItemNames(final CivModCorePlugin plugin) {
 		final var logger = CivLogger.getLogger(ItemUtils.class);
 		MATERIAL_NAMES.clear();
-		final File materialsFile = plugin.getResourceFile("materials.yml");
+		final File materialsFile = plugin.getDataFile("materials.yml");
 		final YamlConfiguration materialsConfig = YamlConfiguration.loadConfiguration(materialsFile);
 		for (final String key : materialsConfig.getKeys(false)) {
 			if (Strings.isNullOrEmpty(key)) {

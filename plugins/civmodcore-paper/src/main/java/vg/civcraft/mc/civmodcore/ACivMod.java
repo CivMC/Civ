@@ -120,7 +120,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 * @param path The path of the file relative to the data folder.
 	 * @return Returns a file instance of the generated path.
 	 */
-	public File getResourceFile(String path) {
+	public File getDataFile(String path) {
 		return new File(getDataFolder(), path);
 	}
 
@@ -130,7 +130,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 * @param path The path to the default resource <i>AND</i> the data file.
 	 */
 	public void saveDefaultResource(String path) {
-		if (!getResourceFile(path).exists()) {
+		if (!getDataFile(path).exists()) {
 			saveResource(path, false);
 		}
 	}
@@ -144,7 +144,7 @@ public abstract class ACivMod extends JavaPlugin {
 	public void saveDefaultResourceAs(String defaultPath, String dataPath) {
 		Preconditions.checkNotNull(defaultPath, "defaultPath cannot be null.");
 		Preconditions.checkNotNull(dataPath, "dataPath cannot be null.");
-		if (getResourceFile(defaultPath).exists()) {
+		if (getDataFile(defaultPath).exists()) {
 			return;
 		}
 		defaultPath = defaultPath.replace('\\', '/');

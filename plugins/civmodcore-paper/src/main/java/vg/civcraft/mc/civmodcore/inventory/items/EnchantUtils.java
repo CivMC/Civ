@@ -98,7 +98,7 @@ public final class EnchantUtils {
 	public static void loadEnchantAbbreviations(final CivModCorePlugin plugin) {
 		final var logger = CivLogger.getLogger(EnchantUtils.class);
 		ENCHANT_ABBR.clear();
-		final File enchantsFile = plugin.getResourceFile("enchants.yml");
+		final File enchantsFile = plugin.getDataFile("enchants.yml");
 		final YamlConfiguration enchantsConfig = YamlConfiguration.loadConfiguration(enchantsFile);
 		for (final String key : enchantsConfig.getKeys(false)) {
 			if (Strings.isNullOrEmpty(key)) {
