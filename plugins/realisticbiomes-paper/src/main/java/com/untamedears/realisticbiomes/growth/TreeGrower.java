@@ -180,8 +180,4 @@ public class TreeGrower extends AgeableGrower {
 		return true;
 	}
 
-	@Override
-	public boolean ignoreGrowthFailure() {
-		return true;
-	}
 }
