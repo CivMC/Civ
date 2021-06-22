@@ -5,22 +5,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
-import net.minecraft.server.v1_16_R3.NBTBase;
-import net.minecraft.server.v1_16_R3.NBTTagByte;
-import net.minecraft.server.v1_16_R3.NBTTagByteArray;
-import net.minecraft.server.v1_16_R3.NBTTagCompound;
-import net.minecraft.server.v1_16_R3.NBTTagDouble;
-import net.minecraft.server.v1_16_R3.NBTTagFloat;
-import net.minecraft.server.v1_16_R3.NBTTagInt;
-import net.minecraft.server.v1_16_R3.NBTTagIntArray;
-import net.minecraft.server.v1_16_R3.NBTTagList;
-import net.minecraft.server.v1_16_R3.NBTTagLong;
-import net.minecraft.server.v1_16_R3.NBTTagShort;
-import net.minecraft.server.v1_16_R3.NBTTagString;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagByte;
+import net.minecraft.nbt.NBTTagByteArray;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.NBTTagIntArray;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
+import net.minecraft.nbt.NBTTagShort;
+import net.minecraft.nbt.NBTTagString;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 @Deprecated
 public class TagManager {
@@ -38,7 +38,7 @@ public class TagManager {
 			throw new IllegalArgumentException("Expected item stack parameter but NULL passed.");
 		}
 
-		net.minecraft.server.v1_16_R3.ItemStack s = CraftItemStack.asNMSCopy(is);
+		final var s = ItemUtils.getNMSItemStack(is);
 		this.tag = s.getTag();
 
 		if (this.tag == null) {
@@ -181,7 +181,7 @@ public class TagManager {
 
 	public ItemStack enrichWithNBT(ItemStack is) {
 
-		net.minecraft.server.v1_16_R3.ItemStack s = CraftItemStack.asNMSCopy(is);
+		final var s = ItemUtils.getNMSItemStack(is);
 
 		if (s == null) {
 			log.severe("Failed to create enriched copy of " + is.toString());
@@ -190,7 +190,7 @@ public class TagManager {
 
 		s.setTag(this.tag);
 
-		return CraftItemStack.asBukkitCopy(s);
+		return s.getBukkitStack();
 	}
 
 	public void setMap(Map<String, Object> map) {

@@ -6,24 +6,21 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
-import net.minecraft.server.v1_16_R3.NBTBase;
-import net.minecraft.server.v1_16_R3.NBTCompressedStreamTools;
-import net.minecraft.server.v1_16_R3.NBTReadLimiter;
-import net.minecraft.server.v1_16_R3.NBTTagCompound;
-import net.minecraft.server.v1_16_R3.NBTTagDouble;
-import net.minecraft.server.v1_16_R3.NBTTagFloat;
-import net.minecraft.server.v1_16_R3.NBTTagList;
-import net.minecraft.server.v1_16_R3.NBTTagLong;
-import net.minecraft.server.v1_16_R3.NBTTagShort;
-import net.minecraft.server.v1_16_R3.NBTTagString;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTCompressedStreamTools;
+import net.minecraft.nbt.NBTReadLimiter;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
+import net.minecraft.nbt.NBTTagShort;
+import net.minecraft.nbt.NBTTagString;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_16_R3.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_17_R1.persistence.CraftPersistentDataContainer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
@@ -39,7 +36,6 @@ public class NBTCompound implements Cloneable, Validation {
 
 	public static final String NULL_STRING = "\u0000";
 
-	private static final String INTERNAL_MAP_KEY = "map";
 	private static final String UUID_MOST_SUFFIX = "Most";
 	private static final String UUID_LEAST_SUFFIX = "Least";
 	private static final String UUID_KEY = "uuid";
@@ -97,7 +93,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * @return The size of the tag compound.
 	 */
 	public int size() {
-		return this.tag.e();
+		return this.tag.x.size();
 	}
 
 	/**
@@ -106,7 +102,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * @return Returns true if the tag compound is empty.
 	 */
 	public boolean isEmpty() {
-		return this.tag.isEmpty();
+		return this.tag.x.isEmpty();
 	}
 
 	/**
@@ -116,7 +112,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * @return Returns true if the contains the given key.
 	 */
 	public boolean hasKey(String key) {
-		return this.tag.hasKey(key);
+		return this.tag.x.containsKey(key);
 	}
 
 	/**
@@ -136,7 +132,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * @return Returns the set of keys.
 	 */
 	public Set<String> getKeys() {
-		return this.tag.getKeys();
+		return this.tag.x.keySet();
 	}
 
 	/**
@@ -147,20 +143,14 @@ public class NBTCompound implements Cloneable, Validation {
 	 * @param key The key to remove.
 	 */
 	public void remove(String key) {
-		this.tag.remove(key);
+		this.tag.x.remove(key);
 	}
 
 	/**
 	 * Clears all values from the tag compound.
 	 */
-	@SuppressWarnings("unchecked")
 	public void clear() {
-		try {
-			((Map<String, NBTBase>) FieldUtils.readField(this.tag, INTERNAL_MAP_KEY, true)).clear();
-		}
-		catch (IllegalAccessException ignored) {
-			this.tag.getKeys().forEach(this.tag::remove);
-		}
+		this.tag.x.clear();
 	}
 
 	/**
@@ -916,11 +906,11 @@ public class NBTCompound implements Cloneable, Validation {
 		if (item == null) {
 			return null;
 		}
-		net.minecraft.server.v1_16_R3.ItemStack craftItem = CraftItemStack.asNMSCopy(item);
-		if (craftItem == null) {
+		final var nmsItem = ItemUtils.getNMSItemStack(item);
+		if (nmsItem == null) {
 			return null;
 		}
-		return new NBTCompound(craftItem.getTag());
+		return new NBTCompound(nmsItem.getOrCreateTag());
 	}
 
 	/**
@@ -947,19 +937,18 @@ public class NBTCompound implements Cloneable, Validation {
 	public static ItemStack processItem(ItemStack item, Consumer<NBTCompound> processor) {
 		Preconditions.checkArgument(ItemUtils.isValidItem(item));
 		Preconditions.checkArgument(processor != null);
-		net.minecraft.server.v1_16_R3.ItemStack craftItem = CraftItemStack.asNMSCopy(item);
-		if (craftItem == null) {
+		final var nmsItem = ItemUtils.getNMSItemStack(item);
+		if (nmsItem == null) {
 			return null;
 		}
-		NBTCompound nbt = new NBTCompound(craftItem.getTag());
+		final var nbt = new NBTCompound(nmsItem.getOrCreateTag());
 		try {
 			processor.accept(nbt);
 		}
 		catch (Exception exception) {
 			return null;
 		}
-		craftItem.setTag(nbt.tag);
-		return CraftItemStack.asBukkitCopy(craftItem);
+		return nmsItem.getBukkitStack();
 	}
 
 	/**

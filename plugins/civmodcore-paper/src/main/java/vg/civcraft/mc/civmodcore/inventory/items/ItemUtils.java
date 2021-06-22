@@ -14,7 +14,7 @@ import net.kyori.adventure.text.Component;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -177,14 +177,13 @@ public final class ItemUtils {
 	 * @param item The item to get the NMS version of.
 	 * @return The NMS version, either handle or copy.
 	 */
-	public static net.minecraft.server.v1_16_R3.ItemStack getNMSItemStack(final ItemStack item) {
+	public static net.minecraft.world.item.ItemStack getNMSItemStack(final ItemStack item) {
 		if (item == null) {
 			return null;
 		}
-		if (item instanceof CraftItemStack) {
-			final var handle = ((CraftItemStack) item).getHandle();
-			if (handle != null) {
-				return handle;
+		if (item instanceof CraftItemStack craftItem) {
+			if (craftItem.handle != null) {
+				return craftItem.handle;
 			}
 		}
 		return CraftItemStack.asNMSCopy(item);

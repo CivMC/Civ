@@ -65,7 +65,7 @@ public final class MoreTags {
 	public static final Tag<Material> DIRT = new BetterTag<>("dirt",
 			ImmutableSet.<Material>builder()
 					.add(Material.FARMLAND)
-					.add(Material.GRASS_PATH)
+					.add(Material.DIRT_PATH)
 					.add(Material.GRASS_BLOCK)
 					.add(Material.DIRT)
 					.add(Material.COARSE_DIRT)

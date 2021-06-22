@@ -4,19 +4,19 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import net.minecraft.server.v1_16_R3.IBlockState;
+import net.minecraft.world.level.block.state.properties.IBlockState;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
 
 public final class BlockProperties {
 
 	private static final Map<String, IBlockState<?>> BLOCK_STATES = new HashMap<>();
 
 	static {
-		for (final Field field : FieldUtils.getAllFields(net.minecraft.server.v1_16_R3.BlockProperties.class)) {
+		for (final Field field : FieldUtils.getAllFields(net.minecraft.world.level.block.state.properties.BlockProperties.class)) {
 			if (!IBlockState.class.isAssignableFrom(field.getType())) {
 				continue;
 			}

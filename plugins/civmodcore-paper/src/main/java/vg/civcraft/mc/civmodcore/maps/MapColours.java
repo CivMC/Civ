@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import net.minecraft.server.v1_16_R3.MaterialMapColor;
+import net.minecraft.world.level.material.MaterialMapColor;
 import org.apache.commons.collections4.CollectionUtils;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
@@ -96,7 +96,7 @@ public enum MapColours {
 		if (!missing.isEmpty()) {
 			final CivLogger logger = CivLogger.getLogger(MapColours.class);
 			logger.warning("The following map colours are missing: " + missing.stream()
-					.map(e -> Integer.toString(e.aj))
+					.map(e -> Integer.toString(e.am))
 					.collect(Collectors.joining(",")));
 		}
 	}

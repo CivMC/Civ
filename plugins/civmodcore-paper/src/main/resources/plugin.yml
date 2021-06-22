@@ -1,8 +1,9 @@
 name: ${project.artifactId}
 version: ${project.version}
 authors: [valadian, rourke750, ProgrammerDan, Maxopoly, DeadBeef, Protonull, Okx, mindless728, Tealnerd]
+website: ${project.url}
 main: vg.civcraft.mc.civmodcore.CivModCorePlugin
-api-version: 1.16
+api-version: 1.17
 commands:
   config: {}
   configsetany:

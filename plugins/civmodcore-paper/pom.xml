@@ -9,9 +9,8 @@
     <version>1.0.1</version>
   </parent>
 
-  <groupId>vg.civcraft.mc.civmodcore</groupId>
   <artifactId>CivModCore</artifactId>
-  <version>1.8.4</version>
+  <version>1.9.0</version>
   <name>CivModCore</name>
   <url>https://github.com/Civclassic/CivModCore/</url>
 
@@ -40,7 +39,8 @@
               <artifactSet>
                 <excludes>
                   <!-- Psuedo Provided -->
-                  <exclude>com.destroystokyo.paper:paper</exclude>
+                  <exclude>it.unimi.dsi:fastutil</exclude>
+                  <exclude>co.aikar:cleaner</exclude>
                 </excludes>
               </artifactSet>
               <filters>
@@ -60,9 +60,10 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.destroystokyo.paper</groupId>
+      <groupId>io.papermc.paper</groupId>
       <artifactId>paper</artifactId>
-      <version>1.16.5-R0.1-SNAPSHOT</version>
+      <version>1.17.1-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <groupId>io.papermc</groupId>
@@ -99,7 +100,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.11</version>
+      <version>3.12.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -115,6 +116,17 @@
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>jsr305</artifactId>
       <version>3.0.2</version>
+    </dependency>
+    <!-- Shaded into Paper -->
+    <dependency>
+      <groupId>it.unimi.dsi</groupId>
+      <artifactId>fastutil</artifactId>
+      <version>8.2.2</version> <!-- https://github.com/PaperMC/Paper/blob/master/Paper-MojangAPI/build.gradle.kts#L22 -->
+    </dependency>
+    <dependency>
+      <groupId>co.aikar</groupId>
+      <artifactId>cleaner</artifactId>
+      <version>1.0-SNAPSHOT</version> <!-- https://github.com/PaperMC/Paper/blob/master/patches/server/0003-Build-system-changes.patch#L34 -->
     </dependency>
     <!-- For Testing -->
     <dependency>

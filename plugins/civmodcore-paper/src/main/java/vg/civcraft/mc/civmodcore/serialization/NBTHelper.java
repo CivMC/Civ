@@ -3,7 +3,7 @@ package vg.civcraft.mc.civmodcore.serialization;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public final class NBTHelper {
@@ -59,7 +59,7 @@ public final class NBTHelper {
 		if (nbt == null) {
 			return null;
 		}
-		return net.minecraft.server.v1_16_R3.ItemStack.fromCompound(nbt.getRAW()).getBukkitStack();
+		return net.minecraft.world.item.ItemStack.a(nbt.getRAW()).getBukkitStack();
 	}
 
 	public static NBTCompound itemStackToNBT(final ItemStack item) {
