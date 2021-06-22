@@ -3,7 +3,9 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
-import org.bukkit.Bukkit;
+import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
+import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.DataParser;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -18,6 +20,7 @@ import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -25,6 +28,9 @@ public class MobCondenser extends BasicHack
 {
 	private Random rng;
 	private Map<EntityType, Double> mobSpawnModifiers;
+
+	@AutoLoad(processor = DataParser.MATERIAL)
+	private List<Material> materialModificationWhitelist;
 
 	public MobCondenser(SimpleAdminHacks plugin, BasicHackConfig config)
 	{
@@ -104,7 +110,9 @@ public class MobCondenser extends BasicHack
 
 			while (iterator.hasNext()) {
 				ItemStack itemStack = iterator.next();
-				itemStack.setAmount((int) Math.round(itemStack.getAmount() / mobSpawnModifiers.get(e.getEntityType())));
+				if (materialModificationWhitelist.contains(itemStack.getType())) {
+					itemStack.setAmount((int) Math.round(itemStack.getAmount() / mobSpawnModifiers.get(e.getEntityType())));
+				}
 			}
 		}
 	}
