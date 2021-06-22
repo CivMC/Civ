@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmodcore;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,8 +8,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
@@ -20,13 +17,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
 
-@SuppressWarnings("deprecation")
 public abstract class ACivMod extends JavaPlugin {
-
-	private final List<Class<? extends NBTSerializable>> serializableClasses = Lists.newArrayList();
 
 	@Override
 	public void onEnable() {
@@ -45,8 +37,6 @@ public abstract class ACivMod extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		this.serializableClasses.forEach(NBTSerialization::unregisterNBTSerializable);
-		this.serializableClasses.clear();
 		HandlerList.unregisterAll(this);
 		Bukkit.getMessenger().unregisterIncomingPluginChannel(this);
 		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
@@ -63,25 +53,6 @@ public abstract class ACivMod extends JavaPlugin {
 			throw new IllegalArgumentException("Cannot register a listener if it's null, you dummy");
 		}
 		getServer().getPluginManager().registerEvents(listener, this);
-	}
-
-	/**
-	 * <p>Registers a serializable.</p>
-	 *
-	 * <p>Note: This is a tracked single use registration. The given serializable will be de-registered when this
-	 * plugin is disabled, thus you should call this within the plugin's onEnable() method.</p>
-	 *
-	 * @param <T> The type of the serializable.
-	 * @param serializable The serializable class.
-	 *
-	 * @deprecated This is no longer necessary and was added to ease usage of serializables,
-	 *     but {@link List#of(Object[])} and {@link java.util.Collection#forEach(Consumer)}
-	 *     has made this largely redundant.
-	 */
-	@Deprecated
-	public <T extends NBTSerializable> void registerSerializable(Class<T> serializable) {
-		NBTSerialization.registerNBTSerializable(serializable);
-		this.serializableClasses.add(serializable);
 	}
 
 	/**

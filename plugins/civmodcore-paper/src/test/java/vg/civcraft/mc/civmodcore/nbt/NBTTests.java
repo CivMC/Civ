@@ -1,32 +1,28 @@
-package vg.civcraft.mc.civmodcore.serialization;
+package vg.civcraft.mc.civmodcore.nbt;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.pseudo.PseudoServer;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
-import vg.civcraft.mc.civmodcore.utilities.Validation;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
-public class SerializationTests {
+public class NBTTests {
 
 	@BeforeClass
-	public static void beforeAll() {
+	public static void setupBukkit() {
 		PseudoServer.setup();
-		NBTSerialization.registerNBTSerializable(ExampleSerializable.class);
-	}
-
-	@AfterClass
-	public static void afterAll() {
-		NBTSerialization.clearAllRegistrations();
 	}
 
 	@Test
@@ -39,7 +35,7 @@ public class SerializationTests {
 				"voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non " +
 				"proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 		// Process
-		NBTCompound nbt = new NBTCompound();
+		final var nbt = new NBTCompound();
 		nbt.setString(STRING_KEY, expectedString);
 		// Check
 		Assert.assertEquals(expectedString, nbt.getString(STRING_KEY));
@@ -49,33 +45,12 @@ public class SerializationTests {
 	public void testStringArraySerialization() {
 		// Setup
 		String STRING_ARRAY_KEY = "test_string_array";
-		String[] expectedStringArray = { "one", "two", null, null, "five" };
+		String[] expectedStringArray = { "one", "two", "three" };
 		// Process
-		NBTCompound nbt = new NBTCompound();
+		final var nbt = new NBTCompound();
 		nbt.setStringArray(STRING_ARRAY_KEY, expectedStringArray);
 		// Check
 		Assert.assertArrayEquals(expectedStringArray, nbt.getStringArray(STRING_ARRAY_KEY));
-	}
-
-	@Test
-	public void testClassSerialization() {
-		// Setup
-		String expectedString = "Turpis tincidunt id aliquet risus feugiat. Donec et odio pellentesque diam " +
-				"volutpat commodo sed egestas. Mattis nunc sed blandit libero volutpat sed. Pellentesque diam " +
-				"volutpat commodo sed egestas egestas fringilla phasellus. Nec feugiat in fermentum posuere urna " +
-				"nec. Urna neque viverra justo nec ultrices dui sapien. Interdum consectetur libero id faucibus " +
-				"nisl tincidunt eget nullam non. Dignissim sodales ut eu sem integer vitae justo eget magna. " +
-				"Amet est placerat in egestas. Pharetra vel turpis nunc eget lorem. Mauris sit amet massa vitae " +
-				"tortor condimentum lacinia quis vel. Faucibus turpis in eu mi bibendum neque egestas congue " +
-				"quisque. Sit amet venenatis urna cursus eget nunc.";
-		// Process
-		ExampleSerializable expected = new ExampleSerializable();
-		expected.setMessage(expectedString);
-		NBTCompound nbt = NBTSerialization.serialize(expected);
-		ExampleSerializable actual = (ExampleSerializable) NBTSerialization.deserialize(nbt);
-		// Check
-		Assert.assertNotNull(actual);
-		Assert.assertEquals(expectedString, actual.getMessage());
 	}
 
 	@Test
@@ -90,12 +65,12 @@ public class SerializationTests {
 				"Proin fermentum leo vel orci porta non pulvinar. Facilisis magna etiam tempor orci eu lobortis " +
 				"elementum nibh tellus. Aliquet eget sit amet tellus cras adipiscing enim.";
 		// Process
-		NBTCompound nbt = new NBTCompound();
+		final var nbt = new NBTCompound();
 		nbt.setString(STRING_KEY, expectedString);
-		byte[] data = NBTCompound.toBytes(nbt);
-		NBTCompound actual = NBTCompound.fromBytes(data);
+		final byte[] data = NBTSerialization.toBytes(nbt);
+		final NBTTagCompound actual = NBTSerialization.fromBytes(data);
 		// Check
-		Assert.assertTrue(Validation.checkValidity(actual));
+		Assert.assertNotNull(actual);
 		Assert.assertEquals(expectedString, actual.getString(STRING_KEY));
 	}
 
@@ -104,13 +79,12 @@ public class SerializationTests {
 		// Setup
 		String STRING_KEY = "test_null_string";
 		// Process
-		NBTCompound nbt = new NBTCompound();
+		final var nbt = new NBTCompound();
 		nbt.setString(STRING_KEY, null);
-		byte[] data = NBTCompound.toBytes(nbt);
-		NBTCompound actual = NBTCompound.fromBytes(data);
+		final byte[] data = NBTSerialization.toBytes(nbt);
+		final var actual = new NBTCompound(NBTSerialization.fromBytes(data));
 		// Check
-		Assert.assertTrue(Validation.checkValidity(actual));
-		Assert.assertNull(actual.getString(STRING_KEY));
+		Assert.assertNull(actual.getNullableString(STRING_KEY));
 	}
 
 	@Test
@@ -128,11 +102,11 @@ public class SerializationTests {
 				"euismod. Cras semper auctor neque vitae tempus. Leo a diam sollicitudin tempor id eu. Non sodales " +
 				"neque sodales ut etiam. Elementum integer enim neque volutpat ac tincidunt vitae semper quis.";
 		// Process
-		NBTCompound nbt = new NBTCompound();
+		final var nbt = new NBTCompound();
 		nbt.setString(STRING_KEY, expectedString);
 		nbt.clear();
 		// Check
-		Assert.assertNull(nbt.getString(STRING_KEY));
+		Assert.assertNull(nbt.getNullableString(STRING_KEY));
 	}
 
 	@Test
@@ -163,6 +137,25 @@ public class SerializationTests {
 		final var parsed = NBTHelper.itemStackFromNBT(nbt);
 		// Check
 		Assert.assertEquals(item, parsed);
+	}
+
+	@Test
+	public void testMapDeserialisation() {
+		// Setup
+		final NBTTagCompound targetNBT = new NBTTagCompound() {{
+			set("EntityTag", new NBTTagCompound() {{
+				setString("id", "minecraft:vex");
+			}});
+		}};
+		final Map<String, Object> testData = new HashMap<>() {{
+			put("EntityTag", new HashMap<String, Object>() {{
+				put("id", "minecraft:vex");
+			}});
+		}};
+		// Process
+		final NBTTagCompound convertedNBT = NBTSerialization.fromMap(testData);
+		// Check
+		Assert.assertEquals(targetNBT, convertedNBT);
 	}
 
 }

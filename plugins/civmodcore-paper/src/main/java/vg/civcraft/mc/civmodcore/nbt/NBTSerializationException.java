@@ -1,11 +1,15 @@
-package vg.civcraft.mc.civmodcore.serialization;
+package vg.civcraft.mc.civmodcore.nbt;
+
+import java.io.Serial;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 /**
- * Exception to be used within {@link NBTSerializable#serialize(NBTCompound)} and
- * {@link NBTSerializable#deserialize(NBTCompound)}.
+ * Exception that ought to be used within {@link NBTSerializable#toNBT(NBTCompound)} and
+ * {@link NBTSerializable#fromNBT(NBTCompound)}.
  */
 public class NBTSerializationException extends RuntimeException {
 
+	@Serial
 	private static final long serialVersionUID = 606023177729327630L;
 
 	public NBTSerializationException() {

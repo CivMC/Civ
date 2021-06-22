@@ -26,7 +26,6 @@ import vg.civcraft.mc.civmodcore.players.settings.commands.ConfigCommand;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardListener;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
 import vg.civcraft.mc.civmodcore.utilities.SkinCache;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
 import vg.civcraft.mc.civmodcore.world.operations.ChunkOperationManager;
@@ -115,7 +114,6 @@ public final class CivModCorePlugin extends ACivMod {
 		WorldTracker.reset();
 		PlayerSettingAPI.saveAll();
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
-		NBTSerialization.clearAllRegistrations();
 		if (this.commands != null) {
 			this.commands.reset();
 			this.commands = null;
