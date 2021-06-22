@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.areas;
+package vg.civcraft.mc.civmodcore.world.model;
 
 import org.bukkit.Chunk;
 import org.bukkit.World;

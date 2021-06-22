@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.areas;
+package vg.civcraft.mc.civmodcore.world.model;
 
 import java.util.Collection;
 import java.util.HashSet;
