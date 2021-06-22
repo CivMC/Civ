@@ -3,10 +3,10 @@ package vg.civcraft.mc.civmodcore;
 import java.sql.SQLException;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
+import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.events.CustomEventMapper;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
@@ -53,7 +53,7 @@ public final class CivModCorePlugin extends ACivMod {
 		super.onEnable();
 		// Load Database
 		try {
-			this.database = (ManagedDatasource) getConfig().get("database");
+			this.database = ManagedDatasource.construct(this, (DatabaseCredentials) getConfig().get("database"));
 			if (this.database != null) {
 				CMCWorldDAO dao = new CMCWorldDAO(this.database, this);
 				if (dao.updateDatabase()) {
@@ -66,7 +66,7 @@ public final class CivModCorePlugin extends ACivMod {
 				}
 			}
 		}
-		catch (Exception error) {
+		catch (final Exception error) {
 			warning("Cannot get database from config.", error);
 			this.database = null;
 		}
