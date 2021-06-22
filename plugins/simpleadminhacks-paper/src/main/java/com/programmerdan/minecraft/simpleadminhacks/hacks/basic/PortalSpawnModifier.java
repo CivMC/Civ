@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.BlockDispenseArmorEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -75,6 +76,13 @@ public class PortalSpawnModifier extends BasicHack {
 	public void onEntityPickupItem(EntityPickupItemEvent e) {
 		if (e.getEntityType() == EntityType.ZOMBIFIED_PIGLIN) {
 			e.setCancelled(true); // Prevents giving piglins items to change what they drop
+		}
+	}
+
+	@EventHandler
+	public void dispenseArmorEvent(BlockDispenseArmorEvent e) {
+		if (e.getTargetEntity().getType() == EntityType.ZOMBIFIED_PIGLIN) {
+			e.setCancelled(true);
 		}
 	}
 
