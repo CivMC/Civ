@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-import vg.civcraft.mc.civmodcore.util.CivLogger;
+import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public final class PotionUtils {
 

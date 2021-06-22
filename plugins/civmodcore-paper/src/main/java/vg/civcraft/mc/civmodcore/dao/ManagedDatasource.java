@@ -27,8 +27,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
-import vg.civcraft.mc.civmodcore.util.MoreMapUtils;
+import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
+import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
 
 /**
  * Plugins should replace their custom Database handlers with an instance of ManagedDatasource.

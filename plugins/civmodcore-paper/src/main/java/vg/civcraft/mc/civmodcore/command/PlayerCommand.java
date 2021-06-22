@@ -6,7 +6,7 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
 @Deprecated
 public abstract class PlayerCommand implements Command {

@@ -23,7 +23,7 @@ import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.Switch;
 import org.bukkit.util.BlockIterator;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
-import vg.civcraft.mc.civmodcore.util.NullUtils;
+import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 /**
  * Class of utility functions for Blocks, and BlockFaces referencing Blocks around a Block.

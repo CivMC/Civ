@@ -3,7 +3,7 @@ package vg.civcraft.mc.civmodcore.uuid;
 import java.util.UUID;
 import org.junit.Assert;
 import org.junit.Test;
-import vg.civcraft.mc.civmodcore.util.UuidUtils;
+import vg.civcraft.mc.civmodcore.utilities.UuidUtils;
 
 public class UuidTests {
 

@@ -14,8 +14,8 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.data.Ageable;
-import vg.civcraft.mc.civmodcore.util.CivLogger;
-import vg.civcraft.mc.civmodcore.util.KeyedUtils;
+import vg.civcraft.mc.civmodcore.utilities.CivLogger;
+import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 
 /**
  * Fills in the gaps between {@link Tag} and {@link MaterialTags}.

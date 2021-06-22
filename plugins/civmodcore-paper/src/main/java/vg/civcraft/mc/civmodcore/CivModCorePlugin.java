@@ -29,7 +29,7 @@ import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardListener;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
-import vg.civcraft.mc.civmodcore.util.SkinCache;
+import vg.civcraft.mc.civmodcore.utilities.SkinCache;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
 import vg.civcraft.mc.civmodcore.world.operations.ChunkOperationManager;
 

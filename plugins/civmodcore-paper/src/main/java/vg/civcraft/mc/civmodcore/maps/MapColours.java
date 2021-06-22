@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import net.minecraft.server.v1_16_R3.MaterialMapColor;
 import org.apache.commons.collections4.CollectionUtils;
-import vg.civcraft.mc.civmodcore.util.CivLogger;
+import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 /**
  * <a href="https://minecraft.fandom.com/wiki/Map_item_format#Base_colors">Reference</a>

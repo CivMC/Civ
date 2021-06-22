@@ -15,7 +15,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vg.civcraft.mc.civmodcore.util.MoreArrayUtils;
+import vg.civcraft.mc.civmodcore.utilities.MoreArrayUtils;
 
 /**
  * Wrapper for cloned inventories intended to ensure that ClonedInventories aren't themselves cloned.

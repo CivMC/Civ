@@ -5,7 +5,7 @@ import java.util.Map;
 import org.apache.commons.collections4.MapUtils;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.util.NumberConversions;
-import vg.civcraft.mc.civmodcore.util.MoreMapUtils;
+import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
 
 /**
  * This is a data class representing a set of credentials used for connecting to databases.

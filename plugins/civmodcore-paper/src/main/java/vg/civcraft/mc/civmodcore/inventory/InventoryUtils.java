@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.util.MoreArrayUtils;
+import vg.civcraft.mc.civmodcore.utilities.MoreArrayUtils;
 
 public final class InventoryUtils {
 

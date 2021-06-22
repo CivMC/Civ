@@ -4,7 +4,7 @@ import java.util.Iterator;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.inventory.Recipe;
-import vg.civcraft.mc.civmodcore.util.NullUtils;
+import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 /**
  * Class of utility functions for Recipes.

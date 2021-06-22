@@ -14,7 +14,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
-import vg.civcraft.mc.civmodcore.util.Validation;
+import vg.civcraft.mc.civmodcore.utilities.Validation;
 
 public class SerializationTests {
 

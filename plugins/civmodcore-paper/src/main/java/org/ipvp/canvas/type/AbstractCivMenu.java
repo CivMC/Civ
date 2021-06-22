@@ -20,7 +20,7 @@ import org.ipvp.canvas.slot.Slot;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.gui.canvas.MenuUtils;
-import vg.civcraft.mc.civmodcore.util.NullUtils;
+import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 public abstract class AbstractCivMenu extends AbstractMenu {
 

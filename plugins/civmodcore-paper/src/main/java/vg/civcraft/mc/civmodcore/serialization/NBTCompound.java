@@ -27,8 +27,8 @@ import org.bukkit.craftbukkit.v1_16_R3.persistence.CraftPersistentDataContainer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.util.NullUtils;
-import vg.civcraft.mc.civmodcore.util.Validation;
+import vg.civcraft.mc.civmodcore.utilities.NullUtils;
+import vg.civcraft.mc.civmodcore.utilities.Validation;
 
 /**
  * Wrapper class for NBTTagCompounds to make NBT serialization and deserialization as robust as possible. Intended to
