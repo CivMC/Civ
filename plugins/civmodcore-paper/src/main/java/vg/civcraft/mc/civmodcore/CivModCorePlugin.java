@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
-import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.events.CustomEventMapper;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
@@ -22,9 +22,7 @@ import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
 import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 import vg.civcraft.mc.civmodcore.maps.MapColours;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
-import vg.civcraft.mc.civmodcore.players.settings.gui.ConfigCommand;
-import vg.civcraft.mc.civmodcore.players.settings.gui.ConfigGetAnyCommand;
-import vg.civcraft.mc.civmodcore.players.settings.gui.ConfigSetAnyCommand;
+import vg.civcraft.mc.civmodcore.players.settings.commands.ConfigCommand;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardListener;
@@ -40,17 +38,12 @@ public final class CivModCorePlugin extends ACivMod {
 	private GlobalChunkMetaManager chunkMetaManager;
 	private ManagedDatasource database;
 	private WorldIDManager worldIdManager;
-	private final AikarCommandManager commands;
+	private CommandManager commands;
 	private SkinCache skinCache;
-
-	public CivModCorePlugin() {
-		this.commands = new AikarCommandManager(this, false);
-	}
 
 	@Override
 	public void onEnable() {
 		instance = this;
-		this.useNewCommandHandler = true;
 		ConfigurationSerialization.registerClass(ManagedDatasource.class);
 		// Save default resources
 		saveDefaultResource("enchants.yml");
@@ -87,6 +80,7 @@ public final class CivModCorePlugin extends ACivMod {
 		registerListener(new WorldTracker());
 		registerListener(ChunkOperationManager.INSTANCE);
 		// Register commands
+		this.commands = new CommandManager(this);
 		this.commands.init();
 		this.commands.registerCommand(new ConfigCommand());
 		this.commands.registerCommand(ChunkOperationManager.INSTANCE);
@@ -99,8 +93,6 @@ public final class CivModCorePlugin extends ACivMod {
 		TreeTypeUtils.init();
 		BottomLineAPI.init();
 		MapColours.init();
-		this.newCommandHandler.registerCommand(new ConfigSetAnyCommand());
-		this.newCommandHandler.registerCommand(new ConfigGetAnyCommand());
 		this.skinCache = new SkinCache(this, getConfig().getInt("skin-download-threads", Runtime.getRuntime().availableProcessors() / 2));
 	}
 
@@ -124,7 +116,10 @@ public final class CivModCorePlugin extends ACivMod {
 		PlayerSettingAPI.saveAll();
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
 		NBTSerialization.clearAllRegistrations();
-		this.commands.reset();
+		if (this.commands != null) {
+			this.commands.reset();
+			this.commands = null;
+		}
 		this.skinCache.shutdown();
 		super.onDisable();
 	}

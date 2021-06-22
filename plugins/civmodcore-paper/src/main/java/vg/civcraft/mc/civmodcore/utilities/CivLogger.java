@@ -42,9 +42,9 @@ public final class CivLogger extends Logger {
 
 	/**
 	 * Create a logger based on a given class and a deliberately specified plugin. Use this in shared classes and such
-	 * which are used by other plugins. For example, {@link vg.civcraft.mc.civmodcore.command.AikarCommandManager} is
-	 * used by multiple plugins, thus it would be disingenuous for it to log as if the messages originate from
-	 * CivModCore instead of the plugin that instantiated the class.
+	 * which are used by other plugins. For example, {@link vg.civcraft.mc.civmodcore.commands.CommandManager} is used
+	 * by multiple plugins, thus it would be disingenuous for it to log as if the messages originate from CivModCore
+	 * instead of the plugin that instantiated the class.
 	 *
 	 * @param pluginClass The instance-originating plugin class.
 	 * @param targetClass The target class to log about.

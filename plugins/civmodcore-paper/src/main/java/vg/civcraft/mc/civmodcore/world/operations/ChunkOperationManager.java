@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.world.operations;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
@@ -20,12 +21,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 import vg.civcraft.mc.civmodcore.world.WorldXZ;
 
-public class ChunkOperationManager extends AikarCommand implements Listener {
+public class ChunkOperationManager extends BaseCommand implements Listener {
 
 	public static final ChunkOperationManager INSTANCE = new ChunkOperationManager();
 	private static final CivModCorePlugin PLUGIN = CivModCorePlugin.getInstance();

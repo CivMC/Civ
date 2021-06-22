@@ -9,13 +9,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -23,9 +20,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.command.CommandHandler;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
 
@@ -34,18 +28,8 @@ public abstract class ACivMod extends JavaPlugin {
 
 	private final List<Class<? extends NBTSerializable>> serializableClasses = Lists.newArrayList();
 
-	@Deprecated
-	protected CommandHandler handle = null;
-	protected StandaloneCommandHandler newCommandHandler;
-	protected boolean useNewCommandHandler = true;
-
 	@Override
 	public void onEnable() {
-		// Allow plugins to disable the new command handler without breaking other plugins that
-		// rely on this being set automatically.
-		if (this.useNewCommandHandler) {
-			this.newCommandHandler = new StandaloneCommandHandler(this);
-		}
 		// Self disable when a hard dependency is disabled
 		registerListener(new Listener() {
 			@EventHandler
@@ -61,11 +45,6 @@ public abstract class ACivMod extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		this.useNewCommandHandler = true;
-		if (this.newCommandHandler != null) {
-			this.newCommandHandler.reset();
-			this.newCommandHandler = null;
-		}
 		this.serializableClasses.forEach(NBTSerialization::unregisterNBTSerializable);
 		this.serializableClasses.clear();
 		HandlerList.unregisterAll(this);
@@ -162,73 +141,6 @@ public abstract class ACivMod extends JavaPlugin {
 			severe("Could not save " + outFile.getName() + " to " + outFile);
 			exception.printStackTrace();
 		}
-	}
-
-	@Override
-	public boolean onCommand(@NotNull CommandSender sender,
-							 @NotNull Command command,
-							 @NotNull String label,
-							 String[] arguments) {
-		if (this.handle != null) {
-			return this.handle.execute(sender, command, arguments);
-		}
-		if (this.newCommandHandler != null) {
-			return this.newCommandHandler.executeCommand(sender, command, arguments);
-		}
-		return false;
-	}
-
-	@Override
-	public List<String> onTabComplete(@NotNull CommandSender sender,
-									  @NotNull Command command,
-									  @NotNull String label,
-									  String[] arguments) {
-		if (this.handle != null) {
-			return this.handle.complete(sender, command, arguments);
-		}
-		if (this.newCommandHandler != null) {
-			return this.newCommandHandler.tabCompleteCommand(sender, command, arguments);
-		}
-		return Collections.emptyList();
-	}
-
-	/**
-	 * Retrieves this plugin's legacy command handler, if it has one.
-	 *
-	 * @return Returns this plugin's legacy command handler, or null.
-	 */
-	public CommandHandler getCommandHandler() {
-		return this.handle;
-	}
-
-	/**
-	 * Registers (or de-registers) a legacy command handler with this plugin.
-	 *
-	 * @param handler The legacy command handler to set. Null will cause de-registration.
-	 */
-	public void setCommandHandler(CommandHandler handler) {
-		this.handle = handler;
-	}
-
-	/**
-	 * <p>Retrieves this plugin's standalone command handler, if it has one.</p>
-	 *
-	 * <p>Note: You can use {@code this.useNewCommandHandler = false;} within your plugin's onEnable() method prior to
-	 * the super call to disable the automatic generation of a standalone command handler.</p>
-	 *
-	 * @return Returns this plugin's standalone command handler, or null.
-	 */
-	public StandaloneCommandHandler getStandaloneCommandHandler() {
-		return this.newCommandHandler;
-	}
-
-	/**
-	 * Registers (or de-registers) a standalone command handler with this plugin.
-	 *
-	 * @param handler The standalone command handler to set. Null will cause de-registration.
-	 */
-	public void setStandaloneCommandHandler(StandaloneCommandHandler handler) {
-		this.newCommandHandler = handler;
 	}
 
 	/**
