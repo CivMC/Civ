@@ -7,6 +7,7 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.DataParser;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Ageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -82,6 +83,14 @@ public class MobCondenser extends BasicHack
 			if (!roll(mobSpawnModifiers.get(e.getEntityType()))) {
 				if (e.getSpawnReason() != CreatureSpawnEvent.SpawnReason.SPAWNER_EGG) {
 					e.setCancelled(true);
+				}
+				else if (e.getEntity() instanceof Ageable) // Is from a spawn egg, and is Ageable
+				{
+					Ageable ageable = (Ageable) e.getEntity();
+
+					if (!ageable.isAdult()) { //Only spawns from right clicking other mobs with a spawn egg
+						e.setCancelled(true);
+					}
 				}
 			}
 		}
