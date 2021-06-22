@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.scoreboard.side;
+package vg.civcraft.mc.civmodcore.players.scoreboard.side;
 
 import java.util.Iterator;
 import java.util.Map;

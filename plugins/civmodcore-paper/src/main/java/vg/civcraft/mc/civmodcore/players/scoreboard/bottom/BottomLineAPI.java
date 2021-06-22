@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.scoreboard.bottom;
+package vg.civcraft.mc.civmodcore.players.scoreboard.bottom;
 
 import java.util.Map;
 import java.util.Map.Entry;

@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.scoreboard.side;
+package vg.civcraft.mc.civmodcore.players.scoreboard.side;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;

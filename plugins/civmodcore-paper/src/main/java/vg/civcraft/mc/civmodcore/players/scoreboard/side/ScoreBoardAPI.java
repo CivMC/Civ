@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.scoreboard.side;
+package vg.civcraft.mc.civmodcore.players.scoreboard.side;
 
 import com.google.common.base.Preconditions;
 import java.util.HashMap;
