@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.ratelimiting;
+package vg.civcraft.mc.civmodcore.utilities.ratelimiting;
 
 import java.util.Map;
 import java.util.TreeMap;

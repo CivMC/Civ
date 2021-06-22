@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.ratelimiting;
+package vg.civcraft.mc.civmodcore.utilities.ratelimiting;
 
 public class TokenBucket {
 
