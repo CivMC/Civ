@@ -1,9 +1,9 @@
-package vg.civcraft.mc.civmodcore.inventorygui.components;
+package vg.civcraft.mc.civmodcore.inventory.gui.components;
 
 import java.util.List;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
-import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
+import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 
 public class ComponableInventory extends ComponableSection {
 

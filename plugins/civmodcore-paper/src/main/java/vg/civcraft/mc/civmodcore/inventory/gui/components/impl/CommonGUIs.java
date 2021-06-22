@@ -1,10 +1,10 @@
-package vg.civcraft.mc.civmodcore.inventorygui.components.impl;
+package vg.civcraft.mc.civmodcore.inventory.gui.components.impl;
 
 import org.bukkit.Material;
-import vg.civcraft.mc.civmodcore.inventorygui.LClickable;
-import vg.civcraft.mc.civmodcore.inventorygui.components.ComponableSection;
-import vg.civcraft.mc.civmodcore.inventorygui.components.SlotPredicates;
-import vg.civcraft.mc.civmodcore.inventorygui.components.StaticDisplaySection;
+import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.ComponableSection;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.SlotPredicates;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.StaticDisplaySection;
 
 public class CommonGUIs {
 

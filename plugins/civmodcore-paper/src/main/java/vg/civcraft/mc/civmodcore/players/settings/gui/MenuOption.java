@@ -2,8 +2,8 @@ package vg.civcraft.mc.civmodcore.players.settings.gui;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
-import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSetting;
 
 public class MenuOption extends MenuItem {

@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.inventorygui.components;
+package vg.civcraft.mc.civmodcore.inventory.gui.components;
 
 import java.util.function.Function;
 

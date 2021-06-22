@@ -1,9 +1,9 @@
-package vg.civcraft.mc.civmodcore.inventorygui.components;
+package vg.civcraft.mc.civmodcore.inventory.gui.components;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 
 public abstract class InventoryComponent {
 	

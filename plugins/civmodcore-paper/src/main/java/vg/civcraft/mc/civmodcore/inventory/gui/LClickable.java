@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.inventorygui;
+package vg.civcraft.mc.civmodcore.inventory.gui;
 
 import java.util.function.Consumer;
 import org.bukkit.Material;

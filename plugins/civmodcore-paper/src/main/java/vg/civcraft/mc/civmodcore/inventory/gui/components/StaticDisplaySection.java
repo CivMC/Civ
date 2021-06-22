@@ -1,6 +1,6 @@
-package vg.civcraft.mc.civmodcore.inventorygui.components;
+package vg.civcraft.mc.civmodcore.inventory.gui.components;
 
-import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 
 public class StaticDisplaySection extends InventoryComponent {
 	private int additionCounter;

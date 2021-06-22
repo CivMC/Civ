@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.inventorygui;
+package vg.civcraft.mc.civmodcore.inventory.gui;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

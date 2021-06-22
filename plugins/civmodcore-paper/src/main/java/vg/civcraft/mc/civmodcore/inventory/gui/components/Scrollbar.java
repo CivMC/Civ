@@ -1,11 +1,11 @@
-package vg.civcraft.mc.civmodcore.inventorygui.components;
+package vg.civcraft.mc.civmodcore.inventory.gui.components;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
-import vg.civcraft.mc.civmodcore.inventorygui.LClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
 
 public class Scrollbar extends InventoryComponent {
 

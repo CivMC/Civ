@@ -15,7 +15,7 @@ import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
-import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
+import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;

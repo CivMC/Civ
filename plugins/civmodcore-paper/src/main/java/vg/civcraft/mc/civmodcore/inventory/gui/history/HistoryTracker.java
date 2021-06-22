@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.inventorygui.history;
+package vg.civcraft.mc.civmodcore.inventory.gui.history;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
