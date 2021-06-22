@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.itemHandling;
+package vg.civcraft.mc.civmodcore.inventory.items;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,8 +17,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 
 /**
  * Allows the storage and comparison of itemstacks while ignoring their maximum

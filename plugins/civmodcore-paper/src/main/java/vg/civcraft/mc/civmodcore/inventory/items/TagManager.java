@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.itemHandling;
+package vg.civcraft.mc.civmodcore.inventory.items;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,6 @@ import net.minecraft.nbt.NBTTagString;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 @Deprecated
 public class TagManager {

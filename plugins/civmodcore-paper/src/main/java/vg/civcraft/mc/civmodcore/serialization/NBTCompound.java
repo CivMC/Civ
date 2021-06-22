@@ -24,12 +24,13 @@ import org.bukkit.craftbukkit.v1_17_R1.persistence.CraftPersistentDataContainer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.TagManager;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 import vg.civcraft.mc.civmodcore.utilities.Validation;
 
 /**
  * Wrapper class for NBTTagCompounds to make NBT serialization and deserialization as robust as possible. Intended to
- * replace {@link vg.civcraft.mc.civmodcore.itemHandling.TagManager TagManager} though the .mapToNBT and .listToNBT
+ * replace {@link TagManager TagManager} though the .mapToNBT and .listToNBT
  * APIs will not be re-implemented here as it's better to have a finer control of how data is written and read.
  */
 public class NBTCompound implements Cloneable, Validation {
