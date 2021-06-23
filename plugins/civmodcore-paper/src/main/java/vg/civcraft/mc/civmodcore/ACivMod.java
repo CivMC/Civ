@@ -212,8 +212,8 @@ public abstract class ACivMod extends JavaPlugin {
 	 * @param <T> The type of the plugin.
 	 * @param clazz The class object of the plugin.
 	 * @return Returns the first found instance of the plugin, or null. Nulls don't necessarily mean there isn't an
-	 *     instance of the plugin in existence. It could just be that it's located some unexpected place. Additionally,
-	 *     just because an instance has been returned does not mean that instance is enabled.
+	 *         instance of the plugin in existence. It could just be that it's located some unexpected place.
+	 *         Additionally, just because an instance has been returned does not mean that instance is enabled.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends JavaPlugin> T getInstance(final Class<T> clazz) {
@@ -234,6 +234,7 @@ public abstract class ACivMod extends JavaPlugin {
 				final Method method = clazz.getDeclaredMethod(methodName);
 				if (Modifier.isPublic(method.getModifiers())
 						&& Modifier.isStatic(method.getModifiers())
+						&& method.getParameterCount() == 0
 						&& clazz.isAssignableFrom(method.getReturnType())) {
 					return (T) method.invoke(null);
 				}
