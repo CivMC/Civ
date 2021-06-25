@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.logging.Level;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang3.time.DateUtils;
-import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -390,20 +389,19 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		}
 	}
 
-	private void banPlayer(Player p, int minutes) {
-		if (!config.isWeepingAngel()) {
+	private void banPlayer(final Player player, final int banTimeMS) {
+		if (!config().isWeepingAngel()) {
 			return;
 		}
-
-		Date exp = DateUtils.addMinutes(new Date(), minutes);
-		Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(p.getName(), "You've been banned for " + minutes +
-				" minutes due to your death.", exp, "weepingAngel");
-
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SimpleAdminHacks.instance(), new Runnable() {
-			public void run() {
-				p.kickPlayer("You've been banned for " + minutes + " minutes due to your death.");
-			}
-		}, 2L);
+		player.banPlayer(
+				// Ban Message
+				"You've been banned for " + banTimeMS + " minutes due to your death.",
+				// Ban Expiry
+				DateUtils.addMilliseconds(new Date(), banTimeMS),
+				// Ban Source
+				"Death",
+				// Kick Player If Online
+				true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
