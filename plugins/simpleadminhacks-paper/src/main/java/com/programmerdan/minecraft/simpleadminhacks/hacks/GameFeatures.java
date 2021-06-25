@@ -7,10 +7,10 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.TeleportUtil;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang3.time.DateUtils;
-import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -390,20 +390,38 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		}
 	}
 
-	private void banPlayer(Player p, int minutes) {
-		if (!config.isWeepingAngel()) {
+	private void banPlayer(final Player player, final int banTimeMS) {
+		if (!config().isWeepingAngel()) {
 			return;
 		}
-
-		Date exp = DateUtils.addMinutes(new Date(), minutes);
-		Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(p.getName(), "You've been banned for " + minutes +
-				" minutes due to your death.", exp, "weepingAngel");
-
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SimpleAdminHacks.instance(), new Runnable() {
-			public void run() {
-				p.kickPlayer("You've been banned for " + minutes + " minutes due to your death.");
+		final String banLengthMessage;
+		if (banTimeMS < 60_000) { // 1 Minute
+			final var seconds = TimeUnit.MILLISECONDS.toSeconds(banTimeMS);
+			if (seconds == 1) {
+				banLengthMessage = "1 second";
 			}
-		}, 2L);
+			else {
+				banLengthMessage = seconds + " seconds";
+			}
+		}
+		else {
+			final var minutes = TimeUnit.MILLISECONDS.toMinutes(banTimeMS);
+			if (minutes == 1) {
+				banLengthMessage = "1 minute";
+			}
+			else {
+				banLengthMessage = minutes + " minutes";
+			}
+		}
+		player.banPlayer(
+				// Ban Message
+				"You've been banned for " + banLengthMessage + " due to your death.",
+				// Ban Expiry
+				DateUtils.addMilliseconds(new Date(), banTimeMS),
+				// Ban Source
+				"Death",
+				// Kick Player If Online
+				true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
