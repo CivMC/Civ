@@ -2,13 +2,14 @@ package com.untamedears.realisticbiomes.growth;
 
 import com.untamedears.realisticbiomes.model.Plant;
 import java.util.Random;
-import net.minecraft.server.v1_16_R3.BiomeDecoratorGroups;
-import net.minecraft.server.v1_16_R3.BlockPosition;
-import net.minecraft.server.v1_16_R3.WorldServer;
+import net.minecraft.core.BlockPosition;
+import net.minecraft.data.worldgen.BiomeDecoratorGroups;
+import net.minecraft.server.level.WorldServer;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 
 /**
  * We need to differentiate fungus from other types of saplings thanks
@@ -43,8 +44,8 @@ public class FungusGrower extends AgeableGrower {
 		final Block block = plant.getLocation().getBlock();
 		final Material material = block.getType();
 		final var growth =
-				material == Material.CRIMSON_FUNGUS ? BiomeDecoratorGroups.CRIMSON_FUNGI_PLANTED :
-				material == Material.WARPED_FUNGUS ? BiomeDecoratorGroups.WARPED_FUNGI_PLANTED :
+				material == Material.CRIMSON_FUNGUS ? BiomeDecoratorGroups.cy :
+				material == Material.WARPED_FUNGUS ? BiomeDecoratorGroups.cA :
 				null;
 		if (growth == null) {
 			return;
@@ -52,8 +53,7 @@ public class FungusGrower extends AgeableGrower {
 		final WorldServer world = ((CraftWorld) block.getWorld()).getHandle();
 		final BlockPosition position = new BlockPosition(block.getX(), block.getY(), block.getZ());
 		//Taken from CraftWorld.generateTree()
-		if (!growth.e.generate(world, world.getChunkProvider().getChunkGenerator(),
-				this.random, position, growth.f)) {
+		if (!growth.e.generate(new FeaturePlaceContext(world, world.getChunkProvider().getChunkGenerator(), this.random, position, growth.f))) {
 			block.setType(material);
 		}
 	}
