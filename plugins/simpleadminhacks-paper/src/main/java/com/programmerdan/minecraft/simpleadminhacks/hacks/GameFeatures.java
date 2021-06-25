@@ -396,7 +396,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		}
 		final String banLengthMessage;
 		if (banTimeMS < 60_000) { // 1 Minute
-			final var seconds = TimeUnit.MICROSECONDS.toSeconds(banTimeMS);
+			final var seconds = TimeUnit.MILLISECONDS.toSeconds(banTimeMS);
 			if (seconds == 1) {
 				banLengthMessage = "1 second";
 			}
@@ -405,7 +405,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			}
 		}
 		else {
-			final var minutes = TimeUnit.MICROSECONDS.toMinutes(banTimeMS);
+			final var minutes = TimeUnit.MILLISECONDS.toMinutes(banTimeMS);
 			if (minutes == 1) {
 				banLengthMessage = "1 minute";
 			}
