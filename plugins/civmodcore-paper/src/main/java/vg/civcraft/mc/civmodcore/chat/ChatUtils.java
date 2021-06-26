@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import java.awt.Color;
 import java.util.List;
 import java.util.Objects;
+import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -16,6 +17,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
+@UtilityClass
 public final class ChatUtils {
 
 	/**

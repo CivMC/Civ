@@ -3,8 +3,10 @@ package vg.civcraft.mc.civmodcore.utilities;
 import com.google.common.reflect.ClassPath;
 import java.io.IOException;
 import java.util.ArrayList;
+import lombok.experimental.UtilityClass;
 import vg.civcraft.mc.civmodcore.ACivMod;
 
+@UtilityClass
 public class ClassUtility {
 
 	public static ArrayList<Class<?>> GetClassesForPlugin(ACivMod plugin) {

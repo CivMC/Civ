@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import com.google.common.math.IntMath;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 
@@ -18,6 +19,7 @@ import org.bukkit.Tag;
  *     <li>{@link TreeTypeUtils TreeTypeUtils}</li>
  * </ul>
  */
+@UtilityClass
 public final class MaterialUtils {
 
 	private static final List<Material> HASH_MATERIALS = new ArrayList<>() {{

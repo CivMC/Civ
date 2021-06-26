@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.inventory;
 
 import java.util.Iterator;
+import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.inventory.Recipe;
@@ -9,6 +10,7 @@ import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 /**
  * Class of utility functions for Recipes.
  */
+@UtilityClass
 public final class RecipeManager {
 
 	/**

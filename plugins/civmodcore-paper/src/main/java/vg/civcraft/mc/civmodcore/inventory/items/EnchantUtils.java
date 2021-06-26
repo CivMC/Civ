@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,6 +25,7 @@ import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 /**
  * Class of static utilities for Enchantments.
  */
+@UtilityClass
 public final class EnchantUtils {
 
 	private static final BiMap<Enchantment, String> ENCHANT_NAMES = ImmutableBiMap.<Enchantment, String>builder()

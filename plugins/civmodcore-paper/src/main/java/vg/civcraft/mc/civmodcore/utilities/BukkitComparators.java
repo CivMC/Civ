@@ -1,13 +1,11 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
 import java.util.Comparator;
+import lombok.experimental.UtilityClass;
 import org.bukkit.Location;
 
+@UtilityClass
 public class BukkitComparators {
-	
-	private BukkitComparators() {
-		
-	}
 	
 	public static Comparator<Location> getLocation() {
 		return (l1, l2) -> {

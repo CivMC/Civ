@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.ArrayUtils;
  *
  * @author Protonull
  */
+@UtilityClass
 public final class MoreArrayUtils {
 
     /**

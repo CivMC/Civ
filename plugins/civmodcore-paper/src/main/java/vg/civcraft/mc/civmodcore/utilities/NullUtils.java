@@ -1,10 +1,12 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
 import javax.annotation.Nonnull;
+import lombok.experimental.UtilityClass;
 
 /**
  * @author Protonull
  */
+@UtilityClass
 public final class NullUtils {
 
     /**

@@ -6,16 +6,15 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
+import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
+@UtilityClass
 public final class BottomLineAPI {
-
-	private BottomLineAPI() {
-	}
 
 	private static Set<BottomLine> lines = new TreeSet<>();
 	private static final String SEPARATOR = ChatColor.BOLD + "  " + ChatColor.BLACK + "||  " + ChatColor.RESET;

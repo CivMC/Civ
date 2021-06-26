@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -20,6 +21,7 @@ import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 /**
  * Fills in the gaps between {@link Tag} and {@link MaterialTags}.
  */
+@UtilityClass
 public final class MoreTags {
 
 	/**

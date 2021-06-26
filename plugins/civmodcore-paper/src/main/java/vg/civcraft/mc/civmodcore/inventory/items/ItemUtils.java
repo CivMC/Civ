@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Material;
@@ -25,6 +26,7 @@ import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 /**
  * Class of static APIs for Items. Replaces ISUtils.
  */
+@UtilityClass
 public final class ItemUtils {
 
 	private static final EnumMap<Material, String> MATERIAL_NAMES = new EnumMap<>(Material.class);

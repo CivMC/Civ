@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.entities;
 
 import com.google.common.base.Strings;
+import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -8,6 +9,7 @@ import org.bukkit.entity.Player;
 /**
  * Class of static APIs for Entities.
  */
+@UtilityClass
 public final class EntityUtils {
 
 	/**

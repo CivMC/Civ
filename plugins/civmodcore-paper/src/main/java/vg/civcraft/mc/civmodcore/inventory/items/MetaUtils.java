@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -22,6 +23,7 @@ import vg.civcraft.mc.civmodcore.chat.ChatUtils;
  * inside of {@link ItemUtils#handleItemMeta(ItemStack, Predicate)}'s handler, thus all of the
  * methods defined below will assume the presence of a valid meta instance.
  */
+@UtilityClass
 public final class MetaUtils {
 
 	/**

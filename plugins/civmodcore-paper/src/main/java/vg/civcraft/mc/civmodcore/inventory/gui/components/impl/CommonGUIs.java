@@ -1,11 +1,13 @@
 package vg.civcraft.mc.civmodcore.inventory.gui.components.impl;
 
+import lombok.experimental.UtilityClass;
 import org.bukkit.Material;
 import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.components.ComponableSection;
 import vg.civcraft.mc.civmodcore.inventory.gui.components.SlotPredicates;
 import vg.civcraft.mc.civmodcore.inventory.gui.components.StaticDisplaySection;
 
+@UtilityClass
 public class CommonGUIs {
 
 	public static ComponableSection genConfirmationGUI(int rows, int columns, Runnable yesFunc, String yesText, Runnable noFunc,

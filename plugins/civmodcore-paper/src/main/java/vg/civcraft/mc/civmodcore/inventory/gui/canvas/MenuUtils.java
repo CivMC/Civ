@@ -1,11 +1,13 @@
 package vg.civcraft.mc.civmodcore.inventory.gui.canvas;
 
+import lombok.experimental.UtilityClass;
 import org.ipvp.canvas.Menu;
 import org.ipvp.canvas.slot.SlotSettings;
 import org.ipvp.canvas.type.AbstractCivMenu;
 import org.ipvp.canvas.type.OpenHandler;
 import org.ipvp.canvas.type.UpdateHandler;
 
+@UtilityClass
 public final class MenuUtils {
 
 	/**

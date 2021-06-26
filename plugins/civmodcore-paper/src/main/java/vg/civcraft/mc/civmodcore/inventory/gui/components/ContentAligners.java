@@ -1,7 +1,9 @@
 package vg.civcraft.mc.civmodcore.inventory.gui.components;
 
 import java.util.function.Function;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ContentAligners {
 
 	public static ContentAligner getLeftAligned() {

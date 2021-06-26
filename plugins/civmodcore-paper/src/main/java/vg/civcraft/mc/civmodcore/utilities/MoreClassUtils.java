@@ -1,5 +1,8 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public final class MoreClassUtils {
 
 	/**

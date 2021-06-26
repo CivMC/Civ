@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
 import com.google.common.base.Strings;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
@@ -8,6 +9,7 @@ import org.bukkit.NamespacedKey;
 /**
  * Utility class to make dealing with namespace keys easier.
  */
+@UtilityClass
 public final class KeyedUtils {
 
 	/**

@@ -1,11 +1,13 @@
 package vg.civcraft.mc.civmodcore.chat;
 
 import javax.annotation.Nonnull;
+import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 
+@UtilityClass
 public final class Componentify {
 
 	private static Component INTERNAL_addLocationWorld(final Location location) {

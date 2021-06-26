@@ -6,11 +6,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
+@UtilityClass
 public final class PotionUtils {
 
 	private static final EnumMap<PotionType, String> POTIONS = new EnumMap<>(PotionType.class) {{

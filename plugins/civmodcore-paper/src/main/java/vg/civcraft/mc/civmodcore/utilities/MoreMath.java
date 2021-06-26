@@ -1,11 +1,14 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
+import lombok.experimental.UtilityClass;
+
 /**
  * General math utility class that <i>may</i> exist elsewhere, but I have none the foggiest where. If any of y'all
  * figure out where, feel free to lodge an official complaint.
  *
  * @author Protonull
  */
+@UtilityClass
 public final class MoreMath {
 
 	/**

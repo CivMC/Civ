@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.players.settings;
 
 import java.util.HashMap;
 import java.util.Map;
+import lombok.experimental.UtilityClass;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -13,6 +14,7 @@ import vg.civcraft.mc.civmodcore.players.settings.impl.IntegerSetting;
 import vg.civcraft.mc.civmodcore.players.settings.impl.LongSetting;
 import vg.civcraft.mc.civmodcore.players.settings.impl.StringSetting;
 
+@UtilityClass
 public class SettingTypeManager {
 	
 	private static Map<Class<?>, PlayerSetting<?>> settings; 
