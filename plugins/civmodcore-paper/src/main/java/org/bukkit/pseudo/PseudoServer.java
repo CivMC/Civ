@@ -2,6 +2,7 @@ package org.bukkit.pseudo;
 
 import com.destroystokyo.paper.entity.ai.MobGoals;
 import com.destroystokyo.paper.profile.PlayerProfile;
+import io.papermc.paper.datapack.DatapackManager;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Collection;
@@ -466,6 +467,11 @@ public class PseudoServer implements Server {
 	}
 
 	@Override
+	public int broadcast(@NotNull Component component) {
+		throw new NotImplementedException();
+	}
+
+	@Override
 	public int broadcast(@NotNull final Component component, @NotNull final String s) {
 		throw new NotImplementedException();
 	}
@@ -893,6 +899,11 @@ public class PseudoServer implements Server {
 	@NotNull
 	@Override
 	public MobGoals getMobGoals() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull DatapackManager getDatapackManager() {
 		throw new NotImplementedException();
 	}
 
