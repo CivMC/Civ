@@ -106,7 +106,23 @@ public final class ItemUtils {
 	public static boolean isValidItem(final ItemStack item) {
 		return item != null
 				&& isValidItemMaterial(item.getType())
-				&& isValidItemAmount(item);
+				&& item.getAmount() > 0
+				&& item.getAmount() <= item.getMaxStackSize();
+	}
+
+	/**
+	 * Checks if an ItemStack is valid instance in that it's non-null, has a valid item material, and has a positive
+	 * item amount. This differs from {@link #isValidItem(ItemStack)} in that the maximum stack size isn't considered,
+	 * so an item considered valid by this method may not be considered valid by {@link #isValidItem(ItemStack)}, thus
+	 * may not appear correctly in inventories.
+	 *
+	 * @param item The item to validate.
+	 * @return Returns true if the item is valid.
+	 */
+	public static boolean isValidItemIgnoringAmount(final ItemStack item) {
+		return item != null
+				&& isValidItemMaterial(item.getType())
+				&& item.getAmount() > 0;
 	}
 
 	/**
