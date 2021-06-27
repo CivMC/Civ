@@ -18,6 +18,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.minecraft.SharedConstants;
+import net.minecraft.server.DispenserRegistry;
 import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -46,7 +48,10 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.craftbukkit.v1_17_R1.block.data.CraftBlockData;
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemFactory;
+import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_17_R1.util.Versioning;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -78,6 +83,9 @@ public class PseudoServer implements Server {
 		if (Bukkit.getServer() == null) { // Ignore highlighter
 			final var previousLevel = LOGGER.getLevel();
 			LOGGER.setLevel(Level.OFF); // This is to prevent unnecessary logging
+			SharedConstants.a(); // SharedConstants.tryDetectVersion()
+			DispenserRegistry.init();
+			DispenserRegistry.c(); // DispenserRegistry.validate()
 			Bukkit.setServer(INSTANCE);
 			LOGGER.setLevel(previousLevel);
 		}
@@ -95,6 +103,18 @@ public class PseudoServer implements Server {
 		return CraftItemFactory.instance();
 	}
 
+	@Nonnull
+	@Override
+	public UnsafeValues getUnsafe() {
+		return CraftMagicNumbers.INSTANCE;
+	}
+
+	@Nonnull
+	@Override
+	public BlockData createBlockData(@Nonnull final Material material) {
+		return CraftBlockData.newData(material, null);
+	}
+
 	// ------------------------------------------------------------
 	// Not implemented
 	// ------------------------------------------------------------
@@ -102,25 +122,25 @@ public class PseudoServer implements Server {
 	@Nonnull
 	@Override
 	public String getName() {
-		return "";
+		return getClass().getSimpleName();
 	}
 
 	@Nonnull
 	@Override
 	public String getVersion() {
-		return "";
+		return getClass().getPackage().getImplementationVersion();
 	}
 
 	@Nonnull
 	@Override
 	public String getBukkitVersion() {
-		return "";
+		return Versioning.getBukkitVersion();
 	}
 
 	@Nonnull
 	@Override
 	public String getMinecraftVersion() {
-		return "";
+		return SharedConstants.getGameVersion().getName();
 	}
 
 	@Nonnull
@@ -817,12 +837,6 @@ public class PseudoServer implements Server {
 
 	@Nonnull
 	@Override
-	public BlockData createBlockData(@Nonnull final Material material) {
-		throw new NotImplementedException();
-	}
-
-	@Nonnull
-	@Override
 	public BlockData createBlockData(@Nonnull final Material material, @Nullable final Consumer<BlockData> consumer) {
 		throw new NotImplementedException();
 	}
@@ -859,12 +873,6 @@ public class PseudoServer implements Server {
 	@Nonnull
 	@Override
 	public List<Entity> selectEntities(@Nonnull final CommandSender commandSender, @Nonnull final String s) throws IllegalArgumentException {
-		throw new NotImplementedException();
-	}
-
-	@Nonnull
-	@Override
-	public UnsafeValues getUnsafe() {
 		throw new NotImplementedException();
 	}
 
