@@ -4,11 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
@@ -61,28 +58,13 @@ public class NameLayerPlugin extends ACivMod {
 			groupManagerDao.loadGroupsInvitations();
 			defaultGroupHandler = new DefaultGroupHandler();
 			autoAcceptHandler = new AutoAcceptHandler(groupManagerDao.loadAllAutoAccept());
-			handle = new CommandHandler();
-			handle.registerCommands();
+			handle = new CommandHandler(this);
 		}
 	}
 	
 	public void registerListeners(){
 		registerListener(new AssociationListener());
 		registerListener(new PlayerListener());
-	}
-	
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!loadGroups)
-			return false;
-		return handle.execute(sender, cmd, args);
-	}
-
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args){
-		if (!loadGroups)
-			return null;
-		return handle.complete(sender, cmd, args);
 	}
 
 	@Override

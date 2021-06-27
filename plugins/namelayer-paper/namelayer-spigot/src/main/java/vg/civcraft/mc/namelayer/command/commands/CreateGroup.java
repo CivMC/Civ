@@ -1,5 +1,9 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Syntax;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -13,39 +17,33 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.RunnableOnGroup;
-import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
+import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public class CreateGroup extends PlayerCommandMiddle{
+@CommandAlias("nlcg|nlcreategroup|creategroup|create|ctcreate|creategroup|cg")
+public class CreateGroup extends BaseCommandMiddle {
 
-	public CreateGroup(String name) {
-		super(name);
-		setIdentifier("nlcg");
-		setDescription("Create a group (Public or Private). Password is optional.");
-		setUsage("/nlcg <name> [password]");
-		setArguments(1,3);
-	}
-
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	@Syntax("/nlcg <name> [password]")
+	@Description("Create a group (Public or Private). Password is optional.")
+	public void execute(CommandSender sender, String groupName, @Optional String userPassword) {
 		if (!(sender instanceof Player)){
 			sender.sendMessage(ChatColor.DARK_BLUE + "Nice try console man, you can't bring me down. The computers won't win. " +
 					"Dis a player commmand back off.");
-			return true;
+			return;
 		}
 		Player p = (Player) sender;
-		String name = args[0];
+		String name = groupName;
 		int currentGroupCount = gm.countGroups(p.getUniqueId());
 		
 		if (NameLayerPlugin.getInstance().getGroupLimit() < currentGroupCount + 1 && !(p.isOp() || p.hasPermission("namelayer.admin"))){
 			p.sendMessage(ChatColor.RED + "You cannot create any more groups! Please delete an un-needed group before making more.");
-			return true;
+			return;
 		}
 		
 		//enforce regulations on the name
 		if (name.length() > 32) {
 			p.sendMessage(ChatColor.RED + "The group name is not allowed to contain more than 32 characters");
-			return true;
+			return;
 		}
 		Charset latin1 = StandardCharsets.ISO_8859_1;
 		boolean invalidChars = false;
@@ -65,18 +63,17 @@ public class CreateGroup extends PlayerCommandMiddle{
 		
 		if(invalidChars) {
 			p.sendMessage(ChatColor.RED + "You used characters, which are not allowed");
-			return true;
+			return;
 		}
 		
 		if (GroupManager.getGroup(name) != null){
 			p.sendMessage(ChatColor.RED + "That group is already taken. Try another unique group name.");
-			return true;
+			return;
 		}
 		String password = "";
-		if (args.length == 2) {
-			password = args[1];
-		}
-		else {
+		if (userPassword != null) {
+			password = userPassword;
+		} else {
 			password = null;
 		}
 		final UUID uuid = NameAPI.getUUID(p.getName());
@@ -102,7 +99,6 @@ public class CreateGroup extends PlayerCommandMiddle{
 			p.sendMessage(ChatColor.YELLOW + "You have reached the group limit with " + NameLayerPlugin.getInstance().getGroupLimit() + " groups! Please delete un-needed groups if you wish to create more.");
 		}
 		p.sendMessage(ChatColor.GREEN + "Group creation request is in process.");
-		return true;
 	}
 
 	public List<String> tabComplete(CommandSender sender, String[] args) {

@@ -1,51 +1,47 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Syntax;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
+import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.gui.GUIGroupOverview;
 import vg.civcraft.mc.namelayer.gui.MainGroupGUI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class NameLayerGroupGui extends PlayerCommandMiddle {
-	
-	public NameLayerGroupGui(String name) {
-		super(name);
-		setIdentifier("nl");
-		setDescription("Open the group management GUI");
-		setUsage("/nl [group]");
-		setArguments(0,1);
-	}
-	
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+@CommandAlias("nl")
+public class NameLayerGroupGui extends BaseCommandMiddle {
+
+	@Syntax("/nl [group]")
+	@Description("Open the group management GUI")
+	public void execute(CommandSender sender, @Optional String groupName) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.BLUE + "Go back home console man, we dont want you here");
-			return true;
+			return;
 		}
-		if (args.length == 0) {
+		if (groupName == null) {
 			GUIGroupOverview gui = new GUIGroupOverview((Player) sender);
 			gui.showScreen();
-			return true;
+			return;
 		}
-		Group g = gm.getGroup(args [0]);
+		Group g = gm.getGroup(groupName);
 		if (g == null) {
 			sender.sendMessage(ChatColor.RED + "This group doesn't exist");
-			return true;
+			return;
 		}
 		if (!gm.hasAccess(g, ((Player) sender).getUniqueId(), PermissionType.getPermission("OPEN_GUI"))) {
 			sender.sendMessage(ChatColor.RED + "You don't have permission to do this");
-			return true;
+			return;
 		}
 		MainGroupGUI gui = new MainGroupGUI((Player) sender, g);
-		return true;
 	}
-	
-	@Override
+
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.BLUE + "Go back home console man, we dont want you here");

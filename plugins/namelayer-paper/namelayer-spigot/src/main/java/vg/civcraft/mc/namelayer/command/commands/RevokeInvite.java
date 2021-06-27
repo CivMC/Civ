@@ -1,5 +1,8 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Syntax;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.ChatColor;
@@ -8,43 +11,37 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
+import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class RevokeInvite extends PlayerCommandMiddle{
+@CommandAlias("nlri")
+public class RevokeInvite extends BaseCommandMiddle {
 
-	public RevokeInvite(String name) {
-		super(name);
-		setIdentifier("nlri");
-		setDescription("Revoke an Invite.");
-		setUsage("/nlri <group> <player>");
-		setArguments(2,2);
-	}
-
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	@Syntax("/nlri <group> <player>")
+	@Description("Revoke an Invite.")
+	public void execute(CommandSender sender, String groupName, String targetPlayer) {
 		if (!(sender instanceof Player)){
 			sender.sendMessage(ChatColor.RED + "I'm sorry baby, please run this as a player :)");
-			return true;
+			return;
 		}
 		Player p = (Player) sender;
-		Group group = GroupManager.getGroup(args[0]);
-		if (groupIsNull(sender, args[0], group)) {
-			return true;
+		Group group = GroupManager.getGroup(groupName);
+		if (groupIsNull(sender, groupName, group)) {
+			return;
 		}
 		if (group.isDisciplined()){
 			p.sendMessage(ChatColor.RED + "This group is disiplined.");
-			return true;
+			return;
 		}
 		UUID executor = NameAPI.getUUID(p.getName());
-		UUID uuid = NameAPI.getUUID(args[1]);
+		UUID uuid = NameAPI.getUUID(targetPlayer);
 		
 		if (uuid == null){
 			p.sendMessage(ChatColor.RED + "The player has never played before.");
-			return true;
+			return;
 		}
 		
 		//check invitee has invite
@@ -52,10 +49,10 @@ public class RevokeInvite extends PlayerCommandMiddle{
 			if(group.isMember(uuid)){
 				p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " is already part of that group, "
 						+ "use /remove to remove them.");
-				return true;
+				return;
 			}
 			p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " does not have an invite to that group.");
-			return true;
+			return;
 		}
 		
 		//get invitee PlayerType
@@ -64,7 +61,7 @@ public class RevokeInvite extends PlayerCommandMiddle{
 		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 		if (t == null){
 			p.sendMessage(ChatColor.RED + "You are not on that group.");
-			return true;
+			return;
 		}
 		boolean allowed = false;
 		switch (pType){ // depending on the type the executor wants to add the player to
@@ -86,17 +83,15 @@ public class RevokeInvite extends PlayerCommandMiddle{
 		}
 		if (!allowed){
 			p.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
-			return true;
+			return;
 		}
 		
 		group.removeInvite(uuid, true);
 		PlayerListener.removeNotification(uuid, group);
 		
 		p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(uuid) + "'s invitation has been revoked.");
-		return true;
 	}
 
-	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)){
 			sender.sendMessage(ChatColor.RED + "I'm sorry baby, please run this as a player :)");

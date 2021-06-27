@@ -11,11 +11,12 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.scheduler.BukkitTask;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.MoreMapUtils;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
+import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
 import vg.civcraft.mc.namelayer.listeners.AssociationListener;
 
 public final class MojangNames {
@@ -27,7 +28,7 @@ public final class MojangNames {
 	private static BukkitTask SAVE_TASK;
 
 	public static void init(final NameLayerPlugin plugin) {
-		final Path mojangFile = plugin.getResourceFile(PROFILES_FILE).toPath();
+		final Path mojangFile = plugin.getDataFile(PROFILES_FILE).toPath();
 		// Load all the profiles that already exist
 		Bukkit.getScheduler().runTaskAsynchronously(
 				plugin, () -> load(plugin, mojangFile));
@@ -38,7 +39,7 @@ public final class MojangNames {
 
 	public static void reset(final NameLayerPlugin plugin) {
 		if (!PROFILES.isEmpty()) {
-			save(plugin, plugin.getResourceFile(PROFILES_FILE).toPath());
+			save(plugin, plugin.getDataFile(PROFILES_FILE).toPath());
 			PROFILES.clear();
 		}
 		if (SAVE_TASK != null) {
@@ -51,8 +52,8 @@ public final class MojangNames {
 		PROFILES.clear();
 		try {
 			final byte[] data = Files.readAllBytes(file);
-			final NBTCompound nbt = NBTCompound.fromBytes(data);
-			nbt.getKeys().forEach(key -> PROFILES.put(key, nbt.getUUID(key)));
+			final NBTTagCompound nbt = NBTSerialization.fromBytes(data);
+			nbt.getKeys().forEach(key -> PROFILES.put(key, nbt.a(key)));
 			plugin.info("[MojangNames] Mojang profiles loaded!");
 		}
 		catch (final NoSuchFileException ignored) {}
@@ -62,9 +63,9 @@ public final class MojangNames {
 	}
 
 	private static void save(final NameLayerPlugin plugin, final Path file) {
-		final NBTCompound nbt = new NBTCompound();
-		PROFILES.forEach((name, uuid) -> nbt.setUUID(name, uuid)); // Ignore highlighter
-		final byte[] data = NBTCompound.toBytes(nbt);
+		final NBTTagCompound nbt = new NBTTagCompound();
+		PROFILES.forEach((name, uuid) -> nbt.a(name, uuid)); // Ignore highlighter
+		final byte[] data = NBTSerialization.toBytes(nbt);
 		try {
 			Files.write(file, data,
 					StandardOpenOption.CREATE,

@@ -1,24 +1,22 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
-import java.util.List;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Syntax;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
+import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 
-public class GlobalStats extends PlayerCommandMiddle{
+@CommandAlias("nlgls")
+@CommandPermission("namelayer.admin")
+public class GlobalStats extends BaseCommandMiddle {
 
-	public GlobalStats(String name) {
-		super(name);
-		setIdentifier("nlgls");
-		setDescription("Get the amount of global groups.");
-		setUsage("/nlgls");
-		setArguments(0,0);
-	}
-
-	@Override
-	public boolean execute(final CommandSender sender, String[] args) {
+	@Syntax("/nlgls")
+	@Description("Get the amount of global groups.")
+	public void execute(final CommandSender sender) {
 		Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), new Runnable(){
 
 			@Override
@@ -29,11 +27,5 @@ public class GlobalStats extends PlayerCommandMiddle{
 			
 		});
 		sender.sendMessage(ChatColor.GREEN + "Stats are being retrieved, please wait.");
-		return true;
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return null;
 	}
 }

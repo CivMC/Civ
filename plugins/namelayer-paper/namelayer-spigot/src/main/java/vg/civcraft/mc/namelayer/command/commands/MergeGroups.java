@@ -1,5 +1,8 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Syntax;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -9,56 +12,50 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
+import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class MergeGroups extends PlayerCommandMiddle {
+@CommandAlias("nlmg")
+public class MergeGroups extends BaseCommandMiddle {
 
-	public MergeGroups(String name) {
-		super(name);
-		setIdentifier("nlmg");
-		setDescription("Merge two groups together.");
-		setUsage("/nlmg <The group left> <The group that will be gone>");
-		setArguments(2, 2);
-	}
-
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	@Syntax("/nlmg <The group left> <The group that will be gone>")
+	@Description("Merge two groups together.")
+	public void execute(CommandSender sender, String groupToKeep, String groupToDelete) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.BLUE + "Fight me, bet you wont.\n Just back off you don't belong here.");
-			return true;
+			return;
 		}
 		final Player p = (Player) sender;
-		final Group g = GroupManager.getGroup(args[0]);
-		if (groupIsNull(sender, args[0], g)) {
-			return true;
+		final Group g = GroupManager.getGroup(groupToKeep);
+		if (groupIsNull(sender, groupToKeep, g)) {
+			return;
 		}
 
-		final Group toMerge = GroupManager.getGroup(args[1]);
-		if (groupIsNull(sender, args[1], toMerge)) {
-			return true;
+		final Group toMerge = GroupManager.getGroup(groupToDelete);
+		if (groupIsNull(sender, groupToDelete, toMerge)) {
+			return;
 		}
 
 		if (g.isDisciplined() || toMerge.isDisciplined()) {
 			p.sendMessage(ChatColor.RED + "One of the groups is disiplined.");
-			return true;
+			return;
 		}
 
 		if (g == toMerge) {
 			p.sendMessage(ChatColor.RED + "You cannot merge a group into itself");
-			return true;
+			return;
 		}
 
 		UUID uuid = NameAPI.getUUID(p.getName());
 		if (!gm.hasAccess(g, uuid, PermissionType.getPermission("MERGE"))) {
 			p.sendMessage(ChatColor.RED + "You don't have permission on group " + g.getName() + ".");
-			return true;
+			return;
 		}
 		if (!gm.hasAccess(toMerge, uuid, PermissionType.getPermission("MERGE"))) {
 			p.sendMessage(ChatColor.RED + "You don't have permission on group " + toMerge.getName() + ".");
-			return true;
+			return;
 		}
 		try {
 			gm.mergeGroup(g, toMerge);
@@ -68,10 +65,8 @@ public class MergeGroups extends PlayerCommandMiddle {
 			p.sendMessage(ChatColor.GREEN + "Group merging may have failed.");
 		}
 		p.sendMessage(ChatColor.GREEN + "Group is under going merge.");
-		return true;
 	}
 
-	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player))
 			return null;

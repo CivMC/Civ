@@ -1,5 +1,8 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Syntax;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -11,28 +14,21 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
+import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.misc.NameFetcher;
 
-public class UpdateName extends PlayerCommandMiddle {
+@CommandAlias("nlun")
+public class UpdateName extends BaseCommandMiddle {
 
-	private Map<UUID, String> newNames;
+	private Map<UUID, String> newNames = Collections.synchronizedSortedMap(new TreeMap<UUID, String>());
 
-	public UpdateName(String name) {
-		super(name);
-		setIdentifier("nlun");
-		setDescription("Updates your name on this server to the one your minecraft account currently has");
-		setUsage("/nlun [CONFIRM]");
-		setArguments(0, 1);
-		newNames = Collections
-				.synchronizedSortedMap(new TreeMap<UUID, String>());
-	}
-
-	public boolean execute(CommandSender sender, String[] args) {
+	@Syntax("/nlun [CONFIRM]")
+	@Description("Updates your name on this server to the one your minecraft account currently has")
+	public void execute(CommandSender sender, String newNameOrConfirm) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.LIGHT_PURPLE
 					+ "NO NO NO NO NO NO NO NO");
-			return true;
+			return;
 		}
 		final Player p = (Player) sender;
 		final UUID uuid = p.getUniqueId();
@@ -40,10 +36,10 @@ public class UpdateName extends PlayerCommandMiddle {
 
 		if (NameLayerPlugin.getGroupManagerDao().hasChangedNameBefore(uuid)) {
 			p.sendMessage(ChatColor.RED + "You already changed your name");
-			return true;
+			return;
 		}
 
-		if (args.length == 0) {
+		if (newNameOrConfirm.isEmpty()) {
 			Bukkit.getScheduler().runTaskAsynchronously(
 					NameLayerPlugin.getInstance(), new Runnable() {
 						@Override
@@ -92,19 +88,19 @@ public class UpdateName extends PlayerCommandMiddle {
 							newNames.put(uuid, newName);
 						}
 					});
-			return true;
+			return;
 		} else {
 			String newName = newNames.get(uuid);
 			if (newName == null) {
 				sender.sendMessage(ChatColor.RED
 						+ "Run \"/nlun\" first to initiate the name changes process");
-				return true;
+				return;
 			}
-			if (!args[0].equals("CONFIRM")) {
+			if (!newNameOrConfirm.equals("CONFIRM")) {
 				sender.sendMessage(ChatColor.RED
 						+ "Run \"/nlun CONFIRM\" to confirm your name change to \""
 						+ newName + "\"");
-				return true;
+				return;
 			}
 			NameLayerPlugin.getGroupManagerDao().logNameChange(uuid, oldName,
 					newName);
@@ -116,7 +112,6 @@ public class UpdateName extends PlayerCommandMiddle {
 					+ newName
 					+ "\". This change will be applied together with all other name changes at a previously announced date.");
 		}
-		return true;
 	}
 
 	public List<String> tabComplete(CommandSender sender, String[] args) {

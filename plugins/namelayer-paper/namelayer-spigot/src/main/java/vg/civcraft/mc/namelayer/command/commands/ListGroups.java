@@ -1,5 +1,9 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Syntax;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.ChatColor;
@@ -7,35 +11,29 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
+import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public class ListGroups extends PlayerCommandMiddle {
+@CommandAlias("nllg")
+public class ListGroups extends BaseCommandMiddle {
 
-	public ListGroups(String name) {
-		super(name);
-		setIdentifier("nllg");
-		setDescription("List groups.");
-		setUsage("/nllg <page>");
-		setArguments(0,1);
-	}
-
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	@Syntax("/nllg <page>")
+	@Description("List groups.")
+	public void execute(CommandSender sender, @Optional String pageNumber) {
 		Player p = null;
 		UUID uuid = null;
 		boolean autopages = false;
 		
 		if ((sender.isOp() || sender.hasPermission("namelayer.admin"))) {
-			if (args.length == 0) {
+			if (pageNumber == null) {
 				uuid = NameAPI.getUUID(sender.getName());
-			} else if (args.length == 1) {
-				uuid = NameAPI.getUUID(args[0]);
+			} else if (pageNumber != null) {
+				uuid = NameAPI.getUUID(sender.getName());
 			}
 				
 			if (uuid == null) {
             	sender.sendMessage(ChatColor.RED + "UUID is NULL, OP Usage is /nllg <playername>");
-            	return true;
+            	return;
             }
             autopages = true;
         } else {
@@ -55,12 +53,12 @@ public class ListGroups extends PlayerCommandMiddle {
 		int actualPages = pages;
 		
 		int target = 1;
-		if (args.length == 1) {
+		if (pageNumber != null) {
 			try {
-				target = Integer.parseInt(args[0]);
+				target = Integer.parseInt(pageNumber);
 			} catch (NumberFormatException e) {
-				sender.sendMessage(ChatColor.RED + args[0] + " is not a number");
-				return false;
+				sender.sendMessage(ChatColor.RED + pageNumber + " is not a number");
+				return;
 			}
 		}
 		
@@ -89,10 +87,5 @@ public class ListGroups extends PlayerCommandMiddle {
 			}
 		}
 		sender.sendMessage(sb.toString());
-		return true;
 	}
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return null;
-	}
-
 }

@@ -5,23 +5,28 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>namelayer-parent</artifactId>
     <groupId>vg.civcraft.mc.namelayer</groupId>
+    <artifactId>namelayer-parent</artifactId>
     <version>1.0.0</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
-  <artifactId>namelayer-nms-interface</artifactId>
+  <artifactId>namelayer-nms-v1_17_R1</artifactId>
   <version>1.0.1</version>
   <packaging>jar</packaging>
 
   <dependencies>
+    <dependency>
+      <groupId>vg.civcraft.mc.namelayer</groupId>
+      <artifactId>namelayer-nms-interface</artifactId>
+      <version>1.0.1</version>
+    </dependency>
 		<dependency>
 			<groupId>io.papermc.paper</groupId>
 			<artifactId>paper</artifactId>
 			<version>1.17-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-	</dependencies>
+  </dependencies>
 
 </project>

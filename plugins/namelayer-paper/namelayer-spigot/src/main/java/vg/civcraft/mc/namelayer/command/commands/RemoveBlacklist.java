@@ -1,5 +1,8 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Syntax;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -10,57 +13,49 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
+import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.BlackList;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class RemoveBlacklist extends PlayerCommandMiddle {
-	
-	public RemoveBlacklist(String name) {
-		super(name);
-		setIdentifier("nlubl");
-		setDescription("Removes a player from the blacklist for a specific group");
-		setUsage("/nlubl <group> <player>");
-		setArguments(2, 2);
-	}
+@CommandAlias("nlubl")
+public class RemoveBlacklist extends BaseCommandMiddle {
 
-	@Override
-	public boolean execute(CommandSender arg0, String[] arg1) {
-		if (!(arg0 instanceof Player)) {
-			arg0.sendMessage(ChatColor.RED
+	@Syntax("/nlubl <group> <player>")
+	@Description("Removes a player from the blacklist for a specific group")
+	public void execute(CommandSender sender, String groupName, String targetPlayer) {
+		if (!(sender instanceof Player)) {
+			sender.sendMessage(ChatColor.RED
 					+ "Why do you have to make this so difficult?");
-			return true;
+			return;
 		}
-		Player p = (Player) arg0;
-		Group g = GroupManager.getGroup(arg1[0]);
+		Player p = (Player) sender;
+		Group g = GroupManager.getGroup(groupName);
 		if (g == null) {
 			p.sendMessage(ChatColor.RED + "This group does not exist");
-			return true;
+			return;
 		}
 		if (!gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("BLACKLIST"))
 				&& !(p.isOp() || p.hasPermission("namelayer.admin"))) {
 			p.sendMessage(ChatColor.RED + "You do not have the required permissions to do this");
-			return true;
+			return;
 		}
-		UUID targetUUID = NameAPI.getUUID(arg1[1]);
+		UUID targetUUID = NameAPI.getUUID(targetPlayer);
 		if (targetUUID == null) {
 			p.sendMessage(ChatColor.RED + "This player does not exist");
-			return true;
+			return;
 		}
 		BlackList bl = NameLayerPlugin.getBlackList();
 		if (!bl.isBlacklisted(g, targetUUID)) {
 			p.sendMessage(ChatColor.RED + "This player is not blacklisted");
-			return true;
+			return;
 		}
 		bl.removeBlacklistMember(g, targetUUID, true);
 		p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(targetUUID) + " was successfully removed from the blacklist for the group " + g.getName());
-		return true;
 	}
 
-	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player)){
 			sender.sendMessage(ChatColor.RED + "I'm sorry baby, please run this as a player :)");

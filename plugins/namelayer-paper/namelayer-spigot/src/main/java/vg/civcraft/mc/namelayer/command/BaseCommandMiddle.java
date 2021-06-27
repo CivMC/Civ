@@ -7,11 +7,9 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public abstract class PlayerCommandMiddle extends BaseCommand {
+public abstract class BaseCommandMiddle extends BaseCommand {
 
-	public PlayerCommandMiddle(String name) {
-		super(name);
-	}
+	public BaseCommandMiddle() {}
 
 	protected GroupManager gm = NameAPI.getGroupManager();
 	

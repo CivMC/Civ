@@ -13,16 +13,16 @@
 
   <modules>
     <module>nms/interface</module>
-    <module>nms/v1_16_R3</module>
+    <module>nms/v1_17_R1</module>
     <module>namelayer-spigot</module>
     <module>namelayer-bungee</module>
     <module>namelayer-all</module>
   </modules>
   
   <properties>
-    <releaseVersion>2.14.1</releaseVersion>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <releaseVersion>2.15.0</releaseVersion>
+    <maven.compiler.source>16</maven.compiler.source>
+    <maven.compiler.target>16</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
@@ -41,6 +41,11 @@
       <id>spigot-repo2</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
     </repository>
+
+		<repository>
+			<id>papermc</id>
+			<url>https://papermc.io/repo/repository/maven-public/</url>
+		</repository>
 
     <repository>
       <id>md_5-repo</id>
@@ -79,6 +84,7 @@
         <module>nms/v1_14_R1</module>
         <module>nms/v1_16_R1</module>
         <module>nms/v1_16_R3</module>
+				<module>nms/v1_17_R1</module>
       </modules>
     </profile>
   </profiles>

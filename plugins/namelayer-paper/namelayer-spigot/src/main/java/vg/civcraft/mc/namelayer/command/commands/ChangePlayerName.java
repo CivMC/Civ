@@ -1,46 +1,40 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
-import java.util.List;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
 import org.bukkit.command.CommandSender;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
+import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 
 /**
  * Created by isaac on 2/6/15.
  */
-public class ChangePlayerName  extends PlayerCommandMiddle {
-    public ChangePlayerName(String name) {
-        super(name);
-        setIdentifier("nlcpn");
-        setDescription("Used by ops to change a players name");
-        setUsage("/nlcpn <old name> <new name>");
-        setArguments(2,2);
-    }
 
-    @Override
-    public boolean execute(CommandSender sender, String[] args) {
+@CommandAlias("nlcpn|changeplayername")
+@CommandPermission("namelayer.admin")
+public class ChangePlayerName  extends BaseCommandMiddle {
+
+    @Syntax("/nlcpn <old name> <new name>")
+    @Description("Used by ops to change a players name")
+    public void execute(CommandSender sender, String currentName, String changedName) {
         if (!sender.isOp() && !sender.hasPermission("namelayer.admin")) {
             sender.sendMessage("You're not an op. ");
-            return false;
+            return;
         }
 
-        UUID player = NameAPI.getUUID(args[0]);
+        UUID player = NameAPI.getUUID(currentName);
         if (player == null){
-            sender.sendMessage(args[0] + " has never logged in");
-            return false;
+            sender.sendMessage(currentName + " has never logged in");
+            return;
         }
 
-        String newName = args[1].length() >= 16 ? args[1].substring(0, 16) : args[1];
+        String newName = changedName.length() >= 16 ? changedName.substring(0, 16) : changedName;
         NameAPI.getAssociationList().changePlayer(newName, player);
         NameAPI.resetCache(player);
 
-        sender.sendMessage("player name changed have them relog for it to take affect");
-        return true;
-    }
-
-    @Override
-    public List<String> tabComplete(CommandSender sender, String[] args) {
-        return null;
+        sender.sendMessage(currentName + "'s name has been changed to " + newName + ". Have them relog for it to take affect");
     }
 }
