@@ -3,6 +3,7 @@ package com.untamedears.realisticbiomes;
 import com.untamedears.realisticbiomes.commands.Menu;
 import com.untamedears.realisticbiomes.listener.AnimalListener;
 import com.untamedears.realisticbiomes.listener.BonemealListener;
+import com.untamedears.realisticbiomes.listener.MobListener;
 import com.untamedears.realisticbiomes.listener.PlantListener;
 import com.untamedears.realisticbiomes.listener.PlayerListener;
 import com.untamedears.realisticbiomes.model.Plant;
@@ -107,6 +108,7 @@ public class RealisticBiomes extends ACivMod {
 		pm.registerEvents(new AnimalListener(animalManager), this);
 		pm.registerEvents(new PlayerListener(growthConfigManager, animalManager, plantManager), this);
 		pm.registerEvents(new BonemealListener(configManager.getBonemealPreventedBlocks()), this);
+		pm.registerEvents(new MobListener(), this);
 	}
 
 }
