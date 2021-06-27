@@ -132,25 +132,6 @@ public class TextUtil {
 		return ret.toString();
 	}
 
-	public static String implodeCommaAnd(List<String> list, String comma, String and) {
-		if (list.size() == 0) {
-			return "";
-		}
-		if (list.size() == 1) {
-			return list.get(0);
-		}
-		String lastItem = list.get(list.size() - 1);
-		String nextToLastItem = list.get(list.size() - 2);
-		String merge = nextToLastItem + and + lastItem;
-		list.set(list.size() - 2, merge);
-		list.remove(list.size() - 1);
-		return implode(list, comma);
-	}
-
-	public static String implodeCommaAnd(List<String> list) {
-		return implodeCommaAnd(list, ", ", " and ");
-	}
-
 	// -------------------------------------------- //
 	// Paging and chrome-tools like titleize
 	// -------------------------------------------- //
