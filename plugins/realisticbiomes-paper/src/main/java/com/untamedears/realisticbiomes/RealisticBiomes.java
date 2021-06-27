@@ -71,6 +71,7 @@ public class RealisticBiomes extends ACivMod {
 	@Override
 	public void onEnable() {
 		CommandManager commandManager = new CommandManager(this);
+		commandManager.init();
 		commandManager.registerCommand(new Menu());
 		super.onEnable();
 		RealisticBiomes.plugin = this;
