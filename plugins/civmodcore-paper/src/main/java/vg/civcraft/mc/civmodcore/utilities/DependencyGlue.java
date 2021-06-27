@@ -1,142 +1,132 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
+import java.util.Objects;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 
 /**
  * Class designed to make creating glue classes easier, particularly with soft dependencies where your plugins may use
  * code from those plugins if they're present.
  *
- * You'll need to register the glues you create with your plugins .registerListener() method.
+ * You'll need to register the glues you create with {@link #registerGlue()}.
  */
 public abstract class DependencyGlue implements Listener {
 
-	private final String pluginName;
-
-	private Plugin plugin;
-
-	private Logger logger;
+	private final PluginManager pluginManager;
+	protected final Plugin plugin;
+	protected final Logger logger;
+	protected final String dependencyName;
+	private Plugin dependencyInstance;
 
 	/**
-	 * <p>You must provide the name of the plugin you wish to glue.</p>
+	 * You must provide the name of the plugin you wish to glue.
 	 *
-	 * <p>Note: The name check is case-insensitive, but it's recommended for the name to be an exact match, if only for
-	 * readability and ease of find and replace.</p>
-	 *
-	 * @param pluginName The name of the plugin you wish to glue.
+	 * @param plugin The host plugin that requires the glued dependency. Must be enabled.
+	 * @param dependencyName The name of the plugin you wish to glue.
 	 */
-	protected DependencyGlue(String pluginName) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(pluginName));
-		this.pluginName = pluginName;
-		onServerLoad(null);
+	protected DependencyGlue(@Nonnull final Plugin plugin, @Nonnull final String dependencyName) {
+		this.pluginManager = Bukkit.getPluginManager();
+		this.plugin = Objects.requireNonNull(plugin);
+		this.logger = CivLogger.getLogger(plugin.getClass(), getClass());
+		this.dependencyName = Objects.requireNonNull(dependencyName);
 	}
 
 	/**
-	 * Gets the plugin name that this glue will check against.
+	 * Gets the dependency's name that this glue will check against.
 	 *
 	 * @return Returns the glue's plugin name.
 	 */
-	public String getPluginName() {
-		return this.pluginName;
+	@Nonnull
+	public String getDependencyName() {
+		return this.dependencyName;
 	}
 
 	/**
-	 * @return Returns the current plugin instance for this glue.
+	 * @return Returns the current dependency instance.
 	 */
-	public Plugin plugin() {
-		return this.plugin;
+	@Nullable
+	public Plugin getDependencyInstance() {
+		return this.dependencyInstance;
 	}
 
 	/**
-	 * @return Returns the current logger instance for this glue.
+	 * @return Returns true if the dependency is currently enabled.
 	 */
-	public Logger logger() {
-		return this.logger;
+	public boolean isDependencyEnabled() {
+		return this.pluginManager.isPluginEnabled(this.dependencyInstance);
 	}
 
 	/**
-	 * @return Returns true if this glue's plugin is currently enabled, which is updated live.
+	 * Will register this glue with Bukkit.
 	 */
-	public boolean isEnabled() {
-		if (this.plugin == null) {
-			return false;
-		}
-		if (!this.plugin.isEnabled()) {
-			return false;
-		}
-		return true;
+	public void registerGlue() {
+		this.pluginManager.registerEvents(this, this.plugin);
 	}
 
 	/**
-	 * <p>Determines whether this glue is safe to use.</p>
-	 *
-	 * <p>This <i>should</i> be kept for internal use because if the glue plugin is enabled but not safe to use, the
-	 * APIs should themselves account for that.</p>
-	 *
-	 * @return Returns true if the glue is deemed safe to use.
+	 * Will unregister this glue with Bukkit.
 	 */
-	public boolean isSafeToUse() {
-		if (!isEnabled()) {
-			return false;
-		}
-		return true;
+	public void resetGlue() {
+		HandlerList.unregisterAll(this);
 	}
 
 	/**
-	 * This is called when the glue's plugin is enabled. Use this as a setup.
+	 * This is called when the dependency is enabled. Use this as a setup.
 	 */
-	protected void onGlueEnabled() {
-		this.logger.info("Gluing " + this.pluginName);
-	}
+	protected abstract void onDependencyEnabled();
 
 	/**
-	 * This is called when the glue's plugin is disabled. Use this as a destructor.
+	 * This is called when the dependency is disabled. Use this as a destructor.
 	 */
-	protected void onGlueDisabled() {
-		this.logger.info("Releasing " + this.pluginName);
-	}
+	protected abstract void onDependencyDisabled();
 
 	@EventHandler
-	public final void onServerLoad(ServerLoadEvent event) {
-		for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-			if (plugin == null || !plugin.isEnabled()) {
-				continue;
+	public final void INTERNAL_onServerLoad(final ServerLoadEvent event) {
+		for (final Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+			if (plugin.isEnabled() && StringUtils.equalsIgnoreCase(plugin.getName(), this.dependencyName)) {
+				this.dependencyInstance = plugin;
+				INTERNAL_logDependencyEnabled();
+				onDependencyEnabled();
+				break;
 			}
-			if (!StringUtils.equalsIgnoreCase(plugin.getName(), this.pluginName)) {
-				continue;
-			}
-			this.plugin = plugin;
-			this.logger = plugin.getLogger();
-			onGlueEnabled();
-			break;
 		}
 	}
 
 	@EventHandler
-	public final void onPluginEnable(PluginEnableEvent event) {
-		if (StringUtils.equalsIgnoreCase(event.getPlugin().getName(), this.pluginName)) {
-			this.plugin = event.getPlugin();
-			this.logger = this.plugin.getLogger();
-			onGlueEnabled();
+	public final void INTERNAL_onPluginEnable(final PluginEnableEvent event) {
+		if (StringUtils.equalsIgnoreCase(event.getPlugin().getName(), this.dependencyName)) {
+			this.dependencyInstance = event.getPlugin();
+			INTERNAL_logDependencyEnabled();
+			onDependencyEnabled();
 		}
 	}
 
 	@EventHandler
-	public final void onPluginDisable(PluginDisableEvent event) {
-		if (StringUtils.equalsIgnoreCase(event.getPlugin().getName(), this.pluginName)) {
-			onGlueDisabled();
-			this.plugin = null;
-			this.logger = null;
+	public final void INTERNAL_onPluginDisable(final PluginDisableEvent event) {
+		if (StringUtils.equalsIgnoreCase(event.getPlugin().getName(), this.dependencyName)) {
+			INTERNAL_logDependencyDisabled();
+			onDependencyDisabled();
+			this.dependencyInstance = null;
 		}
+	}
+
+	private void INTERNAL_logDependencyEnabled() {
+		this.logger.info("Gluing " + this.dependencyName);
+	}
+
+	private void INTERNAL_logDependencyDisabled() {
+		this.logger.info("Releasing " + this.dependencyName);
 	}
 
 }
