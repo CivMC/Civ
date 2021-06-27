@@ -20,7 +20,7 @@ import org.bukkit.block.data.Waterlogged;
 import org.bukkit.event.Cancellable;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class PlantGrowthConfig extends AbstractGrowthConfig {

@@ -5,9 +5,9 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.auto.YamlDataObject;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.auto.YamlDataObject;
 
-public class BlockDrop extends YamlDataObject<BlockDrop>{
+public class BlockDrop extends YamlDataObject<BlockDrop> {
 
 	private List<ItemStack> drops;
 	

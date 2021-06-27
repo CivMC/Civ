@@ -4,9 +4,9 @@ import com.untamedears.realisticbiomes.model.Plant;
 import com.untamedears.realisticbiomes.model.RBChunkCache;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.BlockBasedChunkMetaView;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.BlockBasedChunkMetaView;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableStorageEngine;
 
 public class PlantManager {
 

@@ -40,12 +40,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.CoreConfigManager;
+import vg.civcraft.mc.civmodcore.config.ConfigParser;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
-import vg.civcraft.mc.civmodcore.util.ConfigParsing;
+import vg.civcraft.mc.civmodcore.utilities.ConfigParsing;
 
-public class RBConfigManager extends CoreConfigManager {
+public class RBConfigManager extends ConfigParser {
 
 	private ManagedDatasource database;
 

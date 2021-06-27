@@ -1,5 +1,6 @@
 package com.untamedears.realisticbiomes;
 
+import com.untamedears.realisticbiomes.commands.Menu;
 import com.untamedears.realisticbiomes.listener.AnimalListener;
 import com.untamedears.realisticbiomes.listener.BonemealListener;
 import com.untamedears.realisticbiomes.listener.PlantListener;
@@ -10,10 +11,11 @@ import com.untamedears.realisticbiomes.model.RBDAO;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.BlockBasedChunkMetaView;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.BlockBasedChunkMetaView;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaAPI;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableStorageEngine;
 
 public class RealisticBiomes extends ACivMod {
 
@@ -67,7 +69,8 @@ public class RealisticBiomes extends ACivMod {
 
 	@Override
 	public void onEnable() {
-		this.useNewCommandHandler = true;
+		CommandManager commandManager = new CommandManager(this);
+		commandManager.registerCommand(new Menu());
 		super.onEnable();
 		RealisticBiomes.plugin = this;
 		configManager = new RBConfigManager(this);

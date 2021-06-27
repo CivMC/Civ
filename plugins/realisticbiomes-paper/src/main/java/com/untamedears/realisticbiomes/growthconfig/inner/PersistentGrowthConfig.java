@@ -3,7 +3,7 @@ package com.untamedears.realisticbiomes.growthconfig.inner;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.bukkit.block.Biome;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
 /**
  * Bases growth times on real life time. Biome based multipliers apply inverse

@@ -1,15 +1,19 @@
 package com.untamedears.realisticbiomes.commands;
 
-import java.util.List;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Syntax;
 import org.bukkit.command.CommandSender;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-@CivCommand(id = "rbgrow")
-public class GrowCommand extends StandaloneCommand {
+@CommandAlias("rbgrow")
+@CommandPermission("rb.op")
+public class GrowCommand extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	@Syntax("rbgrow")
+	@Description("Testing command to grow stuff")
+	public void execute(CommandSender sender, String[] args) {
 		/*GaussTree tree = new GaussTree(Double.parseDouble(args[0]), 0.15, Double.parseDouble(args[1]), 0.15,
 				Double.parseDouble(args[2]), Double.parseDouble(args[3]),
 				new BlockTransformation(Material.DARK_OAK_LOG, new HashMap<>()), Double.parseDouble(args[4]), 0.15,
@@ -18,12 +22,5 @@ public class GrowCommand extends StandaloneCommand {
 				new BlockTransformation(Material.OAK_LEAVES, new HashMap<>())); 
 		tree.genAt(((Player) sender).getLocation());*/
 		sender.sendMessage("Done");
-		return true;
 	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return null;
-	}
-
 }

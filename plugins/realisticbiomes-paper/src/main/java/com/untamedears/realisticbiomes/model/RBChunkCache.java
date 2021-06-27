@@ -2,12 +2,12 @@ package com.untamedears.realisticbiomes.model;
 
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import org.bukkit.Bukkit;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
-import vg.civcraft.mc.civmodcore.util.progress.ProgressTrackable;
-import vg.civcraft.mc.civmodcore.util.progress.ProgressTracker;
+import vg.civcraft.mc.civmodcore.utilities.progress.ProgressTrackable;
+import vg.civcraft.mc.civmodcore.utilities.progress.ProgressTracker;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableStorageEngine;
 
 public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements ProgressTrackable {
 

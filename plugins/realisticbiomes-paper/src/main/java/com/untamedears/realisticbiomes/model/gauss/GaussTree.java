@@ -8,11 +8,12 @@ import com.untamedears.realisticbiomes.model.ltree.BlockTransformation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
+import vg.civcraft.mc.civmodcore.nbt.NBTHelper;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class GaussTree {
@@ -34,7 +35,7 @@ public class GaussTree {
 	private Random rng;
 
 	public GaussTree(ItemStack sapling) {
-		NBTCompound nbt = NBTCompound.fromItem(sapling);
+		NBTTagCompound nbt = NBTHelper.itemStackToNBT(sapling);
 
 	}
 

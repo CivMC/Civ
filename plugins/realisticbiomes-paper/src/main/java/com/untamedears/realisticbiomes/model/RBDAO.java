@@ -20,12 +20,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.XZWCoord;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.XZWCoord;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockBasedChunkMeta;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableStorageEngine;
 
 public class RBDAO extends TableStorageEngine<Plant> {
 
