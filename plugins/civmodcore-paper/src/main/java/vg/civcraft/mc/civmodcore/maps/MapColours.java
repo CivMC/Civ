@@ -14,6 +14,8 @@ import vg.civcraft.mc.civmodcore.utilities.CivLogger;
  * This is a mapped version of NMS class {@link MaterialMapColor} to make setting pixel colours easier.
  *
  * <a href="https://minecraft.fandom.com/wiki/Map_item_format#Base_colors">Read more.</a>
+ *
+ * Deobf path: net.minecraft.world.level.material.MaterialColor
  */
 public enum MapColours {
 
@@ -75,8 +77,10 @@ public enum MapColours {
 	WARPED_NYLIUM(MaterialMapColor.ae),
 	WARPED_STEM(MaterialMapColor.af),
 	WARPED_HYPHAE(MaterialMapColor.ag),
-	WARPED_WART_BLOCK(MaterialMapColor.ah);
-	// TODO: Add the new map colours after they're added to the fandom wiki
+	WARPED_WART_BLOCK(MaterialMapColor.ah),
+	DEEPSLATE(MaterialMapColor.ai),
+	RAW_IRON(MaterialMapColor.aj),
+	GLOW_LICHEN(MaterialMapColor.ak);
 
 	private final MaterialMapColor nms;
 
