@@ -7,10 +7,9 @@ import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSSession;
 import com.programmerdan.minecraft.banstick.data.BSShare;
 import com.programmerdan.minecraft.banstick.handler.BanHandler;
+import inet.ipaddr.AddressStringException;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
-import inet.ipaddr.IPAddressStringException;
-import inet.ipaddr.IPAddressTypeException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -63,7 +62,7 @@ public class DoubleTapCommand implements CommandExecutor {
 		// check if IP path
 		try {
 			ipcheck = new IPAddressString(toBan).toAddress();
-		} catch (IPAddressStringException | IPAddressTypeException e) {
+		} catch (AddressStringException e) {
 			ipcheck = null;
 
 			if (arguments.length < 2) {
@@ -74,7 +73,7 @@ public class DoubleTapCommand implements CommandExecutor {
 			secondDoBan = arguments[1].indexOf('+') > -1;
 			secondBan = secondDoBan ? arguments[1].substring(1) : arguments[1];
 		}
-		
+
 		String endDate = (arguments.length >= (2 + offset) ? arguments[1 + offset] : null);
 		String endTime = (arguments.length >= (3 + offset) ? arguments[2 + offset] : null);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
