@@ -4,9 +4,9 @@ import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.containers.BanResult;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.handler.BanHandler;
+import inet.ipaddr.AddressStringException;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
-import inet.ipaddr.IPAddressStringException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.text.ParseException;
@@ -117,7 +117,7 @@ public class BanStickCommand implements CommandExecutor {
 			result.informCommandSender(sender);
 			
 			return true;
-		} catch (IPAddressStringException e) {
+		} catch (AddressStringException e) {
 			// Not an IP address!
 			UUID playerId = null;
 			if (toBan.length() <= 16) {
