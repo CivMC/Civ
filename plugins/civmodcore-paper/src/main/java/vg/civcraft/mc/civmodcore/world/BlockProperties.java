@@ -6,13 +6,14 @@ import java.util.Map;
 import java.util.Optional;
 import net.minecraft.world.level.block.state.properties.IBlockState;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
+import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public final class BlockProperties {
 
+	private static final CivLogger LOGGER = CivLogger.getLogger(BlockProperties.class);
 	private static final Map<String, IBlockState<?>> BLOCK_STATES = new HashMap<>();
 
 	static {
@@ -28,8 +29,7 @@ public final class BlockProperties {
 				exception.printStackTrace();
 			}
 		}
-		Bukkit.getLogger().warning("[BlockProperties] Available block states: " +
-				String.join(",", BLOCK_STATES.keySet()) + ".");
+		LOGGER.info("[BlockProperties] Available block states: " + String.join(",", BLOCK_STATES.keySet()) + ".");
 	}
 
 	public static boolean setBlockProperty(final Block block, final String key, final String value) {
@@ -52,8 +52,10 @@ public final class BlockProperties {
 		final V valueToSet = opt.get();
 		final CraftBlock craftBlock = (CraftBlock) block;
 		final CraftWorld craftWorld = (CraftWorld) block.getWorld();
-		// no idea what the last integer parameter does, I found 2 and 3 being used in NMS code and stuck to that
-		craftWorld.getHandle().setTypeAndData(craftBlock.getPosition(), craftBlock.getNMS().set(state, valueToSet), 2);
+		// Deobf path: net.minecraft.world.level.Level.setBlock()
+		craftWorld.getHandle().setTypeAndData(craftBlock.getPosition(), craftBlock.getNMS().set(state, valueToSet),
+				// This value is named "flag" and appears to be a set of bitwise indicators for block updates
+				2); // 2 and 3 being used in NMS code and stuck to that
 		return true;
 	}
 
