@@ -1,56 +1,38 @@
 package vg.civcraft.mc.civmodcore.world.locations.global;
 
-import java.util.Map;
-import java.util.TreeMap;
+import it.unimi.dsi.fastutil.objects.Object2ShortAVLTreeMap;
+import it.unimi.dsi.fastutil.objects.Object2ShortMap;
+import it.unimi.dsi.fastutil.shorts.Short2ObjectAVLTreeMap;
+import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 public class WorldIDManager {
 
-	private Map<UUID, Short> uuidToInternalID;
-	private Map<Short, UUID> internalIDToUuid;
-	private CMCWorldDAO dao;
+	private final CMCWorldDAO dao;
+	private final Object2ShortMap<UUID> uuidToInternalID;
+	private final Short2ObjectMap<UUID> internalIDToUuid;
 	
 	public WorldIDManager(CMCWorldDAO dao) {
 		this.dao = dao;
-		this.uuidToInternalID = new TreeMap<>();
-		this.internalIDToUuid = new TreeMap<>();
+		this.uuidToInternalID = new Object2ShortAVLTreeMap<>();
+		this.uuidToInternalID.defaultReturnValue((short) -1);
+		this.internalIDToUuid = new Short2ObjectAVLTreeMap<>();
 		if (!setup()) {
 			throw new IllegalStateException("Failed to initialize CMC world tracking");
 		}
 	}
-	
-	/**
-	 * Registers a world for internal use
-	 * 
-	 * @param world World to prepare data structures for
-	 * @return Whether successfull or not
-	 */
-	public boolean registerWorld(World world) {
-		if (uuidToInternalID.containsKey(world.getUID())) {
-			return true;
-		}
-		short id = dao.getOrCreateWorldID(world);
-		if (id == -1) {
-			// very bad
-			return false;
-		}
-		uuidToInternalID.put(world.getUID(), id);
-		internalIDToUuid.put(id, world.getUID());
-		return true;
-	}
 
 	/**
 	 * Registers all currently loaded worlds internally
-	 * 
-	 * @return Whether all worlds were successfully loaded in or not. Errors here
-	 *         would most likely mean a non-working database setup
+	 *
+	 * @return Whether all worlds were successfully loaded in or not. Errors here would most likely mean a non-working
+	 *         database setup.
 	 */
 	public boolean setup() {
-		for (World world : Bukkit.getWorlds()) {
-			boolean worked = registerWorld(world);
-			if (!worked) {
+		for (final World world : Bukkit.getWorlds()) {
+			if (!registerWorld(world)) {
 				return false;
 			}
 		}
@@ -58,14 +40,33 @@ public class WorldIDManager {
 	}
 
 	/**
-	 * Gets the world object mapped to an internal id
+	 * Registers a world for internal use.
 	 * 
-	 * @param id ID to get world for
-	 * @return World if a matching one for the given id exists and the world is
-	 *         loaded currently
+	 * @param world World to prepare data structures for.
+	 * @return Returns whether the registration was successful or not.
 	 */
-	public World getWorldByInternalID(short id) {
-		UUID uuid = internalIDToUuid.get(id);
+	public boolean registerWorld(final World world) {
+		if (this.uuidToInternalID.containsKey(world.getUID())) {
+			return true;
+		}
+		final short id = this.dao.getOrCreateWorldID(world);
+		if (id == -1) {
+			// very bad
+			return false;
+		}
+		this.uuidToInternalID.put(world.getUID(), id);
+		this.internalIDToUuid.put(id, world.getUID());
+		return true;
+	}
+
+	/**
+	 * Gets the world object mapped to an internal id.
+	 * 
+	 * @param id ID to get world for.
+	 * @return World if a matching one for the given id exists and the world is loaded currently.
+	 */
+	public World getWorldByInternalID(final short id) {
+		final UUID uuid = this.internalIDToUuid.get(id);
 		if (uuid == null) {
 			return null;
 		}
@@ -73,32 +74,23 @@ public class WorldIDManager {
 	}
 
 	/**
-	 * Retrieves the internal id used for a world based on the worlds name. Should
-	 * only be used to convert legacy data over
-	 * 
-	 * @param name Name of the world
-	 * @return Id of the world or -1 if no such world is known
+	 * Retrieves the internal id used for a world.
+	 *
+	 * @param world World UUID to get ID for.
+	 * @return Id of the world or -1 if no such world is known.
 	 */
-	public short getInternalWorldIdByName(String name) {
-		World world = Bukkit.getWorld(name);
-		return getInternalWorldId(world);
+	public short getInternalWorldId(final UUID world) {
+		return world == null ? -1 : this.uuidToInternalID.getShort(world);
 	}
 
 	/**
 	 * Retrieves the internal id used for a world.
 	 * 
-	 * @param world World to get ID for
-	 * @return Id of the world or -1 if no such world is known
+	 * @param world World to get ID for.
+	 * @return Id of the world or -1 if no such world is known.
 	 */
 	public short getInternalWorldId(World world) {
-		if (world == null) {
-			return -1;
-		}
-		Short result = uuidToInternalID.get(world.getUID());
-		if (result == null) {
-			return -1;
-		}
-		return result;
+		return world == null ? - 1: getInternalWorldId(world.getUID());
 	}
 
 }
