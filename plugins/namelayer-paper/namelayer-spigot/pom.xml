@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>vg.civcraft.mc.namelayer</groupId>
+    <groupId>com.github.civclassic</groupId>
     <artifactId>namelayer-parent</artifactId>
     <version>1.0.0</version>
   </parent>
@@ -15,7 +15,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>vg.civcraft.mc.namelayer</groupId>
+      <groupId>com.github.civclassic</groupId>
       <artifactId>namelayer-nms-v1_17_R1</artifactId>
       <version>1.0.1</version>
     </dependency>
@@ -79,7 +79,7 @@
       <dependencies>
         <!-- NMS crap -->
 				<dependency>
-					<groupId>vg.civcraft.mc.namelayer</groupId>
+					<groupId>com.github.civclassic</groupId>
 					<artifactId>namelayer-nms-v1_17_R1</artifactId>
 					<version>1.0.1</version>
 				</dependency>

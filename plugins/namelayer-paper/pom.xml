@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>vg.civcraft.mc.namelayer</groupId>
+  <groupId>com.github.civclassic</groupId>
   <artifactId>namelayer-parent</artifactId>
   <version>1.0.0</version>
   <packaging>pom</packaging>
@@ -30,7 +30,7 @@
   <repositories>
     <repository>
       <id>codecrafter47-repo</id>
-      <url>http://nexus.codecrafter47.dyndns.eu/content/repositories/public/</url>
+      <url>https://nexus.codecrafter47.dyndns.eu/content/repositories/public/</url>
     </repository>
 
     <repository>
@@ -49,7 +49,7 @@
 
     <repository>
       <id>md_5-repo</id>
-      <url>http://repo.md-5.net/content/repositories/public/</url>
+      <url>https://repo.md-5.net/content/repositories/public/</url>
     </repository>
     <repository>
       <id>bungeecord-repo</id>

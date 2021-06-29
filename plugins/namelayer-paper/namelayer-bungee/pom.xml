@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>vg.civcraft.mc.namelayer</groupId>
+    <groupId>com.github.civclassic</groupId>
     <artifactId>namelayer-parent</artifactId>
     <version>1.0.0</version>
   </parent>
@@ -15,40 +15,34 @@
   <packaging>jar</packaging>
 
   <dependencies>
-<!--    <dependency>
-      <groupId>vg.civcraft.mc.namelayer</groupId>
-      <artifactId>namelayer-spigot</artifactId>
-      <version>1.0.0</version>
-      <scope>compile</scope>
-    </dependency>-->
-
+    <!-- https://mvnrepository.com/artifact/net.md-5/bungeecord-protocol -->
     <dependency>
       <groupId>net.md-5</groupId>
       <artifactId>bungeecord-protocol</artifactId>
-      <version>1.16-R0.4-SNAPSHOT</version>
+      <version>1.16-R0.4</version>
       <scope>provided</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/net.md-5/bungeecord-api -->
     <dependency>
       <groupId>net.md-5</groupId>
       <artifactId>bungeecord-api</artifactId>
-      <version>1.16-R0.4-SNAPSHOT</version>
+      <version>1.16-R0.4</version>
       <scope>provided</scope>
     </dependency>
+    <!-- http://nexus.codecrafter47.dyndns.eu/service/rest/repository/browse/public/net/md-5/bungeecord-proxy/ -->
     <dependency>
       <groupId>net.md-5</groupId>
       <artifactId>bungeecord-proxy</artifactId>
-      <version>1.16-R0.4-SNAPSHOT</version>
+      <version>1.17-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
-
-    <!-- Hikari -->
+    <!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
-      <version>3.3.0</version>
-      <scope>compile</scope>
+      <version>4.0.3</version>
+      <scope>provided</scope>
     </dependency>
-
   </dependencies>
 
   <build>

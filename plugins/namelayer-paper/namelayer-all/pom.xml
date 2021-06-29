@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>vg.civcraft.mc.namelayer</groupId>
+    <groupId>com.github.civclassic</groupId>
     <artifactId>namelayer-parent</artifactId>
     <version>1.0.0</version>
   </parent>
@@ -16,12 +16,12 @@
 
   <dependencies>
     <dependency>
-      <groupId>vg.civcraft.mc.namelayer</groupId>
+      <groupId>com.github.civclassic</groupId>
       <artifactId>namelayer-spigot</artifactId>
       <version>1.0.0</version>
     </dependency>
     <dependency>
-      <groupId>vg.civcraft.mc.namelayer</groupId>
+      <groupId>com.github.civclassic</groupId>
       <artifactId>namelayer-bungee</artifactId>
       <version>1.0.0</version>
     </dependency>

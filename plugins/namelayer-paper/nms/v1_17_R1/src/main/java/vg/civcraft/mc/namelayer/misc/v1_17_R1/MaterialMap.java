@@ -5,42 +5,26 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class MaterialMap implements MaterialInterface {
+
 	@Override
-	public Material getMaterial(MaterialInterface.Specific specific) {
-		switch (specific) {
-			case GREEN:
-				return Material.LIME_DYE;
-			case RED:
-				return Material.RED_DYE;
-			case BACK:
-				return Material.OAK_DOOR;
-			case MOD:
-				return Material.GOLDEN_CHESTPLATE;
-			case BLACKLIST:
-				return Material.LEAD;
-			case PERMS:
-				return Material.OAK_FENCE_GATE;
-			case MERGE:
-				return Material.CHEST_MINECART;
-			case DEFAULT:
-				return Material.BRICKS;
-		}
-		return null;
+	public Material getMaterial(final MaterialInterface.Specific specific) {
+		return switch (specific) {
+			case GREEN -> Material.LIME_DYE;
+			case RED -> Material.RED_DYE;
+			case BACK -> Material.OAK_DOOR;
+			case MOD -> Material.GOLDEN_CHESTPLATE;
+			case BLACKLIST -> Material.LEAD;
+			case PERMS -> Material.OAK_FENCE_GATE;
+			case MERGE -> Material.CHEST_MINECART;
+			case DEFAULT -> Material.BRICKS;
+		};
 	}
 
 	@Override
-	public ItemStack getItemStack(MaterialInterface.Specific specific) {
-		switch (specific) {
-			case GREEN:
-			case RED:
-			case BACK:
-			case MOD:
-			case BLACKLIST:
-			case PERMS:
-			case MERGE:
-			case DEFAULT:
-				return new ItemStack(getMaterial(specific));
-		}
-		return null;
+	public ItemStack getItemStack(final MaterialInterface.Specific specific) {
+		return switch (specific) {
+			case GREEN, RED, BACK, MOD, BLACKLIST, PERMS, MERGE, DEFAULT -> new ItemStack(getMaterial(specific));
+		};
 	}
+
 }

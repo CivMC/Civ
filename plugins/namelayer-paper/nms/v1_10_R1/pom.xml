@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>vg.civcraft.mc.namelayer</groupId>
+    <groupId>com.github.civclassic</groupId>
     <artifactId>namelayer-parent</artifactId>
     <version>1.0.0</version>
     <relativePath>../../pom.xml</relativePath>
@@ -17,7 +17,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>vg.civcraft.mc.namelayer</groupId>
+      <groupId>com.github.civclassic</groupId>
       <artifactId>namelayer-nms-interface</artifactId>
       <version>1.0.1</version>
     </dependency>
