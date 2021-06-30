@@ -1,11 +1,10 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -20,17 +19,16 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
-import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CommandAlias("nlip")
 public class InvitePlayer extends BaseCommandMiddle {
 
-	@Syntax("/nlip <group> <player> (PlayerType- default MEMBERS)")
+	@CommandAlias("nlip|invite|inviteplayer")
+	@Syntax("<group> <player> [rank (eg: MEMBERS)]")
 	@Description("Invite a player to a group.")
+	@CommandCompletion("@NL_Groups @allplayers @NL_Ranks")
 	public void execute(CommandSender s, String groupName, String playerName, @Optional String playerRank) {
 		final String targetGroup = groupName;
 		final String targetPlayer = playerName;
@@ -163,29 +161,5 @@ public class InvitePlayer extends BaseCommandMiddle {
 			}
 			PlayerListener.addNotification(invitedPlayer, group);
 		}
-	}
-
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage(ChatColor.RED + "I'm sorry baby, please run this as a player :)");
-			return null;
-		}
-		if (args.length < 2) {
-			if (args.length == 0)
-				return GroupTabCompleter.complete(null, null, (Player) sender);
-			else
-				return GroupTabCompleter.complete(args[0], null, (Player)sender);
-		} else if (args.length == 2) {
-			List<String> namesToReturn = new ArrayList<>();
-			for (Player p: Bukkit.getOnlinePlayers()) {
-				if (p.getName().toLowerCase().startsWith(args[1].toLowerCase()))
-					namesToReturn.add(p.getName());
-			}
-			return namesToReturn;
-		}
-		else if (args.length == 3)
-			return MemberTypeCompleter.complete(args[2]);
-
-		else return null;
 	}
 }

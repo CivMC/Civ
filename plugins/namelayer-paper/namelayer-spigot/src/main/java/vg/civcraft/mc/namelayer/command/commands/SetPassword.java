@@ -1,9 +1,9 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
-import java.util.List;
 import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -11,15 +11,15 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CommandAlias("nlsp")
 public class SetPassword extends BaseCommandMiddle {
 
-	@Syntax("/nlsp <group> <password>")
+	@CommandAlias("nlsp|setpassword")
+	@Syntax("<group> <password>")
 	@Description("Set a password on a group.")
+	@CommandCompletion("@NL_Groups")
 	public void execute(CommandSender sender, String groupName, String userPassword) {
 		if (!(sender instanceof Player)){
 			sender.sendMessage("You may not use this command, must be a pluer.");
@@ -48,16 +48,5 @@ public class SetPassword extends BaseCommandMiddle {
 			password = userPassword;
 		g.setPassword(password);
 		p.sendMessage(ChatColor.GREEN + "Password has been successfully set to: " + g.getPassword());
-	}
-
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player))
-			return null;
-
-		if (args.length == 1)
-			return GroupTabCompleter.complete(args[0], PermissionType.getPermission("PASSWORD"), (Player) sender);
-		else{
-			return GroupTabCompleter.complete(null, PermissionType.getPermission("PASSWORD"), (Player)sender);
-		}
 	}
 }

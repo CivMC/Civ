@@ -17,12 +17,12 @@ import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CommandAlias("nllsg")
 public class ListSubGroups extends BaseCommandMiddle {
 
 	private static String format = "%s%s : (%s)\n";
 
-	@Syntax("/nllsg [group]")
+	@CommandAlias("nllsg|subgroups|listsubgroups")
+	@Syntax("[group]")
 	@Description("List the nested group hierarchy.")
 	public void execute(CommandSender sender, @Optional String targetGroupName) {
 		if (!(sender instanceof Player)) {

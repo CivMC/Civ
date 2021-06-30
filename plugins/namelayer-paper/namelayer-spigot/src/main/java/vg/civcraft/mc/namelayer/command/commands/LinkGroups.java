@@ -1,32 +1,25 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
-import java.util.List;
 import java.util.UUID;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CommandAlias("nllink")
 public class LinkGroups extends BaseCommandMiddle {
 
-	@Syntax("/nllink <super group> <sub group>")
+	@CommandAlias("nllink|linkgroups")
+	@Syntax("<super group> <sub group>")
 	@Description("Links two groups to each other as nested groups.")
-	public void execute(CommandSender sender, String parentGroup, String childGroup) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.LIGHT_PURPLE 
-					+ "And it feels like I am just to close to "
-					+ "touch you, but you are not a player.");
-			return;
-		}
+	@CommandCompletion("@NL_Groups @NL_Groups")
+	public void execute(Player sender, String parentGroup, String childGroup) {
 		Player p = (Player) sender;
 			
 		String supername = parentGroup, subname = childGroup;
@@ -85,22 +78,5 @@ public class LinkGroups extends BaseCommandMiddle {
 			message = ChatColor.RED + "Failed to link the groups.";
 		}
 		p.sendMessage(message);
-	}
-
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage(ChatColor.BLUE 
-					+ "Fight me, bet you wont.\n "
-					+ "Just back off you don't belong here.");
-			return null;
-		}
-
-		if (args.length > 0) {
-			return GroupTabCompleter.complete(args[args.length - 1], 
-					PermissionType.getPermission("LINKING"), (Player)sender);
-		} else {
-			return GroupTabCompleter.complete(null, 
-					PermissionType.getPermission("LINKING"), (Player)sender);
-		}
 	}
 }

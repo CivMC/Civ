@@ -2,7 +2,6 @@ package vg.civcraft.mc.namelayer.command.commands;
 
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -12,12 +11,11 @@ import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.AutoAcceptHandler;
 
-@CommandAlias("nltaai")
 public class ToggleAutoAcceptInvites extends BaseCommandMiddle {
 
 	private AutoAcceptHandler handler = NameLayerPlugin.getAutoAcceptHandler();
 
-	@Syntax("/nltaai")
+	@CommandAlias("nltaai|autoaccept")
 	@Description("Toggle the acceptance of invites.")
 	public void execute(CommandSender sender) {
 		if (!(sender instanceof Player)){

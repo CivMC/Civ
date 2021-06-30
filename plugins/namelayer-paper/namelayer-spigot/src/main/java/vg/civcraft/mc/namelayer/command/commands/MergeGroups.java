@@ -1,9 +1,9 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
-import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import org.bukkit.ChatColor;
@@ -13,15 +13,15 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CommandAlias("nlmg")
 public class MergeGroups extends BaseCommandMiddle {
 
-	@Syntax("/nlmg <The group left> <The group that will be gone>")
+	@CommandAlias("nlmg|merge|mergegroups")
+	@Syntax("<group_to_keep> <group_to_delete>")
 	@Description("Merge two groups together.")
+	@CommandCompletion("@NL_Groups @NL_Groups")
 	public void execute(CommandSender sender, String groupToKeep, String groupToDelete) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.BLUE + "Fight me, bet you wont.\n Just back off you don't belong here.");
@@ -65,17 +65,5 @@ public class MergeGroups extends BaseCommandMiddle {
 			p.sendMessage(ChatColor.GREEN + "Group merging may have failed.");
 		}
 		p.sendMessage(ChatColor.GREEN + "Group is under going merge.");
-	}
-
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player))
-			return null;
-
-		if (args.length > 0)
-			return GroupTabCompleter.complete(args[args.length - 1], PermissionType.getPermission("MERGE"),
-					(Player) sender);
-		else {
-			return GroupTabCompleter.complete(null, PermissionType.getPermission("MERGE"), (Player) sender);
-		}
 	}
 }

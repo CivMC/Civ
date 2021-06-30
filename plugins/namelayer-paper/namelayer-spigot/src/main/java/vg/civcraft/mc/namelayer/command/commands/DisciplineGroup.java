@@ -5,22 +5,17 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 
-@CommandAlias("nldig")
-@CommandPermission("namelayer.admin")
 public class DisciplineGroup extends BaseCommandMiddle {
 
-	@Syntax("/nldig <group>")
+	@CommandAlias("nldig|disablegroup|disable|discipline")
+	@CommandPermission("namelayer.admin")
+	@Syntax("<group>")
 	@Description("Disable a group from working.")
-	public void execute(CommandSender sender, String groupName) {
-		if (!(sender instanceof Player))
-			sender.sendMessage(ChatColor.AQUA + "Meh, fine, just this one.");
-		// checks and stuff should be in plugin.yml so going to assume that sender has perms
-		// naaaaaaa
+	public void execute(Player sender, String groupName) {
 		Player p = (Player) sender;
 		Group g = gm.getGroup(groupName);
 		if (groupIsNull(sender, groupName, g)) {

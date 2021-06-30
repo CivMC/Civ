@@ -8,7 +8,6 @@ import co.aikar.commands.annotation.Syntax;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -17,18 +16,13 @@ import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CommandAlias("nlid")
-@CommandPermission("namelayer.admin")
 public class InfoDump extends BaseCommandMiddle {
-	
-	@Syntax("/nlid (page)")
+
+	@CommandAlias("nlid")
+	@CommandPermission("namelayer.admin")
+	@Syntax("[page]")
 	@Description("This command dumps group info for CitadelGUI.")
-	public void execute(CommandSender sender, @Optional String groupID) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "You are not a player?");
-			return;
-		}
-		
+	public void execute(Player sender, @Optional String groupID) {
 		Player player = (Player)sender;
 		UUID playerUUID = NameAPI.getUUID(player.getName());
 		

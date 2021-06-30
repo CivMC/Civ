@@ -18,17 +18,13 @@ import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CommandAlias("nlgs")
-@CommandPermission("namelayer.admin")
 public class GroupStats extends BaseCommandMiddle {
 
-	@Syntax("/nlgs <group>")
+	@CommandAlias("nlgs")
+	@CommandPermission("namelayer.admin")
+	@Syntax("<group>")
 	@Description("Get stats about a group.")
-	public void execute(CommandSender sender, String groupName) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage("meh");
-			return;
-		}
+	public void execute(Player sender, String groupName) {
 		Player p = (Player) sender;
 		Group g = gm.getGroup(groupName);
 		UUID uuid = NameAPI.getUUID(p.getName());	

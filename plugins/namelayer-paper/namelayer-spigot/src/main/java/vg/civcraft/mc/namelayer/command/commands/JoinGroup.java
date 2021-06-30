@@ -5,7 +5,6 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -15,17 +14,12 @@ import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CommandAlias("nljg")
 public class JoinGroup extends BaseCommandMiddle {
 
-	@Syntax("/nljg <group> <password>")
+	@CommandAlias("nljg|join|joingroup")
+	@Syntax("<group> <password>")
 	@Description("Join a password protected group.")
-	public void execute(CommandSender sender, String groupName, String attemptedPassword) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage(ChatColor.RED + "How would this even work. Seriously my reddit account is rourke750, explain to me why " +
-					"you would ever want to do this from console and I will remove this check.");
-			return;
-		}
+	public void execute(Player sender, String groupName, String attemptedPassword) {
 		Player p = (Player) sender;
 		Group g = gm.getGroup(groupName);
 		if (groupIsNull(sender, groupName, g)) {

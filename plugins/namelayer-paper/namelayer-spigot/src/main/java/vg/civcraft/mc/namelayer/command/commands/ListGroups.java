@@ -14,10 +14,10 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 
-@CommandAlias("nllg")
 public class ListGroups extends BaseCommandMiddle {
 
-	@Syntax("/nllg <page>")
+	@CommandAlias("nllg|listgroups|groups")
+	@Syntax("[page]")
 	@Description("List groups.")
 	public void execute(CommandSender sender, @Optional String pageNumber) {
 		Player p = null;

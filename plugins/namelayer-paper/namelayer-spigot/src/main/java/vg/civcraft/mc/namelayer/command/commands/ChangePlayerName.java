@@ -13,18 +13,17 @@ import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
  * Created by isaac on 2/6/15.
  */
 
-@CommandAlias("nlcpn|changeplayername")
-@CommandPermission("namelayer.admin")
 public class ChangePlayerName  extends BaseCommandMiddle {
 
-    @Syntax("/nlcpn <old name> <new name>")
+	@CommandAlias("nlcpn|changeplayername")
+	@CommandPermission("namelayer.admin")
+    @Syntax("<old name> <new name>")
     @Description("Used by ops to change a players name")
     public void execute(CommandSender sender, String currentName, String changedName) {
         if (!sender.isOp() && !sender.hasPermission("namelayer.admin")) {
             sender.sendMessage("You're not an op. ");
             return;
         }
-
         UUID player = NameAPI.getUUID(currentName);
         if (player == null){
             sender.sendMessage(currentName + " has never logged in");

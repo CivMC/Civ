@@ -2,7 +2,6 @@ package vg.civcraft.mc.namelayer.command.commands;
 
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Syntax;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.ChatColor;
@@ -12,16 +11,11 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 
-@CommandAlias("nlgdg")
 public class GetDefaultGroup extends BaseCommandMiddle {
 
-	@Syntax("/nlgdg")
+	@CommandAlias("nlgdg")
 	@Description("Get a players default group")
-	public void execute(CommandSender sender) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage("I don't think you need to do that.");
-			return;
-		}
+	public void execute(Player sender) {
 		Player p = (Player) sender;
 		UUID uuid = NameAPI.getUUID(p.getName());
 

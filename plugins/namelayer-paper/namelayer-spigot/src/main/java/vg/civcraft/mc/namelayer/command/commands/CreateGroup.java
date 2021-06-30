@@ -6,12 +6,10 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -20,17 +18,12 @@ import vg.civcraft.mc.namelayer.RunnableOnGroup;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 
-@CommandAlias("nlcg|nlcreategroup|creategroup|create|ctcreate|creategroup|cg")
 public class CreateGroup extends BaseCommandMiddle {
 
-	@Syntax("/nlcg <name> [password]")
+	@CommandAlias("nlcg|nlcreategroup|creategroup|create|ctcreate|creategroup|cg")
+	@Syntax("<group> [password]")
 	@Description("Create a group (Public or Private). Password is optional.")
-	public void execute(CommandSender sender, String groupName, @Optional String userPassword) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage(ChatColor.DARK_BLUE + "Nice try console man, you can't bring me down. The computers won't win. " +
-					"Dis a player commmand back off.");
-			return;
-		}
+	public void execute(Player sender, String groupName, @Optional String userPassword) {
 		Player p = (Player) sender;
 		String name = groupName;
 		int currentGroupCount = gm.countGroups(p.getUniqueId());
@@ -99,9 +92,5 @@ public class CreateGroup extends BaseCommandMiddle {
 			p.sendMessage(ChatColor.YELLOW + "You have reached the group limit with " + NameLayerPlugin.getInstance().getGroupLimit() + " groups! Please delete un-needed groups if you wish to create more.");
 		}
 		p.sendMessage(ChatColor.GREEN + "Group creation request is in process.");
-	}
-
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return null;
 	}
 }

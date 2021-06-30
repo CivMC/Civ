@@ -8,28 +8,20 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
-import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CommandAlias("nllm")
 public class ListMembers extends BaseCommandMiddle {
 
-	@Syntax("/nllm <group> (PlayerType)")
+	@CommandAlias("nllm|listmembers|members")
+	@Syntax("<group> [rank (e.g: MEMBERS)]")
 	@Description("List the members in a group")
-	public void execute(CommandSender sender, String groupName, @Optional String playerType, @Optional String playerName) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.LIGHT_PURPLE + "No can do.");
-			return;
-		}
-		
+	public void execute(Player sender, String groupName, @Optional String playerType, @Optional String playerName) {
 		Player p = (Player) sender;
 		UUID uuid = NameAPI.getUUID(p.getName());
 		String groupname = groupName;
@@ -92,20 +84,5 @@ public class ListMembers extends BaseCommandMiddle {
 		}
 		
 		p.sendMessage(sb.toString());
-	}
-
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			return null;
-		}
-			
-		if (args.length == 0)
-			return GroupTabCompleter.complete(null, null, (Player) sender);
-		else if (args.length == 1)
-			return GroupTabCompleter.complete(args[0], null, (Player)sender);
-		else if (args.length == 2)
-			return MemberTypeCompleter.complete(args[1]);
-
-		return null;
 	}
 }

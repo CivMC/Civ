@@ -4,32 +4,25 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.misc.NameFetcher;
 
-@CommandAlias("nlun")
 public class UpdateName extends BaseCommandMiddle {
 
 	private Map<UUID, String> newNames = Collections.synchronizedSortedMap(new TreeMap<UUID, String>());
 
-	@Syntax("/nlun [CONFIRM]")
+	@CommandAlias("nlun|updatename|")
+	@Syntax("[confirm]")
 	@Description("Updates your name on this server to the one your minecraft account currently has")
-	public void execute(CommandSender sender, String newNameOrConfirm) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.LIGHT_PURPLE
-					+ "NO NO NO NO NO NO NO NO");
-			return;
-		}
+	public void execute(Player sender, String newNameOrConfirm) {
 		final Player p = (Player) sender;
 		final UUID uuid = p.getUniqueId();
 		final String oldName = NameAPI.getCurrentName(uuid);
@@ -113,15 +106,4 @@ public class UpdateName extends BaseCommandMiddle {
 					+ "\". This change will be applied together with all other name changes at a previously announced date.");
 		}
 	}
-
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			return null;
-		}
-		if (newNames.get(((Player) sender).getUniqueId()) != null) {
-			return Collections.singletonList("CONFIRM");
-		}
-		return null;
-	}
-
 }

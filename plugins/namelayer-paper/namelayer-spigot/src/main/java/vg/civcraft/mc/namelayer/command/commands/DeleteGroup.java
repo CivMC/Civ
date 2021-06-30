@@ -5,31 +5,24 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CommandAlias("nldg")
 public class DeleteGroup extends BaseCommandMiddle {
 	
 	private Map<UUID, String[]> confirmDeleteGroup = new HashMap<UUID, String[]>();
 
-	@Syntax("/nldg <group>")
+	@CommandAlias("nldg|delete|deletegroup|groupdelete")
+	@Syntax("<group>")
 	@Description("Delete a group.")
-	public void execute(CommandSender sender, String groupName) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage(ChatColor.DARK_AQUA + "I grow tired of this, NO.");
-			return;
-		}
+	public void execute(Player sender, String groupName) {
 		Player p = (Player) sender;
 		UUID uuid = NameAPI.getUUID(p.getName());
 		String x = groupName;
@@ -93,17 +86,5 @@ public class DeleteGroup extends BaseCommandMiddle {
 		p.sendMessage(ChatColor.GREEN + "To confirm deletion of group: " + g.getName() + "\nuse /nldg CONFIRM within 15 seconds");
 		confirmDeleteGroup.put(uuid, groupDate);
 		return;
-	}
-
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)){
-			return null;
-		}
-
-		if (args.length > 0)
-			return GroupTabCompleter.complete(args[args.length - 1], PermissionType.getPermission("DELETE"), (Player) sender);
-		else {
-			return GroupTabCompleter.complete(null, PermissionType.getPermission("DELETE"), (Player) sender);
-		}
 	}
 }
