@@ -1,5 +1,8 @@
 package com.biggestnerd.namecolors;
 
+import static me.neznamy.tab.api.TABAPI.getPlayer;
+
+
 import me.neznamy.tab.api.EnumProperty;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -7,12 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
-
-import static me.neznamy.tab.api.TABAPI.getPlayer;
+import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 
 public class NameColors extends ACivMod implements Listener {
 
