@@ -1,11 +1,12 @@
 package sh.okx.railswitch.glue;
 
 import org.bukkit.block.Block;
+import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.util.DependencyGlue;
-import vg.civcraft.mc.civmodcore.util.NullUtils;
+import vg.civcraft.mc.civmodcore.utilities.DependencyGlue;
+import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
@@ -15,29 +16,18 @@ public final class CitadelGlue extends DependencyGlue {
 
     private ReinforcementManager manager;
 
-    public CitadelGlue() {
-        super("Citadel");
+    public CitadelGlue(Plugin plugin) {
+        super(plugin, "Citadel");
     }
 
-    @Override
     public boolean isSafeToUse() {
-        if (!super.isSafeToUse()) {
+        if (!super.isDependencyEnabled()) {
             return false;
         }
         if (this.manager == null) {
             return false;
         }
         return true;
-    }
-
-    @Override
-    protected void onGlueEnabled() {
-        this.manager = Citadel.getInstance().getReinforcementManager();
-    }
-
-    @Override
-    protected void onGlueDisabled() {
-        this.manager = null;
     }
 
     /**
@@ -64,4 +54,13 @@ public final class CitadelGlue extends DependencyGlue {
                 railReinforcement.getGroup());
     }
 
+    @Override
+    protected void onDependencyEnabled() {
+        this.manager = Citadel.getInstance().getReinforcementManager();
+    }
+
+    @Override
+    protected void onDependencyDisabled() {
+        this.manager = null;
+    }
 }

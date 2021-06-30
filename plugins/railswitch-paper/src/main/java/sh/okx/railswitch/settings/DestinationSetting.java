@@ -4,7 +4,7 @@ import com.google.common.base.Strings;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import vg.civcraft.mc.civmodcore.playersettings.impl.StringSetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.StringSetting;
 
 /**
  * Setting representing a player's destination.

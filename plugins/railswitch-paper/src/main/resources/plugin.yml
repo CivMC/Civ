@@ -3,7 +3,7 @@ version: ${project.version}
 main: sh.okx.railswitch.RailSwitchPlugin
 depend: [CivModCore]
 softdepend: [Citadel, NameLayer]
-api-version: 1.14
+api-version: 1.17
 authors: [Okx, Protonull]
 description: Easily make rail switches for automated destination selection
 commands:
