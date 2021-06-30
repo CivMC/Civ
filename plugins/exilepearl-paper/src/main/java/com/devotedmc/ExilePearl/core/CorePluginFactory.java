@@ -22,6 +22,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -136,7 +137,7 @@ public final class CorePluginFactory implements PearlFactory {
 	}
 
 	public LoreProvider createLoreGenerator() {
-		return new CoreLoreGenerator(pearlApi.getPearlConfig());
+		return new CoreLoreGenerator(pearlApi.getPearlConfig(), new NamespacedKey(pearlApi, "exile_pearl_id"));
 	}
 
 	public PearlConfig createPearlConfig() {

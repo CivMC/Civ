@@ -193,7 +193,7 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	/**
 	 * Gets whether people should be allowed to deploy an elytra with a pearl in their inventory
 	 * Also determines if they should be able to pick up pearl items while gliding
-	 * @return true if they should be able to fly & pick up exile pearls while gliding
+	 * @return true if they should be able to fly and pick up exile pearls while gliding
 	 */
 	boolean canElytraWithPearls();
 }

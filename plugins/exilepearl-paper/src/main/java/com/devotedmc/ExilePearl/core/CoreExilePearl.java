@@ -26,6 +26,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -34,6 +35,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
@@ -349,6 +352,10 @@ final class CoreExilePearl implements ExilePearl {
 		im.setLore(lore);
 		im.addEnchant(Enchantment.DURABILITY, 1, true);
 		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+		PersistentDataContainer container = im.getPersistentDataContainer();
+		container.set(pearlApi.getLoreProvider().getExilePearlIdKey(), PersistentDataType.INTEGER, this.pearlId);
+
 		is.setItemMeta(im);
 		return is;
 	}
@@ -367,6 +374,14 @@ final class CoreExilePearl implements ExilePearl {
 		if (pearlId == this.pearlId) {
 			ItemMeta im = is.getItemMeta();
 			im.setLore(pearlApi.getLoreProvider().generateLore(this));
+
+			PersistentDataContainer container = im.getPersistentDataContainer();
+
+			NamespacedKey exilePearlIdKey = pearlApi.getLoreProvider().getExilePearlIdKey();
+			if (!container.has(exilePearlIdKey, PersistentDataType.INTEGER)) {
+				container.set(exilePearlIdKey, PersistentDataType.INTEGER, this.pearlId);
+			}
+
 			is.setItemMeta(im);
 			return true;
 		}

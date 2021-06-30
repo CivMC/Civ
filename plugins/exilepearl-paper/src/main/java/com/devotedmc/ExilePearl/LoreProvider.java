@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl;
 
 import java.util.List;
 import java.util.UUID;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 
 public interface LoreProvider {
@@ -44,4 +45,9 @@ public interface LoreProvider {
 	 * @return The returned lore
 	 */
 	List<String> generatePearlInfo(ExilePearl pearl);
+
+	/**
+	 * Retrieve the exile pearl ID key used for storing the pearl ID on a PersistentDataContainer.
+	 */
+	NamespacedKey getExilePearlIdKey();
 }
