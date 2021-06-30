@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffect;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 import vg.civcraft.mc.civmodcore.config.ConfigParser;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.utilities.ConfigParsing;
@@ -106,7 +107,7 @@ public class CitadelConfigManager extends ConfigParser {
 	}
 
 	private void parseAcidMaterials(ConfigurationSection config) {
-		acidMaterials = parseMaterialList(config, "acidblock_material");
+		acidMaterials = ConfigHelper.parseMaterialList(config, "acidblock_material");
 		if (acidMaterials == null) {
 			logger.info("No valid acid materials found in config");
 			acidMaterials = new LinkedList<>();
@@ -119,7 +120,7 @@ public class CitadelConfigManager extends ConfigParser {
 	@Override
 	protected boolean parseInternal(ConfigurationSection config) {
 		database = (ManagedDatasource) config.get("database");
-		globalBlackList = parseMaterialList(config, "non_reinforceables");
+		globalBlackList = ConfigHelper.parseMaterialList(config, "non_reinforceables");
 		parseAcidMaterials(config);
 		logHostileBreaks = config.getBoolean("logHostileBreaks", true);
 		logFriendlyBreaks = config.getBoolean("logFriendlyBreaks", true);
@@ -153,8 +154,8 @@ public class CitadelConfigManager extends ConfigParser {
 		double maturationScale = config.getInt("scale_amount", 1);
 		float health = (float) config.getDouble("hit_points", 100);
 		double returnChance = config.getDouble("return_chance", 1.0);
-		List<Material> reinforceables = parseMaterialList(config, "reinforceables");
-		List<Material> nonReinforceables = parseMaterialList(config, "non_reinforceables");
+		List<Material> reinforceables = ConfigHelper.parseMaterialList(config, "reinforceables");
+		List<Material> nonReinforceables = ConfigHelper.parseMaterialList(config, "non_reinforceables");
 		short id = (short) config.getInt("id", -1);
 		long decayTimer = ConfigParsing
 				.parseTime(config.getString("decay_timer", String.valueOf(globalDecayTimer / 1000L) + "s"));

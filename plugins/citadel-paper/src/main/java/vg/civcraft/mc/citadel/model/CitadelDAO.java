@@ -14,6 +14,7 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -151,7 +152,7 @@ public class CitadelDAO extends TableStorageEngine<Reinforcement> {
 						int maturationTime = rs.getInt(11);
 						String lore = rs.getString(12);
 
-						short worldID = worldMan.getInternalWorldIdByName(worldName);
+						short worldID = worldMan.getInternalWorldId(Bukkit.getWorld(worldName));
 						if (worldID == -1) {
 							logger.severe("Failed to find world id for world with name " + worldName);
 							return false;
