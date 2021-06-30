@@ -1,24 +1,28 @@
 package vg.civcraft.mc.civchat2.commands;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Syntax;
 import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CivCommand(id = "groupc")
-public class GroupChat extends StandaloneCommand {
+@CommandAlias("groupc|groupchat|gchat|g|gc")
+public class GroupChat extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	@Syntax("/groupc")
+	@Description("Enters a group chat or sends a message to a group chat")
+	public void execute(CommandSender sender, @Optional String targetGroup, @Optional String chatMessage) {
 		CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
 		Player player = (Player) sender;
 		GroupManager gm = NameAPI.getGroupManager();
@@ -28,49 +32,49 @@ public class GroupChat extends StandaloneCommand {
 		}
 		Group group;
 		boolean defGroup = false;
-		if (args.length < 1) {
+		if (!targetGroup.isEmpty() && !chatMessage.isEmpty()) {
 			// Check if player is in groupchat and move them to normal chat
 			if (isGroupChatting) {
 				player.sendMessage(ChatStrings.chatMovedToGlobal);
 				chatMan.removeGroupChat(player);
-				return true;
+				return;
 			} else {
 				String grpName = gm.getDefaultGroup(player.getUniqueId());
 				if (grpName != null) {
 					group = GroupManager.getGroup(grpName);
 					defGroup = true;
 				} else {
-					return false;
+					return;
 				}
 			}
 		} else {
-			group = GroupManager.getGroup(args[0]);
+			group = GroupManager.getGroup(targetGroup);
 		}
 		if (group == null) {
 			player.sendMessage(ChatStrings.chatGroupNotFound);
-			return true;
+			return;
 		}
 		if (!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
 				PermissionType.getPermission("WRITE_CHAT"))) {
 			player.sendMessage(ChatStrings.chatGroupNoPerms);
-			return true;
+			return;
 		}
 		if (CivChat2.getInstance().getDatabaseManager().isIgnoringGroup(player.getUniqueId(), group.getName())) {
 			player.sendMessage(String.format(ChatStrings.chatNeedToUnignore, group.getName()));
-			return true;
+			return;
 		}
-		if (args.length == 1) {
+		if (!targetGroup.isEmpty() && chatMessage == null) {
 			if (isGroupChatting) {
 				// Player already groupchatting check if it's this group
 				Group curGroup = chatMan.getGroupChatting(player);
 				if (curGroup == group) {
 					player.sendMessage(ChatStrings.chatGroupAlreadyChatting);
-					return true;
+					return;
 				} else {
 					player.sendMessage(String.format(ChatStrings.chatGroupNowChattingIn, group.getName()));
 					chatMan.removeGroupChat(player);
 					chatMan.addGroupChat(player, group);
-					return true;
+					return;
 				}
 			} else {
 				player.sendMessage(String.format(ChatStrings.chatGroupNowChattingIn, group.getName()));
@@ -78,36 +82,31 @@ public class GroupChat extends StandaloneCommand {
 					chatMan.removeChannel(player);
 				}
 				chatMan.addGroupChat(player, group);
-				return true;
+				return;
 			}
-		} else if (args.length > 1) {
+		} else if (!targetGroup.isEmpty() && !chatMessage.isEmpty()) {
 			StringBuilder chatMsg = new StringBuilder();
-			for (int i = defGroup ? 0 : 1; i < args.length; i++) {
-				chatMsg.append(args[i]);
-				chatMsg.append(" ");
-			}
+			chatMsg.append(chatMessage);
 			if (isGroupChatting) {
 				// Player already groupchatting check if it's this group
 				Group curGroup = chatMan.getGroupChatting(player);
 				if (curGroup == group) {
 					chatMan.sendGroupMsg(player, group, chatMsg.toString());
-					return true;
+					return;
 				} else {
 					chatMan.sendGroupMsg(player, group, chatMsg.toString());
-					return true;
+					return;
 				}
 			} else {
 				if (chatMan.getChannel(player) != null) {
 					chatMan.removeChannel(player);
 				}
 				chatMan.sendGroupMsg(player, group, chatMsg.toString());
-				return true;
+				return;
 			}
 		}
-		return false;
 	}
 
-	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		if (args.length == 0) {
 			return GroupTabCompleter.complete(null, PermissionType.getPermission("WRITE_CHAT"), (Player) sender);

@@ -6,11 +6,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
-import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
-import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
-import vg.civcraft.mc.civmodcore.scoreboard.side.CivScoreBoard;
-import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
+import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
+import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
+import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
+import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
+import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
 
 public class ScoreboardHUD {
 	private final BottomLine chatBottomLine;

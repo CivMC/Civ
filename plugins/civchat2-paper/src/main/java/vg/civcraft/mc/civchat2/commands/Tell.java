@@ -1,6 +1,10 @@
 package vg.civcraft.mc.civchat2.commands;
 
-import java.util.List;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -9,17 +13,16 @@ import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-@CivCommand(id = "tell")
-public class Tell extends StandaloneCommand {
+@CommandAlias("tell|message|m|pm|msg")
+public class Tell extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	@Syntax("/tell <player> <message>")
+	@Description("Sends a private message to someone or enters a private chat with them")
+	public void execute(CommandSender sender, @Optional String targetPlayer, @Optional String chatMessage) {
 		CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
 		Player player = (Player) sender;
-		if (args.length == 0) {
+		if (targetPlayer.isEmpty() && chatMessage.isEmpty()) {
 			UUID chattingWith = chatMan.getChannel(player);
 			if (chattingWith != null) {
 				chatMan.removeChannel(player);
@@ -27,54 +30,41 @@ public class Tell extends StandaloneCommand {
 			} else {
 				player.sendMessage(ChatStrings.chatNotInPrivateChat);
 			}
-			return true;
+			return;
 		}
 
-		Player receiver = Bukkit.getPlayer(args [0]);
+		Player receiver = Bukkit.getPlayer(targetPlayer);
 		if (receiver == null) {
 			player.sendMessage(ChatStrings.chatPlayerNotFound);
-			return true;
+			return;
 		}
 
 		if (!(receiver.isOnline())) {
 			player.sendMessage(ChatStrings.chatPlayerIsOffline);
-			return true;
+			return;
 		}
 
 		if (player == receiver) {
 			player.sendMessage(ChatStrings.chatCantMessageSelf);
-			return true;
+			return;
 		}
 
-		if (args.length >= 2) {
-			// Player and message
-			StringBuilder builder = new StringBuilder();
-			for (int x = 1; x < args.length; x++) {
-				builder.append(args[x] + " ");
-			}
-
-			chatMan.sendPrivateMsg(player, receiver, builder.toString());
-			return true;
-		} else if (args.length == 1) {
+		if (!chatMessage.isEmpty()) {
+			chatMan.sendPrivateMsg(player, receiver, chatMessage);
+			return;
+		} else {
 			CivChatDAO db = CivChat2.getInstance().getDatabaseManager();
 			if (db.isIgnoringPlayer(player.getUniqueId(), receiver.getUniqueId())) {
 				player.sendMessage(String.format(ChatStrings.chatNeedToUnignore, receiver.getDisplayName()));
-				return true;
+				return;
 			}
 
 			if (db.isIgnoringPlayer(receiver.getUniqueId(), player.getUniqueId())) {
 				player.sendMessage(ChatStrings.chatPlayerIgnoringYou);
-				return true;
+				return;
 			}
 			chatMan.addChatChannel(player, receiver);
 			player.sendMessage(String.format(ChatStrings.chatNowChattingWith, receiver.getDisplayName()));
-			return true;
 		}
-		return false;
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return null;
 	}
 }

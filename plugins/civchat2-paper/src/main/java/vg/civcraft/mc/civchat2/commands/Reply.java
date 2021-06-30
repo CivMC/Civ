@@ -1,6 +1,10 @@
 package vg.civcraft.mc.civchat2.commands;
 
-import java.util.List;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -8,14 +12,13 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-@CivCommand(id = "reply")
-public class Reply extends StandaloneCommand {
+@CommandAlias("reply|r")
+public class Reply extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	@Syntax("/reply <message>")
+	@Description("Replies to the last person you sent a message to or received one from")
+	public void execute(CommandSender sender, @Optional String chatMessage) {
 		Player player = (Player) sender;
 		CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
 		UUID receiverUUID = chatMan.getPlayerReply(player);
@@ -23,36 +26,26 @@ public class Reply extends StandaloneCommand {
 		Player receiver = Bukkit.getPlayer(receiverUUID);
 		if (receiver == null) {
 			player.sendMessage(ChatStrings.chatNoOneToReplyTo);
-			return true;
+			return;
 		}
 
 		if (!(receiver.isOnline())) {
 			player.sendMessage(ChatStrings.chatPlayerIsOffline);
-			return true;
+			return;
 		}
 
 		if (player.getUniqueId().equals(receiver.getUniqueId())) {
 			player.sendMessage(ChatStrings.chatCantMessageSelf);
-			return true;
+			return;
 		}
 
-		if (args.length > 0) {
-			StringBuilder sb = new StringBuilder();
-			for (String s : args) {
-				sb.append(s + " ");
-			}
-			chatMan.sendPrivateMsg(player, receiver, sb.toString());
-			return true;
+		if (!chatMessage.isEmpty()) {
+			chatMan.sendPrivateMsg(player, receiver, chatMessage);
+			return;
 		}
 		// Player to chat with reply user
 		chatMan.removeChannel(player);
 		chatMan.addChatChannel(player, receiver);
 		player.sendMessage(String.format(ChatStrings.chatNowChattingWith, receiver.getName()));
-		return true;
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return null;
 	}
 }

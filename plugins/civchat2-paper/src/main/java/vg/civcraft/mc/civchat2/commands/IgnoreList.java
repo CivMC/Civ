@@ -1,6 +1,9 @@
 package vg.civcraft.mc.civchat2.commands;
 
-import java.util.LinkedList;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Syntax;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.command.CommandSender;
@@ -8,15 +11,14 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.NameAPI;
 
-@CivCommand(id = "ignorelist")
-public class IgnoreList extends StandaloneCommand {
+@CommandAlias("ignorelist")
+public class IgnoreList extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	@Syntax("/ignorelist")
+	@Description("Lists the players and groups you are ignoring")
+	public void execute(CommandSender sender) {
 		Player player = (Player) sender;
 		CivChatDAO db = CivChat2.getInstance().getDatabaseManager();
 		List<UUID> players = db.getIgnoredPlayers(player.getUniqueId());
@@ -45,7 +47,7 @@ public class IgnoreList extends StandaloneCommand {
 		// No groups ignored
 		if (groups == null || groups.isEmpty()) {
 			player.sendMessage(ChatStrings.chatNotIgnoringAnyGroups);
-			return true;
+			return;
 		} else {
 			StringBuilder sb = new StringBuilder();
 			sb.append("<a>Ignored Groups: \n<n>");
@@ -58,12 +60,6 @@ public class IgnoreList extends StandaloneCommand {
 				msg = msg.substring(0, msg.length() - 2);
 			}
 			player.sendMessage(msg);
-			return true;
 		}
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new LinkedList<>();
 	}
 }
