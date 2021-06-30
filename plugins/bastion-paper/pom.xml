@@ -9,8 +9,7 @@
 		<artifactId>civclassic-parent</artifactId>
 		<version>1.0.0</version>
 	</parent>
-
-	<groupId>isaac</groupId>
+	
 	<artifactId>Bastion</artifactId>
 	<packaging>jar</packaging>
 	<version>2.5.0</version>
@@ -27,21 +26,21 @@
 		</dependency>
 		<!-- https://github.com/CivClassic/CivModCore -->
 		<dependency>
-			<groupId>vg.civcraft.mc.civmodcore</groupId>
+			<groupId>com.github.civclassic</groupId>
 			<artifactId>CivModCore</artifactId>
 			<version>1.9.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- https://github.com/CivClassic/NameLayer -->
 		<dependency>
-			<groupId>vg.civcraft.mc.namelayer</groupId>
+			<groupId>com.github.civclassic</groupId>
 			<artifactId>NameLayer</artifactId>
 			<version>2.15.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- https://github.com/CivClassic/Citadel -->
 		<dependency>
-			<groupId>vg.civcraft.mc.citadel</groupId>
+			<groupId>com.github.civclassic</groupId>
 			<artifactId>Citadel</artifactId>
 			<version>4.2.0</version>
 			<scope>provided</scope>
