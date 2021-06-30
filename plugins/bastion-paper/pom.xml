@@ -7,9 +7,9 @@
 	<parent>
 		<groupId>com.github.civclassic</groupId>
 		<artifactId>civclassic-parent</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
-	
+
 	<artifactId>Bastion</artifactId>
 	<packaging>jar</packaging>
 	<version>2.5.0</version>
