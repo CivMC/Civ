@@ -1,5 +1,8 @@
 package com.untamedears.realisticbiomes;
 
+import static vg.civcraft.mc.civmodcore.config.ConfigHelper.parseMaterialList;
+
+
 import com.untamedears.realisticbiomes.growth.AgeableGrower;
 import com.untamedears.realisticbiomes.growth.BambooGrower;
 import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
