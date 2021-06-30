@@ -1,6 +1,8 @@
 package com.github.maxopoly.finale;
 
-import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
+
+import static vg.civcraft.mc.civmodcore.utilities.ConfigParsing.parseTime;
+
 
 import com.github.maxopoly.finale.combat.CombatConfig;
 import com.github.maxopoly.finale.combat.CombatSoundConfig;

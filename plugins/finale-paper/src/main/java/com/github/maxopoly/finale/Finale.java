@@ -1,6 +1,11 @@
 package com.github.maxopoly.finale;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import com.github.maxopoly.finale.command.CardinalCommand;
+import com.github.maxopoly.finale.command.CombatConfigCommand;
+import com.github.maxopoly.finale.command.GammaBrightCommand;
+import com.github.maxopoly.finale.command.ReloadFinaleCommand;
+import com.github.maxopoly.finale.command.ShowCpsCommand;
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
 import com.github.maxopoly.finale.external.FinaleSettingManager;
 import com.github.maxopoly.finale.listeners.DamageListener;
@@ -17,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
 public class Finale extends ACivMod {
 
@@ -30,6 +36,7 @@ public class Finale extends ACivMod {
 	private CombatTagPlusManager ctpManager;
 	private ConfigParser config;
 	private FinaleSettingManager settingsManager;
+	private CommandManager commandManager;
 
 	public CombatTagPlusManager getCombatTagPlusManager() {
 		return ctpManager;
@@ -66,6 +73,8 @@ public class Finale extends ACivMod {
 	public void onEnable() {
 		super.onEnable();
 		instance = this;
+		commandManager = new CommandManager(this);
+		commandManager.init();
 		reload();
 	}
 
@@ -88,6 +97,14 @@ public class Finale extends ACivMod {
 		Bukkit.getPluginManager().registerEvents(new ToolProtectionListener(settingsManager), this);
 	}
 
+	private void registerCommands() {
+		commandManager.registerCommand(new CardinalCommand());
+		commandManager.registerCommand(new CombatConfigCommand());
+		commandManager.registerCommand(new GammaBrightCommand());
+		commandManager.registerCommand(new ReloadFinaleCommand());
+		commandManager.registerCommand(new ShowCpsCommand());
+	}
+
 	public void reload() {
 		onDisable();
 		config = new ConfigParser(this);
@@ -95,6 +112,7 @@ public class Finale extends ACivMod {
 		settingsManager = new FinaleSettingManager();
 		initExternalManagers();
 		registerListener();
+		registerCommands();
 	}
 
 }

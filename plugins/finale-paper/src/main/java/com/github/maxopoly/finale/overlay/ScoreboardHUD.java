@@ -22,13 +22,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
-import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
-import vg.civcraft.mc.civmodcore.playersettings.SettingChangeListener;
-import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
-import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
-import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
-import vg.civcraft.mc.civmodcore.scoreboard.side.CivScoreBoard;
-import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
+import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
+import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
+import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
+import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
+import vg.civcraft.mc.civmodcore.players.settings.PlayerSetting;
+import vg.civcraft.mc.civmodcore.players.settings.SettingChangeListener;
+import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
 
 public class ScoreboardHUD implements Listener {
 

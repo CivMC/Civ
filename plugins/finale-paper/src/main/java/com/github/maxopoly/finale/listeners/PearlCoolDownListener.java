@@ -14,12 +14,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
-import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
-import vg.civcraft.mc.civmodcore.scoreboard.side.CivScoreBoard;
-import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
-import vg.civcraft.mc.civmodcore.util.cooldowns.ICoolDownHandler;
-import vg.civcraft.mc.civmodcore.util.cooldowns.TickCoolDownHandler;
+import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
+import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
+import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
+import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
+import vg.civcraft.mc.civmodcore.utilities.cooldowns.ICoolDownHandler;
+import vg.civcraft.mc.civmodcore.utilities.cooldowns.TickCoolDownHandler;
 
 public class PearlCoolDownListener implements Listener {
 

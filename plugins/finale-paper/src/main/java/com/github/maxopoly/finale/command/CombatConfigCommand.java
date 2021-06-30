@@ -1,78 +1,72 @@
 package com.github.maxopoly.finale.command;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Syntax;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.combat.CombatConfig;
-import java.util.LinkedList;
-import java.util.List;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-@CivCommand(id = "combatconfig")
-public class CombatConfigCommand extends StandaloneCommand {
+@CommandAlias("combatconfig")
+@CommandPermission("finale.cmv")
+public class CombatConfigCommand extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender arg0, String[] arg1) {
-		if (!(arg0 instanceof Player)) {
-			return true;
+	@Syntax("/combatconfig")
+	@Description("View/modify combat config values.")
+	public void execute(CommandSender sender, String property, String valueName, @Optional String velX, @Optional String velY, @Optional String velZ) {
+		if (!(sender instanceof Player)) {
+			return;
 		}
 		
 		CombatConfig cc = Finale.getPlugin().getManager().getCombatConfig();
 		
-		if (arg1.length == 0) {
-			arg0.sendMessage(ChatColor.WHITE + "knockback: " + ChatColor.RED + cc.getKnockbackMultiplier());
-			arg0.sendMessage(ChatColor.WHITE + "sprint: " + ChatColor.RED + cc.getSprintMultiplier());
-			arg0.sendMessage(ChatColor.WHITE + "water: " + ChatColor.RED + cc.getWaterKnockbackMultiplier());
-			arg0.sendMessage(ChatColor.WHITE + "air: " + ChatColor.RED + cc.getAirKnockbackMultiplier());
-			arg0.sendMessage(ChatColor.WHITE + "victim: " + ChatColor.RED + cc.getVictimMotion());
-			arg0.sendMessage(ChatColor.WHITE + "maxVictim: " + ChatColor.RED + cc.getMaxVictimMotion());
-			arg0.sendMessage(ChatColor.WHITE + "attacker: " + ChatColor.RED + cc.getAttackerMotion());
-			arg0.sendMessage(ChatColor.WHITE + "sprintReset: " + ChatColor.RED + cc.isSprintResetEnabled());
-			arg0.sendMessage(ChatColor.WHITE + "noDamageTicks: " + ChatColor.RED + Finale.getPlugin().getManager().getInvulnerableTicks().get(DamageCause.ENTITY_ATTACK));
-			return true;
+		if (property == null && valueName == null) {
+			sender.sendMessage(ChatColor.WHITE + "knockback: " + ChatColor.RED + cc.getKnockbackMultiplier());
+			sender.sendMessage(ChatColor.WHITE + "sprint: " + ChatColor.RED + cc.getSprintMultiplier());
+			sender.sendMessage(ChatColor.WHITE + "water: " + ChatColor.RED + cc.getWaterKnockbackMultiplier());
+			sender.sendMessage(ChatColor.WHITE + "air: " + ChatColor.RED + cc.getAirKnockbackMultiplier());
+			sender.sendMessage(ChatColor.WHITE + "victim: " + ChatColor.RED + cc.getVictimMotion());
+			sender.sendMessage(ChatColor.WHITE + "maxVictim: " + ChatColor.RED + cc.getMaxVictimMotion());
+			sender.sendMessage(ChatColor.WHITE + "attacker: " + ChatColor.RED + cc.getAttackerMotion());
+			sender.sendMessage(ChatColor.WHITE + "sprintReset: " + ChatColor.RED + cc.isSprintResetEnabled());
+			sender.sendMessage(ChatColor.WHITE + "noDamageTicks: " + ChatColor.RED + Finale.getPlugin().getManager().getInvulnerableTicks().get(DamageCause.ENTITY_ATTACK));
+			return;
 		}
 
-		if (arg1.length == 1 && arg1[0].equalsIgnoreCase("save")) {
+		if (valueName == null && property.equalsIgnoreCase("save")) {
 			cc.save();
-			arg0.sendMessage(ChatColor.GREEN + "You have saved the combat config.");
-			return true;
-		}
-
-		if (arg1.length < 2) {
-			arg0.sendMessage(ChatColor.RED + "USAGE: /combatconfig <property> <value>");
-			return true;
+			sender.sendMessage(ChatColor.GREEN + "You have saved the combat config.");
+			return;
 		}
 		
-		String propName = arg1[0];
-		String value = arg1[1];
+		String propName = property;
+		String value = valueName;
 		
 		if (propName.equalsIgnoreCase("sprintReset")) {
 			boolean sprintReset = value.equalsIgnoreCase("true");
 			cc.setSprintResetEnabled(sprintReset);
-			arg0.sendMessage(ChatColor.GREEN + "Set sprintReset to " + sprintReset);
-			return true;
+			sender.sendMessage(ChatColor.GREEN + "Set sprintReset to " + sprintReset);
+			return;
 		}
 
 		if (propName.equalsIgnoreCase("noDamageTicks")) {
 			int invulnTicks = NumberConversions.toInt(value);
 			Finale.getPlugin().getManager().getInvulnerableTicks().put(DamageCause.ENTITY_ATTACK, invulnTicks);
-			arg0.sendMessage(ChatColor.GREEN + "Set noDamageTicks to " + invulnTicks);
-			return true;
+			sender.sendMessage(ChatColor.GREEN + "Set noDamageTicks to " + invulnTicks);
+			return;
 		}
 
-		if (arg1.length < 4) {
-			arg0.sendMessage(ChatColor.RED + "USAGE: /combatconfig <property> <x> <y> <z>");
-			return true;
-		}
-
-		double x = NumberConversions.toDouble(arg1[1]);
-		double y = NumberConversions.toDouble(arg1[2]);
-		double z = NumberConversions.toDouble(arg1[3]);
+		double x = NumberConversions.toDouble(velX);
+		double y = NumberConversions.toDouble(velY);
+		double z = NumberConversions.toDouble(velZ);
 		Vector vec = new Vector(x, y, z);
 		switch(propName) {
 			case "knockback":
@@ -97,14 +91,6 @@ public class CombatConfigCommand extends StandaloneCommand {
 				cc.setAttackerMotion(vec);
 				break;
 		}
-		
-		arg0.sendMessage(ChatColor.GREEN + "Set " + propName + " to " + vec);
-		return true;
+		sender.sendMessage(ChatColor.GREEN + "Set " + propName + " to " + vec);
 	}
-
-	@Override
-	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
-		return new LinkedList<>();
-	}
-
 }

@@ -4,21 +4,7 @@ author: Maxopoly
 version: ${project.version}
 depend: [CivModCore, ProtocolLib]
 softdepend: [CombatTagPlus]
-api-version: 1.13
-commands:
-    finalereload:
-        permission: finale.op
-        aliases: [reloadfinale]
-    cps:
-        description: Show CPS.
-        permission: finale.cps
-    combatconfig:
-        description: View/modify combat config values.
-        permission: finale.cmv
-    gamma:
-        description: Toggles night vision
-    cardinal:
-        description: Changes your direction into a cardinal direction
+api-version: 1.17
 permissions:
     finale.op:
         default: op

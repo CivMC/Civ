@@ -1,30 +1,32 @@
 package com.github.maxopoly.finale.command;
 
-import java.util.Arrays;
-import java.util.List;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Syntax;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-@CivCommand(id = "cardinal")
-public class CardinalCommand extends StandaloneCommand {
+@CommandAlias("cardinal")
+public class CardinalCommand extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender commandSender, String[] args) {
+	@Syntax("/cardinal")
+	@Description("Changes your direction into a cardinal direction")
+	public void execute(CommandSender commandSender, @Optional String targetDirection) {
 		Player player = (Player) commandSender;
 		Location currLocation = player.getLocation();
 
-		if(args.length == 0){
+		if(targetDirection == null){
 			double newYaw = Math.rint(currLocation.getYaw() / 45) * 45;
 			player.teleport(new Location(player.getWorld(), currLocation.getX(), currLocation.getY(),
 					currLocation.getZ(), (float) newYaw, currLocation.getPitch()));
-			return true;
+			return;
 		}
 
-		String direction = args[0].toUpperCase();
+		String direction = targetDirection.toUpperCase();
 		Location location = new Location(player.getWorld(), currLocation.getX(), currLocation.getY(), currLocation.getZ());
 
 		switch(direction){
@@ -48,15 +50,9 @@ public class CardinalCommand extends StandaloneCommand {
 				break;
 			default:
 				player.sendMessage(ChatColor.RED + "Cardinal direction required. You can also use degrees, or 'up' or 'down'. B");
-				return true;
+				return;
 		}
 
 		player.teleport(location);
-		return true;
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender commandSender, String[] args) {
-		return doTabComplete(args[0], Arrays.asList("NORTH","WEST","EAST","SOUTH", "UP","DOWN"), false);
 	}
 }

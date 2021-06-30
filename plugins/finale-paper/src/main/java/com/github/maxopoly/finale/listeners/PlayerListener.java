@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -78,7 +79,7 @@ public class PlayerListener implements Listener {
 
 			double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 			@SuppressWarnings("resource")
-			double spigotRegenExhaustion = ((org.bukkit.craftbukkit.v1_16_R3.CraftWorld) p
+			double spigotRegenExhaustion = ((CraftWorld) p
 					.getWorld()).getHandle().spigotConfig.regenExhaustion;
 			float newExhaustion = (float) (p.getExhaustion() - e.getAmount() * spigotRegenExhaustion);
 

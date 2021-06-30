@@ -10,24 +10,23 @@
 		<version>1.0.0</version>
 	</parent>
 
-	<groupId>com.github.maxopoly</groupId>
 	<artifactId>Finale</artifactId>
 	<packaging>jar</packaging>
-	<version>1.5.1</version>
+	<version>1.6.0</version>
 	<name>Finale</name>
 	<url>https://github.com/Civclassic/Finale</url>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.destroystokyo.paper</groupId>
+			<groupId>io.papermc.paper</groupId>
 			<artifactId>paper</artifactId>
-			<version>1.16.5-R0.1-SNAPSHOT</version>
+			<version>1.17-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>vg.civcraft.mc.civmodcore</groupId>
+			<groupId>com.github.civclassic</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.8.2</version>
+			<version>1.9.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -48,6 +47,10 @@
 		<repository>
 			<id>civ-github-repo</id>
 			<url>https://raw.githubusercontent.com/CivClassic/artifacts/master/</url>
+		</repository>
+		<repository>
+			<id>papermc</id>
+			<url>https://papermc.io/repo/repository/maven-public/</url>
 		</repository>
 		<repository>
 			<id>dmulloy2-repo</id>

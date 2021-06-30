@@ -5,14 +5,14 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.server.v1_16_R3.NBTBase;
-import net.minecraft.server.v1_16_R3.NBTTagCompound;
-import net.minecraft.server.v1_16_R3.NBTTagDouble;
-import net.minecraft.server.v1_16_R3.NBTTagInt;
-import net.minecraft.server.v1_16_R3.NBTTagList;
-import net.minecraft.server.v1_16_R3.NBTTagString;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemUtil {
@@ -94,15 +94,15 @@ public class ItemUtil {
 	}
 
 	public static ItemStack newModifiers(ItemStack is) {
-		net.minecraft.server.v1_16_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
+		net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
 		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
 		compound.set("AttributeModifiers", new NBTTagList());
 		nmsStack.setTag(compound);
 		return CraftItemStack.asBukkitCopy(nmsStack);
 	}
 	
-	public static net.minecraft.server.v1_16_R3.ItemStack getNMSStack(ItemStack is) {
-		net.minecraft.server.v1_16_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
+	public static net.minecraft.world.item.ItemStack getNMSStack(ItemStack is) {
+		net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
 		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
 		if (!compound.hasKey("AttributeModifiers")) {
 			compound.set("AttributeModifiers", new NBTTagList());
@@ -132,7 +132,7 @@ public class ItemUtil {
 	}
 	
 	public static ItemStack modifyAttribute(ItemStack is, AttributeModifier attribute) {
-		net.minecraft.server.v1_16_R3.ItemStack nmsStack = getNMSStack(is);
+		net.minecraft.world.item.ItemStack nmsStack = getNMSStack(is);
 		NBTTagCompound compound = nmsStack.getTag();
 		NBTTagList modifiers = compound.getList("AttributeModifiers", 10); // 10 for compound
 		
