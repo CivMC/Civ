@@ -22,11 +22,11 @@ import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementTypeManager;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.XZWCoord;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
-import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.XZWCoord;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockBasedChunkMeta;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableStorageEngine;
+import vg.civcraft.mc.civmodcore.world.locations.global.WorldIDManager;
 
 public class CitadelDAO extends TableStorageEngine<Reinforcement> {
 

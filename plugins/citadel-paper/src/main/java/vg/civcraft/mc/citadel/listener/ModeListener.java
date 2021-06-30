@@ -25,15 +25,15 @@ import vg.civcraft.mc.citadel.model.HologramManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.playerstate.AbstractPlayerState;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
-import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
-import vg.civcraft.mc.civmodcore.playersettings.SettingChangeListener;
-import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
-import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
-import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
-import vg.civcraft.mc.civmodcore.scoreboard.side.CivScoreBoard;
-import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
-import vg.civcraft.mc.civmodcore.util.DoubleInteractFixer;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
+import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
+import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
+import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
+import vg.civcraft.mc.civmodcore.players.settings.PlayerSetting;
+import vg.civcraft.mc.civmodcore.players.settings.SettingChangeListener;
+import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
+import vg.civcraft.mc.civmodcore.utilities.DoubleInteractFixer;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
 public class ModeListener implements Listener {
 
@@ -124,7 +124,7 @@ public class ModeListener implements Listener {
 	}
 
 	private static void updateDisplaySetting(Player player, DisplayLocationSetting locSetting, boolean state, String text,
-			BottomLine bottomLine, CivScoreBoard scoreBoard) {
+											 BottomLine bottomLine, CivScoreBoard scoreBoard) {
 		if (player == null) {
 			return;
 		}

@@ -10,12 +10,12 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffect;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.CoreConfigManager;
+import vg.civcraft.mc.civmodcore.config.ConfigParser;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.util.ConfigParsing;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.utilities.ConfigParsing;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
-public class CitadelConfigManager extends CoreConfigManager {
+public class CitadelConfigManager extends ConfigParser {
 
 	private ManagedDatasource database;
 	private List<ReinforcementType> reinforcementTypes;

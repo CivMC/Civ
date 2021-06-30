@@ -12,7 +12,7 @@ import vg.civcraft.mc.citadel.command.PatchMode;
 import vg.civcraft.mc.citadel.events.ReinforcementRepairEvent;
 import vg.civcraft.mc.citadel.listener.ModeListener;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 public class PatchState extends AbstractPlayerState {
 

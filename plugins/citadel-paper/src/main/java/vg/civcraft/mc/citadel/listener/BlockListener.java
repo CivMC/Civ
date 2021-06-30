@@ -34,7 +34,7 @@ import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
-import vg.civcraft.mc.civmodcore.util.DoubleInteractFixer;
+import vg.civcraft.mc.civmodcore.utilities.DoubleInteractFixer;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class BlockListener implements Listener {
@@ -318,7 +318,7 @@ public class BlockListener implements Listener {
 		Block block = pie.getClickedBlock();
 		Material type = block.getType();
 		if (type != Material.GRASS_BLOCK && type != Material.DIRT && type != Material.COARSE_DIRT
-				&& type != Material.GRASS_PATH) {
+				&& type != Material.DIRT_PATH) {
 			return;
 		}
 		EquipmentSlot hand = pie.getHand();

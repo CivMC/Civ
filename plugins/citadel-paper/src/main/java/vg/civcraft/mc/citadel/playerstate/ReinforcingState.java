@@ -14,7 +14,7 @@ import vg.civcraft.mc.citadel.events.ReinforcementChangeTypeEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementGroupChangeEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 

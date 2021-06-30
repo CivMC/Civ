@@ -13,15 +13,14 @@ import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.listener.ModeListener;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
-import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
-import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
-import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
-import vg.civcraft.mc.civmodcore.playersettings.impl.BoundedIntegerSetting;
-import vg.civcraft.mc.civmodcore.playersettings.impl.CommandReplySetting;
-import vg.civcraft.mc.civmodcore.playersettings.impl.DecimalFormatSetting;
-import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
-import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting.DisplayLocation;
-import vg.civcraft.mc.civmodcore.playersettings.impl.StringSetting;
+import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
+import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
+import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.BoundedIntegerSetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.CommandReplySetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.DecimalFormatSetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.StringSetting;
 
 public class CitadelSettingManager {
 
@@ -128,15 +127,15 @@ public class CitadelSettingManager {
 				30000);
 		PlayerSettingAPI.registerSetting(hologramDuration, menu);
 		
-		ctbLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocation.NONE, "Bypass display location"
+		ctbLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocationSetting.DisplayLocation.NONE, "Bypass display location"
 				, "citadelBypassDisplayLocation", new ItemStack(Material.GOLDEN_PICKAXE), "bypass");
 		PlayerSettingAPI.registerSetting(ctbLocationSetting, menu);
 		
-		ctiLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocation.SIDEBAR, "Information mode display location"
+		ctiLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocationSetting.DisplayLocation.SIDEBAR, "Information mode display location"
 				, "citadelInfoModeDisplayLocation", new ItemStack(Material.BOOKSHELF), "reinforcement info mode");
 		PlayerSettingAPI.registerSetting(ctiLocationSetting, menu);
 		
-		modeLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocation.SIDEBAR, "Citadel mode display location"
+		modeLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocationSetting.DisplayLocation.SIDEBAR, "Citadel mode display location"
 				, "citadelReinModeDisplayLocation", new ItemStack(Material.NETHER_STAR), "Citadel mode");
 		PlayerSettingAPI.registerSetting(modeLocationSetting, menu);
 		
