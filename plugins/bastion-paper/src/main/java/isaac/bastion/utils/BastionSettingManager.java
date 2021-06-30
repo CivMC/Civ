@@ -5,10 +5,10 @@ import isaac.bastion.BastionType;
 import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
-import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
-import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
-import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
+import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
+import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
+import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
 
 public class BastionSettingManager {
 

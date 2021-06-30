@@ -27,8 +27,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.locations.QTBox;
-import vg.civcraft.mc.civmodcore.locations.SparseQuadTree;
+import vg.civcraft.mc.civmodcore.world.locations.QTBox;
+import vg.civcraft.mc.civmodcore.world.locations.SparseQuadTree;
 
 public class BastionBlockStorage {
 	
