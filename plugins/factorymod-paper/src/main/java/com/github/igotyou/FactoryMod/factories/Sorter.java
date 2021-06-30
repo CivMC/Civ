@@ -20,7 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class Sorter extends Factory {
@@ -156,7 +156,7 @@ public class Sorter extends Factory {
 	public void removeAssignment(ItemStack is) {
 		for (Entry<BlockFace, ItemMap> entry : assignedMaterials.entrySet()) {
 			if (entry.getValue().getAmount(is) != 0) {
-				entry.getValue().removeItemStackCompletly(is);
+				entry.getValue().removeItemStackCompletely(is);
 				break;
 			}
 		}

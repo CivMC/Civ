@@ -16,7 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 public class SorterEgg implements IFactoryEgg {
 	private String name;
@@ -55,7 +55,7 @@ public class SorterEgg implements IFactoryEgg {
 	}
 
 	public Factory revive(List<Location> blocks,
-			Map<BlockFace, ItemMap> assignments, int runTime) {
+						  Map<BlockFace, ItemMap> assignments, int runTime) {
 		MultiBlockStructure ps = new BlockFurnaceStructure(blocks);
 		SorterInteractionManager im = new SorterInteractionManager();
 		IRepairManager rm = new NoRepairDestroyOnBreakManager();

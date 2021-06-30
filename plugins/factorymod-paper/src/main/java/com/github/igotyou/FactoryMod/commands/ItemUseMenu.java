@@ -1,39 +1,34 @@
 package com.github.igotyou.FactoryMod.commands;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Syntax;
 import com.github.igotyou.FactoryMod.utility.ItemUseGUI;
-import java.util.Arrays;
-import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-@CivCommand(id = "item")
-public class ItemUseMenu extends StandaloneCommand {
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+@CommandAlias("item")
+public class ItemUseMenu extends BaseCommand {
+	@Syntax("/item")
+	@Description("Opens a GUI allowing you to browse all recipes which use or output the item in your main hand")
+	public void execute(CommandSender sender, @Optional String material) {
 		Player p = (Player) sender;
-		if (args.length == 0 || args[0].length() == 0) {
+		if (material == null) {
 			ItemUseGUI gui = new ItemUseGUI((Player) sender);
 			gui.showItemOverview(p.getInventory().getItemInMainHand());
 		} else {
-			String concat = String.join(" ", args);
-			Material mat = Material.getMaterial(concat);
+			Material mat = Material.getMaterial(material);
 			if (mat == null) {
-				p.sendMessage(ChatColor.RED + "The item " + concat + " does not exist");
-				return true;
+				p.sendMessage(ChatColor.RED + "The item " + material + " does not exist");
+				return;
 			}
 			ItemUseGUI gui = new ItemUseGUI((Player) sender);
 			gui.showItemOverview(new ItemStack(mat));
 		}
-		return true;
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return doTabComplete(args[0], Arrays.asList(Material.values()), Material::name, false);
 	}
 }

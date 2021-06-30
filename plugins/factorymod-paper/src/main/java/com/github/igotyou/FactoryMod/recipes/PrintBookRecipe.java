@@ -4,15 +4,16 @@ import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
 
 public class PrintBookRecipe extends PrintingPressRecipe {
 	private ItemMap printingPlate;
@@ -66,12 +67,14 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 	}
 
 	protected ItemStack createBook(ItemStack printingPlateStack, int amount) {
-		TagManager printingPlateTag = new TagManager(printingPlateStack);
-		TagManager bookTag = printingPlateTag.getCompound("Book");
+		net.minecraft.world.item.ItemStack book = CraftItemStack.asNMSCopy(printingPlateStack);
+		NBTTagCompound tag = book.getTag().getCompound("Book");
 
-		ItemStack book = new ItemStack(Material.WRITTEN_BOOK, amount);
+		ItemStack bookItem = new ItemStack(Material.WRITTEN_BOOK, amount);
+		net.minecraft.world.item.ItemStack newBook = CraftItemStack.asNMSCopy(bookItem);
+		newBook.setTag(tag);
 
-		return bookTag.enrichWithNBT(book);
+		return CraftItemStack.asBukkitCopy(newBook);
 	}
 
 	@Override

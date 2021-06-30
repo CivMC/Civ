@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
 
 public class PrintNoteRecipe extends PrintBookRecipe {
 	private static class BookInfo {
@@ -42,7 +42,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 			String identifier,
 			String name,
 			int productionTime,
-			ItemMap input, 
+			ItemMap input,
 			ItemMap printingPlate,
 			int outputAmount,
 			boolean secureNote,
@@ -107,9 +107,9 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 		info.title = bookTitle != null && bookTitle.length() > 0 ? bookTitle: this.title;
 
 		if(this.secureNote) {
-			TagManager printingPlateTag = new TagManager(printingPlateStack);
-			String serialNumber = printingPlateTag.getString("SN");
-			info.lines.add(serialNumber);
+			net.minecraft.world.item.ItemStack bookItem = CraftItemStack.asNMSCopy(printingPlateStack);
+			String bookSN = bookItem.getTag().getString("SN");
+			info.lines.add(bookSN);
 		}
 
 		return info;

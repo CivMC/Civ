@@ -16,15 +16,15 @@ import org.bukkit.block.DoubleChest;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class FactoryMaterialReturnRecipe extends InputRecipe {
 
 	private double factor;
 
 	public FactoryMaterialReturnRecipe(String identifier, String name, int productionTime,
-			ItemMap input, double factor) {
+									   ItemMap input, double factor) {
 		super(identifier, name, productionTime, input);
 		this.factor = factor;
 	}

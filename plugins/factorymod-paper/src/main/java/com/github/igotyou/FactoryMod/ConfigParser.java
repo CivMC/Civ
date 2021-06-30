@@ -1,9 +1,10 @@
 package com.github.igotyou.FactoryMod;
 
-import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseItemMap;
-import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseItemMapDirectly;
-import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
-import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTimeAsTicks;
+import static vg.civcraft.mc.civmodcore.utilities.ConfigParsing.parseItemMap;
+import static vg.civcraft.mc.civmodcore.utilities.ConfigParsing.parseItemMapDirectly;
+import static vg.civcraft.mc.civmodcore.utilities.ConfigParsing.parseTime;
+import static vg.civcraft.mc.civmodcore.utilities.ConfigParsing.parseTimeAsTicks;
+
 
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
@@ -58,7 +59,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 public class ConfigParser {
 	private FactoryMod plugin;

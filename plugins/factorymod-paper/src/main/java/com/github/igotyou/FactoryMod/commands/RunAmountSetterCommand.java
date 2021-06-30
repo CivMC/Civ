@@ -1,38 +1,39 @@
 package com.github.igotyou.FactoryMod.commands;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Syntax;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-@CivCommand(id = "fmsrc")
-public class RunAmountSetterCommand extends StandaloneCommand {
+@CommandAlias("fmsrc")
+public class RunAmountSetterCommand extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	@Syntax("/fmsrc <amount>")
+	@Description("Sets the amount of runs for the currently selected recipe in the factory you are looking at")
+	public void execute(CommandSender sender, String runCount) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.MAGIC
 					+ "How the hell is this supposed to work");
-			return true;
+			return;
 		}
 		Player p = (Player) sender;
 		int newAmount; 
 		try {
-			newAmount = Integer.parseInt(args[0]);
+			newAmount = Integer.parseInt(runCount);
 		}
 		catch(NumberFormatException e) {
-			p.sendMessage(ChatColor.RED + args [0] + " is not a number");
-			return true;
+			p.sendMessage(ChatColor.RED + runCount + " is not a number");
+			return;
 		}
 		FactoryModManager manager = FactoryMod.getInstance().getManager();
 		for(Block b : p.getLineOfSight((Set <Material>)null, 15)) {
@@ -43,13 +44,5 @@ public class RunAmountSetterCommand extends StandaloneCommand {
 				p.sendMessage(ChatColor.GREEN + "Set runcount for recipe " + fccf.getCurrentRecipe().getName() + " in " + fccf.getName() + " to "+ newAmount);
 			}
 		}
-		return true;
 	}
-
-	@Override
-	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
-		return new LinkedList<>();
-	}
-
-
 }

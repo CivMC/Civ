@@ -14,9 +14,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
 /**
  * A recipe with any form of item input to run it
@@ -168,7 +168,8 @@ public abstract class InputRecipe implements IRecipe {
 			lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + s);
 		}
 		lore.add("");
-		lore.add(ChatColor.DARK_AQUA + "Time: " + ChatColor.GRAY + TextUtil.formatDuration(getProductionTime() * 50, TimeUnit.MILLISECONDS));
+		lore.add(ChatColor.DARK_AQUA + "Time: " + ChatColor.GRAY + TextUtil
+				.formatDuration(getProductionTime() * 50, TimeUnit.MILLISECONDS));
 		im.setLore(lore);
 		res.setItemMeta(im);
 		return res;
