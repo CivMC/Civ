@@ -22,30 +22,26 @@ public class GroupChat extends BaseCommand {
 	public void execute(Player player, @Optional String targetGroup, @Optional String chatMessage) {
 		CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
 		GroupManager gm = NameAPI.getGroupManager();
-		boolean isGroupChatting = true;
-		if (chatMan.getGroupChatting(player) == null) {
-			isGroupChatting = false;
-		}
+		boolean isGroupChatting = chatMan.getGroupChatting(player) != null;
 		Group group;
 		boolean defGroup = false;
-		if (!(targetGroup == null) && !(chatMessage == null)) {
+		if (targetGroup == null && chatMessage == null) {
 			// Check if player is in groupchat and move them to normal chat
 			if (isGroupChatting) {
 				player.sendMessage(ChatStrings.chatMovedToGlobal);
 				chatMan.removeGroupChat(player);
 				return;
 			} else {
-				String grpName = gm.getDefaultGroup(player.getUniqueId());
-				if (grpName != null) {
-					group = GroupManager.getGroup(grpName);
+				String defGroupName = gm.getDefaultGroup(player.getUniqueId());
+				if (defGroupName != null) {
+					group = GroupManager.getGroup(defGroupName);
 					defGroup = true;
 				} else {
 					return;
 				}
 			}
-		} else {
-			group = GroupManager.getGroup(targetGroup);
 		}
+		group = GroupManager.getGroup(targetGroup);
 		if (group == null) {
 			player.sendMessage(ChatStrings.chatGroupNotFound);
 			return;
@@ -59,18 +55,16 @@ public class GroupChat extends BaseCommand {
 			player.sendMessage(String.format(ChatStrings.chatNeedToUnignore, group.getName()));
 			return;
 		}
-		if (!(targetGroup == null) && chatMessage == null) {
+		if (chatMessage == null) {
 			if (isGroupChatting) {
 				// Player already groupchatting check if it's this group
 				Group curGroup = chatMan.getGroupChatting(player);
 				if (curGroup == group) {
 					player.sendMessage(ChatStrings.chatGroupAlreadyChatting);
-					return;
 				} else {
 					player.sendMessage(String.format(ChatStrings.chatGroupNowChattingIn, group.getName()));
 					chatMan.removeGroupChat(player);
 					chatMan.addGroupChat(player, group);
-					return;
 				}
 			} else {
 				player.sendMessage(String.format(ChatStrings.chatGroupNowChattingIn, group.getName()));
@@ -78,9 +72,8 @@ public class GroupChat extends BaseCommand {
 					chatMan.removeChannel(player);
 				}
 				chatMan.addGroupChat(player, group);
-				return;
 			}
-		} else if (!targetGroup.isEmpty() && !chatMessage.isEmpty()) {
+		} else {
 			StringBuilder chatMsg = new StringBuilder();
 			chatMsg.append(chatMessage);
 			if (isGroupChatting) {
@@ -88,17 +81,14 @@ public class GroupChat extends BaseCommand {
 				Group curGroup = chatMan.getGroupChatting(player);
 				if (curGroup == group) {
 					chatMan.sendGroupMsg(player, group, chatMsg.toString());
-					return;
 				} else {
 					chatMan.sendGroupMsg(player, group, chatMsg.toString());
-					return;
 				}
 			} else {
 				if (chatMan.getChannel(player) != null) {
 					chatMan.removeChannel(player);
 				}
 				chatMan.sendGroupMsg(player, group, chatMsg.toString());
-				return;
 			}
 		}
 	}
