@@ -1,25 +1,10 @@
 name: ${project.name}
 version: ${project.version}
 main: ${project.groupId}.${project.artifactId}.${project.name}Plugin
-api-version: 1.14
+api-version: 1.17
 depend: [CivModCore, BanStick, ExilePearl]
 softdepend: [Votifier]
 authors: [Maxopoly]
-commands:
-  vote:
-    permission: eg.public
-    description: 'Lists all available voting websites'
-    usage: '/vote'
-    min-args: 0
-    max-args: 0
-    player-only: true
-  streak:
-    permission: eg.public
-    description: 'Displays stats about your daily login streak'
-    usage: '/streak'
-    min-args: 0
-    max-args: 0
-    player-only: true
 permissions:
   eg.public:
     default: true
