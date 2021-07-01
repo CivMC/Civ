@@ -3,23 +3,19 @@ package vg.civcraft.mc.civchat2.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Syntax;
 import java.util.List;
 import java.util.UUID;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.namelayer.NameAPI;
 
-@CommandAlias("ignorelist")
 public class IgnoreList extends BaseCommand {
 
-	@Syntax("/ignorelist")
+	@CommandAlias("ignorelist")
 	@Description("Lists the players and groups you are ignoring")
-	public void execute(CommandSender sender) {
-		Player player = (Player) sender;
+	public void execute(Player player) {
 		CivChatDAO db = CivChat2.getInstance().getDatabaseManager();
 		List<UUID> players = db.getIgnoredPlayers(player.getUniqueId());
 		List<String> groups = db.getIgnoredGroups(player.getUniqueId());

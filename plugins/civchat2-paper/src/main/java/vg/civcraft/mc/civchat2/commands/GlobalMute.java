@@ -2,6 +2,7 @@ package vg.civcraft.mc.civchat2.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
@@ -17,12 +18,13 @@ import vg.civcraft.mc.civmodcore.utilities.ConfigParsing;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.namelayer.NameAPI;
 
-@CommandAlias("globalmute")
-@CommandPermission("civchat2.globalmute")
 public class GlobalMute extends BaseCommand {
 
-	@Syntax("/globalmute <set|check|remove> <player> [time]")
+	@CommandAlias("globalmute")
+	@CommandPermission("civchat2.globalmute")
+	@Syntax("<set|check|remove> <player> [time]")
 	@Description("Applies, checks or removes a players global mute timer")
+	@CommandCompletion("set|check|remove @allplayers @nothing")
 	public void execute(CommandSender sender, String getSetOrCheck, String targetPlayer, String muteTime) {
 		UUID player = NameAPI.getUUID(targetPlayer);
 		if (player == null) {

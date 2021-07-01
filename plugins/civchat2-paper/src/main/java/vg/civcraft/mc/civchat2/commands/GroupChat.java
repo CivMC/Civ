@@ -17,14 +17,13 @@ import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CommandAlias("groupc|groupchat|gchat|g|gc")
 public class GroupChat extends BaseCommand {
 
-	@Syntax("/groupc")
+	@CommandAlias("groupc|groupchat|gchat|g|gc")
+	@Syntax("[group] [message]")
 	@Description("Enters a group chat or sends a message to a group chat")
-	public void execute(CommandSender sender, @Optional String targetGroup, @Optional String chatMessage) {
+	public void execute(Player player, @Optional String targetGroup, @Optional String chatMessage) {
 		CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
-		Player player = (Player) sender;
 		GroupManager gm = NameAPI.getGroupManager();
 		boolean isGroupChatting = true;
 		if (chatMan.getGroupChatting(player) == null) {

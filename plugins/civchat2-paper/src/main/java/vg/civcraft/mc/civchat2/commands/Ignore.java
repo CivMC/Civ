@@ -2,22 +2,22 @@ package vg.civcraft.mc.civchat2.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 
-@CommandAlias("ignore")
 public class Ignore extends BaseCommand {
 
-	@Syntax("/ignore <player>")
+	@CommandAlias("ignore")
+	@Syntax("<player>")
 	@Description("Toggles ignoring a player")
-	public void execute(CommandSender sender, String targetPlayer) {
-		Player player = (Player) sender;
+	@CommandCompletion("@allplayers")
+	public void execute(Player player, String targetPlayer) {
 		Player ignoredPlayer = Bukkit.getServer().getPlayer(targetPlayer);
 		if (ignoredPlayer == null) {
 			player.sendMessage(ChatStrings.chatPlayerNotFound);

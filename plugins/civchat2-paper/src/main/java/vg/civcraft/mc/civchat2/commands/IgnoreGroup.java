@@ -16,14 +16,13 @@ import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CommandAlias("ignoregroup")
 public class IgnoreGroup extends BaseCommand {
 
-	@Syntax("/ignoregroup <group>")
+	@CommandAlias("ignoregroup")
+	@Syntax("<group>")
 	@Description("Toggles ignoring a group")
-	public void execute(CommandSender sender, String targetGroup) {
+	public void execute(Player player, String targetGroup) {
 		Group group = GroupManager.getGroup(targetGroup);
-		Player player = (Player) sender;
 		if (group == null) {
 			player.sendMessage(ChatStrings.chatGroupNotFound);
 			return;

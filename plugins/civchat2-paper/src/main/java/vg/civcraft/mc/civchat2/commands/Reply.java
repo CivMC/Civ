@@ -7,19 +7,17 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 
-@CommandAlias("reply|r")
 public class Reply extends BaseCommand {
 
-	@Syntax("/reply <message>")
+	@CommandAlias("reply|r")
+	@Syntax("[message]")
 	@Description("Replies to the last person you sent a message to or received one from")
-	public void execute(CommandSender sender, @Optional String chatMessage) {
-		Player player = (Player) sender;
+	public void execute(Player player, @Optional String chatMessage) {
 		CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
 		UUID receiverUUID = chatMan.getPlayerReply(player);
 
