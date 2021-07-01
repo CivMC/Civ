@@ -1,7 +1,5 @@
 package com.devotedmc.ExilePearl.core;
 
-import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
-
 import com.devotedmc.ExilePearl.BorderHandler;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
@@ -32,6 +30,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.util.Vector;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 /**
  * This class tracks the pearls players that are online and prevents them
@@ -172,8 +171,8 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		Location newLoc = getCorrectedLocation(pearlLocation, playerLocation, pearl.getPlayer().isFlying());
 		if (newLoc != null) {
 			player.teleport(newLoc, TeleportCause.PLUGIN);
-			msg(pearl.getPlayer(), "<i>You can't come within %d blocks of your pearl at (%d, %d).", radius, 
-				pearl.getLocation().getBlockX(), pearl.getLocation().getBlockZ());
+			pearl.getPlayer().sendMessage(String.format("<i>You can't come within %d blocks of your pearl at (%d, %d).", radius,
+					pearl.getLocation().getBlockX(), pearl.getLocation().getBlockZ()));
 		}
 	}
 
@@ -392,7 +391,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 			player.setHealth(Math.max(0, player.getHealth() - bastionDamage));
 			player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_HURT, 1.0F, 1.0F);
 			player.playEffect(EntityEffect.HURT);
-			msg(player, "<b>You aren't allowed in this bastion field when exiled.");
+			player.sendMessage(ChatUtils.parseColor("<b>You aren't allowed in this bastion field when exiled."));
 		}
 	}
 
@@ -432,7 +431,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 
 			player.teleport(newLoc, TeleportCause.PLUGIN);
 
-			msg(player, "<b>You aren't allowed to enter this bastion field when exiled.");
+			player.sendMessage(ChatUtils.parseColor("<b>You aren't allowed to enter this bastion field when exiled."));
 			return true;
 		}
 

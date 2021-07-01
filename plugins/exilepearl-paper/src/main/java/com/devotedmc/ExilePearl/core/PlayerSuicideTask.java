@@ -1,6 +1,5 @@
 package com.devotedmc.ExilePearl.core;
 
-import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
@@ -15,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerMoveEvent;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 /**
  * Lets exiled players kill themselves with a timer
@@ -72,7 +72,7 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 			if (seconds > 0) {
 				// Notify every 10 seconds and last 5 seconds
 				if (seconds <= 5 || seconds % 10 == 0) {
-					msg(p, Lang.suicideInSeconds, seconds);
+					p.sendMessage(String.format(Lang.suicideInSeconds, seconds));
 				}
 			} else {
 				toRemove.add(rec.getKey());
@@ -92,7 +92,7 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 	@Override
 	public void addPlayer(Player player) {
 		players.put(player.getUniqueId(), new SuicideRecord(player.getLocation(), timeout));
-		msg(player, Lang.suicideInSeconds, timeout);
+		player.sendMessage(String.format(Lang.suicideInSeconds, timeout));
 	}
 
 
@@ -110,7 +110,7 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 		SuicideRecord rec = players.get(e.getPlayer().getUniqueId());
 		if (rec != null && e.getTo().distance(rec.location) > 2) {
 			players.remove(e.getPlayer().getUniqueId());
-			msg(e.getPlayer(), Lang.suicideCancelled);
+			e.getPlayer().sendMessage(ChatUtils.parseColor(Lang.suicideCancelled));
 		}
 	}
 

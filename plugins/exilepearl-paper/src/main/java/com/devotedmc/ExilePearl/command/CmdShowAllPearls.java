@@ -28,14 +28,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
+import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
+import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
+import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
-import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
-import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
-import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
-import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
-import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
-import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
+import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class CmdShowAllPearls extends PearlCommand {
@@ -90,17 +90,17 @@ public class CmdShowAllPearls extends PearlCommand {
 					Consumer<ItemStack> itemMetaMod = itemToMod ->
 							ItemUtils.handleItemMeta(itemToMod, (ItemMeta meta) -> {
 								// Pearled player's name
-								meta.displayName(ChatUtils.newComponent(pearl.getPlayerName())
+								meta.setDisplayName(ChatUtils.newComponent(pearl.getPlayerName())
 										.color(NamedTextColor.AQUA)
 										.append(isPlayerBanned ?
 												Component.text(" <banned>")
 														.color(NamedTextColor.RED) :
-												Component.empty()));
+												Component.empty()).toString());
 
-								meta.lore(List.of(
+								meta.setLore(List.of(
 										// Pearl type
 										ChatUtils.newComponent(pearl.getItemName())
-												.color(NamedTextColor.GREEN),
+												.color(NamedTextColor.GREEN).toString(),
 										// Pearled player's name and hash
 										ChatUtils.newComponent("Player: ")
 												.color(NamedTextColor.GOLD)
@@ -108,17 +108,17 @@ public class CmdShowAllPearls extends PearlCommand {
 														.color(NamedTextColor.GRAY))
 												.append(Component.space())
 												.append(Component.text(Integer.toString(pearl.getPearlId(), 36).toUpperCase())
-														.color(NamedTextColor.DARK_GRAY)),
+														.color(NamedTextColor.DARK_GRAY)).toString(),
 										// Pearled Date
 										ChatUtils.newComponent("Pearled: ")
 												.color(NamedTextColor.GOLD)
 												.append(Component.text(DATE_FORMAT.format(pearl.getPearledOn()))
-														.color(NamedTextColor.GRAY)),
+														.color(NamedTextColor.GRAY)).toString(),
 										// Killer's name
 										ChatUtils.newComponent("Killed by: ")
 												.color(NamedTextColor.GOLD)
 												.append(Component.text(pearl.getKillerName())
-														.color(NamedTextColor.GRAY))));
+														.color(NamedTextColor.GRAY)).toString()));
 
 								if (showLocation) {
 									MetaUtils.addComponentLore(meta,

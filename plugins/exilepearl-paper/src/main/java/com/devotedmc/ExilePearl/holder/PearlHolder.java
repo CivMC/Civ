@@ -3,7 +3,7 @@ package com.devotedmc.ExilePearl.holder;
 import com.devotedmc.ExilePearl.ExilePearl;
 import org.bukkit.Location;
 import org.bukkit.World;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockBasedChunkMeta;
 
 /**
  * Interface for an object that can hold or contain an exile pearl

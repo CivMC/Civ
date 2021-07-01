@@ -1,7 +1,5 @@
 package com.devotedmc.ExilePearl.listener;
 
-import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
-
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.Lang;
@@ -12,6 +10,7 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Listener;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 public class RuleListener implements Listener {
 
@@ -56,7 +55,7 @@ public class RuleListener implements Listener {
 		if (isRuleActive(rule, playerId)) {
 			((Cancellable)event).setCancelled(true);
 			if (notify) {
-				msg(player, Lang.ruleCantDoThat, rule.getActionString());
+				player.sendMessage(String.format(ChatUtils.parseColor(Lang.ruleCantDoThat), rule.getActionString()));
 			}
 		}
 	}

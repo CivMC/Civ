@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class PlayerBroadcastListener implements BroadcastListener {
 
@@ -24,7 +23,7 @@ public class PlayerBroadcastListener implements BroadcastListener {
 		Location l = pearl.getHolder().getLocation();
 		String holderName = pearl.getHolder().getName();
 
-		String msg = TextUtil.parse(Lang.pearlBroadcast, pearl.getPlayerName(), holderName, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
+		String msg = String.format(Lang.pearlBroadcast, pearl.getPlayerName(), holderName, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
 
 		Player p = Bukkit.getPlayer(playerId);
 		if (p != null && p.isOnline()) {

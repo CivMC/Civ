@@ -23,7 +23,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 /**
  * Implementation class for generating and parsing exile pearl lore
@@ -202,6 +202,6 @@ final class CoreLoreGenerator implements LoreProvider {
 	}
 
 	protected static String parse(String str, Object... args) {
-		return TextUtil.parse(str, args);
+		return String.format(ChatUtils.parseColor(str), args);
 	}
 }
