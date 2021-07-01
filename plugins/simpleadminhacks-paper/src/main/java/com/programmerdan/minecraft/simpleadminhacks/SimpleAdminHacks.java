@@ -21,13 +21,12 @@ public class SimpleAdminHacks extends ACivMod {
 
 	private final SimpleAdminHacksConfig config;
 	private final HackManager manager;
-	private final CommandRegistrar commands;
+	private CommandRegistrar commands;
 
 	public SimpleAdminHacks() {
 		plugin = this;
 		this.config = new SimpleAdminHacksConfig(this);
 		this.manager = new HackManager(this);
-		this.commands = new CommandRegistrar(this);
 	}
 
 	@Override
@@ -37,6 +36,7 @@ public class SimpleAdminHacks extends ACivMod {
 			setEnabled(false);
 			return;
 		}
+		this.commands = new CommandRegistrar(this);
 		this.manager.loadAllHacks();
 	}
 

@@ -18,6 +18,7 @@ public class CommandRegistrar extends CommandManager {
 
 	public CommandRegistrar(final SimpleAdminHacks plugin) {
 		super(plugin);
+		init();
 		this.plugin = plugin;
 	}
 
