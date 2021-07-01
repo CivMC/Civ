@@ -2,6 +2,7 @@ package com.github.igotyou.FactoryMod.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
@@ -13,11 +14,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("fm")
 public class FactoryMenu extends BaseCommand {
 
-	@Syntax("/fm <factory>")
+	@CommandAlias("fm")
+	@Syntax("[factory]")
 	@Description("Opens a GUI allowing you to browse through all factories")
+	@CommandCompletion("@FM_Factories")
 	public void execute(CommandSender sender, @Optional String factoryName) {
 		Player p = (Player) sender;
 		if (factoryName == null) {

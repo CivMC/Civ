@@ -2,6 +2,8 @@ package com.github.igotyou.FactoryMod.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import com.github.igotyou.FactoryMod.FactoryMod;
@@ -25,11 +27,13 @@ import org.bukkit.block.Furnace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("fmc")
 public class Create extends BaseCommand {
 
-	@Syntax("/fmc <factory>")
+	@CommandAlias("fmc")
+	@CommandPermission("fm.op")
+	@Syntax("<factory>")
 	@Description("Creates a factory at the blocks you are looking at")
+	@CommandCompletion("@FM_Factories")
 	public void execute(CommandSender sender, String factoryName) {
 		FactoryModManager manager = FactoryMod.getInstance().getManager();
 		IFactoryEgg egg = manager.getEgg(factoryName);

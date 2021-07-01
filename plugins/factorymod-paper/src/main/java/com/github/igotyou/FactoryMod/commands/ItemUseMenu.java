@@ -2,6 +2,7 @@ package com.github.igotyou.FactoryMod.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
@@ -12,10 +13,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-@CommandAlias("item")
 public class ItemUseMenu extends BaseCommand {
-	@Syntax("/item")
+
+	@CommandAlias("item")
+	@Syntax("[material]")
 	@Description("Opens a GUI allowing you to browse all recipes which use or output the item in your main hand")
+	@CommandCompletion("@materials")
 	public void execute(CommandSender sender, @Optional String material) {
 		Player p = (Player) sender;
 		if (material == null) {

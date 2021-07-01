@@ -2,6 +2,7 @@ package com.github.igotyou.FactoryMod.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import com.github.igotyou.FactoryMod.FactoryMod;
@@ -15,11 +16,12 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("fmsrc")
 public class RunAmountSetterCommand extends BaseCommand {
 
-	@Syntax("/fmsrc <amount>")
+	@CommandAlias("fmsrc")
+	@Syntax("<amount>")
 	@Description("Sets the amount of runs for the currently selected recipe in the factory you are looking at")
+	@CommandPermission("fm.op")
 	public void execute(CommandSender sender, String runCount) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.MAGIC

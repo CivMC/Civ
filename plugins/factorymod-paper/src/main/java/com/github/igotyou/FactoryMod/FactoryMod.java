@@ -1,22 +1,17 @@
 package com.github.igotyou.FactoryMod;
 
-import com.github.igotyou.FactoryMod.commands.CheatOutput;
-import com.github.igotyou.FactoryMod.commands.Create;
-import com.github.igotyou.FactoryMod.commands.FactoryMenu;
-import com.github.igotyou.FactoryMod.commands.ItemUseMenu;
-import com.github.igotyou.FactoryMod.commands.RunAmountSetterCommand;
+import com.github.igotyou.FactoryMod.commands.FMCommandManager;
 import com.github.igotyou.FactoryMod.listeners.CitadelListener;
 import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.utility.FactoryModPermissionManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
 public class FactoryMod extends ACivMod {
 	private FactoryModManager manager;
 	private static FactoryMod plugin;
 	private FactoryModPermissionManager permissionManager;
-	private CommandManager commandManager;
+	private FMCommandManager commandManager;
 
 	@Override
 	public void onEnable() {
@@ -28,9 +23,7 @@ public class FactoryMod extends ACivMod {
 		if (manager.isCitadelEnabled()) {
 			permissionManager = new FactoryModPermissionManager();
 		}
-		commandManager = new CommandManager(this);
-		commandManager.init();
-		registerCommands();
+		commandManager = new FMCommandManager(this);
 		registerListeners();
 		info("Successfully enabled");
 	}
@@ -63,13 +56,5 @@ public class FactoryMod extends ACivMod {
 		if (manager.isCitadelEnabled()) {
 			plugin.getServer().getPluginManager().registerEvents(new CitadelListener(), plugin);
 		}
-	}
-
-	private void registerCommands() {
-		commandManager.registerCommand(new CheatOutput());
-		commandManager.registerCommand(new Create());
-		commandManager.registerCommand(new FactoryMenu());
-		commandManager.registerCommand(new ItemUseMenu());
-		commandManager.registerCommand(new RunAmountSetterCommand());
 	}
 }
