@@ -37,7 +37,7 @@ public class Reply extends BaseCommand {
 			return;
 		}
 
-		if (!chatMessage.isEmpty()) {
+		if (!(chatMessage == null)) {
 			chatMan.sendPrivateMsg(player, receiver, chatMessage);
 			return;
 		}

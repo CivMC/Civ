@@ -4,17 +4,13 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
-import java.util.List;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class IgnoreGroup extends BaseCommand {
 
@@ -42,12 +38,5 @@ public class IgnoreGroup extends BaseCommand {
 			db.removeIgnoredGroup(player.getUniqueId(), ignore);
 			player.sendMessage(String.format(ChatStrings.chatStoppedIgnoring, ignore));
 		}
-	}
-
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (args.length == 0) {
-			return GroupTabCompleter.complete(null, PermissionType.getPermission("READ_CHAT"), (Player) sender);
-		}
-		return GroupTabCompleter.complete(args [0], PermissionType.getPermission("READ_CHAT"), (Player) sender);
 	}
 }

@@ -5,15 +5,12 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
-import java.util.List;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -31,7 +28,7 @@ public class GroupChat extends BaseCommand {
 		}
 		Group group;
 		boolean defGroup = false;
-		if (!targetGroup.isEmpty() && !chatMessage.isEmpty()) {
+		if (!(targetGroup == null) && !(chatMessage == null)) {
 			// Check if player is in groupchat and move them to normal chat
 			if (isGroupChatting) {
 				player.sendMessage(ChatStrings.chatMovedToGlobal);
@@ -62,7 +59,7 @@ public class GroupChat extends BaseCommand {
 			player.sendMessage(String.format(ChatStrings.chatNeedToUnignore, group.getName()));
 			return;
 		}
-		if (!targetGroup.isEmpty() && chatMessage == null) {
+		if (!(targetGroup == null) && chatMessage == null) {
 			if (isGroupChatting) {
 				// Player already groupchatting check if it's this group
 				Group curGroup = chatMan.getGroupChatting(player);
@@ -104,12 +101,5 @@ public class GroupChat extends BaseCommand {
 				return;
 			}
 		}
-	}
-
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (args.length == 0) {
-			return GroupTabCompleter.complete(null, PermissionType.getPermission("WRITE_CHAT"), (Player) sender);
-		}
-		return GroupTabCompleter.complete(args[0], PermissionType.getPermission("WRITE_CHAT"), (Player) sender);
 	}
 }

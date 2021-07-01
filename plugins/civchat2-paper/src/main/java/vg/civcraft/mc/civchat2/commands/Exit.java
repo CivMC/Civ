@@ -27,9 +27,7 @@ public class Exit extends BaseCommand {
 			return;
 		}
 		StringBuilder chatMsg = new StringBuilder();
-		if (!message.isEmpty()) {
-			chatMsg.append(message);
-		}
+		chatMsg.append(message);
 		Set<Player> players = new HashSet<>(CivChat2.getInstance().getServer().getOnlinePlayers());
 		chatMan.broadcastMessage(player, chatMsg.toString(), localChatFormat, players);
 	}

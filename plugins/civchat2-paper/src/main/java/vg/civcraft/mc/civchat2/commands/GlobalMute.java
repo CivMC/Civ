@@ -6,8 +6,6 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.bukkit.ChatColor;
@@ -64,18 +62,4 @@ public class GlobalMute extends BaseCommand {
 			sender.sendMessage(ChatColor.RED + getSetOrCheck + " is not a valid action");
 		}
 	}
-
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		switch (args.length) {
-		case 0:
-			//return doTabComplete("", Arrays.asList("set", "remove", "check", "get"), false);
-		case 1:
-			//return doTabComplete(args[0], Arrays.asList("set", "remove", "check", "get"), false);
-		case 2:
-			//return doTabComplete(args[1], Bukkit.getOnlinePlayers(), Player::getName, false);
-		default:
-			return Collections.emptyList();
-		}
-	}
-
 }
