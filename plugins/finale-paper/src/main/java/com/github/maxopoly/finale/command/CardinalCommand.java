@@ -2,20 +2,21 @@ package com.github.maxopoly.finale.command;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("cardinal")
 public class CardinalCommand extends BaseCommand {
 
-	@Syntax("/cardinal")
+	@CommandAlias("cardinal")
+	@Syntax("[direction]")
 	@Description("Changes your direction into a cardinal direction")
-	public void execute(CommandSender commandSender, @Optional String targetDirection) {
+	@CommandCompletion("NORTH|EAST|SOUTH|WEST|UP|DOWN")
+	public void execute(Player commandSender, @Optional String targetDirection) {
 		Player player = (Player) commandSender;
 		Location currLocation = player.getLocation();
 

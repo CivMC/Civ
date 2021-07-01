@@ -9,23 +9,18 @@ import co.aikar.commands.annotation.Syntax;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.combat.CombatConfig;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
 
-@CommandAlias("combatconfig")
-@CommandPermission("finale.cmv")
 public class CombatConfigCommand extends BaseCommand {
 
-	@Syntax("/combatconfig")
+	@CommandAlias("combatconfig")
+	@CommandPermission("finale.cmv")
+	@Syntax("<property> <value> [velocityX] [velocityY] [velocityZ]")
 	@Description("View/modify combat config values.")
-	public void execute(CommandSender sender, String property, String valueName, @Optional String velX, @Optional String velY, @Optional String velZ) {
-		if (!(sender instanceof Player)) {
-			return;
-		}
-		
+	public void execute(Player sender, String property, String valueName, @Optional String velX, @Optional String velY, @Optional String velZ) {
 		CombatConfig cc = Finale.getPlugin().getManager().getCombatConfig();
 		
 		if (property == null && valueName == null) {
