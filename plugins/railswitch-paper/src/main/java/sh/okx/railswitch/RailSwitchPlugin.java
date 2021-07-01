@@ -1,6 +1,7 @@
 package sh.okx.railswitch;
 
 import org.bukkit.event.Listener;
+import sh.okx.railswitch.commands.DestinationCommand;
 import sh.okx.railswitch.glue.CitadelGlue;
 import sh.okx.railswitch.settings.SettingsManager;
 import sh.okx.railswitch.switches.SwitchListener;
@@ -22,11 +23,7 @@ public final class RailSwitchPlugin extends ACivMod implements Listener {
         registerListener(new SwitchListener());
         commandManager = new CommandManager(this);
         commandManager.init();
-        registerCommands();
-    }
-
-    private void registerCommands() {
-
+        commandManager.registerCommand(new DestinationCommand());
     }
 
     @Override
