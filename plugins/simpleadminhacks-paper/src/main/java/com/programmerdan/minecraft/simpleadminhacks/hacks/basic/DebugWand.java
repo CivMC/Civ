@@ -1,5 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
@@ -7,12 +8,13 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import java.util.Objects;
+import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,10 +22,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.command.AikarCommand;
-import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 public final class DebugWand extends BasicHack {
 
@@ -34,11 +34,11 @@ public final class DebugWand extends BasicHack {
 		ItemUtils.setDisplayName(WAND, ChatColor.GOLD + "Block Wand");
 	}
 
-	private final AikarCommandManager commands;
+	private final CommandManager commands;
 
 	public DebugWand(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
-		this.commands = new AikarCommandManager(plugin, false) {
+		this.commands = new CommandManager(plugin) {
 			@Override
 			public void registerCommands() {
 				registerCommand(new WandCommand());
@@ -59,7 +59,7 @@ public final class DebugWand extends BasicHack {
 	}
 
 	@CommandPermission(PERMISSION)
-	public static class WandCommand extends AikarCommand {
+	public static class WandCommand extends BaseCommand {
 		@CommandAlias("debugwand|dbwand")
 		@Description("Creates a wand for debugging")
 		public void giveWand(final Player sender) {
@@ -117,11 +117,11 @@ public final class DebugWand extends BasicHack {
 		player.sendMessage(ChatColor.AQUA + "Rotation: "
 				+ ChatColor.YELLOW + "p:" + entityLocation.getPitch() + ", "
 				+ ChatColor.GOLD + "y:" + entityLocation.getYaw());
-		final NBTCompound nbt = new NBTCompound();
-		((CraftEntity) entity).getHandle().save(nbt.getRAW());
+		final NBTTagCompound nbt = new NBTTagCompound();
+		((CraftEntity) entity).getHandle().save(nbt);
 		nbt.remove("Pos"); // Remove redundant position
 		nbt.remove("Rotation"); // Remove redundant rotation
-		player.sendMessage(nbt.getRAW().toString());
+		player.sendMessage(nbt.toString());
 		player.sendMessage(ChatColor.RED + "Data end.");
 		event.setCancelled(true);
 	}

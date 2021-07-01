@@ -22,8 +22,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
+import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 
 public final class AutoRespawn extends BasicHack {
 
@@ -118,7 +118,7 @@ public final class AutoRespawn extends BasicHack {
 		if (Strings.isNullOrEmpty(message)) {
 			return;
 		}
-		player.sendMessage(TextUtil.parse(message));
+		player.sendMessage(ChatUtils.parseColor(message));
 	}
 
 	// ------------------------------------------------------------

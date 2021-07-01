@@ -1,5 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.framework.commands;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
@@ -15,10 +16,9 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
 import java.util.List;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
-import vg.civcraft.mc.civmodcore.command.AikarCommand;
 
 @CommandPermission(CommandRegistrar.PERMISSION_HACKS)
-public class HacksCommand extends AikarCommand {
+public class HacksCommand extends BaseCommand {
 
 	protected final SimpleAdminHacks plugin;
 

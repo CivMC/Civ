@@ -1,5 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
@@ -31,18 +32,18 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
-import vg.civcraft.mc.civmodcore.command.AikarCommand;
-import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
+import vg.civcraft.mc.civmodcore.commands.TabComplete;
 
 public final class EventHandlerList extends BasicHack {
 
-	private final AikarCommandManager commands;
+	private final CommandManager commands;
 	private final HandlersList handlers;
 
 	public EventHandlerList(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
 		this.handlers = new HandlersList();
-		this.commands = new AikarCommandManager(plugin, false) {
+		this.commands = new CommandManager(plugin) {
 			@Override
 			public void registerCommands() {
 				registerCommand(new HandlersCommand(handlers));
@@ -69,7 +70,7 @@ public final class EventHandlerList extends BasicHack {
 	// ------------------------------------------------------------
 
 	@CommandPermission("simpleadmin.eventdebug")
-	private static final class HandlersCommand extends AikarCommand {
+	private static final class HandlersCommand extends BaseCommand {
 
 		private final HandlersList handlers;
 

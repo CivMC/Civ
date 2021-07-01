@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-import net.minecraft.server.v1_16_R3.IBlockData;
+import net.minecraft.world.level.block.state.IBlockData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,11 +32,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
-import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
-import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
-import vg.civcraft.mc.civmodcore.util.cooldowns.ICoolDownHandler;
-import vg.civcraft.mc.civmodcore.util.cooldowns.MilliSecCoolDownHandler;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
+import vg.civcraft.mc.civmodcore.utilities.cooldowns.ICoolDownHandler;
+import vg.civcraft.mc.civmodcore.utilities.cooldowns.MilliSecCoolDownHandler;
+import vg.civcraft.mc.civmodcore.utilities.ratelimiting.RateLimiter;
+import vg.civcraft.mc.civmodcore.utilities.ratelimiting.RateLimiting;
 
 /**
  * Prevents "CivBreak" by denying continuous block break packets.
@@ -211,7 +211,7 @@ public final class AntiFastBreak extends BasicHack {
 	}
 
 	private static IBlockData getNMSBlockData(final Material material) {
-		final net.minecraft.server.v1_16_R3.Block nmsBlock = CraftMagicNumbers.getBlock(material);
+		final net.minecraft.world.level.block.Block nmsBlock = CraftMagicNumbers.getBlock(material);
 		if (nmsBlock == null) {
 			return null;
 		}

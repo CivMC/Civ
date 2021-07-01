@@ -1,5 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -14,16 +15,15 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.command.AikarCommand;
-import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
 public final class PlayerRevive extends BasicHack {
 
-	private final AikarCommandManager commands;
+	private final CommandManager commands;
 
 	public PlayerRevive(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
-		this.commands = new AikarCommandManager(plugin, false) {
+		this.commands = new CommandManager(plugin) {
 			@Override
 			public void registerCommands() {
 				registerCommand(new ReviveCommand());
@@ -44,7 +44,7 @@ public final class PlayerRevive extends BasicHack {
 	}
 
 	@CommandPermission("simpleadmin.revive")
-	public static class ReviveCommand extends AikarCommand {
+	public static class ReviveCommand extends BaseCommand {
 
 		@CommandAlias("revive|respawn|resurrect|ress")
 		@Syntax("<player name>")

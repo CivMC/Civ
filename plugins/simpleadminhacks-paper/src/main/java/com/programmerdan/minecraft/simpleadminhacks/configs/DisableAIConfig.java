@@ -12,8 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import vg.civcraft.mc.civmodcore.config.ConfigHelper;
-import vg.civcraft.mc.civmodcore.util.CivLogger;
-import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
+import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public final class DisableAIConfig extends SimpleHackConfig {
 

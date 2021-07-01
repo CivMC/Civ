@@ -1,5 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
@@ -10,7 +11,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.chat.Componentify;
-import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public final class BedLocator extends BasicHack {
@@ -30,12 +30,12 @@ public final class BedLocator extends BasicHack {
 
 	@Override
 	public void onDisable() {
-		plugin().getCommands().deregisterCommand(this.locatorCommand);
+		plugin().getCommands().unregisterCommand(this.locatorCommand);
 		super.onDisable();
 	}
 
 	@CommandPermission("simpleadmin.bedlocator")
-	public static class BedLocatorCommand extends AikarCommand {
+	public static class BedLocatorCommand extends BaseCommand {
 		@CommandAlias("wheresmybed|locatebed")
 		@Description("Tells you where your bed is")
 		public void giveWand(final Player sender) {

@@ -7,9 +7,9 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
 import java.util.ArrayList;
 import java.util.List;
-import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
-public class CommandRegistrar extends AikarCommandManager {
+public class CommandRegistrar extends CommandManager {
 
 	public static final String ROOT_ALIAS = "hacks|hack|sah";
 	public static final String PERMISSION_HACKS = "simpleadmin.hacks";
@@ -17,7 +17,7 @@ public class CommandRegistrar extends AikarCommandManager {
 	private final SimpleAdminHacks plugin;
 
 	public CommandRegistrar(final SimpleAdminHacks plugin) {
-		super(plugin, false);
+		super(plugin);
 		this.plugin = plugin;
 	}
 

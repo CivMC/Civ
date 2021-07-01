@@ -32,13 +32,11 @@ public class SimpleAdminHacks extends ACivMod {
 
 	@Override
 	public void onEnable() {
-		this.useNewCommandHandler = false;
 		super.onEnable();
 		if (!this.config.parse()) {
 			setEnabled(false);
 			return;
 		}
-		this.commands.init();
 		this.manager.loadAllHacks();
 	}
 

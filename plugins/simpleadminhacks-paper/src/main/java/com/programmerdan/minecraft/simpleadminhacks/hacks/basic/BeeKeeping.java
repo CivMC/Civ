@@ -19,19 +19,19 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_16_R3.EntityBee;
-import net.minecraft.server.v1_16_R3.IEntityAngerable;
-import net.minecraft.server.v1_16_R3.TileEntity;
-import net.minecraft.server.v1_16_R3.TileEntityBeehive;
-import net.minecraft.server.v1_16_R3.WorldServer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.level.WorldServer;
+import net.minecraft.world.entity.animal.EntityBee;
+import net.minecraft.world.level.block.entity.TileEntity;
+import net.minecraft.world.level.block.entity.TileEntityBeehive;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -45,8 +45,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
+import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 
 public final class BeeKeeping extends BasicHack {
 
@@ -199,9 +198,9 @@ public final class BeeKeeping extends BasicHack {
 	}
 
 	private static List<BeeData> getBeesFromHive(@Nonnull final TileEntityBeehive hive) {
-		final NBTCompound nbt = new NBTCompound();
-		hive.save(nbt.getRAW()); // Serialise onto the NBT compound
-		return Stream.of(nbt.getCompoundArray(BEES_LIST_KEY))
+		final NBTTagCompound nbt = new NBTTagCompound();
+		hive.save(nbt); // Serialise onto the NBT compound
+		return Stream.of(nbt.getCompound(BEES_LIST_KEY))
 				.map(bee -> bee.getCompound(BEE_DATA_KEY))
 				.map(BeeData::new)
 				.collect(Collectors.toCollection(ArrayList::new));
@@ -211,7 +210,7 @@ public final class BeeKeeping extends BasicHack {
 
 		public final Component name;
 
-		public BeeData(@Nonnull final NBTCompound nbt) {
+		public BeeData(@Nonnull final NBTTagCompound nbt) {
 			// Parse name
 			final String rawName = nbt.getString(BEE_NAME_KEY);
 			if (Strings.isNullOrEmpty(rawName)) {

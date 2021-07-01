@@ -5,14 +5,20 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.destroystokyo.paper.PaperConfig;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameFixesConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
-import net.minecraft.server.v1_16_R3.ItemStack;
-import net.minecraft.server.v1_16_R3.PacketPlayInBEdit;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraft.network.protocol.game.PacketPlayInBEdit;
+import net.minecraft.world.item.ItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -49,11 +55,11 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.InventoryHolder;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 
 	public static final String NAME = "GameFixes";
+	public static final String NULL_STRING = "\u0000";
 
 	private final PacketManager protocol = new PacketManager();
 
@@ -76,8 +82,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 					final int maxBookPageLength = 256 * 4;
 					// NMS ItemStack, not Bukkit
 					final ItemStack item = ((PacketPlayInBEdit) packet.getHandle()).b();
-					final NBTCompound nbt = new NBTCompound(item.getTag());
-					final String[] pages = nbt.getStringArray("pages");
+					final String[] pages = getStringArray("pages", item.getTag());
 					if (pages.length > maxBookPageSize) {
 						plugin().warning(errorMessage);
 						plugin().warning("- Too many pages! [" + pages.length + "/" + maxBookPageSize + "]");
@@ -96,6 +101,31 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 				}
 			});
 		}
+	}
+
+	public String[] getStringArray(String key, NBTTagCompound tag) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (tag == null) {
+			return new String[0];
+		}
+		NBTTagList list = tag.getList(key, 8);
+		String[] result = new String[list.size()];
+		for (int i = 0; i < result.length; i++) {
+			NBTBase base = list.get(i);
+			if (base.getTypeId() != 8) {
+				result[i] = "";
+			}
+			else if (!(base instanceof NBTTagString)) {
+				result[i] = "";
+			}
+			else {
+				result[i] = base.asString();
+				if (result[i].equals(NULL_STRING)) {
+					result[i] = null;
+				}
+			}
+		}
+		return result;
 	}
 
 	@Override

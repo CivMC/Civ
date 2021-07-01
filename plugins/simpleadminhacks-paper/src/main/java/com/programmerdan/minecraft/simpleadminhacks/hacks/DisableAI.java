@@ -4,13 +4,14 @@ import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.configs.DisableAIConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
+import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.craftbukkit.v1_17_R1.persistence.CraftPersistentDataContainer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 public final class DisableAI extends SimpleHack<DisableAIConfig> implements Listener {
 
@@ -42,7 +43,7 @@ public final class DisableAI extends SimpleHack<DisableAIConfig> implements List
 			return;
 		}
 		final var livingEntity = (LivingEntity) entity;
-		final var nbt = new NBTCompound(entity.getPersistentDataContainer());
+		final var nbt = new NBTTagCompound(((CraftPersistentDataContainer) entity.getPersistentDataContainer()).getRaw()){};
 		if (!config().isLimitingEntityAI(entity.getType(), entity.getEntitySpawnReason())) {
 			// If the entity was disabled before, re-enable it
 			if (nbt.hasKey(HAS_BEEN_DISABLED_KEY)) {

@@ -1,5 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
@@ -21,16 +22,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.Statistic;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.command.AikarCommand;
-import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
+import vg.civcraft.mc.civmodcore.commands.TabComplete;
 
 public final class PlayerStatistics extends BasicHack {
 
-	private final AikarCommandManager commands;
+	private final CommandManager commands;
 
 	public PlayerStatistics(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
-		this.commands = new AikarCommandManager(plugin(), false) {
+		this.commands = new CommandManager(plugin()) {
 			@Override
 			public void registerCommands() {
 				registerCommand(new StatsCommand());
@@ -51,7 +52,7 @@ public final class PlayerStatistics extends BasicHack {
 	}
 
 	@CommandPermission("simpleadmin.stats")
-	public static class StatsCommand extends AikarCommand {
+	public static class StatsCommand extends BaseCommand {
 
 		public static final String ALIAS = "stats|stat|statistic|statistics";
 

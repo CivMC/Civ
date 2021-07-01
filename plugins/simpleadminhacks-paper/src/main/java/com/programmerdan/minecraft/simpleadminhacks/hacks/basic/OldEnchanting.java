@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import net.minecraft.server.v1_16_R3.ContainerEnchantTable;
+import net.minecraft.world.inventory.ContainerEnchantTable;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,7 +25,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventoryView;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -67,8 +67,8 @@ import org.bukkit.projectiles.ProjectileSource;
 import vg.civcraft.mc.civmodcore.entities.EntityUtils;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.RecipeManager;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public final class OldEnchanting extends BasicHack {

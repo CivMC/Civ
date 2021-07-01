@@ -1,5 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import com.programmerdan.minecraft.banstick.BanStick;
@@ -16,7 +17,6 @@ import java.text.SimpleDateFormat;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import vg.civcraft.mc.civmodcore.command.AikarCommand;
 
 public final class StrayStats extends BasicHack {
 
@@ -39,7 +39,7 @@ public final class StrayStats extends BasicHack {
 
 	@Override
 	public void onDisable() {
-		this.plugin.getCommands().deregisterCommand(this.statsCommand);
+		this.plugin.getCommands().unregisterCommand(this.statsCommand);
 		super.onDisable();
 	}
 
@@ -49,7 +49,7 @@ public final class StrayStats extends BasicHack {
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-	private class StatsCommand extends AikarCommand {
+	private class StatsCommand extends BaseCommand {
 		@CommandAlias("compile_player_join_statistics")
 		@CommandPermission("simpleadmin.stats")
 		public void compileStatistics(final CommandSender sender) {
