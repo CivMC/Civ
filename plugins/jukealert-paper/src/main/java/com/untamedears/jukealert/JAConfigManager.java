@@ -3,10 +3,10 @@ package com.untamedears.jukealert;
 import com.untamedears.jukealert.model.SnitchTypeManager;
 import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.CoreConfigManager;
+import vg.civcraft.mc.civmodcore.config.ConfigParser;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
-public class JAConfigManager extends CoreConfigManager {
+public class JAConfigManager extends ConfigParser {
 	private SnitchTypeManager typeMan;
 
 	public JAConfigManager(ACivMod plugin, SnitchTypeManager typeMan) {

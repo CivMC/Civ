@@ -2,7 +2,7 @@ package com.untamedears.jukealert.model.appender.config;
 
 import java.util.concurrent.TimeUnit;
 import org.bukkit.configuration.ConfigurationSection;
-import vg.civcraft.mc.civmodcore.util.ConfigParsing;
+import vg.civcraft.mc.civmodcore.utilities.ConfigParsing;
 
 public class DormantCullingConfig implements AppenderConfig {
 

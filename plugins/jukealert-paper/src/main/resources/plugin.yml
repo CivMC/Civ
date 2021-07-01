@@ -8,47 +8,6 @@ api-version: 1.16
 description: JukeAlert provides an easy-to-use means by which one can record player activity within an 11 block radius. Anything
    someone does while within eleven blocks of a jukebox you've reinforced will be logged on it, and can be read by looking
    at the jukebox and typing '/jainfo'.
-commands:
-   ja:
-      description: Opens snitch log GUI
-      usage: /ja
-      min-args: 0
-      max-args: 0
-      player-only: true
-   jainfo:
-      description: Display information from a snitch
-      usage: /jainfo [<page number> or 'next'] [censor] [action=<action type>] [player=<player name>]
-      min-args: 0
-      max-args: 6
-      player-only: true
-   jalist:
-      description: Lists all snitches you have access to if given no arguments or the ones on the given groups
-      usage: /jalist [group1] [group2] [group3]
-      min-args: 0
-      max-args: 20
-      player-only: true
-   jaclear:
-      description: Deletes all logs a snitch has
-      usage: /jaclear
-      min-args: 0
-      max-args: 0
-      player-only: true
-   janame:
-      description: Name a snitch
-      usage: /janame <name>
-      min-args: 1
-      max-args: 1
-      player-only: true
-   jalookup:
-      description: Look up a snitch by its coordinates
-      usage: /jalookup <x> <y> <z> [world]
-      permission: jukealert.jalookup
-   jamute:
-      description: Adds or removes from a snitch notification ignore list.
-      usage: /jamute <group>
-   jatogglelevers:
-      description: Toggles flag that indicates if a juke should trigger a lever.
-      usage: /jatogglelevers
 permissions:
    jukealert.admin.jagroup:
       description: Use /jagroup even when not the owner

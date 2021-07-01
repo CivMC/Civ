@@ -9,8 +9,8 @@ import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction.Caus
 import com.untamedears.jukealert.model.appender.config.DormantCullingConfig;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import org.bukkit.configuration.ConfigurationSection;
-import vg.civcraft.mc.civmodcore.util.BukkitComparators;
-import vg.civcraft.mc.civmodcore.util.progress.ProgressTrackable;
+import vg.civcraft.mc.civmodcore.utilities.BukkitComparators;
+import vg.civcraft.mc.civmodcore.utilities.progress.ProgressTrackable;
 
 public class DormantCullingAppender extends ConfigurableSnitchAppender<DormantCullingConfig>
 		implements ProgressTrackable {

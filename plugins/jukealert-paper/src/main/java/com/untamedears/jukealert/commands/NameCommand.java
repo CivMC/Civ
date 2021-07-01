@@ -2,36 +2,35 @@ package com.untamedears.jukealert.commands;
 
 import static com.untamedears.jukealert.util.JAUtility.findLookingAtOrClosestSnitch;
 
+
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Syntax;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.util.JAUtility;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
-import java.util.LinkedList;
-import java.util.List;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-@CivCommand(id = "janame")
-public class NameCommand extends StandaloneCommand {
+public class NameCommand extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		Player player = (Player) sender;
-
+	@CommandAlias("janame")
+	@Syntax("<name>")
+	@Description("Name a snitch")
+	public void execute(Player player, String targetName) {
 		String name = "";
-		if (args[0].length() > 40) {
-			name = args[0].substring(0, 40);
+		if (targetName.length() > 40) {
+			name = targetName.substring(0, 40);
 		} else {
-			name = args[0];
+			name = targetName;
 		}
 		Snitch snitch = findLookingAtOrClosestSnitch(player, JukeAlertPermissionHandler.getRenameSnitch());
 		if (snitch == null) {
 			player.sendMessage(
 					ChatColor.RED + "You do not own any snitches nearby or lack permission to view their logs!");
-			return true;
+			return;
 		}
 		String prevName = snitch.getName();
 		snitch.setName(name);
@@ -39,12 +38,6 @@ public class NameCommand extends StandaloneCommand {
 		lineText.addExtra(JAUtility.genTextComponent(snitch));
 		lineText.addExtra(ChatColor.AQUA + " from " + ChatColor.GOLD + prevName);
 		player.spigot().sendMessage(lineText);
-		return true;
 
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new LinkedList<>();
 	}
 }

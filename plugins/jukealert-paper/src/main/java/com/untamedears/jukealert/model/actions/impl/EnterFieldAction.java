@@ -3,10 +3,9 @@ package com.untamedears.jukealert.model.actions.impl;
 import com.untamedears.jukealert.events.PlayerHitSnitchEvent;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
-import org.bukkit.Bukkit;
-import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
-
 import java.util.UUID;
+import org.bukkit.Bukkit;
+import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 
 public class EnterFieldAction extends LoggablePlayerAction {
 

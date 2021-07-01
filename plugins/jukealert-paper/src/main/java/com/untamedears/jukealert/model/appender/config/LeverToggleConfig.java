@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
-import vg.civcraft.mc.civmodcore.util.ConfigParsing;
+import vg.civcraft.mc.civmodcore.utilities.ConfigParsing;
 
 public class LeverToggleConfig implements AppenderConfig {
 

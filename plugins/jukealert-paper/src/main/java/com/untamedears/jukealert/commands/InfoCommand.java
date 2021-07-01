@@ -2,6 +2,12 @@ package com.untamedears.jukealert.commands;
 
 import static com.untamedears.jukealert.util.JAUtility.findLookingAtOrClosestSnitch;
 
+
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Syntax;
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
@@ -20,43 +26,40 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.NameAPI;
 
-@CivCommand(id = "jainfo")
-public class InfoCommand extends StandaloneCommand {
+public class InfoCommand extends BaseCommand {
 
 	private static final String[] autocompleteCommands = { "next", "censor", "action=", "player=" };
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		Player player = (Player) sender;
+	@CommandAlias("jainfo")
+	@Description("Display information from a snitch")
+	@Syntax("[page number_or_'next'] [censor] [action=action_type] [player=player_name]")
+	public void execute(Player player, @Optional String pageNumber) {
 		Snitch snitch = findLookingAtOrClosestSnitch(player, JukeAlertPermissionHandler.getReadLogs());
 		if (snitch == null) {
 			player.sendMessage(
 					ChatColor.RED + " You do not own any snitches nearby or lack permission to view their logs!");
-			return true;
+			return;
 		}
 		if (!snitch.hasAppender(SnitchLogAppender.class)) {
 			player.sendMessage(ChatColor.RED + "This " + snitch.getType().getName() + " named " + snitch.getName()
 					+ " can not save logs");
-			return true;
+			return;
 		}
 		int offset = 0;
 		String filterAction = null;
 		String filterPlayer = null;
-		if (args.length == 1) {
+		if (pageNumber != null) {
 			try {
-				offset = Integer.parseInt(args[0]);
+				offset = Integer.parseInt(pageNumber);
 			} catch (NumberFormatException e) {
-				sender.sendMessage(ChatColor.RED + args[0] + " is not a number");
-				return true;
+				player.sendMessage(ChatColor.RED + pageNumber + " is not a number");
+				return;
 			}
 		}
 		int pageLength = JukeAlert.getInstance().getSettingsManager().getJaInfoLength(player.getUniqueId());
 		sendSnitchLog(player, snitch, offset, pageLength, filterAction, filterPlayer);
-		return true;
 	}
 
 	public void sendSnitchLog(Player player, Snitch snitch, int offset, int pageLength, String actionType,
@@ -109,7 +112,6 @@ public class InfoCommand extends StandaloneCommand {
 		}
 	}
 
-	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		List<String> completedArgs = new ArrayList<>();
 		if (args.length > 0) {

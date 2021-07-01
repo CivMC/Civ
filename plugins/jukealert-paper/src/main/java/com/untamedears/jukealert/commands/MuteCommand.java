@@ -1,46 +1,37 @@
 package com.untamedears.jukealert.commands;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Syntax;
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.util.JASettingsManager;
 import java.util.List;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
 
-@CivCommand(id = "jamute")
-public class MuteCommand extends StandaloneCommand {
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "Players only");
-			return true;
+public class MuteCommand extends BaseCommand {
+	@CommandAlias("jamute")
+	@Syntax("<group>")
+	@Description("Adds or removes from a snitch notification ignore list.")
+	public void execute(Player player, String targetGroup) {
+		if (targetGroup == null) {
+			return;
 		}
-		if (args.length == 0) {
-			return false;
-		}
-		Player player = (Player) sender;
-		Group group = GroupManager.getGroup(args[0]);
+		Group group = GroupManager.getGroup(targetGroup);
 		if (group == null) {
-			player.sendMessage(ChatColor.RED + "The group " + args[0] + " does not exist");
-			return true;
+			player.sendMessage(ChatColor.RED + "The group " + targetGroup + " does not exist");
+			return;
 		}
 		JASettingsManager settingsManager = JukeAlert.getInstance().getSettingsManager();
 		if (settingsManager.doesIgnoreAlert(group.getName(), player.getUniqueId())) {
 			settingsManager.getIgnoredGroupAlerts().removeElement(player.getUniqueId(), group.getName());
 			player.sendMessage(ChatColor.GREEN + "You have unmuted " + group.getName());
-			return true;
+			return;
 		}
 		settingsManager.getIgnoredGroupAlerts().addElement(player.getUniqueId(), group.getName());
 		player.sendMessage(ChatColor.GREEN + "You have muted " + group.getName());
-		return true;
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return null;
 	}
 }

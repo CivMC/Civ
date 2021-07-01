@@ -1,5 +1,8 @@
 package com.untamedears.jukealert.commands;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.gui.SnitchLogGUI;
 import com.untamedears.jukealert.gui.SnitchOverviewGUI;
@@ -9,25 +12,19 @@ import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-@CivCommand(id = "ja")
-public class GUICommand extends StandaloneCommand {
+public class GUICommand extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		Player player = (Player) sender;
+	@CommandAlias("ja")
+	@Description("Opens snitch log GUI")
+	public void execute(Player player) {
 		Snitch cursorSnitch = JAUtility.getSnitchUnderCursor(player);
 		if (cursorSnitch != null && cursorSnitch.hasPermission(player, JukeAlertPermissionHandler.getReadLogs())) {
 			SnitchLogGUI gui = new SnitchLogGUI(player, cursorSnitch);
 			gui.showScreen();
-			return true;
+			return;
 		}
 		// No snitch under cursor, so search around player
 		Collection<Snitch> snitches = JukeAlert.getInstance().getSnitchManager()
@@ -43,20 +40,14 @@ public class GUICommand extends StandaloneCommand {
 		if (snitches.isEmpty()) {
 			player.sendMessage(
 					ChatColor.RED + "You do not own any snitches nearby or lack permission to view their logs!");
-			return true;
+			return;
 		}
 		if (snitches.size() == 1) {
 			SnitchLogGUI gui = new SnitchLogGUI(player, snitches.iterator().next());
 			gui.showScreen();
-			return true;
+			return;
 		}
 		SnitchOverviewGUI gui = new SnitchOverviewGUI(player, new ArrayList<>(snitches), "Nearby snitches", true);
 		gui.showScreen();
-		return true;
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new LinkedList<>();
 	}
 }

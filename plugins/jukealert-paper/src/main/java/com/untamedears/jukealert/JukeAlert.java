@@ -1,5 +1,6 @@
 package com.untamedears.jukealert;
 
+import com.untamedears.jukealert.commands.JACommandManager;
 import com.untamedears.jukealert.database.JukeAlertDAO;
 import com.untamedears.jukealert.listener.LoggableActionListener;
 import com.untamedears.jukealert.listener.SnitchLifeCycleListener;
@@ -11,8 +12,8 @@ import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.SingleBlockAPIView;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaAPI;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.SingleBlockAPIView;
 
 public class JukeAlert extends ACivMod {
 
@@ -29,6 +30,7 @@ public class JukeAlert extends ACivMod {
 	private LoggedActionFactory loggedActionFactory;
 	private JASettingsManager settingsManager;
 	private SnitchCullManager cullManager;
+	private JACommandManager commandManager;
 
 	public JAConfigManager getConfigManager() {
 		return configManager;
@@ -90,6 +92,7 @@ public class JukeAlert extends ACivMod {
 		}
 		snitchManager = new SnitchManager(api);
 		settingsManager = new JASettingsManager();
+		commandManager = new JACommandManager(this);
 		registerJukeAlertEvents();
 		JukeAlertPermissionHandler.setup();
 	}
