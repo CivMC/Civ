@@ -2,13 +2,13 @@ package vg.civcraft.mc.citadel.command;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelUtility;
@@ -19,17 +19,13 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
-@CommandAlias("ctar")
 public class AreaReinforce extends BaseCommand {
 
-	@Syntax("/ctar <lowX> <lowY> <lowZ> <highX> <highY> <highZ> <group>")
+	@CommandAlias("ctar")
+	@Syntax("<lowX> <lowY> <lowZ> <highX> <highY> <highZ> <group>")
 	@Description("Using the reinforcement item in your main hand, reinforces an area to your default or a target group.")
-	public void execute(CommandSender sender, String minX, String minY, String minZ, String maxX, String maxY, String maxZ, @Optional String targetGroup) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage("Must be a player to perform this command.");
-			return;
-		}
-		Player p = (Player) sender;
+	@CommandCompletion("@nothing @nothing @nothing @nothing @nothing @nothing @CT_Groups")
+	public void execute(Player p, String minX, String minY, String minZ, String maxX, String maxY, String maxZ, @Optional String targetGroup) {
 		UUID uuid = NameAPI.getUUID(p.getName());
 		ReinforcementType reinType = Citadel.getInstance().getReinforcementTypeManager()
 				.getByItemStack(p.getInventory().getItemInMainHand());
@@ -38,7 +34,7 @@ public class AreaReinforce extends BaseCommand {
 			return;
 		}
 		String groupName = null;
-		if (targetGroup.isEmpty()) {
+		if (targetGroup == null) {
 			groupName = NameAPI.getGroupManager().getDefaultGroup(uuid);
 			if (groupName == null) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED, "You need to set a default group \n Use /nlsdg to do so");

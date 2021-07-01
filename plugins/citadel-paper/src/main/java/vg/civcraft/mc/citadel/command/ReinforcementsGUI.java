@@ -3,14 +3,12 @@ package vg.civcraft.mc.citadel.command;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Syntax;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.Citadel;
@@ -21,14 +19,13 @@ import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
-@CommandAlias("ctdl")
 public class ReinforcementsGUI extends BaseCommand {
 
 	private DecimalFormat format = new DecimalFormat("##.##");
 
-	@Syntax("/ctdl")
+	@CommandAlias("ctdl|reinforcements")
 	@Description("Opens a GUI displaying all reinforcement materials")
-	public void execute(CommandSender sender) {
+	public void execute(Player sender) {
 		List<ReinforcementType> types = new LinkedList<>(
 				Citadel.getInstance().getReinforcementTypeManager().getAllTypes());
 		// sort ascending by health
@@ -51,7 +48,7 @@ public class ReinforcementsGUI extends BaseCommand {
 			IClickable click = new DecorationStack(is);
 			clicks.add(click);
 		}
-		MultiPageView pageView = new MultiPageView((Player) sender, clicks, ChatColor.BLUE + "Reinforcements", true);
+		MultiPageView pageView = new MultiPageView(sender, clicks, ChatColor.BLUE + "Reinforcements", true);
 		pageView.showScreen();
 	}
 }

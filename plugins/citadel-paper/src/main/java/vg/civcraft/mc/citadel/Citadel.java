@@ -3,19 +3,7 @@ package vg.civcraft.mc.citadel;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
-import vg.civcraft.mc.citadel.command.Acid;
-import vg.civcraft.mc.citadel.command.AdvancedFortification;
-import vg.civcraft.mc.citadel.command.AreaReinforce;
-import vg.civcraft.mc.citadel.command.Bypass;
-import vg.civcraft.mc.citadel.command.EasyMode;
-import vg.civcraft.mc.citadel.command.Fortification;
-import vg.civcraft.mc.citadel.command.Information;
-import vg.civcraft.mc.citadel.command.Insecure;
-import vg.civcraft.mc.citadel.command.Off;
-import vg.civcraft.mc.citadel.command.PatchMode;
-import vg.civcraft.mc.citadel.command.Reinforce;
-import vg.civcraft.mc.citadel.command.ReinforcementsGUI;
-import vg.civcraft.mc.citadel.command.Reload;
+import vg.civcraft.mc.citadel.command.CitadelCommandManager;
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.listener.EntityListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
@@ -30,7 +18,6 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementTypeManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.BlockBasedChunkMetaView;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;
@@ -52,7 +39,7 @@ public class Citadel extends ACivMod {
 	private HologramManager holoManager;
 	private CitadelSettingManager settingManager;
 	private CitadelDAO dao;
-	private CommandManager commandManager;
+	private CitadelCommandManager commandManager;
 
 	private PlayerStateManager stateManager;
 
@@ -148,10 +135,8 @@ public class Citadel extends ACivMod {
 			else {
 				logger.info("HolographicDisplays is not loaded, no holograms available");
 			}});
+		commandManager = new CitadelCommandManager(this);
 		CitadelPermissionHandler.setup();
-		commandManager = new CommandManager(this);
-		commandManager.init();
-		registerCommands();
 		registerListeners();
 	}
 
@@ -164,24 +149,5 @@ public class Citadel extends ACivMod {
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 		getServer().getPluginManager().registerEvents(new ModeListener(this), this);
 		getServer().getPluginManager().registerEvents(new RedstoneListener(config.getMaxRedstoneDistance()), this);
-	}
-
-	/**
-	 * Registers Aikar commands
-	 */
-	private void registerCommands() {
-		commandManager.registerCommand(new Acid());
-		commandManager.registerCommand(new AdvancedFortification());
-		commandManager.registerCommand(new AreaReinforce());
-		commandManager.registerCommand(new Bypass());
-		commandManager.registerCommand(new EasyMode());
-		commandManager.registerCommand(new Fortification());
-		commandManager.registerCommand(new Information());
-		commandManager.registerCommand(new Insecure());
-		commandManager.registerCommand(new Off());
-		commandManager.registerCommand(new PatchMode());
-		commandManager.registerCommand(new Reinforce());
-		commandManager.registerCommand(new ReinforcementsGUI());
-		commandManager.registerCommand(new Reload());
 	}
 }

@@ -3,7 +3,6 @@ package vg.civcraft.mc.citadel.command;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Syntax;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -12,7 +11,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
@@ -26,13 +24,11 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
-@CommandAlias("ctacid")
 public class Acid extends BaseCommand {
 
-	@Syntax("/ctacid")
+	@CommandAlias("ctacid|acid")
 	@Description("Removes the block above it if used on an acid block")
-	public void execute(CommandSender sender) {
-		Player p = (Player) sender;
+	public void execute(Player p) {
 		Iterator<Block> itr = new BlockIterator(p, 40); // Within 2.5 chunks
 		AcidManager acidMan = Citadel.getInstance().getAcidManager();
 		boolean foundAny = false;
