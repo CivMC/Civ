@@ -59,7 +59,7 @@ public class ActivityMap {
 		radius = Citadel.getInstance().getConfigManager().getActivityMapRadius();
 		worlds = Citadel.getInstance().getConfigManager().getActivityWorlds();
 		defaultActivity = Instant
-				.ofEpochMilli(Citadel.getInstance().getConfigManager().getActivityDefault());
+				.ofEpochSecond(Citadel.getInstance().getConfigManager().getActivityDefault());
 
 		Bukkit.getScheduler().runTaskTimerAsynchronously(Citadel.getInstance(), () -> {
 			try (Connection connection = source.getConnection()) {
