@@ -3,16 +3,7 @@ package vg.civcraft.mc.civchat2;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import vg.civcraft.mc.civchat2.commands.Afk;
-import vg.civcraft.mc.civchat2.commands.Exit;
-import vg.civcraft.mc.civchat2.commands.GlobalMute;
-import vg.civcraft.mc.civchat2.commands.GroupChat;
-import vg.civcraft.mc.civchat2.commands.Ignore;
-import vg.civcraft.mc.civchat2.commands.IgnoreGroup;
-import vg.civcraft.mc.civchat2.commands.IgnoreList;
-import vg.civcraft.mc.civchat2.commands.Reply;
-import vg.civcraft.mc.civchat2.commands.Tell;
-import vg.civcraft.mc.civchat2.commands.WhoAmI;
+import vg.civcraft.mc.civchat2.commands.CivChatCommandManager;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
 import vg.civcraft.mc.civchat2.listeners.KillListener;
@@ -21,7 +12,6 @@ import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civchat2.utility.CivChat2SettingsManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -39,7 +29,7 @@ public class CivChat2 extends ACivMod {
 	private CivChat2SettingsManager settingsManager;
 	private CivChat2FileLogger fileLog;
 	private CivChatDAO databaseManager;
-	private CommandManager commandManager;
+	private CivChatCommandManager commandManager;
 
 	@Override
 	public void onEnable() {
@@ -55,9 +45,7 @@ public class CivChat2 extends ACivMod {
 		settingsManager = new CivChat2SettingsManager();
 		chatMan = new CivChat2Manager(instance);
 		log.debug("Debug Enabled");
-		commandManager = new CommandManager(this);
-		commandManager.init();
-		registerCommands();
+		commandManager = new CivChatCommandManager(this);
 		registerNameLayerPermissions();
 		registerCivChatEvents();
 	}
@@ -91,17 +79,8 @@ public class CivChat2 extends ACivMod {
 				"Allows sending messages to the group chat");
 	}
 
-	private void registerCommands() {
-		commandManager.registerCommand(new Afk());
-		commandManager.registerCommand(new Exit());
-		commandManager.registerCommand(new GlobalMute());
-		commandManager.registerCommand(new GroupChat());
-		commandManager.registerCommand(new Ignore());
-		commandManager.registerCommand(new IgnoreGroup());
-		commandManager.registerCommand(new IgnoreList());
-		commandManager.registerCommand(new Reply());
-		commandManager.registerCommand(new Tell());
-		commandManager.registerCommand(new WhoAmI());
+	private void registerCompletions() {
+
 	}
 
 	public static CivChat2 getInstance() {

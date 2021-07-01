@@ -2,6 +2,7 @@ package vg.civcraft.mc.civchat2.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
@@ -19,6 +20,7 @@ public class GroupChat extends BaseCommand {
 	@CommandAlias("groupc|groupchat|gchat|g|gc")
 	@Syntax("[group] [message]")
 	@Description("Enters a group chat or sends a message to a group chat")
+	@CommandCompletion("@CC_Groups @nothing")
 	public void execute(Player player, @Optional String targetGroup, @Optional String chatMessage) {
 		CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
 		GroupManager gm = NameAPI.getGroupManager();
@@ -40,6 +42,9 @@ public class GroupChat extends BaseCommand {
 					return;
 				}
 			}
+		}
+		if (targetGroup == null) {
+			return;
 		}
 		group = GroupManager.getGroup(targetGroup);
 		if (group == null) {
