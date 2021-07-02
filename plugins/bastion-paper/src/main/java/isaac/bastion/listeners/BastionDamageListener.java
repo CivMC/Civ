@@ -132,8 +132,11 @@ public final class BastionDamageListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onDispense(BlockDispenseEvent event) {
-		if (!(event.getItem().getType() == Material.WATER_BUCKET || event.getItem().getType() == Material.LAVA_BUCKET
-				|| event.getItem().getType() == Material.FLINT_AND_STEEL)) {
+		Material material = event.getItem().getType();
+		if (!(material == Material.WATER_BUCKET || material == Material.LAVA_BUCKET
+				|| material == Material.FLINT_AND_STEEL	|| material == Material.TROPICAL_FISH_BUCKET
+				|| material == Material.COD_BUCKET || material == Material.PUFFERFISH_BUCKET
+				|| material == Material.SALMON_SPAWN_EGG || material == Material.BUCKET)) {
 			return;
 		}
 		Set<Location> blocks = new HashSet<>();
