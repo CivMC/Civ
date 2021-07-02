@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
+import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Comparator;
 import org.bukkit.block.data.type.Lectern;
@@ -382,6 +383,57 @@ public class BlockListener implements Listener {
 		}
 		if (!rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
 			p.sendMessage(ChatColor.RED + "You do not have permission to harvest this block");
+			pie.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void preventLightingCandles(PlayerInteractEvent pie) {
+		if (!pie.hasBlock()) {
+			return;
+		}
+		if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
+		Block block = pie.getClickedBlock();
+		Material type = block.getType();
+		if (!MoreTags.LIGHTABLE_CANDLES.isTagged(type)) {
+			return;
+		}
+		if (!pie.hasItem()) {
+			Lightable candles = (Lightable) block.getBlockData();
+			if (candles.isLit()) {
+				Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+				if (rein == null) {
+					return;
+				}
+				if (!rein.hasPermission(pie.getPlayer(), CitadelPermissionHandler.getModifyBlocks())) {
+					pie.getPlayer().sendMessage(ChatColor.RED + "You do not have permission to modify this block");
+					pie.setCancelled(true);
+					return;
+				}
+			}
+		}
+		EquipmentSlot hand = pie.getHand();
+		if (hand != EquipmentSlot.HAND && hand != EquipmentSlot.OFF_HAND) {
+			return;
+		}
+		ItemStack relevant;
+		Player p = pie.getPlayer();
+		if (hand == EquipmentSlot.HAND) {
+			relevant = p.getInventory().getItemInMainHand();
+		} else {
+			relevant = p.getInventory().getItemInOffHand();
+		}
+		if (relevant.getType() != Material.FLINT_AND_STEEL) {
+			return;
+		}
+		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+		if (rein == null) {
+			return;
+		}
+		if (!rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
+			p.sendMessage(ChatColor.RED + "You do not have permission to modify this block");
 			pie.setCancelled(true);
 		}
 	}
