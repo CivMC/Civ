@@ -157,7 +157,7 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockFromToEvent(BlockFromToEvent event) {
 		// prevent water/lava from spilling reinforced blocks away
-		if (event.getToBlock().getY() < 0) {
+		if (event.getToBlock().getY() < event.getToBlock().getWorld().getMinHeight()) {
 			return;
 		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(event.getToBlock());
@@ -460,5 +460,4 @@ public class BlockListener implements Listener {
 			}
 		}
 	}
-
 }

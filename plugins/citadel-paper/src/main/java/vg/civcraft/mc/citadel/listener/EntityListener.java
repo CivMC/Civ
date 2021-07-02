@@ -82,6 +82,9 @@ public class EntityListener implements Listener {
 		if (rein == null || ecbe.getEntityType() == EntityType.FALLING_BLOCK) {
 			return;
 		}
+		if (ecbe.getBlock().getType() == Material.BIG_DRIPLEAF) {
+			return;
+		}
 		ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein), ecbe.getEntity());
 		if (rein.isBroken()) {
 			return;
