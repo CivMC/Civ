@@ -90,17 +90,17 @@ public class CmdShowAllPearls extends PearlCommand {
 					Consumer<ItemStack> itemMetaMod = itemToMod ->
 							ItemUtils.handleItemMeta(itemToMod, (ItemMeta meta) -> {
 								// Pearled player's name
-								meta.setDisplayName(ChatUtils.newComponent(pearl.getPlayerName())
+								meta.displayName(ChatUtils.newComponent(pearl.getPlayerName())
 										.color(NamedTextColor.AQUA)
 										.append(isPlayerBanned ?
 												Component.text(" <banned>")
 														.color(NamedTextColor.RED) :
-												Component.empty()).toString());
+												Component.empty()));
 
-								meta.setLore(List.of(
+								meta.lore(List.of(
 										// Pearl type
 										ChatUtils.newComponent(pearl.getItemName())
-												.color(NamedTextColor.GREEN).toString(),
+												.color(NamedTextColor.GREEN),
 										// Pearled player's name and hash
 										ChatUtils.newComponent("Player: ")
 												.color(NamedTextColor.GOLD)
@@ -108,17 +108,17 @@ public class CmdShowAllPearls extends PearlCommand {
 														.color(NamedTextColor.GRAY))
 												.append(Component.space())
 												.append(Component.text(Integer.toString(pearl.getPearlId(), 36).toUpperCase())
-														.color(NamedTextColor.DARK_GRAY)).toString(),
+														.color(NamedTextColor.DARK_GRAY)),
 										// Pearled Date
 										ChatUtils.newComponent("Pearled: ")
 												.color(NamedTextColor.GOLD)
 												.append(Component.text(DATE_FORMAT.format(pearl.getPearledOn()))
-														.color(NamedTextColor.GRAY)).toString(),
+														.color(NamedTextColor.GRAY)),
 										// Killer's name
 										ChatUtils.newComponent("Killed by: ")
 												.color(NamedTextColor.GOLD)
 												.append(Component.text(pearl.getKillerName())
-														.color(NamedTextColor.GRAY)).toString()));
+														.color(NamedTextColor.GRAY))));
 
 								if (showLocation) {
 									MetaUtils.addComponentLore(meta,
