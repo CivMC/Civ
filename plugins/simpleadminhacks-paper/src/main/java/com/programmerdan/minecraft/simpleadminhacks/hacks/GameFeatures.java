@@ -555,7 +555,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (below.getType() != Material.GOLD_BLOCK) {
 			return;
 		}
-		for(int y = below.getY() + 1; y <= 255; y++) {
+		for(int y = below.getY() + 1; y <= below.getWorld().getMaxHeight(); y++) {
 			if (doTeleport(below, event.getPlayer(), y)) {
 				return;
 			}
@@ -572,7 +572,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (!event.isSneaking()) {
 			return;
 		}
-		for(int y = (below.getY() - 1); y > 0; y--) {
+		for(int y = (below.getY() - 1); y > below.getWorld().getMinHeight(); y--) {
 			if (doTeleport(below, event.getPlayer(), y)) {
 				return;
 			}

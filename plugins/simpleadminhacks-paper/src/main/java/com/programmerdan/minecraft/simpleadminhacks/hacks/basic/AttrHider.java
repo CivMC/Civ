@@ -137,7 +137,7 @@ public final class AttrHider extends BasicHack {
 					for (final WrappedWatchableObject object : cloned.getWatchableCollectionModifier().read(0)) {
 						// Read the 8th field as a float as that's the living entity's health
 						// https://wiki.vg/Entity_metadata#Living_Entity
-						if (object.getIndex() == 8) {
+						if (object.getIndex() == 9) {
 							if ((float) object.getValue() > 0) {
 								object.setValue(1f); // Half a heart
 							}
