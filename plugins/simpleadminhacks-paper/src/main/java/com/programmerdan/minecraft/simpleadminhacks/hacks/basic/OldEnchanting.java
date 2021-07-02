@@ -149,7 +149,7 @@ public final class OldEnchanting extends BasicHack {
 		// Setup enchantment randomiser
 		Field randomiser = null;
 		try {
-			randomiser = FieldUtils.getDeclaredField(ContainerEnchantTable.class, "h", true);
+			randomiser = FieldUtils.getDeclaredField(ContainerEnchantTable.class, "p", true);
 			final Field modifiersField = Field.class.getDeclaredField("modifiers");
 			modifiersField.setAccessible(true);
 			modifiersField.setInt(randomiser, randomiser.getModifiers() & ~Modifier.FINAL);
