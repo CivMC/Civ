@@ -7,9 +7,9 @@ import com.programmerdan.minecraft.banstick.data.BSIPData;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSSession;
 import com.programmerdan.minecraft.banstick.data.BSShare;
-import inet.ipaddr.AddressStringException;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
+import inet.ipaddr.IPAddressStringException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -62,7 +62,7 @@ public class LoveTapCommand  implements CommandExecutor {
 		try {
 			IPAddress ipcheck = new IPAddressString(toTap).toAddress();
 			if (ipcheck == null) {
-				throw new AddressStringException("Null -- but no error?");
+				throw new IPAddressStringException("Null -- but no error?");
 			}
 			if (!sender.hasPermission("banstick.ips")) {
 				sender.sendMessage(ChatColor.RED + "You don't have permission to use / view IPs");
@@ -235,7 +235,7 @@ public class LoveTapCommand  implements CommandExecutor {
 			sender.sendMessage(sb.toString());
 			
 			return true;
-		} catch (AddressStringException e) {
+		} catch (IPAddressStringException e) {
 			// Not an IP address!
 			UUID playerId = null;
 			if (toTap.length() <= 16) {

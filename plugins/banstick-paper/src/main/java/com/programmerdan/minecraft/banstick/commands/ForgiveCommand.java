@@ -5,9 +5,9 @@ import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSShare;
-import inet.ipaddr.AddressStringException;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
+import inet.ipaddr.IPAddressStringException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -87,7 +87,7 @@ public class ForgiveCommand implements CommandExecutor {
 			}
 			
 			return true;
-		} catch (AddressStringException e) {
+		} catch (IPAddressStringException e) {
 			// Not an IP address!
 			UUID playerId = null;
 			if (toForgive.length() <= 16) {
