@@ -222,6 +222,7 @@ public final class ReinforcementLogic {
 			case BAMBOO:
 			case ROSE_BUSH:
 			case TWISTING_VINES_PLANT:
+			case BIG_DRIPLEAF_STEM:
 			case CACTUS:
 			case SUNFLOWER:
 			case LILAC:
@@ -237,6 +238,7 @@ public final class ReinforcementLogic {
 				}
 				return below;
 			}
+			case SPORE_BLOSSOM:
 			case HANGING_ROOTS: {
 				return block.getRelative(BlockFace.UP);
 			}
@@ -308,6 +310,15 @@ public final class ReinforcementLogic {
 				// scan upwards for first different block
 				Block above = block.getRelative(BlockFace.UP);
 				while (above.getType() == block.getType() || above.getType() == Material.CAVE_VINES_PLANT) {
+					above = above.getRelative(BlockFace.UP);
+				}
+				return above;
+			}
+			case CAVE_VINES_PLANT:
+			case WEEPING_VINES_PLANT: {
+				// scan upwards for first different block
+				Block above = block.getRelative(BlockFace.UP);
+				while (above.getType() == block.getType()) {
 					above = above.getRelative(BlockFace.UP);
 				}
 				return above;
