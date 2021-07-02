@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -445,6 +446,16 @@ public class BlockListener implements Listener {
 		}
 		event.setCancelled(true);
 		CitadelUtility.sendAndLog(clicker, ChatColor.RED, "You cannot modify that lectern.");
+	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void onMossSpread(BlockFertilizeEvent event) {
+		for (BlockState block : event.getBlocks()) {
+			if (Citadel.getInstance().getReinforcementManager().getReinforcement(block.getBlock()) != null) {
+				event.setCancelled(true);
+				return;
+			}
+		}
 	}
 
 }
