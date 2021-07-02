@@ -4,8 +4,8 @@ import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSIPData;
-import inet.ipaddr.AddressStringException;
 import inet.ipaddr.IPAddressString;
+import inet.ipaddr.IPAddressStringException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -173,7 +173,7 @@ tor:
 									}
 								}
 								
-							} catch (NullPointerException | AddressStringException e) {
+							} catch (NullPointerException | IPAddressStringException e) {
 								// quiet.
 								errors ++;
 							}

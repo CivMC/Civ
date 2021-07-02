@@ -6,7 +6,6 @@ import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSIPData;
 import com.programmerdan.minecraft.banstick.handler.ProxyLoader;
-import com.programmerdan.minecraft.banstick.importer.IPAddressConverter;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import java.io.BufferedReader;
@@ -90,14 +89,14 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 							if (arr[0] == 0) {
 								arr = Arrays.copyOfRange(arr, 1, arr.length);
 							}
-							lowboundAddr = IPAddressConverter.INSTANCE.from(arr);
+							lowboundAddr = IPAddress.from(arr);
 						} catch (IllegalArgumentException iae) {
 							BanStick.getPlugin().debug("Failed on byte array {0}", start.toByteArray());
 						}
 
 						int mask = lowboundAddr.isIPv4() ? 32 : 128;
 						while (mask > 0) {
-							IPAddress maskAddr = lowboundAddr.toPrefixBlock(mask - 1);
+							IPAddress maskAddr = lowboundAddr.toSubnet(mask - 1);
 							if (maskAddr.getLower().compareTo(lowboundAddr) != 0) {
 								break;
 							}
@@ -110,8 +109,8 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 						}
 						
 						BanStick.getPlugin().debug("  Found sub-CIDR: {0}", 
-								lowboundAddr.toPrefixBlock(mask).toCanonicalString());
-						cidrFromRange.add(lowboundAddr.toPrefixBlock(mask));
+								lowboundAddr.toSubnet(mask).toCanonicalString());
+						cidrFromRange.add(lowboundAddr.toSubnet(mask));
 						
 						BigInteger migrate = BigInteger.valueOf(2).pow((lowboundAddr.isIPv4() ? 32 : 128) - mask);
 						start = start.add(migrate);

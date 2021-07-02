@@ -2,7 +2,6 @@ package com.programmerdan.minecraft.banstick.data;
 
 import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
-import com.programmerdan.minecraft.banstick.importer.IPAddressConverter;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import inet.ipaddr.ipv4.IPv4Address;
@@ -29,7 +28,6 @@ import java.util.Map;
  *
  */
 public final class BSIP {
-
 	private static Map<IPAddress, BSIP> allIPNA = new HashMap<>();
 	private static Map<Long, BSIP> allIPId = new HashMap<>();
 	
@@ -81,7 +79,7 @@ public final class BSIP {
 	 * @return All the subnet records that match it
 	 */
 	public static List<BSIP> allMatching(InetAddress netAddress) {
-		IPAddress lookup = IPAddressConverter.INSTANCE.from(netAddress);
+		IPAddress lookup = IPAddress.from(netAddress);
 		return allMatching(lookup);
 	}
 	
@@ -129,7 +127,7 @@ public final class BSIP {
 	 */
 	public static List<BSIP> allContained(IPAddress lookup, int cidr) {
 		List<BSIP> returns = new ArrayList<>();
-		IPAddress newBase = lookup.toPrefixBlock(cidr);
+		IPAddress newBase = lookup.toSubnet(cidr);
 		StringBuilder sb = new StringBuilder("SELECT * FROM bs_ip WHERE ");
 		if (newBase.isIPv4()) {
 			sb.append("ip4 LIKE \"").append(newBase.toSQLWildcardString()).append("\"");
@@ -220,7 +218,7 @@ public final class BSIP {
 	 */
 	private static void fillFromCIDRs(IPAddress lookup, int maxCIDR, List<BSIP> matches) {
 		for (int curCIDR = maxCIDR; curCIDR > 0; curCIDR--) {
-			BSIP prospect = byCIDR(lookup.toPrefixBlock(curCIDR).getLower().toString(), curCIDR);
+			BSIP prospect = byCIDR(lookup.toSubnet(curCIDR).getLower().toString(), curCIDR);
 			if (prospect != null) {
 				matches.add(prospect);
 			}
@@ -261,7 +259,7 @@ public final class BSIP {
 				BanStick.getPlugin().severe("Unknown Inet address type: " + netAddress.toString());
 				return null;
 			}
-			getIP.setString(1, lookup.toPrefixBlock(cidr).getLower().toString());
+			getIP.setString(1, lookup.toSubnet(cidr).getLower().toString());
 			getIP.setInt(2, cidr);
 			
 			BSIP bsip = null;
@@ -283,7 +281,7 @@ public final class BSIP {
 	 * @return The matching IP or null
 	 */
 	public static BSIP byInetAddress(InetAddress netAddress) {
-		IPAddress lookup = IPAddressConverter.INSTANCE.from(netAddress);
+		IPAddress lookup = IPAddress.from(netAddress);
 		return byIPAddress(lookup);
 	}
 	
@@ -411,7 +409,7 @@ public final class BSIP {
 	 * @return a BSIP object, or null if failure.
 	 */
 	public static BSIP create(InetAddress netAddress) {
-		IPAddress lookup = IPAddressConverter.INSTANCE.from(netAddress);
+		IPAddress lookup = IPAddress.from(netAddress);
 		return create(lookup);
 	}
 	
@@ -478,7 +476,7 @@ public final class BSIP {
 	 * @return a new BSIP or null if failed
 	 */
 	public static BSIP create(InetAddress netAddress, int cidr) {
-		IPAddress lookup = IPAddressConverter.INSTANCE.from(netAddress).toPrefixBlock(cidr).getLower();
+		IPAddress lookup = IPAddress.from(netAddress).toSubnet(cidr).getLower();
 		return create(lookup, cidr);
 	}
 	

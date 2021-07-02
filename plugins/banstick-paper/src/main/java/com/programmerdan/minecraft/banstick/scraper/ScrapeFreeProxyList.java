@@ -5,9 +5,9 @@ import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSIPData;
 import com.programmerdan.minecraft.banstick.handler.ScraperWorker;
-import inet.ipaddr.AddressStringException;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
+import inet.ipaddr.IPAddressStringException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -136,7 +136,7 @@ public class ScrapeFreeProxyList extends ScraperWorker {
 									: new Date(System.currentTimeMillis() + this.banLength), false);
 						}
 					}
-				} catch (AddressStringException iase) {
+				} catch (IPAddressStringException iase) {
 					continue;
 				}
 			}
