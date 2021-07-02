@@ -50,6 +50,8 @@ public class RBUtils {
 			return TreeType.CRIMSON_FUNGUS;
 		case WARPED_FUNGUS:
 			return TreeType.WARPED_FUNGUS;
+			case FLOWERING_AZALEA:
+			return TreeType.AZALEA;
 		default:
 			throw new IllegalArgumentException();
 		}
@@ -81,7 +83,8 @@ public class RBUtils {
 		return material == Material.ACACIA_SAPLING || material == Material.BIRCH_SAPLING
 				|| material == Material.DARK_OAK_SAPLING || material == Material.JUNGLE_SAPLING
 				|| material == Material.OAK_SAPLING || material == Material.SPRUCE_SAPLING
-				|| material == Material.CRIMSON_FUNGUS || material == Material.WARPED_FUNGUS;
+				|| material == Material.CRIMSON_FUNGUS || material == Material.WARPED_FUNGUS
+				|| material == Material.FLOWERING_AZALEA;
 	}
 
 	public static boolean isStem(Material mat) {
