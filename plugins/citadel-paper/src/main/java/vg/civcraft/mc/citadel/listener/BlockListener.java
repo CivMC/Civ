@@ -1,6 +1,8 @@
 package vg.civcraft.mc.citadel.listener;
 
 import com.destroystokyo.paper.MaterialTags;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -452,6 +454,7 @@ public class BlockListener implements Listener {
 	public void onMossSpread(BlockFertilizeEvent event) {
 		for (BlockState block : event.getBlocks()) {
 			if (Citadel.getInstance().getReinforcementManager().getReinforcement(block.getBlock()) != null) {
+				event.getPlayer().sendMessage(Component.text("You can't do that while their are reinforced blocks around!").color(NamedTextColor.RED));
 				event.setCancelled(true);
 				return;
 			}
