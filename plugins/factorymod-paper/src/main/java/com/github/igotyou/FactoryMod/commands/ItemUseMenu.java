@@ -9,7 +9,6 @@ import co.aikar.commands.annotation.Syntax;
 import com.github.igotyou.FactoryMod.utility.ItemUseGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,10 +18,9 @@ public class ItemUseMenu extends BaseCommand {
 	@Syntax("[material]")
 	@Description("Opens a GUI allowing you to browse all recipes which use or output the item in your main hand")
 	@CommandCompletion("@materials")
-	public void execute(CommandSender sender, @Optional String material) {
-		Player p = (Player) sender;
+	public void execute(Player p, @Optional String material) {
 		if (material == null) {
-			ItemUseGUI gui = new ItemUseGUI((Player) sender);
+			ItemUseGUI gui = new ItemUseGUI(p);
 			gui.showItemOverview(p.getInventory().getItemInMainHand());
 		} else {
 			Material mat = Material.getMaterial(material);
@@ -30,7 +28,7 @@ public class ItemUseMenu extends BaseCommand {
 				p.sendMessage(ChatColor.RED + "The item " + material + " does not exist");
 				return;
 			}
-			ItemUseGUI gui = new ItemUseGUI((Player) sender);
+			ItemUseGUI gui = new ItemUseGUI(p);
 			gui.showItemOverview(new ItemStack(mat));
 		}
 	}

@@ -4,17 +4,9 @@ author: Maxopoly, igotyou
 version: ${project.version}
 depend: [CivModCore]
 softdepend: [CivMenu, NameLayer, Citadel]
-commands:
-    fmsrc:
-        permission: fm.op
-        player-only: true
-        description: ''
-        usage: '/fmsrc <count>'
-        min-args: 1
-        max-args: 1
 permissions:
     fm.public:
         default: true
     fm.op:
         default: op
-api-version: 1.13
+api-version: 1.17
