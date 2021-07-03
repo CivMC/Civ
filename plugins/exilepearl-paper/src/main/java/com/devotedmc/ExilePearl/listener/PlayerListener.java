@@ -1198,7 +1198,7 @@ public class PlayerListener implements Listener, Configurable {
 				continue;
 			}
 			event.setCancelled(true);
-			player.sendMessage(Component.text("You cannot fly with imprisoned players!").color(NamedTextColor.RED).toString());
+			player.sendMessage(Component.text("You cannot fly with imprisoned players!").color(NamedTextColor.RED));
 			break;
 		}
 	}
