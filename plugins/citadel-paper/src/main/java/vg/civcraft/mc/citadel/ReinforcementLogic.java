@@ -10,6 +10,7 @@ import org.bukkit.block.data.type.AmethystCluster;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.CoralWallFan;
+import org.bukkit.block.data.type.PointedDripstone;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
@@ -339,6 +340,13 @@ public final class ReinforcementLogic {
 				}
 				return below;
 			}
+			case POINTED_DRIPSTONE:
+				PointedDripstone dripstone = (PointedDripstone) block.getBlockData();
+				Block direction = block.getRelative(dripstone.getVerticalDirection().getOppositeFace());
+				while (direction.getType() == block.getType()) {
+					direction = direction.getRelative(dripstone.getVerticalDirection().getOppositeFace());
+				}
+				return direction;
 			default: {
 				return block;
 			}
