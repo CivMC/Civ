@@ -175,16 +175,33 @@ public class FurnCraftChestFactory extends Factory {
 		}
 		//ensure factory isnt in disrepair
 		if (rm.inDisrepair() && !(currentRecipe instanceof RepairRecipe)) {
+			setRecipe(getAutoSelectRecipe());
 			if (p != null) {
-				p.sendMessage(ChatColor.RED + "This factory is in disrepair, you have to repair it before using it");
+				p.sendMessage(ChatColor.GOLD + "Automatically selected recipe " + currentRecipe.getName());
 			}
-			return;
+			if (!(currentRecipe instanceof RepairRecipe)) {
+				if (p != null) {
+					p.sendMessage(ChatColor.RED + "This factory is in disrepair, you have to repair it before using it");
+				}
+				return;
+			}
+			if (hasInputMaterials()) {
+				activate();
+				return;
+			}
+
 		}
 		if (currentRecipe instanceof RepairRecipe && rm.atFullHealth()) {
+			setRecipe(getAutoSelectRecipe());
 			if (p != null) {
-				p.sendMessage("This factory is already at full health!");
+				p.sendMessage(ChatColor.GOLD + "Automatically selected recipe " + currentRecipe.getName());
 			}
-			return;
+			if (currentRecipe instanceof RepairRecipe) {
+				if (p != null) {
+					p.sendMessage("This factory is already at full health!");
+				}
+				return;
+			}
 		}
 		if (!onStartUp && currentRecipe instanceof Upgraderecipe && FactoryMod.getInstance().getManager().isCitadelEnabled()) {
 			// only allow permitted members to upgrade the factory
@@ -511,6 +528,12 @@ public class FurnCraftChestFactory extends Factory {
 
 	public IRecipe getAutoSelectRecipe() {
 		for (IRecipe rec : recipes) {
+			if (rec instanceof RepairRecipe) {
+				if (getRepairManager().inDisrepair()) {
+					return rec;
+				}
+				continue;
+			}
 			if (rec.enoughMaterialAvailable(getInventory())) {
 				return rec;
 			}
