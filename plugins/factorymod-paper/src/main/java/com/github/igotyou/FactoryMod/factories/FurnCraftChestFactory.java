@@ -145,7 +145,15 @@ public class FurnCraftChestFactory extends Factory {
 			if (rm.inDisrepair() && !(currentRecipe instanceof RepairRecipe)) {
 				IRecipe autoRepair = getRepairRecipe();
 				//Just incase any factory for some reason cannot be repaired.
-				if (autoRepair != null) {
+				if (autoRepair == null) {
+					if (p != null) {
+						p.sendMessage(ChatColor.RED + "The factory doesn't have a repair recipe.");
+					}
+					return;
+				} else {
+					if (p != null) {
+						p.sendMessage(ChatColor.GOLD + "Automatically selected recipe " + autoRepair.getName());
+					}
 					setRecipe(autoRepair);
 				}
 			}
