@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import vg.civcraft.mc.civchat2.CivChat2;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 import vg.civcraft.mc.civmodcore.players.settings.impl.LongSetting;
-import vg.civcraft.mc.civmodcore.utilities.ConfigParsing;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.namelayer.NameAPI;
 
@@ -36,7 +36,7 @@ public class GlobalMute extends BaseCommand {
 				sender.sendMessage(ChatColor.RED + "You need to supply a ban timer");
 				return;
 			}
-			long time = ConfigParsing.parseTime(muteTime);
+			long time = ConfigHelper.parseTime(muteTime);
 			if (time <= 0) {
 				sender.sendMessage(ChatColor.RED + "Invalid ban time frame");
 				return;
