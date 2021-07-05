@@ -1,9 +1,7 @@
 package com.github.igotyou.FactoryMod;
 
-import static vg.civcraft.mc.civmodcore.utilities.ConfigParsing.parseItemMap;
-import static vg.civcraft.mc.civmodcore.utilities.ConfigParsing.parseItemMapDirectly;
-import static vg.civcraft.mc.civmodcore.utilities.ConfigParsing.parseTime;
-import static vg.civcraft.mc.civmodcore.utilities.ConfigParsing.parseTimeAsTicks;
+import static vg.civcraft.mc.civmodcore.config.ConfigHelper.parseTime;
+import static vg.civcraft.mc.civmodcore.config.ConfigHelper.parseTimeAsTicks;
 
 
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
@@ -59,6 +57,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 public class ConfigParser {
@@ -116,7 +115,7 @@ public class ConfigParser {
 		}
 		defaultUpdateTime = parseTimeAsTicks(config.getString("default_update_time", "250ms"));
 		defaultHealth = config.getInt("default_health", 10000);
-		ItemMap dFuel = parseItemMap(config.getConfigurationSection("default_fuel"));
+		ItemMap dFuel = ConfigHelper.parseItemMap(config.getConfigurationSection("default_fuel"));
 		if (dFuel.getTotalUniqueItemAmount() > 0) {
 			defaultFuel = dFuel.getItemStackRepresentation().get(0);
 		} else {
@@ -302,7 +301,7 @@ public class ConfigParser {
 			if (egg == null) {
 				break;
 			}
-			ItemMap pipeSetupCost = parseItemMap(config.getConfigurationSection("setupcost"));
+			ItemMap pipeSetupCost = ConfigHelper.parseItemMap(config.getConfigurationSection("setupcost"));
 			if (pipeSetupCost.getTotalUniqueItemAmount() > 0) {
 				manager.addFactoryEgg(PipeStructure.class, pipeSetupCost, egg);
 			} else {
@@ -314,7 +313,7 @@ public class ConfigParser {
 			if (egg == null) {
 				break;
 			}
-			ItemMap sorterSetupCost = parseItemMap(config.getConfigurationSection("setupcost"));
+			ItemMap sorterSetupCost = ConfigHelper.parseItemMap(config.getConfigurationSection("setupcost"));
 			if (sorterSetupCost.getTotalUniqueItemAmount() > 0) {
 				manager.addFactoryEgg(BlockFurnaceStructure.class, sorterSetupCost, egg);
 			} else {
@@ -348,7 +347,7 @@ public class ConfigParser {
 		}
 		ItemStack fuel;
 		if (config.contains("fuel")) {
-			ItemMap tfuel = parseItemMap(config.getConfigurationSection("fuel"));
+			ItemMap tfuel = ConfigHelper.parseItemMap(config.getConfigurationSection("fuel"));
 			if (tfuel.getTotalUniqueItemAmount() > 0) {
 				fuel = tfuel.getItemStackRepresentation().get(0);
 			} else {
@@ -386,7 +385,7 @@ public class ConfigParser {
 		}
 		ItemStack fuel;
 		if (config.contains("fuel")) {
-			ItemMap tfuel = parseItemMap(config.getConfigurationSection("fuel"));
+			ItemMap tfuel = ConfigHelper.parseItemMap(config.getConfigurationSection("fuel"));
 			if (tfuel.getTotalUniqueItemAmount() > 0) {
 				fuel = tfuel.getItemStackRepresentation().get(0);
 			} else {
@@ -426,7 +425,7 @@ public class ConfigParser {
 		}
 		ItemStack fuel;
 		if (config.contains("fuel")) {
-			ItemMap tfuel = parseItemMap(config.getConfigurationSection("fuel"));
+			ItemMap tfuel = ConfigHelper.parseItemMap(config.getConfigurationSection("fuel"));
 			if (tfuel.getTotalUniqueItemAmount() > 0) {
 				fuel = tfuel.getItemStackRepresentation().get(0);
 			} else {
@@ -464,7 +463,7 @@ public class ConfigParser {
 		double citadelBreakReduction = config.getDouble("citadelBreakReduction", 1.0);
 		ItemMap setupCost = null;
 		if (config.isConfigurationSection("setupcost")) {
-			setupCost = parseItemMap(config.getConfigurationSection("setupcost"));
+			setupCost = ConfigHelper.parseItemMap(config.getConfigurationSection("setupcost"));
 		}
 		FurnCraftChestEgg egg = new FurnCraftChestEgg(name, update, null, fuel, fuelIntervall, returnRate, health,
 				gracePeriod, healthPerDamageIntervall, citadelBreakReduction, setupCost);
@@ -536,7 +535,7 @@ public class ConfigParser {
 				input = ((InputRecipe) parentRecipe).getInput();
 			}
 		} else {
-			input = parseItemMap(inputSection);
+			input = ConfigHelper.parseItemMap(inputSection);
 		}
 		switch (type) {
 		case "PRODUCTION":
@@ -552,7 +551,7 @@ public class ConfigParser {
 					recipeRepresentation = ((ProductionRecipe) parentRecipe).getRecipeRepresentation();
 				}
 			} else {
-				output = parseItemMap(outputSection);
+				output = ConfigHelper.parseItemMap(outputSection);
 				recipeRepresentation = parseFirstItem(outputSection);
 			}
 			ProductionRecipeModifier modi = parseProductionRecipeModifier(config.getConfigurationSection("modi"));
@@ -636,7 +635,7 @@ public class ConfigParser {
 			// This is untested and should not be used for now
 			plugin.warning(
 					"This recipe is not tested or even completly developed, use it with great care and don't expect it to work");
-			ItemMap tessence = parseItemMap(config.getConfigurationSection("essence"));
+			ItemMap tessence = ConfigHelper.parseItemMap(config.getConfigurationSection("essence"));
 			if (tessence.getTotalUniqueItemAmount() > 0) {
 				ItemStack essence = tessence.getItemStackRepresentation().get(0);
 				int repPerEssence = config.getInt("repair_per_essence");
@@ -657,7 +656,7 @@ public class ConfigParser {
 					outputMap = ((PylonRecipe) parentRecipe).getOutput().clone();
 				}
 			} else {
-				outputMap = parseItemMap(outputSec);
+				outputMap = ConfigHelper.parseItemMap(outputSec);
 			}
 			if (outputMap.getTotalItemAmount() == 0) {
 				plugin.warning("Pylon recipe " + name + " has an empty output specified");
@@ -692,7 +691,7 @@ public class ConfigParser {
 					tool = ((DeterministicEnchantingRecipe) parentRecipe).getTool().clone();
 				}
 			} else {
-				tool = parseItemMap(toolSection);
+				tool = ConfigHelper.parseItemMap(toolSection);
 			}
 			if (tool.getTotalItemAmount() == 0) {
 				plugin.warning("Deterministic enchanting recipe " + name
@@ -726,7 +725,7 @@ public class ConfigParser {
 					if (keySec != null) {
 						double chance = keySec.getDouble("chance");
 						totalChance += chance;
-						ItemMap im = parseItemMap(keySec);
+						ItemMap im = ConfigHelper.parseItemMap(keySec);
 						outputs.put(im, chance);
 						if (key.equals(displayMap)) {
 							displayThis = im;
@@ -758,7 +757,7 @@ public class ConfigParser {
 					toolMap = ((LoreEnchantRecipe) parentRecipe).getTool().clone();
 				}
 			} else {
-				toolMap = parseItemMap(toolSec);
+				toolMap = ConfigHelper.parseItemMap(toolSec);
 			}
 			if (toolMap.getTotalItemAmount() == 0) {
 				plugin.warning("Lore enchanting recipe " + name + " had no tool to enchant specified, it was skipped");
@@ -812,7 +811,7 @@ public class ConfigParser {
 					printingPlateOutput = ((PrintingPlateRecipe) parentRecipe).getOutput();
 				}
 			} else {
-				printingPlateOutput = parseItemMap(printingPlateOutputSection);
+				printingPlateOutput = ConfigHelper.parseItemMap(printingPlateOutputSection);
 			}
 			result = new PrintingPlateRecipe(identifier, name, productionTime, input, printingPlateOutput);
 			break;
@@ -826,18 +825,18 @@ public class ConfigParser {
 						printingPlateJsonOutput = ((PrintingPlateJsonRecipe) parentRecipe).getOutput();
 					}
 				} else {
-					printingPlateJsonOutput = parseItemMap(printingPlateJsonOutputSection);
+					printingPlateJsonOutput = ConfigHelper.parseItemMap(printingPlateJsonOutputSection);
 				}
 				result = new PrintingPlateJsonRecipe(identifier, name, productionTime, input, printingPlateJsonOutput);
 				break;
 		case "PRINTBOOK":
-			ItemMap printBookPlate = parseItemMap(config.getConfigurationSection("printingplate"));
+			ItemMap printBookPlate = ConfigHelper.parseItemMap(config.getConfigurationSection("printingplate"));
 			int printBookOutputAmount = config.getInt("outputamount", 1);
 			result = new PrintBookRecipe(identifier, name, productionTime, input, printBookPlate,
 					printBookOutputAmount);
 			break;
 		case "PRINTNOTE":
-			ItemMap printNotePlate = parseItemMap(config.getConfigurationSection("printingplate"));
+			ItemMap printNotePlate = ConfigHelper.parseItemMap(config.getConfigurationSection("printingplate"));
 			int printBookNoteAmount = config.getInt("outputamount", 1);
 			boolean secureNote = config.getBoolean("securenote", false);
 			String noteTitle = config.getString("title");
@@ -899,7 +898,7 @@ public class ConfigParser {
 
 		for (String key : config.getKeys(false)) {
 			ConfigurationSection current = config.getConfigurationSection(key);
-			List<ItemStack> list = parseItemMapDirectly(current).getItemStackRepresentation();
+			List<ItemStack> list = ConfigHelper.parseItemMapDirectly(current).getItemStackRepresentation();
 			return list.isEmpty() ? null : list.get(0);
 		}
 
