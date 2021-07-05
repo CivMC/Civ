@@ -275,6 +275,27 @@ public class BlockListener implements Listener {
 		}
 	}
 
+	/*
+	For some stupid reason, Waxing / Stripping copper blocks calls a BlockPlaceEvent instead of PlayerInteractEvent,
+	this obviously might change in future so heres a warning note
+	Reminder: This is retarded
+	 */
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void preventWaxingCopper(BlockPlaceEvent event) {
+		if (!MoreTags.COPPER_BLOCKS.isTagged(event.getBlockPlaced().getType())) {
+			return;
+		}
+		Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(event.getBlockPlaced());
+		if (reinforcement == null) {
+			return;
+		}
+		Player player = event.getPlayer();
+		if (!reinforcement.hasPermission(player, CitadelPermissionHandler.getModifyBlocks())) {
+			player.sendMessage(ChatColor.RED + "You do not have permission to modify this block");
+			event.setCancelled(true);
+		}
+	}
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void preventTilingGrass(PlayerInteractEvent pie) {
 		if (!pie.hasBlock()) {
