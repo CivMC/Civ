@@ -1,15 +1,15 @@
-#database:
-#  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
-#  plugin: JukeAlert
-#  user: username
-#  password: squidLover69
-#  host: localhost
-#  port: 3306
-#  database: snitches
-#  poolsize: 5
-#  connection_timeout: 10000
-#  idle_timeout: 600000
-#  max_lifetime: 7200000
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  plugin: JukeAlert
+  user: username
+  password: squidLover69
+  host: localhost
+  port: 3306
+  database: snitches
+  poolsize: 5
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
 
 snitchConfigs:
   note:
