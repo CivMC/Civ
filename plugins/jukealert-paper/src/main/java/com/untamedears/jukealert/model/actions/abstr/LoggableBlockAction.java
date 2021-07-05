@@ -33,7 +33,18 @@ public abstract class LoggableBlockAction extends LoggablePlayerAction {
 	/**
 	 * @return Material of the block this action is about
 	 */
+
+	/*
+	Some items cannot be held in the inventory, such as FIRE or POWDER_SNOW, therefore we have a check here to return
+	the correct inventory item to represent.
+	 */
 	public Material getMaterial() {
+		if (material == Material.POWDER_SNOW) {
+			return Material.POWDER_SNOW_BUCKET;
+		}
+		if (material == Material.FIRE) {
+			return Material.FLINT_AND_STEEL;
+		}
 		return material;
 	}
 
