@@ -160,8 +160,10 @@ public class EntityListener implements Listener {
 
 		Block clickedBlock = event.getBlockClicked();
 		Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(clickedBlock);
+		if (reinforcement == null) {
+			return;
+		}
 		Player player = event.getPlayer();
-
 		if (!reinforcement.hasPermission(player, CitadelPermissionHandler.getBypass())) {
 			player.sendMessage(Component.text("You do not have permission to bypass this block!").color(NamedTextColor.RED));
 			event.setCancelled(true);
