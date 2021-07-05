@@ -197,15 +197,15 @@ hangers_inherit_reinforcement: false
 
 # reinforcement_damageMultiplier is m where BlockDamage = 2 ^ (n/m) where n is equal to the number of days the group has been inactive
 reinforcement_damageMultiplier: 365
-#database:
-#  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
-#  plugin: Citadel
-#  user: 'mc_namelayer'
-#  password: 'minecraft'
-#  host: localhost
-#  port: 3306
-#  database: namelayer
-#  poolsize: 5
-#  connection_timeout: 10000
-#  idle_timeout: 600000
-#  max_lifetime: 7200000  
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  plugin: Citadel
+  user: 'mc_namelayer'
+  password: 'minecraft'
+  host: localhost
+  port: 3306
+  database: namelayer
+  poolsize: 5
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
