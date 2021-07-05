@@ -10,10 +10,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
-import vg.civcraft.mc.civmodcore.utilities.ConfigParsing;
 
 public class DogFacts extends BasicHack {
 
@@ -36,7 +36,7 @@ public class DogFacts extends BasicHack {
 	}
 
 	public void startRunnable(List<String> announcements){
-		long interval = ConfigParsing.parseTimeAsTicks(intervalTime);
+		long interval = ConfigHelper.parseTimeAsTicks(intervalTime);
 		int tickOffset = (int) (Math.random() * (interval));
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin ,() -> {
 			if (announcements.isEmpty()) {
