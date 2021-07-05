@@ -43,10 +43,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 import vg.civcraft.mc.civmodcore.config.ConfigParser;
+import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
-import vg.civcraft.mc.civmodcore.utilities.ConfigParsing;
 
 public class RBConfigManager extends ConfigParser {
 
@@ -119,7 +120,7 @@ public class RBConfigManager extends ConfigParser {
 	@Override
 	protected boolean parseInternal(ConfigurationSection config) {
 		hasPersistentGrowth = false;
-		database = (ManagedDatasource) config.get("database", null);
+		database = ManagedDatasource.construct((ACivMod) plugin, (DatabaseCredentials) config.get("database"));
 		legacyPrefix = config.getString("database_prefix", null);
 		Map<String, List<Biome>> biomeAliases = loadBiomeAliases(config.getConfigurationSection("biome_aliases"));
 		loadSchematics();
@@ -153,7 +154,7 @@ public class RBConfigManager extends ConfigParser {
 
 	private Map<Material, Double> parseMaterialDoubleMap(ConfigurationSection parent, String identifier) {
 		Map<Material, Double> result = new EnumMap<>(Material.class);
-		ConfigParsing.parseKeyValueMap(parent, identifier, logger, Material::valueOf, Double::parseDouble, result);
+		ConfigHelper.parseKeyValueMap(parent, identifier, logger, Material::valueOf, Double::parseDouble, result);
 		return result;
 	}
 
@@ -210,7 +211,7 @@ public class RBConfigManager extends ConfigParser {
 			}
 			Long persistTime = null;
 			if (current.isString("persistent_growth_period")) {
-				persistTime = ConfigParsing.parseTime(current.getString("persistent_growth_period"),
+				persistTime = ConfigHelper.parseTime(current.getString("persistent_growth_period"),
 						TimeUnit.MILLISECONDS);
 			}
 			String name = current.getString("name", key);
