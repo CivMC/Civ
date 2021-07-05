@@ -26,7 +26,7 @@
 			<scope>provided</scope>
 		</dependency>
     <dependency>
-      <groupId>vg.civcraft.mc.civmodcore</groupId>
+      <groupId>com.github.civclassic</groupId>
       <artifactId>CivModCore</artifactId>
       <version>1.9.0</version>
       <scope>provided</scope>
