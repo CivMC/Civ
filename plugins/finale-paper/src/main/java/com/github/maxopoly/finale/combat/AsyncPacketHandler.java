@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -60,7 +61,11 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 			World world = attacker.getWorld();
 			
 			PacketContainer packet = event.getPacket();
-			Entity entity = packet.getEntityModifier(event).read(0);
+			CompletableFuture<Entity> entity = new CompletableFuture<>();
+			Bukkit.getScheduler().runTask(Finale.getPlugin(), () -> {
+				entity.complete(packet.getEntityModifier(event).read(0));
+			});
+			entity.join();
 			Damageable target = entity instanceof Damageable ? (Damageable)entity : null;
 			
 			if (target == null || target.isDead() || target.isInvulnerable() ||
