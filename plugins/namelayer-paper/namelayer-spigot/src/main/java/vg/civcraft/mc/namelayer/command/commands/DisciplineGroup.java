@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
@@ -15,6 +16,7 @@ public class DisciplineGroup extends BaseCommandMiddle {
 	@CommandPermission("namelayer.admin")
 	@Syntax("<group>")
 	@Description("Disable a group from working.")
+	@CommandCompletion("@NL_Groups")
 	public void execute(Player sender, String groupName) {
 		Player p = (Player) sender;
 		Group g = gm.getGroup(groupName);

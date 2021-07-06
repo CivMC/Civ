@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.Date;
@@ -22,6 +23,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 	@CommandAlias("nldg|delete|deletegroup|groupdelete")
 	@Syntax("<group>")
 	@Description("Delete a group.")
+	@CommandCompletion("@NL_Groups")
 	public void execute(Player sender, String groupName) {
 		Player p = (Player) sender;
 		UUID uuid = NameAPI.getUUID(p.getName());

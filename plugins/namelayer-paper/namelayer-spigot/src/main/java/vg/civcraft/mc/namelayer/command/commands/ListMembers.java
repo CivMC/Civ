@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
@@ -21,6 +22,7 @@ public class ListMembers extends BaseCommandMiddle {
 	@CommandAlias("nllm|listmembers|members")
 	@Syntax("<group> [rank (e.g: MEMBERS)]")
 	@Description("List the members in a group")
+	@CommandCompletion("@NL_Groups @NL_Ranks")
 	public void execute(Player sender, String groupName, @Optional String playerType, @Optional String playerName) {
 		Player p = (Player) sender;
 		UUID uuid = NameAPI.getUUID(p.getName());

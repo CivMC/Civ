@@ -17,7 +17,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class JoinGroup extends BaseCommandMiddle {
 
 	@CommandAlias("nljg|join|joingroup")
-	@Syntax("<group> <password>")
+	@Syntax("<group> [password]")
 	@Description("Join a password protected group.")
 	public void execute(Player sender, String groupName, String attemptedPassword) {
 		Player p = (Player) sender;

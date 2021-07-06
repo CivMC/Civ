@@ -20,7 +20,7 @@ import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 
 public class AcceptInvite extends BaseCommandMiddle {
 
-	@CommandAlias("nlacceptinvite|nlacceptgroup|acceptinvite|acceptgroup|accept|join|ctjoin|ctj|ag")
+	@CommandAlias("nlacceptinvite|nlacceptgroup|acceptinvite|acceptgroup|accept|join|ctjoin|ctj|ag|nlag")
 	@Syntax("<group>")
 	@Description("Accept an invitation to a group.")
 	@CommandCompletion("@NL_Invites")
@@ -48,7 +48,7 @@ public class AcceptInvite extends BaseCommandMiddle {
 		group.addMember(uuid, type);
 		group.removeInvite(uuid, true);
 		PlayerListener.removeNotification(uuid, group);
-		p.sendMessage(Component.text("You have successfully been added to the group as a " + type.name() +".").color(NamedTextColor.RED));
+		p.sendMessage(Component.text("You have successfully been added to the group as a " + type.name() +".").color(NamedTextColor.GREEN));
 	}
 
 	@TabComplete("NL_Invites")

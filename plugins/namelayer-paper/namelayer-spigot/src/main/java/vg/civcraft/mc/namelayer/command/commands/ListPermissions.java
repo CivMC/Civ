@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
@@ -19,6 +20,7 @@ public class ListPermissions extends BaseCommandMiddle {
 	@CommandAlias("nllp|listperms|perms|permissions")
 	@Syntax("<group> [rank (e.g: MEMBERS)]")
 	@Description("Show permissions for a PlayerType in a specific group.")
+	@CommandCompletion("@NL_Groups @NL_Ranks")
 	public void execute(Player sender, String groupName, @Optional String playerRank) {
 		Player p = (Player) sender;
 		Group g = gm.getGroup(groupName);
