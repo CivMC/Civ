@@ -19,7 +19,7 @@ import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 
 public class RejectInvite extends BaseCommandMiddle {
 
-	@CommandAlias("nlrg|reject|rejectinvite|revoke")
+	@CommandAlias("nlrg|reject|rejectinvite")
 	@Syntax("<group>")
 	@Description("Reject an invitation to a group.")
 	@CommandCompletion("@NL_Invites")

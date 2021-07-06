@@ -18,7 +18,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class RevokeInvite extends BaseCommandMiddle {
 
-	@CommandAlias("nlri|revokeinvite")
+	@CommandAlias("nlri|revokeinvite|revoke")
 	@Syntax("<group> <player>")
 	@Description("Revoke an Invite.")
 	@CommandCompletion("@NL_Groups @allplayers")
