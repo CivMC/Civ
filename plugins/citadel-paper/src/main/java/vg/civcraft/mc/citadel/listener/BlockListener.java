@@ -26,6 +26,7 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.bukkit.event.world.StructureGrowEvent;
@@ -272,6 +273,19 @@ public class BlockListener implements Listener {
 		if (!rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
 			p.sendMessage(ChatColor.RED + "You do not have permission to modify this block");
 			pie.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void rightClickCaveVines(PlayerHarvestBlockEvent event) {
+		Block harvestedBlock = event.getHarvestedBlock();
+		Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(harvestedBlock);
+		if (reinforcement == null) {
+			return;
+		}
+		if (!reinforcement.hasPermission(event.getPlayer(), CitadelPermissionHandler.getCrops())) {
+			event.getPlayer().sendMessage(Component.text("You do not have permission to harvest this crop").color(NamedTextColor.RED));
+			event.setCancelled(true);
 		}
 	}
 

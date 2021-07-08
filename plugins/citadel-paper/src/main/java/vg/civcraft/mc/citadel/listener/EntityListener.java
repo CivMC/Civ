@@ -89,6 +89,9 @@ public class EntityListener implements Listener {
 		if (ecbe.getBlock().getType() == Material.BIG_DRIPLEAF) {
 			return;
 		}
+		if (ecbe.getBlock().getType() == Material.CAVE_VINES || ecbe.getBlock().getType() == Material.CAVE_VINES_PLANT) {
+			return;
+		}
 		ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein), ecbe.getEntity());
 		if (rein.isBroken()) {
 			return;
