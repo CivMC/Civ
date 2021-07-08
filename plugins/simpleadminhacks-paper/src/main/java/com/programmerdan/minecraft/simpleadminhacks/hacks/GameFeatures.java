@@ -560,7 +560,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				return;
 			}
 		}
-		event.getPlayer().sendMessage(ChatColor.RED + "No gold block to teleport you to");
+		event.getPlayer().sendMessage(ChatColor.RED + "No gold block to teleport you up to. Sneak to teleport down instead.");
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -577,7 +577,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				return;
 			}
 		}
-		event.getPlayer().sendMessage(ChatColor.RED + "No gold block to teleport you to");
+		event.getPlayer().sendMessage(ChatColor.RED + "No gold block to teleport you down to. Jump to teleport up instead.");
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
