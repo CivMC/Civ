@@ -46,6 +46,7 @@ public class FungusGrower extends AgeableGrower {
 		final var growth =
 				material == Material.CRIMSON_FUNGUS ? BiomeDecoratorGroups.cy :
 				material == Material.WARPED_FUNGUS ? BiomeDecoratorGroups.cA :
+				material == Material.FLOWERING_AZALEA ? BiomeDecoratorGroups.cS :
 				null;
 		if (growth == null) {
 			return;
