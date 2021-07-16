@@ -7,10 +7,9 @@
 	<parent>
 		<groupId>com.github.civclassic</groupId>
 		<artifactId>civclassic-parent</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 	</parent>
 
-	<groupId>com.untamedears</groupId>
 	<artifactId>itemexchange</artifactId>
 	<version>1.4.4</version>
 	<name>ItemExchange</name>
@@ -19,15 +18,15 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.destroystokyo.paper</groupId>
+			<groupId>io.papermc.paper</groupId>
 			<artifactId>paper-api</artifactId>
-			<version>1.16.4-R0.1-SNAPSHOT</version>
+			<version>1.17.1-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>vg.civcraft.mc.civmodcore</groupId>
+			<groupId>com.github.civclassic</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.8.2</version>
+			<version>1.9.0</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
