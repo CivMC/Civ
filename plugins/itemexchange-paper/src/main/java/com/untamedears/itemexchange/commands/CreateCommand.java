@@ -1,5 +1,6 @@
 package com.untamedears.itemexchange.commands;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
@@ -19,7 +20,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
-import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
@@ -28,14 +28,11 @@ import vg.civcraft.mc.civmodcore.world.WorldUtils;
  * Commands class involved in creating shop exchange rules
  */
 @CommandAlias(CreateCommand.ALIAS)
-public final class CreateCommand extends AikarCommand {
+public final class CreateCommand extends BaseCommand {
 
 	public static final String ALIAS = "iec|iecreate";
-
 	public static final String ALIAS_INPUT_TYPES = "input|i|in|inputs";
-
 	public static final String ALIAS_OUTPUT_TYPES = "output|o|out|outputs";
-
 	public static final String CREATION_SUCCESS = ChatColor.GREEN + "Created exchange successfully.";
 
 	// ------------------------------------------------------------

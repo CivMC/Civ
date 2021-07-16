@@ -1,12 +1,12 @@
 package com.untamedears.itemexchange.rules.interfaces;
 
+import co.aikar.commands.BaseCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang.IllegalClassException;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
@@ -16,7 +16,7 @@ import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
  *
  * {@code public final class BookModifier extends ModifierData<BookModifier> {}}
  */
-public abstract class ModifierData extends AikarCommand
+public abstract class ModifierData extends BaseCommand
 		implements ExchangeData, NBTSerializable, Comparable<ModifierData> {
 
 	private static final int hashOffset = 37513459;

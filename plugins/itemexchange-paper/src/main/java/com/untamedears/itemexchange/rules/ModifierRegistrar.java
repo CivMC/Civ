@@ -43,7 +43,7 @@ public final class ModifierRegistrar {
 		}
 		NBTSerialization.unregisterNBTSerializable(modifier.getClass());
 		this.modifiers.remove(modifier);
-		ItemExchangePlugin.commandManager().deregisterCommand(modifier);
+		ItemExchangePlugin.commandManager().unregisterCommand(modifier);
 	}
 
 	/**
@@ -77,7 +77,7 @@ public final class ModifierRegistrar {
 	public void reset() {
 		for (ModifierData modifier : this.modifiers) {
 			NBTSerialization.unregisterNBTSerializable(modifier.getClass());
-			ItemExchangePlugin.commandManager().deregisterCommand(modifier);
+			ItemExchangePlugin.commandManager().unregisterCommand(modifier);
 		}
 		this.modifiers.clear();
 	}

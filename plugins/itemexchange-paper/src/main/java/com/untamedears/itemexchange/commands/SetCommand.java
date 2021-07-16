@@ -1,5 +1,6 @@
 package com.untamedears.itemexchange.commands;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
@@ -13,11 +14,10 @@ import com.untamedears.itemexchange.utility.RuleHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 @CommandAlias(SetCommand.ALIAS)
-public final class SetCommand extends AikarCommand {
+public final class SetCommand extends BaseCommand {
 
 	public static final String ALIAS = "ies|ieset|set";
 
