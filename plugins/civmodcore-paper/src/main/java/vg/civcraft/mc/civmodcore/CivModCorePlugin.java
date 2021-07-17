@@ -118,7 +118,10 @@ public final class CivModCorePlugin extends ACivMod {
 			this.commands.reset();
 			this.commands = null;
 		}
-		this.skinCache.shutdown();
+		if (this.skinCache != null) {
+			this.skinCache.shutdown();
+			this.skinCache = null;
+		}
 		ConfigurationSerialization.unregisterClass(DatabaseCredentials.class);
 		super.onDisable();
 	}
