@@ -9,6 +9,7 @@ import com.github.maxopoly.finale.misc.SaturationHealthRegenHandler;
 import com.github.maxopoly.finale.misc.WeaponModifier;
 import com.github.maxopoly.finale.potion.PotionHandler;
 import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.entity.EntityDamageEvent;
 
@@ -46,15 +47,8 @@ public class FinaleManager {
 		this.ctpOnLogin = ctpOnLogin;
 		
 		this.cpsHandler = new CPSHandler();
-		
-		Bukkit.getScheduler().runTaskAsynchronously(Finale.getPlugin(), new Runnable() {
-			
-			@Override
-			public void run() {
-				ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(combatHandler = new AsyncPacketHandler()).start();
-			}
-			
-		});
+
+		Bukkit.getScheduler().runTaskAsynchronously(Finale.getPlugin(), () -> ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(combatHandler = new AsyncPacketHandler(combatConfig)).start());
 	}
 	
 	public AsyncPacketHandler getCombatHandler() {

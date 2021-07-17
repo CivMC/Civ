@@ -4,6 +4,9 @@ import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.combat.event.CritHitEvent;
 import java.util.Iterator;
 import java.util.List;
+
+import com.github.maxopoly.finale.misc.knockback.KnockbackConfig;
+import com.github.maxopoly.finale.misc.knockback.KnockbackModifier;
 import net.minecraft.core.particles.Particles;
 import net.minecraft.network.protocol.game.PacketPlayOutEntityVelocity;
 import net.minecraft.network.protocol.game.PacketPlayOutNamedSoundEffect;
@@ -49,20 +52,21 @@ public class CombatUtil {
     }
 	 
 	public static void attack(Player attacker, LivingEntity victim) {
-		new BukkitRunnable() {
+		/*new BukkitRunnable() {
 			
 			@Override
 			public void run() {
 				attack(((CraftPlayer) attacker).getHandle(), ((CraftLivingEntity) victim).getHandle());
 			}
 			
-		}.runTask(Finale.getPlugin());
+		}.runTask(Finale.getPlugin());*/
+		attack(((CraftPlayer) attacker).getHandle(), ((CraftLivingEntity) victim).getHandle());
 	}
 	
 	//see EntityHuman#attack(Entity) to update this
 	public static void attack(EntityHuman attacker, Entity victim) {
 		CombatConfig config = Finale.getPlugin().getManager().getCombatConfig();
-        if (victim.bL() && !victim.r(attacker)) {
+        if (victim.ca() && !victim.r(attacker)) {
 			float damage = (float) attacker.getAttributeInstance(GenericAttributes.f).getValue();
 			float f1 = (victim instanceof EntityLiving) ?
 					EnchantmentManager.a(attacker.getItemInMainHand(), ((EntityLiving) victim).getMonsterType()) :
@@ -110,7 +114,7 @@ public class CombatUtil {
 				boolean shouldSweep = false;
 				double d0 = attacker.H - attacker.G;
 
-				if (shouldKnockback && !shouldCrit && !dealtExtraKnockback && attacker.isOnGround() && d0 < (double) attacker.ev()) {
+				if (shouldKnockback && !shouldCrit && !dealtExtraKnockback && attacker.isOnGround() && d0 < (double) attacker.ew()) {
 					ItemStack itemstack = attacker.b(EnumHand.a);
 					if (itemstack.getItem() instanceof ItemSword) {
 						shouldSweep = true;
@@ -139,55 +143,43 @@ public class CombatUtil {
 					if (victim instanceof EntityLiving) {
 						EntityLiving livingVictim = (EntityLiving) victim;
 						double kbResistance = livingVictim.b(GenericAttributes.c);
-						double knockbackModifier = (1.0 - kbResistance);
+						double knockbackFactor = (1.0 - kbResistance);
 						double knockbackLevelModifier = 1 + (knockbackLevel * config.getKnockbackLevelMultiplier());
 
-						if (knockbackModifier > 0) {
-							double dx = -MathHelper.sin(attacker.getBukkitYaw() * 0.01745329251f) * 0.3f;
-							double dy = 0.35;
-							double dz = MathHelper.cos(attacker.getBukkitYaw() * 0.01745329251f) * 0.3f;
+						if (knockbackFactor > 0) {
+							Vector start = new Vector(
+									-MathHelper.sin(attacker.getBukkitYaw() * 0.01745329251f),
+									1.0,
+									MathHelper.cos(attacker.getBukkitYaw() * 0.01745329251f)
+							).normalize();
+							Vector dv = start.clone();
 
-							Vector knockbackMultiplier = config.getKnockbackMultiplier();
-							Vector waterKnockbackMultiplier = config.getWaterKnockbackMultiplier();
-							Vector airKnockbackMultiplier = config.getAirKnockbackMultiplier();
-
-							dx *= knockbackMultiplier.getX();
-							dy *= knockbackMultiplier.getY();
-							dz *= knockbackMultiplier.getZ();
-
-							if (dealtExtraKnockback) {
-								Vector sprintMultiplier = config.getSprintMultiplier();
-								dx *= sprintMultiplier.getX();
-								dy *= sprintMultiplier.getY();
-								dz *= sprintMultiplier.getZ();
-							}
+							KnockbackConfig knockbackConfig = dealtExtraKnockback ? config.getSprintConfig() : config.getNormalConfig();
 
 							if (victim.isInWater()) {
-								dx *= waterKnockbackMultiplier.getX();
-								dy *= waterKnockbackMultiplier.getY();
-								dz *= waterKnockbackMultiplier.getZ();
-							} else if (!victim.isOnGround()) {
-								dx *= airKnockbackMultiplier.getX();
-								dy *= airKnockbackMultiplier.getY();
-								dz *= airKnockbackMultiplier.getZ();
+								dv = knockbackConfig.getWaterModifier().modifyKnockback(start, dv);
+							} else {
+								if (!victim.isOnGround()) {
+									dv = knockbackConfig.getAirModifier().modifyKnockback(start, dv);
+								} else{
+									dv = knockbackConfig.getGroundModifier().modifyKnockback(start, dv);
+								}
 							}
 
 							if (config.isKnockbackSwordsEnabled() && knockbackLevel > 1) {
-								dx *= knockbackLevelModifier;
-								dz *= knockbackLevelModifier;
+								dv.setX(dv.getX() * knockbackLevelModifier);
+								dv.setZ(dv.getZ() * knockbackLevelModifier);
 							}
 
-							dx *= knockbackModifier;
-							dy *= knockbackModifier;
-							dz *= knockbackModifier;
+							dv = dv.multiply(knockbackFactor);
 
 							victim.af = true;
 
 							Vector victimMotFactor = config.getVictimMotion();
 							Vector maxVictimMot = config.getMaxVictimMotion();
-							double motX = Math.min((victimMot.getX() * victimMotFactor.getX()) + dx, maxVictimMot.getX());
-							double motY = Math.min((victimMot.getY() * victimMotFactor.getY()) + dy, maxVictimMot.getY());
-							double motZ = Math.min((victimMot.getZ() * victimMotFactor.getZ()) + dz, maxVictimMot.getZ());
+							double motX = Math.min((victimMot.getX() * victimMotFactor.getX()) + dv.getX(), maxVictimMot.getX());
+							double motY = Math.min((victimMot.getY() * victimMotFactor.getY()) + dv.getY(), maxVictimMot.getY());
+							double motZ = Math.min((victimMot.getZ() * victimMotFactor.getZ()) + dv.getZ(), maxVictimMot.getZ());
 
 							Vec3D newVictimMot = new Vec3D(motX, motY, motZ);
 							victim.setMot(newVictimMot);
@@ -228,7 +220,7 @@ public class CombatUtil {
 						}
 
 						attacker.getWorld().playSound(attacker, attacker.locX(), attacker.locY(), attacker.locZ(), SoundEffects.on, attacker.getSoundCategory(), 1.0F, 1.0F); // Paper - send while respecting visibility
-						attacker.ff();
+						attacker.fg();
 					}
 
 					if (victim instanceof EntityPlayer && victim.C) {

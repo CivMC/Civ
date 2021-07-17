@@ -1,6 +1,8 @@
 package com.github.maxopoly.finale.combat;
 
 import com.github.maxopoly.finale.Finale;
+import com.github.maxopoly.finale.misc.knockback.KnockbackConfig;
+import com.github.maxopoly.finale.misc.knockback.KnockbackModifier;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.util.Vector;
 
@@ -16,16 +18,14 @@ public class CombatConfig {
 	private boolean sweepEnabled;
 	private CombatSoundConfig combatSounds;
 	private double knockbackLevelMultiplier;
-	private Vector knockbackMultiplier;
-	private Vector sprintMultiplier;
-	private Vector waterKnockbackMultiplier;
-	private Vector airKnockbackMultiplier;
+	private KnockbackConfig normalConfig;
+	private KnockbackConfig sprintConfig;
 	private Vector victimMotion;
 	private Vector maxVictimMotion;
 	private Vector attackerMotion;
 
 	public CombatConfig(boolean attackCooldownEnabled, boolean knockbackSwordsEnabled, boolean sprintResetEnabled, boolean waterSprintResetEnabled, int cpsLimit, long cpsCounterInterval, double maxReach, boolean sweepEnabled, CombatSoundConfig combatSounds,
-						double knockbackLevelMultiplier, Vector knockbackMultiplier, Vector sprintMultiplier, Vector waterKnockbackMultiplier, Vector airKnockbackMultiplier, Vector victimMotion, Vector maxVictimMotion,
+						double knockbackLevelMultiplier, KnockbackConfig normalConfig, KnockbackConfig sprintConfig, Vector victimMotion, Vector maxVictimMotion,
 						Vector attackerMotion) {
 		this.attackCooldownEnabled = attackCooldownEnabled;
 		this.knockbackSwordsEnabled = knockbackSwordsEnabled;
@@ -37,13 +37,24 @@ public class CombatConfig {
 		this.sweepEnabled = sweepEnabled;
 		this.combatSounds = combatSounds;
 		this.knockbackLevelMultiplier = knockbackLevelMultiplier;
-		this.knockbackMultiplier = knockbackMultiplier;
-		this.sprintMultiplier = sprintMultiplier;
-		this.waterKnockbackMultiplier = waterKnockbackMultiplier;
-		this.airKnockbackMultiplier = airKnockbackMultiplier;
+		this.normalConfig = normalConfig;
+		this.sprintConfig = sprintConfig;
 		this.victimMotion = victimMotion;
 		this.maxVictimMotion = maxVictimMotion;
 		this.attackerMotion = attackerMotion;
+	}
+
+	private void setKnockbackConfig(FileConfiguration config, String name, KnockbackConfig knockbackConfig) {
+		setKnockbackModifier(config, "cleanerCombat." + name + ".groundModifier", knockbackConfig.getGroundModifier());
+		setKnockbackModifier(config, "cleanerCombat." + name + ".airModifier", knockbackConfig.getAirModifier());
+		setKnockbackModifier(config, "cleanerCombat." + name + ".waterModifier", knockbackConfig.getWaterModifier());
+	}
+
+	private void setKnockbackModifier(FileConfiguration config, String name, KnockbackModifier modifier) {
+		config.set(name + ".type", modifier.getType().toString());
+		config.set(name + ".x", modifier.getModifier().getX());
+		config.set(name + ".y", modifier.getModifier().getY());
+		config.set(name + ".z", modifier.getModifier().getZ());
 	}
 
 	private void setVector(FileConfiguration config, String name, Vector vec) {
@@ -54,13 +65,11 @@ public class CombatConfig {
 
 	public void save() {
 		FileConfiguration config = Finale.getPlugin().getConfig();
-		setVector(config, "clearCombat.knockbackMultiplier", this.knockbackMultiplier);
-		setVector(config, "clearCombat.sprintMultiplier", this.sprintMultiplier);
-		setVector(config, "clearCombat.waterKnockbackMultiplier", this.waterKnockbackMultiplier);
-		setVector(config, "clearCombat.airKnockbackMultiplier", this.airKnockbackMultiplier);
-		setVector(config, "clearCombat.victimMotion", this.victimMotion);
-		setVector(config, "clearCombat.maxVictimMotion", this.maxVictimMotion);
-		setVector(config, "clearCombat.attackerMotion", this.attackerMotion);
+		setKnockbackConfig(config, "normal", normalConfig);
+		setKnockbackConfig(config, "sprint", sprintConfig);
+		setVector(config, "cleanerCombat.victimMotion", this.victimMotion);
+		setVector(config, "cleanerCombat.maxVictimMotion", this.maxVictimMotion);
+		setVector(config, "cleanerCombat.attackerMotion", this.attackerMotion);
 		config.options().copyDefaults(true);
 		Finale.getPlugin().saveConfig();
 	}
@@ -69,20 +78,12 @@ public class CombatConfig {
 		return knockbackLevelMultiplier;
 	}
 
-	public Vector getKnockbackMultiplier() {
-		return knockbackMultiplier;
+	public KnockbackConfig getNormalConfig() {
+		return normalConfig;
 	}
 
-	public Vector getSprintMultiplier() {
-		return sprintMultiplier;
-	}
-
-	public Vector getAirKnockbackMultiplier() {
-		return airKnockbackMultiplier;
-	}
-
-	public Vector getWaterKnockbackMultiplier() {
-		return waterKnockbackMultiplier;
+	public KnockbackConfig getSprintConfig() {
+		return sprintConfig;
 	}
 
 	public Vector getVictimMotion() {
@@ -133,20 +134,12 @@ public class CombatConfig {
 		return combatSounds;
 	}
 
-	public void setKnockbackMultiplier(Vector knockbackMultiplier) {
-		this.knockbackMultiplier = knockbackMultiplier;
+	public void setNormalConfig(KnockbackConfig normalConfig) {
+		this.normalConfig = normalConfig;
 	}
 
-	public void setSprintMultiplier(Vector sprintMultiplier) {
-		this.sprintMultiplier = sprintMultiplier;
-	}
-
-	public void setAirKnockbackMultiplier(Vector airKnockbackMultiplier) {
-		this.airKnockbackMultiplier = airKnockbackMultiplier;
-	}
-
-	public void setWaterKnockbackMultiplier(Vector waterKnockbackMultiplier) {
-		this.waterKnockbackMultiplier = waterKnockbackMultiplier;
+	public void setSprintConfig(KnockbackConfig sprintConfig) {
+		this.sprintConfig = sprintConfig;
 	}
 
 	public void setVictimMotion(Vector victimMotion) {
