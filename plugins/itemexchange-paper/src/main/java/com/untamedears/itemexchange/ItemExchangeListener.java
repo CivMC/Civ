@@ -37,8 +37,8 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.RecipeManager;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.util.NullUtils;
-import vg.civcraft.mc.civmodcore.util.Validation;
+import vg.civcraft.mc.civmodcore.utilities.NullUtils;
+import vg.civcraft.mc.civmodcore.utilities.Validation;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
@@ -47,15 +47,10 @@ import vg.civcraft.mc.civmodcore.world.WorldUtils;
 public final class ItemExchangeListener implements Listener {
 
 	private static final long TIME_BETWEEN_CLICKS = 200L;
-
 	private static final long TIME_BEFORE_TIMEOUT = 10000L;
-
 	private final ItemExchangePlugin PLUGIN = ItemExchangePlugin.getInstance();
-
 	private final Map<Player, Long> playerInteractionCooldowns = new Hashtable<>();
-
 	private final Map<Player, Location> shopRecord = new HashMap<>();
-
 	private final Map<Player, Integer> ruleIndex = new HashMap<>();
 
 	/**

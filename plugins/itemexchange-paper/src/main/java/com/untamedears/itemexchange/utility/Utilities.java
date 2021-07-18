@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.experimental.ExtensionMethod;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -27,15 +28,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
-import vg.civcraft.mc.civmodcore.util.Chainer;
-import vg.civcraft.mc.civmodcore.util.KeyedUtils;
-import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
-import vg.civcraft.mc.civmodcore.util.NullUtils;
+import vg.civcraft.mc.civmodcore.utilities.JavaExtensions;
+import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
+import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
+import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
  * A series of Utilities of ItemExchange
  */
+@ExtensionMethod(JavaExtensions.class)
 public final class Utilities {
 
 	/**
@@ -65,11 +67,10 @@ public final class Utilities {
 	 */
 	public static void givePlayerExchangeRule(Player player, ExchangeRule rule) {
 		RuntimeException error = new InvalidCommandArgument("Could not create that rule.");
-		Inventory inventory = Chainer.from(player).then(Player::getInventory).get();
-		if (inventory == null || rule == null) {
+		if (player == null || rule == null) {
 			throw error;
 		}
-		if (!InventoryUtils.safelyAddItemsToInventory(inventory, new ItemStack[] { rule.toItem() })) {
+		if (!InventoryUtils.safelyAddItemsToInventory(player.getInventory(), new ItemStack[] { rule.toItem() })) {
 			throw error;
 		}
 	}
@@ -224,7 +225,7 @@ public final class Utilities {
 		}
 		return "[" +
 				effects.stream()
-						.map(entry -> "PotionEffect{" + entry.serialize().toString() + "}")
+						.map(entry -> "PotionEffect{" + entry.serialize() + "}")
 						.collect(Collectors.joining(",")) +
 				"]";
 	}

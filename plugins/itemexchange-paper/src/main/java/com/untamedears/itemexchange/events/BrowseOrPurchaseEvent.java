@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import vg.civcraft.mc.civmodcore.util.Validation;
+import vg.civcraft.mc.civmodcore.utilities.Validation;
 
 /**
  * <p>Event that's emitted when a player is browsing a shop. This event is used to determine whether a player will be
