@@ -27,28 +27,27 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.KeyedUtils;
-import vg.civcraft.mc.civmodcore.util.MoreMapUtils;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
+import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "ENCHANTS", order = 200)
 public final class EnchantModifier extends ModifierData {
 
 	public static final EnchantModifier TEMPLATE = new EnchantModifier();
+	public static final Pattern SET_ENCHANT_PATTERN = Pattern.compile("^([+?\\-])([A-Za-z_]+)([\\d]*)$");
 
 	public static final String REQUIRED_KEY = "required";
-
 	public static final String EXCLUDED_KEY = "excluded";
-
 	public static final String UNLISTED_KEY = "unlisted";
-
-	public static final Pattern SET_ENCHANT_PATTERN = Pattern.compile("^([+?\\-])([A-Za-z_]+)([\\d]*)$");
 
 	private Map<Enchantment, Integer> requiredEnchants;
 	private Set<Enchantment> excludedEnchants;
@@ -90,8 +89,8 @@ public final class EnchantModifier extends ModifierData {
 	}
 
 	@Override
-	public void serialize(NBTCompound nbt) {
-		nbt.setCompound(REQUIRED_KEY, NBTEncodings.encodeLeveledEnchants(getRequiredEnchants()));
+	public void toNBT(@Nonnull final NBTCompound nbt) {
+		nbt.set(REQUIRED_KEY, NBTEncodings.encodeLeveledEnchants(getRequiredEnchants()));
 		nbt.setStringArray(EXCLUDED_KEY, getExcludedEnchants().stream()
 				.map(KeyedUtils::getString)
 				.filter(Objects::nonNull)
@@ -99,14 +98,16 @@ public final class EnchantModifier extends ModifierData {
 		nbt.setBoolean(UNLISTED_KEY, isAllowingUnlistedEnchants());
 	}
 
-	@Override
-	public void deserialize(NBTCompound nbt) {
-		setRequiredEnchants(NBTEncodings.decodeLeveledEnchants(nbt.getCompound(REQUIRED_KEY)));
-		setExcludedEnchants(Arrays.stream(nbt.getStringArray(EXCLUDED_KEY))
+	@Nonnull
+	public static EnchantModifier fromNBT(@Nonnull final NBTCompound nbt) {
+		final var modifier = new EnchantModifier();
+		modifier.setRequiredEnchants(NBTEncodings.decodeLeveledEnchants(nbt.getCompound(REQUIRED_KEY)));
+		modifier.setExcludedEnchants(Arrays.stream(nbt.getStringArray(EXCLUDED_KEY))
 				.map(EnchantUtils::getEnchantment)
 				.filter(Objects::nonNull)
 				.collect(Collectors.toCollection(HashSet::new)));
-		setAllowUnlistedEnchants(nbt.getBoolean(UNLISTED_KEY));
+		modifier.setAllowUnlistedEnchants(nbt.getBoolean(UNLISTED_KEY));
+		return modifier;
 	}
 
 	@Override

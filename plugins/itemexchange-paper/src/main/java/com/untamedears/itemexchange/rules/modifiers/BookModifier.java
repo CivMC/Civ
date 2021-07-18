@@ -8,15 +8,16 @@ import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerializationException;
-import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "BOOK", order = 1000)
@@ -25,23 +26,15 @@ public final class BookModifier extends ModifierData {
 	public static final BookModifier TEMPLATE = new BookModifier();
 
 	private static final String TITLE_KEY = "title";
-
 	private static final String AUTHOR_KEY = "author";
-
 	private static final String GENERATION_KEY = "generation";
-
 	private static final String HAS_PAGES_KEY = "hasPages";
-
 	private static final String BOOK_HASH_KEY = "bookHash";
 
 	private String title;
-
 	private String author;
-
 	private Generation generation;
-
 	private boolean hasPages;
-
 	private int bookHash;
 
 	@Override
@@ -101,21 +94,23 @@ public final class BookModifier extends ModifierData {
 	}
 
 	@Override
-	public void serialize(NBTCompound nbt) throws NBTSerializationException {
+	public void toNBT(@Nonnull final NBTCompound nbt) {
 		nbt.setString(TITLE_KEY, this.title);
 		nbt.setString(AUTHOR_KEY, this.author);
 		nbt.setString(GENERATION_KEY, this.generation.name());
 		nbt.setBoolean(HAS_PAGES_KEY, this.hasPages);
-		nbt.setInteger(BOOK_HASH_KEY, this.bookHash);
+		nbt.setInt(BOOK_HASH_KEY, this.bookHash);
 	}
 
-	@Override
-	public void deserialize(NBTCompound nbt) throws NBTSerializationException {
-		this.title = nbt.getString(TITLE_KEY);
-		this.author = nbt.getString(AUTHOR_KEY);
-		this.generation = EnumUtils.getEnum(Generation.class, nbt.getString(GENERATION_KEY));
-		this.hasPages = nbt.getBoolean(HAS_PAGES_KEY);
-		this.bookHash = nbt.getInteger(BOOK_HASH_KEY);
+	@Nonnull
+	public static BookModifier fromNBT(@Nonnull final NBTCompound nbt) {
+		final var modifier = new BookModifier();
+		modifier.title = nbt.getString(TITLE_KEY);
+		modifier.author = nbt.getString(AUTHOR_KEY);
+		modifier.generation = EnumUtils.getEnum(Generation.class, nbt.getString(GENERATION_KEY));
+		modifier.hasPages = nbt.getBoolean(HAS_PAGES_KEY);
+		modifier.bookHash = nbt.getInt(BOOK_HASH_KEY);
+		return modifier;
 	}
 
 	@Override

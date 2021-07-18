@@ -10,12 +10,14 @@ import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ModifierHandler;
+import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "DISPLAY", order = 100)
@@ -58,13 +60,20 @@ public final class DisplayNameModifier extends ModifierData {
 	}
 
 	@Override
-	public void serialize(NBTCompound nbt) {
-		nbt.setString(DISPLAY_NAME_KEY, getDisplayName());
+	public void toNBT(@Nonnull final NBTCompound nbt) {
+		if (hasDisplayName()) {
+			nbt.setString(DISPLAY_NAME_KEY, getDisplayName());
+		}
+		else {
+			nbt.remove(DISPLAY_NAME_KEY);
+		}
 	}
 
-	@Override
-	public void deserialize(NBTCompound nbt) {
-		setDisplayName(nbt.getString(DISPLAY_NAME_KEY));
+	@Nonnull
+	public static DisplayNameModifier fromNBT(@Nonnull final NBTCompound nbt) {
+		final var modifier = new DisplayNameModifier();
+		modifier.setDisplayName(nbt.getString(DISPLAY_NAME_KEY));
+		return modifier;
 	}
 
 	@Override

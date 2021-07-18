@@ -8,8 +8,9 @@ import java.util.Objects;
 import org.apache.commons.lang.IllegalClassException;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 /**
  * Abstract class that represents a modifier.
@@ -69,11 +70,9 @@ public abstract class ModifierData extends BaseCommand
 	 * Duplicates this modifier.
 	 */
 	public final ModifierData duplicate() {
-		NBTCompound nbt = new NBTCompound();
-		serialize(nbt);
-		ModifierData instance = construct();
-		instance.deserialize(nbt);
-		return instance;
+		final var nbt = new NBTCompound();
+		toNBT(nbt);
+		return NBTSerialization.getDeserializer(getClass()).fromNBT(nbt);
 	}
 
 	/**

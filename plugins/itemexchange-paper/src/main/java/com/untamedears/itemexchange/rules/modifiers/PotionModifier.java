@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -20,9 +21,10 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
-import vg.civcraft.mc.civmodcore.util.NullUtils;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
+import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "POTION", order = 400)
@@ -31,7 +33,6 @@ public final class PotionModifier extends ModifierData {
 	public static final PotionModifier TEMPLATE = new PotionModifier();
 
 	public static final String BASE_KEY = "base";
-
 	public static final String EFFECTS_KEY = "effects";
 
 	private PotionData base;
@@ -78,19 +79,21 @@ public final class PotionModifier extends ModifierData {
 	}
 
 	@Override
-	public void serialize(NBTCompound nbt) {
-		nbt.setCompound(BASE_KEY, NBTEncodings.encodePotionData(this.base));
+	public void toNBT(@Nonnull final NBTCompound nbt) {
+		nbt.set(BASE_KEY, NBTEncodings.encodePotionData(this.base));
 		nbt.setCompoundArray(EFFECTS_KEY, getEffects().stream()
 				.map(NBTEncodings::encodePotionEffect)
 				.toArray(NBTCompound[]::new));
 	}
 
-	@Override
-	public void deserialize(NBTCompound nbt) {
-		setPotionData(NBTEncodings.decodePotionData(nbt.getCompound(BASE_KEY)));
-		setEffects(Arrays.stream(nbt.getCompoundArray(EFFECTS_KEY))
+	@Nonnull
+	public static PotionModifier fromNBT(@Nonnull final NBTCompound nbt) {
+		final var modifier = new PotionModifier();
+		modifier.setPotionData(NBTEncodings.decodePotionData(nbt.getCompound(BASE_KEY)));
+		modifier.setEffects(Arrays.stream(nbt.getCompoundArray(EFFECTS_KEY))
 				.map(NBTEncodings::decodePotionEffect)
 				.collect(Collectors.toCollection(ArrayList::new)));
+		return modifier;
 	}
 
 	@Override

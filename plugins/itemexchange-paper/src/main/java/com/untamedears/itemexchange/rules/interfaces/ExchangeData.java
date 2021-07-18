@@ -1,8 +1,8 @@
 package com.untamedears.itemexchange.rules.interfaces;
 
 import java.util.List;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
-import vg.civcraft.mc.civmodcore.util.Validation;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
+import vg.civcraft.mc.civmodcore.utilities.Validation;
 
 /**
  * This class forms the basis of all exchange data.

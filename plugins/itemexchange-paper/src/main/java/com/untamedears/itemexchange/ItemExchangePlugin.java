@@ -29,8 +29,6 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
 	public void onEnable() {
 		instance = this;
 		super.onEnable();
-		registerSerializable(ExchangeRule.class);
-		registerSerializable(BulkExchangeRule.class);
 		saveDefaultConfig();
 		config = new ItemExchangeConfig(this);
 		config.parse();

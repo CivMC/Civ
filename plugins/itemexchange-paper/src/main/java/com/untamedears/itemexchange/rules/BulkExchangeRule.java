@@ -8,19 +8,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
-import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
+import vg.civcraft.mc.civmodcore.nbt.NBTType;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
 
 public final class BulkExchangeRule implements ExchangeData {
 
 	public static final String BULK_KEY = "BulkExchangeRule";
-
 	public static final String RULES_KEY = "rules";
 
 	private List<ExchangeRule> rules;
@@ -31,19 +31,24 @@ public final class BulkExchangeRule implements ExchangeData {
 	}
 
 	@Override
-	public void serialize(NBTCompound nbt) {
+	public void toNBT(@Nonnull final NBTCompound nbt) {
 		nbt.setCompoundArray(RULES_KEY, getRules().stream()
-				.map(NBTSerialization::serialize)
-				.filter(Objects::nonNull)
+				.map((rule) -> {
+					final var ruleNBT = new NBTCompound();
+					rule.toNBT(ruleNBT);
+					return ruleNBT;
+				})
 				.toArray(NBTCompound[]::new));
 	}
 
-	@Override
-	public void deserialize(NBTCompound nbt) {
-		setRules(Arrays.stream(nbt.getCompoundArray(RULES_KEY))
-				.map(raw -> MoreClassUtils.castOrNull(ExchangeRule.class, NBTSerialization.deserialize(raw)))
+	@Nonnull
+	public static BulkExchangeRule fromNBT(@Nonnull final NBTCompound nbt) {
+		final var rule = new BulkExchangeRule();
+		rule.setRules(Arrays.stream(nbt.getCompoundArray(RULES_KEY))
+				.map(raw -> MoreClassUtils.castOrNull(ExchangeRule.class, ExchangeRule.fromNBT(raw)))
 				.filter(Objects::nonNull)
 				.collect(Collectors.toCollection(ArrayList::new)));
+		return rule;
 	}
 
 	@Override
@@ -67,8 +72,11 @@ public final class BulkExchangeRule implements ExchangeData {
 	}
 
 	public ItemStack toItem() {
-		ItemStack item = NBTCompound.processItem(ItemExchangeConfig.getRuleItem(), (nbt) ->
-				nbt.setCompound(BULK_KEY, NBTSerialization.serialize(this)));
+		ItemStack item = NBTSerialization.processItem(ItemExchangeConfig.getRuleItem(), (nbt) -> {
+			final var ruleNBT = new NBTCompound();
+			toNBT(ruleNBT);
+			nbt.set(BULK_KEY, ruleNBT);
+		});
 		ItemUtils.setDisplayName(item, ChatColor.RED + "Bulk Rule Block");
 		ItemUtils.setLore(item, String.format("This rule block holds %s exchange rule%s.",
 				rules.size(), rules.size() == 1 ? "" : "s"));
@@ -82,11 +90,11 @@ public final class BulkExchangeRule implements ExchangeData {
 		if (item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
 			return null;
 		}
-		NBTSerializable serializable = NBTSerialization.deserialize(NBTCompound.fromItem(item).getCompound(BULK_KEY));
-		if (serializable instanceof BulkExchangeRule) {
-			return (BulkExchangeRule) serializable;
+		final var itemNBT = NBTSerialization.fromItem(item);
+		if (itemNBT.hasKeyOfType(BULK_KEY, NBTType.COMPOUND)) {
+			return null;
 		}
-		return null;
+		return fromNBT(itemNBT.getCompound(BULK_KEY));
 	}
 
 }

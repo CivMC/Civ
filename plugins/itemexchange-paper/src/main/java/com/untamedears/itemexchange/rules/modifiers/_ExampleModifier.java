@@ -7,11 +7,14 @@ import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import java.util.List;
+import javax.annotation.Nonnull;
+import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerializationException;
-import vg.civcraft.mc.civmodcore.util.Validation;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerializationException;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.utilities.Validation;
 
 @CommandAlias(SetCommand.ALIAS) // This is needed to make commands work
 @Modifier(slug = "EXAMPLE", order = 12345)
@@ -66,8 +69,8 @@ public final class _ExampleModifier extends ModifierData {
 	 * @throws NBTSerializationException This is thrown if the implementation has a fatal error serializing.
 	 */
 	@Override
-	public void serialize(NBTCompound nbt) {
-
+	public void toNBT(@Nonnull final NBTCompound nbt) {
+		throw new NotImplementedException("Please implement me on your class!");
 	}
 
 	/**
@@ -77,9 +80,11 @@ public final class _ExampleModifier extends ModifierData {
 	 *         {@link NBTSerializationException} if it is.
 	 * @throws NBTSerializationException This is thrown if the implementation has a fatal error deserializing.
 	 */
-	@Override
-	public void deserialize(NBTCompound nbt) {
-
+	@Nonnull
+	public static NBTSerializable fromNBT(@Nonnull final NBTCompound nbt) {
+		final var modifier = new _ExampleModifier();
+		// Something here
+		return modifier;
 	}
 
 	/**

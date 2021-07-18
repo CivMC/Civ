@@ -16,13 +16,15 @@ import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ModifierHandler;
 import java.util.List;
+import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Repairable;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
 
 /**
  * <p>This additional represents a repair level condition.</p>
@@ -77,13 +79,15 @@ public final class RepairModifier extends ModifierData {
 	}
 
 	@Override
-	public void serialize(NBTCompound nbt) {
-		nbt.setInteger(LEVEL_KEY, getRepairCost());
+	public void toNBT(@Nonnull final NBTCompound nbt) {
+		nbt.setInt(LEVEL_KEY, getRepairCost());
 	}
 
-	@Override
-	public void deserialize(NBTCompound nbt) {
-		setRepairCost(nbt.getInteger(LEVEL_KEY));
+	@Nonnull
+	public static RepairModifier fromNBT(@Nonnull final NBTCompound nbt) {
+		final var modifier = new RepairModifier();
+		modifier.setRepairCost(nbt.getInt(LEVEL_KEY));
+		return modifier;
 	}
 
 	@Override

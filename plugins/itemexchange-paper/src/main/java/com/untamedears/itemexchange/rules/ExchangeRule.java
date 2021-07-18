@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import javax.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.ChatColor;
@@ -23,14 +24,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerializationException;
-import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
-import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
-import vg.civcraft.mc.civmodcore.util.NullUtils;
-import vg.civcraft.mc.civmodcore.util.Validation;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
+import vg.civcraft.mc.civmodcore.nbt.NBTType;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
+import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 /**
  * This class represents an exchange rule.
@@ -45,11 +43,8 @@ public final class ExchangeRule implements ExchangeData {
 	}
 
 	public static final short NEW = 0;
-
 	public static final short ANY = -1;
-
 	public static final short USED = -2;
-
 	public static final short ERROR = -99;
 
 	// ------------------------------------------------------------
@@ -57,21 +52,13 @@ public final class ExchangeRule implements ExchangeData {
 	// ------------------------------------------------------------
 
 	private static final String RULE_KEY = "ExchangeRule";
-
 	private static final String VERSION_KEY = "version";
-
 	private static final String TYPE_KEY = "type";
-
 	private static final String MATERIAL_KEY = "material";
-
 	private static final String AMOUNT_KEY = "amount";
-
 	private static final String MODIFIERS_KEY = "modifiers";
-
 	private static final String LEGACY_DISPLAY_NAME_KEY = "displayName";
-
 	private static final String LEGACY_IGNORE_DISPLAY_NAME_KEY = "ignoringDisplayName";
-
 	private static final String LEGACY_LORE_KEY = "lore";
 
 	// ------------------------------------------------------------
@@ -218,43 +205,56 @@ public final class ExchangeRule implements ExchangeData {
 	}
 
 	@Override
-	public void serialize(NBTCompound nbt) throws NBTSerializationException {
-		nbt.setInteger(VERSION_KEY, 4);
+	public void toNBT(@Nonnull final NBTCompound nbt) {
+		nbt.setInt(VERSION_KEY, 4);
 		nbt.setString(TYPE_KEY, this.type.name());
 		nbt.setString(MATERIAL_KEY, this.material.name());
-		nbt.setInteger(AMOUNT_KEY, this.amount);
+		nbt.setInt(AMOUNT_KEY, this.amount);
 		nbt.setCompoundArray(MODIFIERS_KEY, this.modifiers.stream()
-				.map(NBTSerialization::serialize)
-				.filter(Validation::checkValidity)
+				.map((modifier) -> {
+					final var modifierNBT = new NBTCompound();
+					modifier.toNBT(modifierNBT);
+					return modifierNBT;
+				})
 				.toArray(NBTCompound[]::new));
 	}
 
-	@Override
-	public void deserialize(NBTCompound nbt) throws NBTSerializationException {
-		this.type = EnumUtils.getEnum(Type.class, nbt.getString(TYPE_KEY));
-		this.material = EnumUtils.getEnum(Material.class, nbt.getString(MATERIAL_KEY));
-		this.amount = nbt.getInteger(AMOUNT_KEY);
-		this.modifiers.clear();
+	@Nonnull
+	public static ExchangeRule fromNBT(@Nonnull final NBTCompound nbt) {
+		final var rule = new ExchangeRule();
+		rule.type = EnumUtils.getEnum(Type.class, nbt.getString(TYPE_KEY));
+		rule.material = EnumUtils.getEnum(Material.class, nbt.getString(MATERIAL_KEY));
+		rule.amount = nbt.getInt(AMOUNT_KEY);
+		rule.modifiers.clear();
+		final var modifierRegistrar = ItemExchangePlugin.modifierRegistrar();
 		Arrays.stream(nbt.getCompoundArray(MODIFIERS_KEY))
-				.map(raw -> MoreClassUtils.castOrNull(ModifierData.class, NBTSerialization.deserialize(raw)))
-				.forEachOrdered(this.modifiers::put);
+				.map((modifierNBT) -> {
+					final var template = modifierRegistrar.getModifier(modifierNBT.getString("=="));
+					if (template == null) {
+						return null;
+					}
+					return NBTSerialization.getDeserializer(template.getClass()).fromNBT(modifierNBT);
+				})
+				.filter(Objects::nonNull)
+				.forEachOrdered(rule.modifiers::put);
 		// Legacy Support
 		if (nbt.hasKeyOfType(LEGACY_DISPLAY_NAME_KEY, 8) && !nbt.getBoolean(LEGACY_IGNORE_DISPLAY_NAME_KEY)) {
-			DisplayNameModifier displayName = this.modifiers.get(DisplayNameModifier.class);
+			DisplayNameModifier displayName = rule.modifiers.get(DisplayNameModifier.class);
 			if (displayName == null) {
 				displayName = (DisplayNameModifier) DisplayNameModifier.TEMPLATE.construct();
 				displayName.setDisplayName(nbt.getString(LEGACY_DISPLAY_NAME_KEY));
-				this.modifiers.put(displayName);
+				rule.modifiers.put(displayName);
 			}
 		}
 		if (nbt.hasKeyOfType(LEGACY_LORE_KEY, 9)) {
-			LoreModifier lore = this.modifiers.get(LoreModifier.class);
+			LoreModifier lore = rule.modifiers.get(LoreModifier.class);
 			if (lore == null) {
 				lore = (LoreModifier) LoreModifier.TEMPLATE.construct();
 				lore.setLore(MoreCollectionUtils.collect(ArrayList::new, nbt.getStringArray(LEGACY_LORE_KEY)));
-				this.modifiers.put(lore);
+				rule.modifiers.put(lore);
 			}
 		}
+		return rule;
 	}
 
 	// ------------------------------------------------------------
@@ -430,8 +430,11 @@ public final class ExchangeRule implements ExchangeData {
 	 * @return Returns an itemised representation of this rule.
 	 */
 	public ItemStack toItem() {
-		ItemStack item = NBTCompound.processItem(ItemExchangeConfig.getRuleItem(),
-				(nbt) -> nbt.setCompound(RULE_KEY, NBTSerialization.serialize(this)));
+		ItemStack item = NBTSerialization.processItem(ItemExchangeConfig.getRuleItem(), (nbt) -> {
+			final var itemNBT = new NBTCompound();
+			toNBT(itemNBT);
+			nbt.set(RULE_KEY, itemNBT);
+		});
 		ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
 			meta.setDisplayName(getRuleTitle());
 			meta.setLore(getRuleDetails());
@@ -453,11 +456,11 @@ public final class ExchangeRule implements ExchangeData {
 		if (item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
 			return null;
 		}
-		NBTSerializable serializable = NBTSerialization.deserialize(NBTCompound.fromItem(item).getCompound(RULE_KEY));
-		if (serializable instanceof ExchangeRule) {
-			return (ExchangeRule) serializable;
+		final var itemNBT = NBTSerialization.fromItem(item);
+		if (itemNBT.hasKeyOfType(RULE_KEY, NBTType.COMPOUND)) {
+			return null;
 		}
-		return null;
+		return fromNBT(itemNBT.getCompound(RULE_KEY));
 	}
 
 }

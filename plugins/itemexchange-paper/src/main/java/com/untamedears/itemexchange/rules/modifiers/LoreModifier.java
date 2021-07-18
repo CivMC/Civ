@@ -15,15 +15,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "LORE", order = 300)
@@ -63,13 +65,20 @@ public final class LoreModifier extends ModifierData {
 	}
 
 	@Override
-	public void serialize(NBTCompound nbt) {
-		nbt.setStringArray(LORE_KEY, this.lore == null ? null : this.lore.toArray(new String[0]));
+	public void toNBT(@Nonnull final NBTCompound nbt) {
+		if (this.lore == null) {
+			nbt.remove(LORE_KEY);
+		}
+		else {
+			nbt.setStringArray(LORE_KEY, this.lore.toArray(new String[0]));
+		}
 	}
 
-	@Override
-	public void deserialize(NBTCompound nbt) {
-		setLore(MoreCollectionUtils.collect(ArrayList::new, nbt.getStringArray(LORE_KEY)));
+	@Nonnull
+	public static LoreModifier fromNBT(@Nonnull final NBTCompound nbt) {
+		final var modifier = new LoreModifier();
+		modifier.setLore(MoreCollectionUtils.collect(ArrayList::new, nbt.getStringArray(LORE_KEY)));
+		return modifier;
 	}
 
 	@Override
@@ -112,7 +121,7 @@ public final class LoreModifier extends ModifierData {
 			}
 			else {
 				modifier.setLore(Arrays.stream(value.split(";"))
-						.map(TextUtil::parse)
+						.map(ChatUtils::parseColor)
 						.collect(Collectors.toCollection(ArrayList::new)));
 				handler.relay(ChatColor.GREEN + "Successfully changed lore.");
 			}
