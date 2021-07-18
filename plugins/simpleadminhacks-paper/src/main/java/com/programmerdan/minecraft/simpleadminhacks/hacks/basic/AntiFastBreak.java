@@ -46,6 +46,7 @@ public final class AntiFastBreak extends BasicHack {
 	private final PacketManager packets;
 	private final Map<UUID, Map<Location, Long>> miningLocations;
 	private final RateLimiter violationLimiter;
+	private final RateLimiter loggerLimiter;
 	private ICoolDownHandler<UUID> punishCooldown;
 
 	@AutoLoad(id = "laggLenciency") // Continue to support typo
@@ -58,7 +59,8 @@ public final class AntiFastBreak extends BasicHack {
 		super(plugin, config);
 		this.packets = new PacketManager();
 		this.miningLocations = new TreeMap<>();
-		this.violationLimiter = RateLimiting.createRateLimiter("antiCivBreak", 10, 10, 1, 2000L);
+		this.violationLimiter = RateLimiting.createRateLimiter("antiCivBreak", 10, 10, 1, 2_000L);
+		this.loggerLimiter = RateLimiting.createRateLimiter("antiCivBreakLogger", 4, 4, 1, 10_000L);
 	}
 
 	@Override
@@ -66,10 +68,10 @@ public final class AntiFastBreak extends BasicHack {
 		super.onEnable();
 		if (this.breakDenyDuration <= 0) {
 			this.breakDenyDuration = 3000;
-			this.plugin.warning("Invalid break deny duration, defaulting.");
+			plugin().warning("Invalid break deny duration, defaulting to 3000ms");
 		}
 		this.punishCooldown = new MilliSecCoolDownHandler<>(this.breakDenyDuration);
-		this.packets.addAdapter(new PacketAdapter(this.plugin, PacketType.Play.Client.BLOCK_DIG) {
+		this.packets.addAdapter(new PacketAdapter(plugin(), PacketType.Play.Client.BLOCK_DIG) {
 			@Override
 			public void onPacketReceiving(final PacketEvent event) {
 				final PacketContainer packet = event.getPacket();
@@ -85,7 +87,7 @@ public final class AntiFastBreak extends BasicHack {
 						return;
 					default:
 						// some other stuff we dont care about
-						return;
+						//return;
 				}
 			}
 		});
@@ -109,7 +111,7 @@ public final class AntiFastBreak extends BasicHack {
 			return;
 		}
 		player.sendMessage(ChatColor.RED + "Denying break due to abnormal break speed");
-		this.plugin.debug("Denying block break for " + player.getName() + " due cooldown for another "
+		plugin().debug("Denying block break for " + player.getName() + " due cooldown for another "
 				+ TextUtil.formatDuration(this.punishCooldown.getRemainingCoolDown(player.getUniqueId())));
 		event.setCancelled(true);
 	}
@@ -131,7 +133,7 @@ public final class AntiFastBreak extends BasicHack {
 		final Long timeStarted = miningLocs.remove(location);
 		if (timeStarted == null) {
 			if (ticksToBreak > 1) {
-				this.plugin.debug(player.getName() + " tried to instabreak non-instabreakable block");
+				plugin().debug(player.getName() + " tried to instabreak non-instabreakable block");
 				punish(player);
 			}
 			else {
@@ -140,14 +142,14 @@ public final class AntiFastBreak extends BasicHack {
 			return;
 		}
 		if (ticksToBreak == 0) {
-			this.plugin.debug(player.getName() + " instabroke allowed block " + location.getBlock().toString());
+			plugin().debug(player.getName() + " instabroke allowed block " + location.getBlock());
 			reward(player);
 			return;
 		}
 		final long msToBreak = ticksToBreak * 50L;
 		final long now = System.currentTimeMillis();
 		final long timePassed = now - timeStarted;
-		//this.plugin.debug("Measured " + timePassed + " for allowed time of " + TextUtil.formatDuration(msToBreak));
+		//plugin().debug("Measured " + timePassed + " for allowed time of " + TextUtil.formatDuration(msToBreak));
 		miningLocs.put(location, now);
 		if ((timePassed * this.lagLeniency) < msToBreak) {
 			punish(player);
@@ -158,12 +160,14 @@ public final class AntiFastBreak extends BasicHack {
 	}
 
 	private void punish(final Player player) {
-		this.plugin.debug("Attempting to decrement token count for " + player.getName());
+		plugin().debug("Attempting to decrement token count for " + player.getName());
 		if (!this.violationLimiter.pullToken(player)) {
-			this.plugin.debug("Could not decrement token count for " + player.getName() + ", punishing...");
-			Bukkit.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
+			plugin().debug("Could not decrement token count for " + player.getName() + ", punishing...");
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin(), () -> {
 				this.punishCooldown.putOnCoolDown(player.getUniqueId());
-				this.plugin.info(player.getName() + " is possibly using civ break, fast break detected");
+				if (this.loggerLimiter.pullToken(player.getUniqueId()) || plugin().isDebugEnabled()) {
+					plugin().warning(player.getName() + " is possibly using civ break, fast break detected");
+				}
 				player.sendMessage(ChatColor.RED + "You are breaking blocks too fast");
 			});
 		}
