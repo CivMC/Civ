@@ -2,6 +2,19 @@ package com.github.maxopoly.finale;
 
 import static vg.civcraft.mc.civmodcore.config.ConfigHelper.parseTime;
 
+import java.util.*;
+
+import com.github.maxopoly.finale.misc.knockback.KnockbackConfig;
+import com.github.maxopoly.finale.misc.knockback.KnockbackModifier;
+import com.github.maxopoly.finale.misc.knockback.KnockbackType;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.potion.PotionType;
 
 import com.github.maxopoly.finale.combat.CombatConfig;
 import com.github.maxopoly.finale.combat.CombatSoundConfig;
@@ -14,21 +27,6 @@ import com.github.maxopoly.finale.misc.velocity.VelocityConfig;
 import com.github.maxopoly.finale.misc.velocity.VelocityHandler;
 import com.github.maxopoly.finale.potion.PotionHandler;
 import com.github.maxopoly.finale.potion.PotionModification;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.potion.PotionType;
 import org.bukkit.util.Vector;
 
 public class ConfigParser {
@@ -74,7 +72,7 @@ public class ConfigParser {
 	public boolean isPearlEnabled() {
 		return pearlEnabled;
 	}
-	
+
 	public CombatConfig getCombatConfig() {
 		return combatConfig;
 	}
@@ -335,7 +333,7 @@ public class ConfigParser {
 		}
 		return wm;
 	}
-	
+
 	private ArmourModifier parseArmourModification(ConfigurationSection config) {
 		ArmourModifier am = new ArmourModifier();
 		if (config == null) {
@@ -370,20 +368,24 @@ public class ConfigParser {
 		}
 		return am;
 	}
-	
+
 	private CombatConfig parseCombatConfig(ConfigurationSection config) {
 		double maxReach = config.getDouble("maxReach", 6.0);
-		Vector knockbackMultiplier = parseVector(config, "knockbackMultiplier", new Vector(1, 1, 1));
-		Vector sprintMultiplier = parseVector(config, "sprintMultiplier", new Vector(1, 1, 1));
-		Vector waterKnockbackMultiplier = parseVector(config, "waterKnockbackMultiplier", new Vector(1, 1, 1));
-		Vector airKnockbackMultiplier = parseVector(config, "airKnockbackMultiplier", new Vector(1, 1, 1));
+		KnockbackConfig normalConfig = parseKnockbackConfig(config, "normal", new KnockbackConfig(
+				new KnockbackModifier(KnockbackType.MULTIPLY, new Vector(1, 1, 1)),
+				new KnockbackModifier(KnockbackType.MULTIPLY, new Vector(1, 1, 1)),
+				new KnockbackModifier(KnockbackType.MULTIPLY, new Vector(1, 1, 1))
+		));
+		KnockbackConfig sprintConfig = parseKnockbackConfig(config, "sprint", new KnockbackConfig(
+				new KnockbackModifier(KnockbackType.MULTIPLY, new Vector(3, 1, 3)),
+				new KnockbackModifier(KnockbackType.MULTIPLY, new Vector(3, 1, 3)),
+				new KnockbackModifier(KnockbackType.MULTIPLY, new Vector(3, 1, 3))
+		));
 		Vector victimMotion = parseVector(config, "victimMotion", new Vector(0.5, 0.5, 0.5));
 		Vector maxVictimMotion = parseVector(config, "maxVictimMotion", new Vector(10, 1, 10));
 		Vector attackerMotion = parseVector(config, "attackerMotion", new Vector(0.6, 1, 0.6));
-		plugin.info("Setting knockbackMultiplier to " + knockbackMultiplier);
-		plugin.info("Setting sprintMultiplier to " + sprintMultiplier);
-		plugin.info("Setting waterKnockbackMultiplier to " + waterKnockbackMultiplier);
-		plugin.info("Setting airKnockbackMultiplier to " + airKnockbackMultiplier);
+		plugin.info("Setting normalConfig to " + normalConfig);
+		plugin.info("Setting sprintConfig to " + sprintConfig);
 		plugin.info("Setting victimMotion to " + victimMotion);
 		plugin.info("Setting maxVictimMotion to " + maxVictimMotion);
 		plugin.info("Setting attackerMotion to " + attackerMotion);
@@ -403,7 +405,7 @@ public class ConfigParser {
 		plugin.info("Strong sounds are " + (strongSoundEnabled ? "ON" : "OFF"));
 		plugin.info("Knockback sounds are " + (knockbackSoundEnabled ? "ON" : "OFF"));
 		plugin.info("Crit sounds are " + (critSoundEnabled ? "ON" : "OFF"));
-		
+
 		CombatSoundConfig combatSounds = new CombatSoundConfig(weakSoundEnabled, strongSoundEnabled, knockbackSoundEnabled, critSoundEnabled);
 		boolean attackCooldownEnabled = config.getBoolean("attackCooldownEnabled", false);
 		boolean knockbackSwordsEnabled = config.getBoolean("knockbackSwordsEnabled", true);
@@ -420,7 +422,26 @@ public class ConfigParser {
 		}
 
 		return new CombatConfig(attackCooldownEnabled, knockbackSwordsEnabled, sprintResetEnabled, waterSprintResetEnabled, cpsLimit, cpsCounterInterval, maxReach, sweepEnabled, combatSounds,
-				knockbackLevelMultiplier, knockbackMultiplier, sprintMultiplier, waterKnockbackMultiplier, airKnockbackMultiplier, victimMotion, maxVictimMotion, attackerMotion);
+				knockbackLevelMultiplier, normalConfig, sprintConfig, victimMotion, maxVictimMotion, attackerMotion);
+	}
+
+	private KnockbackConfig parseKnockbackConfig(ConfigurationSection config, String name, KnockbackConfig def) {
+		KnockbackModifier ground = parseKnockbackModifier(config, name + ".groundModifier", def.getGroundModifier());
+		KnockbackModifier air = parseKnockbackModifier(config, name + ".airModifier", def.getGroundModifier());
+		KnockbackModifier water = parseKnockbackModifier(config, name + ".waterModifier", def.getGroundModifier());
+		return new KnockbackConfig(ground, air, water);
+	}
+
+	private KnockbackModifier parseKnockbackModifier(ConfigurationSection config, String name, KnockbackModifier def) {
+		String typeStr = config.getString(name + ".type", def.getType().toString());
+		KnockbackType type = KnockbackType.valueOf(typeStr.toUpperCase());
+		if (type == null) {
+			return def;
+		}
+		double x = config.getDouble(name + ".x", def.getModifier().getX());
+		double y = config.getDouble(name + ".y", def.getModifier().getY());
+		double z = config.getDouble(name + ".z", def.getModifier().getZ());
+		return new KnockbackModifier(type, new Vector(x, y, z));
 	}
 
 	private Vector parseVector(ConfigurationSection config, String name, Vector def) {
@@ -429,7 +450,7 @@ public class ConfigParser {
 		double z = config.getDouble(name + ".z", def.getZ());
 		return new Vector(x, y, z);
 	}
-	
+
 	private Map<EntityDamageEvent.DamageCause, Integer> parseInvulnerabilityTicks(ConfigurationSection config) {
 		Map<EntityDamageEvent.DamageCause, Integer> invulnTicks = new HashMap<>();
 		for (String key : config.getKeys(false)) {
@@ -441,7 +462,7 @@ public class ConfigParser {
 						+ ". It was skipped");
 				continue;
 			}
-			
+
 			int ticks = config.getInt(key);
 			invulnTicks.put(cause, ticks);
 			plugin.info("Applying tick invulnerability modification for " + cause.toString() + ", ticks: " + ticks);

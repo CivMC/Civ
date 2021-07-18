@@ -10,6 +10,7 @@ import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.EnumWrappers.EntityUseAction;
 import com.comphenix.protocol.wrappers.EnumWrappers.Hand;
 import com.comphenix.protocol.wrappers.EnumWrappers.PlayerDigType;
+import com.comphenix.protocol.wrappers.WrappedEnumEntityUseAction;
 import com.github.maxopoly.finale.Finale;
 import com.google.common.collect.Sets;
 import java.util.HashMap;
@@ -23,6 +24,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -30,18 +33,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class AsyncPacketHandler extends PacketAdapter implements Listener {
+
+	private CombatConfig cc;
 	
-	private double maxReach;
-	private int cpsLimit;
-	
-	public AsyncPacketHandler() {
+	public AsyncPacketHandler(CombatConfig cc) {
 		super(Finale.getPlugin(), ListenerPriority.HIGH, PacketType.Play.Client.USE_ENTITY, PacketType.Play.Client.ARM_ANIMATION, PacketType.Play.Client.BLOCK_DIG);
-		
-		CombatConfig cc = Finale.getPlugin().getManager().getCombatConfig();
-		maxReach = cc.getMaxReach();
-		cpsLimit = cc.getCPSLimit();
+
+		this.cc = cc;
 		
 		Bukkit.getPluginManager().registerEvents(this, Finale.getPlugin());
 	}
@@ -53,45 +54,47 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 	@Override
 	public void onPacketReceiving(PacketEvent event) {
 		PacketType packetType = event.getPacketType();
-		
+
 		CPSHandler cpsHandler = Finale.getPlugin().getManager().getCPSHandler();
 		if (packetType == PacketType.Play.Client.USE_ENTITY) {
 			Player attacker = event.getPlayer();
 			World world = attacker.getWorld();
-			
+
 			PacketContainer packet = event.getPacket();
-			Entity entity = packet.getEntityModifier(event).read(0);
-			Damageable target = entity instanceof Damageable ? (Damageable)entity : null;
-			
-			if (target == null || target.isDead() || target.isInvulnerable() ||
-					!world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
-				return;
-			}
-			
-			LivingEntity entityTarget = (LivingEntity) target;
-			
-			StructureModifier<EntityUseAction> actions = packet.getEntityUseActions();
-			EntityUseAction action = actions.read(0);
-			
+			StructureModifier<WrappedEnumEntityUseAction> actions = packet.getEnumEntityUseActions();
+			EntityUseAction action = actions.read(0).getAction();
 			if (action != EntityUseAction.ATTACK) {
 				return;
 			}
 			event.setCancelled(true);
-			
-			//cpsHandler.updateClicks(attacker);
-			
-			double distanceSquared = attacker.getLocation().distanceSquared(target.getLocation());
-			
-			if (distanceSquared > (maxReach * maxReach)) {
-				return;
-			}
-			
-			if (cpsHandler.getCPS(attacker.getUniqueId()) >= cpsLimit) {
-				attacker.sendMessage(ChatColor.RED + "You've hit CPS limit of " + cpsLimit + "!");
-				return;
-			}
-			
-			CombatUtil.attack(attacker, entityTarget);
+			new BukkitRunnable() {
+
+				@Override
+				public void run() {
+					Entity entity = packet.getEntityModifier(event).read(0);
+					Damageable target = entity instanceof Damageable ? (Damageable) entity : null;
+
+					if (target == null || target.isDead() || target.isInvulnerable() ||
+							!world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
+						return;
+					}
+
+					LivingEntity entityTarget = (LivingEntity) target;
+
+					double distanceSquared = attacker.getLocation().distanceSquared(target.getLocation());
+
+					if (distanceSquared > (cc.getMaxReach() * cc.getMaxReach())) {
+						return;
+					}
+
+					if (cpsHandler.getCPS(attacker.getUniqueId()) >= cc.getCPSLimit()) {
+						attacker.sendMessage(ChatColor.RED + "You've hit CPS limit of " + cc.getCPSLimit() + "!");
+						return;
+					}
+
+					CombatUtil.attack(attacker, entityTarget);
+				}
+			}.runTask(Finale.getPlugin());
 		} else if (packetType == PacketType.Play.Client.ARM_ANIMATION) {
 			Player attacker = event.getPlayer();
 			PacketContainer packet = event.getPacket();
@@ -101,11 +104,11 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 			}
 		} else if (packetType == PacketType.Play.Client.BLOCK_DIG) {
 			Player attacker = event.getPlayer();
-			
+
 			if (attacker.getGameMode() != GameMode.SURVIVAL) {
 				return;
 			}
-			
+
 			PacketContainer packet = event.getPacket();
 			BlockPosition position = packet.getBlockPositionModifier().getValues().get(0);
 			PlayerDigType digType = packet.getPlayerDigTypes().getValues().get(0);
@@ -116,18 +119,18 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 					cpsHandler.updateClicks(attacker);
 					return;
 				}
-				
+
 				float strength = ((CraftWorld) block.getWorld()).getHandle()
 						.getType(new net.minecraft.core.BlockPosition(position.getX(), position.getY(), position.getZ()))
 						.getBlock().getDurability();
-				
+
 				long lastStartBreak = lastStartBreaks.getOrDefault(attacker.getUniqueId(), 0L);
 				long timeSinceBreak = (System.currentTimeMillis() - lastStartBreak);
 				lastStartBreaks.put(attacker.getUniqueId(), System.currentTimeMillis());
 				if (strength > 0) {
 					long lastRemoval = lastRemovals.getOrDefault(attacker.getUniqueId(), 0L);
 					long timeSinceRemoval = (System.currentTimeMillis() - lastRemoval);
-					
+
 					if (isDigging.contains(attacker.getUniqueId())) {
 						return;
 					}
