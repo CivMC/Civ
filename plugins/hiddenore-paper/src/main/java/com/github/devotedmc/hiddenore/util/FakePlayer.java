@@ -2877,6 +2877,19 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
+	public void setResourcePack(@Nonnull String string,
+								@Nonnull String string2, boolean bl) {
+
+	}
+
+	@Override
+	public void setResourcePack(@Nonnull String string,
+								@Nonnull String string2, boolean bl,
+								@Nullable Component component) {
+
+	}
+
+	@Override
 	public void setSubtitle(BaseComponent[] arg0) {
 		// TODO Auto-generated method stub
 		
