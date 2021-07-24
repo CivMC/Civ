@@ -57,6 +57,7 @@ public final class ExchangeRule implements ExchangeData {
 	private static final String MATERIAL_KEY = "material";
 	private static final String AMOUNT_KEY = "amount";
 	private static final String MODIFIERS_KEY = "modifiers";
+	private static final String CLASS_KEY = "==";
 	private static final String LEGACY_DISPLAY_NAME_KEY = "displayName";
 	private static final String LEGACY_IGNORE_DISPLAY_NAME_KEY = "ignoringDisplayName";
 	private static final String LEGACY_LORE_KEY = "lore";
@@ -214,6 +215,7 @@ public final class ExchangeRule implements ExchangeData {
 				.map((modifier) -> {
 					final var modifierNBT = new NBTCompound();
 					modifier.toNBT(modifierNBT);
+					modifierNBT.setString(CLASS_KEY, modifier.getSlug());
 					return modifierNBT;
 				})
 				.toArray(NBTCompound[]::new));
@@ -229,7 +231,7 @@ public final class ExchangeRule implements ExchangeData {
 		final var modifierRegistrar = ItemExchangePlugin.modifierRegistrar();
 		Arrays.stream(nbt.getCompoundArray(MODIFIERS_KEY))
 				.map((modifierNBT) -> {
-					final var template = modifierRegistrar.getModifier(modifierNBT.getString("=="));
+					final var template = modifierRegistrar.getModifier(modifierNBT.getString(CLASS_KEY));
 					if (template == null) {
 						return null;
 					}

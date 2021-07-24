@@ -64,7 +64,7 @@ public final class ModifierRegistrar {
 			return null;
 		}
 		for (final ModifierData modifier : this.modifiers) {
-			if (slug.equals(modifier.getClass().getName()) || slug.equals(modifier.getSlug())) {
+			if (slug.equals(modifier.getClass().getName()) || slug.equalsIgnoreCase(modifier.getSlug())) {
 				return modifier;
 			}
 		}
