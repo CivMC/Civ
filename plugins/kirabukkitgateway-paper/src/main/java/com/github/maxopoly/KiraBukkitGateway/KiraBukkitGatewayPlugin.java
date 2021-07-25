@@ -1,6 +1,11 @@
 package com.github.maxopoly.KiraBukkitGateway;
 
 import com.github.maxopoly.KiraBukkitGateway.auth.AuthcodeManager;
+import com.github.maxopoly.KiraBukkitGateway.command.CreateDiscordGroupChatCommand;
+import com.github.maxopoly.KiraBukkitGateway.command.DeleteDiscordGroupChatCommand;
+import com.github.maxopoly.KiraBukkitGateway.command.GenerateDiscordAuthCodeCommand;
+import com.github.maxopoly.KiraBukkitGateway.command.ReloadKiraCommand;
+import com.github.maxopoly.KiraBukkitGateway.command.SyncDiscordChannelAccessCommand;
 import com.github.maxopoly.KiraBukkitGateway.impersonation.KiraLuckPermsWrapper;
 import com.github.maxopoly.KiraBukkitGateway.listener.CivChatListener;
 import com.github.maxopoly.KiraBukkitGateway.listener.JukeAlertListener;
@@ -14,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -27,6 +33,7 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 	private KiraLuckPermsWrapper permsWrapper;
 	private ConfigParser config;
 	private List <KiraLogAppender> logAppenders;
+	private CommandManager commandManager;
 
 	public void onEnable() {
 		super.onEnable();
@@ -39,6 +46,17 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 		getServer().getPluginManager().registerEvents(new JukeAlertListener(), this);
 		getServer().getPluginManager().registerEvents(new SkynetListener(), this);
 		getLogger().info("Successfully enabled " + getName());
+		commandManager = new CommandManager(this);
+		commandManager.init();
+		registerCommands();
+	}
+
+	private void registerCommands() {
+		commandManager.registerCommand(new CreateDiscordGroupChatCommand());
+		commandManager.registerCommand(new DeleteDiscordGroupChatCommand());
+		commandManager.registerCommand(new GenerateDiscordAuthCodeCommand());
+		commandManager.registerCommand(new ReloadKiraCommand());
+		commandManager.registerCommand(new SyncDiscordChannelAccessCommand());
 	}
 
 	public void reload() {
