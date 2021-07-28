@@ -452,17 +452,15 @@ public final class ExchangeRule implements ExchangeData {
 	 * @return Returns an exchange rule if found, or null.
 	 */
 	public static ExchangeRule fromItem(ItemStack item) {
-		if (!ItemUtils.isValidItem(item)) {
-			return null;
-		}
-		if (item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
+		if (!ItemUtils.isValidItem(item)
+				|| item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
 			return null;
 		}
 		final var itemNBT = NBTSerialization.fromItem(item);
 		if (itemNBT.hasKeyOfType(RULE_KEY, NBTType.COMPOUND)) {
-			return null;
+			return fromNBT(itemNBT.getCompound(RULE_KEY));
 		}
-		return fromNBT(itemNBT.getCompound(RULE_KEY));
+		return null;
 	}
 
 }
