@@ -10,7 +10,6 @@ import com.untamedears.itemexchange.utility.Utilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.bukkit.Bukkit;
@@ -225,8 +224,8 @@ public final class ItemExchangeListener implements Listener {
 		CraftingInventory inventory = event.getInventory();
 		inventory.setResult(null);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.getInstance(), () -> {
-			List<ExchangeRule> rules = new ArrayList<>();
-			for (ItemStack item : inventory.getMatrix()) {
+			final var rules = new ArrayList<ExchangeRule>();
+			for (final ItemStack item : inventory.getMatrix()) {
 				if (!ItemUtils.isValidItem(item)) {
 					continue;
 				}
@@ -237,13 +236,12 @@ public final class ItemExchangeListener implements Listener {
 				}
 				BulkExchangeRule bulkRule = BulkExchangeRule.fromItem(item);
 				if (Validation.checkValidity(bulkRule)) {
-					rules.addAll(bulkRule.getRules());
+					rules.addAll(bulkRule.rules());
 					continue;
 				}
 				return;
 			}
-			BulkExchangeRule rule = new BulkExchangeRule();
-			rule.setRules(rules);
+			final var rule = new BulkExchangeRule(rules);
 			inventory.setResult(rule.toItem());
 			InventoryUtils.getViewingPlayers(inventory).forEach(Player::updateInventory);
 		});
@@ -262,7 +260,7 @@ public final class ItemExchangeListener implements Listener {
 			return;
 		}
 		drop.remove();
-		for (ExchangeRule rule : bulk.getRules()) {
+		for (ExchangeRule rule : bulk.rules()) {
 			drop.getWorld().dropItem(drop.getLocation(), rule.toItem()).setVelocity(drop.getVelocity());
 		}
 	}

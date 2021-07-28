@@ -1,5 +1,6 @@
 package com.untamedears.itemexchange.rules.interfaces;
 
+import java.util.ArrayList;
 import java.util.List;
 import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
 import vg.civcraft.mc.civmodcore.utilities.Validation;
@@ -15,7 +16,9 @@ public interface ExchangeData extends Validation, NBTSerializable {
 	 *
 	 * @return Returns any display information.
 	 */
-	List<String> getDisplayInfo();
+	default List<String> getDisplayInfo() {
+		return new ArrayList<>(0);
+	}
 
 	/**
 	 * Use {@link ExchangeData#isBroken()} instead.

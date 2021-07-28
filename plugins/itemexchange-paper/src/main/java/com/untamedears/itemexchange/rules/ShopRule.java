@@ -165,7 +165,7 @@ public final class ShopRule implements Validation {
 			BulkExchangeRule bulk = BulkExchangeRule.fromItem(item);
 			if (bulk != null) {
 				PLUGIN.debug("[Resolve] \tBulk Exchange Rule found.");
-				found.addAll(bulk.getRules());
+				found.addAll(bulk.rules());
 				//continue;
 			}
 		}
