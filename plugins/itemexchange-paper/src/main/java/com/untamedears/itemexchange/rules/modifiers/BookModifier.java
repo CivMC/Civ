@@ -112,13 +112,13 @@ public final class BookModifier extends ModifierData {
 			modifier.setTitle(nbt.getString(TITLE_KEY));
 		}
 		if (nbt.hasKeyOfType(AUTHOR_KEY, NBTType.STRING)) {
-			modifier.setTitle(nbt.getString(AUTHOR_KEY));
+			modifier.setAuthor(nbt.getString(AUTHOR_KEY));
 		}
 		if (nbt.hasKeyOfType(GENERATION_KEY, NBTType.STRING)) {
 			modifier.setGeneration(EnumUtils.getEnum(Generation.class, nbt.getString(GENERATION_KEY)));
 		}
-		modifier.setHasPages(nbt.getBoolean(HAS_PAGES_KEY));
-		if (modifier.hasPages()) {
+		if (nbt.getBoolean(HAS_PAGES_KEY)) {
+			modifier.setHasPages(true);
 			modifier.setBookHash(nbt.getInt(BOOK_HASH_KEY));
 		}
 		return modifier;
@@ -129,13 +129,15 @@ public final class BookModifier extends ModifierData {
 		if (Strings.isNullOrEmpty(this.title)) {
 			return null;
 		}
-		return title;
+		return this.title;
 	}
 
 	@Override
 	public List<String> getDisplayInfo() {
 		final var lines = new ArrayList<String>(2);
-		lines.add(ChatColor.DARK_AQUA + "Author: " + ChatColor.GRAY + (hasAuthor() ? getAuthor() : ""));
+		if (hasAuthor()) {
+			lines.add(ChatColor.DARK_AQUA + "Author: " + ChatColor.GRAY + getAuthor());
+		}
 		if (hasGeneration()) {
 			lines.add(ChatColor.DARK_AQUA + "Generation: " + ChatColor.GRAY + getGeneration().name());
 		}
