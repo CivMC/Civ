@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.logging.Level;
+import javax.annotation.Nonnull;
+import lombok.experimental.ExtensionMethod;
 import lombok.experimental.UtilityClass;
 import net.minecraft.nbt.NBTCompressedStreamTools;
 import net.minecraft.nbt.NBTReadLimiter;
@@ -18,15 +20,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.bukkit.craftbukkit.v1_17_R1.persistence.CraftPersistentDataContainer;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftNBTTagConfigSerializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.pdc.extensions.PersistentDataContainerExtensions;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 @UtilityClass
+@ExtensionMethod(PersistentDataContainerExtensions.class)
 public class NBTSerialization {
 
 	private static final CivLogger LOGGER = CivLogger.getLogger(NBTSerialization.class);
@@ -52,13 +55,11 @@ public class NBTSerialization {
 	 * Generates an NBT compound based on a given persistent data container.
 	 *
 	 * @param container The container to generate an NBT compound from.
-	 * @return Returns a newly generated NBT compound by wrapping the PDC's inner-map, or null.
+	 * @return Returns a newly generated NBT compound by wrapping the PDC's inner-map.
 	 */
-	public static NBTCompound fromPDC(final PersistentDataContainer container) {
-		if (container instanceof CraftPersistentDataContainer craftContainer) {
-			return new NBTCompound(craftContainer.getRaw());
-		}
-		return null;
+	@Nonnull
+	public static NBTCompound fromPDC(@Nonnull final PersistentDataContainer container) {
+		return new NBTCompound(container.getRaw());
 	}
 
 	/**

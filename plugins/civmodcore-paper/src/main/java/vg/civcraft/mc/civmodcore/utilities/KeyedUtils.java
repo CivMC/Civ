@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
 import com.google.common.base.Strings;
+import javax.annotation.Nonnull;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Keyed;
@@ -74,6 +75,16 @@ public final class KeyedUtils {
 			return null;
 		}
 		return getString(keyed.getKey());
+	}
+
+	/**
+	 * @param key The namespace'd key.
+	 * @return Returns a new {@link NamespacedKey} for testing purposes.
+	 */
+	@SuppressWarnings("deprecation")
+	@Nonnull
+	public static NamespacedKey testKey(@Nonnull final String key) {
+		return new NamespacedKey("test", key);
 	}
 
 }
