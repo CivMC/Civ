@@ -1,9 +1,8 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
-import com.google.common.base.Strings;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 
@@ -14,23 +13,17 @@ import org.bukkit.NamespacedKey;
 public final class KeyedUtils {
 
 	/**
-	 * Converts a stringified namespace back into a {@link NamespacedKey}.
+	 * Converts a stringified namespaced-key back into a {@link NamespacedKey}.
 	 *
-	 * @param key The stringified namespace, which MUST be formatted as {@code namespace:name}
+	 * @param key The stringified namespace-key, which MUST be formatted as {@code namespace:name}
 	 * @return Returns a valid {@link NamespacedKey}, or null.
 	 *
 	 * @exception IllegalArgumentException Will throw if the stringified key fails a "[a-z0-9._-]+" check, or if the
-	 *     total length is longer than 256.
+	 *            total length is longer than 256.
 	 */
-	public static NamespacedKey fromString(final String key) {
-		if (Strings.isNullOrEmpty(key)) {
-			return null;
-		}
-		final String[] parts = StringUtils.split(key, ":");
-		if (parts.length != 2) {
-			return null;
-		}
-		return fromParts(parts[0], parts[1]);
+	@Nullable
+	public static NamespacedKey fromString(@Nullable final String key) {
+		return key == null ? null : NamespacedKey.fromString(key);
 	}
 
 	/**
@@ -44,10 +37,8 @@ public final class KeyedUtils {
 	 *     combined length is longer than 256.
 	 */
 	@SuppressWarnings("deprecation")
-	public static NamespacedKey fromParts(final String namespace, final String key) {
-		if (Strings.isNullOrEmpty(namespace) || Strings.isNullOrEmpty(key)) {
-			return null;
-		}
+	@Nonnull
+	public static NamespacedKey fromParts(@Nonnull final String namespace, @Nonnull final String key) {
 		return new NamespacedKey(namespace, key);
 	}
 
@@ -57,11 +48,9 @@ public final class KeyedUtils {
 	 * @param key The {@link NamespacedKey} to convert.
 	 * @return Returns the stringified {@link NamespacedKey}, or null.
 	 */
-	public static String getString(final NamespacedKey key) {
-		if (key == null) {
-			return null;
-		}
-		return key.toString();
+	@Nullable
+	public static String getString(@Nullable final NamespacedKey key) {
+		return key == null ? null : key.toString();
 	}
 
 	/**
@@ -70,15 +59,13 @@ public final class KeyedUtils {
 	 * @param keyed The {@link Keyed} instance.
 	 * @return Returns the stringified {@link Keyed}'s {@link NamespacedKey}, or null.
 	 */
-	public static String getString(final Keyed keyed) {
-		if (keyed == null) {
-			return null;
-		}
-		return getString(keyed.getKey());
+	@Nullable
+	public static String getString(@Nullable final Keyed keyed) {
+		return keyed == null ? null : getString(keyed.getKey());
 	}
 
 	/**
-	 * @param key The namespace'd key.
+	 * @param key The namespaced-key.
 	 * @return Returns a new {@link NamespacedKey} for testing purposes.
 	 */
 	@SuppressWarnings("deprecation")
