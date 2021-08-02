@@ -11,7 +11,6 @@ import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.events.CustomEventMapper;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
@@ -46,7 +45,6 @@ public final class CivModCorePlugin extends ACivMod {
 		ConfigurationSerialization.registerClass(DatabaseCredentials.class);
 		// Save default resources
 		saveDefaultResource("enchants.yml");
-		saveDefaultResource("materials.yml");
 		saveDefaultConfig();
 		super.onEnable();
 		// Load Database
@@ -84,7 +82,6 @@ public final class CivModCorePlugin extends ACivMod {
 		this.commands.registerCommand(ChunkOperationManager.INSTANCE);
 		// Load APIs
 		EnchantUtils.loadEnchantAbbreviations(this);
-		ItemUtils.loadItemNames(this);
 		MoreTags.init();
 		SpawnEggUtils.init();
 		TreeTypeUtils.init();
