@@ -85,6 +85,22 @@ public final class MoreArrayUtils {
     }
 
     /**
+     * Attempts to retrieve an element from an array based on a given index. If the index is out of bounds, this
+     * function will gracefully return fast, returning null.
+     *
+     * @param <T> The type of the array's elements.
+     * @param array The array to get the element from.
+     * @param index The index of the element.
+     * @return Returns the element, or null.
+     */
+    public static <T> T getElement(final T[] array, final int index) {
+        if (ArrayUtils.isEmpty(array) || index < 0 || index >= array.length) {
+            return null;
+        }
+        return array[index];
+    }
+
+    /**
      * Retrieves a random element from an array of elements.
      *
      * @param <T> The type of element.

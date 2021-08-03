@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +10,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.list.LazyList;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -121,6 +121,22 @@ public final class MoreCollectionUtils {
         }
         return true;
     }
+
+    /**
+	 * Attempts to retrieve an element from a collection based on a given index. If the index is out of bounds, this
+	 * function will gracefully return fast, returning null.
+	 *
+	 * @param <T> The type of the collection's elements.
+	 * @param collection The collection to get the element from.
+	 * @param index The index of the element.
+	 * @return Returns the element, or null.
+	 */
+    public static <T> T getElement(final Collection<T> collection, final int index) {
+		if (CollectionUtils.isEmpty(collection) || index < 0 || index >= CollectionUtils.size(collection)) {
+			return null;
+		}
+		return IterableUtils.get(collection, index);
+	}
 
     /**
      * Removes the element at the end of the given list.
