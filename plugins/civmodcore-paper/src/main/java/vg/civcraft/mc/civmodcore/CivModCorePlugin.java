@@ -13,7 +13,6 @@ import vg.civcraft.mc.civmodcore.events.CustomEventMapper;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
-import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventoryListener;
@@ -48,7 +47,6 @@ public final class CivModCorePlugin extends ACivMod {
 		// Save default resources
 		saveDefaultResource("enchants.yml");
 		saveDefaultResource("materials.yml");
-		saveDefaultResource("potions.csv");
 		saveDefaultConfig();
 		super.onEnable();
 		// Load Database
@@ -88,7 +86,6 @@ public final class CivModCorePlugin extends ACivMod {
 		EnchantUtils.loadEnchantAbbreviations(this);
 		ItemUtils.loadItemNames(this);
 		MoreTags.init();
-		PotionUtils.init();
 		SpawnEggUtils.init();
 		TreeTypeUtils.init();
 		BottomLineAPI.init();
