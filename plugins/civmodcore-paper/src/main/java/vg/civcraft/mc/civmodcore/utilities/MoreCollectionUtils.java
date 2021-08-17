@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import javax.annotation.Nonnull;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
@@ -69,60 +70,77 @@ public final class MoreCollectionUtils {
 		return collection;
 	}
 
-    /**
-     * <p>Tests whether there is at least one element in the given collection that passes the criteria of the given
-     * predicate.</p>
-     *
-     * <p>Emulates: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some</p>
-     *
-     * @param <T> The type of the collection's elements.
-     * @param collection The collection to iterate.
-     * @param predicate The element tester.
-     * @return Returns true if at least one element passes the predicate test. Or false if the array fails the
-     * {@link ArrayUtils#isEmpty(Object[]) isNullOrEmpty()} test, or true if the give predicate is null.
-     */
-    public static <T> boolean anyMatch(final Collection<T> collection, final Predicate<T> predicate) {
-        if (CollectionUtils.isEmpty(collection)) {
-            return false;
-        }
-        if (predicate == null) {
-            return true;
-        }
-        for (final T element : collection) {
-            if (predicate.test(element)) {
-                return true;
-            }
-        }
-        return false;
-    }
+	/**
+	 * <p>Tests whether there is at least one element in the given collection that passes the criteria of the given
+	 * predicate.</p>
+	 *
+	 * <p>Emulates: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some</p>
+	 *
+	 * @param <T> The type of the collection's elements.
+	 * @param collection The collection to iterate.
+	 * @param predicate The element tester.
+	 * @return Returns true if at least one element passes the predicate test. Or false if the array fails the
+	 * {@link ArrayUtils#isEmpty(Object[]) isNullOrEmpty()} test, or true if the give predicate is null.
+	 */
+	public static <T> boolean anyMatch(final Collection<T> collection, final Predicate<T> predicate) {
+		if (CollectionUtils.isEmpty(collection)) {
+			return false;
+		}
+		if (predicate == null) {
+			return true;
+		}
+		for (final T element : collection) {
+			if (predicate.test(element)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    /**
-     * <p>Tests whether every element in an collection passes the criteria of the given predicate.</p>
-     *
-     * <p>Emulates: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every</p>
-     *
-     * @param <T> The type of the collection's elements.
-     * @param collection The collection to iterate.
-     * @param predicate The element tester.
-     * @return Returns true if no element fails the predicate test, or if the array fails the
-     * {@link ArrayUtils#isEmpty(Object[]) isNullOrEmpty()} test, or if the give predicate is null.
-     */
-    public static <T> boolean allMatch(final Collection<T> collection, final Predicate<T> predicate) {
-        if (CollectionUtils.isEmpty(collection)) {
-            return true;
-        }
-        if (predicate == null) {
-            return true;
-        }
-        for (final T element : collection) {
-            if (!predicate.test(element)) {
-                return false;
-            }
-        }
-        return true;
-    }
+	/**
+	 * <p>Tests whether every element in an collection passes the criteria of the given predicate.</p>
+	 *
+	 * <p>Emulates: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every</p>
+	 *
+	 * @param <T> The type of the collection's elements.
+	 * @param collection The collection to iterate.
+	 * @param predicate The element tester.
+	 * @return Returns true if no element fails the predicate test, or if the array fails the
+	 * {@link ArrayUtils#isEmpty(Object[]) isNullOrEmpty()} test, or if the give predicate is null.
+	 */
+	public static <T> boolean allMatch(final Collection<T> collection, final Predicate<T> predicate) {
+		if (CollectionUtils.isEmpty(collection)) {
+			return true;
+		}
+		if (predicate == null) {
+			return true;
+		}
+		for (final T element : collection) {
+			if (!predicate.test(element)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
-    /**
+	/**
+	 * @param <T> The type of the collection's elements.
+	 * @param collection The collection to ensure the size of.
+	 * @param size The size to ensure.
+	 * @param defaultElement The element to place into the collection if expanded.
+	 */
+	public static <T> void ensureMinimumSize(@Nonnull final Collection<T> collection,
+											 final int size,
+											 final T defaultElement) {
+		if (size < 0 || size < collection.size()) {
+			return;
+		}
+		for (int i = 0, l = size - collection.size(); i < l; i++) {
+			collection.add(defaultElement);
+		}
+	}
+
+	/**
 	 * Attempts to retrieve an element from a collection based on a given index. If the index is out of bounds, this
 	 * function will gracefully return fast, returning null.
 	 *
@@ -131,44 +149,44 @@ public final class MoreCollectionUtils {
 	 * @param index The index of the element.
 	 * @return Returns the element, or null.
 	 */
-    public static <T> T getElement(final Collection<T> collection, final int index) {
+	public static <T> T getElement(final Collection<T> collection, final int index) {
 		if (CollectionUtils.isEmpty(collection) || index < 0 || index >= CollectionUtils.size(collection)) {
 			return null;
 		}
 		return IterableUtils.get(collection, index);
 	}
 
-    /**
-     * Removes the element at the end of the given list.
-     *
-     * @param <T> The type of the list's elements.
-     * @param list The list to remove the last element from.
-     * @return Returns the element removed.
-     */
-    public static <T> T removeLastElement(final List<T> list) {
-        if (CollectionUtils.isEmpty(list)) {
-            return null;
-        }
-        return list.remove(list.size() - 1);
-    }
+	/**
+	 * Removes the element at the end of the given list.
+	 *
+	 * @param <T> The type of the list's elements.
+	 * @param list The list to remove the last element from.
+	 * @return Returns the element removed.
+	 */
+	public static <T> T removeLastElement(final List<T> list) {
+		if (CollectionUtils.isEmpty(list)) {
+			return null;
+		}
+		return list.remove(list.size() - 1);
+	}
 
-    /**
-     * Retrieves a random element from an list of elements.
-     *
-     * @param <T> The type of element.
-     * @param list The list to retrieve a value from.
-     * @return Returns a random element, or null.
-     */
-    public static <T> T randomElement(final List<T> list) {
-        if (CollectionUtils.isEmpty(list)) {
-            return null;
-        }
-        final int size = list.size();
-        if (size == 1) {
-            return list.get(0);
-        }
-        return list.get(ThreadLocalRandom.current().nextInt(size));
-    }
+	/**
+	 * Retrieves a random element from an list of elements.
+	 *
+	 * @param <T> The type of element.
+	 * @param list The list to retrieve a value from.
+	 * @return Returns a random element, or null.
+	 */
+	public static <T> T randomElement(final List<T> list) {
+		if (CollectionUtils.isEmpty(list)) {
+			return null;
+		}
+		final int size = list.size();
+		if (size == 1) {
+			return list.get(0);
+		}
+		return list.get(ThreadLocalRandom.current().nextInt(size));
+	}
 
 	/**
 	 * Calculates the number of elements that fulfill a given condition.
@@ -199,4 +217,5 @@ public final class MoreCollectionUtils {
 		}
 		return lazyList;
 	}
+
 }
