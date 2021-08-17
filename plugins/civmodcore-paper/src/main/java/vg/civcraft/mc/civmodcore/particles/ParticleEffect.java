@@ -1,87 +1,63 @@
 package vg.civcraft.mc.civmodcore.particles;
 
+import javax.annotation.Nonnull;
+import lombok.NonNull;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 
-public class ParticleEffect {
+/**
+ * @param particle The type of particle to effect, ie: explosion, heart, lava... etc
+ * @param offsetX The maximum randomised offset on the X axis.
+ * @param offsetY The maximum randomised offset on the Y axis.
+ * @param offsetZ The maximum randomised offset on the Z axis.
+ * @param speed The speed of the effect.
+ * @param particleCount The number (density) of the particle effect.
+ */
+public record ParticleEffect(@NonNull Particle particle,
+							 float offsetX,
+							 float offsetY,
+							 float offsetZ,
+							 float speed,
+							 int particleCount) {
 
-	private Particle particle;
-
-	private float offsetX;
-
-	private float offsetY;
-
-	private float offsetZ;
-
-	private float speed;
-
-	private int particleCount;
-
-	public ParticleEffect(Particle particle, float offsetX, float offsetY, float offsetZ, float speed, int particleCount) {
-		this.particle = particle;
-		this.offsetX = offsetX;
-		this.offsetY = offsetY;
-		this.offsetZ = offsetZ;
-		this.speed = speed;
-		this.particleCount = particleCount;
-	}
-
-	/**
-	 * @return the type of particle used in this effect
-	 */
+	@Deprecated
 	public Particle getParticle() {
-		return particle;
+		return this.particle;
 	}
 
-	/**
-	 * @return the amount to be randomly offset by in the X axis
-	 */
+	@Deprecated
 	public float getOffsetX() {
-		return offsetX;
+		return this.offsetX;
 	}
 
-	/**
-	 * @return the amount to be randomly offset by in the Y axis
-	 */
+	@Deprecated
 	public float getOffsetY() {
-		return offsetY;
+		return this.offsetY;
 	}
 
-	/**
-	 * @return the amount to be randomly offset by in the Z axis
-	 */
+	@Deprecated
 	public float getOffsetZ() {
-		return offsetZ;
+		return this.offsetZ;
 	}
 
-	/**
-	 * @return the speed of the particles
-	 */
+	@Deprecated
 	public float getSpeed() {
-		return speed;
+		return this.speed;
 	}
 
-	/**
-	 * @return the amount of particle to display.
-	 */
+	@Deprecated
 	public int getParticleCount() {
-		return particleCount;
+		return this.particleCount;
 	}
 
 	/**
 	 * Display an effect defined in the config around a reinforcement.
 	 *
-	 * @param location
-	 *            the location of the reinforcement.
+	 * @param location the location of the reinforcement.
 	 */
-	public void playEffect(Location location) {
-		location.getWorld().spawnParticle(particle, location, particleCount, offsetX, offsetY, offsetZ, speed, null);
-	}
-
-	@Override
-	public String toString() {
-		return String.format("  type: %s \n   offsetX: %f \n   offsetY: %f \n   offsetZ: %f \n   speed:"
-						+ " " + "%f \n   particleCount: %d", particle, offsetX, offsetY, offsetZ, speed, particleCount);
+	public void playEffect(@Nonnull final Location location) {
+		location.getWorld().spawnParticle(this.particle, location, this.particleCount,
+				this.offsetX, this.offsetY, this.offsetZ, this.speed, null);
 	}
 
 }
