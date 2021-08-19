@@ -2,95 +2,122 @@ package com.github.igotyou.FactoryMod.utility;
 
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author caucow
  */
 public class IOSelector {
 
-	private final DirectionMask inputs;
-	private final DirectionMask outputs;
-	private final DirectionMask fuel;
+	private final EnumSet<Direction> inputs;
+	private final EnumSet<Direction> outputs;
+	private final EnumSet<Direction> fuel;
 
-	public IOSelector(byte inMask, byte outMask, byte fuel) {
-		this.inputs = new DirectionMask(inMask);
-		this.outputs = new DirectionMask(outMask);
-		this.fuel = new DirectionMask(fuel);
+	public IOSelector(Collection<Direction> inMask, Collection<Direction> outMask, Collection<Direction> fuel) {
+		this();
+		this.inputs.addAll(inMask);
+		this.outputs.addAll(outMask);
+		this.fuel.addAll(fuel);
 	}
 
 	public IOSelector() {
-		this((byte) 0, (byte) 0, (byte) 0);
+		this.inputs = EnumSet.noneOf(Direction.class);
+		this.outputs = EnumSet.noneOf(Direction.class);
+		this.fuel = EnumSet.noneOf(Direction.class);
 	}
 
-	public IOState getState(DirectionMask.Direction direction) {
-		return IOState.fromIO(inputs.isSet(direction), outputs.isSet(direction), fuel.isSet(direction));
+	public IOState getState(Direction direction) {
+		return IOState.fromIO(inputs.contains(direction), outputs.contains(direction), fuel.contains(direction));
 	}
 
-	public void setState(DirectionMask.Direction direction, IOState state) {
-		inputs.set(direction, state.isIn());
-		outputs.set(direction, state.isOut());
-		fuel.set(direction, state.isFuel());
+	public void setState(Direction direction, IOState state) {
+		if (state.isIn()) {
+			inputs.add(direction);
+		} else {
+			inputs.remove(direction);
+		}
+		if (state.isOut()) {
+			outputs.add(direction);
+		} else {
+			outputs.remove(direction);
+		}
+		if (state.isFuel()) {
+			fuel.add(direction);
+		} else {
+			fuel.remove(direction);
+		}
 	}
 
 	public int getInputCount() {
-		return Integer.bitCount(inputs.getMask());
+		return inputs.size();
 	}
 
 	public int getOutputCount() {
-		return Integer.bitCount(outputs.getMask());
+		return outputs.size();
 	}
 
 	public int getFuelCount() {
-		return Integer.bitCount(fuel.getMask());
+		return fuel.size();
 	}
 
 	public int getTotalIOFCount() {
 		return getInputCount() + getOutputCount() + getFuelCount();
 	}
 
-	public boolean toggleInput(DirectionMask.Direction direction) {
-		boolean newState = !inputs.isSet(direction);
-		inputs.set(direction, newState);
-		return newState;
+	public boolean toggleInput(Direction direction) {
+		boolean added = inputs.add(direction);
+		if (!added) {
+			inputs.remove(direction);
+		}
+		return added;
 	}
 
-	public boolean isInput(DirectionMask.Direction direction) {
-		return inputs.isSet(direction);
+	public boolean isInput(Direction direction) {
+		return inputs.contains(direction);
 	}
 
-	public boolean toggleOutput(DirectionMask.Direction direction) {
-		boolean newState = !outputs.isSet(direction);
-		outputs.set(direction, newState);
-		return newState;
+	public boolean toggleOutput(Direction direction) {
+		boolean added = outputs.add(direction);
+		if (!added) {
+			outputs.remove(direction);
+		}
+		return added;
 	}
 
-	public boolean isOutput(DirectionMask.Direction direction) {
-		return outputs.isSet(direction);
+	public boolean isOutput(Direction direction) {
+		return outputs.contains(direction);
 	}
 
-	public boolean toggleFuel(DirectionMask.Direction direction) {
-		boolean newState = !fuel.isSet(direction);
-		fuel.set(direction, newState);
-		return newState;
+	public boolean toggleFuel(Direction direction) {
+		boolean added = fuel.add(direction);
+		if (!added) {
+			fuel.remove(direction);
+		}
+		return added;
 	}
 
-	public boolean isFuel(DirectionMask.Direction direction) {
-		return fuel.isSet(direction);
+	public boolean isFuel(Direction direction) {
+		return fuel.contains(direction);
 	}
 
 	public boolean hasInputs() {
-		return inputs.getMask() != 0;
+		return !inputs.isEmpty();
 	}
 
 	public List<BlockFace> getInputs(BlockFace front) {
-		DirectionMask.Direction[] values = DirectionMask.Direction.values();
+		Direction[] values = Direction.values();
 		List<BlockFace> bfList = new ArrayList<>(values.length);
-		for (DirectionMask.Direction dir : values) {
-			if (inputs.isSet(dir)) {
+		for (Direction dir : values) {
+			if (inputs.contains(dir)) {
 				bfList.add(dir.getBlockFacing(front));
 			}
 		}
@@ -98,14 +125,14 @@ public class IOSelector {
 	}
 
 	public boolean hasOutputs() {
-		return outputs.getMask() != 0;
+		return !outputs.isEmpty();
 	}
 
 	public List<BlockFace> getOutputs(BlockFace front) {
-		DirectionMask.Direction[] values = DirectionMask.Direction.values();
+		Direction[] values = Direction.values();
 		List<BlockFace> bfList = new ArrayList<>(values.length);
-		for (DirectionMask.Direction dir : values) {
-			if (outputs.isSet(dir)) {
+		for (Direction dir : values) {
+			if (outputs.contains(dir)) {
 				bfList.add(dir.getBlockFacing(front));
 			}
 		}
@@ -113,51 +140,44 @@ public class IOSelector {
 	}
 
 	public boolean hasFuel() {
-		return fuel.getMask() != 0;
+		return !fuel.isEmpty();
 	}
 
 	public List<BlockFace> getFuel(BlockFace front) {
-		DirectionMask.Direction[] values = DirectionMask.Direction.values();
+		Direction[] values = Direction.values();
 		List<BlockFace> bfList = new ArrayList<>(values.length);
-		for (DirectionMask.Direction dir : values) {
-			if (fuel.isSet(dir)) {
+		for (Direction dir : values) {
+			if (fuel.contains(dir)) {
 				bfList.add(dir.getBlockFacing(front));
 			}
 		}
 		return bfList;
 	}
 
-	public IOState cycleDirection(DirectionMask.Direction direction, boolean backwards) {
+	public IOState cycleDirection(Direction direction, boolean backwards) {
 		IOState cur = getState(direction);
 		if (backwards) {
 			cur = cur.last();
 		} else {
 			cur = cur.next();
 		}
-		inputs.set(direction, cur.isIn());
-		outputs.set(direction, cur.isOut());
-		fuel.set(direction, cur.isFuel());
+		setState(direction, cur);
 		return cur;
 	}
 
-	/**
-	 * @return a compact serialized form of the fuel/in/out bitmasks (high 8 bits unused, 8 bits fuel, 8 bits input, low
-	 * 8 bits output)
-	 */
-	public int toIntMask() {
-		return inputs.getMask() << 8 | outputs.getMask();
+	public ConfigurationSection toConfigSection() {
+		ConfigurationSection sec = new YamlConfiguration();
+		sec.set("in", inputs.stream().map(Enum::name).collect(Collectors.toList()));
+		sec.set("out", outputs.stream().map(Enum::name).collect(Collectors.toList()));
+		sec.set("fuel", fuel.stream().map(Enum::name).collect(Collectors.toList()));
+		return sec;
 	}
 
-	/**
-	 * @param fioCombinedMask compact serialized form of the input, output, and fuel bitmasks (high 8 bits unused, 8
-	 *                        bits fuel, 8 bits input, low 8 bits output)
-	 * @return IOSelector with input, output, and fuel masks set
-	 */
-	public static IOSelector fromIntMask(int fioCombinedMask) {
-		return new IOSelector(
-				(byte) (fioCombinedMask >>> 8 & 0xFF),
-				(byte) (fioCombinedMask & 0xFF),
-				(byte) (fioCombinedMask >>> 16 & 0xFF));
+	public static IOSelector fromConfigSection(ConfigurationSection conf) {
+		List<Direction> inList = conf.getStringList("in").stream().map(Direction::valueOf).collect(Collectors.toList());
+		List<Direction> outList = conf.getStringList("out").stream().map(Direction::valueOf).collect(Collectors.toList());
+		List<Direction> fuelList = conf.getStringList("fuel").stream().map(Direction::valueOf).collect(Collectors.toList());
+		return new IOSelector(inList, outList, fuelList);
 	}
 
 	public enum IOState {

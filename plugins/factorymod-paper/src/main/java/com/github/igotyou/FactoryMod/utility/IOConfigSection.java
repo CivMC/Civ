@@ -49,18 +49,18 @@ public class IOConfigSection extends StaticDisplaySection {
 	private Clickable getIoButton(BlockFace dir) {
 		Block relativeBlock = centerBlock.getRelative(dir);
 		Material type = relativeBlock.getType();
-		DirectionMask.Direction relativeDir = DirectionMask.Direction.getDirection(front, dir);
+		Direction relativeDir = Direction.getDirection(front, dir);
 		return getIoClickable(type, relativeDir, dir.name());
 	}
 
-	private Clickable getIoButton(DirectionMask.Direction dir) {
+	private Clickable getIoButton(Direction dir) {
 		BlockFace relativeDir = dir.getBlockFacing(front);
 		Block relativeBlock = centerBlock.getRelative(relativeDir);
 		Material type = relativeBlock.getType();
 		return getIoClickable(type, dir, dir.name());
 	}
 
-	private Clickable getIoClickable(Material adjacentType, DirectionMask.Direction dir, String dirLabel) {
+	private Clickable getIoClickable(Material adjacentType, Direction dir, String dirLabel) {
 		IOSelector.IOState dirState = ioSelector.getState(dir);
 		boolean hasChest = adjacentType != Material.CHEST && adjacentType != Material.TRAPPED_CHEST;
 		ItemStack display;
@@ -172,12 +172,12 @@ public class IOConfigSection extends StaticDisplaySection {
 		ioDirectionMode = FactoryMod.getInstance().getManager().getPlayerSettings().getIoDirectionMode(viewerId);
 		switch (ioDirectionMode) {
 			case VISUAL_RELATIVE: {
-				set(getIoButton(DirectionMask.Direction.TOP), 1);
-				set(getIoButton(DirectionMask.Direction.FRONT), 2);
-				set(getIoButton(DirectionMask.Direction.LEFT), 3);
-				set(getIoButton(DirectionMask.Direction.RIGHT), 5);
-				set(getIoButton(DirectionMask.Direction.BOTTOM), 7);
-				set(getIoButton(DirectionMask.Direction.BACK), 8);
+				set(getIoButton(Direction.TOP), 1);
+				set(getIoButton(Direction.FRONT), 2);
+				set(getIoButton(Direction.LEFT), 3);
+				set(getIoButton(Direction.RIGHT), 5);
+				set(getIoButton(Direction.BOTTOM), 7);
+				set(getIoButton(Direction.BACK), 8);
 				break;
 			}
 			case CARDINAL: {

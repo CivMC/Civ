@@ -33,7 +33,7 @@ public class MultiInventoryWrapper implements Inventory {
 		this(new ArrayList<>(Arrays.asList(wrapped)));
 	}
 
-	public MultiInventoryWrapper(ArrayList<Inventory> wrapped) {
+	public MultiInventoryWrapper(List<Inventory> wrapped) {
 		Inventory[] wrappedArr = uniquify(wrapped);
 		this.wrapped = wrappedArr;
 		int lsize = 0;

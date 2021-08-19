@@ -5,6 +5,7 @@ import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
 import com.github.igotyou.FactoryMod.events.RecipeExecuteEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
+import com.github.igotyou.FactoryMod.utility.Direction;
 import com.github.igotyou.FactoryMod.utility.IIOFInventoryProvider;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
@@ -16,7 +17,6 @@ import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
-import com.github.igotyou.FactoryMod.utility.DirectionMask;
 import com.github.igotyou.FactoryMod.utility.IOSelector;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 import java.util.ArrayList;
@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Bukkit;
@@ -107,44 +108,14 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 	}
 
 	public Inventory getInputInventory() {
-		FurnCraftChestStructure fccs = (FurnCraftChestStructure) getMultiBlockStructure();
-		ArrayList<Inventory> invs = new ArrayList<>(12);
-		Block fblock = getFurnace();
-		BlockFace facing = getFacing();
-		for (BlockFace relativeFace : getFurnaceIOSelector().getInputs(facing)) {
-			Block relBlock = fblock.getRelative(relativeFace);
-			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
-				invs.add(((Chest) relBlock.getState()).getInventory());
-			}
-		}
-		Block tblock = fccs.getCraftingTable();
-		for (BlockFace relativeFace : getTableIOSelector().getInputs(facing)) {
-			Block relBlock = tblock.getRelative(relativeFace);
-			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
-				invs.add(((Chest) relBlock.getState()).getInventory());
-			}
-		}
+		List<Inventory> invs = new ArrayList<>(12);
+		getInventoriesForIoType(invs, iosel -> iosel::getInputs);
 		return new MultiInventoryWrapper(invs);
 	}
 
 	public Inventory getOutputInventory() {
-		FurnCraftChestStructure fccs = (FurnCraftChestStructure) getMultiBlockStructure();
-		ArrayList<Inventory> invs = new ArrayList<>(12);
-		Block fblock = getFurnace();
-		BlockFace facing = getFacing();
-		for (BlockFace relativeFace : getFurnaceIOSelector().getOutputs(facing)) {
-			Block relBlock = fblock.getRelative(relativeFace);
-			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
-				invs.add(((Chest) relBlock.getState()).getInventory());
-			}
-		}
-		Block tblock = fccs.getCraftingTable();
-		for (BlockFace relativeFace : getTableIOSelector().getOutputs(facing)) {
-			Block relBlock = tblock.getRelative(relativeFace);
-			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
-				invs.add(((Chest) relBlock.getState()).getInventory());
-			}
-		}
+		List<Inventory> invs = new ArrayList<>(12);
+		getInventoriesForIoType(invs, iosel -> iosel::getOutputs);
 		return new MultiInventoryWrapper(invs);
 	}
 
@@ -152,25 +123,30 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 		if (!getFurnaceIOSelector().hasFuel() && !getTableIOSelector().hasFuel()) {
 			return getFurnaceInventory();
 		}
-		FurnCraftChestStructure fccs = (FurnCraftChestStructure) getMultiBlockStructure();
 		ArrayList<Inventory> invs = new ArrayList<>(13);
+		getInventoriesForIoType(invs, iosel -> iosel::getFuel);
 		invs.add(getFurnaceInventory());
+		return new MultiInventoryWrapper(invs);
+	}
+
+	private void getInventoriesForIoType(List<Inventory> combinedInvList,
+			Function<IOSelector, Function<BlockFace, Iterable<BlockFace>>> ioTypeFunc) {
+		FurnCraftChestStructure fccs = (FurnCraftChestStructure) getMultiBlockStructure();
 		Block fblock = getFurnace();
 		BlockFace facing = getFacing();
-		for (BlockFace relativeFace : getFurnaceIOSelector().getFuel(facing)) {
+		for (BlockFace relativeFace : ioTypeFunc.apply(getFurnaceIOSelector()).apply(facing)) {
 			Block relBlock = fblock.getRelative(relativeFace);
 			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
-				invs.add(((Chest) relBlock.getState()).getInventory());
+				combinedInvList.add(((Chest) relBlock.getState()).getInventory());
 			}
 		}
 		Block tblock = fccs.getCraftingTable();
-		for (BlockFace relativeFace : getTableIOSelector().getFuel(facing)) {
+		for (BlockFace relativeFace : ioTypeFunc.apply(getTableIOSelector()).apply(facing)) {
 			Block relBlock = tblock.getRelative(relativeFace);
 			if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
-				invs.add(((Chest) relBlock.getState()).getInventory());
+				combinedInvList.add(((Chest) relBlock.getState()).getInventory());
 			}
 		}
-		return new MultiInventoryWrapper(invs);
 	}
 
 	@Override
@@ -209,7 +185,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 			BlockFace front = getFacing();
 			BlockFace chestDir = getFurnace().getFace(getCraftingTable());
 			if (chestDir != null && front != null) {
-				DirectionMask.Direction defaultDir = DirectionMask.Direction.getDirection(front, chestDir);
+				Direction defaultDir = Direction.getDirection(front, chestDir);
 				tableIoSelector.setState(defaultDir, IOSelector.IOState.BOTH);
 			}
 		}
