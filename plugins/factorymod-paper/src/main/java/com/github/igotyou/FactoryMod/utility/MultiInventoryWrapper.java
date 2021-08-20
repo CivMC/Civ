@@ -119,6 +119,9 @@ public class MultiInventoryWrapper implements Inventory {
 		HashMap<Integer, ItemStack> result = null;
 		for (int invi = 0; invi < wrapped.length; invi++) {
 			result = wrapped[invi].removeItem(itemStacks);
+			if (result.isEmpty()) {
+				break;
+			}
 			itemStacks = new ItemStack[result.size()];
 			int itemi = 0;
 			Iterator<Map.Entry<Integer, ItemStack>> eit = result.entrySet().iterator();

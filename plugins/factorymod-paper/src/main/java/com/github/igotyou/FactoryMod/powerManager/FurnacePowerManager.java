@@ -84,7 +84,10 @@ public class FurnacePowerManager implements IPowerManager {
 		if (iofProvider != null) {
 			Inventory fuelInv = iofProvider.getFuelInventory();
 			if (fuelInv != null) {
-				fuelInv.removeItem(fuel);
+				for (int i = 0; i < fuelCount; i++) {
+					fuelInv.removeItem(fuel);
+				}
+				return;
 			}
 		}
 
