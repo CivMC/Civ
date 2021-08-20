@@ -270,6 +270,8 @@ public class FactoryModManager {
 						if (egg != null) {
 							Factory f = egg.hatch(fccs, p);
 							if (f != null) {
+								// Trigger lazy-initialize default crafting table IOSelector
+								((FurnCraftChestFactory)f).getTableIOSelector();
 								((Chest) (fccs.getChest().getState())).getInventory().clear();
 								addFactory(f);
 								p.sendMessage(ChatColor.GREEN + "Successfully created " + f.getName());

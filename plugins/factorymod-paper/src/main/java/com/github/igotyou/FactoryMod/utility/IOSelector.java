@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -181,19 +180,21 @@ public class IOSelector {
 	}
 
 	public enum IOState {
-		IGNORED(new ItemStack(Material.GRAY_WOOL), 0x808080),
-		INPUT(new ItemStack(Material.BLUE_WOOL), 0x4040FF),
-		OUTPUT(new ItemStack(Material.RED_WOOL), 0xFF4040),
-		BOTH(new ItemStack(Material.PURPLE_WOOL), 0xFF40FF),
-		FUEL(new ItemStack(Material.LIGHT_GRAY_WOOL), 0xA0A0A0),
-		INPUT_FUEL(new ItemStack(Material.CYAN_WOOL), 0x8060FF),
-		OUTPUT_FUEL(new ItemStack(Material.PINK_WOOL), 0xFF6080),
-		BOTH_FUEL(new ItemStack(Material.MAGENTA_WOOL), 0xFF60FF);
+		IGNORED("Ignored", new ItemStack(Material.GRAY_WOOL), 0x808080),
+		INPUT("Input", new ItemStack(Material.BLUE_WOOL), 0x4040FF),
+		OUTPUT("Output", new ItemStack(Material.RED_WOOL), 0xFF4040),
+		BOTH("Input+Output", new ItemStack(Material.PURPLE_WOOL), 0xFF40FF),
+		FUEL("Fuel", new ItemStack(Material.LIGHT_GRAY_WOOL), 0xA0A0A0),
+		INPUT_FUEL("Input+Fuel", new ItemStack(Material.CYAN_WOOL), 0x8060FF),
+		OUTPUT_FUEL("Output+Fuel", new ItemStack(Material.PINK_WOOL), 0xFF6080),
+		BOTH_FUEL("Input+Output+Fuel", new ItemStack(Material.MAGENTA_WOOL), 0xFF60FF);
 
+		public final String displayName;
 		private final ItemStack uiVisual;
 		public final int color;
 
-		private IOState(ItemStack uiVisual, int color) {
+		IOState(String displayName, ItemStack uiVisual, int color) {
+			this.displayName = displayName;
 			this.uiVisual = uiVisual;
 			this.color = color;
 		}

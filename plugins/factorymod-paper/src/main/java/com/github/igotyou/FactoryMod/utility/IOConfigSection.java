@@ -7,12 +7,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
@@ -62,9 +64,9 @@ public class IOConfigSection extends StaticDisplaySection {
 
 	private Clickable getIoClickable(Material adjacentType, Direction dir, String dirLabel) {
 		IOSelector.IOState dirState = ioSelector.getState(dir);
-		boolean hasChest = adjacentType != Material.CHEST && adjacentType != Material.TRAPPED_CHEST;
+		boolean chestMissing = adjacentType != Material.CHEST && adjacentType != Material.TRAPPED_CHEST;
 		ItemStack display;
-		if (hasChest) {
+		if (chestMissing) {
 			display = new ItemStack(Material.BARRIER);
 			ItemUtils.addComponentLore(display, Component
 					.text("<no chest>")
@@ -75,23 +77,25 @@ public class IOConfigSection extends StaticDisplaySection {
 		}
 		if (ioDirectionMode != null) {
 			for (String descLine : ioDirectionMode.fullDescription) {
-				ItemUtils.addComponentLore(display, Component
-						.text(descLine)
-						.color(TextColor.color(255, 255, 192)));
+				ItemUtils.addComponentLore(display,
+						Component.text(descLine).color(TextColor.color(255, 255, 192)));
 			}
 		}
 		ItemUtils.setComponentDisplayName(display,
 				Component.text("\u00a7r")
 						.append(Component.text(dirLabel).color(TextColor.color(192, 192, 192)))
 						.append(Component.text(": "))
-						.append(Component.text(dirState.name()).color(TextColor.color(dirState.color)))
+						.append(Component.text(dirState.displayName).color(TextColor.color(dirState.color)))
 						.asComponent());
 		ItemUtils.addComponentLore(display,
-				Component.text("L/M/R click to toggle I/F/O").color(TextColor.color(192, 192, 192)));
+				Component.text("L/M/R click to toggle I/F/O")
+						.style(Style.style(TextDecoration.BOLD))
+						.color(TextColor.color(255, 255, 255)));
 		FactoryModManager fmMgr = FactoryMod.getInstance().getManager();
 		return new Clickable(display) {
 			private ClickableInventory inventory;
 			private int slot;
+			private BukkitTask reBarrierTask;
 
 			@Override
 			protected void clicked(Player player) {
@@ -158,10 +162,20 @@ public class IOConfigSection extends StaticDisplaySection {
 						Component.text("\u00a7r")
 								.append(Component.text(dirLabel).color(TextColor.color(192, 192, 192)))
 								.append(Component.text(": "))
-								.append(Component.text(newState.name()).color(TextColor.color(newState.color)))
+								.append(Component.text(newState.displayName).color(TextColor.color(newState.color)))
 								.asComponent());
 				if (inventory != null && inventory.getSlot(slot) == this) {
 					inventory.setSlot(this, slot);
+				}
+				if (chestMissing) {
+					if (reBarrierTask != null) {
+						reBarrierTask.cancel();
+					}
+					reBarrierTask = Bukkit.getScheduler().runTaskLater(FactoryMod.getInstance(), () -> {
+						getItemStack().setType(Material.BARRIER);
+						inventory.setSlot(this, slot);
+						reBarrierTask = null;
+					}, 20);
 				}
 			}
 		};

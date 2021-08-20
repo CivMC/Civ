@@ -151,17 +151,20 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 
 	@Override
 	public int getInputCount() {
-		return furnaceIoSelector.getInputCount() + tableIoSelector.getInputCount();
+		return (furnaceIoSelector == null ? 0 : furnaceIoSelector.getInputCount())
+				+ (tableIoSelector == null ? 0 : tableIoSelector.getInputCount());
 	}
 
 	@Override
 	public int getOutputCount() {
-		return furnaceIoSelector.getOutputCount() + tableIoSelector.getOutputCount();
+		return (furnaceIoSelector == null ? 0 : furnaceIoSelector.getOutputCount())
+				+ (tableIoSelector == null ? 0 : tableIoSelector.getOutputCount());
 	}
 
 	@Override
 	public int getFuelCount() {
-		return furnaceIoSelector.getFuelCount() + tableIoSelector.getFuelCount();
+		return (furnaceIoSelector == null ? 0 : furnaceIoSelector.getFuelCount())
+				+ (tableIoSelector == null ? 0 : tableIoSelector.getFuelCount());
 	}
 
 	public void setFurnaceIOSelector(IOSelector ioSelector) {
@@ -210,8 +213,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 		}
 		Furnace fstate = (Furnace) fblock.getState();
 		org.bukkit.block.data.type.Furnace fdata = (org.bukkit.block.data.type.Furnace) fstate.getBlockData();
-		BlockFace facing = fdata.getFacing();
-		return facing;
+		return fdata.getFacing();
 	}
 
 	/**
@@ -530,6 +532,14 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 						deactivate();
 					}
 				}
+			} else if (isAutoSelect())  {
+				IRecipe nextOne = getAutoSelectRecipe();
+				if (nextOne != null) {
+					sendActivatorMessage(ChatColor.GREEN + name + " automatically switched to recipe " + nextOne.getName() + " and began running it");
+					currentRecipe = nextOne;
+					scheduleUpdate();
+				}
+				// don't setPowerCounter to 0, fuel has been consumed, let it be used for the new recipe
 			} else {
 				sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because it ran out of required materials");
 				deactivate();
