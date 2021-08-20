@@ -124,9 +124,9 @@ public abstract class Factory implements Runnable {
 		if (f.getType() != Material.FURNACE) {
 			return;
 		}
-		Furnace furnace = (Furnace) f.getState();
 		Bukkit.getScheduler().runTask(FactoryMod.getInstance(), () -> {
 			if (this.isActive()) {
+				Furnace furnace = (Furnace) f.getState();
 				furnace.setBurnTime(Short.MAX_VALUE);
 				furnace.update();
 			}
@@ -141,9 +141,9 @@ public abstract class Factory implements Runnable {
 		if (f.getType() != Material.FURNACE) {
 			return;
 		}
-		Furnace furnace = (Furnace) f.getState();
 		Bukkit.getScheduler().runTask(FactoryMod.getInstance(), () -> {
 			if (!this.isActive()) {
+				Furnace furnace = (Furnace) f.getState();
 				furnace.setBurnTime((short) 0);
 				furnace.update();
 			}
