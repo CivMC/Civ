@@ -141,12 +141,19 @@ public abstract class Factory implements Runnable {
 		if (f.getType() != Material.FURNACE) {
 			return;
 		}
-		Bukkit.getScheduler().runTask(FactoryMod.getInstance(), () -> {
-			if (!this.isActive()) {
-				Furnace furnace = (Furnace) f.getState();
-				furnace.setBurnTime((short) 0);
-				furnace.update();
-			}
-		});
+		FactoryMod fmPlugin = FactoryMod.getInstance();
+		if (fmPlugin.isEnabled()) {
+			Bukkit.getScheduler().runTask(FactoryMod.getInstance(), () -> {
+				if (!this.isActive()) {
+					Furnace furnace = (Furnace) f.getState();
+					furnace.setBurnTime((short) 0);
+					furnace.update();
+				}
+			});
+		} else if (!this.isActive()) {
+			Furnace furnace = (Furnace) f.getState();
+			furnace.setBurnTime((short) 0);
+			furnace.update();
+		}
 	}
 }
