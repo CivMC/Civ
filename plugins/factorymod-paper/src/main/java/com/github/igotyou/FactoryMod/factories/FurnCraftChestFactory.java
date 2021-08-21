@@ -532,17 +532,17 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 						deactivate();
 					}
 				}
-			} else if (isAutoSelect())  {
-				IRecipe nextOne = getAutoSelectRecipe();
-				if (nextOne != null) {
+			} else {
+				IRecipe nextOne;
+				if (isAutoSelect() && (nextOne = getAutoSelectRecipe()) != null)  {
 					sendActivatorMessage(ChatColor.GREEN + name + " automatically switched to recipe " + nextOne.getName() + " and began running it");
 					currentRecipe = nextOne;
 					scheduleUpdate();
+					// don't setPowerCounter to 0, fuel has been consumed, let it be used for the new recipe
+				} else {
+					sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because it ran out of required materials");
+					deactivate();
 				}
-				// don't setPowerCounter to 0, fuel has been consumed, let it be used for the new recipe
-			} else {
-				sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because it ran out of required materials");
-				deactivate();
 			}
 		} else {
 			sendActivatorMessage(ChatColor.GOLD + name + " deactivated, because the factory was destroyed");
