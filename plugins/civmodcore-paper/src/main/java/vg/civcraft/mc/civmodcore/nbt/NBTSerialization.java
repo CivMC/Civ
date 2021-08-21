@@ -80,7 +80,7 @@ public class NBTSerialization {
 		try {
 			processor.accept(nbt);
 		}
-		catch (final Exception exception) {
+		catch (final Throwable exception) {
 			LOGGER.log(Level.WARNING, "Could not process item NBT!", exception);
 			return null;
 		}

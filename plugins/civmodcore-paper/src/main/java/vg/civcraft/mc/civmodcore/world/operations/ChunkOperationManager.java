@@ -123,7 +123,7 @@ public class ChunkOperationManager extends BaseCommand implements Listener {
 		try {
 			operation.process(chunk);
 		}
-		catch (Exception exception) {
+		catch (final Throwable exception) {
 			PLUGIN.warning("Chunk Operation [" + operation.getClass().getName() + "] has thrown an error:", exception);
 		}
 	}

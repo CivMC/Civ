@@ -132,7 +132,7 @@ public class CommandManager extends BukkitCommandManager {
 			internal = (HashMap<String, CommandCompletionHandler<BukkitCommandCompletionContext>>)
 					FieldUtils.readField(getCommandCompletions(), "completionMap", true);
 		}
-		catch (final Exception exception) {
+		catch (final Throwable exception) {
 			throw new UnsupportedOperationException("Could not get internal completion map.", exception);
 		}
 		for (final TabComplete complete : getTabCompletions(command.getClass()).values()) {
@@ -173,7 +173,7 @@ public class CommandManager extends BukkitCommandManager {
 				default -> throw new UnsupportedOperationException("Unsupported number of parameters.");
 			};
 		}
-		catch (final Exception exception) {
+		catch (final Throwable exception) {
 			this.logger.log(Level.WARNING,
 					"Could not tab complete [@" + id + "]: an error with the handler!", exception);
 			return Collections.emptyList();

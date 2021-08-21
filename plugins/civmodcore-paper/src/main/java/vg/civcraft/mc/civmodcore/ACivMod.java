@@ -239,7 +239,7 @@ public abstract class ACivMod extends JavaPlugin {
 					return (T) method.invoke(null);
 				}
 			}
-			catch (final Exception ignored) { }
+			catch (final Throwable ignored) { }
 		}
 		for (final String fieldName : Arrays.asList("instance", "plugin")) {
 			try {
@@ -249,7 +249,7 @@ public abstract class ACivMod extends JavaPlugin {
 					return (T) field.get(null);
 				}
 			}
-			catch (final Exception ignored) { }
+			catch (final Throwable ignored) { }
 		}
 		// Otherwise there's no instance of the plugin, or it's stored in an unusual way
 		return null;

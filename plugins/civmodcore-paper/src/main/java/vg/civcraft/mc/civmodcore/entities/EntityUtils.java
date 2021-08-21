@@ -27,14 +27,14 @@ public final class EntityUtils {
 		try {
 			return EntityType.valueOf(value.toUpperCase());
 		}
-		catch (Exception ignored) { }
+		catch (final Throwable ignored) { }
 		try {
 			final EntityType type = EntityType.fromId(Short.parseShort(value));
 			if (type != null) {
 				return type;
 			}
 		}
-		catch (final Exception ignored) { }
+		catch (final Throwable ignored) { }
 		return null;
 	}
 

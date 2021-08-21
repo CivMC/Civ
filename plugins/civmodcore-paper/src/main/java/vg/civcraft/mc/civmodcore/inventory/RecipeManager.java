@@ -52,7 +52,7 @@ public final class RecipeManager {
 		try {
 			return Bukkit.getServer().addRecipe(recipe);
 		}
-		catch (final Exception exception) {
+		catch (final Throwable exception) {
 			return false;
 		}
 	}

@@ -38,7 +38,7 @@ public final class UuidUtils {
 		try {
 			return UUID.fromString(value);
 		}
-		catch (final Exception ignored) {
+		catch (final Throwable ignored) {
 			return null;
 		}
 	}

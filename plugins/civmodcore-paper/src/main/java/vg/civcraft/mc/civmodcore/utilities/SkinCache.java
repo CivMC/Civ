@@ -76,7 +76,7 @@ public class SkinCache {
 						return CompletableFuture.supplyAsync(() -> {
 							try {
 								return skinCache.get(uuid);
-							} catch (Exception e) {
+							} catch (Throwable e) {
 								return new SkinData(Bukkit.createProfile(uuid));
 							}
 						}, executor);

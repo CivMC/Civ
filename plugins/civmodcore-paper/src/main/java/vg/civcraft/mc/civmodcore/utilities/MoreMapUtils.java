@@ -113,7 +113,7 @@ public final class MoreMapUtils {
 			// the parser function could be anything.. it could be a class cast, a null reference, number format...
 			// But since this is a value parser and not an arbitrary code executor, nothing complication will be run,
 			// so any exception cab be interpreted as a bad or unexpected value.
-			catch (Exception ignored) {
+			catch (final Throwable ignored) {
 				return fallback;
 			}
 		}

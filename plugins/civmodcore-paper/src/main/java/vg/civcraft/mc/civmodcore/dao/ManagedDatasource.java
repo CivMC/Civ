@@ -311,7 +311,7 @@ public class ManagedDatasource {
 			}
 			return true;
 		}
-		catch (final Exception exception) {
+		catch (final Throwable exception) {
 			this.logger.warning(this.plugin.getName() + " failed to apply updates for some reason...");
 			this.logger.log(Level.WARNING, "Full exception: ", exception);
 			return false;
@@ -352,7 +352,7 @@ public class ManagedDatasource {
 			}
 			return true;
 		}
-		catch (final Exception exception) {
+		catch (final Throwable exception) {
 			this.logger.log(Level.SEVERE, "Unexpected failure during migrations", exception);
 			return false;
 		}
@@ -411,7 +411,7 @@ public class ManagedDatasource {
 					}
 				}
 			}
-			catch (final Exception exception) {
+			catch (final Throwable exception) {
 				if (ignoreErrors) {
 					this.logger.warning("Migration " + migration + " ] Post Call indicated failure; ignored: " +
 							exception.getMessage());

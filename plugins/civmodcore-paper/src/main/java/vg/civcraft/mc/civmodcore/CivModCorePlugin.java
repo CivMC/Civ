@@ -62,7 +62,7 @@ public final class CivModCorePlugin extends ACivMod {
 				}
 			}
 		}
-		catch (final Exception error) {
+		catch (final Throwable error) {
 			warning("Cannot get database from config.", error);
 			this.database = null;
 		}
