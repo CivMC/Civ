@@ -5,6 +5,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
+import org.ipvp.canvas.MenuFunctionListener;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
@@ -69,6 +70,7 @@ public final class CivModCorePlugin extends ACivMod {
 		String scoreboardHeader = ChatColor.translateAlternateColorCodes('&', getConfig().getString("scoreboardHeader","  Info  "));
 		ScoreBoardAPI.setDefaultHeader(scoreboardHeader);
 		// Register listeners
+		registerListener(new MenuFunctionListener());
 		registerListener(new ClickableInventoryListener());
 		registerListener(DialogManager.INSTANCE);
 		registerListener(new ScoreBoardListener());
