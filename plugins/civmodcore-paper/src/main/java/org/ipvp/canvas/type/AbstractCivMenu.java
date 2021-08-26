@@ -65,7 +65,7 @@ public abstract class AbstractCivMenu extends AbstractMenu {
 	 * @return Returns a clone of this menu's title.
 	 */
 	protected Component getTitle() {
-		return ChatUtils.cloneComponent(this.title);
+		return this.title;
 	}
 
 	/**
