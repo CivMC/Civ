@@ -5,6 +5,7 @@ import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
@@ -123,9 +124,13 @@ public abstract class Factory implements Runnable {
 		if (f.getType() != Material.FURNACE) {
 			return;
 		}
-		Furnace furnace = (Furnace) f.getState();
-		furnace.setBurnTime(Short.MAX_VALUE);
-		furnace.update();
+		Bukkit.getScheduler().runTask(FactoryMod.getInstance(), () -> {
+			if (this.isActive()) {
+				Furnace furnace = (Furnace) f.getState();
+				furnace.setBurnTime(Short.MAX_VALUE);
+				furnace.update();
+			}
+		});
 	}
 
 	public String getLogData() {
@@ -136,8 +141,19 @@ public abstract class Factory implements Runnable {
 		if (f.getType() != Material.FURNACE) {
 			return;
 		}
-		Furnace furnace = (Furnace) f.getState();
-		furnace.setBurnTime((short) 0);
-		furnace.update();
+		FactoryMod fmPlugin = FactoryMod.getInstance();
+		if (fmPlugin.isEnabled()) {
+			Bukkit.getScheduler().runTask(FactoryMod.getInstance(), () -> {
+				if (!this.isActive()) {
+					Furnace furnace = (Furnace) f.getState();
+					furnace.setBurnTime((short) 0);
+					furnace.update();
+				}
+			});
+		} else if (!this.isActive()) {
+			Furnace furnace = (Furnace) f.getState();
+			furnace.setBurnTime((short) 0);
+			furnace.update();
+		}
 	}
 }

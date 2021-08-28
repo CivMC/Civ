@@ -4,6 +4,8 @@ import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -27,11 +29,11 @@ public class DecompactingRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean enoughMaterialAvailable(Inventory i) {
-		if (!input.isContainedIn(i)) {
+	public boolean enoughMaterialAvailable(Inventory inputInv) {
+		if (!input.isContainedIn(inputInv)) {
 			return false;
 		}
-		for (ItemStack is : i.getContents()) {
+		for (ItemStack is : inputInv.getContents()) {
 			if (is != null) {
 				if (isDecompactable(is)) {
 					return true;
@@ -42,10 +44,11 @@ public class DecompactingRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		logBeforeRecipeRun(i, fccf);
-		if (input.isContainedIn(i)) {
-			for (ItemStack is : i.getContents()) {
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
+		if (input.isContainedIn(inputInv)) {
+			for (ItemStack is : inputInv.getContents()) {
 				if (is != null) {
 					if (isDecompactable(is)) {
 						ItemStack removeClone = is.clone();
@@ -54,11 +57,11 @@ public class DecompactingRecipe extends InputRecipe {
 						ItemMap toAdd = new ItemMap();
 						removeCompactLore(removeClone);
 						toAdd.addItemAmount(removeClone, CompactingRecipe.getCompactStackSize(removeClone.getType()));
-						if (toAdd.fitsIn(i)) { //fits in chest
-							if (input.removeSafelyFrom(i)) { //remove extra input
-								if (toRemove.removeSafelyFrom(i)) { //remove one compacted item
+						if (toAdd.fitsIn(outputInv)) { //fits in chest
+							if (input.removeSafelyFrom(inputInv)) { //remove extra input
+								if (toRemove.removeSafelyFrom(inputInv)) { //remove one compacted item
 									for(ItemStack add : toAdd.getItemStackRepresentation()) {
-										i.addItem(add);
+										outputInv.addItem(add);
 									}
 								}
 							}
@@ -70,7 +73,7 @@ public class DecompactingRecipe extends InputRecipe {
 				}
 			}
 		}
-		logAfterRecipeRun(i, fccf);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 

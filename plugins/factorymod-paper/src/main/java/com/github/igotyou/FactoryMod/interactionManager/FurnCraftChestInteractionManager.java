@@ -11,12 +11,16 @@ import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.utility.FactoryModGUI;
 import java.text.DecimalFormat;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.github.igotyou.FactoryMod.utility.IOConfigSection;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
@@ -25,6 +29,11 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
+import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
+import vg.civcraft.mc.civmodcore.inventorygui.components.ComponableInventory;
+import vg.civcraft.mc.civmodcore.inventorygui.components.Scrollbar;
+import vg.civcraft.mc.civmodcore.inventorygui.components.SlotPredicates;
+import vg.civcraft.mc.civmodcore.inventorygui.components.StaticDisplaySection;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -33,8 +42,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class FurnCraftChestInteractionManager implements IInteractionManager {
 
 	private FurnCraftChestFactory fccf;
-	private HashMap<Clickable, InputRecipe> recipes = new HashMap<>();
-	private DecimalFormat decimalFormatting;
+	private final DecimalFormat decimalFormatting;
 
 	public FurnCraftChestInteractionManager(FurnCraftChestFactory fccf) {
 		this();
@@ -100,7 +108,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				ClickableInventory ci = new ClickableInventory(54, fccf.getCurrentRecipe().getName());
 				int index = 4;
 				List<ItemStack> inp = ((InputRecipe) fccf.getCurrentRecipe())
-						.getInputRepresentation(fccf.getInventory(), fccf);
+						.getInputRepresentation(fccf.getInputInventory(), fccf);
 				if (inp.size() > 18) {
 					inp = new ItemMap(inp).getLoredItemCountRepresentation();
 				}
@@ -130,7 +138,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				}
 				index = 49;
 				List<ItemStack> outp = ((InputRecipe) fccf.getCurrentRecipe())
-						.getOutputRepresentation(fccf.getInventory(), fccf);
+						.getOutputRepresentation(fccf.getOutputInventory(), fccf);
 				if (outp.size() > 18) {
 					outp = new ItemMap(outp).getLoredItemCountRepresentation();
 				}
@@ -189,78 +197,9 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		}
 		if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure()).getCraftingTable())) { // crafting table
 																										// interaction
-			int rows = ((fccf.getRecipes().size() + 2) / 9) + 1;
-			if (fccf.getRecipes().size() > 52 || rows > 6) {
-				p.sendMessage(ChatColor.RED
-						+ "This factory has more than 52 recipes and the GUI for it can't be opened. Either complain to "
-						+ "your admin to have them put less recipes in this factory or complain to /u/maxopoly to add "
-						+ "scrollviews to this");
-				return;
-			}
-			ClickableInventory ci = new ClickableInventory(rows * 9, "Select a recipe");
-			for (IRecipe rec : fccf.getRecipes()) {
-				InputRecipe recipe = (InputRecipe) (rec);
-				ItemStack recStack = recipe.getRecipeRepresentation();
-				int runcount = fccf.getRunCount(recipe);
-				ItemUtils.addLore(recStack, "",ChatColor.AQUA + "Ran " + String.valueOf(runcount) + " times");
-				if (rec == fccf.getCurrentRecipe()) {
-					ItemUtils.addLore(recStack, ChatColor.GREEN + "Currently selected");
-					ItemUtils.addGlow(recStack);
-				}
-				if (recipe instanceof ProductionRecipe) {
-					ProductionRecipe prod = (ProductionRecipe) recipe;
-					if (prod.getModifier() != null) {
-						ItemUtils.addLore(recStack, ChatColor.BOLD + "   " + ChatColor.GOLD
-								+ fccf.getRecipeLevel(recipe) + " ★");
-						ItemUtils.addLore(recStack, ChatColor.GREEN + "Current output multiplier: " + decimalFormatting
-								.format(prod.getModifier().getFactor(fccf.getRecipeLevel(recipe), runcount)));
-					}
-				}
-				Clickable c = new Clickable(recStack) {
-
-					@Override
-					public void clicked(Player p) {
-						if (fccf.isActive()) {
-							p.sendMessage(ChatColor.RED + "You can't switch recipes while the factory is running");
-						} else {
-							fccf.setRecipe(recipes.get(this));
-							p.sendMessage(ChatColor.GREEN + "Switched recipe to " + recipes.get(this).getName());
-						}
-
-					}
-				};
-				recipes.put(c, recipe);
-				ci.addSlot(c);
-			}
-			ItemStack autoSelectStack = new ItemStack(Material.REDSTONE_BLOCK);
-			ItemUtils.setDisplayName(autoSelectStack, "Toggle auto select");
-			ItemUtils.addLore(autoSelectStack,
-					ChatColor.GOLD + "Make the factory automatically select any",
-					ChatColor.GOLD + "recipe it can run whenever you activate it",
-					ChatColor.AQUA + "Click to turn it " + (fccf.isAutoSelect() ? "off" : "on"));
-			Clickable autoClick = new Clickable(autoSelectStack) {
-
-				@Override
-				public void clicked(Player p) {
-					p.sendMessage(ChatColor.GREEN + "Turned auto select " + (fccf.isAutoSelect() ? "off" : "on")
-							+ " for " + fccf.getName());
-					fccf.setAutoSelect(!fccf.isAutoSelect());
-				}
-			};
-			ci.setSlot(autoClick, (rows * 9) - 2);
-			ItemStack menuStack = new ItemStack(Material.PAINTING);
-			ItemUtils.setDisplayName(menuStack, "Open menu");
-			ItemUtils.addLore(menuStack, ChatColor.LIGHT_PURPLE + "Click to open a detailed menu");
-			Clickable menuC = new Clickable(menuStack) {
-				@Override
-				public void clicked(Player p) {
-					FactoryModGUI gui = new FactoryModGUI(p);
-					gui.showForFactory((FurnCraftChestEgg)FactoryMod.getInstance().getManager().getEgg(fccf.getName()));
-				}
-			};
-			ci.setSlot(menuC, (rows * 9) - 1);
-
-			ci.showInventory(p);
+			ComponableInventory compInv = buildRecipeInventory(p);
+			compInv.update();
+			compInv.updatePlayerView();
 			return;
 		}
 		if (b.equals(fccf.getFurnace())) { // furnace interaction
@@ -271,6 +210,170 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				fccf.attemptToActivate(p, false);
 			}
 		}
+	}
+
+	private ComponableInventory buildRecipeInventory(Player p) {
+		ComponableInventory compInv = new ComponableInventory("Select a recipe", 6, p);
+
+		Clickable autoClick = buildAutoSelectToggle();
+		Clickable menuC = buildMenuClickable();
+		Clickable menuModeButton = buildMenuModeCycleButton(p);
+		Clickable[] buddons = new Clickable[] { autoClick, menuC, menuModeButton };
+		StaticDisplaySection lowerSection = new StaticDisplaySection(buddons);
+
+		Block fblock = fccf.getFurnace();
+		switch (fccf.getUiMenuMode()) {
+			case IOCONFIG: {
+				Scrollbar recipeScroller = buildRecipeScrollbar(3);
+				compInv.addComponent(recipeScroller, SlotPredicates.offsetRectangle(3, 9, 0, 0));
+				if (fblock.getType() == Material.FURNACE) {
+					Furnace fstate = (Furnace) fblock.getState();
+					org.bukkit.block.data.type.Furnace fdata = (org.bukkit.block.data.type.Furnace) fstate.getBlockData();
+					BlockFace facing = fdata.getFacing();
+					IOConfigSection furnaceConfigSection = new IOConfigSection(
+							p,
+							fccf.getFurnaceIOSelector(),
+							Material.FURNACE,
+							fblock,
+							facing,
+							fccf);
+					IOConfigSection tableConfigSection = new IOConfigSection(
+							p,
+							fccf.getTableIOSelector(),
+							Material.CRAFTING_TABLE,
+							((FurnCraftChestStructure) fccf.getMultiBlockStructure()).getCraftingTable(),
+							facing,
+							fccf);
+					compInv.addComponent(furnaceConfigSection, SlotPredicates.offsetRectangle(3, 3, 3, 0));
+					compInv.addComponent(tableConfigSection, SlotPredicates.offsetRectangle(3, 3, 3, 4));
+				}
+				compInv.addComponent(lowerSection, SlotPredicates.offsetRectangle(3, 1, 3, 8));
+				break;
+			}
+			default: {
+				Scrollbar recipeScroller = buildRecipeScrollbar(5);
+				compInv.addComponent(recipeScroller, SlotPredicates.offsetRectangle(5, 9, 0, 0));
+				compInv.addComponent(lowerSection, SlotPredicates.offsetRectangle(1, 3, 5, 6));
+			}
+		}
+		return compInv;
+	}
+
+	private Scrollbar buildRecipeScrollbar(int rows) {
+		rows = Math.max(1, Math.min(5, rows));
+		List<IRecipe> recipeList = fccf.getRecipes();
+		List<IClickable> recipeClickList = new ArrayList<>(recipeList.size());
+		for (IRecipe rec : fccf.getRecipes()) {
+			InputRecipe recipe = (InputRecipe) (rec);
+			ItemStack recStack = recipe.getRecipeRepresentation();
+			int runcount = fccf.getRunCount(recipe);
+			ItemUtils.addLore(recStack, "",ChatColor.AQUA + "Ran " + String.valueOf(runcount) + " times");
+			if (rec == fccf.getCurrentRecipe()) {
+				ItemUtils.addLore(recStack, ChatColor.GREEN + "Currently selected");
+				ItemUtils.addGlow(recStack);
+			}
+			if (recipe instanceof ProductionRecipe) {
+				ProductionRecipe prod = (ProductionRecipe) recipe;
+				if (prod.getModifier() != null) {
+					ItemUtils.addLore(recStack, ChatColor.BOLD + "   " + ChatColor.GOLD
+							+ fccf.getRecipeLevel(recipe) + " ★");
+					ItemUtils.addLore(recStack, ChatColor.GREEN + "Current output multiplier: " + decimalFormatting
+							.format(prod.getModifier().getFactor(fccf.getRecipeLevel(recipe), runcount)));
+				}
+			}
+			Clickable c = new Clickable(recStack) {
+
+				@Override
+				public void clicked(Player p) {
+					if (fccf.isActive()) {
+						p.sendMessage(ChatColor.RED + "You can't switch recipes while the factory is running");
+					} else {
+						fccf.setRecipe(recipe);
+						p.sendMessage(ChatColor.GREEN + "Switched recipe to " + recipe.getName());
+					}
+				}
+			};
+			recipeClickList.add(c);
+		}
+		Scrollbar recipeScroller = new Scrollbar(recipeClickList, rows * 9);
+		recipeScroller.setBackwardsClickSlot(rows == 1 ? 0 : 8);
+		return recipeScroller;
+	}
+
+	private Clickable buildAutoSelectToggle() {
+		ItemStack autoSelectStack = new ItemStack(Material.REDSTONE_BLOCK);
+		ItemUtils.setDisplayName(autoSelectStack, "Toggle auto select");
+		ItemUtils.addLore(autoSelectStack,
+				ChatColor.GOLD + "Make the factory automatically select any",
+				ChatColor.GOLD + "recipe it can run whenever you activate it",
+				ChatColor.AQUA + "Click to turn it " + (fccf.isAutoSelect() ? "off" : "on"));
+		Clickable autoClick = new Clickable(autoSelectStack) {
+
+			@Override
+			public void clicked(Player p) {
+				p.sendMessage(ChatColor.GREEN + "Turned auto select " + (fccf.isAutoSelect() ? "off" : "on")
+						+ " for " + fccf.getName());
+				fccf.setAutoSelect(!fccf.isAutoSelect());
+			}
+		};
+		return autoClick;
+	}
+
+	private Clickable buildMenuClickable() {
+		ItemStack menuStack = new ItemStack(Material.PAINTING);
+		ItemUtils.setDisplayName(menuStack, "Open menu");
+		ItemUtils.addLore(menuStack, ChatColor.LIGHT_PURPLE + "Click to open a detailed menu");
+		Clickable menuC = new Clickable(menuStack) {
+			@Override
+			public void clicked(Player p) {
+				FactoryModGUI gui = new FactoryModGUI(p);
+				gui.showForFactory((FurnCraftChestEgg)FactoryMod.getInstance().getManager().getEgg(fccf.getName()));
+			}
+		};
+		return menuC;
+	}
+
+	private Clickable buildMenuModeCycleButton(Player p) {
+		FurnCraftChestFactory.UiMenuMode[] modes = FurnCraftChestFactory.UiMenuMode.values();
+		FurnCraftChestFactory.UiMenuMode curMode = fccf.getUiMenuMode();
+		FurnCraftChestFactory.UiMenuMode nextMode = modes[(curMode.ordinal() + 1) % modes.length];
+		ItemStack display = new ItemStack(nextMode.uiMaterial);
+		ItemUtils.setComponentDisplayName(display, Component.text(nextMode.uiDescription));
+
+		Clickable menuModeButton = new Clickable(display) {
+			private ClickableInventory inventory;
+			private int slot;
+
+			@Override
+			protected void clicked(Player player) {
+				cycleMenuMode();
+				ComponableInventory compInv = buildRecipeInventory(p);
+				compInv.update();
+				compInv.updatePlayerView();
+			}
+
+			@Override
+			public void addedToInventory(ClickableInventory inv, int slot) {
+				this.inventory = inv;
+				this.slot = slot;
+			}
+
+			private void cycleMenuMode() {
+				FurnCraftChestFactory.UiMenuMode innerCurMode = fccf.getUiMenuMode();
+				innerCurMode = modes[(innerCurMode.ordinal() + 1) % modes.length];
+				fccf.setUiMenuMode(innerCurMode);
+
+				ItemStack innerCurStack = getItemStack();
+				FurnCraftChestFactory.UiMenuMode innerNextMode = modes[(innerCurMode.ordinal() + 1) % modes.length];
+				innerCurStack.setType(innerNextMode.uiMaterial);
+				ItemUtils.setComponentDisplayName(innerCurStack, Component.text(innerNextMode.uiDescription));
+
+				if (inventory != null && inventory.getSlot(slot) == this) {
+					inventory.setSlot(this, slot);
+				}
+			}
+		};
+		return menuModeButton;
 	}
 
 	@Override

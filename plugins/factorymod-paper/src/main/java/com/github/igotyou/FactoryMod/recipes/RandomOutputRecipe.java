@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -45,8 +47,9 @@ public class RandomOutputRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		logBeforeRecipeRun(i, fccf);
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = null;
 		int counter = 0;
@@ -64,14 +67,14 @@ public class RandomOutputRecipe extends InputRecipe {
 			FactoryMod.getInstance().warning("Unable to find a random item to output. Recipe execution was cancelled," + fccf.getLogData());
 			return false;
 		}
-		if (toRemove.isContainedIn(i)) {
-			if (toRemove.removeSafelyFrom(i)) {
+		if (toRemove.isContainedIn(inputInv)) {
+			if (toRemove.removeSafelyFrom(inputInv)) {
 				for(ItemStack is: toAdd.getItemStackRepresentation()) {
-					i.addItem(is);
+					outputInv.addItem(is);
 				}
 			}
 		}
-		logAfterRecipeRun(i, fccf);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 

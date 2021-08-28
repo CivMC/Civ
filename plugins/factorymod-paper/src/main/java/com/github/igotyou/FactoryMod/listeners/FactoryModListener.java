@@ -9,7 +9,10 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -59,14 +62,28 @@ public class FactoryModListener implements Listener {
 	}
 
 	@EventHandler
-	public void redstoneChange(BlockRedstoneEvent e) {
-		if (e.getOldCurrent() == e.getNewCurrent()) {
+	public void redstoneChange(BlockRedstoneEvent evt) {
+		if (evt.getOldCurrent() == evt.getNewCurrent()) {
 			return;
 		}
-		for (BlockFace face : WorldUtils.ALL_SIDES) {
-			Factory f = manager.getFactoryAt(e.getBlock().getRelative(face));
+		Block powerSource = evt.getBlock();
+		Material psType = powerSource.getType();
+		if (psType == Material.REPEATER || psType == Material.COMPARATOR) {
+			BlockData psData = powerSource.getState().getBlockData();
+			BlockFace direction = ((Directional) psData).getFacing();
+			// repeaters "face" their input apparently
+			Block poweredBlock = powerSource.getRelative(direction.getOppositeFace());
+			Factory f = manager.getFactoryAt(poweredBlock);
 			if (f != null) {
-				f.getInteractionManager().redStoneEvent(e, e.getBlock().getRelative(face));
+				f.getInteractionManager().redStoneEvent(evt, poweredBlock);
+			}
+		} else {
+			for (BlockFace direction : WorldUtils.ALL_SIDES) {
+				Block poweredBlock = powerSource.getRelative(direction);
+				Factory f = manager.getFactoryAt(poweredBlock);
+				if (f != null) {
+					f.getInteractionManager().redStoneEvent(evt, poweredBlock);
+				}
 			}
 		}
 	}
@@ -103,29 +120,29 @@ public class FactoryModListener implements Listener {
 	}
 
 	@EventHandler
-	public void playerInteract(PlayerInteractEvent e) {
-		Block block = e.getClickedBlock();
-		Player player = e.getPlayer();
+	public void playerInteract(PlayerInteractEvent evt) {
+		Block block = evt.getClickedBlock();
+		Player player = evt.getPlayer();
 		if (block != null && manager.isPossibleInteractionBlock(block.getType())) {
-			BlockFace bf = e.getBlockFace();
-			Factory c = manager.getFactoryAt(block);
-			if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-				if (c != null) {
-					c.getInteractionManager().rightClick(player, block, bf);
+			BlockFace blockFace = evt.getBlockFace();
+			Factory factory = manager.getFactoryAt(block);
+			if (evt.getAction() == Action.RIGHT_CLICK_BLOCK) {
+				if (factory != null) {
+					factory.getInteractionManager().rightClick(player, block, blockFace);
 				} else {
 					// check if chest is other half of double chest
 					if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
 						for (Block b : MultiBlockStructure.searchForBlockOnSides(block, block.getType())) {
 							Factory f = manager.getFactoryAt(b);
 							if (f != null) {
-								f.getInteractionManager().rightClick(player, b, bf);
+								f.getInteractionManager().rightClick(player, b, blockFace);
 							}
 						}
 					}
 				}
 			}
-			if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
-				if (c == null) {
+			if (evt.getAction() == Action.LEFT_CLICK_BLOCK) {
+				if (factory == null) {
 					if (manager.isPossibleCenterBlock(block.getType())) {
 						if (player.getInventory().getItemInMainHand().getType() == manager
 								.getFactoryInteractionMaterial()) {
@@ -137,13 +154,13 @@ public class FactoryModListener implements Listener {
 							for (Block b : MultiBlockStructure.searchForBlockOnAllSides(block, block.getType())) {
 								Factory f = manager.getFactoryAt(b);
 								if (f != null) {
-									f.getInteractionManager().leftClick(player, b, bf);
+									f.getInteractionManager().leftClick(player, b, blockFace);
 								}
 							}
 						}
 					}
 				} else {
-					c.getInteractionManager().leftClick(player, block, bf);
+					factory.getInteractionManager().leftClick(player, block, blockFace);
 				}
 
 			}

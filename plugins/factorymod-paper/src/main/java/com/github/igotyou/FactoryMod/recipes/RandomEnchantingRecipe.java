@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -91,12 +93,13 @@ public class RandomEnchantingRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		logBeforeRecipeRun(i, fccf);
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
 		for (ItemStack is : input.getItemStackRepresentation()) {
-			i.removeItem(is);
+			inputInv.removeItem(is);
 		}
-		for (ItemStack is : i.getContents()) {
+		for (ItemStack is : inputInv.getContents()) {
 			if (is != null && is.getType() == tool
 					&& !is.getItemMeta().hasEnchants()) {
 				boolean applied = false;
@@ -112,7 +115,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 				break;
 			}
 		}
-		logAfterRecipeRun(i, fccf);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 

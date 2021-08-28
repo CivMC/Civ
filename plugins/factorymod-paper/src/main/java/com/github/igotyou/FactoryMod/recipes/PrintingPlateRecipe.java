@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -38,15 +40,16 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 	}	
 
 	@Override
-	public boolean enoughMaterialAvailable(Inventory i) {
-		return this.input.isContainedIn(i) && getBook(i) != null;
+	public boolean enoughMaterialAvailable(Inventory inputInv) {
+		return this.input.isContainedIn(inputInv) && getBook(inputInv) != null;
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		logBeforeRecipeRun(i, fccf);
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
 
-		ItemStack book = getBook(i);
+		ItemStack book = getBook(inputInv);
 		BookMeta bookMeta = (BookMeta)book.getItemMeta();
 		if (!bookMeta.hasGeneration()){
 			bookMeta.setGeneration(Generation.TATTERED);
@@ -56,9 +59,9 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = output.clone();
 
-		if (toRemove.isContainedIn(i) && toRemove.removeSafelyFrom(i)) {
+		if (toRemove.isContainedIn(inputInv) && toRemove.removeSafelyFrom(inputInv)) {
 			for(ItemStack is: toAdd.getItemStackRepresentation()) {
-				is = addTags(i, serialNumber, is, CraftItemStack.asNMSCopy(book).getTag());
+				is = addTags(serialNumber, is, CraftItemStack.asNMSCopy(book).getTag());
 
 				ItemUtils.setDisplayName(is, itemName);
 				ItemUtils.setLore(is,
@@ -69,15 +72,22 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 						);
 				is.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
 				is.getItemMeta().addItemFlags(ItemFlag.HIDE_ENCHANTS);
-				i.addItem(is);
+				outputInv.addItem(is);
 			}
 		}
 
-		logAfterRecipeRun(i, fccf);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 
+	/**
+	 * @deprecated {@code Inventory i} isn't being used, switch to the overload without it.
+	 */
 	public static ItemStack addTags(Inventory i, String serialNumber, ItemStack plate, NBTTagCompound bookTag) {
+		return addTags(serialNumber, plate, bookTag);
+	}
+
+	public static ItemStack addTags(String serialNumber, ItemStack plate, NBTTagCompound bookTag) {
 		net.minecraft.server.v1_16_R3.ItemStack nmsPlate = CraftItemStack.asNMSCopy(plate);
 		NBTTagCompound plateTag = nmsPlate.getOrCreateTag();
 

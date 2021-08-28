@@ -143,9 +143,14 @@ public class ConfigParser {
 		int globalPylonLimit = config.getInt("global_pylon_limit");
 		PylonRecipe.setGlobalLimit(globalPylonLimit);
 		Map<String, String> factoryRenames = parseRenames(config.getConfigurationSection("renames"));
+		int maxInputChests = config.getInt("max_input_chests", 10);
+		int maxOutputChests = config.getInt("max_output_chests", 10);
+		int maxFuelChests = config.getInt("max_fuel_chests", 10);
+		int maxTotalIOFChests = config.getInt("max_iof_chests", 15);
 
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial, citadelEnabled, nameLayerEnabled,
-				redstonePowerOn, redstoneRecipeChange, logInventories, factoryRenames);
+				redstonePowerOn, redstoneRecipeChange, logInventories, maxInputChests, maxOutputChests, maxFuelChests,
+				maxTotalIOFChests, factoryRenames);
 		upgradeEggs = new HashMap<>();
 		recipeLists = new HashMap<>();
 		recipeScalingUpgradeMapping = new HashMap<>();

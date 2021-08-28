@@ -4,6 +4,8 @@ import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -24,14 +26,15 @@ public class RecipeScalingUpgradeRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		logBeforeRecipeRun(i, fccf);
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
 		if (toUpgrade == null || !fccf.getRecipes().contains(toUpgrade)) {
 			return false;
 		}
 		ItemMap toRemove = input.clone();
-		if (toRemove.isContainedIn(i)) {
-			if (toRemove.removeSafelyFrom(i)) {
+		if (toRemove.isContainedIn(inputInv)) {
+			if (toRemove.removeSafelyFrom(inputInv)) {
 				if (newRank == 1) {
 					fccf.addRecipe(toUpgrade);
 				}
@@ -46,7 +49,7 @@ public class RecipeScalingUpgradeRecipe extends InputRecipe {
 				}
 			}
 		}
-		logAfterRecipeRun(i, fccf);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 
