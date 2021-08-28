@@ -58,7 +58,7 @@ public class ComponableSection extends InventoryComponent {
 	 * Updates the displayed clickables for one specific contained component
 	 * @param component Component to update
 	 */
-	void updateComponent(InventoryComponent component) {
+	protected void updateComponent(InventoryComponent component) {
 		int offSet = 0;
 		component.rebuild();
 		List <IClickable> componentContent = component.getContent();
@@ -84,7 +84,7 @@ public class ComponableSection extends InventoryComponent {
 	}
 
 	@Override
-	void rebuild() {
+	protected void rebuild() {
 		// we use lists instead of maps here, because we expect the amount of components
 		// to be very low, rarely to never above 5
 		List<List<IClickable>> builds = new ArrayList<>();

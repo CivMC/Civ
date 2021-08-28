@@ -29,8 +29,8 @@ public abstract class InventoryComponent {
 	public int getSize() {
 		return size;
 	}
-	
-	abstract void rebuild();
+
+	protected abstract void rebuild();
 	
 	List<IClickable> getContent() {
 		return Collections.unmodifiableList(content);
