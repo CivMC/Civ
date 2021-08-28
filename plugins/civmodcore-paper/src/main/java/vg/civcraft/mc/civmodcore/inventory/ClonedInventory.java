@@ -166,6 +166,11 @@ public final class ClonedInventory implements Inventory {
 	}
 
 	@Override
+	public int close() {
+		return this.inventory.close();
+	}
+
+	@Override
 	public List<HumanEntity> getViewers() {
 		return this.inventory.getViewers();
 	}
