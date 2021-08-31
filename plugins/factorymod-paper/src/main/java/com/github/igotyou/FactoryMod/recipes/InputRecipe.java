@@ -140,8 +140,8 @@ public abstract class InputRecipe implements IRecipe {
 	}
 
 	@Override
-	public boolean enoughMaterialAvailable(Inventory i) {
-		return input.isContainedIn(i);
+	public boolean enoughMaterialAvailable(Inventory inputInv) {
+		return input.isContainedIn(inputInv);
 	}
 
 	@Override

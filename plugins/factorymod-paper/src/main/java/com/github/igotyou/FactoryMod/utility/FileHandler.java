@@ -99,6 +99,9 @@ public class FileHandler {
 						config.set(current + ".runcounts." + i.getName(), fccf.getRunCount(i));
 						config.set(current + ".recipeLevels." + i.getName(), fccf.getRecipeLevel(i));
 					}
+					config.set(current + ".furnace-io", fccf.getFurnaceIOSelector().toConfigSection());
+					config.set(current + ".table-io", fccf.getTableIOSelector().toConfigSection());
+					config.set(current + ".ui-menu-mode", fccf.getUiMenuMode().name());
 				} else if (f instanceof Pipe) {
 					Pipe p = (Pipe) f;
 					config.set(current + ".type", "PIPE");
@@ -258,9 +261,6 @@ public class FileHandler {
 				}
 
 				boolean autoSelect = current.getBoolean("autoSelect", false);
-				if (recipes == null) {
-					recipes = new LinkedList<>();
-				}
 				FurnCraftChestFactory fac = (FurnCraftChestFactory) egg.revive(blocks, health, selectedRecipe,
 						runtime, breakTime, recipes);
 				String activator = current.getString("activator", "null");
@@ -297,6 +297,34 @@ public class FileHandler {
 					}
 				}
 				fac.setAutoSelect(autoSelect);
+				{
+					ConfigurationSection iosec = current.getConfigurationSection("furnace-io");
+					if (iosec != null) {
+						IOSelector furnaceIoSelector = IOSelector.fromConfigSection(iosec);
+						fac.setFurnaceIOSelector(furnaceIoSelector);
+					} else {
+						// Nothing I guess, the furnace has no default state.
+					}
+					iosec = current.getConfigurationSection("table-io");
+					if (iosec != null) {
+						IOSelector tableIoSelector = IOSelector.fromConfigSection(iosec);
+						fac.setTableIOSelector(tableIoSelector);
+					} else {
+						// Default table-side IO moved to FCCF.getTableIoSelector() lazy init
+					}
+				}
+				String menuModeRaw = current.getString("ui-menu-mode");
+				FurnCraftChestFactory.UiMenuMode menuMode;
+				if (menuModeRaw == null) {
+					menuMode = FurnCraftChestFactory.UiMenuMode.SIMPLE;
+				} else {
+					try {
+						menuMode = FurnCraftChestFactory.UiMenuMode.valueOf(menuModeRaw);
+					} catch (IllegalArgumentException iae) {
+						menuMode = FurnCraftChestFactory.UiMenuMode.SIMPLE;
+					}
+				}
+				fac.setUiMenuMode(menuMode);
 				manager.addFactory(fac);
 				counter++;
 				break;

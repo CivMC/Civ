@@ -4,6 +4,8 @@ import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -38,10 +40,10 @@ public class LoreEnchantRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean enoughMaterialAvailable(Inventory i) {
-		if (input.isContainedIn(i)) {
+	public boolean enoughMaterialAvailable(Inventory inputInv) {
+		if (input.isContainedIn(inputInv)) {
 			ItemStack toolio = tool.getItemStackRepresentation().get(0);
-			for (ItemStack is : i.getContents()) {
+			for (ItemStack is : inputInv.getContents()) {
 				if (is != null && toolio.getType() == is.getType() && hasStackRequiredLore(is)) {
 					return true;
 				}
@@ -88,11 +90,12 @@ public class LoreEnchantRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		logBeforeRecipeRun(i, fccf);
-		if (input.removeSafelyFrom(i)) {
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
+		if (input.removeSafelyFrom(inputInv)) {
 			ItemStack toolio = tool.getItemStackRepresentation().get(0);
-			for (ItemStack is : i.getContents()) {
+			for (ItemStack is : inputInv.getContents()) {
 				if (is != null && toolio.getType() == is.getType() && hasStackRequiredLore(is)) {
 					ItemMeta im = is.getItemMeta();
 					if (im == null) {
@@ -112,7 +115,7 @@ public class LoreEnchantRecipe extends InputRecipe {
 				}
 			}
 		}
-		logAfterRecipeRun(i, fccf);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 

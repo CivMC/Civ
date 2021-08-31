@@ -27,60 +27,18 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 			chestBlocks.addAll(searchForBlockOnAllSides(center, Material.CHEST));
 			chestBlocks.addAll(searchForBlockOnAllSides(center, Material.TRAPPED_CHEST));
 			for (Block b : chestBlocks) {
-				switch (center.getFace(b)) {
-				case SOUTH:
-					if (center.getRelative(BlockFace.NORTH).getType() == Material.FURNACE) {
-						chest = b.getLocation();
-						furnace = center.getRelative(BlockFace.NORTH)
-								.getLocation();
-					}
-					break;
-				case NORTH:
-					if (center.getRelative(BlockFace.SOUTH).getType() == Material.FURNACE) {
-						chest = b.getLocation();
-						furnace = center.getRelative(BlockFace.SOUTH)
-								.getLocation();
-					}
-					break;
-				case WEST:
-					if (center.getRelative(BlockFace.EAST).getType() == Material.FURNACE) {
-						chest = b.getLocation();
-						furnace = center.getRelative(BlockFace.EAST)
-								.getLocation();
-					}
-					break;
-				case EAST:
-					if (center.getRelative(BlockFace.WEST).getType() == Material.FURNACE) {
-						chest = b.getLocation();
-						furnace = center.getRelative(BlockFace.WEST)
-								.getLocation();
-					}
-					break;
-				case UP:
-					if (center.getRelative(BlockFace.DOWN).getType() == Material.FURNACE) {
-						chest = b.getLocation();
-						furnace = center.getRelative(BlockFace.DOWN)
-								.getLocation();
-					}
-					break;
-				case DOWN:
-					if (center.getRelative(BlockFace.UP).getType() == Material.FURNACE) {
-						chest = b.getLocation();
-						furnace = center.getRelative(BlockFace.UP)
-								.getLocation();
-					}
-					break;
-				default:
+				BlockFace chestFace = center.getFace(b);
+				if (chestFace == null) continue; // fricc off nullcheck
+				BlockFace furnaceFace = chestFace.getOppositeFace();
+				Block furnaceBlock = center.getRelative(furnaceFace);
+				if (furnaceBlock.getType() == Material.FURNACE) {
+					chest = b.getLocation();
+					furnace = furnaceBlock.getLocation();
 					break;
 				}
-
 			}
 		}
-		if (chest != null && furnace != null) {
-			complete = true;
-		} else {
-			complete = false;
-		}
+		complete = chest != null && furnace != null;
 	}
 
 	public FurnCraftChestStructure(List<Location> blocks) {

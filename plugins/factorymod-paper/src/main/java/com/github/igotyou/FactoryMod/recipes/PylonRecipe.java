@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -28,17 +30,18 @@ public class PylonRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		if (!input.isContainedIn(i)) {
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		if (!input.isContainedIn(inputInv)) {
 			return false;
 		}
 		ItemMap actualOutput = getCurrentOutput();
-		if (!actualOutput.fitsIn(i)) {
+		if (!actualOutput.fitsIn(outputInv)) {
 			return false;
 		}
-		if (input.removeSafelyFrom(i)) {
+		if (input.removeSafelyFrom(inputInv)) {
 			for (ItemStack is : actualOutput.getItemStackRepresentation()) {
-				i.addItem(is);
+				outputInv.addItem(is);
 			}
 		}
 		return true;
@@ -81,8 +84,8 @@ public class PylonRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean enoughMaterialAvailable(Inventory i) {
-		return input.isContainedIn(i) && skyView();
+	public boolean enoughMaterialAvailable(Inventory inputInv) {
+		return input.isContainedIn(inputInv) && skyView();
 	}
 
 	public int getWeight() {
