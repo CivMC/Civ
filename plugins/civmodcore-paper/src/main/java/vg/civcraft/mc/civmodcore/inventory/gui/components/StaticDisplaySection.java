@@ -34,7 +34,7 @@ public class StaticDisplaySection extends InventoryComponent {
 	}
 
 	@Override
-	void rebuild() {
+	protected void rebuild() {
 		//NO OP
 	}
 

@@ -43,7 +43,7 @@ public class ComponableInventory extends ComponableSection {
 	}
 
 	@Override
-	void updateComponent(InventoryComponent component) {
+	protected void updateComponent(InventoryComponent component) {
 		// copy of the implementation from ComponableSection, except that we also mirror
 		// changes through to the ClickableInventory
 		int offSet = 0;

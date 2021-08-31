@@ -13,30 +13,30 @@ public final class SlotPredicates {
 		return counter::isValid;
 	}
 
-	public static IntPredicate rows(int rows) {
-		return rows(rows, 9);
+	public static IntPredicate rows(int height) {
+		return rows(height, 9);
 	}
 
-	public static IntPredicate rows(int rows, int rowLength) {
-		return slots(rows * rowLength);
+	public static IntPredicate rows(int height, int rowLength) {
+		return slots(height * rowLength);
 	}
 
-	public static IntPredicate offsetRectangle(int rows, int columns, int verticalOffset, int horizontalOffset,
+	public static IntPredicate offsetRectangle(int height, int width, int y, int x,
 			int rowLength) {
-		OffsetSlotter slotter = new OffsetSlotter(verticalOffset, horizontalOffset, rows, columns, rowLength);
+		OffsetSlotter slotter = new OffsetSlotter(y, x, height, width, rowLength);
 		return slotter::isValid;
 	}
 
-	public static IntPredicate offsetRectangle(int rows, int columns, int verticalOffset, int horizontalOffset) {
-		return offsetRectangle(rows, columns, verticalOffset, horizontalOffset, ROW_LENGTH);
+	public static IntPredicate offsetRectangle(int height, int width, int y, int x) {
+		return offsetRectangle(height, width, y, x, ROW_LENGTH);
 	}
 
-	public static IntPredicate rectangle(int rows, int columns, int rowLength) {
-		return offsetRectangle(rows, columns, 0, 0, rowLength);
+	public static IntPredicate rectangle(int height, int width, int rowLength) {
+		return offsetRectangle(height, width, 0, 0, rowLength);
 	}
 
-	public static IntPredicate rectangle(int rows, int columns) {
-		return rectangle(rows, columns, ROW_LENGTH);
+	public static IntPredicate rectangle(int height, int width) {
+		return rectangle(height, width, ROW_LENGTH);
 	}
 
 	private static class OffsetSlotter {
@@ -47,11 +47,11 @@ public final class SlotPredicates {
 		private int upperVerticalBound;
 		private int rowLength;
 
-		OffsetSlotter(int offSetRow, int offSetColumn, int sizeRows, int sizeColumns, int rowLength) {
-			this.lowerHorizontalBound = offSetColumn;
-			this.upperHorizontalBound = offSetColumn + sizeColumns - 1;
-			this.lowerVerticalBound = offSetRow;
-			this.upperVerticalBound = offSetRow + sizeRows - 1;
+		OffsetSlotter(int y, int x, int height, int width, int rowLength) {
+			this.lowerHorizontalBound = x;
+			this.upperHorizontalBound = x + width - 1;
+			this.lowerVerticalBound = y;
+			this.upperVerticalBound = y + height - 1;
 			this.rowLength = rowLength;
 		}
 

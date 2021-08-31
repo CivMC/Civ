@@ -91,7 +91,7 @@ public class Scrollbar extends InventoryComponent {
 	}
 
 	@Override
-	void rebuild() {
+	protected void rebuild() {
 		int size = getSize();
 		int contentIndex = scrollOffset * page;
 		// subtract offset created through the next/previous button
