@@ -2,8 +2,10 @@ package com.untamedears.jukealert.model.appender;
 
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.model.Snitch;
+import com.untamedears.jukealert.model.actions.abstr.PlayerAction;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
 import com.untamedears.jukealert.model.appender.config.LeverToggleConfig;
+import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -32,6 +34,13 @@ public class LeverToggleAppender extends ConfigurableSnitchAppender<LeverToggleC
 	@Override
 	public void acceptAction(SnitchAction action) {
 		if (!shouldToggle) {
+			return;
+		}
+		if (!action.hasPlayer()) {
+			return;
+		}
+		PlayerAction playerAc = (PlayerAction) action;
+		if (snitch.hasPermission(playerAc.getPlayer(), JukeAlertPermissionHandler.getSnitchImmune())) {
 			return;
 		}
 		for(LeverToggleConfig.SideEntry entry : config.getEntries(action.getIdentifier())) {
