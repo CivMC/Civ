@@ -1,6 +1,5 @@
 package vg.civcraft.mc.civmodcore;
 
-import com.google.common.base.Preconditions;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,8 +7,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -17,16 +23,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Contract;
 
 public abstract class ACivMod extends JavaPlugin {
+
+	private final Set<Class<? extends ConfigurationSerializable>> configClasses = new HashSet<>(0);
 
 	@Override
 	public void onEnable() {
 		// Self disable when a hard dependency is disabled
 		registerListener(new Listener() {
 			@EventHandler
-			public void onPluginDisable(PluginDisableEvent event) {
-				String pluginName = event.getPlugin().getName();
+			public void onPluginDisable(final PluginDisableEvent event) {
+				final String pluginName = event.getPlugin().getName();
 				if (getDescription().getDepend().contains(pluginName)) {
 					warning("Plugin [" + pluginName + "] has been disabled, disabling this plugin.");
 					disable();
@@ -41,6 +50,7 @@ public abstract class ACivMod extends JavaPlugin {
 		Bukkit.getMessenger().unregisterIncomingPluginChannel(this);
 		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
 		Bukkit.getScheduler().cancelTasks(this);
+		this.configClasses.forEach(ConfigurationSerialization::unregisterClass);
 	}
 
 	/**
@@ -48,17 +58,27 @@ public abstract class ACivMod extends JavaPlugin {
 	 *
 	 * @param listener The listener class to register.
 	 */
-	public void registerListener(Listener listener) {
-		if (listener == null) {
-			throw new IllegalArgumentException("Cannot register a listener if it's null, you dummy");
-		}
-		getServer().getPluginManager().registerEvents(listener, this);
+	public void registerListener(@Nonnull final Listener listener) {
+		getServer().getPluginManager().registerEvents(
+				Objects.requireNonNull(listener, "Cannot register a listener if it's null, you dummy"), this);
+	}
+
+	/**
+	 * Convenience method you can use to register {@link ConfigurationSerializable} classes, which will be
+	 * automatically un-registered when this plugin is disabled.
+	 *
+	 * @param clazz The serializable class to register and automatically unregister upon disable.
+	 */
+	public void registerConfigClass(@Nonnull final Class<? extends ConfigurationSerializable> clazz) {
+		Objects.requireNonNull(clazz, "Cannot register a config class if it's null, you dummy");
+		ConfigurationSerialization.registerClass(clazz);
+		this.configClasses.add(clazz);
 	}
 
 	/**
 	 * Determines whether this plugin is in debug mode, which is determined by a config value.
 	 *
-	 * @return Returns true if this plguin is in debug mode.
+	 * @return Returns true if this plugin is in debug mode.
 	 */
 	public boolean isDebugEnabled() {
 		return getConfig().getBoolean("debug", false);
@@ -70,8 +90,8 @@ public abstract class ACivMod extends JavaPlugin {
 	 * @param path The path of the file relative to the data folder.
 	 * @return Returns a file instance of the generated path.
 	 */
-	public File getDataFile(String path) {
-		return new File(getDataFolder(), path);
+	public File getDataFile(@Nonnull final String path) {
+		return new File(getDataFolder(), Objects.requireNonNull(path));
 	}
 
 	/**
@@ -79,7 +99,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 *
 	 * @param path The path to the default resource <i>AND</i> the data file.
 	 */
-	public void saveDefaultResource(String path) {
+	public void saveDefaultResource(@Nonnull final String path) {
 		if (!getDataFile(path).exists()) {
 			saveResource(path, false);
 		}
@@ -91,9 +111,8 @@ public abstract class ACivMod extends JavaPlugin {
 	 * @param defaultPath The path of the file within the plugin's jar.
 	 * @param dataPath The path the file should take within the plugin's data folder.
 	 */
-	public void saveDefaultResourceAs(String defaultPath, String dataPath) {
-		Preconditions.checkNotNull(defaultPath, "defaultPath cannot be null.");
-		Preconditions.checkNotNull(dataPath, "dataPath cannot be null.");
+	public void saveDefaultResourceAs(@Nonnull String defaultPath,
+									  @Nonnull String dataPath) {
 		if (getDataFile(defaultPath).exists()) {
 			return;
 		}
@@ -104,11 +123,11 @@ public abstract class ACivMod extends JavaPlugin {
 			throw new IllegalArgumentException("The embedded resource '" + defaultPath +
 					"' cannot be found in " + getFile());
 		}
-		final File outFile = new File(getDataFolder(), dataPath);
+		final var outFile = new File(getDataFolder(), dataPath);
 		try {
 			FileUtils.copyInputStreamToFile(data, outFile);
 		}
-		catch (IOException exception) {
+		catch (final IOException exception) {
 			severe("Could not save " + outFile.getName() + " to " + outFile);
 			exception.printStackTrace();
 		}
@@ -202,11 +221,11 @@ public abstract class ACivMod extends JavaPlugin {
 	 *
 	 * <ol>
 	 *     <li>
-	 *         If there's an instance of the class currently enabled. (Don't request ACivMod.class, or you'll just get
-	 *         the the first result.
+	 *         If there's an instance of the class currently enabled. <b>Don't request ACivMod, JavaPlugin, PluginBase,
+	 *         or Plugin or you'll just get the the first result.</b>
 	 *     </li>
-	 *     <li>If there's a public static .getInstance() method.</li>
-	 *     <li>If there's a static instance field.</li>
+	 *     <li>If there's a public static .getInstance() or .getPlugin() method.</li>
+	 *     <li>If there's a static "instance" or "plugin" field.</li>
 	 * </ol>
 	 *
 	 * @param <T> The type of the plugin.
@@ -215,8 +234,10 @@ public abstract class ACivMod extends JavaPlugin {
 	 *         instance of the plugin in existence. It could just be that it's located some unexpected place.
 	 *         Additionally, just because an instance has been returned does not mean that instance is enabled.
 	 */
+	@Contract("null -> null")
+	@Nullable
 	@SuppressWarnings("unchecked")
-	public static <T extends JavaPlugin> T getInstance(final Class<T> clazz) {
+	public static <T extends JavaPlugin> T getInstance(@Nullable final Class<T> clazz) {
 		if (clazz == null) {
 			return null;
 		}

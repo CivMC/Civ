@@ -1,9 +1,7 @@
 package vg.civcraft.mc.civmodcore;
 
 import java.sql.SQLException;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
 import org.ipvp.canvas.MenuFunctionListener;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
@@ -34,6 +32,7 @@ public final class CivModCorePlugin extends ACivMod {
 
 	private static CivModCorePlugin instance;
 
+	private CivModCoreConfig config;
 	private GlobalChunkMetaManager chunkMetaManager;
 	private ManagedDatasource database;
 	private WorldIDManager worldIdManager;
@@ -43,16 +42,18 @@ public final class CivModCorePlugin extends ACivMod {
 	@Override
 	public void onEnable() {
 		instance = this;
-		ConfigurationSerialization.registerClass(DatabaseCredentials.class);
+		registerConfigClass(DatabaseCredentials.class);
 		// Save default resources
 		saveDefaultResource("enchants.yml");
-		saveDefaultConfig();
 		super.onEnable();
+		// Load Config
+		this.config = new CivModCoreConfig(this);
+		this.config.parse();
 		// Load Database
 		try {
-			this.database = ManagedDatasource.construct(this, (DatabaseCredentials) getConfig().get("database"));
+			this.database = ManagedDatasource.construct(this, this.config.getDatabaseCredentials());
 			if (this.database != null) {
-				CMCWorldDAO dao = new CMCWorldDAO(this.database, this);
+				final var dao = new CMCWorldDAO(this.database, this);
 				if (dao.updateDatabase()) {
 					this.worldIdManager = new WorldIDManager(dao);
 					this.chunkMetaManager = new GlobalChunkMetaManager(dao, this.worldIdManager);
@@ -67,8 +68,7 @@ public final class CivModCorePlugin extends ACivMod {
 			warning("Cannot get database from config.", error);
 			this.database = null;
 		}
-		String scoreboardHeader = ChatColor.translateAlternateColorCodes('&', getConfig().getString("scoreboardHeader","  Info  "));
-		ScoreBoardAPI.setDefaultHeader(scoreboardHeader);
+		ScoreBoardAPI.setDefaultHeader(this.config.getScoreboardHeader());
 		// Register listeners
 		registerListener(new MenuFunctionListener());
 		registerListener(new ClickableInventoryListener());
@@ -89,7 +89,7 @@ public final class CivModCorePlugin extends ACivMod {
 		TreeTypeUtils.init();
 		BottomLineAPI.init();
 		MapColours.init();
-		this.skinCache = new SkinCache(this, getConfig().getInt("skin-download-threads", Runtime.getRuntime().availableProcessors() / 2));
+		this.skinCache = new SkinCache(this, this.config.getSkinCacheThreads());
 	}
 
 	@Override
@@ -118,7 +118,10 @@ public final class CivModCorePlugin extends ACivMod {
 			this.skinCache.shutdown();
 			this.skinCache = null;
 		}
-		ConfigurationSerialization.unregisterClass(DatabaseCredentials.class);
+		if (this.config != null) {
+			this.config.reset();
+			this.config = null;
+		}
 		super.onDisable();
 	}
 
