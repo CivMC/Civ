@@ -3,6 +3,7 @@ package com.github.igotyou.FactoryMod.utility;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.FactoryModPlayerSettings;
+import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
@@ -15,13 +16,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
+import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
+import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.StaticDisplaySection;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
-import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
-import vg.civcraft.mc.civmodcore.inventorygui.LClickable;
-import vg.civcraft.mc.civmodcore.inventorygui.components.StaticDisplaySection;
-
-import java.util.UUID;
 
 /**
  * @author caucow

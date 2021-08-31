@@ -1,12 +1,11 @@
 package com.github.igotyou.FactoryMod;
 
+import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
-import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
-import vg.civcraft.mc.civmodcore.playersettings.impl.EnumSetting;
-
-import java.util.UUID;
+import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
+import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
+import vg.civcraft.mc.civmodcore.players.settings.impl.EnumSetting;
 
 public class FactoryModPlayerSettings {
 

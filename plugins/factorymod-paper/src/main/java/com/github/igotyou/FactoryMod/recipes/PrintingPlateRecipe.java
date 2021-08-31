@@ -6,6 +6,7 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,10 +79,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		return true;
 	}
 
-	/**
-	 * @deprecated {@code Inventory i} isn't being used, switch to the overload without it.
-	 */
-	public static ItemStack addTags(Inventory i, String serialNumber, ItemStack plate, NBTTagCompound bookTag) {
+	public static ItemStack addTags(String serialNumber, ItemStack plate, NBTTagCompound bookTag) {
 		net.minecraft.world.item.ItemStack nmsPlate = CraftItemStack.asNMSCopy(plate);
 		NBTTagCompound plateTag = nmsPlate.getOrCreateTag();
 

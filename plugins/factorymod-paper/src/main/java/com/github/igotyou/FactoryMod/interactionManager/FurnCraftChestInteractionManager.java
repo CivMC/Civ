@@ -10,11 +10,10 @@ import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.utility.FactoryModGUI;
+import com.github.igotyou.FactoryMod.utility.IOConfigSection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.github.igotyou.FactoryMod.utility.IOConfigSection;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,6 +27,11 @@ import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
+import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.ComponableInventory;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.Scrollbar;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.SlotPredicates;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.StaticDisplaySection;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.namelayer.NameAPI;

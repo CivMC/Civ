@@ -1,7 +1,7 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
