@@ -3,6 +3,8 @@ package vg.civcraft.mc.citadel.activity;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,7 +42,7 @@ public class ActivityMap {
 
 	private final WorldIDManager worldIdManager;
 	// Must be array list so we can resize it
-	private final Map<Short, LoadingCache<Integer, SparseArray<Instant>>> activityTimes;
+	private final Map<Short, LoadingCache<Integer, Table<Integer, Integer, Instant>>> activityTimes;
 	private final Queue<Update> updates = new LinkedBlockingQueue<>();
 
 	private final List<String> worlds;
@@ -91,15 +93,15 @@ public class ActivityMap {
 		}
 	}
 
-	private LoadingCache<Integer, SparseArray<Instant>> getCache(World world) {
+	private LoadingCache<Integer, Table<Integer, Integer, Instant>> getCache(World world) {
 		return activityTimes.computeIfAbsent(worldIdManager.getInternalWorldId(world), id ->
 				CacheBuilder.newBuilder()
 						.maximumWeight(200000)
-						.weigher((Integer k, SparseArray<Instant> v) -> v.size())
+						.weigher((Integer k, Table<Integer, Integer, Instant> v) -> v.size())
 						.build(new CacheLoader<>() {
 							@Override
-							public SparseArray<Instant> load(Integer groupId) throws SQLException {
-								SparseArray<Instant> list = new SparseArray<>();
+							public Table<Integer, Integer, Instant> load(Integer groupId) throws SQLException {
+								Table<Integer, Integer, Instant> list = HashBasedTable.create();
 								try (Connection connection = source.getConnection()) {
 									PreparedStatement statement = connection
 											.prepareStatement(GET_ACTIVITY);
@@ -110,9 +112,7 @@ public class ActivityMap {
 									while (set.next()) {
 										int scaledX = set.getInt("x");
 										int scaledZ = set.getInt("z");
-										int mapped = integerCantor(scaledX, scaledZ);
-
-										list.put(mapped, set.getTimestamp("activity").toInstant());
+										list.put(scaledX, scaledZ, set.getTimestamp("activity").toInstant());
 									}
 								}
 								return list;
@@ -127,13 +127,12 @@ public class ActivityMap {
 			for (int j = -radius; j <= radius; j++) {
 				try {
 					for (int group : groups) {
-						SparseArray<Instant> list = cache.get(group);
+						Table<Integer, Integer, Instant> list = cache.get(group);
 						int nx = scaledX + i;
 						int nz = scaledZ + j;
-						int cantor = integerCantor(nx, nz);
 						Instant now = Instant.now();
 						synchronized (list) {
-							list.put(cantor, now);
+							list.put(nx, nz, now);
 						}
 
 						this.updates.add(new Update(worldIdManager.getInternalWorldId(world),
@@ -146,33 +145,23 @@ public class ActivityMap {
 		}
 	}
 
-	// Z x Z => N
-	private int integerCantor(int i, int j) {
-		// Z => N
-		int pi = i < 0 ? -i * 2 - 1 : i * 2;
-		int pj = j < 0 ? -j * 2 - 1 : j * 2;
-
-		// Cantor pairing, N x N => N
-		return ((pi + pj) * (pi + pj + 1)) / 2 + pj;
-	}
-
 	public Optional<Instant> getLastActivityTime(Group group, Location location) {
 		if (!isEnabled(location.getWorld())) {
 			return Optional.of(Instant.ofEpochMilli(group.getActivityTimeStamp()));
 		}
 
 		try {
-			SparseArray<Instant> activities = getCache(location.getWorld()).get(group.getGroupId());
+			Table<Integer, Integer, Instant> activities = getCache(location.getWorld()).get(group.getGroupId());
 
 			int scaledX = location.getBlockX() / resolution;
 			int scaledZ = location.getBlockZ() / resolution;
 
 			synchronized (activities) {
-				Instant get = activities.get(integerCantor(scaledX, scaledZ));
+				Instant get = activities.get(scaledX, scaledZ);
 				if (get == null) {
 					Instant activity = Instant.ofEpochMilli(group.getActivityTimeStamp());
 					if (activity.compareTo(defaultActivity) <= 0) {
-						// If the group was last active before activity map was added, use that time for decay
+						// If the group was last active before activity map was added, use the group's activity time for decay
 						get = activity;
 					} else {
 						// If the group has been active since, use the activity map decay

@@ -29,7 +29,6 @@ public class ActivityListener implements Listener {
 	public void on(PlayerMoveEvent event) {
 		Location from = event.getFrom();
 		Location to = event.getTo();
-		// IDE says this is never true but it's wrong
 		//noinspection ConstantConditions
 		if (to == null || from == null || !map.isEnabled(to.getWorld())) {
 			return;
@@ -59,7 +58,6 @@ public class ActivityListener implements Listener {
 		int sz = location.getBlockZ() / resolution;
 
 		Bukkit.getScheduler().runTaskAsynchronously(Citadel.getInstance(), () -> {
-			// Why the fuck is this a database call with no cache
 			List<String> groupNames = NameAPI.getGroupManager()
 					.getAllGroupNames(player.getUniqueId());
 			List<Integer> groupIds = new ArrayList<>();
