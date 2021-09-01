@@ -34,7 +34,7 @@ public class ActivityMap {
 			+ "world SMALLINT, "
 			+ "x INT, "
 			+ "z INT, "
-			+ "resolution INT, "
+			+ "resolution SMALLINT UNSIGNED, "
 			+ "activity TIMESTAMP, "
 			+ "PRIMARY KEY(group_id, world, x, z, resolution))";
 	private static final String GET_ACTIVITY = "SELECT x, z, activity FROM ctdl_activity_map WHERE group_id = ? AND world = ? AND resolution = ?";
