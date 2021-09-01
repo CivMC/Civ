@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -68,7 +70,7 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, final FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
 		FactoryMod.getInstance().getManager().removeFactory(fccf);
 		for (Block b : fccf.getMultiBlockStructure().getRelevantBlocks()) {
 			b.setType(Material.AIR);

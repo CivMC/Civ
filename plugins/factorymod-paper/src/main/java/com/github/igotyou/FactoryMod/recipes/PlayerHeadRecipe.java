@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -48,15 +50,16 @@ public class PlayerHeadRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory f) {
-		logBeforeRecipeRun(i, f);
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
 		ItemMap toRemove = input.clone();
 		ArrayList<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
 		if (players.isEmpty()) {
 			return false;
 		}
-		if (toRemove.isContainedIn(i)) {
-			if (toRemove.removeSafelyFrom(i)) {
+		if (toRemove.isContainedIn(inputInv)) {
+			if (toRemove.removeSafelyFrom(inputInv)) {
 				Random rand = new Random();
 				Player player = players.get(rand.nextInt(players.size()));
 				ItemStack is = new ItemStack(Material.PLAYER_HEAD, 1);
@@ -64,10 +67,10 @@ public class PlayerHeadRecipe extends InputRecipe {
 				im.setOwningPlayer(Bukkit.getOfflinePlayer(player.getUniqueId()));
 				im.setDisplayName(player.getDisplayName());
 				is.setItemMeta(im);
-				i.addItem(is);
+				outputInv.addItem(is);
 			}
 		}
-		logAfterRecipeRun(i, f);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 

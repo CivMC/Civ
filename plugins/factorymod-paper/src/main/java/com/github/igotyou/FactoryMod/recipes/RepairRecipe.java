@@ -6,6 +6,8 @@ import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -45,10 +47,11 @@ public class RepairRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		logBeforeRecipeRun(i, fccf);
-		if (enoughMaterialAvailable(i)) {
-			if (input.removeSafelyFrom(i)) {
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
+		if (enoughMaterialAvailable(inputInv)) {
+			if (input.removeSafelyFrom(inputInv)) {
 				((PercentageHealthRepairManager) (fccf.getRepairManager()))
 						.repair(healthPerRun);
 				LoggingUtils.log(((PercentageHealthRepairManager) (fccf
@@ -57,7 +60,7 @@ public class RepairRecipe extends InputRecipe {
 						+ fccf.getLogData() + " after repairing");
 			}
 		}
-		logAfterRecipeRun(i, fccf);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 	

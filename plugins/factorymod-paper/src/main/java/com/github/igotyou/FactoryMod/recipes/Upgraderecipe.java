@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -26,10 +28,11 @@ public class Upgraderecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		logAfterRecipeRun(i, fccf);
-		if (input.isContainedIn(i)) {
-			if (input.removeSafelyFrom(i)) {
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
+		if (input.isContainedIn(inputInv)) {
+			if (input.removeSafelyFrom(inputInv)) {
 				FurnCraftChestEgg e = egg;
 				fccf.upgrade(e.getName(),
 						e.getRecipes(), e.getFuel(),
@@ -37,7 +40,7 @@ public class Upgraderecipe extends InputRecipe {
 						e.getDamagePerDamagingPeriod(), e.getBreakGracePeriod(), e.getCitadelBreakReduction());
 			}
 		}
-		logAfterRecipeRun(i, fccf);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 

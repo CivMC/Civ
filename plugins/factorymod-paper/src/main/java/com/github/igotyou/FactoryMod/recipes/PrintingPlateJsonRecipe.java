@@ -2,6 +2,7 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -40,8 +41,8 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 	}
 
 	@Override
-	public boolean enoughMaterialAvailable(Inventory i) {
-		String[] pages = String.join("", ((BookMeta) getBook(i).getItemMeta()).getPages()).split("<<PAGE>>");
+	public boolean enoughMaterialAvailable(Inventory inputInv) {
+		String[] pages = String.join("", ((BookMeta) getBook(inputInv).getItemMeta()).getPages()).split("<<PAGE>>");
 
 		for (String page : pages) {
 			try {
@@ -50,25 +51,26 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 
 				String result = checkForIllegalSections(element);
 				if (result != null) {
-					factioryError(i, "Banned Tag Error", "Error Message: " + result);
+					factioryError(inputInv, "Banned Tag Error", "Error Message: " + result);
 
 					return false;
 				}
 			} catch (JsonSyntaxException e) {
-				factioryError(i, "JSON Syntax Error", e.toString());
+				factioryError(inputInv, "JSON Syntax Error", e.toString());
 
 				return false;
 			}
 		}
 
-		return this.input.isContainedIn(i) && getBook(i) != null;
+		return this.input.isContainedIn(inputInv) && getBook(inputInv) != null;
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		logBeforeRecipeRun(i, fccf);
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
 
-		ItemStack book = getBook(i);
+		ItemStack book = getBook(inputInv);
 		BookMeta bookMeta = (BookMeta) book.getItemMeta();
 		if (!bookMeta.hasGeneration()) {
 			bookMeta.setGeneration(BookMeta.Generation.ORIGINAL);
@@ -91,9 +93,9 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = output.clone();
 
-		if (toRemove.isContainedIn(i) && toRemove.removeSafelyFrom(i)) {
+		if (toRemove.isContainedIn(inputInv) && toRemove.removeSafelyFrom(inputInv)) {
 			for (ItemStack is : toAdd.getItemStackRepresentation()) {
-				is = addTags(i, serialNumber, is, bookNBT);
+				is = addTags(serialNumber, is, bookNBT);
 
 				ItemUtils.setDisplayName(is, itemName);
 				ItemUtils.setLore(is,
@@ -105,11 +107,11 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 				);
 				is.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
 				is.getItemMeta().addItemFlags(ItemFlag.HIDE_ENCHANTS);
-				i.addItem(is);
+				outputInv.addItem(is);
 			}
 		}
 
-		logAfterRecipeRun(i, fccf);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 

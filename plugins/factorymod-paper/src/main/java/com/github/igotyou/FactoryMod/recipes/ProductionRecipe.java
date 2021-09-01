@@ -6,6 +6,8 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -111,8 +113,9 @@ public class ProductionRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		logBeforeRecipeRun(i, fccf);
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd;
 		if (getModifier() == null) {
@@ -128,17 +131,17 @@ public class ProductionRecipe extends InputRecipe {
 				}
 			}
 		}
-		if (toRemove.isContainedIn(i)) {
-			if (!toAdd.fitsIn(i)) { // does not fit in chest
+		if (toRemove.isContainedIn(inputInv)) {
+			if (!toAdd.fitsIn(outputInv)) { // does not fit in chest
 				return false;
 			}
-			if (toRemove.removeSafelyFrom(i)) {
+			if (toRemove.removeSafelyFrom(inputInv)) {
 				for (ItemStack is : toAdd.getItemStackRepresentation()) {
-					i.addItem(is);
+					outputInv.addItem(is);
 				}
 			}
 		}
-		logAfterRecipeRun(i, fccf);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 	

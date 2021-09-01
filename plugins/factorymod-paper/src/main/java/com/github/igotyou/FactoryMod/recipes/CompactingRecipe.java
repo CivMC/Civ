@@ -5,6 +5,8 @@ import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -30,12 +32,12 @@ public class CompactingRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean enoughMaterialAvailable(Inventory i) {
-		if (!input.isContainedIn(i)) {
+	public boolean enoughMaterialAvailable(Inventory inputInv) {
+		if (!input.isContainedIn(inputInv)) {
 			return false;
 		}
-		ItemMap im = new ItemMap(i);
-		for (ItemStack is : i.getContents()) {
+		ItemMap im = new ItemMap(inputInv);
+		for (ItemStack is : inputInv.getContents()) {
 			if (is != null) {
 				if (compactable(is, im)) {
 					return true;
@@ -56,25 +58,26 @@ public class CompactingRecipe extends InputRecipe {
 	}
 
 	@Override
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
-		logBeforeRecipeRun(i, fccf);
-		if (input.isContainedIn(i)) {
-			ItemMap im = new ItemMap(i);
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
+		if (input.isContainedIn(inputInv)) {
+			ItemMap im = new ItemMap(inputInv);
 			//technically we could just directly work with the ItemMap here to iterate over the items so we dont check identical items multiple times,
 			//but using the iterator of the inventory preserves the order of the inventory, which is more important here to guarantee one behavior
 			//to the player
-			for (ItemStack is : i.getContents()) {
+			for (ItemStack is : inputInv.getContents()) {
 				if (is != null) {
 					if (compactable(is, im)) {
-						if (input.removeSafelyFrom(i)) {
-							compact(is,i);
+						if (input.removeSafelyFrom(inputInv)) {
+							compact(is, inputInv, outputInv);
 						}
 						break;
 					}
 				}
 			}
 		}
-		logAfterRecipeRun(i, fccf);
+		logAfterRecipeRun(combo, fccf);
 		return true;
 	}
 
@@ -134,13 +137,13 @@ public class CompactingRecipe extends InputRecipe {
 	 * 
 	 * @param is
 	 */
-	private void compact(ItemStack is, Inventory i) {
+	private void compact(ItemStack is, Inventory inputInv, Inventory outputInv) {
 		ItemStack copy = is.clone();
 		copy.setAmount(getCompactStackSize(copy.getType()));
 		ItemMap toRemove = new ItemMap(copy);
-		if (toRemove.removeSafelyFrom(i)) {
+		if (toRemove.removeSafelyFrom(inputInv)) {
 			compactStack(copy);
-			i.addItem(copy);
+			outputInv.addItem(copy);
 		}
 	}
 

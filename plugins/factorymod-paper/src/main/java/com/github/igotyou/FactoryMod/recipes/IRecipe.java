@@ -7,12 +7,11 @@ import org.bukkit.inventory.Inventory;
  * Encapsulates a specific functionality for a FurnCraftChest factory. Each
  * factory of this type can have of many different recipes and what the recipe
  * actually does is completly kept inside the recipe's class
- *
  */
 public interface IRecipe {
 	/**
 	 * @return The identifier for this recipe, which is used both internally and
-	 *         to display the recipe to a player
+	 * to display the recipe to a player
 	 */
 	public String getName();
 
@@ -29,28 +28,26 @@ public interface IRecipe {
 	/**
 	 * Checks whether enough material is available in the given inventory to run
 	 * this recipe at least once
-	 * 
-	 * @param i
-	 *            Inventory to check
+	 *
+	 * @param inputInv Inventory to check
 	 * @return true if the recipe could be run at least once, false if not
 	 */
-	public boolean enoughMaterialAvailable(Inventory i);
+	public boolean enoughMaterialAvailable(Inventory inputInv);
 
 	/**
 	 * Applies whatever the recipe actually does, it's main functionality
-	 * 
-	 * @param i
-	 *            Inventory which contains the materials to work with
-	 * @param f
-	 *            Factory which is run
+	 *
+	 * @param inputInv  Inventory which contains the materials to work with
+	 * @param outputInv Inventory to add output items to.
+	 * @param fccf      Factory which is run
 	 * @return true if the recipe could be run; false otherwise (e.g: not enough storage space)
 	 */
-	public boolean applyEffect(Inventory i, FurnCraftChestFactory f);
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf);
 
 	/**
 	 * Each implementation of this class has to specify a unique identifier,
 	 * which is used to identify instances of this recipe in the config
-	 * 
+	 *
 	 * @return Unique identifier for the implementation
 	 */
 	public String getTypeIdentifier();
