@@ -193,16 +193,6 @@ public class ActivityMap {
 		}
 	}
 
-	/*private static class TimestampedBox extends QTBoxImpl {
-
-		private final Instant instant;
-
-		public TimestampedBox(Instant instant, int x, int z) {
-			super(x, z, x + 1, z + 1);
-			this.instant = instant;
-		}
-	}*/
-
 	public boolean isEnabled(World world) {
 		return world != null && this.worlds.contains(world.getName());
 	}
