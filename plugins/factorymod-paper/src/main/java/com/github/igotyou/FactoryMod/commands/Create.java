@@ -24,7 +24,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Create extends BaseCommand {
@@ -34,7 +33,7 @@ public class Create extends BaseCommand {
 	@Syntax("<factory>")
 	@Description("Creates a factory at the blocks you are looking at")
 	@CommandCompletion("@FM_Factories")
-	public void execute(CommandSender sender, String factoryName) {
+	public void execute(Player sender, String factoryName) {
 		FactoryModManager manager = FactoryMod.getInstance().getManager();
 		IFactoryEgg egg = manager.getEgg(factoryName);
 		if (egg == null) {
@@ -42,7 +41,7 @@ public class Create extends BaseCommand {
 			return;
 		}
 		Set<Material> transparent = null;
-		List<Block> view = ((Player) sender).getLineOfSight(transparent, 10);
+		List<Block> view = sender.getLineOfSight(transparent, 10);
 		Factory exis = manager.getFactoryAt(view.get(view.size() - 1));
 		if (exis != null) {
 			manager.removeFactory(exis);
