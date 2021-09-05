@@ -22,10 +22,10 @@ import vg.civcraft.mc.namelayer.group.Group;
 public class AreaReinforce extends BaseCommand {
 
 	@CommandAlias("ctar")
-	@Syntax("<lowX> <lowY> <lowZ> <highX> <highY> <highZ> <group>")
+	@Syntax("<group> <lowX> <lowY> <lowZ> <highX> <highY> <highZ>")
 	@Description("Using the reinforcement item in your main hand, reinforces an area to your default or a target group.")
-	@CommandCompletion("@nothing @nothing @nothing @nothing @nothing @nothing @CT_Groups")
-	public void execute(Player p, String minX, String minY, String minZ, String maxX, String maxY, String maxZ, @Optional String targetGroup) {
+	@CommandCompletion("@CT_Groups @nothing @nothing @nothing @nothing @nothing @nothing")
+	public void execute(Player p, @Optional String targetGroup, String minX, String minY, String minZ, String maxX, String maxY, String maxZ) {
 		UUID uuid = NameAPI.getUUID(p.getName());
 		ReinforcementType reinType = Citadel.getInstance().getReinforcementTypeManager()
 				.getByItemStack(p.getInventory().getItemInMainHand());
