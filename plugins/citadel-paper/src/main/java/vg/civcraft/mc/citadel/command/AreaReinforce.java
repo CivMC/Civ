@@ -43,6 +43,10 @@ public class AreaReinforce extends StandaloneCommand {
 				return true;
 			}
 		} else {
+			if (args.length == 0) {
+				p.sendMessage(ChatColor.RED + "Please input a valid group");
+				return true;
+			}
 			groupName = args[0];
 		}
 		Group group = GroupManager.getGroup(groupName);
@@ -83,6 +87,9 @@ public class AreaReinforce extends StandaloneCommand {
 					if (!current.getLocation().equals(protecting.getLocation())) {
 						continue;
 					}
+					if (current.getType().isAir()) {
+						continue;
+					}
 					count++;
 					Reinforcement rein = ReinforcementLogic.callReinforcementCreationEvent(p, current, reinType, group);
 					if (rein != null) {
@@ -92,7 +99,7 @@ public class AreaReinforce extends StandaloneCommand {
 			}
 		}
 
-		CitadelUtility.sendAndLog(p, ChatColor.GREEN, "Successfully created " + count + "reinforcements");
+		CitadelUtility.sendAndLog(p, ChatColor.GREEN, "Successfully created " + count + " reinforcements");
 		return true;
 	}
 
