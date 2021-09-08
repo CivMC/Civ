@@ -10,13 +10,13 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import net.minecraft.world.inventory.ContainerEnchantTable;
+import java.util.logging.Level;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -149,14 +149,11 @@ public final class OldEnchanting extends BasicHack {
 		// Setup enchantment randomiser
 		Field randomiser = null;
 		try {
-			randomiser = FieldUtils.getDeclaredField(ContainerEnchantTable.class, "p", true);
-			final Field modifiersField = Field.class.getDeclaredField("modifiers");
-			modifiersField.setAccessible(true);
-			modifiersField.setInt(randomiser, randomiser.getModifiers() & ~Modifier.FINAL);
+			randomiser = FieldUtils.getDeclaredField(ContainerEnchantTable.class, "h", true);
 		}
-		catch (final Exception exception) {
-			plugin.warning("[OldEnchanting] An exception was thrown while trying to reflect the enchanting " +
-					"table's randomiser field.", exception);
+		catch (final Throwable throwable) {
+			this.logger.log(Level.WARNING, "An exception was thrown while trying to reflect the enchanting " +
+					"table's randomiser field.", throwable);
 		}
 		this.enchantingTableRandomiser = randomiser;
 		// Setup entity xp modifiers
@@ -167,22 +164,22 @@ public final class OldEnchanting extends BasicHack {
 	public void onEnable() {
 		super.onEnable();
 		if (this.experienceModifier < 0.0d) {
-			this.plugin.warning("[OldEnchanting] Experience modifier [" + this.experienceModifier + "] " +
+			this.logger.warning("[OldEnchanting] Experience modifier [" + this.experienceModifier + "] " +
 					"is unsupported, defaulting to 0.2");
 			this.experienceModifier = 0.2d;
 		}
 		if (this.lootModifier < 0.0d) {
-			this.plugin.warning("[OldEnchanting] Loot modifier [" + this.lootModifier + "] " +
+			this.logger.warning("[OldEnchanting] Loot modifier [" + this.lootModifier + "] " +
 					"is unsupported, defaulting to 1.5");
 			this.lootModifier = 1.5d;
 		}
 		if (this.maxRepairCost < 2 && this.maxRepairCost != -1) {
-			this.plugin.warning("[OldEnchanting] Maximum repair cost [" + this.maxRepairCost + "] " +
+			this.logger.warning("[OldEnchanting] Maximum repair cost [" + this.maxRepairCost + "] " +
 					"is unsupported, defaulting to 33");
 			this.maxRepairCost = 33;
 		}
 		if (this.expPerBottle < -1) {
-			this.plugin.warning("[OldEnchanting] Experience per bottle [" + this.expPerBottle + "] " +
+			this.logger.warning("[OldEnchanting] Experience per bottle [" + this.expPerBottle + "] " +
 					"is unsupported, defaulting to 10");
 			this.expPerBottle = 10;
 		}
@@ -193,12 +190,12 @@ public final class OldEnchanting extends BasicHack {
 				for (final String key : modifiers.getKeys(false)) {
 					final EntityType type = EntityUtils.getEntityType(key);
 					if (type == null) {
-						this.plugin.warning("[OldEnchanting] EntityType [" + key + "] does not exist, skipping.");
+						this.logger.warning("[OldEnchanting] EntityType [" + key + "] does not exist, skipping.");
 						continue;
 					}
 					double modifier = modifiers.getDouble(key, 1.0d);
 					if (modifier < 0.0d) {
-						this.plugin.warning("[OldEnchanting] Experience modifier [" + modifier + "] for " +
+						this.logger.warning("[OldEnchanting] Experience modifier [" + modifier + "] for " +
 								"[" + key + "] is unsupported, defaulting to 1.0");
 						modifier = 1.0d;
 					}
@@ -480,10 +477,11 @@ public final class OldEnchanting extends BasicHack {
 		final ContainerEnchantTable table = (ContainerEnchantTable) view.getHandle();
 		if (this.randomiseEnchants) {
 			try {
-				this.enchantingTableRandomiser.set(table, RANDOM);
+				final Random tableRandom = (Random) this.enchantingTableRandomiser.get(table);
+				tableRandom.nextDouble();
 			}
-			catch (final IllegalArgumentException | IllegalAccessException exception) {
-				this.plugin.warning("[OldEnchanting] Could not set randomiser!", exception);
+			catch (final IllegalArgumentException | IllegalAccessException | ClassCastException throwable) {
+				this.logger.log(Level.WARNING, "Could not set randomiser!", throwable);
 			}
 		}
 	}

@@ -1,19 +1,19 @@
 package com.programmerdan.minecraft.simpleadminhacks.framework;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.common.primitives.Primitives;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.util.NumberConversions;
+import vg.civcraft.mc.civmodcore.util.CivLogger;
 
 /**
  * Baseline structure for a managed hack.
@@ -22,15 +22,15 @@ import org.bukkit.util.NumberConversions;
  */
 public abstract class SimpleHack<T extends SimpleHackConfig> {
 
+	protected final CivLogger logger;
 	protected final SimpleAdminHacks plugin;
 	protected final T config;
 	private boolean enabled;
 
 	public SimpleHack(final SimpleAdminHacks plugin, final T config) {
-		Preconditions.checkNotNull(plugin, "Plugin cannot be null!");
-		Preconditions.checkNotNull(config, "Config cannot be null!");
-		this.plugin = plugin;
-		this.config = config;
+		this.logger = CivLogger.getLogger(getClass());
+		this.plugin = Objects.requireNonNull(plugin, "Plugin cannot be null!");
+		this.config = Objects.requireNonNull(config, "Config cannot be null!");
 	}
 
 	public final SimpleAdminHacks plugin() {
