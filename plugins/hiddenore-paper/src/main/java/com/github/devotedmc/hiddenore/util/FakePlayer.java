@@ -1439,10 +1439,13 @@ public class FakePlayer implements Player {
 
 	}
 
-	/*@Override
-	public void sendBlockChange(Location loc, int material, byte data) {
+	@Override
+	public void sendSignChange(@Nonnull Location location,
+							   @Nullable List<Component> list,
+							   @Nonnull DyeColor dyeColor, boolean bl)
+			throws IllegalArgumentException {
 
-	}*/
+	}
 
 	@Override
 	public void sendSignChange(Location loc, String[] lines) throws IllegalArgumentException {
@@ -2305,6 +2308,14 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
+	public void sendSignChange(@Nonnull Location location,
+							   @Nullable String[] strings,
+							   @Nonnull DyeColor dyeColor, boolean bl)
+			throws IllegalArgumentException {
+
+	}
+
+	@Override
 	public int getClientViewDistance() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -2570,6 +2581,26 @@ public class FakePlayer implements Player {
 	public void setArrowsInBody(int arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public int getBeeStingerCooldown() {
+		return 0;
+	}
+
+	@Override
+	public void setBeeStingerCooldown(int i) {
+
+	}
+
+	@Override
+	public int getBeeStingersInBody() {
+		return 0;
+	}
+
+	@Override
+	public void setBeeStingersInBody(int i) {
+
 	}
 
 	@Override
@@ -2911,6 +2942,26 @@ public class FakePlayer implements Player {
 	public void setViewDistance(int arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public int getNoTickViewDistance() {
+		return 0;
+	}
+
+	@Override
+	public void setNoTickViewDistance(int i) {
+
+	}
+
+	@Override
+	public int getSendViewDistance() {
+		return 0;
+	}
+
+	@Override
+	public void setSendViewDistance(int i) {
+
 	}
 
 	@Override
