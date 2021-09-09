@@ -3,6 +3,7 @@ package isaac.bastion.manager;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
+import isaac.bastion.Permissions;
 import isaac.bastion.event.BastionDamageEvent;
 import isaac.bastion.event.BastionDamageEvent.Cause;
 import isaac.bastion.storage.BastionBlockStorage;
@@ -27,6 +28,8 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class ElytraManager {
 
@@ -204,8 +207,9 @@ public class ElytraManager {
 		for (BastionBlock bastion : possible) {
 			Location loc = bastion.getLocation().clone();
 			loc.setY(0);
-			
-			if (bastion.canPlace(player)) { // not blocked, continue
+
+			//check player flight permission.
+			if (NameAPI.getGroupManager().hasAccess(bastion.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_ELYTRA))) {
 				continue;
 			}
 			if (bastion.getType().isSquare()) {
