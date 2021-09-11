@@ -23,7 +23,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
-public class ElytraFeatures extends SimpleHack<ElytraFeaturesConfig> implements Listener {
+public final class ElytraFeatures extends SimpleHack<ElytraFeaturesConfig> implements Listener {
 
 	public ElytraFeatures(@Nonnull final  SimpleAdminHacks plugin,
 						  @Nonnull final  ElytraFeaturesConfig config) {
@@ -119,7 +119,7 @@ public class ElytraFeatures extends SimpleHack<ElytraFeaturesConfig> implements 
 
 	private static final class ElytraDamage {
 		private long lastDamageTime;
-		private int damageToDeal;
+		private double damageToDeal;
 	}
 
 	private final Object2ObjectMap<Player, ElytraDamage> damageElytraFlightTracker =
@@ -143,11 +143,8 @@ public class ElytraFeatures extends SimpleHack<ElytraFeaturesConfig> implements 
 		}
 		final ElytraDamage details = this.damageElytraFlightTracker.computeIfAbsent(
 				player, (_key) -> new ElytraDamage());
-		final int damageToDeal = !config().isHeightDamageScaling() ? config().getHeightDamage() :
-				config().getHeightDamage() * blocksAboveAllowedHeight;
-		if (details.damageToDeal < damageToDeal) {
-			details.damageToDeal = damageToDeal;
-		}
+		details.damageToDeal = Math.max(details.damageToDeal,
+				config().getHeightDamage() * blocksAboveAllowedHeight * config().isHeightDamageScaling());
 		final long now = System.currentTimeMillis();
 		final long deltaInterval = now - details.lastDamageTime;
 		// If it's not the right time to damage the player, do nothing

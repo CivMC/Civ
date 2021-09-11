@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.util.CivLogger;
 
-public class ElytraFeaturesConfig extends SimpleHackConfig {
+public final class ElytraFeaturesConfig extends SimpleHackConfig {
 	private final CivLogger logger;
 
 	private boolean disableFlight;
@@ -17,7 +17,7 @@ public class ElytraFeaturesConfig extends SimpleHackConfig {
 	private boolean disableSafeFireworkBoosting;
 
 	private int heightDamage;
-	private boolean heightDamageScaling;
+	private double heightDamageScaling;
 	private int heightBuffer;
 	private long heightDamageInterval;
 
@@ -47,7 +47,12 @@ public class ElytraFeaturesConfig extends SimpleHackConfig {
 			this.heightDamage = 1;
 		}
 
-		this.heightDamageScaling = config.getBoolean("heightDamage.scales", true);
+		this.heightDamageScaling = config.getDouble("heightDamage.scales", 1d);
+		if (this.heightDamageScaling <= 0d) {
+			this.logger.warning("[heightDamage.scales] was set to [" + this.heightDamageScaling + "], " +
+					"which is invalid, defaulting to: 1.0d");
+			this.heightDamageScaling = 1d;
+		}
 
 		this.heightBuffer = config.getInt("heightDamage.buffer", 5);
 
@@ -83,7 +88,7 @@ public class ElytraFeaturesConfig extends SimpleHackConfig {
 		return this.heightDamage;
 	}
 
-	public boolean isHeightDamageScaling() {
+	public double isHeightDamageScaling() {
 		return this.heightDamageScaling;
 	}
 

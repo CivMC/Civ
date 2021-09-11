@@ -249,14 +249,13 @@ hacks:
     disableFireworkBoostingInCombat: false
     # Whether to restrict firework boosting to explosive fireworks
     disableSafeFireworkBoosting: false
-    # This regulates player damage when elytra-flying above world height.
+    # This regulates player damage when Elytra flying above world height.
     heightDamage:
-      # The amount of damage (in half-hearts) the player should take.
+      # The amount of damage (in half-hearts) the flier should take.
       # NOTE: Setting to 0 will disable the damage.
       damage: 1
-      # The damage done to the player when elytra-flying above world height is multiplied by the amount of blocks above
-      # world height. Set this to true to disable scaling; to deal a flat amount of damage.
-      scales: true
+      # The damage is multiplied by the number of blocks above world height multiplied by this number.
+      scales: 1.0
       # The amount of blocks above height limit where damage is not applied.
       buffer: 5
       # The interval (in milliseconds) between damage ticks.
