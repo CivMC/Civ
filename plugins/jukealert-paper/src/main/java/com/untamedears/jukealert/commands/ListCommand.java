@@ -7,13 +7,10 @@ import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.appender.DormantCullingAppender;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -80,11 +77,14 @@ public class ListCommand extends StandaloneCommand {
 		return true;
 	}
 
-	@AllArgsConstructor
-	@EqualsAndHashCode
 	private static class SnitchCache {
 		Snitch snitch;
 		DormantCullingAppender appender;
+		public SnitchCache(final Snitch snitch,
+						   final DormantCullingAppender appender) {
+			this.snitch = snitch;
+			this.appender = appender;
+		}
 	}
 
 	@Override
