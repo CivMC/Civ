@@ -11,6 +11,8 @@ import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
+import it.unimi.dsi.fastutil.ints.IntList;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -19,16 +21,20 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.stream.Stream;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -38,16 +44,19 @@ import org.bukkit.entity.EntityType;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.SingleBlockAPIView;
+import vg.civcraft.mc.civmodcore.locations.global.GlobalLocationTracker;
 import vg.civcraft.mc.civmodcore.locations.global.GlobalTrackableDAO;
 import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
+import vg.civcraft.mc.civmodcore.util.CivLogger;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 
-	public JukeAlertDAO(Logger logger, ManagedDatasource db) {
-		super(logger, db);
+	public JukeAlertDAO(@Nonnull final ManagedDatasource datasource) {
+		super(CivLogger.getLogger(JukeAlertDAO.class), Objects.requireNonNull(datasource));
 	}
 
 	@Override
@@ -593,45 +602,61 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 		}
 	}
 
-	public List<Snitch> loadSnitchesByGroupID(Collection<Integer> groupIDs) {
-		SnitchTypeManager configMan = JukeAlert.getInstance().getSnitchConfigManager();
-		WorldIDManager gcmm = CivModCorePlugin.getInstance().getWorldIdManager();
-		List<Snitch> result = new ArrayList<>();
-		try (Connection insertConn = db.getConnection()) {
-			for (int groupID : groupIDs) {
-				try (PreparedStatement selectSnitch = insertConn.prepareStatement(
-						"select x, y, z, world_id, type_id, name, id from ja_snitches " + "where group_id = ?;");) {
-					selectSnitch.setInt(1, groupID);
-					try (ResultSet rs = selectSnitch.executeQuery()) {
-						while (rs.next()) {
-							int x = rs.getInt(1);
-							int y = rs.getInt(2);
-							int z = rs.getInt(3);
-							int worldID = rs.getInt(4);
-							World world = gcmm.getWorldByInternalID((short) worldID);
-							if (world == null) {
-								logger.log(Level.SEVERE, "Failed to load snitch with world id " + worldID);
-								continue;
-							}
-							Location location = new Location(world, x, y, z);
-							int typeID = rs.getInt(5);
-							SnitchFactoryType type = configMan.getConfig(typeID);
-							if (type == null) {
-								logger.log(Level.SEVERE, "Failed to load snitch with type id " + typeID);
-								continue;
-							}
-							String name = rs.getString(6);
-							int id = rs.getInt(7);
-							Snitch snitch = type.create(id, location, name, groupID, false);
-							result.add(snitch);
-						}
-					}
-				}
+	// ------------------------------------------------------------
+	//
+	// ------------------------------------------------------------
+
+	private Map<Location, Snitch> INTERNAL_snitchMap;
+	@SuppressWarnings("unchecked")
+	private Stream<Snitch> INTERNAL_getSnitches() {
+		if (INTERNAL_snitchMap == null) {
+			final SnitchManager snitchManager = JukeAlert.getInstance().getSnitchManager();
+			// Get SingleBlockAPIView instance
+			final Field SM_API_FIELD = FieldUtils.getDeclaredField(SnitchManager.class, "api", true);
+			final SingleBlockAPIView<Snitch> singleBlockAPIView;
+			try {
+				singleBlockAPIView = (SingleBlockAPIView<Snitch>) SM_API_FIELD.get(snitchManager);
 			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to load snitch from db based on group id: ", e);
+			catch (final IllegalAccessException throwable) {
+				throw new IllegalStateException(
+						"Could not retrieve " + SingleBlockAPIView.class.getSimpleName(),
+						throwable);
+			}
+			// Get GlobalLocationTracker instance
+			final Field SBAV_TRACKER_FIELD = FieldUtils.getDeclaredField(SingleBlockAPIView.class, "tracker", true);
+			final GlobalLocationTracker<Snitch> globalLocationTracker;
+			try {
+				globalLocationTracker = (GlobalLocationTracker<Snitch>) SBAV_TRACKER_FIELD.get(singleBlockAPIView);
+			}
+			catch (final IllegalAccessException throwable) {
+				throw new IllegalStateException(
+						"Could not retrieve " + GlobalLocationTracker.class.getSimpleName(),
+						throwable);
+			}
+			// Get internal map
+			final Field GLT_TRACKED_FIELD = FieldUtils.getDeclaredField(GlobalLocationTracker.class, "tracked", true);
+			try {
+				INTERNAL_snitchMap = (Map<Location, Snitch>) GLT_TRACKED_FIELD.get(globalLocationTracker);
+			}
+			catch (final IllegalAccessException throwable) {
+				throw new IllegalStateException(
+						"Could not retrieve internal tracking map",
+						throwable);
+			}
 		}
-		return result;
+		return INTERNAL_snitchMap.values().stream();
+	}
+
+	@Nonnull
+	public Stream<Snitch> loadSnitchesByGroupID(@Nullable final IntList groupIDs) {
+		if (CollectionUtils.isEmpty(groupIDs)) {
+			return Stream.empty();
+		}
+		return INTERNAL_getSnitches().parallel()
+				.filter((snitch) -> {
+					final Group group = snitch.getGroup();
+					return group != null && !Collections.disjoint(groupIDs, group.getGroupIds());
+				});
 	}
 
 }
