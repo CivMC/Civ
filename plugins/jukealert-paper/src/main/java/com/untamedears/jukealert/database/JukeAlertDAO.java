@@ -12,6 +12,7 @@ import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,6 +28,7 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -378,55 +380,120 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 		}
 	}
 
-	public List<LoggableAction> loadLogs(Snitch snitch) {
-		int id = snitch.getId();
-		if (id == -1) {
-			throw new IllegalArgumentException("Id for loading logs can not be null");
+	/**
+	 * Loads <b>ALL</b> the logs for a given snitch, with some caveats.
+	 *
+	 * @param snitch The snitch to load the logs for.
+	 * @param allowedActionAge The maximum allowed age (as a UNIX timestamp) for actions.
+	 * @param actionLimit The maximum number of actions to load.
+	 */
+	public List<LoggableAction> loadLogs(@Nonnull final Snitch snitch,
+										 final long allowedActionAge,
+										 final int actionLimit) {
+		final int snitchId = snitch.getId();
+		if (snitchId == -1) {
+			throw new IllegalArgumentException("Cannot load logs for unknown snitch!");
 		}
-		List<LoggableAction> result = new ArrayList<>();
-		LoggedActionFactory factory = JukeAlert.getInstance().getLoggedActionFactory();
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement loadActions = insertConn.prepareStatement(
-						"select jsa.name, jse.uuid, jse.x, jse.y, jse.z, jse.creation_time, jse.victim, jse.id"
-								+ " from ja_snitch_entries jse inner join ja_snitch_actions jsa on "
-								+ "jse.type_id = jsa.id where snitch_id = ? order by jse.creation_time asc;");) {
-			loadActions.setInt(1, id);
-			try (ResultSet rs = loadActions.executeQuery()) {
-				while (rs.next()) {
-					String identifier = rs.getString(1);
-					UUID uuid = UUID.fromString(rs.getString(2));
-					int x = rs.getInt(3);
-					int y = rs.getInt(4);
-					int z = rs.getInt(5);
-					long time = rs.getTimestamp(6).getTime();
-					String victim = rs.getString(7);
-					int logId = rs.getInt(8);
-					Location loc = new Location(snitch.getLocation().getWorld(), x, y, z);
-					LoggableAction action = factory.produce(snitch, identifier, uuid, loc, time, victim);
+		final List<LoggableAction> result = new ArrayList<>();
+		final LoggedActionFactory factory = JukeAlert.getInstance().getLoggedActionFactory();
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+						"select jsa.name, jse.uuid, jse.x, jse.y, jse.z, jse.creation_time, jse.victim, jse.id "
+								+ "from ja_snitch_entries jse inner join ja_snitch_actions jsa on "
+								+ "jse.type_id = jsa.id where snitch_id = ? and jse.creation_time >= ? "
+								+ "order by jse.creation_time desc limit " + Math.max(actionLimit, 1) + ";")) {
+			statement.setInt(1, snitchId);
+			statement.setDate(2, new Date(allowedActionAge));
+			try (final ResultSet results = statement.executeQuery()) {
+				while (results.next()) {
+					final String actionType = results.getString(1);
+					final UUID perpetratorUUID = UUID.fromString(results.getString(2));
+					final int incidentX = results.getInt(3);
+					final int incidentY = results.getInt(4);
+					final int incidentZ = results.getInt(5);
+					final long incidentTime = results.getTimestamp(6).getTime();
+					final String extra = results.getString(7);
+					final int incidentID = results.getInt(8);
+					final LoggableAction action = factory.produce(snitch, actionType, perpetratorUUID,
+							new Location(snitch.getLocation().getWorld(), incidentX, incidentY, incidentZ),
+							incidentTime, extra);
 					if (action != null) {
-						action.setID(logId);
+						action.setID(incidentID);
 						result.add(action);
 					}
 				}
 			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to load snitch logs from db:", e);
-			return new ArrayList<>();
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to load snitch logs from db", throwable);
+			return new ArrayList<>(0);
 		}
 		return result;
 	}
 
-	public void deleteLog(LoggableAction log) {
+	/**
+	 * Deletes a particular log from the database.
+	 *
+	 * @param log The log to delete.
+	 */
+	public void deleteLog(@Nonnull final LoggableAction log) {
 		if (log.getID() == -1) {
 			return;
 		}
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement deleteLog = insertConn
-						.prepareStatement("delete from ja_snitch_entries where id = ?;")) {
-			deleteLog.setInt(1, log.getID());
-			deleteLog.execute();
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to delete snitch log", e);
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "delete from ja_snitch_entries where id = ?;")) {
+			statement.setInt(1, log.getID());
+			statement.execute();
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to delete snitch log", throwable);
+		}
+	}
+
+	/**
+	 * Deletes <b>ALL</b> logs for a given snitch.
+	 *
+	 * @param snitch The snitch to delete all logs for.
+	 */
+	public void deleteAllLogsForSnitch(@Nonnull final Snitch snitch) {
+		final int snitchID = snitch.getId();
+		if (snitchID == -1) {
+			throw new IllegalArgumentException("Cannot delete logs for unknown snitch!");
+		}
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "delete from ja_snitch_entries where snitch_id = ?;")) {
+			statement.setInt(1, snitchID);
+			statement.execute();
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to delete snitch log", throwable);
+		}
+	}
+
+	/**
+	 * Deletes <b>ALL</b> old logs for a given snitch.
+	 *
+	 * @param snitch The snitch to delete all old logs for.
+	 * @param allowedSnitchAge The maximum allowed age (as a UNIX timestamp), all actions dated before this will be
+	 *                         deleted.
+	 */
+	public void deleteOldLogsForSnitch(@Nonnull final Snitch snitch,
+									   final long allowedSnitchAge) {
+		final int snitchID = snitch.getId();
+		if (snitchID == -1) {
+			throw new IllegalArgumentException("Cannot delete logs for unknown snitch!");
+		}
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "delete from ja_snitch_entries where snitch_id = ? and jse.creation_time < ?;")) {
+			statement.setInt(1, snitchID);
+			statement.setDate(2, new Date(allowedSnitchAge));
+			statement.execute();
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to delete snitch log", throwable);
 		}
 	}
 
