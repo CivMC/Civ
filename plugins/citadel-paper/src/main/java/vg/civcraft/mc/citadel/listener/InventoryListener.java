@@ -20,7 +20,7 @@ public class InventoryListener implements Listener {
 	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
 		Inventory fromInventory = event.getSource();
 		InventoryHolder fromHolder = fromInventory.getHolder();
-		boolean isFromBlock = fromHolder instanceof Container;
+		boolean isFromBlock = fromHolder instanceof Container || fromHolder instanceof DoubleChest;
 		boolean fromAtChunkBorder = false;
 		Location fromLocation = null;
 		if (isFromBlock) {
@@ -34,7 +34,7 @@ public class InventoryListener implements Listener {
 
 		Inventory destInventory = event.getDestination();
 		InventoryHolder destHolder = destInventory.getHolder();
-		boolean isDestBlock = destHolder instanceof Container;
+		boolean isDestBlock = destHolder instanceof Container || destHolder instanceof DoubleChest;
 		boolean destAtChunkBorder = false;
 		Location destLocation = null;
 		if (isDestBlock) {
