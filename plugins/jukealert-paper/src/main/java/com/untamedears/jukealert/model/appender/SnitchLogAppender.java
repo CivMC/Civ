@@ -21,15 +21,16 @@ import vg.civcraft.mc.civmodcore.util.CivLogger;
 public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionTriggerConfig> {
 
 	public static final String ID = "log";
-	private final CivLogger LOGGER = CivLogger.getLogger(SnitchLogAppender.class);
+	private static final CivLogger LOGGER = CivLogger.getLogger(SnitchLogAppender.class);
+	private static final Comparator<LoggableAction> ACTION_COMPARATOR = Comparator.comparingLong(
+			(action) -> ((SnitchAction) action).getTime());
 
 	private final Object2IntMap<LoggableAction> pendingActions;
 
 	public SnitchLogAppender(final Snitch snitch,
 							 final ConfigurationSection config) {
 		super(snitch, config);
-		this.pendingActions = new Object2IntRBTreeMap<>(
-				Comparator.comparingLong((action) -> ((SnitchAction) action).getTime()));
+		this.pendingActions = new Object2IntRBTreeMap<>(ACTION_COMPARATOR);
 		this.pendingActions.defaultReturnValue(-1);
 	}
 
@@ -42,7 +43,7 @@ public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionT
 	public List<LoggableAction> getFullLogs() {
 		if (getSnitch().getId() == -1) {
 			final var actions = new ArrayList<>(this.pendingActions.keySet());
-			actions.sort(Comparator.comparingLong((action) -> (((SnitchAction) action).getTime())));
+			actions.sort(ACTION_COMPARATOR);
 			Collections.reverse(actions);
 			return actions;
 		}
