@@ -55,6 +55,8 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 
+	public static final int NOT_YET_INSERTED_ID = -1;
+
 	public JukeAlertDAO(@Nonnull final ManagedDatasource datasource) {
 		super(CivLogger.getLogger(JukeAlertDAO.class), Objects.requireNonNull(datasource));
 	}
@@ -253,362 +255,148 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 		db.registerMigration(3, false, "delete from ja_snitches where group_id = -1");
 	}
 
-	@Override
-	public void insert(Snitch snitch) {
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement insertSnitch = insertConn
-						.prepareStatement("insert into ja_snitches (group_id, type_id, x, y , z, world_id, name) "
-								+ "values(?,?, ?,?,?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
-			if (snitch.getGroup() == null) {
-				return;
-			}
-			int groupId = snitch.getGroup().getGroupId();
-			insertSnitch.setInt(1, groupId);
-			insertSnitch.setInt(2, snitch.getType().getID());
-			insertSnitch.setInt(3, snitch.getLocation().getBlockX());
-			insertSnitch.setInt(4, snitch.getLocation().getBlockY());
-			insertSnitch.setInt(5, snitch.getLocation().getBlockZ());
-			insertSnitch.setShort(6, getWorldID(snitch.getLocation()));
-			insertSnitch.setString(7, snitch.getName());
-			insertSnitch.execute();
-			try (ResultSet rs = insertSnitch.getGeneratedKeys()) {
-				if (!rs.next()) {
-					throw new IllegalStateException(
-							"Inserting snitch at " + snitch.getLocation() + " did not generate an id");
-				}
-				snitch.setId(rs.getInt(1));
-			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to insert new snitch: ", e);
-		}
-		snitch.persistAppenders();
-	}
+	// ------------------------------------------------------------
+	// Snitches
+	// ------------------------------------------------------------
 
 	@Override
-	public void update(Snitch snitch) {
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement updateSnitch = insertConn
-						.prepareStatement("update ja_snitches set name = ?, group_id = ? where id = ?;")) {
-			int groupId = snitch.getGroup() == null ? -1 : snitch.getGroup().getGroupId();
-			if (groupId == -1) {
-				delete(snitch);
-				snitch.setCacheState(CacheState.DELETED);
-				return;
-			}
-			updateSnitch.setString(1, snitch.getName());
-			updateSnitch.setInt(2, groupId);
-			if (snitch.getId() == -1) {
-				throw new IllegalStateException("Snitch id can not be null during update");
-			}
-			updateSnitch.setInt(3, snitch.getId());
-			updateSnitch.execute();
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to update snitch: ", e);
+	public void insert(@Nonnull final Snitch snitch) {
+		if (snitch.getId() != NOT_YET_INSERTED_ID) {
+			this.logger.warning("Skipping snitch insert of [" + snitch + "] because its id is already set :s");
+			return;
 		}
-		snitch.persistAppenders();
-	}
-
-	@Override
-	public void delete(Snitch snitch) {
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement deleteSnitch = insertConn.prepareStatement("delete from ja_snitches where id = ?;")) {
-			deleteSnitch.setInt(1, snitch.getId());
-			deleteSnitch.execute();
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to delete snitch: ", e);
+		final Group snitchGroup = snitch.getGroup();
+		if (snitchGroup == null) {
+			this.logger.warning("Skipping snitch insert of [" + snitch + "] because its group is null!");
+			return;
 		}
-	}
-
-	@Override
-	public void loadAll(Consumer<Snitch> insertFunction) {
-		SnitchTypeManager configMan = JukeAlert.getInstance().getSnitchConfigManager();
-		SnitchManager snitchMan = JukeAlert.getInstance().getSnitchManager();
-		WorldIDManager idMan = CivModCorePlugin.getInstance().getWorldIdManager();
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement selectSnitch = insertConn
-						.prepareStatement("select x, y, z, type_id, group_id, name, id, world_id from ja_snitches");
-				ResultSet rs = selectSnitch.executeQuery()) {
-			while (rs.next()) {
-				int x = rs.getInt(1);
-				int y = rs.getInt(2);
-				int z = rs.getInt(3);
-				short worldId = rs.getShort(8);
-				World world = idMan.getWorldByInternalID(worldId);
-				Location location = new Location(world, x, y, z);
-				int typeID = rs.getInt(4);
-				SnitchFactoryType type = configMan.getConfig(typeID);
-				if (type == null) {
-					logger.log(Level.SEVERE, "Failed to load snitch with type id " + typeID);
-					continue;
-				}
-				int groupID = rs.getInt(5);
-				if (groupID == -1) {
-					continue;
-				}
-				String name = rs.getString(6);
-				int id = rs.getInt(7);
-				Snitch snitch = type.create(id, location, name, groupID, false);
-				insertFunction.accept(snitch);
-				snitchMan.addSnitchToQuadTree(snitch);
-				snitch.applyToAppenders(AbstractSnitchAppender::postSetup);
-			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to load snitch from db: ", e);
-		}
-	}
-
-	public int getOrCreateActionID(String name) {
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement selectId = insertConn
-						.prepareStatement("select id from ja_snitch_actions where name = ?;")) {
-			selectId.setString(1, name);
-			try (ResultSet rs = selectId.executeQuery()) {
-				if (rs.next()) {
-					return rs.getInt(1);
-				}
-			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to check for existence of action in db: " + e);
-			return -1;
-		}
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement insertAction = insertConn.prepareStatement(
-						"insert into ja_snitch_actions (name) values(?);", Statement.RETURN_GENERATED_KEYS);) {
-			insertAction.setString(1, name);
-			insertAction.execute();
-			try (ResultSet rs = insertAction.getGeneratedKeys()) {
-				if (!rs.next()) {
-					logger.info("Failed to insert plugin");
-					return -1;
-				}
-				return rs.getInt(1);
-			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to insert action into db:", e);
-			return -1;
-		}
-	}
-
-	/**
-	 * Loads <b>ALL</b> the logs for a given snitch, with some caveats.
-	 *
-	 * @param snitch The snitch to load the logs for.
-	 * @param allowedActionAge The maximum allowed age (as a UNIX timestamp) for actions.
-	 * @param actionLimit The maximum number of actions to load.
-	 */
-	public List<LoggableAction> loadLogs(@Nonnull final Snitch snitch,
-										 final long allowedActionAge,
-										 final int actionLimit) {
-		final int snitchId = snitch.getId();
-		if (snitchId == -1) {
-			throw new IllegalArgumentException("Cannot load logs for unknown snitch!");
-		}
-		final List<LoggableAction> result = new ArrayList<>();
-		final LoggedActionFactory factory = JukeAlert.getInstance().getLoggedActionFactory();
+		final Location snitchLocation = snitch.getLocation();
 		try (final Connection connection = this.db.getConnection();
 			 final PreparedStatement statement = connection.prepareStatement(
-						"select jsa.name, jse.uuid, jse.x, jse.y, jse.z, jse.creation_time, jse.victim, jse.id "
-								+ "from ja_snitch_entries jse inner join ja_snitch_actions jsa on "
-								+ "jse.type_id = jsa.id where snitch_id = ? and jse.creation_time >= ? "
-								+ "order by jse.creation_time desc limit " + Math.max(actionLimit, 1) + ";")) {
-			statement.setInt(1, snitchId);
-			statement.setDate(2, new Date(allowedActionAge));
-			try (final ResultSet results = statement.executeQuery()) {
-				while (results.next()) {
-					final String actionType = results.getString(1);
-					final UUID perpetratorUUID = UUID.fromString(results.getString(2));
-					final int incidentX = results.getInt(3);
-					final int incidentY = results.getInt(4);
-					final int incidentZ = results.getInt(5);
-					final long incidentTime = results.getTimestamp(6).getTime();
-					final String extra = results.getString(7);
-					final int incidentID = results.getInt(8);
-					final LoggableAction action = factory.produce(snitch, actionType, perpetratorUUID,
-							new Location(snitch.getLocation().getWorld(), incidentX, incidentY, incidentZ),
-							incidentTime, extra);
-					if (action != null) {
-						action.setID(incidentID);
-						result.add(action);
-					}
+					 "INSERT INTO ja_snitches (group_id,type_id,x,y,z,world_id,name) VALUES (?,?,?,?,?,?,?);",
+					 Statement.RETURN_GENERATED_KEYS)) {
+			statement.setInt(1, snitchGroup.getGroupId());
+			statement.setInt(2, snitch.getType().getID());
+			statement.setInt(3, snitchLocation.getBlockX());
+			statement.setInt(4, snitchLocation.getBlockY());
+			statement.setInt(5, snitchLocation.getBlockZ());
+			statement.setShort(6, getWorldID(snitchLocation));
+			statement.setString(7, snitch.getName());
+			statement.execute();
+			try (final ResultSet results = statement.getGeneratedKeys()) {
+				if (!results.next()) {
+					throw new IllegalStateException(
+							"Inserting snitch [" + snitch + "] didn't return a new snitch id!");
 				}
+				snitch.setId(results.getInt(1));
 			}
 		}
 		catch (final SQLException throwable) {
-			this.logger.log(Level.SEVERE, "Failed to load snitch logs from db", throwable);
-			return new ArrayList<>(0);
+			this.logger.log(Level.SEVERE, "Failed to insert snitch [" + snitch + "]!", throwable);
 		}
-		return result;
+		snitch.persistAppenders();
 	}
 
-	/**
-	 * Deletes a particular log from the database.
-	 *
-	 * @param log The log to delete.
-	 */
-	public void deleteLog(@Nonnull final LoggableAction log) {
-		if (log.getID() == -1) {
+	@Override
+	public void update(@Nonnull final Snitch snitch) {
+		if (snitch.getId() == NOT_YET_INSERTED_ID) {
+			this.logger.warning("Skipping snitch update of [" + snitch + "] because its id is invalid!");
+			return;
+		}
+		final Group snitchGroup = snitch.getGroup();
+		if (snitchGroup == null) {
+			delete(snitch);
+			snitch.setCacheState(CacheState.DELETED);
 			return;
 		}
 		try (final Connection connection = this.db.getConnection();
 			 final PreparedStatement statement = connection.prepareStatement(
-					 "delete from ja_snitch_entries where id = ?;")) {
-			statement.setInt(1, log.getID());
+					 "UPDATE ja_snitches SET name = ?, group_id = ? WHERE id = ?;")) {
+			statement.setString(1, snitch.getName());
+			statement.setInt(2, snitchGroup.getGroupId());
+			statement.setInt(3, snitch.getId());
 			statement.execute();
 		}
 		catch (final SQLException throwable) {
-			this.logger.log(Level.SEVERE, "Failed to delete snitch log", throwable);
+			this.logger.log(Level.SEVERE, "Failed to update snitch [" + snitch + "]", throwable);
 		}
+		snitch.persistAppenders();
 	}
 
-	/**
-	 * Deletes <b>ALL</b> logs for a given snitch.
-	 *
-	 * @param snitch The snitch to delete all logs for.
-	 */
-	public void deleteAllLogsForSnitch(@Nonnull final Snitch snitch) {
-		final int snitchID = snitch.getId();
-		if (snitchID == -1) {
-			throw new IllegalArgumentException("Cannot delete logs for unknown snitch!");
+	@Override
+	public void delete(@Nonnull final Snitch snitch) {
+		if (snitch.getId() == NOT_YET_INSERTED_ID) {
+			this.logger.warning("Skipping snitch deletion of [" + snitch + "] because its id is invalid!");
+			return;
 		}
 		try (final Connection connection = this.db.getConnection();
 			 final PreparedStatement statement = connection.prepareStatement(
-					 "delete from ja_snitch_entries where snitch_id = ?;")) {
-			statement.setInt(1, snitchID);
+					 "DELETE FROM ja_snitches WHERE id = ?;")) {
+			statement.setInt(1, snitch.getId());
 			statement.execute();
 		}
 		catch (final SQLException throwable) {
-			this.logger.log(Level.SEVERE, "Failed to delete snitch log", throwable);
+			this.logger.log(Level.SEVERE, "Failed to delete snitch [" + snitch + "]", throwable);
 		}
 	}
 
-	/**
-	 * Deletes <b>ALL</b> old logs for a given snitch.
-	 *
-	 * @param snitch The snitch to delete all old logs for.
-	 * @param allowedSnitchAge The maximum allowed age (as a UNIX timestamp), all actions dated before this will be
-	 *                         deleted.
-	 */
-	public void deleteOldLogsForSnitch(@Nonnull final Snitch snitch,
-									   final long allowedSnitchAge) {
-		final int snitchID = snitch.getId();
-		if (snitchID == -1) {
-			throw new IllegalArgumentException("Cannot delete logs for unknown snitch!");
-		}
+	@Override
+	public void loadAll(@Nonnull final Consumer<Snitch> callback) {
+		final SnitchTypeManager snitchTypeManager = JukeAlert.getInstance().getSnitchConfigManager();
+		final SnitchManager snitchManager = JukeAlert.getInstance().getSnitchManager();
+		final WorldIDManager worldIDManager = CivModCorePlugin.getInstance().getWorldIdManager();
 		try (final Connection connection = this.db.getConnection();
 			 final PreparedStatement statement = connection.prepareStatement(
-					 "delete from ja_snitch_entries where snitch_id = ? and jse.creation_time < ?;")) {
-			statement.setInt(1, snitchID);
-			statement.setDate(2, new Date(allowedSnitchAge));
-			statement.execute();
+					 "SELECT id, x, y, z, world_id, type_id, group_id, name FROM ja_snitches;");
+			 final ResultSet results = statement.executeQuery()) {
+			while (results.next()) {
+				final int snitchID = results.getInt(1);
+				final int snitchX = results.getInt(2);
+				final int snitchY = results.getInt(3);
+				final int snitchZ = results.getInt(4);
+				final short snitchWorldID = results.getShort(5);
+				final World snitchWorld = worldIDManager.getWorldByInternalID(snitchWorldID);
+				if (snitchWorld == null) {
+					this.logger.warning(
+							"Could not load world [" + snitchWorldID + "] for snitch [" + snitchID + "]");
+					continue;
+				}
+				final int snitchTypeID = results.getInt(6);
+				final SnitchFactoryType snitchType = snitchTypeManager.getConfig(snitchTypeID);
+				if (snitchType == null) {
+					this.logger.warning(
+							"Could not load snitch type [" + snitchTypeID + "] for snitch [" + snitchID + "]");
+					continue;
+				}
+				final int groupID = results.getInt(7);
+				if (groupID == -1) {
+					this.logger.warning(
+							"Could not load snitch group [" + groupID + "] for snitch [" + snitchID + "]");
+					continue;
+				}
+				final String snitchName = results.getString(8);
+				// Add the snitch to the system
+				final Snitch snitch = snitchType.create(snitchID,
+						new Location(snitchWorld, snitchX, snitchY, snitchZ),
+						snitchName, groupID, false);
+				callback.accept(snitch);
+				snitchManager.addSnitchToQuadTree(snitch);
+				snitch.applyToAppenders(AbstractSnitchAppender::postSetup);
+			}
 		}
 		catch (final SQLException throwable) {
-			this.logger.log(Level.SEVERE, "Failed to delete snitch log", throwable);
+			this.logger.log(Level.SEVERE, "Failed to load snitches from database", throwable);
 		}
 	}
-
-	public void insertLogAsync(int typeID, Snitch snitch, LoggablePlayerAction action) {
-		Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), () -> {
-			insertLog(typeID, snitch, action.getPersistence());
-			action.setCacheState(ActionCacheState.NORMAL);
-		});
-	}
-
-	public int insertLog(int typeID, Snitch snitch, LoggedActionPersistence data) {
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement insertSnitch = insertConn.prepareStatement(
-						"insert into ja_snitch_entries (snitch_id, type_id, uuid, x, y , z, creation_time,"
-								+ "victim) values(?,?,?, ?,?,?, ?,?);",
-						Statement.RETURN_GENERATED_KEYS)) {
-			insertSnitch.setInt(1, snitch.getId());
-			insertSnitch.setInt(2, typeID);
-			insertSnitch.setString(3, data.actorUUID().toString());
-			insertSnitch.setInt(4, data.locationX());
-			insertSnitch.setInt(5, data.locationY());
-			insertSnitch.setInt(6, data.locationZ());
-			insertSnitch.setTimestamp(7, new Timestamp(data.timestamp()));
-			insertSnitch.setString(8, data.extra());
-			insertSnitch.execute();
-			try (ResultSet rs = insertSnitch.getGeneratedKeys()) {
-				if (!rs.next()) {
-					logger.severe("Failed to insert snitch log, no key retrieved");
-				} else {
-					return rs.getInt(1);
-				}
-			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to insert new snitch log: ", e);
-		}
-		return -1;
-	}
-
-	public void setRefreshTimer(int snitchID, long timer) {
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement setTimer = insertConn.prepareStatement(
-						"insert into ja_snitch_refresh (id, last_refresh) values(?,?) on duplicate key update last_refresh = ?;")) {
-			setTimer.setInt(1, snitchID);
-			setTimer.setTimestamp(2, new Timestamp(timer));
-			setTimer.setTimestamp(3, new Timestamp(timer));
-			setTimer.execute();
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to update refresh timer", e);
-		}
-	}
-
-	public void setToggleLever(int snitchID, boolean toggle) {
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement setTimer = insertConn.prepareStatement(
-						"insert into ja_snitch_lever (id, toggle_lever) values(?,?) on duplicate key update toggle_lever = ?;")) {
-			setTimer.setInt(1, snitchID);
-			setTimer.setBoolean(2, toggle);
-			setTimer.setBoolean(3, toggle);
-			setTimer.execute();
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to update toggle lever", e);
-		}
-	}
-
-	public boolean getToggleLever(int snitchID) {
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement selectId = insertConn
-						.prepareStatement("select toggle_lever from ja_snitch_lever where id = ?;")) {
-			selectId.setInt(1, snitchID);
-			try (ResultSet rs = selectId.executeQuery()) {
-				if (rs.next()) {
-					return rs.getBoolean(1);
-				}
-				return false;
-			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to retrieve toggle lever", e);
-			return false;
-		}
-	}
-
-	public long getRefreshTimer(int snitchID) {
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement selectId = insertConn
-						.prepareStatement("select last_refresh from ja_snitch_refresh where id = ?;")) {
-			selectId.setInt(1, snitchID);
-			try (ResultSet rs = selectId.executeQuery()) {
-				if (rs.next()) {
-					return rs.getTimestamp(1).getTime();
-				}
-				logger.log(Level.SEVERE, "Found no refresh timer for snitch with id " + snitchID);
-				return -1;
-			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to retrieve refresh timer", e);
-			return -1;
-		}
-	}
-
-	// ------------------------------------------------------------
-	//
-	// ------------------------------------------------------------
 
 	private Map<Location, Snitch> INTERNAL_snitchMap;
+
 	@SuppressWarnings("unchecked")
-	private Stream<Snitch> INTERNAL_getSnitches() {
+	@Nonnull
+	public Stream<Snitch> loadSnitchesByGroupID(@Nullable final IntList groupIDs) {
+		if (CollectionUtils.isEmpty(groupIDs)) {
+			return Stream.empty();
+		}
 		if (INTERNAL_snitchMap == null) {
 			final SnitchManager snitchManager = JukeAlert.getInstance().getSnitchManager();
 			// Get SingleBlockAPIView instance
@@ -644,19 +432,303 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 						throwable);
 			}
 		}
-		return INTERNAL_snitchMap.values().stream();
-	}
-
-	@Nonnull
-	public Stream<Snitch> loadSnitchesByGroupID(@Nullable final IntList groupIDs) {
-		if (CollectionUtils.isEmpty(groupIDs)) {
-			return Stream.empty();
-		}
-		return INTERNAL_getSnitches().parallel()
+		return INTERNAL_snitchMap.values().parallelStream()
 				.filter((snitch) -> {
 					final Group group = snitch.getGroup();
 					return group != null && !Collections.disjoint(groupIDs, group.getGroupIds());
 				});
+	}
+
+	// ------------------------------------------------------------
+	// Actions
+	// ------------------------------------------------------------
+
+	public int getOrCreateActionID(@Nonnull final String name) {
+		Objects.requireNonNull(name);
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "SELECT id FROM ja_snitch_actions WHERE name = ?;")) {
+			statement.setString(1, name);
+			try (final ResultSet results = statement.executeQuery()) {
+				if (results.next()) {
+					return results.getInt(1);
+				}
+			}
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to check for existence of action in db", throwable);
+			return NOT_YET_INSERTED_ID;
+		}
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "INSERT INTO ja_snitch_actions (name) VALUES (?);",
+					 Statement.RETURN_GENERATED_KEYS)) {
+			statement.setString(1, name);
+			statement.execute();
+			try (final ResultSet results = statement.getGeneratedKeys()) {
+				if (results.next()) {
+					return results.getInt(1);
+				}
+				this.logger.warning("Failed to insert action");
+				return NOT_YET_INSERTED_ID;
+			}
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to insert action into db", throwable);
+			return NOT_YET_INSERTED_ID;
+		}
+	}
+
+	// ------------------------------------------------------------
+	// Logs
+	// ------------------------------------------------------------
+
+	/**
+	 * Loads <b>ALL</b> the logs for a given snitch, with some caveats.
+	 *
+	 * @param snitch The snitch to load the logs for.
+	 * @param allowedActionAge The maximum allowed age (as a UNIX timestamp) for actions.
+	 * @param actionLimit The maximum number of actions to load.
+	 */
+	public List<LoggableAction> loadLogs(@Nonnull final Snitch snitch,
+										 final long allowedActionAge,
+										 final int actionLimit) {
+		final int snitchId = snitch.getId();
+		if (snitchId == NOT_YET_INSERTED_ID) {
+			throw new IllegalArgumentException("Cannot load logs for unknown snitch!");
+		}
+		final List<LoggableAction> result = new ArrayList<>();
+		final LoggedActionFactory factory = JukeAlert.getInstance().getLoggedActionFactory();
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "SELECT jsa.name, jse.uuid, jse.x, jse.y, jse.z, jse.creation_time, jse.victim, jse.id "
+							 + "FROM ja_snitch_entries jse INNER JOIN ja_snitch_actions jsa ON "
+							 + "jse.type_id = jsa.id WHERE snitch_id = ? AND jse.creation_time >= ? "
+							 + "ORDER BY jse.creation_time DESC LIMIT " + Math.max(actionLimit, 1) + ";")) {
+			statement.setInt(1, snitchId);
+			statement.setDate(2, new Date(allowedActionAge));
+			try (final ResultSet results = statement.executeQuery()) {
+				while (results.next()) {
+					final String actionType = results.getString(1);
+					final UUID perpetratorUUID = UUID.fromString(results.getString(2));
+					final int incidentX = results.getInt(3);
+					final int incidentY = results.getInt(4);
+					final int incidentZ = results.getInt(5);
+					final long incidentTime = results.getTimestamp(6).getTime();
+					final String extra = results.getString(7);
+					final int incidentID = results.getInt(8);
+					final LoggableAction action = factory.produce(snitch, actionType, perpetratorUUID,
+							new Location(snitch.getLocation().getWorld(), incidentX, incidentY, incidentZ),
+							incidentTime, extra);
+					if (action != null) {
+						action.setID(incidentID);
+						result.add(action);
+					}
+				}
+			}
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to load snitch logs from db", throwable);
+			return new ArrayList<>(0);
+		}
+		return result;
+	}
+
+	/**
+	 * Inserts a new snitch log to the database.
+	 *
+	 * @param actionTypeID The internal ID of the action type.
+	 * @param snitch The snitch to save the log to.
+	 * @param actionData The data of the action to store in the database.
+	 * @return Returns the snitch log's new database ID.
+	 */
+	public int insertLog(final int actionTypeID,
+						 @Nonnull final Snitch snitch,
+						 @Nonnull final LoggedActionPersistence actionData) {
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "INSERT INTO ja_snitch_entries (snitch_id,type_id,uuid,x,y,z,creation_time,victim) "
+							 + "VALUES (?,?,?,?,?,?,?,?);",
+					 Statement.RETURN_GENERATED_KEYS)) {
+			statement.setInt(1, snitch.getId());
+			statement.setInt(2, actionTypeID);
+			statement.setString(3, actionData.actorUUID().toString());
+			statement.setInt(4, actionData.locationX());
+			statement.setInt(5, actionData.locationY());
+			statement.setInt(6, actionData.locationZ());
+			statement.setTimestamp(7, new Timestamp(actionData.timestamp()));
+			statement.setString(8, actionData.extra());
+			statement.execute();
+			try (final ResultSet results = statement.getGeneratedKeys()) {
+				if (results.next()) {
+					return results.getInt(1);
+				}
+				this.logger.severe("Failed to insert snitch log, no key retrieved");
+			}
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to insert new snitch log", throwable);
+		}
+		return NOT_YET_INSERTED_ID;
+	}
+
+	/**
+	 * Inserts a new snitch log to the database asynchronously.
+	 *
+	 * @param actionTypeID The internal ID of the action type.
+	 * @param snitch The snitch to save the log to.
+	 * @param action The action to store in the database.
+	 */
+	public void insertLogAsync(final int actionTypeID,
+							   @Nonnull final Snitch snitch,
+							   @Nonnull final LoggablePlayerAction action) {
+		Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), () -> {
+			final int actionID = insertLog(actionTypeID, snitch, action.getPersistence());
+			action.setID(actionID);
+			action.setCacheState(ActionCacheState.NORMAL);
+		});
+	}
+
+	/**
+	 * Deletes a particular log from the database.
+	 *
+	 * @param log The log to delete.
+	 */
+	public void deleteLog(@Nonnull final LoggableAction log) {
+		if (log.getID() == NOT_YET_INSERTED_ID) {
+			return;
+		}
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "DELETE FROM ja_snitch_entries WHERE id = ?;")) {
+			statement.setInt(1, log.getID());
+			statement.execute();
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to delete snitch log", throwable);
+		}
+	}
+
+	/**
+	 * Deletes <b>ALL</b> logs for a given snitch.
+	 *
+	 * @param snitch The snitch to delete all logs for.
+	 */
+	public void deleteAllLogsForSnitch(@Nonnull final Snitch snitch) {
+		final int snitchID = snitch.getId();
+		if (snitchID == NOT_YET_INSERTED_ID) {
+			throw new IllegalArgumentException("Cannot delete logs for unknown snitch!");
+		}
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "DELETE FROM ja_snitch_entries WHERE snitch_id = ?;")) {
+			statement.setInt(1, snitchID);
+			statement.execute();
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to delete snitch log", throwable);
+		}
+	}
+
+	/**
+	 * Deletes <b>ALL</b> old logs for a given snitch.
+	 *
+	 * @param snitch The snitch to delete all old logs for.
+	 * @param allowedSnitchAge The maximum allowed age (as a UNIX timestamp), all actions dated before this will be
+	 *                         deleted.
+	 */
+	public void deleteOldLogsForSnitch(@Nonnull final Snitch snitch,
+									   final long allowedSnitchAge) {
+		final int snitchID = snitch.getId();
+		if (snitchID == NOT_YET_INSERTED_ID) {
+			throw new IllegalArgumentException("Cannot delete logs for unknown snitch!");
+		}
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "DELETE FROM ja_snitch_entries WHERE snitch_id = ? AND creation_time < ?;")) {
+			statement.setInt(1, snitchID);
+			statement.setDate(2, new Date(allowedSnitchAge));
+			statement.execute();
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to delete snitch log", throwable);
+		}
+	}
+
+	// ------------------------------------------------------------
+	// Refresh Timer
+	// ------------------------------------------------------------
+
+	public long getRefreshTimer(final int snitchID) {
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "SELECT last_refresh FROM ja_snitch_refresh WHERE id = ?;")) {
+			statement.setInt(1, snitchID);
+			try (final ResultSet results = statement.executeQuery()) {
+				if (results.next()) {
+					return results.getTimestamp(1).getTime();
+				}
+				this.logger.log(Level.SEVERE, "Found no refresh timer for snitch [" + snitchID + "]");
+			}
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to retrieve refresh timer for snitch [" + snitchID + "]", throwable);
+		}
+		return -1L;
+	}
+
+	public void setRefreshTimer(final int snitchID,
+								final long timestamp) {
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "INSERT INTO ja_snitch_refresh (id,last_refresh) VALUES (?,?) " +
+							 "ON DUPLICATE KEY UPDATE last_refresh = ?;")) {
+			statement.setInt(1, snitchID);
+			statement.setTimestamp(2, new Timestamp(timestamp));
+			statement.setTimestamp(3, new Timestamp(timestamp));
+			statement.execute();
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to update refresh timer for snitch [" + snitchID + "]", throwable);
+		}
+	}
+
+	// ------------------------------------------------------------
+	// Toggle Lever
+	// ------------------------------------------------------------
+
+	public boolean getToggleLever(final int snitchID) {
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "SELECT toggle_lever FROM ja_snitch_lever WHERE id = ?;")) {
+			statement.setInt(1, snitchID);
+			try (final ResultSet results = statement.executeQuery()) {
+				if (results.next()) {
+					return results.getBoolean(1);
+				}
+				return false;
+			}
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to retrieve toggle lever for snitch [" + snitchID + "]", throwable);
+			return false;
+		}
+	}
+
+	public void setToggleLever(final int snitchID,
+							   final boolean toggle) {
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "INSERT INTO ja_snitch_lever (id,toggle_lever) VALUES (?,?) " +
+							 "ON DUPLICATE KEY UPDATE toggle_lever = ?;")) {
+			statement.setInt(1, snitchID);
+			statement.setBoolean(2, toggle);
+			statement.setBoolean(3, toggle);
+			statement.execute();
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to update toggle lever for snitch [" + snitchID + "]", throwable);
+		}
 	}
 
 }
