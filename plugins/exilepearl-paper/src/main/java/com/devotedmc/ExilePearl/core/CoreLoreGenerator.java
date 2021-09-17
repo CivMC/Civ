@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.core;
 
+import com.destroystokyo.paper.MaterialTags;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.LoreProvider;
@@ -20,9 +21,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 /**
@@ -38,12 +42,14 @@ final class CoreLoreGenerator implements LoreProvider {
 
 	private final PearlConfig config;
 	private final SimpleDateFormat dateFormat;
+	private final NamespacedKey exilePearlid;
 
-	public CoreLoreGenerator(final PearlConfig config) {
+	public CoreLoreGenerator(PearlConfig config, NamespacedKey exilePearLid) {
 		Preconditions.checkNotNull(config, "config");
 
 		this.config = config;
 		this.dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		this.exilePearlid = exilePearLid;
 	}
 
 	/**
@@ -134,7 +140,21 @@ final class CoreLoreGenerator implements LoreProvider {
 
 	@Override
 	public int getPearlIdFromItemStack(ItemStack is) {
-		List<String> lore = getValidLore(is);
+		if (is == null || !is.hasItemMeta()) {
+			return 0;
+		}
+		ItemMeta meta = is.getItemMeta();
+		if (meta == null) {
+			return 0;
+		}
+
+		PersistentDataContainer container = meta.getPersistentDataContainer();
+		Integer optionalPearlId = container.get(this.exilePearlid, PersistentDataType.INTEGER);
+		if (optionalPearlId != null) {
+			return optionalPearlId;
+		}
+
+		List<String> lore = getValidLore(is, meta);
 		if (lore == null) {
 			return 0;
 		}
@@ -159,6 +179,11 @@ final class CoreLoreGenerator implements LoreProvider {
 		return info;
 	}
 
+	@Override
+	public NamespacedKey getExilePearlIdKey() {
+		return this.exilePearlid;
+	}
+
 
 	/**
 	 * Parses a player ID from a legacy Prison Pearl
@@ -174,23 +199,28 @@ final class CoreLoreGenerator implements LoreProvider {
 		return UUID.fromString(lore.get(1));
 	}
 
+	private List<String> getValidLore(ItemStack is) {
+		if (is == null) {
+			return null;
+		}
+		ItemMeta im = is.getItemMeta();
+		if (im == null) {
+			return null;
+		}
+		return getValidLore(is, im);
+	}
 
 	/**
 	 * Gets whether the pearl lore is valid
 	 * @param is The item stack to check
 	 * @return true if it's valid
 	 */
-	private List<String> getValidLore(ItemStack is) {
-		if (is == null) {
-			return null;
-		}
-
+	private List<String> getValidLore(ItemStack is, ItemMeta im) {
 		if (!(is.getType().equals(Material.PLAYER_HEAD) || is.getType().equals(Material.ENDER_PEARL))) {
 			return null;
 		}
 
-		ItemMeta im = is.getItemMeta();
-		if (im == null || !im.hasEnchants() || !im.hasItemFlag(ItemFlag.HIDE_ENCHANTS)) {
+		if (!im.hasEnchants() || !im.hasItemFlag(ItemFlag.HIDE_ENCHANTS)) {
 			return null;
 		}
 
