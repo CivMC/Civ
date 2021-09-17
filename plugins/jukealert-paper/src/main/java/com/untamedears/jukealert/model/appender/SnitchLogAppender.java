@@ -8,8 +8,8 @@ import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
 import com.untamedears.jukealert.model.appender.config.LimitedActionTriggerConfig;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
-import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntRBTreeMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,7 +28,9 @@ public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionT
 	public SnitchLogAppender(final Snitch snitch,
 							 final ConfigurationSection config) {
 		super(snitch, config);
-		this.pendingActions = new Object2IntArrayMap<>();
+		this.pendingActions = new Object2IntRBTreeMap<>(
+				Comparator.comparingLong((action) -> ((SnitchAction) action).getTime()));
+		this.pendingActions.defaultReturnValue(-1);
 	}
 
 	/**
