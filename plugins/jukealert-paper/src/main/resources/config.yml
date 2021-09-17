@@ -64,3 +64,5 @@ snitchConfigs:
             - BLOCK_BREAK
       log:
         acceptAll: true
+        lifeTime: 4 weeks
+        hardCap: 100000

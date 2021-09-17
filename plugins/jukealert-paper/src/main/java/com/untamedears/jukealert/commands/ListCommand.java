@@ -4,18 +4,18 @@ import com.google.common.base.Strings;
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.gui.SnitchOverviewGUI;
 import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.SnitchTypeManager;
 import com.untamedears.jukealert.model.appender.DormantCullingAppender;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -39,7 +39,7 @@ public class ListCommand extends StandaloneCommand {
 			groupNames = NameAPI.getGroupManager().getAllGroupNames(player.getUniqueId());
 			playerProvidedGroups = false;
 		}
-		final var groupIds = new ArrayList<Integer>();
+		final var groupIds = new IntArrayList();
 		for (final String groupName : groupNames) {
 			final Group group = GroupManager.getGroup(groupName);
 			if (group == null) {
@@ -64,30 +64,27 @@ public class ListCommand extends StandaloneCommand {
 		}
 		sender.sendMessage(ChatColor.GREEN + "Retrieving snitches for a total of " + groupNames.size()
 				+ " group instances. This may take a moment.");
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				final List<Snitch> snitches = JukeAlert.getInstance().getDAO().loadSnitchesByGroupID(groupIds);
-				snitches.removeIf(snitch -> !snitch.hasAppender(DormantCullingAppender.class));
-				snitches.sort((lhs, rhs) -> {
-					/** These should be present, if not look at {@link SnitchTypeManager#registerAppenderTypes()}! */
-					final var thisAppender = lhs.getAppender(DormantCullingAppender.class);
-					final var thatAppender = rhs.getAppender(DormantCullingAppender.class);
-					// Since the time decreases the closer a snitch gets to culling, the values are flipped
-					return Long.compare(
-							thisAppender.getTimeUntilCulling(),
-							thatAppender.getTimeUntilCulling());
-				});
-				new BukkitRunnable() {
-					@Override
-					public void run() {
-						new SnitchOverviewGUI(player, snitches, "Your snitches",
-								player.hasPermission("jukealert.admin")).showScreen();
-					}
-				}.runTask(JukeAlert.getInstance());
-			}
-		}.runTaskAsynchronously(JukeAlert.getInstance());
+		JukeAlert.getInstance().getTaskChainFactory().newChain()
+				.async((unused) -> JukeAlert.getInstance().getDAO().loadSnitchesByGroupID(groupIds).parallel()
+						.map((snitch) -> new SnitchCache(snitch, snitch.getAppender(DormantCullingAppender.class)))
+						.filter((entry) -> entry.appender != null)
+						.sorted(Comparator.comparingLong((entry) -> entry.appender.getTimeUntilCulling()))
+						.map((entry) -> entry.snitch)
+						.collect(Collectors.toList()))
+				.syncLast((snitches) -> new SnitchOverviewGUI(player, snitches, "Your snitches",
+						player.hasPermission("jukealert.admin")).showScreen())
+				.execute();
 		return true;
+	}
+
+	private static class SnitchCache {
+		Snitch snitch;
+		DormantCullingAppender appender;
+		public SnitchCache(final Snitch snitch,
+						   final DormantCullingAppender appender) {
+			this.snitch = snitch;
+			this.appender = appender;
+		}
 	}
 
 	@Override

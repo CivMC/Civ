@@ -11,22 +11,30 @@ import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
+import it.unimi.dsi.fastutil.ints.IntList;
+import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.stream.Stream;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -36,16 +44,19 @@ import org.bukkit.entity.EntityType;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.SingleBlockAPIView;
+import vg.civcraft.mc.civmodcore.locations.global.GlobalLocationTracker;
 import vg.civcraft.mc.civmodcore.locations.global.GlobalTrackableDAO;
 import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
+import vg.civcraft.mc.civmodcore.util.CivLogger;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 
-	public JukeAlertDAO(Logger logger, ManagedDatasource db) {
-		super(logger, db);
+	public JukeAlertDAO(@Nonnull final ManagedDatasource datasource) {
+		super(CivLogger.getLogger(JukeAlertDAO.class), Objects.requireNonNull(datasource));
 	}
 
 	@Override
@@ -378,55 +389,120 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 		}
 	}
 
-	public List<LoggableAction> loadLogs(Snitch snitch) {
-		int id = snitch.getId();
-		if (id == -1) {
-			throw new IllegalArgumentException("Id for loading logs can not be null");
+	/**
+	 * Loads <b>ALL</b> the logs for a given snitch, with some caveats.
+	 *
+	 * @param snitch The snitch to load the logs for.
+	 * @param allowedActionAge The maximum allowed age (as a UNIX timestamp) for actions.
+	 * @param actionLimit The maximum number of actions to load.
+	 */
+	public List<LoggableAction> loadLogs(@Nonnull final Snitch snitch,
+										 final long allowedActionAge,
+										 final int actionLimit) {
+		final int snitchId = snitch.getId();
+		if (snitchId == -1) {
+			throw new IllegalArgumentException("Cannot load logs for unknown snitch!");
 		}
-		List<LoggableAction> result = new ArrayList<>();
-		LoggedActionFactory factory = JukeAlert.getInstance().getLoggedActionFactory();
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement loadActions = insertConn.prepareStatement(
-						"select jsa.name, jse.uuid, jse.x, jse.y, jse.z, jse.creation_time, jse.victim, jse.id"
-								+ " from ja_snitch_entries jse inner join ja_snitch_actions jsa on "
-								+ "jse.type_id = jsa.id where snitch_id = ? order by jse.creation_time asc;");) {
-			loadActions.setInt(1, id);
-			try (ResultSet rs = loadActions.executeQuery()) {
-				while (rs.next()) {
-					String identifier = rs.getString(1);
-					UUID uuid = UUID.fromString(rs.getString(2));
-					int x = rs.getInt(3);
-					int y = rs.getInt(4);
-					int z = rs.getInt(5);
-					long time = rs.getTimestamp(6).getTime();
-					String victim = rs.getString(7);
-					int logId = rs.getInt(8);
-					Location loc = new Location(snitch.getLocation().getWorld(), x, y, z);
-					LoggableAction action = factory.produce(snitch, identifier, uuid, loc, time, victim);
+		final List<LoggableAction> result = new ArrayList<>();
+		final LoggedActionFactory factory = JukeAlert.getInstance().getLoggedActionFactory();
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+						"select jsa.name, jse.uuid, jse.x, jse.y, jse.z, jse.creation_time, jse.victim, jse.id "
+								+ "from ja_snitch_entries jse inner join ja_snitch_actions jsa on "
+								+ "jse.type_id = jsa.id where snitch_id = ? and jse.creation_time >= ? "
+								+ "order by jse.creation_time desc limit " + Math.max(actionLimit, 1) + ";")) {
+			statement.setInt(1, snitchId);
+			statement.setDate(2, new Date(allowedActionAge));
+			try (final ResultSet results = statement.executeQuery()) {
+				while (results.next()) {
+					final String actionType = results.getString(1);
+					final UUID perpetratorUUID = UUID.fromString(results.getString(2));
+					final int incidentX = results.getInt(3);
+					final int incidentY = results.getInt(4);
+					final int incidentZ = results.getInt(5);
+					final long incidentTime = results.getTimestamp(6).getTime();
+					final String extra = results.getString(7);
+					final int incidentID = results.getInt(8);
+					final LoggableAction action = factory.produce(snitch, actionType, perpetratorUUID,
+							new Location(snitch.getLocation().getWorld(), incidentX, incidentY, incidentZ),
+							incidentTime, extra);
 					if (action != null) {
-						action.setID(logId);
+						action.setID(incidentID);
 						result.add(action);
 					}
 				}
 			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to load snitch logs from db:", e);
-			return new ArrayList<>();
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to load snitch logs from db", throwable);
+			return new ArrayList<>(0);
 		}
 		return result;
 	}
 
-	public void deleteLog(LoggableAction log) {
+	/**
+	 * Deletes a particular log from the database.
+	 *
+	 * @param log The log to delete.
+	 */
+	public void deleteLog(@Nonnull final LoggableAction log) {
 		if (log.getID() == -1) {
 			return;
 		}
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement deleteLog = insertConn
-						.prepareStatement("delete from ja_snitch_entries where id = ?;")) {
-			deleteLog.setInt(1, log.getID());
-			deleteLog.execute();
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to delete snitch log", e);
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "delete from ja_snitch_entries where id = ?;")) {
+			statement.setInt(1, log.getID());
+			statement.execute();
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to delete snitch log", throwable);
+		}
+	}
+
+	/**
+	 * Deletes <b>ALL</b> logs for a given snitch.
+	 *
+	 * @param snitch The snitch to delete all logs for.
+	 */
+	public void deleteAllLogsForSnitch(@Nonnull final Snitch snitch) {
+		final int snitchID = snitch.getId();
+		if (snitchID == -1) {
+			throw new IllegalArgumentException("Cannot delete logs for unknown snitch!");
+		}
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "delete from ja_snitch_entries where snitch_id = ?;")) {
+			statement.setInt(1, snitchID);
+			statement.execute();
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to delete snitch log", throwable);
+		}
+	}
+
+	/**
+	 * Deletes <b>ALL</b> old logs for a given snitch.
+	 *
+	 * @param snitch The snitch to delete all old logs for.
+	 * @param allowedSnitchAge The maximum allowed age (as a UNIX timestamp), all actions dated before this will be
+	 *                         deleted.
+	 */
+	public void deleteOldLogsForSnitch(@Nonnull final Snitch snitch,
+									   final long allowedSnitchAge) {
+		final int snitchID = snitch.getId();
+		if (snitchID == -1) {
+			throw new IllegalArgumentException("Cannot delete logs for unknown snitch!");
+		}
+		try (final Connection connection = this.db.getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(
+					 "delete from ja_snitch_entries where snitch_id = ? and jse.creation_time < ?;")) {
+			statement.setInt(1, snitchID);
+			statement.setDate(2, new Date(allowedSnitchAge));
+			statement.execute();
+		}
+		catch (final SQLException throwable) {
+			this.logger.log(Level.SEVERE, "Failed to delete snitch log", throwable);
 		}
 	}
 
@@ -445,12 +521,12 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 						Statement.RETURN_GENERATED_KEYS)) {
 			insertSnitch.setInt(1, snitch.getId());
 			insertSnitch.setInt(2, typeID);
-			insertSnitch.setString(3, data.getPlayer().toString());
-			insertSnitch.setInt(4, data.getX());
-			insertSnitch.setInt(5, data.getY());
-			insertSnitch.setInt(6, data.getZ());
-			insertSnitch.setTimestamp(7, new Timestamp(data.getTime()));
-			insertSnitch.setString(8, data.getVictim());
+			insertSnitch.setString(3, data.actorUUID().toString());
+			insertSnitch.setInt(4, data.locationX());
+			insertSnitch.setInt(5, data.locationY());
+			insertSnitch.setInt(6, data.locationZ());
+			insertSnitch.setTimestamp(7, new Timestamp(data.timestamp()));
+			insertSnitch.setString(8, data.extra());
 			insertSnitch.execute();
 			try (ResultSet rs = insertSnitch.getGeneratedKeys()) {
 				if (!rs.next()) {
@@ -526,45 +602,61 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 		}
 	}
 
-	public List<Snitch> loadSnitchesByGroupID(Collection<Integer> groupIDs) {
-		SnitchTypeManager configMan = JukeAlert.getInstance().getSnitchConfigManager();
-		WorldIDManager gcmm = CivModCorePlugin.getInstance().getWorldIdManager();
-		List<Snitch> result = new ArrayList<>();
-		try (Connection insertConn = db.getConnection()) {
-			for (int groupID : groupIDs) {
-				try (PreparedStatement selectSnitch = insertConn.prepareStatement(
-						"select x, y, z, world_id, type_id, name, id from ja_snitches " + "where group_id = ?;");) {
-					selectSnitch.setInt(1, groupID);
-					try (ResultSet rs = selectSnitch.executeQuery()) {
-						while (rs.next()) {
-							int x = rs.getInt(1);
-							int y = rs.getInt(2);
-							int z = rs.getInt(3);
-							int worldID = rs.getInt(4);
-							World world = gcmm.getWorldByInternalID((short) worldID);
-							if (world == null) {
-								logger.log(Level.SEVERE, "Failed to load snitch with world id " + worldID);
-								continue;
-							}
-							Location location = new Location(world, x, y, z);
-							int typeID = rs.getInt(5);
-							SnitchFactoryType type = configMan.getConfig(typeID);
-							if (type == null) {
-								logger.log(Level.SEVERE, "Failed to load snitch with type id " + typeID);
-								continue;
-							}
-							String name = rs.getString(6);
-							int id = rs.getInt(7);
-							Snitch snitch = type.create(id, location, name, groupID, false);
-							result.add(snitch);
-						}
-					}
-				}
+	// ------------------------------------------------------------
+	//
+	// ------------------------------------------------------------
+
+	private Map<Location, Snitch> INTERNAL_snitchMap;
+	@SuppressWarnings("unchecked")
+	private Stream<Snitch> INTERNAL_getSnitches() {
+		if (INTERNAL_snitchMap == null) {
+			final SnitchManager snitchManager = JukeAlert.getInstance().getSnitchManager();
+			// Get SingleBlockAPIView instance
+			final Field SM_API_FIELD = FieldUtils.getDeclaredField(SnitchManager.class, "api", true);
+			final SingleBlockAPIView<Snitch> singleBlockAPIView;
+			try {
+				singleBlockAPIView = (SingleBlockAPIView<Snitch>) SM_API_FIELD.get(snitchManager);
 			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to load snitch from db based on group id: ", e);
+			catch (final IllegalAccessException throwable) {
+				throw new IllegalStateException(
+						"Could not retrieve " + SingleBlockAPIView.class.getSimpleName(),
+						throwable);
+			}
+			// Get GlobalLocationTracker instance
+			final Field SBAV_TRACKER_FIELD = FieldUtils.getDeclaredField(SingleBlockAPIView.class, "tracker", true);
+			final GlobalLocationTracker<Snitch> globalLocationTracker;
+			try {
+				globalLocationTracker = (GlobalLocationTracker<Snitch>) SBAV_TRACKER_FIELD.get(singleBlockAPIView);
+			}
+			catch (final IllegalAccessException throwable) {
+				throw new IllegalStateException(
+						"Could not retrieve " + GlobalLocationTracker.class.getSimpleName(),
+						throwable);
+			}
+			// Get internal map
+			final Field GLT_TRACKED_FIELD = FieldUtils.getDeclaredField(GlobalLocationTracker.class, "tracked", true);
+			try {
+				INTERNAL_snitchMap = (Map<Location, Snitch>) GLT_TRACKED_FIELD.get(globalLocationTracker);
+			}
+			catch (final IllegalAccessException throwable) {
+				throw new IllegalStateException(
+						"Could not retrieve internal tracking map",
+						throwable);
+			}
 		}
-		return result;
+		return INTERNAL_snitchMap.values().stream();
+	}
+
+	@Nonnull
+	public Stream<Snitch> loadSnitchesByGroupID(@Nullable final IntList groupIDs) {
+		if (CollectionUtils.isEmpty(groupIDs)) {
+			return Stream.empty();
+		}
+		return INTERNAL_getSnitches().parallel()
+				.filter((snitch) -> {
+					final Group group = snitch.getGroup();
+					return group != null && !Collections.disjoint(groupIDs, group.getGroupIds());
+				});
 	}
 
 }

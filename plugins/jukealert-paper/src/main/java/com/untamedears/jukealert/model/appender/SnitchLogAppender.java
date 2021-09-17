@@ -3,122 +3,114 @@ package com.untamedears.jukealert.model.appender;
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.database.JukeAlertDAO;
 import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.actions.ActionCacheState;
-import com.untamedears.jukealert.model.actions.LoggedActionFactory;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
 import com.untamedears.jukealert.model.appender.config.LimitedActionTriggerConfig;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
-import java.util.Iterator;
-import java.util.LinkedList;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntRBTreeMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import javax.annotation.Nonnull;
 import org.bukkit.configuration.ConfigurationSection;
+import vg.civcraft.mc.civmodcore.util.CivLogger;
 
 public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionTriggerConfig> {
 
 	public static final String ID = "log";
+	private static final CivLogger LOGGER = CivLogger.getLogger(SnitchLogAppender.class);
+	private static final Comparator<LoggableAction> ACTION_COMPARATOR = Comparator.comparingLong(
+			(action) -> ((SnitchAction) action).getTime());
 
-	private List<LoggableAction> actions;
-	private boolean hasLoadedAll;
+	private final Object2IntMap<LoggableAction> pendingActions;
 
-	public SnitchLogAppender(Snitch snitch, ConfigurationSection config) {
+	public SnitchLogAppender(final Snitch snitch,
+							 final ConfigurationSection config) {
 		super(snitch, config);
-		this.actions = new LinkedList<>();
-		this.hasLoadedAll = false;
-		if (snitch.getId() != -1) {
-			loadLogs();
-		}
-		else {
-			hasLoadedAll = true;
-			actions = new LinkedList<>();
-		}
+		this.pendingActions = new Object2IntRBTreeMap<>(ACTION_COMPARATOR);
+		this.pendingActions.defaultReturnValue(-1);
 	}
 
+	/**
+	 * @return Returns a list of actions this snitch has recorded, with certain caveats.
+	 *
+	 * @see JukeAlertDAO#loadLogs(Snitch, long, int)
+	 */
+	@Nonnull
+	public List<LoggableAction> getFullLogs() {
+		if (getSnitch().getId() == -1) {
+			final var actions = new ArrayList<>(this.pendingActions.keySet());
+			actions.sort(ACTION_COMPARATOR);
+			Collections.reverse(actions);
+			return actions;
+		}
+		return JukeAlert.getInstance().getDAO().loadLogs(getSnitch(),
+				getMaximumActionAge(), this.config.getHardCap());
+	}
+
+	/**
+	 * Deletes <b>ALL</b> logs for this snitch.
+	 */
+	public void deleteLogs() {
+		if (getSnitch().getId() != -1) {
+			JukeAlert.getInstance().getDAO().deleteAllLogsForSnitch(getSnitch());
+		}
+		this.pendingActions.clear();
+	}
+
+	/**
+	 * @return Returns the maximum age (as a UNIX timestamp) for actions.
+	 */
+	private long getMaximumActionAge() {
+		return System.currentTimeMillis() - this.config.getActionLifespan();
+	}
+
+	/** {@inheritDoc} */
 	@Override
-	public void acceptAction(SnitchAction action) {
+	public void acceptAction(final SnitchAction action) {
 		if (action.isLifeCycleEvent() || !action.hasPlayer()) {
 			return;
 		}
-		if (!config.isTrigger(action.getIdentifier())) {
+		if (!this.config.isTrigger(action.getIdentifier())) {
 			return;
 		}
-		LoggablePlayerAction log = (LoggablePlayerAction) action;
-		if (snitch.hasPermission(log.getPlayer(), JukeAlertPermissionHandler.getSnitchImmune())) {
+		final LoggablePlayerAction log = (LoggablePlayerAction) action;
+		if (this.snitch.hasPermission(log.getPlayer(), JukeAlertPermissionHandler.getSnitchImmune())) {
 			return;
 		}
-		actions.add(log);
-		if (snitch.getId() != -1) {
-			int id = JukeAlert.getInstance().getLoggedActionFactory().getInternalID(action.getIdentifier());
-			if (id != -1) {
-				JukeAlert.getInstance().getDAO().insertLogAsync(id, getSnitch(), log);
-			}
+		final int internalActionID = JukeAlert.getInstance().getLoggedActionFactory().getInternalID(action.getIdentifier());
+		if (internalActionID == -1) {
+			LOGGER.warning("Snitch action [" + action + "] returned an invalid internal-action id "
+					+ "for snitch [" + this.snitch + "]");
+			return;
 		}
-		else {
-			snitch.setDirty();
+		if (this.snitch.getId() == -1) {
+			this.pendingActions.put(log, internalActionID);
+			return;
 		}
+		JukeAlert.getInstance().getDAO().insertLogAsync(internalActionID, getSnitch(), log);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void persist() {
-		JukeAlertDAO dao = JukeAlert.getInstance().getDAO();
-		LoggedActionFactory fac = JukeAlert.getInstance().getLoggedActionFactory();
-		Iterator<LoggableAction> iter = actions.iterator();
-		while (iter.hasNext()) {
-			LoggableAction action = iter.next();
-			switch (action.getCacheState()) {
-			case NEW:
-				int id = fac.getInternalID(((SnitchAction)action).getIdentifier());
-				if (id != -1) {
-					dao.insertLog(id, getSnitch(), action.getPersistence());
-					action.setCacheState(ActionCacheState.NORMAL);
-				}
-				continue;
-			case DELETED:
-				dao.deleteLog(action);
-				iter.remove();
-				continue;
-			case NORMAL:
-				continue;
-			}
-		}
+		final JukeAlertDAO dao = JukeAlert.getInstance().getDAO();
+		this.pendingActions.forEach((action, actionID) ->
+				dao.insertLog(actionID, getSnitch(), action.getPersistence()));
+		this.pendingActions.clear();
+		dao.deleteOldLogsForSnitch(getSnitch(), getMaximumActionAge());
 	}
 
-	private void loadLogs() {
-		synchronized (actions) {
-			try {
-				actions.addAll(JukeAlert.getInstance().getDAO().loadLogs(getSnitch()));
-				hasLoadedAll = true;
-			} finally {
-				actions.notifyAll();
-			}
-		}
-	}
-	
-	public void deleteLogs() {
-		//TODO
-	}
-
-	public List<LoggableAction> getFullLogs() {
-		if (!hasLoadedAll) {
-			synchronized (actions) {
-				while (!hasLoadedAll) {
-					try {
-						actions.wait();
-					} catch (InterruptedException e) {
-						// welp
-					}
-				}
-			}
-		}
-		return actions;
-	}
-
+	/** {@inheritDoc} */
 	@Override
 	public boolean runWhenSnitchInactive() {
 		return false;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Class<LimitedActionTriggerConfig> getConfigClass() {
 		return LimitedActionTriggerConfig.class;
