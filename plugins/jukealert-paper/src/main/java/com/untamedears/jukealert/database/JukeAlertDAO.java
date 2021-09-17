@@ -521,12 +521,12 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 						Statement.RETURN_GENERATED_KEYS)) {
 			insertSnitch.setInt(1, snitch.getId());
 			insertSnitch.setInt(2, typeID);
-			insertSnitch.setString(3, data.getPlayer().toString());
-			insertSnitch.setInt(4, data.getX());
-			insertSnitch.setInt(5, data.getY());
-			insertSnitch.setInt(6, data.getZ());
-			insertSnitch.setTimestamp(7, new Timestamp(data.getTime()));
-			insertSnitch.setString(8, data.getVictim());
+			insertSnitch.setString(3, data.actorUUID().toString());
+			insertSnitch.setInt(4, data.locationX());
+			insertSnitch.setInt(5, data.locationY());
+			insertSnitch.setInt(6, data.locationZ());
+			insertSnitch.setTimestamp(7, new Timestamp(data.timestamp()));
+			insertSnitch.setString(8, data.extra());
 			insertSnitch.execute();
 			try (ResultSet rs = insertSnitch.getGeneratedKeys()) {
 				if (!rs.next()) {
