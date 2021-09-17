@@ -9,4 +9,5 @@ public class Permissions {
 	public static final String BASTION_PLACE = "BASTION_PLACE";
 	public static final String BASTION_LIST = "BASTION_LIST";
 	public static final String BASTION_MANAGE_GROUPS = "BASTION_MANAGE_GROUPS";
+	public static final String BASTION_ELYTRA = "BASTION_ELYTRA";
 }
