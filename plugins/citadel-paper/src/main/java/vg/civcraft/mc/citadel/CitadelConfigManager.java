@@ -170,7 +170,7 @@ public class CitadelConfigManager extends ConfigParser {
 			logger.warning("Reinforcement type at " + config.getCurrentPath() + " had no id, it was ignored");
 			return null;
 		}
-		if (reinforceables != null && nonReinforceables != null) {
+		if (!reinforceables.isEmpty() && !nonReinforceables.isEmpty()) {
 			logger.warning("Both blacklist and whitelist specified for reinforcement type at " + config.getCurrentPath()
 					+ ". This does not make sense and the type will be ignored");
 			return null;
