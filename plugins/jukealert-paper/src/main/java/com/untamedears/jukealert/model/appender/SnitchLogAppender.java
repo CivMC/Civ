@@ -11,7 +11,6 @@ import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntRBTreeMap;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -22,8 +21,10 @@ public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionT
 
 	public static final String ID = "log";
 	private static final CivLogger LOGGER = CivLogger.getLogger(SnitchLogAppender.class);
-	private static final Comparator<LoggableAction> ACTION_COMPARATOR = Comparator.comparingLong(
-			(action) -> ((SnitchAction) action).getTime());
+	private static final Comparator<LoggableAction> ACTION_COMPARATOR = (lhs, rhs) -> Long.compare(
+			// Comparing rhs vs lhs (as opposed to the usual lhs vs rhs) since we want to sort newest to oldest.
+			((SnitchAction) rhs).getTime(),
+			((SnitchAction) lhs).getTime());
 
 	private final Object2IntMap<LoggableAction> pendingActions;
 
@@ -41,14 +42,12 @@ public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionT
 	 */
 	@Nonnull
 	public List<LoggableAction> getFullLogs() {
-		if (getSnitch().getId() == -1) {
-			final var actions = new ArrayList<>(this.pendingActions.keySet());
-			actions.sort(ACTION_COMPARATOR);
-			Collections.reverse(actions);
-			return actions;
-		}
-		return JukeAlert.getInstance().getDAO().loadLogs(getSnitch(),
-				getMaximumActionAge(), this.config.getHardCap());
+		final List<LoggableAction> actions = getSnitch().getId() == -1 ?
+				new ArrayList<>(this.pendingActions.keySet()) :
+				JukeAlert.getInstance().getDAO().loadLogs(
+						getSnitch(), getMaximumActionAge(), this.config.getHardCap());
+		actions.sort(ACTION_COMPARATOR);
+		return actions;
 	}
 
 	/**
