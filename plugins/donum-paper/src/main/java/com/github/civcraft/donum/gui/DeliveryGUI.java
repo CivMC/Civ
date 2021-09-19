@@ -133,7 +133,7 @@ public class DeliveryGUI {
 				PlayerInventory pInv = p.getInventory();
 				for (ItemStack current : inventory.getInventory().getItemStackRepresentation()) {
 					if (new ItemMap(current).fitsIn(pInv)) {
-						Donum.getInstance().debug(
+						Donum.getInstance().info(
 								p.getName() + " got " + current.toString() + " auto delivered from delivery inventory");
 						inventory.getInventory().removeItemStack(current);
 						pInv.addItem(current);
@@ -164,7 +164,7 @@ public class DeliveryGUI {
 			public void clicked(Player p) {
 				PlayerInventory pInv = p.getInventory();
 				if (new ItemMap(is).fitsIn(pInv)) {
-					Donum.getInstance().debug(p.getName() + " took " + is.toString() + " from delivery inventory");
+					Donum.getInstance().info(p.getName() + " took " + is.toString() + " from delivery inventory");
 					inventory.getInventory().removeItemStack(is);
 					pInv.addItem(is);
 					inventory.setDirty(true);
