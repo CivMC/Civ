@@ -67,6 +67,7 @@ public class CitadelUtility {
 			case CAVE_VINES:
 			case CAVE_VINES_PLANT:
 			case SMALL_DRIPLEAF:
+			case SWEET_BERRY_BUSH:
 				return true;
 			default:
 				return false;
