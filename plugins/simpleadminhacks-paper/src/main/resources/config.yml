@@ -13,6 +13,11 @@ hacks:
     enabled: true
     breakDenyDuration: 3000
     laggLenciency: 1.2
+  #Disallows pearls to teleport players further than the distance set
+  #Intended to prevent Statis Chambers but also heavily nerfs pearl cannons
+  AntiStatisChamber:
+    enabled: true
+    maxPearlDistance: 250.00
   ArthropodEggHack:
     enabled: true
     eggChance: 0.03
