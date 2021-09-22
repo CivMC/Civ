@@ -92,11 +92,6 @@ hacks:
     announcements:
       - "[\"\",{\"text\":\"Buy \"},{\"text\":\"Dogecoin\",\"color\":\"dark_red\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.coindesk.com/price/dogecoin\"}},{\"text\":\"!\"}]"
       - "[\"\",{\"text\":\"Very \"},{\"text\":\"Wow!\",\"italic\":true,\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Wow!\"}}]"
-  ElytraFeatures:
-    enabled: true
-    disableFlight: false
-    disableFireworkBoosting: false
-    disableFlightInCombat: false
   EventDebugHack:
     enabled: true
   EventHandlerList:
@@ -242,6 +237,29 @@ hacks:
     # Note: You can also just state "ALL" for all spawn circumstances
     VILLAGER: ALL
     ENDERMITE: [DISPENSE_EGG, EGG, SPAWNER_EGG]
+  ElytraFeatures:
+    enabled: true
+    # Whether Elytra flight should be outright disabled
+    disableFlight: false
+    # Whether Elytra flight should be disabled in combat
+    disableFlightInCombat: false
+    # Whether firework boosting should be outright disabled
+    disableFireworkBoosting: false
+    # Whether firework boosting should be disabled in combat
+    disableFireworkBoostingInCombat: false
+    # Whether to restrict firework boosting to explosive fireworks
+    disableSafeFireworkBoosting: false
+    # This regulates player damage when Elytra flying above world height.
+    heightDamage:
+      # The amount of damage (in half-hearts) the flier should take.
+      # NOTE: Setting to 0 will disable the damage.
+      damage: 1
+      # The damage is multiplied by the number of blocks above world height multiplied by this number.
+      scales: 1.0
+      # The amount of blocks above height limit where damage is not applied.
+      buffer: 5
+      # The interval (in milliseconds) between damage ticks.
+      interval: 1000
   Experimental:
     enabled: true
     combatspy: false
