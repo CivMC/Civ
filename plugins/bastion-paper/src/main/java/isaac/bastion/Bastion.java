@@ -159,6 +159,7 @@ public final class Bastion extends ACivMod {
 		PermissionType.registerPermission(Permissions.BASTION_PLACE, modAndAbove, "Allows a player to place blocks within a bastion field.", false);
 		PermissionType.registerPermission(Permissions.BASTION_LIST, modAndAbove, "Allows a player to see all bastions under this group.");
 		PermissionType.registerPermission(Permissions.BASTION_MANAGE_GROUPS, adminAndAbove, "Allows linking bastion groups.");
+		PermissionType.registerPermission(Permissions.BASTION_ELYTRA, modAndAbove, "Permits elytra flight through a bastion.");
 	}
 
 }
