@@ -22,12 +22,14 @@ public class SimpleAdminHacks extends ACivMod {
 	private final SimpleAdminHacksConfig config;
 	private final HackManager manager;
 	private final CommandRegistrar commands;
+	private final SimpleAdminHacksSettingManager settingManager;
 
 	public SimpleAdminHacks() {
 		plugin = this;
 		this.config = new SimpleAdminHacksConfig(this);
 		this.manager = new HackManager(this);
 		this.commands = new CommandRegistrar(this);
+		this.settingManager = new SimpleAdminHacksSettingManager();
 	}
 
 	@Override
@@ -95,6 +97,15 @@ public class SimpleAdminHacks extends ACivMod {
 	 */
 	public static SimpleAdminHacks instance() {
 		return plugin;
+	}
+
+	/**
+	 * Returns the CivModCore PlayerSetting Manager
+	 * @return
+	 */
+
+	public SimpleAdminHacksSettingManager getSettingManager() {
+		return settingManager;
 	}
 
 	// ------------------------------------------------------------
