@@ -22,13 +22,16 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
+import vg.civcraft.mc.civmodcore.util.DoubleInteractFixer;
 
 public class GoldBlockElevators extends BasicHack {
 
 	private BooleanSetting useJumpSneakTP;
+	private DoubleInteractFixer interactFixer;
 
 	public GoldBlockElevators(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
+		this.interactFixer = new DoubleInteractFixer(plugin);
 		initSettings();
 	}
 
@@ -52,7 +55,7 @@ public class GoldBlockElevators extends BasicHack {
 		if (!event.isSneaking()) {
 			return;
 		}
-		for (int y = (below.getY() - 1); y > 0; y--) {
+		for (int y = (below.getY() - 1); y > below.getWorld().getMinHeight(); y--) {
 			if (doTeleport(below, event.getPlayer(), y)) {
 				return;
 			}
@@ -70,7 +73,7 @@ public class GoldBlockElevators extends BasicHack {
 		if (below.getType() != Material.GOLD_BLOCK) {
 			return;
 		}
-		for (int y = below.getY() + 1; y <= 255; y++) {
+		for (int y = below.getY() + 1; y <= below.getWorld().getMaxHeight(); y++) {
 			if (doTeleport(below, event.getPlayer(), y)) {
 				return;
 			}
@@ -81,12 +84,19 @@ public class GoldBlockElevators extends BasicHack {
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void goldBlockInteract(PlayerInteractEvent event) {
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if (interactFixer.checkInteracted(event.getPlayer(), event.getClickedBlock())) {
+				return;
+			}
+		} else if (event.getAction() != Action.LEFT_CLICK_BLOCK) {
+			return;
+		}
 		Block below = event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
 		if (below.getType() != Material.GOLD_BLOCK) {
 			return;
 		}
 		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-			for (int y = below.getY() - 1; y <= 255; y--) {
+			for (int y = below.getY() - 1; y > below.getWorld().getMinHeight(); y--) {
 				if (doTeleport(below, event.getPlayer(), y)) {
 					return;
 				}
@@ -95,7 +105,7 @@ public class GoldBlockElevators extends BasicHack {
 					Component.text("No gold block to teleport you down to. Right click to teleport up instead.")
 							.color(NamedTextColor.RED));
 		} else {
-			for (int y = below.getY() + 1; y <= 255; y++) {
+			for (int y = below.getY() + 1; y <= below.getWorld().getMaxHeight(); y++) {
 				if (doTeleport(below, event.getPlayer(), y)) {
 					return;
 				}
