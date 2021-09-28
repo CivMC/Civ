@@ -62,6 +62,8 @@ public class CitadelUtility {
 			case KELP:
 			case KELP_PLANT:
 			case SWEET_BERRY_BUSH:
+			case BAMBOO:
+			case BAMBOO_SAPLING:
 				return true;
 			default:
 				return false;
