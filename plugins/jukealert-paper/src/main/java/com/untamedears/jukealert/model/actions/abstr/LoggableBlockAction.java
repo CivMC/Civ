@@ -45,6 +45,9 @@ public abstract class LoggableBlockAction extends LoggablePlayerAction {
 		if (material == Material.FIRE) {
 			return Material.FLINT_AND_STEEL;
 		}
+		if (material == Material.SWEET_BERRY_BUSH) {
+			return Material.SWEET_BERRIES;
+		}
 		return material;
 	}
 
