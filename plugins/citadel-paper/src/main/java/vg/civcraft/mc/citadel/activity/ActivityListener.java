@@ -30,7 +30,7 @@ public class ActivityListener implements Listener {
 		Location from = event.getFrom();
 		Location to = event.getTo();
 		//noinspection ConstantConditions
-		if (to == null || from == null || !map.isEnabled(to.getWorld())) {
+		if (to == null || from == null) {
 			return;
 		}
 
@@ -40,7 +40,7 @@ public class ActivityListener implements Listener {
 		int tsx = to.getBlockX() / resolution;
 		int tsz = to.getBlockZ() / resolution;
 
-		if (fsx != tsx || fsz != tsz) {
+		if ((fsx != tsx || fsz != tsz) && map.isEnabled(to.getWorld())) {
 			doUpdate(to, event.getPlayer());
 		}
 	}

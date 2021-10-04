@@ -11,10 +11,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -45,7 +48,7 @@ public class ActivityMap {
 	private final Map<Short, LoadingCache<Integer, Table<Integer, Integer, Instant>>> activityTimes;
 	private final Queue<Update> updates = new LinkedBlockingQueue<>();
 
-	private final List<String> worlds;
+	private final Set<UUID> worlds;
 	private final int resolution;
 	private final int radius;
 	private final Instant defaultActivity;
@@ -59,7 +62,15 @@ public class ActivityMap {
 
 		resolution = Citadel.getInstance().getConfigManager().getActivityMapResolution();
 		radius = Citadel.getInstance().getConfigManager().getActivityMapRadius();
-		worlds = Citadel.getInstance().getConfigManager().getActivityWorlds();
+		worlds = new HashSet<>();
+		for (String world : Citadel.getInstance().getConfigManager().getActivityWorlds()) {
+			World bukkitWorld = Bukkit.getWorld(world);
+			if (bukkitWorld == null) {
+				CivModCorePlugin.getInstance().getLogger().warning("World not found: " + world);
+			} else {
+				worlds.add(bukkitWorld.getUID());
+			}
+		}
 		defaultActivity = Instant
 				.ofEpochSecond(Citadel.getInstance().getConfigManager().getActivityDefault());
 
@@ -153,8 +164,8 @@ public class ActivityMap {
 		try {
 			Table<Integer, Integer, Instant> activities = getCache(location.getWorld()).get(group.getGroupId());
 
-			int scaledX = location.getBlockX() / resolution;
-			int scaledZ = location.getBlockZ() / resolution;
+			int scaledX = Math.floorDiv(location.getBlockX(), resolution);
+			int scaledZ = Math.floorDiv(location.getBlockZ(), resolution);
 
 			synchronized (activities) {
 				Instant get = activities.get(scaledX, scaledZ);
@@ -194,6 +205,6 @@ public class ActivityMap {
 	}
 
 	public boolean isEnabled(World world) {
-		return world != null && this.worlds.contains(world.getName());
+		return world != null && this.worlds.contains(world.getUID());
 	}
 }
