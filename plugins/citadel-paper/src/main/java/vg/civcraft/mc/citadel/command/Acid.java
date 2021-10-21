@@ -58,23 +58,30 @@ public class Acid extends StandaloneCommand {
 			}
 			long neededTime = acidMan.getRemainingAcidMaturationTime(reinforcement);
 			if (neededTime > 0) {
-				CitadelUtility.sendAndLog(p, ChatColor.RED, "That acid block will be mature in "
-						+ TextUtil.formatDuration(neededTime, TimeUnit.MILLISECONDS));
+				CitadelUtility.sendAndLog(p, ChatColor.RED,
+						"That acid block will be mature in "
+								+ TextUtil.formatDuration(neededTime, TimeUnit.MILLISECONDS),
+						block.getLocation());
 				return true;
 			}
 			Block topFace = block.getRelative(BlockFace.UP);
 			if (MaterialUtils.isAir(topFace.getType())) {
-				CitadelUtility.sendAndLog(p, ChatColor.RED, "There is no block above to acid block.");
+				CitadelUtility.sendAndLog(p, ChatColor.RED,
+						"There is no block above to acid block.",
+						block.getLocation());
 				return true;
 			}
 			Reinforcement topRein = ReinforcementLogic.getReinforcementProtecting(topFace);
 			if (topRein == null) {
-				CitadelUtility.sendAndLog(p, ChatColor.RED, "The block above doesn't have a reinforcement.");
+				CitadelUtility.sendAndLog(p, ChatColor.RED,
+						"The block above doesn't have a reinforcement.",
+						block.getLocation());
 				return true;
 			}
 			if (!acidMan.canAcidBlock(reinforcement.getType(), topRein.getType())) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED,
-						reinforcement.getType().getName() + " can not acid away " + topRein.getType().getName());
+						reinforcement.getType().getName() + " can not acid away " + topRein.getType().getName(),
+						block.getLocation());
 				return true;
 			}
 			ReinforcementAcidBlockedEvent event = new ReinforcementAcidBlockedEvent(p, reinforcement, topRein);
@@ -89,7 +96,7 @@ public class Acid extends StandaloneCommand {
 
 			if (Citadel.getInstance().getConfigManager().logHostileBreaks()) {
 				Citadel.getInstance().getLogger().log(Level.INFO, "Acid at {0} broke {1} at {2}, activated by {3}",
-						new Object[] { block.getLocation(), topFace.getType(), topFace.getLocation(), p.getName() });
+						new Object[]{block.getLocation(), topFace.getType(), topFace.getLocation(), p.getName()});
 			}
 			foundAny = true;
 			reinforcement.setHealth(-1);
@@ -111,7 +118,8 @@ public class Acid extends StandaloneCommand {
 
 	/**
 	 * Checks if a containers contents can be dropped
-	 * @param  block  Container being acid blocked
+	 *
+	 * @param block Container being acid blocked
 	 * @return true if contents have been successfully dropped
 	 */
 
