@@ -7,9 +7,7 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
@@ -58,9 +56,7 @@ public class DogFacts extends BasicHack {
 	}
 
 	private void initSettings() {
-		MenuSection menu = PlayerSettingAPI.getMainMenu()
-				.createMenuSection("Announcement Settings", "Settings relating to Announcements", new ItemStack(
-						Material.OAK_SIGN));
+		MenuSection menu = plugin.getSettingManager().getMainMenu();
 		disableAnnouncements =
 				new BooleanSetting(plugin, false, "Disable Announcements", "disableAnnouncements",
 						"Disable Announcements?");

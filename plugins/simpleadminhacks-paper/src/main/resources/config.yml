@@ -96,6 +96,8 @@ hacks:
     enabled: true
   EventHandlerList:
     enabled: true
+  GoldBlockElevators:
+    enabled: true
   HumbugBatchOne:
     enabled: true
     allowSheepDying: true
