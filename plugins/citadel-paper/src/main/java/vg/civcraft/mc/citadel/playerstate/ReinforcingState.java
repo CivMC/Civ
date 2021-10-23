@@ -54,27 +54,31 @@ public class ReinforcingState extends AbstractPlayerState {
 		Player player = e.getPlayer();
 		// does the player have an item?
 		if (e.getItem() == null) {
-			CitadelUtility.sendAndLog(player, ChatColor.RED, "You have nothing in your hand to reinforce with");
+			CitadelUtility.sendAndLog(player, ChatColor.RED, "You have nothing in your hand to reinforce with",
+					e.getClickedBlock().getLocation());
 			return;
 		}
 		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(e.getItem());
 		// is it a valid item to reinforce with
 		if (type == null) {
-			CitadelUtility.sendAndLog(player, ChatColor.RED, "You can not reinforce with this item");
+			CitadelUtility.sendAndLog(player, ChatColor.RED, "You can not reinforce with this item",
+					e.getClickedBlock().getLocation());
 			return;
 		}
 		Block block = ReinforcementLogic.getResponsibleBlock(e.getClickedBlock());
 		// can the item reinforce the clicked block
 		if (!type.canBeReinforced(block.getType())) {
 			CitadelUtility.sendAndLog(player, ChatColor.RED,
-					type.getName() + " can not reinforce " + block.getType());
+					type.getName() + " can not reinforce " + block.getType(),
+					block.getLocation());
 			return;
 		}
 		// does the player have permission to reinforce on that group
 		if (!NameAPI.getGroupManager().hasAccess(group, e.getPlayer().getUniqueId(),
 				CitadelPermissionHandler.getReinforce())) {
 			CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
-					"You seem to have lost permission to reinforce on " + group.getName());
+					"You seem to have lost permission to reinforce on " + group.getName(),
+					e.getClickedBlock().getLocation());
 			Citadel.getInstance().getStateManager().setState(e.getPlayer(), null);
 			return;
 		}
@@ -83,7 +87,8 @@ public class ReinforcingState extends AbstractPlayerState {
 		if (rein != null) {
 			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getBypass())) {
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
-						"You do not have permission to bypass reinforcements on " + group.getName());
+						"You do not have permission to bypass reinforcements on " + group.getName(),
+						e.getClickedBlock().getLocation());
 				return;
 			}
 		}
@@ -92,7 +97,8 @@ public class ReinforcingState extends AbstractPlayerState {
 			// check inventory for reinforcement item
 			ItemMap toConsume = new ItemMap(type.getItem());
 			if (!toConsume.isContainedIn(player.getInventory())) {
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, "No reinforcing item found in your inventory?");
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, "No reinforcing item found in your inventory?",
+						e.getClickedBlock().getLocation());
 				return;
 			}
 			if (rein == null) {
@@ -105,7 +111,8 @@ public class ReinforcingState extends AbstractPlayerState {
 			// consume item from inventory
 			if (!toConsume.removeSafelyFrom(player.getInventory())) {
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
-						"Failed to remove reinforcement item from your inventory");
+						"Failed to remove reinforcement item from your inventory",
+						e.getClickedBlock().getLocation());
 				return;
 			}
 		}
@@ -144,14 +151,17 @@ public class ReinforcingState extends AbstractPlayerState {
 					rein.setHealth(type.getHealth());
 					rein.resetCreationTime();
 					CitadelUtility.sendAndLog(player, ChatColor.GREEN,
-							"Updated reinforcement to " + rein.getType().getName() + " on " + group.getName());
+							"Updated reinforcement to " + rein.getType().getName() + " on " + group.getName(),
+							e.getClickedBlock().getLocation());
 				} else if (changedGroup) {
 					CitadelUtility.sendAndLog(player, ChatColor.GREEN,
-							"Updated group to " + ChatColor.LIGHT_PURPLE + group.getName());
+							"Updated group to " + ChatColor.LIGHT_PURPLE + group.getName(),
+							e.getClickedBlock().getLocation());
 				}
 			} else if (changedGroup) {
 				CitadelUtility.sendAndLog(player, ChatColor.GREEN,
-						"Updated group to " + ChatColor.LIGHT_PURPLE + group.getName());
+						"Updated group to " + ChatColor.LIGHT_PURPLE + group.getName(),
+						e.getClickedBlock().getLocation());
 			}
 		}
 	}

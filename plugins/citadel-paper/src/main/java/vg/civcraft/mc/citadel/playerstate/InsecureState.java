@@ -35,13 +35,17 @@ public class InsecureState extends AbstractPlayerState {
 			rein.toggleInsecure();
 			if (rein.isInsecure()) {
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.YELLOW,
-						e.getClickedBlock().getType().name() + " is now insecure");
+						e.getClickedBlock().getType().name() + " is now insecure",
+						e.getClickedBlock().getLocation());
 			} else {
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.GREEN,
-						e.getClickedBlock().getType().name() + " is now secure");
+						e.getClickedBlock().getType().name() + " is now secure",
+						e.getClickedBlock().getLocation());
 			}
 		} else {
-			CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, "You are not allowed to make this reinforcement insecure");
+			CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
+					"You are not allowed to make this reinforcement insecure",
+					e.getClickedBlock().getLocation());
 		}
 	}
 
@@ -54,5 +58,4 @@ public class InsecureState extends AbstractPlayerState {
 	public String getOverlayText() {
 		return ChatColor.GREEN + "CTIN";
 	}
-
 }

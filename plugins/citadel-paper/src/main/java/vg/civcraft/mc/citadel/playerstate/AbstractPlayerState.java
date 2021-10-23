@@ -69,7 +69,8 @@ public abstract class AbstractPlayerState {
 		}
 		if (hasAccess) {
 			CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.GREEN,
-					"You could bypass this reinforcement " + "if you turn bypass mode on with '/ctb'");
+					"You could bypass this reinforcement if you turn bypass mode on with '/ctb'",
+					e.getBlock().getLocation());
 		}
 		e.setCancelled(true);
 		float damage = ReinforcementLogic.getDamageApplied(rein);
@@ -105,5 +106,4 @@ public abstract class AbstractPlayerState {
 
 	@Override
 	public abstract boolean equals(Object o);
-
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -54,15 +55,15 @@ public class CitadelSettingManager {
 	public DisplayLocationSetting getBypassLocationSetting() {
 		return ctbLocationSetting;
 	}
-	
+
 	public DisplayLocationSetting getModeLocationSetting() {
 		return modeLocationSetting;
 	}
-	
+
 	public DisplayLocationSetting getInformationLocationSetting() {
 		return ctiLocationSetting;
 	}
-	
+
 	public BooleanSetting getBypass() {
 		return byPass;
 	}
@@ -78,11 +79,11 @@ public class CitadelSettingManager {
 	public boolean shouldShowChatInCti(UUID uuid) {
 		return showChatMsgInCti.getValue(uuid);
 	}
-	
+
 	public boolean shouldCtoDisableCti(UUID uuid) {
 		return ctoDisableCti.getValue(uuid);
 	}
-	
+
 	public boolean shouldCtoDisableCtb(UUID uuid) {
 		return ctoDisableCtb.getValue(uuid);
 	}
@@ -109,7 +110,7 @@ public class CitadelSettingManager {
 		informationMode = new BooleanSetting(Citadel.getInstance(), false, "Information mode", "citadelInformationMode",
 				"Displays information about reinforced blocks when interacting with them");
 		PlayerSettingAPI.registerSetting(informationMode, menu);
-		
+
 		easyMode = new BooleanSetting(Citadel.getInstance(), false, "Easy reinforcing mode", "citadelEasyMode",
 				"Allows automatically reinforcing to your default group with reinforcement materials from your off hand");
 		PlayerSettingAPI.registerSetting(easyMode, menu);
@@ -127,27 +128,27 @@ public class CitadelSettingManager {
 				"How long should holograms in information mode remain visible, measured in milli seconds", false, 1000,
 				30000);
 		PlayerSettingAPI.registerSetting(hologramDuration, menu);
-		
+
 		ctbLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocation.NONE, "Bypass display location"
 				, "citadelBypassDisplayLocation", new ItemStack(Material.GOLDEN_PICKAXE), "bypass");
 		PlayerSettingAPI.registerSetting(ctbLocationSetting, menu);
-		
+
 		ctiLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocation.SIDEBAR, "Information mode display location"
 				, "citadelInfoModeDisplayLocation", new ItemStack(Material.BOOKSHELF), "reinforcement info mode");
 		PlayerSettingAPI.registerSetting(ctiLocationSetting, menu);
-		
+
 		modeLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocation.SIDEBAR, "Citadel mode display location"
 				, "citadelReinModeDisplayLocation", new ItemStack(Material.NETHER_STAR), "Citadel mode");
 		PlayerSettingAPI.registerSetting(modeLocationSetting, menu);
-		
-		ctoDisableCtb =  new BooleanSetting(Citadel.getInstance(), false, "/cto disable /ctb",
+
+		ctoDisableCtb = new BooleanSetting(Citadel.getInstance(), false, "/cto disable /ctb",
 				"citadelCtoDisableCtb", "Should /cto disable Bypass mode (/ctb)");
 		PlayerSettingAPI.registerSetting(ctoDisableCtb, menu);
-		
-		ctoDisableCti =  new BooleanSetting(Citadel.getInstance(), true, "/cto disable /cti",
+
+		ctoDisableCti = new BooleanSetting(Citadel.getInstance(), true, "/cto disable /cti",
 				"citadelCtoDisableCti", "Should /cto disable Information mode (/cti)");
-		PlayerSettingAPI.registerSetting(ctoDisableCti, menu);		
-		
+		PlayerSettingAPI.registerSetting(ctoDisableCti, menu);
+
 		MenuSection commandSection = menu.createMenuSection("Command replies",
 				"Allows configuring the replies received when interacting with reinforcements or Citadel commands. For advanced users only");
 
@@ -193,7 +194,7 @@ public class CitadelSettingManager {
 		PlayerSettingAPI.registerSetting(ctiEnemy, commandSection);
 	}
 
-	public void sendCtiEnemyMessage(Player player, Reinforcement reinforcement) {
+	public void sendCtiEnemyMessage(Player player, Reinforcement reinforcement, Location location) {
 		Map<String, String> args = new TreeMap<>();
 		ReinforcementType type = reinforcement.getType();
 		String percFormat = ctiPercentageHealth.getValue(player)
@@ -210,8 +211,8 @@ public class CitadelSettingManager {
 			String ctiDecayFormat = ctiDecay.getValue(player).replaceAll("%%decay%%", ctiDecayAmountFormat);
 			args.put("decay_string", ctiDecayFormat);
 		} else {
-			args.put("decay_string","");
+			args.put("decay_string", "");
 		}
-		CitadelUtility.sendAndLog(player, ChatColor.RESET, ctiEnemy.formatReply(player.getUniqueId(), args));
+		CitadelUtility.sendAndLog(player, ChatColor.RESET, ctiEnemy.formatReply(player.getUniqueId(), args), location);
 	}
 }

@@ -13,7 +13,7 @@
 	<groupId>vg.civcraft.mc.citadel</groupId>
 	<artifactId>Citadel</artifactId>
 	<packaging>jar</packaging>
-	<version>4.1.1</version>
+	<version>4.2.0</version>
 	<name>Citadel</name>
 	<url>https://github.com/civclassic/Citadel</url>
 

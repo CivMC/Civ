@@ -124,7 +124,7 @@ public class ModeListener implements Listener {
 	}
 
 	private static void updateDisplaySetting(Player player, DisplayLocationSetting locSetting, boolean state, String text,
-			BottomLine bottomLine, CivScoreBoard scoreBoard) {
+	                                         BottomLine bottomLine, CivScoreBoard scoreBoard) {
 		if (player == null) {
 			return;
 		}
@@ -203,7 +203,7 @@ public class ModeListener implements Listener {
 		boolean showChat = settingMan.shouldShowChatInCti(player.getUniqueId());
 		if (rein == null) {
 			if (showChat) {
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.YELLOW, "Not reinforced");
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.YELLOW, "Not reinforced", e.getClickedBlock().getLocation());
 			}
 			return;
 		}
@@ -213,7 +213,7 @@ public class ModeListener implements Listener {
 		boolean showHolo = settingMan.shouldShowHologramInCti(player.getUniqueId());
 		if (!rein.hasPermission(player, CitadelPermissionHandler.getInfo())) {
 			if (showChat) {
-				Citadel.getInstance().getSettingManager().sendCtiEnemyMessage(player, rein);
+				Citadel.getInstance().getSettingManager().sendCtiEnemyMessage(player, rein, e.getClickedBlock().getLocation());
 			}
 			if (showHolo) {
 				showHolo(rein, player);
@@ -248,7 +248,7 @@ public class ModeListener implements Listener {
 					sb.append(String.format("%sAcid block mature in %s", ChatColor.YELLOW, TextUtil.formatDuration(remainingTime, TimeUnit.MILLISECONDS)));
 				}
 			}
-			CitadelUtility.sendAndLog(player, ChatColor.GREEN, sb.toString().trim());
+			CitadelUtility.sendAndLog(player, ChatColor.GREEN, sb.toString().trim(), e.getClickedBlock().getLocation());
 		}
 		if (showHolo) {
 			showHolo(rein, player);
@@ -276,5 +276,4 @@ public class ModeListener implements Listener {
 			holoManager.showInfoHolo(rein, player);
 		}
 	}
-
 }

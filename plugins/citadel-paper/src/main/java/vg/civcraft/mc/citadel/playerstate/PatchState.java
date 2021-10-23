@@ -35,30 +35,37 @@ public class PatchState extends AbstractPlayerState {
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(e.getClickedBlock());
 		Player player = e.getPlayer();
 		if (rein == null) {
-			CitadelUtility.sendAndLog(player, ChatColor.RED, "This block is not reinforced");
+			CitadelUtility.sendAndLog(player, ChatColor.RED,
+					"This block is not reinforced",
+					e.getClickedBlock().getLocation());
 			return;
 		}
 		if (!rein.hasPermission(player, CitadelPermissionHandler.getRepair())) {
 			CitadelUtility.sendAndLog(player, ChatColor.RED,
-					"You do not have permission to repair reinforcements on this group");
+					"You do not have permission to repair reinforcements on this group",
+					e.getClickedBlock().getLocation());
 			return;
 		}
 		if (rein.getHealth() >= rein.getType().getHealth()) {
 			if (rein.hasPermission(player, CitadelPermissionHandler.getRepair())) {
 				CitadelUtility.sendAndLog(player, ChatColor.GOLD,
 						"Reinforcement is already at " + ModeListener.formatHealth(rein) + ChatColor.GOLD
-								+ " health with " + ChatColor.AQUA + rein.getType().getName() + ChatColor.GOLD + " on "
-								+ ChatColor.LIGHT_PURPLE + rein.getGroup().getName());
+								+ " health with " + ChatColor.AQUA + rein.getType().getName() + ChatColor.GOLD
+								+ " on " + ChatColor.LIGHT_PURPLE + rein.getGroup().getName(),
+						e.getClickedBlock().getLocation());
 			} else {
-				CitadelUtility.sendAndLog(player, ChatColor.GOLD, "Reinforcement is already at "
-						+ ModeListener.formatHealth(rein) + ChatColor.GOLD + " health");
+				CitadelUtility.sendAndLog(player, ChatColor.GOLD,
+						"Reinforcement is already at " + ModeListener.formatHealth(rein) + ChatColor.GOLD + " health",
+						e.getClickedBlock().getLocation());
 			}
 			return;
 		}
 		ItemMap playerMap = new ItemMap(player.getInventory());
 		if (playerMap.getAmount(rein.getType().getItem()) <= 0) {
-			CitadelUtility.sendAndLog(player, ChatColor.RED, "You don't have the item required to repair " + ChatColor.AQUA
-					+ rein.getType().getName() + ChatColor.GOLD + " reinforcements");
+			CitadelUtility.sendAndLog(player, ChatColor.RED,
+					"You don't have the item required to repair " + ChatColor.AQUA
+							+ rein.getType().getName() + ChatColor.GOLD + " reinforcements",
+					e.getClickedBlock().getLocation());
 			return;
 		}
 		ReinforcementRepairEvent repairEvent = new ReinforcementRepairEvent(e.getPlayer(), rein);
@@ -84,5 +91,4 @@ public class PatchState extends AbstractPlayerState {
 	public String getOverlayText() {
 		return ChatColor.GREEN + "CTP";
 	}
-
 }
