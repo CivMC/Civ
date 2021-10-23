@@ -67,7 +67,7 @@ public class SkinCache {
 						if (profile.hasTextures()) {
 							return new SkinData(profile);
 						}
-						throw new Exception("Could not complete() PlayerProfile for " + uuid + " (rate limited or profile doesn't exist)");
+						throw new SkinLoadException("Could not complete() PlayerProfile for " + uuid + " (rate limited or profile doesn't exist)");
 					}
 				});
 		this.futureCache = CacheBuilder.newBuilder()
@@ -78,8 +78,23 @@ public class SkinCache {
 						return CompletableFuture.supplyAsync(() -> {
 							try {
 								return skinCache.get(uuid);
-							} catch (Exception e) {
-								return new SkinData(Bukkit.createProfile(uuid));
+							} catch (Exception ex) {
+								// This was causing "issues" with nms querying
+								// the skin server. Just going to log the
+								// exception now I guess
+								// return new SkinData(Bukkit.createProfile(uuid));
+								if (ex instanceof SkinLoadException) {
+									plugin.getLogger().log(Level.WARNING, "Exception loading skin: " + ex.getMessage());
+								} else {
+									plugin.getLogger().log(Level.WARNING, "Exception loading skin", ex);
+								}
+								// also complete exceptionally to cancel later
+								// CompletionStages
+								if (ex instanceof RuntimeException) {
+									throw (RuntimeException) ex;
+								} else {
+									throw new RuntimeException("Skin could not be loaded", ex);
+								}
 							}
 						}, executor);
 					}
@@ -169,5 +184,11 @@ public class SkinCache {
 			headMeta.setPlayerProfile(profile);
 		}
 
+	}
+
+	public static class SkinLoadException extends RuntimeException {
+		public SkinLoadException(String message) {
+			super(message);
+		}
 	}
 }
