@@ -10,7 +10,9 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -66,9 +68,15 @@ public class ListCommand extends StandaloneCommand {
 				+ " group instances. This may take a moment.");
 		JukeAlert.getInstance().getTaskChainFactory().newChain()
 				.async((unused) -> JukeAlert.getInstance().getDAO().loadSnitchesByGroupID(groupIds).parallel()
-						.map((snitch) -> new SnitchCache(snitch, snitch.getAppender(DormantCullingAppender.class)))
-						.filter((entry) -> entry.appender != null)
-						.sorted(Comparator.comparingLong((entry) -> entry.appender.getTimeUntilCulling()))
+						.map((snitch) -> {
+							final DormantCullingAppender appender = snitch.getAppender(DormantCullingAppender.class);
+							if (appender == null) {
+								return null;
+							}
+							return new SnitchCache(snitch, appender.getTimeUntilCulling());
+						})
+						.filter(Objects::nonNull)
+						.sorted(Comparator.comparingLong((entry) -> entry.timeUntilCulling))
 						.map((entry) -> entry.snitch)
 						.collect(Collectors.toList()))
 				.syncLast((snitches) -> new SnitchOverviewGUI(player, snitches, "Your snitches",
@@ -78,12 +86,12 @@ public class ListCommand extends StandaloneCommand {
 	}
 
 	private static class SnitchCache {
-		Snitch snitch;
-		DormantCullingAppender appender;
-		public SnitchCache(final Snitch snitch,
-						   final DormantCullingAppender appender) {
+		private final Snitch snitch;
+		private final long timeUntilCulling;
+		public SnitchCache(@Nonnull final Snitch snitch,
+						   final long timeUntilCulling) {
 			this.snitch = snitch;
-			this.appender = appender;
+			this.timeUntilCulling = timeUntilCulling;
 		}
 	}
 
