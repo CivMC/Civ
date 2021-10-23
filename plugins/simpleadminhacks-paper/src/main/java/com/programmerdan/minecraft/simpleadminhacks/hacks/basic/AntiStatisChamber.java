@@ -28,7 +28,6 @@ public class AntiStatisChamber extends BasicHack {
 	public AntiStatisChamber(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
 		this.key = new NamespacedKey(plugin, "pearl_thrown_time");
-		this.lifetimeValue = ConfigParsing.parseTime(pearlLifetime);
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -44,6 +43,7 @@ public class AntiStatisChamber extends BasicHack {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPearlLand(ProjectileHitEvent event) {
+		this.lifetimeValue = ConfigParsing.parseTime(this.pearlLifetime);
 		Projectile projectile = event.getEntity();
 		if (!(projectile instanceof EnderPearl)) {
 			return;
