@@ -84,6 +84,9 @@ public class GoldBlockElevators extends BasicHack {
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void goldBlockInteract(PlayerInteractEvent event) {
+		if (this.useJumpSneakTP.getValue(event.getPlayer())) {
+			return;
+		}
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (interactFixer.checkInteracted(event.getPlayer(), event.getClickedBlock())) {
 				return;
@@ -93,6 +96,12 @@ public class GoldBlockElevators extends BasicHack {
 		}
 		Block below = event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
 		if (below.getType() != Material.GOLD_BLOCK) {
+			return;
+		}
+		if (event.getClickedBlock() == null) {
+			return;
+		}
+		if (!event.getClickedBlock().equals(below)) {
 			return;
 		}
 		if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
