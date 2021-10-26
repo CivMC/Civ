@@ -5,6 +5,7 @@ import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSIPData;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import com.programmerdan.minecraft.banstick.data.BSSession;
 import com.programmerdan.minecraft.banstick.data.BSShare;
 import java.net.InetAddress;
 import java.util.Collections;
@@ -369,19 +370,20 @@ public class BanStickEventHandler implements Listener {
 				// Then do VPN checks
 				if (enableProxyBans || enableProxyKicks) {
 					// Inject IP Hub handler.
-					BanStick.getPlugin().getIPHubHandler().offer(bsPlayer.getLatestSession().getIP());
+					final BSSession latestSession = bsPlayer.getLatestSession();
+					BanStick.getPlugin().getIPHubHandler().offer(latestSession.getIP());
 
 					try {
 						if (bsPlayer.getProxyPardonTime() == null) {
-							if (bsPlayer.getLatestSession().getIP() == null) {
+							if (latestSession.getIP() == null) {
 								BanStick.getPlugin().warning("Weird failure, no ip for {0}", bsPlayer);
 								return;
 							}
-							if (bsPlayer.getLatestSession().getIP().getIPAddress() == null) {
+							if (latestSession.getIP().getIPAddress() == null) {
 								BanStick.getPlugin().warning("Weird failure, no ip address for {0}", bsPlayer);
 								return;
 							}
-							List<BSIPData> proxyChecks = BSIPData.allByIP(bsPlayer.getLatestSession().getIP());
+							List<BSIPData> proxyChecks = BSIPData.allByIP(latestSession.getIP());
 							if (proxyChecks != null) {
 								for (BSIPData proxyCheck : proxyChecks) {
 									// check if entire provider is banned
@@ -519,7 +521,7 @@ public class BanStickEventHandler implements Listener {
 	 * @param puuid The person to kick
 	 * @param picked The ban being applied
 	 */
-	public void doKickWithCheckup(final UUID puuid, final BSBan picked) {
+	public static void doKickWithCheckup(final UUID puuid, final BSBan picked) {
 		// now schedule a task to kick out the trash.
 		Bukkit.getScheduler().runTask(BanStick.getPlugin(), new Runnable() {
 

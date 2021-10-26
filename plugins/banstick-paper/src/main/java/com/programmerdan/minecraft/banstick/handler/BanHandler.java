@@ -336,27 +336,37 @@ public final class BanHandler {
 	/**
 	 * Checks whether a player is banned.
 	 *
-	 * @param player The player UUID to check if banned.
+	 * @param puuid The player UUID to check if banned.
 	 * @return Returns true if the player is banned.
 	 */
-	public static boolean isPlayerBanned(final UUID player) {
-		final BSPlayer bsPlayer = BSPlayer.byUUID(player);
+	public static boolean isPlayerBanned(final UUID puuid) {
+		BSBan ban = getActivePlayerBanOrTransitive(puuid);
+		return ban != null;
+	}
+
+	/**
+	 * Checks whether a player is banned, and returns the ban.
+	 *
+	 * @param puuid The player UUID to check if banned.
+	 * @return Returns true if the player is banned.
+	 */
+	public static BSBan getActivePlayerBanOrTransitive(final UUID puuid) {
+		final BSPlayer bsPlayer = BSPlayer.byUUID(puuid);
 		if (bsPlayer == null) {
-			return false;
+			return null;
 		}
 		final BSBan bsBan = bsPlayer.getBan();
 		if (bsBan != null && !bsBan.hasBanExpired()) {
-			return true;
+			return bsBan;
 		}
 		if (BanStick.getPlugin().getEventHandler().areTransitiveBansEnabled()) {
 			for (final BSPlayer alt : bsPlayer.getTransitiveSharedPlayers(true)) {
 				final BSBan bsAltBan = alt.getBan();
 				if (bsAltBan != null && !bsAltBan.hasBanExpired()) {
-					return true;
+					return bsAltBan;
 				}
 			}
 		}
-		return false;
+		return null;
 	}
-
 }
