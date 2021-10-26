@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.programmerdan.minecraft.banstick.handler.BanHandler.getActivePlayerBanOrTransitive;
 import static com.programmerdan.minecraft.banstick.handler.BanStickEventHandler.doKickWithCheckup;
 
 /**
@@ -250,10 +251,9 @@ public final class BSShares {
 
 		// this happens after the player has already logged in
 		// if the player has been associated with a banned share, kick them
-		final List<BSBan> bans = BSBan.byShare(share, false);
-		if (!bans.isEmpty()) {
-			final BSBan ban = bans.get(0);
-
+		BSBan ban1 = getActivePlayerBanOrTransitive(share.getFirstPlayer().getUUID());
+		BSBan ban = ban1 != null ? ban1 : getActivePlayerBanOrTransitive(share.getSecondPlayer().getUUID());
+		if (ban != null) {
 			BanStick.getPlugin().info("New overlap between {0} and {1} resulting in at least one ban; kicking...", forPlayer.getName(), player.getName());
 			doKickWithCheckup(player.getUUID(), ban);
 		}
