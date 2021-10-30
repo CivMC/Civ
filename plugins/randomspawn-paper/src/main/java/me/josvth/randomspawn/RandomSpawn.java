@@ -336,6 +336,7 @@ public class RandomSpawn extends JavaPlugin {
 				}
 				result.add(mat);
 			}
+			return result;
 		}
 		return defaultBlackList;
 	}
