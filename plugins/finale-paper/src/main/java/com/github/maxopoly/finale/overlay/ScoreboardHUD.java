@@ -264,24 +264,24 @@ public class ScoreboardHUD implements Listener {
 	}
 
 	private void updateCoordinates(Player p, DisplayLocationSetting setting){
-		if(p == null){
-			return;
-		}
-		Location location = p.getLocation();
-		String coords = String.format("%sLocation: [%s, %s, %s]", ChatColor.GREEN, location.getBlockX(),
-				location.getBlockY(), location.getBlockZ());
-		if (setting.getDisplayLocation(p.getUniqueId()) == DisplayLocationSetting.DisplayLocation.BOTH){
-			coordsBottomLine.updatePlayer(p, coords);
-			scoreBoards.get(11).set(p, coords);
-		} else if (setting.showOnActionbar(p.getUniqueId())) {
-			coordsBottomLine.updatePlayer(p, coords);
-			scoreBoards.get(11).set(p, null);
-		} else if (setting.showOnSidebar(p.getUniqueId())) {
-			scoreBoards.get(11).set(p, coords);
-			coordsBottomLine.removePlayer(p);
-		} else {
-			scoreBoards.get(11).set(p, null);
-			coordsBottomLine.removePlayer(p);
-		}
+//		if(p == null){
+//			return;
+//		}
+//		Location location = p.getLocation();
+//		String coords = String.format("%sLocation: [%s, %s, %s]", ChatColor.GREEN, location.getBlockX(),
+//				location.getBlockY(), location.getBlockZ());
+//		if (setting.getDisplayLocation(p.getUniqueId()) == DisplayLocationSetting.DisplayLocation.BOTH){
+//			coordsBottomLine.updatePlayer(p, coords);
+//			scoreBoards.get(11).set(p, coords);
+//		} else if (setting.showOnActionbar(p.getUniqueId())) {
+//			coordsBottomLine.updatePlayer(p, coords);
+//			scoreBoards.get(11).set(p, null);
+//		} else if (setting.showOnSidebar(p.getUniqueId())) {
+//			scoreBoards.get(11).set(p, coords);
+//			coordsBottomLine.removePlayer(p);
+//		} else {
+//			scoreBoards.get(11).set(p, null);
+//			coordsBottomLine.removePlayer(p);
+//		}
 	}
 }
