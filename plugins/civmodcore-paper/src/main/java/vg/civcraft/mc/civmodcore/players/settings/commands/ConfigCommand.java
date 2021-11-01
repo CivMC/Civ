@@ -27,14 +27,6 @@ public final class ConfigCommand extends BaseCommand {
 		PlayerSettingAPI.getMainMenu().showScreen(sender);
 	}
 
-	@Subcommand("save")
-	@Description("Save all settings to the file.")
-	@CommandPermission(MANAGE_PERMISSION)
-	public void saveAllConfigs(final CommandSender sender) {
-		PlayerSettingAPI.saveAll();
-		sender.sendMessage(ChatColor.GREEN + "/config has been saved.");
-	}
-
 	@Subcommand("get")
 	@Description("Lets you read any config setting for any player")
 	@Syntax("config get <player|uuid> <setting>")

@@ -2,12 +2,10 @@ package vg.civcraft.mc.civmodcore.players.settings;
 
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -35,7 +33,7 @@ public abstract class PlayerSetting<T> {
 			String description, boolean canBeChangedByPlayer) {
 		Preconditions.checkNotNull(gui, "GUI ItemStack can not be null.");
 
-		values = new TreeMap<>();
+		this.values = new ConcurrentHashMap<>();
 		this.defaultValue = defaultValue;
 		this.owningPlugin = owningPlugin;
 		this.niceName = niceName;
@@ -61,13 +59,6 @@ public abstract class PlayerSetting<T> {
 	 */
 	public abstract T deserialize(String serial);
 
-	Map<String, String> dumpAllSerialized() {
-		Map<String, String> result = new HashMap<>();
-		for (Entry<UUID, T> entry : values.entrySet()) {
-			result.put(entry.getKey().toString(), serialize(entry.getValue()));
-		}
-		return result;
-	}
 
 	/**
 	 * @return Textual description shown in the GUI for this setting
@@ -133,6 +124,10 @@ public abstract class PlayerSetting<T> {
 	 */
 	public T getValue(Player player) {
 		return getValue(player.getUniqueId());
+	}
+
+	public boolean hasValue(UUID player) {
+		return values.containsKey(player);
 	}
 	
 	/**
@@ -200,10 +195,19 @@ public abstract class PlayerSetting<T> {
 	public void setValue(UUID player, T value) {
 		if (listeners != null) {
 			T oldValue = getValue(player);
-			for(SettingChangeListener<T> listener: listeners) {
+			for (SettingChangeListener<T> listener : listeners) {
 				listener.handle(player, this, oldValue, value);
 			}
 		}
+		values.put(player, value);
+	}
+
+	/**
+	 * Used for initial setting of a players value when their data is loaded. Does not call any setting change listeners
+	 * @param player UUID of the player whose data is being initialized
+	 * @param value Value to initialize to
+	 */
+	public void setValueInternal(UUID player, T value) {
 		values.put(player, value);
 	}
 
