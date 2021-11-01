@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore;
 
 import java.sql.SQLException;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
 import org.ipvp.canvas.MenuFunctionListener;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
@@ -18,7 +19,6 @@ import vg.civcraft.mc.civmodcore.maps.MapColours;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardListener;
-import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.commands.ConfigCommand;
 import vg.civcraft.mc.civmodcore.utilities.SkinCache;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
@@ -109,7 +109,7 @@ public final class CivModCorePlugin extends ACivMod {
 		}
 		DialogManager.resetDialogs();
 		WorldTracker.reset();
-		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
+		ConfigurationSerialization.unregisterClass(DatabaseCredentials.class);
 		if (this.commands != null) {
 			this.commands.reset();
 			this.commands = null;
