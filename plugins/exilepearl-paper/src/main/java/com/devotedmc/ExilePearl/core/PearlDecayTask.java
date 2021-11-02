@@ -46,7 +46,10 @@ final class PearlDecayTask extends ExilePearlTask {
 			return;
 		}
 
+		long start = System.currentTimeMillis();
 		pearlApi.getPearlManager().decayPearls();
+		long duration = System.currentTimeMillis() - start;
+		pearlApi.log("Pearl decay task took %dms", duration);
 	}
 
 	@Override
