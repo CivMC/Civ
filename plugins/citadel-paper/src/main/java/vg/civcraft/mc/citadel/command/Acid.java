@@ -86,7 +86,7 @@ public class Acid extends BaseCommand {
 
 			if (Citadel.getInstance().getConfigManager().logHostileBreaks()) {
 				Citadel.getInstance().getLogger().log(Level.INFO, "Acid at {0} broke {1} at {2}, activated by {3}",
-						new Object[] { block.getLocation(), topFace.getType(), topFace.getLocation(), p.getName() });
+						new Object[]{block.getLocation(), topFace.getType(), topFace.getLocation(), p.getName()});
 			}
 			foundAny = true;
 			reinforcement.setHealth(-1);
@@ -102,7 +102,8 @@ public class Acid extends BaseCommand {
 
 	/**
 	 * Checks if a containers contents can be dropped
-	 * @param  block  Container being acid blocked
+	 *
+	 * @param block Container being acid blocked
 	 * @return true if contents have been successfully dropped
 	 */
 

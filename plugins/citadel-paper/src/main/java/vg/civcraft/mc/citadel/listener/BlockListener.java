@@ -74,7 +74,7 @@ public class BlockListener implements Listener {
 		if (block.getRelative(0, 1, 0).getType() == matfire) {
 			block.getRelative(0, 1, 0).setType(Material.AIR);
 		} // Essential
-			// Extended fire protection (recommend)
+		// Extended fire protection (recommend)
 		if (block.getRelative(1, 0, 0).getType() == matfire) {
 			block.getRelative(1, 0, 0).setType(Material.AIR);
 		}
@@ -101,7 +101,6 @@ public class BlockListener implements Listener {
 				event.setCancelled(true);
 			}
 		}
-
 	}
 
 	// Stop comparators from being placed unless the reinforcement is insecure
@@ -117,7 +116,8 @@ public class BlockListener implements Listener {
 		if (ReinforcementLogic.isPreventingBlockAccess(event.getPlayer(), block)) {
 			event.setCancelled(true);
 			CitadelUtility.sendAndLog(event.getPlayer(), ChatColor.RED,
-					"You can not place this because it'd allow bypassing a nearby reinforcement");
+					"You can not place this because it'd allow bypassing a nearby reinforcement",
+					block.getLocation());
 			return;
 		}
 		// Comparators can also read through a single opaque block
@@ -126,7 +126,8 @@ public class BlockListener implements Listener {
 					block.getRelative(comparator.getFacing().getOppositeFace()))) {
 				event.setCancelled(true);
 				CitadelUtility.sendAndLog(event.getPlayer(), ChatColor.RED,
-						"You can not place this because it'd allow bypassing a nearby reinforcement");
+						"You can not place this because it'd allow bypassing a nearby reinforcement",
+						block.getLocation());
 			}
 		}
 	}
@@ -197,7 +198,7 @@ public class BlockListener implements Listener {
 				e.setCancelled(true);
 				String msg = String.format("%s is locked with %s%s", e.getClickedBlock().getType().name(),
 						ChatColor.AQUA, rein.getType().getName());
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg);
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg, e.getClickedBlock().getLocation());
 			}
 			return;
 		}
@@ -206,7 +207,7 @@ public class BlockListener implements Listener {
 				e.setCancelled(true);
 				String msg = String.format("%s is locked with %s%s", e.getClickedBlock().getType().name(),
 						ChatColor.AQUA, rein.getType().getName());
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg);
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg, e.getClickedBlock().getLocation());
 			}
 		}
 	}
@@ -223,7 +224,7 @@ public class BlockListener implements Listener {
 			if (rel.getType() == mat && ReinforcementLogic.isPreventingBlockAccess(e.getPlayer(), rel)) {
 				e.setCancelled(true);
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
-						"You can not place this because it'd allow bypassing a nearby reinforcement");
+						"You can not place this because it'd allow bypassing a nearby reinforcement", rel.getLocation());
 				break;
 			}
 		}
@@ -384,7 +385,6 @@ public class BlockListener implements Listener {
 		}
 	}
 
-
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void preventHarvestingHoney(PlayerInteractEvent pie) {
 		if (!pie.hasBlock()) {
@@ -492,7 +492,7 @@ public class BlockListener implements Listener {
 			pie.setCancelled(true);
 			String msg = String.format("%s is locked with %s%s", pie.getClickedBlock().getType().name(), ChatColor.AQUA,
 					rein.getType().getName());
-			CitadelUtility.sendAndLog(pie.getPlayer(), ChatColor.RED, msg);
+			CitadelUtility.sendAndLog(pie.getPlayer(), ChatColor.RED, msg, pie.getClickedBlock().getLocation());
 		}
 	}
 
@@ -534,7 +534,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 		event.setCancelled(true);
-		CitadelUtility.sendAndLog(clicker, ChatColor.RED, "You cannot modify that lectern.");
+		CitadelUtility.sendAndLog(clicker, ChatColor.RED, "You cannot modify that lectern.", lecternLocation);
 	}
 
 	@EventHandler(ignoreCancelled = true)

@@ -80,6 +80,9 @@ public class AreaReinforce extends BaseCommand {
 					if (!current.getLocation().equals(protecting.getLocation())) {
 						continue;
 					}
+					if (current.getType().isAir()) {
+						continue;
+					}
 					count++;
 					Reinforcement rein = ReinforcementLogic.callReinforcementCreationEvent(p, current, reinType, group);
 					if (rein != null) {

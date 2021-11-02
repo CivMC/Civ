@@ -1,7 +1,12 @@
 package vg.civcraft.mc.citadel;
 
 import java.util.logging.Level;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,10 +19,9 @@ import vg.civcraft.mc.namelayer.group.Group;
 /**
  * Just a useful class with general and misplaced methods that can be called
  * from anywhere.
- *
  */
 public class CitadelUtility {
-	
+
 	private CitadelUtility() {
 	}
 
@@ -80,8 +84,29 @@ public class CitadelUtility {
 		receiver.sendMessage(color + message);
 		if (Citadel.getInstance().getConfigManager().logMessages()) {
 			Citadel.getInstance().getLogger().log(Level.INFO, "Sent {0} reply {1}",
-					new Object[] { receiver.getName(), message });
+					new Object[]{receiver.getName(), message});
 		}
+	}
+
+	public static void sendAndLog(CommandSender receiver, ChatColor color, String message, Location location) {
+		final TextComponent component = new TextComponent(color + message);
+		addCoordsHoverComponent(component, location);
+		receiver.spigot().sendMessage(component);
+		if (Citadel.getInstance().getConfigManager().logMessages()) {
+			Citadel.getInstance().getLogger().log(Level.INFO, "Sent {0} reply {1}",
+					new Object[]{receiver.getName(), message});
+		}
+	}
+
+	private static BaseComponent addCoordsHoverComponent(BaseComponent component, Location location) {
+		String hoverText = String.format("Location: %s %s %s",
+				location.getBlockX(),
+				location.getBlockY(),
+				location.getBlockZ());
+		component.setHoverEvent(new HoverEvent(
+				HoverEvent.Action.SHOW_TEXT,
+				new Text(hoverText)));
+		return component;
 	}
 
 	public static void debugLog(String msg) {
@@ -105,11 +130,12 @@ public class CitadelUtility {
 	}
 
 	public static boolean attemptReinforcementCreation(Block block, ReinforcementType type, Group group,
-			Player player) {
+	                                                   Player player) {
 		// check if group still exists
 		if (!group.isValid()) {
 			CitadelUtility.sendAndLog(player, ChatColor.RED,
-					"The group " + group.getName() + " seems to have been deleted in the mean time");
+					"The group " + group.getName() + " seems to have been deleted in the mean time",
+					block.getLocation());
 			Citadel.getInstance().getStateManager().setState(player, null);
 			return true;
 		}
@@ -117,7 +143,8 @@ public class CitadelUtility {
 		if (!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
 				CitadelPermissionHandler.getReinforce())) {
 			CitadelUtility.sendAndLog(player, ChatColor.RED,
-					"You seem to have lost permission to reinforce on " + group.getName());
+					"You seem to have lost permission to reinforce on " + group.getName(),
+					block.getLocation());
 			Citadel.getInstance().getStateManager().setState(player, null);
 			return true;
 		}
@@ -130,7 +157,9 @@ public class CitadelUtility {
 		}
 		// check if reinforcement can reinforce that block
 		if (!type.canBeReinforced(block.getType())) {
-			CitadelUtility.sendAndLog(player, ChatColor.RED, type.getName() + " can not reinforce " + block.getType());
+			CitadelUtility.sendAndLog(player, ChatColor.RED,
+					type.getName() + " can not reinforce " + block.getType(),
+					block.getLocation());
 			return true;
 		}
 		ItemMap playerItems = new ItemMap(player.getInventory());
@@ -147,7 +176,9 @@ public class CitadelUtility {
 		}
 		if (available < required) {
 			Citadel.getInstance().getStateManager().setState(player, null);
-			CitadelUtility.sendAndLog(player, ChatColor.RED, "You have no items left to reinforce with " + type.getName());
+			CitadelUtility.sendAndLog(player, ChatColor.RED,
+					"You have no items left to reinforce with " + type.getName(),
+					block.getLocation());
 			return true;
 		}
 		Reinforcement newRein = ReinforcementLogic.callReinforcementCreationEvent(player, block, type, group);
