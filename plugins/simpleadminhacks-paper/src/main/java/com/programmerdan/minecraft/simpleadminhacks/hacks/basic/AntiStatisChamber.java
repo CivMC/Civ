@@ -16,7 +16,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import vg.civcraft.mc.civmodcore.util.ConfigParsing;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 
 public class AntiStatisChamber extends BasicHack {
 
@@ -43,7 +43,7 @@ public class AntiStatisChamber extends BasicHack {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPearlLand(ProjectileHitEvent event) {
-		this.lifetimeValue = ConfigParsing.parseTime(this.pearlLifetime);
+		this.lifetimeValue = ConfigHelper.parseTime(this.pearlLifetime);
 		Projectile projectile = event.getEntity();
 		if (!(projectile instanceof EnderPearl)) {
 			return;

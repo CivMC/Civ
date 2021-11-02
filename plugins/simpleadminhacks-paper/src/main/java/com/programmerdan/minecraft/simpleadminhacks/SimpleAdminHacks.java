@@ -39,7 +39,6 @@ public class SimpleAdminHacks extends ACivMod {
 			setEnabled(false);
 			return;
 		}
-		this.commands = new CommandRegistrar(this);
 		this.manager.loadAllHacks();
 	}
 
