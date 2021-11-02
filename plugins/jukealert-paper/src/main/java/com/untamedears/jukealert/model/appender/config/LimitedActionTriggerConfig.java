@@ -5,33 +5,44 @@ import com.untamedears.jukealert.model.actions.LoggedActionFactory;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import org.bukkit.configuration.ConfigurationSection;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 
 public class LimitedActionTriggerConfig implements AppenderConfig {
 
-	private Set<String> identifier;
-	private boolean acceptAll;
+	private final Set<String> identifier;
+	private final boolean acceptAll;
+	private final long actionLifespan;
+	private final int hardCap;
 
-	public LimitedActionTriggerConfig(ConfigurationSection config) {
+	public LimitedActionTriggerConfig(final ConfigurationSection config) {
 		this.identifier = new HashSet<>();
 		if (config.isList("trigger")) {
-			List<String> triggers = config.getStringList("trigger");
-			LoggedActionFactory fac = JukeAlert.getInstance().getLoggedActionFactory();
+			final List<String> triggers = ConfigHelper.getStringList(config, "trigger");
+			final LoggedActionFactory actionFactory = JukeAlert.getInstance().getLoggedActionFactory();
 			for (String trigger : triggers) {
 				trigger = trigger.toUpperCase().trim();
-				if (fac.getInternalID(trigger) != -1) {
-					identifier.add(trigger);
+				if (actionFactory.getInternalID(trigger) != -1) {
+					this.identifier.add(trigger);
 				}
 			}
 		}
-		acceptAll = config.getBoolean("acceptAll", false);
+		this.acceptAll = config.getBoolean("acceptAll", false);
+		this.actionLifespan = ConfigHelper.parseTime(config.getString("lifeTime", "4 weeks"), TimeUnit.MILLISECONDS);
+		this.hardCap = config.getInt("hardCap", 100_000);
 	}
 
-	public boolean isTrigger(String actionType) {
-		if (acceptAll) {
-			return true;
-		}
-		return identifier.contains(actionType);
+	public boolean isTrigger(final String actionType) {
+		return this.acceptAll || this.identifier.contains(actionType);
+	}
+
+	public long getActionLifespan() {
+		return this.actionLifespan;
+	}
+
+	public int getHardCap() {
+		return this.hardCap;
 	}
 
 }

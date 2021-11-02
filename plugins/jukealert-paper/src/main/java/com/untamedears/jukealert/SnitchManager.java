@@ -8,9 +8,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import javax.annotation.Nonnull;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import vg.civcraft.mc.civmodcore.world.locations.SparseQuadTree;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.SingleBlockAPIView;
 
 public class SnitchManager {
@@ -65,10 +67,11 @@ public class SnitchManager {
 	 * 
 	 * @param snitch Snitch to remove
 	 */
-	public void removeSnitch(Snitch snitch) {
-		api.remove(snitch);
-		SparseQuadTree<SnitchQTEntry> quadTree = getQuadTreeFor(snitch.getLocation());
-		for (SnitchQTEntry qt : snitch.getFieldManager().getQTEntries()) {
+	public void removeSnitch(@Nonnull final Snitch snitch) {
+		snitch.setCacheState(CacheState.DELETED);
+		this.api.remove(snitch);
+		final SparseQuadTree<SnitchQTEntry> quadTree = getQuadTreeFor(snitch.getLocation());
+		for (final SnitchQTEntry qt : snitch.getFieldManager().getQTEntries()) {
 			quadTree.remove(qt);
 		}
 	}

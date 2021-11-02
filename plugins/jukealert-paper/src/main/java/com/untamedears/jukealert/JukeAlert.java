@@ -1,6 +1,8 @@
 package com.untamedears.jukealert;
 
 import com.untamedears.jukealert.commands.JACommandManager;
+import co.aikar.taskchain.BukkitTaskChainFactory;
+import co.aikar.taskchain.TaskChainFactory;
 import com.untamedears.jukealert.database.JukeAlertDAO;
 import com.untamedears.jukealert.listener.LoggableActionListener;
 import com.untamedears.jukealert.listener.SnitchLifeCycleListener;
@@ -9,6 +11,7 @@ import com.untamedears.jukealert.model.SnitchTypeManager;
 import com.untamedears.jukealert.model.actions.LoggedActionFactory;
 import com.untamedears.jukealert.util.JASettingsManager;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
+import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -30,6 +33,7 @@ public class JukeAlert extends ACivMod {
 	private LoggedActionFactory loggedActionFactory;
 	private JASettingsManager settingsManager;
 	private SnitchCullManager cullManager;
+	private TaskChainFactory taskChainFactory;
 	private JACommandManager commandManager;
 
 	public JAConfigManager getConfigManager() {
@@ -60,9 +64,17 @@ public class JukeAlert extends ACivMod {
 		return cullManager;
 	}
 
+	public TaskChainFactory getTaskChainFactory() {
+		return this.taskChainFactory;
+	}
+
 	@Override
 	public void onDisable() {
 		snitchManager.shutDown();
+		if (this.taskChainFactory != null) {
+			this.taskChainFactory.shutdown(10, TimeUnit.SECONDS);
+			this.taskChainFactory = null;
+		}
 	}
 
 	@Override
@@ -73,7 +85,7 @@ public class JukeAlert extends ACivMod {
 		cullManager = new SnitchCullManager();
 		configManager = new JAConfigManager(this, snitchConfigManager);
 		saveDefaultConfig();
-		dao = new JukeAlertDAO(getLogger(), configManager.getDatabase(getConfig()));
+		dao = new JukeAlertDAO(configManager.getDatabase(getConfig()));
 		if (!dao.updateDatabase()) {
 			getLogger().severe("Errors setting up database, shutting down");
 			Bukkit.shutdown();
@@ -95,6 +107,7 @@ public class JukeAlert extends ACivMod {
 		commandManager = new JACommandManager(this);
 		registerJukeAlertEvents();
 		JukeAlertPermissionHandler.setup();
+		this.taskChainFactory = BukkitTaskChainFactory.create(this);
 	}
 
 	private void registerJukeAlertEvents() {

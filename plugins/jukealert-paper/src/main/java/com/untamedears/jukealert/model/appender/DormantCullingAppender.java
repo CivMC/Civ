@@ -8,47 +8,129 @@ import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction;
 import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction.Cause;
 import com.untamedears.jukealert.model.appender.config.DormantCullingConfig;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
+import javax.annotation.Nonnull;
 import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.utilities.BukkitComparators;
+import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 import vg.civcraft.mc.civmodcore.utilities.progress.ProgressTrackable;
 
-public class DormantCullingAppender extends ConfigurableSnitchAppender<DormantCullingConfig>
+public class DormantCullingAppender
+		extends ConfigurableSnitchAppender<DormantCullingConfig>
 		implements ProgressTrackable {
 	
 	public static final String ID = "dormantcull";
+	private static final CivLogger LOGGER = CivLogger.getLogger(DormantCullingAppender.class);
 
 	private long lastRefresh;
 	private long nextUpdate;
 
-	public DormantCullingAppender(Snitch snitch, ConfigurationSection config) {
+	private enum ActivityStatus { ACTIVE, DORMANT, CULLED }
+	private ActivityStatus databaseKnownStatus;
+
+	public DormantCullingAppender(final Snitch snitch,
+								  final ConfigurationSection config) {
 		super(snitch, config);
-		if (snitch.getId() == -1) {
-			// snitch was just created
-			lastRefresh = System.currentTimeMillis();
-		} else {
-			lastRefresh = JukeAlert.getInstance().getDAO().getRefreshTimer(snitch.getId());
+		this.lastRefresh = snitch.getId() == -1 ? System.currentTimeMillis() :
+				JukeAlert.getInstance().getDAO().getRefreshTimer(snitch.getId());
+	}
+
+	/**
+	 * @return Returns the UNIX timestamp of when this snitch was last refreshed.
+	 */
+	public long getLastRefresh() {
+		return this.lastRefresh;
+	}
+
+	/**
+	 * Updates this snitch's last refresh time.
+	 */
+	public void updateLastRefresh() {
+		this.lastRefresh = System.currentTimeMillis();
+		updateState();
+		getSnitch().setDirty();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public long getNextUpdate() {
+		return this.nextUpdate;
+	}
+
+	/**
+	 * @return Returns this snitch's expected activity status.
+	 */
+	@Nonnull
+	public ActivityStatus getActivityStatus() {
+		final long timeSinceLastRefresh = getTimeSinceLastRefresh();
+		if (timeSinceLastRefresh >= this.config.getTotalLifeTime()) {
+			return ActivityStatus.CULLED;
+		}
+		if (timeSinceLastRefresh >= this.config.getLifetime()) {
+			return ActivityStatus.DORMANT;
+		}
+		return ActivityStatus.ACTIVE;
+	}
+
+	/**
+	 * @return Returns how many milliseconds it has been since this snitch was last refreshed.
+	 */
+	public long getTimeSinceLastRefresh() {
+		return System.currentTimeMillis() - getLastRefresh();
+	}
+
+	/**
+	 * @return Returns how many milliseconds until the snitch goes dormant.
+	 */
+	public long getTimeUntilDormant() {
+		return this.config.getLifetime() - getTimeSinceLastRefresh();
+	}
+
+	/**
+	 * @return Returns how many milliseconds until the snitch culls.
+	 */
+	public long getTimeUntilCulling() {
+		return this.config.getTotalLifeTime() - getTimeSinceLastRefresh();
+	}
+
+	@Override
+	public void updateInternalProgressTime(final long update) {
+		this.nextUpdate = update;
+	}
+
+	private long calcFutureUpdate() {
+		switch (getActivityStatus()) {
+			case CULLED:
+				return Long.MAX_VALUE;
+			case DORMANT:
+				return getLastRefresh() + this.config.getTotalLifeTime();
+			default:
+			case ACTIVE:
+				return getLastRefresh() + this.config.getLifetime();
 		}
 	}
-	
+
+	/** {@inheritDoc} */
 	@Override
 	public void postSetup() {
-		if (lastRefresh == -1) {
-			// no data in db due to recent config change, let's use the current time and
-			// mark it for saving later
-			refreshTimer();
+		if (this.lastRefresh == -1) {
+			// no data in db due to recent config change, let's use the current time and mark it for saving later
+			updateLastRefresh();
 		}
-		nextUpdate = calcFutureUpdate();
+		this.databaseKnownStatus = getActivityStatus();
+		updateInternalProgressTime(calcFutureUpdate());
 		JukeAlert.getInstance().getSnitchCullManager().addCulling(this);
 		updateState();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean runWhenSnitchInactive() {
 		return true;
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public void acceptAction(SnitchAction action) {
+	public void acceptAction(final SnitchAction action) {
 		if (action.isLifeCycleEvent()) {
 			if (action instanceof DestroySnitchAction) {
 				JukeAlert.getInstance().getSnitchCullManager().removeCulling(this);
@@ -58,112 +140,81 @@ public class DormantCullingAppender extends ConfigurableSnitchAppender<DormantCu
 		if (!action.hasPlayer()) {
 			return;
 		}
-		LoggablePlayerAction playerAction = (LoggablePlayerAction) action;
-		if (snitch.hasPermission(playerAction.getPlayer(), JukeAlertPermissionHandler.getListSnitches())) {
-			refreshTimer();
+		final LoggablePlayerAction playerAction = (LoggablePlayerAction) action;
+		if (getSnitch().hasPermission(playerAction.getPlayer(), JukeAlertPermissionHandler.getListSnitches())) {
+			updateLastRefresh();
 		}
-	}
-
-	public long getLastRefresh() {
-		return lastRefresh;
 	}
 	
 	/**
-	 * @return Is the snitch currently dormant, meaning no longer active, but not entirely culled yet
-	 */
-	public boolean isDormant() {
-		long elapsed = getTimeSinceLastRefresh();
-		if (elapsed >= config.getTotalLifeTime()) {
-			return false;
-		}
-		return elapsed >= config.getLifetime();
-	}
-	
-	public long getTimeUntilCulling() {
-		return config.getTotalLifeTime() - getTimeSinceLastRefresh();
-	}
-	
-	public long getTimeUntilDormant() {
-		return config.getLifetime() - getTimeSinceLastRefresh();
-	}
-	
-	/**
-	 * @return Is the snitch currently active, meaning neither culled nor dormant
+	 * @return Returns whether the snitch is currently active, meaning neither dormant nor culled.
 	 */
 	public boolean isActive() {
-		long elapsed = getTimeSinceLastRefresh();
-		if (elapsed >= config.getTotalLifeTime()) {
+		final long timeSinceLastRefresh = getTimeSinceLastRefresh();
+		if (timeSinceLastRefresh >= this.config.getTotalLifeTime()) {
 			return false;
 		}
-		return elapsed < config.getLifetime();
+		return timeSinceLastRefresh < this.config.getLifetime();
 	}
 
-	public void refreshTimer() {
-		this.lastRefresh = System.currentTimeMillis();
-		snitch.setDirty();
-		updateState();
-		JukeAlert.getInstance().getSnitchCullManager().updateCulling(this, calcFutureUpdate());
+	/**
+	 * @return Returns whether the snitch is currently dormant, meaning no longer active but not yet culled.
+	 */
+	public boolean isDormant() {
+		final long timeSinceLastRefresh = getTimeSinceLastRefresh();
+		if (timeSinceLastRefresh >= this.config.getTotalLifeTime()) {
+			return false;
+		}
+		return timeSinceLastRefresh >= this.config.getLifetime();
 	}
 
-	public long getTimeSinceLastRefresh() {
-		return System.currentTimeMillis() - lastRefresh;
+	/** {@inheritDoc} */
+	@Override
+	public void persist() {
+		if (getSnitch().getId() != -1) {
+			JukeAlert.getInstance().getDAO().setRefreshTimer(getSnitch().getId(), getLastRefresh());
+		}
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public void updateState() {
+		final ActivityStatus currentStatus = getActivityStatus();
+		// Culled
+		if (currentStatus == ActivityStatus.CULLED && this.databaseKnownStatus != ActivityStatus.CULLED) {
+			this.databaseKnownStatus = ActivityStatus.CULLED;
+			getSnitch().destroy(null, Cause.CULL);
+			updateInternalProgressTime(Long.MAX_VALUE);
+			LOGGER.info("Culling snitch [" + getSnitch() + "] for exceeding life timer");
+		}
+		// Dormant
+		else if (currentStatus == ActivityStatus.DORMANT && this.databaseKnownStatus != ActivityStatus.DORMANT) {
+			this.databaseKnownStatus = ActivityStatus.DORMANT;
+			updateInternalProgressTime(System.currentTimeMillis() + this.config.getDormantLifeTime());
+			getSnitch().setActiveStatus(false);
+			LOGGER.info("Deactivating snitch [" + getSnitch() + "] for exceeding dormant timer");
+		}
+		// Active
+		else if (this.databaseKnownStatus != ActivityStatus.ACTIVE) {
+			this.databaseKnownStatus = ActivityStatus.ACTIVE;
+			getSnitch().setActiveStatus(true);
+			JukeAlert.getInstance().getSnitchCullManager().updateCulling(this, calcFutureUpdate());
+			LOGGER.info("Re-activating snitch [" + getSnitch() + "]");
+		}
+	}
+
+	/** {@inheritDoc} */
 	@Override
 	public Class<DormantCullingConfig> getConfigClass() {
 		return DormantCullingConfig.class;
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public void persist() {
-		if (snitch.getId() != -1) {
-			JukeAlert.getInstance().getDAO().setRefreshTimer(snitch.getId(), lastRefresh);
-		}
-	}
-
-	@Override
-	public int compareTo(ProgressTrackable o) {
-		return BukkitComparators.getLocation().compare(((AbstractSnitchAppender) o).getSnitch().getLocation(),
-				snitch.getLocation());
-	}
-
-	@Override
-	public void updateInternalProgressTime(long update) {
-		this.nextUpdate = update;
-	}
-
-	private long calcFutureUpdate() {
-		long elapsed = getTimeSinceLastRefresh();
-		if (elapsed >= config.getTotalLifeTime()) {
-			return Long.MAX_VALUE;
-
-		}
-		if (elapsed >= config.getLifetime()) {
-			return lastRefresh + config.getTotalLifeTime();
-		} else {
-			return lastRefresh + config.getLifetime();
-		}
-	}
-
-	@Override
-	public void updateState() {
-		long elapsed = getTimeSinceLastRefresh();
-		if (elapsed >= config.getTotalLifeTime()) {
-			JukeAlert.getInstance().getLogger().info("Culling snitch " + snitch.toString() + " for exceeding life timer");
-			snitch.destroy(null, Cause.CULL);
-			updateInternalProgressTime(Long.MAX_VALUE);
-			return;
-		}
-		if (elapsed >= config.getLifetime()) {
-			JukeAlert.getInstance().getLogger().info("Deactivating snitch " + snitch.toString() + " for exceeding dormant timer");
-			updateInternalProgressTime(System.currentTimeMillis() + config.getDormantLifeTime());
-			snitch.setActiveStatus(false);
-		}
-	}
-
-	@Override
-	public long getNextUpdate() {
-		return nextUpdate;
+	public int compareTo(@Nonnull final ProgressTrackable other) {
+		return BukkitComparators.getLocation().compare(
+				((AbstractSnitchAppender) other).getSnitch().getLocation(),
+				getSnitch().getLocation());
 	}
 
 }
