@@ -1,6 +1,5 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
-import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameFeaturesConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
@@ -14,7 +13,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -47,7 +45,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -549,37 +546,6 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				killer, loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
 	}
 
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void goldBlockJump(PlayerJumpEvent event) {
-		Block below = event.getFrom().getBlock().getRelative(BlockFace.DOWN);
-		if (below.getType() != Material.GOLD_BLOCK) {
-			return;
-		}
-		for(int y = below.getY() + 1; y <= below.getWorld().getMaxHeight(); y++) {
-			if (doTeleport(below, event.getPlayer(), y)) {
-				return;
-			}
-		}
-		event.getPlayer().sendMessage(ChatColor.RED + "No gold block to teleport you up to. Sneak to teleport down instead.");
-	}
-
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void goldBlockSneak(PlayerToggleSneakEvent event) {
-		Block below = event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
-		if (below.getType() != Material.GOLD_BLOCK) {
-			return;
-		}
-		if (!event.isSneaking()) {
-			return;
-		}
-		for(int y = (below.getY() - 1); y > below.getWorld().getMinHeight(); y--) {
-			if (doTeleport(below, event.getPlayer(), y)) {
-				return;
-			}
-		}
-		event.getPlayer().sendMessage(ChatColor.RED + "No gold block to teleport you down to. Jump to teleport up instead.");
-	}
-
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void netheriteCrafting(PrepareSmithingEvent event) {
 		if (!config.isEnabled() || !config.isDisableNetheriteCrafting()) {
@@ -610,23 +576,5 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				});
 				break;
 		}
-	}
-
-	private static boolean doTeleport(Block source, Player player, int y) {
-		Block target = source.getWorld().getBlockAt(source.getX(), y, source.getZ());
-		if (target.getType() != Material.GOLD_BLOCK) {
-			return false;
-		}
-		if (!TeleportUtil.checkForTeleportSpace(target.getRelative(BlockFace.UP).getLocation())) {
-			return false;
-		}
-		source.getWorld().playSound(source.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 8.0F);
-		Location adjustedLocation = target.getLocation().clone();
-		adjustedLocation.add(0.5, 1.02, 0.5);
-		adjustedLocation.setYaw(player.getLocation().getYaw());
-		adjustedLocation.setPitch(player.getLocation().getPitch());
-		player.playSound(adjustedLocation, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 8.0F);
-		player.teleport(adjustedLocation);
-		return true;
 	}
 }

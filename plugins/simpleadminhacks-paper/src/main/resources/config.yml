@@ -13,6 +13,10 @@ hacks:
     enabled: true
     breakDenyDuration: 3000
     laggLenciency: 1.2
+  #Prevents pearls from landing that have been in flight for more than the configured amount of time
+  AntiStatisChamber:
+    enabled: true
+    pearlLifetime: 5m
   ArthropodEggHack:
     enabled: true
     eggChance: 0.03
@@ -95,6 +99,8 @@ hacks:
   EventDebugHack:
     enabled: true
   EventHandlerList:
+    enabled: true
+  GoldBlockElevators:
     enabled: true
   HumbugBatchOne:
     enabled: true
