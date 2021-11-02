@@ -62,11 +62,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.generator.BiomeProvider;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -572,6 +575,11 @@ final class ExilePearlCore implements ExilePearlApi {
 	@Override
 	public ChunkGenerator getDefaultWorldGenerator(String arg0, String arg1) {
 		return plugin.getDefaultWorldGenerator(arg0, arg1);
+	}
+
+	@Override
+	public @Nullable BiomeProvider getDefaultBiomeProvider(@NotNull String string, @Nullable String string2) {
+		return plugin.getDefaultBiomeProvider(string, string2);
 	}
 
 	@Override
