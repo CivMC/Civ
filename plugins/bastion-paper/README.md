@@ -1,6 +1,6 @@
 Bastion
 =======
-A minecraft mod designed for use with [/r/civcraft](https://old.reddit.com/r/Civcraft/) and continually improved by [/r/devoted](https://old.reddit.com/r/devoted/). Currently in use on [/r/civclassics](https://old.reddit.com/r/Civclassics/) at mc.civclassic.com (1.12.2)
+A minecraft mod designed for use with [/r/civcraft](https://old.reddit.com/r/Civcraft/) and continually improved by [/r/devoted](https://old.reddit.com/r/devoted/). Currently in use on [/r/civclassics](https://old.reddit.com/r/Civclassics/) at mc.civclassic.com (1.16.5)
 
 For a more extensive and updated list of features see https://github.com/CivClassic/Bastion/wiki
 
@@ -64,8 +64,8 @@ Permissions:
    * /bsi gives extra info 
 
 To compile:
- * Download Spigot
+ * Download Paper
  * Download Citadel
  * Download Namelayer
- * Download Humbug
- * Link to Spigot, Citadel, Namelayer, and Humbug then compile
+ * Download CivModCore
+ * Link to Paper, Citadel, Namelayer, and CivModCore then compile
