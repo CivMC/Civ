@@ -6,7 +6,7 @@ FactoryMod is a Minecraft plugin with specialized crafting machines that can con
 * Encouraging cooperation through permanence of capital
 * Or simply a way for players to obtain survival unobtainable items
 
-FactoryMod is currently running on [r/civclassics](https://old.reddit.com/r/civclassics/) at mc.civclassic.com (1.12.2)
+FactoryMod is currently running on [r/civclassics](https://old.reddit.com/r/civclassics/) at mc.civclassic.com (1.16.5)
 
 ---
 Any number of factories can be configured, each with unique purposes, and upgradable to other factories. Factories are a static structure created by placing a furnace, crafting bench, and chest together. The ingredients and outputs for a recipe are placed inside the chest. Clicking on the crafting table with a stick allows for selection of a recipe while clicking on the furnace with a stick runs the factory. Before a factory can be run it must be created : the setup cost of goods is deposited in the chest. Factories have a configurable repair cost, which essentially works as an upkeep cost. 
