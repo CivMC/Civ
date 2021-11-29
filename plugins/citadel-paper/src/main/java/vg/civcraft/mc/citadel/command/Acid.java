@@ -78,6 +78,10 @@ public class Acid extends StandaloneCommand {
 						block.getLocation());
 				return true;
 			}
+			if (!topRein.getType().canBeReinforced(topFace.getType())) {
+				CitadelUtility.sendAndLog(p, ChatColor.RED, "You cannot acid that block because it cannot be reinforced.");
+				return true;
+			}
 			if (!acidMan.canAcidBlock(reinforcement.getType(), topRein.getType())) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED,
 						reinforcement.getType().getName() + " can not acid away " + topRein.getType().getName(),
