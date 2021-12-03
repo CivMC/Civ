@@ -20,7 +20,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftNBTTagConfigSerializer;
+import org.bukkit.craftbukkit.v1_18_R1.util.CraftNBTTagConfigSerializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
@@ -48,7 +48,7 @@ public class NBTSerialization {
 		if (nmsItem == null) {
 			return null;
 		}
-		return new NBTCompound(nmsItem.getOrCreateTag());
+		return new NBTCompound(nmsItem.t());
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class NBTSerialization {
 		if (nmsItem == null) {
 			return null;
 		}
-		final var nbt = new NBTCompound(nmsItem.getOrCreateTag());
+		final var nbt = new NBTCompound(nmsItem.t());
 		try {
 			processor.accept(nbt);
 		}

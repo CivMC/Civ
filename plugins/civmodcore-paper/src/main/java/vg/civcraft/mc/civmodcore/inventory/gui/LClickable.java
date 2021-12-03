@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.inventory.gui;
 
 import java.util.function.Consumer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -18,13 +19,15 @@ public class LClickable extends Clickable {
 	
 	public LClickable(Material mat, String name, Consumer<Player> clickFunction) {
 		this(mat, clickFunction);
-		ItemUtils.setDisplayName(this.item, name);
+		ItemUtils.setComponentDisplayName(this.item, Component.text(name));
 	}
 	
 	public LClickable(Material mat, String name, Consumer<Player> clickFunction, String ... lore) {
 		this(mat, name, clickFunction);
 		if (lore.length > 0) {
-			ItemUtils.addLore(this.item, lore);
+			for (String s : lore) {
+				ItemUtils.addComponentLore(this.item, Component.text(s));
+			}
 		}
 	}
 	

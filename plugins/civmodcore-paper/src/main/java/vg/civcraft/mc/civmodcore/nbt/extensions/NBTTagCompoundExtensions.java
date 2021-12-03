@@ -93,8 +93,8 @@ public final class NBTTagCompoundExtensions {
 			return;
 		}
 		if (useLegacyFormat) {
-			self.setLong(key + UUID_MOST_SUFFIX, value.getMostSignificantBits());
-			self.setLong(key + UUID_LEAST_SUFFIX, value.getLeastSignificantBits());
+			self.a(key + UUID_MOST_SUFFIX, value.getMostSignificantBits());
+			self.a(key + UUID_LEAST_SUFFIX, value.getLeastSignificantBits());
 			return;
 		}
 		self.a(key, value);
@@ -106,9 +106,9 @@ public final class NBTTagCompoundExtensions {
 	 */
 	public static void removeUUID(final NBTTagCompound self,
 								  final String key) {
-		self.remove(key);
-		self.remove(key + UUID_MOST_SUFFIX);
-		self.remove(key + UUID_LEAST_SUFFIX);
+		self.r(key);
+		self.r(key + UUID_MOST_SUFFIX);
+		self.r(key + UUID_LEAST_SUFFIX);
 	}
 
 }

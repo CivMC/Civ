@@ -59,7 +59,7 @@ public final class PotionUtils {
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	public static TranslatableComponent asTranslatable(@Nonnull final PotionEffectType effect) {
-		final MobEffectList mojang = MobEffectList.fromId(effect.getId());
+		final MobEffectList mojang = MobEffectList.a(effect.getId());
 		assert mojang != null;
 		final String key = mojang.c(); // Gets the translation key
 		// If the obfuscation has changed, look for a method on MobEffectList like:

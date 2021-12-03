@@ -19,7 +19,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_18_R1.util.CraftChatMessage;
 import org.jetbrains.annotations.Contract;
 
 @UtilityClass

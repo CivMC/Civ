@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagList;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_17_R1.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_18_R1.persistence.CraftPersistentDataContainer;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import vg.civcraft.mc.civmodcore.nbt.NBTType;
@@ -47,7 +47,7 @@ public class PersistentDataContainerExtensions {
 	public static boolean hasList(@Nonnull final PersistentDataContainer self,
 								  @Nonnull final NamespacedKey key) {
 		final var found = getRaw(self).get(key.toString());
-		return found != null && found.getTypeId() == NBTType.LIST;
+		return found != null && found.a() == NBTType.LIST;
 	}
 
 	/**

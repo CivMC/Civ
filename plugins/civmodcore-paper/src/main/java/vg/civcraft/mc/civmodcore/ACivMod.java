@@ -1,8 +1,6 @@
 package vg.civcraft.mc.civmodcore;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -16,7 +14,6 @@ import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -111,27 +108,27 @@ public abstract class ACivMod extends JavaPlugin {
 	 * @param defaultPath The path of the file within the plugin's jar.
 	 * @param dataPath The path the file should take within the plugin's data folder.
 	 */
-	public void saveDefaultResourceAs(@Nonnull String defaultPath,
-									  @Nonnull String dataPath) {
-		if (getDataFile(defaultPath).exists()) {
-			return;
-		}
-		defaultPath = defaultPath.replace('\\', '/');
-		dataPath = dataPath.replace('\\', '/');
-		final InputStream data = getResource(defaultPath);
-		if (data == null) {
-			throw new IllegalArgumentException("The embedded resource '" + defaultPath +
-					"' cannot be found in " + getFile());
-		}
-		final var outFile = new File(getDataFolder(), dataPath);
-		try {
-			FileUtils.copyInputStreamToFile(data, outFile);
-		}
-		catch (final IOException exception) {
-			severe("Could not save " + outFile.getName() + " to " + outFile);
-			exception.printStackTrace();
-		}
-	}
+//	public void saveDefaultResourceAs(@Nonnull String defaultPath,
+//									  @Nonnull String dataPath) {
+//		if (getDataFile(defaultPath).exists()) {
+//			return;
+//		}
+//		defaultPath = defaultPath.replace('\\', '/');
+//		dataPath = dataPath.replace('\\', '/');
+//		final InputStream data = getResource(defaultPath);
+//		if (data == null) {
+//			throw new IllegalArgumentException("The embedded resource '" + defaultPath +
+//					"' cannot be found in " + getFile());
+//		}
+//		final var outFile = new File(getDataFolder(), dataPath);
+//		try {
+//			FileUtils.copyInputStreamToFile(data, outFile);
+//		}
+//		catch (final IOException exception) {
+//			severe("Could not save " + outFile.getName() + " to " + outFile);
+//			exception.printStackTrace();
+//		}
+//	}
 
 	/**
 	 * Disables this plugin.

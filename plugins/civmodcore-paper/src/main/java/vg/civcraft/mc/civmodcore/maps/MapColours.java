@@ -79,8 +79,7 @@ public enum MapColours {
 	WARPED_HYPHAE(MaterialMapColor.ag),
 	WARPED_WART_BLOCK(MaterialMapColor.ah),
 	DEEPSLATE(MaterialMapColor.ai),
-	RAW_IRON(MaterialMapColor.aj),
-	GLOW_LICHEN(MaterialMapColor.ak);
+	RAW_IRON(MaterialMapColor.aj);
 
 	private final MaterialMapColor nms;
 
@@ -104,7 +103,7 @@ public enum MapColours {
 			final CivLogger logger = CivLogger.getLogger(MapColours.class);
 			logger.warning("The following map colours are missing: " + missingColours.stream()
 					/** {@link MaterialMapColor#MaterialMapColor(int, int)} "id" parameter */
-					.map(colour -> Integer.toString(colour.am))
+					.map(colour -> Integer.toString(colour.al))
 					.collect(Collectors.joining(",")));
 		}
 	}

@@ -45,11 +45,11 @@ public final class NBTTagListExtensions {
 	public static boolean isAppropriateType(final NBTTagList self,
 											final NBTBase value) {
 		/** This is a direct copy of {@link NBTTagList#a(NBTBase)} */
-		if (value == null || value.getTypeId() == NBTType.END) {
+		if (value == null || value.a() == NBTType.END) {
 			return false;
 		}
 		final var elementType = getElementType(self);
-		return elementType == NBTType.END || elementType == value.getTypeId();
+		return elementType == NBTType.END || elementType == value.a();
 	}
 
 	/**
@@ -101,7 +101,7 @@ public final class NBTTagListExtensions {
 	public static byte getByte(final NBTTagList self,
 							   final int index) {
 		if (self.get(index) instanceof NBTTagByte nbtByte) {
-			return nbtByte.asByte();
+			return nbtByte.h();
 		}
 		return (byte) 0;
 	}
@@ -227,7 +227,7 @@ public final class NBTTagListExtensions {
 	public static long getLong(final NBTTagList self,
 							   final int index) {
 		if (self.get(index) instanceof NBTTagLong nbtLong) {
-			return nbtLong.asLong();
+			return nbtLong.e();
 		}
 		return 0L;
 	}
@@ -401,7 +401,7 @@ public final class NBTTagListExtensions {
 	public static String getString(final NBTTagList self,
 								   final int index) {
 		if (self.get(index) instanceof NBTTagString nbtString) {
-			return nbtString.asString();
+			return nbtString.e_();
 		}
 		return "";
 	}
@@ -615,7 +615,7 @@ public final class NBTTagListExtensions {
 		if (!isAppropriateType(self, value)) {
 			throw new UnsupportedOperationException(String.format(
 					"Trying to add tag of type %d to list of %d",
-					value.getTypeId(), getElementType(self)));
+					value.a(), getElementType(self)));
 		}
 		self.add(value);
 	}

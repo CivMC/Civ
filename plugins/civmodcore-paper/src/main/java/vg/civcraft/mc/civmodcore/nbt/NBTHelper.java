@@ -74,7 +74,7 @@ public final class NBTHelper {
 			return null;
 		}
 		final var nbt = new NBTCompound();
-		ItemUtils.getNMSItemStack(item).save(nbt);
+		ItemUtils.getNMSItemStack(item).b(nbt);
 		return nbt;
 	}
 

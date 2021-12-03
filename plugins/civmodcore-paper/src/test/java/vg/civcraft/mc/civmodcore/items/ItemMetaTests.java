@@ -32,7 +32,7 @@ public class ItemMetaTests {
 		final var formerItem = NullUtils.isNotNull(NBTSerialization.processItem(TEMPLATE_ITEM, (nbt) -> {
 			final var display = new NBTCompound();
 			display.setString("Name", "Hello!");
-			nbt.set("display", display);
+			nbt.a("display", display);
 		}));
 		final var latterItem = TEMPLATE_ITEM.clone();
 		ItemUtils.setComponentDisplayName(latterItem, Component.text("Hello!"));
@@ -51,7 +51,7 @@ public class ItemMetaTests {
 		final var formerItem = NullUtils.isNotNull(NBTSerialization.processItem(TEMPLATE_ITEM, (nbt) -> {
 			final var display = new NBTCompound();
 			display.setString("Name", "\"Hello!\"");
-			nbt.set("display", display);
+			nbt.a("display", display);
 		}));
 		final var latterItem = TEMPLATE_ITEM.clone();
 		ItemUtils.handleItemMeta(latterItem, (ItemMeta meta) -> {

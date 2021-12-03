@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.inventory.gui.components;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
@@ -126,14 +125,14 @@ public class Scrollbar extends InventoryComponent {
 	}
 
 	private IClickable getBackwardClick() {
-		return new LClickable(Material.ARROW, ChatColor.GOLD + "Show previous page", p -> {
+		return new LClickable(Material.ARROW, "Show previous page", p -> {
 			setPage(getPage() - 1);
 			update();
 		});
 	}
 
 	private IClickable getForwardClick() {
-		return new LClickable(Material.ARROW, ChatColor.GOLD + "Show next page", p -> {
+		return new LClickable(Material.ARROW, "Show next page", p -> {
 			setPage(getPage() + 1);
 			update();
 		});

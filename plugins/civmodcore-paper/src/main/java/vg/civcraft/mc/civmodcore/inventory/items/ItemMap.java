@@ -647,49 +647,49 @@ public class ItemMap {
 			Object object = entry.getValue();
 			if (object instanceof Map) {
 				LOGGER.fine("Adding map at key " + entry.getKey());
-				base.set(entry.getKey(), mapToNBT(new NBTTagCompound(), (Map<String, Object>) object));
+				base.a(entry.getKey(), mapToNBT(new NBTTagCompound(), (Map<String, Object>) object));
 			} else if (object instanceof MemorySection) {
 				LOGGER.fine("Adding map from MemorySection at key " + entry.getKey());
-				base.set(entry.getKey(), mapToNBT(new NBTTagCompound(), ((MemorySection) object).getValues(true)));
+				base.a(entry.getKey(), mapToNBT(new NBTTagCompound(), ((MemorySection) object).getValues(true)));
 			} else if (object instanceof List) {
 				LOGGER.fine("Adding list at key " + entry.getKey());
-				base.set(entry.getKey(), listToNBT(new NBTTagList(), (List<Object>) object));
+				base.a(entry.getKey(), listToNBT(new NBTTagList(), (List<Object>) object));
 			} else if (object instanceof String) {
 				LOGGER.fine("Adding String " + object + " at key " + entry.getKey());
-				base.setString(entry.getKey(), (String) object);
+				base.a(entry.getKey(), (String) object);
 			} else if (object instanceof Double) {
 				LOGGER.fine("Adding Double " + object + " at key " + entry.getKey());
-				base.setDouble(entry.getKey(), (Double) object);
+				base.a(entry.getKey(), (Double) object);
 			} else if (object instanceof Float) {
 				LOGGER.fine("Adding Float " + object + " at key " + entry.getKey());
-				base.setFloat(entry.getKey(), (Float) object);
+				base.a(entry.getKey(), (Float) object);
 			} else if (object instanceof Boolean) {
 				LOGGER.fine("Adding Boolean " + object + " at key " + entry.getKey());
-				base.setBoolean(entry.getKey(), (Boolean) object);
+				base.a(entry.getKey(), (Boolean) object);
 			} else if (object instanceof Byte) {
 				LOGGER.fine("Adding Byte " + object + " at key " + entry.getKey());
-				base.setByte(entry.getKey(), (Byte) object);
+				base.a(entry.getKey(), (Byte) object);
 			} else if (object instanceof Short) {
 				LOGGER.fine("Adding Byte " + object + " at key " + entry.getKey());
-				base.setShort(entry.getKey(), (Short) object);
+				base.a(entry.getKey(), (Short) object);
 			} else if (object instanceof Integer) {
 				LOGGER.fine("Adding Integer " + object + " at key " + entry.getKey());
-				base.setInt(entry.getKey(), (Integer) object);
+				base.a(entry.getKey(), (Integer) object);
 			} else if (object instanceof Long) {
 				LOGGER.fine("Adding Long " + object + " at key " + entry.getKey());
-				base.setLong(entry.getKey(), (Long) object);
+				base.a(entry.getKey(), (Long) object);
 			} else if (object instanceof byte[]) {
 				LOGGER.fine("Adding bytearray at key " + entry.getKey());
-				base.setByteArray(entry.getKey(), (byte[]) object);
+				base.a(entry.getKey(), (byte[]) object);
 			} else if (object instanceof int[]) {
 				LOGGER.fine("Adding intarray at key " + entry.getKey());
-				base.setIntArray(entry.getKey(), (int[]) object);
+				base.a(entry.getKey(), (int[]) object);
 			} else if (object instanceof UUID) {
 				LOGGER.fine("Adding UUID " + object + " at key " + entry.getKey());
 				base.a(entry.getKey(), (UUID) object);
 			} else if (object instanceof NBTBase) {
 				LOGGER.fine("Adding nbtobject at key " + entry.getKey());
-				base.set(entry.getKey(), (NBTBase) object);
+				base.a(entry.getKey(), (NBTBase) object);
 			} else {
 				LOGGER.warning("Unrecognized entry in map-->NBT: " + object.toString());
 			}

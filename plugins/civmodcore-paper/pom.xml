@@ -6,11 +6,11 @@
   <parent>
     <groupId>com.github.civclassic</groupId>
     <artifactId>civclassic-parent</artifactId>
-    <version>1.0.1</version>
+    <version>3.0</version>
   </parent>
 
   <artifactId>CivModCore</artifactId>
-  <version>1.9.0</version>
+  <version>2.0.0</version>
   <name>CivModCore</name>
   <url>https://github.com/Civclassic/CivModCore/</url>
 
@@ -52,8 +52,8 @@
   <dependencies>
     <dependency>
       <groupId>io.papermc.paper</groupId>
-      <artifactId>paper</artifactId>
-      <version>1.17.1-R0.1-SNAPSHOT</version>
+      <artifactId>paper-server</artifactId>
+      <version>1.18-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -61,6 +61,11 @@
           <artifactId>minecraft-server</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.papermc.paper</groupId>
+      <artifactId>paper-api</artifactId>
+      <version>1.18-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.zaxxer</groupId>

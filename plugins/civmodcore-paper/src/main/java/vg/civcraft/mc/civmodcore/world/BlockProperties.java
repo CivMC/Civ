@@ -7,8 +7,8 @@ import java.util.Optional;
 import net.minecraft.world.level.block.state.properties.IBlockState;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R1.block.CraftBlock;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public final class BlockProperties {
@@ -23,7 +23,7 @@ public final class BlockProperties {
 			}
 			try {
 				final IBlockState<?> state = (IBlockState<?>) FieldUtils.readField(field, (Object) null, true);
-				BLOCK_STATES.put(state.getName(), state);
+				BLOCK_STATES.put(state.f(), state);
 			}
 			catch (final IllegalAccessException exception) {
 				exception.printStackTrace();
@@ -53,7 +53,7 @@ public final class BlockProperties {
 		final CraftBlock craftBlock = (CraftBlock) block;
 		final CraftWorld craftWorld = (CraftWorld) block.getWorld();
 		// Deobf path: net.minecraft.world.level.Level.setBlock()
-		craftWorld.getHandle().setTypeAndData(craftBlock.getPosition(), craftBlock.getNMS().set(state, valueToSet),
+		craftWorld.getHandle().a(craftBlock.getPosition(), craftBlock.getNMS().a(state, valueToSet),
 				// This value is named "flag" and appears to be a set of bitwise indicators for block updates
 				2); // 2 and 3 being used in NMS code and stuck to that
 		return true;

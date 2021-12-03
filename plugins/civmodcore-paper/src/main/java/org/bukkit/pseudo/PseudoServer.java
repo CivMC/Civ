@@ -48,10 +48,10 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.craftbukkit.v1_17_R1.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemFactory;
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_17_R1.util.Versioning;
+import org.bukkit.craftbukkit.v1_18_R1.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemFactory;
+import org.bukkit.craftbukkit.v1_18_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_18_R1.util.Versioning;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -71,7 +71,9 @@ import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.structure.StructureManager;
 import org.bukkit.util.CachedServerIcon;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
 public class PseudoServer implements Server {
@@ -84,7 +86,7 @@ public class PseudoServer implements Server {
 			final var previousLevel = LOGGER.getLevel();
 			LOGGER.setLevel(Level.OFF); // This is to prevent unnecessary logging
 			SharedConstants.a(); // SharedConstants.tryDetectVersion()
-			DispenserRegistry.init();
+			DispenserRegistry.a();
 			DispenserRegistry.c(); // DispenserRegistry.validate()
 			Bukkit.setServer(INSTANCE);
 			LOGGER.setLevel(previousLevel);
@@ -119,6 +121,11 @@ public class PseudoServer implements Server {
 	// Not implemented
 	// ------------------------------------------------------------
 
+	@Override
+	public @NotNull File getPluginsFolder() {
+		throw new NotImplementedException();
+	}
+
 	@Nonnull
 	@Override
 	public String getName() {
@@ -140,7 +147,7 @@ public class PseudoServer implements Server {
 	@Nonnull
 	@Override
 	public String getMinecraftVersion() {
-		return SharedConstants.getGameVersion().getName();
+		return SharedConstants.d;
 	}
 
 	@Nonnull
@@ -166,6 +173,11 @@ public class PseudoServer implements Server {
 
 	@Override
 	public int getViewDistance() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public int getSimulationDistance() {
 		throw new NotImplementedException();
 	}
 
@@ -271,6 +283,11 @@ public class PseudoServer implements Server {
 
 	@Override
 	public int getTicksPerWaterAmbientSpawns() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public int getTicksPerWaterUndergroundCreatureSpawns() {
 		throw new NotImplementedException();
 	}
 
@@ -484,6 +501,11 @@ public class PseudoServer implements Server {
 	}
 
 	@Override
+	public boolean getHideOnlinePlayers() {
+		throw new NotImplementedException();
+	}
+
+	@Override
 	public boolean getOnlineMode() {
 		throw new NotImplementedException();
 	}
@@ -680,6 +702,11 @@ public class PseudoServer implements Server {
 	}
 
 	@Override
+	public int getWaterUndergroundCreatureSpawnLimit() {
+		throw new NotImplementedException();
+	}
+
+	@Override
 	public int getAmbientSpawnLimit() {
 		throw new NotImplementedException();
 	}
@@ -756,12 +783,6 @@ public class PseudoServer implements Server {
 	@Nonnull
 	@Override
 	public ChunkGenerator.ChunkData createChunkData(@Nonnull final World world) {
-		throw new NotImplementedException();
-	}
-
-	@Nonnull
-	@Override
-	public ChunkGenerator.ChunkData createVanillaChunkData(@Nonnull final World world, final int i, final int i1) {
 		throw new NotImplementedException();
 	}
 
@@ -873,6 +894,11 @@ public class PseudoServer implements Server {
 	@Nonnull
 	@Override
 	public List<Entity> selectEntities(@Nonnull final CommandSender commandSender, @Nonnull final String s) throws IllegalArgumentException {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull StructureManager getStructureManager() {
 		throw new NotImplementedException();
 	}
 

@@ -71,7 +71,7 @@ public class NBTTests {
 		final NBTTagCompound actual = NBTSerialization.fromBytes(data);
 		// Check
 		Assert.assertNotNull(actual);
-		Assert.assertEquals(expectedString, actual.getString(STRING_KEY));
+		Assert.assertEquals(expectedString, actual.l(STRING_KEY));
 	}
 
 	@Test
@@ -143,8 +143,8 @@ public class NBTTests {
 	public void testMapDeserialisation() {
 		// Setup
 		final NBTTagCompound targetNBT = new NBTTagCompound() {{
-			set("EntityTag", new NBTTagCompound() {{
-				setString("id", "minecraft:vex");
+			a("EntityTag", new NBTTagCompound() {{
+				a("id", "minecraft:vex");
 			}});
 		}};
 		final Map<String, Object> testData = new HashMap<>() {{

@@ -5,9 +5,6 @@ import com.google.common.base.Strings;
 import java.io.File;
 import java.util.Objects;
 import java.util.stream.Stream;
-import org.apache.commons.lang3.ArrayUtils;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FilenameUtils;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
@@ -31,20 +28,20 @@ public abstract class BatchedNbtStorage<T> {
 	 *
 	 * @return Returns a parallel stream of all the correct parsed nbt files into their appropriate container.
 	 */
-	public Stream<T> loadAll() {
-		if (!this.storageFolder.isDirectory()) {
-			return Stream.<T>empty().parallel();
-		}
-		final var files = this.storageFolder.listFiles();
-		if (ArrayUtils.isEmpty(files)) {
-			return Stream.<T>empty().parallel();
-		}
-		assert files != null;
-		return Stream.of(files).parallel()
-				.filter(file -> FilenameUtils.isExtension(file.getName(), EXTENSION))
-				.map(this::loadFile)
-				.filter(Objects::nonNull);
-	}
+//	public Stream<T> loadAll() {
+//		if (!this.storageFolder.isDirectory()) {
+//			return Stream.<T>empty().parallel();
+//		}
+//		final var files = this.storageFolder.listFiles();
+//		if (ArrayUtils.isEmpty(files)) {
+//			return Stream.<T>empty().parallel();
+//		}
+//		assert files != null;
+//		return Stream.of(files).parallel()
+//				.filter(file -> FilenameUtils.isExtension(file.getName(), EXTENSION))
+//				.map(this::loadFile)
+//				.filter(Objects::nonNull);
+//	}
 
 	/**
 	 * Saves a given stream of elements to their respective files.

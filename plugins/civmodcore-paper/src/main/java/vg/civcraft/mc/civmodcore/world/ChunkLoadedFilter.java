@@ -26,8 +26,8 @@ public final class ChunkLoadedFilter {
 			if (position == null) {
 				return false;
 			}
-			final int chunkX = position.getX() >> 4;
-			final int chunkZ = position.getZ() >> 4;
+			final int chunkX = position.u() >> 4;
+			final int chunkZ = position.w() >> 4;
 			final long combined = ((long) chunkX << 32) | (long) chunkZ;
 			if (loadedChunks.contains(combined)) {
 				return true;
