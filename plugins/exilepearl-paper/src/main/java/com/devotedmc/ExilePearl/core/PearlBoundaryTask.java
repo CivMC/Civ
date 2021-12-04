@@ -5,6 +5,7 @@ import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
 import com.devotedmc.ExilePearl.BorderHandler;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
@@ -145,9 +146,11 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		if (player.isDead()) {
 			return;
 		}
-
-		if (!pushoutBastion(player)) {
-			checkBastion(player);
+		
+		if (pearl.getPearlType() != PearlType.PRISON) {
+			if (!pushoutBastion(player)) {
+				checkBastion(player);
+			}
 		}
 
 		// Ignore non-block holders
