@@ -786,6 +786,12 @@ public class PseudoServer implements Server {
 		throw new NotImplementedException();
 	}
 
+	@Override
+	public ChunkGenerator.@NotNull ChunkData createVanillaChunkData(
+			@NotNull World world, int i, int i1) {
+		throw new NotImplementedException();
+	}
+
 	@Nonnull
 	@Override
 	public BossBar createBossBar(@Nullable final String s, @Nonnull final BarColor barColor, @Nonnull final BarStyle barStyle, @Nonnull final BarFlag... barFlags) {
