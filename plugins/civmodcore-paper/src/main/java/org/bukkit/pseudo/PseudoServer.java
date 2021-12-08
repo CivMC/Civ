@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.minecraft.SharedConstants;
-import net.minecraft.server.DispenserRegistry;
+import net.minecraft.server.Bootstrap;
 import org.apache.commons.lang3.NotImplementedException;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -85,9 +85,9 @@ public class PseudoServer implements Server {
 		if (Bukkit.getServer() == null) { // Ignore highlighter
 			final var previousLevel = LOGGER.getLevel();
 			LOGGER.setLevel(Level.OFF); // This is to prevent unnecessary logging
-			SharedConstants.a(); // SharedConstants.tryDetectVersion()
-			DispenserRegistry.a();
-			DispenserRegistry.c(); // DispenserRegistry.validate()
+			SharedConstants.tryDetectVersion(); // SharedConstants.tryDetectVersion()
+			Bootstrap.bootStrap();
+			Bootstrap.validate();
 			Bukkit.setServer(INSTANCE);
 			LOGGER.setLevel(previousLevel);
 		}
@@ -147,7 +147,7 @@ public class PseudoServer implements Server {
 	@Nonnull
 	@Override
 	public String getMinecraftVersion() {
-		return SharedConstants.d;
+		return SharedConstants.getCurrentVersion().toString();
 	}
 
 	@Nonnull

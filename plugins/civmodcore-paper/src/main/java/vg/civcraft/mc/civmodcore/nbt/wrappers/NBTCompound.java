@@ -11,13 +11,13 @@ import javax.annotation.Nullable;
 import lombok.experimental.ExtensionMethod;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.nbt.NBTTagFloat;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagShort;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.FloatTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.ShortTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import org.apache.commons.lang3.StringUtils;
 import vg.civcraft.mc.civmodcore.nbt.NBTType;
 import vg.civcraft.mc.civmodcore.nbt.extensions.NBTTagListExtensions;
@@ -25,7 +25,7 @@ import vg.civcraft.mc.civmodcore.utilities.JavaExtensions;
 import vg.civcraft.mc.civmodcore.utilities.UuidUtils;
 
 @ExtensionMethod({JavaExtensions.class, NBTTagListExtensions.class})
-public class NBTCompound extends NBTTagCompound {
+public class NBTCompound extends CompoundTag {
 
 	public static final String NULL_STRING = "\u0000";
 	private static final String UUID_MOST_SUFFIX = "Most";
@@ -42,7 +42,7 @@ public class NBTCompound extends NBTTagCompound {
 	/**
 	 * Creates a new NBTCompound based on an existing inner-map.
 	 */
-	public NBTCompound(@Nonnull final Map<String, NBTBase> raw) {
+	public NBTCompound(@Nonnull final Map<String, Tag> raw) {
 		super(Objects.requireNonNull(raw));
 	}
 
@@ -51,8 +51,8 @@ public class NBTCompound extends NBTTagCompound {
 	 *
 	 * @param tag The NBTTagCompound to extract from.
 	 */
-	public NBTCompound(@Nullable final NBTTagCompound tag) {
-		this(tag.orElseGet(NBTTagCompound::new).x);
+	public NBTCompound(@Nullable final CompoundTag tag) {
+		this(tag.orElseGet(CompoundTag::new).tags);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class NBTCompound extends NBTTagCompound {
 	 * @return The size of the tag compound.
 	 */
 	public int size() {
-		return this.x.size();
+		return this.tags.size();
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class NBTCompound extends NBTTagCompound {
 	 * @return Returns true if the tag compound is empty.
 	 */
 	public boolean isEmpty() {
-		return this.x.isEmpty();
+		return this.tags.isEmpty();
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class NBTCompound extends NBTTagCompound {
 	 * @return Returns true if the contains the given key.
 	 */
 	public boolean hasKey(@Nullable final String key) {
-		return this.x.containsKey(key);
+		return this.tags.containsKey(key);
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class NBTCompound extends NBTTagCompound {
 	 * @return Returns true if the contains the given key of the given type.
 	 */
 	public boolean hasKeyOfType(@Nonnull final String key, final int type) {
-		return super.b(key, type);
+		return super.contains(key, type);
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	@Nonnull
 	public Set<String> getKeys() {
-		return this.x.keySet();
+		return this.tags.keySet();
 	}
 
 	/**
@@ -114,8 +114,8 @@ public class NBTCompound extends NBTTagCompound {
 		if (StringUtils.equals(fromKey, toKey)) {
 			return;
 		}
-		this.x.computeIfPresent(fromKey, (_key, value) -> {
-			this.x.put(toKey, value);
+		this.tags.computeIfPresent(fromKey, (_key, value) -> {
+			this.tags.put(toKey, value);
 			return null;
 		});
 	}
@@ -128,14 +128,14 @@ public class NBTCompound extends NBTTagCompound {
 	 * @param key The key to remove.
 	 */
 	public void remove(@Nullable final String key) {
-		this.x.remove(key);
+		this.tags.remove(key);
 	}
 
 	/**
 	 * Clears all values from the tag compound.
 	 */
 	public void clear() {
-		this.x.clear();
+		this.tags.clear();
 	}
 
 	/**
@@ -145,8 +145,8 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public void adopt(@Nonnull final NBTCompound nbt) {
 		Preconditions.checkNotNull(nbt);
-		this.x.clear();
-		this.x.putAll(nbt.x);
+		this.tags.clear();
+		this.tags.putAll(nbt.tags);
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public boolean getBoolean(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		return super.e(key);
+		return super.getBoolean(key);
 	}
 
 	/**
@@ -168,7 +168,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public void setBoolean(@Nonnull final String key, final boolean value) {
 		Preconditions.checkNotNull(key);
-		super.a(key, value);
+		super.putBoolean(key, value);
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public byte getByte(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		return super.f(key);
+		return super.getByte(key);
 	}
 
 	/**
@@ -190,7 +190,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public void setByte(@Nonnull final String key, final byte value) {
 		Preconditions.checkNotNull(key);
-		super.a(key, value);
+		super.putByte(key, value);
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public short getShort(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		return super.g(key);
+		return super.getShort(key);
 	}
 
 	/**
@@ -212,7 +212,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public void setShort(@Nonnull final String key, final short value) {
 		Preconditions.checkNotNull(key);
-		super.a(key, value);
+		super.putShort(key, value);
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public int getInt(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		return super.h(key);
+		return super.getInt(key);
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public void setInt(@Nonnull final String key, final int value) {
 		Preconditions.checkNotNull(key);
-		super.a(key, value);
+		super.putInt(key, value);
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public long getLong(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		return super.i(key);
+		return super.getLong(key);
 	}
 
 	/**
@@ -256,7 +256,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public void setLong(@Nonnull final String key, final long value) {
 		Preconditions.checkNotNull(key);
-		super.a(key, value);
+		super.putLong(key, value);
 	}
 
 	/**
@@ -267,7 +267,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public float getFloat(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		return super.j(key);
+		return super.getFloat(key);
 	}
 
 	/**
@@ -278,7 +278,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public void setFloat(@Nonnull final String key, final float value) {
 		Preconditions.checkNotNull(key);
-		super.a(key, value);
+		super.putFloat(key, value);
 	}
 
 	/**
@@ -289,7 +289,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public double getDouble(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		return super.k(key);
+		return super.getDouble(key);
 	}
 
 	/**
@@ -300,7 +300,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public void setDouble(@Nonnull final String key, final double value) {
 		Preconditions.checkNotNull(key);
-		super.a(key, value);
+		super.putDouble(key, value);
 	}
 
 	/**
@@ -310,7 +310,7 @@ public class NBTCompound extends NBTTagCompound {
 	 * @return Returns true if a UUID exists at the given key.
 	 */
 	public boolean hasUUID(@Nonnull final String key) {
-		return super.b(key);
+		return super.hasUUID(key);
 	}
 
 	/**
@@ -321,7 +321,7 @@ public class NBTCompound extends NBTTagCompound {
 	 */
 	public UUID getUUID(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		return !super.b(key) ? UuidUtils.IDENTITY : super.a(key);
+		return !super.hasUUID(key) ? UuidUtils.IDENTITY : super.getUUID(key);
 	}
 
 	/**
@@ -333,7 +333,7 @@ public class NBTCompound extends NBTTagCompound {
 	@Nullable
 	public UUID getNullableUUID(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		return !super.b(key) ? null : super.a(key);
+		return !super.hasUUID(key) ? null : super.getUUID(key);
 	}
 
 	/**
@@ -360,11 +360,11 @@ public class NBTCompound extends NBTTagCompound {
 		}
 		else {
 			if (useMojangFormat) {
-				super.a(key + UUID_MOST_SUFFIX, value.getMostSignificantBits());
-				super.a(key + UUID_LEAST_SUFFIX, value.getLeastSignificantBits());
+				super.putLong(key + UUID_MOST_SUFFIX, value.getMostSignificantBits());
+				super.putLong(key + UUID_LEAST_SUFFIX, value.getLeastSignificantBits());
 			}
 			else {
-				super.a(key, value);
+				super.putUUID(key, value);
 			}
 		}
 	}
@@ -391,7 +391,7 @@ public class NBTCompound extends NBTTagCompound {
 	@Nonnull
 	public String getString(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		return super.l(key);
+		return super.getString(key);
 	}
 
 	/**
@@ -403,10 +403,10 @@ public class NBTCompound extends NBTTagCompound {
 	@Nullable
 	public String getNullableString(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		if (!super.b(key, 8)) {
+		if (!super.contains(key, 8)) {
 			return null;
 		}
-		final String value = super.l(key);
+		final String value = super.getString(key);
 		if (NULL_STRING.equals(value)) {
 			return null;
 		}
@@ -425,7 +425,7 @@ public class NBTCompound extends NBTTagCompound {
 			remove(key);
 		}
 		else {
-			super.a(key, value);
+			super.putString(key, value);
 		}
 	}
 
@@ -450,11 +450,11 @@ public class NBTCompound extends NBTTagCompound {
 	@Nullable
 	public NBTCompound getNullableCompound(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		final var found = this.x.get(key);
+		final var found = this.tags.get(key);
 		if (found instanceof NBTCompound compound) {
 			return compound;
 		}
-		if (found instanceof NBTTagCompound compound) {
+		if (found instanceof CompoundTag compound) {
 			return new NBTCompound(compound);
 		}
 		return null;
@@ -472,7 +472,7 @@ public class NBTCompound extends NBTTagCompound {
 			remove(key);
 		}
 		else {
-			a(key, value);
+			put(key, value);
 		}
 	}
 
@@ -553,7 +553,7 @@ public class NBTCompound extends NBTTagCompound {
 	@Nonnull
 	public byte[] getByteArray(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		return super.m(key);
+		return super.getByteArray(key);
 	}
 
 	/**
@@ -568,7 +568,7 @@ public class NBTCompound extends NBTTagCompound {
 			remove(key);
 			return;
 		}
-		super.a(key, bytes);
+		super.putByteArray(key, bytes);
 	}
 
 	/**
@@ -580,11 +580,11 @@ public class NBTCompound extends NBTTagCompound {
 	@Nonnull
 	public short[] getShortArray(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		final NBTTagList list = c(key, NBTType.SHORT);
+		final ListTag list = getList(key, NBTType.SHORT);
 		final short[] result = new short[list.size()];
 		for (int i = 0; i < result.length; i++) {
-			if (list.get(i) instanceof NBTTagShort nbtShort) {
-				result[i] = nbtShort.g();
+			if (list.get(i) instanceof ShortTag nbtShort) {
+				result[i] = nbtShort.getAsShort();
 			}
 		}
 		return result;
@@ -602,11 +602,11 @@ public class NBTCompound extends NBTTagCompound {
 			remove(key);
 			return;
 		}
-		final NBTTagList list = new NBTTagList();
+		final ListTag list = new ListTag();
 		for (final short value : shorts) {
-			list.add(NBTTagShort.a(value));
+			list.add(ShortTag.valueOf(value));
 		}
-		a(key, list);
+		put(key, list);
 	}
 
 	/**
@@ -618,7 +618,7 @@ public class NBTCompound extends NBTTagCompound {
 	@Nonnull
 	public int[] getIntArray(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		return super.n(key);
+		return super.getIntArray(key);
 	}
 
 	/**
@@ -633,7 +633,7 @@ public class NBTCompound extends NBTTagCompound {
 			remove(key);
 			return;
 		}
-		super.a(key, ints);
+		super.putIntArray(key, ints);
 	}
 
 	/**
@@ -645,7 +645,7 @@ public class NBTCompound extends NBTTagCompound {
 	@Nonnull
 	public long[] getLongArray(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		return super.o(key);
+		return super.getLongArray(key);
 	}
 
 	/**
@@ -660,7 +660,7 @@ public class NBTCompound extends NBTTagCompound {
 			remove(key);
 			return;
 		}
-		super.a(key, longs);
+		super.putLongArray(key, longs);
 	}
 
 	/**
@@ -672,10 +672,10 @@ public class NBTCompound extends NBTTagCompound {
 	@Nonnull
 	public float[] getFloatArray(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		final NBTTagList list = c(key, NBTType.FLOAT);
+		final ListTag list = getList(key, NBTType.FLOAT);
 		final float[] result = new float[list.size()];
 		for (int i = 0; i < result.length; i++) {
-			result[i] = list.i(i);
+			result[i] = list.getFloat(i);
 		}
 		return result;
 	}
@@ -692,11 +692,11 @@ public class NBTCompound extends NBTTagCompound {
 			remove(key);
 			return;
 		}
-		final NBTTagList list = new NBTTagList();
+		final ListTag list = new ListTag();
 		for (final float value : floats) {
-			list.add(NBTTagFloat.a(value));
+			list.add(FloatTag.valueOf(value));
 		}
-		a(key, list);
+		put(key, list);
 	}
 
 	/**
@@ -708,10 +708,10 @@ public class NBTCompound extends NBTTagCompound {
 	@Nonnull
 	public double[] getDoubleArray(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		final NBTTagList list = c(key, NBTType.DOUBLE);
+		final ListTag list = getList(key, NBTType.DOUBLE);
 		final double[] result = new double[list.size()];
 		for (int i = 0; i < result.length; i++) {
-			result[i] = list.h(i);
+			result[i] = list.getDouble(i);
 		}
 		return result;
 	}
@@ -728,11 +728,11 @@ public class NBTCompound extends NBTTagCompound {
 			remove(key);
 			return;
 		}
-		final NBTTagList list = new NBTTagList();
+		final ListTag list = new ListTag();
 		for (final double value : doubles) {
-			list.add(NBTTagDouble.a(value));
+			list.add(DoubleTag.valueOf(value));
 		}
-		a(key, list);
+		put(key, list);
 	}
 
 	/**
@@ -744,18 +744,18 @@ public class NBTCompound extends NBTTagCompound {
 	@Nonnull
 	public UUID[] getUUIDArray(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		if (c(key) instanceof NBTTagList list) {
-			if (list.e() == NBTType.INT_ARRAY) {
+		if (get(key) instanceof ListTag list) {
+			if (list.getId() == NBTType.INT_ARRAY) {
 				final UUID[] result = new UUID[list.size()];
 				for (int i = 0, l = list.size(); i < l; i++) {
 					result[i] = list.getUUID(i);
 				}
 				return result;
 			}
-			if (list.e() == NBTType.COMPOUND) {
+			if (list.getId() == NBTType.COMPOUND) {
 				final UUID[] result = new UUID[list.size()];
 				for (int i = 0, l = list.size(); i < l; i++) {
-					result[i] = list.getCompound(i).a(UUID_KEY);
+					result[i] = list.getCompound(i).getUUID(UUID_KEY);
 				}
 				return result;
 			}
@@ -775,11 +775,11 @@ public class NBTCompound extends NBTTagCompound {
 			remove(key);
 			return;
 		}
-		final NBTTagList list = new NBTTagList();
+		final ListTag list = new ListTag();
 		for (final UUID value : uuids) {
 			list.addUUID(value);
 		}
-		a(key, list);
+		put(key, list);
 	}
 
 	/**
@@ -791,10 +791,10 @@ public class NBTCompound extends NBTTagCompound {
 	@Nonnull
 	public String[] getStringArray(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		final NBTTagList list = c(key, NBTType.STRING);
+		final ListTag list = getList(key, NBTType.STRING);
 		final String[] result = new String[list.size()];
 		for (int i = 0; i < result.length; i++) {
-			result[i] = list.get(i) instanceof NBTTagString nbtString ? nbtString.e_() : "";
+			result[i] = list.get(i) instanceof StringTag nbtString ? nbtString.getAsString() : "";
 		}
 		return result;
 	}
@@ -811,9 +811,9 @@ public class NBTCompound extends NBTTagCompound {
 			remove(key);
 			return;
 		}
-		final NBTTagList list = new NBTTagList();
-		List.of(strings).forEach((string) -> list.add(NBTTagString.a(string)));
-		a(key, list);
+		final ListTag list = new ListTag();
+		List.of(strings).forEach((string) -> list.add(StringTag.valueOf(string)));
+		put(key, list);
 	}
 
 	/**
@@ -825,7 +825,7 @@ public class NBTCompound extends NBTTagCompound {
 	@Nonnull
 	public NBTCompound[] getCompoundArray(@Nonnull final String key) {
 		Preconditions.checkNotNull(key);
-		final NBTTagList list = c(key, NBTType.COMPOUND);
+		final ListTag list = getList(key, NBTType.COMPOUND);
 		final NBTCompound[] result = new NBTCompound[list.size()];
 		for (int i = 0; i < result.length; i++) {
 			result[i] = new NBTCompound(list.getCompound(i));
@@ -845,9 +845,9 @@ public class NBTCompound extends NBTTagCompound {
 			remove(key);
 			return;
 		}
-		final NBTTagList list = new NBTTagList();
+		final ListTag list = new ListTag();
 		list.addAll(List.of(compounds));
-		a(key, list);
+		put(key, list);
 	}
 
 	// ------------------------------------------------------------
@@ -860,7 +860,7 @@ public class NBTCompound extends NBTTagCompound {
 			return true;
 		}
 		if (object instanceof NBTCompound other) {
-			return Objects.equals(this.x, other.x);
+			return Objects.equals(this.tags, other.tags);
 		}
 		return false;
 	}
@@ -868,7 +868,7 @@ public class NBTCompound extends NBTTagCompound {
 	@Nonnull
 	@Override
 	public String toString() {
-		return "NBTCompound" + this.x.toString();
+		return "NBTCompound" + this.tags.toString();
 	}
 
 }

@@ -1,17 +1,14 @@
 package vg.civcraft.mc.civmodcore.nbt;
 
 import lombok.experimental.UtilityClass;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 /**
  * NBT Type IDs for usage with:
  *
  * <ul>
- *     <li>{@link NBTTagCompound#hasKeyOfType(String, int)}</li>
- *     <li>{@link NBTBase#getTypeId()}</li>
- *     <li>{@link NBTTagList#e()} // list element type</li>
+ *     <li>{@link net.minecraft.nbt.CompoundTag#hasKeyOfType(String, int)}</li>
+ *     <li>{@link net.minecraft.nbt.Tag#getTypeId()}</li>
+ *     <li>{@link net.minecraft.nbt.ListTag#e()} // list element type</li>
  *     <li>etc...</li>
  * </ul>
  *
