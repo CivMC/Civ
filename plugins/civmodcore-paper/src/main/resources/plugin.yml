@@ -1,9 +1,8 @@
-name: ${project.artifactId}
-version: ${project.version}
+name: CivModCore
+version: 2.0.0
 authors: [valadian, rourke750, ProgrammerDan, Maxopoly, DeadBeef, Protonull, Okx, mindless728, Tealnerd]
-website: ${project.url}
 main: vg.civcraft.mc.civmodcore.CivModCorePlugin
-api-version: 1.17
+api-version: 1.18
 permissions:
   cmc.config.save:
     default: op
