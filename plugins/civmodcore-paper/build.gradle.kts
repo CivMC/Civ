@@ -6,6 +6,7 @@ plugins {
     java
     `maven-publish`
     id("io.papermc.paperweight.userdev") version "1.3.1"
+    id("com.github.johnrengelman.shadow") version "7.1.0"
 }
 
 repositories {
@@ -48,6 +49,19 @@ tasks {
     }
     processResources {
       filteringCharset = Charsets.UTF_8.name() // We want UTF-8 for everything
+    }
+
+
+  shadowJar {
+       // helper function to relocate a package into our package
+       fun reloc(pkg: String) = relocate(pkg, "vg.civcraft.mc.civmodcore.dependencies.$pkg")
+
+       // relocate and it's transitive dependencies
+       reloc("com.mojang")
+       reloc("com.zaxxer")
+       reloc("net.kyori")
+       reloc("org.apache")
+       reloc("com.google")
     }
 }
 

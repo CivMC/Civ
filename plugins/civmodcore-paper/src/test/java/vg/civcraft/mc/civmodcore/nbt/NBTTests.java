@@ -5,7 +5,7 @@ import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -68,7 +68,7 @@ public class NBTTests {
 		final var nbt = new NBTCompound();
 		nbt.setString(STRING_KEY, expectedString);
 		final byte[] data = NBTSerialization.toBytes(nbt);
-		final NBTTagCompound actual = NBTSerialization.fromBytes(data);
+		final CompoundTag actual = NBTSerialization.fromBytes(data);
 		// Check
 		Assert.assertNotNull(actual);
 		Assert.assertEquals(expectedString, actual.l(STRING_KEY));
@@ -142,9 +142,9 @@ public class NBTTests {
 	@Test
 	public void testMapDeserialisation() {
 		// Setup
-		final NBTTagCompound targetNBT = new NBTTagCompound() {{
-			a("EntityTag", new NBTTagCompound() {{
-				a("id", "minecraft:vex");
+		final CompoundTag targetNBT = new CompoundTag() {{
+			put("EntityTag", new CompoundTag() {{
+				putString("id", "minecraft:vex");
 			}});
 		}};
 		final Map<String, Object> testData = new HashMap<>() {{
@@ -153,7 +153,7 @@ public class NBTTests {
 			}});
 		}};
 		// Process
-		final NBTTagCompound convertedNBT = NBTSerialization.fromMap(testData);
+		final CompoundTag convertedNBT = NBTSerialization.fromMap(testData);
 		// Check
 		Assert.assertEquals(targetNBT, convertedNBT);
 	}
