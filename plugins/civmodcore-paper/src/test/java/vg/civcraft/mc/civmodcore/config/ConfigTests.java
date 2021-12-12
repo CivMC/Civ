@@ -2,8 +2,8 @@ package vg.civcraft.mc.civmodcore.config;
 
 import java.util.HashMap;
 import org.bukkit.Material;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ConfigTests {
 
@@ -18,9 +18,9 @@ public class ConfigTests {
 		// Process
 		final var config = ConfigSection.fromData(data);
 		// Check
-		Assert.assertEquals("value", config.getString("key"));
-		Assert.assertEquals(Material.NAME_TAG.name(), config.getString("material"));
-		Assert.assertEquals(100, config.getInt("amount"));
+		Assertions.assertEquals("value", config.getString("key"));
+		Assertions.assertEquals(Material.NAME_TAG.name(), config.getString("material"));
+		Assertions.assertEquals(100, config.getInt("amount"));
 	}
 
 }
