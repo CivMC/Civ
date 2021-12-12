@@ -71,7 +71,7 @@ public class Acid extends BaseCommand {
 			}
 			if (!topRein.getType().canBeReinforced(topFace.getType())) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED, "You cannot acid that block because it cannot be reinforced.");
-				return true;
+				return;
 			}
 			if (!acidMan.canAcidBlock(reinforcement.getType(), topRein.getType())) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED,
