@@ -11,16 +11,16 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.pseudo.PseudoServer;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 public class NBTTests {
 
-	@BeforeClass
+	@BeforeAll
 	public static void setupBukkit() {
 		PseudoServer.setup();
 	}
@@ -38,7 +38,7 @@ public class NBTTests {
 		final var nbt = new NBTCompound();
 		nbt.setString(STRING_KEY, expectedString);
 		// Check
-		Assert.assertEquals(expectedString, nbt.getString(STRING_KEY));
+		Assertions.assertEquals(expectedString, nbt.getString(STRING_KEY));
 	}
 
 	@Test
@@ -50,7 +50,7 @@ public class NBTTests {
 		final var nbt = new NBTCompound();
 		nbt.setStringArray(STRING_ARRAY_KEY, expectedStringArray);
 		// Check
-		Assert.assertArrayEquals(expectedStringArray, nbt.getStringArray(STRING_ARRAY_KEY));
+		Assertions.assertArrayEquals(expectedStringArray, nbt.getStringArray(STRING_ARRAY_KEY));
 	}
 
 	@Test
@@ -70,8 +70,8 @@ public class NBTTests {
 		final byte[] data = NBTSerialization.toBytes(nbt);
 		final CompoundTag actual = NBTSerialization.fromBytes(data);
 		// Check
-		Assert.assertNotNull(actual);
-		Assert.assertEquals(expectedString, actual.l(STRING_KEY));
+		Assertions.assertNotNull(actual);
+		Assertions.assertEquals(expectedString, actual.getString(STRING_KEY));
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class NBTTests {
 		final byte[] data = NBTSerialization.toBytes(nbt);
 		final var actual = new NBTCompound(NBTSerialization.fromBytes(data));
 		// Check
-		Assert.assertNull(actual.getNullableString(STRING_KEY));
+		Assertions.assertNull(actual.getNullableString(STRING_KEY));
 	}
 
 	@Test
@@ -106,7 +106,7 @@ public class NBTTests {
 		nbt.setString(STRING_KEY, expectedString);
 		nbt.clear();
 		// Check
-		Assert.assertNull(nbt.getNullableString(STRING_KEY));
+		Assertions.assertNull(nbt.getNullableString(STRING_KEY));
 	}
 
 	@Test
@@ -119,7 +119,7 @@ public class NBTTests {
 		final var nbt = NBTHelper.locationToNBT(location);
 		final var parsed = NBTHelper.locationFromNBT(nbt);
 		// Check
-		Assert.assertEquals(location, parsed);
+		Assertions.assertEquals(location, parsed);
 	}
 
 	@Test
@@ -136,7 +136,7 @@ public class NBTTests {
 		final var nbt = NBTHelper.itemStackToNBT(item);
 		final var parsed = NBTHelper.itemStackFromNBT(nbt);
 		// Check
-		Assert.assertEquals(item, parsed);
+		Assertions.assertEquals(item, parsed);
 	}
 
 	@Test
@@ -155,7 +155,7 @@ public class NBTTests {
 		// Process
 		final CompoundTag convertedNBT = NBTSerialization.fromMap(testData);
 		// Check
-		Assert.assertEquals(targetNBT, convertedNBT);
+		Assertions.assertEquals(targetNBT, convertedNBT);
 	}
 
 }

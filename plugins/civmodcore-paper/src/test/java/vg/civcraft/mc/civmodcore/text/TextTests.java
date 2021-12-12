@@ -3,8 +3,8 @@ package vg.civcraft.mc.civmodcore.text;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 public class TextTests {
@@ -21,7 +21,7 @@ public class TextTests {
 		final Component formerParsed = GsonComponentSerializer.gson().deserialize(formerMessage);
 		final Component latterParsed = GsonComponentSerializer.gson().deserialize(latterMessage);
 		// Check
-		Assert.assertEquals(formerParsed, latterParsed);
+		Assertions.assertEquals(formerParsed, latterParsed);
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class TextTests {
 		final Component latterComponent = Component.text().color(NamedTextColor.RED)
 				.append(Component.text("Test")).build();
 		// Check
-		Assert.assertTrue(ChatUtils.areComponentsEqual(formerComponent, latterComponent));
+		Assertions.assertTrue(ChatUtils.areComponentsEqual(formerComponent, latterComponent));
 	}
 
 }
