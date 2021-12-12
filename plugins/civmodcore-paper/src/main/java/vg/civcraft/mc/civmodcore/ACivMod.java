@@ -1,56 +1,38 @@
 package vg.civcraft.mc.civmodcore;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.command.CommandHandler;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
+import org.jetbrains.annotations.Contract;
 
-@SuppressWarnings("deprecation")
 public abstract class ACivMod extends JavaPlugin {
 
-	private final List<Class<? extends NBTSerializable>> serializableClasses = Lists.newArrayList();
-
-	@Deprecated
-	protected CommandHandler handle = null;
-	protected StandaloneCommandHandler newCommandHandler;
-	protected boolean useNewCommandHandler = true;
+	private final Set<Class<? extends ConfigurationSerializable>> configClasses = new HashSet<>(0);
 
 	@Override
 	public void onEnable() {
-		// Allow plugins to disable the new command handler without breaking other plugins that
-		// rely on this being set automatically.
-		if (this.useNewCommandHandler) {
-			this.newCommandHandler = new StandaloneCommandHandler(this);
-		}
 		// Self disable when a hard dependency is disabled
 		registerListener(new Listener() {
 			@EventHandler
-			public void onPluginDisable(PluginDisableEvent event) {
-				String pluginName = event.getPlugin().getName();
+			public void onPluginDisable(final PluginDisableEvent event) {
+				final String pluginName = event.getPlugin().getName();
 				if (getDescription().getDepend().contains(pluginName)) {
 					warning("Plugin [" + pluginName + "] has been disabled, disabling this plugin.");
 					disable();
@@ -61,17 +43,11 @@ public abstract class ACivMod extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		this.useNewCommandHandler = true;
-		if (this.newCommandHandler != null) {
-			this.newCommandHandler.reset();
-			this.newCommandHandler = null;
-		}
-		this.serializableClasses.forEach(NBTSerialization::unregisterNBTSerializable);
-		this.serializableClasses.clear();
 		HandlerList.unregisterAll(this);
 		Bukkit.getMessenger().unregisterIncomingPluginChannel(this);
 		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
 		Bukkit.getScheduler().cancelTasks(this);
+		this.configClasses.forEach(ConfigurationSerialization::unregisterClass);
 	}
 
 	/**
@@ -79,36 +55,27 @@ public abstract class ACivMod extends JavaPlugin {
 	 *
 	 * @param listener The listener class to register.
 	 */
-	public void registerListener(Listener listener) {
-		if (listener == null) {
-			throw new IllegalArgumentException("Cannot register a listener if it's null, you dummy");
-		}
-		getServer().getPluginManager().registerEvents(listener, this);
+	public void registerListener(@Nonnull final Listener listener) {
+		getServer().getPluginManager().registerEvents(
+				Objects.requireNonNull(listener, "Cannot register a listener if it's null, you dummy"), this);
 	}
 
 	/**
-	 * <p>Registers a serializable.</p>
+	 * Convenience method you can use to register {@link ConfigurationSerializable} classes, which will be
+	 * automatically un-registered when this plugin is disabled.
 	 *
-	 * <p>Note: This is a tracked single use registration. The given serializable will be de-registered when this
-	 * plugin is disabled, thus you should call this within the plugin's onEnable() method.</p>
-	 *
-	 * @param <T> The type of the serializable.
-	 * @param serializable The serializable class.
-	 *
-	 * @deprecated This is no longer necessary and was added to ease usage of serializables,
-	 *     but {@link List#of(Object[])} and {@link java.util.Collection#forEach(Consumer)}
-	 *     has made this largely redundant.
+	 * @param clazz The serializable class to register and automatically unregister upon disable.
 	 */
-	@Deprecated
-	public <T extends NBTSerializable> void registerSerializable(Class<T> serializable) {
-		NBTSerialization.registerNBTSerializable(serializable);
-		this.serializableClasses.add(serializable);
+	public void registerConfigClass(@Nonnull final Class<? extends ConfigurationSerializable> clazz) {
+		Objects.requireNonNull(clazz, "Cannot register a config class if it's null, you dummy");
+		ConfigurationSerialization.registerClass(clazz);
+		this.configClasses.add(clazz);
 	}
 
 	/**
 	 * Determines whether this plugin is in debug mode, which is determined by a config value.
 	 *
-	 * @return Returns true if this plguin is in debug mode.
+	 * @return Returns true if this plugin is in debug mode.
 	 */
 	public boolean isDebugEnabled() {
 		return getConfig().getBoolean("debug", false);
@@ -120,8 +87,8 @@ public abstract class ACivMod extends JavaPlugin {
 	 * @param path The path of the file relative to the data folder.
 	 * @return Returns a file instance of the generated path.
 	 */
-	public File getResourceFile(String path) {
-		return new File(getDataFolder(), path);
+	public File getDataFile(@Nonnull final String path) {
+		return new File(getDataFolder(), Objects.requireNonNull(path));
 	}
 
 	/**
@@ -129,8 +96,8 @@ public abstract class ACivMod extends JavaPlugin {
 	 *
 	 * @param path The path to the default resource <i>AND</i> the data file.
 	 */
-	public void saveDefaultResource(String path) {
-		if (!getResourceFile(path).exists()) {
+	public void saveDefaultResource(@Nonnull final String path) {
+		if (!getDataFile(path).exists()) {
 			saveResource(path, false);
 		}
 	}
@@ -141,95 +108,27 @@ public abstract class ACivMod extends JavaPlugin {
 	 * @param defaultPath The path of the file within the plugin's jar.
 	 * @param dataPath The path the file should take within the plugin's data folder.
 	 */
-	public void saveDefaultResourceAs(String defaultPath, String dataPath) {
-		Preconditions.checkNotNull(defaultPath, "defaultPath cannot be null.");
-		Preconditions.checkNotNull(dataPath, "dataPath cannot be null.");
-		if (getResourceFile(defaultPath).exists()) {
-			return;
-		}
-		defaultPath = defaultPath.replace('\\', '/');
-		dataPath = dataPath.replace('\\', '/');
-		final InputStream data = getResource(defaultPath);
-		if (data == null) {
-			throw new IllegalArgumentException("The embedded resource '" + defaultPath +
-					"' cannot be found in " + getFile());
-		}
-		final File outFile = new File(getDataFolder(), dataPath);
-		try {
-			FileUtils.copyInputStreamToFile(data, outFile);
-		}
-		catch (IOException exception) {
-			severe("Could not save " + outFile.getName() + " to " + outFile);
-			exception.printStackTrace();
-		}
-	}
-
-	@Override
-	public boolean onCommand(@NotNull CommandSender sender,
-							 @NotNull Command command,
-							 @NotNull String label,
-							 String[] arguments) {
-		if (this.handle != null) {
-			return this.handle.execute(sender, command, arguments);
-		}
-		if (this.newCommandHandler != null) {
-			return this.newCommandHandler.executeCommand(sender, command, arguments);
-		}
-		return false;
-	}
-
-	@Override
-	public List<String> onTabComplete(@NotNull CommandSender sender,
-									  @NotNull Command command,
-									  @NotNull String label,
-									  String[] arguments) {
-		if (this.handle != null) {
-			return this.handle.complete(sender, command, arguments);
-		}
-		if (this.newCommandHandler != null) {
-			return this.newCommandHandler.tabCompleteCommand(sender, command, arguments);
-		}
-		return Collections.emptyList();
-	}
-
-	/**
-	 * Retrieves this plugin's legacy command handler, if it has one.
-	 *
-	 * @return Returns this plugin's legacy command handler, or null.
-	 */
-	public CommandHandler getCommandHandler() {
-		return this.handle;
-	}
-
-	/**
-	 * Registers (or de-registers) a legacy command handler with this plugin.
-	 *
-	 * @param handler The legacy command handler to set. Null will cause de-registration.
-	 */
-	public void setCommandHandler(CommandHandler handler) {
-		this.handle = handler;
-	}
-
-	/**
-	 * <p>Retrieves this plugin's standalone command handler, if it has one.</p>
-	 *
-	 * <p>Note: You can use {@code this.useNewCommandHandler = false;} within your plugin's onEnable() method prior to
-	 * the super call to disable the automatic generation of a standalone command handler.</p>
-	 *
-	 * @return Returns this plugin's standalone command handler, or null.
-	 */
-	public StandaloneCommandHandler getStandaloneCommandHandler() {
-		return this.newCommandHandler;
-	}
-
-	/**
-	 * Registers (or de-registers) a standalone command handler with this plugin.
-	 *
-	 * @param handler The standalone command handler to set. Null will cause de-registration.
-	 */
-	public void setStandaloneCommandHandler(StandaloneCommandHandler handler) {
-		this.newCommandHandler = handler;
-	}
+//	public void saveDefaultResourceAs(@Nonnull String defaultPath,
+//									  @Nonnull String dataPath) {
+//		if (getDataFile(defaultPath).exists()) {
+//			return;
+//		}
+//		defaultPath = defaultPath.replace('\\', '/');
+//		dataPath = dataPath.replace('\\', '/');
+//		final InputStream data = getResource(defaultPath);
+//		if (data == null) {
+//			throw new IllegalArgumentException("The embedded resource '" + defaultPath +
+//					"' cannot be found in " + getFile());
+//		}
+//		final var outFile = new File(getDataFolder(), dataPath);
+//		try {
+//			FileUtils.copyInputStreamToFile(data, outFile);
+//		}
+//		catch (final IOException exception) {
+//			severe("Could not save " + outFile.getName() + " to " + outFile);
+//			exception.printStackTrace();
+//		}
+//	}
 
 	/**
 	 * Disables this plugin.
@@ -319,21 +218,23 @@ public abstract class ACivMod extends JavaPlugin {
 	 *
 	 * <ol>
 	 *     <li>
-	 *         If there's an instance of the class currently enabled. (Don't request ACivMod.class, or you'll just get
-	 *         the the first result.
+	 *         If there's an instance of the class currently enabled. <b>Don't request ACivMod, JavaPlugin, PluginBase,
+	 *         or Plugin or you'll just get the the first result.</b>
 	 *     </li>
-	 *     <li>If there's a public static .getInstance() method.</li>
-	 *     <li>If there's a static instance field.</li>
+	 *     <li>If there's a public static .getInstance() or .getPlugin() method.</li>
+	 *     <li>If there's a static "instance" or "plugin" field.</li>
 	 * </ol>
 	 *
 	 * @param <T> The type of the plugin.
 	 * @param clazz The class object of the plugin.
 	 * @return Returns the first found instance of the plugin, or null. Nulls don't necessarily mean there isn't an
-	 *     instance of the plugin in existence. It could just be that it's located some unexpected place. Additionally,
-	 *     just because an instance has been returned does not mean that instance is enabled.
+	 *         instance of the plugin in existence. It could just be that it's located some unexpected place.
+	 *         Additionally, just because an instance has been returned does not mean that instance is enabled.
 	 */
+	@Contract("null -> null")
+	@Nullable
 	@SuppressWarnings("unchecked")
-	public static <T extends JavaPlugin> T getInstance(final Class<T> clazz) {
+	public static <T extends JavaPlugin> T getInstance(@Nullable final Class<T> clazz) {
 		if (clazz == null) {
 			return null;
 		}
@@ -351,11 +252,12 @@ public abstract class ACivMod extends JavaPlugin {
 				final Method method = clazz.getDeclaredMethod(methodName);
 				if (Modifier.isPublic(method.getModifiers())
 						&& Modifier.isStatic(method.getModifiers())
+						&& method.getParameterCount() == 0
 						&& clazz.isAssignableFrom(method.getReturnType())) {
 					return (T) method.invoke(null);
 				}
 			}
-			catch (final Exception ignored) { }
+			catch (final Throwable ignored) { }
 		}
 		for (final String fieldName : Arrays.asList("instance", "plugin")) {
 			try {
@@ -365,7 +267,7 @@ public abstract class ACivMod extends JavaPlugin {
 					return (T) field.get(null);
 				}
 			}
-			catch (final Exception ignored) { }
+			catch (final Throwable ignored) { }
 		}
 		// Otherwise there's no instance of the plugin, or it's stored in an unusual way
 		return null;

@@ -1,27 +1,36 @@
 package vg.civcraft.mc.civmodcore.chat;
 
-import com.google.common.base.Strings;
+import io.papermc.paper.adventure.PaperAdventure;
 import java.awt.Color;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.craftbukkit.v1_18_R1.util.CraftChatMessage;
+import org.jetbrains.annotations.Contract;
 
+@UtilityClass
 public final class ChatUtils {
 
 	/**
 	 * This is necessary as {@link ChatColor#values()} has all colours <i>and</i> all formats.
+	 *
+	 * @deprecated Use {@link NamedTextColor} instead.
 	 */
-	@SuppressWarnings("deprecation")
+	@Deprecated
 	public static final List<ChatColor> COLOURS = List.of(
 			ChatColor.BLACK,
 			ChatColor.DARK_BLUE,
@@ -46,7 +55,11 @@ public final class ChatUtils {
 	 * @param g The green value.
 	 * @param b The blue value.
 	 * @return Returns a valid Bungee ChatColor.
+	 *
+	 * @deprecated Use {@link net.kyori.adventure.text.format.TextColor#color(int, int, int)} instead.
 	 */
+	@Nonnull
+	@Deprecated
 	public static ChatColor fromRGB(final byte r, final byte g, final byte b) {
 		return ChatColor.of(new Color(r, g, b));
 	}
@@ -57,7 +70,9 @@ public final class ChatUtils {
 	 * @param colour The given RGB colour.
 	 * @return Returns the closest Minecraft match, or null.
 	 */
-	public static ChatColor collapseColour(final ChatColor colour) {
+	@Contract("!null -> !null")
+	@Nullable
+	public static ChatColor collapseColour(@Nullable final ChatColor colour) {
 		if (colour == null) {
 			return null;
 		}
@@ -82,23 +97,47 @@ public final class ChatUtils {
 	// Color parsing
 	// -------------------------------------------- //
 
-	public static String parseColor(String string) {
+	/**
+	 * @deprecated Please use MiniMessage instead.
+	 * <a href="https://docs.adventure.kyori.net/minimessage.html">Read More</a>.
+	 */
+	@Nonnull
+	@Deprecated
+	public static String parseColor(@Nonnull String string) {
 		string = parseColorAmp(string);
 		string = parseColorAcc(string);
 		string = parseColorTags(string);
 		return string;
 	}
 
-	public static String parseColorAmp(String string) {
+	/**
+	 * @deprecated Please use MiniMessage instead.
+	 * <a href="https://docs.adventure.kyori.net/minimessage.html">Read More</a>.
+	 */
+	@Nonnull
+	@Deprecated
+	public static String parseColorAmp(@Nonnull String string) {
 		string = string.replace("&&", "&");
 		return ChatColor.translateAlternateColorCodes('&', string);
 	}
 
-	public static String parseColorAcc(String string) {
+	/**
+	 * @deprecated Please use MiniMessage instead.
+	 * <a href="https://docs.adventure.kyori.net/minimessage.html">Read More</a>.
+	 */
+	@Nonnull
+	@Deprecated
+	public static String parseColorAcc(@Nonnull String string) {
 		return ChatColor.translateAlternateColorCodes('`', string);
 	}
 
-	public static String parseColorTags(String string) {
+	/**
+	 * @deprecated Please use MiniMessage instead.
+	 * <a href="https://docs.adventure.kyori.net/minimessage.html">Read More</a>.
+	 */
+	@Nonnull
+	@Deprecated
+	public static String parseColorTags(@Nonnull String string) {
 		return string
 				.replace("<black>", ChatColor.BLACK.toString())
 				.replace("<dblue>", ChatColor.DARK_BLUE.toString())
@@ -162,12 +201,11 @@ public final class ChatUtils {
 	 * 
 	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
 	 */
-	@Deprecated(forRemoval = true)
-	public static boolean isNullOrEmpty(final BaseComponent component) {
-		if (component == null) {
+	public static boolean isNullOrEmpty(@Nullable final Component component) {
+		if (component == null || component == Component.empty()) {
 			return true;
 		}
-		return Strings.isNullOrEmpty(component.toPlainText());
+		return StringUtils.isBlank(PlainTextComponentSerializer.plainText().serialize(component));
 	}
 
 	/**
@@ -179,37 +217,108 @@ public final class ChatUtils {
 	 * @param component The component to test if null or empty.
 	 * @return Returns true if the component is null or has no visible content.
 	 */
-	public static boolean isNullOrEmpty(final Component component) {
-		if (component == null) {
-			return true;
-		}
-		return StringUtils.isBlank(PlainComponentSerializer.plain().serialize(component));
-	}
-
-	/**
-	 * Determines whether a given component is a {@code {"text":"","extra":[...]}} component.
-	 *
-	 * @param component The component to test.
-	 * @return Returns whether the given component is a base / container component.
-	 */
-	public static boolean isBaseComponent(final Component component) {
+	public static boolean isBaseComponent(@Nullable final Component component) {
 		if (component == null) {
 			return false;
 		}
-		final var content = component instanceof net.kyori.adventure.text.TextComponent ?
-				((net.kyori.adventure.text.TextComponent) component).content() : null;
-		return StringUtils.isEmpty(content)
+		return (!(component instanceof TextComponent textComponent) || StringUtils.isEmpty(textComponent.content()))
 				&& !component.children().isEmpty()
 				&& component.clickEvent() == null
 				&& component.hoverEvent() == null
 				&& !component.hasStyling();
 	}
 
+	private static final Map<TextDecoration, TextDecoration.State> NORMALISED_DECORATION_MAP =
+			Map.of(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+
+	/**
+	 * Checks whether a given component is the result of {@link #normaliseComponent(Component...)} or
+	 * {@link #normaliseComponent(List)}.
+	 *
+	 * @param component The component to check.
+	 * @return Returns true if the given component is "normalised."
+	 */
+	public static boolean isNormalisedComponent(@Nullable final Component component) {
+		if (!(component instanceof final TextComponent textComponent)) {
+			return false;
+		}
+		return StringUtils.isEmpty(textComponent.content())
+				&& !component.children().isEmpty()
+				&& component.clickEvent() == null
+				&& component.hoverEvent() == null
+				&& Objects.equals(component.color(), NamedTextColor.WHITE)
+				&& Objects.equals(component.decorations(), NORMALISED_DECORATION_MAP);
+	}
+
+	/**
+	 * Wraps a component or series of components into a "normalised" display component, meaning that the text is
+	 * white and non-italic by default.
+	 *
+	 * @param components The component / components to wrap.
+	 * @return Returns the normalised component, or empty if no components are passed.
+	 */
+	@Nonnull
+	public static Component normaliseComponent(final Component... components) {
+		if (ArrayUtils.isEmpty(components)) {
+			return Component.empty();
+		}
+		return Component.text()
+				.color(NamedTextColor.WHITE)
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+				.append(components)
+				.build();
+	}
+
+	/**
+	 * Wraps a series of components into a "normalised" display component, meaning that the text is white and
+	 * non-italic by default.
+	 *
+	 * @param components The components to wrap.
+	 * @return Returns the normalised component, or empty if no components are passed.
+	 */
+	@Nonnull
+	public static Component normaliseComponent(@Nullable final List<Component> components) {
+		if (CollectionUtils.isEmpty(components)) {
+			return Component.empty();
+		}
+		return Component.text()
+				.color(NamedTextColor.WHITE)
+				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+				.append(components)
+				.build();
+	}
+
+	/**
+	 * This will also happily translate any translatable components.
+	 *
+	 * @param component The component to stringify.
+	 * @return Returns a stringified version of the given component.
+	 */
+	@Nonnull
+	public static String stringify(@Nullable final Component component) {
+		return component == null || component == Component.empty() ? "" :
+				CraftChatMessage.fromComponent(PaperAdventure.asVanilla(component));
+	}
+
+	/**
+	 * Upgrades a legacy string (eg: §6Hello, World!) to a Kyori component.
+	 *
+	 * @param string The string to convert into a component.
+	 * @return Returns a new component, or null if the given string was null.
+	 */
+	@Contract("!null -> !null")
+	@Nullable
+	public static Component upgradeLegacyString(@Nullable final String string) {
+		return string == null ? null : string.isEmpty() ? Component.empty() :
+				LegacyComponentSerializer.legacySection().deserialize(string);
+	}
+
 	/**
 	 * @return Generates a new text component that's specifically <i>NOT</i> italicised. Use this for item names and
 	 *         lore.
 	 */
-	public static net.kyori.adventure.text.TextComponent newComponent() {
+	@Nonnull
+	public static TextComponent newComponent() {
 		return newComponent("");
 	}
 
@@ -219,7 +328,8 @@ public final class ChatUtils {
 	 * @param content The text content for the component.
 	 * @return Returns the generated text component.
 	 */
-	public static net.kyori.adventure.text.TextComponent newComponent(final String content) {
+	@Nonnull
+	public static TextComponent newComponent(final String content) {
 		return Component.text(Objects.requireNonNull(content))
 				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
 	}
@@ -229,61 +339,16 @@ public final class ChatUtils {
 	 *
 	 * @param component The component to clone.
 	 * @return Returns a clone of the given component.
-	 */
-	public static Component cloneComponent(final Component component) {
-		if (component == null) {
-			return null;
-		}
-		final var raw = GsonComponentSerializer.gson().serialize(component);
-		return GsonComponentSerializer.gson().deserialize(raw);
-	}
-
-	/**
-	 * This is an easy way to create a text component when all you want to do is colour it.
 	 *
-	 * @param value The value of the text. (Objects will be stringified)
-	 * @param formats The colour formats.
-	 * @return Returns the created component, so you <i>can</i> do more stuff to it.
-	 *
-	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use {@link Component#text()} instead.
+	 * @deprecated Kyori components are immutable, so any methods that offer to update the component will actually
+	 *             instantiate a new component with the modification, thus making this utility unnecessary, if not
+	 *             downright inefficient.
 	 */
+	@Contract("!null -> !null")
+	@Nullable
 	@Deprecated(forRemoval = true)
-	public static TextComponent textComponent(final Object value, final ChatColor... formats) {
-		final TextComponent component = new TextComponent(value == null ? "<null>" : value.toString());
-		if (!ArrayUtils.isEmpty(formats)) {
-			for (final ChatColor format : formats) {
-				if (format == null) {
-					//continue;
-				}
-				else if (format.getColor() != null) {
-					component.setColor(format);
-				}
-				else if (format == ChatColor.RESET) {
-					component.setColor(format);
-					component.setBold(false);
-					component.setItalic(false);
-					component.setUnderlined(false);
-					component.setStrikethrough(false);
-					component.setObfuscated(false);
-				}
-				else if (format == ChatColor.BOLD) {
-					component.setBold(true);
-				}
-				else if (format == ChatColor.ITALIC) {
-					component.setItalic(true);
-				}
-				else if (format == ChatColor.UNDERLINE) {
-					component.setUnderlined(true);
-				}
-				else if (format == ChatColor.STRIKETHROUGH) {
-					component.setStrikethrough(true);
-				}
-				else if (format == ChatColor.MAGIC) {
-					component.setObfuscated(true);
-				}
-			}
-		}
-		return component;
+	public static Component cloneComponent(@Nullable final Component component) {
+		return component == null ? null : component.style(component.style());
 	}
 
 	/**
@@ -293,7 +358,8 @@ public final class ChatUtils {
 	 * @param latter The right hand side component.
 	 * @return Returns whether the two given components are equal.
 	 */
-	public static boolean areComponentsEqual(final Component former, final Component latter) {
+	public static boolean areComponentsEqual(@Nullable final Component former,
+											 @Nullable final Component latter) {
 		if (Objects.equals(former, latter)) {
 			return true;
 		}

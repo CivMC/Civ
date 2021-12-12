@@ -18,7 +18,7 @@ public class DialogManager implements Listener {
 
 	public static final DialogManager INSTANCE = new DialogManager();
 	private static final Map<UUID, Dialog> DIALOGS = new TreeMap<>();
-	
+
 	private DialogManager() {}
 
 	public static Dialog getDialog(final UUID player) {

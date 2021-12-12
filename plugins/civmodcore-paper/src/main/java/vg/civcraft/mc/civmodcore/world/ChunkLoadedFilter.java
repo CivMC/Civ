@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import net.minecraft.server.v1_16_R3.BlockPosition;
+import net.minecraft.core.BlockPos;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -19,7 +19,7 @@ public final class ChunkLoadedFilter {
 	 * @param world The world to filter.
 	 * @return Returns a new filter function.
 	 */
-	public static Predicate<BlockPosition> blockPosition(final World world) {
+	public static Predicate<BlockPos> blockPosition(final World world) {
 		Preconditions.checkArgument(WorldUtils.isWorldLoaded(world));
 		final List<Long> loadedChunks = new ArrayList<>();
 		return (position) -> {

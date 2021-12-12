@@ -20,7 +20,7 @@ import org.ipvp.canvas.slot.Slot;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.gui.canvas.MenuUtils;
-import vg.civcraft.mc.civmodcore.util.NullUtils;
+import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 public abstract class AbstractCivMenu extends AbstractMenu {
 
@@ -65,7 +65,7 @@ public abstract class AbstractCivMenu extends AbstractMenu {
 	 * @return Returns a clone of this menu's title.
 	 */
 	protected Component getTitle() {
-		return ChatUtils.cloneComponent(this.title);
+		return this.title;
 	}
 
 	/**

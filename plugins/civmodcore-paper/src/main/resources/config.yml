@@ -1,15 +1,20 @@
 # Database connection details, should you want to have a database connection.
-# KEEP THIS COMMENTED OUT IN THIS DEFAULT CONFIG OTHERWISE BAD THINGS!
 # Do NOT change the ==: value.
-#database:
-#  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
-#  plugin: CivModCore
-#  user: username
-#  password: password
-#  host: localhost
-#  port: 3306
-#  database: minecraft
-#  poolsize: 5
-#  connection_timeout: 10000
-#  idle_timeout: 600000
-#  max_lifetime: 7200000
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  username: username
+  password: password
+  host: localhost
+  port: 3306
+  database: minecraft
+  poolsize: 5
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
+
+# Keep in mind that the header must be within "" as well as be no more than 16 characters in total text.
+scoreboardHeader: "&2&lCivilisation"
+
+# The number of threads to dedicate to downloading skins from Mojang. Keeping this value commented will automatically
+# calculate the threads based on the number of available processors.
+#skin-download-threads: 1

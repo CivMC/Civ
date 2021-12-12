@@ -10,8 +10,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.NullUtils;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 public class ItemMetaTests {
 
@@ -28,10 +29,10 @@ public class ItemMetaTests {
 	@Test
 	public void testBasicDisplayNameEquality() {
 		// Setup
-		final var formerItem = NullUtils.isNotNull(NBTCompound.processItem(TEMPLATE_ITEM, (nbt) -> {
+		final var formerItem = NullUtils.isNotNull(NBTSerialization.processItem(TEMPLATE_ITEM, (nbt) -> {
 			final var display = new NBTCompound();
 			display.setString("Name", "Hello!");
-			nbt.setCompound("display", display);
+			nbt.a("display", display);
 		}));
 		final var latterItem = TEMPLATE_ITEM.clone();
 		ItemUtils.setComponentDisplayName(latterItem, Component.text("Hello!"));
@@ -47,10 +48,10 @@ public class ItemMetaTests {
 	@Test
 	public void testBasicJsonPrimitiveDisplayNameEquality() {
 		// Setup
-		final var formerItem = NullUtils.isNotNull(NBTCompound.processItem(TEMPLATE_ITEM, (nbt) -> {
+		final var formerItem = NullUtils.isNotNull(NBTSerialization.processItem(TEMPLATE_ITEM, (nbt) -> {
 			final var display = new NBTCompound();
 			display.setString("Name", "\"Hello!\"");
-			nbt.setCompound("display", display);
+			nbt.a("display", display);
 		}));
 		final var latterItem = TEMPLATE_ITEM.clone();
 		ItemUtils.handleItemMeta(latterItem, (ItemMeta meta) -> {

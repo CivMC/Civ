@@ -5,11 +5,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
-import vg.civcraft.mc.civmodcore.util.CivLogger;
+import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
+@UtilityClass
 public final class TreeTypeUtils {
 
 	private static final Map<Material, TreeType> TREE_MATERIALS = ImmutableMap.<Material, TreeType>builder()
@@ -72,6 +74,10 @@ public final class TreeTypeUtils {
 			// Crimson Fungus
 			.put(Material.WARPED_FUNGUS, TreeType.WARPED_FUNGUS)
 			.put(Material.WARPED_STEM, TreeType.CRIMSON_FUNGUS)
+			//Azalea
+			.put(Material.FLOWERING_AZALEA, TreeType.AZALEA)
+			.put(Material.AZALEA_LEAVES, TreeType.AZALEA)
+			.put(Material.FLOWERING_AZALEA_LEAVES, TreeType.AZALEA)
 			.build();
 
 	private static final Map<TreeType, Material> SAPLING_MATERIALS = ImmutableMap.<TreeType, Material>builder()
@@ -106,6 +112,8 @@ public final class TreeTypeUtils {
 			.put(TreeType.CRIMSON_FUNGUS, Material.CRIMSON_FUNGUS)
 			// Crimson Fungus
 			.put(TreeType.WARPED_FUNGUS, Material.WARPED_FUNGUS)
+			// Azalea
+			.put(TreeType.AZALEA, Material.FLOWERING_AZALEA)
 			.build();
 
 	public static void init() {
@@ -134,7 +142,6 @@ public final class TreeTypeUtils {
 			}
 		}
 	}
-
 
 	public static TreeType getMatchingTreeType(final Material material) {
 		return TREE_MATERIALS.get(material);

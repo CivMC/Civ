@@ -1,14 +1,15 @@
 package vg.civcraft.mc.civmodcore.inventory;
 
-import java.util.Iterator;
+import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.inventory.Recipe;
-import vg.civcraft.mc.civmodcore.util.NullUtils;
+import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 /**
  * Class of utility functions for Recipes.
  */
+@UtilityClass
 public final class RecipeManager {
 
 	/**
@@ -22,13 +23,13 @@ public final class RecipeManager {
 	 * @return Returns true if the other recipe matches the base.
 	 */
 	public static boolean matchRecipe(final Recipe base, final Recipe other) {
-		if (base == null) {
-			return false;
+		if (base == other) {
+			return true;
 		}
-		if (base instanceof Keyed && other instanceof Keyed) {
+		if (base instanceof Keyed baseKeyed && other instanceof Keyed otherKeyed) {
 			return NullUtils.equalsNotNull(
-					((Keyed) base).getKey(),
-					((Keyed) other).getKey());
+					baseKeyed.getKey(),
+					otherKeyed.getKey());
 		}
 		return false;
 	}
@@ -51,7 +52,7 @@ public final class RecipeManager {
 		try {
 			return Bukkit.getServer().addRecipe(recipe);
 		}
-		catch (Exception exception) {
+		catch (final Throwable exception) {
 			return false;
 		}
 	}
@@ -66,13 +67,11 @@ public final class RecipeManager {
 		if (recipe == null) {
 			return false;
 		}
-		final Iterator<Recipe> iterator = Bukkit.getServer().recipeIterator();
-		while (iterator.hasNext()) {
-			if (!matchRecipe(recipe, iterator.next())) {
-				continue;
+		for (final var iterator = Bukkit.getServer().recipeIterator(); iterator.hasNext();) {
+			if (matchRecipe(recipe, iterator.next())) {
+				iterator.remove();
+				break;
 			}
-			iterator.remove();
-			return true;
 		}
 		return true;
 	}

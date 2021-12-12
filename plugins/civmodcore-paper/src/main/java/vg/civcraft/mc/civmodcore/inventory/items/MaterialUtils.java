@@ -1,12 +1,18 @@
 package vg.civcraft.mc.civmodcore.inventory.items;
 
 import com.destroystokyo.paper.MaterialTags;
-import com.google.common.base.Strings;
 import com.google.common.math.IntMath;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import lombok.experimental.UtilityClass;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.Tag;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * <p>See <a href="https://github.com/Protonull/BukkitReport/tree/master/reports">BukkitReports</a>.</p>
@@ -18,6 +24,7 @@ import org.bukkit.Tag;
  *     <li>{@link TreeTypeUtils TreeTypeUtils}</li>
  * </ul>
  */
+@UtilityClass
 public final class MaterialUtils {
 
 	private static final List<Material> HASH_MATERIALS = new ArrayList<>() {{
@@ -33,11 +40,21 @@ public final class MaterialUtils {
 	 * @param value The value to search for a matching material by.
 	 * @return Returns a matched material or null.
 	 */
-	public static Material getMaterial(final String value) {
-		if (Strings.isNullOrEmpty(value)) {
-			return null;
-		}
-		return Material.getMaterial(value.toUpperCase());
+	@Nullable
+	public static Material getMaterial(@Nullable final String value) {
+		return StringUtils.isEmpty(value) ? null : Material.getMaterial(value.toUpperCase());
+	}
+
+	/**
+	 * {@link ItemUtils#asTranslatable(ItemStack)} is preferable since that will return a translatable based on
+	 * additional item data, such as Potion becoming Potion of Water Breathing or Potion of Regeneration.
+	 *
+	 * @param material The material to translate.
+	 * @return Returns a translatable component based on the given material.
+	 */
+	@Nonnull
+	public static TranslatableComponent asTranslatable(@Nonnull final Material material) {
+		return Component.translatable(material.translationKey());
 	}
 
 	/**
@@ -47,11 +64,8 @@ public final class MaterialUtils {
 	 * @param material The material to check.
 	 * @return Returns true if the material is air.
 	 */
-	public static boolean isAir(final Material material) {
-		if (material == null) {
-			return true;
-		}
-		return material.isAir();
+	public static boolean isAir(@Nullable final Material material) {
+		return material == null || material.isAir();
 	}
 
 	/**
@@ -60,7 +74,8 @@ public final class MaterialUtils {
 	 * @param object Object to base returned material on
 	 * @return Material hash of the given object
 	 */
-	public static Material getMaterialHash(final Object object) {
+	@Nonnull
+	public static Material getMaterialHash(@Nullable final Object object) {
 		if (object == null) {
 			return HASH_MATERIALS.get(0);
 		}

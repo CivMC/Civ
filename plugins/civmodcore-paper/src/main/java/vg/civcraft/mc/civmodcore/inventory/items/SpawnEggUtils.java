@@ -6,17 +6,20 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
-import vg.civcraft.mc.civmodcore.util.CivLogger;
+import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 /**
  * Class of static APIs for Spawn Eggs.
  */
+@UtilityClass
 public final class SpawnEggUtils {
 
 	private static final BiMap<Material, EntityType> SPAWN_EGGS = ImmutableBiMap.<Material, EntityType>builder()
+			.put(Material.AXOLOTL_SPAWN_EGG, EntityType.AXOLOTL)
 			.put(Material.BAT_SPAWN_EGG, EntityType.BAT)
 			.put(Material.BEE_SPAWN_EGG, EntityType.BEE)
 			.put(Material.BLAZE_SPAWN_EGG, EntityType.BLAZE)
@@ -35,6 +38,8 @@ public final class SpawnEggUtils {
 			.put(Material.EVOKER_SPAWN_EGG, EntityType.EVOKER)
 			.put(Material.FOX_SPAWN_EGG, EntityType.FOX)
 			.put(Material.GHAST_SPAWN_EGG, EntityType.GHAST)
+			.put(Material.GLOW_SQUID_SPAWN_EGG, EntityType.GLOW_SQUID)
+			.put(Material.GOAT_SPAWN_EGG, EntityType.GOAT)
 			.put(Material.GUARDIAN_SPAWN_EGG, EntityType.GUARDIAN)
 			.put(Material.HOGLIN_SPAWN_EGG, EntityType.HOGLIN)
 			.put(Material.HORSE_SPAWN_EGG, EntityType.HORSE)

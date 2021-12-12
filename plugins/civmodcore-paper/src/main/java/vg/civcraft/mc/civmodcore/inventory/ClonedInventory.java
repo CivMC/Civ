@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,9 +15,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import vg.civcraft.mc.civmodcore.util.MoreArrayUtils;
+import vg.civcraft.mc.civmodcore.utilities.MoreArrayUtils;
 
 /**
  * Wrapper for cloned inventories intended to ensure that ClonedInventories aren't themselves cloned.
@@ -58,15 +58,15 @@ public final class ClonedInventory implements Inventory {
 		return this.inventory.addItem(items);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public HashMap<Integer, ItemStack> removeItem(final ItemStack... items) throws IllegalArgumentException {
 		return this.inventory.removeItem(items);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
-	public HashMap<Integer, ItemStack> removeItemAnySlot(@NotNull ItemStack... items) throws IllegalArgumentException {
+	public HashMap<Integer, ItemStack> removeItemAnySlot(@Nonnull ItemStack... items) throws IllegalArgumentException {
 		return this.inventory.removeItemAnySlot(items);
 	}
 
@@ -91,7 +91,7 @@ public final class ClonedInventory implements Inventory {
 	}
 
 	@Override
-	public boolean contains(@NotNull final Material material) throws IllegalArgumentException {
+	public boolean contains(@Nonnull final Material material) throws IllegalArgumentException {
 		return this.inventory.contains(material);
 	}
 
@@ -101,7 +101,7 @@ public final class ClonedInventory implements Inventory {
 	}
 
 	@Override
-	public boolean contains(@NotNull final Material material, final int amount) throws IllegalArgumentException {
+	public boolean contains(@Nonnull final Material material, final int amount) throws IllegalArgumentException {
 		return this.inventory.contains(material, amount);
 	}
 
@@ -116,7 +116,7 @@ public final class ClonedInventory implements Inventory {
 	}
 
 	@Override
-	public HashMap<Integer, ? extends ItemStack> all(@NotNull final Material material) throws IllegalArgumentException {
+	public HashMap<Integer, ? extends ItemStack> all(@Nonnull final Material material) throws IllegalArgumentException {
 		return this.inventory.all(material);
 	}
 
@@ -126,12 +126,12 @@ public final class ClonedInventory implements Inventory {
 	}
 
 	@Override
-	public int first(@NotNull final Material material) throws IllegalArgumentException {
+	public int first(@Nonnull final Material material) throws IllegalArgumentException {
 		return this.inventory.first(material);
 	}
 
 	@Override
-	public int first(@NotNull final ItemStack item) {
+	public int first(@Nonnull final ItemStack item) {
 		return this.inventory.first(item);
 	}
 
@@ -146,12 +146,12 @@ public final class ClonedInventory implements Inventory {
 	}
 
 	@Override
-	public void remove(@NotNull final Material material) throws IllegalArgumentException {
+	public void remove(@Nonnull final Material material) throws IllegalArgumentException {
 		this.inventory.remove(material);
 	}
 
 	@Override
-	public void remove(@NotNull final ItemStack item) {
+	public void remove(@Nonnull final ItemStack item) {
 		this.inventory.remove(item);
 	}
 
@@ -191,7 +191,7 @@ public final class ClonedInventory implements Inventory {
 		return this.inventory.getHolder(useSnapshot);
 	}
 
-	@NotNull
+	@Nonnull
 	@Override
 	public ListIterator<ItemStack> iterator() {
 		return this.inventory.iterator();

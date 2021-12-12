@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -14,12 +15,13 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.data.Ageable;
-import vg.civcraft.mc.civmodcore.util.CivLogger;
-import vg.civcraft.mc.civmodcore.util.KeyedUtils;
+import vg.civcraft.mc.civmodcore.utilities.CivLogger;
+import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 
 /**
  * Fills in the gaps between {@link Tag} and {@link MaterialTags}.
  */
+@UtilityClass
 public final class MoreTags {
 
 	/**
@@ -65,7 +67,7 @@ public final class MoreTags {
 	public static final Tag<Material> DIRT = new BetterTag<>("dirt",
 			ImmutableSet.<Material>builder()
 					.add(Material.FARMLAND)
-					.add(Material.GRASS_PATH)
+					.add(Material.DIRT_PATH)
 					.add(Material.GRASS_BLOCK)
 					.add(Material.DIRT)
 					.add(Material.COARSE_DIRT)
@@ -112,6 +114,7 @@ public final class MoreTags {
 					.add(Material.TWISTING_VINES)
 					.add(Material.WEEPING_VINES)
 					.add(Material.WHEAT)
+					.add(Material.CAVE_VINES)
 					.build());
 
 	public static final Tag<Material> POTTABLE = new BetterTag<>("pottable",
@@ -176,6 +179,80 @@ public final class MoreTags {
 					.add(Material.NETHERITE_INGOT)
 					.add(Material.NETHERITE_BLOCK)
 					.add(Material.NETHERITE_SCRAP)
+					.build());
+
+	public static final Tag<Material> LIGHTABLE_CANDLES = new BetterTag<>("lightable_candles",
+			ImmutableSet.<Material>builder()
+					.add(Material.CANDLE)
+					.add(Material.CANDLE_CAKE)
+					.add(Material.CYAN_CANDLE)
+					.add(Material.CYAN_CANDLE_CAKE)
+					.add(Material.BLACK_CANDLE)
+					.add(Material.BLACK_CANDLE_CAKE)
+					.add(Material.BLUE_CANDLE)
+					.add(Material.BLUE_CANDLE_CAKE)
+					.add(Material.BROWN_CANDLE)
+					.add(Material.BROWN_CANDLE_CAKE)
+					.add(Material.GRAY_CANDLE)
+					.add(Material.GRAY_CANDLE_CAKE)
+					.add(Material.GREEN_CANDLE)
+					.add(Material.GREEN_CANDLE_CAKE)
+					.add(Material.LIGHT_BLUE_CANDLE)
+					.add(Material.LIGHT_BLUE_CANDLE_CAKE)
+					.add(Material.LIGHT_GRAY_CANDLE)
+					.add(Material.LIGHT_GRAY_CANDLE_CAKE)
+					.add(Material.LIME_CANDLE)
+					.add(Material.LIME_CANDLE_CAKE)
+					.add(Material.MAGENTA_CANDLE)
+					.add(Material.MAGENTA_CANDLE_CAKE)
+					.add(Material.ORANGE_CANDLE)
+					.add(Material.ORANGE_CANDLE_CAKE)
+					.add(Material.PINK_CANDLE)
+					.add(Material.PINK_CANDLE_CAKE)
+					.add(Material.PURPLE_CANDLE)
+					.add(Material.PURPLE_CANDLE_CAKE)
+					.add(Material.RED_CANDLE)
+					.add(Material.RED_CANDLE_CAKE)
+					.add(Material.WHITE_CANDLE)
+					.add(Material.WHITE_CANDLE_CAKE)
+					.add(Material.YELLOW_CANDLE)
+					.add(Material.YELLOW_CANDLE_CAKE)
+					.build());
+
+	public static final Tag<Material> COPPER_BLOCKS = new BetterTag<>("copper_blocks",
+			ImmutableSet.<Material>builder()
+					.add(Material.COPPER_BLOCK)
+					.add(Material.EXPOSED_COPPER)
+					.add(Material.WEATHERED_COPPER)
+					.add(Material.OXIDIZED_COPPER)
+					.add(Material.CUT_COPPER)
+					.add(Material.EXPOSED_CUT_COPPER)
+					.add(Material.WEATHERED_CUT_COPPER)
+					.add(Material.OXIDIZED_CUT_COPPER)
+					.add(Material.CUT_COPPER_STAIRS)
+					.add(Material.EXPOSED_CUT_COPPER_STAIRS)
+					.add(Material.WEATHERED_CUT_COPPER_STAIRS)
+					.add(Material.OXIDIZED_CUT_COPPER_STAIRS)
+					.add(Material.CUT_COPPER_SLAB)
+					.add(Material.EXPOSED_CUT_COPPER_SLAB)
+					.add(Material.WEATHERED_CUT_COPPER_SLAB)
+					.add(Material.OXIDIZED_CUT_COPPER_SLAB)
+					.add(Material.WAXED_COPPER_BLOCK)
+					.add(Material.WAXED_EXPOSED_COPPER)
+					.add(Material.WAXED_WEATHERED_COPPER)
+					.add(Material.WAXED_OXIDIZED_COPPER)
+					.add(Material.WAXED_CUT_COPPER)
+					.add(Material.WAXED_EXPOSED_CUT_COPPER)
+					.add(Material.WAXED_WEATHERED_CUT_COPPER)
+					.add(Material.WAXED_OXIDIZED_CUT_COPPER)
+					.add(Material.WAXED_CUT_COPPER_STAIRS)
+					.add(Material.WAXED_EXPOSED_CUT_COPPER_STAIRS)
+					.add(Material.WAXED_WEATHERED_CUT_COPPER_STAIRS)
+					.add(Material.WAXED_OXIDIZED_CUT_COPPER_STAIRS)
+					.add(Material.WAXED_CUT_COPPER_SLAB)
+					.add(Material.WAXED_EXPOSED_CUT_COPPER_SLAB)
+					.add(Material.WAXED_WEATHERED_CUT_COPPER_SLAB)
+					.add(Material.WAXED_OXIDIZED_CUT_COPPER_SLAB)
 					.build());
 
 	// ------------------------------------------------------------

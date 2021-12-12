@@ -2,16 +2,21 @@ package vg.civcraft.mc.civmodcore.inventory;
 
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.util.MoreArrayUtils;
 
+@UtilityClass
 public final class InventoryUtils {
 
 	public static final int CHEST_1_ROW = 9;
@@ -27,14 +32,9 @@ public final class InventoryUtils {
 	 * @param inventory The inventory to test.
 	 * @return Returns true if it's more likely than not valid.
 	 */
-	public static boolean isValidInventory(final Inventory inventory) {
-		if (inventory == null) {
-			return false;
-		}
-		if (inventory.getSize() <= 0) {
-			return false;
-		}
-		return true;
+	public static boolean isValidInventory(@Nullable final Inventory inventory) {
+		return inventory != null
+				&& inventory.getSize() > 0;
 	}
 
 	/**
@@ -42,8 +42,11 @@ public final class InventoryUtils {
 	 *
 	 * @param inventory The inventory to get the viewers of.
 	 * @return Returns a list of players. Returns an empty list if the inventory is null.
+	 *
+	 * @deprecated Use Java 16's instanceof pattern matching instead.
 	 */
-	public static List<Player> getViewingPlayers(final Inventory inventory) {
+	@Deprecated
+	public static List<Player> getViewingPlayers(@Nullable final Inventory inventory) {
 		if (!isValidInventory(inventory)) {
 			return new ArrayList<>(0);
 		}
@@ -59,15 +62,15 @@ public final class InventoryUtils {
 	 * @param inventory The inventory to attempt to find a slot in.
 	 * @param item The item to find a place for.
 	 * @return Returns an index of a slot that it's safe to add to. A return value of -1 means no safe place. Even if
-	 *     the return value is -1 it may still be <i>possible</i> to add the item stack to the inventory, as this
-	 *     function attempts to find the first slot that the given item stack can fit into wholly; that if it can
-	 * 	   technically fit but has to be distributed then there's no "first empty".
+	 *         the return value is -1 it may still be <i>possible</i> to add the item stack to the inventory, as this
+	 *         function attempts to find the first slot that the given item stack can fit into wholly; that if it can
+	 *         technically fit but has to be distributed then there's no "first empty".
 	 */
-	public static int firstEmpty(final Inventory inventory, final ItemStack item) {
+	public static int firstEmpty(@Nullable final Inventory inventory, final ItemStack item) {
 		if (inventory == null) {
 			return -1;
 		}
-		// If there's a slot free, then just return that. Otherwise if
+		// If there's a slot free, then just return that. Otherwise, if
 		// the item is invalid, just return whatever slot was returned.
 		final int index = inventory.firstEmpty();
 		if (index >= 0 || !ItemUtils.isValidItem(item)) {
@@ -95,9 +98,10 @@ public final class InventoryUtils {
 	 *
 	 * @param inventory The inventory to clear of items.
 	 */
-	public static void clearInventory(final Inventory inventory) {
-		Preconditions.checkArgument(isValidInventory(inventory));
-		inventory.setContents(MoreArrayUtils.fill(inventory.getContents(), null));
+	public static void clearInventory(@Nonnull final Inventory inventory) {
+		final ItemStack[] contents = inventory.getContents();
+		Arrays.fill(contents, new ItemStack(Material.AIR));
+		inventory.setContents(contents);
 	}
 
 	/**
@@ -106,11 +110,8 @@ public final class InventoryUtils {
 	 * @param inventory The inventory to check.
 	 * @return Returns true if an inventory has multiple viewers.
 	 */
-	public static boolean hasOtherViewers(final Inventory inventory) {
-		if (!isValidInventory(inventory)) {
-			return false;
-		}
-		return inventory.getViewers().size() > 1;
+	public static boolean hasOtherViewers(@Nullable final Inventory inventory) {
+		return inventory != null && inventory.getViewers().size() > 1;
 	}
 
 	/**
@@ -120,13 +121,9 @@ public final class InventoryUtils {
 	 * @return Returns true if the slot count is or between 1-6 multiples of 9.
 	 */
 	public static boolean isValidChestSize(final int slots) {
-		if (slots <= 0 || slots > 54) {
-			return false;
-		}
-		if ((slots % 9) > 0) {
-			return false;
-		}
-		return true;
+		return slots > 0
+				&& slots <= 54
+				&& (slots % 9) == 0;
 	}
 
 	/**

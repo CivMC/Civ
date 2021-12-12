@@ -1,13 +1,16 @@
 package vg.civcraft.mc.civmodcore.entities;
 
 import com.google.common.base.Strings;
-import org.bukkit.entity.Entity;
+import javax.annotation.Nonnull;
+import lombok.experimental.UtilityClass;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 
 /**
  * Class of static APIs for Entities.
  */
+@UtilityClass
 public final class EntityUtils {
 
 	/**
@@ -24,34 +27,23 @@ public final class EntityUtils {
 		try {
 			return EntityType.valueOf(value.toUpperCase());
 		}
-		catch (Exception ignored) { }
+		catch (final Throwable ignored) { }
 		try {
 			final EntityType type = EntityType.fromId(Short.parseShort(value));
 			if (type != null) {
 				return type;
 			}
 		}
-		catch (final Exception ignored) { }
+		catch (final Throwable ignored) { }
 		return null;
 	}
 
 	/**
-	 * Checks whether an entity is a player.
-	 *
-	 * @param entity The entity to test.
-	 * @return Returns true if the entity is a player.
+	 * @param entityType The entity type to translate.
+	 * @return Returns a translatable component based on the given entity type.
 	 */
-	public static boolean isPlayer(final Entity entity) {
-		if (entity == null) {
-			return false;
-		}
-		if (entity.getType() != EntityType.PLAYER) {
-			return false;
-		}
-		if (!(entity instanceof Player)) {
-			return false;
-		}
-		return true;
+	public static TranslatableComponent asTranslatable(@Nonnull final EntityType entityType) {
+		return Component.translatable(entityType.translationKey());
 	}
 
 }

@@ -1,7 +1,5 @@
 package vg.civcraft.mc.civmodcore.dao;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,11 +7,8 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Objects;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -21,14 +16,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.commons.collections4.MapUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.util.MoreCollectionUtils;
-import vg.civcraft.mc.civmodcore.util.MoreMapUtils;
+import vg.civcraft.mc.civmodcore.utilities.CivLogger;
+import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 
 /**
  * Plugins should replace their custom Database handlers with an instance of ManagedDatasource.
@@ -71,67 +64,77 @@ import vg.civcraft.mc.civmodcore.util.MoreMapUtils;
  * 
  * @author ProgrammerDan (refactored by Protonull)
  */
-public class ManagedDatasource implements ConfigurationSerializable {
+public class ManagedDatasource {
 
-	private static final Logger LOGGER = Bukkit.getLogger();
+	private static final String CREATE_MIGRATIONS_TABLE = """
+	CREATE TABLE IF NOT EXISTS managed_plugin_data (
+		managed_id BIGINT NOT NULL AUTO_INCREMENT,
+		plugin_name VARCHAR(120) NOT NULL,
+		management_began TIMESTAMP NOT NULL DEFAULT NOW(),
+		current_migration_number INT NOT NULL,
+		last_migration TIMESTAMP,
+		CONSTRAINT pk_managed_plugin_data PRIMARY KEY (managed_id),
+		CONSTRAINT uniq_managed_plugin UNIQUE (plugin_name),
+		INDEX idx_managed_plugin USING BTREE (plugin_name)
+	);
+	""";
 
-	private static final String CREATE_MIGRATIONS_TABLE = "CREATE TABLE IF NOT EXISTS managed_plugin_data ("
-			+ "managed_id BIGINT NOT NULL AUTO_INCREMENT, " + "plugin_name VARCHAR(120) NOT NULL, "
-			+ "management_began TIMESTAMP NOT NULL DEFAULT NOW(), " + "current_migration_number INT NOT NULL, "
-			+ "last_migration TIMESTAMP, " + "CONSTRAINT pk_managed_plugin_data PRIMARY KEY (managed_id), "
-			+ "CONSTRAINT uniq_managed_plugin UNIQUE (plugin_name), "
-			+ "INDEX idx_managed_plugin USING BTREE (plugin_name)" + ");";
+	private static final String CREATE_LOCK_TABLE = """
+	CREATE TABLE IF NOT EXISTS managed_plugin_locks (
+		plugin_name VARCHAR(120) NOT NULL,
+		lock_time TIMESTAMP NOT NULL DEFAULT NOW(),
+		CONSTRAINT pk_managed_plugin_locks PRIMARY KEY (plugin_name)
+	);
+	""";
 
-	private static final String CREATE_LOCK_TABLE = "CREATE TABLE IF NOT EXISTS managed_plugin_locks ("
-			+ "plugin_name VARCHAR(120) NOT NULL, " + "lock_time TIMESTAMP NOT NULL DEFAULT NOW(), "
-			+ "CONSTRAINT pk_managed_plugin_locks PRIMARY KEY (plugin_name)" + ");";
+	private static final String CHECK_LAST_MIGRATION = """
+	SELECT current_migration_number FROM managed_plugin_data WHERE plugin_name = ?;
+	""";
 
-	private static final String CHECK_LAST_MIGRATION = "SELECT current_migration_number FROM managed_plugin_data "
-			+ "WHERE plugin_name = ?;";
+	private static final String RECORD_MIGRATION = """
+	INSERT INTO managed_plugin_data
+		(plugin_name, current_migration_number, last_migration)
+	VALUES
+		(?, ?, NOW())
+	ON DUPLICATE KEY UPDATE 
+		plugin_name = VALUES(plugin_name),
+		current_migration_number = VALUES(current_migration_number),
+		last_migration = VALUES(last_migration);
+	""";
 
-	private static final String RECORD_MIGRATION = "INSERT INTO managed_plugin_data "
-			+ "(plugin_name, current_migration_number, last_migration) "
-			+ "VALUES (?, ?, NOW()) ON DUPLICATE KEY UPDATE plugin_name = VALUES(plugin_name), "
-			+ "current_migration_number = VALUES(current_migration_number), "
-			+ "last_migration = VALUES(last_migration);";
+	private static final String CLEANUP_LOCK_TABLE = """
+	DELETE FROM managed_plugin_locks WHERE lock_time <= TIMESTAMPADD(HOUR, -8, NOW());
+	""";
 
-	private static final String CLEANUP_LOCK_TABLE = "DELETE FROM managed_plugin_locks "
-			+ "WHERE lock_time <= TIMESTAMPADD(HOUR, -8, NOW());";
+	private static final String ACQUIRE_LOCK = """
+	INSERT IGNORE INTO managed_plugin_locks (plugin_name) VALUES (?);
+	""";
 
-	private static final String ACQUIRE_LOCK = "INSERT IGNORE INTO managed_plugin_locks (plugin_name) VALUES (?);";
-
-	private static final String RELEASE_LOCK = "DELETE FROM managed_plugin_locks WHERE plugin_name = ?;";
+	private static final String RELEASE_LOCK = """
+	DELETE FROM managed_plugin_locks WHERE plugin_name = ?;
+	""";
 
 	private static final long MAX_WAIT_FOR_LOCK = 600000L;
-
 	private static final long WAIT_PERIOD = 500L;
 
+	private final CivLogger logger;
 	private final Plugin plugin;
-	private final DatabaseCredentials credentials;
 	private final ConnectionPool connections;
 	private final ExecutorService postExecutor;
 	private final TreeMap<Integer, Migration> migrations;
 	private int firstMigration;
 	private int lastMigration;
 
-	/**
-	 * See {@link #ManagedDatasource(ACivMod, String, String, String, int, String, String, int, long, long, long)} for
-	 * more details.
-	 *
-	 * @param plugin The civ plugin whose database is being managed.
-	 * @param user The SQL user to connect as.
-	 * @param pass The SQL user's password.
-	 * @param host The hostname of the database.
-	 * @param port The port to connect via.
-	 * @param database The specific database to create and modify tables in.
-	 * @param poolSize The maximum size of the connection pool (under 10 recommended)
-	 * @param connectionTimeout The longest a query can run until it times out (1-5 seconds recommended)
-	 * @param idleTimeout The longest a connection can sit idle before recycling (10 minutes recommended, check dbms)
-	 * @param maxLifetime The longest a connection can exist in total. (2 hours recommended, check dbms)
-	 */
-	public ManagedDatasource(ACivMod plugin, String user, String pass, String host, int port, String database,
-							 int poolSize, long connectionTimeout, long idleTimeout, long maxLifetime) {
-		this(plugin, user, pass, host, port, "mysql", database, poolSize, connectionTimeout, idleTimeout, maxLifetime);
+	private ManagedDatasource(final CivLogger logger,
+							  final ACivMod plugin,
+							  final ConnectionPool connections) {
+		this.logger = logger;
+		this.plugin = plugin;
+		this.connections = connections;
+		this.postExecutor = Executors.newSingleThreadExecutor();
+		this.migrations = new TreeMap<>();
+		this.firstMigration = Integer.MAX_VALUE;
+		this.lastMigration = Integer.MIN_VALUE;
 	}
 
 	/**
@@ -174,55 +177,36 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	 * docs for any further questions.
 	 *
 	 * @param plugin The plugin whose database is being managed.
-	 * @param user The SQL user to connect as.
-	 * @param pass The SQL user's password.
-	 * @param host The hostname of the database.
-	 * @param port The port to connect via.
-	 * @param driver The jdbc driver to use to connect to the database.
-	 * @param database The specific database to create and modify tables in.
-	 * @param poolSize The maximum size of the connection pool (under 10 recommended)
-	 * @param connectionTimeout The longest a query can run until it times out (1-5 seconds recommended)
-	 * @param idleTimeout The longest a connection can sit idle before recycling (10 minutes recommended, check dbms)
-	 * @param maxLifetime The longest a connection can exist in total. (2 hours recommended, check dbms)
-	 */
-	public ManagedDatasource(ACivMod plugin, String user, String pass, String host, int port, String driver,
-							 String database, int poolSize, long connectionTimeout, long idleTimeout,
-							 long maxLifetime) {
-		this(plugin, new DatabaseCredentials(user, pass, host, port, driver, database,
-				poolSize, connectionTimeout, idleTimeout, maxLifetime));
-	}
-
-	/**
-	 * Create a new ManagedDatasource.
-	 *
-	 * @param plugin The plugin whose database is being managed.
 	 * @param credentials The credentials to connect to the database with.
+	 * @return Returns
 	 */
-	public ManagedDatasource(ACivMod plugin, DatabaseCredentials credentials) {
-		Preconditions.checkArgument(plugin != null && plugin.isEnabled());
-		Preconditions.checkArgument(credentials != null);
-		this.plugin = plugin;
-		this.credentials = credentials;
-		LOGGER.info(String.format("Connecting to %s@%s:%s using %s",credentials.getDatabase(),
-				credentials.getHostname(), credentials.getPort(), credentials.getUsername()));
-		this.connections = new ConnectionPool(credentials);
-		this.postExecutor = Executors.newSingleThreadExecutor();
-		this.migrations = new TreeMap<>();
-		this.firstMigration = Integer.MAX_VALUE;
-		this.lastMigration = Integer.MIN_VALUE;
-		try (Connection connection = connections.getConnection();) {
-			try (Statement statement = connection.createStatement();) {
+	@Nullable
+	public static ManagedDatasource construct(@Nonnull final ACivMod plugin,
+											  @Nullable final DatabaseCredentials credentials) {
+		final var logger = CivLogger.getLogger(plugin.getClass(), ManagedDatasource.class);
+		if (credentials == null) {
+			logger.warning("You must pass in a set of credentials");
+			return null;
+		}
+		final var connections = new ConnectionPool(credentials);
+		logger.info(String.format("Connecting to %s@%s:%s using %s",credentials.database(),
+				credentials.host(), credentials.port(), credentials.username()));
+		try (final Connection connection = connections.getConnection()) {
+			try (final Statement statement = connection.createStatement()) {
 				statement.executeUpdate(ManagedDatasource.CREATE_MIGRATIONS_TABLE);
 			}
-			try (Statement statement = connection.createStatement();) {
+			try (final Statement statement = connection.createStatement()) {
 				statement.executeUpdate(ManagedDatasource.CREATE_LOCK_TABLE);
 			}
 		}
-		catch (SQLException ignored) {
-			LOGGER.severe("Failed to prepare migrations table or register this plugin to it.");
-			LOGGER.log(Level.SEVERE, "Assuming you provided proper database credentials this is most likely happening, because " +
-					"your mysql install is outdated. We recommend using MariaDB or at least the latest mysql version", ignored);
+		catch (final SQLException exception) {
+			logger.severe("Failed to prepare migrations table or register this plugin to it.");
+			logger.log(Level.SEVERE, "Assuming you provided proper database credentials this is most likely " +
+					"happening, because your mysql install is outdated. We recommend using MariaDB or at least the " +
+					"latest mysql version.", exception);
+			return null;
 		}
+		return new ManagedDatasource(logger, plugin, connections);
 	}
 
 	/**
@@ -234,7 +218,9 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	 * @param ignoreErrors Indicates if errors in this migration should be ignored.
 	 * @param queries The queries to run, in sequence.
 	 */
-	public void registerMigration(int id, boolean ignoreErrors, String... queries) {
+	public void registerMigration(final int id,
+								  final boolean ignoreErrors,
+								  final String... queries) {
 		registerMigration(id, ignoreErrors, null, queries);
 	}
 
@@ -248,13 +234,16 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	 * @param callback An optional callback that'll run after the migration has completed.
 	 * @param queries The queries to run, in sequence.
 	 */
-	public void registerMigration(int id, boolean ignoreErrors, Callable<Boolean> callback, String... queries) {
+	public void registerMigration(final int id,
+								  final boolean ignoreErrors,
+								  final Callable<Boolean> callback,
+								  final String... queries) {
 		this.migrations.put(id, new Migration(ignoreErrors, callback, queries));
-		if (id > lastMigration) {
-			lastMigration = id;
+		if (id > this.lastMigration) {
+			this.lastMigration = id;
 		}
-		if (id < firstMigration) {
-			firstMigration = id;
+		if (id < this.firstMigration) {
+			this.firstMigration = id;
 		}
 	}
 
@@ -280,51 +269,51 @@ public class ManagedDatasource implements ConfigurationSerializable {
 		try {
 			checkWaitLock();
 		}
-		catch (SQLException exception) {
-			LOGGER.log(Level.SEVERE, "An uncorrectable SQL error was encountered!", exception);
+		catch (final SQLException exception) {
+			this.logger.log(Level.SEVERE, "An uncorrectable SQL error was encountered!", exception);
 			return false;
 		}
-		catch (TimeoutException exception) {
-			LOGGER.log(Level.SEVERE, "Unable to acquire a lock!", exception);
+		catch (final TimeoutException exception) {
+			this.logger.log(Level.SEVERE, "Unable to acquire a lock!", exception);
 			return false;
 		}
 		// Now check update level, etc.
-		int currentLevel = migrations.firstKey() - 1;
-		try (Connection connection = getConnection();
-			 PreparedStatement statement = connection.prepareStatement(CHECK_LAST_MIGRATION);) {
+		int currentLevel = this.migrations.firstKey() - 1;
+		try (final Connection connection = getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(CHECK_LAST_MIGRATION)) {
 			statement.setString(1, plugin.getName());
-			try (ResultSet set = statement.executeQuery();) {
+			try (final ResultSet set = statement.executeQuery()) {
 				if (set.next()) {
 					currentLevel = set.getInt(1);
 				} // else we aren't tracked yet!
 			}
 		}
-		catch (SQLException e) {
-			LOGGER.log(Level.SEVERE, "Unable to check last migration!", e);
+		catch (final SQLException exception) {
+			this.logger.log(Level.SEVERE, "Unable to check last migration!", exception);
 			releaseLock();
 			return false;
 		}
-		NavigableMap<Integer, Migration> newApply = migrations.tailMap(currentLevel, false);
+		final NavigableMap<Integer, Migration> newApply = this.migrations.tailMap(currentLevel, false);
 		try {
 			if (newApply.size() > 0) {
-				LOGGER.info(String.format("%s database is behind, %s migrations found",
-						plugin.getName(), newApply.size()));
+				this.logger.info(String.format("%s database is behind, %s migrations found",
+						this.plugin.getName(), newApply.size()));
 				if (doMigrations(newApply)) {
-					LOGGER.info(plugin.getName() + " fully migrated.");
+					this.logger.info(this.plugin.getName() + " fully migrated.");
 				}
 				else {
-					LOGGER.warning(plugin.getName() + " failed to apply updates.");
+					this.logger.warning(this.plugin.getName() + " failed to apply updates.");
 					return false;
 				}
 			}
 			else {
-				LOGGER.info(plugin.getName() + " database is up to date.");
+				this.logger.info(this.plugin.getName() + " database is up to date.");
 			}
 			return true;
 		}
-		catch (Exception exception) {
-			LOGGER.warning(plugin.getName() + " failed to apply updates for some reason...");
-			LOGGER.log(Level.WARNING, "Full exception: ", exception);
+		catch (final Throwable exception) {
+			this.logger.warning(this.plugin.getName() + " failed to apply updates for some reason...");
+			this.logger.log(Level.WARNING, "Full exception: ", exception);
 			return false;
 		}
 		finally {
@@ -332,60 +321,63 @@ public class ManagedDatasource implements ConfigurationSerializable {
 		}
 	}
 
-	private boolean doMigrations(NavigableMap<Integer, Migration> migrations) {
+	private boolean doMigrations(final NavigableMap<Integer, Migration> migrations) {
 		try {
-			for (Integer id : migrations.keySet()) {
-				LOGGER.info("Migration " +  id + " ] Applying");
-				Migration migration = migrations.get(id);
+			for (final Integer id : migrations.keySet()) {
+				this.logger.info("Migration " +  id + " ] Applying");
+				final Migration migration = migrations.get(id);
 				if (migration == null) {
 					continue; // huh?
 				}
 				if (doMigration(id, migration.migrations, migration.ignoreErrors, migration.postMigration)) {
-					LOGGER.info("Migration " +  id + " ] Successful");
-					try (Connection connection = getConnection();
-						 PreparedStatement statement = connection.prepareStatement(RECORD_MIGRATION);) {
-						statement.setString(1, plugin.getName());
+					this.logger.info("Migration " +  id + " ] Successful");
+					try (final Connection connection = getConnection();
+						 final PreparedStatement statement = connection.prepareStatement(RECORD_MIGRATION)) {
+						statement.setString(1, this.plugin.getName());
 						statement.setInt(2, id);
 						if (statement.executeUpdate() < 1) {
-							LOGGER.warning("Might not have recorded migration " + id + " occurrence successfully.");
+							this.logger.warning("Might not have recorded migration " + id + " occurrence successfully.");
 						}
 					}
-					catch (SQLException exception) {
-						LOGGER.warning("Failed to record migration " + id + " occurrence successfully.");
-						LOGGER.log(Level.SEVERE, "Full Error: ", exception);
+					catch (final SQLException exception) {
+						this.logger.warning("Failed to record migration " + id + " occurrence successfully.");
+						this.logger.log(Level.SEVERE, "Full Error: ", exception);
 						return false;
 					}
 				}
 				else {
-					LOGGER.info("Migration " +  id + " ] Failed");
+					this.logger.info("Migration " +  id + " ] Failed");
 					return false;
 				}
 			}
 			return true;
 		}
-		catch (Exception exception) {
-			LOGGER.log(Level.SEVERE, "Unexpected failure during migrations", exception);
+		catch (final Throwable exception) {
+			this.logger.log(Level.SEVERE, "Unexpected failure during migrations", exception);
 			return false;
 		}
 	}
 
-	private boolean doMigration(Integer migration, List<String> queries, boolean ignoreErrors, Callable<Boolean> post) {
-		try (Connection connection = getConnection();) {
-			for (String query : queries) {
-				try (Statement statement = connection.createStatement();) {
+	private boolean doMigration(final Integer migration,
+								final List<String> queries,
+								final boolean ignoreErrors,
+								final Callable<Boolean> post) {
+		try (final Connection connection = getConnection()) {
+			for (final String query : queries) {
+				try (final Statement statement = connection.createStatement()) {
 					statement.executeUpdate(query);
 					if (!ignoreErrors) { // if we ignore errors we totally ignore warnings.
 						SQLWarning warning = statement.getWarnings();
 						while (warning != null) {
-							LOGGER.warning("Migration " + migration + " ] Warning: " + warning.getMessage());
+							this.logger.warning("Migration " + migration + " ] Warning: " + warning.getMessage());
 							// TODO: add verbose check
 							warning = warning.getNextWarning();
 						}
 					}
 				}
-				catch (SQLException exception) {
+				catch (final SQLException exception) {
 					if (ignoreErrors) {
-						LOGGER.warning("Migration " + migration + " ] Ignoring error: " + exception.getMessage());
+						this.logger.warning("Migration " + migration + " ] Ignoring error: " + exception.getMessage());
 					}
 					else {
 						throw exception;
@@ -393,40 +385,40 @@ public class ManagedDatasource implements ConfigurationSerializable {
 				}
 			}
 		}
-		catch (SQLException exception) {
+		catch (final SQLException exception) {
 			if (ignoreErrors) {
-				LOGGER.warning("Migration " + migration + " ] Ignoring error: " + exception.getMessage());
+				this.logger.warning("Migration " + migration + " ] Ignoring error: " + exception.getMessage());
 			}
 			else {
-				LOGGER.warning("Migration " + migration + " ] Failed migration: " + exception.getMessage());
-				LOGGER.log(Level.SEVERE, "Full Error: ", exception);
+				this.logger.warning("Migration " + migration + " ] Failed migration: " + exception.getMessage());
+				this.logger.log(Level.SEVERE, "Full Error: ", exception);
 				return false;
 			}
 		}
 		if (post != null) {
-			Future<Boolean> doing = postExecutor.submit(post);
+			final Future<Boolean> doing = postExecutor.submit(post);
 			try {
 				if (doing.get()) {
-					LOGGER.info("Migration " + migration + " ] Post Call Complete");
+					this.logger.info("Migration " + migration + " ] Post Call Complete");
 				}
 				else {
 					if (ignoreErrors) {
-						LOGGER.warning("Migration " + migration + " ] Post Call indicated failure; ignored.");
+						this.logger.warning("Migration " + migration + " ] Post Call indicated failure; ignored.");
 					}
 					else {
-						LOGGER.severe("Migration " + migration + " ] Post Call failed!");
+						this.logger.severe("Migration " + migration + " ] Post Call failed!");
 						return false;
 					}
 				}
 			}
-			catch (Exception exception) {
+			catch (final Throwable exception) {
 				if (ignoreErrors) {
-					LOGGER.warning("Migration " + migration + " ] Post Call indicated failure; ignored: " +
+					this.logger.warning("Migration " + migration + " ] Post Call indicated failure; ignored: " +
 							exception.getMessage());
 				}
 				else {
-					LOGGER.severe("Migration " + migration + " ] Post Call failed!");
-					LOGGER.log(Level.SEVERE, "Full Error: ", exception);
+					this.logger.severe("Migration " + migration + " ] Post Call failed!");
+					this.logger.log(Level.SEVERE, "Full Error: ", exception);
 					return false;
 				}
 			}
@@ -440,14 +432,14 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	 * @return Returns true if the plugin has an entry in the migrations table; false for any other outcome.
 	 */
 	public boolean isManaged() {
-		try (Connection connection = getConnection();
-			 PreparedStatement statement = connection.prepareStatement(CHECK_LAST_MIGRATION);) {
+		try (final Connection connection = getConnection();
+			 final PreparedStatement statement = connection.prepareStatement(CHECK_LAST_MIGRATION)) {
 			statement.setString(1, plugin.getName());
-			try (ResultSet set = statement.executeQuery();) {
+			try (final ResultSet set = statement.executeQuery()) {
 				return set.next();
 			}
 		}
-		catch (SQLException e) {
+		catch (final SQLException ignored) {
 			return false;
 		}
 	}
@@ -469,27 +461,28 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	 */
 	private boolean checkWaitLock() throws TimeoutException, SQLException {
 		/* First, cleanup old locks if any */
-		try (Connection connection = getConnection(); Statement cleanup = connection.createStatement();) {
+		try (final Connection connection = getConnection();
+			 final Statement cleanup = connection.createStatement()) {
 			cleanup.executeUpdate(CLEANUP_LOCK_TABLE);
 		}
-		catch (SQLException exception) {
-			LOGGER.severe("Unable to cleanup old locks, error encountered!");
+		catch (final SQLException exception) {
+			this.logger.severe("Unable to cleanup old locks, error encountered!");
 			throw exception;
 		}
 		/* Now get our own lock */
 		long start = System.currentTimeMillis();
 		while (System.currentTimeMillis() - start < MAX_WAIT_FOR_LOCK) {
-			try (Connection connection = getConnection();
-				 PreparedStatement tryAcquire = connection.prepareStatement(ACQUIRE_LOCK);) {
-				tryAcquire.setString(1, plugin.getName());
+			try (final Connection connection = getConnection();
+				 final PreparedStatement tryAcquire = connection.prepareStatement(ACQUIRE_LOCK)) {
+				tryAcquire.setString(1, this.plugin.getName());
 				int hasLock = tryAcquire.executeUpdate();
 				if (hasLock > 0) {
-					LOGGER.info("Lock acquired, proceeding.");
+					this.logger.info("Lock acquired, proceeding.");
 					return true;
 				}
 			}
-			catch (SQLException failToAcquire) {
-				LOGGER.severe("Unable to acquire a lock, error encountered!");
+			catch (final SQLException failToAcquire) {
+				this.logger.severe("Unable to acquire a lock, error encountered!");
 				// let the exception continue so we return right away; only errors we'd encounter here are terminal.
 				throw failToAcquire;
 			}
@@ -499,7 +492,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 			try {
 				Thread.sleep(WAIT_PERIOD);
 			}
-			catch (InterruptedException ignored) {
+			catch (final InterruptedException ignored) {
 				// Someone wants us to check right away.
 			}
 		}
@@ -507,19 +500,19 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	}
 
 	private void releaseLock() {
-		try (Connection connection = getConnection();
-				PreparedStatement release = connection.prepareStatement(RELEASE_LOCK);) {
+		try (final Connection connection = getConnection();
+			 final PreparedStatement release = connection.prepareStatement(RELEASE_LOCK)) {
 			release.setString(1, plugin.getName());
 			int releaseLock = release.executeUpdate();
 			if (releaseLock < 1) {
-				LOGGER.warning("Attempted to release a lock, already released.");
+				this.logger.warning("Attempted to release a lock, already released.");
 			}
 			else {
-				LOGGER.info("Lock released.");
+				this.logger.info("Lock released.");
 			}
 		}
-		catch (SQLException exception) {
-			LOGGER.log(Level.WARNING, "Attempted to release lock; failed. This may interrupt startup for other " +
+		catch (final SQLException exception) {
+			this.logger.log(Level.WARNING, "Attempted to release lock; failed. This may interrupt startup for other " +
 							"servers working against this database.", exception);
 		}
 	}
@@ -533,7 +526,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	 * @throws SQLException If the pool has gone away, database is not connected, or other error has occurred.
 	 */
 	public Connection getConnection() throws SQLException {
-		return connections.getConnection();
+		return this.connections.getConnection();
 	}
 
 	/**
@@ -542,48 +535,13 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	 * @throws SQLException Something went horribly wrong.
 	 */
 	public void close() throws SQLException {
-		connections.close();
+		this.connections.close();
 	}
 
-	private static class Migration {
-		public List<String> migrations;
-		public boolean ignoreErrors;
-		public Callable<Boolean> postMigration;
+	private static record Migration(boolean ignoreErrors, Callable<Boolean> postMigration, List<String> migrations) {
 		public Migration(boolean ignoreErrors, Callable<Boolean> postMigration, String... migrations) {
-			this.migrations = MoreCollectionUtils.collect(ArrayList::new, migrations);
-			this.ignoreErrors = ignoreErrors;
-			this.postMigration = postMigration;
+			this(ignoreErrors, postMigration, MoreCollectionUtils.collect(ArrayList::new, migrations));
 		}
-	}
-
-	@Override
-	public Map<String, Object> serialize() {
-		Map<String, Object> data = new HashMap<>();
-		data.put("plugin", this.plugin.getName());
-		data.putAll(this.credentials.serialize());
-		return data;
-	}
-
-	public static ManagedDatasource deserialize(Map<String, Object> data) {
-		if (MapUtils.isEmpty(data)) {
-			LOGGER.info("Database not defined.");
-			return null;
-		}
-		String pluginName = MoreMapUtils.attemptGet(data, "", "plugin");
-		if (Strings.isNullOrEmpty(pluginName)) {
-			LOGGER.warning("Config defined ManagedDatasource did not specify a plugin, which is required.");
-			return null;
-		}
-		Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
-		if (plugin == null || !plugin.isEnabled()) {
-			LOGGER.warning("Config defined ManagedDatasource did not specify a loaded plugin, is it correct?");
-			return null;
-		}
-		if (!ACivMod.class.isAssignableFrom(plugin.getClass())) {
-			LOGGER.warning("ManagedDatasource only supports ACivMod plugins.");
-			return null;
-		}
-		return new ManagedDatasource((ACivMod) plugin, Objects.requireNonNull(DatabaseCredentials.deserialize(data)));
 	}
 
 }
