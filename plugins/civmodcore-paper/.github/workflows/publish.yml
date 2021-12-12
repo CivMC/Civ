@@ -1,10 +1,14 @@
-name: Build
+name: Publish
 on:
-  pull_request:
+  release:
+    types: [created]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v2
@@ -22,5 +26,5 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Build
-        run: ./gradlew build --stacktrace
+      - name: Publish
+        run: ./gradlew publish --stacktrace

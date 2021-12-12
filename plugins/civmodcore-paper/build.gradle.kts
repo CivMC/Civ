@@ -10,12 +10,11 @@ plugins {
 }
 
 group = "net.civmc"
-version = "2.0.0"
+version = "2.0.0-SNAPSHOT"
 description = "CivModCore"
 
 repositories {
 	mavenCentral()
-    maven("https://raw.githubusercontent.com/CivClassic/artifacts/master/")
 	maven("https://repo.aikar.co/content/groups/aikar/")
     maven("https://jitpack.io")
     maven("https://libraries.minecraft.net")
@@ -84,7 +83,14 @@ tasks {
 }
 
 publishing {
-	publications.create<MavenPublication>("maven") {
-		from(components["java"])
+	repositories {
+		maven {
+			name = "GitHubPackages"
+			url = uri("https://maven.pkg.github.com/CivMC")
+			credentials {
+				username = System.getenv("GITHUB_ACTOR")
+				password = System.getenv("GITHUB_TOKEN")
+			}
+		}
 	}
 }
