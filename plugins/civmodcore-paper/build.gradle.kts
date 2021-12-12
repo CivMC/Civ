@@ -3,75 +3,26 @@
  */
 
 plugins {
-    java
+    `java-library`
     `maven-publish`
     id("io.papermc.paperweight.userdev") version "1.3.1"
     id("com.github.johnrengelman.shadow") version "7.1.0"
 }
 
+group = "net.civmc"
+version = "2.0.0-SNAPSHOT"
+description = "CivModCore"
+
 repositories {
-    mavenLocal()
-    maven {
-        url = uri("https://raw.githubusercontent.com/CivClassic/artifacts/master/")
-    }
-
-    maven {
-        url = uri("https://jitpack.io")
-    }
-
-    maven {
-        url = uri("https://libraries.minecraft.net")
-    }
-
-    maven {
-        url = uri("https://papermc.io/repo/repository/maven-public/")
-    }
-
-    maven {
-        url = uri("https://repo.maven.apache.org/maven2/")
-    }
-}
-
-tasks {
-  build {
-    dependsOn(reobfJar)
-  }
-
-  compileJava {
-      options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
-
-      // Set the release flag. This configures what version bytecode the compiler will emit, as well as what JDK APIs are usable.
-      // See https://openjdk.java.net/jeps/247 for more information.
-      options.release.set(17)
-    }
-    javadoc {
-      options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
-    }
-    processResources {
-      filteringCharset = Charsets.UTF_8.name() // We want UTF-8 for everything
-    }
-
-
-  shadowJar {
-       // helper function to relocate a package into our package
-       fun reloc(pkg: String) = relocate(pkg, "vg.civcraft.mc.civmodcore.dependencies.$pkg")
-
-       // relocate and it's transitive dependencies
-       reloc("com.mojang")
-       reloc("com.zaxxer")
-       reloc("net.kyori")
-       reloc("org.apache")
-       reloc("com.google")
-    }
-}
-
-
-java {
-  toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+	mavenCentral()
+	maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://jitpack.io")
+    maven("https://libraries.minecraft.net")
 }
 
 dependencies {
-    paperDevBundle("1.18-R0.1-SNAPSHOT")
+	paperDevBundle("1.18-R0.1-SNAPSHOT")
+
     implementation("com.mojang:datafixerupper:1.0.20")
     implementation("com.zaxxer:HikariCP:3.4.2")
     implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
@@ -83,23 +34,68 @@ dependencies {
     implementation("com.google.code.findbugs:jsr305:3.0.2")
     implementation("it.unimi.dsi:fastutil:8.2.2")
     implementation("co.aikar:cleaner:1.0-SNAPSHOT")
-    testImplementation("junit:junit:4.13.2")
-    compileOnly("org.projectlombok:lombok:1.18.20")
-    annotationProcessor ("org.projectlombok:lombok:1.18.20")
+
+     compileOnly("org.projectlombok:lombok:1.18.20")
+     annotationProcessor ("org.projectlombok:lombok:1.18.20")
+
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.2.0")
 }
 
-group = "com.github.civclassic"
-version = "2.0.0"
-description = "CivModCore"
+java {
+	toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+
+tasks {
+	build {
+		dependsOn(reobfJar)
+	}
+
+	compileJava {
+		options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
+
+		// Set the release flag. This configures what version bytecode the compiler will emit, as well as what JDK APIs are usable.
+		// See https://openjdk.java.net/jeps/247 for more information.
+		options.release.set(17)
+	}
+	javadoc {
+		options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
+	}
+	processResources {
+		filteringCharset = Charsets.UTF_8.name() // We want UTF-8 for everything
+	}
+
+	test {
+		useJUnitPlatform()
+	}
+
+	shadowJar {
+		// helper function to relocate a package into our package
+		fun reloc(pkg: String) = relocate(pkg, "vg.civcraft.mc.civmodcore.dependencies.$pkg")
+
+		// relocate and it's transitive dependencies
+		reloc("com.mojang")
+		reloc("com.zaxxer")
+		reloc("net.kyori")
+		reloc("org.apache")
+		reloc("com.google")
+	}
+}
 
 publishing {
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
-    }
+	repositories {
+		maven {
+			name = "GitHubPackages"
+			url = uri("https://maven.pkg.github.com/CivMC/CivModCore")
+			credentials {
+				username = System.getenv("GITHUB_ACTOR")
+				password = System.getenv("GITHUB_TOKEN")
+			}
+		}
+	}
+	publications {
+		register<MavenPublication>("gpr") {
+			from(components["java"])
+		}
+	}
 }
-
-tasks.withType<JavaCompile>() {
-    options.encoding = "UTF-8"
-}
-
-

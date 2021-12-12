@@ -1,8 +1,8 @@
 package vg.civcraft.mc.civmodcore.uuid;
 
 import java.util.UUID;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import vg.civcraft.mc.civmodcore.utilities.UuidUtils;
 
 public class UuidTests {
@@ -15,7 +15,7 @@ public class UuidTests {
 		final byte[] uuidBytes = UuidUtils.uuidToBytes(testUuid);
 		final UUID rebuildUuid = UuidUtils.bytesToUUID(uuidBytes);
 		// Check
-		Assert.assertEquals(testUuid, rebuildUuid);
+		Assertions.assertEquals(testUuid, rebuildUuid);
 	}
 
 }
