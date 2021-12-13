@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmodcore;
 
 import javax.annotation.Nonnull;
-import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.config.ConfigParser;
@@ -9,15 +8,12 @@ import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 
 public final class CivModCoreConfig extends ConfigParser {
 
-	@Getter
 	private DatabaseCredentials databaseCredentials;
 	private static final DatabaseCredentials DEFAULT_DATABASE_CREDENTIALS = null;
 
-	@Getter
 	private String scoreboardHeader;
 	private static final String DEFAULT_SCOREBOARD_HEADER = "  Info  ";
 
-	@Getter
 	private int skinCacheThreads;
 	private static final int DEFAULT_SKIN_CACHE_THREADS = Runtime.getRuntime().availableProcessors() / 2;
 
@@ -44,4 +40,15 @@ public final class CivModCoreConfig extends ConfigParser {
 		this.skinCacheThreads = DEFAULT_SKIN_CACHE_THREADS;
 	}
 
+	public DatabaseCredentials getDatabaseCredentials() {
+		return databaseCredentials;
+	}
+
+	public String getScoreboardHeader() {
+		return scoreboardHeader;
+	}
+
+	public int getSkinCacheThreads() {
+		return skinCacheThreads;
+	}
 }

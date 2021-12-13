@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
-import net.minecraft.world.effect.MobEffectList;
+import net.minecraft.world.effect.MobEffect;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -59,9 +59,9 @@ public final class PotionUtils {
 	@SuppressWarnings("deprecation")
 	@Nonnull
 	public static TranslatableComponent asTranslatable(@Nonnull final PotionEffectType effect) {
-		final MobEffectList mojang = MobEffectList.a(effect.getId());
+		final MobEffect mojang = MobEffect.byId(effect.getId());
 		assert mojang != null;
-		final String key = mojang.c(); // Gets the translation key
+		final String key = mojang.getDescriptionId(); // Gets the translation key
 		// If the obfuscation has changed, look for a method on MobEffectList like:
 		//
 		//    protected String b() {

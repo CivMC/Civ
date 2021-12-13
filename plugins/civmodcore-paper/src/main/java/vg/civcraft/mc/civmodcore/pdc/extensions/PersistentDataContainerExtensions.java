@@ -7,8 +7,8 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import lombok.experimental.ExtensionMethod;
 import lombok.experimental.UtilityClass;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.v1_18_R1.persistence.CraftPersistentDataContainer;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -27,7 +27,7 @@ public class PersistentDataContainerExtensions {
 	 * @return Returns the PDC's inner-map.
 	 */
 	@Nonnull
-	public static Map<String, NBTBase> getRaw(@Nonnull final PersistentDataContainer self) {
+	public static Map<String, Tag> getRaw(@Nonnull final PersistentDataContainer self) {
 		return ((CraftPersistentDataContainer) self).getRaw();
 	}
 
@@ -47,7 +47,7 @@ public class PersistentDataContainerExtensions {
 	public static boolean hasList(@Nonnull final PersistentDataContainer self,
 								  @Nonnull final NamespacedKey key) {
 		final var found = getRaw(self).get(key.toString());
-		return found != null && found.a() == NBTType.LIST;
+		return found != null && found.getId() == NBTType.LIST;
 	}
 
 	/**
@@ -62,12 +62,12 @@ public class PersistentDataContainerExtensions {
 										 @Nonnull final PersistentDataType<P, C> type) {
 		final var pdc = (CraftPersistentDataContainer) self;
 		final var found = pdc.getRaw().get(key.toString());
-		if (!(found instanceof NBTTagList tagList)) {
+		if (!(found instanceof ListTag tagList)) {
 			return null;
 		}
 		final var typeRegistry = pdc.getDataTagTypeRegistry();
 		final var result = new ArrayList<C>(tagList.size());
-		for (final NBTBase nbtElement : tagList) {
+		for (final Tag nbtElement : tagList) {
 			final P primitiveElement = typeRegistry.extract(type.getPrimitiveType(), nbtElement);
 			final C complexElement = type.fromPrimitive(primitiveElement, pdc.getAdapterContext());
 			result.add(Objects.requireNonNull(complexElement));
@@ -89,10 +89,10 @@ public class PersistentDataContainerExtensions {
 									  @Nonnull final List<C> list) {
 		final var pdc = (CraftPersistentDataContainer) self;
 		final var typeRegistry = pdc.getDataTagTypeRegistry();
-		final var result = new NBTTagList();
+		final var result = new ListTag();
 		for (final C complexElement : list) {
 			final P primitiveElement = type.toPrimitive(complexElement, pdc.getAdapterContext());
-			final NBTBase nbtElement = typeRegistry.wrap(type.getPrimitiveType(), primitiveElement);
+			final Tag nbtElement = typeRegistry.wrap(type.getPrimitiveType(), primitiveElement);
 			result.add(Objects.requireNonNull(nbtElement));
 		}
 		pdc.getRaw().put(key.toString(), result);

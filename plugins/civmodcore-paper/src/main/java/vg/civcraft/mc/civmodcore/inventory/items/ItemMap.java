@@ -11,18 +11,18 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByte;
-import net.minecraft.nbt.NBTTagByteArray;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.nbt.NBTTagFloat;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.nbt.NBTTagIntArray;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagLong;
-import net.minecraft.nbt.NBTTagShort;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.ByteArrayTag;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.FloatTag;
+import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.ShortTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -638,7 +638,7 @@ public class ItemMap {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static NBTTagCompound mapToNBT(NBTTagCompound base, Map<String, Object> map) {
+	public static CompoundTag mapToNBT(CompoundTag base, Map<String, Object> map) {
 		LOGGER.fine("Representing map --> NBTTagCompound");
 		if (map == null || base == null) {
 			return base;
@@ -647,49 +647,49 @@ public class ItemMap {
 			Object object = entry.getValue();
 			if (object instanceof Map) {
 				LOGGER.fine("Adding map at key " + entry.getKey());
-				base.a(entry.getKey(), mapToNBT(new NBTTagCompound(), (Map<String, Object>) object));
+				base.put(entry.getKey(), mapToNBT(new CompoundTag(), (Map<String, Object>) object));
 			} else if (object instanceof MemorySection) {
 				LOGGER.fine("Adding map from MemorySection at key " + entry.getKey());
-				base.a(entry.getKey(), mapToNBT(new NBTTagCompound(), ((MemorySection) object).getValues(true)));
+				base.put(entry.getKey(), mapToNBT(new CompoundTag(), ((MemorySection) object).getValues(true)));
 			} else if (object instanceof List) {
 				LOGGER.fine("Adding list at key " + entry.getKey());
-				base.a(entry.getKey(), listToNBT(new NBTTagList(), (List<Object>) object));
+				base.put(entry.getKey(), listToNBT(new ListTag(), (List<Object>) object));
 			} else if (object instanceof String) {
 				LOGGER.fine("Adding String " + object + " at key " + entry.getKey());
-				base.a(entry.getKey(), (String) object);
+				base.putString(entry.getKey(), (String) object);
 			} else if (object instanceof Double) {
 				LOGGER.fine("Adding Double " + object + " at key " + entry.getKey());
-				base.a(entry.getKey(), (Double) object);
+				base.putDouble(entry.getKey(), (Double) object);
 			} else if (object instanceof Float) {
 				LOGGER.fine("Adding Float " + object + " at key " + entry.getKey());
-				base.a(entry.getKey(), (Float) object);
+				base.putFloat(entry.getKey(), (Float) object);
 			} else if (object instanceof Boolean) {
 				LOGGER.fine("Adding Boolean " + object + " at key " + entry.getKey());
-				base.a(entry.getKey(), (Boolean) object);
+				base.putBoolean(entry.getKey(), (Boolean) object);
 			} else if (object instanceof Byte) {
 				LOGGER.fine("Adding Byte " + object + " at key " + entry.getKey());
-				base.a(entry.getKey(), (Byte) object);
+				base.putByte(entry.getKey(), (Byte) object);
 			} else if (object instanceof Short) {
-				LOGGER.fine("Adding Byte " + object + " at key " + entry.getKey());
-				base.a(entry.getKey(), (Short) object);
+				LOGGER.fine("Adding Short " + object + " at key " + entry.getKey());
+				base.putShort(entry.getKey(), (Short) object);
 			} else if (object instanceof Integer) {
 				LOGGER.fine("Adding Integer " + object + " at key " + entry.getKey());
-				base.a(entry.getKey(), (Integer) object);
+				base.putInt(entry.getKey(), (Integer) object);
 			} else if (object instanceof Long) {
 				LOGGER.fine("Adding Long " + object + " at key " + entry.getKey());
-				base.a(entry.getKey(), (Long) object);
+				base.putLong(entry.getKey(), (Long) object);
 			} else if (object instanceof byte[]) {
 				LOGGER.fine("Adding bytearray at key " + entry.getKey());
-				base.a(entry.getKey(), (byte[]) object);
+				base.putByteArray(entry.getKey(), (byte[]) object);
 			} else if (object instanceof int[]) {
 				LOGGER.fine("Adding intarray at key " + entry.getKey());
-				base.a(entry.getKey(), (int[]) object);
+				base.putIntArray(entry.getKey(), (int[]) object);
 			} else if (object instanceof UUID) {
 				LOGGER.fine("Adding UUID " + object + " at key " + entry.getKey());
-				base.a(entry.getKey(), (UUID) object);
-			} else if (object instanceof NBTBase) {
+				base.putUUID(entry.getKey(), (UUID) object);
+			} else if (object instanceof Tag) {
 				LOGGER.fine("Adding nbtobject at key " + entry.getKey());
-				base.a(entry.getKey(), (NBTBase) object);
+				base.put(entry.getKey(), (Tag) object);
 			} else {
 				LOGGER.warning("Unrecognized entry in map-->NBT: " + object.toString());
 			}
@@ -698,7 +698,7 @@ public class ItemMap {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static NBTTagList listToNBT(NBTTagList base, List<Object> list) {
+	public static ListTag listToNBT(ListTag base, List<Object> list) {
 		LOGGER.fine("Representing list --> NBTTagList");
 		if (list == null || base == null) {
 			return base;
@@ -706,43 +706,43 @@ public class ItemMap {
 		for (Object object : list) {
 			if (object instanceof Map) {
 				LOGGER.fine("Adding map to list");
-				base.add(mapToNBT(new NBTTagCompound(), (Map<String, Object>) object));
+				base.add(mapToNBT(new CompoundTag(), (Map<String, Object>) object));
 			} else if (object instanceof MemorySection) {
 				LOGGER.fine("Adding map from MemorySection to list");
-				base.add(mapToNBT(new NBTTagCompound(), ((MemorySection) object).getValues(true)));
+				base.add(mapToNBT(new CompoundTag(), ((MemorySection) object).getValues(true)));
 			} else if (object instanceof List) {
 				LOGGER.fine("Adding list to list");
-				base.add(listToNBT(new NBTTagList(), (List<Object>) object));
+				base.add(listToNBT(new ListTag(), (List<Object>) object));
 			} else if (object instanceof String) {
 				LOGGER.fine("Adding string " + object + " to list");
-				base.add(NBTTagString.a((String) object));
+				base.add(StringTag.valueOf((String) object));
 			} else if (object instanceof Double) {
 				LOGGER.fine("Adding double " + object + " to list");
-				base.add(NBTTagDouble.a((Double) object));
+				base.add(DoubleTag.valueOf((Double) object));
 			} else if (object instanceof Float) {
 				LOGGER.fine("Adding float " + object + " to list");
-				base.add(NBTTagFloat.a((Float) object));
+				base.add(FloatTag.valueOf((Float) object));
 			} else if (object instanceof Byte) {
 				LOGGER.fine("Adding byte " + object + " to list");
-				base.add(NBTTagByte.a((Byte) object));
+				base.add(ByteTag.valueOf((Byte) object));
 			} else if (object instanceof Short) {
 				LOGGER.fine("Adding short " + object + " to list");
-				base.add(NBTTagShort.a((Short) object));
+				base.add(ShortTag.valueOf((Short) object));
 			} else if (object instanceof Integer) {
 				LOGGER.fine("Adding integer " + object + " to list");
-				base.add(NBTTagInt.a((Integer) object));
+				base.add(IntTag.valueOf((Integer) object));
 			} else if (object instanceof Long) {
 				LOGGER.fine("Adding long " + object + " to list");
-				base.add(NBTTagLong.a((Long) object));
+				base.add(LongTag.valueOf((Long) object));
 			} else if (object instanceof byte[]) {
 				LOGGER.fine("Adding byte array to list");
-				base.add(new NBTTagByteArray((byte[]) object));
+				base.add(new ByteArrayTag((byte[]) object));
 			} else if (object instanceof int[]) {
 				LOGGER.fine("Adding int array to list");
-				base.add(new NBTTagIntArray((int[]) object));
-			} else if (object instanceof NBTBase) {
+				base.add(new IntArrayTag((int[]) object));
+			} else if (object instanceof Tag) {
 				LOGGER.fine("Adding nbt object to list");
-				base.add((NBTBase) object);
+				base.add((Tag) object);
 			} else {
 				LOGGER.warning("Unrecognized entry in list-->NBT: " + base);
 			}

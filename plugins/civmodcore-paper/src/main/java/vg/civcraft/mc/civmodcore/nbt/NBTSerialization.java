@@ -14,10 +14,10 @@ import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import lombok.experimental.ExtensionMethod;
 import lombok.experimental.UtilityClass;
-import net.minecraft.nbt.NBTCompressedStreamTools;
-import net.minecraft.nbt.NBTReadLimiter;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.bukkit.craftbukkit.v1_18_R1.util.CraftNBTTagConfigSerializer;
@@ -48,7 +48,7 @@ public class NBTSerialization {
 		if (nmsItem == null) {
 			return null;
 		}
-		return new NBTCompound(nmsItem.t());
+		return new NBTCompound(nmsItem.getTag());
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class NBTSerialization {
 		if (nmsItem == null) {
 			return null;
 		}
-		final var nbt = new NBTCompound(nmsItem.t());
+		final var nbt = new NBTCompound(nmsItem.getTag());
 		try {
 			processor.accept(nbt);
 		}
@@ -87,12 +87,12 @@ public class NBTSerialization {
 		return nmsItem.getBukkitStack();
 	}
 
-	public static NBTTagCompound fromMap(final Map<String, Object> data) {
-		return (NBTTagCompound) CraftNBTTagConfigSerializer.deserialize(data);
+	public static CompoundTag fromMap(final Map<String, Object> data) {
+		return (CompoundTag) CraftNBTTagConfigSerializer.deserialize(data);
 	}
 
-	public static NBTTagList fromList(final List<Object> data) {
-		return (NBTTagList) CraftNBTTagConfigSerializer.deserialize(data);
+	public static ListTag fromList(final List<Object> data) {
+		return (ListTag) CraftNBTTagConfigSerializer.deserialize(data);
 	}
 
 	/**
@@ -101,13 +101,13 @@ public class NBTSerialization {
 	 * @param nbt The NBTCompound to serialize.
 	 * @return Returns a data array representing the given NBTCompound serialized, or otherwise null.
 	 */
-	public static byte[] toBytes(final NBTTagCompound nbt) {
+	public static byte[] toBytes(final CompoundTag nbt) {
 		if (nbt == null) {
 			return null;
 		}
 		final ByteArrayDataOutput output = ByteStreams.newDataOutput();
 		try {
-			NBTCompressedStreamTools.a(nbt, output);
+			NbtIo.write(nbt, output);
 		}
 		catch (final IOException exception) {
 			LOGGER.log(Level.WARNING, "Could not serialise NBT to bytes!", exception);
@@ -122,13 +122,13 @@ public class NBTSerialization {
 	 * @param bytes The NBT data as a byte array.
 	 * @return Returns an NBTCompound if the deserialization was successful, or otherwise null.
 	 */
-	public static NBTTagCompound fromBytes(final byte[] bytes) {
+	public static CompoundTag fromBytes(final byte[] bytes) {
 		if (ArrayUtils.isEmpty(bytes)) {
 			return null;
 		}
 		final ByteArrayDataInput input = ByteStreams.newDataInput(bytes);
 		try {
-			return NBTCompressedStreamTools.a(input, NBTReadLimiter.a);
+			return NbtIo.read(input, NbtAccounter.UNLIMITED);
 		}
 		catch (final IOException exception) {
 			LOGGER.log(Level.WARNING, "Could not deserialise NBT from bytes!", exception);
