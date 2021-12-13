@@ -33,6 +33,9 @@ import com.github.devotedmc.hiddenore.HiddenOre;
  * @author soerxpso, programmerdan
  */
 public class BreakTracking {
+	private static final int POS_LAYERS = 320;
+	private static final int NEG_LAYERS = 64;
+	private static final int TOTAL_LAYERS = POS_LAYERS + NEG_LAYERS;
 	private static final int GEN = 1;
 	private static final int MAP = 0;
 	Map<UUID, Map<Long, short[]>> track;
@@ -80,7 +83,7 @@ public class BreakTracking {
 
 					while (dis.readBoolean()) {
 						Long chunk = dis.readLong();
-						short[] layers = new short[256];
+						short[] layers = new short[TOTAL_LAYERS];
 						for (int i = 0; i < layers.length; i++) {
 							layers[i] = dis.readShort();
 						}
@@ -133,7 +136,7 @@ public class BreakTracking {
 
 					while (dis.readBoolean()) {
 						Long chunk = dis.readLong();
-						long[][][] layers = new long[2][256][4];
+						long[][][] layers = new long[2][TOTAL_LAYERS][4];
 						for (int i = 0; i < layers[MAP].length; i++) {
 							for (int j = 0; j < 4; j++) {
 								layers[MAP][i][j] = dis.readLong(); // "map"
@@ -330,7 +333,7 @@ public class BreakTracking {
 			mapLayers = new long[2][256][4];
 			mapChunks.put(chunk_id, mapLayers);
 			
-			for (int y = 0; y < 256; y++) {
+			for (int y = -NEG_LAYERS; y < POS_LAYERS; y++) {
 				for (int x = 0; x < 16; x++) {
 					for (int z = 0; z < 16; z++) {
 						Block b = chunk.getBlock(x, y, z);
@@ -338,8 +341,8 @@ public class BreakTracking {
 							int bloc = (( x << 4) + z);
 							int quad = (block_id / 64);
 							long mask = (1l << (bloc % 64));
-							mapLayers[MAP][y][quad] |= mask; // if unset, set. Ignore complements basis.
-							mapLayers[GEN][y][quad] |= mask; // tracks for "breaks" and "gens".
+							mapLayers[MAP][y+NEG_LAYERS][quad] |= mask; // if unset, set. Ignore complements basis.
+							mapLayers[GEN][y+NEG_LAYERS][quad] |= mask; // tracks for "breaks" and "gens".
 						}
 					}
 				}
@@ -347,12 +350,12 @@ public class BreakTracking {
 		}
 
 		boolean ret = false;
-		if ((mapLayers[GEN][Y][quad_id] & mask_id) == mask_id) {
+		if ((mapLayers[GEN][Y+NEG_LAYERS][quad_id] & mask_id) == mask_id) {
 			ret = false; // already broken!
 		} else {
 			ret = true; // new break according to this tracking.
-			mapLayers[MAP][Y][quad_id] |= mask_id;
-			mapLayers[GEN][Y][quad_id] |= mask_id;
+			mapLayers[MAP][Y+NEG_LAYERS][quad_id] |= mask_id;
+			mapLayers[GEN][Y+NEG_LAYERS][quad_id] |= mask_id;
 		}
 		
 		s = System.currentTimeMillis() - s;
@@ -403,7 +406,7 @@ public class BreakTracking {
 			return true;
 		}
 
-		if ((mapLayers[GEN][Y][quad_id] & mask_id) == mask_id) {
+		if ((mapLayers[GEN][Y+NEG_LAYERS][quad_id] & mask_id) == mask_id) {
 			return false;
 		} else {
 			return true;
@@ -449,28 +452,28 @@ public class BreakTracking {
 			return; // should be init'd or this is being improperly called.
 		}
 		
-		mapLayers[GEN][Y][quad_id] |= mask_id;
+		mapLayers[GEN][Y+NEG_LAYERS][quad_id] |= mask_id;
 		if (exp) {
-			if (Y > 0) mapLayers[GEN][Y-1][quad_id] |= mask_id;
-			if (Y < 255) mapLayers[GEN][Y+1][quad_id] |= mask_id;
+			if (Y > -NEG_LAYERS) mapLayers[GEN][Y-1][quad_id] |= mask_id;
+			if (Y < POS_LAYERS) mapLayers[GEN][Y+1][quad_id] |= mask_id;
 			
 			if (X > 0) {
 				int nblock_id = (((X-1) << 4) + Z);
 				int nquad_id = (nblock_id / 64);
 				long nmask_id = (1l << (nblock_id % 64));
-				mapLayers[GEN][Y][nquad_id] |= nmask_id;
+				mapLayers[GEN][Y+NEG_LAYERS][nquad_id] |= nmask_id;
 			} else postTrackBreak(loc.clone().add(-1, 0, 0), false);
 			if (X < 15)  {
 				int nblock_id = (((X+1) << 4) + Z);
 				int nquad_id = (nblock_id / 64);
 				long nmask_id = (1l << (nblock_id % 64));
-				mapLayers[GEN][Y][nquad_id] |= nmask_id;
+				mapLayers[GEN][Y+NEG_LAYERS][nquad_id] |= nmask_id;
 			} else postTrackBreak(loc.clone().add(1, 0, 0), false);
 			if (Z > 0) {
 				int nblock_id = (((X) << 4) + (Z-1));
 				int nquad_id = (nblock_id / 64);
 				long nmask_id = (1l << (nblock_id % 64));
-				mapLayers[GEN][Y][nquad_id] |= nmask_id;
+				mapLayers[GEN][Y+NEG_LAYERS][nquad_id] |= nmask_id;
 			} else postTrackBreak(loc.clone().add(0, 0, -1), false);
 			if (Z < 15)  {
 				int nblock_id = (((X) << 4) + (Z+1));
@@ -481,7 +484,7 @@ public class BreakTracking {
 		}
 		if (Config.isDebug) {
 			HiddenOre.getPlugin().getLogger()
-					.info("now world " + world + " chunk " + chunk_id + " gent " + mapLayers[GEN][Y][quad_id]);
+					.info("now world " + world + " chunk " + chunk_id + " gent " + mapLayers[GEN][Y+NEG_LAYERS][quad_id]);
 		}
 		s = System.currentTimeMillis() - s;
 		if (s > 10l) {
@@ -527,7 +530,7 @@ public class BreakTracking {
 		short[] layers = chunks.get(chunk_id);
 		if (layers == null) { // init layers
 			initLayers = System.nanoTime();
-			layers = new short[256];
+			layers = new short[TOTAL_LAYERS];
 			chunks.put(chunk_id, layers);
 			initLayers = System.nanoTime() - initLayers;
 		}
@@ -547,11 +550,11 @@ public class BreakTracking {
 			long[][][] mapLayers = mapChunks.get(chunk_id);
 			if (mapLayers == null) { // init layers
 				initMapLayers = System.nanoTime();
-				mapLayers = new long[2][256][4];
+				mapLayers = new long[2][TOTAL_LAYERS][4];
 				mapChunks.put(chunk_id, mapLayers);
 				ChunkSnapshot chunkS = chunk.getChunkSnapshot();
 				
-				for (int y = 0; y < 256; y++) {
+				for (int y = -NEG_LAYERS; y < POS_LAYERS; y++) {
 					for (int x = 0; x < 16; x++) {
 						for (int z = 0; z < 16; z++) {
 							//Block b = chunk.getBlock(x, y, z);
@@ -561,8 +564,8 @@ public class BreakTracking {
 								int bloc = ((x << 4) + z);
 								int quad = (block_id / 64);
 								long mask = (1l << (bloc % 64));
-								mapLayers[MAP][y][quad] |= mask; // if unset, set. Ignore complements basis.
-								mapLayers[GEN][y][quad] |= mask; // tracks for "breaks" and "gens".
+								mapLayers[MAP][y+NEG_LAYERS][quad] |= mask; // if unset, set. Ignore complements basis.
+								mapLayers[GEN][y+NEG_LAYERS][quad] |= mask; // tracks for "breaks" and "gens".
 							}
 						}
 					}
@@ -570,35 +573,35 @@ public class BreakTracking {
 				initMapLayers = System.nanoTime() - initMapLayers;
 			}
 	
-			if ((mapLayers[MAP][Y][quad_id] & mask_id) == mask_id) {
+			if ((mapLayers[MAP][Y+NEG_LAYERS][quad_id] & mask_id) == mask_id) {
 				ret = false; // already broken!
 			} else {
 				ret = true; // new break according to this tracking.
-				mapLayers[MAP][Y][quad_id] |= mask_id;
-				mapLayers[GEN][Y][quad_id] |= mask_id;
+				mapLayers[MAP][Y+NEG_LAYERS][quad_id] |= mask_id;
+				mapLayers[GEN][Y+NEG_LAYERS][quad_id] |= mask_id;
 			}
 			
-			spc =  mapLayers[MAP][Y][quad_id];
+			spc =  mapLayers[MAP][Y+NEG_LAYERS][quad_id];
 		}
 		
-		if (layers[Y] == 0) {
+		if (layers[Y+NEG_LAYERS] == 0) {
 			scanLayer = System.nanoTime();
 			// quick layer scan for air and water
 			for (int x = 0; x < 16; x++) {
 				for (int z = 0; z < 16; z++) {
 					Block b = chunk.getBlock(x, Y, z);
 					if (b.isEmpty() || b.isLiquid()) {
-						layers[Y]++;
+						layers[Y+NEG_LAYERS]++;
 					}
 				}
 			}
 			scanLayer = System.nanoTime() - scanLayer;
 		}
 
-		if (layers[Y] >= 256) { // done
+		if (layers[Y+NEG_LAYERS] >= TOTAL_LAYERS) { // done
 			ret = false;
 		} else if (ret) {
-			layers[Y]++; // represent new break in layer.
+			layers[Y+NEG_LAYERS]++; // represent new break in layer.
 			ret = true;
 		}
 		if (ret) { 
@@ -626,7 +629,7 @@ public class BreakTracking {
 		
 		if (Config.isDebug) {
 			HiddenOre.getPlugin().getLogger()
-					.info("now world " + world + " chunk " + chunk_id + " layersum " + layers[Y] + " map" + quad_id + ":" + mask_id + "t " + spc);
+					.info("now world " + world + " chunk " + chunk_id + " layersum " + layers[Y+NEG_LAYERS] + " map" + quad_id + ":" + mask_id + "t " + spc);
 		}
 
 		s = System.currentTimeMillis() - s;
