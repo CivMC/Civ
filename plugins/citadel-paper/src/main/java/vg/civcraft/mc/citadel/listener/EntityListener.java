@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -26,15 +28,17 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
+import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -80,6 +84,12 @@ public class EntityListener implements Listener {
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
 		// Do not allow a falling block entity to damage reinforcements.
 		if (rein == null || ecbe.getEntityType() == EntityType.FALLING_BLOCK) {
+			return;
+		}
+		if (ecbe.getBlock().getType() == Material.BIG_DRIPLEAF) {
+			return;
+		}
+		if (ecbe.getBlock().getType() == Material.CAVE_VINES || ecbe.getBlock().getType() == Material.CAVE_VINES_PLANT) {
 			return;
 		}
 		ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein), ecbe.getEntity());
@@ -143,6 +153,32 @@ public class EntityListener implements Listener {
 				}
 			}
 		}.runTaskAsynchronously(Citadel.getInstance());
+	}
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void powderedSnowPickup(PlayerBucketFillEvent event) {
+		if (event.getBlockClicked().getType() != Material.POWDER_SNOW) {
+			return;
+		}
+
+		Block clickedBlock = event.getBlockClicked();
+		Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(clickedBlock);
+		if (reinforcement == null) {
+			return;
+		}
+		Player player = event.getPlayer();
+		if (!reinforcement.hasPermission(player, CitadelPermissionHandler.getBypass())) {
+			player.sendMessage(Component.text("You do not have permission to bypass this block!").color(NamedTextColor.RED));
+			event.setCancelled(true);
+			return;
+		}
+		ReinforcementBypassEvent bypassEvent = new ReinforcementBypassEvent(player, reinforcement);
+		Bukkit.getPluginManager().callEvent(bypassEvent);
+		if (event.isCancelled()) {
+			event.setCancelled(true);
+			return;
+		}
+		reinforcement.setHealth(-1);
 	}
 
 	// prevent creating golems from reinforced blocks

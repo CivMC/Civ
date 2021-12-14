@@ -1,70 +1,63 @@
 package vg.civcraft.mc.citadel.command;
 
-import java.util.ArrayList;
-import java.util.List;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
-@CivCommand(id = "ctar")
-public class AreaReinforce extends StandaloneCommand {
+public class AreaReinforce extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage("Must be a player to perform this command.");
-			return true;
-		}
-		Player p = (Player) sender;
+	@CommandAlias("ctar")
+	@Syntax("<group> <lowX> <lowY> <lowZ> <highX> <highY> <highZ>")
+	@Description("Using the reinforcement item in your main hand, reinforces an area to your default or a target group.")
+	@CommandCompletion("@CT_Groups @nothing @nothing @nothing @nothing @nothing @nothing")
+	public void execute(Player p, @Optional String targetGroup, String minX, String minY, String minZ, String maxX, String maxY, String maxZ) {
 		UUID uuid = NameAPI.getUUID(p.getName());
 		ReinforcementType reinType = Citadel.getInstance().getReinforcementTypeManager()
 				.getByItemStack(p.getInventory().getItemInMainHand());
 		if (reinType == null) {
 			CitadelUtility.sendAndLog(p, ChatColor.RED, "The item you are holding is not a possible reinforcement");
-			return true;
+			return;
 		}
 		String groupName = null;
-		if (args.length == 6) {
+		if (targetGroup == null) {
 			groupName = NameAPI.getGroupManager().getDefaultGroup(uuid);
 			if (groupName == null) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED, "You need to set a default group \n Use /nlsdg to do so");
-				return true;
+				return;
 			}
 		} else {
-			if (args.length == 0) {
-				p.sendMessage(ChatColor.RED + "Please input a valid group");
-				return true;
-			}
-			groupName = args[0];
+			groupName = targetGroup;
 		}
 		Group group = GroupManager.getGroup(groupName);
 		if (group == null) {
 			CitadelUtility.sendAndLog(p, ChatColor.RED, "That group does not exist.");
-			return true;
+			return;
 		}
 		// no additional group permission check here because the player is
 		// admin/op anyway
 		int xMin, yMin, zMin, xMax, yMax, zMax;
-		int offset = args.length == 7 ? 1 : 0;
 		try {
-			int x1 = Integer.parseInt(args[offset]);
-			int y1 = Integer.parseInt(args[offset + 1]);
-			int z1 = Integer.parseInt(args[offset + 2]);
-			int x2 = Integer.parseInt(args[offset + 3]);
-			int y2 = Integer.parseInt(args[offset + 4]);
-			int z2 = Integer.parseInt(args[offset + 5]);
+			int x1 = Integer.parseInt(minX);
+			int y1 = Integer.parseInt(minY);
+			int z1 = Integer.parseInt(minZ);
+			int x2 = Integer.parseInt(maxX);
+			int y2 = Integer.parseInt(maxY);
+			int z2 = Integer.parseInt(maxZ);
 			xMin = Math.min(x1, x2);
 			yMin = Math.min(y1, y2);
 			zMin = Math.min(z1, z2);
@@ -73,7 +66,7 @@ public class AreaReinforce extends StandaloneCommand {
 			zMax = Math.max(z1, z2);
 		} catch (NumberFormatException e) {
 			CitadelUtility.sendAndLog(p, ChatColor.RED, "One of the arguments you provided was not a number");
-			return false;
+			return;
 		}
 		int count = 0;
 		for (int x = xMin; x <= xMax; x++) {
@@ -99,12 +92,6 @@ public class AreaReinforce extends StandaloneCommand {
 			}
 		}
 
-		CitadelUtility.sendAndLog(p, ChatColor.GREEN, "Successfully created " + count + " reinforcements");
-		return true;
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new ArrayList<>();
+		CitadelUtility.sendAndLog(p, ChatColor.GREEN, "Successfully created " + count + "reinforcements");
 	}
 }

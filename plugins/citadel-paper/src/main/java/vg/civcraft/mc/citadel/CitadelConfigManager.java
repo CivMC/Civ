@@ -10,12 +10,13 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffect;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.CoreConfigManager;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
+import vg.civcraft.mc.civmodcore.config.ConfigParser;
+import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.util.ConfigParsing;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
-public class CitadelConfigManager extends CoreConfigManager {
+public class CitadelConfigManager extends ConfigParser {
 
 	private ManagedDatasource database;
 	private List<ReinforcementType> reinforcementTypes;
@@ -106,7 +107,7 @@ public class CitadelConfigManager extends CoreConfigManager {
 	}
 
 	private void parseAcidMaterials(ConfigurationSection config) {
-		acidMaterials = parseMaterialList(config, "acidblock_material");
+		acidMaterials = ConfigHelper.parseMaterialList(config, "acidblock_material");
 		if (acidMaterials == null) {
 			logger.info("No valid acid materials found in config");
 			acidMaterials = new LinkedList<>();
@@ -118,8 +119,8 @@ public class CitadelConfigManager extends CoreConfigManager {
 
 	@Override
 	protected boolean parseInternal(ConfigurationSection config) {
-		database = (ManagedDatasource) config.get("database");
-		globalBlackList = parseMaterialList(config, "non_reinforceables");
+		database = ManagedDatasource.construct((ACivMod) plugin, (DatabaseCredentials) config.get("database"));
+		globalBlackList = ConfigHelper.parseMaterialList(config, "non_reinforceables");
 		parseAcidMaterials(config);
 		logHostileBreaks = config.getBoolean("logHostileBreaks", true);
 		logFriendlyBreaks = config.getBoolean("logFriendlyBreaks", true);
@@ -128,7 +129,7 @@ public class CitadelConfigManager extends CoreConfigManager {
 		logMessages = config.getBoolean("logMessages", true);
 		redstoneRange = config.getDouble("redstoneDistance", 3);
 		globalDecayMultiplier = config.getDouble("global_decay_multiplier", 2.0);
-		globalDecayTimer = ConfigParsing.parseTime(config.getString("global_decay_timer", "0"));
+		globalDecayTimer = ConfigHelper.parseTime(config.getString("global_decay_timer", "0"));
 		parseReinforcementTypes(config.getConfigurationSection("reinforcements"));
 		hangersInheritReinforcements = config.getBoolean("hangers_inherit_reinforcement", false);
 		return true;
@@ -145,18 +146,18 @@ public class CitadelConfigManager extends CoreConfigManager {
 		ReinforcementEffect damageEffect = getReinforcementEffect(config.getConfigurationSection("damage_effect"));
 		ReinforcementEffect destructionEffect = getReinforcementEffect(
 				config.getConfigurationSection("destruction_effect"));
-		long gracePeriod = ConfigParsing.parseTime(config.getString("grace_period", "0"), TimeUnit.MILLISECONDS);
-		long maturationTime = ConfigParsing.parseTime(config.getString("mature_time", "0"), TimeUnit.MILLISECONDS);
-		long acidTime = ConfigParsing.parseTime(config.getString("acid_time", "-1"), TimeUnit.MILLISECONDS);
+		long gracePeriod = ConfigHelper.parseTime(config.getString("grace_period", "0"), TimeUnit.MILLISECONDS);
+		long maturationTime = ConfigHelper.parseTime(config.getString("mature_time", "0"), TimeUnit.MILLISECONDS);
+		long acidTime = ConfigHelper.parseTime(config.getString("acid_time", "-1"), TimeUnit.MILLISECONDS);
 		int acidPriority = config.getInt("acid_priority", 0);
 		String name = config.getString("name");
 		double maturationScale = config.getInt("scale_amount", 1);
 		float health = (float) config.getDouble("hit_points", 100);
 		double returnChance = config.getDouble("return_chance", 1.0);
-		List<Material> reinforceables = parseMaterialList(config, "reinforceables");
-		List<Material> nonReinforceables = parseMaterialList(config, "non_reinforceables");
+		List<Material> reinforceables = ConfigHelper.parseMaterialList(config, "reinforceables");
+		List<Material> nonReinforceables = ConfigHelper.parseMaterialList(config, "non_reinforceables");
 		short id = (short) config.getInt("id", -1);
-		long decayTimer = ConfigParsing
+		long decayTimer = ConfigHelper
 				.parseTime(config.getString("decay_timer", String.valueOf(globalDecayTimer / 1000L) + "s"));
 		double decayMultiplier = config.getDouble("decay_multiplier", globalDecayMultiplier);
 		double multiplerOnDeletedGroup = config.getDouble("deleted_group_multipler", 4);
@@ -169,7 +170,7 @@ public class CitadelConfigManager extends CoreConfigManager {
 			logger.warning("Reinforcement type at " + config.getCurrentPath() + " had no id, it was ignored");
 			return null;
 		}
-		if (reinforceables != null && nonReinforceables != null) {
+		if (!reinforceables.isEmpty() && !nonReinforceables.isEmpty()) {
 			logger.warning("Both blacklist and whitelist specified for reinforcement type at " + config.getCurrentPath()
 					+ ". This does not make sense and the type will be ignored");
 			return null;

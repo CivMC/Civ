@@ -1,22 +1,19 @@
 package vg.civcraft.mc.citadel.command;
 
-import java.util.ArrayList;
-import java.util.List;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelUtility;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
-import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 
-@CivCommand(id = "ctb")
-public class Bypass extends StandaloneCommand {
+public class Bypass extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		Player player = (Player) sender;
+	@CommandAlias("ctb|bypass")
+	@Description("Toggles bypass state. In bypass state you can break blocks reinforced on groups you have access to in a single break")
+	public void execute(Player player) {
 		BooleanSetting setting = Citadel.getInstance().getSettingManager().getBypass();
 		boolean enabled = setting.getValue(player);
 		if (enabled) {
@@ -26,11 +23,5 @@ public class Bypass extends StandaloneCommand {
 					"Bypass mode has been enabled. You will be able to break reinforced blocks if you are on the group.");
 		}
 		setting.toggleValue(player.getUniqueId());
-		return true;
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new ArrayList<>();
 	}
 }

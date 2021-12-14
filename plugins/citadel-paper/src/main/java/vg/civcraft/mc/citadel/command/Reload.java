@@ -1,26 +1,20 @@
 package vg.civcraft.mc.citadel.command;
 
-import java.util.LinkedList;
-import java.util.List;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-@CivCommand(id = "citadelreload")
-public class Reload extends StandaloneCommand {
+public class Reload extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	@CommandAlias("citadelreload")
+	@CommandPermission("citadel.admin")
+	@Description("Reloads Citadel entirely")
+	public void execute(CommandSender sender) {
 		Citadel.getInstance().reload();
 		sender.sendMessage(ChatColor.GREEN + "Reloaded Citadel");
-		return true;
 	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new LinkedList<>();
-	}
-
 }

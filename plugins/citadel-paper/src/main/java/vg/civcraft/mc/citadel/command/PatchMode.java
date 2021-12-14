@@ -1,22 +1,21 @@
 package vg.civcraft.mc.citadel.command;
 
-import java.util.LinkedList;
-import java.util.List;
-import org.bukkit.command.CommandSender;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.Description;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.playerstate.AbstractPlayerState;
 import vg.civcraft.mc.citadel.playerstate.PatchState;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-@CivCommand(id = "ctp")
-public class PatchMode extends StandaloneCommand{
+public class PatchMode extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		Player player = (Player) sender;
+	@CommandAlias("ctp|patchmode|patch")
+	@Description("Enters patch mode, which allows you to repair reinforcements. Note that repairing reinforcements will also reset their maturation cycle")
+	@CommandCompletion("@CT_Groups")
+	public void execute(Player player) {
 		PlayerStateManager stateManager = Citadel.getInstance().getStateManager();
 		AbstractPlayerState currentState = Citadel.getInstance().getStateManager().getState(player);
 		if (currentState instanceof PatchState) {
@@ -24,12 +23,5 @@ public class PatchMode extends StandaloneCommand{
 		} else {
 			stateManager.setState(player, new PatchState(player));
 		}
-		return true;
 	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new LinkedList<>();
-	}
-
 }

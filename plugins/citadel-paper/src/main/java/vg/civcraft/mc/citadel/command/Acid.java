@@ -1,8 +1,9 @@
 package vg.civcraft.mc.citadel.command;
 
-import java.util.ArrayList;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
@@ -10,7 +11,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
@@ -21,17 +21,14 @@ import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.events.ReinforcementAcidBlockedEvent;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
-@CivCommand(id = "ctacid")
-public class Acid extends StandaloneCommand {
+public class Acid extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		Player p = (Player) sender;
+	@CommandAlias("ctacid|acid")
+	@Description("Removes the block above it if used on an acid block")
+	public void execute(Player p) {
 		Iterator<Block> itr = new BlockIterator(p, 40); // Within 2.5 chunks
 		AcidManager acidMan = Citadel.getInstance().getAcidManager();
 		boolean foundAny = false;
@@ -44,49 +41,42 @@ public class Acid extends StandaloneCommand {
 				if (!foundAny) {
 					CitadelUtility.sendAndLog(p, ChatColor.RED, "That block is not a valid acid block");
 				}
-				return true;
+				return;
 			}
 			Reinforcement reinforcement = ReinforcementLogic.getReinforcementAt(block.getLocation());
 			if (reinforcement == null) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED, "That block is not reinforced.");
-				return true;
+				return;
 			}
 			if (!reinforcement.hasPermission(p, CitadelPermissionHandler.getAcidblock())) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED,
 						"You do not have sufficient permission to use acid blocks on this group.");
-				return true;
+				return;
 			}
 			long neededTime = acidMan.getRemainingAcidMaturationTime(reinforcement);
 			if (neededTime > 0) {
-				CitadelUtility.sendAndLog(p, ChatColor.RED,
-						"That acid block will be mature in "
-								+ TextUtil.formatDuration(neededTime, TimeUnit.MILLISECONDS),
-						block.getLocation());
-				return true;
+				CitadelUtility.sendAndLog(p, ChatColor.RED, "That acid block will be mature in "
+						+ TextUtil.formatDuration(neededTime, TimeUnit.MILLISECONDS));
+				return;
 			}
 			Block topFace = block.getRelative(BlockFace.UP);
 			if (MaterialUtils.isAir(topFace.getType())) {
-				CitadelUtility.sendAndLog(p, ChatColor.RED,
-						"There is no block above to acid block.",
-						block.getLocation());
-				return true;
+				CitadelUtility.sendAndLog(p, ChatColor.RED, "There is no block above to acid block.");
+				return;
 			}
 			Reinforcement topRein = ReinforcementLogic.getReinforcementProtecting(topFace);
 			if (topRein == null) {
-				CitadelUtility.sendAndLog(p, ChatColor.RED,
-						"The block above doesn't have a reinforcement.",
-						block.getLocation());
-				return true;
+				CitadelUtility.sendAndLog(p, ChatColor.RED, "The block above doesn't have a reinforcement.");
+				return;
 			}
 			if (!topRein.getType().canBeReinforced(topFace.getType())) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED, "You cannot acid that block because it cannot be reinforced.");
-				return true;
+				return;
 			}
 			if (!acidMan.canAcidBlock(reinforcement.getType(), topRein.getType())) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED,
-						reinforcement.getType().getName() + " can not acid away " + topRein.getType().getName(),
-						block.getLocation());
-				return true;
+						reinforcement.getType().getName() + " can not acid away " + topRein.getType().getName());
+				return;
 			}
 			ReinforcementAcidBlockedEvent event = new ReinforcementAcidBlockedEvent(p, reinforcement, topRein);
 			Bukkit.getPluginManager().callEvent(event);
@@ -95,7 +85,7 @@ public class Acid extends StandaloneCommand {
 					Citadel.getInstance().getLogger().log(Level.INFO,
 							"Acid block event cancelled for acid at " + reinforcement.getLocation());
 				}
-				return true;
+				return;
 			}
 
 			if (Citadel.getInstance().getConfigManager().logHostileBreaks()) {
@@ -112,12 +102,6 @@ public class Acid extends StandaloneCommand {
 				topFace.breakNaturally();
 			}
 		}
-		return true;
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new ArrayList<>();
 	}
 
 	/**

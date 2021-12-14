@@ -1,30 +1,21 @@
 package vg.civcraft.mc.citadel.command;
 
-import java.util.ArrayList;
-import java.util.List;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
-import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 
-@CivCommand(id = "cti")
-public class Information extends StandaloneCommand {
+public class Information extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		Player player = (Player) sender;
+	@CommandAlias("cti|ctinfo|info")
+	@Description("Enters information mode. Interacting with blocks in information mode will show information on their reinforcement")
+	public void execute(Player player) {
 		BooleanSetting ctiSetting = Citadel.getInstance().getSettingManager().getInformationMode();
 		ctiSetting.toggleValue(player.getUniqueId());
 		player.sendMessage(ChatColor.GREEN + "Toggled reinforcement information mode " + ChatColor.YELLOW
 				+ (ctiSetting.getValue(player.getUniqueId()) ? "on" : "off"));
-		return true;
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new ArrayList<>();
 	}
 }

@@ -47,16 +47,16 @@ public class ReinforcementType {
 		this.destructionEffect = destructionEffect;
 		this.gracePeriod = gracePeriod;
 		this.deletedGroupMulitplier = deletedGroupMulitplier;
-		if (allowsReinforceables != null) {
+		if (!allowsReinforceables.isEmpty()) {
 			this.allowedReinforceables = new TreeSet<>(allowsReinforceables);
 		} else {
 			// can only black list OR white list
-			if (disallowedReinforceables != null) {
+			if (!disallowedReinforceables.isEmpty()) {
 				this.disallowedReinforceables = new TreeSet<>(disallowedReinforceables);
 			}
 		}
 		this.globalBlackList = new TreeSet<>();
-		if (globalBlackList != null) {
+		if (!globalBlackList.isEmpty()) {
 			this.globalBlackList.addAll(globalBlackList);
 		}
 		this.id = id;

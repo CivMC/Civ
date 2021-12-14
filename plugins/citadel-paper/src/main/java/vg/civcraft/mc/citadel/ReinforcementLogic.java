@@ -6,9 +6,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.AmethystCluster;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.CoralWallFan;
+import org.bukkit.block.data.type.PointedDripstone;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
@@ -172,6 +174,7 @@ public final class ReinforcementLogic {
 			case WARPED_FUNGUS:
 			case CRIMSON_FUNGUS:
 			case BAMBOO_SAPLING:
+			case FLOWERING_AZALEA:
 			case WHEAT:
 			case CARROTS:
 			case POTATOES:
@@ -212,21 +215,15 @@ public final class ReinforcementLogic {
 			case DEAD_FIRE_CORAL_FAN:
 			case DEAD_HORN_CORAL:
 			case DEAD_HORN_CORAL_FAN:
+			case SMALL_DRIPLEAF:
 			case NETHER_WART: {
 				return block.getRelative(BlockFace.DOWN);
-			}
-			case TWISTING_VINES: {
-				// scan downwards for first different block
-				Block below = block.getRelative(BlockFace.DOWN);
-				while (below.getType() == block.getType() || below.getType() == Material.TWISTING_VINES_PLANT) {
-					below = below.getRelative(BlockFace.DOWN);
-				}
-				return below;
 			}
 			case SUGAR_CANE:
 			case BAMBOO:
 			case ROSE_BUSH:
 			case TWISTING_VINES_PLANT:
+			case BIG_DRIPLEAF_STEM:
 			case CACTUS:
 			case SUNFLOWER:
 			case LILAC:
@@ -241,6 +238,10 @@ public final class ReinforcementLogic {
 					below = below.getRelative(BlockFace.DOWN);
 				}
 				return below;
+			}
+			case SPORE_BLOSSOM:
+			case HANGING_ROOTS: {
+				return block.getRelative(BlockFace.UP);
 			}
 			case ACACIA_DOOR:
 			case BIRCH_DOOR:
@@ -292,6 +293,12 @@ public final class ReinforcementLogic {
 				CoralWallFan cwf = (CoralWallFan) block.getBlockData();
 				return block.getRelative(cwf.getFacing().getOppositeFace());
 			}
+			case SMALL_AMETHYST_BUD:
+			case MEDIUM_AMETHYST_BUD:
+			case LARGE_AMETHYST_BUD: {
+				AmethystCluster amethyst = (AmethystCluster) block.getBlockData();
+				return block.getRelative(amethyst.getFacing().getOppositeFace());
+			}
 			case WEEPING_VINES: {
 				// scan upwards
 				Block above = block.getRelative(BlockFace.UP);
@@ -300,14 +307,46 @@ public final class ReinforcementLogic {
 				}
 				return above;
 			}
+			case CAVE_VINES: {
+				// scan upwards for first different block
+				Block above = block.getRelative(BlockFace.UP);
+				while (above.getType() == block.getType() || above.getType() == Material.CAVE_VINES_PLANT) {
+					above = above.getRelative(BlockFace.UP);
+				}
+				return above;
+			}
+			case CAVE_VINES_PLANT:
 			case WEEPING_VINES_PLANT: {
-				// scan upwards
+				// scan upwards for first different block
 				Block above = block.getRelative(BlockFace.UP);
 				while (above.getType() == block.getType()) {
 					above = above.getRelative(BlockFace.UP);
 				}
 				return above;
 			}
+			case TWISTING_VINES: {
+				// scan downwards for first different block
+				Block below = block.getRelative(BlockFace.DOWN);
+				while (below.getType() == block.getType() || below.getType() == Material.TWISTING_VINES_PLANT) {
+					below = below.getRelative(BlockFace.DOWN);
+				}
+				return below;
+			}
+			case BIG_DRIPLEAF: {
+				// scan downwards for first different block
+				Block below = block.getRelative(BlockFace.DOWN);
+				while (below.getType() == block.getType() || below.getType() == Material.BIG_DRIPLEAF_STEM) {
+					below = below.getRelative(BlockFace.DOWN);
+				}
+				return below;
+			}
+			case POINTED_DRIPSTONE:
+				PointedDripstone dripstone = (PointedDripstone) block.getBlockData();
+				Block direction = block.getRelative(dripstone.getVerticalDirection().getOppositeFace());
+				while (direction.getType() == block.getType()) {
+					direction = direction.getRelative(dripstone.getVerticalDirection().getOppositeFace());
+				}
+				return direction;
 			default: {
 				return block;
 			}

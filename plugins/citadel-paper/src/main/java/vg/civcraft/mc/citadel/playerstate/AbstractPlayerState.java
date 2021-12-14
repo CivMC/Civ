@@ -18,9 +18,9 @@ import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
-import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
-import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
-import vg.civcraft.mc.civmodcore.util.DelayedItemDrop;
+import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
+import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
+import vg.civcraft.mc.civmodcore.utilities.DelayedItemDrop;
 
 public abstract class AbstractPlayerState {
 

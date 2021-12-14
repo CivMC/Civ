@@ -12,7 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
@@ -43,6 +43,7 @@ public class CitadelUtility {
 			case JUNGLE_SAPLING:
 			case OAK_SAPLING:
 			case SPRUCE_SAPLING:
+			case FLOWERING_AZALEA:
 			case WHEAT:
 			case CARROTS:
 			case POTATOES:
@@ -65,6 +66,11 @@ public class CitadelUtility {
 			case WEEPING_VINES_PLANT:
 			case KELP:
 			case KELP_PLANT:
+			case BIG_DRIPLEAF:
+			case BIG_DRIPLEAF_STEM:
+			case CAVE_VINES:
+			case CAVE_VINES_PLANT:
+			case SMALL_DRIPLEAF:
 			case SWEET_BERRY_BUSH:
 			case BAMBOO:
 			case BAMBOO_SAPLING:

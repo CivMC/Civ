@@ -1,31 +1,31 @@
 package vg.civcraft.mc.citadel.command;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
+import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
+import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
-import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
-import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
-@CivCommand(id = "ctdl")
-public class ReinforcementsGUI extends StandaloneCommand {
+public class ReinforcementsGUI extends BaseCommand {
 
 	private DecimalFormat format = new DecimalFormat("##.##");
 
-	@Override
-	public boolean execute(CommandSender sender, String[] arg1) {
+	@CommandAlias("ctdl|reinforcements")
+	@Description("Opens a GUI displaying all reinforcement materials")
+	public void execute(Player sender) {
 		List<ReinforcementType> types = new LinkedList<>(
 				Citadel.getInstance().getReinforcementTypeManager().getAllTypes());
 		// sort ascending by health
@@ -48,14 +48,7 @@ public class ReinforcementsGUI extends StandaloneCommand {
 			IClickable click = new DecorationStack(is);
 			clicks.add(click);
 		}
-		MultiPageView pageView = new MultiPageView((Player) sender, clicks, ChatColor.BLUE + "Reinforcements", true);
+		MultiPageView pageView = new MultiPageView(sender, clicks, ChatColor.BLUE + "Reinforcements", true);
 		pageView.showScreen();
-		return true;
 	}
-
-	@Override
-	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
-		return null;
-	}
-
 }

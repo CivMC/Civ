@@ -3,6 +3,7 @@ package vg.civcraft.mc.citadel;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
+import vg.civcraft.mc.citadel.command.CitadelCommandManager;
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.listener.EntityListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
@@ -17,10 +18,10 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementTypeManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.BlockBasedChunkMetaView;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.BlockBasedChunkMetaView;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaAPI;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableStorageEngine;
 
 public class Citadel extends ACivMod {
 
@@ -38,6 +39,7 @@ public class Citadel extends ACivMod {
 	private HologramManager holoManager;
 	private CitadelSettingManager settingManager;
 	private CitadelDAO dao;
+	private CitadelCommandManager commandManager;
 
 	private PlayerStateManager stateManager;
 
@@ -114,7 +116,7 @@ public class Citadel extends ACivMod {
 			Bukkit.shutdown();
 			return;
 		}
-		BlockBasedChunkMetaView<CitadelChunkData, TableBasedDataObject, TableStorageEngine<Reinforcement>> chunkMetaData = 
+		BlockBasedChunkMetaView<CitadelChunkData, TableBasedDataObject, TableStorageEngine<Reinforcement>> chunkMetaData =
 				ChunkMetaAPI.registerBlockBasedPlugin(this, () -> new CitadelChunkData(false, dao),dao, true);
 		if (chunkMetaData == null) {
 			logger.severe("Errors setting up chunk metadata API, shutting down");
@@ -133,6 +135,7 @@ public class Citadel extends ACivMod {
 			else {
 				logger.info("HolographicDisplays is not loaded, no holograms available");
 			}});
+		commandManager = new CitadelCommandManager(this);
 		CitadelPermissionHandler.setup();
 		registerListeners();
 	}
