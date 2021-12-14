@@ -23,10 +23,11 @@ repositories {
 dependencies {
 	paperDevBundle("1.18-R0.1-SNAPSHOT")
 
-    implementation("com.mojang:datafixerupper:1.0.20")
+	shadow("co.aikar:acf-bukkit:0.5.0-SNAPSHOT")
+
+	implementation("com.mojang:datafixerupper:1.0.20")
     implementation("com.zaxxer:HikariCP:3.4.2")
     implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
-    implementation("co.aikar:acf-bukkit:0.5.0-SNAPSHOT")
     implementation("co.aikar:taskchain-bukkit:3.7.2")
     implementation("com.github.IPVP-MC:canvas:91ec97f076")
     implementation("org.apache.commons:commons-lang3:3.12.0")
@@ -35,8 +36,8 @@ dependencies {
     implementation("it.unimi.dsi:fastutil:8.2.2")
     implementation("co.aikar:cleaner:1.0-SNAPSHOT")
 
-     compileOnly("org.projectlombok:lombok:1.18.20")
-     annotationProcessor ("org.projectlombok:lombok:1.18.20")
+	compileOnly("org.projectlombok:lombok:1.18.20")
+	annotationProcessor ("org.projectlombok:lombok:1.18.20")
 
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.2.0")
@@ -70,15 +71,10 @@ tasks {
 	}
 
 	shadowJar {
-		// helper function to relocate a package into our package
-		fun reloc(pkg: String) = relocate(pkg, "vg.civcraft.mc.civmodcore.dependencies.$pkg")
-
-		// relocate and it's transitive dependencies
-		reloc("com.mojang")
-		reloc("com.zaxxer")
-		reloc("net.kyori")
-		reloc("org.apache")
-		reloc("com.google")
+		dependencies {
+			exclude(dependency("it.unimi.dsi:fastutil"))
+			exclude(dependency("co.aikar:cleaner"))
+		}
 	}
 }
 
