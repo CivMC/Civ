@@ -23,8 +23,7 @@ repositories {
 dependencies {
 	paperDevBundle("1.18-R0.1-SNAPSHOT")
 
-	shadow("co.aikar:acf-bukkit:0.5.0-SNAPSHOT")
-
+	implementation("co.aikar:acf-bukkit:0.5.0-SNAPSHOT")
 	implementation("com.mojang:datafixerupper:1.0.20")
     implementation("com.zaxxer:HikariCP:3.4.2")
     implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
@@ -33,8 +32,9 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("org.apache.commons:commons-collections4:4.4")
     implementation("com.google.code.findbugs:jsr305:3.0.2")
-    implementation("it.unimi.dsi:fastutil:8.2.2")
-    implementation("co.aikar:cleaner:1.0-SNAPSHOT")
+
+    compileOnly("it.unimi.dsi:fastutil:8.2.2")
+    compileOnly("co.aikar:cleaner:1.0-SNAPSHOT")
 
 	compileOnly("org.projectlombok:lombok:1.18.20")
 	annotationProcessor ("org.projectlombok:lombok:1.18.20")
@@ -71,6 +71,8 @@ tasks {
 	}
 
 	shadowJar {
+		fun reloc(pkg: String) = relocate(pkg, "net.civmc.civmodcore.shadow")
+
 		dependencies {
 			exclude(dependency("it.unimi.dsi:fastutil"))
 			exclude(dependency("co.aikar:cleaner"))
