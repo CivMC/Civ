@@ -6,7 +6,7 @@
 
   <parent>
     <artifactId>namelayer-parent</artifactId>
-    <groupId>vg.civcraft.mc.namelayer</groupId>
+    <groupId>com.github.civclassic</groupId>
     <version>1.0.0</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
@@ -16,12 +16,12 @@
   <packaging>jar</packaging>
 
   <dependencies>
-    <dependency>
-      <groupId>com.destroystokyo.paper</groupId>
-      <artifactId>paper</artifactId>
-      <version>1.16.5-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
+		<dependency>
+			<groupId>io.papermc.paper</groupId>
+			<artifactId>paper</artifactId>
+			<version>1.17-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 
 </project>

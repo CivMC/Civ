@@ -51,7 +51,7 @@ public class NameAPI {
 	}
 	/**
 	 * Gets the playername from a given server from their uuid.
-	 * @param uuid.
+	 * @param uuid uuid of target player
 	 * @return Returns the PlayerName from the UUID.
 	 */
 	public static String getCurrentName(UUID uuid) {

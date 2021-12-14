@@ -1,5 +1,6 @@
 package vg.civcraft.mc.namelayer.misc;
 
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 

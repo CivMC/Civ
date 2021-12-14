@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.github.civclassic</groupId>
+    <artifactId>namelayer-parent</artifactId>
+    <version>1.0.0</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>namelayer-nms-v1_17_R1</artifactId>
+  <version>1.0.1</version>
+  <packaging>jar</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.github.civclassic</groupId>
+      <artifactId>namelayer-nms-interface</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+		<dependency>
+			<groupId>io.papermc.paper</groupId>
+			<artifactId>paper</artifactId>
+			<version>1.17.1-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+  </dependencies>
+
+</project>

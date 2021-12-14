@@ -1,62 +1,44 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
-import java.util.List;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Syntax;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
+import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.gui.GUIGroupOverview;
 import vg.civcraft.mc.namelayer.gui.MainGroupGUI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class NameLayerGroupGui extends PlayerCommandMiddle {
-	
-	public NameLayerGroupGui(String name) {
-		super(name);
-		setIdentifier("nl");
-		setDescription("Open the group management GUI");
-		setUsage("/nl [group]");
-		setArguments(0,1);
-	}
-	
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+public class NameLayerGroupGui extends BaseCommandMiddle {
+
+	@CommandAlias("nl")
+	@Syntax("[group]")
+	@Description("Open the group management GUI")
+	@CommandCompletion("@NL_Groups")
+	public void execute(CommandSender sender, @Optional String groupName) {
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.BLUE + "Go back home console man, we dont want you here");
-			return true;
+			return;
 		}
-		if (args.length == 0) {
+		if (groupName == null) {
 			GUIGroupOverview gui = new GUIGroupOverview((Player) sender);
 			gui.showScreen();
-			return true;
+			return;
 		}
-		Group g = gm.getGroup(args [0]);
+		Group g = gm.getGroup(groupName);
 		if (g == null) {
 			sender.sendMessage(ChatColor.RED + "This group doesn't exist");
-			return true;
+			return;
 		}
 		if (!gm.hasAccess(g, ((Player) sender).getUniqueId(), PermissionType.getPermission("OPEN_GUI"))) {
 			sender.sendMessage(ChatColor.RED + "You don't have permission to do this");
-			return true;
+			return;
 		}
 		MainGroupGUI gui = new MainGroupGUI((Player) sender, g);
-		return true;
 	}
-	
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.BLUE + "Go back home console man, we dont want you here");
-			return null;
-		}
-		if (args.length == 0) {
-			return GroupTabCompleter.complete(null, PermissionType.getPermission("OPEN_GUI"), (Player)sender);
-		}
-		else {
-			return GroupTabCompleter.complete(args [0], PermissionType.getPermission("OPEN_GUI"), (Player)sender);
-		}
-	}
-
 }

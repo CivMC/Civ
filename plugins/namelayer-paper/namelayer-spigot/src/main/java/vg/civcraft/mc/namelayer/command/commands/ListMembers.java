@@ -1,62 +1,54 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Syntax;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
-import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
+import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class ListMembers extends PlayerCommandMiddle {
+public class ListMembers extends BaseCommandMiddle {
 
-	public ListMembers(String name) {
-		super(name);
-		setIdentifier("nllm");
-		setDescription("List the members in a group");
-		setUsage("/nllm <group> (PlayerType)");
-		setArguments(1,3);
-	}
-
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.LIGHT_PURPLE + "No can do.");
-			return true;
-		}
-		
+	@CommandAlias("nllm|listmembers|members")
+	@Syntax("<group> [rank (e.g: MEMBERS)]")
+	@Description("List the members in a group")
+	@CommandCompletion("@NL_Groups @NL_Ranks")
+	public void execute(Player sender, String groupName, @Optional String playerType, @Optional String playerName) {
 		Player p = (Player) sender;
 		UUID uuid = NameAPI.getUUID(p.getName());
-		String groupname = args[0];
+		String groupname = groupName;
 		
 		Group group = GroupManager.getGroup(groupname);
 		if (groupIsNull(sender, groupname, group)) {
-			return true;
+			return;
 		}
 		
 		if (!p.hasPermission("namelayer.admin")) {
 			if (!group.isMember(uuid)) {
 				p.sendMessage(ChatColor.RED + "You're not on this group.");
-				return true;
+				return;
 			}
 	
 			if (!gm.hasAccess(group, uuid, PermissionType.getPermission("GROUPSTATS"))) {
 				p.sendMessage(ChatColor.RED 
 						+ "You don't have permission to run that command.");
-				return true;
+				return;
 			}
 		}
 		
 		List<UUID> uuids = null;
-		if (args.length == 3) {
-			String nameMin = args[1], nameMax = args[2];
+		if (playerType != null && playerName != null) {
+			String nameMin = playerType, nameMax = playerName;
 			
 			List<UUID> members = group.getAllMembers();
 			uuids = Lists.newArrayList();
@@ -68,14 +60,14 @@ public class ListMembers extends PlayerCommandMiddle {
 					uuids.add(member);
 				}
 			}
-		} else if (args.length == 2) {
-			String playerRank = args[1];
+		} else if (playerType != null && playerName == null) {
+			String playerRank = playerType;
 			PlayerType filterType = PlayerType.getPlayerType(playerRank);
 			
 			if (filterType == null) {
 				// user entered invalid type, show them
 				PlayerType.displayPlayerTypes(p);
-				return true;
+				return;
 			}
 			
 			uuids = group.getAllMembers(filterType);
@@ -94,22 +86,5 @@ public class ListMembers extends PlayerCommandMiddle {
 		}
 		
 		p.sendMessage(sb.toString());
-		return true;
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			return null;
-		}
-			
-		if (args.length == 0)
-			return GroupTabCompleter.complete(null, null, (Player) sender);
-		else if (args.length == 1)
-			return GroupTabCompleter.complete(args[0], null, (Player)sender);
-		else if (args.length == 2)
-			return MemberTypeCompleter.complete(args[1]);
-
-		return null;
 	}
 }

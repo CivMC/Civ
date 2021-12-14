@@ -5,23 +5,23 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>vg.civcraft.mc.namelayer</groupId>
+    <groupId>com.github.civclassic</groupId>
     <artifactId>namelayer-parent</artifactId>
     <version>1.0.0</version>
   </parent>
 
   <artifactId>NameLayer</artifactId>
   <!-- My Mavenfu is weak, you must update in 2 places. -->
-  <version>2.14.1</version>
+  <version>2.15.0</version>
 
   <dependencies>
     <dependency>
-      <groupId>vg.civcraft.mc.namelayer</groupId>
+      <groupId>com.github.civclassic</groupId>
       <artifactId>namelayer-spigot</artifactId>
       <version>1.0.0</version>
     </dependency>
     <dependency>
-      <groupId>vg.civcraft.mc.namelayer</groupId>
+      <groupId>com.github.civclassic</groupId>
       <artifactId>namelayer-bungee</artifactId>
       <version>1.0.0</version>
     </dependency>

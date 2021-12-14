@@ -1,30 +1,21 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
 import java.util.List;
 import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
+import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 
-public class GetDefaultGroup extends PlayerCommandMiddle{
+public class GetDefaultGroup extends BaseCommandMiddle {
 
-	public GetDefaultGroup(String name) {
-		super(name);
-		setIdentifier("nlgdg");
-		setDescription("Get a players default group");
-		setUsage("/nlgdg");
-		setArguments(0,0);
-	}
-
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage("I don't think you need to do that.");
-			return true;
-		}
+	@CommandAlias("nlgdg")
+	@Description("Get a players default group")
+	public void execute(Player sender) {
 		Player p = (Player) sender;
 		UUID uuid = NameAPI.getUUID(p.getName());
 
@@ -35,11 +26,8 @@ public class GetDefaultGroup extends PlayerCommandMiddle{
 		else{
 			p.sendMessage(ChatColor.GREEN + "Your current default group is " + x);
 		}
-		
-		return true;
 	}
 
-	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		if (!(sender instanceof Player))
 			return null;
