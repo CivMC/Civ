@@ -81,6 +81,7 @@ $RECYCLE.BIN/
 .idea/gradle.xml
 .idea/libraries
 build/
+!gradle/wrapper/gradle-wrapper.jar
 
 # Mongo Explorer plugin:
 .idea/mongoSettings.xml
