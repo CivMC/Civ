@@ -11,6 +11,7 @@ local.properties
 /target
 target/
 *.iml
+.idea/
 
 # Eclipse Core
 .project

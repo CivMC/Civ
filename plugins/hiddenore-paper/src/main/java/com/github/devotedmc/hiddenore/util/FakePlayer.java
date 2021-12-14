@@ -51,16 +51,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityCategory;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Firework;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Pose;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -1421,12 +1412,6 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
-	public boolean sendChunkChange(Location loc, int sx, int sy, int sz, byte[] data) {
-
-		return false;
-	}
-
-	@Override
 	public void sendSignChange(@Nonnull Location location,
 							   @Nullable List<Component> list) throws IllegalArgumentException {
 
@@ -1760,6 +1745,21 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
+	public void hideEntity(Plugin plugin,  Entity entity) {
+
+	}
+
+	@Override
+	public void showEntity(Plugin plugin,  Entity entity) {
+
+	}
+
+	@Override
+	public boolean canSee(Entity entity) {
+		return false;
+	}
+
+	@Override
 	public boolean isOnGround() {
 
 		return false;
@@ -1839,6 +1839,16 @@ public class FakePlayer implements Player {
 	public double getHealthScale() {
 
 		return 0;
+	}
+
+	@Override
+	public void sendHealthUpdate(double v, int i, float v1) {
+
+	}
+
+	@Override
+	public void sendHealthUpdate() {
+
 	}
 
 	@Override
@@ -1936,6 +1946,16 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
+	public  Component name() {
+		return null;
+	}
+
+	@Override
+	public  Component teamDisplayName() {
+		return null;
+	}
+
+	@Override
 	public boolean isSilent() {
 		return false;
 	}
@@ -2003,7 +2023,7 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void setCooldown(Material arg0, int arg1) {
-		
+
 	}
 
 	@Override
@@ -2013,12 +2033,12 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void setShoulderEntityLeft(Entity arg0) {
-		
+
 	}
 
 	@Override
 	public void setShoulderEntityRight(Entity arg0) {
-		
+
 	}
 
 	@Override
@@ -2073,7 +2093,7 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void setPortalCooldown(int arg0) {
-		
+
 	}
 
 	@Override
@@ -2088,32 +2108,37 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void playSound(Location arg0, Sound arg1, SoundCategory arg2, float arg3, float arg4) {
-		
+
 	}
 
 	@Override
 	public void playSound(Location arg0, String arg1, SoundCategory arg2, float arg3, float arg4) {
-		
+
 	}
 
 	@Override
 	public void sendTitle(String arg0, String arg1, int arg2, int arg3, int arg4) {
-		
+
 	}
 
 	@Override
 	public void setResourcePack(String arg0, byte[] arg1) {
-		
+
 	}
 
 	@Override
 	public void stopSound(Sound arg0, SoundCategory arg1) {
-		
+
 	}
 
 	@Override
 	public void stopSound(String arg0, SoundCategory arg1) {
-		
+
+	}
+
+	@Override
+	public void stopAllSounds() {
+
 	}
 
 	@Override
@@ -2128,16 +2153,21 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void setSwimming(boolean arg0) {
-		
+
 	}
 
 	@Override
 	public void sendBlockChange(Location arg0, BlockData arg1) {
-		
+
 	}
 
 	@Override
 	public void sendBlockDamage(@Nonnull Location location, float f) {
+
+	}
+
+	@Override
+	public void sendEquipmentChange(LivingEntity livingEntity,  EquipmentSlot equipmentSlot,  ItemStack itemStack) {
 
 	}
 
@@ -2190,7 +2220,7 @@ public class FakePlayer implements Player {
 	@Override
 	public void wakeup(boolean setSpawnLocation) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -2256,7 +2286,7 @@ public class FakePlayer implements Player {
 	@Override
 	public <T> void setMemory(MemoryKey<T> memoryKey, T memoryValue) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -2268,7 +2298,7 @@ public class FakePlayer implements Player {
 	@Override
 	public void setAbsorptionAmount(double arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -2280,7 +2310,7 @@ public class FakePlayer implements Player {
 	@Override
 	public void setRotation(float yaw, float pitch) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -2304,7 +2334,7 @@ public class FakePlayer implements Player {
 	@Override
 	public void sendSignChange(Location loc, String[] lines, DyeColor dyeColor) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -2334,7 +2364,7 @@ public class FakePlayer implements Player {
 	@Override
 	public void openBook(ItemStack book) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -2358,19 +2388,19 @@ public class FakePlayer implements Player {
 	@Override
 	public void attack(Entity target) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void swingMainHand() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void swingOffHand() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -2382,19 +2412,19 @@ public class FakePlayer implements Player {
 	@Override
 	public void sendExperienceChange(float progress) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void sendExperienceChange(float progress, int level) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void closeInventory(Reason arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -2436,7 +2466,17 @@ public class FakePlayer implements Player {
 	@Override
 	public void openSign(Sign arg0) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public void showDemoScreen() {
+
+	}
+
+	@Override
+	public boolean isAllowingServerListings() {
+		return false;
 	}
 
 	@Override
@@ -2466,7 +2506,7 @@ public class FakePlayer implements Player {
 	@Override
 	public void clearActiveItem() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -2568,19 +2608,19 @@ public class FakePlayer implements Player {
 	@Override
 	public void playPickupItemAnimation(Item arg0, int arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setArrowCooldown(int arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setArrowsInBody(int arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -2606,37 +2646,37 @@ public class FakePlayer implements Player {
 	@Override
 	public void setArrowsStuck(int arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setHurtDirection(float arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setInvisible(boolean arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setJumping(boolean arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setKiller(Player arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setShieldBlockingDelay(int arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -2714,19 +2754,19 @@ public class FakePlayer implements Player {
 	@Override
 	public void sendMessage(UUID arg0, String arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void sendMessage(UUID arg0, String[] arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void sendRawMessage(UUID arg0, String arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -2773,6 +2813,11 @@ public class FakePlayer implements Player {
 	@Override
 	public @Nonnull Set<Player> getTrackedPlayers() {
 		return null;
+	}
+
+	@Override
+	public boolean spawnAt(Location location,  SpawnReason spawnReason) {
+		return false;
 	}
 
 	@Override
@@ -2832,7 +2877,7 @@ public class FakePlayer implements Player {
 	@Override
 	public void giveExp(int arg0, boolean arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -2844,67 +2889,67 @@ public class FakePlayer implements Player {
 	@Override
 	public void hideTitle() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resetCooldown() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void sendActionBar(String arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void sendActionBar(BaseComponent... arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void sendActionBar(char arg0, String arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void sendTitle(Title arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setAffectsSpawning(boolean arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setPlayerListHeaderFooter(BaseComponent[] arg0, BaseComponent[] arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setPlayerListHeaderFooter(BaseComponent arg0, BaseComponent arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setPlayerProfile(PlayerProfile arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setResourcePack(String arg0, String arg1) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
