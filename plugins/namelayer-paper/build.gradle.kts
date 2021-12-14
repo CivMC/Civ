@@ -3,6 +3,7 @@ subprojects {
 	apply<MavenPublishPlugin>()
 
 	group = "net.civmc"
+	version = "2.0.0-SNAPSHOT"
 	description = "NameLayer"
 
 	configure<PublishingExtension> {
