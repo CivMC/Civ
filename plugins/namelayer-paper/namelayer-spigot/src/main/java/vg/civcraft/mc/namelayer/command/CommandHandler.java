@@ -3,43 +3,15 @@ package vg.civcraft.mc.namelayer.command;
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.CommandCompletions;
 import java.util.Arrays;
-import javax.annotation.Nonnull;
+import java.util.stream.Collectors;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
-import vg.civcraft.mc.namelayer.command.commands.AcceptInvite;
-import vg.civcraft.mc.namelayer.command.commands.AddBlacklist;
-import vg.civcraft.mc.namelayer.command.commands.ChangePlayerName;
-import vg.civcraft.mc.namelayer.command.commands.CreateGroup;
-import vg.civcraft.mc.namelayer.command.commands.DeleteGroup;
-import vg.civcraft.mc.namelayer.command.commands.DisciplineGroup;
-import vg.civcraft.mc.namelayer.command.commands.GetDefaultGroup;
-import vg.civcraft.mc.namelayer.command.commands.GlobalStats;
-import vg.civcraft.mc.namelayer.command.commands.GroupStats;
-import vg.civcraft.mc.namelayer.command.commands.InfoDump;
-import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
-import vg.civcraft.mc.namelayer.command.commands.JoinGroup;
-import vg.civcraft.mc.namelayer.command.commands.LeaveGroup;
-import vg.civcraft.mc.namelayer.command.commands.ListCurrentInvites;
-import vg.civcraft.mc.namelayer.command.commands.ListGroups;
-import vg.civcraft.mc.namelayer.command.commands.ListMembers;
-import vg.civcraft.mc.namelayer.command.commands.ListPermissions;
-import vg.civcraft.mc.namelayer.command.commands.ListPlayerTypes;
-import vg.civcraft.mc.namelayer.command.commands.ModifyPermissions;
-import vg.civcraft.mc.namelayer.command.commands.NameLayerGroupGui;
-import vg.civcraft.mc.namelayer.command.commands.PromotePlayer;
-import vg.civcraft.mc.namelayer.command.commands.RejectInvite;
-import vg.civcraft.mc.namelayer.command.commands.RemoveBlacklist;
-import vg.civcraft.mc.namelayer.command.commands.RemoveMember;
-import vg.civcraft.mc.namelayer.command.commands.RevokeInvite;
-import vg.civcraft.mc.namelayer.command.commands.SetDefaultGroup;
-import vg.civcraft.mc.namelayer.command.commands.SetPassword;
-import vg.civcraft.mc.namelayer.command.commands.ShowBlacklist;
-import vg.civcraft.mc.namelayer.command.commands.ToggleAutoAcceptInvites;
-import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
-import vg.civcraft.mc.namelayer.command.commands.UpdateName;
+import vg.civcraft.mc.namelayer.command.commands.*;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
+
+import javax.annotation.Nonnull;
 
 public class CommandHandler extends CommandManager{
 
@@ -91,6 +63,6 @@ public class CommandHandler extends CommandManager{
 		completions.registerAsyncCompletion("NL_Ranks", (context) ->
 				Arrays.asList(GroupManager.PlayerType.getStringOfTypes().split(" ")));
 		completions.registerCompletion("NL_Perms", (context) ->
-				PermissionType.getAllPermissions().stream().map(PermissionType::getName).toList());
+				PermissionType.getAllPermissions().stream().map(PermissionType::getName).collect(Collectors.toList()));
 	}
 }
