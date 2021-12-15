@@ -101,12 +101,6 @@ local.properties
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 
-# Gradle
-.idea/**/gradle.xml
-.idea/**/libraries
-build
-.gradle
-
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
@@ -265,6 +259,14 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Gradle
+.idea/**/gradle.xml
+.idea/**/libraries
+build
+.gradle
+!gradlew.bat
+!gradle/wrapper/gradle-wrapper.jar
 
 <<<<<<< HEAD
 # End of https://www.gitignore.io/api/java,batch,linux,macos,maven,windows,intellij+all
