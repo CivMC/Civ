@@ -24,3 +24,5 @@ jobs:
 
       - name: Build
         run: ./gradlew build --stacktrace
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
