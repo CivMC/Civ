@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.scheduler.BukkitTask;
@@ -52,8 +52,8 @@ public final class MojangNames {
 		PROFILES.clear();
 		try {
 			final byte[] data = Files.readAllBytes(file);
-			final NBTTagCompound nbt = NBTSerialization.fromBytes(data);
-			nbt.getKeys().forEach(key -> PROFILES.put(key, nbt.a(key)));
+			final CompoundTag nbt = NBTSerialization.fromBytes(data);
+			nbt.getAllKeys().forEach(key -> PROFILES.put(key, nbt.getUUID(key)));
 			plugin.info("[MojangNames] Mojang profiles loaded!");
 		}
 		catch (final NoSuchFileException ignored) {}
@@ -63,8 +63,8 @@ public final class MojangNames {
 	}
 
 	private static void save(final NameLayerPlugin plugin, final Path file) {
-		final NBTTagCompound nbt = new NBTTagCompound();
-		PROFILES.forEach((name, uuid) -> nbt.a(name, uuid)); // Ignore highlighter
+		final CompoundTag nbt = new CompoundTag();
+		PROFILES.forEach((name, uuid) -> nbt.putUUID(name, uuid)); // Ignore highlighter
 		final byte[] data = NBTSerialization.toBytes(nbt);
 		try {
 			Files.write(file, data,
