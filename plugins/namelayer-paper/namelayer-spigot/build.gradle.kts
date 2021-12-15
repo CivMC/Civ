@@ -3,7 +3,19 @@ plugins {
 }
 
 repositories {
+	fun civRepo(name: String) {
+		maven {
+			url = uri("https://maven.pkg.github.com/CivMC/${name}")
+			credentials {
+				username = System.getenv("GITHUB_ACTOR")
+				password = System.getenv("GITHUB_TOKEN")
+			}
+		}
+	}
+
 	mavenCentral()
+	civRepo("CivModCore")
+
 	maven("https://hub.spigotmc.org/nexus/content/groups/public/")
 	maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots")
 	maven("https://repo.md-5.net/content/repositories/public/")
@@ -15,7 +27,7 @@ repositories {
 dependencies {
 	paperDevBundle("1.18-R0.1-SNAPSHOT")
 
-	implementation("com.github.CivMC:CivModCore:v2.0.0-SNAPSHOT-11:dev-all")
+	implementation("net.civmc:civmodcore:2.0.0-SNAPSHOT:dev-all")
 }
 
 configure<JavaPluginExtension> {
