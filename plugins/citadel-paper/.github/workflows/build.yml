@@ -24,3 +24,6 @@ jobs:
 
       - name: Build
         run: ./gradlew build --stacktrace
+        env:
+          CIVMC_USERNAME: ${{ secrets.CIVMC_USERNAME }}
+          CIVMC_PAT: ${{ secrets.CIVMC_PAT }}
