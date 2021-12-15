@@ -8,7 +8,7 @@ import com.untamedears.realisticbiomes.model.ltree.BlockTransformation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
@@ -35,7 +35,7 @@ public class GaussTree {
 	private Random rng;
 
 	public GaussTree(ItemStack sapling) {
-		NBTTagCompound nbt = NBTHelper.itemStackToNBT(sapling);
+		CompoundTag nbt = NBTHelper.itemStackToNBT(sapling);
 
 	}
 

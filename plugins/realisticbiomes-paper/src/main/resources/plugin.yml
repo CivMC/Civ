@@ -1,8 +1,8 @@
-name: ${project.name}
+name: RealisticBiomes
 main: com.untamedears.realisticbiomes.RealisticBiomes
 depend:
 - CivModCore
-version: ${project.version}
+version: 2.3.0-SNAPSHOT
 authors:
 - mgrandi
 - gispy-king
@@ -15,7 +15,7 @@ authors:
 - pruby
 - Maxopoly
 - BlackXnt
-api-version: 1.14
+api-version: 1.18
 description: RealisticBiomes makes farming harder by limiting growth rates of crops and making them only grow well in certain biomes.
 permissions:
   rb.public:

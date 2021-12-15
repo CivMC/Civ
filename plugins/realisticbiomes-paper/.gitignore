@@ -6,3 +6,5 @@ target/
 .settings/*
 dependency-reduced-pom.xml
 *.iml
+.gradle
+build
