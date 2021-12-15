@@ -10,6 +10,8 @@ local.properties
 .loadpath
 /target
 target/
+*.iml
+.idea/
 
 # Eclipse Core
 .project
