@@ -13,8 +13,8 @@ repositories {
 		maven {
 			url = uri("https://maven.pkg.github.com/CivMC/${name}")
 			credentials {
-				username = System.getenv("GITHUB_ACTOR")
-				password = System.getenv("GITHUB_TOKEN")
+				username = System.getenv("CIVMC_USERNAME")
+				password = System.getenv("CIVMC_PAT")
 			}
 		}
 	}
