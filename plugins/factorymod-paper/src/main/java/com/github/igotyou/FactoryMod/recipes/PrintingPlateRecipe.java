@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -79,12 +79,12 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		return true;
 	}
 
-	public static ItemStack addTags(String serialNumber, ItemStack plate, NBTTagCompound bookTag) {
+	public static ItemStack addTags(String serialNumber, ItemStack plate, CompoundTag bookTag) {
 		net.minecraft.world.item.ItemStack nmsPlate = CraftItemStack.asNMSCopy(plate);
-		NBTTagCompound plateTag = nmsPlate.getOrCreateTag();
+		CompoundTag plateTag = nmsPlate.getOrCreateTag();
 
-		plateTag.setString("SN", serialNumber);
-		plateTag.set("Book", bookTag);
+		plateTag.putString("SN", serialNumber);
+		plateTag.put("Book", bookTag);
 
 		nmsPlate.setTag(plateTag);
 		return CraftItemStack.asBukkitCopy(nmsPlate);

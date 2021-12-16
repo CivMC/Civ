@@ -5,10 +5,10 @@ import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -68,7 +68,7 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 
 	protected ItemStack createBook(ItemStack printingPlateStack, int amount) {
 		net.minecraft.world.item.ItemStack book = CraftItemStack.asNMSCopy(printingPlateStack);
-		NBTTagCompound tag = book.getTag().getCompound("Book");
+		CompoundTag tag = book.getTag().getCompound("Book");
 
 		ItemStack bookItem = new ItemStack(Material.WRITTEN_BOOK, amount);
 		net.minecraft.world.item.ItemStack newBook = CraftItemStack.asNMSCopy(bookItem);
