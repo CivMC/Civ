@@ -32,6 +32,8 @@
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+build
+.gradle
 
 # CMake
 cmake-build-*/
