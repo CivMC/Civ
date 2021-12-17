@@ -229,7 +229,7 @@ public class BanStickDatabaseHandler {
 					" name VARCHAR(16)," +
 					" uuid CHAR(36) NOT NULL UNIQUE," +
 					" first_add TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-					" bid BIGINT REFERENCES bs_ban(bid)," +
+					" bid BIGINT, " +
 					" ip_pardon_time TIMESTAMP NULL, " +
 					" proxy_pardon_time TIMESTAMP NULL," +
 					" shared_pardon_time TIMESTAMP NULL," +
@@ -239,28 +239,31 @@ public class BanStickDatabaseHandler {
 					" INDEX bs_player_shared_pardons (shared_pardon_time)," +
 					" INDEX bs_player_join (first_add)" +
 					");",
+
 					"CREATE TABLE IF NOT EXISTS bs_session (" +
 					" sid BIGINT AUTO_INCREMENT PRIMARY KEY," +
-					" pid BIGINT REFERENCES bs_player(pid)," +
+					" pid BIGINT," +
 					" join_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 					" leave_time TIMESTAMP NULL," +
-					" iid BIGINT NOT NULL REFERENCES bs_ip(iid)," +
+					" iid BIGINT NOT NULL," +
 					" INDEX bs_session_pids (pid, join_time, leave_time)" +
 					");",
+
 					"CREATE TABLE IF NOT EXISTS bs_ban_log (" +
 					" lid BIGINT AUTO_INCREMENT PRIMARY KEY," +
-					" pid BIGINT NOT NULL REFERENCES bs_player(pid)," +
-					" bid BIGINT NOT NULL REFERENCES bs_ban(bid)," +
+					" pid BIGINT NOT NULL," +
+					" bid BIGINT NOT NULL," +
 					" action_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 					" action VARCHAR(10) NOT NULL," +
 					" INDEX bs_ban_log_time (pid, action_time DESC)" +
 					");", // TODO: Whenever a ban is given or removed from a player, record.
+
 					"CREATE TABLE IF NOT EXISTS bs_ban (" +
 					" bid BIGINT AUTO_INCREMENT PRIMARY KEY," +
 					" ban_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-					" ip_ban BIGINT REFERENCES bs_ip(iid)," +
-					" proxy_ban BIGINT REFERENCES bs_ip_data(idid)," +
-					" share_ban BIGINT REFERENCES bs_share(sid)," +
+					" ip_ban BIGINT," +
+					" proxy_ban BIGINT," + 
+					" share_ban BIGINT," +
 					" admin_ban BOOLEAN DEFAULT FALSE," +
 					" message TEXT," +
 					" ban_end TIMESTAMP NULL," +
@@ -270,6 +273,7 @@ public class BanStickDatabaseHandler {
 					" INDEX bs_ban_share (share_ban)," +
 					" INDEX bs_ban_end (ban_end)" +
 					");",
+
 					"CREATE TABLE IF NOT EXISTS bs_share (" +
 					" sid BIGINT AUTO_INCREMENT PRIMARY KEY," +
 					" create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
@@ -314,8 +318,28 @@ public class BanStickDatabaseHandler {
 					" INDEX bs_ip_data_iid (iid)," +
 					" INDEX bs_ip_data_valid (valid, create_time DESC)," +
 					" INDEX bs_ip_data_proxy (proxy)" +
-					");"
-				);
+					");",
+
+					"ALTER TABLE bs_player ADD CONSTRAINT fk_bs_player_ban " +
+					" FOREIGN KEY (bid) REFERENCES bs_ban (bid);",
+					"ALTER TABLE bs_session ADD CONSTRAINT fk_bs_session_player " +
+					" FOREIGN KEY (pid) REFERENCES bs_player (pid);",
+					"ALTER TABLE bs_session ADD CONSTRAINT fk_bs_session_iid " +
+					" FOREIGN KEY (iid) REFERENCES bs_ip (iid);",
+					
+					"ALTER TABLE bs_ban_log ADD CONSTRAINT fk_bs_ban_log_player " +
+					" FOREIGN KEY (pid) REFERENCES bs_player (pid);",
+					"ALTER TABLE bs_ban_log ADD CONSTRAINT fk_bs_ban_log_ban " + 
+					" FOREIGN KEY (bid) REFERENCES bs_ban (bid);",
+
+					"ALTER TABLE bs_ban ADD CONSTRAINT fk_bs_ban_ip " +
+					" FOREIGN KEY (ip_ban) REFERENCES bs_ip (iid);",
+					"ALTER TABLE bs_ban ADD CONSTRAINT fk_bs_ban_ip_data " +
+					" FOREIGN KEY (proxy_ban) REFERENCES bs_ip_data (idid);",
+					"ALTER TABLE bs_ban ADD CONSTRAINT fk_bs_ban_share " +
+					" FOREIGN KEY (share_ban) REFERENCES bs_share (sid);"
+
+		);
 		data.registerMigration(1,  false, "CREATE TABLE IF NOT EXISTS bs_exclusion ("
 		        + "eid BIGINT AUTO_INCREMENT PRIMARY KEY,"
 	            + "create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
