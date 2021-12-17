@@ -18,7 +18,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
-import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
 import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
@@ -77,7 +76,7 @@ public final class EnchantStorageModifier extends ModifierData {
 
 	@Override
 	public void toNBT(@Nonnull final NBTCompound nbt) {
-		nbt.set(ENCHANTS_KEY, NBTEncodings.encodeLeveledEnchants(getEnchants()));
+		nbt.put(ENCHANTS_KEY, NBTEncodings.encodeLeveledEnchants(getEnchants()));
 	}
 
 	@Nonnull

@@ -33,7 +33,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
-import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
@@ -90,7 +89,7 @@ public final class EnchantModifier extends ModifierData {
 
 	@Override
 	public void toNBT(@Nonnull final NBTCompound nbt) {
-		nbt.set(REQUIRED_KEY, NBTEncodings.encodeLeveledEnchants(getRequiredEnchants()));
+		nbt.put(REQUIRED_KEY, NBTEncodings.encodeLeveledEnchants(getRequiredEnchants()));
 		nbt.setStringArray(EXCLUDED_KEY, getExcludedEnchants().stream()
 				.map(KeyedUtils::getString)
 				.filter(Objects::nonNull)

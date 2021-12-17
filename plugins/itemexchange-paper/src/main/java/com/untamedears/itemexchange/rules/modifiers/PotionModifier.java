@@ -21,7 +21,6 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
-import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
@@ -80,7 +79,7 @@ public final class PotionModifier extends ModifierData {
 
 	@Override
 	public void toNBT(@Nonnull final NBTCompound nbt) {
-		nbt.set(BASE_KEY, NBTEncodings.encodePotionData(this.base));
+		nbt.put(BASE_KEY, NBTEncodings.encodePotionData(this.base));
 		nbt.setCompoundArray(EFFECTS_KEY, getEffects().stream()
 				.map(NBTEncodings::encodePotionEffect)
 				.toArray(NBTCompound[]::new));

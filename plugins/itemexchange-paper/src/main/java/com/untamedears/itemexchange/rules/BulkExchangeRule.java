@@ -55,7 +55,7 @@ public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData
 		final ItemStack item = NBTSerialization.processItem(ItemExchangeConfig.getRuleItem(), (nbt) -> {
 			final var ruleNBT = new NBTCompound();
 			toNBT(ruleNBT);
-			nbt.set(BULK_KEY, ruleNBT);
+			nbt.put(BULK_KEY, ruleNBT);
 		});
 		ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
 			meta.displayName(Component.text()
