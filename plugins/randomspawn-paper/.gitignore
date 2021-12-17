@@ -13,3 +13,5 @@ target/
 /dist
 *.eml
 *.iml
+.gradle
+build
