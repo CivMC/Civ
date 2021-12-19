@@ -33,9 +33,9 @@ repositories {
 dependencies {
     paperDevBundle("1.18-R0.1-SNAPSHOT")
     compileOnly("net.civmc:civmodcore:2.0.0-SNAPSHOT:dev-all")
-    compileOnly("net.civmc:worldborder:1.11.0-SNAPSHOT:dev")
-    compileOnly("net.civmc:bastion:2.6.0-SNAPSHOT:dev")
-    compileOnly("net.civmc:banstick:1.4.0-SNAPSHOT:dev")
+    compileOnly("net.civmc:worldborder:2.0.0-SNAPSHOT:dev")
+    compileOnly("net.civmc:bastion:3.0.0-SNAPSHOT:dev")
+    compileOnly("net.civmc:banstick:2.0.0-SNAPSHOT:dev")
 }
 
 java {
