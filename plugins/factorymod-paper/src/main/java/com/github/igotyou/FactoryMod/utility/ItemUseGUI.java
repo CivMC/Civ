@@ -14,14 +14,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.ComponableInventory;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.ContentAligners;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.Scrollbar;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.SlotPredicates;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.StaticDisplaySection;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
-import vg.civcraft.mc.civmodcore.inventorygui.LClickable;
-import vg.civcraft.mc.civmodcore.inventorygui.components.ComponableInventory;
-import vg.civcraft.mc.civmodcore.inventorygui.components.ContentAligners;
-import vg.civcraft.mc.civmodcore.inventorygui.components.Scrollbar;
-import vg.civcraft.mc.civmodcore.inventorygui.components.SlotPredicates;
-import vg.civcraft.mc.civmodcore.inventorygui.components.StaticDisplaySection;
 
 public class ItemUseGUI {
 
@@ -90,12 +90,14 @@ public class ItemUseGUI {
 					ItemUtils.getItemName(item)));
 			itemAsOutput.add(new LClickable(noItems, p -> { }));
 		}
-		Scrollbar itemAsInputBar = new Scrollbar(itemAsInput, 24, 8, ContentAligners.getCenteredInOrder(itemAsInput.size(), 24, 4));
+		Scrollbar itemAsInputBar = new Scrollbar(itemAsInput, 24, 8, ContentAligners
+				.getCenteredInOrder(itemAsInput.size(), 24, 4));
 		itemAsInputBar.setBackwardsClickSlot(3);
 		inventory.addComponent(itemAsInputBar, SlotPredicates.rectangle(6, 4));
 
 		IClickable dividerClick = getDividerClick();
-		StaticDisplaySection middleLine = new StaticDisplaySection(dividerClick, dividerClick, dividerClick, dividerClick, dividerClick , dividerClick);
+		StaticDisplaySection
+				middleLine = new StaticDisplaySection(dividerClick, dividerClick, dividerClick, dividerClick, dividerClick , dividerClick);
 		inventory.addComponent(middleLine, SlotPredicates.offsetRectangle(6, 1, 0, 4));
 
 		Scrollbar itemAsOutputBar = new Scrollbar(itemAsOutput, 24, 5, ContentAligners.getCenteredInOrder(itemAsOutput.size(), 24, 4));

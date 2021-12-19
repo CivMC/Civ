@@ -6,24 +6,23 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-
-import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
-import net.minecraft.server.v1_16_R3.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class PrintingPlateRecipe extends PrintingPressRecipe {
 	public static final String itemName = "Printing Plate";
@@ -80,19 +79,12 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		return true;
 	}
 
-	/**
-	 * @deprecated {@code Inventory i} isn't being used, switch to the overload without it.
-	 */
-	public static ItemStack addTags(Inventory i, String serialNumber, ItemStack plate, NBTTagCompound bookTag) {
-		return addTags(serialNumber, plate, bookTag);
-	}
+	public static ItemStack addTags(String serialNumber, ItemStack plate, CompoundTag bookTag) {
+		net.minecraft.world.item.ItemStack nmsPlate = CraftItemStack.asNMSCopy(plate);
+		CompoundTag plateTag = nmsPlate.getOrCreateTag();
 
-	public static ItemStack addTags(String serialNumber, ItemStack plate, NBTTagCompound bookTag) {
-		net.minecraft.server.v1_16_R3.ItemStack nmsPlate = CraftItemStack.asNMSCopy(plate);
-		NBTTagCompound plateTag = nmsPlate.getOrCreateTag();
-
-		plateTag.setString("SN", serialNumber);
-		plateTag.set("Book", bookTag);
+		plateTag.putString("SN", serialNumber);
+		plateTag.put("Book", bookTag);
 
 		nmsPlate.setTag(plateTag);
 		return CraftItemStack.asBukkitCopy(nmsPlate);

@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod;
 
+import com.github.igotyou.FactoryMod.commands.FMCommandManager;
 import com.github.igotyou.FactoryMod.listeners.CitadelListener;
 import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
@@ -10,6 +11,7 @@ public class FactoryMod extends ACivMod {
 	private FactoryModManager manager;
 	private static FactoryMod plugin;
 	private FactoryModPermissionManager permissionManager;
+	private FMCommandManager commandManager;
 
 	@Override
 	public void onEnable() {
@@ -21,6 +23,7 @@ public class FactoryMod extends ACivMod {
 		if (manager.isCitadelEnabled()) {
 			permissionManager = new FactoryModPermissionManager();
 		}
+		commandManager = new FMCommandManager(this);
 		registerListeners();
 		info("Successfully enabled");
 	}

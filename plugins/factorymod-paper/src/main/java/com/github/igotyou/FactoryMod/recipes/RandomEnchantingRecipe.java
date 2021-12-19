@@ -13,8 +13,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class RandomEnchantingRecipe extends InputRecipe {
 	private List<RandomEnchant> enchants;
@@ -34,7 +34,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 	}
 
 	public RandomEnchantingRecipe(String identifier, String name, int productionTime,
-			ItemMap input, Material tool, List<RandomEnchant> enchants) {
+								  ItemMap input, Material tool, List<RandomEnchant> enchants) {
 		super(identifier, name, productionTime, input);
 		this.enchants = enchants;
 		this.tool = tool;

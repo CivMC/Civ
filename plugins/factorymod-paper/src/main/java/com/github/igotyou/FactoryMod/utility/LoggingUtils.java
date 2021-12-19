@@ -5,7 +5,7 @@ import java.util.logging.Level;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 public class LoggingUtils {
 	

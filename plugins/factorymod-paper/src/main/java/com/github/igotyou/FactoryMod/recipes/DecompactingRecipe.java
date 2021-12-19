@@ -10,8 +10,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
  * Used to decompact itemstacks, which means a single item with compacted lore
@@ -23,7 +23,7 @@ public class DecompactingRecipe extends InputRecipe {
 	private String compactedLore;
 
 	public DecompactingRecipe(String identifier, ItemMap input, String name, int productionTime,
-			String compactedLore) {
+							  String compactedLore) {
 		super(identifier, name, productionTime, input);
 		this.compactedLore = compactedLore;
 	}

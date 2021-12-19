@@ -4,45 +4,9 @@ author: Maxopoly, igotyou
 version: ${project.version}
 depend: [CivModCore]
 softdepend: [CivMenu, NameLayer, Citadel]
-commands:
-    fm:
-        permission: fm.public
-        description: 'Opens a GUI allowing you to browse through all factories'
-        usage: '/fm [factoryName]'
-        min-args: 0
-        max-args: 10
-        player-only: true
-    fmc:
-        permission: fm.op
-        description: 'Creates a factory at the blocks you are looking at'
-        usage: '/fmc <name>'
-        min-args: 0
-        max-args: 10
-        player-only: true
-    fmco:
-        permission: fm.op
-        description: 'Gives you the output of the selected recipe in the factory you are looking at'
-        usage: '/fmco'
-        min-args: 0
-        max-args: 0
-        player-only: true
-    fmsrc:
-        permission: fm.op
-        player-only: true
-        description: 'Sets the amount of runs for the currently selected recipe in the factory you are looking at'
-        usage: '/fmsrc <count>'
-        min-args: 1
-        max-args: 1
-    item:
-      permission: fm.public
-      description: 'Opens a GUI allowing you to browse all recipes which use or output the item in your main hand'
-      usage: '/item [material name]'
-      min-args: 0
-      max-args: 1
-      player-only: true
 permissions:
     fm.public:
         default: true
     fm.op:
         default: op
-api-version: 1.13
+api-version: 1.17

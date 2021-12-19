@@ -262,15 +262,27 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 			rm.breakIt();
 			return;
 		}
-		//ensure enough materials for the recipe are available
-		if (!hasInputMaterials()) {
-			if (!isAutoSelect()) {
-				if (p != null) {
-					p.sendMessage(ChatColor.RED + "Not enough materials available");
+
+		//If Autoselect is on
+		if (autoSelect) {
+			//If the factory is in disrepair and we got autoSelect on, we want to repair it
+			if (rm.inDisrepair() && !(currentRecipe instanceof RepairRecipe)) {
+				IRecipe autoRepair = getRepairRecipe();
+				//Just incase any factory for some reason cannot be repaired.
+				if (autoRepair == null) {
+					if (p != null) {
+						p.sendMessage(ChatColor.RED + "The factory doesn't have a repair recipe.");
+					}
+					return;
+				} else {
+					if (p != null) {
+						p.sendMessage(ChatColor.GOLD + "Automatically selected recipe " + autoRepair.getName());
+					}
+					setRecipe(autoRepair);
 				}
-				return;
-			} else {
-				//handle autoselect
+			}
+			if (!hasInputMaterials() || (!rm.inDisrepair() && (currentRecipe instanceof  RepairRecipe))) {
+				//Let autoselect find something to run that isn't the repair recipe
 				IRecipe autoSelected = getAutoSelectRecipe();
 				if (autoSelected == null) {
 					if (p != null) {
@@ -284,7 +296,30 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 					setRecipe(autoSelected);
 				}
 			}
+		} else {
+			//We are running the factory manually, so we just do the usual checks
+			if (!hasInputMaterials()) {
+				if (p != null) {
+					p.sendMessage(ChatColor.RED + "Not enough materials available");
+				}
+				return;
+			}
+			//The factory is broken and needs to be repaired
+			if (rm.inDisrepair() && !(currentRecipe instanceof RepairRecipe)) {
+				if (p != null) {
+					p.sendMessage(ChatColor.RED + "This factory is in disrepair, you have to repair it before using it");
+				}
+				return;
+			}
+			//The factory is at full health, so there's no reason to repair it.
+			if (rm.atFullHealth() && (currentRecipe instanceof RepairRecipe) ) {
+				if (p != null) {
+					p.sendMessage(ChatColor.GREEN + "This factory is already at full health");
+				}
+				return;
+			}
 		}
+
 		//ensure we have fuel
 		if (!pm.powerAvailable(1)) {
 			if (p != null) {
@@ -297,19 +332,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 			}
 			return;
 		}
-		//ensure factory isnt in disrepair
-		if (rm.inDisrepair() && !(currentRecipe instanceof RepairRecipe)) {
-			if (p != null) {
-				p.sendMessage(ChatColor.RED + "This factory is in disrepair, you have to repair it before using it");
-			}
-			return;
-		}
-		if (currentRecipe instanceof RepairRecipe && rm.atFullHealth()) {
-			if (p != null) {
-				p.sendMessage("This factory is already at full health!");
-			}
-			return;
-		}
+
 		if (!onStartUp && currentRecipe instanceof Upgraderecipe && FactoryMod.getInstance().getManager().isCitadelEnabled()) {
 			// only allow permitted members to upgrade the factory
 			Reinforcement rein = ReinforcementLogic.getReinforcementAt(mbs.getCenter());
@@ -648,9 +671,28 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 		return currentRecipe.enoughMaterialAvailable(getInputInventory());
 	}
 
+	/**
+	 * @return a recipe which the factory contains enough ressources to run except repair type recipes,
+	 * returns null if none exists
+	 *
+	 */
+
 	public IRecipe getAutoSelectRecipe() {
 		for (IRecipe rec : recipes) {
-			if (rec.enoughMaterialAvailable(getInputInventory())) {
+			if (rec.enoughMaterialAvailable(getInventory()) && !(rec instanceof RepairRecipe)) {
+				return rec;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @return yields a repair type recipe for repairing the factory if any exists, returns null if none exists
+	 *
+	 */
+	public IRecipe getRepairRecipe() {
+		for (IRecipe rec : recipes) {
+			if (rec instanceof RepairRecipe) {
 				return rec;
 			}
 		}

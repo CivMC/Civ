@@ -18,20 +18,20 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
+import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.ComponableInventory;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.ComponableSection;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.ContentAligners;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.InventoryComponent;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.Scrollbar;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.SlotPredicates;
+import vg.civcraft.mc.civmodcore.inventory.gui.components.StaticDisplaySection;
+import vg.civcraft.mc.civmodcore.inventory.gui.history.HistoryItem;
+import vg.civcraft.mc.civmodcore.inventory.gui.history.HistoryTracker;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
-import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
-import vg.civcraft.mc.civmodcore.inventorygui.LClickable;
-import vg.civcraft.mc.civmodcore.inventorygui.components.ComponableInventory;
-import vg.civcraft.mc.civmodcore.inventorygui.components.ComponableSection;
-import vg.civcraft.mc.civmodcore.inventorygui.components.ContentAligners;
-import vg.civcraft.mc.civmodcore.inventorygui.components.InventoryComponent;
-import vg.civcraft.mc.civmodcore.inventorygui.components.Scrollbar;
-import vg.civcraft.mc.civmodcore.inventorygui.components.SlotPredicates;
-import vg.civcraft.mc.civmodcore.inventorygui.components.StaticDisplaySection;
-import vg.civcraft.mc.civmodcore.inventorygui.history.HistoryItem;
-import vg.civcraft.mc.civmodcore.inventorygui.history.HistoryTracker;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class FactoryModGUI {
 

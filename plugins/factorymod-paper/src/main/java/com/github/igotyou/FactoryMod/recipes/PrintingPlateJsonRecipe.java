@@ -10,9 +10,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import java.util.Arrays;
 import java.util.UUID;
-import net.minecraft.server.v1_16_R3.NBTTagCompound;
-import net.minecraft.server.v1_16_R3.NBTTagList;
-import net.minecraft.server.v1_16_R3.NBTTagString;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -21,8 +21,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 	/*
@@ -78,17 +78,17 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 		String serialNumber = UUID.randomUUID().toString();
 
 		String[] pages = String.join("", bookMeta.getPages()).split("<<PAGE>>");
-		NBTTagList pagesNBT = new NBTTagList();
+		ListTag pagesNBT = new ListTag();
 
 		for (String page : pages) {
-			pagesNBT.add(NBTTagString.a(page));
+			pagesNBT.add(StringTag.valueOf(page));
 		}
 
-		NBTTagCompound bookNBT = new NBTTagCompound();
-		bookNBT.setInt("generation", bookMeta.getGeneration().ordinal());
-		bookNBT.setString("author", bookMeta.getAuthor());
-		bookNBT.setString("title", bookMeta.getTitle());
-		bookNBT.set("pages", pagesNBT);
+		CompoundTag bookNBT = new CompoundTag();
+		bookNBT.putInt("generation", bookMeta.getGeneration().ordinal());
+		bookNBT.putString("author", bookMeta.getAuthor());
+		bookNBT.putString("title", bookMeta.getTitle());
+		bookNBT.put("pages", pagesNBT);
 
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = output.clone();

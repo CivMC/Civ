@@ -1,6 +1,5 @@
 package com.github.igotyou.FactoryMod;
 
-import com.github.igotyou.FactoryMod.commands.FactoryTabCompleters;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.eggs.PipeEgg;
@@ -31,7 +30,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Dropper;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 /**
  * Manager class which handles all factories, their locations and their creation
@@ -453,7 +452,6 @@ public class FactoryModManager {
 			eggs.put(recipe, egg);
 		}
 		this.eggs.put(egg.getName().toLowerCase(), egg);
-		FactoryTabCompleters.addFactory(egg.getName());
 	}
 
 	public void saveFactories() {
