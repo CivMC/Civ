@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.civmc"
-version = "2.7.0-SNAPSHOT"
+version = "3.0.0-SNAPSHOT"
 description = "FactoryMod"
 
 repositories {
@@ -69,7 +69,7 @@ publishing {
 	repositories {
 		maven {
 			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/CivMC/Citadel")
+			url = uri("https://maven.pkg.github.com/CivMC/FactoryMod")
 			credentials {
 				username = System.getenv("GITHUB_ACTOR")
 				password = System.getenv("GITHUB_TOKEN")
