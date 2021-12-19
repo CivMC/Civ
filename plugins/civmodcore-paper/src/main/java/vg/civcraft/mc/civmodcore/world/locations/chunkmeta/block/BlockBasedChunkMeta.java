@@ -24,7 +24,7 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.ChunkMeta;
 public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extends StorageEngine> extends ChunkMeta<S> {
 
 	protected static final int CHUNK_HEIGHT = 384;
-	protected static final int L1_SECTION_COUNT = 16;
+	protected static final int L1_SECTION_COUNT = 24;
 	protected static final int L2_SECTION_COUNT = CHUNK_HEIGHT / L1_SECTION_COUNT;
 	protected static final int L3_X_SECTION_COUNT = 16;
 	protected static final int L4_Z_SECTION_LENGTH = 16;
