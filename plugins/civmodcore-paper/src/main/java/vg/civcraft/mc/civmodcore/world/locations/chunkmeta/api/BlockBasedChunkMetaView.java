@@ -67,7 +67,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 	 * @return Data at the given location or null if no data exists there
 	 */
 	public D get(Location location) {
-		validateY(location.getBlockY());
+		validateY(location.getWorld(), location.getBlockY());
 		short worldID = worldIdManager.getInternalWorldId(location.getWorld());
 		T chunk = super.getChunkMeta(location);
 		D data;
@@ -107,7 +107,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 			throw new IllegalArgumentException("Data to insert can not be null");
 		}
 		Location loc = data.getLocation();
-		validateY(loc.getBlockY());
+		validateY(loc.getWorld(), loc.getBlockY());
 		T chunk;
 		if (alwaysLoaded) {
 			chunk = getOrCreateChunkMeta(loc.getWorld(), loc.getChunk().getX(), loc.getChunk().getZ());
@@ -154,7 +154,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 	 * @return Data removed, null if nothing was removed
 	 */
 	public D remove(Location location) {
-		validateY(location.getBlockY());
+		validateY(location.getWorld(), location.getBlockY());
 		T chunk = super.getChunkMeta(location);
 		if (chunk != null) {
 			return chunk.remove(location);
@@ -169,12 +169,12 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 
 	}
 
-	private static void validateY(int y) {
-		if (y < 0) {
-			throw new IllegalArgumentException("Y-level of data may not be less than 0");
+	private static void validateY(World world, int y) {
+		if (y < world.getMinHeight()) {
+			throw new IllegalArgumentException("Y-level of data may not be less than " + world.getMinHeight());
 		}
-		if (y > 255) {
-			throw new IllegalArgumentException("Y-level of data may not be more than 255");
+		if (y > world.getMaxHeight()) {
+			throw new IllegalArgumentException("Y-level of data may not be more than " + world.getMaxHeight());
 		}
 	}
 

@@ -23,7 +23,7 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.ChunkMeta;
  */
 public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extends StorageEngine> extends ChunkMeta<S> {
 
-	protected static final int CHUNK_HEIGHT = 256;
+	protected static final int CHUNK_HEIGHT = 384;
 	protected static final int L1_SECTION_COUNT = 16;
 	protected static final int L2_SECTION_COUNT = CHUNK_HEIGHT / L1_SECTION_COUNT;
 	protected static final int L3_X_SECTION_COUNT = 16;
@@ -129,7 +129,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 	 * the third level cache it is contained in. Third level indices are the
 	 * relative x offset within the chunk
 	 * 
-	 * @param l3Offset L3 offset in the given L2 cache
+	 * @param l3Section L3 offset in the given L2 cache
 	 * @param create   Should the level 4 cache be created if it does not exist yet
 	 * @return Retrieved cache, may be null if none exists and creation was not
 	 *         requested
@@ -146,12 +146,12 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 
 	@SuppressWarnings("unchecked")
 	private BlockDataObject<D>[] getL4ZSubArrayAbsolute(int x, int y, boolean create) {
-		int yOffsetL1 = y / L1_SECTION_COUNT;
+		int yOffsetL1 = (y + 64) / L1_SECTION_COUNT;
 		BlockDataObject<D>[][][] l2Section = getL2SubArray(yOffsetL1, create);
 		if (l2Section == null) {
 			return null;
 		}
-		int yOffsetL2 = y % L2_SECTION_COUNT;
+		int yOffsetL2 = (y + 64) % L2_SECTION_COUNT;
 		BlockDataObject<D>[][] l3XSection = getL3XSubArray(l2Section, yOffsetL2, create);
 		if (l3XSection == null) {
 			return null;
