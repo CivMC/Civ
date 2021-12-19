@@ -209,3 +209,6 @@ dependency-reduced-pom.xml
 /target/
 
 /bin/
+
+!gradlew.bat
+!gradle-wrapper.jar
