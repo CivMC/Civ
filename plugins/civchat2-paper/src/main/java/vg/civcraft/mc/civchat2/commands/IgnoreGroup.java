@@ -1,29 +1,27 @@
 package vg.civcraft.mc.civchat2.commands;
 
-import java.util.List;
-import org.bukkit.command.CommandSender;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Syntax;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CivCommand(id = "ignoregroup")
-public class IgnoreGroup extends StandaloneCommand {
+public class IgnoreGroup extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		Group group = GroupManager.getGroup(args [0]);
-		Player player = (Player) sender;
+	@CommandAlias("ignoregroup")
+	@Syntax("<group>")
+	@Description("Toggles ignoring a group")
+	public void execute(Player player, String targetGroup) {
+		Group group = GroupManager.getGroup(targetGroup);
 		if (group == null) {
 			player.sendMessage(ChatStrings.chatGroupNotFound);
-			return true;
+			return;
 		}
 		String ignore = group.getName();
 		CivChatDAO db = CivChat2.getInstance().getDatabaseManager();
@@ -35,19 +33,10 @@ public class IgnoreGroup extends StandaloneCommand {
 				chatMan.removeGroupChat(player);
 				player.sendMessage(ChatStrings.chatMovedToGlobal);
 			}
-			return true;
+			return;
 		} else {
 			db.removeIgnoredGroup(player.getUniqueId(), ignore);
 			player.sendMessage(String.format(ChatStrings.chatStoppedIgnoring, ignore));
-			return true;
 		}
-	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (args.length == 0) {
-			return GroupTabCompleter.complete(null, PermissionType.getPermission("READ_CHAT"), (Player) sender);
-		}
-		return GroupTabCompleter.complete(args [0], PermissionType.getPermission("READ_CHAT"), (Player) sender);
 	}
 }

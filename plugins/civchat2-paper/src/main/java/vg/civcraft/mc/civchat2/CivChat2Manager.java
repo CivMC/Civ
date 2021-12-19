@@ -22,7 +22,8 @@ import vg.civcraft.mc.civchat2.event.PrivateMessageEvent;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.utility.ScoreboardHUD;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -412,12 +413,12 @@ public class CivChat2Manager {
 
 	public String parse(String text) {
 
-		return TextUtil.parse(text);
+		return ChatUtils.parseColor(text);
 	}
 
 	public String parse(String text, Object... args) {
 
-		return TextUtil.parse(text, args);
+		return String.format(ChatUtils.parseColor(text), args);
 	}
 	
 	public void setCustomName(UUID player, String name) {

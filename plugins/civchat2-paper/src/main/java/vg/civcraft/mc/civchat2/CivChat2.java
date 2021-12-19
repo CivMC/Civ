@@ -3,6 +3,7 @@ package vg.civcraft.mc.civchat2;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import vg.civcraft.mc.civchat2.commands.CivChatCommandManager;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
 import vg.civcraft.mc.civchat2.listeners.KillListener;
@@ -28,6 +29,7 @@ public class CivChat2 extends ACivMod {
 	private CivChat2SettingsManager settingsManager;
 	private CivChat2FileLogger fileLog;
 	private CivChatDAO databaseManager;
+	private CivChatCommandManager commandManager;
 
 	@Override
 	public void onEnable() {
@@ -43,6 +45,7 @@ public class CivChat2 extends ACivMod {
 		settingsManager = new CivChat2SettingsManager();
 		chatMan = new CivChat2Manager(instance);
 		log.debug("Debug Enabled");
+		commandManager = new CivChatCommandManager(this);
 		registerNameLayerPermissions();
 		registerCivChatEvents();
 	}
@@ -74,6 +77,10 @@ public class CivChat2 extends ACivMod {
 				"Allows receiving messages sent in the group chat");
 		PermissionType.registerPermission("WRITE_CHAT", new ArrayList<>(memberAndAbove), 
 				"Allows sending messages to the group chat");
+	}
+
+	private void registerCompletions() {
+
 	}
 
 	public static CivChat2 getInstance() {
