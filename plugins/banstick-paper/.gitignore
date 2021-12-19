@@ -283,3 +283,6 @@ dependency-reduced-pom.xml
 =======
 # End of https://www.gitignore.io/api/java,batch,linux,macos,maven,windows,eclipse,intellij+all
 >>>>>>> civclassic/master
+
+!gradle-wrapper.jar
+!gradlew.bat
