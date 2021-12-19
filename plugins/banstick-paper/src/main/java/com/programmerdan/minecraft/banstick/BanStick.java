@@ -35,7 +35,6 @@ public class BanStick extends ACivMod {
 	@Override
 	public void onEnable() {
 		instance = this;
-		this.useNewCommandHandler = false;
 		super.onEnable();
 
 		saveDefaultConfig();

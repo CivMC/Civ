@@ -17,6 +17,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.NameAPI;
 
@@ -58,8 +59,8 @@ public class IpCheckImportWorker extends ImportWorker {
 		long idleTimeout = config.getLong("idle_timeout", 600000L);
 		long maxLifetime = config.getLong("max_lifetime", 7200000L);
 		try {
-			internalDatabase = new ManagedDatasource(BanStick.getPlugin(), username, password, host, port, dbname,
-					poolsize, connectionTimeout, idleTimeout, maxLifetime);
+			internalDatabase = ManagedDatasource.construct(BanStick.getPlugin(), new DatabaseCredentials(username, password, host, port, "mysql", dbname,
+					poolsize, connectionTimeout, idleTimeout, maxLifetime));
 			internalDatabase.getConnection().close();
 		} catch (Exception se) {
 			BanStick.getPlugin().info("Failed to initialize Database connection");

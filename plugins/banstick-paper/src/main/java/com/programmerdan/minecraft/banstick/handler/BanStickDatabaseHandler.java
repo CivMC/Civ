@@ -16,6 +16,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
 /**
@@ -67,8 +68,8 @@ public class BanStickDatabaseHandler {
 		long idleTimeout = config.getLong("idle_timeout", 600000L);
 		long maxLifetime = config.getLong("max_lifetime", 7200000L);
 		try {
-			data = new ManagedDatasource(BanStick.getPlugin(), username, password, host, port, dbname,
-					poolsize, connectionTimeout, idleTimeout, maxLifetime);
+			data = ManagedDatasource.construct(BanStick.getPlugin(), new DatabaseCredentials(username, password, host, port, "mysql", dbname,
+					poolsize, connectionTimeout, idleTimeout, maxLifetime));
 			data.getConnection().close();
 		} catch (Exception se) {
 			BanStick.getPlugin().info("Failed to initialize Database connection");
