@@ -14,9 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import sh.okx.railswitch.RailSwitchPlugin;
 import sh.okx.railswitch.glue.CitadelGlue;
 import sh.okx.railswitch.settings.SettingsManager;
-import vg.civcraft.mc.civmodcore.entities.EntityUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
@@ -26,7 +26,7 @@ public class SwitchListener implements Listener {
 
     public static final String WILDCARD = "*";
 
-    public static final CitadelGlue CITADEL_GLUE = new CitadelGlue();
+    public static final CitadelGlue CITADEL_GLUE = new CitadelGlue(RailSwitchPlugin.getPlugin(RailSwitchPlugin.class));
 
     /**
      * Event handler for rail switches. Will determine if a switch exists at the target location, and if so will process
@@ -62,7 +62,7 @@ public class SwitchListener implements Listener {
         Player player = null; {
             double searchDistance = Double.MAX_VALUE;
             for (Entity entity : block.getWorld().getNearbyEntities(block.getLocation(), 3, 3, 3)) {
-                if (!EntityUtils.isPlayer(entity)) {
+                if (!(entity instanceof Player)) {
                     continue;
                 }
                 Entity vehicle = entity.getVehicle();
@@ -83,7 +83,7 @@ public class SwitchListener implements Listener {
             return;
         }
         // If Citadel is enabled, check that the sign and the rail are on the same group
-        if (CITADEL_GLUE.isEnabled()) {
+        if (CITADEL_GLUE.isSafeToUse()) {
             if (!CITADEL_GLUE.doSignAndRailHaveSameReinforcement(above, block)) {
                 return;
             }
