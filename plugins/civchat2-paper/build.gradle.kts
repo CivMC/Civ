@@ -71,7 +71,7 @@ publishing {
 	repositories {
 		maven {
 			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/CivMC/Citadel")
+			url = uri("https://maven.pkg.github.com/CivMC/CivChat2")
 			credentials {
 				username = System.getenv("GITHUB_ACTOR")
 				password = System.getenv("GITHUB_TOKEN")
