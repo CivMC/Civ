@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.bukkit.configuration.ConfigurationSection;
-import vg.civcraft.mc.civmodcore.util.CivLogger;
+import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionTriggerConfig> {
 

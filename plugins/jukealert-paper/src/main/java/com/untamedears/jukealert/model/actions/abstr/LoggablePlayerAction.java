@@ -5,20 +5,19 @@ import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.ActionCacheState;
 import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
 import com.untamedears.jukealert.util.JAUtility;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
+import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
+import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
-import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
-import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.namelayer.NameAPI;
-
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public abstract class LoggablePlayerAction extends PlayerAction implements LoggableAction {
 	

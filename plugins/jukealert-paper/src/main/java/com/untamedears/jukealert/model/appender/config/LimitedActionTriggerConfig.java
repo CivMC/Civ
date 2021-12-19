@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.config.ConfigHelper;
-import vg.civcraft.mc.civmodcore.util.ConfigParsing;
 
 public class LimitedActionTriggerConfig implements AppenderConfig {
 
@@ -30,7 +29,7 @@ public class LimitedActionTriggerConfig implements AppenderConfig {
 			}
 		}
 		this.acceptAll = config.getBoolean("acceptAll", false);
-		this.actionLifespan = ConfigParsing.parseTime(config.getString("lifeTime", "4 weeks"), TimeUnit.MILLISECONDS);
+		this.actionLifespan = ConfigHelper.parseTime(config.getString("lifeTime", "4 weeks"), TimeUnit.MILLISECONDS);
 		this.hardCap = config.getInt("hardCap", 100_000);
 	}
 

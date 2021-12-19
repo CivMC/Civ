@@ -2,7 +2,7 @@ package com.untamedears.jukealert.util;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import vg.civcraft.mc.civmodcore.playersettings.impl.StringSetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.StringSetting;
 
 public class TimeZoneSetting extends StringSetting {
 

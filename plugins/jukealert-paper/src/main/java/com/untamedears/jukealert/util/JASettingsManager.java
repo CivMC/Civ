@@ -4,13 +4,12 @@ import com.untamedears.jukealert.JukeAlert;
 import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
-import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
-import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
-import vg.civcraft.mc.civmodcore.playersettings.impl.BoundedIntegerSetting;
-import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
-import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting.DisplayLocation;
-import vg.civcraft.mc.civmodcore.playersettings.impl.collection.SetSetting;
+import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
+import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
+import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.BoundedIntegerSetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.collection.SetSetting;
 
 public class JASettingsManager {
 
@@ -42,7 +41,7 @@ public class JASettingsManager {
 				"jaIgnoreAllSnitchAlerts", "Mutes all snitch notifications if enabled");
 		PlayerSettingAPI.registerSetting(ignoreAllAlerts, menu);
 		
-		showNearbySnitchCount = new DisplayLocationSetting(JukeAlert.getInstance(), DisplayLocation.SIDEBAR, "Show nearby snitch count",
+		showNearbySnitchCount = new DisplayLocationSetting(JukeAlert.getInstance(), DisplayLocationSetting.DisplayLocation.SIDEBAR, "Show nearby snitch count",
 				"jaShowNearbySnitchCount", new ItemStack(Material.JUKEBOX),"Nearby snitch count");
 		PlayerSettingAPI.registerSetting(showNearbySnitchCount, menu);
 		

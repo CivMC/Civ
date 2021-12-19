@@ -43,12 +43,12 @@ import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.SingleBlockAPIView;
-import vg.civcraft.mc.civmodcore.locations.global.GlobalLocationTracker;
-import vg.civcraft.mc.civmodcore.locations.global.GlobalTrackableDAO;
-import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
-import vg.civcraft.mc.civmodcore.util.CivLogger;
+import vg.civcraft.mc.civmodcore.utilities.CivLogger;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.SingleBlockAPIView;
+import vg.civcraft.mc.civmodcore.world.locations.global.GlobalLocationTracker;
+import vg.civcraft.mc.civmodcore.world.locations.global.GlobalTrackableDAO;
+import vg.civcraft.mc.civmodcore.world.locations.global.WorldIDManager;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -116,7 +116,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 						boolean triggerLever = rs.getBoolean(9);
 						int oldId = rs.getInt(10);
 
-						short worldID = worldIdMan.getInternalWorldIdByName(worldName);
+						short worldID = worldIdMan.getInternalWorldId(Bukkit.getWorld(worldName));
 						if (worldID == -1) {
 							logger.severe("Failed to find world id for world with name " + worldName);
 							return false;

@@ -1,9 +1,10 @@
 package com.untamedears.jukealert.util;
 
-import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
-import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
-import vg.civcraft.mc.civmodcore.scoreboard.side.CivScoreBoard;
-import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
+
+import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
+import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
+import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
+import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
 
 public class OverlayManager {
 	

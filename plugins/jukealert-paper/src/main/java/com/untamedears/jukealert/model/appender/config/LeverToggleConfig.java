@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
-import vg.civcraft.mc.civmodcore.util.ConfigParsing;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 
 public class LeverToggleConfig implements AppenderConfig {
 
@@ -33,7 +33,7 @@ public class LeverToggleConfig implements AppenderConfig {
 				logger.warning(key + " at " + config.getCurrentPath() + " is not a valid BlockFace, entry was ignored");
 				continue;
 			}
-			long delay = ConfigParsing.parseTime(current.getString("disableDelay", "1 second"));
+			long delay = ConfigHelper.parseTime(current.getString("disableDelay", "1 second"));
 			if (!current.isList("trigger")) {
 				logger.warning("No trigger actions specified for lever at " + current.getCurrentPath());
 				continue;

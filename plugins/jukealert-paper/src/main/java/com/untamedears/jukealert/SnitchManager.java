@@ -11,9 +11,9 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import vg.civcraft.mc.civmodcore.locations.SparseQuadTree;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.SingleBlockAPIView;
+import vg.civcraft.mc.civmodcore.world.locations.SparseQuadTree;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.SingleBlockAPIView;
 
 public class SnitchManager {
 
