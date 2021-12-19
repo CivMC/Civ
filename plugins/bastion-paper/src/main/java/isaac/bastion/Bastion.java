@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.logging.Level;
 import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -86,7 +87,7 @@ public final class Bastion extends ACivMod {
 		long maxLifetime = config.getLong("maxLifetime");
 		ManagedDatasource db = null;
 		try {
-			db = new ManagedDatasource(this, user, pass, host, port, dbname, poolsize, connectionTimeout, idleTimeout, maxLifetime);
+			db = ManagedDatasource.construct(this, new DatabaseCredentials(user, pass, host, port, "mysql", dbname, poolsize, connectionTimeout, idleTimeout, maxLifetime));
 			db.getConnection().close();
 		} catch(Exception e) {
 			warning("Could not connect to database, stopping bastion", e);
