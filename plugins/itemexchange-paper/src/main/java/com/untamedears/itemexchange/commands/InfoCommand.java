@@ -1,5 +1,6 @@
 package com.untamedears.itemexchange.commands;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
@@ -8,10 +9,9 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import vg.civcraft.mc.civmodcore.command.AikarCommand;
 
 @CommandAlias("iei|ieinfo")
-public final class InfoCommand extends AikarCommand {
+public final class InfoCommand extends BaseCommand {
 
 	@Subcommand("shop|shopblocks")
 	@Description("Shows what blocks can be made into shops.")

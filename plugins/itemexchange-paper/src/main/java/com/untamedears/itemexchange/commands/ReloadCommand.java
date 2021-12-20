@@ -1,5 +1,6 @@
 package com.untamedears.itemexchange.commands;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
@@ -7,11 +8,10 @@ import co.aikar.commands.annotation.Description;
 import com.untamedears.itemexchange.ItemExchangePlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import vg.civcraft.mc.civmodcore.command.AikarCommand;
 
 @CommandAlias("ier|iereload")
 @CommandPermission("itemexchange.reload")
-public final class ReloadCommand extends AikarCommand {
+public final class ReloadCommand extends BaseCommand {
 
 	private final ItemExchangePlugin plugin;
 

@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
-import vg.civcraft.mc.civmodcore.util.Validation;
+import vg.civcraft.mc.civmodcore.utilities.Validation;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**

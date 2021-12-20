@@ -12,11 +12,8 @@ public class SuccessfulPurchaseEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 
 	private final Player player;
-
 	private final TradeRule trade;
-
 	private final ItemStack[] input;
-
 	private final ItemStack[] output;
 
 	private SuccessfulPurchaseEvent(Player player, TradeRule trade, ItemStack[] input, ItemStack[] output) {

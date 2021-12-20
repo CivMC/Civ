@@ -10,7 +10,6 @@ import com.untamedears.itemexchange.utility.Utilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import org.bukkit.Bukkit;
@@ -37,8 +36,8 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.RecipeManager;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.util.NullUtils;
-import vg.civcraft.mc.civmodcore.util.Validation;
+import vg.civcraft.mc.civmodcore.utilities.NullUtils;
+import vg.civcraft.mc.civmodcore.utilities.Validation;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
@@ -47,15 +46,10 @@ import vg.civcraft.mc.civmodcore.world.WorldUtils;
 public final class ItemExchangeListener implements Listener {
 
 	private static final long TIME_BETWEEN_CLICKS = 200L;
-
 	private static final long TIME_BEFORE_TIMEOUT = 10000L;
-
 	private final ItemExchangePlugin PLUGIN = ItemExchangePlugin.getInstance();
-
 	private final Map<Player, Long> playerInteractionCooldowns = new Hashtable<>();
-
 	private final Map<Player, Location> shopRecord = new HashMap<>();
-
 	private final Map<Player, Integer> ruleIndex = new HashMap<>();
 
 	/**
@@ -230,8 +224,8 @@ public final class ItemExchangeListener implements Listener {
 		CraftingInventory inventory = event.getInventory();
 		inventory.setResult(null);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.getInstance(), () -> {
-			List<ExchangeRule> rules = new ArrayList<>();
-			for (ItemStack item : inventory.getMatrix()) {
+			final var rules = new ArrayList<ExchangeRule>();
+			for (final ItemStack item : inventory.getMatrix()) {
 				if (!ItemUtils.isValidItem(item)) {
 					continue;
 				}
@@ -242,13 +236,12 @@ public final class ItemExchangeListener implements Listener {
 				}
 				BulkExchangeRule bulkRule = BulkExchangeRule.fromItem(item);
 				if (Validation.checkValidity(bulkRule)) {
-					rules.addAll(bulkRule.getRules());
+					rules.addAll(bulkRule.rules());
 					continue;
 				}
 				return;
 			}
-			BulkExchangeRule rule = new BulkExchangeRule();
-			rule.setRules(rules);
+			final var rule = new BulkExchangeRule(rules);
 			inventory.setResult(rule.toItem());
 			InventoryUtils.getViewingPlayers(inventory).forEach(Player::updateInventory);
 		});
@@ -267,7 +260,7 @@ public final class ItemExchangeListener implements Listener {
 			return;
 		}
 		drop.remove();
-		for (ExchangeRule rule : bulk.getRules()) {
+		for (ExchangeRule rule : bulk.rules()) {
 			drop.getWorld().dropItem(drop.getLocation(), rule.toItem()).setVelocity(drop.getVelocity());
 		}
 	}

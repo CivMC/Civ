@@ -15,13 +15,15 @@ import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ModifierHandler;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
+import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "DAMAGE", order = 500)
@@ -78,13 +80,15 @@ public final class DamageableModifier extends ModifierData {
 	}
 
 	@Override
-	public void serialize(NBTCompound nbt) {
-		nbt.setInteger(DAMAGE_KEY, getDamage());
+	public void toNBT(@Nonnull final NBTCompound nbt) {
+		nbt.setInt(DAMAGE_KEY, getDamage());
 	}
 
-	@Override
-	public void deserialize(NBTCompound nbt) {
-		setDamage(nbt.getInteger(DAMAGE_KEY));
+	@Nonnull
+	public static DamageableModifier fromNBT(@Nonnull final NBTCompound nbt) {
+		final var modifier = new DamageableModifier();
+		modifier.setDamage(nbt.getInt(DAMAGE_KEY));
+		return modifier;
 	}
 
 	@Override

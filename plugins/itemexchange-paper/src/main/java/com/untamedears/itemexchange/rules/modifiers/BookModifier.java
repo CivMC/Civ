@@ -8,15 +8,15 @@ import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
-import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerializationException;
-import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
+import vg.civcraft.mc.civmodcore.nbt.NBTType;
+import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "BOOK", order = 1000)
@@ -25,44 +25,35 @@ public final class BookModifier extends ModifierData {
 	public static final BookModifier TEMPLATE = new BookModifier();
 
 	private static final String TITLE_KEY = "title";
-
 	private static final String AUTHOR_KEY = "author";
-
 	private static final String GENERATION_KEY = "generation";
-
 	private static final String HAS_PAGES_KEY = "hasPages";
-
 	private static final String BOOK_HASH_KEY = "bookHash";
 
 	private String title;
-
 	private String author;
-
 	private Generation generation;
-
 	private boolean hasPages;
-
 	private int bookHash;
 
 	@Override
-	public BookModifier construct(ItemStack item) {
-		BookMeta meta = MoreClassUtils.castOrNull(BookMeta.class, item.getItemMeta());
-		if (meta == null) {
+	public BookModifier construct(final ItemStack item) {
+		if (!(item.getItemMeta() instanceof BookMeta bookMeta)) {
 			return null;
 		}
-		BookModifier modifier = new BookModifier();
-		if (meta.hasTitle()) {
-			modifier.setTitle(meta.getTitle());
+		final var modifier = new BookModifier();
+		if (bookMeta.hasTitle()) {
+			modifier.setTitle(bookMeta.getTitle());
 		}
-		if (meta.hasAuthor()) {
-			modifier.setAuthor(meta.getAuthor());
+		if (bookMeta.hasAuthor()) {
+			modifier.setAuthor(bookMeta.getAuthor());
 		}
-		if (meta.hasGeneration()) {
-			modifier.setGeneration(Objects.requireNonNull(meta.getGeneration()));
+		if (bookMeta.hasGeneration()) {
+			modifier.setGeneration(Objects.requireNonNull(bookMeta.getGeneration()));
 		}
-		if (meta.hasPages()) {
+		if (bookMeta.hasPages()) {
 			modifier.setHasPages(true);
-			modifier.setBookHash(bookHash(meta.getPages()));
+			modifier.setBookHash(bookHash(bookMeta.getPages()));
 		}
 		return modifier;
 	}
@@ -74,48 +65,63 @@ public final class BookModifier extends ModifierData {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		BookMeta meta = MoreClassUtils.castOrNull(BookMeta.class, item.getItemMeta());
-		if (meta == null) {
+		if (!(item.getItemMeta() instanceof BookMeta bookMeta)) {
 			return false;
 		}
-		if (meta.hasTitle() != hasTitle()) {
+		if (bookMeta.hasTitle() != hasTitle()) {
 			return false;
 		}
-		if (meta.hasAuthor() != hasAuthor()) {
+		if (bookMeta.hasAuthor() != hasAuthor()) {
 			return false;
 		}
 		if (hasGeneration()) {
-			if (meta.getGeneration() != getGeneration()) {
+			if (bookMeta.getGeneration() != getGeneration()) {
 				return false;
 			}
 		}
-		if (meta.hasPages() != hasPages()) {
+		if (bookMeta.hasPages() != hasPages()) {
 			return false;
 		}
-		if (meta.hasPages()) {
-			if (bookHash(meta.getPages()) != getBookHash()) {
-				return false;
-			}
+		if (bookMeta.hasPages()) {
+			return bookHash(bookMeta.getPages()) == getBookHash();
 		}
 		return true;
 	}
 
 	@Override
-	public void serialize(NBTCompound nbt) throws NBTSerializationException {
-		nbt.setString(TITLE_KEY, this.title);
-		nbt.setString(AUTHOR_KEY, this.author);
-		nbt.setString(GENERATION_KEY, this.generation.name());
+	public void toNBT(@Nonnull final NBTCompound nbt) {
+		if (hasTitle()) {
+			nbt.setString(TITLE_KEY, this.title);
+		}
+		if (hasAuthor()) {
+			nbt.setString(AUTHOR_KEY, this.author);
+		}
+		if (hasGeneration()) {
+			nbt.setString(GENERATION_KEY, this.generation.name());
+		}
 		nbt.setBoolean(HAS_PAGES_KEY, this.hasPages);
-		nbt.setInteger(BOOK_HASH_KEY, this.bookHash);
+		if (hasPages()) {
+			nbt.setInt(BOOK_HASH_KEY, this.bookHash);
+		}
 	}
 
-	@Override
-	public void deserialize(NBTCompound nbt) throws NBTSerializationException {
-		this.title = nbt.getString(TITLE_KEY);
-		this.author = nbt.getString(AUTHOR_KEY);
-		this.generation = EnumUtils.getEnum(Generation.class, nbt.getString(GENERATION_KEY));
-		this.hasPages = nbt.getBoolean(HAS_PAGES_KEY);
-		this.bookHash = nbt.getInteger(BOOK_HASH_KEY);
+	@Nonnull
+	public static BookModifier fromNBT(@Nonnull final NBTCompound nbt) {
+		final var modifier = new BookModifier();
+		if (nbt.hasKeyOfType(TITLE_KEY, NBTType.STRING)) {
+			modifier.setTitle(nbt.getString(TITLE_KEY));
+		}
+		if (nbt.hasKeyOfType(AUTHOR_KEY, NBTType.STRING)) {
+			modifier.setAuthor(nbt.getString(AUTHOR_KEY));
+		}
+		if (nbt.hasKeyOfType(GENERATION_KEY, NBTType.STRING)) {
+			modifier.setGeneration(EnumUtils.getEnum(Generation.class, nbt.getString(GENERATION_KEY)));
+		}
+		if (nbt.getBoolean(HAS_PAGES_KEY)) {
+			modifier.setHasPages(true);
+			modifier.setBookHash(nbt.getInt(BOOK_HASH_KEY));
+		}
+		return modifier;
 	}
 
 	@Override
@@ -123,13 +129,15 @@ public final class BookModifier extends ModifierData {
 		if (Strings.isNullOrEmpty(this.title)) {
 			return null;
 		}
-		return title;
+		return this.title;
 	}
 
 	@Override
 	public List<String> getDisplayInfo() {
-		List<String> lines = new ArrayList<>();
-		lines.add(ChatColor.DARK_AQUA + "Author: " + ChatColor.GRAY + (hasAuthor() ? getAuthor() : ""));
+		final var lines = new ArrayList<String>(2);
+		if (hasAuthor()) {
+			lines.add(ChatColor.DARK_AQUA + "Author: " + ChatColor.GRAY + getAuthor());
+		}
 		if (hasGeneration()) {
 			lines.add(ChatColor.DARK_AQUA + "Generation: " + ChatColor.GRAY + getGeneration().name());
 		}
@@ -159,7 +167,7 @@ public final class BookModifier extends ModifierData {
 		return this.title;
 	}
 
-	public void setTitle(String title) {
+	public void setTitle(final String title) {
 		this.title = title;
 	}
 
@@ -171,7 +179,7 @@ public final class BookModifier extends ModifierData {
 		return this.author;
 	}
 
-	public void setAuthor(String author) {
+	public void setAuthor(final String author) {
 		this.author = author;
 	}
 
@@ -183,7 +191,7 @@ public final class BookModifier extends ModifierData {
 		return this.generation;
 	}
 
-	public void setGeneration(Generation generation) {
+	public void setGeneration(final Generation generation) {
 		this.generation = generation;
 	}
 
@@ -191,7 +199,7 @@ public final class BookModifier extends ModifierData {
 		return this.hasPages;
 	}
 
-	public void setHasPages(boolean hasPages) {
+	public void setHasPages(final boolean hasPages) {
 		this.hasPages = hasPages;
 	}
 
@@ -199,11 +207,11 @@ public final class BookModifier extends ModifierData {
 		return this.bookHash;
 	}
 
-	public void setBookHash(int bookHash) {
+	public void setBookHash(final int bookHash) {
 		this.bookHash = bookHash;
 	}
 
-	private static int bookHash(List<String> pages) {
+	private static int bookHash(final List<String> pages) {
 		if (CollectionUtils.isEmpty(pages)) {
 			return 0;
 		}

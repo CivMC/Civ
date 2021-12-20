@@ -13,7 +13,7 @@ import com.untamedears.itemexchange.rules.modifiers.LoreModifier;
 import com.untamedears.itemexchange.rules.modifiers.PotionModifier;
 import com.untamedears.itemexchange.rules.modifiers.RepairModifier;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
 /**
  * The main Item Exchange plugin class.
@@ -22,16 +22,13 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
 
 	private static ItemExchangePlugin instance;
 	private static ItemExchangeConfig config;
-	private static AikarCommandManager commands;
+	private static CommandManager commands;
 	private static ModifierRegistrar modifiers;
 
 	@Override
 	public void onEnable() {
 		instance = this;
-		useNewCommandHandler = false;
 		super.onEnable();
-		registerSerializable(ExchangeRule.class);
-		registerSerializable(BulkExchangeRule.class);
 		saveDefaultConfig();
 		config = new ItemExchangeConfig(this);
 		config.parse();
@@ -75,7 +72,7 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
 		return config;
 	}
 
-	public static AikarCommandManager commandManager() {
+	public static CommandManager commandManager() {
 		return commands;
 	}
 

@@ -1,22 +1,25 @@
 package com.untamedears.itemexchange.utility;
 
+import com.google.common.collect.ClassToInstanceMap;
+import com.google.common.collect.MutableClassToInstanceMap;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
-import java.util.HashMap;
+import com.untamedears.itemexchange.utility.functional.NonNullSupplier;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
-import vg.civcraft.mc.civmodcore.util.MoreClassUtils;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import lombok.EqualsAndHashCode;
 
 /**
  * A storage method for modifiers that puts significance on the modifier's class.
  */
+@EqualsAndHashCode
 public final class ModifierStorage implements Iterable<ModifierData> {
 
-	private final Map<Class<ModifierData>, ModifierData> map = new HashMap<>();
+	private final ClassToInstanceMap<ModifierData> map = MutableClassToInstanceMap.create();
 
 	/**
 	 * @return Returns how many modifiers are being stored.
@@ -45,11 +48,8 @@ public final class ModifierStorage implements Iterable<ModifierData> {
 	 * @param clazz The class of the modifier.
 	 * @return Returns true if the modifier is stored.
 	 */
-	public boolean hasModifier(Class<? extends ModifierData> clazz) {
-		if (clazz == null) {
-			return false;
-		}
-		return this.map.get(clazz) != null;
+	public boolean hasModifier(@Nullable final Class<? extends ModifierData> clazz) {
+		return clazz != null && this.map.containsKey(clazz);
 	}
 
 	/**
@@ -58,11 +58,8 @@ public final class ModifierStorage implements Iterable<ModifierData> {
 	 * @param instance The instance of the modifier.
 	 * @return Returns true if the modifier is stored.
 	 */
-	public boolean hasModifier(ModifierData instance) {
-		if (instance == null) {
-			return false;
-		}
-		return this.map.get(instance.getClass()) != null;
+	public boolean hasModifier(@Nullable final ModifierData instance) {
+		return instance != null && this.map.containsKey(instance.getClass());
 	}
 
 	/**
@@ -72,11 +69,9 @@ public final class ModifierStorage implements Iterable<ModifierData> {
 	 * @param clazz The class of the modifier.
 	 * @return Returns a cast modifier to the given type, or null.
 	 */
-	public <T extends ModifierData> T get(Class<T> clazz) {
-		if (clazz == null) {
-			return null;
-		}
-		return MoreClassUtils.castOrNull(clazz, this.map.get(clazz));
+	@Nullable
+	public <T extends ModifierData> T get(@Nonnull final Class<T> clazz) {
+		return (T) this.map.getInstance(Objects.requireNonNull(clazz));
 	}
 
 	/**
@@ -86,11 +81,9 @@ public final class ModifierStorage implements Iterable<ModifierData> {
 	 * @param instance An example instance of the modifier.
 	 * @return Returns a cast modifier to the given type, or null.
 	 */
+	@Nullable
 	@SuppressWarnings("unchecked")
-	public <T extends ModifierData> T get(T instance) {
-		if (instance == null) {
-			return null;
-		}
+	public <T extends ModifierData> T get(@Nonnull final T instance) {
 		return get((Class<T>) instance.getClass());
 	}
 
@@ -100,23 +93,14 @@ public final class ModifierStorage implements Iterable<ModifierData> {
 	 *
 	 * @param <T> The type of the modifier.
 	 * @param clazz The class of the modifier.
-	 * @param supplier A supplier to create a new modifier.
+	 * @param supplier A supplier to create a new modifier. MUST NOT RETURN NULL!
 	 * @return Returns a cast modifier to the given type, or null if the given supplier returned null.
 	 */
+	@Nonnull
 	@SuppressWarnings("unchecked")
-	public <T extends ModifierData> T getOrDefault(Class<T> clazz, Supplier<T> supplier) {
-		if (clazz == null || supplier == null) {
-			return null;
-		}
-		T current = get(clazz);
-		if (current == null) {
-			current = supplier.get();
-			if (current == null) {
-				return null;
-			}
-			this.map.put((Class<ModifierData>) clazz, current);
-		}
-		return current;
+	public <T extends ModifierData> T getOrDefault(@Nonnull final Class<T> clazz,
+												   @Nonnull final NonNullSupplier<T> supplier) {
+		return (T) this.map.computeIfAbsent(Objects.requireNonNull(clazz), (_clazz) -> supplier.get());
 	}
 
 	/**
@@ -125,11 +109,13 @@ public final class ModifierStorage implements Iterable<ModifierData> {
 	 *
 	 * @param <T> The type of the modifier.
 	 * @param instance An example instance of the modifier.
-	 * @param supplier A supplier to create a new modifier.
+	 * @param supplier A supplier to create a new modifier. MUST NOT RETURN NULL!
 	 * @return Returns a cast modifier to the given type, or null if the given supplier returned null.
 	 */
+	@Nonnull
 	@SuppressWarnings("unchecked")
-	public <T extends ModifierData> T getOrDefault(T instance, Supplier<T> supplier) {
+	public <T extends ModifierData> T getOrDefault(@Nonnull final T instance,
+												   @Nonnull final NonNullSupplier<T> supplier) {
 		return getOrDefault((Class<T>) instance.getClass(), supplier);
 	}
 
@@ -139,12 +125,9 @@ public final class ModifierStorage implements Iterable<ModifierData> {
 	 * @param instance The modifier to add to storage.
 	 * @return Returns any previous modifier that was stored, not null.
 	 */
-	@SuppressWarnings("unchecked")
-	public ModifierData put(ModifierData instance) {
-		if (instance == null) {
-			return null;
-		}
-		return this.map.put((Class<ModifierData>) instance.getClass(), instance);
+	@Nullable
+	public ModifierData put(@Nonnull final ModifierData instance) {
+		return this.map.put(instance.getClass(), instance);
 	}
 
 	/**
@@ -153,7 +136,8 @@ public final class ModifierStorage implements Iterable<ModifierData> {
 	 * @param clazz The modifier class to remove.
 	 * @return Returns what was removed.
 	 */
-	public ModifierData remove(Class<ModifierData> clazz) {
+	@Nullable
+	public ModifierData remove(@Nullable final Class<ModifierData> clazz) {
 		return this.map.remove(clazz);
 	}
 
@@ -163,57 +147,38 @@ public final class ModifierStorage implements Iterable<ModifierData> {
 	 * @param instance The modifier to remove.
 	 * @return Returns what was removed.
 	 */
-	public ModifierData remove(ModifierData instance) {
-		if (instance == null) {
-			return null;
-		}
-		return this.map.remove(instance.getClass());
-	}
-
-	@Override
-	public boolean equals(Object object) {
-		if (object == this) {
-			return true;
-		}
-		ModifierStorage other = MoreClassUtils.castOrNull(ModifierStorage.class, object);
-		if (other == null) {
-			return false;
-		}
-		if (!this.map.equals(other.map)) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public int hashCode() {
-		return 239487509 + this.map.hashCode();
+	@Nullable
+	public ModifierData remove(@Nullable final ModifierData instance) {
+		return instance == null ? null : this.map.remove(instance.getClass());
 	}
 
 	@Override
 	public String toString() {
-		return "ModifierStorage" + this.map.values().toString();
+		return "ModifierStorage" + this.map.values();
 	}
 
+	@Nonnull
 	@Override
 	public Iterator<ModifierData> iterator() {
 		return this.map.values().iterator();
 	}
 
-	@Override
-	public void forEach(Consumer<? super ModifierData> action) {
-		stream().forEachOrdered(action);
-	}
-
+	@Nonnull
 	@Override
 	public Spliterator<ModifierData> spliterator() {
 		return this.map.values().spliterator();
 	}
 
+	@Nonnull
 	public Stream<ModifierData> stream() {
 		return this.map.values().stream()
 				.filter(Objects::nonNull)
 				.sorted();
+	}
+
+	@Override
+	public void forEach(@Nonnull final Consumer<? super ModifierData> action) {
+		stream().forEachOrdered(action);
 	}
 
 }

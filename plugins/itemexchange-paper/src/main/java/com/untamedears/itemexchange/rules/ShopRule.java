@@ -19,7 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
-import vg.civcraft.mc.civmodcore.util.Validation;
+import vg.civcraft.mc.civmodcore.utilities.Validation;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
@@ -165,7 +165,7 @@ public final class ShopRule implements Validation {
 			BulkExchangeRule bulk = BulkExchangeRule.fromItem(item);
 			if (bulk != null) {
 				PLUGIN.debug("[Resolve] \tBulk Exchange Rule found.");
-				found.addAll(bulk.getRules());
+				found.addAll(bulk.rules());
 				//continue;
 			}
 		}

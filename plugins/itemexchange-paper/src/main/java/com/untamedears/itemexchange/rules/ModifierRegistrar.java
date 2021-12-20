@@ -6,7 +6,6 @@ import com.untamedears.itemexchange.utility.ModifierStorage;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.stream.Stream;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
 
 public final class ModifierRegistrar {
 
@@ -27,7 +26,6 @@ public final class ModifierRegistrar {
 		if (!Modifier.isFinal(modifier.getClass().getModifiers())) {
 			throw new IllegalArgumentException("That modifier is not final.");
 		}
-		NBTSerialization.registerNBTSerializable(modifier.getClass());
 		this.modifiers.put(modifier);
 		ItemExchangePlugin.commandManager().registerCommand(modifier);
 	}
@@ -41,9 +39,8 @@ public final class ModifierRegistrar {
 		if (modifier == null) {
 			return;
 		}
-		NBTSerialization.unregisterNBTSerializable(modifier.getClass());
 		this.modifiers.remove(modifier);
-		ItemExchangePlugin.commandManager().deregisterCommand(modifier);
+		ItemExchangePlugin.commandManager().unregisterCommand(modifier);
 	}
 
 	/**
@@ -62,6 +59,18 @@ public final class ModifierRegistrar {
 				.findFirst().orElse(null);
 	}
 
+	public ModifierData getModifier(final String slug) {
+		if (slug == null) {
+			return null;
+		}
+		for (final ModifierData modifier : this.modifiers) {
+			if (slug.equals(modifier.getClass().getName()) || slug.equalsIgnoreCase(modifier.getSlug())) {
+				return modifier;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Retrieves all registered modifiers in order.
 	 *
@@ -76,8 +85,7 @@ public final class ModifierRegistrar {
 	 */
 	public void reset() {
 		for (ModifierData modifier : this.modifiers) {
-			NBTSerialization.unregisterNBTSerializable(modifier.getClass());
-			ItemExchangePlugin.commandManager().deregisterCommand(modifier);
+			ItemExchangePlugin.commandManager().unregisterCommand(modifier);
 		}
 		this.modifiers.clear();
 	}
