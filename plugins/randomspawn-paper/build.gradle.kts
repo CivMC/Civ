@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.civmc"
-version = "3.1.0-SNAPSHOT"
+version = "3.0.0-SNAPSHOT"
 description = "RandomSpawn"
 
 repositories {
