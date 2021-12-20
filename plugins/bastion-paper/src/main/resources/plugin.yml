@@ -1,5 +1,5 @@
-name: ${project.name}
-version: ${project.version}
+name: Bastion
+version: 2.6.0-SNAPSHOT
 main: isaac.bastion.Bastion
 author: spaceFountain
 authors: [Rourke750, ProgrammerDan, Maxopoly, TealNerd, Aleksey-Terzi]
