@@ -13,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public abstract class BaseCommand<T extends Plugin> {
 
@@ -840,11 +839,11 @@ public abstract class BaseCommand<T extends Plugin> {
 	 * @return The formatted string
 	 */
 	protected static String parse(String str, Object... args) {
-		return TextUtil.parse(str, args);
+		return String.format(parse(str), args);
 	}
 
 	protected static String parse(String str) {
-		return TextUtil.parse(str);
+		return ChatUtils.parseColor(str);
 	}
 
 

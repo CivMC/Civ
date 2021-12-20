@@ -41,8 +41,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.util.cooldowns.ICoolDownHandler;
-import vg.civcraft.mc.civmodcore.util.cooldowns.MilliSecCoolDownHandler;
+import vg.civcraft.mc.civmodcore.utilities.cooldowns.ICoolDownHandler;
+import vg.civcraft.mc.civmodcore.utilities.cooldowns.MilliSecCoolDownHandler;
 
 /**
  * The prison pearl manager implementation

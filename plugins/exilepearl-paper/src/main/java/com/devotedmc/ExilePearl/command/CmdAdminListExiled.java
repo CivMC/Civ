@@ -4,7 +4,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.util.Permission;
 import java.util.Collection;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
 public class CmdAdminListExiled extends PearlCommand {
 

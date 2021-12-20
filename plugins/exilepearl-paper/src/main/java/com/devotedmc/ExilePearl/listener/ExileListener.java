@@ -1,7 +1,5 @@
 package com.devotedmc.ExilePearl.listener;
 
-import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
-
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.Lang;
@@ -43,6 +41,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 /**
  * Listener for disallowing certain actions of exiled players
@@ -343,7 +342,7 @@ public class ExileListener extends RuleListener implements Configurable {
 	public void onCollectXp(PlayerExpChangeEvent e) {
 		if (isRuleActive(ExileRule.COLLECT_XP, e.getPlayer().getUniqueId())) {
 			e.setAmount(0);
-			msg(e.getPlayer(), Lang.ruleCantDoThat, ExileRule.COLLECT_XP.getActionString());
+			e.getPlayer().sendMessage(ChatUtils.parseColor(String.format(Lang.ruleCantDoThat, ExileRule.COLLECT_XP.getActionString())));
 		}
 	}
 
@@ -412,7 +411,7 @@ public class ExileListener extends RuleListener implements Configurable {
 		}
 
 		if (e.isCancelled()) {
-			msg(player, Lang.ruleCantDoThat, "do that");
+			player.sendMessage(ChatUtils.parseColor(String.format(Lang.ruleCantDoThat, "do that")));
 		}
 	}
 

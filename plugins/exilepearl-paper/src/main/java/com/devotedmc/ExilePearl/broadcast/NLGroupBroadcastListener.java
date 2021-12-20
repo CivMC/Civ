@@ -8,7 +8,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -29,7 +29,7 @@ public class NLGroupBroadcastListener implements BroadcastListener {
 		Location l = pearl.getHolder().getLocation();
 		String name = pearl.getHolder().getName();
 
-		String msg = TextUtil.parse(Lang.groupPearlBroadcast, group.getName(), pearl.getPlayerName(), name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
+		String msg = String.format(ChatUtils.parseColor(Lang.groupPearlBroadcast), group.getName(), pearl.getPlayerName(), name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
 
 		GroupManager gm = NameAPI.getGroupManager();
 

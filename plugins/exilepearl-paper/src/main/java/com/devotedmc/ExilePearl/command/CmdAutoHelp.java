@@ -2,7 +2,7 @@ package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import java.util.ArrayList;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
 public class CmdAutoHelp extends PearlCommand
 {
