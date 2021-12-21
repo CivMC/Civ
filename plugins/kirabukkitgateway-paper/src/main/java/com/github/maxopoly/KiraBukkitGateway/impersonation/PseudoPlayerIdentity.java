@@ -3,20 +3,21 @@ package com.github.maxopoly.KiraBukkitGateway.impersonation;
 import com.mojang.authlib.GameProfile;
 import java.util.UUID;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.EntityPlayer;
-import net.minecraft.server.level.WorldServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
 
-public class PseudoPlayerIdentity extends EntityPlayer {
 
-	public PseudoPlayerIdentity(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile) {
+public class PseudoPlayerIdentity extends ServerPlayer {
+
+	public PseudoPlayerIdentity(MinecraftServer minecraftserver, ServerLevel worldserver, GameProfile gameprofile) {
 		super(minecraftserver, worldserver, gameprofile);
 	}
 
-	public static EntityPlayer generate(UUID uuid, String name) {
+	public static ServerPlayer generate(UUID uuid, String name) {
 		MinecraftServer minecraftServer = MinecraftServer.getServer();
-		WorldServer worldServer = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle();
+		ServerLevel worldServer = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle();
 		GameProfile gameProfile = new GameProfile(uuid, name);
 		return new PseudoPlayerIdentity(minecraftServer, worldServer, gameProfile);
 	}

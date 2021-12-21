@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.conversations.Conversation;
@@ -15,6 +16,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 public class PseudoConsoleSender implements ConsoleCommandSender {
 
@@ -79,6 +81,11 @@ public class PseudoConsoleSender implements ConsoleCommandSender {
 	@Override
 	public Spigot spigot() {
 		return actualSender.spigot();
+	}
+
+	@Override
+	public @NotNull Component name() {
+		return this.actualSender.name();
 	}
 
 	@Override
