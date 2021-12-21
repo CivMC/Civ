@@ -5,14 +5,13 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemUtil {
@@ -95,17 +94,17 @@ public class ItemUtil {
 
 	public static ItemStack newModifiers(ItemStack is) {
 		net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
-		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
-		compound.set("AttributeModifiers", new NBTTagList());
+		CompoundTag compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new CompoundTag();
+		compound.put("AttributeModifiers", new ListTag());
 		nmsStack.setTag(compound);
 		return CraftItemStack.asBukkitCopy(nmsStack);
 	}
 	
 	public static net.minecraft.world.item.ItemStack getNMSStack(ItemStack is) {
 		net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
-		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
-		if (!compound.hasKey("AttributeModifiers")) {
-			compound.set("AttributeModifiers", new NBTTagList());
+		CompoundTag compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new CompoundTag();
+		if (!compound.contains("AttributeModifiers")) {
+			compound.put("AttributeModifiers", new ListTag());
 		}
 		nmsStack.setTag(compound);
 		return nmsStack;
@@ -133,25 +132,25 @@ public class ItemUtil {
 	
 	public static ItemStack modifyAttribute(ItemStack is, AttributeModifier attribute) {
 		net.minecraft.world.item.ItemStack nmsStack = getNMSStack(is);
-		NBTTagCompound compound = nmsStack.getTag();
-		NBTTagList modifiers = compound.getList("AttributeModifiers", 10); // 10 for compound
+		CompoundTag compound = nmsStack.getTag();
+		ListTag modifiers = compound.getList("AttributeModifiers", 10); // 10 for compound
 		
 		Number value = attribute.getValue();
-		NBTBase valueTag = (value instanceof Double) ? NBTTagDouble.a((Double) value) : NBTTagInt.a((Integer) value);
+		Tag valueTag = (value instanceof Double) ? DoubleTag.valueOf((Double) value) : IntTag.valueOf((Integer) value);
 		
 		Slot slot = attribute.getSlot();
-		
-		NBTTagCompound attributeTag = new NBTTagCompound();
-		attributeTag.set("AttributeName", NBTTagString.a(attribute.getName()));
-		attributeTag.set("Name", NBTTagString.a(attribute.getName()));
-		attributeTag.set("Operation", NBTTagInt.a(0));
-		attributeTag.set("Amount", valueTag);
-		attributeTag.set("Slot", NBTTagString.a(slot.getName()));
-		attributeTag.set("UUIDLeast", NBTTagInt.a(slot.getUuidLeast()));
-		attributeTag.set("UUIDMost", NBTTagInt.a(slot.getUuidMost()));
+
+		CompoundTag attributeTag = new CompoundTag();
+		attributeTag.putString("AttributeName", attribute.getName());
+		attributeTag.putString("Name", attribute.getName());
+		attributeTag.putInt("Operation", 0);
+		attributeTag.put("Amount", valueTag);
+		attributeTag.putString("Slot", slot.getName());
+		attributeTag.put("UUIDLeast", IntTag.valueOf(slot.getUuidLeast()));
+		attributeTag.put("UUIDMost", IntTag.valueOf(slot.getUuidMost()));
 		modifiers.add(attributeTag);
 		
-		compound.set("AttributeModifiers", modifiers);
+		compound.put("AttributeModifiers", modifiers);
 		nmsStack.setTag(compound);
 		return CraftItemStack.asBukkitCopy(nmsStack);
 	}

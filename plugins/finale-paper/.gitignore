@@ -10,3 +10,5 @@ out/artifacts/Finale/.DS_Store
 out/artifacts/.DS_Store
 out/.DS_Store
 .DS_Store
+.gradle
+build
