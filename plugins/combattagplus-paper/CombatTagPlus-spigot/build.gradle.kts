@@ -31,8 +31,8 @@ dependencies {
     implementation("com.github.TownyAdvanced:towny:0.97.5.0")
     implementation("me.confuser:BarAPI:3.5")
 
-    implementation(project(":combattagplushook"))
-    implementation(project(":combattagpluscompat-api"))
+    // implementation(project(":combattagplushook"))
+    // implementation(project(":combattagpluscompat-api"))
 }
 
 configure<JavaPluginExtension> {
