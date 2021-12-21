@@ -2,7 +2,7 @@ subprojects {
     apply<JavaPlugin>()
     apply<MavenPublishPlugin>()
 
-    group = "net.civmc"
+    group = "net.civmc.combattagplus"
     version = "2.0.0-SNAPSHOT"
     description = "CombatTagPlus"
 
