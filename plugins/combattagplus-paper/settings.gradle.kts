@@ -9,4 +9,4 @@ pluginManagement {
 
 include("combattagpluscompat-api")
 include("combattagplushook")
-include("combattagplus")
+include("combattagplus-spigot")
