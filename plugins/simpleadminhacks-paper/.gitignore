@@ -7,3 +7,5 @@
 .idea/
 *.iml
 logs
+build
+.gradle

@@ -4,9 +4,9 @@ import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.configs.DisableAIConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_17_R1.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_18_R1.persistence.CraftPersistentDataContainer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -43,20 +43,20 @@ public final class DisableAI extends SimpleHack<DisableAIConfig> implements List
 			return;
 		}
 		final var livingEntity = (LivingEntity) entity;
-		final var nbt = new NBTTagCompound(((CraftPersistentDataContainer) entity.getPersistentDataContainer()).getRaw()){};
+		final var nbt = new CompoundTag(((CraftPersistentDataContainer) entity.getPersistentDataContainer()).getRaw()){};
 		if (!config().isLimitingEntityAI(entity.getType(), entity.getEntitySpawnReason())) {
 			// If the entity was disabled before, re-enable it
-			if (nbt.hasKey(HAS_BEEN_DISABLED_KEY)) {
+			if (nbt.contains(HAS_BEEN_DISABLED_KEY)) {
 				livingEntity.setAI(nbt.getBoolean(HAS_BEEN_DISABLED_KEY));
 				nbt.remove(HAS_BEEN_DISABLED_KEY);
 			}
 			return;
 		}
 		// If the entity has already been disabled, leave alone
-		if (nbt.hasKey(HAS_BEEN_DISABLED_KEY)) {
+		if (nbt.contains(HAS_BEEN_DISABLED_KEY)) {
 			return;
 		}
-		nbt.setBoolean(HAS_BEEN_DISABLED_KEY, livingEntity.hasAI());
+		nbt.putBoolean(HAS_BEEN_DISABLED_KEY, livingEntity.hasAI());
 		livingEntity.setAI(false);
 	}
 

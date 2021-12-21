@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import net.minecraft.core.BlockPosition;
+import net.minecraft.core.BlockPos;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -107,7 +107,7 @@ public final class ShipOutOfLuck extends BasicHack {
 		//return;
 	}
 
-	private static Stream<BlockPosition> getCollidingBlocks(final BoundingBox bounds) {
+	private static Stream<BlockPos> getCollidingBlocks(final BoundingBox bounds) {
 		// This transform the bounds of the boat to be a flat rectangle roughly a carpet's thickness smaller on each
 		// side and placed the same distance below the boat, which should be enough to reliably detect what blocks
 		// are carrying the boat without false alarming with blocks beside the boat.
@@ -116,7 +116,7 @@ public final class ShipOutOfLuck extends BasicHack {
 		final int valY = (int) Math.floor(bounds.getMinY() - 0.06);
 		final int minZ = (int) Math.floor(bounds.getMinZ() + 0.06);
 		final int maxZ = (int) Math.floor(bounds.getMaxZ() - 0.06);
-		return BlockPosition.a(minX, valY, minZ, maxX, valY, maxZ);
+		return BlockPos.betweenClosedStream(minX, valY, minZ, maxX, valY, maxZ);
 	}
 
 }

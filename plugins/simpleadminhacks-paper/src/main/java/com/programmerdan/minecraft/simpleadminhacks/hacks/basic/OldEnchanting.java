@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import net.minecraft.world.inventory.ContainerEnchantTable;
 import java.util.logging.Level;
+import net.minecraft.world.inventory.EnchantmentMenu;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,7 +25,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftInventoryView;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -149,7 +149,7 @@ public final class OldEnchanting extends BasicHack {
 		// Setup enchantment randomiser
 		Field randomiser = null;
 		try {
-			randomiser = FieldUtils.getDeclaredField(ContainerEnchantTable.class, "h", true);
+			randomiser = FieldUtils.getDeclaredField(EnchantmentMenu.class, "h", true);
 		}
 		catch (final Throwable throwable) {
 			this.logger.log(Level.WARNING, "An exception was thrown while trying to reflect the enchanting " +
@@ -474,7 +474,7 @@ public final class OldEnchanting extends BasicHack {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPrepareItemEnchant(final PrepareItemEnchantEvent event) {
 		final CraftInventoryView view = (CraftInventoryView) event.getView();
-		final ContainerEnchantTable table = (ContainerEnchantTable) view.getHandle();
+		final EnchantmentMenu table = (EnchantmentMenu) view.getHandle();
 		if (this.randomiseEnchants) {
 			try {
 				final Random tableRandom = (Random) this.enchantingTableRandomiser.get(table);

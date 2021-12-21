@@ -6,9 +6,9 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.level.storage.WorldNBTStorage;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.level.storage.PlayerDataStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,8 +16,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_17_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_18_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -68,8 +68,8 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 		}
 		if (player == null && playerUID != null) { // Go deep into NBT.
 			@SuppressWarnings("resource")
-			WorldNBTStorage storage = ((CraftServer) plugin().getServer()).getServer().k;
-			NBTTagCompound rawPlayer = storage.getPlayerData(playerUID.toString());
+			PlayerDataStorage storage = ((CraftServer) plugin().getServer()).getServer().playerDataStorage;
+			CompoundTag rawPlayer = storage.getPlayerData(playerUID.toString());
 
 			if (rawPlayer != null) {
 				plugin().debug("Player {0} found in NBT data, read-only access enabled.", playername);
@@ -83,9 +83,9 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 			int food = rawPlayer.getInt("foodLevel");
 
 			// Fun NMS inventory reconstruction from file data.
-			net.minecraft.world.entity.player.PlayerInventory nms_pl_inv = new net.minecraft.world.entity.player.PlayerInventory(null);
-			NBTTagList inv = rawPlayer.getList("Inventory", rawPlayer.getTypeId());
-			nms_pl_inv.b(inv); // We use this to bypass the Craft code which requires a player object, unlike NMS.
+			net.minecraft.world.entity.player.Inventory nms_pl_inv = new net.minecraft.world.entity.player.Inventory(null);
+			ListTag inv = rawPlayer.getList("Inventory", rawPlayer.getId());
+			nms_pl_inv.load(inv); // We use this to bypass the Craft code which requires a player object, unlike NMS.
 			PlayerInventory pl_inv = new CraftInventoryPlayer(nms_pl_inv);
 
 			invSee(sender, pl_inv, health, food, playername);

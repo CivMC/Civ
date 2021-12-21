@@ -19,19 +19,19 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.level.WorldServer;
-import net.minecraft.world.entity.animal.EntityBee;
-import net.minecraft.world.level.block.entity.TileEntity;
-import net.minecraft.world.level.block.entity.TileEntityBeehive;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.animal.Bee;
+import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -41,6 +41,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
@@ -99,20 +100,20 @@ public final class BeeKeeping extends BasicHack {
 				|| (this.severStingerChance > 0.0d && RANDOM.nextDouble() <= this.severStingerChance)) {
 			return;
 		}
-		final EntityBee bee = (EntityBee) ((CraftEntity) attacker).getHandle();
+		final Bee bee = (Bee) ((CraftEntity) attacker).getHandle();
 		// Undo bee pacification and allow the bee to sting again
 		/** See the code in {@link IEntityAngerable#pacify()} */
-		final var lastDamageCause = bee.getLastDamager();
-		final var angerTarget = bee.getAngerTarget();
-		final var goalTarget = bee.getGoalTarget();
-		final var angerLevel = bee.getAnger();
+		final var lastDamageCause = bee.getLastHurtByMob();
+		final var angerTarget = bee.getPersistentAngerTarget();
+		final var goalTarget = bee.getTarget();
+		final var angerLevel = bee.getRemainingPersistentAngerTime();
 		Bukkit.getScheduler().runTask(this.plugin, () -> {
 			bee.setHasStung(false);
 			// Reset the above values
-			bee.setLastDamager(lastDamageCause);
-			bee.setAngerTarget(angerTarget);
-			bee.setGoalTarget(goalTarget, null, false); // Params: target, cause, emit event
-			bee.setAnger(angerLevel);
+			bee.setLastHurtByMob(lastDamageCause);
+			bee.setPersistentAngerTarget(angerTarget);
+			bee.setTarget(goalTarget, EntityTargetEvent.TargetReason.FORGOT_TARGET, false); // Params: target, cause, emit event
+			bee.setRemainingPersistentAngerTime(angerLevel);
 		});
 	}
 
@@ -142,7 +143,7 @@ public final class BeeKeeping extends BasicHack {
 		if (!HIVE_MATERIALS.contains(block.getType())) {
 			return;
 		}
-		final TileEntityBeehive beehive = getBeeHive(block);
+		final BeehiveBlockEntity beehive = getBeeHive(block);
 		if (beehive.isEmpty()) {
 			player.sendMessage(ChatColor.GOLD + "There aren't any bees in that hive.");
 			return;
@@ -189,17 +190,17 @@ public final class BeeKeeping extends BasicHack {
 		player.sendMessage(response);
 	}
 
-	private static TileEntityBeehive getBeeHive(@Nonnull final Block block) {
+	private static BeehiveBlockEntity getBeeHive(@Nonnull final Block block) {
 		final CraftBlock craftBlock = (CraftBlock) block;
 		final CraftWorld craftWorld = craftBlock.getCraftWorld();
-		final WorldServer worldServer = craftWorld.getHandle();
-		final TileEntity tileEntity = worldServer.getTileEntity(craftBlock.getPosition());
-		return (TileEntityBeehive) Objects.requireNonNull(tileEntity);
+		final ServerLevel worldServer = craftWorld.getHandle();
+		final BlockEntity tileEntity = worldServer.getBlockEntity(craftBlock.getPosition());
+		return (BeehiveBlockEntity) Objects.requireNonNull(tileEntity);
 	}
 
-	private static List<BeeData> getBeesFromHive(@Nonnull final TileEntityBeehive hive) {
-		final NBTTagCompound nbt = new NBTTagCompound();
-		hive.save(nbt); // Serialise onto the NBT compound
+	private static List<BeeData> getBeesFromHive(@Nonnull final BeehiveBlockEntity hive) {
+		final CompoundTag nbt = new CompoundTag();
+//		hive.save(nbt); // Serialise onto the NBT compound
 		return Stream.of(nbt.getCompound(BEES_LIST_KEY))
 				.map(bee -> bee.getCompound(BEE_DATA_KEY))
 				.map(BeeData::new)
@@ -210,7 +211,7 @@ public final class BeeKeeping extends BasicHack {
 
 		public final Component name;
 
-		public BeeData(@Nonnull final NBTTagCompound nbt) {
+		public BeeData(@Nonnull final CompoundTag nbt) {
 			// Parse name
 			final String rawName = nbt.getString(BEE_NAME_KEY);
 			if (Strings.isNullOrEmpty(rawName)) {

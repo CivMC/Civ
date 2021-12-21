@@ -8,13 +8,13 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import java.util.Objects;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -117,7 +117,7 @@ public final class DebugWand extends BasicHack {
 		player.sendMessage(ChatColor.AQUA + "Rotation: "
 				+ ChatColor.YELLOW + "p:" + entityLocation.getPitch() + ", "
 				+ ChatColor.GOLD + "y:" + entityLocation.getYaw());
-		final NBTTagCompound nbt = new NBTTagCompound();
+		final CompoundTag nbt = new CompoundTag();
 		((CraftEntity) entity).getHandle().save(nbt);
 		nbt.remove("Pos"); // Remove redundant position
 		nbt.remove("Rotation"); // Remove redundant rotation

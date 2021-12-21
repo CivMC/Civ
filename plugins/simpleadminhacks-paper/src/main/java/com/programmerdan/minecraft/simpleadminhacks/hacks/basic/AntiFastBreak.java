@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-import net.minecraft.world.level.block.state.IBlockData;
+import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_18_R1.util.CraftMagicNumbers;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -175,13 +175,13 @@ public final class AntiFastBreak extends BasicHack {
 
 	private static float getDamagePerTick(final Material material, final Player player) {
 		final ItemStack tool = player.getInventory().getItemInMainHand();
-		final IBlockData blockData = getNMSBlockData(material);
+		final BlockState blockData = getNMSBlockData(material);
 		if (blockData == null) {
 			throw new IllegalArgumentException("Could not determine block break type for " + material);
 		}
 		// if you ever need to version upgrade this, search for a method in n.m.s.Item
 		// calling "getDestroySpeed(this,blockData)" in n.m.s.ItemStack
-		float damagePerTick = CraftItemStack.asNMSCopy(tool).a(blockData);
+		float damagePerTick = CraftItemStack.asNMSCopy(tool).getDestroySpeed(blockData);
 		// above method does not include efficiency or haste, so we add it ourselves
 		final int effLevel = tool.getEnchantmentLevel(Enchantment.DIG_SPEED);
 		int efficiencyBonus = 0;
@@ -214,12 +214,12 @@ public final class AntiFastBreak extends BasicHack {
 		return (int) Math.ceil(damageToDeal / damagePerTick);
 	}
 
-	private static IBlockData getNMSBlockData(final Material material) {
+	private static BlockState getNMSBlockData(final Material material) {
 		final net.minecraft.world.level.block.Block nmsBlock = CraftMagicNumbers.getBlock(material);
 		if (nmsBlock == null) {
 			return null;
 		}
-		return nmsBlock.getBlockData();
+		return nmsBlock.defaultBlockState();
 	}
 
 }
