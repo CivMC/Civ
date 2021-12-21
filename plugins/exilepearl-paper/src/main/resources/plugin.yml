@@ -1,6 +1,6 @@
-name: ${name}
-version: ${version}
-main: ${groupId}.${name}.${name}Plugin
+name: ExilePearl
+version: 1.6.0-SNAPSHOT
+main: net.civmc.ExilePearl.ExilePearlPlugin
 depend: [CivModCore]
 softdepend: [NameLayer, Citadel, Bastion, CivChat2, JukeAlert, CombatTagPlus, RandomSpawn, WorldBorder, MythicMobs, Brewery, BanStick]
 commands:
