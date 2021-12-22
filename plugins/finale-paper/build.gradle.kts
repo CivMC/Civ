@@ -33,7 +33,7 @@ dependencies {
     paperDevBundle("1.18-R0.1-SNAPSHOT")
     compileOnly("net.civmc:civmodcore:2.0.0-SNAPSHOT:dev-all")
     compileOnly("net.civmc.combattagplus:combattagplus-spigot:2.0.0-SNAPSHOT:dev")
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0-SNAPSHOT")
 }
 
 java {

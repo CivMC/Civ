@@ -25,6 +25,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -91,7 +92,7 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 						return;
 					}
 
-					CombatUtil.attack(attacker, (net.minecraft.world.entity.LivingEntity) entityTarget);
+					CombatUtil.attack(attacker, ((CraftLivingEntity) entityTarget).getHandle());
 				}
 			}.runTask(Finale.getPlugin());
 		} else if (packetType == PacketType.Play.Client.ARM_ANIMATION) {
