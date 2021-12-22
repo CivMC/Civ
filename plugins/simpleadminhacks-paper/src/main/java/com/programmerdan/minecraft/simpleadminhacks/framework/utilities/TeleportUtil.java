@@ -66,7 +66,7 @@ public class TeleportUtil {
 			block = block.getRelative(BlockFace.DOWN);
 		}
 		// Now that the window is prepared, scan down the Y-axis.
-		while (block.getY() >= 1) {
+		while (block.getY() >= block.getWorld().getMinHeight() + 1) {
 			Material blockMat = block.getType();
 			if (blockMat.isSolid()) {
 				if (air_count == 4) {
