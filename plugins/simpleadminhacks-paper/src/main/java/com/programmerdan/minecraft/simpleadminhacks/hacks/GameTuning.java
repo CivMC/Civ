@@ -437,7 +437,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
-		if(config.isEnabled() && config.isPreventFallingThroughBedrock() && event.getTo().getY() < 1
+		if(config.isEnabled() && config.isPreventFallingThroughBedrock() && event.getTo().getY() < event.getTo().getWorld().getMinHeight()
 				&& GameMode.SURVIVAL.equals(event.getPlayer().getGameMode())) {
 			TeleportUtil.tryToTeleportVertically(event.getPlayer(), event.getTo(), "falling into the void");
 		}
