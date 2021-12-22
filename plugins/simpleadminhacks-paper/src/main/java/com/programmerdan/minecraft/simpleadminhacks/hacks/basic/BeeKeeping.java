@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -199,10 +198,8 @@ public final class BeeKeeping extends BasicHack {
 	}
 
 	private static List<BeeData> getBeesFromHive(@Nonnull final BeehiveBlockEntity hive) {
-		final CompoundTag nbt = new CompoundTag();
-//		hive.save(nbt); // Serialise onto the NBT compound
-		return Stream.of(nbt.getCompound(BEES_LIST_KEY))
-				.map(bee -> bee.getCompound(BEE_DATA_KEY))
+		return hive.writeBees().stream()
+				.map(bee -> ((CompoundTag) bee).getCompound(BEE_DATA_KEY))
 				.map(BeeData::new)
 				.collect(Collectors.toCollection(ArrayList::new));
 	}

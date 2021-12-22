@@ -40,7 +40,7 @@ dependencies {
     compileOnly("net.civmc:namelayer-spigot:3.0.0-SNAPSHOT:dev")
     compileOnly("net.civmc:citadel:5.0.0-SNAPSHOT:dev")
     compileOnly("net.civmc.combattagplus:combattagplus-spigot:2.0.0-SNAPSHOT:dev")
-    implementation("com.comphenix.protocol:ProtocolLib:4.7.0")
+    implementation("com.comphenix.protocol:ProtocolLib:4.8.0-SNAPSHOT")
     compileOnly("net.civmc:banstick:2.0.0-SNAPSHOT:dev")
 }
 
