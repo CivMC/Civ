@@ -30,19 +30,30 @@ dependencies {
 	implementation("net.civmc:civmodcore:2.0.0-SNAPSHOT:dev-all")
 }
 
-configure<JavaPluginExtension> {
+java {
 	toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
-tasks.withType<JavaCompile> {
-	options.encoding = Charsets.UTF_8.name()
-	options.release.set(17)
-}
+tasks {
+	build {
+		dependsOn(reobfJar)
+	}
 
-tasks.withType<Javadoc> {
-	options.encoding = Charsets.UTF_8.name()
-}
+	compileJava {
+		options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
 
-tasks.withType<ProcessResources> {
-	filteringCharset = Charsets.UTF_8.name()
+		// Set the release flag. This configures what version bytecode the compiler will emit, as well as what JDK APIs are usable.
+		// See https://openjdk.java.net/jeps/247 for more information.
+		options.release.set(17)
+	}
+	javadoc {
+		options.encoding = Charsets.UTF_8.name() // We want UTF-8 for everything
+	}
+	processResources {
+		filteringCharset = Charsets.UTF_8.name() // We want UTF-8 for everything
+	}
+
+	test {
+		useJUnitPlatform()
+	}
 }
