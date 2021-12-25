@@ -1,0 +1,5 @@
+name: ${name}
+main: net.civmc.exampleplugin.ExamplePlugin
+version: ${version}
+authors: [SoundTech]
+depend: [CivModCore]

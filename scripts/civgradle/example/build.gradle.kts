@@ -1,12 +1,16 @@
+import net.civmc.civgradle.common.util.civRepo
+
 plugins {
     id("net.civmc.civgradle.plugin")
 }
 
-civGradle {
-    civRepositories = listOf("CivModCore")
+subprojects {
+    apply(plugin = "net.civmc.civgradle.plugin")
 
-    paper {
-        paperVersion = "1.18-R0.1-SNAPSHOT"
+    group = "net.cimc.exampleplugin"
+    version = "1.0.0-SNAPSHOT"
+
+    repositories {
+        civRepo("CivMC/CivModCore")
     }
 }
-
