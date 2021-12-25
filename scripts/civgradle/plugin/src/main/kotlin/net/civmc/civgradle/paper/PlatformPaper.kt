@@ -1,15 +1,9 @@
 package net.civmc.civgradle.paper
 
 import net.civmc.civgradle.CivGradleExtension
-import org.apache.tools.ant.filters.ReplaceTokens
-import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.internal.file.DefaultFilePropertyFactory
-import org.gradle.api.tasks.Copy
-import org.gradle.api.tasks.compile.JavaCompile
-import org.gradle.jvm.tasks.Jar
 import org.gradle.language.jvm.tasks.ProcessResources
-import org.gradle.util.Path
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File

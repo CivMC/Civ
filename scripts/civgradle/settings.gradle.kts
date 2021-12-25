@@ -9,4 +9,5 @@ pluginManagement {
 
 include(":example")
 include(":example:spigot")
-includeBuild("plugin-build")
+
+includeBuild("plugin")

@@ -27,6 +27,6 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Publish
-        run: ./gradlew -p plugin-build publish --stacktrace
+        run: ./gradlew -p plugin publish --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
