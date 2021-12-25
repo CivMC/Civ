@@ -1,78 +1,31 @@
 package net.civmc.civgradle
 
-import org.gradle.api.GradleException
+import net.civmc.civgradle.extension.CivGradleExtension
+import net.civmc.civgradle.platform.common.PlatformCommon
+import net.civmc.civgradle.platform.paper.PlatformPaper
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.plugins.JavaLibraryPlugin
-import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.api.tasks.compile.JavaCompile
-import org.gradle.api.tasks.javadoc.Javadoc
-import org.gradle.jvm.toolchain.JavaLanguageVersion
-import org.gradle.language.jvm.tasks.ProcessResources
-import java.net.URI
 
+@Suppress("unused")
 abstract class CivGradlePlugin : Plugin<Project> {
 
     private val logger: Logger = LoggerFactory.getLogger(CivGradlePlugin::class.java)
 
     override fun apply(project: Project) {
-        val extension = project.extensions.create("civGradle", CivGradleExtension::class.java, project)
+        val extension = project.extensions.create("civGradle", CivGradleExtension::class.java)
 
-        configureJava(project)
-        configureCivRepositories(project, extension)
-    }
+        project.afterEvaluate {
+            logger.debug("Applying Common Platform")
+            PlatformCommon.apply(project, extension)
 
-    fun configureCivRepositories(project: Project, extension: CivGradleExtension) {
-        if (extension.civRepositories.isEmpty()) {
-            logger.debug("No civ repositories to configure")
-        }
-
-        val githubActor: String? = System.getenv("GITHUB_ACTOR")
-        val githubToken: String? = System.getenv("GITHUB_TOKEN")
-
-        if (githubActor.isNullOrEmpty() || githubToken.isNullOrEmpty()) {
-            throw GradleException("GITHUB_ACTOR or GITHUB_TOKEN are not configured. Please set them in environment variables.")
-        }
-
-        extension.civRepositories.forEach { name ->
-            project.repositories.maven {
-                it.url = URI("https://maven.pkg.github.com/${extension.githubOrganization}/${name}")
-                it.credentials {
-                    // These need to be set in the user environment variables
-                    it.username = githubActor
-                    it.password = githubToken
-                }
+            if (!extension.paper.paperVersion.isNullOrEmpty()) {
+                logger.debug("Applying Paper Platform")
+                PlatformPaper.apply(project, extension)
             }
         }
 
-        logger.debug("Civ Repositories Configured")
-    }
 
-    /**
-     * Configure our project to use java 17 UTF_8 for everything
-     */
-    fun configureJava(project: Project) {
-        project.pluginManager.apply(JavaLibraryPlugin::class.java)
-
-        val javaExtension = project.extensions.findByType(JavaPluginExtension::class.java)
-
-        javaExtension?.toolchain?.languageVersion?.set(JavaLanguageVersion.of(17))
-
-        project.tasks.withType(JavaCompile::class.java) {
-            it.options.encoding = Charsets.UTF_8.name()
-            it.options.release.set(17)
-        }
-
-        project.tasks.withType(Javadoc::class.java) {
-            it.options.encoding = Charsets.UTF_8.name()
-        }
-
-        project.tasks.withType(ProcessResources::class.java) {
-            it.filteringCharset = Charsets.UTF_8.name()
-        }
-
-        logger.debug("Java tasks configured")
     }
 }
