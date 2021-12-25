@@ -3,7 +3,6 @@ plugins {
     `maven-publish`
     id("net.civmc.civgradle.plugin")
     id("io.papermc.paperweight.userdev") version "1.3.1"
-    id("xyz.jpenilla.run-paper") version "1.0.6"
 }
 
 civGradle {

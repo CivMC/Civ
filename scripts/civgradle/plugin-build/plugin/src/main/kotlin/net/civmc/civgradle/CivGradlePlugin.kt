@@ -15,10 +15,11 @@ abstract class CivGradlePlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val extension = project.extensions.create("civGradle", CivGradleExtension::class.java)
 
-        if (extension.paper.pluginName.isNotEmpty()) {
-            logger.debug("Applying Platform for Paper project")
-            PlatformCommon.apply(project, extension)
-            PlatformPaper.apply(project, extension)
+        project.afterEvaluate {
+            if (extension.paper.pluginName.isNotEmpty()) {
+                PlatformCommon.apply(project, extension)
+                PlatformPaper.apply(project, extension)
+            }
         }
     }
 }

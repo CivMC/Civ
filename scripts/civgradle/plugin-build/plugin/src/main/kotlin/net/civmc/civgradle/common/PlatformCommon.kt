@@ -1,6 +1,7 @@
 package net.civmc.civgradle.common
 
 import net.civmc.civgradle.CivGradleExtension
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.compile.JavaCompile
@@ -15,11 +16,9 @@ object PlatformCommon {
     private val logger: Logger = LoggerFactory.getLogger(PlatformCommon::class.java)
 
     fun apply(project: Project, extension: CivGradleExtension) {
-        project.afterEvaluate {
             if (project.pluginManager.hasPlugin("java-library")) {
                 configureJava(project)
             }
-        }
     }
 
     /**
@@ -29,6 +28,8 @@ object PlatformCommon {
         val javaExtension = project.extensions.findByType(JavaPluginExtension::class.java)
 
         javaExtension?.toolchain?.languageVersion?.set(JavaLanguageVersion.of(17))
+        javaExtension?.withJavadocJar()
+        javaExtension?.withSourcesJar()
 
         project.tasks.withType(JavaCompile::class.java) {
             it.options.encoding = Charsets.UTF_8.name()
