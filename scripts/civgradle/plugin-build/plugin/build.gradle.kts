@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.6.0"
     id("java-gradle-plugin")
+    `maven-publish`
 }
 
 repositories {
@@ -18,6 +19,24 @@ gradlePlugin {
             id = "net.civmc.civgradle.plugin"
             implementationClass = "net.civmc.civgradle.CivGradlePlugin"
             version = version
+        }
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/CivMC/CivGradle")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        register<MavenPublication>("gpr") {
+            from(components["java"])
         }
     }
 }
