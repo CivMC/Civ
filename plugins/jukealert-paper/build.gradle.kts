@@ -13,6 +13,7 @@ description = "JukeAlert"
 subprojects {
 	apply(plugin = "net.civmc.civgradle.plugin")
 	apply(plugin = "java-library")
+	apply(plugin = "maven-publish")
 
 	group = "net.cimc.exampleplugin"
 	version = "1.0.0-SNAPSHOT"
@@ -32,22 +33,22 @@ subprojects {
 		civRepo("CivMC/NameLayer")
 		civRepo("CivMC/Citadel")
 	}
-}
 
-publishing {
-	repositories {
-		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/CivMC/JukeAlert")
-			credentials {
-				username = System.getenv("GITHUB_ACTOR")
-				password = System.getenv("GITHUB_TOKEN")
+	publishing {
+		repositories {
+			maven {
+				name = "GitHubPackages"
+				url = uri("https://maven.pkg.github.com/CivMC/JukeAlert")
+				credentials {
+					username = System.getenv("GITHUB_ACTOR")
+					password = System.getenv("GITHUB_TOKEN")
+				}
 			}
 		}
-	}
-	publications {
-		register<MavenPublication>("gpr") {
-			from(components["java"])
+		publications {
+			register<MavenPublication>("gpr") {
+				from(components["java"])
+			}
 		}
 	}
 }
