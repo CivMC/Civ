@@ -18,7 +18,7 @@ object PlatformPaper {
     }
 
     private fun configurePaper(project: Project, extension: PlatformPaperExtension) {
-        project.tasks.findByName("build")?.dependsOn("reobfJar")
+        project.tasks.getByName("build").dependsOn("reobfJar")
 
         project.setProperty("archivesBaseName", extension.pluginName + "-paper")
 

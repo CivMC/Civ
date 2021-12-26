@@ -14,6 +14,7 @@ object PlatformCommon {
 
     private val logger: Logger = LoggerFactory.getLogger(PlatformCommon::class.java)
 
+    @Suppress("unused_parameter")
     fun apply(project: Project, extension: CivGradleExtension) {
             if (project.pluginManager.hasPlugin("java-library")) {
                 configureJava(project)
@@ -24,11 +25,12 @@ object PlatformCommon {
      * Configure our project to use java 17 UTF_8 for everything
      */
     private fun configureJava(project: Project) {
-        val javaExtension = project.extensions.findByType(JavaPluginExtension::class.java)
+        val javaExtension = project.extensions.getByType(JavaPluginExtension::class.java)
 
-        javaExtension?.toolchain?.languageVersion?.set(JavaLanguageVersion.of(17))
-        javaExtension?.withJavadocJar()
-        javaExtension?.withSourcesJar()
+        javaExtension.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+
+        javaExtension.withJavadocJar()
+        javaExtension.withSourcesJar()
 
         project.tasks.withType(JavaCompile::class.java) {
             it.options.encoding = Charsets.UTF_8.name()
