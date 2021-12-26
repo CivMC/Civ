@@ -15,8 +15,8 @@ subprojects {
 	apply(plugin = "java-library")
 	apply(plugin = "maven-publish")
 
-	group = "net.cimc.exampleplugin"
-	version = "1.0.0-SNAPSHOT"
+	group = "net.cimc.jukealert"
+	version = "3.0.0-SNAPSHOT"
 
 	java {
 		toolchain {
