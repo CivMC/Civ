@@ -1,6 +1,6 @@
-name: ${project.name}
+name: ${name}
 main: com.untamedears.jukealert.JukeAlert
-version: ${project.version}
+version: ${version}
 authors: [mgrandi, Maxopoly]
 depend: [CivModCore, NameLayer, Citadel]
 softdepend: [VanishNoPacket]
