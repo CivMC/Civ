@@ -26,20 +26,20 @@ gradlePlugin {
     }
 }
 
-//publishing {
-//    repositories {
-//        maven {
-//            name = "GitHubPackages"
-//            url = uri("https://maven.pkg.github.com/CivMC/CivGradle")
-//            credentials {
-//                username = System.getenv("GITHUB_ACTOR")
-//                password = System.getenv("GITHUB_TOKEN")
-//            }
-//        }
-//    }
-//    publications {
-//        register<MavenPublication>("gpr") {
-//            from(components["java"])
-//        }
-//    }
-//}
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/CivMC/CivGradle")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        register<MavenPublication>("gpr") {
+            from(components["java"])
+        }
+    }
+}
