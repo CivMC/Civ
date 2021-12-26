@@ -7,6 +7,12 @@ plugins {
 group = "net.civmc.civgradle"
 version = "1.0.0-SNAPSHOT"
 
+kotlin {
+    jvmToolchain {
+        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
+
 repositories {
     mavenCentral()
 }
