@@ -34,12 +34,12 @@ public class SimpleAdminHacks extends ACivMod {
 	@Override
 	public void onEnable() {
 		super.onEnable();
-		this.commands = new CommandRegistrar(this);
 		if (!this.config.parse()) {
 			setEnabled(false);
 			return;
 		}
 		this.manager.loadAllHacks();
+		this.commands = new CommandRegistrar(this);
 	}
 
 	@Override
