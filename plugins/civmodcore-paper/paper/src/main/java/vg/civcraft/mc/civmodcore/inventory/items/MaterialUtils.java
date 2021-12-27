@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
  * <p>See <a href="https://github.com/Protonull/BukkitReport/tree/master/reports">BukkitReports</a>.</p>
  *
  * <ul>
- *     <label>See also:</label>
+ *     <li>See also:</li>
  *     <li>{@link MoreTags MoreTags}</li>
  *     <li>{@link SpawnEggUtils SpawnEggUtils}</li>
  *     <li>{@link TreeTypeUtils TreeTypeUtils}</li>

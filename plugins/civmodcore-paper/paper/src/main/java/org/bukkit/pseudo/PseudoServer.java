@@ -214,6 +214,26 @@ public class PseudoServer implements Server {
 	}
 
 	@Override
+	public @NotNull String getResourcePack() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull String getResourcePackHash() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull String getResourcePackPrompt() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean isResourcePackRequired() {
+		throw new NotImplementedException();
+	}
+
+	@Override
 	public boolean hasWhitelist() {
 		throw new NotImplementedException();
 	}
@@ -788,7 +808,7 @@ public class PseudoServer implements Server {
 
 	@Override
 	public ChunkGenerator.@NotNull ChunkData createVanillaChunkData(
-			@NotNull World world, int i, int i1) {
+			@NotNull World world, int x, int z) {
 		throw new NotImplementedException();
 	}
 
