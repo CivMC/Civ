@@ -6,6 +6,8 @@ CivModCore is derived from Humbug.
 
 ## Versions
 
+* 2.0.0 - Paper 1.18.1 - This version onwards requires gradle
+
 * 1.9.0 - Paper 1.17.1
 
 * 1.8.4 - Paper 1.16.5
@@ -21,6 +23,16 @@ CivModCore is derived from Humbug.
 * [1.5.9](https://github.com/CivClassic/CivModCore/tree/a55880dd11bee3612f5aa842412119775b3bcb91) - Spigot 1.10.x
 
 No explicit backwards support is offered to any previous version, whether it be major, minor, or patch.
+
+----
+
+##How to compile with Gradle
+
+To compile CivModCore, you need JDK 17.
+
+Clone this repo, run ./gradlew build to create your jar, You can find the compiled jar in the paper `build/libs` directory.
+
+To get a full list of tasks, run ./gradlew tasks.
 
 ----
 
@@ -57,8 +69,12 @@ For more information, look through the [CivTemplate plugin](https://github.com/C
 Include the following in your dependency list in your plugin's POM file:
 
     <dependency>
-        <groupId>vg.civcraft.mc.civmodcore</groupId>
+        <groupId>net.civmc</groupId>
         <artifactId>CivModCore</artifactId>
-        <version>1.8.4</version>
+        <version>2.0.0-SNAPSHOT</version>
         <scope>provided</scope>
     </dependency>
+
+For Gradle include the following line inside your dependencies code block:
+
+	implementation("net.civmc:civmodcore:2.0.0-SNAPSHOT:dev-all")

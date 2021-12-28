@@ -1,18 +1,21 @@
 package vg.civcraft.mc.civmodcore.nbt;
 
 import lombok.experimental.UtilityClass;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 
 /**
  * NBT Type IDs for usage with:
  *
  * <ul>
- *     <li>{@link net.minecraft.nbt.CompoundTag#hasKeyOfType(String, int)}</li>
- *     <li>{@link net.minecraft.nbt.Tag#getTypeId()}</li>
- *     <li>{@link net.minecraft.nbt.ListTag#e()} // list element type</li>
+ *     <li>{@link CompoundTag#contains(String, int)}}</li>
+ *     <li>{@link Tag#getType()} ()}</li>
+ *     <li>{@link ListTag#getId()} // list element type</li>
  *     <li>etc...</li>
  * </ul>
  *
- * This is a better version of {@link org.bukkit.craftbukkit.v1_17_R1.util.CraftMagicNumbers.NBT}
+ * This is a better version of {@link org.bukkit.craftbukkit.v1_18_R1.util.CraftMagicNumbers}
  */
 @UtilityClass
 public final class NBTType {
