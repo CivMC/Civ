@@ -43,7 +43,7 @@ subprojects {
 		repositories {
 			maven {
 				name = "GitHubPackages"
-				url = uri("https://maven.pkg.github.com/CivMC/NameLayer")
+				url = uri("https://maven.pkg.github.com/CivMC/Citadel")
 				credentials {
 					username = System.getenv("GITHUB_ACTOR")
 					password = System.getenv("GITHUB_TOKEN")
