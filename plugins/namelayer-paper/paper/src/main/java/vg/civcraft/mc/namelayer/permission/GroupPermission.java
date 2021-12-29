@@ -68,8 +68,8 @@ public class GroupPermission {
 	 * @param permType The PermissionType.
 	 * @return Returns false if the PlayerType already has the permission.
 	 */
-	public boolean addPermission(PlayerType ptype, PermissionType permtype) {
-		return addPermission(ptype,permtype,true);
+	public boolean addPermission(PlayerType pType, PermissionType permType) {
+		return addPermission(pType,permType,true);
 	}
 
 	public boolean addPermission(PlayerType pType, PermissionType permType, boolean savetodb) {
