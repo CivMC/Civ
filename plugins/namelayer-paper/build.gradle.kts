@@ -6,17 +6,22 @@ plugins {
 	id("net.civmc.civgradle.plugin") version "1.0.0-SNAPSHOT"
 }
 
-group = "net.civmc"
-version = "3.0.0-SNAPSHOT"
-description = "JukeAlert"
+// Temporary hack:
+// Remove the root build directory
+gradle.buildFinished {
+	project.buildDir.deleteRecursively()
+}
+
+allprojects {
+	group = "net.civmc.namelayer"
+	version = "3.0.0-SNAPSHOT"
+	description = "NameLayer"
+}
 
 subprojects {
 	apply(plugin = "net.civmc.civgradle.plugin")
 	apply(plugin = "java-library")
 	apply(plugin = "maven-publish")
-
-	group = "net.cimc.namelayer"
-	version = "3.0.0-SNAPSHOT"
 
 	java {
 		toolchain {
