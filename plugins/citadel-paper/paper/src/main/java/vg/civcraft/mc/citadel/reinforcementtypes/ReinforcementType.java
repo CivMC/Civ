@@ -28,12 +28,13 @@ public class ReinforcementType {
 	private double decayMultiplier;
 	private double deletedGroupMulitplier;
 	private int legacyId;
+	private Set<String> allowedWorlds;
 
 	public ReinforcementType(float health, double returnChance, ItemStack item, long maturationTime, long acidTime, int acidPriority,
 			double scale, long gracePeriod, ReinforcementEffect creationEffect, ReinforcementEffect damageEffect,
 			ReinforcementEffect destructionEffect, Collection<Material> allowsReinforceables,
 			Collection<Material> disallowedReinforceables, short id, String name, Collection<Material> globalBlackList,
-			long decayTimer, double decayMultiplier, double deletedGroupMulitplier, int legacyId) {
+			long decayTimer, double decayMultiplier, double deletedGroupMulitplier, int legacyId, Collection allowedWorlds) {
 		this.health = health;
 		this.name = name;
 		this.returnChance = returnChance;
@@ -59,6 +60,11 @@ public class ReinforcementType {
 		if (!globalBlackList.isEmpty()) {
 			this.globalBlackList.addAll(globalBlackList);
 		}
+		this.allowedWorlds = new TreeSet<>();
+		if (!allowedWorlds.isEmpty())
+		{
+			this.allowedWorlds.addAll(allowedWorlds);
+		}
 		this.id = id;
 		this.decayMultiplier = decayMultiplier;
 		this.decayTimer = decayTimer;
@@ -73,6 +79,21 @@ public class ReinforcementType {
 			return disallowedReinforceables == null || !disallowedReinforceables.contains(mat);
 		}
 		return allowedReinforceables.contains(mat);
+	}
+
+	public Set<String> getAllowedWorlds()
+	{
+		return allowedWorlds;
+	}
+
+	public boolean isAllowedInWorld(String worldName)
+	{
+		if (allowedWorlds.contains(worldName) || allowedWorlds.isEmpty())
+		{
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

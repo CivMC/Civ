@@ -73,6 +73,12 @@ public class ReinforcingState extends AbstractPlayerState {
 					block.getLocation());
 			return;
 		}
+		// is the reinforcement item allowed in the current world
+		if (!type.isAllowedInWorld(block.getWorld().getName())) {
+			CitadelUtility.sendAndLog(player, ChatColor.RED,
+					type.getName() + " cannot reinforce in this dimension", block.getLocation());
+			return;
+		}
 		// does the player have permission to reinforce on that group
 		if (!NameAPI.getGroupManager().hasAccess(group, e.getPlayer().getUniqueId(),
 				CitadelPermissionHandler.getReinforce())) {
