@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.civmc"
-version = "1.6.0-SNAPSHOT"
+version = "2.0.0-SNAPSHOT"
 description = "ItemExchange"
 
 repositories {
@@ -67,7 +67,7 @@ publishing {
 	repositories {
 		maven {
 			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/CivMC/Citadel")
+			url = uri("https://maven.pkg.github.com/CivMC/ItemExchange")
 			credentials {
 				username = System.getenv("GITHUB_ACTOR")
 				password = System.getenv("GITHUB_TOKEN")
