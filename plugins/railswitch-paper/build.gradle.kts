@@ -13,7 +13,7 @@ gradle.buildFinished {
 }
 
 allprojects {
-	group = "net.civmc.civmodcore"
+	group = "net.civmc.railswitch"
 	version = "2.0.0-SNAPSHOT"
 	description = "RailSwitch"
 }
