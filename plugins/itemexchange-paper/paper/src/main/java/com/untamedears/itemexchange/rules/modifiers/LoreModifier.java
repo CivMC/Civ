@@ -23,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 

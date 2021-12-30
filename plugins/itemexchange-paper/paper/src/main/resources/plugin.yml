@@ -1,5 +1,5 @@
-name: ItemExchange
-version: 1.6.0-SNAPSHOT
+name: ${name}
+version: ${version}
 authors: [gmlaxfanatic, Protonull]
 main: com.untamedears.itemexchange.ItemExchangePlugin
 api-version: 1.16
