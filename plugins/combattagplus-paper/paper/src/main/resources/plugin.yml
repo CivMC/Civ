@@ -1,0 +1,41 @@
+name: ${name}
+description: Tag players in combat
+version: ${version}
+authors: [Byteflux, Sudzzy]
+main: net.minelink.ctplus.CombatTagPlus
+softdepend: [BarAPI, PlayerHeads, WorldGuard, Factions, Towny, BossBarAPI, ActionBarAPI, mcMMO]
+api-version: 1.14
+commands:
+  combattagplus:
+    aliases: [ctplus, ct, combattag]
+    description: Check combat tag timer
+    permission: ctplus.check
+    permission-message: '§cYou do not have permission to use that command.'
+  ctplusreload:
+    aliases: [ctreload]
+    description: Reload CombatTagPlus config
+    permission: ctplus.reload
+    permission-message: '§cYou do not have permission to use that command.'
+  ctpluslogout:
+    aliases: [ctlogout, ctlog, logout]
+    description: Logs out the player without spawning an NPC or killing them
+    permission: ctplus.logout
+    permission-message: '§cYou do not have permission to use that command.'
+  ctplusuntag:
+    aliases: [ctuntag, untag]
+    description: Untags the specified player
+    permission: ctplus.untag
+    permission-message: '§cYou do not have permission to use that command.'
+permissions:
+  ctplus.reload: {default: op}
+  ctplus.bypass.tag: {default: op}
+  ctplus.bypass.command: {default: op}
+  ctplus.bypass.blockedit: {default: op}
+  ctplus.bypass.storageaccess: {default: op}
+  ctplus.bypass.enderpearl: {default: op}
+  ctplus.bypass.flying: {default: op}
+  ctplus.bypass.teleport: {default: op}
+  ctplus.bypass.craft: {default: op}
+  ctplus.check: {default: true}
+  ctplus.logout: {default: true}
+  ctplus.notify.kill: {default: true}
