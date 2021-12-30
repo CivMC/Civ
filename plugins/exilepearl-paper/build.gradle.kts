@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.civmc"
-version = "1.6.0-SNAPSHOT"
+version = "2.0.0-SNAPSHOT"
 description = "ExilePearl"
 
 repositories {
@@ -32,7 +32,6 @@ repositories {
     civRepo("RandomSpawn")
     civRepo("WorldBorder")
     civRepo("CombatTagPlus")
-    civRepo("Brewery")
     civRepo("BanStick")
 
     maven("https://papermc.io/repo/repository/maven-public/")
