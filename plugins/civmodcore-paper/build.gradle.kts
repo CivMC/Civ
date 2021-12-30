@@ -6,17 +6,22 @@ plugins {
     id("net.civmc.civgradle.plugin") version "1.0.0-SNAPSHOT"
 }
 
-group = "net.civmc"
-version = "2.0.0-SNAPSHOT"
-description = "CivModCore"
+// Temporary hack:
+// Remove the root build directory
+gradle.buildFinished {
+	project.buildDir.deleteRecursively()
+}
+
+allprojects {
+	group = "net.civmc.civmodcore"
+	version = "2.0.0-SNAPSHOT"
+	description = "CivModCore"
+}
 
 subprojects {
 	apply(plugin = "net.civmc.civgradle.plugin")
 	apply(plugin = "java-library")
 	apply(plugin = "maven-publish")
-
-	group = "net.cimc.civmodcore"
-	version = "2.0.0-SNAPSHOT"
 
 	java {
 		toolchain {
