@@ -31,7 +31,7 @@ public class NormalState extends AbstractPlayerState {
 			return;
 		}
 		ItemStack offHand = player.getInventory().getItemInOffHand();
-		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStackAndWorld(offHand, player.getWorld().getName());
+		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(offHand);
 		if (type == null) {
 			return;
 		}
@@ -53,7 +53,7 @@ public class NormalState extends AbstractPlayerState {
 			return;
 		}
 		ItemStack hand = player.getInventory().getItemInMainHand();
-		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStackAndWorld(hand, player.getWorld().getName());
+		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(hand);
 		if (type == null) {
 			return;
 		}
