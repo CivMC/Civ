@@ -49,7 +49,7 @@ public class AdvancedFortification extends BaseCommand {
 			CitadelUtility.sendAndLog(player, ChatColor.RED, "You need to hold a reinforcement item in your off hand");
 			return;
 		}
-		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(offHand);
+		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(offHand, player.getWorld().getName());
 		if (type == null) {
 			CitadelUtility.sendAndLog(player, ChatColor.RED, "You can not reinforce with the item in your off hand");
 			return;

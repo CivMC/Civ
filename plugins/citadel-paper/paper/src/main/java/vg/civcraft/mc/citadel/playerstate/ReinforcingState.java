@@ -58,7 +58,7 @@ public class ReinforcingState extends AbstractPlayerState {
 					e.getClickedBlock().getLocation());
 			return;
 		}
-		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(e.getItem());
+		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(e.getItem(), player.getWorld().getName());
 		// is it a valid item to reinforce with
 		if (type == null) {
 			CitadelUtility.sendAndLog(player, ChatColor.RED, "You can not reinforce with this item",
