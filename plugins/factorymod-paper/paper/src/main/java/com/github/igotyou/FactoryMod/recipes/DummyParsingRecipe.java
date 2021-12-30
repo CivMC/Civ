@@ -3,7 +3,6 @@ package com.github.igotyou.FactoryMod.recipes;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.List;
 
-import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

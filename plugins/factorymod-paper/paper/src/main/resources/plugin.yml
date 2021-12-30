@@ -1,7 +1,7 @@
-name: FactoryMod
+name: ${name}
 main: com.github.igotyou.FactoryMod.FactoryMod
 author: Maxopoly, igotyou
-version: 2.7.0-SNAPSHOT
+version: ${version}
 depend: [CivModCore]
 softdepend: [CivMenu, NameLayer, Citadel]
 permissions:
