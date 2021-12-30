@@ -59,6 +59,11 @@ public class ReinforcementTypeManager {
 				return false;
 			}
 
+			if (globalTypesByItem.put(type.getItem(), type) != null) {
+				// Problem because there is already a global reinforcement for the item type registered
+				return false;
+			}
+
 			globalTypesByItem.put(type.getItem(), type); // Types with no allowed worlds are global and able to be used everywhere
 
 			return true;
