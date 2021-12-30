@@ -2,17 +2,18 @@ package vg.civcraft.mc.citadel.reinforcementtypes;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import org.bukkit.inventory.ItemStack;
 
 public class ReinforcementTypeManager {
 
-	private Map<ItemStack, ReinforcementType> typesByItem;
 	private Map<Short, ReinforcementType> typesById;
+	private Map<String, Map<ItemStack, ReinforcementType>> typesByWorld;
 
 	public ReinforcementTypeManager() {
-		typesByItem = new HashMap<>();
+		typesByWorld = new HashMap<>();
 		typesById = new TreeMap<>();
 	}
 
@@ -24,14 +25,15 @@ public class ReinforcementTypeManager {
 		return typesById.get(id);
 	}
 
-	public ReinforcementType getByItemStack(ItemStack is) {
+	public ReinforcementType getByItemStackAndWorld(ItemStack is, String worldName)
+	{
 		ItemStack copy = is.clone();
 		copy.setAmount(1);
-		return typesByItem.get(copy);
+		return typesByWorld.getOrDefault(worldName, new HashMap<>()).get(copy);
 	}
 
 	public void register(ReinforcementType type) {
-		typesByItem.put(type.getItem(), type);
+		type.getAllowedWorlds().forEach(allowedWorld -> typesByWorld.computeIfAbsent(allowedWorld, k -> new HashMap<>()).put(type.getItem(), type));
 		typesById.put(type.getID(), type);
 	}
 

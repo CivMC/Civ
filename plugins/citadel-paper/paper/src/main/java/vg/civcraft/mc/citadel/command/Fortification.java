@@ -33,7 +33,7 @@ public class Fortification extends BaseCommand {
 			return;
 		}
 		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager()
-				.getByItemStack(player.getInventory().getItemInMainHand());
+				.getByItemStackAndWorld(player.getInventory().getItemInMainHand(), player.getWorld().getName());
 		if (type == null) {
 			CitadelUtility.sendAndLog(player, ChatColor.RED, "You can not reinforce with this item");
 			stateManager.setState(player, null);
