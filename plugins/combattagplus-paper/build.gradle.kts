@@ -12,7 +12,7 @@ gradle.buildFinished {
 
 allprojects {
     group = "net.civmc.combattagplus"
-    version = "3.0.0-SNAPSHOT"
+    version = "2.0.0-SNAPSHOT"
     description = "CombatTagPlus"
 }
 
