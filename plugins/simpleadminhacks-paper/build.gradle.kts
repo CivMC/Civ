@@ -45,7 +45,7 @@ subprojects {
 		repositories {
 			maven {
 				name = "GitHubPackages"
-				url = uri("https://maven.pkg.github.com/CivMC/CivModCore")
+				url = uri("https://maven.pkg.github.com/CivMC/SimpleAdminHacks")
 				credentials {
 					username = System.getenv("GITHUB_ACTOR")
 					password = System.getenv("GITHUB_TOKEN")
