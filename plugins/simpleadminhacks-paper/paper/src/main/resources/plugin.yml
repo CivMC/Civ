@@ -1,0 +1,160 @@
+name: ${name}
+main: com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks
+author: ProgrammerDan
+authors: [ProgrammerDan, Maxopoly]
+version: ${version}
+depend: [CivModCore]
+softdepend: [CombatTagPlus, NameLayer, Citadel, ProtocolLib]
+api-version: 1.18
+commands:
+  hacks:
+    description: Shows the various hacks and fixes supported by this plugin and controls them
+    usage: |
+      /<command>
+      /<command> <hackname>
+      /<command> <hackname> enable|disable
+      /<command> <hackname> get|set <config> [value]
+    permission: simpleadmin.hacks
+  invsee:
+    description: See any player inventory, online or not.
+    usage: /<command> [playername|UUID]
+    permission: simpleadmin.invsee
+  invmod:
+    description: Modify any player inventory, online or not.
+    usage: /<command> [playername|UUID]
+    permission: simpleadmin.invmod
+  chunklimits:
+    description: Display block chunk limit in chat
+    usage: /<command> 
+  serialize:
+    description: Print to console the object held as serialized yaml
+    usage: /<command>
+    permission: simpleadmin.hacks
+  introkit:
+    description: Give a player the currently configured introkit
+    usage: /<command> [playername|UUID]
+    permission: simpleadmin.kit
+  introbook:
+    description: Give a player the currently configured intro book
+    usage: /<command> [playername|UUID]
+    permission: simpleadmin.book
+  hackbot:
+    description: Allows the creation of NPCs
+    usage: |
+      /<command> spawn [npc name]
+      /<command> despawn [npc name]
+      /<command> save [npc name]
+      /<command> generate [npc name] [name of skin] [spawn <world,x,y,z>] [options and flags]
+      /<command> help generate shows detailed help on the generate subcommand
+      /<command> destroy [npc name]
+      /<command> all save
+      /<command> all despawn
+      /<command> all spawn
+      /<command> [status|list]
+    permission: simpleadmin.bots
+  showtimings:
+    description: Get an in-game map that shows tick length and distribution over time (2 mins, updated continuously)
+    usage: /<command>
+    permission: simpleadmin.timings
+  bindtimings:
+    description: Get an in-game map that shows relative tick usage by a targetted class
+    usage: /<command> classname
+    permission: simpleadmin.timings
+  thresholdtimings:
+    description: Get periodic reports on misbehaving classes using a lot of tick time, based on a threshold (as a factor * avg tick)
+    usage: /<command> threshold
+    permission: simpleadmin.timings
+  listtimings:
+    description: Show all Classes that can be used with bindtimings; this is a progressive report function that continues until nothing new is seen
+    usage: /<command>
+    permission: simpleadmin.timings
+  stoptimings:
+    description: Stop any advanced timing tracking. Does not stop /showtimings reults.
+    usage: /<command>
+    permission: simpleadmin.timings
+  insight:
+    description: Event insights. Passively tracks stuff, or actively represents events for players.
+    usage: |
+      /<command> on
+      /<command> active - Activates active monitoring of events. For continuous events, pings you with a summary update every 5 seconds. For initiated events, pings you immediately.
+      /<command> off
+      /<command> inactive - Deactivates active monitoring.
+      /<command> list - Shows all monitored events and some stats about each
+      /<command> list <event> - Shows all monitored events that match the passed param <event>
+      /<command> periodic <time> - Shows a color differentiated summary of monitored events and counts that have changed, with <time> as ticks inbetween display
+      /<command> periodic <event> <time> - Shows a color differentiated summary of monitored evenst that match the passed param <event>, with <time> as ticks inbetween display
+      /<command> - Just shows this description
+  debugevent:
+    description: Allows debugging of an event and its handlers
+    usage: /<command> full.path.to.event
+    permission: simpleadmin.eventdebug
+  stats: {} # Defined in (basic) PlayerStats
+permissions:
+  simpleadmin.*:
+    description: Gives access to all SimpleAdminHacks commands
+    default: op
+    children:
+      simpleadmin.hacks: true
+      simpleadmin.invsee: true
+      simpleadmin.chestsee: true
+      simpleadmin.invmod: true
+      simpleadmin.chestmod: true
+      simpleadmin.kit: true
+      simpleadmin.book: true
+      simpleadmin.broadcast: true
+      simpleadmin.bots: true
+      simpleadmin.timings: true
+      simpleadmin.eventdebug: true
+      simpleadmin.stats: true
+      simpleadmin.revive: true
+      simpleadmin.debugwand: true
+      simpleadmin.bedlocator: true
+      simpleadmin.elytrabypass: true
+    simpleadmin.hacks:
+      description: Allows control of the hacks and settings which simpleadminhacks supports
+      default: op
+    simpleadmin.invsee:
+      description: Allows viewing player inventory
+      default: op
+    simpleadmin.chestsee:
+      description: Allows viewing any chests
+      default: op
+    simpleadmin.invmod:
+      description: Allows modifying player inventory
+      default: op
+    simpleadmin.chestmod:
+      description: Allows modifying any chests
+      default: op
+    simpleadmin.kit:
+      description: Gives ability to gift starting kit
+      default: op
+    simpleadmin.book:
+      description: Gives ability to gift starting book
+      default: op
+    simpleadmin.broadcast:
+      description: Gives the holder the ability to receive broadcasts
+      default: op
+    simpleadmin.bots:
+      description: Gives the ability to create NPCs (bots)
+      default: op
+    simpleadmin.timings:
+      description: Gives the ability to view and manage /...timings commands
+      default: op
+    simpleadmin.eventdebug:
+      description: Gives the ability to view and manage /...timings commands
+      default: op
+    simpleadmin.stats:
+      description: Gives the ability to view and manage player statistics
+      default: op
+    simpleadmin.revive:
+      description: Gives the ability to revive players
+      default: op
+    simpleadmin.debugwand:
+      description: Gives the ability to create and use debug wands
+      default: op
+    simpleadmin.bedlocator:
+      description: Gives the ability to locate your own bed
+      default: true
+    simpleadmin.elytrabypass:
+      description: Gives the ability to bypass elytra restrictions
+      default: op
