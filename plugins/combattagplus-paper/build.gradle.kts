@@ -1,10 +1,39 @@
-subprojects {
-    apply<JavaPlugin>()
-    apply<MavenPublishPlugin>()
+plugins {
+    `java-library`
+    `maven-publish`
+    id("net.civmc.civgradle.plugin") version "1.0.0-SNAPSHOT"
+}
 
+// Temporary hack:
+// Remove the root build directory
+gradle.buildFinished {
+    project.buildDir.deleteRecursively()
+}
+
+allprojects {
     group = "net.civmc.combattagplus"
-    version = "2.0.0-SNAPSHOT"
+    version = "3.0.0-SNAPSHOT"
     description = "CombatTagPlus"
+}
+
+subprojects {
+    apply(plugin = "net.civmc.civgradle.plugin")
+    apply(plugin = "java-library")
+    apply(plugin = "maven-publish")
+
+    repositories {
+        mavenCentral()
+
+        maven("https://papermc.io/repo/repository/maven-public/")
+        maven("https://ci.frostcast.net/plugin/repository/everything")
+        maven("https://jitpack.io")
+    }
+
+    configure<JavaPluginExtension> {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
 
     configure<PublishingExtension> {
         repositories {
@@ -17,11 +46,9 @@ subprojects {
                 }
             }
         }
-        configure<PublishingExtension> {
-            publications {
-                register<MavenPublication>("gpr") {
-                    from(components["java"])
-                }
+        publications {
+            register<MavenPublication>("gpr") {
+                from(components["java"])
             }
         }
     }
