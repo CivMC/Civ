@@ -1,7 +1,7 @@
-name: ${project.name}
+name: ${name}
 main: com.github.igotyou.FactoryMod.FactoryMod
 author: Maxopoly, igotyou
-version: ${project.version}
+version: ${version}
 depend: [CivModCore]
 softdepend: [CivMenu, NameLayer, Citadel]
 permissions:
