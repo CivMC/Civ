@@ -1,8 +1,6 @@
 package com.untamedears.itemexchange;
 
 import com.untamedears.itemexchange.commands.CommandRegistrar;
-import com.untamedears.itemexchange.rules.BulkExchangeRule;
-import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ModifierRegistrar;
 import com.untamedears.itemexchange.rules.modifiers.BookModifier;
 import com.untamedears.itemexchange.rules.modifiers.DamageableModifier;
