@@ -38,10 +38,12 @@ object PlatformPaper {
         }
 
         project.tasks.withType(ProcessResources::class.java) {
-            it.expand(mapOf(
-                "name" to extension.pluginName,
-                "version" to project.version
-            ))
+            it.filesMatching("plugin.yml") {
+                it.expand(mapOf(
+                    "name" to extension.pluginName,
+                    "version" to project.version
+                ))
+            }
         }
     }
 }
