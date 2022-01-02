@@ -13,7 +13,7 @@ gradle.buildFinished {
 }
 
 allprojects {
-	group = "net.civmc.civmodcore"
+	group = "net.civmc.randomspawn"
 	version = "3.0.0-SNAPSHOT"
 	description = "RandomSpawn"
 }
