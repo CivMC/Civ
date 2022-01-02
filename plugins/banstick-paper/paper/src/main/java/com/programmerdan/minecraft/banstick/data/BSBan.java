@@ -23,7 +23,8 @@ import javax.annotation.Nonnull;
  * BSBan object, wraps an actual ban.
  * Might link with an IP, Proxy, or Share.
  * 
- * @author <a href="mailto:programmerdan@gmail.com>ProgrammerDan</a>
+ * @author ProgrammerDan
+ * Email: programmerdan@gmail.com
  *
  */
 public final class BSBan {
