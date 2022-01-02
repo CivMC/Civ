@@ -1,8 +1,8 @@
-name: RealisticBiomes
+name: ${name}
 main: com.untamedears.realisticbiomes.RealisticBiomes
 depend:
 - CivModCore
-version: 2.3.0-SNAPSHOT
+version: ${version}
 authors:
 - mgrandi
 - gispy-king
