@@ -14,8 +14,9 @@ civGradle {
 dependencies {
 	paperDevBundle("1.18.1-R0.1-SNAPSHOT")
 
+	compileOnly("net.civmc.civmodcore:paper:2.0.0-SNAPSHOT:dev-all")
+	compileOnly("net.civmc.namelayer:paper:3.0.0-SNAPSHOT:dev")
+
     implementation("com.github.seancfoley:ipaddress:2.0.2")
     implementation("org.jsoup:jsoup:1.13.1")
-    compileOnly("net.civmc:civmodcore:2.0.0-SNAPSHOT:dev-all")
-    compileOnly("net.civmc:namelayer-spigot:3.0.0-SNAPSHOT:dev")
 }
