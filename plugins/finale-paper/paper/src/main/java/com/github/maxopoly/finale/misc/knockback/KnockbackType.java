@@ -1,9 +1,5 @@
 package com.github.maxopoly.finale.misc.knockback;
 
-import org.bukkit.util.Vector;
-
-import java.util.function.BiFunction;
-
 public enum KnockbackType {
 
 	DIRECT((start, knockback, modifier) -> {
