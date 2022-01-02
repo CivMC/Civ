@@ -1,5 +1,5 @@
-name: ${project.artifactId}
-version: ${project.version}
+name: ${name}
+version: ${version}
 main: sh.okx.railswitch.RailSwitchPlugin
 depend: [CivModCore]
 softdepend: [Citadel, NameLayer]
