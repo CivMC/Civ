@@ -14,7 +14,7 @@ dependencies {
 	paperDevBundle("1.18.1-R0.1-SNAPSHOT")
 
     compileOnly("net.civmc:civmodcore:2.0.0-SNAPSHOT:dev-all")
-    compileOnly("com.vexsoftware:nuvotifier-bukkit:2.7.3")
+    compileOnly("com.vexsoftware:nuvotifier-universal:2.7.3")
     compileOnly("net.civmc:banstick:2.0.0-SNAPSHOT:dev")
     compileOnly("net.civmc:exilepearl:2.0.0-SNAPSHOT:dev")
 }
