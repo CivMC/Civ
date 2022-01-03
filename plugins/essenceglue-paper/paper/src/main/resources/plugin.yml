@@ -1,5 +1,5 @@
-name: ${project.name}
-version: ${project.version}
+name: ${name}
+version: ${version}
 main: com.github.maxopoly.essenceglue.EssenceGluePlugin
 api-version: 1.17
 depend: [CivModCore, BanStick, ExilePearl]
