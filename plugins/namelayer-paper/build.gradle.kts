@@ -1,12 +1,43 @@
-subprojects {
-	apply<JavaPlugin>()
-	apply<MavenPublishPlugin>()
+import net.civmc.civgradle.common.util.civRepo
 
-	group = "net.civmc"
+plugins {
+	`java-library`
+	`maven-publish`
+	id("net.civmc.civgradle.plugin") version "1.0.0-SNAPSHOT"
+}
+
+// Temporary hack:
+// Remove the root build directory
+gradle.buildFinished {
+	project.buildDir.deleteRecursively()
+}
+
+allprojects {
+	group = "net.civmc.namelayer"
 	version = "3.0.0-SNAPSHOT"
 	description = "NameLayer"
+}
 
-	configure<PublishingExtension> {
+subprojects {
+	apply(plugin = "net.civmc.civgradle.plugin")
+	apply(plugin = "java-library")
+	apply(plugin = "maven-publish")
+
+	java {
+		toolchain {
+			languageVersion.set(JavaLanguageVersion.of(17))
+		}
+	}
+
+	repositories {
+		mavenCentral()
+
+		maven("https://papermc.io/repo/repository/maven-public/")
+
+		civRepo("CivMC/CivModCore")
+	}
+
+	publishing {
 		repositories {
 			maven {
 				name = "GitHubPackages"
@@ -17,13 +48,10 @@ subprojects {
 				}
 			}
 		}
-		configure<PublishingExtension> {
-			publications {
-				register<MavenPublication>("gpr") {
-					from(components["java"])
-				}
+		publications {
+			register<MavenPublication>("gpr") {
+				from(components["java"])
 			}
 		}
 	}
 }
-
