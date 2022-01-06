@@ -6,7 +6,7 @@ plugins {
 
 civGradle {
 	paper {
-		pluginName = "ExilePearl"
+		pluginName = "CivChat2"
 	}
 }
 
