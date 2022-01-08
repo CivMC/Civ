@@ -1,5 +1,5 @@
-name: '${project.name}'
-version: '${project.version}'
+name: ${name}
+version: ${version}
 main: com.github.devotedmc.hiddenore.HiddenOre
 author: Soerxpso
 authors: [ProgrammerDan]

@@ -83,6 +83,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class FakePlayer implements Player {
 	private final ItemStack inHand;
@@ -2127,6 +2128,29 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
+	public void setResourcePack(@NotNull String url,
+								@Nullable byte[] hash,
+								@Nullable String prompt) {
+	}
+
+	@Override
+	public void setResourcePack(@NotNull String url, @Nullable byte[] hash, boolean force) {
+
+	}
+
+	@Override
+	public void setResourcePack(@NotNull String url, @Nullable byte[] hash,
+								@Nullable String prompt, boolean force) {
+
+	}
+
+	@Override
+	public void setResourcePack(@NotNull String url, @Nullable byte[] hash,
+								@Nullable Component prompt, boolean force) {
+
+	}
+
+	@Override
 	public void stopSound(Sound arg0, SoundCategory arg1) {
 
 	}
@@ -2817,6 +2841,11 @@ public class FakePlayer implements Player {
 
 	@Override
 	public boolean spawnAt(Location location,  SpawnReason spawnReason) {
+		return false;
+	}
+
+	@Override
+	public boolean isInPowderedSnow() {
 		return false;
 	}
 
