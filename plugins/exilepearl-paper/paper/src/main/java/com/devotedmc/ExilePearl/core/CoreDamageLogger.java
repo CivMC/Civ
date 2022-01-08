@@ -14,7 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import net.minelink.ctplus.compat.api.NpcIdentity;
+import net.minelink.ctplus.compat.base.NpcIdentity;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;

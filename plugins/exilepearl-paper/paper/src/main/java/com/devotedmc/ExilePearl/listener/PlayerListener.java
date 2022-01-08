@@ -27,7 +27,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minelink.ctplus.compat.api.NpcIdentity;
+import net.minelink.ctplus.compat.base.NpcIdentity;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;

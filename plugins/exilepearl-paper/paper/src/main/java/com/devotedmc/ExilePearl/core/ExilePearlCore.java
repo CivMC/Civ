@@ -52,7 +52,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.minelink.ctplus.CombatTagPlus;
-import net.minelink.ctplus.compat.api.NpcIdentity;
+import net.minelink.ctplus.compat.base.NpcIdentity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;

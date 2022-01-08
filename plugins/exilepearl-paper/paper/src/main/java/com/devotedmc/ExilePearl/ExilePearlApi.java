@@ -6,7 +6,7 @@ import com.devotedmc.ExilePearl.util.BastionWrapper;
 import com.devotedmc.ExilePearl.util.Clock;
 import java.util.List;
 import java.util.UUID;
-import net.minelink.ctplus.compat.api.NpcIdentity;
+import net.minelink.ctplus.compat.base.NpcIdentity;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
