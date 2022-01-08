@@ -13,7 +13,7 @@ civGradle {
 dependencies {
 	paperDevBundle("1.18.1-R0.1-SNAPSHOT")
 
-    implementation("net.civmc:civmodcore:2.0.0-SNAPSHOT:dev-all")
-    implementation("com.sk89q.worldedit:worldedit-bukkit:7.2.8")
+    compileOnly("net.civmc.civmodcore:paper:2.0.0-SNAPSHOT:dev-all")
+	compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.8")
     implementation("org.apache.commons:commons-math3:3.6.1")
 }
