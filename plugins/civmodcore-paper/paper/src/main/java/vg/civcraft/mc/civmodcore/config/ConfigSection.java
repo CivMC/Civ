@@ -17,7 +17,9 @@ public class ConfigSection extends MemoryConfiguration {
 	 */
 	public static ConfigSection fromData(@Nonnull final Map<String, Object> data) {
 		final var section = new ConfigSection();
-		section.map.putAll(data);
+		for (var entry : data.entrySet()) {
+			section.set(entry.getKey(), entry.getValue());
+		}
 		return section;
 	}
 
