@@ -1,6 +1,5 @@
 package com.devotedmc.ExilePearl.core;
 
-import com.destroystokyo.paper.MaterialTags;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.LoreProvider;
