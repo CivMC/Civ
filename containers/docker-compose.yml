@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+
+  paper:
+    build: paper
+    restart: unless-stopped
+    ports:
+      - "25565:25565"
+    environment:
+      INIT_MEMORY: 1G
+      MAX_MEMORY: 5G
+
+      CIV_MYSQL_HOST: mariadb
+      CIV_MYSQL_USERNAME: username
+      CIV_MYSQL_PASSWORD: password
+      CIV_MYSQL_DATABASE: minecraft
+    volumes:
+      - ./local/data:/data # Mount everything for debugging
+      - ./local/logs:/data/logs
+      - ./local/world:/data/world
+      - ./local/world_nether:/data/world_nether
+      - ./local/world_the_end:/data/world_the_end
+
+  mariadb:
+    image: mariadb:10.7.1
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: username
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: minecraft

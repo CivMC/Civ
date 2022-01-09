@@ -1,0 +1,41 @@
+{
+  "file": "/data/bukkit.yml",
+  "ops": [
+    {
+      "$set": {
+        "path": "$.spawn-limits.monsters",
+        "value": 1
+      }
+    },
+    {
+      "$set": {
+        "path": "$.spawn-limits.animals",
+        "value": 1
+      }
+    },
+    {
+      "$set": {
+        "path": "$.spawn-limits.water-animals",
+        "value": 1
+      }
+    },
+    {
+      "$set": {
+        "path": "$.spawn-limits.water-ambient",
+        "value": 1
+      }
+    },
+    {
+      "$set": {
+        "path": "$.spawn-limits.water-underground-creature",
+        "value": 1
+      }
+    },
+    {
+      "$set": {
+        "path": "$.spawn-limits.ambient",
+        "value": 1
+      }
+    }
+  ]
+}
