@@ -34,3 +34,5 @@ services:
       MYSQL_USER: username
       MYSQL_PASSWORD: password
       MYSQL_DATABASE: minecraft
+    volumes:
+      - ./local/mariadb:/var/lib/mysql
