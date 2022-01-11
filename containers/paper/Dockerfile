@@ -18,6 +18,7 @@ ENV OVERRIDE_SERVER_PROPERTIES=true
 ENV MOTD="You're a §l§abeautiful§r person."
 ENV MAX_PLAYERS="150"
 ENV SPAWN_PROTECTION="0"
+ENV ONLINE_MODE="false"
 
 # https://github.com/itzg/docker-minecraft-server#running-a-paper-server
 ENV TYPE=PAPER

@@ -1,0 +1,9 @@
+FROM itzg/bungeecord
+
+COPY config /config
+COPY plugins /plugins
+
+ENV TYPE=WATERFALL
+
+ENV REPLACE_ENV_VARIABLES=true
+ENV REPLACE_ENV_VARIABLE_PREFIX=CIV

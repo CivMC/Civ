@@ -1,0 +1,11 @@
+{
+  "file": "/data/spigot.yml",
+  "ops": [
+    {
+      "$set": {
+        "path": "$.settings.bungeecord",
+        "value": true
+      }
+    }
+  ]
+}
