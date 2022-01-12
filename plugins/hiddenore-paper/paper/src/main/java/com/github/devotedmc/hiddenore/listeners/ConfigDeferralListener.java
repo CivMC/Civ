@@ -37,10 +37,12 @@ public class ConfigDeferralListener implements Listener {
 		ConfigurationSection worldGenConfig = Config.instance.getWorldGenerations();
 		if (worldGenConfig != null) {
 			for (String key : worldGenConfig.getKeys(false)) {
-				HiddenOre.getPlugin().getLogger().log(Level.INFO, "Registered Ore Generation Suppression Listener for World {0}", key);
-				WorldGenerationListener list = new WorldGenerationListener(worldGenConfig.getConfigurationSection(key));
-				HiddenOre.getPlugin().getServer().getPluginManager().registerEvents(list, HiddenOre.getPlugin());
-				HiddenOre.getPlugin().getWorldGen().add(list);
+				if (key.equals(init.getWorld().getName())) {
+					HiddenOre.getPlugin().getLogger().log(Level.INFO, "Registered Ore Generation Suppression Listener for World {0}", key);
+					WorldGenerationListener list = new WorldGenerationListener(worldGenConfig.getConfigurationSection(key));
+					HiddenOre.getPlugin().getServer().getPluginManager().registerEvents(list, HiddenOre.getPlugin());
+					HiddenOre.getPlugin().getWorldGen().add(list);
+				}
 			}
 		}
 	}
