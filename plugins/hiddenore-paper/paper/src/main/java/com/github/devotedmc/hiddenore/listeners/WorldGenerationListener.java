@@ -139,7 +139,7 @@ public class WorldGenerationListener implements Listener {
 		try {
 			int maxY = chunk.getWorld().getMaxHeight();
 			// now scan the chunk for ores and remove them.
-			for (int y = 1; y < maxY; y++) {
+			for (int y = chunk.getWorld().getMinHeight() + 1; y < maxY; y++) {
 				for (int x = 0; x < 16; x++) {
 					for (int z = 0; z < 16; z++) {
 						Block block = chunk.getBlock(x, y, z);
@@ -173,7 +173,7 @@ public class WorldGenerationListener implements Listener {
 		ItemStack breakItem = new ItemStack(Material.DIAMOND_PICKAXE);
 		for(int x = 0; x < 16; x++) {
 			for(int z = 0; z < 16; z++) {
-				for(int y = 0; y < xzmax; y++) {
+				for(int y = chunk.getWorld().getMinHeight(); y < xzmax; y++) {
 					Block block = chunk.getBlock(x, y, z);
 					BlockConfig bc = Config.isDropBlock(world, block.getBlockData());
 					if(bc == null) continue;
