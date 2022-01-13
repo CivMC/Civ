@@ -128,15 +128,16 @@ public class SnitchLogGUI {
 				new Dialog(clicker, JukeAlert.getInstance()) {
 					@Override
 					public void onReply(String[] message) {
-						if (message.length != 1) {
-							clicker.sendMessage(Component.text()
-									.color(NamedTextColor.RED)
-									.content("Snitch names may only be a single word")
-									.build());
-							showScreen();
-							return;
+						StringBuilder builder = new StringBuilder();
+						for (String s : message) {
+							builder.append(s).append(" ");
 						}
-						final String newName = message[0];
+						String newName = "";
+						if (builder.toString().length() > 40) {
+							newName = builder.substring(0, 40);
+						} else {
+							newName = builder.toString();
+						}
 						SnitchLogGUI.this.snitch.setName(newName);
 						clicker.sendMessage(Component.text()
 								.color(NamedTextColor.AQUA)
