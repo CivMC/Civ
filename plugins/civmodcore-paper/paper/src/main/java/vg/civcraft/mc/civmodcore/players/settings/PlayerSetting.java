@@ -2,10 +2,12 @@ package vg.civcraft.mc.civmodcore.players.settings;
 
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -39,7 +41,7 @@ public abstract class PlayerSetting<T> {
 		this.niceName = niceName;
 		this.identifier = identifier;
 		this.visualization = gui;
-		this.description = description;
+		this.description = WordUtils.wrap(description, 32, "#", false);
 		this.canBeChangedByPlayer = canBeChangedByPlayer;
 	}
 
@@ -47,7 +49,7 @@ public abstract class PlayerSetting<T> {
 		ItemUtils.setDisplayName(item, niceName);
 		ItemUtils.addLore(item, ChatColor.LIGHT_PURPLE + "Value: " + ChatColor.RESET + toText(getValue(player)));
 		if (description != null) {
-			ItemUtils.addLore(item, description);
+			ItemUtils.addLore(item, Arrays.stream(description.split("#")).toList());
 		}
 	}
 
