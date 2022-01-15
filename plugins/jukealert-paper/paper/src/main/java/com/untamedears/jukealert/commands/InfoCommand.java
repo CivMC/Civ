@@ -17,7 +17,6 @@ import com.untamedears.jukealert.model.appender.SnitchLogAppender;
 import com.untamedears.jukealert.util.JAUtility;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -93,7 +92,6 @@ public class InfoCommand extends BaseCommand {
 			}
 			logs = logCopy;
 		}
-		Collections.reverse(logs);
 		int initialOffset = pageLength * offset;
 		if (initialOffset >= logs.size()) {
 			TextComponent reply = JAUtility.genTextComponent(snitch);
