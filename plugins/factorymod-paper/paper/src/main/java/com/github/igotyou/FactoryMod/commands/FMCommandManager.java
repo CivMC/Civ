@@ -3,7 +3,7 @@ package com.github.igotyou.FactoryMod.commands;
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.CommandCompletions;
 import com.github.igotyou.FactoryMod.FactoryMod;
-import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import javax.annotation.Nonnull;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
@@ -27,7 +27,7 @@ public class FMCommandManager extends CommandManager {
 	@Override
 	public void registerCompletions(@Nonnull CommandCompletions<BukkitCommandCompletionContext> completions) {
 		super.registerCompletions(completions);
-		completions.registerCompletion("FM_Factories", (context) -> FactoryMod.getInstance().getManager().getAllFactories().stream().map(
-				Factory::getName).toList());
+		completions.registerCompletion("FM_Factories", (context) -> FactoryMod.getInstance().getManager().getAllFactoryEggs().stream().map(
+				IFactoryEgg::getName).toList());
 	}
 }
