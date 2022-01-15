@@ -21,6 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -56,6 +58,10 @@ public class InfoCommand extends BaseCommand {
 				player.sendMessage(ChatColor.RED + pageNumber + " is not a number");
 				return;
 			}
+		}
+		if (offset < 0) {
+			player.sendMessage(Component.text("You cannot input a negative number here").color(NamedTextColor.RED));
+			return;
 		}
 		int pageLength = JukeAlert.getInstance().getSettingsManager().getJaInfoLength(player.getUniqueId());
 		sendSnitchLog(player, snitch, offset, pageLength, filterAction, filterPlayer);
