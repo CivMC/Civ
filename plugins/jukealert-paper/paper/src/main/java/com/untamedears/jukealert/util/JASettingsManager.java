@@ -8,7 +8,6 @@ import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 import vg.civcraft.mc.civmodcore.players.settings.impl.BoundedIntegerSetting;
-import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
 import vg.civcraft.mc.civmodcore.players.settings.impl.collection.SetSetting;
 
 public class JASettingsManager {
@@ -16,7 +15,6 @@ public class JASettingsManager {
 	private BoundedIntegerSetting jaInfoSize;
 	private BoundedIntegerSetting jaListSize;
 	private BooleanSetting ignoreAllAlerts;
-	private DisplayLocationSetting showNearbySnitchCount;
 	private SetSetting<String> ignoredGroupAlerts;
 	private BooleanSetting showDirections;
 	private BooleanSetting monoColorAlerts;
@@ -41,10 +39,6 @@ public class JASettingsManager {
 				"jaIgnoreAllSnitchAlerts", "Mutes all snitch notifications if enabled");
 		PlayerSettingAPI.registerSetting(ignoreAllAlerts, menu);
 		
-		showNearbySnitchCount = new DisplayLocationSetting(JukeAlert.getInstance(), DisplayLocationSetting.DisplayLocation.SIDEBAR, "Show nearby snitch count",
-				"jaShowNearbySnitchCount", new ItemStack(Material.JUKEBOX),"Nearby snitch count");
-		PlayerSettingAPI.registerSetting(showNearbySnitchCount, menu);
-		
 		ignoredGroupAlerts = new SetSetting<>(JukeAlert.getInstance(), "Ignored group alerts", "jaIgnoredSnitchGroups",
 				new ItemStack(Material.BELL), "Groups you have muted, meaning you won't receive snitch alerts from them",
 				String.class);
@@ -65,10 +59,6 @@ public class JASettingsManager {
 
 	public boolean doesIgnoreAlert(String groupName, UUID uuid) {
 		return ignoredGroupAlerts.contains(uuid, groupName);
-	}
-	
-	public DisplayLocationSetting getNearbySnitchLocation() {
-		return showNearbySnitchCount;
 	}
 
 	public boolean doesIgnoreAllAlerts(UUID uuid) {
