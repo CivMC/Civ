@@ -41,7 +41,7 @@ public abstract class PlayerSetting<T> {
 		this.niceName = niceName;
 		this.identifier = identifier;
 		this.visualization = gui;
-		this.description = WordUtils.wrap(description, 32, "#", false);
+		this.description = description;
 		this.canBeChangedByPlayer = canBeChangedByPlayer;
 	}
 
@@ -49,7 +49,7 @@ public abstract class PlayerSetting<T> {
 		ItemUtils.setDisplayName(item, niceName);
 		ItemUtils.addLore(item, ChatColor.LIGHT_PURPLE + "Value: " + ChatColor.RESET + toText(getValue(player)));
 		if (description != null) {
-			ItemUtils.addLore(item, Arrays.stream(description.split("#")).toList());
+			ItemUtils.addLore(item, Arrays.stream(WordUtils.wrap(description, 32, "@", false).split("@")).toList());
 		}
 	}
 
