@@ -21,7 +21,22 @@ public class TextUtil {
 		long totalMinutes = totalSeconds / 60;
 		long minutes = totalMinutes % 60;
 		long totalHours = totalMinutes / 60;
+		long totalDays = totalHours / 24;
+		long totalWeeks = totalDays / 7;
+		long totalYears = totalWeeks / 52;
 		StringBuilder sb = new StringBuilder();
+		if (totalYears > 0) {
+			sb.append(totalYears);
+			sb.append(" y ");
+		}
+		if (totalWeeks > 0) {
+			sb.append(totalWeeks);
+			sb.append(" w ");
+		}
+		if (totalDays > 0) {
+			sb.append(totalDays);
+			sb.append(" d ");
+		}
 		if (totalHours > 0) {
 			sb.append(totalHours);
 			sb.append(" h ");
