@@ -310,9 +310,8 @@ public class BastionBlockManager {
 		}
 
 		if (dev) {
-			sb.append('\n');
 			for(BastionBlock bas : bastions) {
-				sb.append(bas.toString() + '\n');
+				sb.append('\n' + bas.toString() );
 			}
 		}
 		return sb.toString();
