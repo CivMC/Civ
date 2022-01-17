@@ -7,5 +7,5 @@ depend: [CivModCore]
 api-version: 1.16
 description: NameLayer handles groups creation and management, in addition to name changes. Once you have connected to Civcraft with a name, it is permanently yours. If a name is already taken, then NameLayer will add a number to the name.
 permissions:
-   namelayer.admin:
-      default: op
+  namelayer.admin:
+    default: op

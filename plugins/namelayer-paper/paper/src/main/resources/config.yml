@@ -1,9 +1,9 @@
 sql:
-  hostname: {{ central_db_location }}
+  hostname: 'hostname'
   port: 3306
-  dbname: {{ central_db_name }}
-  username: {{ central_db_user }}
-  password: {{ mysql_non_root_pass }}
+  dbname: 'dbname'
+  username: 'user'
+  password: 'password'
   poolsize: 10
   connection_timeout: 10000
   idle_timeout: 600000
@@ -39,4 +39,3 @@ persistance:
 nameRandomizer:
  active: false
  grace: 600000
- 
