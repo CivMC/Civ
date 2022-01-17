@@ -17,11 +17,12 @@ import com.untamedears.jukealert.model.appender.SnitchLogAppender;
 import com.untamedears.jukealert.util.JAUtility;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -58,6 +59,10 @@ public class InfoCommand extends BaseCommand {
 				return;
 			}
 		}
+		if (offset < 0) {
+			player.sendMessage(Component.text("You cannot input a negative number here").color(NamedTextColor.RED));
+			return;
+		}
 		int pageLength = JukeAlert.getInstance().getSettingsManager().getJaInfoLength(player.getUniqueId());
 		sendSnitchLog(player, snitch, offset, pageLength, filterAction, filterPlayer);
 	}
@@ -93,7 +98,6 @@ public class InfoCommand extends BaseCommand {
 			}
 			logs = logCopy;
 		}
-		Collections.reverse(logs);
 		int initialOffset = pageLength * offset;
 		if (initialOffset >= logs.size()) {
 			TextComponent reply = JAUtility.genTextComponent(snitch);
