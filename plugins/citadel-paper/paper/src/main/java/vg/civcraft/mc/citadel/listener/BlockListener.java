@@ -12,6 +12,7 @@ import org.bukkit.block.Container;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Comparator;
+import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.block.data.type.Lectern;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -21,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
@@ -546,5 +548,21 @@ public class BlockListener implements Listener {
 				return;
 			}
 		}
+	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void onDispenserGrowMoss(BlockDispenseEvent event){
+		Block dispenserBlock = event.getBlock();
+		ItemStack bonemeal = event.getItem();
+		Dispenser dispenser = (Dispenser) event.getBlock().getBlockData();
+
+		if (bonemeal.getType() != Material.BONE_MEAL) {
+			return;
+		}
+		Block moss = dispenserBlock.getRelative(dispenser.getFacing());
+		if (moss.getType() != Material.MOSS_BLOCK) {
+			return;
+		}
+		event.setCancelled(true);
 	}
 }

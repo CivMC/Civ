@@ -149,7 +149,7 @@ public class CitadelSettingManager {
 		PlayerSettingAPI.registerSetting(ctoDisableCti, menu);
 
 		MenuSection commandSection = menu.createMenuSection("Command replies",
-				"Allows configuring the replies received when interacting with reinforcements or Citadel commands. For advanced users only");
+				"Configures replies of reinforcements or Citadel commands");
 
 		ctiNotReinforced = new CommandReplySetting(Citadel.getInstance(), ChatColor.YELLOW + "Not reinforced",
 				"CTI Message Unreinforced", "citadel_cti_unreinforced", new ItemStack(Material.YELLOW_TERRACOTTA),
