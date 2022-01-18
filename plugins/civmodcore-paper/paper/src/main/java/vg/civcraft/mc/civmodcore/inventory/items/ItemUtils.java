@@ -62,6 +62,16 @@ public final class ItemUtils {
 	}
 
 	/**
+	 * Checks whether the given item can be interpreted as an empty slot.
+	 *
+	 * @param item The item to check.
+	 * @return Returns true if the item can be interpreted as an empty slot.
+	 */
+	public static boolean isEmptyItem(final ItemStack item) {
+		return item == null || item.getType() == Material.AIR;
+	}
+
+	/**
 	 * Checks if an ItemStack is valid. An ItemStack is considered valid if when added to an inventory, it shows as an
 	 * item with an amount within appropriate bounds. Therefore {@code new ItemStack(Material.AIR)} will not be
 	 * considered valid, nor will {@code new ItemStack(Material.STONE, 80)}
@@ -70,10 +80,9 @@ public final class ItemUtils {
 	 * @return Returns true if the item is valid.
 	 */
 	public static boolean isValidItem(@Nullable final ItemStack item) {
-		return item != null
+		return !isEmptyItem(item)
 				&& isValidItemMaterial(item.getType())
-				&& item.getAmount() > 0
-				&& item.getAmount() <= item.getMaxStackSize();
+				&& isValidItemAmount(item);
 	}
 
 	/**
@@ -185,8 +194,20 @@ public final class ItemUtils {
 	 * @return Returns the given item with a decremented amount, or null.
 	 */
 	@Nullable
-	public static ItemStack decrementItem(@Nullable final ItemStack item) {
-		return item == null ? null : item.subtract().getAmount() <= 0 ? null : item;
+	public static ItemStack decrementItem(final ItemStack item) {
+		return decrementItem(item, 1);
+	}
+
+	/**
+	 * Decrements an item's amount, or returns null if the amount reaches zero.
+	 *
+	 * @param item The item to decrement in amount. Will return the item unchanged if the amount is zero of less.
+	 * @return Returns the given item with a decremented amount, or null.
+	 */
+	@Nullable
+	public static ItemStack decrementItem(final ItemStack item,
+										  final int amount) {
+		return item == null ? null : amount < 1 ? item : item.subtract(amount).getAmount() < 1 ? null : item;
 	}
 
 	/**
