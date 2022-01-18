@@ -1,5 +1,5 @@
 plugins {
-	id("org.sonarqube") version "3.3" apply false
+	id("org.sonarqube") version "3.3"
 }
 
 allprojects {
@@ -11,7 +11,6 @@ allprojects {
 subprojects {
 	apply(plugin = "java-library")
 	apply(plugin = "maven-publish")
-	apply(plugin = "org.sonarqube")
 
 	project.setProperty("archivesBaseName", "CivModCore-$name")
 
@@ -59,12 +58,12 @@ subprojects {
 			}
 		}
 	}
+}
 
-	configure<org.sonarqube.gradle.SonarQubeExtension> {
-		properties {
-			property("sonar.projectKey", "CivMC_CivModCore")
-			property("sonar.organization", "civmc")
-			property("sonar.host.url", "https://sonarcloud.io")
-		}
+sonarqube {
+	properties {
+		property("sonar.projectKey", "CivMC_CivModCore")
+		property("sonar.organization", "civmc")
+		property("sonar.host.url", "https://sonarcloud.io")
 	}
 }
