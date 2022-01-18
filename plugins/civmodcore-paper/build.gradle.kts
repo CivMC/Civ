@@ -1,3 +1,7 @@
+plugins {
+	id("org.sonarqube") version "3.3" apply false
+}
+
 allprojects {
 	group = "net.civmc.civmodcore"
 	version = "2.0.0-SNAPSHOT"
@@ -7,6 +11,7 @@ allprojects {
 subprojects {
 	apply(plugin = "java-library")
 	apply(plugin = "maven-publish")
+	apply(plugin = "org.sonarqube")
 
 	project.setProperty("archivesBaseName", "CivModCore-$name")
 
@@ -52,6 +57,14 @@ subprojects {
 			register<MavenPublication>("mavenJava") {
 				from(components["java"])
 			}
+		}
+	}
+
+	configure<org.sonarqube.gradle.SonarQubeExtension> {
+		properties {
+			property("sonar.projectKey", "CivMC_CivModCore")
+			property("sonar.organization", "civmc")
+			property("sonar.host.url", "https://sonarcloud.io")
 		}
 	}
 }
