@@ -21,13 +21,14 @@ import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.PlayerDataStorage;
 import net.minelink.ctplus.compat.base.NpcIdentity;
+import net.minelink.ctplus.compat.base.NpcPlayerHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-public class NpcPlayerHelperImpl implements NpcPlayerHelper{
+public class NpcPlayerHelperImpl implements NpcPlayerHelper {
     @Override
     public Player spawn(Player player) {
         NpcPlayer npcPlayer = NpcPlayer.valueOf(player);
