@@ -1,9 +1,0 @@
-name: Push Master
-on:
-  push:
-    branches:
-      - master
-
-jobs:
-  call_sonar:
-    uses: CivMC/.github/.github/workflows/gradle_sonarqube.yml@master
