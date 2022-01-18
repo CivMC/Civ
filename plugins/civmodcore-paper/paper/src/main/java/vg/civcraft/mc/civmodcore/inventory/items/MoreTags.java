@@ -255,6 +255,15 @@ public final class MoreTags {
 					.add(Material.WAXED_OXIDIZED_CUT_COPPER_SLAB)
 					.build());
 
+	/**
+	 * This is referring to materials that can exist in the world as blocks.
+	 */
+	public static final Tag<Material> LIQUID_BLOCKS = new BetterTag<>("liquid_blocks",
+			ImmutableSet.<Material>builder()
+					.add(Material.LAVA)
+					.add(Material.WATER)
+					.build());
+
 	// ------------------------------------------------------------
 	// Better Tag class to allow for easy Tag creation.
 	// ------------------------------------------------------------

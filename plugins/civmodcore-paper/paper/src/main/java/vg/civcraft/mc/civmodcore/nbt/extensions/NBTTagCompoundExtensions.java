@@ -1,9 +1,11 @@
 package vg.civcraft.mc.civmodcore.nbt.extensions;
 
+import java.util.Objects;
 import java.util.UUID;
 import lombok.experimental.ExtensionMethod;
 import lombok.experimental.UtilityClass;
 import net.minecraft.nbt.CompoundTag;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.utilities.UuidUtils;
 
 /**
@@ -20,14 +22,14 @@ public final class NBTTagCompoundExtensions {
 	 * @param self The NBTTagCompound to get the size of.
 	 * @return Returns the number of key-value pairs.
 	 */
-	public static int size(final CompoundTag self) {
+	public static int size(@NotNull final CompoundTag self) {
 		return self.tags.size();
 	}
 
 	/**
 	 * @param self The NBTTagCompound to clear.
 	 */
-	public static void clear(final CompoundTag self) {
+	public static void clear(@NotNull final CompoundTag self) {
 		self.tags.clear();
 	}
 
@@ -35,8 +37,8 @@ public final class NBTTagCompoundExtensions {
 	 * @param self The NBTTagCompound to do the adopting.
 	 * @param other The NBTTagCompound to adopt.
 	 */
-	public static void adopt(final CompoundTag self,
-							 final CompoundTag other) {
+	public static void adopt(@NotNull final CompoundTag self,
+							 @NotNull final CompoundTag other) {
 		if (self == other || self.tags == other.tags) { // Ignore highlighter
 			return;
 		}
@@ -49,7 +51,7 @@ public final class NBTTagCompoundExtensions {
 	 * @param key The key of the UUID.
 	 * @return Returns true if there's a UUID value for that key.
 	 */
-	public static boolean hasUUID(final CompoundTag self,
+	public static boolean hasUUID(@NotNull final CompoundTag self,
 								  final String key) {
 		return self.hasUUID(key);
 	}
@@ -59,7 +61,8 @@ public final class NBTTagCompoundExtensions {
 	 * @param key The key of the UUID.
 	 * @return Returns a UUID, defaulted to 00000000-0000-0000-0000-000000000000.
 	 */
-	public static UUID getUUID(final CompoundTag self,
+	@NotNull
+	public static UUID getUUID(@NotNull final CompoundTag self,
 							   final String key) {
 		if (!hasUUID(self, key)) {
 			return UuidUtils.IDENTITY;
@@ -72,9 +75,10 @@ public final class NBTTagCompoundExtensions {
 	 * @param key The key of the UUID.
 	 * @param value The UUID value.
 	 */
-	public static void setUUID(final CompoundTag self,
-							   final String key,
+	public static void setUUID(@NotNull final CompoundTag self,
+							   @NotNull final String key,
 							   final UUID value) {
+		Objects.requireNonNull(key);
 		setUUID(self, key, value, false);
 	}
 
@@ -84,10 +88,11 @@ public final class NBTTagCompoundExtensions {
 	 * @param value The UUID value.
 	 * @param useLegacyFormat Whether to use Mojang's legacy least+most format.
 	 */
-	public static void setUUID(final CompoundTag self,
-							   final String key,
+	public static void setUUID(@NotNull final CompoundTag self,
+							   @NotNull final String key,
 							   final UUID value,
 							   final boolean useLegacyFormat) {
+		Objects.requireNonNull(key);
 		if (value == null) {
 			removeUUID(self, key);
 			return;
@@ -104,8 +109,9 @@ public final class NBTTagCompoundExtensions {
 	 * @param self The NBTTagCompound to remove the UUID from.
 	 * @param key The key of the UUID.
 	 */
-	public static void removeUUID(final CompoundTag self,
-								  final String key) {
+	public static void removeUUID(@NotNull final CompoundTag self,
+								  @NotNull final String key) {
+		Objects.requireNonNull(key);
 		self.remove(key);
 		self.remove(key + UUID_MOST_SUFFIX);
 		self.remove(key + UUID_LEAST_SUFFIX);

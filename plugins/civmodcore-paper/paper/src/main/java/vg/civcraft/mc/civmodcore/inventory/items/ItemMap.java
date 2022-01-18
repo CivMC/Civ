@@ -633,7 +633,7 @@ public class ItemMap {
 		LOGGER.fine("Received request to enrich " + item.toString());
 		item = item.clone();
 		item.setAmount(MoreMath.clamp(amount, 1, item.getMaxStackSize()));
-		item = NBTSerialization.processItem(item, (nbt) -> mapToNBT(nbt, map));
+		item = NBTSerialization.processItem(item, (nbt) -> mapToNBT(nbt.getRAW(), map));
 		return item;
 	}
 

@@ -67,7 +67,7 @@ public class NBTTests {
 		// Process
 		final var nbt = new NBTCompound();
 		nbt.setString(STRING_KEY, expectedString);
-		final byte[] data = NBTSerialization.toBytes(nbt);
+		final byte[] data = NBTSerialization.toBytes(nbt.getRAW());
 		final CompoundTag actual = NBTSerialization.fromBytes(data);
 		// Check
 		Assertions.assertNotNull(actual);
@@ -81,7 +81,7 @@ public class NBTTests {
 		// Process
 		final var nbt = new NBTCompound();
 		nbt.setString(STRING_KEY, null);
-		final byte[] data = NBTSerialization.toBytes(nbt);
+		final byte[] data = NBTSerialization.toBytes(nbt.getRAW());
 		final var actual = new NBTCompound(NBTSerialization.fromBytes(data));
 		// Check
 		Assertions.assertNull(actual.getNullableString(STRING_KEY));
