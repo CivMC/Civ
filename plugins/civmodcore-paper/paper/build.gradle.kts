@@ -1,14 +1,7 @@
 plugins {
 	`java-library`
-	id("net.civmc.civgradle.plugin")
-	id("io.papermc.paperweight.userdev") version "1.3.1"
+	id("io.papermc.paperweight.userdev") version "1.3.3"
 	id("com.github.johnrengelman.shadow") version "7.1.0"
-}
-
-civGradle {
-	paper {
-		pluginName = "CivModCore"
-	}
 }
 
 dependencies {

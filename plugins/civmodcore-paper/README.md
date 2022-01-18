@@ -30,7 +30,7 @@ No explicit backwards support is offered to any previous version, whether it be 
 
 To compile CivModCore, you need JDK 17.
 
-Clone this repo, run ./gradlew build to create your jar, You can find the compiled jar in the paper `build/libs` directory.
+Clone this repo, run `./gradlew reobfJar` to create your jar, You can find the compiled jar in the paper `build/libs` directory.
 
 To get a full list of tasks, run ./gradlew tasks.
 
