@@ -435,7 +435,7 @@ public final class ExchangeRule implements ExchangeData {
 		ItemStack item = NBTSerialization.processItem(ItemExchangeConfig.getRuleItem(), (nbt) -> {
 			final var itemNBT = new NBTCompound();
 			toNBT(itemNBT);
-			nbt.put(RULE_KEY, itemNBT);
+			nbt.setCompound(RULE_KEY, itemNBT);
 		});
 		ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
 			meta.setDisplayName(getRuleTitle());

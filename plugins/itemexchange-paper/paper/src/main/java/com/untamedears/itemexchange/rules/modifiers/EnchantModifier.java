@@ -89,7 +89,7 @@ public final class EnchantModifier extends ModifierData {
 
 	@Override
 	public void toNBT(@Nonnull final NBTCompound nbt) {
-		nbt.put(REQUIRED_KEY, NBTEncodings.encodeLeveledEnchants(getRequiredEnchants()));
+		nbt.setCompound(REQUIRED_KEY, NBTEncodings.encodeLeveledEnchants(getRequiredEnchants()));
 		nbt.setStringArray(EXCLUDED_KEY, getExcludedEnchants().stream()
 				.map(KeyedUtils::getString)
 				.filter(Objects::nonNull)
