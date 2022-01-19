@@ -40,11 +40,11 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         npcPlayer.gameMode.setLevel(worldServer);
         npcPlayer.spawnInvulnerableTime = 0;
 
-        for (Object o : MinecraftServer.getServer().getPlayerList().getPlayers()) {
-            if (!(o instanceof ServerPlayer) || o instanceof NpcPlayer) continue;
+        for (ServerPlayer serverPlayer : MinecraftServer.getServer().getPlayerList().getPlayers()) {
+            if (serverPlayer instanceof NpcPlayer) continue;
 
             ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, npcPlayer);
-            ((ServerPlayer) o).connection.send(packet);
+            serverPlayer.connection.send(packet);
         }
 
         worldServer.entityManager.addNewEntity(npcPlayer);
@@ -59,16 +59,16 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
             throw new IllegalArgumentException();
         }
 
-        for (Object o : MinecraftServer.getServer().getPlayerList().getPlayers()) {
-            if (!(o instanceof ServerPlayer) || o instanceof NpcPlayer) continue;
+        for (ServerPlayer serverPlayer : MinecraftServer.getServer().getPlayerList().getPlayers()) {
+            if (serverPlayer instanceof NpcPlayer) continue;
 
             ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, entity);
-            ((ServerPlayer) o).connection.send(packet);
+            serverPlayer.connection.send(packet);
         }
 
         ServerLevel worldServer = entity.getLevel();
         worldServer.chunkSource.removeEntity(entity);
-        worldServer.getPlayers(serverPlayer -> true).remove(entity);
+        worldServer.getPlayers(serverPlayer -> serverPlayer instanceof NpcPlayer).remove(entity);
         removePlayerList(player);
     }
 
@@ -173,30 +173,19 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
     public void createPlayerList(Player player) {
         ServerPlayer p = ((CraftPlayer) player).getHandle();
 
-        for (ServerLevel worldServer : MinecraftServer.getServer().getAllLevels()) {
-            for (Object o : worldServer.getPlayers(x -> true)) {
-                if (!(o instanceof NpcPlayer)) continue;
-
-                NpcPlayer npcPlayer = (NpcPlayer) o;
-                ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(
-                        ClientboundPlayerInfoPacket.Action.ADD_PLAYER, npcPlayer);
-                p.connection.send(packet);
-            }
+        for (ServerPlayer serverPlayer : MinecraftServer.getServer().getPlayerList().getPlayers()) {
+            ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(
+                    ClientboundPlayerInfoPacket.Action.ADD_PLAYER, serverPlayer);
+            p.connection.send(packet);
         }
     }
 
     @Override
     public void removePlayerList(Player player) {
         ServerPlayer p = ((CraftPlayer) player).getHandle();
-
-        for (ServerLevel worldServer : MinecraftServer.getServer().getAllLevels()) {
-            for (Object o : worldServer.getPlayers(x -> true)) {
-                if (!(o instanceof NpcPlayer)) continue;
-
-                NpcPlayer npcPlayer = (NpcPlayer) o;
-                ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, npcPlayer);
-                p.connection.send(packet);
-            }
+        for (ServerPlayer serverPlayer : MinecraftServer.getServer().getPlayerList().getPlayers()) {
+            ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, serverPlayer);
+            p.connection.send(packet);
         }
     }
 }
