@@ -1,18 +1,14 @@
+val pluginName: String by project
+
 plugins {
 	id("org.sonarqube") version "3.3"
-}
-
-allprojects {
-	group = "net.civmc.civmodcore"
-	version = "2.0.0-SNAPSHOT"
-	description = "CivModCore"
 }
 
 subprojects {
 	apply(plugin = "java-library")
 	apply(plugin = "maven-publish")
 
-	project.setProperty("archivesBaseName", "CivModCore-$name")
+	project.setProperty("archivesBaseName", "$pluginName-$name-$version")
 
 	configure<JavaPluginExtension> {
 		withJavadocJar()
@@ -35,7 +31,7 @@ subprojects {
 		repositories {
 			maven {
 				name = "GitHubPackages"
-				url = uri("https://maven.pkg.github.com/CivMC/CivModCore")
+				url = uri("https://maven.pkg.github.com/CivMC/$pluginName")
 				credentials {
 					username = System.getenv("GITHUB_ACTOR")
 					password = System.getenv("GITHUB_TOKEN")
@@ -62,7 +58,7 @@ subprojects {
 
 sonarqube {
 	properties {
-		property("sonar.projectKey", "CivMC_CivModCore")
+		property("sonar.projectKey", "CivMC_$pluginName")
 		property("sonar.organization", "civmc")
 		property("sonar.host.url", "https://sonarcloud.io")
 	}
