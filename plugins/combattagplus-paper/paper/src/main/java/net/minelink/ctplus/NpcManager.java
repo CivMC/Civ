@@ -100,6 +100,7 @@ public final class NpcManager {
         }
 
         // Remove the NPC entity from the world
+        npc.getEntity().remove();
         plugin.getNpcPlayerHelper().despawn(npc.getEntity());
         spawnedNpcs.remove(npc.getIdentity().getId());
         npc.getEntity().removeMetadata("NPC", plugin);
