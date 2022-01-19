@@ -15,6 +15,6 @@ dependencies {
 
 	compileOnly("net.civmc.civmodcore:paper:2.0.0-SNAPSHOT:dev-all")
 
-	compileOnly("org.projectlombok:lombok:1.18.20")
-    annotationProcessor("org.projectlombok:lombok:1.18.20")
+	compileOnly("org.projectlombok:lombok:1.18.22")
+	annotationProcessor("org.projectlombok:lombok:1.18.22")
 }
