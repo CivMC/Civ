@@ -1,3 +1,5 @@
+val pluginName: String by project
+
 plugins {
 	`java-library`
 	id("io.papermc.paperweight.userdev") version "1.3.3"
@@ -24,4 +26,15 @@ dependencies {
 
     	testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
     	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.2.0")
+}
+
+tasks {
+	processResources {
+		filesMatching("plugin.yml") {
+			expand(mapOf(
+				"name" to pluginName,
+				"version" to version,
+			))
+		}
+	}
 }
