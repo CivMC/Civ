@@ -1,7 +1,10 @@
 package net.minelink.ctplus;
 
-import java.util.UUID;
+import static org.bukkit.ChatColor.GREEN;
+import static org.bukkit.ChatColor.RED;
 
+
+import java.util.UUID;
 import net.minelink.ctplus.compat.base.NpcNameGeneratorFactory;
 import net.minelink.ctplus.compat.base.NpcPlayerHelper;
 import net.minelink.ctplus.hook.Hook;
@@ -18,15 +21,12 @@ import net.minelink.ctplus.task.TagUpdateTask;
 import net.minelink.ctplus.util.BarUtils;
 import net.minelink.ctplus.util.ReflectionUtils;
 import net.minelink.ctplus.util.Version;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import static org.bukkit.ChatColor.*;
 
 public final class CombatTagPlus extends JavaPlugin {
 
@@ -135,7 +135,13 @@ public final class CombatTagPlus extends JavaPlugin {
 
     private boolean checkVersionCompatibility() {
         // Load NMS compatibility helper class
-        Class<?> helperClass = ReflectionUtils.getCompatClass("NpcPlayerHelperImpl");
+        Class<?> helperClass;
+        try {
+            helperClass = Class.forName("net.minelink.ctplus.nms.NpcPlayerHelperImpl");
+        }catch (ClassNotFoundException exception) {
+            exception.printStackTrace();
+            return false;
+        }
 
         // Warn about incompatibility and return false indicating failure
         if (helperClass == null) {
