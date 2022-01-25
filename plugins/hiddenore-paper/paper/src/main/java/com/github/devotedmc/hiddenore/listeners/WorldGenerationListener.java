@@ -1,10 +1,12 @@
 package com.github.devotedmc.hiddenore.listeners;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.github.devotedmc.hiddenore.BlockConfig;
+import com.github.devotedmc.hiddenore.Config;
+import com.github.devotedmc.hiddenore.HiddenOre;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
-
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,10 +19,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.devotedmc.hiddenore.BlockConfig;
-import com.github.devotedmc.hiddenore.Config;
-import com.github.devotedmc.hiddenore.HiddenOre;
-
 /**
  * Populator to strip out blocks selectively from a world during generation. 
  * 
@@ -28,8 +26,7 @@ import com.github.devotedmc.hiddenore.HiddenOre;
  */
 public class WorldGenerationListener implements Listener {
 
-	Set<Material> toReplace = null;
-	Material replaceWith = null;
+	Map<Material, Material> replacements = null;
 	String worldName = null;
 	UUID worldUUID = null;
 	
@@ -39,9 +36,8 @@ public class WorldGenerationListener implements Listener {
 	 * <code>
 	 *   world: world_name (or UUID)
 	 *   replace:
-	 *   - IRON_ORE
-	 *   - REDSTONE_ORE
-	 *   with: STONE
+	 *     IRON_ORE: STONE
+	 *     REDSTONE_ORE: STONE
 	 * </code>
 	 * <br>
 	 * This should be specified per world.
@@ -66,17 +62,15 @@ public class WorldGenerationListener implements Listener {
 			worldUUID = null;
 		}
 		if (config.contains("replace")) {
-			toReplace = new HashSet<>();
-			for (String replace : config.getStringList("replace")) {
-				Material rMat = Material.matchMaterial(replace);
-				if (rMat != null) {
-					toReplace.add(rMat);
+			replacements = new HashMap<>();
+			for (String replace : config.getConfigurationSection("replace").getKeys(false)) {
+				Material rMat = Material.matchMaterial(replace.toUpperCase());
+				System.out.println(config.getCurrentPath());
+				Material wMat = Material.matchMaterial(config.getConfigurationSection("replace").getString(replace));
+				if (rMat != null && wMat != null) {
+					replacements.put(rMat, wMat);
 				}
 			}
-		}
-		if (config.contains("with")) {
-			String with = config.getString("with");
-			replaceWith = Material.matchMaterial(with);
 		}
 	}
 	
@@ -91,7 +85,7 @@ public class WorldGenerationListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void postGenerationOreClear(ChunkPopulateEvent event) {
-		if (toReplace == null || replaceWith == null || (worldName == null && worldUUID == null) ) {
+		if (replacements == null || (worldName == null && worldUUID == null) ) {
 			return;
 		}
 		
@@ -145,9 +139,9 @@ public class WorldGenerationListener implements Listener {
 						Block block = chunk.getBlock(x, y, z);
 						Material mat = block.getType();
 						
-						if (toReplace.contains(mat)) {
+						if (replacements.containsKey(mat)) {
 							rep++;
-							block.setType(replaceWith, false);
+							block.setType(replacements.get(mat), false);
 						}
 					}
 				}

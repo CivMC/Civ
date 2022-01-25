@@ -7,7 +7,9 @@ import com.github.devotedmc.hiddenore.listeners.WorldGenerationListener;
 import com.github.devotedmc.hiddenore.tracking.BreakTracking;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -23,7 +25,7 @@ public class HiddenOre extends JavaPlugin {
 	
 	private static BlockBreakListener breakHandler;
 	private static ExploitListener exploitHandler;
-	private List<WorldGenerationListener> worldGen = new ArrayList<>();
+	private static List<WorldGenerationListener> worldGen;
 
 	@Override
 	public void onEnable() {
@@ -56,6 +58,18 @@ public class HiddenOre extends JavaPlugin {
 				
 		commandHandler = new CommandHandler(this);
 		this.getCommand("hiddenore").setExecutor(commandHandler);
+
+		worldGen = new ArrayList<>();
+
+		ConfigurationSection worldGenConfig = Config.instance.getWorldGenerations();
+		if (worldGenConfig != null) {
+			for (String key : worldGenConfig.getKeys(false)) {
+				HiddenOre.getPlugin().getLogger().log(Level.INFO, "Registered Ore Generation Suppression Listener for World {0}", key);
+				WorldGenerationListener list = new WorldGenerationListener(worldGenConfig.getConfigurationSection(key));
+				HiddenOre.getPlugin().getServer().getPluginManager().registerEvents(list, HiddenOre.getPlugin());
+				worldGen.add(list);
+			}
+		}
 	}
 
 	@Override
@@ -76,9 +90,5 @@ public class HiddenOre extends JavaPlugin {
 	
 	public BlockBreakListener getBreakListener() {
 		return breakHandler;
-	}
-
-	public List<WorldGenerationListener> getWorldGen() {
-		return worldGen;
 	}
 }

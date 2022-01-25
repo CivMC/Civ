@@ -1,18 +1,15 @@
 package com.github.devotedmc.hiddenore.listeners;
 
+import com.github.devotedmc.hiddenore.Config;
+import com.github.devotedmc.hiddenore.HiddenOre;
 import java.util.UUID;
 import java.util.logging.Level;
-
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
-
-import com.github.devotedmc.hiddenore.Config;
-import com.github.devotedmc.hiddenore.HiddenOre;
 
 /**
  * For world ore clearing to work, the plugin has to launch on startup.
@@ -34,17 +31,6 @@ public class ConfigDeferralListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void handleWorldLoadEvent(WorldLoadEvent init) {
 		checkPreLoad(init.getWorld());
-		ConfigurationSection worldGenConfig = Config.instance.getWorldGenerations();
-		if (worldGenConfig != null) {
-			for (String key : worldGenConfig.getKeys(false)) {
-				if (key.equals(init.getWorld().getName())) {
-					HiddenOre.getPlugin().getLogger().log(Level.INFO, "Registered Ore Generation Suppression Listener for World {0}", key);
-					WorldGenerationListener list = new WorldGenerationListener(worldGenConfig.getConfigurationSection(key));
-					HiddenOre.getPlugin().getServer().getPluginManager().registerEvents(list, HiddenOre.getPlugin());
-					HiddenOre.getPlugin().getWorldGen().add(list);
-				}
-			}
-		}
 	}
 	
 	private void checkPreLoad(World world) {

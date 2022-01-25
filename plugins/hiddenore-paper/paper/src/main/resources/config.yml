@@ -16,19 +16,17 @@ clear_ores:
  main_world:
   world: world
   replace:
-  - IRON_ORE
-  - REDSTONE_ORE
-  - GOLD_ORE
-  - COAL_ORE
-  - DIAMOND_ORE
-  - EMERALD_ORE
-  - LAPIS_ORE
-  with: STONE
+    IRON_ORE: STONE
+    REDSTONE_ORE: STONE
+    GOLD_ORE: STONE
+    COAL_ORE: STONE
+    DIAMOND_ORE: STONE
+    EMERALD_ORE: STONE
+    LAPIS_ORE: STONE
  end_world:
   world: world_nether
   replace: 
-  - NETHER_QUARTZ_ORE
-  with: NETHERRACK
+    NETHER_QUARTZ_ORE: NETHERRACK
 tools:
  # Giving a tool ignore:all:true will make it the default catchall, if specified in a config.
  # So if you have a "default" behavior you want for any non-specified tool, use that.

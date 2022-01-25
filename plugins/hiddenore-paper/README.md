@@ -4,6 +4,36 @@ Brought to you by the developers from https://www.reddit.com/r/Devoted and https
 
 Massively configurable, low-impact plugin to allow post world generation ore balance, via either drops, or ad-hoc generation of ores into the blocks of the world on-demand. It works as a wonderful anti-xray plugin, and as a powerful incentive tool for mining.
 
+##Notes on Minecraft 1.18
+
+HiddenOre now supports the overworlds new 384 block height in total. The `clear_ores` feature of HiddenOre has now also been updated to support replacing specific ores with specific replacements. Default confiurations have been updated to reflect this with an example being: 
+```yaml
+clear_ores:
+    main_world:
+        world: world
+        replace:
+            IRON_ORE: STONE
+            REDSTONE_ORE: STONE
+            GOLD_ORE: STONE
+            COAL_ORE: STONE
+            DIAMOND_ORE: STONE
+            EMERALD_ORE: STONE
+            LAPIS_ORE: STONE
+            DEEPSLATE_IRON_ORE: DEEPSLATE
+            DEEPSLATE_REDSTONE_ORE: DEEPSLATE
+            DEEPSLATE_GOLD_ORE: DEEPSLATE
+            DEEPSLATE_COAL_ORE: DEEPSLATE
+            DEEPSLATE_DIAMOND_ORE: DEEPSLATE
+            DEEPSLATE_EMERALD_ORE: DEEPSLATE
+            DEEPSLATE_LAPIS_ORE: DEEPSLATE
+    end_world:
+        world: world_nether
+        replace:
+            NETHER_QUARTZ_ORE: NETHERRACK
+```
+
+Do be aware if you are adding ores into deepslate, you cannot add `DEEPSLATE` as an aggregate of stone, it must have its own section under the `blocks` ConfigurationSection
+
 ## Notes on Minecraft 1.14
 
 Largely unchanged from 1.13, however it is worth noting that if you previouly used the durability match for "first hit", "last hit" or specific durability hit bonuses, you will need to recreate those configs, as durability is now in the metadata for items.
@@ -90,6 +120,8 @@ I'm probably missing some other details but that's it for now.
 * Better documentation
 
 ### Feature Augment List:
+
+**v2.0.0** Updated to Minecraft 1.18
 
 **v1.6.0** Generaly update to 1.14.4. Thanks Maxopoly!
 

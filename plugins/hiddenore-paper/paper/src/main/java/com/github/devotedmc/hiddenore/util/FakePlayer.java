@@ -809,6 +809,16 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
+	public boolean isFreezeTickingLocked() {
+		return false;
+	}
+
+	@Override
+	public void lockFreezeTicks(boolean locked) {
+
+	}
+
+	@Override
 	public void remove() {
 
 	}
@@ -1446,6 +1456,11 @@ public class FakePlayer implements Player {
 	@Override
 	public void updateInventory() {
 
+	}
+
+	@Override
+	public @Nullable GameMode getPreviousGameMode() {
+		return null;
 	}
 
 	@Override
@@ -2118,6 +2133,17 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
+	public void playSound(@NotNull Entity entity, @NotNull Sound sound, float volume, float pitch) {
+
+	}
+
+	@Override
+	public void playSound(@NotNull Entity entity, @NotNull Sound sound,
+						  @NotNull SoundCategory category, float volume, float pitch) {
+
+	}
+
+	@Override
 	public void sendTitle(String arg0, String arg1, int arg2, int arg3, int arg4) {
 
 	}
@@ -2187,6 +2213,12 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void sendBlockDamage(@Nonnull Location location, float f) {
+
+	}
+
+	@Override
+	public void sendMultiBlockChange(
+			@NotNull Map<Location, BlockData> blockChanges, boolean suppressLightUpdates) {
 
 	}
 
