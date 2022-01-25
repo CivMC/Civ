@@ -171,7 +171,7 @@ public class WorldGenerationListener implements Listener {
 					BlockConfig bc = Config.isDropBlock(world, block.getBlockData());
 					if(bc == null) continue;
 					for(BlockFace face : faces) {
-						if(block.getRelative(face).getType() == Material.AIR) {
+						if(block.getRelative(face).getType().isAir()) {
 							BlockBreakListener.spoofBlockBreak(block.getLocation(), block, breakItem);
 							break;
 						}
