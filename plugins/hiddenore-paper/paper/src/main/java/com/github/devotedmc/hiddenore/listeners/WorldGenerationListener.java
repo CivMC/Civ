@@ -65,7 +65,6 @@ public class WorldGenerationListener implements Listener {
 			replacements = new HashMap<>();
 			for (String replace : config.getConfigurationSection("replace").getKeys(false)) {
 				Material rMat = Material.matchMaterial(replace.toUpperCase());
-				System.out.println(config.getCurrentPath());
 				Material wMat = Material.matchMaterial(config.getConfigurationSection("replace").getString(replace));
 				if (rMat != null && wMat != null) {
 					replacements.put(rMat, wMat);
