@@ -6,10 +6,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
   build:
     name: Build
@@ -30,7 +26,7 @@ jobs:
       - name: Login to Github Packages
         uses: docker/login-action@v1
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -38,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: waterfall
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/waterfall:latest
+          tags: ghcr.io/civmc/civdocker/waterfall:latest
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/main' }}
 
@@ -46,7 +42,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: paper
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/paper:latest
+          tags: ghcr.io/civmc/civdocker/paper:latest
           # build on feature branches, push only on main branch
           push: ${{ github.ref == 'refs/heads/main' }}
 
