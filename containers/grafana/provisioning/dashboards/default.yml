@@ -1,0 +1,9 @@
+# TODO: Can't figure this out yet. Manually impory the dashboard.
+
+#apiVersion: 1
+#
+#providers:
+#  - name: 'dashboards'
+#    options:
+#      path:
+#        /etc/grafana/provisioning/dashboards/files

@@ -7,10 +7,10 @@ COPY plugins /plugins
 COPY patches /patches
 ENV PATCH_DEFINITIONS=/patches
 
-COPY replacements /replacements
-# https://github.com/itzg/docker-minecraft-server#opadministrator-players
-ENV OPS_FILE=/replacements/ops.json
-ENV OVERRIDE_OPS=TRUE
+# https://github.com/itzg/docker-minecraft-server#optional-plugins-mods-and-config-attach-points
+COPY config /config
+ENV COPY_CONFIG_DEST=/data
+ENV SYNC_SKIP_NEWER_IN_DESTINATION=false
 
 # Kind of annoying we have to set this all here instead of a patch...
 # https://github.com/itzg/docker-minecraft-server#server-configuration

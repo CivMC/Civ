@@ -1,0 +1,9 @@
+output:
+  url: ${CIV_INFLUX_HOST}
+  organization: ${CIV_INFLUX_ORG}
+  bucket: ${CIV_INFLUX_BUCKET}
+  interval: 10 # seconds
+
+authentication:
+  scheme: "TOKEN"
+  token: ${CIV_INFLUX_TOKEN}

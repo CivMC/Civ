@@ -23,6 +23,11 @@ services:
       CIV_MYSQL_USERNAME: username
       CIV_MYSQL_PASSWORD: password
       CIV_MYSQL_DATABASE: minecraft
+
+      CIV_INFLUX_HOST: http://influx:8086
+      CIV_INFLUX_ORG: CivMC
+      CIV_INFLUX_BUCKET: UnifiedMetrics
+      CIV_INFLUX_TOKEN: admintoken
     volumes:
       - ./local/paper:/data
 
@@ -36,3 +41,31 @@ services:
       MYSQL_DATABASE: minecraft
     volumes:
       - ./local/mariadb:/var/lib/mysql
+
+  influx:
+    image: influxdb:2.1-alpine
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: username
+      DOCKER_INFLUXDB_INIT_PASSWORD: password
+      DOCKER_INFLUXDB_INIT_ORG: CivMC
+      DOCKER_INFLUXDB_INIT_BUCKET: UnifiedMetrics
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: admintoken
+    volumes:
+      - ./local/influx:/var/lib/influxdb2
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      CIV_INFLUX_HOST: http://influx:8086
+      CIV_INFLUX_ORG: CivMC
+      CIV_INFLUX_TOKEN: admintoken
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+
