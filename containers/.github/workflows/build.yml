@@ -36,7 +36,7 @@ jobs:
           context: waterfall
           tags: ghcr.io/civmc/civdocker/waterfall:latest
           # build on feature branches, push only on main branch
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: ${{ github.ref == 'refs/heads/master' }}
 
       - name: Build and push Paper Docker image
         uses: docker/build-push-action@v2
@@ -44,7 +44,7 @@ jobs:
           context: paper
           tags: ghcr.io/civmc/civdocker/paper:latest
           # build on feature branches, push only on main branch
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: ${{ github.ref == 'refs/heads/master' }}
 
 
 
