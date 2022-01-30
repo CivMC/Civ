@@ -19,10 +19,12 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.Switch;
 import org.bukkit.util.BlockIterator;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 /**
@@ -513,6 +515,18 @@ public final class WorldUtils {
 			throw new IllegalArgumentException("Block iterator requires a range of 1 or higher.");
 		}
 		return new BlockIterator(block.getWorld(), block.getLocation().toVector(), face.getDirection(), 0, range);
+	}
+
+	/**
+	 * Determines whether a given block is liquid source.
+	 *
+	 * @param block The block to check.
+	 * @return Returns true if the block is a liquid source.
+	 */
+	public static boolean isSourceBlock(final Block block) {
+		return block != null
+				&& MoreTags.LIQUID_BLOCKS.isTagged(block.getType())
+				&& ((Levelled) block.getBlockData()).getLevel() == 0;
 	}
 
 }

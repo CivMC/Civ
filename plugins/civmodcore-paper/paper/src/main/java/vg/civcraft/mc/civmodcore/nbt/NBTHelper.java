@@ -66,7 +66,7 @@ public final class NBTHelper {
 		if (nbt == null) {
 			return null;
 		}
-		return net.minecraft.world.item.ItemStack.of(nbt).getBukkitStack();
+		return net.minecraft.world.item.ItemStack.of(nbt.getRAW()).getBukkitStack();
 	}
 
 	public static NBTCompound itemStackToNBT(final ItemStack item) {
@@ -74,7 +74,7 @@ public final class NBTHelper {
 			return null;
 		}
 		final var nbt = new NBTCompound();
-		ItemUtils.getNMSItemStack(item).save(nbt);
+		ItemUtils.getNMSItemStack(item).save(nbt.getRAW());
 		return nbt;
 	}
 

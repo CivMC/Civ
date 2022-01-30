@@ -1,6 +1,6 @@
 package vg.civcraft.mc.civmodcore.nbt;
 
-import com.google.common.base.Preconditions;
+import com.google.common.annotations.Beta;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
-import lombok.experimental.ExtensionMethod;
 import lombok.experimental.UtilityClass;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -23,13 +21,14 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 import org.bukkit.craftbukkit.v1_18_R1.util.CraftNBTTagConfigSerializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.pdc.extensions.PersistentDataContainerExtensions;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 @UtilityClass
-@ExtensionMethod(PersistentDataContainerExtensions.class)
 public class NBTSerialization {
 
 	private static final CivLogger LOGGER = CivLogger.getLogger(NBTSerialization.class);
@@ -40,15 +39,16 @@ public class NBTSerialization {
 	 * @param item The item to retrieve the NBT form.
 	 * @return Returns the item's NBT.
 	 */
+	@Nullable
 	public static NBTCompound fromItem(final ItemStack item) {
 		if (item == null) {
 			return null;
 		}
-		final var nmsItem = ItemUtils.getNMSItemStack(item);
-		if (nmsItem == null) {
+		final net.minecraft.world.item.ItemStack nmsItem = ItemUtils.getNMSItemStack(item);
+		if (nmsItem == net.minecraft.world.item.ItemStack.EMPTY) {
 			return null;
 		}
-		return new NBTCompound(nmsItem.getTag());
+		return new NBTCompound(nmsItem.getOrCreateTag());
 	}
 
 	/**
@@ -57,9 +57,9 @@ public class NBTSerialization {
 	 * @param container The container to generate an NBT compound from.
 	 * @return Returns a newly generated NBT compound by wrapping the PDC's inner-map.
 	 */
-	@Nonnull
-	public static NBTCompound fromPDC(@Nonnull final PersistentDataContainer container) {
-		return new NBTCompound(container.getRaw());
+	@NotNull
+	public static NBTCompound fromPDC(@NotNull final PersistentDataContainer container) {
+		return new NBTCompound(PersistentDataContainerExtensions.getRaw(container));
 	}
 
 	/**
@@ -69,14 +69,14 @@ public class NBTSerialization {
 	 * @param processor The processor.
 	 * @return Returns the given item with the processed NBT, or null if it could not be successfully processed.
 	 */
-	public static ItemStack processItem(final ItemStack item, final Consumer<NBTCompound> processor) {
-		Preconditions.checkArgument(ItemUtils.isValidItem(item));
-		Preconditions.checkArgument(processor != null);
-		final var nmsItem = ItemUtils.getNMSItemStack(item);
-		if (nmsItem == null) {
+	@Nullable
+	public static ItemStack processItem(final ItemStack item,
+										@NotNull final Consumer<NBTCompound> processor) {
+		final net.minecraft.world.item.ItemStack nmsItem = ItemUtils.getNMSItemStack(item);
+		if (nmsItem == net.minecraft.world.item.ItemStack.EMPTY) {
 			return null;
 		}
-		final var nbt = new NBTCompound(nmsItem.getTag());
+		final var nbt = new NBTCompound(nmsItem.getOrCreateTag());
 		try {
 			processor.accept(nbt);
 		}
@@ -87,10 +87,12 @@ public class NBTSerialization {
 		return nmsItem.getBukkitStack();
 	}
 
+	@Beta
 	public static CompoundTag fromMap(final Map<String, Object> data) {
 		return (CompoundTag) CraftNBTTagConfigSerializer.deserialize(data);
 	}
 
+	@Beta
 	public static ListTag fromList(final List<Object> data) {
 		return (ListTag) CraftNBTTagConfigSerializer.deserialize(data);
 	}
@@ -101,6 +103,8 @@ public class NBTSerialization {
 	 * @param nbt The NBTCompound to serialize.
 	 * @return Returns a data array representing the given NBTCompound serialized, or otherwise null.
 	 */
+	@SuppressWarnings("UnstableApiUsage")
+	@Nullable
 	public static byte[] toBytes(final CompoundTag nbt) {
 		if (nbt == null) {
 			return null;
@@ -122,6 +126,8 @@ public class NBTSerialization {
 	 * @param bytes The NBT data as a byte array.
 	 * @return Returns an NBTCompound if the deserialization was successful, or otherwise null.
 	 */
+	@SuppressWarnings("UnstableApiUsage")
+	@Nullable
 	public static CompoundTag fromBytes(final byte[] bytes) {
 		if (ArrayUtils.isEmpty(bytes)) {
 			return null;
@@ -144,7 +150,8 @@ public class NBTSerialization {
 	 * @return Returns a deserializer function.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends NBTSerializable> NBTDeserializer<T> getDeserializer(final Class<T> clazz) {
+	@NotNull
+	public static <T extends NBTSerializable> NBTDeserializer<T> getDeserializer(@NotNull final Class<T> clazz) {
 		final var method = MethodUtils.getMatchingAccessibleMethod(clazz, "fromNBT", NBTCompound.class);
 		if (!Objects.equals(clazz, method.getReturnType())) {
 			throw new IllegalArgumentException("That class hasn't implemented its own fromNBT method.. please fix");

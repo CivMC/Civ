@@ -1,29 +1,19 @@
-import net.civmc.civgradle.common.util.civRepo
+val pluginName: String by project
 
 plugins {
-    `java-library`
-    `maven-publish`
-    id("net.civmc.civgradle.plugin") version "1.0.0-SNAPSHOT"
-}
-
-// Temporary hack:
-// Remove the root build directory
-gradle.buildFinished {
-	project.buildDir.deleteRecursively()
-}
-
-allprojects {
-	group = "net.civmc.civmodcore"
-	version = "2.0.0-SNAPSHOT"
-	description = "CivModCore"
+	id("org.sonarqube") version "3.3"
 }
 
 subprojects {
-	apply(plugin = "net.civmc.civgradle.plugin")
 	apply(plugin = "java-library")
 	apply(plugin = "maven-publish")
 
-	java {
+	project.setProperty("archivesBaseName", "$pluginName-$name-$version")
+
+	configure<JavaPluginExtension> {
+		withJavadocJar()
+		withSourcesJar()
+
 		toolchain {
 			languageVersion.set(JavaLanguageVersion.of(17))
 		}
@@ -32,25 +22,44 @@ subprojects {
 	repositories {
 		mavenCentral()
         maven("https://repo.aikar.co/content/groups/aikar/")
-        maven("https://jitpack.io")
         maven("https://libraries.minecraft.net")
+
+		maven("https://jitpack.io")
 	}
 
-	publishing {
+	configure<PublishingExtension> {
 		repositories {
 			maven {
 				name = "GitHubPackages"
-				url = uri("https://maven.pkg.github.com/CivMC/CivModCore")
+				url = uri("https://maven.pkg.github.com/CivMC/$pluginName")
 				credentials {
 					username = System.getenv("GITHUB_ACTOR")
 					password = System.getenv("GITHUB_TOKEN")
 				}
 			}
+
+			val targetRepo = if (version.toString().endsWith("SNAPSHOT")) "maven-snapshots" else "maven-releases"
+			maven {
+				name = "CivMC"
+				url = uri("https://repo.civmc.net/repository/$targetRepo/")
+				credentials {
+					username = System.getenv("CIVMC_NEXUS_USER")
+					password = System.getenv("CIVMC_NEXUS_PASSWORD")
+				}
+			}
 		}
 		publications {
-			register<MavenPublication>("gpr") {
+			register<MavenPublication>("mavenJava") {
 				from(components["java"])
 			}
 		}
+	}
+}
+
+sonarqube {
+	properties {
+		property("sonar.projectKey", "CivMC_$pluginName")
+		property("sonar.organization", "civmc")
+		property("sonar.host.url", "https://sonarcloud.io")
 	}
 }

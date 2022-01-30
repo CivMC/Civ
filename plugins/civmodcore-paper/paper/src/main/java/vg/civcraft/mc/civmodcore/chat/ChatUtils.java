@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -20,7 +21,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.craftbukkit.v1_18_R1.util.CraftChatMessage;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 @UtilityClass
 public final class ChatUtils {
@@ -377,6 +381,28 @@ public final class ChatUtils {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Converts a given item into a hover event.
+	 *
+	 * @param item The item to convert.
+	 * @return Returns a valid hover event of the item, or if the item is null, a representation of that.
+	 */
+	@NotNull
+	public static HoverEvent<?> createItemHoverEvent(@org.jetbrains.annotations.Nullable final ItemStack item) {
+		if (ItemUtils.isEmptyItem(item)) {
+			return HoverEvent.showText(Component.text()
+					.color(NamedTextColor.RED)
+					.content("<null item>")
+					.build());
+		}
+		return HoverEvent.showItem(
+				item.getType().getKey(),
+				item.getAmount()
+				// TODO: There's a variant of this method that includes an NBT compound. My guess is to include display
+				//       name and lore, perhaps also enchantments, etc..
+		);
 	}
 
 }

@@ -1,14 +1,9 @@
+val pluginName: String by project
+
 plugins {
 	`java-library`
-	id("net.civmc.civgradle.plugin")
-	id("io.papermc.paperweight.userdev") version "1.3.1"
+	id("io.papermc.paperweight.userdev") version "1.3.3"
 	id("com.github.johnrengelman.shadow") version "7.1.0"
-}
-
-civGradle {
-	paper {
-		pluginName = "CivModCore"
-	}
 }
 
 dependencies {
@@ -25,11 +20,21 @@ dependencies {
         implementation("com.google.code.findbugs:jsr305:3.0.2")
 
         compileOnly("it.unimi.dsi:fastutil:8.2.2")
-        compileOnly("co.aikar:cleaner:1.0-SNAPSHOT")
 
     	compileOnly("org.projectlombok:lombok:1.18.20")
     	annotationProcessor ("org.projectlombok:lombok:1.18.20")
 
     	testImplementation("org.junit.jupiter:junit-jupiter-api:5.2.0")
     	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.2.0")
+}
+
+tasks {
+	processResources {
+		filesMatching("plugin.yml") {
+			expand(mapOf(
+				"name" to pluginName,
+				"version" to version,
+			))
+		}
+	}
 }
