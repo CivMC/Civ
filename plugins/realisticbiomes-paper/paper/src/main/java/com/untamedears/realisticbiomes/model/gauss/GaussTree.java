@@ -35,7 +35,7 @@ public class GaussTree {
 	private Random rng;
 
 	public GaussTree(ItemStack sapling) {
-		CompoundTag nbt = NBTHelper.itemStackToNBT(sapling);
+		CompoundTag nbt = NBTHelper.itemStackToNBT(sapling).getRAW();
 
 	}
 
