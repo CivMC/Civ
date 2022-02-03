@@ -74,6 +74,23 @@ public class RBUtils {
 				|| mat == Material.TWISTING_VINES_PLANT || mat == Material.WEEPING_VINES_PLANT;
 	}
 
+	public static Material getStemMaterial(Material material) {
+		switch (material) {
+			case KELP:
+				return Material.KELP_PLANT;
+			case TWISTING_VINES:
+				return Material.TWISTING_VINES_PLANT;
+			case WEEPING_VINES:
+				return Material.WEEPING_VINES_PLANT;
+			case BAMBOO_SAPLING:
+				return Material.BAMBOO;
+			case CAVE_VINES:
+				return Material.CAVE_VINES_PLANT;
+			default:
+				return material;
+		}
+	}
+
 	public static boolean isCrop(Material material) {
 		return material == Material.BEETROOTS || material == Material.WHEAT || material == Material.POTATOES
 				|| material == Material.CARROTS || material == Material.NETHER_WART_BLOCK;
@@ -98,6 +115,27 @@ public class RBUtils {
 
 	public static boolean resetProgressOnGrowth(Material mat) {
 		return isColumnPlant(mat) || isStem(mat);
+	}
+
+	public static BlockFace getGrowthDirection(Material material) {
+		switch (material) {
+			case TWISTING_VINES:
+			case TWISTING_VINES_PLANT:
+			case KELP:
+			case KELP_PLANT:
+			case BAMBOO_SAPLING:
+			case BAMBOO:
+			case SUGAR_CANE:
+			case CACTUS:
+				return BlockFace.UP;
+			case WEEPING_VINES:
+			case WEEPING_VINES_PLANT:
+			case CAVE_VINES:
+			case CAVE_VINES_PLANT:
+				return BlockFace.DOWN;
+			default:
+				return BlockFace.SELF;
+		}
 	}
 
 	private RBUtils() {

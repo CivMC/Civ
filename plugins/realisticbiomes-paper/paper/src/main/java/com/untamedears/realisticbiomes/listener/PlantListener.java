@@ -141,11 +141,12 @@ public class PlantListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockSpread(BlockSpreadEvent event) {
-		Plant plant = plantManager.getPlant(event.getSource());
-		PlantGrowthConfig growthConfig = getGrowthConfigFallback(event.getBlock());
-		if (growthConfig != null) {
-			plant.getGrowthConfig().handleAttemptedGrowth(event, event.getSource());
-		}
+		handleGrowEvent(event, event.getSource(), event.getSource().getType());
+//		Plant plant = plantManager.getPlant(event.getSource());
+//		PlantGrowthConfig growthConfig = getGrowthConfigFallback(event.getBlock());
+//		if (growthConfig != null) {
+//			plant.getGrowthConfig().handleAttemptedGrowth(event, event.getSource());
+//		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

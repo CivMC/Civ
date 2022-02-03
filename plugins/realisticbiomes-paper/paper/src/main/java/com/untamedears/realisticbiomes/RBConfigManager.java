@@ -13,6 +13,7 @@ import com.untamedears.realisticbiomes.growth.IArtificialGrower;
 import com.untamedears.realisticbiomes.growth.SchematicGrower;
 import com.untamedears.realisticbiomes.growth.SeaPickleGrower;
 import com.untamedears.realisticbiomes.growth.StemGrower;
+import com.untamedears.realisticbiomes.growth.TipGrower;
 import com.untamedears.realisticbiomes.growth.TreeGrower;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
@@ -287,6 +288,11 @@ public class RBConfigManager extends ConfigParser {
 				return new FruitGrower(material, attachedStemMat, stemMat);
 			case "fungus":
 				return new FungusGrower(material);
+			case "tip":
+				Material stem = MaterialUtils.getMaterial(section.getString("stem_material"));
+				BlockFace growthDirection = BlockFace.valueOf(section.getString("growth_direction"));
+				int maxHeight3 = section.getInt("max_height", 25);
+				return new TipGrower(material, stem, growthDirection, maxHeight3);
 			case "ageable":
 				int maxStage = section.getInt("max_stage", 7);
 				int increment = section.getInt("increment", 1);
