@@ -52,7 +52,7 @@ public class PlantLogicManager {
 					ColumnPlantGrower grower = (ColumnPlantGrower) bottomColumnPlant.getGrowthConfig().getGrower();
 					
 					Block topColumn = VerticalGrower.getRelativeBlock(block ,RBUtils.getGrowthDirection(block.getType()));
-					int blocksBroken = Math.abs(topColumn.getY() - block.getY() + 1);
+					int blocksBroken = Math.abs(topColumn.getY() - block.getY()) + 1;
 					long growthTime = bottomColumnPlant.getGrowthConfig().getPersistentGrowthTime(sourceColumn, true);
 					int stage = grower.getStage(bottomColumnPlant);
 					if (stage == grower.getMaxStage()) {

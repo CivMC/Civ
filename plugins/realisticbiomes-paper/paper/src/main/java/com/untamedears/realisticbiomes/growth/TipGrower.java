@@ -27,13 +27,13 @@ public class TipGrower extends ColumnPlantGrower{
 
 	@Override
 	public int getMaxStage() {
-		return this.maxHeight;
+		return this.maxHeight - 1;
 	}
 
 	@Override
 	public int getStage(Plant plant) {
 		Block plantBlock = plant.getLocation().getBlock();
-		Block endBlock = plantBlock;
+		Block endBlock = plantBlock.getRelative(primaryGrowthDirection.getOppositeFace());
 		int count = 0;
 		for (int i = 0; i <= 384; i++) {
 			endBlock = endBlock.getRelative(getPrimaryGrowthDirection());
@@ -43,7 +43,7 @@ public class TipGrower extends ColumnPlantGrower{
 			}
 			break;
 		}
-		return count;
+		return count - 1;
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class TipGrower extends ColumnPlantGrower{
 	}
 
 	protected Block growVertically(Plant plant, Block block, int howMany) {
-		int counter = 1;
+		int counter = 0;
 		Block onTop = block;
 		while (counter < getMaxStage() && howMany > 0) {
 			counter++;

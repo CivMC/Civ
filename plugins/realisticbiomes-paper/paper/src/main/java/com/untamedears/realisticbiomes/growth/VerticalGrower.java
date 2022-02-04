@@ -19,7 +19,7 @@ public class VerticalGrower extends IArtificialGrower {
 		// not actually using this variable, but just having it here as a fail safe
 		for (int i = 0; i < 384; i++) {
 			Block below = bottomBlock.getRelative(face);
-			if (below.getType() != mat || below.getType() != RBUtils.getStemMaterial(mat)) {
+			if (below.getType() != mat && below.getType() != RBUtils.getStemMaterial(mat)) {
 				break;
 			}
 			bottomBlock = below;
