@@ -91,6 +91,21 @@ public class RBUtils {
 		}
 	}
 
+	public static Material getTipMaterial(Material material) {
+		switch (material) {
+			case KELP_PLANT:
+				return Material.KELP;
+			case TWISTING_VINES_PLANT:
+				return Material.TWISTING_VINES;
+			case WEEPING_VINES_PLANT:
+				return Material.WEEPING_VINES;
+			case CAVE_VINES_PLANT:
+				return Material.CAVE_VINES;
+			default:
+				return material;
+		}
+	}
+
 	public static boolean isCrop(Material material) {
 		return material == Material.BEETROOTS || material == Material.WHEAT || material == Material.POTATOES
 				|| material == Material.CARROTS || material == Material.NETHER_WART_BLOCK;
