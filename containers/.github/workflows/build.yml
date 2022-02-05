@@ -31,12 +31,10 @@ jobs:
             ghcr.io/civmc/civdocker/waterfall
           tags: |
             type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
-            type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
 
       - name: Paper - Docker meta
         id: paper-meta
@@ -46,12 +44,10 @@ jobs:
             ghcr.io/civmc/civdocker/paper
           tags: |
             type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
-            type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=sha
 
       - name: Set up Docker Buildx
         id: buildx
