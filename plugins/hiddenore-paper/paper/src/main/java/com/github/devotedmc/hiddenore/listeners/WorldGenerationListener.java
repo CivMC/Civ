@@ -1,10 +1,12 @@
 package com.github.devotedmc.hiddenore.listeners;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.github.devotedmc.hiddenore.BlockConfig;
+import com.github.devotedmc.hiddenore.Config;
+import com.github.devotedmc.hiddenore.HiddenOre;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
-
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,10 +19,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.github.devotedmc.hiddenore.BlockConfig;
-import com.github.devotedmc.hiddenore.Config;
-import com.github.devotedmc.hiddenore.HiddenOre;
-
 /**
  * Populator to strip out blocks selectively from a world during generation. 
  * 
@@ -28,8 +26,7 @@ import com.github.devotedmc.hiddenore.HiddenOre;
  */
 public class WorldGenerationListener implements Listener {
 
-	Set<Material> toReplace = null;
-	Material replaceWith = null;
+	Map<Material, Material> replacements = null;
 	String worldName = null;
 	UUID worldUUID = null;
 	
@@ -39,9 +36,8 @@ public class WorldGenerationListener implements Listener {
 	 * <code>
 	 *   world: world_name (or UUID)
 	 *   replace:
-	 *   - IRON_ORE
-	 *   - REDSTONE_ORE
-	 *   with: STONE
+	 *     IRON_ORE: STONE
+	 *     REDSTONE_ORE: STONE
 	 * </code>
 	 * <br>
 	 * This should be specified per world.
@@ -66,17 +62,14 @@ public class WorldGenerationListener implements Listener {
 			worldUUID = null;
 		}
 		if (config.contains("replace")) {
-			toReplace = new HashSet<>();
-			for (String replace : config.getStringList("replace")) {
-				Material rMat = Material.matchMaterial(replace);
-				if (rMat != null) {
-					toReplace.add(rMat);
+			replacements = new HashMap<>();
+			for (String replace : config.getConfigurationSection("replace").getKeys(false)) {
+				Material rMat = Material.matchMaterial(replace.toUpperCase());
+				Material wMat = Material.matchMaterial(config.getConfigurationSection("replace").getString(replace));
+				if (rMat != null && wMat != null) {
+					replacements.put(rMat, wMat);
 				}
 			}
-		}
-		if (config.contains("with")) {
-			String with = config.getString("with");
-			replaceWith = Material.matchMaterial(with);
 		}
 	}
 	
@@ -91,7 +84,7 @@ public class WorldGenerationListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void postGenerationOreClear(ChunkPopulateEvent event) {
-		if (toReplace == null || replaceWith == null || (worldName == null && worldUUID == null) ) {
+		if (replacements == null || (worldName == null && worldUUID == null) ) {
 			return;
 		}
 		
@@ -139,15 +132,15 @@ public class WorldGenerationListener implements Listener {
 		try {
 			int maxY = chunk.getWorld().getMaxHeight();
 			// now scan the chunk for ores and remove them.
-			for (int y = 1; y < maxY; y++) {
+			for (int y = chunk.getWorld().getMinHeight() + 1; y < maxY; y++) {
 				for (int x = 0; x < 16; x++) {
 					for (int z = 0; z < 16; z++) {
 						Block block = chunk.getBlock(x, y, z);
 						Material mat = block.getType();
 						
-						if (toReplace.contains(mat)) {
+						if (replacements.containsKey(mat)) {
 							rep++;
-							block.setType(replaceWith, false);
+							block.setType(replacements.get(mat), false);
 						}
 					}
 				}
@@ -173,12 +166,12 @@ public class WorldGenerationListener implements Listener {
 		ItemStack breakItem = new ItemStack(Material.DIAMOND_PICKAXE);
 		for(int x = 0; x < 16; x++) {
 			for(int z = 0; z < 16; z++) {
-				for(int y = 0; y < xzmax; y++) {
+				for(int y = chunk.getWorld().getMinHeight(); y < xzmax; y++) {
 					Block block = chunk.getBlock(x, y, z);
 					BlockConfig bc = Config.isDropBlock(world, block.getBlockData());
 					if(bc == null) continue;
 					for(BlockFace face : faces) {
-						if(block.getRelative(face).getType() == Material.AIR) {
+						if(block.getRelative(face).getType().isAir()) {
 							BlockBreakListener.spoofBlockBreak(block.getLocation(), block, breakItem);
 							break;
 						}

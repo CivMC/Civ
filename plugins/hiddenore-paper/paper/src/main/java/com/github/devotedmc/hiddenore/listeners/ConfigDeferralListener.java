@@ -1,17 +1,15 @@
 package com.github.devotedmc.hiddenore.listeners;
 
+import com.github.devotedmc.hiddenore.Config;
+import com.github.devotedmc.hiddenore.HiddenOre;
 import java.util.UUID;
 import java.util.logging.Level;
-
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.event.world.WorldLoadEvent;
-
-import com.github.devotedmc.hiddenore.Config;
-import com.github.devotedmc.hiddenore.HiddenOre;
 
 /**
  * For world ore clearing to work, the plugin has to launch on startup.

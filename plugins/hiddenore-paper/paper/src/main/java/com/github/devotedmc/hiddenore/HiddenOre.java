@@ -1,19 +1,17 @@
 package com.github.devotedmc.hiddenore;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
-
 import com.github.devotedmc.hiddenore.commands.CommandHandler;
 import com.github.devotedmc.hiddenore.listeners.BlockBreakListener;
 import com.github.devotedmc.hiddenore.listeners.ExploitListener;
 import com.github.devotedmc.hiddenore.listeners.WorldGenerationListener;
 import com.github.devotedmc.hiddenore.tracking.BreakTracking;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 public class HiddenOre extends JavaPlugin {
 
@@ -60,9 +58,9 @@ public class HiddenOre extends JavaPlugin {
 				
 		commandHandler = new CommandHandler(this);
 		this.getCommand("hiddenore").setExecutor(commandHandler);
-		
+
 		worldGen = new ArrayList<>();
-		
+
 		ConfigurationSection worldGenConfig = Config.instance.getWorldGenerations();
 		if (worldGenConfig != null) {
 			for (String key : worldGenConfig.getKeys(false)) {
