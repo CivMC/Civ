@@ -58,7 +58,7 @@ public class ReinforcingState extends AbstractPlayerState {
 					e.getClickedBlock().getLocation());
 			return;
 		}
-		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(e.getItem());
+		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(e.getItem(), player.getWorld().getName());
 		// is it a valid item to reinforce with
 		if (type == null) {
 			CitadelUtility.sendAndLog(player, ChatColor.RED, "You can not reinforce with this item",
@@ -71,6 +71,12 @@ public class ReinforcingState extends AbstractPlayerState {
 			CitadelUtility.sendAndLog(player, ChatColor.RED,
 					type.getName() + " can not reinforce " + block.getType(),
 					block.getLocation());
+			return;
+		}
+		// is the reinforcement item allowed in the current world
+		if (!type.isAllowedInWorld(block.getWorld().getName())) {
+			CitadelUtility.sendAndLog(player, ChatColor.RED,
+					type.getName() + " cannot reinforce in this dimension", block.getLocation());
 			return;
 		}
 		// does the player have permission to reinforce on that group

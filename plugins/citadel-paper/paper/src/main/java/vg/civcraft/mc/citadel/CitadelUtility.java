@@ -162,6 +162,13 @@ public class CitadelUtility {
 					block.getLocation());
 			return true;
 		}
+		// check if reinforcement is allowed in the current world
+		if (!type.isAllowedInWorld(block.getWorld().getName()))
+		{
+			CitadelUtility.sendAndLog(player, ChatColor.RED,
+					type.getName() + " can not reinforce in this dimension", block.getLocation());
+			return true;
+		}
 		ItemMap playerItems = new ItemMap(player.getInventory());
 		if (player.getInventory().getItemInOffHand() != null) {
 			playerItems.addItemStack(player.getInventory().getItemInOffHand());

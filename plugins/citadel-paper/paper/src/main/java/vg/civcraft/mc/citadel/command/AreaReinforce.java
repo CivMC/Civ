@@ -28,7 +28,7 @@ public class AreaReinforce extends BaseCommand {
 	public void execute(Player p, @Optional String targetGroup, String minX, String minY, String minZ, String maxX, String maxY, String maxZ) {
 		UUID uuid = NameAPI.getUUID(p.getName());
 		ReinforcementType reinType = Citadel.getInstance().getReinforcementTypeManager()
-				.getByItemStack(p.getInventory().getItemInMainHand());
+				.getByItemStack(p.getInventory().getItemInMainHand(), p.getWorld().getName());
 		if (reinType == null) {
 			CitadelUtility.sendAndLog(p, ChatColor.RED, "The item you are holding is not a possible reinforcement");
 			return;

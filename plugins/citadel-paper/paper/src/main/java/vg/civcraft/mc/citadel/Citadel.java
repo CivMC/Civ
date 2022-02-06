@@ -109,7 +109,14 @@ public class Citadel extends ACivMod {
 			return;
 		}
 		typeManager = new ReinforcementTypeManager();
-		config.getReinforcementTypes().forEach(t -> typeManager.register(t));
+		config.getReinforcementTypes().forEach(t ->
+		{
+			if (!typeManager.register(t)) {
+				logger.severe("Errors in the config file, shutting down");
+				Bukkit.shutdown();
+				return;
+			}
+		});
 		dao = new CitadelDAO(this.logger, config.getDatabase());
 		if (!dao.updateDatabase()) {
 			logger.severe("Errors setting up database, shutting down");

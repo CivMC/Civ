@@ -3,6 +3,8 @@ package vg.civcraft.mc.citadel;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.configuration.ConfigurationSection;
@@ -162,6 +164,7 @@ public class CitadelConfigManager extends ConfigParser {
 		double decayMultiplier = config.getDouble("decay_multiplier", globalDecayMultiplier);
 		double multiplerOnDeletedGroup = config.getDouble("deleted_group_multipler", 4);
 		int legacyId = config.getInt("legacy_id", -1);
+		List<String> allowedWorlds = ConfigHelper.getStringList(config, "allowed_worlds");
 		if (name == null) {
 			logger.warning("No name specified for reinforcement type at " + config.getCurrentPath());
 			name = item.getType().name();
@@ -175,13 +178,14 @@ public class CitadelConfigManager extends ConfigParser {
 					+ ". This does not make sense and the type will be ignored");
 			return null;
 		}
+		//TODO Should really be replaced with a toString() method
 		logger.info("Parsed reinforcement type " + name + " for item " + item.toString() + ", returnChance: "
 				+ returnChance + ", maturationTime: " + TextUtil.formatDuration(maturationTime, TimeUnit.MILLISECONDS)
 				+ ", acidTime: " + TextUtil.formatDuration(acidTime, TimeUnit.MILLISECONDS) + ", gracePeriod: "
-				+ gracePeriod + ", id: " + id);
+				+ gracePeriod + ", id: " + id + ", allowedWorlds: " + StringUtils.join(allowedWorlds, ", "));
 		return new ReinforcementType(health, returnChance, item, maturationTime, acidTime, acidPriority, maturationScale, gracePeriod,
 				creationEffect, damageEffect, destructionEffect, reinforceables, nonReinforceables, id, name,
-				globalBlackList, decayTimer, decayMultiplier, multiplerOnDeletedGroup, legacyId);
+				globalBlackList, decayTimer, decayMultiplier, multiplerOnDeletedGroup, legacyId, allowedWorlds);
 	}
 
 	private void parseReinforcementTypes(ConfigurationSection config) {
