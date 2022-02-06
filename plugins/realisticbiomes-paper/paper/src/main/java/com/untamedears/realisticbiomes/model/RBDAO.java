@@ -229,6 +229,8 @@ public class RBDAO extends TableStorageEngine<Plant> {
 						+ "from rb_plant p inner join rb_chunk c on p.chunkId=c.id;");
 		db.registerMigration(3, false,
 				"alter table rb_plants add type smallint");
+		db.registerMigration(4, false,
+				"alter table rb_plants modify y tinyint signed not null");
 	}
 
 	@Override
