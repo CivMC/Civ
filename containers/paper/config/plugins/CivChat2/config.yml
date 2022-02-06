@@ -1,0 +1,29 @@
+chat:
+  #globalChatRange: The base chat distance that people will message across def=1000
+  globalChatRange: 1000
+  #defaultChatColor: The default chatcolor to use for global chat def=BLUE
+  defaultChatColor: WHITE
+  #color for console and OP "say" command
+  opChatColor: LIGHT_PURPLE
+  #yIncreaseDist: The Y-Level to increase chat at def=100
+  yIncreaseDist: 100
+  #yIncreaseScale: Scale to increase chat distance.. this value divided by 1000
+  #so yIncreaseScale=10 will be 10 extra radius per block they go up, 1 would be 1 extra radius per block
+  #Coded formula globalChatRange = globalChatRange + (globalChatRange * ((yIncreaseScale/1000) * #blocksaboveydist)))
+  yIncreaseScale: 1
+info:
+  #debug: lots of debugging logging will show up in the console def=false
+  debug: false
+  #groups: if NameLayer groups is enabled def=true
+  groups: true
+  #afkmessage: The default afk message people will get when player has afk toggled def=Player is currently AFK
+  afkmessage: Player is currently AFK
+  loginAnnounce: true
+  #chatRangeWarn: warns new players about the local chat limit.
+  chatRangeWarn: true
+mysql:
+  host: ${CIV_MYSQL_HOST}
+  dbname: ${CIV_MYSQL_DATABASE}
+  port: 3306
+  username: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}

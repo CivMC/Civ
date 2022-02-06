@@ -1,0 +1,125 @@
+mysql:
+  user: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}
+  host: ${CIV_MYSQL_HOST}
+  database: ${CIV_MYSQL_DATABASE}
+  port: 3306
+  poolsize: 10
+  connectionTimeout: 10000
+  idleTimout: 600000
+  maxLifetime: 7200000
+  savesPerDay: 64
+commonSettings:
+  cancelReinforcementModeInBastionField: false
+  listBastionTimeout: 2000
+  cancelPlacementAndDamage:
+    - SCAFFOLDING
+bastions:
+#The first bastion in this list will be used as the default type
+#This only really matters the first time your start it up when converting from old bastion
+#All bastions in the db will be flagged as, in this instance, citybastion
+  citybastion:
+    block:
+      material: NETHER_WART_BLOCK
+      durability: 0
+      name: City Bastion
+      lore: 
+        - This bastion will protect your plot
+    shortName: City
+    squarefield: true
+    effectRadius: 50
+    includeY: true
+    startScaleFactor: 100
+    finalScaleFactor: 0.2
+    warmupTime: 86400000
+    erosionPerDay: 0
+    regenPerDay: 0
+    blocksToErode: 1
+    placementCooldown: 2000
+    destroyOnRemove: true
+    onlyDirectDestroy: false
+    destroyOnRemoveWhileImmature: true
+    pearls:
+      block: false
+      blockMidair: fakse
+      scaleFactor: 1
+      requireMaturity: true
+      consumeOnBlock: false
+      damageFirstBastion: false
+    elytra:
+      block: true
+      scaleFactor: 1
+      requireMaturity: true
+      destroyOnBlock: false
+      damageOnBlock: true
+      explodeOnBlock: true
+      explodeOnBlockStrength: 0
+  claimbastion:
+    block:
+      material: BONE_BLOCK
+      durability: 0
+      name: Claim Bastion
+      lore: 
+        - This bastion will protect your claims
+    squarefield: false
+    effectRadius: 300
+    includeY: true
+    startScaleFactor: 100
+    finalScaleFactor: 0.2
+    warmupTime: 86400000
+    erosionPerDay: 0
+    regenPerDay: 0
+    blocksToErode: 1
+    placementCooldown: 2000
+    destroyOnRemove: false
+    onlyDirectDestroy: true
+    destroyOnRemoveWhileImmature: true
+    pearls:
+      block: false
+      blockMidair: false
+      scaleFactor: 1
+      requireMaturity: true
+      consumeOnBlock: false
+      damageFirstBastion: false
+    elytra:
+      block: false
+      scaleFactor: 1
+      requireMaturity: true
+      destroyOnBlock: false
+      damageOnBlock: true
+      explodeOnBlock: true
+      explodeOnBlockStrength: 0
+  bastion:
+    block:
+      material: SPONGE
+      durability: 0
+      name: Bastion
+      lore: 
+        - this one is hellaz
+    squarefield: false
+    effectRadius: 10
+    includeY: true
+    startScaleFactor: 100
+    finalScaleFactor: 0.2
+    warmupTime: 86400000
+    erosionPerDay: 0
+    regenPerDay: 0
+    blocksToErode: 1
+    placementCooldown: 2000
+    destroyOnRemove: true
+    onlyDirectDestroy: false
+    pearls:
+      block: true
+      blockMidair: true
+      scaleFactor: 2
+      requireMaturity: true
+      consumeOnBlock: true
+      damageFirstBastion: true
+    elytra:
+      block: true
+      scaleFactor: 1
+      requireMaturity: true
+      destroyOnBlock: true
+      damageOnBlock: false
+      explodeOnBlock: true
+      explodeOnBlockStrength: 0

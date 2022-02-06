@@ -1,0 +1,346 @@
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+#                               STORAGE SETTINGS                              #
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+# 
+# storage.type
+#  - What type of storage to use
+#      Options: 
+#        0: File storage (default)
+#        1: MySQL storage
+#        2: RAM storage (dev use only)
+# 
+# storage.mysql.x
+#  - Connection options for a MySQL database
+# 
+# storage.mysql.migrate_pp
+#  - When true, the MySQL storage will attempt to migrate PrisonPearl data 
+#    when it connects for the first time.
+# 
+# 
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+#                               GENERAL SETTINGS                              #
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+# 
+# general.suicide_time_seconds
+#  - The timeout for the /suicide command before the player 
+#    actually dies
+#
+# general.max_pearled_alts  
+#  - Once a player has this many accounts pearled, any further BanStick alts will be prevented from logging in
+#
+# general.max_pearled_message  
+#  - Message shown to altbanned accounts when they attempt to login
+#
+# general.can_elytra_with_pearls
+#  - Will prevent players opening an elytra with a pearl in their inventory, also disables picking up a pearl item
+#    while they are gliding.
+# 
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+#                                PEARL SETTINGS                               #
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+#
+# pearls.autofree_worldborder
+#  - When true, pearls that are outside world-border will be freed during a 
+#    decay operation
+#
+# pearls.free_by_throwing
+#  - When true, pearls can be freed by throwing them
+# 
+# pearls.free_teleport
+#  - When true, freeing a prison pearled player teleports them to the freer
+# 
+# pearls.hotbar_needed
+#  - When true, players will only be pearled if the killer has a pearl 
+#    in their hotbar
+# 
+# pearls.decay_interval_min
+#  - How often the decay task runs in minutes
+# 
+# pearls.decay_amount
+#  - The raw health amount that is removed with each decay operation
+# 
+# pearls.max_value
+#  - The maximum health value.
+#  - This will determine the displayed health percent value
+# 
+# pearls.start_value
+#  - The starting health value of pearls when they are created
+# 
+# pearls.TYPE.repair_materials
+#  - The materials used to repair pearls
+#  - The repair value is how many health points are repaired for each item 
+#
+# pearls.bastion_harm_amount
+#  - The amount of damage to deal to players when they are inside a
+#    bastion field they don't have perms on.
+#
+# pearls.prison_world
+#  - The name of the world where prisoners should be sent
+# pearls.main_world
+#  - The name of the world where freed prisoners should go
+#
+# pearls.upgrade_materials
+# - The materials used to upgrade pearls from exile to prison
+#   The repair value is how many are required
+#
+# pearls.allow_pearl_stealing
+# - Whether or not prison pearls can be stolen by killing a summoned player
+#
+# pearls.allow_summoning
+# - Whether or not summoning is allowed
+#
+# pearls.cost_multiplier_days
+# - Time frame after which the cost for repairing pearls is increased, set to 0 to disable
+# 
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+#                              HELP ITEM SETTINGS                             #
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+# 
+# help_item.enabled
+#  - When true, a help item is generated for pearled players on respawn
+# 
+# help_item.item_name
+#  - The name given to the help item
+# 
+# help_item.item_text
+#  - The help item text
+# 
+# 
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+#                                  DAMAGE LOG                                 #
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+# 
+# damage_log.enabled
+#  - When true, the damage log task is enabled to track who is awarded pearls
+#    If this is disabled, a pearl will only be awarded by a direct kill.
+#
+# damage_log.algorithm
+#  - The algorithm type to use when awarding pearls
+#      Options: 
+#        0: Most Recent - Use most recent damager to award the pearl
+#        1: Most Damage - Use highest tracked damager to award the pearl# 
+#
+# damage_log.tick_interval
+#  - The interval in ticks for how often the damage tracking task runs
+#
+# damage_log.decay_amount
+#  - The damage amount to remove at each run interval.
+#     Example:
+#     If tick_interval=20 and decay_amount=1, a player dealing 10 damage will
+#     be tracked for 10 seconds. (20t/second)
+#
+# damage_log.max_amount
+#  - The maximum damage amount to track for a given damager.
+#
+# damage_log.potion_damge
+#  - The base damage to apply for splash potions. This only applies to 
+#    harming, poison, and weakness splash potions.
+#    An extended or upgraded potion has a 2x multiplier of this value.
+#    The potion intensity (0 - 1.0) is also used as a multiplier, so a player
+#    may not always be dealt the full potion damage amount.
+#
+#
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+#                                  EXILE RULES                                #
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+# 
+# rules.pearl_radius
+#  - The radius around their pearl that an exiled player can't enter
+#  - Set this value to 0 to disable the radius 
+# 
+# rules.ignite
+#  - When false, exiled players can't set things on fire
+# 
+# rules.use_bed
+#  - When false, exiled players can't use beds
+# 
+# rules.spawn_reset
+#  - When true, resets the bed of an exiled player if killed by another player
+# 
+# rules.use_bucket
+#  - When false, exiled players can't empty buckets or move them to other inventories
+#
+# rules.fill_bucket
+#  - When false, exiled players can't fill buckets (unless milk_cows is true)
+#
+# rules.milk_cows
+#  - When false, exiled players can't milk cows
+#
+# rules.fill_cauldron
+#  - When false, exiled players can't fill cauldrons from water buckets
+# 
+# rules.use_potions
+#  - When false, exiled players can't use potions
+# 
+# rules.throw_pearl
+#  - When false, exiled players can't throw ender pearls
+# 
+# rules.pvp
+#  - When false, exiled players can't harm other players
+# 
+# rules.kill_pets
+#  - When false, exiled players can't harm pet mobs
+# 
+# rules.kill_mobs
+#  - When false, exiled players can't harm protected mobs
+# 
+# rules.enchant
+#  - When false, exiled players can't enchant items
+# 
+# rules.brew
+#  - When false, exiled players can't brew potions
+#
+# rules.drink_brews
+#  - When false, exiled players can't drink brewery brews
+# 
+# rules.suicide
+#  - When true, exiled players can use the /suicide command
+# 
+# rules.mine_blocks
+#  - When false, exiled players can't break any blocks
+# 
+# rules.collect_xp
+#  - When false, exiled players can't collect xp orbs
+# 
+# rules.use_anvil
+#  - When false, exiled players can't use anvils
+# 
+# rules.place_tnt
+#  - When false, exiled players can't place TNT
+# 
+# rules.chat_local
+#  - When false, exiled players can't chat locally.
+#  - Requires CivChat2 plugin
+# 
+# rules.create_bastion
+#  - When false, exiled players can't create bastions
+#  - Requires Bastion plugin
+# 
+# rules.damage_bastion
+#  - When false, exiled players can't damage bastions
+#  - Requires Bastion plugin
+# 
+# rules.enter_bastion
+#  - When false, exiled players can't enter bastion fields that they 
+#    aren't a member of
+#  - Requires Bastion plugin
+# 
+# rules.damage_reinforcement
+#  - When false, exiled players can't damage reinforced blocks
+#  - Requires Citadel plugin
+# 
+# rules.place_snitch
+#  - When false, exiled players can't place jukeboxes or noteblocks
+#  - Requires JukeAlert plugin
+# 
+# rules.protected_mobs
+#  - Mobs that are protected when rules.kill_mobs is set to false
+# 
+# rules.disallowed_worlds
+#  - Worlds that pearls are not allowed to be stored in
+#
+#
+# Start Config
+storage:
+  type: 1
+  mysql:
+    host: ${CIV_MYSQL_HOST}
+    dbname: ${CIV_MYSQL_DATABASE}
+    port: 3306
+    username: ${CIV_MYSQL_USERNAME}
+    password: ${CIV_MYSQL_PASSWORD}
+    connection_timeout: 5000
+    idle_timeout: 5000
+    max_lifetime: 5000
+    pool_size: 5
+    migrate_pp: false
+    migrate_dbname: prisonpearl
+general:
+  suicide_time_seconds: 180
+  max_pearled_alts: 1
+  max_pearled_message: 'You have too many imprisoned alts'
+  can_elytra_with_pearls: true
+pearls:
+  autofree_worldborder: true
+  free_by_throwing: false
+  free_teleport: true
+  hotbar_needed: true
+  decay_interval_human: week
+  decay_interval_min_human: 10080
+  decay_interval_min: 60
+  decay_amount: 1
+  decay_timeout_min: 10080
+  start_value: 12
+  max_value: 336
+  repair_materials:
+    PRISON:
+      emerald:
+        material: EMERALD
+        repair: 3
+    EXILE:
+      obsidian:
+        material: OBSIDIAN
+        repair: 3
+  bastion_harm_amount: 2.0
+  upgrade_materials:
+    special_diamond_thing:
+      material: DIAMOND
+      repair: 1
+      lore:
+       - This is used to upgrade exile pearls to prison pearls
+  allow_pearl_stealing: true
+  allow_summoning: true
+  prison_world: world_the_end
+  main_world: world
+  cost_multiplier_days: 365
+help_item:
+  enabled: true
+  item_name: "You've been pearled!"
+  item_text:
+  - "<a>You have been pearled."
+  - ""
+  - "<n>Another player has imprisoned you in an ender pearl."
+  - "<n>Your in-game actions will be limited until you are freed."
+  - "<n>You can type <c>/ep locate to see the location of your pearl."
+damage_log:
+  enabled: true
+  algorithm: 0
+  tick_interval: 20
+  decay_amount: 1.0
+  max_amount: 30.0
+  potion_damge: 6.0
+rules:
+  pearl_radius: 1000
+  ignite: false
+  use_bed: false
+  spawn_reset: false
+  use_bucket: false
+  fill_bucket: false
+  milk_cows: true
+  use_potions: false
+  drink_brews: true
+  fill_cauldron: true
+  throw_pearl: false
+  pvp: false
+  kill_pets: false
+  kill_mobs: false
+  enchant: true
+  brew: true
+  suicide: true
+  mine_blocks: true
+  collect_xp: true
+  use_anvil: true
+  place_tnt: false
+  chat_local: false
+  create_bastion: false
+  damage_bastion: false
+  enter_bastion: false
+  damage_reinforcement: false
+  place_snitch: false
+  protected_mobs:
+  - Sheep
+  - Cow
+  - Pig
+  - Horse
+  disallowed_worlds:
+

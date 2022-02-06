@@ -1,0 +1,41 @@
+sql:
+  hostname: ${CIV_MYSQL_HOST}
+  port: 3306
+  dbname: ${CIV_MYSQL_DATABASE}
+  username: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}
+  poolsize: 10
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
+groups:
+  enable: true
+  grouplimit: 25
+  creationOnFirstJoin: true
+persistance:
+  forceloadnamecaching: true
+#name_cleanser:
+## this section holds a list of words you consider offensive or innapropriate
+#  bad_words:
+#  - ugly
+#  - silly
+#  - fart
+## this section holds various "substitutes" that players will use in names to bypass filtering
+#  opts:
+#   a: ['4', '&']
+#   b: ['&', '5']
+#   c: ['(',')']
+#  clean_words:
+## this section holds a list of words to replace offensive words with
+#  - pretty
+#  - smart
+#  - rainbow
+## set to true to activate, don't include this section or set to false to deactivate
+#  clean_names: true
+## Do we alert OPs when a name is changed b/c dirty?
+#  alert_ops: true
+## Do we alert people who have this permission, when a name is changed b/c dirty? 
+#  alert_perm: namelayer.alert_dirty_name
+nameRandomizer:
+ active: false
+ grace: 600000

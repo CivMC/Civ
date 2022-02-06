@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
 
@@ -7,6 +7,9 @@ services:
     restart: unless-stopped
     tty: true
     stdin_open: true
+    depends_on:
+      - mariadb
+      - influx
     ports:
       - "25565:25577"
 
@@ -15,6 +18,11 @@ services:
     restart: unless-stopped
     tty: true
     stdin_open: true
+    depends_on:
+      mariadb:
+        condition: service_started
+      influx:
+        condition: service_started
     environment:
       INIT_MEMORY: 1G
       MAX_MEMORY: 5G
@@ -62,6 +70,8 @@ services:
   grafana:
     image: grafana/grafana-oss:latest
     restart: unless-stopped
+    depends_on:
+      - influx
     ports:
       - "3000:3000"
     environment:
