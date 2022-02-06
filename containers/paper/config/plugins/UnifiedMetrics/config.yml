@@ -1,5 +1,5 @@
 server:
-  name: "global"
+  name: ${CIV_SERVER_NAME}
 
 metrics:
   enabled: true
