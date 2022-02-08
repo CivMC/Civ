@@ -27,7 +27,7 @@ public class RBUtils {
 
 	public static Block getRealPlantBlock(Block block) {
 		if (isColumnPlant(block.getType())) {
-			return ColumnPlantGrower.getRelativeBlock(block, BlockFace.DOWN);
+			return ColumnPlantGrower.getRelativeBlock(block, RBUtils.getGrowthDirection(block.getType()).getOppositeFace());
 		}
 		return block;
 	}
@@ -71,7 +71,9 @@ public class RBUtils {
 	public static boolean isColumnPlant(Material mat) {
 		return mat == Material.CACTUS || mat == Material.SUGAR_CANE  || mat == Material.BAMBOO
 				|| mat == Material.TWISTING_VINES || mat == Material.WEEPING_VINES
-				|| mat == Material.TWISTING_VINES_PLANT || mat == Material.WEEPING_VINES_PLANT;
+				|| mat == Material.TWISTING_VINES_PLANT || mat == Material.WEEPING_VINES_PLANT
+				|| mat == Material.KELP || mat == Material.KELP_PLANT
+				|| mat == Material.CAVE_VINES || mat == Material.CAVE_VINES_PLANT;
 	}
 
 	public static Material getStemMaterial(Material material) {
