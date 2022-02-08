@@ -10,6 +10,7 @@ import com.untamedears.realisticbiomes.growth.FruitGrower;
 import com.untamedears.realisticbiomes.growth.FungusGrower;
 import com.untamedears.realisticbiomes.growth.HorizontalBlockSpreadGrower;
 import com.untamedears.realisticbiomes.growth.IArtificialGrower;
+import com.untamedears.realisticbiomes.growth.KelpGrower;
 import com.untamedears.realisticbiomes.growth.SchematicGrower;
 import com.untamedears.realisticbiomes.growth.SeaPickleGrower;
 import com.untamedears.realisticbiomes.growth.StemGrower;
@@ -293,6 +294,9 @@ public class RBConfigManager extends ConfigParser {
 				BlockFace growthDirection = BlockFace.valueOf(section.getString("growth_direction"));
 				int maxHeight3 = section.getInt("max_height", 25);
 				return new TipGrower(material, stem, growthDirection, maxHeight3);
+			case "kelp":
+				int maxHeight4 = section.getInt("max_height", 25);
+				return new KelpGrower(maxHeight4);
 			case "ageable":
 				int maxStage = section.getInt("max_stage", 7);
 				int increment = section.getInt("increment", 1);
