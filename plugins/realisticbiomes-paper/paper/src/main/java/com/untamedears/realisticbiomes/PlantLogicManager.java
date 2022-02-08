@@ -132,8 +132,14 @@ public class PlantLogicManager {
 			return;
 		}
 		if (growthConfig.getGrower() instanceof VerticalGrower) {
-			BlockFace direction = ((VerticalGrower) growthConfig.getGrower()).getPrimaryGrowthDirection();
+			BlockFace direction = ((VerticalGrower) growthConfig.getGrower()).getPrimaryGrowthDirection().getOppositeFace();
 			if (block.getRelative(direction).getType() == block.getType()) {
+				return;
+			}
+			if (block.getRelative(direction).getType() == RBUtils.getStemMaterial(block.getType())) {
+				return;
+			}
+			if (block.getRelative(direction).getType() == RBUtils.getTipMaterial(block.getType())) {
 				return;
 			}
 		}
