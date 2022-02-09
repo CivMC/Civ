@@ -23,6 +23,19 @@ public class BambooGrower extends ColumnPlantGrower {
 		return highestBlock;
 	}
 
+	@Override
+	public int getStage(Plant plant) {
+		Block block = plant.getLocation().getBlock();
+		if (block.getType() != Material.BAMBOO_SAPLING && block.getType() != Material.BAMBOO) {
+			return -1;
+		}
+		Block bottom = getRelativeBlock(block, getPrimaryGrowthDirection().getOppositeFace());
+		if (!bottom.getLocation().equals(block.getLocation())) {
+			return -1;
+		}
+		return getActualHeight(block) - 1;
+	}
+
 	private void handleProperLeafGrowth(Block block, Block highestBlock) {
 		// according to https://minecraft.gamepedia.com/Bamboo#Appearance
 		int actualHeight = super.getActualHeight(block) + 1;
