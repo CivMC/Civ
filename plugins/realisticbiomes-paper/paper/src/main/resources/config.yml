@@ -14,6 +14,8 @@ no_bonemeal_blocks:
   - CAVE_VINES_PLANT
   - BAMBOO_SAPLING
   - SWEET_BERRY_BUSH
+  - BIG_DRIPLEAF
+  - BIG_DRIPLEAF_STEM
 
   # categories of biomes
 biome_aliases:
