@@ -73,7 +73,8 @@ public class RBUtils {
 				|| mat == Material.TWISTING_VINES || mat == Material.WEEPING_VINES
 				|| mat == Material.TWISTING_VINES_PLANT || mat == Material.WEEPING_VINES_PLANT
 				|| mat == Material.KELP || mat == Material.KELP_PLANT
-				|| mat == Material.CAVE_VINES || mat == Material.CAVE_VINES_PLANT;
+				|| mat == Material.CAVE_VINES || mat == Material.CAVE_VINES_PLANT
+				|| mat == Material.BIG_DRIPLEAF || mat == Material.BIG_DRIPLEAF_STEM;
 	}
 
 	public static Material getStemMaterial(Material material) {
@@ -88,6 +89,8 @@ public class RBUtils {
 				return Material.BAMBOO;
 			case CAVE_VINES:
 				return Material.CAVE_VINES_PLANT;
+			case BIG_DRIPLEAF:
+				return Material.BIG_DRIPLEAF_STEM;
 			default:
 				return material;
 		}
@@ -103,6 +106,8 @@ public class RBUtils {
 				return Material.WEEPING_VINES;
 			case CAVE_VINES_PLANT:
 				return Material.CAVE_VINES;
+			case BIG_DRIPLEAF_STEM:
+				return Material.BIG_DRIPLEAF;
 			default:
 				return material;
 		}
@@ -144,6 +149,8 @@ public class RBUtils {
 			case BAMBOO:
 			case SUGAR_CANE:
 			case CACTUS:
+			case BIG_DRIPLEAF:
+			case BIG_DRIPLEAF_STEM:
 				return BlockFace.UP;
 			case WEEPING_VINES:
 			case WEEPING_VINES_PLANT:

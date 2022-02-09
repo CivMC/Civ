@@ -4,6 +4,7 @@ import com.untamedears.realisticbiomes.model.Plant;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Directional;
 
 public class TipGrower extends ColumnPlantGrower{
 
@@ -59,12 +60,21 @@ public class TipGrower extends ColumnPlantGrower{
 	protected Block growVertically(Plant plant, Block block, int howMany) {
 		int counter = 0;
 		Block onTop = block;
+		BlockFace direction = null;
+		if (block.getBlockData() instanceof Directional dir) {
+			direction = dir.getFacing();
+		}
 		while (counter < getMaxStage() && howMany > 0) {
 			counter++;
 			onTop = onTop.getRelative(getPrimaryGrowthDirection());
 			Material topMaterial = onTop.getType();
 			if (topMaterial.isAir()) {
 				onTop.setType(tip, true);
+				if (direction != null) {
+					Directional blockData = ((Directional) onTop.getBlockData());
+					blockData.setFacing(direction);
+					onTop.setBlockData(blockData);
+				}
 				howMany--;
 				continue;
 			}
