@@ -772,6 +772,58 @@ plants:
       SOUL_TORCH: 0.1
     biomes:
       freshwater: 1.0
+  RED_MUSHROOM:
+    persistent_growth_period: 12h
+    name: Red Mushroom
+    grower:
+      type: horizontalspread
+      max_amount: 81
+      max_range: 9
+      replaceable_blocks:
+        - AIR
+        - CAVE_AIR
+        - VOID_AIR
+      valid_soil:
+        - STONE
+        - MYCELIUM
+        - PODZOL
+    id: 23
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: RED_MUSHROOM
+      v: 2730
+    needs_sun_light: false
+    biomes:
+      swampy: 2.0
+      foresty: 1.0
+      cold_forest: 1.0
+      freshwater: 1.0
+  BROWN_MUSHROOM:
+    persistent_growth_period: 12h
+    name: Brown Mushroom
+    grower:
+      type: horizontalspread
+      max_amount: 81
+      max_range: 9
+      replaceable_blocks:
+        - AIR
+        - CAVE_AIR
+        - VOID_AIR
+      valid_soil:
+        - STONE
+        - MYCELIUM
+        - PODZOL
+    id: 24
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: BROWN_MUSHROOM
+      v: 2730
+    needs_sun_light: false
+    biomes:
+      swampy: 2.0
+      foresty: 1.0
+      cold_forest: 1.0
+      freshwater: 1.0
 
 database:
   ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
