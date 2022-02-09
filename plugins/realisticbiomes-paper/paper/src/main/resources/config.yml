@@ -13,6 +13,7 @@ no_bonemeal_blocks:
   - WEEPING_VINES_PLANT
   - CAVE_VINES_PLANT
   - BAMBOO_SAPLING
+  - SWEET_BERRY_BUSH
 
   # categories of biomes
 biome_aliases:
