@@ -15,10 +15,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -152,5 +154,22 @@ public class PlayerListener implements Listener {
 		Bukkit.getScheduler().runTask(RealisticBiomes.getInstance(), () -> {
 			RealisticBiomes.getInstance().getPlantLogicManager().updateGrowthTime(plant, block);
 		});
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onFish(PlayerFishEvent event) {
+		//disable prot 4 fishing
+		if (event.getCaught() == null) {
+			return;
+		}
+		if (event.getCaught() instanceof Item item) {
+			Material mat = item.getItemStack().getType();
+			if (mat == Material.BOW ||
+				mat == Material.ENCHANTED_BOOK ||
+				mat == Material.FISHING_ROD) {
+
+				event.setCancelled(true);
+			}
+		}
 	}
 }
