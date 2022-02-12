@@ -2,6 +2,7 @@ FROM itzg/minecraft-server
 
 # https://github.com/itzg/docker-minecraft-server#optional-plugins-mods-and-config-attach-points
 COPY plugins /plugins
+ENV REMOVE_OLD_MODS=TRUE
 
 # https://github.com/itzg/docker-minecraft-server#patching-existing-files
 COPY patches /patches
