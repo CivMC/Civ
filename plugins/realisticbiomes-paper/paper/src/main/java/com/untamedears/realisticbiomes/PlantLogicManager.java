@@ -63,7 +63,7 @@ public class PlantLogicManager {
 						// If not broken at max growth, increase creation time based on number of blocks broken
 						long create = bottomColumnPlant.getCreationTime();
 						bottomColumnPlant.setCreationTime(
-								(long) Math.min(System.currentTimeMillis(), create + (growthTime * (blocksBroken / (double) grower.getMaxStage()))));
+								(long) Math.min(System.currentTimeMillis(), create + (growthTime * Math.min(1.0D, (blocksBroken / (double) grower.getMaxStage())))));
 					}
 				}
 				updateGrowthTime(bottomColumnPlant, sourceColumn);
