@@ -74,12 +74,13 @@ final class CoreExilePearl implements ExilePearl {
 	 * @param holder The holder instance
 	 */
 	public CoreExilePearl(final ExilePearlApi pearlApi, final PearlUpdateStorage storage, 
-			final UUID playerId, final UUID killedBy, int pearlId, final PearlHolder holder) {
+			final UUID playerId, final UUID killedBy, int pearlId, final PearlHolder holder, final PearlType defaultPearlType) {
 		Preconditions.checkNotNull(pearlApi, "pearlApi");
 		Preconditions.checkNotNull(storage, "storage");
 		Preconditions.checkNotNull(playerId, "playerId");
 		Preconditions.checkNotNull(killedBy, "killedBy");
 		Preconditions.checkNotNull(holder, "holder");
+		Preconditions.checkNotNull(defaultPearlType, "defaultPearlType");
 
 		this.pearlApi = pearlApi;
 		this.storage = storage;
@@ -88,7 +89,7 @@ final class CoreExilePearl implements ExilePearl {
 		this.killedBy = killedBy;
 		this.pearledOn = new Date();
 		this.lastSeen = new Date();
-		this.pearlType = PearlType.EXILE;
+		this.pearlType = defaultPearlType;
 		this.holders = new LinkedBlockingDeque<PearlHolder>();
 		this.holders.add(holder);
 		this.health = DEFAULT_HEALTH;

@@ -107,6 +107,12 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	Set<RepairMaterial> getRepairMaterials(PearlType type);
 
 	/**
+	 * Gets the default pearl type between EXILE or PRISON
+	 * @return The default pearl type
+	 */
+	PearlType getDefaultPearlType();
+
+	/**
 	 * Gets the names of animals that are protected
 	 * @return The protected animal names
 	 */
