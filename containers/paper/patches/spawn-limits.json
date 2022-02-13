@@ -4,7 +4,7 @@
     {
       "$set": {
         "path": "$.spawn-limits.monsters",
-        "value": 1
+        "value": 8
       }
     },
     {
@@ -16,7 +16,7 @@
     {
       "$set": {
         "path": "$.spawn-limits.water-animals",
-        "value": 1
+        "value": 6
       }
     },
     {
@@ -35,6 +35,54 @@
       "$set": {
         "path": "$.spawn-limits.ambient",
         "value": 1
+      }
+    },
+    {
+      "$set": {
+        "path": "$.ticks-per.animal-spawns",
+        "value": 400
+      }
+    },
+    {
+      "$set": {
+        "path": "$.ticks-per.monster-spawns",
+        "value": 200
+      }
+    },
+    {
+      "$set": {
+        "path": "$.ticks-per.water-spawns",
+        "value": 200
+      }
+    },
+    {
+      "$set": {
+        "path": "$.ticks-per.water-ambient-spawns",
+        "value": 600
+      }
+    },
+    {
+      "$set": {
+        "path": "$.ticks-per.water-underground-creature-spawns",
+        "value": 400
+      }
+    },
+    {
+      "$set": {
+        "path": "$.ticks-per.ambient-spawns",
+        "value": 600
+      }
+    },
+    {
+      "$set": {
+        "path": "$.ticks-per.autosave",
+        "value": 6000
+      }
+    },
+    {
+      "$set": {
+        "path": "$.chunks-gc.period-in-ticks",
+        "value": 400
       }
     }
   ]
