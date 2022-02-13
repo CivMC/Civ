@@ -1,0 +1,29 @@
+{
+  "file": "/data/paper.yml",
+  "ops": [
+    {
+      "$set": {
+        "path": "$.world-settings.default.wandering-trader.spawn-day-length",
+        "value": 72000
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.wandering-trader.spawn-chance-failure-increment",
+        "value": 5
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.game-mechanics.pillager-patrols.spawn-chance",
+        "value": 0.05
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.game-mechanics.pillager-patrols.start.day",
+        "value": 20
+      }
+    }
+  ]
+}
