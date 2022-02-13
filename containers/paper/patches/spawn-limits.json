@@ -4,7 +4,7 @@
     {
       "$set": {
         "path": "$.spawn-limits.monsters",
-        "value": 8
+        "value": 6
       }
     },
     {
@@ -16,7 +16,7 @@
     {
       "$set": {
         "path": "$.spawn-limits.water-animals",
-        "value": 6
+        "value": 4
       }
     },
     {
