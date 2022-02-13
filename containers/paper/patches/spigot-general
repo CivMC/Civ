@@ -3,19 +3,19 @@
   "ops": [
     {
       "$set": {
-        "path": "$.moved-wrongly-threshold",
+        "path": "$.settings.moved-wrongly-threshold",
         "value": 1.0625
       }
     },
     {
       "$set": {
-        "path": "$.moved-too-quickly-multiplier",
+        "path": "$.settings.moved-too-quickly-multiplier",
         "value": 50.0
       }
     },
     {
       "$set": {
-        "path": "$.restart-on-crash",
+        "path": "$.settings.restart-on-crash",
         "value": false
       }
     }
