@@ -1,0 +1,89 @@
+{
+  "file": "/data/paper.yml",
+  "ops": [
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.monster.soft",
+        "value": 28
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.monster.hard",
+        "value": 96
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.creature.soft",
+        "value": 28
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.creature.hard",
+        "value": 96
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.ambient.soft",
+        "value": 28
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.ambient.hard",
+        "value": 96
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.underground_water_creature.soft",
+        "value": 28
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.underground_water_creature.hard",
+        "value": 96
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.water_creature.soft",
+        "value": 28
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.water_creature.hard",
+        "value": 96
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.water_ambient.soft",
+        "value": 28
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.water_ambient.hard",
+        "value": 64
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.misc.soft",
+        "value": 28
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.despawn-ranges.misc.hard",
+        "value": 96
+      }
+    }
+  ]
+}
