@@ -1,0 +1,23 @@
+{
+  "file": "/data/spigot.yml",
+  "ops": [
+    {
+      "$set": {
+        "path": "$.world-settings.ticks-per.hopper-transfer",
+        "value": 16
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.ticks-per.hopper-check",
+        "value": 8
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.hopper-amount",
+        "value": 2
+      }
+    }
+  ]
+}
