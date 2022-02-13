@@ -1,0 +1,23 @@
+{
+  "file": "/data/spigot.yml",
+  "ops": [
+    {
+      "$set": {
+        "path": "$.moved-wrongly-threshold",
+        "value": 1.0625
+      }
+    },
+    {
+      "$set": {
+        "path": "$.moved-too-quickly-multiplier",
+        "value": 50.0
+      }
+    },
+    {
+      "$set": {
+        "path": "$.restart-on-crash",
+        "value": false
+      }
+    }
+  ]
+}
