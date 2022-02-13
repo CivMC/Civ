@@ -21,20 +21,20 @@
     },
     {
       "$set": {
-        "path": "$.world-settings.default.game-mechanics.disable-mob-spawner-egg-transformation",
+        "path": "$.world-settings.default.game-mechanics.disable-mob-spawner-spawn-egg-transformation",
         "value": true
       }
     },
     {
       "$set": {
         "path": "$.world-settings.default.door-breaking-difficulty.zombie",
-        "value": 
+        "value": []
       }
     },
     {
       "$set": {
         "path": "$.world-settings.default.door-breaking-difficulty.vindicator",
-        "value": 
+        "value": []
       }
     },
     {

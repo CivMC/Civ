@@ -81,7 +81,7 @@
     },
     {
       "$set": {
-        "path": "$.chunks-gc.period-in-ticks",
+        "path": "$.chunk-gc.period-in-ticks",
         "value": 400
       }
     }

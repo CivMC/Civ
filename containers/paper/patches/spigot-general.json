@@ -21,31 +21,31 @@
     },
     {
       "$set": {
-        "path": "$.settings.enable-zombie-pigmen-portal-spawns",
+        "path": "$.world-settings.default.enable-zombie-pigmen-portal-spawns",
         "value": false
       }
     },
     {
       "$set": {
-        "path": "$.settings.arrow-despawn-rate",
+        "path": "$.world-settings.default.arrow-despawn-rate",
         "value": 100
       }
     },
     {
       "$set": {
-        "path": "$.settings.trident-despawn-rate",
+        "path": "$.world-settings.default.trident-despawn-rate",
         "value": 100
       }
     },
     {
       "$set": {
-        "path": "$.settings.nerf-spawner-mobs",
+        "path": "$.world-settings.default.nerf-spawner-mobs",
         "value": true
       }
     },
     {
       "$set": {
-        "path": "$.settings.mob-spawn-range",
+        "path": "$.world-settings.default.mob-spawn-range",
         "value": 2
       }
     }

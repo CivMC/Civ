@@ -20,6 +20,8 @@ ENV MOTD="You're a §l§abeautiful§r person."
 ENV MAX_PLAYERS="150"
 ENV SPAWN_PROTECTION="0"
 ENV ONLINE_MODE="false"
+ENV VIEW_DISTANCE="7"
+ENV SIMULATION_DISTANCE="3"
 
 # https://github.com/itzg/docker-minecraft-server#running-a-paper-server
 ENV TYPE=PAPER
