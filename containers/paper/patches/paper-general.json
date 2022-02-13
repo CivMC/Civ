@@ -15,7 +15,7 @@
     },
     {
       "$set": {
-        "path": "$.world-settings.game-mechanics.disable-chest-cat-detection",
+        "path": "$.world-settings.default.game-mechanics.disable-chest-cat-detection",
         "value": true
       }
     },
@@ -23,6 +23,18 @@
       "$set": {
         "path": "$.world-settings.default.game-mechanics.disable-mob-spawner-egg-transformation",
         "value": true
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.door-breaking-difficulty.zombie",
+        "value": 
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.default.door-breaking-difficulty.vindicator",
+        "value": 
       }
     },
     {
