@@ -1,0 +1,59 @@
+{
+  "file": "/data/spigot.yml",
+  "ops": [
+    {
+      "$set": {
+        "path": "$.world-settings.entity-activation-range.animals",
+        "value": 8
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.entity-activation-range.monster",
+        "value": 8
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.entity-activation-range.misc",
+        "value": 8
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.entity-activation-range.water",
+        "value": 8
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.entity-activation-range.villagers",
+        "value": 8
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.entity-activation-range.wake-up-inactive.villagers-max-per-tick",
+        "value": 1
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.entity-activation-range.wake-up-inactive.villagers-for",
+        "value": 10
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.entity-activation-range.wake-up-inactive.villagers-works-immunity-after",
+        "value": 200
+      }
+    },
+    {
+      "$set": {
+        "path": "$.world-settings.entity-activation-range.wake-up-inactive.tick-inactive-villagers",
+        "value": false
+      }
+    }
+  ]
+}

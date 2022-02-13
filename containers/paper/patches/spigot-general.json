@@ -1,0 +1,53 @@
+{
+  "file": "/data/spigot.yml",
+  "ops": [
+    {
+      "$set": {
+        "path": "$.settings.moved-wrongly-threshold",
+        "value": 1.0625
+      }
+    },
+    {
+      "$set": {
+        "path": "$.settings.moved-too-quickly-multiplier",
+        "value": 50.0
+      }
+    },
+    {
+      "$set": {
+        "path": "$.settings.restart-on-crash",
+        "value": false
+      }
+    },
+    {
+      "$set": {
+        "path": "$.settings.enable-zombie-pigmen-portal-spawns",
+        "value": false
+      }
+    },
+    {
+      "$set": {
+        "path": "$.settings.arrow-despawn-rate",
+        "value": 100
+      }
+    },
+    {
+      "$set": {
+        "path": "$.settings.trident-despawn-rate",
+        "value": 100
+      }
+    },
+    {
+      "$set": {
+        "path": "$.settings.nerf-spawner-mobs",
+        "value": true
+      }
+    },
+    {
+      "$set": {
+        "path": "$.settings.mob-spawn-range",
+        "value": 2
+      }
+    }
+  ]
+}
