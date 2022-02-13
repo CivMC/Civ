@@ -4,7 +4,7 @@
     {
       "$set": {
         "path": "$.timings.server-name",
-        "value": CivMC
+        "value": "CivMC"
       }
     },
     {
