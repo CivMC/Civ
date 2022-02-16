@@ -1,0 +1,191 @@
+version: 2
+general:
+  checkForUpdates: true
+  updateOnBlockDamage: true
+  bypassNotification: true
+  ignoreSpectator: false
+  updateRadius: 2
+advanced:
+  verbose: false
+  maxMillisecondsPerTick: 10
+  protocolLibThreads: -1
+  obfuscationWorkerThreads: -1
+  proximityHiderThreads: -1
+cache:
+  enabled: true
+  baseDirectory: orebfuscator_cache
+  maximumOpenRegionFiles: 256
+  deleteRegionFilesAfterAccess: 172800000
+  maximumSize: 8192
+  expireAfterAccess: 30000
+  maximumTaskQueueSize: 32768
+obfuscation:
+  obfuscation-overworld:
+    enabled: true
+    minY: -64
+    maxY: 320
+    worlds:
+    - world
+    hiddenBlocks:
+    - minecraft:emerald_ore
+    - minecraft:deepslate_emerald_ore
+    - minecraft:diamond_ore
+    - minecraft:deepslate_diamond_ore
+    - minecraft:gold_ore
+    - minecraft:deepslate_gold_ore
+    - minecraft:raw_gold_block
+    - minecraft:iron_ore
+    - minecraft:deepslate_iron_ore
+    - minecraft:raw_iron_block
+    - minecraft:coal_ore
+    - minecraft:deepslate_coal_ore
+    - minecraft:lapis_ore
+    - minecraft:deepslate_lapis_ore
+    - minecraft:redstone_ore
+    - minecraft:deepslate_redstone_ore
+    - minecraft:copper_ore
+    - minecraft:raw_copper_block
+    - minecraft:deepslate_copper_ore
+    - minecraft:stone
+    - minecraft:deepslate
+    - minecraft:chest
+    - minecraft:ender_chest
+    - minecraft:trapped_chest
+    - minecraft:barrel
+    - minecraft:jukebox
+    - minecraft:sponge
+    - minecraft:note_block
+    - minecraft:spawner
+    - minecraft:terracotta
+    - minecraft:light_gray_terracotta
+    - minecraft:white_terracotta
+    - minecraft:orange_terracotta
+    - minecraft:red_terracotta
+    - minecraft:brown_terracotta
+    - minecraft:yellow_terracotta
+    randomBlocks:
+      minecraft:cave_air: 1
+      minecraft:clay: 1
+      minecraft:coal_ore: 1
+      minecraft:cobblestone: 1
+      minecraft:diamond_ore: 5
+      minecraft:emerald_ore: 5
+      minecraft:gold_ore: 5
+      minecraft:iron_ore: 5
+      minecraft:lapis_ore: 1
+      minecraft:mossy_cobblestone: 1
+      minecraft:obsidian: 1
+      minecraft:redstone_ore: 1
+      minecraft:stone: 1
+  obfuscation-nether:
+    enabled: true
+    minY: -64
+    maxY: 320
+    worlds:
+    - world_nether
+    hiddenBlocks:
+    - minecraft:netherrack
+    - minecraft:nether_quartz_ore
+    - minecraft:chest
+    - minecraft:ender_chest
+    - minecraft:trapped_chest
+    - minecraft:barrel
+    - minecraft:jukebox
+    - minecraft:sponge
+    - minecraft:note_block
+    - minecraft:spawner
+    - minecraft:ancient_debris
+    - minecraft:nether_gold_ore
+    - minecraft:basalt
+    - minecraft:soul_sand
+    - minecraft:soul_soil
+    randomBlocks:
+      minecraft:netherrack: 4
+      minecraft:nether_quartz_ore: 1
+      minecraft:nether_gold_ore: 1
+      minecraft:ancient_debris: 1
+proximity:
+  proximity-overworld:
+    enabled: true
+    minY: -64
+    maxY: 320
+    worlds:
+    - world
+    distance: 16
+    useFastGazeCheck: false
+    useBlockBelow: false
+    hiddenBlocks:
+      minecraft:mossy_cobblestone: {}
+      minecraft:diamond_ore: {}
+      minecraft:deepslate_diamond_ore: {}
+      minecraft:emerald_ore: {}
+      minecraft:deepslate_emerald_ore: {}
+      minecraft:chest: {}
+      minecraft:ender_chest: {}
+      minecraft:trapped_chest: {}
+      minecraft:barrel: {}
+      minecraft:jukebox: {}
+      minecraft:note_block: {}
+      minecraft:sponge: {}
+      minecraft:anvil: {}
+      minecraft:crafting_table: {}
+      minecraft:dispenser: {}
+      minecraft:enchanting_table: {}
+      minecraft:furnace: {}
+      minecraft:blast_furnace: {}
+      minecraft:cartography_table: {}
+      minecraft:fletching_table: {}
+      minecraft:grindstone: {}
+      minecraft:composter: {}
+      minecraft:lectern: {}
+      minecraft:loom: {}
+      minecraft:smithing_table: {}
+      minecraft:smoker: {}
+      minecraft:stonecutter: {}
+      minecraft:hopper: {}
+      minecraft:spawner: {}
+      minecraft:bee_nest: {}
+      minecraft:beehive: {}
+    randomBlocks:
+      minecraft:stone: 1
+  proximity-nether:
+    enabled: true
+    minY: -64
+    maxY: 320
+    worlds:
+    - world_nether
+    distance: 16
+    useFastGazeCheck: false
+    useBlockBelow: true
+    hiddenBlocks:
+      minecraft:chest: {}
+      minecraft:ender_chest: {}
+      minecraft:trapped_chest: {}
+      minecraft:barrel: {}
+      minecraft:jukebox: {}
+      minecraft:note_block: {}
+      minecraft:sponge: {}
+      minecraft:anvil: {}
+      minecraft:crafting_table: {}
+      minecraft:dispenser: {}
+      minecraft:enchanting_table: {}
+      minecraft:furnace: {}
+      minecraft:blast_furnace: {}
+      minecraft:cartography_table: {}
+      minecraft:fletching_table: {}
+      minecraft:grindstone: {}
+      minecraft:composter: {}
+      minecraft:lectern: {}
+      minecraft:loom: {}
+      minecraft:smithing_table: {}
+      minecraft:smoker: {}
+      minecraft:stonecutter: {}
+      minecraft:hopper: {}
+      minecraft:spawner: {}
+      minecraft:bee_nest: {}
+      minecraft:beehive: {}
+      minecraft:ancient_debris: {}
+      minecraft:nether_gold_ore: {}
+      minecraft:respawn_anchor: {}
+    randomBlocks:
+      minecraft:netherrack: 1
