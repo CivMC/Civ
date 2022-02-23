@@ -54,6 +54,7 @@ import org.bukkit.craftbukkit.v1_18_R1.util.CraftMagicNumbers;
 import org.bukkit.craftbukkit.v1_18_R1.util.Versioning;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.SpawnCategory;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.help.HelpMap;
@@ -313,6 +314,11 @@ public class PseudoServer implements Server {
 
 	@Override
 	public int getTicksPerAmbientSpawns() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public int getTicksPerSpawns(@NotNull SpawnCategory spawnCategory) {
 		throw new NotImplementedException();
 	}
 
@@ -578,6 +584,24 @@ public class PseudoServer implements Server {
 		throw new NotImplementedException();
 	}
 
+	@Override
+	public org.bukkit.profile.@NotNull PlayerProfile createPlayerProfile(
+			@org.jetbrains.annotations.Nullable UUID uniqueId, @org.jetbrains.annotations.Nullable String name) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public org.bukkit.profile.@NotNull PlayerProfile createPlayerProfile(
+			@NotNull UUID uniqueId) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public org.bukkit.profile.@NotNull PlayerProfile createPlayerProfile(
+			@NotNull String name) {
+		throw new NotImplementedException();
+	}
+
 	@Nonnull
 	@Override
 	public Set<String> getIPBans() {
@@ -626,6 +650,12 @@ public class PseudoServer implements Server {
 	@Nonnull
 	@Override
 	public ConsoleCommandSender getConsoleSender() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull CommandSender createCommandSender(
+			@NotNull Consumer<? super Component> feedback) {
 		throw new NotImplementedException();
 	}
 
@@ -728,6 +758,11 @@ public class PseudoServer implements Server {
 
 	@Override
 	public int getAmbientSpawnLimit() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public int getSpawnLimit(@NotNull SpawnCategory spawnCategory) {
 		throw new NotImplementedException();
 	}
 

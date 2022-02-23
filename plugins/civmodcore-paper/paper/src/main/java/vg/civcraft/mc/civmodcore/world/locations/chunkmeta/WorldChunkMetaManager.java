@@ -194,6 +194,7 @@ public class WorldChunkMetaManager {
 									iter.remove();
 									if (!coord.hasPermanentlyLoadedData()) {
 										metas.remove(coord);
+										coord.deleteNonPersistentData();
 										// coord is up for garbage collection at this point and all of its data has been
 										// written to the db
 									} else {
