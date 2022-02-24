@@ -49,7 +49,11 @@ public class WorldChunkMetaManager {
 		this.world = world;
 		this.metas = new HashMap<>();
 		this.unloadingQueue = Collections.synchronizedSet(new TreeSet<>((a, b) -> {
-			return Math.toIntExact(a.getLastMCUnloadingTime() - b.getLastMCUnloadingTime());
+			int timeDiff = Math.toIntExact(a.getLastMCUnloadingTime() - b.getLastMCUnloadingTime());
+			if (timeDiff != 0) {
+				return timeDiff;
+			}
+			return a.compareTo(b);
 		}));
 		registerUnloadRunnable();
 		startChunkLoadingConsumer();
@@ -181,24 +185,31 @@ public class WorldChunkMetaManager {
 			}
 			long currentTime = System.currentTimeMillis();
 			synchronized (unloadingQueue) {
+				System.out.println("In queue: " + unloadingQueue);
 				Iterator<ChunkCoord> iter = unloadingQueue.iterator();
 				while (iter.hasNext()) {
 					ChunkCoord coord = iter.next();
 					// Is time up?
+					System.out.println("ChunkCoord: " + coord);
 					if (currentTime - coord.getLastMCUnloadingTime() > UNLOAD_DELAY) {
+						System.out.println("passed time up");
 						// make sure chunk hasnt loaded again since
 						if (coord.getLastMCUnloadingTime() > coord.getLastMCLoadingTime()) {
+							System.out.println("hasnt loaded again");
 							synchronized (metas) {
 								synchronized (coord) {
 									coord.fullyPersist();
 									iter.remove();
 									if (!coord.hasPermanentlyLoadedData()) {
+										System.out.println("Before: " + metas.size() + " at " + coord.toString());
 										metas.remove(coord);
-										coord.deleteNonPersistentData();
+										System.out.println("After: " + metas.size() + " at " + coord.toString());
 										// coord is up for garbage collection at this point and all of its data has been
 										// written to the db
 									} else {
+										System.out.println("Before else: " + metas.size() + " at " + coord.toString());
 										coord.deleteNonPersistentData();
+										System.out.println("After else: " + metas.size() + " at " + coord.toString());
 										// keep chunk coord, but garbage collect the data we dont want to keep inside of
 										// it
 									}
