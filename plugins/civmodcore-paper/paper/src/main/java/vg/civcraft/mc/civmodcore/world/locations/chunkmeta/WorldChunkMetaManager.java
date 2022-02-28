@@ -269,6 +269,7 @@ public class WorldChunkMetaManager {
 		// chunkCoord can never be null here, otherwise our data structure would be
 		// broken, in which case we'd want to know
 		chunkCoord.minecraftChunkUnloaded();
+		System.out.println("Adding " + chunkCoord + " to unload queue");
 		unloadingQueue.add(chunkCoord);
 	}
 

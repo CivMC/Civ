@@ -70,6 +70,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.messaging.Messenger;
+import org.bukkit.potion.PotionBrewer;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.structure.StructureManager;
@@ -1027,6 +1028,11 @@ public class PseudoServer implements Server {
 	@Nonnull
 	@Override
 	public DatapackManager getDatapackManager() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull PotionBrewer getPotionBrewer() {
 		throw new NotImplementedException();
 	}
 
