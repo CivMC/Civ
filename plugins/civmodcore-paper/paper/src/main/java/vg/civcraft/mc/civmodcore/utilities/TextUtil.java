@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.ChatColor;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
@@ -35,6 +36,14 @@ public class TextUtil {
 			sb.append(" sec");
 		}
 		return sb.toString().trim();
+	}
+	
+	public static String formatDurationWithFormat(long time, String format) {
+		return formatDurationWithFormat(time, format, true);
+	}
+
+	public static String formatDurationWithFormat(long time, String format, boolean padWithZeros) {
+		return DurationFormatUtils.formatDuration(time, format, padWithZeros);
 	}
 
 	// -------------------------------------------- //
