@@ -34,8 +34,6 @@ public class ChunkMetaListener implements Listener {
 			while (true) {
 				try {
 					Chunk chunk = unloadQueue.take();
-					System.out.println("Chunk in consumer: " + chunk);
-					System.out.println("Queue in consumer: " + unloadQueue);
 					manager.unloadChunkData(chunk);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
