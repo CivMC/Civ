@@ -57,7 +57,7 @@ public class XZWCoord implements Comparable<XZWCoord> {
 		}
 		int xComp = Integer.compare(this.x, o.getX());
 		if (xComp != 0) {
-			return worldComp;
+			return xComp;
 		}
 		return Integer.compare(this.z, o.getZ());
 	}

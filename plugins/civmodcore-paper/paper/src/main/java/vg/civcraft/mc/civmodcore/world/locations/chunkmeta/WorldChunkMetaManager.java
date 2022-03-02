@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Executors;
@@ -41,7 +40,7 @@ public class WorldChunkMetaManager {
 	private final Set<ChunkCoord> unloadingQueue;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private Thread chunkLoadingConsumer;
-	private Queue<ChunkCoord> chunkLoadingQueue;
+	private LinkedBlockingQueue<ChunkCoord> chunkLoadingQueue;
 	private World world;
 
 	public WorldChunkMetaManager(World world, short worldID) {
@@ -49,7 +48,11 @@ public class WorldChunkMetaManager {
 		this.world = world;
 		this.metas = new HashMap<>();
 		this.unloadingQueue = Collections.synchronizedSet(new TreeSet<>((a, b) -> {
-			return Math.toIntExact(a.getLastMCUnloadingTime() - b.getLastMCUnloadingTime());
+			int timeDiff = Math.toIntExact(a.getLastMCUnloadingTime() - b.getLastMCUnloadingTime());
+			if (timeDiff != 0) {
+				return timeDiff;
+			}
+			return a.compareTo(b);
 		}));
 		registerUnloadRunnable();
 		startChunkLoadingConsumer();
@@ -224,21 +227,15 @@ public class WorldChunkMetaManager {
 		this.chunkLoadingQueue = new LinkedBlockingQueue<>();
 		chunkLoadingConsumer = new Thread(() -> {
 			while (true) {
-				ChunkCoord coord;
-				synchronized (chunkLoadingQueue) {
-					while (chunkLoadingQueue.isEmpty()) {
-						try {
-							chunkLoadingQueue.wait();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-					coord = chunkLoadingQueue.poll();
-					if (coord == null) {
-						continue;
-					}
+				ChunkCoord coord = null;
+				try {
+					coord = chunkLoadingQueue.take();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					continue;
 				}
 				coord.loadAll();
+				coord = null;
 			}
 		});
 		chunkLoadingConsumer.start();
