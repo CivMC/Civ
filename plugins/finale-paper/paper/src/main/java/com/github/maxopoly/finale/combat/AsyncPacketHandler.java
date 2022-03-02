@@ -19,13 +19,19 @@ import java.util.Set;
 import java.util.UUID;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftBoat;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftVehicle;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -76,6 +82,9 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 
 					if (target == null || target.isDead() || target.isInvulnerable() ||
 							!world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
+						if (entity instanceof CraftVehicle vehicle){
+							vehicle.getHandle().hurt(DamageSource.playerAttack(((CraftPlayer) attacker).getHandle()), (float) ((CraftPlayer) attacker).getHandle().getAttribute(Attributes.ATTACK_DAMAGE).getValue());
+						}
 						return;
 					}
 
