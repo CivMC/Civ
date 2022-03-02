@@ -63,8 +63,8 @@ public class CombatUtil {
         if (victim.isAttackable() && !victim.skipAttackInteraction(attacker)) {
 			float damage = (float) attacker.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
 			float f1 = (victim instanceof LivingEntity) ?
-					EnchantmentHelper.getDamageBonus(attacker.getItemInHand(attacker.swingingArm), ((LivingEntity) victim).getMobType()) :
-					EnchantmentHelper.getDamageBonus(attacker.getItemInHand(attacker.swingingArm), MobType.UNDEFINED);
+					EnchantmentHelper.getDamageBonus(attacker.getItemInHand(attacker.getUsedItemHand()), ((LivingEntity) victim).getMobType()) :
+					EnchantmentHelper.getDamageBonus(attacker.getItemInHand(attacker.getUsedItemHand()), MobType.UNDEFINED);
 
 			float f2 = 0;
 			boolean shouldKnockback = true;
