@@ -1,6 +1,5 @@
 package vg.civcraft.mc.civmodcore.world.locations.chunkmeta;
 
-import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
@@ -25,7 +24,7 @@ public class ChunkMetaListener implements Listener {
 	// unloaded chunks may have to wait for the unloading queue cleanup to finish.
 	// We don't want to block the main thread, so we use a different one for this
 	private Thread unloadConsumer;
-	private final Queue<Chunk> unloadQueue;
+	private final LinkedBlockingQueue<Chunk> unloadQueue;
 
 	public ChunkMetaListener(GlobalChunkMetaManager manager, ChunkMetaViewTracker viewTracker) {
 		this.manager = manager;
@@ -33,26 +32,14 @@ public class ChunkMetaListener implements Listener {
 		this.unloadQueue = new LinkedBlockingQueue<>();
 		unloadConsumer = new Thread(() -> {
 			while (true) {
-				synchronized (unloadQueue) {
-					while (unloadQueue.isEmpty()) {
-						try {
-							unloadQueue.wait();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-					// usually it'd be bad to exit the monitor block here, but due to only having
-					// one consumer and wanting to avoid the problem described above, we need to do
-					// this
-					Chunk chunk = unloadQueue.poll();
-					if (chunk == null) {
-						// should never happen, but eh
-						continue;
-					}
+				try {
+					Chunk chunk = unloadQueue.take();
 					manager.unloadChunkData(chunk);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			}
-		});
+		}, "CivModCore chunk unload handler");
 		unloadConsumer.start();
 	}
 
@@ -65,10 +52,7 @@ public class ChunkMetaListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void chunkUnload(ChunkUnloadEvent e) {
-		synchronized (unloadQueue) {
-			unloadQueue.add(e.getChunk());
-			unloadQueue.notifyAll();
-		}
+		unloadQueue.add(e.getChunk());
 		viewTracker.applyToAllSingleBlockViews(s -> s.handleChunkUnload(e.getChunk()));
 	}
 
