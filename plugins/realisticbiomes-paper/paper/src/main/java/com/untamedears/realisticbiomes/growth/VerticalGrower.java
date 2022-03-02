@@ -1,6 +1,7 @@
 package com.untamedears.realisticbiomes.growth;
 
 import com.untamedears.realisticbiomes.model.Plant;
+import com.untamedears.realisticbiomes.utils.RBUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,9 +17,9 @@ public class VerticalGrower extends IArtificialGrower {
 		Material mat = block.getType();
 		Block bottomBlock = block;
 		// not actually using this variable, but just having it here as a fail safe
-		for (int i = 0; i < 257; i++) {
+		for (int i = 0; i < 384; i++) {
 			Block below = bottomBlock.getRelative(face);
-			if (below.getType() != mat) {
+			if (below.getType() != mat && below.getType() != RBUtils.getTipMaterial(mat) && below.getType() != RBUtils.getStemMaterial(mat)) {
 				break;
 			}
 			bottomBlock = below;
@@ -140,9 +141,5 @@ public class VerticalGrower extends IArtificialGrower {
 	@Override
 	public boolean deleteOnFullGrowth() {
 		return false;
-	}
-
-	public boolean ignoreGrowthFailure() {
-		return instaBreakTouching;
 	}
 }

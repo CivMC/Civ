@@ -9,15 +9,19 @@ import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
 import com.untamedears.realisticbiomes.utils.RBUtils;
 import java.text.DecimalFormat;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -129,5 +133,43 @@ public class PlayerListener implements Listener {
 		}
 		event.getPlayer()
 				.sendMessage(plantConfig.getInfoString(event.getClickedBlock().getRelative(event.getBlockFace())));
+	}
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onPlayerHarvest(PlayerHarvestBlockEvent event) {
+		if (event.getHarvestedBlock().getType() != Material.SWEET_BERRY_BUSH) {
+			return;
+		}
+		Block block = event.getHarvestedBlock();
+		Plant plant = RealisticBiomes.getInstance().getPlantManager().getPlant(block);
+		if (plant == null) {
+			return;
+		}
+		PlantGrowthConfig config = plant.getGrowthConfig();
+		if (config == null) {
+			return;
+		}
+		config.getGrower().setStage(plant, 0);
+
+		plant.setCreationTime(System.currentTimeMillis());
+		Bukkit.getScheduler().runTask(RealisticBiomes.getInstance(), () -> {
+			RealisticBiomes.getInstance().getPlantLogicManager().updateGrowthTime(plant, block);
+		});
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onFish(PlayerFishEvent event) {
+		//disable prot 4 fishing
+		if (event.getCaught() == null) {
+			return;
+		}
+		if (event.getCaught() instanceof Item item) {
+			Material mat = item.getItemStack().getType();
+			if (mat == Material.BOW ||
+				mat == Material.ENCHANTED_BOOK ||
+				mat == Material.FISHING_ROD) {
+
+				event.setCancelled(true);
+			}
+		}
 	}
 }

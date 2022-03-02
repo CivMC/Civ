@@ -2,9 +2,11 @@ package com.untamedears.realisticbiomes;
 
 import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 import com.untamedears.realisticbiomes.growth.FruitGrower;
+import com.untamedears.realisticbiomes.growth.TipGrower;
 import com.untamedears.realisticbiomes.growth.VerticalGrower;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
+import com.untamedears.realisticbiomes.utils.RBUtils;
 import java.util.HashSet;
 import java.util.Set;
 import org.bukkit.Material;
@@ -39,7 +41,7 @@ public class PlantLogicManager {
 		// we need
 		// to update that if we just broke one of the upper blocks of a column plant
 		if (columnBlocks != null && columnBlocks.contains(block.getType())) {
-			Block sourceColumn = VerticalGrower.getRelativeBlock(block, BlockFace.DOWN);
+			Block sourceColumn = VerticalGrower.getRelativeBlock(block ,RBUtils.getGrowthDirection(block.getType()).getOppositeFace());
 			Plant bottomColumnPlant = plantManager.getPlant(sourceColumn);
 			if (bottomColumnPlant != null) {
 				if (bottomColumnPlant.getGrowthConfig() == null
@@ -48,9 +50,9 @@ public class PlantLogicManager {
 					bottomColumnPlant.resetCreationTime();
 				} else {
 					ColumnPlantGrower grower = (ColumnPlantGrower) bottomColumnPlant.getGrowthConfig().getGrower();
-
-					Block topColumn = VerticalGrower.getRelativeBlock(block, BlockFace.UP);
-					int blocksBroken = topColumn.getY() - block.getY() + 1;
+					
+					Block topColumn = VerticalGrower.getRelativeBlock(block ,RBUtils.getGrowthDirection(block.getType()));
+					int blocksBroken = Math.abs(topColumn.getY() - block.getY()) + 1;
 					long growthTime = bottomColumnPlant.getGrowthConfig().getPersistentGrowthTime(sourceColumn, true);
 					int stage = grower.getStage(bottomColumnPlant);
 					if (stage == grower.getMaxStage()) {
@@ -61,7 +63,7 @@ public class PlantLogicManager {
 						// If not broken at max growth, increase creation time based on number of blocks broken
 						long create = bottomColumnPlant.getCreationTime();
 						bottomColumnPlant.setCreationTime(
-								(long) Math.min(System.currentTimeMillis(), create + (growthTime * (blocksBroken / (double) grower.getMaxStage()))));
+								(long) Math.min(System.currentTimeMillis(), create + (growthTime * Math.min(1.0D, (blocksBroken / (double) grower.getMaxStage())))));
 					}
 				}
 				updateGrowthTime(bottomColumnPlant, sourceColumn);
@@ -110,6 +112,14 @@ public class PlantLogicManager {
 				}
 				columnBlocks.add(grower.getMaterial());
 			}
+			if (config.getGrower() instanceof TipGrower) {
+				TipGrower grower = (TipGrower) config.getGrower();
+				if (columnBlocks == null) {
+					columnBlocks = new HashSet<>();
+				}
+				columnBlocks.add(grower.getTipMaterial());
+				columnBlocks.add(grower.getStemMaterial());
+			}
 		}
 	}
 
@@ -122,8 +132,14 @@ public class PlantLogicManager {
 			return;
 		}
 		if (growthConfig.getGrower() instanceof VerticalGrower) {
-			BlockFace direction = ((VerticalGrower) growthConfig.getGrower()).getPrimaryGrowthDirection();
+			BlockFace direction = ((VerticalGrower) growthConfig.getGrower()).getPrimaryGrowthDirection().getOppositeFace();
 			if (block.getRelative(direction).getType() == block.getType()) {
+				return;
+			}
+			if (block.getRelative(direction).getType() == RBUtils.getStemMaterial(block.getType())) {
+				return;
+			}
+			if (block.getRelative(direction).getType() == RBUtils.getTipMaterial(block.getType())) {
 				return;
 			}
 		}
@@ -147,6 +163,15 @@ public class PlantLogicManager {
 				below = below.getRelative(direction);
 			}
 			return below.getRelative(direction.getOppositeFace());
+		}
+		if (growthConfig.getGrower() instanceof TipGrower) {
+			TipGrower config = ((TipGrower) growthConfig.getGrower());
+			BlockFace direction = config.getPrimaryGrowthDirection();
+			Block adjacent = block.getRelative(direction);
+			while (adjacent.getType() == material || adjacent.getType() == config.getStemMaterial()) {
+				adjacent = adjacent.getRelative(direction);
+			}
+			return adjacent.getRelative(direction.getOppositeFace());
 		}
 		return block;
 	}
