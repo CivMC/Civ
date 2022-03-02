@@ -13,7 +13,6 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import vg.civcraft.mc.civmodcore.nbt.NBTHelper;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class GaussTree {
@@ -35,7 +34,6 @@ public class GaussTree {
 	private Random rng;
 
 	public GaussTree(ItemStack sapling) {
-		CompoundTag nbt = NBTHelper.itemStackToNBT(sapling).getRAW();
 
 	}
 
