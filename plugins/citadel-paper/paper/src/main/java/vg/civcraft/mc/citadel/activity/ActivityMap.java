@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
@@ -27,7 +26,7 @@ import org.bukkit.World;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
+import vg.civcraft.mc.civmodcore.world.locations.global.WorldIDManager;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class ActivityMap {
