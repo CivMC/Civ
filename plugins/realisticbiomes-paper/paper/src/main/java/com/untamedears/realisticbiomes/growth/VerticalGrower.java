@@ -142,8 +142,4 @@ public class VerticalGrower extends IArtificialGrower {
 	public boolean deleteOnFullGrowth() {
 		return false;
 	}
-
-	public boolean ignoreGrowthFailure() {
-		return instaBreakTouching;
-	}
 }
