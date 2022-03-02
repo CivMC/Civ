@@ -3,10 +3,11 @@ package vg.civcraft.mc.civmodcore.players.settings;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public abstract class PlayerSetting<T> {
 			String description, boolean canBeChangedByPlayer) {
 		Preconditions.checkNotNull(gui, "GUI ItemStack can not be null.");
 
-		this.values = new ConcurrentHashMap<>();
+		this.values = new TreeMap<>();
 		this.defaultValue = defaultValue;
 		this.owningPlugin = owningPlugin;
 		this.niceName = niceName;
@@ -61,6 +62,13 @@ public abstract class PlayerSetting<T> {
 	 */
 	public abstract T deserialize(String serial);
 
+	Map<String, String> dumpAllSerialized() {
+		Map<String, String> result = new HashMap<>();
+		for (Map.Entry<UUID, T> entry : values.entrySet()) {
+			result.put(entry.getKey().toString(), serialize(entry.getValue()));
+		}
+		return result;
+	}
 
 	/**
 	 * @return Textual description shown in the GUI for this setting
