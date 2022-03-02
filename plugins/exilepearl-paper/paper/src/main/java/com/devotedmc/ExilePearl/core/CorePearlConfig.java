@@ -209,6 +209,11 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	}
 
 	@Override
+	public PearlType getDefaultPearlType() {
+		return PearlType.valueOf(doc.getString("pearls.default_pearl_type", "EXILE"));
+	}
+
+	@Override
 	public Set<String> getDisallowedWorlds() {
 		HashSet<String> worlds = new HashSet<>();
 		for(String str : doc.getStringList("rules.disallowed_worlds"))

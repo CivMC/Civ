@@ -70,6 +70,10 @@
 #  - The materials used to repair pearls
 #  - The repair value is how many health points are repaired for each item 
 #
+# pearls.default_pearl_type
+#  - The default pearl type when pearling somebody
+#  - Only options currently are EXILE or PRISON
+#
 # pearls.bastion_harm_amount
 #  - The amount of damage to deal to players when they are inside a
 #    bastion field they don't have perms on.
@@ -281,6 +285,7 @@ pearls:
       obsidian:
         material: OBSIDIAN
         repair: 3
+  default_pearl_type: EXILE
   bastion_harm_amount: 2.0
   upgrade_materials:
     special_diamond_thing:
