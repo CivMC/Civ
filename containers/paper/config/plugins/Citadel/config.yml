@@ -13,55 +13,183 @@ logCreation: true
 #Log message replies sent to users? Very useful
 logMessages: true
 
-
 #General debug messages
 debug: true
+
+#Still used in calculating the localized decay. The difference is localized decay uses different last activity timers for each region. 
+global_decay_timer: 3 months
+global_decay_multiplier: 2.0
 
 reinforcements:
   stone:
     id: 1
     item:
       ==: org.bukkit.inventory.ItemStack
-      v: 1
       type: STONE
-    effect:
-      type: ENCHANTING_TABLE
-      speed: 0.5
-      particleCount: 50
+    creation_effect:
+      type: PORTAL
+      speed: 0.8
+      particleCount: 200
+      offset: 0.0
+    damage_effect:
+      type: SMOKE_NORMAL
+      speed: 0.06
+      particleCount: 40
+      offset: 0
+    destruction_effect:
+      type: SMOKE_LARGE
+      speed: 0.04
+      particleCount: 80
+      offset: 0.0
     mature_time: 5m
     acid_time: 20m
+    acid_priority: 2
     name: Stone
     hit_points: 50
+    allowed_worlds:
+      - world
+  netherbrick:
+    id: 4
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1
+      type: NETHER_BRICK
+    creation_effect:
+      type: PORTAL
+      speed: 0.8
+      particleCount: 200
+      offset: 0.0
+    damage_effect:
+      type: SMOKE_NORMAL
+      speed: 0.06
+      particleCount: 40
+      offset: 0
+    destruction_effect:
+      type: SMOKE_LARGE
+      speed: 0.04
+      particleCount: 80
+      offset: 0.0
+    mature_time: 5m
+    acid_time: 20m
+    acid_priority: 2
+    name: Netherbrick
+    hit_points: 50
+    allowed_worlds:
+      - world_nether
   iron:
     id: 2
     item:
       ==: org.bukkit.inventory.ItemStack
       v: 1
       type: IRON_INGOT
-    effect:
-      type: ENCHANTING_TABLE
-      speed: 0.5
-      particleCount: 50
+    creation_effect:
+      type: ENCHANTMENT_TABLE
+      speed: 1
+      particleCount: 100
+      offset: 0.1
+    damage_effect:
+      type: END_ROD
+      speed: 0.045
+      particleCount: 15
+      offset: 0.0
+    destruction_effect:
+      type: END_ROD
+      speed: 0.13
+      particleCount: 200
+      offset: 0
     mature_time: 30m
     acid_time: 6h
+    acid_priority: 5
     name: Iron
     hit_points: 300
+    allowed_worlds:
+      - world
+  gold:
+    id: 5
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1
+      type: GOLD_INGOT
+    creation_effect:
+      type: ENCHANTMENT_TABLE
+      speed: 1
+      particleCount: 100
+      offset: 0.1
+    damage_effect:
+      type: END_ROD
+      speed: 0.045
+      particleCount: 15
+      offset: 0.0
+    destruction_effect:
+      type: END_ROD
+      speed: 0.13
+      particleCount: 200
+      offset: 0
+    mature_time: 30m
+    acid_time: 6h
+    acid_priority: 5
+    name: Gold
+    hit_points: 300
+    allowed_worlds:
+      - world_nether
   diamond:
     id: 3
     item:
       ==: org.bukkit.inventory.ItemStack
       v: 1
       type: DIAMOND
-    effect:
-      type: ENCHANTING_TABLE
+    creation_effect:
+      type: NAUTILUS
+      speed: 0.6
+      particleCount: 100
+      offset: 0.1
+    damage_effect:
+      type: BUBBLE_POP
+      speed: 0.2
+      particleCount: 100
+      offset: 0.1
+    destruction_effect:
+      type: BUBBLE_POP
       speed: 0.5
-      particleCount: 50
+      particleCount: 500
+      offset: 0.1
     mature_time: 4h
     acid_time: 48h
+    acid_priority: 10
     name: Diamond
     hit_points: 2000
+    allowed_worlds:
+      - world
+  gildedblackstone:
+    id: 6
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1
+      type: GILDED_BLACKSTONE
+    creation_effect:
+      type: NAUTILUS
+      speed: 0.6
+      particleCount: 100
+      offset: 0.1
+    damage_effect:
+      type: BUBBLE_POP
+      speed: 0.2
+      particleCount: 100
+      offset: 0.1
+    destruction_effect:
+      type: BUBBLE_POP
+      speed: 0.5
+      particleCount: 500
+      offset: 0.1
+    mature_time: 4h
+    acid_time: 48h
+    acid_priority: 10
+    name: GildedBlackstone
+    hit_points: 2000
+    allowed_worlds:
+      - world_nether
   bedrock:
-    id: 4
+    id: 10
     item:
       ==: org.bukkit.inventory.ItemStack
       v: 1
@@ -193,10 +321,24 @@ acidblock_material:
  - GOLD_BLOCK
 
 # Determines whether hanging entities (such as Item Frames) can be protected by their host block
-hangers_inherit_reinforcement: false
+hangers_inherit_reinforcement: true
 
 # reinforcement_damageMultiplier is m where BlockDamage = 2 ^ (n/m) where n is equal to the number of days the group has been inactive
 reinforcement_damageMultiplier: 365
+
+# Set this to the unix timestamp in seconds when the activity feature is being added,
+# this is the time used when a player has not entered a region yet
+activity-default: 1646588117
+
+activity-map-worlds:
+  - world
+  - world_nether
+
+# Ideally should be a power of two
+activity-map-resolution: 128
+# Radius around each area to also refresh
+activity-map-radius: 4
+
 database:
   ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
   plugin: Citadel
