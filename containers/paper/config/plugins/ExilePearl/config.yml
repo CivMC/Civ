@@ -265,34 +265,42 @@ pearls:
   free_by_throwing: false
   free_teleport: true
   hotbar_needed: true
-  decay_interval_human: week
-  decay_interval_min_human: 10080
+  decay_interval_human: day
+  decay_interval_min_human: 1440 #used when showing cost of the pearl on item lore
   decay_interval_min: 60
   decay_amount: 1
-  decay_timeout_min: 10080
-  start_value: 12
-  max_value: 336
+  decay_timeout_min: 9590400 #effectively never timeout decay
+  start_value: 12 #starting pearl health is 12 hours
+  max_value: 336 #maximum pearl health is 14 days
+  cost_multiplier_days: 90 #this currently only affects pearls of players who have not logged in for this interval
   repair_materials:
     PRISON:
-      emerald:
-        material: EMERALD
-        repair: 3
-    EXILE:
-      obsidian:
-        material: OBSIDIAN
-        repair: 3
+     mana:
+       material: ENDER_EYE    
+       name: Player Essence
+       lore:
+         - Activity reward used to fuel pearls                                                      
+       repair: 24 #24 health is consumed per day, so one player can fuel one pearl
+#    EXILE:
+#      mana:                         
+#        material: ENDER_EYE    
+#        name: Player Essence
+#        lore:
+#         - Activity reward used to fuel pearls                                                      
+#        repair: 144 #768 health is consumed per day, so 144 allows a player to fill 1.5 exile pearls of equal streak (768*1.5/8)
   bastion_harm_amount: 2.0
   upgrade_materials:
-    special_diamond_thing:
-      material: DIAMOND
-      repair: 1
-      lore:
-       - This is used to upgrade exile pearls to prison pearls
+#    mana:                                                                    
+#      material: ENDER_EYE    
+#      name: Player Essence
+#      lore:
+#       - Activity reward used to fuel pearls                                                      
+#      repair: 149
+  default_pearl_type: PRISON
   allow_pearl_stealing: true
   allow_summoning: true
-  prison_world: world_the_end
+  prison_world: world_nether
   main_world: world
-  cost_multiplier_days: 365
 help_item:
   enabled: true
   item_name: "You've been pearled!"
@@ -311,32 +319,32 @@ damage_log:
   potion_damge: 6.0
 rules:
   pearl_radius: 1000
-  ignite: false
-  use_bed: false
-  spawn_reset: false
-  use_bucket: false
-  fill_bucket: false
-  milk_cows: true
-  use_potions: false
-  drink_brews: true
-  fill_cauldron: true
-  throw_pearl: false
-  pvp: false
-  kill_pets: false
-  kill_mobs: false
-  enchant: true
-  brew: true
-  suicide: true
-  mine_blocks: true
-  collect_xp: true
-  use_anvil: true
-  place_tnt: false
-  chat_local: false
-  create_bastion: false
-  damage_bastion: false
-  enter_bastion: false
-  damage_reinforcement: false
-  place_snitch: false
+  ignite: false # Can exiles start a fire
+  use_bed: true # Can exiles use a bed
+  spawn_reset: true # reset exile player bed when killed by a player
+  use_bucket: true # Can exiles empty a bucket
+  fill_bucket: true # can exiles fill a bucket
+  milk_cows: true # can exiles milk a cow
+  use_potions: false # can exiles use potions
+  drink_brews: true # can exiles drink brews
+  fill_cauldron: true # can exiles fill a cauldron
+  throw_pearl: false # can exiles throw ender pearls
+  pvp: false # can exiles pvp
+  kill_pets: false # can exiles kill pets
+  kill_mobs: false # can exiles kill mobs
+  enchant: true # can exiles enchant items
+  brew: true # can exiles brew potions
+  suicide: true # can exiles /suicide
+  mine_blocks: true # can exiles break blocks
+  collect_xp: true # can exiles collect xp
+  use_anvil: true # can exiles use an anvil
+  place_tnt: false # can exiles place tnt
+  chat_local: true # can exiles speak in local chat
+  create_bastion: true # can exiles place bastion blocks
+  damage_bastion: false # can exiles damage bastions
+  enter_bastion: false # can exiles enter a bastion field
+  damage_reinforcement: false # can exiles break reinforced blocks
+  place_snitch: true # can exiles place snitches
   protected_mobs:
   - Sheep
   - Cow
