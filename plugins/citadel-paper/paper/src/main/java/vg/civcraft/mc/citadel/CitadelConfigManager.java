@@ -39,12 +39,33 @@ public class CitadelConfigManager extends ConfigParser {
 
 	private boolean hangersInheritReinforcements;
 
+	private int activityMapResolution;
+	private int activityMapRadius;
+	private long activityDefault;
+	private List<String> activityWorlds;
+
 	public CitadelConfigManager(ACivMod plugin) {
 		super(plugin);
 	}
 
 	public List<Material> getAcidMaterials() {
 		return acidMaterials;
+	}
+
+	public int getActivityMapRadius() {
+		return activityMapRadius;
+	}
+
+	public int getActivityMapResolution() {
+		return activityMapResolution;
+	}
+
+	public long getActivityDefault() {
+		return activityDefault;
+	}
+
+	public List<String> getActivityWorlds() {
+		return activityWorlds;
 	}
 
 	public List<Material> getBlacklistedMaterials() {
@@ -134,6 +155,12 @@ public class CitadelConfigManager extends ConfigParser {
 		globalDecayTimer = ConfigHelper.parseTime(config.getString("global_decay_timer", "0"));
 		parseReinforcementTypes(config.getConfigurationSection("reinforcements"));
 		hangersInheritReinforcements = config.getBoolean("hangers_inherit_reinforcement", false);
+
+		activityMapRadius = config.getInt("activity-map-radius", 1);
+		activityMapResolution = config.getInt("activity-map-resolution", 512);
+		activityDefault = config.getLong("activity-default", System.currentTimeMillis());
+		activityWorlds = config.getStringList("activity-map-worlds");
+
 		return true;
 	}
 
