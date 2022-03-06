@@ -1,0 +1,56 @@
+debug: false
+
+max_streak: 1
+streak_delay: 20 hours
+streak_grace_period: 1 day
+#Needs to be a multiple of a full minute
+online_for_reward: 30 minutes
+
+give_reward_to_pearled: false
+multiply_pearl_cost: false
+
+login_reward:
+  essence:
+     material: ENDER_EYE
+     name: Player Essence
+     amount: 1
+     lore:
+      - Activity reward used to fuel pearls
+
+voting_reward:
+  essence:
+     material: ENDER_EYE
+     name: Player Essence
+     amount: 1
+     lore:
+      - Activity reward used to fuel pearls
+
+voting_sites:
+  #minecraftmp:
+  #  voting_cooldown: 20 hours
+  #  voting_url: 'https://minecraft-mp.com/server/255779/vote/?username=%PLAYER%'
+  #  internal_key: 'Minecraft-MP.com'
+  #  name: 'minecraft-mp.com'
+  #minecraftserverlist:
+  #  voting_cooldown: 20 hours
+  #  voting_url: 'https://minecraft-server-list.com/server/459507/vote/'
+  #  internal_key: 'MCSL'
+  #  name: 'minecraft-server-list.com'
+  #minecraftservers:
+  #  voting_cooldown: 20 hours
+  #  voting_url: 'https://minecraftservers.org/vote/583559'
+  #  internal_key: 'MinecraftServers.org'
+  #  name: 'minecraftservers.org'
+  
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
+  plugin: EssenceGlue
+  username: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}
+  host: ${CIV_MYSQL_HOST}
+  port: 3306
+  database: ${CIV_MYSQL_DATABASE}
+  poolsize: 5
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000  
