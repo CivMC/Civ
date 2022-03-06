@@ -17,7 +17,7 @@ logMessages: true
 debug: true
 
 #Still used in calculating the localized decay. The difference is localized decay uses different last activity timers for each region. 
-global_decay_timer: 3 months
+global_decay_timer: 5 minutes
 global_decay_multiplier: 2.0
 
 reinforcements:
