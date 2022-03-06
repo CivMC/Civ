@@ -1,5 +1,8 @@
 FROM itzg/minecraft-server
 
+# https://github.com/itzg/docker-minecraft-server/blob/master/README.md#versions
+ENV VERSION=1.18.1
+
 # https://github.com/itzg/docker-minecraft-server#optional-plugins-mods-and-config-attach-points
 COPY plugins /plugins
 ENV REMOVE_OLD_MODS=TRUE
