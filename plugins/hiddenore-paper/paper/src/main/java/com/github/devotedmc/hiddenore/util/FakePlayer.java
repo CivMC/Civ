@@ -2382,6 +2382,11 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
+	public @NotNull SpawnCategory getSpawnCategory() {
+		return null;
+	}
+
+	@Override
 	public PersistentDataContainer getPersistentDataContainer() {
 		// TODO Auto-generated method stub
 		return null;
@@ -3048,6 +3053,16 @@ public class FakePlayer implements Player {
 	public void setViewDistance(int arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public int getSimulationDistance() {
+		return 0;
+	}
+
+	@Override
+	public void setSimulationDistance(int simulationDistance) {
+
 	}
 
 	@Override
