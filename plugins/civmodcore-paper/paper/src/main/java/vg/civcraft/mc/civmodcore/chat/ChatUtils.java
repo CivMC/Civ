@@ -20,7 +20,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_18_R2.util.CraftChatMessage;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -371,8 +371,8 @@ public final class ChatUtils {
 			return false;
 		}
 		if (StringUtils.equals(
-				MiniMessage.get().serialize(former),
-				MiniMessage.get().serialize(latter))) {
+				MiniMessage.miniMessage().serialize(former),
+				MiniMessage.miniMessage().serialize(latter))) {
 			return true;
 		}
 		if (StringUtils.equals(

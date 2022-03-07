@@ -7,8 +7,8 @@ import java.util.Optional;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R2.block.CraftBlock;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public final class BlockProperties {
