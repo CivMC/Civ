@@ -7,7 +7,6 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -16,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 
 import java.util.Set;
@@ -33,6 +31,12 @@ public class ArmourBound extends BasicHack {
 		super(plugin, config);
 		this.plugin = plugin;
 		this.key = new NamespacedKey(plugin, "SAH_ArmourBound");
+		for (String string : whitelist) {
+			Material material = Material.matchMaterial(string);
+			if (material == null) {
+				this.plugin.getLogger().warning("ArmourBound found " + string + " as a whitelist item but couldn't match it, are you sure this is correct?");
+			}
+		}
 	}
 
 	@EventHandler
@@ -42,10 +46,9 @@ public class ArmourBound extends BasicHack {
 		if (newItem == null) {
 			return;
 		}
-		for (String string : whitelist) {
-			if (Material.matchMaterial(string) == null) {
-				this.plugin.getLogger().warning("ArmourBound found " + string + " as a whitelist item but couldn't match it, are you sure this is correct?");
-			}
+
+		if (!whitelist.contains(newItem.getType().toString())) {
+			return;
 		}
 
 		UUID boundUUID = getOrSetOwnerUUID(newItem, player);
