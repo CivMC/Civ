@@ -16,9 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
