@@ -19,6 +19,6 @@ dependencies {
     compileOnly("net.civmc.combattagplus:paper:2.0.0-SNAPSHOT:dev")
     compileOnly("net.civmc.banstick:paper:2.0.0-SNAPSHOT:dev")
 
-	compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0-SNAPSHOT")
+	compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0")
 
 }
