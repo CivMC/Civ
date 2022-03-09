@@ -1,7 +1,7 @@
 server_connect_timeout: 10000
 listeners:
   - query_port: 25565
-    motd: "You're a §l§abeautiful§r person."
+    motd: "§rYou're a §l§abeautiful§r person."
     tab_list: GLOBAL
     query_enabled: false
     proxy_protocol: false
