@@ -65,8 +65,9 @@ public class ArmourBound extends BasicHack {
 		UUID boundUUID = UUID.fromString(itemContainer.get(this.key, PersistentDataType.STRING));
 		if (!boundUUID.equals(player.getUniqueId())) {
 			player.closeInventory();
-			player.getWorld().dropItemNaturally(player.getLocation(), newItem);
-			player.getInventory().getItem(realSlot).setAmount(0);
+			ItemStack toDrop = newItem.clone();
+			newItem.setAmount(0);
+			player.getWorld().dropItemNaturally(player.getLocation(), toDrop);
 			player.sendMessage(Component.text("This armor is not bound to you!").color(NamedTextColor.RED));
 		}
 	}
