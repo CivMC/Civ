@@ -49,10 +49,9 @@ public class PortalModifyHack extends BasicHack {
 		if (world == null) {
 			return;
 		}
-		Location to = new Location(getTargetWorld(player), event.getTo().getX(), event.getTo().getY(), event.getTo().getZ());
+		Location to = new Location(getTargetWorld(player), event.getFrom().getX(), event.getFrom().getY(), event.getFrom().getZ());
 		event.setTo(to);
 		if (to.getWorld().getName().equals(targetWorld)) {
-			System.out.println("Spawning portal");
 			spawnExitPortal(to);
 
 		}
@@ -78,6 +77,6 @@ public class PortalModifyHack extends BasicHack {
 		//Taken from EndDragonFight#spawnExitPortal
 		EndPodiumFeature podiumFeature = new EndPodiumFeature(true);
 		ServerLevel level = ((CraftWorld) location.getWorld()).getHandle();
-		podiumFeature.configured(FeatureConfiguration.NONE).place(level, level.getChunkSource().getGenerator(), new Random(), new BlockPos(location.getX(), location.getY() - 7, location.getZ()));
+		podiumFeature.configured(FeatureConfiguration.NONE).place(level, level.getChunkSource().getGenerator(), new Random(), new BlockPos(location.getX() + 2, location.getY() - 1, location.getZ() + 2));
 	}
 }
