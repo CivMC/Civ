@@ -11,6 +11,7 @@ import vg.civcraft.mc.citadel.listener.EntityListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
 import vg.civcraft.mc.citadel.listener.ModeListener;
 import vg.civcraft.mc.citadel.listener.RedstoneListener;
+import vg.civcraft.mc.citadel.listener.WorldBorderListener;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.CitadelChunkData;
 import vg.civcraft.mc.citadel.model.CitadelDAO;
@@ -165,5 +166,6 @@ public class Citadel extends ACivMod {
 		getServer().getPluginManager().registerEvents(new ModeListener(this), this);
 		getServer().getPluginManager().registerEvents(new RedstoneListener(config.getMaxRedstoneDistance()), this);
 		getServer().getPluginManager().registerEvents(new ActivityListener(activityMap), this);
+		getServer().getPluginManager().registerEvents(new WorldBorderListener(), this);
 	}
 }

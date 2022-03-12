@@ -1,12 +1,15 @@
 package vg.civcraft.mc.citadel;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffect;
@@ -43,6 +46,8 @@ public class CitadelConfigManager extends ConfigParser {
 	private int activityMapRadius;
 	private long activityDefault;
 	private List<String> activityWorlds;
+
+	private Map<World, WorldBorderBuffers> buffers;
 
 	public CitadelConfigManager(ACivMod plugin) {
 		super(plugin);
@@ -82,6 +87,10 @@ public class CitadelConfigManager extends ConfigParser {
 
 	public boolean doHangersInheritReinforcements() {
 		return hangersInheritReinforcements;
+	}
+
+	public Map<World, WorldBorderBuffers> getWorldBorderBuffers() {
+		return this.buffers;
 	}
 
 	private ReinforcementEffect getReinforcementEffect(ConfigurationSection config) {
@@ -161,6 +170,8 @@ public class CitadelConfigManager extends ConfigParser {
 		activityDefault = config.getLong("activity-default", System.currentTimeMillis());
 		activityWorlds = config.getStringList("activity-map-worlds");
 
+		parseWorldBorderBuffers(config.getConfigurationSection("world-border-buffers"));
+
 		return true;
 	}
 
@@ -233,4 +244,68 @@ public class CitadelConfigManager extends ConfigParser {
 		}
 	}
 
+	private void parseWorldBorderBuffers(ConfigurationSection config) {
+		buffers = new HashMap<>();
+		if (config == null) {
+			logger.info("No Buffers zones found in config");
+			return;
+		}
+		for (String key : config.getKeys(false)) {
+			World world = Bukkit.getWorld(key);
+			if (world == null) {
+				logger.warning("WorldBuffer at " + config.getCurrentPath() + " couldn't find a world with this name: " + key);
+				continue;
+			}
+			if (config.getConfigurationSection(key) == null) {
+				logger.warning("Couldn't loop inside a world buffer config section");
+				continue;
+			}
+			config = config.getConfigurationSection(key);
+			String worldBorderShape = config.getString("world_border_shape", "square");
+			double worldBorderBufferSize = config.getDouble("world_border_buffer_size", 100D);
+			Map<String, Double> worldBorderCenter = new HashMap<>();
+			config = config.getConfigurationSection("world_border_center");
+			worldBorderCenter.put("x", config.getDouble("x", 0.0));
+			worldBorderCenter.put("z", config.getDouble("z", 0.0));
+			buffers.put(world, new WorldBorderBuffers(worldBorderCenter, worldBorderShape, worldBorderBufferSize));
+		}
+
+	}
+
+	public class WorldBorderBuffers {
+
+		private Map<?, ?> borderCenter;
+		private String borderShape;
+		private double bufferSize;
+
+		public WorldBorderBuffers(Map<?, ?> borderCenter, String borderShape, double bufferSize) {
+			this.borderCenter = borderCenter;
+			this.borderShape = borderShape;
+			this.bufferSize = bufferSize;
+		}
+
+		public Map<?, ?> getBorderCenter() {
+			return borderCenter;
+		}
+
+		public void setBorderCenter(Map<?, ?> borderCenter) {
+			this.borderCenter = borderCenter;
+		}
+
+		public String getBorderShape() {
+			return borderShape;
+		}
+
+		public void setBorderShape(String borderShape) {
+			this.borderShape = borderShape;
+		}
+
+		public double getBufferSize() {
+			return bufferSize;
+		}
+
+		public void setBufferSize(double bufferSize) {
+			this.bufferSize = bufferSize;
+		}
+	}
 }
