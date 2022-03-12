@@ -328,7 +328,7 @@ reinforcement_damageMultiplier: 365
 
 # Set this to the unix timestamp in seconds when the activity feature is being added,
 # this is the time used when a player has not entered a region yet
-activity-default: 1646588117
+# activity-default: 1646588117
 
 activity-map-worlds:
   - world
