@@ -5,6 +5,7 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.RepairMaterial;
+import com.devotedmc.ExilePearl.util.Permission;
 import com.devotedmc.ExilePearl.util.SpawnUtil;
 import java.util.Set;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
@@ -20,6 +21,8 @@ public class CmdUpgrade extends PearlCommand {
 		this.aliases.add("upgrade");
 		this.helpShort = "Upgrades an Exile Pearl to a Prison Pearl";
 		this.senderMustBePlayer = true;
+		this.permission = Permission.UPGRADE.node;
+		this.visibility = CommandVisibility.SECRET;
 	}
 
 	@Override

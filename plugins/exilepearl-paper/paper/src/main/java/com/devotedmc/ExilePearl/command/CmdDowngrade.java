@@ -4,6 +4,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlType;
+import com.devotedmc.ExilePearl.util.Permission;
 import com.devotedmc.ExilePearl.util.SpawnUtil;
 
 /**
@@ -16,6 +17,8 @@ public class CmdDowngrade extends PearlCommand {
 		this.aliases.add("downgrade");
 		this.helpShort = "Downgrades a Prison Pearl";
 		this.senderMustBePlayer = true;
+		this.permission = Permission.DOWNGRADE.node;
+		this.visibility = CommandVisibility.SECRET;
 	}
 
 	@Override

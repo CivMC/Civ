@@ -13,7 +13,9 @@ public enum Permission
 	SET_TYPE("settype"),
 	SET_KILLER("setkiller"),
 	SET_DATE("setdate"),
-	CONFIG("config")
+	CONFIG("config"),
+	DOWNGRADE("downgrade"),
+	UPGRADE("upgrade")
 	;
 
 	/**
