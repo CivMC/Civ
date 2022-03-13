@@ -233,5 +233,5 @@ world-border-buffers:
     world_border_buffer_size: 100
     #Center of the border
     world_border_center:
-      x: 0.0
-      z: 0.0
+      x: 0.5
+      z: 0.5
