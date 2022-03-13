@@ -272,7 +272,7 @@ pearls:
   decay_timeout_min: 9590400 #effectively never timeout decay
   start_value: 12 #starting pearl health is 12 hours
   max_value: 336 #maximum pearl health is 14 days
-  cost_multiplier_days: 90 #this currently only affects pearls of players who have not logged in for this interval
+  cost_multiplier_days: 90 #increase pearl repair cost after 90 days
   repair_materials:
     PRISON:
      mana:
