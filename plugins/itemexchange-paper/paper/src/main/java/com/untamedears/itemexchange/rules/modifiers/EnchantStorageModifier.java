@@ -76,7 +76,7 @@ public final class EnchantStorageModifier extends ModifierData {
 
 	@Override
 	public void toNBT(@Nonnull final NBTCompound nbt) {
-		nbt.put(ENCHANTS_KEY, NBTEncodings.encodeLeveledEnchants(getEnchants()));
+		nbt.setCompound(ENCHANTS_KEY, NBTEncodings.encodeLeveledEnchants(getEnchants()));
 	}
 
 	@Nonnull
