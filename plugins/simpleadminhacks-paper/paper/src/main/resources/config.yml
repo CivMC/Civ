@@ -17,6 +17,18 @@ hacks:
   AntiStatisChamber:
     enabled: true
     pearlLifetime: 5m
+  #Bounds armour to specific players disallowing others to wear the same armour piece after first equip
+  ArmourBound:
+    enabled: true
+    whitelist:
+      - DIAMOND_HELMET
+      - DIAMOND_CHESTPLATE
+      - DIAMOND_LEGGINGS
+      - DIAMOND_BOOTS
+      - NETHERITE_HELMET
+      - NETHERITE_CHESTPLATE
+      - NETHERITE_LEGGINGS
+      - NETHERITE_BOOTS
   ArthropodEggHack:
     enabled: true
     eggChance: 0.03
