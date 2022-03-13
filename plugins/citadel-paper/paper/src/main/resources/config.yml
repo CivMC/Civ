@@ -227,11 +227,11 @@ activity-default: 1621639167
 world-border-buffers:
   #Has to be the world name
   world:
-    #'circle' or 'square' supported only
-    world_border_shape: circle
+    #'CIRCLE' or 'SQUARE' supported only
+    shape: CIRCLE
     #Radius from border center you want the no reinforcement zone to kick in
-    world_border_buffer_size: 100
+    starting_radius:
     #Center of the border
-    world_border_center:
+    center:
       x: 0.5
       z: 0.5

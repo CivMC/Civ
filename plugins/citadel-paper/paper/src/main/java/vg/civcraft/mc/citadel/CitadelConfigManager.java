@@ -1,9 +1,11 @@
 package vg.civcraft.mc.citadel;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -12,6 +14,7 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.citadel.model.WorldBorderBuffers;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffect;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -47,7 +50,7 @@ public class CitadelConfigManager extends ConfigParser {
 	private long activityDefault;
 	private List<String> activityWorlds;
 
-	private Map<World, WorldBorderBuffers> buffers;
+	private Map<UUID, WorldBorderBuffers> buffers;
 
 	public CitadelConfigManager(ACivMod plugin) {
 		super(plugin);
@@ -89,8 +92,8 @@ public class CitadelConfigManager extends ConfigParser {
 		return hangersInheritReinforcements;
 	}
 
-	public Map<World, WorldBorderBuffers> getWorldBorderBuffers() {
-		return this.buffers;
+	public Map<UUID, WorldBorderBuffers> getWorldBorderBuffers() {
+		return Collections.unmodifiableMap(this.buffers);
 	}
 
 	private ReinforcementEffect getReinforcementEffect(ConfigurationSection config) {
@@ -256,56 +259,29 @@ public class CitadelConfigManager extends ConfigParser {
 				logger.warning("WorldBuffer at " + config.getCurrentPath() + " couldn't find a world with this name: " + key);
 				continue;
 			}
-			if (config.getConfigurationSection(key) == null) {
+			ConfigurationSection insideWorld = config.getConfigurationSection(key);
+			if (insideWorld == null) {
 				logger.warning("Couldn't loop inside a world buffer config section");
 				continue;
 			}
-			config = config.getConfigurationSection(key);
-			String worldBorderShape = config.getString("world_border_shape", "square");
-			double worldBorderBufferSize = config.getDouble("world_border_buffer_size", 100D);
-			Map<String, Double> worldBorderCenter = new HashMap<>();
-			config = config.getConfigurationSection("world_border_center");
-			worldBorderCenter.put("x", config.getDouble("x", 0.0));
-			worldBorderCenter.put("z", config.getDouble("z", 0.0));
-			buffers.put(world, new WorldBorderBuffers(worldBorderCenter, worldBorderShape, worldBorderBufferSize));
+			WorldBorderBuffers.Shape worldBorderShape;
+			try {
+				worldBorderShape = WorldBorderBuffers.Shape.valueOf(insideWorld.getString("shape", "square").toUpperCase());
+			} catch (IllegalArgumentException exception) {
+				logger.warning("Shape at " + insideWorld.getCurrentPath() + " was not a valid input");
+				continue;
+			}
+			double worldBorderBufferSize = insideWorld.getDouble("starting_radius", 100D);
+			ConfigurationSection insideCenter = insideWorld.getConfigurationSection("center");
+			if (insideCenter == null) {
+				logger.info("No center for world border buffer found at " + insideWorld.getCurrentPath());
+				continue;
+			}
+			double centerX = insideCenter.getDouble("x", 0.0);
+			double centerZ = insideCenter.getDouble("z", 0.0);
+			logger.info("Parsed World Border Buffer zone for world " + world.getName() + " with radius " + worldBorderBufferSize + " in shape " + worldBorderShape + " centered at  " + centerX + ", " + centerZ);
+			buffers.put(world.getUID(), new WorldBorderBuffers(centerX, centerZ, worldBorderShape, worldBorderBufferSize));
 		}
 
-	}
-
-	public class WorldBorderBuffers {
-
-		private Map<?, ?> borderCenter;
-		private String borderShape;
-		private double bufferSize;
-
-		public WorldBorderBuffers(Map<?, ?> borderCenter, String borderShape, double bufferSize) {
-			this.borderCenter = borderCenter;
-			this.borderShape = borderShape;
-			this.bufferSize = bufferSize;
-		}
-
-		public Map<?, ?> getBorderCenter() {
-			return borderCenter;
-		}
-
-		public void setBorderCenter(Map<?, ?> borderCenter) {
-			this.borderCenter = borderCenter;
-		}
-
-		public String getBorderShape() {
-			return borderShape;
-		}
-
-		public void setBorderShape(String borderShape) {
-			this.borderShape = borderShape;
-		}
-
-		public double getBufferSize() {
-			return bufferSize;
-		}
-
-		public void setBufferSize(double bufferSize) {
-			this.bufferSize = bufferSize;
-		}
 	}
 }
