@@ -49,15 +49,6 @@ public class GlobalChunkMetaManager {
 			Supplier<ChunkMeta<?>> computer, boolean alwaysLoaded) {
 		return getWorldManager(world).computeIfAbsent(pluginID, chunkX, chunkZ, computer, alwaysLoaded);
 	}
-
-	/**
-	 * Saves all data out to the database
-	 */
-	public void flushAll() {
-		for (WorldChunkMetaManager man : worldToManager.values()) {
-			man.flushAll();
-		}
-	}
 	
 	/**
 	 * Saves all data for one specific plugin out to the database

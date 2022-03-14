@@ -28,6 +28,8 @@ public class WorldChunkMetaManager {
 	 */
 	private static final long UNLOAD_DELAY = 5L * 60L * 1000L;
 	private static final long UNLOAD_CHECK_INTERVAL = 1000L;
+	
+	private static final long REGULAR_SAVE_INTERVAL = 60L * 1000L;
 
 	private final short worldID;
 	private final Map<ChunkCoord, ChunkCoord> metas;
@@ -56,6 +58,7 @@ public class WorldChunkMetaManager {
 		}));
 		registerUnloadRunnable();
 		startChunkLoadingConsumer();
+		registerRegularSaveRunnable();
 	}
 
 	ChunkMeta<?> computeIfAbsent(short pluginID, int x, int z, Supplier<ChunkMeta<?>> computer, boolean alwaysLoaded) {
@@ -69,19 +72,6 @@ public class WorldChunkMetaManager {
 		existing.setPluginID(pluginID);
 		coord.addChunkMeta(existing);
 		return existing;
-	}
-
-	/**
-	 * Saves all entries to the database
-	 */
-	void flushAll() {
-		synchronized (metas) {
-			for (ChunkCoord coord : metas.keySet()) {
-				synchronized (coord) {
-					coord.fullyPersist();
-				}
-			}
-		}
 	}
 
 	void flushPluginData(short pluginID) {
@@ -175,6 +165,21 @@ public class WorldChunkMetaManager {
 			unloadingQueue.remove(chunkCoord);
 		}
 		chunkCoord.minecraftChunkLoaded();
+	}
+	
+	private void registerRegularSaveRunnable() {
+		scheduler.scheduleWithFixedDelay(() -> {
+			//we don't take a lock on metas, because we will not modify it
+			for(ChunkCoord coord : metas.values()) {
+				synchronized (coord) {
+					if (!coord.isChunkLoaded()) {
+						// to avoid race conditions, we will not write out chunks currently unloaded
+						continue;
+					}
+					coord.fullyPersist();
+				}
+			}
+		}, REGULAR_SAVE_INTERVAL, REGULAR_SAVE_INTERVAL, TimeUnit.MILLISECONDS);
 	}
 
 	private void registerUnloadRunnable() {

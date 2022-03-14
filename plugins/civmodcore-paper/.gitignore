@@ -8,3 +8,5 @@
 *.iml
 .gradle
 build
+*/.settings/**
+**/bin/
