@@ -7,6 +7,10 @@ import com.untamedears.jukealert.model.appender.DormantCullingAppender;
 import com.untamedears.jukealert.model.appender.LeverToggleAppender;
 import com.untamedears.jukealert.model.appender.ShowOwnerOnDestroyAppender;
 import com.untamedears.jukealert.model.appender.SnitchLogAppender;
+import com.untamedears.jukealert.model.field.FieldManager;
+import com.untamedears.jukealert.model.field.SingleCuboidRangeManager;
+import com.untamedears.jukealert.model.field.VariableSizeCuboidRangeManager;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -61,8 +65,9 @@ public class SnitchTypeManager {
 			return false;
 		}
 		String name = config.getString("name");
-		if (!config.isInt("range")) {
-			logger.warning("Snitch type at " + config.getCurrentPath() + " had no range specified");
+		Function<Snitch, FieldManager> fieldGenerator = getFieldInstanciation(config);
+		if (fieldGenerator == null) {
+			logger.warning("Snitch type at " + config.getCurrentPath() + " had no valid field specified");
 			return false;
 		}
 		sb.append("Successfully parsed type ");
@@ -71,9 +76,6 @@ public class SnitchTypeManager {
 		sb.append(id);
 		sb.append(", item: ");
 		sb.append(item.toString());
-		int range = config.getInt("range");
-		sb.append(", range: ");
-		sb.append(range);
 		sb.append(", appenders: ");
 		List<Function<Snitch, AbstractSnitchAppender>> appenderInstanciations = new ArrayList<>();
 		if (config.isConfigurationSection("appender")) {
@@ -101,11 +103,40 @@ public class SnitchTypeManager {
 		if (appenderInstanciations.isEmpty()) {
 			logger.warning("Snitch config at "  + config.getCurrentPath() + " has no appenders, this is likely not what you intended");
 		}
-		SnitchFactoryType configFactory = new SnitchFactoryType(item, range, name, id, appenderInstanciations);
+		SnitchFactoryType configFactory = new SnitchFactoryType(item, fieldGenerator, name, id, appenderInstanciations);
 		configFactoriesById.put(configFactory.getID(), configFactory);
 		configFactoriesByItem.put(configFactory.getItem(), configFactory);
 		logger.info(sb.toString());
 		return true;
+	}
+	
+	private Function<Snitch, FieldManager> getFieldInstanciation(ConfigurationSection config) {
+		Logger logger = JukeAlert.getInstance().getLogger();
+		if (config.isInt("range")) {
+			int range = config.getInt("range");
+			return (s -> new SingleCuboidRangeManager(range, s));
+		}
+		ConfigurationSection rangeSection = config.getConfigurationSection("range");
+		if (rangeSection == null) {
+			logger.warning("Snitch config at "  + config.getCurrentPath() + " had no range config");
+			return null;
+		}
+		String type = rangeSection.getString("type", "none");
+		switch(type) {
+		case "cube":
+			int range = rangeSection.getInt("range", 11);
+			logger.info("Parsed cube FieldManager with range " + range);
+			return (s -> new SingleCuboidRangeManager(range, s));
+		case "cuboid":
+			int width = rangeSection.getInt("width");
+			int height = rangeSection.getInt("height");
+			logger.info("Parsed cuboid FieldManager with width " + width + " and height " + height);
+			return (s -> new VariableSizeCuboidRangeManager(width, height, s));
+		default:
+			logger.warning("Unknown range type " + type + " at " + rangeSection.getCurrentPath());
+			return null;
+		}
+		
 	}
 
 	/**

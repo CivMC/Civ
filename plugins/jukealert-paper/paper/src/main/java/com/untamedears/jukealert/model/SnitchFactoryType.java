@@ -1,6 +1,7 @@
 package com.untamedears.jukealert.model;
 
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
+import com.untamedears.jukealert.model.field.FieldManager;
 import com.untamedears.jukealert.model.field.SingleCuboidRangeManager;
 import java.util.List;
 import java.util.function.Function;
@@ -12,21 +13,21 @@ public class SnitchFactoryType {
 	private final int id;
 	private final ItemStack item;
 	private final String name;
-	private final int range;
+	private final Function<Snitch, FieldManager> fieldGenerator;
 
 	private final List<Function<Snitch, AbstractSnitchAppender>> appenders;
 
-	public SnitchFactoryType(ItemStack item, int range, String name, int id,
+	public SnitchFactoryType(ItemStack item, Function<Snitch, FieldManager> fieldGenerator, String name, int id,
 			List<Function<Snitch, AbstractSnitchAppender>> appenders) {
 		this.item = item;
 		this.name = name;
 		this.id = id;
-		this.range = range;
+		this.fieldGenerator = fieldGenerator;
 		this.appenders = appenders;
 	}
 
 	public Snitch create(int snitchID, Location location, String name, int groupID, boolean isNew) {
-		Snitch snitch = new Snitch(snitchID, location, isNew, groupID, s -> new SingleCuboidRangeManager(range, s),
+		Snitch snitch = new Snitch(snitchID, location, isNew, groupID, fieldGenerator,
 				this, name);
 		for(Function<Snitch, AbstractSnitchAppender> appenderFunc : appenders) {
 			AbstractSnitchAppender appender = appenderFunc.apply(snitch);
