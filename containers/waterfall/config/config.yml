@@ -1,6 +1,6 @@
 server_connect_timeout: 10000
 listeners:
-  - query_port: 25566
+  - query_port: 25565
     motd: "§rYou're a §l§abeautiful§r person."
     tab_list: GLOBAL
     query_enabled: false
