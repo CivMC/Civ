@@ -44,5 +44,5 @@ disabled_commands:
 servers:
   lobby:
     motd: '&1CivMC'
-    address: "paper:25565"
+    address: "paper:25566"
     restricted: false
