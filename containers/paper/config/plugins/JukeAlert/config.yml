@@ -54,7 +54,7 @@ snitchConfigs:
 
 
 database:
-  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
   plugin: JukeAlert
   user: '{{ mysql_user }}'
   password: '{{ mysql_non_root_pass }}'
