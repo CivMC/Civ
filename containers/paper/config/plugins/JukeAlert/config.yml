@@ -1,0 +1,68 @@
+snitchConfigs:
+  note:
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: NOTE_BLOCK
+      amount: 1
+    id: 0
+    name: Snitch
+    range: 11
+    appender:
+      broadcast:
+        trigger:
+         - ENTRY
+         - LOGIN
+         - LOGOUT
+      dormantcull:
+        lifeTime: 4 weeks
+        dormantTime: 4 weeks
+      showownerondestroy: {}
+  juke:
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: JUKEBOX
+      amount: 1
+    id: 1
+    name: Logsnitch
+    range: 11
+    appender:
+      broadcast:
+        trigger:
+         - ENTRY
+         - LOGIN
+         - LOGOUT
+      dormantcull:
+        lifeTime: 6 weeks
+        dormantTime: 6 weeks
+      showownerondestroy: {}
+      levertoggle:
+        NORTH:
+          trigger:
+           - ENTRY
+           - LOGIN
+        SOUTH: 
+          trigger:
+           - OPEN_CONTAINER
+        EAST: 
+          trigger:
+           - BLOCK_PLACE
+        WEST: 
+          trigger:
+           - BLOCK_BREAK
+      log:
+        acceptAll: true
+
+
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
+  plugin: JukeAlert
+  user: '{{ mysql_user }}'
+  password: '{{ mysql_non_root_pass }}'
+  host: '{{ mysql_host }}'
+  port: 3306
+  database: '{{ mysql_db_name }}'
+  poolsize: 5
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000  
+
