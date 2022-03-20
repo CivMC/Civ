@@ -1,0 +1,26 @@
+settings:
+  default: &default
+    portainer:
+      enabled: false
+    portainer-agent: # TODO: Create Stack
+      enabled: false
+    traefik:
+      enabled: true
+    auth:
+      enabled: false
+    monitoring:
+      enabled: true
+    minecraft:
+      enabled: true
+
+  production:
+    <<: *default
+    portainer:
+      enabled: true
+    auth:
+      enabled: true
+
+  test:
+    <<: *default
+    portainer-agent:
+      enabled: true

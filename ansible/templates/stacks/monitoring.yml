@@ -1,0 +1,141 @@
+version: '3.8'
+
+services:
+
+  grafana:
+    image: grafana/grafana-oss
+    networks:
+      - traefik-public
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      GF_SERVER_DOMAIN: "{{secret.monitoring.grafana.host}}"
+      GF_SERVER_ROOT_URL: "https://{{secret.monitoring.grafana.host}}"
+      # TODO: If oauth enabled
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+      GF_AUTH_GENERIC_OAUTH_NAME: "Keycloak"
+      GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
+      GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "{{secret.monitoring.grafana.oauth.client_id}}"
+      GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: "{{secret.monitoring.grafana.oauth.client_secret}}"
+      GF_AUTH_GENERIC_OAUTH_SCOPES: profile
+      GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/auth/realms/Internal/protocol/openid-connect/auth"
+      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/auth/realms/Internal/protocol/openid-connect/token"
+      GF_AUTH_GENERIC_OAUTH_API_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/auth/realms/Internal/protocol/openid-connect/userinfo"
+      GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'"
+    deploy:
+      placement:
+        constraints: [node.hostname == civmc-prod]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.grafana-public-http.rule=Host(`{{secret.monitoring.grafana.host}}`)
+        - traefik.http.routers.grafana-public-http.entrypoints=http
+        - traefik.http.routers.grafana-public-http.middlewares=https-redirect
+        - traefik.http.routers.grafana-public-https.rule=Host(`{{secret.monitoring.grafana.host}}`)
+        - traefik.http.routers.grafana-public-https.entrypoints=https
+        - traefik.http.routers.grafana-public-https.tls=true
+        - traefik.http.routers.grafana-public-https.tls.certresolver=le
+        - traefik.http.services.grafana-public.loadbalancer.server.port=3000
+
+#  telegraf:
+#    image: telegraf:latest
+#    user: telegraf:998
+#    network_mode: "host"
+#    volumes:
+#      - telegraf-conf:/etc/telegraf
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
+#      - /sys:/host/sys:ro
+#      - /proc:/host/proc:ro
+#      - /etc:/host/etc:ro
+#    environment:
+#      HOST_PROC: /host/proc
+#      HOST_SYS: /host/sys
+#      HOST_ETC: /host/etc
+#      ENGINE_HOST: "{{ '{{.Node.Hostname}}' }}"
+#    deploy:
+#      mode: global
+
+#  loki:
+#    image: grafana/loki
+#    networks:
+#      - traefik-public
+#    volumes:
+#      - loki-data:/data/loki
+#      - loki-config:/etc/loki
+#    deploy:
+#      placement:
+#        constraints: [node.hostname == civmc-test]
+#      labels:
+#        - traefik.enable=true
+#        - traefik.docker.network=traefik-public
+#        - traefik.constraint-label=traefik-public
+#        - traefik.http.routers.loki-public-http.rule=Host(`${LOKI_DOMAIN?Variable not set}`)
+#        - traefik.http.routers.loki-public-http.entrypoints=http
+#        - traefik.http.routers.loki-public-http.middlewares=https-redirect
+#        - traefik.http.routers.loki-public-https.rule=Host(`${LOKI_DOMAIN?Variable not set}`)
+#        - traefik.http.routers.loki-public-https.entrypoints=https
+#        - traefik.http.routers.loki-public-https.tls=true
+#        - traefik.http.routers.loki-public-https.tls.certresolver=le
+#        - traefik.http.services.loki-public.loadbalancer.server.port=3100
+
+#  influxdb:
+#    image: influxdb
+#    networks:
+#      - traefik-public
+#    volumes:
+#      - influx-data:/var/lib/influxdb2
+#    deploy:
+#      placement:
+#        constraints: [node.hostname == civmc-test]
+#      labels:
+#        - traefik.enable=true
+#        - traefik.docker.network=traefik-public
+#        - traefik.constraint-label=traefik-public
+#        - traefik.http.routers.influx-public-http.rule=Host(`${DOMAIN?Variable not set}`)
+#        - traefik.http.routers.influx-public-http.entrypoints=http
+#        - traefik.http.routers.influx-public-http.middlewares=https-redirect
+#        - traefik.http.routers.influx-public-https.rule=Host(`${DOMAIN?Variable not set}`)
+#        - traefik.http.routers.influx-public-https.entrypoints=https
+#        - traefik.http.routers.influx-public-https.tls=true
+#        - traefik.http.routers.influx-public-https.tls.certresolver=le
+#        - traefik.http.services.influx-public.loadbalancer.server.port=8086
+
+volumes:
+  grafana-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/stacks/monitoring/grafana-data
+
+#  loki-data:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      o: bind
+#      device: /opt/swarm/stack/monitoring/loki-data
+#  loki-config:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      o: bind
+#      device: /opt/swarm/stack/monitoring/loki-config
+#
+#  influx-data:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      o: bind
+#      device: /opt/swarm/stack/monitoring/influx-data
+#  telegraf-conf:
+#    driver: local
+#    driver_opts:
+#      type: none
+#      o: bind
+#      device: /opt/swarm/stack/monitoring/telegraf-conf
+
+networks:
+  traefik-public:
+    external: true

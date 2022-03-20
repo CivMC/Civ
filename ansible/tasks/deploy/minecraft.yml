@@ -1,0 +1,46 @@
+- name: Minecraft | Create Folder
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.minecraft.enabled
+  file:
+    path: /opt/stacks/minecraft
+    state: directory
+
+- name: Minecraft | Create volume folders
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.minecraft.enabled
+  file:
+    path: '{{item}}'
+    state: directory
+  loop:
+    - /opt/stacks/minecraft/paper-data
+    - /opt/stacks/minecraft/kira-config
+    - /opt/stacks/minecraft/mariadb-data
+    - /opt/stacks/minecraft/postgres-data
+
+- name: Minecraft | Copy Stack
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.minecraft.enabled
+  template:
+    src: ../../templates/stacks/minecraft.yml
+    dest: /opt/stacks/minecraft/minecraft.yml
+
+- name: Minecraft | Copy Kira Config
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.minecraft.enabled
+  template:
+    src: ../../templates/kira-config.json
+    dest: /opt/stacks/minecraft/kira-config/config.json
+
+- name: Minecraft | Deploy Stack
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.minecraft.enabled
+  docker_stack:
+    state: present
+    name: minecraft
+    compose:
+      - /opt/stacks/minecraft/minecraft.yml

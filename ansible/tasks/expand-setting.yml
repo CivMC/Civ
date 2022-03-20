@@ -1,0 +1,15 @@
+- name: Expand Setting | Include settings
+  include_vars:
+    file: ../variables/settings.yml
+
+- name: Expand Setting | Include secrets
+  include_vars:
+    file: ../variables/secrets.yml
+
+- name: Expand Setting | Set Setting
+  set_fact:
+    secret: "{{secrets[setting]}}"
+
+- name: Expand Setting | Set Setting
+  set_fact:
+    setting: "{{settings[setting]}}"

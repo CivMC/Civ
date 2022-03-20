@@ -1,0 +1,15 @@
+- name: Install
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install | Expand setting
+      include: ../tasks/expand-setting.yml
+
+    - name: Deploy | Include Tasks
+      include_tasks:
+        file: '../tasks/install/{{install_task}}.yml'
+      loop:
+        - docker
+      loop_control:
+        loop_var: install_task

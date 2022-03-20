@@ -1,0 +1,35 @@
+- name: Auth | Create folder
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.auth.enabled
+  file:
+    path: /opt/stacks/auth
+    state: directory
+
+- name: Auth | Create volume folders
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.auth.enabled
+  file:
+    path: '{{item}}'
+    state: directory
+  loop:
+    - /opt/stacks/auth/postgres-data
+
+- name: Auth | Copy Stack
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.auth.enabled
+  template:
+    src: ../../templates/stacks/auth.yml
+    dest: /opt/stacks/auth/auth.yml
+
+- name: Auth | Deploy Stack
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.auth.enabled
+  docker_stack:
+    state: present
+    name: auth
+    compose:
+      - /opt/stacks/auth/auth.yml

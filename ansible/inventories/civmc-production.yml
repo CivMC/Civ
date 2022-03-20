@@ -1,0 +1,10 @@
+all:
+  hosts:
+    civmc-prod:
+      ansible_host: 15.204.163.224
+  children:
+    swarm_manager:
+      hosts:
+        civmc-prod:
+  vars:
+    setting: production

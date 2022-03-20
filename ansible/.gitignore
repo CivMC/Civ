@@ -1,0 +1,10 @@
+variables/secrets.yml
+
+# Editors
+## IDEA
+.idea
+*.iml
+*.iws
+
+## Vim
+*.swp

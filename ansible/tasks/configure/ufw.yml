@@ -1,0 +1,45 @@
+- name: Allow SSH From anywhere
+  ufw:
+    rule: allow
+    name: OpenSSH
+
+# TODO: Nodes in swarm
+#- name: Allow Docker-machine communication from trusted
+#  ufw:
+#    rule: allow
+#    port: 2376
+#    src: '{{ item }}'
+#  loop: '{{ trusted_ips }}'
+
+#- name: Allow Swarm Manager communication from trusted
+#  ufw:
+#    rule: allow
+#    port: 2377
+#    src: '{{ item }}'
+#  loop: '{{ trusted_ips }}'
+#
+#- name: Allow Swarm Manager communication from trusted
+#  ufw:
+#    rule: allow
+#    port: 2377
+#    src: '{{ item }}'
+#  loop: '{{ trusted_ips }}'
+#
+#- name: Allow Container network communication from trusted
+#  ufw:
+#    rule: allow
+#    port: 7946
+#    src: '{{ item }}'
+#  loop: '{{ trusted_ips }}'
+#
+#- name: Allow Ingress network communication from trusted
+#  ufw:
+#    rule: allow
+#    port: 4789
+#    src: '{{ item }}'
+#  loop: '{{ trusted_ips }}'
+
+- name: Disallow everything else and enable UFW
+  ufw:
+    state: enabled
+    policy: reject

@@ -1,0 +1,194 @@
+version: '3.8'
+
+services:
+
+  waterfall:
+    image: ghcr.io/civmc/civdocker/waterfall:1.15.2
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    ports:
+      # Open port in host mode, to bypass swarm ingress
+      - target: 25577
+        published: 25565
+        protocol: tcp
+        mode: host
+    environment:
+      CIV_POSTGRES_HOST: prod-server_postgres
+      CIV_POSTGRES_USERNAME: minecraft
+      CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
+    deploy:
+      placement:
+        constraints: [node.hostname == civmc-prod]
+
+  paper:
+    image: ghcr.io/civmc/civdocker/paper:1.15.2
+    restart: unless-stopped
+    networks:
+      - traefik-public
+    tty: true
+    stdin_open: true
+    stop_grace_period: 60m
+    environment:
+      INIT_MEMORY: 40G
+      MAX_MEMORY: 40G
+      STOP_DURATION: 3600
+
+      CIV_SERVER_NAME: prod-server
+
+      CIV_WORLD_GENERATOR: Terra:CIVMC
+
+      CIV_MYSQL_HOST: minecraft_mariadb
+      CIV_MYSQL_USERNAME: minecraft
+      CIV_MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
+      CIV_MYSQL_DATABASE: minecraft
+
+      CIV_POSTGRES_HOST: minecraft_postgres
+      CIV_POSTGRES_USERNAME: minecraft
+      CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
+
+      CIV_RABBITMQ_HOST: minecraft_rabbitmq
+      CIV_RABBITMQ_USERNAME: rabbitmq
+      CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
+
+    volumes:
+      - paper-data:/data
+      # Private Config & Plugins
+      - /opt/PrivateConfig/paper/config/RealisticBiomes/config.yml:/config/plugins/RealisticBiomes/config.yml
+      - /opt/PrivateConfig/paper/plugins/Vulcan-2.6.5.jar:/config/plugins/Vulcan-2.6.5.jar
+      - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
+      - /opt/PrivateConfig/paper/config/HiddenOre/config.yml:/config/plugins/HiddenOre/config.yml
+      - /opt/PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/config/plugins/KirraBukkitGateway/cnfig.yml
+      - /opt/PrivateConfig/paper/config/FactoryMod/config.yml:/config/plugins/FactoryMod/config.yml
+      - /opt/PrivateConfig/paper/config/Bastion/config.yml:/config/plugins/Bastion/config.yml
+      - /opt/PrivateConfig/paper/config/Terra/packs/CivMC:/config/plugins/Terra/packs/CivMC
+      - /opt/PrivateConfig/paper/config/Votifier/config.yml:/config/plugins/Votifier/config.yml
+      - /opt/PrivateConfig/paper/config/Votifier/rsa/public.key:/config/plugins/Votifier/rsa/public.key
+      - /opt/PrivateConfig/paper/config/Votifier/rsa/private.key:/config/plugins/Votifier/rsa/private.key
+      #- /opt/PrivateConfig/paper/config/Finale/config.yml:/config/plugins/Finale/config.yml
+    deploy:
+      placement:
+        constraints: [node.hostname == civmc-prod]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.prod-server-dynmap-http.rule=Host(`{{secret.minecraft.paper.dynmap_host}}`)
+        - traefik.http.routers.prod-server-dynmap-http.entrypoints=http
+        - traefik.http.routers.prod-server-dynmap-http.middlewares=https-redirect
+        - traefik.http.routers.prod-server-dynmap-https.rule=Host(`{{secret.minecraft.paper.dynmap_host}}`)
+        - traefik.http.routers.prod-server-dynmap-https.entrypoints=https
+        - traefik.http.routers.prod-server-dynmap-https.tls=true
+        - traefik.http.routers.prod-server-dynmap-https.tls.certresolver=le
+        - traefik.http.services.prod-server-dynmap.loadbalancer.server.port=8123
+
+  queue:
+    image: ghcr.io/civmc/civdocker/queue:1.15.2
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    environment:
+      INIT_MEMORY: 4G
+      MAX_MEMORY: 4G
+
+      CIV_SERVER_NAME: queue-prod-server
+
+      CIV_POSTGRES_HOST: minecraft_postgres
+      CIV_POSTGRES_USERNAME: minecraft
+      CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
+
+    volumes:
+      # Private Config & Plugins
+      - /opt/PrivateConfig/paper/plugins/Vulcan-2.6.5.jar:/config/plugins/Vulcan-2.6.5.jar
+      - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
+    deploy:
+      placement:
+        constraints: [node.hostname == civmc-prod]
+
+  kira:
+    image: ghcr.io/civmc/kira:latest
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    volumes:
+      - kira-config:/app/config.json
+    deploy:
+      placement:
+        constraints: [node.hostname == civmc-prod]
+
+  mariadb:
+    image: mariadb:10.7.1
+    restart: unless-stopped
+    command: --max-connections 500
+    environment:
+      MYSQL_USER: minecraft
+      MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
+      MYSQL_ROOT_PASSWORD: '{{secret.minecraft.mysql.root_password}}'
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    deploy:
+      placement:
+        constraints: [node.hostname == civmc-prod]
+
+  postgres:
+    image: timescale/timescaledb:latest-pg14
+    restart: unless-stopped
+    command: postgres -c 'max_connections=500'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: minecraft
+      POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    deploy:
+      placement:
+        constraints: [node.hostname == civmc-prod]
+
+  rabbitmq:
+    image: rabbitmq:3.9.16-management
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: '{{secret.minecraft.rabbitmq.password}}'
+    deploy:
+      placement:
+        constraints: [node.hostname == civmc-prod]
+
+networks:
+  traefik-public:
+    external: true
+
+volumes:
+  paper-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/stacks/minecraft/paper-data
+  kira-config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/stacks/minecraft/kira-config/config.json
+  mariadb-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/stacks/minecraft/mariadb-data
+  postgres-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /opt/stacks/minecraft/postgres-data

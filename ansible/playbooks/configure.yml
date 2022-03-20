@@ -1,0 +1,16 @@
+- name: Configure
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Configure | Expand setting
+      include: ../tasks/expand-setting.yml
+
+    - name: Configure | Include Tasks
+      include_tasks:
+        file: '../tasks/configure/{{configure_task}}.yml'
+      loop:
+        - docker
+        - ufw
+      loop_control:
+        loop_var: configure_task
