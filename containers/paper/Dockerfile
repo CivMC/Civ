@@ -16,16 +16,6 @@ COPY config /config
 ENV COPY_CONFIG_DEST=/data
 ENV SYNC_SKIP_NEWER_IN_DESTINATION=false
 
-# Kind of annoying we have to set this all here instead of a patch...
-# https://github.com/itzg/docker-minecraft-server#server-configuration
-ENV OVERRIDE_SERVER_PROPERTIES=true
-ENV MOTD="You're a §l§abeautiful§r person."
-ENV MAX_PLAYERS="150"
-ENV SPAWN_PROTECTION="0"
-ENV ONLINE_MODE="false"
-ENV VIEW_DISTANCE="7"
-ENV SIMULATION_DISTANCE="3"
-
 # https://github.com/itzg/docker-minecraft-server#running-a-paper-server
 ENV TYPE=PAPER
 ENV EULA=TRUE
