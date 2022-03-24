@@ -7,10 +7,6 @@ ENV VERSION=1.18.1
 COPY plugins /plugins
 ENV REMOVE_OLD_MODS=TRUE
 
-# https://github.com/itzg/docker-minecraft-server#patching-existing-files
-COPY patches /patches
-ENV PATCH_DEFINITIONS=/patches
-
 # https://github.com/itzg/docker-minecraft-server#optional-plugins-mods-and-config-attach-points
 COPY config /config
 ENV COPY_CONFIG_DEST=/data
