@@ -407,7 +407,7 @@ hacks:
     badOmen: false
     #a list of materials players shouldn't be allowed to place at all
     noplace:
-     #- GRINDSTONE Leaving here so future dev's know the config format for this
+     - GRINDSTONE
   HorseStats:
     enabled: true
     wand: COMPASS
