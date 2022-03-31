@@ -463,7 +463,7 @@ hacks:
            meta-type: UNSPECIFIC
            lore:
             - "Gift from the Admins as you"
-            - "begin your journey on CivClassic"
+            - "begin your journey on CivMC"
        - ==: org.bukkit.inventory.ItemStack
          type: BED
          amount: 1  
