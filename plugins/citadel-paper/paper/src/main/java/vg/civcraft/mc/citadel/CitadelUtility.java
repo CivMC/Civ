@@ -176,10 +176,17 @@ public class CitadelUtility {
 		// check inventory
 		int available = playerItems.getAmount(type.getItem());
 		int required = type.getItem().getAmount();
-		boolean consumeExtra = block.getType() == type.getItem().getType();
-		if (consumeExtra) {
-			//make sure they're not trying to reinforce with the single block thats also being placed
-			required++;
+		// special handling if the reinforcement material is also the block being placed
+		// consuming the reinforcement material once will count the block being placed as reinforcing itself
+		// so detect that and consume an extra one
+		boolean consumeExtra = false;
+		boolean blockIsAlsoReinforcement = block.getType() == type.getItem().getType();
+		if (blockIsAlsoReinforcement) {
+			boolean placingFromReinforcementStack = player.getInventory().getHeldItemSlot() == player.getInventory().first(block.getType());
+				if (placingFromReinforcementStack) {
+					consumeExtra = true;
+					required++;
+			}
 		}
 		if (available < required) {
 			Citadel.getInstance().getStateManager().setState(player, null);
