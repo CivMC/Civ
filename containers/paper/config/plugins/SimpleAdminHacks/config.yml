@@ -431,7 +431,7 @@ hacks:
       title: Welcome ${player}!
       author: TangentialThreat
       pages: 
-       - "&5Hello and welcome to Civclassic, &2${player}!\n\n   &1ExilePearl&r\nKill other players while holding an ender pearl to banish them from the location their pearl is stored at. Stored pearls require Mana. Be warned that allies of pearled players may hunt you down..."
+       - "&5Hello and welcome to CivMC, &2${player}!\n\n   &1ExilePearl&r\nKill other players while holding an ender pearl to banish them from the location their pearl is stored at. Stored pearls require Mana. Be warned that allies of pearled players may hunt you down..."
        - "   &1MemeMana&r\nYou get Mana every day for logging in regularly. This is used to maintain an Exile Pearl and is very valuable to some players. Selling your Mana can be a good way to get some starting resources."
        - "   &1Namelayer&r\nManage groups! Type \"/nljg ! !\" without quotes for global chat and \"/g !\" to chat in the group. Type \"/nl\" to create and join groups. Many other features use groups – lock your doors so only your allies can enter with Citadel! Forge friendships!"
        - "   &1Citadel&r\nDon’t be the first two of the three little piggies! \"/ctf\" (usually followed by a group name) while holding stone (not cobble) and then place blocks. Your house is now 50x stronger!"
@@ -442,7 +442,7 @@ hacks:
        - "hit the furnace with a stick. You are now a wealthy charcoal baron capable of producing one of many items faster and more efficiently than those savages still using furnaces! Type \"/fm\" for more info – almost all items have factories."
        - "   &1RealisticBiomes&r\nYou will starve! Crops and trees require sunlight or glowstone, grow slowly across the board, and do not grow in inappropriate biomes. This encourages trade and warfare because diverse crops are required for FactoryMod XP production."
        - "   &5Closing Remarks&r\nType /help for more info on everything. Go to https://redd.it/j3nk2f for a more detailed guide. There is much more to learn."
-       - "If you would like to report hacks or glitches, please message the admins through subreddit modmail at reddit.com/r/civclassics\n\nDisclaimer: &2TangentialThreat&r is not staff and should not be trusted."
+       - "If you would like to report hacks or glitches, please message the admins through subreddit modmail at reddit.com/r/CivMC\n\nDisclaimer: &2TangentialThreat&r is not staff and should not be trusted."
   InvControl:
     enabled: true
   NewfriendAssist:
@@ -463,7 +463,7 @@ hacks:
            meta-type: UNSPECIFIC
            lore:
             - "Gift from the Admins as you"
-            - "begin your journey on CivClassic"
+            - "begin your journey on CivMC"
        - ==: org.bukkit.inventory.ItemStack
          type: BED
          amount: 1  
