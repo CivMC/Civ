@@ -1,14 +1,20 @@
 package vg.civcraft.mc.citadel;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.citadel.model.WorldBorderBuffers;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffect;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -43,6 +49,8 @@ public class CitadelConfigManager extends ConfigParser {
 	private int activityMapRadius;
 	private long activityDefault;
 	private List<String> activityWorlds;
+
+	private Map<UUID, WorldBorderBuffers> buffers;
 
 	public CitadelConfigManager(ACivMod plugin) {
 		super(plugin);
@@ -82,6 +90,10 @@ public class CitadelConfigManager extends ConfigParser {
 
 	public boolean doHangersInheritReinforcements() {
 		return hangersInheritReinforcements;
+	}
+
+	public Map<UUID, WorldBorderBuffers> getWorldBorderBuffers() {
+		return Collections.unmodifiableMap(this.buffers);
 	}
 
 	private ReinforcementEffect getReinforcementEffect(ConfigurationSection config) {
@@ -161,6 +173,8 @@ public class CitadelConfigManager extends ConfigParser {
 		activityDefault = config.getLong("activity-default", System.currentTimeMillis());
 		activityWorlds = config.getStringList("activity-map-worlds");
 
+		parseWorldBorderBuffers(config.getConfigurationSection("world-border-buffers"));
+
 		return true;
 	}
 
@@ -233,4 +247,41 @@ public class CitadelConfigManager extends ConfigParser {
 		}
 	}
 
+	private void parseWorldBorderBuffers(ConfigurationSection config) {
+		buffers = new HashMap<>();
+		if (config == null) {
+			logger.info("No Buffers zones found in config");
+			return;
+		}
+		for (String key : config.getKeys(false)) {
+			World world = Bukkit.getWorld(key);
+			if (world == null) {
+				logger.warning("WorldBuffer at " + config.getCurrentPath() + " couldn't find a world with this name: " + key);
+				continue;
+			}
+			ConfigurationSection insideWorld = config.getConfigurationSection(key);
+			if (insideWorld == null) {
+				logger.warning("Couldn't loop inside a world buffer config section");
+				continue;
+			}
+			WorldBorderBuffers.Shape worldBorderShape;
+			try {
+				worldBorderShape = WorldBorderBuffers.Shape.valueOf(insideWorld.getString("shape", "square").toUpperCase());
+			} catch (IllegalArgumentException exception) {
+				logger.warning("Shape at " + insideWorld.getCurrentPath() + " was not a valid input");
+				continue;
+			}
+			double worldBorderBufferSize = insideWorld.getDouble("starting_radius", 100D);
+			ConfigurationSection insideCenter = insideWorld.getConfigurationSection("center");
+			if (insideCenter == null) {
+				logger.info("No center for world border buffer found at " + insideWorld.getCurrentPath());
+				continue;
+			}
+			double centerX = insideCenter.getDouble("x", 0.0);
+			double centerZ = insideCenter.getDouble("z", 0.0);
+			logger.info("Parsed World Border Buffer zone for world " + world.getName() + " with radius " + worldBorderBufferSize + " in shape " + worldBorderShape + " centered at  " + centerX + ", " + centerZ);
+			buffers.put(world.getUID(), new WorldBorderBuffers(centerX, centerZ, worldBorderShape, worldBorderBufferSize));
+		}
+
+	}
 }

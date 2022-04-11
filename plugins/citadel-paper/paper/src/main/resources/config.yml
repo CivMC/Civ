@@ -221,3 +221,17 @@ activity-map-radius: 1
 # Set this to the unix timestamp in seconds when the activity feature is being added,
 # this is the time used when a player has not entered a region yet
 activity-default: 1621639167
+
+# This will prevent reinforcements being made within a configurable distance of your border
+# Supports 'circle' and 'square' world_border_shape's
+world-border-buffers:
+  #Has to be the world name
+  world:
+    #'CIRCLE' or 'SQUARE' supported only
+    shape: CIRCLE
+    #Radius from border center you want the no reinforcement zone to kick in
+    starting_radius:
+    #Center of the border
+    center:
+      x: 0.5
+      z: 0.5
