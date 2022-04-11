@@ -84,6 +84,9 @@ public final class AttrHider extends BasicHack {
 								fakeDamageable.setDamage(0);
 							}
 							if (meta.hasEnchants()) {
+								for (Enchantment enchantment : fakeMeta.getEnchants().keySet()) {
+									fakeMeta.removeEnchant(enchantment);
+								}
 								fakeMeta.addEnchant(Enchantment.DURABILITY, 1, true);
 							}
 							fakeItem.setItemMeta(fakeMeta);
