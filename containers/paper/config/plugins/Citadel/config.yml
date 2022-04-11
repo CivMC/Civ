@@ -326,6 +326,20 @@ hangers_inherit_reinforcement: true
 # reinforcement_damageMultiplier is m where BlockDamage = 2 ^ (n/m) where n is equal to the number of days the group has been inactive
 reinforcement_damageMultiplier: 365
 
+# This will prevent reinforcements being made within a configurable distance of your border
+# Supports 'circle' and 'square' world_border_shape's
+world-border-buffers:
+  #Has to be the world name
+  world:
+    #'CIRCLE' or 'SQUARE' supported only
+    shape: CIRCLE
+    #Radius from border center you want the no reinforcement zone to kick in
+    starting_radius: 1000
+    #Center of the border
+    center:
+      x: 0.5
+      z: 0.5
+
 # Set this to the unix timestamp in seconds when the activity feature is being added,
 # this is the time used when a player has not entered a region yet
 # activity-default: 1646588117
