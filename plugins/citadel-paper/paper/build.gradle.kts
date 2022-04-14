@@ -15,5 +15,5 @@ dependencies {
 
 	compileOnly("net.civmc.civmodcore:paper:2.0.0-SNAPSHOT:dev-all")
 	compileOnly("net.civmc.namelayer:paper:3.0.0-SNAPSHOT:dev")
-	compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9-SNAPSHOT")
+	compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9")
 }
