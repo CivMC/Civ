@@ -13,3 +13,5 @@
 
 .gradle
 build
+
+paper/bin
