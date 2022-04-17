@@ -35,7 +35,7 @@ public class DamageListener implements Listener {
 
 	private static final List<Material> ladderBlocks = Arrays.asList(new Material[] { Material.LADDER, Material.VINE });
 	private static Set<Material> swords = new TreeSet<Material>(Arrays.asList(new Material[] { Material.WOODEN_SWORD,
-			Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD }));
+			Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD, Material.NETHERITE_SWORD }));
 
 	public static final String powerMetaDataKey = "shooterPowerLevel";
 	public static final String impaleMetaDataKey = "shooterImpaleLevel";
