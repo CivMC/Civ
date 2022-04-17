@@ -12,3 +12,12 @@ permissions:
         default: op
     finale.cmv:
         default: op
+    finale.give:
+        default: op
+    finale.ally:
+        default: true
+    finale.blocks:
+        default: true
+    finale.chemtrails:
+        default: true
+

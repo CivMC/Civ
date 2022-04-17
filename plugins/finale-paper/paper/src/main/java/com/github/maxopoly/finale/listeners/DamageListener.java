@@ -1,7 +1,10 @@
 package com.github.maxopoly.finale.listeners;
 
+import com.destroystokyo.paper.event.entity.ProjectileCollideEvent;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.combat.event.CritHitEvent;
+import com.github.maxopoly.finale.misc.ally.AllyHandler;
+import com.github.maxopoly.finale.misc.arrow.ArrowHandler;
 import com.github.maxopoly.finale.misc.DamageModificationConfig;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,17 +13,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
@@ -35,7 +37,8 @@ public class DamageListener implements Listener {
 	private static Set<Material> swords = new TreeSet<Material>(Arrays.asList(new Material[] { Material.WOODEN_SWORD,
 			Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD }));
 
-	private static final String powerMetaDataKey = "shooterPowerLevel";
+	public static final String powerMetaDataKey = "shooterPowerLevel";
+	public static final String impaleMetaDataKey = "shooterImpaleLevel";
 
 	private Map<DamageModificationConfig.Type, DamageModificationConfig> modifiers;
 
@@ -59,6 +62,16 @@ public class DamageListener implements Listener {
 		if (!(e.getDamager() instanceof LivingEntity)) {
 			if (e.getDamager().getType() == EntityType.ARROW) {
 				handleArrow(e);
+			}
+			if (e.getDamager().getType() == EntityType.TRIDENT) {
+				handleTrident(e);
+			}
+			if (e.getDamager().getType() == EntityType.FIREWORK) {
+				DamageModificationConfig fireworkModifier = modifiers.get(DamageModificationConfig.Type.FIREWORK);
+				if (fireworkModifier != null) {
+					double damage = fireworkModifier.modify(e.getDamage());
+					e.setDamage(damage);
+				}
 			}
 			return;
 		}
@@ -92,6 +105,27 @@ public class DamageListener implements Listener {
 		}
 	}
 
+	private void handleTrident(EntityDamageByEntityEvent e) {
+		DamageModificationConfig tridentModifier = modifiers.get(DamageModificationConfig.Type.TRIDENT);
+		if (tridentModifier != null) {
+			e.setDamage(tridentModifier.modify(e.getDamage()));
+		}
+		DamageModificationConfig impaleModifier = modifiers.get(DamageModificationConfig.Type.IMPALE_ENCHANT);
+		if (impaleModifier == null) {
+			return;
+		}
+		Trident trident = (Trident) e.getDamager();
+		List<MetadataValue> values = trident.getMetadata(impaleMetaDataKey);
+		if (values == null || values.size() == 0) {
+			return;
+		}
+
+		int impaleLevel = values.get(0).asInt();
+		double damage = impaleModifier.modify(e.getDamage(), impaleLevel);
+
+		e.setDamage(damage);
+	}
+
 	private void handleArrow(EntityDamageByEntityEvent e) {
 		DamageModificationConfig arrowModifier = modifiers.get(DamageModificationConfig.Type.ARROW);
 		if (arrowModifier != null) {
@@ -101,35 +135,53 @@ public class DamageListener implements Listener {
 		if (powerModifier == null) {
 			return;
 		}
-		Arrow arrow = (Arrow) e.getEntity();
+		Arrow arrow = (Arrow) e.getDamager();
 		List<MetadataValue> values = arrow.getMetadata(powerMetaDataKey);
 		if (values == null || values.size() == 0) {
 			return;
-		} else {
-			int powerLevel = values.get(0).asInt();
-			e.setDamage(powerModifier.modify(e.getDamage(), powerLevel));
 		}
+
+		int powerLevel = values.get(0).asInt();
+		double damage = powerModifier.modify(e.getDamage(), powerLevel);
+
+		if (arrow.getShooter() instanceof Player && e.getEntity() instanceof Player) {
+			Player shooter = (Player) arrow.getShooter();
+			Player target = (Player) e.getEntity();
+			AllyHandler allyHandler = Finale.getPlugin().getManager().getAllyHandler();
+			ArrowHandler arrowHandler = Finale.getPlugin().getManager().getArrowHandler();
+
+			if (allyHandler.isAllyOf(shooter, target)) {
+				damage *= (1 - arrowHandler.getAllyDamageReduction());
+			}
+		}
+
+		e.setDamage(damage);
 	}
 
 	@EventHandler
 	public void handleProjectileShot(ProjectileLaunchEvent e) {
-		if (e.getEntityType() != EntityType.ARROW) {
-			return;
-		}
 		if (!(e.getEntity().getShooter() instanceof Player)) {
 			return;
 		}
 		Player shooter = (Player) e.getEntity().getShooter();
-		ItemStack bow = shooter.getInventory().getItemInMainHand();
-		if (bow.getType() != Material.BOW) {
-			bow = shooter.getInventory().getItemInOffHand();
+		if (e.getEntityType() == EntityType.ARROW) {
+			ItemStack bow = shooter.getInventory().getItemInMainHand();
 			if (bow.getType() != Material.BOW) {
-				return;
+				bow = shooter.getInventory().getItemInOffHand();
+				if (bow.getType() != Material.BOW) {
+					return;
+				}
 			}
+			Arrow arrow = (Arrow) e.getEntity();
+			arrow.setMetadata(powerMetaDataKey,
+					new FixedMetadataValue(Finale.getPlugin(), bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE)));
+		} else if (e.getEntityType() == EntityType.TRIDENT) {
+			Trident trident = (Trident) e.getEntity();
+			ItemStack tridentItem = trident.getItem();
+			int impalingLevel = tridentItem.getEnchantmentLevel(Enchantment.IMPALING);
+			trident.setMetadata(impaleMetaDataKey,
+					new FixedMetadataValue(Finale.getPlugin(), impalingLevel));
 		}
-		Arrow arrow = (Arrow) e.getEntity();
-		arrow.setMetadata(powerMetaDataKey,
-				new FixedMetadataValue(Finale.getPlugin(), bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE)));
 	}
 
 	@EventHandler
@@ -157,6 +209,44 @@ public class DamageListener implements Listener {
 			}
 			
 		}, 1L);
+	}
+
+	@EventHandler
+	public void onProjectileHit(ProjectileHitEvent event) {
+		if (!(event.getEntity() instanceof Arrow)) {
+			return;
+		}
+
+		ArrowHandler arrowHandler = Finale.getPlugin().getManager().getArrowHandler();
+		arrowHandler.arrowImpact(event);
+	}
+
+	@EventHandler
+	public void onProjectileCollide(ProjectileCollideEvent event) {
+		if (!(event.getEntity() instanceof Arrow)) {
+			return;
+		}
+		ArrowHandler arrowHandler = Finale.getPlugin().getManager().getArrowHandler();
+		if (arrowHandler.isAllyCollide()) {
+			return;
+		}
+
+		Arrow arrow = (Arrow) event.getEntity();
+		if (!(arrow.getShooter() instanceof Player)) {
+			return;
+		}
+
+		Entity collidedWith = event.getCollidedWith();
+		if (!(collidedWith instanceof Player)) {
+			return;
+		}
+
+		Player shooter = (Player) arrow.getShooter();
+		Player target = (Player) collidedWith;
+
+		AllyHandler allyHandler = Finale.getPlugin().getManager().getAllyHandler();
+
+		event.setCancelled(allyHandler.isAllyOf(shooter, target));
 	}
 
 }

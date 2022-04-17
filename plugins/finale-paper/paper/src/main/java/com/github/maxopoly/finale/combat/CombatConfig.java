@@ -1,6 +1,7 @@
 package com.github.maxopoly.finale.combat;
 
 import com.github.maxopoly.finale.Finale;
+import com.github.maxopoly.finale.combat.knockback.KnockbackStrategy;
 import com.github.maxopoly.finale.misc.knockback.KnockbackConfig;
 import com.github.maxopoly.finale.misc.knockback.KnockbackModifier;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,10 +24,11 @@ public class CombatConfig {
 	private Vector victimMotion;
 	private Vector maxVictimMotion;
 	private Vector attackerMotion;
+	private KnockbackStrategy knockbackStrategy;
 
 	public CombatConfig(boolean attackCooldownEnabled, boolean knockbackSwordsEnabled, boolean sprintResetEnabled, boolean waterSprintResetEnabled, int cpsLimit, long cpsCounterInterval, double maxReach, boolean sweepEnabled, CombatSoundConfig combatSounds,
 						double knockbackLevelMultiplier, KnockbackConfig normalConfig, KnockbackConfig sprintConfig, Vector victimMotion, Vector maxVictimMotion,
-						Vector attackerMotion) {
+						Vector attackerMotion, KnockbackStrategy knockbackStrategy) {
 		this.attackCooldownEnabled = attackCooldownEnabled;
 		this.knockbackSwordsEnabled = knockbackSwordsEnabled;
 		this.sprintResetEnabled = sprintResetEnabled;
@@ -42,6 +44,7 @@ public class CombatConfig {
 		this.victimMotion = victimMotion;
 		this.maxVictimMotion = maxVictimMotion;
 		this.attackerMotion = attackerMotion;
+		this.knockbackStrategy = knockbackStrategy;
 	}
 
 	private void setKnockbackConfig(FileConfiguration config, String name, KnockbackConfig knockbackConfig) {
@@ -132,6 +135,10 @@ public class CombatConfig {
 
 	public CombatSoundConfig getCombatSounds() {
 		return combatSounds;
+	}
+
+	public KnockbackStrategy getKnockbackStrategy() {
+		return knockbackStrategy;
 	}
 
 	public void setNormalConfig(KnockbackConfig normalConfig) {

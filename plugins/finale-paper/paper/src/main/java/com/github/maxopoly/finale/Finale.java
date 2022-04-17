@@ -1,22 +1,10 @@
 package com.github.maxopoly.finale;
 
 import com.comphenix.protocol.ProtocolLibrary;
-import com.github.maxopoly.finale.command.CardinalCommand;
-import com.github.maxopoly.finale.command.CombatConfigCommand;
-import com.github.maxopoly.finale.command.GammaBrightCommand;
-import com.github.maxopoly.finale.command.ReloadFinaleCommand;
-import com.github.maxopoly.finale.command.ShowCpsCommand;
+import com.github.maxopoly.finale.command.*;
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
 import com.github.maxopoly.finale.external.FinaleSettingManager;
-import com.github.maxopoly.finale.listeners.DamageListener;
-import com.github.maxopoly.finale.listeners.EnchantmentDisableListener;
-import com.github.maxopoly.finale.listeners.ExtraDurabilityListener;
-import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
-import com.github.maxopoly.finale.listeners.PlayerListener;
-import com.github.maxopoly.finale.listeners.PotionListener;
-import com.github.maxopoly.finale.listeners.ToolProtectionListener;
-import com.github.maxopoly.finale.listeners.VelocityFixListener;
-import com.github.maxopoly.finale.listeners.WeaponModificationListener;
+import com.github.maxopoly.finale.listeners.*;
 import com.github.maxopoly.finale.overlay.ScoreboardHUD;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
@@ -63,6 +51,11 @@ public class Finale extends ACivMod {
 
 	@Override
 	public void onDisable() {
+		if (manager != null) {
+			manager.getAllyHandler().save();
+			manager.getAllyHandler().shutdown();
+		}
+
 		HandlerList.unregisterAll(this);
 		ProtocolLibrary.getProtocolManager().removePacketListeners(this);
 		ProtocolLibrary.getProtocolManager().getAsynchronousManager().unregisterAsyncHandlers(this);
@@ -95,6 +88,11 @@ public class Finale extends ACivMod {
 		Bukkit.getPluginManager().registerEvents(new DamageListener(config.getDamageModifiers()), this);
 		Bukkit.getPluginManager().registerEvents(new ScoreboardHUD(settingsManager), this);
 		Bukkit.getPluginManager().registerEvents(new ToolProtectionListener(settingsManager), this);
+		Bukkit.getPluginManager().registerEvents(new WarpFruitListener(), this);
+		Bukkit.getPluginManager().registerEvents(new TridentListener(), this);
+		Bukkit.getPluginManager().registerEvents(new ShieldListener(), this);
+		Bukkit.getPluginManager().registerEvents(new BlockListener(), this);
+		Bukkit.getPluginManager().registerEvents(new CrossbowListener(), this);
 	}
 
 	private void registerCommands() {
@@ -103,6 +101,8 @@ public class Finale extends ACivMod {
 		commandManager.registerCommand(new GammaBrightCommand());
 		commandManager.registerCommand(new ReloadFinaleCommand());
 		commandManager.registerCommand(new ShowCpsCommand());
+		commandManager.registerCommand(new FinaleCommand());
+		commandManager.registerCommand(new AllyCommand());
 	}
 
 	public void reload() {

@@ -14,7 +14,7 @@ gradle.buildFinished {
 
 allprojects {
 	group = "net.civmc.finale"
-	version = "2.0.0-SNAPSHOT"
+	version = "2.1.0-SNAPSHOT"
 	description = "Finale"
 }
 

@@ -20,38 +20,39 @@ cleanerCombat:
     strong: false
     knockback: false
     crit: false
-  knockbackLevelMultiplier: 0.6 # a constant to control the knockback sword level
+  knockbackLevelMultiplier: 0.5 # a constant to control the knockback sword level
+  strategy: standard
   normal:
     groundModifier: # modifies knockback in general.
-      type: DIRECT # MULTIPLY or ADD or DIRECT
-      x: 0.625
-      y: 0.5
-      z: 0.625
+      type: MULTIPLY # MULTIPLY or ADD
+      x: 0.85
+      y: 0.8
+      z: 0.85
     airModifier: # modifies knockback if the victim is in the air.
-      type: DIRECT # MULTIPLY or ADD or DIRECT
-      x: 0.625
-      y: 0.5
-      z: 0.625
+      type: MULTIPLY # MULTIPLY or ADD
+      x: 0.95
+      y: 1.0
+      z: 0.95
     waterModifier: # modifies knockback if the victim is in water.
-      type: DIRECT # MULTIPLY or ADD or DIRECT
-      x: 0.625
-      y: 0.5
-      z: 0.625
+      type: MULTIPLY # MULTIPLY or ADD
+      x: 1.0
+      y: 1.0
+      z: 1.0
   sprint: # modifies knockback if the attacker is sprinting.
     groundModifier: # modifies knockback in general.
-      type: DIRECT # MULTIPLY or ADD or DIRECT
+      type: MULTIPLY # MULTIPLY or ADD
       x: 1.0
-      y: 0.6
+      y: 0.9
       z: 1.0
     airModifier: # modifies knockback if the victim is in the air.
-      type: DIRECT
+      type: MULTIPLY
       x: 1.0
-      y: 0.6
+      y: 1.0
       z: 1.0
     waterModifier: # modifies knockback if the victim is in water.
-      type: DIRECT
+      type: MULTIPLY
       x: 1.0
-      y: 0.6
+      y: 1.0
       z: 1.0
   attackerMotion: # modifies motion of attacker upon attacking.
     x: 0.6
@@ -264,9 +265,286 @@ damageModifiers:
   STRENGTH_EFFECT:
     mode: DIRECT
     multiplier: 0.8
+  ARROW:
+    mode: DIRECT
+    multiplier: 1.0
+  POWER_ENCHANT:
+    mode: DIRECT
+    multiplier: 1.0
+  TRIDENT:
+    mode: DIRECT
+    multiplier: 1.0
+  IMPALE_ENCHANT:
+    mode: DIRECT
+    multiplier: 1.0
+  FIREWORK:
+    mode: DIRECT
+    multiplier: 1.0
 
 invulTicksEnabled: false
 invulnerableTicks:
   POISON: 1
   PROJECTILE: 1
   ENTITY_ATTACK: 10
+
+# the warp fruit will roll back to 7 seconds ago
+warpFruit: # logSize * logInterval = how far back in time you go
+  logSize: 35 # log queue size
+  logInterval: 200ms # in milliseconds
+  cooldown: 10s
+  maxDistance: 100 # max warp distance
+  spectralWhileChanneling: true
+
+trident:
+  returnToOffhand: true # if you throw the trident with your offhand, should it return to your offhand?
+  generalCooldown: 10s
+  riptideCooldown: 60s
+
+shield:
+  bash:
+    enabled: true
+    activationResistance:
+      enabled: true
+      amplifier: 1
+      duration: 200
+    power:
+      fromGround:
+        x: 1.5
+        y: 1
+        z: 1.5
+      inAir:
+        x: 1
+        y: 0.5
+        z: 1
+    targetDistance: 3
+    damage: 1
+    cooldown: 10s
+  passive:
+    enabled: true
+    amplifier: 0
+
+crossbow:
+  enabled: true
+  reinforcementDamage: 5
+  bastionDamage: 5
+  cooldown: 4000ms
+  antiAir:
+    standardAA:
+      key: standardAA
+      item:
+        name: Anti Air Missile
+        color:
+          r: 255
+          g: 0
+          b: 0
+      power: 2
+      speed: 2
+      damage: 5
+      damageRadius: 3
+      homingRadius: 10
+      homingStrength: 0.2 # how sharp should homing turns be?
+      activateRadius: 1
+      maxRange: 500
+      gravity: 0.005
+
+ally:
+  enabled: true
+  seeInvis: true # should you be able to see invisible allies?
+  animateLink: # settings for animating adding/removing ally
+    enabled: true
+    maxDistance: 20
+  storage:
+    file: ally.sqlite
+
+enhancedArrows:
+  enabled: true
+  minDistance: 10 # how far should arrow travel for arrows to become area of effect?
+  radius: 1
+  damage: 0.25
+  allyDamageReduction: 1 # how much damage to reduce against allied players? 1 = negate all damage, 0 = full friendly fire
+  allyCollide: false # should arrows collide with allies?
+  allyExemptArrowTypes: # which tipped arrows should apply to allies?
+    - NIGHT_VISION
+    - INVISIBILITY
+    - JUMP
+    - FIRE_RESISTANCE
+    - SPEED
+    - STRENGTH
+    - REGEN
+    - TURTLE_MASTER
+    - LUCK
+    - SLOW_FALLING
+
+# customize tipped arrows
+tippedArrows:
+  nightvision:
+    name: Arrow of Night Vision
+    type: NIGHT_VISION
+    durations:
+      normal: 440
+      extended: 1200
+      amplified: 220
+    color:
+      r: 3
+      g: 32
+      b: 126
+  invisiblity:
+    name: Arrow of Invisibility
+    type: INVISIBILITY
+    durations:
+      normal: 440
+      extended: 1200
+      amplified: 220
+    color:
+      r: 120
+      g: 124
+      b: 131
+  leaping:
+    name: Arrow of Leaping
+    type: JUMP
+    durations:
+      normal: 440
+      extended: 1200
+      amplified: 220
+    color:
+      r: 83
+      g: 230
+      b: 87
+  fire_resistance:
+    name: Arrow of Fire Resistance
+    type: FIRE_RESISTANCE
+    durations:
+      normal: 440
+      extended: 1200
+      amplified: 220
+    color:
+      r: 221
+      g: 147
+      b: 68
+  speed:
+    name: Arrow of Swiftness
+    type: SPEED
+    durations:
+      normal: 440
+      extended: 1200
+      amplified: 220
+    color:
+      r: 104
+      g: 159
+      b: 185
+  slow:
+    name: Arrow of Slowness
+    type: SLOW
+    durations:
+      normal: 220
+      extended: 600
+      amplified: 40
+    color:
+      r: 89
+      g: 103
+      b: 112
+  turtle_master:
+    name: Arrow of Turtle Master
+    type: TURTLE_MASTER
+    durations:
+      normal: 40
+      extended: 100
+      amplified: 40
+    color:
+      r: 119
+      g: 89
+      b: 78
+  water_breathing:
+    name: Arrow of Water Breathing
+    type: WATER_BREATHING
+    durations:
+      normal: 440
+      extended: 1200
+      amplified: 40
+    color:
+      r: 19
+      g: 71
+      b: 134
+  poison:
+    name: Arrow of Poison
+    type: POISON
+    durations:
+      normal: 100
+      extended: 220
+      amplified: 40
+    color:
+      r: 94
+      g: 129
+      b: 43
+  regen:
+    name: Arrow of Regeneration
+    type: REGEN
+    durations: # duration in ticks (20 ticks = 1 second)
+      normal: 100
+      extended: 220
+      amplified: 40
+    color:
+      r: 188
+      g: 102
+      b: 146
+  strength:
+    name: Arrow of Strength
+    type: STRENGTH
+    durations: # duration in ticks (20 ticks = 1 second)
+      normal: 440
+      extended: 1200
+      amplified: 220
+    color:
+      r: 110
+      g: 28
+      b: 31
+  weakness:
+    name: Arrow of Weakness
+    type: WEAKNESS
+    durations: # duration in ticks (20 ticks = 1 second)
+      normal: 220
+      extended: 600
+      amplified: 100
+    color:
+      r: 110
+      g: 28
+      b: 31
+  luck:
+    name: Arrow of Luck
+    type: LUCK
+    durations: # duration in ticks (20 ticks = 1 second)
+      normal: 740
+      extended: 740
+      amplified: 740
+    color:
+      r: 74
+      g: 131
+      b: 18
+  slow_falling:
+    name: Arrow of Slow Falling
+    type: SLOW_FALLING
+    durations: # duration in ticks (20 ticks = 1 second)
+      normal: 220
+      extended: 600
+      amplified: 220
+    color:
+      r: 254
+      g: 232
+      b: 198
+blockPlacementRestrictions:
+  enabled: true
+  mode: BLACKLIST # BLACKLIST, WHITELIST, NOLIST (only cooldowns)
+  blacklist:
+    - COBWEB
+    - OBSIDIAN
+  whitelist:
+    - WATER_BUCKET
+    - COBBLESTONE
+  cooldowns:
+    cobweb:
+      type: COBWEB
+      cooldown: 5s
+    obsidian:
+      type: OBSIDIAN
+      cooldown: 1s
+

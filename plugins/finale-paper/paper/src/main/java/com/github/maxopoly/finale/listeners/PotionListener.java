@@ -91,6 +91,9 @@ public class PotionListener implements Listener {
 		}
 
 		for (LivingEntity entity : e.getAffectedEntities()) {
+			if (entity.isDead()) {
+				continue;
+			}
 			double maxHealth = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 			double modifiedHealth = entity.getHealth();
 			double intensity = e.getIntensity(entity);

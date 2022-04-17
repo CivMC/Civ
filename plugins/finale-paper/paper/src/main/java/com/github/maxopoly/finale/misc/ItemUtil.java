@@ -99,8 +99,15 @@ public class ItemUtil {
 		nmsStack.setTag(compound);
 		return CraftItemStack.asBukkitCopy(nmsStack);
 	}
-	
+
 	public static net.minecraft.world.item.ItemStack getNMSStack(ItemStack is) {
+		net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
+		CompoundTag compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new CompoundTag();
+		nmsStack.setTag(compound);
+		return nmsStack;
+	}
+	
+	public static net.minecraft.world.item.ItemStack getNMSStackAttributeModifiers(ItemStack is) {
 		net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
 		CompoundTag compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new CompoundTag();
 		if (!compound.contains("AttributeModifiers")) {
@@ -131,7 +138,7 @@ public class ItemUtil {
 	}
 	
 	public static ItemStack modifyAttribute(ItemStack is, AttributeModifier attribute) {
-		net.minecraft.world.item.ItemStack nmsStack = getNMSStack(is);
+		net.minecraft.world.item.ItemStack nmsStack = getNMSStackAttributeModifiers(is);
 		CompoundTag compound = nmsStack.getTag();
 		ListTag modifiers = compound.getList("AttributeModifiers", 10); // 10 for compound
 		
@@ -153,6 +160,20 @@ public class ItemUtil {
 		compound.put("AttributeModifiers", modifiers);
 		nmsStack.setTag(compound);
 		return CraftItemStack.asBukkitCopy(nmsStack);
+	}
+
+	public static ItemStack setAAKey(ItemStack is, String key) {
+		net.minecraft.world.item.ItemStack nmsItem = ItemUtil.getNMSStack(is);
+		CompoundTag compoundTag = nmsItem.getTag();
+		compoundTag.putString("aa-key", key);
+		nmsItem.setTag(compoundTag);
+		return CraftItemStack.asBukkitCopy(nmsItem);
+	}
+
+	public static String getAAKey(ItemStack is) {
+		net.minecraft.world.item.ItemStack nmsItem = ItemUtil.getNMSStack(is);
+		CompoundTag compoundTag = nmsItem.getTag();
+		return compoundTag.getString("aa-key");
 	}
 	
 }

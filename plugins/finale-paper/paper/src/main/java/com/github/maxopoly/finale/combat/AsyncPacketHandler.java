@@ -7,6 +7,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.BlockPosition;
+import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.EnumWrappers.EntityUseAction;
 import com.comphenix.protocol.wrappers.EnumWrappers.Hand;
 import com.comphenix.protocol.wrappers.EnumWrappers.PlayerDigType;
@@ -25,11 +26,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_18_R1.entity.CraftLivingEntity;
-import org.bukkit.entity.Damageable;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -40,7 +39,7 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 	private CombatConfig cc;
 	
 	public AsyncPacketHandler(CombatConfig cc) {
-		super(Finale.getPlugin(), ListenerPriority.HIGH, PacketType.Play.Client.USE_ENTITY, PacketType.Play.Client.ARM_ANIMATION, PacketType.Play.Client.BLOCK_DIG);
+		super(Finale.getPlugin(), ListenerPriority.HIGH, PacketType.Play.Client.USE_ENTITY, PacketType.Play.Client.ARM_ANIMATION, PacketType.Play.Client.BLOCK_DIG, PacketType.Play.Client.ENTITY_ACTION);
 
 		this.cc = cc;
 		
@@ -63,6 +62,7 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 			PacketContainer packet = event.getPacket();
 			StructureModifier<WrappedEnumEntityUseAction> actions = packet.getEnumEntityUseActions();
 			EntityUseAction action = actions.read(0).getAction();
+
 			if (action != EntityUseAction.ATTACK) {
 				return;
 			}
@@ -71,15 +71,11 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 
 				@Override
 				public void run() {
-					Entity entity = packet.getEntityModifier(event).read(0);
-					Damageable target = entity instanceof Damageable ? (Damageable) entity : null;
-
+					Entity target = packet.getEntityModifier(event).read(0);
 					if (target == null || target.isDead() || target.isInvulnerable() ||
-							!world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
+							!world.getUID().equals(target.getWorld().getUID())) {
 						return;
 					}
-
-					LivingEntity entityTarget = (LivingEntity) target;
 
 					double distanceSquared = attacker.getLocation().distanceSquared(target.getLocation());
 
@@ -92,9 +88,19 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 						return;
 					}
 
-					CombatUtil.attack(attacker, ((CraftLivingEntity) entityTarget).getHandle());
+					CombatUtil.attack(attacker, ((CraftEntity) target).getHandle());
 				}
 			}.runTask(Finale.getPlugin());
+		} else if (packetType == PacketType.Play.Client.ENTITY_ACTION) {
+			Player player = event.getPlayer();
+			PacketContainer packet = event.getPacket();
+			EnumWrappers.PlayerAction playerAction = packet.getPlayerActions().read(0);
+			SprintHandler sprintHandler = Finale.getPlugin().getManager().getSprintHandler();
+			if (playerAction == EnumWrappers.PlayerAction.START_SPRINTING) {
+				sprintHandler.startSprinting(player);
+			} else if (playerAction == EnumWrappers.PlayerAction.STOP_SPRINTING) {
+				sprintHandler.stopSprinting(player);
+			}
 		} else if (packetType == PacketType.Play.Client.ARM_ANIMATION) {
 			Player attacker = event.getPlayer();
 			PacketContainer packet = event.getPacket();
