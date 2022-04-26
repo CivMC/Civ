@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_18_R1.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_18_R2.persistence.CraftPersistentDataContainer;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import vg.civcraft.mc.civmodcore.nbt.NBTType;

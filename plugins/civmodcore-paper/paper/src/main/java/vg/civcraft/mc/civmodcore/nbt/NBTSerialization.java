@@ -18,7 +18,7 @@ import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftNBTTagConfigSerializer;
+import org.bukkit.craftbukkit.v1_18_R2.util.CraftNBTTagConfigSerializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;

@@ -15,7 +15,7 @@ import net.minecraft.nbt.Tag;
  *     <li>etc...</li>
  * </ul>
  *
- * This is a better version of {@link org.bukkit.craftbukkit.v1_18_R1.util.CraftMagicNumbers}
+ * This is a better version of {@link org.bukkit.craftbukkit.v1_18_R2.util.CraftMagicNumbers}
  */
 @UtilityClass
 public final class NBTType {

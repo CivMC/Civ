@@ -7,12 +7,11 @@ plugins {
 }
 
 dependencies {
-	paperDevBundle("1.18.1-R0.1-SNAPSHOT")
+	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 
     	implementation("co.aikar:acf-bukkit:0.5.0-SNAPSHOT")
     	implementation("com.mojang:datafixerupper:1.0.20")
         implementation("com.zaxxer:HikariCP:3.4.2")
-        implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
         implementation("co.aikar:taskchain-bukkit:3.7.2")
         implementation("com.github.IPVP-MC:canvas:91ec97f076")
         implementation("org.apache.commons:commons-lang3:3.12.0")
