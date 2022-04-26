@@ -561,8 +561,9 @@ final class CoreExilePearl implements ExilePearl {
 		if (timer <= 0) {
 			return 1.0;
 		}
-		long sincePearled = System.currentTimeMillis() - getPearledOn().getTime();
+    
+	  long sincePearled = System.currentTimeMillis() - getPearledOn().getTime();
 		double days = TimeUnit.MILLISECONDS.toDays(sincePearled);
-		return Math.max(1.0, days / timer);
+		return Math.max(1.0, Math.pow(1.25, (days / timer)));
 	}
 }
