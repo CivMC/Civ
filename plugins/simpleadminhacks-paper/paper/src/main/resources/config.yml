@@ -62,6 +62,8 @@ hacks:
     hideEffects: true
     # Hide the health of entities
     hideHealth: true
+    # Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
+    roundPlayerListPing: true
   AutoRespawn:
     enabled: true
     # Delay in MS
