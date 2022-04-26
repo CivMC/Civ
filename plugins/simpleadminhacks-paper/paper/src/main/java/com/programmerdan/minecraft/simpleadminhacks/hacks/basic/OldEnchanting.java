@@ -25,7 +25,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftInventoryView;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
