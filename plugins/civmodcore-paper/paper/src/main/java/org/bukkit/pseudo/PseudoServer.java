@@ -1016,9 +1016,9 @@ public class PseudoServer implements Server {
 	}
 
 	@Override
-	public @NotNull PlayerProfile createProfileExact(@org.jetbrains.annotations.Nullable UUID uuid,
-													 @org.jetbrains.annotations.Nullable String name) {
-		return null;
+	public @NotNull PlayerProfile createProfileExact(@Nullable UUID uuid,
+													 @Nullable String name) {
+		throw new NotImplementedException();
 	}
 
 	@Override
