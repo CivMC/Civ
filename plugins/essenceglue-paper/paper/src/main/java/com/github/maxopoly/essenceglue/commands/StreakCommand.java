@@ -1,23 +1,20 @@
 package com.github.maxopoly.essenceglue.commands;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
 import com.github.maxopoly.essenceglue.EssenceGluePlugin;
 import com.github.maxopoly.essenceglue.StreakManager;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
-@CivCommand(id = "streak")
-public class StreakCommand extends StandaloneCommand {
+public class StreakCommand extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		Player p = (Player) sender;
+	@CommandAlias("streak")
+	@Description("Displays stats about your daily login streak")
+	public void execute(Player p) {
 		UUID uuid = StreakManager.getTrueUUID(p.getUniqueId());
 		StreakManager streakMan = EssenceGluePlugin.instance().getStreakManager();
 		p.sendMessage(ChatColor.GREEN + "Your current login streak is " + streakMan.getRecalculatedCurrentStreak(uuid));
@@ -29,12 +26,5 @@ public class StreakCommand extends StandaloneCommand {
 			long left = streakMan.untilTodaysReward(uuid);
 			p.sendMessage(ChatColor.GREEN + "You will receive your daily rewards in " + TextUtil.formatDuration(left));
 		}
-		return true;
 	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return Collections.emptyList();
-	}
-
 }

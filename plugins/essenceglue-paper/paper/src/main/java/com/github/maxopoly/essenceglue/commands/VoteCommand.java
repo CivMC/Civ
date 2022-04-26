@@ -1,34 +1,31 @@
 package com.github.maxopoly.essenceglue.commands;
 
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.Description;
 import com.github.maxopoly.essenceglue.EssenceGluePlugin;
 import com.github.maxopoly.essenceglue.StreakManager;
 import com.github.maxopoly.essenceglue.VotifyManager;
 import com.github.maxopoly.essenceglue.VotingSite;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
-
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
-@CivCommand(id = "vote")
-public class VoteCommand extends StandaloneCommand {
+public class VoteCommand extends BaseCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	@CommandAlias("vote")
+	@Description("Lists all available voting websites")
+	public void execute(Player sender) {
 		VotifyManager voteMan = EssenceGluePlugin.instance().getVoteManager();
 		if (voteMan == null) {
 			sender.sendMessage(ChatColor.RED + "Voting is not enabled");
-			return true;
+			return;
 		}
 		Player p = (Player) sender;
 		for (VotingSite site : EssenceGluePlugin.instance().getConfigManager().getVotingCooldowns().values()) {
@@ -51,12 +48,5 @@ public class VoteCommand extends StandaloneCommand {
 								+ TextUtil.formatDuration(remaining));
 			}
 		}
-		return true;
 	}
-
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return Collections.emptyList();
-	}
-
 }

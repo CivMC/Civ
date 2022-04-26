@@ -1,7 +1,10 @@
 package com.github.maxopoly.essenceglue;
 
+import com.github.maxopoly.essenceglue.commands.StreakCommand;
+import com.github.maxopoly.essenceglue.commands.VoteCommand;
 import org.bukkit.Bukkit;
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
 public final class EssenceGluePlugin extends ACivMod {
 
@@ -10,6 +13,7 @@ public final class EssenceGluePlugin extends ACivMod {
 	private StreakManager streakMan;
 	private RewardManager rewardMan;
 	private VotifyManager votifyMan;
+	private CommandManager commandManager;
 
 	public static EssenceGluePlugin instance() {
 		return instance;
@@ -25,6 +29,9 @@ public final class EssenceGluePlugin extends ACivMod {
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
 		}
+		commandManager = new CommandManager(this);
+		commandManager.init();
+		registerCommands();
 		streakMan = new StreakManager(this, configMan.getStreakDelay(), configMan.getStreakGracePeriod(),
 				configMan.getMaxStreak(), configMan.getOnlineTimeForReward(), configMan.giveRewardToPearled());
 		if (configMan.getDatabase() != null) {
@@ -43,6 +50,11 @@ public final class EssenceGluePlugin extends ACivMod {
 			getLogger().info("Votifier is not enabled, no voting support is possible");
 		}
 		Bukkit.getPluginManager().registerEvents(new ExilePearListener(streakMan, configMan.multiplyPearlCost()), this);
+	}
+
+	private void registerCommands() {
+		commandManager.registerCommand(new StreakCommand());
+		commandManager.registerCommand(new VoteCommand());
 	}
 
 	public StreakManager getStreakManager() {

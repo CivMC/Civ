@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.CoreConfigManager;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
+import vg.civcraft.mc.civmodcore.config.ConfigParser;
+import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-import vg.civcraft.mc.civmodcore.util.ConfigParsing;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
-public class EssenceConfigManager extends CoreConfigManager {
+public class EssenceConfigManager extends ConfigParser {
 
 	private ManagedDatasource db;
 	private int maxStreak;
@@ -29,21 +30,21 @@ public class EssenceConfigManager extends CoreConfigManager {
 	@Override
 	protected boolean parseInternal(ConfigurationSection config) {
 		if (config.contains("database")) {
-			db = (ManagedDatasource) config.get("database");
+			db = ManagedDatasource.construct((ACivMod) plugin, (DatabaseCredentials) config.get("database"));
 		}
 		maxStreak = config.getInt("max_streak", 8);
-		streakDelay = ConfigParsing.parseTime(config.getString("streak_delay", "20 hours"));
-		streakGracePeriod = ConfigParsing.parseTime(config.getString("streak_grace_period", "1 day"));
-		timeForGain = ConfigParsing.parseTime(config.getString("online_for_reward", "30 minutes"));
-		loginReward = ConfigParsing.parseItemMap(config.getConfigurationSection("login_reward"));
-		votingReward = ConfigParsing.parseItemMap(config.getConfigurationSection("voting_reward"));
+		streakDelay = ConfigHelper.parseTime(config.getString("streak_delay", "20 hours"));
+		streakGracePeriod = ConfigHelper.parseTime(config.getString("streak_grace_period", "1 day"));
+		timeForGain = ConfigHelper.parseTime(config.getString("online_for_reward", "30 minutes"));
+		loginReward = ConfigHelper.parseItemMap(config.getConfigurationSection("login_reward"));
+		votingReward = ConfigHelper.parseItemMap(config.getConfigurationSection("voting_reward"));
 		votingCooldowns = new HashMap<>();
 		if (config.isConfigurationSection("voting_sites")) {
 			ConfigurationSection votingKeySection = config.getConfigurationSection("voting_sites");
 			for (String key : votingKeySection.getKeys(false)) {
 				if (votingKeySection.isConfigurationSection(key)) {
 					ConfigurationSection current = votingKeySection.getConfigurationSection(key);
-					long votingCooldown = ConfigParsing.parseTime(current.getString("voting_cooldown", "20h"));
+					long votingCooldown = ConfigHelper.parseTime(current.getString("voting_cooldown", "20h"));
 					String votingUrl = current.getString("voting_url");
 					String internalKey = current.getString("internal_key");
 					String name = current.getString("name");
