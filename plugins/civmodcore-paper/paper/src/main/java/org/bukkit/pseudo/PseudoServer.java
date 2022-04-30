@@ -35,6 +35,7 @@ import org.bukkit.Tag;
 import org.bukkit.UnsafeValues;
 import org.bukkit.Warning;
 import org.bukkit.World;
+import org.bukkit.WorldBorder;
 import org.bukkit.WorldCreator;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.block.data.BlockData;
@@ -408,6 +409,11 @@ public class PseudoServer implements Server {
 	@Nullable
 	@Override
 	public World getWorld(@Nonnull final NamespacedKey namespacedKey) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull WorldBorder createWorldBorder() {
 		throw new NotImplementedException();
 	}
 
@@ -1006,6 +1012,12 @@ public class PseudoServer implements Server {
 	@Nonnull
 	@Override
 	public PlayerProfile createProfile(@Nullable final UUID uuid, @Nullable final String s) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull PlayerProfile createProfileExact(@Nullable UUID uuid,
+													 @Nullable String name) {
 		throw new NotImplementedException();
 	}
 
