@@ -40,6 +40,7 @@ import org.bukkit.SoundCategory;
 import org.bukkit.Statistic;
 import org.bukkit.WeatherType;
 import org.bukkit.World;
+import org.bukkit.WorldBorder;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.attribute.Attribute;
@@ -1832,6 +1833,16 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
+
+	}
+
+	@Override
+	public @Nullable WorldBorder getWorldBorder() {
+		return null;
+	}
+
+	@Override
+	public void setWorldBorder(@Nullable WorldBorder border) {
 
 	}
 
