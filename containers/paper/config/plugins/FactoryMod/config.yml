@@ -1,0 +1,40 @@
+default_update_time: 1s
+default_fuel:
+  charcoal:
+    material: CHARCOAL
+default_fuel_consumption_intervall: 1s
+default_return_rate: 0.5
+default_break_grace_period: 1000d
+decay_intervall: 1h
+decay_amount: 21
+default_health: 10000
+disable_nether: false
+use_recipe_yamlidentifiers: true
+log_inventories: true
+force_include_default: true
+
+factories:
+  stone_smelter:
+    type: FCC
+    name: Basic Smelter
+    citadelBreakReduction: 1.0
+    setupcost:
+      stone:
+        material: STONE
+        amount: 512
+    recipes:
+      - smelt_stone
+      - smelt_deepslate
+      - smelt_smooth_stone
+      - smelt_cracked_stone_bricks
+      - smelt_glass
+      - smelt_glass_red
+      - smelt_netherrack
+      - smelt_red_netherbrick
+      - smelt_bricks
+      - smelt_hard_clay
+      - smelt_sandstone
+      - smelt_smooth_sandstone
+      - smelt_smooth_red_sandstone
+      - smelt_smooth_quartz
+      - repair_stone_smelter

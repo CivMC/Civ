@@ -1,0 +1,3 @@
+CREATE DATABASE civspy;
+\c civspy;
+CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;

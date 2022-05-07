@@ -8,8 +8,10 @@ services:
     tty: true
     stdin_open: true
     depends_on:
-      - mariadb
-      - influx
+      mariadb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
     ports:
       - "25565:25577"
 
@@ -21,8 +23,8 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
-      influx:
-        condition: service_started
+      postgres:
+        condition: service_healthy
     ports:
       - "8123:8123"
     environment:
@@ -36,10 +38,9 @@ services:
       CIV_MYSQL_PASSWORD: password
       CIV_MYSQL_DATABASE: minecraft
 
-      CIV_INFLUX_HOST: http://influx:8086
-      CIV_INFLUX_ORG: CivMC
-      CIV_INFLUX_BUCKET: UnifiedMetrics
-      CIV_INFLUX_TOKEN: admintoken
+      CIV_POSTGRES_HOST: postgres
+      CIV_POSTGRES_USERNAME: postgres
+      CIV_POSTGRES_PASSWORD: postgres
     volumes:
       - ./local/paper:/data
 
@@ -60,27 +61,30 @@ services:
     volumes:
       - ./local/mariadb:/var/lib/mysql
 
-
-  influx:
-    image: influxdb:2.1-alpine
+  postgres:
+    image: timescale/timescaledb:latest-pg14
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     ports:
-      - "8086:8086"
+      - "5432:5432"
     environment:
-      DOCKER_INFLUXDB_INIT_MODE: setup
-      DOCKER_INFLUXDB_INIT_USERNAME: username
-      DOCKER_INFLUXDB_INIT_PASSWORD: password
-      DOCKER_INFLUXDB_INIT_ORG: CivMC
-      DOCKER_INFLUXDB_INIT_BUCKET: UnifiedMetrics
-      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: admintoken
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
     volumes:
-      - ./local/influx:/var/lib/influxdb2
+      - ./provisioning/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./local/postgres:/var/lib/postgresql/data
 
   grafana:
     image: grafana/grafana-oss:latest
     restart: unless-stopped
     depends_on:
-      - influx
+      postgres:
+        condition: service_healthy
     profiles:
       - extra
     ports:
