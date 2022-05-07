@@ -1,9 +1,9 @@
 database:
- host:
- port:
- database:
- user:
- password:
+ host: localhost
+ port: 5432
+ database: postgres
+ user: postgres
+ password: postgres
  poolsize: 10
  connectionTimeout: 10000
  idleTimeout: 600000

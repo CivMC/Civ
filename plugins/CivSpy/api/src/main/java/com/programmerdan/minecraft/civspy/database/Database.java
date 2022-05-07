@@ -13,6 +13,7 @@ import java.util.logging.Level;
 
 import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.hikari.HikariConfig;
+import org.postgresql.Driver;
 
 /**
  * Wrapper for Connection Pool, and holder for static strings.
@@ -20,7 +21,22 @@ import com.zaxxer.hikari.HikariConfig;
  * @author ProgrammerDan
  */
 public class Database {
-	public static final String INIT_DATABASE =
+
+	public static final String INIT_DATABASE = """
+			CREATE TABLE IF NOT EXISTS spy_stats(
+				stat_time TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+				stat_key TEXT NOT NULL,
+				server TEXT,
+				world TEXT,
+				chunk_x INTEGER,
+				chunk_z INTEGER,
+				uuid TEXT,
+				numeric_value DOUBLE PRECISION,
+				string_value TEXT
+			);
+			SELECT create_hypertable('spy_stats', 'stat_time', if_not_exists => true);
+			""";
+	public static final String INIT_DATABAaSE =
 			"CREATE TABLE IF NOT EXISTS spy_stats (" +
 			"  id BIGINT NOT NULL AUTO_INCREMENT," +
 			"  stat_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
@@ -72,7 +88,8 @@ public class Database {
 		this.log = log;
 		if (user != null && host != null && port > 0 && database != null) {
 			HikariConfig config = new HikariConfig();
-			config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database);
+			config.setDriverClassName(Driver.class.getName());
+			config.setJdbcUrl("jdbc:postgresql://" + host + ":" + port + "/" + database);
 			config.setConnectionTimeout(connectionTimeout); // 1000l);
 			config.setIdleTimeout(idleTimeout); //600000l);
 			config.setMaxLifetime(maxLifetime); //7200000l);
