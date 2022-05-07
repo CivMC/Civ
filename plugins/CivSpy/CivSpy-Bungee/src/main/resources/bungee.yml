@@ -1,4 +1,0 @@
-name: ${project.name}
-version: ${project.version}
-author: ProgrammerDan
-main: com.programmerdan.minecraft.civspy.CivSpyBungee

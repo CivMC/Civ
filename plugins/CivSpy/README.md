@@ -9,7 +9,7 @@ For CivSpy-Bungee, just follow the examples as shown in [the main class](CivSpy-
 
 #### Basic Configuration
 
-CivSpy (both bungee and bukkit) sits on top of a HikariCP connection pool. This pool needs to be well-configured or you risk data loss. 
+CivSpy (both bungee and bukkit) sits on top of a HikariCP connection pool. This pool needs to be well-configured, or you risk data loss. 
 
 For more details see:
 
