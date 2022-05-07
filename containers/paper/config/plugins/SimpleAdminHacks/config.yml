@@ -184,9 +184,9 @@ hacks:
     # NOTE: Modifier must be 0 or greater
     lootModifier: 1.5
     # Enables xp bottles to be crafted from emeralds and vice versa
-    emeraldCrafting: true
+    emeraldCrafting: false
     # Enables gaining xp from emeralds directly if emeraldCrafting is enabled
-    emeraldLeveling: true
+    emeraldLeveling: false
     # Disables exp from mobs, fishing, mining, breeding, furnace extracting, etc
     disableGrindExp: true
     # Prevents exp orbs from granting xp
@@ -198,7 +198,7 @@ hacks:
     maxRepairCost: -1
     # Defines the set amount of xp that xp bottles will produce
     # NOTE: Value must be a 0 or greater, or -1 for vanilla random
-    expPerBottle: 10
+    expPerBottle: 60
     # Allows player's to store their levels in bottles if expPerBottle has a value higher than 0
     allowExpRecovery: true
     # Disallows players from creating enchanted books
