@@ -6,6 +6,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("io.papermc.paperweight.userdev") version "1.3.1"
+	id("com.github.johnrengelman.shadow") version "7.1.0"
 }
 
 group = "net.civmc"
@@ -38,12 +39,13 @@ repositories {
 
 dependencies {
     paperDevBundle("1.18-R0.1-SNAPSHOT")
+
     implementation("com.rabbitmq:amqp-client:5.6.0")
-    implementation("net.civmc:civmodcore:2.0.0-SNAPSHOT:dev-all")
-    implementation("net.civmc:namelayer-spigot:3.0.0-SNAPSHOT:dev")
-    implementation("net.civmc:civchat2:2.0.0-SNAPSHOT:dev")
-    implementation("net.cimc.jukealert:paper:3.0.0-SNAPSHOT:dev")
-    implementation("net.luckperms:api:5.0")
+    compileOnly("net.civmc:civmodcore:2.0.0-SNAPSHOT:dev-all")
+	compileOnly("net.civmc:namelayer-spigot:3.0.0-SNAPSHOT:dev")
+	compileOnly("net.civmc:civchat2:2.0.0-SNAPSHOT:dev")
+	compileOnly("net.cimc.jukealert:paper:3.0.0-SNAPSHOT:dev")
+	compileOnly("net.luckperms:api:5.0")
 }
 
 java {
@@ -67,6 +69,12 @@ tasks {
 	}
 	processResources {
 		filteringCharset = Charsets.UTF_8.name() // We want UTF-8 for everything
+		filesMatching("plugin.yml") {
+			expand(mapOf(
+				"name" to "KiraBukkitGateway",
+				"version" to version,
+			))
+		}
 	}
 
 	test {
