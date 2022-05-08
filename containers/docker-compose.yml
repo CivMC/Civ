@@ -12,6 +12,8 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     ports:
       - "25565:25577"
 
@@ -41,6 +43,10 @@ services:
       CIV_POSTGRES_HOST: postgres
       CIV_POSTGRES_USERNAME: postgres
       CIV_POSTGRES_PASSWORD: postgres
+
+      CIV_RABBITMQ_HOST: rabbitmq
+      CIV_RABBITMQ_USERNAME: rabbitmq
+      CIV_RABBITMQ_PASSWORD: rabbitmq
     volumes:
       - ./local/paper:/data
 
@@ -78,6 +84,20 @@ services:
     volumes:
       - ./provisioning/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./local/postgres:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3.9.16-management
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    ports:
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
 
   grafana:
     image: grafana/grafana-oss:latest
