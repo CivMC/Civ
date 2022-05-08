@@ -18,7 +18,7 @@ info:
   groups: true
   #afkmessage: The default afk message people will get when player has afk toggled def=Player is currently AFK
   afkmessage: Player is currently AFK
-  loginAnnounce: true
+  loginAnnounce: false
   #chatRangeWarn: warns new players about the local chat limit.
   chatRangeWarn: true
 mysql:
