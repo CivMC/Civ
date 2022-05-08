@@ -6,3 +6,5 @@ dependency-reduced-pom.xml
 *.iml
 .gradle
 build
+
+.idea

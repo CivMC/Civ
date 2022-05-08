@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.civmc"
-version = "1.5.0-SNAPSHOT"
+version = "2.0.0-SNAPSHOT"
 description = "KiraBukkitGateway"
 
 repositories {
@@ -23,8 +23,14 @@ repositories {
     		}
     	}
     }
+
     mavenCentral()
-    civRepo("CivModCore")
+
+	maven("https://repo.aikar.co/content/groups/aikar/")
+	maven("https://repo.civmc.net/repository/maven-public/")
+
+	maven("https://jitpack.io")
+
     civRepo("NameLayer")
     civRepo("CivChat2")
     civRepo("JukeAlert")
@@ -36,7 +42,7 @@ dependencies {
     implementation("net.civmc:civmodcore:2.0.0-SNAPSHOT:dev-all")
     implementation("net.civmc:namelayer-spigot:3.0.0-SNAPSHOT:dev")
     implementation("net.civmc:civchat2:2.0.0-SNAPSHOT:dev")
-    implementation("net.civmc:jukealert:3.0.0-SNAPSHOT:dev")
+    implementation("net.cimc.jukealert:paper:3.0.0-SNAPSHOT:dev")
     implementation("net.luckperms:api:5.0")
 }
 
