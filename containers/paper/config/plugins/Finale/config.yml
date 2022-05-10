@@ -20,8 +20,6 @@ cleanerCombat:
     strong: false
     knockback: false
     crit: true
-  knockbackLevelMultiplier: 0.5 # a constant to control the knockback sword level #NEW 2.1 STUFF 
-  strategy: standard #NEW 2.1 STUFF
   sprintMultiplier: # modifies knockback if the attacker is sprinting.
     x: 2.3
     y: 1.0
