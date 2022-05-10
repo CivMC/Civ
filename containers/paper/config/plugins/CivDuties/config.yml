@@ -1,0 +1,42 @@
+tiers:
+  default:
+    priority: 0
+    diable_death_drops: true
+    enable_combattag_block: true
+    permission: civduties.superfriend
+    commands:
+      spectator:
+        syntax: gamemode spectator %PLAYER_NAME%
+        timing: ENABLE
+        executor: CONSOLE
+      survival:
+        syntax: gamemode survival %PLAYER_NAME%
+        timing: DISABLE
+        executor: CONSOLE
+      clear:
+        syntax: clear %PLAYER_NAME%
+        timing: ENABLE
+        executor: CONSOLE
+      vanish:
+        syntax: vanish on %PLAYER_NAME%
+        timing: ENABLE
+        executor: CONSOLE
+      unvanish:
+        syntax: vanish off %PLAYER_NAME%
+        timing: DISABLE
+        executor: CONSOLE
+    temporary:
+      groups:
+        - dutied
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  plugin: CivDuties
+  user: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}
+  host: ${CIV_MYSQL_HOST}
+  port: 3306
+  database: ${CIV_MYSQL_DATABASE}
+  poolsize: 5
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
