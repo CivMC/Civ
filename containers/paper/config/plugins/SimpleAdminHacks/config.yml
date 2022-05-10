@@ -240,6 +240,10 @@ hacks:
       - COAL
       - ROTTEN_FLESH
       - GOLD_NUGGET
+  #Alters end portals to send you to a target dimension instead of just the end
+  PortalModifyHack:
+    enabled: true
+    targetWorld: world_nether
   PortalSpawnModifier:
     enabled: false
     pigManChance: 0.15
