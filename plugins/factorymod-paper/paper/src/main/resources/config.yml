@@ -47,6 +47,8 @@
 #material requires you to specify the type of the item. Use Spigot's official item identifers here, a full list of those
 #can be found here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 
+#** AS OF 1.18 USE MOJANG NAMES FOR ENCHANTMENTS, E.G DIG_SPEED is now EFFICIENCY
+
 #durability allows you to specify the durability of the item. Note that this is not only limited to the durability of tools
 #or armour, but instead the durability is also used to create different variations of the same material. For example orange
 #wool is actually just white wool with a durability of 1. If this option is not specified it will default to 0, which is also
