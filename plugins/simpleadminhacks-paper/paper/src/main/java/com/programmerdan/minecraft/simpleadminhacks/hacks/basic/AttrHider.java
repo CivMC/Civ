@@ -7,6 +7,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
+import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 import com.destroystokyo.paper.MaterialTags;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
@@ -26,6 +27,9 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class AttrHider extends BasicHack {
 
 	public static final String BYPASS_PERMISSION = "attrhider.bypass";
@@ -40,6 +44,9 @@ public final class AttrHider extends BasicHack {
 
 	@AutoLoad
 	private boolean hideHealth;
+
+	@AutoLoad
+	private boolean roundPlayerListPing;
 
 	public AttrHider(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
@@ -84,6 +91,9 @@ public final class AttrHider extends BasicHack {
 								fakeDamageable.setDamage(0);
 							}
 							if (meta.hasEnchants()) {
+								for (Enchantment enchantment : fakeMeta.getEnchants().keySet()) {
+									fakeMeta.removeEnchant(enchantment);
+								}
 								fakeMeta.addEnchant(Enchantment.DURABILITY, 1, true);
 							}
 							fakeItem.setItemMeta(fakeMeta);
@@ -149,6 +159,41 @@ public final class AttrHider extends BasicHack {
 				}
 			});
 		}
+		if (this.roundPlayerListPing) {
+			this.packets.addAdapter(new PacketAdapter(this.plugin, PacketType.Play.Server.PLAYER_INFO) {
+				@Override
+				public void onPacketSending(final PacketEvent event) {
+					final PacketContainer packet = event.getPacket();
+					final Player player = event.getPlayer();
+					if (player.hasPermission(BYPASS_PERMISSION)) {
+						return;
+					}
+					final PacketContainer cloned = packet.deepClone();
+					List<PlayerInfoData> newInfos = new ArrayList<>();
+					List<PlayerInfoData> oldInfos = cloned.getPlayerInfoDataLists().read(0);
+					for (PlayerInfoData oldInfo : oldInfos) {
+						int latency = oldInfo.getLatency();
+						// Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
+						// this follows 1.16.5 PlayerTabOverlay#renderPingIcon()
+						if (latency < 0) latency = -1;
+						else if (latency < 150) latency = 75; // average of 0 and 150, arbitrary
+						else if (latency < 300) latency = 225;
+						else if (latency < 600) latency = 450;
+						else if (latency < 1000) latency = 800;
+						else latency = 1000;
+						newInfos.add(new PlayerInfoData(
+								oldInfo.getProfile(),
+								latency,
+								oldInfo.getGameMode(),
+								oldInfo.getDisplayName()));
+					}
+					cloned.getPlayerInfoDataLists().write(0, newInfos);
+					// The packet data is shared between events, but the event
+					// instance is exclusive to THIS sending of the packet
+					event.setPacket(cloned);
+				}
+			});
+		}
 	}
 
 	@Override
@@ -174,5 +219,4 @@ public final class AttrHider extends BasicHack {
 				|| material == Material.LINGERING_POTION
 				|| material == Material.SPLASH_POTION;
 	}
-	
 }

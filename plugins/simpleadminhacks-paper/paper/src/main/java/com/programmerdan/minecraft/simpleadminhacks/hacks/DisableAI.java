@@ -6,7 +6,7 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.DisableAIConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import net.minecraft.nbt.CompoundTag;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_18_R1.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_18_R2.persistence.CraftPersistentDataContainer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
