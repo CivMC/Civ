@@ -55,7 +55,7 @@ public class WordBankRecipe extends InputRecipe {
 		if (!ItemUtils.isValidItem(toApply)) {
 			return false;
 		}
-		if (ItemUtils.getDisplayName(toApply) != null) {
+		if (!ItemUtils.getDisplayName(toApply).isEmpty()) {
 			return false;
 		}
 		ItemMap input = new ItemMap();
@@ -129,7 +129,7 @@ public class WordBankRecipe extends InputRecipe {
 		if (!ItemUtils.isValidItem(toApply)) {
 			return false;
 		}
-		if (ItemUtils.getDisplayName(toApply) != null) {
+		if (!ItemUtils.getDisplayName(toApply).isEmpty()) {
 			return false;
 		}
 		for (int i = 1; i < inputInv.getSize(); i++) {
