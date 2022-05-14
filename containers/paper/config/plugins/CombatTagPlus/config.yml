@@ -109,7 +109,7 @@ npc-despawn-time: 60
 reset-despawn-time-on-hit: true
 
 # Generates a random name for the NPC. Turn this off to use the player name (potentially unsafe!)
-generate-random-name: true
+generate-random-name: false
 
 # This is the prefix to use for the random name. 12 characters max.
 random-name-prefix: PvPLogger
