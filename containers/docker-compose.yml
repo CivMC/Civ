@@ -54,7 +54,7 @@ services:
     image: mariadb:10.7.1
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      test: [ "CMD-SHELL", 'mysqladmin ping --user "$$MYSQL_USER" --password="$$MYSQL_PASSWORD"' ]
       timeout: 20s
       retries: 10
     ports:
