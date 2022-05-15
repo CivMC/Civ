@@ -20,7 +20,7 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public class CreateGroup extends BaseCommandMiddle {
 
-	@CommandAlias("nlcg|nlcreategroup|creategroup|create|ctcreate|creategroup|cg")
+	@CommandAlias("nlcg|nlcreategroup|creategroup|create|ctcreate|creategroup")
 	@Syntax("<group> [password]")
 	@Description("Create a group (Public or Private). Password is optional.")
 	public void execute(Player sender, String groupName, @Optional String userPassword) {
