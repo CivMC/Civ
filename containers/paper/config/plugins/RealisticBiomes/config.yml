@@ -63,8 +63,8 @@ biome_aliases:
     - OLD_GROWTH_BIRCH_FOREST
   cold:
     - ICE_SPIKES
-    - GIANT_SPRUCE_TAIGA
-    - GIANT_TREE_TAIGA
+    - OLD_GROWTH_SPRUCE_TAIGA
+    - OLD_GROWTH_PINE_TAIGA
     - TAIGA
     - SNOWY_PLAINS
     - SNOWY_TAIGA
@@ -72,8 +72,6 @@ biome_aliases:
     - OLD_GROWTH_SPRUCE_TAIGA
     - OLD_GROWTH_PINE_TAIGA
     - TAIGA
-    - TAIGA_HILLS
-    - TAIGA_MOUNTAINS
   hot_dry:
     - DESERT
     - BADLANDS
@@ -89,7 +87,6 @@ biome_aliases:
   mesa:
     - BADLANDS
     - ERODED_BADLANDS
-    - WOODED_BADLANDS_PLATEAU
   mushroom:
     - MUSHROOM_FIELDS
   swampy:
