@@ -564,8 +564,8 @@ disabled-context-calculators: []
 # - These aliases are provided in addition to the real world name. Applied recursively.
 # - Remove the comment characters for the default aliases to apply.
 world-rewrite:
-#  world_nether: world
-#  world_the_end: world
+  world_nether: world
+  world_the_end: world
 
 # Define special group weights for this server.
 #
