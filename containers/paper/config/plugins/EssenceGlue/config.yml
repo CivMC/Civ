@@ -43,7 +43,7 @@ voting_sites:
   #  name: 'minecraftservers.org'
   
 database:
-  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
   plugin: EssenceGlue
   username: ${CIV_MYSQL_USERNAME}
   password: ${CIV_MYSQL_PASSWORD}
