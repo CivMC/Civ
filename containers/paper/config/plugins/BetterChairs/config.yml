@@ -1,0 +1,28 @@
+version: 1
+Chairs:
+  AllowedDistanceToChair: 2
+  AutoRotatePlayer: true
+  NeedEmptyHands: true
+  NeedsSignsOnBothSides: false
+  UseStairs: true
+  UseSlabs: true
+  LeavingChair:
+    TeleportPlayerToOldLocation: true
+    KeepHeadRotation: true
+  Messages:
+    AlreadyOccupied: false
+    NeedsSignsOnBothSides: false
+    NowSitting: false
+  Regeneration:
+    Enabled: false
+    Amplifier: 1
+Filter:
+  Worlds:
+    Enabled: false
+    UseAsBlacklist: true
+    Names:
+    - worldname
+    - worldname2
+Updater:
+  CheckForUpdates: false
+  NotifyOnJoin: true
