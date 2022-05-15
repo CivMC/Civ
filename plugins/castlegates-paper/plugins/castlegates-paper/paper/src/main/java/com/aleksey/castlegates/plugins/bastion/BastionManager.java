@@ -69,10 +69,10 @@ public class BastionManager implements IBastionManager {
 			return true;
 
 		ReinforcementManager reinManager = Citadel.getInstance().getReinforcementManager();
-		Group citadelGroup = citadel.getGroupName() != null ? GroupManager.getGroup(citadel.getGroupName()) : null;
 
 		for(BastionBlock bastion : bastions) {
-			if(bastion.getType().isOnlyDirectDestruction() || !bastion.inField(loc)) continue;
+			if(bastion.getType().isOnlyDirectDestruction() || !bastion.inField(loc))
+				continue;
 
 			Reinforcement rein = reinManager.getReinforcement(bastion.getLocation());
 
@@ -82,21 +82,20 @@ public class BastionManager implements IBastionManager {
 			if(players == null)
 				return false;
 
-			if(citadel.useJukeAlert() && !citadel.getGroupName().equalsIgnoreCase(rein.getGroup().getName())) {
+			if(citadel.useJukeAlert() && !rein.getGroup().getName().equalsIgnoreCase(citadel.getGroupName()))
 				return false;
-			} else if(citadelGroup == null) {
-				boolean hasAccess = false;
 
-				for (Player player : players) {
-					if (bastion.permAccess(player, perm)) {
-						hasAccess = true;
-						break;
-					}
+			boolean hasAccess = false;
+
+			for (Player player : players) {
+				if (bastion.permAccess(player, perm)) {
+					hasAccess = true;
+					break;
 				}
-
-				if (!hasAccess)
-					return false;
 			}
+
+			if (!hasAccess)
+				return false;
 		}
 
 		return true;

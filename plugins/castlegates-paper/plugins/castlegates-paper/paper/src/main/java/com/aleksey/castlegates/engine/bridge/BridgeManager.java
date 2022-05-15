@@ -151,7 +151,8 @@ public class BridgeManager {
 	}
 
 	public void removeLink(GearblockLink link) {
-		if(link == null) return;
+		if(link == null)
+			return;
 
 		Gearblock gearblock1 = link.getGearblock1();
 
@@ -236,23 +237,22 @@ public class BridgeManager {
 			case Partial: return PowerResult.DifferentCitadelGroup;
 		}
 
-		if(extendDoorTimerBatch(gearblock)) return PowerResult.Unchanged;
+		if(extendDoorTimerBatch(gearblock))
+			return PowerResult.Unchanged;
 
-		if(!unlock(gearblock)) return PowerResult.Locked;
+		if(!unlock(gearblock))
+			return PowerResult.Locked;
 
 		gearblock.setPowered(true);
 
 		if(gearblock.getLink() != null)
 		{
-			PowerResult result;
+			PowerResult result = !gearblock.getLink().isDrawn()
+				? canDraw(world, gearblock.getLink(), citadel)
+				: canUndraw(world, gearblock.getLink(), players, citadel);
 
-			if(!gearblock.getLink().isDrawn()) {
-				result = canDraw(world, gearblock.getLink(), citadel);
-			} else {
-				result = canUndraw(world, gearblock.getLink(), players, citadel);
-			}
-
-			if(result != PowerResult.Allowed) return result;
+			if(result != PowerResult.Allowed)
+				return result;
 		}
 
 		PowerResult result = powerGear(world, gearblock, players, citadel);
@@ -276,16 +276,19 @@ public class BridgeManager {
 
 		PowerResult transferResult = transferPower(world, gearblock, true, players, citadel, gearblocks);
 
-		if(transferResult != PowerResult.Allowed) return transferResult;
+		if(transferResult != PowerResult.Allowed)
+			return transferResult;
 
-		if(isLocked(gearblocks)) return PowerResult.Locked;
+		if(isLocked(gearblocks))
+			return PowerResult.Locked;
 
 		TimerBatch timerBatch = gearblock.getTimer() != null ? new TimerBatch(world, gearblock, gearblocks) : null;
 		Boolean draw = powerGearList(world, gearblocks, timerBatch);
 
 		lock(gearblock, gearblocks);
 
-		if(draw == null) return PowerResult.Unchanged;
+		if(draw == null)
+			return PowerResult.Unchanged;
 
 		PowerResult result = draw ? PowerResult.Drawn : PowerResult.Undrawn;
 
@@ -626,7 +629,8 @@ public class BridgeManager {
 		while(x1 != x2 || y1 != y2 || z1 != z2) {
 			Block block = world.getBlockAt(x1, y1, z1);
 
-			if(!Helper.isEmptyBlock(block)) return new PowerResult(PowerResult.Status.Blocked, block);
+			if(!Helper.isEmptyBlock(block))
+				return new PowerResult(PowerResult.Status.Blocked, block);
 
 			bridgeBlocks.add(block);
 

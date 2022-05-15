@@ -68,6 +68,7 @@ public class ConfigManager {
 	private int _timerDefault;
 	private TimerOperation _timerDefaultOperation;
 	private boolean _gearblockMustBeReinforced;
+	private boolean _horizontalLinkDisabled;
 
 	public ConfigManager(Logger logger) {
 		_logger = logger;
@@ -96,6 +97,7 @@ public class ConfigManager {
 		_timerDefault = getInt("Settings.Timer.DefaultInterval", 5);
 		_timerDefaultOperation = getTimerOperation();
 		_gearblockMustBeReinforced = getBoolean("Settings.GearblockMustBeReinforced", false);
+		_horizontalLinkDisabled = getBoolean("Settings.HorizontalLinkDisabled", false);
 
 		_gearMaterials = getBlockMaterials("Blocks.GearMaterials", ConfigDefaults.gearMaterials);
 		_bridgeMaterials = getBlockMaterials("Blocks.BridgeMaterials", ConfigDefaults.bridgeMaterials);
@@ -134,6 +136,8 @@ public class ConfigManager {
 	}
 
 	public boolean isGearblockMustBeReinforced() { return _gearblockMustBeReinforced; }
+
+	public boolean isHorizontalLinkDisabled() { return _horizontalLinkDisabled; }
 
 	public Database getDatabase() {
 		return _database;

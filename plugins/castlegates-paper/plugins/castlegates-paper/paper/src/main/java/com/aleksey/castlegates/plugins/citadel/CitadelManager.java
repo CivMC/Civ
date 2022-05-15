@@ -53,12 +53,10 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 	}
 
 	public ICitadel getCitadel(List<Player> players, Location loc) {
-    	boolean hasAccess = false;
-    	boolean useJukeAlert = false;
-
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(loc);
 
-		hasAccess = rein == null;
+		boolean hasAccess = rein == null;
+		boolean useJukeAlert = false;
 
 		if(!hasAccess) {
 			var doorsPermission= CitadelPermissionHandler.getDoors();

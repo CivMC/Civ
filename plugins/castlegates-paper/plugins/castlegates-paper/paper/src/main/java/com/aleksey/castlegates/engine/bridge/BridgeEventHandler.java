@@ -58,7 +58,8 @@ public class BridgeEventHandler {
             return false;
         }
 
-        if(event.getAction() != Action.LEFT_CLICK_BLOCK) return false;
+        if(event.getAction() != Action.LEFT_CLICK_BLOCK)
+            return false;
 
         boolean interacted = false;
         ConfigManager configManager = CastleGates.getConfigManager();
@@ -220,7 +221,8 @@ public class BridgeEventHandler {
 
         Gearblock gearblock1 = _storage.getGearblock(new BlockCoord(block));
 
-        if(gearblock1 == null) return false;
+        if(gearblock1 == null)
+            return false;
 
         if(!CastleGates.getCitadelManager().canBypass(player, block.getLocation())) {
             player.sendMessage(ChatColor.RED + "Citadel has prevented the creation of a link.");
@@ -289,8 +291,13 @@ public class BridgeEventHandler {
         int x = startGearBlock.getX();
         int y = startGearBlock.getY();
         int z = startGearBlock.getZ();
+        int maxBridgeLength = CastleGates.getConfigManager().getMaxBridgeLength();
 
-        for(int i = 0; i < CastleGates.getConfigManager().getMaxBridgeLength(); i++) {
+        boolean isNonSimpleDisabled = CastleGates.getConfigManager().isHorizontalLinkDisabled()
+                && blockFace != BlockFace.UP
+                && blockFace != BlockFace.DOWN;
+
+        for(int i = 0; i < maxBridgeLength; i++) {
             x += blockFace.getModX();
             y += blockFace.getModY();
             z += blockFace.getModZ();
@@ -299,7 +306,9 @@ public class BridgeEventHandler {
             Gearblock gearblock = _storage.getGearblock(location);
 
             if(gearblock != null) {
-                return i > 0 ? new FindGearResult(gearblock, i): null;
+                return i == 0 || i > 1 && isNonSimpleDisabled
+                    ? null
+                    : new FindGearResult(gearblock, i);
             }
         }
 
