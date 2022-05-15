@@ -41,7 +41,7 @@ biome_aliases:
   water:
     - DEEP_OCEAN
     - OCEAN
-    - STONE_SHORE
+    - STONY_SHORE
   freshwater:
     - RIVER
     - BEACH
@@ -54,23 +54,23 @@ biome_aliases:
     - SUNFLOWER_PLAINS
     - SAVANNA
     - SAVANNA_PLATEAU
-    - SHATTERED_SAVANNA
+    - WINDSWEPT_SAVANNA
   foresty:
     - BIRCH_FOREST
     - DARK_FOREST
     - FLOWER_FOREST
     - FOREST
-    - TALL_BIRCH_FOREST
+    - OLD_GROWTH_BIRCH_FOREST
   cold:
     - ICE_SPIKES
     - GIANT_SPRUCE_TAIGA
     - GIANT_TREE_TAIGA
     - TAIGA
-    - SNOWY_TUNDRA
+    - SNOWY_PLAINS
     - SNOWY_TAIGA
   cold_forest:
-    - GIANT_SPRUCE_TAIGA
-    - GIANT_TREE_TAIGA
+    - OLD_GROWTH_SPRUCE_TAIGA
+    - OLD_GROWTH_PINE_TAIGA
     - TAIGA
     - TAIGA_HILLS
     - TAIGA_MOUNTAINS
@@ -78,14 +78,14 @@ biome_aliases:
     - DESERT
     - BADLANDS
     - ERODED_BADLANDS
-    - WOODED_BADLANDS_PLATEAU
+    - WOODED_BADLANDS
   hot_rainy:
     - JUNGLE
-    - JUNGLE_EDGE
+    - SPARSE_JUNGLE
   mountain:
-    - MOUNTAINS
-    - GRAVELLY_MOUNTAINS
-    - WOODED_MOUNTAINS
+    - WINDSWEPT_HILLS
+    - WINDSWEPT_GRAVELLY_HILLS
+    - WINDSWEPT_FOREST
   mesa:
     - BADLANDS
     - ERODED_BADLANDS
