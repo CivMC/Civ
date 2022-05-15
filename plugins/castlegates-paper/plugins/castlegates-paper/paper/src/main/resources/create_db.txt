@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS cg_gearblock (
+    GearblockId INT NOT NULL AUTO_INCREMENT
+   ,WorldId VARCHAR(36) NOT NULL
+   ,X INT NOT NULL
+   ,Y INT NOT NULL
+   ,Z INT NOT NULL
+   ,Timer INT
+   ,TimerOperation INT
+
+   ,CONSTRAINT pk_cg_gearblock PRIMARY KEY (GearblockId)
+);
+
+CREATE TABLE IF NOT EXISTS cg_link (
+    LinkId INT NOT NULL AUTO_INCREMENT
+   ,StartGearblockId INT
+   ,EndGearblockId INT
+   ,Blocks VARCHAR(1024)
+
+   ,CONSTRAINT pk_cg_link PRIMARY KEY (LinkId)
+);
+
+CREATE TABLE IF NOT EXISTS cg_reinforcement (
+    LinkId INT NOT NULL
+   ,BlockSequence INT NOT NULL
+   ,CreationTime BIGINT NOT NULL
+   ,TypeId SMALLINT NOT NULL
+   ,Health FLOAT NOT NULL
+   ,GroupId INT NOT NULL
+   ,Insecure BOOL NOT NULL
+
+   ,CONSTRAINT pk_cg_reinforcement PRIMARY KEY (LinkId, BlockSequence)
+)
