@@ -1,0 +1,129 @@
+enabled: true
+debug: false
+
+# The blocks that are valid shop blocks for ItemExchange.
+# The block must have a natively retrievable inventory.
+supportedBlocks:
+  - "CHEST"
+  - "TRAPPED_CHEST"
+  - "BARREL"
+  - "DISPENSER"
+  - "DROPPER"
+
+# Supported blocks allowed to trigger the successful transaction button.
+# Make sure not to add blocks that themselves would be activated by the transaction button, like dispensers.
+# Additionally, make sure to only specify blocks that are directional.
+successButtonBlocks:
+  - "CHEST"
+  - "TRAPPED_CHEST"
+  - "BARREL"
+  - "ENDER_CHEST"
+
+createShopFromChest: true
+
+# The item of which the exchange data will be encoded onto, eg: STONE_BUTTON
+ruleItem: "STONE_BUTTON"
+
+repairables:
+  - "DIAMOND_HELMET"
+  - "DIAMOND_CHESTPLATE"
+  - "DIAMOND_LEGGINGS"
+  - "DIAMOND_BOOTS"
+  - "GOLDEN_HELMET"
+  - "GOLDEN_CHESTPLATE"
+  - "GOLDEN_LEGGINGS"
+  - "GOLDEN_BOOTS"
+  - "IRON_HELMET"
+  - "IRON_CHESTPLATE"
+  - "IRON_LEGGINGS"
+  - "IRON_BOOTS"
+  - "CHAINMAIL_HELMET"
+  - "CHAINMAIL_CHESTPLATE"
+  - "CHAINMAIL_LEGGINGS"
+  - "CHAINMAIL_BOOTS"
+  - "LEATHER_HELMET"
+  - "LEATHER_CHESTPLATE"
+  - "LEATHER_LEGGINGS"
+  - "LEATHER_BOOTS"
+  - "DIAMOND_SWORD"
+  - "GOLDEN_SWORD"
+  - "IRON_SWORD"
+  - "STONE_SWORD"
+  - "WOODEN_SWORD"
+  - "DIAMOND_AXE"
+  - "GOLDEN_AXE"
+  - "IRON_AXE"
+  - "STONE_AXE"
+  - "WOODEN_AXE"
+  - "DIAMOND_PICKAXE"
+  - "GOLDEN_PICKAXE"
+  - "IRON_PICKAXE"
+  - "STONE_PICKAXE"
+  - "WOODEN_PICKAXE"
+  - "DIAMOND_SHOVEL"
+  - "GOLDEN_SHOVEL"
+  - "IRON_SHOVEL"
+  - "STONE_SHOVEL"
+  - "WOODEN_SHOVEL"
+  - "DIAMOND_HOE"
+  - "GOLDEN_HOE"
+  - "IRON_HOE"
+  - "STONE_HOE"
+  - "WOODEN_HOE"
+  - "BOW"
+  - "SHEARS"
+  - "FISHING_ROD"
+  - "FLINT_AND_STEEL"
+  - "CARROT_ON_A_STICK"
+  - "SHIELD"
+  - "ENCHANTED_BOOK"
+
+shopRelay:
+  # The blocks that can be used as shop relay blocks (must be valid block materials and distinct from shop blocks)
+  relayBlocks:
+    - "ENDER_CHEST"
+  # Determines how many times a relay can be relayed
+  recursionLimit: 0
+  # Determines how far (in blocks) a relay can search
+  reachDistance: 4
+  # Determines which blocks will be ignored by relays (wont end the search for shops)
+  permeable:
+    - AIR
+    - CAVE_AIR
+    - WATER
+    - LAVA
+    - GLASS
+    - WHITE_STAINED_GLASS
+    - ORANGE_STAINED_GLASS
+    - MAGENTA_STAINED_GLASS
+    - LIGHT_BLUE_STAINED_GLASS
+    - YELLOW_STAINED_GLASS
+    - LIME_STAINED_GLASS
+    - PINK_STAINED_GLASS
+    - GRAY_STAINED_GLASS
+    - LIGHT_GRAY_STAINED_GLASS
+    - CYAN_STAINED_GLASS
+    - PURPLE_STAINED_GLASS
+    - BLUE_STAINED_GLASS
+    - BROWN_STAINED_GLASS
+    - GREEN_STAINED_GLASS
+    - RED_STAINED_GLASS
+    - BLACK_STAINED_GLASS
+    - GLASS_PANE
+    - WHITE_STAINED_GLASS_PANE
+    - ORANGE_STAINED_GLASS_PANE
+    - MAGENTA_STAINED_GLASS_PANE
+    - LIGHT_BLUE_STAINED_GLASS_PANE
+    - YELLOW_STAINED_GLASS_PANE
+    - LIME_STAINED_GLASS_PANE
+    - PINK_STAINED_GLASS_PANE
+    - GRAY_STAINED_GLASS_PANE
+    - LIGHT_GRAY_STAINED_GLASS_PANE
+    - CYAN_STAINED_GLASS_PANE
+    - PURPLE_STAINED_GLASS_PANE
+    - BLUE_STAINED_GLASS_PANE
+    - BROWN_STAINED_GLASS_PANE
+    - GREEN_STAINED_GLASS_PANE
+    - RED_STAINED_GLASS_PANE
+    - BLACK_STAINED_GLASS_PANE
+    - IRON_BARS
