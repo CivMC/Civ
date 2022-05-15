@@ -36,7 +36,17 @@ no_bonemeal_blocks:
   - ACACIA_SAPLING
   - FLOWERING_AZALEA
 
-  # categories of biomes
+# REMINDER, ALIAS AND BIOME NAMES SHOULD NOT CLASH!
+#
+# forest:
+#   - BIRCH_FOREST
+#   - DARK_FOREST
+#   - FLOWER_FOREST
+#
+# This ^ example alias will be ignored since because the "forest" alias clashes with
+# Bukkit's "FOREST" biome, and RealisticBiomes priorities biomes over aliases.
+# See https://github.com/CivClassic/AnsibleSetup/pull/39#issuecomment-642815952
+# See all biomes here: https://papermc.io/javadocs/paper/1.18/org/bukkit/block/Biome.html
 biome_aliases:
   water:
     - DEEP_OCEAN
