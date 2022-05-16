@@ -306,13 +306,31 @@ public class BridgeEventHandler {
             Gearblock gearblock = _storage.getGearblock(location);
 
             if(gearblock != null) {
-                return i == 0 || i > 1 && isNonSimpleDisabled
-                    ? null
-                    : new FindGearResult(gearblock, i);
+                if (i == 0 || i > 1 && isNonSimpleDisabled)
+                    return null;
+
+                if (isNonSimpleDisabled && (
+                        hasAdjacentGearblocks(worldUID, startGearBlock.getX(), startGearBlock.getY(), startGearBlock.getZ())
+                        || hasAdjacentGearblocks(worldUID, x, y, z)
+                    )
+                ) {
+                    return null;
+                }
+
+                return new FindGearResult(gearblock, i);
             }
         }
 
         return null;
+    }
+
+    private boolean hasAdjacentGearblocks(UUID worldUID, int x, int y, int z) {
+        return _storage.hasGearblock(new BlockCoord(worldUID, x + 1, y, z))
+                || _storage.hasGearblock(new BlockCoord(worldUID, x - 1, y, z))
+                || _storage.hasGearblock(new BlockCoord(worldUID, x, y + 1, z))
+                || _storage.hasGearblock(new BlockCoord(worldUID, x, y - 1, z))
+                || _storage.hasGearblock(new BlockCoord(worldUID, x, y, z + 1))
+                || _storage.hasGearblock(new BlockCoord(worldUID, x, y, z - 1));
     }
 
     private void showGearInfo(PlayerInteractEvent event) {
