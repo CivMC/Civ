@@ -1,6 +1,9 @@
 # Set to true if you want tapping a plant with bonemeal to double it.
 allow_tallplant_replication: true
 
+#Enable auto replant?
+auto_replant_enabled: true
+
 no_bonemeal_blocks:
   - SEA_PICKLE
   - KELP

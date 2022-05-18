@@ -9,6 +9,7 @@ import com.untamedears.realisticbiomes.listener.PlayerListener;
 import com.untamedears.realisticbiomes.model.Plant;
 import com.untamedears.realisticbiomes.model.RBChunkCache;
 import com.untamedears.realisticbiomes.model.RBDAO;
+import com.untamedears.realisticbiomes.utils.AutoReplant;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -108,6 +109,9 @@ public class RealisticBiomes extends ACivMod {
 		pm.registerEvents(new PlayerListener(growthConfigManager, animalManager, plantManager), this);
 		pm.registerEvents(new BonemealListener(configManager.getBonemealPreventedBlocks()), this);
 		pm.registerEvents(new MobListener(), this);
+		if (getConfig().getBoolean("auto_replant_enabled", true)) {
+			pm.registerEvents(new AutoReplant(), this);
+		}
 	}
 
 }
