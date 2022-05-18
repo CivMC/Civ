@@ -1,11 +1,11 @@
-name: NameColors
+name: ${name}
 main: com.biggestnerd.namecolors.NameColors
-version: ${project.version}
+version: ${version}
 authors: [biggestnerd, Maxopoly]
 depend: [CivModCore, CivChat2]
 softdepend:
   - TAB
-api-version: 1.14
+api-version: 1.17
 commands:
   namecolor:
     description: "Give your name a nice color!"
