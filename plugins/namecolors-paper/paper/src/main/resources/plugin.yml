@@ -1,6 +1,6 @@
-name: NameColors
+name: ${name}
 main: com.biggestnerd.namecolors.NameColors
-version: ${project.version}
+version: ${version}
 authors: [biggestnerd, Maxopoly]
 depend: [CivModCore, CivChat2]
 softdepend:
