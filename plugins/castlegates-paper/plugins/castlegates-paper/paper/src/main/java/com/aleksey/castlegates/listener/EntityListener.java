@@ -1,4 +1,3 @@
-<<<<<<< HEAD:paper/src/main/java/com/aleksey/castlegates/listener/EntityListener.java
 /**
  * @author Aleksey Terzi
  *
@@ -45,51 +44,3 @@ public class EntityListener implements Listener {
 		CastleGates.getManager().handleEntityChangeBlock(event);
 	}
 }
-=======
-/**
- * @author Aleksey Terzi
- *
- */
-
-package com.aleksey.castlegates.listener;
-
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-
-import com.aleksey.castlegates.CastleGates;
-
-public class EntityListener implements Listener {
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerJoin(PlayerJoinEvent event) {
-    	CastleGates.getManager().handlePlayerJoin(event);
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerQuit(PlayerQuitEvent event) {
-    	CastleGates.getManager().handlePlayerQuit(event);
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onPlayerInteract(PlayerInteractEvent event) {
-    	if(event.getClickedBlock() != null) {
-    		CastleGates.getManager().handleBlockClicked(event);
-    	}
-    }
-
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onEntityExplode(EntityExplodeEvent event) {
-		CastleGates.getManager().handleEntityExplode(event);
-	}
-
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onEntityChangeBlock(EntityChangeBlockEvent event) {
-		CastleGates.getManager().handleEntityChangeBlock(event);
-	}
-}
->>>>>>> 57e838af0c60c6113cb06cd01d640ca23fb9ed29:src/main/java/com/aleksey/castlegates/listener/EntityListener.java
