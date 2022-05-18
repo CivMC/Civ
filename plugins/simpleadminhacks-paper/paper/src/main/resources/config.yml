@@ -196,9 +196,12 @@ hacks:
   PlayerStatistics:
     enabled: true
   #Alters end portals to send you to a target dimension instead of just the end
+  #This is a very specific hack made for CivMC, it is not recommended to enable
+  #Unless you want to fully mimic their behaviour
   PortalModifyHack:
     enabled: false
     targetWorld: world_nether
+    homeWorld: world
   PortalSpawnModifier:
     enabled: true
     pigManChance: 0.5

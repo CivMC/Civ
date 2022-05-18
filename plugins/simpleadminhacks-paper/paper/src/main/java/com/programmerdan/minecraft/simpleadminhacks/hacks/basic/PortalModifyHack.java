@@ -4,18 +4,10 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.levelgen.feature.EndPodiumFeature;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -26,16 +18,11 @@ public class PortalModifyHack extends BasicHack {
 
 	@AutoLoad
 	private String targetWorld;
-
-	//Player UUID -> World UUID they came from
-	private Map<UUID, UUID> playerWorldTracker;
-
-	private SimpleAdminHacks plugin;
+	@AutoLoad
+	private String homeWorld;
 	
 	public PortalModifyHack(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
-		this.plugin = plugin;
-		this.playerWorldTracker = new HashMap<>();
 	}
 
 	//We want to go last incase any plugins want to cancel our attempt
@@ -49,34 +36,43 @@ public class PortalModifyHack extends BasicHack {
 		if (world == null) {
 			return;
 		}
-		Location to = new Location(getTargetWorld(player), event.getFrom().getX(), event.getFrom().getY(), event.getFrom().getZ());
+		Location to;
+		switch (getTargetWorld(player).getEnvironment()) {
+			case NETHER:
+				to = new Location(getTargetWorld(player), event.getFrom().getX(), 125, event.getFrom().getZ());
+				break;
+			case NORMAL:
+				to = new Location(getTargetWorld(player), event.getFrom().getX(), -62.1, event.getFrom().getBlock().getRelative(0,0,1).getZ());
+				break;
+			default:
+				return;
+		}
 		event.setTo(to);
 		if (to.getWorld().getName().equals(targetWorld)) {
-			spawnExitPortal(to);
-
+			spawnExit(to);
 		}
-		playerWorldTracker.putIfAbsent(player.getUniqueId(), player.getWorld().getUID());
 	}
 
 	private World getTargetWorld(Player player) {
-		World world = Bukkit.getWorld(targetWorld);
-		if (world == null) {
+		World target = Bukkit.getWorld(targetWorld);
+		World home = Bukkit.getWorld(homeWorld);
+		if (target == null) {
 			return player.getWorld();
 		}
-
-		if (player.getWorld().equals(world)) {
-			return Bukkit.getWorld(playerWorldTracker.computeIfAbsent(player.getUniqueId(), k -> Bukkit.getWorlds().get(0).getUID()));
+		if (home == null) {
+			return player.getWorld();
 		}
-		return world;
+		return player.getWorld().equals(target) ? home : target;
 	}
 
-	private void spawnExitPortal(Location location) {
+	private void spawnExit(Location location) {
 		if (location == null) {
 			return;
 		}
-		//Taken from EndDragonFight#spawnExitPortal
-		EndPodiumFeature podiumFeature = new EndPodiumFeature(true);
-		ServerLevel level = ((CraftWorld) location.getWorld()).getHandle();
-		podiumFeature.configured(FeatureConfiguration.NONE).place(level, level.getChunkSource().getGenerator(), new Random(), new BlockPos(location.getX() + 2, location.getY() - 1, location.getZ() + 2));
+		location.getBlock().getRelative(0,-2,0).setType(Material.NETHERRACK);
+		location.getBlock().getRelative(0,-1,0).setType(Material.NETHERRACK);
+		location.getBlock().getRelative(0,0,0).setType(Material.AIR);
+		location.getBlock().getRelative(0,1,0).setType(Material.AIR);
+		location.getBlock().getRelative(0,2,0).setType(Material.END_PORTAL);
 	}
 }
