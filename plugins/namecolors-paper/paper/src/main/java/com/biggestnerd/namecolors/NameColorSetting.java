@@ -88,7 +88,7 @@ public class NameColorSetting extends PlayerSetting<ChatColor> {
 					@Override
 					public void clicked(Player p) {
 						player.sendMessage(
-								"The color of your name was changed to " + entry.getValue().name());
+								"The color of your name was changed to " + entry.getKey() + entry.getKey().name());
 						setValue(player, entry.getKey());
 					}
 				});
