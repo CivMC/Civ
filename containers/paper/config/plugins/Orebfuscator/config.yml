@@ -47,6 +47,7 @@ obfuscation:
     - minecraft:raw_copper_block
     - minecraft:deepslate_copper_ore
     - minecraft:stone
+    - minecraft:obsidian
     - minecraft:deepslate
     - minecraft:chest
     - minecraft:ender_chest
@@ -85,6 +86,7 @@ obfuscation:
     - world_nether
     hiddenBlocks:
     - minecraft:netherrack
+    - minecraft:obsidian
     - minecraft:nether_quartz_ore
     - minecraft:chest
     - minecraft:ender_chest
