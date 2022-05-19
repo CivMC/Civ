@@ -280,7 +280,7 @@ pearls:
        name: Player Essence
        lore:
          - Activity reward used to fuel pearls                                                      
-       repair: 24 #24 health is consumed per day, so one player can fuel one pearl
+       repair: 12 #24 health is consumed per day, so one player can fuel one pearl
 #    EXILE:
 #      mana:                         
 #        material: ENDER_EYE    
