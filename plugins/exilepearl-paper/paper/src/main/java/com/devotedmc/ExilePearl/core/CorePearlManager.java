@@ -148,10 +148,6 @@ final class CorePearlManager implements PearlManager {
 			return null;
 		}
 
-		Player player = Bukkit.getPlayer(exiledId);
-		if (player != null) {
-			player.setHealth(0);
-		}
 		pearls.put(pearl.getPlayerId(), pearl);
 		storage.getStorage().pearlInsert(pearl);
 
