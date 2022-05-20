@@ -22,6 +22,7 @@ world:
     - "FIRE" # 51 # fire
     - "CACTUS" # 81 # cactus
     - "OBSIDIAN" # 49 # obsidian - don't spawn in military infrastructure
+    - "BEDROCK"
     - "BLACK_CARPET" # 171 # carpet - don't spawn in military infrastructure
     - "BLUE_CARPET"
     - "BROWN_CARPET"
@@ -72,6 +73,7 @@ world_nether:
     - "FIRE" # 51 # fire
     - "CACTUS" # 81 # cactus
     - "OBSIDIAN" # 49 # obsidian - don't spawn in military infrastructure
+    - "BEDROCK"
     - "BLACK_CARPET" # 171 # carpet - don't spawn in military infrastructure
     - "BLUE_CARPET"
     - "BROWN_CARPET"
