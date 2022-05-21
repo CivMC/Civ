@@ -119,7 +119,7 @@ hacks:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Please review the server rules at reddit.com/r/civmc/wiki/rules","color":"green","clickEvent":{"action":"open_url","value":"https://www.reddit.com/r/civmc/wiki/rules"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"You may not give another player access to any of your accounts. If you share an account with a friend, you and that friend will be considered the same person.","color":"green"}]'
   ElytraFeatures:
-    enabled: true
+    enabled: false
     # Whether Elytra flight should be outright disabled
     disableFlight: false
     # Whether Elytra flight should be disabled in combat
