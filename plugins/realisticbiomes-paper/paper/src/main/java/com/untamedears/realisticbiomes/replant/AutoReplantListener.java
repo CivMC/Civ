@@ -146,7 +146,6 @@ public class AutoReplantListener implements Listener {
 
 	private void replantCropFromDrops(PlayerInteractEvent event, Material seed) {
 		Block block = event.getClickedBlock();
-		Material plant = block.getType();
 		// Subtract one seed from the drops, to be used for replanting
 		List<ItemStack> drops = new ArrayList<>(block.getDrops(event.getItem()));
 		Iterator<ItemStack> it = drops.iterator();
@@ -178,7 +177,7 @@ public class AutoReplantListener implements Listener {
 			return;
 		}
 
-		resetCropState(block, block.getBlockData(), plant);
+		resetCropState(block, block.getBlockData(), block.getType());
 
 		for (ItemStack drop : drops) {
 			block.getWorld().dropItemNaturally(block.getLocation(), drop);
