@@ -174,8 +174,8 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		Location newLoc = getCorrectedLocation(pearlLocation, playerLocation, pearl.getPlayer().isFlying());
 		if (newLoc != null) {
 			player.teleport(newLoc, TeleportCause.PLUGIN);
-			pearl.getPlayer().sendMessage(String.format("<i>You can't come within %d blocks of your pearl at (%d, %d).", radius,
-					pearl.getLocation().getBlockX(), pearl.getLocation().getBlockZ()));
+			pearl.getPlayer().sendMessage(ChatUtils.parseColor(String.format("<i>You can't come within %d blocks of your pearl at (%d, %d).", radius,
+					pearl.getLocation().getBlockX(), pearl.getLocation().getBlockZ())));
 		}
 	}
 
