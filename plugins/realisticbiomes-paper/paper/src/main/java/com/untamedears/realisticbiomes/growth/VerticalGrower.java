@@ -67,7 +67,8 @@ public class VerticalGrower extends IArtificialGrower {
 		if (!bottom.getLocation().equals(block.getLocation())) {
 			return -1;
 		}
-		return getActualHeight(block) - 1;
+		int stage = getActualHeight(block) - 1;
+		return Math.min(stage, getMaxStage());
 	}
 
 	protected int getActualHeight(Block block) {
