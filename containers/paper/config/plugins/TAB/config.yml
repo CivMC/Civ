@@ -6,6 +6,8 @@ header-footer:
   header:
     - '&6&kAAAA&r&6&l Welcome to CivMC! &r&6&kAAAA'
     - "&7Online players: &f%online%"
+    - &6Admins &0| &c Moderators
+    - &aDonors &0| &4B&ai&3g &dD&6o&4n&9o&2o&5r
   footer:
     - '&9Modmail at &6reddit.com/r/civmc'
     - '&9%tps% TPS &r&6discord.gg/nDnsU6vJqg'
