@@ -63,7 +63,7 @@ public class PlantListener implements Listener {
 	}
 
 	private void handleGrowEvent(Cancellable event, Block sourceBlock, Material material) {
-		Plant plant = plantManager.getPlant(sourceBlock);
+		Plant plant = plantManager.getPlant(RBUtils.getRealPlantBlock(sourceBlock));
 		PlantGrowthConfig growthConfig;
 		if (plant == null) {
 			growthConfig = plugin.getGrowthConfigManager().getGrowthConfigFallback(material);
