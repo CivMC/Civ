@@ -394,7 +394,7 @@ hacks:
       enabled: true
       rainOccurrenceChance: .5
     # Makes nether ratio 1 to 1
-    oneToOneNether: false
+    oneToOneNether: true
     # Return nether portal, true = enabled    false = disabled
     returnNetherPortal: true
     allowNetherTravel: false
