@@ -44,7 +44,8 @@ public class TipGrower extends ColumnPlantGrower{
 			}
 			break;
 		}
-		return count - 1;
+		int stage = count - 1;
+		return Math.min(stage, getMaxStage());
 	}
 
 	@Override

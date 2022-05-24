@@ -33,7 +33,8 @@ public class BambooGrower extends ColumnPlantGrower {
 		if (!bottom.getLocation().equals(block.getLocation())) {
 			return -1;
 		}
-		return getActualHeight(block) - 1;
+		int stage = getActualHeight(block) - 1;
+		return Math.min(stage, getMaxStage());
 	}
 
 	private void handleProperLeafGrowth(Block block, Block highestBlock) {
