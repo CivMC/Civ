@@ -3,6 +3,8 @@ allow_tallplant_replication: true
 
 #Enable auto replant?
 auto_replant_enabled: true
+# true for right click auto replant, false for left click
+auto_replant_right_click: true
 
 no_bonemeal_blocks:
   - SEA_PICKLE

@@ -14,7 +14,7 @@ gradle.buildFinished {
 
 allprojects {
 	group = "net.civmc.realisticbiomes"
-	version = "3.0.0-SNAPSHOT"
+	version = "3.1.0-SNAPSHOT"
 	description = "RealisticBiomes"
 }
 
