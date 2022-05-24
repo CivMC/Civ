@@ -264,7 +264,7 @@ world-settings:
     water-over-lava-flow-speed: 5
     grass-spread-tick-rate: 2
     use-faster-eigencraft-redstone: true
-    nether-ceiling-void-damage-height: 0
+    nether-ceiling-void-damage-height: 128
     only-players-collide: false
     allow-vehicle-collisions: true
     allow-non-player-entities-on-scoreboards: false
