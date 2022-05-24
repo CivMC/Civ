@@ -4,6 +4,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlType;
+import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdSummon extends PearlCommand {
 
@@ -13,6 +14,8 @@ public class CmdSummon extends PearlCommand {
 
 		this.senderMustBePlayer = true;
 		this.setHelpShort("Summon a prisoner");
+		this.permission = Permission.SUMMON.node;
+		this.visibility = CommandVisibility.SECRET;
 	}
 
 	@Override
