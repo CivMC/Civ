@@ -17,29 +17,6 @@ snitchConfigs:
         lifeTime: 4 weeks
         dormantTime: 4 weeks
       showownerondestroy: {}
-  supernote:
-    item:
-      ==: org.bukkit.inventory.ItemStack
-      type: NOTE_BLOCK
-      amount: 1
-      lore:
-        - Tall snitch that extends 50 blocks up and down
-    id: 2
-    name: Tallsnitch
-    range:
-      type: cuboid
-      width: 11
-      height: 50
-    appender:
-      broadcast:
-        trigger:
-         - ENTRY
-         - LOGIN
-         - LOGOUT
-      dormantcull:
-        lifeTime: 4 weeks
-        dormantTime: 4 weeks
-      showownerondestroy: {}
   juke:
     item:
       ==: org.bukkit.inventory.ItemStack
