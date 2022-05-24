@@ -5,6 +5,7 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
+import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdSummonConfirm extends PearlCommand {
 
@@ -14,6 +15,8 @@ public class CmdSummonConfirm extends PearlCommand {
 
 		this.senderMustBePlayer = true;
 		this.setHelpShort("Confirms a summon request.");
+		this.permission = Permission.SUMMON_CONFIRM.node;
+		this.visibility = CommandVisibility.SECRET;
 	}
 
 	@Override
