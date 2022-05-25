@@ -245,7 +245,7 @@ storage:
   type: 1
   mysql:
     host: ${CIV_MYSQL_HOST}
-    dbname: ${CIV_MYSQL_DATABASE}
+    dbname: exilepearl
     port: 3306
     username: ${CIV_MYSQL_USERNAME}
     password: ${CIV_MYSQL_PASSWORD}

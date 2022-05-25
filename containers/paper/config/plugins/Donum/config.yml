@@ -1,5 +1,5 @@
 #Url that can be opened in the delivery gui
-complaintURL: https://www.reddit.com/message/compose?to=%2Fr%2FCivClassics
+complaintURL: https://www.reddit.com/message/compose?to=%2Fr%2FCivMC
 
 #Whether BetterShards player data API should be used for delivery inventories
 useBetterShards: false
@@ -11,7 +11,7 @@ debug: false
 #database credentials
 database:
   host: ${CIV_MYSQL_HOST}
-  database: ${CIV_MYSQL_DATABASE}
+  database: donum
   port: 3306
   password: ${CIV_MYSQL_PASSWORD}
   user: ${CIV_MYSQL_USERNAME}

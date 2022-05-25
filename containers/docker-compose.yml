@@ -36,9 +36,8 @@ services:
       CIV_SERVER_NAME: local
 
       CIV_MYSQL_HOST: mariadb
-      CIV_MYSQL_USERNAME: username
-      CIV_MYSQL_PASSWORD: password
-      CIV_MYSQL_DATABASE: minecraft
+      CIV_MYSQL_USERNAME: mariadb
+      CIV_MYSQL_PASSWORD: mariadb
 
       CIV_POSTGRES_HOST: postgres
       CIV_POSTGRES_USERNAME: postgres
@@ -53,6 +52,7 @@ services:
   mariadb:
     image: mariadb:10.7.1
     restart: unless-stopped
+    command: --max-connections 500
     healthcheck:
       test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
       timeout: 20s
@@ -60,11 +60,12 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_USER: username
-      MYSQL_PASSWORD: password
-      MYSQL_DATABASE: minecraft
+      MYSQL_ROOT_PASSWORD: mariadb
+      MYSQL_USER: mariadb
+      MYSQL_PASSWORD: mariadb
+      MYSQL_DATABASE: mariadb
     volumes:
+      - ./provisioning/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
       - ./local/mariadb:/var/lib/mysql
 
   postgres:

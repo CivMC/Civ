@@ -1,7 +1,7 @@
 sql:
   hostname: ${CIV_MYSQL_HOST}
   port: 3306
-  dbname: ${CIV_MYSQL_DATABASE}
+  dbname: namelayer
   username: ${CIV_MYSQL_USERNAME}
   password: ${CIV_MYSQL_PASSWORD}
   poolsize: 10

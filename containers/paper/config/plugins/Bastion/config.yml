@@ -2,7 +2,7 @@ mysql:
   user: ${CIV_MYSQL_USERNAME}
   password: ${CIV_MYSQL_PASSWORD}
   host: ${CIV_MYSQL_HOST}
-  database: ${CIV_MYSQL_DATABASE}
+  database: bastion
   port: 3306
   poolsize: 10
   connectionTimeout: 10000
