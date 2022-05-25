@@ -6,10 +6,7 @@ snitchConfigs:
       amount: 1
     id: 0
     name: Snitch
-    range:
-      type: cuboid
-      width: 11
-      height: 50
+    range: 11
     appender:
       broadcast:
         trigger:
