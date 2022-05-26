@@ -92,8 +92,8 @@ jobs:
         with:
           context: queue
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.paper-meta.outputs.tags }}
-          labels: ${{ steps.paper-meta.outputs.labels }}
+          tags: ${{ steps.queue-meta.outputs.tags }}
+          labels: ${{ steps.queue-meta.outputs.labels }}
 
 
 
