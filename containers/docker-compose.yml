@@ -50,19 +50,6 @@ services:
     volumes:
       - ./local/paper:/data
 
-  queue:
-    build: queue
-    restart: unless-stopped
-    tty: true
-    stdin_open: true
-    environment:
-      INIT_MEMORY: 1G
-      MAX_MEMORY: 5G
-
-      CIV_SERVER_NAME: local-queue
-    volumes:
-      - ./local/queue:/data
-
   mariadb:
     image: mariadb:10.7.1
     restart: unless-stopped
