@@ -28,7 +28,7 @@ services:
       postgres:
         condition: service_healthy
     ports:
-      - "8123:8123"t
+      - "8123:8123"
     environment:
       INIT_MEMORY: 1G
       MAX_MEMORY: 5G
