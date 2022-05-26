@@ -29,3 +29,6 @@ ticks-per:
   ambient-spawns: 600
   autosave: 6000
 aliases: now-in-commands.yml
+worlds:
+  world:
+    generator: ${CIV_WORLD_GENERATOR}

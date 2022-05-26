@@ -28,12 +28,13 @@ services:
       postgres:
         condition: service_healthy
     ports:
-      - "8123:8123"
+      - "8123:8123"t
     environment:
       INIT_MEMORY: 1G
       MAX_MEMORY: 5G
 
       CIV_SERVER_NAME: local
+      CIV_WORLD_GENERATOR: Terra:DEFAULT
 
       CIV_MYSQL_HOST: mariadb
       CIV_MYSQL_USERNAME: mariadb
