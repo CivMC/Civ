@@ -74,7 +74,7 @@ events:
     threshold: 2.8
     banMessage: VPS / VPN Proxy use is generally prohibited. Modmail to www.reddit.com/r/CivMC to discuss
   share:
-    threshold: 2
+    threshold: 0
     banMessage: Multiaccounting is not generally allowed. To discuss or if in error, modmail www.reddit.com/r/CivMC
   enable:
     ipBans: true
