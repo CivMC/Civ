@@ -164,7 +164,10 @@ disabled-command-message: '&b{command}&c is disabled in combat.'
 
 # These commands are unusable by players who are combat tagged. Use '*' to blacklist all commands.
 command-blacklist:
-  - '*'
+  - ctlog
+  - logout
+  - ctlogout
+  - ctpluslogout
 
 # Customize the words used to describe durations (both singular and plural)
 duration-words:
