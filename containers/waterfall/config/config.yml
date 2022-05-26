@@ -1,7 +1,6 @@
 server_connect_timeout: 10000
 listeners:
   - query_port: 25565
-    motd: "§2Building with more than just blocks.§r"
     tab_list: GLOBAL
     query_enabled: false
     proxy_protocol: false
@@ -9,12 +8,12 @@ listeners:
       pvp.md-5.net: pvp
     ping_passthrough: false
     priorities:
-      - lobby
+      - main
     bind_local_address: true
     host: "0.0.0.0:25577"
-    max_players: 200
+    max_players: 750
     tab_size: 60
-    force_default_server: false
+    force_default_server: true
 remote_ping_cache: -1
 network_compression_threshold: 256
 permissions:
@@ -28,7 +27,7 @@ log_pings: true
 connection_throttle_limit: 3
 prevent_proxy_connections: false
 timeout: 30000
-player_limit: 250
+player_limit: -1
 ip_forward: true
 groups:
   md_5:
@@ -42,7 +41,11 @@ forge_support: true
 disabled_commands:
   - disabledcommandhere
 servers:
-  lobby:
-    motd: '&1CivMC'
+  main:
+    motd: '§2Building with more than just blocks.§r'
     address: "paper:25565"
+    restricted: false
+  queue:
+    motd: '&1CivMC Lobby'
+    address: "queue:25565"
     restricted: false
