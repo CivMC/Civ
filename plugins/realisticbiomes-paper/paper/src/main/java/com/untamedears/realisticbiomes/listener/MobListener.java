@@ -18,6 +18,8 @@ public class MobListener implements Listener
 		crops.add(Material.BEETROOTS);
 		crops.add(Material.CARROTS);
 		crops.add(Material.WHEAT);
+		crops.add(Material.SWEET_BERRIES);
+		crops.add(Material.SWEET_BERRY_BUSH);
 	}
 
 	@EventHandler
@@ -27,11 +29,19 @@ public class MobListener implements Listener
 				e.setCancelled(true);
 			}
 		}
+		if (e.getEntityType() == EntityType.FOX) {
+			if (crops.contains(e.getBlock().getType()) || crops.contains(e.getTo())) {
+				e.setCancelled(true);
+			}
+		}
 	}
 
 	@EventHandler
 	public void onEntityPickupItem(EntityPickupItemEvent e) {
 		if (e.getEntityType() == EntityType.VILLAGER) {
+			e.setCancelled(true);
+		}
+		if (e.getEntityType() == EntityType.FOX) {
 			e.setCancelled(true);
 		}
 	}
