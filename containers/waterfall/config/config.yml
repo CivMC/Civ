@@ -27,7 +27,7 @@ log_pings: true
 connection_throttle_limit: 3
 prevent_proxy_connections: false
 timeout: 30000
-player_limit: -1
+player_limit: 1
 ip_forward: true
 groups:
   md_5:
