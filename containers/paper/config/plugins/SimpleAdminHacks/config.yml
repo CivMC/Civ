@@ -163,7 +163,7 @@ hacks:
     disableLavaCobbleMountains: true
     disableWanderingTrader: false
     preventPearlGlitching: true
-    preventUsingEyeOfEnder: true
+    preventUsingEyeOfEnder: false
     disablePiglins: false
     disableGapples: true
     disableEndGatewayTP: false
