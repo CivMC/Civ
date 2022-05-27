@@ -74,7 +74,6 @@ obfuscation:
       minecraft:gold_ore: 5
       minecraft:iron_ore: 5
       minecraft:lapis_ore: 1
-      minecraft:mossy_cobblestone: 1
       minecraft:obsidian: 1
       minecraft:redstone_ore: 1
       minecraft:stone: 1
@@ -117,7 +116,6 @@ proximity:
     useFastGazeCheck: false
     useBlockBelow: false
     hiddenBlocks:
-      minecraft:mossy_cobblestone: {}
       minecraft:diamond_ore: {}
       minecraft:deepslate_diamond_ore: {}
       minecraft:emerald_ore: {}
