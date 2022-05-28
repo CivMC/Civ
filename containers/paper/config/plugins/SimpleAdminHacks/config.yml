@@ -331,7 +331,7 @@ hacks:
     villagerTrading: false
     witherSpawning: true
     patrolSpawning: true
-    phantomSpawning: true
+    phantomSpawning: false
     enderChestPlacement: true
     enderChestUse: false
     shulkerBoxUse: false
