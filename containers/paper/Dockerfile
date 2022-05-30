@@ -15,6 +15,7 @@ ENV SYNC_SKIP_NEWER_IN_DESTINATION=false
 # https://github.com/itzg/docker-minecraft-server#running-a-paper-server
 ENV TYPE=PAPER
 ENV EULA=TRUE
+ENV USE_AIKAR_FLAGS=TRUE
 # https://github.com/itzg/docker-minecraft-server#replacing-variables-inside-configs
 ENV REPLACE_ENV_DURING_SYNC=TRUE
 ENV REPLACE_ENV_VARIABLE_PREFIX=CIV
