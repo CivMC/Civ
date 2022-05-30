@@ -26,21 +26,21 @@ voting_reward:
       - Activity reward used to fuel pearls
 
 voting_sites:
-  #minecraftmp:
-  #  voting_cooldown: 20 hours
-  #  voting_url: 'https://minecraft-mp.com/server/255779/vote/?username=%PLAYER%'
-  #  internal_key: 'Minecraft-MP.com'
-  #  name: 'minecraft-mp.com'
-  #minecraftserverlist:
-  #  voting_cooldown: 20 hours
-  #  voting_url: 'https://minecraft-server-list.com/server/459507/vote/'
-  #  internal_key: 'MCSL'
-  #  name: 'minecraft-server-list.com'
-  #minecraftservers:
-  #  voting_cooldown: 20 hours
-  #  voting_url: 'https://minecraftservers.org/vote/583559'
-  #  internal_key: 'MinecraftServers.org'
-  #  name: 'minecraftservers.org'
+  minecraftmp:
+    voting_cooldown: 20 hours
+    voting_url: 'https://minecraft-mp.com/server/305231/vote/?username=%PLAYER%'
+    internal_key: 'Minecraft-MP.com'
+    name: 'minecraft-mp.com'
+  minecraftserverlist:
+    voting_cooldown: 20 hours
+    voting_url: 'https://minecraft-server-list.com/server/488241/vote/'
+    internal_key: 'MCSL'
+    name: 'minecraft-server-list.com'
+  minecraftservers:
+    voting_cooldown: 20 hours
+    voting_url: 'https://minecraftservers.org/vote/636677'
+    internal_key: 'MinecraftServers.org'
+    name: 'minecraftservers.org'
   
 database:
   ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
