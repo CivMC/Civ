@@ -89,8 +89,8 @@ JOININGMAINSERVER: "&6Connecting to the server..."
 
 # Max players per queue type allowed on the main server
 REGULARSLOTS: 1
-PRIORITYSLOTS: 1
-VETERANSLOTS: 1
+PRIORITYSLOTS: 0
+VETERANSLOTS: 0
 
 # Whether you want to set the main server as your target or just want to have BungeeCord to decide.
 FORCEMAINSERVER: false
@@ -109,7 +109,7 @@ MAXPLAYERSPERMOVE: 10
 
 # Should the queue be always active or only when the main server is full?
 # When activated you will always be sent into the queue server and then the main server.
-ALWAYSQUEUE: true
+ALWAYSQUEUE: false
 
 # Send an XP sound to every player who gets to position 5 or below in the queue
 SENDXPSOUND: true
