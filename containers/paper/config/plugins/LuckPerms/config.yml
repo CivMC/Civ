@@ -83,7 +83,7 @@ use-server-uuid-cache: false
 #
 # - A H2 database is the default option.
 # - If you want to edit data manually in "traditional" storage files, we suggest using YAML.
-storage-method: yaml
+storage-method: postgresql
 
 # The following block defines the settings for remote database storage methods.
 #
@@ -95,15 +95,15 @@ data:
   # - The standard DB engine port is used by default
   #   (MySQL: 3306, PostgreSQL: 5432, MongoDB: 27017)
   # - Specify as "host:port" if differs
-  address: localhost
+  address: ${CIV_POSTGRES_HOST}
 
   # The name of the database to store LuckPerms data in.
   # - This must be created already. Don't worry about this setting if you're using MongoDB.
-  database: minecraft
+  database: luckperms
 
   # Credentials for the database.
-  username: root
-  password: ''
+  username: ${CIV_POSTGRES_USERNAME}
+  password: ${CIV_POSTGRES_PASSWORD}
 
   # These settings apply to the MySQL connection pool.
   # - The default values will be suitable for the majority of users.

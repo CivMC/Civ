@@ -24,7 +24,7 @@ header-footer:
 
 # https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Tablist-name-formatting
 tablist-name-formatting:
-  enabled: true
+  enabled: false
   align-tabsuffix-on-the-right: false
   character-width-overrides: {}
   anti-override: true
@@ -157,7 +157,7 @@ scoreboard:
 
 # https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Ping-Spoof
 ping-spoof:
-  enabled: false
+  enabled: true
   value: 0
 
 # https://github.com/NEZNAMY/TAB/wiki/Feature-guide:-Pet-name-fix
