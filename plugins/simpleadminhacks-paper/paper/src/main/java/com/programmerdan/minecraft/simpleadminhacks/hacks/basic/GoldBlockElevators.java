@@ -4,6 +4,8 @@ import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
+import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.DataParser;
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.TeleportUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,6 +28,9 @@ import vg.civcraft.mc.civmodcore.utilities.DoubleInteractFixer;
 
 public class GoldBlockElevators extends BasicHack {
 
+	@AutoLoad(processor = DataParser.MATERIAL)
+	private Material elevatorBlock;
+
 	private BooleanSetting useJumpSneakTP;
 	private DoubleInteractFixer interactFixer;
 
@@ -33,6 +38,14 @@ public class GoldBlockElevators extends BasicHack {
 		super(plugin, config);
 		this.interactFixer = new DoubleInteractFixer(plugin);
 		initSettings();
+	}
+
+	@Override
+	public void onEnable() {
+		super.onEnable();
+
+		if (elevatorBlock == null)
+			elevatorBlock = Material.GOLD_BLOCK;
 	}
 
 	private void initSettings() {
@@ -49,7 +62,7 @@ public class GoldBlockElevators extends BasicHack {
 			return;
 		}
 		Block below = event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
-		if (below.getType() != Material.GOLD_BLOCK) {
+		if (below.getType() != elevatorBlock) {
 			return;
 		}
 		if (!event.isSneaking()) {
@@ -70,7 +83,7 @@ public class GoldBlockElevators extends BasicHack {
 			return;
 		}
 		Block below = event.getFrom().getBlock().getRelative(BlockFace.DOWN);
-		if (below.getType() != Material.GOLD_BLOCK) {
+		if (below.getType() != elevatorBlock) {
 			return;
 		}
 		for (int y = below.getY() + 1; y <= below.getWorld().getMaxHeight(); y++) {
@@ -95,7 +108,7 @@ public class GoldBlockElevators extends BasicHack {
 			return;
 		}
 		Block below = event.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
-		if (below.getType() != Material.GOLD_BLOCK) {
+		if (below.getType() != elevatorBlock) {
 			return;
 		}
 		if (event.getClickedBlock() == null) {
@@ -127,7 +140,7 @@ public class GoldBlockElevators extends BasicHack {
 
 	private boolean doTeleport(Block source, Player player, int y) {
 		Block target = source.getWorld().getBlockAt(source.getX(), y, source.getZ());
-		if (target.getType() != Material.GOLD_BLOCK) {
+		if (target.getType() != elevatorBlock) {
 			return false;
 		}
 		if (!TeleportUtil.checkForTeleportSpace(target.getRelative(BlockFace.UP).getLocation())) {
