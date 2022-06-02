@@ -60,6 +60,10 @@ services:
       MAX_MEMORY: 5G
 
       CIV_SERVER_NAME: local-queue
+
+      CIV_POSTGRES_HOST: postgres
+      CIV_POSTGRES_USERNAME: postgres
+      CIV_POSTGRES_PASSWORD: postgres
     volumes:
       - ./local/queue:/data
 

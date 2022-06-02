@@ -19,7 +19,7 @@ REGEXMESSAGE: "&6[PQ] Invalid username please use: %regex%"
 REGISTERTAB: true
 
 # Server is full message
-SERVERISFULLMESSAGE: "%server% &6is full"
+SERVERISFULLMESSAGE: "&6CivMC is full"
 
 # It is not recommended decreasing this number (milliseconds)
 SERVERONLINECHECKDELAY: 500
@@ -89,8 +89,8 @@ JOININGMAINSERVER: "&6Connecting to the server..."
 
 # Max players per queue type allowed on the main server
 REGULARSLOTS: 1
-PRIORITYSLOTS: 1
-VETERANSLOTS: 1
+PRIORITYSLOTS: 0
+VETERANSLOTS: 0
 
 # Whether you want to set the main server as your target or just want to have BungeeCord to decide.
 FORCEMAINSERVER: false

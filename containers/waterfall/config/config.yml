@@ -1,6 +1,6 @@
 server_connect_timeout: 10000
 listeners:
-  - query_port: 25577
+  - query_port: 25565
     tab_list: GLOBAL
     query_enabled: false
     proxy_protocol: false
@@ -18,7 +18,7 @@ permissions:
   default: null
 log_pings: true
 connection_throttle_limit: 3
-prevent_proxy_connections: true
+prevent_proxy_connections: false
 timeout: 30000
 player_limit: -1
 ip_forward: true
