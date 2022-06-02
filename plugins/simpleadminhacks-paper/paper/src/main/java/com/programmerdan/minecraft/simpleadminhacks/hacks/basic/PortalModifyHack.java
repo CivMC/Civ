@@ -5,6 +5,7 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import org.bukkit.Bukkit;
+import org.bukkit.HeightMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -42,7 +43,7 @@ public class PortalModifyHack extends BasicHack {
 				to = new Location(getTargetWorld(player), event.getFrom().getX(), 125, event.getFrom().getZ());
 				break;
 			case NORMAL:
-				to = new Location(getTargetWorld(player), event.getFrom().getX(), -62.1, event.getFrom().getBlock().getRelative(0,0,1).getZ());
+				to = getTargetWorld(player).getHighestBlockAt(player.getLocation(), HeightMap.WORLD_SURFACE).getLocation().toCenterLocation().add(0,1,0);
 				break;
 			default:
 				return;
@@ -69,9 +70,14 @@ public class PortalModifyHack extends BasicHack {
 		if (location == null) {
 			return;
 		}
-		location.getBlock().getRelative(0,-2,0).setType(Material.NETHERRACK);
-		location.getBlock().getRelative(0,-1,0).setType(Material.NETHERRACK);
-		location.getBlock().getRelative(0,0,0).setType(Material.AIR);
+		//:Glad:
+		if (location.getBlock().getRelative(0,-2,0).getType() == Material.BEDROCK) {
+			location.getBlock().getRelative(0,-2,0).setType(Material.NETHERRACK);
+		};
+		if (location.getBlock().getRelative(0,-1,0).getType() == Material.BEDROCK) {
+			location.getBlock().getRelative(0,-1,0).setType(Material.NETHERRACK);
+		}
+		location.getBlock().setType(Material.AIR);
 		location.getBlock().getRelative(0,1,0).setType(Material.AIR);
 		location.getBlock().getRelative(0,2,0).setType(Material.END_PORTAL);
 	}
