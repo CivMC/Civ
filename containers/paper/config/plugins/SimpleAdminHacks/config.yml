@@ -108,7 +108,7 @@ hacks:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /g ! to join global chat","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /vote to vote for CivMC and receive essence!","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"The message is a lie, there are no essence streaks","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Lodestones work as elevators, shift to go down and spacebar to go up","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Lodestones work as elevators, shift to go down and spacebar to go up. They can be made in the Iron Forge factory","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Do not put buttons or signs over an elevator - or it will be blocked and you will not be able to teleport back to that block!","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Consider donating to the server at patreon.com/civ_mc!","color":"green","clickEvent":{"action":"open_url","value":"https://www.patreon.com/civ_mc"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"All ores except coal and copper can spawn in big veins","color":"green"}]'
@@ -149,7 +149,6 @@ hacks:
     enabled: true
   GoldBlockElevators:
     enabled: true
-    elevatorBlock: LODESTONE
   HumbugBatchOne:
     enabled: true
     allowSheepDying: true
