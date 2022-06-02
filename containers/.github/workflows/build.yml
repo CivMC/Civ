@@ -78,7 +78,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: waterfall
-          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.waterfall-meta.outputs.tags }}
           labels: ${{ steps.waterfall-meta.outputs.labels }}
 
@@ -86,7 +85,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: paper
-          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.paper-meta.outputs.tags }}
           labels: ${{ steps.paper-meta.outputs.labels }}
 
@@ -94,7 +92,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: queue
-          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.queue-meta.outputs.tags }}
           labels: ${{ steps.queue-meta.outputs.labels }}
 
