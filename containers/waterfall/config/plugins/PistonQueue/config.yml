@@ -89,8 +89,8 @@ JOININGMAINSERVER: "&6Connecting to the server..."
 
 # Max players per queue type allowed on the main server
 REGULARSLOTS: 1
-PRIORITYSLOTS: 0
-VETERANSLOTS: 0
+PRIORITYSLOTS: 1
+VETERANSLOTS: 1
 
 # Whether you want to set the main server as your target or just want to have BungeeCord to decide.
 FORCEMAINSERVER: false
