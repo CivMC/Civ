@@ -1,0 +1,105 @@
+# options:
+# date-format SHORT/MEDIUM/LONG/FULL SHORT/MEDIUM/LONG/FULL
+# date/time formats are any of short/medium/long/full, twice, separated by a space
+# the first is the length of the date format and the second, the time format.
+# custom-date-format <FORMAT>
+# these give you more control over your date formats
+# documentation for custom date formats: https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html
+# in <type> [months] [weeks] [days] [hours] [minutes] [seconds]
+# this will show something like "5 hours, 2 minutes" for "in 2 days hours minutes seconds"
+# you can include a ? like "minutes?" so that it only shows if the next greatest time period is zero
+# for example,  "in minutes seconds?" can show "2 minutes" or "59 seconds" but not "1 minute 4 seconds"
+# The types affect the formatting, these are what they look like
+# Type 1: "5 hours, 3 minutes and 20 seconds"
+# Type 2: "5 hours, 2 minutes, 1 second"
+# Type 3: "1 hour 5 minutes"
+# Type 4: "1h, 5m and 3s"
+# Type 5: "4h, 2m, 2s"
+# Type 6: "3h 7m 6s"
+# Type 7: "8h2m4s"
+#
+# you will want different formats depending on how long you want your deathbans to be
+# if you don't quite understand, there are many examples
+time-format: 'date-format long long'
+# time-format: 'date-format full medium' # Sunday, 20 January 2019, 22:50:00
+# time-format: 'custom-date-format dd-MM-yyyy HH:mm:ss' # 2001-1-7 15:42:28
+# time-format: 'custom-date-format EEE, d MMM yyyy HH:mm:ss' # Wed, 4 Jul 2001 12:08:56
+# time-format: 'date-format long short' # 20 January 2019, 22:47
+# time-format: 'in 0 months weeks days hours minutes' # 5 hours and 1 minute
+# time-format: 'in 5 weeks days hours? minutes?' # 1w, 4h
+
+messages:
+  ban: |-
+    You were kicked because of your death.
+    You will be able to join at %time%.
+  kick: |-
+    You died and have been kicked.
+  lives:
+    # you can use any of the following placeholders:
+    # %player% player name
+    # %lives% number of deaths until ban
+    # %maxlives% maximum number of lives
+    # %deaths% number of deaths since the last ban
+    # %bans% amount of times banned
+    self: |-
+      &eYou have %lives%/%maxlives% lives remaining.
+      &eYou have been kicked %bans% time(s).
+    other: |-
+      &6Player %player%
+      &e%lives%/%maxlives% lives remaining.
+      &eKicked %bans% time(s).
+    invalid-player: '&cInvalid player'
+  revive:
+    invalid-player: '&cInvalid player'
+    max-lives: '&cThat player is at their maximum amount of lives'
+    revived: '&a%player% has been revived. You now have %lives% live(s).'
+    transferred: '&aYou have transferred a life to %player%. You now have %lives% lives'
+    confirm: '&eYou will be kicked if you do this! If you are sure, type the command again.'
+    self: '&cYou cannot transfer a life to yourself!'
+
+# if a player will be death banned by /reviving a player, give them this amount of seconds to confirm
+# set to 0 to disable confirming
+revive-confirm: 10
+
+# how many lives people should have when they are banned and then revived
+# all - they have their maximum amount of lives
+# 1, 2, 3 (any positive number) - they will have exactly this amount of lives
+# -1, -2, -3 (any negative number) - they will have this fewer lives than the maximum (if the max lives is 10, and you set this to -4, they will have 6 lives when revived).
+revive-lives: all
+
+# if true, players with the permission deathban.notify will receive notifications when they join
+# to update if the server is on an older version of DeathBan.
+notify-update: true
+
+database:
+  # interval to save changes to the database file
+  flush-interval: 30s
+
+default:
+  # how many deaths they can have until they die
+  lives: 3
+  # how long their death ban is
+  # alternatively you can use a list for different death bans as a player is banned more times
+  # if the player has more bans than the list, they will be banned permanently (for 100 years)
+  time: 10s
+  # time:
+  # - 10m
+  # - 1h
+  # optionally you can include a list of commands to run on deathban
+  # commands:
+  # - 'say %player% has been death banned!'
+
+# if a player has permission for multiple groups,
+# the one with the highest priority will be used.
+# groups also support commands
+groups:
+#  donator:
+#    permission: deathban.group.donator
+#    lives: 20
+#    time: 5h
+#    priority: 1
+#  staff:
+#    permission: deathban.group.staff
+#    lives: 15
+#    time: 1h
+#    priority: 2
