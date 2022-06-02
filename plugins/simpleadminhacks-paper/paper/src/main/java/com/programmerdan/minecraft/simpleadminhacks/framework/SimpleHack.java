@@ -211,6 +211,8 @@ public abstract class SimpleHack<T extends SimpleHackConfig> {
 				}
 				else {
 					value = config.getObject(identifier, clazz, null);
+					if (value == null)
+						value = config.getString(identifier);
 				}
 				if (value == null) {
 					// do nothing

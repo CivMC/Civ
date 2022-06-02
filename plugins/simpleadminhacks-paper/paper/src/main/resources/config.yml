@@ -116,6 +116,7 @@ hacks:
     enabled: true
   GoldBlockElevators:
     enabled: true
+    elevatorBlock: LODESTONE
   HumbugBatchOne:
     enabled: true
     allowSheepDying: true
