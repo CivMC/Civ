@@ -43,7 +43,7 @@ STARTTIME: 30
 
 # When the main server is down should you kick the player from the queue?
 KICKWHENDOWN: false
-SERVERDOWNKICKMESSAGE: "CivMC is down, please try again later."
+SERVERDOWNKICKMESSAGE: "CivMC is restarting, please try again in a minute."
 
 # If a player gets kicked from the main server (it goes down/crashes), he gets sent into queue and waits.
 IFMAINDOWNSENDTOQUEUE: true
