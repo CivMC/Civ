@@ -9,7 +9,7 @@ listeners:
       - main
     bind_local_address: true
     host: "0.0.0.0:25577"
-    max_players: 200
+    max_players: 150
     tab_size: 60
     force_default_server: true
 remote_ping_cache: -1
