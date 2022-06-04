@@ -16,10 +16,8 @@ abstract class CivGradlePlugin : Plugin<Project> {
         val extension = project.extensions.create("civGradle", CivGradleExtension::class.java)
 
         project.afterEvaluate {
-            if (extension.paper.pluginName.isNotEmpty()) {
-                PlatformCommon.apply(project, extension)
-                PlatformPaper.apply(project, extension)
-            }
+            PlatformCommon.apply(project, extension)
+            PlatformPaper.apply(project, extension)
         }
     }
 }

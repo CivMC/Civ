@@ -1,7 +1,7 @@
-import net.civmc.civgradle.common.util.civRepo
+import net.civmc.civgradle.CivGradleExtension
 
 plugins {
-    id("net.civmc.civgradle.plugin")
+    id("net.civmc.civgradle.plugin") apply false
 }
 
 subprojects {
@@ -11,6 +11,10 @@ subprojects {
     version = "1.0.0-SNAPSHOT"
 
     repositories {
-        civRepo("CivMC/CivModCore")
+        maven("https://repo.civmc.net/repository/maven-public")
+    }
+
+    configure<CivGradleExtension> {
+        pluginName = "ExamplePlugin"
     }
 }

@@ -7,5 +7,4 @@ import javax.inject.Inject
 @Suppress("unused_parameter")
 open class PlatformPaperExtension @Inject constructor(objects: ObjectFactory) {
 
-    var pluginName = ""
 }

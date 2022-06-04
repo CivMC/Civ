@@ -3,12 +3,15 @@ package net.civmc.civgradle.common
 import net.civmc.civgradle.CivGradleExtension
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.language.jvm.tasks.ProcessResources
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.net.URI
 
 object PlatformCommon {
 
@@ -16,9 +19,15 @@ object PlatformCommon {
 
     @Suppress("unused_parameter")
     fun apply(project: Project, extension: CivGradleExtension) {
-            if (project.pluginManager.hasPlugin("java-library")) {
-                configureJava(project)
-            }
+        if (project.pluginManager.hasPlugin("java-library")) {
+            logger.debug("Configuring Java")
+            configureJava(project)
+        }
+
+        if(project.pluginManager.hasPlugin("maven-publish")) {
+            logger.debug("Configuring Maven Publish")
+            configureMavenPublish(project, extension)
+        }
     }
 
     /**
@@ -46,5 +55,50 @@ object PlatformCommon {
         }
 
         logger.debug("Java tasks configured")
+    }
+
+    private fun configureMavenPublish(project: Project, extension: CivGradleExtension) {
+        val publishingExtension = project.extensions.getByType(PublishingExtension::class.java)
+
+        val githubActor = System.getenv("GITHUB_ACTOR")
+        val githubToken = System.getenv("GITHUB_TOKEN")
+
+        val nexusUser = System.getenv("CIVMC_NEXUS_USER")
+        val nexusPassword = System.getenv("CIVMC_NEXUS_PASSWORD")
+
+        publishingExtension.repositories {
+            if (!githubActor.isNullOrEmpty() && !githubToken.isNullOrEmpty()) {
+                it.maven {
+                    it.name = "GitHubPackages"
+                    it.url = URI("https://maven.pkg.github.com/CivMC/${extension.pluginName}")
+                    it.credentials {
+                        it.username = githubActor
+                        it.password = githubToken
+                    }
+                }
+            }
+
+            if (!nexusUser.isNullOrEmpty() && !nexusPassword.isNullOrEmpty()) {
+                val targetRepo = if (project.version.toString().endsWith("SNAPSHOT"))
+                    "maven-snapshots"
+                else
+                    "maven-releases"
+
+                it.maven {
+                    it.name = "CivMC"
+                    it.url = URI("https://repo.civmc.net/repository/$targetRepo")
+                    it.credentials {
+                        it.username = nexusUser
+                        it.password = nexusPassword
+                    }
+                }
+            }
+        }
+
+        publishingExtension.publications {
+            it.register("maven", MavenPublication::class.java) {
+                it.from(project.components.getByName("java"))
+            }
+        }
     }
 }

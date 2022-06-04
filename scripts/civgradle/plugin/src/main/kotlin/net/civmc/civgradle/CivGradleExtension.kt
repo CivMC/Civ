@@ -7,6 +7,8 @@ import javax.inject.Inject
 
 open class CivGradleExtension @Inject constructor(objects: ObjectFactory) {
 
+    var pluginName = ""
+
     val paper: PlatformPaperExtension = objects.newInstance(PlatformPaperExtension::class.java)
 
     @Suppress("unused")

@@ -13,11 +13,13 @@ object PlatformPaper {
     private val logger: Logger = LoggerFactory.getLogger(PlatformPaper::class.java)
 
     fun apply(project: Project, extension: CivGradleExtension) {
-        logger.debug("Applying paper platform")
-        configurePaper(project, extension.paper)
+        if (project.pluginManager.hasPlugin("io.paperweight.userdev")) {
+            logger.debug("Configuring paperweight")
+            configurePaperWeight(project, extension)
+        }
     }
 
-    private fun configurePaper(project: Project, extension: PlatformPaperExtension) {
+    private fun configurePaperWeight(project: Project, extension: CivGradleExtension) {
         project.tasks.getByName("build").dependsOn("reobfJar")
 
         project.setProperty("archivesBaseName", extension.pluginName + "-paper")
