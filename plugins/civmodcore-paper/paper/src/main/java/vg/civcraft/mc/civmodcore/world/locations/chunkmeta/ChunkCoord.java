@@ -192,14 +192,10 @@ public class ChunkCoord extends XZWCoord {
 	}
 	
 	public boolean isChunkLoaded() {
-		if (this.lastUnloadingTime <= 0) {
-			//being loaded rn, ignore
-			return false;
-		}
 		if (this.lastUnloadingTime > 0) {
 			return this.lastUnloadingTime < this.lastLoadingTime;
 		} else {
-			return true;
+			return this.lastLoadingTime > 0;
 		}
 	}
 
