@@ -320,7 +320,7 @@ acidblock_material:
  - GOLD_BLOCK
 
 # Determines whether hanging entities (such as Item Frames) can be protected by their host block
-hangers_inherit_reinforcement: false
+hangers_inherit_reinforcement: true
 
 # reinforcement_damageMultiplier is m where BlockDamage = 2 ^ (n/m) where n is equal to the number of days the group has been inactive
 reinforcement_damageMultiplier: 365
