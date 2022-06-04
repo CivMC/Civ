@@ -7,7 +7,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -92,8 +91,8 @@ public class StreakManager {
 				if (currentCount >= countRequiredForGain && receiveRewards.getValue(p)) {
 					updatePlayerStreak(uuid);
 					currentOnlineTime.remove(uuid);
-					p.sendMessage(ChatColor.GREEN + "Your login streak is now " + ChatColor.LIGHT_PURPLE
-							+ getCurrentStreak(uuid, true));
+//					p.sendMessage(ChatColor.GREEN + "Your login streak is now " + ChatColor.LIGHT_PURPLE
+//							+ getCurrentStreak(uuid, true));
 					if (giveRewardToPearled || ExilePearlPlugin.getApi().getExiledAlts(uuid, true) < 1) {
 						EssenceGluePlugin.instance().getRewardManager().giveLoginReward(p,
 								getCurrentStreak(uuid, true));
