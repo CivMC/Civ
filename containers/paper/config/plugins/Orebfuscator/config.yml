@@ -23,7 +23,7 @@ obfuscation:
   obfuscation-overworld:
     enabled: true
     minY: -64
-    maxY: 320
+    maxY: 150
     worlds:
     - world
     hiddenBlocks:
@@ -80,8 +80,8 @@ obfuscation:
       minecraft:stone: 1
   obfuscation-nether:
     enabled: true
-    minY: -64
-    maxY: 320
+    minY: 1
+    maxY: 128
     worlds:
     - world_nether
     hiddenBlocks:
@@ -110,7 +110,7 @@ proximity:
   proximity-overworld:
     enabled: true
     minY: -64
-    maxY: 320
+    maxY: 150
     worlds:
     - world
     distance: 16
@@ -163,8 +163,8 @@ proximity:
       minecraft:stone: 1
   proximity-nether:
     enabled: true
-    minY: -64
-    maxY: 320
+    minY: 1
+    maxY: 128
     worlds:
     - world_nether
     distance: 16
