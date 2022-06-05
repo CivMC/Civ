@@ -28,7 +28,7 @@ dependencies {
 gradlePlugin {
     plugins {
         create("net.civmc.civgradle") {
-            id = "net.civmc.civgradle.plugin"
+            id = "net.civmc.civgradle"
             implementationClass = "net.civmc.civgradle.CivGradlePlugin"
             version = version
         }
