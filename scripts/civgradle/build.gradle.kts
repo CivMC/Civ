@@ -15,6 +15,7 @@ kotlin {
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
     maven("https://repo.papermc.io/repository/maven-public/")
 }
 
@@ -22,7 +23,10 @@ dependencies {
     implementation(kotlin("stdlib", "1.6.0"))
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
 
+    // Keep these plugin versions on the classpath, so we can update them all at once if needed.
     implementation("io.papermc.paperweight.userdev:io.papermc.paperweight.userdev.gradle.plugin:1.3.6")
+    implementation("xyz.jpenilla.run-paper:xyz.jpenilla.run-paper.gradle.plugin:1.0.6")
+    implementation("com.github.johnrengelman.shadow:com.github.johnrengelman.shadow.gradle.plugin:7.1.0")
 }
 
 gradlePlugin {
