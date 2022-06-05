@@ -19,6 +19,7 @@ jobs:
       - uses: gradle/gradle-build-action@v2
         with:
           arguments: publish
+          build-root-directory: plugin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CIVMC_NEXUS_USER: ${{ secrets.CIVMC_NEXUS_USER }}
