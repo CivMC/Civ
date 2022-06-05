@@ -76,7 +76,7 @@ public class BlockListener implements Listener {
 		if (reinforcement == null) {
 			return;
 		}
-		if (!reinforcement.hasPermission(event.getPlayer(), CitadelPermissionHandler.getCrops())) {
+		if (reinforcement.hasPermission(event.getPlayer(), CitadelPermissionHandler.getCrops())) {
 			return;
 		}
 		event.setCancelled(true);
