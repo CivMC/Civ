@@ -1,12 +1,23 @@
-/bin
-/target/
-.classpath
-.project
-.settings/**
-/logs/
-.idea/
+# Gradle
+.gradle/
+build/
+run/
+
+# Editors
+## Idea
+.idea
 *.iml
-.gradle
-build
-*/.settings/**
-**/bin/
+*.iws
+
+## VIM
+*.swp
+
+# OS
+## MacOS
+.DS_Store
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
