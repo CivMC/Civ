@@ -16,11 +16,12 @@ abstract class CivGradlePlugin : Plugin<Project> {
         val extension = project.extensions.create("civGradle", CivGradleExtension::class.java)
 
         project.beforeEvaluate {
+            PlatformCommon.afterEvaluate(project, extension)
             PlatformPaper.beforeEvaluate(project, extension)
         }
 
         project.afterEvaluate {
-            PlatformCommon.apply(project, extension)
+            PlatformCommon.afterEvaluate(project, extension)
             PlatformPaper.afterEvaluate(project, extension)
         }
     }

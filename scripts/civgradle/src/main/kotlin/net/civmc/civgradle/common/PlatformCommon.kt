@@ -17,8 +17,11 @@ object PlatformCommon {
 
     private val logger: Logger = LoggerFactory.getLogger(PlatformCommon::class.java)
 
-    @Suppress("unused_parameter")
-    fun apply(project: Project, extension: CivGradleExtension) {
+    fun beforeEvaluate(project: Project, extension: CivGradleExtension) {
+
+    }
+
+    fun afterEvaluate(project: Project, extension: CivGradleExtension) {
         if (project.pluginManager.hasPlugin("java-library")) {
             logger.debug("Configuring Java")
             configureJava(project)
