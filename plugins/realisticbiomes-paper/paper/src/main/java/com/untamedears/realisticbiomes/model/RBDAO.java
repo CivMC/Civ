@@ -231,6 +231,8 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				"alter table rb_plants add type smallint");
 		db.registerMigration(4, false,
 				"alter table rb_plants modify y tinyint signed not null");
+		db.registerMigration(5, false,
+				"alter table rb_plants modify y smallint not null");
 	}
 
 	@Override
