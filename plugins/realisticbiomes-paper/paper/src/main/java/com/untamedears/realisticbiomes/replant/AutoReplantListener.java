@@ -101,7 +101,7 @@ public class AutoReplantListener implements Listener {
 			case WHEAT -> Material.WHEAT_SEEDS;
 			case CARROTS -> Material.CARROT;
 			case POTATOES -> Material.POTATO;
-			case BEETROOTS -> Material.BEETROOT;
+			case BEETROOTS -> Material.BEETROOT_SEEDS;
 			case NETHER_WART -> Material.NETHER_WART;
 			case COCOA -> Material.COCOA_BEANS;
 			default -> null;
