@@ -55,6 +55,13 @@ hacks:
      - TURTLE
      - DOLPHIN
      - BEE
+     - STRIDER
+     - GLOW_SQUID
+     - CAT
+     - AXOLOTL
+     - GOAT
+     - PARROT
+     - PANDA
   AttrHider:
     enabled: true
     # Hide item data like enchantments, firework effects, book data, potion, etc..
