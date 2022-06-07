@@ -1,5 +1,7 @@
 FROM itzg/bungeecord
 
+ENV WATERFALL_VERSION=1.18
+
 COPY config /config
 COPY plugins /plugins
 
