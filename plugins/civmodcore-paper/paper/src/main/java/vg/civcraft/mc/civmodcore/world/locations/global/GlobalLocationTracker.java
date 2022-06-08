@@ -1,6 +1,8 @@
 package vg.civcraft.mc.civmodcore.world.locations.global;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -15,17 +17,19 @@ public class GlobalLocationTracker<T extends LocationTrackable> {
 	private Map<Location, T> tracked;
 	private GlobalTrackableDAO<T> dao;
 	private Map<Location, T> deleted;
+	private Map<Location, T> modified;
 	private Map<XZWCoord, Map<Location, T>> perChunk;
 
 	public GlobalLocationTracker(GlobalTrackableDAO<T> dao) {
 		this.tracked = new HashMap<>();
 		this.dao = dao;
 		this.deleted = new HashMap<>();
+		this.modified = new HashMap<>();
 		this.perChunk = new HashMap<>();
 	}
 	
 	public synchronized void initFromDB() {
-		dao.loadAll(this::put);
+		dao.loadAll(this::putUnmodified);
 	}
 
 	public void handleChunkLoad(Chunk chunk) {
@@ -52,22 +56,52 @@ public class GlobalLocationTracker<T extends LocationTrackable> {
 		}
 	}
 
-	public synchronized void persist() {
-		deleted.values().forEach(dao::delete);
-		for (T t : tracked.values()) {
+	public void persist() {
+		persistDeleted();
+		persistModified();
+	}
+
+	private void persistDeleted() {
+		List<T> list;
+
+		synchronized (this.deleted) {
+			if (this.deleted.isEmpty())
+				return;
+
+			list = new ArrayList<>();
+			list.addAll(this.deleted.values());
+			this.deleted.clear();
+		}
+
+		list.forEach(dao::delete);
+	}
+
+	private void persistModified() {
+		List<T> list;
+
+		synchronized (this.modified) {
+			if (this.modified.isEmpty())
+				return;
+
+			list = new ArrayList<>();
+			list.addAll(this.modified.values());
+			this.modified.clear();
+		}
+
+		for (T t : list) {
 			switch (t.getCacheState()) {
-			case DELETED:
-				dao.delete(t);
-				break;
-			case MODIFIED:
-				dao.update(t);
-				break;
-			case NEW:
-				dao.insert(t);
-				break;
-			case NORMAL:
-			default:
-				break;
+				case DELETED:
+					dao.delete(t);
+					break;
+				case MODIFIED:
+					dao.update(t);
+					break;
+				case NEW:
+					dao.insert(t);
+					break;
+				case NORMAL:
+				default:
+					break;
 			}
 			t.setCacheState(CacheState.NORMAL);
 		}
@@ -77,7 +111,15 @@ public class GlobalLocationTracker<T extends LocationTrackable> {
 		return tracked.get(loc);
 	}
 
-	public synchronized void put(T trackable) {
+	public void put(T trackable) {
+		putUnmodified(trackable);
+
+		synchronized (this.modified) {
+			this.modified.put(trackable.getLocation(), trackable);
+		}
+	}
+
+	private synchronized void putUnmodified(T trackable) {
 		tracked.put(trackable.getLocation(), trackable);
 		Map<Location, T> chunkSpecificData = perChunk.computeIfAbsent(XZWCoord.fromLocation(
 				trackable.getLocation()), s -> new HashMap<>());
@@ -93,7 +135,10 @@ public class GlobalLocationTracker<T extends LocationTrackable> {
 				CivModCorePlugin.getInstance().getLogger().severe("Data removed from per chunk tracking did "
 						+ "not match data in global tracking");
 			}
-			deleted.put(loc, removed);
+
+			synchronized (this.deleted) {
+				this.deleted.put(loc, removed);
+			}
 		}
 		return removed;
 	}
