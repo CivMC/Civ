@@ -98,7 +98,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 	private BlockDataObject<D>[][][] getL2SubArray(int l1Offset, boolean create) {
 		BlockDataObject<D>[][][] subArray = data[l1Offset];
 		if (create && subArray == null) {
-			subArray = new BlockDataObject[L2_SECTION_COUNT][][];
+			subArray = new BlockDataObject[L1_SECTION_COUNT][][];
 			data[l1Offset] = subArray;
 		}
 		return subArray;
@@ -151,7 +151,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 		if (l2Section == null) {
 			return null;
 		}
-		int yOffsetL2 = (y + 64) % L2_SECTION_COUNT;
+		int yOffsetL2 = (y + 64) % L1_SECTION_COUNT;
 		BlockDataObject<D>[][] l3XSection = getL3XSubArray(l2Section, yOffsetL2, create);
 		if (l3XSection == null) {
 			return null;
