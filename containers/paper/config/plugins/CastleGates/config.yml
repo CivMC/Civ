@@ -1,9 +1,9 @@
 Database:
-  host: ${CIV_MYSQL_HOST}
+  Host: ${CIV_MYSQL_HOST}
   Port: 3306
   Schema: castlegates
-  user: ${CIV_MYSQL_USERNAME}
-  password: ${CIV_MYSQL_PASSWORD}
+  User: ${CIV_MYSQL_USERNAME}
+  Password: ${CIV_MYSQL_PASSWORD}
 Settings:
   AllowAutoCreate: true
   InteractWithSnitches: true
