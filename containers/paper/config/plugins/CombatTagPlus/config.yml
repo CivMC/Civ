@@ -26,7 +26,7 @@ reset-tag-on-pearl: false
 play-effect: true
 
 # Always spawns the NPC even without combat tagged to prevent any chance of running away.
-always-spawn: false
+always-spawn: true
 
 # Allows mobs to combat tag players.
 mob-tagging: false
