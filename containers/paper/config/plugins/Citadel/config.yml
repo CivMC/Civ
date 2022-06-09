@@ -217,6 +217,7 @@ non_reinforceables:
  - TALL_GRASS
  - DEAD_BUSH
  - PISTON
+ - STICKY_PISTON
  - MOVING_PISTON
  - PISTON_HEAD
  - POPPY
