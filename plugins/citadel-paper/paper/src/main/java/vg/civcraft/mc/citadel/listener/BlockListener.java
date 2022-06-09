@@ -64,6 +64,25 @@ public class BlockListener implements Listener {
 		Citadel.getInstance().getStateManager().getState(event.getPlayer()).handleBlockPlace(event);
 	}
 
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void plantExploitFix(BlockPlaceEvent event) {
+		Block placed = event.getBlockPlaced();
+		Block placedAgainst = event.getBlockAgainst();
+
+		if (!CitadelUtility.isPlant(placed)) {
+			return;
+		}
+		Reinforcement reinforcement = ReinforcementLogic.getReinforcementAt(placedAgainst.getLocation());
+		if (reinforcement == null) {
+			return;
+		}
+		if (reinforcement.hasPermission(event.getPlayer(), CitadelPermissionHandler.getCrops())) {
+			return;
+		}
+		event.setCancelled(true);
+		event.getPlayer().sendMessage(Component.text("You cannot place against without the permission " + CitadelPermissionHandler.getCrops().getName() + " on it's group!", NamedTextColor.RED));
+	}
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void blockBurn(BlockBurnEvent bbe) {
 		Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(bbe.getBlock());
