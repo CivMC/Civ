@@ -1,11 +1,7 @@
 package vg.civcraft.mc.citadel.command;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Optional;
-import co.aikar.commands.annotation.Syntax;
+import co.aikar.commands.annotation.*;
 import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -25,6 +21,7 @@ public class AreaReinforce extends BaseCommand {
 	@Syntax("<group> <lowX> <lowY> <lowZ> <highX> <highY> <highZ>")
 	@Description("Using the reinforcement item in your main hand, reinforces an area to your default or a target group.")
 	@CommandCompletion("@CT_Groups @nothing @nothing @nothing @nothing @nothing @nothing")
+	@CommandPermission("citadel.admin")
 	public void execute(Player p, @Optional String targetGroup, String minX, String minY, String minZ, String maxX, String maxY, String maxZ) {
 		UUID uuid = NameAPI.getUUID(p.getName());
 		ReinforcementType reinType = Citadel.getInstance().getReinforcementTypeManager()
