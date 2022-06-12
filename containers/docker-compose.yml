@@ -33,6 +33,8 @@ services:
       INIT_MEMORY: 1G
       MAX_MEMORY: 5G
 
+      CIV_WHITELIST: 'false'
+
       CIV_SERVER_NAME: local
       CIV_WORLD_GENERATOR: Terra:DEFAULT
 
@@ -58,6 +60,8 @@ services:
     environment:
       INIT_MEMORY: 1G
       MAX_MEMORY: 5G
+
+      CIV_WHITELIST: 'false'
 
       CIV_SERVER_NAME: local-queue
 
