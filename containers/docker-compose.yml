@@ -35,7 +35,6 @@ services:
 
       CIV_SERVER_NAME: local
 
-      CIV_WHITELIST: 'false'
       CIV_WORLD_GENERATOR: Terra:DEFAULT
 
       CIV_MYSQL_HOST: mariadb
@@ -62,8 +61,6 @@ services:
       MAX_MEMORY: 5G
 
       CIV_SERVER_NAME: local-queue
-
-      CIV_WHITELIST: 'false'
 
       CIV_POSTGRES_HOST: postgres
       CIV_POSTGRES_USERNAME: postgres

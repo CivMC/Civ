@@ -18,3 +18,5 @@ ENV EULA=TRUE
 # https://github.com/itzg/docker-minecraft-server#replacing-variables-inside-configs
 ENV REPLACE_ENV_DURING_SYNC=TRUE
 ENV REPLACE_ENV_VARIABLE_PREFIX=CIV
+
+ENV CIV_WHITELIST=false
