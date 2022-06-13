@@ -63,7 +63,7 @@ public class ArmourBound extends BasicHack {
 			return;
 		}
 		UUID boundUUID = UUID.fromString(itemContainer.get(this.key, PersistentDataType.STRING));
-		if (!boundUUID.equals(player.getUniqueId())) {
+		if (!boundUUID.equals(player.getUniqueId()) && !player.hasMetadata("NPC")) {
 			player.closeInventory();
 			ItemStack toDrop = newItem.clone();
 			newItem.setAmount(0);
