@@ -3,17 +3,26 @@ package vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Location;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockBasedChunkMeta;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockDataObject;
+import vg.civcraft.mc.civmodcore.world.locations.files.FileCacheManager;
 
 public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 		extends BlockBasedChunkMeta<TableBasedDataObject, TableStorageEngine<D>> {
 
-	private List<D> modifiedEntries;
+	private final List<D> modifiedEntries;
+	private final FileCacheManager<D> fileCacheManager;
 
 	public TableBasedBlockChunkMeta(boolean isNew, TableStorageEngine<D> storage) {
+		this(isNew, storage, null);
+	}
+
+	public TableBasedBlockChunkMeta(boolean isNew, TableStorageEngine<D> storage, FileCacheManager<D> fileCacheManager) {
 		super(isNew, storage);
 		this.modifiedEntries = new ArrayList<>();
+		this.fileCacheManager = fileCacheManager;
 	}
 
 	public void reportChange(D data) {
@@ -52,30 +61,41 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 
 	@Override
 	public void insert() {
+		boolean hasChanges = false;
+
 		for (D data : modifiedEntries) {
 			switch (data.getCacheState()) {
 			case NORMAL:
 				continue;
 			case MODIFIED:
 				storage.update(data, chunkCoord);
+				hasChanges = true;
 				break;
 			case NEW:
 				storage.insert(data, chunkCoord);
+				hasChanges = true;
 				break;
 			case DELETED:
 				storage.delete(data, chunkCoord);
+				hasChanges = true;
+				break;
 			}
 			data.setCacheState(CacheState.NORMAL);
 		}
 		modifiedEntries.clear();
+
+		if (hasChanges)
+			invalidateFileCache();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void delete() {
-		iterateAll(d -> {
+		if (iterateAll(d -> {
 			storage.delete((D)d, chunkCoord);
-		});
+		})) {
+			invalidateFileCache();
+		}
 	}
 
 	@Override
@@ -83,12 +103,65 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 		insert();
 	}
 
+	private void invalidateFileCache() {
+		if (this.fileCacheManager != null)
+			this.fileCacheManager.invalidate(this.chunkCoord.getWorld(), this.chunkCoord.getX(), this.chunkCoord.getZ());
+	}
+
 	@Override
 	public void populate() {
+		if (!populateFromFileCache())
+			populateFromDB();
+	}
+
+	private boolean populateFromFileCache() {
+		if (this.fileCacheManager == null)
+			return false;
+
+		// Aleksey's Temporary: long startTime = System.currentTimeMillis();
+
+		List<D> objects = this.fileCacheManager.load(this.chunkCoord.getWorld(), this.chunkCoord.getX(), this.chunkCoord.getZ());
+		if (objects == null)
+			return false;
+
+		for (D o : objects) {
+			Location loc = o.getLocation();
+			put(modulo(loc.getBlockX()), loc.getBlockY(), modulo(loc.getBlockZ()), o, false);
+		}
+
+		this.storage.afterFill(objects);
+
+		// Aleksey's Temporary: CivModCorePlugin.getInstance().getLogger().warning("populateFromFileCache() :: world = " + this.chunkCoord.getWorld().getName() + ", x = " + this.chunkCoord.getX() + ", z = " + this.chunkCoord.getZ() + ", time = " + (System.currentTimeMillis() - startTime));
+
+		return true;
+	}
+
+	private void populateFromDB() {
+		// Aleksey's Temporary: long startTime = System.currentTimeMillis();
+
+		List<D> objects = new ArrayList<>();
+
 		storage.fill(this, data -> {
 			Location loc = data.getLocation();
 			put(modulo(loc.getBlockX()), loc.getBlockY(), modulo(loc.getBlockZ()), data, false);
+			objects.add(data);
 		});
+
+		this.storage.afterFill(objects);
+
+		// Aleksey's Temporary: CivModCorePlugin.getInstance().getLogger().warning("populateFromDB() :: world = " + this.chunkCoord.getWorld().getName() + ", x = " + this.chunkCoord.getX() + ", z = " + this.chunkCoord.getZ()+ ", time = " + (System.currentTimeMillis() - startTime));
 	}
 
+	@Override
+	public void handleChunkUnload() {
+		if (this.fileCacheManager == null)
+			return;
+
+		List<D> objects = new ArrayList<>();
+		iterateAll(d -> {
+			objects.add((D)d);
+		});
+
+		this.fileCacheManager.unload(this.chunkCoord.getWorld(), this.chunkCoord.getX(), this.chunkCoord.getZ(), objects);
+	}
 }
