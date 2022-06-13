@@ -132,6 +132,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 	public void fill(TableBasedBlockChunkMeta<Plant> chunkData, Consumer<Plant> insertFunction) {
 		int preMultipliedX = chunkData.getChunkCoord().getX() * 16;
 		int preMultipliedZ = chunkData.getChunkCoord().getZ() * 16;
+		List<Plant> toUpdate = new ArrayList<>();
 		PlantLogicManager logicMan = RealisticBiomes.getInstance().getPlantLogicManager();
 		GrowthConfigManager growthConfigMan = RealisticBiomes.getInstance().getGrowthConfigManager();
 		World world = chunkData.getChunkCoord().getWorld();
@@ -157,20 +158,15 @@ public class RBDAO extends TableStorageEngine<Plant> {
 						growthConfig = growthConfigMan.getConfigById(configId);
 					}
 					Plant plant = new Plant(creationTime, location, false, growthConfig);
+					toUpdate.add(plant);
 					insertFunction.accept(plant);
 				}
 			}
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to load plant from db: ", e);
 		}
-	}
-
-	@Override
-	public void afterFill(List<Plant> addedObjects) {
-		PlantLogicManager logicMan = RealisticBiomes.getInstance().getPlantLogicManager();
-
 		Bukkit.getScheduler().runTask(RealisticBiomes.getInstance(), () -> {
-			for (Plant plant : addedObjects) {
+			for (Plant plant : toUpdate) {
 				if (plant.getCacheState() == CacheState.DELETED) {
 					continue;
 				}

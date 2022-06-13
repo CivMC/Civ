@@ -18,9 +18,5 @@ subprojects {
 		maven("https://repo.civmc.net/repository/maven-public/")
         maven("https://maven.enginehub.org/repo/")
         maven("https://repo.maven.apache.org/maven2/")
-
-		flatDir {
-			dirs("../libs")
-		}
 	}
 }
