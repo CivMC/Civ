@@ -8,14 +8,15 @@ import vg.civcraft.mc.civmodcore.world.WorldUtils;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableStorageEngine;
+import vg.civcraft.mc.civmodcore.world.locations.files.FileCacheManager;
 
 public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements ProgressTrackable {
 
 	private ProgressTracker<Plant> tracker;
 	private long nextUpdate;
 
-	public RBChunkCache(boolean isNew, TableStorageEngine<Plant> storage) {
-		super(isNew, storage);
+	public RBChunkCache(boolean isNew, TableStorageEngine<Plant> storage, FileCacheManager<Plant> fileCacheManager) {
+		super(isNew, storage, fileCacheManager);
 		tracker = new ProgressTracker<>();
 		this.nextUpdate = Long.MAX_VALUE;
 	}
@@ -80,6 +81,7 @@ public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements Pro
 
 	@Override
 	public void handleChunkUnload() {
+		super.handleChunkUnload();
 		Bukkit.getScheduler().runTask(RealisticBiomes.getInstance(), () -> {
 			RealisticBiomes.getInstance().getPlantProgressManager().removeChunk(this);
 			updateInternalProgressTime(Long.MAX_VALUE);

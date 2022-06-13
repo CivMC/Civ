@@ -7,6 +7,7 @@ import com.untamedears.realisticbiomes.listener.MobListener;
 import com.untamedears.realisticbiomes.listener.PlantListener;
 import com.untamedears.realisticbiomes.listener.PlayerListener;
 import com.untamedears.realisticbiomes.model.Plant;
+import com.untamedears.realisticbiomes.model.PlantSerializer;
 import com.untamedears.realisticbiomes.model.RBChunkCache;
 import com.untamedears.realisticbiomes.model.RBDAO;
 import com.untamedears.realisticbiomes.replant.AutoReplantListener;
@@ -17,6 +18,9 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.BlockBasedChunkMe
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableStorageEngine;
+import vg.civcraft.mc.civmodcore.world.locations.files.FileCacheManager;
+
+import java.nio.file.Path;
 
 public class RealisticBiomes extends ACivMod {
 
@@ -33,8 +37,9 @@ public class RealisticBiomes extends ACivMod {
 	private PlantLogicManager plantLogicManager;
 	private PlantProgressManager plantProgressManager;
 	private RBCommandManager commandManager;
-
 	private RBDAO dao;
+	private PlantSerializer plantSerializer;
+	private FileCacheManager<Plant> fileCacheManager;
 
 	public RBConfigManager getConfigManager() {
 		return configManager;
@@ -62,11 +67,14 @@ public class RealisticBiomes extends ACivMod {
 
 	@Override
 	public void onDisable() {
-		dao.setBatchMode(true);
-		if (plantManager != null) {
-			plantManager.shutDown();
+		this.dao.setBatchMode(true);
+		if (this.plantManager != null) {
+			this.plantManager.shutDown();
 		}
-		dao.cleanupBatches();
+		this.dao.cleanupBatches();
+
+		if (this.fileCacheManager != null)
+			this.fileCacheManager.closeCacheFiles();
 	}
 
 	@Override
@@ -85,11 +93,20 @@ public class RealisticBiomes extends ACivMod {
 				Bukkit.shutdown();
 				return;
 			}
-			plantProgressManager = new PlantProgressManager();
-			BlockBasedChunkMetaView<RBChunkCache, TableBasedDataObject, TableStorageEngine<Plant>> chunkMetaData = ChunkMetaAPI
-					.registerBlockBasedPlugin(this, () -> {
-						return new RBChunkCache(false, dao);
-					}, dao, false);
+
+			this.plantSerializer = new PlantSerializer(this.growthConfigManager);
+			this.fileCacheManager = new FileCacheManager<>(this.plantSerializer, Path.of("civmodcore_cache", "realisticbiomes"));
+			this.plantProgressManager = new PlantProgressManager();
+
+			BlockBasedChunkMetaView<RBChunkCache, TableBasedDataObject, TableStorageEngine<Plant>> chunkMetaData =
+					ChunkMetaAPI
+						.registerBlockBasedPlugin(
+								this,
+								() -> new RBChunkCache(false, dao, this.fileCacheManager),
+								dao,
+								false
+						);
+
 			if (chunkMetaData == null) {
 				getLogger().severe("Errors setting up chunk metadata API, shutting down");
 				Bukkit.shutdown();

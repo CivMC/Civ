@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+
+import com.untamedears.realisticbiomes.utils.Constants;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,6 +23,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
@@ -68,7 +69,9 @@ public class AutoReplantListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onRightClick(PlayerInteractEvent event) {
-		if (!rightClick) {
+		if (!rightClick
+				|| event.getHand() != EquipmentSlot.HAND) // Process only the main hand (no need to show 'no perms' twice)
+		{
 			return;
 		}
 
@@ -76,6 +79,11 @@ public class AutoReplantListener implements Listener {
 		if (block == null || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
+
+		ItemStack item = event.getItem();
+		if (item != null && item.getType() == Constants.Stick) // Do not auto-replant when the player just want to get growth info
+			return;
+
 		Player player = event.getPlayer();
 		if (!getToggleAutoReplant(player.getUniqueId())) {
 			return;

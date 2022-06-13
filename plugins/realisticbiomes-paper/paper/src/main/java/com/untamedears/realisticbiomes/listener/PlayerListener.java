@@ -7,6 +7,7 @@ import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growthconfig.AnimalMateConfig;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
+import com.untamedears.realisticbiomes.utils.Constants;
 import com.untamedears.realisticbiomes.utils.RBUtils;
 import java.text.DecimalFormat;
 import org.bukkit.Bukkit;
@@ -49,7 +50,7 @@ public class PlayerListener implements Listener {
 		if (event.getItem() == null) {
 			return;
 		}
-		if (event.getItem().getType() != Material.STICK) {
+		if (event.getItem().getType() != Constants.Stick) {
 			return;
 		}
 		Block block = RBUtils.getRealPlantBlock(event.getClickedBlock());

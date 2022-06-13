@@ -259,22 +259,33 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 				sb.append(" is fully grown ");
 				return sb.toString();
 			}
-			long totalTime = getPersistentGrowthTime(block);
-			long passedTime = System.currentTimeMillis() - plant.getCreationTime();
-			long timeRemaining = Math.max(0, totalTime - passedTime);
-			if (timeRemaining >= INFINITE_TIME || totalTime == -1) {
-				sb.append(" will never grow here");
-			} else {
-				sb.append(" will grow to full size ");
-				if (timeRemaining <= 0) {
-					sb.append("now");
-				} else {
-					sb.append("in ");
-					sb.append(TextUtil.formatDuration(timeRemaining, TimeUnit.MILLISECONDS));
-				}
-			}
+			appendPlantProgress(block, plant, sb);
 		}
 		return sb.toString();
+	}
+
+	private void appendPlantProgress(Block block, Plant plant, StringBuilder sb) {
+		long totalTime = getPersistentGrowthTime(block);
+		long passedTime = System.currentTimeMillis() - plant.getCreationTime();
+		long timeRemaining = Math.max(0, totalTime - passedTime);
+
+		if (timeRemaining >= INFINITE_TIME || totalTime == -1) {
+			sb.append(" will never grow here");
+			return;
+		}
+
+		if (plant.getNextUpdate() == Long.MAX_VALUE) {
+			sb.append(" does not grow");
+			return;
+		}
+
+		sb.append(" will grow to full size ");
+		if (timeRemaining <= 0) {
+			sb.append("now");
+		} else {
+			sb.append("in ");
+			sb.append(TextUtil.formatDuration(timeRemaining, TimeUnit.MILLISECONDS));
+		}
 	}
 
 	/**
