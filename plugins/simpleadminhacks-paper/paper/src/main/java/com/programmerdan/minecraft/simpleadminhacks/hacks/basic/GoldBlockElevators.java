@@ -9,7 +9,6 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.DataParse
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.TeleportUtil;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -21,6 +20,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
@@ -33,11 +33,11 @@ public class GoldBlockElevators extends BasicHack {
 
 	private BooleanSetting useJumpSneakTP;
 	private DoubleInteractFixer interactFixer;
+	private String blockName;
 
 	public GoldBlockElevators(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
 		this.interactFixer = new DoubleInteractFixer(plugin);
-		initSettings();
 	}
 
 	@Override
@@ -46,13 +46,21 @@ public class GoldBlockElevators extends BasicHack {
 
 		if (elevatorBlock == null)
 			elevatorBlock = Material.GOLD_BLOCK;
+
+		this.blockName = ItemUtils.getItemName(this.elevatorBlock).toLowerCase();
+
+		if (this.blockName.startsWith("block of"))
+			this.blockName = this.blockName.substring("block of ".length());
+
+		initSettings();
 	}
 
 	private void initSettings() {
 		MenuSection mainMenu = plugin.getSettingManager().getMainMenu();
-		this.useJumpSneakTP =
-				new BooleanSetting(plugin, true, "Use Jump or Sneak to teleport on gold blocks", "jumpOrSneakTp",
-						"When true, jumping or sneaking on gold blocks will teleport you up/down, when false, right or left clicking will do the same.");
+		String name = String.format("Use Jump or Sneak to teleport on %s blocks", this.blockName);
+		String description = String.format("When true, jumping or sneaking on %s blocks will teleport you up/down, when false, right or left clicking will do the same.",
+				this.blockName);
+		this.useJumpSneakTP = new BooleanSetting(plugin, true, name, "jumpOrSneakTp", description);
 		PlayerSettingAPI.registerSetting(this.useJumpSneakTP, mainMenu);
 	}
 
@@ -73,8 +81,10 @@ public class GoldBlockElevators extends BasicHack {
 				return;
 			}
 		}
-		event.getPlayer().sendMessage(
-				ChatColor.RED + "No gold block to teleport you down to. Jump to teleport up instead.");
+
+		String message = String.format("No %s block to teleport you down to. Jump to teleport up instead.", this.blockName);
+
+		event.getPlayer().sendMessage(Component.text(message).color(NamedTextColor.RED));
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -91,8 +101,10 @@ public class GoldBlockElevators extends BasicHack {
 				return;
 			}
 		}
-		event.getPlayer()
-				.sendMessage(ChatColor.RED + "No gold block to teleport you up to. Sneak to teleport down instead.");
+
+		String message = String.format("No %s block to teleport you up to. Sneak to teleport down instead.", this.blockName);
+
+		event.getPlayer().sendMessage(Component.text(message).color(NamedTextColor.RED));
 	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -123,18 +135,20 @@ public class GoldBlockElevators extends BasicHack {
 					return;
 				}
 			}
-			event.getPlayer().sendMessage(
-					Component.text("No gold block to teleport you down to. Right click to teleport up instead.")
-							.color(NamedTextColor.RED));
+
+			String message = String.format("No %s block to teleport you down to. Right click to teleport up instead.", this.blockName);
+
+			event.getPlayer().sendMessage(Component.text(message).color(NamedTextColor.RED));
 		} else {
 			for (int y = below.getY() + 1; y <= below.getWorld().getMaxHeight(); y++) {
 				if (doTeleport(below, event.getPlayer(), y)) {
 					return;
 				}
 			}
-			event.getPlayer().sendMessage(
-					Component.text("No gold block to teleport you up to. Left click to teleport down instead.")
-							.color(NamedTextColor.RED));
+
+			String message = String.format("No %s block to teleport you up to. Left click to teleport down instead.", this.blockName);
+
+			event.getPlayer().sendMessage(Component.text(message).color(NamedTextColor.RED));
 		}
 	}
 
