@@ -1,6 +1,5 @@
 package vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
@@ -34,10 +33,6 @@ public abstract class TableStorageEngine<D extends TableBasedDataObject>
 	public abstract void delete(D data, XZWCoord coord);
 
 	public abstract void fill(TableBasedBlockChunkMeta<D> chunkData, Consumer<D> insertFunction);
-
-	public void afterFill(List<D> addedObjects) {
-
-	}
 	
 	@SuppressWarnings("unchecked")
 	@Override

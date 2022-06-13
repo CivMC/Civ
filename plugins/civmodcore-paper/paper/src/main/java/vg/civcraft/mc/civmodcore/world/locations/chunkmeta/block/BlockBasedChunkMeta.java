@@ -319,9 +319,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 	}
 
 	@SuppressWarnings("rawtypes")
-	public boolean iterateAll(Consumer<D> functionToApply) {
-		boolean hasData = false;
-
+	public void iterateAll(Consumer<D> functionToApply) {
 		for (int i = 0; i < data.length; i++) {
 			BlockDataObject[][][] l2Cache = data[i];
 			if (l2Cache == null) {
@@ -342,14 +340,11 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 							@SuppressWarnings("unchecked")
 							D value = (D) l4Cache[l];
 							functionToApply.accept(value);
-							hasData = true;
 						}
 					}
 				}
 			}
 		}
-
-		return hasData;
 	}
 
 	public static int modulo(int a) {
