@@ -149,7 +149,7 @@ public final class OldEnchanting extends BasicHack {
 		// Setup enchantment randomiser
 		Field randomiser = null;
 		try {
-			randomiser = FieldUtils.getDeclaredField(EnchantmentMenu.class, "h", true);
+			randomiser = FieldUtils.getDeclaredField(EnchantmentMenu.class, "p", true);
 		}
 		catch (final Throwable throwable) {
 			this.logger.log(Level.WARNING, "An exception was thrown while trying to reflect the enchanting " +
