@@ -69,10 +69,7 @@ public class BlockListener implements Listener {
 		Block placed = event.getBlockPlaced();
 		Block placedAgainst = event.getBlockAgainst();
 
-		if (!CitadelUtility.isPlant(placed)) {
-			return;
-		}
-		Reinforcement reinforcement = ReinforcementLogic.getReinforcementAt(placedAgainst.getLocation());
+		Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(placed);
 		if (reinforcement == null) {
 			return;
 		}
@@ -80,7 +77,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 		event.setCancelled(true);
-		event.getPlayer().sendMessage(Component.text("You cannot place against without the permission " + CitadelPermissionHandler.getCrops().getName() + " on it's group!", NamedTextColor.RED));
+		event.getPlayer().sendMessage(Component.text("You cannot place this without the permission " + CitadelPermissionHandler.getCrops().getName() + " on it's group!", NamedTextColor.RED));
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
