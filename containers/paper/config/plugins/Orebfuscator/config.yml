@@ -23,7 +23,7 @@ obfuscation:
   obfuscation-overworld:
     enabled: true
     minY: -64
-    maxY: 150
+    maxY: 70
     worlds:
     - world
     hiddenBlocks:
