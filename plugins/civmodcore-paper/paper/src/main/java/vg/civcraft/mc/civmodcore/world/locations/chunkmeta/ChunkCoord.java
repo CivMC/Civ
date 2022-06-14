@@ -9,6 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaViewTracker;
@@ -122,9 +123,9 @@ public class ChunkCoord extends XZWCoord {
 	}
 
 	ChunkMeta<?> getMeta(short pluginID, boolean alwaysLoaded) {
-		// Make this call idempotent
+		// This call is cheap and should be done in any case. Threads will be parked when necessary on relevant code
+		// sections.
 		loadAll();
-
 		return chunkMetas.get(pluginID);
 	}
 
@@ -146,23 +147,32 @@ public class ChunkCoord extends XZWCoord {
 		// Lets to an expensive synchronization here if necessary.
 		synchronized (this) {
 			if (!isFullyLoaded.get()) {
-				for (Entry<Short, Supplier<ChunkMeta<?>>> generator : ChunkMetaFactory.getInstance()
-						.getEmptyChunkFunctions()) {
-					ChunkMeta<?> chunk = generator.getValue().get();
-					chunk.setChunkCoord(this);
-					short pluginID = generator.getKey();
-					chunk.setPluginID(pluginID);
-					try {
-						chunk.populate();
-					} catch (Exception e) {
-						CivModCorePlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to load chunk data", e);
+				timed("Populate empty chunk functions.", () -> {
+					for (Entry<Short, Supplier<ChunkMeta<?>>> generator : ChunkMetaFactory.getInstance()
+							.getEmptyChunkFunctions()) {
+						ChunkMeta<?> chunk = generator.getValue().get();
+						chunk.setChunkCoord(this);
+						short pluginID = generator.getKey();
+						chunk.setPluginID(pluginID);
+						timed("Populate empty chunk functions: chunk.populate()", chunk::populate);
+						timed("Populate empty chunk functions: postLoad", () -> ChunkMetaViewTracker.getInstance().get(pluginID).postLoad(chunk));
+						timed("Populate empty chunk functions: addChunkMeta", () -> addChunkMeta(chunk));
 					}
-					ChunkMetaViewTracker.getInstance().get(pluginID).postLoad(chunk);
-					addChunkMeta(chunk);
-				}
-				isFullyLoaded.set(true);
+					isFullyLoaded.set(true);
+				});
 			}
 		}
+	}
+
+	private void timed(String name, Runnable r) {
+		long start = System.currentTimeMillis();
+		try {
+			r.run();
+		} catch (Exception e) {
+			CivModCorePlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to time: \"" + name + "\"", e);
+		}
+
+		CivModCorePlugin.getInstance().getLogger().log(Level.INFO, "Timing: \"" + name + "\" " + (System.currentTimeMillis() - start) + "ms");
 	}
 
 	/**
