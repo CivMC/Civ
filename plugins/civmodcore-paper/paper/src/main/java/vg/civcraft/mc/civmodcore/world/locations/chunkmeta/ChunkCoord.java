@@ -154,9 +154,7 @@ public class ChunkCoord extends XZWCoord {
 					chunk.setPluginID(pluginID);
 					try {
 						chunk.populate();
-					} catch (Throwable e) {
-						// need to catch everything here, otherwise we block the main thread forever
-						// once it tries to read this
+					} catch (Exception e) {
 						CivModCorePlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to load chunk data", e);
 					}
 					ChunkMetaViewTracker.getInstance().get(pluginID).postLoad(chunk);
