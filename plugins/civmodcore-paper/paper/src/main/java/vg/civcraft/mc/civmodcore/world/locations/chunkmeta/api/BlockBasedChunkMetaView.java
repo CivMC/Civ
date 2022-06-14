@@ -7,11 +7,13 @@ import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.ChunkMeta;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.ChunkMetaLoadStatus;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.XZWCoord;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockBasedStorageEngine;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockDataObject;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockDataObjectLoadStatus;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.fallback.SingleBlockTracker;
 import vg.civcraft.mc.civmodcore.world.locations.global.WorldIDManager;
 
@@ -52,12 +54,32 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 
 	/**
 	 * Gets the data at the given location
+	 *
+	 * @param block Block to get data for
+	 * @return Data tied to the given block or null if no data exists there
+	 */
+	public BlockDataObjectLoadStatus<D> getIfLoaded(Block block) {
+		return get(block.getLocation(), false);
+	}
+
+	/**
+	 * Gets the data at the given location
+	 *
+	 * @param location Location to get data for
+	 * @return Data at the given location or null if no data exists there
+	 */
+	public BlockDataObjectLoadStatus<D> getIfLoaded(Location location) {
+		return get(location, false);
+	}
+
+	/**
+	 * Gets the data at the given location
 	 * 
 	 * @param block Block to get data for
 	 * @return Data tied to the given block or null if no data exists there
 	 */
 	public D get(Block block) {
-		return get(block.getLocation());
+		return get(block.getLocation(), true).data;
 	}
 
 	/**
@@ -67,9 +89,24 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 	 * @return Data at the given location or null if no data exists there
 	 */
 	public D get(Location location) {
+		return get(location, true).data;
+	}
+
+	public BlockDataObjectLoadStatus<D> get(Location location, boolean waitUntilLoaded) {
 		validateY(location.getWorld(), location.getBlockY());
 		short worldID = worldIdManager.getInternalWorldId(location.getWorld());
-		T chunk = super.getChunkMeta(location);
+		T chunk;
+
+		if (waitUntilLoaded) {
+			chunk = super.getChunkMeta(location);
+		} else {
+			ChunkMetaLoadStatus chunkMetaLoadStatus = super.getChunkMetaIfLoaded(location);
+			if (!chunkMetaLoadStatus.isLoaded)
+				return new BlockDataObjectLoadStatus(null, false);
+
+			chunk = (T)chunkMetaLoadStatus.meta;
+		}
+
 		D data;
 		if (chunk == null) {
 			if (alwaysLoaded) {
@@ -87,9 +124,9 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 				singleBlockTracker.putBlock(data, worldID);
 			}
 		} else {
-			return chunk.get(location);
+			data = chunk.get(location);
 		}
-		return data;
+		return new BlockDataObjectLoadStatus(data, true);
 	}
 
 	@SuppressWarnings("unchecked")
