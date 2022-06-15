@@ -66,6 +66,10 @@ public class PlantListener implements Listener {
 	private void handleGrowEvent(Cancellable event, Block sourceBlock, Material material) {
 		PlantLoadState state = plantManager.getPlantIfLoaded(RBUtils.getRealPlantBlock(sourceBlock));
 		if (!state.isLoaded) {
+			// RB cannot handle it now and therefore waiting for the next tick
+			// but for now cancel it to prevent vanilla mechanics
+			event.setCancelled(true);
+
 			return;
 		}
 
