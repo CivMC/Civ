@@ -70,7 +70,7 @@ public class CommandManager extends BukkitCommandManager {
 	 */
     public void registerCompletions(@Nonnull final CommandCompletions<BukkitCommandCompletionContext> completions) {
 		completions.registerCompletion("none", (context) -> Collections.emptyList());
-		completions.registerAsyncCompletion("allplayers", (context) ->
+		completions.registerCompletion("allplayers", (context) ->
 				Bukkit.getOnlinePlayers().stream()
 						.map(Player::getName)
 						.toList());
