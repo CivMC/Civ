@@ -926,7 +926,7 @@ database:
   host: ${CIV_MYSQL_HOST}
   port: 3306
   database: realisticbiomes
-  poolsize: 15
+  poolsize: 20
   connection_timeout: 10000
   idle_timeout: 600000
   max_lifetime: 7200000

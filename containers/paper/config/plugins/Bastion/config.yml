@@ -4,7 +4,7 @@ mysql:
   host: ${CIV_MYSQL_HOST}
   database: bastion
   port: 3306
-  poolsize: 10
+  poolsize: 20
   connectionTimeout: 10000
   idleTimout: 600000
   maxLifetime: 7200000
