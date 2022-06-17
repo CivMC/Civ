@@ -33,7 +33,6 @@ public class ChunkCoord extends XZWCoord {
 	 * the entire life time of this object
 	 */
 	private AtomicBoolean isFullyLoaded = new AtomicBoolean(false);
-	private ReentrantLock loadingLock = new ReentrantLock();
 	private World world;
 
 	ChunkCoord(int x, int z, short worldID, World world) {
