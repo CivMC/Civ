@@ -126,7 +126,7 @@ public class TreeGrower extends AgeableGrower {
 		case JUNGLE_SAPLING:
 			return big ? TreeType.JUNGLE : TreeType.SMALL_JUNGLE;
 		case SPRUCE_SAPLING:
-			return big ? TreeType.MEGA_REDWOOD : TreeType.TALL_REDWOOD;
+			return big ? TreeType.MEGA_REDWOOD : TreeType.REDWOOD;
 		case CHORUS_FLOWER:
 			return TreeType.CHORUS_PLANT;
 		default:
