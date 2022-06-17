@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
@@ -71,8 +71,8 @@ public class CommandManager extends BukkitCommandManager {
     public void registerCompletions(@Nonnull final CommandCompletions<BukkitCommandCompletionContext> completions) {
 		completions.registerCompletion("none", (context) -> Collections.emptyList());
 		completions.registerAsyncCompletion("allplayers", (context) ->
-				Arrays.stream(Bukkit.getOfflinePlayers())
-						.map(OfflinePlayer::getName)
+				Bukkit.getOnlinePlayers().stream()
+						.map(Player::getName)
 						.toList());
 		completions.registerAsyncCompletion("materials", (context) ->
 				Arrays.stream(Material.values())
