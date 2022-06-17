@@ -252,7 +252,7 @@ storage:
     connection_timeout: 5000
     idle_timeout: 5000
     max_lifetime: 5000
-    pool_size: 5
+    pool_size: 10
     migrate_pp: false
     migrate_dbname: prisonpearl
 general:

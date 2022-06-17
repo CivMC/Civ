@@ -7,7 +7,7 @@ database:
   host: ${CIV_MYSQL_HOST}
   port: 3306
   database: civmodcore
-  poolsize: 5
+  poolsize: 10
   connection_timeout: 10000
   idle_timeout: 600000
   max_lifetime: 7200000
