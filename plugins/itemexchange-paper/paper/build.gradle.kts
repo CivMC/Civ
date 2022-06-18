@@ -14,7 +14,10 @@ dependencies {
 	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 
 	compileOnly("net.civmc.civmodcore:paper:2.0.0-SNAPSHOT:dev-all")
+	compileOnly("net.civmc:namelayer-spigot:3.0.0-SNAPSHOT:dev")
+	compileOnly("net.civmc:citadel:5.0.0-SNAPSHOT:dev")
+	compileOnly("net.cimc.jukealert:paper:3.0.0-SNAPSHOT:dev")
 
-	compileOnly("org.projectlombok:lombok:1.18.22")
-	annotationProcessor("org.projectlombok:lombok:1.18.22")
+	compileOnly("org.projectlombok:lombok:1.18.24")
+	annotationProcessor("org.projectlombok:lombok:1.18.24")
 }
