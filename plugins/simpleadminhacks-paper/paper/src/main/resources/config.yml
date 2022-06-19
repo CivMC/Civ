@@ -465,6 +465,12 @@ hacks:
     # in seconds
     delay: 180
     message: "&4%player% is raiding a chest at %x% %y% %z%."
+  #Used to roll a dice on whether to drop an additional sapling on block break or leaf decay
+  SaplingHack:
+    enabled: true
+    blocks:
+      JUNGLE_LEAVES: 0.5
+      DARK_OAK_LEAVES: 0.5
   SanityHack:
     enabled: true
     trackPlace: true
