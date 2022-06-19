@@ -75,6 +75,7 @@ public class CitadelUtility {
 			case BAMBOO:
 			case BAMBOO_SAPLING:
 			case SEA_PICKLE:
+			case POINTED_DRIPSTONE:
 				return true;
 			default:
 				return false;
