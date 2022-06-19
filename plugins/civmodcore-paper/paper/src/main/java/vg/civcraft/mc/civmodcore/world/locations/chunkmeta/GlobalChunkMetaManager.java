@@ -66,6 +66,21 @@ public class GlobalChunkMetaManager {
 
 	/**
 	 * Retrieves ChunkMeta for the given plugin from the given chunk in the given
+	 * world.
+	 * If it is not loaded then just return and do not wait
+	 *
+	 * @param pluginID Internal id of the plugin the meta belongs to
+	 * @param world    World the chunk is in
+	 * @param chunkX   X-coord of the chunk
+	 * @param chunkZ   Z-coord of the chunk
+	 * @return Retrieved ChunkMetaLoadStatus for the given parameter
+	 */
+	public ChunkMetaLoadStatus getChunkMetaIfLoaded(short pluginID, World world, int chunkX, int chunkZ, boolean alwaysLoaded) {
+		return getWorldManager(world).getChunkMetaIfLoaded(pluginID, chunkX, chunkZ, alwaysLoaded);
+	}
+
+	/**
+	 * Retrieves ChunkMeta for the given plugin from the given chunk in the given
 	 * world. May be null if no such meta is specified yet
 	 * 
 	 * @param pluginID Internal id of the plugin the meta belongs to

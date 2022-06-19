@@ -122,6 +122,25 @@ public class WorldChunkMetaManager {
 
 	/**
 	 * Retrieves the chunk meta for a specific chunk for a specific plugin.
+	 * If it is not loaded then just return and do not wait
+	 *
+	 * DO NOT USE THIS FOR UNLOADED CHUNKS, THINGS WILL BREAK HORRIBLY
+	 *
+	 * @param pluginID Internal id of the plugin
+	 * @param x        X-coordinate of the chunk
+	 * @param z        Z-coordinate of the chunk
+	 * @return ChunkMetaLoadStatus for the given parameter
+	 */
+	ChunkMetaLoadStatus getChunkMetaIfLoaded(short pluginID, int x, int z, boolean alwaysLoaded) {
+		ChunkCoord coord = getChunkCoord(x, z, false, false);
+		if (coord == null) {
+			return null;
+		}
+		return coord.getMetaIfLoaded(pluginID, alwaysLoaded);
+	}
+
+	/**
+	 * Retrieves the chunk meta for a specific chunk for a specific plugin.
 	 * 
 	 * DO NOT USE THIS FOR UNLOADED CHUNKS, THINGS WILL BREAK HORRIBLY
 	 * 
