@@ -9,8 +9,7 @@ header-footer:
   footer:
     - '&9Modmail at &6reddit.com/r/civmc'
     - '&a%tps% TPS &r&6discord.gg/nDnsU6vJqg'
-    - '&6Admins &c Moderators'
-    - '&aDonors &4B&ai&3g &dD&6o&4n&9o&5r'
+    - '&6Admins: WingZero54, Ahrimanne, SoundTech, Infra_'
   per-world:
     world1:
       header:
