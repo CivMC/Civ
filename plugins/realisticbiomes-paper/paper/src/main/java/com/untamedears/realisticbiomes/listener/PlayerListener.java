@@ -25,6 +25,7 @@ import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerListener implements Listener {
@@ -100,7 +101,7 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
 		ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-		if (item.getType() != Material.STICK) {
+		if (item.getType() != Constants.Stick || event.getHand() != EquipmentSlot.HAND) {
 			return;
 		}
 		Entity entity = event.getRightClicked();
