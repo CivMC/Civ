@@ -8,9 +8,9 @@ public class ChunkMetaFactory {
 	private static ChunkMetaFactory instance;
 
 	public static ChunkMetaFactory getInstance() {
-		if (instance == null)
+		if (instance == null) {
 			instance = new ChunkMetaFactory();
-
+		}
 		return instance;
 	}
 

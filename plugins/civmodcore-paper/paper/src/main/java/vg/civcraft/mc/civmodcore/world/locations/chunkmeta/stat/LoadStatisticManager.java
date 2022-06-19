@@ -169,8 +169,9 @@ public class LoadStatisticManager {
 			} else {
 				worldActions.put(current.threadIndex, null);
 
-				if (prev != null)
+				if (prev != null) {
 					addStatistic(prev, current);
+				}
 			}
 		}
 	}

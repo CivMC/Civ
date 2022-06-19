@@ -86,6 +86,9 @@ public class ChunkCoord extends XZWCoord {
 				break;
 			case DELETED:
 				chunkMeta.delete();
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported cache state '" + chunkMeta.getCacheState() + "'");
 		}
 		chunkMeta.setCacheState(CacheState.NORMAL);
 	}
@@ -148,6 +151,18 @@ public class ChunkCoord extends XZWCoord {
 
 	/**
 	 * Loads data for all plugins for this chunk
+	 *
+	 * @param threadIndex Specifies the index of the thread used to load this chunk
+	 *                    It is literally index of the Thread in the list WorldChunkMetaManager::chunkLoadingThreads
+	 *                    Used here just as informative field provided to statistics polling
+	 *                    Doesn't not influence any mechanics
+	 *
+	 *                    If threadIndex == LoadStatisticManager.MainThreadIndex then this means
+	 *                    that the "main thread" called this function
+	 *
+	 *                    If the server has enough resources to perform requests then "main thread"
+	 *                    will come to loadAll() always at the time when either chunk is loaded (the best case)
+	 *                    or when it is loading now by the thread from WorldChunkMetaManager
 	 */
 	void loadAll(int threadIndex) {
 		// Skip the monitor check if this is set to true.
@@ -193,7 +208,11 @@ public class ChunkCoord extends XZWCoord {
 		this.lastLoadingTime = System.currentTimeMillis();
 		if (hasBeenLoadedBefore) {
 			for (ChunkMeta<?> meta : chunkMetas.values()) {
-				meta.handleChunkCacheReuse();
+				try {
+					meta.handleChunkCacheReuse();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
 		}
 	}
@@ -213,7 +232,11 @@ public class ChunkCoord extends XZWCoord {
 	void minecraftChunkUnloaded() {
 		this.lastUnloadingTime = System.currentTimeMillis();
 		for (ChunkMeta<?> meta : chunkMetas.values()) {
-			meta.handleChunkUnload();
+			try {
+				meta.handleChunkUnload();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 }

@@ -6,6 +6,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.config.ConfigParser;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 
+import java.util.Objects;
+
 public final class CivModCoreConfig extends ConfigParser {
 
 	private DatabaseCredentials databaseCredentials;
@@ -25,6 +27,7 @@ public final class CivModCoreConfig extends ConfigParser {
 
 	CivModCoreConfig(@Nonnull final CivModCorePlugin plugin) {
 		super(plugin);
+		Objects.requireNonNull(plugin);
 		reset();
 	}
 

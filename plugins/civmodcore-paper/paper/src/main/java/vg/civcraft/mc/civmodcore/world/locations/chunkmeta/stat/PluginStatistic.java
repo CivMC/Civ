@@ -15,14 +15,16 @@ public class PluginStatistic {
 		this.pluginName = pluginName;
 	}
 
-	public PluginStatistic clone() {
-		PluginStatistic clone = new PluginStatistic(this.pluginId, this.pluginName);
-		clone.chunkLoadCount = this.chunkLoadCount;
-		clone.chunkLoadSumNanoSec = this.chunkLoadSumNanoSec;
-		clone.chunkLoadMinTimeNanoSec = this.chunkLoadMinTimeNanoSec;
-		clone.chunkLoadMaxTimeNanoSec = this.chunkLoadMaxTimeNanoSec;
-		clone.isInitialized = this.isInitialized;
+	private PluginStatistic(PluginStatistic original) {
+		this (original.pluginId, original.pluginName);
+		chunkLoadCount = original.chunkLoadCount;
+		chunkLoadSumNanoSec = original.chunkLoadSumNanoSec;
+		chunkLoadMinTimeNanoSec = original.chunkLoadMinTimeNanoSec;
+		chunkLoadMaxTimeNanoSec = original.chunkLoadMaxTimeNanoSec;
+		isInitialized = original.isInitialized;
+	}
 
-		return clone;
+	public PluginStatistic clone() {
+		return new PluginStatistic(this);
 	}
 }
