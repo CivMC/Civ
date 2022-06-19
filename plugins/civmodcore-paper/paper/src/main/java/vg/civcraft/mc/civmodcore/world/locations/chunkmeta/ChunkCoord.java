@@ -118,6 +118,14 @@ public class ChunkCoord extends XZWCoord {
 		return lastUnloadingTime;
 	}
 
+	ChunkMetaLoadStatus getMetaIfLoaded(short pluginID, boolean alwaysLoaded) {
+		if (!alwaysLoaded && !isFullyLoaded)
+			return new ChunkMetaLoadStatus(null, false);
+
+		ChunkMeta<?> meta = getMeta(pluginID, alwaysLoaded);
+
+		return new ChunkMetaLoadStatus(meta, true);
+	}
 	ChunkMeta<?> getMeta(short pluginID, boolean alwaysLoaded) {
 		if (!alwaysLoaded && !isFullyLoaded) {
 			// check before taking monitor. This is fine, because the loaded flag will never

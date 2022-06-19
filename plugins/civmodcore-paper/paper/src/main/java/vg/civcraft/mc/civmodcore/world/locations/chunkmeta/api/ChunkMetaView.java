@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.ChunkMeta;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.ChunkMetaLoadStatus;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockBasedChunkMeta;
 
@@ -90,6 +91,21 @@ public class ChunkMetaView<T extends ChunkMeta<?>> extends APIView {
 	/**
 	 * Retrieves chunk metadata for the given chunk with the given for this specific
 	 * plugin
+	 * If it is not loaded then just return and do not wait
+	 *
+	 * @param location Location of the chunk to get metadata for
+	 * @return ChunkMetaLoadStatus for the requested chunk owned by this plugin
+	 */
+	public ChunkMetaLoadStatus getChunkMetaIfLoaded(Location location) {
+		if (location == null) {
+			throw new IllegalArgumentException("Location may not be null");
+		}
+		return getChunkMetaIfLoaded(location.getWorld(), BlockBasedChunkMeta.toChunkCoord(location.getBlockX()), BlockBasedChunkMeta.toChunkCoord(location.getBlockZ()));
+	}
+
+	/**
+	 * Retrieves chunk metadata for the given chunk with the given for this specific
+	 * plugin
 	 * 
 	 * @param location Location of the chunk to get metadata for
 	 * @return ChunkMeta for the requested chunk owned by this plugin, possibly null
@@ -100,6 +116,27 @@ public class ChunkMetaView<T extends ChunkMeta<?>> extends APIView {
 			throw new IllegalArgumentException("Location may not be null");
 		}
 		return getChunkMeta(location.getWorld(), BlockBasedChunkMeta.toChunkCoord(location.getBlockX()), BlockBasedChunkMeta.toChunkCoord(location.getBlockZ()));
+	}
+
+	/**
+	 * Retrieves chunk metadata in the given world for the chunk with the given
+	 * chunk coordinates for this specific plugin.
+	 * If it is not loaded then just return and do not wait
+	 *
+	 * @param world  World the chunk is in
+	 * @param chunkX X-Coordinate of the chunk
+	 * @param chunkZ Z-Coordinate of the chunk
+	 * @return ChunkMetaLoadStatus for the requested chunk owned by this plugin
+	 */
+	@SuppressWarnings("unchecked")
+	public ChunkMetaLoadStatus getChunkMetaIfLoaded(World world, int chunkX, int chunkZ) {
+		if (world == null) {
+			throw new IllegalArgumentException("World may not be null");
+		}
+		if (globalManager == null) {
+			throw new IllegalStateException("View already shut down, can not read data");
+		}
+		return globalManager.getChunkMetaIfLoaded(pluginID, world, chunkX, chunkZ, alwaysLoaded);
 	}
 
 	/**
