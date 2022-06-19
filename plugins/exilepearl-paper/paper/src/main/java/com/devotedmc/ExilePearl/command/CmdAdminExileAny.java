@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -125,6 +126,14 @@ public class CmdAdminExileAny extends PearlCommand {
 		if (pearl == null) {
 			msg("<b>Tried to exile player <c>%s <b>but the operation failed.", playerName);
 			return;
+		}
+
+		Player player = Bukkit.getPlayer(playerId);
+		if (player != null) {
+			//Kill the player here if everything was successful
+			//This was originally implemented in CorePearlManager.exilePlayer
+			//However resulted in a 'double' death scenario
+			player.setHealth(0);
 		}
 
 		// Place the pearl in the inventory
