@@ -5,6 +5,7 @@ import com.untamedears.realisticbiomes.PlantManager;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
+import com.untamedears.realisticbiomes.model.PlantLoadState;
 import com.untamedears.realisticbiomes.utils.RBUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -63,7 +64,17 @@ public class PlantListener implements Listener {
 	}
 
 	private void handleGrowEvent(Cancellable event, Block sourceBlock, Material material) {
-		Plant plant = plantManager.getPlant(RBUtils.getRealPlantBlock(sourceBlock));
+		PlantLoadState state = plantManager.getPlantIfLoaded(RBUtils.getRealPlantBlock(sourceBlock));
+		if (!state.isLoaded) {
+			// RB cannot handle it now and therefore waiting for the next tick
+			// but for now cancel it to prevent vanilla mechanics
+			event.setCancelled(true);
+
+			return;
+		}
+
+		Plant plant = state.plant;
+
 		PlantGrowthConfig growthConfig;
 		if (plant == null) {
 			growthConfig = plugin.getGrowthConfigManager().getGrowthConfigFallback(material);
