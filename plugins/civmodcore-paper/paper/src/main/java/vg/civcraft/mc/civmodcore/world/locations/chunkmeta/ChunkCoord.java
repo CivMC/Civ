@@ -5,14 +5,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaViewTracker;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.stat.LoadStatisticManager;
 
 public class ChunkCoord extends XZWCoord {
 
@@ -27,13 +25,13 @@ public class ChunkCoord extends XZWCoord {
 	/**
 	 * Each ChunkMeta belongs to one plugin, they are identified by the plugin id
 	 */
-	private Map<Short, ChunkMeta<?>> chunkMetas;
+	private final Map<Short, ChunkMeta<?>> chunkMetas;
 	/**
 	 * Set to true once all data has been loaded for this chunk and stays true for
 	 * the entire life time of this object
 	 */
-	private AtomicBoolean isFullyLoaded = new AtomicBoolean(false);
-	private World world;
+	private final AtomicBoolean isFullyLoaded = new AtomicBoolean(false);
+	private final World world;
 
 	ChunkCoord(int x, int z, short worldID, World world) {
 		super(x, z, worldID);
@@ -122,17 +120,20 @@ public class ChunkCoord extends XZWCoord {
 	}
 
 	ChunkMetaLoadStatus getMetaIfLoaded(short pluginID, boolean alwaysLoaded) {
-		if (!alwaysLoaded && !isFullyLoaded)
+		if (!alwaysLoaded && !isFullyLoaded.get())
 			return new ChunkMetaLoadStatus(null, false);
 
 		ChunkMeta<?> meta = getMeta(pluginID, alwaysLoaded);
 
 		return new ChunkMetaLoadStatus(meta, true);
 	}
+
 	ChunkMeta<?> getMeta(short pluginID, boolean alwaysLoaded) {
 		// This call is cheap and should be done in any case. Threads will be parked when necessary on relevant code
 		// sections.
-		loadAll();
+		if (!alwaysLoaded)
+			loadAll(LoadStatisticManager.MainThreadIndex);
+
 		return chunkMetas.get(pluginID);
 	}
 
@@ -148,38 +149,39 @@ public class ChunkCoord extends XZWCoord {
 	/**
 	 * Loads data for all plugins for this chunk
 	 */
-	void loadAll() {
+	void loadAll(int threadIndex) {
 		// Skip the monitor check if this is set to true.
 		if (isFullyLoaded.get()) return;
 		// Lets to an expensive synchronization here if necessary.
 		synchronized (this) {
 			if (!isFullyLoaded.get()) {
-				timed("Populate empty chunk functions.", () -> {
-					for (Entry<Short, Supplier<ChunkMeta<?>>> generator : ChunkMetaFactory.getInstance()
-							.getEmptyChunkFunctions()) {
-						ChunkMeta<?> chunk = generator.getValue().get();
-						chunk.setChunkCoord(this);
-						short pluginID = generator.getKey();
-						chunk.setPluginID(pluginID);
-						timed("Populate empty chunk functions: chunk.populate()", chunk::populate);
-						timed("Populate empty chunk functions: postLoad", () -> ChunkMetaViewTracker.getInstance().get(pluginID).postLoad(chunk));
-						timed("Populate empty chunk functions: addChunkMeta", () -> addChunkMeta(chunk));
-					}
-					isFullyLoaded.set(true);
-				});
+				for (ChunkMetaInitializer initializer : ChunkMetaFactory.getInstance().getInitializers())
+					loadPluginChunk(threadIndex, initializer);
+
+				isFullyLoaded.set(true);
 			}
 		}
 	}
 
-	private void timed(String name, Runnable r) {
-		long start = System.currentTimeMillis();
+	void loadPluginChunk(int threadIndex, ChunkMetaInitializer initializer) {
+		LoadStatisticManager.start(this.world, threadIndex, initializer.pluginId);
+
+		ChunkMeta<?> chunk = initializer.generator.get();
+		short pluginId = initializer.pluginId;
+
+		chunk.setChunkCoord(this);
+		chunk.setPluginID(pluginId);
+
 		try {
-			r.run();
-		} catch (Exception e) {
-			CivModCorePlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to time: \"" + name + "\"", e);
+			chunk.populate();
+		} catch (Throwable e) {
+			CivModCorePlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to load chunk data", e);
 		}
 
-		CivModCorePlugin.getInstance().getLogger().log(Level.INFO, "Timing: \"" + name + "\" " + (System.currentTimeMillis() - start) + "ms");
+		ChunkMetaViewTracker.getInstance().get(pluginId).postLoad(chunk);
+		addChunkMeta(chunk);
+
+		LoadStatisticManager.stop(this.world, threadIndex, initializer.pluginId);
 	}
 
 	/**
@@ -214,5 +216,4 @@ public class ChunkCoord extends XZWCoord {
 			meta.handleChunkUnload();
 		}
 	}
-
 }
