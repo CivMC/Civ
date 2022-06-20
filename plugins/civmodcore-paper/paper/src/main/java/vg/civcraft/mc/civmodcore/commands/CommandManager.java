@@ -20,7 +20,6 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -33,6 +32,8 @@ import vg.civcraft.mc.civmodcore.utilities.CivLogger;
  * Command registration class wrapper around {@link BukkitCommandManager}.
  */
 public class CommandManager extends BukkitCommandManager {
+
+	// allMaterials and itemMaterials won't change over a run, so autocomplete lists can be prebuilt globally.
 	private final static List<String> allMaterials = Arrays.stream(Material.values()).map(Enum::name).toList();
 
 	private final static List<String> itemMaterials = Arrays.stream(Material.values()).filter(ItemUtils::isValidItemMaterial).map(Enum::name).toList();
@@ -59,11 +60,18 @@ public class CommandManager extends BukkitCommandManager {
 	 */
 	public final void init() {
 		// Prepare our list with player names on init.
+		// Load all known players once on initialization, then use a loginlistener to update the existing name set.
 		Arrays.stream(Bukkit.getOfflinePlayers()).map(OfflinePlayer::getName).forEach(autocompletePlayerNames::add);
+		/*TODO
+		this may be better solved with a single global listener, but the implications would've needed some checks.
+		This is pretty cheap and works fast.
+		 */
+
 		Bukkit.getPluginManager().registerEvents(new Listener() {
 			// Players joining should be added to our list, just in case they are new.
 			@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 			public void onLogin(PlayerLoginEvent ev) {
+				// For autocomplete we wil update the listeners.
 				autocompletePlayerNames.add(ev.getPlayer().getName());
 			}
 		}, plugin);
@@ -90,6 +98,9 @@ public class CommandManager extends BukkitCommandManager {
 	 */
 	public void registerCompletions(@Nonnull final CommandCompletions<BukkitCommandCompletionContext> completions) {
 		completions.registerCompletion("none", (context) -> Collections.emptyList());
+		// Completion lists are copied so outer code can modify the lists without breaking our inner contracts,
+		// namely that all players should be searchable by completion.
+		// Using Collections.immutableList is an alternative, but both variants aren't expensive.
 		completions.registerAsyncCompletion("allplayers", (context) -> new ArrayList<>(autocompletePlayerNames));
 		completions.registerAsyncCompletion("materials", (context) -> new ArrayList<>(allMaterials));
 		completions.registerAsyncCompletion("itemMaterials", (context) -> new ArrayList<>(itemMaterials));
