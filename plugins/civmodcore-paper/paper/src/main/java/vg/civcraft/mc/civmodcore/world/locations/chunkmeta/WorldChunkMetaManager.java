@@ -279,6 +279,7 @@ public class WorldChunkMetaManager {
 				ChunkCoord coord = chunkLoadingQueue.take();
 				coord.loadAll(threadIndex);
 			} catch (InterruptedException e) {
+				if(!disabled.get()) e.printStackTrace();
 			}
 		}
 
