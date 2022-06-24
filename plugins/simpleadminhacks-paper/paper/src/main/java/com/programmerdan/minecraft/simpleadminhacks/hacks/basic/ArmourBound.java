@@ -77,11 +77,11 @@ public class ArmourBound extends BasicHack {
 
 	@EventHandler
 	public void onItemCraft(PrepareItemCraftEvent event) {
-		CraftingInventory inventory = event.getInventory();
-		ItemStack[] matrix = inventory.getMatrix();
 		if (event.getRecipe() == null) {
 			return;
 		}
+		CraftingInventory inventory = event.getInventory();
+		ItemStack[] matrix = inventory.getMatrix();
 		ItemStack boundItem = null;
 		PersistentDataContainer container = null;
 		ItemMeta meta = null;
@@ -92,10 +92,10 @@ public class ArmourBound extends BasicHack {
 			if (!whitelist.contains(item.getType().toString())) {
 				continue;
 			}
-			if (!item.hasItemMeta()) {
+			meta = item.getItemMeta();
+			if (meta == null) {
 				continue;
 			}
-			meta = item.getItemMeta();
 			container = meta.getPersistentDataContainer();
 			if (!container.has(this.key, PersistentDataType.STRING)) {
 				continue;
@@ -103,12 +103,14 @@ public class ArmourBound extends BasicHack {
 			boundItem = item;
 			break;
 		}
-		if (boundItem == null || container == null) {
+		if (boundItem == null) {
 			return;
 		}
 		inventory.setResult(new ItemStack(Material.AIR));
-		for (HumanEntity player : inventory.getViewers()) {
-			((Player) player).updateInventory();
+		for (HumanEntity viewer : inventory.getViewers()) {
+			if (viewer instanceof final Player playerViewer) {
+				playerViewer.updateInventory();
+			}
 		}
 	}
 
