@@ -106,7 +106,7 @@ public class ArmourBound extends BasicHack {
 		if (boundItem == null) {
 			return;
 		}
-		inventory.setResult(new ItemStack(Material.AIR));
+		inventory.setResult(null);
 		for (HumanEntity viewer : inventory.getViewers()) {
 			if (viewer instanceof final Player playerViewer) {
 				playerViewer.updateInventory();
