@@ -34,6 +34,18 @@ import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
 public class ScoreboardHUD implements Listener {
 	//TODO Make this a configuration item so it can be changed at runtime.
 	private final static long UPDATE_PERIOD_IN_TICKS = 20L * 5L; // Every 5 seconds.
+
+	private final static Map<PotionEffectType, ChatColor> colorMapping = new HashMap<>();
+
+	static {
+		colorMapping.put(PotionEffectType.FIRE_RESISTANCE, ChatColor.GOLD);
+		colorMapping.put(PotionEffectType.SPEED, ChatColor.AQUA);
+		colorMapping.put(PotionEffectType.INCREASE_DAMAGE, ChatColor.RED);
+		colorMapping.put(PotionEffectType.REGENERATION, ChatColor.LIGHT_PURPLE);
+		colorMapping.put(PotionEffectType.FAST_DIGGING, ChatColor.AQUA);
+		colorMapping.put(PotionEffectType.SLOW, ChatColor.GRAY);
+	}
+
 	private List<CivScoreBoard> scoreBoards;
 	private FinaleSettingManager settingsMan;
 	private BottomLine coordsBottomLine;
@@ -53,81 +65,62 @@ public class ScoreboardHUD implements Listener {
 					updateAllPotionEffects(p);
 				}
 			}
-		}, 0, UPDATE_PERIOD_IN_TICKS);
-		settingsMan.getArmorSetting().registerListener(new SettingChangeListener<Boolean>() {
-
-			@Override
-			public void handle(UUID player, PlayerSetting<Boolean> setting, Boolean oldValue, Boolean newValue) {
-				Player p = Bukkit.getPlayer(player);
-				if (p == null) {
-					return;
-				}
-				if (newValue) {
-					updateDurabilities(p);
-				} else {
-					for (int i = 1; i < 5; i++) {
-						scoreBoards.get(i).set(p, null);
-					}
+		}, UPDATE_PERIOD_IN_TICKS, UPDATE_PERIOD_IN_TICKS);
+		settingsMan.getArmorSetting().registerListener((player, setting, oldValue, newValue) -> {
+			Player p = Bukkit.getPlayer(player);
+			if (p == null) {
+				return;
+			}
+			if (newValue) {
+				updateDurabilities(p);
+			} else {
+				for (int i = 1; i < 5; i++) {
+					scoreBoards.get(i).set(p, null);
 				}
 			}
 		});
-		settingsMan.getToolSetting().registerListener(new SettingChangeListener<Boolean>() {
-
-			@Override
-			public void handle(UUID player, PlayerSetting<Boolean> setting, Boolean oldValue, Boolean newValue) {
-				Player p = Bukkit.getPlayer(player);
-				if (p == null) {
-					return;
-				}
-				if (newValue) {
-					updateDurabilities(p);
-				} else {
-					scoreBoards.get(0).set(p, null);
-				}
+		settingsMan.getToolSetting().registerListener((player, setting, oldValue, newValue) -> {
+			Player p = Bukkit.getPlayer(player);
+			if (p == null) {
+				return;
+			}
+			if (newValue) {
+				updateDurabilities(p);
+			} else {
+				scoreBoards.get(0).set(p, null);
 			}
 		});
-		settingsMan.getGammaBrightSetting().registerListener(new SettingChangeListener<Boolean>() {
-
-			@Override
-			public void handle(UUID player, PlayerSetting<Boolean> setting, Boolean oldValue, Boolean newValue) {
-				Player p = Bukkit.getPlayer(player);
-				if (p == null) {
-					return;
-				}
-				if (newValue) {
-					updateGammaBright(p);
-				} else {
-					p.removePotionEffect(PotionEffectType.NIGHT_VISION);
-				}
+		settingsMan.getGammaBrightSetting().registerListener((player, setting, oldValue, newValue) -> {
+			Player p = Bukkit.getPlayer(player);
+			if (p == null) {
+				return;
+			}
+			if (newValue) {
+				updateGammaBright(p);
+			} else {
+				p.removePotionEffect(PotionEffectType.NIGHT_VISION);
 			}
 		});
-		settingsMan.getPotionSetting().registerListener(new SettingChangeListener<Boolean>() {
-
-			@Override
-			public void handle(UUID player, PlayerSetting<Boolean> setting, Boolean oldValue, Boolean newValue) {
-				Player p = Bukkit.getPlayer(player);
-				if (p == null) {
-					return;
-				}
-				if (newValue) {
-					updateAllPotionEffects(p);
-				} else {
-					for (int i = 5; i < 11; i++) {
-						scoreBoards.get(i).set(p, null);
-					}
+		settingsMan.getPotionSetting().registerListener((player, setting, oldValue, newValue) -> {
+			Player p = Bukkit.getPlayer(player);
+			if (p == null) {
+				return;
+			}
+			if (newValue) {
+				updateAllPotionEffects(p);
+			} else {
+				for (int i = 5; i < 11; i++) {
+					scoreBoards.get(i).set(p, null);
 				}
 			}
 		});
 
-		settingsMan.getCoordsLocation().registerListener(new SettingChangeListener<String>() {
-			@Override
-			public void handle(UUID player, PlayerSetting<String> playerSetting, String s, String t1) {
-				Player p = Bukkit.getPlayer(player);
-				if (p == null) {
-					return;
-				}
-				updateCoordinates(Bukkit.getPlayer(player), settingsMan.getCoordsLocation());
+		settingsMan.getCoordsLocation().registerListener((player, playerSetting, s, t1) -> {
+			Player p = Bukkit.getPlayer(player);
+			if (p == null) {
+				return;
 			}
+			updateCoordinates(Bukkit.getPlayer(player), settingsMan.getCoordsLocation());
 		});
 	}
 
@@ -177,6 +170,8 @@ public class ScoreboardHUD implements Listener {
 			if (seconds.length() == 1) {
 				seconds = "0" + seconds;
 			}
+
+			//TODO check deprecated methods
 			String name = PotionUtils.getEffectNiceName(pot.getType());
 			String formatted = String.format("%s %s%s %d | %d:%s", sortingPrefix, effectColor, name, level, minutes,
 					seconds);
@@ -189,23 +184,8 @@ public class ScoreboardHUD implements Listener {
 		}
 	}
 
-	private static Map<PotionEffectType, ChatColor> colorMapping;
-
 	private static ChatColor getMatchingColor(PotionEffectType pet) {
-		if (colorMapping == null) {
-			colorMapping = new HashMap<>();
-			colorMapping.put(PotionEffectType.FIRE_RESISTANCE, ChatColor.GOLD);
-			colorMapping.put(PotionEffectType.SPEED, ChatColor.AQUA);
-			colorMapping.put(PotionEffectType.INCREASE_DAMAGE, ChatColor.RED);
-			colorMapping.put(PotionEffectType.REGENERATION, ChatColor.LIGHT_PURPLE);
-			colorMapping.put(PotionEffectType.FAST_DIGGING, ChatColor.AQUA);
-			colorMapping.put(PotionEffectType.SLOW, ChatColor.GRAY);
-		}
-		ChatColor color = colorMapping.get(pet);
-		if (color != null) {
-			return color;
-		}
-		return ChatColor.YELLOW;
+		return colorMapping.getOrDefault(pet, ChatColor.YELLOW);
 	}
 
 	private void updateDurabilities(Player p) {
