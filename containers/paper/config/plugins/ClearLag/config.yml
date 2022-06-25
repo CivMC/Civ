@@ -134,7 +134,7 @@ item-spawn-age-setter:
 # -- 'check-radius' is the radius of what clearlag will check for 'max-mobs'
 mob-breeding-limiter:
   enabled: true
-  max-mobs: 10
+  max-mobs: 12
   check-radius: 15
 
 #Should clearlag purge logs under /logs when the server starts?
@@ -164,7 +164,7 @@ config-updater:
 mobegg-limiter:
   enabled: true
   check-radius: 15
-  max-mobs: 15
+  max-mobs: 12
 
 #Disable new chunk generation, or just put a cap on how many can load at once.
 #May cause many bugs with Spigot 1.8+, not recommended!
@@ -228,7 +228,7 @@ firespread-reducer:
 #     and possibly removed.
 chunk-entity-limiter:
   enabled: true
-  limit: 20
+  limit: 12
   entities:
     - bat !hasName
     - bee !hasName
