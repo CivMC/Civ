@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,11 +26,10 @@ import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
-import vg.civcraft.mc.civmodcore.players.settings.PlayerSetting;
-import vg.civcraft.mc.civmodcore.players.settings.SettingChangeListener;
 import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
 
 public class ScoreboardHUD implements Listener {
+
 	//TODO Make this a configuration item so it can be changed at runtime.
 	private final static long UPDATE_PERIOD_IN_TICKS = 20L * 5L; // Every 5 seconds.
 
@@ -158,7 +156,7 @@ public class ScoreboardHUD implements Listener {
 				break;
 			}
 			if (pot.getType().equals(PotionEffectType.NIGHT_VISION)
-					&& settingsMan.getGammaBrightSetting().getValue(p)) {
+				&& settingsMan.getGammaBrightSetting().getValue(p)) {
 				continue;
 			}
 			String sortingPrefix = ChatColor.BLACK + "|" + (char) ('a' + boardIndex);
@@ -174,7 +172,7 @@ public class ScoreboardHUD implements Listener {
 			//TODO check deprecated methods
 			String name = PotionUtils.getEffectNiceName(pot.getType());
 			String formatted = String.format("%s %s%s %d | %d:%s", sortingPrefix, effectColor, name, level, minutes,
-					seconds);
+				seconds);
 			scoreBoards.get(boardIndex).set(p, formatted);
 			boardIndex++;
 		}
@@ -241,7 +239,7 @@ public class ScoreboardHUD implements Listener {
 			colorPrefix = ChatColor.RED.toString() + ChatColor.BOLD.toString();
 		}
 		return String.format("%s %s%s: %s%d%s/%d", sortingPrefix, ChatColor.AQUA, prefix, colorPrefix, remainingHealth,
-				ChatColor.AQUA, maxDura);
+			ChatColor.AQUA, maxDura);
 	}
 
 	private void updateCoordinates(Player p, DisplayLocationSetting setting) {
