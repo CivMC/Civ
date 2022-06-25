@@ -21,6 +21,9 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 
 import com.aleksey.castlegates.CastleGates;
 import com.aleksey.castlegates.database.ReinforcementInfo;
+import vg.civcraft.mc.citadel.playerstate.AbstractPlayerState;
+import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
+import vg.civcraft.mc.citadel.playerstate.ReinforcingState;
 
 public class CitadelManager extends Thread implements ICitadelManager, Runnable {
 	private static class UpdatedReinforcement {
@@ -40,18 +43,22 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
     private List<UpdatedReinforcement> _updatedReinforcements = new ArrayList<UpdatedReinforcement>();
 	private Queue<UpdatedReinforcement> _localUpdatedReinforcements = new ArrayDeque<UpdatedReinforcement>();
 
+	@Override
     public void init() {
     	startThread();
     }
 
+	@Override
     public void close() {
     	terminateThread();
     }
 
+	@Override
 	public double getMaxRedstoneDistance() {
 		return CastleGates.getConfigManager().getMaxRedstoneDistance();
 	}
 
+	@Override
 	public ICitadel getCitadel(List<Player> players, Location loc) {
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(loc);
 
@@ -81,11 +88,13 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 		return new com.aleksey.castlegates.plugins.citadel.Citadel(rein, hasAccess, useJukeAlert);
 	}
 
+	@Override
 	public boolean isReinforced(Location loc) {
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(loc);
 		return rein != null;
 	}
 
+	@Override
 	public boolean canBypass(Player player, Location loc) {
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(loc);
 
@@ -99,6 +108,7 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 			|| player.hasPermission("citadel.admin");
 	}
 
+	@Override
 	public boolean canViewInformation(Player player, Location loc) {
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(loc);
 
@@ -112,6 +122,7 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 			|| player.hasPermission("citadel.admin");
 	}
 
+	@Override
 	public ReinforcementInfo removeReinforcement(Location loc) {
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(loc);
 
@@ -132,6 +143,7 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 		return info;
 	}
 
+	@Override
 	public boolean createReinforcement(ReinforcementInfo info, Location loc) {
 		if(info == null)
 			return false;
@@ -144,6 +156,14 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 		}
 
 		return true;
+	}
+
+	@Override
+	public boolean isReinforcingStateActive(Player player) {
+		PlayerStateManager stateManager = Citadel.getInstance().getStateManager();
+		AbstractPlayerState currentState = stateManager.getState(player);
+
+		return currentState instanceof ReinforcingState;
 	}
 
     public void startThread() {

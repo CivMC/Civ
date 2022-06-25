@@ -22,4 +22,5 @@ public interface ICitadelManager {
 	boolean canViewInformation(Player player, Location loc);
 	ReinforcementInfo removeReinforcement(Location loc);
 	boolean createReinforcement(ReinforcementInfo info, Location loc);
+	boolean isReinforcingStateActive(Player player);
 }

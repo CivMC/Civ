@@ -140,8 +140,12 @@ public class BridgeEventHandler {
     }
 
     private boolean createGearblockAndLink(PlayerInteractEvent event) {
-        if(event.getClickedBlock() == null || !createGearblock(event))
+        if(event.getClickedBlock() == null
+                || CastleGates.getCitadelManager().isReinforcingStateActive(event.getPlayer())
+                || !createGearblock(event)
+        ) {
             return false;
+        }
 
         Block block = event.getClickedBlock();
         Gearblock gearblock1 = _storage.getGearblock(new BlockCoord(block));
