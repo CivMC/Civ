@@ -2,11 +2,13 @@ package com.github.maxopoly.finale.overlay;
 
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.external.FinaleSettingManager;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -30,7 +32,8 @@ import vg.civcraft.mc.civmodcore.players.settings.SettingChangeListener;
 import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
 
 public class ScoreboardHUD implements Listener {
-
+	//TODO Make this a configuration item so it can be changed at runtime.
+	private final static long UPDATE_PERIOD_IN_TICKS = 20L * 5L; // Every 5 seconds.
 	private List<CivScoreBoard> scoreBoards;
 	private FinaleSettingManager settingsMan;
 	private BottomLine coordsBottomLine;
@@ -50,7 +53,7 @@ public class ScoreboardHUD implements Listener {
 					updateAllPotionEffects(p);
 				}
 			}
-		}, 5L, 5L);
+		}, 0, UPDATE_PERIOD_IN_TICKS);
 		settingsMan.getArmorSetting().registerListener(new SettingChangeListener<Boolean>() {
 
 			@Override
@@ -120,7 +123,7 @@ public class ScoreboardHUD implements Listener {
 			@Override
 			public void handle(UUID player, PlayerSetting<String> playerSetting, String s, String t1) {
 				Player p = Bukkit.getPlayer(player);
-				if(p == null) {
+				if (p == null) {
 					return;
 				}
 				updateCoordinates(Bukkit.getPlayer(player), settingsMan.getCoordsLocation());
@@ -222,8 +225,7 @@ public class ScoreboardHUD implements Listener {
 			if (!settingsMan.showArmorDurability(p.getUniqueId())) {
 				return null;
 			}
-		}
-		else {
+		} else {
 			if (!settingsMan.showToolDurability(p.getUniqueId())) {
 				return null;
 			}
@@ -262,25 +264,7 @@ public class ScoreboardHUD implements Listener {
 				ChatColor.AQUA, maxDura);
 	}
 
-	private void updateCoordinates(Player p, DisplayLocationSetting setting){
-//		if(p == null){
-//			return;
-//		}
-//		Location location = p.getLocation();
-//		String coords = String.format("%sLocation: [%s, %s, %s]", ChatColor.GREEN, location.getBlockX(),
-//				location.getBlockY(), location.getBlockZ());
-//		if (setting.getDisplayLocation(p.getUniqueId()) == DisplayLocationSetting.DisplayLocation.BOTH){
-//			coordsBottomLine.updatePlayer(p, coords);
-//			scoreBoards.get(11).set(p, coords);
-//		} else if (setting.showOnActionbar(p.getUniqueId())) {
-//			coordsBottomLine.updatePlayer(p, coords);
-//			scoreBoards.get(11).set(p, null);
-//		} else if (setting.showOnSidebar(p.getUniqueId())) {
-//			scoreBoards.get(11).set(p, coords);
-//			coordsBottomLine.removePlayer(p);
-//		} else {
-//			scoreBoards.get(11).set(p, null);
-//			coordsBottomLine.removePlayer(p);
-//		}
+	private void updateCoordinates(Player p, DisplayLocationSetting setting) {
+
 	}
 }
