@@ -12,8 +12,11 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -69,6 +72,45 @@ public class ArmourBound extends BasicHack {
 			newItem.setAmount(0);
 			player.getWorld().dropItemNaturally(player.getLocation(), toDrop);
 			player.sendMessage(Component.text("This armor is not bound to you!").color(NamedTextColor.RED));
+		}
+	}
+
+	@EventHandler
+	public void onItemCraft(PrepareItemCraftEvent event) {
+		if (event.getRecipe() == null) {
+			return;
+		}
+		CraftingInventory inventory = event.getInventory();
+		ItemStack[] matrix = inventory.getMatrix();
+		ItemStack boundItem = null;
+		PersistentDataContainer container = null;
+		ItemMeta meta = null;
+		for (ItemStack item : matrix) {
+			if (item == null) {
+				continue;
+			}
+			if (!whitelist.contains(item.getType().toString())) {
+				continue;
+			}
+			meta = item.getItemMeta();
+			if (meta == null) {
+				continue;
+			}
+			container = meta.getPersistentDataContainer();
+			if (!container.has(this.key, PersistentDataType.STRING)) {
+				continue;
+			}
+			boundItem = item;
+			break;
+		}
+		if (boundItem == null) {
+			return;
+		}
+		inventory.setResult(null);
+		for (HumanEntity viewer : inventory.getViewers()) {
+			if (viewer instanceof final Player playerViewer) {
+				playerViewer.updateInventory();
+			}
 		}
 	}
 
