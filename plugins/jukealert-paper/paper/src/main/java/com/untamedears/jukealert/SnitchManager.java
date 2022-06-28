@@ -14,6 +14,7 @@ import org.bukkit.block.Block;
 import vg.civcraft.mc.civmodcore.world.locations.SparseQuadTree;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.SingleBlockAPIView;
+import vg.civcraft.mc.namelayer.group.Group;
 
 public class SnitchManager {
 
@@ -40,6 +41,16 @@ public class SnitchManager {
 	public void addSnitch(Snitch snitch) {
 		api.put(snitch);
 		addSnitchToQuadTree(snitch);
+	}
+
+	public void renameSnitch(Snitch snitch, String newName) {
+		snitch.setName(newName);
+		api.put(snitch);
+	}
+
+	public void setSnitchGroup(Snitch snitch, Group group) {
+		snitch.setGroup(group);
+		api.put(snitch);
 	}
 
 	public void addSnitchToQuadTree(Snitch snitch) {
