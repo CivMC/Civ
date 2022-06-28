@@ -38,7 +38,7 @@ repositories {
 }
 
 dependencies {
-    paperDevBundle("1.18-R0.1-SNAPSHOT")
+    paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 
     implementation("com.rabbitmq:amqp-client:5.6.0")
     compileOnly("net.civmc:civmodcore:2.0.0-SNAPSHOT:dev-all")
