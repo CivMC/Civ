@@ -1,6 +1,7 @@
 package com.untamedears.jukealert.gui;
 
 import com.untamedears.jukealert.JukeAlert;
+import com.untamedears.jukealert.SnitchManager;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
 import com.untamedears.jukealert.model.appender.LeverToggleAppender;
@@ -37,6 +38,7 @@ public class SnitchLogGUI {
 	private final Player player;
 	private final Snitch snitch;
 	private final SnitchLogAppender logAppender;
+	private final SnitchManager snitchManager;
 	private List<IClickable> buttonCache;
 
 	public SnitchLogGUI(@Nonnull final Player player,
@@ -44,6 +46,7 @@ public class SnitchLogGUI {
 		this.player = Objects.requireNonNull(player);
 		this.snitch = Objects.requireNonNull(snitch);
 		this.logAppender = snitch.getAppender(SnitchLogAppender.class);
+		this.snitchManager = JukeAlert.getInstance().getSnitchManager();
 	}
 
 	private boolean INTERNAL_hasPermission(@Nonnull final PermissionType permission) {
@@ -138,7 +141,7 @@ public class SnitchLogGUI {
 						} else {
 							newName = builder.toString();
 						}
-						SnitchLogGUI.this.snitch.setName(newName);
+						snitchManager.renameSnitch(SnitchLogGUI.this.snitch, newName);
 						clicker.sendMessage(Component.text()
 								.color(NamedTextColor.AQUA)
 								.content("Changed snitch name to " + newName)

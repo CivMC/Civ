@@ -1,5 +1,6 @@
 package com.untamedears.jukealert.listener;
 
+import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.SnitchManager;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.SnitchFactoryType;
@@ -142,6 +143,6 @@ public class SnitchLifeCycleListener implements Listener {
 					e.getReinforcement().getGroup().getName(), e.getNewGroup().getName(), location.getBlockX(),
 					location.getBlockY(), location.getBlockZ()));
 		}
-		snitch.setGroup(e.getNewGroup());
+		snitchManager.setSnitchGroup(snitch, e.getNewGroup());
 	}
 }
