@@ -18,3 +18,9 @@ scoreboardHeader: "&2&lCivilisation"
 # The number of threads to dedicate to downloading skins from Mojang. Keeping this value commented will automatically
 # calculate the threads based on the number of available processors.
 #skin-download-threads: 1
+
+# Use command '/cmc stat' to see time spent on the loading chunks in ChunkCoord.loadAll() method
+chunk-loading-statistics: true
+
+# Number of threads used to load chunks in WorldChunkMetaManager (WorldChunkMetaManager::chunkLoadingThreads)
+chunk-loading-threads: 1

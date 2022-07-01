@@ -17,6 +17,7 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockDataObject
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.auto.AutoBlockChunkMeta;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.auto.AutoStorageEngine;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.auto.SerializableDataObject;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.stat.LoadStatisticManager;
 import vg.civcraft.mc.civmodcore.world.locations.global.CMCWorldDAO;
 import vg.civcraft.mc.civmodcore.world.locations.global.GlobalLocationTracker;
 import vg.civcraft.mc.civmodcore.world.locations.global.GlobalTrackableDAO;
@@ -65,6 +66,7 @@ public class ChunkMetaAPI {
 			//if a plugin preloads all data, we don't want to do anything on chunk load/unload
 			ChunkMetaFactory metaFactory = ChunkMetaFactory.getInstance();
 			metaFactory.registerPlugin(plugin.getName(), id, (Supplier<ChunkMeta<?>>) (Supplier<?>) emptyChunkCreator);
+			LoadStatisticManager.registerPlugin(plugin.getName(), id);
 		}
 		BlockBasedChunkMetaView<T, D, S> view = new BlockBasedChunkMetaView<>(plugin, id, globalManager,
 				emptyChunkCreator, storageEngine, storageEngine.stayLoaded(), allowAccessUnloaded);

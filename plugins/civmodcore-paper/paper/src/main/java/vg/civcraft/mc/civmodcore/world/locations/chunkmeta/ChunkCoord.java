@@ -4,11 +4,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.function.Supplier;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
+
 import org.bukkit.World;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaViewTracker;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.stat.LoadStatisticManager;
 
 public class ChunkCoord extends XZWCoord {
 
@@ -23,19 +25,18 @@ public class ChunkCoord extends XZWCoord {
 	/**
 	 * Each ChunkMeta belongs to one plugin, they are identified by the plugin id
 	 */
-	private Map<Short, ChunkMeta<?>> chunkMetas;
+	private final Map<Short, ChunkMeta<?>> chunkMetas;
 	/**
 	 * Set to true once all data has been loaded for this chunk and stays true for
 	 * the entire life time of this object
 	 */
-	private boolean isFullyLoaded;
-	private World world;
+	private final AtomicBoolean isFullyLoaded = new AtomicBoolean(false);
+	private final World world;
 
 	ChunkCoord(int x, int z, short worldID, World world) {
 		super(x, z, worldID);
 		this.world = world;
 		this.chunkMetas = new TreeMap<>();
-		this.isFullyLoaded = false;
 		this.lastLoadingTime = -1;
 		this.lastUnloadingTime = -1;
 	}
@@ -54,16 +55,16 @@ public class ChunkCoord extends XZWCoord {
 
 	/**
 	 * Writes all data held by this instance to the database
-	 *
 	 */
 	void fullyPersist() {
 		for (ChunkMeta<?> chunkMeta : chunkMetas.values()) {
 			persistChunkMeta(chunkMeta);
 		}
 	}
-	
+
 	/**
 	 * Writes all data held by this instance for one specific plugin to the database
+	 *
 	 * @param id Internal id of the plugin to save data for
 	 */
 	void persistPlugin(short id) {
@@ -72,19 +73,22 @@ public class ChunkCoord extends XZWCoord {
 			persistChunkMeta(chunkMeta);
 		}
 	}
-	
+
 	private static void persistChunkMeta(ChunkMeta<?> chunkMeta) {
 		switch (chunkMeta.getCacheState()) {
-		case NORMAL:
-			break;
-		case MODIFIED:
-			chunkMeta.update();
-			break;
-		case NEW:
-			chunkMeta.insert();
-			break;
-		case DELETED:
-			chunkMeta.delete();
+			case NORMAL:
+				break;
+			case MODIFIED:
+				chunkMeta.update();
+				break;
+			case NEW:
+				chunkMeta.insert();
+				break;
+			case DELETED:
+				chunkMeta.delete();
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported cache state '" + chunkMeta.getCacheState() + "'");
 		}
 		chunkMeta.setCacheState(CacheState.NORMAL);
 	}
@@ -93,8 +97,8 @@ public class ChunkCoord extends XZWCoord {
 	 * Forget all data which is not supposed to be held in memory permanently
 	 */
 	void deleteNonPersistentData() {
-		Iterator<Entry<Short,ChunkMeta<?>>> iter = chunkMetas.entrySet().iterator();
-		while(iter.hasNext()) {
+		Iterator<Entry<Short, ChunkMeta<?>>> iter = chunkMetas.entrySet().iterator();
+		while (iter.hasNext()) {
 			ChunkMeta<?> meta = iter.next().getValue();
 			if (!meta.loadAlways()) {
 				iter.remove();
@@ -104,7 +108,7 @@ public class ChunkCoord extends XZWCoord {
 
 	/**
 	 * @return When was the minecraft chunk (the block data) this object is tied
-	 *         last loaded (UNIX timestamp)
+	 * last loaded (UNIX timestamp)
 	 */
 	long getLastMCLoadingTime() {
 		return lastLoadingTime;
@@ -112,37 +116,27 @@ public class ChunkCoord extends XZWCoord {
 
 	/**
 	 * @return When was the minecraft chunk (the block data) this object is tied
-	 *         last unloaded (UNIX timestamp)
+	 * last unloaded (UNIX timestamp)
 	 */
 	long getLastMCUnloadingTime() {
 		return lastUnloadingTime;
 	}
 
 	ChunkMetaLoadStatus getMetaIfLoaded(short pluginID, boolean alwaysLoaded) {
-		if (!alwaysLoaded && !isFullyLoaded)
+		if (!alwaysLoaded && !isFullyLoaded.get())
 			return new ChunkMetaLoadStatus(null, false);
 
 		ChunkMeta<?> meta = getMeta(pluginID, alwaysLoaded);
 
 		return new ChunkMetaLoadStatus(meta, true);
 	}
-	ChunkMeta<?> getMeta(short pluginID, boolean alwaysLoaded) {
-		if (!alwaysLoaded && !isFullyLoaded) {
-			// check before taking monitor. This is fine, because the loaded flag will never
-			// switch from true to false,
-			// only the other way around
-			synchronized (this) {
-				while (!isFullyLoaded) {
 
-					try {
-						wait();
-					} catch (InterruptedException e) {
-						// whatever
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+	ChunkMeta<?> getMeta(short pluginID, boolean alwaysLoaded) {
+		// This call is cheap and should be done in any case. Threads will be parked when necessary on relevant code
+		// sections.
+		if (!alwaysLoaded)
+			loadAll(LoadStatisticManager.MainThreadIndex);
+
 		return chunkMetas.get(pluginID);
 	}
 
@@ -157,32 +151,52 @@ public class ChunkCoord extends XZWCoord {
 
 	/**
 	 * Loads data for all plugins for this chunk
+	 *
+	 * @param threadIndex Specifies the index of the thread used to load this chunk
+	 *                    It is literally index of the Thread in the list WorldChunkMetaManager::chunkLoadingThreads
+	 *                    Used here just as informative field provided to statistics polling
+	 *                    Doesn't not influence any mechanics
+	 *
+	 *                    If threadIndex == LoadStatisticManager.MainThreadIndex then this means
+	 *                    that the "main thread" called this function
+	 *
+	 *                    If the server has enough resources to perform requests then "main thread"
+	 *                    will come to loadAll() always at the time when either chunk is loaded (the best case)
+	 *                    or when it is loading now by the thread from WorldChunkMetaManager
 	 */
-	void loadAll() {
+	void loadAll(int threadIndex) {
+		// Skip the monitor check if this is set to true.
+		if (isFullyLoaded.get()) return;
+		// Lets to an expensive synchronization here if necessary.
 		synchronized (this) {
-			if (isFullyLoaded) {
-				return;
-			}
+			if (!isFullyLoaded.get()) {
+				for (ChunkMetaInitializer initializer : ChunkMetaFactory.getInstance().getInitializers())
+					loadPluginChunk(threadIndex, initializer);
 
-			for (Entry<Short, Supplier<ChunkMeta<?>>> generator : ChunkMetaFactory.getInstance()
-					.getEmptyChunkFunctions()) {
-				ChunkMeta<?> chunk = generator.getValue().get();
-				chunk.setChunkCoord(this);
-				short pluginID = generator.getKey();
-				chunk.setPluginID(pluginID);
-				try {
-					chunk.populate();
-				} catch (Throwable e) {
-					// need to catch everything here, otherwise we block the main thread forever
-					// once it tries to read this
-					CivModCorePlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to load chunk data", e);
-				}
-				ChunkMetaViewTracker.getInstance().get(pluginID).postLoad(chunk);
-				addChunkMeta(chunk);
+				isFullyLoaded.set(true);
 			}
-			isFullyLoaded = true;
-			this.notifyAll();
 		}
+	}
+
+	void loadPluginChunk(int threadIndex, ChunkMetaInitializer initializer) {
+		LoadStatisticManager.start(this.world, threadIndex, initializer.pluginId);
+
+		ChunkMeta<?> chunk = initializer.generator.get();
+		short pluginId = initializer.pluginId;
+
+		chunk.setChunkCoord(this);
+		chunk.setPluginID(pluginId);
+
+		try {
+			chunk.populate();
+		} catch (Throwable e) {
+			CivModCorePlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to load chunk data", e);
+		}
+
+		ChunkMetaViewTracker.getInstance().get(pluginId).postLoad(chunk);
+		addChunkMeta(chunk);
+
+		LoadStatisticManager.stop(this.world, threadIndex, initializer.pluginId);
 	}
 
 	/**
@@ -193,12 +207,16 @@ public class ChunkCoord extends XZWCoord {
 		boolean hasBeenLoadedBefore = this.lastLoadingTime != -1;
 		this.lastLoadingTime = System.currentTimeMillis();
 		if (hasBeenLoadedBefore) {
-			for(ChunkMeta <?> meta : chunkMetas.values()) {
-				meta.handleChunkCacheReuse();
+			for (ChunkMeta<?> meta : chunkMetas.values()) {
+				try {
+					meta.handleChunkCacheReuse();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
 		}
 	}
-	
+
 	public boolean isChunkLoaded() {
 		if (this.lastUnloadingTime > 0) {
 			return this.lastUnloadingTime < this.lastLoadingTime;
@@ -213,9 +231,12 @@ public class ChunkCoord extends XZWCoord {
 	 */
 	void minecraftChunkUnloaded() {
 		this.lastUnloadingTime = System.currentTimeMillis();
-		for(ChunkMeta <?> meta : chunkMetas.values()) {
-			meta.handleChunkUnload();
+		for (ChunkMeta<?> meta : chunkMetas.values()) {
+			try {
+				meta.handleChunkUnload();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
-
 }
