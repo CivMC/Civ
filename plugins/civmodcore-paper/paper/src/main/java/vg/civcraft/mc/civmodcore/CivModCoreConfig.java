@@ -6,6 +6,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import vg.civcraft.mc.civmodcore.config.ConfigParser;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 
+import java.util.Objects;
+
 public final class CivModCoreConfig extends ConfigParser {
 
 	private DatabaseCredentials databaseCredentials;
@@ -17,8 +19,15 @@ public final class CivModCoreConfig extends ConfigParser {
 	private int skinCacheThreads;
 	private static final int DEFAULT_SKIN_CACHE_THREADS = Runtime.getRuntime().availableProcessors() / 2;
 
+	private boolean chunkLoadingStatistics;
+	private static final boolean DEFAULT_CHUNK_LOADING_STATISTICS = true;
+
+	private int chunkLoadingThreads;
+	private static final int DEFAULT_CHUNK_LOADING_THREADS = 1;
+
 	CivModCoreConfig(@Nonnull final CivModCorePlugin plugin) {
 		super(plugin);
+		Objects.requireNonNull(plugin);
 		reset();
 	}
 
@@ -29,6 +38,8 @@ public final class CivModCoreConfig extends ConfigParser {
 		this.scoreboardHeader = ChatColor.translateAlternateColorCodes('&',
 				config.getString("scoreboardHeader", DEFAULT_SCOREBOARD_HEADER));
 		this.skinCacheThreads = config.getInt("skin-download-threads", DEFAULT_SKIN_CACHE_THREADS);
+		this.chunkLoadingStatistics = config.getBoolean("chunk-loading-statistics", DEFAULT_CHUNK_LOADING_STATISTICS);
+		this.chunkLoadingThreads = config.getInt("chunk-loading-threads", DEFAULT_CHUNK_LOADING_THREADS);
 		return true;
 	}
 
@@ -38,6 +49,8 @@ public final class CivModCoreConfig extends ConfigParser {
 		this.databaseCredentials = DEFAULT_DATABASE_CREDENTIALS;
 		this.scoreboardHeader = DEFAULT_SCOREBOARD_HEADER;
 		this.skinCacheThreads = DEFAULT_SKIN_CACHE_THREADS;
+		this.chunkLoadingStatistics = DEFAULT_CHUNK_LOADING_STATISTICS;
+		this.chunkLoadingThreads = DEFAULT_CHUNK_LOADING_THREADS;
 	}
 
 	public DatabaseCredentials getDatabaseCredentials() {
@@ -50,5 +63,13 @@ public final class CivModCoreConfig extends ConfigParser {
 
 	public int getSkinCacheThreads() {
 		return skinCacheThreads;
+	}
+
+	public boolean getChunkLoadingStatistics() {
+		return this.chunkLoadingStatistics;
+	}
+
+	public int getChunkLoadingThreads() {
+		return this.chunkLoadingThreads;
 	}
 }

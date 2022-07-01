@@ -1,16 +1,14 @@
 package vg.civcraft.mc.civmodcore.world.locations.chunkmeta;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
+
 import org.bukkit.World;
 
 /**
@@ -40,12 +38,14 @@ public class WorldChunkMetaManager {
 	 * cleanup trivial
 	 */
 	private final Set<ChunkCoord> unloadingQueue;
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-	private Thread chunkLoadingConsumer;
-	private LinkedBlockingQueue<ChunkCoord> chunkLoadingQueue;
-	private World world;
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+	private final List<AtomicBoolean> chunkLoadingDisablers;
+	private final List<Thread> chunkLoadingThreads;
+	private final LinkedBlockingQueue<ChunkCoord> chunkLoadingQueue;
+	private final World world;
+	private final Logger logger;
 
-	public WorldChunkMetaManager(World world, short worldID) {
+	public WorldChunkMetaManager(World world, short worldID, int chunkLoadingThreadCount, Logger logger) {
 		this.worldID = worldID;
 		this.world = world;
 		this.metas = new HashMap<>();
@@ -56,8 +56,14 @@ public class WorldChunkMetaManager {
 			}
 			return a.compareTo(b);
 		}));
+
+		this.chunkLoadingQueue = new LinkedBlockingQueue<>();
+		this.chunkLoadingDisablers = new ArrayList<>();
+		this.chunkLoadingThreads = new ArrayList<>();
+		this.logger = logger;
+
 		registerUnloadRunnable();
-		startChunkLoadingConsumer();
+		startChunkLoadingThreads(chunkLoadingThreadCount);
 		registerRegularSaveRunnable();
 	}
 
@@ -188,17 +194,21 @@ public class WorldChunkMetaManager {
 	
 	private void registerRegularSaveRunnable() {
 		scheduler.scheduleWithFixedDelay(() -> {
-			//we don't take a lock on metas, because we will not modify it
-			for(ChunkCoord coord : metas.values()) {
-				synchronized (coord) {
-					if (!coord.isChunkLoaded()) {
-						// to avoid race conditions, we will not write out chunks currently unloaded
-						continue;
-					}
-					coord.fullyPersist();
-				}
-			}
+			saveAllChunks();
 		}, REGULAR_SAVE_INTERVAL, REGULAR_SAVE_INTERVAL, TimeUnit.MILLISECONDS);
+	}
+
+	private void saveAllChunks() {
+		//we don't take a lock on metas, because we will not modify it
+		for(ChunkCoord coord : metas.values()) {
+			synchronized (coord) {
+				if (!coord.isChunkLoaded()) {
+					// to avoid race conditions, we will not write out chunks currently unloaded
+					continue;
+				}
+				coord.fullyPersist();
+			}
+		}
 	}
 
 	private void registerUnloadRunnable() {
@@ -247,22 +257,33 @@ public class WorldChunkMetaManager {
 		}, UNLOAD_CHECK_INTERVAL, UNLOAD_CHECK_INTERVAL, TimeUnit.MILLISECONDS);
 	}
 
-	private void startChunkLoadingConsumer() {
-		this.chunkLoadingQueue = new LinkedBlockingQueue<>();
-		chunkLoadingConsumer = new Thread(() -> {
-			while (true) {
-				ChunkCoord coord = null;
-				try {
-					coord = chunkLoadingQueue.take();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					continue;
-				}
-				coord.loadAll();
-				coord = null;
+	private void startChunkLoadingThreads(int chunkLoadingCount) {
+		for (int i = 0; i < chunkLoadingCount; i++) {
+			final int threadIndex = i;
+
+			final AtomicBoolean disabled = new AtomicBoolean(false);
+			this.chunkLoadingDisablers.add(disabled);
+
+			final String threadName = "cmc-chunk-loading-" + this.worldID + "-" + i;
+			Thread thread = new Thread(() -> chunkLoadingThread(threadIndex, threadName, disabled), threadName);
+			this.chunkLoadingThreads.add(thread);
+			thread.start();
+		}
+	}
+
+	private void chunkLoadingThread(int threadIndex, String threadName, AtomicBoolean disabled) {
+		this.logger.info("[" + this.world.getName() + "] Thread " + threadName + " is started.");
+
+		while (!disabled.get()) {
+			try {
+				ChunkCoord coord = chunkLoadingQueue.take();
+				coord.loadAll(threadIndex);
+			} catch (InterruptedException e) {
+				if(!disabled.get()) e.printStackTrace();
 			}
-		});
-		chunkLoadingConsumer.start();
+		}
+
+		this.logger.info("[" + this.world.getName() + "] Thread " + threadName + " is stopped.");
 	}
 
 	/**
@@ -281,4 +302,28 @@ public class WorldChunkMetaManager {
 		unloadingQueue.add(chunkCoord);
 	}
 
+	public void disable() {
+		for (int i = 0; i < this.chunkLoadingDisablers.size(); i++) {
+			AtomicBoolean disabled = this.chunkLoadingDisablers.get(i);
+			disabled.set(true);
+
+			Thread chunkLoadingThread = this.chunkLoadingThreads.get(i);
+			chunkLoadingThread.interrupt();
+		}
+
+		this.scheduler.shutdown();
+
+		try {
+			if (!this.scheduler.awaitTermination(60, TimeUnit.SECONDS))
+				this.scheduler.shutdownNow();
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+		}
+
+		this.logger.info("[" + this.world.getName() + "] Scheduler and its tasks are shutdown.");
+
+		saveAllChunks();
+
+		this.logger.info("[" + this.world.getName() + "] All chunks have been saved.");
+	}
 }

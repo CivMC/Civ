@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -15,10 +17,19 @@ import vg.civcraft.mc.civmodcore.world.locations.global.WorldIDManager;
 public class GlobalChunkMetaManager {
 	private final CMCWorldDAO chunkDao;
 	private final Map<UUID, WorldChunkMetaManager> worldToManager;
+	private final int chunkLoadingThreadCount;
+	private final Logger logger;
 
-	public GlobalChunkMetaManager(CMCWorldDAO chunkDao, WorldIDManager idManager) {
+	public int getChunkLoadingThreadCount() {
+		return this.chunkLoadingThreadCount;
+	}
+
+	public GlobalChunkMetaManager(CMCWorldDAO chunkDao, WorldIDManager idManager, int chunkLoadingThreadCount) {
 		this.chunkDao = chunkDao;
 		this.worldToManager = new TreeMap<>();
+		this.chunkLoadingThreadCount = chunkLoadingThreadCount;
+		this.logger = CivModCorePlugin.getInstance().getLogger();
+
 		for (World world : Bukkit.getWorlds()) {
 			registerWorld(idManager.getInternalWorldId(world), world);
 		}
@@ -128,8 +139,13 @@ public class GlobalChunkMetaManager {
 	}
 	
 	public void registerWorld(short id, World world) {
-		WorldChunkMetaManager manager = new WorldChunkMetaManager(world, id);
+		WorldChunkMetaManager manager = new WorldChunkMetaManager(world, id, this.chunkLoadingThreadCount, this.logger);
 		worldToManager.put(world.getUID(), manager);
 	}
 
+	public void disableWorlds() {
+		for (WorldChunkMetaManager manager : worldToManager.values()) {
+			manager.disable();
+		}
+	}
 }

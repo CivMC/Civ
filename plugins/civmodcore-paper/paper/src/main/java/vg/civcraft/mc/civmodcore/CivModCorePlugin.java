@@ -7,6 +7,7 @@ import org.bukkit.entity.HumanEntity;
 import org.ipvp.canvas.MenuFunctionListener;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
+import vg.civcraft.mc.civmodcore.commands.StatCommand;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.events.CustomEventMapper;
@@ -25,6 +26,7 @@ import vg.civcraft.mc.civmodcore.utilities.SkinCache;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaAPI;
+import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.stat.LoadStatisticManager;
 import vg.civcraft.mc.civmodcore.world.locations.global.CMCWorldDAO;
 import vg.civcraft.mc.civmodcore.world.locations.global.WorldIDManager;
 import vg.civcraft.mc.civmodcore.world.operations.ChunkOperationManager;
@@ -57,7 +59,7 @@ public final class CivModCorePlugin extends ACivMod {
 				final var dao = new CMCWorldDAO(this.database, this);
 				if (dao.updateDatabase()) {
 					this.worldIdManager = new WorldIDManager(dao);
-					this.chunkMetaManager = new GlobalChunkMetaManager(dao, this.worldIdManager);
+					this.chunkMetaManager = new GlobalChunkMetaManager(dao, this.worldIdManager, this.config.getChunkLoadingThreads());
 					info("Setup database successfully");
 				}
 				else {
@@ -83,6 +85,7 @@ public final class CivModCorePlugin extends ACivMod {
 		this.commands.init();
 		this.commands.registerCommand(new ConfigCommand());
 		this.commands.registerCommand(ChunkOperationManager.INSTANCE);
+		this.commands.registerCommand(new StatCommand());
 		// Load APIs
 		EnchantUtils.loadEnchantAbbreviations(this);
 		MoreTags.init();
@@ -91,12 +94,16 @@ public final class CivModCorePlugin extends ACivMod {
 		BottomLineAPI.init();
 		MapColours.init();
 		this.skinCache = new SkinCache(this, this.config.getSkinCacheThreads());
+
+		if (this.config.getChunkLoadingStatistics())
+			LoadStatisticManager.enable();
 	}
 
 	@Override
 	public void onDisable() {
 		Bukkit.getOnlinePlayers().forEach(HumanEntity::closeInventory);
 		ChunkMetaAPI.saveAll();
+		this.chunkMetaManager.disableWorlds();
 		this.chunkMetaManager = null;
 		// Disconnect database
 		if (this.database != null) {
@@ -120,6 +127,9 @@ public final class CivModCorePlugin extends ACivMod {
 			this.skinCache.shutdown();
 			this.skinCache = null;
 		}
+
+		LoadStatisticManager.disable();
+
 		if (this.config != null) {
 			this.config.reset();
 			this.config = null;
