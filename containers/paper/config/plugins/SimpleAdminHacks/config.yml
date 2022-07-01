@@ -527,6 +527,10 @@ hacks:
     blocks:
       JUNGLE_LEAVES: 0.025
       DARK_OAK_LEAVES: 0.05
+      OAK_LEAVES: 0
+      BIRCH_LEAVES: 0
+      ACACIA_LEAVES: 0
+      SPRUCE_LEAVES: 0
   TimingsHack:
     enabled: false
   ToggleLamp:
