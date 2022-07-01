@@ -519,6 +519,14 @@ hacks:
     trackPlace: true
     trackBreak: true
     belowYLevel: 7
+  #Used to roll a dice on whether to drop an additional sapling on block break or leaf decay
+  SaplingHack:
+    enabled: true
+    #Should we still roll the dice for people when using a fortune enchanted tool?
+    allow_fortune: true
+    blocks:
+      JUNGLE_LEAVES: 0.025
+      DARK_OAK_LEAVES: 0.05
   TimingsHack:
     enabled: false
   ToggleLamp:
