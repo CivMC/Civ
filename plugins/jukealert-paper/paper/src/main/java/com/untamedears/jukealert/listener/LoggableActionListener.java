@@ -30,11 +30,15 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Function;
+
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -206,13 +210,25 @@ public class LoggableActionListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onOpenInventory(InventoryOpenEvent event) {
 		InventoryHolder holder = event.getInventory().getHolder();
-		if (!(holder instanceof BlockInventoryHolder)) {
+		Location location;
+		Material material;
+
+		if (holder instanceof BlockInventoryHolder blockHolder) {
+			location = blockHolder.getBlock().getLocation();
+			material = blockHolder.getBlock().getType();
+		} else if (holder instanceof DoubleChest doubleChest) {
+			location = doubleChest.getLocation();
+			material = Material.CHEST;
+		} else if (holder instanceof StorageMinecart minecart) {
+			location = minecart.getLocation();
+			material = Material.CHEST_MINECART;
+		} else {
 			return;
 		}
-		BlockInventoryHolder blockHolder = (BlockInventoryHolder) holder;
+
 		Player player = (Player) event.getPlayer();
 		handlePlayerAction(player, s -> new OpenContainerAction(System.currentTimeMillis(), s, player.getUniqueId(),
-				blockHolder.getBlock().getLocation(), blockHolder.getBlock().getType()));
+				location, material));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
