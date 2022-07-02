@@ -8,6 +8,7 @@ public abstract class LocationTrackable {
 	
 	private Location location;
 	private CacheState cacheState;
+	private GlobalLocationTracker tracker;
 	
 	public LocationTrackable(boolean isNew, Location location) {
 		this.location = location;
@@ -34,6 +35,13 @@ public abstract class LocationTrackable {
 	
 	public void setDirty() {
 		setCacheState(CacheState.MODIFIED);
+
+		if (tracker != null) {
+			tracker.setModified(this);
+		}
 	}
 
+	void setTracker(GlobalLocationTracker tracker) {
+		this.tracker = tracker;
+	}
 }
