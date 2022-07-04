@@ -18,6 +18,7 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.activity.ActivityMap;
 import vg.civcraft.mc.citadel.events.ReinforcementModeSwitchEvent;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.CitadelSettingManager;
@@ -247,6 +248,11 @@ public class ModeListener implements Listener {
 				} else {
 					sb.append(String.format("%sAcid block mature in %s", ChatColor.YELLOW, TextUtil.formatDuration(remainingTime, TimeUnit.MILLISECONDS)));
 				}
+			}
+			if (e.getPlayer().hasPermission("citadel.admin")) {
+				sb.append(String.format("\n%sActivityMap.Activity = %s",
+						ChatColor.WHITE,
+						Citadel.getInstance().getActivityMap().getLastActivityTime(rein.getGroup(), rein.getLocation())));
 			}
 			CitadelUtility.sendAndLog(player, ChatColor.GREEN, sb.toString().trim(), e.getClickedBlock().getLocation());
 		}
