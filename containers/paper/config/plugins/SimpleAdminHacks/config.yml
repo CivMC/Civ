@@ -84,6 +84,8 @@ hacks:
     # Deactivate by removing all the quotes below
     respawnQuotes:
     - You wake up in an unfamiliar place...
+  BedLocator:
+    enabled: false
   BeeKeeping:
     enabled: true
     # Value between 0 and 1 that determines the percentage chance that a bee will replace
