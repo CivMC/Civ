@@ -845,12 +845,10 @@ public class PlayerListener implements Listener, Configurable {
 		if (!pearlApi.getPearlConfig().getFreeByThrowing()) {
 			player.sendMessage(ChatUtils.parseColor(Lang.pearlCantThrow));
 			e.setCancelled(true);
-			player.getInventory().setItemInMainHand(pearl.createItemStack());
 			return;
 		}
 		e.setCancelled(true);
 		if (pearlApi.freePearl(pearl, PearlFreeReason.PEARL_THROWN)) {
-			player.getInventory().setItemInMainHand(null);
 			player.sendMessage(String.format(Lang.pearlYouFreed, pearl.getPlayerName()));
 		}
 	}
@@ -869,22 +867,15 @@ public class PlayerListener implements Listener, Configurable {
 		if (p == null) {
 			return;
 		}
+		ItemStack mainHand = p.getInventory().getItemInMainHand();
+		ItemStack offHand = p.getInventory().getItemInOffHand();
 
-		ExilePearl pearl = pearlApi.getPearlFromItemStack(p.getInventory().getItemInMainHand());
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(mainHand) == null ? pearlApi.getPearlFromItemStack(offHand) : pearlApi.getPearlFromItemStack(mainHand);
 		if (pearl == null) {
 			return;
 		}
-
 		p.sendMessage(ChatUtils.parseColor(Lang.pearlCantThrow));
 		e.setCancelled(true);
-
-		// Need to schedule this or else the re-created pearl doesn't show up
-		Bukkit.getScheduler().scheduleSyncDelayedTask(pearlApi, new Runnable() {
-			@Override
-			public void run() {
-				p.getInventory().setItemInMainHand(pearl.createItemStack());
-			}
-		});
 	}
 
 
