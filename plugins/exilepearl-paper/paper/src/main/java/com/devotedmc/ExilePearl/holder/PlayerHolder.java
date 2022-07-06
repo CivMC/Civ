@@ -74,6 +74,12 @@ public class PlayerHolder implements PearlHolder {
 			}
 		}
 
+		//Is the item in the players offhand?
+		ItemStack offhand = player.getInventory().getItemInOffHand();
+		if (pearl.validateItemStack(offhand)) {
+			return HolderVerifyResult.IN_OFFHAND;
+		}
+
 		// Nope, not found
 		return HolderVerifyResult.DEFAULT;
 	}
