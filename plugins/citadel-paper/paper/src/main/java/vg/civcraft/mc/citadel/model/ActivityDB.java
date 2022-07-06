@@ -61,13 +61,13 @@ public class ActivityDB {
 		try (Connection connection = datasource.getConnection()) {
 			try (PreparedStatement statement = connection.prepareStatement(UPDATE_ACTIVITY)) {
 				for (ActivityItem activityItem : activities) {
-					statement.setInt(1, activityItem.group);
-					statement.setShort(2, activityItem.world);
-					statement.setInt(3, activityItem.x);
-					statement.setInt(4, activityItem.z);
-					statement.setInt(5, activityItem.resolution);
-					statement.setTimestamp(6, Timestamp.from(activityItem.activity));
-					statement.setTimestamp(7, Timestamp.from(activityItem.activity));
+					statement.setInt(1, activityItem.group());
+					statement.setShort(2, activityItem.world());
+					statement.setInt(3, activityItem.x());
+					statement.setInt(4, activityItem.z());
+					statement.setInt(5, activityItem.resolution());
+					statement.setTimestamp(6, Timestamp.from(activityItem.activity()));
+					statement.setTimestamp(7, Timestamp.from(activityItem.activity()));
 					statement.addBatch();
 				}
 

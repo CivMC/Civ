@@ -1,16 +1,6 @@
 package vg.civcraft.mc.citadel.activity;
 
-class RegionCoord {
-	public final short worldId;
-	public final int x;
-	public final int z;
-
-	public RegionCoord(short worldId, int x, int z) {
-		this.worldId = worldId;
-		this.x = x;
-		this.z = z;
-	}
-
+record RegionCoord (short worldId, int x, int z) {
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof RegionCoord coord

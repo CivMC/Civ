@@ -160,8 +160,8 @@ public class ActivityMap {
 	}
 
 	private RegionData getRegion(RegionCoord regionCoord, boolean loadIfNotLoaded) {
-		Map<XZKey, RegionData> worldData = data.computeIfAbsent(regionCoord.worldId, a -> new ConcurrentHashMap<>());
-		XZKey regionKey = new XZKey(regionCoord.x, regionCoord.z);
+		Map<XZKey, RegionData> worldData = data.computeIfAbsent(regionCoord.worldId(), a -> new ConcurrentHashMap<>());
+		XZKey regionKey = new XZKey(regionCoord.x(), regionCoord.z());
 		RegionData regionData = worldData.computeIfAbsent(regionKey, a -> new RegionData());
 
 		if (regionData.isLoaded() || !loadIfNotLoaded) {
@@ -175,9 +175,9 @@ public class ActivityMap {
 
 			long start = System.nanoTime();
 
-			activityDB.select(regionCoord.worldId, regionCoord.x, regionCoord.z, resolution, activityItem -> {
-				GroupData groupData = new GroupData(activityItem.activity);
-				regionData.put(activityItem.group, groupData);
+			activityDB.select(regionCoord.worldId(), regionCoord.x(), regionCoord.z(), resolution, activityItem -> {
+				GroupData groupData = new GroupData(activityItem.activity());
+				regionData.put(activityItem.group(), groupData);
 			});
 
 			timePoll.pushTimeNano(System.nanoTime() - start);
@@ -236,12 +236,12 @@ public class ActivityMap {
 				regions = new HashMap<>();
 			}
 
-			Set<Integer> groups = regions.computeIfAbsent(playerUpdate.regionCoord, a -> new HashSet<>());
+			Set<Integer> groups = regions.computeIfAbsent(playerUpdate.regionCoord(), a -> new HashSet<>());
 
-			List<String> groupNames = groupManager.getAllGroupNames(playerUpdate.playerId);
+			List<String> groupNames = groupManager.getAllGroupNames(playerUpdate.playerId());
 			for (String groupName : groupNames) {
 				Group group = GroupManager.getGroup(groupName);
-				if (groupManager.hasAccess(group, playerUpdate.playerId, CitadelPermissionHandler.getBypass())) {
+				if (groupManager.hasAccess(group, playerUpdate.playerId(), CitadelPermissionHandler.getBypass())) {
 					groups.add(group.getGroupId());
 				}
 			}
@@ -262,10 +262,10 @@ public class ActivityMap {
 			}
 
 			for (int xOffset = -radius; xOffset <= radius; xOffset++) {
-				int x = regionCoord.x + xOffset;
+				int x = regionCoord.x() + xOffset;
 				for (int zOffset = -radius; zOffset <= radius; zOffset++) {
-					int z = regionCoord.z + zOffset;
-					RegionCoord extendedRegionCoord = new RegionCoord(regionCoord.worldId, x, z);
+					int z = regionCoord.z() + zOffset;
+					RegionCoord extendedRegionCoord = new RegionCoord(regionCoord.worldId(), x, z);
 					boolean updateEntry = regionCoord.equals(extendedRegionCoord);
 
 					if (isRegionActivityValid(extendedRegionCoord, groups, updateEntry)) {
@@ -331,10 +331,10 @@ public class ActivityMap {
 	private void getUpdatedActivities(List<ActivityItem> activities, RegionCoord regionCoord, Set<Integer> groups, Instant activity) {
 		for (int groupId : groups) {
 			var activityItem = new ActivityItem(
-					regionCoord.worldId,
+					regionCoord.worldId(),
 					groupId,
-					regionCoord.x,
-					regionCoord.z,
+					regionCoord.x(),
+					regionCoord.z(),
 					activity,
 					resolution
 			);
@@ -372,12 +372,12 @@ public class ActivityMap {
 		ChunkCoord chunkCoord;
 		while ((chunkCoord = chunkUnloadQueue.poll()) != null) {
 			RegionCoord regionCoord = getRegionCoordByChunk(chunkCoord);
-			Map<XZKey, RegionData> worldData = data.get(regionCoord.worldId);
+			Map<XZKey, RegionData> worldData = data.get(regionCoord.worldId());
 			if (worldData == null) {
 				continue;
 			}
 
-			XZKey regionKey = new XZKey(regionCoord.x, regionCoord.z);
+			XZKey regionKey = new XZKey(regionCoord.x(), regionCoord.z());
 			RegionData regionData = worldData.get(regionKey);
 			if (regionData == null) {
 				continue;
@@ -401,9 +401,9 @@ public class ActivityMap {
 	}
 
 	private RegionCoord getRegionCoordByChunk(ChunkCoord chunkCoord) {
-		short worldId = chunkCoord.worldId;
-		int regionX = Math.floorDiv(chunkCoord.x << 4, resolution);
-		int regionZ = Math.floorDiv(chunkCoord.z << 4, resolution);
+		short worldId = chunkCoord.worldId();
+		int regionX = Math.floorDiv(chunkCoord.x() << 4, resolution);
+		int regionZ = Math.floorDiv(chunkCoord.z() << 4, resolution);
 
 		return new RegionCoord(worldId, regionX, regionZ);
 	}

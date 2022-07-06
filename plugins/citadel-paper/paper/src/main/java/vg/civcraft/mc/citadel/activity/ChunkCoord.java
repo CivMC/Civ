@@ -1,18 +1,6 @@
 package vg.civcraft.mc.citadel.activity;
 
-import org.bukkit.Chunk;
-
-class ChunkCoord {
-	public final short worldId;
-	public final int x;
-	public final int z;
-
-	public ChunkCoord(short worldId, int x, int z) {
-		this.worldId = worldId;
-		this.x = x;
-		this.z = z;
-	}
-
+record ChunkCoord (short worldId, int x, int z) {
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof ChunkCoord key

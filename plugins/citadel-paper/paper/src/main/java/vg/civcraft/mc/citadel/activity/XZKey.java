@@ -1,14 +1,6 @@
 package vg.civcraft.mc.citadel.activity;
 
-class XZKey {
-	private final int x;
-	private final int z;
-
-	public XZKey(int x, int z) {
-		this.x = x;
-		this.z = z;
-	}
-
+record XZKey (int x, int z) {
 	@Override
 	public boolean equals(Object obj) {
 		return obj instanceof XZKey key

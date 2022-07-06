@@ -8,7 +8,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
-import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.activity.ActivityMap;
 
 public class ActivityListener implements Listener {
@@ -23,8 +22,8 @@ public class ActivityListener implements Listener {
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Location from = event.getFrom();
 		Location to = event.getTo();
-		//noinspection ConstantConditions
-		if (to == null || from == null) {
+
+		if (to == null || from == null || !event.hasChangedBlock()) {
 			return;
 		}
 
