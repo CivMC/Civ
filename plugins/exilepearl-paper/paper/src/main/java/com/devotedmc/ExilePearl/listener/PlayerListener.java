@@ -862,7 +862,9 @@ public class PlayerListener implements Listener, Configurable {
 		if (!(e.getEntity() instanceof EnderPearl)) {
 			return;
 		}
-
+		if (pearlApi.getPearlConfig().getFreeByThrowing()) {
+			return;
+		}
 		final Player p = (Player)e.getEntity().getShooter();
 		if (p == null) {
 			return;
