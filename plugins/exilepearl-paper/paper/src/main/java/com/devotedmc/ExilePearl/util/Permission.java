@@ -15,6 +15,8 @@ public enum Permission
 	SET_DATE("setdate"),
 	CONFIG("config"),
 	DOWNGRADE("downgrade"),
+	SUMMON("summon"),
+	SUMMON_CONFIRM("summon_confirm"),
 	UPGRADE("upgrade")
 	;
 

@@ -1218,11 +1218,13 @@ public class PlayerListener implements Listener, Configurable {
 		event.getPlayer().sendMessage(Component.text("You cannot fly with imprisoned players!").color(NamedTextColor.RED));
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerPortal(PlayerPortalEvent event) {
 		ExilePearl pearl = pearlApi.getPearl(event.getPlayer().getUniqueId());
 		if(pearl != null && pearl.getPearlType() == PearlType.PRISON && event.getCause() == TeleportCause.END_PORTAL) {
 			event.setTo(SpawnUtil.chooseSpawn(pearlApi.getPearlConfig().getPrisonWorld()));
+			event.getPlayer().sendMessage(Component.text("Pearled players cannot use portals!", NamedTextColor.RED));
+			event.setCancelled(true);
 		}
 	}
 
