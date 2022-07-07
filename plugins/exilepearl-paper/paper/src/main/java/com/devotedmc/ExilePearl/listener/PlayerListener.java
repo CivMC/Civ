@@ -862,9 +862,6 @@ public class PlayerListener implements Listener, Configurable {
 		if (!(e.getEntity() instanceof EnderPearl)) {
 			return;
 		}
-		if (pearlApi.getPearlConfig().getFreeByThrowing()) {
-			return;
-		}
 		final Player p = (Player)e.getEntity().getShooter();
 		if (p == null) {
 			return;
@@ -874,6 +871,20 @@ public class PlayerListener implements Listener, Configurable {
 
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(mainHand) == null ? pearlApi.getPearlFromItemStack(offHand) : pearlApi.getPearlFromItemStack(mainHand);
 		if (pearl == null) {
+			return;
+		}
+		if (pearlApi.getPearlConfig().getFreeByThrowing()) {
+			if (pearl.validateItemStack(mainHand)) {
+				mainHand.setAmount(mainHand.getAmount() - 1);
+			} else if (pearl.validateItemStack(offHand)){
+				offHand.setAmount(offHand.getAmount() - 1);
+			}
+			pearlApi.freePearl(pearl, PearlFreeReason.PEARL_THROWN);
+			p.sendMessage(ChatUtils.parseColor(String.format(Lang.pearlYouFreed, pearl.getPlayerName())));
+			if (pearl.getPlayer() != null) {
+				pearl.getPlayer().sendMessage(ChatUtils.parseColor(Lang.pearlYouWereFreed));
+			}
+			e.setCancelled(true);
 			return;
 		}
 		p.sendMessage(ChatUtils.parseColor(Lang.pearlCantThrow));
