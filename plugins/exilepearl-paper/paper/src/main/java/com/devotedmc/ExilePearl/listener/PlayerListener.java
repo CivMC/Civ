@@ -2,7 +2,6 @@ package com.devotedmc.ExilePearl.listener;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFreeReason;
@@ -140,7 +139,7 @@ public class PlayerListener implements Listener, Configurable {
 			}
 			event.setResult(null);
 			// This is needed because of client side shenanigans
-			Bukkit.getScheduler().runTaskLater(ExilePearlPlugin.getInstance(), () -> {
+			Bukkit.getScheduler().runTaskLater(pearlApi, () -> {
 				for (final Player viewer : InventoryUtils.getViewingPlayers(inventory)) {
 					viewer.updateInventory();
 				}
