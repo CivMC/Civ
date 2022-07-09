@@ -573,12 +573,11 @@ public class PlayerListener implements Listener, Configurable {
 		}
 		else if(event.getAction() == InventoryAction.HOTBAR_SWAP) {
 			PlayerInventory playerInventory = event.getWhoClicked().getInventory();
-			ItemStack itemStack = null;
-			try {
-				itemStack = playerInventory.getItem(event.getHotbarButton());
-			} catch (ArrayIndexOutOfBoundsException exception) {
-				itemStack = playerInventory.getItem(EquipmentSlot.OFF_HAND);
-			}
+			
+			ItemStack itemStack = event.getHotbarButton() >= 0
+					? playerInventory.getItem(event.getHotbarButton())
+					: playerInventory.getItem(EquipmentSlot.OFF_HAND);
+
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(itemStack);
 
 			if(pearl != null) {
