@@ -39,8 +39,6 @@ public class ActivityMap {
 
 	private static final long SAVE_CHANGES_INTERVAL_MS = 60L * 1000L; // 1 min
 	private static final long UNLOAD_INTERVAL_MS = 60L * 1000L; // 1 min
-	private static final long ENTERED_REGION_INTERVAL_MS = 3 * 60L * 60L * 1000L; // 3 hours
-	private static final long ACTIVE_REGION_INTERVAL_MS = 3 * 60L * 60L * 1000L; // 3 hours
 
 	private final Logger logger;
 	private final ActivityDB activityDB;
@@ -58,6 +56,8 @@ public class ActivityMap {
 	private final Set<UUID> worlds;
 	private final int resolution;
 	private final int radius;
+	private final long entryRefreshAfterMs;
+	private final long radiusRefreshAfterMs;
 	private final Instant defaultActivity;
 
 	private boolean enabled;
@@ -78,6 +78,8 @@ public class ActivityMap {
 		this.resolution = resolution <= 0 ? 1 : resolution;
 
 		this.radius = Citadel.getInstance().getConfigManager().getActivityMapRadius();
+		this.entryRefreshAfterMs = Citadel.getInstance().getConfigManager().getActivityEntryRefreshAfterMs();
+		this.radiusRefreshAfterMs = Citadel.getInstance().getConfigManager().getActivityRadiusRefreshAfterMs();
 		this.worlds = new HashSet<>();
 		this.defaultActivity = Instant
 				.ofEpochSecond(Citadel.getInstance().getConfigManager().getActivityDefault());
@@ -268,7 +270,7 @@ public class ActivityMap {
 					RegionCoord extendedRegionCoord = new RegionCoord(regionCoord.worldId(), x, z);
 					boolean updateEntry = regionCoord.equals(extendedRegionCoord);
 
-					if (isRegionActivityValid(extendedRegionCoord, groups, updateEntry)) {
+					if (isRegionRadiusValid(extendedRegionCoord, groups, updateEntry)) {
 						continue;
 					}
 
@@ -291,7 +293,7 @@ public class ActivityMap {
 			return false;
 		}
 
-		Instant enteredPoint = Instant.now().minusMillis(ENTERED_REGION_INTERVAL_MS);
+		Instant enteredPoint = Instant.now().minusMillis(entryRefreshAfterMs);
 
 		synchronized (regionData) {
 			for (int groupId : groups) {
@@ -305,13 +307,13 @@ public class ActivityMap {
 		return true;
 	}
 
-	private boolean isRegionActivityValid(RegionCoord regionCoord, Set<Integer> groups, boolean updateEntry) {
+	private boolean isRegionRadiusValid(RegionCoord regionCoord, Set<Integer> groups, boolean updateEntry) {
 		RegionData regionData = getRegion(regionCoord, false);
 		if (!regionData.isLoaded()) {
 			return false;
 		}
 
-		Instant activePoint = Instant.now().minusMillis(ACTIVE_REGION_INTERVAL_MS);
+		Instant activePoint = Instant.now().minusMillis(radiusRefreshAfterMs);
 
 		synchronized (regionData) {
 			for (int groupId : groups) {

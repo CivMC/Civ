@@ -47,6 +47,9 @@ public class CitadelConfigManager extends ConfigParser {
 
 	private int activityMapResolution;
 	private int activityMapRadius;
+	private long activityEntryRefreshAfterMs;
+	private long activityRadiusRefreshAfterMs;
+
 	private long activityDefault;
 	private List<String> activityWorlds;
 
@@ -66,6 +69,14 @@ public class CitadelConfigManager extends ConfigParser {
 
 	public int getActivityMapResolution() {
 		return activityMapResolution;
+	}
+
+	public long getActivityEntryRefreshAfterMs() {
+		return activityEntryRefreshAfterMs;
+	}
+
+	public long getActivityRadiusRefreshAfterMs() {
+		return activityRadiusRefreshAfterMs;
 	}
 
 	public long getActivityDefault() {
@@ -170,6 +181,8 @@ public class CitadelConfigManager extends ConfigParser {
 
 		activityMapRadius = config.getInt("activity-map-radius", 1);
 		activityMapResolution = config.getInt("activity-map-resolution", 512);
+		activityEntryRefreshAfterMs = config.getLong("activity-entry-refresh-after-ms", 3 * 60L * 60L * 1000L);
+		activityRadiusRefreshAfterMs = config.getLong("activity-radius-refresh-after-ms", 3 * 60L * 60L * 1000L);
 		activityDefault = config.getLong("activity-default", System.currentTimeMillis());
 		activityWorlds = config.getStringList("activity-map-worlds");
 
