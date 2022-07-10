@@ -14,4 +14,7 @@ pluginManagement {
 	}
 }
 
+rootProject.name = "finale"
+
 include(":paper")
+project(":paper").name = rootProject.name + "-paper"
