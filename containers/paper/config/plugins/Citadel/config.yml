@@ -268,6 +268,7 @@ non_reinforceables:
  - FIRE
  - SOUL_FIRE
  - SNOW
+ - POWDER_SNOW
  - ICE
  - CACTUS
  - KELP_PLANT
