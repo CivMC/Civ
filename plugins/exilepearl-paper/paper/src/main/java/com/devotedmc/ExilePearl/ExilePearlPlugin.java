@@ -5,7 +5,6 @@ import java.io.File;
 import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -19,8 +18,6 @@ import org.bukkit.plugin.java.JavaPluginLoader;
  *
  */
 public final class ExilePearlPlugin extends JavaPlugin {
-
-	private static ExilePearlPlugin instance;
 
 	private static ExilePearlApi core;
 
@@ -37,10 +34,6 @@ public final class ExilePearlPlugin extends JavaPlugin {
     	super(loader, description, dataFolder, file);
 		core = CorePluginFactory.createCore(this);
     }
-
-	public static Plugin getInstance() {
-		return instance;
-	}
 
 	@Override
 	public void onLoad() { 
