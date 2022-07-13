@@ -18,6 +18,7 @@ public enum HolderVerifyResult
 	NO_ITEM_PLAYER_OR_LOCATION("no player or location", false),
 	ON_GROUND("on ground", true),
 	IN_HAND("in player hand", true),
+	IN_OFFHAND("in player offhand", true),
 	IN_CHEST("in chest", true),
 	IN_PLAYER_INVENTORY("in player inventory", true),
 	IN_PLAYER_INVENTORY_VIEW("in player inventory view", true),
