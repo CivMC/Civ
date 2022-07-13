@@ -7,7 +7,6 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.stat.LoadStatistic;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.stat.LoadStatisticManager;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.stat.PluginStatistic;
@@ -18,9 +17,6 @@ public class StatCommand extends BaseCommand {
 	@Description("Shows chunk loading statistics.")
 	@CommandPermission("cmc.debug")
 	public void save(CommandSender sender) {
-		if (sender instanceof Player)
-			return;
-
 		LoadStatistic loadStatistic = LoadStatisticManager.getLoadStatistic();
 		if (loadStatistic == null) {
 			sender.sendMessage(ChatColor.RED + "Statistics polling is disabled");

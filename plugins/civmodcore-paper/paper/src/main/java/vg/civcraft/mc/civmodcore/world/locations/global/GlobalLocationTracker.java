@@ -113,13 +113,18 @@ public class GlobalLocationTracker<T extends LocationTrackable> {
 
 	public void put(T trackable) {
 		putUnmodified(trackable);
+		setModified(trackable);
+	}
 
+	public void setModified(T trackable) {
 		synchronized (this.modified) {
 			this.modified.put(trackable.getLocation(), trackable);
 		}
 	}
 
 	private synchronized void putUnmodified(T trackable) {
+		trackable.setTracker(this);
+
 		tracked.put(trackable.getLocation(), trackable);
 		Map<Location, T> chunkSpecificData = perChunk.computeIfAbsent(XZWCoord.fromLocation(
 				trackable.getLocation()), s -> new HashMap<>());
