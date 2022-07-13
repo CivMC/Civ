@@ -718,9 +718,9 @@ public class PlayerListener implements Listener, Configurable {
 				if (pearlApi.isPlayerExiled(playerId)) {
 					for(Player dmgr : damagers) {
 						if(pearlApi.getPearlConfig().getShouldAnnounceExileLocation()){
-							dmgr.sendMessage(String.format(Lang.pearlAlreadyPearledAtLocation, pearlApi.getRealPlayerName(playerId), pearlApi.getPearl(playerId).getLocationDescription()));
+							dmgr.sendMessage(ChatUtils.parseColor(String.format(Lang.pearlAlreadyPearledAtLocation, pearlApi.getRealPlayerName(playerId), pearlApi.getPearl(playerId).getLocationDescription())));
 						}else{
-							dmgr.sendMessage(String.format(Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(playerId)));
+							dmgr.sendMessage(ChatUtils.parseColor(String.format(Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(playerId))));
 						}
 					}
 				}
@@ -734,7 +734,7 @@ public class PlayerListener implements Listener, Configurable {
 			// Notify other damagers if they were not awarded the pearl
 			for(Player damager : damagers) {
 				if (damager != killer) {
-					damager.sendMessage(String.format(Lang.pearlYouDamagedNotAwarded, pearlApi.getRealPlayerName(playerId), pearlApi.getRealPlayerName(killer.getUniqueId())));
+					damager.sendMessage(ChatUtils.parseColor(String.format(Lang.pearlYouDamagedNotAwarded, pearlApi.getRealPlayerName(playerId), pearlApi.getRealPlayerName(killer.getUniqueId()))));
 				}
 			}
 
