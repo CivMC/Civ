@@ -89,6 +89,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -571,7 +572,12 @@ public class PlayerListener implements Listener, Configurable {
 		}
 		else if(event.getAction() == InventoryAction.HOTBAR_SWAP) {
 			PlayerInventory playerInventory = event.getWhoClicked().getInventory();
-			ExilePearl pearl = pearlApi.getPearlFromItemStack(playerInventory.getItem(event.getHotbarButton()));
+			
+			ItemStack itemStack = event.getHotbarButton() >= 0
+					? playerInventory.getItem(event.getHotbarButton())
+					: playerInventory.getItem(EquipmentSlot.OFF_HAND);
+
+			ExilePearl pearl = pearlApi.getPearlFromItemStack(itemStack);
 
 			if(pearl != null) {
 				boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
