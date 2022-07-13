@@ -76,8 +76,10 @@ public class CmdShowAllPearls extends PearlCommand {
 					final Location pearlLocation = pearl.getLocation();
 					final boolean isPlayerBanned = isBanStickEnabled
 							&& BanHandler.isPlayerBanned(pearl.getPlayerId());
-					final boolean showLocation = WorldUtils.blockDistance(
-							senderLocation, pearlLocation, true) <= pearlExclusionRadius;
+
+					final int distanceToPearl = WorldUtils.blockDistance(senderLocation, pearlLocation, true);
+					// distance is -1 if the pearl is in a different world
+					final boolean showLocation = distanceToPearl != -1 && distanceToPearl <= pearlExclusionRadius;
 
 					CompletableFuture<ItemStack> itemReadyFuture = new CompletableFuture<>();
 					final ItemStack item = isPlayerBanned
