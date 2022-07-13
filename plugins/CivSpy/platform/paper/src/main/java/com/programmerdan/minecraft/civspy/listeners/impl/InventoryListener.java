@@ -104,12 +104,14 @@ public class InventoryListener extends ServerDataListener {
 			Inventory source = event.getSource();
 			if (source == null) return;
 			Location sourceLocation = source.getLocation();
+			if (sourceLocation == null) return;
 			Chunk sourceChunk = sourceLocation.getChunk();
 			String sourcePicker = resolveType(source);
 
 			Inventory destination = event.getDestination();
 			if (destination == null) return;
 			Location destinationLocation = destination.getLocation();
+			if (destinationLocation == null) return;
 			Chunk destinationChunk = destinationLocation.getChunk();
 			String destinationPicker = resolveType(destination);
 
