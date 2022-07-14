@@ -1,57 +1,28 @@
-import net.civmc.civgradle.common.util.civRepo
+import net.civmc.civgradle.CivGradleExtension
 
 plugins {
-    `java-library`
-    `maven-publish`
-    id("net.civmc.civgradle.plugin") version "1.0.0-SNAPSHOT"
-}
-
-// Temporary hack:
-// Remove the root build directory
-gradle.buildFinished {
-	project.buildDir.deleteRecursively()
-}
-
-allprojects {
-	group = "com.aleksey.castlegates"
-	version = "2.0.0-SNAPSHOT"
-	description = "CastleGates"
+	id("net.civmc.civgradle") version "2.+" apply false
 }
 
 subprojects {
-	apply(plugin = "net.civmc.civgradle.plugin")
 	apply(plugin = "java-library")
 	apply(plugin = "maven-publish")
+	apply(plugin = "net.civmc.civgradle")
 
-	java {
-		toolchain {
-			languageVersion.set(JavaLanguageVersion.of(17))
-		}
+	configure<CivGradleExtension> {
+		pluginName = project.property("pluginName") as String
 	}
 
 	repositories {
 		mavenCentral()
-        civRepo("CivMC/CivModCore")
-        civRepo("CivMC/NameLayer")
-        civRepo("CivMC/Citadel")
-		civRepo("CivMC/Bastion")
-		civRepo("CivMC/JukeAlert")
-	}
-
-	publishing {
-		repositories {
-			maven {
-				name = "GitHubPackages"
-				url = uri("https://maven.pkg.github.com/CivMC/CastleGates")
-				credentials {
-					username = System.getenv("GITHUB_ACTOR")
-					password = System.getenv("GITHUB_TOKEN")
-				}
-			}
-		}
-		publications {
-			register<MavenPublication>("gpr") {
-				from(components["java"])
+		maven("https://repo.civmc.net/repository/maven-public")
+		maven("https://repo.codemc.io/repository/maven-public/")
+		maven {
+			name = "GitHubPackages"
+			url = uri("https://maven.pkg.github.com/CivMC/NameLayer")
+			credentials {
+				username = System.getenv("GITHUB_ACTOR")
+				password = System.getenv("GITHUB_TOKEN")
 			}
 		}
 	}
