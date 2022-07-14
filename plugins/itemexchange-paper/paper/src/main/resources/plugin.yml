@@ -4,6 +4,7 @@ authors: [gmlaxfanatic, Protonull]
 main: com.untamedears.itemexchange.ItemExchangePlugin
 api-version: 1.16
 depend: [CivModCore]
+softdepend: [NameLayer, Citadel, JukeAlert]
 permissions:
   itemexchange.reload:
     default: op
