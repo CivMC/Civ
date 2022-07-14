@@ -573,23 +573,6 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 	}
 
 	/**
-	 * Inserts a new snitch log to the database asynchronously.
-	 *
-	 * @param actionTypeID The internal ID of the action type.
-	 * @param snitch The snitch to save the log to.
-	 * @param action The action to store in the database.
-	 */
-	public void insertLogAsync(final int actionTypeID,
-							   @Nonnull final Snitch snitch,
-							   @Nonnull final LoggablePlayerAction action) {
-		Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), () -> {
-			final int actionID = insertLog(actionTypeID, snitch, action.getPersistence());
-			action.setID(actionID);
-			action.setCacheState(ActionCacheState.NORMAL);
-		});
-	}
-
-	/**
 	 * Deletes a particular log from the database.
 	 *
 	 * @param log The log to delete.

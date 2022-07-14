@@ -37,7 +37,7 @@ public class KillPlayerAction extends LoggablePlayerVictimAction {
 	
 	@Override
 	protected String getChatRepresentationIdentifier() {
-		return "Killed " + getVictim();
+		return "Killed " + getVictimName();
 	}
 
 	@Override
