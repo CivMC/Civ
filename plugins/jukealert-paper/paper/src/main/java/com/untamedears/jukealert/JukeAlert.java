@@ -70,7 +70,7 @@ public class JukeAlert extends ACivMod {
 
 	@Override
 	public void onDisable() {
-		snitchManager.shutDown();
+		snitchManager.shutdown();
 		if (this.taskChainFactory != null) {
 			this.taskChainFactory.shutdown(10, TimeUnit.SECONDS);
 			this.taskChainFactory = null;
@@ -102,7 +102,10 @@ public class JukeAlert extends ACivMod {
 			Bukkit.shutdown();
 			return;
 		}
+
 		snitchManager = new SnitchManager(api);
+		snitchManager.enable();
+
 		settingsManager = new JASettingsManager();
 		commandManager = new JACommandManager(this);
 		registerJukeAlertEvents();

@@ -90,7 +90,8 @@ public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionT
 			this.pendingActions.put(log, internalActionID);
 			return;
 		}
-		JukeAlert.getInstance().getDAO().insertLogAsync(internalActionID, getSnitch(), log);
+
+		JukeAlert.getInstance().getSnitchManager().saveLog(internalActionID, getSnitch(), log);
 	}
 
 	/** {@inheritDoc} */

@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "net.civmc"
-version = "3.0.0-SNAPSHOT"
+version = "3.0.1"
 description = "JukeAlert"
 
 subprojects {
@@ -16,7 +16,7 @@ subprojects {
 	apply(plugin = "maven-publish")
 
 	group = "net.civmc.jukealert"
-	version = "3.0.0-SNAPSHOT"
+	version = "3.0.1"
 
 	java {
 		toolchain {
