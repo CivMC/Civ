@@ -420,7 +420,7 @@ hacks:
     witherGrief: false
     dragonGrief: true
     allowEnchantedApples: false
-    preventFallingThroughBedrock: true
+    preventFallingThroughBedrock: false
     # Disable the Bad Omen effect that player receive when killing pillager patrols
     badOmen: false
     #a list of materials players shouldn't be allowed to place at all
