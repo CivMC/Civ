@@ -185,7 +185,7 @@ public class CombatUtil {
 						}
 					}
 					Vector attackerMotion = config.getAttackerMotion();
-					attacker.setDeltaMovement(attacker.getDeltaMovement().add(attackerMotion.getX(), attackerMotion.getY(), attackerMotion.getZ()));
+					attacker.setDeltaMovement(attacker.getDeltaMovement().multiply(attackerMotion.getX(), attackerMotion.getY(), attackerMotion.getZ()));
 					if (attacker.isInWater()) {
 						attacker.setSprinting(!config.isWaterSprintResetEnabled());
 					} else {
