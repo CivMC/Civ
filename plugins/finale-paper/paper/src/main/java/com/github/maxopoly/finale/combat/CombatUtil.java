@@ -176,6 +176,8 @@ public class CombatUtil {
 							double motZ = Math.min((victimMot.z * victimMotFactor.getZ()) + dv.getZ(), maxVictimMot.getZ());
 
 							victimMot = new Vec3(motX, motY, motZ);
+
+							victim.setDeltaMovement(victimMot);
 						} else {
 							victim.push(
 									(-Mth.sin(attacker.getBukkitYaw() * 0.017453292f) * knockbackLevel * 0.5f),
