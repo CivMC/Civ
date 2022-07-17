@@ -10,6 +10,7 @@
       include_tasks:
         file: '../tasks/configure/{{configure_task}}.yml'
       loop:
+        - backups
         - docker
         - ufw
       loop_control:

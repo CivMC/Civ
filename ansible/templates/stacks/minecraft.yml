@@ -19,7 +19,7 @@ services:
       CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
     deploy:
       placement:
-        constraints: [node.hostname == civmc-prod]
+        constraints: [node.role == manager]
 
   paper:
     image: ghcr.io/civmc/civdocker/paper:1.15.2
@@ -68,7 +68,7 @@ services:
       #- /opt/PrivateConfig/paper/config/Finale/config.yml:/config/plugins/Finale/config.yml
     deploy:
       placement:
-        constraints: [node.hostname == civmc-prod]
+        constraints: [node.role == manager]
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
@@ -103,7 +103,7 @@ services:
       - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
     deploy:
       placement:
-        constraints: [node.hostname == civmc-prod]
+        constraints: [node.role == manager]
 
   kira:
     image: ghcr.io/civmc/kira:latest
@@ -114,7 +114,7 @@ services:
       - kira-config:/app/config.json
     deploy:
       placement:
-        constraints: [node.hostname == civmc-prod]
+        constraints: [node.role == manager]
 
   mariadb:
     image: mariadb:10.7.1
@@ -128,7 +128,7 @@ services:
       - mariadb-data:/var/lib/mysql
     deploy:
       placement:
-        constraints: [node.hostname == civmc-prod]
+        constraints: [node.role == manager]
 
   postgres:
     image: timescale/timescaledb:latest-pg14
@@ -146,7 +146,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
     deploy:
       placement:
-        constraints: [node.hostname == civmc-prod]
+        constraints: [node.role == manager]
 
   rabbitmq:
     image: rabbitmq:3.9.16-management
@@ -161,7 +161,7 @@ services:
       RABBITMQ_DEFAULT_PASS: '{{secret.minecraft.rabbitmq.password}}'
     deploy:
       placement:
-        constraints: [node.hostname == civmc-prod]
+        constraints: [node.role == manager]
 
 networks:
   traefik-public:

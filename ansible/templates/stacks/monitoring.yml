@@ -25,7 +25,7 @@ services:
       GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'"
     deploy:
       placement:
-        constraints: [node.hostname == civmc-prod]
+        constraints: [node.role == manager]
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public

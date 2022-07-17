@@ -20,7 +20,7 @@ services:
       DB_PASSWORD: '{{secret.auth.postgres.password}}'
     deploy:
       placement:
-        constraints: [node.hostname == civmc-prod]
+        constraints: [node.role == manager]
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
@@ -50,7 +50,7 @@ services:
       retries: 10
     deploy:
       placement:
-        constraints: [node.hostname == civmc-prod]
+        constraints: [node.role == manager]
 
 volumes:
   postgres-data:
