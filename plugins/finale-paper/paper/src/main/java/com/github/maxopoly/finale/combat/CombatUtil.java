@@ -265,7 +265,7 @@ public class CombatUtil {
 					}
 
 					EnchantmentHelper.doPostDamageEffects(attacker, victim);
-					ItemStack itemstack1 = attacker.getItemInHand(attacker.swingingArm);
+					ItemStack itemstack1 = attacker.getMainHandItem();
 					Object object = victim;
 
 					if (victim instanceof EnderDragonPart) {
