@@ -117,48 +117,17 @@ proximity:
     useFastGazeCheck: false
     useBlockBelow: false
     hiddenBlocks:
-      minecraft:diamond_ore: {}
-      minecraft:deepslate_diamond_ore: {}
-      minecraft:coal_ore: {}
-      minecraft:deepslate_coal_ore: {}
-      minecraft:iron_ore: {}
-      minecraft:deepslate_iron_ore: {}
-      minecraft:copper_ore: {}
-      minecraft:deepslate_copper_ore: {}
-      minecraft:gold_ore: {}
-      minecraft:deepslate_gold_ore: {}
-      minecraft:redstone_ore: {}
-      minecraft:deepslate_redstone_ore: {}
-      minecraft:lapis_ore: {}
-      minecraft:deepslate_lapis_ore: {}
-      minecraft:emerald_ore: {}
-      minecraft:deepslate_emerald_ore: {}
       minecraft:chest: {}
-      minecraft:ender_chest: {}
       minecraft:trapped_chest: {}
       minecraft:barrel: {}
       minecraft:jukebox: {}
       minecraft:note_block: {}
       minecraft:sponge: {}
-      minecraft:anvil: {}
       minecraft:crafting_table: {}
       minecraft:dispenser: {}
-      minecraft:enchanting_table: {}
       minecraft:furnace: {}
       minecraft:blast_furnace: {}
-      minecraft:cartography_table: {}
-      minecraft:fletching_table: {}
-      minecraft:grindstone: {}
-      minecraft:composter: {}
-      minecraft:lectern: {}
-      minecraft:loom: {}
-      minecraft:smithing_table: {}
-      minecraft:smoker: {}
-      minecraft:stonecutter: {}
       minecraft:hopper: {}
-      minecraft:spawner: {}
-      minecraft:bee_nest: {}
-      minecraft:beehive: {}
     randomBlocks:
       minecraft:stone: 1
   proximity-nether:
@@ -172,34 +141,16 @@ proximity:
     useBlockBelow: true
     hiddenBlocks:
       minecraft:chest: {}
-      minecraft:ender_chest: {}
       minecraft:trapped_chest: {}
       minecraft:barrel: {}
       minecraft:jukebox: {}
       minecraft:note_block: {}
       minecraft:sponge: {}
-      minecraft:anvil: {}
       minecraft:crafting_table: {}
       minecraft:dispenser: {}
-      minecraft:enchanting_table: {}
       minecraft:furnace: {}
       minecraft:blast_furnace: {}
-      minecraft:cartography_table: {}
-      minecraft:fletching_table: {}
-      minecraft:grindstone: {}
-      minecraft:composter: {}
-      minecraft:lectern: {}
-      minecraft:loom: {}
-      minecraft:smithing_table: {}
-      minecraft:smoker: {}
-      minecraft:stonecutter: {}
       minecraft:hopper: {}
-      minecraft:spawner: {}
-      minecraft:bee_nest: {}
-      minecraft:beehive: {}
-      minecraft:ancient_debris: {}
-      minecraft:nether_gold_ore: {}
-      minecraft:nether_quartz_ore: {}
       minecraft:respawn_anchor: {}
     randomBlocks:
       minecraft:netherrack: 1
