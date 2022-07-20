@@ -117,6 +117,8 @@ proximity:
     useFastGazeCheck: false
     useBlockBelow: false
     hiddenBlocks:
+      minecraft:diamond_ore: {}
+      minecraft:deepslate_diamond_ore: {}
       minecraft:chest: {}
       minecraft:trapped_chest: {}
       minecraft:barrel: {}
@@ -140,6 +142,7 @@ proximity:
     useFastGazeCheck: false
     useBlockBelow: true
     hiddenBlocks:
+      minecraft:ancient_debris: {}
       minecraft:chest: {}
       minecraft:trapped_chest: {}
       minecraft:barrel: {}
