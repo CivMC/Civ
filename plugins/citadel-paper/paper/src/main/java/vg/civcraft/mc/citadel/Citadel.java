@@ -3,7 +3,7 @@ package vg.civcraft.mc.citadel;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
-import vg.civcraft.mc.citadel.activity.ActivityListener;
+import vg.civcraft.mc.citadel.listener.ActivityListener;
 import vg.civcraft.mc.citadel.activity.ActivityMap;
 import vg.civcraft.mc.citadel.command.CitadelCommandManager;
 import vg.civcraft.mc.citadel.listener.BlockListener;
@@ -88,6 +88,7 @@ public class Citadel extends ACivMod {
 
 	@Override
 	public void onDisable() {
+		activityMap.disable();
 		dao.setBatchMode(true);
 		reinManager.shutDown();
 		dao.cleanupBatches();
@@ -131,7 +132,10 @@ public class Citadel extends ACivMod {
 			Bukkit.shutdown();
 			return;
 		}
-		activityMap = new ActivityMap(config.getDatabase());
+
+		activityMap = new ActivityMap(this.logger, config.getDatabase());
+		activityMap.enable();
+
 		BlockBasedChunkMetaView<CitadelChunkData, TableBasedDataObject, TableStorageEngine<Reinforcement>> chunkMetaData =
 				ChunkMetaAPI.registerBlockBasedPlugin(this, () -> new CitadelChunkData(false, dao),dao, true);
 		if (chunkMetaData == null) {

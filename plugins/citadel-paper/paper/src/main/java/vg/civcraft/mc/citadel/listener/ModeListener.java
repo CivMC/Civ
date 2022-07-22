@@ -248,6 +248,11 @@ public class ModeListener implements Listener {
 					sb.append(String.format("%sAcid block mature in %s", ChatColor.YELLOW, TextUtil.formatDuration(remainingTime, TimeUnit.MILLISECONDS)));
 				}
 			}
+			if (e.getPlayer().hasPermission("citadel.admin")) {
+				sb.append(String.format("\n%sActivityMap.Activity = %s",
+						ChatColor.WHITE,
+						Citadel.getInstance().getActivityMap().getLastActivityTime(rein.getGroup(), rein.getLocation())));
+			}
 			CitadelUtility.sendAndLog(player, ChatColor.GREEN, sb.toString().trim(), e.getClickedBlock().getLocation());
 		}
 		if (showHolo) {
