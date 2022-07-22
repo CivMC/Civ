@@ -39,7 +39,7 @@ public class ExitVehicleAction extends LoggablePlayerVictimAction {
 	}
 	
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return "Exited " + ItemUtils.getItemName(getVehicle());
 	}
 

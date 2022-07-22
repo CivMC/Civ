@@ -25,7 +25,7 @@ public class MountEntityAction extends LoggablePlayerVictimAction {
 	}
 	
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return "Mounted " + getVictim();
 	}
 

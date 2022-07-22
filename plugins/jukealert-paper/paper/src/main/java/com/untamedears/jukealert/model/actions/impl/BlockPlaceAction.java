@@ -25,7 +25,7 @@ public class BlockPlaceAction extends LoggableBlockAction {
 	}
 
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return "Place";
 	}
 

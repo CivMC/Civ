@@ -24,7 +24,7 @@ public class LeaveFieldAction extends LoggablePlayerAction {
 	}
 
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return "Leave";
 	}
 

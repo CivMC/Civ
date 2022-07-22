@@ -39,7 +39,7 @@ public class DestroyVehicleAction extends LoggablePlayerVictimAction {
 	}
 
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return "Broke " + ItemUtils.getItemName(getVehicle());
 	}
 

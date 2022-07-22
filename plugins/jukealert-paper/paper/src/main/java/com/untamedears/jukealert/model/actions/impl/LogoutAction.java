@@ -32,7 +32,7 @@ public class LogoutAction extends LoggablePlayerAction {
 	}
 
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return ChatColor.BOLD + "Logout";
 	}
 }

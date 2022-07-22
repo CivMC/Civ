@@ -15,7 +15,7 @@ public class EmptyBucketAction extends LoggableBlockAction {
 	}
 
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return "Emptied bucket";
 	}
 

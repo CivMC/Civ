@@ -62,21 +62,21 @@ public abstract class LoggablePlayerAction extends PlayerAction implements Logga
 	}
 	
 	@Override
-	public TextComponent getChatRepresentation(Location reference, boolean live) {
+	public TextComponent getChatRepresentation(Location reference, boolean live, boolean censor) {
 		Location referenceLoc = getLocationForStringRepresentation();
 		boolean sameWorld = JAUtility.isSameWorld(referenceLoc, reference);
+		String referenceLocText = censor ? "[*** *** ***]" : JAUtility.formatLocation(referenceLoc, !sameWorld);
+
 		TextComponent comp = new TextComponent(
 				String.format("%s%s  %s%s  ", ChatColor.GOLD, getChatRepresentationIdentifier(), ChatColor.GREEN, NameAPI.getCurrentName(getPlayer())));
 		if (live) {
 			comp.addExtra(JAUtility.genTextComponent(snitch));
-			comp.addExtra(String.format("  %s%s", ChatColor.YELLOW,
-					JAUtility.formatLocation(referenceLoc, !sameWorld)));
+			comp.addExtra(String.format("  %s%s", ChatColor.YELLOW, referenceLocText));
 		}
 		else {
 			//dont need to explicitly list location when retrieving logs and its the snitch location
 			if (referenceLoc != snitch.getLocation()) {
-				comp.addExtra(String.format("%s%s", ChatColor.YELLOW,
-						JAUtility.formatLocation(referenceLoc, !sameWorld)));
+				comp.addExtra(String.format("%s%s ", ChatColor.YELLOW, referenceLocText));
 			}
 			comp.addExtra(new TextComponent(ChatColor.AQUA + getFormattedTime()));
 		}
@@ -100,8 +100,6 @@ public abstract class LoggablePlayerAction extends PlayerAction implements Logga
 	protected Location getLocationForStringRepresentation() {
 		return snitch.getLocation();
 	}
-	
-	protected abstract String getChatRepresentationIdentifier();
 
 	protected IClickable getEnrichedClickableSkullFor(UUID uuid) {
 		CompletableFuture<ItemStack> itemReadyFuture = new CompletableFuture<>();

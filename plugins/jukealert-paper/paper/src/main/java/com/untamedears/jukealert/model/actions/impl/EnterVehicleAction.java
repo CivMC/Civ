@@ -39,7 +39,7 @@ public class EnterVehicleAction extends LoggablePlayerVictimAction {
 	}
 
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return "Entered " + ItemUtils.getItemName(getVehicle());
 	}
 

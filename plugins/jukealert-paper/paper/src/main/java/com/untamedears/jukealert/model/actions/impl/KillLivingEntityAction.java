@@ -30,7 +30,7 @@ public class KillLivingEntityAction extends LoggablePlayerVictimAction {
 	}
 	
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return "Killed " + getVictim();
 	}
 
