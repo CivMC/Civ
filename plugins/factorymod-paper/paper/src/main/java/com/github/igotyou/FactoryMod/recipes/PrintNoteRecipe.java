@@ -89,7 +89,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 	private BookInfo getBookInfo(ItemStack printingPlateStack) {
 		ItemStack book = createBook(printingPlateStack, 1);
 		BookMeta bookMeta = (BookMeta) book.getItemMeta();
-		String text = bookMeta.getPageCount() > 0 ? bookMeta.getPage(1) : "";
+		String text = bookMeta.getPageCount() > 0 ? String.join("\n", bookMeta.getPages()) : "";
 		String[] lines = text.split("\n");
 		List<String> fixedLines = new ArrayList<>();
 
