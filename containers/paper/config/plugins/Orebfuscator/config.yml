@@ -76,7 +76,6 @@ obfuscation:
       minecraft:lapis_ore: 1
       minecraft:mossy_cobblestone: 1
       minecraft:obsidian: 1
-      minecraft:redstone_ore: 1
       minecraft:stone: 1
   obfuscation-nether:
     enabled: true
