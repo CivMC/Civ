@@ -73,7 +73,7 @@ services:
     restart: unless-stopped
     command: --max-connections 500
     healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      test: [ "CMD-SHELL", 'mysqladmin ping --user "$$MYSQL_USER" --password="$$MYSQL_PASSWORD"' ]
       timeout: 20s
       retries: 10
     ports:
