@@ -20,22 +20,39 @@ cleanerCombat:
     strong: false
     knockback: false
     crit: true
-  sprintMultiplier: # modifies knockback if the attacker is sprinting.
-    x: 2.3
-    y: 1.0
-    z: 2.3
-  knockbackMultiplier: # modifies knockback in general.
-    x: 1.2
-    y: 0.9
-    z: 1.2
-  waterKnockbackMultiplier: # modifies knockback if the victim is in water.
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  airKnockbackMultiplier: # modifies knockback if the victim is in the air
-    x: 1.0
-    y: 1.05
-    z: 1.0
+  knockbackLevelMultiplier: 0.6 # a constant to control the knockback sword level
+  normal:
+    groundModifier: # modifies knockback in general.
+      type: DIRECT # MULTIPLY or ADD or DIRECT
+      x: 0.625
+      y: 0.5
+      z: 0.625
+    airModifier: # modifies knockback if the victim is in the air.
+      type: DIRECT # MULTIPLY or ADD or DIRECT
+      x: 0.625
+      y: 0.5
+      z: 0.625
+    waterModifier: # modifies knockback if the victim is in water.
+      type: DIRECT # MULTIPLY or ADD or DIRECT
+      x: 0.625
+      y: 0.5
+      z: 0.625
+  sprint: # modifies knockback if the attacker is sprinting.
+    groundModifier: # modifies knockback in general.
+      type: DIRECT # MULTIPLY or ADD or DIRECT
+      x: 1.0
+      y: 0.6
+      z: 1.0
+    airModifier: # modifies knockback if the victim is in the air.
+      type: DIRECT
+      x: 1.0
+      y: 0.6
+      z: 1.0
+    waterModifier: # modifies knockback if the victim is in water.
+      type: DIRECT
+      x: 1.0
+      y: 0.6
+      z: 1.0
   attackerMotion: # modifies motion of attacker upon attacking.
     x: 0.6
     y: 1.0
@@ -46,7 +63,7 @@ cleanerCombat:
     z: 0.5
   maxVictimMotion: # maximum motion of victim upon getting hit.
     x: 10.0
-    y: 0.3
+    y: 10.0
     z: 10.0
     
 # gives full control over health / regen, default is full reversion to 1.8 mechanics
