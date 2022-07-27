@@ -176,6 +176,8 @@ public class CombatUtil {
 							double motZ = Math.min((victimMot.z * victimMotFactor.getZ()) + dv.getZ(), maxVictimMot.getZ());
 
 							victimMot = new Vec3(motX, motY, motZ);
+
+							victim.setDeltaMovement(victimMot);
 						} else {
 							victim.push(
 									(-Mth.sin(attacker.getBukkitYaw() * 0.017453292f) * knockbackLevel * 0.5f),
@@ -185,7 +187,7 @@ public class CombatUtil {
 						}
 					}
 					Vector attackerMotion = config.getAttackerMotion();
-					attacker.setDeltaMovement(attacker.getDeltaMovement().add(attackerMotion.getX(), attackerMotion.getY(), attackerMotion.getZ()));
+					attacker.setDeltaMovement(attacker.getDeltaMovement().multiply(attackerMotion.getX(), attackerMotion.getY(), attackerMotion.getZ()));
 					if (attacker.isInWater()) {
 						attacker.setSprinting(!config.isWaterSprintResetEnabled());
 					} else {
@@ -263,7 +265,9 @@ public class CombatUtil {
 					}
 
 					EnchantmentHelper.doPostDamageEffects(attacker, victim);
-					ItemStack itemstack1 = attacker.getItemInHand(attacker.swingingArm);
+
+					InteractionHand hand = attacker.swingingArm != null ? attacker.swingingArm : InteractionHand.MAIN_HAND;
+					ItemStack itemstack1 = attacker.getItemInHand(hand);
 					Object object = victim;
 
 					if (victim instanceof EnderDragonPart) {
