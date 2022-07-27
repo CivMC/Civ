@@ -558,11 +558,19 @@ public class BlockListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	public void onMossSpread(BlockFertilizeEvent event) {
 		for (BlockState block : event.getBlocks()) {
-			if (Citadel.getInstance().getReinforcementManager().getReinforcement(block.getBlock()) != null) {
-				event.getPlayer().sendMessage(Component.text("You can't do that while their are reinforced blocks around!").color(NamedTextColor.RED));
-				event.setCancelled(true);
-				return;
+			Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(block.getBlock());
+			if (reinforcement == null) {
+				continue;
 			}
+			Player player = event.getPlayer();
+			if (player == null) {
+				continue;
+			}
+			if (reinforcement.hasPermission(event.getPlayer(), CitadelPermissionHandler.getCrops())) {
+				continue;
+			}
+			event.getPlayer().sendMessage(Component.text("You can't do that while their are reinforced blocks around!").color(NamedTextColor.RED));
+			event.setCancelled(true);
 		}
 	}
 
