@@ -38,7 +38,7 @@ public class ToolProtectionListener implements Listener {
 			for(int i = 0; i < 5; i++) {
 				e.getPlayer().sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "Your tool is almost broken");
 			}
-			e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 3, 4));
+			e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 10, 4));
 		}
 	}
 
