@@ -60,7 +60,7 @@ public class AdvancedFortification extends BaseCommand {
 			return;
 		}
 		String groupName = null;
-		if (targetGroup.isEmpty()) {
+		if (targetGroup == null ||targetGroup.isEmpty()) {
 			groupName = NameAPI.getGroupManager().getDefaultGroup(player.getUniqueId());
 			if (groupName == null) {
 				CitadelUtility.sendAndLog(player, ChatColor.RED,
