@@ -2,6 +2,7 @@ package com.untamedears.realisticbiomes.growthconfig;
 
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growth.IArtificialGrower;
+import com.untamedears.realisticbiomes.growth.VerticalGrower;
 import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
 import com.untamedears.realisticbiomes.growthconfig.inner.PersistentGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
@@ -24,6 +25,9 @@ import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class PlantGrowthConfig extends AbstractGrowthConfig {
+	private record SetStageResult(int currentStage, int intendedStage, long creationTime, Long nextUpdateTime){}
+
+	private static final SetStageResult NO_NEXT_UPDATE = new SetStageResult(0, 0, 0, Long.MAX_VALUE);
 
 	private static Random rng = new Random();
 	private static final byte MAX_LIGHT = 15;
@@ -400,32 +404,16 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		long now = System.currentTimeMillis();
 		long timeElapsed = now - creationTime;
 		double progress = (double) timeElapsed / (double) totalTime;
-		int currentStage = grower.getStage(plant);
-		if (currentStage < 0) {
-			plant.getOwningCache().remove(plant);
-			return Long.MAX_VALUE;
+
+		SetStageResult setStageResult = setStage(plant, block, totalTime, creationTime, progress);
+		if (setStageResult.nextUpdateTime != null) {
+			return setStageResult.nextUpdateTime;
 		}
-		int intendedState = Math.min((int) (grower.getMaxStage() * progress), grower.getMaxStage());
-		if (intendedState != currentStage) {
-			try {
-				grower.setStage(plant, intendedState);
-			} catch (IllegalArgumentException e) {
-				RealisticBiomes.getInstance().getLogger().warning("Failed to update stage for " + block.toString());
-				//delete
-				plant.getOwningCache().remove(plant);
-				return Long.MAX_VALUE;
-			}
-			currentStage = grower.getStage(plant);
-			if (intendedState != currentStage) {
-				if (!grower.ignoreGrowthFailure()) {
-					//setting the state failed due to some external condition, we assume this wont change any time soon
-					return Long.MAX_VALUE;
-				}
-				if (creationTime != plant.getCreationTime() && plant.getGrowthConfig() != this) {
-					return updatePlant(plant, block);
-				}
-			}
-		}
+
+		int currentStage = setStageResult.currentStage;
+		int intendedStage = setStageResult.intendedStage;
+		creationTime = setStageResult.creationTime;
+
 		if (plant.getGrowthConfig() != this) {
 			//happens for example when a stem fully grows
 			return plant.getGrowthConfig().updatePlant(plant, block);
@@ -438,10 +426,59 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			return Long.MAX_VALUE;
 		}
 		double incPerStage = grower.getIncrementPerStage();
-		double nextProgressStage = (intendedState + incPerStage) / grower.getMaxStage();
+		double nextProgressStage = (intendedStage + incPerStage) / grower.getMaxStage();
 		nextProgressStage = Math.min(nextProgressStage, 1.0);
 		long timeFromCreationTillNextStage = (long) (totalTime * nextProgressStage);
 		return creationTime + timeFromCreationTillNextStage;
+	}
+
+	private SetStageResult setStage(Plant plant, Block block, long totalTime, long creationTime, double progress) {
+		int currentStage = grower.getStage(plant);
+		if (currentStage < 0) {
+			plant.getOwningCache().remove(plant);
+			return NO_NEXT_UPDATE;
+		}
+
+		int intendedStage = Math.min((int) (grower.getMaxStage() * progress), grower.getMaxStage());
+		if (intendedStage == currentStage) {
+			return new SetStageResult(currentStage, intendedStage, creationTime, null);
+		}
+
+		boolean stageSet;
+		try {
+			stageSet = grower.setStage(plant, intendedStage);
+		} catch (IllegalArgumentException e) {
+			RealisticBiomes.getInstance().getLogger().warning("Failed to update stage for " + block.toString());
+			//delete
+			plant.getOwningCache().remove(plant);
+			return NO_NEXT_UPDATE;
+		}
+
+		currentStage = grower.getStage(plant);
+		if (intendedStage == currentStage) {
+			return new SetStageResult(currentStage, intendedStage, creationTime, null);
+		}
+
+		if (stageSet
+				&& grower instanceof VerticalGrower verticalGrower
+				&& verticalGrower.isInstaBreakTouching())
+		{
+			creationTime = System.currentTimeMillis() - totalTime * currentStage / grower.getMaxStage();
+			plant.setCreationTime(creationTime);
+			return new SetStageResult(currentStage, currentStage, creationTime, null);
+		}
+
+		if (!grower.ignoreGrowthFailure()) {
+			//setting the state failed due to some external condition, we assume this wont change any time soon
+			return NO_NEXT_UPDATE;
+		}
+
+		if (creationTime != plant.getCreationTime() && plant.getGrowthConfig() != this) {
+			long nextUpdateTime = updatePlant(plant, block);
+			return new SetStageResult(0, 0, 0, nextUpdateTime);
+		}
+
+		return new SetStageResult(currentStage, intendedStage, creationTime, null);
 	}
 	
 	public String toString() {

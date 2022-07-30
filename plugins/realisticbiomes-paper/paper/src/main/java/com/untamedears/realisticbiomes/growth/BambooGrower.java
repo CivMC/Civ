@@ -15,12 +15,11 @@ public class BambooGrower extends ColumnPlantGrower {
 	}
 
 	@Override
-	protected Block growVertically(Plant plant, Block block, int howMany) {
+	protected VerticalGrowResult growVertically(Plant plant, Block block, int howMany) {
 		// Actual growth is here:
-		Block highestBlock = super.growVertically(plant, block, howMany);
-		handleProperLeafGrowth(block, highestBlock);
-
-		return highestBlock;
+		VerticalGrowResult result = super.growVertically(plant, block, howMany);
+		handleProperLeafGrowth(block, result.top());
+		return result;
 	}
 
 	@Override

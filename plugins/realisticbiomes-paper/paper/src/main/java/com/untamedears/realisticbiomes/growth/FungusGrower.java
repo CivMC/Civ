@@ -36,9 +36,9 @@ public class FungusGrower extends AgeableGrower {
 	}
 
 	@Override
-	public void setStage(final Plant plant, final int stage) {
+	public boolean setStage(final Plant plant, final int stage) {
 		if (stage < 1) {
-			return;
+			return true;
 		}
 		final Block block = plant.getLocation().getBlock();
 		final Material material = block.getType();
@@ -48,7 +48,7 @@ public class FungusGrower extends AgeableGrower {
 				material == Material.FLOWERING_AZALEA ? TreeFeatures.AZALEA_TREE :
 				null;
 		if (growth == null) {
-			return;
+			return true;
 		}
 		final ServerLevel world = ((CraftWorld) block.getWorld()).getHandle();
 		final BlockPos position = new BlockPos(block.getX(), block.getY(), block.getZ());
@@ -56,6 +56,7 @@ public class FungusGrower extends AgeableGrower {
 		if (!growth.value().place(world, world.getChunkSource().getGenerator(), this.random, position)) {
 			block.setType(material);
 		}
+		return true;
 	}
 
 	@Override

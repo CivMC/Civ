@@ -28,6 +28,36 @@ public class PlantLogicManager {
 		initAdjacentPlantBlocks(growthConfigManager.getAllGrowthConfigs());
 	}
 
+	public void handleCactusPhysics(Block cactusBlock) {
+		Plant plant = plantManager.getPlant(cactusBlock);
+		Block bottom = cactusBlock;
+		int stage = 0;
+
+		if (plant == null) {
+			Block below = cactusBlock.getRelative(BlockFace.DOWN);
+			while (below.getType() == Material.CACTUS) {
+				below = below.getRelative(BlockFace.DOWN);
+				stage++;
+			}
+			bottom = below.getRelative(BlockFace.UP);
+			plant = plantManager.getPlant(bottom);
+		}
+
+		if (plant == null) {
+			return;
+		}
+
+		if (plant.getGrowthConfig() == null
+				|| !(plant.getGrowthConfig().getGrower() instanceof ColumnPlantGrower grower))
+		{
+			plant.resetCreationTime();
+			updateGrowthTime(plant, bottom);
+		} else {
+			long growthTime = plant.getGrowthConfig().getPersistentGrowthTime(bottom, true);
+			updateGrowthTimeOnDestruction(plant, stage, growthTime);
+		}
+	}
+
 	public void handleBlockDestruction(Block block) {
 		if (plantManager == null) {
 			return;
@@ -56,24 +86,25 @@ public class PlantLogicManager {
 
 		Block sourceColumn = VerticalGrower.getRelativeBlock(block ,RBUtils.getGrowthDirection(block.getType()).getOppositeFace());
 		Plant bottomColumnPlant = plantManager.getPlant(sourceColumn);
-		if (bottomColumnPlant == null)
+		if (bottomColumnPlant == null) {
 			return false;
+		}
 
 		if (bottomColumnPlant.getGrowthConfig() == null
 				|| !(bottomColumnPlant.getGrowthConfig().getGrower() instanceof ColumnPlantGrower grower)) {
 			// Fallback behaviour
 			bottomColumnPlant.resetCreationTime();
-		} else {
-			Block topColumn = VerticalGrower.getRelativeBlock(block ,RBUtils.getGrowthDirection(block.getType()));
-			int blocksBroken = Math.abs(topColumn.getY() - block.getY()) + 1;
-			long growthTime = bottomColumnPlant.getGrowthConfig().getPersistentGrowthTime(sourceColumn, true);
-			int stage = grower.getStage(bottomColumnPlant);
-			int stagesLeft = Math.max(stage - blocksBroken, 0);
-
-			bottomColumnPlant.setCreationTime(System.currentTimeMillis() - growthTime * stagesLeft / grower.getMaxStage());
+			updateGrowthTime(bottomColumnPlant, sourceColumn);
+			return true;
 		}
 
-		updateGrowthTime(bottomColumnPlant, sourceColumn);
+		Block topColumn = VerticalGrower.getRelativeBlock(block ,RBUtils.getGrowthDirection(block.getType()));
+		int blocksBroken = Math.abs(topColumn.getY() - block.getY()) + 1;
+		long growthTime = bottomColumnPlant.getGrowthConfig().getPersistentGrowthTime(sourceColumn, true);
+		int oldStage = grower.getStage(bottomColumnPlant);
+		int currentStage = Math.max(oldStage - blocksBroken, 0);
+
+		updateGrowthTimeOnDestruction(bottomColumnPlant, currentStage, growthTime);
 
 		return true;
 	}
@@ -97,9 +128,22 @@ public class PlantLogicManager {
 		long growthTime = bottomColumnPlant.getGrowthConfig().getPersistentGrowthTime(sourceColumn, true);
 		int stage = grower.getStage(bottomColumnPlant);
 
-		bottomColumnPlant.setCreationTime(System.currentTimeMillis() - growthTime * stage / grower.getMaxStage());
+		updateGrowthTimeOnDestruction(bottomColumnPlant, stage, growthTime);
+	}
 
-		updateGrowthTime(bottomColumnPlant, sourceColumn);
+	private void updateGrowthTimeOnDestruction(Plant plant, int stage, long growthTime) {
+		ColumnPlantGrower grower = (ColumnPlantGrower) plant.getGrowthConfig().getGrower();
+		long creationTime = System.currentTimeMillis() - growthTime * stage / grower.getMaxStage();
+
+		plant.setCreationTime(System.currentTimeMillis() - growthTime * stage / grower.getMaxStage());
+
+		double incPerStage = grower.getIncrementPerStage();
+		double nextProgressStage = (stage + incPerStage) / grower.getMaxStage();
+		nextProgressStage = Math.min(nextProgressStage, 1.0);
+		long timeFromCreationTillNextStage = (long) (growthTime * nextProgressStage);
+		long nextUpdateTime = creationTime + timeFromCreationTillNextStage;
+
+		plant.setNextGrowthTime(nextUpdateTime);
 	}
 
 	private void handleFruitBlockDestruction(Block block) {
@@ -257,5 +301,4 @@ public class PlantLogicManager {
 			plant.setNextGrowthTime(nextUpdateTime);
 		}
 	}
-
 }

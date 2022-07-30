@@ -149,14 +149,14 @@ public class TreeGrower extends AgeableGrower {
 	}
 
 	@Override
-	public void setStage(Plant plant, int stage) {
+	public boolean setStage(Plant plant, int stage) {
 		if (stage < 1) {
-			return;
+			return true;
 		}
 		Block block = plant.getLocation().getBlock();
 		// Re-Read the block data to make sure it is up to date
 		if (!(block.getBlockData() instanceof Sapling)) {
-			return;
+			return true;
 		}
 		Material mat = block.getType();
 		boolean canBeBig = canBeBig(mat);
@@ -165,7 +165,7 @@ public class TreeGrower extends AgeableGrower {
 		}
 		TreeType type = remapSaplingToTree(mat, canBeBig);
 		if (type == null) {
-			return;
+			return true;
 		}
 		if (canBeBig) {
 			clearBigTreeSaplings(block, mat);
@@ -176,6 +176,7 @@ public class TreeGrower extends AgeableGrower {
 			//failed, so restore sapling, TODO restore 2x2
 			block.setType(mat);
 		}
+		return true;
 	}
 	
 	@Override

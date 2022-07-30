@@ -25,10 +25,12 @@ public class CustomTreeGrower extends IArtificialGrower {
 	}
 
 	@Override
-	public void setStage(Plant plant, int stage) {
+	public boolean setStage(Plant plant, int stage) {
 		if (stage < 1) {
-			return;
+			return true;
 		}
+
+		return true;
 	}
 
 	@Override

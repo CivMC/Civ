@@ -114,18 +114,6 @@ public class PlantListener implements Listener {
 		growthConfig.handleAttemptedGrowth(event, sourceBlock);
 	}
 
-	private PlantGrowthConfig getGrowthConfigFallback(Block block) {
-		Plant plant = plantManager.getPlant(block);
-		PlantGrowthConfig growthConfig = null;
-		if (plant != null) {
-			growthConfig = plant.getGrowthConfig();
-		}
-		if (growthConfig == null) {
-			growthConfig = plugin.getGrowthConfigManager().getGrowthConfigFallback(block.getType());
-		}
-		return growthConfig;
-	}
-
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		plugin.getPlantLogicManager().handlePlantCreation(event.getBlock(), event.getItemInHand());
@@ -165,22 +153,11 @@ public class PlantListener implements Listener {
 
 		if (event.getChangedType() != Material.CACTUS
 				|| event.getSourceBlock().getType() != Material.AIR
+				|| event.getSourceBlock().getY() <= event.getBlock().getLocation().getY()
 		) {
 			return;
 		}
 
-		Plant plant = plantManager.getPlant(event.getBlock());
-		if (plant == null) {
-			// scan downwards
-			Block below = event.getBlock().getRelative(BlockFace.DOWN);
-			while (below.getType() == Material.CACTUS) {
-				below = below.getRelative(BlockFace.DOWN);
-			}
-			Block bottom = below.getRelative(BlockFace.UP);
-			plant = plantManager.getPlant(bottom);
-		}
-		if (plant != null) {
-			plant.resetCreationTime();
-		}
+		plugin.getPlantLogicManager().handleCactusPhysics(event.getBlock());
 	}
 }

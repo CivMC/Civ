@@ -35,11 +35,12 @@ public class SchematicGrower extends IArtificialGrower {
 	}
 
 	@Override
-	public void setStage(Plant plant, int stage) {
+	public boolean setStage(Plant plant, int stage) {
 		if (stage < 1) {
-			return;
+			return true;
 		}
 		schematic.spawnAt(plant.getLocation().add(offset));
+		return true;
 	}
 
 	@Override

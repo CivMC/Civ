@@ -28,14 +28,15 @@ public class SeaPickleGrower extends IArtificialGrower {
 	}
 
 	@Override
-	public void setStage(Plant plant, int stage) {
+	public boolean setStage(Plant plant, int stage) {
 		Block block = plant.getLocation().getBlock();
 		if (block.getType() != Material.SEA_PICKLE) {
-			return;
+			return true;
 		}
 		SeaPickle data = (SeaPickle) block.getBlockData();
 		data.setPickles(stage + 1);
 		block.setBlockData(data);
+		return true;
 	}
 
 	@Override

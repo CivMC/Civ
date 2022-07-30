@@ -29,12 +29,13 @@ public class StemGrower extends AgeableGrower {
 	}
 	
 	@Override
-	public void setStage(Plant plant, int stage) {
+	public boolean setStage(Plant plant, int stage) {
 		super.setStage(plant, stage);
 		if (getMaxStage() == stage) {
 			plant.resetCreationTime();
 			plant.setGrowthConfig(fruitConfig);
 		}
+		return true;
 	}
 
 }
