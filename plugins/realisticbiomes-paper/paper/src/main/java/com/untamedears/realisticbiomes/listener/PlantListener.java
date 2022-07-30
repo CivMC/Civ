@@ -153,21 +153,22 @@ public class PlantListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockSpread(BlockSpreadEvent event) {
 		handleGrowEvent(event, event.getSource(), event.getNewState().getType());
-//		Plant plant = plantManager.getPlant(event.getSource());
-//		PlantGrowthConfig growthConfig = getGrowthConfigFallback(event.getBlock());
-//		if (growthConfig != null) {
-//			plant.getGrowthConfig().handleAttemptedGrowth(event, event.getSource());
-//		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void cactusBreak(BlockPhysicsEvent event) {
-		if (event.getBlock().getType() != Material.CACTUS) {
+		// - sourceBlock is affecting the other block
+		//   If it is AIR then this means that the CACTUS block was replaced by AIR
+		// - changedType is the block the was affected
+		//   Must be CACTUS since we handling here CACTUS break event
+		//   Growth time should be recalculated if the CACTUS was broken
+
+		if (event.getChangedType() != Material.CACTUS
+				|| event.getSourceBlock().getType() != Material.AIR
+		) {
 			return;
 		}
-		if (event.getChangedType() != Material.AIR) {
-			return;
-		}
+
 		Plant plant = plantManager.getPlant(event.getBlock());
 		if (plant == null) {
 			// scan downwards
