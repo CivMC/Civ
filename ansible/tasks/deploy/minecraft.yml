@@ -27,14 +27,6 @@
     src: ../../templates/stacks/minecraft.yml
     dest: /opt/stacks/minecraft/minecraft.yml
 
-- name: Minecraft | Copy Kira Config
-  when:
-    - "'swarm_manager' in group_names"
-    - setting.minecraft.enabled
-  template:
-    src: ../../templates/kira-config.json
-    dest: /opt/stacks/minecraft/kira-config/config.json
-
 - name: Minecraft | Deploy Stack
   when:
     - "'swarm_manager' in group_names"

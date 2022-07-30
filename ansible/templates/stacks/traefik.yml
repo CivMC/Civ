@@ -7,6 +7,11 @@ services:
     ports:
       - "80:80" # HTTP
       - "443:443" #HTTPS
+    networks:
+      - traefik-public
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-certs:/certificates
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -16,9 +21,6 @@ services:
         - traefik.constraint-label=traefik-public
         - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
         - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - traefik-certs:/certificates
     command:
       - --providers.docker
       - --providers.docker.constraints=Label(`traefik.constraint-label`, `traefik-public`)
@@ -32,8 +34,6 @@ services:
       - --accesslog
       - --log
       - --api
-    networks:
-      - traefik-public
 
 networks:
   traefik-public:

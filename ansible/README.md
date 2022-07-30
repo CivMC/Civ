@@ -9,6 +9,7 @@ subgraph Exposed Ports;
   port_http((80));
   port_https((443));
   port_mc((25565));
+  port_vote((8192));
 end;
 
 subgraph Minecraft;
@@ -21,6 +22,7 @@ subgraph Minecraft;
   mc_rabbitmq[(RabbitMQ)];
   
   port_mc-->mc_waterfall;
+  port_vote-->mc_paper;
     
   mc_waterfall-->mc_paper;
   mc_waterfall-->mc_queue;

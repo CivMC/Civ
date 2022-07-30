@@ -8,7 +8,10 @@ docker service scale minecraft_queue=0
 sleep 20m
 
 echo "$(date) Starting backup..."
-tar --exclude /opt/stacks/minecraft/orebfuscator_cache -zcvf "/opt/backups/$(date).tgz" /opt/stacks/minecraft/
+tar \
+  --exclude /opt/stacks/minecraft/orebfuscator_cache \
+  --exclude /opt/stacks/minecraft/plugins/dynmap \
+   -zcvf "/opt/backups/$(date).tgz" /opt/stacks/minecraft/
 
 echo "$(date) Starting services after backup..."
 docker service scale minecraft_paper=1

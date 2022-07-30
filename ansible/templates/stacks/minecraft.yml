@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   waterfall:
-    image: ghcr.io/civmc/civdocker/waterfall:1.15.2
+    image: ghcr.io/civmc/civdocker/waterfall:1.16.2
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -14,7 +14,7 @@ services:
         protocol: tcp
         mode: host
     environment:
-      CIV_POSTGRES_HOST: prod-server_postgres
+      CIV_POSTGRES_HOST: minecraft_postgres
       CIV_POSTGRES_USERNAME: minecraft
       CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
     deploy:
@@ -22,13 +22,19 @@ services:
         constraints: [node.role == manager]
 
   paper:
-    image: ghcr.io/civmc/civdocker/paper:1.15.2
+    image: ghcr.io/civmc/civdocker/paper:1.16.2
     restart: unless-stopped
     networks:
       - traefik-public
+      - minecraft_default
     tty: true
     stdin_open: true
     stop_grace_period: 60m
+    ports:
+      - target: 8192
+        published: 8192
+        protocol: tcp
+        mode: host
     environment:
       INIT_MEMORY: 40G
       MAX_MEMORY: 40G
@@ -52,7 +58,7 @@ services:
       CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
 
     volumes:
-      - paper-data:/data
+      - /opt/stacks/minecraft/paper-data:/data
       # Private Config & Plugins
       - /opt/PrivateConfig/paper/config/RealisticBiomes/config.yml:/config/plugins/RealisticBiomes/config.yml
       - /opt/PrivateConfig/paper/plugins/Vulcan-2.6.5.jar:/config/plugins/Vulcan-2.6.5.jar
@@ -61,6 +67,7 @@ services:
       - /opt/PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/config/plugins/KirraBukkitGateway/cnfig.yml
       - /opt/PrivateConfig/paper/config/FactoryMod/config.yml:/config/plugins/FactoryMod/config.yml
       - /opt/PrivateConfig/paper/config/Bastion/config.yml:/config/plugins/Bastion/config.yml
+      - /opt/PrivateConfig/paper/config/Brewery/config.yml:/config/plugins/Brewery/config.yml
       - /opt/PrivateConfig/paper/config/Terra/packs/CivMC:/config/plugins/Terra/packs/CivMC
       - /opt/PrivateConfig/paper/config/Votifier/config.yml:/config/plugins/Votifier/config.yml
       - /opt/PrivateConfig/paper/config/Votifier/rsa/public.key:/config/plugins/Votifier/rsa/public.key
@@ -83,7 +90,7 @@ services:
         - traefik.http.services.prod-server-dynmap.loadbalancer.server.port=8123
 
   queue:
-    image: ghcr.io/civmc/civdocker/queue:1.15.2
+    image: ghcr.io/civmc/civdocker/queue:1.16.2
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -111,7 +118,7 @@ services:
     tty: true
     stdin_open: true
     volumes:
-      - kira-config:/app/config.json
+      - /opt/stacks/minecraft/kira-config/config.json:/app/config.json
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -120,12 +127,15 @@ services:
     image: mariadb:10.7.1
     restart: unless-stopped
     command: --max-connections 500
+    networks:
+      - monitoring
+      - minecraft_default
     environment:
       MYSQL_USER: minecraft
       MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
       MYSQL_ROOT_PASSWORD: '{{secret.minecraft.mysql.root_password}}'
     volumes:
-      - mariadb-data:/var/lib/mysql
+      - /opt/stacks/minecraft/mariadb-data:/var/lib/mysql
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -134,6 +144,9 @@ services:
     image: timescale/timescaledb:latest-pg14
     restart: unless-stopped
     command: postgres -c 'max_connections=500'
+    networks:
+      - monitoring
+      - minecraft_default
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 10s
@@ -143,7 +156,7 @@ services:
       POSTGRES_USER: minecraft
       POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - /opt/stacks/minecraft/postgres-data:/var/lib/postgresql/data
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -164,31 +177,9 @@ services:
         constraints: [node.role == manager]
 
 networks:
+  minecraft_default:
+    external: true
   traefik-public:
     external: true
-
-volumes:
-  paper-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /opt/stacks/minecraft/paper-data
-  kira-config:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /opt/stacks/minecraft/kira-config/config.json
-  mariadb-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /opt/stacks/minecraft/mariadb-data
-  postgres-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /opt/stacks/minecraft/postgres-data
+  monitoring:
+    external: true

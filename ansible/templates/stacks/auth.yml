@@ -38,7 +38,7 @@ services:
     image: postgres:latest
     restart: always
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - /opt/stacks/auth/postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: '{{secret.auth.postgres.password}}'
@@ -51,14 +51,6 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
-
-volumes:
-  postgres-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /opt/stacks/auth/postgres-data
 
 networks:
   traefik-public:
