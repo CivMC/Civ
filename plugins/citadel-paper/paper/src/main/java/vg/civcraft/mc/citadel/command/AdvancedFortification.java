@@ -33,7 +33,7 @@ public class AdvancedFortification extends BaseCommand {
 		AdvancedFortificationState advFortState = null;
 		if (currentState instanceof AdvancedFortificationState) {
 			advFortState = (AdvancedFortificationState) currentState;
-			if (targetGroup.isEmpty()) {
+			if (targetGroup == null || targetGroup.isEmpty()) {
 				stateManager.setState(player, null);
 				return;
 			}
