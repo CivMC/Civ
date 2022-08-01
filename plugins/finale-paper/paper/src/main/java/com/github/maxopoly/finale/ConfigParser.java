@@ -113,7 +113,7 @@ public class ConfigParser {
 		// Pearl cooldown changes
 		this.pearlEnabled = parsePearls(config.getConfigurationSection("pearls"));
 		plugin.info("Ender pearl additions: " + pearlEnabled);
-		this.itemCDEnabled = parseItemCooldown(config.getConfigurationSection("itemCooldowns"));
+		this.itemCDEnabled = parseItemCooldown(config.getConfigurationSection("gappleCooldown"));
 		plugin.info("Item Cooldowns active: " + itemCDEnabled);
 		WeaponModifier weapMod = parseWeaponModification(config.getConfigurationSection("weaponModification"));
 		ArmourModifier armourMod = parseArmourModification(config.getConfigurationSection("armourModification"));
