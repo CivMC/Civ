@@ -14,8 +14,11 @@ import vg.civcraft.mc.civmodcore.players.settings.impl.IntegerSetting;
 public class FinaleSettingManager {
 
 	private BooleanSetting vanillaPearlCooldown;
+	private BooleanSetting vanillaItemCooldown;
+	private BooleanSetting actionBarItemCooldown;
 	private BooleanSetting actionBarPearlCooldown;
 	private BooleanSetting sideBarPearlCooldown;
+	private BooleanSetting sideBarItemCooldown;
 	private BooleanSetting showArmor;
 	private BooleanSetting showTool;
 	private BooleanSetting showPotionEffects;
@@ -43,15 +46,30 @@ public class FinaleSettingManager {
 				"Should pearl cooldown be shown as an overlay on the item, the way it is done in vanilla");
 		PlayerSettingAPI.registerSetting(vanillaPearlCooldown, menu);
 
+		vanillaItemCooldown = new BooleanSetting(plugin, false, "Use vanilla item cooldown",
+			"finaleVanillaItemCooldown",
+			"Should items cooldown be shown as an overlay on the item, the way it is done in vanilla");
+		PlayerSettingAPI.registerSetting(vanillaItemCooldown, menu);
+
 		actionBarPearlCooldown = new BooleanSetting(plugin, true, "Show pearl cooldown on action bar",
 				"finaleActionBarPearlCooldown",
 				"Should pearl cooldown be shown on the action bar at the bottom of your screen");
 		PlayerSettingAPI.registerSetting(actionBarPearlCooldown, menu);
 
+		actionBarItemCooldown = new BooleanSetting(plugin, true, "Show item cooldown on action bar",
+			"finaleActionBarItemCooldown",
+			"Should items cooldown be shown on the action bar at the bottom of your screen");
+		PlayerSettingAPI.registerSetting(actionBarItemCooldown, menu);
+
 		sideBarPearlCooldown = new BooleanSetting(plugin, false, "Show pearl cooldown in side bar",
 				"finaleSideBarPearlCooldown",
 				"Should pearl cooldown be shown on the sidebar");
 		PlayerSettingAPI.registerSetting(sideBarPearlCooldown, menu);
+
+		sideBarItemCooldown = new BooleanSetting(plugin, false, "Show item cooldown in side bar",
+			"finaleSideBarItemCooldown",
+			"Should items cooldown be shown on the sidebar");
+		PlayerSettingAPI.registerSetting(sideBarItemCooldown, menu);
 
 		showArmor = new BooleanSetting(Finale.getPlugin(), true, "Show armor durability", "finaleArmorDurabilitySidebar","Should the durability of your worn armor be shown in the scorebard");
 		PlayerSettingAPI.registerSetting(showArmor, menu);
@@ -74,6 +92,10 @@ public class FinaleSettingManager {
 
 	public boolean setVanillaPearlCooldown(UUID uuid) {
 		return vanillaPearlCooldown.getValue(uuid);
+	}
+
+	public boolean setVanillaItemCooldown(UUID uuid) {
+		return vanillaItemCooldown.getValue(uuid);
 	}
 
 	public int getToolProtectionThreshhold(UUID uuid) {
@@ -108,8 +130,16 @@ public class FinaleSettingManager {
 		return sideBarPearlCooldown.getValue(uuid);
 	}
 
+	public boolean sideBarItemCooldown(UUID uuid) {
+		return sideBarItemCooldown.getValue(uuid);
+	}
+
 	public boolean actionBarPearlCooldown(UUID uuid) {
 		return actionBarPearlCooldown.getValue(uuid);
+	}
+
+	public boolean actionBarItemCooldown(UUID uuid) {
+		return actionBarItemCooldown.getValue(uuid);
 	}
 
 	public boolean showArmorDurability(UUID uuid) {

@@ -33,7 +33,9 @@ public class ConfigParser {
 	private Finale plugin;
 	private FinaleManager manager;
 	private boolean pearlEnabled;
+	private boolean itemCDEnabled;
 	private long pearlCooldown;
+	private long itemCooldown;
 	private boolean combatTagOnPearl;
 	private PotionHandler potionHandler;
 	private Collection<Enchantment> disabledEnchants;
@@ -61,6 +63,10 @@ public class ConfigParser {
 		return pearlCooldown;
 	}
 
+	public long getItemCooldown() {
+		return itemCooldown;
+	}
+
 	public PotionHandler getPotionHandler() {
 		return potionHandler;
 	}
@@ -71,6 +77,10 @@ public class ConfigParser {
 
 	public boolean isPearlEnabled() {
 		return pearlEnabled;
+	}
+
+	public boolean isItemCDEnabled() {
+		return itemCDEnabled;
 	}
 
 	public CombatConfig getCombatConfig() {
@@ -103,6 +113,8 @@ public class ConfigParser {
 		// Pearl cooldown changes
 		this.pearlEnabled = parsePearls(config.getConfigurationSection("pearls"));
 		plugin.info("Ender pearl additions: " + pearlEnabled);
+		this.itemCDEnabled = parseItemCooldown(config.getConfigurationSection("itemCooldowns"));
+		plugin.info("Item Cooldowns active: " + itemCDEnabled);
 		WeaponModifier weapMod = parseWeaponModification(config.getConfigurationSection("weaponModification"));
 		ArmourModifier armourMod = parseArmourModification(config.getConfigurationSection("armourModification"));
 		boolean invulTicksEnabled = config.getBoolean("invulTicksEnabled", false);
@@ -198,6 +210,15 @@ public class ConfigParser {
 		combatTagOnPearl = config.getBoolean("combatTag", true)
 				&& Bukkit.getPluginManager().isPluginEnabled("CombatTagPlus");
 		plugin.info("Combat tagging on pearling: " + combatTagOnPearl);
+		return true;
+	}
+
+	private boolean parseItemCooldown(ConfigurationSection section){
+		if (section == null || !section.getBoolean("enabled", false)) {
+			return false;
+		}
+		itemCooldown = parseTime(section.getString("cooldown", "10s"));
+		plugin.info("Item Cooldown active and set to " + itemCooldown/20 + " seconds!");
 		return true;
 	}
 

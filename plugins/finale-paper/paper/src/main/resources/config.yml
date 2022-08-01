@@ -84,6 +84,10 @@ pearls:
   #Combat tag using CTP when pearling?
   combatTag: true
 
+#Config same as above, except with only enabled and cooldown as options
+itemCooldowns:
+  enabled: true
+  cooldown: 16s
 #allows adjusting the attack damage of any item by its spigot material identifier
 weaponModification:
   netheriteAxe:
