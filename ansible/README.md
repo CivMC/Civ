@@ -65,7 +65,6 @@ subgraph Traefik;
   port_https-->tfk_traefik;
   
   tfk_traefik-->mon_grafana;
-  tfk_traefik-->mc_paper;
   tfk_traefik-->por_portainer;
 end;
 ```
