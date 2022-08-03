@@ -9,8 +9,7 @@ sleep 20m
 
 echo "$(date) Starting backup..."
 tar \
-  --exclude /opt/stacks/minecraft/orebfuscator_cache \
-  --exclude /opt/stacks/minecraft/plugins/dynmap \
+  --exclude /opt/stacks/minecraft/paper-data/orebfuscator_cache \
    -zcvf "/opt/backups/$(date).tgz" /opt/stacks/minecraft/
 
 echo "$(date) Starting services after backup..."
