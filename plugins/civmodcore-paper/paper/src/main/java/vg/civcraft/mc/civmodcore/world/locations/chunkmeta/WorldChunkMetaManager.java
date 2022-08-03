@@ -82,7 +82,7 @@ public class WorldChunkMetaManager {
 
 	void flushPluginData(short pluginID) {
 		synchronized (metas) {
-			for (ChunkCoord coord : metas.keySet()) {
+			for (ChunkCoord coord : metas.values()) {
 				synchronized (coord) {
 					coord.persistPlugin(pluginID);
 				}
@@ -199,8 +199,12 @@ public class WorldChunkMetaManager {
 	}
 
 	private void saveAllChunks() {
-		//we don't take a lock on metas, because we will not modify it
-		for(ChunkCoord coord : metas.values()) {
+		List<ChunkCoord> saveList;
+		synchronized (metas) {
+			saveList = new ArrayList<>(metas.values());
+		}
+
+		for(ChunkCoord coord : saveList) {
 			synchronized (coord) {
 				if (!coord.isChunkLoaded()) {
 					// to avoid race conditions, we will not write out chunks currently unloaded
@@ -223,28 +227,8 @@ public class WorldChunkMetaManager {
 					ChunkCoord coord = iter.next();
 					// Is time up?
 					if (currentTime - coord.getLastMCUnloadingTime() > UNLOAD_DELAY) {
-						// make sure chunk hasnt loaded again since
-						if (coord.getLastMCUnloadingTime() > coord.getLastMCLoadingTime()) {
-							synchronized (metas) {
-								synchronized (coord) {
-									coord.fullyPersist();
-									iter.remove();
-									if (!coord.hasPermanentlyLoadedData()) {
-										metas.remove(coord);
-										// coord is up for garbage collection at this point and all of its data has been
-										// written to the db
-									} else {
-										coord.deleteNonPersistentData();
-										// keep chunk coord, but garbage collect the data we dont want to keep inside of
-										// it
-									}
-								}
-							}
-						}
-						else {
-							//chunk was loaded again, remove it from unloading queue
-							iter.remove();
-						}
+						unloadChunkCoord(coord);
+						iter.remove();
 					} else {
 						// tree set iterator is guaranteed to be in ascending order and we use the
 						// timestamp of unloading as key,
@@ -255,6 +239,34 @@ public class WorldChunkMetaManager {
 			}
 
 		}, UNLOAD_CHECK_INTERVAL, UNLOAD_CHECK_INTERVAL, TimeUnit.MILLISECONDS);
+	}
+
+	private void unloadChunkCoord(ChunkCoord coord) {
+		// make sure chunk hasnt loaded again since
+		if (coord.getLastMCUnloadingTime() <= coord.getLastMCLoadingTime()) {
+			return;
+		}
+
+		boolean hasPermanentlyLoadedData;
+
+		synchronized (coord) {
+			coord.fullyPersist();
+
+			hasPermanentlyLoadedData = coord.hasPermanentlyLoadedData();
+			if (hasPermanentlyLoadedData) {
+				// keep chunk coord, but garbage collect the data we dont want to keep inside of
+				// it
+				coord.deleteNonPersistentData();
+			}
+		}
+
+		if (!hasPermanentlyLoadedData && coord.getLastMCUnloadingTime() > coord.getLastMCLoadingTime()) {
+			// coord is up for garbage collection at this point and all of its data has been
+			// written to the db
+			synchronized (metas) {
+				metas.remove(coord);
+			}
+		}
 	}
 
 	private void startChunkLoadingThreads(int chunkLoadingCount) {
