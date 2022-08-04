@@ -122,6 +122,10 @@ public class ChunkCoord extends XZWCoord {
 		return lastUnloadingTime;
 	}
 
+	void clearLastMCUnloadingTime() {
+		lastUnloadingTime = -1;
+	}
+
 	ChunkMetaLoadStatus getMetaIfLoaded(short pluginID, boolean alwaysLoaded) {
 		if (!alwaysLoaded && !isFullyLoaded.get())
 			return new ChunkMetaLoadStatus(null, false);
