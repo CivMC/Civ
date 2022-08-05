@@ -10,6 +10,7 @@
       include_tasks:
         file: '../tasks/install/{{install_task}}.yml'
       loop:
+        - packages
         - docker
       loop_control:
         loop_var: install_task

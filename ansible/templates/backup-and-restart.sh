@@ -8,9 +8,14 @@ docker service scale minecraft_queue=0
 sleep 20m
 
 echo "$(date) Starting backup..."
-tar \
-  --exclude /opt/stacks/minecraft/paper-data/orebfuscator_cache \
-   -zcvf "/opt/backups/$(date).tgz" /opt/stacks/minecraft/
+export AWS_ACCESS_KEY_ID={{secret.backup.s3_access_key_id}}
+export AWS_SECRET_ACCESS_KEY={{secret.backup.s3_access_key}}
+export RESTIC_PASSWORD={{secret.backup.restic_password}}
+restic \
+  -r {{secret.backup.restic_repo}} backup \
+  /opt/stacks/minecraft/ \
+  --exclude '**orebfuscator_cache'\
+  --exclude '**dynmap'
 
 echo "$(date) Starting services after backup..."
 docker service scale minecraft_paper=1
