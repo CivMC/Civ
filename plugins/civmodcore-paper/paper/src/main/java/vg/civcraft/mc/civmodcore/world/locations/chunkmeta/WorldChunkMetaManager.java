@@ -106,7 +106,7 @@ public class WorldChunkMetaManager {
 				if (populate) {
 					// Prevent removal from metas in case we load at the same time
 					// as it unloads
-					value.clearLastMCUnloadingTime();
+					value.clearUnloaded();
 				}
 				return value;
 			}
@@ -223,11 +223,11 @@ public class WorldChunkMetaManager {
 
 			ChunkCoord coord;
 			while((coord = unloadingQueue.poll()) != null) {
-				if (coord.getLastMCUnloadingTime() == -1) {
+				if (!coord.isUnloaded()) {
 					continue;
 				}
 
-				if (System.currentTimeMillis() - coord.getLastMCUnloadingTime() > UNLOAD_DELAY) {
+				if (System.currentTimeMillis() - coord.getLastUnloadedTime() > UNLOAD_DELAY) {
 					unloadChunkCoord(coord);
 				} else {
 					if (readdList == null) {
@@ -245,7 +245,7 @@ public class WorldChunkMetaManager {
 
 	private void unloadChunkCoord(ChunkCoord coord) {
 		// make sure chunk hasnt loaded again since
-		if (coord.getLastMCUnloadingTime() <= coord.getLastMCLoadingTime()) {
+		if (!coord.isUnloaded()) {
 			return;
 		}
 
@@ -266,9 +266,9 @@ public class WorldChunkMetaManager {
 			// coord is up for garbage collection at this point and all of its data has been
 			// written to the db
 			synchronized (metas) {
-				if (coord.getLastMCUnloadingTime() > coord.getLastMCLoadingTime()) {
+				if (coord.isUnloaded()) {
 					metas.remove(coord);
-					coord.clearLastMCUnloadingTime();
+					coord.clearUnloaded();
 				}
 			}
 		}
