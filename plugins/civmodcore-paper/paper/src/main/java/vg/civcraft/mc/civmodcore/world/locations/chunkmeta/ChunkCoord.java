@@ -13,15 +13,16 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaViewTrac
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.stat.LoadStatisticManager;
 
 public class ChunkCoord extends XZWCoord {
+	private static final long  INVALID_TIME = -1;
 
 	/**
 	 * When was this chunk last loaded in Minecraft as UNIX timestamp
 	 */
-	private long lastLoadingTime;
+	private long lastLoadedTime;
 	/**
 	 * When was this chunk last unloaded in Minecraft as UNIX timestamp
 	 */
-	private long lastUnloadingTime;
+	private long lastUnloadedTime;
 	/**
 	 * Each ChunkMeta belongs to one plugin, they are identified by the plugin id
 	 */
@@ -37,8 +38,8 @@ public class ChunkCoord extends XZWCoord {
 		super(x, z, worldID);
 		this.world = world;
 		this.chunkMetas = new TreeMap<>();
-		this.lastLoadingTime = -1;
-		this.lastUnloadingTime = -1;
+		this.lastLoadedTime = INVALID_TIME;
+		this.lastUnloadedTime = INVALID_TIME;
 	}
 
 	/**
@@ -108,18 +109,18 @@ public class ChunkCoord extends XZWCoord {
 
 	/**
 	 * @return When was the minecraft chunk (the block data) this object is tied
-	 * last loaded (UNIX timestamp)
-	 */
-	long getLastMCLoadingTime() {
-		return lastLoadingTime;
-	}
-
-	/**
-	 * @return When was the minecraft chunk (the block data) this object is tied
 	 * last unloaded (UNIX timestamp)
 	 */
-	long getLastMCUnloadingTime() {
-		return lastUnloadingTime;
+	long getLastUnloadedTime() {
+		return lastUnloadedTime;
+	}
+
+	void clearUnloaded() {
+		lastUnloadedTime = INVALID_TIME;
+	}
+
+	boolean isUnloaded() {
+		return lastUnloadedTime > lastLoadedTime;
 	}
 
 	ChunkMetaLoadStatus getMetaIfLoaded(short pluginID, boolean alwaysLoaded) {
@@ -204,8 +205,8 @@ public class ChunkCoord extends XZWCoord {
 	 * loaded
 	 */
 	void minecraftChunkLoaded() {
-		boolean hasBeenLoadedBefore = this.lastLoadingTime != -1;
-		this.lastLoadingTime = System.currentTimeMillis();
+		boolean hasBeenLoadedBefore = this.lastLoadedTime != INVALID_TIME;
+		this.lastLoadedTime = System.currentTimeMillis();
 		if (hasBeenLoadedBefore) {
 			for (ChunkMeta<?> meta : chunkMetas.values()) {
 				try {
@@ -218,10 +219,10 @@ public class ChunkCoord extends XZWCoord {
 	}
 
 	public boolean isChunkLoaded() {
-		if (this.lastUnloadingTime > 0) {
-			return this.lastUnloadingTime < this.lastLoadingTime;
+		if (this.lastUnloadedTime > 0) {
+			return this.lastUnloadedTime < this.lastLoadedTime;
 		} else {
-			return this.lastLoadingTime > 0;
+			return this.lastLoadedTime > 0;
 		}
 	}
 
@@ -230,7 +231,7 @@ public class ChunkCoord extends XZWCoord {
 	 * unloaded
 	 */
 	void minecraftChunkUnloaded() {
-		this.lastUnloadingTime = System.currentTimeMillis();
+		this.lastUnloadedTime = System.currentTimeMillis();
 		for (ChunkMeta<?> meta : chunkMetas.values()) {
 			try {
 				meta.handleChunkUnload();
