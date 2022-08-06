@@ -13,10 +13,10 @@ import com.comphenix.protocol.wrappers.EnumWrappers.PlayerDigType;
 import com.comphenix.protocol.wrappers.WrappedEnumEntityUseAction;
 import com.github.maxopoly.finale.Finale;
 import com.google.common.collect.Sets;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
@@ -54,8 +54,8 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 	}
 	
 	private Set<UUID> isDigging = Sets.newConcurrentHashSet();
-	private Map<UUID, Long> lastRemovals = new HashMap<>();
-	private Map<UUID, Long> lastStartBreaks = new HashMap<>();
+	private Map<UUID, Long> lastRemovals = new ConcurrentHashMap<>();
+	private Map<UUID, Long> lastStartBreaks = new ConcurrentHashMap<>();
 	
 	@Override
 	public void onPacketReceiving(PacketEvent event) {
@@ -158,16 +158,8 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 	public void onQuit(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
 		
-		if (isDigging.contains(player.getUniqueId())) {
-			isDigging.remove(player.getUniqueId());
-		}
-		
-		if (lastRemovals.containsKey(player.getUniqueId())) {
-			lastRemovals.remove(player.getUniqueId());
-		}
-		
-		if (lastStartBreaks.containsKey(player.getUniqueId())) {
-			lastStartBreaks.remove(player.getUniqueId());
-		}
+		isDigging.remove(player.getUniqueId());
+		lastRemovals.remove(player.getUniqueId());
+		lastStartBreaks.remove(player.getUniqueId());
 	}
 }
