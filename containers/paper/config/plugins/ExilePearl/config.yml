@@ -263,7 +263,7 @@ general:
 pearls:
   autofree_worldborder: true
   free_by_throwing: false
-  free_teleport: true
+  free_teleport: false
   hotbar_needed: true
   decay_interval_human: day
   decay_interval_min_human: 34560 #This is hardcoded to divide by 1440 so we have to multiply by 24 to show the correct pearl cost
