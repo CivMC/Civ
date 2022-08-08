@@ -60,6 +60,12 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	}
 
 	@Override
+	public void onEnable() {
+		Bukkit.getPluginManager().registerEvents(this, plugin);
+		super.onEnable();
+	}
+
+	@Override
 	public String status() {
 		StringBuilder genStatus = new StringBuilder();
 		genStatus.append("GameFixes is ");
