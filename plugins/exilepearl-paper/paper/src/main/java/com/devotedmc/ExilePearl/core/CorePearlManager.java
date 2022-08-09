@@ -290,13 +290,12 @@ final class CorePearlManager implements PearlManager {
 				pearl.setLastOnline(new Date());
 			}
 
-			// convert timeout to milliseconds and compare against last time online.
-			if (decayTimeout == 0 || (new Date()).getTime() - pearl.getLastOnline().getTime() < (decayTimeout * 60 * 1000)) {
+			if (pearl.isActive()) {
 				PearlDecayEvent e = new PearlDecayEvent(pearl, decayAmount);
 				Bukkit.getPluginManager().callEvent(e);
 				if (!e.isCancelled() && e.getDamageAmount() > 0) {
 					int oldHealth = pearl.getHealth();
-					int newHealth = oldHealth - decayAmount;
+					int newHealth = oldHealth - e.getDamageAmount();
 					pearl.setHealth(newHealth);
 					pearlApi.log("Set pearl for player %s health from %s to %s", pearl.getPlayerName(), oldHealth, newHealth);
 				}

@@ -68,14 +68,23 @@ final class CoreExilePearl implements ExilePearl {
 	private boolean storageEnabled;
 	private boolean summoned;
 	private Location returnLoc;
+	private long decayTimeoutMs;
 
 	/**
 	 * Creates a new prison pearl instance
 	 * @param playerId The pearled player id
 	 * @param holder The holder instance
 	 */
-	public CoreExilePearl(final ExilePearlApi pearlApi, final PearlUpdateStorage storage, 
-			final UUID playerId, final UUID killedBy, int pearlId, final PearlHolder holder, final PearlType defaultPearlType) {
+	public CoreExilePearl(
+			final ExilePearlApi pearlApi,
+			final PearlUpdateStorage storage,
+			final UUID playerId,
+			final UUID killedBy,
+			final int pearlId,
+			final PearlHolder holder,
+			final PearlType defaultPearlType,
+			final int decayTimeoutMin)
+	{
 		Preconditions.checkNotNull(pearlApi, "pearlApi");
 		Preconditions.checkNotNull(storage, "storage");
 		Preconditions.checkNotNull(playerId, "playerId");
@@ -94,7 +103,8 @@ final class CoreExilePearl implements ExilePearl {
 		this.holders = new LinkedBlockingDeque<PearlHolder>();
 		this.holders.add(holder);
 		this.health = DEFAULT_HEALTH;
-		storageEnabled = false;
+		this.storageEnabled = false;
+		this.decayTimeoutMs = (long)decayTimeoutMin * 60L * 1000L;
 	}
 
 
@@ -527,6 +537,11 @@ final class CoreExilePearl implements ExilePearl {
 		if (storageEnabled) {
 			storage.updatePearlLastOnline(this);
 		}
+	}
+
+	@Override
+	public boolean isActive() {
+		return decayTimeoutMs == 0L || (new Date()).getTime() - getLastOnline().getTime() < decayTimeoutMs;
 	}
 
 	@Override
