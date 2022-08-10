@@ -11,6 +11,7 @@ import com.github.maxopoly.finale.external.FinaleSettingManager;
 import com.github.maxopoly.finale.listeners.DamageListener;
 import com.github.maxopoly.finale.listeners.EnchantmentDisableListener;
 import com.github.maxopoly.finale.listeners.ExtraDurabilityListener;
+import com.github.maxopoly.finale.listeners.GappleCooldownListener;
 import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
 import com.github.maxopoly.finale.listeners.PlayerListener;
 import com.github.maxopoly.finale.listeners.PotionListener;
@@ -86,6 +87,9 @@ public class Finale extends ACivMod {
 			Bukkit.getPluginManager()
 					.registerEvents(new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(),
 							ctpManager), this);
+		}
+		if (config.isItemCDEnabled()) {
+			Bukkit.getPluginManager().registerEvents(new GappleCooldownListener(config.getItemCooldown()), this);
 		}
 		Bukkit.getPluginManager().registerEvents(new WeaponModificationListener(), this);
 		Bukkit.getPluginManager().registerEvents(new ExtraDurabilityListener(), this);
