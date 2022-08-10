@@ -66,7 +66,7 @@ public class HorizontalBlockSpreadGrower extends IArtificialGrower {
 	}
 
 	@Override
-	public void setStage(Plant plant, int stage) {
+	public boolean setStage(Plant plant, int stage) {
 		int currentAmount = getStage(plant);
 		int toAdd = stage - currentAmount;
 		outer:
@@ -112,6 +112,7 @@ public class HorizontalBlockSpreadGrower extends IArtificialGrower {
 			break; // no valid growth spot available, cancel all further growth attempts
 		}
 
+		return true;
 	}
 
 	private boolean growAtSpot(Plant source, Location loc) {

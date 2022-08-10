@@ -57,8 +57,10 @@ public abstract class IArtificialGrower {
 	 * 
 	 * @param plant Plant to set growth stage for
 	 * @param stage Stage to set to
+	 * @return True if the stage was set successfully.
+	 *         Now used only for VerticalGrower, helps to determine if CACTUS grown but was broken by adjacent blocks
 	 */
-	public abstract void setStage(Plant plant, int stage);
+	public abstract boolean setStage(Plant plant, int stage);
 
 	/**
 	 * @return Should a plant instance be deleted entirely once fully grown

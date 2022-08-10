@@ -114,18 +114,6 @@ public class PlantListener implements Listener {
 		growthConfig.handleAttemptedGrowth(event, sourceBlock);
 	}
 
-	private PlantGrowthConfig getGrowthConfigFallback(Block block) {
-		Plant plant = plantManager.getPlant(block);
-		PlantGrowthConfig growthConfig = null;
-		if (plant != null) {
-			growthConfig = plant.getGrowthConfig();
-		}
-		if (growthConfig == null) {
-			growthConfig = plugin.getGrowthConfigManager().getGrowthConfigFallback(block.getType());
-		}
-		return growthConfig;
-	}
-
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		plugin.getPlantLogicManager().handlePlantCreation(event.getBlock(), event.getItemInHand());
@@ -153,33 +141,23 @@ public class PlantListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockSpread(BlockSpreadEvent event) {
 		handleGrowEvent(event, event.getSource(), event.getNewState().getType());
-//		Plant plant = plantManager.getPlant(event.getSource());
-//		PlantGrowthConfig growthConfig = getGrowthConfigFallback(event.getBlock());
-//		if (growthConfig != null) {
-//			plant.getGrowthConfig().handleAttemptedGrowth(event, event.getSource());
-//		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void cactusBreak(BlockPhysicsEvent event) {
-		if (event.getBlock().getType() != Material.CACTUS) {
+		// - sourceBlock is affecting the other block
+		//   If it is AIR then this means that the CACTUS block was replaced by AIR
+		// - changedType is the block the was affected
+		//   Must be CACTUS since we handling here CACTUS break event
+		//   Growth time should be recalculated if the CACTUS was broken
+
+		if (event.getChangedType() != Material.CACTUS
+				|| event.getSourceBlock().getType() != Material.AIR
+				|| event.getSourceBlock().getY() <= event.getBlock().getLocation().getY()
+		) {
 			return;
 		}
-		if (event.getChangedType() != Material.AIR) {
-			return;
-		}
-		Plant plant = plantManager.getPlant(event.getBlock());
-		if (plant == null) {
-			// scan downwards
-			Block below = event.getBlock().getRelative(BlockFace.DOWN);
-			while (below.getType() == Material.CACTUS) {
-				below = below.getRelative(BlockFace.DOWN);
-			}
-			Block bottom = below.getRelative(BlockFace.UP);
-			plant = plantManager.getPlant(bottom);
-		}
-		if (plant != null) {
-			plant.resetCreationTime();
-		}
+
+		plugin.getPlantLogicManager().handleCactusPhysics(event.getBlock());
 	}
 }

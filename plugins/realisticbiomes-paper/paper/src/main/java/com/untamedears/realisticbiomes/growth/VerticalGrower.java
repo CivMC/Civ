@@ -12,6 +12,7 @@ import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class VerticalGrower extends IArtificialGrower {
+	public record VerticalGrowResult(boolean growthLimited, Block top){}
 	
 	public static Block getRelativeBlock(Block block, BlockFace face) {
 		Material mat = block.getType();
@@ -52,6 +53,10 @@ public class VerticalGrower extends IArtificialGrower {
 		return primaryGrowthDirection;
 	}
 
+	public boolean isInstaBreakTouching() {
+		return instaBreakTouching;
+	}
+
 	@Override
 	public int getMaxStage() {
 		return maxHeight - 1;
@@ -85,7 +90,7 @@ public class VerticalGrower extends IArtificialGrower {
 	 * @param howMany How tall should the growth be
 	 * @return highest plant block
 	 */
-	protected Block growVertically(Plant plant, Block block, int howMany) {
+	protected VerticalGrowResult growVertically(Plant plant, Block block, int howMany) {
 		if (material != null && block.getType() != material) {
 			block.setType(material);
 		}
@@ -108,7 +113,9 @@ public class VerticalGrower extends IArtificialGrower {
 							Item item = block.getWorld().dropItemNaturally(loc, toDrop);
 							item.setVelocity(item.getVelocity().multiply(1.2));
 							plant.resetCreationTime();
-							return onTop.getRelative(primaryGrowthDirection.getOppositeFace());
+							onTop = onTop.getRelative(primaryGrowthDirection.getOppositeFace());
+
+							return new VerticalGrowResult(false, onTop);
 						}
 					}
 				}
@@ -125,19 +132,20 @@ public class VerticalGrower extends IArtificialGrower {
 			break;
 		}
 
-		return onTop.getType() != material ? onTop.getRelative(primaryGrowthDirection.getOppositeFace()) : onTop;
+		onTop = onTop.getType() != material ? onTop.getRelative(primaryGrowthDirection.getOppositeFace()) : onTop;
+
+		return new VerticalGrowResult(howMany > 0, onTop);
 	}
 
 	@Override
-	public void setStage(Plant plant, int stage) {
+	public boolean setStage(Plant plant, int stage) {
 		int currentStage = getStage(plant);
 		if (stage <= currentStage) {
-			return;
+			return false;
 		}
 		Block block = plant.getLocation().getBlock();
-		growVertically(plant, block, stage - currentStage);
+		return !growVertically(plant, block, stage - currentStage).growthLimited;
 	}
-
 
 	@Override
 	public boolean deleteOnFullGrowth() {

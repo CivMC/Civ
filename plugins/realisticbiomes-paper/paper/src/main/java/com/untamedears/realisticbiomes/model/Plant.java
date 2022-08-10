@@ -9,6 +9,8 @@ import vg.civcraft.mc.civmodcore.utilities.progress.ProgressTrackable;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;
 
+import java.util.Date;
+
 public class Plant extends TableBasedDataObject implements ProgressTrackable {
 
 	private long creationTime;
@@ -102,6 +104,11 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 	}
 	
 	public String toString() {
-		return String.format("Created: %d, , Loc: %s, Next update in: %d, config: %s", creationTime, getLocation().toString(), nextUpdate- System.currentTimeMillis(), growthConfig);
+		return String.format("Created: %s, Loc: %s, Next update in: %s, config: %s",
+				new Date(creationTime),
+				"[" + getLocation().getBlockX() + " " + getLocation().getBlockY() + " " + getLocation().getBlockZ() + "]",
+				nextUpdate != Long.MAX_VALUE ? (nextUpdate - System.currentTimeMillis()) + " ms" : "Never",
+				growthConfig
+		);
 	}
 }

@@ -49,16 +49,17 @@ public class TipGrower extends ColumnPlantGrower{
 	}
 
 	@Override
-	public void setStage(Plant plant, int stage) {
+	public boolean setStage(Plant plant, int stage) {
 		int currentStage = getStage(plant);
 		Block plantBlock = plant.getLocation().getBlock();
 		if (stage <= currentStage) {
-			return;
+			return false;
 		}
-		growVertically(plant, getRelativeBlock(plantBlock), stage - currentStage);
+		return !growVertically(plant, getRelativeBlock(plantBlock), stage - currentStage).growthLimited();
 	}
 
-	protected Block growVertically(Plant plant, Block block, int howMany) {
+	@Override
+	protected VerticalGrowResult growVertically(Plant plant, Block block, int howMany) {
 		int counter = 0;
 		Block onTop = block;
 		BlockFace direction = null;
@@ -88,7 +89,9 @@ public class TipGrower extends ColumnPlantGrower{
 			break;
 		}
 
-		return onTop.getType() != getTipMaterial() ? onTop.getRelative(getPrimaryGrowthDirection().getOppositeFace()) : onTop;
+		onTop = onTop.getType() != getTipMaterial() ? onTop.getRelative(getPrimaryGrowthDirection().getOppositeFace()) : onTop;
+
+		return new VerticalGrowResult(howMany > 0, onTop);
 	}
 
 	@Override

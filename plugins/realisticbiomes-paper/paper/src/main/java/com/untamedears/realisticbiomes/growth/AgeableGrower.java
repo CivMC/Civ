@@ -43,7 +43,7 @@ public class AgeableGrower extends IArtificialGrower {
 	}
 
 	@Override
-	public void setStage(Plant plant, int stage) {
+	public boolean setStage(Plant plant, int stage) {
 		Block block = plant.getLocation().getBlock();
 		if (!(block.getBlockData() instanceof Ageable)) {
 			throw new IllegalArgumentException("Can not set age for non Ageable plant " + plant.getGrowthConfig());
@@ -51,6 +51,8 @@ public class AgeableGrower extends IArtificialGrower {
 		Ageable ageable = ((Ageable) block.getBlockData());
 		ageable.setAge(stage);
 		block.setBlockData(ageable, true);
+
+		return true;
 	}
 
 	@Override

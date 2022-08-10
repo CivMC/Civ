@@ -99,7 +99,7 @@ public class FruitGrower extends IArtificialGrower {
 	}
 
 	@Override
-	public void setStage(Plant plant, int stage) {
+	public boolean setStage(Plant plant, int stage) {
 		if (stage == 0) {
 			Block block = plant.getLocation().getBlock();
 			block.setType(nonAttachedStem, true);
@@ -109,9 +109,10 @@ public class FruitGrower extends IArtificialGrower {
 				ageable.setAge(ageable.getMaximumAge());
 			}
 			block.setBlockData(data);
-			return;
+			return true;
 		}
 		growFruit(plant.getLocation().getBlock());
+		return true;
 	}
 
 	@Override

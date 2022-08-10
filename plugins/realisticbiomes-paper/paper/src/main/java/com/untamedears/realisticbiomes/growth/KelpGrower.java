@@ -44,17 +44,17 @@ public class KelpGrower extends TipGrower{
 	}
 
 	@Override
-	public void setStage(Plant plant, int stage) {
+	public boolean setStage(Plant plant, int stage) {
 		int currentStage = getStage(plant);
 		Block plantBlock = plant.getLocation().getBlock();
 		if (stage <= currentStage) {
-			return;
+			return false;
 		}
-		growVertically(plant, getRelativeBlock(plantBlock), stage - currentStage);
+		return !growVertically(plant, getRelativeBlock(plantBlock), stage - currentStage).growthLimited();
 	}
 
 	@Override
-	protected Block growVertically(Plant plant, Block block, int howMany) {
+	protected VerticalGrowResult growVertically(Plant plant, Block block, int howMany) {
 		int counter = 0;
 		Block onTop = block;
 		while (counter < getMaxStage() && howMany > 0) {
@@ -75,7 +75,9 @@ public class KelpGrower extends TipGrower{
 			break;
 		}
 
-		return onTop.getType() != getTipMaterial() ? onTop.getRelative(getPrimaryGrowthDirection().getOppositeFace()) : onTop;
+		onTop = onTop.getType() != getTipMaterial() ? onTop.getRelative(getPrimaryGrowthDirection().getOppositeFace()) : onTop;
+
+		return new VerticalGrowResult(howMany > 0, onTop);
 	}
 
 	@Override
