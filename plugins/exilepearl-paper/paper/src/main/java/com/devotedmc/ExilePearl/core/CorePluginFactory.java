@@ -64,7 +64,16 @@ public final class CorePluginFactory implements PearlFactory {
 			boolean summoned = doc.getBoolean("summoned", false);
 			Location returnLoc = doc.getLocation("returnLoc");
 
-			ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedBy, pearlId, new BlockHolder(loc.getBlock()), pearlApi.getPearlConfig().getDefaultPearlType());
+			ExilePearl pearl = new CoreExilePearl(
+					pearlApi,
+					pearlApi.getStorageProvider().getStorage(),
+					uid,
+					killedBy,
+					pearlId,
+					new BlockHolder(loc.getBlock()),
+					pearlApi.getPearlConfig().getDefaultPearlType(),
+					pearlApi.getPearlConfig().getPearlHealthDecayTimeout()
+			);
 			pearl.setPearlType(PearlType.valueOf(doc.getInteger("type", 0)));
 			pearl.setHealth(health);
 			pearl.setPearledOn(pearledOn);
@@ -86,7 +95,16 @@ public final class CorePluginFactory implements PearlFactory {
 		Preconditions.checkNotNull(uid, "uid");
 		Preconditions.checkNotNull(killedBy, "killedBy");
 
-		ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedBy.getUniqueId(), pearlId, new PlayerHolder(killedBy), pearlApi.getPearlConfig().getDefaultPearlType());
+		ExilePearl pearl = new CoreExilePearl(
+				pearlApi,
+				pearlApi.getStorageProvider().getStorage(),
+				uid,
+				killedBy.getUniqueId(),
+				pearlId,
+				new PlayerHolder(killedBy),
+				pearlApi.getPearlConfig().getDefaultPearlType(),
+				pearlApi.getPearlConfig().getPearlHealthDecayTimeout()
+		);
 		pearl.enableStorage();
 		return pearl;
 	}
@@ -97,7 +115,16 @@ public final class CorePluginFactory implements PearlFactory {
 		Preconditions.checkNotNull(killedById, "killedById");
 		Preconditions.checkNotNull(holder, "holder");
 
-		ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedById, pearlId, holder, pearlApi.getPearlConfig().getDefaultPearlType());
+		ExilePearl pearl = new CoreExilePearl(
+				pearlApi,
+				pearlApi.getStorageProvider().getStorage(),
+				uid,
+				killedById,
+				pearlId,
+				holder,
+				pearlApi.getPearlConfig().getDefaultPearlType(),
+				pearlApi.getPearlConfig().getPearlHealthDecayTimeout()
+		);
 		pearl.enableStorage();
 		return pearl;
 	}

@@ -226,6 +226,13 @@ public interface ExilePearl {
 	void setLastOnline(Date online);
 
 	/**
+	 * Gets whether or not the pearl is active
+	 * If the player didn't login longer than pearls.decay_timeout_min then the pearl becomes inactive
+	 * @return true if the pearl is active
+	 */
+	boolean isActive();
+
+	/**
 	 * Gets whether or not the pearled player is summoned
 	 * This is always false for exiled players, summoning only works for upgraded PrisonPearls
 	 * @return true if the player is summoned

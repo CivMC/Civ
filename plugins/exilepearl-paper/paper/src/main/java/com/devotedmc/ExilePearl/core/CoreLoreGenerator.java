@@ -112,8 +112,7 @@ final class CoreLoreGenerator implements LoreProvider {
 			}
 		}
 
-		int decayTimeout = config.getPearlHealthDecayTimeout();
-		if ( (new Date()).getTime() - pearl.getLastOnline().getTime() >= (decayTimeout * 60 * 1000)) {
+		if (!pearl.isActive()) {
 			lore.add(parse("<h>Health Decay suspended due to Inactivity"));
 		}
 
