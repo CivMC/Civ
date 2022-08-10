@@ -51,7 +51,7 @@ public class IgniteBlockAction extends LoggablePlayerAction  {
 	}
 
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return "Ignited";
 	}
 

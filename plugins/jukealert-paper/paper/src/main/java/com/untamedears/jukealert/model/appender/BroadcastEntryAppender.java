@@ -48,7 +48,7 @@ public class BroadcastEntryAppender extends ConfigurableSnitchAppender<LimitedAc
 				continue;
 			}
 			if (snitch.hasPermission(uuid, JukeAlertPermissionHandler.getSnitchAlerts())) {
-				TextComponent comp = log.getChatRepresentation(player.getLocation(), true);
+				TextComponent comp = log.getChatRepresentation(player.getLocation(), true, false);
 
 				if (settings.shouldShowDirections(uuid)) {
 					comp.addExtra(String.format("  %s", JAUtility.genDirections(snitch, player)));

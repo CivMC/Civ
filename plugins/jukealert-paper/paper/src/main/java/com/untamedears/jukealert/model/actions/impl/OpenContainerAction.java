@@ -15,7 +15,7 @@ public class OpenContainerAction extends LoggableBlockAction {
 	}
 
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return "Opened";
 	}
 

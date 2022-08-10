@@ -30,7 +30,7 @@ public class DismountEntityAction extends LoggablePlayerVictimAction {
 	}
 
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return "Dismounted " + getVictim();
 	}
 

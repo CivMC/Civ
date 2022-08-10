@@ -31,7 +31,7 @@ public class EnterFieldAction extends LoggablePlayerAction {
 	}
 
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return "Enter";
 	}
 }

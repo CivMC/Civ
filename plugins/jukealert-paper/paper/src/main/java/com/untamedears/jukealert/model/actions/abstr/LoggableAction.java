@@ -16,10 +16,11 @@ public interface LoggableAction {
 	 * @param reference Current location of the player to show the output to
 	 * @param live      Whether the action is happening right now or being retrieved
 	 *                  as a record
+	 * @param censor    If True then override location by [*** *** ***]
 	 * @return TextComponent representing this instance ready for sending to a
 	 *         player
 	 */
-	TextComponent getChatRepresentation(Location reference, boolean live);
+	TextComponent getChatRepresentation(Location reference, boolean live, boolean censor);
 
 	LoggedActionPersistence getPersistence();
 
@@ -31,4 +32,5 @@ public interface LoggableAction {
 
 	ActionCacheState getCacheState();
 
+	String getChatRepresentationIdentifier();
 }
