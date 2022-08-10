@@ -30,10 +30,8 @@ import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftVehicle;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -82,8 +80,7 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 
 					if (target == null || target.isDead() || target.isInvulnerable() ||
 							!world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
-						if (entity instanceof CraftVehicle || entity.getType() == EntityType.ITEM_FRAME){
-							CraftEntity craftEntity = (CraftEntity)entity;
+						if (entity instanceof CraftEntity craftEntity){
 							craftEntity.getHandle().hurt(DamageSource.playerAttack(((CraftPlayer) attacker).getHandle()), (float) ((CraftPlayer) attacker).getHandle().getAttribute(Attributes.ATTACK_DAMAGE).getValue());
 						}
 						return;
