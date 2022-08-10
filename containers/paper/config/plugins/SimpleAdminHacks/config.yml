@@ -403,7 +403,7 @@ hacks:
       enabled: true
       spawnSetMessage: '&bYour spawn has been set.'
     rainReduction:
-      enabled: true
+      enabled: false
       rainOccurrenceChance: .5
     # Makes nether ratio 1 to 1
     oneToOneNether: true
