@@ -16,3 +16,6 @@ permissions:
   civchat2.globalmute:
     description: Gives access to the global mute command
     default: op
+  civchat2.leavejoinimmune:
+    description: Disables a player broadcasting Leave/Join messages
+    default: op
