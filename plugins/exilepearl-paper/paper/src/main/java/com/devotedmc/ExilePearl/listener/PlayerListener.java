@@ -911,7 +911,7 @@ public class PlayerListener implements Listener, Configurable {
 		pearlApi.log(String.format("%s has bound %s to a ExilePearl", e.getPearl().getKillerName(), e.getPearl().getPlayerName()));
 
 		if (imprisoned != null) {
-			imprisoned.sendMessage(String.format(ChatUtils.parseColor(Lang.pearlYouWereBound), e.getPearl().getPlayerName()));
+			imprisoned.sendMessage(String.format(ChatUtils.parseColor(Lang.pearlYouWereBound), imprisoner.getName()));
 		}
 		imprisoner.sendMessage(String.format(ChatUtils.parseColor(Lang.pearlYouBound), e.getPearl().getPlayerName()));
 	}
