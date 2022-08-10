@@ -33,7 +33,7 @@ public class AdvancedFortification extends BaseCommand {
 		AdvancedFortificationState advFortState = null;
 		if (currentState instanceof AdvancedFortificationState) {
 			advFortState = (AdvancedFortificationState) currentState;
-			if (targetGroup.isEmpty()) {
+			if (targetGroup == null || targetGroup.isEmpty()) {
 				stateManager.setState(player, null);
 				return;
 			}
@@ -60,7 +60,7 @@ public class AdvancedFortification extends BaseCommand {
 			return;
 		}
 		String groupName = null;
-		if (targetGroup.isEmpty()) {
+		if (targetGroup == null ||targetGroup.isEmpty()) {
 			groupName = NameAPI.getGroupManager().getDefaultGroup(player.getUniqueId());
 			if (groupName == null) {
 				CitadelUtility.sendAndLog(player, ChatColor.RED,
