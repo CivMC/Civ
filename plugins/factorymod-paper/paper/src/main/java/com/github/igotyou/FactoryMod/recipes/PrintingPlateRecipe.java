@@ -26,6 +26,7 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class PrintingPlateRecipe extends PrintingPressRecipe {
 	public static final String itemName = "Printing Plate";
+	private static final int version = 1;
 
 	protected ItemMap output;
 
@@ -85,6 +86,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 
 		plateTag.putString("SN", serialNumber);
 		plateTag.put("Book", bookTag);
+		plateTag.putInt("Version", version);
 
 		nmsPlate.setTag(plateTag);
 		return CraftItemStack.asBukkitCopy(nmsPlate);
