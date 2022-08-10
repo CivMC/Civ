@@ -22,18 +22,13 @@ public class CPSHandler implements Listener {
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
-		
-		if (playerClicks.containsKey(player.getUniqueId())) {
-			playerClicks.remove(player.getUniqueId());
-		}
-		
-		if (showCps.contains(player)) {
-			showCps.remove(player);
-		}
+
+		playerClicks.remove(player.getUniqueId());
+		showCps.remove(player);
 	}
 
 	private Map<UUID, List<Long>> playerClicks = new ConcurrentHashMap<>();
-	private Set<Player> showCps = Sets.newHashSet();
+	private Set<Player> showCps = Sets.newConcurrentHashSet();
 	
 	public int getCPS(UUID uuid) {
 		 final long time = System.currentTimeMillis();
@@ -41,22 +36,27 @@ public class CPSHandler implements Listener {
 		 if (clicks == null) {
 		 	return 0;
 		 }
-	     Iterator<Long> iterator = clicks.iterator();
-	     while (iterator.hasNext()) {
-	    	 if (iterator.next() + Finale.getPlugin().getManager().getCombatConfig().getCpsCounterInterval() < time) {
-	    		 iterator.remove();
-	         }
-	     }
-	     return this.playerClicks.get(uuid).size();
+
+		 long cpsCounterInterval = Finale.getPlugin().getManager().getCombatConfig().getCpsCounterInterval();
+
+		 synchronized (clicks) {
+			 Iterator<Long> iterator = clicks.iterator();
+			 while (iterator.hasNext()) {
+				 if (iterator.next() + cpsCounterInterval < time) {
+					 iterator.remove();
+				 }
+			 }
+
+			 return clicks.size();
+		 }
 	}
  
 	public void updateClicks(Player player) {
-	 	List<Long> clicks = playerClicks.get(player.getUniqueId());
-	 	if (clicks == null) {
-		 	clicks = new ArrayList<>();
-		 	playerClicks.put(player.getUniqueId(), clicks);
-	 	}
-	 	clicks.add(System.currentTimeMillis());
+	 	List<Long> clicks = playerClicks.computeIfAbsent(player.getUniqueId(), id -> new ArrayList<>());
+
+	 	synchronized (clicks) {
+			clicks.add(System.currentTimeMillis());
+		}
  	}
  
  	public void showCPS(Player player) {
