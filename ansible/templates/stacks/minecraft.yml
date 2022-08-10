@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   waterfall:
-    image: ghcr.io/civmc/civdocker/waterfall:1.16.7
+    image: ghcr.io/civmc/civdocker/waterfall:1.16.8
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -22,7 +22,7 @@ services:
         constraints: [node.role == manager]
 
   paper:
-    image: ghcr.io/civmc/civdocker/paper:1.16.7
+    image: ghcr.io/civmc/civdocker/paper:1.16.8
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -75,7 +75,7 @@ services:
         constraints: [node.role == manager]
 
   queue:
-    image: ghcr.io/civmc/civdocker/queue:1.16.7
+    image: ghcr.io/civmc/civdocker/queue:1.16.8
     restart: unless-stopped
     tty: true
     stdin_open: true
