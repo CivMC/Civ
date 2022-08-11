@@ -13,11 +13,12 @@ import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,17 +32,14 @@ public class ListCommand extends BaseCommand {
 	@CommandAlias("jalist")
 	@Syntax("[group]")
 	@Description("Lists all snitches you have access to if given no arguments or the ones on the given groups")
-	public void execute(final Player player, @Optional final String targetGroup1, @Optional final String targetGroup2, @Optional final String targetGroup3) {
-		boolean playerProvidedGroups = true;
+	public void execute(final Player player, @Optional final String[] targetGroups) {
+		boolean playerProvidedGroups = false;
 		List<String> groupNames = null;
-		if (!(targetGroup1 == null) && !(targetGroup2 == null) && !(targetGroup3 == null)) {
-			groupNames.add(targetGroup1);
-			groupNames.add(targetGroup2);
-			groupNames.add(targetGroup3);
-		}
-		if (CollectionUtils.isEmpty(groupNames)) {
+		if (targetGroups.length != 0) {
+			groupNames = new ArrayList<String>(Arrays.asList(targetGroups));
+			playerProvidedGroups = true;
+		} else {
 			groupNames = NameAPI.getGroupManager().getAllGroupNames(player.getUniqueId());
-			playerProvidedGroups = false;
 		}
 		final var groupIds = new IntArrayList();
 		for (final String groupName : groupNames) {
