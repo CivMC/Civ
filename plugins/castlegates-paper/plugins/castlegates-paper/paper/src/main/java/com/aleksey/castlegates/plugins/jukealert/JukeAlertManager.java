@@ -28,7 +28,7 @@ public class JukeAlertManager implements IJukeAlertManager {
 				{
 					LeverToggleAppender toggleAppender = snitch.getAppender(LeverToggleAppender.class);
 					if (toggleAppender == null) {
-						return false;
+						continue;
 					}
 					if (toggleAppender.shouldToggle())
 						return true;
