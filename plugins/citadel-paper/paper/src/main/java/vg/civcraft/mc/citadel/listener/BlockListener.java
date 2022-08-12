@@ -45,6 +45,8 @@ import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.utilities.DoubleInteractFixer;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
+import java.util.Iterator;
+
 public class BlockListener implements Listener {
 
 	private static final Material matfire = Material.FIRE;
@@ -561,36 +563,18 @@ public class BlockListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onMossSpread(BlockFertilizeEvent event) {
-		for (BlockState block : event.getBlocks()) {
+		Player player = event.getPlayer();
+		Iterator<BlockState> iterator = event.getBlocks().iterator();
+		while (iterator.hasNext()) {
+			BlockState block = iterator.next();
 			Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(block.getBlock());
 			if (reinforcement == null) {
 				continue;
 			}
-			Player player = event.getPlayer();
-			if (player == null) {
+			if (player != null && reinforcement.hasPermission(player, CitadelPermissionHandler.getCrops())) {
 				continue;
 			}
-			if (reinforcement.hasPermission(event.getPlayer(), CitadelPermissionHandler.getCrops())) {
-				continue;
-			}
-			event.getPlayer().sendMessage(Component.text("You can't do that while their are reinforced blocks around!").color(NamedTextColor.RED));
-			event.setCancelled(true);
+			iterator.remove();
 		}
-	}
-
-	@EventHandler(ignoreCancelled = true)
-	public void onDispenserGrowMoss(BlockDispenseEvent event){
-		Block dispenserBlock = event.getBlock();
-		ItemStack bonemeal = event.getItem();
-		Dispenser dispenser = (Dispenser) event.getBlock().getBlockData();
-
-		if (bonemeal.getType() != Material.BONE_MEAL) {
-			return;
-		}
-		Block moss = dispenserBlock.getRelative(dispenser.getFacing());
-		if (moss.getType() != Material.MOSS_BLOCK) {
-			return;
-		}
-		event.setCancelled(true);
 	}
 }
