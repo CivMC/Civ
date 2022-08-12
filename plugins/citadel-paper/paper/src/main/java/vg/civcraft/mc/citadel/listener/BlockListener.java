@@ -44,12 +44,16 @@ import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.utilities.DoubleInteractFixer;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
+import vg.civcraft.mc.namelayer.group.Group;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class BlockListener implements Listener {
 
 	private static final Material matfire = Material.FIRE;
+	private final Map<Block, Block> mossSpreadingDispensers = new HashMap<>();
 
 	private DoubleInteractFixer interactFixer;
 
@@ -565,6 +569,11 @@ public class BlockListener implements Listener {
 	public void onMossSpread(BlockFertilizeEvent event) {
 		Player player = event.getPlayer();
 		Iterator<BlockState> iterator = event.getBlocks().iterator();
+		Block dispenser = mossSpreadingDispensers.remove(event.getBlock());
+		Reinforcement dispenserRein = dispenser == null ? null
+				: Citadel.getInstance().getReinforcementManager().getReinforcement(dispenser);
+		Group dispenserGroup = dispenserRein == null ? null :
+				dispenserRein.getGroup();
 		while (iterator.hasNext()) {
 			BlockState block = iterator.next();
 			Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(block.getBlock());
@@ -574,7 +583,25 @@ public class BlockListener implements Listener {
 			if (player != null && reinforcement.hasPermission(player, CitadelPermissionHandler.getCrops())) {
 				continue;
 			}
+			if (dispenserGroup != null && dispenserGroup == reinforcement.getGroup()) {
+				continue;
+			}
 			iterator.remove();
 		}
+	}
+
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+	public void onDispenserGrowMoss(BlockDispenseEvent event) {
+		Block dispenserBlock = event.getBlock();
+		ItemStack bonemeal = event.getItem();
+		Dispenser dispenser = (Dispenser) event.getBlock().getBlockData();
+		if (bonemeal.getType() != Material.BONE_MEAL) {
+			return;
+		}
+		Block moss = dispenserBlock.getRelative(dispenser.getFacing());
+		if (moss.getType() != Material.MOSS_BLOCK) {
+			return;
+		}
+		mossSpreadingDispensers.put(moss, dispenserBlock);
 	}
 }
