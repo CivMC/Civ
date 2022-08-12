@@ -18,6 +18,7 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 	private boolean isPhantomSpawning;
 	private boolean enderChestPlacement;
 	private boolean enderChestUse;
+    private boolean grindstoneUse;
 	private boolean shulkerBoxUse;
 	private boolean totemPowers;
 	private boolean chorusFruitUse;
@@ -61,6 +62,9 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 
 		this.enderChestUse = config.getBoolean("enderChestUse", false);
 		if (!this.enderChestUse) plugin().log("  Using EnderChests is disabled");
+		
+		this.grindstoneUse = config.getBoolean("grindstoneUse", false);
+		if (!this.grindstoneUse) plugin().log("  Using Grindstones is disabled");
 
 		this.shulkerBoxUse = config.getBoolean("shulkerBoxUse", false);
 		if (!this.shulkerBoxUse) plugin().log("  Using Shulker Boxes is disabled");
@@ -131,6 +135,10 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 
 	public boolean isEnderChestUse() {
 		return this.enderChestUse;
+	}
+	
+	public boolean isGrindstoneUse() {
+		return this.grindstoneUse;
 	}
 
 	public boolean isShulkerBoxUse() {
