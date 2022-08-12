@@ -30,7 +30,7 @@ public class NameAtCommand extends BaseCommand {
 		renameSnitch(player, parsed.snitchName, parsed.location);
 	}
 
-	private static ParsedArgs parseArgs(Player player, String[] args) throws InvalidCommandArgument  {
+	private static ParsedArgs parseArgs(Player player, String[] args) throws InvalidCommandArgument {
 		// Need at least 3 coordinates and a name.
 		if (args.length < 4) {
 			throw new InvalidCommandArgument("Not enough arguments.");
@@ -44,9 +44,9 @@ public class NameAtCommand extends BaseCommand {
 		if (!isInteger(args[0])) {
 			String worldName = args[0];
 			world = Bukkit.getWorld(worldName);
-	        if (world == null) {
+			if (world == null) {
 				throw new InvalidCommandArgument("Unknown world: " + worldName + ".");
-	        }
+			}
 			xIndex = 1;
 			yIndex = 2;
 			zIndex = 3;
