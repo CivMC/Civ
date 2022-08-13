@@ -11,26 +11,32 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.chat.Componentify;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public final class BedLocator extends BasicHack {
 
-	private final BedLocatorCommand locatorCommand;
+	private final CommandManager commands;
 
 	public BedLocator(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
-		this.locatorCommand = new BedLocatorCommand();
+		this.commands = new CommandManager(plugin()) {
+			@Override
+			public void registerCommands() {
+				registerCommand(new BedLocatorCommand());
+			}
+		};
 	}
 
 	@Override
 	public void onEnable() {
 		super.onEnable();
-		plugin().getCommands().registerCommand(this.locatorCommand);
+		commands.init();
 	}
 
 	@Override
 	public void onDisable() {
-		plugin().getCommands().unregisterCommand(this.locatorCommand);
+		commands.reset();
 		super.onDisable();
 	}
 

@@ -4,7 +4,7 @@ author: ProgrammerDan
 authors: [ProgrammerDan, Maxopoly]
 version: ${version}
 depend: [CivModCore]
-softdepend: [CombatTagPlus, NameLayer, Citadel, ProtocolLib]
+softdepend: [CombatTagPlus, NameLayer, Citadel, ProtocolLib, BankStick]
 api-version: 1.18
 commands:
   hacks:
