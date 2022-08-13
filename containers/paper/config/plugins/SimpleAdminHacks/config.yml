@@ -112,9 +112,9 @@ hacks:
     enabled: true
     intervalTime: 15m
     announcements:
-      #- '["",{"text":"[CivMC] ","color":"gold"},{"text":"Join the Official Discord at https://discord.gg/eXE8X9HkFF","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/eXE8X9HkFF"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Join the Official Discord at https://discord.gg/zp63BaX3Uf","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/zp63BaX3Uf"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit our wiki at civwiki.org","color":"green","clickEvent":{"action":"open_url","value":"https://civwiki.org/wiki/Main_Page"}}]'
-      #- '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the map at ccmap.github.io","color":"green","clickEvent":{"action":"open_url","value":"https://ccmap.github.io/"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player made map at map.civmc.tk","color":"green","clickEvent":{"action":"open_url","value":"https://map.civmc.tk/"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"To join global chat, type `/nljg ! !`, to leave, type `/nllg !`","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /g ! to talk in global chat","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /vote to vote for CivMC and receive essence!","color":"green"}]'
