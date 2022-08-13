@@ -17,6 +17,7 @@ public class CitadelCommandManager extends CommandManager {
 	@Override
 	public void registerCommands() {
 		registerCommand(new Acid());
+		registerCommand(new Activity());
 		registerCommand(new AdvancedFortification());
 		registerCommand(new AreaReinforce());
 		registerCommand(new Bypass());

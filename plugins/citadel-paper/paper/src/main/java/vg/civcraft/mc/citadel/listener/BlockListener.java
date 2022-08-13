@@ -14,6 +14,7 @@ import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Comparator;
 import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.block.data.type.Lectern;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -25,8 +26,8 @@ import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -111,13 +112,16 @@ public class BlockListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void blockPhysEvent(BlockPhysicsEvent event) {
+	public void onEntityChangeBlock(EntityChangeBlockEvent event) {
+		if (event.getEntityType() != EntityType.FALLING_BLOCK) {
+			return;
+		}
+
 		Block block = event.getBlock();
-		if (block.getType().hasGravity()) {
-			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
-			if (rein != null) {
-				event.setCancelled(true);
-			}
+		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
+
+		if (rein != null) {
+			event.setCancelled(true);
 		}
 	}
 
@@ -558,11 +562,19 @@ public class BlockListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	public void onMossSpread(BlockFertilizeEvent event) {
 		for (BlockState block : event.getBlocks()) {
-			if (Citadel.getInstance().getReinforcementManager().getReinforcement(block.getBlock()) != null) {
-				event.getPlayer().sendMessage(Component.text("You can't do that while their are reinforced blocks around!").color(NamedTextColor.RED));
-				event.setCancelled(true);
-				return;
+			Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(block.getBlock());
+			if (reinforcement == null) {
+				continue;
 			}
+			Player player = event.getPlayer();
+			if (player == null) {
+				continue;
+			}
+			if (reinforcement.hasPermission(event.getPlayer(), CitadelPermissionHandler.getCrops())) {
+				continue;
+			}
+			event.getPlayer().sendMessage(Component.text("You can't do that while their are reinforced blocks around!").color(NamedTextColor.RED));
+			event.setCancelled(true);
 		}
 	}
 
