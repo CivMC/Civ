@@ -11,6 +11,7 @@ echo "$(date) Starting backup..."
 export AWS_ACCESS_KEY_ID={{secret.backup.s3_access_key_id}}
 export AWS_SECRET_ACCESS_KEY={{secret.backup.s3_access_key}}
 export RESTIC_PASSWORD={{secret.backup.restic_password}}
+export RESTIC_PASSWORD2={{secret.backup.restic_password}}
 restic \
   -r {{secret.backup.restic_shortterm_repo}} backup \
   /opt/stacks/minecraft/ \
