@@ -571,12 +571,16 @@ public class BlockListener implements Listener {
 		Iterator<BlockState> iterator = event.getBlocks().iterator();
 		Block dispenser = mossSpreadingDispensers.remove(event.getBlock());
 		Reinforcement dispenserRein = dispenser == null ? null
-				: Citadel.getInstance().getReinforcementManager().getReinforcement(dispenser);
+				: Citadel.getInstance()
+					.getReinforcementManager()
+					.getReinforcement(dispenser);
 		Group dispenserGroup = dispenserRein == null ? null :
 				dispenserRein.getGroup();
 		while (iterator.hasNext()) {
 			BlockState block = iterator.next();
-			Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(block.getBlock());
+			Reinforcement reinforcement = Citadel.getInstance()
+				.getReinforcementManager()
+				.getReinforcement(block.getBlock());
 			if (reinforcement == null) {
 				continue;
 			}
