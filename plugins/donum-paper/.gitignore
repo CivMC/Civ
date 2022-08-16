@@ -1,9 +1,11 @@
-/target/
+build/
+
+.idea
+*.iml
+*.iws
+*.swp
 .classpath
 .settings/**
 .project
-/bin/
-.gradle
-build/
 
-*.iml
+.gradle
