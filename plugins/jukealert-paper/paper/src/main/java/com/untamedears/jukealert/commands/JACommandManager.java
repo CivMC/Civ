@@ -18,6 +18,7 @@ public class JACommandManager extends CommandManager {
 		registerCommand(new ListCommand());
 		registerCommand(new MuteCommand());
 		registerCommand(new NameCommand());
+		registerCommand(new NameAtCommand());
 		registerCommand(new ToggleLeverCommand());
 	}
 }
