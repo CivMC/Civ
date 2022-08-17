@@ -14,6 +14,8 @@ services:
         protocol: tcp
         mode: host
     environment:
+      INIT_MEMORY: 2G
+      MAX_MEMORY: 2G
       CIV_POSTGRES_HOST: minecraft_postgres
       CIV_POSTGRES_USERNAME: minecraft
       CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
