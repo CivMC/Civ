@@ -155,7 +155,14 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			} else {
 				genStatus.append("disabled\n");
 			}
-
+			
+			genStatus.append("  Grindstone use is ");
+			if (config.isGrindstoneUse()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+			
 			genStatus.append("  Shulker Box use is ");
 			if (config.isShulkerBoxUse()) {
 				genStatus.append("enabled\n");
@@ -312,6 +319,20 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			boolean enderChest = action == Action.RIGHT_CLICK_BLOCK &&
 					Material.ENDER_CHEST.equals(material);
 			if (enderChest) {
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void disableGrindstoneUse(PlayerInteractEvent event) {
+		if (!config.isEnabled()) return;
+		if (!config.isGrindstoneUse()) {
+			Action action = event.getAction();
+			Material material = event.getClickedBlock().getType();
+			boolean Grindstone = action == Action.RIGHT_CLICK_BLOCK &&
+					Material.GRINDSTONE.equals(material);
+			if (Grindstone) {
 				event.setCancelled(true);
 			}
 		}
