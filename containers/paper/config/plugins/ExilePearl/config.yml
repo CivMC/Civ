@@ -312,7 +312,7 @@ help_item:
   - "<n>You can type <c>/ep locate to see the location of your pearl."
 damage_log:
   enabled: true
-  algorithm: 0
+  algorithm: 1
   tick_interval: 20
   decay_amount: 1.0
   max_amount: 30.0
