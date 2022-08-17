@@ -345,6 +345,7 @@ hacks:
     phantomSpawning: false
     enderChestPlacement: true
     enderChestUse: false
+    grindstoneUse: false
     shulkerBoxUse: false
     totemPower: true
     chorusFruitTeleportation: false
@@ -429,7 +430,7 @@ hacks:
     badOmen: false
     #a list of materials players shouldn't be allowed to place at all
     noplace:
-     - GRINDSTONE
+     #- GRINDSTONE Leaving this here for reference
   HorseStats:
     enabled: true
     wand: COMPASS
