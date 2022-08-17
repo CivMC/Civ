@@ -93,7 +93,7 @@ public class ReinforcingState extends AbstractPlayerState {
 		if (rein != null) {
 			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getBypass())) {
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
-						"You do not have permission to bypass reinforcements on " + group.getName(),
+						"You do not have permission to bypass this reinforcement",
 						e.getClickedBlock().getLocation());
 				return;
 			}
