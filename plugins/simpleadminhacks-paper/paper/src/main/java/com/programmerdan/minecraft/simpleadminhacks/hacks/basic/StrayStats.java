@@ -3,7 +3,6 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
-import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
@@ -17,29 +16,39 @@ import java.text.SimpleDateFormat;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
 public final class StrayStats extends BasicHack {
-
-	public StrayStats(final SimpleAdminHacks plugin, final BasicHackConfig config) {
-		super(plugin, config);
-	}
 
 	// ------------------------------------------------------------
 	// Bootstrap
 	// ------------------------------------------------------------
 
-	private final StatsCommand statsCommand = new StatsCommand();
+	private final CommandManager commands;
+
+	public StrayStats(final SimpleAdminHacks plugin, final BasicHackConfig config) {
+		super(plugin, config);
+		this.commands = new CommandManager(plugin()) {
+			@Override
+			public void registerCommands() {
+				registerCommand(new StatsCommand());
+			}
+		};
+	}
 
 	@Override
 	public void onEnable() {
 		super.onEnable();
-		BanStick.getPlugin();
-		this.plugin.getCommands().registerCommand(this.statsCommand);
+		if(plugin.getServer().getPluginManager().getPlugin("BanStick") == null) {
+			plugin.severe("StrayStats failed to initialize because BanStick plugin is not found");
+			return;
+		}
+		commands.init();
 	}
 
 	@Override
 	public void onDisable() {
-		this.plugin.getCommands().unregisterCommand(this.statsCommand);
+		commands.reset();
 		super.onDisable();
 	}
 
