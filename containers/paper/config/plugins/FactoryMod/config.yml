@@ -29,6 +29,7 @@ factories:
       - smelt_cracked_stone_bricks
       - smelt_glass
       - smelt_glass_red
+      - smelt_glass_soulsand
       - smelt_bricks
       - smelt_hard_clay
       - smelt_sandstone
@@ -1493,6 +1494,18 @@ recipes:
       glass:
         material: GLASS
         amount: 128
+  smelt_glass_soulsand:
+    type: PRODUCTION
+    production_time: 4s
+    name: Smelt Glass from Soul Sand
+    input:
+      soulsand:
+        material: SOUL_SAND
+        amount: 64
+    output:
+      glass:
+        material: GLASS
+        amount: 128      
   smelt_netherrack:
     production_time: 4s
     name: Smelt Netherrack
