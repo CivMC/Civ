@@ -1,0 +1,8 @@
+TALL_GRASS:
+  ==: org.bukkit.inventory.ItemStack
+  v: 2975
+  type: TALL_GRASS
+GRASS:
+  ==: org.bukkit.inventory.ItemStack
+  v: 2975
+  type: GRASS
