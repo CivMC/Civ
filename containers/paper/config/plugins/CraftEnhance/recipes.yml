@@ -1,0 +1,19 @@
+recipe1:
+  ==: com.dutchjelly.craftenhance.crafthandling.recipes.WBRecipe
+  result: TALL_GRASS
+  hidden: false
+  recipe:
+  - null
+  - null
+  - null
+  - null
+  - GRASS
+  - null
+  - null
+  - GRASS
+  - null
+  permission: null
+  page: -1
+  slot: -1
+  matchmeta: true
+  shapeless: true
