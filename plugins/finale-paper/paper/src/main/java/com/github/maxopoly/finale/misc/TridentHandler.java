@@ -16,14 +16,16 @@ import java.util.UUID;
 public class TridentHandler {
 
 	private boolean returnToOffhand;
+	private boolean bypassFullInv;
 	private long riptideCooldown;
 	private long generalCooldown;
 
 	private CooldownHandler riptideCooldownHandler;
 	private CooldownHandler generalCooldownHandler;
 
-	public TridentHandler(boolean returnToOffhand, long riptideCooldown, long generalCooldown) {
+	public TridentHandler(boolean returnToOffhand, boolean bypassFullInv, long riptideCooldown, long generalCooldown) {
 		this.returnToOffhand = returnToOffhand;
+		this.bypassFullInv = bypassFullInv;
 		this.riptideCooldown = riptideCooldown;
 		this.generalCooldown = generalCooldown;
 
@@ -39,6 +41,10 @@ public class TridentHandler {
 
 	public boolean isReturnToOffhand() {
 		return returnToOffhand;
+	}
+
+	public boolean isBypassFullInv() {
+		return bypassFullInv;
 	}
 
 	public void putRiptideOnCooldown(Player shooter) {

@@ -8,16 +8,14 @@ api-version: 1.17
 permissions:
     finale.op:
         default: op
-    finale.cps:
-        default: op
     finale.cmv:
         default: op
     finale.give:
         default: op
+    finale.cps:
+        default: true
     finale.ally:
         default: true
     finale.blocks:
-        default: true
-    finale.chemtrails:
         default: true
 

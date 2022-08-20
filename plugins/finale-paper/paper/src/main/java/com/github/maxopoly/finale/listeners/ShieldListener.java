@@ -18,7 +18,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 public class ShieldListener implements Listener {
+
+	private Set<UUID> hasPassiveResistance = new HashSet<>();
 
 	@EventHandler
 	public void onShieldBash(PlayerInteractEvent event) {
@@ -100,7 +106,10 @@ public class ShieldListener implements Listener {
 				} else if (mainHand != null && mainHand.getType() == Material.SHIELD) {
 					addPassiveResistance(player);
 				} else {
-					player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+					if (hasPassiveResistance.contains(player.getUniqueId())) {
+						player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+						hasPassiveResistance.remove(player.getUniqueId());
+					}
 				}
 			}
 
@@ -113,6 +122,7 @@ public class ShieldListener implements Listener {
 			return;
 		}
 		player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, shieldHandler.getPassiveResistanceAmplifier()));
+		hasPassiveResistance.add(player.getUniqueId());
 	}
 
 }

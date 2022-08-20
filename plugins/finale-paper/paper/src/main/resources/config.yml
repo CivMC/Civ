@@ -84,6 +84,10 @@ pearls:
   cooldown: 16s
   #Combat tag using CTP when pearling?
   combatTag: true
+gapples:
+  enabled: true
+  cooldown: 30s
+  enchantedCooldown: 5m
 
 #allows adjusting the attack damage of any item by its spigot material identifier
 weaponModification:
@@ -123,6 +127,9 @@ weaponModification:
   woodSword:
     material: WOODEN_SWORD
     damage: 3
+  trident:
+    material: TRIDENT
+    damage: 8
 
 armourModification:
   diamondHelmet:
@@ -294,9 +301,16 @@ warpFruit: # logSize * logInterval = how far back in time you go
   cooldown: 10s
   maxDistance: 100 # max warp distance
   spectralWhileChanneling: true
+  afterEffects:
+    slowness:
+      type: SLOW
+      amplifier: 0
+      duration: 40
 
 trident:
-  returnToOffhand: true # if you throw the trident with your offhand, should it return to your offhand?
+  returnToOffhand:
+    enabled: true # if you throw the trident with your offhand, should it return to your offhand?
+    bypassFullInv: true # work even when player's inventory is full
   generalCooldown: 10s
   riptideCooldown: 60s
 
@@ -534,12 +548,28 @@ tippedArrows:
 blockPlacementRestrictions:
   enabled: true
   mode: BLACKLIST # BLACKLIST, WHITELIST, NOLIST (only cooldowns)
+  reinforce: false # should players be allowed to reinforce while in combat?
+  zones:
+    obsidian:
+      type: OBSIDIAN
+      radius: 10
+    cobweb:
+      type: COBWEB
+      radius: 5
+    waterbucket:
+      type: WATER_BUCKET
+      radius: 5
+    lavabucket:
+      type: LAVA_BUCKET
+      radius: 5
   blacklist:
     - COBWEB
     - OBSIDIAN
-  whitelist:
     - WATER_BUCKET
+    - LAVA_BUCKET
+  whitelist:
     - COBBLESTONE
+    - STONE
   cooldowns:
     cobweb:
       type: COBWEB

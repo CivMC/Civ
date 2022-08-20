@@ -6,6 +6,7 @@ import com.github.maxopoly.finale.misc.CooldownHandler;
 import com.github.maxopoly.finale.misc.ally.AllyHandler;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
@@ -28,15 +29,18 @@ public class WarpFruitTracker {
 	private double maxDistance;
 	private boolean spectralWhileChanneling;
 
+	private List<PotionEffect> afterEffects;
+
 	private CooldownHandler cooldownHandler;
 	private Map<UUID, WarpFruitData> warpFruitDataMap = new HashMap<>();
 
-	public WarpFruitTracker(int logSize, long logInterval, long warpFruitCooldown, double maxDistance, boolean spectralWhileChanneling) {
+	public WarpFruitTracker(int logSize, long logInterval, long warpFruitCooldown, double maxDistance, boolean spectralWhileChanneling, List<PotionEffect> afterEffects) {
 		this.logSize = logSize;
 		this.logInterval = logInterval;
 		this.warpFruitCooldown = warpFruitCooldown;
 		this.maxDistance = maxDistance;
 		this.spectralWhileChanneling = spectralWhileChanneling;
+		this.afterEffects = afterEffects;
 
 		this.cooldownHandler = new CooldownHandler("warpfruitCooldown", warpFruitCooldown, (player, cooldowns) ->
 				ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Warp fruit: " +
@@ -145,6 +149,9 @@ public class WarpFruitTracker {
 		world.playSound(warpLoc, Sound.ITEM_CHORUS_FRUIT_TELEPORT, 1f, 1f);
 		player.setFallDistance(0);
 		player.teleport(warpLoc);
+		if (!afterEffects.isEmpty()) {
+			player.addPotionEffects(afterEffects);
+		}
 		putOnCooldown(player);
 		return true;
 	}

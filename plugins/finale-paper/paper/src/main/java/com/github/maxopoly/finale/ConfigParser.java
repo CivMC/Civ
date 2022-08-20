@@ -29,6 +29,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 import com.github.maxopoly.finale.combat.CombatConfig;
@@ -38,6 +40,7 @@ import com.github.maxopoly.finale.misc.velocity.VelocityHandler;
 import com.github.maxopoly.finale.potion.PotionHandler;
 import com.github.maxopoly.finale.potion.PotionModification;
 import org.bukkit.util.Vector;
+import org.json.simple.JSONArray;
 
 public class ConfigParser {
 	private Finale plugin;
@@ -121,6 +124,7 @@ public class ConfigParser {
 		CrossbowHandler crossbowHandler = parseCrossbowHandler(config.getConfigurationSection("crossbow"));
 		AllyHandler allyHandler = parseAllyHandler(config.getConfigurationSection("ally"));
 		allyHandler.init();
+		GappleHandler gappleHandler = parseGappleHandler(config.getConfigurationSection("gapples"));
 
 		TippedArrowModifier tippedArrowMod = parseTippedArrowModification(config.getConfigurationSection("tippedArrows"));
 		BlockRestrictionHandler blockRestrictionHandler = parseBlockRestrictionHandler(config.getConfigurationSection("blockPlacementRestrictions"));
@@ -138,11 +142,22 @@ public class ConfigParser {
 		long warpFruitCooldown = parseTime(config.getString("warpFruit.cooldown", "10s"));
 		double warpFruitMaxDistance = config.getDouble("warpFruit.maxDistance", 100);
 		boolean warpFruitSpectralWhileChanneling = config.getBoolean("warpFruit.spectralWhileChanneling", true);
-		WarpFruitTracker warpFruitTracker = new WarpFruitTracker(warpFruitLogSize, warpFruitLogInterval, warpFruitCooldown, warpFruitMaxDistance, warpFruitSpectralWhileChanneling);
+		List<PotionEffect> afterEffects = new ArrayList<>();
+		ConfigurationSection afterEffectsSection = config.getConfigurationSection("afterEffects");
+		for (String key : afterEffectsSection.getKeys(false)) {
+			ConfigurationSection afterEffectSection = afterEffectsSection.getConfigurationSection(key);
+			String potionEffectTypeStr = afterEffectSection.getString("type");
+			PotionEffectType potionEffectType = PotionEffectType.getByName(potionEffectTypeStr.toUpperCase());
+			int amplifier = afterEffectSection.getInt("amplifier");
+			int duration = afterEffectSection.getInt("duration");
+			PotionEffect effect = new PotionEffect(potionEffectType, duration, amplifier);
+			afterEffects.add(effect);
+		}
+		WarpFruitTracker warpFruitTracker = new WarpFruitTracker(warpFruitLogSize, warpFruitLogInterval, warpFruitCooldown, warpFruitMaxDistance, warpFruitSpectralWhileChanneling, afterEffects);
 
 		// Initialize the manager
 		manager = new FinaleManager(debug, attackEnabled, attackSpeed,invulTicksEnabled, invulnerableTicks, regenEnabled, ctpOnLogin, regenhandler, weapMod, armourMod,
-				allyHandler, arrowHandler, tridentHandler, shieldHandler, crossbowHandler, potionHandler, tippedArrowMod, blockRestrictionHandler, combatConfig, warpFruitTracker);
+				allyHandler, arrowHandler, tridentHandler, shieldHandler, crossbowHandler, gappleHandler, potionHandler, tippedArrowMod, blockRestrictionHandler, combatConfig, warpFruitTracker);
 		plugin.info("Successfully parsed config");
 		return manager;
 	}
@@ -249,17 +264,32 @@ public class ConfigParser {
 		return new ArrowHandler(enabled, minDistance, radius, damage, allyDamageReduction, allyCollide, allyExemptArrowTypes);
 	}
 
+	public GappleHandler parseGappleHandler(ConfigurationSection config) {
+		if (config == null) {
+			plugin.info("No gapple modifications found");
+			return new GappleHandler(false,0);
+		}
+
+		boolean enabled = config.getBoolean("enabled");
+		long gappleCooldown = parseTime(config.getString("cooldown", "30s"));
+
+		return new GappleHandler(enabled, gappleCooldown);
+	}
+
 	public TridentHandler parseTridentHandler(ConfigurationSection config) {
 		if (config == null) {
 			plugin.info("No trident modifications found");
-			return new TridentHandler(true, 60000, 10000);
+			return new TridentHandler(true, true, 60000, 10000);
 		}
 
-		boolean returnToOffhand = config.getBoolean("returnToOffhand");
+		ConfigurationSection returnToOffhandSection = config.getConfigurationSection("returnToOffhand");
+		boolean returnToOffhand = returnToOffhandSection.getBoolean("enabled");
+		boolean bypassFullInv = returnToOffhandSection.getBoolean("bypassFullInv");
+
 		long riptideCooldown = parseTime(config.getString("riptideCooldown", "10s"));
 		long generalCooldown = parseTime(config.getString("generalCooldown", "60s"));
 
-		return new TridentHandler(returnToOffhand, riptideCooldown, generalCooldown);
+		return new TridentHandler(returnToOffhand, bypassFullInv, riptideCooldown, generalCooldown);
 	}
 
 	public ShieldHandler parseShieldHandler(ConfigurationSection config) {
@@ -364,7 +394,20 @@ public class ConfigParser {
 							ChatColor.GOLD + "" + ChatColor.BOLD + WordUtils.capitalize(materialType.toString()) + ": " +
 									ChatColor.YELLOW + CooldownHandler.formatCoolDown(coolDownHandler, player.getUniqueId())));
 		}
-		return new BlockRestrictionHandler(enabled, restrictionMode, blacklist, whitelist, materialCooldowns);
+
+		Map<Material, Integer> zoneRadii = new HashMap<>();
+		ConfigurationSection zonesSection = config.getConfigurationSection("zones");
+		for (String key : zonesSection.getKeys(false)) {
+			ConfigurationSection zoneSection = zonesSection.getConfigurationSection(key);
+			String materialTypeStr = zoneSection.getString("type");
+			Material materialType = Material.valueOf(materialTypeStr.toUpperCase());
+			int zoneRadius = zoneSection.getInt("radius", -1);
+			if (zoneRadius != -1) {
+				zoneRadii.put(materialType, zoneRadius);
+			}
+		}
+
+		return new BlockRestrictionHandler(enabled, restrictionMode, zoneRadii, blacklist, whitelist, materialCooldowns);
 	}
 
 	public AllyHandler parseAllyHandler(ConfigurationSection config) {

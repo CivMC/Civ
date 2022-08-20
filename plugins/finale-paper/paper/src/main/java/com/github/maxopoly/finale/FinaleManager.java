@@ -36,6 +36,7 @@ public class FinaleManager {
 	private TridentHandler tridentHandler;
 	private ShieldHandler shieldHandler;
 	private CrossbowHandler crossbowHandler;
+	private GappleHandler gappleHandler;
 	private TippedArrowModifier tippedArrowModifier;
 	private BlockRestrictionHandler blockRestrictionHandler;
 	private Set<UUID> chemtrails = new HashSet<>();
@@ -53,7 +54,7 @@ public class FinaleManager {
 	public FinaleManager(boolean debug, boolean attackSpeedEnabled, double attackSpeed, boolean invulTicksEnabled, Map<EntityDamageEvent.DamageCause, Integer> invulnerableTicks, boolean regenHandlerEnabled,
 			boolean ctpOnLogin, SaturationHealthRegenHandler regenHandler, WeaponModifier weaponModifier, ArmourModifier armourModifier,
 						 AllyHandler allyHandler, ArrowHandler arrowHandler, TridentHandler tridentHandler, ShieldHandler shieldHandler, CrossbowHandler crossbowHandler,
-						 PotionHandler potionHandler, TippedArrowModifier tippedArrowModifier, BlockRestrictionHandler blockRestrictionHandler,
+						 GappleHandler gappleHandler, PotionHandler potionHandler, TippedArrowModifier tippedArrowModifier, BlockRestrictionHandler blockRestrictionHandler,
 						 CombatConfig combatConfig, WarpFruitTracker warpFruitTracker) {
 		this.debug = debug;
 		this.attackSpeedEnabled = attackSpeedEnabled;
@@ -68,6 +69,7 @@ public class FinaleManager {
 		this.tridentHandler = tridentHandler;
 		this.shieldHandler = shieldHandler;
 		this.crossbowHandler = crossbowHandler;
+		this.gappleHandler = gappleHandler;
 		this.tippedArrowModifier = tippedArrowModifier;
 		this.blockRestrictionHandler = blockRestrictionHandler;
 		this.combatConfig = combatConfig;
@@ -140,6 +142,10 @@ public class FinaleManager {
 
 	public CrossbowHandler getCrossbowHandler() {
 		return crossbowHandler;
+	}
+
+	public GappleHandler getGappleHandler() {
+		return gappleHandler;
 	}
 
 	public TippedArrowModifier getTippedArrowModifier() {

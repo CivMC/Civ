@@ -33,6 +33,7 @@ subprojects {
 		mavenCentral()
         civRepo("CivMC/CivModCore")
         civRepo("CivMC/CombatTagPlus")
+		civRepo("CivMC/Citadel")
         maven("https://repo.dmulloy2.net/content/groups/public/")
 	}
 
