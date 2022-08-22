@@ -468,7 +468,11 @@ public class PlayerListener implements Listener, Configurable {
 
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(e.getCurrentItem());
 		if(pearl != null) {
-			if (pearlApi.isPlayerExiled(clicker)) {
+			ExilePearl clickerPearl = pearlApi.getPearl(clicker.getUniqueId());
+			if (clickerPearl == null) {
+				return;
+			}
+			if (pearlApi.isPlayerExiled(clicker) && clickerPearl.getPearlType() == PearlType.EXILE) {
 				clicker.sendMessage(ChatUtils.parseColor(Lang.pearlCantHold));
 				e.setCancelled(true);
 			}
@@ -490,8 +494,11 @@ public class PlayerListener implements Listener, Configurable {
 		if (pearl == null) {
 			return;
 		}
-
-		if (pearlApi.isPlayerExiled((Player)e.getEntity())) {
+		ExilePearl pearlee = pearlApi.getPearl(e.getEntity().getUniqueId());
+		if (pearlee == null) {
+			return;
+		}
+		if (pearlApi.isPlayerExiled((Player)e.getEntity()) && pearlee.getPearlType() == PearlType.EXILE) {
 			e.setCancelled(true);
 		}
 	}
