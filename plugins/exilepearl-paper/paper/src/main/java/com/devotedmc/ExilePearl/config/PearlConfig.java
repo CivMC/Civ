@@ -202,4 +202,10 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	 * @return true if they should be able to fly and pick up exile pearls while gliding
 	 */
 	boolean canElytraWithPearls();
+
+	/**
+	 * Should players be able to take pearls through end/nether portals?
+	 * @return true if they can
+	 */
+	boolean canTakeThroughPortals();
 }

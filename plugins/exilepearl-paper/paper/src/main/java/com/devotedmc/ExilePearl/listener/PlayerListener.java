@@ -1237,6 +1237,23 @@ public class PlayerListener implements Listener, Configurable {
 		}
 	}
 
+	@EventHandler
+	public void whenPearlTransfer(PlayerPortalEvent event){
+		if (pearlApi.getPearlConfig().canTakeThroughPortals()) {
+			return;
+		}
+		Player player = event.getPlayer();
+		for(ItemStack is : player.getInventory()){
+			ExilePearl pearl = pearlApi.getPearlFromItemStack(is);
+			if (pearl == null) {
+				continue;
+			}
+			player.getWorld().dropItemNaturally(player.getLocation(), is);
+			is.setAmount(is.getAmount() - 1);
+			player.sendMessage(Component.text("The pearl(s) you were carrying have been dropped since you went through a portal!", NamedTextColor.RED));
+		}
+	}
+
 	@Override
 	public void loadConfig(PearlConfig config) {
 		repairMaterials.clear();

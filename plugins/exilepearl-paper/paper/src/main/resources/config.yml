@@ -34,6 +34,9 @@
 # general.can_elytra_with_pearls
 #  - Will prevent players opening an elytra with a pearl in their inventory, also disables picking up a pearl item
 #    while they are gliding.
+#
+# general.can_take_through_portals
+#  - Should players be able to take pearls through portals? True if yes, false for not
 # 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
 #                                PEARL SETTINGS                               #
@@ -264,6 +267,7 @@ general:
   max_pearled_alts: 1
   max_pearled_message: 'You have too many imprisoned alts'
   can_elytra_with_pearls: true
+  can_take_through_portals: false
 pearls:
   autofree_worldborder: true
   free_by_throwing: false
