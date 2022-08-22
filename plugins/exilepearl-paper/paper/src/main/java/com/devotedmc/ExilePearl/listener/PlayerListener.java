@@ -12,6 +12,7 @@ import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
+import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.util.SpawnUtil;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
@@ -1248,8 +1249,11 @@ public class PlayerListener implements Listener, Configurable {
 			if (pearl == null) {
 				continue;
 			}
-			player.getWorld().dropItemNaturally(player.getLocation(), is);
+			if (!(pearl.getHolder() instanceof PlayerHolder playerHolder)) {
+				return;
+			}
 			is.setAmount(is.getAmount() - 1);
+			pearl.setHolder(player.getWorld().dropItemNaturally(player.getLocation(), pearl.createItemStack()));
 			player.sendMessage(Component.text("The pearl(s) you were carrying have been dropped since you went through a portal!", NamedTextColor.RED));
 		}
 	}
