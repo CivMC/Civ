@@ -12,7 +12,6 @@ import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
-import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.util.SpawnUtil;
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
@@ -1248,9 +1247,6 @@ public class PlayerListener implements Listener, Configurable {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(is);
 			if (pearl == null) {
 				continue;
-			}
-			if (!(pearl.getHolder() instanceof PlayerHolder playerHolder)) {
-				return;
 			}
 			is.setAmount(is.getAmount() - 1);
 			pearl.setHolder(player.getWorld().dropItemNaturally(player.getLocation(), pearl.createItemStack()));
