@@ -77,6 +77,7 @@ obfuscation:
       minecraft:mossy_cobblestone: 1
       minecraft:obsidian: 1
       minecraft:stone: 1
+      minecraft:deepslate: 1
   obfuscation-nether:
     enabled: true
     minY: 1
