@@ -172,9 +172,6 @@ public class CitadelUtility {
 			return true;
 		}
 		ItemMap playerItems = new ItemMap(player.getInventory());
-		if (player.getInventory().getItemInOffHand() != null) {
-			playerItems.addItemStack(player.getInventory().getItemInOffHand());
-		}
 		// check inventory
 		int available = playerItems.getAmount(type.getItem());
 		int required = type.getItem().getAmount();
@@ -184,10 +181,11 @@ public class CitadelUtility {
 		boolean consumeExtra = false;
 		boolean blockIsAlsoReinforcement = block.getType() == type.getItem().getType();
 		if (blockIsAlsoReinforcement) {
-			boolean placingFromReinforcementStack = player.getInventory().getHeldItemSlot() == player.getInventory().first(block.getType());
-				if (placingFromReinforcementStack) {
-					consumeExtra = true;
-					required++;
+			boolean placingFromReinforcementStack = (player.getInventory().getHeldItemSlot() == player.getInventory().first(block.getType())) ||
+					(player.getInventory().getItemInOffHand().getType() == type.getItem().getType());
+			if (placingFromReinforcementStack) {
+				consumeExtra = true;
+				required++;
 			}
 		}
 		if (available < required) {
