@@ -15,7 +15,9 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -112,6 +114,32 @@ public class ArmourBound extends BasicHack {
 				playerViewer.updateInventory();
 			}
 		}
+	}
+
+	@EventHandler
+	public void onAnvilRepair(PrepareAnvilEvent event) {
+		AnvilInventory inventory = event.getInventory();
+		ItemStack first = inventory.getFirstItem();
+		if (first == null || first.getType() == Material.AIR) {
+			return;
+		}
+		ItemStack second = inventory.getSecondItem();
+		if (second == null || second.getType() == Material.AIR) {
+			return;
+		}
+		if (!second.hasItemMeta()) {
+			return;
+		}
+		PersistentDataContainer container = second.getItemMeta().getPersistentDataContainer();
+		if (!container.has(this.key, PersistentDataType.STRING)) {
+			return;
+		}
+		ItemStack result = event.getResult();
+		if (result == null || result.getType() == Material.AIR) {
+			return;
+		}
+		result.setItemMeta(second.getItemMeta());
+		event.setResult(result);
 	}
 
 	private EquipmentSlot getRealSlot(PlayerArmorChangeEvent.SlotType slotType) {
