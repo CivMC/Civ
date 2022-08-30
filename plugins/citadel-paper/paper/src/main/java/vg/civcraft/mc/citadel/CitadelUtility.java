@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
@@ -179,10 +180,14 @@ public class CitadelUtility {
 		// consuming the reinforcement material once will count the block being placed as reinforcing itself
 		// so detect that and consume an extra one
 		boolean consumeExtra = false;
+		//We do this over a material check to keep lore/name support intact etc
+		ItemStack offfhandStack = player.getInventory().getItemInOffHand().clone();
+		offfhandStack.setAmount(1);
+
 		boolean blockIsAlsoReinforcement = block.getType() == type.getItem().getType();
 		if (blockIsAlsoReinforcement) {
 			boolean placingFromReinforcementStack = (player.getInventory().getHeldItemSlot() == player.getInventory().first(block.getType())) ||
-					(player.getInventory().getItemInOffHand().getType() == type.getItem().getType());
+					(offfhandStack.equals(type.getItem()));
 			if (placingFromReinforcementStack) {
 				consumeExtra = true;
 				required++;
