@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.listener;
 
+import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
@@ -33,7 +34,6 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.World;
 import org.bukkit.block.Barrel;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -272,10 +272,13 @@ public class PlayerListener implements Listener, Configurable {
 		}
 
 		Location loc = imprisoner.getLocation();
-		World world = imprisoner.getWorld();
 		Inventory inv = imprisoner.getInventory();
-		for (Entry<Integer, ? extends ItemStack> entry :
-			inv.all(Material.ENDER_PEARL).entrySet()) {
+		removePearlFromInventory(inv, loc);
+		imprisoner.saveData();
+	}
+
+	public void removePearlFromInventory(Inventory inv, Location loc) {
+		for (Entry<Integer, ? extends ItemStack> entry : inv.all(Material.ENDER_PEARL).entrySet()) {
 			ItemStack item = entry.getValue();
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
 			if (pearl == null) {
@@ -283,12 +286,22 @@ public class PlayerListener implements Listener, Configurable {
 			}
 			int slot = entry.getKey();
 			inv.clear(slot);
-			world.dropItemNaturally(loc, item);
+			pearl.setHolder(loc.getWorld().dropItemNaturally(loc, item));
 		}
-		imprisoner.saveData();
 	}
 
-
+	@EventHandler
+	public void onNPCDespawn(EntityRemoveFromWorldEvent event) {
+		Entity entity = event.getEntity();
+		if (!(entity instanceof Player player)) {
+			return;
+		}
+		if (!entity.hasMetadata("NPC")){
+			return;
+		}
+		removePearlFromInventory(player.getInventory(), player.getLocation());
+		player.saveData();
+	}
 
 	/**
 	 * Prevents a pearl from despawning
