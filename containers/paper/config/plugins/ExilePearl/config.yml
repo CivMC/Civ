@@ -318,7 +318,7 @@ damage_log:
   max_amount: 30.0
   potion_damge: 6.0
 rules:
-  pearl_radius: 1000
+  pearl_radius: 0
   ignite: false # Can exiles start a fire
   use_bed: true # Can exiles use a bed
   spawn_reset: true # reset exile player bed when killed by a player
