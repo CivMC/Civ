@@ -134,11 +134,14 @@ public class ArmourBound extends BasicHack {
 			return;
 		}
 		PersistentDataContainer firstContainer = first.getItemMeta().getPersistentDataContainer();
+		PersistentDataContainer secondContainer = second.getItemMeta().getPersistentDataContainer();
 		if (!firstContainer.has(this.key, PersistentDataType.STRING)) {
+			if (secondContainer.has(this.key, PersistentDataType.STRING)) {
+				event.setResult(null);
+			}
 			return;
 		}
 		UUID firstUUID = UUID.fromString(firstContainer.get(this.key, PersistentDataType.STRING));
-		PersistentDataContainer secondContainer = second.getItemMeta().getPersistentDataContainer();
 		if (!secondContainer.has(this.key, PersistentDataType.STRING)) {
 			return;
 		}
