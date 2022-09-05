@@ -11,6 +11,16 @@ chat:
   #so yIncreaseScale=10 will be 10 extra radius per block they go up, 1 would be 1 extra radius per block
   #Coded formula globalChatRange = globalChatRange + (globalChatRange * ((yIncreaseScale/1000) * #blocksaboveydist)))
   yIncreaseScale: 1
+  killRange: 1000
+  dynamicColoring: false
+  colors:
+    near:
+      range: 0
+      color: WHITE
+    far:
+      range: 800
+      color: GRAY
+  globalGroup: '!'
 info:
   #debug: lots of debugging logging will show up in the console def=false
   debug: false
