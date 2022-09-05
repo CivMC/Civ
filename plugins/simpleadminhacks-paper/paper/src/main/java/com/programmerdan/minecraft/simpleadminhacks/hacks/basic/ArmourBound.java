@@ -21,6 +21,7 @@ import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -124,7 +125,11 @@ public class ArmourBound extends BasicHack {
 			return;
 		}
 		ItemStack second = inventory.getSecondItem();
+		ItemStack result = event.getResult();
 		if (second == null || second.getType() == Material.AIR) {
+			return;
+		}
+		if (result == null || result.getType() == Material.AIR) {
 			return;
 		}
 		if (!first.hasItemMeta()) {
@@ -137,7 +142,13 @@ public class ArmourBound extends BasicHack {
 		PersistentDataContainer secondContainer = second.getItemMeta().getPersistentDataContainer();
 		if (!firstContainer.has(this.key, PersistentDataType.STRING)) {
 			if (secondContainer.has(this.key, PersistentDataType.STRING)) {
-				event.setResult(null);
+				result.setItemMeta(second.getItemMeta());
+				result.editMeta(meta -> {
+					if (meta instanceof Damageable damageable) {
+						damageable.setDamage(((Damageable)event.getResult().getItemMeta()).getDamage());
+					}
+				});
+				event.setResult(result);
 			}
 			return;
 		}
@@ -146,10 +157,6 @@ public class ArmourBound extends BasicHack {
 			return;
 		}
 		UUID secondUUID = UUID.fromString(secondContainer.get(this.key, PersistentDataType.STRING));
-		ItemStack result = event.getResult();
-		if (result == null || result.getType() == Material.AIR) {
-			return;
-		}
 		if (firstUUID.equals(secondUUID)) {
 			//We dont want to do anything if these both match, otherwise set the result to null
 			return;
