@@ -2097,6 +2097,12 @@ recipes:
         name: Bio-Component
         lore:
           - Bio-Component for bastion
+      essence:
+        material: ENDER_EYE
+        amount: 64
+        name: Player Essence
+        lore:
+          - Activity reward used to fuel pearls
     output:
       bastion:
         material: SPONGE
@@ -2148,6 +2154,12 @@ recipes:
         name: Bio-Component
         lore:
           - Bio-Component for bastion
+      essence:
+        material: ENDER_EYE
+        amount: 4
+        name: Player Essence
+        lore:
+          - Activity reward used to fuel pearls
     output:
       city_bastion:
         material: BONE_BLOCK
