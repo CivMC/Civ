@@ -152,6 +152,9 @@ public class ArmourBound extends BasicHack {
 			return;
 		}
 		event.setResult(null);
+		for (HumanEntity entity : inventory.getViewers()) {
+			((Player)entity).updateInventory();
+		}
 	}
 
 	private EquipmentSlot getRealSlot(PlayerArmorChangeEvent.SlotType slotType) {
