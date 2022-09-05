@@ -541,4 +541,9 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	public boolean canElytraWithPearls() {
 		return doc.getBoolean("general.can_elytra_with_pearls", true);
 	}
+
+	@Override
+	public boolean canTakeThroughPortals() {
+		return doc.getBoolean("general.can_take_through_portals", false);
+	}
 }
