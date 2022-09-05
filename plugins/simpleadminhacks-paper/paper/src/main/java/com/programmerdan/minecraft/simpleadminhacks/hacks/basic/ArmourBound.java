@@ -21,6 +21,7 @@ import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -124,22 +125,46 @@ public class ArmourBound extends BasicHack {
 			return;
 		}
 		ItemStack second = inventory.getSecondItem();
+		ItemStack result = event.getResult();
 		if (second == null || second.getType() == Material.AIR) {
+			return;
+		}
+		if (result == null || result.getType() == Material.AIR) {
+			return;
+		}
+		if (!first.hasItemMeta()) {
 			return;
 		}
 		if (!second.hasItemMeta()) {
 			return;
 		}
-		PersistentDataContainer container = second.getItemMeta().getPersistentDataContainer();
-		if (!container.has(this.key, PersistentDataType.STRING)) {
+		PersistentDataContainer firstContainer = first.getItemMeta().getPersistentDataContainer();
+		PersistentDataContainer secondContainer = second.getItemMeta().getPersistentDataContainer();
+		if (!firstContainer.has(this.key, PersistentDataType.STRING)) {
+			if (secondContainer.has(this.key, PersistentDataType.STRING)) {
+				result.setItemMeta(second.getItemMeta());
+				result.editMeta(meta -> {
+					if (meta instanceof Damageable damageable) {
+						damageable.setDamage(((Damageable)event.getResult().getItemMeta()).getDamage());
+					}
+				});
+				event.setResult(result);
+			}
 			return;
 		}
-		ItemStack result = event.getResult();
-		if (result == null || result.getType() == Material.AIR) {
+		UUID firstUUID = UUID.fromString(firstContainer.get(this.key, PersistentDataType.STRING));
+		if (!secondContainer.has(this.key, PersistentDataType.STRING)) {
 			return;
 		}
-		result.setItemMeta(second.getItemMeta());
-		event.setResult(result);
+		UUID secondUUID = UUID.fromString(secondContainer.get(this.key, PersistentDataType.STRING));
+		if (firstUUID.equals(secondUUID)) {
+			//We dont want to do anything if these both match, otherwise set the result to null
+			return;
+		}
+		event.setResult(null);
+		for (HumanEntity entity : inventory.getViewers()) {
+			((Player)entity).updateInventory();
+		}
 	}
 
 	private EquipmentSlot getRealSlot(PlayerArmorChangeEvent.SlotType slotType) {
