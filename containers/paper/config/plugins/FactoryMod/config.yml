@@ -240,7 +240,7 @@ factories:
         amount: 64
       essence:
         material: ENDER_EYE
-        amount: 32
+        amount: 64
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -290,7 +290,7 @@ factories:
         amount: 192
       essence:
         material: ENDER_EYE
-        amount: 38
+        amount: 76
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -307,7 +307,7 @@ factories:
         amount: 320
       essence:
         material: ENDER_EYE
-        amount: 64
+        amount: 128
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -324,7 +324,7 @@ factories:
         amount: 256
       essence:
         material: ENDER_EYE
-        amount: 50
+        amount: 100
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -341,7 +341,7 @@ factories:
         amount: 160
       essence:
         material: ENDER_EYE
-        amount: 32
+        amount: 64
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -361,7 +361,7 @@ factories:
         amount: 48
       essence:
         material: ENDER_EYE
-        amount: 8
+        amount: 32
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -381,7 +381,7 @@ factories:
         amount: 80
       essence:
         material: ENDER_EYE
-        amount: 16
+        amount: 64
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -401,7 +401,7 @@ factories:
         amount: 64
       essence:
         material: ENDER_EYE
-        amount: 12
+        amount: 48
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -421,7 +421,7 @@ factories:
         amount: 40
       essence:
         material: ENDER_EYE
-        amount: 8
+        amount: 32
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -438,7 +438,7 @@ factories:
         amount: 96
       essence:
         material: ENDER_EYE
-        amount: 18
+        amount: 36
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -455,7 +455,7 @@ factories:
         amount: 80
       essence:
         material: ENDER_EYE
-        amount: 16
+        amount: 32
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -472,7 +472,7 @@ factories:
         amount: 48
       essence:
         material: ENDER_EYE
-        amount: 8
+        amount: 16
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -489,7 +489,7 @@ factories:
         amount: 64
       essence:
         material: ENDER_EYE
-        amount: 12
+        amount: 24
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -506,7 +506,7 @@ factories:
         amount: 32
       essence:
         material: ENDER_EYE
-        amount: 6
+        amount: 12
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -526,7 +526,7 @@ factories:
         amount: 20
       essence:
         material: ENDER_EYE
-        amount: 4
+        amount: 32
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -546,7 +546,7 @@ factories:
         amount: 24
       essence:
         material: ENDER_EYE
-        amount: 4
+        amount: 36
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -566,7 +566,7 @@ factories:
         amount: 9
       essence:
         material: ENDER_EYE
-        amount: 2
+        amount: 16
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -586,7 +586,7 @@ factories:
         amount: 4
       essence:
         material: ENDER_EYE
-        amount: 1
+        amount: 16
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -606,7 +606,7 @@ factories:
         amount: 4
       essence:
         material: ENDER_EYE
-        amount: 1
+        amount: 12
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -829,7 +829,7 @@ factories:
           - Bio-Component for bastion
       essence:
         material: ENDER_EYE
-        amount: 64
+        amount: 128
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -850,7 +850,7 @@ factories:
         amount: 32
       essence:
         material: ENDER_EYE
-        amount: 16
+        amount: 32
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -1441,7 +1441,7 @@ recipes:
         amount: 8
       essence:
         material: ENDER_EYE
-        amount: 4
+        amount: 8
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -1465,7 +1465,7 @@ recipes:
         amount: 32
       essence:
         material: ENDER_EYE
-        amount: 32
+        amount: 64
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -2097,6 +2097,12 @@ recipes:
         name: Bio-Component
         lore:
           - Bio-Component for bastion
+      essence:
+        material: ENDER_EYE
+        amount: 64
+        name: Player Essence
+        lore:
+          - Activity reward used to fuel pearls
     output:
       bastion:
         material: SPONGE
@@ -2148,6 +2154,12 @@ recipes:
         name: Bio-Component
         lore:
           - Bio-Component for bastion
+      essence:
+        material: ENDER_EYE
+        amount: 4
+        name: Player Essence
+        lore:
+          - Activity reward used to fuel pearls
     output:
       city_bastion:
         material: BONE_BLOCK
@@ -3805,7 +3817,7 @@ recipes:
         amount: 6
       essence:
         material: ENDER_EYE
-        amount: 4
+        amount: 8
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4488,7 +4500,7 @@ recipes:
         amount: 128
       essence:
         material: ENDER_EYE
-        amount: 128
+        amount: 256
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4700,7 +4712,7 @@ recipes:
         amount: 19
       essence:
         material: ENDER_EYE
-        amount: 4
+        amount: 8
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4715,7 +4727,7 @@ recipes:
         amount: 32
       essence:
         material: ENDER_EYE
-        amount: 6
+        amount: 12
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4730,7 +4742,7 @@ recipes:
         amount: 25
       essence:
         material: ENDER_EYE
-        amount: 4
+        amount: 10
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4745,7 +4757,7 @@ recipes:
         amount: 16
       essence:
         material: ENDER_EYE
-        amount: 2
+        amount: 6
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4760,7 +4772,7 @@ recipes:
         amount: 2
       essence:
         material: ENDER_EYE
-        amount: 2
+        amount: 8
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4775,7 +4787,7 @@ recipes:
         amount: 4
       essence:
         material: ENDER_EYE
-        amount: 4
+        amount: 12
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4790,7 +4802,7 @@ recipes:
         amount: 3
       essence:
         material: ENDER_EYE
-        amount: 3
+        amount: 10
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4805,7 +4817,7 @@ recipes:
         amount: 2
       essence:
         material: ENDER_EYE
-        amount: 2
+        amount: 6
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4820,7 +4832,7 @@ recipes:
         amount: 9
       essence:
         material: ENDER_EYE
-        amount: 2
+        amount: 10
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4835,7 +4847,7 @@ recipes:
         amount: 8
       essence:
         material: ENDER_EYE
-        amount: 2
+        amount: 10
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4850,7 +4862,7 @@ recipes:
         amount: 5
       essence:
         material: ENDER_EYE
-        amount: 1
+        amount: 3
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4865,7 +4877,7 @@ recipes:
         amount: 6
       essence:
         material: ENDER_EYE
-        amount: 1
+        amount: 2
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4880,7 +4892,7 @@ recipes:
         amount: 3
       essence:
         material: ENDER_EYE
-        amount: 1
+        amount: 10
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4895,7 +4907,7 @@ recipes:
         amount: 1
       essence:
         material: ENDER_EYE
-        amount: 1
+        amount: 10
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4913,7 +4925,7 @@ recipes:
         amount: 3
       essence:
         material: ENDER_EYE
-        amount: 1
+        amount: 3
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4931,7 +4943,7 @@ recipes:
         amount: 1
       essence:
         material: ENDER_EYE
-        amount: 1
+        amount: 3
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4949,7 +4961,7 @@ recipes:
         amount: 1
       essence:
         material: ENDER_EYE
-        amount: 1
+        amount: 3
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -4967,7 +4979,7 @@ recipes:
         amount: 1
       essence:
         material: ENDER_EYE
-        amount: 1
+        amount: 2
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -5015,7 +5027,7 @@ recipes:
           - Bio-Component for bastion
       essence:
         material: ENDER_EYE
-        amount: 8
+        amount: 16
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -5666,7 +5678,7 @@ recipes:
         amount: 3
       essence:
         material: ENDER_EYE
-        amount: 2
+        amount: 5
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -5718,7 +5730,7 @@ recipes:
           - Compacted Item
       essence:
         material: ENDER_EYE
-        amount: 10
+        amount: 32
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -5795,7 +5807,7 @@ recipes:
           - Compacted Item
       essence:
         material: ENDER_EYE
-        amount: 10
+        amount: 32
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -5872,7 +5884,7 @@ recipes:
           - Compacted Item
       essence:
         material: ENDER_EYE
-        amount: 10
+        amount: 32
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -5949,7 +5961,7 @@ recipes:
           - Compacted Item
       essence:
         material: ENDER_EYE
-        amount: 10
+        amount: 32
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -5989,7 +6001,7 @@ recipes:
         amount: 128
       essence:
         material: ENDER_EYE
-        amount: 64
+        amount: 128
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
@@ -6007,7 +6019,7 @@ recipes:
         amount: 16
       essence:
         material: ENDER_EYE
-        amount: 8
+        amount: 16
         name: Player Essence
         lore:
           - Activity reward used to fuel pearls
