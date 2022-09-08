@@ -6,11 +6,20 @@ import com.github.igotyou.FactoryMod.events.RecipeExecuteEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
-import com.github.igotyou.FactoryMod.recipes.*;
+import com.github.igotyou.FactoryMod.recipes.IRecipe;
+import com.github.igotyou.FactoryMod.recipes.InputRecipe;
+import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
+import com.github.igotyou.FactoryMod.recipes.RecipeScalingUpgradeRecipe;
+import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
+import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
-import com.github.igotyou.FactoryMod.utility.*;
+import com.github.igotyou.FactoryMod.utility.Direction;
+import com.github.igotyou.FactoryMod.utility.IIOFInventoryProvider;
+import com.github.igotyou.FactoryMod.utility.IOSelector;
+import com.github.igotyou.FactoryMod.utility.LoggingUtils;
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -29,7 +38,12 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 /**
