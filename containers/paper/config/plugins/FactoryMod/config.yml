@@ -6768,6 +6768,16 @@ recipes:
         record_wait:
           material: MUSIC_DISC_WAIT
           amount: 1
+      record_pigstep:
+        chance: 0.0000588235
+        record_pigstep:
+          material: MUSIC_DISC_PIGSTEP
+          amount: 1
+      record_otherside:
+        chance: 0.0000588235
+        record_otherside: MUSIC_DISC_OTHERSIDE
+          material: 
+          amount: 1
       minecart:
         chance: 0.0008941634
         minecart:
