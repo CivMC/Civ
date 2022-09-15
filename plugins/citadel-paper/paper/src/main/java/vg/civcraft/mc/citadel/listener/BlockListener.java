@@ -573,7 +573,7 @@ public class BlockListener implements Listener {
 			if (reinforcement.hasPermission(event.getPlayer(), CitadelPermissionHandler.getCrops())) {
 				continue;
 			}
-			event.getPlayer().sendMessage(Component.text("You can't do that while their are reinforced blocks around!").color(NamedTextColor.RED));
+			event.getPlayer().sendMessage(Component.text("You can't do that while there are reinforced blocks around!").color(NamedTextColor.RED));
 			event.setCancelled(true);
 		}
 	}
