@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel.model;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
@@ -71,5 +72,12 @@ public class AcidManager {
 		}
 		return acidTypes.stream()
 				.anyMatch(acidType -> acidType.material() == b.getType());
+	}
+
+	public AcidType getAcidTypeFromMaterial(Material material) {
+		return acidTypes.stream()
+				.filter(acidType -> acidType.material() == material)
+				.findFirst()
+				.orElseThrow();
 	}
 }

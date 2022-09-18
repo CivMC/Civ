@@ -79,12 +79,24 @@ acids:
   gold:
     material: GOLD_BLOCK
     multiplier: 1
+    faces:
+        - UP
   diamond:
     material: DIAMOND_BLOCK
     multiplier: 2
+    faces:
+        - UP
+        - DOWN
   netherite:
     material: NETHERITE_BLOCK
     multiplier: 4
+    faces:
+        - UP
+        - DOWN
+        - NORTH
+        - SOUTH
+        - EAST
+        - WEST
     
 non_reinforceables:
  - BEDROCK

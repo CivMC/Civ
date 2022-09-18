@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -258,7 +259,9 @@ public class CitadelConfigManager extends ConfigParser {
 
 		Material material = Material.getMaterial(materialName);
 
-		return new AcidType(material, multiplier);
+		List<BlockFace> blockFaces = config.getStringList("faces").stream().map(BlockFace::valueOf).toList();
+
+		return new AcidType(material, multiplier, blockFaces);
 	}
 
 	private void parseAcidTypes(ConfigurationSection config) {
