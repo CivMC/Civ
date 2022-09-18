@@ -1,21 +1,22 @@
 package vg.civcraft.mc.citadel.model;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.acidtypes.AcidType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class AcidManager {
 
-	private Set<Material> material;
+	private List<AcidType> acidTypes;
 
-	public AcidManager(Collection<Material> acidMats) {
-		this.material = new TreeSet<>(acidMats);
+	public AcidManager(Collection<AcidType> acidTypes) {
+		this.acidTypes = new ArrayList<>(acidTypes);
 	}
 
 	/**
@@ -40,6 +41,13 @@ public class AcidManager {
 	public long getRemainingAcidMaturationTime(Reinforcement rein) {
 		Block acidBlock = rein.getLocation().getBlock();
 		Block targetBlock = acidBlock.getRelative(BlockFace.UP);
+
+		double acidMultiplier = acidTypes.stream()
+				.filter(acidType -> acidType.material() == acidBlock.getType())
+				.findFirst()
+				.map(AcidType::modifier)
+				.orElse(1D);
+
 		double decayMultiplier = 1;
 		if (!MaterialUtils.isAir(targetBlock.getType())) {
 			Reinforcement targetBlockRein = ReinforcementLogic.getReinforcementAt(targetBlock.getLocation());
@@ -47,7 +55,7 @@ public class AcidManager {
 				decayMultiplier = ReinforcementLogic.getDecayDamage(targetBlockRein);
 			}
 		}
-		long totalTime = Math.round(rein.getType().getAcidTime() / decayMultiplier);
+		long totalTime = Math.round(rein.getType().getAcidTime() / decayMultiplier * acidMultiplier);
 		return Math.max(0, totalTime - rein.getAge());
 	}
 
@@ -61,6 +69,7 @@ public class AcidManager {
 		if (b == null) {
 			return false;
 		}
-		return material.contains(b.getType());
+		return acidTypes.stream()
+				.anyMatch(acidType -> acidType.material() == b.getType());
 	}
 }

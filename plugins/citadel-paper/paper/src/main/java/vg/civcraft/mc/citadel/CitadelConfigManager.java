@@ -1,12 +1,5 @@
 package vg.civcraft.mc.citadel;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,6 +7,8 @@ import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
+import vg.civcraft.mc.citadel.acidtypes.AcidType;
 import vg.civcraft.mc.citadel.model.WorldBorderBuffers;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffect;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
@@ -24,11 +19,14 @@ import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 public class CitadelConfigManager extends ConfigParser {
 
 	private ManagedDatasource database;
 	private List<ReinforcementType> reinforcementTypes;
-	private List<Material> acidMaterials;
+	private List<AcidType> acidTypes;
 
 	private List<Material> globalBlackList;
 
@@ -57,10 +55,6 @@ public class CitadelConfigManager extends ConfigParser {
 
 	public CitadelConfigManager(ACivMod plugin) {
 		super(plugin);
-	}
-
-	public List<Material> getAcidMaterials() {
-		return acidMaterials;
 	}
 
 	public int getActivityMapRadius() {
@@ -132,6 +126,10 @@ public class CitadelConfigManager extends ConfigParser {
 		return reinforcementTypes;
 	}
 
+	public List<AcidType> getAcidTypes() {
+		return acidTypes;
+	}
+
 	public boolean logCreation() {
 		return logCreation;
 	}
@@ -152,22 +150,10 @@ public class CitadelConfigManager extends ConfigParser {
 		return logMessages;
 	}
 
-	private void parseAcidMaterials(ConfigurationSection config) {
-		acidMaterials = ConfigHelper.parseMaterialList(config, "acidblock_material");
-		if (acidMaterials == null) {
-			logger.info("No valid acid materials found in config");
-			acidMaterials = new LinkedList<>();
-		}
-		for (Material mat : acidMaterials) {
-			logger.info("Adding " + mat.toString() + " as valid acid material");
-		}
-	}
-
 	@Override
 	protected boolean parseInternal(ConfigurationSection config) {
 		database = ManagedDatasource.construct((ACivMod) plugin, (DatabaseCredentials) config.get("database"));
 		globalBlackList = ConfigHelper.parseMaterialList(config, "non_reinforceables");
-		parseAcidMaterials(config);
 		logHostileBreaks = config.getBoolean("logHostileBreaks", true);
 		logFriendlyBreaks = config.getBoolean("logFriendlyBreaks", true);
 		logDamage = config.getBoolean("logDamage", false);
@@ -177,6 +163,7 @@ public class CitadelConfigManager extends ConfigParser {
 		globalDecayMultiplier = config.getDouble("global_decay_multiplier", 2.0);
 		globalDecayTimer = ConfigHelper.parseTime(config.getString("global_decay_timer", "0"));
 		parseReinforcementTypes(config.getConfigurationSection("reinforcements"));
+		parseAcidTypes(config.getConfigurationSection("acids"));
 		hangersInheritReinforcements = config.getBoolean("hangers_inherit_reinforcement", false);
 
 		activityMapRadius = config.getInt("activity-map-radius", 1);
@@ -256,6 +243,40 @@ public class CitadelConfigManager extends ConfigParser {
 			ReinforcementType type = parseReinforcementType(config.getConfigurationSection(key));
 			if (type != null) {
 				reinforcementTypes.add(type);
+			}
+		}
+	}
+
+	@Nullable
+	private AcidType parseAcidType(ConfigurationSection config) {
+		String materialName = config.getString("material");
+		if (materialName == null) {
+			logger.info("Ignoring invalid acid material");
+			return null;
+		}
+		double multiplier = config.getDouble("multiplier");
+
+		Material material = Material.getMaterial(materialName);
+
+		return new AcidType(material, multiplier);
+	}
+
+	private void parseAcidTypes(ConfigurationSection config) {
+		acidTypes = new ArrayList<>();
+
+		if (config == null) {
+			logger.info("No acid types found in config");
+			return;
+		}
+
+		for (String key: config.getKeys(false)) {
+			if (!config.isConfigurationSection(key)) {
+				logger.warning("Ignoring invalid entry " + key + " at " + config.getCurrentPath());
+				continue;
+			}
+			AcidType type = parseAcidType(config.getConfigurationSection(key));
+			if (type != null) {
+				acidTypes.add(type);
 			}
 		}
 	}

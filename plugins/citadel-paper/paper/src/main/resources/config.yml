@@ -74,6 +74,17 @@ reinforcements:
     acid_time: 1s
     name: Bedrock
     hit_points: 420420420
+
+acids:
+  gold:
+    material: GOLD_BLOCK
+    multiplier: 1
+  diamond:
+    material: DIAMOND_BLOCK
+    multiplier: 2
+  netherite:
+    material: NETHERITE_BLOCK
+    multiplier: 4
     
 non_reinforceables:
  - BEDROCK
