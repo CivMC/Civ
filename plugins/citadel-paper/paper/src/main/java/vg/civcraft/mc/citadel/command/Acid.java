@@ -3,6 +3,9 @@ package vg.civcraft.mc.citadel.command;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
+import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -22,10 +25,6 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
-import java.util.Iterator;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-
 public class Acid extends BaseCommand {
 
 	@CommandAlias("ctacid|acid")
@@ -33,8 +32,6 @@ public class Acid extends BaseCommand {
 	public void execute(Player p) {
 		Iterator<Block> itr = new BlockIterator(p, 40); // Within 2.5 chunks
 		AcidManager acidMan = Citadel.getInstance().getAcidManager();
-
-
 		boolean foundAny = false;
 		while (itr.hasNext()) {
 			Block block = itr.next();

@@ -1,11 +1,23 @@
 package vg.civcraft.mc.citadel;
 
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
+import vg.civcraft.mc.citadel.listener.ActivityListener;
 import vg.civcraft.mc.citadel.activity.ActivityMap;
 import vg.civcraft.mc.citadel.command.CitadelCommandManager;
-import vg.civcraft.mc.citadel.listener.*;
-import vg.civcraft.mc.citadel.model.*;
+import vg.civcraft.mc.citadel.listener.BlockListener;
+import vg.civcraft.mc.citadel.listener.EntityListener;
+import vg.civcraft.mc.citadel.listener.InventoryListener;
+import vg.civcraft.mc.citadel.listener.ModeListener;
+import vg.civcraft.mc.citadel.listener.RedstoneListener;
+import vg.civcraft.mc.citadel.listener.WorldBorderListener;
+import vg.civcraft.mc.citadel.model.AcidManager;
+import vg.civcraft.mc.citadel.model.CitadelChunkData;
+import vg.civcraft.mc.citadel.model.CitadelDAO;
+import vg.civcraft.mc.citadel.model.CitadelSettingManager;
+import vg.civcraft.mc.citadel.model.HologramManager;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementTypeManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -14,7 +26,6 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableStorageEngine;
 
-import java.util.logging.Logger;
 
 public class Citadel extends ACivMod {
 
