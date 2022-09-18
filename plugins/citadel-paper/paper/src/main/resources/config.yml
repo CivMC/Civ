@@ -78,18 +78,18 @@ reinforcements:
 acids:
   gold:
     material: GOLD_BLOCK
-    multiplier: 1
+    maturation_time_multiplier: 1
     faces:
         - UP
   diamond:
     material: DIAMOND_BLOCK
-    multiplier: 2
+    maturation_time_multiplier: 2
     faces:
         - UP
         - DOWN
   netherite:
     material: NETHERITE_BLOCK
-    multiplier: 4
+    maturation_time_multiplier: 4
     faces:
         - UP
         - DOWN

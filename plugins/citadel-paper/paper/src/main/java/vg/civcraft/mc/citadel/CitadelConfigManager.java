@@ -260,7 +260,7 @@ public class CitadelConfigManager extends ConfigParser {
 			logger.info("Ignoring invalid acid material");
 			return null;
 		}
-		double multiplier = config.getDouble("multiplier");
+		double multiplier = config.getDouble("maturation_time_multiplier");
 
 		Material material = Material.getMaterial(materialName);
 
