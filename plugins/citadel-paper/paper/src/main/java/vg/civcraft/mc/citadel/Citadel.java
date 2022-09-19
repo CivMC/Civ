@@ -26,6 +26,7 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableStorageEngine;
 
+
 public class Citadel extends ACivMod {
 
 	private static Citadel instance;
@@ -145,7 +146,7 @@ public class Citadel extends ACivMod {
 		}
 		reinManager = new ReinforcementManager(chunkMetaData);
 		stateManager = new PlayerStateManager();
-		acidManager = new AcidManager(config.getAcidMaterials());
+		acidManager = new AcidManager(config.getAcidTypes());
 		settingManager = new CitadelSettingManager();
 		Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
 			if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {

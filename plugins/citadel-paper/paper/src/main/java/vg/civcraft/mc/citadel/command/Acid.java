@@ -18,6 +18,7 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.acidtypes.AcidType;
 import vg.civcraft.mc.citadel.events.ReinforcementAcidBlockedEvent;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
@@ -59,48 +60,47 @@ public class Acid extends BaseCommand {
 						+ TextUtil.formatDuration(neededTime, TimeUnit.MILLISECONDS));
 				return;
 			}
-			Block topFace = block.getRelative(BlockFace.UP);
-			if (MaterialUtils.isAir(topFace.getType())) {
-				CitadelUtility.sendAndLog(p, ChatColor.RED, "There is no block above to acid block.");
-				return;
-			}
-			Reinforcement topRein = ReinforcementLogic.getReinforcementProtecting(topFace);
-			if (topRein == null) {
-				CitadelUtility.sendAndLog(p, ChatColor.RED, "The block above doesn't have a reinforcement.");
-				return;
-			}
-			if (!topRein.getType().canBeReinforced(topFace.getType())) {
-				CitadelUtility.sendAndLog(p, ChatColor.RED, "You cannot acid that block because it cannot be reinforced.");
-				return;
-			}
-			if (!acidMan.canAcidBlock(reinforcement.getType(), topRein.getType())) {
-				CitadelUtility.sendAndLog(p, ChatColor.RED,
-						reinforcement.getType().getName() + " can not acid away " + topRein.getType().getName());
-				return;
-			}
-			ReinforcementAcidBlockedEvent event = new ReinforcementAcidBlockedEvent(p, reinforcement, topRein);
-			Bukkit.getPluginManager().callEvent(event);
-			if (event.isCancelled()) {
-				if (Citadel.getInstance().getConfigManager().isDebugEnabled()) {
-					Citadel.getInstance().getLogger().log(Level.INFO,
-							"Acid block event cancelled for acid at " + reinforcement.getLocation());
+
+			AcidType acidType = acidMan.getAcidTypeFromMaterial(block.getType());
+
+			for (BlockFace blockFace : acidType.blockFaces()) {
+				Block relativeBlock = block.getRelative(blockFace);
+
+				Reinforcement relativeReinforcement = ReinforcementLogic.getReinforcementProtecting(relativeBlock);
+				if (
+						relativeReinforcement == null
+						|| !relativeReinforcement.getType().canBeReinforced(relativeBlock.getType())
+						|| !acidMan.canAcidBlock(reinforcement.getType(), relativeReinforcement.getType())
+						|| acidMan.isPossibleAcidBlock(relativeBlock)
+				) {
+					continue;
 				}
-				return;
+
+				ReinforcementAcidBlockedEvent event = new ReinforcementAcidBlockedEvent(p, reinforcement, relativeReinforcement);
+				Bukkit.getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					if (Citadel.getInstance().getConfigManager().isDebugEnabled()) {
+						Citadel.getInstance().getLogger().log(Level.INFO,
+								"Acid block event cancelled for acid at " + reinforcement.getLocation());
+					}
+					return;
+				}
+
+				if (Citadel.getInstance().getConfigManager().logHostileBreaks()) {
+					Citadel.getInstance().getLogger().log(Level.INFO, "Acid at {0} broke {1} at {2}, activated by {3}",
+							new Object[]{block.getLocation(), relativeBlock.getType(), relativeBlock.getLocation(), p.getName()});
+				}
+
+				foundAny = true;
+				ReinforcementLogic.damageReinforcement(relativeReinforcement, relativeReinforcement.getHealth() + 1, p);
+				if (!acidContainerBlock(relativeBlock)) {
+					relativeBlock.breakNaturally();
+				}
 			}
 
-			if (Citadel.getInstance().getConfigManager().logHostileBreaks()) {
-				Citadel.getInstance().getLogger().log(Level.INFO, "Acid at {0} broke {1} at {2}, activated by {3}",
-						new Object[]{block.getLocation(), topFace.getType(), topFace.getLocation(), p.getName()});
-			}
-			foundAny = true;
 			reinforcement.setHealth(-1);
-			// play particles for top block
-			ReinforcementLogic.damageReinforcement(topRein, topRein.getHealth() + 1, p);
 			block.breakNaturally();
 			p.getWorld().dropItemNaturally(reinforcement.getLocation(), reinforcement.getType().getItem());
-			if (!acidContainerBlock(topFace)) {
-				topFace.breakNaturally();
-			}
 		}
 	}
 
