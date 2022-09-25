@@ -91,6 +91,7 @@ factories:
       - make_prismarine_bricks
       - make_dark_prismarine
       - make_sea_lantern
+      - make_end_rods
       - make_redstone_lamp
       - pack_ice
       - pack_blue_ice
@@ -1797,6 +1798,21 @@ recipes:
       sea_lantern:
         material: SEA_LANTERN
         amount: 32
+  make_end_rods:
+    production_time: 4s
+    name: Make End Rods
+    type: PRODUCTION
+    input:
+      sea_lantern:
+        material: SEA_LANTERN
+        amount: 4
+      blaze_rod:
+        material: BLAZE_ROD
+        amount: 4
+    output:
+      end_rod:
+        material: END_ROD
+        amount: 16
   make_redstone_lamp:
     forceInclude: true
     production_time: 4s
