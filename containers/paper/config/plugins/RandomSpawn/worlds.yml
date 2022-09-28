@@ -40,22 +40,62 @@ world:
     - "WHITE_CARPET"
     - "YELLOW_CARPET"
   spawnpoints:
-#    Acadia: #SpacemanSpleef#0212
-#      x: 3600
-#      y: 250 # overridden in code, but must be set
-#      z: -9950
-#      nearby: true # require another player nearby?
-#      checkradius: 900 # require another player closer than this
-#      radius: 200 # spawn area outer radius
-#      exclusion: 0 # spawn area inner radius
-#    Yoahtl: # @Aki#3250
-#      x: -4989
-#      y: 250 # overridden in code, but must be set
-#      z: 6887
-#      nearby: true # require another player nearby?
-#      checkradius: 900 # require another player closer than this
-#      radius: 215 # spawn area outer radius
-#      exclusion: 78 # spawn area inner radius
+    Dalgon: # fredhun14#7177
+      x: 3200
+      y: 250 # overridden in code, but must be set
+      z: 5200
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    HyperboreanConfederation: # SpacemanSpleef#0212
+      x: -880
+      y: 250 # overridden in code, but must be set
+      z: 7500
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Icenia: # chrischrispie#7502
+      x: -3800
+      y: 250 # overridden in code, but must be set
+      z: -4330
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 215 # spawn area outer radius
+      exclusion: 78 # spawn area inner radius
+    Kallos: # K0mmi#4134
+      x: -924
+      y: 250 # overridden in code, but must be set
+      z: -3500
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Nara: # bronnakus#1195
+      x: 3200
+      y: 250 # overridden in code, but must be set
+      z: 4800
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Pavia: # Danny#1931
+      x: 1000
+      y: 250 # overridden in code, but must be set
+      z: -3000
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Santiago: # Yodabird19#1542
+      x: 6344
+      y: 250 # overridden in code, but must be set
+      z: 3034
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
 world_nether:
   keeprandomspawns: false
   newplayertime: 3000
