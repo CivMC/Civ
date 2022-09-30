@@ -49,6 +49,14 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
+    Commonwealth: # reffelruz#5046
+      x: -4004
+      y: 250 # overridden in code, but must be set
+      z: 102
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
     CortesiaDelMar: # Yodabird19#1542
       x: 6344
       y: 250 # overridden in code, but must be set
@@ -105,10 +113,26 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
+    ReunanUnion: # Sleepy Moe#5591
+      x: 8646
+      y: 250 # overridden in code, but must be set
+      z: 1521
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
     SPQR: # Antonius_Jones#1007 
       x: 2950
       y: 250 # overridden in code, but must be set
       z: -5550
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Truidencia: # Hylian Cellist#8553
+      x: 6583
+      y: 250 # overridden in code, but must be set
+      z: 6372
       nearby: true # require another player nearby?
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
