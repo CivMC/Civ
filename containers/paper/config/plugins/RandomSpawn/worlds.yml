@@ -137,6 +137,14 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
+    Valyria: # Doom#0893
+      x: -5935
+      y: 250 # overridden in code, but must be set
+      z: -5620
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
     Yoahtl: # Solitaire7#3180
       x: 7615
       y: 250 # overridden in code, but must be set
