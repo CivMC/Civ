@@ -129,6 +129,14 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
+    TemporalIsles: # PhysicsGamer#2937
+      x: -1791
+      y: 250 # overridden in code, but must be set
+      z: -6068
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
     Truidencia: # Hylian Cellist#8553
       x: 6583
       y: 250 # overridden in code, but must be set
