@@ -7026,6 +7026,90 @@ recipes:
           amount: 1
           nbt:
             SkullOwner: Maxopoly
+      crimeo_skull:
+        chance: 0.0010294117
+        crimeo_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: Crimeo
+      Mike0War_skull:
+        chance: 0.0010294117
+        Mike0War_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: Mike0War
+      LordOfMarzipan_skull:
+        chance: 0.0010294117
+        LordOfMarzipan_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: LordOfMarzipan
+      Wingzero54_skull:
+        chance: 0.0010294117
+        Wingzero54_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: Wingzero54
+      SoundTech_skull:
+        chance: 0.0010294117
+        SoundTech_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: SoundTech
+      Ahrimanne_skull:
+        chance: 0.0010294117
+        Ahrimanne_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: Ahrimanne
+      DietCola_skull:
+        chance: 0.0010294117
+        DietCola_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: DietCola
+      togoshigekata_skull:
+        chance: 0.0010294117
+        togoshigekata_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: togoshigekata
+      wjkroeker_skull:
+        chance: 0.0010294117
+        wjkroeker_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: wjkroeker
+      NovaCaesar_skull:
+        chance: 0.0010294117
+        NovaCaesar_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: NovaCaesar
+      tradespin_skull:
+        chance: 0.0010294117
+        tradespin_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: tradespin
+      Yergo_skull:
+        chance: 0.0010294117
+        yergo_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: Yergo
       decorative_bread_skull:
         chance: 0.0010294117
         decorative_bread_skull:
@@ -7301,33 +7385,33 @@ recipes:
               Properties:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWU5ZDIyZDlhZGE2M2UyODE0MjBhZTMzNjkxODgwODY5ZmExYTE0YmZkZjg3ZDhlNTM4ZTk5OGE4ZjI5NTk1YiJ9fX0=
-      # 20% each of 0.9156103892
+      # 20% each of 0.9032574488
       dirt:
-        chance: 0.18312207784
+        chance: 0.18065148976
         dirt:
           material: DIRT
           amount: 1
           name: Dirt!
       cobblestone:
-        chance: 0.18312207784
+        chance: 0.18065148976
         cobblestone:
           material: COBBLESTONE
           amount: 1
           name: Cobblestone!
       sand:
-        chance: 0.18312207784
+        chance: 0.18065148976
         sand:
           material: SAND
           amount: 1
           name: Sand!
       gravel:
-        chance: 0.18312207784
+        chance: 0.18065148976
         gravel: 
           material: GRAVEL
           amount: 1
           name: Gravel!
       terracotta:
-        chance: 0.18312207784
+        chance: 0.18065148976
         terracotta:
           material: TERRACOTTA
           amount: 1
