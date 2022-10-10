@@ -42,7 +42,9 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 
 	@Override
 	public boolean enoughMaterialAvailable(Inventory inputInv) {
-		String[] pages = String.join("", ((BookMeta) getBook(inputInv).getItemMeta()).getPages()).split("<<PAGE>>");
+		ItemStack book = getBook(inputInv);
+		if (book == null) return false;
+		String[] pages = String.join("", ((BookMeta) book.getItemMeta()).getPages()).split("<<PAGE>>");
 
 		for (String page : pages) {
 			try {
