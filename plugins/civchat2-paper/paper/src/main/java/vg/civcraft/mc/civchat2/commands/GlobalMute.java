@@ -5,9 +5,12 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -23,7 +26,7 @@ public class GlobalMute extends BaseCommand {
 	@Syntax("<set|check|remove> <player> [time]")
 	@Description("Applies, checks or removes a players global mute timer")
 	@CommandCompletion("set|check|remove @allplayers @nothing")
-	public void execute(CommandSender sender, String getSetOrCheck, String targetPlayer, String muteTime) {
+	public void execute(CommandSender sender, String getSetOrCheck, String targetPlayer, @Optional String muteTime) {
 		UUID player = NameAPI.getUUID(targetPlayer);
 		if (player == null) {
 			sender.sendMessage(ChatColor.RED + "The player " + targetPlayer + " does not exist");
@@ -47,6 +50,7 @@ public class GlobalMute extends BaseCommand {
 			return;
 		case "remove":
 			banSetting.setValue(player, 0L);
+			sender.sendMessage(Component.text("You have unmuted the player " + targetPlayer, NamedTextColor.GREEN));
 			return;
 		case "check":
 		case "get":

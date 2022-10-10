@@ -187,9 +187,12 @@ public class CivChat2Manager {
 		}
 		
 		long mutedUntil = instance.getCivChat2SettingsManager().getGlobalChatMuteSetting().getValue(sender);
+		Group targetChatGroup = groupChatChannels.get(sender.getUniqueId());
 		if (mutedUntil > System.currentTimeMillis()) {
-			sender.sendMessage(String.format(ChatStrings.globalMuted, TextUtil.formatDuration(mutedUntil - System.currentTimeMillis())));
-			return;
+			if (targetChatGroup == null || targetChatGroup.getName().equals(instance.getPluginConfig().getGlobalChatGroupName())) {
+				sender.sendMessage(String.format(ChatStrings.globalMuted, TextUtil.formatDuration(mutedUntil - System.currentTimeMillis())));
+				return;
+			}
 		}
 
 		int range = config.getChatRange();
