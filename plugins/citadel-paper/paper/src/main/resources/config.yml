@@ -74,6 +74,29 @@ reinforcements:
     acid_time: 1s
     name: Bedrock
     hit_points: 420420420
+
+acids:
+  gold:
+    material: GOLD_BLOCK
+    maturation_time_multiplier: 1
+    faces:
+        - UP
+  diamond:
+    material: DIAMOND_BLOCK
+    maturation_time_multiplier: 2
+    faces:
+        - UP
+        - DOWN
+  netherite:
+    material: NETHERITE_BLOCK
+    maturation_time_multiplier: 4
+    faces:
+        - UP
+        - DOWN
+        - NORTH
+        - SOUTH
+        - EAST
+        - WEST
     
 non_reinforceables:
  - BEDROCK

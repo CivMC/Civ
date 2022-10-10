@@ -16,6 +16,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Openable;
+import org.bukkit.block.data.Powerable;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Switch;
 import org.bukkit.entity.Entity;
@@ -44,14 +45,12 @@ public class RedstoneListener implements Listener {
 		if (reinLocation.getWorld() == null) {
 			return false;
 		}
-
-		// distance is radius, not diameter
-		double diameter = distance * 2;
-		Collection<Entity> entities = reinLocation.getWorld().getNearbyEntities(reinLocation, diameter, diameter,
-				diameter,
+		// distance is radius
+		Collection<Entity> entities = reinLocation.getWorld().getNearbyEntities(reinLocation, distance, distance,
+				distance,
 				e -> e instanceof Player && !e.isDead()
 						&& reinforcement.hasPermission(e.getUniqueId(), CitadelPermissionHandler.getDoors())
-						&& e.getLocation().distanceSquared(reinLocation) <= diameter * diameter);
+						&& e.getLocation().distanceSquared(reinLocation) <= distance * distance);
 		return !entities.isEmpty();
 	}
 
@@ -101,18 +100,18 @@ public class RedstoneListener implements Listener {
 		// needs special handling because buttons attached to ceiling and ground can be
 		// turned in which case the facing direction indicates this direction
 		switch (button.getAttachedFace()) {
-		case CEILING:
-			attachedBlock = e.getClickedBlock().getRelative(BlockFace.UP);
-			break;
-		case FLOOR:
-			attachedBlock = e.getClickedBlock().getRelative(BlockFace.DOWN);
-			break;
-		case WALL:
-			attachedBlock = e.getClickedBlock().getRelative(button.getFacing().getOppositeFace());
-			break;
-		default:
-			Citadel.getInstance().getLogger().warning("Could not handle button face " + button.getAttachedFace());
-			return;
+			case CEILING:
+				attachedBlock = e.getClickedBlock().getRelative(BlockFace.UP);
+				break;
+			case FLOOR:
+				attachedBlock = e.getClickedBlock().getRelative(BlockFace.DOWN);
+				break;
+			case WALL:
+				attachedBlock = e.getClickedBlock().getRelative(button.getFacing().getOppositeFace());
+				break;
+			default:
+				Citadel.getInstance().getLogger().warning("Could not handle button face " + button.getAttachedFace());
+				return;
 		}
 		// prepare all sides of button itself
 		setupAdjacentDoors(e.getPlayer(), buttonBlock, button.getFacing().getOppositeFace());
@@ -122,19 +121,25 @@ public class RedstoneListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void redstonePower(BlockRedstoneEvent bre) {
-		// prevent doors from being opened by redstone
-		if (bre.getNewCurrent() <= 0 || bre.getOldCurrent() > 0) {
-			return;
-		}
+		// prevent doors from being opened or closed by redstone
 		Block block = bre.getBlock();
 		BlockData blockData = block.getBlockData();
-		if (!(blockData instanceof Openable)) {
+		if (!(blockData instanceof Openable openable)) {
 			return;
 		}
-		Openable openable = (Openable) blockData;
-		if (openable.isOpen()) {
+
+		if (openable.isOpen() && bre.getOldCurrent() <= 0
+				|| !openable.isOpen() && bre.getOldCurrent() > 0
+		) {
 			return;
 		}
+
+		if (!hasDoorAccess(block, blockData, openable.isOpen())) {
+			bre.setNewCurrent(bre.getOldCurrent());
+		}
+	}
+
+	private boolean hasDoorAccess(Block block, BlockData blockData, boolean isInsecure) {
 		if (blockData instanceof Door) {
 			// we always store the activation for the lower half of a door
 			Door door = (Door) blockData;
@@ -144,28 +149,22 @@ public class RedstoneListener implements Listener {
 		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
 		if (rein == null) {
-			return;
+			return true;
 		}
-		if (rein.isInsecure()) {
-			boolean playerNearby = isAuthorizedPlayerNear(rein, maxRedstoneDistance);
-			if (!playerNearby) {
-				bre.setNewCurrent(bre.getOldCurrent());
-			}
-			return;
+		if (isInsecure || rein.isInsecure()) {
+			return isAuthorizedPlayerNear(rein, maxRedstoneDistance);
 		}
 		List<UUID> playersActivating = authorizations.get(block.getLocation());
 		if (playersActivating == null) {
-			bre.setNewCurrent(bre.getOldCurrent());
-			return;
+			return false;
 		}
 		for (UUID uuid : playersActivating) {
 			if (rein.hasPermission(uuid, CitadelPermissionHandler.getDoors())) {
 				// single valid perm is enough to open
-				return;
+				return true;
 			}
 		}
-		// noone valid found nearby, so deny
-		bre.setNewCurrent(bre.getOldCurrent());
+		return false;
 	}
 
 	private void setupAdjacentDoors(Player player, Block block, BlockFace skip) {
@@ -212,7 +211,7 @@ public class RedstoneListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void entityStepPressurePlate(EntityInteractEvent e) {
-		if (!(e.getEntity() instanceof Vehicle)){
+		if (!(e.getEntity() instanceof Vehicle)) {
 			return;
 		}
 		Material mat = e.getBlock().getType();
@@ -226,5 +225,4 @@ public class RedstoneListener implements Listener {
 			}
 		}
 	}
-
 }
