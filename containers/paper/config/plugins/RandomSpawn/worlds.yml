@@ -89,6 +89,14 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 215 # spawn area outer radius
       exclusion: 78 # spawn area inner radius
+    IlaKyavul: # Caesar#5029
+      x: 7082
+      y: 250 # overridden in code, but must be set
+      z: 3694
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 215 # spawn area outer radius
+      exclusion: 78 # spawn area inner radius
     Kallos: # K0mmi#4134
       x: -924
       y: 250 # overridden in code, but must be set
@@ -109,6 +117,14 @@ world:
       x: 1000
       y: 250 # overridden in code, but must be set
       z: -3000
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Qbarra: # Loobiz#1628
+      x: 7058
+      y: 250 # overridden in code, but must be set
+      z: 715
       nearby: true # require another player nearby?
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
