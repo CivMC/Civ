@@ -5550,7 +5550,7 @@ recipes:
     output:
       exp:
         material: EXPERIENCE_BOTTLE
-        amount: 32
+        amount: 64
   basic_xp_2:
     production_time: 4s
     name: Make Exp 2
@@ -5577,7 +5577,7 @@ recipes:
     output:
       exp:
         material: EXPERIENCE_BOTTLE
-        amount: 32
+        amount: 64
   basic_xp_3:
     production_time: 4s
     name: Make Exp 3
@@ -5598,13 +5598,13 @@ recipes:
       oak_sapling:
         material: OAK_SAPLING
         amount: 32
-      string:
-        material: STRING
-        amount: 16
+      spider_eye:
+        material: SPIDER_EYE
+        amount: 8
     output:
       exp:
         material: EXPERIENCE_BOTTLE
-        amount: 32
+        amount: 64
   basic_xp_4:
     production_time: 4s
     name: Make Exp 4
@@ -5634,7 +5634,7 @@ recipes:
     output:
       exp:
         material: EXPERIENCE_BOTTLE
-        amount: 32
+        amount: 64
   basic_xp_5:
     production_time: 4s
     name: Make Exp 5
@@ -5667,7 +5667,7 @@ recipes:
     output:
       exp:
         material: EXPERIENCE_BOTTLE
-        amount: 32
+        amount: 64
   wither_skull:
     forceInclude: true
     production_time: 2s
@@ -5837,9 +5837,9 @@ recipes:
         amount: 16
         lore:
           - Compacted Item
-      string:
-        material: STRING
-        amount: 2
+      spider_eye:
+        material: SPIDER_EYE
+        amount: 1
         lore:
           - Compacted Item
       glass_bottle:
