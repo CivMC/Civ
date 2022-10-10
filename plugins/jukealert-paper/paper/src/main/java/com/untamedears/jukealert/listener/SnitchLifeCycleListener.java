@@ -13,7 +13,9 @@ import java.util.UUID;
 import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Jukebox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -72,6 +74,11 @@ public class SnitchLifeCycleListener implements Listener {
 		}
 		if (block.getType() == snitchConfig.getItem().getType()) {
 			event.setDropItems(false);
+			if (block.getState() instanceof Jukebox jukebox) {
+				ItemStack playing = jukebox.getRecord();
+				if (playing.getType() != Material.AIR)
+					block.getWorld().dropItemNaturally(block.getLocation(), playing);
+			};
 			block.getWorld().dropItemNaturally(block.getLocation(), snitchConfig.getItem());
 		}
 	}
