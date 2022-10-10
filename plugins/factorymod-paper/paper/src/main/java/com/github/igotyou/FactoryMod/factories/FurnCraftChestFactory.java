@@ -5,8 +5,6 @@ import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
 import com.github.igotyou.FactoryMod.events.RecipeExecuteEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
-import com.github.igotyou.FactoryMod.utility.Direction;
-import com.github.igotyou.FactoryMod.utility.IIOFInventoryProvider;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
@@ -17,16 +15,10 @@ import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
+import com.github.igotyou.FactoryMod.utility.Direction;
+import com.github.igotyou.FactoryMod.utility.IIOFInventoryProvider;
 import com.github.igotyou.FactoryMod.utility.IOSelector;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Function;
-
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,6 +37,14 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Function;
 
 /**
  * Represents a "classic" factory, which consists of a furnace as powersource, a
@@ -281,7 +281,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 					setRecipe(autoRepair);
 				}
 			}
-			if (!hasInputMaterials() || (!rm.inDisrepair() && (currentRecipe instanceof  RepairRecipe))) {
+			if (!hasInputMaterials() && !rm.inDisrepair()) {
 				//Let autoselect find something to run that isn't the repair recipe
 				IRecipe autoSelected = getAutoSelectRecipe();
 				if (autoSelected == null) {
@@ -679,7 +679,10 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 
 	public IRecipe getAutoSelectRecipe() {
 		for (IRecipe rec : recipes) {
-			if (rec.enoughMaterialAvailable(getInventory()) && !(rec instanceof RepairRecipe)) {
+			if (rec.enoughMaterialAvailable(getInventory()) && this.rm.inDisrepair() && rec instanceof RepairRecipe) {
+				return rec;
+			}
+			if (rec.enoughMaterialAvailable(getInventory()) && !this.rm.inDisrepair() && !(rec instanceof RepairRecipe)) {
 				return rec;
 			}
 		}
