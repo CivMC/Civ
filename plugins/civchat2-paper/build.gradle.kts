@@ -14,7 +14,7 @@ gradle.buildFinished {
 
 allprojects {
 	group = "net.civmc.civchat2"
-	version = "2.0.1"
+	version = "2.0.2"
 	description = "CivChat2"
 }
 
