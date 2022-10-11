@@ -14,7 +14,7 @@ gradle.buildFinished {
 
 allprojects {
 	group = "net.civmc.factorymod"
-	version = "3.0.0-SNAPSHOT"
+	version = "3.0.1"
 	description = "FactoryMod"
 }
 
