@@ -68,7 +68,7 @@ services:
       - /opt/PrivateConfig/paper/config/Bastion/config.yml:/config/plugins/Bastion/config.yml
       - /opt/PrivateConfig/paper/config/Brewery/config.yml:/config/plugins/Brewery/config.yml
       - /opt/PrivateConfig/paper/config/Terra/packs/CivMC:/config/plugins/Terra/packs/CivMC
-      - /opt/PrivateConfig/paper/config/Vanotifier/config.yml:/config/plugins/Votifier/config.yml
+      - /opt/PrivateConfig/paper/config/Votifier/config.yml:/config/plugins/Votifier/config.yml
       - /opt/PrivateConfig/paper/config/Votifier/rsa/public.key:/config/plugins/Votifier/rsa/public.key
       - /opt/PrivateConfig/paper/config/Votifier/rsa/private.key:/config/plugins/Votifier/rsa/private.key
       #- /opt/PrivateConfig/paper/config/Finale/config.yml:/config/plugins/Finale/config.yml
