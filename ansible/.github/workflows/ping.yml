@@ -18,7 +18,7 @@ jobs:
         with:
           playbook: ping.yml
           directory: ./playbooks
-          requirements: ./requirements.yml
+          requirements: requirements.yml
           key: ${{secrets.SSH_PRIVATE_KEY}}
           options: |
             --inventory ./inventories/civmc-production.yml
