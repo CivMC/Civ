@@ -1,0 +1,25 @@
+ name: Ping
+ on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to Ping'
+        type: environment
+        required: true 
+
+jobs:
+  Ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Ping
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: ping.yml
+          directory: ./playbooks
+          requirements: ./requirements.yml
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          options: |
+            --inventory ./inventories/civmc-production.yml
+            -u actions
