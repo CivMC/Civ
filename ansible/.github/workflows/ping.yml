@@ -16,8 +16,7 @@ jobs:
       - name: Ping
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: ping.yml
-          directory: ./playbooks
+          playbook: playbooks/ping.yml
           requirements: requirements.yml
           key: ${{secrets.SSH_PRIVATE_KEY}}
           options: |
