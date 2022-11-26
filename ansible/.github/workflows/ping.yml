@@ -10,6 +10,7 @@ on:
 jobs:
   ping:
     runs-on: ubuntu-latest
+    environment: Production
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
