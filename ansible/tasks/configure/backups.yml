@@ -16,7 +16,7 @@
   cron:
     name: "backup"
     minute: 0
-    hour: 7
+    hour: 6
     user: root
     job: /opt/backup-and-restart.sh
     cron_file: /etc/cron.d/minecraft
