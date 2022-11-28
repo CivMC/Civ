@@ -45,12 +45,14 @@ public class RedstoneListener implements Listener {
 		if (reinLocation.getWorld() == null) {
 			return false;
 		}
-		// distance is radius
-		Collection<Entity> entities = reinLocation.getWorld().getNearbyEntities(reinLocation, distance, distance,
-				distance,
+
+		// distance is radius, not diameter
+		double diameter = distance * 2;
+		Collection<Entity> entities = reinLocation.getWorld().getNearbyEntities(reinLocation, diameter, diameter,
+				diameter,
 				e -> e instanceof Player && !e.isDead()
 						&& reinforcement.hasPermission(e.getUniqueId(), CitadelPermissionHandler.getDoors())
-						&& e.getLocation().distanceSquared(reinLocation) <= distance * distance);
+						&& e.getLocation().distanceSquared(reinLocation) <= diameter * diameter);
 		return !entities.isEmpty();
 	}
 
