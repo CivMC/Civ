@@ -16,7 +16,8 @@ restic \
   -r {{secret.backup.restic_shortterm_repo}} backup \
   /opt/stacks/minecraft/ \
   --exclude '**orebfuscator_cache'\
-  --exclude '**dynmap'
+  --exclude '**dynmap'\
+  --exclude '**postgres-data'
 
 echo "$(date) Starting services after backup..."
 docker service scale minecraft_paper=1
