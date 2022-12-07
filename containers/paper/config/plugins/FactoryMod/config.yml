@@ -7525,9 +7525,6 @@ recipes:
             ub:
               enchant: unbreaking
               level: 3
-            for:
-              enchant: fortune
-              level: 3
             eff:
               enchant: efficiency
               level: 5
