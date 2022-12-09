@@ -89,6 +89,10 @@ gapples:
   cooldown: 30s
   enchantedCooldown: 5m
 
+#Config same as above, except with only enabled and cooldown as options
+gappleCooldown:
+  enabled: true
+  cooldown: 16s
 #allows adjusting the attack damage of any item by its spigot material identifier
 weaponModification:
   netheriteAxe:
@@ -339,6 +343,8 @@ shield:
 
 crossbow:
   enabled: true
+  radius: 2
+  artilleryDamage: 1
   reinforcementDamage: 5
   bastionDamage: 5
   cooldown: 4000ms
@@ -577,4 +583,3 @@ blockPlacementRestrictions:
     obsidian:
       type: OBSIDIAN
       cooldown: 1s
-

@@ -30,8 +30,8 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_18_R1.util.CraftVector;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R2.util.CraftVector;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityExhaustionEvent;
@@ -133,6 +133,7 @@ public class CombatUtil {
 					if (victim instanceof LivingEntity) {
 						KnockbackStrategy knockbackStrategy = config.getKnockbackStrategy();
 						LivingEntity livingVictim = (LivingEntity) victim;
+
 						knockbackStrategy.handleKnockback(attacker, livingVictim, knockbackLevel);
 					}
 
@@ -207,7 +208,9 @@ public class CombatUtil {
 					}
 
 					EnchantmentHelper.doPostDamageEffects(attacker, victim);
-					ItemStack itemstack1 = attacker.getItemInHand(attacker.swingingArm);
+
+					InteractionHand hand = attacker.swingingArm != null ? attacker.swingingArm : InteractionHand.MAIN_HAND;
+					ItemStack itemstack1 = attacker.getItemInHand(hand);
 					Object object = victim;
 
 					if (victim instanceof EnderDragonPart) {

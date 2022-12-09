@@ -14,21 +14,26 @@ import com.comphenix.protocol.wrappers.EnumWrappers.PlayerDigType;
 import com.comphenix.protocol.wrappers.WrappedEnumEntityUseAction;
 import com.github.maxopoly.finale.Finale;
 import com.google.common.collect.Sets;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_18_R1.entity.CraftLivingEntity;
-import org.bukkit.entity.*;
+import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
+import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -46,10 +51,9 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, Finale.getPlugin());
 	}
 
-	private Set<UUID> attackedThisTick = Sets.newConcurrentHashSet();
 	private Set<UUID> isDigging = Sets.newConcurrentHashSet();
-	private Map<UUID, Long> lastRemovals = new HashMap<>();
-	private Map<UUID, Long> lastStartBreaks = new HashMap<>();
+	private Map<UUID, Long> lastRemovals = new ConcurrentHashMap<>();
+	private Map<UUID, Long> lastStartBreaks = new ConcurrentHashMap<>();
 	
 	@Override
 	public void onPacketReceiving(PacketEvent event) {
@@ -72,9 +76,14 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 
 				@Override
 				public void run() {
-					Entity target = packet.getEntityModifier(event).read(0);
+					Entity entity = packet.getEntityModifier(event).read(0);
+					Damageable target = entity instanceof Damageable ? (Damageable) entity : null;
+
 					if (target == null || target.isDead() || target.isInvulnerable() ||
-							!world.getUID().equals(target.getWorld().getUID())) {
+							!world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
+						if (entity instanceof CraftEntity craftEntity){
+							craftEntity.getHandle().hurt(DamageSource.playerAttack(((CraftPlayer) attacker).getHandle()), (float) ((CraftPlayer) attacker).getHandle().getAttribute(Attributes.ATTACK_DAMAGE).getValue());
+						}
 						return;
 					}
 
@@ -159,16 +168,8 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 	public void onQuit(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
 		
-		if (isDigging.contains(player.getUniqueId())) {
-			isDigging.remove(player.getUniqueId());
-		}
-		
-		if (lastRemovals.containsKey(player.getUniqueId())) {
-			lastRemovals.remove(player.getUniqueId());
-		}
-		
-		if (lastStartBreaks.containsKey(player.getUniqueId())) {
-			lastStartBreaks.remove(player.getUniqueId());
-		}
+		isDigging.remove(player.getUniqueId());
+		lastRemovals.remove(player.getUniqueId());
+		lastStartBreaks.remove(player.getUniqueId());
 	}
 }

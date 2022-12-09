@@ -2,9 +2,7 @@ package com.github.maxopoly.finale.combat;
 
 import com.github.maxopoly.finale.Finale;
 import com.google.common.collect.Sets;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -19,55 +17,51 @@ import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 
 public class CPSHandler implements Listener {
-	
+
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
-		
-		if (playerClicks.containsKey(player.getUniqueId())) {
-			playerClicks.remove(player.getUniqueId());
-		}
-		
-		if (showCps.contains(player)) {
-			showCps.remove(player);
-		}
+
+		playerClicks.remove(player.getUniqueId());
+		showCps.remove(player);
 	}
 
-	private Map<UUID, List<Long>> playerClicks = new ConcurrentHashMap<>();
-	private Set<Player> showCps = Sets.newHashSet();
+	private Map<UUID, ArrayDeque<Long>> playerClicks = new ConcurrentHashMap<>();
+	private Set<Player> showCps = Sets.newConcurrentHashSet();
 
 	public CPSHandler() {
 		Bukkit.getPluginManager().registerEvents(this, Finale.getPlugin());
 	}
-	
+
 	public int getCPS(UUID uuid) {
-		 final long time = System.currentTimeMillis();
-		 List<Long> clicks = this.playerClicks.get(uuid);
-		 if (clicks == null) {
-		 	return 0;
-		 }
-	     Iterator<Long> iterator = clicks.iterator();
-	     while (iterator.hasNext()) {
-	    	 if (iterator.next() + Finale.getPlugin().getManager().getCombatConfig().getCpsCounterInterval() < time) {
-	    		 iterator.remove();
-	         }
-	     }
-	     return this.playerClicks.get(uuid).size();
+		ArrayDeque<Long> clicks = this.playerClicks.get(uuid);
+		if (clicks == null) {
+			return 0;
+		}
+
+		final long cpsCounterInterval = Finale.getPlugin().getManager().getCombatConfig().getCpsCounterInterval();
+		final long bottomTime = System.currentTimeMillis() - cpsCounterInterval;
+
+		synchronized (clicks) {
+			while (!clicks.isEmpty() && clicks.peek() < bottomTime) {
+				clicks.poll();
+			}
+			return clicks.size();
+		}
 	}
- 
+
 	public void updateClicks(Player player) {
-	 	List<Long> clicks = playerClicks.get(player.getUniqueId());
-	 	if (clicks == null) {
-		 	clicks = new ArrayList<>();
-		 	playerClicks.put(player.getUniqueId(), clicks);
-	 	}
-	 	clicks.add(System.currentTimeMillis());
- 	}
- 
- 	public void showCPS(Player player) {
-	 	showCps.add(player);
-	 	getCPSBottomLine().updatePlayer(player, getCPSText(player));
- 	}
+		ArrayDeque<Long> clicks = playerClicks.computeIfAbsent(player.getUniqueId(), id -> new ArrayDeque<>());
+
+		synchronized (clicks) {
+			clicks.add(System.currentTimeMillis());
+		}
+	}
+
+	public void showCPS(Player player) {
+		showCps.add(player);
+		getCPSBottomLine().updatePlayer(player, getCPSText(player));
+	}
 
 	public void hideCPS(Player player) {
 		showCps.remove(player);
@@ -87,7 +81,7 @@ public class CPSHandler implements Listener {
 				if (!isShowingCPS(player)) {
 					return null;
 				}
-				
+
 				return getCPSText(player);
 			}, 1L);
 		}

@@ -1,19 +1,15 @@
 package com.github.maxopoly.finale.misc.crossbow;
 
 import com.github.maxopoly.finale.misc.ItemUtil;
-import net.kyori.adventure.text.Component;
-import net.minecraft.nbt.CompoundTag;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_18_R1.inventory.CraftItemStack;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Color;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 
 public class AntiAirMissile {
 

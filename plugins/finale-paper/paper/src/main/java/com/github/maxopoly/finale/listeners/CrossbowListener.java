@@ -8,14 +8,20 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.FireworkExplodeEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class CrossbowListener implements Listener {
+
+	private Set<UUID> firedFireworks = new HashSet<>();
 
 	@EventHandler
 	public void onShootCrossbow(EntityShootBowEvent event) {
@@ -38,6 +44,7 @@ public class CrossbowListener implements Listener {
 
 		ItemStack consumable = event.getConsumable();
 		if (consumable.getType() == Material.FIREWORK_ROCKET) {
+			firedFireworks.add(event.getProjectile().getUniqueId());
 			crossbowHandler.putOnCooldown(shooter);
 			return;
 		}
@@ -51,6 +58,14 @@ public class CrossbowListener implements Listener {
 			event.setCancelled(true);
 			antiAirMissile.fireAAMissile(shooter);
 			crossbowHandler.putOnCooldown(shooter);
+		}
+	}
+
+	@EventHandler
+	public void onFireworkExplode(FireworkExplodeEvent event) {
+		CrossbowHandler crossbowHandler = Finale.getPlugin().getManager().getCrossbowHandler();
+		if (firedFireworks.contains(event.getEntity().getUniqueId())) {
+			crossbowHandler.handleFireworkExplode(event);
 		}
 	}
 

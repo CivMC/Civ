@@ -5,6 +5,7 @@
 - Fixed no vehicle damage bug.
 - Fixed erratic knockback.
 - Fixed sprinting with no hunger bug.
+- Fixed sprint breaking intermittently in 1.18.
 
 *Below changes are experimental; some have already been written and being tested on Helios.*
 
@@ -133,6 +134,13 @@ Riptide will go on cooldown for [x] seconds after use.
 
 Tridents, in general, will go on cooldown for [y] seconds after use.
 
+```
+trident:
+    returnToOffhand: true # if you throw the trident with your offhand, should it return to your offhand?
+    generalCooldown: 10s
+    riptideCooldown: 60s
+```
+
 Tridents have a valid damage modifier:
 ```
 damageModifiers:
@@ -145,7 +153,7 @@ damageModifiers:
 
 ## Crossbows
 
-Fireworks have a valid damage modifier now, so damage from fireworks towards players can be adjusted.
+Fireworks also have a valid damage modifier now, so damage from fireworks towards players can be adjusted.
 
 ```
 damageModifiers:

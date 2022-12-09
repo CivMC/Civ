@@ -17,14 +17,18 @@ public class FinaleSettingManager {
 	private BooleanSetting actionBarTimeWarpCooldown;
 	private BooleanSetting sideBarTimeWarpCooldown;
 	private BooleanSetting vanillaPearlCooldown;
+	private BooleanSetting vanillaItemCooldown;
+	private BooleanSetting actionBarItemCooldown;
 	private BooleanSetting actionBarPearlCooldown;
 	private BooleanSetting sideBarPearlCooldown;
+
 	private BooleanSetting vanillaRiptideCooldown;
 	private BooleanSetting actionBarRiptideCooldown;
 	private BooleanSetting sideBarRiptideCooldown;
 	private BooleanSetting vanillaTridentCooldown;
 	private BooleanSetting actionBarTridentCooldown;
 	private BooleanSetting sideBarTridentCooldown;
+
 	private BooleanSetting showArmor;
 	private BooleanSetting showTool;
 	private BooleanSetting showPotionEffects;
@@ -67,10 +71,20 @@ public class FinaleSettingManager {
 				"Should pearl cooldown be shown as an overlay on the item, the way it is done in vanilla");
 		PlayerSettingAPI.registerSetting(vanillaPearlCooldown, menu);
 
+		vanillaItemCooldown = new BooleanSetting(plugin, false, "Use vanilla item cooldown",
+			"finaleVanillaItemCooldown",
+			"Should items cooldown be shown as an overlay on the item, the way it is done in vanilla");
+		PlayerSettingAPI.registerSetting(vanillaItemCooldown, menu);
+
 		actionBarPearlCooldown = new BooleanSetting(plugin, true, "Show pearl cooldown on action bar",
 				"finaleActionBarPearlCooldown",
 				"Should pearl cooldown be shown on the action bar at the bottom of your screen");
 		PlayerSettingAPI.registerSetting(actionBarPearlCooldown, menu);
+
+		actionBarItemCooldown = new BooleanSetting(plugin, true, "Show item cooldown on action bar",
+			"finaleActionBarItemCooldown",
+			"Should items cooldown be shown on the action bar at the bottom of your screen");
+		PlayerSettingAPI.registerSetting(actionBarItemCooldown, menu);
 
 		sideBarPearlCooldown = new BooleanSetting(plugin, false, "Show pearl cooldown in side bar",
 				"finaleSideBarPearlCooldown",
@@ -130,6 +144,10 @@ public class FinaleSettingManager {
 		return vanillaPearlCooldown.getValue(uuid);
 	}
 
+	public boolean setVanillaItemCooldown(UUID uuid) {
+		return vanillaItemCooldown.getValue(uuid);
+	}
+
 	public int getToolProtectionThreshhold(UUID uuid) {
 		return toolProtectionThreshhold.getValue(uuid);
 	}
@@ -176,6 +194,10 @@ public class FinaleSettingManager {
 
 	public boolean actionBarPearlCooldown(UUID uuid) {
 		return actionBarPearlCooldown.getValue(uuid);
+	}
+
+	public boolean actionBarItemCooldown(UUID uuid) {
+		return actionBarItemCooldown.getValue(uuid);
 	}
 
 	public boolean showArmorDurability(UUID uuid) {

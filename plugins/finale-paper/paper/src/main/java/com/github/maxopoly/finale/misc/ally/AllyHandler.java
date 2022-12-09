@@ -45,6 +45,7 @@ public class AllyHandler implements Listener {
 			public void run() {
 				for (Map.Entry<UUID, Set<UUID>> playerAlliesEntry : playerAllies.entrySet()) {
 					Player player = Bukkit.getPlayer(playerAlliesEntry.getKey());
+					if (player == null) continue;
 					if (!player.isOnline()) continue;
 
 					Team allyTeam = getAllyTeam(player);
@@ -86,7 +87,7 @@ public class AllyHandler implements Listener {
 					while (allyIDIterator.hasNext()) {
 						UUID allyID = allyIDIterator.next();
 						Player ally = Bukkit.getPlayer(allyID);
-						if (ally.isOnline()) {
+						if (ally != null && ally.isOnline()) {
 							Team allyTeam = getAllyTeam(player);
 							allyTeam.addEntry(ally.getName());
 						}
@@ -202,6 +203,10 @@ public class AllyHandler implements Listener {
 				}
 
 				Location dest = destPlayer.getEyeLocation();
+				if (!loc.getWorld().getUID().equals(dest.getWorld())) {
+					cancel();
+					return;
+				}
 				if (loc.distanceSquared(dest) < (1 * 1)) {
 					cancel();
 				}
@@ -235,6 +240,7 @@ public class AllyHandler implements Listener {
 			return;
 		}
 		allies.remove(ally.getUniqueId());
+		playerAllies.put(player.getUniqueId(), allies);
 		animateLink(player, ally, false);
 
 		Team allyTeam = getAllyTeam(player);
@@ -266,13 +272,14 @@ public class AllyHandler implements Listener {
 
 				ResultSet rs = ps.executeQuery();
 				while (rs.next()) {
-					String allyUUIDStr = rs.getString(0);
+					String allyUUIDStr = rs.getString("AllyUUID");
 					UUID allyUUID = UUID.fromString(allyUUIDStr);
 					allies.add(allyUUID);
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+			playerAllies.put(player.getUniqueId(), allies);
 		}
 		return allies;
 	}

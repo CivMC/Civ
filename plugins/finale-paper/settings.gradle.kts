@@ -1,5 +1,3 @@
-rootProject.name = "finale"
-
 pluginManagement {
 	repositories {
 		gradlePluginPortal()
@@ -14,4 +12,7 @@ pluginManagement {
 	}
 }
 
+rootProject.name = "finale"
+
 include(":paper")
+project(":paper").name = rootProject.name + "-paper"

@@ -143,7 +143,7 @@ public class ConfigParser {
 		double warpFruitMaxDistance = config.getDouble("warpFruit.maxDistance", 100);
 		boolean warpFruitSpectralWhileChanneling = config.getBoolean("warpFruit.spectralWhileChanneling", true);
 		List<PotionEffect> afterEffects = new ArrayList<>();
-		ConfigurationSection afterEffectsSection = config.getConfigurationSection("afterEffects");
+		ConfigurationSection afterEffectsSection = config.getConfigurationSection("warpFruit.afterEffects");
 		for (String key : afterEffectsSection.getKeys(false)) {
 			ConfigurationSection afterEffectSection = afterEffectsSection.getConfigurationSection(key);
 			String potionEffectTypeStr = afterEffectSection.getString("type");
@@ -333,10 +333,12 @@ public class ConfigParser {
 	public CrossbowHandler parseCrossbowHandler(ConfigurationSection config) {
 		if (config == null) {
 			plugin.info("No crossbow modifications found");
-			return new CrossbowHandler(true, 5, 5, 4000, new HashMap<>());
+			return new CrossbowHandler(true, 2, 1,5, 5, 4000, new HashMap<>());
 		}
 
 		boolean enabled = config.getBoolean("enabled");
+		int radius = config.getInt("radius");
+		float artilleryDamage = ((Double) config.getDouble("artilleryDamage")).floatValue();
 		double reinforcementDamage = config.getDouble("reinforcementDamage");
 		double bastionDamage = config.getDouble("bastionDamage");
 		long cooldown = parseTime(config.getString("cooldown"));
@@ -369,7 +371,7 @@ public class ConfigParser {
 			antiAirMissiles.put(key, antiAirMissile);
 		}
 
-		return new CrossbowHandler(enabled, reinforcementDamage, bastionDamage, cooldown, antiAirMissiles);
+		return new CrossbowHandler(enabled, radius, artilleryDamage, reinforcementDamage, bastionDamage, cooldown, antiAirMissiles);
 	}
 
 	public BlockRestrictionHandler parseBlockRestrictionHandler(ConfigurationSection config) {

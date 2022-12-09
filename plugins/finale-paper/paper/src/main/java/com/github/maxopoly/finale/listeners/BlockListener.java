@@ -13,6 +13,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.Plugin;
@@ -23,9 +24,7 @@ import java.util.List;
 
 public class BlockListener implements Listener {
 
-
-
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		CombatTagPlusManager ctpManager = Finale.getPlugin().getCombatTagPlusManager();
@@ -33,6 +32,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 
+		System.out.println("COMBAT TAGGED PLAYER");
 		BlockRestrictionHandler blockRestrictionHandler = Finale.getPlugin().getManager().getBlockRestrictionHandler();
 		BlockRestrictionHandler.RestrictionMode mode = blockRestrictionHandler.getMode();
 		Block blockPlaced = event.getBlockPlaced();
@@ -70,7 +70,7 @@ public class BlockListener implements Listener {
 			for (LivingEntity livingEntity : nearbyLivingEntities) {
 				if (livingEntity instanceof Player) {
 					Player nearbyPlayer = (Player) livingEntity;
-					if (!allyHandler.isAllyOf(nearbyPlayer, event.getPlayer())) {
+					if (!nearbyPlayer.getUniqueId().equals(event.getPlayer().getUniqueId()) && !allyHandler.isAllyOf(nearbyPlayer, event.getPlayer())) {
 						enemyNearby = true;
 						break;
 					}

@@ -56,10 +56,10 @@ public class AllyCommand extends BaseCommand {
 			return;
 		}
 
-		if (target.getUniqueId().equals(sender.getUniqueId())) {
+		/*if (target.getUniqueId().equals(sender.getUniqueId())) {
 			sender.sendMessage(ChatColor.RED + "You can't unally yourself.");
 			return;
-		}
+		}*/
 
 		allyHandler.removeAlly(sender, target);
 

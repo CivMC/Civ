@@ -124,7 +124,7 @@ public class TridentListener implements Listener {
 			return;
 		}
 
-		System.out.println("entities: " + entities);
+		//System.out.println("entities: " + entities);
 		for (Entity entity : entities) {
 			if (!(entity instanceof Trident)) continue;
 
@@ -145,7 +145,7 @@ public class TridentListener implements Listener {
 
 			if (returnTrident.getUniqueId().equals(trident.getUniqueId())) {
 				ItemStack offhand = shooter.getInventory().getItemInOffHand();
-				System.out.println(offhand);
+				//System.out.println(offhand);
 				if (offhand == null || offhand.getType().isAir()) {
 					trident.remove();
 					shooter.getInventory().setItemInOffHand(trident.getItemStack());
