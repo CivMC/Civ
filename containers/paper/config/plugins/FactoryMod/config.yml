@@ -6709,72 +6709,72 @@ recipes:
           material: LAPIS_BLOCK
           amount: 1
       record_13:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_13:
           material: MUSIC_DISC_13
           amount: 1
       record_cats:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_cats:
           material: MUSIC_DISC_CAT
           amount: 1
       record_blocks:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_blocks:
           material: MUSIC_DISC_BLOCKS
           amount: 1
       record_chirp:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_chirp:
           material: MUSIC_DISC_CHIRP
           amount: 1
       record_far:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_far:
           material: MUSIC_DISC_FAR
           amount: 1
       record_mall:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_mall:
           material: MUSIC_DISC_MALL
           amount: 1
       record_mellohi:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_mellohi:
           material: MUSIC_DISC_MELLOHI
           amount: 1
       record_stal:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_stal:
           material: MUSIC_DISC_STAL
           amount: 1
       record_strad:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_strad:
           material: MUSIC_DISC_STRAD
           amount: 1
       record_ward:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_ward:
           material: MUSIC_DISC_WARD
           amount: 1
       record_11:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_11:
           material: MUSIC_DISC_11
           amount: 1
       record_wait:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_wait:
           material: MUSIC_DISC_WAIT
           amount: 1
       record_pigstep:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_pigstep:
           material: MUSIC_DISC_PIGSTEP
           amount: 1
       record_otherside:
-        chance: 0.0000588235
+        chance: 0.00005042014
         record_otherside: MUSIC_DISC_OTHERSIDE
           material: 
           amount: 1
