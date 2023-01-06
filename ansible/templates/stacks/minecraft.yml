@@ -100,7 +100,7 @@ services:
         constraints: [node.role == manager]
 
   kira:
-    image: ghcr.io/civmc/kira:latest
+    image: ghcr.io/civmc/kira:2.0.0
     restart: unless-stopped
     tty: true
     stdin_open: true
