@@ -351,6 +351,15 @@ world-border-buffers:
     center:
       x: 0.0
       z: 0.0
+  world_nether:
+    #'CIRCLE' or 'SQUARE' supported only
+    shape: CIRCLE
+    #Radius from border center you want the no reinforcement zone to kick in
+    starting_radius: 9900
+    #Center of the border
+    center:
+      x: 0.0
+      z: 0.0
 
 # Set this to the unix timestamp in seconds when the activity feature is being added,
 # this is the time used when a player has not entered a region yet
