@@ -131,6 +131,8 @@ hacks:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"If you type /fm you can see all the types of factories you can make","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Please review the server rules at reddit.com/r/civmc/wiki/index","color":"green","clickEvent":{"action":"open_url","value":"https://www.reddit.com/r/civmc/wiki/index/"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"You may not give another player access to any of your accounts. If you share an account with a friend, you and that friend will be considered the same person.","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player run newsletter at https://civwiki.news/ to see whats been going on!","color":"green"}]'
+
   ElytraFeatures:
     enabled: false
     # Whether Elytra flight should be outright disabled
