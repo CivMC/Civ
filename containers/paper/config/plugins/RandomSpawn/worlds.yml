@@ -250,6 +250,8 @@ world:
       radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
 world_nether:
+  randomspawnon:
+    - respawn
   keeprandomspawns: false
   newplayertime: 3000
   spawnarea:
