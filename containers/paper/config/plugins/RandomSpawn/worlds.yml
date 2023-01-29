@@ -185,6 +185,62 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 247 # spawn area outer radius
       exclusion: 144 # spawn area inner radius
+    Estalia: # Walkers#9999
+      x: 0
+      y: 250 # overridden in code, but must be set
+      z: 0
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    FreeDanzilonanRepublic: # buystamps#8915
+      x: 5245
+      y: 250 # overridden in code, but must be set
+      z: 4530
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Regentsburgh: # Britisher#3253
+      x: -3514
+      y: 250 # overridden in code, but must be set
+      z: 8839
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Pridelands: # Gillilaeous#0662
+      x: -2238
+      y: 250 # overridden in code, but must be set
+      z: 9216
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    AmboisePalace: # Danman#1792
+      x: 4306
+      y: 250 # overridden in code, but must be set
+      z: -3497
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Pacem: # Wheaties#7056
+      x: -5194
+      y: 250 # overridden in code, but must be set
+      z: -1008
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Icarus: # Zolo#7662
+      x: -9100
+      y: 250 # overridden in code, but must be set
+      z: -400
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
 world_nether:
   keeprandomspawns: false
   newplayertime: 3000
