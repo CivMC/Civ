@@ -7089,13 +7089,13 @@ recipes:
           amount: 1
           nbt:
             SkullOwner: wjkroeker
-      NovaCaesar_skull:
+      NovaCeasar_skull:
         chance: 0.0010294117
-        NovaCaesar_skull:
+        NovaCeasar_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
-            SkullOwner: NovaCaesar
+            SkullOwner: NovaCeasar
       tradespin_skull:
         chance: 0.0010294117
         tradespin_skull:
