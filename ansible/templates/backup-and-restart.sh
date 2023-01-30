@@ -34,7 +34,7 @@ restic \
 echo "$(date) Pruning shortterm backups..."
 restic \
   -r {{secret.backup.restic_shortterm_repo}} forget \
-  --keep-last 3 \
+  --keep-last 2 \
   --prune
 
 echo "$(date) Backup finished!"

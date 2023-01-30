@@ -40,6 +40,16 @@ services:
         - traefik.http.routers.grafana-public-https.tls.certresolver=le
         - traefik.http.services.grafana-public.loadbalancer.server.port=3000
 
+  loki:
+    image: grafana/loki
+    networks:
+      - monitoring
+    volumes:
+      - /opt/stacks/monitoring/loki-data:/data/loki
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
 networks:
   traefik-public:
     external: true

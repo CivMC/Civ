@@ -15,6 +15,7 @@
     state: directory
   loop:
     - /opt/stacks/monitoring/grafana-data
+    - /opt/stacks/monitoring/loki-data
 
 - name: Monitoring | Copy Stack
   when:
