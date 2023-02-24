@@ -194,9 +194,9 @@ world:
       radius: 247 # spawn area outer radius
       exclusion: 144 # spawn area inner radius
     Estalia: # Walkers#9999
-      x: 0
+      x: 1
       y: 250 # overridden in code, but must be set
-      z: 0
+      z: 1
       nearby: true # require another player nearby?
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
