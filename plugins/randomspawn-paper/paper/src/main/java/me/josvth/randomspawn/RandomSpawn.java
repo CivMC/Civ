@@ -161,8 +161,12 @@ public class RandomSpawn extends JavaPlugin {
 			maxTries = 1000; // sensible limits plz
 		}
 
+		// Uniformly distributed in "annulus". Explanation: https://forum.unity.com/threads/random-point-within-circle-with-min-max-radius.597523/#post-8524934
+		double ex2 = exclusionRadius * exclusionRadius;
+		double r2 = radius * radius;
 		do {
-			double r = exclusionRadius + Math.random() * (radius - exclusionRadius);
+			double r = Math.sqrt(Math.random() * (r2 - ex2) + ex2);
+
 			double phi = Math.random() * 2d * Math.PI;
 
 			double x = Math.round(center.getX() + Math.cos(phi) * r);
