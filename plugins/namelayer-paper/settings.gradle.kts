@@ -6,7 +6,7 @@ pluginManagement {
 	}
 }
 
-rootProject.name = "randomspawn"
+rootProject.name = "namelayer"
 
 include(":paper")
 project(":paper").name = rootProject.name + "-paper"
