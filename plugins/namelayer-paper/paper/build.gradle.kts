@@ -1,17 +1,7 @@
 plugins {
-	`java-library`
-	id("net.civmc.civgradle.plugin")
-	id("io.papermc.paperweight.userdev") version "1.3.1"
+	id("io.papermc.paperweight.userdev")
 }
-
-civGradle {
-	paper {
-		pluginName = "NameLayer"
-	}
-}
-
 dependencies {
 	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
-
-	compileOnly("net.civmc.civmodcore:paper:2.0.0-SNAPSHOT:dev-all")
+	compileOnly("net.civmc.civmodcore:civmodcore-paper:2.3.5:dev-all")
 }
