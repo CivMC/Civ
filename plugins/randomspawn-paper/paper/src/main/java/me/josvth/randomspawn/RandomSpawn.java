@@ -1,7 +1,5 @@
 package me.josvth.randomspawn;
 
-import com.wimbli.WorldBorder.BorderData;
-import com.wimbli.WorldBorder.WorldBorder;
 import isaac.bastion.Bastion;
 import isaac.bastion.manager.BastionBlockManager;
 import java.util.ArrayList;
@@ -34,7 +32,6 @@ public class RandomSpawn extends JavaPlugin {
 	WorldChangeListener worldChangeListener;
 	SignListener signListener;
 	DamageListener damageListener;
-	private boolean isWorldBorderEnabled = false;
 	private boolean isBastionsEnabled = false;
 
 	private static List<Material> defaultBlackList = Arrays.asList(
@@ -57,7 +54,6 @@ public class RandomSpawn extends JavaPlugin {
 		signListener = new SignListener(this);
 		damageListener = new DamageListener(this);
 
-		isWorldBorderEnabled = getServer().getPluginManager().isPluginEnabled("WorldBorder");
 		isBastionsEnabled = getServer().getPluginManager().isPluginEnabled("Bastion");
 
 	}
@@ -129,14 +125,6 @@ public class RandomSpawn extends JavaPlugin {
 			return null;
 		}
 
-		if (isWorldBorderEnabled) {
-			BorderData border = WorldBorder.plugin.getWorldBorder(world.getName());
-			if (border != null) {
-				if (!border.insideBorder(ret)) {
-					return chooseSpawn(world);
-				}
-			}
-		}
 		if (isBastionsEnabled) {
 			BastionBlockManager bm = Bastion.getBastionManager();
 			if (bm != null) {

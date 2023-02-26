@@ -16,15 +16,6 @@ subprojects {
 	repositories {
 		mavenCentral()
 		maven("https://repo.civmc.net/repository/maven-public")
-		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/CivMC/RandomSpawn")
-			credentials {
-				username = System.getenv("GITHUB_ACTOR")
-				password = System.getenv("GITHUB_TOKEN")
-			}
-		}
-
 		maven("https://jitpack.io")
 	}
 }
