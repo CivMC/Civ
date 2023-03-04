@@ -65,7 +65,7 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
-    CortesiaDelMarConcord: CommradePotatoe#4719
+    CortesiaDelMarConcord: # CommradePotatoe#4719
       x: 5012
       y: 250 # overridden in code, but must be set
       z: 3134
