@@ -108,14 +108,14 @@ public class MainGroupGUI extends AbstractGroupGUI {
 			ci.setSlot(baCl, 45);
 		}
 		// next button
-		if ((45 * (currentPage + 1)) <= clicks.size()) {
+		if ((36 * (currentPage + 1)) < clicks.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
 			ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
 
 				@Override
 				public void clicked(Player arg0) {
-					if ((45 * (currentPage + 1)) <= clicks.size()) {
+					if ((36 * (currentPage + 1)) < clicks.size()) {
 						currentPage++;
 					}
 					showScreen();
