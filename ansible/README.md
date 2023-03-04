@@ -44,7 +44,9 @@ end;
 
 subgraph Monitoring;
   mon_grafana[Grafana];
+  mon_loki[Loki];
   
+  mon_grafana-->mon_loki;
   mon_grafana-->mc_postgres;
   mon_grafana-->mc_mariadb;
   mon_grafana-.->auth_keycloak;

@@ -12,6 +12,12 @@ services:
       mode: global
       placement:
         constraints: [node.platform.os == linux]
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
 
   portainer:
     image: portainer/portainer-ce:2.11.1
@@ -38,6 +44,12 @@ services:
         - traefik.http.routers.portainer-https.tls=true
         - traefik.http.routers.portainer-https.tls.certresolver=le
         - traefik.http.services.portainer.loadbalancer.server.port=9000
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
 
 networks:
   agent_network:

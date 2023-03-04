@@ -3,6 +3,15 @@
     rule: allow
     name: OpenSSH
 
+# Docker bypasses UFW and modifies iptables directly
+- name: Protect port 3100 for Loki
+  iptables:
+    chain: DOCKER-USER
+    in_interface: ens18 # TODO: Make interface configurable for others
+    destination_port: 3100
+    protocol: tcp
+    jump: REJECT
+
 # TODO: Nodes in swarm
 #- name: Allow Docker-machine communication from trusted
 #  ufw:

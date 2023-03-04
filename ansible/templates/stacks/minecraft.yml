@@ -22,6 +22,12 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
 
   paper:
     image: ghcr.io/civmc/civdocker/paper:1.18.5
@@ -75,6 +81,12 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
 
   queue:
     image: ghcr.io/civmc/civdocker/queue:1.18.5
@@ -98,6 +110,12 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
 
   kira:
     image: ghcr.io/civmc/kira:2.0.0
@@ -109,6 +127,12 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
 
   mariadb:
     image: mariadb:10.7.1
@@ -126,6 +150,12 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
 
   postgres:
     image: timescale/timescaledb:latest-pg14
@@ -147,6 +177,12 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
 
   rabbitmq:
     image: rabbitmq:3.9.16-management
@@ -162,6 +198,12 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
 
 networks:
   minecraft_default:

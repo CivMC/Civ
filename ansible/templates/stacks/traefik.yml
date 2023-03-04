@@ -34,6 +34,12 @@ services:
       - --accesslog
       - --log
       - --api
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
 
 networks:
   traefik-public:

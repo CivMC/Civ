@@ -39,13 +39,22 @@ services:
         - traefik.http.routers.grafana-public-https.tls=true
         - traefik.http.routers.grafana-public-https.tls.certresolver=le
         - traefik.http.services.grafana-public.loadbalancer.server.port=3000
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
 
   loki:
     image: grafana/loki
     networks:
       - monitoring
+    ports:
+      - "3100:3100"
     volumes:
-      - /opt/stacks/monitoring/loki-data:/data/loki
+      - /opt/stacks/monitoring/loki-config/local-config.yaml:/etc/loki/local-config.yaml
+      - /opt/stacks/monitoring/loki-data:/loki
     deploy:
       placement:
         constraints: [node.role == manager]
