@@ -18,7 +18,6 @@ world:
   spawnblacklist:
     - "WATER" # 8, 9 # water
     - "LAVA" # 10, 11 # lava
-    # - 18 # leaves
     - "FIRE" # 51 # fire
     - "CACTUS" # 81 # cactus
     - "OBSIDIAN" # 49 # obsidian - don't spawn in military infrastructure
@@ -40,6 +39,17 @@ world:
     - "RED_CARPET"
     - "WHITE_CARPET"
     - "YELLOW_CARPET"
+    - "ACACIA_TRAPDOOR"
+    - "BAMBOO_TRAPDOOR"
+    - "BIRCH_TRAPDOOR"
+    - "CRIMSON_TRAPDOOR"
+    - "DARK_OAK_TRAPDOOR"
+    - "IRON_TRAPDOOR"
+    - "JUNGLE_TRAPDOOR"
+    - "MANGROVE_TRAPDOOR"
+    - "OAK_TRAPDOOR"
+    - "SPRUCE_TRAPDOOR"
+    - "WARPED_TRAPDOOR"
   spawnpoints:
     CityOfEngland: # GatorGlitch#2793
       x: 3772
