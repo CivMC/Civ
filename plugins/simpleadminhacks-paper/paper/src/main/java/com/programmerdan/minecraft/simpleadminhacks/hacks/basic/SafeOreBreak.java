@@ -5,7 +5,6 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -24,9 +23,9 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
-import vg.civcraft.mc.civmodcore.players.settings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
+import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 
 public final class SafeOreBreak extends BasicHack {
 
@@ -51,25 +50,25 @@ public final class SafeOreBreak extends BasicHack {
 		OUTER:
 		for (String ore : ores) {
 			String[] parts = ore.split(",");
-			Material[] materialParts = new Material[parts.length];
+			List<Material> materialParts = new ArrayList<>(parts.length);
 
-			for (int i = 0; i < parts.length; i++) {
-				String part = parts[i];
-				materialParts[i] = MaterialUtils.getMaterial(part);
-				if (materialParts[i] == null) {
-					logger.warning("Invalid material '"  + parts[0] + "'. Skipping.");
+			for (String part : parts) {
+				Material material = MaterialUtils.getMaterial(part);
+				if (material == null) {
+					logger.warning("Invalid material '" + parts[0] + "'. Skipping.");
 					continue OUTER;
 				}
+				materialParts.add(material);
 			}
 
-			breakOres.add(Arrays.asList(materialParts));
-			String materialName = PlainTextComponentSerializer.plainText() .serialize(Component.translatable(materialParts[0]));
+			breakOres.add(materialParts);
+			String materialName = PlainTextComponentSerializer.plainText().serialize(Component.translatable(materialParts.get(0)));
 			BooleanOreSetting setting = new BooleanOreSetting(plugin, true,
 					"Safe " + materialName + " break",
-					"safeOreBreak_" + materialParts[0].getKey().getKey(),
+					"safeOreBreak_" + materialParts.get(0).getKey().getKey(),
 					"Prevents you from breaking " + materialName
 							+ " without a silk touch pickaxe.",
-					materialParts[0]);
+					materialParts.get(0));
 			oreSettings.add(setting);
 			PlayerSettingAPI.registerSetting(setting, mainMenu);
 		}
@@ -114,35 +113,14 @@ public final class SafeOreBreak extends BasicHack {
 		}
 	}
 
-	private static class BooleanOreSetting extends PlayerSetting<Boolean> {
+	private static class BooleanOreSetting extends BooleanSetting {
 
 		private final Material ore;
 
 		public BooleanOreSetting(JavaPlugin owningPlugin, Boolean defaultValue, String name, String identifier,
 							  String description, Material ore) {
-			super(owningPlugin, defaultValue, name, identifier, new ItemStack(Material.STONE), description, true);
+			super(owningPlugin, defaultValue, name, identifier, description);
 			this.ore = ore;
-		}
-
-		@Override
-		public Boolean deserialize(String serial) {
-			switch (serial.toLowerCase()) {
-				case "1":
-				case "true":
-				case "t":
-				case "y":
-				case "yes":
-					return true;
-				case "0":
-				case "false":
-				case "f":
-				case "n":
-				case "no":
-					return false;
-				case "null":
-					return null;
-			}
-			throw new IllegalArgumentException(serial + " is not a valid boolean value");
 		}
 
 		@Override
@@ -158,42 +136,5 @@ public final class SafeOreBreak extends BasicHack {
 			applyInfoToItemStack(item, player);
 			return item;
 		}
-
-		@Override
-		public void handleMenuClick(Player player, MenuSection menu) {
-			setValue(player.getUniqueId(), !getValue(player.getUniqueId()));
-			menu.showScreen(player);
-		}
-
-		@Override
-		public String serialize(Boolean value) {
-			return String.valueOf(value);
-		}
-
-		@Override
-		public String toText(Boolean value) {
-			return String.valueOf(value);
-		}
-
-		@Override
-		public boolean isValidValue(String input) {
-			switch (input.toLowerCase()) {
-				case "1":
-				case "true":
-				case "t":
-				case "y":
-				case "yes":
-				case "0":
-				case "false":
-				case "f":
-				case "n":
-				case "no":
-				case "null":
-					return true;
-				default:
-					return false;
-			}
-		}
-
 	}
 }
