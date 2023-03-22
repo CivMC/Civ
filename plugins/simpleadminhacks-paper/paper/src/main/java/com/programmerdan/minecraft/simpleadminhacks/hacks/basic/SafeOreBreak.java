@@ -55,7 +55,7 @@ public final class SafeOreBreak extends BasicHack {
 			for (String part : parts) {
 				Material material = MaterialUtils.getMaterial(part);
 				if (material == null) {
-					logger.warning("Invalid material '" + parts[0] + "'. Skipping.");
+					logger.warning("Invalid material '" + part + "'. Skipping.");
 					continue OUTER;
 				}
 				materialParts.add(material);
