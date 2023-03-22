@@ -108,6 +108,7 @@ public final class SafeOreBreak extends BasicHack {
 								.color(NamedTextColor.RED));
 					}
 					event.setCancelled(true);
+					return;
 				}
 			}
 		}
