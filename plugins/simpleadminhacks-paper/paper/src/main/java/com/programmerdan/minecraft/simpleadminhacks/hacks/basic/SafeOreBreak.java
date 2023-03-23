@@ -30,7 +30,7 @@ import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 public final class SafeOreBreak extends BasicHack {
 
 	@AutoLoad
-	private List<String> ores;
+	private List<List<String>> ores;
 
 	private final List<BooleanOreSetting> oreSettings = new ArrayList<>();
 	private final List<List<Material>> breakOres = new ArrayList<>();
@@ -48,9 +48,8 @@ public final class SafeOreBreak extends BasicHack {
 		MenuSection mainMenu = plugin.getSettingManager().getMainMenu();
 
 		OUTER:
-		for (String ore : ores) {
-			String[] parts = ore.split(",");
-			List<Material> materialParts = new ArrayList<>(parts.length);
+		for (List<String> parts : ores) {
+			List<Material> materialParts = new ArrayList<>(parts.size());
 
 			for (String part : parts) {
 				Material material = MaterialUtils.getMaterial(part);
