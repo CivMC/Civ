@@ -19,12 +19,24 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.Contract;
 
 public abstract class ACivMod extends JavaPlugin {
 
 	private final Set<Class<? extends ConfigurationSerializable>> configClasses = new HashSet<>(0);
+
+	/** Primary constructor used by the real server */
+	protected ACivMod() {
+		super();
+	}
+
+	/** Secondary constructor used for testing */
+	protected ACivMod(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+		super(loader, description, dataFolder, file);
+	}
 
 	@Override
 	public void onEnable() {
