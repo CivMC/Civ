@@ -6791,8 +6791,8 @@ recipes:
           amount: 1
       record_otherside:
         chance: 0.00005042014
-        record_otherside: MUSIC_DISC_OTHERSIDE
-          material: 
+        record_otherside: 
+          material: MUSIC_DISC_OTHERSIDE
           amount: 1
       minecart:
         chance: 0.0008941634
