@@ -113,6 +113,16 @@ public class ProductionRecipe extends InputRecipe {
 	}
 
 	@Override
+	public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv) {
+		boolean isFeasible = input.fitsIn(outputInv);
+		String reasonSnippet = isFeasible ? null : "it ran out of storage space";
+		return new EffectFeasibility(
+				isFeasible,
+				reasonSnippet
+		);
+	}
+
+	@Override
 	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
 		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
 		logBeforeRecipeRun(combo, fccf);

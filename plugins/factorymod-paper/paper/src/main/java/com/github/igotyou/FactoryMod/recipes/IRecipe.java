@@ -35,6 +35,15 @@ public interface IRecipe {
 	public boolean enoughMaterialAvailable(Inventory inputInv);
 
 	/**
+	 * Evaluates whether it's currently feasible to apply the recipe effect, given the constraints of the factory,
+	 * input/output inventories, or other custom recipe logic.
+	 * By default, this method returns a result indicating that the effect is always feasible to be applied.
+	 */
+	default public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv) {
+		return new EffectFeasibility(true, null);
+	}
+
+	/**
 	 * Applies whatever the recipe actually does, it's main functionality
 	 *
 	 * @param inputInv  Inventory which contains the materials to work with

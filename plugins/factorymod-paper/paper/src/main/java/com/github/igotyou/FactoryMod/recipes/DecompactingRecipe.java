@@ -4,6 +4,7 @@ import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Material;
@@ -41,6 +42,26 @@ public class DecompactingRecipe extends InputRecipe {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv) {
+		boolean isFeasible = Arrays.stream(inputInv.getContents())
+				.filter(Objects::nonNull)
+				.filter(this::isDecompactable)
+				.map(it -> {
+					ItemStack removeClone = it.clone();
+					removeClone.setAmount(1);
+					removeCompactLore(removeClone);
+					ItemMap toAdd = new ItemMap(removeClone);
+					toAdd.addItemAmount(removeClone, CompactingRecipe.getCompactStackSize(removeClone.getType()));
+					return toAdd;
+				})
+				.allMatch(it -> it.fitsIn(outputInv));
+		return new EffectFeasibility(
+				isFeasible,
+				isFeasible ? null : "it ran out of storage space"
+		);
 	}
 
 	@Override
