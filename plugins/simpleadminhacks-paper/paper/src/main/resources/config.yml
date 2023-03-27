@@ -209,6 +209,13 @@ hacks:
     ghastChance: 0.07
     witherSkeletonChance: 0.05
     witherHeadDropChance: 0.04
+  SafeOreBreak:
+    enabled: true
+    ores:
+      - [DIAMOND_ORE,DEEPSLATE_DIAMOND_ORE]
+      - [COAL_ORE,DEEPSLATE_COAL_ORE]
+      - [REDSTONE_ORE,DEEPSLATE_REDSTONE_ORE]
+      - [LAPIS_ORE,DEEPSLATE_LAPIS_ORE]
   ShipOutOfLuck:
     enabled: true
     # The list of Material's that boats cannot be placed on and will eject passengers
