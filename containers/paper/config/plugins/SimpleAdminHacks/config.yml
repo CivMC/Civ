@@ -456,7 +456,8 @@ hacks:
       title: Welcome ${player}!
       author: RedDevel
       pages: 
-	- "&5Hello and welcome to CivMC, &2${player}!\n\n   A server based on nation building and player freedom. Where admin control is minimal, and players dispense their own justice." 
+	- "&5Hello and welcome to CivMC, &2${player}!\n\n   A server based on nation building and political roleplay, where admin control is minimal and players have the opportunity to dispense their own justice. A world ripe with chance for any new friend to carve out their own legacy."
+	- "With an almost decade long history, filled with moments of high excitement in war and of peace, farming and socializing with your closest allies. Where countries, towns, and cities consist of more than just the blocks they're made of." 
 	- "   &1Namelayer&r\nPocket radios! Create or join chat groups to communicate with friends all over CivMC. By default you have joined global chat or ! chat. You can switch from local chat (1000 block radius) to this one by performing the command: /g !"
 	- "Go back to localchat by performing the /g command on it own. This works for any group you are allowed to speak in. just switch ! for the name of the group. \nCreate your own group using the GUI by perfoming the /nl Command."
 	- "   &1Citadel&r\nAnother use for your groups! Slow down raiders by reinforcing blocks such as your house or your chests and doors to lock them. Reinforced blocks take multiple breaks to drop for players not on the reinforcement group."
