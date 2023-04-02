@@ -123,6 +123,14 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
+    MtAugusta: # ComradeNick#9912
+      x: 3052
+      y: 250 # overridden in code, but must be set
+      z: 2235
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
     Nara: # bronnakus#1195
       x: 3200
       y: 250 # overridden in code, but must be set
@@ -211,7 +219,7 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
-    FreeDanzilonanRepublic: # buystamps#8915
+    FreeDanzilonanRepublic: # nobody
       x: 5245
       y: 250 # overridden in code, but must be set
       z: 4530
