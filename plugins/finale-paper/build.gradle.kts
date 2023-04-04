@@ -4,12 +4,6 @@ plugins {
 	id("net.civmc.civgradle") version "2.+" apply false
 }
 
-// Temporary hack:
-// Remove the root build directory
-gradle.buildFinished {
-	project.buildDir.deleteRecursively()
-}
-
 subprojects {
 	apply(plugin = "java-library")
 	apply(plugin = "maven-publish")
@@ -23,16 +17,5 @@ subprojects {
 		mavenCentral()
 		maven("https://repo.civmc.net/repository/maven-public")
         maven("https://repo.dmulloy2.net/content/groups/public/")
-	}
-
-	repositories {
-		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/CivMC/Finale")
-			credentials {
-				username = System.getenv("GITHUB_ACTOR")
-				password = System.getenv("GITHUB_TOKEN")
-			}
-		}
 	}
 }
