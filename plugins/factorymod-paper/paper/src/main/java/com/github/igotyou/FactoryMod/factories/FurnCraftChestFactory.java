@@ -333,6 +333,16 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 			return;
 		}
 
+		// Ensure the recipe effect can be applied
+		var effectFeasibility = currentRecipe.evaluateEffectFeasibility(getInputInventory(), getOutputInventory());
+		if (!(effectFeasibility.isFeasible())) {
+			LoggingUtils.log(String.format("Skipping activation of recipe [%s], since the effect wasn't feasible.", currentRecipe.getName()));
+			if (p != null) {
+				p.sendMessage(String.format("%sUnable to activate recipe because %s.",ChatColor.RED, effectFeasibility.reasonSnippet()));
+			}
+			return;
+		}
+
 		if (!onStartUp && currentRecipe instanceof Upgraderecipe && FactoryMod.getInstance().getManager().isCitadelEnabled()) {
 			// only allow permitted members to upgrade the factory
 			Reinforcement rein = ReinforcementLogic.getReinforcementAt(mbs.getCenter());
