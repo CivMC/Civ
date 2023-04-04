@@ -1,61 +1,23 @@
-import net.civmc.civgradle.common.util.civRepo
+import net.civmc.civgradle.CivGradleExtension
 
 plugins {
-    `java-library`
-    `maven-publish`
-    id("net.civmc.civgradle.plugin") version "1.0.0-SNAPSHOT"
-}
-
-// Temporary hack:
-// Remove the root build directory
-gradle.buildFinished {
-	project.buildDir.deleteRecursively()
-}
-
-allprojects {
-	group = "net.civmc.simpleadminhacks"
-	version = "2.1.1"
-	description = "SimpleAdminHacks"
+	id("net.civmc.civgradle") version "2.+" apply false
 }
 
 subprojects {
-	apply(plugin = "net.civmc.civgradle.plugin")
 	apply(plugin = "java-library")
 	apply(plugin = "maven-publish")
+	apply(plugin = "net.civmc.civgradle")
 
-	java {
-		toolchain {
-			languageVersion.set(JavaLanguageVersion.of(17))
-		}
+	configure<CivGradleExtension> {
+		pluginName = project.property("pluginName") as String
 	}
 
 	repositories {
 		mavenCentral()
-        civRepo("CivMC/CivModCore")
-        civRepo("CivMC/NameLayer")
-        civRepo("CivMC/Citadel")
-        civRepo("CivMC/CombatTagPlus")
-        civRepo("CivMC/BanStick")
+		maven("https://repo.civmc.net/repository/maven-public")
         maven("https://repo.dmulloy2.net/repository/public/")
         maven("https://ci.frostcast.net/plugin/repository/everything")
         maven("https://jitpack.io")
-	}
-
-	publishing {
-		repositories {
-			maven {
-				name = "GitHubPackages"
-				url = uri("https://maven.pkg.github.com/CivMC/SimpleAdminHacks")
-				credentials {
-					username = System.getenv("GITHUB_ACTOR")
-					password = System.getenv("GITHUB_TOKEN")
-				}
-			}
-		}
-		publications {
-			register<MavenPublication>("gpr") {
-				from(components["java"])
-			}
-		}
 	}
 }
