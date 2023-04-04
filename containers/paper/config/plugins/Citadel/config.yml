@@ -41,7 +41,7 @@ reinforcements:
       speed: 0.04
       particleCount: 80
       offset: 0.0
-    mature_time: 1h
+    mature_time: 30m
     acid_time: 2h
     acid_priority: 2
     name: Stone
@@ -69,7 +69,7 @@ reinforcements:
       speed: 0.04
       particleCount: 80
       offset: 0.0
-    mature_time: 1h
+    mature_time: 30m
     acid_time: 2h
     acid_priority: 2
     name: Netherbrick
@@ -97,7 +97,7 @@ reinforcements:
       speed: 0.13
       particleCount: 200
       offset: 0
-    mature_time: 8h
+    mature_time: 4h
     acid_time: 12h
     acid_priority: 5
     name: Iron
@@ -125,7 +125,7 @@ reinforcements:
       speed: 0.13
       particleCount: 200
       offset: 0
-    mature_time: 8h
+    mature_time: 4h
     acid_time: 12h
     acid_priority: 5
     name: Gold
@@ -153,8 +153,8 @@ reinforcements:
       speed: 0.5
       particleCount: 500
       offset: 0.1
-    mature_time: 24h
-    acid_time: 36h
+    mature_time: 12h
+    acid_time: 24h
     acid_priority: 10
     name: Diamond
     hit_points: 2000
@@ -181,8 +181,8 @@ reinforcements:
       speed: 0.5
       particleCount: 500
       offset: 0.1
-    mature_time: 24h
-    acid_time: 36h
+    mature_time: 12h
+    acid_time: 24h
     acid_priority: 10
     name: GildedBlackstone
     hit_points: 2000
