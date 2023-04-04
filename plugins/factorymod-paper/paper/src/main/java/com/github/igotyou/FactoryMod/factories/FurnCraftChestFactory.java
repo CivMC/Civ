@@ -281,8 +281,9 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 					setRecipe(autoRepair);
 				}
 			}
-			if (!hasInputMaterials() || (!rm.inDisrepair() && (currentRecipe instanceof  RepairRecipe))) {
-				//Let autoselect find something to run that isn't the repair recipe
+
+			// If we run out of input materials, try to auto-select a new recipe
+			if (!hasInputMaterials()) {
 				IRecipe autoSelected = getAutoSelectRecipe();
 				if (autoSelected == null) {
 					if (p != null) {
@@ -682,18 +683,28 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 	}
 
 	/**
-	 * @return a recipe which the factory contains enough ressources to run except repair type recipes,
-	 * returns null if none exists
-	 *
+	 * Auto-selects a recipe which has enough materials to run given the current state of the factory.
+	 * @return null if no suitable recipe was found
 	 */
-
 	public IRecipe getAutoSelectRecipe() {
-		for (IRecipe rec : recipes) {
-			if (rec.enoughMaterialAvailable(getInventory()) && !(rec instanceof RepairRecipe)) {
-				return rec;
-			}
+		var selectedRecipe = recipes.stream()
+				.filter(it -> {
+					// We want to select a repair recipe if and only if the factory is in disrepair
+					if (rm.inDisrepair()) {
+						return it instanceof RepairRecipe;
+					} else {
+						return !(it instanceof RepairRecipe);
+					}
+				})
+				.filter(it -> it.enoughMaterialAvailable(getInputInventory()))
+				.findFirst()
+				.orElse(null);
+
+		if (selectedRecipe != null) {
+			LoggingUtils.log("Auto-selected recipe " + selectedRecipe.getName());
 		}
-		return null;
+
+		return selectedRecipe;
 	}
 
 	/**
