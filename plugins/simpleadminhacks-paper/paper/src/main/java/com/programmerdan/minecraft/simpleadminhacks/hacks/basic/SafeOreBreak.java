@@ -5,18 +5,14 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.WeakHashMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemFlag;
@@ -34,8 +30,6 @@ public final class SafeOreBreak extends BasicHack {
 
 	private final List<BooleanOreSetting> oreSettings = new ArrayList<>();
 	private final List<List<Material>> breakOres = new ArrayList<>();
-
-	private final Set<Player> receivedWarning = Collections.newSetFromMap(new WeakHashMap<>());
 
 	public SafeOreBreak(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
@@ -100,11 +94,10 @@ public final class SafeOreBreak extends BasicHack {
 						continue OUTER;
 					}
 
-					if (receivedWarning.add(event.getPlayer())) {
-						event.getPlayer().sendMessage(Component.text(
-										"A SimpleAdminHacks /config option is preventing you from breaking that ore without a silk touch pickaxe.")
-								.color(NamedTextColor.RED));
-					}
+					event.getPlayer().sendMessage(Component.text(
+									"A SimpleAdminHacks /config option is preventing you from breaking that ore without a silk touch pickaxe.")
+							.color(NamedTextColor.RED));
+
 					event.setCancelled(true);
 					return;
 				}
