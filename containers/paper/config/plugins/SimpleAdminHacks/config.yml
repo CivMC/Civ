@@ -276,8 +276,9 @@ hacks:
       - [LAPIS_ORE,DEEPSLATE_LAPIS_ORE]
       - [GOLD_ORE,DEEPSLATE_GOLD_ORE]
       - [IRON_ORE,DEEPSLATE_IRON_ORE]
-      - [GILDED_BLACKSTONE]
+      - [NETHER_GOLD_ORE,GILDED_BLACKSTONE]
       - [NETHER_QUARTZ_ORE]
+      - [GLOWSTONE]
   ShipOutOfLuck:
     enabled: true
     boatBreakers:
