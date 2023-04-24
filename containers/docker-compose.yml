@@ -40,6 +40,7 @@ services:
       CIV_SERVER_NAME: local
 
       CIV_WORLD_GENERATOR: Terra:DEFAULT
+      CIV_WORDBANK_SEED: wordbank
 
       CIV_MYSQL_HOST: mariadb
       CIV_MYSQL_USERNAME: mariadb
