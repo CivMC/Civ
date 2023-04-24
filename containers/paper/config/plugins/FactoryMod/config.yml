@@ -6260,7 +6260,7 @@ recipes:
     name: Generate item name
     production_time: 4s
     word_count: 3
-    seed: "{{ wordbank_seed }}"
+    seed: "${CIV_WORDBANK_SEED}"
     colors:
       - YELLOW
       - LIGHT_PURPLE
