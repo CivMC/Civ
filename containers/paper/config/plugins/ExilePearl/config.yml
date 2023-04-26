@@ -266,7 +266,7 @@ pearls:
   free_teleport: false
   hotbar_needed: true
   decay_interval_human: day
-  decay_interval_min_human: 34560 #This is hardcoded to divide by 1440 so we have to multiply by 24 to show the correct pearl cost
+  decay_interval_min_human: 1440 #This value is divided by decay_interval_min and repair cost to show essence cost per day (1440 = 1 day in minutes).
   decay_interval_min: 60
   decay_amount: 1
   decay_timeout_min: 525600 # don't timeout until after a year
