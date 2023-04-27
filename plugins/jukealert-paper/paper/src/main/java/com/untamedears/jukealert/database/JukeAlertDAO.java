@@ -670,24 +670,6 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 	// Toggle Lever
 	// ------------------------------------------------------------
 
-	public boolean getToggleLever(final int snitchID) {
-		try (final Connection connection = this.db.getConnection();
-			 final PreparedStatement statement = connection.prepareStatement(
-					 "SELECT toggle_lever FROM ja_snitch_lever WHERE id = ?;")) {
-			statement.setInt(1, snitchID);
-			try (final ResultSet results = statement.executeQuery()) {
-				if (results.next()) {
-					return results.getBoolean(1);
-				}
-				return false;
-			}
-		}
-		catch (final SQLException throwable) {
-			this.logger.log(Level.SEVERE, "Failed to retrieve toggle lever for snitch [" + snitchID + "]", throwable);
-			return false;
-		}
-	}
-
 	public void setToggleLever(final int snitchID,
 							   final boolean toggle) {
 		try (final Connection connection = this.db.getConnection();
