@@ -890,7 +890,7 @@ public class ConfigParser {
 		}
 		if (result != null) {
 			((InputRecipe) result)
-					.setFuelConsumptionIntervall(parseTimeAsTicks(config.getString("fuel_consumption_intervall", "0")));
+					.setFuelConsumptionIntervall(parseTimeAsTicks(config.getString("fuel_consumption_intervall", String.valueOf(this.defaultFuelConsumptionTime))));
 			plugin.info("Parsed recipe " + name);
 		}
 		return result;
