@@ -1,9 +1,5 @@
 package com.github.igotyou.FactoryMod;
 
-import static vg.civcraft.mc.civmodcore.config.ConfigHelper.parseTime;
-import static vg.civcraft.mc.civmodcore.config.ConfigHelper.parseTimeAsTicks;
-
-
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.eggs.PipeEgg;
@@ -36,6 +32,18 @@ import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.FactoryGarbageCollector;
 import com.github.igotyou.FactoryMod.utility.FactoryModGUI;
+import org.apache.commons.lang.WordUtils;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,17 +56,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import org.apache.commons.lang.WordUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import vg.civcraft.mc.civmodcore.config.ConfigHelper;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
+
+import static vg.civcraft.mc.civmodcore.config.ConfigHelper.parseTime;
+import static vg.civcraft.mc.civmodcore.config.ConfigHelper.parseTimeAsTicks;
 
 public class ConfigParser {
 	private FactoryMod plugin;
@@ -889,8 +889,14 @@ public class ConfigParser {
 			result = null;
 		}
 		if (result != null) {
+			int interval = 0;
+			if (config.getString("fuel_consumption_intervall") == null) {
+				interval = this.defaultFuelConsumptionTime;
+			} else {
+				interval = parseTimeAsTicks(config.getString("fuel_consumption_intervall"));
+			}
 			((InputRecipe) result)
-					.setFuelConsumptionIntervall(parseTimeAsTicks(config.getString("fuel_consumption_intervall", String.valueOf(this.defaultFuelConsumptionTime))));
+					.setFuelConsumptionIntervall(interval);
 			plugin.info("Parsed recipe " + name);
 		}
 		return result;
