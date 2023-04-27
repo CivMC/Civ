@@ -91,7 +91,7 @@ public class SnitchLifeCycleListener implements Listener {
 			return;
 		}
 		pendingSnitches.remove(location);
-		Snitch snitch = snitchConfig.create(-1, location, "", e.getReinforcement().getGroupId(), true);
+		Snitch snitch = snitchConfig.create(-1, location, "", e.getReinforcement().getGroupId(), true, System.currentTimeMillis(), false);
 		Player p = e.getPlayer();
 		logger.info(String.format("Created snitch of type %s at %s by %s", snitch.getType().getName(),
 				snitch.getLocation().toString(), p != null ? p.getName() : "null"));

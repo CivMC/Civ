@@ -22,7 +22,7 @@ public class LeverToggleAppender extends ConfigurableSnitchAppender<LeverToggleC
 	public LeverToggleAppender(Snitch snitch, ConfigurationSection config) {
 		super(snitch, config);
 		if (snitch.getId() != -1) {
-			this.shouldToggle = JukeAlert.getInstance().getDAO().getToggleLever(snitch.getId());
+			this.shouldToggle = snitch.isToggleLever();
 		}
 	}
 

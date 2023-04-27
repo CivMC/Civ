@@ -30,8 +30,7 @@ public class DormantCullingAppender
 	public DormantCullingAppender(final Snitch snitch,
 								  final ConfigurationSection config) {
 		super(snitch, config);
-		this.lastRefresh = snitch.getId() == -1 ? System.currentTimeMillis() :
-				JukeAlert.getInstance().getDAO().getRefreshTimer(snitch.getId());
+		this.lastRefresh = snitch.getRefreshTimer();
 	}
 
 	/**
