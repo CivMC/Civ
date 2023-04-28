@@ -1,5 +1,5 @@
 plugins {
-	id("net.civmc.civgradle.plugin")
+	id("net.civmc.civgradle")
 	id("io.papermc.paperweight.userdev")
 }
 
