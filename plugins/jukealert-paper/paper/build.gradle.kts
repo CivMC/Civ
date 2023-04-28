@@ -1,19 +1,12 @@
 plugins {
-	`java-library`
-	id("net.civmc.civgradle.plugin")
-	id("io.papermc.paperweight.userdev") version "1.3.1"
-}
-
-civGradle {
-	paper {
-		pluginName = "JukeAlert"
-	}
+	id("net.civmc.civgradle")
+	id("io.papermc.paperweight.userdev")
 }
 
 dependencies {
 	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 
-	compileOnly("net.civmc:civmodcore:2.0.0-SNAPSHOT:dev-all")
-	compileOnly("net.civmc:namelayer-spigot:3.0.0-SNAPSHOT:dev")
-	compileOnly("net.civmc:citadel:5.0.0-SNAPSHOT:dev")
+	compileOnly("net.civmc.civmodcore:civmodcore-paper:2.3.5:dev-all")
+	compileOnly("net.civmc.namelayer:namelayer-paper:3.0.4:dev")
+	compileOnly("net.civmc.citadel:citadel-paper:5.1.2:dev")
 }
