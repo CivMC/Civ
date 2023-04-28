@@ -6,7 +6,7 @@ pluginManagement {
 	}
 }
 
-rootProject.name = "citadel"
+rootProject.name = "jukealert"
 
 include(":paper")
 project(":paper").name = rootProject.name + "-paper"
