@@ -913,7 +913,6 @@ factories:
         material: PAPER
         amount: 64
     recipes:
-      - wordbank_item
       - bind_books
       - bind_writable_books
       - craft_printing_plate
@@ -924,7 +923,30 @@ factories:
       - repair_printer
       - craft_globe_banner_pattern
       - craft_piglin_banner_pattern
-      - craft_creeper_banner_pattern
+      - craft_creeper_banner_pattern   
+  research_station:
+    type: FCC
+    name: Research Station
+    citadelBreakReduction: 1.0
+    fuel:
+      fuelidentifier:
+        material: EMERALD
+    setupcost:
+      essence:
+        material: ENDER_EYE
+        amount: 48
+        name: Player Essence
+        lore:
+          - Activity reward used to fuel pearls
+      paper:
+        material: PAPER
+        amount: 64
+      ink:
+        material: INK_SAC
+        amount: 4
+    recipes:
+      - wordbank_item
+      - repair_station          
   concrete_mixer:
     type: FCC
     name: Concrete Mixer
@@ -6259,6 +6281,7 @@ recipes:
     type: WORDBANK
     name: Generate item name
     production_time: 4s
+    fuel_consumption_intervall: 4s
     word_count: 3
     seed: "${CIV_WORDBANK_SEED}"
     colors:
@@ -6398,6 +6421,26 @@ recipes:
       paper:
         material: PAPER
         amount: 6
+    health_gained: 10000
+  repair_station:     
+    forceInclude: true
+    type: REPAIR
+    name: Repair Station
+    production_time: 4s
+    fuel_consumption_intervall: 4s
+    input:
+      essence:
+        material: ENDER_EYE
+        amount: 8
+        name: Player Essence
+        lore:
+          - Activity reward used to fuel pearls
+      paper:
+        material: PAPER
+        amount: 16
+      ink:
+        material: INK_SAC
+        amount: 2
     health_gained: 10000
   crack_fossil:
     type: RANDOM
