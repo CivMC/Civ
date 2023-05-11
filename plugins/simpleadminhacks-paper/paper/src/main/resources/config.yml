@@ -500,6 +500,11 @@ hacks:
     maxHealth: 50
   TimingsHack:
     enabled: true
+  OneTimeTeleport:
+    enabled: true
+    material_blacklist: []
+    unsafe_materials: [LAVA, WATER]
+    ott_timeout: 2d
   ToggleLamp:
     enabled: false
     cooldownTime: 100
