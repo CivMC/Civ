@@ -33,8 +33,4 @@ servers:
   main:
     motd: '§2Building with more than just blocks.§r'
     address: "paper:25565"
-    restricted: true
-  queue:
-    motd: '&1CivMC Lobby'
-    address: "queue:25565"
-    restricted: true
+    restricted: false
