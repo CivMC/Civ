@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   waterfall:
-    image: ghcr.io/civmc/civdocker/waterfall:1.18.6
+    image: ghcr.io/civmc/civdocker/waterfall:1.19.0
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -30,7 +30,7 @@ services:
           loki-batch-size: "400"
 
   paper:
-    image: ghcr.io/civmc/civdocker/paper:1.18.6
+    image: ghcr.io/civmc/civdocker/paper:1.19.0
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -70,14 +70,14 @@ services:
       - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
       - /opt/PrivateConfig/paper/config/HiddenOre/config.yml:/config/plugins/HiddenOre/config.yml
       - /opt/PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/config/plugins/KirraBukkitGateway/cnfig.yml
-      # - /opt/PrivateConfig/paper/config/FactoryMod/config.yml:/config/plugins/FactoryMod/config.yml
       - /opt/PrivateConfig/paper/config/Bastion/config.yml:/config/plugins/Bastion/config.yml
       - /opt/PrivateConfig/paper/config/Brewery/config.yml:/config/plugins/Brewery/config.yml
       - /opt/PrivateConfig/paper/config/Terra/packs/CivMC:/config/plugins/Terra/packs/CivMC
       - /opt/PrivateConfig/paper/config/Votifier/config.yml:/config/plugins/Votifier/config.yml
       - /opt/PrivateConfig/paper/config/Votifier/rsa/public.key:/config/plugins/Votifier/rsa/public.key
       - /opt/PrivateConfig/paper/config/Votifier/rsa/private.key:/config/plugins/Votifier/rsa/private.key
-      #- /opt/PrivateConfig/paper/config/Finale/config.yml:/config/plugins/Finale/config.yml
+      - /opt/PrivateConfig/paper/config/DiscordSRV/config.yml:/config/plugins/DiscordSRV/config.yml
+      - /opt/PrivateConfig/paper/config/DiscordSRV/alerts.yml:/config/plugins/DiscordSRV/alerts.yml
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -89,7 +89,7 @@ services:
           loki-batch-size: "400"
 
   queue:
-    image: ghcr.io/civmc/civdocker/queue:1.18.6
+    image: ghcr.io/civmc/civdocker/queue:1.19.0
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -118,7 +118,7 @@ services:
           loki-batch-size: "400"
 
   kira:
-    image: ghcr.io/civmc/kira:2.0.0
+    image: ghcr.io/civmc/kira:2.0.1
     restart: unless-stopped
     tty: true
     stdin_open: true
