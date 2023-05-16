@@ -4505,6 +4505,21 @@ recipes:
         material: REDSTONE
         amount: 1
     health_gained: 10000
+  make_bucket_of_tropical_fish:
+    production_time: 4s
+    name: Make Bucket of Tropical Fish
+    type: PRODUCTION
+    input:
+      tropical fish:
+        material: TROPICAL_FISH
+        amount: 3
+      bucket of water:
+        material: BUCKET_OF_WATER
+        amount: 1
+    output:
+      bucket of tropical fish:
+        material: BUCKET_OF_TROPICAL_FISH
+        amount: 1
   make_saddle:
     production_time: 4s
     name: Make Saddles
