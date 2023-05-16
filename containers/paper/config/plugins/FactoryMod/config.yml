@@ -786,6 +786,7 @@ factories:
       - make_comparator
       - make_repeater
       - make_gearbox
+      - make_sculk_sensor
       - repair_redstone
   bastion_factory:
     type: FCC
@@ -4649,6 +4650,24 @@ recipes:
       repeater:
         material: REPEATER
         amount: 96
+  make_sculk_sensor:
+    production_time: 4s
+    name: Make Sculk sensor
+    type: PRODUCTION
+    input:
+      note_block:
+        material: NOTE_BLOCK
+        amount: 8
+      redstone:
+        material: REDSTONE
+        amount: 16
+      experience_bottle:
+        material: EXPERIENCE_BOTTLE
+        amount: 32
+    output:
+      sculk_sensor:
+        material: SCULK_SENSOR
+        amount: 4
   repair_redstone:
     production_time: 4s
     name: Repair Factory
