@@ -992,6 +992,38 @@ factories:
       - harden_concrete_red
       - harden_concrete_black
       - repair_mixer
+  bio_factory:
+    type: FCC
+    name: Bio Factory
+    citadelBreakingReduction: 1.0
+    fuel:
+      fuelidentifier:
+        material: BONE_MEAL
+    setupcost:
+      bone_blocks:
+        material: BONE_BLOCK
+        amount: 32
+      dirt:
+        material: DIRT
+        amount: 64
+    recipes:
+      - grow_flowering_azalea_leaves
+      - grow_azalea_leaves
+      - grow_spore_blossom
+      - grow_big_dripleaf
+      - grow_small_dripleaf
+      - grow_lily_pad
+      - grow_red_mushroom_block
+      - grow_brown_mushroom_block
+      - grow_mushroom_stem
+      - spread_sculk_vein
+      - kill_bush
+      - form_tube_coral_block
+      - form_fire_coral_block
+      - form_horn_coral_block
+      - form_brain_coral_block
+      - form_bubble_coral_block
+      - repair_bio
   gold_forge:
     type: FCC
     name: Gold Forge
@@ -7476,6 +7508,19 @@ recipes:
           material: TERRACOTTA
           amount: 1
           name: Terracotta!
+  repair_bio:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      bone_block:
+        material: BONE_BLOCK
+        amount: 8
+      dirt:
+        material: DIRT
+        amount: 16
+    health_gained: 10000  
   repair_gold_forge:
     production_time: 4s
     name: Repair Factory
@@ -7485,6 +7530,223 @@ recipes:
         material: GOLD_INGOT
         amount: 16
     health_gained: 10000
+  grow_flowering_azalea_leaves:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow flowering Azalea leaves
+    type: PRODUCTION
+    input:
+      oak_leaves:
+        material: OAK_LEAVES
+        amount: 64
+      allium:
+        material: ALLIUM
+        amount: 4
+    output:
+      flowering_azalea_leaves:
+        material: FLOWERING_AZALEA_LEAVES
+        amount: 64
+  grow_azalea_leaves:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow Azalea leaves
+    type: PRODUCTION
+    input:
+      oak_leaves:
+        material: OAK_LEAVES
+        amount: 64
+    output:
+      azalea_leaves:
+        material: AZALEA_LEAVES
+        amount: 64
+  grow_spore_blossom:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow spore blossom
+    type: PRODUCTION
+    input:
+      moss_block:
+        material: MOSS_BLOCK
+        amount: 16
+      peony:
+        material: PEONY
+        amount: 4
+    output:
+      spore_blossom:
+        material: SPORE_BLOSSOM
+        amount: 4
+  grow_big_dripleaf:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow big Dripleaf
+    type: PRODUCTION
+    input:
+      kelp:
+        material: KELP
+        amount: 64
+    output:
+      big_dripleaf:
+        material: BIG_DRIPLEAF
+        amount: 8
+  grow_small_dripleaf:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow small Dripleaf
+    type: PRODUCTION
+    input:
+      kelp:
+        material: KELP
+        amount: 32
+    output:
+      big_dripleaf:
+        material: SMALL_DRIPLEAF
+        amount: 8
+  grow_lily_pad:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow Lily pad
+    type: PRODUCTION
+    input:
+      kelp:
+        material: KELP
+        amount: 16
+    output:
+      lily_pad:
+        material: LILY_PAD
+        amount: 8
+  grow_red_mushroom_block:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow red Mushroom block
+    type: PRODUCTION
+    input:
+      red_mushroom:
+        material: RED_MUSHROOM
+        amount: 64
+    output:
+      red_mushroom_block:
+        material: RED_MUSHROOM_BLOCK
+        amount: 16
+  grow_brown_mushroom_block:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow brown Mushroom block
+    type: PRODUCTION
+    input:
+      brown_mushroom:
+        material: BROWN_MUSHROOM
+        amount: 64
+    output:
+      brown_mushroom_block:
+        material: BROWN_MUSHROOM_BLOCK
+        amount: 16
+  grow_mushroom_stem:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow Mushroom stem
+    type: PRODUCTION
+    input:
+      red_mushroom:
+        material: RED_MUSHROOM
+        amount: 32
+        brown_mushroom:
+        material: BROWN_MUSHROOM
+        amount: 32
+    output:
+      mushroom_stem:
+        material: MUSHROOM_STEM
+        amount: 16 
+  spread_sculk_vein:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Spread Sculk vein
+    type: PRODUCTION
+    input:
+      experience_bottle:
+        material: EXPERIENCE_BOTTLE
+        amount: 32
+    output:
+      sculk_vein:
+        material: SCULK_VEIN
+        amount: 16
+  kill_bush:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Kill bush
+    type: PRODUCTION
+    input:
+      sticks:
+        material: STICK
+        amount: 64
+    output:
+      dead_bush:
+        material: DEAD_BUSH
+        amount: 16
+  form_tube_coral_block:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Form tube coral block
+    type: PRODUCTION
+    input:
+      tube_coral:
+        material: TUBE_CORAL
+        amount: 64
+    output:
+      tube_coral_block:
+        material: TUBE_CORAL_BLOCK
+        amount: 16
+  form_fire_coral_block:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Form fire coral block
+    type: PRODUCTION
+    input:
+      fire_coral:
+        material: FIRE_CORAL
+        amount: 64
+    output:
+      tube_coral_block:
+        material: FIRE_CORAL_BLOCK
+        amount: 16
+  form_horn_coral_block:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Form horn coral block
+    type: PRODUCTION
+    input:
+      horn_coral:
+        material: HORN_CORAL
+        amount: 64
+    output:
+      horn_coral_block:
+        material: HORN_CORAL_BLOCK
+        amount: 16
+  form_brain_coral_block:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Form brain coral block
+    type: PRODUCTION
+    input:
+      brain_coral:
+        material: BRAIN_CORAL
+        amount: 64
+    output:
+      brain_coral_block:
+        material: BRAIN_CORAL_BLOCK
+        amount: 16
+  form_bubble_coral_block:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Form bubble coral block
+    type: PRODUCTION
+    input:
+      bubble_coral:
+        material: BUBBLE_CORAL
+        amount: 64
+    output:
+      bubble_coral_block:
+        material: BUBBLE_CORAL_BLOCK
+        amount: 16
   forge_gold_pickaxes:
     type: RANDOM
     name: Forge Gold Pickaxes
