@@ -86,6 +86,7 @@ factories:
     recipes:
       - make_red_sand
       - clean_red_sand
+      - make_end_stone
       - make_purpur
       - condense_purpur_fruit
       - make_prismarine_bricks
@@ -1768,7 +1769,22 @@ recipes:
         amount: 64
       bucket:
         material: BUCKET
-        amount: 1
+        amount: 1    
+  make_end_stone:
+    production_time: 4s
+    name: Make End stone
+    type: PRODUCTION
+    input:
+      stone:
+        material: STONE
+        amount: 64
+      yellow dye:
+        material: YELLOW_DYE
+        amount: 8        
+    output:
+      end_stone:
+        material: END_STONE
+        amount: 64
   make_purpur:
     production_time: 4s
     name: Make Purpur
