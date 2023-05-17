@@ -1019,6 +1019,7 @@ factories:
       - grow_mushroom_stem
       - spread_sculk_vein
       - kill_bush
+      - root_dirt
       - form_tube_coral_block
       - form_fire_coral_block
       - form_horn_coral_block
@@ -7766,6 +7767,22 @@ recipes:
       bubble_coral_block:
         material: BUBBLE_CORAL_BLOCK
         amount: 16
+  root_dirt:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Root dirt
+    type: PRODUCTION
+    input:
+      dirt:
+        material: DIRT
+        amount: 64
+      sticks:
+        material: STICK
+        amount: 16
+    output:
+      rooted_dirt:
+        material: ROOTED_DIRT
+        amount: 64
   forge_gold_pickaxes:
     type: RANDOM
     name: Forge Gold Pickaxes
