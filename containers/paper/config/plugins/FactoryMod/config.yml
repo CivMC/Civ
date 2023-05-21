@@ -7685,7 +7685,7 @@ recipes:
       red_mushroom:
         material: RED_MUSHROOM
         amount: 32
-        brown_mushroom:
+      brown_mushroom:
         material: BROWN_MUSHROOM
         amount: 32
     output:
