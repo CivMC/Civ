@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   waterfall:
-    image: ghcr.io/civmc/civdocker/waterfall:1.19.0
+    image: ghcr.io/civmc/civdocker/waterfall:1.21.3
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -30,7 +30,7 @@ services:
           loki-batch-size: "400"
 
   paper:
-    image: ghcr.io/civmc/civdocker/paper:1.19.0
+    image: ghcr.io/civmc/civdocker/paper:1.21.3
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -48,6 +48,7 @@ services:
       CIV_SERVER_NAME: prod-server
 
       CIV_WORLD_GENERATOR: Terra:CIVMC
+      CIV_WORDBANK_SEED: '{{secret.minecraft.wordbank_seed}}'
 
       CIV_MYSQL_HOST: minecraft_mariadb
       CIV_MYSQL_USERNAME: minecraft
@@ -78,35 +79,6 @@ services:
       - /opt/PrivateConfig/paper/config/Votifier/rsa/private.key:/config/plugins/Votifier/rsa/private.key
       - /opt/PrivateConfig/paper/config/DiscordSRV/config.yml:/config/plugins/DiscordSRV/config.yml
       - /opt/PrivateConfig/paper/config/DiscordSRV/alerts.yml:/config/plugins/DiscordSRV/alerts.yml
-    deploy:
-      placement:
-        constraints: [node.role == manager]
-    logging:
-        driver: grafana/loki-docker-driver
-        options:
-          loki-url: "http://localhost:3100/loki/api/v1/push"
-          loki-retries: "5"
-          loki-batch-size: "400"
-
-  queue:
-    image: ghcr.io/civmc/civdocker/queue:1.19.0
-    restart: unless-stopped
-    tty: true
-    stdin_open: true
-    environment:
-      INIT_MEMORY: 4G
-      MAX_MEMORY: 4G
-
-      CIV_SERVER_NAME: queue-prod-server
-
-      CIV_POSTGRES_HOST: minecraft_postgres
-      CIV_POSTGRES_USERNAME: minecraft
-      CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
-
-    volumes:
-      # Private Config & Plugins
-      - /opt/PrivateConfig/paper/plugins/Vulcan-2.6.5.jar:/config/plugins/Vulcan-2.6.5.jar
-      - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
     deploy:
       placement:
         constraints: [node.role == manager]
