@@ -7692,19 +7692,6 @@ recipes:
       mushroom_stem:
         material: MUSHROOM_STEM
         amount: 16 
-  spread_sculk_vein:
-    production_time: 4s
-    fuel_consumption_intervall: 1s
-    name: Spread Sculk vein
-    type: PRODUCTION
-    input:
-      experience_bottle:
-        material: EXPERIENCE_BOTTLE
-        amount: 32
-    output:
-      sculk_vein:
-        material: SCULK_VEIN
-        amount: 16
   kill_bush:
     production_time: 4s
     fuel_consumption_intervall: 1s
