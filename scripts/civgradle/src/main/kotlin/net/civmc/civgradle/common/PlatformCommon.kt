@@ -63,7 +63,7 @@ object PlatformCommon {
         project.tasks.withType(Test::class.java) { testing ->
             testing.useJUnitPlatform()
             testing.testLogging { logging ->
-                logging.events(TestLogEvent.values())
+                logging.events(*TestLogEvent.values())
                 logging.exceptionFormat = TestExceptionFormat.FULL
                 logging.showCauses = true
                 logging.showExceptions = true
