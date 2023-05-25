@@ -7,6 +7,9 @@ import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.api.tasks.javadoc.Javadoc
+import org.gradle.api.tasks.testing.Test
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.language.jvm.tasks.ProcessResources
 import org.slf4j.Logger
@@ -55,6 +58,17 @@ object PlatformCommon {
 
         project.tasks.withType(ProcessResources::class.java) {
             it.filteringCharset = Charsets.UTF_8.name()
+        }
+
+        project.tasks.withType(Test::class.java) { testing ->
+            testing.useJUnitPlatform()
+            testing.testLogging { logging ->
+                logging.events(TestLogEvent.values())
+                logging.exceptionFormat = TestExceptionFormat.FULL
+                logging.showCauses = true
+                logging.showExceptions = true
+                logging.showStackTraces = true
+            }
         }
 
         logger.debug("Java tasks configured")
