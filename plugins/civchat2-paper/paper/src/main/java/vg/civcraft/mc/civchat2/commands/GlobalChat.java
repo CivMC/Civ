@@ -16,85 +16,57 @@ import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class GlobalChat extends BaseCommand {
-
 	@CommandAlias("global|globalchat")
 	@Syntax("[message]")
 	@Description("Enters global group chat or sends a message to global group chat")
 	@CommandCompletion("@CC_Groups @nothing")
+	
 	public void execute(Player player, @Optional String chatMessage) {
-        String targetGroup = CivChat2.getInstance().getPluginConfig().getGlobalChatGroupName();
+		String globalGroupName = CivChat2.getInstance().getPluginConfig().getGlobalChatGroupName();
+		Group globalGroup = GroupManager.getGroup(globalGroupName);
 		CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
-		GroupManager gm = NameAPI.getGroupManager();
-		boolean isGroupChatting = chatMan.getGroupChatting(player) != null;
-		Group group;
-		boolean defGroup = false;
-		if (targetGroup == null && chatMessage == null) {
-			// Check if player is in groupchat and move them to normal chat
-			if (isGroupChatting) {
-				player.sendMessage(ChatStrings.chatMovedToGlobal);
-				chatMan.removeGroupChat(player);
-				return;
-			} else {
-				String defGroupName = gm.getDefaultGroup(player.getUniqueId());
-				if (defGroupName != null) {
-					group = GroupManager.getGroup(defGroupName);
-					defGroup = true;
-				} else {
-					return;
-				}
-			}
-		}
-		if (targetGroup == null) {
+		Group currentGroup = chatMan.getGroupChatting(player);
+		
+		if (globalGroupName == null) {
 			return;
 		}
-		group = GroupManager.getGroup(targetGroup);
-		if (group == null) {
+		if (globalGroup == null) {
 			player.sendMessage(ChatStrings.chatGroupNotFound);
 			return;
 		}
-		if (!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
+		if (!NameAPI.getGroupManager().hasAccess(globalGroup, player.getUniqueId(),
 				PermissionType.getPermission("WRITE_CHAT"))) {
 			player.sendMessage(ChatStrings.chatGroupNoPerms);
 			return;
 		}
-		if (CivChat2.getInstance().getDatabaseManager().isIgnoringGroup(player.getUniqueId(), group.getName())) {
-			player.sendMessage(String.format(ChatStrings.chatNeedToUnignore, group.getName()));
+		if (CivChat2.getInstance().getDatabaseManager().isIgnoringGroup(player.getUniqueId(), globalGroupName)) {
+			player.sendMessage(String.format(ChatStrings.chatNeedToUnignore, globalGroupName));
 			return;
 		}
 		if (chatMessage == null) {
-			if (isGroupChatting) {
-				// Player already groupchatting check if it's this group
-				Group curGroup = chatMan.getGroupChatting(player);
-				if (curGroup == group) {
+			if (currentGroup != null) { // Check if currently in group
+				if (currentGroup == globalGroup) { // Check if current group global
 					player.sendMessage(ChatStrings.chatGroupAlreadyChatting);
-				} else {
-					player.sendMessage(String.format(ChatStrings.chatGroupNowChattingIn, group.getName()));
+				} else { // Switch to global group from current group
+					player.sendMessage(String.format(ChatStrings.chatGroupNowChattingIn, globalGroupName));
 					chatMan.removeGroupChat(player);
-					chatMan.addGroupChat(player, group);
+					chatMan.addGroupChat(player, globalGroup);
 				}
-			} else {
-				player.sendMessage(String.format(ChatStrings.chatGroupNowChattingIn, group.getName()));
+			} else { // Switch to global group
+				player.sendMessage(String.format(ChatStrings.chatGroupNowChattingIn, globalGroupName));
 				if (chatMan.getChannel(player) != null) {
 					chatMan.removeChannel(player);
 				}
-				chatMan.addGroupChat(player, group);
+				chatMan.addGroupChat(player, globalGroup);
 			}
-		} else {
-			StringBuilder chatMsg = new StringBuilder();
-			chatMsg.append(chatMessage);
-			if (isGroupChatting) {
-				// Player already groupchatting check if it's this group
-				Group curGroup = chatMan.getGroupChatting(player);
-				if (curGroup == group) {
-					chatMan.sendGroupMsg(player, group, chatMsg.toString());
-				} else {
-					chatMan.sendGroupMsg(player, group, chatMsg.toString());
-				}
+		} else { // Send message to global group
+			if (currentGroup != null) {
+				chatMan.sendGroupMsg(player, globalGroup, chatMessage);
 			} else {
 				if (chatMan.getChannel(player) != null) {
 					chatMan.removeChannel(player);
 				}
-				chatMan.sendGroupMsg(player, group, chatMsg.toString());
+				chatMan.sendGroupMsg(player, globalGroup, chatMessage);
 			}
 		}
 	}
