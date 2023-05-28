@@ -49,6 +49,14 @@ world:
     - "SPRUCE_TRAPDOOR"
     - "WARPED_TRAPDOOR"
   spawnpoints:
+    Aeros: # ItzHoover#4345
+      x: -2300
+      y: 250 # overridden in code, but must be set
+      z: -200
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
     AmboisePalace: # Danman#1792
       x: 4306
       y: 250 # overridden in code, but must be set
@@ -61,6 +69,14 @@ world:
       x: 3772
       y: 250 # overridden in code, but must be set
       z: -5940
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Cliqueston: # SQOpenSpellBook#6534
+      x: 2673
+      y: 250 # overridden in code, but must be set
+      z: 4555
       nearby: true # require another player nearby?
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
@@ -153,6 +169,14 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
+    Lambat: # Kaprediem#3161
+      x: 3651
+      y: 250 # overridden in code, but must be set
+      z: -1438
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
     MtAugusta: # ComradeNick#9912
       x: 3052
       y: 250 # overridden in code, but must be set
@@ -217,6 +241,14 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
+    RepublicOfTransylvania: # TransylvaniaMan#4471
+      x: 5344
+      y: 250 # overridden in code, but must be set
+      z: 5627
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
     ReunanUnion: # Sleepy Moe#5591
       x: 8646
       y: 250 # overridden in code, but must be set
@@ -253,6 +285,14 @@ world:
       x: -5935
       y: 250 # overridden in code, but must be set
       z: -5620
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Venne: # Shadowvdark#4378
+      x: -1277
+      y: 250 # overridden in code, but must be set
+      z: 5689
       nearby: true # require another player nearby?
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
