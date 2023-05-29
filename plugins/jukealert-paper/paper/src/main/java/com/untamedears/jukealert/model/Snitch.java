@@ -38,7 +38,6 @@ public class Snitch extends LocationTrackable {
 	private SnitchFactoryType type;
 	private boolean active;
 	private long refreshTimer;
-
 	private boolean toggleLever;
 
 	/**
