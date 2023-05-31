@@ -566,7 +566,7 @@ hacks:
     enabled: true
     material_blacklist: []
     unsafe_materials: [LAVA, WATER]
-    ott_timeout: 2d
+    ott_timeout: 1d
   ToggleLamp:
     enabled: true
     cooldownTime: 100
