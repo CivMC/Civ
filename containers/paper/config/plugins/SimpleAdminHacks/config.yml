@@ -562,6 +562,11 @@ hacks:
       SPRUCE_LEAVES: 0
   TimingsHack:
     enabled: false
+  OneTimeTeleport:
+    enabled: true
+    material_blacklist: []
+    unsafe_materials: [LAVA, WATER]
+    ott_timeout: 2d
   ToggleLamp:
     enabled: true
     cooldownTime: 100
