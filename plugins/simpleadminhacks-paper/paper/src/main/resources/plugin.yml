@@ -89,6 +89,9 @@ commands:
     usage: /<command> full.path.to.event
     permission: simpleadmin.eventdebug
   stats: {} # Defined in (basic) PlayerStats
+  ott:
+    description: Allows a player a one time teleport
+    usage: /<command> <player>
 permissions:
   simpleadmin.*:
     description: Gives access to all SimpleAdminHacks commands

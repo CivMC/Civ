@@ -10,6 +10,7 @@ dependencies {
     compileOnly("net.civmc.citadel:citadel-paper:5.1.2:dev")
     compileOnly("net.civmc.combattagplus:paper:2.0.0-SNAPSHOT:dev")
     compileOnly("net.civmc.banstick:banstick-paper:2.0.1:dev")
+	compileOnly("net.civmc.bastion:bastion-paper:3.0.1:dev")
 
 	compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0")
 
