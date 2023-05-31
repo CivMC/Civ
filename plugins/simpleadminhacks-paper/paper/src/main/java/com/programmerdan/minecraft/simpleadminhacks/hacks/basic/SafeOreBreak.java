@@ -56,7 +56,7 @@ public final class SafeOreBreak extends BasicHack {
 
 			breakOres.add(materialParts);
 			String materialName = PlainTextComponentSerializer.plainText().serialize(Component.translatable(materialParts.get(0)));
-			BooleanOreSetting setting = new BooleanOreSetting(plugin, true,
+			BooleanOreSetting setting = new BooleanOreSetting(plugin, false,
 					"Safe " + materialName + " break",
 					"safeOreBreak_" + materialParts.get(0).getKey().getKey(),
 					"Prevents you from breaking " + materialName
