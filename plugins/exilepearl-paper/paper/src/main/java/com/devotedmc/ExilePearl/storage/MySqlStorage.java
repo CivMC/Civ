@@ -6,21 +6,17 @@ import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.MySqlConfig;
 import com.google.common.base.Preconditions;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
+
+import java.sql.*;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Level;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
 
 class MySqlStorage implements PluginStorage {
 
@@ -437,6 +433,22 @@ class MySqlStorage implements PluginStorage {
 			}
 		} catch (SQLException ex) {
 			logFailedPearlOperation(ex, pearl, "update return location");
+		}
+	}
+
+	@Override
+	public void updatePearledOnDate(ExilePearl pearl) {
+		Preconditions.checkNotNull(pearl, "pearl");
+
+		try (Connection connection = db.getConnection()) {
+			try (PreparedStatement ps = connection.prepareStatement("INSERT INTO exilepearls (pearled_on) VALUES (?);")) {
+				ps.setLong(1, pearl.getPearledOn().getTime());
+				ps.executeUpdate();
+			} catch (SQLException ex) {
+				logFailedPearlOperation(ex, pearl, "insert pearled_on");
+			}
+		} catch (SQLException ex) {
+			logFailedPearlOperation(ex, pearl, "update pearled_on");
 		}
 	}
 

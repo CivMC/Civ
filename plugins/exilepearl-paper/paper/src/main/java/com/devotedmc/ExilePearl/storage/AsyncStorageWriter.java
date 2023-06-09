@@ -141,6 +141,14 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	}
 
 	@Override
+	public void updatePearledOnDate(ExilePearl pearl) {
+		Preconditions.checkNotNull(pearl, "pearl");
+		checkRunning();
+
+		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_PEARLED_ON));
+	}
+
+	@Override
 	public void run() {
 		logger.log("The async database thread is running.");
 
@@ -202,6 +210,9 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 		case UPDATE_RETURN_LOCATION:
 			storage.updateReturnLocation(record.getPearl());
 			break;
+
+		case UPDATE_PEARLED_ON:
+			storage.updatePearledOnDate(record.getPearl());
 
 		case TERMINATE:
 		default:

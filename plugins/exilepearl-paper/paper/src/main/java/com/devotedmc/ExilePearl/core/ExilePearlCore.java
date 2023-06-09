@@ -1,32 +1,10 @@
 package com.devotedmc.ExilePearl.core;
 
-import com.devotedmc.ExilePearl.BorderHandler;
-import com.devotedmc.ExilePearl.BrewHandler;
-import com.devotedmc.ExilePearl.DamageLogger;
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.LoreProvider;
-import com.devotedmc.ExilePearl.PearlFreeReason;
-import com.devotedmc.ExilePearl.PearlManager;
-import com.devotedmc.ExilePearl.StorageProvider;
-import com.devotedmc.ExilePearl.SuicideHandler;
-import com.devotedmc.ExilePearl.command.BaseCommand;
-import com.devotedmc.ExilePearl.command.CmdAutoHelp;
-import com.devotedmc.ExilePearl.command.CmdExilePearl;
-import com.devotedmc.ExilePearl.command.CmdLegacy;
-import com.devotedmc.ExilePearl.command.CmdSuicide;
-import com.devotedmc.ExilePearl.command.PearlCommand;
+import com.devotedmc.ExilePearl.*;
+import com.devotedmc.ExilePearl.command.*;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
-import com.devotedmc.ExilePearl.listener.BanStickListener;
-import com.devotedmc.ExilePearl.listener.BastionListener;
-import com.devotedmc.ExilePearl.listener.CitadelListener;
-import com.devotedmc.ExilePearl.listener.CivChatListener;
-import com.devotedmc.ExilePearl.listener.ExileListener;
-import com.devotedmc.ExilePearl.listener.JukeAlertListener;
-import com.devotedmc.ExilePearl.listener.PlayerListener;
-import com.devotedmc.ExilePearl.listener.RandomSpawnListener;
-import com.devotedmc.ExilePearl.listener.WorldBorderListener;
+import com.devotedmc.ExilePearl.listener.*;
 import com.devotedmc.ExilePearl.storage.CoreStorageProvider;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.util.BastionWrapper;
@@ -36,21 +14,10 @@ import com.devotedmc.ExilePearl.util.NameLayerPermissions;
 import com.google.common.base.Preconditions;
 import com.wimbli.WorldBorder.BorderData;
 import com.wimbli.WorldBorder.WorldBorder;
+import io.papermc.paper.plugin.configuration.PluginMeta;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.compat.base.NpcIdentity;
 import org.bukkit.Bukkit;
@@ -73,6 +40,12 @@ import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The implementation class for the ExilPearlApi.
@@ -585,6 +558,11 @@ final class ExilePearlCore implements ExilePearlApi {
 	@Override
 	public PluginDescriptionFile getDescription() {
 		return plugin.getDescription();
+	}
+
+	@Override
+	public @NotNull PluginMeta getPluginMeta() {
+		return plugin.getPluginMeta();
 	}
 
 	@Override
