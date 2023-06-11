@@ -14,7 +14,6 @@ import com.devotedmc.ExilePearl.util.NameLayerPermissions;
 import com.google.common.base.Preconditions;
 import com.wimbli.WorldBorder.BorderData;
 import com.wimbli.WorldBorder.WorldBorder;
-import io.papermc.paper.plugin.configuration.PluginMeta;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
@@ -558,11 +557,6 @@ final class ExilePearlCore implements ExilePearlApi {
 	@Override
 	public PluginDescriptionFile getDescription() {
 		return plugin.getDescription();
-	}
-
-	@Override
-	public @NotNull PluginMeta getPluginMeta() {
-		return plugin.getPluginMeta();
 	}
 
 	@Override
