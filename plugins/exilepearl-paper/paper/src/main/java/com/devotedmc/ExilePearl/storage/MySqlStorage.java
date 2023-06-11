@@ -440,15 +440,15 @@ class MySqlStorage implements PluginStorage {
 	public void updatePearledOnDate(ExilePearl pearl) {
 		Preconditions.checkNotNull(pearl, "pearl");
 
-		try (Connection connection = db.getConnection()) {
-			try (PreparedStatement ps = connection.prepareStatement("INSERT INTO exilepearls (pearled_on) VALUES (?);")) {
-				ps.setLong(1, pearl.getPearledOn().getTime());
-				ps.executeUpdate();
-			} catch (SQLException ex) {
-				logFailedPearlOperation(ex, pearl, "insert pearled_on");
-			}
-		} catch (SQLException ex) {
-			logFailedPearlOperation(ex, pearl, "update pearled_on");
+		try (Connection connection = db.getConnection();
+			 PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET pearled_on = ? WHERE uid = ?"); ) {
+
+			ps.setLong(1, pearl.getPearledOn().getTime());
+			ps.setString(2, pearl.getPlayerId().toString());
+			ps.executeUpdate();
+		}
+		catch (SQLException ex) {
+			logFailedPearlOperation(ex, pearl, "update 'pearled_on'");
 		}
 	}
 
