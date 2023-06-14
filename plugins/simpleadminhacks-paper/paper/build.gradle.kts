@@ -11,6 +11,7 @@ dependencies {
     compileOnly("net.civmc.combattagplus:paper:2.0.0-SNAPSHOT:dev")
     compileOnly("net.civmc.banstick:banstick-paper:2.0.1:dev")
 	compileOnly("net.civmc.bastion:bastion-paper:3.0.1:dev")
+	// TODO: Add ExilePearl dependency once its added to CivMC Maven repo
 
 	compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0")
 

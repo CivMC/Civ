@@ -132,6 +132,11 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 				return;
 			}
 
+			if (GLUE_isPearled(sender.getUniqueId())) {
+				sender.sendMessage(Component.text("You cannot OTT while pearled!", NamedTextColor.RED));
+				return;
+			}
+
 			final UUID previousRequest = OneTimeTeleport.this.senderToReceiver.put(
 					sender.getUniqueId(),
 					targetPlayer.getPlayer().getUniqueId()
@@ -215,6 +220,12 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 				return;
 			}
 
+			if (GLUE_isPearled(requestingPlayer.getUniqueId())) {
+				sender.sendMessage(Component.text(requestingPlayer.getName() + " could not one-time teleport as they're pearled!", NamedTextColor.RED));
+				requestingPlayer.sendMessage(Component.text(sender.getName() + " accepted your request, but you're pearled!", NamedTextColor.RED));
+				return;
+			}
+
 			if (!isSafeLocation(sender, requestingPlayer)) {
 				sender.sendMessage(Component.text("This isn't a safe location to accept a one-time teleport!", NamedTextColor.RED));
 				requestingPlayer.sendMessage(Component.text(sender.getName() + " tried to accept your one-time teleport but is in an unsafe location!", NamedTextColor.RED));
@@ -283,6 +294,15 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 			}
 			return false;
 		});
+	}
+
+	private static boolean GLUE_isPearled(
+			final @NotNull UUID playerUUID
+	) {
+		if (Bukkit.getPluginManager().isPluginEnabled("ExilePearl")) {
+			return ExilePearlPlugin.getApi().getPearlManager().getPearl(playerUUID) != null;
+		}
+		return false;
 	}
 
 	private static boolean GLUE_isCombatTagged(
