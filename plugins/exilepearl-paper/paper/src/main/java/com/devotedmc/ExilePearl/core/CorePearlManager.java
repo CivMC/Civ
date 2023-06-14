@@ -19,6 +19,7 @@ import com.devotedmc.ExilePearl.util.SpawnUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import com.programmerdan.minecraft.banstick.handler.BanHandler;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -282,6 +283,14 @@ final class CorePearlManager implements PearlManager {
 			// Ignore freed offline pearls
 			if (pearl.getFreedOffline()) {
 				continue;
+			}
+
+			//Skip decay if the pearled player is banned
+			if (pearlApi.isBanStickEnabled()) {
+				if (BanHandler.isPlayerBanned(pearl.getPlayerId())) {
+					pearlApi.log("Skipping decay for player %s since they are currently banned", pearl.getPlayerName());
+					continue;
+				}
 			}
 
 			PearlHolder holder = pearl.getHolder();
