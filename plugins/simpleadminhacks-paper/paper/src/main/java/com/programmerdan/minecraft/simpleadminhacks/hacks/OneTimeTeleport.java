@@ -137,6 +137,11 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 				return;
 			}
 
+			if (config().isLimitingToSameWorld() && !Objects.equals(sender.getWorld(), targetPlayer.getPlayer().getWorld())) {
+				sender.sendMessage(Component.text("You cannot OTT to another world!", NamedTextColor.RED));
+				return;
+			}
+
 			final UUID previousRequest = OneTimeTeleport.this.senderToReceiver.put(
 					sender.getUniqueId(),
 					targetPlayer.getPlayer().getUniqueId()
@@ -223,6 +228,12 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 			if (GLUE_isPearled(requestingPlayer.getUniqueId())) {
 				sender.sendMessage(Component.text(requestingPlayer.getName() + " could not one-time teleport as they're pearled!", NamedTextColor.RED));
 				requestingPlayer.sendMessage(Component.text(sender.getName() + " accepted your request, but you're pearled!", NamedTextColor.RED));
+				return;
+			}
+
+			if (config().isLimitingToSameWorld() && !Objects.equals(sender.getWorld(), requestingPlayer.getWorld())) {
+				sender.sendMessage(Component.text(requestingPlayer.getName() + " could not one-time teleport as they're in a different world!", NamedTextColor.RED));
+				requestingPlayer.sendMessage(Component.text(sender.getName() + " accepted your request, but you're in a different world!", NamedTextColor.RED));
 				return;
 			}
 

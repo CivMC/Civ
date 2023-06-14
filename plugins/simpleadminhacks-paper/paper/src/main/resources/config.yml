@@ -475,6 +475,8 @@ hacks:
     unsafe_materials: [LAVA, WATER]
     # How long newfriends will have to use OTT before it expires
     ott_timeout: 2d
+    # Whether or not to limit OTT to same-world teleports
+    limitToSameWorld: false
   ReinforcedChestBreak:
     enabled: true
     # in seconds
