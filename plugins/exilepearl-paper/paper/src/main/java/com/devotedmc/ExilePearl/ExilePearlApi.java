@@ -119,23 +119,10 @@ public interface ExilePearlApi extends Plugin, PearlAccess, PearlLogger, PlayerP
 	boolean isRandomSpawnEnabled();
 
 	/**
-	 * Gets whether WorldBorder hooks are enabled
-	 * @return True if it is enabled
-	 */
-	boolean isWorldBorderEnabled();
-
-	/**
 	 * Gets whether CombatTag hooks are enabled
 	 * @return True if it is enabled
 	 */
 	boolean isCombatTagEnabled();
-
-	/**
-	 * Checks if a location is inside the world border
-	 * @param location the location to check
-	 * @return true if the location is inside the border
-	 */
-	boolean isLocationInsideBorder(Location location);
 
 	/**
 	 * Gets whether a player is in a non-permission bastion

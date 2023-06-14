@@ -64,12 +64,6 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	int getPearlHealthMaxValue();
 
 	/**
-	 * Gets whether pearls outside world border should be freed
-	 * @return the pearl max start value
-	 */
-	boolean getShouldAutoFreeWorldBorder();
-
-	/**
 	 * Gets whether the pearl must be in the hot bar
 	 * @return the pearl max start value
 	 */
