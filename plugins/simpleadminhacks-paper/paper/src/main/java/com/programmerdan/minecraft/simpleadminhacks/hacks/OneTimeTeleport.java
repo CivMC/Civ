@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.google.common.collect.Lists;
@@ -104,15 +105,21 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 				final Player sender
 		) {
 			if (checkOTT(sender.getUniqueId())) {
-				sender.sendMessage(Component.text("Your one time teleport will expire in " + TextUtil.formatDuration(
-						config().getTimeLimitOnUsageInMillis() - (System.currentTimeMillis() - OneTimeTeleport.this.timeSinceGranted.getValue(sender.getUniqueId()))
-				), NamedTextColor.GREEN));
+				final long expiresIn = config().getTimeLimitOnUsageInMillis() - (System.currentTimeMillis() - OneTimeTeleport.this.timeSinceGranted.getValue(sender.getUniqueId()));
+				sender.sendMessage(Component.text()
+						.content("Your one time teleport will expire in " + TextUtil.formatDuration(expiresIn))
+						.color(NamedTextColor.GREEN)
+						.decorate(TextDecoration.UNDERLINED)
+						.hoverEvent(HoverEvent.showText(Component.text("Clicking this message will suggest an OTT request command")))
+						.clickEvent(ClickEvent.suggestCommand("/ott to "))
+				);
 				return;
 			}
-			sender.sendMessage(Component.text("You don't have a one time teleport.", NamedTextColor.RED));
+			sender.sendMessage(Component.text("You don't have a one-time teleport.", NamedTextColor.RED));
 		}
 
 		@Subcommand("to|request")
+		@Description("Makes an OTT request to a player. If accepted, you'll teleport to them.")
 		public void requestOTT(
 				final Player sender,
 				final OnlinePlayer targetPlayer
@@ -167,6 +174,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 		}
 
 		@Subcommand("revoke|rescind|stop")
+		@Description("Revokes your OTT request.")
 		public void rescindRequest(
 				final Player sender
 		) {
@@ -198,6 +206,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 
 		@Subcommand("accept|approve|allow|yes")
 		@CommandCompletion("@sah_ott_requests")
+		@Description("Accepts an OTT request to your location.")
 		public void acceptOTT(
 				final Player sender,
 				final OnlinePlayer requestingOnlinePlayer
@@ -257,6 +266,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 
 		@Subcommand("reject|refuse|deny|no")
 		@CommandCompletion("@sah_ott_requests")
+		@Description("Rejects an OTT to your location.")
 		public void rejectOTT(
 				final Player sender,
 				final OnlinePlayer requestingOnlinePlayer
