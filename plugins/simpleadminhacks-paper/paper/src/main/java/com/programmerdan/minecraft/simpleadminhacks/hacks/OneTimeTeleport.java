@@ -38,7 +38,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.commands.NamedCommand;
 import vg.civcraft.mc.civmodcore.commands.TabComplete;
@@ -125,29 +125,24 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 				final Player sender,
 				final OnlinePlayer targetPlayer
 		) {
-			if (!checkOTT(sender.getUniqueId())) {
-				sender.sendMessage(Component.text("Your one-time teleport has expired!"));
-				return;
-			}
-
-			if (!OneTimeTeleport.this.hasOTT.getValue(sender.getUniqueId())) {
-				sender.sendMessage(Component.text("You have already used your OTT!", NamedTextColor.RED));
-				return;
-			}
-
-			if (GLUE_isCombatTagged(sender.getUniqueId())) {
-				sender.sendMessage(Component.text("You cannot OTT while in combat!", NamedTextColor.RED));
-				return;
-			}
-
-			if (GLUE_isPearled(sender.getUniqueId())) {
-				sender.sendMessage(Component.text("You cannot OTT while pearled!", NamedTextColor.RED));
-				return;
-			}
-
-			if (config().isLimitingToSameWorld() && !Objects.equals(sender.getWorld(), targetPlayer.getPlayer().getWorld())) {
-				sender.sendMessage(Component.text("You cannot OTT to another world!", NamedTextColor.RED));
-				return;
+			switch (testPermissibility(sender, targetPlayer.getPlayer())) {
+				case OK -> {}
+				case FAIL_NO_OTT -> {
+					sender.sendMessage(Component.text("Your are no longer able to use OTT!"));
+					return;
+				}
+				case FAIL_IN_COMBAT -> {
+					sender.sendMessage(Component.text("You cannot OTT while in combat!", NamedTextColor.RED));
+					return;
+				}
+				case FAIL_IS_PEARLED -> {
+					sender.sendMessage(Component.text("You cannot OTT while pearled!", NamedTextColor.RED));
+					return;
+				}
+				case FAIL_DIFFERENT_WORLD -> {
+					sender.sendMessage(Component.text("You cannot OTT to another world!", NamedTextColor.RED));
+					return;
+				}
 			}
 
 			final UUID previousRequest = OneTimeTeleport.this.senderToReceiver.put(
@@ -222,29 +217,29 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 				return;
 			}
 
-			if (!checkOTT(requestingPlayer.getUniqueId())) {
-				sender.sendMessage(Component.text(requestingPlayer.getName() + "'s one-time teleport has expired!"));
-				requestingPlayer.sendMessage(Component.text("Failed to teleport because your one-time teleport has expired!"));
-				return;
-			}
-
-			if (GLUE_isCombatTagged(requestingPlayer.getUniqueId())) {
-				sender.sendMessage(Component.text(requestingPlayer.getName() + " could not one-time teleport as they're in combat!", NamedTextColor.RED));
-				requestingPlayer.sendMessage(Component.text(sender.getName() + " accepted your request, but you're in combat!", NamedTextColor.RED));
-				OneTimeTeleport.this.senderToReceiver.put(requestingPlayer.getUniqueId(), sender.getUniqueId()); // Be kind and put the request back!
-				return;
-			}
-
-			if (GLUE_isPearled(requestingPlayer.getUniqueId())) {
-				sender.sendMessage(Component.text(requestingPlayer.getName() + " could not one-time teleport as they're pearled!", NamedTextColor.RED));
-				requestingPlayer.sendMessage(Component.text(sender.getName() + " accepted your request, but you're pearled!", NamedTextColor.RED));
-				return;
-			}
-
-			if (config().isLimitingToSameWorld() && !Objects.equals(sender.getWorld(), requestingPlayer.getWorld())) {
-				sender.sendMessage(Component.text(requestingPlayer.getName() + " could not one-time teleport as they're in a different world!", NamedTextColor.RED));
-				requestingPlayer.sendMessage(Component.text(sender.getName() + " accepted your request, but you're in a different world!", NamedTextColor.RED));
-				return;
+			switch (testPermissibility(requestingPlayer, sender)) {
+				case OK -> {}
+				case FAIL_NO_OTT -> {
+					sender.sendMessage(Component.text(requestingPlayer.getName() + "'s one-time teleport has expired!"));
+					requestingPlayer.sendMessage(Component.text("Failed to teleport because your one-time teleport has expired!"));
+					return;
+				}
+				case FAIL_IN_COMBAT -> {
+					sender.sendMessage(Component.text(requestingPlayer.getName() + " could not one-time teleport as they're in combat!", NamedTextColor.RED));
+					requestingPlayer.sendMessage(Component.text(sender.getName() + " accepted your request, but you're in combat!", NamedTextColor.RED));
+					OneTimeTeleport.this.senderToReceiver.put(requestingPlayer.getUniqueId(), sender.getUniqueId()); // Be kind and put the request back!
+					return;
+				}
+				case FAIL_IS_PEARLED -> {
+					sender.sendMessage(Component.text(requestingPlayer.getName() + " could not one-time teleport as they're pearled!", NamedTextColor.RED));
+					requestingPlayer.sendMessage(Component.text(sender.getName() + " accepted your request, but you're pearled!", NamedTextColor.RED));
+					return;
+				}
+				case FAIL_DIFFERENT_WORLD -> {
+					sender.sendMessage(Component.text(requestingPlayer.getName() + " could not one-time teleport as they're in a different world!", NamedTextColor.RED));
+					requestingPlayer.sendMessage(Component.text(sender.getName() + " accepted your request, but you're in a different world!", NamedTextColor.RED));
+					return;
+				}
 			}
 
 			if (!isSafeLocation(sender, requestingPlayer)) {
@@ -318,20 +313,32 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 		});
 	}
 
-	private static boolean GLUE_isPearled(
-			final @NotNull UUID playerUUID
+	/** All possible permissible states that requesting and accepting share! */
+	private enum OttPermissible { OK, FAIL_NO_OTT, FAIL_IN_COMBAT, FAIL_IS_PEARLED, FAIL_DIFFERENT_WORLD }
+	private @NotNull OttPermissible testPermissibility(
+			final @NotNull Player requestingPlayer,
+			final @NotNull Player destinationPlayer
 	) {
-		if (Bukkit.getPluginManager().isPluginEnabled("ExilePearl")) {
-			return ExilePearlPlugin.getApi().getPearlManager().getPearl(playerUUID) != null;
+		if (!checkOTT(requestingPlayer.getUniqueId())) {
+			return OttPermissible.FAIL_NO_OTT;
 		}
-		return false;
-	}
-
-	private static boolean GLUE_isCombatTagged(
-			final @NotNull UUID playerUUID
-	) {
-		final Plugin cbtPlugin = Bukkit.getPluginManager().getPlugin("CombatTagPlus");
-		return cbtPlugin != null && ((CombatTagPlus) cbtPlugin).getTagManager().isTagged(playerUUID);
+		if (Bukkit.getPluginManager().isPluginEnabled("CombatTagPlus")) {
+			final CombatTagPlus combatTagPlus = JavaPlugin.getPlugin(CombatTagPlus.class);
+			if (combatTagPlus.getTagManager().isTagged(requestingPlayer.getUniqueId())) {
+				return OttPermissible.FAIL_IN_COMBAT;
+			}
+		}
+		if (Bukkit.getPluginManager().isPluginEnabled("ExilePearl")) {
+			if (ExilePearlPlugin.getApi().getPearlManager().getPearl(requestingPlayer.getUniqueId()) != null) {
+				return OttPermissible.FAIL_IS_PEARLED;
+			}
+		}
+		if (config().isLimitingToSameWorld()) {
+			if (!Objects.equals(requestingPlayer.getWorld(), destinationPlayer.getWorld())) {
+				return OttPermissible.FAIL_DIFFERENT_WORLD;
+			}
+		}
+		return OttPermissible.OK;
 	}
 
 	private @NotNull List<Block> getNearbyBlocks(
