@@ -113,6 +113,7 @@ permissions:
       simpleadmin.debugwand: true
       simpleadmin.bedlocator: true
       simpleadmin.elytrabypass: true
+      simpleadmin.grantott: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
@@ -160,4 +161,7 @@ permissions:
       default: true
     simpleadmin.elytrabypass:
       description: Gives the ability to bypass elytra restrictions
+      default: op
+    simpleadmin.grantott:
+      description: Gives the ability to grant players OTT usages
       default: op

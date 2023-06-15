@@ -3,9 +3,11 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import co.aikar.commands.bukkit.contexts.OnlinePlayer;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.google.common.collect.Lists;
@@ -29,7 +31,9 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minelink.ctplus.CombatTagPlus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -47,6 +51,7 @@ import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 import vg.civcraft.mc.civmodcore.players.settings.impl.LongSetting;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
+import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> implements Listener {
 
@@ -121,6 +126,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 
 		@Subcommand("to|request")
 		@Description("Makes an OTT request to a player. If accepted, you'll teleport to them.")
+		@Syntax("<player>")
 		public void requestOTT(
 				final Player sender,
 				final OnlinePlayer targetPlayer
@@ -203,6 +209,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 		@Subcommand("accept|approve|allow|yes")
 		@CommandCompletion("@sah_ott_requests")
 		@Description("Accepts an OTT request to your location.")
+		@Syntax("<requester>")
 		public void acceptOTT(
 				final Player sender,
 				final OnlinePlayer requestingOnlinePlayer
@@ -256,13 +263,16 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 
 			OneTimeTeleport.this.hasOTT.setValue(requestingPlayer.getUniqueId(), false);
 
+			OneTimeTeleport.this.logger.info("Player[" + requestingPlayer.getName() + "] has OTT-teleported from [" + WorldUtils.getBlockLocation(requestingPlayer.getLocation()) + "] to [" + sender.getName() + "] at [" + WorldUtils.getBlockLocation(sender.getLocation()) + "]");
 			requestingPlayer.teleport(sender.getLocation());
 			sender.sendMessage(Component.text(requestingPlayer.getName() + " has been teleported to you!", NamedTextColor.GREEN));
+			requestingPlayer.sendMessage(Component.text("You have been teleported to " + sender.getName() + "!", NamedTextColor.GREEN));
 		}
 
 		@Subcommand("reject|refuse|deny|no")
 		@CommandCompletion("@sah_ott_requests")
 		@Description("Rejects an OTT to your location.")
+		@Syntax("<requester>")
 		public void rejectOTT(
 				final Player sender,
 				final OnlinePlayer requestingOnlinePlayer
@@ -278,6 +288,29 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 			}
 
 			requestingPlayer.sendMessage(Component.text(sender.getName() + " has denied your OTT request!", NamedTextColor.RED));
+		}
+
+		@Subcommand("grant|bestow|give")
+		@CommandPermission("simpleadmin.grantott")
+		@CommandCompletion("@allplayers")
+		@Description("Gives a player a use of OTT as if they first joined.")
+		@Syntax("<recipient>")
+		public void grantOTT(
+				final CommandSender sender,
+				final String receivingPlayerName
+		) {
+			final OfflinePlayer receivingPlayer = Bukkit.getOfflinePlayerIfCached(receivingPlayerName);
+			if (receivingPlayer == null) {
+				sender.sendMessage(Component.text("Could not find player " + receivingPlayerName + "!", NamedTextColor.RED));
+				return;
+			}
+			OneTimeTeleport.this.timeSinceGranted.setValue(receivingPlayer.getUniqueId(), System.currentTimeMillis());
+			OneTimeTeleport.this.hasOTT.setValue(receivingPlayer.getUniqueId(), true);
+			sender.sendMessage(Component.text("You have granted " + receivingPlayer.getName() + " an OTT!", NamedTextColor.GREEN));
+			final Player onlineReceivingPlayer = receivingPlayer.getPlayer();
+			if (onlineReceivingPlayer != null) {
+				onlineReceivingPlayer.sendMessage(Component.text("You have been granted an OTT!", NamedTextColor.GREEN));
+			}
 		}
 	};
 
