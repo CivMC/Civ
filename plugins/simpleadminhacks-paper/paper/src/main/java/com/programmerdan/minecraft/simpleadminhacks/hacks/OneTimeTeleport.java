@@ -19,10 +19,10 @@ import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -47,7 +47,6 @@ import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.commands.TabComplete;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
-import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 import vg.civcraft.mc.civmodcore.players.settings.impl.LongSetting;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
@@ -73,7 +72,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 		// Since there's no way to unregister settings without some gnarly reflection, this will only register settings
 		// that aren't already registered. Also, MoreCollectionUtils.getMissing() when?
 		final Collection<PlayerSetting<?>> allSettings = PlayerSettingAPI.getAllSettings();
-		final Collection<PlayerSetting<?>> ourSettings = Lists.newArrayList(this.hasOTT, this.timeSinceGranted);
+		final Collection<PlayerSetting<?>> ourSettings = Lists.newArrayList(this.grantedTimestamps);
 		ourSettings.removeIf(allSettings::contains);
 		ourSettings.forEach((setting) -> PlayerSettingAPI.registerSetting(setting, null));
 
@@ -87,19 +86,13 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 		HandlerList.unregisterAll(this);
 	}
 
-	private final Map<UUID, UUID> senderToReceiver = new TreeMap<>();
+	private final Map<UUID, UUID> senderToReceiver = new HashMap<>();
 
-	private final BooleanSetting hasOTT = new BooleanSetting(
+	private static final long OTT_AVAILABLE = -1L;
+	private static final long OTT_UNAVAILABLE = -2L;
+	private final LongSetting grantedTimestamps = new LongSetting(
 			plugin(),
-			false,
-			"Can you use a one time teleport?",
-			"hasOTT",
-			"Allows usage of /ott to <player>"
-	);
-
-	private final LongSetting timeSinceGranted = new LongSetting(
-			plugin(),
-			-1L,
+			OTT_AVAILABLE,
 			"Time since OTT granted",
 			"timeSinceOTTGrant"
 	);
@@ -112,7 +105,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 				final Player sender
 		) {
 			if (checkOTT(sender.getUniqueId())) {
-				final long expiresIn = config().getTimeLimitOnUsageInMillis() - (System.currentTimeMillis() - OneTimeTeleport.this.timeSinceGranted.getValue(sender.getUniqueId()));
+				final long expiresIn = config().getTimeLimitOnUsageInMillis() - (System.currentTimeMillis() - OneTimeTeleport.this.grantedTimestamps.getValue(sender.getUniqueId()));
 				sender.sendMessage(Component.text()
 						.content("Your one time teleport will expire in " + TextUtil.formatDuration(expiresIn))
 						.color(NamedTextColor.GREEN)
@@ -285,7 +278,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 			final Inventory requestingPlayerInventory = requestingPlayer.getInventory();
 			config().getMaterialBlacklist().forEach(requestingPlayerInventory::remove);
 
-			OneTimeTeleport.this.hasOTT.setValue(requestingPlayer.getUniqueId(), false);
+			OneTimeTeleport.this.grantedTimestamps.setValue(requestingPlayer.getUniqueId(), OTT_UNAVAILABLE);
 
 			OneTimeTeleport.this.logger.info("Player[" + requestingPlayer.getName() + "] has OTT-teleported from [" + WorldUtils.getBlockLocation(requestingPlayer.getLocation()) + "] to [" + sender.getName() + "] at [" + WorldUtils.getBlockLocation(sender.getLocation()) + "]");
 			requestingPlayer.teleport(sender.getLocation());
@@ -332,8 +325,7 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 				sender.sendMessage(Component.text("Could not find player " + receivingPlayerName + "!", NamedTextColor.RED));
 				return;
 			}
-			OneTimeTeleport.this.timeSinceGranted.setValue(receivingPlayer.getUniqueId(), System.currentTimeMillis());
-			OneTimeTeleport.this.hasOTT.setValue(receivingPlayer.getUniqueId(), true);
+			OneTimeTeleport.this.grantedTimestamps.setValue(receivingPlayer.getUniqueId(), System.currentTimeMillis());
 			sender.sendMessage(Component.text("You have granted " + receivingPlayer.getName() + " an OTT!", NamedTextColor.GREEN));
 			final Player onlineReceivingPlayer = receivingPlayer.getPlayer();
 			if (onlineReceivingPlayer != null) {
@@ -425,21 +417,18 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 	private boolean checkOTT(
 			final @NotNull UUID uuid
 	) {
-		final long timeSince = this.timeSinceGranted.getValue(uuid);
-		if (timeSince == -1L && !this.hasOTT.getValue(uuid)) {
-			this.hasOTT.setValue(uuid, true);
-			this.timeSinceGranted.setValue(uuid, System.currentTimeMillis());
-			return true;
-		}
-		else if (
-				timeSince != -1L
-						&& System.currentTimeMillis() >= (timeSince + config().getTimeLimitOnUsageInMillis())
-						&& this.hasOTT.getValue(uuid)
-		) {
-			this.hasOTT.setValue(uuid, false);
-			this.senderToReceiver.remove(uuid);
+		final long grantedTimestamp = this.grantedTimestamps.getValue(uuid);
+		if (grantedTimestamp == OTT_UNAVAILABLE) {
 			return false;
 		}
-		return this.hasOTT.getValue(uuid);
+		if (grantedTimestamp == OTT_AVAILABLE) {
+			this.grantedTimestamps.setValue(uuid, System.currentTimeMillis());
+			return true;
+		}
+		if (System.currentTimeMillis() >= (grantedTimestamp + config().getTimeLimitOnUsageInMillis())) {
+			this.grantedTimestamps.setValue(uuid, OTT_UNAVAILABLE);
+			return false;
+		}
+		return true;
 	}
 }
