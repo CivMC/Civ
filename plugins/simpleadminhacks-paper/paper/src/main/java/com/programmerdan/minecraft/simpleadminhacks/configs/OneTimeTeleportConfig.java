@@ -2,7 +2,6 @@ package com.programmerdan.minecraft.simpleadminhacks.configs;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import org.bukkit.Material;
@@ -64,11 +63,11 @@ public final class OneTimeTeleportConfig extends SimpleHackConfig {
 	}
 
 	public @NotNull List<Material> getMaterialBlacklist() {
-		return Collections.unmodifiableList(Objects.requireNonNullElseGet(this.materialBlacklist, List::of));
+		return Objects.requireNonNullElseGet(this.materialBlacklist, List::of);
 	}
 
 	public @NotNull List<Material> getUnsafeMaterials() {
-		return Collections.unmodifiableList(Objects.requireNonNullElseGet(this.unsafeMaterials, List::of));
+		return Objects.requireNonNullElseGet(this.unsafeMaterials, List::of);
 	}
 
 	public long getTimeLimitOnUsageInMillis() {
