@@ -260,11 +260,24 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 				}
 			}
 
-			if (isRestrictedDestination(sender, requestingPlayer)) {
-				sender.sendMessage(Component.text("This isn't a safe location to accept a one-time teleport!", NamedTextColor.RED));
-				requestingPlayer.sendMessage(Component.text(sender.getName() + " tried to accept your one-time teleport but is in an unsafe location!", NamedTextColor.RED));
-				OneTimeTeleport.this.senderToReceiver.put(requestingPlayer.getUniqueId(), sender.getUniqueId()); // Be kind and put the request back!
-				return;
+			if (Bukkit.getPluginManager().isPluginEnabled("Bastion")) {
+				for (final BastionBlock bastion : Bastion.getBastionManager().getBlockingBastions(sender.getLocation())) {
+					if (!bastion.canPlace(sender) || !bastion.canPlace(requestingPlayer)) {
+						sender.sendMessage(Component.text(requestingPlayer.getName() + " could not one-time teleport to a hostile bastion!", NamedTextColor.RED));
+						requestingPlayer.sendMessage(Component.text(sender.getName() + " accepted your request, but they're in a hostile bastion!", NamedTextColor.RED));
+						OneTimeTeleport.this.senderToReceiver.put(requestingPlayer.getUniqueId(), sender.getUniqueId()); // Be kind and put the request back!
+						return;
+					}
+				}
+			}
+
+			for (final Block block : getNearbyBlocks(sender.getLocation().getBlock(), 8)) {
+				if (config().getUnsafeMaterials().contains(block.getType())) {
+					sender.sendMessage(Component.text(requestingPlayer.getName() + " could not one-time teleport with unsafe blocks nearby!", NamedTextColor.RED));
+					requestingPlayer.sendMessage(Component.text(sender.getName() + " accepted your request, but there's unsafe blocks nearby!", NamedTextColor.RED));
+					OneTimeTeleport.this.senderToReceiver.put(requestingPlayer.getUniqueId(), sender.getUniqueId()); // Be kind and put the request back!
+					return;
+				}
 			}
 
 			// Remove any blacklisted materials from the player's inventory
@@ -407,25 +420,6 @@ public final class OneTimeTeleport extends SimpleHack<OneTimeTeleportConfig> imp
 			}
 		}
 		return blocks;
-	}
-
-	private boolean isRestrictedDestination(
-			final @NotNull Player targetPlayer,
-			final @NotNull Player requestingPlayer
-	) {
-		if (Bukkit.getPluginManager().isPluginEnabled("Bastion")) {
-			for (final BastionBlock bastion : Bastion.getBastionManager().getBlockingBastions(targetPlayer.getLocation())) {
-				if (!bastion.canPlace(targetPlayer) || !bastion.canPlace(requestingPlayer)) {
-					return true;
-				}
-			}
-		}
-		for (final Block block : getNearbyBlocks(targetPlayer.getLocation().getBlock(), 8)) {
-			if (config().getUnsafeMaterials().contains(block.getType())) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private boolean checkOTT(
