@@ -6,21 +6,9 @@ import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
-import com.devotedmc.ExilePearl.holder.BlockHolder;
-import com.devotedmc.ExilePearl.holder.EntityHolder;
-import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
-import com.devotedmc.ExilePearl.holder.ItemHolder;
-import com.devotedmc.ExilePearl.holder.PearlHolder;
-import com.devotedmc.ExilePearl.holder.PlayerHolder;
+import com.devotedmc.ExilePearl.holder.*;
 import com.devotedmc.ExilePearl.storage.PearlUpdateStorage;
 import com.google.common.base.Preconditions;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
@@ -39,6 +27,10 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
+
+import java.util.*;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Instance of a player who is imprisoned in an exile pearl
@@ -154,6 +146,10 @@ final class CoreExilePearl implements ExilePearl {
 		checkPearlValid();
 
 		this.pearledOn = pearledOn;
+
+		if (storageEnabled) {
+			storage.updatePearledOnDate(this);
+		}
 	}
 
 
@@ -287,6 +283,10 @@ final class CoreExilePearl implements ExilePearl {
 	@Override
 	public void setKillerId(UUID killerId) {
 		this.killedBy = killerId;
+
+		if(storageEnabled) {
+			storage.updatePearlKiller(this);
+		}
 	}
 
 
