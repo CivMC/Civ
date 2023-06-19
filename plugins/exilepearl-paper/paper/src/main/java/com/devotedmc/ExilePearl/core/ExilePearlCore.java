@@ -4,7 +4,14 @@ import com.devotedmc.ExilePearl.*;
 import com.devotedmc.ExilePearl.command.*;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
-import com.devotedmc.ExilePearl.listener.*;
+import com.devotedmc.ExilePearl.listener.BanStickListener;
+import com.devotedmc.ExilePearl.listener.BastionListener;
+import com.devotedmc.ExilePearl.listener.CitadelListener;
+import com.devotedmc.ExilePearl.listener.CivChatListener;
+import com.devotedmc.ExilePearl.listener.ExileListener;
+import com.devotedmc.ExilePearl.listener.JukeAlertListener;
+import com.devotedmc.ExilePearl.listener.PlayerListener;
+import com.devotedmc.ExilePearl.listener.RandomSpawnListener;
 import com.devotedmc.ExilePearl.storage.CoreStorageProvider;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.util.BastionWrapper;
@@ -12,8 +19,6 @@ import com.devotedmc.ExilePearl.util.Clock;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.devotedmc.ExilePearl.util.NameLayerPermissions;
 import com.google.common.base.Preconditions;
-import com.wimbli.WorldBorder.BorderData;
-import com.wimbli.WorldBorder.WorldBorder;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
@@ -78,7 +83,6 @@ final class ExilePearlCore implements ExilePearlApi {
 	private final BastionListener bastionListener;
 	private final JukeAlertListener jukeAlertListener;
 	private final RandomSpawnListener randomSpawnListener;
-	private final WorldBorderListener worldBorderListener;
 	private final BanStickListener banStickListener;
 
 	private final HashSet<BaseCommand<?>> commands;
@@ -110,7 +114,6 @@ final class ExilePearlCore implements ExilePearlApi {
 		bastionListener = new BastionListener(this);
 		jukeAlertListener = new JukeAlertListener(this);
 		randomSpawnListener = new RandomSpawnListener(this);
-		worldBorderListener = new WorldBorderListener(this);
 		banStickListener = new BanStickListener(this);
 
 		commands = new HashSet<>();
@@ -188,11 +191,6 @@ final class ExilePearlCore implements ExilePearlApi {
 			this.getServer().getPluginManager().registerEvents(randomSpawnListener, this);
 		} else {
 			logIgnoringHooks("RandomSpawn");
-		}
-		if (isWorldBorderEnabled()) {
-			this.getServer().getPluginManager().registerEvents(worldBorderListener, this);
-		} else {
-			logIgnoringHooks("WorldBorder");
 		}
 		if(isBanStickEnabled()) {
 		    this.getServer().getPluginManager().registerEvents(banStickListener, this);
@@ -497,11 +495,6 @@ final class ExilePearlCore implements ExilePearlApi {
 		return Bukkit.getPluginManager().isPluginEnabled("RandomSpawn");
 	}
 
-	@Override
-	public boolean isWorldBorderEnabled() {
-		return Bukkit.getPluginManager().isPluginEnabled("WorldBorder");
-	}
-
 
     @Override
     public boolean isBanStickEnabled() {
@@ -617,16 +610,6 @@ final class ExilePearlCore implements ExilePearlApi {
 	@Override
 	public void setNaggable(boolean arg0) {
 		plugin.setNaggable(arg0);
-	}
-
-	@Override
-	public boolean isLocationInsideBorder(Location location) {
-		if (isWorldBorderEnabled()) {
-			WorldBorder wb = WorldBorder.plugin;
-			BorderData bd = wb.getWorldBorder(location.getWorld().getName());
-			return bd.insideBorder(location);
-		}
-		return true;
 	}
 
 	@Override

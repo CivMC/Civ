@@ -163,11 +163,6 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	}
 
 	@Override
-	public boolean getShouldAutoFreeWorldBorder() {
-		return doc.getBoolean("pearls.autofree_worldborder", true);
-	}
-
-	@Override
 	public boolean getMustPrisonPearlHotBar() {
 		return doc.getBoolean("pearls.hotbar_needed", true);
 	}

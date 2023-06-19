@@ -204,16 +204,6 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		int ixLoc = Location.locToBlock(xLoc);
 		int izLoc = Location.locToBlock(zLoc);
 
-		Location wbTest = new Location(playerLocation.getWorld(), xLoc, yLoc, zLoc);
-
-		// Jump to other side of circle if this location is outside the world border
-		if (!pearlApi.isLocationInsideBorder(wbTest)) {
-			xLoc = x - dX * f;
-			zLoc = z - dZ * f;
-			ixLoc = Location.locToBlock(xLoc);
-			izLoc = Location.locToBlock(zLoc);
-		}
-
 		// Make sure the chunk we're checking in is actually loaded
 		Chunk tChunk = pearlLocation.getWorld().getChunkAt(ixLoc >> 4, ixLoc >> 4);
 		if (!tChunk.isLoaded()) {
