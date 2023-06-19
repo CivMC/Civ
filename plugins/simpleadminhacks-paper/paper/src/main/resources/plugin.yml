@@ -4,7 +4,7 @@ author: ProgrammerDan
 authors: [ProgrammerDan, Maxopoly]
 version: ${version}
 depend: [CivModCore]
-softdepend: [CombatTagPlus, NameLayer, Citadel, ProtocolLib, BanStick]
+softdepend: [CombatTagPlus, NameLayer, Citadel, ProtocolLib, BanStick, ExilePearl]
 api-version: 1.18
 commands:
   hacks:
@@ -89,9 +89,6 @@ commands:
     usage: /<command> full.path.to.event
     permission: simpleadmin.eventdebug
   stats: {} # Defined in (basic) PlayerStats
-  ott:
-    description: Allows a player a one time teleport
-    usage: /<command> <player>
 permissions:
   simpleadmin.*:
     description: Gives access to all SimpleAdminHacks commands
@@ -113,6 +110,7 @@ permissions:
       simpleadmin.debugwand: true
       simpleadmin.bedlocator: true
       simpleadmin.elytrabypass: true
+      simpleadmin.grantott: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
@@ -160,4 +158,7 @@ permissions:
       default: true
     simpleadmin.elytrabypass:
       description: Gives the ability to bypass elytra restrictions
+      default: op
+    simpleadmin.grantott:
+      description: Gives the ability to grant players OTT usages
       default: op

@@ -467,6 +467,16 @@ hacks:
             - "This world is unforgiving."
             - "Be sure to get a good night's"
             - "rest soon."
+  OneTimeTeleport:
+    enabled: true
+    # Item materials that should be removed from the player upon teleporting
+    material_blacklist: []
+    # Blocks that will block OTT if in range of the target player
+    unsafe_materials: [LAVA, WATER]
+    # How long newfriends will have to use OTT before it expires
+    ott_timeout: 2d
+    # Whether or not to limit OTT to same-world teleports
+    limitToSameWorld: false
   ReinforcedChestBreak:
     enabled: true
     # in seconds
@@ -500,11 +510,6 @@ hacks:
     maxHealth: 50
   TimingsHack:
     enabled: true
-  OneTimeTeleport:
-    enabled: true
-    material_blacklist: []
-    unsafe_materials: [LAVA, WATER]
-    ott_timeout: 2d
   ToggleLamp:
     enabled: false
     cooldownTime: 100

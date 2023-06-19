@@ -124,12 +124,7 @@ public final class HackManager {
 		}
 		register(hack);
 		this.plugin.info("Registered hack: " + hackName);
-		interactWithHack(hack, (finalHack) -> {
-			finalHack.onLoad();
-			if (finalHack.shouldEnable()) {
-				finalHack.enable();
-			}
-		});
+		interactWithHack(hack, SimpleHack::onLoad);
 		return hack;
 	}
 
