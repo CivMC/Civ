@@ -2,6 +2,16 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -12,16 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
-
-import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class WordBankRecipe extends InputRecipe {
 
@@ -120,7 +120,7 @@ public class WordBankRecipe extends InputRecipe {
 
 	@Override
 	public Material getRecipeRepresentationMaterial() {
-		return Material.PAINTING;
+		return Material.WRITABLE_BOOK;
 	}
 
 	@Override
@@ -151,6 +151,12 @@ public class WordBankRecipe extends InputRecipe {
 		for (Entry<ItemStack, Integer> entry : entries) {
 			digest.update(entry.getKey().getType().getKey().getKey().getBytes());
 			digest.update(toBuffer(entry.getValue()));
+			if (entry.getKey().getItemMeta().hasLore()) {
+				ItemStack item = entry.getKey();
+				for (String s : item.getItemMeta().getLore()) {
+					digest.update(s.getBytes());
+				}
+			}
 		}
 		byte[] result = digest.digest();
 		ByteBuffer buffer = ByteBuffer.allocate(result.length);
