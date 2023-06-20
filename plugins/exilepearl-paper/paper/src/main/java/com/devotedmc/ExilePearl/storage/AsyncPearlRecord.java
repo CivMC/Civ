@@ -22,7 +22,8 @@ class AsyncPearlRecord {
 		UPDATE_KILLER,
 		UPDATE_LAST_SEEN,
 		UPDATE_SUMMONED,
-		UPDATE_RETURN_LOCATION
+		UPDATE_RETURN_LOCATION,
+		UPDATE_PEARLED_ON
 	}
 
 	private final ExilePearl pearl;

@@ -5,6 +5,9 @@ import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.config.Document;
 import com.google.common.base.Preconditions;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,8 +16,6 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * File storage for pearls. Not done yet
@@ -139,6 +140,12 @@ class FileStorage implements PluginStorage {
 	@Override
 	public void updateReturnLocation(ExilePearl pearl) {
 		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("returnLoc", pearl.getReturnLocation());
+		writeFile();
+	}
+
+	@Override
+	public void updatePearledOnDate(ExilePearl pearl) {
+		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("pearled_on", pearl.getPearledOn());
 		writeFile();
 	}
 

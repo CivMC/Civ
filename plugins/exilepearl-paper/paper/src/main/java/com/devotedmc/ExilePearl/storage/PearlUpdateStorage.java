@@ -51,4 +51,10 @@ public interface PearlUpdateStorage {
 	 * @param pearl The pearl instance to update
 	 */
 	void updateReturnLocation(ExilePearl pearl);
+
+	/**
+	 * Updates the date on which the pearl was created
+	 * @param pearl The pearl instance to update
+	 */
+	void updatePearledOnDate(ExilePearl pearl);
 }
