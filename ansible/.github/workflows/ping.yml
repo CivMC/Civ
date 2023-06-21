@@ -20,6 +20,18 @@ jobs:
         env:
           SECRETS_YML: ${{secrets.SECRETS_YML}}
 
+      - name: Setup SSH
+        shell: bash
+        run: |
+          mkdir -p /home/runner/.ssh
+          echo -e "$SSH_PRIVATE_KEY" >> /home/runner/.ssh/id_rsa
+          echo -e "$SSH_KNOWN_HOSTS" >> /home/runner/.ssh/known_hosts
+          chmod 700 /home/runner/.ssh/id_rsa
+          chmod 700 /home/runner/.ssh/known_hosts
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+
       - name: Ping
         uses: dawidd6/action-ansible-playbook@v2
         with:
@@ -29,3 +41,4 @@ jobs:
           known_hosts: ${{env.SSH_KNOWN_HOSTS}}
           options: |
             --inventory ./inventories/civmc-${{inputs.environment}}.yml
+
