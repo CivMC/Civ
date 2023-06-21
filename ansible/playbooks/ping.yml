@@ -2,5 +2,8 @@
   hosts: all
 
   tasks:
+    - name: Configure | Expand setting
+      include: ../tasks/expand-setting.yml
+
     - name: Ping
       ping:
