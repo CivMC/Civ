@@ -6,6 +6,7 @@ on:
         description: 'Environment to Ping'
         type: environment
         required: true 
+        default: Test
 
 jobs:
   ping:

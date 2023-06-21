@@ -1,11 +1,11 @@
 all:
   hosts:
-    prod-swarm-1:
+    test-swarm-1:
       ansible_host: 147.135.5.112
       ansible_user: actions
   children:
     swarm_manager:
       hosts:
-        prod-swarm-1:
+        test-swarm-1:
   vars:
-    setting: production
+    setting: test
