@@ -14,6 +14,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      - name: Inject secrets
+        run: 'echo "$SECRETS_YML" > variables/secrets.yml'
+        shell: bash
+        env:
+          SECRETS_YML: ${{secrets.SECRETS_YML}}
+
       - name: Ping
         uses: dawidd6/action-ansible-playbook@v2
         with:
