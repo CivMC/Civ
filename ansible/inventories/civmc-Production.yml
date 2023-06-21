@@ -1,7 +1,7 @@
 all:
   hosts:
     prod-swarm-1:
-      ansible_host: 147.135.5.112
+      ansible_host: 15.204.132.210
       ansible_user: actions
   children:
     swarm_manager:
