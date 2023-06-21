@@ -37,8 +37,6 @@ jobs:
         with:
           playbook: playbooks/ping.yml
           requirements: requirements.yml
-          key: ${{secrets.SSH_PRIVATE_KEY}}
-          known_hosts: ${{env.SSH_KNOWN_HOSTS}}
           options: |
             --inventory ./inventories/civmc-${{inputs.environment}}.yml
 
