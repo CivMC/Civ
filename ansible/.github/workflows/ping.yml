@@ -10,7 +10,6 @@ on:
 jobs:
   ping:
     runs-on: ubuntu-latest
-    environment: Production
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -28,4 +27,4 @@ jobs:
           key: ${{secrets.SSH_PRIVATE_KEY}}
           known_hosts: ${{env.SSH_KNOWN_HOSTS}}
           options: |
-            --inventory ./inventories/civmc-production.yml
+            --inventory ./inventories/civmc-${{inputs.environment}}.yml
