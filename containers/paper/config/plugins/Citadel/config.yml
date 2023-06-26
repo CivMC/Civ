@@ -98,7 +98,7 @@ reinforcements:
       particleCount: 200
       offset: 0
     mature_time: 4h
-    acid_time: 12h
+    acid_time: 6h
     acid_priority: 5
     name: Iron
     hit_points: 300
@@ -126,7 +126,7 @@ reinforcements:
       particleCount: 200
       offset: 0
     mature_time: 4h
-    acid_time: 12h
+    acid_time: 6h
     acid_priority: 5
     name: Gold
     hit_points: 300
