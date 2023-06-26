@@ -1,0 +1,27 @@
+- name: Setup Server
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Setup Server | Expand setting
+      include: ../tasks/expand-setting.yml
+
+    - name: Setup Server | Include Installation Tasks
+      include_tasks:
+        file: '../tasks/install/{{install_task}}.yml'
+      loop:
+        - packages
+        - docker
+      loop_control:
+        loop_var: install_task
+
+    - name: Setup Server | Include Configuration Tasks
+      include_tasks:
+        file: '../tasks/configure/{{configure_task}}.yml'
+      loop:
+        - backups
+        - docker
+        - ufw
+      loop_control:
+        loop_var: configure_task
+    

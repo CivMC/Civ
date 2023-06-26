@@ -1,11 +1,11 @@
 all:
   hosts:
-    test-swarm-1:
-      ansible_host: 147.135.5.112
+    civmc-test-1:
+      ansible_host: 15.204.132.209
       ansible_user: actions
   children:
     swarm_manager:
       hosts:
-        test-swarm-1:
+        civmc-test-1:
   vars:
     setting: test
