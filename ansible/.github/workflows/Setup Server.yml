@@ -30,6 +30,4 @@ jobs:
           known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}
           options: |
             --inventory ./inventories/civmc-${{inputs.environment}}.yml
-            -e "ansible_become_password=$SUDO_PASSWORD"
-        env:
-          SUDO_PASSWORD: ${{secrets.SUDO_PASSWORD}}
+            -e "ansible_become_password=${{secrets.SUDO_PASSWORD}}"
