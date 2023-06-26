@@ -19,6 +19,7 @@ jobs:
         shell: bash
         env:
           SECRETS_YML: ${{secrets.SECRETS_YML}}
+          SUDO_PASSWORD: ${{secrets.SUDO_PASSWORD}}
 
       - name: Setup Server
         uses: dawidd6/action-ansible-playbook@v2
@@ -29,6 +30,6 @@ jobs:
           known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}
           options: |
             --inventory ./inventories/civmc-${{inputs.environment}}.yml
-            -e ansible_password='{{ lookup("env", "SUDO_PASSWORD") }}'
+            -e "ansible_become_password=$SUDO_PASSWORD"
         env:
           SUDO_PASSWORD: ${{secrets.SUDO_PASSWORD}}
