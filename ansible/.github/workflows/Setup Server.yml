@@ -20,7 +20,7 @@ jobs:
         env:
           SECRETS_YML: ${{secrets.SECRETS_YML}}
 
-      - name: Ping
+      - name: Setup Server
         uses: dawidd6/action-ansible-playbook@v2
         with:
           playbook: playbooks/setup-server.yml
@@ -29,3 +29,6 @@ jobs:
           known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}
           options: |
             --inventory ./inventories/civmc-${{inputs.environment}}.yml
+            -e ansible_password='{{ lookup("env", "SUDO_PASSWORD") }}'
+        env:
+          SUDO_PASSWORD: ${{secrets.SUDO_PASSWORD}}
