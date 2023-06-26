@@ -42,7 +42,7 @@ reinforcements:
       particleCount: 80
       offset: 0.0
     mature_time: 30m
-    acid_time: 2h
+    acid_time: 30m
     acid_priority: 2
     name: Stone
     hit_points: 50
@@ -70,7 +70,7 @@ reinforcements:
       particleCount: 80
       offset: 0.0
     mature_time: 30m
-    acid_time: 2h
+    acid_time: 30m
     acid_priority: 2
     name: Netherbrick
     hit_points: 50
