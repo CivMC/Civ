@@ -228,10 +228,17 @@ public class RandomSpawn extends JavaPlugin {
 
 		// Search the Nether for a valid Y from the bottom-up.
 		if (world.getEnvironment() == Environment.NETHER) {
-			floorBlock = world.getBlockAt((int) x, world.getMinHeight(), (int) z);
+			// TODO: These are here due to an odd behaviour with vanilla nether. The roof-bedrock
+			//       will be at y128, but the world-height is 256. Using the max-height API would
+			//       mean that players occasionally get spawned above the roof. The empty blocks
+			//       above the roof are AIR, not VOID_AIR, so you cannot check for that either.
+			final int netherMinHeight = 0; // world.getMinHeight();
+			final int netherMaxHeight = 128; // world.getMaxHeight();
+
+			floorBlock = world.getBlockAt((int) x, netherMinHeight, (int) z);
 			feetBlock = floorBlock.getRelative(0, 1, 0);
 			headBlock = floorBlock.getRelative(0, 2, 0);
-			while (headBlock.getY() < world.getMaxHeight()) {
+			while (headBlock.getY() < netherMaxHeight) {
 				if (isValidSpawnLocation(headBlock, feetBlock, floorBlock, blacklist)) {
 					return (double) feetBlock.getY();
 				}
@@ -244,10 +251,16 @@ public class RandomSpawn extends JavaPlugin {
 
 		// Otherwise do a top-down search.
 		else {
+			// TODO: This is here to prevent players from rare instances of being spawned deep
+			//       underground. Lava lakes typically only generate at around y30, so players
+			//       unfortunate enough to be spawned underground should have relative safety.
+			//       Keep in mind that this else also applies to other dimensions like the End.
+			final int otherMinHeight = 40; // world.getMinHeight();
+
 			headBlock = world.getBlockAt((int) x, world.getMaxHeight(), (int) z);
 			feetBlock = headBlock.getRelative(0, -1, 0);
 			floorBlock = headBlock.getRelative(0, -2, 0);
-			while (floorBlock.getY() >= world.getMinHeight()) {
+			while (floorBlock.getY() >= otherMinHeight) {
 				if (isValidSpawnLocation(headBlock, feetBlock, floorBlock, blacklist)) {
 					return (double) feetBlock.getY();
 				}
