@@ -18,10 +18,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class RandomSpawn extends JavaPlugin {
 
@@ -130,110 +132,149 @@ public class RandomSpawn extends JavaPlugin {
 			}
 		}
 
+		// Spawn the player at the centre of the block
+		ret.setX(ret.getBlockX() + 0.5);
+		ret.setZ(ret.getBlockZ() + 0.5);
 		return ret;
-
 	}
 
 	private Location chooseSpawn(double radius, double exclusionRadius, Location center, List<Material> blacklist) {
-		Location result = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ());
-
-		int maxTries = 50 * (int) radius;
-		if (maxTries < 50) {
-			maxTries = 50;
-		}
-		if (maxTries > 1000) {
-			maxTries = 1000; // sensible limits plz
-		}
-
 		// Uniformly distributed in "annulus". Explanation: https://forum.unity.com/threads/random-point-within-circle-with-min-max-radius.597523/#post-8524934
-		double ex2 = exclusionRadius * exclusionRadius;
-		double r2 = radius * radius;
-		do {
-			double r = Math.sqrt(Math.random() * (r2 - ex2) + ex2);
+		final double ex2 = exclusionRadius * exclusionRadius;
+		final double r2 = radius * radius;
 
-			double phi = Math.random() * 2d * Math.PI;
+		for (int attempts = 1000; --attempts > 0;) {
+			final double r = Math.sqrt(Math.random() * (r2 - ex2) + ex2);
+			final double phi = Math.random() * 2d * Math.PI;
+			final double x = Math.round(center.getX() + Math.cos(phi) * r);
+			final double z = Math.round(center.getZ() + Math.sin(phi) * r);
 
-			double x = Math.round(center.getX() + Math.cos(phi) * r);
-			double z = Math.round(center.getZ() + Math.sin(phi) * r);
+			final Double y = getValidY(center.getWorld(), x, z, blacklist);
+			if (y == null) {
+				continue;
+			}
 
-			result.setX(x);
-			result.setZ(z);
-			result.setY(getValidHighestY(center.getWorld(), x, z, blacklist));
-		} while (result.getY() == -1 && --maxTries >= 0);
-		return result;
+			return new Location(center.getWorld(), x, y, z);
+		}
+
+		return center;
 	}
 
 	private Location chooseSpawn(World world, double xmin, double xmax, double zmin, double zmax, double thickness,
 			List<Material> blacklist) {
-		Location result = new Location(world, xmin, 0, zmin);
 
 		if (thickness <= 0) {
-			do {
-				double x = xmin + Math.random() * (xmax - xmin + 1);
-				double z = zmin + Math.random() * (zmax - zmin + 1);
+			for (int attempts = 1000; --attempts > 0;) {
+				final double x = xmin + Math.random() * (xmax - xmin + 1);
+				final double z = zmin + Math.random() * (zmax - zmin + 1);
 
-				result.setX(x);
-				result.setZ(z);
-				result.setY(getValidHighestY(world, x, z, blacklist));
-			} while (result.getY() == -1);
-		} else {
-			do {
-				double x = 0, z = 0;
-				int side = (int) (Math.random() * 4d);
-				double borderOffset = Math.random() * thickness;
+				final Double y = getValidY(world, x, z, blacklist);
+				if (y == null) {
+					continue;
+				}
+
+				return new Location(world, x, y, z);
+			}
+		}
+		else {
+			for (int attempts = 1000; --attempts > 0;) {
+				final double x, z;
+				final int side = (int) (Math.random() * 4d);
+				final double borderOffset = Math.random() * thickness;
 				if (side == 0) {
 					x = xmin + borderOffset;
 					// Also balancing probability considering thickness
 					z = zmin + Math.random() * (zmax - zmin + 1 - 2 * thickness) + thickness;
-				} else if (side == 1) {
+				}
+				else if (side == 1) {
 					x = xmax - borderOffset;
 					z = zmin + Math.random() * (zmax - zmin + 1 - 2 * thickness) + thickness;
-				} else if (side == 2) {
+				}
+				else if (side == 2) {
 					x = xmin + Math.random() * (xmax - xmin + 1);
 					z = zmin + borderOffset;
-				} else {
+				}
+				else {
 					x = xmin + Math.random() * (xmax - xmin + 1);
 					z = zmax - borderOffset;
 				}
 
-				result.setX(x);
-				result.setZ(z);
-				result.setY(getValidHighestY(world, x, z, blacklist));
-			} while (result.getY() == -1);
+				final Double y = getValidY(world, x, z, blacklist);
+				if (y == null) {
+					continue;
+				}
+
+				return new Location(world, x, y, z);
+			}
 		}
-		return result;
+
+		return new Location(world, xmin, 0, zmin);
 	}
 
-	private double getValidHighestY(World world, double x, double z, List<Material> blacklist) {
-		world.getChunkAt(new Location(world, x, 0, z)).load();
-		double y = 0;
-		Material blockMat = Material.AIR;
+	/**
+	 * Attempts to find a valid Y-level for a given X and Z coordinate.
+	 *
+	 * @return Returns a Y coordinate, or null if no valid Y-level could be found.
+	 */
+	private static @Nullable Double getValidY(
+			final @NotNull World world,
+			final double x,
+			final double z,
+			final @NotNull List<Material> blacklist
+	) {
+		world.getChunkAt((int) x, (int) z).load();
+
+		Block floorBlock, feetBlock, headBlock;
+
+		// Search the Nether for a valid Y from the bottom-up.
 		if (world.getEnvironment() == Environment.NETHER) {
-			Material blockYMat = world.getBlockAt((int)x,(int) y,(int) z).getType();
-			Material blockY2Mat = world.getBlockAt((int)x,(int) y+1,(int) z).getType();
-			while (y < 128 && !(MaterialUtils.isAir(blockYMat) && MaterialUtils.isAir(blockY2Mat))) {
-				y++;
-				blockYMat = blockY2Mat;
-				blockY2Mat = world.getBlockAt((int)x,(int) y+1,(int) z).getType();
+			floorBlock = world.getBlockAt((int) x, world.getMinHeight(), (int) z);
+			feetBlock = floorBlock.getRelative(0, 1, 0);
+			headBlock = floorBlock.getRelative(0, 2, 0);
+			while (headBlock.getY() < world.getMaxHeight()) {
+				if (isValidSpawnLocation(headBlock, feetBlock, floorBlock, blacklist)) {
+					return (double) feetBlock.getY();
+				}
+				final Block nextBlock = headBlock.getRelative(0, 1, 0);
+				floorBlock = feetBlock;
+				feetBlock = headBlock;
+				headBlock = nextBlock;
 			}
-			if (y == 127)
-				return -1;
-		} else {
-			y = 257;
-			while (y >= 0 && MaterialUtils.isAir(blockMat)) {
-				y--;
-				blockMat = world.getBlockAt((int)x,(int) y,(int) z).getType();
-			}
-			if (y == 0)
-				return -1;
-			y++;
 		}
 
-		if (blacklist.contains(blockMat)) {
-			return -1;
+		// Otherwise do a top-down search.
+		else {
+			headBlock = world.getBlockAt((int) x, world.getMaxHeight(), (int) z);
+			feetBlock = headBlock.getRelative(0, -1, 0);
+			floorBlock = headBlock.getRelative(0, -2, 0);
+			while (floorBlock.getY() >= world.getMinHeight()) {
+				if (isValidSpawnLocation(headBlock, feetBlock, floorBlock, blacklist)) {
+					return (double) feetBlock.getY();
+				}
+				final Block nextBlock = floorBlock.getRelative(0, -1, 0);
+				headBlock = feetBlock;
+				feetBlock = floorBlock;
+				floorBlock = nextBlock;
+			}
 		}
 
-		return y;
+		return null;
+	}
+
+	/**
+	 * This is a 1x3 area predicate where the bottom-most block (ie the "floorBlock") must be solid, and the two block
+	 * above it must not be solid. This function defers to Minecraft what "solid" means. See {@link Block#isSolid()} for
+	 * more information there. Also, all blocks must not be made of blacklisted materials.
+	 */
+	private static boolean isValidSpawnLocation(
+			final @NotNull Block headBlock,
+			final @NotNull Block feetBlock,
+			final @NotNull Block floorBlock,
+			final @NotNull List<Material> blackListedMaterials // TODO: This should be a set
+	) {
+		return floorBlock.isSolid() && !blackListedMaterials.contains(floorBlock.getType())
+				&& !feetBlock.isSolid() && !blackListedMaterials.contains(feetBlock.getType())
+				&& !headBlock.isSolid() && !blackListedMaterials.contains(headBlock.getType());
 	}
 
 	// Methods for a safe landing :)
