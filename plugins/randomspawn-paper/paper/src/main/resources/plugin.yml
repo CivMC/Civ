@@ -2,6 +2,7 @@ name: ${name}
 version: ${version}
 main: me.josvth.randomspawn.RandomSpawn
 author: Josvth
+depend: [BanStick]
 softdepend: [Bastion]
 api-version: 1.18
 commands:
