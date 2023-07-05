@@ -3,7 +3,7 @@ version: ${version}
 main: me.josvth.randomspawn.RandomSpawn
 author: Josvth
 softdepend: [Bastion]
-api-version: 1.17
+api-version: 1.18
 commands:
   randomspawn:
     description: The main command.
