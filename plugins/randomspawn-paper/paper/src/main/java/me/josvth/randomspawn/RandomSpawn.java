@@ -32,7 +32,6 @@ public class RandomSpawn extends JavaPlugin {
 	WorldChangeListener worldChangeListener;
 	SignListener signListener;
 	DamageListener damageListener;
-	private boolean isBastionsEnabled = false;
 
 	private static List<Material> defaultBlackList = Arrays.asList(
 			new Material[] { Material.WATER, Material.LAVA, Material.FIRE, Material.CACTUS, Material.MAGMA_BLOCK });
@@ -53,9 +52,6 @@ public class RandomSpawn extends JavaPlugin {
 		worldChangeListener = new WorldChangeListener(this);
 		signListener = new SignListener(this);
 		damageListener = new DamageListener(this);
-
-		isBastionsEnabled = getServer().getPluginManager().isPluginEnabled("Bastion");
-
 	}
 
 	public void logInfo(String message) {
@@ -125,11 +121,11 @@ public class RandomSpawn extends JavaPlugin {
 			return null;
 		}
 
-		if (isBastionsEnabled) {
+		if (getServer().getPluginManager().isPluginEnabled("Bastion")) {
 			BastionBlockManager bm = Bastion.getBastionManager();
 			if (bm != null) {
 				if (!bm.getBlockingBastions(ret).isEmpty()) {
-					return chooseSpawn(world);
+					return chooseSpawn(world); // TODO: infinite recursion seems rather dangerous
 				}
 			}
 		}
