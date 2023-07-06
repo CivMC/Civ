@@ -26,9 +26,9 @@ public class SnitchFactoryType {
 		this.appenders = appenders;
 	}
 
-	public Snitch create(int snitchID, Location location, String name, int groupID, boolean isNew, long refreshTimer, boolean toggleLever) {
+	public Snitch create(int snitchID, Location location, String name, int groupID, boolean isNew) {
 		Snitch snitch = new Snitch(snitchID, location, isNew, groupID, fieldGenerator,
-				this, name, refreshTimer, toggleLever);
+				this, name);
 		for(Function<Snitch, AbstractSnitchAppender> appenderFunc : appenders) {
 			AbstractSnitchAppender appender = appenderFunc.apply(snitch);
 			if (appender != null) {

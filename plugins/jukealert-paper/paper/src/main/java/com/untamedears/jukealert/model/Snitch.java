@@ -37,8 +37,6 @@ public class Snitch extends LocationTrackable {
 	private FieldManager fieldManager;
 	private SnitchFactoryType type;
 	private boolean active;
-	private long refreshTimer;
-	private boolean toggleLever;
 
 	/**
 	 * 
@@ -53,8 +51,7 @@ public class Snitch extends LocationTrackable {
 	 * @param name         Name of the snitch
 	 */
 	public Snitch(int snitchID, Location loc, boolean isNew, int groupID,
-				  Function<Snitch, FieldManager> fieldManagerFunc, SnitchFactoryType type, String name,
-				  long refreshTimer, boolean toggleLever) {
+				  Function<Snitch, FieldManager> fieldManagerFunc, SnitchFactoryType type, String name) {
 		super(isNew, loc);
 		this.snitchId = snitchID;
 		this.groupID = groupID;
@@ -62,8 +59,6 @@ public class Snitch extends LocationTrackable {
 		this.fieldManager = fieldManagerFunc.apply(this);
 		this.type = type;
 		this.appenders = new HashMap<>();
-		this.refreshTimer = refreshTimer;
-		this.toggleLever = toggleLever;
 		this.active = true;
 	}
 
@@ -275,13 +270,5 @@ public class Snitch extends LocationTrackable {
 	@Override
 	public String toString() {
 		return String.format("{Snitch at %s, group id %d, id %d, active %b}", getLocation(), groupID, snitchId, active);
-	}
-
-	public long getRefreshTimer() {
-		return refreshTimer;
-	}
-
-	public boolean isToggleLever() {
-		return toggleLever;
 	}
 }

@@ -11,6 +11,8 @@ import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
+import com.untamedears.jukealert.model.appender.DormantCullingAppender;
+import com.untamedears.jukealert.model.appender.LeverToggleAppender;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -384,11 +386,19 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 				boolean toggleLever = results.getBoolean(10);
 
 				// Add the snitch to the system
-				final Snitch snitch = snitchType.create(snitchID,
+				Snitch snitch = snitchType.create(snitchID,
 						new Location(snitchWorld, snitchX, snitchY, snitchZ),
-						snitchName, groupID, false, lastRefresh, toggleLever);
+						snitchName, groupID, false);
 				callback.accept(snitch);
 				snitchManager.addSnitchToQuadTree(snitch);
+				DormantCullingAppender dormantCullingAppender = snitch.getAppender(DormantCullingAppender.class);
+				if (dormantCullingAppender != null) {
+					dormantCullingAppender.setLastRefresh(lastRefresh);
+				}
+				LeverToggleAppender leverToggleAppender = snitch.getAppender(LeverToggleAppender.class);
+				if (leverToggleAppender != null) {
+					leverToggleAppender.setShouldToggle(toggleLever);
+				}
 				snitch.applyToAppenders(AbstractSnitchAppender::postSetup);
 			}
 		}

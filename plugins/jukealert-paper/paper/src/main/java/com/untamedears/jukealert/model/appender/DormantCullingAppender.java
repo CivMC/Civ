@@ -21,16 +21,16 @@ public class DormantCullingAppender
 	public static final String ID = "dormantcull";
 	private static final CivLogger LOGGER = CivLogger.getLogger(DormantCullingAppender.class);
 
-	private long lastRefresh;
+	private long lastRefresh = System.currentTimeMillis();
+
 	private long nextUpdate;
 
-	private enum ActivityStatus { ACTIVE, DORMANT, CULLED }
-	private ActivityStatus databaseKnownStatus;
 
+	private enum ActivityStatus { ACTIVE, DORMANT, CULLED;}
+	private ActivityStatus databaseKnownStatus;
 	public DormantCullingAppender(final Snitch snitch,
 								  final ConfigurationSection config) {
 		super(snitch, config);
-		this.lastRefresh = snitch.getRefreshTimer();
 	}
 
 	/**
@@ -38,6 +38,10 @@ public class DormantCullingAppender
 	 */
 	public long getLastRefresh() {
 		return this.lastRefresh;
+	}
+
+	public void setLastRefresh(long lastRefresh) {
+		this.lastRefresh = lastRefresh;
 	}
 
 	/**

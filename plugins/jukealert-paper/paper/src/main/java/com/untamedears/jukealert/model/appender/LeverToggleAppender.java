@@ -21,14 +21,15 @@ public class LeverToggleAppender extends ConfigurableSnitchAppender<LeverToggleC
 
 	public LeverToggleAppender(Snitch snitch, ConfigurationSection config) {
 		super(snitch, config);
-		if (snitch.getId() != -1) {
-			this.shouldToggle = snitch.isToggleLever();
-		}
 	}
 
 	@Override
 	public boolean runWhenSnitchInactive() {
 		return false;
+	}
+
+	public void setShouldToggle(boolean shouldToggle) {
+		this.shouldToggle = shouldToggle;
 	}
 
 	@Override
