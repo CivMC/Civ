@@ -11,13 +11,13 @@ Options:
   check-for-update: true
 
   # Defines whether a player should get up after taking damage
-  get-up-damage: false
+  get-up-damage: true
 
   # Defines whether a player can get up from sitting or posing by sneaking
   get-up-sneak: true
 
   # Defines whether a player is returned to the original location
-  get-up-return: false
+  get-up-return: true
 
   # Defines whether a player gets up when the block below breaks
   get-up-break: true
@@ -51,7 +51,7 @@ Options:
     empty-hand-only: true
 
     # Defines the maximum range in which a player can sit down by clicking (0 means unlimited)
-    max-distance: 0.0
+    max-distance: 2.0
 
     # Defines whether a player should receive a custom message when sitting
     sit-message: true
@@ -64,31 +64,31 @@ Options:
   PlayerSit:
 
     # Defines whether a player can right-click to sit on another player
-    allow-sit: true
+    allow-sit: false
 
     # Defines whether a player can right-click to sit on an NPC
-    allow-sit-npc: true
+    allow-sit-npc: false
 
     # Defines the maximum number of players that can be stacked (0 means unlimited)
-    max-stack: 0
+    max-stack: 1
 
     # Defines whether a player should kick out all passengers when sneaking
     sneak-ejects: true
 
     # Defines whether a player should be placed at the bottom of the player sit stack when dismounting
-    bottom-return: false
+    bottom-return: true
 
     # Defines whether a player needs an empty main hand to sit on another player
     empty-hand-only: true
 
     # Defines the maximum range in which a player can sit on another player (0 means unlimited)
-    max-distance: 0.0
+    max-distance: 2.0
 
     # Defines whether a player should receive a custom message when sitting on top of another player
     sit-message: true
 
     # Defines whether a player can sit on another player by default without using the sit playertoggle command
-    default-sit-mode: true
+    default-sit-mode: false
 
 
 
@@ -104,7 +104,7 @@ Options:
     lay-rest: true
 
     # Defines whether a player makes snoring sounds when lying down
-    lay-snoring-sounds: false
+    lay-snoring-sounds: true
 
     # Defines whether snoring sounds are only heard at night
     lay-snoring-night-only: true
@@ -117,7 +117,7 @@ Options:
   Crawl:
 
     # Defines whether a player can get up from crawling by sneaking
-    get-up-sneak: true
+    get-up-sneak: false
 
     # Defines whether a player can double-sneak in a short amount of time to start crawling
     double-sneak: false
@@ -127,7 +127,7 @@ Options:
   Emote:
 
     # Defines the maximum range at which emotes can be seen
-    max-distance: 192.0
+    max-distance: 64.0
 
 
 
@@ -144,6 +144,7 @@ Options:
   # Defines the list of materials on which a player may not sit or pose
   MaterialBlacklist:
   - "lava"
+  - "Water"
 
   # Defines the list of commands that cannot be executed while sitting or posing
   CommandBlacklist:
