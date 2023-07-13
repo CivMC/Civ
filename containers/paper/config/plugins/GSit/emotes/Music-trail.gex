@@ -19,13 +19,6 @@ head: false
 # data:particle_data		- the specific data of the particle
 
 pattern:
-- "particle:note delay:0 repeat:1 amount:1 xoffset:-0.2 yoffset:0.0 zoffset:0.0 extra:1"
-- "particle:note delay:0 repeat:1 amount:1 xoffset:0.2 yoffset:0.0 zoffset:0.0 extra:1"
-- "particle:note delay:0 repeat:1 amount:1 xoffset:0.0 yoffset:0.0 zoffset:0.2 extra:1"
-- "particle:note delay:0 repeat:1 amount:1 xoffset:0.0 yoffset:0.0 zoffset:-0.2 extra:1"
-- "particle:note delay:0 repeat:1 amount:1 xoffset:0.2 yoffset:0.0 zoffset:0.0 extra:1"
-- "particle:note delay:0 repeat:1 amount:1 xoffset:-0.2 yoffset:0.0 zoffset:0.2 extra:1"
-- "particle:note delay:0 repeat:1 amount:1 xoffset:0.2 yoffset:0.0 zoffset:0.2 extra:1"
 - "particle:note delay:0 repeat:1 amount:1 xoffset:0.0 yoffset:0.0 zoffset:0.0 extra:1"
 
 
