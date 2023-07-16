@@ -1,10 +1,6 @@
 package com.devotedmc.ExilePearl.core;
 
-import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
-import com.devotedmc.ExilePearl.LoreProvider;
-import com.devotedmc.ExilePearl.PearlType;
-import com.devotedmc.ExilePearl.RepairMaterial;
+import com.devotedmc.ExilePearl.*;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -123,7 +119,7 @@ final class CoreLoreGenerator implements LoreProvider {
 			if (cmd != null) {
 				lore.add(parse("<l>Commands:"));
 				lore.add(parse(CmdExilePearl.instance().cmdFree.getUsageTemplate(true)));
-				if(pearl.getPearlType() == PearlType.PRISON) {
+				if(pearl.getPearlType() == PearlType.PRISON && config.getDefaultPearlType() == PearlType.EXILE) {
 					lore.add(parse(CmdExilePearl.instance().cmdDowngrade.getUsageTemplate(true)));
 				}
 			}
