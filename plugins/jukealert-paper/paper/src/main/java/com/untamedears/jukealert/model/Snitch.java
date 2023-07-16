@@ -214,6 +214,14 @@ public class Snitch extends LocationTrackable {
 	}
 
 	/**
+	 * Returns a boolean representing whether the snitch is currently active (e.g., recording snitch hits)
+	 * Currently used to synchronise the state in DormantCullingAppender with the real activity of the snitch.
+	 */
+	public boolean getActiveStatus() {
+		return this.active;
+	}
+
+	/**
 	 * Forces all appenders of this snitch to persist their current state
 	 */
 	public void persistAppenders() {

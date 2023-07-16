@@ -100,15 +100,11 @@ public class DormantCullingAppender
 		this.nextUpdate = update;
 	}
 
-	private long calcFutureUpdate() {
-		switch (getActivityStatus()) {
-			case CULLED:
-				return Long.MAX_VALUE;
-			case DORMANT:
-				return getLastRefresh() + this.config.getTotalLifeTime();
-			default:
-			case ACTIVE:
-				return getLastRefresh() + this.config.getLifetime();
+	private void syncNextUpdate() {
+		switch (this.databaseKnownStatus) {
+			case CULLED -> cullSnitch();
+			case DORMANT -> deactivateSnitch();
+			default -> updateInternalProgressTime(getLastRefresh() + this.config.getLifetime());
 		}
 	}
 
@@ -120,9 +116,8 @@ public class DormantCullingAppender
 			updateLastRefresh();
 		}
 		this.databaseKnownStatus = getActivityStatus();
-		updateInternalProgressTime(calcFutureUpdate());
+		syncNextUpdate();
 		JukeAlert.getInstance().getSnitchCullManager().addCulling(this);
-		updateState();
 	}
 
 	/** {@inheritDoc} */
@@ -185,24 +180,35 @@ public class DormantCullingAppender
 		final ActivityStatus currentStatus = getActivityStatus();
 		// Culled
 		if (currentStatus == ActivityStatus.CULLED && this.databaseKnownStatus != ActivityStatus.CULLED) {
-			this.databaseKnownStatus = ActivityStatus.CULLED;
-			getSnitch().destroy(null, Cause.CULL);
-			updateInternalProgressTime(Long.MAX_VALUE);
-			LOGGER.info("Culling snitch [" + getSnitch() + "] for exceeding life timer");
+			cullSnitch();
 		}
 		// Dormant
 		else if (currentStatus == ActivityStatus.DORMANT && this.databaseKnownStatus != ActivityStatus.DORMANT) {
-			this.databaseKnownStatus = ActivityStatus.DORMANT;
-			updateInternalProgressTime(System.currentTimeMillis() + this.config.getDormantLifeTime());
-			getSnitch().setActiveStatus(false);
-			LOGGER.info("Deactivating snitch [" + getSnitch() + "] for exceeding dormant timer");
+			deactivateSnitch();
 		}
 		// Active
-		else if (this.databaseKnownStatus != ActivityStatus.ACTIVE) {
+		else if (currentStatus == ActivityStatus.ACTIVE && this.databaseKnownStatus != ActivityStatus.ACTIVE) {
 			this.databaseKnownStatus = ActivityStatus.ACTIVE;
 			getSnitch().setActiveStatus(true);
-			JukeAlert.getInstance().getSnitchCullManager().updateCulling(this, calcFutureUpdate());
+			syncNextUpdate();
+			JukeAlert.getInstance().getSnitchCullManager().updateCulling(this, this.getNextUpdate());
 			LOGGER.info("Re-activating snitch [" + getSnitch() + "]");
+		}
+	}
+
+	private void cullSnitch() {
+		this.databaseKnownStatus = ActivityStatus.CULLED;
+		getSnitch().destroy(null, Cause.CULL);
+		updateInternalProgressTime(Long.MAX_VALUE);
+		LOGGER.info("Culling snitch [" + getSnitch() + "] for exceeding life timer");
+	}
+
+	private void deactivateSnitch() {
+		updateInternalProgressTime(getLastRefresh() + this.config.getTotalLifeTime());
+		this.databaseKnownStatus = ActivityStatus.DORMANT;
+		if (getSnitch().getActiveStatus()) {
+			getSnitch().setActiveStatus(false);
+			LOGGER.info("Deactivating snitch [" + getSnitch() + "] for exceeding dormant timer");
 		}
 	}
 
