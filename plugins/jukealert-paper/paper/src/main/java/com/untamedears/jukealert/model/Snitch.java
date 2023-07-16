@@ -51,7 +51,7 @@ public class Snitch extends LocationTrackable {
 	 * @param name         Name of the snitch
 	 */
 	public Snitch(int snitchID, Location loc, boolean isNew, int groupID,
-			Function<Snitch, FieldManager> fieldManagerFunc, SnitchFactoryType type, String name) {
+				  Function<Snitch, FieldManager> fieldManagerFunc, SnitchFactoryType type, String name) {
 		super(isNew, loc);
 		this.snitchId = snitchID;
 		this.groupID = groupID;

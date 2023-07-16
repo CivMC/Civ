@@ -11,6 +11,8 @@ import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
+import com.untamedears.jukealert.model.appender.DormantCullingAppender;
+import com.untamedears.jukealert.model.appender.LeverToggleAppender;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -347,7 +349,9 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 		final WorldIDManager worldIDManager = CivModCorePlugin.getInstance().getWorldIdManager();
 		try (final Connection connection = this.db.getConnection();
 			 final PreparedStatement statement = connection.prepareStatement(
-					 "SELECT id, x, y, z, world_id, type_id, group_id, name FROM ja_snitches;");
+					 "SELECT ja_snitches.id, x, y, z, world_id, type_id, group_id, name, last_refresh, toggle_lever FROM ja_snitches" +
+							 " LEFT JOIN ja_snitch_refresh ON ja_snitches.id = ja_snitch_refresh.id" +
+							 " LEFT JOIN ja_snitch_lever ON ja_snitches.id = ja_snitch_lever.id");
 			 final ResultSet results = statement.executeQuery()) {
 			while (results.next()) {
 				final int snitchID = results.getInt(1);
@@ -375,12 +379,26 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 					continue;
 				}
 				final String snitchName = results.getString(8);
+
+				Timestamp lastRefreshTimestamp = results.getTimestamp(9);
+				long lastRefresh = lastRefreshTimestamp == null ? -1L : lastRefreshTimestamp.getTime();
+
+				boolean toggleLever = results.getBoolean(10);
+
 				// Add the snitch to the system
-				final Snitch snitch = snitchType.create(snitchID,
+				Snitch snitch = snitchType.create(snitchID,
 						new Location(snitchWorld, snitchX, snitchY, snitchZ),
 						snitchName, groupID, false);
 				callback.accept(snitch);
 				snitchManager.addSnitchToQuadTree(snitch);
+				DormantCullingAppender dormantCullingAppender = snitch.getAppender(DormantCullingAppender.class);
+				if (dormantCullingAppender != null) {
+					dormantCullingAppender.setLastRefresh(lastRefresh);
+				}
+				LeverToggleAppender leverToggleAppender = snitch.getAppender(LeverToggleAppender.class);
+				if (leverToggleAppender != null) {
+					leverToggleAppender.setShouldToggle(toggleLever);
+				}
 				snitch.applyToAppenders(AbstractSnitchAppender::postSetup);
 			}
 		}
@@ -642,24 +660,6 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 	// Refresh Timer
 	// ------------------------------------------------------------
 
-	public long getRefreshTimer(final int snitchID) {
-		try (final Connection connection = this.db.getConnection();
-			 final PreparedStatement statement = connection.prepareStatement(
-					 "SELECT last_refresh FROM ja_snitch_refresh WHERE id = ?;")) {
-			statement.setInt(1, snitchID);
-			try (final ResultSet results = statement.executeQuery()) {
-				if (results.next()) {
-					return results.getTimestamp(1).getTime();
-				}
-				this.logger.log(Level.SEVERE, "Found no refresh timer for snitch [" + snitchID + "]");
-			}
-		}
-		catch (final SQLException throwable) {
-			this.logger.log(Level.SEVERE, "Failed to retrieve refresh timer for snitch [" + snitchID + "]", throwable);
-		}
-		return -1L;
-	}
-
 	public void setRefreshTimer(final int snitchID,
 								final long timestamp) {
 		try (final Connection connection = this.db.getConnection();
@@ -679,24 +679,6 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 	// ------------------------------------------------------------
 	// Toggle Lever
 	// ------------------------------------------------------------
-
-	public boolean getToggleLever(final int snitchID) {
-		try (final Connection connection = this.db.getConnection();
-			 final PreparedStatement statement = connection.prepareStatement(
-					 "SELECT toggle_lever FROM ja_snitch_lever WHERE id = ?;")) {
-			statement.setInt(1, snitchID);
-			try (final ResultSet results = statement.executeQuery()) {
-				if (results.next()) {
-					return results.getBoolean(1);
-				}
-				return false;
-			}
-		}
-		catch (final SQLException throwable) {
-			this.logger.log(Level.SEVERE, "Failed to retrieve toggle lever for snitch [" + snitchID + "]", throwable);
-			return false;
-		}
-	}
 
 	public void setToggleLever(final int snitchID,
 							   final boolean toggle) {
