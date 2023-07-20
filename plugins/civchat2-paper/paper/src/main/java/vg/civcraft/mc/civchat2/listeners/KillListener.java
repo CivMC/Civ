@@ -37,23 +37,27 @@ public class KillListener implements Listener {
 		if (!settingsMan.getSendOwnKills(killer.getUniqueId())) {
 			return;
 		}
-		String itemDescriptor;
+		String msg;
 		ItemStack item = killer.getInventory().getItemInMainHand();
 		if (item == null || MaterialUtils.isAir(item.getType())) {
-			itemDescriptor = "by hand";
-		}
-		else {
+			msg = String.format("%s%s was killed by %s by hand", ChatColor.DARK_RED, victim.getDisplayName(), killer.getDisplayName());
+		} else {
+			String itemName = ItemUtils.getItemName(item);
 			String displayName = ItemUtils.getDisplayName(item);
-			if (displayName == null) {
-				itemDescriptor = "with " + ItemUtils.getItemName(item);
+			Boolean isEnchanted = ItemUtils.getItemMeta(item).hasEnchants();
+			Boolean isRenamed = displayName != null && displayName != "";
+			if (isEnchanted && !isRenamed) {
+				displayName = String.format("with %s%s", ChatColor.AQUA, itemName);
+			} else if (isEnchanted && isRenamed) {
+				displayName = String.format("with %s%s%s", ChatColor.AQUA, ChatColor.ITALIC, displayName);
+			} else if (!isEnchanted && isRenamed) {
+				displayName = String.format("with %s%s%s", ChatColor.WHITE, ChatColor.ITALIC, displayName);
+			} else if (!isEnchanted && !isRenamed) {
+				displayName = String.format("with %s%s", ChatColor.WHITE, itemName);
 			}
-			else {
-				itemDescriptor = "with " + displayName;
-			}
+			msg = String.format("%s%s was killed by %s %s", ChatColor.DARK_RED, victim.getDisplayName(), killer.getDisplayName(), displayName);
 		}
 		Location killLoc = victim.getLocation();
-		String msg = String.format("%s%s was killed by %s%s %s", victim.getDisplayName(), ChatColor.GOLD, killer.getDisplayName(),
-				ChatColor.GOLD, itemDescriptor);
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			Location loc = p.getLocation();
 			if (!loc.getWorld().equals(killLoc.getWorld())) {
