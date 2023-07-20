@@ -1,0 +1,12 @@
+# TODO: Use docker module, currently it doesn't seem to support updating.
+- name: Start Server | Start Paper
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.minecraft.enabled
+  command: docker service scale minecraft_paper=1
+
+- name: Start Server | Start Waterfall
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.minecraft.enabled
+  command: docker service scale minecraft_waterfall=1
