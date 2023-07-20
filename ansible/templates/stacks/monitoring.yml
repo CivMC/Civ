@@ -13,6 +13,7 @@ services:
       GF_SERVER_DOMAIN: "{{secret.monitoring.grafana.host}}"
       GF_SERVER_ROOT_URL: "https://{{secret.monitoring.grafana.host}}"
       # TODO: If oauth enabled
+      GF_AUTH_OAUTH_ALLOW_INSECURE_EMAIL_LOOKUP: "true"
       GF_AUTH_DISABLE_LOGIN_FORM: "true"
       GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
       GF_AUTH_GENERIC_OAUTH_NAME: "Keycloak"

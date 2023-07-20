@@ -15,8 +15,10 @@ restic \
   -r {{secret.backup.restic_shortterm_repo}} backup \
   /opt/stacks/minecraft/ \
   --exclude '**orebfuscator_cache'\
+  --exclude '**civmodcore_cache'\
   --exclude '**dynmap'\
-  --exclude '**postgres-data'
+  --exclude '**postgres-data'\
+  --exclude '**plugins'
 
 echo "$(date) Starting services after backup..."
 docker service scale minecraft_paper=1
@@ -32,7 +34,7 @@ restic \
 echo "$(date) Pruning shortterm backups..."
 restic \
   -r {{secret.backup.restic_shortterm_repo}} forget \
-  --keep-last 2 \
+  --keep-last 1 \
   --prune
 
 echo "$(date) Backup finished!"

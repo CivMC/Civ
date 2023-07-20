@@ -25,3 +25,10 @@
       loop_control:
         loop_var: configure_task
     
+    - name: Setup Server | Include Deployment Tasks
+      include_tasks:
+        file: '../tasks/deploy/{{deploy_task}}.yml'
+      loop:
+        - minecraft
+      loop_control:
+        loop_var: configure_task
