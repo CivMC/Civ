@@ -2,14 +2,15 @@
   when:
     - "'swarm_manager' in group_names"
     - setting.minecraft.enabled
-  community.docker.docker_swarm_service:
-    name: minecraft_waterfall
-    replicas: 0
+  community.docker.docker_compose:
+    project_src: /opt/stacks/minecraft/minecraft.yml
+    scale:
+      waterfall: 0
 
-- name: Stop Server | Stop Paper
-  when:
-    - "'swarm_manager' in group_names"
-    - setting.minecraft.enabled
-  community.docker.docker_swarm_service:
-    name: minecraft_paper
-    replicas: 0
+# - name: Stop Server | Stop Paper
+#   when:
+#     - "'swarm_manager' in group_names"
+#     - setting.minecraft.enabled
+#   community.docker.docker_swarm_service:
+#     name: minecraft_paper
+#     replicas: 0
