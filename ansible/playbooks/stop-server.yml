@@ -1,0 +1,11 @@
+- name: Stop Server
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Stop Server | Expand setting
+      include: ../tasks/expand-setting.yml
+
+    - name: Stop Server | Include Stop Tasks
+      include_tasks:
+        file: '../tasks/stop-server.yml'
