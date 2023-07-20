@@ -2,7 +2,7 @@
   when:
     - "'swarm_manager' in group_names"
     - setting.minecraft.enabled
-  docker_stack_info:
+  community.docker.docker_stack_info:
   register: result
 
 - name: Show results
