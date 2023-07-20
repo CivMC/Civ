@@ -179,7 +179,6 @@ services:
 
 networks:
   minecraft_default:
-    external: true
   traefik-public:
     external: true
   monitoring:
