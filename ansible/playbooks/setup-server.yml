@@ -31,4 +31,4 @@
       loop:
         - minecraft
       loop_control:
-        loop_var: configure_task
+        loop_var: deploy_task
