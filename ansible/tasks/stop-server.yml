@@ -1,10 +1,15 @@
-- name: Stop Server | Stop Server
+- name: Stop Server | Stop Waterfall
   when:
     - "'swarm_manager' in group_names"
     - setting.minecraft.enabled
-  community.docker.docker_stack_info:
-  register: result
+  community.docker.docker_swarm_service:
+    name: minecraft_waterfall
+    replicas: 0
 
-- name: Show results
-  ansible.builtin.debug:
-    var: result.results
+- name: Stop Server | Stop Paper
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.minecraft.enabled
+  community.docker.docker_swarm_service:
+    name: minecraft_paper
+    replicas: 0
