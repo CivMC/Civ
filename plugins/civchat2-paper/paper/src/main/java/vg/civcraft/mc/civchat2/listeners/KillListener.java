@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civchat2.listeners;
 
+import java.util.Optional;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -40,22 +41,25 @@ public class KillListener implements Listener {
 		String msg;
 		ItemStack item = killer.getInventory().getItemInMainHand();
 		if (item == null || MaterialUtils.isAir(item.getType())) {
-			msg = String.format("%s%s was killed by %s by hand", ChatColor.DARK_RED, victim.getDisplayName(), killer.getDisplayName());
+			msg = String.format("%s%s was killed by %s by hand", ChatColor.DARK_GRAY, victim.getDisplayName(),
+					killer.getDisplayName());
 		} else {
 			String itemName = ItemUtils.getItemName(item);
 			String displayName = ItemUtils.getDisplayName(item);
-			Boolean isEnchanted = ItemUtils.getItemMeta(item).hasEnchants();
-			Boolean isRenamed = displayName != null && displayName != "";
-			if (isEnchanted && !isRenamed) {
-				displayName = String.format("with %s%s", ChatColor.AQUA, itemName);
-			} else if (isEnchanted && isRenamed) {
-				displayName = String.format("with %s%s%s", ChatColor.AQUA, ChatColor.ITALIC, displayName);
-			} else if (!isEnchanted && isRenamed) {
-				displayName = String.format("with %s%s%s", ChatColor.WHITE, ChatColor.ITALIC, displayName);
-			} else if (!isEnchanted && !isRenamed) {
-				displayName = String.format("with %s%s", ChatColor.WHITE, itemName);
+			Boolean hasWordBank = Optional.ofNullable(ItemUtils.getItemMeta(item))
+					.map(r -> r.displayName())
+					.map(f -> f.children().size() > 0)
+					.orElse(false);
+			if (!hasWordBank) {
+				displayName = String.format("with a %s", itemName);
+			} else {
+				displayName = String.format("with %s", displayName);
 			}
-			msg = String.format("%s%s was killed by %s %s", ChatColor.DARK_RED, victim.getDisplayName(), killer.getDisplayName(), displayName);
+			String victimFormattedName = String.format("%s%s", ChatColor.ITALIC, victim.getDisplayName());
+			String killerFormattedName = String.format("%s%s", ChatColor.ITALIC, killer.getDisplayName());
+
+			msg = String.format("%s%s %swas killed by %s %s%s", ChatColor.DARK_GRAY, victimFormattedName,
+					ChatColor.DARK_GRAY, killerFormattedName, ChatColor.DARK_GRAY, displayName);
 		}
 		Location killLoc = victim.getLocation();
 		for (Player p : Bukkit.getOnlinePlayers()) {
