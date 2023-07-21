@@ -20,16 +20,16 @@ public class GlobalChat extends BaseCommand {
 	@Syntax("[message]")
 	@Description("Enters global group chat or sends a message to global group chat")
 	@CommandCompletion("@CC_Groups @nothing")
-	
+
 	public void execute(Player player, @Optional String chatMessage) {
 		String globalGroupName = CivChat2.getInstance().getPluginConfig().getGlobalChatGroupName();
-		Group globalGroup = GroupManager.getGroup(globalGroupName);
-		CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
-		Group currentGroup = chatMan.getGroupChatting(player);
-		
 		if (globalGroupName == null) {
 			return;
 		}
+		Group globalGroup = GroupManager.getGroup(globalGroupName);
+		CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
+		Group currentGroup = chatMan.getGroupChatting(player);
+
 		if (globalGroup == null) {
 			player.sendMessage(ChatStrings.chatGroupNotFound);
 			return;
