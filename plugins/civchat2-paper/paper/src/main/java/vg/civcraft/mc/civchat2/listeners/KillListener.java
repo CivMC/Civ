@@ -40,9 +40,12 @@ public class KillListener implements Listener {
 		}
 		String msg;
 		ItemStack item = killer.getInventory().getItemInMainHand();
+		String victimFormattedName = String.format("%s%s", ChatColor.ITALIC, victim.getDisplayName());
+		String killerFormattedName = String.format("%s%s", ChatColor.ITALIC, killer.getDisplayName());
+
 		if (item == null || MaterialUtils.isAir(item.getType())) {
-			msg = String.format("%s%s was killed by %s by hand", ChatColor.DARK_GRAY, victim.getDisplayName(),
-					killer.getDisplayName());
+			msg = String.format("%s%s %swas killed by %s %sby hand", ChatColor.DARK_GRAY, victimFormattedName,
+					ChatColor.DARK_GRAY, killerFormattedName, ChatColor.DARK_GRAY);
 		} else {
 			String itemName = ItemUtils.getItemName(item);
 			String displayName = ItemUtils.getDisplayName(item);
@@ -55,8 +58,6 @@ public class KillListener implements Listener {
 			} else {
 				displayName = String.format("with %s", displayName);
 			}
-			String victimFormattedName = String.format("%s%s", ChatColor.ITALIC, victim.getDisplayName());
-			String killerFormattedName = String.format("%s%s", ChatColor.ITALIC, killer.getDisplayName());
 
 			msg = String.format("%s%s %swas killed by %s %s%s", ChatColor.DARK_GRAY, victimFormattedName,
 					ChatColor.DARK_GRAY, killerFormattedName, ChatColor.DARK_GRAY, displayName);
