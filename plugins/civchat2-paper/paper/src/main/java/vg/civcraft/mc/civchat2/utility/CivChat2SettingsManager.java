@@ -8,6 +8,7 @@ import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
+import vg.civcraft.mc.civmodcore.players.settings.impl.EnumSetting;
 import vg.civcraft.mc.civmodcore.players.settings.impl.LongSetting;
 
 public class CivChat2SettingsManager {
@@ -20,6 +21,7 @@ public class CivChat2SettingsManager {
 	private BooleanSetting showChatGroup;
 	private DisplayLocationSetting chatGroupLocation;
 	private LongSetting chatUnmuteTimer;
+	private EnumSetting<KillMessageFormat> killMessageFormat;
 
 	public CivChat2SettingsManager() {
 		initSettings();
@@ -60,6 +62,9 @@ public class CivChat2SettingsManager {
 		
 		chatUnmuteTimer = new LongSetting(CivChat2.getInstance(), 0L, "Global chat mute", "chatGlobalMuteTimer");
 		PlayerSettingAPI.registerSetting(chatUnmuteTimer, null);
+
+		killMessageFormat = new EnumSetting<>(CivChat2.getInstance(), KillMessageFormat.WITH, "Kill Message Format", "killMessageFormat", new ItemStack(Material.WRITABLE_BOOK), "Choose your kill message format", true, KillMessageFormat.class);
+		PlayerSettingAPI.registerSetting(killMessageFormat, menu);
 	}
 	
 	public LongSetting getGlobalChatMuteSetting() {
@@ -92,5 +97,36 @@ public class CivChat2SettingsManager {
 
 	public DisplayLocationSetting getChatGroupLocation() {
 		return chatGroupLocation;
+	}
+
+	public KillMessageFormat getKillMessageFormat(UUID uuid) {
+		return killMessageFormat.getValue(uuid);
+	}
+
+	public enum KillMessageFormat {
+		FOR(
+			"for"
+			),
+		WHILE(
+			"while"
+		),
+		BLANK(
+			""
+		),
+		USING(
+			"using"
+		),
+		BY(
+			"by"
+		),
+		WITH(
+			"with"
+		);
+
+		public final String simpleDescription;
+
+		private KillMessageFormat(String simpleDescription) {
+			this.simpleDescription = simpleDescription;
+		}	
 	}
 }

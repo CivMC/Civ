@@ -56,7 +56,12 @@ public class KillListener implements Listener {
 			if (!hasWordBank) {
 				displayName = String.format("with a %s", itemName);
 			} else {
-				displayName = String.format("with %s", displayName);
+				String killMessageFormat = settingsMan.getKillMessageFormat(killer.getUniqueId()).simpleDescription;
+				if (killMessageFormat.isBlank()) {
+					displayName = String.format("%s%s", killMessageFormat, displayName);
+				} else {
+					displayName = String.format("%s %s", killMessageFormat, displayName);
+				}
 			}
 
 			msg = String.format("%s%s %swas killed by %s %s%s", ChatColor.DARK_GRAY, victimFormattedName,
