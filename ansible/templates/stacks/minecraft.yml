@@ -95,7 +95,7 @@ services:
     tty: true
     stdin_open: true
     volumes:
-      - /opt/stacks/minecraft/kira-config/config.json:/app/config.json
+      - /opt/PrivateConfig/kira/test-config.json:/app/config.json
     deploy:
       placement:
         constraints: [node.role == manager]
