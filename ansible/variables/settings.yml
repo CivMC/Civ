@@ -5,8 +5,10 @@ settings:
       enabled: true
     monitoring:
       enabled: true
-    minecraft:
+    minecraft: &default_minecraft
       enabled: true
+      resources: &default_minecraft_resources
+        memory: 40G
     # Optional Stacks
     auth:
       enabled: false
@@ -18,5 +20,10 @@ settings:
 
   test:
     <<: *default
+    minecraft:
+      <<: *default_minecraft
+      resources:
+        <<: *default_minecraft_resources
+        memory: 8G
     auth:
       enabled: true # TODO: MOVE
