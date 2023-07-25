@@ -9,6 +9,7 @@ services:
       - traefik-public
     volumes:
       - /opt/stacks/maven/nexus-data:/nexus-data
+    user: "0"
     deploy:
       placement:
         constraints: [node.role == manager]
