@@ -12,6 +12,8 @@ settings:
     # Optional Stacks
     auth:
       enabled: false
+    maven:
+      enabled: false
 
   production:
     <<: *default
@@ -26,4 +28,6 @@ settings:
         <<: *default_minecraft_resources
         memory: 8G
     auth:
+      enabled: true # TODO: MOVE
+    maven:
       enabled: true # TODO: MOVE

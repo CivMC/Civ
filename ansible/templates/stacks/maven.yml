@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+
+  nexus:
+    image: sonatype/nexus3:latest
+    restart: always
+    networks:
+      - traefik-public
+    volumes:
+      - /opt/stacks/maven/nexus-data:/nexus-data
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.maven-public-http.rule=Host(`{{secret.maven.nexus.host}}`)
+        - traefik.http.routers.maven-public-http.entrypoints=http
+        - traefik.http.routers.maven-public-http.middlewares=https-redirect
+        - traefik.http.routers.maven-public-https.rule=Host(`{{secret.maven.nexus.host}}`)
+        - traefik.http.routers.maven-public-https.entrypoints=https
+        - traefik.http.routers.maven-public-https.tls=true
+        - traefik.http.routers.maven-public-https.tls.certresolver=le
+        - traefik.http.services.maven-public.loadbalancer.server.port=8081
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
+
+networks:
+  traefik-public:
+    external: true
