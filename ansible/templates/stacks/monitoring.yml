@@ -57,6 +57,7 @@ services:
     volumes:
       - /opt/PrivateConfig/loki/test-config.yaml:/etc/loki/local-config.yaml
       - /opt/stacks/monitoring/loki-data:/loki
+    user: "0"
     deploy:
       placement:
         constraints: [node.role == manager]
