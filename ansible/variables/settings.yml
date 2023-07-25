@@ -8,21 +8,15 @@ settings:
     minecraft:
       enabled: true
     # Optional Stacks
-    portainer:
-      enabled: false
-    portainer-agent: # TODO: Create Stack
-      enabled: false
     auth:
       enabled: false
 
   production:
     <<: *default
-    portainer:
-      enabled: true
     auth:
       enabled: false # TODO: MOVE
 
   test:
     <<: *default
-    portainer-agent:
-      enabled: true
+    auth:
+      enabled: true # TODO: MOVE

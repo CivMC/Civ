@@ -29,6 +29,9 @@
       include_tasks:
         file: '../tasks/deploy/{{deploy_task}}.yml'
       loop:
+        - traefik
+        - auth
+        - monitoring
         - minecraft
       loop_control:
         loop_var: deploy_task
