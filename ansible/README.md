@@ -6,6 +6,10 @@
 3. Actions secret defined with SECRETS_YML
 4. SINGLE manager node
 
+## TODOs
+- Private Config
+- Mount backups location and configure params, setup
+
 ## Deployable Services
 
 ```mermaid
