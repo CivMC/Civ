@@ -46,7 +46,7 @@ services:
         mode: host
     environment:
       INIT_MEMORY: '{{setting.minecraft.resources.memory}}'
-      MAX_MEMORY: '{{secret.minecraft.resources.memory}}'
+      MAX_MEMORY: '{{setting.minecraft.resources.memory}}'
       STOP_DURATION: 3600
 
       CIV_SERVER_NAME: prod-server
