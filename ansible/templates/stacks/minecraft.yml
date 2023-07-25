@@ -7,6 +7,8 @@ services:
     restart: unless-stopped
     tty: true
     stdin_open: true
+    networks:
+      - minecraft_default
     ports:
       # Open port in host mode, to bypass swarm ingress
       - target: 25577
@@ -35,6 +37,8 @@ services:
     tty: true
     stdin_open: true
     stop_grace_period: 60m
+    networks:
+      - minecraft_default
     ports:
       - target: 8192
         published: 8192
@@ -94,6 +98,8 @@ services:
     restart: unless-stopped
     tty: true
     stdin_open: true
+    networks:
+      - minecraft_default
     volumes:
       - /opt/PrivateConfig/kira/test-config.json:/app/config.json
     deploy:
@@ -159,6 +165,8 @@ services:
   rabbitmq:
     image: rabbitmq:3.9.16-management
     restart: unless-stopped
+    networks:
+      - minecraft_default
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 60s
