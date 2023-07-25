@@ -25,6 +25,7 @@ services:
       GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/auth/realms/Internal/protocol/openid-connect/token"
       GF_AUTH_GENERIC_OAUTH_API_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/auth/realms/Internal/protocol/openid-connect/userinfo"
       GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'"
+    user: "0"
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -54,7 +55,7 @@ services:
     ports:
       - "3100:3100"
     volumes:
-      - /opt/stacks/monitoring/loki-config/local-config.yaml:/etc/loki/local-config.yaml
+      - /opt/PrivateConfig/loki/test-config.yaml:/etc/loki/local-config.yaml
       - /opt/stacks/monitoring/loki-data:/loki
     deploy:
       placement:
