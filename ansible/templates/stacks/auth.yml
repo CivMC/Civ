@@ -41,7 +41,7 @@ services:
           loki-batch-size: "400"
 
   postgres:
-    image: postgres:latest
+    image: postgres:14
     restart: always
     volumes:
       - /opt/stacks/auth/postgres-data:/var/lib/postgresql/data
