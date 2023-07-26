@@ -6,8 +6,8 @@ services:
     image: jboss/keycloak:latest
     restart: always
     networks:
+      - auth_default
       - traefik-public
-
     environment:
       KEYCLOAK_USER: '{{secret.auth.keycloak.user}}'
       KEYCLOAK_PASSWORD: '{{secret.auth.keycloak.password}}'
@@ -43,6 +43,8 @@ services:
   postgres:
     image: postgres:14
     restart: always
+    networks:
+      - auth_default
     volumes:
       - /opt/stacks/auth/postgres-data:/var/lib/postgresql/data
     environment:
@@ -65,5 +67,6 @@ services:
           loki-batch-size: "400"
 
 networks:
+  auth_default:
   traefik-public:
     external: true
