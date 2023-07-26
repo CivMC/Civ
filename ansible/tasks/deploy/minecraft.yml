@@ -23,7 +23,7 @@
     - "'swarm_manager' in group_names"
     - setting.minecraft.enabled
   template:
-    src: ../../templates/stacks/minecraft.yml
+    src: ../../templates/stacks/minecraft.yml.j2
     dest: /opt/stacks/minecraft/minecraft.yml
 
 - name: Minecraft | Deploy Stack

@@ -21,9 +21,6 @@ services:
       CIV_POSTGRES_HOST: minecraft_postgres
       CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
       CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
-      {% if setting.minecraft.whitelist %}
-      ENABLE_WHITELIST: "true"
-      {% endif %}
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -70,6 +67,9 @@ services:
       CIV_RABBITMQ_USERNAME: rabbitmq
       CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
 
+      {% if setting.minecraft.whitelist %}
+      ENABLE_WHITELIST: "true"
+      {% endif %}
     volumes:
       - /opt/stacks/minecraft/paper-data:/data
       # Private Config & Plugins
