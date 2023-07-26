@@ -15,7 +15,6 @@
     state: directory
   loop:
     - /opt/stacks/minecraft/paper-data
-    - /opt/stacks/minecraft/kira-config
     - /opt/stacks/minecraft/mariadb-data
     - /opt/stacks/minecraft/postgres-data
 

@@ -10,6 +10,17 @@
 - Private Config
 - Mount backups location and configure params, setup
 
+## Provisioned Layout
+```
+/
+└── opt/
+    ├── backup-and-restart.sh
+    └── stacks/
+        └── <stack>/
+            ├── <stack>.yml
+            └── ...<service-data>  
+```
+
 ## Deployable Services
 
 ```mermaid
