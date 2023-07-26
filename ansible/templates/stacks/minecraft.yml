@@ -19,7 +19,7 @@ services:
       INIT_MEMORY: 2G
       MAX_MEMORY: 2G
       CIV_POSTGRES_HOST: minecraft_postgres
-      CIV_POSTGRES_USERNAME: minecraft
+      CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
       CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
     deploy:
       placement:
@@ -55,12 +55,12 @@ services:
       CIV_WORDBANK_SEED: '{{secret.minecraft.wordbank_seed}}'
 
       CIV_MYSQL_HOST: minecraft_mariadb
-      CIV_MYSQL_USERNAME: minecraft
+      CIV_MYSQL_USERNAME: '{{secret.minecraft.mysql.username}}'
       CIV_MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
       CIV_MYSQL_DATABASE: minecraft
 
       CIV_POSTGRES_HOST: minecraft_postgres
-      CIV_POSTGRES_USERNAME: minecraft
+      CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
       CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
 
       CIV_RABBITMQ_HOST: minecraft_rabbitmq
