@@ -67,9 +67,10 @@ services:
       CIV_RABBITMQ_USERNAME: rabbitmq
       CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
 
-      {% if setting.minecraft.whitelist %}
+{% if setting.minecraft.whitelist %}
       ENABLE_WHITELIST: "true"
-      {% endif %}
+{% endif %}
+
     volumes:
       - /opt/stacks/minecraft/paper-data:/data
       # Private Config & Plugins
