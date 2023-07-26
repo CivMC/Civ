@@ -7,6 +7,7 @@ settings:
       enabled: true
     minecraft: &default_minecraft
       enabled: true
+      whitelist: false
       resources: &default_minecraft_resources
         memory: 40G
     # Optional Stacks
@@ -24,6 +25,7 @@ settings:
     <<: *default
     minecraft:
       <<: *default_minecraft
+      whitelist: true
       resources:
         <<: *default_minecraft_resources
         memory: 8G
