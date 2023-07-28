@@ -26,37 +26,37 @@ public class WorldChangeListener implements Listener {
 		final Player player = event.getPlayer();
 		String playerName = player.getName();
 
-		if (player.hasPermission("RandomSpawn.exclude")){ 																// checks if player should be excluded
+		if (player.hasPermission("RandomSpawn.exclude")){                                 // checks if player should be excluded
 			plugin.logDebug(playerName + " is excluded from Random Spawning.");
-			return; 
+			return;
 		}
 
 		World from = event.getFrom();
 		World to = player.getWorld();
-		
-		if(player.getBedSpawnLocation() != null && to.equals(player.getBedSpawnLocation().getWorld())) return;			// players bed is in this world
-		
-		List<String> randomSpawnFlags = plugin.yamlHandler.worlds.getStringList(to.getName() + ".randomspawnon");	
-		
+
+		if(player.getBedSpawnLocation() != null && to.equals(player.getBedSpawnLocation().getWorld())) return;      // players bed is in this world
+
+		List<String> randomSpawnFlags = plugin.yamlHandler.worlds.getStringList(to.getName() + ".randomspawnon");
+
 		if(randomSpawnFlags.contains("teleport-from-" + from.getName())){
-						
-			Location spawnLocation = plugin.chooseSpawn(to);
-			
+
+			Location spawnLocation = plugin.getSpawnSelector().getRandomSpawnLocation(to);
+
 			if (spawnLocation == null) {
 				plugin.logDebug(playerName + " got unlucky and was not successfully randomspawned. Default behavior will apply");
 				return;
 			}
-						
+
 			plugin.sendGround(player, spawnLocation);
-			
+
 			player.teleport(spawnLocation.add(0, 5, 0));
-			
+
 			player.setMetadata("lasttimerandomspawned", new FixedMetadataValue(plugin, System.currentTimeMillis()));
-			
+
 			if (plugin.yamlHandler.worlds.getBoolean(to.getName() + ".keeprandomspawns",false)){
 				player.setBedSpawnLocation(spawnLocation);
 			}
-			
+
 			if (plugin.yamlHandler.config.getString("messages.randomspawned") != null){
 				player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.yamlHandler.config.getString("messages.randomspawned")));
 			}
