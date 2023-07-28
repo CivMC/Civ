@@ -1047,6 +1047,38 @@ factories:
       - forge_gold_boots
       - make_bell
       - repair_gold_forge
+  copper_workshop:
+    type: FCC
+    name: Copper Workshop
+    citadelBreakReduction: 1.0
+    fuel:
+      fuelidentifier:
+        material: AMETHYST_SHARD
+    setupcost:
+      copper_block:
+        material: COPPER_BLOCK
+        amount: 64
+      exposed_copper:
+        material: EXPOSED_COPPER
+        amount: 64
+      weathered_copper:
+        material: WEATHERED_COPPER
+        amount: 64
+      oxidized_copper:
+        material: OXIDIZED_COPPER
+        amount: 64
+      honeycomb:
+        material: HONEYCOMB
+        amount: 32
+    recipes:
+     - wax_copper_block
+     - wax_exposed_copper
+     - wax_weathered_copper
+     - wax_oxidized_copper
+     - weather_copper_block
+     - weather_exposed_copper
+     - weather_weathered_copper
+     - repair_copper_workshop
 #RECIPES
 recipes:
   smelt_stone:
@@ -6509,6 +6541,144 @@ recipes:
       ink:
         material: INK_SAC
         amount: 2
+    health_gained: 10000
+  wax_copper_block:
+    production_time: 4s
+    name: Wax Copper Block
+    type: PRODUCTION
+    input:
+      copper_block:
+        material: COPPER_BLOCK
+        amount: 64
+      honeycomb:
+        material: HONEYCOMB
+        amount: 16
+    output:
+      waxed_copper_block:
+        material: WAXED_COPPER_BLOCK
+        amount: 64
+  wax_exposed_copper:
+    production_time: 4s
+    name: Wax Exposed Copper
+    type: PRODUCTION
+    input:
+      exposed_copper:
+        material: EXPOSED_COPPER
+        amount: 64
+      honeycomb:
+        material: HONEYCOMB
+        amount: 16
+    output:
+      waxed_exposed_copper:
+        material: WAXED_EXPOSED_COPPER
+        amount: 64
+  wax_weathered_copper:
+    production_time: 4s
+    name: Wax Weathered Copper
+    type: PRODUCTION
+    input:
+      weathered_copper:
+        material: WEATHERED_COPPER
+        amount: 64
+      honeycomb:
+        material: HONEYCOMB
+        amount: 16
+    output:
+      waxed_weathered_copper:
+        material: WAXED_WEATHERED_COPPER
+        amount: 64
+  wax_oxidized_copper:
+    production_time: 4s
+    name: Wax Oxidized Copper
+    type: PRODUCTION
+    input:
+      oxidized_copper:
+        material: OXIDIZED_COPPER
+        amount: 64
+      honeycomb:
+        material: HONEYCOMB
+        amount: 16
+    output:
+      waxed_oxidized_copper:
+        material: WAXED_OXIDIZED_COPPER
+        amount: 64
+  weather_copper_block:
+    production_time: 4s
+    fuel_consumption_intervall: 2s
+    name: Weather Copper Block
+    type: PRODUCTION
+    input:
+      copper_Block:
+        material: COPPER_BLOCK
+        amount: 64
+      water_bucket:
+        material: WATER_BUCKET
+        amount: 1
+    output:
+      exposed_copper:
+        material: EXPOSED_COPPER
+        amount: 64
+      bucket:
+        material: BUCKET
+        amount: 1
+  weather_exposed_copper:
+    production_time: 6s
+    fuel_consumption_intervall: 2s
+    name: Weather Exposed Copper
+    type: PRODUCTION
+    input:
+      exposed_copper:
+        material: EXPOSED_COPPER
+        amount: 64
+      water_bucket:
+        material: WATER_BUCKET
+        amount: 1
+    output:
+      weathered_copper:
+        material: WEATHERED_COPPER
+        amount: 64
+      bucket:
+        material: BUCKET
+        amount: 1
+  weather_weathered_copper:
+    production_time: 8s
+    fuel_consumption_intervall: 2s
+    name: Weather Weathered Copper
+    type: PRODUCTION
+    input:
+      weathered_copper:
+        material: WEATHERED_COPPER
+        amount: 64
+      water_bucket:
+        material: WATER_BUCKET
+        amount: 1
+    output:
+      oxidized_copper:
+        material: OXIDIZED_COPPER
+        amount: 64
+      bucket:
+        material: BUCKET
+        amount: 1
+  repair_copper_workshop:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      copper_block:
+        material: COPPER_BLOCK
+        amount: 16
+      exposed_copper:
+        material: EXPOSED_COPPER
+        amount: 16
+      weathered_copper:
+        material: WEATHERED_COPPER
+        amount: 16
+      oxidized_copper:
+        material: OXIDIZED_COPPER
+        amount: 16
+      honeycomb:
+        material: HONEYCOMB
+        amount: 16
     health_gained: 10000
   crack_fossil:
     type: RANDOM
