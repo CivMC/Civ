@@ -68,7 +68,7 @@ public class BlockingSpawnSelector implements SpawnSelector {
 			int thickness = yamlHandler.worlds.getInt(worldName + ".spawnarea.thickness", 0);
 
 			// square can block too bad (TODO fix)
-			ret = CompletableFuture.completedFuture(chooseSpawn(world, xmin, xmax, zmin, zmax, thickness, blacklist, block));
+			ret = CompletableFuture.completedFuture(chooseSpawn(world, xmin, xmax, zmin, zmax, thickness, blacklist, true));
 		} else if (type.equalsIgnoreCase("circle")) {
 			double exclusionRadius = yamlHandler.worlds.getDouble(worldName + ".spawnarea.exclusionradius", 0);
 			double radius = yamlHandler.worlds.getDouble(worldName + ".spawnarea.radius", 100);
