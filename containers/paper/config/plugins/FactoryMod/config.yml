@@ -88,6 +88,7 @@ factories:
       - clean_red_sand
       - make_end_stone
       - make_purpur
+      - fuse_amethyst
       - condense_purpur_fruit
       - make_prismarine_bricks
       - make_dark_prismarine
@@ -1021,6 +1022,7 @@ factories:
       - spread_sculk_vein
       - kill_bush
       - root_dirt
+      - melt_ice
       - form_tube_coral_block
       - form_fire_coral_block
       - form_horn_coral_block
@@ -1832,6 +1834,18 @@ recipes:
       purpur:
         material: PURPUR_BLOCK
         amount: 64
+  fuse_amethyst:
+    production_time: 4s
+    name: Fuse Amethyst
+    type: PRODUCTION
+    input:
+      amethyst_shard:
+        material: AMETHYST_SHARD
+        amount: 64
+    output:
+      amethyst_cluster:
+        material: AMETHYST_CLUSTER
+        amount: 12
   condense_purpur_fruit:
     forceInclude: true
     production_time: 4s
@@ -4071,12 +4085,12 @@ recipes:
         material: CHEST
         amount: 32
       membrane:
-        material: PHANTOM_MEMBRANE
-        amount: 8
+        material: HONEYCOMB
+        amount:16
     output:
       beehive:
         material: BEEHIVE
-        amount: 1
+        amount: 16
   sticks_to_chest:
     production_time: 4s
     name: Reconstitute Sticks to Chests
@@ -7269,147 +7283,168 @@ recipes:
             - City bastions block reinforcements and elytra
           amount: 1
       tealnerd_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         tealnerd_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: TealNerd
       iebagi_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         iebagi_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: iebagi
       dsclouse_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         dsclouse_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: Dsclouse
       ttk2_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         ttk2_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: ttk2
       bonkill_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         bonkill_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: Bonkill
       programmerdan_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         programmerdan_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: ProgrammerDan
       maxopoly_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         maxopoly_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: Maxopoly
       crimeo_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         crimeo_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: Crimeo
       Mike0War_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         Mike0War_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: Mike0War
       LordOfMarzipan_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         LordOfMarzipan_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: LordOfMarzipan
       Wingzero54_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         Wingzero54_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: Wingzero54
       SoundTech_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         SoundTech_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: SoundTech
       Ahrimanne_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         Ahrimanne_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: Ahrimanne
       DietCola_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         DietCola_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: DietCola
+      RedDevel_skull:
+        chance: 0.00096507346
+        reddevel_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: RedDevel
       togoshigekata_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         togoshigekata_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: togoshigekata
       wjkroeker_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         wjkroeker_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: wjkroeker
       NovaCeasar_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         NovaCeasar_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: NovaCeasar
       tradespin_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         tradespin_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: tradespin
       Yergo_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         yergo_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: Yergo
       Blob_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         blob_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
             SkullOwner: Blob
+      Kingstell_skull:
+        chance: 0.00096507346
+        kingstell_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: Kingstell
+      Gwua_skull:
+        chance: 0.00096507346
+        Gwua_skull:
+          material: PLAYER_HEAD
+          amount: 1
+          nbt:
+            SkullOwner: Gwua
       decorative_bread_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_bread_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7420,7 +7455,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjM0ODdkNDU3ZjkwNjJkNzg3YTNlNmNlMWM0NjY0YmY3NDAyZWM2N2RkMTExMjU2ZjE5YjM4Y2U0ZjY3MCJ9fX0=
       decorative_melon_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_melon_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7431,7 +7466,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzNmZWQ1MTRjM2UyMzhjYTdhYzFjOTRiODk3ZmY2NzExYjFkYmU1MDE3NGFmYzIzNWM4ZjgwZDAyOSJ9fX0=
       decorative_pumpkin_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_pumpkin_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7442,7 +7477,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdkN2FkMmRjYjU3ZGZhOWYwMjNkYmI5OWI2OThmYzUzMDc1YzNlOWQ2NTQ1MDYxMzlhNjQ3YWM5MDdmZGRjNSJ9fX0=
       decorative_cup_of_tea_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_cup_of_tea_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7453,7 +7488,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDhlOTRkZGQ3NjlhNWJlYTc0ODM3NmI0ZWM3MzgzZmQzNmQyNjc4OTRkN2MzYmVlMDExZThlNGY1ZmNkNyJ9fX0=
       decorative_hamburger_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_hamburger_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7464,7 +7499,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTZlZjFjMjVmNTE2ZjJlN2Q2Zjc2Njc0MjBlMzNhZGNmM2NkZjkzOGNiMzdmOWE0MWE4YjM1ODY5ZjU2OWIifX19
       decorative_clock_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_clock_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7475,7 +7510,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmRlNGUyNzgzZjg1YTM5MTIyMWRkOTE2NTZiYTY4OGU3ZTQyZDE2ZjZhYmJmYmNmYWQ5Y2E1MzYxN2ZjYTYifX19
       decorative_monitor_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_monitor_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7486,7 +7521,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTVjMjkyYTI0ZjU0YTdhNDM3ODUyNjY1NTJkYmE3YTE4NGY5YzUwZTBkOTRiMzM3ZDhkM2U3NmU5ZTljY2U3In19fQ==
       decorative_pile_of_books_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_pile_of_books_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7497,7 +7532,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjFjNjNkOWI5ZmQ4NzQyZWFlYjA0YzY5MjE3MmNiOWRhNDM3ODE2OThhNTc1Y2RhYmUxYzA0ZGYxMmMzZiJ9fX0=
       decorative_chest_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_chest_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7508,7 +7543,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmY2OGQ1MDliNWQxNjY5Yjk3MWRkMWQ0ZGYyZTQ3ZTE5YmNiMWIzM2JmMWE3ZmYxZGRhMjliZmM2ZjllYmYifX19
       decorative_medicine_chest_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_medicine_chest_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7519,7 +7554,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjdjN2RmNTJiNWU1MGJhZGI2MWZlZDcyMTJkOTc5ZTYzZmU5NGYxYmRlMDJiMjk2OGM2YjE1NmE3NzAxMjZjIn19fQ==
       decorative_eye_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_eye_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7530,7 +7565,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmNlZjg3NzcyYWZkODViNDY4ZjRjN2ZiOTU3MWUzMTQzNWVmNzY1YWQ0MTNmZTQ2MDI2MjE1MDQyM2UyMDIxIn19fQ==
       decorative_present_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_present_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7541,7 +7576,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjBhZmE0ZmZmZDEwODYzZTc2YzY5OGRhMmM5YzllNzk5YmNmOWFiOWFhMzdkODMxMjg4MTczNDIyNWQzY2EifX19
       decorative_poke_ball_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_poke_ball_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7552,7 +7587,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDQzZDRiN2FjMjRhMWQ2NTBkZGY3M2JkMTQwZjQ5ZmMxMmQyNzM2ZmMxNGE4ZGMyNWMwZjNmMjlkODVmOGYifX19
       decorative_globe_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_globe_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7563,7 +7598,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjFkZDRmZTRhNDI5YWJkNjY1ZGZkYjNlMjEzMjFkNmVmYTZhNmI1ZTdiOTU2ZGI5YzVkNTljOWVmYWIyNSJ9fX0=
       decorative_blaze_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_blaze_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7574,7 +7609,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjc4ZWYyZTRjZjJjNDFhMmQxNGJmZGU5Y2FmZjEwMjE5ZjViMWJmNWIzNWE0OWViNTFjNjQ2Nzg4MmNiNWYwIn19fQ==
       decorative_ghast_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_ghast_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7585,7 +7620,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGI2YTcyMTM4ZDY5ZmJiZDJmZWEzZmEyNTFjYWJkODcxNTJlNGYxYzk3ZTVmOTg2YmY2ODU1NzFkYjNjYzAifX19
       decorative_pigzombie_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_pigzombie_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7596,7 +7631,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzRlOWM2ZTk4NTgyZmZkOGZmOGZlYjMzMjJjZDE4NDljNDNmYjE2YjE1OGFiYjExY2E3YjQyZWRhNzc0M2ViIn19fQ==
       decorative_enderman_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_enderman_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7607,7 +7642,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2E1OWJiMGE3YTMyOTY1YjNkOTBkOGVhZmE4OTlkMTgzNWY0MjQ1MDllYWRkNGU2YjcwOWFkYTUwYjljZiJ9fX0=
       decorative_guardian_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_guardian_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7618,7 +7653,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTMyYzI0NTI0YzgyYWIzYjNlNTdjMjA1MmM1MzNmMTNkZDhjMGJlYjhiZGQwNjM2OWJiMjU1NGRhODZjMTIzIn19fQ==
       decorative_skull_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_skull_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7629,7 +7664,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWFlMzg1NWY5NTJjZDRhMDNjMTQ4YTk0NmUzZjgxMmE1OTU1YWQzNWNiY2I1MjYyN2VhNGFjZDQ3ZDMwODEifX19
       decorative_potted_azalea_plant_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_potted_azalea_plant_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7640,7 +7675,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzM1MjU3Yjc5OWQzOTQ2OTI3ZjJiMzI1ZDM2NmViNTEwNGE1YzM1MjE5ZWU0ZTRkMzU3MjFiZjI4YTIxMCJ9fX0=
       decorative_potted_camellia_plant_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_potted_camellia_plant_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7651,7 +7686,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWRjNGMxMmJmMjYxOWNiZmM4ZjIyZGM2MmMwMjJjZTE1MTI2Y2VhM2UyMTJjMjhkOWY5NmVhMzEwYWM0YzQyIn19fQ==
       decorative_wink_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_wink_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7662,7 +7697,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjRlYTJkNmY5MzlmZWZlZmY1ZDEyMmU2M2RkMjZmYThhNDI3ZGY5MGIyOTI4YmMxZmE4OWE4MjUyYTdlIn19fQ==
       decorative_apple_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_apple_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7673,7 +7708,7 @@ recipes:
                 textures:
                   - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTJiMzViZGE1ZWJkZjEzNWY0ZTcxY2U0OTcyNmZiZWM1NzM5ZjBhZGVkZjAxYzUxOWUyYWVhN2Y1MTk1MWVhMiJ9fX0=
       decorative_sushi_salmon_skull:
-        chance: 0.0010294117
+        chance: 0.00096507346
         decorative_sushi_salmon_skull:
           material: PLAYER_HEAD
           amount: 1
@@ -7956,6 +7991,22 @@ recipes:
       rooted_dirt:
         material: ROOTED_DIRT
         amount: 64
+  melt_ice:
+    production_time: 1s
+    fuel_consumption_intervall: 2s
+    name: Melt Ice
+    type: PRODUCTION
+    input:
+      ice:
+        material: ICE
+        amount: 1
+      bucket:
+        material: BUCKET
+        amount: 1
+    output:
+      rooted_dirt:
+        material: WATER_BUCKET
+        amount: 1
   forge_gold_pickaxes:
     type: RANDOM
     name: Forge Gold Pickaxes
