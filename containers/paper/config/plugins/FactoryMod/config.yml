@@ -4086,7 +4086,7 @@ recipes:
         amount: 32
       membrane:
         material: HONEYCOMB
-        amount:16
+        amount: 16
     output:
       beehive:
         material: BEEHIVE
