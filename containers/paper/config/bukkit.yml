@@ -31,4 +31,4 @@ ticks-per:
 aliases: now-in-commands.yml
 worlds:
   world:
-    generator: Terra:CIVMC
+    generator: ${CIV_WORLD_GENERATOR}
