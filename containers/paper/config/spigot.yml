@@ -76,8 +76,8 @@ world-settings:
     entity-activation-range:
       animals: 8
       monsters: 8
-      raiders: 48
-      misc: 8
+      raiders: 8
+      misc: 10
       water: 8
       villagers: 8
       flying-monsters: 32
@@ -101,10 +101,10 @@ world-settings:
       ignore-spectators: false
     entity-tracking-range:
       players: 96
-      animals: 48
-      monsters: 48
-      misc: 32
-      other: 64
+      animals: 8
+      monsters: 16
+      misc: 8
+      other: 8
     ticks-per:
       hopper-transfer: 16
       hopper-check: 8
@@ -144,11 +144,12 @@ world-settings:
     item-despawn-rate: 6000
     view-distance: default
     simulation-distance: default
-    thunder-chance: 100000
+    thunder-chance: 10000
     arrow-despawn-rate: 100
     trident-despawn-rate: 100
     hanging-tick-frequency: 100
     zombie-aggressive-towards-villager: true
+    max-entity-collisions: 1
     nerf-spawner-mobs: true
     mob-spawn-range: 2
     end-portal-sound-radius: 0

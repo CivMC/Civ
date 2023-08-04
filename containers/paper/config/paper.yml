@@ -8,7 +8,7 @@
 # Discord: https://discord.gg/papermc
 # IRC: #paper @ irc.esper.net ( https://webchat.esper.net/?channels=paper ) 
 # Website: https://papermc.io/ 
-# Docs: https://paper.readthedocs.org/ 
+# Docs: https://docs.papermc.io/ 
 
 verbose: false
 messages:
@@ -31,10 +31,13 @@ timings:
   history-interval: 300
   history-length: 3600
   server-name: CivMC
-config-version: 25
+config-version: 27
 settings:
+  proxy-protocol: false
+  resolve-selectors-in-books: false
   use-dimension-type-for-custom-spawners: false
   chunk-loading:
+    player-max-chunk-load-rate: -1.0
     min-load-radius: 2
     max-concurrent-sends: 2
     autoconfig-send-distance: true
@@ -83,6 +86,7 @@ settings:
     page-max: 2560
     total-multiplier: 0.98
   loggers:
+    use-rgb-for-named-text-colors: true
     deobfuscate-stacktraces: true
   item-validation:
     display-name: 8192
@@ -119,6 +123,9 @@ settings:
         action: DROP
 world-settings:
   default:
+    treasure-maps-find-already-discovered:
+      villager-trade: false
+      loot-tables: default
     delay-chunk-unloads-by: 10s
     disable-teleportation-suffocation-check: false
     generator-settings:
@@ -151,6 +158,12 @@ world-settings:
       disable-end-credits: false
       disable-mob-spawner-spawn-egg-transformation: true
     door-breaking-difficulty:
+      zombie_villager:
+      - HARD
+      husk:
+      - HARD
+      zombified_piglin:
+      - HARD
       zombie: []
       vindicator: []
     max-growth-height:
@@ -164,29 +177,29 @@ world-settings:
       MaximumTicks: 600
     despawn-ranges:
       monster:
-        soft: 28
-        hard: 96
+        soft: 24
+        hard: 48
       creature:
-        soft: 28
-        hard: 96
+        soft: 24
+        hard: 48
       ambient:
-        soft: 28
-        hard: 96
+        soft: 24
+        hard: 48
       axolotls:
-        soft: 32
+        soft: 24
         hard: 128
       underground_water_creature:
-        soft: 28
-        hard: 96
+        soft: 24
+        hard: 48
       water_creature:
-        soft: 28
-        hard: 96
+        soft: 24
+        hard: 48
       water_ambient:
-        soft: 28
-        hard: 64
+        soft: 24
+        hard: 48
       misc:
-        soft: 28
-        hard: 96
+        soft: 24
+        hard: 48
     falling-block-height-nerf: 0
     tnt-entity-height-nerf: 0
     slime-spawn-height:
@@ -263,7 +276,6 @@ world-settings:
     prevent-tnt-from-moving-in-water: false
     water-over-lava-flow-speed: 5
     grass-spread-tick-rate: 2
-    use-faster-eigencraft-redstone: true
     nether-ceiling-void-damage-height: 128
     only-players-collide: false
     allow-vehicle-collisions: true
@@ -333,7 +345,6 @@ world-settings:
     light-queue-size: 20
     auto-save-interval: -1
     enable-treasure-maps: false
-    treasure-maps-return-already-discovered: false
     split-overstacked-loot: true
     map-item-frame-cursor-limit: 128
     entity-per-chunk-save-limit:
@@ -344,9 +355,70 @@ world-settings:
       fireball: 1
       small_fireball: 1
     alt-item-despawn-rate:
-      enabled: false
+      enabled: true
       items:
-        COBBLESTONE: 300
+        wheat_seeds: 400
+        beetroot_seeds: 400
+        cactus: 400
+        potato: 400
+        red_mushroom: 400
+        kelp: 400
+        nether_wart: 400
+        oak_sapling: 400
+        carrot: 400
+        melon: 400
+        cocoa_beans: 400
+        twisting_vines: 400
+        weeping_vines: 400
+        vine: 400
+        wheat: 400
+        bamboo: 400
+        pumpkin: 400
+        brown_mushroom: 400
+        crimson_stem: 400
+        sweet_berries: 400
+        beetroot: 400
+        sugar_cane: 400
+        deepslate: 400
+        cobbled_deepslate: 400
+        cobblestone: 500
+        stone: 500
+        wool: 600
+        feather: 600
+        raw_chicken: 600
+        stone_axe: 1200
+        stone_pickaxe: 1200
+        stone_sword: 1200
+        wooden_axe: 1200
+        wooden_pickaxe: 1200
+        wooden_sword: 1200
+        arrow: 1200
+        dirt: 1200
+        diamond: 12000
+        diamond_block: 12000
+        deepslate_diamond_ore: 12000
+        diamond_ore: 12000
+        diamond_sword: 12000
+        diamond_pickaxe: 12000
+        diamond_axe: 12000
+        diamond_shovel: 12000
+        diamond_helmet: 12000
+        diamond_chestplate: 12000
+        diamond_leggings: 12000
+        diamond_boots: 12000
+        ancient_debris: 12000
+        netherite_ingot: 12000
+        netherite_block: 12000
+        netherite_scrap: 12000
+        netherite_sword: 12000
+        netherite_pickaxe: 12000
+        netherite_axe: 12000
+        netherite_shovel: 12000
+        netherite_hoe: 12000
+        netherite_helmet: 12000
+        netherite_chestplate: 12000
+        netherite_leggings: 12000
+        netherite_boots: 12000
     tick-rates:
       sensor:
         villager:
@@ -356,3 +428,4 @@ world-settings:
           validatenearbypoi: -1
     feature-seeds:
       generate-random-seeds-for-all: false
+    redstone-implementation: eigencraft
