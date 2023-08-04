@@ -1,10 +1,10 @@
-limit:
-  name: "Dropper"
+limit:  
+  name: "Furnace"
   type: "GROUP"
-  bypass-permission: "insights.bypass.limit.redstone"
-  limit: 16
+  bypass-permission: "insights.bypass.limit.tables"
+  limit: 40
   materials:
-    - "DROPPER"
+    - "FURNACE"  
   settings:
     enabled-worlds:
       whitelist: false

@@ -1,10 +1,11 @@
-limit:
-  name: "Dropper"
+limit:  
+  name: "Campfires"
   type: "GROUP"
-  bypass-permission: "insights.bypass.limit.redstone"
+  bypass-permission: "insights.bypass.limit.table"
   limit: 16
   materials:
-    - "DROPPER"
+    - "CAMPFIRE"
+    - "SOUL_CAMPFIRE"
   settings:
     enabled-worlds:
       whitelist: false

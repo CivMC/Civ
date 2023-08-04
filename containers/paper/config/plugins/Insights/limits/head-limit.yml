@@ -1,5 +1,6 @@
-  name: "head"
-  type: "TILE"
+limit:
+  name: "Heads"
+  type: "GROUP"
   bypass-permission: "insights.bypass.limit.head"
   limit: 10
   materials:

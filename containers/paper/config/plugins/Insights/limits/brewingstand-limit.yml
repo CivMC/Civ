@@ -1,13 +1,9 @@
-  name: "TABLES"
+limit:  
+  name: "Brewing Stand"
   type: "GROUP"
   bypass-permission: "insights.bypass.limit.table"
   limit: 40
   materials:
-    - "FURNACE"
-    - "SMOKER"
-    - "BLAST_FURNACE"
-    - "CAMPFIRE"
-    - "SOUL_CAMPFIRE"
     - "BREWING_STAND"    
   settings:
     enabled-worlds:

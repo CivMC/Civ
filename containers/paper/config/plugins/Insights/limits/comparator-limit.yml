@@ -1,6 +1,3 @@
-# This is an example group limit for tiles. Users will be able to place at most 64 redstone in a chunk.
-# The limit makes use of a world blacklist, which means with the current configuration it will work for all worlds.
-# It will also work for all addons.
 limit:
   name: "Comparator"
   type: "GROUP"
