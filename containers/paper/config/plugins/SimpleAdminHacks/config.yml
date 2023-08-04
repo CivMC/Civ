@@ -409,7 +409,10 @@ hacks:
         SMOKER: 40
         CAMPFIRE: 16
         SOUL_CAMPFIRE: 16
-        STATIC_ENTITIES: 48
+        ITEM_FRAME: 48
+        GLOW_ITEM_FRAME: 48
+        ARMOR_STAND: 48
+        PAINTING: 48
         PLAYER_HEAD: 10 
       exempt:
       - Steve
