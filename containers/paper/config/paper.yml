@@ -357,42 +357,10 @@ world-settings:
     alt-item-despawn-rate:
       enabled: true
       items:
-        wheat_seeds: 400
-        beetroot_seeds: 400
-        cactus: 400
-        potato: 400
-        red_mushroom: 400
-        kelp: 400
-        nether_wart: 400
-        oak_sapling: 400
-        carrot: 400
-        melon: 400
-        cocoa_beans: 400
-        twisting_vines: 400
-        weeping_vines: 400
-        vine: 400
-        wheat: 400
-        bamboo: 400
-        pumpkin: 400
-        brown_mushroom: 400
-        crimson_stem: 400
-        sweet_berries: 400
-        beetroot: 400
-        sugar_cane: 400
-        deepslate: 400
-        cobbled_deepslate: 400
-        cobblestone: 500
-        stone: 500
-        wool: 600
-        feather: 600
-        raw_chicken: 600
-        stone_axe: 1200
-        stone_pickaxe: 1200
-        stone_sword: 1200
-        wooden_axe: 1200
-        wooden_pickaxe: 1200
-        wooden_sword: 1200
-        arrow: 1200
+        deepslate: 3000
+        cobbled_deepslate: 3000
+        cobblestone: 3000
+        stone: 3000
         dirt: 1200
         diamond: 12000
         diamond_block: 12000
