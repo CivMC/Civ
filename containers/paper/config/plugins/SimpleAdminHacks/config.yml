@@ -399,7 +399,7 @@ hacks:
         DISPENSER: 16
         DROPPER: 16
         COMPARATOR: 16
-        REPEATER: 16
+        REPEATER: 64
         PISTON: 30
         STICKY_PISTON: 30
         OBSERVER: 30
