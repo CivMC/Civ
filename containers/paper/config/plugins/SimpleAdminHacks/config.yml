@@ -396,20 +396,21 @@ hacks:
       exceededMessage: '&9Limit (%Limit%) reached for this chunk, you cannot place more of this type of block (%Material%).'
       tileEntities:
         HOPPER: 16
-#        PISTON: 50 Limiting pistons doesn't actually work, because all the blocks being moved are counted as the piston entities
-#        STICKY_PISTON: 50 So this just makes it so you can't have flying machines, etc 
-#        MOVING_PISTON: 50 Without actually stopping placement of pistons
-#        PISTON_HEAD: 50 Adding any of these to this list disallows pistons from pushing them for some reason. 
-#        OBSERVER: 50 Totally killing flying machines, they won't even start. https://github.com/CivClassic/AnsibleSetup/issues/237
         DISPENSER: 16
         DROPPER: 16
-        COMPARATOR: 12
+        COMPARATOR: 16
+        REPEATER: 16
+        PISTON: 30
+        STICKY_PISTON: 30
+        OBSERVER: 30
         FURNACE: 40
         BLAST_FURNACE: 40
         BREWING_STAND: 40
         SMOKER: 40
-        CAMPFIRE: 40
-        SOUL_CAMPFIRE: 40
+        CAMPFIRE: 16
+        SOUL_CAMPFIRE: 16
+        STATIC_ENTITIES: 48
+        PLAYER_HEAD: 10 
       exempt:
       - Steve
       - Alex

@@ -2,7 +2,7 @@ limit:
   name: "Tile Entities"
   type: "GROUP"
   bypass-permission: "insights.bypass.limit.entity"
-  limit: 16
+  limit: 48
   entities:
     - "ITEM_FRAME"
     - "GLOW_ITEM_FRAME"
