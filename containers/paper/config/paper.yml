@@ -263,10 +263,10 @@ world-settings:
     prevent-tnt-from-moving-in-water: false
     water-over-lava-flow-speed: 5
     grass-spread-tick-rate: 2
+    use-faster-eigencraft-redstone: true
     nether-ceiling-void-damage-height: 128
     only-players-collide: false
     allow-vehicle-collisions: true
-    use-faster-eigencraft-redstone: true
     allow-non-player-entities-on-scoreboards: false
     fix-items-merging-through-walls: false
     keep-spawn-loaded: false
