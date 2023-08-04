@@ -8,7 +8,7 @@
 # Discord: https://discord.gg/papermc
 # IRC: #paper @ irc.esper.net ( https://webchat.esper.net/?channels=paper ) 
 # Website: https://papermc.io/ 
-# Docs: https://docs.papermc.io/ 
+# Docs: https://paper.readthedocs.org/
 
 verbose: false
 messages:
@@ -31,13 +31,10 @@ timings:
   history-interval: 300
   history-length: 3600
   server-name: CivMC
-config-version: 27
+config-version: 25
 settings:
-  proxy-protocol: false
-  resolve-selectors-in-books: false
   use-dimension-type-for-custom-spawners: false
   chunk-loading:
-    player-max-chunk-load-rate: -1.0
     min-load-radius: 2
     max-concurrent-sends: 2
     autoconfig-send-distance: true
@@ -86,7 +83,6 @@ settings:
     page-max: 2560
     total-multiplier: 0.98
   loggers:
-    use-rgb-for-named-text-colors: true
     deobfuscate-stacktraces: true
   item-validation:
     display-name: 8192
@@ -123,9 +119,6 @@ settings:
         action: DROP
 world-settings:
   default:
-    treasure-maps-find-already-discovered:
-      villager-trade: false
-      loot-tables: default
     delay-chunk-unloads-by: 10s
     disable-teleportation-suffocation-check: false
     generator-settings:
@@ -273,6 +266,7 @@ world-settings:
     nether-ceiling-void-damage-height: 128
     only-players-collide: false
     allow-vehicle-collisions: true
+    use-faster-eigencraft-redstone: true
     allow-non-player-entities-on-scoreboards: false
     fix-items-merging-through-walls: false
     keep-spawn-loaded: false
@@ -339,6 +333,7 @@ world-settings:
     light-queue-size: 20
     auto-save-interval: -1
     enable-treasure-maps: false
+    treasure-maps-return-already-discovered: false
     split-overstacked-loot: true
     map-item-frame-cursor-limit: 128
     entity-per-chunk-save-limit:
@@ -390,4 +385,3 @@ world-settings:
           validatenearbypoi: -1
     feature-seeds:
       generate-random-seeds-for-all: false
-    redstone-implementation: eigencraft
