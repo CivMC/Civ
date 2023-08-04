@@ -158,12 +158,6 @@ world-settings:
       disable-end-credits: false
       disable-mob-spawner-spawn-egg-transformation: true
     door-breaking-difficulty:
-      zombie_villager:
-      - HARD
-      husk:
-      - HARD
-      zombified_piglin:
-      - HARD
       zombie: []
       vindicator: []
     max-growth-height:
