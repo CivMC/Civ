@@ -1,0 +1,26 @@
+# This is an example group limit for tiles. Users will be able to place at most 64 redstone in a chunk.
+# The limit makes use of a world blacklist, which means with the current configuration it will work for all worlds.
+# It will also work for all addons.
+limit:
+  name: "Redstone"
+  type: "PERMISSION"
+  bypass-permission: "insights.bypass.limit.redstone"
+  limit: 16
+  materials:
+    - "HOPPER"
+    - "DISPENSER"
+    - "DROPPER"
+    - "STICKY_PISTON"
+    - "PISTON"
+    - "TNT"
+    - "REPEATER"
+    - "COMPARATOR"
+    - "OBSERVER"
+  settings:
+    enabled-worlds:
+      whitelist: false
+      worlds: []
+    enabled-addons:
+      whitelist: false
+      addons: []
+    disallow-placement-outside-region: false

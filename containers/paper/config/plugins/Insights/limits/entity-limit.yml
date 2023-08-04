@@ -1,0 +1,17 @@
+  name: "Tile Entities"
+  type: "PERMISSION"
+  bypass-permission: "insights.bypass.limit.entity"
+  limit: 16
+  entities:
+    - "ITEM_FRAME"
+    - "GLOW_ITEM_FRAME"
+    - "PAINTING"
+    - "ARMOR_STAND"
+  settings:
+    enabled-worlds:
+      whitelist: false
+      worlds: []
+    enabled-addons:
+      whitelist: false
+      addons: []
+    disallow-placement-outside-region: false

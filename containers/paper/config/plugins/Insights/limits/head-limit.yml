@@ -1,0 +1,15 @@
+  name: "head"
+  type: "GROUP"
+  bypass-permission: "insights.bypass.limit.head"
+  limit: 10
+  materials:
+    - "PLAYER_HEAD"
+    - "PLAYER_WALL_HEAD"
+  settings:
+    enabled-worlds:
+      whitelist: false
+      worlds: []
+    enabled-addons:
+      whitelist: false
+      addons: []
+    disallow-placement-outside-region: false

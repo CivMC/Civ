@@ -1,0 +1,19 @@
+  name: "TABLES"
+  type: "GROUP"
+  bypass-permission: "insights.bypass.limit.table"
+  limit: 40
+  materials:
+    - "FURNACE"
+    - "SMOKER"
+    - "BLAST_FURNACE"
+    - "CAMPFIRE"
+    - "SOUL_CAMPFIRE"
+    - "BREWING_STAND"    
+  settings:
+    enabled-worlds:
+      whitelist: false
+      worlds: []
+    enabled-addons:
+      whitelist: false
+      addons: []
+    disallow-placement-outside-region: false
