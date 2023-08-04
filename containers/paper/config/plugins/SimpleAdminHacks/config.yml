@@ -405,8 +405,6 @@ hacks:
         BLAST_FURNACE: 40
         BREWING_STAND: 40
         SMOKER: 40
-        CAMPFIRE: 16
-        SOUL_CAMPFIRE: 16
         ITEM_FRAME: 48
         GLOW_ITEM_FRAME: 48
         ARMOR_STAND: 48
