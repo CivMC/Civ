@@ -74,10 +74,10 @@ world-settings:
       cavevines-modifier: 100
       glowberry-modifier: 100
     entity-activation-range:
-      animals: 32
-      monsters: 32
+      animals: 8
+      monsters: 8
       raiders: 8
-      misc: 12
+      misc: 8
       water: 8
       villagers: 8
       flying-monsters: 32
@@ -100,11 +100,11 @@ world-settings:
       tick-inactive-villagers: false
       ignore-spectators: false
     entity-tracking-range:
-      players: 96
-      animals: 8
-      monsters: 16
-      misc: 8
-      other: 8
+      players: 160
+      animals: 32
+      monsters: 32
+      misc: 16
+      other: 16
     ticks-per:
       hopper-transfer: 16
       hopper-check: 8

@@ -1,5 +1,5 @@
   name: "Tile Entities"
-  type: "PERMISSION"
+  type: "TILE"
   bypass-permission: "insights.bypass.limit.entity"
   limit: 16
   entities:
