@@ -189,6 +189,7 @@ factories:
       - dye_glass_green
       - dye_glass_red
       - dye_glass_black
+      - dye_glass_tinted
       - repair_glass
   grill:
     type: FCC
@@ -3233,6 +3234,21 @@ recipes:
     output:
       black_glass:
         material: BLACK_STAINED_GLASS
+        amount: 64
+  dye_glass_tinted:
+    production_time: 4s
+    name: Dye Glass Tinted
+    type: PRODUCTION
+    input:
+      glass:
+        material: GLASS
+        amount: 64
+      amethyst_shard:
+        material: AMETHYST_SHARD
+        amount: 4
+    output:
+      tinted_glass:
+        material: TINTED_GLASS
         amount: 64
   mix_concrete_white:
     production_time: 4s
