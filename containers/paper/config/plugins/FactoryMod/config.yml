@@ -88,7 +88,6 @@ factories:
       - clean_red_sand
       - make_end_stone
       - make_purpur
-      - fuse_amethyst
       - condense_purpur_fruit
       - make_prismarine_bricks
       - make_dark_prismarine
@@ -1834,18 +1833,6 @@ recipes:
       purpur:
         material: PURPUR_BLOCK
         amount: 64
-  fuse_amethyst:
-    production_time: 4s
-    name: Fuse Amethyst
-    type: PRODUCTION
-    input:
-      amethyst_shard:
-        material: AMETHYST_SHARD
-        amount: 64
-    output:
-      amethyst_cluster:
-        material: AMETHYST_CLUSTER
-        amount: 12
   condense_purpur_fruit:
     forceInclude: true
     production_time: 4s
