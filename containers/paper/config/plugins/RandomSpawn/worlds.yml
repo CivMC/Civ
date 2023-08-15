@@ -329,6 +329,30 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 247 # spawn area outer radius
       exclusion: 144 # spawn area inner radius
+    Meracydia: # xenovolution
+      x: 5381
+      y: 250 # overridden in code, but must be set
+      z: 7618
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Zephyria: # Pqrrot
+      x: 5917
+      y: 250 # overridden in code, but must be set
+      z: -2257
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    The Papal States: # Antares
+      x: -6700
+      y: 250 # overridden in code, but must be set
+      z: 625
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
 world_nether:
   randomspawnon:
     - respawn
