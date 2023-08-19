@@ -93,7 +93,6 @@ shopRelay:
     - WATER
     - LAVA
     - IRON_BARS
-    - BEACON
     - GLASS
     - TINTED_GLASS
     - WHITE_STAINED_GLASS
