@@ -1,0 +1,15 @@
+limit:  
+  name: "Blast Furnace"
+  type: "GROUP"
+  bypass-permission: "insights.bypass.limit.table"
+  limit: 40
+  materials:
+    - "BLAST_FURNACE"  
+  settings:
+    enabled-worlds:
+      whitelist: false
+      worlds: []
+    enabled-addons:
+      whitelist: false
+      addons: []
+    disallow-placement-outside-region: false

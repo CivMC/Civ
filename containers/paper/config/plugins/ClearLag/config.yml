@@ -72,17 +72,17 @@ ram-meter:
 # -- 'disable-natural-entity-spawning' disables the server's natural world spawning
 # -- 'halted' this section defines which actions should be halted during '/lagg halt'
 halt-command:
-  remove-entities: true
-  disable-natural-entity-spawning: true
+  remove-entities: false
+  disable-natural-entity-spawning: false
   halted:
-    fire: true
-    fire-burn: true
-    explosion: true
-    decay: true
-    block-fade: true
-    block-form: true
-    block-spread: true
-    block-natural-change: true
+    fire: false
+    fire-burn: false
+    explosion: false
+    decay: false
+    block-fade: false
+    block-form: false
+    block-spread: false
+    block-natural-change: false
 
 #This limits how fast a user can move by walking or flying in a single tick (20 ticks a second)
 #I HIGHLY recommend you use this on servers with increased player-speed/fly to prevent chunk overload
@@ -99,34 +99,8 @@ player-speed-limiter:
 #Material list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
 # -- 'items' Lists the material names of the entities with their spawn-age (In seconds)
 item-spawn-age-setter:
-  enabled: false #Paper.yml can change despawn times
+  enabled: false
   items:
-    stone: 240
-    grass: 240
-    cobblestone: 240
-    log: 240
-    stone_axe: 240
-    stone_pickaxe: 240
-    stone_sword: 240
-    wooden_axe: 240
-    wooden_pickaxe: 240
-    wooden_sword: 240
-    rotten_flesh: 240
-    gravel: 240
-    dirt: 240
-    leather: 200
-    sand: 240
-    bone: 240
-    beef: 240
-    chicken: 160
-    rabbit: 240
-    salmon: 240
-    cactus: 210
-    wool: 180
-    arrow: 160
-    PORKCHOP: 240
-    potato: 240
-    RED_TULIP: 240
 
 #Should mobs be nerfed to prevent over-breeding to reduce CPU usage (And possibly raise TPS)
 #When mobs are stuck too close, collisions are extremely intensive putting a pretty mean load on the server
@@ -134,8 +108,8 @@ item-spawn-age-setter:
 # -- 'check-radius' is the radius of what clearlag will check for 'max-mobs'
 mob-breeding-limiter:
   enabled: true
-  max-mobs: 12
-  check-radius: 15
+  max-mobs: 16
+  check-radius: 32
 
 #Should clearlag purge logs under /logs when the server starts?
 # -- 'days-old' means how many days old can the log be to be deleted
@@ -163,8 +137,8 @@ config-updater:
 # -- 'max-mobs' is how many entities may be in the radius before the spawning is blocked
 mobegg-limiter:
   enabled: true
-  check-radius: 15
-  max-mobs: 12
+  check-radius: 16
+  max-mobs: 24
 
 #Disable new chunk generation, or just put a cap on how many can load at once.
 #May cause many bugs with Spigot 1.8+, not recommended!
@@ -179,10 +153,10 @@ chunk-limiter:
 # -- Lower it is, the better your entity tick will be and the more CPU cycles you'll save
 # -- If it's too high, expect bugs / lots of lag
 mob-range:
-  enabled: false #Spigot.yml does this
-  zombie: 30
-  skeleton: 30
-  creeper: 20
+  enabled: false
+  #zombie: 30
+  #skeleton: 30
+  #creeper: 20
 
 #How long should items/Mobs be left on the ground
 # -- live-time's go by ticks (20 ticks a second)
@@ -200,8 +174,8 @@ live-time:
 # -- 'radius' is the radius clearlag will check for TNT-Minecarts
 tnt-minecart:
   enabled: true
-  max: 4
-  radius: 10
+  max: 8
+  radius: 8
 
 #This option reduces global dispenser fire rate
 # -- 'time' is in milliseconds
@@ -214,79 +188,79 @@ dispenser-reducer:
 # -- 'max-primed' is the max primed TNT within the radius allowed before clearlag begins to remove
 tnt-reducer:
   enabled: true
-  check-radius: 5
-  max-primed: 3
+  check-radius: 8
+  max-primed: 12
 
 #This option reduces fire spread rate
 # -- 'time' is in milliseconds
 firespread-reducer:
-  enabled: true
+  enabled: false
   time: 9223372036854775807
 
 #How many entities should one chunk be allowed to hold?
 # -- 'entities' lists all the entities that will be counted
 #     and possibly removed.
 chunk-entity-limiter:
-  enabled: true
+  enabled: false
   limit: 12
   entities:
-    - bat !hasName
-    - bee !hasName
-    - blaze !hasName
-    - blaze liveTime=1200
-    - cave_spider !hasName
-    - cave_spider liveTime=1200
-    - chicken !hasName
-    - cod !hasName
-    - cow !hasName
-    - creeper !hasName
-    - drowned !hasName
-    - elder_guardian !hasName
-    - enderman !hasName
-    - endermite !hasName
-    - fox !hasName
-    - ghast !hasName
-    - guardian !hasName
-    - guardian liveTime=1200
-    - hoglin !hasName
-    - horse !hasName
-    - husk !hasName
-    - illusioner !hasName
-    - iron_golem !hasName
-    - magma_cube !hasName
-    - mule !hasName
-    - mushroom_cow !hasName
-    - ocelot !hasName
-    - panda !hasName
-    - phantom !hasName
-    - pig !hasName
-    - pillager !hasName
-    - polar_bear !hasName
-    - pufferfish !hasName
-    - rabbit !hasName
-    - salmon !hasName
-    - sheep !hasName
-    - silverfish !hasName
-    - skeleton !hasName
-    - skeleton_horse !hasName
-    - snowman !hasName !hasName
-    - spider !hasName
-    - stray !hasName
-    - strider !hasName
-    - squid !hasName
-    - tropical_fish !hasName
-    - turtle !hasName
-    - vex !hasName
-    - villager !hasName
-    - vindicator !hasName
-    - wolf !hasName
-    - zoglin !hasName
-    - zombie !hasName
-    - zombie liveTime=1200
-    - zombie_villager !hasName
-    - zombified_piglin !hasName
-    - zombified_piglin liveTime=1200
-  # - Pig liveTime=100 <- This mob will be REMOVED if it's been alive for 100 ticks (5 seconds)
+    #- bat !hasName
+    #- bee !hasName
+    #- blaze !hasName
+    #- blaze liveTime=1200
+    #- cave_spider !hasName
+    #- cave_spider liveTime=1200
+    #- chicken !hasName
+    #- cod !hasName
+    #- cow !hasName
+    #- creeper !hasName
+    #- drowned !hasName
+    #- elder_guardian !hasName
+    #- enderman !hasName
+    #- endermite !hasName
+    #- fox !hasName
+    #- ghast !hasName
+    #- guardian !hasName
+    #- guardian liveTime=1200
+    #- hoglin !hasName
+    #- horse !hasName
+    #- husk !hasName
+    #- illusioner !hasName
+    #- iron_golem !hasName
+    #- magma_cube !hasName
+    #- mule !hasName
+    #- mushroom_cow !hasName
+    #- ocelot !hasName
+    #- panda !hasName
+    #- phantom !hasName
+    #- pig !hasName
+    #- pillager !hasName
+    #- polar_bear !hasName
+    #- pufferfish !hasName
+    #- rabbit !hasName
+    #- salmon !hasName
+    #- sheep !hasName
+    #- silverfish !hasName
+    #- skeleton !hasName
+    #- skeleton_horse !hasName
+    #- snowman !hasName !hasName
+    #- spider !hasName
+    #- stray !hasName
+    #- strider !hasName
+    #- squid !hasName
+    #- tropical_fish !hasName
+    #- turtle !hasName
+    #- vex !hasName
+    #- villager !hasName
+    #- vindicator !hasName
+    #- wolf !hasName
+    #- zoglin !hasName
+    #- zombie !hasName
+    #- zombie liveTime=1200
+    #- zombie_villager !hasName
+    #- zombified_piglin !hasName
+    #- zombified_piglin liveTime=1200
+    #- Pig liveTime=100 <- This mob will be REMOVED if it's been alive for 100 ticks (5 seconds)
 
 #A per-entity chunk limiter. Very useful to limiting useless mobs like squid, but not zombies
 # -- 'entity-limits' lists all the entities, their filters, and 'limit' to specify their limit
@@ -297,15 +271,15 @@ chunk-entity-limiter:
 # -- 'check-interval' How often (in ticks, 50MS) should chunks be checked
 # -- 'chunk-batch-size' How many chunks at once should be checked
 per-entity-chunk-entity-limiter:
-  enabled: true
+  enabled: false
   entity-limits:
-    - COD limit:1
-    - ZOMBIFIED_PIGLIN limit:8
-    - GHAST limit:3
-    - ZOMBIE limit:8
-    - SPIDER limit:8
-    - CAVE_SPIDER limit:8
-    - SNOW_GOLEM limit:4
+    #- COD limit:1
+    #- ZOMBIFIED_PIGLIN limit:8
+    #- GHAST limit:3
+    #- ZOMBIE limit:8
+    #- SPIDER limit:8
+    #- CAVE_SPIDER limit:8
+    #- SNOW_GOLEM limit:4
   passive-cleaner:
     passive-cleaning-enabled: false
     check-interval: 30

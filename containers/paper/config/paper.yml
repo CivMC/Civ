@@ -8,7 +8,7 @@
 # Discord: https://discord.gg/papermc
 # IRC: #paper @ irc.esper.net ( https://webchat.esper.net/?channels=paper ) 
 # Website: https://papermc.io/ 
-# Docs: https://paper.readthedocs.org/ 
+# Docs: https://paper.readthedocs.org/
 
 verbose: false
 messages:
@@ -164,29 +164,29 @@ world-settings:
       MaximumTicks: 600
     despawn-ranges:
       monster:
-        soft: 28
-        hard: 96
+        soft: 24
+        hard: 48
       creature:
-        soft: 28
-        hard: 96
+        soft: 24
+        hard: 48
       ambient:
-        soft: 28
-        hard: 96
+        soft: 24
+        hard: 48
       axolotls:
-        soft: 32
+        soft: 24
         hard: 128
       underground_water_creature:
-        soft: 28
-        hard: 96
+        soft: 24
+        hard: 48
       water_creature:
-        soft: 28
-        hard: 96
+        soft: 24
+        hard: 48
       water_ambient:
-        soft: 28
-        hard: 64
+        soft: 24
+        hard: 48
       misc:
-        soft: 28
-        hard: 96
+        soft: 24
+        hard: 48
     falling-block-height-nerf: 0
     tnt-entity-height-nerf: 0
     slime-spawn-height:
@@ -344,9 +344,38 @@ world-settings:
       fireball: 1
       small_fireball: 1
     alt-item-despawn-rate:
-      enabled: false
+      enabled: true
       items:
-        COBBLESTONE: 300
+        deepslate: 3000
+        cobbled_deepslate: 3000
+        cobblestone: 3000
+        stone: 3000
+        dirt: 1200
+        diamond: 12000
+        diamond_block: 12000
+        deepslate_diamond_ore: 12000
+        diamond_ore: 12000
+        diamond_sword: 12000
+        diamond_pickaxe: 12000
+        diamond_axe: 12000
+        diamond_shovel: 12000
+        diamond_helmet: 12000
+        diamond_chestplate: 12000
+        diamond_leggings: 12000
+        diamond_boots: 12000
+        ancient_debris: 12000
+        netherite_ingot: 12000
+        netherite_block: 12000
+        netherite_scrap: 12000
+        netherite_sword: 12000
+        netherite_pickaxe: 12000
+        netherite_axe: 12000
+        netherite_shovel: 12000
+        netherite_hoe: 12000
+        netherite_helmet: 12000
+        netherite_chestplate: 12000
+        netherite_leggings: 12000
+        netherite_boots: 12000
     tick-rates:
       sensor:
         villager:

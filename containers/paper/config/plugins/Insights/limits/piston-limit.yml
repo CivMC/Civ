@@ -1,0 +1,15 @@
+limit:
+  name: "Piston"
+  type: "GROUP"
+  bypass-permission: "insights.bypass.limit.redstone"
+  limit: 30
+  materials:
+    - "PISTON"
+  settings:
+    enabled-worlds:
+      whitelist: false
+      worlds: []
+    enabled-addons:
+      whitelist: false
+      addons: []
+    disallow-placement-outside-region: false
