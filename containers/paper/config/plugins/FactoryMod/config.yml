@@ -7449,7 +7449,7 @@ recipes:
             SkullOwner: Gwua
       s0uthw3st_skull:
         chance: 0.00094496776
-        Gwua_skull:
+        s0uthw3st_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
