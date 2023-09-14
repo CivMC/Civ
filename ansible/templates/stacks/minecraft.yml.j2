@@ -105,7 +105,7 @@ services:
     networks:
       - minecraft_default
     volumes:
-      - /opt/PrivateConfig/kira/test-config.json:/app/config.json
+      - /opt/PrivateConfig/kira/{{setting.environment}}-config.json:/app/config.json
     deploy:
       placement:
         constraints: [node.role == manager]
