@@ -392,24 +392,24 @@ hacks:
   GameTuning:
     enabled: true
     chunkLimits:
-      enabled: true
+      enabled: false
       exceededMessage: '&9Limit (%Limit%) reached for this chunk, you cannot place more of this type of block (%Material%).'
       tileEntities:
         HOPPER: 16
         DISPENSER: 16
         DROPPER: 16
-        COMPARATOR: 16
-        PISTON: 30
-        STICKY_PISTON: 30
-        FURNACE: 40
+        COMPARATOR: 32
+        PISTON: 128
+        STICKY_PISTON: 128
+        FURNACE: 48
         BLAST_FURNACE: 40
-        BREWING_STAND: 40
-        SMOKER: 40
+        BREWING_STAND: 48
+        SMOKER: 48
         ITEM_FRAME: 48
         GLOW_ITEM_FRAME: 48
         ARMOR_STAND: 48
         PAINTING: 48
-        PLAYER_HEAD: 10 
+        PLAYER_HEAD: 16
       exempt:
       - Steve
       - Alex
