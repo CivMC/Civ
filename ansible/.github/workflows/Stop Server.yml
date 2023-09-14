@@ -4,6 +4,7 @@ on:
     inputs:
       environment:
         description: 'Environment to Stop'
+        type: environment
         required: true 
         default: Test
 

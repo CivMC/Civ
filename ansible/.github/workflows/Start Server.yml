@@ -4,6 +4,7 @@ on:
     inputs:
       environment:
         description: 'Environment to Start'
+        type: environment
         required: true 
         default: Test
 

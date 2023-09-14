@@ -4,6 +4,7 @@ on:
     inputs:
       environment:
         description: 'Environment to Setup'
+        type: environment
         required: true 
         default: Test
 
