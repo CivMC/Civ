@@ -2,7 +2,7 @@ limit:
   name: "Comparator"
   type: "GROUP"
   bypass-permission: "insights.bypass.limit.redstone"
-  limit: 16
+  limit: 32
   materials:
     - "COMPARATOR"
   settings:

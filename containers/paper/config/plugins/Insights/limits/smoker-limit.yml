@@ -2,7 +2,7 @@ limit:
   name: "smoker"
   type: "GROUP"
   bypass-permission: "insights.bypass.limit.table"
-  limit: 40
+  limit: 48
   materials:
     - "SMOKER"  
   settings:

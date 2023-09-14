@@ -2,7 +2,7 @@ limit:
   name: "Furnace"
   type: "GROUP"
   bypass-permission: "insights.bypass.limit.tables"
-  limit: 40
+  limit: 48
   materials:
     - "FURNACE"  
   settings:

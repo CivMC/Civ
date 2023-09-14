@@ -2,7 +2,7 @@ limit:
   name: "Piston"
   type: "GROUP"
   bypass-permission: "insights.bypass.limit.redstone"
-  limit: 30
+  limit: 128
   materials:
     - "PISTON"
   settings:
