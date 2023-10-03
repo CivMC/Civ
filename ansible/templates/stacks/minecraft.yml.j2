@@ -87,7 +87,7 @@ services:
       - /opt/PrivateConfig/paper/config/Votifier/rsa/private.key:/config/plugins/Votifier/rsa/private.key
       - /opt/PrivateConfig/paper/config/DiscordSRV/config.yml:/config/plugins/DiscordSRV/config.yml
       - /opt/PrivateConfig/paper/config/DiscordSRV/alerts.yml:/config/plugins/DiscordSRV/alerts.yml
-      - /opt/PrivateConfig/paper/config/MythicMobs/config.yml:/config/plugins/MythicMobs/config.yml
+      - /opt/PrivateConfig/paper/config/MythicMobs/config.yml:/config/plugins/MythicMobs
     deploy:
       placement:
         constraints: [node.role == manager]
