@@ -1,12 +1,18 @@
 package com.github.igotyou.FactoryMod.listeners;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.recipes.WordBankRecipe;
+import com.github.igotyou.FactoryMod.events.RecipeExecuteEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.CraftingInventory;
@@ -51,6 +57,18 @@ public class CompactItemListener implements Listener {
 	}
 
 	/**
+	 * Prevents players from enchanting compacted items
+	 */
+	@EventHandler
+	public void enchantEvent(EnchantItemEvent e) {
+		ItemStack ei = e.getItem();
+		if (isCompacted(ei)) {
+			e.setCancelled(true);
+			e.getEnchanter().sendMessage(ChatColor.RED + "You can not enchant compacted items");
+		}
+	}
+
+	/**
 	 * Prevents players from eating compacted items
 	 */
 	@EventHandler
@@ -58,6 +76,22 @@ public class CompactItemListener implements Listener {
 		if (isCompacted(e.getItem())) {
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.RED + "You can not eat compacted food");
+		}
+
+	}
+
+	/**
+	 * Prevents players from wordbanking compacted items
+	 */
+	@EventHandler
+	public void wordbankEvent(FactoryActivateEvent e) {
+		FurnCraftChestFactory fac = ((FurnCraftChestFactory) e.getFactory());
+
+		if (!fac.getCurrentRecipe().getTypeIdentifier().equals("WORDBANK")) return;
+
+		if (isCompacted(fac.getInputInventory().getItem(0))) {
+			e.setCancelled(true);
+			e.getActivator().sendMessage(ChatColor.RED + "You can not wordbank compacted items");
 		}
 
 	}
