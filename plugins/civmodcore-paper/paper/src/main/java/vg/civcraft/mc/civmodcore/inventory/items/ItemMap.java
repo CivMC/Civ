@@ -105,12 +105,7 @@ public class ItemMap {
 	}
 
 	private static ItemStack INTERNAL_createKey(ItemStack item) {
-		item = item.asOne(); // this also clones the stack
-		ItemUtils.handleItemMeta(item, (Repairable meta) -> {
-			meta.setRepairCost(0);
-			return true;
-		});
-		return item;
+		return item.asOne();
 	}
 
 
