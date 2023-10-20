@@ -7487,7 +7487,7 @@ recipes:
             SkullOwner: s0uthw3st
       CapColt_skull:
         chance: 0.0009256827
-        s0uthw3st_skull:
+        CapColt_skull:
           material: PLAYER_HEAD
           amount: 1
           nbt:
