@@ -48,6 +48,7 @@ factories:
     recipes:
       - smelt_netherrack
       - smelt_red_netherbrick
+      - make_nether_brick_fence
       - smelt_nether_quartz
       - smelt_quartz_blocks
       - smelt_smooth_quartz
