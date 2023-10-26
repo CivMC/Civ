@@ -184,6 +184,22 @@ world:
       nearby: true # require another player nearby?
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius 
+    Kaowta: # plrog
+      x: -8132
+      y: 250 # overridden in code, but must be set
+      z: -139
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Kingdom of Amicitia: # jjonnn
+      x: 702
+      y: 250 # overridden in code, but must be set
+      z: 3732
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
     Lambat: # Kaprediem#3161
       x: 3651
@@ -285,14 +301,6 @@ world:
       x: 2950
       y: 250 # overridden in code, but must be set
       z: -5550
-      nearby: true # require another player nearby?
-      checkradius: 900 # require another player closer than this
-      radius: 200 # spawn area outer radius
-      exclusion: 0 # spawn area inner radius
-    TemporalEmpire: # PhysicsGamer
-      x: -850
-      y: 250 # overridden in code, but must be set
-      z: -5900
       nearby: true # require another player nearby?
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
