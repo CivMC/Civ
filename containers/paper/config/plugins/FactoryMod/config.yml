@@ -6556,7 +6556,7 @@ recipes:
         amount: 1
     output:
       thing_banner_pattern:
-        material: THING_BANNER_PATTERN
+        material: MOJANG_BANNER_PATTERN
         amount: 1   
   repair_printer:
     forceInclude: true
