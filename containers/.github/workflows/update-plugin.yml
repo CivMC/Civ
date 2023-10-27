@@ -28,6 +28,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - name: Extract branch name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
 
       - name: List Releases
         run: gh release list -R ${{ github.repository_owner }}/${{ inputs.plugin }}
@@ -47,4 +51,4 @@ jobs:
         run: git add . && git commit -m "${{ inputs.plugin }}-${{ inputs.version }}" && git push -u origin feature/update-${{ inputs.plugin }}-${{ inputs.version }}
 
       - name: Create PR
-        run: gh pr create -B master -H feature/update-${{ inputs.plugin }}-${{ inputs.version }} -t "Update ${{ inputs.plugin }}-${{ inputs.version }}" -b "Update ${{ inputs.plugin }}-${{ inputs.version }}"
+        run: gh pr create -B ${{ steps.extract_branch.outputs.branch }} -H feature/update-${{ inputs.plugin }}-${{ inputs.version }} -t "Update ${{ inputs.plugin }}-${{ inputs.version }}" -b "Update ${{ inputs.plugin }}-${{ inputs.version }}"
