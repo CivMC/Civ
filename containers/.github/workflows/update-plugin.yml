@@ -44,7 +44,7 @@ jobs:
         run: gh release download -R ${{ github.repository_owner }}/${{ inputs.plugin }} ${{ inputs.version }} -p ${{ inputs.asset_pattern}}
 
       - name: Commit and push branch
-        run: git add . && git push -u origin feature/update-${{ inputs.plugin }}-${{ inputs.version }}
+        run: git add . && git commit -m "${{ inputs.plugin }}-${{ inputs.version }}" && git push -u origin feature/update-${{ inputs.plugin }}-${{ inputs.version }}
 
       - name: Create PR
         run: gh pr create -B master -H feature/update-${{ inputs.plugin }}-${{ inputs.version }} -t "Update ${{ inputs.plugin }}-${{ inputs.version }}" -b "Update ${{ inputs.plugin }}-${{ inputs.version }}"
