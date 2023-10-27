@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   waterfall:
-    image: ghcr.io/civmc/civdocker/waterfall:1.24.0
+    image: ghcr.io/civmc/civdocker/waterfall:1.24.1
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -32,7 +32,7 @@ services:
           loki-batch-size: "400"
 
   paper:
-    image: ghcr.io/civmc/civdocker/paper:1.24.0
+    image: ghcr.io/civmc/civdocker/paper:1.24.1
     restart: unless-stopped
     tty: true
     stdin_open: true
