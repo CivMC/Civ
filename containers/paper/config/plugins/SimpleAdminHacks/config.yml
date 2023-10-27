@@ -357,7 +357,7 @@ hacks:
     villagerTrading: false
     witherSpawning: true
     patrolSpawning: true
-    phantomSpawning: false
+    phantomSpawning: true
     enderChestPlacement: true
     enderChestUse: false
     grindstoneUse: false
