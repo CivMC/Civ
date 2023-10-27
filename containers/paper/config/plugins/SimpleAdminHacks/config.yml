@@ -278,6 +278,8 @@ hacks:
       - [NETHER_GOLD_ORE,GILDED_BLACKSTONE]
       - [NETHER_QUARTZ_ORE]
       - [GLOWSTONE]
+      - [SEA_LANTERN]
+      - [BOOKSHELF]
   ShipOutOfLuck:
     enabled: true
     boatBreakers:
