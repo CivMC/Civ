@@ -1,5 +1,8 @@
 name: 'Update Plugin'
 
+# This workflow is still very much WIP, and more of a POC than anything right now.
+# Inputs and such may very well change depending on what the parent repo
+# ends up providing, but I'm kind of working backwards here.
 on:
   workflow_dispatch:
     inputs:
@@ -7,11 +10,48 @@ on:
         description: The plugin from this organization to update
         required: true
         type: string
+      version:
+        description: The release version to update to
+        required: true
+        type: string
+      asset_pattern:
+        description: The asset to update to
+        required: true
+        type: string
+env:
+    GH_TOKEN: ${{ github.token }}
 
 jobs:
   update_plugin:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set git user
+        run: git config user.email "41898282+github-actions[bot]@users.noreply.github.com" && git config user.name "github-actions[bot]"
+      
+      - name: Extract branch name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
       - name: List Releases
         run: gh release list -R ${{ github.repository_owner }}/${{ inputs.plugin }}
+
+      - name: Create Branch
+        run: git checkout -b feature/update-${{ inputs.plugin }}-${{ inputs.version }}
+
+      - name: Remove old version
+        working-directory: paper/plugins
+        run: shopt -s nocaseglob && rm ${{ inputs.plugin }}*
+
+      - name: Download latest release
+        working-directory: paper/plugins
+        run: gh release download -R ${{ github.repository_owner }}/${{ inputs.plugin }} ${{ inputs.version }} -p ${{ inputs.asset_pattern}}
+
+      - name: Commit and push branch
+        run: git add . && git commit -m "${{ inputs.plugin }}-${{ inputs.version }}" && git push -u origin feature/update-${{ inputs.plugin }}-${{ inputs.version }}
+
+      - name: Create PR
+        run: gh pr create -B ${{ steps.extract_branch.outputs.branch }} -H feature/update-${{ inputs.plugin }}-${{ inputs.version }} -t "Update ${{ inputs.plugin }}-${{ inputs.version }}" -b "Update ${{ inputs.plugin }}-${{ inputs.version }}"
