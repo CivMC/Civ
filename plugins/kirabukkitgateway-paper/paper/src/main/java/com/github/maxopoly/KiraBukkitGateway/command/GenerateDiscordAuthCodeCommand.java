@@ -24,7 +24,7 @@ public class GenerateDiscordAuthCodeCommand extends BaseCommand {
 		RabbitCommands rabbit = KiraBukkitGatewayPlugin.getInstance().getRabbit();
 		rabbit.sendAuthCode(code, p.getName(), p.getUniqueId());
 		sender.sendMessage(String.format(
-				"%sYour code is '%s'. Run '!kira auth %s' in the official discord to authenticate. Note that upper/lower case does not matter.",
+				"%sYour code is '%s'. Execute '/auth %s' in the official discord to authenticate and link your account. Note that upper/lower case does not matter.",
 				ChatColor.GOLD, code, code));
 	}
 }
