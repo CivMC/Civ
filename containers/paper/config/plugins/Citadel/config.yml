@@ -331,6 +331,7 @@ non_reinforceables:
  - DEAD_TUBE_CORAL_FAN
  - DEAD_TUBE_CORAL_WALL_FAN
  - SCAFFOLDING
+ - COBWEB
 
 # Determines whether hanging entities (such as Item Frames) can be protected by their host block
 hangers_inherit_reinforcement: true
