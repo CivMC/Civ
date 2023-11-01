@@ -6,10 +6,8 @@
     - name: Update Server | Expand setting
       include: ../tasks/expand-setting.yml
 
-    - name: Update Server | Include Playbooks
-      ansible.builtin.import_playbook: '{{playbook}}.yml'
-      loop:
-        - stop-server
-        - setup-server
-      loop_control:
-        loop_var: playbook
+    - name: Update Server | Include Stop Server
+      ansible.builtin.import_playbook: stop-server.yml
+    
+    - name: Update Server | Include Setup Server
+      ansible.builtin.import_playbook: setup-server.yml
