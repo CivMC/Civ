@@ -1,13 +1,5 @@
-- name: Update Server
-  hosts: all
-  become: true
-
-  tasks:
-    - name: Update Server | Expand setting
-      include: ../tasks/expand-setting.yml
-
-    - name: Update Server | Include Stop Server
-      ansible.builtin.import_playbook: stop-server.yml
+- name: Update Server | Include Stop Server
+  ansible.builtin.import_playbook: stop-server.yml
     
-    - name: Update Server | Include Setup Server
-      ansible.builtin.import_playbook: setup-server.yml
+- name: Update Server | Include Setup Server
+  ansible.builtin.import_playbook: setup-server.yml
