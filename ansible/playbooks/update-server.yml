@@ -1,5 +1,44 @@
-- name: Update Server | Include Stop Server
-  ansible.builtin.import_playbook: stop-server.yml
+- name: Update Server
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update Server | Expand setting
+      include: ../tasks/expand-setting.yml
+
+    - name: Update Server | Include Stop Tasks
+      include_tasks:
+        file: '../tasks/stop-server.yml'
+
+    # TODO: This is currently redundant with setup-server.
+    # We need a way to tell if the settings have already been included or not to prevent it from happening twice
+    - name: Update Server | Include Installation Tasks
+      include_tasks:
+        file: '../tasks/install/{{install_task}}.yml'
+      loop:
+        - packages
+        - docker
+      loop_control:
+        loop_var: install_task
+
+    - name: Update Server | Include Configuration Tasks
+      include_tasks:
+        file: '../tasks/configure/{{configure_task}}.yml'
+      loop:
+        - backups
+        - docker
+        - ufw
+      loop_control:
+        loop_var: configure_task
     
-- name: Update Server | Include Setup Server
-  ansible.builtin.import_playbook: setup-server.yml
+    - name: Update Server | Include Deployment Tasks
+      include_tasks:
+        file: '../tasks/deploy/{{deploy_task}}.yml'
+      loop:
+        - traefik
+        - auth
+        - maven
+        - monitoring
+        - minecraft
+      loop_control:
+        loop_var: deploy_task
