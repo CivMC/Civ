@@ -1,16 +1,11 @@
 package vg.civcraft.mc.civmodcore;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -18,9 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.Contract;
 
 public abstract class ACivMod extends JavaPlugin {
 
@@ -212,65 +205,4 @@ public abstract class ACivMod extends JavaPlugin {
 			getLogger().log(Level.INFO, message, vars);
 		}
 	}
-
-	/**
-	 * <p>Attempts to retrieve a plugin's instance through several known means.</p>
-	 *
-	 * <ol>
-	 *     <li>
-	 *         If there's an instance of the class currently enabled. <b>Don't request ACivMod, JavaPlugin, PluginBase,
-	 *         or Plugin or you'll just get the the first result.</b>
-	 *     </li>
-	 *     <li>If there's a public static .getInstance() or .getPlugin() method.</li>
-	 *     <li>If there's a static "instance" or "plugin" field.</li>
-	 * </ol>
-	 *
-	 * @param <T> The type of the plugin.
-	 * @param clazz The class object of the plugin.
-	 * @return Returns the first found instance of the plugin, or null. Nulls don't necessarily mean there isn't an
-	 *         instance of the plugin in existence. It could just be that it's located some unexpected place.
-	 *         Additionally, just because an instance has been returned does not mean that instance is enabled.
-	 */
-	@Contract("null -> null")
-	@Nullable
-	@SuppressWarnings("unchecked")
-	public static <T extends JavaPlugin> T getInstance(@Nullable final Class<T> clazz) {
-		if (clazz == null) {
-			return null;
-		}
-		try {
-			return JavaPlugin.getPlugin(clazz);
-		}
-		catch (final IllegalArgumentException | IllegalStateException ignored) { }
-		for (final Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-			if (clazz.equals(plugin.getClass())) {
-				return (T) plugin;
-			}
-		}
-		for (final String methodName : Arrays.asList("getInstance", "getPlugin")) {
-			try {
-				final Method method = clazz.getDeclaredMethod(methodName);
-				if (Modifier.isPublic(method.getModifiers())
-						&& Modifier.isStatic(method.getModifiers())
-						&& method.getParameterCount() == 0
-						&& clazz.isAssignableFrom(method.getReturnType())) {
-					return (T) method.invoke(null);
-				}
-			}
-			catch (final Throwable ignored) { }
-		}
-		for (final String fieldName : Arrays.asList("instance", "plugin")) {
-			try {
-				final Field field = clazz.getField(fieldName);
-				if (Modifier.isStatic(field.getModifiers())
-						&& clazz.isAssignableFrom(field.getType())) {
-					return (T) field.get(null);
-				}
-			}
-			catch (final Throwable ignored) { }
-		}
-		// Otherwise there's no instance of the plugin, or it's stored in an unusual way
-		return null;
-	}
-
 }
