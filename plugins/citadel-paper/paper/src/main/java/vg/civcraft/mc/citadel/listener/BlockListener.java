@@ -6,6 +6,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
@@ -592,5 +593,29 @@ public class BlockListener implements Listener {
 			return;
 		}
 		event.setCancelled(true);
+	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void preventHostileAnvilUsage(
+			final PlayerInteractEvent event
+	) {
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
+		final Block clickedBlock = event.getClickedBlock();
+		if (clickedBlock == null || !Tag.ANVIL.isTagged(clickedBlock.getType())) {
+			return;
+		}
+		final Player clicker = event.getPlayer();
+		// We already know that an anvil is a single block, thus the additional logic
+		// of ReinforcementLogic.getReinforcementProtecting(block) is unnecessary
+		final Reinforcement reinforcement = ReinforcementLogic.getReinforcementAt(clickedBlock.getLocation());
+		if (reinforcement == null
+				|| reinforcement.isInsecure()
+				|| reinforcement.hasPermission(clicker.getUniqueId(), CitadelPermissionHandler.getChests())) {
+			return;
+		}
+		event.setCancelled(true);
+		CitadelUtility.sendAndLog(clicker, ChatColor.RED, "You cannot use that anvil.", clickedBlock.getLocation());
 	}
 }
