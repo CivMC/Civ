@@ -2,6 +2,7 @@ import net.civmc.civgradle.CivGradleExtension
 
 plugins {
 	id("net.civmc.civgradle") version "2.+" apply false
+    id("com.gradle.enterprise") version("3.15")
 }
 
 subprojects {
@@ -20,4 +21,14 @@ subprojects {
 
 		maven("https://jitpack.io")
 	}
+}
+
+gradleEnterprise {
+    if (System.getenv("CI") != null) {
+        buildScan {
+            publishAlways()
+            termsOfServiceUrl = "https://gradle.com/terms-of-service"
+            termsOfServiceAgree = "yes"
+        }
+    }
 }
