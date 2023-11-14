@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-   uses: civmc/.github/.github/workflows/gradle_build@master
+   uses: civmc/.github/.github/workflows/gradle_build.yml@master
    with:
      gradle_task: reobf
    secrets: inherit
