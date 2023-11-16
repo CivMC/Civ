@@ -1,4 +1,5 @@
-FROM itzg/minecraft-server
+# Pin to java21
+FROM itzg/minecraft-server@sha256:b6900acfcf761f55d3708eccab840b0427f393d6f8e8f21cf6a6a8bc9ecb695b
 
 # https://github.com/itzg/docker-minecraft-server/blob/master/README.md#versions
 ENV VERSION=1.18.2
