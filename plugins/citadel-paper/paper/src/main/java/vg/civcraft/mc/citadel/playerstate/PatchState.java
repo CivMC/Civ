@@ -78,6 +78,18 @@ public class PatchState extends AbstractPlayerState {
 				return;
 			}
 		}
+
+		CitadelUtility.sendAndLog(
+				player,
+				ChatColor.GOLD, "Patching "
+						+ ChatColor.AQUA + rein.getType().getName()
+						+ ChatColor.GOLD + " reinforcement owned by "
+						+ ChatColor.LIGHT_PURPLE + rein.getGroup().getName()
+						+ ChatColor.GOLD + " from "
+						+ ModeListener.formatHealth(rein),
+				e.getClickedBlock().getLocation()
+		);
+
 		rein.setHealth(rein.getType().getHealth());
 		rein.resetCreationTime();
 	}
