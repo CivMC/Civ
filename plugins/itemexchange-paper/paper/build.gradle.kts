@@ -1,22 +1,14 @@
 plugins {
-	`java-library`
-	id("net.civmc.civgradle.plugin")
-	id("io.papermc.paperweight.userdev") version "1.3.1"
-}
-
-civGradle {
-	paper {
-		pluginName = "ItemExchange"
-	}
+	id("io.papermc.paperweight.userdev")
 }
 
 dependencies {
 	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 
-	compileOnly("net.civmc.civmodcore:paper:2.0.0-SNAPSHOT:dev-all")
-	compileOnly("net.civmc:namelayer-spigot:3.0.0-SNAPSHOT:dev")
-	compileOnly("net.civmc:citadel:5.0.0-SNAPSHOT:dev")
-	compileOnly("net.cimc.jukealert:paper:3.0.0-SNAPSHOT:dev")
+	compileOnly("net.civmc.civmodcore:civmodcore-paper:2.3.5:dev-all")
+	compileOnly("net.civmc.namelayer:namelayer-paper:3.0.4:dev")
+	compileOnly("net.civmc.citadel:citadel-paper:5.1.2:dev")
+	compileOnly("net.civmc.jukealert:jukealert-paper:3.0.7:dev")
 
 	compileOnly("org.projectlombok:lombok:1.18.24")
 	annotationProcessor("org.projectlombok:lombok:1.18.24")

@@ -39,7 +39,7 @@ public final class ShopPurchaseAction extends LoggablePlayerAction {
 	}
 
 	@Override
-	protected String getChatRepresentationIdentifier() {
+	public String getChatRepresentationIdentifier() {
 		return "ItemExchange purchase";
 	}
 
