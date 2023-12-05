@@ -4,7 +4,7 @@
 
   tasks:
     - name: Update Server | Expand setting
-      include: ../tasks/expand-setting.yml
+      include_tasks: ../tasks/expand-setting.yml
 
     - name: Update Server | Include Stop Tasks
       include_tasks:
