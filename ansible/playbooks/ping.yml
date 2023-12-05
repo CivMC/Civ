@@ -3,7 +3,7 @@
 
   tasks:
     - name: Configure | Expand setting
-      include: ../tasks/expand-setting.yml
+      include_tasks: ../tasks/expand-setting.yml
 
     - name: Ping
       ping:

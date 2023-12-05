@@ -4,7 +4,7 @@
 
   tasks:
     - name: Start Server | Expand setting
-      include: ../tasks/expand-setting.yml
+      include_tasks: ../tasks/expand-setting.yml
 
     - name: Start Server | Include Start Tasks
       include_tasks:

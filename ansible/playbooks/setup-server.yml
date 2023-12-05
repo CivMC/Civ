@@ -4,7 +4,7 @@
 
   tasks:
     - name: Setup Server | Expand setting
-      include: ../tasks/expand-setting.yml
+      include_tasks: ../tasks/expand-setting.yml
 
     - name: Setup Server | Include Installation Tasks
       include_tasks:
