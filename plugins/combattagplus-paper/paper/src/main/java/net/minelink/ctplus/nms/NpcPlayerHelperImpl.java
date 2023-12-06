@@ -16,6 +16,7 @@ import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
@@ -47,6 +48,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
             serverPlayer.connection.send(packet);
         }
 
+        worldServer.entityManager.getEntityGetter().get(player.getUniqueId()).remove(Entity.RemovalReason.DISCARDED);
         worldServer.entityManager.addNewEntity(npcPlayer);
 
         return npcPlayer.getBukkitEntity();
