@@ -6438,7 +6438,7 @@ recipes:
       present:
         material: DRIED_KELP_BLOCK
         amount: 1
-        name: &5Present"
+        name: &5Present
     outputs:
       Emerald:
         chance: 1
