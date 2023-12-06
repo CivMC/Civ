@@ -10,14 +10,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 
 public abstract class ACivMod extends JavaPlugin {
 
 	private final Set<Class<? extends ConfigurationSerializable>> configClasses = new HashSet<>(0);
+
+	/** Primary constructor used by the real server */
+	protected ACivMod() {
+		super();
+	}
+
+	/** Secondary constructor used for testing */
+	protected ACivMod(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+		super(loader, description, dataFolder, file);
+	}
 
 	@Override
 	public void onEnable() {
@@ -36,10 +47,6 @@ public abstract class ACivMod extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		HandlerList.unregisterAll(this);
-		Bukkit.getMessenger().unregisterIncomingPluginChannel(this);
-		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
-		Bukkit.getScheduler().cancelTasks(this);
 		this.configClasses.forEach(ConfigurationSerialization::unregisterClass);
 	}
 
@@ -127,7 +134,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 * Disables this plugin.
 	 */
 	public void disable() {
-		getPluginLoader().disablePlugin(this);
+		getServer().getPluginManager().disablePlugin(this);
 	}
 
 	/**

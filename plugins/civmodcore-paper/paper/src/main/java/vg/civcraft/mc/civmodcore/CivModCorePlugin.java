@@ -1,22 +1,23 @@
 package vg.civcraft.mc.civmodcore;
 
+import java.io.File;
 import java.sql.SQLException;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.ipvp.canvas.MenuFunctionListener;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.civmodcore.commands.StatCommand;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.events.CustomEventMapper;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
-import vg.civcraft.mc.civmodcore.maps.MapColours;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardListener;
@@ -29,9 +30,18 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.stat.LoadStatisticManager;
 import vg.civcraft.mc.civmodcore.world.locations.global.CMCWorldDAO;
 import vg.civcraft.mc.civmodcore.world.locations.global.WorldIDManager;
-import vg.civcraft.mc.civmodcore.world.operations.ChunkOperationManager;
 
-public final class CivModCorePlugin extends ACivMod {
+public class CivModCorePlugin extends ACivMod {
+
+	/** Primary constructor used by the real server */
+	public CivModCorePlugin() {
+		super();
+	}
+
+	/** Secondary constructor used for testing */
+	protected CivModCorePlugin(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+		super(loader, description, dataFolder, file);
+	}
 
 	private static CivModCorePlugin instance;
 
@@ -77,14 +87,11 @@ public final class CivModCorePlugin extends ACivMod {
 		registerListener(new ClickableInventoryListener());
 		registerListener(DialogManager.INSTANCE);
 		registerListener(new ScoreBoardListener());
-		registerListener(new CustomEventMapper());
 		registerListener(new WorldTracker());
-		registerListener(ChunkOperationManager.INSTANCE);
 		// Register commands
 		this.commands = new CommandManager(this);
 		this.commands.init();
 		this.commands.registerCommand(new ConfigCommand());
-		this.commands.registerCommand(ChunkOperationManager.INSTANCE);
 		this.commands.registerCommand(new StatCommand());
 		// Load APIs
 		EnchantUtils.loadEnchantAbbreviations(this);
@@ -92,7 +99,6 @@ public final class CivModCorePlugin extends ACivMod {
 		SpawnEggUtils.init();
 		TreeTypeUtils.init();
 		BottomLineAPI.init();
-		MapColours.init();
 		this.skinCache = new SkinCache(this, this.config.getSkinCacheThreads());
 
 		if (this.config.getChunkLoadingStatistics())
