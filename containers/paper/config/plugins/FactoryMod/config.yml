@@ -6439,6 +6439,7 @@ recipes:
         material: CHEST
         amount: 1
         name: §3Present
+        lore:
     outputs:
       Emerald:
         chance: 1
