@@ -951,6 +951,7 @@ factories:
         amount: 4
     recipes:
       - wordbank_item
+      - open_present
       - repair_station          
   concrete_mixer:
     type: FCC
@@ -6428,6 +6429,28 @@ recipes:
       - DARK_AQUA
       - GRAY
     path: words.txt
+  open_present:
+    type: RANDOM
+    name: Open Present
+    production_time: 1s
+    fuel_consumption_intervall: 4s
+    input:
+      fossil:
+        material: PLAYER_HEAD
+        amount: 1
+        name: &5Christmas Present
+    outputs:
+      Emerald:
+        chance: 1
+        emerald:
+          material: EMERALD
+          amount: 1
+      Diamond:
+        chance: 10
+        emerald:
+          material: DIAMOND
+          amount: 1
+          lore:
   print_book:
     type: PRINTBOOK
     name: Print Book
