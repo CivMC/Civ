@@ -61,6 +61,11 @@ TNT Sound Volume: 2
 Droppable Items:
 - 'COD'
 - 'SALMON'
+- 'LILY_PAD'
+- 'BOWL'
+- 'ROTTEN_FLESH'
+- 'STICK'
+- 'BONE'
 # Random Chance, What items should be dropped if not tnt?
 # WOOD_SWORD is for <1.13 WOODEN_SWORD is for 1.13>
 # For a list of materials: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
