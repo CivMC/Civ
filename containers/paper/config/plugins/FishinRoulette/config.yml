@@ -1,0 +1,95 @@
+(Byte 0-100) Chance Of TNT: 0
+# 0 for 0% chance
+
+# TNT Section
+
+(Int Tick) TNT Fuse: 15
+# Should they get a chance to see a Flying TNT to the face? (Yes)
+# Default TNT fuse is 15 ticks.
+
+TNT Velocity Multiplier: 0.2
+# Default 0.2
+
+Keep Inventory: false
+# If the player dies due to TNT the Anti-AutoFishing tnt damage
+# Should they keep their inventory? 
+# (Does not set Worlds with KeepInv false, False just ignores and uses world setting)
+
+# Config for Selective/Fake TNT, Only effects he fisher.
+# Will be ignored if "Real TNT" is true.
+FakeTnt:
+    (Decimal) TNT Damage: 50.0
+    # Note: TNT Will not break blocks, Nor deal damage to other entities.
+    # If you feel mean.
+    # Amount of health to subtract, 50 for insta-kill.
+
+Real TNT: false
+# Should the plugin create a real TNT Explosion (Effecting other entities)?
+# (Warning) Will kill the player that is auto-fishing.
+
+RealTnt:
+    TNT Force (Float): '4.0'
+    # How much Power should the TNT have? (Vanilla TNT = 4)
+    TNT Should Set Fire: true
+    # Should the TNT set fire? (Like ghast fireballs and beds in the nether)
+    TNT Should Break Blocks: true
+    # Should the TNT break blocks like normal TNT or not?
+
+Death Message: '%Player% Tried Auto-fishin'' Roulette and ended up on the receiving end.'
+# What death message should be sent (Accepts Color cotes (&);
+# use %Player% for the player's name
+
+Help:
+    Show Barrier Particle: false
+    # Show the player what block(s) are causing the game to consider that area An autofisher.
+    Alert Message: ""
+    # Message to send to a player that has used an auto-fisher
+    # use %Player% for the player's name
+    # Set to "" to disable
+
+TNT Sound: 'ENTITY_WITCH_AMBIENT'
+# Use /playsound in-game to find the sound that you want quickly.
+TNT Sound Pitch: 1
+# (Float) Sound pitch. 1=default vanilla
+TNT Sound Volume: 2
+# (Float) Sound volume. 1=default vanilla
+
+# These sounds play the moment the tnt is spawned,
+# The default sound 'ENTITY_WITCH_AMBIENT, 1, 2'
+# Should sound like the game is laughing at them.
+
+Droppable Items:
+- 'COD'
+- 'SALMON'
+# Random Chance, What items should be dropped if not tnt?
+# WOOD_SWORD is for <1.13 WOODEN_SWORD is for 1.13>
+# For a list of materials: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+
+# A List of Materials that will trigger this plugin
+Autofisher Materials:
+# legacy items
+- 'GOLD_PLATE'
+- 'IRON_PLATE'
+- 'STONE_PLATE'
+- 'WOOD_PLATE'
+# 1.13+ items
+- 'ACACIA_PRESSURE_PLATE'
+- 'BIRCH_PRESSURE_PLATE'
+- 'DARK_OAK_PRESSURE_PLATE'
+- 'HEAVY_WEIGHTED_PRESSURE_PLATE'
+- 'JUNGLE_PRESSURE_PLATE'
+- 'LIGHT_WEIGHTED_PRESSURE_PLATE'
+- 'OAK_PRESSURE_PLATE'
+- 'SPRUCE_PRESSURE_PLATE'
+- 'STONE_PRESSURE_PLATE'
+# 1.16+ items
+- 'CRIMSON_PRESSURE_PLATE'
+- 'POLISHED_BLACKSTONE_PRESSURE_PLATE'
+- 'WARPED_PRESSURE_PLATE'
+# Other
+- 'STRING'
+- 'TRIPWIRE'
+
+# No Touchy
+Config Version: 2
+# No Touchy
