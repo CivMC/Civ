@@ -6438,7 +6438,7 @@ recipes:
       present:
         material: PLAYER_HEAD
         amount: 1
-        name: "&5Christmas Present"
+        name: &5"Christmas Present"
     outputs:
       Emerald:
         chance: 1
