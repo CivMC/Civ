@@ -6435,10 +6435,10 @@ recipes:
     production_time: 1s
     fuel_consumption_intervall: 4s
     input:
-      fossil:
+      present:
         material: PLAYER_HEAD
         amount: 1
-        name: &5Christmas Present
+        name: "&5Christmas Present"
     outputs:
       Emerald:
         chance: 1
