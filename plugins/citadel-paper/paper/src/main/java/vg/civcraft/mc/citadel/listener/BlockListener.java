@@ -44,10 +44,16 @@ import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.utilities.DoubleInteractFixer;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
+import vg.civcraft.mc.namelayer.group.Group;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class BlockListener implements Listener {
 
 	private static final Material matfire = Material.FIRE;
+	private final Map<Block, Block> mossSpreadingDispensers = new HashMap<>();
 
 	private DoubleInteractFixer interactFixer;
 
@@ -561,29 +567,38 @@ public class BlockListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onMossSpread(BlockFertilizeEvent event) {
-		for (BlockState block : event.getBlocks()) {
-			Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(block.getBlock());
+		Player player = event.getPlayer();
+		Iterator<BlockState> iterator = event.getBlocks().iterator();
+		Block dispenser = mossSpreadingDispensers.remove(event.getBlock());
+		Reinforcement dispenserRein = dispenser == null ? null
+				: Citadel.getInstance()
+					.getReinforcementManager()
+					.getReinforcement(dispenser);
+		Group dispenserGroup = dispenserRein == null ? null :
+				dispenserRein.getGroup();
+		while (iterator.hasNext()) {
+			BlockState block = iterator.next();
+			Reinforcement reinforcement = Citadel.getInstance()
+				.getReinforcementManager()
+				.getReinforcement(block.getBlock());
 			if (reinforcement == null) {
 				continue;
 			}
-			Player player = event.getPlayer();
-			if (player == null) {
+			if (player != null && reinforcement.hasPermission(player, CitadelPermissionHandler.getCrops())) {
 				continue;
 			}
-			if (reinforcement.hasPermission(event.getPlayer(), CitadelPermissionHandler.getCrops())) {
+			if (dispenserGroup != null && dispenserGroup == reinforcement.getGroup()) {
 				continue;
 			}
-			event.getPlayer().sendMessage(Component.text("You can't do that while there are reinforced blocks around!").color(NamedTextColor.RED));
-			event.setCancelled(true);
+			iterator.remove();
 		}
 	}
 
-	@EventHandler(ignoreCancelled = true)
-	public void onDispenserGrowMoss(BlockDispenseEvent event){
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+	public void onDispenserGrowMoss(BlockDispenseEvent event) {
 		Block dispenserBlock = event.getBlock();
 		ItemStack bonemeal = event.getItem();
 		Dispenser dispenser = (Dispenser) event.getBlock().getBlockData();
-
 		if (bonemeal.getType() != Material.BONE_MEAL) {
 			return;
 		}
@@ -591,6 +606,6 @@ public class BlockListener implements Listener {
 		if (moss.getType() != Material.MOSS_BLOCK) {
 			return;
 		}
-		event.setCancelled(true);
+		mossSpreadingDispensers.put(moss, dispenserBlock);
 	}
 }
