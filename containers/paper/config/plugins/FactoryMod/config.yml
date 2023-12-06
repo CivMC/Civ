@@ -6436,9 +6436,9 @@ recipes:
     fuel_consumption_intervall: 4s
     input:
       present:
-        material: DRIED_KELP_BLOCK
+        material: CHEST
         amount: 1
-        name: &5Present
+        name: §3Present
     outputs:
       Emerald:
         chance: 1
