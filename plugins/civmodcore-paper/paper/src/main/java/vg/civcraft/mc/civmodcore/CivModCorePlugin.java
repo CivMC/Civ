@@ -32,7 +32,6 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.stat.LoadStatisticManager;
 import vg.civcraft.mc.civmodcore.world.locations.global.CMCWorldDAO;
 import vg.civcraft.mc.civmodcore.world.locations.global.WorldIDManager;
-import vg.civcraft.mc.civmodcore.world.operations.ChunkOperationManager;
 
 public class CivModCorePlugin extends ACivMod {
 
@@ -92,12 +91,10 @@ public class CivModCorePlugin extends ACivMod {
 		registerListener(new ScoreBoardListener());
 		registerListener(new CustomEventMapper());
 		registerListener(new WorldTracker());
-		registerListener(ChunkOperationManager.INSTANCE);
 		// Register commands
 		this.commands = new CommandManager(this);
 		this.commands.init();
 		this.commands.registerCommand(new ConfigCommand());
-		this.commands.registerCommand(ChunkOperationManager.INSTANCE);
 		this.commands.registerCommand(new StatCommand());
 		// Load APIs
 		EnchantUtils.loadEnchantAbbreviations(this);
