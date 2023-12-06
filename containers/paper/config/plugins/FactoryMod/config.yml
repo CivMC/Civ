@@ -6436,9 +6436,9 @@ recipes:
     fuel_consumption_intervall: 4s
     input:
       present:
-        material: PLAYER_HEAD
+        material: DRIED_KELP_BLOCK
         amount: 1
-        name: &5"Christmas Present"
+        name: &5Present"
     outputs:
       Emerald:
         chance: 1
