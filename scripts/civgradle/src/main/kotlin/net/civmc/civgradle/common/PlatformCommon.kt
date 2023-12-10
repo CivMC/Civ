@@ -73,7 +73,7 @@ object PlatformCommon {
             if (!githubActor.isNullOrEmpty() && !githubToken.isNullOrEmpty()) {
                 it.maven {
                     it.name = "GitHubPackages"
-                    it.url = URI("https://maven.pkg.github.com/CivMC/${extension.pluginName}")
+                    it.url = URI("https://maven.pkg.github.com/${extension.repoOwner}/${extension.pluginName}")
                     it.credentials {
                         it.username = githubActor
                         it.password = githubToken
