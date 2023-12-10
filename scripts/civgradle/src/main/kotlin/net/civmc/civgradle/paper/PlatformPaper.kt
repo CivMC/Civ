@@ -5,7 +5,7 @@ import org.gradle.api.Project
 import org.gradle.language.jvm.tasks.ProcessResources
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import xyz.jpenilla.runpaper.task.RunServerTask
+import xyz.jpenilla.runpaper.task.RunServer
 
 object PlatformPaper {
 
@@ -15,8 +15,8 @@ object PlatformPaper {
         if (project.pluginManager.hasPlugin("xyz.jpenilla.run-paper")) {
             logger.debug("Configuring run-paper")
 
-            project.tasks.withType(RunServerTask::class.java) {
-                it.minecraftVersion.set("1.18")
+            project.tasks.withType(RunServer::class.java) { server ->
+                server.minecraftVersion("1.18")
             }
         }
     }
