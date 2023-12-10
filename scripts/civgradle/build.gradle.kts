@@ -21,7 +21,13 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib", "1.6.0"))
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2") {
+        constraints {
+            implementation("commons-io:commons-io:2.12.0") {
+                because("Resolves CVE-2021-29425") // https://devhub.checkmarx.com/cve-details/CVE-2021-29425/
+            }
+        }
+    }
 
     // Keep these plugin versions on the classpath, so we can update them all at once if needed.
     implementation("io.papermc.paperweight.userdev:io.papermc.paperweight.userdev.gradle.plugin:1.5.5") // https://github.com/PaperMC/paperweight/tags
