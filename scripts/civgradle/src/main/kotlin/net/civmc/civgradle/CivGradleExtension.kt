@@ -7,6 +7,7 @@ import javax.inject.Inject
 
 open class CivGradleExtension @Inject constructor(objects: ObjectFactory) {
 
+    var repoOwner = "CivMC"
     var pluginName = ""
 
     val paper: PlatformPaperExtension = objects.newInstance(PlatformPaperExtension::class.java)
