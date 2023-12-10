@@ -1,5 +1,6 @@
 package net.civmc.civgradle.common
 
+import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
 import net.civmc.civgradle.CivGradleExtension
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
@@ -30,6 +31,11 @@ object PlatformCommon {
         if(project.pluginManager.hasPlugin("maven-publish")) {
             logger.debug("Configuring Maven Publish")
             configureMavenPublish(project, extension)
+        }
+
+        if (project.pluginManager.hasPlugin("com.gradle.enterprise")) {
+            logger.debug("Configuring Gradle Enterprise")
+            configureGradleEnterprise(project, extension)
         }
     }
 
@@ -101,6 +107,18 @@ object PlatformCommon {
         publishingExtension.publications {
             it.register("maven", MavenPublication::class.java) {
                 it.from(project.components.getByName("java"))
+            }
+        }
+    }
+
+    private fun configureGradleEnterprise(project: Project, extension: CivGradleExtension) {
+        val enterpriseExtension = project.extensions.getByType(GradleEnterpriseExtension::class.java)
+
+        enterpriseExtension.buildScan {
+            if (!System.getenv("CI").isNullOrEmpty()) {
+               it.tag("CI")
+                it.termsOfServiceUrl = "https://gradle.com/terms-of-service"
+                it.termsOfServiceAgree = "yes"
             }
         }
     }
