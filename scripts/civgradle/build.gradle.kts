@@ -25,7 +25,7 @@ dependencies {
 
     // Keep these plugin versions on the classpath, so we can update them all at once if needed.
     implementation("io.papermc.paperweight.userdev:io.papermc.paperweight.userdev.gradle.plugin:1.5.5") // https://github.com/PaperMC/paperweight/tags
-    implementation("xyz.jpenilla.run-paper:xyz.jpenilla.run-paper.gradle.plugin:1.0.6")
+    implementation("xyz.jpenilla.run-paper:xyz.jpenilla.run-paper.gradle.plugin:2.1.0") // https://github.com/jpenilla/run-task/releases
     implementation("gradle.plugin.com.github.johnrengelman:shadow:7.1.2")
 }
 
