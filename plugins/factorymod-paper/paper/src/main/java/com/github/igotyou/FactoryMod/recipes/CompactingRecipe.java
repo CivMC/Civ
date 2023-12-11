@@ -2,9 +2,8 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+
+import java.util.*;
 
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Material;
@@ -12,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 
 /**
  * Used to compact items, which means whole or multiple stacks of an item are reduced to a single lored item, which is stackable to the same stacksize
@@ -176,14 +176,11 @@ public class CompactingRecipe extends InputRecipe {
 	 */
 	private boolean compactable(ItemStack is, ItemMap im) {
 		if (is == null || excludedMaterials.contains(is.getType()) || (input.getAmount(is) != 0) || (is.getItemMeta().getLore() != null &&
-				is.getItemMeta().getLore().contains(compactedLore)) || (is.getItemMeta().hasEnchants() && is.getType().getMaxStackSize() == 1)) {
+				is.getItemMeta().getLore().contains(compactedLore))) {
 			return false;
-		}	
-		if (im.getAmount(is) >= getCompactStackSize(is.getType())) {
-			return true;
-		} 
-		return false;
-	}
+		}
+        return im.getAmount(is) >= getCompactStackSize(is.getType());
+    }
 
 	@Override
 	public String getTypeIdentifier() {
