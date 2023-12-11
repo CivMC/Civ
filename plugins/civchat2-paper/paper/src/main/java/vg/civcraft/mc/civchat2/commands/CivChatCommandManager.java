@@ -18,11 +18,13 @@ public class CivChatCommandManager extends CommandManager {
 	public void registerCommands() {
 		registerCommand(new Afk());
 		registerCommand(new Exit());
+		registerCommand(new GlobalChat());
 		registerCommand(new GlobalMute());
 		registerCommand(new GroupChat());
 		registerCommand(new Ignore());
 		registerCommand(new IgnoreGroup());
 		registerCommand(new IgnoreList());
+		registerCommand(new LocalChat());
 		registerCommand(new Reply());
 		registerCommand(new Tell());
 		registerCommand(new WhoAmI());
