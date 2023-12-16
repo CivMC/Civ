@@ -1,11 +1,11 @@
-name: PR Build Completed
+name: ✅ PR Updated Completed
 
 on:
     workflow_run:
         types:
             - "completed"
         workflows:
-            - "PR Build"
+            - "⬇️ PR Updated"
 
 jobs:
     call_comment_on_pr:

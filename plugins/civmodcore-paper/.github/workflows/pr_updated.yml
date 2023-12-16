@@ -1,4 +1,4 @@
-name: PR Build
+name: ⬇️ PR Updated
 
 on:
     pull_request:
