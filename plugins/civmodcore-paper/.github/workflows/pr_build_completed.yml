@@ -8,6 +8,7 @@ on:
             - "PR Build"
 
 jobs:
-    build_completed:
+    call_comment_on_pr:
+        name: ☎️ Call  Comment on PR
         uses: CivMC/.github/.github/workflows/comment_on_pr.yml@master
         secrets: inherit
