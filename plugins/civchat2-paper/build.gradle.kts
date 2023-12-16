@@ -1,7 +1,7 @@
 import net.civmc.civgradle.CivGradleExtension
 
 plugins {
-	id("net.civmc.civgradle") version "2.+" apply false
+	id("net.civmc.civgradle") version "3.1.2" apply false
 }
 
 subprojects {
