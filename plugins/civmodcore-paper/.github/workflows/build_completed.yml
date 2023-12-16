@@ -9,4 +9,5 @@ on:
 
 jobs:
   build_completed:
-    uses: civmc/.github/.github/workflows/
+    uses: CivMC/.github/.github/workflows/gradle_publish.yml@master
+    secrets: inherit
