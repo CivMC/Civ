@@ -10,5 +10,5 @@ jobs:
         uses: CivMC/.github/.github/workflows/gradle_build.yml@master
         with:
             java_version: 21
-            gradle_task: reobf
+            gradle_task: reobf --stacktrace
         secrets: inherit
