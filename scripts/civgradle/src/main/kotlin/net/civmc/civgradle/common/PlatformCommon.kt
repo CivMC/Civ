@@ -21,8 +21,14 @@ object PlatformCommon {
 
     private val logger: Logger = LoggerFactory.getLogger(PlatformCommon::class.java)
 
-    fun beforeEvaluate(project: Project, extension: CivGradleExtension) {
+    private var enterpriseEnabled = false
 
+    fun beforeEvaluate(project: Project, extension: CivGradleExtension) {
+        project.gradle.settingsEvaluated {
+            if (it.pluginManager.hasPlugin("com.gradle.enterprise")) {
+                enterpriseEnabled = true
+            }
+        }
     }
 
     fun afterEvaluate(project: Project, extension: CivGradleExtension) {
@@ -36,7 +42,7 @@ object PlatformCommon {
             configureMavenPublish(project, extension)
         }
 
-        if (project.pluginManager.hasPlugin("com.gradle.enterprise")) {
+        if (enterpriseEnabled) {
             logger.debug("Configuring Gradle Enterprise")
             configureGradleEnterprise(project, extension)
         }
