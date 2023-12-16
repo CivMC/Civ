@@ -1,0 +1,11 @@
+name: Tag Created
+
+on:
+   push:
+       tags:
+           - 'v*.*.*'
+
+jobs:
+    tag_created:
+        uses: CivMC/.github/.github/workflows/gradle_publish.yml@master
+        secrets: inherit

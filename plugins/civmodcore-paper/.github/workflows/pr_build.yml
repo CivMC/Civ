@@ -1,0 +1,12 @@
+name: PR Build
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened]
+
+jobs:
+    pr_updated:
+        uses: CivMC/.github/.github/workflows/gradle_build.yml@master
+        with:
+            gradle_task: reobf
+        secrets: inherit

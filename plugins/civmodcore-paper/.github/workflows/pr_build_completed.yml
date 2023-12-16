@@ -1,0 +1,13 @@
+name: PR Build Completed
+
+on:
+    workflow_run:
+        types:
+            - "completed"
+        workflows:
+            - "PR Build"
+
+jobs:
+    build_completed:
+        uses: CivMC/.github/.github/workflows/comment_on_pr.yml@master
+        secrets: inherit
