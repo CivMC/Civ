@@ -9,6 +9,5 @@ jobs:
         name: ☎️ Call  Gradle Build
         uses: CivMC/.github/.github/workflows/gradle_build.yml@master
         with:
-            java_version: 21
-            gradle_task: reobf --stacktrace
+            gradle_task: reobf
         secrets: inherit
