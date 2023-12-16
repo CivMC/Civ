@@ -49,19 +49,19 @@ object PlatformCommon {
     }
 
     /**
-     * Configure our project to use java 21 UTF_8 for everything
+     * Configure our project to use java 17 UTF_8 for everything
      */
     private fun configureJava(project: Project) {
         val javaExtension = project.extensions.getByType(JavaPluginExtension::class.java)
 
-        javaExtension.toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+        javaExtension.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 
         javaExtension.withJavadocJar()
         javaExtension.withSourcesJar()
 
         project.tasks.withType(JavaCompile::class.java) {
             it.options.encoding = Charsets.UTF_8.name()
-            it.options.release.set(21)
+            it.options.release.set(17)
         }
 
         project.tasks.withType(Javadoc::class.java) {
