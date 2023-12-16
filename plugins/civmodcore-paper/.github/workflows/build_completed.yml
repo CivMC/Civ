@@ -1,0 +1,12 @@
+name: Build Completed
+
+on:
+  workflow_run:
+    types:
+      - "completed"
+    workflows:
+      - "Build"
+
+jobs:
+  build_completed:
+    uses: civmc/.github/.github/workflows/
