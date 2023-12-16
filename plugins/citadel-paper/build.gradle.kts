@@ -1,7 +1,7 @@
 import net.civmc.civgradle.CivGradleExtension
 
 plugins {
-	id("net.civmc.civgradle") version "2.+" apply false
+	id("net.civmc.civgradle") version "3.1.2" apply false
 }
 
 subprojects {
@@ -19,14 +19,6 @@ subprojects {
 		maven("https://repo.aikar.co/content/groups/aikar/")
 		maven("https://libraries.minecraft.net")
 		maven("https://repo.codemc.io/repository/maven-public/")
-		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/CivMC/NameLayer")
-			credentials {
-				username = System.getenv("GITHUB_ACTOR")
-				password = System.getenv("GITHUB_TOKEN")
-			}
-		}
 
 		maven("https://jitpack.io")
 	}

@@ -1,0 +1,14 @@
+name: ✅ PR Updated Completed
+
+on:
+    workflow_run:
+        types:
+            - "completed"
+        workflows:
+            - "⬇️ PR Updated"
+
+jobs:
+    call_comment_on_pr:
+        name: ☎️ Call  Comment on PR
+        uses: CivMC/.github/.github/workflows/comment_on_pr.yml@master
+        secrets: inherit
