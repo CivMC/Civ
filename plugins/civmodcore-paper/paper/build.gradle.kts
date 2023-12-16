@@ -5,7 +5,9 @@ plugins {
 }
 
 dependencies {
-	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+	paperweight {
+		paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+	}
 
 	implementation("co.aikar:acf-bukkit:0.5.0-SNAPSHOT")
 	implementation("com.mojang:datafixerupper:1.0.20")
@@ -18,8 +20,8 @@ dependencies {
 
 	compileOnly("it.unimi.dsi:fastutil:8.5.8")
 
-	compileOnly("org.projectlombok:lombok:1.18.24")
-	annotationProcessor ("org.projectlombok:lombok:1.18.24")
+	compileOnly("org.projectlombok:lombok:1.18.30")
+	annotationProcessor ("org.projectlombok:lombok:1.18.30")
 
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
