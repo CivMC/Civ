@@ -1,126 +1,49 @@
-# Is the plugin enabled?
-enabled: true
+competitions:
+    # When should the plugin broadcast the time remaining? (time-alert in messages.yml) in the format MM:SS
+    alerts:
 
-# The locale of the message file
-# Currently: en, cs, de, es, fr, ja, ko, nl, pl, pt-br, ru, tr, vn, zh_cn
-# Delete messages.yml before changing this
-locale: en
+# By copying and pasting competitions from the "competitions" section, you can make as many as you want. Please make sure that your
+# competition names are all different, otherwise the system may behave unexpectedly.
 
-# Should EMF fish only be given during a competition?
-fish-only-in-competition: false
+general:
 
-# Would you like to test out new experimental features? These are partially working features such as the database that
-# may not work on all servers.
-experimental-features: false
+  # This is the minimum needed amount of players for an automatic competition to start.
+  minimum-players: 1
 
-# The plugin stores stats about fish caught by players, used in the fish log. Disabling this will disable functionality
-# of this feature.
-# ATTENTION: Toggling this requires a full server restart.
-database: true
-# Prevents verbose output when the plugin interacts with the database.
-disable-db-verbose: true
-# Info for connecting to a mysql database:
-mysql:
-  # Set to false if you're using a standard SQLITE .db file
-  use-mysql: false
-  # The address of the database (the port 3306 is automatically added in by default, if different: specify with address:port)
-  address: localhost
-  # The name of the database to store fish data in
-  database: evenmorefish
-  # Login information
-  username: root
-  password: ''
+  # Should broadcasted catches (defined in rarities.yml) only be shown to players holding fishing rods?
+  broadcast-only-rods: true
 
-# When dropping tool items (e.g. fishing rod) should they be dropped with a random durability
-# instead of always full durability?
-random-durability: true
+  # This is the allowed-rarities value used for /emf admin competition start <time> specific_fish
+  allowed-rarities:
 
-# Setting this to false disables /emf shop and money rewards from competitions. It's unlikely
-# you'll want to do this, but it is possible.
-enable-economy: false
+  # The colour of the bossbar shown at the top of the screen, (defaults to GREEN)
+  bossbar-colour: GREEN
+  # The title of the bossbar (defaults to the one set in messages.yml) - like messages.yml, this won't include the "_s left"
+  bossbar-prefix: "&a&lFishing Contest: "
 
-# Setting this to change the boosbar style
-# you can use like: SEGMENTED_6 SEGMENTED_10 SEGMENTED_12 SEGMENTED_20 SOLID
-barstyle: 'SEGMENTED_10'
+  # This is the number-needed value used for /emf admin competition start <time> specific_fish
+  number-needed: 1
 
-# Requires that the fishing rod to have the "emf-rod-nbt" value in order to catch custom fish defined in fish.yml.
-# This allows you to sell rods that will be the only ones able to catch EvenMoreFish fish.
-require-nbt-rod: false
+  # Fish will only be entered into the competition if they're in this world.
+  #required-worlds:
+  #  - "competition_world"
 
-# This defines the item given with the "/emf admin rod-nbt -p:Playername" command. It uses the same formatting as the fish
-# and baits in fish & baits .yml files.
-nbt-rod-item:
-  item:
-    # This needs to be FISHING_ROD
-    material: FISHING_ROD
-    displayname: "&eEvenMoreFish Fishing Rod"
-  glowing: true
-  lore:
-    - ""
-    - "&7Catch &ecustom &7fish using this"
-    - "&7fishing rod."
+leaderboard:
 
-# Should the user need emf.use_rod permission in order to catch default custom fish defined in fish.yml. This requires
-# Vault and a permission manager such as LuckPerms.
-requires-fishing-permission: false
+  # This is the colours used in the variable {pos_colour} for each position, if you aren't using this variable, it isn't needed.
+  # Start from #1 then go down as many as you like
+  position-colours:
+    - "&6"
+    - "&e"
+    - "&7"
+    - "&7"
+    - "&#888888"
 
-# Should fish and baits be blocked from being crafted into other items. For example, when the player tries to craft
-# the starfish into a beacon.
-block-crafting: true
-
-# For customizing the /emf shop GUI
-gui:
-  # Fills the empty slots of a normal /emf shop
-  filler: GRAY_STAINED_GLASS_PANE
-  # Fills the empty slots of /emf shop when there's an error (i.e. the player trying to sell nothing)
-  filler-error: RED_STAINED_GLASS_PANE
-  # The item for the player to click to sell their fish
-  sell-item: GOLD_INGOT
-  # The slot to put the item in on the bottom row, accepts values 1-9 inclusive.
-  sell-slot: 4
-  # The item for the player to click to automatically sell all their fish
-  sell-all-item: COD_BUCKET
-  # The slot to put the item in on the bottom row, accepts values 1-9 inclusive.
-  sell-all-slot: 6
-  # The item for the player to click to confirm selling their fish
-  sell-item-confirm: GOLD_BLOCK
-  # The item for the player to click to confirm selling all of their fish
-  sell-all-item-confirm: TROPICAL_FISH_BUCKET
-  # The item shown to the player when an error occurs (trying to sell nothing of value from the gui)
-  sell-item-error: REDSTONE_BLOCK
-  # The item shown to the player when an error occurs (trying to sell nothing of value from their inventory)
-  sell-all-item-error: SALMON_BUCKET
-  # How many rows the selling area of the GUI should be (max 5, min 1)
-  size: 3
-  # Should the items be dropped(false) or sold(true) when a player exits an inventory?
-  sell-over-drop: false
-
-# Uncomment the below section to enable these feature. They sett the plugin to only give custom fish when users are
-# in a list of set defined regions (this requires the worldguard/redprotect plugin) and/or in a list of set defined
-# worlds. EvenMoreFish automatically detects your protection plugin so it's important you don't run both at once.
-# Note- Changing this value requires a SERVER RESTART NOT A RELOAD.
-#allowed-regions:
-#  - "fishing"
-#
-#allowed-worlds:
-#  - "fishworld"
-
-# Prevents mcMMO from overriding fishing loot, this means treasure won't appear when fish can.
-disable-mcmmo-loot: true
-
-# Prevents AureliumSkills from overriding fishing loot, this means treasure won't appear when fish can.
-disable-aureliumskills-loot: true
-
-# Should the shop give you money or claim blocks?
-# Currently: money, claimblocks
-sell-type: money
-
-# When set to true, players won't be able to place fish that are heads, like head-64 or head-uuid.
-place-head-fish: false
-
-# Switch between custom fish or vanilla fishing
-vanilla-fishing: false
+rewards:
+  participation:
+    - "MESSAGE:&eUnfortunately only the top 3 players receive awards for fishing. Better luck next time. :)"
+  # Add as many more places as you need
 
 # ATTENTION ATTENTION ATTENTION
 # DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
-config-version: 14
+config-version: 1
