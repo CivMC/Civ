@@ -91,6 +91,7 @@ services:
       - /opt/PrivateConfig/paper/config/EvenMoreFish/baits.yml:/config/plugins/EvenMoreFish/baits.yml
       - /opt/PrivateConfig/paper/config/EvenMoreFish/fish.yml:/config/plugins/EvenMoreFish/fish.yml
       - /opt/PrivateConfig/paper/config/EvenMoreFish/rarities.yml:/config/plugins/EvenMoreFish/rarities.yml
+      - /opt/PrivateConfig/paper/config/EvenMoreFish/competitions.yml:/config/plugins/EvenMoreFish/competitions.yml
     deploy:
       placement:
         constraints: [node.role == manager]
