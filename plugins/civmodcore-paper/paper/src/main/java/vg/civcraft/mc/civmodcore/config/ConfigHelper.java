@@ -10,8 +10,6 @@ import java.util.function.Predicate;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.NonNull;
-import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -30,6 +28,7 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
@@ -38,7 +37,6 @@ import vg.civcraft.mc.civmodcore.world.model.GlobalYLimitedArea;
 import vg.civcraft.mc.civmodcore.world.model.IArea;
 import vg.civcraft.mc.civmodcore.world.model.RectangleArea;
 
-@UtilityClass
 public final class ConfigHelper {
 
 	private static final Logger LOGGER = Bukkit.getLogger();
@@ -51,8 +49,8 @@ public final class ConfigHelper {
 	 * @return Returns the configuration section at the given key, or returns a new, empty section.
 	 */
 	@Nonnull
-	public static ConfigurationSection getSection(@NonNull final ConfigurationSection config,
-												  @NonNull final String key) {
+	public static ConfigurationSection getSection(@NotNull final ConfigurationSection config,
+												  @NotNull final String key) {
 		ConfigurationSection found = config.getConfigurationSection(key);
 		if (found == null) {
 			found = config.createSection(key);
@@ -69,8 +67,8 @@ public final class ConfigHelper {
 	 * @return Returns a list of strings, which is never null.
 	 */
 	@Nonnull
-	public static List<String> getStringList(@NonNull final ConfigurationSection config,
-											 @NonNull final String key) {
+	public static List<String> getStringList(@NotNull final ConfigurationSection config,
+											 @NotNull final String key) {
 		if (config.isString(key)) {
 			final var list = new ArrayList<String>(1);
 			list.add(config.getString(key));
@@ -89,9 +87,9 @@ public final class ConfigHelper {
 	 * @return Returns a list, or null.
 	 */
 	@Nonnull
-	public static <T> List<T> parseList(@NonNull final ConfigurationSection config,
-										@NonNull final String key,
-										@NonNull final Function<String, T> parser) {
+	public static <T> List<T> parseList(@NotNull final ConfigurationSection config,
+										@NotNull final String key,
+										@NotNull final Function<String, T> parser) {
 		if (!config.isList(key)) {
 			return new ArrayList<>(0);
 		}

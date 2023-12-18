@@ -1,9 +1,7 @@
 package vg.civcraft.mc.civmodcore.inventory.gui.components;
 
 import java.util.function.IntPredicate;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
 public final class SlotPredicates {
 
 	private static final int ROW_LENGTH = 9;

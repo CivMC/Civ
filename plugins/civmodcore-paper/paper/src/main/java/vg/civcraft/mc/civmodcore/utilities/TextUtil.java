@@ -3,14 +3,12 @@ package vg.civcraft.mc.civmodcore.utilities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.bukkit.ChatColor;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
-@UtilityClass
-public class TextUtil {
+public final class TextUtil {
 
 	public static String formatDuration(long time) {
 		return formatDuration(time, TimeUnit.MILLISECONDS);

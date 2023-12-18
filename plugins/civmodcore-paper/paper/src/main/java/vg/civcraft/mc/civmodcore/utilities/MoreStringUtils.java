@@ -1,12 +1,10 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
 import java.util.List;
-import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-@UtilityClass
 public class MoreStringUtils {
 
 	public static String joinOxfordComma(final String[] strings, final String comma, final String oxfordComma) {

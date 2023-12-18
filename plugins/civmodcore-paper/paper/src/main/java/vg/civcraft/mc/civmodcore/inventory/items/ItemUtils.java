@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.Material;
@@ -21,7 +20,6 @@ import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 /**
  * Class of static APIs for Items. Replaces ISUtils.
  */
-@UtilityClass
 public final class ItemUtils {
 
 	/**

@@ -2,14 +2,12 @@ package vg.civcraft.mc.civmodcore.utilities;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.experimental.UtilityClass;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 
 /**
  * Utility class to make dealing with namespace keys easier.
  */
-@UtilityClass
 public final class KeyedUtils {
 
 	/**

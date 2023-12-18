@@ -5,12 +5,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-@UtilityClass
-public class ScoreBoardAPI {
+public final class ScoreBoardAPI {
 	
 	private static Map<UUID, Integer> openScores = new TreeMap<>();
 	private static Map<String, CivScoreBoard> boards = new HashMap<>();

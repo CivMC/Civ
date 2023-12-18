@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.logging.Level;
-import lombok.experimental.UtilityClass;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -28,8 +27,7 @@ import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.pdc.extensions.PersistentDataContainerExtensions;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
-@UtilityClass
-public class NBTSerialization {
+public final class NBTSerialization {
 
 	private static final CivLogger LOGGER = CivLogger.getLogger(NBTSerialization.class);
 

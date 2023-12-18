@@ -9,7 +9,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.list.LazyList;
@@ -20,7 +19,6 @@ import org.apache.commons.lang3.ArrayUtils;
  *
  * @author Protonull
  */
-@UtilityClass
 public final class MoreCollectionUtils {
 
 	/**

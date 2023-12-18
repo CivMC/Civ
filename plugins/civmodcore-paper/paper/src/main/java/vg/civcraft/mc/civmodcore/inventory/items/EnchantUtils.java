@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.apache.commons.collections4.CollectionUtils;
@@ -28,7 +27,6 @@ import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 /**
  * Class of static utilities for Enchantments.
  */
-@UtilityClass
 public final class EnchantUtils {
 
 	private static final BiMap<Enchantment, String> ENCHANT_ABBR = HashBiMap.create(Enchantment.values().length);

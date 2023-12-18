@@ -1,8 +1,6 @@
 package vg.civcraft.mc.civmodcore.nbt.extensions;
 
 import java.util.UUID;
-import lombok.experimental.ExtensionMethod;
-import lombok.experimental.UtilityClass;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
@@ -22,10 +20,8 @@ import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.UuidUtils;
 
 /**
- * Set of extension methods for {@link net.minecraft.nbt.ListTag}. Use {@link ExtensionMethod @ExtensionMethod} to take
- * most advantage of this.
+ * Set of extension methods for {@link net.minecraft.nbt.ListTag}.
  */
-@UtilityClass
 public final class NBTTagListExtensions {
 
 	/**

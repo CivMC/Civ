@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
  *     <li>{@link TreeTypeUtils TreeTypeUtils}</li>
  * </ul>
  */
-@UtilityClass
 public final class MaterialUtils {
 
 	private static final List<Material> HASH_MATERIALS = new ArrayList<>() {{

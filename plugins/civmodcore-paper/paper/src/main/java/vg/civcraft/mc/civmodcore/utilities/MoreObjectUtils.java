@@ -1,6 +1,5 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
-import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.ObjectUtils;
 
 /**
@@ -8,7 +7,6 @@ import org.apache.commons.lang3.ObjectUtils;
  *
  * @author Protonull
  */
-@UtilityClass
 public final class MoreObjectUtils {
 
 	/**

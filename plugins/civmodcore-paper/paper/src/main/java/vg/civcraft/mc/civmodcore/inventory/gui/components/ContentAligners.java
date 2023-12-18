@@ -1,10 +1,8 @@
 package vg.civcraft.mc.civmodcore.inventory.gui.components;
 
 import java.util.function.Function;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
-public class ContentAligners {
+public final class ContentAligners {
 
 	public static ContentAligner getLeftAligned() {
 		return new Counter(i -> i + 1, 0);

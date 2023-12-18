@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import lombok.experimental.UtilityClass;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
@@ -22,7 +21,6 @@ import vg.civcraft.mc.civmodcore.players.settings.impl.AltConsistentSetting;
  * configuration GUI
  *
  */
-@UtilityClass
 public final class PlayerSettingAPI {
 
 	private static final String FILE_NAME = "civ-player-settings.yml";

@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.entities;
 
 import com.google.common.base.Strings;
 import javax.annotation.Nonnull;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.entity.EntityType;
@@ -10,7 +9,6 @@ import org.bukkit.entity.EntityType;
 /**
  * Class of static APIs for Entities.
  */
-@UtilityClass
 public final class EntityUtils {
 
 	/**

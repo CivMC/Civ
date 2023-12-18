@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.minecraft.world.effect.MobEffect;
@@ -17,7 +16,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
-@UtilityClass
 public final class PotionUtils {
 
 	private static final Map<Pair<Material, PotionType>, TranslatableComponent> POTION_TRANSLATIONS = new Object2ObjectAVLTreeMap<>();

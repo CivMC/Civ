@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.utilities;
 
 import java.util.Collections;
 import java.util.List;
-import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -10,7 +9,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
-@UtilityClass
 public final class DelayedItemDrop {
 
 	/**

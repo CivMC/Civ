@@ -5,14 +5,10 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
-import lombok.experimental.ExtensionMethod;
-import lombok.experimental.UtilityClass;
 
 /**
- * Set of extension methods to make Java more tolerable. Use {@link ExtensionMethod @ExtensionMethod} to take most
- * advantage of this.
+ * Set of extension methods to make Java more tolerable.
  */
-@UtilityClass
 public final class JavaExtensions {
 
 	/**
