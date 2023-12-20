@@ -209,6 +209,14 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
+    Meracydia: # xenovolution
+      x: 5381
+      y: 250 # overridden in code, but must be set
+      z: 7618
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
     MtAugusta: # ComradeNick#9912
       x: 3052
       y: 250 # overridden in code, but must be set
@@ -353,6 +361,14 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
+    Winterbourne: # 795046514363727923
+      x: -37
+      y: 250 # overridden in code, but must be set
+      z: -7585
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
     Yoahtl: # Solitaire7#3180
       x: 7615
       y: 250 # overridden in code, but must be set
@@ -361,14 +377,6 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 247 # spawn area outer radius
       exclusion: 144 # spawn area inner radius
-    Meracydia: # xenovolution
-      x: 5381
-      y: 250 # overridden in code, but must be set
-      z: 7618
-      nearby: true # require another player nearby?
-      checkradius: 900 # require another player closer than this
-      radius: 200 # spawn area outer radius
-      exclusion: 0 # spawn area inner radius
     Zephyria: # Pqrrot
       x: 5917
       y: 250 # overridden in code, but must be set
