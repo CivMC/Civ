@@ -547,8 +547,8 @@ hacks:
     message: "&4%player% is raiding a chest at %x% %y% %z%."
   SanityHack:
     enabled: false
-    trackPlace: true
-    trackBreak: true
+    trackPlace: false
+    trackBreak: false
     belowYLevel: 7
   #Used to roll a dice on whether to drop an additional sapling on block break or leaf decay
   SaplingHack:
