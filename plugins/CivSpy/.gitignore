@@ -1,0 +1,16 @@
+.git
+target/
+**/target/
+**/apidocs/
+**/.settings/
+**/.project
+**/.classpath
+**/dependency-reduced-pom.xml
+
+*.idea
+*.iml
+*.iws
+
+.gradle
+build
+run
