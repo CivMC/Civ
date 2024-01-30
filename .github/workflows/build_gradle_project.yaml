@@ -1,0 +1,44 @@
+# This workflow can be used to build any gradle project in the repo
+name: Build Gradle Project
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        description: 'The project to build'
+        type: string
+        required: true
+
+jobs:
+  build_gradle:
+    name: Build Gradle
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ensure Wrapper Permissions
+        run: chmod +x ./gradlew
+
+      - uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Gradle Build
+        uses: gradle/gradle-build-action@v2
+        env:
+          CI: true
+        with:
+          arguments: '${{inputs.project}}:build --scan'
+
+      - name: Build Project
+        run: |
+          echo "Building Project"
+          echo "Build Completed"
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: gradle-build
+          path: '**/build/libs/*'
