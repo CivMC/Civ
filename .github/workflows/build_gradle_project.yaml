@@ -32,11 +32,6 @@ jobs:
         with:
           arguments: '${{inputs.project}}:build --scan'
 
-      - name: Build Project
-        run: |
-          echo "Building Project"
-          echo "Build Completed"
-
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
         with:

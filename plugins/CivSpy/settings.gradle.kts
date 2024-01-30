@@ -7,6 +7,13 @@ pluginManagement {
 	}
 }
 
+plugins {
+	id("com.gradle.enterprise") version("3.16")
+}
+
+rootProject.name="civspy"
+
 include(":api")
 include(":platform:bungee")
 include(":platform:paper")
+project(":platform:paper").name = rootProject.name + "-paper"

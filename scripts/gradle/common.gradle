@@ -1,0 +1,87 @@
+
+pluginManager.withPlugin("java-library") {
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+        withSourcesJar()
+        withJavadocJar()
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = "UTF-8"
+        options.release = 17
+    }
+
+    tasks.withType(ProcessResources).configureEach {
+        filteringCharset = "UTF-8"
+    }
+
+    // TODO
+//    tasks.withType(Test).configureEach {
+//        useJUnitPlatform()
+//        testLogging {
+//            events(*TestLogEvent.values())
+//            exceptionFormat = TestExceptionFormat.FULL
+//            showCauses = true
+//            showExceptions = true
+//            showStackTraces = true
+//        }
+//    }
+}
+
+pluginManager.withPlugin("maven-publish") {
+    def githubActor = System.getenv("GITHUB_ACTOR")
+    def githubToken = System.getenv("GITHUB_TOKEN")
+    def nexusUser = System.getenv("CIVMC_NEXUS_USER")
+    def nexusPassword = System.getenv("CIVMC_NEXUS_PASSWORD")
+
+    publishing {
+        repositories {
+            if (githubActor && githubToken) {
+                maven {
+                    name = "GitHubPackages"
+                    url = URI("https://maven.pkg.github.com/CivMC/Civ")
+                    credentials {
+                        username = githubActor
+                        password = githubToken
+                    }
+                }
+            }
+
+            if (nexusUser && nexusPassword) {
+                def targetRepo = project.version.toString().endsWith("SNAPSHOT") ?
+                    "maven-snapshots"
+                :
+                    "maven-releases"
+
+                maven {
+                    name = "CivMC"
+                    url = URI("https://repo.civmc.net/repository/$targetRepo")
+                    credentials {
+                        username = nexusUser
+                        password = nexusPassword
+                    }
+                }
+            }
+        }
+
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+    }
+}
+
+pluginManager.withPlugin("com.gradle.enterprise") {
+    gradleEnterprise {
+        buildScan {
+            if (System.getenv("CI")) {
+                it.tag("CI")
+                it.termsOfServiceUrl = "https://gradle.com/terms-of-service"
+                it.termsOfServiceAgree = "yes"
+            }
+        }
+    }
+}
