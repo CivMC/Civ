@@ -1,5 +1,5 @@
 # Pin to java17
-FROM itzg/minecraft-server@sha256:9293063e98776a0ed5f11742197143fbb9ab87a45e3908df8eeb1c7b7f42b8a1
+FROM itzg/minecraft-server@sha256:346cb47929edc36e977f3b064f882a9c919df65fe4807ac35c05fdacf442822f
 
 # https://github.com/itzg/docker-minecraft-server/blob/master/README.md#versions
 ENV VERSION=1.18.2
