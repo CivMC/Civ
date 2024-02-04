@@ -1,0 +1,34 @@
+name: Kira | Restart
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to Restart'
+        type: environment
+        required: true 
+        default: Test
+
+jobs:
+  kira-restart:
+    runs-on: ubuntu-latest
+    environment: ${{inputs.environment}}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Inject secrets
+        run: 'echo "$SECRETS_YML" > variables/secrets.yml'
+        shell: bash
+        env:
+          SECRETS_YML: ${{secrets.SECRETS_YML}}
+          SUDO_PASSWORD: ${{secrets.SUDO_PASSWORD}}
+
+      - name: Restart Kira
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: playbooks/restart-kira.yml
+          requirements: requirements.yml
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}
+          options: |
+            --inventory ./inventories/civmc-${{inputs.environment}}.yml
+            -e "ansible_become_password=${{secrets.SUDO_PASSWORD}}"
