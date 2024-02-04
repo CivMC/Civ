@@ -234,13 +234,13 @@ world:
       radius: 200 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
     Nara: # bronnakus#1195
-      x: 3200
+      x: 3313
       y: 250 # overridden in code, but must be set
-      z: 4800
+      z: 4912
       nearby: true # require another player nearby?
       checkradius: 900 # require another player closer than this
-      radius: 200 # spawn area outer radius
-      exclusion: 0 # spawn area inner radius
+      radius: 250 # spawn area outer radius
+      exclusion: 100 # spawn area inner radius
     Pacem: # Wheaties#7056
       x: -5194
       y: 250 # overridden in code, but must be set
