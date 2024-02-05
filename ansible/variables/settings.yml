@@ -22,7 +22,7 @@ settings:
     environment: Production
     minecraft:
       <<: *default_minecraft
-      civdocker_version: '1.25.2'
+      civdocker_version: '1.25.3'
     auth:
       enabled: false # TODO: MOVE
 
@@ -31,7 +31,7 @@ settings:
     environment: Test
     minecraft:
       <<: *default_minecraft
-      civdocker_version: '1.25.3'
+      civdocker_version: 'master'
       whitelist: true
       resources:
         <<: *default_minecraft_resources
