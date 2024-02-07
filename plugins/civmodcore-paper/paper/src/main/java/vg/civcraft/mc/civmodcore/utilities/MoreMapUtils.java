@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Function;
-import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -14,7 +13,6 @@ import org.apache.commons.lang3.ArrayUtils;
  *
  * @author Protonull
  */
-@UtilityClass
 public final class MoreMapUtils {
 
 	/**

@@ -5,13 +5,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
-@UtilityClass
 public final class TreeTypeUtils {
 
 	private static final Map<Material, TreeType> TREE_MATERIALS = ImmutableMap.<Material, TreeType>builder()

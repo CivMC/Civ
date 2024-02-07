@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -26,7 +25,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
-@UtilityClass
 public final class ChatUtils {
 
 	/**

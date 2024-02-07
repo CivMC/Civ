@@ -1,6 +1,5 @@
 package vg.civcraft.mc.civmodcore.nbt;
 
-import lombok.experimental.UtilityClass;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -17,7 +16,6 @@ import net.minecraft.nbt.Tag;
  *
  * This is a better version of {@link org.bukkit.craftbukkit.v1_18_R2.util.CraftMagicNumbers}
  */
-@UtilityClass
 public final class NBTType {
 
 	public static final byte END = (byte) 0;

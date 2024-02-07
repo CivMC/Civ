@@ -6,10 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.function.Consumer;
-import lombok.experimental.UtilityClass;
 import vg.civcraft.mc.civmodcore.ACivMod;
 
-@UtilityClass
 public final class ResourceUtils {
 
 	/**

@@ -1,13 +1,11 @@
 package vg.civcraft.mc.civmodcore.pdc;
 
 import javax.annotation.Nonnull;
-import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
 
-@UtilityClass
 public final class PersistentDataTypes {
 	public static final String DECODER_ERROR = "Was unable to decode that %s! [%s]";
 

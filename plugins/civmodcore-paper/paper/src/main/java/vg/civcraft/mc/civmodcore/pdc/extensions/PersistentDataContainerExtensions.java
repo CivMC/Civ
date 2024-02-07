@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import lombok.experimental.ExtensionMethod;
-import lombok.experimental.UtilityClass;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import org.bukkit.NamespacedKey;
@@ -16,11 +14,9 @@ import org.bukkit.persistence.PersistentDataType;
 import vg.civcraft.mc.civmodcore.nbt.NBTType;
 
 /**
- * Set of extension methods for {@link PersistentDataContainer}. Use {@link ExtensionMethod @ExtensionMethod} to take
- * most advantage of this.
+ * Set of extension methods for {@link PersistentDataContainer}.
  */
-@UtilityClass
-public class PersistentDataContainerExtensions {
+public final class PersistentDataContainerExtensions {
 
 	/**
 	 * @param self The PersistentDataContainer to get the internal NBT of.

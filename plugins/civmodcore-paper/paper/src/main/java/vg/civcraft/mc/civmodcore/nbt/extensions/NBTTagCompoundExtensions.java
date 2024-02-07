@@ -2,17 +2,13 @@ package vg.civcraft.mc.civmodcore.nbt.extensions;
 
 import java.util.Objects;
 import java.util.UUID;
-import lombok.experimental.ExtensionMethod;
-import lombok.experimental.UtilityClass;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.utilities.UuidUtils;
 
 /**
- * Set of extension methods for {@link net.minecraft.nbt.CompoundTag}. Use {@link ExtensionMethod @ExtensionMethod} to take most
- * advantage of this.
+ * Set of extension methods for {@link net.minecraft.nbt.CompoundTag}.
  */
-@UtilityClass
 public final class NBTTagCompoundExtensions {
 
 	private static final String UUID_MOST_SUFFIX = "Most";

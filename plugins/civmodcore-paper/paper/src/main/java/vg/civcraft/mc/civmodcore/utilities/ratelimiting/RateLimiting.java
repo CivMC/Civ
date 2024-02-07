@@ -3,11 +3,9 @@ package vg.civcraft.mc.civmodcore.utilities.ratelimiting;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 
-@UtilityClass
-public class RateLimiting {
+public final class RateLimiting {
 
 	private static Map<String, RateLimiter> limiterMapping = new HashMap<>();
 

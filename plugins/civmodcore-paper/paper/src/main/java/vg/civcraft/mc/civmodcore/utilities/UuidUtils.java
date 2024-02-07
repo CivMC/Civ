@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.utilities;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -10,7 +9,6 @@ import org.apache.commons.lang3.ArrayUtils;
  *
  * @author Protonull
  */
-@UtilityClass
 public final class UuidUtils {
 
 	public static final UUID IDENTITY = new UUID(0L, 0L);

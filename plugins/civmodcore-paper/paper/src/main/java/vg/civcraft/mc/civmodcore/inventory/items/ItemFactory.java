@@ -3,7 +3,6 @@ package vg.civcraft.mc.civmodcore.inventory.items;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import javax.annotation.Nonnull;
-import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
@@ -16,8 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  * {@link CraftItemStack CraftItemStacks} interact more efficiently with NMS than {@link ItemStack} does as the latter
  * is entirely abstract in nature.
  */
-@UtilityClass
-public class ItemFactory {
+public final class ItemFactory {
 
 	private static final Constructor<CraftItemStack> CRAFT_ITEM_STACK_CONSTRUCTOR;
 

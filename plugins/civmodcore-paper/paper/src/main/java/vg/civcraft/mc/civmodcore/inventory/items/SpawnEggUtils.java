@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import lombok.experimental.UtilityClass;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -15,7 +14,6 @@ import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 /**
  * Class of static APIs for Spawn Eggs.
  */
-@UtilityClass
 public final class SpawnEggUtils {
 
 	private static final BiMap<Material, EntityType> SPAWN_EGGS = ImmutableBiMap.<Material, EntityType>builder()
