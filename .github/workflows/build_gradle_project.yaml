@@ -2,6 +2,11 @@
 name: Build Gradle Project
 
 on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'The project to build'
+        type: string
   workflow_call:
     inputs:
       project:

@@ -2,6 +2,11 @@
 name: Publish Gradle Project
 
 on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'The project to publish'
+        type: string
   workflow_call:
     inputs:
       project:
