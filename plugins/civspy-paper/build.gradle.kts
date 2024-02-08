@@ -4,14 +4,17 @@ plugins {
 	id("xyz.jpenilla.run-paper")
 }
 
-apply(from = "${rootProject.projectDir}/../../scripts/gradle/paper.gradle")
+group = "net.civmc.civspy"
+version = "2.0.1"
+
+apply(from = "${rootProject.projectDir}/scripts/gradle/paper.gradle")
 
 repositories {
 	maven("https://papermc.io/repo/repository/maven-public/")
 }
 
 dependencies {
-	implementation(project(":api"))
+	implementation(project(":plugins:civspy-api"))
 
 	paperweight {
 		paperDevBundle("1.18.2-R0.1-SNAPSHOT")
@@ -20,7 +23,9 @@ dependencies {
 
 tasks {
 	shadowJar {
-		exclude("org.slf4j")
+		dependencies {
+			exclude(dependency("org.slf4j::"))
+		}
 
 		relocate("org.postgresql", "com.programmerdan.minecraft.civspy.repack.postgresql")
 		relocate("org.checkerframework", "com.programmerdan.minecraft.civspy.repack.checkerframework")

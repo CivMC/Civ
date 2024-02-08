@@ -1,3 +1,5 @@
 rootProject.name = "Civ"
 
-includeBuild("plugins/CivSpy")
+include(":plugins:civspy-api")
+include(":plugins:civspy-paper")
+include(":plugins:civspy-bungee")

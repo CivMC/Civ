@@ -1,4 +1,4 @@
-name: ${pluginName}
+name: CivSpy
 version: ${version}
 author: [ProgrammerDan]
 api-version: 1.13
