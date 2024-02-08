@@ -17,6 +17,9 @@ jobs:
   publish_gradle:
     name: Publish Gradle
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - uses: actions/checkout@v4
@@ -33,6 +36,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         env:
           CI: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           arguments: "${{inputs.project && format('{0}:', inputs.project)}}publish --scan"
 
