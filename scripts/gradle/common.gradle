@@ -38,7 +38,7 @@ pluginManager.withPlugin("maven-publish") {
             if (githubActor && githubToken) {
                 maven {
                     name = "GitHubPackages"
-                    url = URI("https://maven.pkg.github.com/CivMC/Civ")
+                    url = "https://maven.pkg.github.com/CivMC/Civ"
                     credentials {
                         username = githubActor
                         password = githubToken

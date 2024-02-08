@@ -1,5 +1,5 @@
 # This workflow can be used to build any gradle project in the repo
-name: Build Gradle Project
+name: Gradle | Build Project
 
 on:
   workflow_dispatch:

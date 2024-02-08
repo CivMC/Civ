@@ -1,5 +1,5 @@
 # This workflow can be used to publish any gradle project in the repo
-name: Publish Gradle Project
+name: Gradle | Publish Project
 
 on:
   workflow_dispatch:
