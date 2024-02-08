@@ -1,4 +1,3 @@
-
 pluginManager.withPlugin("java-library") {
     java {
         toolchain {
@@ -33,8 +32,6 @@ pluginManager.withPlugin("java-library") {
 pluginManager.withPlugin("maven-publish") {
     def githubActor = System.getenv("GITHUB_ACTOR")
     def githubToken = System.getenv("GITHUB_TOKEN")
-    def nexusUser = System.getenv("CIVMC_NEXUS_USER")
-    def nexusPassword = System.getenv("CIVMC_NEXUS_PASSWORD")
 
     publishing {
         repositories {
@@ -45,22 +42,6 @@ pluginManager.withPlugin("maven-publish") {
                     credentials {
                         username = githubActor
                         password = githubToken
-                    }
-                }
-            }
-
-            if (nexusUser && nexusPassword) {
-                def targetRepo = project.version.toString().endsWith("SNAPSHOT") ?
-                    "maven-snapshots"
-                :
-                    "maven-releases"
-
-                maven {
-                    name = "CivMC"
-                    url = URI("https://repo.civmc.net/repository/$targetRepo")
-                    credentials {
-                        username = nexusUser
-                        password = nexusPassword
                     }
                 }
             }

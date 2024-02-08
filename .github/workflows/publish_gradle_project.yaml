@@ -1,16 +1,16 @@
-# This workflow can be used to build any gradle project in the repo
-name: Build Gradle Project
+# This workflow can be used to publish any gradle project in the repo
+name: Publish Gradle Project
 
 on:
   workflow_call:
     inputs:
       project:
-        description: 'The project to build'
+        description: 'The project to publish'
         type: string
 
 jobs:
-  build_gradle:
-    name: Build Gradle
+  publish_gradle:
+    name: Publish Gradle
     runs-on: ubuntu-latest
 
     steps:
@@ -24,12 +24,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Gradle Build
+      - name: Gradle Publish
         uses: gradle/gradle-build-action@v2
         env:
           CI: true
         with:
-          arguments: "${{inputs.project && format('{0}:', inputs.project)}}build --scan"
+          arguments: "${{inputs.project && format('{0}:', inputs.project)}}publish --scan"
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
