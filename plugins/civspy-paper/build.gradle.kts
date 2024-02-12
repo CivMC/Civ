@@ -7,8 +7,6 @@ plugins {
 group = "net.civmc.civspy"
 version = "2.0.1"
 
-apply(from = "${rootProject.projectDir}/scripts/gradle/paper.gradle")
-
 repositories {
 	maven("https://papermc.io/repo/repository/maven-public/")
 }
