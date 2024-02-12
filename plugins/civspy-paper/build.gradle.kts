@@ -7,10 +7,6 @@ plugins {
 group = "net.civmc.civspy"
 version = "2.0.1"
 
-repositories {
-	maven("https://papermc.io/repo/repository/maven-public/")
-}
-
 dependencies {
 	implementation(project(":plugins:civspy-api"))
 
