@@ -165,28 +165,28 @@ world-settings:
     despawn-ranges:
       monster:
         soft: 24
-        hard: 48
+        hard: 128
       creature:
         soft: 24
-        hard: 48
+        hard: 128
       ambient:
         soft: 24
-        hard: 48
+        hard: 96
       axolotls:
         soft: 24
         hard: 128
       underground_water_creature:
         soft: 24
-        hard: 48
+        hard: 96
       water_creature:
         soft: 24
-        hard: 48
+        hard: 96
       water_ambient:
         soft: 24
-        hard: 48
+        hard: 96
       misc:
         soft: 24
-        hard: 48
+        hard: 96
     falling-block-height-nerf: 0
     tnt-entity-height-nerf: 0
     slime-spawn-height:
