@@ -151,7 +151,7 @@ world-settings:
     zombie-aggressive-towards-villager: true
     max-entity-collisions: 1
     nerf-spawner-mobs: true
-    mob-spawn-range: 6
+    mob-spawn-range: 5
     end-portal-sound-radius: 0
   worldeditregentempworld:
     verbose: false
