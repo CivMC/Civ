@@ -1,0 +1,13 @@
+name: ⬇️ PR Updated
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened]
+
+jobs:
+    call_gradle_build:
+        name: ☎️ Call  Gradle Build
+        uses: CivMC/.github/.github/workflows/gradle_build.yml@master
+        with:
+            gradle_task: reobf
+        secrets: inherit

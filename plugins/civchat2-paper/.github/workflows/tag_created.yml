@@ -1,0 +1,12 @@
+name: 🏷️ Tag Created
+
+on:
+    push:
+        tags:
+            - 'v*.*.*'
+
+jobs:
+    call_gradle_publish:
+        name: ☎️ Call  Gradle Publish
+        uses: CivMC/.github/.github/workflows/gradle_publish.yml@master
+        secrets: inherit
