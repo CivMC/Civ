@@ -19,6 +19,10 @@ project.extensions.configure<GradleEnterpriseExtension> {
 
 allprojects {
 
+    // TODO: We probably don't want to apply these to every project
+    apply(plugin = "java-library")
+    apply(plugin = "maven-publish")
+
     repositories {
         mavenCentral()
         maven("https://oss.sonatype.org/content/repositories/snapshots")
@@ -48,20 +52,21 @@ allprojects {
         }
     }
 
-    pluginManager.withPlugin("maven-publish") {
-        configure<PublishingExtension> {
-            val githubActor = System.getenv("GITHUB_ACTOR")
-            val githubToken = System.getenv("GITHUB_TOKEN")
 
-            repositories {
-                if (githubActor != null && githubToken != null) {
-                    maven {
-                        name = "GitHubPackages"
-                        url = uri("https://maven.pkg.github.com/CivMC/Civ")
-                        credentials {
-                            username = githubActor
-                            password = githubToken
-                        }
+    configure<PublishingExtension> {
+        val githubActor = System.getenv("GITHUB_ACTOR")
+        val githubToken = System.getenv("GITHUB_TOKEN")
+
+        repositories {
+            logger.info("GITHUB_ACTOR: ${githubActor != null}")
+            logger.info("GITHUB_TOKEN: ${githubToken != null}")
+            if (githubActor != null && githubToken != null) {
+                maven {
+                    name = "GitHubPackages"
+                    url = uri("https://maven.pkg.github.com/CivMC/Civ")
+                    credentials {
+                        username = githubActor
+                        password = githubToken
                     }
                 }
             }
@@ -93,10 +98,4 @@ allprojects {
             }
         }
     }
-}
-
-// TODO: We probably don't want to apply this to every subproject
-subprojects {
-    apply(plugin = "java-library")
-    apply(plugin = "maven-publish")
 }
