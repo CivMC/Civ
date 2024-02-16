@@ -1,25 +1,13 @@
-import net.civmc.civgradle.CivGradleExtension
-
 plugins {
-	id("net.civmc.civgradle") version "3.1.2" apply false
+	id("io.papermc.paperweight.userdev")
 }
 
-subprojects {
-	apply(plugin = "java-library")
-	apply(plugin = "maven-publish")
-	apply(plugin = "net.civmc.civgradle")
+version = "5.2.0"
 
-	configure<CivGradleExtension> {
-		pluginName = project.property("pluginName") as String
-	}
+dependencies {
+	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 
-	repositories {
-		mavenCentral()
-		maven("https://repo.civmc.net/repository/maven-public")
-		maven("https://repo.aikar.co/content/groups/aikar/")
-		maven("https://libraries.minecraft.net")
-		maven("https://repo.codemc.io/repository/maven-public/")
-
-		maven("https://jitpack.io")
-	}
+	compileOnly(project(":plugins:civmodcore-paper"))
+	compileOnly(project(":plugins:namelayer-paper"))
+	compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9")
 }
