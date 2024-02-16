@@ -1,24 +1,15 @@
-import net.civmc.civgradle.CivGradleExtension
-
 plugins {
-    id("net.civmc.civgradle") version "3.1.2" apply false
+    id("io.papermc.paperweight.userdev")
+    id("xyz.jpenilla.run-paper")
 }
 
-subprojects {
-    apply(plugin = "java-library")
-    apply(plugin = "maven-publish")
-    apply(plugin = "net.civmc.civgradle")
+version = "2.0.1"
 
-    configure<CivGradleExtension> {
-        pluginName = project.property("pluginName") as String
+dependencies {
+    paperweight {
+        paperDevBundle("1.18.2-R0.1-SNAPSHOT")
     }
 
-    repositories {
-        mavenCentral()
-
-        maven("https://papermc.io/repo/repository/maven-public/")
-        maven("https://ci.frostcast.net/plugin/repository/everything")
-
-        maven("https://jitpack.io")
-    }
+    compileOnly("com.github.TownyAdvanced:towny:0.97.5.0")
+    compileOnly("me.confuser:BarAPI:3.5")
 }
