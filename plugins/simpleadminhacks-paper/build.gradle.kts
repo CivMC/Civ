@@ -1,23 +1,19 @@
-import net.civmc.civgradle.CivGradleExtension
-
 plugins {
-	id("net.civmc.civgradle") version "2.+" apply false
+	id("io.papermc.paperweight.userdev")
 }
 
-subprojects {
-	apply(plugin = "java-library")
-	apply(plugin = "maven-publish")
-	apply(plugin = "net.civmc.civgradle")
+version = "2.2.3"
 
-	configure<CivGradleExtension> {
-		pluginName = project.property("pluginName") as String
-	}
+dependencies {
+	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 
-	repositories {
-		mavenCentral()
-		maven("https://repo.civmc.net/repository/maven-public")
-        maven("https://repo.dmulloy2.net/repository/public/")
-        maven("https://ci.frostcast.net/plugin/repository/everything")
-        maven("https://jitpack.io")
-	}
+	compileOnly(project(":plugins:civmodcore-paper"))
+	compileOnly(project(":plugins:namelayer-paper"))
+	compileOnly(project(":plugins:citadel-paper"))
+	compileOnly(project(":plugins:combattagplus-paper"))
+	compileOnly(project(":plugins:banstick-paper"))
+	compileOnly(project(":plugins:bastion-paper"))
+	compileOnly(project(":plugins:exilepearl-paper"))
+
+	compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0")
 }
