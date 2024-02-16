@@ -28,7 +28,7 @@ jobs:
         env:
           TAG: ${{ github.ref_name }}
           VERSION: ${{steps.split_version.outputs.version }}
-        run: echo "project=${TAG//$VERSION}" >> $GITHUB_OUTPUT
+        run: echo "project=${TAG//-$VERSION}" >> $GITHUB_OUTPUT
 
   call_publish_gradle:
     needs: split_values
