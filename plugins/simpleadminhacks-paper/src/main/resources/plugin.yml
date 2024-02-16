@@ -1,4 +1,4 @@
-name: ${name}
+name: SimpleAdminHacks
 main: com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks
 author: ProgrammerDan
 authors: [ProgrammerDan, Maxopoly]

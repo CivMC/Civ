@@ -1,4 +1,4 @@
-name: ${name}
+name: ExilePearl
 version: ${version}
 main: com.devotedmc.ExilePearl.ExilePearlPlugin
 depend: [CivModCore]

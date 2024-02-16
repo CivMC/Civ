@@ -1,4 +1,4 @@
-name: ${name}
+name: RandomSpawn
 version: ${version}
 main: me.josvth.randomspawn.RandomSpawn
 author: Josvth

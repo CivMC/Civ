@@ -1,4 +1,4 @@
-name: ${name}
+name: Banstick
 version: ${version}
 main: com.programmerdan.minecraft.banstick.BanStick
 author: ProgrammerDan
