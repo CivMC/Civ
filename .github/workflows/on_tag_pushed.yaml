@@ -13,14 +13,22 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
+      version: ${{ steps.split_version.outputs.version }}
       project: ${{ steps.split.outputs.project }}
 
     steps:
-      - name: Split Project Name
-        id: split
+      - name: Split Project Version
+        id: split_version
         env:
           TAG: ${{ github.ref_name }}
-        run: echo "project=$(cut -d '-' -f 1 <<< $TAG)" >> $GITHUB_OUTPUT
+        run: echo "version=${TAG##*-}" >> $GITHUB_OUTPUT
+
+      - name: Split Project Name
+        id: split_name
+        env:
+          TAG: ${{ github.ref_name }}
+          VERSION: ${{steps.split_version.outputs.version }}
+        run: echo "project=${TAG//$VERSION}" >> $GITHUB_OUTPUT
 
   call_publish_gradle:
     needs: split_values
