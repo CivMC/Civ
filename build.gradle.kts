@@ -7,8 +7,6 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.2.2" apply false
 }
 
-group = "net.civmc"
-
 project.extensions.configure<GradleEnterpriseExtension> {
     buildScan {
         if (System.getenv("CI") != null) {
@@ -20,6 +18,8 @@ project.extensions.configure<GradleEnterpriseExtension> {
 }
 
 allprojects {
+
+    group = "net.civmc"
 
     // TODO: We probably don't want to apply these to every project
     apply(plugin = "java-library")
