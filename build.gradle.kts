@@ -58,8 +58,6 @@ allprojects {
         val githubToken = System.getenv("GITHUB_TOKEN")
 
         repositories {
-            logger.info("GITHUB_ACTOR: ${githubActor != null}")
-            logger.info("GITHUB_TOKEN: ${githubToken != null}")
             if (githubActor != null && githubToken != null) {
                 maven {
                     name = "GitHubPackages"
@@ -69,6 +67,12 @@ allprojects {
                         password = githubToken
                     }
                 }
+            }
+        }
+
+        publications {
+            create<MavenPublication>("maven") {
+                from(components["java"])
             }
         }
     }
