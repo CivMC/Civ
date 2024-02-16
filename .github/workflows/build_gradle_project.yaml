@@ -1,5 +1,5 @@
 # Build a project
-name: Gradle | Build Project
+name: 🐘 Gradle | Build Project
 
 on:
   workflow_dispatch:
@@ -27,28 +27,30 @@ on:
 
 jobs:
   build_gradle:
-    name: Build Gradle
+    name: 🐘 Build Gradle
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 🚩 Checkout Repo
+        uses: actions/checkout@v4
 
-      - name: Ensure Wrapper Permissions
+      - name: ❓ Ensure Wrapper Permissions
         run: chmod +x ./gradlew
 
-      - uses: actions/setup-java@v3
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Gradle Build
+      - name: 🐘 Gradle Build
         uses: gradle/gradle-build-action@v2
         env:
           CI: true
         with:
           arguments: "${{inputs.category}}:${{inputs.project}}:build --scan"
 
-      - name: Upload Build Artifact
+      - name: 🗃️ Upload Build Artifact
         uses: actions/upload-artifact@v3
         with:
           name: gradle-build

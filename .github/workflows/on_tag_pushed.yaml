@@ -9,7 +9,7 @@ on:
 
 jobs:
   split_values:
-    name: Split Values
+    name: ✂️ Split Values
     runs-on: ubuntu-latest
 
     outputs:
@@ -17,13 +17,13 @@ jobs:
       project: ${{ steps.split_project.outputs.project }}
 
     steps:
-      - name: Split Project Version
+      - name: ✂️ Split Project Version
         id: split_version
         env:
           TAG: ${{ github.ref_name }}
         run: echo "version=${TAG##*-}" >> $GITHUB_OUTPUT
 
-      - name: Split Project Name
+      - name: ✂️ Split Project Name
         id: split_project
         env:
           TAG: ${{ github.ref_name }}

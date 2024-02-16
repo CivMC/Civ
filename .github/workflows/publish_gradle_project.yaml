@@ -1,5 +1,5 @@
 # Publish a project to maven
-name: Gradle | Publish Project
+name: 🐘 Gradle | Publish Project
 
 on:
   workflow_dispatch:
@@ -27,24 +27,26 @@ on:
 
 jobs:
   publish_gradle:
-    name: Publish Gradle
+    name: 🐘 Publish Gradle
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 🚩 Checkout Repo
+        uses: actions/checkout@v4
 
-      - name: Ensure Wrapper Permissions
+      - name: ❓ Ensure Wrapper Permissions
         run: chmod +x ./gradlew
 
-      - uses: actions/setup-java@v3
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Gradle Publish
+      - name: 🐘 Gradle Publish
         uses: gradle/gradle-build-action@v2
         env:
           CI: true
