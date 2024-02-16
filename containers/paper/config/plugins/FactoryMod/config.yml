@@ -6742,30 +6742,30 @@ recipes:
         lore:
           - Crack me in a factory for a prize!
     outputs:
-      # Trash - 54% of total (0.135 each)
+      # Trash - 70% of total (0.175 each)
       cobblestone:
-        chance: 0.135
+        chance: 0.175
         cobblestone:
           material: COBBLESTONE
           amount: 1
       sand:
-        chance: 0.135
+        chance: 0.175
         sand:
           material: SAND
           amount: 1
       gravel:
-        chance: 00.135
+        chance: 0.175
         gravel: 
           material: GRAVEL
           amount: 1
       terracotta:
-        chance: 0.135
+        chance: 0.175
         terracotta:
           material: TERRACOTTA
           amount: 1
-      # Spawn eggs - 10% of total (0.00256410256 each)
+      # Spawn eggs - 2% of total (0.00051282051 each)
       vindicator:
-        chance: 0.00256410256
+        chance: 0.00051282051
         vindicator:
           material: VINDICATOR_SPAWN_EGG
           amount: 1
@@ -6773,7 +6773,7 @@ recipes:
             EntityTag:
               id: "minecraft:vindication_illager"
       vex:
-        chance: 0.00256410256
+        chance: 0.00051282051
         vex:
           material: VEX_SPAWN_EGG
           amount: 1
@@ -6781,7 +6781,7 @@ recipes:
             EntityTag:
               id: "minecraft:vex"
       silverfish:
-        chance: 0.00256410256
+        chance: 0.00051282051
         silverfish:
           material: SILVERFISH_SPAWN_EGG
           amount: 1
@@ -6789,7 +6789,7 @@ recipes:
             EntityTag:
               id: "minecraft:silverfish"
       endermite:
-        chance: 0.00256410256
+        chance: 0.00051282051
         endermite:
           material: ENDERMITE_SPAWN_EGG
           amount: 1
@@ -6797,7 +6797,7 @@ recipes:
             EntityTag:
               id: "minecraft:endermite"
       zombiehorse:
-        chance: 0.00256410256
+        chance: 0.00051282051
         zombiehorse:
           material: ZOMBIE_HORSE_SPAWN_EGG
           amount: 1
@@ -6805,7 +6805,7 @@ recipes:
             EntityTag:
               id: "minecraft:zombie_horse"
       skeletonhorse:
-        chance: 0.00256410256
+        chance: 0.00051282051
         skeletonhorse:
           material: SKELETON_HORSE_SPAWN_EGG
           amount: 1
@@ -6813,7 +6813,7 @@ recipes:
             EntityTag:
               id: "minecraft:skeleton_horse"
       donkey:
-        chance: 0.00256410256
+        chance: 0.00051282051
         donkey:
           material: DONKEY_SPAWN_EGG
           amount: 1
@@ -6821,7 +6821,7 @@ recipes:
             EntityTag:
               id: "minecraft:donkey"
       polarbear:
-        chance: 0.00256410256
+        chance: 0.00051282051
         polarbear:
           material: POLAR_BEAR_SPAWN_EGG
           amount: 1
@@ -6829,7 +6829,7 @@ recipes:
             EntityTag:
               id: "minecraft:polar_bear"
       parrot:
-        chance: 0.00256410256
+        chance: 0.00051282051
         parrot:
           material: PARROT_SPAWN_EGG
           amount: 1
@@ -6837,7 +6837,7 @@ recipes:
             EntityTag:
               id: "minecraft:parrot"
       llama:
-        chance: 0.00256410256
+        chance: 0.00051282051
         llama:
           material: LLAMA_SPAWN_EGG
           amount: 1
@@ -6845,218 +6845,218 @@ recipes:
             EntityTag:
               id: "minecraft:llama"
       fox:
-        chance: 0.00256410256
+        chance: 0.00051282051
         fox:
           material: FOX_SPAWN_EGG
           amount: 1
       cat:
-        chance: 0.00256410256
+        chance: 0.00051282051
         cat:
           material: CAT_SPAWN_EGG
           amount: 1
       mooshroom:
-        chance: 0.00256410256
+        chance: 0.00051282051
         mooshroom:
           material: MOOSHROOM_SPAWN_EGG
           amount: 1
       horse:
-        chance: 0.00256410256
+        chance: 0.00051282051
         horse:
           material: HORSE_SPAWN_EGG
           amount: 1
       rabbit:
-        chance: 0.00256410256
+        chance: 0.00051282051
         rabbit:
           material: RABBIT_SPAWN_EGG
           amount: 1
       ocelot:
-        chance: 0.00256410256
+        chance: 0.00051282051
         ocelot:
           material: OCELOT_SPAWN_EGG
           amount: 1
       squid:
-        chance: 0.00256410256
+        chance: 0.00051282051
         squid:
           material: SQUID_SPAWN_EGG
           amount: 1
       wolf:
-        chance: 0.00256410256
+        chance: 0.00051282051
         wolf:
           material: WOLF_SPAWN_EGG
           amount: 1
       axolotl:
-        chance: 0.00256410256
+        chance: 0.00051282051
         axolotl:
           material: AXOLOTL_SPAWN_EGG
           amount: 1
       bee:
-        chance: 0.00256410256
+        chance: 0.00051282051
         bee:
           material: BEE_SPAWN_EGG
           amount: 1
       panda:
-        chance: 0.00256410256
+        chance: 0.00051282051
         panda:
           material: PANDA_SPAWN_EGG
           amount: 1
       dolphin:
-        chance: 0.00256410256
+        chance: 0.00051282051
         dolphin:
           material: DOLPHIN_SPAWN_EGG
           amount: 1
       stray:
-        chance: 0.00256410256
+        chance: 0.00051282051
         stray:
           material: STRAY_SPAWN_EGG
           amount: 1
       strider:
-        chance: 0.00256410256
+        chance: 0.00051282051
         strider:
           material: STRIDER_SPAWN_EGG
           amount: 1
       hoglin:
-        chance: 0.00256410256
+        chance: 0.00051282051
         hoglin:
           material: HOGLIN_SPAWN_EGG
           amount: 1
       creeper:
-        chance: 0.00256410256
+        chance: 0.00051282051
         creeper:
           material: CREEPER_SPAWN_EGG
           amount: 1
       zombie:
-        chance: 0.00256410256
+        chance: 0.00051282051
         zombie:
           material: ZOMBIE_SPAWN_EGG
           amount: 1
       skeleton:
-        chance: 0.00256410256
+        chance: 0.00051282051
         skeleton:
           material: SKELETON_SPAWN_EGG
           amount: 1
       spider:
-        chance: 0.00256410256
+        chance: 0.00051282051
         spider:
           material: SPIDER_SPAWN_EGG
           amount: 1
       blaze:
-        chance: 0.00256410256
+        chance: 0.00051282051
         blaze:
           material: BLAZE_SPAWN_EGG
           amount: 1
       ghast:
-        chance: 0.00256410256
+        chance: 0.00051282051
         ghast:
           material: GHAST_SPAWN_EGG
           amount: 1
       guardian:
-        chance: 0.00256410256
+        chance: 0.00051282051
         guardian:
           material: GUARDIAN_SPAWN_EGG
           amount: 1
       magmacube:
-        chance: 0.00256410256
+        chance: 0.00051282051
         magmacube:
           material: MAGMA_CUBE_SPAWN_EGG
           amount: 1
       slime:
-        chance: 0.00256410256
+        chance: 0.00051282051
         slime:
           material: SLIME_SPAWN_EGG
           amount: 1
       witch:
-        chance: 0.00256410256
+        chance: 0.00051282051
         witch:
           material: WITCH_SPAWN_EGG
           amount: 1
       villager:
-        chance: 0.00256410256
+        chance: 0.00051282051
         villager:
           material: VILLAGER_SPAWN_EGG
           amount: 1
       cavespider:
-        chance: 0.00256410256
+        chance: 0.00051282051
         cavespider:
           material: CAVE_SPIDER_SPAWN_EGG
           amount: 1
       enderman:
-        chance: 0.00256410256
+        chance: 0.00051282051
         enderman:
           material: ENDERMAN_SPAWN_EGG
           amount: 1
       zombiepigman:
-        chance: 0.00256410256
+        chance: 0.00051282051
         zombiepigman:
           material: ZOMBIFIED_PIGLIN_SPAWN_EGG
           amount: 1
-      # Music Disks - 5% of total (0.00357142857 each)
+      # Music Disks - 1% of total (0.00071428571 each)
       record_13:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_13:
           material: MUSIC_DISC_13
           amount: 1
       record_cats:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_cats:
           material: MUSIC_DISC_CAT
           amount: 1
       record_blocks:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_blocks:
           material: MUSIC_DISC_BLOCKS
           amount: 1
       record_chirp:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_chirp:
           material: MUSIC_DISC_CHIRP
           amount: 1
       record_far:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_far:
           material: MUSIC_DISC_FAR
           amount: 1
       record_mall:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_mall:
           material: MUSIC_DISC_MALL
           amount: 1
       record_mellohi:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_mellohi:
           material: MUSIC_DISC_MELLOHI
           amount: 1
       record_stal:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_stal:
           material: MUSIC_DISC_STAL
           amount: 1
       record_strad:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_strad:
           material: MUSIC_DISC_STRAD
           amount: 1
       record_ward:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_ward:
           material: MUSIC_DISC_WARD
           amount: 1
       record_11:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_11:
           material: MUSIC_DISC_11
           amount: 1
       record_wait:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_wait:
           material: MUSIC_DISC_WAIT
           amount: 1
       record_pigstep:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_pigstep:
           material: MUSIC_DISC_PIGSTEP
           amount: 1
       record_otherside:
-        chance: 0.00357142857
+        chance: 0.00071428571
         record_otherside: 
           material: MUSIC_DISC_OTHERSIDE
           amount: 1
@@ -7141,54 +7141,54 @@ recipes:
         emerald_block:
           material: EMERALD_BLOCK
           amount: 1
-      # Tools/enchanting books - 5% (0.0025 each)
+      # Tools/enchanting books - 1% (0.0005 each)
       diamond_sword:
-        chance: 0.0025
+        chance: 0.0005
         diamond_sword:
           material: DIAMOND_SWORD
           amount: 1
       diamond_pickaxe:
-        chance: 0.0025
+        chance: 0.0005
         diamond_pickaxe:
           material: DIAMOND_PICKAXE
           amount: 1
       diamond_axe:
-        chance: 0.0025
+        chance: 0.0005
         diamond_axe:
           material: DIAMOND_AXE
           amount: 1
       diamond_shovel:
-        chance: 0.0025
+        chance: 0.0005
         diamond_shovel:
           material: DIAMOND_SHOVEL
           amount: 1
       diamond_hoe:
-        chance: 0.0025
+        chance: 0.0005
         diamond_hoe:
           material: DIAMOND_HOE
           amount: 1
       diamond_chestplate:
-        chance: 0.0025
+        chance: 0.0005
         diamond_chestplate:
           material: DIAMOND_CHESTPLATE
           amount: 1
       diamond_leggings:
-        chance: 0.0025
+        chance: 0.0005
         diamond_leggings:
           material: DIAMOND_LEGGINGS
           amount: 1
       diamond_helmet:
-        chance: 0.0025
+        chance: 0.0005
         diamond_helmet:
           material: DIAMOND_HELMET
           amount: 1
       diamond_boots:
-        chance: 0.0025
+        chance: 0.0005
         diamond_boots:
           material: DIAMOND_BOOTS
           amount: 1
       unbreaking_3_book:
-        chance: 0.0025
+        chance: 0.0005
         power_5_book:
           material: ENCHANTED_BOOK
           amount: 1
@@ -7197,7 +7197,7 @@ recipes:
               enchant: unbreaking
               level: 3
       efficiency_5_book:
-        chance: 0.0025
+        chance: 0.0005
         efficiency_5_book:
           material: ENCHANTED_BOOK
           amount: 1
@@ -7206,7 +7206,7 @@ recipes:
               enchant: efficiency
               level: 5
       silk_touch_book:
-        chance: 0.0025
+        chance: 0.0005
         silk_touch_book:
           material: ENCHANTED_BOOK
           amount: 1
@@ -7215,7 +7215,7 @@ recipes:
               enchant: silk_touch
               level: 1
       sharpness_book:
-        chance: 0.0025
+        chance: 0.0005
         sharpness_book:
           material: ENCHANTED_BOOK
           amount: 1
@@ -7224,7 +7224,7 @@ recipes:
               enchant: sharpness
               level: 5
       power_5_book:
-        chance: 0.0025
+        chance: 0.0005
         power_5_book:
           material: ENCHANTED_BOOK
           amount: 1
@@ -7233,7 +7233,7 @@ recipes:
               enchant: power
               level: 5
       fortune_3_book:
-        chance: 0.0025
+        chance: 0.0005
         fortune_3_book:
           material: ENCHANTED_BOOK
           amount: 1
@@ -7242,7 +7242,7 @@ recipes:
               enchant: fortune
               level: 3
       protection_4_book:
-        chance: 0.0025
+        chance: 0.0005
         protection_4_book:
           material: ENCHANTED_BOOK
           amount: 1
@@ -7251,7 +7251,7 @@ recipes:
               enchant: protection
               level: 4
       depth_strider_3_book:
-        chance: 0.0025
+        chance: 0.0005
         depth_strider_3_book:
           material: ENCHANTED_BOOK
           amount: 1
@@ -7260,7 +7260,7 @@ recipes:
               enchant: depth_strider
               level: 3
       aqua_affinity_book:
-        chance: 0.0025
+        chance: 0.0005
         aqua_affinity_book:
           material: ENCHANTED_BOOK
           amount: 1
@@ -7269,7 +7269,7 @@ recipes:
               enchant: aqua_affinity
               level: 1
       infinity_book:
-        chance: 0.0025
+        chance: 0.0005
         infinity_book:
           material: ENCHANTED_BOOK
           amount: 1
@@ -7278,7 +7278,7 @@ recipes:
               enchant: infinity
               level: 1
       looting_3_book:
-        chance: 0.0025
+        chance: 0.0005
         looting_3_book:
           material: ENCHANTED_BOOK
           amount: 1
@@ -7295,7 +7295,7 @@ recipes:
           lore:
             - Egg of Creation
       apollo_bow:
-        chance: 0.0005
+        chance: 0.00005
         apollo_bow:
           material: BOW
           amount: 1
@@ -7318,7 +7318,7 @@ recipes:
               enchant: infinity
               level: 1
       excalibur_sword:
-        chance: 0.0005
+        chance: 0.00005
         excalibur_sword:
           material: DIAMOND_SWORD
           amount: 1
@@ -7338,7 +7338,7 @@ recipes:
               enchant: looting
               level: 3
       imcando_pick:
-        chance: 0.0005
+        chance: 0.00005
         imcando_pick:
           material: DIAMOND_PICKAXE
           amount: 1
@@ -7352,7 +7352,7 @@ recipes:
               enchant: unbreaking
               level: 3
       city_bastion:
-        chance: 0.0005
+        chance: 0.00005
         city_bastion:
           material: BONE_BLOCK
           name: City Bastion
@@ -7360,7 +7360,7 @@ recipes:
             - City bastions block reinforcements and elytra
           amount: 1
       bastion:
-        chance: 0.000125
+        chance: 0.0000125
         bastion:
           material: SPONGE
           name: Bastion
@@ -7370,32 +7370,32 @@ recipes:
             - As well as stop elytra
           amount: 1
       beacon:
-        chance: 0.0001
+        chance: 0.00001
         beacon:
           material: BEACON
           amount: 1
       diamond_horse_armor:
-        chance: 0.0012
+        chance: 0.00012
         diamond_horse_armor:
           material: DIAMOND_HORSE_ARMOR
           amount: 1
       gold_horse_armor:
-        chance: 0.0012
+        chance: 0.00012
         gold_horse_armor:
           material: GOLD_HORSE_ARMOR
           amount: 1
       iron_horse_armor:
-        chance: 0.0012
+        chance: 0.00012
         iron_horse_armor:
           material: IRON_HORSE_ARMOR
           amount: 1
       leather_horse_armor:
-        chance: 0.0012
+        chance: 0.00012
         leather_horse_armor:
           material: LEATHER_HORSE_ARMOR
           amount: 1
       jukebox:
-        chance: 0.0029749999
+        chance: 0.0092974999
         jukebox:
           material: JUKEBOX
           amount: 1
