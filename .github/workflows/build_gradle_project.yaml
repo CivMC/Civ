@@ -1,15 +1,27 @@
-# This workflow can be used to build any gradle project in the repo
+# Build a project
 name: Gradle | Build Project
 
 on:
   workflow_dispatch:
     inputs:
+      category:
+        required: true
+        description: 'The category of project'
+        type: choice
+        options:
+          - plugins
       project:
+        required: true
         description: 'The project to build'
         type: string
   workflow_call:
     inputs:
+      category:
+        required: true
+        description: 'The category of project'
+        type: string
       project:
+        required: true
         description: 'The project to build'
         type: string
 
@@ -34,7 +46,7 @@ jobs:
         env:
           CI: true
         with:
-          arguments: "${{inputs.project && format('{0}:', inputs.project)}}build --scan"
+          arguments: "${{inputs.category}}:${{inputs.project}}:build --scan"
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3

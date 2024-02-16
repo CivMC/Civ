@@ -1,5 +1,5 @@
-# Publish a project to maven
-name: Gradle | Publish Project
+# Attach artifacts to a github release
+name: Gradle | Release Project
 
 on:
   workflow_dispatch:
@@ -12,7 +12,7 @@ on:
           - plugins
       project:
         required: true
-        description: 'The project to publish'
+        description: 'The project to build'
         type: string
   workflow_call:
     inputs:
@@ -22,16 +22,15 @@ on:
         type: string
       project:
         required: true
-        description: 'The project to publish'
+        description: 'The project to build'
         type: string
 
 jobs:
-  publish_gradle:
-    name: Publish Gradle
+  release_gradle:
+    name: Release Gradle
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
@@ -44,10 +43,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Gradle Publish
+      - name: Gradle Build
         uses: gradle/gradle-build-action@v2
         env:
           CI: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          arguments: "${{inputs.category}}:${{inputs.project}}:publish --scan"
+          arguments: "plugins:${{inputs.category}}:${{inputs.project}} build --scan"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: '${{inputs.category}}/${{inputs.project}}/build/libs/*'
