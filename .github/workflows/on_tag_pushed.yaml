@@ -5,7 +5,7 @@ name: 🏷️ Tag Pushed
 on:
   push:
     tags:
-      - '*-v*.*.*'
+      - '*/v*.*.*'
 
 jobs:
   split_values:
@@ -21,14 +21,14 @@ jobs:
         id: split_version
         env:
           TAG: ${{ github.ref_name }}
-        run: echo "version=${TAG##*-}" >> $GITHUB_OUTPUT
+        run: echo "version=${TAG##*/}" >> $GITHUB_OUTPUT
 
       - name: ✂️ Split Project Name
         id: split_project
         env:
           TAG: ${{ github.ref_name }}
           VERSION: ${{steps.split_version.outputs.version }}
-        run: echo "project=${TAG//-$VERSION}" >> $GITHUB_OUTPUT
+        run: echo "project=${TAG///$VERSION}" >> $GITHUB_OUTPUT
 
   call_publish_gradle:
     needs: split_values
