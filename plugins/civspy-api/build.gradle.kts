@@ -1,4 +1,3 @@
-group = "net.civmc.civspy"
 version = "2.0.1"
 
 dependencies {

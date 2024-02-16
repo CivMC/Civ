@@ -7,6 +7,8 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.2.2" apply false
 }
 
+group = "net.civmc"
+
 project.extensions.configure<GradleEnterpriseExtension> {
     buildScan {
         if (System.getenv("CI") != null) {

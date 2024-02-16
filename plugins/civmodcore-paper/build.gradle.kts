@@ -4,7 +4,6 @@ plugins {
 	id("xyz.jpenilla.run-paper")
 }
 
-group = "net.civmc.civmodcore"
 version = "3.0.0"
 
 dependencies {
