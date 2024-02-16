@@ -1,0 +1,37 @@
+#edit the following example world to your preferences
+#remember to change 'exampleworld' into your world name
+exampleworld:
+  randomspawnon:
+  - respawn
+  - bedrespawn
+  - firstjoin
+  keeprandomspawns: false
+  spawnpointson:
+  - firstjoin
+  - newplayer
+  newplayertime: 3000
+  spawnpoints:
+    '0':
+      name: City A
+      x: 500
+      y: 70
+      z: 1000
+      radius: 500
+      exclusion: 100
+      nearby: true
+      checkradius: 500
+  spawnbyplayer: true
+  spawnbyplayerarea:
+    exclusionradius: 200
+    radius: 500
+  spawnarea:
+    type: "circle"
+    radius: 10000
+  spawnblacklist:
+    - 8
+    - 9
+    - 10
+    - 11
+    - 18
+    - 51
+    - 81
