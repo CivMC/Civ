@@ -48,7 +48,7 @@ jobs:
         env:
           CI: true
         with:
-          arguments: "${{inputs.category}}:${{inputs.project}} build --scan"
+          arguments: "${{inputs.category}}:${{inputs.project}}:build --scan"
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
