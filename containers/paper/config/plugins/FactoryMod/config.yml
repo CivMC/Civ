@@ -7062,7 +7062,7 @@ recipes:
           amount: 1
       #Resources - 25% (Divided seperately over all below)
       iron_ingot:
-        chance: 0.0375
+        chance: 0.051
         iron_ingot:
           material: IRON_INGOT
           amount: 1
@@ -7097,7 +7097,7 @@ recipes:
           material: COAL
           amount: 1
       emerald:
-        chance: 0.01
+        chance: 0.00125
         emerald:
           material: EMERALD
           amount: 1
@@ -7137,7 +7137,7 @@ recipes:
           material: COAL_BLOCK
           amount: 1
       emerald_block:
-        chance: 0.005
+        chance: 0.00025
         emerald_block:
           material: EMERALD_BLOCK
           amount: 1
