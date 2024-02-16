@@ -14,7 +14,7 @@ jobs:
 
     outputs:
       version: ${{ steps.split_version.outputs.version }}
-      project: ${{ steps.split.outputs.project }}
+      project: ${{ steps.split_project.outputs.project }}
 
     steps:
       - name: Split Project Version
@@ -24,7 +24,7 @@ jobs:
         run: echo "version=${TAG##*-}" >> $GITHUB_OUTPUT
 
       - name: Split Project Name
-        id: split_name
+        id: split_project
         env:
           TAG: ${{ github.ref_name }}
           VERSION: ${{steps.split_version.outputs.version }}
