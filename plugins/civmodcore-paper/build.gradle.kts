@@ -11,14 +11,14 @@ dependencies {
 		paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 	}
 
-	implementation("co.aikar:acf-bukkit:0.5.0-SNAPSHOT")
-	implementation("com.mojang:datafixerupper:1.0.20")
-	implementation("com.zaxxer:HikariCP:5.0.1")
-	implementation("co.aikar:taskchain-bukkit:3.7.2")
-	implementation("com.github.IPVP-MC:canvas:91ec97f076")
-	implementation("org.apache.commons:commons-lang3:3.12.0")
-	implementation("org.apache.commons:commons-collections4:4.4")
-	implementation("com.google.code.findbugs:jsr305:3.0.2")
+	api("co.aikar:acf-bukkit:0.5.0-SNAPSHOT")
+	api("com.mojang:datafixerupper:1.0.20")
+	api("com.zaxxer:HikariCP:5.0.1")
+	api("co.aikar:taskchain-bukkit:3.7.2")
+	api("com.github.IPVP-MC:canvas:91ec97f076")
+	api("org.apache.commons:commons-lang3:3.12.0")
+	api("org.apache.commons:commons-collections4:4.4")
+	api("com.google.code.findbugs:jsr305:3.0.2")
 
 	compileOnly("it.unimi.dsi:fastutil:8.5.8")
 
