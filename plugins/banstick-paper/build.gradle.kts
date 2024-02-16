@@ -1,21 +1,16 @@
-import net.civmc.civgradle.CivGradleExtension
-
 plugins {
-	id("net.civmc.civgradle") version "2.+" apply false
+	id("io.papermc.paperweight.userdev")
+	id("com.github.johnrengelman.shadow")
 }
 
-subprojects {
-	apply(plugin = "net.civmc.civgradle")
-	apply(plugin = "java-library")
-	apply(plugin = "maven-publish")
+version = "2.0.1"
 
-	configure<CivGradleExtension> {
-		pluginName = project.property("pluginName") as String
-	}
+dependencies {
+	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 
-	repositories {
-		mavenCentral()
-		maven("https://repo.civmc.net/repository/maven-public")
-		maven("https://jitpack.io")
-	}
+	compileOnly(project(":plugins:civmodcore-paper"))
+	compileOnly(project(":plugins:namelayer-paper"))
+
+	implementation("com.github.seancfoley:ipaddress:2.0.2")
+	implementation("org.jsoup:jsoup:1.13.1")
 }

@@ -5,6 +5,7 @@ plugins {
 }
 
 
+include(":plugins:banstick-paper")
 include(":plugins:citadel-paper")
 include(":plugins:civmodcore-paper")
 include(":plugins:civspy-api")
