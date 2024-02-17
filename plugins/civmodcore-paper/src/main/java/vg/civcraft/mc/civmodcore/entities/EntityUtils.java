@@ -1,16 +1,12 @@
 package vg.civcraft.mc.civmodcore.entities;
 
 import com.google.common.base.Strings;
-import javax.annotation.Nonnull;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslatableComponent;
 import org.bukkit.entity.EntityType;
 
 /**
  * Class of static APIs for Entities.
  */
 public final class EntityUtils {
-
 	/**
 	 * Attempts to retrieve an entity type by its slug or id.
 	 *
@@ -35,13 +31,4 @@ public final class EntityUtils {
 		catch (final Throwable ignored) { }
 		return null;
 	}
-
-	/**
-	 * @param entityType The entity type to translate.
-	 * @return Returns a translatable component based on the given entity type.
-	 */
-	public static TranslatableComponent asTranslatable(@Nonnull final EntityType entityType) {
-		return Component.translatable(entityType.translationKey());
-	}
-
 }
