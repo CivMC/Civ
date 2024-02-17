@@ -108,31 +108,6 @@ hacks:
       - UNLUCK
   DebugWand:
     enabled: true
-  DogFacts:
-    enabled: true
-    intervalTime: 15m
-    announcements:
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Join the Official Discord at https://discord.gg/zp63BaX3Uf","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/zp63BaX3Uf"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit the community wiki at civwiki.org","color":"green","clickEvent":{"action":"open_url","value":"https://civwiki.org/wiki/Main_Page"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit our wiki at wiki.civmc.net","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player made map at civmc-map.github.io","color":"green","clickEvent":{"action":"open_url","value":"https://civmc-map.github.io/"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /g ! to talk in global chat","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /vote to vote for CivMC and receive essence!","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Consider donating to the server at patreon.com/civ_mc! And get some unique perks!","color":"blue","clickEvent":{"action":"open_url","value":"https://www.patreon.com/civ_mc"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"All ores except coal and copper can spawn in big veins. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/hiddenore"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"All ores except diamond spawn randomly as you dig. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/hiddenore"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"The command /config will let you adjust various settings","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /rb to see the crop information for the biome you are in","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /chunklimits to see the restrictions on how many blocks can be placed in a chunk","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"If you type /fm you can see all the types of factories you can make","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Please review the server rules at reddit.com/r/civmc/wiki/index","color":"green","clickEvent":{"action":"open_url","value":"https://www.reddit.com/r/civmc/wiki/index/"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"The use of VPNs or multiple accounts is not allowed, Logging in from the same place as a friend will result in an automatic ban. Accidental use of either may be resolved via a ticket on the official CivMC Discord","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/zp63BaX3Uf"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player run newsletter at https://civwiki.news/ to see whats been going on!","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the starter guide at wiki.civmc.net/pages/getting-started","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/getting-started"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Make sure to reinforce your buildings/chests to protect them from others. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/essential/citadel"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Jukeboxes and Noteblocks act as CCTV, when reinforced they record player actions. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/jukealert"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Killing someone with an ender pearl in your hotbar will lock them in the nether! Player essence is used to keep the players trapped. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/essential/exilepearl"}}]'
-  
   ElytraFeatures:
     enabled: false
     # Whether Elytra flight should be outright disabled
@@ -347,6 +322,30 @@ hacks:
     # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html
     # Note: You can also just state "ALL" for all spawn circumstances
     VILLAGER: ALL
+  DogFacts:
+    enabled: true
+    intervalTime: 15m
+    # Use https://webui.advntr.dev/ to create wacky announcements!
+    announcements:
+      - "<gold>[CivMC] <green>Join the Official Discord at <click:open_url:'https://discord.gg/zp63BaX3Uf'><u>https://discord.gg/zp63BaX3Uf</u></click>"
+      - "<gold>[CivMC] <green>Visit the community wiki at <click:open_url:'https://civwiki.org/wiki/Main_Page'><u>civwiki.org</u></click>"
+      - "<gold>[CivMC] <green>Check out the player made map at <click:open_url:'https://civmc-map.github.io/'><u>civmc-map.github.io</u></click>"
+      - "<gold>[CivMC] <green>Type <click:copy_to_clipboard:'/g !'><u>/g !</u></click> to talk in global chat."
+      - "<gold>[CivMC] <green>Type <click:copy_to_clipboard:'/vote'><u>/vote</u></click> to vote for CivMC and receive essence!"
+      - "<gold>[CivMC] <blue>Consider donating to the server at <click:open_url:'https://www.patreon.com/civ_mc'><u>patreon.com/civ_mc</u></click>! And get some unique perks!"
+      - "<gold>[CivMC] <green>All ores except coal and copper can spawn in big veins. <click:open_url:'https://wiki.civmc.net/pages/plugins/unique/hiddenore'><u>Click for more info</u></click>."
+      - "<gold>[CivMC] <green>All ores except diamond spawn randomly as you dig. <click:open_url:'https://wiki.civmc.net/pages/plugins/unique/hiddenore'><u>Click for more info</u></click>."
+      - "<gold>[CivMC] <green>The command <click:copy_to_clipboard:'/config'><u>/config</u></click> will let you adjust various settings."
+      - "<gold>[CivMC] <green>Type <click:copy_to_clipboard:'/rb'><u>/rb</u></click> to see the crop information for the biome you are in."
+      - "<gold>[CivMC] <green>Type <click:copy_to_clipboard:'/chunklimits'><u>/chunklimits</u></click> to see the restrictions on how many blocks can be placed in a chunk."
+      - "<gold>[CivMC] <green>If you type <click:copy_to_clipboard:'/fm'><u>/fm</u></click> you can see all the types of factories you can make."
+      - "<gold>[CivMC] <green>Please review the server rules at <click:open_url:'https://www.reddit.com/r/civmc/wiki/index/'><u>reddit.com/r/civmc/wiki/index</u></click>"
+      - "<gold>[CivMC] <green>The use of VPNs or multiple accounts is not allowed, Logging in from the same place as a friend will result in an automatic ban. Accidental use of either may be resolved via a ticket on the official <click:open_url:'https://discord.gg/zp63BaX3Uf'><u>CivMC Discord</u></click>."
+      - "<gold>[CivMC] <green>Check out the player run newsletter at <click:open_url:'https://civwiki.news/'><u>https://civwiki.news/</u></click> to see whats been going on!"
+      - "<gold>[CivMC] <green>Check out the starter guide at <click:open_url:'https://wiki.civmc.net/pages/getting-started'><u>wiki.civmc.net/pages/getting-started</u></click>"
+      - "<gold>[CivMC] <green>Make sure to reinforce your buildings/chests to protect them from others. <click:open_url:'https://wiki.civmc.net/pages/plugins/essential/citadel'><u>Click for more info</u></click>."
+      - "<gold>[CivMC] <green>Jukeboxes and Noteblocks act as CCTV, when reinforced they record player actions. <click:open_url:'https://wiki.civmc.net/pages/plugins/unique/jukealert'><u>Click for more info</u></click>."
+      - "<gold>[CivMC] <green>Killing someone with an ender pearl in your hotbar will lock them in the nether! Player essence is used to keep the players trapped. <click:open_url:'https://wiki.civmc.net/pages/plugins/essential/exilepearl'><u>Click for more info</u></click>."
   Experimental:
     enabled: true
     combatspy: false
