@@ -17,7 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.world.EntitiesUnloadEvent;
 
 /**
- Allows for high hard despawn distance and low simulation distance by forcible removing mobs
+ Allows for high hard despawn distance and low simulation distance by forcibly removing mobs
  that are inside the simulation distance yet, still in the hard despawn distance.
  */
 public class DespawnFix extends BasicHack {
