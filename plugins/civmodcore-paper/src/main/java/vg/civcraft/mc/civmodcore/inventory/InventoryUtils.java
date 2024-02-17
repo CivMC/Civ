@@ -8,11 +8,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.wesjd.anvilgui.AnvilGUI;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public final class InventoryUtils {
@@ -236,4 +238,7 @@ public final class InventoryUtils {
 		return true;
 	}
 
+	public static @NotNull AnvilGUI.Builder newAnvilGui() {
+		return new AnvilGUI.Builder();
+	}
 }
