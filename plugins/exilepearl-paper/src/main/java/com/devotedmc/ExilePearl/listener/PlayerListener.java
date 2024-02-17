@@ -241,7 +241,7 @@ public class PlayerListener implements Listener, Configurable {
 	public void onInventoryPickupItem(InventoryPickupItemEvent e) {
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(e.getItem().getItemStack());
 		if(pearl != null){
-			if (e.getInventory().getHolder() instanceof HopperMinecart) {
+			if (e.getInventory().getHolder(false) instanceof HopperMinecart) {
 				e.setCancelled(true);
 			} else if (e.getInventory().getType() == InventoryType.HOPPER) {
 				pearl.setHolder(e.getInventory().getLocation().getBlock());
@@ -388,7 +388,7 @@ public class PlayerListener implements Listener, Configurable {
 			if(pearl != null) {
 				boolean clickedTop = event.getView().convertSlot(slot) == slot;
 
-				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
+				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder(false) : event.getView().getBottomInventory().getHolder(false);
 
 				updatePearlHolder(pearl, holder, event);
 
@@ -411,7 +411,7 @@ public class PlayerListener implements Listener, Configurable {
 		if (holder instanceof Chest) {
 			updatePearl(pearl, (Chest)holder);
 		} else if (holder instanceof DoubleChest) {
-			updatePearl(pearl, (Chest) ((DoubleChest) holder).getLeftSide());
+			updatePearl(pearl, (Chest) ((DoubleChest) holder).getLeftSide(false));
 		} else if (holder instanceof Furnace) {
 			updatePearl(pearl, (Furnace) holder);
 		} else if (holder instanceof Dispenser) {
@@ -564,7 +564,7 @@ public class PlayerListener implements Listener, Configurable {
 
 			if(pearl != null) {
 				boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
-				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
+				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder(false) : event.getView().getBottomInventory().getHolder(false);
 				if (holder != null) {
 					updatePearlHolder(pearl, holder, event);
 				}
@@ -576,7 +576,7 @@ public class PlayerListener implements Listener, Configurable {
 			if(pearl != null) {
 				boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
 
-				InventoryHolder holder = !clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
+				InventoryHolder holder = !clickedTop ? event.getView().getTopInventory().getHolder(false) : event.getView().getBottomInventory().getHolder(false);
 
 				// ShiftClicking into a furnace will not move the pearl into the furnace so the pearlHolder should not be updated
 				if (event.getClick().isShiftClick() && holder != null && holder.getInventory() instanceof FurnaceInventory) {
@@ -602,7 +602,7 @@ public class PlayerListener implements Listener, Configurable {
 			if(pearl != null) {
 				boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
 
-				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
+				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder(false) : event.getView().getBottomInventory().getHolder(false);
 
 				updatePearlHolder(pearl, holder, event);
 			}
@@ -622,7 +622,7 @@ public class PlayerListener implements Listener, Configurable {
 			if(pearl != null) {
 				boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
 
-				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
+				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder(false) : event.getView().getBottomInventory().getHolder(false);
 
 				updatePearlHolder(pearl, holder, event);
 			}
