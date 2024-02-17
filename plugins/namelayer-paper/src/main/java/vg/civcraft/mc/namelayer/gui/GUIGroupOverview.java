@@ -141,6 +141,7 @@ public class GUIGroupOverview {
 	private List<Clickable> getGroupClickables() {
 		String defaultGroupName = gm.getDefaultGroup(p.getUniqueId());
 		List<String> groupNames = gm.getAllGroupNames(p.getUniqueId());
+		groupNames.sort(String.CASE_INSENSITIVE_ORDER);
 		List<Clickable> result = new ArrayList<Clickable>();
 		Set<String> alreadyProcessed = new HashSet<String>();
 		for (String groupName : groupNames) {
