@@ -7084,7 +7084,7 @@ recipes:
       Redstone_dust:
         chance: 0.025
         Redstone_dust:
-          material: REDSTONE_DUST
+          material: REDSTONE
           amount: 1
       Copper_ingot:
         chance: 0.0375
@@ -7379,10 +7379,10 @@ recipes:
         diamond_horse_armor:
           material: DIAMOND_HORSE_ARMOR
           amount: 1
-      gold_horse_armor:
+      golden_horse_armor:
         chance: 0.00012
-        gold_horse_armor:
-          material: GOLD_HORSE_ARMOR
+        golden_horse_armor:
+          material: GOLDEN_HORSE_ARMOR
           amount: 1
       iron_horse_armor:
         chance: 0.00012
