@@ -6742,6 +6742,551 @@ recipes:
         lore:
           - Crack me in a factory for a prize!
     outputs:
+      # Trash - 70% of total (0.175 each)
+      cobblestone:
+        chance: 0.175
+        cobblestone:
+          material: COBBLESTONE
+          amount: 1
+      sand:
+        chance: 0.175
+        sand:
+          material: SAND
+          amount: 1
+      gravel:
+        chance: 0.175
+        gravel: 
+          material: GRAVEL
+          amount: 1
+      terracotta:
+        chance: 0.175
+        terracotta:
+          material: TERRACOTTA
+          amount: 1
+      # Spawn eggs - 2% of total (0.00051282051 each)
+      vindicator:
+        chance: 0.00051282051
+        vindicator:
+          material: VINDICATOR_SPAWN_EGG
+          amount: 1
+          nbt:
+            EntityTag:
+              id: "minecraft:vindication_illager"
+      vex:
+        chance: 0.00051282051
+        vex:
+          material: VEX_SPAWN_EGG
+          amount: 1
+          nbt:
+            EntityTag:
+              id: "minecraft:vex"
+      silverfish:
+        chance: 0.00051282051
+        silverfish:
+          material: SILVERFISH_SPAWN_EGG
+          amount: 1
+          nbt:
+            EntityTag:
+              id: "minecraft:silverfish"
+      endermite:
+        chance: 0.00051282051
+        endermite:
+          material: ENDERMITE_SPAWN_EGG
+          amount: 1
+          nbt:
+            EntityTag:
+              id: "minecraft:endermite"
+      zombiehorse:
+        chance: 0.00051282051
+        zombiehorse:
+          material: ZOMBIE_HORSE_SPAWN_EGG
+          amount: 1
+          nbt:
+            EntityTag:
+              id: "minecraft:zombie_horse"
+      skeletonhorse:
+        chance: 0.00051282051
+        skeletonhorse:
+          material: SKELETON_HORSE_SPAWN_EGG
+          amount: 1
+          nbt:
+            EntityTag:
+              id: "minecraft:skeleton_horse"
+      donkey:
+        chance: 0.00051282051
+        donkey:
+          material: DONKEY_SPAWN_EGG
+          amount: 1
+          nbt:
+            EntityTag:
+              id: "minecraft:donkey"
+      polarbear:
+        chance: 0.00051282051
+        polarbear:
+          material: POLAR_BEAR_SPAWN_EGG
+          amount: 1
+          nbt:
+            EntityTag:
+              id: "minecraft:polar_bear"
+      parrot:
+        chance: 0.00051282051
+        parrot:
+          material: PARROT_SPAWN_EGG
+          amount: 1
+          nbt:
+            EntityTag:
+              id: "minecraft:parrot"
+      llama:
+        chance: 0.00051282051
+        llama:
+          material: LLAMA_SPAWN_EGG
+          amount: 1
+          nbt:
+            EntityTag:
+              id: "minecraft:llama"
+      fox:
+        chance: 0.00051282051
+        fox:
+          material: FOX_SPAWN_EGG
+          amount: 1
+      cat:
+        chance: 0.00051282051
+        cat:
+          material: CAT_SPAWN_EGG
+          amount: 1
+      mooshroom:
+        chance: 0.00051282051
+        mooshroom:
+          material: MOOSHROOM_SPAWN_EGG
+          amount: 1
+      horse:
+        chance: 0.00051282051
+        horse:
+          material: HORSE_SPAWN_EGG
+          amount: 1
+      rabbit:
+        chance: 0.00051282051
+        rabbit:
+          material: RABBIT_SPAWN_EGG
+          amount: 1
+      ocelot:
+        chance: 0.00051282051
+        ocelot:
+          material: OCELOT_SPAWN_EGG
+          amount: 1
+      squid:
+        chance: 0.00051282051
+        squid:
+          material: SQUID_SPAWN_EGG
+          amount: 1
+      wolf:
+        chance: 0.00051282051
+        wolf:
+          material: WOLF_SPAWN_EGG
+          amount: 1
+      axolotl:
+        chance: 0.00051282051
+        axolotl:
+          material: AXOLOTL_SPAWN_EGG
+          amount: 1
+      bee:
+        chance: 0.00051282051
+        bee:
+          material: BEE_SPAWN_EGG
+          amount: 1
+      panda:
+        chance: 0.00051282051
+        panda:
+          material: PANDA_SPAWN_EGG
+          amount: 1
+      dolphin:
+        chance: 0.00051282051
+        dolphin:
+          material: DOLPHIN_SPAWN_EGG
+          amount: 1
+      stray:
+        chance: 0.00051282051
+        stray:
+          material: STRAY_SPAWN_EGG
+          amount: 1
+      strider:
+        chance: 0.00051282051
+        strider:
+          material: STRIDER_SPAWN_EGG
+          amount: 1
+      hoglin:
+        chance: 0.00051282051
+        hoglin:
+          material: HOGLIN_SPAWN_EGG
+          amount: 1
+      creeper:
+        chance: 0.00051282051
+        creeper:
+          material: CREEPER_SPAWN_EGG
+          amount: 1
+      zombie:
+        chance: 0.00051282051
+        zombie:
+          material: ZOMBIE_SPAWN_EGG
+          amount: 1
+      skeleton:
+        chance: 0.00051282051
+        skeleton:
+          material: SKELETON_SPAWN_EGG
+          amount: 1
+      spider:
+        chance: 0.00051282051
+        spider:
+          material: SPIDER_SPAWN_EGG
+          amount: 1
+      blaze:
+        chance: 0.00051282051
+        blaze:
+          material: BLAZE_SPAWN_EGG
+          amount: 1
+      ghast:
+        chance: 0.00051282051
+        ghast:
+          material: GHAST_SPAWN_EGG
+          amount: 1
+      guardian:
+        chance: 0.00051282051
+        guardian:
+          material: GUARDIAN_SPAWN_EGG
+          amount: 1
+      magmacube:
+        chance: 0.00051282051
+        magmacube:
+          material: MAGMA_CUBE_SPAWN_EGG
+          amount: 1
+      slime:
+        chance: 0.00051282051
+        slime:
+          material: SLIME_SPAWN_EGG
+          amount: 1
+      witch:
+        chance: 0.00051282051
+        witch:
+          material: WITCH_SPAWN_EGG
+          amount: 1
+      villager:
+        chance: 0.00051282051
+        villager:
+          material: VILLAGER_SPAWN_EGG
+          amount: 1
+      cavespider:
+        chance: 0.00051282051
+        cavespider:
+          material: CAVE_SPIDER_SPAWN_EGG
+          amount: 1
+      enderman:
+        chance: 0.00051282051
+        enderman:
+          material: ENDERMAN_SPAWN_EGG
+          amount: 1
+      zombiepigman:
+        chance: 0.00051282051
+        zombiepigman:
+          material: ZOMBIFIED_PIGLIN_SPAWN_EGG
+          amount: 1
+      # Music Disks - 1% of total (0.00071428571 each)
+      record_13:
+        chance: 0.00071428571
+        record_13:
+          material: MUSIC_DISC_13
+          amount: 1
+      record_cats:
+        chance: 0.00071428571
+        record_cats:
+          material: MUSIC_DISC_CAT
+          amount: 1
+      record_blocks:
+        chance: 0.00071428571
+        record_blocks:
+          material: MUSIC_DISC_BLOCKS
+          amount: 1
+      record_chirp:
+        chance: 0.00071428571
+        record_chirp:
+          material: MUSIC_DISC_CHIRP
+          amount: 1
+      record_far:
+        chance: 0.00071428571
+        record_far:
+          material: MUSIC_DISC_FAR
+          amount: 1
+      record_mall:
+        chance: 0.00071428571
+        record_mall:
+          material: MUSIC_DISC_MALL
+          amount: 1
+      record_mellohi:
+        chance: 0.00071428571
+        record_mellohi:
+          material: MUSIC_DISC_MELLOHI
+          amount: 1
+      record_stal:
+        chance: 0.00071428571
+        record_stal:
+          material: MUSIC_DISC_STAL
+          amount: 1
+      record_strad:
+        chance: 0.00071428571
+        record_strad:
+          material: MUSIC_DISC_STRAD
+          amount: 1
+      record_ward:
+        chance: 0.00071428571
+        record_ward:
+          material: MUSIC_DISC_WARD
+          amount: 1
+      record_11:
+        chance: 0.00071428571
+        record_11:
+          material: MUSIC_DISC_11
+          amount: 1
+      record_wait:
+        chance: 0.00071428571
+        record_wait:
+          material: MUSIC_DISC_WAIT
+          amount: 1
+      record_pigstep:
+        chance: 0.00071428571
+        record_pigstep:
+          material: MUSIC_DISC_PIGSTEP
+          amount: 1
+      record_otherside:
+        chance: 0.00071428571
+        record_otherside: 
+          material: MUSIC_DISC_OTHERSIDE
+          amount: 1
+      #Resources - 25% (Divided seperately over all below)
+      iron_ingot:
+        chance: 0.051
+        iron_ingot:
+          material: IRON_INGOT
+          amount: 1
+      Gold_ingot:
+        chance: 0.0125
+        iron_ingot:
+          material: GOLD_INGOT
+          amount: 1
+      diamond:
+        chance: 0.0025
+        diamond:
+          material: DIAMOND
+          amount: 1
+      lapis_lazuli:
+        chance: 0.0125
+        lapis_lazuli:
+          material: LAPIS_LAZULI
+          amount: 1
+      Redstone_dust:
+        chance: 0.025
+        Redstone_dust:
+          material: REDSTONE_DUST
+          amount: 1
+      Copper_ingot:
+        chance: 0.0375
+        Copper_ingot:
+          material: COPPER_INGOT
+          amount: 1
+      coal:
+        chance: 0.0375
+        coal:
+          material: COAL
+          amount: 1
+      emerald:
+        chance: 0.00125
+        emerald:
+          material: EMERALD
+          amount: 1
+      iron_block:
+        chance: 0.016875
+        iron_block:
+          material: IRON_BLOCK
+          amount: 1
+      Gold_block:
+        chance: 0.0125
+        iron_block:
+          material: GOLD_BLOCK
+          amount: 1
+      diamond_block:
+        chance: 0.000625
+        diamond_block:
+          material: DIAMOND_BLOCK
+          amount: 1
+      lapis_block:
+        chance: 0.00625
+        lapis_block:
+          material: LAPIS_BLOCK
+          amount: 1
+      Redstone_block:
+        chance: 0.00625
+        Redstone_block:
+          material: REDSTONE_BLOCK
+          amount: 1
+      Copper_block:
+        chance: 0.0125
+        Copper_block:
+          material: COPPER_BLOCK
+          amount: 1
+      coal_block:
+        chance: 0.015
+        coal_block:
+          material: COAL_BLOCK
+          amount: 1
+      emerald_block:
+        chance: 0.00025
+        emerald_block:
+          material: EMERALD_BLOCK
+          amount: 1
+      # Tools/enchanting books - 1% (0.0005 each)
+      diamond_sword:
+        chance: 0.0005
+        diamond_sword:
+          material: DIAMOND_SWORD
+          amount: 1
+      diamond_pickaxe:
+        chance: 0.0005
+        diamond_pickaxe:
+          material: DIAMOND_PICKAXE
+          amount: 1
+      diamond_axe:
+        chance: 0.0005
+        diamond_axe:
+          material: DIAMOND_AXE
+          amount: 1
+      diamond_shovel:
+        chance: 0.0005
+        diamond_shovel:
+          material: DIAMOND_SHOVEL
+          amount: 1
+      diamond_hoe:
+        chance: 0.0005
+        diamond_hoe:
+          material: DIAMOND_HOE
+          amount: 1
+      diamond_chestplate:
+        chance: 0.0005
+        diamond_chestplate:
+          material: DIAMOND_CHESTPLATE
+          amount: 1
+      diamond_leggings:
+        chance: 0.0005
+        diamond_leggings:
+          material: DIAMOND_LEGGINGS
+          amount: 1
+      diamond_helmet:
+        chance: 0.0005
+        diamond_helmet:
+          material: DIAMOND_HELMET
+          amount: 1
+      diamond_boots:
+        chance: 0.0005
+        diamond_boots:
+          material: DIAMOND_BOOTS
+          amount: 1
+      unbreaking_3_book:
+        chance: 0.0005
+        power_5_book:
+          material: ENCHANTED_BOOK
+          amount: 1
+          stored_enchants:
+            unbreaking3:
+              enchant: unbreaking
+              level: 3
+      efficiency_5_book:
+        chance: 0.0005
+        efficiency_5_book:
+          material: ENCHANTED_BOOK
+          amount: 1
+          stored_enchants:
+            efficiency5:
+              enchant: efficiency
+              level: 5
+      silk_touch_book:
+        chance: 0.0005
+        silk_touch_book:
+          material: ENCHANTED_BOOK
+          amount: 1
+          stored_enchants:
+            silktouch:
+              enchant: silk_touch
+              level: 1
+      sharpness_book:
+        chance: 0.0005
+        sharpness_book:
+          material: ENCHANTED_BOOK
+          amount: 1
+          stored_enchants:
+            sharpness5:
+              enchant: sharpness
+              level: 5
+      power_5_book:
+        chance: 0.0005
+        power_5_book:
+          material: ENCHANTED_BOOK
+          amount: 1
+          stored_enchants:
+            power5:
+              enchant: power
+              level: 5
+      fortune_3_book:
+        chance: 0.0005
+        fortune_3_book:
+          material: ENCHANTED_BOOK
+          amount: 1
+          stored_enchants:
+            fortune3:
+              enchant: fortune
+              level: 3
+      protection_4_book:
+        chance: 0.0005
+        protection_4_book:
+          material: ENCHANTED_BOOK
+          amount: 1
+          stored_enchants:
+            protection4:
+              enchant: protection
+              level: 4
+      depth_strider_3_book:
+        chance: 0.0005
+        depth_strider_3_book:
+          material: ENCHANTED_BOOK
+          amount: 1
+          stored_enchants:
+            depthstrider3:
+              enchant: depth_strider
+              level: 3
+      aqua_affinity_book:
+        chance: 0.0005
+        aqua_affinity_book:
+          material: ENCHANTED_BOOK
+          amount: 1
+          stored_enchants:
+            aquaaffinity:
+              enchant: aqua_affinity
+              level: 1
+      infinity_book:
+        chance: 0.0005
+        infinity_book:
+          material: ENCHANTED_BOOK
+          amount: 1
+          stored_enchants:
+            infinity:
+              enchant: infinity
+              level: 1
+      looting_3_book:
+        chance: 0.0005
+        looting_3_book:
+          material: ENCHANTED_BOOK
+          amount: 1
+          stored_enchants:
+            looting3:
+              enchant: looting
+              level: 3
+      # special - 1% (Divided seperatly over all below)
       dragon_egg:
         chance: 0.0000000001
         dragon_egg:
@@ -6749,26 +7294,8 @@ recipes:
           amount: 1
           lore:
             - Egg of Creation
-      gezo:
-        chance: 0.0000040909
-        gezo:
-          material: PAPER
-          amount: 1
-          lore:
-            - Gezo was here !!!
-      clockback:
-        chance: 0.0000040909
-        clockback:
-          material: CLOCK
-          amount: 1
-          lore:
-            - Clockback
-          enchants:
-            kb:
-              enchant: KNOCKBACK
-              level: 3
       apollo_bow:
-        chance: 0.0000040909
+        chance: 0.00005
         apollo_bow:
           material: BOW
           amount: 1
@@ -6778,6 +7305,9 @@ recipes:
             power:
               enchant: power
               level: 5
+            punch:
+              enchant: punch
+              level: 2
             ub:
               enchant: unbreaking
               level: 3
@@ -6787,8 +7317,28 @@ recipes:
             infinity:
               enchant: infinity
               level: 1
+      excalibur_sword:
+        chance: 0.00005
+        excalibur_sword:
+          material: DIAMOND_SWORD
+          amount: 1
+          lore:
+            - Excalibur!
+          enchants:
+            sharpness:
+              enchant: sharpness
+              level: 5
+            fireaspect:
+              enchant: fire_aspect
+              level: 2
+            ub:
+              enchant: unbreaking
+              level: 3
+            looting:
+              enchant: looting
+              level: 3
       imcando_pick:
-        chance: 0.0000040909
+        chance: 0.00005
         imcando_pick:
           material: DIAMOND_PICKAXE
           amount: 1
@@ -6801,76 +7351,16 @@ recipes:
             ub:
               enchant: unbreaking
               level: 3
-      power_5_book:
-        chance: 0.0000358441
-        power_5_book:
-          material: ENCHANTED_BOOK
-          amount: 1
-          stored_enchants:
-            power5:
-              enchant: power
-              level: 5
-      infinity_book:
-        chance: 0.0000358441
-        infinity_book:
-          material: ENCHANTED_BOOK
-          amount: 1
-          stored_enchants:
-            infinity:
-              enchant: infinity
-              level: 1
-      efficiency_5_book:
-        chance: 0.0000358441
-        efficiency_5_book:
-          material: ENCHANTED_BOOK
-          amount: 1
-          stored_enchants:
-            eff5:
-              enchant: efficiency
-              level: 5
-      unbreaking_3_book:
-        chance: 0.0000358441
-        unbreaking_3_book:
-          material: ENCHANTED_BOOK
-          amount: 1
-          stored_enchants:
-            ub3:
-              enchant: unbreaking
-              level: 3
-      sharpness_5_book:
-        chance: 0.0000358441
-        sharpness_5_book:
-          material: ENCHANTED_BOOK
-          amount: 1
-          stored_enchants:
-            sharpness5:
-              enchant: sharpness
-              level: 5
-      protection_4_book:
-        chance: 0.0000358441
-        protection_4_book:
-          material: ENCHANTED_BOOK
-          amount: 1
-          stored_enchants:
-            protection4:
-              enchant: protection
-              level: 4
-      silk_touch_book:
-        chance: 0.0000358441
-        silk_touch_book:
-          material: ENCHANTED_BOOK
-          amount: 1
-          stored_enchants:
-            silktouch:
-              enchant: silk_touch
-              level: 1
-      diamond_horse_armor:
-        chance: 0.0001481480
-        diamond_horse_armor:
-          material: DIAMOND_HORSE_ARMOR
+      city_bastion:
+        chance: 0.00005
+        city_bastion:
+          material: BONE_BLOCK
+          name: City Bastion
+          lore:
+            - City bastions block reinforcements and elytra
           amount: 1
       bastion:
-        chance: 0.0000740740
+        chance: 0.0000125
         bastion:
           material: SPONGE
           name: Bastion
@@ -6879,926 +7369,36 @@ recipes:
             - It will also block pearls when they land
             - As well as stop elytra
           amount: 1
-      diamond_pickaxe:
-        chance: 0.0001481480
-        diamond_pickaxe:
-          material: DIAMOND_PICKAXE
-          amount: 1
-      diamond_axe:
-        chance: 0.0001481480
-        diamond_axe:
-          material: DIAMOND_AXE
-          amount: 1
-      diamond_shovel:
-        chance: 0.0001481480
-        diamond_shovel:
-          material: DIAMOND_SHOVEL
-          amount: 1
-      diamond_chestplate:
-        chance: 0.0000740740
-        diamond_chestplate:
-          material: DIAMOND_CHESTPLATE
-          amount: 1
-      diamond_leggings:
-        chance: 0.0000740740
-        diamond_leggings:
-          material: DIAMOND_LEGGINGS
-          amount: 1
-      diamond_helmet:
-        chance: 0.0000740740
-        diamond_helmet:
-          material: DIAMOND_HELMET
-          amount: 1
-      diamond_boots:
-        chance: 0.0000740740
-        diamond_boots:
-          material: DIAMOND_BOOTS
-          amount: 1
-      iron_ingots:
-        chance: 0.0000740740
-        iron_ingots:
-          material: IRON_INGOT
-          amount: 64
-      diamond_block:
-        chance: 0.0000740740
-        diamond_block:
-          material: DIAMOND_BLOCK
-          amount: 1
-      creeper:
-        chance: 0.0008941634
-        creeper:
-          material: CREEPER_SPAWN_EGG
-          amount: 1
-      zombie:
-        chance: 0.0008941634
-        zombie:
-          material: ZOMBIE_SPAWN_EGG
-          amount: 1
-      skeleton:
-        chance: 0.0008941634
-        skeleton:
-          material: SKELETON_SPAWN_EGG
-          amount: 1
-      spider:
-        chance: 0.0008941634
-        spider:
-          material: SPIDER_SPAWN_EGG
-          amount: 1
-      blaze:
-        chance: 0.0008941634
-        blaze:
-          material: BLAZE_SPAWN_EGG
-          amount: 1
-      ghast:
-        chance: 0.0008941634
-        ghast:
-          material: GHAST_SPAWN_EGG
-          amount: 1
-      guardian:
-        chance: 0.0008941634
-        guardian:
-          material: GUARDIAN_SPAWN_EGG
-          amount: 1
-      magmacube:
-        chance: 0.0008941634
-        magmacube:
-          material: MAGMA_CUBE_SPAWN_EGG
-          amount: 1
-      slime:
-        chance: 0.0008941634
-        slime:
-          material: SLIME_SPAWN_EGG
-          amount: 1
-      witch:
-        chance: 0.0008941634
-        witch:
-          material: WITCH_SPAWN_EGG
-          amount: 1
-      villager:
-        chance: 0.0008941634
-        villager:
-          material: VILLAGER_SPAWN_EGG
-          amount: 1
-      cavespider:
-        chance: 0.0008941634
-        cavespider:
-          material: CAVE_SPIDER_SPAWN_EGG
-          amount: 1
-      enderman:
-        chance: 0.0008941634
-        enderman:
-          material: ENDERMAN_SPAWN_EGG
-          amount: 1
-      zombiepigman:
-        chance: 0.0008941634
-        zombiepigman:
-          material: ZOMBIFIED_PIGLIN_SPAWN_EGG
-          amount: 1
-      charcoal:
-        chance: 0.0000740740
-        charcoal:
-          material: CHARCOAL
-          amount: 2048
       beacon:
-        chance: 0.000037037
+        chance: 0.00001
         beacon:
           material: BEACON
           amount: 1
-      iron_pickaxe:
-        chance: 0.0008941634
-        iron_pickaxe:
-          material: IRON_PICKAXE
+      diamond_horse_armor:
+        chance: 0.00012
+        diamond_horse_armor:
+          material: DIAMOND_HORSE_ARMOR
           amount: 1
-      iron_spade:
-        chance: 0.0008941634
-        iron_spade:
-          material: IRON_SHOVEL
-          amount: 1
-      iron_axe:
-        chance: 0.0008941634
-        iron_axe:
-          material: IRON_AXE
-          amount: 1
-      iron_sword:
-        chance: 0.0008941634
-        iron_sword:
-          material: IRON_SWORD
-          amount: 1
-      note_blocks:
-        chance: 0.0008941634
-        note_blocks:
-          material: NOTE_BLOCK
-          amount: 5
-      diamond:
-        chance: 0.0008941634
-        diamond:
-          material: DIAMOND
-          amount: 1
-      emerald:
-        chance: 0.0008941634
-        emerald:
-          material: EMERALD
-          amount: 1
-      iron_block:
-        chance: 0.0008941634
-        iron_block:
-          material: IRON_BLOCK
-          amount: 1
-      redstone_block:
-        chance: 0.0008941634
-        redstone_block:
-          material: REDSTONE_BLOCK
-          amount: 1
-      lapis_block:
-        chance: 0.0008941634
-        lapis_block:
-          material: LAPIS_BLOCK
-          amount: 1
-      record_13:
-        chance: 0.00005042014
-        record_13:
-          material: MUSIC_DISC_13
-          amount: 1
-      record_cats:
-        chance: 0.00005042014
-        record_cats:
-          material: MUSIC_DISC_CAT
-          amount: 1
-      record_blocks:
-        chance: 0.00005042014
-        record_blocks:
-          material: MUSIC_DISC_BLOCKS
-          amount: 1
-      record_chirp:
-        chance: 0.00005042014
-        record_chirp:
-          material: MUSIC_DISC_CHIRP
-          amount: 1
-      record_far:
-        chance: 0.00005042014
-        record_far:
-          material: MUSIC_DISC_FAR
-          amount: 1
-      record_mall:
-        chance: 0.00005042014
-        record_mall:
-          material: MUSIC_DISC_MALL
-          amount: 1
-      record_mellohi:
-        chance: 0.00005042014
-        record_mellohi:
-          material: MUSIC_DISC_MELLOHI
-          amount: 1
-      record_stal:
-        chance: 0.00005042014
-        record_stal:
-          material: MUSIC_DISC_STAL
-          amount: 1
-      record_strad:
-        chance: 0.00005042014
-        record_strad:
-          material: MUSIC_DISC_STRAD
-          amount: 1
-      record_ward:
-        chance: 0.00005042014
-        record_ward:
-          material: MUSIC_DISC_WARD
-          amount: 1
-      record_11:
-        chance: 0.00005042014
-        record_11:
-          material: MUSIC_DISC_11
-          amount: 1
-      record_wait:
-        chance: 0.00005042014
-        record_wait:
-          material: MUSIC_DISC_WAIT
-          amount: 1
-      record_pigstep:
-        chance: 0.00005042014
-        record_pigstep:
-          material: MUSIC_DISC_PIGSTEP
-          amount: 1
-      record_otherside:
-        chance: 0.00005042014
-        record_otherside: 
-          material: MUSIC_DISC_OTHERSIDE
-          amount: 1
-      minecart:
-        chance: 0.0008941634
-        minecart:
-          material: MINECART
-          amount: 1
-      mooshroom:
-        chance: 0.0008941634
-        mooshroom:
-          material: MOOSHROOM_SPAWN_EGG
-          amount: 1
-      horse:
-        chance: 0.0008941634
-        horse:
-          material: HORSE_SPAWN_EGG
-          amount: 1
-      rabbit:
-        chance: 0.0008941634
-        rabbit:
-          material: RABBIT_SPAWN_EGG
-          amount: 1
-      ocelot:
-        chance: 0.0008941634
-        ocelot:
-          material: OCELOT_SPAWN_EGG
-          amount: 1
-      squid:
-        chance: 0.0008941634
-        squid:
-          material: SQUID_SPAWN_EGG
-          amount: 1
-      wolf:
-        chance: 0.0008941634
-        wolf:
-          material: WOLF_SPAWN_EGG
-          amount: 1
-      axolotl:
-        chance: 0.0008941634
-        axolotl:
-          material: AXOLOTL_SPAWN_EGG
-          amount: 1
-      bee:
-        chance: 0.0008941634
-        bee:
-          material: BEE_SPAWN_EGG
-          amount: 1
-      panda:
-        chance: 0.0008941634
-        panda:
-          material: PANDA_SPAWN_EGG
-          amount: 1
-      dolphin:
-        chance: 0.0008941634
-        dolphin:
-          material: DOLPHIN_SPAWN_EGG
-          amount: 1
-      stray:
-        chance: 0.0008941634
-        stray:
-          material: STRAY_SPAWN_EGG
-          amount: 1
-      strider:
-        chance: 0.0008941634
-        strider:
-          material: STRIDER_SPAWN_EGG
-          amount: 1
-      hoglin:
-        chance: 0.0008941634
-        hoglin:
-          material: HOGLIN_SPAWN_EGG
-          amount: 1
-      cat:
-        chance: 0.0008941634
-        cat:
-          material: CAT_SPAWN_EGG
-          amount: 1
-      fox:
-        chance: 0.0008941634
-        fox:
-          material: FOX_SPAWN_EGG
+      gold_horse_armor:
+        chance: 0.00012
+        gold_horse_armor:
+          material: GOLD_HORSE_ARMOR
           amount: 1
       iron_horse_armor:
-        chance: 0.0008941634
+        chance: 0.00012
         iron_horse_armor:
           material: IRON_HORSE_ARMOR
           amount: 1
-      heart_of_the_sea:
-        chance: 0.0008941634
-        heart_of_the_sea:
-          material: HEART_OF_THE_SEA
+      leather_horse_armor:
+        chance: 0.00012
+        leather_horse_armor:
+          material: LEATHER_HORSE_ARMOR
           amount: 1
-      prismarine_shards:
-        chance: 0.0008941634
-        prismarine_shards:
-          material: PRISMARINE_SHARD
-          amount: 5
-      prismarine_crystals:
-        chance: 0.0008941634
-        prismarine_crystals:
-          material: PRISMARINE_CRYSTALS
-          amount: 3
       jukebox:
-        chance: 0.0008941634
+        chance: 0.0092974999
         jukebox:
           material: JUKEBOX
           amount: 1
-      llama:
-        chance: 0.0008941634
-        llama:
-          material: LLAMA_SPAWN_EGG
-          amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:llama"
-      parrot:
-        chance: 0.0008941634
-        parrot:
-          material: PARROT_SPAWN_EGG
-          amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:parrot"
-      polarbear:
-        chance: 0.0008941634
-        polarbear:
-          material: POLAR_BEAR_SPAWN_EGG
-          amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:polar_bear"
-      donkey:
-        chance: 0.0008941634
-        donkey:
-          material: DONKEY_SPAWN_EGG
-          amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:donkey"
-      skeletonhorse:
-        chance: 0.0008941634
-        skeletonhorse:
-          material: SKELETON_HORSE_SPAWN_EGG
-          amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:skeleton_horse"
-      zombiehorse:
-        chance: 0.0008941634
-        zombiehorse:
-          material: ZOMBIE_HORSE_SPAWN_EGG
-          amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:zombie_horse"
-      endermite:
-        chance: 0.0008941634
-        endermite:
-          material: ENDERMITE_SPAWN_EGG
-          amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:endermite"
-      silverfish:
-        chance: 0.0008941634
-        silverfish:
-          material: SILVERFISH_SPAWN_EGG
-          amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:silverfish"
-      vex:
-        chance: 0.0008941634
-        vex:
-          material: VEX_SPAWN_EGG
-          amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:vex"
-      vindicator:
-        chance: 0.0008941634
-        vindicator:
-          material: VINDICATOR_SPAWN_EGG
-          amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:vindication_illager"
-      city_bastion:
-        chance: 0.0000740740
-        city_bastion:
-          material: BONE_BLOCK
-          name: City Bastion
-          lore:
-            - City bastions block reinforcements and elytra
-          amount: 1
-# 0.04535845262 / skull amount (49 current)
-      tealnerd_skull:
-        chance: 0.0009256827
-        tealnerd_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: TealNerd
-      iebagi_skull:
-        chance: 0.0009256827
-        iebagi_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: iebagi
-      dsclouse_skull:
-        chance: 0.0009256827
-        dsclouse_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: Dsclouse
-      ttk2_skull:
-        chance: 0.0009256827
-        ttk2_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: ttk2
-      bonkill_skull:
-        chance: 0.0009256827
-        bonkill_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: Bonkill
-      programmerdan_skull:
-        chance: 0.0009256827
-        programmerdan_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: ProgrammerDan
-      maxopoly_skull:
-        chance: 0.0009256827
-        maxopoly_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: Maxopoly
-      crimeo_skull:
-        chance: 0.0009256827
-        crimeo_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: Crimeo
-      Mike0War_skull:
-        chance: 0.0009256827
-        Mike0War_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: Mike0War
-      LordOfMarzipan_skull:
-        chance: 0.0009256827
-        LordOfMarzipan_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: LordOfMarzipan
-      Wingzero54_skull:
-        chance: 0.0009256827
-        Wingzero54_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: Wingzero54
-      SoundTech_skull:
-        chance: 0.0009256827
-        SoundTech_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: SoundTech
-      Ahrimanne_skull:
-        chance: 0.0009256827
-        Ahrimanne_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: Ahrimanne
-      DietCola_skull:
-        chance: 0.0009256827
-        DietCola_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: DietCola
-      RedDevel_skull:
-        chance: 0.0009256827
-        reddevel_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: RedDevel
-      togoshigekata_skull:
-        chance: 0.0009256827
-        togoshigekata_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: togoshigekata
-      wjkroeker_skull:
-        chance: 0.0009256827
-        wjkroeker_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: wjkroeker
-      NovaCeasar_skull:
-        chance: 0.0009256827
-        NovaCeasar_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: NovaCeasar
-      tradespin_skull:
-        chance: 0.0009256827
-        tradespin_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: tradespin
-      Yergo_skull:
-        chance: 0.0009256827
-        yergo_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: Yergo
-      Blob_skull:
-        chance: 0.0009256827
-        blob_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: Blob
-      Kingstell_skull:
-        chance: 0.0009256827
-        kingstell_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: Kingstell
-      Gwua_skull:
-        chance: 0.0009256827
-        Gwua_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: Gwua
-      s0uthw3st_skull:
-        chance: 0.0009256827
-        s0uthw3st_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: s0uthw3st
-      CapColt_skull:
-        chance: 0.0009256827
-        CapColt_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner: CapColt
-      decorative_bread_skull:
-        chance: 0.0009256827
-        decorative_bread_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: a75e3f60-2242-4429-8ece-bcde77
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjM0ODdkNDU3ZjkwNjJkNzg3YTNlNmNlMWM0NjY0YmY3NDAyZWM2N2RkMTExMjU2ZjE5YjM4Y2U0ZjY3MCJ9fX0=
-      decorative_melon_skull:
-        chance: 0.0009256827
-        decorative_melon_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 21186685-3336-4dbd-8dda-493bc7
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzNmZWQ1MTRjM2UyMzhjYTdhYzFjOTRiODk3ZmY2NzExYjFkYmU1MDE3NGFmYzIzNWM4ZjgwZDAyOSJ9fX0=
-      decorative_pumpkin_skull:
-        chance: 0.0009256827
-        decorative_pumpkin_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 9650240d-aa92-4ceb-9cfa-676f0c
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDdkN2FkMmRjYjU3ZGZhOWYwMjNkYmI5OWI2OThmYzUzMDc1YzNlOWQ2NTQ1MDYxMzlhNjQ3YWM5MDdmZGRjNSJ9fX0=
-      decorative_cup_of_tea_skull:
-        chance: 0.0009256827
-        decorative_cup_of_tea_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 2a3545d4-3ea5-4d26-9033-c28047
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDhlOTRkZGQ3NjlhNWJlYTc0ODM3NmI0ZWM3MzgzZmQzNmQyNjc4OTRkN2MzYmVlMDExZThlNGY1ZmNkNyJ9fX0=
-      decorative_hamburger_skull:
-        chance: 0.0009256827
-        decorative_hamburger_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: bb7dc51c-1dce-42f4-ae93-6a7907
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTZlZjFjMjVmNTE2ZjJlN2Q2Zjc2Njc0MjBlMzNhZGNmM2NkZjkzOGNiMzdmOWE0MWE4YjM1ODY5ZjU2OWIifX19
-      decorative_clock_skull:
-        chance: 0.0009256827
-        decorative_clock_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: f952235c-44a2-4f91-a6aa-0fcf36
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmRlNGUyNzgzZjg1YTM5MTIyMWRkOTE2NTZiYTY4OGU3ZTQyZDE2ZjZhYmJmYmNmYWQ5Y2E1MzYxN2ZjYTYifX19
-      decorative_monitor_skull:
-        chance: 0.0009256827
-        decorative_monitor_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 6522a7fd-3649-4d2c-a6b4-3c24e5
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTVjMjkyYTI0ZjU0YTdhNDM3ODUyNjY1NTJkYmE3YTE4NGY5YzUwZTBkOTRiMzM3ZDhkM2U3NmU5ZTljY2U3In19fQ==
-      decorative_pile_of_books_skull:
-        chance: 0.0009256827
-        decorative_pile_of_books_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 6e166933-a807-4a73-8a19-e44053
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjFjNjNkOWI5ZmQ4NzQyZWFlYjA0YzY5MjE3MmNiOWRhNDM3ODE2OThhNTc1Y2RhYmUxYzA0ZGYxMmMzZiJ9fX0=
-      decorative_chest_skull:
-        chance: 0.0009256827
-        decorative_chest_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 148ce164-81e8-43d3-b057-4b21cf
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmY2OGQ1MDliNWQxNjY5Yjk3MWRkMWQ0ZGYyZTQ3ZTE5YmNiMWIzM2JmMWE3ZmYxZGRhMjliZmM2ZjllYmYifX19
-      decorative_medicine_chest_skull:
-        chance: 0.0009256827
-        decorative_medicine_chest_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: f32f4e87-9fb0-48b0-8cc4-56eebf
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjdjN2RmNTJiNWU1MGJhZGI2MWZlZDcyMTJkOTc5ZTYzZmU5NGYxYmRlMDJiMjk2OGM2YjE1NmE3NzAxMjZjIn19fQ==
-      decorative_eye_skull:
-        chance: 0.0009256827
-        decorative_eye_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: f9f975e2-cdf7-411b-9323-f5db99
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmNlZjg3NzcyYWZkODViNDY4ZjRjN2ZiOTU3MWUzMTQzNWVmNzY1YWQ0MTNmZTQ2MDI2MjE1MDQyM2UyMDIxIn19fQ==
-      decorative_present_skull:
-        chance: 0.0009256827
-        decorative_present_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: cc5fdd1a-60f8-40d6-b667-a197e3
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjBhZmE0ZmZmZDEwODYzZTc2YzY5OGRhMmM5YzllNzk5YmNmOWFiOWFhMzdkODMxMjg4MTczNDIyNWQzY2EifX19
-      decorative_poke_ball_skull:
-        chance: 0.0009256827
-        decorative_poke_ball_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 04be8421-c832-4cf8-82e5-9b88d8
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDQzZDRiN2FjMjRhMWQ2NTBkZGY3M2JkMTQwZjQ5ZmMxMmQyNzM2ZmMxNGE4ZGMyNWMwZjNmMjlkODVmOGYifX19
-      decorative_globe_skull:
-        chance: 0.0009256827
-        decorative_globe_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 10174993-9b01-4045-919c-bf82db
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjFkZDRmZTRhNDI5YWJkNjY1ZGZkYjNlMjEzMjFkNmVmYTZhNmI1ZTdiOTU2ZGI5YzVkNTljOWVmYWIyNSJ9fX0=
-      decorative_blaze_skull:
-        chance: 0.0009256827
-        decorative_blaze_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 7ceb88b2-7f5f-4399-abb9-706825
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjc4ZWYyZTRjZjJjNDFhMmQxNGJmZGU5Y2FmZjEwMjE5ZjViMWJmNWIzNWE0OWViNTFjNjQ2Nzg4MmNiNWYwIn19fQ==
-      decorative_ghast_skull:
-        chance: 0.0009256827
-        decorative_ghast_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 807f287f-6499-4e93-a887-0a298a
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGI2YTcyMTM4ZDY5ZmJiZDJmZWEzZmEyNTFjYWJkODcxNTJlNGYxYzk3ZTVmOTg2YmY2ODU1NzFkYjNjYzAifX19
-      decorative_pigzombie_skull:
-        chance: 0.0009256827
-        decorative_pigzombie_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 6540c046-d6ea-4aff-9766-32a54e
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzRlOWM2ZTk4NTgyZmZkOGZmOGZlYjMzMjJjZDE4NDljNDNmYjE2YjE1OGFiYjExY2E3YjQyZWRhNzc0M2ViIn19fQ==
-      decorative_enderman_skull:
-        chance: 0.0009256827
-        decorative_enderman_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 0de98464-1274-4dd6-bba8-370efa
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2E1OWJiMGE3YTMyOTY1YjNkOTBkOGVhZmE4OTlkMTgzNWY0MjQ1MDllYWRkNGU2YjcwOWFkYTUwYjljZiJ9fX0=
-      decorative_guardian_skull:
-        chance: 0.0009256827
-        decorative_guardian_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 2e9c0a67-92b3-4949-9be1-faf123
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTMyYzI0NTI0YzgyYWIzYjNlNTdjMjA1MmM1MzNmMTNkZDhjMGJlYjhiZGQwNjM2OWJiMjU1NGRhODZjMTIzIn19fQ==
-      decorative_skull_skull:
-        chance: 0.0009256827
-        decorative_skull_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: c659cdd4-e436-4977-a6a7-d5518e
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWFlMzg1NWY5NTJjZDRhMDNjMTQ4YTk0NmUzZjgxMmE1OTU1YWQzNWNiY2I1MjYyN2VhNGFjZDQ3ZDMwODEifX19
-      decorative_potted_azalea_plant_skull:
-        chance: 0.0009256827
-        decorative_potted_azalea_plant_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: faec9b66-94ca-4b6f-b6cd-f9a54b
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzM1MjU3Yjc5OWQzOTQ2OTI3ZjJiMzI1ZDM2NmViNTEwNGE1YzM1MjE5ZWU0ZTRkMzU3MjFiZjI4YTIxMCJ9fX0=
-      decorative_potted_camellia_plant_skull:
-        chance: 0.0009256827
-        decorative_potted_camellia_plant_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: e5fdfdc7-f8a4-4a77-8d7c-17d98c
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWRjNGMxMmJmMjYxOWNiZmM4ZjIyZGM2MmMwMjJjZTE1MTI2Y2VhM2UyMTJjMjhkOWY5NmVhMzEwYWM0YzQyIn19fQ==
-      decorative_wink_skull:
-        chance: 0.0009256827
-        decorative_wink_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 81faf4e7-33e6-4cfd-bb15-21268d8def8b
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjRlYTJkNmY5MzlmZWZlZmY1ZDEyMmU2M2RkMjZmYThhNDI3ZGY5MGIyOTI4YmMxZmE4OWE4MjUyYTdlIn19fQ==
-      decorative_apple_skull:
-        chance: 0.0009256827
-        decorative_apple_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 0d5fd9c3-d044-478f-b774-d37b5f86fa2a
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTJiMzViZGE1ZWJkZjEzNWY0ZTcxY2U0OTcyNmZiZWM1NzM5ZjBhZGVkZjAxYzUxOWUyYWVhN2Y1MTk1MWVhMiJ9fX0=
-      decorative_sushi_salmon_skull:
-        chance: 0.0009256827
-        decorative_sushi_salmon_skull:
-          material: PLAYER_HEAD
-          amount: 1
-          nbt:
-            SkullOwner:
-              Id: 56810a43-92a9-4974-8693-48ace62881ff
-              Properties:
-                textures:
-                  - Value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWU5ZDIyZDlhZGE2M2UyODE0MjBhZTMzNjkxODgwODY5ZmExYTE0YmZkZjg3ZDhlNTM4ZTk5OGE4ZjI5NTk1YiJ9fX0=
-      # 20% each of 0.9022280371
-      dirt:
-        chance: 0.18044560740
-        dirt:
-          material: DIRT
-          amount: 1
-          name: Dirt!
-      cobblestone:
-        chance: 0.18044560740
-        cobblestone:
-          material: COBBLESTONE
-          amount: 1
-          name: Cobblestone!
-      sand:
-        chance: 0.18044560740
-        sand:
-          material: SAND
-          amount: 1
-          name: Sand!
-      gravel:
-        chance: 0.18044560740
-        gravel: 
-          material: GRAVEL
-          amount: 1
-          name: Gravel!
-      terracotta:
-        chance: 0.18044560740
-        terracotta:
-          material: TERRACOTTA
-          amount: 1
-          name: Terracotta!
   repair_bio:
     production_time: 4s
     fuel_consumption_intervall: 1s
