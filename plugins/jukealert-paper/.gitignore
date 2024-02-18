@@ -1,0 +1,17 @@
+/bin
+.classpath
+.project
+*.jar
+!citadel.jar
+!gradle-wrapper.jar
+*~
+/target/
+.settings/
+*.iml
+
+.idea/
+
+.gradle
+build
+
+paper/bin
