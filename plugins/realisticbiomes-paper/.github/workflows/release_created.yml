@@ -1,0 +1,8 @@
+name: Publish
+on:
+  release:
+    types: [created]
+
+jobs:
+  call_publish:
+    uses: CivMC/.github/.github/workflows/gradle_publish.yml@master
