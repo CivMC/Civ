@@ -513,3 +513,5 @@ hacks:
   ToggleLamp:
     enabled: false
     cooldownTime: 100
+  DespawnFix:
+    enabled: true
