@@ -4,6 +4,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -141,7 +142,18 @@ public class GUIGroupOverview {
 	private List<Clickable> getGroupClickables() {
 		String defaultGroupName = gm.getDefaultGroup(p.getUniqueId());
 		List<String> groupNames = gm.getAllGroupNames(p.getUniqueId());
-		groupNames.sort(String.CASE_INSENSITIVE_ORDER);
+		groupNames.sort(Comparator.comparing((String g) -> {
+					Group group = GroupManager.getGroup(g);
+					return group != null && group.isOwner(p.getUniqueId());
+				}).thenComparing((String g) -> {
+					Group group = GroupManager.getGroup(g);
+					if (group != null) {
+						return group.getPlayerType(p.getUniqueId());
+					} else {
+						return PlayerType.NOT_BLACKLISTED;
+					}
+				}).reversed()
+				.thenComparing(String.CASE_INSENSITIVE_ORDER));
 		List<Clickable> result = new ArrayList<Clickable>();
 		Set<String> alreadyProcessed = new HashSet<String>();
 		for (String groupName : groupNames) {
