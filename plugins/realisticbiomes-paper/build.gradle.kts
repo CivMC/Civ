@@ -1,26 +1,14 @@
-import net.civmc.civgradle.CivGradleExtension
-
 plugins {
-	id("net.civmc.civgradle") version "2.+" apply false
+	id("io.papermc.paperweight.userdev")
+	id("xyz.jpenilla.run-paper")
 }
 
-subprojects {
-	apply(plugin = "java-library")
-	apply(plugin = "maven-publish")
-	apply(plugin = "net.civmc.civgradle")
+version = "3.2.3"
 
-	configure<CivGradleExtension> {
-		pluginName = project.property("pluginName") as String
-	}
+dependencies {
+	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 
-	repositories {
-		mavenCentral()
-		maven("https://repo.civmc.net/repository/maven-public/")
-        maven("https://maven.enginehub.org/repo/")
-        maven("https://repo.maven.apache.org/maven2/")
-
-		flatDir {
-			dirs("../libs")
-		}
-	}
+	compileOnly(project(":plugins:civmodcore-paper"))
+	compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.8")
+	implementation("org.apache.commons:commons-math3:3.6.1")
 }
