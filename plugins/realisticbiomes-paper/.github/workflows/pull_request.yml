@@ -1,7 +1,0 @@
-name: Build
-on:
-  pull_request:
-
-jobs:
-  call_build:
-    uses: CivMC/.github/.github/workflows/gradle_build.yml@master

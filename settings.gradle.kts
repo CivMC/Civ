@@ -4,7 +4,6 @@ plugins {
     id("com.gradle.enterprise") version "3.16.2"
 }
 
-
 include(":plugins:banstick-paper")
 include(":plugins:bastion-paper")
 include(":plugins:citadel-paper")
@@ -18,4 +17,5 @@ include(":plugins:exilepearl-paper")
 // TODO include(":plugins:namelayer-bungee")
 include(":plugins:namelayer-paper")
 include(":plugins:randomspawn-paper")
+include(":plugins:realisticbiomes-paper")
 include(":plugins:simpleadminhacks-paper")
