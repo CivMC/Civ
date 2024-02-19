@@ -8,36 +8,34 @@ import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandCompletions.CommandCompletionHandler;
 import co.aikar.commands.CommandContexts;
 import com.google.common.base.Strings;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.logging.Level;
 import javax.annotation.Nonnull;
-
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.Plugin;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 /**
  * Command registration class wrapper around {@link BukkitCommandManager}.
  */
 public class CommandManager extends BukkitCommandManager {
-
-	// allMaterials and itemMaterials won't change over a run, so autocomplete lists can be prebuilt globally.
-	private final static List<String> allMaterials = Arrays.stream(Material.values()).map(Enum::name).toList();
-
-	private final static List<String> itemMaterials = Arrays.stream(Material.values()).filter(ItemUtils::isValidItemMaterial).map(Enum::name).toList();
-
 	// Track players to offer quick completion where necessary.
 	private final Set<String> autocompletePlayerNames = new ConcurrentSkipListSet<>();
 
@@ -76,9 +74,9 @@ public class CommandManager extends BukkitCommandManager {
 			}
 		}, plugin);
 
-		registerCommands();
-		registerCompletions(getCommandCompletions());
 		registerContexts(getCommandContexts());
+		registerCompletions(getCommandCompletions());
+		registerCommands();
 	}
 
 	/**
@@ -97,13 +95,14 @@ public class CommandManager extends BukkitCommandManager {
 	 *                    {@link #getCommandCompletions()}.
 	 */
 	public void registerCompletions(@Nonnull final CommandCompletions<BukkitCommandCompletionContext> completions) {
-		completions.registerCompletion("none", (context) -> Collections.emptyList());
+		CommandHelpers.registerNoneCompletion(completions);
+		CommandHelpers.registerMaterialsCompletion(completions);
+		CommandHelpers.registerItemMaterialsCompletion(completions);
+
 		// Completion lists are copied so outer code can modify the lists without breaking our inner contracts,
 		// namely that all players should be searchable by completion.
 		// Using Collections.immutableList is an alternative, but both variants aren't expensive.
 		completions.registerAsyncCompletion("allplayers", (context) -> new ArrayList<>(autocompletePlayerNames));
-		completions.registerAsyncCompletion("materials", (context) -> new ArrayList<>(allMaterials));
-		completions.registerAsyncCompletion("itemMaterials", (context) -> new ArrayList<>(itemMaterials));
 	}
 
 	/**
@@ -114,6 +113,7 @@ public class CommandManager extends BukkitCommandManager {
 	 *                 {@link #getCommandContexts()}.
 	 */
 	public void registerContexts(@Nonnull final CommandContexts<BukkitCommandExecutionContext> contexts) {
+		CommandHelpers.registerConsoleSenderContext(contexts);
 	}
 
 	/**
