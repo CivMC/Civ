@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -55,6 +56,7 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 		if (config.isEnabled()) {
 			plugin().log("Registering introbook command");
 			plugin().registerCommand("introbook", this);
+			plugin().registerCommand("giveintrobook", this);
 		}
 	}
 
@@ -173,30 +175,38 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (args.length < 1) return false;
+		if(command.getName().equalsIgnoreCase("giveintrobook")) {
+			if (args.length < 1) return false;
 
-		Player p = plugin().getServer().getPlayer(args[0]);
+			Player p = plugin().getServer().getPlayer(args[0]);
 
-		if (p == null) {
-			try {
-				UUID pu = UUID.fromString(args[0]);
-				p = plugin().getServer().getPlayer(pu);
-			} catch (IllegalArgumentException iae) {
-				p = null;
+			if (p == null) {
+				try {
+					UUID pu = UUID.fromString(args[0]);
+					p = plugin().getServer().getPlayer(pu);
+				} catch (IllegalArgumentException iae) {
+					p = null;
+				}
 			}
-		}
 
-		if (p == null) {
-			sender.sendMessage(ChatColor.RED + "Unable to find " + args[0]);
-		} else {
-			plugin().log(Level.INFO, "Sent introbook to {0}", args[0]);
-			p.sendMessage(ChatColor.GREEN + "You've been given an introductory book!");
-			Inventory inv = p.getInventory();
-			inv.addItem(config.getIntroBook(p));
-		}
+			if (p == null) {
+				sender.sendMessage(ChatColor.RED + "Unable to find " + args[0]);
+			} else {
+				plugin().log(Level.INFO, "Sent introbook to {0}", args[0]);
+				p.sendMessage(ChatColor.GREEN + "You've been given an introductory book!");
+				Inventory inv = p.getInventory();
+				inv.addItem(config.getIntroBook(p));
+			}
 
-		return true;
-	}
+			return true;
+		} else if (command.getName().equalsIgnoreCase("introbook")) {
+			Player player = (Player) sender;
+
+			player.openBook(config.getIntroBook(player));
+
+			return true;
+		} else return false;
+    }
 
 	public static IntrobookConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new IntrobookConfig(plugin, config);
