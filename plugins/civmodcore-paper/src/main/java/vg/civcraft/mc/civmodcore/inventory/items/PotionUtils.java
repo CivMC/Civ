@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
-import net.minecraft.world.effect.MobEffect;
+import net.kyori.adventure.translation.Translatable;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -51,29 +51,6 @@ public final class PotionUtils {
 	}
 
 	/**
-	 * @param effect The potion effect to get a translatable component for.
-	 * @return Returns a translatable component for the given potion effect.
-	 */
-	@SuppressWarnings("deprecation")
-	@Nonnull
-	public static TranslatableComponent asTranslatable(@Nonnull final PotionEffectType effect) {
-		final MobEffect mojang = MobEffect.byId(effect.getId());
-		assert mojang != null;
-		final String key = mojang.getDescriptionId(); // Gets the translation key
-		// If the obfuscation has changed, look for a method on MobEffectList like:
-		//
-		//    protected String b() {
-		//        if (this.d == null) {
-		//            this.d = SystemUtils.a("effect", IRegistry.V.getKey(this));
-		//        }
-		//        return this.d;
-		//    }
-		//
-		// then use whatever method calls that method
-		return Component.translatable(key);
-	}
-
-	/**
 	 * @param potion The potion type to get the name of.
 	 * @return Returns the name of the potion, or null.
 	 *
@@ -90,12 +67,11 @@ public final class PotionUtils {
 	 * @param effect The potion effect to get the name of.
 	 * @return Returns the name of the potion effect, or null.
 	 *
-	 * @deprecated Use {@link #asTranslatable(PotionEffectType)} instead.
+	 * @deprecated Use {@link Component#translatable(Translatable)} instead.
 	 */
 	@Deprecated
 	@Nullable
 	public static String getEffectNiceName(@Nullable final PotionEffectType effect) {
-		return effect == null ? null : ChatUtils.stringify(asTranslatable(effect));
+		return effect == null ? null : ChatUtils.stringify(Component.translatable(effect));
 	}
-
 }
