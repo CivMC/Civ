@@ -25,7 +25,7 @@ commands:
     permission: simpleadmin.invmod
   chunklimits:
     description: Display block chunk limit in chat
-    usage: /<command> 
+    usage: /<command>
   serialize:
     description: Print to console the object held as serialized yaml
     usage: /<command>
@@ -34,9 +34,13 @@ commands:
     description: Give a player the currently configured introkit
     usage: /<command> [playername|UUID]
     permission: simpleadmin.kit
-  introbook:
+  giveintrobook:
     description: Give a player the currently configured intro book
     usage: /<command> [playername|UUID]
+    permission: simpleadmin.givebook
+  introbook:
+    description: Opens the currently configured intro book
+    usage: /<command>
     permission: simpleadmin.book
   hackbot:
     description: Allows the creation of NPCs
