@@ -1,10 +1,12 @@
 import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinTopLevelExtension
 import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
     id("io.papermc.paperweight.userdev") version "1.5.10" apply false
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("xyz.jpenilla.run-paper") version "2.2.2" apply false
+    id("org.jetbrains.kotlin.jvm") version "1.9.22" apply false
 }
 
 project.extensions.configure<GradleEnterpriseExtension> {
@@ -56,6 +58,13 @@ allprojects {
         }
     }
 
+    pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+        configure<KotlinTopLevelExtension> {
+            jvmToolchain {
+                languageVersion.set(JavaLanguageVersion.of(17))
+            }
+        }
+    }
 
     configure<PublishingExtension> {
         val githubActor = System.getenv("GITHUB_ACTOR")
