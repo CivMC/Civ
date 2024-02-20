@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.translation.Translatable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -103,24 +103,15 @@ public final class EnchantUtils {
 	}
 
 	/**
-	 * @param enchant The enchantment to get a translatable component for.
-	 * @return Returns a translatable component for the given enchantment.
-	 */
-	@Nonnull
-	public static TranslatableComponent asTranslatable(@Nonnull final Enchantment enchant) {
-		return Component.translatable(enchant.translationKey());
-	}
-
-	/**
 	 * @param enchant The enchantment to get the name of.
 	 * @return Returns the name of the enchantment, or null.
 	 *
-	 * @deprecated Use {@link #asTranslatable(Enchantment)} instead.
+	 * @deprecated Use {@link Component#translatable(Translatable)} instead.
 	 */
 	@Nullable
 	@Deprecated
 	public static String getEnchantNiceName(@Nullable final Enchantment enchant) {
-		return enchant == null ? null : ChatUtils.stringify(asTranslatable(enchant));
+		return enchant == null ? null : ChatUtils.stringify(Component.translatable(enchant));
 	}
 
 	/**

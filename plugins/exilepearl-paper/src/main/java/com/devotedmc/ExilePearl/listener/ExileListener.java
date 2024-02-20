@@ -379,7 +379,7 @@ public class ExileListener extends RuleListener implements Configurable {
 			if (item == null || !clickedTop) {
 				return;
 			}
-			holder = e.getView().getTopInventory().getHolder();
+			holder = e.getView().getTopInventory().getHolder(false);
 
 		} else if(action == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
 			item = e.getCurrentItem();
@@ -388,7 +388,7 @@ public class ExileListener extends RuleListener implements Configurable {
 				return;
 			}
 
-			holder = e.getView().getTopInventory().getHolder(); // we're canceling bottom
+			holder = e.getView().getTopInventory().getHolder(false); // we're canceling bottom
 			// inventory click but only if _top_ inventory is specific type.
 		} else {
 			return;

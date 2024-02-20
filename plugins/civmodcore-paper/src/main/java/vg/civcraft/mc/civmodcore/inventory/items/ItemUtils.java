@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TranslatableComponent;
+import net.kyori.adventure.translation.Translatable;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
@@ -21,28 +21,18 @@ import vg.civcraft.mc.civmodcore.chat.ChatUtils;
  * Class of static APIs for Items. Replaces ISUtils.
  */
 public final class ItemUtils {
-
-	/**
-	 * @param item The item to get a translatable component for.
-	 * @return Returns a translatable component of the given item.
-	 */
-	@Nonnull
-	public static TranslatableComponent asTranslatable(@Nonnull final ItemStack item) {
-		return Component.translatable(item.translationKey());
-	}
-
 	/**
 	 * Gets the name of an item based off a material, e.g: POLISHED_GRANITE to Polished Granite
 	 *
 	 * @param material The material to get the name of.
 	 * @return Returns the material name.
 	 *
-	 * @deprecated Use {@link MaterialUtils#asTranslatable(Material)} instead.
+	 * @deprecated Use {@link Component#translatable(Translatable)} instead.
 	 */
 	@Deprecated
 	@Nonnull
 	public static String getItemName(@Nonnull final Material material) {
-		return ChatUtils.stringify(MaterialUtils.asTranslatable(Objects.requireNonNull(material)));
+		return ChatUtils.stringify(Component.translatable(Objects.requireNonNull(material)));
 	}
 
 	/**
@@ -51,12 +41,12 @@ public final class ItemUtils {
 	 * @param item The item to get the name of.
 	 * @return Returns the item's name.
 	 *
-	 * @deprecated Use {@link #asTranslatable(ItemStack)} instead.
+	 * @deprecated Use {@link Component#translatable(Translatable)} instead.
 	 */
 	@Deprecated
 	@Nullable
 	public static String getItemName(@Nullable final ItemStack item) {
-		return item == null ? null : ChatUtils.stringify(asTranslatable(item));
+		return item == null ? null : ChatUtils.stringify(Component.translatable(item));
 	}
 
 	/**

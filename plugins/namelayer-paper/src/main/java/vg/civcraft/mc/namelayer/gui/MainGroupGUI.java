@@ -1,18 +1,19 @@
 package vg.civcraft.mc.namelayer.gui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -138,7 +139,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		ci.setSlot(setupMemberTypeToggle(PlayerType.OWNER, showOwners), 52);
 
 		// exit button
-		ItemStack backToOverview = goBackStack(); 
+		ItemStack backToOverview = goBackStack();
 		ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Close");
 		ci.setSlot(new Clickable(backToOverview) {
 
@@ -333,7 +334,10 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				}
 			}
 		}
-		for (UUID uuid : g.getAllMembers()) {
+		List<UUID> allMembers = g.getAllMembers();
+		allMembers.sort(Comparator.comparing(g::isOwner).thenComparing(g::getPlayerType).reversed()
+				.thenComparing(NameAPI::getCurrentName, String.CASE_INSENSITIVE_ORDER));
+		for (UUID uuid : allMembers) {
 			Clickable c = null;
 			switch (g.getPlayerType(uuid)) {
 				case MEMBERS:
@@ -428,6 +432,8 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		is.setItemMeta(im);
 		ItemUtils.setDisplayName(is, ChatColor.GOLD + NameAPI.getCurrentName(toDisplay));
 		if (g.isOwner(toDisplay)) { // special case for primary owner
+			is.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			is.addEnchantment(Enchantment.DURABILITY, 1);
 			ItemUtils.addLore(is, ChatColor.AQUA + "Rank: Primary Owner");
 			ItemUtils.addLore(is, ChatColor.RED + "You don't have permission",
 					ChatColor.RED + "to modify the rank of this player");
@@ -491,7 +497,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				uuid, PlayerType.OWNER);
 		ci.setSlot(ownerClick, 16);
 
-		ItemStack backToOverview = goBackStack(); 
+		ItemStack backToOverview = goBackStack();
 		ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Back to overview");
 		ci.setSlot(new Clickable(backToOverview) {
 
@@ -517,6 +523,8 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		Clickable modClick;
 		if (rank == pType) {
 			ItemUtils.setDisplayName(mod, ChatColor.GOLD + "Remove this player");
+			mod.lore(List.of(Component.text("/nlrm " + g.getName() + " " + NameAPI.getCurrentName(toChange))
+							.color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)));
 			if (!gm.hasAccess(g, p.getUniqueId(), getAccordingPermission(pType))) {
 				ItemUtils.addLore(mod, ChatColor.RED
 						+ "You dont have permission to do this");
@@ -542,6 +550,8 @@ public class MainGroupGUI extends AbstractGroupGUI {
 							+ demoteOrPromote(g.getPlayerType(toChange), pType,
 							true) + " this player to "
 							+ PlayerType.getNiceRankName(pType));
+			mod.lore(List.of(Component.text("/nlpp " + g.getName() + " " + NameAPI.getCurrentName(toChange) + " " + pType)
+							.color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)));
 			if (!gm.hasAccess(g, p.getUniqueId(), getAccordingPermission(pType))) {
 				ItemUtils.addLore(mod, ChatColor.RED
 						+ "You dont have permission to do this");
@@ -965,7 +975,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		}
 		return c;
 	}
-	
+
 	private Clickable getSuperMenuClickable() {
 		ItemStack is = new ItemStack(Material.DIAMOND);
 		ItemUtils.setDisplayName(is, ChatColor.GOLD + "Return to overview for all your groups");

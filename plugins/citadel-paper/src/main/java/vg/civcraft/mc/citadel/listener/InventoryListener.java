@@ -19,7 +19,7 @@ public class InventoryListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
 		Inventory fromInventory = event.getSource();
-		InventoryHolder fromHolder = fromInventory.getHolder();
+		InventoryHolder fromHolder = fromInventory.getHolder(false);
 		boolean isFromBlock = fromHolder instanceof Container || fromHolder instanceof DoubleChest;
 		boolean fromAtChunkBorder = false;
 		Location fromLocation = null;
@@ -33,7 +33,7 @@ public class InventoryListener implements Listener {
 		}
 
 		Inventory destInventory = event.getDestination();
-		InventoryHolder destHolder = destInventory.getHolder();
+		InventoryHolder destHolder = destInventory.getHolder(false);
 		boolean isDestBlock = destHolder instanceof Container || destHolder instanceof DoubleChest;
 		boolean destAtChunkBorder = false;
 		Location destLocation = null;
@@ -56,8 +56,8 @@ public class InventoryListener implements Listener {
 		if (isFromBlock) {
 			if (fromAtChunkBorder && fromHolder instanceof DoubleChest) {
 				DoubleChest doubleChest = (DoubleChest) fromHolder;
-				Location chestLocation = ((Chest) doubleChest.getLeftSide()).getLocation();
-				Location otherLocation = ((Chest) doubleChest.getRightSide()).getLocation();
+				Location chestLocation = ((Chest) doubleChest.getLeftSide(false)).getLocation();
+				Location otherLocation = ((Chest) doubleChest.getRightSide(false)).getLocation();
 				// [LagFix] If either side of the double chest is not loaded then the
 				// reinforcement cannot be retrieved
 				// [LagFix] without necessarily loading the chunk to check against reinforcement
@@ -75,8 +75,8 @@ public class InventoryListener implements Listener {
 		if (isDestBlock) {
 			if (destAtChunkBorder && destHolder instanceof DoubleChest) {
 				DoubleChest doubleChest = (DoubleChest) destHolder;
-				Location chestLocation = ((Chest) doubleChest.getLeftSide()).getLocation();
-				Location otherLocation = ((Chest) doubleChest.getRightSide()).getLocation();
+				Location chestLocation = ((Chest) doubleChest.getLeftSide(false)).getLocation();
+				Location otherLocation = ((Chest) doubleChest.getRightSide(false)).getLocation();
 				// [LagFix] If either side of the double chest is not loaded then the
 				// reinforcement cannot be retrieved
 				// [LagFix] without necessarily loading the chunk to check against reinforcement
