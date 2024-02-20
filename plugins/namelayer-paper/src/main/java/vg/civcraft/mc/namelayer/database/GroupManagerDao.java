@@ -44,7 +44,7 @@ public class GroupManagerDao {
 				+ "inner join faction_id fi on fi.group_name = f.group_name "
 				+ "where f.group_name = ?";
 	private static final String getGroupIDs = "SELECT f.group_id, count(DISTINCT fm.member_name) AS sz FROM faction_id f "
-				+ "INNER JOIN faction_member fm ON f.group_id = fm.group_id WHERE f.group_name = ? GROUP BY f.group_id ORDER BY sz DESC";
+				+ "LEFT JOIN faction_member fm ON f.group_id = fm.group_id WHERE f.group_name = ? GROUP BY f.group_id ORDER BY sz DESC";
 	private static final String getGroupById = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id, f.last_timestamp " +
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_id = ? "

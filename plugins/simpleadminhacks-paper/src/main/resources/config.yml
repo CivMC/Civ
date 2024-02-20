@@ -136,6 +136,8 @@ hacks:
     disableGapples: true
   ItemMetaConverterHack:
     enabled: true
+  MapCopyProtection:
+    enabled: true
   OldEnchanting:
     enabled: true
     # Hides what enchantment will be granted within the Enchanting Table

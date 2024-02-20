@@ -26,6 +26,10 @@ commands:
   chunklimits:
     description: Display block chunk limit in chat
     usage: /<command>
+  copyprotect:
+    description: Protect a map from copying.
+    usage: /<command>
+    permission: simpleadmin.copyprotect
   serialize:
     description: Print to console the object held as serialized yaml
     usage: /<command>
