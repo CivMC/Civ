@@ -89,6 +89,6 @@ public class AreaReinforce extends BaseCommand {
 			}
 		}
 
-		CitadelUtility.sendAndLog(p, ChatColor.GREEN, "Successfully created " + count + "reinforcements");
+		CitadelUtility.sendAndLog(p, ChatColor.GREEN, "Successfully created " + count + " reinforcements");
 	}
 }

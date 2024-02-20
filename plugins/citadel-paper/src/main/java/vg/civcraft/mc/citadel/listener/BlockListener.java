@@ -18,6 +18,7 @@ import org.bukkit.block.data.type.Lectern;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -30,6 +31,7 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTakeLecternBookEvent;
@@ -632,5 +634,80 @@ public class BlockListener implements Listener {
 		}
 		event.setCancelled(true);
 		CitadelUtility.sendAndLog(clicker, ChatColor.RED, "You cannot use that anvil.", clickedBlock.getLocation());
+	}
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void preventTakingBooks(PlayerInteractEvent pie) {
+		if (!pie.hasBlock()) {
+			return;
+		}
+		if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
+		Block block = pie.getClickedBlock();
+		Material type = block.getType();
+		if (type != Material.CHISELED_BOOKSHELF) {
+			return;
+		}
+		EquipmentSlot hand = pie.getHand();
+		if (hand != EquipmentSlot.HAND && hand != EquipmentSlot.OFF_HAND) {
+			return;
+		}
+		ItemStack relevant;
+		Player p = pie.getPlayer();
+		if (hand == EquipmentSlot.HAND) {
+			relevant = p.getInventory().getItemInMainHand();
+		} else {
+			relevant = p.getInventory().getItemInOffHand();
+		}
+		if (relevant.getType() != Material.AIR && !Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(relevant.getType())) {
+			return;
+		}
+		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+		if (rein == null) {
+			return;
+		}
+		if (!rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
+			p.sendMessage(ChatColor.RED + "You do not have permission to " +
+					(Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(relevant.getType()) ? "place books in this shelf" : "take books from this shelf"));
+			pie.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void preventDusting(PlayerInteractEvent pie) { // Maybe this should be changed to brushing? The two terms seem to be used interchangeably.
+		if (!pie.hasBlock()) {
+			return;
+		}
+		if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
+		Block block = pie.getClickedBlock();
+		Material type = block.getType();
+		if (!MoreTags.DUSTABLE.isTagged(type)) {
+			return;
+		}
+		EquipmentSlot hand = pie.getHand();
+		if (hand != EquipmentSlot.HAND && hand != EquipmentSlot.OFF_HAND) {
+			return;
+		}
+		ItemStack relevant;
+		Player p = pie.getPlayer();
+		if (hand == EquipmentSlot.HAND) {
+			relevant = p.getInventory().getItemInMainHand();
+		} else {
+			relevant = p.getInventory().getItemInOffHand();
+		}
+		if (relevant.getType() != Material.BRUSH) {
+			return;
+		}
+		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+		if (rein == null) {
+			return;
+		}
+		if (!rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
+			p.sendMessage(ChatColor.RED + "You do not have permission to dust this block");
+			pie.setCancelled(true);
+		}
 	}
 }
