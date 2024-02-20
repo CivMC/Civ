@@ -76,6 +76,7 @@ public final class MoreTags {
 					.add(Material.DIRT)
 					.add(Material.COARSE_DIRT)
 					.add(Material.PODZOL)
+					.add(Material.ROOTED_DIRT)
 					.build());
 
 	public static final Tag<Material> POTIONS = new BetterTag<>("potion",
@@ -84,6 +85,12 @@ public final class MoreTags {
 					.add(Material.SPLASH_POTION)
 					.add(Material.LINGERING_POTION)
 					.build());
+
+	public static final Tag<Material> DUSTABLE = new BetterTag<>("dustable",
+		ImmutableSet.<Material>builder()
+			.add(Material.SUSPICIOUS_GRAVEL)
+			.add(Material.SUSPICIOUS_SAND)
+			.build());
 
 	/**
 	 * Materials of items that can apply potion effects.
