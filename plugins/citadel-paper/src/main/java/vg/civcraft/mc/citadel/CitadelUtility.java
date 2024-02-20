@@ -5,6 +5,8 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import net.minelink.ctplus.CombatTagPlus;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -197,6 +199,15 @@ public class CitadelUtility {
 			Citadel.getInstance().getStateManager().setState(player, null);
 			CitadelUtility.sendAndLog(player, ChatColor.RED,
 					"You have no items left to reinforce with " + type.getName(),
+					block.getLocation());
+			return true;
+		}
+		if (Bukkit.getPluginManager().getPlugin("CombatTagPlus") != null &&
+				Citadel.getInstance().getCombatTagPlus().getTagManager().isTagged(player.getUniqueId()) &&
+				Citadel.getInstance().getConfigManager().shouldBlockReinforcingInCombat()) {
+			Citadel.getInstance().getStateManager().setState(player, null);
+			CitadelUtility.sendAndLog(player, ChatColor.RED,
+					"You cannot reinforce in combat ",
 					block.getLocation());
 			return true;
 		}
