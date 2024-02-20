@@ -107,6 +107,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				}
 			};
 			ci.setSlot(baCl, 45);
+		} else {
+		// back to overview button
+			ci.setSlot(getSuperMenuClickable(), 45);
 		}
 		// next button
 		if ((36 * (currentPage + 1)) < clicks.size()) {
@@ -127,7 +130,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 		// options
 
-		ci.setSlot(getSuperMenuClickable(), 45);
 		ci.setSlot(createInheritedMemberToggle(), 46);
 		ci.setSlot(createInviteToggle(), 47);
 		ci.setSlot(setupMemberTypeToggle(PlayerType.MEMBERS, showMembers), 48);
