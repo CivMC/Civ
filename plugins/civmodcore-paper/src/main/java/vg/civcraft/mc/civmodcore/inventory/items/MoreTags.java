@@ -30,18 +30,22 @@ public final class MoreTags {
 			ImmutableSet.<Material>builder()
 					.add(Material.ACACIA_LOG)
 					.add(Material.BIRCH_LOG)
+					.add(Material.CHERRY_LOG)
 					.add(Material.DARK_OAK_LOG)
 					.add(Material.JUNGLE_LOG)
+					.add(Material.MANGROVE_LOG)
 					.add(Material.OAK_LOG)
 					.add(Material.SPRUCE_LOG)
 					.build());
-	
+
 	public static final Tag<Material> STRIPPED_LOGS = new BetterTag<>("stripped_logs",
 			ImmutableSet.<Material>builder()
 					.add(Material.STRIPPED_ACACIA_LOG)
 					.add(Material.STRIPPED_BIRCH_LOG)
+					.add(Material.STRIPPED_CHERRY_LOG)
 					.add(Material.STRIPPED_DARK_OAK_LOG)
 					.add(Material.STRIPPED_JUNGLE_LOG)
+					.add(Material.STRIPPED_MANGROVE_LOG)
 					.add(Material.STRIPPED_OAK_LOG)
 					.add(Material.STRIPPED_SPRUCE_LOG)
 					.build());
@@ -50,8 +54,10 @@ public final class MoreTags {
 			ImmutableSet.<Material>builder()
 					.add(Material.STRIPPED_ACACIA_WOOD)
 					.add(Material.STRIPPED_BIRCH_WOOD)
+					.add(Material.STRIPPED_CHERRY_WOOD)
 					.add(Material.STRIPPED_DARK_OAK_WOOD)
 					.add(Material.STRIPPED_JUNGLE_WOOD)
+					.add(Material.STRIPPED_MANGROVE_WOOD)
 					.add(Material.STRIPPED_OAK_WOOD)
 					.add(Material.STRIPPED_SPRUCE_WOOD)
 					.build());
@@ -105,11 +111,15 @@ public final class MoreTags {
 					.add(Material.KELP)
 					.add(Material.MELON_STEM)
 					.add(Material.NETHER_WART)
+					.add(Material.PITCHER_CROP)
+					.add(Material.PITCHER_PLANT)
 					.add(Material.POTATOES)
 					.add(Material.PUMPKIN_STEM)
 					.add(Material.SUGAR_CANE)
 					.add(Material.SWEET_BERRY_BUSH)
 					.add(Material.TWISTING_VINES)
+					.add(Material.TORCHFLOWER_CROP)
+					.add(Material.TORCHFLOWER)
 					.add(Material.WEEPING_VINES)
 					.add(Material.WHEAT)
 					.add(Material.CAVE_VINES)
@@ -125,6 +135,7 @@ public final class MoreTags {
 					.add(Material.BLUE_ORCHID)
 					.add(Material.BROWN_MUSHROOM)
 					.add(Material.CACTUS)
+					.add(Material.CHERRY_SAPLING)
 					.add(Material.CORNFLOWER)
 					.add(Material.CRIMSON_FUNGUS)
 					.add(Material.CRIMSON_ROOTS)
@@ -134,6 +145,7 @@ public final class MoreTags {
 					.add(Material.FERN)
 					.add(Material.JUNGLE_SAPLING)
 					.add(Material.LILY_OF_THE_VALLEY)
+					.add(Material.MANGROVE_PROPAGULE)
 					.add(Material.OAK_SAPLING)
 					.add(Material.ORANGE_TULIP)
 					.add(Material.OXEYE_DAISY)
@@ -260,6 +272,7 @@ public final class MoreTags {
 			ImmutableSet.<Material>builder()
 					.add(Material.LAVA)
 					.add(Material.WATER)
+					.add(Material.POWDER_SNOW)
 					.build());
 
 	// ------------------------------------------------------------
@@ -310,6 +323,7 @@ public final class MoreTags {
 			CollectionUtils.filter(missing, material -> Bukkit.createBlockData(material) instanceof Ageable);
 			missing.removeIf(Tag.ICE::isTagged);
 			missing.removeIf(Tag.FIRE::isTagged);
+			missing.removeIf(Tag.SAPLINGS::isTagged);
 			missing.removeIf(CROPS::isTagged);
 			if (!missing.isEmpty()) {
 				logger.warning("The following crops are missing: " +
