@@ -633,4 +633,26 @@ public class BlockListener implements Listener {
 		event.setCancelled(true);
 		CitadelUtility.sendAndLog(clicker, ChatColor.RED, "You cannot use that anvil.", clickedBlock.getLocation());
 	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void preventFlowerTheft(PlayerInteractEvent event) {
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
+		Block block = event.getClickedBlock();
+		if (block == null || !Tag.FLOWER_POTS.isTagged(block.getType())) {
+			return;
+		}
+		Player player = event.getPlayer();
+
+		Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+
+		if (reinforcement == null
+				|| reinforcement.isInsecure()
+				|| reinforcement.hasPermission(player.getUniqueId(), CitadelPermissionHandler.getModifyBlocks())) {
+			return;
+		}
+		event.setCancelled(true);
+		player.sendMessage(ChatColor.RED + "You do not have permission to modify this block");
+	}
 }
