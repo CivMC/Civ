@@ -427,7 +427,7 @@ public class PseudoServer implements Server {
 
 	@Override
 	public boolean isTickingWorlds() {
-		return false;
+		throw new NotImplementedException();
 	}
 
 	@Nullable
@@ -1098,7 +1098,7 @@ public class PseudoServer implements Server {
 
 	@Override
 	public @org.jetbrains.annotations.Nullable <T extends Keyed> Registry<T> getRegistry(@NotNull Class<T> aClass) {
-		return null;
+		throw new NotImplementedException();
 	}
 
 	@Nonnull
@@ -1186,52 +1186,52 @@ public class PseudoServer implements Server {
 
 	@Override
 	public @NotNull RegionScheduler getRegionScheduler() {
-		return null;
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public @NotNull AsyncScheduler getAsyncScheduler() {
-		return null;
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public @NotNull GlobalRegionScheduler getGlobalRegionScheduler() {
-		return null;
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public boolean isOwnedByCurrentRegion(@NotNull World world, @NotNull Position position) {
-		return false;
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public boolean isOwnedByCurrentRegion(@NotNull World world, @NotNull Position position, int i) {
-		return false;
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public boolean isOwnedByCurrentRegion(@NotNull Location location) {
-		return false;
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public boolean isOwnedByCurrentRegion(@NotNull Location location, int i) {
-		return false;
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public boolean isOwnedByCurrentRegion(@NotNull World world, int i, int i1) {
-		return false;
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public boolean isOwnedByCurrentRegion(@NotNull World world, int i, int i1, int i2) {
-		return false;
+		throw new NotImplementedException();
 	}
 
 	@Override
 	public boolean isOwnedByCurrentRegion(@NotNull Entity entity) {
-		return false;
+		throw new NotImplementedException();
 	}
 
 	@Override
