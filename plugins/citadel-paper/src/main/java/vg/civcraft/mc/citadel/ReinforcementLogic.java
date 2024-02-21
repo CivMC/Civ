@@ -199,7 +199,7 @@ public final class ReinforcementLogic {
 			case SEA_PICKLE:
 			case FERN:
 			case KELP:
-			case GRASS:
+			case SHORT_GRASS:
 			case SEAGRASS:
 			case TUBE_CORAL:
 			case TUBE_CORAL_FAN:
