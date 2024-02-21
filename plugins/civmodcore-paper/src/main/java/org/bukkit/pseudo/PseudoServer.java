@@ -5,6 +5,7 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import io.papermc.paper.datapack.DatapackManager;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.InetAddress;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +17,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import io.papermc.paper.math.Position;
+import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
+import io.papermc.paper.threadedregions.scheduler.RegionScheduler;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.minecraft.SharedConstants;
@@ -29,7 +34,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Registry;
 import org.bukkit.Server;
+import org.bukkit.ServerTickManager;
 import org.bukkit.StructureType;
 import org.bukkit.Tag;
 import org.bukkit.UnsafeValues;
@@ -49,10 +56,10 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.craftbukkit.v1_18_R2.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemFactory;
-import org.bukkit.craftbukkit.v1_18_R2.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_18_R2.util.Versioning;
+import org.bukkit.craftbukkit.v1_20_R3.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemFactory;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_20_R3.util.Versioning;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
@@ -61,18 +68,23 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.help.HelpMap;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemCraftResult;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.loot.LootTable;
+import org.bukkit.map.MapCursor;
 import org.bukkit.map.MapView;
+import org.bukkit.packs.DataPackManager;
+import org.bukkit.packs.ResourcePack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.potion.PotionBrewer;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.structure.StructureManager;
 import org.bukkit.util.CachedServerIcon;
@@ -118,6 +130,11 @@ public class PseudoServer implements Server {
 	@Override
 	public BlockData createBlockData(@Nonnull final Material material) {
 		return CraftBlockData.newData(material, null);
+	}
+
+	@Override
+	public @NotNull BlockData createBlockData(@NotNull Material material, @org.jetbrains.annotations.Nullable Consumer<? super BlockData> consumer) {
+		return null;
 	}
 
 	// ------------------------------------------------------------
@@ -213,6 +230,36 @@ public class PseudoServer implements Server {
 
 	@Override
 	public boolean getAllowNether() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean isLoggingIPs() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull List<String> getInitialEnabledPacks() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull List<String> getInitialDisabledPacks() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull DataPackManager getDataPackManager() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull ServerTickManager getServerTickManager() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @org.jetbrains.annotations.Nullable ResourcePack getServerResourcePack() {
 		throw new NotImplementedException();
 	}
 
@@ -378,6 +425,11 @@ public class PseudoServer implements Server {
 		throw new NotImplementedException();
 	}
 
+	@Override
+	public boolean isTickingWorlds() {
+		throw new NotImplementedException();
+	}
+
 	@Nullable
 	@Override
 	public World createWorld(@Nonnull final WorldCreator worldCreator) {
@@ -442,6 +494,11 @@ public class PseudoServer implements Server {
 	}
 
 	@Override
+	public @org.jetbrains.annotations.Nullable ItemStack createExplorerMap(@NotNull World world, @NotNull Location location, org.bukkit.generator.structure.@NotNull StructureType structureType, @NotNull MapCursor.Type type, int i, boolean b) {
+		return null;
+	}
+
+	@Override
 	public void reload() {
 		throw new NotImplementedException();
 	}
@@ -449,6 +506,16 @@ public class PseudoServer implements Server {
 	@Override
 	public void reloadData() {
 		throw new NotImplementedException();
+	}
+
+	@Override
+	public void updateResources() {
+
+	}
+
+	@Override
+	public void updateRecipes() {
+
 	}
 
 	@Nullable
@@ -470,6 +537,11 @@ public class PseudoServer implements Server {
 	@Override
 	public boolean addRecipe(@Nullable final Recipe recipe) {
 		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean addRecipe(@org.jetbrains.annotations.Nullable Recipe recipe, boolean b) {
+		return false;
 	}
 
 	@Nonnull
@@ -496,6 +568,21 @@ public class PseudoServer implements Server {
 		throw new NotImplementedException();
 	}
 
+	@Override
+	public @NotNull ItemStack craftItem(@NotNull ItemStack[] itemStacks, @NotNull World world) {
+		return null;
+	}
+
+	@Override
+	public @NotNull ItemCraftResult craftItemResult(@NotNull ItemStack[] itemStacks, @NotNull World world, @NotNull Player player) {
+		return null;
+	}
+
+	@Override
+	public @NotNull ItemCraftResult craftItemResult(@NotNull ItemStack[] itemStacks, @NotNull World world) {
+		return null;
+	}
+
 	@Nonnull
 	@Override
 	public Iterator<Recipe> recipeIterator() {
@@ -517,6 +604,11 @@ public class PseudoServer implements Server {
 		throw new NotImplementedException();
 	}
 
+	@Override
+	public boolean removeRecipe(@NotNull NamespacedKey namespacedKey, boolean b) {
+		return false;
+	}
+
 	@Nonnull
 	@Override
 	public Map<String, String[]> getCommandAliases() {
@@ -531,6 +623,16 @@ public class PseudoServer implements Server {
 	@Override
 	public void setSpawnRadius(final int i) {
 		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean shouldSendChatPreviews() {
+		return false;
+	}
+
+	@Override
+	public boolean isEnforcingSecureProfiles() {
+		return false;
 	}
 
 	@Override
@@ -623,6 +725,16 @@ public class PseudoServer implements Server {
 	@Override
 	public void unbanIP(@Nonnull final String s) {
 		throw new NotImplementedException();
+	}
+
+	@Override
+	public void banIP(@NotNull InetAddress inetAddress) {
+
+	}
+
+	@Override
+	public void unbanIP(@NotNull InetAddress inetAddress) {
+
 	}
 
 	@Nonnull
@@ -739,6 +851,11 @@ public class PseudoServer implements Server {
 	}
 
 	@Override
+	public int getMaxChainedNeighborUpdates() {
+		return 0;
+	}
+
+	@Override
 	public int getMonsterSpawnLimit() {
 		throw new NotImplementedException();
 	}
@@ -784,10 +901,20 @@ public class PseudoServer implements Server {
 		throw new NotImplementedException();
 	}
 
+	@Override
+	public void motd(@NotNull Component component) {
+
+	}
+
 	@Nonnull
 	@Override
 	public String getMotd() {
 		throw new NotImplementedException();
+	}
+
+	@Override
+	public void setMotd(@NotNull String s) {
+
 	}
 
 	@Nullable
@@ -812,6 +939,11 @@ public class PseudoServer implements Server {
 	@Override
 	public ScoreboardManager getScoreboardManager() {
 		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull Criteria getScoreboardCriteria(@NotNull String s) {
+		return null;
 	}
 
 	@Nullable
@@ -926,12 +1058,6 @@ public class PseudoServer implements Server {
 
 	@Nonnull
 	@Override
-	public BlockData createBlockData(@Nonnull final Material material, @Nullable final Consumer<BlockData> consumer) {
-		throw new NotImplementedException();
-	}
-
-	@Nonnull
-	@Override
 	public BlockData createBlockData(@Nonnull final String s) throws IllegalArgumentException {
 		throw new NotImplementedException();
 	}
@@ -970,6 +1096,11 @@ public class PseudoServer implements Server {
 		throw new NotImplementedException();
 	}
 
+	@Override
+	public @org.jetbrains.annotations.Nullable <T extends Keyed> Registry<T> getRegistry(@NotNull Class<T> aClass) {
+		throw new NotImplementedException();
+	}
+
 	@Nonnull
 	@Override
 	public Spigot spigot() {
@@ -995,6 +1126,11 @@ public class PseudoServer implements Server {
 	@Override
 	public String getPermissionMessage() {
 		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull Component permissionMessage() {
+		return null;
 	}
 
 	@Nonnull
@@ -1045,6 +1181,56 @@ public class PseudoServer implements Server {
 
 	@Override
 	public @NotNull PotionBrewer getPotionBrewer() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull RegionScheduler getRegionScheduler() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull AsyncScheduler getAsyncScheduler() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public @NotNull GlobalRegionScheduler getGlobalRegionScheduler() {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean isOwnedByCurrentRegion(@NotNull World world, @NotNull Position position) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean isOwnedByCurrentRegion(@NotNull World world, @NotNull Position position, int i) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean isOwnedByCurrentRegion(@NotNull Location location) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean isOwnedByCurrentRegion(@NotNull Location location, int i) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean isOwnedByCurrentRegion(@NotNull World world, int i, int i1) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean isOwnedByCurrentRegion(@NotNull World world, int i, int i1, int i2) {
+		throw new NotImplementedException();
+	}
+
+	@Override
+	public boolean isOwnedByCurrentRegion(@NotNull Entity entity) {
 		throw new NotImplementedException();
 	}
 
