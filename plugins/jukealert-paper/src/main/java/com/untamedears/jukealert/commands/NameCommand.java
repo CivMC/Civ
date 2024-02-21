@@ -15,6 +15,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
+import java.util.Objects;
+
 public class NameCommand extends BaseCommand {
 	@CommandAlias("janame")
 	@Syntax("<name>")
@@ -37,9 +39,9 @@ public class NameCommand extends BaseCommand {
 
 		String prevName = snitch.getName();
 		JukeAlert.getInstance().getSnitchManager().renameSnitch(snitch, newName);
-		TextComponent lineText = new TextComponent(ChatColor.AQUA + " Changed snitch name to ");
+		TextComponent lineText = new TextComponent(ChatColor.AQUA + (Objects.equals(prevName, "") ? "Set " : "Changed ") + "snitch name to ");
 		lineText.addExtra(JAUtility.genTextComponent(snitch));
-		lineText.addExtra(ChatColor.AQUA + " from " + ChatColor.GOLD + prevName);
+		lineText.addExtra(Objects.equals(prevName, "") ? "" : ChatColor.AQUA + " from " + ChatColor.GOLD + prevName);
 		player.spigot().sendMessage(lineText);
 	}
 
