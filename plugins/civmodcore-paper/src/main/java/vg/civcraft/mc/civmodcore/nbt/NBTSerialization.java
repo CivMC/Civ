@@ -17,7 +17,7 @@ import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.bukkit.craftbukkit.v1_18_R2.util.CraftNBTTagConfigSerializer;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftNBTTagConfigSerializer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
@@ -132,7 +132,7 @@ public final class NBTSerialization {
 		}
 		final ByteArrayDataInput input = ByteStreams.newDataInput(bytes);
 		try {
-			return NbtIo.read(input, NbtAccounter.UNLIMITED);
+			return NbtIo.read(input, NbtAccounter.unlimitedHeap());
 		}
 		catch (final IOException exception) {
 			LOGGER.log(Level.WARNING, "Could not deserialise NBT from bytes!", exception);
