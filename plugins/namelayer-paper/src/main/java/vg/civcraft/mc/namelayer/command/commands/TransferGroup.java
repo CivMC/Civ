@@ -66,9 +66,11 @@ public class TransferGroup extends BaseCommandMiddle {
 					+ " is not a member of the group and can't be made primary owner!");
 			return false;
 		}
+		g.removeMember(futureOwner);
+		g.addMember(futureOwner, GroupManager.PlayerType.OWNER);
 		g.setOwner(futureOwner);
 		owner.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(futureOwner)
-				+ " has been given ownership of the group.");
+				+ " has been given ownership of the group and promoted to OWNER role.");
 		return true;
 	}
 }
