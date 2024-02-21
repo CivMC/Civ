@@ -3,6 +3,8 @@ package vg.civcraft.mc.citadel.listener;
 import com.destroystokyo.paper.MaterialTags;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minecraft.world.level.block.ChangeOverTimeBlock;
+import net.minecraft.world.level.block.SculkBlock;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -25,10 +27,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
+import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.block.SculkBloomEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerEvent;
@@ -208,6 +215,27 @@ public class BlockListener implements Listener {
 				event.setCancelled(true);
 				return;
 			}
+		}
+	}
+
+	// prevent sculk spread if block is reinforced
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onSculkSpread(BlockSpreadEvent event) {
+		if (event.getSource().getType() != Material.SCULK && event.getSource().getType() != Material.SCULK_CATALYST) return;
+
+		if (ReinforcementLogic.getReinforcementProtecting(event.getBlock()) != null) {
+				event.setCancelled(true);
+        }
+	}
+
+	// prevent drying mud to clay if the mud is reinforced
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onMudDry(BlockFormEvent event) {
+		if (event.getNewState().getType() != Material.CLAY &&
+				event.getBlock().getType() != Material.MUD) return;
+
+		if (ReinforcementLogic.getReinforcementProtecting(event.getBlock()) != null) {
+			event.setCancelled(true);
 		}
 	}
 
