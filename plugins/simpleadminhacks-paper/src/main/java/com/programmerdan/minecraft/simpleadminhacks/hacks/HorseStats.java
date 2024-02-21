@@ -17,6 +17,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class HorseStats extends SimpleHack<HorseStatsConfig> implements Listener {
+	private static final double INTERNAL_TO_METRES_PER_SECOND = 42.15778758471;
 
 	public HorseStats(SimpleAdminHacks plugin, HorseStatsConfig config) {
 		super(plugin, config);
@@ -36,22 +37,29 @@ public class HorseStats extends SimpleHack<HorseStatsConfig> implements Listener
 			AbstractHorse horse = (AbstractHorse)entity;
 			AttributeInstance attrHealth = horse.getAttribute(Attribute.GENERIC_MAX_HEALTH);
 			AttributeInstance attrSpeed = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
-			event.getPlayer().sendMessage(String.format("%sHealth = %f, Speed = %f, Jump height = %f",
+			event.getPlayer().sendMessage(String.format("%sHealth = %f, Speed = %fm/s, Jump height = %f blocks",
 					ChatColor.YELLOW,
 					attrHealth.getBaseValue(),
-					attrSpeed.getBaseValue(),
-					horse.getJumpStrength()));
+					attrSpeed.getBaseValue() * INTERNAL_TO_METRES_PER_SECOND,
+					jumpHeightInBlocks(horse.getJumpStrength())));
+			event.setCancelled(true);
 		} else if (entity instanceof Strider) {
 			Strider strider = (Strider) entity;
 			AttributeInstance attrHealth = strider.getAttribute(Attribute.GENERIC_MAX_HEALTH);
 			AttributeInstance attrSpeed = strider.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
-			event.getPlayer().sendMessage(String.format("%sHealth = %f, Speed = %f",
+			event.getPlayer().sendMessage(String.format("%sHealth = %f, Speed = %fm/s",
 					ChatColor.YELLOW,
 					attrHealth.getBaseValue(),
-					attrSpeed.getBaseValue()));
+					attrSpeed.getBaseValue() * INTERNAL_TO_METRES_PER_SECOND));
+			event.setCancelled(true);
 		} else {
 			return;
 		}
+	}
+
+	private double jumpHeightInBlocks(double x) {
+		// This is a curve-fitted formula, so not 100% accurate
+		return -0.1817584952 * x * x * x + 3.689713992 * x * x + 2.128599134 * x - 0.343930367;
 	}
 
 	@Override
