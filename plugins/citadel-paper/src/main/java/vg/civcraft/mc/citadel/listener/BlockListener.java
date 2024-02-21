@@ -17,6 +17,7 @@ import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Comparator;
 import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.block.data.type.Lectern;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -235,6 +236,25 @@ public class BlockListener implements Listener {
 				event.getBlock().getType() != Material.MUD) return;
 
 		if (ReinforcementLogic.getReinforcementProtecting(event.getBlock()) != null) {
+			event.setCancelled(true);
+		}
+	}
+
+	// prevent dirt to mud if dirt is reinforced
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onMudCreated(EntityChangeBlockEvent event) {
+		if (!Tag.CONVERTABLE_TO_MUD.isTagged(event.getBlock().getType()) ||
+				event.getTo() != Material.MUD) return;
+
+		Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(event.getBlock().getLocation());
+		if (reinforcement == null) return;
+
+		Entity eventEntity = event.getEntity();
+
+		if (!(eventEntity instanceof Player player)) return;
+
+        if (!reinforcement.hasPermission(player, CitadelPermissionHandler.getModifyBlocks())) {
+			player.sendMessage(ChatColor.RED + "You do not have permission to modify this block");
 			event.setCancelled(true);
 		}
 	}
