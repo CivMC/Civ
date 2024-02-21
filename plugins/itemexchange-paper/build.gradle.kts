@@ -11,7 +11,4 @@ dependencies {
 	compileOnly(project(":plugins:namelayer-paper"))
 	compileOnly(project(":plugins:citadel-paper"))
 	compileOnly(project(":plugins:jukealert-paper"))
-
-	compileOnly("org.projectlombok:lombok:1.18.24")
-	annotationProcessor("org.projectlombok:lombok:1.18.24")
 }

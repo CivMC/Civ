@@ -11,12 +11,10 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import lombok.EqualsAndHashCode;
 
 /**
  * A storage method for modifiers that puts significance on the modifier's class.
  */
-@EqualsAndHashCode
 public final class ModifierStorage implements Iterable<ModifierData> {
 
 	private final ClassToInstanceMap<ModifierData> map = MutableClassToInstanceMap.create();
