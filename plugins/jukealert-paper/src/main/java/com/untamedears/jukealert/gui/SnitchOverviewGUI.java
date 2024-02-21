@@ -45,7 +45,7 @@ public class SnitchOverviewGUI {
 			// Base the snitch icon on the snitch type
 			final var icon = snitch.getType().getItem().clone();
 			ItemUtils.handleItemMeta(icon, (ItemMeta meta) -> {
-				meta.displayName(Component.text(snitch.getName()).color(NamedTextColor.GOLD));
+				meta.displayName(Component.text(snitch.getName(), NamedTextColor.GOLD));
 				final var location = snitch.getLocation();
 				List<Component> lore = new ArrayList<>();
 				lore.add(ChatUtils.newComponent("Location: ").color(NamedTextColor.AQUA)
