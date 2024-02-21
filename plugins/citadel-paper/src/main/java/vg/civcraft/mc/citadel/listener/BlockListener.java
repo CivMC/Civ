@@ -222,7 +222,7 @@ public class BlockListener implements Listener {
 	// prevent sculk spread if block is reinforced
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onSculkSpread(BlockSpreadEvent event) {
-		if (event.getSource().getType() != Material.SCULK && event.getSource().getType() != Material.SCULK_CATALYST) return;
+		if (event.getSource().getType() != Material.SCULK_CATALYST) return;
 
 		if (ReinforcementLogic.getReinforcementProtecting(event.getBlock()) != null) {
 				event.setCancelled(true);

@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
@@ -20,7 +21,7 @@ public class InventoryListener implements Listener {
 	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
 		Inventory fromInventory = event.getSource();
 		InventoryHolder fromHolder = fromInventory.getHolder(false);
-		boolean isFromBlock = fromHolder instanceof Container || fromHolder instanceof DoubleChest;
+		boolean isFromBlock = fromHolder instanceof BlockInventoryHolder || fromHolder instanceof DoubleChest;
 		boolean fromAtChunkBorder = false;
 		Location fromLocation = null;
 		if (isFromBlock) {
@@ -34,7 +35,7 @@ public class InventoryListener implements Listener {
 
 		Inventory destInventory = event.getDestination();
 		InventoryHolder destHolder = destInventory.getHolder(false);
-		boolean isDestBlock = destHolder instanceof Container || destHolder instanceof DoubleChest;
+		boolean isDestBlock = destHolder instanceof BlockInventoryHolder || destHolder instanceof DoubleChest;
 		boolean destAtChunkBorder = false;
 		Location destLocation = null;
 		if (isDestBlock) {
