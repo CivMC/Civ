@@ -758,6 +758,7 @@ public class BlockListener implements Listener {
 			p.sendMessage(ChatColor.RED + "You do not have permission to dust this block");
 			pie.setCancelled(true);
 		}
+	}
     
 	@EventHandler(ignoreCancelled = true)
 	public void preventFlowerTheft(PlayerInteractEvent event) {
