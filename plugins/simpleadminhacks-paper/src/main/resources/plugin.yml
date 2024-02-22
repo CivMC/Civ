@@ -5,7 +5,7 @@ authors: [ProgrammerDan, Maxopoly]
 version: ${version}
 depend: [CivModCore]
 softdepend: [CombatTagPlus, NameLayer, Citadel, ProtocolLib, BanStick, ExilePearl]
-api-version: 1.18
+api-version: 1.20
 commands:
   hacks:
     description: Shows the various hacks and fixes supported by this plugin and controls them
