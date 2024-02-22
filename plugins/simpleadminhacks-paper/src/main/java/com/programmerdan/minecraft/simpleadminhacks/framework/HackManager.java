@@ -130,7 +130,9 @@ public final class HackManager {
 
 	public void enableAllHacks() {
 		for (final SimpleHack<?> hack : hacks) {
-			enableHack(hack);
+			if (hack.shouldEnable()) {
+				enableHack(hack);
+			}
 		}
 	}
 
