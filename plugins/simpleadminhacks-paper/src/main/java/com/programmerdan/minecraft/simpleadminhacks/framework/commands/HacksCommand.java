@@ -13,7 +13,9 @@ import com.google.common.base.Strings;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
-import java.util.List;
+
+import java.util.*;
+
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -34,11 +36,13 @@ public class HacksCommand extends BaseCommand {
 		if (hacks.isEmpty()) {
 			sender.sendMessage(" No hacks registered.");
 		}
-		else {
-			for (final SimpleHack<? extends SimpleHackConfig> hack : hacks) {
-				sender.sendMessage(" • " + ChatColor.YELLOW + hack.getName() + ": " + ChatColor.AQUA +
-						(hack.isEnabled() ? "enabled" : "disabled"));
-			}
+		final Map<String, SimpleHack<? extends SimpleHackConfig>> names = new TreeMap<>();
+		for (SimpleHack<? extends SimpleHackConfig> hack : hacks) {
+			names.put(hack.getName(), hack);
+		}
+		for (final SimpleHack<? extends SimpleHackConfig> hack : names.values()) {
+			sender.sendMessage(" • " + ChatColor.YELLOW + hack.getName() + ": " + ChatColor.AQUA +
+					(hack.isEnabled() ? "enabled" : "disabled"));
 		}
 	}
 
