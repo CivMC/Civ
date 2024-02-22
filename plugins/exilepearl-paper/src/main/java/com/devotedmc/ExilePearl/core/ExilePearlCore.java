@@ -19,6 +19,8 @@ import com.devotedmc.ExilePearl.util.Clock;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.devotedmc.ExilePearl.util.NameLayerPermissions;
 import com.google.common.base.Preconditions;
+import io.papermc.paper.plugin.configuration.PluginMeta;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
@@ -553,6 +555,11 @@ final class ExilePearlCore implements ExilePearlApi {
 	}
 
 	@Override
+	public @NotNull PluginMeta getPluginMeta() {
+		return plugin.getDescription();
+	}
+
+	@Override
 	public Logger getLogger() {
 		return plugin.getLogger();
 	}
@@ -560,6 +567,11 @@ final class ExilePearlCore implements ExilePearlApi {
 	@Override
 	public String getName() {
 		return plugin.getName();
+	}
+
+	@Override
+	public @NotNull LifecycleEventManager<Plugin> getLifecycleManager() {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
