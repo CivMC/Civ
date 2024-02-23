@@ -1,4 +1,4 @@
-name: ${name}
+name: EssenceGlue
 version: ${version}
 main: com.github.maxopoly.essenceglue.EssenceGluePlugin
 api-version: 1.17
