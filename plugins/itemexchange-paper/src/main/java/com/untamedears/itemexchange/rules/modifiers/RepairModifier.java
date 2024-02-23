@@ -23,7 +23,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Repairable;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
-import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
 
 /**
  * <p>This additional represents a repair level condition.</p>
@@ -48,8 +47,7 @@ public final class RepairModifier extends ModifierData {
 		if (!ItemExchangeConfig.canRepairItem(item.getType())) {
 			return null;
 		}
-		Repairable meta = MoreClassUtils.castOrNull(Repairable.class, item.getItemMeta());
-		if (meta == null) {
+		if (!(item.getItemMeta() instanceof final Repairable meta)) {
 			return null;
 		}
 		RepairModifier modifier = new RepairModifier();
@@ -64,8 +62,7 @@ public final class RepairModifier extends ModifierData {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		Repairable meta = MoreClassUtils.castOrNull(Repairable.class, item.getItemMeta());
-		if (meta == null) {
+		if (!(item.getItemMeta() instanceof final Repairable meta)) {
 			return false;
 		}
 		int itemRepair = meta.getRepairCost();
