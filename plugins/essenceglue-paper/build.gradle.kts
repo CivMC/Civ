@@ -10,8 +10,8 @@ dependencies {
 	}
 
 	compileOnly(project(":plugins:civmodcore-paper"))
-    compileOnly("com.github.NuVotifier.NuVotifier:nuvotifier-bukkit:2.7.2")
-    compileOnly("com.github.NuVotifier.NuVotifier:nuvotifier-api:2.7.2")
+	compileOnly("com.github.NuVotifier.NuVotifier:nuvotifier-bukkit:2.7.2")
+	compileOnly("com.github.NuVotifier.NuVotifier:nuvotifier-api:2.7.2")
 	compileOnly(project(":plugins:banstick-paper"))
 	compileOnly(project(":plugins:exilepearl-paper"))
 }
