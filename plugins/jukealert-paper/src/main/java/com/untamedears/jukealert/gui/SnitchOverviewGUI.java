@@ -2,12 +2,21 @@ package com.untamedears.jukealert.gui;
 
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.appender.DormantCullingAppender;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.FastMultiPageView;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
@@ -29,38 +38,39 @@ public class SnitchOverviewGUI {
 		this.canShowDetails = canShowDetails;
 	}
 
-	private List<IClickable> constructSnitchClickables() {
+	private List<IClickable> constructSnitchClickables(int start, int offset) {
 		final List<IClickable> clickables = new LinkedList<>();
-		for (final Snitch snitch : this.snitches) {
+		for (int i = start; i <= Math.min(snitches.size() - 1, start + offset); i++) {
+			Snitch snitch = snitches.get(i);
 			// Base the snitch icon on the snitch type
 			final var icon = snitch.getType().getItem().clone();
 			ItemUtils.handleItemMeta(icon, (ItemMeta meta) -> {
-				meta.setDisplayName(ChatColor.GOLD + snitch.getName());
+				meta.displayName(Component.text(snitch.getName(), NamedTextColor.GOLD));
 				final var location = snitch.getLocation();
-				MetaUtils.addLore(meta, ChatColor.AQUA + "Location: "
-						+ ChatColor.WHITE + location.getWorld().getName() + " "
-						+ ChatColor.RED + location.getBlockX()
-						+ ChatColor.WHITE + ", "
-						+ ChatColor.GREEN + location.getBlockY()
-						+ ChatColor.WHITE + ", "
-						+ ChatColor.BLUE + location.getBlockZ());
-				MetaUtils.addLore(meta, ChatColor.YELLOW + "Group: " + snitch.getGroup().getName());
+				List<Component> lore = new ArrayList<>();
+				lore.add(ChatUtils.newComponent("Location: ").color(NamedTextColor.AQUA)
+						.append(Component.text(location.getWorld().getName() + " ").color(NamedTextColor.WHITE))
+						.append(Component.text(location.getBlockX()).color(NamedTextColor.RED))
+						.append(Component.text(", ").color(NamedTextColor.WHITE))
+						.append(Component.text(location.getBlockY()).color(NamedTextColor.GREEN))
+						.append(Component.text(", ").color(NamedTextColor.WHITE))
+						.append(Component.text(location.getBlockZ()).color(NamedTextColor.BLUE)));
+				lore.add(ChatUtils.newComponent("Group: " + snitch.getGroup().getName()).color(NamedTextColor.YELLOW));
 				if (snitch.hasAppender(DormantCullingAppender.class)) {
 					final var cull = snitch.getAppender(DormantCullingAppender.class);
 					if (cull.isActive()) {
-						MetaUtils.addLore(meta, ChatColor.AQUA + "Will go dormant in " +
-								TextUtil.formatDuration(cull.getTimeUntilDormant()));
+						lore.add(ChatUtils.newComponent("Will go dormant in " + TextUtil.formatDuration(cull.getTimeUntilDormant())).color(NamedTextColor.AQUA));
 						MetaUtils.addGlow(meta);
 					}
 					else if (cull.isDormant()) {
-						MetaUtils.addLore(meta, ChatColor.AQUA + "Will cull in " +
-								TextUtil.formatDuration(cull.getTimeUntilCulling()));
+						lore.add(ChatUtils.newComponent("Will cull in " + TextUtil.formatDuration(cull.getTimeUntilCulling())).color(NamedTextColor.AQUA));
 					}
 				}
 				if (this.canShowDetails) {
-					MetaUtils.addLore(meta, ChatColor.GREEN + "Click to show details");
+					lore.add(ChatUtils.newComponent("Click to show details").color(NamedTextColor.GREEN));
 				}
-				MetaUtils.addLore(meta, ChatColor.GOLD + "Right click to send waypoint");
+				lore.add(ChatUtils.newComponent("Right click to send waypoint").color(NamedTextColor.GOLD));
+				meta.lore(lore);
 				return true;
 			});
 			clickables.add(new Clickable(icon) {
@@ -90,7 +100,7 @@ public class SnitchOverviewGUI {
 	}
 
 	public void showScreen() {
-		final var view = new MultiPageView(this.player, constructSnitchClickables(), this.title, true);
+		final var view = new FastMultiPageView(this.player, this::constructSnitchClickables, this.title, 6);
 		view.setMenuSlot(SnitchLogGUI.constructExitClick(), 3);
 		view.showScreen();
 	}
