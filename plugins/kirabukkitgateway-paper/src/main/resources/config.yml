@@ -1,0 +1,35 @@
+# Database connection details, should you want to have a database connection.
+# KEEP THIS COMMENTED OUT IN THIS DEFAULT CONFIG OTHERWISE BAD THINGS!
+# Do NOT change the ==: value.
+#database:
+#  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
+#  plugin: KiraBukkitGateway
+#  user: username
+#  password: password
+#  host: localhost
+#  port: 3306
+#  database: minecraft
+#  poolsize: 5
+#  connection_timeout: 10000
+#  idle_timeout: 600000
+#  max_lifetime: 7200000
+
+# Your RabbitMQ credentials
+rabbitmq:
+  user: username
+  password: password
+  host: localhost
+  port: 5672
+  incomingQueue: kira-to-gateway
+  outgoingQueue: gateway-to-kira
+
+# This will relay particular messages emitted to the console to specified relays
+# "key"   = the name of the relay config
+# "regex" = pattern to match console messages against, which, if true, will be relayed
+console:
+  foo:
+    key: aac
+    regex: '.* moved too quickly.*'
+  bar:
+    key: ip
+    regex: '.*is brand new!.*'
