@@ -4,10 +4,6 @@ plugins {
 
 version = "2.0.0-SNAPSHOT"
 
-repositories {
-    maven("https://repo.kryptonmc.org/releases")
-}
-
 dependencies {
     paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 
