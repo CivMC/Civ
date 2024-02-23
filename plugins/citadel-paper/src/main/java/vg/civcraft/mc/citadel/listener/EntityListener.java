@@ -42,7 +42,6 @@ import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -263,8 +262,7 @@ public class EntityListener implements Listener {
 			case EXPLOSION:
 				return;
 			case ENTITY: {
-				Player player = MoreClassUtils.castOrNull(Player.class, event.getRemover());
-				if (player == null) {
+				if (!(event.getRemover() instanceof final Player player)) {
 					break;
 				}
 				Hanging entity = event.getEntity();
@@ -311,12 +309,10 @@ public class EntityListener implements Listener {
 		if (!Citadel.getInstance().getConfigManager().doHangersInheritReinforcements()) {
 			return;
 		}
-		Hanging entity = MoreClassUtils.castOrNull(Hanging.class, event.getEntity());
-		if (entity == null) {
+		if (!(event.getEntity() instanceof final Hanging entity)) {
 			return;
 		}
-		Player player = MoreClassUtils.castOrNull(Player.class, event.getDamager());
-		if (player == null) {
+		if (!(event.getDamager() instanceof final Player player)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -344,8 +340,7 @@ public class EntityListener implements Listener {
 		if (!Citadel.getInstance().getConfigManager().doHangersInheritReinforcements()) {
 			return;
 		}
-		Hanging entity = MoreClassUtils.castOrNull(Hanging.class, event.getRightClicked());
-		if (entity == null) {
+		if (!(event.getRightClicked() instanceof final Hanging entity)) {
 			return;
 		}
 		Block host = entity.getLocation().getBlock().getRelative(entity.getAttachedFace());
