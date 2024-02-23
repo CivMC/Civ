@@ -1,4 +1,4 @@
-name: ${name}
+name: JukeAlert
 main: com.untamedears.jukealert.JukeAlert
 version: ${version}
 authors: [mgrandi, Maxopoly]
