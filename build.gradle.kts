@@ -32,6 +32,7 @@ allprojects {
         maven("https://repo.aikar.co/content/groups/aikar/")
         maven("https://libraries.minecraft.net")
         maven("https://repo.codemc.io/repository/maven-public/")
+        maven("https://repo.kryptonmc.org/releases")
 
         maven("https://jitpack.io")
     }
