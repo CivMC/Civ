@@ -22,7 +22,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
-import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 @CommandAlias(SetCommand.ALIAS)
@@ -39,8 +38,7 @@ public final class PotionModifier extends ModifierData {
 
 	@Override
 	public PotionModifier construct(ItemStack item) {
-		PotionMeta meta = MoreClassUtils.castOrNull(PotionMeta.class, item.getItemMeta());
-		if (meta == null) {
+		if (!(item.getItemMeta() instanceof final PotionMeta meta)) {
 			return null;
 		}
 		PotionModifier modifier = new PotionModifier();
@@ -59,8 +57,7 @@ public final class PotionModifier extends ModifierData {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		PotionMeta meta = MoreClassUtils.castOrNull(PotionMeta.class, item.getItemMeta());
-		if (meta == null) {
+		if (!(item.getItemMeta() instanceof final PotionMeta meta)) {
 			return false;
 		}
 		if (!NullUtils.equalsNotNull(this.base, meta.getBasePotionData())) {
