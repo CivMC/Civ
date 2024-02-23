@@ -57,17 +57,20 @@ public class CmdShowAllPearls extends PearlCommand {
 	@Override
 	public void perform() {
 		final Player sender = player();
+		if (onCoolDown(sender)) return;
+		generateOpenPearlsMenu(sender);
+	}
 
+	private boolean onCoolDown(Player sender) {
 		final long now = System.currentTimeMillis();
 		final long previousUseTime = COOLDOWNS.compute(sender.getUniqueId(),
 				(uuid, value) -> value == null ? 0L : value); // This is better than getOrDefault()
 		if (previousUseTime > (now - COOLDOWN)) {
 			sender.sendMessage(ChatColor.RED + "You can't do that yet.");
-			return;
+			return true;
 		}
 		COOLDOWNS.put(sender.getUniqueId(), now);
-
-		generateOpenPearlsMenu(sender);
+		return false;
 	}
 
 	private void generateOpenPearlsMenu(Player sender) {
@@ -227,6 +230,7 @@ public class CmdShowAllPearls extends PearlCommand {
 		return new Clickable(item) {
 			@Override
 			public void clicked(final Player clicker) {
+				if (onCoolDown(clicker)) return;
 				bannedPearlToggle = !bannedPearlToggle;
 				clicker.sendMessage(Component.text()
 						.color(NamedTextColor.GREEN)
