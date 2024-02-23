@@ -22,7 +22,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
-import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "DAMAGE", order = 500)
@@ -61,8 +60,7 @@ public final class DamageableModifier extends ModifierData {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		Damageable meta = MoreClassUtils.castOrNull(Damageable.class, item.getItemMeta());
-		if (meta == null) {
+		if (!(item.getItemMeta() instanceof final Damageable meta)) {
 			return false;
 		}
 		int itemDamage = meta.getDamage();
