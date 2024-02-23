@@ -521,20 +521,20 @@ hacks:
     enabled: true
     # All in metres per second
     # Minecraft will prevent you going faster than 30m/s
-    base: 12
+    base: 11
     materials:
       COBBLESTONE: 8
       COPPER_BLOCK: 29
       EXPOSED_COPPER: 23
       WEATHERED_COPPER: 18
       OXIDIZED_COPPER: 14
-    skyBase: 1
+    skyBase: 12
     skyMaterials:
-      COBBLESTONE: 0
-      COPPER_BLOCK: 1
-      EXPOSED_COPPER: 1
-      WEATHERED_COPPER: 1
-      OXIDIZED_COPPER: 1
+      COBBLESTONE: 8
+      COPPER_BLOCK: 29
+      EXPOSED_COPPER: 23
+      WEATHERED_COPPER: 18
+      OXIDIZED_COPPER: 14
   CopperRail:
     enabled: true
     deoxidise: true
