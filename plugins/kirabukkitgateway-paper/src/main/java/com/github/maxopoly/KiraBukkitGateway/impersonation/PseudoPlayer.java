@@ -33,9 +33,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_18_R2.scoreboard.CraftScoreboard;
+import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -455,10 +455,6 @@ public class PseudoPlayer extends CraftPlayer {
 
 	public int getTicksLived() {
 		throw new InvalidCommandAttemptException();
-	}
-
-	public EntityType getType() {
-		return EntityType.PLAYER;
 	}
 
 	public UUID getUniqueId() {
