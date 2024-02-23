@@ -571,7 +571,7 @@ final class ExilePearlCore implements ExilePearlApi {
 
 	@Override
 	public @NotNull LifecycleEventManager<Plugin> getLifecycleManager() {
-		throw new UnsupportedOperationException();
+return plugin.getLifecycleManager();
 	}
 
 	@Override
