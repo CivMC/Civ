@@ -88,10 +88,12 @@ public final class BetterRails extends SimpleHack<BetterRailsConfig> implements 
 		Material belowRail = minecart.getLocation().subtract(0, 1, 0).getBlock().getType();
 		Material belowRail2 = minecart.getLocation().subtract(0, 2, 0).getBlock().getType();
 
-		double speedMetresPerSecond = maxOrGet(config.getMaxSpeedMetresPerSecond(belowRail), config.getMaxSpeedMetresPerSecond(belowRail2), config.getBaseSpeed());
+		double speedMetresPerSecond;
 
 		if (minecart.getLocation().getBlockY() == minecart.getWorld().getHighestBlockYAt(minecart.getLocation(), HeightMap.WORLD_SURFACE)) {
-			speedMetresPerSecond += maxOrGet(config.getSkySpeedMetresPerSecond(belowRail), config.getSkySpeedMetresPerSecond(belowRail2), config.getSkySpeed());
+			speedMetresPerSecond = maxOrGet(config.getSkySpeedMetresPerSecond(belowRail), config.getSkySpeedMetresPerSecond(belowRail2), config.getSkySpeed());
+		} else {
+			speedMetresPerSecond = maxOrGet(config.getMaxSpeedMetresPerSecond(belowRail), config.getMaxSpeedMetresPerSecond(belowRail2), config.getBaseSpeed());
 		}
 
 
