@@ -1,0 +1,49 @@
+#An example for a tier utilizing all the options available
+
+#name:
+#    permission: civduties.admin
+#    priority: 1
+#    commands:
+#        commandidentifier1:
+#            syntax: gamemode 1
+#            timing: ENABLE
+#            executor: PLAYER
+#        commandidentifier2:
+#            syntax: /deop %PLAYER%
+#            timing: DISABLE
+#            executor: CONSOLE
+#        commandidentifier3:
+#            syntax: say A player in duty mode logged in
+#            timing: LOGIN
+#            executor: CONSOLE
+#    temporary:
+#       permissions:
+#           - bukkit.ban
+#           - bukkit.unban
+#       groups:
+#           - admins
+#    disable_death_drops: true
+#    enable_combattag_block: true
+
+#permission specifies the permission required the player to have to be able to use the tier. 
+#priority if a player has permissions to more than one tier his default tier will be the tier with the highest priority.
+#commands allows to run commands.
+#    syntax the command to run.
+#    timing when to run the command. Can be ENABLE, DISABLE, LOGIN or LOGOUT.
+#    executor who will run the command. Can be the PLAYER or the CONSOLE. A player can only run commands he has permission to. 
+#temporary specifies permissions the player will have or permissions groups the player will be add to while in duty.
+#disable_death_drops allows to disable drops from a player that dies in duty mode. 
+#enable_combattag_block prevent the player from entering duty mode while combattaged. Uses CombatTagPlus: https://github.com/MinelinkNetwork/CombatTagPlus
+
+tiers:
+  default:
+    priority: 0
+    disable_death_drops: true
+    enable_combattag_block: true
+
+mysql:
+  hostname: 'localhost'
+  port: 3306
+  dbname: 'bukkit'
+  username: 'bukkit'
+  password: ''
