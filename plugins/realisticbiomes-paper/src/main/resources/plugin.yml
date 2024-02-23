@@ -1,4 +1,4 @@
-name: ${name}
+name: RealisticBiomes
 main: com.untamedears.realisticbiomes.RealisticBiomes
 depend:
 - CivModCore
