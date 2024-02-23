@@ -1,4 +1,5 @@
 import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
+import io.papermc.paperweight.tasks.RemapJar
 import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
@@ -76,6 +77,17 @@ allprojects {
         publications {
             create<MavenPublication>("maven") {
                 from(components["java"])
+                pluginManager.withPlugin("io.papermc.paperweight.userdev") {
+                    artifact(project.tasks.withType<RemapJar>().getByName("reobfJar").outputJar)
+                }
+            }
+            pluginManager.withPlugin("com.github.johnrengelman.shadow") {
+                create<MavenPublication>("shadow") {
+                    from(components["java"])
+                    pluginManager.withPlugin("io.papermc.paperweight.userdev") {
+                        artifact(project.tasks.withType<RemapJar>().getByName("reobfJar").outputJar)
+                    }
+                }
             }
         }
     }
