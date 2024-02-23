@@ -8,9 +8,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -44,7 +46,7 @@ public class CmdShowAllPearls extends PearlCommand {
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
 	private static final Map<UUID, Long> COOLDOWNS = new HashMap<>();
 	private static final long COOLDOWN = 10_000; // 10 seconds
-	private static final Map<UUID, Boolean> TOGGLES = new HashMap<>();
+	private static final Set<UUID> TOGGLES = new HashSet<>();
 
 	public CmdShowAllPearls(final ExilePearlApi pearlApi) {
 		super(pearlApi);
@@ -74,8 +76,7 @@ public class CmdShowAllPearls extends PearlCommand {
 	}
 
 	private void generateOpenPearlsMenu(Player sender) {
-		final boolean bannedPearlToggle = TOGGLES.compute(sender.getUniqueId(),
-				(uuid, value) -> value == null || value); // This is better than getOrDefault()
+		final boolean bannedPearlToggle = TOGGLES.contains(sender.getUniqueId());
 		final Location senderLocation = sender.getLocation();
 		final double pearlExclusionRadius = this.plugin.getPearlConfig().getRulePearlRadius() * 1.2;
 		final boolean isBanStickEnabled = this.plugin.isBanStickEnabled();
@@ -84,7 +85,7 @@ public class CmdShowAllPearls extends PearlCommand {
 				// Sort pearls from newest to oldest
 				.sorted(ComparatorUtils.reversedComparator(Comparator.comparing(ExilePearl::getPearledOn)))
 				.filter((pearl) -> {
-					if (bannedPearlToggle) {
+					if (!bannedPearlToggle) {
 						final boolean isPlayerBanned = isBanStickEnabled
 								&& BanHandler.isPlayerBanned(pearl.getPlayerId());
 
@@ -233,7 +234,11 @@ public class CmdShowAllPearls extends PearlCommand {
 			@Override
 			public void clicked(final Player clicker) {
 				if (onCoolDown(clicker)) return;
-				TOGGLES.put(clicker.getUniqueId(), !bannedPearlToggle);
+				if (bannedPearlToggle) {
+					TOGGLES.add(clicker.getUniqueId());
+				} else {
+					TOGGLES.remove(clicker.getUniqueId());
+				}
 				clicker.sendMessage(Component.text()
 						.color(NamedTextColor.GREEN)
 						.content("Banned pearls toggled " + (bannedPearlToggle ? "on" : "off"))
