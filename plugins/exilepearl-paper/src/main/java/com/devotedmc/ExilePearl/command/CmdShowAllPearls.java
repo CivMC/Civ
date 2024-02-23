@@ -44,7 +44,7 @@ public class CmdShowAllPearls extends PearlCommand {
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
 	private static final Map<UUID, Long> COOLDOWNS = new HashMap<>();
 	private static final long COOLDOWN = 10_000; // 10 seconds
-	private boolean bannedPearlToggle = true;
+	private static final Map<UUID, Boolean> TOGGLES = new HashMap<>();
 
 	public CmdShowAllPearls(final ExilePearlApi pearlApi) {
 		super(pearlApi);
@@ -74,6 +74,8 @@ public class CmdShowAllPearls extends PearlCommand {
 	}
 
 	private void generateOpenPearlsMenu(Player sender) {
+		final boolean bannedPearlToggle = TOGGLES.compute(sender.getUniqueId(),
+				(uuid, value) -> value == null || value); // This is better than getOrDefault()
 		final Location senderLocation = sender.getLocation();
 		final double pearlExclusionRadius = this.plugin.getPearlConfig().getRulePearlRadius() * 1.2;
 		final boolean isBanStickEnabled = this.plugin.isBanStickEnabled();
@@ -207,11 +209,11 @@ public class CmdShowAllPearls extends PearlCommand {
 		LazyList<IClickable> lazyContents = MoreCollectionUtils.lazyList(contentSuppliers);
 		final var pageView = new MultiPageView(sender, lazyContents, "All Pearls", true);
 
-		pageView.setMenuSlot(contructBannedPearlsToggleClick(), 4);
+		pageView.setMenuSlot(constructBannedPearlsToggleClick(bannedPearlToggle), 4);
 		pageView.showScreen();
 	}
 
-	private IClickable contructBannedPearlsToggleClick() {
+	private IClickable constructBannedPearlsToggleClick(final boolean bannedPearlToggle) {
 		final var item = new ItemStack(Material.BARRIER);
 		ItemUtils.handleItemMeta(item, (final ItemMeta meta) -> {
 			meta.displayName(Component.text()
@@ -231,10 +233,10 @@ public class CmdShowAllPearls extends PearlCommand {
 			@Override
 			public void clicked(final Player clicker) {
 				if (onCoolDown(clicker)) return;
-				bannedPearlToggle = !bannedPearlToggle;
+				TOGGLES.put(clicker.getUniqueId(), !bannedPearlToggle);
 				clicker.sendMessage(Component.text()
 						.color(NamedTextColor.GREEN)
-						.content("Banned pearls toggled " + (!bannedPearlToggle ? "on" : "off"))
+						.content("Banned pearls toggled " + (bannedPearlToggle ? "on" : "off"))
 						.build());
 				generateOpenPearlsMenu(clicker);
 			}
