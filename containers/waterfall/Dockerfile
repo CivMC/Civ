@@ -1,7 +1,7 @@
 # Pin to java17
-FROM itzg/bungeecord@sha256:f67819eeefd9fe6d4ee5f6f4f3c67c171ba92e27cb22166a4abad3d1874afd4c
+FROM itzg/bungeecord@sha256:7e7eeb9023cc213de2ca7ecbcf2cccc506fd46a31346f7250d2fcc5637cf5bb7
 
-ENV WATERFALL_VERSION=1.18
+ENV WATERFALL_VERSION=1.20
 
 COPY config /config
 COPY plugins /plugins

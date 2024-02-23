@@ -1,8 +1,8 @@
 # Pin to java17
-FROM itzg/minecraft-server@sha256:346cb47929edc36e977f3b064f882a9c919df65fe4807ac35c05fdacf442822f
+FROM itzg/minecraft-server@sha256:491e37fa63ffef22c9ac1f6ec2fb4cc793735799cd91bafa1e5790aa39e9b313
 
 # https://github.com/itzg/docker-minecraft-server/blob/master/README.md#versions
-ENV VERSION=1.18.2
+ENV VERSION=1.20.4
 
 # https://github.com/itzg/docker-minecraft-server#optional-plugins-mods-and-config-attach-points
 COPY plugins /plugins
