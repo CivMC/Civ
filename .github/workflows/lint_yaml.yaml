@@ -1,0 +1,19 @@
+# Lint all YAML
+name: 🔎 Lint Yaml
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  lint_yaml:
+    name: 🔎 Lint Yaml
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚩 Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: 🔎 Lint Yaml
+        uses: ibiqlik/action-yamllint@v3
+        continue-on-error: true # TODO: Remove after checks pass
