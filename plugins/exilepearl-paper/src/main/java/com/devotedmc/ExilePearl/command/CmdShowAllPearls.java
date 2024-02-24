@@ -234,7 +234,7 @@ public class CmdShowAllPearls extends PearlCommand {
 			@Override
 			public void clicked(final Player clicker) {
 				if (onCoolDown(clicker)) return;
-				if (bannedPearlToggle) {
+				if (!bannedPearlToggle) {
 					TOGGLES.add(clicker.getUniqueId());
 				} else {
 					TOGGLES.remove(clicker.getUniqueId());
