@@ -6,8 +6,8 @@ on:
   workflow_call:
 
 jobs:
-  build_gradle:
-    name: 🐘 Build Gradle
+  check_gradle:
+    name: 🐘 Check Gradle
     runs-on: ubuntu-latest
 
     steps:
