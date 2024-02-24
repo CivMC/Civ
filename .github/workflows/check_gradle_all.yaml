@@ -1,0 +1,31 @@
+# Check all projects
+name: 🐘 Gradle | Check All
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build_gradle:
+    name: 🐘 Build Gradle
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚩 Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: ❓ Ensure Wrapper Permissions
+        run: chmod +x ./gradlew
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 🐘 Gradle Check
+        uses: gradle/gradle-build-action@v2
+        env:
+          CI: true
+        with:
+          arguments: "check --scan"

@@ -1,0 +1,11 @@
+name: ⬇️ PR Updated
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  call_gradle_check:
+    name: ☎️ Call  Gradle Check
+    uses: ./.github/workflows/check_gradle_all.yaml
+    secrets: inherit
