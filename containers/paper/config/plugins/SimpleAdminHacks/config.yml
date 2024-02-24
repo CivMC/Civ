@@ -182,6 +182,8 @@ hacks:
     disableEndGatewayTP: false
   ItemMetaConverterHack:
     enabled: true
+  MapCopyProtection:
+    enabled: true
   OldEnchanting:
     enabled: true
     # Hides what enchantment will be granted within the Enchanting Table
@@ -466,29 +468,20 @@ hacks:
       title: Welcome ${player}!
       author: RedDevel
       pages: 
-        - "&5Hello and welcome to CivMC, &2${player}!\n\n   A server based on nation building and political roleplay, where admin control is minimal and players have the opportunity to dispense their own justice. A world ripe with chance for any new friend to carve out their own legacy."
-        - "With an almost decade long history, filled with moments of high excitement in war and of peace, farming and socializing with your closest allies. Where countries, towns, and cities consist of more than just the blocks they're made of." 
-        - "   &1Namelayer&r\nPocket radios! Create or join chat groups to communicate with friends all over CivMC. By default you have joined global chat or ! chat. You can switch from local chat (1000 block radius) to this one by performing the command: /g !"
-        - "Go back to localchat by performing the /g command on it own. This works for any group you are allowed to speak in. just switch ! for the name of the group. \nCreate your own group using the GUI by perfoming the /nl Command."
-        - "   &1Citadel&r\nAnother use for your groups! Slow down raiders by reinforcing blocks such as your house or your chests and doors to lock them. Reinforced blocks take multiple breaks to drop for players not on the reinforcement group."
-        - "To reinforce a block perform the command /ctr <Groupname> while holding stone, iron or diamond. Then punch any block to reinforce it to that group. Now only you and your allies can interact with that block! Tip: Use /ctf instead to reinforce while building!"
-        - "   &1Hiddenore&r\nSuddenly iron surrounds you! Ores spawn around you as you mine. While caves are still dusted with some visible ores, the main way to get ores is to dig. Ores still hold the same height level for their rarity."
-        - "Diamonds are unique on civmc. They spawn in what is called a vein. Veins consist of single diamond ores, spaced out over a wide area (as much as 11 blocks from other ores) and can be quite profitable. A message will appear in chat whenever a diamond ore is uncovered" 
-        - "It is recommended to mark diamond ores with a block or a waypoint to get an idea of the size of the vein. \nUse silk touch on all ores for increased returns when smelting them in the Ore smelter factory. (better than fortune!)"
-        - "   &1JukeAlert&r\nSmile! you're on snitches! Jukeboxes and note blocks when reinforced will turn into a snitch and notify players on the group when other players enter its 23x23 box field. Note blocks turned snitch only hold this one function." 
-        - "Jukeboxes in addition also log some actions, like block breaks or the opening of doors and chests. You can access a jukebox and its logs if you're on its group by performing the /ja command. To name a nearby snitch perform the /janame (Snitchname)"
-        - "   &1ExilePearl&r\nKilling other players with an ender pearl in your hotbar will banish them to the nether. A filled Pearl require essence to keep the player trapped. The location of the pearl is shown to the pearled player and can be broadcast to others. So watch your back..."
-        - "   &1Essence&r\nYou get essence every day for logging in. This is used to maintain an ExilePearl and is very valuable to some players and nations. Selling your essence can be a good way to get some starting resources. If you don't plan on using it."
-        - "   &1FactoryMod&r\nThe industrial revolution in cube form! Factories produce items at quicker and better rates. Or produce items otherwise unavailable or locked away such as XP or netherite. Costs might be high for some however, working together is advised!"
-        - "Perform the command /Fm to see all factories available, as well as their creation costs and recipes. Make your own factory by putting down a chest next to a crafting table next to a furnace. Input the costs for making a factory in the chests, and hit the furnace with a stick"
-        - "   &1RealisticBiomes&r\nHermit's bane! Biomes each have their own growable crops and trees, forcing players to trade, travel or expand their nations borders to gain access to all the crops they need. XP is made with a variety of these crops in the crucible factory."
-        - "Perform the command: /rb to view what crops grow in your biome! Use a maximum of 8 layers of clay underneath your farms to increase growth speed. And use glowstone near crops to make \"greenhouses\" for underground farming."
-        - "   &1Bastions&r\nNo not the nether ones! Bastions are specials blocks used to prevent certain actions by players not on the group it's reinforced to. City bastions (look like bone blocks) have a wide area of 100x100 but are limited to preventing others from reinforcing."
-        - "Vault Bastions are smaller but do more. they can prevent block placement entirely and stop players from pearling inside its field. allowing for complex protective structures like bunkers or their bigger variant: vaults."
-        - "   &1Brewery&r\nNo you're drunk! Brewery allows players to produce over 200 different kinds of booze each with their own name and effects. While some recipes are public, most brews have to be discovered by experimenting with ingredients."
-        - "Brews are made by first boiling ingredients for some time in a cauldron. Then can be distilled in a brewing stand and/or aged in a barrel (a multiblock structure) made of the main different kinds of wood. Caution! Don't drink too much alcohol."
-        - "   &5Closing Remarks&r\nType /help for more info on everything. Go to https://civwiki.org/wiki/Civ101 for a more detailed guide. There is much more to learn."
-        - "If you would like to report hacks or harassment, please message the admins through the subreddit modmail at reddit.com/r/CivMC. For bugs or wrongful/accidental bans either send a modmail or submit a ticket on the offical CivMC discord."
+        - "&5    Welcome &2${player}!\n         &5to CivMC!&r\n\nThis book will guide your first steps!\nIf you die or lose it you can open it via the /introbook command\n\nLet's begin your journey!"
+        - "You've just spawned near another player or town, say something in chat!\n\nIf nobody responds try out global chat instead by using the /global command!\n\nMany nations will want a potential new productive member.\nTake your pick!"
+        - "Maybe you've joined at a time of lower activity, and nobody is responding.\n\nThen you can join the official discord and take your pick of the nation ads there!\n\n      &9discord.gg/\n      HkD79GfmQQ&r"
+        - "Is the nation you want to join far away?\nWell you're in luck!\n\nEvery new player in their first 24 hours on the server gets a singular free tp!\n\nSimply use the command below:\n\n    &c/ott to <player>&r"
+        - "Want to start your own settlement?\nVery possible! but incredibly difficult.\n\nNot just because of a lack of resources!\n\nKnowledge and connections are power in CivMC. You'd be better off building those up first."
+        - "Joining a nation never ties you down. You can even join multiple at once! That's why it's important to remember that you can always start your own nation at a later time.\nThere's not rush!\nTake your time to learn the game first\n\nOn that note:"
+        - "          &5Plugins!&r\n\nCivMC has many many different features and mechanics that make it unique.\nYou can learn about all of them on our handy Wiki!\n\n      &9wiki.civmc.net\n\n&4IT IS VITAL YOU LOOK\n     AT THIS WIKI&r"
+        - "When you join a nation the players there will likely explain some of the basic important plugins to you\n\nThese are:\nCitadel (protect your stuff)\nJukeAlert (know who's breaking your stuff)\nExilepearl (Jail people who broke your stuff)"
+        - "       &5AVOID DOING\n     THE FOLLOWING\n     IF YOU WANT TO\n         SURVIVE\n\n&r1. Breaking people's stuff\n2. Jumping into obsidian pits\n3. Crossing into excluded areas\n4. Anything people would kill you for."
+        - "  &5THEY WILL KILL YOU&r\nLeave the raiding until you understand how to get away with it.\nCameras are watching!\n\nLoot stolen without care is easily taken away, and damages your reputation with others!\nOr will find you killed and banished to the nether"
+        - "It is always important to remember this:\n\nOn CivMC your actions have consequences.\n\nYou have 1 account. 1 name. Don't dirty it the first chance you get.\n\nThat is if you want to make something of yourself.\nWhatever that may be."
+        - "            &5TOS&r\nCivMC is not complete anarchy. You can and will be banned if you break the server rules.\n (Find on the discord)\n\nRefrain from using hacks or spouting slurs.\nAct like a decent human being and all will be well."
+        - "      &5Bugs/Issues&r\n\nIf you've found a bug or have any other issues that require an admin.\nThen you can either raise a ticket on the discord or send a modmail via our reddit.\n\n         &9R/CivMC&r"
+        - "        &5Goodluck!&r\nThere are many things to do on CivMC. Let your ambitions run wild!\n\nLeave something behind people will remember for years to come.\n\nBe it your actions, your creations or your destruction..."
   InvControl:
     enabled: true
   NewfriendAssist:
@@ -571,3 +564,31 @@ hacks:
     cooldownTime: 100
   DespawnFix:
     enabled: true
+  BetterRails:
+    enabled: true
+    # All in metres per second
+    # Minecraft will prevent you going faster than 30m/s
+    base: 11
+    materials:
+      COBBLESTONE: 8
+      COPPER_BLOCK: 29
+      EXPOSED_COPPER: 23
+      WEATHERED_COPPER: 18
+      OXIDIZED_COPPER: 14
+    skyBase: 12
+    skyMaterials:
+      COBBLESTONE: 8
+      COPPER_BLOCK: 30
+      EXPOSED_COPPER: 24
+      WEATHERED_COPPER: 19
+      OXIDIZED_COPPER: 15
+  CopperRail:
+    enabled: true
+    deoxidise: true
+    # Chance to oxidise copper one level.
+    # Unoxidised copper will oxidise at 75% of this level.
+    damage: 0.02
+  FasterHorses:
+    enabled: true
+    minSpeed: 0.1125
+    maxSpeed: 0.438827582278 # 18.5m/s
