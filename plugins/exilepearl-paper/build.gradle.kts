@@ -2,7 +2,7 @@ plugins {
 	id("io.papermc.paperweight.userdev")
 }
 
-version = "2.1.5"
+version = "2.1.6"
 
 dependencies {
 	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
