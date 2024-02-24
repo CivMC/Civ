@@ -257,7 +257,7 @@ storage:
     migrate_dbname: prisonpearl
 general:
   suicide_time_seconds: 180
-  max_pearled_alts: 1
+  max_pearled_alts: 3
   max_pearled_message: 'You have too many imprisoned alts'
   can_elytra_with_pearls: true
 pearls:
