@@ -6,6 +6,11 @@ on:
 
 jobs:
   call_gradle_check:
-    name: ☎️ Call  Gradle Check
+    name: ☎️ Call Gradle Check
     uses: ./.github/workflows/check_gradle_all.yaml
+    secrets: inherit
+
+  call_lint_yaml:
+    name: ☎️ Call Lint Yaml
+    uses: ./.github/workflows/lint_yaml.yaml
     secrets: inherit
