@@ -226,7 +226,7 @@ public class CmdShowAllPearls extends PearlCommand {
 					Component.text()
 							.decoration(TextDecoration.ITALIC, false)
 							.color(NamedTextColor.AQUA)
-							.content("Currently turned " + (!bannedPearlToggle ? "on" : "off"))
+							.content("Currently turned " + (bannedPearlToggle ? "on" : "off"))
 							.build());
 			return true;
 		});
@@ -241,7 +241,7 @@ public class CmdShowAllPearls extends PearlCommand {
 				}
 				clicker.sendMessage(Component.text()
 						.color(NamedTextColor.GREEN)
-						.content("Banned pearls toggled " + (bannedPearlToggle ? "on" : "off"))
+						.content("Banned pearls toggled " + (!bannedPearlToggle ? "on" : "off"))
 						.build());
 				generateOpenPearlsMenu(clicker);
 			}
