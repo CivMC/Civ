@@ -1,4 +1,4 @@
-name: ${name}
+name: ItemExchange
 version: ${version}
 authors: [gmlaxfanatic, Protonull]
 main: com.untamedears.itemexchange.ItemExchangePlugin
