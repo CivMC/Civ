@@ -26,7 +26,6 @@ public class HorseStats extends SimpleHack<HorseStatsConfig> implements Listener
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onHorseStatCheck(PlayerInteractEntityEvent event) {
-		System.out.println("evt");
 		if (!config.isEnabled()) {
 			return;
 		}
