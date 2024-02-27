@@ -4,13 +4,16 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.logging.Level;
 
@@ -19,6 +22,7 @@ public class FasterHorses extends BasicHack {
 	private double minSpeed;
 	@AutoLoad
 	private double maxSpeed;
+	private final NamespacedKey speedChangedKey = new NamespacedKey(plugin, "speed-changed");
 
 	public FasterHorses(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
@@ -27,6 +31,9 @@ public class FasterHorses extends BasicHack {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void on(EntityBreedEvent event) {
 		if (event.getEntity().getType() != EntityType.HORSE) {
+			return;
+		}
+		if (event.getEntity().getPersistentDataContainer().has(speedChangedKey, PersistentDataType.INTEGER)) {
 			return;
 		}
 		double dadSpeed = event.getFather().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
@@ -39,16 +46,20 @@ public class FasterHorses extends BasicHack {
 			newSpeed = maxSpeed;
 		}
 		event.getEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(newSpeed);
-
-		plugin.getLogger().log(Level.INFO, "Horse breed to have speed: " + newSpeed);
+		event.getEntity().getPersistentDataContainer().set(speedChangedKey, PersistentDataType.INTEGER, 1);
+		plugin.getLogger().log(Level.INFO, "Horse bred to have speed: " + newSpeed);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void on(CreatureSpawnEvent event) {
+		System.out.println("evt");
 		if (event.getEntity().getType() != EntityType.HORSE) {
 			return;
 		}
 		if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.BREEDING) {
+			return;
+		}
+		if (((Tameable) event.getEntity()).isTamed() || event.getEntity().getPersistentDataContainer().has(speedChangedKey, PersistentDataType.INTEGER)) {
 			return;
 		}
 
@@ -58,6 +69,7 @@ public class FasterHorses extends BasicHack {
 		}
 		double irwinHallDist = (Math.random() * 0.3 + Math.random() * 0.3 + Math.random() * 0.3) * ((this.maxSpeed - this.minSpeed) / 0.9) + this.minSpeed;
 		moveSpeed.setBaseValue(irwinHallDist);
+		event.getEntity().getPersistentDataContainer().set(speedChangedKey, PersistentDataType.INTEGER, 1);
 		plugin.getLogger().log(Level.INFO, "Setting Horse Speed to: " + irwinHallDist);
 	}
 }
