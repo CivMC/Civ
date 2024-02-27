@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class HorseStats extends SimpleHack<HorseStatsConfig> implements Listener {
@@ -25,11 +26,15 @@ public class HorseStats extends SimpleHack<HorseStatsConfig> implements Listener
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onHorseStatCheck(PlayerInteractEntityEvent event) {
+		System.out.println("evt");
 		if (!config.isEnabled()) {
 			return;
 		}
 		ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
 		if (!item.getType().equals(config.getHorseCheckerItem())) {
+			return;
+		}
+		if (event.getHand() == EquipmentSlot.OFF_HAND) {
 			return;
 		}
 		Entity entity = event.getRightClicked();
