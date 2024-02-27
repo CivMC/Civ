@@ -35,9 +35,6 @@ public class FasterHorses extends BasicHack {
 		if (event.getEntity().getType() != EntityType.HORSE) {
 			return;
 		}
-		if (event.getEntity().getPersistentDataContainer().has(speedChangedKey, PersistentDataTypes.BOOLEAN)) {
-			return;
-		}
 		double dadSpeed = event.getFather().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
 		double mumSpeed = event.getMother().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
 		double irwinHallDist = (Math.random() * 0.3 + Math.random() * 0.3 + Math.random() * 0.3) * ((this.maxSpeed - this.minSpeed) / 0.9) + this.minSpeed;
