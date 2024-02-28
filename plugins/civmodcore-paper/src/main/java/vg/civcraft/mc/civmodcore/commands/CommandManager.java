@@ -59,7 +59,9 @@ public class CommandManager extends BukkitCommandManager {
 	public final void init() {
 		// Prepare our list with player names on init.
 		// Load all known players once on initialization, then use a loginlistener to update the existing name set.
-		Arrays.stream(Bukkit.getOfflinePlayers()).map(OfflinePlayer::getName).forEach(autocompletePlayerNames::add);
+		Arrays.stream(Bukkit.getOfflinePlayers()).map(OfflinePlayer::getName)
+			.filter(Objects::nonNull)
+			.forEach(autocompletePlayerNames::add);
 		/*TODO
 		this may be better solved with a single global listener, but the implications would've needed some checks.
 		This is pretty cheap and works fast.
