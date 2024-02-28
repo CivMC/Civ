@@ -4,7 +4,7 @@ plugins {
 	id("xyz.jpenilla.run-paper")
 }
 
-version = "3.0.2"
+version = "3.0.3"
 
 dependencies {
 	paperweight {
