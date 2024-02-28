@@ -139,23 +139,35 @@ public class CopperRail extends BasicHack {
 
 		Block copperBlock = block.getRelative(BlockFace.DOWN);
 		Optional<BlockState> previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
-		if (previous.isEmpty()) {
-			copperBlock = copperBlock.getRelative(BlockFace.DOWN);
+
+		int damageToApply = 0;
+		CraftPlayer player = (CraftPlayer) event.getPlayer();
+		net.minecraft.world.item.ItemStack handle = ((CraftItemStack) item).handle;
+
+		while (previous.isPresent() && (handle.getMaxDamage() - handle.getDamageValue()) > damageToApply) {
+			copperBlock.setType(previous.get().getBukkitMaterial());
+			damageToApply++;
+			previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
 		}
 
+		copperBlock = copperBlock.getRelative(BlockFace.DOWN);
 		previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
-		if (previous.isEmpty()) {
+
+		while (previous.isPresent() && (handle.getMaxDamage() - handle.getDamageValue()) > damageToApply) {
+			copperBlock.setType(previous.get().getBukkitMaterial());
+			damageToApply++;
+			previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
+		}
+
+		if (damageToApply == 0) {
 			return;
 		}
-
-		copperBlock.setType(previous.get().getBukkitMaterial());
 
 		block.getWorld().playSound(block.getLocation(), Sound.ITEM_AXE_SCRAPE, SoundCategory.BLOCKS, 1, 1);
 		block.getWorld().playEffect(block.getLocation(), Effect.OXIDISED_COPPER_SCRAPE, 0);
 
-		CraftPlayer player = (CraftPlayer) event.getPlayer();
 		// TODO: In 1.19 or above, this can be replaced with ItemStack#damage thanks to Paper
-		((CraftItemStack) item).handle.hurtAndBreak(1, player.getHandle(), p -> {
+		handle.hurtAndBreak(damageToApply, player.getHandle(), p -> {
 			p.broadcastBreakEvent(event.getHand() == EquipmentSlot.HAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
 		});
 
