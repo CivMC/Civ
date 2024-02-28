@@ -18,6 +18,7 @@ import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
+import vg.civcraft.mc.civmodcore.players.PlayerNames;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardListener;
@@ -88,6 +89,7 @@ public class CivModCorePlugin extends ACivMod {
 		registerListener(DialogManager.INSTANCE);
 		registerListener(new ScoreBoardListener());
 		registerListener(new WorldTracker());
+		registerListener(PlayerNames.init());
 		// Register commands
 		this.commands = new CommandManager(this);
 		this.commands.init();
