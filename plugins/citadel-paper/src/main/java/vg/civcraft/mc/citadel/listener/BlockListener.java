@@ -28,6 +28,7 @@ import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
@@ -195,6 +196,22 @@ public class BlockListener implements Listener {
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(event.getToBlock());
 		if (rein != null) {
 			event.setCancelled(true);
+		}
+	}
+
+	// prevent "enemy" grass spreading to reinforced dirt
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onGrassSpread(BlockSpreadEvent event) {
+		if (event.getSource().getType() != Material.GRASS_BLOCK) return;
+
+		Reinforcement destRein = ReinforcementLogic.getReinforcementProtecting(event.getBlock());
+
+		if (destRein != null) {
+			Reinforcement sourceRein = ReinforcementLogic.getReinforcementProtecting(event.getSource());
+
+			if (sourceRein == null || sourceRein.getGroupId() != destRein.getGroupId()) {
+				event.setCancelled(true);
+			}
 		}
 	}
 
