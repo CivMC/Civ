@@ -66,7 +66,7 @@ public class AntiDerailment extends BasicHack {
 			return;
 		}
 
-		if (minecart.getMaxSpeed() == 0.4D) {
+		if (minecart.getMaxSpeed() == 0.4D || !previousTickMinecartVelocity.containsKey(minecart)) {
 			previousTickMinecartVelocity.put(minecart, minecart.getVelocity());
 			return;
 		}
