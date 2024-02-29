@@ -10,7 +10,7 @@ sql:
   max_lifetime: 7200000
 groups:
   enable: true
-  grouplimit: 25
+  grouplimit: 35
   creationOnFirstJoin: true
 persistance:
   forceloadnamecaching: true
