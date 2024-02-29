@@ -11,7 +11,7 @@ settings:
   minimum-api: none
 spawn-limits:
   axolotls: 1
-  monsters: 30
+  monsters: 20
   animals: 10
   water-animals: 6
   water-ambient: 4
@@ -22,7 +22,7 @@ chunk-gc:
 ticks-per:
   axolotl-spawns: 4800
   animal-spawns: 4800
-  monster-spawns: 20
+  monster-spawns: 40
   water-spawns: 1200
   water-ambient-spawns: 4800
   water-underground-creature-spawns: 7200
