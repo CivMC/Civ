@@ -18,11 +18,11 @@ import vg.civcraft.mc.namelayer.group.Group;
 public class AreaReinforce extends BaseCommand {
 
 	@CommandAlias("ctar")
-	@Syntax("<group> <lowX> <lowY> <lowZ> <highX> <highY> <highZ>")
+	@Syntax("<group> <lowX> <lowY> <lowZ> <highX> <highY> <highZ> <skip_existing_reinforcements>")
 	@Description("Using the reinforcement item in your main hand, reinforces an area to your default or a target group.")
-	@CommandCompletion("@CT_Groups @nothing @nothing @nothing @nothing @nothing @nothing")
+	@CommandCompletion("@CT_Groups @nothing @nothing @nothing @nothing @nothing @nothing true")
 	@CommandPermission("citadel.admin")
-	public void execute(Player p, @Optional String targetGroup, String minX, String minY, String minZ, String maxX, String maxY, String maxZ) {
+	public void execute(Player p, @Optional String targetGroup, String minX, String minY, String minZ, String maxX, String maxY, String maxZ, @Optional String skipReinforcements) {
 		UUID uuid = NameAPI.getUUID(p.getName());
 		ReinforcementType reinType = Citadel.getInstance().getReinforcementTypeManager()
 				.getByItemStack(p.getInventory().getItemInMainHand(), p.getWorld().getName());
@@ -65,6 +65,10 @@ public class AreaReinforce extends BaseCommand {
 			CitadelUtility.sendAndLog(p, ChatColor.RED, "One of the arguments you provided was not a number");
 			return;
 		}
+		boolean skipReins = false;
+		if (skipReinforcements.equalsIgnoreCase("true")) {
+			skipReins = true;
+		}
 		int count = 0;
 		for (int x = xMin; x <= xMax; x++) {
 			for (int y = yMin; y <= yMax; y++) {
@@ -74,6 +78,9 @@ public class AreaReinforce extends BaseCommand {
 						continue;
 					}
 					Block protecting = ReinforcementLogic.getResponsibleBlock(current);
+					if (skipReins) {
+						continue;
+					}
 					if (!current.getLocation().equals(protecting.getLocation())) {
 						continue;
 					}
