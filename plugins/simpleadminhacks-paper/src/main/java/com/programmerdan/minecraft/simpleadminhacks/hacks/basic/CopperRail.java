@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
@@ -144,7 +145,7 @@ public class CopperRail extends BasicHack {
 		CraftPlayer player = (CraftPlayer) event.getPlayer();
 		net.minecraft.world.item.ItemStack handle = ((CraftItemStack) item).handle;
 
-		while (previous.isPresent() && handle.getMaxDamage() > handle.getDamageValue()) {
+		while (previous.isPresent() && event.getItem().getType() != Material.AIR) {
 			copperBlock.setType(previous.get().getBukkitMaterial());
 			damaged = true;
 
@@ -158,7 +159,7 @@ public class CopperRail extends BasicHack {
 		copperBlock = copperBlock.getRelative(BlockFace.DOWN);
 		previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
 
-		while (previous.isPresent() && handle.getMaxDamage() > handle.getDamageValue()) {
+		while (previous.isPresent() && event.getItem().getType() != Material.AIR) {
 			copperBlock.setType(previous.get().getBukkitMaterial());
 			damaged = true;
 
