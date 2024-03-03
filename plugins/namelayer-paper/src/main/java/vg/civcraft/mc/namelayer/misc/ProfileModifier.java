@@ -14,15 +14,15 @@ public class ProfileModifier implements ProfileInterface {
 	@Override
 	public void setPlayerProfile(final Player player, final String name) {
 		final String oldName = player.getName();
-        PlayerProfile oldProfile = player.getPlayerProfile();
-        PlayerProfile newProfile = new CraftPlayerProfile(player.getUniqueId(), name);
+		PlayerProfile oldProfile = player.getPlayerProfile();
+		PlayerProfile newProfile = new CraftPlayerProfile(player.getUniqueId(), name);
 		if (name.length() > 16) {
 			LOGGER.info(String.format("The player %s (%s) was kicked from the server due to their "
 							+ "name already existing but now becoming over 16 characters.",
 					name, player.getUniqueId()));
 		}
-        newProfile.setProperties(oldProfile.getProperties());
-        player.setPlayerProfile(newProfile);
+		newProfile.setProperties(oldProfile.getProperties());
+		player.setPlayerProfile(newProfile);
 		player.displayName(Component.text(name));
 		player.playerListName(Component.text(name));
 		player.customName(Component.text(name));
