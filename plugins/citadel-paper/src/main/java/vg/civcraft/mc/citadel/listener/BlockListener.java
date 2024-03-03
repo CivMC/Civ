@@ -205,13 +205,13 @@ public class BlockListener implements Listener {
 		if (event.getSource().getType() != Material.GRASS_BLOCK) return;
 
 		Reinforcement destRein = ReinforcementLogic.getReinforcementProtecting(event.getBlock());
+		if (destRein == null) {
+			return;
+		}
 
-		if (destRein != null) {
-			Reinforcement sourceRein = ReinforcementLogic.getReinforcementProtecting(event.getSource());
-
-			if (sourceRein == null || sourceRein.getGroupId() != destRein.getGroupId()) {
-				event.setCancelled(true);
-			}
+		Reinforcement sourceRein = ReinforcementLogic.getReinforcementProtecting(event.getSource());
+		if (sourceRein == null || sourceRein.getGroupId() != destRein.getGroupId()) {
+			event.setCancelled(true);
 		}
 	}
 
