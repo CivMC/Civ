@@ -140,36 +140,41 @@ public class CopperRail extends BasicHack {
 		Block copperBlock = block.getRelative(BlockFace.DOWN);
 		Optional<BlockState> previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
 
-		int damageToApply = 0;
+		boolean damaged = false;
 		CraftPlayer player = (CraftPlayer) event.getPlayer();
 		net.minecraft.world.item.ItemStack handle = ((CraftItemStack) item).handle;
 
-		while (previous.isPresent() && (handle.getMaxDamage() - handle.getDamageValue()) > damageToApply) {
+		while (previous.isPresent() && handle.getMaxDamage() > handle.getDamageValue()) {
 			copperBlock.setType(previous.get().getBukkitMaterial());
-			damageToApply++;
+			damaged = true;
+
+			// TODO: In 1.19 or above, this can be replaced with ItemStack#damage thanks to Paper
+			handle.hurtAndBreak(1, player.getHandle(), p -> {
+				p.broadcastBreakEvent(event.getHand() == EquipmentSlot.HAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
+			});
 			previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
 		}
 
 		copperBlock = copperBlock.getRelative(BlockFace.DOWN);
 		previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
 
-		while (previous.isPresent() && (handle.getMaxDamage() - handle.getDamageValue()) > damageToApply) {
+		while (previous.isPresent() && handle.getMaxDamage() > handle.getDamageValue()) {
 			copperBlock.setType(previous.get().getBukkitMaterial());
-			damageToApply++;
+			damaged = true;
+
+			// TODO: In 1.19 or above, this can be replaced with ItemStack#damage thanks to Paper
+			handle.hurtAndBreak(1, player.getHandle(), p -> {
+				p.broadcastBreakEvent(event.getHand() == EquipmentSlot.HAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
+			});
 			previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
 		}
 
-		if (damageToApply == 0) {
+		if (!damaged) {
 			return;
 		}
 
 		block.getWorld().playSound(block.getLocation(), Sound.ITEM_AXE_SCRAPE, SoundCategory.BLOCKS, 1, 1);
 		block.getWorld().playEffect(block.getLocation(), Effect.OXIDISED_COPPER_SCRAPE, 0);
-
-		// TODO: In 1.19 or above, this can be replaced with ItemStack#damage thanks to Paper
-		handle.hurtAndBreak(damageToApply, player.getHandle(), p -> {
-			p.broadcastBreakEvent(event.getHand() == EquipmentSlot.HAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
-		});
 
 		event.setCancelled(true);
 	}
