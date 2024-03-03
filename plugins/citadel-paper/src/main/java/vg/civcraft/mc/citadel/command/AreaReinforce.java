@@ -65,10 +65,7 @@ public class AreaReinforce extends BaseCommand {
 			CitadelUtility.sendAndLog(p, ChatColor.RED, "One of the arguments you provided was not a number");
 			return;
 		}
-		boolean skipReins = false;
-		if (skipReinforcements.equalsIgnoreCase("true")) {
-			skipReins = true;
-		}
+		boolean skipReins = skipReinforcements.equalsIgnoreCase("true");
 		int count = 0;
 		for (int x = xMin; x <= xMax; x++) {
 			for (int y = yMin; y <= yMax; y++) {
