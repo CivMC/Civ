@@ -1,17 +1,20 @@
-# Set to true if you want tapping a plant with bonemeal to double it.
+ # Set to true if you want tapping a plant with bonemeal to double it.
 allow_tallplant_replication: true
 
+auto_replant_enabled: true
+# true for right click auto replant, false for left click
+auto_replant_right_click: true
+
 no_bonemeal_blocks:
-  - SEA_PICKLE
   - KELP
   - TWISTING_VINES
   - WEEPING_VINES
   - CAVE_VINES
   - BAMBOO
+  - BAMBOO_SAPLING
   - KELP_PLANT
   - TWISTING_VINES_PLANT
   - WEEPING_VINES_PLANT
-  - CAVE_VINES_PLANT
   - BAMBOO_SAPLING
   - SWEET_BERRY_BUSH
   - BIG_DRIPLEAF
@@ -35,23 +38,23 @@ no_bonemeal_blocks:
   - DARK_OAK_SAPLING
   - ACACIA_SAPLING
   - FLOWERING_AZALEA
+  - AZALEA
+  - CRIMSON_FUNGUS
+  - WARPED_FUNGUS
 
-# REMINDER, ALIAS AND BIOME NAMES SHOULD NOT CLASH!
-#
-# forest:
-#   - BIRCH_FOREST
-#   - DARK_FOREST
-#   - FLOWER_FOREST
-#
-# This ^ example alias will be ignored since because the "forest" alias clashes with
-# Bukkit's "FOREST" biome, and RealisticBiomes priorities biomes over aliases.
-# See https://github.com/CivClassic/AnsibleSetup/pull/39#issuecomment-642815952
-# See all biomes here: https://papermc.io/javadocs/paper/1.18/org/bukkit/block/Biome.html
+ # categories of biomes
 biome_aliases:
-  water:
-    - DEEP_OCEAN
+  oceans:
     - OCEAN
-    - STONY_SHORE
+    - WARM_OCEAN
+    - COLD_OCEAN
+    - LUKEWARM_OCEAN
+    - FROZEN_OCEAN
+  deep_oceans:
+    - DEEP_OCEAN
+    - DEEP_COLD_OCEAN
+    - DEEP_LUKEWARM_OCEAN
+    - DEEP_FROZEN_OCEAN
   freshwater:
     - RIVER
     - BEACH
@@ -59,53 +62,71 @@ biome_aliases:
     - SNOWY_BEACH
     - FROZEN_OCEAN
     - FROZEN_RIVER
-  temperate:
+  tall_mountains:
+    - SNOWY_SLOPES
+    
+    
+  flatlands:
     - PLAINS
     - SUNFLOWER_PLAINS
-    - SAVANNA
-    - SAVANNA_PLATEAU
-    - WINDSWEPT_SAVANNA
-  foresty:
-    - BIRCH_FOREST
-    - DARK_FOREST
+  forests:
     - FLOWER_FOREST
     - FOREST
+  birch_forests:
+    - BIRCH_FOREST
     - OLD_GROWTH_BIRCH_FOREST
-  cold:
-    - ICE_SPIKES
+  meadows:
+    - MEADOW
+
+  taigas:
+    - TAIGA
     - OLD_GROWTH_SPRUCE_TAIGA
     - OLD_GROWTH_PINE_TAIGA
-    - TAIGA
-    - SNOWY_PLAINS
-    - SNOWY_TAIGA
-  cold_forest:
-    - OLD_GROWTH_SPRUCE_TAIGA
-    - OLD_GROWTH_PINE_TAIGA
-    - TAIGA
-  hot_dry:
-    - DESERT
-    - BADLANDS
-    - ERODED_BADLANDS
-    - WOODED_BADLANDS
-  hot_rainy:
-    - JUNGLE
-    - SPARSE_JUNGLE
-  mountain:
     - WINDSWEPT_HILLS
     - WINDSWEPT_GRAVELLY_HILLS
     - WINDSWEPT_FOREST
+  cold_taiga:
+    - SNOWY_TAIGA
+    - GROVE
+    - JAGGED_PEAKS
+  tundra:
+    - ICE_SPIKES
+    - SNOWY_PLAINS
+  cold_mountain:
+    - FROZEN_PEAKS
+    
+  savannas:
+    - SAVANNA
+    - SAVANNA_PLATEAU
+    - WINDSWEPT_SAVANNA
+  desert:
+    - DESERT
   mesa:
     - BADLANDS
     - ERODED_BADLANDS
+    - WOODED_BADLANDS
+    
+  jungles:
+    - JUNGLE
+    - SPARSE_JUNGLE
+  bamboo:
+    - BAMBOO_JUNGLE
+  dark_forest:
+    - DARK_FOREST
   mushroom:
     - MUSHROOM_FIELDS
-  swampy:
+  swamp:
     - SWAMP
-  nether:
+    
+  nether_wastes:
     - NETHER_WASTES
+  soul_sand:
     - SOUL_SAND_VALLEY
+  crimson:
     - CRIMSON_FOREST
+  warped:
     - WARPED_FOREST
+  basalt:
     - BASALT_DELTAS
   end:
     - END_BARRENS
@@ -116,9 +137,9 @@ biome_aliases:
 
 plants:
 
-  # formerly inheriting CROP properties
+# formerly inheriting CROP properties
   WHEAT:
-    persistent_growth_period: 3h
+    persistent_growth_period: 16h
     name: Wheat
     id: 1
     item:
@@ -131,39 +152,21 @@ plants:
       max_stage: 7
       increment: 1
     vanilla_materials:
-      - WHEAT
+    - WHEAT
     soil_max_layers: 8
-    max_soil_bonus: 2
     soil_boni:
-      CLAY: 0.5
-      DIRT: 0.1
+      CLAY: 0.125
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      temperate: 1.0
-      foresty: 0.75
-      nether: 0.5
-      end: 0.5
-      cold: 0.25
-      hot_dry: 0.25
-      mountain: 0.25
-      mesa: 0.25
-      mushroom: 0.25
-      freshwater: 0.25
-      water: 0.1
-      cold_water: 0.1
-      hot_rainy: 0.1
-      swampy: 0.1
+      flatlands: 1.0
+      meadows: 0.5
+      forests: 0.5
+      birch_forests: 0.5
+
 
   CARROT:
-    persistent_growth_period: 3h
+    persistent_growth_period: 16h
     name: Carrots
     id: 2
     item:
@@ -176,29 +179,20 @@ plants:
       max_stage: 7
       increment: 3
     vanilla_materials:
-      - CARROTS
-    soil_max_layers: 4
+    - CARROTS
+    soil_max_layers: 8
     soil_boni:
-      CLAY: 0.5
+      CLAY: 0.125
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      hot_rainy: 1.0
-      swampy: 0.5
-      temperate: 0.25
-      hot_dry: 0.1
-      mesa: 0.1
-      end: 0.1
-
+      meadows: 1.0
+      flatlands: 0.5
+      forests: 0.5
+      birch_forests: 0.5
+      
   POTATO:
-    persistent_growth_period: 3h
+    persistent_growth_period: 16h
     name: Potatoes
     id: 3
     item:
@@ -211,29 +205,20 @@ plants:
       max_stage: 7
       increment: 3
     vanilla_materials:
-      - POTATOES
-    soil_max_layers: 4
+    - POTATOES
+    soil_max_layers: 8
     soil_boni:
-      CLAY: 0.5
+      CLAY: 0.125
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      mountain: 1.0
-      temperate: 0.5
-      cold: 0.25
-      mesa: 0.1
-      nether: 0.1
-      end: 0.1
+      taigas: 0.5
+      cold_taiga: 1.0
+      tundra: 0.5
+      cold_mountain: 0.5
 
   BEETROOT:
-    persistent_growth_period: 3h
+    persistent_growth_period: 16h
     name: Beetroots
     id: 4
     item:
@@ -246,30 +231,18 @@ plants:
       max_stage: 3
       increment: 1
     vanilla_materials:
-      - BEETROOTS
-    soil_max_layers: 4
+    - BEETROOTS
+    soil_max_layers: 8
     soil_boni:
-      CLAY: 0.5
+      CLAY: 0.125
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
-    biomes:
-      temperate: 1.0
-      foresty: 0.75
-      nether: 0.5
-      end: 0.5
-      cold: 0.25
-      hot_dry: 0.25
-      mesa: 0.25
-      mountain: 0.25
-      mushroom: 0.25
-
+    biomes:    
+      taigas: 0.5
+      cold_taiga: 0.5
+      tundra: 1.0
+      cold_mountain: 0.5
+  
   NETHER_WART:
     persistent_growth_period: 16h
     name: Nether wart
@@ -284,25 +257,19 @@ plants:
       max_stage: 3
       increment: 1
     vanilla_materials:
-      - NETHER_WART
+    - NETHER_WART
     needs_sun_light: false
-    soil_max_layers: 4
+    soil_max_layers: 8
     soil_boni:
-      SOUL_SAND: 0.5
+      SOUL_SAND: 0.125
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      nether: 1.0
-      mushroom: 0.5
-      hot_dry: 0.25
-      mesa: 0.25
+      CRIMSON_FOREST: 0.5
+      WARPED_FOREST: 0.5
+      NETHER_WASTES: 1.0
+      SOUL_SAND_VALLEY: 0.5
+      BASALT_DELTAS: 0.5
 
   COCOA:
     persistent_growth_period: 24h
@@ -318,25 +285,21 @@ plants:
       max_stage: 2
       increment: 1
     vanilla_materials:
-      - COCOA
+    - COCOA
     soil_max_layers: 25
     soil_boni:
-      VINE: 0.3
+      VINE: 0.15
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      hot_rainy: 1.0
-      swampy: 1.0
+      jungles: 1.0
+      bamboo_jungle: 0.6
+      swamp: 0.4
+      dark_forest: 0.25
+      mushroom: 0.25
 
   MELON:
-    persistent_growth_period: 0
+    persistent_growth_period: 16h
     name: Melon
     id: 7
     item:
@@ -344,30 +307,24 @@ plants:
       type: MELON
       v: 2584
     can_be_planted: false
-    soil_max_layers: 4
+    soil_max_layers: 8
     soil_boni:
-      CLAY: 0.5
+      CLAY: 0.125
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     grower:
       type: fruit
       material: MELON
       stem_type: MELON_STEM
       attached_stem_type: ATTACHED_MELON_STEM
     vanilla_materials:
-      - ATTACHED_MELON_STEM
-      - MELON_STEM
+    - ATTACHED_MELON_STEM
+    - MELON_STEM
+    - MELON
     biomes:
-      swampy: 1.0
-      hot_rainy: 0.5
-      temperate: 0.25
+      mesa: 0.6
+      savannas: 1.0
+      desert: 0.4
 
   MELON_STEM:
     persistent_growth_period: 0
@@ -381,25 +338,18 @@ plants:
       type: stem
       material: MELON_STEM
       fruit_config: Melon
-    soil_max_layers: 4
+    soil_max_layers: 8
     soil_boni:
-      CLAY: 0.5
+      CLAY: 0.125
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      swampy: 1.0
-      hot_rainy: 0.5
-      temperate: 0.25
+      mesa: 0.6
+      savannas: 1.0
+      desert: 0.4
 
   PUMPKIN:
-    persistent_growth_period: 0
+    persistent_growth_period: 16h
     name: Pumpkin
     id: 9
     can_be_planted: false
@@ -413,24 +363,19 @@ plants:
       stem_type: PUMPKIN_STEM
       attached_stem_type: ATTACHED_PUMPKIN_STEM
     vanilla_materials:
-      - ATTACHED_PUMPKIN_STEM
-      - PUMPKIN_STEM
-    soil_max_layers: 4
+    - ATTACHED_PUMPKIN_STEM
+    - PUMPKIN_STEM
+    - PUMPKIN
+    soil_max_layers: 8
     soil_boni:
-      CLAY: 0.5
+      CLAY: 0.125
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      cold: 1.0
-      mountain: 1.0
-      temperate: 0.25
+      taigas: 1.0
+      cold_taiga: 0.5
+      tundra: 0.5
+      cold_mountain: 0.5
 
   PUMPKIN_STEM:
     persistent_growth_period: 0
@@ -444,29 +389,21 @@ plants:
       ==: org.bukkit.inventory.ItemStack
       type: PUMPKIN_SEEDS
       v: 1
-    soil_max_layers: 4
+    soil_max_layers: 8
     soil_boni:
-      CLAY: 0.5
+      CLAY: 0.125
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      cold: 1.0
-      mountain: 1.0
-      temperate: 0.25
+      taigas: 1.0
+      cold_taiga: 0.5
+      tundra: 0.5
+      cold_mountain: 0.5
 
-  # formerly inheriting Column properties
+# formerly inheriting Column properties
 
   CACTUS:
-    # persistent_growth_period: 6h
-    # Persistent growth was disabled for cactus due to unresolved issues with cactus growth not being cleared and causing immense lag
-    persistent_growth_period: 0
+    persistent_growth_period: 12h
     name: Cactus
     grower:
       type: column
@@ -474,19 +411,19 @@ plants:
       max_height: 3
       insta_break_toching: true
     vanilla_materials:
-      - CACTUS
+    - CACTUS
     id: 11
     item:
       ==: org.bukkit.inventory.ItemStack
       type: CACTUS
       v: 1
     biomes:
-      hot_dry: 1.0
-      nether: 0.5
-      mesa: 0.5
+      desert: 1.0
+      mesa: 0.6
+      savannas: 0.0
 
   SUGAR_CANE:
-    persistent_growth_period: 6h
+    persistent_growth_period: 12h
     name: Sugar cane
     id: 12
     grower:
@@ -494,141 +431,114 @@ plants:
       material: SUGAR_CANE
       max_height: 3
     vanilla_materials:
-      - SUGAR_CANE
+    - SUGAR_CANE
     item:
       ==: org.bukkit.inventory.ItemStack
       type: SUGAR_CANE
       v: 1
     biomes:
-      hot_rainy: 1.0
-      swampy: 0.5
-      freshwater: 0.5
-      PLAINS: 1.0
-
-  # formerly inheriting "basetree" properties
+      jungles: 1.0
+      bamboo: 1.0
+      swamp: 0.5
+      mushroom: 1.0
+      dark_forest: 0.25
+# formerly inheriting "basetree" properties
 
   OAK_SAPLING:
-    persistent_growth_period: 6h
+    persistent_growth_period: 12h
     name: Oak Tree
     id: 13
     grower:
       type: tree
       material: OAK_SAPLING
     vanilla_materials:
-      - OAK_SAPLING
+    - OAK_SAPLING
     item:
       ==: org.bukkit.inventory.ItemStack
       type: OAK_SAPLING
       v: 1
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      mushroom: 0.5
-      freshwater: 0.5
-      swampy: 0.5
-      foresty: 2.0
-      temperate: 0.25
-      hot_rainy: 0.5
-      nether: 0.25
-      end: 0.25
+      forests: 1.0
+      birch_forests: 0.8
+      flatlands: 0.25
+      meadows: 0.25
+      savannas: 0.5
+      mesa: 0.25
 
   BIRCH_SAPLING:
-    persistent_growth_period: 6h
+    persistent_growth_period: 12h
     name: Birch Tree
     id: 14
     grower:
       type: tree
       material: BIRCH_SAPLING
     vanilla_materials:
-      - BIRCH_SAPLING
+    - BIRCH_SAPLING
     item:
       ==: org.bukkit.inventory.ItemStack
       type: BIRCH_SAPLING
       v: 1
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      foresty: 2.0
-      mushroom: 0.5
-      freshwater: 0.5
-      temperate: 0.25
+      forests: 0.5
+      birch_forests: 1.0
+      flatland: 0.25
+      meadows: 0.25
 
   SPRUCE_SAPLING:
-    persistent_growth_period: 6h
+    persistent_growth_period: 12h
     name: Spruce Tree
     id: 15
     grower:
       type: tree
       material: SPRUCE_SAPLING
     vanilla_materials:
-      - SPRUCE_SAPLING
+    - SPRUCE_SAPLING
     item:
       ==: org.bukkit.inventory.ItemStack
       type: SPRUCE_SAPLING
       v: 1
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      mushroom: 0.5
-      cold_water: 0.5
-      cold: 0.75
-      cold_forest: 2.0
-      mountain: 0.75
+      taigas: 1.0
+      cold_taiga: 1.0
+      tundra: 0.25
+      cold_mountain: 0.25
 
   JUNGLE_SAPLING:
-    persistent_growth_period: 6h
+    persistent_growth_period: 12h
     name: Jungle Tree
     id: 16
     grower:
       type: tree
       material: JUNGLE_SAPLING
     vanilla_materials:
-      - JUNGLE_SAPLING
+    - JUNGLE_SAPLING
     item:
       ==: org.bukkit.inventory.ItemStack
       type: JUNGLE_SAPLING
       v: 1
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      hot_rainy: 1.0
+      jungles: 1.0
+      bamboo: 0.8
+      mushroom: 0.25
+      swamp: 0.25
+      dark_forest: 0.6
 
   ACACIA_SAPLING:
-    persistent_growth_period: 6h
+    persistent_growth_period: 12h
     name: Acacia Tree
     grower:
       type: tree
       material: ACACIA_SAPLING
     vanilla_materials:
-      - ACACIA_SAPLING
+    - ACACIA_SAPLING
     id: 17
     item:
       ==: org.bukkit.inventory.ItemStack
@@ -636,28 +546,19 @@ plants:
       v: 1
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      hot_dry: 2.0
-      mesa: 2.0
-      temperate: 1.0
-      mushroom: 0.0
-      freshwater: 0.0
+      savannas: 1.0
+      desert: 0.6
+      mesa: 0.6
 
   DARK_OAK_SAPLING:
-    persistent_growth_period: 6h
+    persistent_growth_period: 12h
     name: Dark Oak Tree
     grower:
       type: tree
       material: DARK_OAK_SAPLING
     vanilla_materials:
-      - DARK_OAK_SAPLING
+    - DARK_OAK_SAPLING
     id: 18
     item:
       ==: org.bukkit.inventory.ItemStack
@@ -665,20 +566,17 @@ plants:
       v: 1
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      swampy: 2.0
-      foresty: 1.0
-      cold_forest: 0.5
-      freshwater: 0.5
+      jungles: 0.6
+      forests: 0.6
+      taigas: 0.6
+      birch_forests: 0.6
+      dark_forest: 1.0
+      swamp: 0.8
+      meadows: 0.5
+      
   GLOW_BERRIES:
-    persistent_growth_period: 6h
+    persistent_growth_period: 8h
     name: Glow Berries
     grower:
       type: tip
@@ -693,15 +591,9 @@ plants:
       v: 2730
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
       LUSH_CAVES: 1.0
+      
   TWISTING_VINES:
     persistent_growth_period: 6h
     name: Twisting Vines
@@ -718,15 +610,9 @@ plants:
       v: 2730
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
       WARPED_FOREST: 1.0
+      
   WEEPING_VINES:
     persistent_growth_period: 6h
     name: Weeping Vines
@@ -743,17 +629,11 @@ plants:
       v: 2730
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
       CRIMSON_FOREST: 1.0
+      
   KELP:
-    persistent_growth_period: 6h
+    persistent_growth_period: 8h
     name: Kelp
     grower:
       type: kelp
@@ -765,28 +645,26 @@ plants:
       v: 2730
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
+    needs_sun_light: false
     biomes:
-      freshwater: 1.0
+      deep_oceans: 1.0
+      oceans: 0.5
+      
   RED_MUSHROOM:
-    persistent_growth_period: 12h
+    persistent_growth_period: 0
+    base_rate: 1.0
     name: Red Mushroom
+    vanilla_materials:
+      - RED_MUSHROOM
     grower:
       type: horizontalspread
-      max_amount: 81
+      max_amount: 60
       max_range: 9
       replaceable_blocks:
         - AIR
         - CAVE_AIR
         - VOID_AIR
       valid_soil:
-        - STONE
         - MYCELIUM
         - PODZOL
     id: 23
@@ -796,23 +674,27 @@ plants:
       v: 2730
     needs_sun_light: false
     biomes:
-      swampy: 2.0
-      foresty: 1.0
-      cold_forest: 1.0
-      freshwater: 1.0
+      swamp: 0.6
+      jungles: 0.25
+      bamboo: 0.25
+      mushroom: 1.0
+      dark_forest: 0.6
+      
   BROWN_MUSHROOM:
-    persistent_growth_period: 12h
+    persistent_growth_period: 0
+    base_rate: 1.0
     name: Brown Mushroom
+    vanilla_materials:
+      - BROWN_MUSHROOM
     grower:
       type: horizontalspread
-      max_amount: 81
+      max_amount: 60
       max_range: 9
       replaceable_blocks:
         - AIR
         - CAVE_AIR
         - VOID_AIR
       valid_soil:
-        - STONE
         - MYCELIUM
         - PODZOL
     id: 24
@@ -822,10 +704,50 @@ plants:
       v: 2730
     needs_sun_light: false
     biomes:
-      swampy: 2.0
-      foresty: 1.0
-      cold_forest: 1.0
-      freshwater: 1.0
+      swamp: 0.6
+      jungles: 0.25
+      bamboo: 0.25
+      mushroom: 1.0
+      dark_forest: 0.6
+      
+  CRIMSON_FUNGUS:
+    persistent_growth_period: 12h
+    name: Crimson Fungus
+    grower:
+      type: fungus
+      material: CRIMSON_FUNGUS
+    vanilla_materials:
+      - CRIMSON_FUNGUS
+    id: 28
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: CRIMSON_FUNGUS
+      v: 2730
+    needs_sun_light: false
+    biomes:
+      CRIMSON_FOREST: 1.0
+      NETHER_WASTES: 0.5
+      SOUL_SAND_VALLEY: 0.3
+      
+  WARPED_FUNGUS:
+    persistent_growth_period: 12h
+    name: Warped Fungus
+    grower:
+      type: fungus
+      material: WARPED_FUNGUS
+    vanilla_materials:
+      - WARPED_FUNGUS
+    id: 29
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: WARPED_FUNGUS
+      v: 2730
+    needs_sun_light: false
+    biomes:
+      WARPED_FOREST: 1.0
+      NETHER_WASTES: 0.5
+      SOUL_SAND_VALLEY: 0.3
+      
   BAMBOO:
     persistent_growth_period: 12h
     name: Bamboo
@@ -839,18 +761,13 @@ plants:
       v: 2730
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      swampy: 2.0
-      foresty: 1.0
-      cold_forest: 1.0
-      freshwater: 1.0
+      swamp: 0.25
+      jungles: 0.5
+      bamboo: 1.0
+      mushroom: 0.25
+      dark_forest: 0.25
+      
   SWEET_BERRY:
     persistent_growth_period: 12h
     name: Sweet Berry
@@ -868,28 +785,12 @@ plants:
       - SWEET_BERRIES
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      temperate: 1.0
-      foresty: 0.75
-      nether: 0.5
-      end: 0.5
-      cold: 0.25
-      hot_dry: 0.25
-      mountain: 0.25
-      mesa: 0.25
-      mushroom: 0.25
-      freshwater: 0.25
-      water: 0.1
-      cold_water: 0.1
-      hot_rainy: 0.1
-      swampy: 0.1
+      taigas: 0.5
+      cold_taiga: 0.5
+      tundra: 0.5
+      cold_mountain: 1.0
+      
   BIG_DRIPLEAF:
     persistent_growth_period: 12h
     name: Big Dripleaf
@@ -906,18 +807,9 @@ plants:
       v: 2730
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
-      swampy: 2.0
-      foresty: 1.0
-      cold_forest: 1.0
       freshwater: 1.0
+
 database:
   ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
   plugin: RealisticBiomes
@@ -926,7 +818,831 @@ database:
   host: ${CIV_MYSQL_HOST}
   port: 3306
   database: realisticbiomes
-  poolsize: 20
+  poolsize: 5
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
+ # Set to true if you want tapping a plant with bonemeal to double it.
+allow_tallplant_replication: true
+
+auto_replant_enabled: true
+# true for right click auto replant, false for left click
+auto_replant_right_click: true
+
+no_bonemeal_blocks:
+  - KELP
+  - TWISTING_VINES
+  - WEEPING_VINES
+  - CAVE_VINES
+  - BAMBOO
+  - BAMBOO_SAPLING
+  - KELP_PLANT
+  - TWISTING_VINES_PLANT
+  - WEEPING_VINES_PLANT
+  - BAMBOO_SAPLING
+  - SWEET_BERRY_BUSH
+  - BIG_DRIPLEAF
+  - BIG_DRIPLEAF_STEM
+  - RED_MUSHROOM
+  - BROWN_MUSHROOM
+  - WHEAT
+  - CARROTS
+  - POTATOES
+  - BEETROOTS
+  - NETHER_WART
+  - COCOA
+  - MELON_STEM
+  - PUMPKIN_STEM
+  - CACTUS
+  - SUGAR_CANE
+  - OAK_SAPLING
+  - BIRCH_SAPLING
+  - SPRUCE_SAPLING
+  - JUNGLE_SAPLING
+  - DARK_OAK_SAPLING
+  - ACACIA_SAPLING
+  - FLOWERING_AZALEA
+  - AZALEA
+  - CRIMSON_FUNGUS
+  - WARPED_FUNGUS
+
+ # categories of biomes
+biome_aliases:
+  oceans:
+    - OCEAN
+    - WARM_OCEAN
+    - COLD_OCEAN
+    - LUKEWARM_OCEAN
+    - FROZEN_OCEAN
+  deep_oceans:
+    - DEEP_OCEAN
+    - DEEP_COLD_OCEAN
+    - DEEP_LUKEWARM_OCEAN
+    - DEEP_FROZEN_OCEAN
+  freshwater:
+    - RIVER
+    - BEACH
+  cold_water:
+    - SNOWY_BEACH
+    - FROZEN_OCEAN
+    - FROZEN_RIVER
+  tall_mountains:
+    - SNOWY_SLOPES
+    
+    
+  flatlands:
+    - PLAINS
+    - SUNFLOWER_PLAINS
+  forests:
+    - FLOWER_FOREST
+    - FOREST
+  birch_forests:
+    - BIRCH_FOREST
+    - OLD_GROWTH_BIRCH_FOREST
+  meadows:
+    - MEADOW
+
+  taigas:
+    - TAIGA
+    - OLD_GROWTH_SPRUCE_TAIGA
+    - OLD_GROWTH_PINE_TAIGA
+    - WINDSWEPT_HILLS
+    - WINDSWEPT_GRAVELLY_HILLS
+    - WINDSWEPT_FOREST
+  cold_taiga:
+    - SNOWY_TAIGA
+    - GROVE
+    - JAGGED_PEAKS
+  tundra:
+    - ICE_SPIKES
+    - SNOWY_PLAINS
+  cold_mountain:
+    - FROZEN_PEAKS
+    
+  savannas:
+    - SAVANNA
+    - SAVANNA_PLATEAU
+    - WINDSWEPT_SAVANNA
+  desert:
+    - DESERT
+  mesa:
+    - BADLANDS
+    - ERODED_BADLANDS
+    - WOODED_BADLANDS
+    
+  jungles:
+    - JUNGLE
+    - SPARSE_JUNGLE
+  bamboo:
+    - BAMBOO_JUNGLE
+  dark_forest:
+    - DARK_FOREST
+  mushroom:
+    - MUSHROOM_FIELDS
+  swamp:
+    - SWAMP
+    
+  nether_wastes:
+    - NETHER_WASTES
+  soul_sand:
+    - SOUL_SAND_VALLEY
+  crimson:
+    - CRIMSON_FOREST
+  warped:
+    - WARPED_FOREST
+  basalt:
+    - BASALT_DELTAS
+  end:
+    - END_BARRENS
+    - END_HIGHLANDS
+    - END_MIDLANDS
+    - THE_VOID
+    - THE_END
+
+plants:
+
+# formerly inheriting CROP properties
+  WHEAT:
+    persistent_growth_period: 16h
+    name: Wheat
+    id: 1
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: WHEAT_SEEDS
+      v: 1
+    grower:
+      type: ageable
+      material: WHEAT
+      max_stage: 7
+      increment: 1
+    vanilla_materials:
+    - WHEAT
+    soil_max_layers: 8
+    soil_boni:
+      CLAY: 0.125
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      flatlands: 1.0
+      meadows: 0.5
+      forests: 0.5
+      birch_forests: 0.5
+
+
+  CARROT:
+    persistent_growth_period: 16h
+    name: Carrots
+    id: 2
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: CARROT
+      v: 1
+    grower:
+      type: ageable
+      material: CARROTS
+      max_stage: 7
+      increment: 3
+    vanilla_materials:
+    - CARROTS
+    soil_max_layers: 8
+    soil_boni:
+      CLAY: 0.125
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      meadows: 1.0
+      flatlands: 0.5
+      forests: 0.5
+      birch_forests: 0.5
+      
+  POTATO:
+    persistent_growth_period: 16h
+    name: Potatoes
+    id: 3
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: POTATO
+      v: 1
+    grower:
+      type: ageable
+      material: POTATOES
+      max_stage: 7
+      increment: 3
+    vanilla_materials:
+    - POTATOES
+    soil_max_layers: 8
+    soil_boni:
+      CLAY: 0.125
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      taigas: 0.5
+      cold_taiga: 1.0
+      tundra: 0.5
+      cold_mountain: 0.5
+
+  BEETROOT:
+    persistent_growth_period: 16h
+    name: Beetroots
+    id: 4
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: BEETROOT_SEEDS
+      v: 1
+    grower:
+      type: ageable
+      material: BEETROOTS
+      max_stage: 3
+      increment: 1
+    vanilla_materials:
+    - BEETROOTS
+    soil_max_layers: 8
+    soil_boni:
+      CLAY: 0.125
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:    
+      taigas: 0.5
+      cold_taiga: 0.5
+      tundra: 1.0
+      cold_mountain: 0.5
+  
+  NETHER_WART:
+    persistent_growth_period: 16h
+    name: Nether wart
+    id: 5
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: NETHER_WART
+      v: 1
+    grower:
+      type: ageable
+      material: NETHER_WART
+      max_stage: 3
+      increment: 1
+    vanilla_materials:
+    - NETHER_WART
+    needs_sun_light: false
+    soil_max_layers: 8
+    soil_boni:
+      SOUL_SAND: 0.125
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      CRIMSON_FOREST: 0.5
+      WARPED_FOREST: 0.5
+      NETHER_WASTES: 1.0
+      SOUL_SAND_VALLEY: 0.5
+      BASALT_DELTAS: 0.5
+
+  COCOA:
+    persistent_growth_period: 24h
+    name: Cocoa
+    id: 6
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: COCOA_BEANS
+      v: 1
+    grower:
+      type: ageable
+      material: COCOA
+      max_stage: 2
+      increment: 1
+    vanilla_materials:
+    - COCOA
+    soil_max_layers: 25
+    soil_boni:
+      VINE: 0.15
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      jungles: 1.0
+      bamboo_jungle: 0.6
+      swamp: 0.4
+      dark_forest: 0.25
+      mushroom: 0.25
+
+  MELON:
+    persistent_growth_period: 16h
+    name: Melon
+    id: 7
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: MELON
+      v: 2584
+    can_be_planted: false
+    soil_max_layers: 8
+    soil_boni:
+      CLAY: 0.125
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    grower:
+      type: fruit
+      material: MELON
+      stem_type: MELON_STEM
+      attached_stem_type: ATTACHED_MELON_STEM
+    vanilla_materials:
+    - ATTACHED_MELON_STEM
+    - MELON_STEM
+    - MELON
+    biomes:
+      mesa: 0.6
+      savannas: 1.0
+      desert: 0.4
+
+  MELON_STEM:
+    persistent_growth_period: 0
+    name: Melon stem
+    id: 8
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: MELON_SEEDS
+      v: 1
+    grower:
+      type: stem
+      material: MELON_STEM
+      fruit_config: Melon
+    soil_max_layers: 8
+    soil_boni:
+      CLAY: 0.125
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      mesa: 0.6
+      savannas: 1.0
+      desert: 0.4
+
+  PUMPKIN:
+    persistent_growth_period: 16h
+    name: Pumpkin
+    id: 9
+    can_be_planted: false
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: PUMPKIN
+      v: 1
+    grower:
+      type: fruit
+      material: PUMPKIN
+      stem_type: PUMPKIN_STEM
+      attached_stem_type: ATTACHED_PUMPKIN_STEM
+    vanilla_materials:
+    - ATTACHED_PUMPKIN_STEM
+    - PUMPKIN_STEM
+    - PUMPKIN
+    soil_max_layers: 8
+    soil_boni:
+      CLAY: 0.125
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      taigas: 1.0
+      cold_taiga: 0.5
+      tundra: 0.5
+      cold_mountain: 0.5
+
+  PUMPKIN_STEM:
+    persistent_growth_period: 0
+    name: Pumpkin stem
+    grower:
+      type: stem
+      material: PUMPKIN_STEM
+      fruit_config: Pumpkin
+    id: 10
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: PUMPKIN_SEEDS
+      v: 1
+    soil_max_layers: 8
+    soil_boni:
+      CLAY: 0.125
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      taigas: 1.0
+      cold_taiga: 0.5
+      tundra: 0.5
+      cold_mountain: 0.5
+
+# formerly inheriting Column properties
+
+  CACTUS:
+    persistent_growth_period: 12h
+    name: Cactus
+    grower:
+      type: column
+      material: CACTUS
+      max_height: 3
+      insta_break_toching: true
+    vanilla_materials:
+    - CACTUS
+    id: 11
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: CACTUS
+      v: 1
+    biomes:
+      desert: 1.0
+      mesa: 0.6
+      savannas: 0.0
+
+  SUGAR_CANE:
+    persistent_growth_period: 12h
+    name: Sugar cane
+    id: 12
+    grower:
+      type: column
+      material: SUGAR_CANE
+      max_height: 3
+    vanilla_materials:
+    - SUGAR_CANE
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: SUGAR_CANE
+      v: 1
+    biomes:
+      jungles: 1.0
+      bamboo: 1.0
+      swamp: 0.5
+      mushroom: 1.0
+      dark_forest: 0.25
+# formerly inheriting "basetree" properties
+
+  OAK_SAPLING:
+    persistent_growth_period: 12h
+    name: Oak Tree
+    id: 13
+    grower:
+      type: tree
+      material: OAK_SAPLING
+    vanilla_materials:
+    - OAK_SAPLING
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: OAK_SAPLING
+      v: 1
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      forests: 1.0
+      birch_forests: 0.8
+      flatlands: 0.25
+      meadows: 0.25
+      savannas: 0.5
+      mesa: 0.25
+
+  BIRCH_SAPLING:
+    persistent_growth_period: 12h
+    name: Birch Tree
+    id: 14
+    grower:
+      type: tree
+      material: BIRCH_SAPLING
+    vanilla_materials:
+    - BIRCH_SAPLING
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: BIRCH_SAPLING
+      v: 1
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      forests: 0.5
+      birch_forests: 1.0
+      flatland: 0.25
+      meadows: 0.25
+
+  SPRUCE_SAPLING:
+    persistent_growth_period: 12h
+    name: Spruce Tree
+    id: 15
+    grower:
+      type: tree
+      material: SPRUCE_SAPLING
+    vanilla_materials:
+    - SPRUCE_SAPLING
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: SPRUCE_SAPLING
+      v: 1
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      taigas: 1.0
+      cold_taiga: 1.0
+      tundra: 0.25
+      cold_mountain: 0.25
+
+  JUNGLE_SAPLING:
+    persistent_growth_period: 12h
+    name: Jungle Tree
+    id: 16
+    grower:
+      type: tree
+      material: JUNGLE_SAPLING
+    vanilla_materials:
+    - JUNGLE_SAPLING
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: JUNGLE_SAPLING
+      v: 1
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      jungles: 1.0
+      bamboo: 0.8
+      mushroom: 0.25
+      swamp: 0.25
+      dark_forest: 0.6
+
+  ACACIA_SAPLING:
+    persistent_growth_period: 12h
+    name: Acacia Tree
+    grower:
+      type: tree
+      material: ACACIA_SAPLING
+    vanilla_materials:
+    - ACACIA_SAPLING
+    id: 17
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: ACACIA_SAPLING
+      v: 1
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      savannas: 1.0
+      desert: 0.6
+      mesa: 0.6
+
+  DARK_OAK_SAPLING:
+    persistent_growth_period: 12h
+    name: Dark Oak Tree
+    grower:
+      type: tree
+      material: DARK_OAK_SAPLING
+    vanilla_materials:
+    - DARK_OAK_SAPLING
+    id: 18
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: DARK_OAK_SAPLING
+      v: 1
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      jungles: 0.6
+      forests: 0.6
+      taigas: 0.6
+      birch_forests: 0.6
+      dark_forest: 1.0
+      swamp: 0.8
+      meadows: 0.5
+      
+  GLOW_BERRIES:
+    persistent_growth_period: 8h
+    name: Glow Berries
+    grower:
+      type: tip
+      material: CAVE_VINES
+      stem_material: CAVE_VINES_PLANT
+      growth_direction: DOWN
+      max_height: 25
+    id: 19
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: GLOW_BERRIES
+      v: 2730
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      LUSH_CAVES: 1.0
+      
+  TWISTING_VINES:
+    persistent_growth_period: 6h
+    name: Twisting Vines
+    grower:
+      type: tip
+      material: TWISTING_VINES
+      stem_material: TWISTING_VINES_PLANT
+      growth_direction: UP
+      max_height: 25
+    id: 20
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: TWISTING_VINES
+      v: 2730
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      WARPED_FOREST: 1.0
+      
+  WEEPING_VINES:
+    persistent_growth_period: 6h
+    name: Weeping Vines
+    grower:
+      type: tip
+      material: WEEPING_VINES
+      stem_material: WEEPING_VINES_PLANT
+      growth_direction: DOWN
+      max_height: 25
+    id: 21
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: WEEPING_VINES
+      v: 2730
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      CRIMSON_FOREST: 1.0
+      
+  KELP:
+    persistent_growth_period: 8h
+    name: Kelp
+    grower:
+      type: kelp
+      max_height: 25
+    id: 22
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: KELP
+      v: 2730
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    needs_sun_light: false
+    biomes:
+      deep_oceans: 1.0
+      oceans: 0.5
+      
+  RED_MUSHROOM:
+    persistent_growth_period: 0
+    base_rate: 1.0
+    name: Red Mushroom
+    vanilla_materials:
+      - RED_MUSHROOM
+    grower:
+      type: horizontalspread
+      max_amount: 60
+      max_range: 9
+      replaceable_blocks:
+        - AIR
+        - CAVE_AIR
+        - VOID_AIR
+      valid_soil:
+        - MYCELIUM
+        - PODZOL
+    id: 23
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: RED_MUSHROOM
+      v: 2730
+    needs_sun_light: false
+    biomes:
+      swamp: 0.6
+      jungles: 0.25
+      bamboo: 0.25
+      mushroom: 1.0
+      dark_forest: 0.6
+      
+  BROWN_MUSHROOM:
+    persistent_growth_period: 0
+    base_rate: 1.0
+    name: Brown Mushroom
+    vanilla_materials:
+      - BROWN_MUSHROOM
+    grower:
+      type: horizontalspread
+      max_amount: 60
+      max_range: 9
+      replaceable_blocks:
+        - AIR
+        - CAVE_AIR
+        - VOID_AIR
+      valid_soil:
+        - MYCELIUM
+        - PODZOL
+    id: 24
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: BROWN_MUSHROOM
+      v: 2730
+    needs_sun_light: false
+    biomes:
+      swamp: 0.6
+      jungles: 0.25
+      bamboo: 0.25
+      mushroom: 1.0
+      dark_forest: 0.6
+      
+  CRIMSON_FUNGUS:
+    persistent_growth_period: 12h
+    name: Crimson Fungus
+    grower:
+      type: fungus
+      material: CRIMSON_FUNGUS
+    vanilla_materials:
+      - CRIMSON_FUNGUS
+    id: 28
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: CRIMSON_FUNGUS
+      v: 2730
+    needs_sun_light: false
+    biomes:
+      CRIMSON_FOREST: 1.0
+      NETHER_WASTES: 0.5
+      SOUL_SAND_VALLEY: 0.3
+      
+  WARPED_FUNGUS:
+    persistent_growth_period: 12h
+    name: Warped Fungus
+    grower:
+      type: fungus
+      material: WARPED_FUNGUS
+    vanilla_materials:
+      - WARPED_FUNGUS
+    id: 29
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: WARPED_FUNGUS
+      v: 2730
+    needs_sun_light: false
+    biomes:
+      WARPED_FOREST: 1.0
+      NETHER_WASTES: 0.5
+      SOUL_SAND_VALLEY: 0.3
+      
+  BAMBOO:
+    persistent_growth_period: 12h
+    name: Bamboo
+    grower:
+      type: bamboo
+      max_height: 12
+    id: 25
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: BAMBOO
+      v: 2730
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      swamp: 0.25
+      jungles: 0.5
+      bamboo: 1.0
+      mushroom: 0.25
+      dark_forest: 0.25
+      
+  SWEET_BERRY:
+    persistent_growth_period: 12h
+    name: Sweet Berry
+    id: 26
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: SWEET_BERRIES
+      v: 2730
+    grower:
+      type: ageable
+      material: SWEET_BERRY_BUSH
+      max_stage: 3
+      increment: 1
+    vanilla_materials:
+      - SWEET_BERRIES
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      taigas: 0.5
+      cold_taiga: 0.5
+      tundra: 0.5
+      cold_mountain: 1.0
+      
+  BIG_DRIPLEAF:
+    persistent_growth_period: 12h
+    name: Big Dripleaf
+    grower:
+      type: tip
+      material: BIG_DRIPLEAF
+      stem_material: BIG_DRIPLEAF_STEM
+      growth_direction: UP
+      max_height: 25
+    id: 27
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: BIG_DRIPLEAF
+      v: 2730
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      freshwater: 1.0
+
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  plugin: RealisticBiomes
+  user: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}
+  host: ${CIV_MYSQL_HOST}
+  port: 3306
+  database: realisticbiomes
+  poolsize: 5
   connection_timeout: 10000
   idle_timeout: 600000
   max_lifetime: 7200000
