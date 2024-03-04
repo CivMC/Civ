@@ -1,0 +1,54 @@
+# Publish a container
+name: 🐋 Container | Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        required: true
+        description: 'The project to publish'
+        type: string
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        description: 'The project to publish'
+        type: string
+
+jobs:
+  publish_container:
+    name: 🐋 Publish Container
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚩 Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: 🔎 Introspect metadata
+        id: metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/civmc/civ/${{inputs.project}}
+          tags: |
+            type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
+      - name: 🪵 Login to Github Packages
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🐳 Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: containers/${{inputs.project}}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
