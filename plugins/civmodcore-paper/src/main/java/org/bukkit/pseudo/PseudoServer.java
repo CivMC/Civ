@@ -2,21 +2,8 @@ package org.bukkit.pseudo;
 
 import com.destroystokyo.paper.entity.ai.MobGoals;
 import com.destroystokyo.paper.profile.PlayerProfile;
+import io.papermc.paper.ban.BanListType;
 import io.papermc.paper.datapack.DatapackManager;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.net.InetAddress;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import io.papermc.paper.math.Position;
 import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
@@ -89,6 +76,21 @@ import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.structure.StructureManager;
 import org.bukkit.util.CachedServerIcon;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.InetAddress;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @SuppressWarnings("deprecation")
 public class PseudoServer implements Server {
@@ -742,10 +744,15 @@ public class PseudoServer implements Server {
 	public Set<OfflinePlayer> getBannedPlayers() {
 		throw new NotImplementedException();
 	}
-
+	
+	@Override
+	public <B extends BanList<E>, E> @NotNull B getBanList(@NotNull BanListType<B> banListType) {
+		return null;
+	}
+	
 	@Nonnull
 	@Override
-	public BanList getBanList(@Nonnull final BanList.Type type) {
+	public <T extends BanList<?>> T getBanList(@Nonnull final BanList.Type type) {
 		throw new NotImplementedException();
 	}
 
