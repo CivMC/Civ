@@ -74,10 +74,13 @@ public class AreaReinforce extends BaseCommand {
 					if (!reinType.canBeReinforced(current.getType())) {
 						continue;
 					}
-					Block protecting = ReinforcementLogic.getResponsibleBlock(current);
-					if (skipReins) {
-						continue;
+					Reinforcement reinforcement = ReinforcementLogic.getReinforcementAt(current.getLocation());
+					if (reinforcement != null) {
+						if (skipReins) {
+							continue;
+						}
 					}
+					Block protecting = ReinforcementLogic.getResponsibleBlock(current);
 					if (!current.getLocation().equals(protecting.getLocation())) {
 						continue;
 					}
