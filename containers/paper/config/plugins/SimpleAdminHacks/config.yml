@@ -592,3 +592,5 @@ hacks:
     enabled: true
     minSpeed: 0.1125
     maxSpeed: 0.438827582278 # 18.5m/s
+  AntiDerailment:
+    enabled: true
