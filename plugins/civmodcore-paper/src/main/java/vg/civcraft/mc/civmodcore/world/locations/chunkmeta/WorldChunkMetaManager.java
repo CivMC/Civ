@@ -191,7 +191,11 @@ public class WorldChunkMetaManager {
 	}
 	
 	private void registerRegularSaveRunnable() {
+		this.logger.info("[" + this.world.getName() + "] Registering regular chunk save runnable.");
+
 		scheduler.scheduleWithFixedDelay(() -> {
+			this.logger.info("[" + this.world.getName() + "] Saving all chunks per schedule.");
+
 			saveAllChunks();
 		}, REGULAR_SAVE_INTERVAL, REGULAR_SAVE_INTERVAL, TimeUnit.MILLISECONDS);
 	}
