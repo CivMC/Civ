@@ -80,10 +80,6 @@ public class AntiDerailment extends BasicHack {
 		Block block = e.getTo().getBlock();
 		if (Tag.RAILS.isTagged(block.getType())) {
 			previousTickMinecartVelocity.put(minecart, minecart.getVelocity());
-
-			if (e.getTo().getY() < e.getFrom().getY()) {
-				return;
-			}
 			return;
 		}
 
