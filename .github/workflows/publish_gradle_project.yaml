@@ -89,6 +89,7 @@ jobs:
       - name: 🗃️ Create/Update Release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: ${{ needs.determine_values.outputs.category }}/${{ needs.determine_values.outputs.project }}/${{ needs.determine_values.outputs.version }}
           files: '${{needs.determine_values.outputs.category}}/${{needs.determine_values.outputs.project}}/build/libs/*'
 
       - name: 🐘 Gradle Publish
