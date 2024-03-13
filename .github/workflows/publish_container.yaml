@@ -53,6 +53,9 @@ jobs:
     name: 🐋 Publish Container
     needs: determine_values
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
       - name: 🚩 Checkout Repo
