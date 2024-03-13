@@ -14,7 +14,7 @@ on:
         type: string
   push:
     tags:
-      - 'container/*/v*.*.*'
+      - 'containers/*/v*.*.*'
 
 jobs:
   # This job either uses the inputs from the workflow_dispatch event,
