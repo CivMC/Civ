@@ -47,7 +47,7 @@ jobs:
         run: |
           echo "category=${CATEGORY_OVERRIDE:-${TAG%%/*}}" >> $GITHUB_OUTPUT
           echo "version=${VERSION_OVERRIDE:-${TAG##*/}}" >> $GITHUB_OUTPUT        
-          dirname "project=${PROJECT_OVERRIDE:-${TAG#*/}}" >> $GITHUB_OUTPUT
+          echo "project=$(dirname ${PROJECT_OVERRIDE:-${TAG#*/}})" >> $GITHUB_OUTPUT
 
   publish_container:
     name: 🐋 Publish Container
