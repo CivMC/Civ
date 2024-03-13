@@ -12,6 +12,12 @@ on:
         required: true
         description: 'The version to release'
         type: string
+      category:
+        required: true
+        description: 'The category of project'
+        type: choice
+        options:
+          - containers
   push:
     tags:
       - 'containers/*/v*.*.*'
@@ -39,9 +45,9 @@ jobs:
           VERSION_OVERRIDE: ${{ inputs.version }}
           TAG: ${{ github.ref_name }}
         run: |
-          echo "category=${CATEGORY_OVERRIDE:-${TAG%%/*}}" >> $GITHUB_ENV
-          echo "version=${VERSION_OVERRIDE:-${TAG##*/}}" >> $GITHUB_ENV          
-          dirname "project=${PROJECT_OVERRIDE:-${TAG#*/}}" >> $GITHUB_ENV
+          echo "category=${CATEGORY_OVERRIDE:-${TAG%%/*}}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION_OVERRIDE:-${TAG##*/}}" >> $GITHUB_OUTPUT        
+          dirname "project=${PROJECT_OVERRIDE:-${TAG#*/}}" >> $GITHUB_OUTPUT
 
   publish_container:
     name: 🐋 Publish Container
