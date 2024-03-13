@@ -46,9 +46,9 @@ jobs:
           VERSION_OVERRIDE: ${{ inputs.version }}
           TAG: ${{ github.ref_name }}
         run: |
-          echo "category=${CATEGORY_OVERRIDE:-${TAG%%/*}}" >> $GITHUB_ENV
-          echo "version=${VERSION_OVERRIDE:-${TAG##*/}}" >> $GITHUB_ENV          
-          dirname "project=${PROJECT_OVERRIDE:-${TAG#*/}}" >> $GITHUB_ENV
+          echo "category=${CATEGORY_OVERRIDE:-${TAG%%/*}}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION_OVERRIDE:-${TAG##*/}}" >> $GITHUB_OUTPUT        
+          dirname "project=${PROJECT_OVERRIDE:-${TAG#*/}}" >> $GITHUB_OUTPUT
 
   publish_gradle:
     name: 🐘 Publish Gradle
