@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: determine_values
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
