@@ -6,18 +6,46 @@ on:
     inputs:
       project:
         required: true
-        description: 'The project to publish'
+        description: 'The container to publish'
         type: string
-  workflow_call:
-    inputs:
-      project:
+      version:
         required: true
-        description: 'The project to publish'
+        description: 'The version to release'
         type: string
+  push:
+    tags:
+      - 'container/*/v*.*.*'
 
 jobs:
+  # This job either uses the inputs from the workflow_dispatch event,
+  # or will split values out of the pushed tag.
+  # This allows the release manager to either create a release themselves and have this job pick it up,
+  # Or run this job to create a release.
+  determine_values:
+    name: 🔎 Determine Values
+    runs-on: ubuntu-latest
+
+    outputs:
+      category: ${{ steps.determine_values.outputs.category }}
+      version: ${{ steps.determine_values.outputs.version }}
+      project: ${{ steps.determine_values.outputs.project }}
+
+    steps:
+      - name: 🔎 Determine Project Values
+        id: determine_values
+        env:
+          CATEGORY_OVERRIDE: ${{ inputs.category }}
+          PROJECT_OVERRIDE: ${{ inputs.project }}
+          VERSION_OVERRIDE: ${{ inputs.version }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          echo "category=${CATEGORY_OVERRIDE:-${TAG%%/*}}" >> $GITHUB_ENV
+          echo "version=${VERSION_OVERRIDE:-${TAG##*/}}" >> $GITHUB_ENV          
+          dirname "project=${PROJECT_OVERRIDE:-${TAG#*/}}" >> $GITHUB_ENV
+
   publish_container:
     name: 🐋 Publish Container
+    needs: determine_values
     runs-on: ubuntu-latest
 
     steps:
@@ -29,13 +57,13 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/civmc/civ/${{inputs.project}}
+            ghcr.io/civmc/civ/${{needs.determine_values.outputs.project}}
           tags: |
             type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
             type=ref,event=branch
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
+            type=semver,pattern={{version}},value=${{needs.determine_values.outputs.version}}
+            type=semver,pattern={{major}}.{{minor}},value=${{needs.determine_values.outputs.version}}
+            type=semver,pattern={{major}},value=${{needs.determine_values.outputs.version}}
 
       - name: 🪵 Login to Github Packages
         if: github.event_name != 'pull_request'
@@ -48,7 +76,7 @@ jobs:
       - name: 🐳 Build and push
         uses: docker/build-push-action@v5
         with:
-          context: containers/${{inputs.project}}
+          context: containers/${{needs.determine_values.outputs.project}}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}

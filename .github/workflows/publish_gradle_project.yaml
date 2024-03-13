@@ -1,4 +1,5 @@
-# Publish a project to maven
+# Release a gradle project
+# Publish to maven, and create/update
 name: 🐘 Gradle | Publish Project
 
 on:
@@ -12,26 +13,49 @@ on:
           - plugins
       project:
         required: true
-        description: 'The project to publish'
+        description: 'The project to build'
         type: string
-  workflow_call:
-    inputs:
-      category:
+      version:
         required: true
-        description: 'The category of project'
+        description: 'The version to release'
         type: string
-      project:
-        required: true
-        description: 'The project to publish'
-        type: string
+  push:
+    tags:
+      - 'plugins/*/v*.*.*'
 
 jobs:
+  # This job either uses the inputs from the workflow_dispatch event,
+  # or will split values out of the pushed tag.
+  # This allows the release manager to either create a release themselves and have this job pick it up,
+  # Or run this job to create a release.
+  determine_values:
+    name: 🔎 Determine Values
+    runs-on: ubuntu-latest
+
+    outputs:
+      category: ${{ steps.determine_values.outputs.category }}
+      version: ${{ steps.determine_values.outputs.version }}
+      project: ${{ steps.determine_values.outputs.project }}
+
+    steps:
+      - name: 🔎 Determine Project Values
+        id: determine_values
+        env:
+          CATEGORY_OVERRIDE: ${{ inputs.category }}
+          PROJECT_OVERRIDE: ${{ inputs.project }}
+          VERSION_OVERRIDE: ${{ inputs.version }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          echo "category=${CATEGORY_OVERRIDE:-${TAG%%/*}}" >> $GITHUB_ENV
+          echo "version=${VERSION_OVERRIDE:-${TAG##*/}}" >> $GITHUB_ENV          
+          dirname "project=${PROJECT_OVERRIDE:-${TAG#*/}}" >> $GITHUB_ENV
+
   publish_gradle:
     name: 🐘 Publish Gradle
     runs-on: ubuntu-latest
+    needs: determine_values
     permissions:
-      contents: read
-      packages: write
+      contents: write
 
     steps:
       - name: 🚩 Checkout Repo
@@ -46,10 +70,24 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      # TODO: Bump version if not already done
+
+      - name: 🐘 Gradle Build
+        uses: gradle/gradle-build-action@v2
+        env:
+          CI: true
+        with:
+          arguments: "${{needs.determine_values.outputs.category}}:${{needs.determine_values.outputs.project}}:build --scan"
+
+      - name: 🗃️ Create/Update Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: '${{needs.determine_values.outputs.category}}/${{needs.determine_values.outputs.project}}/build/libs/*'
+
       - name: 🐘 Gradle Publish
         uses: gradle/gradle-build-action@v2
         env:
           CI: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          arguments: "${{inputs.category}}:${{inputs.project}}:publish --scan"
+          arguments: "${{needs.determine_values.outputs.category}}:${{needs.determine_values.outputs.project}}:publish --scan"
