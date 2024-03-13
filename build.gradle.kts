@@ -65,7 +65,7 @@ allprojects {
             if (githubActor != null && githubToken != null) {
                 maven {
                     name = "GitHubPackages"
-                    url = uri("https://maven.pkg.github.com/AngrySoundTech/civ-temp")
+                    url = uri("https://maven.pkg.github.com/CivMC/Civ")
                     credentials {
                         username = githubActor
                         password = githubToken
