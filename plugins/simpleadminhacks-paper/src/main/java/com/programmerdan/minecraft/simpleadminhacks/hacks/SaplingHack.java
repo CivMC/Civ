@@ -5,6 +5,7 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.SaplingConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import java.util.Random;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -43,7 +44,7 @@ public class SaplingHack extends SimpleHack<SaplingConfig> implements Listener {
 			return;
 		}
 		double nextDouble = random.nextDouble();
-		if (nextDouble <= this.config.getChanceMap().get(brokenBlock.getType())) {
+		if (nextDouble <= this.config.getChanceMap().getOrDefault(brokenBlock.getType(), 0.0D)) {
 			brokenBlock.getWorld().dropItemNaturally(brokenBlock.getLocation(), new ItemStack(getSaplingMaterial(brokenBlock.getType()), 1));
 			logger.info("Dropped extra " + getSaplingMaterial(brokenBlock.getType())  + " from being broken at " + brokenBlock.getLocation());
 		}
@@ -56,17 +57,14 @@ public class SaplingHack extends SimpleHack<SaplingConfig> implements Listener {
 			return;
 		}
 		double nextDouble = random.nextDouble();
-		if (nextDouble <= this.config.getChanceMap().get(decayedBlock.getType())) {
+		if (nextDouble <= this.config.getChanceMap().getOrDefault(decayedBlock.getType(), 0.0D)) {
 			decayedBlock.getWorld().dropItemNaturally(decayedBlock.getLocation(), new ItemStack(getSaplingMaterial(decayedBlock.getType()), 1));
 			logger.info("Dropped extra " + getSaplingMaterial(decayedBlock.getType())  + " from being broken at " + decayedBlock.getLocation());
 		}
 	}
 
 	private boolean checkIfLeafBlock(Block block) {
-		return switch (block.getType()) {
-			case OAK_LEAVES, BIRCH_LEAVES, SPRUCE_LEAVES, JUNGLE_LEAVES, ACACIA_LEAVES, DARK_OAK_LEAVES -> true;
-			default -> false;
-		};
+		return Tag.LEAVES.isTagged(block.getType());
 	}
 
 	private boolean checkIfItemHasFortune(ItemStack itemStack) {
@@ -84,7 +82,9 @@ public class SaplingHack extends SimpleHack<SaplingConfig> implements Listener {
 			case JUNGLE_LEAVES -> Material.JUNGLE_SAPLING;
 			case ACACIA_LEAVES -> Material.ACACIA_SAPLING;
 			case DARK_OAK_LEAVES -> Material.DARK_OAK_SAPLING;
+			case AZALEA_LEAVES -> Material.AZALEA;
 			//We set this to air so nothing will drop if it comes to erroring
+			//This needs to be updated any time a new tree is added, can we make it better?
 			default -> Material.AIR;
 		};
 	}
