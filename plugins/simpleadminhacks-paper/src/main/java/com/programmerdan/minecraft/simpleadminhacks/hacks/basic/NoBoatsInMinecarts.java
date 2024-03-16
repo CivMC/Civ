@@ -10,6 +10,7 @@ import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 
 /**
  * Prevents boats from entering minecarts
+ * Fix for <a href="https://bugs.mojang.com/browse/MC-113871">MC-113871</a>
  */
 public class NoBoatsInMinecarts extends BasicHack {
 
