@@ -40,9 +40,6 @@ public class SaplingHack extends SimpleHack<SaplingConfig> implements Listener {
 				return;
 			}
 		}
-		if (!this.config.getChanceMap().containsKey(brokenBlock.getType())) {
-			return;
-		}
 		double nextDouble = random.nextDouble();
 		if (nextDouble <= this.config.getChanceMap().getOrDefault(brokenBlock.getType(), 0.0D)) {
 			brokenBlock.getWorld().dropItemNaturally(brokenBlock.getLocation(), new ItemStack(getSaplingMaterial(brokenBlock.getType()), 1));
