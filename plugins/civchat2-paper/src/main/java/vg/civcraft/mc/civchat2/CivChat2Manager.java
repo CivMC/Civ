@@ -431,4 +431,8 @@ public class CivChat2Manager {
 	public void removeCustomName(UUID player) {
 		customNames.remove(player);
 	}
+
+	public ScoreboardHUD getScoreboardHUD() {
+		return scoreboardHUD;
+	}
 }
