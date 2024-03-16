@@ -8,7 +8,7 @@ import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
-import com.comphenix.protocol.wrappers.WrappedWatchableObject;
+import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.destroystokyo.paper.MaterialTags;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
@@ -144,7 +144,7 @@ public final class AttrHider extends BasicHack {
 						return;
 					}
 					final PacketContainer cloned = packet.deepClone();
-					for (final WrappedWatchableObject object : cloned.getWatchableCollectionModifier().read(0)) {
+					for (final WrappedDataValue object : cloned.getDataValueCollectionModifier().read(0)) {
 						// Read the 8th field as a float as that's the living entity's health
 						// https://wiki.vg/Entity_metadata#Living_Entity
 						if (object.getIndex() == 9) {
@@ -172,6 +172,7 @@ public final class AttrHider extends BasicHack {
 					List<PlayerInfoData> newInfos = new ArrayList<>();
 					List<PlayerInfoData> oldInfos = cloned.getPlayerInfoDataLists().read(0);
 					for (PlayerInfoData oldInfo : oldInfos) {
+						if (oldInfo == null) continue;
 						int latency = oldInfo.getLatency();
 						// Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
 						// this follows 1.16.5 PlayerTabOverlay#renderPingIcon()
