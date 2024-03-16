@@ -231,6 +231,11 @@ public class BlockListener implements Listener {
 			return;
 		}
 
+		// Iron trapdoors and doors cannot be opened by right clicking on them
+		if (e.getClickedBlock().getType() == Material.IRON_TRAPDOOR || e.getClickedBlock().getType() == Material.IRON_DOOR) {
+			return;
+		}
+
 		if (e.getClickedBlock().getState() instanceof Container) {
 			if (!rein.hasPermission(player, CitadelPermissionHandler.getChests())) {
 				e.setCancelled(true);
