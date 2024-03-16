@@ -72,6 +72,9 @@ public class CivChat2Listener implements Listener {
 				p.sendMessage(playerJoinEvent.getPlayer().getDisplayName() + ChatColor.YELLOW + " has joined the game");
 			}
 		}
+		
+		// Set current chat group in scoreboard
+		chatman.getScoreboardHUD().updateScoreboardHUD(playerJoinEvent.getPlayer());
 
 		if (CivChat2.getInstance().getPluginConfig().getChatRangeWarn() && !playerJoinEvent.getPlayer().hasPlayedBefore()) {
 			localWarn.add(playerJoinEvent.getPlayer().getUniqueId());
