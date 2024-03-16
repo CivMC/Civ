@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -36,6 +37,14 @@ import vg.civcraft.mc.civmodcore.utilities.CivLogger;
  * Command registration class wrapper around {@link BukkitCommandManager}.
  */
 public class CommandManager extends BukkitCommandManager {
+	private static final Set<String> offlinePlayerNames = new HashSet<>();
+
+	static {
+		Arrays.stream(Bukkit.getOfflinePlayers()).map(OfflinePlayer::getName)
+			.filter(Objects::nonNull)
+			.forEach(offlinePlayerNames::add);
+	}
+
 	// Track players to offer quick completion where necessary.
 	private final Set<String> autocompletePlayerNames = new ConcurrentSkipListSet<>();
 
@@ -59,13 +68,7 @@ public class CommandManager extends BukkitCommandManager {
 	public final void init() {
 		// Prepare our list with player names on init.
 		// Load all known players once on initialization, then use a loginlistener to update the existing name set.
-		Arrays.stream(Bukkit.getOfflinePlayers()).map(OfflinePlayer::getName)
-			.filter(Objects::nonNull)
-			.forEach(autocompletePlayerNames::add);
-		/*TODO
-		this may be better solved with a single global listener, but the implications would've needed some checks.
-		This is pretty cheap and works fast.
-		 */
+		autocompletePlayerNames.addAll(offlinePlayerNames);
 
 		Bukkit.getPluginManager().registerEvents(new Listener() {
 			// Players joining should be added to our list, just in case they are new.
