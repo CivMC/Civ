@@ -60,7 +60,7 @@ public class CitadelUtility {
 			case LILAC:
 			case PEONY:
 			case TALL_GRASS:
-			case GRASS:
+			case SHORT_GRASS:
 			case TWISTING_VINES:
 			case TWISTING_VINES_PLANT:
 			case WEEPING_VINES:

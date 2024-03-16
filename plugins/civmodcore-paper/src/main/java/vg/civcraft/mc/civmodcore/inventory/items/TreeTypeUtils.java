@@ -27,6 +27,13 @@ public final class TreeTypeUtils {
 			.put(Material.BIRCH_LEAVES, TreeType.BIRCH)
 			.put(Material.STRIPPED_BIRCH_LOG, TreeType.BIRCH)
 			.put(Material.STRIPPED_BIRCH_WOOD, TreeType.BIRCH)
+			// Mangrove
+			.put(Material.CHERRY_SAPLING, TreeType.CHERRY)
+			.put(Material.CHERRY_WOOD, TreeType.CHERRY)
+			.put(Material.CHERRY_LOG, TreeType.CHERRY)
+			.put(Material.CHERRY_LEAVES, TreeType.CHERRY)
+			.put(Material.STRIPPED_CHERRY_LOG, TreeType.CHERRY)
+			.put(Material.STRIPPED_CHERRY_WOOD, TreeType.CHERRY)
 			// Dark Oak
 			.put(Material.DARK_OAK_SAPLING, TreeType.DARK_OAK)
 			.put(Material.DARK_OAK_WOOD, TreeType.DARK_OAK)
@@ -41,6 +48,13 @@ public final class TreeTypeUtils {
 			.put(Material.JUNGLE_LEAVES, TreeType.JUNGLE)
 			.put(Material.STRIPPED_JUNGLE_LOG, TreeType.JUNGLE)
 			.put(Material.STRIPPED_JUNGLE_WOOD, TreeType.JUNGLE)
+			// Mangrove
+			.put(Material.MANGROVE_PROPAGULE, TreeType.MANGROVE)
+			.put(Material.MANGROVE_WOOD, TreeType.MANGROVE)
+			.put(Material.MANGROVE_LOG, TreeType.MANGROVE)
+			.put(Material.MANGROVE_LEAVES, TreeType.MANGROVE)
+			.put(Material.STRIPPED_MANGROVE_LOG, TreeType.MANGROVE)
+			.put(Material.STRIPPED_MANGROVE_WOOD, TreeType.MANGROVE)
 			// Oak
 			.put(Material.OAK_SAPLING, TreeType.TREE)
 			.put(Material.OAK_WOOD, TreeType.TREE)
@@ -84,12 +98,17 @@ public final class TreeTypeUtils {
 			// Birch
 			.put(TreeType.BIRCH, Material.BIRCH_SAPLING)
 			.put(TreeType.TALL_BIRCH, Material.BIRCH_SAPLING)
+			// Cherry
+			.put(TreeType.CHERRY, Material.CHERRY_SAPLING)
 			// Dark Oak
 			.put(TreeType.DARK_OAK, Material.DARK_OAK_SAPLING)
 			// Jungle
 			.put(TreeType.JUNGLE, Material.JUNGLE_SAPLING)
 			.put(TreeType.SMALL_JUNGLE, Material.JUNGLE_SAPLING)
 			.put(TreeType.JUNGLE_BUSH, Material.JUNGLE_SAPLING)
+			// Mangrove
+			.put(TreeType.MANGROVE, Material.MANGROVE_PROPAGULE)
+			.put(TreeType.TALL_MANGROVE, Material.MANGROVE_PROPAGULE)
 			// Oak
 			.put(TreeType.BIG_TREE, Material.OAK_SAPLING)
 			.put(TreeType.TREE, Material.OAK_SAPLING)
@@ -121,7 +140,7 @@ public final class TreeTypeUtils {
 			final Set<TreeType> missing = new HashSet<>();
 			final Set<TreeType> exclude = Set.of( // Set of TreeTypes that cannot be reverse searched
 					TreeType.BIG_TREE, TreeType.JUNGLE_BUSH, TreeType.SWAMP, TreeType.SMALL_JUNGLE,
-					TreeType.TALL_BIRCH, TreeType.MEGA_REDWOOD, TreeType.TALL_REDWOOD);
+					TreeType.TALL_BIRCH, TreeType.MEGA_REDWOOD, TreeType.TALL_REDWOOD, TreeType.TALL_MANGROVE);
 			CollectionUtils.addAll(missing, TreeType.values());
 			missing.removeIf(type -> exclude.contains(type) || TREE_MATERIALS.containsValue(type));
 			if (!missing.isEmpty()) {

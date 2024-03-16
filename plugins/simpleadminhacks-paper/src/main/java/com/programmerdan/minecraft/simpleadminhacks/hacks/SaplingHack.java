@@ -64,7 +64,8 @@ public class SaplingHack extends SimpleHack<SaplingConfig> implements Listener {
 
 	private boolean checkIfLeafBlock(Block block) {
 		return switch (block.getType()) {
-			case OAK_LEAVES, BIRCH_LEAVES, SPRUCE_LEAVES, JUNGLE_LEAVES, ACACIA_LEAVES, DARK_OAK_LEAVES -> true;
+			case OAK_LEAVES, BIRCH_LEAVES, SPRUCE_LEAVES, JUNGLE_LEAVES, ACACIA_LEAVES, DARK_OAK_LEAVES,
+					MANGROVE_LEAVES, CHERRY_LEAVES -> true;
 			default -> false;
 		};
 	}
@@ -84,6 +85,8 @@ public class SaplingHack extends SimpleHack<SaplingConfig> implements Listener {
 			case JUNGLE_LEAVES -> Material.JUNGLE_SAPLING;
 			case ACACIA_LEAVES -> Material.ACACIA_SAPLING;
 			case DARK_OAK_LEAVES -> Material.DARK_OAK_SAPLING;
+			case MANGROVE_LEAVES -> Material.MANGROVE_PROPAGULE;
+			case CHERRY_LEAVES -> Material.CHERRY_SAPLING;
 			//We set this to air so nothing will drop if it comes to erroring
 			default -> Material.AIR;
 		};

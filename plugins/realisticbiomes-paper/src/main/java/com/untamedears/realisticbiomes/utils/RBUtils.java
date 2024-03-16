@@ -34,24 +34,28 @@ public class RBUtils {
 
 	public static TreeType getTreeType(Block block) {
 		switch (block.getType()) {
-		case ACACIA_SAPLING:
-			return TreeType.ACACIA;
-		case BIRCH_SAPLING:
-			return TreeType.BIRCH;
-		case OAK_SAPLING:
-			return TreeType.TREE;
-		case JUNGLE_SAPLING:
-			return TreeType.JUNGLE;
-		case DARK_OAK_SAPLING:
-			return TreeType.DARK_OAK;
-		case SPRUCE_SAPLING:
-			return TreeType.REDWOOD;
-		case CRIMSON_FUNGUS:
-			return TreeType.CRIMSON_FUNGUS;
-		case WARPED_FUNGUS:
-			return TreeType.WARPED_FUNGUS;
+			case ACACIA_SAPLING:
+				return TreeType.ACACIA;
+			case BIRCH_SAPLING:
+				return TreeType.BIRCH;
+			case OAK_SAPLING:
+				return TreeType.TREE;
+			case JUNGLE_SAPLING:
+				return TreeType.JUNGLE;
+			case DARK_OAK_SAPLING:
+				return TreeType.DARK_OAK;
+			case SPRUCE_SAPLING:
+				return TreeType.REDWOOD;
+			case CRIMSON_FUNGUS:
+				return TreeType.CRIMSON_FUNGUS;
+			case WARPED_FUNGUS:
+				return TreeType.WARPED_FUNGUS;
 			case FLOWERING_AZALEA:
-			return TreeType.AZALEA;
+				return TreeType.AZALEA;
+			case MANGROVE_PROPAGULE:
+				return TreeType.MANGROVE;
+			case CHERRY_SAPLING:
+				return TreeType.CHERRY;
 		default:
 			throw new IllegalArgumentException();
 		}
@@ -123,7 +127,8 @@ public class RBUtils {
 				|| material == Material.DARK_OAK_SAPLING || material == Material.JUNGLE_SAPLING
 				|| material == Material.OAK_SAPLING || material == Material.SPRUCE_SAPLING
 				|| material == Material.CRIMSON_FUNGUS || material == Material.WARPED_FUNGUS
-				|| material == Material.FLOWERING_AZALEA;
+				|| material == Material.FLOWERING_AZALEA || material == Material.MANGROVE_PROPAGULE
+				|| material == Material.CHERRY_SAPLING;
 	}
 
 	public static boolean isStem(Material mat) {

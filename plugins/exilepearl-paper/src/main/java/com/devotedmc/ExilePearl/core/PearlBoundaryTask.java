@@ -55,7 +55,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	public static final LinkedHashSet<Material> safeOpenBlocks = new LinkedHashSet<>(Arrays.asList(
 			 new Material[] { 
 					Material.AIR, Material.WATER, Material.RAIL, Material.ACTIVATOR_RAIL, 
-					Material.POWERED_RAIL, Material.DETECTOR_RAIL, Material.GRASS, Material.FERN,
+					Material.POWERED_RAIL, Material.DETECTOR_RAIL, Material.SHORT_GRASS, Material.FERN,
 					Material.LARGE_FERN, Material.DEAD_BUSH, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM,
 					Material.TORCH, Material.REDSTONE_WIRE, Material.WHEAT, Material.LADDER, Material.LEVER, Material.STONE_PRESSURE_PLATE}
 		));

@@ -58,10 +58,7 @@ public class AssociationListener implements Listener {
 		UUID uuid = event.getPlayer().getUniqueId();
 		associations.addPlayer(playername, uuid);
 		event.setJoinMessage(ChatColor.YELLOW + NameAPI.getCurrentName(uuid) + " joined the game");
-	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void OnPlayerLogin(PlayerLoginEvent event) {
 		final Player player = event.getPlayer();
 		MojangNames.declareMojangName(player.getUniqueId(), player.getName());
 		String name = associations.getCurrentName(player.getUniqueId());
@@ -70,6 +67,7 @@ public class AssociationListener implements Listener {
 			associations.addPlayer(player.getName(), player.getUniqueId());
 			name = associations.getCurrentName(player.getUniqueId());
 		}
+
 
 		if (game != null)
 			game.setPlayerProfile(player, name);

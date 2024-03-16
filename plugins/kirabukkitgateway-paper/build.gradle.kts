@@ -5,7 +5,9 @@ plugins {
 version = "2.0.3"
 
 dependencies {
-	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+	paperweight {
+		paperDevBundle("1.20.4-R0.1-SNAPSHOT")
+	}
 
     implementation("com.rabbitmq:amqp-client:5.6.0")
 	compileOnly(project(":plugins:civmodcore-paper"))

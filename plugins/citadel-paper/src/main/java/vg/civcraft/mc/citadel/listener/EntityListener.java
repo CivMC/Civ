@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+
+import io.papermc.paper.event.player.PlayerOpenSignEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -368,4 +370,17 @@ public class EntityListener implements Listener {
 		event.setCancelled(true);
 	}
 
+	// prevent editing signs without permission
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void playerEditSign(PlayerOpenSignEvent event) {
+		Player player = event.getPlayer();
+
+		Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(event.getSign().getBlock());
+		if (reinforcement == null) return;
+
+		if (!reinforcement.hasPermission(player, CitadelPermissionHandler.getModifyBlocks())) {
+			player.sendMessage(ChatColor.RED + "You do not have permission to modify this block");
+			event.setCancelled(true);
+		}
+	}
 }

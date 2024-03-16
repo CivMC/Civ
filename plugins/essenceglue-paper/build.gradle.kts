@@ -5,7 +5,9 @@ plugins {
 version = "2.0.0-SNAPSHOT"
 
 dependencies {
-	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+	paperweight {
+		paperDevBundle("1.20.4-R0.1-SNAPSHOT")
+	}
 
 	compileOnly(project(":plugins:civmodcore-paper"))
 	compileOnly("com.github.NuVotifier.NuVotifier:nuvotifier-bukkit:2.7.2")
