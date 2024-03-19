@@ -89,7 +89,7 @@ public class CivModCorePlugin extends ACivMod {
 		registerListener(DialogManager.INSTANCE);
 		registerListener(new ScoreBoardListener());
 		registerListener(new WorldTracker());
-		registerListener(PlayerNames.init());
+		registerListener(new PlayerNames());
 		// Register commands
 		this.commands = new CommandManager(this);
 		this.commands.init();

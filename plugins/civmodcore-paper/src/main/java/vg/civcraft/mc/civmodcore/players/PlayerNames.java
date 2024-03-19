@@ -15,34 +15,31 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-public final class PlayerNames {
-	private static final Set<String> names = Collections.synchronizedSet(new HashSet<>());
+public final class PlayerNames implements Listener {
 
-	@ApiStatus.Internal
-	public static @NotNull Listener init() {
+	private static final Set<String> names = new HashSet<>();
+
+	public PlayerNames() {
+		names.clear();
 		names.addAll(
 			Stream.of(Bukkit.getOfflinePlayers())
 				.map(OfflinePlayer::getName)
 				.filter(StringUtils::isNotBlank)
 				.toList()
 		);
-		return new Listener() {
-			@EventHandler(
-				priority = EventPriority.MONITOR, // Make sure it happens after NameLayer's AssociationListener
-				ignoreCancelled = true
-			)
-			private void onLogin(
-				final @NotNull PlayerLoginEvent event
-			) {
-				names.add(event.getPlayer().getName());
-			}
-		};
 	}
 
-	/**
-	 * Retrieves a copy of all known player names.
-	 */
+	@EventHandler(
+		priority = EventPriority.MONITOR, // Make sure it happens after NameLayer's AssociationListener
+		ignoreCancelled = true
+	)
+	private void onLogin(
+		final @NotNull PlayerLoginEvent event
+	) {
+		names.add(event.getPlayer().getName());
+	}
+
 	public static @NotNull Collection<String> getPlayerNames() {
-		return Set.of(names.toArray(String[]::new));
+		return Collections.unmodifiableSet(names);
 	}
 }
