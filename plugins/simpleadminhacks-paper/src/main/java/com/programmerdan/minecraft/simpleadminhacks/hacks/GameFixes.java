@@ -5,6 +5,8 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.GameFixesConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
 import java.util.logging.Level;
+
+import net.minecraft.world.item.ItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -20,6 +22,7 @@ import org.bukkit.block.data.type.Hopper;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
@@ -313,12 +316,14 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			return;
 		}
 		RespawnAnchor anchor = (RespawnAnchor) event.getClickedBlock().getBlockData();
-		if (!event.getMaterial().equals(Material.GLOWSTONE)) {
-			event.setCancelled(true);
-		} else if (anchor.getCharges() == anchor.getMaximumCharges()) {
-			event.setCancelled(true);
+		if (!event.getMaterial().equals(Material.GLOWSTONE) || anchor.getCharges() == anchor.getMaximumCharges()) {
+			boolean flag = event.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR || event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR;
+			boolean flag1 = event.getPlayer().isSneaking() && flag;
+			if (!flag1) {
+				event.setUseInteractedBlock(Event.Result.DENY);
+				event.getPlayer().sendMessage(ChatColor.RED + "Respawn anchor bombing is disabled");
+			}
 		}
-		event.getPlayer().sendMessage(ChatColor.RED + "Respawn anchor bombing is disabled");
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
