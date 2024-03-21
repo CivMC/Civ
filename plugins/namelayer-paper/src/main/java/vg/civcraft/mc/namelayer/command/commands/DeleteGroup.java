@@ -29,36 +29,40 @@ public class DeleteGroup extends BaseCommandMiddle {
 		UUID uuid = NameAPI.getUUID(p.getName());
 		String x = groupName;
 		String confirm = "CONFIRM_DELETION";
-		if(x.equals(confirm))
+		if(x.contains(confirm))
 		{
 			//check if they met the 15 second window
 			if(confirmDeleteGroup.containsKey(uuid)){
 				//user is in the hashmap
 				String[] entry = confirmDeleteGroup.get(uuid);
 				Group gD = gm.getGroup(entry[0]);
-				//player could have lost delete permission in the mean time
-				if (!NameAPI.getGroupManager().hasAccess(gD, uuid, PermissionType.getPermission("DELETE"))){
-					p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
-					return;
-				}
-				Date now = new Date(System.currentTimeMillis() - 15000);
-				//if it has been less than 15 seconds
-				if(now.getTime() < Long.parseLong(entry[1]))
-				{
-					//good to go delete the group
-					if(gm.deleteGroup(gD.getName()))
-						p.sendMessage(ChatColor.GREEN + "Group was successfully deleted.");
-					else
-						p.sendMessage(ChatColor.GREEN + "Group is now disciplined."
-								+ " Check back later to see if group is deleted.");
-					
-					confirmDeleteGroup.remove(uuid);
-					return;
-				}
-				else{
-					p.sendMessage(ChatColor.RED + "You did not do /nldg %s fast enough, you will need to start over".formatted(confirm));
-					confirmDeleteGroup.remove(uuid);
-					return;
+
+				if(x.equals("%s_%s".formatted(confirm, gD.getName()))) {
+
+					//player could have lost delete permission in the mean time
+					if (!NameAPI.getGroupManager().hasAccess(gD, uuid, PermissionType.getPermission("DELETE"))){
+						p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
+						return;
+					}
+					Date now = new Date(System.currentTimeMillis() - 15000);
+					//if it has been less than 15 seconds
+					if(now.getTime() < Long.parseLong(entry[1]))
+					{
+						//good to go delete the group
+						if(gm.deleteGroup(gD.getName()))
+							p.sendMessage(ChatColor.GREEN + "Group was successfully deleted.");
+						else
+							p.sendMessage(ChatColor.GREEN + "Group is now disciplined."
+									+ " Check back later to see if group is deleted.");
+
+						confirmDeleteGroup.remove(uuid);
+						return;
+					}
+					else{
+						p.sendMessage(ChatColor.RED + "You did not do /nldg %s fast enough, you will need to start over".formatted(confirm));
+						confirmDeleteGroup.remove(uuid);
+						return;
+					}
 				}
 			}
 			
@@ -85,7 +89,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 		Date date = new Date();
 		Long dateString = date.getTime();
 		String[] groupDate = new String[] {g.getName(), dateString.toString()};
-		p.sendMessage(ChatColor.RED + "To confirm deletion of group: %s\nuse /nldg %s within 15 seconds".formatted(g.getName(), confirm));
+		p.sendMessage(ChatColor.RED + "To confirm the IRREVERSIBLE deletion of the group '%s' along with ALL reinforcements, bastions and snitches on it:\nType /nldg %s_%s within 15 seconds.".formatted(g.getName(), confirm, g.getName()));
 		confirmDeleteGroup.put(uuid, groupDate);
 		return;
 	}
