@@ -239,21 +239,35 @@ public class BlockListener implements Listener {
 		if (rein == null) {
 			return;
 		}
+		Player player = e.getPlayer();
+
+		// Logic copied from ServerPlayerGameMode#useItemOn
+		// This will let the event happen if the player is not going to actually open/interact with the block
+		boolean flag = player.getInventory().getItemInMainHand().getType() != Material.AIR || player.getInventory().getItemInOffHand().getType() != Material.AIR;
+		if (player.isSneaking() && flag) {
+			return;
+		}
+
+		// Iron trapdoors and doors cannot be opened by right clicking on them
+		if (e.getClickedBlock().getType() == Material.IRON_TRAPDOOR || e.getClickedBlock().getType() == Material.IRON_DOOR) {
+			return;
+		}
+
 		if (e.getClickedBlock().getState() instanceof Container) {
-			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getChests())) {
+			if (!rein.hasPermission(player, CitadelPermissionHandler.getChests())) {
 				e.setCancelled(true);
 				String msg = String.format("%s is locked with %s%s", e.getClickedBlock().getType().name(),
 						ChatColor.AQUA, rein.getType().getName());
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg, e.getClickedBlock().getLocation());
+				CitadelUtility.sendAndLog(player, ChatColor.RED, msg, e.getClickedBlock().getLocation());
 			}
 			return;
 		}
 		if (e.getClickedBlock().getBlockData() instanceof Openable) {
-			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getDoors())) {
+			if (!rein.hasPermission(player, CitadelPermissionHandler.getDoors())) {
 				e.setCancelled(true);
 				String msg = String.format("%s is locked with %s%s", e.getClickedBlock().getType().name(),
 						ChatColor.AQUA, rein.getType().getName());
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg, e.getClickedBlock().getLocation());
+				CitadelUtility.sendAndLog(player, ChatColor.RED, msg, e.getClickedBlock().getLocation());
 			}
 		}
 	}
