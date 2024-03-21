@@ -28,7 +28,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 		Player p = (Player) sender;
 		UUID uuid = NameAPI.getUUID(p.getName());
 		String x = groupName;
-		String confirm = "CONFIRM DELETION";
+		String confirm = "CONFIRM_DELETION";
 		if(x.equals(confirm))
 		{
 			//check if they met the 15 second window
