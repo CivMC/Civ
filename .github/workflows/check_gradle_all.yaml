@@ -2,8 +2,8 @@
 name: 🐘 Gradle | Check All
 
 on:
-  workflow_dispatch:
-  workflow_call:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   check_gradle:

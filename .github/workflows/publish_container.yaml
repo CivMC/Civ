@@ -1,0 +1,82 @@
+# Publish a container
+name: 🐋 Container | Publish
+
+on:
+  push:
+    tags:
+      - 'containers/*/v*.*.*'
+
+jobs:
+  determine_values:
+    name: 🔎 Determine Values
+    runs-on: ubuntu-latest
+
+    outputs:
+      category: ${{ steps.determine_values.outputs.category }}
+      version: ${{ steps.determine_values.outputs.version }}
+      project: ${{ steps.determine_values.outputs.project }}
+
+    steps:
+      - name: 🔎 Determine Project Values
+        id: determine_values
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          category=${TAG%%/*}
+          echo "category=${category}"
+          echo "category=${category}" >> $GITHUB_OUTPUT
+          
+          version=${TAG##*/}
+          echo "version=${version}"
+          echo "version=${version}" >> $GITHUB_OUTPUT
+          
+          project=${TAG#*/}
+          project=${project%/*}
+          echo "project=${project}"
+          echo "project=${project}" >> $GITHUB_OUTPUT
+
+  publish_container:
+    name: 🐋 Publish Container
+    needs: determine_values
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: 🚩 Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: 🔎 Introspect metadata
+        id: metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ghcr.io/civmc/civ/${{needs.determine_values.outputs.project}}
+          tags: |
+            type=raw,value=latest,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
+            type=ref,event=branch
+            type=semver,pattern={{version}},value=${{needs.determine_values.outputs.version}}
+            type=semver,pattern={{major}}.{{minor}},value=${{needs.determine_values.outputs.version}}
+            type=semver,pattern={{major}},value=${{needs.determine_values.outputs.version}}
+
+      - name: 🪵 Login to Github Packages
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🗃️ Create/Update Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.determine_values.outputs.category }}/${{ needs.determine_values.outputs.project }}/${{ needs.determine_values.outputs.version }}
+
+      - name: 🐳 Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: containers/${{needs.determine_values.outputs.project}}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}

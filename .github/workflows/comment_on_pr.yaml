@@ -1,7 +1,11 @@
 name: 💬 Comment on PR
 
 on:
-  workflow_call:
+  workflow_run:
+    types:
+      - "completed"
+    workflows:
+      - "🐘 Gradle | Check All"
 
 jobs:
   comment-on-pr:

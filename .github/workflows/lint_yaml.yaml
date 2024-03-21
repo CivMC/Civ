@@ -2,8 +2,8 @@
 name: 🔎 Lint Yaml
 
 on:
-  workflow_dispatch:
-  workflow_call:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   lint_yaml:
