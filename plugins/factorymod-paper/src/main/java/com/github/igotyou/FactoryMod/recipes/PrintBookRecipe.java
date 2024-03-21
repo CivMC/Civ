@@ -2,11 +2,6 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import net.minecraft.nbt.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,10 +11,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.inventory.ClonedInventory;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class PrintBookRecipe extends PrintingPressRecipe {
 	private ItemMap printingPlate;
@@ -58,12 +57,16 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 
 		ItemStack printingPlateStack = getPrintingPlateItemStack(inputInv, this.printingPlate);
 		ItemMap toRemove = this.input.clone();
-
+		
+		ItemStack book = createBook(printingPlateStack, this.outputAmount);
+		if (!ClonedInventory.cloneInventory(outputInv).addItem(book).isEmpty()) {
+			return false;
+		}
+		
 		if (printingPlateStack != null
 				&& toRemove.isContainedIn(inputInv)
 				&& toRemove.removeSafelyFrom(inputInv)
 		) {
-			ItemStack book = createBook(printingPlateStack, this.outputAmount);
 			book.editMeta(BookMeta.class, x -> x.setGeneration(getNextGeneration(x.getGeneration())));
 			outputInv.addItem(book);
 		}
