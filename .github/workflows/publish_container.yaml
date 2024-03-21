@@ -2,11 +2,31 @@
 name: 🐋 Container | Publish
 
 on:
+  workflow_dispatch:
+    inputs:
+      project:
+        required: true
+        description: 'The container to publish'
+        type: string
+      version:
+        required: true
+        description: 'The version to release'
+        type: string
+      category:
+        required: true
+        description: 'The category of project'
+        type: choice
+        options:
+          - containers
   push:
     tags:
       - 'containers/*/v*.*.*'
 
 jobs:
+  # This job either uses the inputs from the workflow_dispatch event,
+  # or will split values out of the pushed tag.
+  # This allows the release manager to either create a release themselves and have this job pick it up,
+  # Or run this job to create a release.
   determine_values:
     name: 🔎 Determine Values
     runs-on: ubuntu-latest
@@ -20,18 +40,21 @@ jobs:
       - name: 🔎 Determine Project Values
         id: determine_values
         env:
+          CATEGORY_OVERRIDE: ${{ inputs.category }}
+          PROJECT_OVERRIDE: ${{ inputs.project }}
+          VERSION_OVERRIDE: ${{ inputs.version }}
           TAG: ${{ github.ref_name }}
         run: |
-          category=${TAG%%/*}
+          category=${CATEGORY_OVERRIDE:-${TAG%%/*}}
           echo "category=${category}"
           echo "category=${category}" >> $GITHUB_OUTPUT
           
-          version=${TAG##*/}
+          version=${VERSION_OVERRIDE:-${TAG##*/}}
           echo "version=${version}"
           echo "version=${version}" >> $GITHUB_OUTPUT
           
-          project=${TAG#*/}
-          project=${project%/*}
+          project=${PROJECT_OVERRIDE:-${TAG#*/}}
+          project=${PROJECT_OVERRIDE:-${project%/*}}
           echo "project=${project}"
           echo "project=${project}" >> $GITHUB_OUTPUT
 
