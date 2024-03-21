@@ -28,7 +28,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 		Player p = (Player) sender;
 		UUID uuid = NameAPI.getUUID(p.getName());
 		String x = groupName;
-		String confirm = "CONFIRM";
+		String confirm = "CONFIRM DELETION";
 		if(x.equals(confirm))
 		{
 			//check if they met the 15 second window
@@ -56,7 +56,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 					return;
 				}
 				else{
-					p.sendMessage(ChatColor.RED + "You did not do /nldg CONFIRM fast enough, you will need to start over");
+					p.sendMessage(ChatColor.RED + "You did not do /nldg %s fast enough, you will need to start over".formatted(confirm));
 					confirmDeleteGroup.remove(uuid);
 					return;
 				}
@@ -85,7 +85,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 		Date date = new Date();
 		Long dateString = date.getTime();
 		String[] groupDate = new String[] {g.getName(), dateString.toString()};
-		p.sendMessage(ChatColor.GREEN + "To confirm deletion of group: " + g.getName() + "\nuse /nldg CONFIRM within 15 seconds");
+		p.sendMessage(ChatColor.RED + "To confirm deletion of group: %s\nuse /nldg %s within 15 seconds".formatted(g.getName(), confirm));
 		confirmDeleteGroup.put(uuid, groupDate);
 		return;
 	}
