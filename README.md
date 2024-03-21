@@ -15,10 +15,11 @@ Optional services may be started by enabling the profile flag, e.g. `--profile <
 
 Current services and exposed ports are:
 
-| Name     | Ports     | Profile    |
-|----------|-----------|------------|
-| pvp      |           |            |
-| mariadb  | TCP/3306  |            |
-| postgres | TCP/5432  |            |
-| rabbitmq | HTTP/5672 |            |
-| grafana  | HTTP/3000 | monitoring |
+| Name     | Ports | Description         | Profile    |
+|----------|-------|---------------------|------------|
+| pvp      |       |                     |            |
+| mariadb  | 3306  | TCP, Database       |            |
+| postgres | 5432  | TCP, Database       |            |
+| rabbitmq | 5672  | TCP, AMQP           |            |
+|          | 15672 | HTTP, Management UI |            |
+| grafana  | 3000  | HTTP, Grafana UI    | monitoring |
