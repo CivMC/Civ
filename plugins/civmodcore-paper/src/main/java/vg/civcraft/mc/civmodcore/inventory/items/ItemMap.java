@@ -2,15 +2,6 @@ package vg.civcraft.mc.civmodcore.inventory.items;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
 import net.minecraft.nbt.ByteArrayTag;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
@@ -31,10 +22,20 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.Repairable;
+import vg.civcraft.mc.civmodcore.inventory.ClonedInventory;
 import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 import vg.civcraft.mc.civmodcore.utilities.MoreMath;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Allows the storage and comparison of item stacks while ignoring their maximum possible stack sizes. This offers
@@ -495,10 +496,10 @@ public class ItemMap {
 	}
 
 	/**
-	 * Checks whether this instance would completly fit into the given inventory
+	 * Checks whether this instance would completely fit into the given inventory
 	 *
 	 * @param i Inventory to check
-	 * @return True if this ItemMap's item representation would completly fit in the inventory, false if not
+	 * @return True if this ItemMap's item representation would completely fit in the inventory, false if not
 	 */
 	public boolean fitsIn(Inventory i) {
 		int size;
@@ -509,11 +510,22 @@ public class ItemMap {
 		}
 		ItemMap invCopy = new ItemMap();
 		for (ItemStack is : i.getStorageContents()) {
-			invCopy.addItemStack(is);
+			if (is == null) continue;
+			invCopy.addItemAmount(is, is.getAmount());
 		}
 		ItemMap instanceCopy = this.clone();
 		instanceCopy.merge(invCopy);
-		return instanceCopy.getItemStackRepresentation().size() <= size;
+		
+		if (!(instanceCopy.getItemStackRepresentation().size() <= size)) {
+			return false;
+		}
+		
+		for(ItemStack itemStack : this.getItemStackRepresentation()) {
+			if (!ClonedInventory.cloneInventory(i).addItem(itemStack).isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**

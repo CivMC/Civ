@@ -7,10 +7,6 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -23,6 +19,11 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 public class PrintingPlateRecipe extends PrintingPressRecipe {
 	public static final String itemName = "Printing Plate";
@@ -59,6 +60,10 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = output.clone();
 
+		if (!toAdd.fitsIn(outputInv)) {
+			return false;
+		}
+		
 		if (toRemove.isContainedIn(inputInv) && toRemove.removeSafelyFrom(inputInv)) {
 			for(ItemStack is: toAdd.getItemStackRepresentation()) {
 				is = addTags(serialNumber, is, CraftItemStack.asNMSCopy(book).getTag());

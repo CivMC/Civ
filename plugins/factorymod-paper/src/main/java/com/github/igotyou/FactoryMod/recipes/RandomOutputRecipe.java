@@ -2,12 +2,6 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,6 +9,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 
 public class RandomOutputRecipe extends InputRecipe {
 	private Map<ItemMap, Double> outputs;
@@ -45,7 +45,17 @@ public class RandomOutputRecipe extends InputRecipe {
 			lowestChanceMap = displayOutput;
 		}
 	}
-
+	
+	@Override
+	public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv) {
+		boolean isFeasible = input.fitsIn(outputInv);
+		String reasonSnippet = isFeasible ? null : "it ran out of storage space";
+		return new EffectFeasibility(
+				isFeasible,
+				reasonSnippet
+		);
+	}
+	
 	@Override
 	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
 		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
@@ -67,12 +77,17 @@ public class RandomOutputRecipe extends InputRecipe {
 			FactoryMod.getInstance().warning("Unable to find a random item to output. Recipe execution was cancelled," + fccf.getLogData());
 			return false;
 		}
-		if (toRemove.isContainedIn(inputInv)) {
-			if (toRemove.removeSafelyFrom(inputInv)) {
-				for(ItemStack is: toAdd.getItemStackRepresentation()) {
-					outputInv.addItem(is);
+		
+		if (toAdd.fitsIn(outputInv)) {
+			if (toRemove.isContainedIn(inputInv)) {
+				if (toRemove.removeSafelyFrom(inputInv)) {
+					for(ItemStack is: toAdd.getItemStackRepresentation()) {
+						outputInv.addItem(is);
+					}
 				}
 			}
+		} else {
+			return false;
 		}
 		logAfterRecipeRun(combo, fccf);
 		return true;
