@@ -60,7 +60,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 						return;
 					}
 					else{
-						p.sendMessage(Component.text("You did not do /nldg %s %s fast enough, you will need to start over".formatted(confirm, gD.getName())).color(NamedTextColor.RED));
+						p.sendMessage(Component.text("You did not do '/nldg %s %s' fast enough, you will need to start over".formatted(confirm, gD.getName())).color(NamedTextColor.RED));
 						confirmDeleteGroup.remove(uuid);
 						return;
 					}
@@ -90,7 +90,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 		Date date = new Date();
 		Long dateString = date.getTime();
 		String[] groupDate = new String[] {g.getName(), dateString.toString()};
-		p.sendMessage(Component.text("To confirm the IRREVERSIBLE deletion of the group '%s' along with ALL reinforcements, bastions and snitches on it:\nType /nldg %s %s within 15 seconds.".formatted(g.getName(), confirm, g.getName())).color(NamedTextColor.RED));
+		p.sendMessage(Component.text("To confirm the IRREVERSIBLE deletion of the group '%s' along with ALL reinforcements, bastions and snitches on it:\nType '/nldg %s %s' within 15 seconds.".formatted(g.getName(), confirm, g.getName())).color(NamedTextColor.RED));
 		confirmDeleteGroup.put(uuid, groupDate);
 		return;
 	}
