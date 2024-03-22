@@ -30,7 +30,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 		Player p = (Player) sender;
 		UUID uuid = NameAPI.getUUID(p.getName());
 		String x = groupName;
-		String confirm = "CONFIRM_DELETION";
+		String confirm = "CONFIRM DELETION";
 		if(x.toLowerCase().contains(confirm.toLowerCase()))
 		{
 			//check if they met the 15 second window
@@ -39,7 +39,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 				String[] entry = confirmDeleteGroup.get(uuid);
 				Group gD = gm.getGroup(entry[0]);
 
-				if(x.equalsIgnoreCase("%s_%s".formatted(confirm, gD.getName()))) {
+				if(x.equalsIgnoreCase("%s %s".formatted(confirm, gD.getName()))) {
 
 					//player could have lost delete permission in the mean time
 					if (!NameAPI.getGroupManager().hasAccess(gD, uuid, PermissionType.getPermission("DELETE"))){
@@ -60,7 +60,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 						return;
 					}
 					else{
-						p.sendMessage(Component.text("You did not do /nldg %s_%s fast enough, you will need to start over".formatted(confirm, gD.getName())).color(NamedTextColor.RED));
+						p.sendMessage(Component.text("You did not do /nldg %s %s fast enough, you will need to start over".formatted(confirm, gD.getName())).color(NamedTextColor.RED));
 						confirmDeleteGroup.remove(uuid);
 						return;
 					}
@@ -90,7 +90,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 		Date date = new Date();
 		Long dateString = date.getTime();
 		String[] groupDate = new String[] {g.getName(), dateString.toString()};
-		p.sendMessage(Component.text("To confirm the IRREVERSIBLE deletion of the group '%s' along with ALL reinforcements, bastions and snitches on it:\nType /nldg %s_%s within 15 seconds.".formatted(g.getName(), confirm, g.getName())).color(NamedTextColor.RED));
+		p.sendMessage(Component.text("To confirm the IRREVERSIBLE deletion of the group '%s' along with ALL reinforcements, bastions and snitches on it:\nType /nldg %s %s within 15 seconds.".formatted(g.getName(), confirm, g.getName())).color(NamedTextColor.RED));
 		confirmDeleteGroup.put(uuid, groupDate);
 		return;
 	}
