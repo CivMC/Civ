@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
@@ -41,7 +44,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 
 					//player could have lost delete permission in the mean time
 					if (!NameAPI.getGroupManager().hasAccess(gD, uuid, PermissionType.getPermission("DELETE"))){
-						p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
+						p.sendMessage(Component.text("You do not have permission to run that command.").color(TextColor.color(255, 0, 0)));
 						return;
 					}
 					Date now = new Date(System.currentTimeMillis() - 15000);
@@ -50,16 +53,15 @@ public class DeleteGroup extends BaseCommandMiddle {
 					{
 						//good to go delete the group
 						if(gm.deleteGroup(gD.getName()))
-							p.sendMessage(ChatColor.GREEN + "Group was successfully deleted.");
+							p.sendMessage(Component.text("Group was successfully deleted.").color(TextColor.color(0, 255, 0)));
 						else
-							p.sendMessage(ChatColor.GREEN + "Group is now disciplined."
-									+ " Check back later to see if group is deleted.");
+							p.sendMessage(Component.text("Group is now disciplined. Check back later to see if group is deleted.").color(TextColor.color(0, 255, 0)));
 
 						confirmDeleteGroup.remove(uuid);
 						return;
 					}
 					else{
-						p.sendMessage(ChatColor.RED + "You did not do /nldg %s fast enough, you will need to start over".formatted(confirm));
+						p.sendMessage(Component.text("You did not do /nldg %s fast enough, you will need to start over".formatted(confirm)).color(TextColor.color(255, 0, 0)));
 						confirmDeleteGroup.remove(uuid);
 						return;
 					}
@@ -73,23 +75,23 @@ public class DeleteGroup extends BaseCommandMiddle {
 			return;
 		}
 		if (!NameAPI.getGroupManager().hasAccess(g, uuid, PermissionType.getPermission("DELETE"))){
-			p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
+			p.sendMessage(Component.text("You do not have permission to run that command.").color(TextColor.color(255, 0, 0)));
 			return;
 		}
 		PlayerType pType = g.getPlayerType(uuid);
 		if (pType == null && !p.hasPermission("namelayer.admin")){
-			p.sendMessage(ChatColor.RED + "You are not on that group.");
+			p.sendMessage(Component.text("You are not on that group.").color(TextColor.color(255, 0, 0)));
 			return;
 		}
 		if (g.isDisciplined() && !p.hasPermission("namelayer.admin")){
-			p.sendMessage(ChatColor.RED + "Group is disiplined.");
+			p.sendMessage(Component.text("Group is disiplined.").color(TextColor.color(255, 0, 0)));
 			return;
 		}
 		//set that user can confirm group in 15 seconds
 		Date date = new Date();
 		Long dateString = date.getTime();
 		String[] groupDate = new String[] {g.getName(), dateString.toString()};
-		p.sendMessage(ChatColor.RED + "To confirm the IRREVERSIBLE deletion of the group '%s' along with ALL reinforcements, bastions and snitches on it:\nType /nldg %s_%s within 15 seconds.".formatted(g.getName(), confirm, g.getName()));
+		p.sendMessage(Component.text("To confirm the IRREVERSIBLE deletion of the group '%s' along with ALL reinforcements, bastions and snitches on it:\nType /nldg %s_%s within 15 seconds.".formatted(g.getName(), confirm, g.getName())).color(TextColor.color(255, 0, 0)));
 		confirmDeleteGroup.put(uuid, groupDate);
 		return;
 	}
