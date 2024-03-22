@@ -32,7 +32,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 		UUID uuid = NameAPI.getUUID(p.getName());
 		String x = groupName;
 		String confirm = "CONFIRM_DELETION";
-		if(x.contains(confirm))
+		if(x.toLowerCase().contains(confirm.toLowerCase()))
 		{
 			//check if they met the 15 second window
 			if(confirmDeleteGroup.containsKey(uuid)){
@@ -40,7 +40,7 @@ public class DeleteGroup extends BaseCommandMiddle {
 				String[] entry = confirmDeleteGroup.get(uuid);
 				Group gD = gm.getGroup(entry[0]);
 
-				if(x.equals("%s_%s".formatted(confirm, gD.getName()))) {
+				if(x.equalsIgnoreCase("%s_%s".formatted(confirm, gD.getName()))) {
 
 					//player could have lost delete permission in the mean time
 					if (!NameAPI.getGroupManager().hasAccess(gD, uuid, PermissionType.getPermission("DELETE"))){
