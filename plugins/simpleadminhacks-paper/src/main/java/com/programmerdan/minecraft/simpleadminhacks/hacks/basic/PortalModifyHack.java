@@ -1,5 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
+import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
@@ -13,8 +14,10 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PortalModifyHack extends BasicHack {
 
@@ -22,6 +25,8 @@ public class PortalModifyHack extends BasicHack {
 	private String targetWorld;
 	@AutoLoad
 	private String homeWorld;
+
+	private final Map<Player, Location> teleports = new HashMap<>();
 	
 	public PortalModifyHack(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
@@ -52,10 +57,18 @@ public class PortalModifyHack extends BasicHack {
 				return;
 		}
 		event.setCancelled(true);
-		player.teleport(to, PlayerTeleportEvent.TeleportCause.END_PORTAL);
-		if (to.getWorld().getName().equals(targetWorld)) {
-			spawnExit(to);
+		teleports.put(player, to);
+	}
+
+	@EventHandler
+	public void onTick(ServerTickEndEvent event) {
+		for (Map.Entry<Player, Location> entry : teleports.entrySet()) {
+				entry.getKey().teleport(entry.getValue(), PlayerTeleportEvent.TeleportCause.END_PORTAL);
+				if (entry.getValue().getWorld().getName().equals(targetWorld)) {
+					spawnExit(entry.getValue());
+				}
 		}
+		teleports.clear();
 	}
 
 	private World getTargetWorld(Player player) {
