@@ -8,25 +8,23 @@ import co.aikar.commands.annotation.Subcommand;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @CommandAlias("cmc")
 public class ChunkMetaCommand extends BaseCommand {
 
-	private static boolean ENABLE_CHUNK_META_LOGS = false;
+	private static final Logger CHUNK_META_LOGGER = Logger.getLogger("Chunk meta");
 
-	public static boolean chunkMetaLogsEnabled() {
-		return ENABLE_CHUNK_META_LOGS;
-	}
-
-	@Subcommand("chunkmeta")
+	@Subcommand("togglechunkmeta")
 	@Description("Toggle showing chunk meta logs")
 	@CommandPermission("cmc.debug")
 	public void chunkmeta(CommandSender sender) {
-		if (ENABLE_CHUNK_META_LOGS) {
-			ENABLE_CHUNK_META_LOGS = false;
+		if (CHUNK_META_LOGGER.getLevel().intValue() < Level.INFO.intValue()) {
+			CHUNK_META_LOGGER.setLevel(Level.INFO);
 			sender.sendMessage(Component.text("Chunk meta logs disabled.", NamedTextColor.RED));
 		} else {
-			ENABLE_CHUNK_META_LOGS = true;
+			CHUNK_META_LOGGER.setLevel(Level.FINE);
 			sender.sendMessage(Component.text("Chunk meta logs enabled.", NamedTextColor.GREEN));
 		}
 	}
