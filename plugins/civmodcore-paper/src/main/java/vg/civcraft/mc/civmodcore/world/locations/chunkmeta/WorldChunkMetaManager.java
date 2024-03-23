@@ -186,8 +186,14 @@ public class WorldChunkMetaManager {
 	 * @param z Z-coordinate of the chunk
 	 */
 	void loadChunk(int x, int z) {
-		ChunkCoord chunkCoord = getChunkCoord(x, z, true, true);
-		chunkCoord.minecraftChunkLoaded();
+		synchronized (metas) {
+			ChunkCoord coord = getChunkCoord(x, z, true, true);
+			if (coord.isUnloaded()) {
+				return;
+			}
+
+			coord.minecraftChunkLoaded();
+		}
 	}
 	
 	private void registerRegularSaveRunnable() {
@@ -244,32 +250,22 @@ public class WorldChunkMetaManager {
 	}
 
 	private void unloadChunkCoord(ChunkCoord coord) {
-		// make sure chunk hasnt loaded again since
-		if (!coord.isUnloaded()) {
-			return;
-		}
-
-		boolean hasPermanentlyLoadedData;
-
 		synchronized (coord) {
 			coord.fullyPersist();
 
-			hasPermanentlyLoadedData = coord.hasPermanentlyLoadedData();
-			if (hasPermanentlyLoadedData) {
+			if (coord.hasPermanentlyLoadedData()) {
 				// keep chunk coord, but garbage collect the data we dont want to keep inside of
 				// it
 				coord.deleteNonPersistentData();
 			}
 		}
 
-		if (!hasPermanentlyLoadedData) {
-			// coord is up for garbage collection at this point and all of its data has been
-			// written to the db
-			synchronized (metas) {
-				if (coord.isUnloaded()) {
-					metas.remove(coord);
-					coord.clearUnloaded();
-				}
+		// coord is up for garbage collection at this point and all of its data has been
+		// written to the db
+		synchronized (metas) {
+			if (coord.isUnloaded()) {
+				metas.remove(coord);
+				coord.clearUnloaded();
 			}
 		}
 	}
