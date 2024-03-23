@@ -55,7 +55,7 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 	@Override
 	public void insert() {
 		if (ChunkMetaCommand.chunkMetaLogsEnabled()) {
-			CivModCorePlugin.getInstance().getLogger().info("Inserting at " + chunkCoord);
+			CivModCorePlugin.getInstance().getLogger().info("[Chunkmeta] Inserting at " + chunkCoord);
 		}
 		for (D data : modifiedEntries) {
 			switch (data.getCacheState()) {
