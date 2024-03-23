@@ -3,6 +3,8 @@ package vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.Location;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+import vg.civcraft.mc.civmodcore.commands.ChunkMetaCommand;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockBasedChunkMeta;
 
@@ -52,6 +54,9 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 
 	@Override
 	public void insert() {
+		if (ChunkMetaCommand.chunkMetaLogsEnabled()) {
+			CivModCorePlugin.getInstance().getLogger().info("Inserting at " + chunkCoord);
+		}
 		for (D data : modifiedEntries) {
 			switch (data.getCacheState()) {
 			case NORMAL:

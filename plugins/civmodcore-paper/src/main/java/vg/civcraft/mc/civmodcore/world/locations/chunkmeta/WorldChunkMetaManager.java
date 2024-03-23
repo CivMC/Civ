@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import org.bukkit.World;
+import vg.civcraft.mc.civmodcore.commands.ChunkMetaCommand;
 
 /**
  * Stores Chunk metadata for all plugins for one specific world. Metadata is
@@ -20,7 +21,6 @@ import org.bukkit.World;
  *
  */
 public class WorldChunkMetaManager {
-
 	/**
 	 * How long should chunk data be kept in memory after the chunk is unloaded? 5
 	 * minutes
@@ -228,16 +228,22 @@ public class WorldChunkMetaManager {
 				}
 
 				if (System.currentTimeMillis() - coord.getLastUnloadedTime() > UNLOAD_DELAY) {
+					if (ChunkMetaCommand.chunkMetaLogsEnabled()) {
+						logger.info("[Chunkmeta] Unloading chunk " + coord + " - unloaded: " + coord.getLastUnloadedTime());
+					}
 					unloadChunkCoord(coord);
 				} else {
 					if (readdList == null) {
 						readdList = new HashSet<>();
 					}
 					readdList.add(coord);
+
 				}
 			}
-
 			if (readdList != null) {
+				if (ChunkMetaCommand.chunkMetaLogsEnabled()) {
+					logger.info("[Chunkmeta] Unloaded chunks remaining unsaved: " + readdList);
+				}
 				unloadingQueue.addAll(readdList);
 			}
 		}, UNLOAD_CHECK_INTERVAL, UNLOAD_CHECK_INTERVAL, TimeUnit.MILLISECONDS);
@@ -267,6 +273,9 @@ public class WorldChunkMetaManager {
 			// written to the db
 			synchronized (metas) {
 				if (coord.isUnloaded()) {
+					if (ChunkMetaCommand.chunkMetaLogsEnabled()) {
+						logger.info("[Chunkmeta] Chunk no longer being tracked: " + coord);
+					}
 					metas.remove(coord);
 					coord.clearUnloaded();
 				}
@@ -313,6 +322,9 @@ public class WorldChunkMetaManager {
 	 */
 	void unloadChunk(int x, int z) {
 		ChunkCoord chunkCoord = getChunkCoord(x, z, false, false);
+		if (ChunkMetaCommand.chunkMetaLogsEnabled()) {
+			logger.info("[Chunkmeta] Add to unloading queue: " + chunkCoord);
+		}
 		// chunkCoord can never be null here, otherwise our data structure would be
 		// broken, in which case we'd want to know
 		chunkCoord.minecraftChunkUnloaded();
