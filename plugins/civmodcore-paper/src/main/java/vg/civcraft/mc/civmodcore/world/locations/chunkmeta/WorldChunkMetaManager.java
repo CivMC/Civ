@@ -21,6 +21,8 @@ import vg.civcraft.mc.civmodcore.commands.ChunkMetaCommand;
  *
  */
 public class WorldChunkMetaManager {
+	private static final Logger CHUNK_META_LOGGER = Logger.getLogger("Chunk meta");
+
 	/**
 	 * How long should chunk data be kept in memory after the chunk is unloaded? 5
 	 * minutes
@@ -228,9 +230,7 @@ public class WorldChunkMetaManager {
 				}
 
 				if (System.currentTimeMillis() - coord.getLastUnloadedTime() > UNLOAD_DELAY) {
-					if (ChunkMetaCommand.chunkMetaLogsEnabled()) {
-						logger.info("[Chunkmeta] Unloading chunk " + coord + " - unloaded: " + coord.getLastUnloadedTime());
-					}
+					CHUNK_META_LOGGER.fine("[Chunkmeta] Unloading chunk " + coord + " - unloaded: " + coord.getLastUnloadedTime());
 					unloadChunkCoord(coord);
 				} else {
 					if (readdList == null) {
@@ -242,7 +242,7 @@ public class WorldChunkMetaManager {
 			}
 			if (readdList != null) {
 				if (ChunkMetaCommand.chunkMetaLogsEnabled()) {
-					logger.info("[Chunkmeta] Unloaded chunks remaining unsaved: " + readdList);
+					CHUNK_META_LOGGER.fine("[Chunkmeta] Unloaded chunks remaining unsaved: " + readdList);
 				}
 				unloadingQueue.addAll(readdList);
 			}
@@ -274,7 +274,7 @@ public class WorldChunkMetaManager {
 			synchronized (metas) {
 				if (coord.isUnloaded()) {
 					if (ChunkMetaCommand.chunkMetaLogsEnabled()) {
-						logger.info("[Chunkmeta] Chunk no longer being tracked: " + coord);
+						CHUNK_META_LOGGER.fine("[Chunkmeta] Chunk no longer being tracked: " + coord);
 					}
 					metas.remove(coord);
 					coord.clearUnloaded();
@@ -323,7 +323,7 @@ public class WorldChunkMetaManager {
 	void unloadChunk(int x, int z) {
 		ChunkCoord chunkCoord = getChunkCoord(x, z, false, false);
 		if (ChunkMetaCommand.chunkMetaLogsEnabled()) {
-			logger.info("[Chunkmeta] Add to unloading queue: " + chunkCoord);
+			CHUNK_META_LOGGER.fine("[Chunkmeta] Add to unloading queue: " + chunkCoord);
 		}
 		// chunkCoord can never be null here, otherwise our data structure would be
 		// broken, in which case we'd want to know
