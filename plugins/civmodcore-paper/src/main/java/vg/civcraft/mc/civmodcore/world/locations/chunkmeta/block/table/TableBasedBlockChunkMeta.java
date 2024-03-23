@@ -54,7 +54,7 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 
 	@Override
 	public void insert() {
-		CHUNK_META_LOGGER.fine("[Chunkmeta] Inserting at " + chunkCoord);
+		CHUNK_META_LOGGER.fine("Inserting at " + chunkCoord);
 		for (D data : modifiedEntries) {
 			switch (data.getCacheState()) {
 			case NORMAL:
