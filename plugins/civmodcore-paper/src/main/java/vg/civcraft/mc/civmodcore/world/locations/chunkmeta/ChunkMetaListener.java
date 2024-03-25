@@ -54,7 +54,7 @@ public class ChunkMetaListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void chunkUnload(ChunkUnloadEvent e) {
-		CHUNK_META_LOGGER.debug("Adding " + e.getChunk() + " to unload queue - length " + unloadQueue.size());
+		CHUNK_META_LOGGER.debug("World " + CivModCorePlugin.getInstance().getWorldIdManager().getInternalWorldId(e.getWorld()) + ": Adding " + e.getChunk() + " to unload queue - length " + unloadQueue.size());
 		unloadQueue.add(e.getChunk());
 		viewTracker.applyToAllSingleBlockViews(s -> s.handleChunkUnload(e.getChunk()));
 	}
