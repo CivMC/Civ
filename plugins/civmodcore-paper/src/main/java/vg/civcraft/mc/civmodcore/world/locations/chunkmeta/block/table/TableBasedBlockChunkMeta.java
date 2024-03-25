@@ -2,14 +2,15 @@ package vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bukkit.Location;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockBasedChunkMeta;
 
 public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 		extends BlockBasedChunkMeta<TableBasedDataObject, TableStorageEngine<D>> {
-	private static final Logger CHUNK_META_LOGGER = Logger.getLogger("Chunk meta");
+	private static final Logger CHUNK_META_LOGGER = LogManager.getLogger("Chunk meta");
 
 	private List<D> modifiedEntries;
 
@@ -54,7 +55,7 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 
 	@Override
 	public void insert() {
-		CHUNK_META_LOGGER.fine("Inserting at " + chunkCoord);
+		CHUNK_META_LOGGER.debug("Inserting at " + chunkCoord);
 		for (D data : modifiedEntries) {
 			switch (data.getCacheState()) {
 			case NORMAL:
