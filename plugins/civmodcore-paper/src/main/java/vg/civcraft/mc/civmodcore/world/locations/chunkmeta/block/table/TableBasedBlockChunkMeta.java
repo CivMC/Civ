@@ -12,15 +12,16 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 		extends BlockBasedChunkMeta<TableBasedDataObject, TableStorageEngine<D>> {
 	private static final Logger CHUNK_META_LOGGER = LogManager.getLogger("Chunk meta");
 
-	private List<D> modifiedEntries;
+	private final List<D> modifiedEntries = new ArrayList<>();
 
 	public TableBasedBlockChunkMeta(boolean isNew, TableStorageEngine<D> storage) {
 		super(isNew, storage);
-		this.modifiedEntries = new ArrayList<>();
 	}
 
 	public void reportChange(D data) {
-		modifiedEntries.add(data);
+		synchronized (modifiedEntries) {
+			modifiedEntries.add(data);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -28,7 +29,9 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 	public void put(int x, int y, int z, TableBasedDataObject blockData, boolean isNew) {
 		super.put(x, y, z, blockData, isNew);
 		if (isNew) {
-			modifiedEntries.add((D) blockData);
+			synchronized (modifiedEntries) {
+				modifiedEntries.add((D) blockData);
+			}
 		}
 	}
 
@@ -40,7 +43,9 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 		//this may look weird, but is what happens if the data was NEW previously, never written to the
 		//db and doesn't need to be deleted from there either
 		if (blockData.getCacheState() != CacheState.NORMAL) {
-			modifiedEntries.add((D) blockData);
+			synchronized (modifiedEntries) {
+				modifiedEntries.add((D) blockData);
+			}
 		}
 	}
 
@@ -56,7 +61,12 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 	@Override
 	public void insert() {
 		CHUNK_META_LOGGER.debug("Inserting at " + chunkCoord);
-		for (D data : modifiedEntries) {
+		List<D> datas;
+		synchronized (modifiedEntries) {
+			datas = new ArrayList<>(modifiedEntries);
+			modifiedEntries.clear();
+		}
+		for (D data : datas) {
 			switch (data.getCacheState()) {
 			case NORMAL:
 				continue;
@@ -71,7 +81,6 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 			}
 			data.setCacheState(CacheState.NORMAL);
 		}
-		modifiedEntries.clear();
 	}
 
 	@SuppressWarnings("unchecked")
