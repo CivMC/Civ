@@ -493,7 +493,7 @@ final class CoreExilePearl implements ExilePearl {
 		Location l = getHolder().getLocation();
 		String name = getHolder().getName();
 		if (getPlayer() != null) {
-			getPlayer().sendMessage(ChatUtils.parseColor(String.format(Lang.pearlPearlIsHeld, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName())));
+			getPlayer().sendMessage(ChatUtils.parseColor(String.format(Lang.pearlPearlIsHeld, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName(), getHealthPercent())));
 		}
 		for(BroadcastListener b : bcastListeners) {
 			b.broadcast(this);

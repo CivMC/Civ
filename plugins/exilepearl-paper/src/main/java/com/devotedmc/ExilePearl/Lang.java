@@ -5,7 +5,7 @@ public class Lang
 	public static final String pearlCantHold = "<b>Pearled players can't pick up pearls.";
 	public static final String pearlMotd2 = "<i>Type \"<c>/pp locate<i>\" to locate your pearl.";
 	public static final String pearlNotExiled = "<i>You are not pearled.";
-	public static final String pearlPearlIsHeld = "<i>Your pearl is held by <a>%s <n>[%d %d %d %s]";
+	public static final String pearlPearlIsHeld = "<i>Your pearl is held by <a>%s <n>[%d %d %d %s]<i> at <a>%d <i>health!";
 	public static final String pearlYouBound = "<g>You've bound <c>%s <g>to a pearl!";
 	public static final String pearlYouWereBound = "<b>You've been bound to a pearl by <c>%s";
 	public static final String pearlYouWereFreed = "<g>You've been freed!";
