@@ -194,7 +194,12 @@ public class WorldChunkMetaManager {
 	
 	private void registerRegularSaveRunnable() {
 		scheduler.scheduleWithFixedDelay(() -> {
-			saveAllChunks();
+			try {
+				CHUNK_META_LOGGER.debug("World " + worldID + ": Saving all chunks");
+				saveAllChunks();
+			} catch (RuntimeException ex) {
+				ex.printStackTrace();
+			}
 		}, REGULAR_SAVE_INTERVAL, REGULAR_SAVE_INTERVAL, TimeUnit.MILLISECONDS);
 	}
 
