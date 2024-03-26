@@ -101,14 +101,14 @@ public class PotionListener implements Listener {
 
 			modifiedHealth += intensity * multiplier * (healingEffect.getAmplifier() + 1)
 					* healthPerPotionLevel;
-			entity.setHealth(Math.min(maxHealth, modifiedHealth));
+			if (!entity.isDead()) entity.setHealth(Math.min(maxHealth, modifiedHealth));
 		}
 	}
 
 	@EventHandler
 	public void itemConsume(PlayerItemConsumeEvent e) {
 		PotionModification potMod = getModification(e.getItem());
-		if (potMod == null) {
+		if (potMod == null || e.getPlayer().isDead()) {
 			return;
 		}
 		PotionMeta potMeta = (PotionMeta) e.getItem().getItemMeta();
@@ -141,7 +141,7 @@ public class PotionListener implements Listener {
 						ent.addPotionEffect(potEffect, false);
 					};
 			for (LivingEntity ent : e.getAffectedEntities()) {
-				impact.accept(ent);
+				if (!ent.isDead()) impact.accept(ent);
 			}
 		});
 	}
