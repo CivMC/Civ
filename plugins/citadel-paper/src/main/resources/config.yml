@@ -218,6 +218,9 @@ acidblock_material:
 # Determines whether hanging entities (such as Item Frames) can be protected by their host block
 hangers_inherit_reinforcement: false
 
+# Determines whether or not reinforcing should be allowed in combat (requires CombatTagPlus to function)
+block_reinforcing_in_combat: false
+
 # reinforcement_damageMultiplier is m where BlockDamage = 2 ^ (n/m) where n is equal to the number of days the group has been inactive
 reinforcement_damageMultiplier: 365
 database:

@@ -1,8 +1,11 @@
 package vg.civcraft.mc.citadel;
 
 import java.util.logging.Logger;
+
+import net.minelink.ctplus.CombatTagPlus;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.citadel.listener.ActivityListener;
 import vg.civcraft.mc.citadel.activity.ActivityMap;
 import vg.civcraft.mc.citadel.command.CitadelCommandManager;
@@ -41,6 +44,7 @@ public class Citadel extends ACivMod {
 	private AcidManager acidManager;
 	private ReinforcementTypeManager typeManager;
 	private HologramManager holoManager;
+    private CombatTagPlus combatTagPlus;
 	private CitadelSettingManager settingManager;
 	private CitadelDAO dao;
 	private ActivityMap activityMap;
@@ -79,10 +83,14 @@ public class Citadel extends ACivMod {
 		return holoManager;
 	}
 
+	public CombatTagPlus getCombatTagPlus() {
+		return combatTagPlus;
+	}
+
 	public ActivityMap getActivityMap() {
 		return activityMap;
 	}
-	
+
 	CitadelDAO getDAO() {
 		return dao;
 	}
@@ -156,6 +164,11 @@ public class Citadel extends ACivMod {
 			else {
 				logger.info("HolographicDisplays is not loaded, no holograms available");
 			}});
+
+		Plugin combatTagPlusPlugin = Bukkit.getPluginManager().getPlugin("CombatTagPlus");
+		if(combatTagPlusPlugin != null) {
+			combatTagPlus = (CombatTagPlus) combatTagPlusPlugin;
+		}
 		commandManager = new CitadelCommandManager(this);
 		CitadelPermissionHandler.setup();
 		registerListeners();

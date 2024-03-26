@@ -9,5 +9,6 @@ dependencies {
 
 	compileOnly(project(":plugins:civmodcore-paper"))
 	compileOnly(project(":plugins:namelayer-paper"))
+	compileOnly(project(":plugins:combattagplus-paper"))
 	compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9")
 }

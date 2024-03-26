@@ -48,6 +48,7 @@ public class CitadelConfigManager extends ConfigParser {
 	private double redstoneRange;
 
 	private boolean hangersInheritReinforcements;
+	private boolean blockReinforcingInCombat;
 
 	private int activityMapResolution;
 	private int activityMapRadius;
@@ -101,6 +102,10 @@ public class CitadelConfigManager extends ConfigParser {
 
 	public boolean doHangersInheritReinforcements() {
 		return hangersInheritReinforcements;
+	}
+
+	public boolean shouldBlockReinforcingInCombat() {
+		return blockReinforcingInCombat;
 	}
 
 	public Map<UUID, WorldBorderBuffers> getWorldBorderBuffers() {
@@ -171,6 +176,7 @@ public class CitadelConfigManager extends ConfigParser {
 		parseReinforcementTypes(config.getConfigurationSection("reinforcements"));
 		parseAcidTypes(config.getConfigurationSection("acids"));
 		hangersInheritReinforcements = config.getBoolean("hangers_inherit_reinforcement", false);
+		blockReinforcingInCombat = config.getBoolean("block_reinforcing_in_combat", false);
 
 		activityMapRadius = config.getInt("activity-map-radius", 1);
 		activityMapResolution = config.getInt("activity-map-resolution", 512);
