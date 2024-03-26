@@ -3,6 +3,13 @@ package vg.civcraft.mc.namelayer.group;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.database.GroupManagerDao;
+
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,11 +17,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
-import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 
 public class Group {
 	
@@ -105,15 +107,38 @@ public class Group {
 	 * @return Returns all the UUIDS of the specific PlayerType.
 	 */
 	public List<UUID> getAllMembers(PlayerType type) {
-		List<UUID> uuids = Lists.newArrayList();;
-		for (Map.Entry<UUID, PlayerType> entry : players.entrySet()) {
+		List<UUID> uuids = Lists.newArrayList();
+        for (Map.Entry<UUID, PlayerType> entry : players.entrySet()) {
 			if (entry.getValue() == type) {
 				uuids.add(entry.getKey());
 			}
 		}
 		return uuids;
 	}
-	
+
+	/**
+	 * Returns all the uuids of the invitees in this group.
+	 * @return Returns all the uuids.
+	 */
+	public List<UUID> getAllInvites() {
+		return Lists.newArrayList(invites.keySet());
+	}
+
+	/**
+	 * Returns all the invited UUIDS of a group's PlayerType.
+	 * @param type The PlayerType of a group that you want the UUIDs of.
+	 * @return Returns all the invited UUIDS of the specific PlayerType.
+	 */
+	public List<UUID> getAllInvites(PlayerType type) {
+		List<UUID> uuids = Lists.newArrayList();
+		for (Map.Entry<UUID, PlayerType> entry : invites.entrySet()) {
+			if (entry.getValue() == type) {
+				uuids.add(entry.getKey());
+			}
+		}
+		return uuids;
+	}
+
 	/**
 	 * Gives the uuids of the members whose name starts with the given
 	 * String, this is not case-sensitive
@@ -307,8 +332,9 @@ public class Group {
 	
 	/**
 	 * @param uuid- The UUID of the player.
-	 * @return Returns the PlayerType of a UUID.
+	 * @return Returns the PlayerType of a member UUID.
 	 */
+	@Nullable
 	public PlayerType getPlayerType(UUID uuid) {
 		PlayerType member = players.get(uuid);
 		if (member != null) {
@@ -319,7 +345,24 @@ public class Group {
 		}
 		return PlayerType.NOT_BLACKLISTED;
 	}
-	
+
+	/**
+	 * @param uuid- The UUID of the player.
+	 * @return Returns the PlayerType of an invited UUID.
+	 */
+	@Nullable
+	public PlayerType getPlayerInviteType(UUID uuid) {
+		PlayerType invitee = invites.get(uuid);
+		if (invitee != null) {
+			return invitee;
+		}
+		if (NameLayerPlugin.getBlackList().isBlacklisted(this, uuid)) {
+			return null;
+		}
+		return PlayerType.NOT_BLACKLISTED;
+	}
+
+
 	public PlayerType getCurrentRank(UUID uuid) {
 		return players.get(uuid);
 	}
