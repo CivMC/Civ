@@ -20,6 +20,7 @@ public class RandomOutputRecipe extends InputRecipe {
 	private Map<ItemMap, Double> outputs;
 	private static Random rng;
 	private ItemMap lowestChanceMap;
+	private ItemMap guaranteedOutput;
 
 	public RandomOutputRecipe(String identifier, String name, int productionTime, ItemMap input,
 			Map<ItemMap, Double> outputs, ItemMap displayOutput) {
@@ -47,8 +48,27 @@ public class RandomOutputRecipe extends InputRecipe {
 	}
 	
 	@Override
-	public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv) {
-		boolean isFeasible = input.fitsIn(outputInv);
+	public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		int counter = 0;
+		while(counter < 20) {
+			guaranteedOutput = getRandomOutput();
+			if (guaranteedOutput != null) {
+				guaranteedOutput = guaranteedOutput.clone();
+				break;
+			}
+			else {
+				counter++;
+			}
+		}
+		
+		if (guaranteedOutput == null) {
+			return new EffectFeasibility(
+					false,
+					"it failed to find a random item"
+			);
+		}
+		
+		boolean isFeasible = guaranteedOutput.fitsIn(outputInv);
 		String reasonSnippet = isFeasible ? null : "it ran out of storage space";
 		return new EffectFeasibility(
 				isFeasible,
@@ -61,18 +81,8 @@ public class RandomOutputRecipe extends InputRecipe {
 		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
 		logBeforeRecipeRun(combo, fccf);
 		ItemMap toRemove = input.clone();
-		ItemMap toAdd = null;
-		int counter = 0;
-		while(counter < 20) {
-			toAdd = getRandomOutput();
-			if (toAdd != null) {
-				toAdd = toAdd.clone();
-				break;
-			}
-			else {
-				counter++;
-			}
-		}
+		ItemMap toAdd = guaranteedOutput;
+
 		if (toAdd == null) {
 			FactoryMod.getInstance().warning("Unable to find a random item to output. Recipe execution was cancelled," + fccf.getLogData());
 			return false;

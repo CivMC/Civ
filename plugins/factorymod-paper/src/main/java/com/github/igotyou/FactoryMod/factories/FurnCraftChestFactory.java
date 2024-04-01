@@ -335,7 +335,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 		}
 
 		// Ensure the recipe effect can be applied
-		var effectFeasibility = currentRecipe.evaluateEffectFeasibility(getInputInventory(), getOutputInventory());
+		var effectFeasibility = currentRecipe.evaluateEffectFeasibility(getInputInventory(), getOutputInventory(), this);
 		if (!(effectFeasibility.isFeasible())) {
 			LoggingUtils.log(String.format("Skipping activation of recipe [%s], since the effect wasn't feasible.", currentRecipe.getName()));
 			if (p != null) {

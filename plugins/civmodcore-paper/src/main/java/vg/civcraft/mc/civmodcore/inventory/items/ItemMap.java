@@ -520,8 +520,10 @@ public class ItemMap {
 			return false;
 		}
 		
+		ClonedInventory clonedInventory = ClonedInventory.cloneInventory(i);
+		
 		for(ItemStack itemStack : this.getItemStackRepresentation()) {
-			if (!ClonedInventory.cloneInventory(i).addItem(itemStack).isEmpty()) {
+			if (!clonedInventory.addItem(itemStack).isEmpty()) {
 				return false;
 			}
 		}
