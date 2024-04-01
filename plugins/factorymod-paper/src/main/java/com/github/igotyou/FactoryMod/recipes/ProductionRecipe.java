@@ -2,11 +2,6 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Random;
-
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,6 +9,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Random;
 
 /**
  * Consumes a set of materials from a container and outputs another set of
@@ -27,6 +27,7 @@ public class ProductionRecipe extends InputRecipe {
 	private ProductionRecipeModifier modifier;
 	private Random rng;
 	private DecimalFormat decimalFormatting;
+	private ItemMap guaranteedOutput;
 
 	public ProductionRecipe(
 			String identifier,
@@ -113,8 +114,24 @@ public class ProductionRecipe extends InputRecipe {
 	}
 
 	@Override
-	public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv) {
-		boolean isFeasible = input.fitsIn(outputInv);
+	public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		ItemMap toAdd;
+		if (getModifier() == null) {
+			toAdd = output.clone();
+		} else {
+			toAdd = getGuaranteedOutput(fccf.getRecipeLevel(this), fccf.getRunCount(this));
+			double factor = modifier.getFactor(fccf.getRecipeLevel(this), fccf.getRunCount(this));
+			for(Entry<ItemStack, Integer> entry : output.getEntrySet()) {
+				double additionalChance = (((double) entry.getValue()) * factor) - toAdd.getAmount(entry.getKey());
+				if (rng.nextDouble() <= additionalChance) {
+					toAdd.addItemAmount(entry.getKey(), 1);
+				}
+			}
+		}
+		
+		guaranteedOutput = toAdd;
+		
+		boolean isFeasible = guaranteedOutput.fitsIn(outputInv);
 		String reasonSnippet = isFeasible ? null : "it ran out of storage space";
 		return new EffectFeasibility(
 				isFeasible,
@@ -127,20 +144,8 @@ public class ProductionRecipe extends InputRecipe {
 		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
 		logBeforeRecipeRun(combo, fccf);
 		ItemMap toRemove = input.clone();
-		ItemMap toAdd;
-		if (getModifier() == null) {
-			toAdd = output.clone();
-		}
-		else {
-			toAdd = getGuaranteedOutput(fccf.getRecipeLevel(this), fccf.getRunCount(this));
-			double factor = modifier.getFactor(fccf.getRecipeLevel(this), fccf.getRunCount(this));
-			for(Entry<ItemStack, Integer> entry : output.getEntrySet()) {
-				double additionalChance = (((double) entry.getValue()) * factor) - toAdd.getAmount(entry.getKey());
-				if (rng.nextDouble() <= additionalChance) {
-					toAdd.addItemAmount(entry.getKey(), 1);
-				}
-			}
-		}
+		ItemMap toAdd = guaranteedOutput;
+
 		if (toRemove.isContainedIn(inputInv)) {
 			if (!toAdd.fitsIn(outputInv)) { // does not fit in chest
 				return false;

@@ -45,7 +45,7 @@ public class DecompactingRecipe extends InputRecipe {
 	}
 
 	@Override
-	public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv) {
+	public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
 		boolean isFeasible = Arrays.stream(inputInv.getContents())
 				.filter(Objects::nonNull)
 				.filter(this::isDecompactable)
