@@ -7,7 +7,6 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
-import org.ipvp.canvas.MenuFunctionListener;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.commands.ChunkMetaCommand;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
@@ -85,7 +84,6 @@ public class CivModCorePlugin extends ACivMod {
 		}
 		ScoreBoardAPI.setDefaultHeader(this.config.getScoreboardHeader());
 		// Register listeners
-		registerListener(new MenuFunctionListener());
 		registerListener(new ClickableInventoryListener());
 		registerListener(DialogManager.INSTANCE);
 		registerListener(new ScoreBoardListener());
