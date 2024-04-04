@@ -15,7 +15,6 @@ dependencies {
 	api("com.mojang:datafixerupper:1.0.20")
 	api("com.zaxxer:HikariCP:5.0.1")
 	api("co.aikar:taskchain-bukkit:3.7.2")
-	api("com.github.IPVP-MC:canvas:91ec97f076")
 	api("org.apache.commons:commons-lang3:3.12.0")
 	api("org.apache.commons:commons-collections4:4.4")
 	api("com.google.code.findbugs:jsr305:3.0.2")
