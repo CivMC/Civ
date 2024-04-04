@@ -6451,7 +6451,7 @@ recipes:
     production_time: 1s
     fuel_consumption_intervall: 4s
     input:
-      fossil:
+      easteregg:
         material: EGG
         amount: 1
         name: §dEaster Egg
