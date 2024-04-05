@@ -6526,6 +6526,7 @@ recipes:
         recipe1:
           material: PAPER
           amount: 1
+          name: §dEaster Bread Recipe
           lore:
             - Easter Bread
             - Easter bread 2
@@ -6536,6 +6537,7 @@ recipes:
         recipe2:
           material: PAPER
           amount: 1
+          name: §dCandied Carrots Recipe
           lore:
             - Candied Carrots
       recipe3:
@@ -6543,12 +6545,14 @@ recipes:
         recipe3:
           material: PAPER
           amount: 1
+          name: §dDyed Eggs Recipe
           lore:
             - Dyed Eggs
       recipe4:
         chance: 0.01
         recipe4:
           material: PAPER
+          name: §dCarrot Cake Recipe
           lore:
             - Carrot Cake
       recipe5:
@@ -6556,6 +6560,7 @@ recipes:
         recipe5:
           material: PAPER
           amount: 1
+          name: §dDeviled Eggs
           lore:
             - Deviled Eggs
       recipe6:
@@ -6563,6 +6568,7 @@ recipes:
         recipe6:
           material: PAPER
           amount: 1
+          name: §dEggnog Recipe
           lore:
             - Eggnog
       recipe7:
@@ -6570,6 +6576,7 @@ recipes:
         recipe7:
           material: PAPER
           amount: 1
+          name: §dAdvocaat Recipe
           lore:
             - Advocaat
       rabbitpunch:
