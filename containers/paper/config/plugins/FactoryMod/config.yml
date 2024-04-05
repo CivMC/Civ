@@ -6473,12 +6473,12 @@ recipes:
         chance: 0.15
         apple:
           material: APPLE
-          amount: 16
+          amount: 8
       bread:
         chance: 0.15
         bread:
           material: BREAD
-          amount: 16                
+          amount: 8             
     #Good Loot--- 30%
       ironingot:
         chance: 0.0375
@@ -6522,12 +6522,15 @@ recipes:
           amount: 4
     #Unique--- 10%
       recipe1:
-        chance: 0.01
+        chance: 1
         recipe1:
           material: PAPER
           amount: 1
           lore:
             - Easter Bread
+            - Easter bread 2
+            - Line 3
+            - Line 4
       recipe2:
         chance: 0.01
         recipe2:
