@@ -6522,7 +6522,7 @@ recipes:
           amount: 4
     #Unique--- 10%
       recipe1:
-        chance: 1
+        chance: 0.01
         recipe1:
           material: PAPER
           amount: 1
