@@ -951,6 +951,7 @@ factories:
         amount: 4
     recipes:
       - wordbank_item
+      - crack_easter_egg
       - repair_station          
   concrete_mixer:
     type: FCC
@@ -6444,6 +6445,193 @@ recipes:
       plate:
         material: OAK_TRAPDOOR
         amount: 1
+  crack_easter_egg:
+    type: RANDOM
+    name: Crack Easter Egg
+    production_time: 1s
+    fuel_consumption_intervall: 4s
+    input:
+      easteregg:
+        material: EGG
+        amount: 1
+        name: §dEaster Egg
+        lore:
+          - Crack it open for a surprise!
+    outputs:
+    #Food--- 60%
+      egg:
+        chance: 0.15
+        egg:
+          material: EGG
+          amount: 8
+      carrot:
+        chance: 0.15
+        carrot:
+          material: CARROT
+          amount: 16
+      apple:
+        chance: 0.15
+        apple:
+          material: APPLE
+          amount: 8
+      bread:
+        chance: 0.15
+        bread:
+          material: BREAD
+          amount: 8             
+    #Good Loot--- 30%
+      ironingot:
+        chance: 0.0375
+        ironingot:
+          material: IRON_INGOT
+          amount: 2
+      goldingot:
+        chance: 0.0375
+        goldingot:
+          material: GOLD_INGOT
+          amount: 2
+      copperblock:
+        chance: 0.0375
+        copperblock:
+          material: COPPER_BLOCK
+          amount: 1
+      rabbitfoot:
+        chance: 0.0375
+        rabbitfoot:
+          material: RABBIT_FOOT
+          amount: 1
+      turtleegg:
+        chance: 0.0375
+        turtleegg:
+          material: TURTLE_EGG
+          amount: 1
+      rabbitspawnegg:
+        chance: 0.0375
+        rabbitspawnegg:
+          material: RABBIT_SPAWN_EGG
+          amount: 1
+      goldencarrot:
+        chance: 0.0375
+        goldencarrot:
+          material: GOLDEN_CARROT
+          amount: 16
+      goldenapple:
+        chance: 0.0375
+        goldenapple:
+          material: GOLDEN_APPLE
+          amount: 4
+    #Unique--- 10%
+      recipe1:
+        chance: 1
+        recipe1:
+          material: PAPER
+          amount: 1
+          name: §dEaster Bread Recipe
+          lore:
+            - Milk
+            - Yeast
+            - Salt
+            - Egg
+            - Butter
+            - Flour
+      recipe2:
+        chance: 0.01
+        recipe2:
+          material: PAPER
+          amount: 1
+          name: §dCandied Carrots Recipe
+          lore:
+            - Carrots
+            - Sugar
+            - Salt
+            - Black Pepper
+            - Butter
+      recipe3:
+        chance: 0.01
+        recipe3:
+          material: PAPER
+          amount: 1
+          name: §dDyed Eggs Recipe
+          lore:
+            - Egg
+            - Pink dye
+      recipe4:
+        chance: 0.01
+        recipe4:
+          material: PAPER
+          name: §dCarrot Cake Recipe
+          lore:
+            - Egg
+            - Olive Oil
+            - Sugar
+            - Vanilla extract
+            - Flour
+            - Cinnamon
+            - Salt
+            - Carrot
+            - Walnuts
+      recipe5:
+        chance: 0.01
+        recipe5:
+          material: PAPER
+          amount: 1
+          name: §dDeviled Eggs
+          lore:
+            - Egg 
+            - Mayonnaise 
+            - Mustard 
+            - Paprika 
+            - Salt 
+            - Pepper
+      recipe6:
+        chance: 0.01
+        recipe6:
+          material: PAPER
+          amount: 1
+          name: §dEggnog Recipe
+          lore:
+            - Egg
+            - Sugar
+            - Milk
+            - Cloves
+            - Cinnamon
+            - Nutmeg
+            - Vanilla Extract
+            - Rum
+      recipe7:
+        chance: 0.01
+        recipe7:
+          material: PAPER
+          amount: 1
+          name: §dAdvocaat Recipe
+          lore:
+            - Egg
+            - Sugar
+            - Salt
+            - Vanilla Extract
+            - Vodka
+      rabbitpunch:
+        chance: 0.01
+        rabbitkick:
+          material: RABBIT_FEET
+          amount: 1
+          lore:
+            - Rabbit Kick!
+          enchants:
+            sharpness:
+              enchant: knockback
+              level: 2
+      diamond:
+        chance: 0.01
+        diamond:
+          material: DIAMOND
+          amount: 1
+      emerald:
+        chance: 0.01
+        emerald:
+          material: EMERALD
+          amount: 1
+
   print_note:
     type: PRINTNOTE
     name: Print Note
