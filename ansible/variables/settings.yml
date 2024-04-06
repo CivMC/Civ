@@ -31,7 +31,7 @@ settings:
     environment: Test
     minecraft:
       <<: *default_minecraft
-      civdocker_version: '1.26.8'
+      civdocker_version: '1.26.9'
       whitelist: true
       resources:
         <<: *default_minecraft_resources
