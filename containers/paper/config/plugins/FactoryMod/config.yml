@@ -6528,10 +6528,12 @@ recipes:
           amount: 1
           name: §dEaster Bread Recipe
           lore:
-            - Easter Bread
-            - Easter bread 2
-            - Line 3
-            - Line 4
+            - Milk
+            - Yeast
+            - Salt
+            - Egg
+            - Butter
+            - Flour
       recipe2:
         chance: 0.01
         recipe2:
@@ -6539,7 +6541,11 @@ recipes:
           amount: 1
           name: §dCandied Carrots Recipe
           lore:
-            - Candied Carrots
+            - Carrots
+            - Sugar
+            - Salt
+            - Black Pepper
+            - Butter
       recipe3:
         chance: 0.01
         recipe3:
@@ -6547,14 +6553,23 @@ recipes:
           amount: 1
           name: §dDyed Eggs Recipe
           lore:
-            - Dyed Eggs
+            - Egg
+            - Pink dye
       recipe4:
         chance: 0.01
         recipe4:
           material: PAPER
           name: §dCarrot Cake Recipe
           lore:
-            - Carrot Cake
+            - Egg
+            - Olive Oil
+            - Sugar
+            - Vanilla extract
+            - Flour
+            - Cinnamon
+            - Salt
+            - Carrot
+            - Walnuts
       recipe5:
         chance: 0.01
         recipe5:
@@ -6562,7 +6577,12 @@ recipes:
           amount: 1
           name: §dDeviled Eggs
           lore:
-            - Deviled Eggs
+            - Egg 
+            - Mayonnaise 
+            - Mustard 
+            - Paprika 
+            - Salt 
+            - Pepper
       recipe6:
         chance: 0.01
         recipe6:
@@ -6570,7 +6590,14 @@ recipes:
           amount: 1
           name: §dEggnog Recipe
           lore:
-            - Eggnog
+            - Egg
+            - Sugar
+            - Milk
+            - Cloves
+            - Cinnamon
+            - Nutmeg
+            - Vanilla Extract
+            - Rum
       recipe7:
         chance: 0.01
         recipe7:
@@ -6578,7 +6605,11 @@ recipes:
           amount: 1
           name: §dAdvocaat Recipe
           lore:
-            - Advocaat
+            - Egg
+            - Sugar
+            - Salt
+            - Vanilla Extract
+            - Vodka
       rabbitpunch:
         chance: 0.01
         rabbitkick:
