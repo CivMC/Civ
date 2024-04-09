@@ -9,9 +9,8 @@ import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.items.Compaction;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 
 /**
  * Used to compact items, which means whole or multiple stacks of an item are reduced to a single lored item, which is stackable to the same stacksize
@@ -22,13 +21,11 @@ import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
  */
 public class CompactingRecipe extends InputRecipe {
 	private List<Material> excludedMaterials;
-	private String compactedLore;
 
 	public CompactingRecipe(String identifier, ItemMap input, List<Material> excludedMaterial,
-							String name, int productionTime, String compactedLore) {
+							String name, int productionTime) {
 		super(identifier, name, productionTime, input);
 		this.excludedMaterials = excludedMaterial;
-		this.compactedLore = compactedLore;
 	}
 
 	@Override
@@ -151,7 +148,7 @@ public class CompactingRecipe extends InputRecipe {
 	 * Applies the lore and set the amount to 1. Dont call this directly if you want to compact items for players
 	 */
 	private void compactStack(ItemStack is) {
-		ItemUtils.addLore(is,compactedLore);
+		is.editMeta((meta) -> Compaction.markAsCompacted(meta, Compaction.AddLore.YES_IF_ABSENT));
 		is.setAmount(1);
 	}
 
@@ -175,8 +172,7 @@ public class CompactingRecipe extends InputRecipe {
 	 * @return True if compacting the stack is allowed, false if not
 	 */
 	private boolean compactable(ItemStack is, ItemMap im) {
-		if (is == null || excludedMaterials.contains(is.getType()) || (input.getAmount(is) != 0) || (is.getItemMeta().getLore() != null &&
-				is.getItemMeta().getLore().contains(compactedLore))) {
+		if (is == null || excludedMaterials.contains(is.getType()) || (input.getAmount(is) != 0) || Compaction.isCompacted(is)) {
 			return false;
 		}
         return im.getAmount(is) >= getCompactStackSize(is.getType());
@@ -185,10 +181,6 @@ public class CompactingRecipe extends InputRecipe {
 	@Override
 	public String getTypeIdentifier() {
 		return "COMPACT";
-	}
-
-	public String getCompactedLore() {
-		return compactedLore;
 	}
 
 	public List <Material> getExcludedMaterials() {

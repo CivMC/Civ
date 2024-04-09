@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.Compaction;
 import vg.civcraft.mc.civmodcore.world.model.EllipseArea;
 import vg.civcraft.mc.civmodcore.world.model.GlobalYLimitedArea;
 import vg.civcraft.mc.civmodcore.world.model.IArea;
@@ -178,6 +179,9 @@ public final class ConfigHelper {
 				for (ItemFlag flag : ItemFlag.values()) {
 					meta.addItemFlags(flag);
 				}
+			}
+			if (current.getBoolean("compacted")) {
+				Compaction.markAsCompacted(meta, Compaction.AddLore.YES_IF_ABSENT);
 			}
 			if (current.contains("enchants")) {
 				for (String enchantKey : current.getConfigurationSection("enchants").getKeys(false)) {

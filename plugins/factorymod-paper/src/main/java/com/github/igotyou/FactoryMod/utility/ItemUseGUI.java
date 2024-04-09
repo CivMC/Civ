@@ -21,6 +21,7 @@ import vg.civcraft.mc.civmodcore.inventory.gui.components.ContentAligners;
 import vg.civcraft.mc.civmodcore.inventory.gui.components.Scrollbar;
 import vg.civcraft.mc.civmodcore.inventory.gui.components.SlotPredicates;
 import vg.civcraft.mc.civmodcore.inventory.gui.components.StaticDisplaySection;
+import vg.civcraft.mc.civmodcore.inventory.items.Compaction;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class ItemUseGUI {
@@ -133,8 +134,7 @@ public class ItemUseGUI {
 			}
 		}
 		if (recipe instanceof CompactingRecipe) {
-			CompactingRecipe output = (CompactingRecipe) recipe;
-			if (String.join("", ItemUtils.getLore(item)).equals(output.getCompactedLore())) {
+			if (Compaction.isCompacted(item)) {
 				return getItemRecipeStack(fccEgg, recipe, item);
 			}
 		}

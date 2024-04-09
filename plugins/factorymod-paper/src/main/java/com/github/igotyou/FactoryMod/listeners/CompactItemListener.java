@@ -1,6 +1,5 @@
 package com.github.igotyou.FactoryMod.listeners;
 
-import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import io.papermc.paper.event.player.PlayerLoomPatternSelectEvent;
@@ -19,7 +18,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.LoomInventory;
-import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.inventory.items.Compaction;
 
 /**
  * Used to handle events related to items with compacted lore
@@ -31,7 +30,7 @@ public class CompactItemListener implements Listener {
 	 */
 	@EventHandler
 	public void blockPlaceEvent(BlockPlaceEvent e) {
-		if (isCompacted(e.getItemInHand())) {
+		if (Compaction.isCompacted(e.getItemInHand())) {
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.RED + "You can not place compacted blocks");
 		}
@@ -45,7 +44,7 @@ public class CompactItemListener implements Listener {
 	public void craftingEvent(CraftItemEvent e) {
 		CraftingInventory ci = e.getInventory();
 		for (ItemStack is : ci.getMatrix()) {
-			if (isCompacted(is)) {
+			if (Compaction.isCompacted(is)) {
 				e.setCancelled(true);
 				HumanEntity h = e.getWhoClicked();
 				if (h instanceof Player) {
@@ -62,7 +61,7 @@ public class CompactItemListener implements Listener {
 	@EventHandler
 	public void enchantEvent(EnchantItemEvent e) {
 		ItemStack ei = e.getItem();
-		if (isCompacted(ei)) {
+		if (Compaction.isCompacted(ei)) {
 			e.setCancelled(true);
 			e.getEnchanter().sendMessage(ChatColor.RED + "You can not enchant compacted items");
 		}
@@ -73,7 +72,7 @@ public class CompactItemListener implements Listener {
 	 */
 	@EventHandler
 	public void itemConsumeEvent(PlayerItemConsumeEvent e) {
-		if (isCompacted(e.getItem())) {
+		if (Compaction.isCompacted(e.getItem())) {
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.RED + "You can not eat compacted food");
 		}
@@ -88,7 +87,7 @@ public class CompactItemListener implements Listener {
 
 		if (!fac.getCurrentRecipe().getTypeIdentifier().equals("WORDBANK")) return;
 
-		if (isCompacted(fac.getInputInventory().getItem(0))) {
+		if (Compaction.isCompacted(fac.getInputInventory().getItem(0))) {
 			e.setCancelled(true);
 			e.getActivator().sendMessage(ChatColor.RED + "You can not wordbank compacted items");
 		}
@@ -105,7 +104,7 @@ public class CompactItemListener implements Listener {
 
 		if (e.getInventory().getType() == InventoryType.ANVIL) {
 			if (e.getSlotType() == InventoryType.SlotType.RESULT) {
-				if (isCompacted(e.getInventory().getItem(0)) || isCompacted(e.getInventory().getItem(1))) {
+				if (Compaction.isCompacted(e.getInventory().getItem(0)) || Compaction.isCompacted(e.getInventory().getItem(1))) {
 					e.setCancelled(true);
 					e.getWhoClicked().sendMessage(ChatColor.RED + "You can not use compacted items in an anvil");
 				}
@@ -124,7 +123,7 @@ public class CompactItemListener implements Listener {
 
 		if (e.getInventory().getType() == InventoryType.SMITHING) {
 			if (e.getSlotType() == InventoryType.SlotType.RESULT) {
-				if (isCompacted(e.getInventory().getItem(0)) || isCompacted(e.getInventory().getItem(1))) {
+				if (Compaction.isCompacted(e.getInventory().getItem(0)) || Compaction.isCompacted(e.getInventory().getItem(1))) {
 					e.setCancelled(true);
 					e.getWhoClicked().sendMessage(ChatColor.RED + "You can not use compacted items in a smithing table");
 				}
@@ -142,7 +141,7 @@ public class CompactItemListener implements Listener {
 		for (int i = 0; i < 2; i++) {
 			if (li.getItem(i) == null) continue;
 			if (li.getItem(i).getType() == Material.AIR) continue;
-			if (isCompacted(li.getItem(i))) {
+			if (Compaction.isCompacted(li.getItem(i))) {
 				e.setCancelled(true);
 				e.getPlayer().sendMessage(ChatColor.RED + "You can not use compacted items in a loom");
 			}
@@ -160,31 +159,11 @@ public class CompactItemListener implements Listener {
 
 		if (e.getInventory().getType() == InventoryType.CARTOGRAPHY) {
 			if (e.getSlotType() == InventoryType.SlotType.RESULT) {
-				if (isCompacted(e.getInventory().getItem(0)) || isCompacted(e.getInventory().getItem(1))) {
+				if (Compaction.isCompacted(e.getInventory().getItem(0)) || Compaction.isCompacted(e.getInventory().getItem(1))) {
 					e.setCancelled(true);
 					e.getWhoClicked().sendMessage(ChatColor.RED + "You can not copy compacted maps");
 				}
 			}
 		}
 	}
-
-	private boolean isCompacted(ItemStack is) {
-		if (is == null) {
-			return false;
-		}
-		if (!is.hasItemMeta()) {
-			return false;
-		}
-		ItemMeta im = is.getItemMeta();
-		if (!im.hasLore()) {
-			return false;
-		}
-		for (String lore : im.getLore()) {
-			if (FactoryMod.getInstance().getManager().isCompactLore(lore)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 }
