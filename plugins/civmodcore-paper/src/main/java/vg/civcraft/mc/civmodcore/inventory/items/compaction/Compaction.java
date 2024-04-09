@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.inventory.items;
+package vg.civcraft.mc.civmodcore.inventory.items.compaction;
 
 import java.util.List;
 import net.kyori.adventure.text.Component;
@@ -8,6 +8,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.pdc.PersistentDataTypes;
 
 public final class Compaction {

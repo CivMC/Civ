@@ -49,10 +49,7 @@ public class FactoryMod extends ACivMod {
 	private void registerListeners() {
 		plugin.getServer().getPluginManager()
 				.registerEvents(new FactoryModListener(manager), plugin);
-		plugin.getServer()
-				.getPluginManager()
-				.registerEvents(
-						new CompactItemListener(), plugin);
+		registerListener(new CompactItemListener());
 		if (manager.isCitadelEnabled()) {
 			plugin.getServer().getPluginManager().registerEvents(new CitadelListener(), plugin);
 		}

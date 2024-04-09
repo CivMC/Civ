@@ -21,7 +21,7 @@ import vg.civcraft.mc.civmodcore.inventory.gui.components.ContentAligners;
 import vg.civcraft.mc.civmodcore.inventory.gui.components.Scrollbar;
 import vg.civcraft.mc.civmodcore.inventory.gui.components.SlotPredicates;
 import vg.civcraft.mc.civmodcore.inventory.gui.components.StaticDisplaySection;
-import vg.civcraft.mc.civmodcore.inventory.items.Compaction;
+import vg.civcraft.mc.civmodcore.inventory.items.compaction.Compaction;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class ItemUseGUI {

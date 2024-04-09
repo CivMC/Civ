@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.Compaction;
+import vg.civcraft.mc.civmodcore.inventory.items.compaction.Compaction;
 import vg.civcraft.mc.civmodcore.world.model.EllipseArea;
 import vg.civcraft.mc.civmodcore.world.model.GlobalYLimitedArea;
 import vg.civcraft.mc.civmodcore.world.model.IArea;
