@@ -34,7 +34,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
-import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
 
 @CommandAlias(SetCommand.ALIAS)
@@ -91,8 +90,7 @@ public final class EnchantModifier extends ModifierData {
     public void toNBT(@NotNull final NBTCompound nbt) {
         nbt.setCompound(REQUIRED_KEY, NBTEncodings.encodeLeveledEnchants(getRequiredEnchants()));
         nbt.setStringArray(EXCLUDED_KEY, getExcludedEnchants().stream()
-            .map(KeyedUtils::getString)
-            .filter(Objects::nonNull)
+            .map((entry) -> entry.getKey().asString())
             .toArray(String[]::new));
         nbt.setBoolean(UNLISTED_KEY, isAllowingUnlistedEnchants());
     }

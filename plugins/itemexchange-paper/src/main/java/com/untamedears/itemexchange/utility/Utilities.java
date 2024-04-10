@@ -28,7 +28,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
-import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
@@ -176,7 +175,7 @@ public final class Utilities {
         }
         return "[" +
             leveledEnchants.entrySet().stream()
-                .map(entry -> KeyedUtils.getString(entry.getKey()) + ":" + entry.getValue())
+                .map((entry) -> entry.getKey().getKey().asString() + ":" + entry.getValue())
                 .collect(Collectors.joining(",")) +
             "]";
     }
@@ -187,7 +186,7 @@ public final class Utilities {
         }
         return "[" +
             enchants.stream()
-                .map(entry -> KeyedUtils.getString(entry.getKey()))
+                .map((entry) -> entry.getKey().asString())
                 .collect(Collectors.joining(",")) +
             "]";
     }
