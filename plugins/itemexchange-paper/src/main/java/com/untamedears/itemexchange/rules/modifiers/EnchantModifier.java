@@ -92,7 +92,6 @@ public final class EnchantModifier extends ModifierData {
         nbt.setCompound(REQUIRED_KEY, NBTEncodings.encodeLeveledEnchants(getRequiredEnchants()));
         nbt.setStringArray(EXCLUDED_KEY, getExcludedEnchants().stream()
             .map(KeyedUtils::getString)
-            .filter(Objects::nonNull)
             .toArray(String[]::new));
         nbt.setBoolean(UNLISTED_KEY, isAllowingUnlistedEnchants());
     }
