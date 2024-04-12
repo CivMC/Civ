@@ -94,7 +94,7 @@ allprojects {
     }
 
     tasks.withType<RunServer> {
-        minecraftVersion("1.18")
+        minecraftVersion("1.20.4")
     }
 
     pluginManager.withPlugin("io.papermc.paperweight.userdev") {
