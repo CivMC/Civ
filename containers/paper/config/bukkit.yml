@@ -22,7 +22,7 @@ chunk-gc:
 ticks-per:
   axolotl-spawns: 4800
   animal-spawns: 4800
-  monster-spawns: 200
+  monster-spawns: 100
   water-spawns: 1200
   water-ambient-spawns: 4800
   water-underground-creature-spawns: 7200
