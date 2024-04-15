@@ -161,10 +161,10 @@ world:
       checkradius: 900 # require another player closer than this
       radius: 215 # spawn area outer radius
       exclusion: 78 # spawn area inner radius
-    Imperia: #Britisher#3253
-      x: -3425
+    Imperial Federation: #destroh.
+      x: -3388
       y: 250 # overridden in code, but must be set
-      z: 6816
+      z: 7981
       nearby: true # require another player nearby?
       checkradius: 900 # require another player closer than this
       radius: 200 # spawn area outer radius
