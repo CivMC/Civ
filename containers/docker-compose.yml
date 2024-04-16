@@ -1,0 +1,126 @@
+version: '3.9'
+
+services:
+
+  waterfall:
+    build: waterfall
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      CIV_POSTGRES_HOST: postgres
+      CIV_POSTGRES_USERNAME: postgres
+      CIV_POSTGRES_PASSWORD: postgres
+    ports:
+      - "25565:25577"
+
+  paper:
+    build: paper
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8123:8123"
+    environment:
+      INIT_MEMORY: 1G
+      MAX_MEMORY: 5G
+
+      CIV_SERVER_NAME: local
+
+      CIV_WORLD_GENERATOR: Terra:DEFAULT
+      CIV_WORDBANK_SEED: wordbank
+
+      CIV_MYSQL_HOST: mariadb
+      CIV_MYSQL_USERNAME: mariadb
+      CIV_MYSQL_PASSWORD: mariadb
+
+      CIV_POSTGRES_HOST: postgres
+      CIV_POSTGRES_USERNAME: postgres
+      CIV_POSTGRES_PASSWORD: postgres
+
+      CIV_RABBITMQ_HOST: rabbitmq
+      CIV_RABBITMQ_USERNAME: rabbitmq
+      CIV_RABBITMQ_PASSWORD: rabbitmq
+    volumes:
+      - ./local/paper:/data
+
+  mariadb:
+    image: mariadb:10.7.1
+    restart: unless-stopped
+    command: --max-connections 500
+    healthcheck:
+      test: [ "CMD-SHELL", 'mysqladmin ping --user "$$MYSQL_USER" --password="$$MYSQL_PASSWORD"' ]
+      timeout: 20s
+      retries: 10
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: mariadb
+      MYSQL_USER: mariadb
+      MYSQL_PASSWORD: mariadb
+      MYSQL_DATABASE: mariadb
+    volumes:
+      - ./provisioning/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./local/mariadb:/var/lib/mysql
+
+  postgres:
+    image: timescale/timescaledb:latest-pg14
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", 'pg_isready -U "$$POSTGRES_USER"']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./provisioning/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./local/postgres:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3.9.16-management
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    ports:
+      - "5672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - extra
+    ports:
+      - "3000:3000"
+    environment:
+      CIV_INFLUX_HOST: http://influx:8086
+      CIV_INFLUX_ORG: CivMC
+      CIV_INFLUX_TOKEN: admintoken
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+
