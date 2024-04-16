@@ -1,0 +1,5 @@
+- name: Install Packages | Install apt packages
+  apt:
+    state: present
+    name:
+      - restic

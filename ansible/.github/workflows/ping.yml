@@ -1,0 +1,33 @@
+name: Ping
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to Ping'
+        type: environment
+        required: true 
+        default: Test
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    environment: ${{inputs.environment}}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Inject secrets
+        run: 'echo "$SECRETS_YML" > variables/secrets.yml'
+        shell: bash
+        env:
+          SECRETS_YML: ${{secrets.SECRETS_YML}}
+
+      - name: Ping
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: playbooks/ping.yml
+          requirements: requirements.yml
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}
+          options: |
+            --inventory ./inventories/civmc-${{inputs.environment}}.yml
+
