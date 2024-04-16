@@ -1,27 +1,23 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
-import com.google.common.base.Strings;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
+import java.security.SecureRandom;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.md_5.bungee.api.ChatColor;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.NeutralMob;
 import net.minecraft.world.entity.animal.Bee;
-import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Beehive;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -34,26 +30,16 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.chat.ChatUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
-
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public final class BeeKeeping extends BasicHack {
-
     private static final Random RANDOM = new SecureRandom();
 
-    public BeeKeeping(final SimpleAdminHacks plugin, final BasicHackConfig config) {
+    public BeeKeeping(
+        final @NotNull SimpleAdminHacks plugin,
+        final @NotNull BasicHackConfig config
+    ) {
         super(plugin, config);
     }
 
@@ -66,18 +52,29 @@ public final class BeeKeeping extends BasicHack {
         EntityType.COW,
         EntityType.PIG,
         EntityType.SHEEP,
-        EntityType.RABBIT);
+        EntityType.RABBIT
+    );
 
     @AutoLoad
     private double spawnChance;
 
-    @EventHandler(ignoreCancelled = true)
-    public void beeSpawning(final CreatureSpawnEvent event) {
-        if (!NEUTRAL_MOBS.contains(event.getEntityType())
-            || event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.NATURAL
-            || this.spawnChance <= 0.0d
-            || (this.spawnChance < 1.0d && RANDOM.nextDouble() > this.spawnChance)) {
+    @EventHandler(
+        ignoreCancelled = true
+    )
+    private void beeSpawning(
+        final @NotNull CreatureSpawnEvent event
+    ) {
+        if (!NEUTRAL_MOBS.contains(event.getEntityType())) {
             return;
+        }
+        if (event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.NATURAL) {
+            return;
+        }
+        if (this.spawnChance <= 0.0d) {
+            return; // Spawning is impossible
+        }
+        if (this.spawnChance < 1.0d && RANDOM.nextDouble() > this.spawnChance) {
+            return; // Spawn chance not met
         }
         final Location location = event.getLocation();
         final World world = location.getWorld();
@@ -92,23 +89,34 @@ public final class BeeKeeping extends BasicHack {
     @AutoLoad
     private double severStingerChance;
 
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void attackedByBee(final EntityDamageByEntityEvent event) {
+    @EventHandler(
+        priority = EventPriority.MONITOR,
+        ignoreCancelled = true
+    )
+    private void attackedByBee(
+        final @NotNull EntityDamageByEntityEvent event
+    ) {
         final Entity attacker = event.getDamager();
-        if (attacker.getType() != EntityType.BEE
-            || event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK // Ignore if not attacked
-            || this.severStingerChance >= 1.0d // Ignore if severance is guaranteed
-            || (this.severStingerChance > 0.0d && RANDOM.nextDouble() <= this.severStingerChance)) {
+        if (attacker.getType() != EntityType.BEE) {
             return;
         }
-        final Bee bee = (Bee) ((CraftEntity) attacker).getHandle();
+        if (event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+            return;
+        }
+        if (this.severStingerChance >= 1.0d) {
+            return; // Severance is guaranteed
+        }
+        if (this.severStingerChance > 0.0d && RANDOM.nextDouble() <= this.severStingerChance) {
+            return; // Severance chance met
+        }
+        final var bee = (Bee) ((CraftEntity) attacker).getHandle();
         // Undo bee pacification and allow the bee to sting again
-        /** See the code in {@link IEntityAngerable#pacify()} */
-        final var lastDamageCause = bee.getLastHurtByMob();
-        final var angerTarget = bee.getPersistentAngerTarget();
-        final var goalTarget = bee.getTarget();
-        final var angerLevel = bee.getRemainingPersistentAngerTime();
-        Bukkit.getScheduler().runTask(this.plugin, () -> {
+        /** See the code in {@link NeutralMob#stopBeingAngry()} */
+        final LivingEntity lastDamageCause = bee.getLastHurtByMob();
+        final UUID angerTarget = bee.getPersistentAngerTarget();
+        final LivingEntity goalTarget = bee.getTarget();
+        final int angerLevel = bee.getRemainingPersistentAngerTime();
+        Bukkit.getScheduler().runTask(plugin(), () -> {
             bee.setHasStung(false);
             // Reset the above values
             bee.setLastHurtByMob(lastDamageCause);
@@ -122,104 +130,41 @@ public final class BeeKeeping extends BasicHack {
     // Bee Hive/Nest Details
     // ------------------------------------------------------------
 
-    private static final String BEES_LIST_KEY = "Bees";
-    private static final String BEE_DATA_KEY = "EntityData";
-    private static final String BEE_NAME_KEY = "CustomName";
-
-    private static final Set<Material> HIVE_MATERIALS = Set.of(
-        Material.BEE_NEST,
-        Material.BEEHIVE);
-
-    @EventHandler(ignoreCancelled = true)
-    public void showHiveDetails(final PlayerInteractEvent event) {
+    @EventHandler(
+        ignoreCancelled = true,
+        priority = EventPriority.MONITOR
+    )
+    private void showHiveDetails(
+        final @NotNull PlayerInteractEvent event
+    ) {
         final Player player = event.getPlayer();
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
-        final ItemStack held = event.getItem();
-        if (ItemUtils.isValidItem(held)) {
+        if (event.getHand() != EquipmentSlot.HAND) { // Prevent double-interaction
             return;
         }
-        final Block block = Objects.requireNonNull(event.getClickedBlock());
-        if (!HIVE_MATERIALS.contains(block.getType())) {
+        if (event.hasItem()) {
             return;
         }
-        final BeehiveBlockEntity beehive = getBeeHive(block);
-        if (beehive.isEmpty()) {
-            player.sendMessage(ChatColor.GOLD + "There aren't any bees in that hive.");
+        final Block block = event.getClickedBlock();
+        if (block == null || !(block.getState() instanceof final Beehive hive)) {
             return;
         }
-        final List<BeeData> bees = getBeesFromHive(beehive);
-        final int numberOfUnnamed = MoreCollectionUtils.numberOfMatches(bees, BeeData::isNameless);
-        bees.removeIf(BeeData::isNameless);
-        // Start building response
-        final var response = Component.text().color(NamedTextColor.GOLD);
-        final Iterator<BeeData> nameIterator = bees.iterator();
-        boolean doneFirstElement = false;
-        while (nameIterator.hasNext()) {
-            final BeeData bee = nameIterator.next();
-            if (nameIterator.hasNext() || numberOfUnnamed > 0) {
-                if (doneFirstElement) {
-                    response.append(Component.text(", "));
-                }
-            } else if (numberOfUnnamed == 0) {
-                response.append(Component.text(", and "));
-            }
-            assert bee.name != null;
-            response.append(bee.name);
-            doneFirstElement = true;
+        final int numberOfBees = hive.getEntityCount();
+        if (numberOfBees < 1) {
+            player.sendMessage(Component.text(
+                "There aren't any bees in that hive.",
+                NamedTextColor.GOLD
+            ));
+            return;
         }
-        if (numberOfUnnamed > 0) {
-            if (bees.isEmpty()) {
-                response.append(Component.text("There are " + numberOfUnnamed + " bees"));
-            } else {
-                response.append(Component.text(", and " + numberOfUnnamed + " others are"));
-            }
-        } else {
-            response.append(Component.text(" are"));
-        }
-        if (beehive.isSedated()) {
-            response.append(Component.text(" sedated"));
-        } else {
-            response.append(Component.text(" happily buzzing"));
-        }
-        response.append(Component.text(" in that hive."));
-        player.sendMessage(response);
+        player.sendMessage(Component.text(
+            "There "
+                + (numberOfBees == 1 ? "is 1 bee " : "are " + numberOfBees + " bees ")
+                + (hive.isSedated() ? "sedated " : "happily buzzing ")
+                + "in that hive.",
+            NamedTextColor.GOLD
+        ));
     }
-
-    private static BeehiveBlockEntity getBeeHive(@NotNull final Block block) {
-        final CraftBlock craftBlock = (CraftBlock) block;
-        final CraftWorld craftWorld = craftBlock.getCraftWorld();
-        final ServerLevel worldServer = craftWorld.getHandle();
-        final BlockEntity tileEntity = worldServer.getBlockEntity(craftBlock.getPosition());
-        return (BeehiveBlockEntity) Objects.requireNonNull(tileEntity);
-    }
-
-    private static List<BeeData> getBeesFromHive(@NotNull final BeehiveBlockEntity hive) {
-        List<BeehiveBlockEntity.Occupant> bees = hive.components().get(DataComponents.BEES);
-
-		return bees == null ? null : bees.stream().map(bee -> bee.entityData().copyTag()).map(BeeData::new).collect(Collectors.toCollection(ArrayList::new));
-	}
-
-    private static final class BeeData {
-
-        public final Component name;
-
-        public BeeData(@NotNull final CompoundTag nbt) {
-            // Parse name
-            final String rawName = nbt.getString(BEE_NAME_KEY);
-            if (Strings.isNullOrEmpty(rawName)) {
-                this.name = null;
-            } else {
-                final var componentName = GsonComponentSerializer.gson().deserialize(rawName);
-                this.name = ChatUtils.isNullOrEmpty(componentName) ? null : componentName;
-            }
-        }
-
-        public boolean isNameless() {
-            return this.name == null;
-        }
-
-    }
-
 }
