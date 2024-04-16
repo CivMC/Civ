@@ -1,0 +1,19 @@
+# TODO: Fail when more than one manager
+
+- name: Configure Docker | Initialize Swarm
+  when: "'swarm_manager' in group_names"
+  docker_swarm:
+    state: present
+
+- name: Configure Docker | Create Stacks Directory
+  file:
+    path: /opt/stacks
+    state: directory
+
+- name: Configure Docker | Create shared networks
+  docker_network:
+    name: '{{item}}'
+    driver: overlay
+  loop:
+    - traefik-public
+    - monitoring

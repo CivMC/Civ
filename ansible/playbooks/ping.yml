@@ -1,0 +1,9 @@
+- name: Ping
+  hosts: all
+
+  tasks:
+    - name: Configure | Expand setting
+      include_tasks: ../tasks/expand-setting.yml
+
+    - name: Ping
+      ping:
