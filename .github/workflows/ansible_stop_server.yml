@@ -1,15 +1,19 @@
-name: Kira | Restart
+name: 🏗️ Ansible | Stop Server
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to Restart'
+        description: 'Environment to Stop'
         type: environment
         required: true 
         default: Test
 
+defaults:
+  run:
+    working-directory: ./ansible
+
 jobs:
-  kira-restart:
+  stop-server:
     runs-on: ubuntu-latest
     environment: ${{inputs.environment}}
     steps:
@@ -22,10 +26,10 @@ jobs:
           SECRETS_YML: ${{secrets.SECRETS_YML}}
           SUDO_PASSWORD: ${{secrets.SUDO_PASSWORD}}
 
-      - name: Restart Kira
+      - name: Stop Server
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: playbooks/restart-kira.yml
+          playbook: playbooks/stop-server.yml
           requirements: requirements.yml
           key: ${{secrets.SSH_PRIVATE_KEY}}
           known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}
