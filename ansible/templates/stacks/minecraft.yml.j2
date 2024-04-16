@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   waterfall:
-    image: ghcr.io/civmc/civdocker/waterfall:{{setting.minecraft.civdocker_version}}
+    image: ghcr.io/civmc/civ/waterfall:{{setting.minecraft.civdocker_version}}
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -26,7 +26,7 @@ services:
         constraints: [node.role == manager]
 
   paper:
-    image: ghcr.io/civmc/civdocker/paper:{{setting.minecraft.civdocker_version}}
+    image: ghcr.io/civmc/civ/paper:{{setting.minecraft.civdocker_version}}
     restart: unless-stopped
     tty: true
     stdin_open: true
