@@ -8,10 +8,6 @@ on:
         required: true 
         default: Test
 
-defaults:
-  run:
-    working-directory: ./ansible
-
 jobs:
   ping:
     runs-on: ubuntu-latest
@@ -22,16 +18,17 @@ jobs:
       - name: Inject secrets
         run: 'echo "$SECRETS_YML" > variables/secrets.yml'
         shell: bash
+        working-directory: ./ansible
         env:
           SECRETS_YML: ${{secrets.SECRETS_YML}}
 
       - name: Ping
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: playbooks/ping.yml
-          requirements: requirements.yml
+          playbook: ansible/playbooks/ping.yml
+          requirements: ansible/requirements.yml
           key: ${{secrets.SSH_PRIVATE_KEY}}
           known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}
           options: |
-            --inventory ./inventories/civmc-${{inputs.environment}}.yml
+            --inventory ./ansible/inventories/civmc-${{inputs.environment}}.yml
 
