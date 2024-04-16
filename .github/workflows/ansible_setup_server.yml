@@ -8,10 +8,6 @@ on:
         required: true 
         default: Test
 
-defaults:
-  run:
-    working-directory: ./ansible
-
 jobs:
   setup-server:
     runs-on: ubuntu-latest
@@ -22,6 +18,7 @@ jobs:
       - name: Inject secrets
         run: 'echo "$SECRETS_YML" > variables/secrets.yml'
         shell: bash
+        working-directory: ./ansible
         env:
           SECRETS_YML: ${{secrets.SECRETS_YML}}
           SUDO_PASSWORD: ${{secrets.SUDO_PASSWORD}}
@@ -29,10 +26,10 @@ jobs:
       - name: Setup Server
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: playbooks/setup-server.yml
-          requirements: requirements.yml
+          playbook: ansible/playbooks/setup-server.yml
+          requirements: ansible/requirements.yml
           key: ${{secrets.SSH_PRIVATE_KEY}}
           known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}
           options: |
-            --inventory ./inventories/civmc-${{inputs.environment}}.yml
+            --inventory ./ansible/inventories/civmc-${{inputs.environment}}.yml
             -e "ansible_become_password=${{secrets.SUDO_PASSWORD}}"
