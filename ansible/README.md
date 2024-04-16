@@ -1,10 +1,13 @@
 # CivAnsible
 
 ## Prerequisites
-1. Inventory created
-2. Github Settings: environments defined with SSH_KNOWN_HOSTS, SSH_PRIVATE_KEY, SUDO PASSWORD
-3. Actions secret defined with SECRETS_YML
-4. SINGLE manager node
+1. Create a user on the server named `actions` with sudo privileges
+2. Create Environments in Github settings with the following environment secrets:
+    - SSH_KNOWN_HOSTS
+    - SSH_PRIVATE_KEY
+    - SUDO_PASSWORD
+3. Create a repo scoped secret with the contents of your secrets.yml called SECRETS_YML
+4. Create an ansible inventory named after the environment
 
 ## TODOs
 - Private Config

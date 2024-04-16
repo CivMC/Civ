@@ -1,15 +1,19 @@
-name: Start Server
+name: 🏗️ Ansible | Update Server
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to Start'
+        description: 'Environment to Update'
         type: environment
         required: true 
         default: Test
 
+defaults:
+  run:
+    working-directory: ./ansible
+
 jobs:
-  start-server:
+  update-server:
     runs-on: ubuntu-latest
     environment: ${{inputs.environment}}
     steps:
@@ -22,10 +26,10 @@ jobs:
           SECRETS_YML: ${{secrets.SECRETS_YML}}
           SUDO_PASSWORD: ${{secrets.SUDO_PASSWORD}}
 
-      - name: Start Server
+      - name: Update Server
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: playbooks/start-server.yml
+          playbook: playbooks/update-server.yml
           requirements: requirements.yml
           key: ${{secrets.SSH_PRIVATE_KEY}}
           known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}

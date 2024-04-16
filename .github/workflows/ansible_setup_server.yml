@@ -1,15 +1,19 @@
-name: Stop Server
+name: 🏗️ Ansible | Setup Server
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to Stop'
+        description: 'Environment to Setup'
         type: environment
         required: true 
         default: Test
 
+defaults:
+  run:
+    working-directory: ./ansible
+
 jobs:
-  stop-server:
+  setup-server:
     runs-on: ubuntu-latest
     environment: ${{inputs.environment}}
     steps:
@@ -22,10 +26,10 @@ jobs:
           SECRETS_YML: ${{secrets.SECRETS_YML}}
           SUDO_PASSWORD: ${{secrets.SUDO_PASSWORD}}
 
-      - name: Stop Server
+      - name: Setup Server
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: playbooks/stop-server.yml
+          playbook: playbooks/setup-server.yml
           requirements: requirements.yml
           key: ${{secrets.SSH_PRIVATE_KEY}}
           known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}

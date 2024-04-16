@@ -1,15 +1,19 @@
-name: Ping
+name: 🏗️ Ansible | Restart Kira
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to Ping'
+        description: 'Environment to Restart'
         type: environment
         required: true 
         default: Test
 
+defaults:
+  run:
+    working-directory: ./ansible
+
 jobs:
-  ping:
+  kira-restart:
     runs-on: ubuntu-latest
     environment: ${{inputs.environment}}
     steps:
@@ -20,14 +24,15 @@ jobs:
         shell: bash
         env:
           SECRETS_YML: ${{secrets.SECRETS_YML}}
+          SUDO_PASSWORD: ${{secrets.SUDO_PASSWORD}}
 
-      - name: Ping
+      - name: Restart Kira
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: playbooks/ping.yml
+          playbook: playbooks/restart-kira.yml
           requirements: requirements.yml
           key: ${{secrets.SSH_PRIVATE_KEY}}
           known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}
           options: |
             --inventory ./inventories/civmc-${{inputs.environment}}.yml
-
+            -e "ansible_become_password=${{secrets.SUDO_PASSWORD}}"
