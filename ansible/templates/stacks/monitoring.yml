@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+
+  grafana:
+    image: grafana/grafana-oss
+    networks:
+      - traefik-public
+      - monitoring
+    volumes:
+      - /opt/stacks/monitoring/grafana-data:/var/lib/grafana
+    environment:
+      GF_SERVER_DOMAIN: "{{secret.monitoring.grafana.host}}"
+      GF_SERVER_ROOT_URL: "https://{{secret.monitoring.grafana.host}}"
+      # TODO: If oauth enabled
+      GF_AUTH_OAUTH_ALLOW_INSECURE_EMAIL_LOOKUP: "true"
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+      GF_AUTH_GENERIC_OAUTH_NAME: "Keycloak"
+      GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
+      GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "{{secret.monitoring.grafana.oauth.client_id}}"
+      GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: "{{secret.monitoring.grafana.oauth.client_secret}}"
+      GF_AUTH_GENERIC_OAUTH_SCOPES: profile
+      GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/auth/realms/Internal/protocol/openid-connect/auth"
+      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/auth/realms/Internal/protocol/openid-connect/token"
+      GF_AUTH_GENERIC_OAUTH_API_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/auth/realms/Internal/protocol/openid-connect/userinfo"
+      GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'"
+    user: "0"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.grafana-public-http.rule=Host(`{{secret.monitoring.grafana.host}}`)
+        - traefik.http.routers.grafana-public-http.entrypoints=http
+        - traefik.http.routers.grafana-public-http.middlewares=https-redirect
+        - traefik.http.routers.grafana-public-https.rule=Host(`{{secret.monitoring.grafana.host}}`)
+        - traefik.http.routers.grafana-public-https.entrypoints=https
+        - traefik.http.routers.grafana-public-https.tls=true
+        - traefik.http.routers.grafana-public-https.tls.certresolver=le
+        - traefik.http.services.grafana-public.loadbalancer.server.port=3000
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
+
+  loki:
+    image: grafana/loki
+    networks:
+      - monitoring
+    ports:
+      - "3100:3100"
+    volumes:
+      - /opt/PrivateConfig/loki/test-config.yaml:/etc/loki/local-config.yaml
+      - /opt/stacks/monitoring/loki-data:/loki
+    user: "0"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  traefik-public:
+    external: true
+  monitoring:
+    external: true
