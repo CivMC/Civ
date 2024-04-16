@@ -1,5 +1,3 @@
-version: '3.9'
-
 # Development stack for Civ. This stack can be used to develop and test the server and plugins locally.
 # Please note that this stack is NOT suitable for production use, as it exposes all service ports, and uses default passwords.
 
@@ -8,6 +6,58 @@ services:
   #################
   ### Minecraft ###
   #################
+
+  waterfall:
+    build: containers/waterfall
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      CIV_POSTGRES_HOST: postgres
+      CIV_POSTGRES_USERNAME: postgres
+      CIV_POSTGRES_PASSWORD: postgres
+    ports:
+      - "25565:25577"
+
+  paper:
+    build: containers/paper
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      INIT_MEMORY: 1G
+      MAX_MEMORY: 5G
+
+      CIV_SERVER_NAME: local
+
+      CIV_WORLD_GENERATOR: Terra:DEFAULT
+      CIV_WORDBANK_SEED: wordbank
+
+      CIV_MYSQL_HOST: mariadb
+      CIV_MYSQL_USERNAME: mariadb
+      CIV_MYSQL_PASSWORD: mariadb
+
+      CIV_POSTGRES_HOST: postgres
+      CIV_POSTGRES_USERNAME: postgres
+      CIV_POSTGRES_PASSWORD: postgres
+
+      CIV_RABBITMQ_HOST: rabbitmq
+      CIV_RABBITMQ_USERNAME: rabbitmq
+      CIV_RABBITMQ_PASSWORD: rabbitmq
+    volumes:
+      - ./containers/data/paper:/data
 
   pvp:
     build: containers/pvp
