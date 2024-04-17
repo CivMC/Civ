@@ -1,0 +1,42 @@
+settings:
+  default: &default
+    # Default Stacks
+    traefik:
+      enabled: true
+    monitoring:
+      enabled: true
+    minecraft: &default_minecraft
+      enabled: true
+      civdocker_version: latest
+      whitelist: false
+      resources: &default_minecraft_resources
+        memory: 40G
+    # Optional Stacks
+    auth:
+      enabled: false
+    maven:
+      enabled: false
+
+  production:
+    <<: *default
+    environment: Production
+    minecraft:
+      <<: *default_minecraft
+      civdocker_version: '1.26.10'
+    auth:
+      enabled: false # TODO: MOVE
+
+  test:
+    <<: *default
+    environment: Test
+    minecraft:
+      <<: *default_minecraft
+      civdocker_version: '1.26.10'
+      whitelist: true
+      resources:
+        <<: *default_minecraft_resources
+        memory: 8G
+    auth:
+      enabled: true # TODO: MOVE
+    maven:
+      enabled: true # TODO: MOVE

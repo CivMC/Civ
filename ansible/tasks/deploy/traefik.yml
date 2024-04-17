@@ -1,0 +1,35 @@
+- name: Traefik | Create Folder
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.traefik.enabled
+  file:
+    path: /opt/stacks/traefik
+    state: directory
+
+- name: Traefik | Create volume folders
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.traefik.enabled
+  file:
+    path: '{{item}}'
+    state: directory
+  loop:
+    - /opt/stacks/traefik/traefik-certs
+
+- name: Traefik | Copy Stack
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.traefik.enabled
+  template:
+    src: ../../templates/stacks/traefik.yml
+    dest: /opt/stacks/traefik/traefik.yml
+
+- name: Traefik | Deploy Stack
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.traefik.enabled
+  docker_stack:
+    state: present
+    name: traefik
+    compose:
+      - /opt/stacks/traefik/traefik.yml
