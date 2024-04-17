@@ -7,8 +7,8 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
-import org.ipvp.canvas.MenuFunctionListener;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
+import vg.civcraft.mc.civmodcore.commands.ChunkMetaCommand;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.civmodcore.commands.StatCommand;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
@@ -84,7 +84,6 @@ public class CivModCorePlugin extends ACivMod {
 		}
 		ScoreBoardAPI.setDefaultHeader(this.config.getScoreboardHeader());
 		// Register listeners
-		registerListener(new MenuFunctionListener());
 		registerListener(new ClickableInventoryListener());
 		registerListener(DialogManager.INSTANCE);
 		registerListener(new ScoreBoardListener());
@@ -95,6 +94,7 @@ public class CivModCorePlugin extends ACivMod {
 		this.commands.init();
 		this.commands.registerCommand(new ConfigCommand());
 		this.commands.registerCommand(new StatCommand());
+		this.commands.registerCommand(new ChunkMetaCommand());
 		// Load APIs
 		EnchantUtils.loadEnchantAbbreviations(this);
 		MoreTags.init();

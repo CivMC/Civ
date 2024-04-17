@@ -1,0 +1,32 @@
+{
+  "db": {
+    "host": "minecraft_postgres",
+    "port": 5432,
+    "database": "kira",
+    "user": "minecraft",
+    "password": "{{secret.minecraft.postgres.password}}"
+  },
+  "rabbitmq": {
+    "host": "prod-server_rabbitmq",
+    "port": 5672,
+    "user": "rabbitmq",
+    "password": "{{secret.minecraft.rabbitmq.password}}",
+    "incomingQueue": "gateway-to-kira",
+    "outgoingQueue": "kira-to-gateway"
+  },
+  "bot": {
+    "serverid": 912074050086502470,
+    "authroleid": 979201905622401025,
+    "token": "{{secret.minecraft.kira.token}}"
+  },
+  "api": {
+    "address": "localhost",
+    "port": 80,
+    "sslCertPassword": null,
+    "sslCertPath": null
+  },
+  "consoleforward": {},
+  "apirate": "500ms",
+  "commandprefix": "!kira ",
+  "relayCategory": 0
+}

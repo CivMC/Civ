@@ -1,0 +1,15 @@
+- name: Restart Kira
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Restart Kira | Expand setting
+      include_tasks: ../tasks/expand-setting.yml
+
+    - name: Restart Kira | Include Stop Tasks
+      include_tasks:
+        file: '../tasks/stop-kira.yml'
+    
+    - name: Restart Kira | Include Start Tasks
+      include_tasks:
+        file: '../tasks/start-kira.yml'

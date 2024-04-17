@@ -1,0 +1,49 @@
+settings:
+  update-checker:
+    enabled: true
+    interval-seconds: 10800
+  scans:
+    concurrent-threads: -1
+    iteration-interval-ticks: 1
+    chunks-per-iteration: 256
+    info-interval-millis: 100
+  chunk-scans:
+    mode: ALWAYS
+    player-tracker-interval-ticks: 5
+  notification:
+    type: BOSSBAR
+    bossbar:
+      color: BLUE
+      overlay: NOTCHED_10
+      flags: []
+      duration-ticks: 60
+    actionbar:
+      segments: 50
+      progress-sequence: '|'
+      done-color: <green>
+      total-color: <dark_gray>
+      separator: ' '
+  area-scan-notifications:
+    enabled: true
+    permission: ''
+  spigot:
+    entity-tracker-interval-ticks: 10
+  apply-piston-limits: true
+  pagination-results-per-page: 6
+  disabled-listeners:
+  - BlockFromToEvent
+  - FluidLevelChangeEvent
+  - SpongeAbsorbEvent
+  - LeavesDecayEvent
+  listener-priorities:
+    BlockPlaceEvent: LOWEST
+    HangingPlaceEvent: LOWEST
+    EntityPlaceEvent: LOWEST
+    BlockPistonExtendEvent: LOWEST
+    BlockPistonRetractEvent: LOWEST
+  redstone-update-limiter:
+    enabled: false
+    limit: 50000
+    aggregate-ticks: 10
+    aggregate-size: 30
+    block-outside-region: false

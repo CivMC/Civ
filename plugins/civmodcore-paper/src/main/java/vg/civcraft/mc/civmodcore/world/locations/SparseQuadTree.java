@@ -1,6 +1,6 @@
 package vg.civcraft.mc.civmodcore.world.locations;
 
-import java.util.HashSet;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -43,7 +43,7 @@ public class SparseQuadTree<T extends QTBox> {
 	}
 
 	public SparseQuadTree(Integer borderSize) {
-		boxes = new HashSet<>();
+		boxes = new ObjectOpenHashSet<>();
 		if (borderSize == null || borderSize < 0) {
 			throw new IllegalArgumentException("borderSize == null || borderSize < 0");
 		}
@@ -52,7 +52,7 @@ public class SparseQuadTree<T extends QTBox> {
 	}
 
 	protected SparseQuadTree(Integer borderSize, Quadrant quadrant) {
-		this.boxes = new HashSet<>();
+		this.boxes = new ObjectOpenHashSet<>();
 		this.borderSize = borderSize;
 		this.quadrant = quadrant;
 	}
@@ -102,7 +102,7 @@ public class SparseQuadTree<T extends QTBox> {
 			border = borderSize;
 		}
 		if (boxes != null) {
-			Set<T> result = new HashSet<>();
+			Set<T> result = new ObjectOpenHashSet<>();
 			// These two loops are the same except for the second doesn't include the
 			// border adjustment for a little added performance.
 			if (includeBorder) {
@@ -145,7 +145,7 @@ public class SparseQuadTree<T extends QTBox> {
 		}
 		--size;
 		if (size == 0) {
-			boxes = new HashSet<>();
+			boxes = new ObjectOpenHashSet<>();
 			northWest = null;
 			northEast = null;
 			southWest = null;
