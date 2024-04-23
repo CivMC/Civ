@@ -1,0 +1,13 @@
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    access: proxy
+    url: ${CIV_INFLUX_HOST}
+    secureJsonData:
+        token: ${CIV_INFLUX_TOKEN}
+    jsonData:
+      version: Flux
+      organization: ${CIV_INFLUX_ORG}
+      tlsSkipVerify: true

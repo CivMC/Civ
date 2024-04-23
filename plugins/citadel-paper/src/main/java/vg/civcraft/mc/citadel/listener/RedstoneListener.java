@@ -98,14 +98,17 @@ public class RedstoneListener implements Listener {
 		Switch button = (Switch) (e.getClickedBlock().getBlockData());
 		Block buttonBlock = e.getClickedBlock();
 		Block attachedBlock;
+		BlockFace skip = button.getFacing().getOppositeFace();
 		// needs special handling because buttons attached to ceiling and ground can be
 		// turned in which case the facing direction indicates this direction
 		switch (button.getAttachedFace()) {
 		case CEILING:
 			attachedBlock = e.getClickedBlock().getRelative(BlockFace.UP);
+			skip = BlockFace.UP;
 			break;
 		case FLOOR:
 			attachedBlock = e.getClickedBlock().getRelative(BlockFace.DOWN);
+			skip = BlockFace.DOWN;
 			break;
 		case WALL:
 			attachedBlock = e.getClickedBlock().getRelative(button.getFacing().getOppositeFace());
@@ -115,7 +118,7 @@ public class RedstoneListener implements Listener {
 			return;
 		}
 		// prepare all sides of button itself
-		setupAdjacentDoors(e.getPlayer(), buttonBlock, button.getFacing().getOppositeFace());
+		setupAdjacentDoors(e.getPlayer(), buttonBlock, skip);
 		// prepare all sides of the block attached to
 		setupAdjacentDoors(e.getPlayer(), attachedBlock, button.getFacing());
 	}

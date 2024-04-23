@@ -115,6 +115,10 @@ public class ChunkCoord extends XZWCoord {
 		return lastUnloadedTime;
 	}
 
+	public long getLastLoadedTime() {
+		return lastLoadedTime;
+	}
+
 	void clearUnloaded() {
 		lastUnloadedTime = INVALID_TIME;
 	}
