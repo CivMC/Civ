@@ -208,6 +208,22 @@ public class BlockListener implements Listener {
 		}
 	}
 
+	// prevent "enemy" grass spreading to reinforced dirt
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onGrassSpread(BlockSpreadEvent event) {
+		if (event.getSource().getType() != Material.GRASS_BLOCK) return;
+
+		Reinforcement destRein = ReinforcementLogic.getReinforcementProtecting(event.getBlock());
+		if (destRein == null) {
+			return;
+		}
+
+		Reinforcement sourceRein = ReinforcementLogic.getReinforcementProtecting(event.getSource());
+		if (sourceRein == null || sourceRein.getGroupId() != destRein.getGroupId()) {
+			event.setCancelled(true);
+		}
+	}
+
 	// prevent breaking reinforced blocks through plant growth
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onStructureGrow(StructureGrowEvent event) {
@@ -272,21 +288,35 @@ public class BlockListener implements Listener {
 		if (rein == null) {
 			return;
 		}
+		Player player = e.getPlayer();
+
+		// Logic copied from ServerPlayerGameMode#useItemOn
+		// This will let the event happen if the player is not going to actually open/interact with the block
+		boolean flag = player.getInventory().getItemInMainHand().getType() != Material.AIR || player.getInventory().getItemInOffHand().getType() != Material.AIR;
+		if (player.isSneaking() && flag) {
+			return;
+		}
+
+		// Iron trapdoors and doors cannot be opened by right clicking on them
+		if (e.getClickedBlock().getType() == Material.IRON_TRAPDOOR || e.getClickedBlock().getType() == Material.IRON_DOOR) {
+			return;
+		}
+
 		if (e.getClickedBlock().getState() instanceof Container) {
-			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getChests())) {
+			if (!rein.hasPermission(player, CitadelPermissionHandler.getChests())) {
 				e.setCancelled(true);
 				String msg = String.format("%s is locked with %s%s", e.getClickedBlock().getType().name(),
 						ChatColor.AQUA, rein.getType().getName());
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg, e.getClickedBlock().getLocation());
+				CitadelUtility.sendAndLog(player, ChatColor.RED, msg, e.getClickedBlock().getLocation());
 			}
 			return;
 		}
 		if (e.getClickedBlock().getBlockData() instanceof Openable) {
-			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getDoors())) {
+			if (!rein.hasPermission(player, CitadelPermissionHandler.getDoors())) {
 				e.setCancelled(true);
 				String msg = String.format("%s is locked with %s%s", e.getClickedBlock().getType().name(),
 						ChatColor.AQUA, rein.getType().getName());
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg, e.getClickedBlock().getLocation());
+				CitadelUtility.sendAndLog(player, ChatColor.RED, msg, e.getClickedBlock().getLocation());
 			}
 		}
 	}
@@ -759,7 +789,7 @@ public class BlockListener implements Listener {
 			pie.setCancelled(true);
 		}
 	}
-    
+
 	@EventHandler(ignoreCancelled = true)
 	public void preventFlowerTheft(PlayerInteractEvent event) {
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {

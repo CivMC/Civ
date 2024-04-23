@@ -1,0 +1,56 @@
+- name: Install Docker | Install dependencies
+  apt:
+    state: present
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+      - python3-pip
+
+- name: Install Docker | Install Docker SDK For Python
+  pip:
+    state: present
+    name:
+      - jsondiff
+      - docker
+
+- name: Install Docker | Get DEB architecture
+  shell: dpkg --print-architecture
+  register: deb_architecture
+
+- name: Install Docker | Get LSB release
+  shell: lsb_release -cs
+  register: lsb_release
+
+- name: Install Docker | Add docker signing key
+  apt_key:
+    url: 'https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg'
+    keyring: /usr/share/keyrings/docker.gpg
+    state: present
+
+- name: Install Docker | Add docker repository
+  apt_repository:
+    repo: 'deb [arch={{ deb_architecture.stdout }} signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ lsb_release.stdout }} stable'
+    filename: docker
+    state: present
+
+- name: Install Docker | Install docker
+  apt:
+    state: present
+    update_cache: true
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+
+- name: Install Docker | Install Loki Plugin
+  community.docker.docker_plugin:
+    plugin_name: grafana/loki-docker-driver:latest
+    state: present
+
+- name: Install Docker | Enable Loki Plugin
+  community.docker.docker_plugin:
+    plugin_name: grafana/loki-docker-driver:latest
+    state: enable

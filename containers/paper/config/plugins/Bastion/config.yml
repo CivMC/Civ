@@ -1,0 +1,103 @@
+mysql:
+  user: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}
+  host: ${CIV_MYSQL_HOST}
+  database: bastion
+  port: 3306
+  poolsize: 10
+  connectionTimeout: 10000
+  idleTimout: 600000
+  maxLifetime: 7200000
+  savesPerDay: 64
+commonSettings:
+  cancelReinforcementModeInBastionField: false
+  listBastionTimeout: 2000
+  cancelPlacementAndDamage:
+    - SCAFFOLDING
+bastions:
+#The first bastion in this list will be used as the default type
+#This only really matters the first time your start it up when converting from old bastion
+#All bastions in the db will be flagged as, in this instance, citybastion
+  basic:
+    block:
+      material: SPONGE
+      durability: 0
+      name: Bastion
+      lore: 
+        - This bastion will protect you from grief
+        - It will also block pearls when they land
+        - As well as stop elytra
+    squarefield: true
+    effectRadius: 10
+    includeY: true
+    startScaleFactor: 10
+    finalScaleFactor: 1.111111111111111
+    warmupTime: 172800000
+    erosionPerDay: 0
+    regenPerDay: 5
+    blocksToErode: -1
+    placementCooldown: 2000
+    destroyOnRemove: true
+    onlyDirectDestroy: false
+    blockReinforcements: true
+    destroyOnRemoveWhileImmature: true #doesn't matter anyway if destroyOnRemove=true
+    proximityDamageRange: 18
+    proximityDamageFactor: 1.0
+    overlay_name: Va
+    pearls:
+      block: true
+      blockMidair: false
+      scaleFactor: 1
+      requireMaturity: true
+      consumeOnBlock: false
+      damageFirstBastion: true
+      allowPearlingOut: true
+    elytra:
+      block: true
+      scaleFactor: 1
+      requireMaturity: true
+      destroyOnBlock: false
+      damageOnBlock: true
+      explodeOnBlock: true
+      explodeOnBlockStrength: 0
+  city:
+    block:
+      material: BONE_BLOCK
+      durability: 0
+      name: City Bastion
+      lore:
+        - City bastions block reinforcements and elytra
+    squarefield: true
+    effectRadius: 50
+    includeY: true
+    startScaleFactor: 10
+    finalScaleFactor: 0.75
+    warmupTime: 172800000
+    erosionPerDay: 0
+    regenPerDay: 5
+    blocksToErode: -1
+    placementCooldown: 2000
+    destroyOnRemove: false
+    onlyDirectDestroy: true
+    blockReinforcements: true
+    destroyOnRemoveWhileImmature: true
+    proximityDamageRange: 25
+    proximityDamageFactor: 0.5
+    overlay_name: Ci
+    pearls:
+      block: false
+      blockMidair: false
+      scaleFactor: 1
+      requireMaturity: true
+      consumeOnBlock: true
+      damageFirstBastion: true
+      allowPearlingOut: true
+    elytra:
+      block: true
+      scaleFactor: 1
+      requireMaturity: true
+      destroyOnBlock: false
+      damageOnBlock: true
+      damageFirstBastion: true
+      explodeOnBlock: true
+      explodeOnBlockStrength: 0

@@ -1,0 +1,6 @@
+# TODO: Use docker module, currently it doesn't seem to support updating.
+- name: Start Kira | Start Kira
+  when:
+    - "'swarm_manager' in group_names"
+    - setting.minecraft.enabled
+  command: docker service scale minecraft_kira=1

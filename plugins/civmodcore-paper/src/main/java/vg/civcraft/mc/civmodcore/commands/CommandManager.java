@@ -10,25 +10,15 @@ import co.aikar.commands.CommandContexts;
 import com.google.common.base.Strings;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import org.apache.commons.lang3.reflect.FieldUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
@@ -36,9 +26,6 @@ import vg.civcraft.mc.civmodcore.utilities.CivLogger;
  * Command registration class wrapper around {@link BukkitCommandManager}.
  */
 public class CommandManager extends BukkitCommandManager {
-	// Track players to offer quick completion where necessary.
-	private final Set<String> autocompletePlayerNames = new ConcurrentSkipListSet<>();
-
 	private final CivLogger logger;
 
 	/**
@@ -57,23 +44,6 @@ public class CommandManager extends BukkitCommandManager {
 	 * {@link #unregisterCompletions()}, otherwise there may be issues.
 	 */
 	public final void init() {
-		// Prepare our list with player names on init.
-		// Load all known players once on initialization, then use a loginlistener to update the existing name set.
-		Arrays.stream(Bukkit.getOfflinePlayers()).map(OfflinePlayer::getName).forEach(autocompletePlayerNames::add);
-		/*TODO
-		this may be better solved with a single global listener, but the implications would've needed some checks.
-		This is pretty cheap and works fast.
-		 */
-
-		Bukkit.getPluginManager().registerEvents(new Listener() {
-			// Players joining should be added to our list, just in case they are new.
-			@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-			public void onLogin(PlayerLoginEvent ev) {
-				// For autocomplete we wil update the listeners.
-				autocompletePlayerNames.add(ev.getPlayer().getName());
-			}
-		}, plugin);
-
 		registerContexts(getCommandContexts());
 		registerCompletions(getCommandCompletions());
 		registerCommands();
@@ -98,11 +68,7 @@ public class CommandManager extends BukkitCommandManager {
 		CommandHelpers.registerNoneCompletion(completions);
 		CommandHelpers.registerMaterialsCompletion(completions);
 		CommandHelpers.registerItemMaterialsCompletion(completions);
-
-		// Completion lists are copied so outer code can modify the lists without breaking our inner contracts,
-		// namely that all players should be searchable by completion.
-		// Using Collections.immutableList is an alternative, but both variants aren't expensive.
-		completions.registerAsyncCompletion("allplayers", (context) -> new ArrayList<>(autocompletePlayerNames));
+		CommandHelpers.registerKnownPlayersCompletion(completions);
 	}
 
 	/**

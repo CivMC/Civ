@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
-import lombok.experimental.ExtensionMethod;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -29,7 +28,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
-import vg.civcraft.mc.civmodcore.utilities.JavaExtensions;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
@@ -37,7 +35,6 @@ import vg.civcraft.mc.civmodcore.world.WorldUtils;
 /**
  * A series of Utilities of ItemExchange
  */
-@ExtensionMethod(JavaExtensions.class)
 public final class Utilities {
 
 	/**

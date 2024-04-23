@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.world.locations.chunkmeta;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import org.apache.logging.log4j.LogManager;
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,6 +14,7 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaViewTrac
 import vg.civcraft.mc.civmodcore.world.locations.global.WorldIDManager;
 
 public class ChunkMetaListener implements Listener {
+	private static final org.apache.logging.log4j.Logger CHUNK_META_LOGGER = LogManager.getLogger("Chunk meta");
 
 	private final GlobalChunkMetaManager manager;
 	private final ChunkMetaViewTracker viewTracker;
@@ -52,6 +54,7 @@ public class ChunkMetaListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void chunkUnload(ChunkUnloadEvent e) {
+		CHUNK_META_LOGGER.debug("World " + CivModCorePlugin.getInstance().getWorldIdManager().getInternalWorldId(e.getWorld()) + ": Adding " + e.getChunk() + " to unload queue - length " + unloadQueue.size());
 		unloadQueue.add(e.getChunk());
 		viewTracker.applyToAllSingleBlockViews(s -> s.handleChunkUnload(e.getChunk()));
 	}
