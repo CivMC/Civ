@@ -13,6 +13,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +23,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -105,6 +107,7 @@ import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 public class FakePlayer implements Player {
@@ -794,6 +797,11 @@ public class FakePlayer implements Player {
 	public boolean teleport(Entity destination, TeleportCause cause) {
 
 		return false;
+	}
+
+	@Override
+	public @NotNull CompletableFuture<Boolean> teleportAsync(@NotNull Location location, @NotNull PlayerTeleportEvent.TeleportCause teleportCause, @NotNull TeleportFlag @NotNull ... teleportFlags) {
+		return null;
 	}
 
 	@Override
@@ -2274,6 +2282,16 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
+	public int getItemInUseTicks() {
+		return 0;
+	}
+
+	@Override
+	public void setItemInUseTicks(int i) {
+
+	}
+
+	@Override
 	public InventoryView openMerchant(Merchant arg0, boolean arg1) {
 		return null;
 	}
@@ -2790,6 +2808,21 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
+	public @NotNull @Unmodifiable Set<Long> getSentChunkKeys() {
+		return Collections.emptySet();
+	}
+
+	@Override
+	public @NotNull @Unmodifiable Set<Chunk> getSentChunks() {
+		return Collections.emptySet();
+	}
+
+	@Override
+	public boolean isChunkSent(long l) {
+		return false;
+	}
+
+	@Override
 	public BlockFace getFacing() {
 		// TODO Auto-generated method stub
 		return null;
@@ -2797,7 +2830,7 @@ public class FakePlayer implements Player {
 
 	@Override
 	public Pose getPose() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated metod stub
 		return null;
 	}
 
@@ -3041,6 +3074,31 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
+	public int getActiveItemRemainingTime() {
+		return 0;
+	}
+
+	@Override
+	public void setActiveItemRemainingTime(@Range(from = 0L, to = 2147483647L) int i) {
+
+	}
+
+	@Override
+	public boolean hasActiveItem() {
+		return false;
+	}
+
+	@Override
+	public int getActiveItemUsedTime() {
+		return 0;
+	}
+
+	@Override
+	public @NotNull EquipmentSlot getActiveItemHand() {
+		return null;
+	}
+
+	@Override
 	public float getSidewaysMovement() {
 		return 0;
 	}
@@ -3053,6 +3111,16 @@ public class FakePlayer implements Player {
 	@Override
 	public float getForwardsMovement() {
 		return 0;
+	}
+
+	@Override
+	public void startUsingItem(@NotNull EquipmentSlot equipmentSlot) {
+
+	}
+
+	@Override
+	public void completeUsingActiveItem() {
+
 	}
 
 	@Override
@@ -3152,6 +3220,16 @@ public class FakePlayer implements Player {
 	@Override
 	public boolean isInvisible() {
 		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setNoPhysics(boolean b) {
+
+	}
+
+	@Override
+	public boolean hasNoPhysics() {
 		return false;
 	}
 
