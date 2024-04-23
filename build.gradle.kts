@@ -98,6 +98,21 @@ allprojects {
     }
 
     pluginManager.withPlugin("io.papermc.paperweight.userdev") {
+
+        if (project.name.endsWith("paper") && project.name != "civspy-paper") {
+            // Copy the built jar into the paper container, removing any jars from previous versions
+            tasks.register("copyPaper", Copy::class) {
+                doFirst {
+                    delete(fileTree("../../containers/paper/plugins") {
+                        include(project.name + "-*.jar")
+                    })
+                }
+                dependsOn("build")
+                from(tasks.findByPath("reobfJar")!!.outputs.files)
+                into("../../containers/paper/plugins")
+            }
+        }
+
         tasks.withType<ProcessResources> {
             filesMatching("plugin.yml") {
                 expand(project.properties)
