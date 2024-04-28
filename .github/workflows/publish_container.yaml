@@ -3,8 +3,6 @@ name: 🐋 Container | Publish
 
 on:
   push:
-    branches:
-      - '*'
     tags:
       - 'containers/*/v*.*.*'
 
