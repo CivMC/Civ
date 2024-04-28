@@ -87,12 +87,16 @@ factories:
     recipes:
       - make_red_sand
       - clean_red_sand
+      - make_packed_mud
+      - make_mud_bricks
       - make_end_stone
       - make_purpur
-      - condense_purpur_fruit
       - make_prismarine_bricks
       - make_dark_prismarine
       - make_sea_lantern
+      - make_ochre_froglight
+      - make_verdant_froglight
+      - make_pearlescent_froglight
       - make_end_rods
       - make_redstone_lamp
       - pack_ice
@@ -658,6 +662,7 @@ factories:
       - make_ladders
       - make_scaffolding
       - make_bookshelves
+      - make_chiseled_bookshelves
       - make_beehive
       - make_casing
       - make_crates
@@ -665,41 +670,49 @@ factories:
       - make_fences
       - make_fence_gates
       - make_signs
+      - make_hanging_signs
       - make_trapdoors
       - make_wood_doors
       - make_spruce_fences
       - make_spruce_fence_gates
       - make_spruce_signs
+      - make_spruce_hanging_signs
       - make_spruce_trapdoors
       - make_spruce_doors
       - make_birch_fences
       - make_birch_fence_gates
       - make_birch_signs
+      - make_birch_hanging_signs
       - make_birch_trapdoors
       - make_birch_doors
       - make_jungle_fences
       - make_jungle_fence_gates
       - make_jungle_signs
+      - make_jungle_hanging_signs
       - make_jungle_trapdoors
       - make_jungle_doors
       - make_acacia_fences
       - make_acacia_fence_gates
       - make_acacia_signs
+      - make_acacia_hanging_signs
       - make_acacia_trapdoors
       - make_acacia_doors
       - make_dark_oak_fences
       - make_dark_oak_fence_gates
       - make_dark_oak_signs
+      - make_dark_oak_hanging_signs
       - make_dark_oak_trapdoors
       - make_dark_oak_doors
       - make_crimson_fences
       - make_crimson_fence_gates
       - make_crimson_signs
+      - make_crimson_hanging_signs
       - make_crimson_trapdoors
       - make_crimson_doors
       - make_warped_fences
       - make_warped_fence_gates
       - make_warped_signs
+      - make_warped_hanging_signs
       - make_warped_trapdoors
       - make_warped_doors
       - repair_carpentry
@@ -1022,9 +1035,11 @@ factories:
       - grow_red_mushroom_block
       - grow_brown_mushroom_block
       - grow_mushroom_stem
-      - spread_sculk_vein
+      - grow_sculk
+      - grow_sculk_vein
       - kill_bush
       - root_dirt
+      - make_mud
       - melt_ice
       - form_tube_coral_block
       - form_fire_coral_block
@@ -1818,7 +1833,36 @@ recipes:
         amount: 64
       bucket:
         material: BUCKET
-        amount: 1    
+        amount: 1  
+  make_packed_mud:
+    forceInclude: true
+    production_time: 4s
+    name: Make Packed Mud
+    type: PRODUCTION
+    input:
+      mud:
+        material: MUD
+        amount: 64
+      wheat:
+        material: WHEAT
+        amount: 8
+    output:
+      packed_mud:
+        material: PACKED_MUD
+        amount: 64
+  make_mud_bricks:
+    forceInclude: true
+    production_time: 4s
+    name: Make Mud Bricks
+    type: PRODUCTION
+    input:
+      mud:
+        material: MUD
+        amount: 64
+    output:
+      mud_bricks:
+        material: MUD_BRICKS
+        amount: 128
   make_end_stone:
     production_time: 4s
     name: Make End stone
@@ -1845,19 +1889,6 @@ recipes:
       purple dye:
         material: PURPLE_DYE
         amount: 8
-    output:
-      purpur:
-        material: PURPUR_BLOCK
-        amount: 64
-  condense_purpur_fruit:
-    forceInclude: true
-    production_time: 4s
-    name: Make Purpur from Fruit
-    type: PRODUCTION
-    input:
-      fruit:
-        material: POPPED_CHORUS_FRUIT
-        amount: 64
     output:
       purpur:
         material: PURPUR_BLOCK
@@ -1919,6 +1950,51 @@ recipes:
       sea_lantern:
         material: SEA_LANTERN
         amount: 32
+  make_ochre_froglight:
+    production_time: 4s
+    name: Make Ochre Froglight
+    type: PRODUCTION
+    input:
+      magma_cream:
+        material: MAGMA_CREAM
+        amount: 16
+      yellow_dye:
+        material: YELLOW_DYE
+        amount: 4
+    output:
+      ochre_froglight:
+        material: OCHRE_FROGLIGHT
+        amount: 64
+  make_verdant_froglight:
+    production_time: 4s
+    name: Make Verdant Froglight
+    type: PRODUCTION
+    input:
+      magma_cream:
+        material: MAGMA_CREAM
+        amount: 16
+      green_dye:
+        material: GREEN_DYE
+        amount: 4
+    output:
+      verdant_froglight:
+        material: VERDANT_FROGLIGHT
+        amount: 64
+  make_pearlescent_froglight:
+    production_time: 4s
+    name: Make Pearlescent Froglight
+    type: PRODUCTION
+    input:
+      magma_cream:
+        material: MAGMA_CREAM
+        amount: 16
+      purple_dye:
+        material: PURPLE_DYE
+        amount: 4
+    output:
+      pearlescent_froglight:
+        material: PEARLESCENT_FROGLIGHT
+        amount: 64 
   make_end_rods:
     production_time: 4s
     name: Make End Rods
@@ -4019,6 +4095,21 @@ recipes:
       sign:
         material: OAK_SIGN
         amount: 128
+  make_hanging_signs:
+    production_time: 4s
+    name: Make Hanging Signs
+    type: PRODUCTION
+    input:
+      chest:
+        material: CHEST
+        amount: 12
+      iron_ingot:
+        material: IRON_INGOT
+        amount: 4
+    output:
+      sign:
+        material: OAK_HANGING_SIGN
+        amount: 128
   make_ladders:
     production_time: 4s
     name: Make Ladders
@@ -4057,6 +4148,17 @@ recipes:
     output:
       bookshelves:
         material: BOOKSHELF
+        amount: 64
+  make_chiseled_bookshelves:
+    production_time: 4s
+    name: Make Chiseled Bookshelves
+    type: PRODUCTION
+      chest:
+        material: CHEST
+        amount: 12
+    output:
+      bookshelves:
+        material: CHISELED_BOOKSHELF
         amount: 64
   make_trapdoors:
     production_time: 4s
@@ -4154,6 +4256,21 @@ recipes:
       sign:
         material: SPRUCE_SIGN
         amount: 128
+  make_spruce_hanging_signs:
+    production_time: 4s
+    name: Make Spruce Hanging Signs
+    type: PRODUCTION
+    input:
+      chest:
+        material: SPRUCE_LOG
+        amount: 24
+      iron_ingot:
+        material: IRON_INGOT
+        amount: 4
+    output:
+      sign:
+        material: SPRUCE_HANGING_SIGN
+        amount: 128
   make_spruce_trapdoors:
     production_time: 4s
     name: Make Trap Doors
@@ -4213,6 +4330,21 @@ recipes:
     output:
       sign:
         material: BIRCH_SIGN
+        amount: 128
+  make_birch_hanging_signs:
+    production_time: 4s
+    name: Make Birch Hanging Signs
+    type: PRODUCTION
+    input:
+      chest:
+        material: BIRCH_LOG
+        amount: 24
+      iron_ingot:
+        material: IRON_INGOT
+        amount: 4
+    output:
+      sign:
+        material: BIRCH_HANGING_SIGN
         amount: 128
   make_birch_trapdoors:
     production_time: 4s
@@ -4274,6 +4406,21 @@ recipes:
       sign:
         material: JUNGLE_SIGN
         amount: 128
+  make_jungle_hanging_signs:
+    production_time: 4s
+    name: Make Jungle Hanging Signs
+    type: PRODUCTION
+    input:
+      chest:
+        material: JUNGLE_LOG
+        amount: 24
+      iron_ingot:
+        material: IRON_INGOT
+        amount: 4
+    output:
+      sign:
+        material: JUNGLE_HANGING_SIGN
+        amount: 128
   make_jungle_trapdoors:
     production_time: 4s
     name: Make Trap Doors
@@ -4333,6 +4480,21 @@ recipes:
     output:
       sign:
         material: ACACIA_SIGN
+        amount: 128
+  make_acacia_hanging_signs:
+    production_time: 4s
+    name: Make Acacia Hanging Signs
+    type: PRODUCTION
+    input:
+      chest:
+        material: ACACIA_LOG
+        amount: 24
+      iron_ingot:
+        material: IRON_INGOT
+        amount: 4
+    output:
+      sign:
+        material: ACACIA_HANGING_SIGN
         amount: 128
   make_acacia_trapdoors:
     production_time: 4s
@@ -4394,6 +4556,21 @@ recipes:
       sign:
         material: DARK_OAK_SIGN
         amount: 128
+  make_dark_oak_hanging_signs:
+    production_time: 4s
+    name: Make Dark Oak Hanging Signs
+    type: PRODUCTION
+    input:
+      chest:
+        material: DARK_OAK_LOG
+        amount: 24
+      iron_ingot:
+        material: IRON_INGOT
+        amount: 4
+    output:
+      sign:
+        material: DARK_OAK_HANGING_SIGN
+        amount: 128
   make_dark_oak_trapdoors:
     production_time: 4s
     name: Make Trap Doors
@@ -4454,6 +4631,21 @@ recipes:
       sign:
         material: CRIMSON_SIGN
         amount: 128
+  make_crimson_hanging_signs:
+    production_time: 4s
+    name: Make Crimson Hanging Signs
+    type: PRODUCTION
+    input:
+      chest:
+        material: CRIMSON_STEM
+        amount: 24
+      iron_ingot:
+        material: IRON_INGOT
+        amount: 4
+    output:
+      sign:
+        material: CRIMSON_HANGING_SIGN
+        amount: 128
   make_crimson_trapdoors:
     production_time: 4s
     name: Make Trap Doors
@@ -4513,6 +4705,21 @@ recipes:
     output:
       sign:
         material: WARPED_SIGN
+        amount: 128
+  make_warped_hanging_signs:
+    production_time: 4s
+    name: Make Warped Hanging Signs
+    type: PRODUCTION
+    input:
+      chest:
+        material: WARPED_STEM
+        amount: 24
+      iron_ingot:
+        material: IRON_INGOT
+        amount: 4
+    output:
+      sign:
+        material: WARPED_HANGING_SIGN
         amount: 128
   make_warped_trapdoors:
     production_time: 4s
@@ -6951,9 +7158,9 @@ recipes:
         terracotta:
           material: TERRACOTTA
           amount: 1
-      # Spawn eggs - 2% of total (0.00051282051 each)
+      # Spawn eggs - 2% of total (0.00047619047 each)
       vindicator:
-        chance: 0.00051282051
+        chance: 0.00047619047
         vindicator:
           material: VINDICATOR_SPAWN_EGG
           amount: 1
@@ -6961,7 +7168,7 @@ recipes:
             EntityTag:
               id: "minecraft:vindication_illager"
       vex:
-        chance: 0.00051282051
+        chance: 0.00047619047
         vex:
           material: VEX_SPAWN_EGG
           amount: 1
@@ -6969,7 +7176,7 @@ recipes:
             EntityTag:
               id: "minecraft:vex"
       silverfish:
-        chance: 0.00051282051
+        chance: 0.00047619047
         silverfish:
           material: SILVERFISH_SPAWN_EGG
           amount: 1
@@ -6977,7 +7184,7 @@ recipes:
             EntityTag:
               id: "minecraft:silverfish"
       endermite:
-        chance: 0.00051282051
+        chance: 0.00047619047
         endermite:
           material: ENDERMITE_SPAWN_EGG
           amount: 1
@@ -6985,7 +7192,7 @@ recipes:
             EntityTag:
               id: "minecraft:endermite"
       zombiehorse:
-        chance: 0.00051282051
+        chance: 0.00047619047
         zombiehorse:
           material: ZOMBIE_HORSE_SPAWN_EGG
           amount: 1
@@ -6993,7 +7200,7 @@ recipes:
             EntityTag:
               id: "minecraft:zombie_horse"
       skeletonhorse:
-        chance: 0.00051282051
+        chance: 0.00047619047
         skeletonhorse:
           material: SKELETON_HORSE_SPAWN_EGG
           amount: 1
@@ -7001,7 +7208,7 @@ recipes:
             EntityTag:
               id: "minecraft:skeleton_horse"
       donkey:
-        chance: 0.00051282051
+        chance: 0.00047619047
         donkey:
           material: DONKEY_SPAWN_EGG
           amount: 1
@@ -7009,7 +7216,7 @@ recipes:
             EntityTag:
               id: "minecraft:donkey"
       polarbear:
-        chance: 0.00051282051
+        chance: 0.00047619047
         polarbear:
           material: POLAR_BEAR_SPAWN_EGG
           amount: 1
@@ -7017,7 +7224,7 @@ recipes:
             EntityTag:
               id: "minecraft:polar_bear"
       parrot:
-        chance: 0.00051282051
+        chance: 0.00047619047
         parrot:
           material: PARROT_SPAWN_EGG
           amount: 1
@@ -7025,7 +7232,7 @@ recipes:
             EntityTag:
               id: "minecraft:parrot"
       llama:
-        chance: 0.00051282051
+        chance: 0.00047619047
         llama:
           material: LLAMA_SPAWN_EGG
           amount: 1
@@ -7033,220 +7240,245 @@ recipes:
             EntityTag:
               id: "minecraft:llama"
       fox:
-        chance: 0.00051282051
+        chance: 0.00047619047
         fox:
           material: FOX_SPAWN_EGG
           amount: 1
       cat:
-        chance: 0.00051282051
+        chance: 0.00047619047
         cat:
           material: CAT_SPAWN_EGG
           amount: 1
       mooshroom:
-        chance: 0.00051282051
+        chance: 0.00047619047
         mooshroom:
           material: MOOSHROOM_SPAWN_EGG
           amount: 1
       horse:
-        chance: 0.00051282051
+        chance: 0.00047619047
         horse:
           material: HORSE_SPAWN_EGG
           amount: 1
       rabbit:
-        chance: 0.00051282051
+        chance: 0.00047619047
         rabbit:
           material: RABBIT_SPAWN_EGG
           amount: 1
       ocelot:
-        chance: 0.00051282051
+        chance: 0.00047619047
         ocelot:
           material: OCELOT_SPAWN_EGG
           amount: 1
       squid:
-        chance: 0.00051282051
+        chance: 0.00047619047
         squid:
           material: SQUID_SPAWN_EGG
           amount: 1
       wolf:
-        chance: 0.00051282051
+        chance: 0.00047619047
         wolf:
           material: WOLF_SPAWN_EGG
           amount: 1
       axolotl:
-        chance: 0.00051282051
+        chance: 0.00047619047
         axolotl:
           material: AXOLOTL_SPAWN_EGG
           amount: 1
       bee:
-        chance: 0.00051282051
+        chance: 0.00047619047
         bee:
           material: BEE_SPAWN_EGG
           amount: 1
       panda:
-        chance: 0.00051282051
+        chance: 0.00047619047
         panda:
           material: PANDA_SPAWN_EGG
           amount: 1
       dolphin:
-        chance: 0.00051282051
+        chance: 0.00047619047
         dolphin:
           material: DOLPHIN_SPAWN_EGG
           amount: 1
       stray:
-        chance: 0.00051282051
+        chance: 0.00047619047
         stray:
           material: STRAY_SPAWN_EGG
           amount: 1
       strider:
-        chance: 0.00051282051
+        chance: 0.00047619047
         strider:
           material: STRIDER_SPAWN_EGG
           amount: 1
       hoglin:
-        chance: 0.00051282051
+        chance: 0.00047619047
         hoglin:
           material: HOGLIN_SPAWN_EGG
           amount: 1
       creeper:
-        chance: 0.00051282051
+        chance: 0.00047619047
         creeper:
           material: CREEPER_SPAWN_EGG
           amount: 1
       zombie:
-        chance: 0.00051282051
+        chance: 0.00047619047
         zombie:
           material: ZOMBIE_SPAWN_EGG
           amount: 1
       skeleton:
-        chance: 0.00051282051
+        chance: 0.00047619047
         skeleton:
           material: SKELETON_SPAWN_EGG
           amount: 1
       spider:
-        chance: 0.00051282051
+        chance: 0.00047619047
         spider:
           material: SPIDER_SPAWN_EGG
           amount: 1
       blaze:
-        chance: 0.00051282051
+        chance: 0.00047619047
         blaze:
           material: BLAZE_SPAWN_EGG
           amount: 1
       ghast:
-        chance: 0.00051282051
+        chance: 0.00047619047
         ghast:
           material: GHAST_SPAWN_EGG
           amount: 1
       guardian:
-        chance: 0.00051282051
+        chance: 0.00047619047
         guardian:
           material: GUARDIAN_SPAWN_EGG
           amount: 1
       magmacube:
-        chance: 0.00051282051
+        chance: 0.00047619047
         magmacube:
           material: MAGMA_CUBE_SPAWN_EGG
           amount: 1
       slime:
-        chance: 0.00051282051
+        chance: 0.00047619047
         slime:
           material: SLIME_SPAWN_EGG
           amount: 1
       witch:
-        chance: 0.00051282051
+        chance: 0.00047619047
         witch:
           material: WITCH_SPAWN_EGG
           amount: 1
       villager:
-        chance: 0.00051282051
+        chance: 0.00047619047
         villager:
           material: VILLAGER_SPAWN_EGG
           amount: 1
       cavespider:
-        chance: 0.00051282051
+        chance: 0.00047619047
         cavespider:
           material: CAVE_SPIDER_SPAWN_EGG
           amount: 1
       enderman:
-        chance: 0.00051282051
+        chance: 0.00047619047
         enderman:
           material: ENDERMAN_SPAWN_EGG
           amount: 1
       zombiepigman:
-        chance: 0.00051282051
+        chance: 0.00047619047
         zombiepigman:
           material: ZOMBIFIED_PIGLIN_SPAWN_EGG
           amount: 1
-      # Music Disks - 1% of total (0.00071428571 each)
+      Camel:
+        chance: 0.00047619047
+        Camel:
+          material: CAMEL_SPAWN_EGG
+          amount: 1
+      Frog:
+        chance: 0.00047619047
+        Frog:
+          material: FROG_SPAWN_EGG
+          amount: 1
+      Sniffer:
+        chance: 0.00047619047
+        Sniffer:
+          material: SNIFFER_EGG
+          amount: 1
+      # Music Disks - 1% of total (0.000625 each)
       record_13:
-        chance: 0.00071428571
+        chance: 0.000625
         record_13:
           material: MUSIC_DISC_13
           amount: 1
       record_cats:
-        chance: 0.00071428571
+        chance: 0.000625
         record_cats:
           material: MUSIC_DISC_CAT
           amount: 1
       record_blocks:
-        chance: 0.00071428571
+        chance: 0.000625
         record_blocks:
           material: MUSIC_DISC_BLOCKS
           amount: 1
       record_chirp:
-        chance: 0.00071428571
+        chance: 0.000625
         record_chirp:
           material: MUSIC_DISC_CHIRP
           amount: 1
       record_far:
-        chance: 0.00071428571
+        chance: 0.000625
         record_far:
           material: MUSIC_DISC_FAR
           amount: 1
       record_mall:
-        chance: 0.00071428571
+        chance: 0.000625
         record_mall:
           material: MUSIC_DISC_MALL
           amount: 1
       record_mellohi:
-        chance: 0.00071428571
+        chance: 0.000625
         record_mellohi:
           material: MUSIC_DISC_MELLOHI
           amount: 1
       record_stal:
-        chance: 0.00071428571
+        chance: 0.000625
         record_stal:
           material: MUSIC_DISC_STAL
           amount: 1
       record_strad:
-        chance: 0.00071428571
+        chance: 0.000625
         record_strad:
           material: MUSIC_DISC_STRAD
           amount: 1
       record_ward:
-        chance: 0.00071428571
+        chance: 0.000625
         record_ward:
           material: MUSIC_DISC_WARD
           amount: 1
       record_11:
-        chance: 0.00071428571
+        chance: 0.000625
         record_11:
           material: MUSIC_DISC_11
           amount: 1
       record_wait:
-        chance: 0.00071428571
+        chance: 0.000625
         record_wait:
           material: MUSIC_DISC_WAIT
           amount: 1
       record_pigstep:
-        chance: 0.00071428571
+        chance: 0.000625
         record_pigstep:
           material: MUSIC_DISC_PIGSTEP
           amount: 1
       record_otherside:
-        chance: 0.00071428571
+        chance: 0.000625
         record_otherside: 
           material: MUSIC_DISC_OTHERSIDE
+          amount: 1
+      record_relic:
+        chance: 0.000625
+        record_relic: 
+          material: MUSIC_DISC_RELIC
+          amount: 1
+      record_5:
+        chance: 0.000625
+        record_5: 
+          material: MUSIC_DISC_5
           amount: 1
       #Resources - 25% (Divided seperately over all below)
       iron_ingot:
@@ -7735,6 +7967,38 @@ recipes:
       mushroom_stem:
         material: MUSHROOM_STEM
         amount: 16 
+  grow_sculk:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow Sculk
+    type: PRODUCTION
+    input:
+      red_mushroom:
+        material: RED_MUSHROOM
+        amount: 16
+      brown_mushroom:
+        material: BROWN_MUSHROOM
+        amount: 16
+    output:
+      sculk:
+        material: SCULK
+        amount: 64
+  grow_sculk_vein:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow Sculk Vein
+    type: PRODUCTION
+    input:
+      red_mushroom:
+        material: RED_MUSHROOM
+        amount: 8
+      brown_mushroom:
+        material: BROWN_MUSHROOM
+        amount: 8
+    output:
+      sculk_vein:
+        material: SCULK_VEIN
+        amount: 64
   kill_bush:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -7748,6 +8012,57 @@ recipes:
       dead_bush:
         material: DEAD_BUSH
         amount: 16
+  root_dirt:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Root dirt
+    type: PRODUCTION
+    input:
+      dirt:
+        material: DIRT
+        amount: 64
+      sticks:
+        material: STICK
+        amount: 16
+    output:
+      rooted_dirt:
+        material: ROOTED_DIRT
+        amount: 64
+  make_mud:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Make Mud
+    type: PRODUCTION
+    input:
+      dirt:
+        material: DIRT
+        amount: 64
+      sticks:
+        material: WATER_BUCKET
+        amount: 1
+    output:
+      mud:
+        material: MUD
+        amount: 64  
+      bucket:
+        material: BUCKET
+        amount: 1  
+  melt_ice:
+    production_time: 1s
+    fuel_consumption_intervall: 2s
+    name: Melt Ice
+    type: PRODUCTION
+    input:
+      ice:
+        material: ICE
+        amount: 1
+      bucket:
+        material: BUCKET
+        amount: 1
+    output:
+      rooted_dirt:
+        material: WATER_BUCKET
+        amount: 1
   form_tube_coral_block:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -7813,38 +8128,6 @@ recipes:
       bubble_coral_block:
         material: BUBBLE_CORAL_BLOCK
         amount: 16
-  root_dirt:
-    production_time: 4s
-    fuel_consumption_intervall: 1s
-    name: Root dirt
-    type: PRODUCTION
-    input:
-      dirt:
-        material: DIRT
-        amount: 64
-      sticks:
-        material: STICK
-        amount: 16
-    output:
-      rooted_dirt:
-        material: ROOTED_DIRT
-        amount: 64
-  melt_ice:
-    production_time: 1s
-    fuel_consumption_intervall: 2s
-    name: Melt Ice
-    type: PRODUCTION
-    input:
-      ice:
-        material: ICE
-        amount: 1
-      bucket:
-        material: BUCKET
-        amount: 1
-    output:
-      rooted_dirt:
-        material: WATER_BUCKET
-        amount: 1
   forge_gold_pickaxes:
     type: RANDOM
     name: Forge Gold Pickaxes
