@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   waterfall:
-    image: ghcr.io/civmc/civ/waterfall:{{setting.minecraft.civdocker_version}}
+    image: itzg/bungeecord@sha256:f67819eeefd9fe6d4ee5f6f4f3c67c171ba92e27cb22166a4abad3d1874afd4c
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -16,6 +16,12 @@ services:
         protocol: tcp
         mode: host
     environment:
+      WATERFALL_VERSION: '1.18'
+      TYPE: 'WATERFALL'
+
+      REPLACE_ENV_VARIABLES: 'true'
+      REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+
       INIT_MEMORY: 2G
       MAX_MEMORY: 2G
       CIV_POSTGRES_HOST: minecraft_postgres
@@ -24,6 +30,10 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+    volumes:
+      # Config & Plugins
+      - /opt/stacks/minecraft/proxy-config:/config
+      - /opt/stacks/minecraft/proxy-plugins:/plugins
 
   paper:
     image: itzg/minecraft-server@sha256:346cb47929edc36e977f3b064f882a9c919df65fe4807ac35c05fdacf442822f
