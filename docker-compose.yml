@@ -27,7 +27,7 @@ services:
       - "25565:25577"
 
   paper:
-    build: containers/paper
+    image: itzg/minecraft-server@sha256:346cb47929edc36e977f3b064f882a9c919df65fe4807ac35c05fdacf442822f
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -37,6 +37,16 @@ services:
       postgres:
         condition: service_healthy
     environment:
+      TYPE: 'paper'
+      VERSION: '1.18.2'
+      EULA: 'TRUE'
+
+      REMOVE_OLD_MODS: 'TRUE'
+      COPY_CONFIG_DEST: '/data'
+      SYNC_SKIP_NEWER_IN_DESTINATION: 'false'
+      REPLACE_ENV_DURING_SYNC: 'TRUE'
+      REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+
       INIT_MEMORY: 1G
       MAX_MEMORY: 5G
 
@@ -58,6 +68,8 @@ services:
       CIV_RABBITMQ_PASSWORD: rabbitmq
     volumes:
       - ./containers/data/paper:/data
+      - ./ansible/templates/stacks/minecraft/paper-config:/config
+      - ./ansible/templates/stacks/minecraft/paper-plugins:/plugins
 
   pvp:
     build: containers/pvp
