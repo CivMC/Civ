@@ -8,7 +8,7 @@ services:
   #################
 
   waterfall:
-    build: containers/waterfall
+    image: itzg/bungeecord@sha256:f67819eeefd9fe6d4ee5f6f4f3c67c171ba92e27cb22166a4abad3d1874afd4c
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -20,6 +20,12 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
+      WATERFALL_VERSION: '1.18'
+      TYPE: 'WATERFALL'
+
+      REPLACE_ENV_VARIABLES: 'true'
+      REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+
       CIV_POSTGRES_HOST: postgres
       CIV_POSTGRES_USERNAME: postgres
       CIV_POSTGRES_PASSWORD: postgres
@@ -70,36 +76,6 @@ services:
       - ./containers/data/paper:/data
       - ./ansible/templates/stacks/minecraft/paper-config:/config
       - ./ansible/templates/stacks/minecraft/paper-plugins:/plugins
-
-  pvp:
-    build: containers/pvp
-    restart: unless-stopped
-    tty: true
-    stdin_open: true
-    depends_on:
-      mariadb:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-    environment:
-      INIT_MEMORY: 1G
-      MAX_MEMORY: 5G
-
-      CIV_SERVER_NAME: local-pvp
-
-      CIV_MYSQL_HOST: mariadb
-      CIV_MYSQL_USERNAME: mariadb
-      CIV_MYSQL_PASSWORD: mariadb
-
-      CIV_POSTGRES_HOST: postgres
-      CIV_POSTGRES_USERNAME: postgres
-      CIV_POSTGRES_PASSWORD: postgres
-
-      CIV_RABBITMQ_HOST: rabbitmq
-      CIV_RABBITMQ_USERNAME: rabbitmq
-      CIV_RABBITMQ_PASSWORD: rabbitmq
-    volumes:
-      - ./containers/data/pvp:/data
 
   #################
   ### Databases ###
