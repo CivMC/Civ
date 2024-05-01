@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   waterfall:
-    image: ghcr.io/civmc/civ/waterfall:{{setting.minecraft.civdocker_version}}
+    image: itzg/bungeecord@sha256:f67819eeefd9fe6d4ee5f6f4f3c67c171ba92e27cb22166a4abad3d1874afd4c
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -16,6 +16,12 @@ services:
         protocol: tcp
         mode: host
     environment:
+      WATERFALL_VERSION: '1.18'
+      TYPE: 'WATERFALL'
+
+      REPLACE_ENV_VARIABLES: 'true'
+      REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+
       INIT_MEMORY: 2G
       MAX_MEMORY: 2G
       CIV_POSTGRES_HOST: minecraft_postgres
@@ -24,9 +30,13 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
+    volumes:
+      # Config & Plugins
+      - /opt/stacks/minecraft/proxy-config:/config
+      - /opt/stacks/minecraft/proxy-plugins:/plugins
 
   paper:
-    image: ghcr.io/civmc/civ/paper:{{setting.minecraft.civdocker_version}}
+    image: itzg/minecraft-server@sha256:346cb47929edc36e977f3b064f882a9c919df65fe4807ac35c05fdacf442822f
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -39,11 +49,29 @@ services:
         protocol: tcp
         mode: host
     environment:
+      TYPE: 'paper'
+      VERSION: '1.18.2'
+      EULA: 'TRUE'
+
+      REMOVE_OLD_MODS: 'TRUE'
+      COPY_CONFIG_DEST: '/data'
+      SYNC_SKIP_NEWER_IN_DESTINATION: 'false'
+      REPLACE_ENV_DURING_SYNC: 'TRUE'
+      REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+
       INIT_MEMORY: '{{setting.minecraft.resources.memory}}'
       MAX_MEMORY: '{{setting.minecraft.resources.memory}}'
+      USE_AIKAR_FLAGS: 'TRUE'
       STOP_DURATION: 3600
 
       CIV_SERVER_NAME: prod-server
+{% if setting.minecraft.whitelist %}
+      ENABLE_WHITELIST: 'true'
+      CIV_WHITELIST: 'true'
+{% else %}
+      ENABLE_WHITELIST: 'false'
+      CIV_WHITELIST: 'false'
+{% endif %}
 
       CIV_WORLD_GENERATOR: Terra:CIVMC
       CIV_WORDBANK_SEED: '{{secret.minecraft.wordbank_seed}}'
@@ -61,12 +89,12 @@ services:
       CIV_RABBITMQ_USERNAME: rabbitmq
       CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
 
-{% if setting.minecraft.whitelist %}
-      ENABLE_WHITELIST: "true"
-{% endif %}
-
     volumes:
+      # Persistence
       - /opt/stacks/minecraft/paper-data:/data
+      # Config & Plugins
+      - /opt/stacks/minecraft/paper-config:/config
+      - /opt/stacks/minecraft/paper-plugins:/plugins
       # Private Config & Plugins
       - /opt/PrivateConfig/paper/plugins/Vulcan-2.8.5.jar:/config/plugins/Vulcan-2.8.5.jar
       - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml

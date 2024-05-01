@@ -33,6 +33,6 @@
         - auth
         - maven
         - monitoring
-        - minecraft
+        - stacks
       loop_control:
         loop_var: deploy_task
