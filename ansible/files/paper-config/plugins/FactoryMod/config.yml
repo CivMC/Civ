@@ -4153,6 +4153,7 @@ recipes:
     production_time: 4s
     name: Make Chiseled Bookshelves
     type: PRODUCTION
+    input:
       chest:
         material: CHEST
         amount: 12
