@@ -3,6 +3,13 @@ package vg.civcraft.mc.namelayer.group;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.database.GroupManagerDao;
+
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,11 +17,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
-import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 
 public class Group {
 	
@@ -27,14 +29,14 @@ public class Group {
 	private boolean isValid = true;  // if false, then group has recently been deleted and is invalid
 	private int id;
 	private Set<Integer> ids = Sets.<Integer>newConcurrentHashSet();
-		
+	
 	private Group supergroup;
 	private Set<Group> subgroups = Sets.<Group>newConcurrentHashSet();
 	private Map<UUID, PlayerType> players = Maps.<UUID, PlayerType>newHashMap();
 	private Map<UUID, PlayerType> invites = Maps.<UUID, PlayerType>newHashMap();
 	private long activityTimestamp;
 	
-	public Group(String name, UUID owner, boolean disciplined, 
+	public Group(String name, UUID owner, boolean disciplined,
 			String password, int id, long activityTimestamp) {
 		if (db == null) {
 			db = NameLayerPlugin.getGroupManagerDao();
@@ -105,7 +107,7 @@ public class Group {
 	 * @return Returns all the UUIDS of the specific PlayerType.
 	 */
 	public List<UUID> getAllMembers(PlayerType type) {
-		List<UUID> uuids = Lists.newArrayList();;
+		List<UUID> uuids = Lists.newArrayList();
 		for (Map.Entry<UUID, PlayerType> entry : players.entrySet()) {
 			if (entry.getValue() == type) {
 				uuids.add(entry.getKey());
@@ -113,11 +115,34 @@ public class Group {
 		}
 		return uuids;
 	}
-	
+
+	/**
+	 * Returns all the uuids of the invitees in this group.
+	 * @return Returns all the uuids.
+	 */
+	public List<UUID> getAllInvites() {
+		return new ArrayList<>(invites.keySet());
+	}
+
+	/**
+	 * Returns all the invited UUIDS of a group's PlayerType.
+	 * @param type The PlayerType of a group that you want the UUIDs of.
+	 * @return Returns all the invited UUIDS of the specific PlayerType.
+	 */
+	public List<UUID> getAllInvites(PlayerType type) {
+		List<UUID> uuids = new ArrayList<>(invites.size());
+		for (Map.Entry<UUID, PlayerType> entry : invites.entrySet()) {
+			if (entry.getValue() == type) {
+				uuids.add(entry.getKey());
+			}
+		}
+		return uuids;
+	}
+
 	/**
 	 * Gives the uuids of the members whose name starts with the given
 	 * String, this is not case-sensitive
-	 * 
+	 *
 	 * @param prefix start of the players name
 	 * @return list of all players whose name starts with the given string
 	 */
@@ -137,7 +162,7 @@ public class Group {
 	
 	/**
 	 * Gives the uuids of players who are in this group and whos name is
-	 * within the given range. 
+	 * within the given range.
 	 * @param lowerLimit lexicographically lowest acceptable name
 	 * @param upperLimit lexicographically highest acceptable name
 	 * @return list of uuids of all players in the group whose name is within the given range
@@ -148,7 +173,7 @@ public class Group {
 		
 		for (UUID member : members) {
 			String name = NameAPI.getCurrentName(member);
-			if (name.compareToIgnoreCase(lowerLimit) >= 0 
+			if (name.compareToIgnoreCase(lowerLimit) >= 0
 					&& name.compareToIgnoreCase(upperLimit) <= 0) {
 				uuids.add(member);
 			}
@@ -181,7 +206,7 @@ public class Group {
 	public List<Group> getSubgroups() {
 		return Lists.newArrayList(subgroups);
 	}
-		
+	
 	/**
 	 * Checks if a sub group is on a group.
 	 * @param group- The SubGroup.
@@ -190,7 +215,7 @@ public class Group {
 	public boolean hasSubGroup(Group group){
 		return subgroups.contains(group);
 	}
-		
+	
 	/**
 	 * @return Returns the SubGroup for this group if there is one, null otherwise.
 	 */
@@ -219,7 +244,7 @@ public class Group {
 		}
 		return supergroup.hasSuperGroup(group);
 	}
-		
+	
 	/**
 	 * Adds the player to be allowed to join a group into a specific PlayerType.
 	 * @param uuid- The UUID of the player.
@@ -233,7 +258,7 @@ public class Group {
 	 * Adds the player to be allowed to join a group into a specific PlayerType.
 	 * @param uuid- The UUID of the player.
 	 * @param type- The PlayerType they will be joining.
-	 * @param saveToDB - save the invitation to the DB. 
+	 * @param saveToDB - save the invitation to the DB.
 	 */
 	public void addInvite(UUID uuid, PlayerType type, boolean saveToDB){
 		invites.put(uuid, type);
@@ -265,7 +290,7 @@ public class Group {
 	/**
 	 * Removes the invite of a Player
 	 * @param uuid- The UUID of the player.
-	 * @param saveToDB - remove the invitation from the DB. 
+	 * @param saveToDB - remove the invitation from the DB.
 	 */
 	public void removeInvite(UUID uuid, boolean saveToDB){
 		invites.remove(uuid);
@@ -307,8 +332,9 @@ public class Group {
 	
 	/**
 	 * @param uuid- The UUID of the player.
-	 * @return Returns the PlayerType of a UUID.
+	 * @return Returns the PlayerType of a member UUID.
 	 */
+	@Nullable
 	public PlayerType getPlayerType(UUID uuid) {
 		PlayerType member = players.get(uuid);
 		if (member != null) {
@@ -319,7 +345,24 @@ public class Group {
 		}
 		return PlayerType.NOT_BLACKLISTED;
 	}
-	
+
+	/**
+	 * @param uuid- The UUID of the player.
+	 * @return Returns the PlayerType of an invited UUID.
+	 */
+	@Nullable
+	public PlayerType getPlayerInviteType(UUID uuid) {
+		PlayerType invitee = invites.get(uuid);
+		if (invitee != null) {
+			return invitee;
+		}
+		if (NameLayerPlugin.getBlackList().isBlacklisted(this, uuid)) {
+			return null;
+		}
+		return PlayerType.NOT_BLACKLISTED;
+	}
+
+
 	public PlayerType getCurrentRank(UUID uuid) {
 		return players.get(uuid);
 	}
@@ -327,7 +370,7 @@ public class Group {
 	/**
 	 * Adds a member to a group.
 	 * @param uuid- The uuid of the player.
-	 * @param type- The PlayerType to add. If a preexisting PlayerType is found, 
+	 * @param type- The PlayerType to add. If a preexisting PlayerType is found,
 	 * it will be overwritten.
 	 */
 	
@@ -376,17 +419,17 @@ public class Group {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param supergroup the base group
 	 * @param subgroup the group to link under it
-	 * @param saveToDb - add link to the DB. 
+	 * @param saveToDb - add link to the DB.
 	 * @return true if linking succeeded, false otherwise.
 	 */
 	public static boolean link(Group supergroup, Group subgroup, boolean saveToDb) {
 		if (supergroup == null || subgroup == null) {
 			return false;
 		}
-				
+		
 		if (supergroup.equals(subgroup)) {
 			return false;
 		}
@@ -403,7 +446,7 @@ public class Group {
 		if (!supergroup.hasSubGroup(subgroup)) {
 			supergroup.subgroups.add(subgroup);
 		}
-		if (saveToDb) {		
+		if (saveToDb) {
 			db.addSubGroup(supergroup.getName(), subgroup.getName());
 		}
 		
@@ -411,7 +454,7 @@ public class Group {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @param supergroup the main group
 	 * @param subgroup the sub group to unlink
 	 * @return true if unlink succeeded, false otherwise
@@ -420,18 +463,18 @@ public class Group {
 		return unlink(supergroup,subgroup, true);
 	}
 	public static boolean unlink(Group supergroup, Group subgroup, boolean savetodb) {
-		if (supergroup == null || subgroup == null) { 
+		if (supergroup == null || subgroup == null) {
 			return false;
 		}
-						
+		
 		if (subgroup.hasSuperGroup() && subgroup.supergroup.equals(supergroup)) {
 			subgroup.supergroup = null;
 		}
 		
 		if (supergroup.hasSubGroup(subgroup)) {
 			supergroup.subgroups.remove(subgroup);
-		}		
-						
+		}
+		
 		if (savetodb){
 			db.removeSubGroup(supergroup.getName(), subgroup.getName());
 		}
@@ -464,7 +507,7 @@ public class Group {
 	/**
 	 * Sets the default group for a player
 	 * @param uuid- The UUID of the player.
-	 * 
+	 *
 	 */
 	public void setDefaultGroup(UUID uuid) {
 		NameLayerPlugin.getDefaultGroupHandler().setDefaultGroup(uuid, this);
@@ -508,14 +551,14 @@ public class Group {
 	/**
 	 * Gets the id for a group.
 	 * <p>
-	 * <b>Note:</b> 
+	 * <b>Note:</b>
 	 * Keep in mind though if you are trying to get a group_id from a GroupCreateEvent event
 	 * it will not be accurate. You must have a delay for 1 tick for it to work correctly.
 	 * <p>
-	 * Also calling the GroupManager.getGroup(int) will return a group that either has that 
+	 * Also calling the GroupManager.getGroup(int) will return a group that either has that
 	 * group id or the object associated with that id. As such if a group is previously called
 	 * and which didn't have the same id as the one called now you could get a different group id.
-	 * Example would be System.out.println(GroupManager.getGroup(1).getGroupId()) and that 
+	 * Example would be System.out.println(GroupManager.getGroup(1).getGroupId()) and that
 	 * could equal something like 2.
 	 * @return the group id for a group.
 	 */
@@ -524,7 +567,7 @@ public class Group {
 	/**
 	 * Addresses issue above somewhat. Allows implementations that need the whole list of Ids
 	 * associated with this groupname to get them.
-	 * 
+	 *
 	 * @return list of ids paired with this group name.
 	 */
 	public List<Integer> getGroupIds() { return new ArrayList<Integer>(this.ids); }
