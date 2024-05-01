@@ -20,10 +20,10 @@ services:
       GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP: "true"
       GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "{{secret.monitoring.grafana.oauth.client_id}}"
       GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: "{{secret.monitoring.grafana.oauth.client_secret}}"
-      GF_AUTH_GENERIC_OAUTH_SCOPES: profile
-      GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/auth/realms/Internal/protocol/openid-connect/auth"
-      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/auth/realms/Internal/protocol/openid-connect/token"
-      GF_AUTH_GENERIC_OAUTH_API_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/auth/realms/Internal/protocol/openid-connect/userinfo"
+      GF_AUTH_GENERIC_OAUTH_SCOPES: 'openid profile email'
+      GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/realms/Internal/protocol/openid-connect/auth"
+      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/realms/Internal/protocol/openid-connect/token"
+      GF_AUTH_GENERIC_OAUTH_API_URL: "https://{{secret.monitoring.grafana.oauth.domain}}/realms/Internal/protocol/openid-connect/userinfo"
       GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'"
     user: "0"
     deploy:
