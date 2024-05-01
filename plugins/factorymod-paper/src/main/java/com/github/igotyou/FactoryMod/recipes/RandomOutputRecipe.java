@@ -2,12 +2,6 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
-
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,10 +10,17 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
+
 public class RandomOutputRecipe extends InputRecipe {
 	private Map<ItemMap, Double> outputs;
 	private static Random rng;
 	private ItemMap lowestChanceMap;
+	private ItemMap guaranteedOutput;
 
 	public RandomOutputRecipe(String identifier, String name, int productionTime, ItemMap input,
 			Map<ItemMap, Double> outputs, ItemMap displayOutput) {
@@ -45,34 +46,58 @@ public class RandomOutputRecipe extends InputRecipe {
 			lowestChanceMap = displayOutput;
 		}
 	}
-
+	
 	@Override
-	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
-		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
-		logBeforeRecipeRun(combo, fccf);
-		ItemMap toRemove = input.clone();
-		ItemMap toAdd = null;
+	public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
 		int counter = 0;
 		while(counter < 20) {
-			toAdd = getRandomOutput();
-			if (toAdd != null) {
-				toAdd = toAdd.clone();
+			guaranteedOutput = getRandomOutput();
+			if (guaranteedOutput != null) {
+				guaranteedOutput = guaranteedOutput.clone();
 				break;
 			}
 			else {
 				counter++;
 			}
 		}
+		
+		if (guaranteedOutput == null) {
+			return new EffectFeasibility(
+					false,
+					"it failed to find a random item"
+			);
+		}
+		
+		boolean isFeasible = guaranteedOutput.fitsIn(outputInv);
+		String reasonSnippet = isFeasible ? null : "it ran out of storage space";
+		return new EffectFeasibility(
+				isFeasible,
+				reasonSnippet
+		);
+	}
+	
+	@Override
+	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+		logBeforeRecipeRun(combo, fccf);
+		ItemMap toRemove = input.clone();
+		ItemMap toAdd = guaranteedOutput;
+
 		if (toAdd == null) {
 			FactoryMod.getInstance().warning("Unable to find a random item to output. Recipe execution was cancelled," + fccf.getLogData());
 			return false;
 		}
-		if (toRemove.isContainedIn(inputInv)) {
-			if (toRemove.removeSafelyFrom(inputInv)) {
-				for(ItemStack is: toAdd.getItemStackRepresentation()) {
-					outputInv.addItem(is);
+		
+		if (toAdd.fitsIn(outputInv)) {
+			if (toRemove.isContainedIn(inputInv)) {
+				if (toRemove.removeSafelyFrom(inputInv)) {
+					for(ItemStack is: toAdd.getItemStackRepresentation()) {
+						outputInv.addItem(is);
+					}
 				}
 			}
+		} else {
+			return false;
 		}
 		logAfterRecipeRun(combo, fccf);
 		return true;

@@ -1,11 +1,6 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -13,6 +8,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Used to decompact itemstacks, which means a single item with compacted lore
@@ -45,7 +45,7 @@ public class DecompactingRecipe extends InputRecipe {
 	}
 
 	@Override
-	public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv) {
+	public EffectFeasibility evaluateEffectFeasibility(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
 		boolean isFeasible = Arrays.stream(inputInv.getContents())
 				.filter(Objects::nonNull)
 				.filter(this::isDecompactable)
@@ -53,7 +53,7 @@ public class DecompactingRecipe extends InputRecipe {
 					ItemStack removeClone = it.clone();
 					removeClone.setAmount(1);
 					removeCompactLore(removeClone);
-					ItemMap toAdd = new ItemMap(removeClone);
+					ItemMap toAdd = new ItemMap();
 					toAdd.addItemAmount(removeClone, CompactingRecipe.getCompactStackSize(removeClone.getType()));
 					return toAdd;
 				})
