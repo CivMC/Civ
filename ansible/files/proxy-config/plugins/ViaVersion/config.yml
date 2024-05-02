@@ -82,7 +82,7 @@ velocity-servers: {}
 #
 # What is the maximum per second a client can send (Use %pps to display their pps)
 # Use -1 to disable.
-max-pps: -1
+max-pps: 800
 max-pps-kick-msg: "You are sending too many packets!"
 #
 # We can also kick them if over a period they send over a threshold a certain amount of times.
@@ -91,7 +91,7 @@ max-pps-kick-msg: "You are sending too many packets!"
 # Use -1 to disable.
 tracking-period: 6
 # How many packets per second counts as a warning
-tracking-warning-pps: 1200
+tracking-warning-pps: 120
 # How many warnings over the interval can we have
 # This can never be higher than "tracking-period"
 tracking-max-warnings: 4
@@ -103,7 +103,7 @@ tracking-max-kick-msg: "You are sending too many packets, :("
 #
 # Whether to make sure ViaVersion's UserConnection object is already available in the PlayerJoinEvent.
 # You may disable this for faster startup/join time if you are 100% sure no plugin requires this.
-register-userconnections-on-join: false
+register-userconnections-on-join: true
 # Should we enable our hologram patch?
 # If they're in the wrong place enable this
 hologram-patch: false
