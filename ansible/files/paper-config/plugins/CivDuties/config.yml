@@ -26,6 +26,8 @@ tiers:
         timing: DISABLE
         executor: CONSOLE
     temporary:
+      permissions:
+        - jukealert.vanish
       groups:
         - dutied
 database:
