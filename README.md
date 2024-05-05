@@ -17,16 +17,16 @@ Optional services may be started by enabling the profile flag, e.g. `--profile <
 
 Current services and exposed ports are:
 
-| Name      | Ports | Description         | Profile    |
-|-----------|-------|---------------------|------------|
-| waterfall | 25565 | TCP, Minecraft      |            |
-| paper     |       |                     |            |
-| pvp       |       |                     |            |
-| mariadb   | 3306  | TCP, Database       |            |
-| postgres  | 5432  | TCP, Database       |            |
-| rabbitmq  | 5672  | TCP, AMQP           |            |
-|           | 15672 | HTTP, Management UI |            |
-| grafana   | 3000  | HTTP, Grafana UI    | monitoring |
+| Name     | Ports | Description         | Profile    |
+|----------|-------|---------------------|------------|
+| proxy    | 25565 | TCP, Minecraft      |            |
+| paper    |       |                     |            |
+| pvp      |       |                     |            |
+| mariadb  | 3306  | TCP, Database       |            |
+| postgres | 5432  | TCP, Database       |            |
+| rabbitmq | 5672  | TCP, AMQP           |            |
+|          | 15672 | HTTP, Management UI |            |
+| grafana  | 3000  | HTTP, Grafana UI    | monitoring |
 
 #### Using the console
 For the minecraft servers and other interactive containers, you can attach to the console to run commands:
