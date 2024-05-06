@@ -7,7 +7,7 @@ services:
   ### Minecraft ###
   #################
 
-  waterfall:
+  proxy:
     image: itzg/bungeecord@sha256:f67819eeefd9fe6d4ee5f6f4f3c67c171ba92e27cb22166a4abad3d1874afd4c
     restart: unless-stopped
     tty: true
@@ -31,6 +31,10 @@ services:
       CIV_POSTGRES_PASSWORD: postgres
     ports:
       - "25565:25577"
+    volumes:
+      - ./containers/data/proxy:/data
+      - ./ansible/files/proxy-config:/config
+      - ./ansible/files/proxy-plugins:/plugins
 
   paper:
     image: itzg/minecraft-server@sha256:346cb47929edc36e977f3b064f882a9c919df65fe4807ac35c05fdacf442822f
@@ -41,6 +45,8 @@ services:
       mariadb:
         condition: service_healthy
       postgres:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     environment:
       TYPE: 'paper'
@@ -74,8 +80,8 @@ services:
       CIV_RABBITMQ_PASSWORD: rabbitmq
     volumes:
       - ./containers/data/paper:/data
-      - ./ansible/templates/stacks/minecraft/paper-config:/config
-      - ./ansible/templates/stacks/minecraft/paper-plugins:/plugins
+      - ./ansible/files/paper-config:/config
+      - ./ansible/files/paper-plugins:/plugins
 
   #################
   ### Databases ###
