@@ -703,6 +703,18 @@ factories:
       - make_dark_oak_hanging_signs
       - make_dark_oak_trapdoors
       - make_dark_oak_doors
+      - make_cherry_fences
+      - make_cherry_fence_gates
+      - make_cherry_signs
+      - make_cherry_hanging_signs
+      - make_cherry_trapdoors
+      - make_cherry_doors
+      - make_mangrove_fences
+      - make_mangrove_fence_gates
+      - make_mangrove_signs
+      - make_mangrove_hanging_signs
+      - make_mangrove_trapdoors
+      - make_mangrove_doors
       - make_crimson_fences
       - make_crimson_fence_gates
       - make_crimson_signs
@@ -1026,9 +1038,12 @@ factories:
         material: DIRT
         amount: 64
     recipes:
+      - splice_cherry_sapling
+      - splice_mangrove_propagule
       - grow_flowering_azalea_leaves
       - grow_azalea_leaves
       - grow_spore_blossom
+      - grow_pink_petals
       - grow_big_dripleaf
       - grow_small_dripleaf
       - grow_lily_pad
@@ -4608,6 +4623,156 @@ recipes:
       door:
         material: DARK_OAK_FENCE_GATE
         amount: 128
+  make_cherry_fences:
+    production_time: 4s
+    name: Make Fences
+    type: PRODUCTION
+    input:
+      CHERRY_LOG:
+        material: CHERRY_LOG
+        amount: 16
+    output:
+      fence:
+        material: CHERRY_FENCE
+        amount: 128
+  make_cherry_signs:
+    production_time: 4s
+    name: Make Signs
+    type: PRODUCTION
+    input:
+      CHERRY_LOG:
+        material: CHERRY_LOG
+        amount: 24
+    output:
+      sign:
+        material: CHERRY_SIGN
+        amount: 128
+  make_cherry_hanging_signs:
+    production_time: 4s
+    name: Make Spruce Hanging Signs
+    type: PRODUCTION
+    input:
+      chest:
+        material: CHERRY_LOG
+        amount: 24
+      iron_ingot:
+        material: IRON_INGOT
+        amount: 4
+    output:
+      sign:
+        material: CHERRY_HANGING_SIGN
+        amount: 128
+  make_cherry_trapdoors:
+    production_time: 4s
+    name: Make Trap Doors
+    type: PRODUCTION
+    input:
+      CHERRY_LOG:
+        material: CHERRY_LOG
+        amount: 32
+    output:
+      trapdoor:
+        material: CHERRY_TRAPDOOR
+        amount: 128
+  make_cherry_doors:
+    production_time: 4s
+    name: Make Doors
+    type: PRODUCTION
+    input:
+      CHERRY_LOG:
+        material: CHERRY_LOG
+        amount: 24
+    output:
+      door:
+        material: CHERRY_DOOR
+        amount: 128
+  make_cherry_fence_gates:
+    production_time: 4s
+    name: Make Fence Gates
+    type: PRODUCTION
+    input:
+      CHERRY_LOG:
+        material: CHERRY_LOG
+        amount: 16
+    output:
+      door:
+        material: CHERRY_FENCE_GATE
+        amount: 128
+  make_mangrove_fences:
+    production_time: 4s
+    name: Make Fences
+    type: PRODUCTION
+    input:
+      MANGROVE_LOG:
+        material: MANGROVE_LOG
+        amount: 16
+    output:
+      fence:
+        material: MANGROVE_FENCE
+        amount: 128
+  make_mangrove_signs:
+    production_time: 4s
+    name: Make Signs
+    type: PRODUCTION
+    input:
+      MANGROVE_LOG:
+        material: MANGROVE_LOG
+        amount: 24
+    output:
+      sign:
+        material: MANGROVE_SIGN
+        amount: 128
+  make_mangrove_hanging_signs:
+    production_time: 4s
+    name: Make Spruce Hanging Signs
+    type: PRODUCTION
+    input:
+      chest:
+        material: MANGROVE_LOG
+        amount: 24
+      iron_ingot:
+        material: IRON_INGOT
+        amount: 4
+    output:
+      sign:
+        material: MANGROVE_HANGING_SIGN
+        amount: 128
+  make_mangrove_trapdoors:
+    production_time: 4s
+    name: Make Trap Doors
+    type: PRODUCTION
+    input:
+      MANGROVE_LOG:
+        material: MANGROVE_LOG
+        amount: 32
+    output:
+      trapdoor:
+        material: MANGROVE_TRAPDOOR
+        amount: 128
+  make_mangrove_doors:
+    production_time: 4s
+    name: Make Doors
+    type: PRODUCTION
+    input:
+      MANGROVE_LOG:
+        material: MANGROVE_LOG
+        amount: 24
+    output:
+      door:
+        material: MANGROVE_DOOR
+        amount: 128
+  make_mangrove_fence_gates:
+    production_time: 4s
+    name: Make Fence Gates
+    type: PRODUCTION
+    input:
+      MANGROVE_LOG:
+        material: MANGROVE_LOG
+        amount: 16
+    output:
+      door:
+        material: MANGROVE_FENCE_GATE
+        amount: 128
   make_crimson_fences:
     production_time: 4s
     name: Make Fences
@@ -7842,6 +8007,38 @@ recipes:
         material: GOLD_INGOT
         amount: 16
     health_gained: 10000
+  splice_cherry_sapling:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Splice cherry sapling
+    type: PRODUCTION
+    input:
+      oak_sapling:
+        material: OAK_SAPLING
+        amount: 32
+      spore_blossom:
+        material: SPORE_BLOSSOM
+        amount: 16
+    output:
+      cherry_sapling:
+        material: CHERRY_SAPLING
+        amount: 32
+  splice_mangrove_propagule:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Splice mangrove propagule
+    type: PRODUCTION
+    input:
+      oak_sapling:
+        material: OAK_SAPLING
+        amount: 32
+      vine:
+        material: VINE
+        amount: 16
+    output:
+      mangrove_propagule:
+        material: MANGROVE_PROPAGULE
+        amount: 32  
   grow_flowering_azalea_leaves:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -7887,6 +8084,19 @@ recipes:
       spore_blossom:
         material: SPORE_BLOSSOM
         amount: 4
+  grow_pink_petals:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow pink petals
+    type: PRODUCTION
+    input:
+      cherry_sapling:
+        material: CHERRY_SAPLING
+        amount: 8
+    output:
+      pink_petals:
+        material: PINK_PETALS
+        amount: 32
   grow_big_dripleaf:
     production_time: 4s
     fuel_consumption_intervall: 1s
