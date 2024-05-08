@@ -103,13 +103,13 @@ allprojects {
             // Copy the built jar into the paper container, removing any jars from previous versions
             tasks.register("copyPaper", Copy::class) {
                 doFirst {
-                    delete(fileTree("../../containers/paper/plugins") {
+                    delete(fileTree("../../ansible/files/paper-plugins") {
                         include(project.name + "-*.jar")
                     })
                 }
                 dependsOn("build")
                 from(tasks.findByPath("reobfJar")!!.outputs.files)
-                into("../../containers/paper/plugins")
+                into("../../ansible/files/paper-plugins")
             }
         }
 
