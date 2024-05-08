@@ -8,6 +8,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import java.util.Arrays;
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -21,9 +23,6 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-
-import java.util.Arrays;
-import java.util.UUID;
 
 public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 	/*
@@ -96,10 +95,6 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = output.clone();
 
-		if (!toAdd.fitsIn(outputInv)) {
-			return false;
-		}
-		
 		if (toRemove.isContainedIn(inputInv) && toRemove.removeSafelyFrom(inputInv)) {
 			for (ItemStack is : toAdd.getItemStackRepresentation()) {
 				is = addTags(serialNumber, is, bookNBT);
