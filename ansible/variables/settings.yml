@@ -22,7 +22,7 @@ settings:
     environment: Production
     minecraft:
       <<: *default_minecraft
-      civdocker_version: '1.26.10'
+      civdocker_version: '1.27.1'
     auth:
       enabled: false # TODO: MOVE
 
