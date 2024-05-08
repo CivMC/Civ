@@ -1,6 +1,11 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -8,14 +13,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import vg.civcraft.mc.civmodcore.inventory.ClonedInventory;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 
 /***
  * Outputs a player head belonging to a random player who is connected to the server when the recipe is run
@@ -59,23 +58,17 @@ public class PlayerHeadRecipe extends InputRecipe {
 		if (players.isEmpty()) {
 			return false;
 		}
-		
 		if (toRemove.isContainedIn(inputInv)) {
-			Random rand = new Random();
-			Player player = players.get(rand.nextInt(players.size()));
-			ItemStack is = new ItemStack(Material.PLAYER_HEAD, 1);
-			
-			if (!ClonedInventory.cloneInventory(outputInv).addItem(is).isEmpty()) {
-				return false;
-			}
 			if (toRemove.removeSafelyFrom(inputInv)) {
+				Random rand = new Random();
+				Player player = players.get(rand.nextInt(players.size()));
+				ItemStack is = new ItemStack(Material.PLAYER_HEAD, 1);
 				SkullMeta im = (SkullMeta) is.getItemMeta();
 				im.setOwningPlayer(Bukkit.getOfflinePlayer(player.getUniqueId()));
 				im.setDisplayName(player.getDisplayName());
 				is.setItemMeta(im);
 				outputInv.addItem(is);
 			}
-			
 		}
 		logAfterRecipeRun(combo, fccf);
 		return true;
