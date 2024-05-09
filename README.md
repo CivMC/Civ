@@ -8,8 +8,12 @@ This monorepo will eventually contain all civ projects and development
 
 ### Containers
 A docker compose stack is provided to help test containers built from
-this repo. To start the stack, run the following command:
-`docker compose up --build`. Please note that this stack is NOT suitable for production use.
+this repo. To start the stack, run the following commands:
+
+1. `gradle :ansible:build`
+2. `docker compose up`
+
+Please note that this stack is NOT suitable for production use.
 
 Container data (world, logs, etc.) are mounted at [./containers/data](./containers/data).
 
