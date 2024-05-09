@@ -3,6 +3,9 @@
   become: true
 
   tasks:
+    - name: Stop Server| Include Preflight
+      include_tasks: ../tasks/preflight-checks.yml
+
     - name: Stop Server | Expand setting
       include_tasks: ../tasks/expand-setting.yml
 
