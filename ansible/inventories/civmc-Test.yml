@@ -2,7 +2,7 @@ all:
   hosts:
     civmc-test-1:
       ansible_host: 15.204.132.209
-      ansible_user: sound
+      ansible_user: actions
   children:
     swarm_manager:
       hosts:
