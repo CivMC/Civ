@@ -94,9 +94,6 @@ factories:
       - make_prismarine_bricks
       - make_dark_prismarine
       - make_sea_lantern
-      - make_ochre_froglight
-      - make_verdant_froglight
-      - make_pearlescent_froglight
       - make_end_rods
       - make_redstone_lamp
       - pack_ice
@@ -1054,7 +1051,6 @@ factories:
       - grow_sculk_vein
       - kill_bush
       - root_dirt
-      - make_mud
       - melt_ice
       - form_tube_coral_block
       - form_fire_coral_block
@@ -1965,51 +1961,6 @@ recipes:
       sea_lantern:
         material: SEA_LANTERN
         amount: 32
-  make_ochre_froglight:
-    production_time: 4s
-    name: Make Ochre Froglight
-    type: PRODUCTION
-    input:
-      magma_cream:
-        material: MAGMA_CREAM
-        amount: 16
-      yellow_dye:
-        material: YELLOW_DYE
-        amount: 4
-    output:
-      ochre_froglight:
-        material: OCHRE_FROGLIGHT
-        amount: 64
-  make_verdant_froglight:
-    production_time: 4s
-    name: Make Verdant Froglight
-    type: PRODUCTION
-    input:
-      magma_cream:
-        material: MAGMA_CREAM
-        amount: 16
-      green_dye:
-        material: GREEN_DYE
-        amount: 4
-    output:
-      verdant_froglight:
-        material: VERDANT_FROGLIGHT
-        amount: 64
-  make_pearlescent_froglight:
-    production_time: 4s
-    name: Make Pearlescent Froglight
-    type: PRODUCTION
-    input:
-      magma_cream:
-        material: MAGMA_CREAM
-        amount: 16
-      purple_dye:
-        material: PURPLE_DYE
-        amount: 4
-    output:
-      pearlescent_froglight:
-        material: PEARLESCENT_FROGLIGHT
-        amount: 64 
   make_end_rods:
     production_time: 4s
     name: Make End Rods
@@ -8190,6 +8141,9 @@ recipes:
       brown_mushroom:
         material: BROWN_MUSHROOM
         amount: 16
+      emerald:
+        material: EMERALD
+        amount: 1
     output:
       sculk:
         material: SCULK
@@ -8206,6 +8160,9 @@ recipes:
       brown_mushroom:
         material: BROWN_MUSHROOM
         amount: 8
+      emerald:
+        material: EMERALD
+        amount: 1
     output:
       sculk_vein:
         material: SCULK_VEIN
@@ -8239,25 +8196,6 @@ recipes:
       rooted_dirt:
         material: ROOTED_DIRT
         amount: 64
-  make_mud:
-    production_time: 4s
-    fuel_consumption_intervall: 1s
-    name: Make Mud
-    type: PRODUCTION
-    input:
-      dirt:
-        material: DIRT
-        amount: 64
-      sticks:
-        material: WATER_BUCKET
-        amount: 1
-    output:
-      mud:
-        material: MUD
-        amount: 64  
-      bucket:
-        material: BUCKET
-        amount: 1  
   melt_ice:
     production_time: 1s
     fuel_consumption_intervall: 2s
