@@ -1,6 +1,9 @@
 # CivAnsible
 This project is a hybrid gradle/ansible project that is designed to provision and deploy services to a server.
 
+Vendored plugins are located in `src/` (gradle), since they are used to build the end plugin directory (`/build/`)
+Configs are located in `files/`, since they are purely copied by ansible
+
 ## Prerequisites
 1. Create a user on the server named `actions` with sudo privileges
 2. Create Environments in Github settings with the following environment secrets:
