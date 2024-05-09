@@ -7250,9 +7250,6 @@ recipes:
       fossil:
         material: PRISMARINE_SHARD
         amount: 1
-        name: §3Fossil
-        lore:
-          - Crack me in a factory for a prize!
     outputs:
       # Trash - 70% of total (0.175 each)
       cobblestone:
