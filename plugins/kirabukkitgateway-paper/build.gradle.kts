@@ -1,5 +1,6 @@
 plugins {
 	id("io.papermc.paperweight.userdev")
+	id("com.github.johnrengelman.shadow")
 }
 
 version = "2.0.3"
@@ -9,7 +10,7 @@ dependencies {
 		paperDevBundle("1.20.4-R0.1-SNAPSHOT")
 	}
 
-    implementation("com.rabbitmq:amqp-client:5.6.0")
+	api("com.rabbitmq:amqp-client:5.17.1")
 	compileOnly(project(":plugins:civmodcore-paper"))
 	compileOnly(project(":plugins:namelayer-paper"))
 	compileOnly(project(":plugins:civchat2-paper"))
