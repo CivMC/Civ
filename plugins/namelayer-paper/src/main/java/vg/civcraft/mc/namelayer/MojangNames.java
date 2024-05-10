@@ -13,6 +13,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import org.bukkit.Bukkit;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.scheduler.BukkitTask;
 import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
@@ -108,7 +109,7 @@ public final class MojangNames {
 	}
 
 	/**
-	 * DO NOT USE THIS ANYWHERE OTHER THAN {@link AssociationListener#OnPlayerLogin(PlayerLoginEvent)}
+	 * DO NOT USE THIS ANYWHERE OTHER THAN {@link AssociationListener#OnPlayerJoin(PlayerJoinEvent)}
 	 *
 	 * @param uuid The player's uuid.
 	 * @param name The player's Mojang name.

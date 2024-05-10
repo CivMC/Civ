@@ -80,6 +80,8 @@ public class SaplingHack extends SimpleHack<SaplingConfig> implements Listener {
 			case ACACIA_LEAVES -> Material.ACACIA_SAPLING;
 			case DARK_OAK_LEAVES -> Material.DARK_OAK_SAPLING;
 			case AZALEA_LEAVES -> Material.AZALEA;
+			case MANGROVE_LEAVES -> Material.MANGROVE_PROPAGULE;
+			case CHERRY_LEAVES -> Material.CHERRY_SAPLING;
 			//We set this to air so nothing will drop if it comes to erroring
 			//This needs to be updated any time a new tree is added, can we make it better?
 			default -> Material.AIR;

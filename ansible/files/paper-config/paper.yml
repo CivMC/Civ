@@ -157,8 +157,8 @@ world-settings:
       cactus: 3
       reeds: 3
       bamboo:
-        max: 16
-        min: 11
+        max: 10
+        min: 6
     fishing-time-range:
       MinimumTicks: 100
       MaximumTicks: 600

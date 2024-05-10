@@ -3,16 +3,17 @@ package com.github.maxopoly.KiraBukkitGateway.impersonation;
 import com.mojang.authlib.GameProfile;
 import java.util.UUID;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 
 
 public class PseudoPlayerIdentity extends ServerPlayer {
 
 	public PseudoPlayerIdentity(MinecraftServer minecraftserver, ServerLevel worldserver, GameProfile gameprofile) {
-		super(minecraftserver, worldserver, gameprofile);
+		super(minecraftserver, worldserver, gameprofile, ClientInformation.createDefault());
 	}
 
 	public static ServerPlayer generate(UUID uuid, String name) {
