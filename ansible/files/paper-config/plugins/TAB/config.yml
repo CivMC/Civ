@@ -176,7 +176,7 @@ placeholder-output-replacements:
     "yes": "&7| Vanished"
     "no": ""
   "%afk%":
-    true: " &o[AFK]&r"
+    true: ""
     false: ""
   "%essentials_nickname%":
     "%essentials_nickname%": "%player%" #placeholder did not parse correctly, show real name instead
