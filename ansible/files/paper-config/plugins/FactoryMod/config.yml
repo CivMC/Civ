@@ -974,8 +974,8 @@ factories:
     recipes:
       - wordbank_item
       - crack_easter_egg
+      - fabricate_netherite_upgrade
       - repair_station
-      - fabricate_netherite_smithing_template
   concrete_mixer:
     type: FCC
     name: Concrete Mixer
@@ -6734,9 +6734,9 @@ recipes:
       plate:
         material: OAK_TRAPDOOR
         amount: 1
-  fabricate_netherite_smithing_template:
+  fabricate_netherite_upgrade:
     type: PRODUCTION
-    name: Fabricate Netherite Smithing Template
+    name: Fabricate Netherite Upgrade
     production_time: 4s
     input:
       netherrack:
@@ -6749,8 +6749,8 @@ recipes:
         material: DIAMOND
         amount: 7
     output:
-      netherite_smithing_template:
-        material: NETHERITE_SMITHING_TEMPLATE
+      netherite_upgrade_smithing_template:
+        material: NETHERITE_UPGRADE_SMITHING_TEMPLATE
         amount: 1
   wordbank_item:
     type: WORDBANK
