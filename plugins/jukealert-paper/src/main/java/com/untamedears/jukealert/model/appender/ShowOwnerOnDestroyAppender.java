@@ -28,11 +28,13 @@ public class ShowOwnerOnDestroyAppender extends AbstractSnitchAppender {
 		if (!action.isLifeCycleEvent()) {
 			return;
 		}
-		if (!(action instanceof DestroySnitchAction)) {
+		if (!(action instanceof DestroySnitchAction dsa)) {
 			return;
 		}
-		DestroySnitchAction dsa = ((DestroySnitchAction) action);
 		UUID destroyerUUID = dsa.getPlayer();
+		if (destroyerUUID == null) {
+			return;
+		}
 		Player player = Bukkit.getPlayer(destroyerUUID);
 		if (player == null) {
 			return;
