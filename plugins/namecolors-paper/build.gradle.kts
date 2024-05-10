@@ -12,5 +12,5 @@ dependencies {
     compileOnly(project(":plugins:civmodcore-paper"))
     compileOnly(project(":plugins:namelayer-paper"))
     compileOnly(project(":plugins:civchat2-paper"))
-    compileOnly("me.neznamy:tab-api:3.0.2")
+    compileOnly("me.neznamy:tab-api:4.0.2")
 }
