@@ -181,7 +181,7 @@ hacks:
     disableGapples: true
     disableEndGatewayTP: false
   ItemMetaConverterHack:
-    enabled: true
+    enabled: false
   MapCopyProtection:
     enabled: true
   OldEnchanting:
