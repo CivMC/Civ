@@ -1,4 +1,5 @@
 import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
+import io.papermc.paperweight.tasks.RemapJar
 import xyz.jpenilla.runpaper.task.RunServer
 
 plugins {
@@ -77,15 +78,41 @@ allprojects {
         publications {
             create<MavenPublication>("maven") {
                 from(components["java"])
+                pluginManager.withPlugin("io.papermc.paperweight.userdev") {
+                    artifact(project.tasks.withType<RemapJar>().getByName("reobfJar").outputJar)
+                }
+            }
+            pluginManager.withPlugin("com.github.johnrengelman.shadow") {
+                create<MavenPublication>("shadow") {
+                    from(components["java"])
+                    pluginManager.withPlugin("io.papermc.paperweight.userdev") {
+                        artifact(project.tasks.withType<RemapJar>().getByName("reobfJar").outputJar)
+                    }
+                }
             }
         }
     }
 
     tasks.withType<RunServer> {
-        minecraftVersion("1.18")
+        minecraftVersion("1.20.4")
     }
 
     pluginManager.withPlugin("io.papermc.paperweight.userdev") {
+
+        if (project.name.endsWith("paper") && project.name != "civspy-paper") {
+            // Copy the built jar into the paper container, removing any jars from previous versions
+            tasks.register("copyPaper", Copy::class) {
+                doFirst {
+                    delete(fileTree("../../ansible/files/paper-plugins") {
+                        include(project.name + "-*.jar")
+                    })
+                }
+                dependsOn("build")
+                from(tasks.findByPath("reobfJar")!!.outputs.files)
+                into("../../ansible/files/paper-plugins")
+            }
+        }
+
         tasks.withType<ProcessResources> {
             filesMatching("plugin.yml") {
                 expand(project.properties)

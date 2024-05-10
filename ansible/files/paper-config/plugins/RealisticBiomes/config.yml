@@ -41,6 +41,10 @@ no_bonemeal_blocks:
   - AZALEA
   - CRIMSON_FUNGUS
   - WARPED_FUNGUS
+  - CHERRY_SAPLING
+  - MANGROVE_PROPAGULE
+  - TORCH_FLOWER
+  - PITCHER_PLANT
 
  # categories of biomes
 biome_aliases:
@@ -77,6 +81,7 @@ biome_aliases:
     - OLD_GROWTH_BIRCH_FOREST
   meadows:
     - MEADOW
+    - CHERRY_GROVE
 
   taigas:
     - TAIGA
@@ -117,6 +122,7 @@ biome_aliases:
     - MUSHROOM_FIELDS
   swamp:
     - SWAMP
+    - MANGROVE_SWAMP
     
   nether_wastes:
     - NETHER_WASTES
@@ -134,6 +140,10 @@ biome_aliases:
     - END_MIDLANDS
     - THE_VOID
     - THE_END
+  caves:
+    - DEEP_DARK
+    - DRIPSTONE_CAVES
+    - LUSH_CAVES
 
 plants:
 
@@ -466,6 +476,7 @@ plants:
       meadows: 0.25
       savannas: 0.5
       mesa: 0.25
+      swamp: 0.5
 
   BIRCH_SAPLING:
     persistent_growth_period: 12h
@@ -749,11 +760,11 @@ plants:
       SOUL_SAND_VALLEY: 0.3
       
   BAMBOO:
-    persistent_growth_period: 12h
+    persistent_growth_period: 24h
     name: Bamboo
     grower:
       type: bamboo
-      max_height: 12
+      max_height: 10
     id: 25
     item:
       ==: org.bukkit.inventory.ItemStack
@@ -809,6 +820,55 @@ plants:
       GLOWSTONE: 0.5
     biomes:
       freshwater: 1.0
+
+  CHERRY_SAPLING:
+    persistent_growth_period: 12h
+    name: Cherry Tree
+    grower:
+      type: tree
+      material: CHERRY_SAPLING
+    vanilla_materials:
+    - CHERRY_SAPLING
+    id: 28
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: CHERRY_SAPLING
+      v: 1
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      jungles: 0.25
+      forests: 0.6
+      taigas: 0.8
+      birch_forests: 0.5
+      dark_forest: 0.25
+      swamp: 0.25
+      meadows: 1.0
+      taigas: 0.25
+      cold_taiga: 0.1
+      tundra: 0.1
+      cold_mountain: 0.25
+      flatlands: 0.5
+
+  MANGROVE_PROPAGULE:
+    persistent_growth_period: 12h
+    name: Mangrove Tree
+    grower:
+      type: tree
+      material: MANGROVE_PROPAGULE
+    vanilla_materials:
+    - MANGROVE_PROPAGULE
+    id: 29
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: MANGROVE_PROPAGULE
+      v: 1
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      jungles: 0.25
+      dark_forest: 0.25
+      swamp: 1.0
 
 database:
   ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials

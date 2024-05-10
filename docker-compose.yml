@@ -8,7 +8,7 @@ services:
   #################
 
   proxy:
-    image: itzg/bungeecord@sha256:f67819eeefd9fe6d4ee5f6f4f3c67c171ba92e27cb22166a4abad3d1874afd4c
+    image: itzg/bungeecord@sha256:7e7eeb9023cc213de2ca7ecbcf2cccc506fd46a31346f7250d2fcc5637cf5bb7
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -20,7 +20,7 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      WATERFALL_VERSION: '1.18'
+      WATERFALL_VERSION: '1.20'
       TYPE: 'WATERFALL'
 
       REPLACE_ENV_VARIABLES: 'true'
@@ -37,7 +37,7 @@ services:
       - ./ansible/files/proxy-plugins:/plugins
 
   paper:
-    image: itzg/minecraft-server@sha256:346cb47929edc36e977f3b064f882a9c919df65fe4807ac35c05fdacf442822f
+    image: itzg/minecraft-server@sha256:491e37fa63ffef22c9ac1f6ec2fb4cc793735799cd91bafa1e5790aa39e9b313
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -50,7 +50,7 @@ services:
         condition: service_healthy
     environment:
       TYPE: 'paper'
-      VERSION: '1.18.2'
+      VERSION: '1.20.4'
       EULA: 'TRUE'
 
       REMOVE_OLD_MODS: 'TRUE'
