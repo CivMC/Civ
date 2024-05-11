@@ -43,8 +43,8 @@ no_bonemeal_blocks:
   - WARPED_FUNGUS
   - CHERRY_SAPLING
   - MANGROVE_PROPAGULE
-  - TORCH_FLOWER
-  - PITCHER_PLANT
+  - TORCHFLOWER
+  - PITCHER_CROP
 
  # categories of biomes
 biome_aliases:
