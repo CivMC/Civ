@@ -31,7 +31,7 @@ settings:
     environment: Test
     minecraft:
       <<: *default_minecraft
-      civdocker_version: 'tabfix'
+      civdocker_version: '2.0.0'
       whitelist: true
       resources:
         <<: *default_minecraft_resources
