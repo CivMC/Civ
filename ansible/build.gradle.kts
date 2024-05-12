@@ -4,6 +4,7 @@ val proxyPlugin by configurations.creating
 dependencies {
     paperPlugin(project(path = ":plugins:banstick-paper", configuration = "reobf"))
     paperPlugin(project(path = ":plugins:bastion-paper", configuration = "reobf"))
+    paperPlugin(project(path = ":plugins:castlegates-paper", configuration = "reobf"))
     paperPlugin(project(path = ":plugins:citadel-paper", configuration = "reobf"))
     paperPlugin(project(path = ":plugins:civchat2-paper", configuration = "reobf"))
     paperPlugin(project(path = ":plugins:civduties-paper", configuration = "reobf"))
