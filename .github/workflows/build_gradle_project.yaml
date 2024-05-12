@@ -34,21 +34,17 @@ jobs:
       - name: 🚩 Checkout Repo
         uses: actions/checkout@v4
 
-      - name: ❓ Ensure Wrapper Permissions
-        run: chmod +x ./gradlew
-
       - name: ☕ Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: 🐘 Setup Gradle
+        uses: gradle/setup-gradle@v3
+
       - name: 🐘 Gradle Build
-        uses: gradle/gradle-build-action@v2
-        env:
-          CI: true
-        with:
-          arguments: "${{inputs.category}}:${{inputs.project}}:build --scan"
+        run: CI=true ./gradlew ${{inputs.category}}:${{inputs.project}}:build --scan
 
       - name: 🗃️ Upload Build Artifact
         uses: actions/upload-artifact@v3
