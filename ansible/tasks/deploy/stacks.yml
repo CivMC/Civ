@@ -48,13 +48,13 @@
       - "'swarm_manager' in group_names"
       - item.enabled
   copy:
-      src: '../../files/{{item.file}}'
+      src: '{{item.file}}'
       dest: '/opt/stacks/{{item.target}}'
   loop:
       - { file: 'paper-config', target: 'minecraft', enabled: setting.minecraft.enabled }
-      - { file: 'build/paper-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
       - { file: 'proxy-config', target: 'minecraft', enabled: setting.minecraft.enabled }
-      - { file: 'build/proxy-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
+      - { file: '../../build/paper-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
+      - { file: '../../build/proxy-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
 
 - name: Deploy Stacks | Deploy Stacks
   when:
