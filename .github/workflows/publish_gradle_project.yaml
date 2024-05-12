@@ -55,7 +55,7 @@ jobs:
           distribution: 'temurin'
 
       - name: 🐘 Setup Gradle
-        uses: gradle/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v3
 
         # TODO: Bump version if not already done
 

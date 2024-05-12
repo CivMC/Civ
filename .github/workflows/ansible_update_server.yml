@@ -23,7 +23,7 @@ jobs:
           distribution: 'temurin'
 
       - name: 🐘 Setup Gradle
-        uses: gradle/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v3
 
       - name: 🐘 Gradle Build
         run: CI=true ./gradlew :ansible:build
