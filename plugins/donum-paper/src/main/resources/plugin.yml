@@ -1,4 +1,4 @@
-name: ${name}
+name: Donum
 main: com.github.civcraft.donum.Donum
 author: Maxopoly
 version: ${version}
