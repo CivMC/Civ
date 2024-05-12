@@ -9,6 +9,7 @@ dependencies {
     paperPlugin(project(path = ":plugins:civduties-paper", configuration = "reobf"))
     paperPlugin(project(path = ":plugins:civmodcore-paper", configuration = "reobf"))
     paperPlugin(project(path = ":plugins:combattagplus-paper", configuration = "reobf"))
+    paperPlugin(project(path = ":plugins:donum-paper"))
     paperPlugin(project(path = ":plugins:essenceglue-paper", configuration = "reobf"))
     paperPlugin(project(path = ":plugins:exilepearl-paper", configuration = "reobf"))
     paperPlugin(project(path = ":plugins:factorymod-paper", configuration = "reobf"))

@@ -1,31 +1,8 @@
-import net.civmc.civgradle.CivGradleExtension
+version = "2.0.0"
 
-plugins {
-    id("net.civmc.civgradle") version "2.+" apply false
-}
+dependencies {
+    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
 
-subprojects {
-    apply(plugin = "java-library")
-    apply(plugin = "maven-publish")
-    apply(plugin = "net.civmc.civgradle")
-
-    configure<CivGradleExtension> {
-        pluginName = project.property("pluginName") as String
-    }
-
-    repositories {
-        mavenCentral()
-        maven("https://repo.civmc.net/repository/maven-public/")
-        maven("https://papermc.io/repo/repository/maven-public/")
-        maven("https://repo.codemc.io/repository/maven-public/")
-
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/CivMC/NameLayer")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
+    compileOnly(project(":plugins:civmodcore-paper"))
+    compileOnly(project(":plugins:namelayer-paper"))
 }
