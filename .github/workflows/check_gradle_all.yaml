@@ -14,18 +14,14 @@ jobs:
       - name: 🚩 Checkout Repo
         uses: actions/checkout@v4
 
-      - name: ❓ Ensure Wrapper Permissions
-        run: chmod +x ./gradlew
-
       - name: ☕ Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: 🐘 Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
       - name: 🐘 Gradle Check
-        uses: gradle/gradle-build-action@v2
-        env:
-          CI: true
-        with:
-          arguments: "check --scan"
+        run: CI=true ./gradlew check --scan

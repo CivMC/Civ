@@ -1,4 +1,8 @@
 # CivAnsible
+This project is a hybrid gradle/ansible project that is designed to provision and deploy services to a server.
+
+Vendored plugins are located in `src/` (gradle), since they are used to build the end plugin directory (`/build/`)
+Configs are located in `files/`, since they are purely copied by ansible
 
 ## Prerequisites
 1. Create a user on the server named `actions` with sudo privileges
@@ -8,6 +12,10 @@
     - SUDO_PASSWORD
 3. Create a repo scoped secret with the contents of your secrets.yml called SECRETS_YML
 4. Create an ansible inventory named after the environment
+
+## Usage
+1. Build dependencies with `gradle :ansible:build`
+2. Use an ansible playbook with `ansible-playbook -i inventories/<inventory> playbooks/<playbook>`
 
 ## TODOs
 - Private Config

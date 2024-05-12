@@ -15,6 +15,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 🐘 Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: 🐘 Gradle Build
+        run: CI=true ./gradlew :ansible:build
+
       - name: Inject secrets
         run: 'echo "$SECRETS_YML" > variables/secrets.yml'
         shell: bash
