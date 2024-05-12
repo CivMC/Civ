@@ -7,7 +7,6 @@ settings:
       enabled: true
     minecraft: &default_minecraft
       enabled: true
-      civdocker_version: latest
       whitelist: false
       resources: &default_minecraft_resources
         memory: 40G
@@ -22,7 +21,6 @@ settings:
     environment: Production
     minecraft:
       <<: *default_minecraft
-      civdocker_version: '2.0.0'
     auth:
       enabled: false # TODO: MOVE
 
@@ -31,7 +29,6 @@ settings:
     environment: Test
     minecraft:
       <<: *default_minecraft
-      civdocker_version: '2.0.0'
       whitelist: true
       resources:
         <<: *default_minecraft_resources

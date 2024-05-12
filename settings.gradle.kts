@@ -4,6 +4,8 @@ plugins {
     id("com.gradle.enterprise") version "3.16.2"
 }
 
+include(":ansible")
+
 include(":plugins:banstick-paper")
 include(":plugins:bastion-paper")
 include(":plugins:citadel-paper")

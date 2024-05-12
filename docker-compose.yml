@@ -34,7 +34,7 @@ services:
     volumes:
       - ./containers/data/proxy:/data
       - ./ansible/files/proxy-config:/config
-      - ./ansible/files/proxy-plugins:/plugins
+      - ./ansible/build/proxy-plugins:/plugins
 
   paper:
     image: itzg/minecraft-server@sha256:491e37fa63ffef22c9ac1f6ec2fb4cc793735799cd91bafa1e5790aa39e9b313
@@ -81,7 +81,7 @@ services:
     volumes:
       - ./containers/data/paper:/data
       - ./ansible/files/paper-config:/config
-      - ./ansible/files/paper-plugins:/plugins
+      - ./ansible/build/paper-plugins:/plugins
 
   #################
   ### Databases ###

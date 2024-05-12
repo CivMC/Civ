@@ -1,0 +1,19 @@
+- name: Preflight Checks | Check for secrets.yml
+  connection: local
+  stat: path=../variables/secrets.yml
+  register: secrets_yml
+
+- name: Preflight Checks | Fail if secrets.yml is missing
+  fail:
+    msg: "secrets.yml is missing, please create it by copying variables/secrets.example.yml"
+  when: not secrets_yml.stat.exists
+
+- name: Preflight Checks | Check for build dir
+  connection: local
+  stat: path=../build/
+  register: build_dir
+
+- name: Preflight Checks | Fail if build dir is missing
+  fail:
+    msg: "build/ is missing, please create it by running `gradle :ansible:build`"
+  when: not build_dir.stat.exists
