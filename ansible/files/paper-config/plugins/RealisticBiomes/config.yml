@@ -829,7 +829,7 @@ plants:
       material: CHERRY_SAPLING
     vanilla_materials:
     - CHERRY_SAPLING
-    id: 28
+    id: 30
     item:
       ==: org.bukkit.inventory.ItemStack
       type: CHERRY_SAPLING
@@ -858,7 +858,7 @@ plants:
       material: MANGROVE_PROPAGULE
     vanilla_materials:
     - MANGROVE_PROPAGULE
-    id: 29
+    id: 31
     item:
       ==: org.bukkit.inventory.ItemStack
       type: MANGROVE_PROPAGULE
