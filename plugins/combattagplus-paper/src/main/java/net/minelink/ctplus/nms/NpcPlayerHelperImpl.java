@@ -2,16 +2,12 @@ package net.minelink.ctplus.nms;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundPlayerInfoPacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -20,14 +16,21 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.PlayerDataStorage;
 import net.minelink.ctplus.compat.base.NpcIdentity;
 import net.minelink.ctplus.compat.base.NpcPlayerHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.List;
 
 public class NpcPlayerHelperImpl implements NpcPlayerHelper {
     @Override
@@ -44,12 +47,16 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         for (ServerPlayer serverPlayer : MinecraftServer.getServer().getPlayerList().getPlayers()) {
             if (serverPlayer instanceof NpcPlayer) continue;
 
-            ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.ADD_PLAYER, npcPlayer);
+            ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, npcPlayer);
             serverPlayer.connection.send(packet);
         }
 
-        worldServer.entityManager.getEntityGetter().get(player.getUniqueId()).remove(Entity.RemovalReason.DISCARDED);
-        worldServer.entityManager.addNewEntity(npcPlayer);
+        Entity oldPlayer = worldServer.getEntity(player.getUniqueId());
+
+        if (oldPlayer != null) {
+            oldPlayer.remove(Entity.RemovalReason.DISCARDED);
+            worldServer.addFreshEntity(npcPlayer);
+        }
 
         return npcPlayer.getBukkitEntity();
     }
@@ -64,11 +71,11 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         for (ServerPlayer serverPlayer : MinecraftServer.getServer().getPlayerList().getPlayers()) {
             if (serverPlayer instanceof NpcPlayer) continue;
 
-            ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, entity);
+            ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(List.of(entity.getUUID()));
             serverPlayer.connection.send(packet);
         }
 
-        ServerLevel worldServer = entity.getLevel();
+        ServerLevel worldServer = entity.serverLevel();
         worldServer.chunkSource.removeEntity(entity);
         worldServer.getPlayers(serverPlayer -> serverPlayer instanceof NpcPlayer).remove(entity);
         removePlayerList(player);
@@ -98,7 +105,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
 
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             ItemStack item = entity.getItemBySlot(slot);
-            if (item == null) continue;
+            if (item.getItem() == Items.AIR) continue;
 
             // Set the attribute for this equipment to consider armor values and enchantments
             // Actually getAttributeMap().a() is used with the previous item, to clear the Attributes
@@ -109,7 +116,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
             List<Pair<EquipmentSlot, ItemStack>> list = Lists.newArrayList();
             list.add(Pair.of(slot, item));
             Packet packet = new ClientboundSetEquipmentPacket(entity.getId(), list);
-            entity.getLevel().chunkSource.broadcast(entity, packet);
+            entity.serverLevel().chunkSource.broadcast(entity, packet);
         }
     }
 
@@ -154,7 +161,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         playerNbt.putInt("foodTickTimer", foodTickTimer);
         playerNbt.putFloat("foodSaturationLevel", entity.getFoodData().getSaturationLevel());
         playerNbt.putFloat("foodExhaustionLevel", entity.getFoodData().exhaustionLevel);
-        playerNbt.putShort("Fire", (short) entity.remainingFireTicks);
+        playerNbt.putShort("Fire", (short) entity.getRemainingFireTicks());
         playerNbt.put("Inventory", npcPlayer.getInventory().save(new ListTag()));
 
         File file1 = new File(worldStorage.getPlayerDir(), identity.getId().toString() + ".dat.tmp");
@@ -176,8 +183,8 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         ServerPlayer p = ((CraftPlayer) player).getHandle();
 
         for (ServerPlayer serverPlayer : MinecraftServer.getServer().getPlayerList().getPlayers()) {
-            ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(
-                    ClientboundPlayerInfoPacket.Action.ADD_PLAYER, serverPlayer);
+            ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(
+                    ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, serverPlayer);
             p.connection.send(packet);
         }
     }
@@ -186,7 +193,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
     public void removePlayerList(Player player) {
         ServerPlayer p = ((CraftPlayer) player).getHandle();
         for (ServerPlayer serverPlayer : MinecraftServer.getServer().getPlayerList().getPlayers()) {
-            ClientboundPlayerInfoPacket packet = new ClientboundPlayerInfoPacket(ClientboundPlayerInfoPacket.Action.REMOVE_PLAYER, serverPlayer);
+            ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(List.of(serverPlayer.getUUID()));
             p.connection.send(packet);
         }
     }

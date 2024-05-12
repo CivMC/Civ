@@ -77,7 +77,8 @@ public class CivChat2Listener implements Listener {
 			}
 		}
 
-		if (Bukkit.getPlayer(chatman.getChannel(playerJoinEvent.getPlayer())) == null) {
+		UUID player = chatman.getChannel(playerJoinEvent.getPlayer());
+		if (player != null && Bukkit.getPlayer(player) == null) {
 			chatman.removeChannel(playerJoinEvent.getPlayer());
 		}
 

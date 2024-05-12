@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_18_R2.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.v1_20_R3.persistence.CraftPersistentDataContainer;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import vg.civcraft.mc.civmodcore.nbt.NBTType;
@@ -64,7 +64,7 @@ public final class PersistentDataContainerExtensions {
 		final var typeRegistry = pdc.getDataTagTypeRegistry();
 		final var result = new ArrayList<C>(tagList.size());
 		for (final Tag nbtElement : tagList) {
-			final P primitiveElement = typeRegistry.extract(type.getPrimitiveType(), nbtElement);
+			final P primitiveElement = typeRegistry.extract(type, nbtElement);
 			final C complexElement = type.fromPrimitive(primitiveElement, pdc.getAdapterContext());
 			result.add(Objects.requireNonNull(complexElement));
 		}
@@ -88,7 +88,7 @@ public final class PersistentDataContainerExtensions {
 		final var result = new ListTag();
 		for (final C complexElement : list) {
 			final P primitiveElement = type.toPrimitive(complexElement, pdc.getAdapterContext());
-			final Tag nbtElement = typeRegistry.wrap(type.getPrimitiveType(), primitiveElement);
+			final Tag nbtElement = typeRegistry.wrap(type, primitiveElement);
 			result.add(Objects.requireNonNull(nbtElement));
 		}
 		pdc.getRaw().put(key.toString(), result);
