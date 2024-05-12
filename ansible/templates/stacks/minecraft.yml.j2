@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   waterfall:
-    image: itzg/bungeecord@sha256:f67819eeefd9fe6d4ee5f6f4f3c67c171ba92e27cb22166a4abad3d1874afd4c
+    image: itzg/bungeecord@sha256:7e7eeb9023cc213de2ca7ecbcf2cccc506fd46a31346f7250d2fcc5637cf5bb7
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -16,8 +16,9 @@ services:
         protocol: tcp
         mode: host
     environment:
-      WATERFALL_VERSION: '1.18'
+      WATERFALL_VERSION: '1.20'
       TYPE: 'WATERFALL'
+      WATERFALL_BUILD_ID: 577
 
       REPLACE_ENV_VARIABLES: 'true'
       REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
@@ -36,7 +37,7 @@ services:
       - /opt/stacks/minecraft/proxy-plugins:/plugins
 
   paper:
-    image: itzg/minecraft-server@sha256:346cb47929edc36e977f3b064f882a9c919df65fe4807ac35c05fdacf442822f
+    image: itzg/minecraft-server@sha256:491e37fa63ffef22c9ac1f6ec2fb4cc793735799cd91bafa1e5790aa39e9b313
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -50,7 +51,7 @@ services:
         mode: host
     environment:
       TYPE: 'paper'
-      VERSION: '1.18.2'
+      VERSION: '1.20.4'
       EULA: 'TRUE'
 
       REMOVE_OLD_MODS: 'TRUE'

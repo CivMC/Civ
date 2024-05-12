@@ -8,10 +8,10 @@ version = "3.0.6"
 
 dependencies {
 	paperweight {
-		paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+		paperDevBundle("1.20.4-R0.1-SNAPSHOT")
 	}
 
-	api("co.aikar:acf-bukkit:0.5.0-SNAPSHOT")
+	api("co.aikar:acf-bukkit:0.5.1-SNAPSHOT")
 	api("com.mojang:datafixerupper:1.0.20")
 	api("com.zaxxer:HikariCP:5.0.1")
 	api("co.aikar:taskchain-bukkit:3.7.2")

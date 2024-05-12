@@ -5,6 +5,7 @@ import com.github.maxopoly.finale.combat.event.CritHitEvent;
 import com.github.maxopoly.finale.misc.knockback.KnockbackConfig;
 import java.util.Iterator;
 import java.util.List;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
@@ -29,8 +30,8 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_18_R2.util.CraftVector;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.util.CraftVector;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
@@ -41,7 +42,7 @@ public class CombatUtil {
 	 private static void sendSoundEffect(net.minecraft.world.entity.player.Player fromEntity, double x, double y, double z, SoundEvent soundEffect, SoundSource soundCategory, float volume, float pitch) {
         fromEntity.playSound(soundEffect, volume, pitch); // This will not send the effect to the entity himself
         if (fromEntity instanceof ServerPlayer) {
-            ((ServerPlayer) fromEntity).connection.send(new ClientboundSoundPacket(soundEffect, soundCategory, x, y, z, volume, pitch));
+            ((ServerPlayer) fromEntity).connection.send(new ClientboundSoundPacket(Holder.direct(soundEffect), soundCategory, x, y, z, volume, pitch, fromEntity.level().getRandom().nextLong()));
         }
     }
 	 
@@ -74,7 +75,7 @@ public class CombatUtil {
 				damage *= 0.2F + f2 * f2 * 0.8F;
 				f1 *= f2;
 			}
-			Level world = attacker.getLevel();
+			Level world = attacker.level();
 			if (damage > 0.0F || f1 > 0.0F) {
 				boolean dealtExtraKnockback = false;
 				byte baseKnockbackLevel = 0;
@@ -90,7 +91,7 @@ public class CombatUtil {
 					dealtExtraKnockback = true;
 				}
 
-				boolean shouldCrit = shouldKnockback && attacker.fallDistance > 0.0F && !attacker.isOnGround() && !attacker.onClimbable() && !attacker.isInWater()
+				boolean shouldCrit = shouldKnockback && attacker.fallDistance > 0.0F && !attacker.onGround() && !attacker.onClimbable() && !attacker.isInWater()
 						&& !attacker.hasEffect(MobEffects.BLINDNESS) && !attacker.isPassenger() && victim instanceof LivingEntity;
 				shouldCrit = shouldCrit && !attacker.isSprinting();
 				if (shouldCrit) {
@@ -108,7 +109,7 @@ public class CombatUtil {
 				boolean shouldSweep = false;
 				double d0 = attacker.walkDist - attacker.walkDistO;
 
-				if (shouldKnockback && !shouldCrit && !dealtExtraKnockback && attacker.isOnGround() && d0 < (double) attacker.getSpeed()) {
+				if (shouldKnockback && !shouldCrit && !dealtExtraKnockback && attacker.onGround() && d0 < (double) attacker.getSpeed()) {
 					ItemStack itemstack = attacker.getItemInHand(InteractionHand.MAIN_HAND);
 					if (itemstack.getItem() instanceof SwordItem) {
 						shouldSweep = true;
@@ -132,7 +133,7 @@ public class CombatUtil {
 				}
 
 				Vec3 victimMot = victim.getDeltaMovement();
-				boolean damagedVictim = victim.hurt(DamageSource.playerAttack(attacker), damage);
+				boolean damagedVictim = victim.hurt(world.damageSources().playerAttack(attacker), damage);
 				if (damagedVictim) {
 					if (victim instanceof LivingEntity) {
 						LivingEntity livingVictim = (LivingEntity) victim;
@@ -153,7 +154,7 @@ public class CombatUtil {
 							if (victim.isInWater()) {
 								dv = knockbackConfig.getWaterModifier().modifyKnockback(start, dv);
 							} else {
-								if (!victim.isOnGround()) {
+								if (!victim.onGround()) {
 									dv = knockbackConfig.getAirModifier().modifyKnockback(start, dv);
 								} else{
 									dv = knockbackConfig.getGroundModifier().modifyKnockback(start, dv);
@@ -198,7 +199,7 @@ public class CombatUtil {
 
 					if (shouldSweep && config.isSweepEnabled()) {
 						float f4 = 1.0F + EnchantmentHelper.getSweepingDamageRatio(attacker) * damage;
-						List<LivingEntity> list = attacker.getLevel().getEntitiesOfClass(LivingEntity.class, victim.getBoundingBox().inflate(1.0D, 0.25D, 1.0D));
+						List<LivingEntity> list = attacker.level().getEntitiesOfClass(LivingEntity.class, victim.getBoundingBox().inflate(1.0D, 0.25D, 1.0D));
 						Iterator<LivingEntity> iterator = list.iterator();
 
 						while (iterator.hasNext()) {
@@ -206,14 +207,14 @@ public class CombatUtil {
 
 							if (entityliving != attacker && entityliving != victim && !attacker.skipAttackInteraction(entityliving) && (!(entityliving instanceof ArmorStand) || !((ArmorStand) entityliving).isMarker()) && attacker.distanceToSqr(entityliving) < 9.0D) {
 								// CraftBukkit start - Only apply knockback if the damage hits
-								if (entityliving.hurt(DamageSource.playerAttack(attacker).sweep(), f4)) {
+								if (entityliving.hurt(world.damageSources().playerAttack(attacker).sweep(), f4)) {
 									entityliving.knockback(0.4F, (double) Mth.sin(attacker.getBukkitYaw() * 0.017453292F), (double) (-Mth.cos(attacker.getBukkitYaw() * 0.017453292F)));
 								}
 								// CraftBukkit end
 							}
 						}
 
-						attacker.getLevel().playSound(attacker, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, attacker.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
+						world.playSound(attacker, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, attacker.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
 						attacker.sweepAttack();
 					}
 
@@ -249,9 +250,9 @@ public class CombatUtil {
 
 					if (shouldCrit || shouldSweep) {
 						if (shouldKnockback && config.getCombatSounds().isStrongEnabled()) {
-							attacker.getLevel().playSound(attacker, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, attacker.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
+							attacker.level().playSound(attacker, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, attacker.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
 						} else if (config.getCombatSounds().isWeakEnabled()) {
-							attacker.getLevel().playSound(attacker, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_WEAK, attacker.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
+							attacker.level().playSound(attacker, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_WEAK, attacker.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
 						}
 					}
 
@@ -274,7 +275,7 @@ public class CombatUtil {
 						object = ((EnderDragonPart) victim).parentMob;
 					}
 
-					if (!attacker.getLevel().isClientSide() && !itemstack1.isEmpty() && object instanceof LivingEntity) {
+					if (!attacker.level().isClientSide() && !itemstack1.isEmpty() && object instanceof LivingEntity) {
 						itemstack1.hurtEnemy((LivingEntity) object, attacker);
 						if (itemstack1.isEmpty()) {
 							attacker.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
