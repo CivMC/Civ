@@ -1,6 +1,6 @@
 package com.github.civcraft.donum;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class DonumConfiguration {
@@ -23,7 +23,7 @@ public class DonumConfiguration {
 		this.database = config.getString("database.database", "global");
 		this.port = config.getInt("database.port",3306);
 		this.user = config.getString("database.user", "global");
-		this.password = config.getString("database.password", RandomStringUtils.random(16));		
+		this.password = config.getString("database.password", RandomStringUtils.random(16));
 	}
 	
 	/**
