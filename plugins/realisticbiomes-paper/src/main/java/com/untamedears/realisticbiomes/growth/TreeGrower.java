@@ -31,6 +31,8 @@ public class TreeGrower extends AgeableGrower {
 		case ACACIA_SAPLING:
 		case CHORUS_FLOWER:
 		case FLOWERING_AZALEA:
+		case CHERRY_SAPLING:
+		case MANGROVE_PROPAGULE:
 			return false;
 		case DARK_OAK_SAPLING:
 		case JUNGLE_SAPLING:
@@ -121,6 +123,10 @@ public class TreeGrower extends AgeableGrower {
 			return TreeType.ACACIA;
 		case FLOWERING_AZALEA:
 			return TreeType.AZALEA;
+		case CHERRY_SAPLING:
+			return TreeType.CHERRY;
+		case MANGROVE_PROPAGULE:
+			return TreeType.MANGROVE : TreeType.TALL_MANGROVE; 
 		case DARK_OAK_SAPLING:
 			return big ? TreeType.DARK_OAK : null;
 		case JUNGLE_SAPLING:
