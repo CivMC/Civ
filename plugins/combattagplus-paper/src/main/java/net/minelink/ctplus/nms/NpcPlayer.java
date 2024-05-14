@@ -33,7 +33,7 @@ public class NpcPlayer extends ServerPlayer {
     public static NpcPlayer valueOf(Player player) {
         MinecraftServer minecraftServer = MinecraftServer.getServer();
         ServerLevel worldServer = ((CraftWorld) player.getWorld()).getHandle();
-        GameProfile gameProfile = new GameProfile(player.getUniqueId(), NpcNameGeneratorFactory.getNameGenerator().generate(player));
+        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), NpcNameGeneratorFactory.getNameGenerator().generate(player));
         ClientInformation clientInformation = ((CraftPlayer) player).getHandle().clientInformation();
 
         for (Map.Entry<String, Property> entry: ((CraftPlayer) player).getProfile().getProperties().entries()) {
