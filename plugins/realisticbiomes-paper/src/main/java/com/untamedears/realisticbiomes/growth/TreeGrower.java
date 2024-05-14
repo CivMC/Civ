@@ -126,7 +126,7 @@ public class TreeGrower extends AgeableGrower {
 		case CHERRY_SAPLING:
 			return TreeType.CHERRY;
 		case MANGROVE_PROPAGULE:
-			return TreeType.MANGROVE : TreeType.TALL_MANGROVE; 
+			return big ? TreeType.TALL_MANGROVE : TreeType.MANGROVE; 
 		case DARK_OAK_SAPLING:
 			return big ? TreeType.DARK_OAK : null;
 		case JUNGLE_SAPLING:
