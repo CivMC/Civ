@@ -821,6 +821,32 @@ plants:
     biomes:
       freshwater: 1.0
 
+
+  DARK_OAK_SAPLING:
+    persistent_growth_period: 12h
+    name: Dark Oak Tree
+    grower:
+      type: tree
+      material: DARK_OAK_SAPLING
+    vanilla_materials:
+    - DARK_OAK_SAPLING
+    id: 18
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: DARK_OAK_SAPLING
+      v: 1
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      jungles: 0.6
+      forests: 0.6
+      taigas: 0.6
+      birch_forests: 0.6
+      dark_forest: 1.0
+      swamp: 0.8
+      meadows: 0.5
+      
+
   CHERRY_SAPLING:
     persistent_growth_period: 0h
     name: Cherry Tree
