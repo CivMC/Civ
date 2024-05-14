@@ -14,6 +14,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.HashMap;
@@ -63,10 +64,17 @@ public class PortalModifyHack extends BasicHack {
 	@EventHandler
 	public void onTick(ServerTickEndEvent event) {
 		for (Map.Entry<Player, Location> entry : teleports.entrySet()) {
-				entry.getKey().teleport(entry.getValue(), PlayerTeleportEvent.TeleportCause.END_PORTAL);
-				if (entry.getValue().getWorld().getName().equals(targetWorld)) {
-					spawnExit(entry.getValue());
-				}
+			Player player = entry.getKey();
+			PlayerPortalEvent portalEvent = new PlayerPortalEvent(player, player.getLocation(), entry.getValue(), PlayerTeleportEvent.TeleportCause.END_PORTAL, 0, true, 0);
+			Bukkit.getServer().getPluginManager().callEvent(portalEvent);
+			//noinspection ConstantValue
+			if (portalEvent.isCancelled() || portalEvent.getTo() == null || portalEvent.getTo().getWorld() == null) {
+				continue;
+			}
+			player.teleport(portalEvent.getTo(), PlayerTeleportEvent.TeleportCause.END_PORTAL);
+			if (portalEvent.getTo().getWorld().getName().equals(targetWorld)) {
+				spawnExit(entry.getValue());
+			}
 		}
 		teleports.clear();
 	}
