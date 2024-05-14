@@ -822,7 +822,7 @@ plants:
       freshwater: 1.0
 
   CHERRY_SAPLING:
-    persistent_growth_period: 0h
+    persistent_growth_period: 12h
     name: Cherry Tree
     grower:
       type: tree
@@ -851,7 +851,7 @@ plants:
       flatlands: 0.5
 
   MANGROVE_PROPAGULE:
-    persistent_growth_period: 0h
+    persistent_growth_period: 12h
     name: Mangrove Tree
     grower:
       type: tree
