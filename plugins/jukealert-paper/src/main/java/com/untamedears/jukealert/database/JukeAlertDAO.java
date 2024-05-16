@@ -520,7 +520,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 		try (final Connection connection = this.db.getConnection();
 			 final PreparedStatement statement = connection.prepareStatement(
 					 "SELECT jsa.name, jse.uuid, jse.x, jse.y, jse.z, jse.creation_time, jse.victim, jse.id "
-							 + "FROM ja_snitch_entries jse INNER JOIN ja_snitch_actions jsa ON "
+							 + "FROM ja_snitch_entries jse STRAIGHT_JOIN ja_snitch_actions jsa ON "
 							 + "jse.type_id = jsa.id WHERE snitch_id = ? AND jse.creation_time >= ? "
 							 + "ORDER BY jse.creation_time DESC LIMIT " + Math.max(actionLimit, 1) + ";")) {
 			statement.setInt(1, snitchId);
