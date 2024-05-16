@@ -13,6 +13,7 @@ import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.eggs.PipeEgg;
 import com.github.igotyou.FactoryMod.eggs.SorterEgg;
 import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
@@ -65,7 +66,9 @@ public class Create extends BaseCommand {
 					((Furnace) furnaceBS).setCustomName(fcce.getName());
 					furnaceBS.update(true);
 				}
-				manager.addFactory(fcce.hatch(fccs, (Player) sender));
+				Factory factory = fcce.hatch(fccs, sender);
+				((FurnCraftChestFactory) factory).getTableIOSelector();
+				manager.addFactory(factory);
 				sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());
 			} else {
 				sender.sendMessage(ChatColor.RED + "You are not looking at the right block for this factory");
