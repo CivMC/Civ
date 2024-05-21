@@ -15,6 +15,8 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.events.EventUtils;
 
 public abstract class ACivMod extends JavaPlugin {
 
@@ -59,9 +61,10 @@ public abstract class ACivMod extends JavaPlugin {
      *
      * @param listener The listener class to register.
      */
-    public void registerListener(@Nonnull final Listener listener) {
-        getServer().getPluginManager().registerEvents(
-            Objects.requireNonNull(listener, "Cannot register a listener if it's null, you dummy"), this);
+    public void registerListener(
+        final @NotNull Listener listener
+    ) {
+        EventUtils.registerListener(this, listener);
     }
 
     /**

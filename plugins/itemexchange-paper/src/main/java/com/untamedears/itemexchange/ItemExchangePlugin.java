@@ -1,9 +1,6 @@
 package com.untamedears.itemexchange;
 
 import com.untamedears.itemexchange.commands.CommandRegistrar;
-import com.untamedears.itemexchange.glues.citadel.CitadelGlue;
-import com.untamedears.itemexchange.glues.jukealert.JukeAlertGlue;
-import com.untamedears.itemexchange.glues.namelayer.NameLayerGlue;
 import com.untamedears.itemexchange.rules.ModifierRegistrar;
 import com.untamedears.itemexchange.rules.modifiers.BookModifier;
 import com.untamedears.itemexchange.rules.modifiers.DamageableModifier;
@@ -13,10 +10,8 @@ import com.untamedears.itemexchange.rules.modifiers.EnchantStorageModifier;
 import com.untamedears.itemexchange.rules.modifiers.LoreModifier;
 import com.untamedears.itemexchange.rules.modifiers.PotionModifier;
 import com.untamedears.itemexchange.rules.modifiers.RepairModifier;
-import java.util.List;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
-import vg.civcraft.mc.civmodcore.utilities.DependencyGlue;
 
 /**
  * The main Item Exchange plugin class.
@@ -27,12 +22,6 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
     private static ItemExchangeConfig config;
     private static CommandManager commands;
     private static ModifierRegistrar modifiers;
-
-    private final List<DependencyGlue> glues = List.of(
-        new NameLayerGlue(this),
-        new CitadelGlue(this),
-        new JukeAlertGlue(this)
-    );
 
     @Override
     public void onEnable() {
@@ -53,12 +42,10 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
         modifiers.registerModifier(RepairModifier.TEMPLATE); // 600
         modifiers.registerModifier(BookModifier.TEMPLATE); // 1000
         registerListener(new ItemExchangeListener());
-        this.glues.forEach(DependencyGlue::registerGlue);
     }
 
     @Override
     public void onDisable() {
-        this.glues.forEach(DependencyGlue::resetGlue);
         if (modifiers != null) {
             modifiers.reset();
             modifiers = null;

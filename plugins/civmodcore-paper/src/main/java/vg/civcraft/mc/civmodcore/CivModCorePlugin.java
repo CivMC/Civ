@@ -13,6 +13,7 @@ import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.civmodcore.commands.StatCommand;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
+import vg.civcraft.mc.civmodcore.gluing.GlueManager;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
@@ -91,6 +92,7 @@ public class CivModCorePlugin extends ACivMod {
         registerListener(new ScoreBoardListener());
         registerListener(new WorldTracker());
         registerListener(new PlayerNames());
+        registerListener(new GlueManager(this));
         // Register commands
         this.commands = new CommandManager(this);
         this.commands.init();
