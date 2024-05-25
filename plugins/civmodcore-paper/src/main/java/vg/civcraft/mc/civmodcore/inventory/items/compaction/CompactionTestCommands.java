@@ -3,6 +3,7 @@ package vg.civcraft.mc.civmodcore.inventory.items.compaction;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,21 +20,19 @@ import org.jetbrains.annotations.NotNull;
 @CommandAlias("compaction")
 @CommandPermission("cmc.debug")
 public final class CompactionTestCommands extends BaseCommand {
-	private static final ItemStack TEMPLATE_ITEM = new ItemStack(Material.DIAMOND);
-
 	public enum CompactedItemType { NEW, LEGACY }
 
 	@Subcommand("give")
 	public void giveNewItem(
 		final @NotNull Player sender,
-		final @NotNull CompactedItemType type
+		final @NotNull CompactedItemType type,
+		final @NotNull @Default("DIAMOND") Material material,
+		final @Default("1") int amount
 	) {
-		final ItemStack item = TEMPLATE_ITEM.clone();
+		final ItemStack item = new ItemStack(material, amount);
 		switch (type) {
 			case NEW -> item.editMeta(Compaction::markAsCompacted);
-			case LEGACY -> item.editMeta((meta) -> {
-				meta.setLore(List.of(Compaction.COMPACTED_ITEM_LORE));
-			});
+			case LEGACY -> item.editMeta((meta) -> meta.setLore(List.of(Compaction.COMPACTED_ITEM_LORE)));
 		}
 		sender.getInventory().addItem(item);
 		sender.sendMessage(Component.text("You've been given a compacted item!", NamedTextColor.GREEN));
@@ -72,14 +71,14 @@ public final class CompactionTestCommands extends BaseCommand {
 
 		final var recipes = new ArrayList<MerchantRecipe>();
 		{ // Compacted result recipe
-			final ItemStack result = TEMPLATE_ITEM.clone();
+			final ItemStack result = new ItemStack(Material.DIAMOND);
 			result.editMeta(Compaction::markAsCompacted);
 			final var recipe = new MerchantRecipe(result, Short.MAX_VALUE);
 			recipe.addIngredient(new ItemStack(Material.STICK));
 			recipes.add(recipe);
 		}
 		{ // Compacted ingredient recipe
-			final var recipe = new MerchantRecipe(TEMPLATE_ITEM.clone(), Short.MAX_VALUE);
+			final var recipe = new MerchantRecipe(new ItemStack(Material.DIAMOND), Short.MAX_VALUE);
 			final ItemStack ingredient = new ItemStack(Material.STICK);
 			ingredient.editMeta(Compaction::markAsCompacted);
 			recipe.addIngredient(ingredient);
