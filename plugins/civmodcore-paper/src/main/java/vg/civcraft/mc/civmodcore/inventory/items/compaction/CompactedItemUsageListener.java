@@ -1,7 +1,8 @@
 package vg.civcraft.mc.civmodcore.inventory.items.compaction;
 
 import io.papermc.paper.event.player.PlayerLoomPatternSelectEvent;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +20,7 @@ import org.bukkit.inventory.SmithingInventory;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
-public final class CompactedItemListener implements Listener {
+public final class CompactedItemUsageListener implements Listener {
 	/**
 	 * Prevents players from placing compacted blocks
 	 */
@@ -29,7 +30,10 @@ public final class CompactedItemListener implements Listener {
 	) {
 		if (Compaction.isCompacted(event.getItemInHand())) {
 			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "You cannot place compacted blocks");
+			event.getPlayer().sendMessage(Component.text(
+				"You cannot place compacted blocks!",
+				NamedTextColor.RED
+			));
 		}
 	}
 
@@ -44,7 +48,10 @@ public final class CompactedItemListener implements Listener {
 			if (Compaction.isCompacted(slot)) {
 				event.setCancelled(true);
 				if (event.getWhoClicked() instanceof final Player clicker) {
-					clicker.sendMessage(ChatColor.RED + "You cannot craft with compacted items");
+					clicker.sendMessage(Component.text(
+						"You cannot craft with compacted items!",
+						NamedTextColor.RED
+					));
 				}
 				break;
 			}
@@ -60,7 +67,10 @@ public final class CompactedItemListener implements Listener {
 	) {
 		if (Compaction.isCompacted(event.getItem())) {
 			event.setCancelled(true);
-			event.getEnchanter().sendMessage(ChatColor.RED + "You cannot enchant compacted items");
+			event.getEnchanter().sendMessage(Component.text(
+				"You cannot enchant compacted items!",
+				NamedTextColor.RED
+			));
 		}
 	}
 
@@ -73,7 +83,10 @@ public final class CompactedItemListener implements Listener {
 	) {
 		if (Compaction.isCompacted(event.getItem())) {
 			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "You cannot eat compacted food");
+			event.getPlayer().sendMessage(Component.text(
+				"You cannot eat compacted food!",
+				NamedTextColor.RED
+			));
 		}
 	}
 
@@ -96,7 +109,10 @@ public final class CompactedItemListener implements Listener {
 		}
 		if (Compaction.isCompacted(anvil.getFirstItem()) || Compaction.isCompacted(anvil.getSecondItem())) {
 			event.setCancelled(true);
-			event.getWhoClicked().sendMessage(ChatColor.RED + "You cannot use compacted items in an anvil");
+			event.getWhoClicked().sendMessage(Component.text(
+				"You cannot use compacted items in an anvil!",
+				NamedTextColor.RED
+			));
 		}
 	}
 
@@ -119,7 +135,10 @@ public final class CompactedItemListener implements Listener {
 		}
 		if (Compaction.isCompacted(smith.getInputEquipment()) || Compaction.isCompacted(smith.getInputMineral())) {
 			event.setCancelled(true);
-			event.getWhoClicked().sendMessage(ChatColor.RED + "You cannot use compacted items in a smithing table");
+			event.getWhoClicked().sendMessage(Component.text(
+				"You cannot use compacted items in a smithing table!",
+				NamedTextColor.RED
+			));
 		}
 	}
 
@@ -142,7 +161,10 @@ public final class CompactedItemListener implements Listener {
 		}
 		if (Compaction.isCompacted(cartography.getItem(0)) || Compaction.isCompacted(cartography.getItem(1))) {
 			event.setCancelled(true);
-			event.getWhoClicked().sendMessage(ChatColor.RED + "You cannot copy compacted maps");
+			event.getWhoClicked().sendMessage(Component.text(
+				"You cannot copy compacted maps!",
+				NamedTextColor.RED
+			));
 		}
 	}
 
@@ -156,7 +178,10 @@ public final class CompactedItemListener implements Listener {
 		final LoomInventory loom = event.getLoomInventory();
 		if (Compaction.isCompacted(loom.getItem(0)) || Compaction.isCompacted(loom.getItem(1))) {
 			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "You cannot use compacted items in a loom");
+			event.getPlayer().sendMessage(Component.text(
+				"You cannot use compacted items in a loom!",
+				NamedTextColor.RED
+			));
 		}
 	}
 }

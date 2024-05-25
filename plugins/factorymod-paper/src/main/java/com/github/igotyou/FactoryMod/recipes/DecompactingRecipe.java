@@ -99,7 +99,7 @@ public class DecompactingRecipe extends InputRecipe {
 		List<ItemStack> result = new LinkedList<>();
 		if (i == null) {
 			ItemStack is = new ItemStack(Material.STONE, 1);
-			is.editMeta((meta) -> Compaction.markAsCompacted(meta, Compaction.AddLore.YES));
+			is.editMeta(Compaction::markAsCompacted);
 			result.add(is);
 			return result;
 		}

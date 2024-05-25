@@ -21,6 +21,8 @@ dependencies {
 
 	compileOnly("it.unimi.dsi:fastutil:8.5.8")
 
+	compileOnly("com.comphenix.protocol:ProtocolLib:5.2.0-SNAPSHOT")
+
 	testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
 	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 }

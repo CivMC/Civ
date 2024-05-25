@@ -181,7 +181,7 @@ public final class ConfigHelper {
 				}
 			}
 			if (current.getBoolean("compacted")) {
-				Compaction.markAsCompacted(meta, Compaction.AddLore.YES_IF_ABSENT);
+				Compaction.markAsCompacted(meta);
 			}
 			if (current.contains("enchants")) {
 				for (String enchantKey : current.getConfigurationSection("enchants").getKeys(false)) {

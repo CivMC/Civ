@@ -148,7 +148,7 @@ public class CompactingRecipe extends InputRecipe {
 	 * Applies the lore and set the amount to 1. Dont call this directly if you want to compact items for players
 	 */
 	private void compactStack(ItemStack is) {
-		is.editMeta((meta) -> Compaction.markAsCompacted(meta, Compaction.AddLore.YES_IF_ABSENT));
+		is.editMeta(Compaction::markAsCompacted);
 		is.setAmount(1);
 	}
 

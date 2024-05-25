@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import java.io.File;
 import java.sql.SQLException;
 import org.bukkit.Bukkit;
@@ -18,7 +19,10 @@ import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.compaction.CompactedItemListener;
+import vg.civcraft.mc.civmodcore.inventory.items.compaction.CompactedItemUsageListener;
+import vg.civcraft.mc.civmodcore.inventory.items.compaction.CompactedItemNetworkTransformer;
+import vg.civcraft.mc.civmodcore.inventory.items.compaction.CompactionTestCommands;
+import vg.civcraft.mc.civmodcore.inventory.items.compaction.CompactedItemUpgradeListener;
 import vg.civcraft.mc.civmodcore.players.PlayerNames;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
@@ -53,6 +57,7 @@ public class CivModCorePlugin extends ACivMod {
 	private WorldIDManager worldIdManager;
 	private CommandManager commands;
 	private SkinCache skinCache;
+	private CompactedItemNetworkTransformer compactedNetworkAdapter;
 
 	@Override
 	public void onEnable() {
@@ -90,13 +95,15 @@ public class CivModCorePlugin extends ACivMod {
 		registerListener(new ScoreBoardListener());
 		registerListener(new WorldTracker());
 		registerListener(new PlayerNames());
-		registerListener(new CompactedItemListener());
+		registerListener(new CompactedItemUsageListener());
+		registerListener(new CompactedItemUpgradeListener());
 		// Register commands
 		this.commands = new CommandManager(this);
 		this.commands.init();
 		this.commands.registerCommand(new ConfigCommand());
 		this.commands.registerCommand(new StatCommand());
 		this.commands.registerCommand(new ChunkMetaCommand());
+		this.commands.registerCommand(new CompactionTestCommands());
 		// Load APIs
 		EnchantUtils.loadEnchantAbbreviations(this);
 		MoreTags.init();
@@ -107,6 +114,9 @@ public class CivModCorePlugin extends ACivMod {
 
 		if (this.config.getChunkLoadingStatistics())
 			LoadStatisticManager.enable();
+
+		this.compactedNetworkAdapter = new CompactedItemNetworkTransformer(this);
+		ProtocolLibrary.getProtocolManager().addPacketListener(this.compactedNetworkAdapter);
 	}
 
 	@Override
@@ -139,6 +149,11 @@ public class CivModCorePlugin extends ACivMod {
 		}
 
 		LoadStatisticManager.disable();
+
+		if (this.compactedNetworkAdapter != null) {
+			ProtocolLibrary.getProtocolManager().removePacketListener(this.compactedNetworkAdapter);
+			this.compactedNetworkAdapter = null;
+		}
 
 		if (this.config != null) {
 			this.config.reset();
