@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPluginLoader;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.commands.ChunkMetaCommand;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
+import vg.civcraft.mc.civmodcore.commands.DebugCommands;
 import vg.civcraft.mc.civmodcore.commands.StatCommand;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
@@ -100,6 +101,7 @@ public class CivModCorePlugin extends ACivMod {
 		// Register commands
 		this.commands = new CommandManager(this);
 		this.commands.init();
+		this.commands.registerCommand(new DebugCommands());
 		this.commands.registerCommand(new ConfigCommand());
 		this.commands.registerCommand(new StatCommand());
 		this.commands.registerCommand(new ChunkMetaCommand());
