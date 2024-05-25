@@ -58,7 +58,7 @@ public final class Compaction {
 		meta.getPersistentDataContainer().remove(COMPACTED_KEY);
 	}
 
-	private static boolean hasCompactedLore(
+	public static boolean hasCompactedLore(
 		final @NotNull ItemMeta meta
 	) {
 		final List<Component> lore = meta.lore();

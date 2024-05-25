@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +16,82 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 @CommandAlias("compaction")
 @CommandPermission("cmc.debug")
 public final class CompactionTestCommands extends BaseCommand {
-	public enum CompactedItemType { NEW, LEGACY }
+	@Subcommand("compact")
+	@Description("Marks the item held in your main hand as compacted.")
+	public void compactHeldItem(
+		final @NotNull Player sender
+	) {
+		final ItemStack item = sender.getInventory().getItemInMainHand();
+		if (ItemUtils.isEmptyItem(item)) {
+			sender.sendMessage(Component.text(
+				"You are not holding an item to compact!",
+				NamedTextColor.YELLOW
+			));
+			return;
+		}
 
+		final ItemMeta meta = item.getItemMeta();
+		if (Compaction.isCompacted(meta)) {
+			sender.sendMessage(Component.text(
+				"That item is already compacted!",
+				NamedTextColor.YELLOW
+			));
+			return;
+		}
+		if (Compaction.hasCompactedLore(meta)) {
+			sender.sendMessage(Component.text(
+				"That is a legacy compacted item! Use '/compaction upgrade' instead!",
+				NamedTextColor.YELLOW
+			));
+			return;
+		}
+
+		Compaction.markAsCompacted(meta);
+		item.setItemMeta(meta);
+	}
+
+	@Subcommand("decompact")
+	@Description("Removes the compacted marking on the item held in your main hand.")
+	public void decompactHeldItem(
+		final @NotNull Player sender
+	) {
+		final ItemStack item = sender.getInventory().getItemInMainHand();
+		if (ItemUtils.isEmptyItem(item)) {
+			sender.sendMessage(Component.text(
+				"You are not holding an item to decompact!",
+				NamedTextColor.YELLOW
+			));
+			return;
+		}
+
+		final ItemMeta meta = item.getItemMeta();
+		if (!Compaction.isCompacted(meta)) {
+			sender.sendMessage(Component.text(
+				"That item is already compacted!",
+				NamedTextColor.YELLOW
+			));
+			return;
+		}
+		if (Compaction.hasCompactedLore(meta)) {
+			sender.sendMessage(Component.text(
+				"That is a legacy compacted item! You must use '/compaction upgrade' first!",
+				NamedTextColor.YELLOW
+			));
+			return;
+		}
+
+		Compaction.removeCompactedMarking(meta);
+		item.setItemMeta(meta);
+	}
+
+	public enum CompactedItemType { NEW, LEGACY }
 	@Subcommand("give")
 	public void giveNewItem(
 		final @NotNull Player sender,
