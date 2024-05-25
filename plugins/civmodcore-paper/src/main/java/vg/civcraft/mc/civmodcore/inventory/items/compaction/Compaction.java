@@ -105,7 +105,7 @@ public final class Compaction {
 	) {
 		final List<Component> lore = MetaUtils.getComponentLore(meta);
 		lore.removeIf(Compaction::isCompactedLoreLine);
-		meta.lore(lore);
+		MetaUtils.setComponentLore(meta, lore);
 	}
 
 	public enum UpgradeResult { SUCCESS, EMPTY_ITEM, ALREADY_COMPACTED, NOT_COMPACTED }

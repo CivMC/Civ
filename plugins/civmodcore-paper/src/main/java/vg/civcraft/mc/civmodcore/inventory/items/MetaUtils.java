@@ -107,7 +107,7 @@ public final class MetaUtils {
 	 */
 	public static void setComponentLore(@Nonnull final ItemMeta meta,
 										@Nullable List<Component> lines) {
-		if (lines == null) {
+		if (CollectionUtils.isEmpty(lines)) {
 			clearLore(meta);
 			return;
 		}
