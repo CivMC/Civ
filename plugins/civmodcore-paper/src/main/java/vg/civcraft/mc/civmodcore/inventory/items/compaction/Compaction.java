@@ -124,7 +124,9 @@ public final class Compaction {
 			return UpgradeResult.EMPTY_ITEM;
 		}
 		final UpgradeResult result = attemptUpgrade(meta);
-		item.setItemMeta(meta);
+		if (result == UpgradeResult.SUCCESS) {
+			item.setItemMeta(meta);
+		}
 		return result;
 	}
 
