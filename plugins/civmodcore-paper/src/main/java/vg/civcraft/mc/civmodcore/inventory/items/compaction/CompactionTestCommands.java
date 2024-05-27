@@ -7,7 +7,6 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import java.util.ArrayList;
-import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -102,7 +101,7 @@ public final class CompactionTestCommands extends BaseCommand {
 		final ItemStack item = new ItemStack(material, amount);
 		switch (type) {
 			case NEW -> item.editMeta(Compaction::markAsCompacted);
-			case LEGACY -> item.editMeta((meta) -> meta.setLore(List.of(Compaction.COMPACTED_ITEM_LORE)));
+			case LEGACY -> item.editMeta(Compaction::addLegacyCompactedLore);
 		}
 		sender.getInventory().addItem(item);
 		sender.sendMessage(Component.text("You've been given a compacted item!", NamedTextColor.GREEN));

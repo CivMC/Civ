@@ -98,6 +98,16 @@ public final class Compaction {
 	}
 
 	/**
+	 * Adds the "Compacted Item" lore in the Bukkit fashion.
+	 */
+	@SuppressWarnings("deprecation")
+	public static void addLegacyCompactedLore(
+		final @NotNull ItemMeta meta
+	) {
+		MetaUtils.addLore(meta, List.of(COMPACTED_ITEM_LORE));
+	}
+
+	/**
 	 * Removes the "Compacted Item" lore.
 	 */
 	public static void removeCompactedLore(
