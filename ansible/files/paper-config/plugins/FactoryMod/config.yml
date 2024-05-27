@@ -4970,8 +4970,7 @@ recipes:
       bamboo:
         material: BAMBOO
         amount: 64
-        lore:
-          - Compacted Item
+        compacted: true
       membrane:
         material: PHANTOM_MEMBRANE
         amount: 128
@@ -4987,8 +4986,7 @@ recipes:
       emerald_block:
         material: EMERALD_BLOCK
         amount: 2
-        lore:
-          - Compacted Item
+        compacted: true
     output:
       elytra:
         material: ELYTRA
@@ -5550,8 +5548,7 @@ recipes:
       lava_bucket:
         material: LAVA_BUCKET
         amount: 4
-        lore:
-          - Compacted Item
+        compacted: true
     output:
       obsidian:
         material: OBSIDIAN
@@ -5559,8 +5556,7 @@ recipes:
       bucket:
         material: BUCKET
         amount: 2
-        lore:
-          - Compacted Item
+        compacted: true
   make_chains:
     production_time: 4s
     name: Make Chains
@@ -6186,43 +6182,35 @@ recipes:
       potato:
         material: POTATO
         amount: 256
-        lore:
-          - Compacted Item
+        compacted: true
       carrot:
         material: CARROT
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
       melon:
         material: MELON
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
       cocoa_beans:
         material: COCOA_BEANS
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
       kelp:
         material: KELP
         amount: 64
-        lore:
-          - Compacted Item
+        compacted: true
       red_mushroom:
         material: RED_MUSHROOM
         amount: 32
-        lore:
-          - Compacted Item
+        compacted: true
       twitsing_vines:
         material: TWISTING_VINES
         amount: 64
-        lore:
-          - Compacted Item
+        compacted: true
       nether_wart:
         material: NETHER_WART
         amount: 64
-        lore:
-          - Compacted Item
+        compacted: true
       essence:
         material: ENDER_EYE
         amount: 32
@@ -6232,29 +6220,24 @@ recipes:
       coal:
         material: COAL
         amount: 3
-        lore:
-          - Compacted Item
+        compacted: true
       oak_sapling:
         material: OAK_SAPLING
         amount: 32
-        lore:
-          - Compacted Item
+        compacted: true
       bone:
         material: BONE
         amount: 2
-        lore:
-          - Compacted Item
+        compacted: true
       glass_bottle:
         material: GLASS_BOTTLE
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
     output:
       exp:
         material: EMERALD_BLOCK
         amount: 2
-        lore:
-          - Compacted Item
+        compacted: true
   adv_xp_2:
     production_time: 4s
     name: Make Exp 2
@@ -6263,43 +6246,35 @@ recipes:
       cactus:
         material: CACTUS
         amount: 256
-        lore:
-          - Compacted Item
+        compacted: true
       vine:
         material: VINE
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
       pumpkin:
         material: PUMPKIN
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
       wheat:
         material: WHEAT
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
       bamboo:
         material: BAMBOO
         amount: 64
-        lore:
-          - Compacted Item
+        compacted: true
       brown_mushroom:
         material: BROWN_MUSHROOM
         amount: 32
-        lore:
-          - Compacted Item
+        compacted: true
       weeping_vines:
         material: WEEPING_VINES
         amount: 64
-        lore:
-          - Compacted Item
+        compacted: true
       nether_wart:
         material: NETHER_WART
         amount: 64
-        lore:
-          - Compacted Item
+        compacted: true
       essence:
         material: ENDER_EYE
         amount: 32
@@ -6309,29 +6284,24 @@ recipes:
       redstone:
         material: REDSTONE
         amount: 3
-        lore:
-          - Compacted Item
+        compacted: true
       spruce_sapling:
         material: SPRUCE_SAPLING
         amount: 16
-        lore:
-          - Compacted Item
+        compacted: true
       spider_eye:
         material: SPIDER_EYE
         amount: 1
-        lore:
-          - Compacted Item
+        compacted: true
       glass_bottle:
         material: GLASS_BOTTLE
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
     output:
       exp:
         material: EMERALD_BLOCK
         amount: 2
-        lore:
-          - Compacted Item
+        compacted: true
   adv_xp_3:
     production_time: 4s
     name: Make Exp 3
@@ -6340,43 +6310,35 @@ recipes:
       carrot:
         material: CARROT
         amount: 256
-        lore:
-          - Compacted Item
+        compacted: true
       beetroot:
         material: BEETROOT
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
       melon:
         material: MELON
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
       cocoa_beans:
         material: COCOA_BEANS
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
       sweet_berries:
         material: SWEET_BERRIES
         amount: 64
-        lore:
-          - Compacted Item
+        compacted: true
       bamboo:
         material: BAMBOO
         amount: 64
-        lore:
-          - Compacted Item
+        compacted: true
       twisting_vines:
         material: TWISTING_VINES
         amount: 64
-        lore:
-          - Compacted Item
+        compacted: true
       crimson_stem:
         material: CRIMSON_STEM
         amount: 32
-        lore:
-          - Compacted Item
+        compacted: true
       essence:
         material: ENDER_EYE
         amount: 32
@@ -6386,29 +6348,24 @@ recipes:
       raw_copper:
         material: RAW_COPPER
         amount: 3
-        lore:
-          - Compacted Item
+        compacted: true
       birch_sapling:
         material: BIRCH_SAPLING
         amount: 32
-        lore:
-          - Compacted Item
+        compacted: true
       gunpowder:
         material: GUNPOWDER
         amount: 2
-        lore:
-          - Compacted Item
+        compacted: true
       glass_bottle:
         material: GLASS_BOTTLE
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
     output:
       exp:
         material: EMERALD_BLOCK
         amount: 2
-        lore:
-          - Compacted Item
+        compacted: true
   adv_xp_4:
     production_time: 4s
     name: Make Exp 4
@@ -6417,43 +6374,35 @@ recipes:
       sugar_cane:
         material: SUGAR_CANE
         amount: 256
-        lore:
-          - Compacted Item
+        compacted: true
       cactus:
         material: CACTUS
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
       wheat:
         material: WHEAT
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
       potato:
         material: POTATO
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
       sweet_berries:
         material: SWEET_BERRIES
         amount: 64
-        lore:
-          - Compacted Item
+        compacted: true
       kelp:
         material: KELP
         amount: 64
-        lore:
-          - Compacted Item
+        compacted: true
       weeping_vines:
         material: WEEPING_VINES
         amount: 64
-        lore:
-          - Compacted Item
+        compacted: true
       warped_stem:
         material: WARPED_STEM
         amount: 32
-        lore:
-          - Compacted Item
+        compacted: true
       essence:
         material: ENDER_EYE
         amount: 32
@@ -6463,29 +6412,24 @@ recipes:
       lapis_lazuli:
         material: LAPIS_LAZULI
         amount: 3
-        lore:
-          - Compacted Item
+        compacted: true
       jungle_sapling:
         material: JUNGLE_SAPLING
         amount: 16
-        lore:
-          - Compacted Item
+        compacted: true
       rotten_flesh:
         material: ROTTEN_FLESH
         amount: 2
-        lore:
-          - Compacted Item
+        compacted: true
       glass_bottle:
         material: GLASS_BOTTLE
         amount: 128
-        lore:
-          - Compacted Item
+        compacted: true
     output:
       exp:
         material: EMERALD_BLOCK
         amount: 2
-        lore:
-          - Compacted Item
+        compacted: true
   upgrade_to_advanced_cauldron:
     production_time: 4s
     name: Upgrade to Advanced Cauldron
@@ -6529,7 +6473,6 @@ recipes:
         material: CHEST
         lore:
           - Crate
-    compact_lore: Compacted Item
     excluded_materials:
       - BOOK
   decompact:
@@ -6538,7 +6481,6 @@ recipes:
     name: Decompact
     type: DECOMPACT
     input:
-    compact_lore: Compacted Item
   repair_compactor:
     production_time: 4s
     name: Repair Factory
