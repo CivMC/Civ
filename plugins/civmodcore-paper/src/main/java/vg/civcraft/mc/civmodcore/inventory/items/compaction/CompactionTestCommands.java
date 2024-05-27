@@ -104,7 +104,10 @@ public final class CompactionTestCommands extends BaseCommand {
 			case LEGACY -> item.editMeta(Compaction::addLegacyCompactedLore);
 		}
 		sender.getInventory().addItem(item);
-		sender.sendMessage(Component.text("You've been given a compacted item!", NamedTextColor.GREEN));
+		sender.sendMessage(Component.text(
+			"You've been given a compacted item!",
+			NamedTextColor.GREEN
+		));
 	}
 
 	@Subcommand("upgrade")
@@ -156,5 +159,9 @@ public final class CompactionTestCommands extends BaseCommand {
 		merchant.setRecipes(recipes);
 
 		sender.openMerchant(merchant, true);
+		sender.sendMessage(Component.text(
+			"Opening merchant interface!",
+			NamedTextColor.GREEN
+		));
 	}
 }
