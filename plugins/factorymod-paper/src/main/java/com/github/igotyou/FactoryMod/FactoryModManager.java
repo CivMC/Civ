@@ -30,6 +30,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Dropper;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 /**
@@ -523,6 +524,10 @@ public class FactoryModManager {
 		synchronized (factories) {
 			return new HashSet<>(factories);
 		}
+	}
+
+	public @NotNull Set<String> getAllRecipesIdentifiers() {
+		return Set.copyOf(this.recipes.keySet());
 	}
 
 	/**
