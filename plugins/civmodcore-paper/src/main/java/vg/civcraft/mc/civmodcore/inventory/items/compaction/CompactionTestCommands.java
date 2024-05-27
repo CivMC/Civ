@@ -1,6 +1,8 @@
 package vg.civcraft.mc.civmodcore.inventory.items.compaction;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.ShowCommandHelp;
+import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
@@ -22,6 +24,12 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 @CommandAlias("compaction")
 @CommandPermission("cmc.debug")
 public final class CompactionTestCommands extends BaseCommand {
+	@Default
+	@CatchUnknown
+	public void showHelp() {
+		throw new ShowCommandHelp();
+	}
+
 	@Subcommand("compact")
 	@Description("Marks the item held in your main hand as compacted.")
 	public void compactHeldItem(

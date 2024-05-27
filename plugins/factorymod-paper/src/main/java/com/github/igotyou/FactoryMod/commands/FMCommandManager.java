@@ -10,6 +10,7 @@ import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import javax.annotation.Nonnull;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.commands.CommandHelpers;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
 public class FMCommandManager extends CommandManager {
@@ -19,6 +20,7 @@ public class FMCommandManager extends CommandManager {
 	) {
 		super(plugin);
 		init();
+		CommandHelpers.enableCommandHelp(this);
 	}
 
 	public @NotNull FactoryMod getPlugin() {

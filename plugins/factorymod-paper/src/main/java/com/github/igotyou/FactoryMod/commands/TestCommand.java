@@ -1,8 +1,11 @@
 package com.github.igotyou.FactoryMod.commands;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.ShowCommandHelp;
+import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
@@ -22,6 +25,12 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 @CommandAlias("fmtest")
 @CommandPermission("cmc.debug")
 public final class TestCommand extends BaseCommand {
+	@Default
+	@CatchUnknown
+	public void showHelp() {
+		throw new ShowCommandHelp();
+	}
+
 	/**
 	 * Use this when you want to test the factory making process instead of just using /fmc
 	 */
@@ -70,11 +79,11 @@ public final class TestCommand extends BaseCommand {
 	@Description("Gives the items that a particular recipe takes as ingredients, or produces as a result.")
 	public void giveRecipeItems(
 			final @NotNull Player sender,
-			final @NotNull RecipeItems type,
+			final @NotNull RecipeItems category,
 			final @NotNull IRecipe recipe
 	) {
 		final List<ItemStack> items;
-		switch (type) {
+		switch (category) {
 			case INGREDIENTS -> {
 				if (!(recipe instanceof final InputRecipe inputRecipe)) {
 					sender.sendMessage(Component.text(
@@ -95,7 +104,7 @@ public final class TestCommand extends BaseCommand {
 				}
 				items = productionRecipe.getOutput().getItemStackRepresentation();
 			}
-			default -> throw new IllegalArgumentException("Unknown recipe items:" + type.name());
+			default -> throw new IllegalArgumentException("Unknown recipe items:" + category.name());
 		}
 
 		if (!InventoryUtils.safelyAddItemsToInventory(sender.getInventory(), items.toArray(ItemStack[]::new))) {
