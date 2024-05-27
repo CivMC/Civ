@@ -16,7 +16,7 @@ public final class Compaction {
 	public static final String COMPACTED_ITEM_LORE = "Compacted Item";
 
 	/**
-	 * Checks whether a given item is marked as compacted via its PDC or its lore.
+	 * Checks whether a given item is marked as compacted via its PDC.
 	 */
 	public static boolean isCompacted(
 		final ItemStack item
@@ -50,7 +50,7 @@ public final class Compaction {
 	}
 
 	/**
-	 * Removes the marking that marks the item as compacted, as well as the lore text, if it's present.
+	 * Removes the marking that marks the item as compacted.
 	 */
 	public static void removeCompactedMarking(
 		final @NotNull ItemMeta meta
@@ -141,7 +141,7 @@ public final class Compaction {
 	}
 
 	/**
-	 * Attempts to upgrade a legacy compacted item lore.
+	 * Attempts to upgrade a legacy compacted item meta.
 	 */
 	public static @NotNull UpgradeResult attemptUpgrade(
 		final @NotNull ItemMeta meta

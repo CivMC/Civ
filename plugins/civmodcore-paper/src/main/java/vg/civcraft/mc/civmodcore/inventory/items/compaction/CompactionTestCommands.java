@@ -71,16 +71,16 @@ public final class CompactionTestCommands extends BaseCommand {
 		}
 
 		final ItemMeta meta = item.getItemMeta();
-		if (!Compaction.isCompacted(meta)) {
+		if (Compaction.hasCompactedLore(meta)) {
 			sender.sendMessage(Component.text(
-				"That item is already compacted!",
+				"That is a legacy compacted item! You must use '/compaction upgrade' first!",
 				NamedTextColor.YELLOW
 			));
 			return;
 		}
-		if (Compaction.hasCompactedLore(meta)) {
+		if (!Compaction.isCompacted(meta)) {
 			sender.sendMessage(Component.text(
-				"That is a legacy compacted item! You must use '/compaction upgrade' first!",
+				"That is not a compacted item!",
 				NamedTextColor.YELLOW
 			));
 			return;

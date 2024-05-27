@@ -31,6 +31,7 @@ public final class CompactedItemNetworkTransformer extends PacketAdapter {
 		void handle(@NotNull PacketContainer container);
 	}
 
+	// Only add handlers for packets where the items are shown to players. Entity equipment need not apply.
 	private static final Map<PacketType, PacketHandler> HANDLERS = ImmutableMap.<PacketType, PacketHandler>builder()
 		.put(PacketType.Play.Server.WINDOW_ITEMS, CompactedItemNetworkTransformer::handleWindowItems)
 		.put(PacketType.Play.Server.SET_SLOT, CompactedItemNetworkTransformer::handleSetSlot)
