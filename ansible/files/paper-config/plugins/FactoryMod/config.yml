@@ -4970,7 +4970,8 @@ recipes:
       bamboo:
         material: BAMBOO
         amount: 64
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       membrane:
         material: PHANTOM_MEMBRANE
         amount: 128
@@ -4986,7 +4987,8 @@ recipes:
       emerald_block:
         material: EMERALD_BLOCK
         amount: 2
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
     output:
       elytra:
         material: ELYTRA
@@ -5548,7 +5550,8 @@ recipes:
       lava_bucket:
         material: LAVA_BUCKET
         amount: 4
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
     output:
       obsidian:
         material: OBSIDIAN
@@ -5556,7 +5559,8 @@ recipes:
       bucket:
         material: BUCKET
         amount: 2
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
   make_chains:
     production_time: 4s
     name: Make Chains
@@ -6182,35 +6186,43 @@ recipes:
       potato:
         material: POTATO
         amount: 256
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       carrot:
         material: CARROT
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       melon:
         material: MELON
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       cocoa_beans:
         material: COCOA_BEANS
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       kelp:
         material: KELP
         amount: 64
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       red_mushroom:
         material: RED_MUSHROOM
         amount: 32
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       twitsing_vines:
         material: TWISTING_VINES
         amount: 64
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       nether_wart:
         material: NETHER_WART
         amount: 64
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       essence:
         material: ENDER_EYE
         amount: 32
@@ -6220,24 +6232,29 @@ recipes:
       coal:
         material: COAL
         amount: 3
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       oak_sapling:
         material: OAK_SAPLING
         amount: 32
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       bone:
         material: BONE
         amount: 2
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       glass_bottle:
         material: GLASS_BOTTLE
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
     output:
       exp:
         material: EMERALD_BLOCK
         amount: 2
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
   adv_xp_2:
     production_time: 4s
     name: Make Exp 2
@@ -6246,35 +6263,43 @@ recipes:
       cactus:
         material: CACTUS
         amount: 256
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       vine:
         material: VINE
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       pumpkin:
         material: PUMPKIN
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       wheat:
         material: WHEAT
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       bamboo:
         material: BAMBOO
         amount: 64
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       brown_mushroom:
         material: BROWN_MUSHROOM
         amount: 32
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       weeping_vines:
         material: WEEPING_VINES
         amount: 64
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       nether_wart:
         material: NETHER_WART
         amount: 64
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       essence:
         material: ENDER_EYE
         amount: 32
@@ -6284,24 +6309,29 @@ recipes:
       redstone:
         material: REDSTONE
         amount: 3
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       spruce_sapling:
         material: SPRUCE_SAPLING
         amount: 16
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       spider_eye:
         material: SPIDER_EYE
         amount: 1
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       glass_bottle:
         material: GLASS_BOTTLE
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
     output:
       exp:
         material: EMERALD_BLOCK
         amount: 2
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
   adv_xp_3:
     production_time: 4s
     name: Make Exp 3
@@ -6310,35 +6340,43 @@ recipes:
       carrot:
         material: CARROT
         amount: 256
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       beetroot:
         material: BEETROOT
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       melon:
         material: MELON
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       cocoa_beans:
         material: COCOA_BEANS
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       sweet_berries:
         material: SWEET_BERRIES
         amount: 64
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       bamboo:
         material: BAMBOO
         amount: 64
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       twisting_vines:
         material: TWISTING_VINES
         amount: 64
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       crimson_stem:
         material: CRIMSON_STEM
         amount: 32
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       essence:
         material: ENDER_EYE
         amount: 32
@@ -6348,24 +6386,29 @@ recipes:
       raw_copper:
         material: RAW_COPPER
         amount: 3
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       birch_sapling:
         material: BIRCH_SAPLING
         amount: 32
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       gunpowder:
         material: GUNPOWDER
         amount: 2
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       glass_bottle:
         material: GLASS_BOTTLE
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
     output:
       exp:
         material: EMERALD_BLOCK
         amount: 2
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
   adv_xp_4:
     production_time: 4s
     name: Make Exp 4
@@ -6374,35 +6417,43 @@ recipes:
       sugar_cane:
         material: SUGAR_CANE
         amount: 256
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       cactus:
         material: CACTUS
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       wheat:
         material: WHEAT
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       potato:
         material: POTATO
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       sweet_berries:
         material: SWEET_BERRIES
         amount: 64
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       kelp:
         material: KELP
         amount: 64
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       weeping_vines:
         material: WEEPING_VINES
         amount: 64
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       warped_stem:
         material: WARPED_STEM
         amount: 32
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       essence:
         material: ENDER_EYE
         amount: 32
@@ -6412,24 +6463,29 @@ recipes:
       lapis_lazuli:
         material: LAPIS_LAZULI
         amount: 3
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       jungle_sapling:
         material: JUNGLE_SAPLING
         amount: 16
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       rotten_flesh:
         material: ROTTEN_FLESH
         amount: 2
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
       glass_bottle:
         material: GLASS_BOTTLE
         amount: 128
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
     output:
       exp:
         material: EMERALD_BLOCK
         amount: 2
-        compacted: true
+        modifiers:
+          - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
   upgrade_to_advanced_cauldron:
     production_time: 4s
     name: Upgrade to Advanced Cauldron

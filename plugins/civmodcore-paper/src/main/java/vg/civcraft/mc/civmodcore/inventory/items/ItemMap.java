@@ -27,11 +27,13 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 import vg.civcraft.mc.civmodcore.utilities.MoreMath;
@@ -745,4 +747,9 @@ public class ItemMap {
 		return base;
 	}
 
+	public static abstract class ConfigItemModifier implements ConfigurationSerializable {
+		public abstract void modifyItem(
+			@NotNull ItemMeta meta
+		);
+	}
 }

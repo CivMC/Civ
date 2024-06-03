@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.inventory.items.compaction;
+package com.github.igotyou.FactoryMod.compaction;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.ShowCommandHelp;
@@ -14,32 +14,34 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
-@CommandAlias("compaction")
+@CommandAlias("fmcompact")
 @CommandPermission("cmc.debug")
 public final class CompactionTestCommands extends BaseCommand {
 	@Default
 	@CatchUnknown
-	public void showHelp() {
+	private void showHelp() {
 		throw new ShowCommandHelp();
 	}
 
 	@Subcommand("compact")
 	@Description("Marks the item held in your main hand as compacted.")
-	public void compactHeldItem(
+	private void compactHeldItem(
 		final @NotNull Player sender
 	) {
 		final ItemStack item = sender.getInventory().getItemInMainHand();
 		if (ItemUtils.isEmptyItem(item)) {
 			sender.sendMessage(Component.text(
-				"You are not holding an item to compact!",
-				NamedTextColor.YELLOW
+					"You are not holding an item to compact!",
+					NamedTextColor.YELLOW
 			));
 			return;
 		}
@@ -47,15 +49,15 @@ public final class CompactionTestCommands extends BaseCommand {
 		final ItemMeta meta = item.getItemMeta();
 		if (Compaction.isCompacted(meta)) {
 			sender.sendMessage(Component.text(
-				"That item is already compacted!",
-				NamedTextColor.YELLOW
+					"That item is already compacted!",
+					NamedTextColor.YELLOW
 			));
 			return;
 		}
 		if (Compaction.hasCompactedLore(meta)) {
 			sender.sendMessage(Component.text(
-				"That is a legacy compacted item! Use '/compaction upgrade' instead!",
-				NamedTextColor.YELLOW
+					"That is a legacy compacted item! Use '/compaction upgrade' instead!",
+					NamedTextColor.YELLOW
 			));
 			return;
 		}
@@ -66,14 +68,14 @@ public final class CompactionTestCommands extends BaseCommand {
 
 	@Subcommand("decompact")
 	@Description("Removes the compacted marking on the item held in your main hand.")
-	public void decompactHeldItem(
+	private void decompactHeldItem(
 		final @NotNull Player sender
 	) {
 		final ItemStack item = sender.getInventory().getItemInMainHand();
 		if (ItemUtils.isEmptyItem(item)) {
 			sender.sendMessage(Component.text(
-				"You are not holding an item to decompact!",
-				NamedTextColor.YELLOW
+					"You are not holding an item to decompact!",
+					NamedTextColor.YELLOW
 			));
 			return;
 		}
@@ -81,15 +83,15 @@ public final class CompactionTestCommands extends BaseCommand {
 		final ItemMeta meta = item.getItemMeta();
 		if (Compaction.hasCompactedLore(meta)) {
 			sender.sendMessage(Component.text(
-				"That is a legacy compacted item! You must use '/compaction upgrade' first!",
-				NamedTextColor.YELLOW
+					"That is a legacy compacted item! You must use '/compaction upgrade' first!",
+					NamedTextColor.YELLOW
 			));
 			return;
 		}
 		if (!Compaction.isCompacted(meta)) {
 			sender.sendMessage(Component.text(
-				"That is not a compacted item!",
-				NamedTextColor.YELLOW
+					"That is not a compacted item!",
+					NamedTextColor.YELLOW
 			));
 			return;
 		}
@@ -98,9 +100,10 @@ public final class CompactionTestCommands extends BaseCommand {
 		item.setItemMeta(meta);
 	}
 
-	public enum CompactedItemType { NEW, LEGACY }
+	private enum CompactedItemType { NEW, LEGACY }
 	@Subcommand("give")
-	public void giveNewItem(
+	@Description("Creates a new compacted item.")
+	private void giveNewItem(
 		final @NotNull Player sender,
 		final @NotNull CompactedItemType type,
 		final @NotNull @Default("DIAMOND") Material material,
@@ -113,38 +116,66 @@ public final class CompactionTestCommands extends BaseCommand {
 		}
 		sender.getInventory().addItem(item);
 		sender.sendMessage(Component.text(
-			"You've been given a compacted item!",
-			NamedTextColor.GREEN
+				"You've been given a compacted item!",
+				NamedTextColor.GREEN
 		));
 	}
 
 	@Subcommand("upgrade")
-	public void upgradeHeldLegacy(
+	@Description("Attempts to upgrade a legacy compacted item held in your main hand.")
+	private void upgradeHeldLegacy(
 		final @NotNull Player sender
 	) {
 		final ItemStack item = sender.getInventory().getItemInMainHand();
 		switch (Compaction.attemptUpgrade(item)) {
 			case SUCCESS -> sender.sendMessage(Component.text(
-				"Successfully upgraded legacy compacted item!",
-				NamedTextColor.GREEN
+					"Successfully upgraded legacy compacted item!",
+					NamedTextColor.GREEN
 			));
 			case EMPTY_ITEM -> sender.sendMessage(Component.text(
-				"You are not holding an item to upgrade!",
-				NamedTextColor.YELLOW
+					"You are not holding an item to upgrade!",
+					NamedTextColor.YELLOW
 			));
 			case ALREADY_COMPACTED -> sender.sendMessage(Component.text(
-				"That item is already compacted!",
-				NamedTextColor.YELLOW
+					"That item is already compacted!",
+					NamedTextColor.YELLOW
 			));
 			case NOT_COMPACTED -> sender.sendMessage(Component.text(
-				"That item is not a legacy compacted item!",
-				NamedTextColor.YELLOW
+					"That item is not a legacy compacted item!",
+					NamedTextColor.YELLOW
 			));
 		}
 	}
 
+	@Subcommand("inventory")
+	@Description("Shows you an example inventory window containing compacted items.")
+	private void viewInventory(
+			final @NotNull Player sender
+	) {
+		final Inventory inventory = Bukkit.createInventory(
+				null,
+				InventoryUtils.CHEST_3_ROWS,
+				Component.text("Test Inventory")
+		);
+
+		inventory.addItem(new ItemStack(Material.STICK)); // Non-comapcted item
+
+		{ // Compacted example
+			final ItemStack item = new ItemStack(Material.DIAMOND);
+			item.editMeta(Compaction::markAsCompacted);
+			inventory.addItem(item);
+		}
+
+		sender.openInventory(inventory);
+		sender.sendMessage(Component.text(
+				"Opening example inventory!",
+				NamedTextColor.GREEN
+		));
+	}
+
 	@Subcommand("merchant")
-	public void viewMerchantTest(
+	@Description("Shows you an example merchant window containing compacted items.")
+	private void viewMerchantTest(
 		final @NotNull Player sender
 	) {
 		final Merchant merchant = Bukkit.createMerchant(Component.text("Test Merchant"));
@@ -168,8 +199,8 @@ public final class CompactionTestCommands extends BaseCommand {
 
 		sender.openMerchant(merchant, true);
 		sender.sendMessage(Component.text(
-			"Opening merchant interface!",
-			NamedTextColor.GREEN
+				"Opening example merchant window!",
+				NamedTextColor.GREEN
 		));
 	}
 }

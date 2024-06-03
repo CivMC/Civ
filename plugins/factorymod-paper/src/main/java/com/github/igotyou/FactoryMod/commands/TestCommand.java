@@ -27,7 +27,7 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 public final class TestCommand extends BaseCommand {
 	@Default
 	@CatchUnknown
-	public void showHelp() {
+	private void showHelp() {
 		throw new ShowCommandHelp();
 	}
 
@@ -36,7 +36,7 @@ public final class TestCommand extends BaseCommand {
 	 */
 	@Subcommand("give factory")
 	@Description("Gives the items necessary to create a particular factory.")
-	public void giveFactoryItems(
+	private void giveFactoryItems(
 			final @NotNull Player sender,
 			final @NotNull IFactoryEgg factory
 	) {
@@ -74,10 +74,10 @@ public final class TestCommand extends BaseCommand {
 		));
 	}
 
-	public enum RecipeItems { INGREDIENTS, RESULT }
+	private enum RecipeItems { INGREDIENTS, RESULT }
 	@Subcommand("give recipe")
 	@Description("Gives the items that a particular recipe takes as ingredients, or produces as a result.")
-	public void giveRecipeItems(
+	private void giveRecipeItems(
 			final @NotNull Player sender,
 			final @NotNull RecipeItems category,
 			final @NotNull IRecipe recipe

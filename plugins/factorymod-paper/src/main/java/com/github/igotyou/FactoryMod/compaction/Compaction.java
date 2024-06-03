@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.inventory.items.compaction;
+package com.github.igotyou.FactoryMod.compaction;
 
 import java.util.List;
 import net.kyori.adventure.text.Component;
@@ -12,7 +12,7 @@ import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.pdc.PersistentDataTypes;
 
 public final class Compaction {
-	private static final NamespacedKey COMPACTED_KEY = new NamespacedKey("cmc", "compacted_item");
+	public static final NamespacedKey COMPACTED_KEY = new NamespacedKey("fm", "compacted_item");
 	public static final String COMPACTED_ITEM_LORE = "Compacted Item";
 
 	/**

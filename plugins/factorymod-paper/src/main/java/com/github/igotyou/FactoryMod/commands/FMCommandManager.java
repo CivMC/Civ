@@ -6,6 +6,7 @@ import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
 import co.aikar.commands.InvalidCommandArgument;
 import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.compaction.CompactionTestCommands;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import javax.annotation.Nonnull;
@@ -35,6 +36,7 @@ public class FMCommandManager extends CommandManager {
 		registerCommand(new ItemUseMenu());
 		registerCommand(new RunAmountSetterCommand());
 		registerCommand(new TestCommand());
+		registerCommand(new CompactionTestCommands());
 	}
 
 	@Override

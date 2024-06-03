@@ -10,7 +10,7 @@ import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventory.items.compaction.Compaction;
+import com.github.igotyou.FactoryMod.compaction.Compaction;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 /**

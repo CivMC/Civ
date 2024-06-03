@@ -21,10 +21,7 @@ import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.compaction.CompactedItemUsageListener;
-import vg.civcraft.mc.civmodcore.inventory.items.compaction.CompactedItemNetworkTransformer;
-import vg.civcraft.mc.civmodcore.inventory.items.compaction.CompactionTestCommands;
-import vg.civcraft.mc.civmodcore.inventory.items.compaction.CompactedItemUpgradeListener;
+import vg.civcraft.mc.civmodcore.inventory.items.network.NetworkItemMetaTransformer;
 import vg.civcraft.mc.civmodcore.players.PlayerNames;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
@@ -59,7 +56,7 @@ public class CivModCorePlugin extends ACivMod {
 	private WorldIDManager worldIdManager;
 	private CommandManager commands;
 	private SkinCache skinCache;
-	private CompactedItemNetworkTransformer compactedNetworkAdapter;
+	private NetworkItemMetaTransformer compactedNetworkAdapter;
 
 	@Override
 	public void onEnable() {
@@ -97,8 +94,6 @@ public class CivModCorePlugin extends ACivMod {
 		registerListener(new ScoreBoardListener());
 		registerListener(new WorldTracker());
 		registerListener(new PlayerNames());
-		registerListener(new CompactedItemUsageListener());
-		registerListener(new CompactedItemUpgradeListener());
 		// Register commands
 		this.commands = new CommandManager(this);
 		this.commands.init();
@@ -107,7 +102,6 @@ public class CivModCorePlugin extends ACivMod {
 		this.commands.registerCommand(new ConfigCommand());
 		this.commands.registerCommand(new StatCommand());
 		this.commands.registerCommand(new ChunkMetaCommand());
-		this.commands.registerCommand(new CompactionTestCommands());
 		// Load APIs
 		EnchantUtils.loadEnchantAbbreviations(this);
 		MoreTags.init();
@@ -119,7 +113,7 @@ public class CivModCorePlugin extends ACivMod {
 		if (this.config.getChunkLoadingStatistics())
 			LoadStatisticManager.enable();
 
-		this.compactedNetworkAdapter = new CompactedItemNetworkTransformer(this);
+		this.compactedNetworkAdapter = new NetworkItemMetaTransformer(this);
 		ProtocolLibrary.getProtocolManager().addPacketListener(this.compactedNetworkAdapter);
 	}
 

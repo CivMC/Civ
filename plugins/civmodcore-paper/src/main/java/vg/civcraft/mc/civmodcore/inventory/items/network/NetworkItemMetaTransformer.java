@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.inventory.items.compaction;
+package vg.civcraft.mc.civmodcore.inventory.items.network;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -16,29 +16,32 @@ import net.minecraft.network.protocol.game.ClientboundMerchantOffersPacket;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 /**
- * This unobtrusively adds the "Compacted Item" lore to items before being sent over the network. Since the lore is not
- * <i>actually</i> on the item, there's no need to worry about changes in name and lore formatting causing items not to
- * stack properly.
+ * This allows plugins to unobtrusively modify item metas before being sent over the network. Any changes made to the
+ * item metas do not contaminate their original items.
  */
-public final class CompactedItemNetworkTransformer extends PacketAdapter {
+@ApiStatus.Internal
+public final class NetworkItemMetaTransformer extends PacketAdapter {
 	@FunctionalInterface
 	private interface PacketHandler {
-		void handle(@NotNull PacketContainer container);
+		void handle(
+			@NotNull PacketContainer container
+		);
 	}
 
 	// Only add handlers for packets where the items are shown to players. Entity equipment need not apply.
 	private static final Map<PacketType, PacketHandler> HANDLERS = ImmutableMap.<PacketType, PacketHandler>builder()
-		.put(PacketType.Play.Server.WINDOW_ITEMS, CompactedItemNetworkTransformer::handleWindowItems)
-		.put(PacketType.Play.Server.SET_SLOT, CompactedItemNetworkTransformer::handleSetSlot)
-		.put(PacketType.Play.Server.OPEN_WINDOW_MERCHANT, CompactedItemNetworkTransformer::handleMerchantOffers)
+		.put(PacketType.Play.Server.WINDOW_ITEMS, NetworkItemMetaTransformer::handleWindowItems)
+		.put(PacketType.Play.Server.SET_SLOT, NetworkItemMetaTransformer::handleSetSlot)
+		.put(PacketType.Play.Server.OPEN_WINDOW_MERCHANT, NetworkItemMetaTransformer::handleMerchantOffers)
 		.build();
 
-	public CompactedItemNetworkTransformer(
+	public NetworkItemMetaTransformer(
 		final @NotNull CivModCorePlugin plugin
 	) {
 		super(
@@ -71,11 +74,11 @@ public final class CompactedItemNetworkTransformer extends PacketAdapter {
 		final ClientboundContainerSetContentPacket handle; // For reference
 
 		container.getItemListModifier().modify(0, (items) -> {
-			processPotentiallyCompactedItems(items.listIterator());
+			processItems(items.listIterator());
 			return items;
 		});
 		container.getItemModifier().modify(0, (original) -> {
-			return maybeAddCompactedLore(original).orElse(original);
+			return processItem(original).orElse(original);
 		});
 	}
 
@@ -85,7 +88,7 @@ public final class CompactedItemNetworkTransformer extends PacketAdapter {
 		final ClientboundContainerSetSlotPacket handle; // For reference
 
 		container.getItemModifier().modify(0, (original) -> {
-			return maybeAddCompactedLore(original).orElse(original);
+			return processItem(original).orElse(original);
 		});
 	}
 
@@ -99,24 +102,26 @@ public final class CompactedItemNetworkTransformer extends PacketAdapter {
 				final MerchantRecipe originalOffer = iter.next();
 
 				final List<ItemStack> ingredients = originalOffer.getIngredients();
-				processPotentiallyCompactedItems(ingredients.listIterator());
+				processItems(ingredients.listIterator());
 
-				final ItemStack result = maybeAddCompactedLore(originalOffer.getResult()).orElse(originalOffer.getResult());
-
-				// ALWAYS USE THE MOST COMPREHENSIVE CONSTRUCTOR
-				final var newOffer = new MerchantRecipe(
-					result,
-					originalOffer.getUses(),
-					originalOffer.getMaxUses(),
-					originalOffer.hasExperienceReward(),
-					originalOffer.getVillagerExperience(),
-					originalOffer.getPriceMultiplier(),
-					originalOffer.getDemand(),
-					originalOffer.getSpecialPrice(),
-					originalOffer.shouldIgnoreDiscounts()
-				);
-				newOffer.setIngredients(ingredients);
-				iter.set(newOffer);
+				final Optional<ItemStack> result = processItem(originalOffer.getResult());
+				if (result.isPresent()) {
+					// Can't just change the result, so we need to reconstruct the recipe
+					// ALWAYS USE THE MOST COMPREHENSIVE CONSTRUCTOR
+					final var newOffer = new MerchantRecipe(
+						result.get(),
+						originalOffer.getUses(),
+						originalOffer.getMaxUses(),
+						originalOffer.hasExperienceReward(),
+						originalOffer.getVillagerExperience(),
+						originalOffer.getPriceMultiplier(),
+						originalOffer.getDemand(),
+						originalOffer.getSpecialPrice(),
+						originalOffer.shouldIgnoreDiscounts()
+					);
+					newOffer.setIngredients(ingredients);
+					iter.set(newOffer);
+				}
 			}
 			return offers;
 		});
@@ -126,15 +131,15 @@ public final class CompactedItemNetworkTransformer extends PacketAdapter {
 	// Helpers
 	// ============================================================
 
-	private static void processPotentiallyCompactedItems(
+	private static void processItems(
 		final @NotNull ListIterator<ItemStack> iter
 	) {
 		while (iter.hasNext()) {
-			maybeAddCompactedLore(iter.next()).ifPresent(iter::set);
+			processItem(iter.next()).ifPresent(iter::set);
 		}
 	}
 
-	private static Optional<ItemStack> maybeAddCompactedLore(
+	private static Optional<ItemStack> processItem(
 		ItemStack item
 	) {
 		if (ItemUtils.isEmptyItem(item)) {
@@ -145,12 +150,12 @@ public final class CompactedItemNetworkTransformer extends PacketAdapter {
 		if (meta == null) { // Shouldn't happen, but just in case
 			return Optional.empty();
 		}
-		if (!Compaction.isCompacted(meta)) {
-			return Optional.empty(); // Do nothing
+		final var event = new NetworkItemEvent(meta);
+		event.callEvent();
+		if (!event.hasMetaBeenUpdated()) {
+			return Optional.empty();
 		}
-		// Otherwise, add compaction lore to cloned item
-		Compaction.addCompactedLore(meta);
-		item.setItemMeta(meta);
+		item.setItemMeta(event.meta);
 		return Optional.of(item);
 	}
 }
