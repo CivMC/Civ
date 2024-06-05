@@ -7,6 +7,8 @@ hacks:
   ############################################################
   ## Basic Hacks
   ############################################################
+  AntiDerailment:
+    enabled: true
   AntiFastBreak:
     enabled: true
     laggLenciency: 1.5
@@ -106,7 +108,15 @@ hacks:
       - SLOW_DIGGING
       - SLOW_FALLING
       - UNLUCK
+  CopperRail:
+    enabled: true
+    deoxidise: true
+    # Chance to oxidise copper one level.
+    # Unoxidised copper will oxidise at 75% of this level.
+    damage: 0.02
   DebugWand:
+    enabled: true
+  DespawnFix:
     enabled: true
   DogFacts:
     enabled: true
@@ -132,34 +142,14 @@ hacks:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Make sure to reinforce your buildings/chests to protect them from others. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/essential/citadel"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Jukeboxes and Noteblocks act as CCTV, when reinforced they record player actions. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/jukealert"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Killing someone with an ender pearl in your hotbar will lock them in the nether! Player essence is used to keep the players trapped. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/essential/exilepearl"}}]'
-  
-  ElytraFeatures:
-    enabled: false
-    # Whether Elytra flight should be outright disabled
-    disableFlight: false
-    # Whether Elytra flight should be disabled in combat
-    disableFlightInCombat: false
-    # Whether firework boosting should be outright disabled
-    disableFireworkBoosting: false
-    # Whether firework boosting should be disabled in combat
-    disableFireworkBoostingInCombat: true
-    # Whether to restrict firework boosting to explosive fireworks
-    disableSafeFireworkBoosting: false
-    # This regulates player damage when Elytra flying above world height.
-    heightDamage:
-      # The amount of damage (in half-hearts) the flier should take.
-      # NOTE: Setting to 0 will disable the damage.
-      damage: 1
-      # The damage is multiplied by the number of blocks above world height multiplied by this number.
-      scales: 1.0
-      # The amount of blocks above height limit where damage is not applied.
-      buffer: 5
-      # The interval (in milliseconds) between damage ticks.
-      interval: 1000
   EventDebugHack:
     enabled: true
   EventHandlerList:
     enabled: true
+  FasterHorses:
+    enabled: true
+    minSpeed: 0.1125
+    maxSpeed: 0.438827582278 # 18.5m/s
   GoldBlockElevators:
     enabled: true
   HumbugBatchOne:
@@ -184,6 +174,18 @@ hacks:
     enabled: true
   MapCopyProtection:
     enabled: true
+  MobCondenser:
+    enabled: false
+    mobSpawnModifiers:
+      ZOMBIFIED_PIGLIN: 0.10
+    materialModificationWhitelist:
+      - GHAST_TEAR
+      - WITHER_SKELETON_SKULL
+      - GUNPOWDER
+      - BONE
+      - COAL
+      - ROTTEN_FLESH
+      - GOLD_NUGGET
   OldEnchanting:
     enabled: true
     # Hides what enchantment will be granted within the Enchanting Table
@@ -245,18 +247,6 @@ hacks:
     enabled: true
   PlayerStatistics:
     enabled: true
-  MobCondenser:
-    enabled: false
-    mobSpawnModifiers:
-      ZOMBIFIED_PIGLIN: 0.10
-    materialModificationWhitelist:
-      - GHAST_TEAR
-      - WITHER_SKELETON_SKULL
-      - GUNPOWDER
-      - BONE
-      - COAL
-      - ROTTEN_FLESH
-      - GOLD_NUGGET
   #Alters end portals to send you to a target dimension instead of just the end
   #This is a very specific hack made for CivMC, it is not recommended to enable
   #Unless you want to fully mimic their behaviour
@@ -291,6 +281,8 @@ hacks:
       - PACKED_ICE
       - FROSTED_ICE
       - BLUE_ICE
+  StrayStats:
+    enabled: true
   # Currently changes a striders speed to be between 0.175 (Default) and 0.3375 (Horse max speed)
   # aswell as default health to between 20 (Default) and 50 (2.5 heart bars)
   # Only works on newly spawned striders, not pre-existing mobs
@@ -304,8 +296,6 @@ hacks:
     minHealth: 20
     #25 Hearts
     maxHealth: 50
-  StrayStats:
-    enabled: true
   TestConfigHack:
     enabled: true
     # Please do not change any of the values below, otherwise it will undermine the test.
@@ -335,6 +325,24 @@ hacks:
       - BEACON
       - SPONGE
       - HOPPER
+  BetterRails:
+    enabled: true
+    # All in metres per second
+    # Minecraft will prevent you going faster than 30m/s
+    base: 9
+    materials:
+      COBBLESTONE: 8
+      COPPER_BLOCK: 29
+      EXPOSED_COPPER: 23
+      WEATHERED_COPPER: 18
+      OXIDIZED_COPPER: 14
+    skyBase: 10
+    skyMaterials:
+      COBBLESTONE: 8
+      COPPER_BLOCK: 30
+      EXPOSED_COPPER: 24
+      WEATHERED_COPPER: 19
+      OXIDIZED_COPPER: 15
   CTAnnounce:
     enabled: true
     delay: 10000
@@ -347,6 +355,29 @@ hacks:
     # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html
     # Note: You can also just state "ALL" for all spawn circumstances
     VILLAGER: ALL
+  ElytraFeatures:
+    enabled: false
+    # Whether Elytra flight should be outright disabled
+    disableFlight: false
+    # Whether Elytra flight should be disabled in combat
+    disableFlightInCombat: false
+    # Whether firework boosting should be outright disabled
+    disableFireworkBoosting: false
+    # Whether firework boosting should be disabled in combat
+    disableFireworkBoostingInCombat: true
+    # Whether to restrict firework boosting to explosive fireworks
+    disableSafeFireworkBoosting: false
+    # This regulates player damage when Elytra flying above world height.
+    heightDamage:
+      # The amount of damage (in half-hearts) the flier should take.
+      # NOTE: Setting to 0 will disable the damage.
+      damage: 1
+      # The damage is multiplied by the number of blocks above world height multiplied by this number.
+      scales: 1.0
+      # The amount of blocks above height limit where damage is not applied.
+      buffer: 5
+      # The interval (in milliseconds) between damage ticks.
+      interval: 1000
   Experimental:
     enabled: true
     combatspy: false
@@ -530,6 +561,11 @@ hacks:
            lore:
             - "This will help you"
             - "get on track."
+  OneTimeTeleport:
+    enabled: true
+    material_blacklist: []
+    unsafe_materials: [LAVA, WATER]
+    ott_timeout: 1d
   ReinforcedChestBreak:
     enabled: true    
     # in seconds
@@ -554,43 +590,6 @@ hacks:
       SPRUCE_LEAVES: 0
   TimingsHack:
     enabled: false
-  OneTimeTeleport:
-    enabled: true
-    material_blacklist: []
-    unsafe_materials: [LAVA, WATER]
-    ott_timeout: 1d
   ToggleLamp:
     enabled: true
     cooldownTime: 100
-  DespawnFix:
-    enabled: true
-  BetterRails:
-    enabled: true
-    # All in metres per second
-    # Minecraft will prevent you going faster than 30m/s
-    base: 9
-    materials:
-      COBBLESTONE: 8
-      COPPER_BLOCK: 29
-      EXPOSED_COPPER: 23
-      WEATHERED_COPPER: 18
-      OXIDIZED_COPPER: 14
-    skyBase: 10
-    skyMaterials:
-      COBBLESTONE: 8
-      COPPER_BLOCK: 30
-      EXPOSED_COPPER: 24
-      WEATHERED_COPPER: 19
-      OXIDIZED_COPPER: 15
-  CopperRail:
-    enabled: true
-    deoxidise: true
-    # Chance to oxidise copper one level.
-    # Unoxidised copper will oxidise at 75% of this level.
-    damage: 0.02
-  FasterHorses:
-    enabled: true
-    minSpeed: 0.1125
-    maxSpeed: 0.438827582278 # 18.5m/s
-  AntiDerailment:
-    enabled: true

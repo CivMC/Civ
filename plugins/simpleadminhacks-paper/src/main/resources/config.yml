@@ -9,6 +9,8 @@ hacks:
   ############################################################
   ## Basic Hacks
   ############################################################
+  AntiDerailment:
+    enabled: true
   AntiFastBreak:
     enabled: true
     breakDenyDuration: 3000
@@ -99,7 +101,15 @@ hacks:
       - BAD_OMEN
       - SLOW_DIGGING
       - SLOW_FALLING
+  CopperRail:
+    enabled: true
+    deoxidise: true
+    # Chance to oxidise copper one level.
+    # Unoxidised copper will oxidise at 75% of this level.
+    damage: 0.03
   DebugWand:
+    enabled: true
+  DespawnFix:
     enabled: true
   DogFacts:
     enabled: false
@@ -114,6 +124,10 @@ hacks:
     enabled: true
   EventHandlerList:
     enabled: true
+  FasterHorses:
+    enabled: true
+    minSpeed: 0.1125
+    maxSpeed: 0.438827582278 # 18.5m/s
   GoldBlockElevators:
     enabled: true
     elevatorBlock: LODESTONE
@@ -138,6 +152,18 @@ hacks:
     enabled: true
   MapCopyProtection:
     enabled: true
+  MobCondenser:
+    enabled: false
+    mobSpawnModifiers:
+      ZOMBIFIED_PIGLIN: 0.10
+    materialModificationWhitelist:
+      - GHAST_TEAR
+      - WITHER_SKELETON_SKULL
+      - GUNPOWDER
+      - BONE
+      - COAL
+      - ROTTEN_FLESH
+      - GOLD_NUGGET
   OldEnchanting:
     enabled: true
     # Hides what enchantment will be granted within the Enchanting Table
@@ -228,6 +254,19 @@ hacks:
       - BLUE_ICE
   StrayStats:
     enabled: true
+  #Currently changes a striders speed to be between 0.175 (Default) and 0.3375 (Horse max speed)
+  #aswell as default health to between 20 (Default) and 50 (2.5 heart bars)
+  #Only works on newly spawned striders, not pre-existing mobs
+  StriderBreeding:
+    enabled: true
+    #Default strider speed is 0.175
+    minSpeed: 0.175
+    #Max horse speed is 0.3375
+    maxSpeed: 0.3375
+    #10 Hearts
+    minHealth: 20
+    #25 Hearts
+    maxHealth: 50
   TestConfigHack:
     enabled: true
     # Please do not change any of the values below, otherwise it will undermine the test.
@@ -261,6 +300,24 @@ hacks:
       - PISTON_BASE
       - PISTON_STICKY_BASE
       - OBSERVER
+  BetterRails:
+    enabled: true
+    # All in metres per second
+    # Minecraft will prevent you going faster than 30m/s
+    base: 11
+    materials:
+      COBBLESTONE: 8
+      COPPER_BLOCK: 29
+      EXPOSED_COPPER: 23
+      WEATHERED_COPPER: 18
+      OXIDIZED_COPPER: 14
+    skyBase: 12
+    skyMaterials:
+      COBBLESTONE: 8
+      COPPER_BLOCK: 30
+      EXPOSED_COPPER: 24
+      WEATHERED_COPPER: 19
+      OXIDIZED_COPPER: 15
   CTAnnounce:
     enabled: false
     delay: 10000
@@ -484,6 +541,11 @@ hacks:
     # in seconds
     delay: 180
     message: "&4%player% is raiding a chest at %x% %y% %z%."
+  SanityHack:
+    enabled: true
+    trackPlace: true
+    trackBreak: true
+    belowYLevel: 7
   #Used to roll a dice on whether to drop an additional sapling on block break or leaf decay
   SaplingHack:
     enabled: true
@@ -492,58 +554,8 @@ hacks:
     blocks:
       JUNGLE_LEAVES: 0.5
       DARK_OAK_LEAVES: 0.5
-  SanityHack:
-    enabled: true
-    trackPlace: true
-    trackBreak: true
-    belowYLevel: 7
-  #Currently changes a striders speed to be between 0.175 (Default) and 0.3375 (Horse max speed)
-  #aswell as default health to between 20 (Default) and 50 (2.5 heart bars)
-  #Only works on newly spawned striders, not pre-existing mobs
-  StriderBreeding:
-    enabled: true
-    #Default strider speed is 0.175
-    minSpeed: 0.175
-    #Max horse speed is 0.3375
-    maxSpeed: 0.3375
-    #10 Hearts
-    minHealth: 20
-    #25 Hearts
-    maxHealth: 50
   TimingsHack:
     enabled: true
   ToggleLamp:
     enabled: false
     cooldownTime: 100
-  DespawnFix:
-    enabled: true
-  BetterRails:
-    enabled: true
-    # All in metres per second
-    # Minecraft will prevent you going faster than 30m/s
-    base: 11
-    materials:
-      COBBLESTONE: 8
-      COPPER_BLOCK: 29
-      EXPOSED_COPPER: 23
-      WEATHERED_COPPER: 18
-      OXIDIZED_COPPER: 14
-    skyBase: 12
-    skyMaterials:
-      COBBLESTONE: 8
-      COPPER_BLOCK: 30
-      EXPOSED_COPPER: 24
-      WEATHERED_COPPER: 19
-      OXIDIZED_COPPER: 15
-  CopperRail:
-    enabled: true
-    deoxidise: true
-    # Chance to oxidise copper one level.
-    # Unoxidised copper will oxidise at 75% of this level.
-    damage: 0.03
-  FasterHorses:
-    enabled: true
-    minSpeed: 0.1125
-    maxSpeed: 0.438827582278 # 18.5m/s
-  AntiDerailment:
-    enabled: true
