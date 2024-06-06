@@ -1,12 +1,25 @@
 package com.github.igotyou.FactoryMod.compaction;
 
 import java.util.Map;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 /**
- * Bit of a janky workaround to mark {@link ItemMap} items as compacted, since ItemMap lives in CivModCore.
+ * <p>Bit of a janky workaround to mark {@link ItemMap} items as compacted, since ItemMap lives in CivModCore.</p>
+ *
+ * <pre><code>
+ * glass_bottles:
+ *   material: GLASS_BOTTLE
+ *   amount: 128
+ *   modifiers:
+ *     - ==: com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier
+ * </code></pre>
+ *
+ * <p>Please note that modifiers are applied in order of appearance. See
+ * {@link ConfigHelper#parseItemMapDirectly(ConfigurationSection)} for more details</p>
  */
 public final class CompactedConfigItemModifier extends ItemMap.ConfigItemModifier {
 	@Override

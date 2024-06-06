@@ -1,6 +1,5 @@
 package vg.civcraft.mc.civmodcore;
 
-import com.comphenix.protocol.ProtocolLibrary;
 import java.io.File;
 import java.sql.SQLException;
 import org.bukkit.Bukkit;
@@ -21,7 +20,6 @@ import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.network.NetworkItemMetaTransformer;
 import vg.civcraft.mc.civmodcore.players.PlayerNames;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
@@ -56,7 +54,6 @@ public class CivModCorePlugin extends ACivMod {
 	private WorldIDManager worldIdManager;
 	private CommandManager commands;
 	private SkinCache skinCache;
-	private NetworkItemMetaTransformer compactedNetworkAdapter;
 
 	@Override
 	public void onEnable() {
@@ -112,9 +109,6 @@ public class CivModCorePlugin extends ACivMod {
 
 		if (this.config.getChunkLoadingStatistics())
 			LoadStatisticManager.enable();
-
-		this.compactedNetworkAdapter = new NetworkItemMetaTransformer(this);
-		ProtocolLibrary.getProtocolManager().addPacketListener(this.compactedNetworkAdapter);
 	}
 
 	@Override
@@ -147,11 +141,6 @@ public class CivModCorePlugin extends ACivMod {
 		}
 
 		LoadStatisticManager.disable();
-
-		if (this.compactedNetworkAdapter != null) {
-			ProtocolLibrary.getProtocolManager().removePacketListener(this.compactedNetworkAdapter);
-			this.compactedNetworkAdapter = null;
-		}
 
 		if (this.config != null) {
 			this.config.reset();

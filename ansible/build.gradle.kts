@@ -21,6 +21,7 @@ dependencies {
     paperPlugin(project(path = ":plugins:kirabukkitgateway-paper", configuration = "reobf"))
     paperPlugin(project(path = ":plugins:namecolors-paper", configuration = "reobf"))
     paperPlugin(project(path = ":plugins:namelayer-paper", configuration = "reobf"))
+    paperPlugin(project(path = ":plugins:protocollib-paper", configuration = "reobf"))
     paperPlugin(project(path = ":plugins:railswitch-paper", configuration = "reobf"))
     paperPlugin(project(path = ":plugins:randomspawn-paper", configuration = "reobf"))
     paperPlugin(project(path = ":plugins:realisticbiomes-paper", configuration = "reobf"))

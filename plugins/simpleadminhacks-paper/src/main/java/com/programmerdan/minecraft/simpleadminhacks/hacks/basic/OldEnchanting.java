@@ -8,7 +8,6 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
-import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
 import java.lang.reflect.Field;
 import java.security.SecureRandom;
 import java.util.HashMap;
@@ -64,6 +63,7 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.projectiles.ProjectileSource;
+import uk.protonull.civ.protocollib.PooledPacketAdapters;
 import vg.civcraft.mc.civmodcore.entities.EntityUtils;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.RecipeManager;
@@ -77,7 +77,7 @@ public final class OldEnchanting extends BasicHack {
 	private static final ItemStack EMERALD_ITEM = new ItemStack(Material.EMERALD, 1);
 	private static final Random RANDOM = new SecureRandom();
 
-	private final PacketManager packets;
+	private final PooledPacketAdapters packets;
 	private final ShapelessRecipe emeraldToExp;
 	private final ShapedRecipe expToEmerald;
 	private final Field enchantingTableRandomiser;
@@ -134,7 +134,7 @@ public final class OldEnchanting extends BasicHack {
 	public OldEnchanting(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
 		// Setup packet manager
-		this.packets = new PacketManager();
+		this.packets = new PooledPacketAdapters();
 		// Recipe that crafts Bottles o' Enchanting from Emeralds
 		this.emeraldToExp = new ShapelessRecipe(
 				new NamespacedKey(plugin, "emeraldToBottle"),

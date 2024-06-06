@@ -35,7 +35,7 @@ public final class CompactionTestCommands extends BaseCommand {
 	@Subcommand("compact")
 	@Description("Marks the item held in your main hand as compacted.")
 	private void compactHeldItem(
-		final @NotNull Player sender
+			final @NotNull Player sender
 	) {
 		final ItemStack item = sender.getInventory().getItemInMainHand();
 		if (ItemUtils.isEmptyItem(item)) {
@@ -69,7 +69,7 @@ public final class CompactionTestCommands extends BaseCommand {
 	@Subcommand("decompact")
 	@Description("Removes the compacted marking on the item held in your main hand.")
 	private void decompactHeldItem(
-		final @NotNull Player sender
+			final @NotNull Player sender
 	) {
 		final ItemStack item = sender.getInventory().getItemInMainHand();
 		if (ItemUtils.isEmptyItem(item)) {
@@ -104,15 +104,15 @@ public final class CompactionTestCommands extends BaseCommand {
 	@Subcommand("give")
 	@Description("Creates a new compacted item.")
 	private void giveNewItem(
-		final @NotNull Player sender,
-		final @NotNull CompactedItemType type,
-		final @NotNull @Default("DIAMOND") Material material,
-		final @Default("1") int amount
+			final @NotNull Player sender,
+			final @NotNull CompactedItemType type,
+			final @NotNull @Default("DIAMOND") Material material,
+			final @Default("1") int amount
 	) {
 		final ItemStack item = new ItemStack(material, amount);
 		switch (type) {
 			case NEW -> item.editMeta(Compaction::markAsCompacted);
-			case LEGACY -> item.editMeta(Compaction::addLegacyCompactedLore);
+			case LEGACY -> item.editMeta(Compaction::addCompactedLore);
 		}
 		sender.getInventory().addItem(item);
 		sender.sendMessage(Component.text(
@@ -124,7 +124,7 @@ public final class CompactionTestCommands extends BaseCommand {
 	@Subcommand("upgrade")
 	@Description("Attempts to upgrade a legacy compacted item held in your main hand.")
 	private void upgradeHeldLegacy(
-		final @NotNull Player sender
+			final @NotNull Player sender
 	) {
 		final ItemStack item = sender.getInventory().getItemInMainHand();
 		switch (Compaction.attemptUpgrade(item)) {
@@ -176,7 +176,7 @@ public final class CompactionTestCommands extends BaseCommand {
 	@Subcommand("merchant")
 	@Description("Shows you an example merchant window containing compacted items.")
 	private void viewMerchantTest(
-		final @NotNull Player sender
+			final @NotNull Player sender
 	) {
 		final Merchant merchant = Bukkit.createMerchant(Component.text("Test Merchant"));
 

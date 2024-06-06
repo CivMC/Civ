@@ -1,8 +1,10 @@
 package com.github.igotyou.FactoryMod;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import com.github.igotyou.FactoryMod.commands.FMCommandManager;
 import com.github.igotyou.FactoryMod.compaction.CompactedConfigItemModifier;
 import com.github.igotyou.FactoryMod.compaction.CompactedItemListener;
+import com.github.igotyou.FactoryMod.compaction.CompactedItemNetworkAdapter;
 import com.github.igotyou.FactoryMod.listeners.CitadelListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.utility.FactoryModPermissionManager;
@@ -27,12 +29,14 @@ public class FactoryMod extends ACivMod {
 		}
 		commandManager = new FMCommandManager(this);
 		registerListeners();
+		ProtocolLibrary.getProtocolManager().addPacketListener(new CompactedItemNetworkAdapter(this));
 		info("Successfully enabled");
 	}
 
 	@Override
 	public void onDisable() {
 		manager.shutDown();
+		ProtocolLibrary.getProtocolManager().removePacketListeners(this);
 		plugin.info("Shutting down");
 	}
 

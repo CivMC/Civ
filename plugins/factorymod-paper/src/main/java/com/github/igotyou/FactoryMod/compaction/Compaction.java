@@ -19,7 +19,7 @@ public final class Compaction {
 	 * Checks whether a given item is marked as compacted via its PDC.
 	 */
 	public static boolean isCompacted(
-		final ItemStack item
+			final ItemStack item
 	) {
 		if (item == null) {
 			return false;
@@ -35,7 +35,7 @@ public final class Compaction {
 	 * Checks whether a given item is marked as compacted via its PDC.
 	 */
 	public static boolean isCompacted(
-		final @NotNull ItemMeta meta
+			final @NotNull ItemMeta meta
 	) {
 		return meta.getPersistentDataContainer().getOrDefault(COMPACTED_KEY, PersistentDataTypes.BOOLEAN, false);
 	}
@@ -44,7 +44,7 @@ public final class Compaction {
 	 * Marks the given item as compacted.
 	 */
 	public static void markAsCompacted(
-		final @NotNull ItemMeta meta
+			final @NotNull ItemMeta meta
 	) {
 		meta.getPersistentDataContainer().set(COMPACTED_KEY, PersistentDataTypes.BOOLEAN, true);
 	}
@@ -53,18 +53,24 @@ public final class Compaction {
 	 * Removes the marking that marks the item as compacted.
 	 */
 	public static void removeCompactedMarking(
-		final @NotNull ItemMeta meta
+			final @NotNull ItemMeta meta
 	) {
 		meta.getPersistentDataContainer().remove(COMPACTED_KEY);
 	}
 
 	public static boolean hasCompactedLore(
-		final @NotNull ItemMeta meta
+			final @NotNull ItemMeta meta
 	) {
 		final List<Component> lore = meta.lore();
 		if (lore == null) {
 			return false;
 		}
+		return hasCompactedLore(lore);
+	}
+
+	public static boolean hasCompactedLore(
+			final @NotNull List<@NotNull Component> lore
+	) {
 		for (final Component line : lore) {
 			if (isCompactedLoreLine(line)) {
 				return true;
@@ -74,7 +80,7 @@ public final class Compaction {
 	}
 
 	private static boolean isCompactedLoreLine(
-		final @NotNull Component line
+			final @NotNull Component line
 	) {
 		final var content = new StringBuilder();
 		for (final Component part : line.iterable(ComponentIteratorType.DEPTH_FIRST)) {
@@ -92,30 +98,40 @@ public final class Compaction {
 	 * Adds the "Compacted Item" lore.
 	 */
 	public static void addCompactedLore(
-		final @NotNull ItemMeta meta
+			final @NotNull ItemMeta meta
 	) {
-		MetaUtils.addComponentLore(meta, List.of(Component.text(COMPACTED_ITEM_LORE)));
+		final List<Component> lore = MetaUtils.getComponentLore(meta);
+		addCompactedLore(lore);
+		MetaUtils.setComponentLore(meta, lore);
 	}
 
 	/**
-	 * Adds the "Compacted Item" lore in the Bukkit fashion.
+	 * Adds the "Compacted Item" lore.
 	 */
-	@SuppressWarnings("deprecation")
-	public static void addLegacyCompactedLore(
-		final @NotNull ItemMeta meta
+	public static void addCompactedLore(
+			final @NotNull List<@NotNull Component> lore
 	) {
-		MetaUtils.addLore(meta, List.of(COMPACTED_ITEM_LORE));
+		lore.add(Component.text(COMPACTED_ITEM_LORE));
 	}
 
 	/**
 	 * Removes the "Compacted Item" lore.
 	 */
 	public static void removeCompactedLore(
-		final @NotNull ItemMeta meta
+			final @NotNull ItemMeta meta
 	) {
 		final List<Component> lore = MetaUtils.getComponentLore(meta);
-		lore.removeIf(Compaction::isCompactedLoreLine);
+		removeCompactedLore(lore);
 		MetaUtils.setComponentLore(meta, lore);
+	}
+
+	/**
+	 * Removes the "Compacted Item" lore.
+	 */
+	public static void removeCompactedLore(
+			final @NotNull List<@NotNull Component> lore
+	) {
+		lore.removeIf(Compaction::isCompactedLoreLine);
 	}
 
 	public enum UpgradeResult { SUCCESS, EMPTY_ITEM, ALREADY_COMPACTED, NOT_COMPACTED }
@@ -124,7 +140,7 @@ public final class Compaction {
 	 * Attempts to upgrade a legacy compacted item.
 	 */
 	public static @NotNull UpgradeResult attemptUpgrade(
-		final ItemStack item
+			final ItemStack item
 	) {
 		if (item == null) {
 			return UpgradeResult.EMPTY_ITEM;
@@ -144,7 +160,7 @@ public final class Compaction {
 	 * Attempts to upgrade a legacy compacted item meta.
 	 */
 	public static @NotNull UpgradeResult attemptUpgrade(
-		final @NotNull ItemMeta meta
+			final @NotNull ItemMeta meta
 	) {
 		if (isCompacted(meta)) {
 			return UpgradeResult.ALREADY_COMPACTED;

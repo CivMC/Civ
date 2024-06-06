@@ -25,28 +25,8 @@ import org.bukkit.inventory.LoomInventory;
 import org.bukkit.inventory.SmithingInventory;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.network.NetworkItemEvent;
 
 public final class CompactedItemListener implements Listener {
-	// ============================================================
-	// Network
-	// ============================================================
-
-	/**
-	 * Add the "Compacted Item" lore to compacted items at network-time.
-	 */
-	@EventHandler(
-			priority = EventPriority.HIGHEST
-	)
-	private void annotateCompactedItems(
-			final @NotNull NetworkItemEvent event
-	) {
-		if (Compaction.isCompacted(event.meta)) {
-			Compaction.addCompactedLore(event.meta);
-			event.markAsUpdated();
-		}
-	}
-
 	// ============================================================
 	// Upgrades
 	// ============================================================

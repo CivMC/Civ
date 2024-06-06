@@ -14,7 +14,6 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
-import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -26,6 +25,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
+import uk.protonull.civ.protocollib.PooledPacketAdapters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,7 @@ public final class AttrHider extends BasicHack {
 
 	public static final String BYPASS_PERMISSION = "attrhider.bypass";
 
-	private final PacketManager packets = new PacketManager();
+	private final PooledPacketAdapters packets = new PooledPacketAdapters();
 
 	@AutoLoad
 	private boolean hideItemMeta;
