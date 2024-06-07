@@ -1,0 +1,5 @@
+[versions]
+paper = "1.21.3-R0.1-SNAPSHOT"
+
+[libraries]
+paper-api = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }

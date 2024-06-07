@@ -7,7 +7,7 @@ version = "2.0.1"
 
 dependencies {
     paperweight {
-        paperDevBundle("1.21.3-R0.1-SNAPSHOT")
+        paperDevBundle(libs.versions.paper)
     }
 
     compileOnly("me.confuser:BarAPI:3.5")
