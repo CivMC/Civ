@@ -25,7 +25,6 @@ public class GameFixesConfig extends SimpleHackConfig {
 
 	private boolean preventTreeWrap;
 	private boolean maintainFlatBedrock;
-	private boolean fixPearlGlitch;
 	private boolean preventLongSigns;
 	private int signLengthLimit;
 	private boolean preventLongSignsAbsolute;
@@ -65,9 +64,6 @@ public class GameFixesConfig extends SimpleHackConfig {
 
 		maintainFlatBedrock = config.getBoolean("maintainFlatBedrock", false);
 		if (maintainFlatBedrock) plugin().log("  Maintaining bedrock flatness.");
-
-		fixPearlGlitch = config.getBoolean("fixPearlGlitch", false);
-		if (fixPearlGlitch) plugin().log("  Pearl glitch fix enabled.");
 
 		preventLongSigns = config.getBoolean("preventLongSigns", true);
 		signLengthLimit = config.getInt("signLengthLimit", 100);
@@ -169,10 +165,6 @@ public class GameFixesConfig extends SimpleHackConfig {
 
 	public boolean maintainFlatBedrock() {
 		return maintainFlatBedrock;
-	}
-
-	public boolean fixPearlGlitch() {
-		return fixPearlGlitch;
 	}
 
 	public boolean isPreventLongSigns() {
