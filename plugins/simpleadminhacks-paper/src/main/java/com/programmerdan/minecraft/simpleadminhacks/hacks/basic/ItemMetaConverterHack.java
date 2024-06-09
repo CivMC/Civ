@@ -4,16 +4,11 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import net.kyori.adventure.text.Component;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
-import org.w3c.dom.Text;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
-
-import java.util.List;
 
 public class ItemMetaConverterHack extends BasicHack {
 
