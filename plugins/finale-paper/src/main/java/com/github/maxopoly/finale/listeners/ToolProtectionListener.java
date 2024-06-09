@@ -5,7 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
@@ -21,7 +21,7 @@ public class ToolProtectionListener implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onBlockBreak(BlockBreakEvent e) {
+	public void onItemDamageByPlayer(PlayerItemDamageEvent e) {
 		if (!settingMan.useToolProtection(e.getPlayer().getUniqueId())) {
 			return;
 		}
@@ -35,11 +35,12 @@ public class ToolProtectionListener implements Listener {
 		}
 		int health = is.getType().getMaxDurability() - meta.getDamage();
 		if (health <= settingMan.getToolProtectionThreshhold(e.getPlayer().getUniqueId())) {
-			for(int i = 0; i < 5; i++) {
-				e.getPlayer().sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "Your tool is almost broken");
+			for (int i = 0; i < 5; i++) {
+				e.getPlayer().sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "Your %s is almost broken".formatted(
+						e.getItem().getType().name().replace('_', ' ').toLowerCase()
+				));
 			}
 			e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 10, 4));
 		}
 	}
-
 }
