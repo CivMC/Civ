@@ -389,7 +389,6 @@ hacks:
     stopAnchorBombing: true
     preventTreeWraparound: true
     maintainFlatBedrock: false
-    fixPearlGlitch: false
     preventLongSigns: true
     signLengthLimit: 100
     preventLongSignsAbsolute: true
