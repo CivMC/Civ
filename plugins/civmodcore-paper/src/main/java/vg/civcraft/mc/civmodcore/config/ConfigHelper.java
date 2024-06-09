@@ -179,6 +179,11 @@ public final class ConfigHelper {
 					meta.addItemFlags(flag);
 				}
 			}
+			for (final Object modifier : current.getList("modifiers", List.of())) {
+				if (modifier instanceof final ItemMap.ConfigItemModifier configItemModifier) {
+					configItemModifier.modifyItem(meta);
+				}
+			}
 			if (current.contains("enchants")) {
 				for (String enchantKey : current.getConfigurationSection("enchants").getKeys(false)) {
 					ConfigurationSection enchantConfig = current.getConfigurationSection("enchants")

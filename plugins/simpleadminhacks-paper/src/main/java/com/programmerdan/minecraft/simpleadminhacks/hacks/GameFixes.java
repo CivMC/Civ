@@ -3,7 +3,6 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameFixesConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
 import java.util.logging.Level;
 
 import net.minecraft.world.item.ItemStack;
@@ -49,15 +48,12 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 
 	public static final String NAME = "GameFixes";
 
-	private final PacketManager protocol = new PacketManager();
-
 	public GameFixes(SimpleAdminHacks plugin, GameFixesConfig config) {
 		super(plugin, config);
 	}
 
 	@Override
 	public void onDisable() {
-		this.protocol.removeAllAdapters();
 		HandlerList.unregisterAll(this);
 		super.onDisable();
 	}

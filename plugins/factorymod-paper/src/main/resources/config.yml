@@ -479,7 +479,6 @@ factories:
 #           material: CHEST
 #           lore:
 #            - Crate
-#   compact_lore: Compacted Item
 #   excluded_materials:
 #    - BOOK
 
@@ -502,11 +501,10 @@ factories:
 #Example:
 
 #decompactedIdentifier:
-#   type:DECOMPACT
+#   type: DECOMPACT
 #   name: Decompaction recipe
 #   production_time: 5s
 #   input:
-#   compact_lore: Compact Item
 
 
 #type always has to be DECOMPACT here. 

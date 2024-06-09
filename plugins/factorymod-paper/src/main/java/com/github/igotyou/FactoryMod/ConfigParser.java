@@ -566,15 +566,6 @@ public class ConfigParser {
 			result = new ProductionRecipe(identifier, name, productionTime, input, output, recipeRepresentation, modi);
 			break;
 		case "COMPACT":
-			String compactedLore = config.getString("compact_lore",
-					(parentRecipe instanceof CompactingRecipe) ? ((CompactingRecipe) parentRecipe).getCompactedLore()
-							: null);
-			if (compactedLore == null) {
-				plugin.warning("No special lore specified for compaction recipe " + name + " it was skipped");
-				result = null;
-				break;
-			}
-			manager.addCompactLore(compactedLore);
 			List<Material> excluded = new LinkedList<>();
 			if (config.isList("excluded_materials")) {
 				for (String mat : config.getStringList("excluded_materials")) {
@@ -593,20 +584,10 @@ public class ConfigParser {
 				}
 				// otherwise just leave list empty, as nothing is specified, which is fine
 			}
-			result = new CompactingRecipe(identifier, input, excluded, name, productionTime, compactedLore);
+			result = new CompactingRecipe(identifier, input, excluded, name, productionTime);
 			break;
 		case "DECOMPACT":
-			String decompactedLore = config.getString("compact_lore",
-					(parentRecipe instanceof DecompactingRecipe)
-							? ((DecompactingRecipe) parentRecipe).getCompactedLore()
-							: null);
-			if (decompactedLore == null) {
-				plugin.warning("No special lore specified for decompaction recipe " + name + " it was skipped");
-				result = null;
-				break;
-			}
-			manager.addCompactLore(decompactedLore);
-			result = new DecompactingRecipe(identifier, input, name, productionTime, decompactedLore);
+			result = new DecompactingRecipe(identifier, input, name, productionTime);
 			break;
 		case "REPAIR":
 			int health = config.getInt("health_gained",

@@ -9,7 +9,6 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
-import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -31,6 +30,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import uk.protonull.civ.protocollib.PooledPacketAdapters;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.civmodcore.utilities.cooldowns.ICoolDownHandler;
@@ -43,7 +43,7 @@ import vg.civcraft.mc.civmodcore.utilities.ratelimiting.RateLimiting;
  */
 public final class AntiFastBreak extends BasicHack {
 
-	private final PacketManager packets;
+	private final PooledPacketAdapters packets;
 	private final Map<UUID, Map<Location, Long>> miningLocations;
 	private final RateLimiter violationLimiter;
 	private final RateLimiter loggerLimiter;
@@ -57,7 +57,7 @@ public final class AntiFastBreak extends BasicHack {
 
 	public AntiFastBreak(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
-		this.packets = new PacketManager();
+		this.packets = new PooledPacketAdapters();
 		this.miningLocations = new TreeMap<>();
 		this.violationLimiter = RateLimiting.createRateLimiter("antiCivBreak", 10, 10, 1, 2_000L);
 		this.loggerLimiter = RateLimiting.createRateLimiter("antiCivBreakLogger", 4, 4, 1, 10_000L);

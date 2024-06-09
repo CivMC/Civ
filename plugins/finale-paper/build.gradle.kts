@@ -15,5 +15,5 @@ dependencies {
 
 	compileOnly(project(":plugins:civmodcore-paper"))
 	compileOnly(project(":plugins:combattagplus-paper"))
-	compileOnly("com.comphenix.protocol:ProtocolLib:5.2.0-20231209.220838-1")
+	compileOnly(project(":plugins:protocollib-paper"))
 }
