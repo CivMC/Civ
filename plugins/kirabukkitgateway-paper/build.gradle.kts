@@ -7,7 +7,7 @@ version = "2.0.3"
 
 dependencies {
 	paperweight {
-		paperDevBundle("1.20.4-R0.1-SNAPSHOT")
+		paperDevBundle(libs.versions.paper)
 	}
 
 	api("com.rabbitmq:amqp-client:5.17.1")
