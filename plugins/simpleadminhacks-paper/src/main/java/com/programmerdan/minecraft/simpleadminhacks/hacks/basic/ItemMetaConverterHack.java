@@ -4,11 +4,16 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
+import org.w3c.dom.Text;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
+
+import java.util.List;
 
 public class ItemMetaConverterHack extends BasicHack {
 
@@ -38,9 +43,10 @@ public class ItemMetaConverterHack extends BasicHack {
 		boolean displayNameWasChanged = false;
 		if (meta.hasDisplayName()) {
 			final var currentDisplayName = meta.displayName();
+
 			assert currentDisplayName != null;
 			if (!ChatUtils.isBaseComponent(currentDisplayName)) {
-				meta.displayName(Component.text().append(currentDisplayName).build());
+				meta.displayName(currentDisplayName.compact());
 				displayNameWasChanged = true;
 			}
 		}
@@ -51,7 +57,7 @@ public class ItemMetaConverterHack extends BasicHack {
 			for (int i = 0, l = currentLore.size(); i < l; i++) {
 				final var loreLine = currentLore.get(i);
 				if (!ChatUtils.isBaseComponent(loreLine)) {
-					currentLore.set(i, Component.text().append(loreLine).build());
+					currentLore.set(i, Component.empty().append(loreLine.compact()));
 					loreWasChanged = true;
 				}
 			}
@@ -63,5 +69,4 @@ public class ItemMetaConverterHack extends BasicHack {
 			item.setItemMeta(meta);
 		}
 	}
-
 }
