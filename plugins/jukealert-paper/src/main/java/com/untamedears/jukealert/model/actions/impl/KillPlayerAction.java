@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class KillPlayerAction extends LoggablePlayerVictimAction {

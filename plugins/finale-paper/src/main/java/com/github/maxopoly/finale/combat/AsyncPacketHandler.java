@@ -19,7 +19,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.bukkit.Bukkit;

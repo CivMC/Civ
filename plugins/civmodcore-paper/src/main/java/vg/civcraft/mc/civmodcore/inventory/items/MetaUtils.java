@@ -11,8 +11,6 @@ import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;

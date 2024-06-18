@@ -108,7 +108,7 @@ public final class ItemUtils {
 	 */
 	public static boolean isValidItemMaterial(@Nullable final Material material) {
 		return material != null
-			/** Add any null-returns in {@link CraftItemFactory#getItemMeta(Material, org.bukkit.craftbukkit.v1_17_R1.inventory.CraftMetaItem)} */
+			/** Add any null-returns in {@link CraftItemFactory#getItemMeta(Material, org.bukkit.craftbukkit.inventory.CraftMetaItem)} */
 			&& material != Material.AIR
 			&& material.isItem();
 	}
