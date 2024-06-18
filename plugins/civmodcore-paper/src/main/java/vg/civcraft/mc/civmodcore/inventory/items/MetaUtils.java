@@ -55,8 +55,8 @@ public final class MetaUtils {
 		}
 		if (former.hasDisplayName()) {
 			if (!ChatUtils.areComponentsEqual(
-					former.displayName(),
-					latter.displayName())) {
+				former.displayName(),
+				latter.displayName())) {
 				return false;
 			}
 		}
@@ -65,8 +65,8 @@ public final class MetaUtils {
 		}
 		if (former.hasLore()) {
 			if (!Objects.equals(
-					getComponentLore(former),
-					getComponentLore(latter))) {
+				getComponentLore(former),
+				getComponentLore(latter))) {
 				return false;
 			}
 		}
@@ -186,17 +186,6 @@ public final class MetaUtils {
 			lore.addAll(lines);
 		}
 		meta.lore(lore);
-	}
-
-	/**
-	 * Makes an item glow by adding an enchantment and the flag for hiding enchantments, so it has the enchantment glow
-	 * without an enchantment being visible. Note that this does actually apply an enchantment to an item.
-	 *
-	 * @param meta Item meta to apply glow to.
-	 */
-	public static void addGlow(@Nonnull final ItemMeta meta) {
-		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		meta.addEnchant(Enchantment.DURABILITY, 1, true); // true = ignoreLevelRestriction
 	}
 
 	// ------------------------------------------------------------

@@ -4,8 +4,6 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
-import java.util.List;
-import java.util.Map;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Player;
@@ -13,6 +11,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
+
+import java.util.List;
+import java.util.Map;
 
 public class ArthropodEggHack extends BasicHack {
 
@@ -61,13 +62,13 @@ public class ArthropodEggHack extends BasicHack {
 		}
 
 		// Check if one enchantment is BaneOfArthropods
-		if (null == itemEnchants.get(Enchantment.DAMAGE_ARTHROPODS)) {
+		if (null == itemEnchants.get(Enchantment.BANE_OF_ARTHROPODS)) {
 			return;
 		}
 
 		double randomNum = Math.random();
-		double levelOfArthropod = handstack.getEnchantmentLevel(Enchantment.DAMAGE_ARTHROPODS);
-		double levelOfLooting = handstack.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+		double levelOfArthropod = handstack.getEnchantmentLevel(Enchantment.BANE_OF_ARTHROPODS);
+		double levelOfLooting = handstack.getEnchantmentLevel(Enchantment.LOOTING);
 
 		double targetPercentage = (eggChance * levelOfArthropod) + (lootingChance * levelOfLooting);
 

@@ -7,8 +7,8 @@ import java.util.Optional;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.block.CraftBlock;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public final class BlockProperties {
@@ -54,8 +54,8 @@ public final class BlockProperties {
 		final CraftWorld craftWorld = (CraftWorld) block.getWorld();
 		// Deobf path: net.minecraft.world.level.Level.setBlock()
 		craftWorld.getHandle().setBlock(craftBlock.getPosition(), craftBlock.getNMS().setValue(state, valueToSet),
-				// This value is named "flag" and appears to be a set of bitwise indicators for block updates
-				2); // 2 and 3 being used in NMS code and stuck to that
+			// This value is named "flag" and appears to be a set of bitwise indicators for block updates
+			2); // 2 and 3 being used in NMS code and stuck to that
 		return true;
 	}
 

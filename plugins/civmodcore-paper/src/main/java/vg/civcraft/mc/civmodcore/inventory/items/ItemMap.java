@@ -10,31 +10,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
-import net.minecraft.nbt.ByteArrayTag;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.DoubleTag;
-import net.minecraft.nbt.FloatTag;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongTag;
-import net.minecraft.nbt.ShortTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.Repairable;
-import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
-import vg.civcraft.mc.civmodcore.utilities.CivLogger;
-import vg.civcraft.mc.civmodcore.utilities.MoreMath;
 
 /**
  * Allows the storage and comparison of item stacks while ignoring their maximum possible stack sizes. This offers
@@ -53,8 +35,6 @@ import vg.civcraft.mc.civmodcore.utilities.MoreMath;
  *       for a little longer since they work fine enough and aren't in critical updates.
  */
 public class ItemMap {
-
-	private static final CivLogger LOGGER = CivLogger.getLogger(ItemMap.class);
 
 	private final Object2IntMap<ItemStack> items;
 	private int totalItems;
@@ -108,44 +88,6 @@ public class ItemMap {
 		return item.asOne();
 	}
 
-
-
-
-	//getAmount
-	//getTotalItemAmount
-	//getTotalUniqueItemAmount
-	//getStacksByMaterial
-	//getStacksByMaterialEnchant
-	//getStacksByLore
-	//getEntrySet
-	//getItemStackRepresentation
-	//getLoredItemCountRepresentation
-
-	//addAll
-	//addItemStack
-	//addItemAmount
-	//addToInventory
-	//addToEntrySet
-
-	//removeItemStack
-	//removeItemStackCompletely
-	//removeSafelyFrom
-
-	//fitsIn
-	//isContainedIn
-	//containedExactlyIn
-	//getMultiplesContainedIn
-	//multiplyContent
-
-	//createMapConformCopy
-	//enrichWithNBT
-	//clone
-	//merge
-	//update
-
-
-
-
 	/**
 	 * Clones the given item stack, sets its amount to one and checks whether a stack equaling the created one exists
 	 * in the item map. If yes the amount of the given stack (before the amount was set to 1) will be added to the
@@ -158,7 +100,7 @@ public class ItemMap {
 			return;
 		}
 		this.items.computeInt(INTERNAL_createKey(input), (key, amount) ->
-				amount == null ? input.getAmount() : amount + input.getAmount());
+			amount == null ? input.getAmount() : amount + input.getAmount());
 		this.totalItems += input.getAmount();
 	}
 
@@ -474,7 +416,6 @@ public class ItemMap {
 				ItemStack toAdd = is.clone();
 				int addAmount = Math.min(amount, is.getMaxStackSize());
 				toAdd.setAmount(addAmount);
-				// log.info("Adding {0} as ItemStack", toAdd.toString());
 				result.add(toAdd);
 				amount -= addAmount;
 			}
@@ -615,134 +556,4 @@ public class ItemMap {
 		}
 		return false;
 	}
-
-	/**
-	 * Utility to add NBT tags to an item and produce a custom stack size
-	 *
-	 * @param item  Template Bukkit ItemStack
-	 * @param amount Output Stack Size
-	 * @param map Java Maps and Lists representing NBT data
-	 * @return Cloned ItemStack with amount set to amt and NBT set to map.
-	 */
-	public static ItemStack enrichWithNBT(ItemStack item, int amount, Map<String, Object> map) {
-		LOGGER.fine("Received request to enrich " + item.toString());
-		item = item.clone();
-		item.setAmount(MoreMath.clamp(amount, 1, item.getMaxStackSize()));
-		item = NBTSerialization.processItem(item, (nbt) -> mapToNBT(nbt.getRAW(), map));
-		return item;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static CompoundTag mapToNBT(CompoundTag base, Map<String, Object> map) {
-		LOGGER.fine("Representing map --> NBTTagCompound");
-		if (map == null || base == null) {
-			return base;
-		}
-		for (Map.Entry<String, Object> entry : map.entrySet()) {
-			Object object = entry.getValue();
-			if (object instanceof Map) {
-				LOGGER.fine("Adding map at key " + entry.getKey());
-				base.put(entry.getKey(), mapToNBT(new CompoundTag(), (Map<String, Object>) object));
-			} else if (object instanceof MemorySection) {
-				LOGGER.fine("Adding map from MemorySection at key " + entry.getKey());
-				base.put(entry.getKey(), mapToNBT(new CompoundTag(), ((MemorySection) object).getValues(true)));
-			} else if (object instanceof List) {
-				LOGGER.fine("Adding list at key " + entry.getKey());
-				base.put(entry.getKey(), listToNBT(new ListTag(), (List<Object>) object));
-			} else if (object instanceof String) {
-				LOGGER.fine("Adding String " + object + " at key " + entry.getKey());
-				base.putString(entry.getKey(), (String) object);
-			} else if (object instanceof Double) {
-				LOGGER.fine("Adding Double " + object + " at key " + entry.getKey());
-				base.putDouble(entry.getKey(), (Double) object);
-			} else if (object instanceof Float) {
-				LOGGER.fine("Adding Float " + object + " at key " + entry.getKey());
-				base.putFloat(entry.getKey(), (Float) object);
-			} else if (object instanceof Boolean) {
-				LOGGER.fine("Adding Boolean " + object + " at key " + entry.getKey());
-				base.putBoolean(entry.getKey(), (Boolean) object);
-			} else if (object instanceof Byte) {
-				LOGGER.fine("Adding Byte " + object + " at key " + entry.getKey());
-				base.putByte(entry.getKey(), (Byte) object);
-			} else if (object instanceof Short) {
-				LOGGER.fine("Adding Short " + object + " at key " + entry.getKey());
-				base.putShort(entry.getKey(), (Short) object);
-			} else if (object instanceof Integer) {
-				LOGGER.fine("Adding Integer " + object + " at key " + entry.getKey());
-				base.putInt(entry.getKey(), (Integer) object);
-			} else if (object instanceof Long) {
-				LOGGER.fine("Adding Long " + object + " at key " + entry.getKey());
-				base.putLong(entry.getKey(), (Long) object);
-			} else if (object instanceof byte[]) {
-				LOGGER.fine("Adding bytearray at key " + entry.getKey());
-				base.putByteArray(entry.getKey(), (byte[]) object);
-			} else if (object instanceof int[]) {
-				LOGGER.fine("Adding intarray at key " + entry.getKey());
-				base.putIntArray(entry.getKey(), (int[]) object);
-			} else if (object instanceof UUID) {
-				LOGGER.fine("Adding UUID " + object + " at key " + entry.getKey());
-				base.putUUID(entry.getKey(), (UUID) object);
-			} else if (object instanceof Tag) {
-				LOGGER.fine("Adding nbtobject at key " + entry.getKey());
-				base.put(entry.getKey(), (Tag) object);
-			} else {
-				LOGGER.warning("Unrecognized entry in map-->NBT: " + object.toString());
-			}
-		}
-		return base;
-	}
-
-	@SuppressWarnings("unchecked")
-	public static ListTag listToNBT(ListTag base, List<Object> list) {
-		LOGGER.fine("Representing list --> NBTTagList");
-		if (list == null || base == null) {
-			return base;
-		}
-		for (Object object : list) {
-			if (object instanceof Map) {
-				LOGGER.fine("Adding map to list");
-				base.add(mapToNBT(new CompoundTag(), (Map<String, Object>) object));
-			} else if (object instanceof MemorySection) {
-				LOGGER.fine("Adding map from MemorySection to list");
-				base.add(mapToNBT(new CompoundTag(), ((MemorySection) object).getValues(true)));
-			} else if (object instanceof List) {
-				LOGGER.fine("Adding list to list");
-				base.add(listToNBT(new ListTag(), (List<Object>) object));
-			} else if (object instanceof String) {
-				LOGGER.fine("Adding string " + object + " to list");
-				base.add(StringTag.valueOf((String) object));
-			} else if (object instanceof Double) {
-				LOGGER.fine("Adding double " + object + " to list");
-				base.add(DoubleTag.valueOf((Double) object));
-			} else if (object instanceof Float) {
-				LOGGER.fine("Adding float " + object + " to list");
-				base.add(FloatTag.valueOf((Float) object));
-			} else if (object instanceof Byte) {
-				LOGGER.fine("Adding byte " + object + " to list");
-				base.add(ByteTag.valueOf((Byte) object));
-			} else if (object instanceof Short) {
-				LOGGER.fine("Adding short " + object + " to list");
-				base.add(ShortTag.valueOf((Short) object));
-			} else if (object instanceof Integer) {
-				LOGGER.fine("Adding integer " + object + " to list");
-				base.add(IntTag.valueOf((Integer) object));
-			} else if (object instanceof Long) {
-				LOGGER.fine("Adding long " + object + " to list");
-				base.add(LongTag.valueOf((Long) object));
-			} else if (object instanceof byte[]) {
-				LOGGER.fine("Adding byte array to list");
-				base.add(new ByteArrayTag((byte[]) object));
-			} else if (object instanceof int[]) {
-				LOGGER.fine("Adding int array to list");
-				base.add(new IntArrayTag((int[]) object));
-			} else if (object instanceof Tag) {
-				LOGGER.fine("Adding nbt object to list");
-				base.add((Tag) object);
-			} else {
-				LOGGER.warning("Unrecognized entry in list-->NBT: " + base);
-			}
-		}
-		return base;
-	}
-
 }

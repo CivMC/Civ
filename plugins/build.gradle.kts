@@ -7,7 +7,7 @@ subprojects {
 
     configure<JavaPluginExtension> {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
+            languageVersion.set(JavaLanguageVersion.of(21))
         }
         withSourcesJar()
         withJavadocJar()
@@ -15,7 +15,7 @@ subprojects {
 
     tasks.withType<JavaCompile> {
         options.encoding = "UTF-8"
-        options.release = 17
+        options.release = 21
     }
 
     tasks.withType<ProcessResources> {

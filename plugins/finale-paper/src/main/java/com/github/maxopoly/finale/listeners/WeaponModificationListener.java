@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class WeaponModificationListener implements Listener {
-	
+
 	private final WeaponModifier manager = Finale.getPlugin().getManager().getWeaponModifer();
 
 	@EventHandler
@@ -19,8 +19,6 @@ public class WeaponModificationListener implements Listener {
 		if (is == null) {
 			return;
 		}
-
-		is = ItemUtil.newModifiers(is); // there was a bug where modifiers weren't changing for items with already changed modifiers.
 
 		ArmourModifier armourMod = Finale.getPlugin().getManager().getArmourModifier();
 

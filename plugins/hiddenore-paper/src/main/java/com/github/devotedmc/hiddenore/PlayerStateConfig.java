@@ -1,14 +1,14 @@
 package com.github.devotedmc.hiddenore;
 
-import java.util.List;
-
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.List;
+
 /**
  * Allows altering the chance rate based on the player's state/ effects they are under
- * 
+ *
  * format --
  * <code>
  * &lt;name&gt;:
@@ -21,10 +21,10 @@ import org.bukkit.potion.PotionEffectType;
  * </code>
  * each list of numbers is applied to each "level" so first number is for haste I, second for haste II; in this way custom effect levels
  * can be accomodated. At present only effects that already "logically" impact mining as present, you can add others I suppose.
- * 
- * See doLoad function for where these are initialized. Usable configs are set as named sections under top-level section "states". 
+ *
+ * See doLoad function for where these are initialized. Usable configs are set as named sections under top-level section "states".
  * Then, individual DropLimits as defined at any level can apply a state using a "state" attribute decorator.
- * 
+ *
  * @author ProgrammerDan
  *
  */
@@ -35,10 +35,10 @@ public class PlayerStateConfig {
 	public List<Double> luckRates;
 	public List<Double> blindnessRates;
 	public List<Double> badluckRates;
-	
+
 	/**
 	 * All states are applied successively
-	 * 
+	 *
 	 * @param player the player to apply adjustments to
 	 * @return value 0+ indicating adjustment to chance
 	 */
@@ -46,15 +46,15 @@ public class PlayerStateConfig {
 		double presentRate = 1.0d;
 		for (PotionEffect effect : player.getActivePotionEffects()) {
 			int idx = effect.getAmplifier();
-			if (effect.getType().equals(PotionEffectType.FAST_DIGGING)) { // haste
+			if (effect.getType().equals(PotionEffectType.HASTE)) { // haste
 				if (hasteRates != null && idx < hasteRates.size()) {
 					presentRate *= hasteRates.get(idx);
 				}
-			} else if (effect.getType().equals(PotionEffectType.SLOW_DIGGING)) { // fatigue
+			} else if (effect.getType().equals(PotionEffectType.MINING_FATIGUE)) { // fatigue
 				if (fatigueRates != null && idx < fatigueRates.size()) {
 					presentRate *= fatigueRates.get(idx);
 				}
-			} else if (effect.getType().equals(PotionEffectType.CONFUSION)) { // nausea
+			} else if (effect.getType().equals(PotionEffectType.NAUSEA)) { // nausea
 				if (nauseaRates != null && idx < nauseaRates.size()) {
 					presentRate *= nauseaRates.get(idx);
 				}

@@ -47,6 +47,8 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityDismountEvent;
+import org.bukkit.event.entity.EntityMountEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -61,12 +63,10 @@ import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.InventoryHolder;
-import org.spigotmc.event.entity.EntityDismountEvent;
-import org.spigotmc.event.entity.EntityMountEvent;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class LoggableActionListener implements Listener {
-	
+
 	private final SnitchManager snitchManager;
 	private final Map<UUID, Set<Snitch>> insideFields;
 
@@ -249,7 +249,7 @@ public class LoggableActionListener implements Listener {
 		// TODO Old JA had this listener, is it really needed?
 		handleSnitchLogout(event.getPlayer());
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void playerIgniteBlock(BlockIgniteEvent event) {
 		if (event.getCause() != IgniteCause.FLINT_AND_STEEL || event.getPlayer() == null) {

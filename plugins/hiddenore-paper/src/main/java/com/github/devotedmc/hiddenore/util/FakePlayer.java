@@ -76,6 +76,7 @@ import org.bukkit.entity.*;
 import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent.Reason;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -224,7 +225,7 @@ public class FakePlayer implements Player {
 			public int firstEmpty() {
 				return 0;
 			}
-			
+
 			@Override
 			public void remove(Material material) throws IllegalArgumentException {
 			}
@@ -1207,6 +1208,11 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
+	public void heal(double amount, @NotNull EntityRegainHealthEvent.RegainReason reason) {
+
+	}
+
+	@Override
 	public double getMaxHealth() {
 
 		return 0;
@@ -1425,6 +1431,31 @@ public class FakePlayer implements Player {
 	public InetSocketAddress getAddress() {
 
 		return null;
+	}
+
+	@Override
+	public @org.jetbrains.annotations.Nullable InetSocketAddress getHAProxyAddress() {
+		return null;
+	}
+
+	@Override
+	public boolean isTransferred() {
+		return false;
+	}
+
+	@Override
+	public @NotNull CompletableFuture<byte[]> retrieveCookie(@NotNull NamespacedKey key) {
+		return null;
+	}
+
+	@Override
+	public void storeCookie(@NotNull NamespacedKey key, @NotNull byte[] value) {
+
+	}
+
+	@Override
+	public void transfer(@NotNull String host, int port) {
+
 	}
 
 	@Override
@@ -2159,49 +2190,59 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-			double offsetZ) {
+							  double offsetZ) {
 
 	}
 
 	@Override
 	public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-			double offsetY, double offsetZ) {
+							  double offsetY, double offsetZ) {
 
 	}
 
 	@Override
 	public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-			double offsetZ, T data) {
+								  double offsetZ, T data) {
 
 	}
 
 	@Override
 	public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-			double offsetY, double offsetZ, T data) {
+								  double offsetY, double offsetZ, T data) {
 
 	}
 
 	@Override
 	public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-			double offsetZ, double extra) {
+							  double offsetZ, double extra) {
 
 	}
 
 	@Override
 	public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-			double offsetY, double offsetZ, double extra) {
+							  double offsetY, double offsetZ, double extra) {
 
 	}
 
 	@Override
 	public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-			double offsetZ, double extra, T data) {
+								  double offsetZ, double extra, T data) {
 
 	}
 
 	@Override
 	public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-			double offsetY, double offsetZ, double extra, T data) {
+								  double offsetY, double offsetZ, double extra, T data) {
+
+	}
+
+	@Override
+	public <T> void spawnParticle(@NotNull Particle particle, @NotNull Location location, int i, double v, double v1, double v2, double v3, @org.jetbrains.annotations.Nullable T t, boolean b) {
+
+	}
+
+	@Override
+	public <T> void spawnParticle(@NotNull Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, @org.jetbrains.annotations.Nullable T t, boolean b) {
 
 	}
 
@@ -2842,6 +2883,11 @@ public class FakePlayer implements Player {
 	@Override
 	public boolean isInWorld() {
 		return false;
+	}
+
+	@Override
+	public @org.jetbrains.annotations.Nullable String getAsString() {
+		return "";
 	}
 
 	@Override
@@ -3762,25 +3808,25 @@ public class FakePlayer implements Player {
 	@Override
 	public void setSubtitle(BaseComponent[] arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setSubtitle(BaseComponent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setTitleTimes(int arg0, int arg1, int arg2) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setViewDistance(int arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -3816,31 +3862,31 @@ public class FakePlayer implements Player {
 	@Override
 	public void showTitle(BaseComponent[] arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void showTitle(BaseComponent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void showTitle(BaseComponent[] arg0, BaseComponent[] arg1, int arg2, int arg3, int arg4) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void showTitle(BaseComponent arg0, BaseComponent arg1, int arg2, int arg3, int arg4) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void updateTitle(Title arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

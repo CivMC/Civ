@@ -27,10 +27,10 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -43,19 +43,19 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class AsyncPacketHandler extends PacketAdapter implements Listener {
 
 	private CombatConfig cc;
-	
+
 	public AsyncPacketHandler(CombatConfig cc) {
 		super(Finale.getPlugin(), ListenerPriority.HIGH, PacketType.Play.Client.USE_ENTITY, PacketType.Play.Client.ARM_ANIMATION, PacketType.Play.Client.BLOCK_DIG);
 
 		this.cc = cc;
-		
+
 		Bukkit.getPluginManager().registerEvents(this, Finale.getPlugin());
 	}
-	
+
 	private Set<UUID> isDigging = Sets.newConcurrentHashSet();
 	private Map<UUID, Long> lastRemovals = new ConcurrentHashMap<>();
 	private Map<UUID, Long> lastStartBreaks = new ConcurrentHashMap<>();
-	
+
 	@Override
 	public void onPacketReceiving(PacketEvent event) {
 		PacketType packetType = event.getPacketType();
@@ -80,7 +80,7 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 					Damageable target = entity instanceof Damageable ? (Damageable) entity : null;
 
 					if (target == null || target.isDead() || target.isInvulnerable() ||
-							!world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
+						!world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
 						if (entity instanceof CraftEntity craftEntity){
 							DamageSources damageSources = ((CraftWorld) world).getHandle().damageSources();
 							craftEntity.getHandle().hurt(damageSources.playerAttack(((CraftPlayer) attacker).getHandle()), (float) ((CraftPlayer) attacker).getHandle().getAttribute(Attributes.ATTACK_DAMAGE).getValue());
@@ -152,11 +152,11 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
-		
+
 		isDigging.remove(player.getUniqueId());
 		lastRemovals.remove(player.getUniqueId());
 		lastStartBreaks.remove(player.getUniqueId());

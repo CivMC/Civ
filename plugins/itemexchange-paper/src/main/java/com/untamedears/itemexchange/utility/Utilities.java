@@ -6,11 +6,6 @@ import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import javax.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -25,12 +20,18 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionType;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
+
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A series of Utilities of ItemExchange
@@ -192,14 +193,12 @@ public final class Utilities {
 				"]";
 	}
 
-	public static String potionDataToString(final PotionData data) {
+	public static String potionDataToString(final PotionType data) {
 		if (data == null) {
 			return null;
 		}
 		return "PotionData{" +
-				"type=" + data.getType().name() + "," +
-				"extended=" + data.isExtended() + "," +
-				"upgraded=" + data.isUpgraded() +
+				"type=" + data.name() + "," +
 				"}";
 	}
 

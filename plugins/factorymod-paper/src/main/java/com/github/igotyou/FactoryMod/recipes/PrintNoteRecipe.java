@@ -6,20 +6,19 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PrintNoteRecipe extends PrintBookRecipe {
 	private static class BookInfo {
@@ -109,11 +108,11 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 
 		BookInfo info = new BookInfo();
 		info.lines = fixedLines;
-		info.title = bookTitle != null && bookTitle.length() > 0 ? bookTitle : this.title;
+		info.title = bookTitle != null && !bookTitle.isEmpty() ? bookTitle : this.title;
 
 		if (this.secureNote) {
 			net.minecraft.world.item.ItemStack bookItem = CraftItemStack.asNMSCopy(printingPlateStack);
-			String bookSN = bookItem.getTag().getString("SN");
+			String bookSN = bookItem.get(DataComponents.CUSTOM_DATA).copyTag().getString("SN");
 			info.lines.add(bookSN);
 		}
 
@@ -122,8 +121,8 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 
 	private int getVersion(ItemStack item) {
 		var book = CraftItemStack.asNMSCopy(item);
-		var tag = book.getTag();
-		if (tag != null && tag.contains("Version")) return tag.getInt("Version");
+		var tag = book.get(DataComponents.WRITTEN_BOOK_CONTENT);
+		if (tag != null) return tag.generation();
 		return 0;
 	}
 

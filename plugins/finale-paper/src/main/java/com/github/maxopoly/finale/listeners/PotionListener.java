@@ -2,6 +2,7 @@ package com.github.maxopoly.finale.listeners;
 
 import com.github.maxopoly.finale.potion.PotionHandler;
 import com.github.maxopoly.finale.potion.PotionModification;
+import java.util.List;
 import java.util.function.Consumer;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
@@ -14,39 +15,12 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class PotionListener implements Listener {
 
 	private static final double healthPerPotionLevel = 4; // 2 hearts per level
-
-	public static PotionEffect fromPotionData(PotionData data) {
-		PotionEffectType type = data.getType().getEffectType();
-		if (type == PotionEffectType.HEAL || type == PotionEffectType.HARM) {
-			return new PotionEffect(type, 1, data.isUpgraded() ? 1 : 0);
-		} else if (type == PotionEffectType.REGENERATION || type == PotionEffectType.POISON) {
-			if (data.isExtended()) {
-				return new PotionEffect(type, 1800, 0);
-			} else if (data.isUpgraded()) {
-				return new PotionEffect(type, 440, 1);
-			} else {
-				return new PotionEffect(type, 900, 0);
-			}
-		} else if (type == PotionEffectType.NIGHT_VISION || type == PotionEffectType.INVISIBILITY
-				|| type == PotionEffectType.FIRE_RESISTANCE || type == PotionEffectType.WATER_BREATHING) {
-			return new PotionEffect(type, data.isExtended() ? 9600 : 3600, 0);
-		} else if (type == PotionEffectType.WEAKNESS || type == PotionEffectType.SLOW) {
-			return new PotionEffect(type, data.isExtended() ? 4800 : 1800, 0);
-		} else if (data.isExtended()) {
-			return new PotionEffect(type, 9600, 0);
-		} else if (data.isUpgraded()) {
-			return new PotionEffect(type, 1800, 1);
-		} else {
-			return new PotionEffect(type, 3600, 0);
-		}
-	}
 
 	private PotionHandler potHandler;
 
@@ -63,7 +37,7 @@ public class PotionListener implements Listener {
 			return null;
 		}
 		PotionMeta potMeta = (PotionMeta) im;
-		return potHandler.getApplyingModifications(potMeta.getBasePotionData().getType(), is);
+		return potHandler.getApplyingModifications(potMeta.getBasePotionType(), is);
 	}
 
 	@EventHandler
@@ -74,7 +48,7 @@ public class PotionListener implements Listener {
 		}
 
 
-		PotionEffect healingEffect = e.getPotion().getEffects().stream().filter(eff -> eff.getType().equals(PotionEffectType.HEAL)).findFirst().orElse(null);
+		PotionEffect healingEffect = e.getPotion().getEffects().stream().filter(eff -> eff.getType().equals(PotionEffectType.INSTANT_HEALTH)).findFirst().orElse(null);
 		if (healingEffect == null) {
 			return;
 		}
@@ -100,7 +74,7 @@ public class PotionListener implements Listener {
 				continue;
 
 			modifiedHealth += intensity * multiplier * (healingEffect.getAmplifier() + 1)
-					* healthPerPotionLevel;
+				* healthPerPotionLevel;
 			if (!entity.isDead()) entity.setHealth(Math.min(maxHealth, modifiedHealth));
 		}
 	}
@@ -112,11 +86,14 @@ public class PotionListener implements Listener {
 			return;
 		}
 		PotionMeta potMeta = (PotionMeta) e.getItem().getItemMeta();
-		PotionEffect potEffect = fromPotionData(potMeta.getBasePotionData());
-		PotionEffect toReplace = new PotionEffect(potEffect.getType(),
+		List<PotionEffect> potEffects = potMeta.getBasePotionType().getPotionEffects();
+		for (PotionEffect potEffect : potEffects) {
+			PotionEffect toReplace = new PotionEffect(potEffect.getType(),
 				(int) (potEffect.getDuration() * potMod.getMultiplier()), potEffect.getAmplifier());
+			e.getPlayer().addPotionEffect(toReplace);
+		}
 		e.setItem(null);
-		e.getPlayer().addPotionEffect(toReplace, false);
+
 	}
 
 	@EventHandler
@@ -131,15 +108,15 @@ public class PotionListener implements Listener {
 			// for multipler <= 1 we can just change the intensity. That does not work for
 			// more than 1 though, because MC internally enforces a max intensity of 1
 			final PotionEffect potEffect = new PotionEffect(originalEffect.getType(), (int) (originalEffect.getDuration() * multiplier),
-					originalEffect.getAmplifier());
+				originalEffect.getAmplifier());
 			Consumer<LivingEntity> impact = (multiplier <= 1.0) ?
-					(ent) -> {
-						e.setIntensity(ent, e.getIntensity(ent) * multiplier);
-					} :
-					(ent) -> {
-						e.setIntensity(ent, 0.0);
-						ent.addPotionEffect(potEffect, false);
-					};
+				(ent) -> {
+					e.setIntensity(ent, e.getIntensity(ent) * multiplier);
+				} :
+				(ent) -> {
+					e.setIntensity(ent, 0.0);
+					ent.addPotionEffect(potEffect, false);
+				};
 			for (LivingEntity ent : e.getAffectedEntities()) {
 				if (!ent.isDead()) impact.accept(ent);
 			}
