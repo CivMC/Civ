@@ -195,7 +195,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			return;
 		}
 		if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure()).getCraftingTable())) { // crafting table
-																										// interaction
+			// interaction
 			ComponableInventory compInv = buildRecipeInventory(p);
 			compInv.update();
 			compInv.updatePlayerView();
@@ -269,7 +269,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			ItemUtils.addLore(recStack, "",ChatColor.AQUA + "Ran " + String.valueOf(runcount) + " times");
 			if (rec == fccf.getCurrentRecipe()) {
 				ItemUtils.addLore(recStack, ChatColor.GREEN + "Currently selected");
-				ItemUtils.addGlow(recStack);
+				recStack.getItemMeta().setEnchantmentGlintOverride(true);
 			}
 			if (recipe instanceof ProductionRecipe) {
 				ProductionRecipe prod = (ProductionRecipe) recipe;

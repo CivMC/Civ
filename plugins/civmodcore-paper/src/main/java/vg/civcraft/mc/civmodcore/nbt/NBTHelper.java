@@ -27,12 +27,12 @@ public final class NBTHelper {
 		}
 		final UUID worldUUID = nbt.getUUID(LOCATION_WORLD_KEY);
 		return new Location(
-				UuidUtils.isNullOrIdentity(worldUUID) ? null : Bukkit.getWorld(worldUUID),
-				nbt.getDouble(LOCATION_X_KEY),
-				nbt.getDouble(LOCATION_Y_KEY),
-				nbt.getDouble(LOCATION_Z_KEY),
-				nbt.getFloat(LOCATION_YAW_KEY),
-				nbt.getFloat(LOCATION_PITCH_KEY));
+			UuidUtils.isNullOrIdentity(worldUUID) ? null : Bukkit.getWorld(worldUUID),
+			nbt.getDouble(LOCATION_X_KEY),
+			nbt.getDouble(LOCATION_Y_KEY),
+			nbt.getDouble(LOCATION_Z_KEY),
+			nbt.getFloat(LOCATION_YAW_KEY),
+			nbt.getFloat(LOCATION_PITCH_KEY));
 	}
 
 	public static NBTCompound locationToNBT(final Location location) {
@@ -50,26 +50,6 @@ public final class NBTHelper {
 		if (location.getPitch() != 0) {
 			nbt.setFloat(LOCATION_PITCH_KEY, location.getPitch());
 		}
-		return nbt;
-	}
-
-	// ------------------------------------------------------------
-	// ItemStack
-	// ------------------------------------------------------------
-
-	public static ItemStack itemStackFromNBT(final NBTCompound nbt) {
-		if (nbt == null) {
-			return null;
-		}
-		return net.minecraft.world.item.ItemStack.of(nbt.getRAW()).getBukkitStack();
-	}
-
-	public static NBTCompound itemStackToNBT(final ItemStack item) {
-		if (item == null) {
-			return null;
-		}
-		final var nbt = new NBTCompound();
-		ItemUtils.getNMSItemStack(item).save(nbt.getRAW());
 		return nbt;
 	}
 

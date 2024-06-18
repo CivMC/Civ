@@ -195,7 +195,7 @@ public class PlayerListener implements Listener, Configurable {
 		}
 
 		if ((item.getType() == Material.PLAYER_HEAD || item.getType() == Material.ENDER_PEARL)
-				&& item.getEnchantmentLevel(Enchantment.DURABILITY) != 0) {
+				&& item.getEnchantmentLevel(Enchantment.UNBREAKING) != 0) {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
 			if (pearl == null || pearl.getFreedOffline()) {
 				return new ItemStack(Material.ENDER_PEARL, 1);
@@ -548,7 +548,7 @@ public class PlayerListener implements Listener, Configurable {
 		InventoryAction a = event.getAction();
 		//pearlApi.log("Inv Action: " + a.toString());
 		if(a == InventoryAction.COLLECT_TO_CURSOR
-				|| a == InventoryAction.PICKUP_ALL 
+				|| a == InventoryAction.PICKUP_ALL
 				|| a == InventoryAction.PICKUP_HALF
 				|| a == InventoryAction.PICKUP_ONE) {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(event.getCurrentItem());
@@ -559,7 +559,7 @@ public class PlayerListener implements Listener, Configurable {
 		}
 		else if(event.getAction() == InventoryAction.PLACE_ALL
 				|| event.getAction() == InventoryAction.PLACE_SOME
-				|| event.getAction() == InventoryAction.PLACE_ONE) {	
+				|| event.getAction() == InventoryAction.PLACE_ONE) {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(event.getCursor());
 
 			if(pearl != null) {
@@ -592,7 +592,7 @@ public class PlayerListener implements Listener, Configurable {
 		}
 		else if(event.getAction() == InventoryAction.HOTBAR_SWAP) {
 			PlayerInventory playerInventory = event.getWhoClicked().getInventory();
-			
+
 			ItemStack itemStack = event.getHotbarButton() >= 0
 					? playerInventory.getItem(event.getHotbarButton())
 					: playerInventory.getItem(EquipmentSlot.OFF_HAND);
@@ -680,7 +680,7 @@ public class PlayerListener implements Listener, Configurable {
 
 		final UUID playerId;
 		Player killer = null;
-		
+
 		// If the player was an NPC, grab the ID from it
 		NpcIdentity npcId = null;
 		try {
@@ -692,18 +692,18 @@ public class PlayerListener implements Listener, Configurable {
 			playerId = ((Player)e.getEntity()).getUniqueId();
 		}
 		ExilePearl pearl = pearlApi.getPearl(playerId);
-		
+
 
 		if(pearlApi.isPlayerExiled(playerId)
-		   && pearlApi.getPearl(playerId).getPearlType() == PearlType.PRISON
-		   && !pearlApi.getPearl(playerId).isSummoned()
-		   && e.getEntity().getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())){
+				&& pearlApi.getPearl(playerId).getPearlType() == PearlType.PRISON
+				&& !pearlApi.getPearl(playerId).isSummoned()
+				&& e.getEntity().getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())){
 			return;
 		}
 
 		// These will be priority sorted according to the configured algorithm
 		List<Player> damagers = pearlApi.getDamageLogger().getSortedDamagers(playerId);
-		
+
 		// Check is player is already exiled
 		if (pearlApi.isPlayerExiled(playerId)) {
 			//Reset bed of exiled player if killer is not null
@@ -732,7 +732,7 @@ public class PlayerListener implements Listener, Configurable {
 
 			// Check if pearl in the hotbar
 			if (pearlApi.getPearlConfig().getMustPrisonPearlHotBar() && firstpearl > 8) {
-				continue; 
+				continue;
 			}
 
 			pearl = pearlApi.exilePlayer(playerId, damager);
@@ -771,10 +771,10 @@ public class PlayerListener implements Listener, Configurable {
 
 			// Scan for the smallest stack of normal ender pearls
 			for (Entry<Integer, ? extends ItemStack> entry :
-				inv.all(Material.ENDER_PEARL).entrySet()) {
+					inv.all(Material.ENDER_PEARL).entrySet()) {
 				ItemStack newstack = entry.getValue();
 				int newstacknum = entry.getKey();
-				if (newstack.getEnchantmentLevel(Enchantment.DURABILITY) == 0) {
+				if (newstack.getEnchantmentLevel(Enchantment.UNBREAKING) == 0) {
 					if (stack != null) {
 						// don't keep a stack bigger than the previous one
 						if (newstack.getAmount() > stack.getAmount()) {
@@ -838,7 +838,7 @@ public class PlayerListener implements Listener, Configurable {
 			removeHelpItem(pearl.getPlayer());
 		} else if (pearl != null) {
 			pearl.setLastOnline(new Date());
-			if(pearl.getPearlType() == PearlType.PRISON && !pearl.isSummoned() && 
+			if(pearl.getPearlType() == PearlType.PRISON && !pearl.isSummoned() &&
 					!e.getPlayer().getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())) {
 				SpawnUtil.spawnPlayer(pearl.getPlayer(), pearlApi.getPearlConfig().getPrisonWorld());
 			}
@@ -858,7 +858,7 @@ public class PlayerListener implements Listener, Configurable {
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Material m = e.getClickedBlock().getType();
 			if (e.getClickedBlock().getState() instanceof BlockInventoryHolder ||
-				m == Material.CRAFTING_TABLE || m == Material.ANVIL || m == Material.ENCHANTING_TABLE || m == Material.BEACON) {
+					m == Material.CRAFTING_TABLE || m == Material.ANVIL || m == Material.ENCHANTING_TABLE || m == Material.BEACON) {
 				return;
 			}
 		} else if (e.getAction() != Action.RIGHT_CLICK_AIR) {
@@ -1019,7 +1019,7 @@ public class PlayerListener implements Listener, Configurable {
 			return;
 		}
 
-		if (result.getEnchantmentLevel(Enchantment.DURABILITY) != 1) {
+		if (result.getEnchantmentLevel(Enchantment.UNBREAKING) != 1) {
 			//inv.setResult(new ItemStack(Material.AIR)); // Is preventing normal crafting of stone buttons.
 			// It would be better to trigger against something that does not get crafted, like spider eyes or something
 			return;
@@ -1282,11 +1282,13 @@ public class PlayerListener implements Listener, Configurable {
 			// This item is basically used as a trigger to catch the recipe being created
 			ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);
 			ItemMeta im = resultItem.getItemMeta();
-			im.addEnchant(Enchantment.DURABILITY, 1, true);
+			// TODO: This should use the new enchantment glint component, but because exilepearl
+			//  depends on the unbreaking enchantment to determine whether or not something is a pearl (why?????), it does not
+			im.addEnchant(Enchantment.UNBREAKING, 1, true);
 			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			resultItem.setItemMeta(im);
 
-			
+
 			for(PearlType type : PearlType.values()) {
 				repairMaterials.put(type, config.getRepairMaterials(type));
 			}
@@ -1307,7 +1309,7 @@ public class PlayerListener implements Listener, Configurable {
 		try {
 			ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);
 			ItemMeta im = resultItem.getItemMeta();
-			im.addEnchant(Enchantment.DURABILITY, 1, true);
+			im.addEnchant(Enchantment.UNBREAKING, 1, true);
 			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			resultItem.setItemMeta(im);
 
@@ -1348,7 +1350,7 @@ public class PlayerListener implements Listener, Configurable {
 			return false;
 		}
 
-		return im.getEnchantLevel(Enchantment.DURABILITY) == 2;
+		return im.getEnchantLevel(Enchantment.UNBREAKING) == 2;
 	}
 
 	/**
@@ -1375,7 +1377,7 @@ public class PlayerListener implements Listener, Configurable {
 			ItemMeta im = helpItem.getItemMeta();
 			im.setDisplayName(helpItemName);
 			im.setLore(helpItemText);
-			im.addEnchant(Enchantment.DURABILITY, 2, true);
+			im.addEnchant(Enchantment.UNBREAKING, 2, true);
 			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			helpItem.setItemMeta(im);
 			player.getInventory().setItem(0, helpItem);

@@ -4,10 +4,6 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -40,6 +36,11 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class HumbugBatchOne extends BasicHack {
 
@@ -188,7 +189,7 @@ public class HumbugBatchOne extends BasicHack {
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void disableEnderCrystal(EntityDamageByEntityEvent e) {
-		if (disableEnderCrystalDamage && e.getDamager().getType() == EntityType.ENDER_CRYSTAL) {
+		if (disableEnderCrystalDamage && e.getDamager().getType() == EntityType.END_CRYSTAL) {
 			e.setCancelled(true);
 		}
 	}
@@ -229,7 +230,7 @@ public class HumbugBatchOne extends BasicHack {
 		if (event.getAction() == org.bukkit.event.entity.EntityPotionEffectEvent.Action.REMOVED || event.getCause() == Cause.PLUGIN) {
 			return;
 		}
-		if (event.getModifiedType() == PotionEffectType.SLOW_DIGGING) {
+		if (event.getModifiedType() == PotionEffectType.MINING_FATIGUE) {
 			event.setCancelled(true);
 		}
 	}
@@ -292,22 +293,22 @@ public class HumbugBatchOne extends BasicHack {
 			height = 0.375;
 		}
 		else switch (mat) {
-		case CHEST:
-		case TRAPPED_CHEST:
-		case ENDER_CHEST:
-			height = 0.875;
-			break;
-		case LILY_PAD:
-			height = 0.016;
-			break;
-		case ENCHANTING_TABLE:
-			height = 0.016;
-			break;
-		case PLAYER_WALL_HEAD:
-		case PLAYER_HEAD:
-			height = 0.5;
-			break;
-		}
+				case CHEST:
+				case TRAPPED_CHEST:
+				case ENDER_CHEST:
+					height = 0.875;
+					break;
+				case LILY_PAD:
+					height = 0.016;
+					break;
+				case ENCHANTING_TABLE:
+					height = 0.016;
+					break;
+				case PLAYER_WALL_HEAD:
+				case PLAYER_HEAD:
+					height = 0.5;
+					break;
+			}
 
 		// Check if the below block is difficult
 		// This is added because if you face downward directly on a gate, it will
@@ -325,7 +326,7 @@ public class HumbugBatchOne extends BasicHack {
 				height = 0.5;
 			} else {
 				upperBlockBypass = true; // Cancel this event. What's happening is the user is going to get stuck due to
-											// the height.
+				// the height.
 			}
 		}
 

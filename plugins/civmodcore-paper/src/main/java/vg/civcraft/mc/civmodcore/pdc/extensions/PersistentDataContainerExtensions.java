@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import org.bukkit.NamespacedKey;
-import org.bukkit.craftbukkit.v1_20_R3.persistence.CraftPersistentDataContainer;
+import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import vg.civcraft.mc.civmodcore.nbt.NBTType;

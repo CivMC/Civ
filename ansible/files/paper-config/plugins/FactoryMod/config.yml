@@ -1103,14 +1103,14 @@ factories:
         material: HONEYCOMB
         amount: 32
     recipes:
-     - wax_copper_block
-     - wax_exposed_copper
-     - wax_weathered_copper
-     - wax_oxidized_copper
-     - weather_copper_block
-     - weather_exposed_copper
-     - weather_weathered_copper
-     - repair_copper_workshop
+      - wax_copper_block
+      - wax_exposed_copper
+      - wax_weathered_copper
+      - wax_oxidized_copper
+      - weather_copper_block
+      - weather_exposed_copper
+      - weather_weathered_copper
+      - repair_copper_workshop
 #RECIPES
 recipes:
   smelt_stone:
@@ -1627,7 +1627,7 @@ recipes:
     output:
       glass:
         material: GLASS
-        amount: 128      
+        amount: 128
   smelt_netherrack:
     production_time: 4s
     name: Smelt Netherrack
@@ -1845,7 +1845,7 @@ recipes:
         amount: 64
       bucket:
         material: BUCKET
-        amount: 1  
+        amount: 1
   make_packed_mud:
     forceInclude: true
     production_time: 4s
@@ -1885,7 +1885,7 @@ recipes:
         amount: 64
       yellow dye:
         material: YELLOW_DYE
-        amount: 8        
+        amount: 8
     output:
       end_stone:
         material: END_STONE
@@ -5545,8 +5545,8 @@ recipes:
     type: PRODUCTION
     input:
       iron_ingot:
-          material: IRON_INGOT
-          amount: 6
+        material: IRON_INGOT
+        amount: 6
       lava_bucket:
         material: LAVA_BUCKET
         amount: 4
@@ -6801,7 +6801,7 @@ recipes:
         lore:
           - Crack it open for a surprise!
     outputs:
-    #Food--- 60%
+      #Food--- 60%
       egg:
         chance: 0.15
         egg:
@@ -6821,8 +6821,8 @@ recipes:
         chance: 0.15
         bread:
           material: BREAD
-          amount: 8             
-    #Good Loot--- 30%
+          amount: 8
+      #Good Loot--- 30%
       ironingot:
         chance: 0.0375
         ironingot:
@@ -6863,7 +6863,7 @@ recipes:
         goldenapple:
           material: GOLDEN_APPLE
           amount: 4
-    #Unique--- 10%
+      #Unique--- 10%
       recipe1:
         chance: 0.01
         recipe1:
@@ -6920,11 +6920,11 @@ recipes:
           amount: 1
           name: §dDeviled Eggs
           lore:
-            - Egg 
-            - Mayonnaise 
-            - Mustard 
-            - Paprika 
-            - Salt 
+            - Egg
+            - Mayonnaise
+            - Mustard
+            - Paprika
+            - Salt
             - Pepper
       recipe6:
         chance: 0.01
@@ -6956,7 +6956,7 @@ recipes:
       rabbitpunch:
         chance: 0.01
         rabbitkick:
-          material: RABBIT_FEET
+          material: RABBIT_FOOT
           amount: 1
           lore:
             - Rabbit Kick!
@@ -7088,7 +7088,7 @@ recipes:
     output:
       thing_banner_pattern:
         material: MOJANG_BANNER_PATTERN
-        amount: 1   
+        amount: 1
   repair_printer:
     forceInclude: true
     type: REPAIR
@@ -7102,7 +7102,7 @@ recipes:
         material: PAPER
         amount: 6
     health_gained: 10000
-  repair_station:     
+  repair_station:
     forceInclude: true
     type: REPAIR
     name: Repair Station
@@ -7286,7 +7286,7 @@ recipes:
           amount: 1
       gravel:
         chance: 0.175
-        gravel: 
+        gravel:
           material: GRAVEL
           amount: 1
       terracotta:
@@ -7300,81 +7300,71 @@ recipes:
         vindicator:
           material: VINDICATOR_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:vindication_illager"
+          entity_data:
+            id: "minecraft:vindication_illager"
       vex:
         chance: 0.00047619047
         vex:
           material: VEX_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:vex"
+          entity_data:
+            id: "minecraft:vex"
       silverfish:
         chance: 0.00047619047
         silverfish:
           material: SILVERFISH_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:silverfish"
+          entity_data:
+            id: "minecraft:silverfish"
       endermite:
         chance: 0.00047619047
         endermite:
           material: ENDERMITE_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:endermite"
+          entity_data:
+            id: "minecraft:endermite"
       zombiehorse:
         chance: 0.00047619047
         zombiehorse:
           material: ZOMBIE_HORSE_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:zombie_horse"
+          entity_data:
+            id: "minecraft:zombie_horse"
       skeletonhorse:
         chance: 0.00047619047
         skeletonhorse:
           material: SKELETON_HORSE_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:skeleton_horse"
+          entity_data:
+            id: "minecraft:skeleton_horse"
       donkey:
         chance: 0.00047619047
         donkey:
           material: DONKEY_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:donkey"
+          entity_data:
+            id: "minecraft:donkey"
       polarbear:
         chance: 0.00047619047
         polarbear:
           material: POLAR_BEAR_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:polar_bear"
+          entity_data:
+            id: "minecraft:polar_bear"
       parrot:
         chance: 0.00047619047
         parrot:
           material: PARROT_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:parrot"
+          entity_data:
+            id: "minecraft:parrot"
       llama:
         chance: 0.00047619047
         llama:
           material: LLAMA_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:llama"
+          entity_data:
+            id: "minecraft:llama"
       fox:
         chance: 0.00047619047
         fox:
@@ -7603,17 +7593,17 @@ recipes:
           amount: 1
       record_otherside:
         chance: 0.000625
-        record_otherside: 
+        record_otherside:
           material: MUSIC_DISC_OTHERSIDE
           amount: 1
       record_relic:
         chance: 0.000625
-        record_relic: 
+        record_relic:
           material: MUSIC_DISC_RELIC
           amount: 1
       record_5:
         chance: 0.000625
-        record_5: 
+        record_5:
           material: MUSIC_DISC_5
           amount: 1
       #Resources - 25% (Divided seperately over all below)
@@ -7967,7 +7957,7 @@ recipes:
       dirt:
         material: DIRT
         amount: 16
-    health_gained: 10000  
+    health_gained: 10000
   repair_gold_forge:
     production_time: 4s
     name: Repair Factory
@@ -8008,7 +7998,7 @@ recipes:
     output:
       mangrove_propagule:
         material: MANGROVE_PROPAGULE
-        amount: 32  
+        amount: 32
   grow_flowering_azalea_leaves:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -8147,7 +8137,7 @@ recipes:
     output:
       mushroom_stem:
         material: MUSHROOM_STEM
-        amount: 16 
+        amount: 16
   grow_sculk:
     production_time: 4s
     fuel_consumption_intervall: 1s

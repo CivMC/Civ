@@ -60,7 +60,7 @@ public class SnitchOverviewGUI {
 					final var cull = snitch.getAppender(DormantCullingAppender.class);
 					if (cull.isActive()) {
 						lore.add(ChatUtils.newComponent("Will go dormant in " + TextUtil.formatDuration(cull.getTimeUntilDormant())).color(NamedTextColor.AQUA));
-						MetaUtils.addGlow(meta);
+						meta.setEnchantmentGlintOverride(true);
 					}
 					else if (cull.isDormant()) {
 						lore.add(ChatUtils.newComponent("Will cull in " + TextUtil.formatDuration(cull.getTimeUntilCulling())).color(NamedTextColor.AQUA));

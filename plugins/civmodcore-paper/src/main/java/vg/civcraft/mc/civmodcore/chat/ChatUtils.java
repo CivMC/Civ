@@ -19,7 +19,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftChatMessage;
+import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -34,21 +34,21 @@ public final class ChatUtils {
 	 */
 	@Deprecated
 	public static final List<ChatColor> COLOURS = List.of(
-			ChatColor.BLACK,
-			ChatColor.DARK_BLUE,
-			ChatColor.DARK_GREEN,
-			ChatColor.DARK_AQUA,
-			ChatColor.DARK_RED,
-			ChatColor.DARK_PURPLE,
-			ChatColor.GOLD,
-			ChatColor.GRAY,
-			ChatColor.DARK_GRAY,
-			ChatColor.BLUE,
-			ChatColor.GREEN,
-			ChatColor.AQUA,
-			ChatColor.RED,
-			ChatColor.LIGHT_PURPLE,
-			ChatColor.YELLOW);
+		ChatColor.BLACK,
+		ChatColor.DARK_BLUE,
+		ChatColor.DARK_GREEN,
+		ChatColor.DARK_AQUA,
+		ChatColor.DARK_RED,
+		ChatColor.DARK_PURPLE,
+		ChatColor.GOLD,
+		ChatColor.GRAY,
+		ChatColor.DARK_GRAY,
+		ChatColor.BLUE,
+		ChatColor.GREEN,
+		ChatColor.AQUA,
+		ChatColor.RED,
+		ChatColor.LIGHT_PURPLE,
+		ChatColor.YELLOW);
 
 	/**
 	 * Converts an RGB value into a Bungee ChatColor.
@@ -84,7 +84,7 @@ public final class ChatUtils {
 		for (final ChatColor currentColour : COLOURS) {
 			final Color currentColor = currentColour.getColor();
 			final double distance = Math.sqrt(
-					Math.pow(color.getRed() - currentColor.getRed(), 2)
+				Math.pow(color.getRed() - currentColor.getRed(), 2)
 					- Math.pow(color.getGreen() - currentColor.getGreen(), 2)
 					- Math.pow(color.getBlue() - currentColor.getBlue(), 2));
 			if (nearestDistance > distance) {
@@ -141,51 +141,51 @@ public final class ChatUtils {
 	@Deprecated
 	public static String parseColorTags(@Nonnull String string) {
 		return string
-				.replace("<black>", ChatColor.BLACK.toString())
-				.replace("<dblue>", ChatColor.DARK_BLUE.toString())
-				.replace("<dgreen>", ChatColor.DARK_GREEN.toString())
-				.replace("<daqua>", ChatColor.DARK_AQUA.toString())
-				.replace("<dred>", ChatColor.DARK_RED.toString())
-				.replace("<dpurple>", ChatColor.DARK_PURPLE.toString())
-				.replace("<gold>", ChatColor.GOLD.toString())
-				.replace("<lgray>", ChatColor.GRAY.toString()) // This has to be lgray because gray is already claimed.
-				.replace("<dgray>", ChatColor.DARK_GRAY.toString())
-				.replace("<blue>", ChatColor.BLUE.toString())
-				.replace("<green>", ChatColor.GREEN.toString())
-				.replace("<aqua>", ChatColor.AQUA.toString())
-				.replace("<red>", ChatColor.RED.toString())
-				.replace("<lpurple>", ChatColor.LIGHT_PURPLE.toString())
-				.replace("<yellow>", ChatColor.YELLOW.toString())
-				.replace("<white>", ChatColor.WHITE.toString())
-				.replace("<s>", ChatColor.STRIKETHROUGH.toString())
-				.replace("<u>", ChatColor.UNDERLINE.toString())
-				.replace("<ul>", ChatColor.UNDERLINE.toString())
-				.replace("<r>", ChatColor.RESET.toString())
-				.replace("<strike>", ChatColor.STRIKETHROUGH.toString())
-				.replace("<italic>", ChatColor.ITALIC.toString())
-				.replace("<bold>", ChatColor.BOLD.toString())
-				.replace("<reset>", ChatColor.RESET.toString())
-				// Legacy support
-				.replace("<empty>", "") // Just... why?
-				.replace("<navy>", ChatColor.DARK_BLUE.toString())
-				.replace("<teal>", ChatColor.DARK_AQUA.toString())
-				.replace("<silver>", ChatColor.GRAY.toString())
-				.replace("<gray>", ChatColor.DARK_GRAY.toString()) // REEE why name this gray?
-				.replace("<lime>", ChatColor.GREEN.toString())
-				.replace("<rose>", ChatColor.RED.toString())
-				.replace("<pink>", ChatColor.LIGHT_PURPLE.toString())
-				.replace("<it>", ChatColor.ITALIC.toString())
-				.replace("<g>", ChatColor.GREEN.toString()) // Good
-				.replace("<b>", ChatColor.RED.toString()) // Bad
-				.replace("<i>", ChatColor.WHITE.toString()) // Info
-				.replace("<a>", ChatColor.GOLD.toString()) // Art
-				.replace("<l>", ChatColor.GREEN.toString()) // Logo
-				.replace("<n>", ChatColor.GRAY.toString()) // Notice
-				.replace("<h>", ChatColor.LIGHT_PURPLE.toString()) // Highlight
-				.replace("<c>", ChatColor.AQUA.toString()) // Parameter
-				.replace("<p>", ChatColor.DARK_AQUA.toString()) // Parameter
-				.replace("<w>", ChatColor.WHITE.toString()) // Parameter
-				.replace("<lp>", ChatColor.LIGHT_PURPLE.toString());
+			.replace("<black>", ChatColor.BLACK.toString())
+			.replace("<dblue>", ChatColor.DARK_BLUE.toString())
+			.replace("<dgreen>", ChatColor.DARK_GREEN.toString())
+			.replace("<daqua>", ChatColor.DARK_AQUA.toString())
+			.replace("<dred>", ChatColor.DARK_RED.toString())
+			.replace("<dpurple>", ChatColor.DARK_PURPLE.toString())
+			.replace("<gold>", ChatColor.GOLD.toString())
+			.replace("<lgray>", ChatColor.GRAY.toString()) // This has to be lgray because gray is already claimed.
+			.replace("<dgray>", ChatColor.DARK_GRAY.toString())
+			.replace("<blue>", ChatColor.BLUE.toString())
+			.replace("<green>", ChatColor.GREEN.toString())
+			.replace("<aqua>", ChatColor.AQUA.toString())
+			.replace("<red>", ChatColor.RED.toString())
+			.replace("<lpurple>", ChatColor.LIGHT_PURPLE.toString())
+			.replace("<yellow>", ChatColor.YELLOW.toString())
+			.replace("<white>", ChatColor.WHITE.toString())
+			.replace("<s>", ChatColor.STRIKETHROUGH.toString())
+			.replace("<u>", ChatColor.UNDERLINE.toString())
+			.replace("<ul>", ChatColor.UNDERLINE.toString())
+			.replace("<r>", ChatColor.RESET.toString())
+			.replace("<strike>", ChatColor.STRIKETHROUGH.toString())
+			.replace("<italic>", ChatColor.ITALIC.toString())
+			.replace("<bold>", ChatColor.BOLD.toString())
+			.replace("<reset>", ChatColor.RESET.toString())
+			// Legacy support
+			.replace("<empty>", "") // Just... why?
+			.replace("<navy>", ChatColor.DARK_BLUE.toString())
+			.replace("<teal>", ChatColor.DARK_AQUA.toString())
+			.replace("<silver>", ChatColor.GRAY.toString())
+			.replace("<gray>", ChatColor.DARK_GRAY.toString()) // REEE why name this gray?
+			.replace("<lime>", ChatColor.GREEN.toString())
+			.replace("<rose>", ChatColor.RED.toString())
+			.replace("<pink>", ChatColor.LIGHT_PURPLE.toString())
+			.replace("<it>", ChatColor.ITALIC.toString())
+			.replace("<g>", ChatColor.GREEN.toString()) // Good
+			.replace("<b>", ChatColor.RED.toString()) // Bad
+			.replace("<i>", ChatColor.WHITE.toString()) // Info
+			.replace("<a>", ChatColor.GOLD.toString()) // Art
+			.replace("<l>", ChatColor.GREEN.toString()) // Logo
+			.replace("<n>", ChatColor.GRAY.toString()) // Notice
+			.replace("<h>", ChatColor.LIGHT_PURPLE.toString()) // Highlight
+			.replace("<c>", ChatColor.AQUA.toString()) // Parameter
+			.replace("<p>", ChatColor.DARK_AQUA.toString()) // Parameter
+			.replace("<w>", ChatColor.WHITE.toString()) // Parameter
+			.replace("<lp>", ChatColor.LIGHT_PURPLE.toString());
 	}
 
 	// -------------------------------------------- //
@@ -200,7 +200,7 @@ public final class ChatUtils {
 	 *
 	 * @param component The component to test if null or empty.
 	 * @return Returns true if the component is null or has no visible content.
-	 * 
+	 *
 	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
 	 */
 	public static boolean isNullOrEmpty(@Nullable final Component component) {
@@ -224,14 +224,14 @@ public final class ChatUtils {
 			return false;
 		}
 		return (!(component instanceof TextComponent textComponent) || StringUtils.isEmpty(textComponent.content()))
-				&& !component.children().isEmpty()
-				&& component.clickEvent() == null
-				&& component.hoverEvent() == null
-				&& !component.hasStyling();
+			&& !component.children().isEmpty()
+			&& component.clickEvent() == null
+			&& component.hoverEvent() == null
+			&& !component.hasStyling();
 	}
 
 	private static final Map<TextDecoration, TextDecoration.State> NORMALISED_DECORATION_MAP =
-			Map.of(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+		Map.of(TextDecoration.ITALIC, TextDecoration.State.FALSE);
 
 	/**
 	 * Checks whether a given component is the result of {@link #normaliseComponent(Component...)} or
@@ -245,11 +245,11 @@ public final class ChatUtils {
 			return false;
 		}
 		return StringUtils.isEmpty(textComponent.content())
-				&& !component.children().isEmpty()
-				&& component.clickEvent() == null
-				&& component.hoverEvent() == null
-				&& Objects.equals(component.color(), NamedTextColor.WHITE)
-				&& Objects.equals(component.decorations(), NORMALISED_DECORATION_MAP);
+			&& !component.children().isEmpty()
+			&& component.clickEvent() == null
+			&& component.hoverEvent() == null
+			&& Objects.equals(component.color(), NamedTextColor.WHITE)
+			&& Objects.equals(component.decorations(), NORMALISED_DECORATION_MAP);
 	}
 
 	/**
@@ -265,10 +265,10 @@ public final class ChatUtils {
 			return Component.empty();
 		}
 		return Component.text()
-				.color(NamedTextColor.WHITE)
-				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-				.append(components)
-				.build();
+			.color(NamedTextColor.WHITE)
+			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			.append(components)
+			.build();
 	}
 
 	/**
@@ -284,10 +284,10 @@ public final class ChatUtils {
 			return Component.empty();
 		}
 		return Component.text()
-				.color(NamedTextColor.WHITE)
-				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
-				.append(components)
-				.build();
+			.color(NamedTextColor.WHITE)
+			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
+			.append(components)
+			.build();
 	}
 
 	/**
@@ -299,7 +299,7 @@ public final class ChatUtils {
 	@Nonnull
 	public static String stringify(@Nullable final Component component) {
 		return component == null || component == Component.empty() ? "" :
-				CraftChatMessage.fromComponent(PaperAdventure.asVanilla(component));
+			CraftChatMessage.fromComponent(PaperAdventure.asVanilla(component));
 	}
 
 	/**
@@ -312,7 +312,7 @@ public final class ChatUtils {
 	@Nullable
 	public static Component upgradeLegacyString(@Nullable final String string) {
 		return string == null ? null : string.isEmpty() ? Component.empty() :
-				LegacyComponentSerializer.legacySection().deserialize(string);
+			LegacyComponentSerializer.legacySection().deserialize(string);
 	}
 
 	/**
@@ -333,7 +333,7 @@ public final class ChatUtils {
 	@Nonnull
 	public static TextComponent newComponent(final String content) {
 		return Component.text(Objects.requireNonNull(content))
-				.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+			.decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
 	}
 
 	/**
@@ -369,13 +369,13 @@ public final class ChatUtils {
 			return false;
 		}
 		if (StringUtils.equals(
-				MiniMessage.miniMessage().serialize(former),
-				MiniMessage.miniMessage().serialize(latter))) {
+			MiniMessage.miniMessage().serialize(former),
+			MiniMessage.miniMessage().serialize(latter))) {
 			return true;
 		}
 		if (StringUtils.equals(
-				LegacyComponentSerializer.legacyAmpersand().serialize(former),
-				LegacyComponentSerializer.legacyAmpersand().serialize(latter))) {
+			LegacyComponentSerializer.legacyAmpersand().serialize(former),
+			LegacyComponentSerializer.legacyAmpersand().serialize(latter))) {
 			return true;
 		}
 		return false;
@@ -391,15 +391,15 @@ public final class ChatUtils {
 	public static HoverEvent<?> createItemHoverEvent(@org.jetbrains.annotations.Nullable final ItemStack item) {
 		if (ItemUtils.isEmptyItem(item)) {
 			return HoverEvent.showText(Component.text()
-					.color(NamedTextColor.RED)
-					.content("<null item>")
-					.build());
+				.color(NamedTextColor.RED)
+				.content("<null item>")
+				.build());
 		}
 		return HoverEvent.showItem(
-				item.getType().getKey(),
-				item.getAmount()
-				// TODO: There's a variant of this method that includes an NBT compound. My guess is to include display
-				//       name and lore, perhaps also enchantments, etc..
+			item.getType().getKey(),
+			item.getAmount()
+			// TODO: There's a variant of this method that includes an NBT compound. My guess is to include display
+			//       name and lore, perhaps also enchantments, etc..
 		);
 	}
 

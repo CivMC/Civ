@@ -43,11 +43,12 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.craftbukkit.v1_20_R3.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemFactory;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_20_R3.util.Versioning;
+import org.bukkit.craftbukkit.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.inventory.CraftItemFactory;
+import org.bukkit.craftbukkit.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.util.Versioning;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
 import org.bukkit.event.inventory.InventoryType;
@@ -122,6 +123,11 @@ public class PseudoServer implements Server {
 		return CraftItemFactory.instance();
 	}
 
+	@Override
+	public @NotNull EntityFactory getEntityFactory() {
+		return null;
+	}
+
 	@Nonnull
 	@Override
 	public UnsafeValues getUnsafe() {
@@ -131,7 +137,7 @@ public class PseudoServer implements Server {
 	@Nonnull
 	@Override
 	public BlockData createBlockData(@Nonnull final Material material) {
-		return CraftBlockData.newData(material, null);
+		return CraftBlockData.newData(material.asBlockType(), null);
 	}
 
 	@Override
@@ -638,6 +644,11 @@ public class PseudoServer implements Server {
 	}
 
 	@Override
+	public boolean isAcceptingTransfers() {
+		return false;
+	}
+
+	@Override
 	public boolean getHideOnlinePlayers() {
 		throw new NotImplementedException();
 	}
@@ -697,19 +708,19 @@ public class PseudoServer implements Server {
 
 	@Override
 	public org.bukkit.profile.@NotNull PlayerProfile createPlayerProfile(
-			@org.jetbrains.annotations.Nullable UUID uniqueId, @org.jetbrains.annotations.Nullable String name) {
+		@org.jetbrains.annotations.Nullable UUID uniqueId, @org.jetbrains.annotations.Nullable String name) {
 		throw new NotImplementedException();
 	}
 
 	@Override
 	public org.bukkit.profile.@NotNull PlayerProfile createPlayerProfile(
-			@NotNull UUID uniqueId) {
+		@NotNull UUID uniqueId) {
 		throw new NotImplementedException();
 	}
 
 	@Override
 	public org.bukkit.profile.@NotNull PlayerProfile createPlayerProfile(
-			@NotNull String name) {
+		@NotNull String name) {
 		throw new NotImplementedException();
 	}
 
@@ -744,12 +755,12 @@ public class PseudoServer implements Server {
 	public Set<OfflinePlayer> getBannedPlayers() {
 		throw new NotImplementedException();
 	}
-	
+
 	@Override
 	public <B extends BanList<E>, E> @NotNull B getBanList(@NotNull BanListType<B> banListType) {
 		return null;
 	}
-	
+
 	@Nonnull
 	@Override
 	public <T extends BanList<?>> T getBanList(@Nonnull final BanList.Type type) {
@@ -781,7 +792,7 @@ public class PseudoServer implements Server {
 
 	@Override
 	public @NotNull CommandSender createCommandSender(
-			@NotNull Consumer<? super Component> feedback) {
+		@NotNull Consumer<? super Component> feedback) {
 		throw new NotImplementedException();
 	}
 
@@ -989,7 +1000,7 @@ public class PseudoServer implements Server {
 
 	@Override
 	public ChunkGenerator.@NotNull ChunkData createVanillaChunkData(
-			@NotNull World world, int x, int z) {
+		@NotNull World world, int x, int z) {
 		throw new NotImplementedException();
 	}
 

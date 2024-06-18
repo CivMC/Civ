@@ -13,13 +13,13 @@ import org.bukkit.potion.PotionEffectType;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class ToolProtectionListener implements Listener {
-	
+
 	private FinaleSettingManager settingMan;
-	
+
 	public ToolProtectionListener(FinaleSettingManager settingMan) {
 		this.settingMan = settingMan;
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent e) {
 		if (!settingMan.useToolProtection(e.getPlayer().getUniqueId())) {
@@ -38,7 +38,7 @@ public class ToolProtectionListener implements Listener {
 			for(int i = 0; i < 5; i++) {
 				e.getPlayer().sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "Your tool is almost broken");
 			}
-			e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 10, 4));
+			e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.MINING_FATIGUE, 10, 4));
 		}
 	}
 

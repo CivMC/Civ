@@ -17,11 +17,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.boss.EnderDragonPart;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -30,42 +28,40 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftVector;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.util.CraftVector;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.util.Vector;
 
 public class CombatUtil {
-	
-	 private static void sendSoundEffect(net.minecraft.world.entity.player.Player fromEntity, double x, double y, double z, SoundEvent soundEffect, SoundSource soundCategory, float volume, float pitch) {
-        fromEntity.playSound(soundEffect, volume, pitch); // This will not send the effect to the entity himself
-        if (fromEntity instanceof ServerPlayer) {
-            ((ServerPlayer) fromEntity).connection.send(new ClientboundSoundPacket(Holder.direct(soundEffect), soundCategory, x, y, z, volume, pitch, fromEntity.level().getRandom().nextLong()));
-        }
-    }
-	 
+
+	private static void sendSoundEffect(net.minecraft.world.entity.player.Player fromEntity, double x, double y, double z, SoundEvent soundEffect, SoundSource soundCategory, float volume, float pitch) {
+		fromEntity.playSound(soundEffect, volume, pitch); // This will not send the effect to the entity himself
+		if (fromEntity instanceof ServerPlayer) {
+			((ServerPlayer) fromEntity).connection.send(new ClientboundSoundPacket(Holder.direct(soundEffect), soundCategory, x, y, z, volume, pitch, fromEntity.level().getRandom().nextLong()));
+		}
+	}
+
 	public static void attack(Player attacker, LivingEntity victim) {
 		/*new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
 				attack(((CraftPlayer) attacker).getHandle(), ((CraftLivingEntity) victim).getHandle());
 			}
-			
+
 		}.runTask(Finale.getPlugin());*/
 		attack(((CraftPlayer) attacker).getHandle(), victim);
 	}
-	
+
 	//see EntityHuman#attack(Entity) to update this
 	public static void attack(net.minecraft.world.entity.player.Player attacker, Entity victim) {
 		CombatConfig config = Finale.getPlugin().getManager().getCombatConfig();
-        if (victim.isAttackable() && !victim.skipAttackInteraction(attacker)) {
+		if (victim.isAttackable() && !victim.skipAttackInteraction(attacker)) {
 			float damage = (float) attacker.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
-			float f1 = (victim instanceof LivingEntity) ?
-					EnchantmentHelper.getDamageBonus(attacker.getItemInHand(attacker.getUsedItemHand()), ((LivingEntity) victim).getMobType()) :
-					EnchantmentHelper.getDamageBonus(attacker.getItemInHand(attacker.getUsedItemHand()), MobType.UNDEFINED);
+			float f1 = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), victim.getType());
 
 			float f2 = 0;
 			boolean shouldKnockback = true;
@@ -92,7 +88,7 @@ public class CombatUtil {
 				}
 
 				boolean shouldCrit = shouldKnockback && attacker.fallDistance > 0.0F && !attacker.onGround() && !attacker.onClimbable() && !attacker.isInWater()
-						&& !attacker.hasEffect(MobEffects.BLINDNESS) && !attacker.isPassenger() && victim instanceof LivingEntity;
+					&& !attacker.hasEffect(MobEffects.BLINDNESS) && !attacker.isPassenger() && victim instanceof LivingEntity;
 				shouldCrit = shouldCrit && !attacker.isSprinting();
 				if (shouldCrit) {
 					double critMultiplier = 1.5d;
@@ -127,7 +123,7 @@ public class CombatUtil {
 
 						if (!combustEvent.isCancelled()) {
 							onFire = true;
-							victim.setSecondsOnFire(combustEvent.getDuration(), false);
+							victim.setRemainingFireTicks(combustEvent.getDuration() * 20);
 						}
 					}
 				}
@@ -143,9 +139,9 @@ public class CombatUtil {
 
 						if (knockbackFactor > 0) {
 							Vector start = new Vector(
-									-Mth.sin(attacker.getBukkitYaw() * 0.01745329251f),
-									1.0,
-									Mth.cos(attacker.getBukkitYaw() * 0.01745329251f)
+								-Mth.sin(attacker.getBukkitYaw() * 0.01745329251f),
+								1.0,
+								Mth.cos(attacker.getBukkitYaw() * 0.01745329251f)
 							).normalize();
 							Vector dv = start.clone();
 
@@ -181,9 +177,9 @@ public class CombatUtil {
 							victim.setDeltaMovement(victimMot);
 						} else {
 							victim.push(
-									(-Mth.sin(attacker.getBukkitYaw() * 0.017453292f) * knockbackLevel * 0.5f),
-									0.1,
-									(Mth.cos(attacker.getBukkitYaw() * 0.017453292f) * knockbackLevel * 0.5f)
+								(-Mth.sin(attacker.getBukkitYaw() * 0.017453292f) * knockbackLevel * 0.5f),
+								0.1,
+								(Mth.cos(attacker.getBukkitYaw() * 0.017453292f) * knockbackLevel * 0.5f)
 							);
 						}
 					}
@@ -243,7 +239,7 @@ public class CombatUtil {
 					if (shouldCrit) {
 						if (config.getCombatSounds().isCritEnabled()) {
 							sendSoundEffect(attacker, attacker.getX(), attacker.getY(), attacker.getZ(),
-									SoundEvents.PLAYER_ATTACK_CRIT, attacker.getSoundSource(), 1.0F, 1.0F);
+								SoundEvents.PLAYER_ATTACK_CRIT, attacker.getSoundSource(), 1.0F, 1.0F);
 						}
 						attacker.crit(victim);
 					}
@@ -292,7 +288,7 @@ public class CombatUtil {
 							org.bukkit.Bukkit.getPluginManager().callEvent(combustEvent);
 
 							if (!combustEvent.isCancelled()) {
-								victim.setSecondsOnFire(combustEvent.getDuration());
+								victim.setRemainingFireTicks(combustEvent.getDuration() * 20);
 							}
 							// CraftBukkit end
 						}
@@ -301,8 +297,8 @@ public class CombatUtil {
 							int k = (int) ((double) f5 * 0.5D);
 
 							((ServerLevel) world).sendParticles(ParticleTypes.DAMAGE_INDICATOR, victim.getX(),
-									victim.getY() + (double) (victim.getEyeHeight() * 0.5F), victim.getZ(), k, 0.1D, 0.0D, 0.1D,
-									0.2D);
+								victim.getY() + (double) (victim.getEyeHeight() * 0.5F), victim.getZ(), k, 0.1D, 0.0D, 0.1D,
+								0.2D);
 						}
 					}
 
@@ -319,7 +315,7 @@ public class CombatUtil {
 					// CraftBukkit end
 				}
 			}
-        }
-    }
+		}
+	}
 }
 

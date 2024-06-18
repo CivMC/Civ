@@ -67,11 +67,11 @@ public class GUIGroupOverview {
 		ci.setSlot(getCreateGroupClickable(), 46);
 		//join group
 		ci.setSlot(getJoinGroupClickable(), 47);
-		
+
 		//autoaccept toggle
 		ItemStack toggle = MenuUtils.toggleButton(autoAccept, ChatColor.GOLD + "Automatically accept group invites", true);
 		Clickable toggleClick = new Clickable(toggle) {
-			
+
 			@Override
 			public void clicked(Player p) {
 				if (autoAccept){
@@ -88,7 +88,7 @@ public class GUIGroupOverview {
 				}
 				autoAccept = !autoAccept;
 				NameLayerPlugin.getAutoAcceptHandler().toggleAutoAccept(p.getUniqueId(), true);
-				showScreen();			
+				showScreen();
 			}
 		};
 		ci.setSlot(toggleClick, 48);
@@ -127,7 +127,7 @@ public class GUIGroupOverview {
 		}
 
 		// close button
-		ItemStack backToOverview = AbstractGroupGUI.goBackStack(); 
+		ItemStack backToOverview = AbstractGroupGUI.goBackStack();
 		ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Close");
 		ci.setSlot(new Clickable(backToOverview) {
 
@@ -171,27 +171,27 @@ public class GUIGroupOverview {
 			}
 			ItemStack is = null;
 			switch (pType) {
-			case MEMBERS:
-				is = new ItemStack(Material.LEATHER_CHESTPLATE);
-				ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Member");
-				break;
-			case MODS:
-				is = AbstractGroupGUI.modStack();
-				ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Mod");
-				break;
-			case ADMINS:
-				is = new ItemStack(Material.IRON_CHESTPLATE);
-				ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Admin");
-				break;
-			case OWNER:
-				is = new ItemStack(Material.DIAMOND_CHESTPLATE);
-				if (g.isOwner(p.getUniqueId())) {
-					ItemUtils.addLore(is, ChatColor.AQUA
-							+ "Your rank: Primary owner");
-				} else {
-					ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Owner");
-				}
-				break;
+				case MEMBERS:
+					is = new ItemStack(Material.LEATHER_CHESTPLATE);
+					ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Member");
+					break;
+				case MODS:
+					is = AbstractGroupGUI.modStack();
+					ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Mod");
+					break;
+				case ADMINS:
+					is = new ItemStack(Material.IRON_CHESTPLATE);
+					ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Admin");
+					break;
+				case OWNER:
+					is = new ItemStack(Material.DIAMOND_CHESTPLATE);
+					if (g.isOwner(p.getUniqueId())) {
+						ItemUtils.addLore(is, ChatColor.AQUA
+								+ "Your rank: Primary owner");
+					} else {
+						ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Owner");
+					}
+					break;
 			}
 			if (is == null) {
 				continue;
@@ -202,7 +202,7 @@ public class GUIGroupOverview {
 				List<String> lore = im.getLore();
 				lore.add(ChatColor.DARK_AQUA + "Your current default group");
 				im.setLore(lore);
-				im.addEnchant(Enchantment.DURABILITY, 1, true);
+				im.setEnchantmentGlintOverride(true);
 			}
 			is.setItemMeta(im);
 			if (gm.hasAccess(g, p.getUniqueId(),
@@ -250,7 +250,7 @@ public class GUIGroupOverview {
 
 					@Override
 					public List<String> onTabComplete(String wordCompleted,
-							String[] fullMessage) {
+													  String[] fullMessage) {
 						return Collections.emptyList();
 					}
 
@@ -276,7 +276,7 @@ public class GUIGroupOverview {
 						if (NameLayerPlugin.getInstance().getGroupLimit() < gm
 								.countGroups(p.getUniqueId()) + 1
 								&& !(p.isOp() || p
-										.hasPermission("namelayer.admin"))) {
+								.hasPermission("namelayer.admin"))) {
 							p.sendMessage(ChatColor.RED
 									+ "You cannot create any more groups! Please delete an un-needed group before making more.");
 							showScreen();
@@ -329,7 +329,7 @@ public class GUIGroupOverview {
 									} else {
 										p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
 										if (NameLayerPlugin.getInstance().getGroupLimit() == gm.countGroups(p.getUniqueId())) {
-											p.sendMessage(ChatColor.YELLOW + "You have reached the group limit with " 
+											p.sendMessage(ChatColor.YELLOW + "You have reached the group limit with "
 													+ NameLayerPlugin.getInstance().getGroupLimit()
 													+ " groups! Please delete un-needed groups if you wish to create more.");
 										}
@@ -349,23 +349,23 @@ public class GUIGroupOverview {
 		};
 		return c;
 	}
-	
+
 	private Clickable getJoinGroupClickable() {
 		ItemStack is = new ItemStack(Material.CHEST);
 		ItemUtils.setDisplayName(is, ChatColor.GOLD + "Join password protected group");
 		Clickable c = new Clickable(is) {
-			
+
 			@Override
 			public void clicked(final Player p) {
 				p.sendMessage(ChatColor.YELLOW + "Enter the name of the group or \"cancel\" to leave this prompt");
 				ClickableInventory.forceCloseInventory(p);
 				new Dialog(p, NameLayerPlugin.getInstance()) {
-					
+
 					@Override
 					public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
 						return Collections.emptyList();
 					}
-					
+
 					@Override
 					public void onReply(String[] message) {
 						if (message.length > 1) {
@@ -391,12 +391,12 @@ public class GUIGroupOverview {
 						}
 						p.sendMessage(ChatColor.YELLOW + "Enter the group password");
 						Dialog passDia = new Dialog(p, NameLayerPlugin.getInstance()) {
-							
+
 							@Override
 							public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
 								return Collections.emptyList();
 							}
-							
+
 							@Override
 							public void onReply(String[] message) {
 								if (g.getPassword() == null || !g.getPassword().equals(message [0])) {
@@ -426,17 +426,17 @@ public class GUIGroupOverview {
 									p.sendMessage(ChatColor.GREEN + "You have successfully been added to "  + gro.getName());
 									showScreen();
 								}
-								
+
 							}
 						};
 					}
 				};
-				
+
 			}
 		};
 		return c;
 	}
-	
+
 	private Group ensureFreshGroup(Group g) {
 		if (!g.isValid()) {
 			return GroupManager.getGroup(g.getName());

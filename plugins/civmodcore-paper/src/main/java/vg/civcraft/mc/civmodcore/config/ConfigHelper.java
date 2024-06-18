@@ -10,27 +10,35 @@ import java.util.function.Predicate;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.kyori.adventure.text.Component;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.KnowledgeBookMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.MusicInstrumentMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.world.model.EllipseArea;
 import vg.civcraft.mc.civmodcore.world.model.GlobalYLimitedArea;
@@ -165,11 +173,11 @@ public final class ConfigHelper {
 		} else {
 			String name = current.getString("name");
 			if (name != null) {
-				meta.setDisplayName(name);
+				meta.displayName(Component.text(name));
 			}
 			List<String> lore = current.getStringList("lore");
 			if (lore != null) {
-				meta.setLore(lore);
+				meta.setLore(lore); // TODO: Minimessage!
 			}
 			if (current.isBoolean("unbreakable")) {
 				meta.setUnbreakable(current.getBoolean("unbreakable"));
@@ -182,18 +190,18 @@ public final class ConfigHelper {
 			if (current.contains("enchants")) {
 				for (String enchantKey : current.getConfigurationSection("enchants").getKeys(false)) {
 					ConfigurationSection enchantConfig = current.getConfigurationSection("enchants")
-							.getConfigurationSection(enchantKey);
+						.getConfigurationSection(enchantKey);
 					if (!enchantConfig.isString("enchant")) {
 						LOGGER.warning("No enchant specified for enchantment entry at " + enchantConfig.getCurrentPath()
-								+ ". Entry was ignored");
+							+ ". Entry was ignored");
 						continue;
 					}
 					Enchantment enchant;
 					enchant = Enchantment
-							.getByKey(NamespacedKey.minecraft((enchantConfig.getString("enchant").toLowerCase())));
+						.getByKey(NamespacedKey.minecraft((enchantConfig.getString("enchant").toLowerCase())));
 					if (enchant == null) {
 						LOGGER.severe("Failed to parse enchantment " + enchantConfig.getString("enchant")
-								+ ", the entry was ignored");
+							+ ", the entry was ignored");
 						continue;
 					}
 					int level = enchantConfig.getInt("level", 1);
@@ -201,7 +209,7 @@ public final class ConfigHelper {
 				}
 			}
 			if (m == Material.LEATHER_BOOTS || m == Material.LEATHER_CHESTPLATE || m == Material.LEATHER_HELMET
-					|| m == Material.LEATHER_LEGGINGS) {
+				|| m == Material.LEATHER_LEGGINGS) {
 				ConfigurationSection color = current.getConfigurationSection("color");
 				Color leatherColor = null;
 				if (color != null) {
@@ -212,10 +220,8 @@ public final class ConfigHelper {
 				} else {
 					String hexColorCode = current.getString("color");
 					if (hexColorCode != null) {
-						Integer hexColor = Integer.parseInt(hexColorCode, 16);
-						if (hexColor != null) {
-							leatherColor = Color.fromRGB(hexColor);
-						}
+						int hexColor = Integer.parseInt(hexColorCode, 16);
+						leatherColor = Color.fromRGB(hexColor);
 					}
 				}
 				if (leatherColor != null) {
@@ -228,7 +234,7 @@ public final class ConfigHelper {
 					EnchantmentStorageMeta enchantMeta = (EnchantmentStorageMeta) meta;
 					for (String sEKey : storedEnchantSection.getKeys(false)) {
 						ConfigurationSection currentStoredEnchantSection = storedEnchantSection
-								.getConfigurationSection(sEKey);
+							.getConfigurationSection(sEKey);
 						if (currentStoredEnchantSection != null) {
 							Enchantment enchant = EnchantUtils.getEnchantment(currentStoredEnchantSection.getString("enchant"));
 							int level = currentStoredEnchantSection.getInt("level", 1);
@@ -237,14 +243,14 @@ public final class ConfigHelper {
 							}
 							else {
 								LOGGER.severe("Failed to parse enchantment at " + currentStoredEnchantSection.getCurrentPath()
-										+ ", it was not applied");
+									+ ", it was not applied");
 							}
 						}
 					}
 				}
 			}
 			if (m == Material.POTION || m == Material.SPLASH_POTION || m == Material.LINGERING_POTION
-					|| m == Material.TIPPED_ARROW) {
+				|| m == Material.TIPPED_ARROW) {
 				ConfigurationSection potion = current.getConfigurationSection("potion_effects");
 				if (potion != null) {
 					PotionType potType;
@@ -252,13 +258,11 @@ public final class ConfigHelper {
 						potType = PotionType.valueOf(potion.getString("type", "AWKWARD"));
 					} catch (IllegalArgumentException e) {
 						LOGGER.warning("Expected potion type at " + potion.getCurrentPath() + ", but "
-								+ potion.getString("type") + " is not a valid potion type");
+							+ potion.getString("type") + " is not a valid potion type");
 						potType = PotionType.AWKWARD;
 					}
-					boolean upgraded = potion.getBoolean("upgraded", false);
-					boolean extended = potion.getBoolean("extended", false);
 					PotionMeta potMeta = (PotionMeta) meta;
-					potMeta.setBasePotionData(new PotionData(potType, extended, upgraded));
+					potMeta.setBasePotionType(potType);
 					ConfigurationSection customEffects = potion.getConfigurationSection("custom_effects");
 					if (customEffects != null) {
 						List<PotionEffect> pots = parsePotionEffects(potion);
@@ -269,14 +273,117 @@ public final class ConfigHelper {
 				}
 
 			}
-			toAdd.setItemMeta(meta);
-			if (current.contains("nbt")) {
-				toAdd = ItemMap.enrichWithNBT(toAdd, 1, current.getConfigurationSection("nbt").getValues(true));
+			if (current.contains("max_stack_size")) {
+				meta.setMaxStackSize(current.getInt("max_stack_size"));
 			}
+			if (current.contains("damage")) {
+				((Damageable) meta).setDamage(current.getInt("damage"));
+			}
+			if (current.contains("rarity")) {
+				meta.setRarity(ItemRarity.valueOf(current.getString("rarity")));
+			}
+			if (current.contains("custom_model_data")) {
+				meta.setCustomModelData(current.getInt("custom_model_data"));
+			}
+			if (current.contains("hide_tooltip")) {
+				meta.setHideTooltip(current.getBoolean("hide_tooltip"));
+			}
+			if (current.contains("repair_cost")) {
+				net.minecraft.world.item.ItemStack nmsItem = ItemUtils.getNMSItemStack(toAdd);
+				nmsItem.set(DataComponents.REPAIR_COST, current.getInt("repair_cost"));
+
+				toAdd = nmsItem.getBukkitStack();
+			}
+			if (current.contains("enchantment_glint_override")) {
+				meta.setEnchantmentGlintOverride(current.getBoolean("enchantment_glint_override"));
+			}
+			if (current.contains("fire_resistant")) {
+				meta.setFireResistant(current.getBoolean("fire_resistant"));
+			}
+			if (current.contains("bundle_contents")) {
+				// TODO: doesn't look hard, just same logic as FM item config
+			}
+			if (current.contains("entity_data")) { // TODO: only doing ID for now but some other fields might be useful here
+				ConfigurationSection entityDataSection = current.getConfigurationSection("entity_data");
+				net.minecraft.world.item.ItemStack nmsItem = ItemUtils.getNMSItemStack(toAdd);
+
+				CustomData customData = CustomData.EMPTY.update(nbt -> nbt.putString("id", entityDataSection.getString("id")));
+				nmsItem.set(DataComponents.ENTITY_DATA, customData);
+				toAdd = nmsItem.getBukkitStack();
+			}
+			if (current.contains("instrument")) {
+				((MusicInstrumentMeta) meta).setInstrument(Registry.INSTRUMENT.get(NamespacedKey.minecraft(current.getString("instrument"))));
+			}
+			if (current.contains("recipes")) { // TODO: test
+				List<String> recipeStrings = current.getStringList("recipes");
+				List<NamespacedKey> recipes = new ArrayList<>(recipeStrings.size());
+
+				recipeStrings.forEach(recipeString -> recipes.add(NamespacedKey.minecraft(recipeString)));
+
+				((KnowledgeBookMeta) meta).setRecipes(recipes);
+			}
+
+
+//	    		"custom_data"
+//				"max_stack_size" `
+//				"max_damage" ` ignored
+//				"damage" `
+//				"unbreakable" `
+//				"custom_name" `
+//				"item_name" ` ignored
+//				"lore" ` should be updated
+//				"rarity" `
+//				"enchantments" `
+//				"can_place_on" ` ignored -- adventure mode only
+//				"can_break" ` ignored -- adventure mode only
+//				"attribute_modifiers" ` ignored
+//				"custom_model_data" `
+//				"hide_additional_tooltip" ` ignored, set through flag
+//				"hide_tooltip" `
+//				"repair_cost" ` TODO: test
+//				"creative_slot_lock" ` ignored
+//				"enchantment_glint_override" `
+//				"intangible_projectile" ` ignored but this could be worth looking at, just not sure how it works
+//				"food" ` ignored
+//				"fire_resistant" `
+//				"tool" ` ignored :( some of these are really cool but I'm too lazy to figure them out so TODO
+//				"stored_enchantments" `
+//				"dyed_color" `
+//				"map_color" ` ignored
+//				"map_id" ` ignored
+//				"map_decorations" ` ignored
+//				"map_post_processing" ` ignored
+//				"charged_projectiles" ` ignored
+//				"bundle_contents" `
+//				"potion_contents" ` ignored in favour of existing potion format
+//				"suspicious_stew_effects" ` ignored
+//				"writable_book_content" ` ignored in favour of existing book format
+//				"written_book_content" Create new scratch file from selection
+//				"trim" ` ignored aaaaaa
+//				"debug_stick_state" ` ignored
+//				"entity_data" `
+//				"bucket_entity_data" ` ignored but worth looking at
+//				"block_entity_data" ` ignored but worth looking at
+//				"instrument" `
+//				"ominous_bottle_amplifier" ` ignored, pretty sure this is just a potion
+//				"recipes" `
+//				"lodestone_tracker" ` ignored but could be cool
+//				"firework_explosion" ` ignored but should be easy
+//				"fireworks" ` ignored but should be easy
+//				"profile" ` ignored
+//				"note_block_sound" ` ignored
+//				"banner_patterns" ` all down are ignored
+//				"base_color"
+//				"pot_decorations"
+//				"container"
+//				"block_state"
+//				"bees"
+//				"lock"
+//				"container_loot"
+
+			toAdd.setItemMeta(meta);
 		}
-		// Setting amount must be last just in cast enrichWithNBT is called,
-		// which
-		// resets the amount to 1.
+
 		int amount = current.getInt("amount", 1);
 		toAdd.setAmount(amount);
 		im.addItemStack(toAdd);
@@ -413,13 +520,13 @@ public final class ConfigHelper {
 				String type = configEffect.getString("type");
 				if (type == null) {
 					LOGGER.severe("Expected potion type to be specified, but found no \"type\" option at "
-							+ configEffect.getCurrentPath());
+						+ configEffect.getCurrentPath());
 					continue;
 				}
 				PotionEffectType effect = PotionEffectType.getByName(type);
 				if (effect == null) {
 					LOGGER.severe("Expected potion type to be specified at " + configEffect.getCurrentPath()
-							+ " but found " + type + " which is no valid type");
+						+ " but found " + type + " which is no valid type");
 				}
 				int duration = configEffect.getInt("duration", 200);
 				int amplifier = configEffect.getInt("amplifier", 0);
@@ -530,7 +637,7 @@ public final class ConfigHelper {
 		for (String keyString : section.getKeys(false)) {
 			if (section.isConfigurationSection(keyString)) {
 				logger.warning(
-						"Ignoring invalid " + identifier + " entry " + keyString + " at " + section.getCurrentPath());
+					"Ignoring invalid " + identifier + " entry " + keyString + " at " + section.getCurrentPath());
 				continue;
 			}
 			K keyinstance;
@@ -538,7 +645,7 @@ public final class ConfigHelper {
 				keyinstance = keyConverter.apply(keyString);
 			} catch (IllegalArgumentException e) {
 				logger.warning("Failed to parse " + identifier + " " + keyString + " at " + section.getCurrentPath()
-						+ ": " + e.toString());
+					+ ": " + e.toString());
 				continue;
 			}
 			V value = valueConverter.apply(section.getString(keyString));
