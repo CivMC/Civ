@@ -53,7 +53,7 @@ public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData
 	}
 
 	public ItemStack toItem() {
-		ItemStack item = ItemStack.empty();
+		ItemStack item = ItemExchangeConfig.getRuleItem();
 		final var itemNBT = new NBTCompound();
 		toNBT(itemNBT);
 
