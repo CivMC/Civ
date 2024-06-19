@@ -435,7 +435,7 @@ public final class ExchangeRule implements ExchangeData {
 	 * @return Returns an itemised representation of this rule.
 	 */
 	public ItemStack toItem() {
-		ItemStack item = ItemStack.empty();
+		ItemStack item = ItemExchangeConfig.getRuleItem();
 		final var itemNBT = new NBTCompound();
 		toNBT(itemNBT);
 
