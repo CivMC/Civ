@@ -34,413 +34,411 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class GUIGroupOverview {
 
-	private int currentPage;
-	private Player p;
-	private static GroupManager gm;
-	private boolean autoAccept;
+    private int currentPage;
+    private Player p;
+    private static GroupManager gm;
+    private boolean autoAccept;
 
-	public GUIGroupOverview(Player p) {
-		if (gm == null) {
-			gm = NameAPI.getGroupManager();
-		}
-		autoAccept = NameLayerPlugin.getAutoAcceptHandler().getAutoAccept(p.getUniqueId());
-		this.p = p;
-		this.currentPage = 0;
-	}
+    public GUIGroupOverview(Player p) {
+        if (gm == null) {
+            gm = NameAPI.getGroupManager();
+        }
+        autoAccept = NameLayerPlugin.getAutoAcceptHandler().getAutoAccept(p.getUniqueId());
+        this.p = p;
+        this.currentPage = 0;
+    }
 
-	public void showScreen() {
+    public void showScreen() {
 
-		ClickableInventory ci = new ClickableInventory(54, p.getName() + "'s groups");
-		final List<Clickable> groups = getGroupClickables();
-		if (groups.size() < 45 * currentPage) {
-			// would show an empty page, so go to previous
-			currentPage--;
-			showScreen();
-		}
+        ClickableInventory ci = new ClickableInventory(54, p.getName() + "'s groups");
+        final List<Clickable> groups = getGroupClickables();
+        if (groups.size() < 45 * currentPage) {
+            // would show an empty page, so go to previous
+            currentPage--;
+            showScreen();
+        }
 
-		for (int i = 45 * currentPage; i < 45 * (currentPage + 1)
-				&& i < groups.size(); i++) {
-			ci.setSlot(groups.get(i), i - (45 * currentPage));
-		}
+        for (int i = 45 * currentPage; i < 45 * (currentPage + 1)
+            && i < groups.size(); i++) {
+            ci.setSlot(groups.get(i), i - (45 * currentPage));
+        }
 
-		// create group
-		ci.setSlot(getCreateGroupClickable(), 46);
-		//join group
-		ci.setSlot(getJoinGroupClickable(), 47);
-		
-		//autoaccept toggle
-		ItemStack toggle = MenuUtils.toggleButton(autoAccept, ChatColor.GOLD + "Automatically accept group invites", true);
-		Clickable toggleClick = new Clickable(toggle) {
-			
-			@Override
-			public void clicked(Player p) {
-				if (autoAccept){
-					NameLayerPlugin.log(Level.INFO,
-							p.getName() + " turned autoaccept for invites off "
-									+ " via the gui");
-					p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group invites");
-				}
-				else {
-					NameLayerPlugin.log(Level.INFO,
-							p.getName() + " turned autoaccept for invites on "
-									+ " via the gui");
-					p.sendMessage(ChatColor.GREEN + "You will automatically accept group invites");
-				}
-				autoAccept = !autoAccept;
-				NameLayerPlugin.getAutoAcceptHandler().toggleAutoAccept(p.getUniqueId(), true);
-				showScreen();			
-			}
-		};
-		ci.setSlot(toggleClick, 48);
+        // create group
+        ci.setSlot(getCreateGroupClickable(), 46);
+        //join group
+        ci.setSlot(getJoinGroupClickable(), 47);
 
-		// previous button
-		if (currentPage > 0) {
-			ItemStack back = new ItemStack(Material.ARROW);
-			ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
-			Clickable baCl = new Clickable(back) {
+        //autoaccept toggle
+        ItemStack toggle = MenuUtils.toggleButton(autoAccept, ChatColor.GOLD + "Automatically accept group invites", true);
+        Clickable toggleClick = new Clickable(toggle) {
 
-				@Override
-				public void clicked(Player arg0) {
-					if (currentPage > 0) {
-						currentPage--;
-					}
-					showScreen();
-				}
-			};
-			ci.setSlot(baCl, 45);
-		}
-		// next button
-		if ((45 * (currentPage + 1)) < groups.size()) {
-			ItemStack forward = new ItemStack(Material.ARROW);
-			ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
-			Clickable forCl = new Clickable(forward) {
+            @Override
+            public void clicked(Player p) {
+                if (autoAccept) {
+                    NameLayerPlugin.log(Level.INFO,
+                        p.getName() + " turned autoaccept for invites off "
+                            + " via the gui");
+                    p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group invites");
+                } else {
+                    NameLayerPlugin.log(Level.INFO,
+                        p.getName() + " turned autoaccept for invites on "
+                            + " via the gui");
+                    p.sendMessage(ChatColor.GREEN + "You will automatically accept group invites");
+                }
+                autoAccept = !autoAccept;
+                NameLayerPlugin.getAutoAcceptHandler().toggleAutoAccept(p.getUniqueId(), true);
+                showScreen();
+            }
+        };
+        ci.setSlot(toggleClick, 48);
 
-				@Override
-				public void clicked(Player arg0) {
-					if ((45 * (currentPage + 1)) < groups.size()) {
-						currentPage++;
-					}
-					showScreen();
-				}
-			};
-			ci.setSlot(forCl, 53);
-		}
+        // previous button
+        if (currentPage > 0) {
+            ItemStack back = new ItemStack(Material.ARROW);
+            ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
+            Clickable baCl = new Clickable(back) {
 
-		// close button
-		ItemStack backToOverview = AbstractGroupGUI.goBackStack(); 
-		ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Close");
-		ci.setSlot(new Clickable(backToOverview) {
+                @Override
+                public void clicked(Player arg0) {
+                    if (currentPage > 0) {
+                        currentPage--;
+                    }
+                    showScreen();
+                }
+            };
+            ci.setSlot(baCl, 45);
+        }
+        // next button
+        if ((45 * (currentPage + 1)) < groups.size()) {
+            ItemStack forward = new ItemStack(Material.ARROW);
+            ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
+            Clickable forCl = new Clickable(forward) {
 
-			@Override
-			public void clicked(Player arg0) {
-				ClickableInventory.forceCloseInventory(arg0);
-			}
-		}, 49);
-		ci.showInventory(p);
-	}
+                @Override
+                public void clicked(Player arg0) {
+                    if ((45 * (currentPage + 1)) < groups.size()) {
+                        currentPage++;
+                    }
+                    showScreen();
+                }
+            };
+            ci.setSlot(forCl, 53);
+        }
 
-	private List<Clickable> getGroupClickables() {
-		String defaultGroupName = gm.getDefaultGroup(p.getUniqueId());
-		List<String> groupNames = gm.getAllGroupNames(p.getUniqueId());
-		groupNames.sort(Comparator.comparing((String g) -> {
-					Group group = GroupManager.getGroup(g);
-					return group != null && group.isOwner(p.getUniqueId());
-				}).thenComparing((String g) -> {
-					Group group = GroupManager.getGroup(g);
-					if (group != null) {
-						return group.getPlayerType(p.getUniqueId());
-					} else {
-						return PlayerType.NOT_BLACKLISTED;
-					}
-				}).reversed()
-				.thenComparing(String.CASE_INSENSITIVE_ORDER));
-		List<Clickable> result = new ArrayList<Clickable>();
-		Set<String> alreadyProcessed = new HashSet<String>();
-		for (String groupName : groupNames) {
-			if (alreadyProcessed.contains(groupName)) {
-				continue;
-			}
-			final Group g = GroupManager.getGroup(groupName);
-			if (g == null) {
-				continue;
-			}
-			Clickable c;
-			PlayerType pType = g.getPlayerType(p.getUniqueId());
-			if (pType == null) {
-				continue;
-			}
-			ItemStack is = null;
-			switch (pType) {
-			case MEMBERS:
-				is = new ItemStack(Material.LEATHER_CHESTPLATE);
-				ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Member");
-				break;
-			case MODS:
-				is = AbstractGroupGUI.modStack();
-				ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Mod");
-				break;
-			case ADMINS:
-				is = new ItemStack(Material.IRON_CHESTPLATE);
-				ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Admin");
-				break;
-			case OWNER:
-				is = new ItemStack(Material.DIAMOND_CHESTPLATE);
-				if (g.isOwner(p.getUniqueId())) {
-					ItemUtils.addLore(is, ChatColor.AQUA
-							+ "Your rank: Primary owner");
-				} else {
-					ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Owner");
-				}
-				break;
-			}
-			if (is == null) {
-				continue;
-			}
-			ItemMeta im = is.getItemMeta();
-			im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
-			if (g.getName().equals(defaultGroupName)) {
-				List<String> lore = im.getLore();
-				lore.add(ChatColor.DARK_AQUA + "Your current default group");
-				im.setLore(lore);
-				im.addEnchant(Enchantment.DURABILITY, 1, true);
-			}
-			is.setItemMeta(im);
-			if (gm.hasAccess(g, p.getUniqueId(),
-					PermissionType.getPermission("GROUPSTATS"))) {
-				ItemUtils.addLore(
-						is,
-						ChatColor.AQUA
-								+ String.valueOf(g.getAllMembers().size())
-								+ " member"
-								+ (g.getAllMembers().size() > 1 ? "s" : ""));
-			}
-			ItemUtils.setDisplayName(is, ChatColor.GOLD + g.getName());
-			if (gm.hasAccess(g, p.getUniqueId(),
-					PermissionType.getPermission("OPEN_GUI"))) {
-				c = new Clickable(is) {
+        // close button
+        ItemStack backToOverview = AbstractGroupGUI.goBackStack();
+        ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Close");
+        ci.setSlot(new Clickable(backToOverview) {
 
-					@Override
-					public void clicked(Player arg0) {
-						MainGroupGUI mgui = new MainGroupGUI(p, g);
-					}
-				};
-			} else {
-				ItemUtils.addLore(is, ChatColor.RED
-						+ "You aren't permitted to open", ChatColor.RED
-						+ "the GUI for this group");
-				c = new DecorationStack(is);
-			}
-			result.add(c);
-			alreadyProcessed.add(groupName);
-		}
-		return result;
-	}
+            @Override
+            public void clicked(Player arg0) {
+                ClickableInventory.forceCloseInventory(arg0);
+            }
+        }, 49);
+        ci.showInventory(p);
+    }
 
-	private Clickable getCreateGroupClickable() {
-		ItemStack is = new ItemStack(Material.APPLE);
-		ItemUtils.setDisplayName(is, ChatColor.GOLD + "Create group");
-		Clickable c = new Clickable(is) {
+    private List<Clickable> getGroupClickables() {
+        String defaultGroupName = gm.getDefaultGroup(p.getUniqueId());
+        List<String> groupNames = gm.getAllGroupNames(p.getUniqueId());
+        groupNames.sort(Comparator.comparing((String g) -> {
+                Group group = GroupManager.getGroup(g);
+                return group != null && group.isOwner(p.getUniqueId());
+            }).thenComparing((String g) -> {
+                Group group = GroupManager.getGroup(g);
+                if (group != null) {
+                    return group.getPlayerType(p.getUniqueId());
+                } else {
+                    return PlayerType.NOT_BLACKLISTED;
+                }
+            }).reversed()
+            .thenComparing(String.CASE_INSENSITIVE_ORDER));
+        List<Clickable> result = new ArrayList<Clickable>();
+        Set<String> alreadyProcessed = new HashSet<String>();
+        for (String groupName : groupNames) {
+            if (alreadyProcessed.contains(groupName)) {
+                continue;
+            }
+            final Group g = GroupManager.getGroup(groupName);
+            if (g == null) {
+                continue;
+            }
+            Clickable c;
+            PlayerType pType = g.getPlayerType(p.getUniqueId());
+            if (pType == null) {
+                continue;
+            }
+            ItemStack is = null;
+            switch (pType) {
+                case MEMBERS:
+                    is = new ItemStack(Material.LEATHER_CHESTPLATE);
+                    ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Member");
+                    break;
+                case MODS:
+                    is = AbstractGroupGUI.modStack();
+                    ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Mod");
+                    break;
+                case ADMINS:
+                    is = new ItemStack(Material.IRON_CHESTPLATE);
+                    ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Admin");
+                    break;
+                case OWNER:
+                    is = new ItemStack(Material.DIAMOND_CHESTPLATE);
+                    if (g.isOwner(p.getUniqueId())) {
+                        ItemUtils.addLore(is, ChatColor.AQUA
+                            + "Your rank: Primary owner");
+                    } else {
+                        ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Owner");
+                    }
+                    break;
+            }
+            if (is == null) {
+                continue;
+            }
+            ItemMeta im = is.getItemMeta();
+            im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS);
+            if (g.getName().equals(defaultGroupName)) {
+                List<String> lore = im.getLore();
+                lore.add(ChatColor.DARK_AQUA + "Your current default group");
+                im.setLore(lore);
+                im.addEnchant(Enchantment.DURABILITY, 1, true);
+            }
+            is.setItemMeta(im);
+            if (gm.hasAccess(g, p.getUniqueId(),
+                PermissionType.getPermission("GROUPSTATS"))) {
+                ItemUtils.addLore(
+                    is,
+                    ChatColor.AQUA
+                        + String.valueOf(g.getAllMembers().size())
+                        + " member"
+                        + (g.getAllMembers().size() > 1 ? "s" : ""));
+            }
+            ItemUtils.setDisplayName(is, ChatColor.GOLD + g.getName());
+            if (gm.hasAccess(g, p.getUniqueId(),
+                PermissionType.getPermission("OPEN_GUI"))) {
+                c = new Clickable(is) {
 
-			@Override
-			public void clicked(final Player p) {
-				p.sendMessage(ChatColor.YELLOW
-						+ "Enter the name of your new group or \"cancel\" to exit this prompt");
-				ClickableInventory.forceCloseInventory(p);
-				new Dialog(p, NameLayerPlugin.getInstance()) {
+                    @Override
+                    public void clicked(Player arg0) {
+                        MainGroupGUI mgui = new MainGroupGUI(p, g);
+                    }
+                };
+            } else {
+                ItemUtils.addLore(is, ChatColor.RED
+                    + "You aren't permitted to open", ChatColor.RED
+                    + "the GUI for this group");
+                c = new DecorationStack(is);
+            }
+            result.add(c);
+            alreadyProcessed.add(groupName);
+        }
+        return result;
+    }
 
-					@Override
-					public List<String> onTabComplete(String wordCompleted,
-							String[] fullMessage) {
-						return Collections.emptyList();
-					}
+    private Clickable getCreateGroupClickable() {
+        ItemStack is = new ItemStack(Material.APPLE);
+        ItemUtils.setDisplayName(is, ChatColor.GOLD + "Create group");
+        Clickable c = new Clickable(is) {
 
-					@Override
-					public void onReply(String[] message) {
-						if (message.length > 1) {
-							p.sendMessage(ChatColor.RED
-									+ "Group names may not contain spaces");
-							showScreen();
-							return;
-						}
-						String groupName = message[0];
-						if (groupName.equals("")) {
-							p.sendMessage(ChatColor.RED
-									+ "You didn't enter anything!");
-							showScreen();
-							return;
-						}
-						if (groupName.equals("cancel")) {
-							showScreen();
-							return;
-						}
-						if (NameLayerPlugin.getInstance().getGroupLimit() < gm
-								.countGroups(p.getUniqueId()) + 1
-								&& !(p.isOp() || p
-										.hasPermission("namelayer.admin"))) {
-							p.sendMessage(ChatColor.RED
-									+ "You cannot create any more groups! Please delete an un-needed group before making more.");
-							showScreen();
-							return;
-						}
-						// enforce regulations on the name
-						if (groupName.length() > 32) {
-							p.sendMessage(ChatColor.RED
-									+ "The group name is not allowed to contain more than 32 characters");
-							showScreen();
-							return;
-						}
-						Charset latin1 = StandardCharsets.ISO_8859_1;
-						boolean invalidChars = false;
-						if (!latin1.newEncoder().canEncode(groupName)) {
-							invalidChars = true;
-						}
+            @Override
+            public void clicked(final Player p) {
+                p.sendMessage(ChatColor.YELLOW
+                    + "Enter the name of your new group or \"cancel\" to exit this prompt");
+                ClickableInventory.forceCloseInventory(p);
+                new Dialog(p, NameLayerPlugin.getInstance()) {
 
-						for (char c : groupName.toCharArray()) {
-							if (Character.isISOControl(c)) {
-								invalidChars = true;
-							}
-						}
+                    @Override
+                    public List<String> onTabComplete(String wordCompleted,
+                                                      String[] fullMessage) {
+                        return Collections.emptyList();
+                    }
 
-						if (invalidChars) {
-							p.sendMessage(ChatColor.RED
-									+ "You used characters, which are not allowed");
-							showScreen();
-							return;
-						}
+                    @Override
+                    public void onReply(String[] message) {
+                        if (message.length > 1) {
+                            p.sendMessage(ChatColor.RED
+                                + "Group names may not contain spaces");
+                            showScreen();
+                            return;
+                        }
+                        String groupName = message[0];
+                        if (groupName.equals("")) {
+                            p.sendMessage(ChatColor.RED
+                                + "You didn't enter anything!");
+                            showScreen();
+                            return;
+                        }
+                        if (groupName.equals("cancel")) {
+                            showScreen();
+                            return;
+                        }
+                        if (NameLayerPlugin.getInstance().getGroupLimit() < gm
+                            .countGroups(p.getUniqueId()) + 1
+                            && !(p.isOp() || p
+                            .hasPermission("namelayer.admin"))) {
+                            p.sendMessage(ChatColor.RED
+                                + "You cannot create any more groups! Please delete an un-needed group before making more.");
+                            showScreen();
+                            return;
+                        }
+                        // enforce regulations on the name
+                        if (groupName.length() > 32) {
+                            p.sendMessage(ChatColor.RED
+                                + "The group name is not allowed to contain more than 32 characters");
+                            showScreen();
+                            return;
+                        }
+                        Charset latin1 = StandardCharsets.ISO_8859_1;
+                        boolean invalidChars = false;
+                        if (!latin1.newEncoder().canEncode(groupName)) {
+                            invalidChars = true;
+                        }
 
-						if (GroupManager.getGroup(groupName) != null) {
-							p.sendMessage(ChatColor.RED
-									+ "That group is already taken. Try another unique group name.");
-							showScreen();
-							return;
-						}
+                        for (char c : groupName.toCharArray()) {
+                            if (Character.isISOControl(c)) {
+                                invalidChars = true;
+                            }
+                        }
 
-						final UUID uuid = p.getUniqueId();
-						Group g = new Group(groupName, uuid, false, null, -1, System.currentTimeMillis());
-						gm.createGroupAsync(g, new RunnableOnGroup() {
-							@Override
-							public void run() {
-								Player p = null;
-								p = Bukkit.getPlayer(uuid);
-								Group g = getGroup();
-								if (p != null) {
-									if (g.getGroupId() == -1) { // failure
-										p.sendMessage(ChatColor.RED + "That group is already taken or creation failed.");
-									} else {
-										p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
-										if (NameLayerPlugin.getInstance().getGroupLimit() == gm.countGroups(p.getUniqueId())) {
-											p.sendMessage(ChatColor.YELLOW + "You have reached the group limit with " 
-													+ NameLayerPlugin.getInstance().getGroupLimit()
-													+ " groups! Please delete un-needed groups if you wish to create more.");
-										}
-									}
-									showScreen();
+                        if (invalidChars) {
+                            p.sendMessage(ChatColor.RED
+                                + "You used characters, which are not allowed");
+                            showScreen();
+                            return;
+                        }
 
-								} else {
-									NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group {0} creation complete resulting in group id: {1}",
-											new Object[] {g.getName(), g.getGroupId()});
-								}
-							}
-						}, false);
-					}
-				};
+                        if (GroupManager.getGroup(groupName) != null) {
+                            p.sendMessage(ChatColor.RED
+                                + "That group is already taken. Try another unique group name.");
+                            showScreen();
+                            return;
+                        }
 
-			}
-		};
-		return c;
-	}
-	
-	private Clickable getJoinGroupClickable() {
-		ItemStack is = new ItemStack(Material.CHEST);
-		ItemUtils.setDisplayName(is, ChatColor.GOLD + "Join password protected group");
-		Clickable c = new Clickable(is) {
-			
-			@Override
-			public void clicked(final Player p) {
-				p.sendMessage(ChatColor.YELLOW + "Enter the name of the group or \"cancel\" to leave this prompt");
-				ClickableInventory.forceCloseInventory(p);
-				new Dialog(p, NameLayerPlugin.getInstance()) {
-					
-					@Override
-					public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
-						return Collections.emptyList();
-					}
-					
-					@Override
-					public void onReply(String[] message) {
-						if (message.length > 1) {
-							p.sendMessage(ChatColor.RED + "Group names can't contain spaces");
-							showScreen();
-							return;
-						}
-						String groupName = message [0];
-						if (groupName.equals("cancel")) {
-							showScreen();
-							return;
-						}
-						final Group g = gm.getGroup(groupName);
-						if (g == null) {
-							p.sendMessage(ChatColor.RED + "This group doesn't exist");
-							showScreen();
-							return;
-						}
-						if (g.isMember(p.getUniqueId())) {
-							p.sendMessage(ChatColor.RED + "You are already a member of this group");
-							showScreen();
-							return;
-						}
-						p.sendMessage(ChatColor.YELLOW + "Enter the group password");
-						Dialog passDia = new Dialog(p, NameLayerPlugin.getInstance()) {
-							
-							@Override
-							public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
-								return Collections.emptyList();
-							}
-							
-							@Override
-							public void onReply(String[] message) {
-								if (g.getPassword() == null || !g.getPassword().equals(message [0])) {
-									p.sendMessage(ChatColor.RED + "Wrong password");
-									showScreen();
-								}
-								else {
-									Group gro = ensureFreshGroup(g);
-									GroupPermission groupPerm = gm.getPermissionforGroup(gro);
-									PlayerType pType = groupPerm.getFirstWithPerm(PermissionType.getPermission("JOIN_PASSWORD"));
-									if (pType == null) {
-										p.sendMessage(ChatColor.RED + "Someone derped. This group does not have the specified permission to let you join, sorry.");
-										showScreen();
-										return;
-									}
-									if (NameLayerPlugin.getBlackList().isBlacklisted(gro, p.getUniqueId())) {
-										p.sendMessage(ChatColor.RED + "You can not join a group you have been blacklisted from");
-										showScreen();
-										return;
-									}
+                        final UUID uuid = p.getUniqueId();
+                        Group g = new Group(groupName, uuid, false, null, -1, System.currentTimeMillis());
+                        gm.createGroupAsync(g, new RunnableOnGroup() {
+                            @Override
+                            public void run() {
+                                Player p = null;
+                                p = Bukkit.getPlayer(uuid);
+                                Group g = getGroup();
+                                if (p != null) {
+                                    if (g.getGroupId() == -1) { // failure
+                                        p.sendMessage(ChatColor.RED + "That group is already taken or creation failed.");
+                                    } else {
+                                        p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
+                                        if (NameLayerPlugin.getInstance().getGroupLimit() == gm.countGroups(p.getUniqueId())) {
+                                            p.sendMessage(ChatColor.YELLOW + "You have reached the group limit with "
+                                                + NameLayerPlugin.getInstance().getGroupLimit()
+                                                + " groups! Please delete un-needed groups if you wish to create more.");
+                                        }
+                                    }
+                                    showScreen();
 
-									NameLayerPlugin.log(Level.INFO,
-											p.getName() + " joined with password "
-													+ " to group " + g.getName()
-													+ " via the gui");
-									gro.addMember(p.getUniqueId(), pType);
-									p.sendMessage(ChatColor.GREEN + "You have successfully been added to "  + gro.getName());
-									showScreen();
-								}
-								
-							}
-						};
-					}
-				};
-				
-			}
-		};
-		return c;
-	}
-	
-	private Group ensureFreshGroup(Group g) {
-		if (!g.isValid()) {
-			return GroupManager.getGroup(g.getName());
-		}
-		return g;
-	}
+                                } else {
+                                    NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group {0} creation complete resulting in group id: {1}",
+                                        new Object[]{g.getName(), g.getGroupId()});
+                                }
+                            }
+                        }, false);
+                    }
+                };
+
+            }
+        };
+        return c;
+    }
+
+    private Clickable getJoinGroupClickable() {
+        ItemStack is = new ItemStack(Material.CHEST);
+        ItemUtils.setDisplayName(is, ChatColor.GOLD + "Join password protected group");
+        Clickable c = new Clickable(is) {
+
+            @Override
+            public void clicked(final Player p) {
+                p.sendMessage(ChatColor.YELLOW + "Enter the name of the group or \"cancel\" to leave this prompt");
+                ClickableInventory.forceCloseInventory(p);
+                new Dialog(p, NameLayerPlugin.getInstance()) {
+
+                    @Override
+                    public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
+                        return Collections.emptyList();
+                    }
+
+                    @Override
+                    public void onReply(String[] message) {
+                        if (message.length > 1) {
+                            p.sendMessage(ChatColor.RED + "Group names can't contain spaces");
+                            showScreen();
+                            return;
+                        }
+                        String groupName = message[0];
+                        if (groupName.equals("cancel")) {
+                            showScreen();
+                            return;
+                        }
+                        final Group g = gm.getGroup(groupName);
+                        if (g == null) {
+                            p.sendMessage(ChatColor.RED + "This group doesn't exist");
+                            showScreen();
+                            return;
+                        }
+                        if (g.isMember(p.getUniqueId())) {
+                            p.sendMessage(ChatColor.RED + "You are already a member of this group");
+                            showScreen();
+                            return;
+                        }
+                        p.sendMessage(ChatColor.YELLOW + "Enter the group password");
+                        Dialog passDia = new Dialog(p, NameLayerPlugin.getInstance()) {
+
+                            @Override
+                            public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
+                                return Collections.emptyList();
+                            }
+
+                            @Override
+                            public void onReply(String[] message) {
+                                if (g.getPassword() == null || !g.getPassword().equals(message[0])) {
+                                    p.sendMessage(ChatColor.RED + "Wrong password");
+                                    showScreen();
+                                } else {
+                                    Group gro = ensureFreshGroup(g);
+                                    GroupPermission groupPerm = gm.getPermissionforGroup(gro);
+                                    PlayerType pType = groupPerm.getFirstWithPerm(PermissionType.getPermission("JOIN_PASSWORD"));
+                                    if (pType == null) {
+                                        p.sendMessage(ChatColor.RED + "Someone derped. This group does not have the specified permission to let you join, sorry.");
+                                        showScreen();
+                                        return;
+                                    }
+                                    if (NameLayerPlugin.getBlackList().isBlacklisted(gro, p.getUniqueId())) {
+                                        p.sendMessage(ChatColor.RED + "You can not join a group you have been blacklisted from");
+                                        showScreen();
+                                        return;
+                                    }
+
+                                    NameLayerPlugin.log(Level.INFO,
+                                        p.getName() + " joined with password "
+                                            + " to group " + g.getName()
+                                            + " via the gui");
+                                    gro.addMember(p.getUniqueId(), pType);
+                                    p.sendMessage(ChatColor.GREEN + "You have successfully been added to " + gro.getName());
+                                    showScreen();
+                                }
+
+                            }
+                        };
+                    }
+                };
+
+            }
+        };
+        return c;
+    }
+
+    private Group ensureFreshGroup(Group g) {
+        if (!g.isValid()) {
+            return GroupManager.getGroup(g.getName());
+        }
+        return g;
+    }
 }

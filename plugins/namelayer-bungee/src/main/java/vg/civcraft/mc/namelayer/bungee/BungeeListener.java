@@ -15,98 +15,98 @@ import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 import net.md_5.bungee.protocol.packet.LoginRequest;
 
-public class BungeeListener implements Listener{
+public class BungeeListener implements Listener {
 
-	private DataBaseManager db;
-	private NameLayerBungee plugin;
-	
-	public BungeeListener(DataBaseManager db) {
-		this.db = db;
-		plugin = NameLayerBungee.getInstance();
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void postLoginEvent(LoginEvent event) {
-		PendingConnection pending = event.getConnection();
-		InitialHandler handle = (InitialHandler) pending;
-		UUID uuid = pending.getUniqueId();
-		db.addPlayer(pending.getName(), uuid);
-		String name = db.getCurrentName(uuid);
-		// pre 1.11
-		try {
-			Field loginField = InitialHandler.class.getDeclaredField("loginRequest");
-			loginField.setAccessible(true);
-			LoginRequest request = (LoginRequest) loginField.get(handle);
-			request.setData(name);
-			//setFinalStatic(nameField, name, con);
-		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// post 1.11
-		try {
-			Field nameField = InitialHandler.class.getDeclaredField("name");
-			nameField.setAccessible(true);
-			nameField.set(handle, name);
-		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	/*
-	 * This doesn't work (1.12)
-	 * @param event
-	 */
+    private DataBaseManager db;
+    private NameLayerBungee plugin;
+
+    public BungeeListener(DataBaseManager db) {
+        this.db = db;
+        plugin = NameLayerBungee.getInstance();
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void postLoginEvent(LoginEvent event) {
+        PendingConnection pending = event.getConnection();
+        InitialHandler handle = (InitialHandler) pending;
+        UUID uuid = pending.getUniqueId();
+        db.addPlayer(pending.getName(), uuid);
+        String name = db.getCurrentName(uuid);
+        // pre 1.11
+        try {
+            Field loginField = InitialHandler.class.getDeclaredField("loginRequest");
+            loginField.setAccessible(true);
+            LoginRequest request = (LoginRequest) loginField.get(handle);
+            request.setData(name);
+            //setFinalStatic(nameField, name, con);
+        } catch (NoSuchFieldException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        // post 1.11
+        try {
+            Field nameField = InitialHandler.class.getDeclaredField("name");
+            nameField.setAccessible(true);
+            nameField.set(handle, name);
+        } catch (NoSuchFieldException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /*
+     * This doesn't work (1.12)
+     * @param event
+     */
 	/*@EventHandler(priority = EventPriority.LOWEST)
 	public void postLoginEvent(PostLoginEvent event) {
 		UUID uuid = event.getPlayer().getUniqueId();
 		String name = db.getCurrentName(uuid);
 		event.getPlayer().setDisplayName(name);
 	}*/
-	
-	public void setFinalStatic(Field field, Object newValue, Object object) {
-		try {
-			field.setAccessible(true);
 
-			// remove final modifier from field
-			Field modifiersField;
-			modifiersField = Field.class.getDeclaredField("modifiers");
-			modifiersField.setAccessible(true);
-			modifiersField
-					.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+    public void setFinalStatic(Field field, Object newValue, Object object) {
+        try {
+            field.setAccessible(true);
 
-			field.set(object, newValue);
-		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+            // remove final modifier from field
+            Field modifiersField;
+            modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField
+                .setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+            field.set(object, newValue);
+        } catch (NoSuchFieldException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

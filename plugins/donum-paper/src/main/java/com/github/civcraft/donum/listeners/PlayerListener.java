@@ -7,9 +7,9 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 public class PlayerListener implements Listener {
-	
-	@EventHandler
-	public void playerWasStupid(PlayerDeathEvent e) {
-		Donum.getManager().saveDeathInventory(e.getEntity().getUniqueId(), new ItemMap(e.getDrops()));
-	}
+
+    @EventHandler
+    public void playerWasStupid(PlayerDeathEvent e) {
+        Donum.getManager().saveDeathInventory(e.getEntity().getUniqueId(), new ItemMap(e.getDrops()));
+    }
 }

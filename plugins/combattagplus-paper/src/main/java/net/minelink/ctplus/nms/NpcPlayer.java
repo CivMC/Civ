@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 public class NpcPlayer extends ServerPlayer {
 
     private NpcIdentity identity;
+
     public NpcPlayer(MinecraftServer server, ServerLevel world, GameProfile profile, ClientInformation clientInformation) {
         super(server, world, profile, clientInformation);
     }
@@ -36,7 +37,7 @@ public class NpcPlayer extends ServerPlayer {
         GameProfile gameProfile = new GameProfile(UUID.randomUUID(), NpcNameGeneratorFactory.getNameGenerator().generate(player));
         ClientInformation clientInformation = ((CraftPlayer) player).getHandle().clientInformation();
 
-        for (Map.Entry<String, Property> entry: ((CraftPlayer) player).getProfile().getProperties().entries()) {
+        for (Map.Entry<String, Property> entry : ((CraftPlayer) player).getProfile().getProperties().entries()) {
             gameProfile.getProperties().put(entry.getKey(), entry.getValue());
         }
 

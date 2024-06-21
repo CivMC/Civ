@@ -12,15 +12,15 @@ import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
 
 public class PseudoPlayerIdentity extends ServerPlayer {
 
-	public PseudoPlayerIdentity(MinecraftServer minecraftserver, ServerLevel worldserver, GameProfile gameprofile) {
-		super(minecraftserver, worldserver, gameprofile, ClientInformation.createDefault());
-	}
+    public PseudoPlayerIdentity(MinecraftServer minecraftserver, ServerLevel worldserver, GameProfile gameprofile) {
+        super(minecraftserver, worldserver, gameprofile, ClientInformation.createDefault());
+    }
 
-	public static ServerPlayer generate(UUID uuid, String name) {
-		MinecraftServer minecraftServer = MinecraftServer.getServer();
-		ServerLevel worldServer = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle();
-		GameProfile gameProfile = new GameProfile(uuid, name);
-		return new PseudoPlayerIdentity(minecraftServer, worldServer, gameProfile);
-	}
+    public static ServerPlayer generate(UUID uuid, String name) {
+        MinecraftServer minecraftServer = MinecraftServer.getServer();
+        ServerLevel worldServer = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle();
+        GameProfile gameProfile = new GameProfile(uuid, name);
+        return new PseudoPlayerIdentity(minecraftServer, worldServer, gameProfile);
+    }
 
 }

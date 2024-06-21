@@ -1,6 +1,5 @@
 /**
  * @author Aleksey Terzi
- *
  */
 
 package com.aleksey.castlegates.plugins.bastion;
@@ -12,6 +11,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public interface IBastionManager {
-	void init();
-	boolean canUndraw(List<Player> players, List<Block> bridgeBlocks, ICitadel jukeAlertCitadel);
+
+    void init();
+
+    boolean canUndraw(List<Player> players, List<Block> bridgeBlocks, ICitadel jukeAlertCitadel);
 }

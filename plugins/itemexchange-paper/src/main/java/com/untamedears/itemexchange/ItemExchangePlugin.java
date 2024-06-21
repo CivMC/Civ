@@ -23,76 +23,76 @@ import vg.civcraft.mc.civmodcore.utilities.DependencyGlue;
  */
 public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
 
-	private static ItemExchangePlugin instance;
-	private static ItemExchangeConfig config;
-	private static CommandManager commands;
-	private static ModifierRegistrar modifiers;
+    private static ItemExchangePlugin instance;
+    private static ItemExchangeConfig config;
+    private static CommandManager commands;
+    private static ModifierRegistrar modifiers;
 
-	private final List<DependencyGlue> glues = List.of(
-			new NameLayerGlue(this),
-			new CitadelGlue(this),
-			new JukeAlertGlue(this)
-	);
+    private final List<DependencyGlue> glues = List.of(
+        new NameLayerGlue(this),
+        new CitadelGlue(this),
+        new JukeAlertGlue(this)
+    );
 
-	@Override
-	public void onEnable() {
-		instance = this;
-		super.onEnable();
-		saveDefaultConfig();
-		config = new ItemExchangeConfig(this);
-		config.parse();
-		commands = new CommandRegistrar(this);
-		commands.init();
-		modifiers = new ModifierRegistrar();
-		modifiers.registerModifier(DisplayNameModifier.TEMPLATE); // 100
-		modifiers.registerModifier(EnchantModifier.TEMPLATE); // 200
-		modifiers.registerModifier(EnchantStorageModifier.TEMPLATE); // 201
-		modifiers.registerModifier(LoreModifier.TEMPLATE); // 300
-		modifiers.registerModifier(PotionModifier.TEMPLATE); // 400
-		modifiers.registerModifier(DamageableModifier.TEMPLATE); // 500
-		modifiers.registerModifier(RepairModifier.TEMPLATE); // 600
-		modifiers.registerModifier(BookModifier.TEMPLATE); // 1000
-		registerListener(new ItemExchangeListener());
-		this.glues.forEach(DependencyGlue::registerGlue);
-	}
+    @Override
+    public void onEnable() {
+        instance = this;
+        super.onEnable();
+        saveDefaultConfig();
+        config = new ItemExchangeConfig(this);
+        config.parse();
+        commands = new CommandRegistrar(this);
+        commands.init();
+        modifiers = new ModifierRegistrar();
+        modifiers.registerModifier(DisplayNameModifier.TEMPLATE); // 100
+        modifiers.registerModifier(EnchantModifier.TEMPLATE); // 200
+        modifiers.registerModifier(EnchantStorageModifier.TEMPLATE); // 201
+        modifiers.registerModifier(LoreModifier.TEMPLATE); // 300
+        modifiers.registerModifier(PotionModifier.TEMPLATE); // 400
+        modifiers.registerModifier(DamageableModifier.TEMPLATE); // 500
+        modifiers.registerModifier(RepairModifier.TEMPLATE); // 600
+        modifiers.registerModifier(BookModifier.TEMPLATE); // 1000
+        registerListener(new ItemExchangeListener());
+        this.glues.forEach(DependencyGlue::registerGlue);
+    }
 
-	@Override
-	public void onDisable() {
-		this.glues.forEach(DependencyGlue::resetGlue);
-		if (modifiers != null) {
-			modifiers.reset();
-			modifiers = null;
-		}
-		if (config != null) {
-			config.reset();
-			config = null;
-		}
-		if (commands != null) {
-			commands.reset();
-			commands = null;
-		}
-		super.onDisable();
-	}
+    @Override
+    public void onDisable() {
+        this.glues.forEach(DependencyGlue::resetGlue);
+        if (modifiers != null) {
+            modifiers.reset();
+            modifiers = null;
+        }
+        if (config != null) {
+            config.reset();
+            config = null;
+        }
+        if (commands != null) {
+            commands.reset();
+            commands = null;
+        }
+        super.onDisable();
+    }
 
-	@Override
-	public void close() throws Exception {
-		instance = null;
-	}
+    @Override
+    public void close() throws Exception {
+        instance = null;
+    }
 
-	public static ItemExchangeConfig config() {
-		return config;
-	}
+    public static ItemExchangeConfig config() {
+        return config;
+    }
 
-	public static CommandManager commandManager() {
-		return commands;
-	}
+    public static CommandManager commandManager() {
+        return commands;
+    }
 
-	public static ModifierRegistrar modifierRegistrar() {
-		return modifiers;
-	}
+    public static ModifierRegistrar modifierRegistrar() {
+        return modifiers;
+    }
 
-	public static ItemExchangePlugin getInstance() {
-		return instance;
-	}
+    public static ItemExchangePlugin getInstance() {
+        return instance;
+    }
 
 }

@@ -13,20 +13,20 @@ import org.bukkit.command.CommandSender;
 @CommandPermission("itemexchange.reload")
 public final class ReloadCommand extends BaseCommand {
 
-	private final ItemExchangePlugin plugin;
+    private final ItemExchangePlugin plugin;
 
-	public ReloadCommand(ItemExchangePlugin plugin) {
-		this.plugin = plugin;
-	}
+    public ReloadCommand(ItemExchangePlugin plugin) {
+        this.plugin = plugin;
+    }
 
-	@Default
-	@Description("Reload's ItemExchange's config.")
-	public void onReloadConfig(CommandSender sender) {
-		this.plugin.saveDefaultConfig();
-		ItemExchangePlugin.config().reset();
-		this.plugin.reloadConfig();
-		ItemExchangePlugin.config().parse();
-		sender.sendMessage(ChatColor.GREEN + "ItemExchange's config has been reloaded.");
-	}
+    @Default
+    @Description("Reload's ItemExchange's config.")
+    public void onReloadConfig(CommandSender sender) {
+        this.plugin.saveDefaultConfig();
+        ItemExchangePlugin.config().reset();
+        this.plugin.reloadConfig();
+        ItemExchangePlugin.config().parse();
+        sender.sendMessage(ChatColor.GREEN + "ItemExchange's config has been reloaded.");
+    }
 
 }

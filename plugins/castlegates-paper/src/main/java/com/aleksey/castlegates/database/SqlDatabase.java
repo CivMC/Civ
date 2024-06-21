@@ -1,6 +1,5 @@
 /**
  * @author Aleksey Terzi
- *
  */
 
 package com.aleksey.castlegates.database;
@@ -17,7 +16,8 @@ import java.util.logging.Logger;
 import com.aleksey.castlegates.utils.ResourceHelper;
 
 public class SqlDatabase {
-	private final String _host;
+
+    private final String _host;
     private final int _port;
     private final String _db;
     private final String _user;
@@ -72,11 +72,11 @@ public class SqlDatabase {
     }
 
     public boolean checkConnection() {
-    	if(isConnected()) return true;
+        if (isConnected()) return true;
 
-		_logger.log(Level.INFO, "Database went away, reconnecting.");
+        _logger.log(Level.INFO, "Database went away, reconnecting.");
 
-		return connect();
+        return connect();
     }
 
     public PreparedStatement prepareStatement(String sqlStatement) throws SQLException {
@@ -88,28 +88,28 @@ public class SqlDatabase {
     }
 
     public boolean initDb() {
-    	_logger.log(Level.INFO, "Database initialization started...");
+        _logger.log(Level.INFO, "Database initialization started...");
 
-    	ArrayList<String> list = ResourceHelper.readScriptList("/create_db.txt");
+        ArrayList<String> list = ResourceHelper.readScriptList("/create_db.txt");
 
         if (list == null) {
             _logger.log(Level.SEVERE, "Resource create_db.txt is not found.");
             return false;
         }
 
-		for(String script : list) {
-			try (PreparedStatement statement = prepareStatement(script)) {
-				statement.execute();
-	    	} catch (SQLException e) {
-	    		_logger.log(Level.SEVERE, "Database is NOT initialized.");
-	    		_logger.log(Level.SEVERE, "Failed script: \n" + script);
-				e.printStackTrace();
-				return false;
-			}
-		}
+        for (String script : list) {
+            try (PreparedStatement statement = prepareStatement(script)) {
+                statement.execute();
+            } catch (SQLException e) {
+                _logger.log(Level.SEVERE, "Database is NOT initialized.");
+                _logger.log(Level.SEVERE, "Failed script: \n" + script);
+                e.printStackTrace();
+                return false;
+            }
+        }
 
-		_logger.log(Level.INFO, "Database initialized.");
+        _logger.log(Level.INFO, "Database initialized.");
 
-		return true;
+        return true;
     }
 }

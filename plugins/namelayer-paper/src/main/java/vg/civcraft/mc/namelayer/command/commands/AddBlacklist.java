@@ -17,38 +17,38 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class AddBlacklist extends BaseCommandMiddle {
 
-	@CommandAlias("nlbl|blacklist|addblacklist")
-	@Syntax("<group> <player>")
-	@Description("Blacklist a player for a specific group")
-	@CommandCompletion("@NL_Groups @allplayers")
-	public void execute(Player sender, String groupName, String playerName) {
-		Player p = (Player) sender;
-		Group g = GroupManager.getGroup(groupName);
-		if (g == null) {
-			p.sendMessage(ChatColor.RED + "This group does not exist");
-			return;
-		}
-		if (!gm.hasAccess(g, p.getUniqueId(),
-				PermissionType.getPermission("BLACKLIST"))
-				&& !(p.isOp() || p.hasPermission("namelayer.admin"))) {
-			p.sendMessage(ChatColor.RED + "You do not have the required permissions to do this");
-			return;
-		}
-		UUID targetUUID = NameAPI.getUUID(playerName);
-		if (targetUUID == null) {
-			p.sendMessage(ChatColor.RED + "This player does not exist");
-			return;
-		}
-		if (g.isMember(targetUUID)) {
-			p.sendMessage(ChatColor.RED + "You can't blacklist members of a group");
-			return;
-		}
-		BlackList bl = NameLayerPlugin.getBlackList();
-		if (bl.isBlacklisted(g, targetUUID)) {
-			p.sendMessage(ChatColor.RED + "This player is already blacklisted");
-			return;
-		}
-		bl.addBlacklistMember(g, targetUUID, true);
-		p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(targetUUID) + " was successfully blacklisted on the group " + g.getName());
-	}
+    @CommandAlias("nlbl|blacklist|addblacklist")
+    @Syntax("<group> <player>")
+    @Description("Blacklist a player for a specific group")
+    @CommandCompletion("@NL_Groups @allplayers")
+    public void execute(Player sender, String groupName, String playerName) {
+        Player p = (Player) sender;
+        Group g = GroupManager.getGroup(groupName);
+        if (g == null) {
+            p.sendMessage(ChatColor.RED + "This group does not exist");
+            return;
+        }
+        if (!gm.hasAccess(g, p.getUniqueId(),
+            PermissionType.getPermission("BLACKLIST"))
+            && !(p.isOp() || p.hasPermission("namelayer.admin"))) {
+            p.sendMessage(ChatColor.RED + "You do not have the required permissions to do this");
+            return;
+        }
+        UUID targetUUID = NameAPI.getUUID(playerName);
+        if (targetUUID == null) {
+            p.sendMessage(ChatColor.RED + "This player does not exist");
+            return;
+        }
+        if (g.isMember(targetUUID)) {
+            p.sendMessage(ChatColor.RED + "You can't blacklist members of a group");
+            return;
+        }
+        BlackList bl = NameLayerPlugin.getBlackList();
+        if (bl.isBlacklisted(g, targetUUID)) {
+            p.sendMessage(ChatColor.RED + "This player is already blacklisted");
+            return;
+        }
+        bl.addBlacklistMember(g, targetUUID, true);
+        p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(targetUUID) + " was successfully blacklisted on the group " + g.getName());
+    }
 }

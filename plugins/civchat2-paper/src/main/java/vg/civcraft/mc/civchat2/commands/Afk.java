@@ -9,14 +9,14 @@ import vg.civcraft.mc.civchat2.CivChat2;
 
 public class Afk extends BaseCommand {
 
-	@CommandAlias("afk")
-	@Description("Toggle afk status")
-	public void execute(Player player) {
-		boolean isAfk = CivChat2.getInstance().getCivChat2Manager().togglePlayerAfk(player);
-		if (isAfk) {
-			player.sendMessage(ChatStrings.chatAfk);
-		} else {
-			player.sendMessage(ChatStrings.chatNotAfk);
-		}
-	}
+    @CommandAlias("afk")
+    @Description("Toggle afk status")
+    public void execute(Player player) {
+        boolean isAfk = CivChat2.getInstance().getCivChat2Manager().togglePlayerAfk(player);
+        if (isAfk) {
+            player.sendMessage(ChatStrings.chatAfk);
+        } else {
+            player.sendMessage(ChatStrings.chatNotAfk);
+        }
+    }
 }

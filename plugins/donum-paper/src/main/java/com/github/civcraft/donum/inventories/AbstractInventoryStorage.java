@@ -5,21 +5,21 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 
 public class AbstractInventoryStorage {
-	
-	private UUID owner;
-	protected ItemMap inventory;
-	
-	public AbstractInventoryStorage(UUID owner, ItemMap inventory) {
-		this.owner = owner;
-		this.inventory = inventory;
-	}
-	
-	public UUID getOwner() {
-		return owner;
-	}
-	
-	public ItemMap getInventory() {
-		return inventory;
-	}
+
+    private UUID owner;
+    protected ItemMap inventory;
+
+    public AbstractInventoryStorage(UUID owner, ItemMap inventory) {
+        this.owner = owner;
+        this.inventory = inventory;
+    }
+
+    public UUID getOwner() {
+        return owner;
+    }
+
+    public ItemMap getInventory() {
+        return inventory;
+    }
 
 }

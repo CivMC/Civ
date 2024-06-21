@@ -3,11 +3,11 @@ main: vg.civcraft.mc.civchat2.CivChat2
 version: ${version}
 api-version: 1.16
 authors:
-- jjj5311
-- Maxopoly
+  - jjj5311
+  - Maxopoly
 depend:
-- NameLayer
-- CivModCore
+  - NameLayer
+  - CivModCore
 description: CivChat2 limits the chat radius to 1000 blocks. However Private Messaging and Group Chat works above the 1000 block chat radius.
 permissions:
   CivChat2.*:

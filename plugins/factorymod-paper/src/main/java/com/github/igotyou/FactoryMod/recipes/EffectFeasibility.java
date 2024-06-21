@@ -7,4 +7,6 @@ import javax.annotation.Nullable;
  * The reason string should be plaintext and formatted such that it can be inserted in a
  * player message that reads like "The factory couldn't run because {reasonSnippet}."
  */
-public record EffectFeasibility(boolean isFeasible, @Nullable String reasonSnippet) { }
+public record EffectFeasibility(boolean isFeasible, @Nullable String reasonSnippet) {
+
+}

@@ -7,22 +7,22 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class EmptyBucketAction extends LoggableBlockAction {
-	
-	public static final String ID = "EMPTY_BUCKET";
 
-	public EmptyBucketAction(long time, Snitch snitch, UUID player, Location location, Material material) {
-		super(time, snitch, player, location, material);
-	}
+    public static final String ID = "EMPTY_BUCKET";
 
-	@Override
-	public String getChatRepresentationIdentifier() {
-		return "Emptied bucket";
-	}
+    public EmptyBucketAction(long time, Snitch snitch, UUID player, Location location, Material material) {
+        super(time, snitch, player, location, material);
+    }
+
+    @Override
+    public String getChatRepresentationIdentifier() {
+        return "Emptied bucket";
+    }
 
 
-	@Override
-	public String getIdentifier() {
-		return ID;
-	}
+    @Override
+    public String getIdentifier() {
+        return ID;
+    }
 
 }

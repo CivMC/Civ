@@ -2,72 +2,73 @@
 
 <Configuration status="WARN" packages="com.mojang.util">
 
-    <Appenders>
+  <Appenders>
 
-        <Console name="WINDOWS_COMPAT" target="SYSTEM_OUT"></Console>
+    <Console name="WINDOWS_COMPAT" target="SYSTEM_OUT"></Console>
 
-        <Queue name="TerminalConsole">
+    <Queue name="TerminalConsole">
 
-            <PatternLayout pattern="[%d{HH:mm:ss} %level]: %msg%n" />
+      <PatternLayout pattern="[%d{HH:mm:ss} %level]: %msg%n"/>
 
-        </Queue>
+    </Queue>
 
-        <RollingRandomAccessFile name="File" fileName="logs/latest.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
+    <RollingRandomAccessFile name="File" fileName="logs/latest.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
 
-            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n" />
+      <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level]: %msg%n"/>
 
-            <Policies>
+      <Policies>
 
-                <TimeBasedTriggeringPolicy />
+        <TimeBasedTriggeringPolicy/>
 
-                <OnStartupTriggeringPolicy />
+        <OnStartupTriggeringPolicy/>
 
-            </Policies>
+      </Policies>
 
-        </RollingRandomAccessFile>
+    </RollingRandomAccessFile>
 
-		        <RollingRandomAccessFile name="ChatLogsFile" fileName="logs/ChatLogs/latest.log" filePattern="logs/ChatLogs/%d{yyyy-MM-dd}-%i.log.gz">
+    <RollingRandomAccessFile name="ChatLogsFile" fileName="logs/ChatLogs/latest.log"
+                             filePattern="logs/ChatLogs/%d{yyyy-MM-dd}-%i.log.gz">
 
-            <PatternLayout pattern="[%d{HH:mm:ss}] [Chat]: %msg%n" />
+      <PatternLayout pattern="[%d{HH:mm:ss}] [Chat]: %msg%n"/>
 
-            <Policies>
+      <Policies>
 
-                <TimeBasedTriggeringPolicy />
+        <TimeBasedTriggeringPolicy/>
 
-                <OnStartupTriggeringPolicy />
+        <OnStartupTriggeringPolicy/>
 
-            </Policies>
+      </Policies>
 
-        </RollingRandomAccessFile>
+    </RollingRandomAccessFile>
 
-    </Appenders>
+  </Appenders>
 
-    <Loggers>
+  <Loggers>
 
-	    <Logger name="ChatLogs" level="info" additivity="false">
+    <Logger name="ChatLogs" level="info" additivity="false">
 
-            <AppenderRef ref="ChatLogsFile"/>
+      <AppenderRef ref="ChatLogsFile"/>
 
-            <AppenderRef ref="TerminalConsole" level="info"/>
+      <AppenderRef ref="TerminalConsole" level="info"/>
 
-        </Logger>
+    </Logger>
 
-        <Root level="info">
+    <Root level="info">
 
-            <filters>
+      <filters>
 
-                <MarkerFilter marker="NETWORK_PACKETS" onMatch="DENY" onMismatch="NEUTRAL" />
+        <MarkerFilter marker="NETWORK_PACKETS" onMatch="DENY" onMismatch="NEUTRAL"/>
 
-            </filters>
+      </filters>
 
-            <AppenderRef ref="WINDOWS_COMPAT" level="info"/>
+      <AppenderRef ref="WINDOWS_COMPAT" level="info"/>
 
-            <AppenderRef ref="File"/>
+      <AppenderRef ref="File"/>
 
-            <AppenderRef ref="TerminalConsole" level="info"/>
+      <AppenderRef ref="TerminalConsole" level="info"/>
 
-        </Root>
+    </Root>
 
-    </Loggers>
+  </Loggers>
 
 </Configuration>

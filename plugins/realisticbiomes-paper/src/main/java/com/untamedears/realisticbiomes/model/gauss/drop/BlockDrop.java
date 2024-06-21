@@ -9,30 +9,30 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.auto.YamlDataOb
 
 public class BlockDrop extends YamlDataObject<BlockDrop> {
 
-	private List<ItemStack> drops;
-	
-	public BlockDrop(Location location, boolean isNew, ItemStack drop) {
-		this(location, isNew, Arrays.asList(drop));
-	}
-	
-	public BlockDrop(Location location, boolean isNew, List<ItemStack> drops) {
-		super(location, isNew);
-		this.drops = drops;
-	}
-	
-	public List<ItemStack> getDrops() {
-		return drops;
-	}
+    private List<ItemStack> drops;
 
-	@Override
-	protected void concreteSerialize(YamlConfiguration config) {
-		config.set("drops", drops);
-	}
-	
-	public static BlockDrop deserialize(Location location, YamlConfiguration config) {
-		@SuppressWarnings("unchecked")
-		List<ItemStack> drops = (List<ItemStack>) config.getList("drops");
-		return new BlockDrop(location, false, drops);
-	}
+    public BlockDrop(Location location, boolean isNew, ItemStack drop) {
+        this(location, isNew, Arrays.asList(drop));
+    }
+
+    public BlockDrop(Location location, boolean isNew, List<ItemStack> drops) {
+        super(location, isNew);
+        this.drops = drops;
+    }
+
+    public List<ItemStack> getDrops() {
+        return drops;
+    }
+
+    @Override
+    protected void concreteSerialize(YamlConfiguration config) {
+        config.set("drops", drops);
+    }
+
+    public static BlockDrop deserialize(Location location, YamlConfiguration config) {
+        @SuppressWarnings("unchecked")
+        List<ItemStack> drops = (List<ItemStack>) config.getList("drops");
+        return new BlockDrop(location, false, drops);
+    }
 
 }

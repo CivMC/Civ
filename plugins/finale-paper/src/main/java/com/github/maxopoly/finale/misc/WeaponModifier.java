@@ -5,58 +5,59 @@ import java.util.Map;
 import org.bukkit.Material;
 
 public class WeaponModifier {
-	
-	public static final int DAMAGE_NON_ADJUSTED = -1;
-	public static final double ATTACK_SPEED_NON_ADJUSTED = -1.0D;
 
-	private static final class WeaponConfig {
-		private Material mat;
-		private double damage;
-		private double attackSpeed;
+    public static final int DAMAGE_NON_ADJUSTED = -1;
+    public static final double ATTACK_SPEED_NON_ADJUSTED = -1.0D;
 
-		private WeaponConfig(Material mat, double damage, double attackSpeed) {
-			this.mat = mat;
-			this.damage = damage;
-			this.attackSpeed = attackSpeed;
-		}
+    private static final class WeaponConfig {
 
-		public double getAttackSpeed() {
-			return attackSpeed;
-		}
+        private Material mat;
+        private double damage;
+        private double attackSpeed;
 
-		public double getDamage() {
-			return damage;
-		}
+        private WeaponConfig(Material mat, double damage, double attackSpeed) {
+            this.mat = mat;
+            this.damage = damage;
+            this.attackSpeed = attackSpeed;
+        }
 
-		public Material getMaterial() {
-			return mat;
-		}
-	}
+        public double getAttackSpeed() {
+            return attackSpeed;
+        }
 
-	private Map<Material, WeaponConfig> weapons;
+        public double getDamage() {
+            return damage;
+        }
 
-	public WeaponModifier() {
-		this.weapons = new EnumMap<>(Material.class);
-	}
+        public Material getMaterial() {
+            return mat;
+        }
+    }
 
-	public void addWeapon(Material m, int damage, double attackSpeed) {
-		weapons.put(m, new WeaponConfig(m, damage, attackSpeed));
-	}
+    private Map<Material, WeaponConfig> weapons;
 
-	public double getAttackSpeed(Material m) {
-		WeaponConfig config = weapons.get(m);
-		if (config == null) {
-			return DAMAGE_NON_ADJUSTED;
-		}
-		return config.getAttackSpeed();
-	}
+    public WeaponModifier() {
+        this.weapons = new EnumMap<>(Material.class);
+    }
 
-	public double getDamage(Material m) {
-		WeaponConfig config = weapons.get(m);
-		if (config == null) {
-			return ATTACK_SPEED_NON_ADJUSTED;
-		}
-		return config.getDamage();
-	}
+    public void addWeapon(Material m, int damage, double attackSpeed) {
+        weapons.put(m, new WeaponConfig(m, damage, attackSpeed));
+    }
+
+    public double getAttackSpeed(Material m) {
+        WeaponConfig config = weapons.get(m);
+        if (config == null) {
+            return DAMAGE_NON_ADJUSTED;
+        }
+        return config.getAttackSpeed();
+    }
+
+    public double getDamage(Material m) {
+        WeaponConfig config = weapons.get(m);
+        if (config == null) {
+            return ATTACK_SPEED_NON_ADJUSTED;
+        }
+        return config.getDamage();
+    }
 
 }

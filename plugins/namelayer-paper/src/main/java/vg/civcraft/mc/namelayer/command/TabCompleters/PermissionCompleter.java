@@ -7,10 +7,11 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 /**
  * Created by isaac on 2/2/2015.
- *
+ * <p>
  * Used by tab completers to get a list of user types
  */
 public class PermissionCompleter {
+
     public static List<String> complete(String lastArg) {
         List<String> typeStrings = new ArrayList<>();
 
@@ -19,7 +20,7 @@ public class PermissionCompleter {
         }
 
         if (lastArg == null) {
-          	return typeStrings;
+            return typeStrings;
         } else {
             return StringUtil.copyPartialMatches(lastArg, typeStrings, new ArrayList<>());
         }

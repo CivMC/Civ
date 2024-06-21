@@ -9,9 +9,9 @@ import javax.annotation.Nonnull;
  */
 public abstract class NamedCommand extends BaseCommand {
 
-	@SuppressWarnings("deprecation")
-	public NamedCommand(@Nonnull final String command) {
-		super(Objects.requireNonNull(command));
-	}
+    @SuppressWarnings("deprecation")
+    public NamedCommand(@Nonnull final String command) {
+        super(Objects.requireNonNull(command));
+    }
 
 }

@@ -9,13 +9,13 @@ import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
 public class JsonStorageEngine<D extends JsonableDataObject<D>> extends AutoStorageEngine<D> {
 
-	private static final JsonParser jsonParser = new JsonParser();
+    private static final JsonParser jsonParser = new JsonParser();
 
-	public JsonStorageEngine(ManagedDatasource db, Logger logger,
-			BiFunction<Location, JsonObject, D> dataDeserializer) {
-		super(db, logger, (l, s) -> {
-			return dataDeserializer.apply(l, (JsonObject)jsonParser.parse(s));
-		});
-	}
+    public JsonStorageEngine(ManagedDatasource db, Logger logger,
+                             BiFunction<Location, JsonObject, D> dataDeserializer) {
+        super(db, logger, (l, s) -> {
+            return dataDeserializer.apply(l, (JsonObject) jsonParser.parse(s));
+        });
+    }
 
 }

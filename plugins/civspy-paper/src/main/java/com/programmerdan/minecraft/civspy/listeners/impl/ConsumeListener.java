@@ -21,42 +21,42 @@ import com.programmerdan.minecraft.civspy.util.ItemStackToString;
 /**
  * Contributes <code>player.consume</code> datapoints. What was consumed is the
  * string value.
- * 
+ *
  * @author ProgrammerDan
  */
 public class ConsumeListener extends ServerDataListener {
 
-	public ConsumeListener(DataManager target, Logger logger, String server) {
-		super(target, logger, server);
-	}
+    public ConsumeListener(DataManager target, Logger logger, String server) {
+        super(target, logger, server);
+    }
 
-	@Override
-	public void shutdown() {
-		// NO-OP
-	}
+    @Override
+    public void shutdown() {
+        // NO-OP
+    }
 
-	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
-	public void consumeEvent(PlayerItemConsumeEvent consumeEvent) {
-		try {
-			Player player = consumeEvent.getPlayer();
-			if (player == null) return;
-			UUID uuid = player.getUniqueId();
-			
-			ItemStack inItem = consumeEvent.getItem();
-			if (inItem == null) return;
-			
-			Location location = player.getLocation();
-			if (location == null) return;
-			Chunk chunk = location.getChunk();
-		
-			ItemStack pickQ = inItem.clone();
-			pickQ.setAmount(1);
-			DataSample rpick = new PointDataSample("player.consume", this.getServer(),
-					chunk.getWorld().getName(), uuid, chunk.getX(), chunk.getZ(), 
-					ItemStackToString.toString(pickQ));
-			this.record(rpick);
-		} catch (Exception e) {
-			logger.log(Level.SEVERE, "Failed to track Consume Event in CivSpy", e);
-		}
-	}
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void consumeEvent(PlayerItemConsumeEvent consumeEvent) {
+        try {
+            Player player = consumeEvent.getPlayer();
+            if (player == null) return;
+            UUID uuid = player.getUniqueId();
+
+            ItemStack inItem = consumeEvent.getItem();
+            if (inItem == null) return;
+
+            Location location = player.getLocation();
+            if (location == null) return;
+            Chunk chunk = location.getChunk();
+
+            ItemStack pickQ = inItem.clone();
+            pickQ.setAmount(1);
+            DataSample rpick = new PointDataSample("player.consume", this.getServer(),
+                chunk.getWorld().getName(), uuid, chunk.getX(), chunk.getZ(),
+                ItemStackToString.toString(pickQ));
+            this.record(rpick);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Failed to track Consume Event in CivSpy", e);
+        }
+    }
 }

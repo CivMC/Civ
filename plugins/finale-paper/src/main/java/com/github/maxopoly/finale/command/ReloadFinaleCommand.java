@@ -10,11 +10,11 @@ import org.bukkit.command.CommandSender;
 
 public class ReloadFinaleCommand extends BaseCommand {
 
-	@CommandAlias("finalereload")
-	@CommandPermission("finale.op")
-	@Description("Reloads finale entirely")
-	public void execute(CommandSender sender) {
-		Finale.getPlugin().reload();
-		sender.sendMessage(ChatColor.GREEN + "Reloaded Finale");
-	}
+    @CommandAlias("finalereload")
+    @CommandPermission("finale.op")
+    @Description("Reloads finale entirely")
+    public void execute(CommandSender sender) {
+        Finale.getPlugin().reload();
+        sender.sendMessage(ChatColor.GREEN + "Reloaded Finale");
+    }
 }

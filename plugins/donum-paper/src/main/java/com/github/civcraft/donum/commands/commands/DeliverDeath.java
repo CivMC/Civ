@@ -17,30 +17,29 @@ import vg.civcraft.mc.namelayer.NameAPI;
 
 public class DeliverDeath extends BaseCommand {
 
-	@CommandAlias("deliverdeath")
-	@Syntax("<player> [inventoriesToGet]")
-	@Description("Shows death inventories for a player, by default the last 25")
-	@CommandPermission("donum.op")
-	public void execute(Player player, String targetPlayer, @Optional String inventoriesToGet) {
-		UUID delUUID = NameAPI.getUUID(targetPlayer);
-		if (delUUID == null) {
-			player.sendMessage(ChatColor.RED + "This player has never logged into civcraft");
-			return;
-		}
-		int amountToRetrieve;
-		if (inventoriesToGet != null) {
-			try {
-				amountToRetrieve = Integer.parseInt(inventoriesToGet);
-			} catch (NumberFormatException e) {
-				player.sendMessage(ChatColor.RED + inventoriesToGet + " is not a valid number");
-				return;
-			}
-		}
-		else {
-			amountToRetrieve = 25;
-		}
-		List <DeathInventory> inventories = Donum.getManager().getDeathInventories(delUUID, amountToRetrieve);
-		DeathInventoryGUI gui = new DeathInventoryGUI(player.getUniqueId(), inventories);
-		gui.showScreen();
-	}
+    @CommandAlias("deliverdeath")
+    @Syntax("<player> [inventoriesToGet]")
+    @Description("Shows death inventories for a player, by default the last 25")
+    @CommandPermission("donum.op")
+    public void execute(Player player, String targetPlayer, @Optional String inventoriesToGet) {
+        UUID delUUID = NameAPI.getUUID(targetPlayer);
+        if (delUUID == null) {
+            player.sendMessage(ChatColor.RED + "This player has never logged into civcraft");
+            return;
+        }
+        int amountToRetrieve;
+        if (inventoriesToGet != null) {
+            try {
+                amountToRetrieve = Integer.parseInt(inventoriesToGet);
+            } catch (NumberFormatException e) {
+                player.sendMessage(ChatColor.RED + inventoriesToGet + " is not a valid number");
+                return;
+            }
+        } else {
+            amountToRetrieve = 25;
+        }
+        List<DeathInventory> inventories = Donum.getManager().getDeathInventories(delUUID, amountToRetrieve);
+        DeathInventoryGUI gui = new DeathInventoryGUI(player.getUniqueId(), inventories);
+        gui.showScreen();
+    }
 }

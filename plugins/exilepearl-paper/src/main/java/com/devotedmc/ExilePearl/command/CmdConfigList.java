@@ -6,78 +6,79 @@ import com.devotedmc.ExilePearl.config.PearlConfig;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
 public class CmdConfigList extends PearlCommand {
-	private final PearlConfig config;
-	private int lineLength;
 
-	public CmdConfigList(ExilePearlApi pearlApi) {
-		super(pearlApi);
+    private final PearlConfig config;
+    private int lineLength;
 
-		config = plugin.getPearlConfig();
+    public CmdConfigList(ExilePearlApi pearlApi) {
+        super(pearlApi);
 
-		this.senderMustBePlayer = false;
-		this.errorOnToManyArgs = false;
+        config = plugin.getPearlConfig();
 
-		this.aliases.add("list");
-		this.helpShort = "Lists the exile rule options";
-	}
+        this.senderMustBePlayer = false;
+        this.errorOnToManyArgs = false;
 
-	@Override
-	public void perform() {
+        this.aliases.add("list");
+        this.helpShort = "Lists the exile rule options";
+    }
 
-		StringBuilder sb = new StringBuilder();
-		sb.append(TextUtil.titleize("Exile Pearl Rules") + "\n");
-		lineLength = 0;
+    @Override
+    public void perform() {
 
-		appendIntRule(sb, ExileRule.PEARL_RADIUS.toString(), config.getRulePearlRadius());
-		appendBooleanRule(sb, ExileRule.DAMAGE_REINFORCEMENT);
-		appendBooleanRule(sb, ExileRule.CREATE_BASTION);
-		appendBooleanRule(sb, ExileRule.DAMAGE_BASTION);
-		appendBooleanRule(sb, ExileRule.ENTER_BASTION);
-		appendBooleanRule(sb, ExileRule.THROW_PEARL);
-		appendBooleanRule(sb, ExileRule.CHAT);
-		appendBooleanRule(sb, ExileRule.PVP);
-		appendBooleanRule(sb, ExileRule.KILL_PETS);
-		appendBooleanRule(sb, ExileRule.KILL_MOBS);
-		appendBooleanRule(sb, ExileRule.IGNITE);
-		appendBooleanRule(sb, ExileRule.USE_BUCKET);
-		appendBooleanRule(sb, ExileRule.USE_POTIONS);
-		appendBooleanRule(sb, ExileRule.USE_BED);
-		appendBooleanRule(sb, ExileRule.SUICIDE);
-		appendBooleanRule(sb, ExileRule.SNITCH);
-		appendBooleanRule(sb, ExileRule.MINE);
-		appendBooleanRule(sb, ExileRule.BREW);
-		appendBooleanRule(sb, ExileRule.ENCHANT);
-		appendBooleanRule(sb, ExileRule.COLLECT_XP);
-		appendBooleanRule(sb, ExileRule.USE_ANVIL);
-		appendBooleanRule(sb, ExileRule.PLACE_TNT);
-		appendBooleanRule(sb, ExileRule.FILL_BUCKET);
-		appendBooleanRule(sb, ExileRule.FILL_CAULDRON);
-		appendBooleanRule(sb, ExileRule.DRINK_BREWS);
-		appendBooleanRule(sb, ExileRule.MILK_COWS);
-		sb.setLength(sb.length() - 2);
+        StringBuilder sb = new StringBuilder();
+        sb.append(TextUtil.titleize("Exile Pearl Rules") + "\n");
+        lineLength = 0;
 
-		msg(sb.toString());
-	}
+        appendIntRule(sb, ExileRule.PEARL_RADIUS.toString(), config.getRulePearlRadius());
+        appendBooleanRule(sb, ExileRule.DAMAGE_REINFORCEMENT);
+        appendBooleanRule(sb, ExileRule.CREATE_BASTION);
+        appendBooleanRule(sb, ExileRule.DAMAGE_BASTION);
+        appendBooleanRule(sb, ExileRule.ENTER_BASTION);
+        appendBooleanRule(sb, ExileRule.THROW_PEARL);
+        appendBooleanRule(sb, ExileRule.CHAT);
+        appendBooleanRule(sb, ExileRule.PVP);
+        appendBooleanRule(sb, ExileRule.KILL_PETS);
+        appendBooleanRule(sb, ExileRule.KILL_MOBS);
+        appendBooleanRule(sb, ExileRule.IGNITE);
+        appendBooleanRule(sb, ExileRule.USE_BUCKET);
+        appendBooleanRule(sb, ExileRule.USE_POTIONS);
+        appendBooleanRule(sb, ExileRule.USE_BED);
+        appendBooleanRule(sb, ExileRule.SUICIDE);
+        appendBooleanRule(sb, ExileRule.SNITCH);
+        appendBooleanRule(sb, ExileRule.MINE);
+        appendBooleanRule(sb, ExileRule.BREW);
+        appendBooleanRule(sb, ExileRule.ENCHANT);
+        appendBooleanRule(sb, ExileRule.COLLECT_XP);
+        appendBooleanRule(sb, ExileRule.USE_ANVIL);
+        appendBooleanRule(sb, ExileRule.PLACE_TNT);
+        appendBooleanRule(sb, ExileRule.FILL_BUCKET);
+        appendBooleanRule(sb, ExileRule.FILL_CAULDRON);
+        appendBooleanRule(sb, ExileRule.DRINK_BREWS);
+        appendBooleanRule(sb, ExileRule.MILK_COWS);
+        sb.setLength(sb.length() - 2);
 
-	private void appendBooleanRule(StringBuilder sb, ExileRule rule) {
-		String tag = "<g>";
-		boolean value = config.canPerform(rule);
-		if (!value) {
-			tag = "<b>";
-		}
+        msg(sb.toString());
+    }
 
-		String txt = String.format("%s%s<n>, ", tag, rule.toString());
-		int strLength = txt.length() - 6;
-		if (lineLength + strLength > 50) {
-			sb.append("\n");
-			lineLength = 0;
-		}
+    private void appendBooleanRule(StringBuilder sb, ExileRule rule) {
+        String tag = "<g>";
+        boolean value = config.canPerform(rule);
+        if (!value) {
+            tag = "<b>";
+        }
 
-		sb.append(txt);
-		lineLength += strLength;
-	}
+        String txt = String.format("%s%s<n>, ", tag, rule.toString());
+        int strLength = txt.length() - 6;
+        if (lineLength + strLength > 50) {
+            sb.append("\n");
+            lineLength = 0;
+        }
 
-	private void appendIntRule(StringBuilder sb, String name, int value) {
-		sb.append(String.format("<a>%s<n>(%d), ", name, value));
-	}
+        sb.append(txt);
+        lineLength += strLength;
+    }
+
+    private void appendIntRule(StringBuilder sb, String name, int value) {
+        sb.append(String.format("<a>%s<n>(%d), ", name, value));
+    }
 }
