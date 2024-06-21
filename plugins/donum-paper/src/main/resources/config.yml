@@ -8,8 +8,8 @@ useBetterShards: true
 
 #database credentials
 database:
-  host: {{ central_db_location }}
-  database: {{ central_db_name }}
+  host: { { central_db_location } }
+  database: { { central_db_name } }
   port: 3306
-  password: {{ mysql_non_root_pass }}
-  user: {{ central_db_user }}
+  password: { { mysql_non_root_pass } }
+  user: { { central_db_user } }

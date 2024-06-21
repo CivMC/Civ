@@ -15,29 +15,29 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class ClickableInventoryListener implements Listener {
 
-	@EventHandler
-	public void inventoryClick(InventoryClickEvent event) {
-		if (!(event.getWhoClicked() instanceof Player player)) {
-			return;
-		}
-		ClickableInventory inventory = ClickableInventory.getOpenInventory(player);
-		if (inventory != null) {
-			event.setCancelled(true); // always cancel first to prevent dupes
-			inventory.itemClick(player, event.getRawSlot(), event.getClick());
-		}
-	}
+    @EventHandler
+    public void inventoryClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) {
+            return;
+        }
+        ClickableInventory inventory = ClickableInventory.getOpenInventory(player);
+        if (inventory != null) {
+            event.setCancelled(true); // always cancel first to prevent dupes
+            inventory.itemClick(player, event.getRawSlot(), event.getClick());
+        }
+    }
 
-	@EventHandler
-	public void inventoryClose(InventoryCloseEvent event) {
-		if (!(event.getPlayer() instanceof Player player)) { // Despite the name, it's not necessarily a player
-			return;
-		}
-		ClickableInventory.inventoryWasClosed(player);
-	}
+    @EventHandler
+    public void inventoryClose(InventoryCloseEvent event) {
+        if (!(event.getPlayer() instanceof Player player)) { // Despite the name, it's not necessarily a player
+            return;
+        }
+        ClickableInventory.inventoryWasClosed(player);
+    }
 
-	@EventHandler
-	public void playerLogoff(PlayerQuitEvent event) {
-		ClickableInventory.inventoryWasClosed(event.getPlayer());
-	}
+    @EventHandler
+    public void playerLogoff(PlayerQuitEvent event) {
+        ClickableInventory.inventoryWasClosed(event.getPlayer());
+    }
 
 }

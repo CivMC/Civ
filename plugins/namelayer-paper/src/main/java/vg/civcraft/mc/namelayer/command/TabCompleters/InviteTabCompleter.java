@@ -16,17 +16,18 @@ import vg.civcraft.mc.namelayer.listeners.PlayerListener;
  * Created by isaac on 2/2/2015.
  */
 public class InviteTabCompleter {
-	public static List<String> complete(String lastArg, Player sender) {
-		UUID uuid = NameAPI.getUUID(sender.getName());
-		Set<Group> groups = PlayerListener.getNotifications(uuid);
-		if (groups == null) {
-			return Collections.emptyList();
-		}
-		List<String> groupsString = groups.stream().map(Group::getName).collect(Collectors.toList());
-		if (lastArg == null) {
-			return groupsString;
-		}
 
-		return StringUtil.copyPartialMatches(lastArg, groupsString, new ArrayList<>());
-	}
+    public static List<String> complete(String lastArg, Player sender) {
+        UUID uuid = NameAPI.getUUID(sender.getName());
+        Set<Group> groups = PlayerListener.getNotifications(uuid);
+        if (groups == null) {
+            return Collections.emptyList();
+        }
+        List<String> groupsString = groups.stream().map(Group::getName).collect(Collectors.toList());
+        if (lastArg == null) {
+            return groupsString;
+        }
+
+        return StringUtil.copyPartialMatches(lastArg, groupsString, new ArrayList<>());
+    }
 }

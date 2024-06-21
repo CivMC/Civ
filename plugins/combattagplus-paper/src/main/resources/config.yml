@@ -15,7 +15,7 @@ untag-message: '&aYou are no longer in combat.'
 
 # This message is displayed to the player when they attempt to check the remaining time on their tag, while not being tagged
 command-untag-message: '&aYou are not in combat.'
- 
+
 # This message is displayed to the player when they check the remaining time on their tag via command. {time} will be replaced with the remaining tag time.
 command-tag-message: '&c{time} seconds remaining on your combat timer.'
 
@@ -157,7 +157,7 @@ worldguard: true
 towny: true
 
 # This is a list of worlds where combat tagging should be disabled.
-disabled-worlds: [world_the_end]
+disabled-worlds: [ world_the_end ]
 
 # This message is displayed when the player tries to execute a disabled command whilst in combat.
 disabled-command-message: '&b{command}&c is disabled in combat.'

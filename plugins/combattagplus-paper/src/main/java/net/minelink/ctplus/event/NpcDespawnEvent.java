@@ -28,8 +28,8 @@ public final class NpcDespawnEvent extends Event {
     public Npc getNpc() {
         return npc;
     }
-    
-    public NpcDespawnReason getDespawnReason(){
-    	return reason;
+
+    public NpcDespawnReason getDespawnReason() {
+        return reason;
     }
 }

@@ -10,29 +10,29 @@ import org.bukkit.entity.Player;
 
 public class PlayerBroadcastListener implements BroadcastListener {
 
-	private final UUID playerId;
+    private final UUID playerId;
 
-	public PlayerBroadcastListener(final Player player) {
-		Preconditions.checkNotNull(player, "player");
+    public PlayerBroadcastListener(final Player player) {
+        Preconditions.checkNotNull(player, "player");
 
-		this.playerId = player.getUniqueId();
-	}
+        this.playerId = player.getUniqueId();
+    }
 
-	@Override
-	public void broadcast(ExilePearl pearl) {
-		Location l = pearl.getHolder().getLocation();
-		String holderName = pearl.getHolder().getName();
+    @Override
+    public void broadcast(ExilePearl pearl) {
+        Location l = pearl.getHolder().getLocation();
+        String holderName = pearl.getHolder().getName();
 
-		String msg = String.format(Lang.pearlBroadcast, pearl.getPlayerName(), holderName, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
+        String msg = String.format(Lang.pearlBroadcast, pearl.getPlayerName(), holderName, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
 
-		Player p = Bukkit.getPlayer(playerId);
-		if (p != null && p.isOnline()) {
-			p.sendMessage(msg);
-		}
-	}
+        Player p = Bukkit.getPlayer(playerId);
+        if (p != null && p.isOnline()) {
+            p.sendMessage(msg);
+        }
+    }
 
-	@Override
-	public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -42,16 +42,16 @@ public class PlayerBroadcastListener implements BroadcastListener {
 
         PlayerBroadcastListener other = (PlayerBroadcastListener) o;
 
-		return playerId.equals(other.playerId);
-	}
+        return playerId.equals(other.playerId);
+    }
 
-	@Override
-	public int hashCode() {
-		return playerId.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return playerId.hashCode();
+    }
 
-	@Override
-	public boolean contains(Object o) {
-		return playerId.equals(o);
-	}
+    @Override
+    public boolean contains(Object o) {
+        return playerId.equals(o);
+    }
 }

@@ -5,8 +5,8 @@ package vg.civcraft.mc.civmodcore.inheritance;
  */
 public class ParentClass {
 
-	public static ParentClass create() {
-		return new ParentClass();
-	}
+    public static ParentClass create() {
+        return new ParentClass();
+    }
 
 }

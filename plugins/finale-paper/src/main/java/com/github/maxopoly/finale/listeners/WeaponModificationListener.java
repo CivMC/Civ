@@ -10,46 +10,46 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class WeaponModificationListener implements Listener {
-	
-	private final WeaponModifier manager = Finale.getPlugin().getManager().getWeaponModifer();
 
-	@EventHandler
-	public void weaponMod(InventoryClickEvent e) {
-		ItemStack is = e.getCurrentItem();
-		if (is == null) {
-			return;
-		}
+    private final WeaponModifier manager = Finale.getPlugin().getManager().getWeaponModifer();
 
-		is = ItemUtil.newModifiers(is); // there was a bug where modifiers weren't changing for items with already changed modifiers.
+    @EventHandler
+    public void weaponMod(InventoryClickEvent e) {
+        ItemStack is = e.getCurrentItem();
+        if (is == null) {
+            return;
+        }
 
-		ArmourModifier armourMod = Finale.getPlugin().getManager().getArmourModifier();
+        is = ItemUtil.newModifiers(is); // there was a bug where modifiers weren't changing for items with already changed modifiers.
 
-		double toughness = armourMod.getToughness(is.getType());
-		double armour = armourMod.getArmour(is.getType());
-		double knockbackResistance = armourMod.getKnockbackResistance(is.getType());
+        ArmourModifier armourMod = Finale.getPlugin().getManager().getArmourModifier();
 
-		if (toughness != -1 || armour != -1 || knockbackResistance != -1) {
-			if (toughness == -1) {
-				toughness = ItemUtil.getDefaultArmourToughness(is);
-			}
-			if (armour == -1) {
-				armour = ItemUtil.getDefaultArmour(is);
-			}
-			if (knockbackResistance == -1) {
-				knockbackResistance = ItemUtil.getDefaultKnockbackResistance(is);
-			}
-			is = ItemUtil.setArmour(ItemUtil.setArmourToughness(ItemUtil.setArmourKnockbackResistance(is, knockbackResistance), toughness), armour);
-		}
+        double toughness = armourMod.getToughness(is.getType());
+        double armour = armourMod.getArmour(is.getType());
+        double knockbackResistance = armourMod.getKnockbackResistance(is.getType());
 
-		WeaponModifier weaponMod = Finale.getPlugin().getManager().getWeaponModifer();
+        if (toughness != -1 || armour != -1 || knockbackResistance != -1) {
+            if (toughness == -1) {
+                toughness = ItemUtil.getDefaultArmourToughness(is);
+            }
+            if (armour == -1) {
+                armour = ItemUtil.getDefaultArmour(is);
+            }
+            if (knockbackResistance == -1) {
+                knockbackResistance = ItemUtil.getDefaultKnockbackResistance(is);
+            }
+            is = ItemUtil.setArmour(ItemUtil.setArmourToughness(ItemUtil.setArmourKnockbackResistance(is, knockbackResistance), toughness), armour);
+        }
 
-		double adjustedDamage = weaponMod.getDamage(is.getType());
-		double adjustedAttackSpeed = weaponMod.getAttackSpeed(is.getType());
+        WeaponModifier weaponMod = Finale.getPlugin().getManager().getWeaponModifer();
 
-		if (adjustedAttackSpeed != -1.0 || adjustedDamage != -1) {
-			is = ItemUtil.setDamage(ItemUtil.setAttackSpeed(is, adjustedAttackSpeed), adjustedDamage);
-		}
-		e.setCurrentItem(is);
-	}
+        double adjustedDamage = weaponMod.getDamage(is.getType());
+        double adjustedAttackSpeed = weaponMod.getAttackSpeed(is.getType());
+
+        if (adjustedAttackSpeed != -1.0 || adjustedDamage != -1) {
+            is = ItemUtil.setDamage(ItemUtil.setAttackSpeed(is, adjustedAttackSpeed), adjustedDamage);
+        }
+        e.setCurrentItem(is);
+    }
 
 }

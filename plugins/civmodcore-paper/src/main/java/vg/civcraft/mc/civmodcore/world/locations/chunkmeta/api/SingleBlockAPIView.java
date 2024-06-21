@@ -12,57 +12,57 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class SingleBlockAPIView <T extends LocationTrackable> extends APIView {
+public class SingleBlockAPIView<T extends LocationTrackable> extends APIView {
 
-	private static final long REGULAR_SAVE_INTERVAL_MILLISECONDS = 60L * 1000L;
+    private static final long REGULAR_SAVE_INTERVAL_MILLISECONDS = 60L * 1000L;
 
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-	private final GlobalLocationTracker<T> tracker;
-	private ScheduledFuture<?> regularSaveRunnable;
-	
-	SingleBlockAPIView(JavaPlugin plugin, short pluginID, GlobalLocationTracker<T> tracker) {
-		super(plugin, pluginID);
-		this.tracker = tracker;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, tracker::initFromDB);
-		registerRegularSaveRunnable();
-	}
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final GlobalLocationTracker<T> tracker;
+    private ScheduledFuture<?> regularSaveRunnable;
 
-	private void registerRegularSaveRunnable() {
-		this.regularSaveRunnable = scheduler.scheduleWithFixedDelay(() -> {
-			tracker.persist();
-		}, REGULAR_SAVE_INTERVAL_MILLISECONDS, REGULAR_SAVE_INTERVAL_MILLISECONDS, TimeUnit.MILLISECONDS);
-	}
-	
-	public T get(Location loc) {
-		return tracker.get(loc);
-	}
+    SingleBlockAPIView(JavaPlugin plugin, short pluginID, GlobalLocationTracker<T> tracker) {
+        super(plugin, pluginID);
+        this.tracker = tracker;
+        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, tracker::initFromDB);
+        registerRegularSaveRunnable();
+    }
 
-	public void put(T trackable) {
-		tracker.put(trackable);
-	}
+    private void registerRegularSaveRunnable() {
+        this.regularSaveRunnable = scheduler.scheduleWithFixedDelay(() -> {
+            tracker.persist();
+        }, REGULAR_SAVE_INTERVAL_MILLISECONDS, REGULAR_SAVE_INTERVAL_MILLISECONDS, TimeUnit.MILLISECONDS);
+    }
 
-	public T remove(Location loc) {
-		return tracker.remove(loc);
-	}
+    public T get(Location loc) {
+        return tracker.get(loc);
+    }
 
-	public T remove(T trackable) {
-		return remove(trackable.getLocation());
-	}
+    public void put(T trackable) {
+        tracker.put(trackable);
+    }
 
-	public void handleChunkLoad(Chunk chunk) {
+    public T remove(Location loc) {
+        return tracker.remove(loc);
+    }
 
-	}
+    public T remove(T trackable) {
+        return remove(trackable.getLocation());
+    }
 
-	public void handleChunkUnload(Chunk chunk) {
+    public void handleChunkLoad(Chunk chunk) {
 
-	}
+    }
 
-	@Override
-	public void disable() {
-		if (this.regularSaveRunnable != null)
-			this.regularSaveRunnable.cancel(false);
+    public void handleChunkUnload(Chunk chunk) {
 
-		tracker.persist();
-	}
+    }
+
+    @Override
+    public void disable() {
+        if (this.regularSaveRunnable != null)
+            this.regularSaveRunnable.cancel(false);
+
+        tracker.persist();
+    }
 
 }

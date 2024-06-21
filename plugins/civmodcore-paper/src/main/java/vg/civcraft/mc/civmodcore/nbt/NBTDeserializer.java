@@ -10,7 +10,7 @@ import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 @FunctionalInterface
 public interface NBTDeserializer<T extends NBTSerializable> {
 
-	@Nonnull
-	T fromNBT(@Nonnull final NBTCompound nbt);
+    @Nonnull
+    T fromNBT(@Nonnull final NBTCompound nbt);
 
 }

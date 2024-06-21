@@ -19,67 +19,67 @@ import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public final class IgnoreList extends BaseCommand {
-	@CommandAlias("ignorelist")
-	@Description("Lists the players and groups you are ignoring")
-	private void execute(
-		final @NotNull Player sender
-	) {
-		final CivChatDAO db = CivChat2.getInstance().getDatabaseManager();
 
-		// Ignored players
-		sender.sendMessage(
-			Component.text()
-				.content("Ignored players: [")
-				.append(
-					db.getIgnoredPlayers(sender.getUniqueId())
-						.stream()
-						.map(NameAPI::getCurrentName)
-						.filter(Objects::nonNull)
-						.flatMap(commaSeparatedClickableNames("/ignore %s"))
-						.toList()
-				)
-				.append(Component.text("]"))
-		);
+    @CommandAlias("ignorelist")
+    @Description("Lists the players and groups you are ignoring")
+    private void execute(
+        final @NotNull Player sender
+    ) {
+        final CivChatDAO db = CivChat2.getInstance().getDatabaseManager();
 
-		// Ignored groups
-		sender.sendMessage(
-			Component.text()
-				.content("Ignored groups: [")
-				.append(
-					db.getIgnoredGroups(sender.getUniqueId())
-						.stream()
-						.flatMap(commaSeparatedClickableNames("/ignoregroup %s"))
-						.toList()
-				)
-				.append(Component.text("]"))
-		);
-	}
+        // Ignored players
+        sender.sendMessage(
+            Component.text()
+                .content("Ignored players: [")
+                .append(
+                    db.getIgnoredPlayers(sender.getUniqueId())
+                        .stream()
+                        .map(NameAPI::getCurrentName)
+                        .filter(Objects::nonNull)
+                        .flatMap(commaSeparatedClickableNames("/ignore %s"))
+                        .toList()
+                )
+                .append(Component.text("]"))
+        );
 
-	private static @NotNull Function<String, Stream<Component>> commaSeparatedClickableNames(
-		final @NotNull String formattedCommand
-	) {
-		final var hasPreviousName = new AtomicBoolean(false);
-		return (name) -> {
-			final Component clickableName = Component.text()
-				.content(name)
-				.color(NamedTextColor.YELLOW)
-				.decoration(TextDecoration.UNDERLINED, TextDecoration.State.TRUE)
-				.clickEvent(ClickEvent.clickEvent(
-					ClickEvent.Action.COPY_TO_CLIPBOARD,
-					formattedCommand.formatted(name)
-				))
-				.hoverEvent(HoverEvent.showText(Component.text("Click to copy un-ignore command")))
-				.build();
-			if (hasPreviousName.get()) {
-				return Stream.of(
-					Component.text(", "),
-					clickableName
-				);
-			}
-			else {
-				hasPreviousName.set(true);
-				return Stream.of(clickableName);
-			}
-		};
-	}
+        // Ignored groups
+        sender.sendMessage(
+            Component.text()
+                .content("Ignored groups: [")
+                .append(
+                    db.getIgnoredGroups(sender.getUniqueId())
+                        .stream()
+                        .flatMap(commaSeparatedClickableNames("/ignoregroup %s"))
+                        .toList()
+                )
+                .append(Component.text("]"))
+        );
+    }
+
+    private static @NotNull Function<String, Stream<Component>> commaSeparatedClickableNames(
+        final @NotNull String formattedCommand
+    ) {
+        final var hasPreviousName = new AtomicBoolean(false);
+        return (name) -> {
+            final Component clickableName = Component.text()
+                .content(name)
+                .color(NamedTextColor.YELLOW)
+                .decoration(TextDecoration.UNDERLINED, TextDecoration.State.TRUE)
+                .clickEvent(ClickEvent.clickEvent(
+                    ClickEvent.Action.COPY_TO_CLIPBOARD,
+                    formattedCommand.formatted(name)
+                ))
+                .hoverEvent(HoverEvent.showText(Component.text("Click to copy un-ignore command")))
+                .build();
+            if (hasPreviousName.get()) {
+                return Stream.of(
+                    Component.text(", "),
+                    clickableName
+                );
+            } else {
+                hasPreviousName.set(true);
+                return Stream.of(clickableName);
+            }
+        };
+    }
 }

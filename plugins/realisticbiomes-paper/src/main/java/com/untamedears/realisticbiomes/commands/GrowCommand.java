@@ -11,9 +11,9 @@ import org.bukkit.command.CommandSender;
 @CommandPermission("rb.op")
 public class GrowCommand extends BaseCommand {
 
-	@Syntax("rbgrow")
-	@Description("Testing command to grow stuff")
-	public void execute(CommandSender sender, String[] args) {
+    @Syntax("rbgrow")
+    @Description("Testing command to grow stuff")
+    public void execute(CommandSender sender, String[] args) {
 		/*GaussTree tree = new GaussTree(Double.parseDouble(args[0]), 0.15, Double.parseDouble(args[1]), 0.15,
 				Double.parseDouble(args[2]), Double.parseDouble(args[3]),
 				new BlockTransformation(Material.DARK_OAK_LOG, new HashMap<>()), Double.parseDouble(args[4]), 0.15,
@@ -21,6 +21,6 @@ public class GrowCommand extends BaseCommand {
 				Double.parseDouble(args[8]), 0.15, Double.parseDouble(args[9]), 0.15,
 				new BlockTransformation(Material.OAK_LEAVES, new HashMap<>())); 
 		tree.genAt(((Player) sender).getLocation());*/
-		sender.sendMessage("Done");
-	}
+        sender.sendMessage("Done");
+    }
 }

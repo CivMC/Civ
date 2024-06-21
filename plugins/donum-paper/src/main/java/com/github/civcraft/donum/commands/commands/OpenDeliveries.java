@@ -13,16 +13,16 @@ import org.bukkit.entity.Player;
 
 public class OpenDeliveries extends BaseCommand {
 
-	@CommandAlias("present")
-	@Description("Opens your delivery inventory")
-	public void execute(Player player) {
-		UUID uuid = player.getUniqueId();
-		DeliveryInventory delInv = Donum.getManager().getDeliveryInventory(uuid);
-		if (delInv == null) {
-			player.sendMessage(ChatColor.RED + "Your inventory isnt loaded yet, try again in a few seconds");
-			return;
-		}
-		DeliveryGUI delGUI = new DeliveryGUI(uuid, delInv);
-		delGUI.showScreen();
-	}
+    @CommandAlias("present")
+    @Description("Opens your delivery inventory")
+    public void execute(Player player) {
+        UUID uuid = player.getUniqueId();
+        DeliveryInventory delInv = Donum.getManager().getDeliveryInventory(uuid);
+        if (delInv == null) {
+            player.sendMessage(ChatColor.RED + "Your inventory isnt loaded yet, try again in a few seconds");
+            return;
+        }
+        DeliveryGUI delGUI = new DeliveryGUI(uuid, delInv);
+        delGUI.showScreen();
+    }
 }

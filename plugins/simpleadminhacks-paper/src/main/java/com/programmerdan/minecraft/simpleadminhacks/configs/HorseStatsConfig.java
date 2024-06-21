@@ -7,18 +7,18 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public class HorseStatsConfig extends SimpleHackConfig {
 
-	private Material horseCheckerItem;
+    private Material horseCheckerItem;
 
-	public HorseStatsConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
-		super(plugin, base);
-	}
+    public HorseStatsConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
+        super(plugin, base);
+    }
 
-	@Override
-	protected void wireup(ConfigurationSection config) {
-		horseCheckerItem = Material.getMaterial(config.getString("wand"));
-	}
+    @Override
+    protected void wireup(ConfigurationSection config) {
+        horseCheckerItem = Material.getMaterial(config.getString("wand"));
+    }
 
-	public Material getHorseCheckerItem() {
-		return horseCheckerItem;
-	}
+    public Material getHorseCheckerItem() {
+        return horseCheckerItem;
+    }
 }

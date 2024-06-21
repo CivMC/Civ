@@ -10,21 +10,20 @@ import org.bukkit.entity.Player;
 
 public class SendMessageHandler extends RabbitInput {
 
-	public SendMessageHandler() {
-		super("sendmessage");
-	}
+    public SendMessageHandler() {
+        super("sendmessage");
+    }
 
-	@Override
-	public void handle(JsonObject input) {
-		UUID target = UUID.fromString(input.get("receiver").getAsString());
-		String msg = input.get("message").getAsString();
-		Player p = Bukkit.getPlayer(target);
-		if (p != null) {
-			p.sendMessage(ChatColor.GOLD + msg);
-		}
-		else {
-			//player is offline, so we use their discord PM as backup
-			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(target, msg, -1);
-		}
-	}
+    @Override
+    public void handle(JsonObject input) {
+        UUID target = UUID.fromString(input.get("receiver").getAsString());
+        String msg = input.get("message").getAsString();
+        Player p = Bukkit.getPlayer(target);
+        if (p != null) {
+            p.sendMessage(ChatColor.GOLD + msg);
+        } else {
+            //player is offline, so we use their discord PM as backup
+            KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(target, msg, -1);
+        }
+    }
 }

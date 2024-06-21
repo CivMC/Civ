@@ -75,10 +75,10 @@ public final class PlayerListener implements Listener {
         if (SafeLogoutTask.isFinished(player)) return;
 
         plugin.getServer().getPluginManager().callEvent(
-                new CombatLogEvent(
-                        player,
-                        isTagged ? CombatLogEvent.Reason.TAGGED : CombatLogEvent.Reason.UNSAFE_LOGOUT
-                )
+            new CombatLogEvent(
+                player,
+                isTagged ? CombatLogEvent.Reason.TAGGED : CombatLogEvent.Reason.UNSAFE_LOGOUT
+            )
         );
     }
 
@@ -351,7 +351,7 @@ public final class PlayerListener implements Listener {
             case ENDER_PEARL:
                 return;
             case COMMAND: // Essentials uses COMMAND instead of PLUGIN
-                          //  Thank you @ExoticCoding -- addresses #85
+                //  Thank you @ExoticCoding -- addresses #85
             case PLUGIN:
             case UNKNOWN:
                 // Optionally untag on PLUGIN or UNKNOWN
@@ -399,10 +399,10 @@ public final class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void denySafeZoneEntry(PlayerTeleportEvent event) {
         if (plugin.getSettings().denySafezoneEnderpearl() &&
-                plugin.getTagManager().isTagged(event.getPlayer().getUniqueId()) &&
-                event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL &&
-                !plugin.getHookManager().isPvpEnabledAt(event.getTo()) &&
-                plugin.getHookManager().isPvpEnabledAt(event.getFrom())) {
+            plugin.getTagManager().isTagged(event.getPlayer().getUniqueId()) &&
+            event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL &&
+            !plugin.getHookManager().isPvpEnabledAt(event.getTo()) &&
+            plugin.getHookManager().isPvpEnabledAt(event.getFrom())) {
             event.setCancelled(true);
         }
     }

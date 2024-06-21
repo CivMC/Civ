@@ -30,390 +30,395 @@ import org.bukkit.scheduler.BukkitTask;
 
 /**
  * This class deals with scheduling a constrained lookup / update of data from IP data reporting service(s).
- * 
+ *
  * <p>Initially supports ip-api.com tl;dr free and decent request limits.
- * 
+ *
  * <p>Configurable, slightly.
- * 
+ *
  * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  */
 public class BanStickIPDataHandler extends BukkitRunnable {
-	private BukkitTask selfTask;
-	private ConcurrentLinkedQueue<WeakReference<BSIP>> toCheck;
-	private boolean enabled;
-	
-	private int maxBatch;
-	private long period;
-	private int currentFailures;
-	private int disableOnFailures;
-	private long cooldownToReenable;
-	
-	private final String target = "http://ip-api.com/batch";
 
-	/**
-	 * Sets up an IPData handler from a config section.
-	 * @param config the config
-	 */
-	public BanStickIPDataHandler(FileConfiguration config) {
-		if (!configure(config.getConfigurationSection("iplookup"))) {
-			BanStick.getPlugin().warning("IP Data lookup is disabled. This will reduce the quality of information on player's connections.");
-			return;
-		}
-		
-		begin();
-	}
-	
-	private boolean configure(ConfigurationSection config) {
-		if (config != null && config.getBoolean("enable", false)) {
-			enabled = true;
-		} else {
-			return false;
-		}
-		
-		this.toCheck = new ConcurrentLinkedQueue<>();
-		
-		this.maxBatch = config.getInt("maxBatch", 50);
-		this.period = config.getLong("period", 20);
-		this.disableOnFailures = config.getInt("failureCap", 10);
-		this.cooldownToReenable = config.getLong("cooldownTicks", 72000L);
-		this.currentFailures = 0;
-		
-		return true;
-	}
-	
-	private void begin() {
-		if (enabled) {
-			currentFailures = 0;
-			selfTask = this.runTaskTimerAsynchronously(BanStick.getPlugin(), period, period);
-			BanStick.getPlugin().warning("Dynamic IP Data lookup task started.");
-		}
-	}
-	
-	/**
-	 * Shuts down this IPData Handler
-	 */
-	public void end() {
-		this.enabled = false;
-		if (this.selfTask == null) {
-			return;
-		}
-		this.selfTask.cancel();
-	}
-	
-	/**
-	 * Asks this IPData handler to check on a specific IP when possible.
-	 * @param check the IP to check eventually.
-	 */
-	public void offer(BSIP check) {
-		if (enabled) {
-			this.toCheck.offer(new WeakReference<BSIP>(check));
-		}
-	}
-	
-	@Override
-	public void run() {
-		if (!enabled) {
-			return;
-		}
-		if (disableOnFailures <= currentFailures) {
-			enabled = false;
-			if (this.cooldownToReenable > 0) {
-				BanStick.getPlugin().severe("Too many failures; temporarily disabling BanStickIPData updater.");
-				Bukkit.getScheduler().runTaskLater(BanStick.getPlugin(), new Runnable() {
-					@Override
-					public void run() {
-						currentFailures = 0;
-						enabled = true;
-					}
-				}, this.cooldownToReenable);
-			} else {
-				BanStick.getPlugin().severe("Too many failures; permanently disabling BanStickIPData updater.");
-				selfTask.cancel();
-			}
-			return;
-		}
-		if (this.toCheck.isEmpty()) {
-			return;
-		}
-		try {
-			Set<Long> hardStaged = new HashSet<>();
-			List<Map<String, String>> source = new ArrayList<>();
-			
-			int curBatch = 0;
-			while (curBatch < this.maxBatch && !this.toCheck.isEmpty()) {
-				WeakReference<BSIP> nextCheck = this.toCheck.poll();
-				if (nextCheck == null) {
-					break; // we're somehow empty already
-				}
-				BSIP nextIP = nextCheck.get();
-				if (nextIP == null) {
-					continue; // it's not available anymore.
-				}
-				if (hardStaged.contains(nextIP.getId())) {
-					continue; // we've already staged it.
-				}
-				
-				IPAddress address = nextIP.getIPAddress();
-				Integer mask = address.getNetworkPrefixLength();
-				if (!(mask == null || mask == (address.isIPv4() ? 32 : 128))) {
-					continue; // only cidr-less ips allowed.
-				}
-				if (mask != null) {
-					address = address.getLower(); // strip cidr
-				}
-				
-				Map<String, String> newEntry = new HashMap<>();
-				newEntry.put("query", address.toString());
-				source.add(newEntry);
-				curBatch ++;
-			}
-			
-			if (source.size() == 0) {
-				return;
-			}
-			
-			IpData[] replies = null;
-			
-			GsonBuilder builder = new com.google.gson.GsonBuilder();
-			Gson gson = builder.create();
-			String data = gson.toJson(source);
-			BanStick.getPlugin().debug("Requesting data from ip-data: {0}", data);
-			byte[] dataPrep = data.getBytes(StandardCharsets.UTF_8);
-			
-			URL url = new URL(target);
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			
-			connection.setRequestMethod("POST");
-			connection.setDoOutput(true);
-			connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-			connection.setRequestProperty("Content-Length", String.valueOf(dataPrep.length));
-			connection.setDoInput(true);
-			connection.connect();
-			try (OutputStream dataSender = connection.getOutputStream()) {
-				dataSender.write(dataPrep);
-			}
-			try (InputStreamReader dataReply = new InputStreamReader(connection.getInputStream())) {
-				replies = gson.fromJson(dataReply, IpData[].class);
-			}
-			if (replies == null || replies.length == 0) {
-				BanStick.getPlugin().warning("IPData periodic batch updater failure, no data received");
-				currentFailures ++;
-				return;
-			}
-			
-			for (IpData reply : replies) {
-				if (reply.getMessage() != null) {
-					BanStick.getPlugin().debug("Failure during IPData lookup for {0}: {1}", 
-							reply.getQuery(), reply.getMessage());
-					continue;
-				}
-				IPAddressString replyAddress = new IPAddressString(reply.getQuery());
-				IPAddress address = replyAddress.getAddress();
-				if (address == null) {
-					continue;
-				}
-				BSIP ipMatch = BSIP.byIPAddress(address);
-				if (ipMatch == null) {
-					continue;
-				}
-				BSIPData dataMatch = BSIPData.byExactIP(ipMatch);
-				String continent = null;
-				String domain = null;
-				String comment = null;
-				String sauce = "IP-API batch";
-				float proxy = 0.0f;
-				if (dataMatch != null) {
-					if (reply.hasChanged(dataMatch)) { // is old outdated?
-						dataMatch.invalidate(); // mark that record and make a new one.
-						continent = dataMatch.getContinent();
-						domain = dataMatch.getDomain();
-						comment = dataMatch.getComment();
-						proxy = dataMatch.getProxy();
-						if (dataMatch.getSource() != null && dataMatch.getSource().contains(sauce)) {
-							sauce = dataMatch.getSource();
-						} else {
-							sauce = dataMatch.getSource() != null ? dataMatch.getSource() + " aug. by IP-API batch"
-									: "IP-API batch";
-						}
-					} else {
-						continue; // just move on, no changes.
-					}
-				}
-				dataMatch = BSIPData.create(ipMatch, continent, reply.getCountry(), reply.getRegionName(), 
-						reply.getCity(), reply.getZip(), reply.getLat(), reply.getLon(), domain, 
-						reply.getOrg(), reply.getAs(), reply.getIsp(), proxy, sauce, comment);
-				BanStick.getPlugin().getRegistrarHandler().checkAndCleanup(dataMatch);
-			}
-		} catch (MalformedURLException mue) {
-			enabled = false;
-			BanStick.getPlugin().severe("Failed to connect to malformed IPData check url", mue);
-		} catch (IOException ioe) {
-			currentFailures ++;
-			BanStick.getPlugin().warning("IO Error on IPData update: ", ioe);
-		} catch (ClassCastException cce) {
-			enabled = false;
-			BanStick.getPlugin().severe("Failed to identify connection as http; perm failure", cce);
-		}
-	}
-	
-	class IpData {
-		private String status;
-		private String message;
-		private String query;
-		private String country;
-		private String countryCode;
-		private String region;
-		private String regionName;
-		private String city;
-		private String zip;
-		private Double lat;
-		private Double lon;
-		private String timezone;
-		private String isp;
-		private String org;
-		private String as;
-		
-		IpData() { }
+    private BukkitTask selfTask;
+    private ConcurrentLinkedQueue<WeakReference<BSIP>> toCheck;
+    private boolean enabled;
 
-		public String getStatus() {
-			return status;
-		}
+    private int maxBatch;
+    private long period;
+    private int currentFailures;
+    private int disableOnFailures;
+    private long cooldownToReenable;
 
-		public void setStatus(String status) {
-			this.status = status;
-		}
+    private final String target = "http://ip-api.com/batch";
 
-		public String getMessage() {
-			return message;
-		}
+    /**
+     * Sets up an IPData handler from a config section.
+     *
+     * @param config the config
+     */
+    public BanStickIPDataHandler(FileConfiguration config) {
+        if (!configure(config.getConfigurationSection("iplookup"))) {
+            BanStick.getPlugin().warning("IP Data lookup is disabled. This will reduce the quality of information on player's connections.");
+            return;
+        }
 
-		public void setMessage(String message) {
-			this.message = message;
-		}
+        begin();
+    }
 
-		public String getQuery() {
-			return query;
-		}
+    private boolean configure(ConfigurationSection config) {
+        if (config != null && config.getBoolean("enable", false)) {
+            enabled = true;
+        } else {
+            return false;
+        }
 
-		public void setQuery(String query) {
-			this.query = query;
-		}
+        this.toCheck = new ConcurrentLinkedQueue<>();
 
-		public String getCountry() {
-			return country;
-		}
+        this.maxBatch = config.getInt("maxBatch", 50);
+        this.period = config.getLong("period", 20);
+        this.disableOnFailures = config.getInt("failureCap", 10);
+        this.cooldownToReenable = config.getLong("cooldownTicks", 72000L);
+        this.currentFailures = 0;
 
-		public void setCountry(String country) {
-			this.country = country;
-		}
+        return true;
+    }
 
-		public String getCountryCode() {
-			return countryCode;
-		}
+    private void begin() {
+        if (enabled) {
+            currentFailures = 0;
+            selfTask = this.runTaskTimerAsynchronously(BanStick.getPlugin(), period, period);
+            BanStick.getPlugin().warning("Dynamic IP Data lookup task started.");
+        }
+    }
 
-		public void setCountryCode(String countryCode) {
-			this.countryCode = countryCode;
-		}
+    /**
+     * Shuts down this IPData Handler
+     */
+    public void end() {
+        this.enabled = false;
+        if (this.selfTask == null) {
+            return;
+        }
+        this.selfTask.cancel();
+    }
 
-		public String getRegion() {
-			return region;
-		}
+    /**
+     * Asks this IPData handler to check on a specific IP when possible.
+     *
+     * @param check the IP to check eventually.
+     */
+    public void offer(BSIP check) {
+        if (enabled) {
+            this.toCheck.offer(new WeakReference<BSIP>(check));
+        }
+    }
 
-		public void setRegion(String region) {
-			this.region = region;
-		}
+    @Override
+    public void run() {
+        if (!enabled) {
+            return;
+        }
+        if (disableOnFailures <= currentFailures) {
+            enabled = false;
+            if (this.cooldownToReenable > 0) {
+                BanStick.getPlugin().severe("Too many failures; temporarily disabling BanStickIPData updater.");
+                Bukkit.getScheduler().runTaskLater(BanStick.getPlugin(), new Runnable() {
+                    @Override
+                    public void run() {
+                        currentFailures = 0;
+                        enabled = true;
+                    }
+                }, this.cooldownToReenable);
+            } else {
+                BanStick.getPlugin().severe("Too many failures; permanently disabling BanStickIPData updater.");
+                selfTask.cancel();
+            }
+            return;
+        }
+        if (this.toCheck.isEmpty()) {
+            return;
+        }
+        try {
+            Set<Long> hardStaged = new HashSet<>();
+            List<Map<String, String>> source = new ArrayList<>();
 
-		public String getRegionName() {
-			return regionName;
-		}
+            int curBatch = 0;
+            while (curBatch < this.maxBatch && !this.toCheck.isEmpty()) {
+                WeakReference<BSIP> nextCheck = this.toCheck.poll();
+                if (nextCheck == null) {
+                    break; // we're somehow empty already
+                }
+                BSIP nextIP = nextCheck.get();
+                if (nextIP == null) {
+                    continue; // it's not available anymore.
+                }
+                if (hardStaged.contains(nextIP.getId())) {
+                    continue; // we've already staged it.
+                }
 
-		public void setRegionName(String regionName) {
-			this.regionName = regionName;
-		}
+                IPAddress address = nextIP.getIPAddress();
+                Integer mask = address.getNetworkPrefixLength();
+                if (!(mask == null || mask == (address.isIPv4() ? 32 : 128))) {
+                    continue; // only cidr-less ips allowed.
+                }
+                if (mask != null) {
+                    address = address.getLower(); // strip cidr
+                }
 
-		public String getCity() {
-			return city;
-		}
+                Map<String, String> newEntry = new HashMap<>();
+                newEntry.put("query", address.toString());
+                source.add(newEntry);
+                curBatch++;
+            }
 
-		public void setCity(String city) {
-			this.city = city;
-		}
+            if (source.size() == 0) {
+                return;
+            }
 
-		public String getZip() {
-			return zip;
-		}
+            IpData[] replies = null;
 
-		public void setZip(String zip) {
-			this.zip = zip;
-		}
+            GsonBuilder builder = new com.google.gson.GsonBuilder();
+            Gson gson = builder.create();
+            String data = gson.toJson(source);
+            BanStick.getPlugin().debug("Requesting data from ip-data: {0}", data);
+            byte[] dataPrep = data.getBytes(StandardCharsets.UTF_8);
 
-		public Double getLat() {
-			return lat;
-		}
+            URL url = new URL(target);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-		public void setLat(Double lat) {
-			this.lat = lat;
-		}
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+            connection.setRequestProperty("Content-Length", String.valueOf(dataPrep.length));
+            connection.setDoInput(true);
+            connection.connect();
+            try (OutputStream dataSender = connection.getOutputStream()) {
+                dataSender.write(dataPrep);
+            }
+            try (InputStreamReader dataReply = new InputStreamReader(connection.getInputStream())) {
+                replies = gson.fromJson(dataReply, IpData[].class);
+            }
+            if (replies == null || replies.length == 0) {
+                BanStick.getPlugin().warning("IPData periodic batch updater failure, no data received");
+                currentFailures++;
+                return;
+            }
 
-		public Double getLon() {
-			return lon;
-		}
+            for (IpData reply : replies) {
+                if (reply.getMessage() != null) {
+                    BanStick.getPlugin().debug("Failure during IPData lookup for {0}: {1}",
+                        reply.getQuery(), reply.getMessage());
+                    continue;
+                }
+                IPAddressString replyAddress = new IPAddressString(reply.getQuery());
+                IPAddress address = replyAddress.getAddress();
+                if (address == null) {
+                    continue;
+                }
+                BSIP ipMatch = BSIP.byIPAddress(address);
+                if (ipMatch == null) {
+                    continue;
+                }
+                BSIPData dataMatch = BSIPData.byExactIP(ipMatch);
+                String continent = null;
+                String domain = null;
+                String comment = null;
+                String sauce = "IP-API batch";
+                float proxy = 0.0f;
+                if (dataMatch != null) {
+                    if (reply.hasChanged(dataMatch)) { // is old outdated?
+                        dataMatch.invalidate(); // mark that record and make a new one.
+                        continent = dataMatch.getContinent();
+                        domain = dataMatch.getDomain();
+                        comment = dataMatch.getComment();
+                        proxy = dataMatch.getProxy();
+                        if (dataMatch.getSource() != null && dataMatch.getSource().contains(sauce)) {
+                            sauce = dataMatch.getSource();
+                        } else {
+                            sauce = dataMatch.getSource() != null ? dataMatch.getSource() + " aug. by IP-API batch"
+                                : "IP-API batch";
+                        }
+                    } else {
+                        continue; // just move on, no changes.
+                    }
+                }
+                dataMatch = BSIPData.create(ipMatch, continent, reply.getCountry(), reply.getRegionName(),
+                    reply.getCity(), reply.getZip(), reply.getLat(), reply.getLon(), domain,
+                    reply.getOrg(), reply.getAs(), reply.getIsp(), proxy, sauce, comment);
+                BanStick.getPlugin().getRegistrarHandler().checkAndCleanup(dataMatch);
+            }
+        } catch (MalformedURLException mue) {
+            enabled = false;
+            BanStick.getPlugin().severe("Failed to connect to malformed IPData check url", mue);
+        } catch (IOException ioe) {
+            currentFailures++;
+            BanStick.getPlugin().warning("IO Error on IPData update: ", ioe);
+        } catch (ClassCastException cce) {
+            enabled = false;
+            BanStick.getPlugin().severe("Failed to identify connection as http; perm failure", cce);
+        }
+    }
 
-		public void setLon(Double lon) {
-			this.lon = lon;
-		}
+    class IpData {
 
-		public String getTimezone() {
-			return timezone;
-		}
+        private String status;
+        private String message;
+        private String query;
+        private String country;
+        private String countryCode;
+        private String region;
+        private String regionName;
+        private String city;
+        private String zip;
+        private Double lat;
+        private Double lon;
+        private String timezone;
+        private String isp;
+        private String org;
+        private String as;
 
-		public void setTimezone(String timezone) {
-			this.timezone = timezone;
-		}
+        IpData() {
+        }
 
-		public String getIsp() {
-			return isp;
-		}
+        public String getStatus() {
+            return status;
+        }
 
-		public void setIsp(String isp) {
-			this.isp = isp;
-		}
+        public void setStatus(String status) {
+            this.status = status;
+        }
 
-		public String getOrg() {
-			return org;
-		}
+        public String getMessage() {
+            return message;
+        }
 
-		public void setOrg(String org) {
-			this.org = org;
-		}
+        public void setMessage(String message) {
+            this.message = message;
+        }
 
-		public String getAs() {
-			return as;
-		}
+        public String getQuery() {
+            return query;
+        }
 
-		public void setAs(String as) {
-			this.as = as;
-		}
-		
-		public boolean hasChanged(BSIPData data) {
-			if (isEqual(data.getCountry(), this.country) && isEqual(data.getRegion(), this.regionName) 
-					&& isEqual(data.getCity(), this.city) && isEqual(data.getPostal(), this.zip)
-					&& isEqual(data.getLat(), this.lat) && isEqual(data.getLon(), this.lon)
-					&& isEqual(data.getConnection(), this.isp) && isEqual(data.getProvider(), this.org)
-					&& isEqual(data.getRegisteredAs(), this.as)) {
-				return false;
-			}
-			return true;
-		}
-		
-		private boolean isEqual(Object a, Object b) {
-			if (a == null && b == null) {
-				return true;
-			}
-			if (a != null) {
-				return a.equals(b);
-			}
-			return b.equals(a);
-		}
-	}
+        public void setQuery(String query) {
+            this.query = query;
+        }
+
+        public String getCountry() {
+            return country;
+        }
+
+        public void setCountry(String country) {
+            this.country = country;
+        }
+
+        public String getCountryCode() {
+            return countryCode;
+        }
+
+        public void setCountryCode(String countryCode) {
+            this.countryCode = countryCode;
+        }
+
+        public String getRegion() {
+            return region;
+        }
+
+        public void setRegion(String region) {
+            this.region = region;
+        }
+
+        public String getRegionName() {
+            return regionName;
+        }
+
+        public void setRegionName(String regionName) {
+            this.regionName = regionName;
+        }
+
+        public String getCity() {
+            return city;
+        }
+
+        public void setCity(String city) {
+            this.city = city;
+        }
+
+        public String getZip() {
+            return zip;
+        }
+
+        public void setZip(String zip) {
+            this.zip = zip;
+        }
+
+        public Double getLat() {
+            return lat;
+        }
+
+        public void setLat(Double lat) {
+            this.lat = lat;
+        }
+
+        public Double getLon() {
+            return lon;
+        }
+
+        public void setLon(Double lon) {
+            this.lon = lon;
+        }
+
+        public String getTimezone() {
+            return timezone;
+        }
+
+        public void setTimezone(String timezone) {
+            this.timezone = timezone;
+        }
+
+        public String getIsp() {
+            return isp;
+        }
+
+        public void setIsp(String isp) {
+            this.isp = isp;
+        }
+
+        public String getOrg() {
+            return org;
+        }
+
+        public void setOrg(String org) {
+            this.org = org;
+        }
+
+        public String getAs() {
+            return as;
+        }
+
+        public void setAs(String as) {
+            this.as = as;
+        }
+
+        public boolean hasChanged(BSIPData data) {
+            if (isEqual(data.getCountry(), this.country) && isEqual(data.getRegion(), this.regionName)
+                && isEqual(data.getCity(), this.city) && isEqual(data.getPostal(), this.zip)
+                && isEqual(data.getLat(), this.lat) && isEqual(data.getLon(), this.lon)
+                && isEqual(data.getConnection(), this.isp) && isEqual(data.getProvider(), this.org)
+                && isEqual(data.getRegisteredAs(), this.as)) {
+                return false;
+            }
+            return true;
+        }
+
+        private boolean isEqual(Object a, Object b) {
+            if (a == null && b == null) {
+                return true;
+            }
+            if (a != null) {
+                return a.equals(b);
+            }
+            return b.equals(a);
+        }
+    }
 }

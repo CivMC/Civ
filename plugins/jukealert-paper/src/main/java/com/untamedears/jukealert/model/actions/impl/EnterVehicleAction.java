@@ -13,34 +13,34 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class EnterVehicleAction extends LoggablePlayerVictimAction {
 
-	public static final String ID = "ENTER_VEHICLE";
-	
-	public EnterVehicleAction(long time, Snitch snitch, UUID player, Location location, String victim) {
-		super(time, snitch, player, location, victim);
-	}
+    public static final String ID = "ENTER_VEHICLE";
 
-	@Override
-	public IClickable getGUIRepresentation() {
-		ItemStack is = new ItemStack(getVehicle());
-		super.enrichGUIItem(is);
-		return new DecorationStack(is);
-	}
+    public EnterVehicleAction(long time, Snitch snitch, UUID player, Location location, String victim) {
+        super(time, snitch, player, location, victim);
+    }
 
-	/**
-	 * @return Material of the entered vehicle
-	 */
-	public Material getVehicle() {
-		return JAUtility.getVehicle(victim);
-	}
+    @Override
+    public IClickable getGUIRepresentation() {
+        ItemStack is = new ItemStack(getVehicle());
+        super.enrichGUIItem(is);
+        return new DecorationStack(is);
+    }
 
-	@Override
-	public String getIdentifier() {
-		return ID;
-	}
+    /**
+     * @return Material of the entered vehicle
+     */
+    public Material getVehicle() {
+        return JAUtility.getVehicle(victim);
+    }
 
-	@Override
-	public String getChatRepresentationIdentifier() {
-		return "Entered " + ItemUtils.getItemName(getVehicle());
-	}
+    @Override
+    public String getIdentifier() {
+        return ID;
+    }
+
+    @Override
+    public String getChatRepresentationIdentifier() {
+        return "Entered " + ItemUtils.getItemName(getVehicle());
+    }
 
 }

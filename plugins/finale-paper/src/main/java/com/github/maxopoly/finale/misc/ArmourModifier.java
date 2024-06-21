@@ -5,93 +5,94 @@ import java.util.Map;
 import org.bukkit.Material;
 
 public class ArmourModifier {
-	
-	public static class ArmourConfig {
 
-		private double toughness;
-		private double armour;
-		private double knockbackResistance;
-		private int extraDurabilityHits;
+    public static class ArmourConfig {
 
-		public ArmourConfig(double toughness, double armour, double knockbackResistance) {
-			this(toughness, armour, knockbackResistance, 0);
-		}
-		public ArmourConfig(double toughness, double armour, double knockbackResistance, int extraDurabilityHits) {
-			this.toughness = toughness;
-			this.armour = armour;
-			this.knockbackResistance = knockbackResistance;
-			this.extraDurabilityHits = extraDurabilityHits;
-		}
+        private double toughness;
+        private double armour;
+        private double knockbackResistance;
+        private int extraDurabilityHits;
 
-		public double getToughness() {
-			return toughness;
-		}
-		
-		public double getArmour() {
-			return armour;
-		}
+        public ArmourConfig(double toughness, double armour, double knockbackResistance) {
+            this(toughness, armour, knockbackResistance, 0);
+        }
 
-		public double getKnockbackResistance() {
-			return knockbackResistance;
-		}
+        public ArmourConfig(double toughness, double armour, double knockbackResistance, int extraDurabilityHits) {
+            this.toughness = toughness;
+            this.armour = armour;
+            this.knockbackResistance = knockbackResistance;
+            this.extraDurabilityHits = extraDurabilityHits;
+        }
 
-		public int getExtraDurabilityHits() {
-			return extraDurabilityHits;
-		}
+        public double getToughness() {
+            return toughness;
+        }
 
-		@Override
-		public String toString() {
-			return "Armour [toughness=" + toughness + ", armour=" + armour + ", kb_resistance=" + knockbackResistance + "]";
-		}
-		
-	}
+        public double getArmour() {
+            return armour;
+        }
 
-	private ExtraDurabilityTracker extraDurabilityTracker;
-	private Map<Material, ArmourConfig> armour;
+        public double getKnockbackResistance() {
+            return knockbackResistance;
+        }
 
-	public ArmourModifier() {
-		this.extraDurabilityTracker = new ExtraDurabilityTracker(this);
-		this.armour = new HashMap<Material, ArmourConfig>();
-	}
+        public int getExtraDurabilityHits() {
+            return extraDurabilityHits;
+        }
 
-	public void addArmour(Material m, double toughness, double armour, double knockbackResistance, int extraDurabilityHits) {
-		this.armour.put(m, new ArmourConfig(toughness, armour, knockbackResistance, extraDurabilityHits));
-	}
+        @Override
+        public String toString() {
+            return "Armour [toughness=" + toughness + ", armour=" + armour + ", kb_resistance=" + knockbackResistance + "]";
+        }
 
-	public double getToughness(Material m) {
-		ArmourConfig config = armour.get(m);
-		if (config == null) {
-			return -1;
-		}
-		return config.getToughness();
-	}
+    }
 
-	public double getArmour(Material m) {
-		ArmourConfig config = armour.get(m);
-		if (config == null) {
-			return -1;
-		}
-		return config.getArmour();
-	}
+    private ExtraDurabilityTracker extraDurabilityTracker;
+    private Map<Material, ArmourConfig> armour;
 
-	public double getKnockbackResistance(Material m) {
-		ArmourConfig config = armour.get(m);
-		if (config == null) {
-			return -1;
-		}
-		return config.getKnockbackResistance();
-	}
+    public ArmourModifier() {
+        this.extraDurabilityTracker = new ExtraDurabilityTracker(this);
+        this.armour = new HashMap<Material, ArmourConfig>();
+    }
 
-	public int getExtraDurabilityHits(Material m) {
-		ArmourConfig config = armour.get(m);
-		if (config == null) {
-			return -1;
-		}
+    public void addArmour(Material m, double toughness, double armour, double knockbackResistance, int extraDurabilityHits) {
+        this.armour.put(m, new ArmourConfig(toughness, armour, knockbackResistance, extraDurabilityHits));
+    }
 
-		return config.getExtraDurabilityHits();
-	}
+    public double getToughness(Material m) {
+        ArmourConfig config = armour.get(m);
+        if (config == null) {
+            return -1;
+        }
+        return config.getToughness();
+    }
 
-	public ExtraDurabilityTracker getExtraDurabilityTracker() {
-		return extraDurabilityTracker;
-	}
+    public double getArmour(Material m) {
+        ArmourConfig config = armour.get(m);
+        if (config == null) {
+            return -1;
+        }
+        return config.getArmour();
+    }
+
+    public double getKnockbackResistance(Material m) {
+        ArmourConfig config = armour.get(m);
+        if (config == null) {
+            return -1;
+        }
+        return config.getKnockbackResistance();
+    }
+
+    public int getExtraDurabilityHits(Material m) {
+        ArmourConfig config = armour.get(m);
+        if (config == null) {
+            return -1;
+        }
+
+        return config.getExtraDurabilityHits();
+    }
+
+    public ExtraDurabilityTracker getExtraDurabilityTracker() {
+        return extraDurabilityTracker;
+    }
 }

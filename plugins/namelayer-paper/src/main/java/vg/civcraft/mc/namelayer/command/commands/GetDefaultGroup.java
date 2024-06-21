@@ -13,29 +13,28 @@ import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 
 public class GetDefaultGroup extends BaseCommandMiddle {
 
-	@CommandAlias("nlgdg")
-	@Description("Get a players default group")
-	public void execute(Player sender) {
-		Player p = (Player) sender;
-		UUID uuid = NameAPI.getUUID(p.getName());
+    @CommandAlias("nlgdg")
+    @Description("Get a players default group")
+    public void execute(Player sender) {
+        Player p = (Player) sender;
+        UUID uuid = NameAPI.getUUID(p.getName());
 
-		String x = gm.getDefaultGroup(uuid);
-		if(x == null){
-			p.sendMessage(ChatColor.RED + "You do not currently have a default group use /nlsdg to set it");
-		}
-		else{
-			p.sendMessage(ChatColor.GREEN + "Your current default group is " + x);
-		}
-	}
+        String x = gm.getDefaultGroup(uuid);
+        if (x == null) {
+            p.sendMessage(ChatColor.RED + "You do not currently have a default group use /nlsdg to set it");
+        } else {
+            p.sendMessage(ChatColor.GREEN + "Your current default group is " + x);
+        }
+    }
 
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player))
-			return null;
+    public List<String> tabComplete(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player))
+            return null;
 
-		if (args.length == 1)
-			return GroupTabCompleter.complete(args[0], null, (Player) sender);
-		else{
-			return GroupTabCompleter.complete(null, null, (Player)sender);
-		}
-	}
+        if (args.length == 1)
+            return GroupTabCompleter.complete(args[0], null, (Player) sender);
+        else {
+            return GroupTabCompleter.complete(null, null, (Player) sender);
+        }
+    }
 }

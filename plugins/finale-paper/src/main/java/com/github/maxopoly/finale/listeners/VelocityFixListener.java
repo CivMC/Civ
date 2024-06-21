@@ -8,18 +8,18 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 
 public class VelocityFixListener implements Listener {
 
-	private VelocityHandler velocityManager;
+    private VelocityHandler velocityManager;
 
-	public VelocityFixListener(VelocityHandler velocityManager) {
-		this.velocityManager = velocityManager;
-	}
+    public VelocityFixListener(VelocityHandler velocityManager) {
+        this.velocityManager = velocityManager;
+    }
 
-	@EventHandler
-	public void projectileLaunch(ProjectileLaunchEvent e) {
-		if (!(e.getEntity().getShooter() instanceof Player)) {
-			return;
-		}
-		velocityManager.modifyVelocity(e.getEntity(), (Player) e.getEntity().getShooter());
-	}
+    @EventHandler
+    public void projectileLaunch(ProjectileLaunchEvent e) {
+        if (!(e.getEntity().getShooter() instanceof Player)) {
+            return;
+        }
+        velocityManager.modifyVelocity(e.getEntity(), (Player) e.getEntity().getShooter());
+    }
 
 }

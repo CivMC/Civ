@@ -4,8 +4,8 @@ import com.devotedmc.ExilePearl.util.Clock;
 
 final class CoreClock implements Clock {
 
-	@Override
-	public long getCurrentTime() {
-		return System.currentTimeMillis();
-	}
+    @Override
+    public long getCurrentTime() {
+        return System.currentTimeMillis();
+    }
 }

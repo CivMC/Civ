@@ -6,22 +6,22 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockDataObject
 
 public class TableBasedDataObject extends BlockDataObject<TableBasedDataObject> {
 
-	public TableBasedDataObject(Location location, boolean isNew) {
-		super(location, isNew);
-	}
-	
-	public void setDirty() {
-		setCacheState(CacheState.MODIFIED);
-	}
+    public TableBasedDataObject(Location location, boolean isNew) {
+        super(location, isNew);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void setCacheState(CacheState newState) {
-		CacheState oldState = this.state;
-		super.setCacheState(newState);
-		if (this.state != CacheState.NORMAL && this.state != oldState && getOwningCache() != null) {
-			((TableBasedBlockChunkMeta<TableBasedDataObject>) getOwningCache()).reportChange(this);
-		}
-	}
+    public void setDirty() {
+        setCacheState(CacheState.MODIFIED);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void setCacheState(CacheState newState) {
+        CacheState oldState = this.state;
+        super.setCacheState(newState);
+        if (this.state != CacheState.NORMAL && this.state != oldState && getOwningCache() != null) {
+            ((TableBasedBlockChunkMeta<TableBasedDataObject>) getOwningCache()).reportChange(this);
+        }
+    }
 
 }

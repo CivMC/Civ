@@ -12,32 +12,32 @@ import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
 public class CommandRegistrar extends CommandManager {
 
-	public static final String ROOT_ALIAS = "hacks|hack|sah";
-	public static final String PERMISSION_HACKS = "simpleadmin.hacks";
+    public static final String ROOT_ALIAS = "hacks|hack|sah";
+    public static final String PERMISSION_HACKS = "simpleadmin.hacks";
 
-	private final SimpleAdminHacks plugin;
+    private final SimpleAdminHacks plugin;
 
-	public CommandRegistrar(final SimpleAdminHacks plugin) {
-		super(plugin);
-		this.plugin = plugin;
-		init();
-	}
+    public CommandRegistrar(final SimpleAdminHacks plugin) {
+        super(plugin);
+        this.plugin = plugin;
+        init();
+    }
 
-	@Override
-	public void registerCommands() {
-		registerCommand(new HacksCommand(this.plugin));
-	}
+    @Override
+    public void registerCommands() {
+        registerCommand(new HacksCommand(this.plugin));
+    }
 
-	@Override
-	public void registerCompletions(final CommandCompletions<BukkitCommandCompletionContext> completions) {
-		super.registerCompletions(completions);
-		completions.registerAsyncCompletion("hacks", (context) -> {
-			final Set<String> names = new TreeSet<>();
-			for (final SimpleHack<? extends SimpleHackConfig> hack : this.plugin.getHackManager().getHacks()) {
-				names.add(hack.getName());
-			}
-			return names;
-		});
-	}
+    @Override
+    public void registerCompletions(final CommandCompletions<BukkitCommandCompletionContext> completions) {
+        super.registerCompletions(completions);
+        completions.registerAsyncCompletion("hacks", (context) -> {
+            final Set<String> names = new TreeSet<>();
+            for (final SimpleHack<? extends SimpleHackConfig> hack : this.plugin.getHackManager().getHacks()) {
+                names.add(hack.getName());
+            }
+            return names;
+        });
+    }
 
 }
