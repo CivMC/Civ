@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.CustomData;
 import org.bukkit.Bukkit;
@@ -174,11 +175,18 @@ public final class ConfigHelper {
 		} else {
 			String name = current.getString("name");
 			if (name != null) {
-				meta.displayName(Component.text(name));
+				meta.displayName(MiniMessage.miniMessage().deserialize(name));
 			}
-			List<String> lore = current.getStringList("lore");
-			if (lore != null) {
-				meta.setLore(lore); // TODO: Minimessage!
+
+			List<String> loreStrings = current.getStringList("lore");
+
+			if (!loreStrings.isEmpty()) {
+				List<Component> lore = new ArrayList<>(loreStrings.size());
+				for (String line : loreStrings) {
+					lore.add(MiniMessage.miniMessage().deserialize(line));
+				}
+
+				meta.lore(lore);
 			}
 			if (current.isBoolean("unbreakable")) {
 				meta.setUnbreakable(current.getBoolean("unbreakable"));
