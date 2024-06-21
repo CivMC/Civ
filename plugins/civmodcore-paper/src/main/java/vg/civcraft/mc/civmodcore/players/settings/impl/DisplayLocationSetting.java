@@ -60,7 +60,7 @@ public class DisplayLocationSetting extends LimitedStringSetting {
 		ItemStack sideStack = new ItemStack(mat);
 		ItemUtils.setDisplayName(sideStack, String.format(infoText, ChatColor.GOLD, displayName));
 		if (location == currentlySelect) {
-			sideStack.getItemMeta().setEnchantmentGlintOverride(true);
+			sideStack.editMeta(itemMeta -> itemMeta.setEnchantmentGlintOverride(true));
 		}
 		return new LClickable(sideStack, p -> {
 			setValue(p, location.toString());
