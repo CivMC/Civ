@@ -2,13 +2,14 @@ package com.untamedears.jukealert.model.actions.impl;
 
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerVictimAction;
-import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.namelayer.NameAPI;
+
+import java.util.UUID;
 
 public class KillPlayerAction extends LoggablePlayerVictimAction {
 
@@ -29,7 +30,7 @@ public class KillPlayerAction extends LoggablePlayerVictimAction {
 	@Override
 	public IClickable getGUIRepresentation() {
 		ItemStack is = new ItemStack(Material.DIAMOND_SWORD);
-		is.getItemMeta().setEnchantmentGlintOverride(true);
+		is.editMeta(itemMeta -> itemMeta.setEnchantmentGlintOverride(true));
 		super.enrichGUIItem(is);
 		return new DecorationStack(is);
 	}

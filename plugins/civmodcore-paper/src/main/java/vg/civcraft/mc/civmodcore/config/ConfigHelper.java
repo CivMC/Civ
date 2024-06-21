@@ -32,6 +32,7 @@ import org.bukkit.inventory.meta.KnowledgeBookMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.MusicInstrumentMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.Repairable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
@@ -53,7 +54,7 @@ public final class ConfigHelper {
 	 * Retrieves the configuration section at the given key on the given configuration section.
 	 *
 	 * @param config The config to get the keyed section from.
-	 * @param key The key of the section to retrieve.
+	 * @param key    The key of the section to retrieve.
 	 * @return Returns the configuration section at the given key, or returns a new, empty section.
 	 */
 	@Nonnull
@@ -71,7 +72,7 @@ public final class ConfigHelper {
 	 * list, that value will be converted to a list.
 	 *
 	 * @param config The config section to retrieve the list from.
-	 * @param key The key to get the list of.
+	 * @param key    The key to get the list of.
 	 * @return Returns a list of strings, which is never null.
 	 */
 	@Nonnull
@@ -88,9 +89,9 @@ public final class ConfigHelper {
 	/**
 	 * Attempts to retrieve a list from a config section.
 	 *
-	 * @param <T> The type to parse the list into.
+	 * @param <T>    The type to parse the list into.
 	 * @param config The config section.
-	 * @param key The key of the list.
+	 * @param key    The key of the list.
 	 * @param parser The parser to convert the string value into the correct type.
 	 * @return Returns a list, or null.
 	 */
@@ -116,7 +117,7 @@ public final class ConfigHelper {
 	 * Attempts to retrieve a list of materials from a config section.
 	 *
 	 * @param config The config section.
-	 * @param key The key of the list.
+	 * @param key    The key of the list.
 	 * @return Returns a list of materials, or null.
 	 */
 	@Nonnull
@@ -240,8 +241,7 @@ public final class ConfigHelper {
 							int level = currentStoredEnchantSection.getInt("level", 1);
 							if (enchant != null) {
 								enchantMeta.addStoredEnchant(enchant, level, true);
-							}
-							else {
+							} else {
 								LOGGER.severe("Failed to parse enchantment at " + currentStoredEnchantSection.getCurrentPath()
 									+ ", it was not applied");
 							}
@@ -289,19 +289,13 @@ public final class ConfigHelper {
 				meta.setHideTooltip(current.getBoolean("hide_tooltip"));
 			}
 			if (current.contains("repair_cost")) {
-				net.minecraft.world.item.ItemStack nmsItem = ItemUtils.getNMSItemStack(toAdd);
-				nmsItem.set(DataComponents.REPAIR_COST, current.getInt("repair_cost"));
-
-				toAdd = nmsItem.getBukkitStack();
+				((Repairable) meta).setRepairCost(current.getInt("repair_cost"));
 			}
 			if (current.contains("enchantment_glint_override")) {
 				meta.setEnchantmentGlintOverride(current.getBoolean("enchantment_glint_override"));
 			}
 			if (current.contains("fire_resistant")) {
 				meta.setFireResistant(current.getBoolean("fire_resistant"));
-			}
-			if (current.contains("bundle_contents")) {
-				// TODO: doesn't look hard, just same logic as FM item config
 			}
 			if (current.contains("entity_data")) { // TODO: only doing ID for now but some other fields might be useful here
 				ConfigurationSection entityDataSection = current.getConfigurationSection("entity_data");
@@ -314,7 +308,7 @@ public final class ConfigHelper {
 			if (current.contains("instrument")) {
 				((MusicInstrumentMeta) meta).setInstrument(Registry.INSTRUMENT.get(NamespacedKey.minecraft(current.getString("instrument"))));
 			}
-			if (current.contains("recipes")) { // TODO: test
+			if (current.contains("recipes")) {
 				List<String> recipeStrings = current.getStringList("recipes");
 				List<NamespacedKey> recipes = new ArrayList<>(recipeStrings.size());
 
@@ -322,7 +316,6 @@ public final class ConfigHelper {
 
 				((KnowledgeBookMeta) meta).setRecipes(recipes);
 			}
-
 
 //	    		"custom_data"
 //				"max_stack_size" `
