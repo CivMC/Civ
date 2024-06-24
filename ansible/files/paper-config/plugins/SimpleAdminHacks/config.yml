@@ -182,6 +182,8 @@ hacks:
     disableEndGatewayTP: false
   ItemMetaConverterHack:
     enabled: true
+  ItemSerializerHack:
+    enabled: true
   MapCopyProtection:
     enabled: true
   OldEnchanting:
