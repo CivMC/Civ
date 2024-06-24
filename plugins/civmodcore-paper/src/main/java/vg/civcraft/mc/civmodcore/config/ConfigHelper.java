@@ -1,6 +1,26 @@
 package vg.civcraft.mc.civmodcore.config;
 
 import com.google.common.collect.Lists;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
+import vg.civcraft.mc.civmodcore.world.model.EllipseArea;
+import vg.civcraft.mc.civmodcore.world.model.GlobalYLimitedArea;
+import vg.civcraft.mc.civmodcore.world.model.IArea;
+import vg.civcraft.mc.civmodcore.world.model.RectangleArea;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,44 +28,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.CustomData;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
-import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemRarity;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.KnowledgeBookMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.MusicInstrumentMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.inventory.meta.Repairable;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
-import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
-import vg.civcraft.mc.civmodcore.world.model.EllipseArea;
-import vg.civcraft.mc.civmodcore.world.model.GlobalYLimitedArea;
-import vg.civcraft.mc.civmodcore.world.model.IArea;
-import vg.civcraft.mc.civmodcore.world.model.RectangleArea;
 
 public final class ConfigHelper {
 
@@ -141,254 +123,11 @@ public final class ConfigHelper {
 			return result;
 		}
 		for (final String key : config.getKeys(false)) {
-			ConfigurationSection current = config.getConfigurationSection(key);
-			ItemMap partMap = parseItemMapDirectly(current);
+			ItemMap partMap = new ItemMap();
+			partMap.addItemStack(config.getItemStack(key, ItemStack.empty()));
 			result.merge(partMap);
 		}
 		return result;
-	}
-
-	@Nonnull
-	public static ItemMap parseItemMapDirectly(@Nullable final ConfigurationSection current) {
-		ItemMap im = new ItemMap();
-		if (current == null) {
-			return im;
-		}
-		Material m = null;
-		try {
-			m = Material.valueOf(current.getString("material"));
-		} catch (IllegalArgumentException iae) {
-			m = null;
-		} finally {
-			if (m == null) {
-				LOGGER.severe("Failed to find material " + current.getString("material") + " in section " + current.getCurrentPath());
-				return im;
-			}
-		}
-		ItemStack toAdd = new ItemStack(m);
-		if (current.isInt("durability")) {
-			LOGGER.warning("Item durability as specified at " + current.getCurrentPath() + " is no longer supported");
-		}
-		ItemMeta meta = toAdd.getItemMeta();
-		if (meta == null) {
-			LOGGER.severe("No item meta found for" + current.getCurrentPath());
-		} else {
-			String name = current.getString("name");
-			if (name != null) {
-				meta.displayName(MiniMessage.miniMessage().deserialize(name));
-			}
-
-			List<String> loreStrings = current.getStringList("lore");
-
-			if (!loreStrings.isEmpty()) {
-				List<Component> lore = new ArrayList<>(loreStrings.size());
-				for (String line : loreStrings) {
-					lore.add(MiniMessage.miniMessage().deserialize(line));
-				}
-
-				meta.lore(lore);
-			}
-			if (current.isBoolean("unbreakable")) {
-				meta.setUnbreakable(current.getBoolean("unbreakable"));
-			}
-			if (current.isBoolean("hideFlags") && current.getBoolean("hideFlags")) {
-				for (ItemFlag flag : ItemFlag.values()) {
-					meta.addItemFlags(flag);
-				}
-			}
-			if (current.contains("enchants")) {
-				for (String enchantKey : current.getConfigurationSection("enchants").getKeys(false)) {
-					ConfigurationSection enchantConfig = current.getConfigurationSection("enchants")
-						.getConfigurationSection(enchantKey);
-					if (!enchantConfig.isString("enchant")) {
-						LOGGER.warning("No enchant specified for enchantment entry at " + enchantConfig.getCurrentPath()
-							+ ". Entry was ignored");
-						continue;
-					}
-					Enchantment enchant;
-					enchant = Enchantment
-						.getByKey(NamespacedKey.minecraft((enchantConfig.getString("enchant").toLowerCase())));
-					if (enchant == null) {
-						LOGGER.severe("Failed to parse enchantment " + enchantConfig.getString("enchant")
-							+ ", the entry was ignored");
-						continue;
-					}
-					int level = enchantConfig.getInt("level", 1);
-					meta.addEnchant(enchant, level, true);
-				}
-			}
-			if (m == Material.LEATHER_BOOTS || m == Material.LEATHER_CHESTPLATE || m == Material.LEATHER_HELMET
-				|| m == Material.LEATHER_LEGGINGS) {
-				ConfigurationSection color = current.getConfigurationSection("color");
-				Color leatherColor = null;
-				if (color != null) {
-					int red = color.getInt("red");
-					int blue = color.getInt("blue");
-					int green = color.getInt("green");
-					leatherColor = Color.fromRGB(red, green, blue);
-				} else {
-					String hexColorCode = current.getString("color");
-					if (hexColorCode != null) {
-						int hexColor = Integer.parseInt(hexColorCode, 16);
-						leatherColor = Color.fromRGB(hexColor);
-					}
-				}
-				if (leatherColor != null) {
-					((LeatherArmorMeta) meta).setColor(leatherColor);
-				}
-			}
-			if (m == Material.ENCHANTED_BOOK) {
-				ConfigurationSection storedEnchantSection = current.getConfigurationSection("stored_enchants");
-				if (storedEnchantSection != null) {
-					EnchantmentStorageMeta enchantMeta = (EnchantmentStorageMeta) meta;
-					for (String sEKey : storedEnchantSection.getKeys(false)) {
-						ConfigurationSection currentStoredEnchantSection = storedEnchantSection
-							.getConfigurationSection(sEKey);
-						if (currentStoredEnchantSection != null) {
-							Enchantment enchant = EnchantUtils.getEnchantment(currentStoredEnchantSection.getString("enchant"));
-							int level = currentStoredEnchantSection.getInt("level", 1);
-							if (enchant != null) {
-								enchantMeta.addStoredEnchant(enchant, level, true);
-							} else {
-								LOGGER.severe("Failed to parse enchantment at " + currentStoredEnchantSection.getCurrentPath()
-									+ ", it was not applied");
-							}
-						}
-					}
-				}
-			}
-			if (m == Material.POTION || m == Material.SPLASH_POTION || m == Material.LINGERING_POTION
-				|| m == Material.TIPPED_ARROW) {
-				ConfigurationSection potion = current.getConfigurationSection("potion_effects");
-				if (potion != null) {
-					PotionType potType;
-					try {
-						potType = PotionType.valueOf(potion.getString("type", "AWKWARD"));
-					} catch (IllegalArgumentException e) {
-						LOGGER.warning("Expected potion type at " + potion.getCurrentPath() + ", but "
-							+ potion.getString("type") + " is not a valid potion type");
-						potType = PotionType.AWKWARD;
-					}
-					PotionMeta potMeta = (PotionMeta) meta;
-					potMeta.setBasePotionType(potType);
-					ConfigurationSection customEffects = potion.getConfigurationSection("custom_effects");
-					if (customEffects != null) {
-						List<PotionEffect> pots = parsePotionEffects(potion);
-						for (PotionEffect pe : pots) {
-							potMeta.addCustomEffect(pe, true);
-						}
-					}
-				}
-
-			}
-			if (current.contains("max_stack_size")) {
-				meta.setMaxStackSize(current.getInt("max_stack_size"));
-			}
-			if (current.contains("damage")) {
-				((Damageable) meta).setDamage(current.getInt("damage"));
-			}
-			if (current.contains("rarity")) {
-				meta.setRarity(ItemRarity.valueOf(current.getString("rarity")));
-			}
-			if (current.contains("custom_model_data")) {
-				meta.setCustomModelData(current.getInt("custom_model_data"));
-			}
-			if (current.contains("hide_tooltip")) {
-				meta.setHideTooltip(current.getBoolean("hide_tooltip"));
-			}
-			if (current.contains("repair_cost")) {
-				((Repairable) meta).setRepairCost(current.getInt("repair_cost"));
-			}
-			if (current.contains("enchantment_glint_override")) {
-				meta.setEnchantmentGlintOverride(current.getBoolean("enchantment_glint_override"));
-			}
-			if (current.contains("fire_resistant")) {
-				meta.setFireResistant(current.getBoolean("fire_resistant"));
-			}
-			if (current.contains("entity_data")) { // TODO: only doing ID for now but some other fields might be useful here
-				ConfigurationSection entityDataSection = current.getConfigurationSection("entity_data");
-				net.minecraft.world.item.ItemStack nmsItem = ItemUtils.getNMSItemStack(toAdd);
-
-				CustomData customData = CustomData.EMPTY.update(nbt -> nbt.putString("id", entityDataSection.getString("id")));
-				nmsItem.set(DataComponents.ENTITY_DATA, customData);
-				toAdd = nmsItem.getBukkitStack();
-			}
-			if (current.contains("instrument")) {
-				((MusicInstrumentMeta) meta).setInstrument(Registry.INSTRUMENT.get(NamespacedKey.minecraft(current.getString("instrument"))));
-			}
-			if (current.contains("recipes")) {
-				List<String> recipeStrings = current.getStringList("recipes");
-				List<NamespacedKey> recipes = new ArrayList<>(recipeStrings.size());
-
-				recipeStrings.forEach(recipeString -> recipes.add(NamespacedKey.minecraft(recipeString)));
-
-				((KnowledgeBookMeta) meta).setRecipes(recipes);
-			}
-
-//	    		"custom_data"
-//				"max_stack_size" `
-//				"max_damage" ` ignored
-//				"damage" `
-//				"unbreakable" `
-//				"custom_name" `
-//				"item_name" ` ignored
-//				"lore" ` should be updated
-//				"rarity" `
-//				"enchantments" `
-//				"can_place_on" ` ignored -- adventure mode only
-//				"can_break" ` ignored -- adventure mode only
-//				"attribute_modifiers" ` ignored
-//				"custom_model_data" `
-//				"hide_additional_tooltip" ` ignored, set through flag
-//				"hide_tooltip" `
-//				"repair_cost" ` TODO: test
-//				"creative_slot_lock" ` ignored
-//				"enchantment_glint_override" `
-//				"intangible_projectile" ` ignored but this could be worth looking at, just not sure how it works
-//				"food" ` ignored
-//				"fire_resistant" `
-//				"tool" ` ignored :( some of these are really cool but I'm too lazy to figure them out so TODO
-//				"stored_enchantments" `
-//				"dyed_color" `
-//				"map_color" ` ignored
-//				"map_id" ` ignored
-//				"map_decorations" ` ignored
-//				"map_post_processing" ` ignored
-//				"charged_projectiles" ` ignored
-//				"bundle_contents" `
-//				"potion_contents" ` ignored in favour of existing potion format
-//				"suspicious_stew_effects" ` ignored
-//				"writable_book_content" ` ignored in favour of existing book format
-//				"written_book_content" Create new scratch file from selection
-//				"trim" ` ignored aaaaaa
-//				"debug_stick_state" ` ignored
-//				"entity_data" `
-//				"bucket_entity_data" ` ignored but worth looking at
-//				"block_entity_data" ` ignored but worth looking at
-//				"instrument" `
-//				"ominous_bottle_amplifier" ` ignored, pretty sure this is just a potion
-//				"recipes" `
-//				"lodestone_tracker" ` ignored but could be cool
-//				"firework_explosion" ` ignored but should be easy
-//				"fireworks" ` ignored but should be easy
-//				"profile" ` ignored
-//				"note_block_sound" ` ignored
-//				"banner_patterns" ` all down are ignored
-//				"base_color"
-//				"pot_decorations"
-//				"container"
-//				"block_state"
-//				"bees"
-//				"lock"
-//				"container_loot"
-
-			toAdd.setItemMeta(meta);
-		}
-
-		int amount = current.getInt("amount", 1);
-		toAdd.setAmount(amount);
-		im.addItemStack(toAdd);
-		return im;
 	}
 
 	public static int parseTimeAsTicks(@Nonnull final String arg) {

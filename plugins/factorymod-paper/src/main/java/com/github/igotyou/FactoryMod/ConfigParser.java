@@ -906,14 +906,12 @@ public class ConfigParser {
 		if (config == null) {
 			return null;
 		}
-
+		List<ItemStack> list = new ArrayList<>();
 		for (String key : config.getKeys(false)) {
-			ConfigurationSection current = config.getConfigurationSection(key);
-			List<ItemStack> list = ConfigHelper.parseItemMapDirectly(current).getItemStackRepresentation();
-			return list.isEmpty() ? null : list.get(0);
+			list.add(config.getItemStack(key, ItemStack.empty()));
 		}
 
-		return null;
+		return list.isEmpty() ? null : list.getFirst();
 	}
 
 	private Map<String, String> parseRenames(ConfigurationSection config) {
