@@ -72,7 +72,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		if (e.getRegainReason() == RegainReason.SATIATED
-			&& manager.getPassiveRegenHandler().blockPassiveHealthRegen()) {
+				&& manager.getPassiveRegenHandler().blockPassiveHealthRegen()) {
 			// apparently setting to cancelled doesn't prevent the "consumption" of
 			// satiation.
 			Player p = (Player) e.getEntity();
@@ -80,7 +80,7 @@ public class PlayerListener implements Listener {
 			double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 			@SuppressWarnings("resource")
 			double spigotRegenExhaustion = ((CraftWorld) p
-				.getWorld()).getHandle().spigotConfig.regenExhaustion;
+					.getWorld()).getHandle().spigotConfig.regenExhaustion;
 			float newExhaustion = (float) (p.getExhaustion() - e.getAmount() * spigotRegenExhaustion);
 
 			StringBuilder alterHealth = null;
@@ -91,7 +91,7 @@ public class PlayerListener implements Listener {
 				alterHealth.append(":").append(p.getFoodLevel());
 			}
 			if (newExhaustion < 0) // not 100% sure this is correct route; intention was restoring what spigot
-				// takes, but we'll roll with it
+									// takes, but we'll roll with it
 				newExhaustion = 0;
 
 			p.setExhaustion(newExhaustion);

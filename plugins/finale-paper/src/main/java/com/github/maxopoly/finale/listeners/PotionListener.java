@@ -74,7 +74,7 @@ public class PotionListener implements Listener {
 				continue;
 
 			modifiedHealth += intensity * multiplier * (healingEffect.getAmplifier() + 1)
-				* healthPerPotionLevel;
+					* healthPerPotionLevel;
 			if (!entity.isDead()) entity.setHealth(Math.min(maxHealth, modifiedHealth));
 		}
 	}
@@ -108,15 +108,15 @@ public class PotionListener implements Listener {
 			// for multipler <= 1 we can just change the intensity. That does not work for
 			// more than 1 though, because MC internally enforces a max intensity of 1
 			final PotionEffect potEffect = new PotionEffect(originalEffect.getType(), (int) (originalEffect.getDuration() * multiplier),
-				originalEffect.getAmplifier());
+					originalEffect.getAmplifier());
 			Consumer<LivingEntity> impact = (multiplier <= 1.0) ?
-				(ent) -> {
-					e.setIntensity(ent, e.getIntensity(ent) * multiplier);
-				} :
-				(ent) -> {
-					e.setIntensity(ent, 0.0);
-					ent.addPotionEffect(potEffect, false);
-				};
+					(ent) -> {
+						e.setIntensity(ent, e.getIntensity(ent) * multiplier);
+					} :
+					(ent) -> {
+						e.setIntensity(ent, 0.0);
+						ent.addPotionEffect(potEffect, false);
+					};
 			for (LivingEntity ent : e.getAffectedEntities()) {
 				if (!ent.isDead()) impact.accept(ent);
 			}

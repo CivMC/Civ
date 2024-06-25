@@ -65,23 +65,23 @@ public class EntityListener implements Listener {
 		}
 	}
 
-	// Prevent Piglins and other "smart" mobs from opening reinforced doors, trapdoors, and fence gates
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onOpenDoor(EntityInteractEvent eie) {
-		Material material = eie.getBlock().getType();
+    // Prevent Piglins and other "smart" mobs from opening reinforced doors, trapdoors, and fence gates
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onOpenDoor(EntityInteractEvent eie) {
+        Material material = eie.getBlock().getType();
 
-		if (!(Tag.DOORS.isTagged(material) || Tag.TRAPDOORS.isTagged(material) || Tag.FENCE_GATES.isTagged(material))) {
-			return;
-		}
+        if (!(Tag.DOORS.isTagged(material) || Tag.TRAPDOORS.isTagged(material) || Tag.FENCE_GATES.isTagged(material))) {
+            return;
+        }
 
-		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(eie.getBlock());
-		if (rein != null) {
-			eie.setCancelled(true);
-			if (eie.getEntity() instanceof Mob mob) {
-				mob.getPathfinder().stopPathfinding(); // Prevent trying to interact every tick
-			}
-		}
-	}
+        Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(eie.getBlock());
+        if (rein != null) {
+            eie.setCancelled(true);
+            if (eie.getEntity() instanceof Mob mob) {
+                mob.getPathfinder().stopPathfinding(); // Prevent trying to interact every tick
+            }
+        }
+    }
 
 	// For some ungodly reason, when you break a block below a block with gravity, it spawns a FallingBlock entity
 	// that then attempts to change the block. To prevent this change from ticking damage and creating a ghost block

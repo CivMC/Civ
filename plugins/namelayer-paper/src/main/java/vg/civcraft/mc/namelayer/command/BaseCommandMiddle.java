@@ -12,7 +12,7 @@ public abstract class BaseCommandMiddle extends BaseCommand {
 	public BaseCommandMiddle() {}
 
 	protected GroupManager gm = NameAPI.getGroupManager();
-
+	
 	protected boolean groupIsNull(CommandSender sender, String groupname, Group group) {
 	    if (group == null) {
 	        sender.sendMessage(String.format(
@@ -22,4 +22,4 @@ public abstract class BaseCommandMiddle extends BaseCommand {
 	    }
 	    return false;
 	}
-}
+    }

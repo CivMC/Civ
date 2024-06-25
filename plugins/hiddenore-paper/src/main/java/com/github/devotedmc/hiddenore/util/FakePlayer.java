@@ -225,7 +225,7 @@ public class FakePlayer implements Player {
 			public int firstEmpty() {
 				return 0;
 			}
-
+			
 			@Override
 			public void remove(Material material) throws IllegalArgumentException {
 			}
@@ -2190,43 +2190,43 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-							  double offsetZ) {
+				double offsetZ) {
 
 	}
 
 	@Override
 	public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-							  double offsetY, double offsetZ) {
+				double offsetY, double offsetZ) {
 
 	}
 
 	@Override
 	public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-								  double offsetZ, T data) {
+			double offsetZ, T data) {
 
 	}
 
 	@Override
 	public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-								  double offsetY, double offsetZ, T data) {
+				double offsetY, double offsetZ, T data) {
 
 	}
 
 	@Override
 	public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-							  double offsetZ, double extra) {
+				double offsetZ, double extra) {
 
 	}
 
 	@Override
 	public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-							  double offsetY, double offsetZ, double extra) {
+				double offsetY, double offsetZ, double extra) {
 
 	}
 
 	@Override
 	public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-								  double offsetZ, double extra, T data) {
+				double offsetZ, double extra, T data) {
 
 	}
 
@@ -3808,25 +3808,25 @@ public class FakePlayer implements Player {
 	@Override
 	public void setSubtitle(BaseComponent[] arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void setSubtitle(BaseComponent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void setTitleTimes(int arg0, int arg1, int arg2) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void setViewDistance(int arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -3862,31 +3862,31 @@ public class FakePlayer implements Player {
 	@Override
 	public void showTitle(BaseComponent[] arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void showTitle(BaseComponent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void showTitle(BaseComponent[] arg0, BaseComponent[] arg1, int arg2, int arg3, int arg4) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void showTitle(BaseComponent arg0, BaseComponent arg1, int arg2, int arg3, int arg4) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void updateTitle(Title arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override

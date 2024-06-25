@@ -22,7 +22,7 @@ public class Upgraderecipe extends InputRecipe {
 	private FurnCraftChestEgg egg;
 
 	public Upgraderecipe(String identifier, String name, int productionTime, ItemMap input,
-						 FurnCraftChestEgg egg) {
+				 FurnCraftChestEgg egg) {
 		super(identifier, name, productionTime, input);
 		this.egg = egg;
 	}

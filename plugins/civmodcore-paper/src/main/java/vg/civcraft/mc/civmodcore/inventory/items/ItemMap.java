@@ -100,7 +100,7 @@ public class ItemMap {
 			return;
 		}
 		this.items.computeInt(INTERNAL_createKey(input), (key, amount) ->
-			amount == null ? input.getAmount() : amount + input.getAmount());
+				amount == null ? input.getAmount() : amount + input.getAmount());
 		this.totalItems += input.getAmount();
 	}
 

@@ -9,6 +9,12 @@ import com.untamedears.itemexchange.rules.modifiers.DisplayNameModifier;
 import com.untamedears.itemexchange.rules.modifiers.LoreModifier;
 import com.untamedears.itemexchange.utility.ModifierStorage;
 import com.untamedears.itemexchange.utility.Utilities;
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.component.CustomData;
@@ -25,13 +31,6 @@ import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * This class represents an exchange rule.

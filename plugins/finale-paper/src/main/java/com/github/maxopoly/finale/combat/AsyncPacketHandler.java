@@ -79,7 +79,7 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 					Damageable target = entity instanceof Damageable ? (Damageable) entity : null;
 
 					if (target == null || target.isDead() || target.isInvulnerable() ||
-						!world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
+							!world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
 						if (entity instanceof CraftEntity craftEntity){
 							DamageSources damageSources = ((CraftWorld) world).getHandle().damageSources();
 							craftEntity.getHandle().hurt(damageSources.playerAttack(((CraftPlayer) attacker).getHandle()), (float) ((CraftPlayer) attacker).getHandle().getAttribute(Attributes.ATTACK_DAMAGE).getValue());

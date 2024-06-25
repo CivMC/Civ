@@ -4,6 +4,10 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameTuningConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.TeleportUtil;
+import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -49,11 +53,6 @@ import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-
-import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * This is a grab-bag class to hold any _tuning_ related configurations that impact the

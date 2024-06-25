@@ -107,7 +107,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 			};
 			ci.setSlot(baCl, 45);
 		} else {
-			// back to overview button
+		// back to overview button
 			ci.setSlot(getSuperMenuClickable(), 45);
 		}
 		// next button
@@ -215,9 +215,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					};
 				} else {
 					ItemUtils.addLore(is, ChatColor.RED
-									+ "You don't have permission to remove",
+							+ "You don't have permission to remove",
 							ChatColor.RED + NameAPI.getCurrentName(uuid)
-									+ "from the blacklist");
+							  + "from the blacklist");
 					c = new DecorationStack(is);
 				}
 				clicks.add(c);
@@ -237,36 +237,36 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				ItemUtils.setDisplayName(is, ChatColor.GOLD + playerName);
 				boolean canRevoke = false;
 				switch (entry.getValue()) {
-					case MEMBERS:
-						ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Member");
-						if (gm.hasAccess(g, p.getUniqueId(),
-								PermissionType.getPermission("MEMBERS"))) {
-							canRevoke = true;
-						}
-						break;
-					case MODS:
-						ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Mod");
-						if (gm.hasAccess(g, p.getUniqueId(),
-								PermissionType.getPermission("MODS"))) {
-							canRevoke = true;
-						}
-						break;
-					case ADMINS:
-						ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Admin");
-						if (gm.hasAccess(g, p.getUniqueId(),
-								PermissionType.getPermission("ADMINS"))) {
-							canRevoke = true;
-						}
-						break;
-					case OWNER:
-						ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Owner");
-						if (gm.hasAccess(g, p.getUniqueId(),
-								PermissionType.getPermission("OWNER"))) {
-							canRevoke = true;
-						}
-						break;
-					default:
-						continue;
+                        case MEMBERS:
+                            ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Member");
+                            if (gm.hasAccess(g, p.getUniqueId(),
+                                    PermissionType.getPermission("MEMBERS"))) {
+                                canRevoke = true;
+                            }
+                            break;
+                        case MODS:
+                            ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Mod");
+                            if (gm.hasAccess(g, p.getUniqueId(),
+                                    PermissionType.getPermission("MODS"))) {
+                                canRevoke = true;
+                            }
+                            break;
+                        case ADMINS:
+                            ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Admin");
+                            if (gm.hasAccess(g, p.getUniqueId(),
+                                    PermissionType.getPermission("ADMINS"))) {
+                                canRevoke = true;
+                            }
+                            break;
+                        case OWNER:
+                            ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Owner");
+                            if (gm.hasAccess(g, p.getUniqueId(),
+                                    PermissionType.getPermission("OWNER"))) {
+                                canRevoke = true;
+                            }
+                            break;
+                        default:
+                            continue;
 				}
 				Clickable c = null;
 				if (canRevoke) {
@@ -524,7 +524,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		if (rank == pType) {
 			ItemUtils.setDisplayName(mod, ChatColor.GOLD + "Remove this player");
 			mod.lore(List.of(Component.text("/nlrm " + g.getName() + " " + NameAPI.getCurrentName(toChange))
-					.color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)));
+							.color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)));
 			if (!gm.hasAccess(g, p.getUniqueId(), getAccordingPermission(pType))) {
 				ItemUtils.addLore(mod, ChatColor.RED
 						+ "You dont have permission to do this");
@@ -551,7 +551,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 							true) + " this player to "
 							+ PlayerType.getNiceRankName(pType));
 			mod.lore(List.of(Component.text("/nlpp " + g.getName() + " " + NameAPI.getCurrentName(toChange) + " " + pType)
-					.color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)));
+							.color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)));
 			if (!gm.hasAccess(g, p.getUniqueId(), getAccordingPermission(pType))) {
 				ItemUtils.addLore(mod, ChatColor.RED
 						+ "You dont have permission to do this");

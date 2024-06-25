@@ -8,6 +8,12 @@ import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.NBTEncodings;
 import com.untamedears.itemexchange.utility.Utilities;
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -16,13 +22,6 @@ import org.bukkit.potion.PotionType;
 import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "POTION", order = 400)

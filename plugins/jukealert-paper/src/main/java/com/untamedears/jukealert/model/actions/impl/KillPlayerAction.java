@@ -12,17 +12,17 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import java.util.UUID;
 
 public class KillPlayerAction extends LoggablePlayerVictimAction {
-
+	
 	public static final String ID = "KILL_PLAYER";
 
 	public KillPlayerAction(long time, Snitch snitch, UUID player, Location location, UUID victim) {
 		super(time, snitch, player, location, victim.toString());
 	}
-
+	
 	public String getVictimName() {
 		return NameAPI.getCurrentName(getVictimUUID());
 	}
-
+	
 	public UUID getVictimUUID() {
 		return UUID.fromString(victim);
 	}
@@ -34,7 +34,7 @@ public class KillPlayerAction extends LoggablePlayerVictimAction {
 		super.enrichGUIItem(is);
 		return new DecorationStack(is);
 	}
-
+	
 	@Override
 	public String getChatRepresentationIdentifier() {
 		return "Killed " + getVictimName();

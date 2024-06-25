@@ -1103,14 +1103,14 @@ factories:
         material: HONEYCOMB
         amount: 32
     recipes:
-      - wax_copper_block
-      - wax_exposed_copper
-      - wax_weathered_copper
-      - wax_oxidized_copper
-      - weather_copper_block
-      - weather_exposed_copper
-      - weather_weathered_copper
-      - repair_copper_workshop
+    - wax_copper_block
+    - wax_exposed_copper
+    - wax_weathered_copper
+    - wax_oxidized_copper
+    - weather_copper_block
+    - weather_exposed_copper
+    - weather_weathered_copper
+    - repair_copper_workshop
 #RECIPES
 recipes:
   smelt_stone:
@@ -5545,8 +5545,8 @@ recipes:
     type: PRODUCTION
     input:
       iron_ingot:
-        material: IRON_INGOT
-        amount: 6
+          material: IRON_INGOT
+          amount: 6
       lava_bucket:
         material: LAVA_BUCKET
         amount: 4
@@ -6801,7 +6801,7 @@ recipes:
         lore:
           - Crack it open for a surprise!
     outputs:
-      #Food--- 60%
+    #Food--- 60%
       egg:
         chance: 0.15
         egg:
@@ -6822,7 +6822,7 @@ recipes:
         bread:
           material: BREAD
           amount: 8
-      #Good Loot--- 30%
+    #Good Loot--- 30%
       ironingot:
         chance: 0.0375
         ironingot:
@@ -6863,7 +6863,7 @@ recipes:
         goldenapple:
           material: GOLDEN_APPLE
           amount: 4
-      #Unique--- 10%
+    #Unique--- 10%
       recipe1:
         chance: 0.01
         recipe1:

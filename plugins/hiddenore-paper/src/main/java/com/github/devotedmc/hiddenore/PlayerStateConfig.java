@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Allows altering the chance rate based on the player's state/ effects they are under
- *
+ * 
  * format --
  * <code>
  * &lt;name&gt;:
@@ -21,10 +21,10 @@ import java.util.List;
  * </code>
  * each list of numbers is applied to each "level" so first number is for haste I, second for haste II; in this way custom effect levels
  * can be accomodated. At present only effects that already "logically" impact mining as present, you can add others I suppose.
- *
+ * 
  * See doLoad function for where these are initialized. Usable configs are set as named sections under top-level section "states".
  * Then, individual DropLimits as defined at any level can apply a state using a "state" attribute decorator.
- *
+ * 
  * @author ProgrammerDan
  *
  */
@@ -35,10 +35,10 @@ public class PlayerStateConfig {
 	public List<Double> luckRates;
 	public List<Double> blindnessRates;
 	public List<Double> badluckRates;
-
+	
 	/**
 	 * All states are applied successively
-	 *
+	 * 
 	 * @param player the player to apply adjustments to
 	 * @return value 0+ indicating adjustment to chance
 	 */

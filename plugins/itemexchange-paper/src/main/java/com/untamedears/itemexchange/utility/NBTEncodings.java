@@ -1,6 +1,8 @@
 package com.untamedears.itemexchange.utility;
 
 import com.google.common.collect.Maps;
+import java.util.Map;
+import java.util.Objects;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
@@ -10,9 +12,6 @@ import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
-
-import java.util.Map;
-import java.util.Objects;
 
 public final class NBTEncodings {
 

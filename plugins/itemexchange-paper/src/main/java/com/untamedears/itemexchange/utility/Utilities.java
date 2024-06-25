@@ -6,6 +6,11 @@ import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -26,12 +31,6 @@ import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
-
-import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * A series of Utilities of ItemExchange

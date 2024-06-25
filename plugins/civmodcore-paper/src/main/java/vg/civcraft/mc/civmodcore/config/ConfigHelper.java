@@ -1,6 +1,15 @@
 package vg.civcraft.mc.civmodcore.config;
 
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.logging.Logger;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,16 +28,6 @@ import vg.civcraft.mc.civmodcore.world.model.GlobalYLimitedArea;
 import vg.civcraft.mc.civmodcore.world.model.IArea;
 import vg.civcraft.mc.civmodcore.world.model.RectangleArea;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.logging.Logger;
-
 public final class ConfigHelper {
 
 	private static final Logger LOGGER = Bukkit.getLogger();
@@ -37,7 +36,7 @@ public final class ConfigHelper {
 	 * Retrieves the configuration section at the given key on the given configuration section.
 	 *
 	 * @param config The config to get the keyed section from.
-	 * @param key    The key of the section to retrieve.
+	 * @param key The key of the section to retrieve.
 	 * @return Returns the configuration section at the given key, or returns a new, empty section.
 	 */
 	@Nonnull
@@ -55,7 +54,7 @@ public final class ConfigHelper {
 	 * list, that value will be converted to a list.
 	 *
 	 * @param config The config section to retrieve the list from.
-	 * @param key    The key to get the list of.
+	 * @param key The key to get the list of.
 	 * @return Returns a list of strings, which is never null.
 	 */
 	@Nonnull
@@ -72,9 +71,9 @@ public final class ConfigHelper {
 	/**
 	 * Attempts to retrieve a list from a config section.
 	 *
-	 * @param <T>    The type to parse the list into.
+	 * @param <T> The type to parse the list into.
 	 * @param config The config section.
-	 * @param key    The key of the list.
+	 * @param key The key of the list.
 	 * @param parser The parser to convert the string value into the correct type.
 	 * @return Returns a list, or null.
 	 */
@@ -100,7 +99,7 @@ public final class ConfigHelper {
 	 * Attempts to retrieve a list of materials from a config section.
 	 *
 	 * @param config The config section.
-	 * @param key    The key of the list.
+	 * @param key The key of the list.
 	 * @return Returns a list of materials, or null.
 	 */
 	@Nonnull
@@ -260,13 +259,13 @@ public final class ConfigHelper {
 				String type = configEffect.getString("type");
 				if (type == null) {
 					LOGGER.severe("Expected potion type to be specified, but found no \"type\" option at "
-						+ configEffect.getCurrentPath());
+							+ configEffect.getCurrentPath());
 					continue;
 				}
 				PotionEffectType effect = PotionEffectType.getByName(type);
 				if (effect == null) {
 					LOGGER.severe("Expected potion type to be specified at " + configEffect.getCurrentPath()
-						+ " but found " + type + " which is no valid type");
+							+ " but found " + type + " which is no valid type");
 				}
 				int duration = configEffect.getInt("duration", 200);
 				int amplifier = configEffect.getInt("amplifier", 0);
@@ -377,7 +376,7 @@ public final class ConfigHelper {
 		for (String keyString : section.getKeys(false)) {
 			if (section.isConfigurationSection(keyString)) {
 				logger.warning(
-					"Ignoring invalid " + identifier + " entry " + keyString + " at " + section.getCurrentPath());
+						"Ignoring invalid " + identifier + " entry " + keyString + " at " + section.getCurrentPath());
 				continue;
 			}
 			K keyinstance;
@@ -385,7 +384,7 @@ public final class ConfigHelper {
 				keyinstance = keyConverter.apply(keyString);
 			} catch (IllegalArgumentException e) {
 				logger.warning("Failed to parse " + identifier + " " + keyString + " at " + section.getCurrentPath()
-					+ ": " + e.toString());
+						+ ": " + e.toString());
 				continue;
 			}
 			V value = valueConverter.apply(section.getString(keyString));
