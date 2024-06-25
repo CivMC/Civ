@@ -2190,13 +2190,13 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-				double offsetZ) {
+			double offsetZ) {
 
 	}
 
 	@Override
 	public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-				double offsetY, double offsetZ) {
+			double offsetY, double offsetZ) {
 
 	}
 
@@ -2208,13 +2208,13 @@ public class FakePlayer implements Player {
 
 	@Override
 	public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-				double offsetY, double offsetZ, T data) {
+			double offsetY, double offsetZ, T data) {
 
 	}
 
 	@Override
 	public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-				double offsetZ, double extra) {
+			double offsetZ, double extra) {
 
 	}
 
@@ -2226,7 +2226,7 @@ public class FakePlayer implements Player {
 
 	@Override
 	public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-				double offsetZ, double extra, T data) {
+			double offsetZ, double extra, T data) {
 
 	}
 

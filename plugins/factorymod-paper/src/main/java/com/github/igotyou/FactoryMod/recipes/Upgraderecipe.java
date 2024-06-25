@@ -22,7 +22,7 @@ public class Upgraderecipe extends InputRecipe {
 	private FurnCraftChestEgg egg;
 
 	public Upgraderecipe(String identifier, String name, int productionTime, ItemMap input,
-				 FurnCraftChestEgg egg) {
+			FurnCraftChestEgg egg) {
 		super(identifier, name, productionTime, input);
 		this.egg = egg;
 	}
@@ -55,7 +55,7 @@ public class Upgraderecipe extends InputRecipe {
 		ItemUtils.setDisplayName(res, name);
 		return res;
 	}
-
+	
 	@Override
 	public Material getRecipeRepresentationMaterial() {
 		return ((InputRecipe)egg.getRecipes().get(0)).getOutputRepresentation(null, null).get(0).getType();

@@ -31,7 +31,7 @@ import org.bukkit.projectiles.ProjectileSource;
 /**
  * This class tracks damage dealt between players for the purpose
  * of decided who should be awarded the pearl of a killed player.
- *
+ * 
  * @author Gordon
  */
 final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {

@@ -282,7 +282,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 			}
 		}
 	}
-
+	
 	@EventHandler
 	public void enterBed(PlayerBedEnterEvent e) {
 		if (!config.isEnabled() || !config.areDaytimeBedsEnabled()) {

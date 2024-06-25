@@ -6,6 +6,10 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.core.component.DataComponents;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -16,9 +20,6 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PrintNoteRecipe extends PrintBookRecipe {
 	private static class BookInfo {

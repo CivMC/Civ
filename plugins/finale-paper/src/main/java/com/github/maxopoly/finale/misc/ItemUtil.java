@@ -12,7 +12,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemUtil {
-
+	
 	private static final List<Material> HELMET = Arrays.asList(Material.NETHERITE_HELMET, Material.DIAMOND_HELMET, Material.CHAINMAIL_HELMET, Material.IRON_HELMET, Material.GOLDEN_HELMET, Material.LEATHER_HELMET);
 	private static final List<Material> CHEST = Arrays.asList(Material.NETHERITE_CHESTPLATE, Material.DIAMOND_CHESTPLATE, Material.CHAINMAIL_CHESTPLATE, Material.IRON_CHESTPLATE, Material.GOLDEN_CHESTPLATE, Material.LEATHER_CHESTPLATE, Material.ELYTRA);
 	private static final List<Material> LEGS = Arrays.asList(Material.NETHERITE_LEGGINGS, Material.DIAMOND_LEGGINGS, Material.CHAINMAIL_LEGGINGS, Material.IRON_LEGGINGS, Material.GOLDEN_LEGGINGS, Material.LEATHER_LEGGINGS);
@@ -44,7 +44,7 @@ public class ItemUtil {
 			.put(Material.NETHERITE_CHESTPLATE, new ArmourConfig(3, 8, 0.1))
 			.put(Material.NETHERITE_HELMET, new ArmourConfig(3, 3, 0.1))
 			.build();
-
+	
 	public static double getDefaultArmourToughness(ItemStack is) {
 		if (!(DEFAULT_ARMOUR.containsKey(is.getType()))) {
 			return 0;

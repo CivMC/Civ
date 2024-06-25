@@ -13,13 +13,13 @@ import org.bukkit.potion.PotionEffectType;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class ToolProtectionListener implements Listener {
-
+	
 	private FinaleSettingManager settingMan;
-
+	
 	public ToolProtectionListener(FinaleSettingManager settingMan) {
 		this.settingMan = settingMan;
 	}
-
+	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent e) {
 		if (!settingMan.useToolProtection(e.getPlayer().getUniqueId())) {

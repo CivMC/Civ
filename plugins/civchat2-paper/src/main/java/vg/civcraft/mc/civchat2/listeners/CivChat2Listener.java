@@ -60,11 +60,7 @@ public class CivChat2Listener implements Listener {
 				if (playerQuitEvent.getPlayer().hasPermission("civchat2.leavejoinimmune")) {
 					continue;
 				}
-				p.sendMessage(playerQuitEvent.getPlayer().displayName()
-						.append(Component.text(" has left the game")
-								.color(NamedTextColor.YELLOW)
-						)
-				);
+				p.sendMessage(playerQuitEvent.getPlayer().displayName().append(Component.text(" has left the game", NamedTextColor.YELLOW)));
 			}
 		}
 	}
@@ -79,11 +75,7 @@ public class CivChat2Listener implements Listener {
 				if (playerJoinEvent.getPlayer().hasPermission("civchat2.leavejoinimmune")) {
 					continue;
 				}
-				p.sendMessage(playerJoinEvent.getPlayer().displayName()
-						.append(Component.text(" has joined the game")
-								.color(NamedTextColor.YELLOW)
-						)
-				);
+				p.sendMessage(playerJoinEvent.getPlayer().displayName().append(Component.text(" has joined the game", NamedTextColor.YELLOW)));
 			}
 		}
 

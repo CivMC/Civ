@@ -292,22 +292,22 @@ public class HumbugBatchOne extends BasicHack {
 			height = 0.375;
 		}
 		else switch (mat) {
-			case CHEST:
-			case TRAPPED_CHEST:
-			case ENDER_CHEST:
-				height = 0.875;
-				break;
-			case LILY_PAD:
-				height = 0.016;
-				break;
-			case ENCHANTING_TABLE:
-				height = 0.016;
-				break;
-			case PLAYER_WALL_HEAD:
-			case PLAYER_HEAD:
-				height = 0.5;
-				break;
-			}
+		case CHEST:
+		case TRAPPED_CHEST:
+		case ENDER_CHEST:
+			height = 0.875;
+			break;
+		case LILY_PAD:
+			height = 0.016;
+			break;
+		case ENCHANTING_TABLE:
+			height = 0.016;
+			break;
+		case PLAYER_WALL_HEAD:
+		case PLAYER_HEAD:
+			height = 0.5;
+			break;
+		}
 
 		// Check if the below block is difficult
 		// This is added because if you face downward directly on a gate, it will

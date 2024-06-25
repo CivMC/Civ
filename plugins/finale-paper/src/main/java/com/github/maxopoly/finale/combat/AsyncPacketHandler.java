@@ -42,19 +42,19 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class AsyncPacketHandler extends PacketAdapter implements Listener {
 
 	private CombatConfig cc;
-
+	
 	public AsyncPacketHandler(CombatConfig cc) {
 		super(Finale.getPlugin(), ListenerPriority.HIGH, PacketType.Play.Client.USE_ENTITY, PacketType.Play.Client.ARM_ANIMATION, PacketType.Play.Client.BLOCK_DIG);
 
 		this.cc = cc;
-
+		
 		Bukkit.getPluginManager().registerEvents(this, Finale.getPlugin());
 	}
-
+	
 	private Set<UUID> isDigging = Sets.newConcurrentHashSet();
 	private Map<UUID, Long> lastRemovals = new ConcurrentHashMap<>();
 	private Map<UUID, Long> lastStartBreaks = new ConcurrentHashMap<>();
-
+	
 	@Override
 	public void onPacketReceiving(PacketEvent event) {
 		PacketType packetType = event.getPacketType();
@@ -151,11 +151,11 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 			}
 		}
 	}
-
+	
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
-
+		
 		isDigging.remove(player.getUniqueId());
 		lastRemovals.remove(player.getUniqueId());
 		lastStartBreaks.remove(player.getUniqueId());

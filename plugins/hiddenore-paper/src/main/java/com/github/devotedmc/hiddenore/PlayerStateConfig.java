@@ -1,10 +1,10 @@
 package com.github.devotedmc.hiddenore;
 
+import java.util.List;
+
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.List;
 
 /**
  * Allows altering the chance rate based on the player's state/ effects they are under

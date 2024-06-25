@@ -771,217 +771,217 @@ public class PseudoPlayer extends CraftPlayer {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean beginConversation(Conversation arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean isConversing() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public long getFirstPlayed() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public long getLastPlayed() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public Player getPlayer() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean hasPlayedBefore() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean isBanned() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean isOnline() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean isWhitelisted() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setWhitelisted(boolean arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public Map<String, Object> serialize() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public Set<String> getListeningPluginChannels() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void sendPluginMessage(Plugin arg0, String arg1, byte[] arg2) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean canSee(Player arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void chat(String arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void decrementStatistic(Statistic arg0) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void decrementStatistic(Statistic arg0, int arg1) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void decrementStatistic(Statistic arg0, Material arg1) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void decrementStatistic(Statistic arg0, EntityType arg1) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void decrementStatistic(Statistic arg0, Material arg1, int arg2) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void decrementStatistic(Statistic arg0, EntityType arg1, int arg2) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public InetSocketAddress getAddress() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public AdvancementProgress getAdvancementProgress(Advancement arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean getAllowFlight() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public Location getBedSpawnLocation() {
 		return offlinePlayer.getBedSpawnLocation();
 	}
 
-    
+	
 	public Location getCompassTarget() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public String getDisplayName() {
 		return name;
 	}
 
-    
+	
 	public float getExhaustion() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public float getExp() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public float getFlySpeed() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public int getFoodLevel() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public double getHealthScale() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public int getLevel() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public String getLocale() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public String getPlayerListName() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public long getPlayerTime() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public long getPlayerTimeOffset() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public WeatherType getPlayerWeather() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public float getSaturation() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public CraftScoreboard getScoreboard() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public Entity getSpectatorTarget() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public int getStatistic(Statistic arg0) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public int getStatistic(Statistic arg0, Material arg1) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
@@ -991,459 +991,459 @@ public class PseudoPlayer extends CraftPlayer {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public int getTotalExperience() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public float getWalkSpeed() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void giveExp(int arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void giveExpLevels(int arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void hidePlayer(Player arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void hidePlayer(Plugin arg0, Player arg1) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void incrementStatistic(Statistic arg0) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void incrementStatistic(Statistic arg0, int arg1) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void incrementStatistic(Statistic arg0, Material arg1) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void incrementStatistic(Statistic arg0, EntityType arg1) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void incrementStatistic(Statistic arg0, Material arg1, int arg2) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void incrementStatistic(Statistic arg0, EntityType arg1, int arg2) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean isFlying() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean isHealthScaled() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean isPlayerTimeRelative() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean isSleepingIgnored() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean isSneaking() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean isSprinting() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void kickPlayer(String arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void loadData() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean performCommand(String arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void playEffect(Location arg0, Effect arg1, int arg2) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public <T> void playEffect(Location arg0, Effect arg1, T arg2) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void playNote(Location arg0, byte arg1, byte arg2) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void playNote(Location arg0, Instrument arg1, Note arg2) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void playSound(Location arg0, Sound arg1, float arg2, float arg3) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void playSound(Location arg0, String arg1, float arg2, float arg3) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void playSound(Location arg0, Sound arg1, SoundCategory arg2, float arg3, float arg4) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void playSound(Location arg0, String arg1, SoundCategory arg2, float arg3, float arg4) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void resetPlayerTime() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void resetPlayerWeather() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void resetTitle() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void saveData() {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void sendBlockChange(Location arg0, Material arg1, byte arg2) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public boolean sendChunkChange(Location arg0, int arg1, int arg2, int arg3, byte[] arg4) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void sendMap(MapView arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void sendRawMessage(String arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void sendSignChange(Location arg0, String[] arg1) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void sendTitle(String arg0, String arg1) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void sendTitle(String arg0, String arg1, int arg2, int arg3, int arg4) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setAllowFlight(boolean arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setBedSpawnLocation(Location arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setBedSpawnLocation(Location arg0, boolean arg1) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setCompassTarget(Location arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setDisplayName(String arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setExhaustion(float arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setExp(float arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setFlySpeed(float arg0) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setFlying(boolean arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setFoodLevel(int arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setHealthScale(double arg0) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setHealthScaled(boolean arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setLevel(int arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setPlayerListName(String arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setPlayerTime(long arg0, boolean arg1) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setPlayerWeather(WeatherType arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setResourcePack(String arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setResourcePack(String arg0, byte[] arg1) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setSaturation(float arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setScoreboard(Scoreboard arg0) throws IllegalArgumentException, IllegalStateException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setSleepingIgnored(boolean arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setSneaking(boolean arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setSpectatorTarget(Entity arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setSprinting(boolean arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setStatistic(Statistic arg0, int arg1) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setStatistic(Statistic arg0, Material arg1, int arg2) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setStatistic(Statistic arg0, EntityType arg1, int arg2) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setTexturePack(String arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setTotalExperience(int arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void setWalkSpeed(float arg0) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void showPlayer(Player arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void showPlayer(Plugin arg0, Player arg1) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void spawnParticle(Particle arg0, Location arg1, int arg2) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public <T> void spawnParticle(Particle arg0, Location arg1, int arg2, T arg3) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public <T> void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4, T arg5) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void spawnParticle(Particle arg0, Location arg1, int arg2, double arg3, double arg4, double arg5) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public <T> void spawnParticle(Particle arg0, Location arg1, int arg2, double arg3, double arg4, double arg5,
 								  T arg6) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void spawnParticle(Particle arg0, Location arg1, int arg2, double arg3, double arg4, double arg5,
 							  double arg6) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4, double arg5, double arg6,
 							  double arg7) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public <T> void spawnParticle(Particle arg0, Location arg1, int arg2, double arg3, double arg4, double arg5,
 								  double arg6, T arg7) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public <T> void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4, double arg5,
 								  double arg6, double arg7, T arg8) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4, double arg5, double arg6,
 							  double arg7, double arg8) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public <T> void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4, double arg5,
 								  double arg6, double arg7, double arg8, T arg9) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public Player.Spigot spigot() {
 		return spigotPlayer;
 	}
 
-    
+	
 	public void stopSound(Sound arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void stopSound(String arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void stopSound(Sound arg0, SoundCategory arg1) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void stopSound(String arg0, SoundCategory arg1) {
 		throw new InvalidCommandAttemptException();
 	}
 
-    
+	
 	public void updateInventory() {
 		throw new InvalidCommandAttemptException();
 	}

@@ -200,7 +200,7 @@ public final class ChatUtils {
 	 *
 	 * @param component The component to test if null or empty.
 	 * @return Returns true if the component is null or has no visible content.
-	 *
+	 * 
 	 * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
 	 */
 	public static boolean isNullOrEmpty(@Nullable final Component component) {
