@@ -25,12 +25,12 @@ public final class NBTHelper {
 		}
 		final UUID worldUUID = nbt.getUUID(LOCATION_WORLD_KEY);
 		return new Location(
-			UuidUtils.isNullOrIdentity(worldUUID) ? null : Bukkit.getWorld(worldUUID),
-			nbt.getDouble(LOCATION_X_KEY),
-			nbt.getDouble(LOCATION_Y_KEY),
-			nbt.getDouble(LOCATION_Z_KEY),
-			nbt.getFloat(LOCATION_YAW_KEY),
-			nbt.getFloat(LOCATION_PITCH_KEY));
+				UuidUtils.isNullOrIdentity(worldUUID) ? null : Bukkit.getWorld(worldUUID),
+				nbt.getDouble(LOCATION_X_KEY),
+				nbt.getDouble(LOCATION_Y_KEY),
+				nbt.getDouble(LOCATION_Z_KEY),
+				nbt.getFloat(LOCATION_YAW_KEY),
+				nbt.getFloat(LOCATION_PITCH_KEY));
 	}
 
 	public static NBTCompound locationToNBT(final Location location) {

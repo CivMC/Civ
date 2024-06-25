@@ -3,6 +3,9 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.configs.InvControlConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.level.storage.PlayerDataStorage;
@@ -23,10 +26,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.namelayer.NameAPI;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 public class InvControl extends SimpleHack<InvControlConfig> implements CommandExecutor, Listener {
 
@@ -146,29 +145,29 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 			sender.sendMessage(sb.toString());
 		} else {
 			Player admin = (Player) sender;
-			Inventory inv = Bukkit.createInventory(
-					admin, 45, playername + "'s Inventory");
-			for (int slot = 0; slot < 36; slot++) {
-				final ItemStack it = pl_inv.getItem(slot);
-				inv.setItem(slot, it);
-			}
-			inv.setItem(36, pl_inv.getItemInOffHand());
-			inv.setItem(38, pl_inv.getHelmet());
-			inv.setItem(39, pl_inv.getChestplate());
-			inv.setItem(40, pl_inv.getLeggings());
-			inv.setItem(41, pl_inv.getBoots());
-			ItemStack ihealth = new ItemStack(Material.APPLE, (int)health*2);
-			ItemMeta hdata = ihealth.getItemMeta();
-			hdata.setDisplayName("Player Health");
-			ihealth.setItemMeta(hdata);
-			inv.setItem(43, ihealth);
-			ItemStack hunger = new ItemStack(Material.COOKED_BEEF, food);
-			hdata = hunger.getItemMeta();
-			hdata.setDisplayName("Player Hunger");
-			hunger.setItemMeta(hdata);
-			inv.setItem(44, hunger);
-			admin.openInventory(inv);
-			admin.updateInventory();
+	        Inventory inv = Bukkit.createInventory(
+		        admin, 45, playername + "'s Inventory");
+		    for (int slot = 0; slot < 36; slot++) {
+		      final ItemStack it = pl_inv.getItem(slot);
+		      inv.setItem(slot, it);
+		    }
+		    inv.setItem(36, pl_inv.getItemInOffHand());
+		    inv.setItem(38, pl_inv.getHelmet());
+		    inv.setItem(39, pl_inv.getChestplate());
+		    inv.setItem(40, pl_inv.getLeggings());
+		    inv.setItem(41, pl_inv.getBoots());
+		    ItemStack ihealth = new ItemStack(Material.APPLE, (int)health*2);
+		    ItemMeta hdata = ihealth.getItemMeta();
+		    hdata.setDisplayName("Player Health");
+		    ihealth.setItemMeta(hdata);
+		    inv.setItem(43, ihealth);
+		    ItemStack hunger = new ItemStack(Material.COOKED_BEEF, food);
+		    hdata = hunger.getItemMeta();
+		    hdata.setDisplayName("Player Hunger");
+		    hunger.setItemMeta(hdata);
+		    inv.setItem(44, hunger);
+		    admin.openInventory(inv);
+		    admin.updateInventory();
 		}
 	}
 

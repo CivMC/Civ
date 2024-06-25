@@ -708,19 +708,19 @@ public class PseudoServer implements Server {
 
 	@Override
 	public org.bukkit.profile.@NotNull PlayerProfile createPlayerProfile(
-		@org.jetbrains.annotations.Nullable UUID uniqueId, @org.jetbrains.annotations.Nullable String name) {
+			@org.jetbrains.annotations.Nullable UUID uniqueId, @org.jetbrains.annotations.Nullable String name) {
 		throw new NotImplementedException();
 	}
 
 	@Override
 	public org.bukkit.profile.@NotNull PlayerProfile createPlayerProfile(
-		@NotNull UUID uniqueId) {
+			@NotNull UUID uniqueId) {
 		throw new NotImplementedException();
 	}
 
 	@Override
 	public org.bukkit.profile.@NotNull PlayerProfile createPlayerProfile(
-		@NotNull String name) {
+			@NotNull String name) {
 		throw new NotImplementedException();
 	}
 
@@ -792,7 +792,7 @@ public class PseudoServer implements Server {
 
 	@Override
 	public @NotNull CommandSender createCommandSender(
-		@NotNull Consumer<? super Component> feedback) {
+			@NotNull Consumer<? super Component> feedback) {
 		throw new NotImplementedException();
 	}
 
@@ -1000,7 +1000,7 @@ public class PseudoServer implements Server {
 
 	@Override
 	public ChunkGenerator.@NotNull ChunkData createVanillaChunkData(
-		@NotNull World world, int x, int z) {
+			@NotNull World world, int x, int z) {
 		throw new NotImplementedException();
 	}
 

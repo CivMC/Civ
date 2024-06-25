@@ -19,10 +19,10 @@ public class DisplayLocationSetting extends LimitedStringSetting {
 	private String displayName;
 
 	public DisplayLocationSetting(JavaPlugin plugin, DisplayLocation defaultValue, String name, String identifier,
-								  ItemStack gui, String displayName) {
+								  					  ItemStack gui, String displayName) {
 		super(plugin, defaultValue.toString(), name, identifier, gui, "Set where to display " + displayName,
-			Arrays.stream(DisplayLocation.values()).map(DisplayLocation::toString).collect(Collectors.toList()),
-			false);
+				Arrays.stream(DisplayLocation.values()).map(DisplayLocation::toString).collect(Collectors.toList()),
+				false);
 		this.displayName = displayName;
 	}
 
@@ -44,15 +44,15 @@ public class DisplayLocationSetting extends LimitedStringSetting {
 	public void handleMenuClick(Player player, MenuSection menu) {
 		DisplayLocation currentValue = DisplayLocation.fromString(getValue(player));
 		IClickable sideClick = genLocationClick(Material.YELLOW_BANNER, "%sShow %s only on side bar",
-			DisplayLocation.SIDEBAR, menu, currentValue);
+				DisplayLocation.SIDEBAR, menu, currentValue);
 		IClickable actionClick = genLocationClick(Material.STONE_PRESSURE_PLATE, "%sShow %s only on action bar",
-			DisplayLocation.ACTIONBAR, menu, currentValue);
+				DisplayLocation.ACTIONBAR, menu, currentValue);
 		IClickable bothClick = genLocationClick(Material.PAINTING, "%sShow %s both on action and side bar",
-			DisplayLocation.BOTH, menu, currentValue);
+				DisplayLocation.BOTH, menu, currentValue);
 		IClickable noneClick = genLocationClick(Material.BARRIER, "%sShow %s neither on side bar, nor action bar",
-			DisplayLocation.NONE, menu, currentValue);
+				DisplayLocation.NONE, menu, currentValue);
 		MultiPageView selector = new MultiPageView(player, Arrays.asList(sideClick, actionClick, bothClick, noneClick),
-			"Select where to show " + displayName, true);
+				"Select where to show " + displayName, true);
 		selector.showScreen();
 	}
 
@@ -73,17 +73,17 @@ public class DisplayLocationSetting extends LimitedStringSetting {
 
 		public static DisplayLocation fromString(String s) {
 			switch (s.toUpperCase()) {
-				case "SIDEBAR":
-					return SIDEBAR;
-				case "ACTIONBAR":
-					return ACTIONBAR;
-				case "BOTH":
-					return BOTH;
-				case "NONE":
-				case "NEITHER":
-					return NONE;
-				default:
-					return null;
+					case "SIDEBAR":
+						return SIDEBAR;
+					case "ACTIONBAR":
+						return ACTIONBAR;
+					case "BOTH":
+						return BOTH;
+					case "NONE":
+					case "NEITHER":
+						return NONE;
+					default:
+						return null;
 			}
 		}
 	}

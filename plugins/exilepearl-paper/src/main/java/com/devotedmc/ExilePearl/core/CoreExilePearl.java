@@ -228,48 +228,48 @@ final class CoreExilePearl implements ExilePearl {
 	}
 
 
-	/**
-	 * Gets the pearl health value
-	 * @return The strength value
-	 */
+    /**
+     * Gets the pearl health value
+     * @return The strength value
+     */
 	@Override
-	public Integer getHealthPercent() {
+    public Integer getHealthPercent() {
 		return (int)Math.round(((double)health / pearlApi.getPearlConfig().getPearlHealthMaxValue()) * 100);
-	}
+    }
 
 
-	/**
-	 * Gets the pearl health value
-	 * @return The strength value
-	 */
+    /**
+     * Gets the pearl health value
+     * @return The strength value
+     */
 	@Override
-	public int getHealth() {
-		return this.health;
-	}
+    public int getHealth() {
+        return this.health;
+    }
 
 
-	/**
-	 * Sets the pearl heatlh value
-	 * @param health The health value
-	 */
+    /**
+     * Sets the pearl heatlh value
+     * @param health The health value
+     */
 	@Override
-	public void setHealth(int health) {
+    public void setHealth(int health) {
 		checkPearlValid();
 
-		if (health < 0) {
+    	if (health < 0) {
 			health = 0;
-		}
+    	}
 
-		if (health > pearlApi.getPearlConfig().getPearlHealthMaxValue()) {
-			health = pearlApi.getPearlConfig().getPearlHealthMaxValue();
-		}
+    	if (health > pearlApi.getPearlConfig().getPearlHealthMaxValue()) {
+    		health = pearlApi.getPearlConfig().getPearlHealthMaxValue();
+    	}
 
-		this.health = health;
+    	this.health = health;
 
 		if(storageEnabled) {
 			storage.updatePearlHealth(this);
 		}
-	}
+    }
 
 	/**
 	 * Gets the pearl location
@@ -454,26 +454,26 @@ final class CoreExilePearl implements ExilePearl {
 		}
 	}
 
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder(17, 31) // two randomly chosen prime numbers
-				.append(playerId)
-				.append(killedBy)
-				.append(getLocation())
-				.append(health)
-				.append(pearledOn)
-				.append(freedOffline)
-				.toHashCode();
-	}
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 31) // two randomly chosen prime numbers
+            .append(playerId)
+            .append(killedBy)
+            .append(getLocation())
+            .append(health)
+            .append(pearledOn)
+            .append(freedOffline)
+            .toHashCode();
+    }
 
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
 		CoreExilePearl other = (CoreExilePearl) o;
 
@@ -485,7 +485,7 @@ final class CoreExilePearl implements ExilePearl {
 				.append(pearledOn, other.pearledOn)
 				.append(freedOffline, other.freedOffline)
 				.isEquals();
-	}
+    }
 
 
 	@Override
@@ -580,7 +580,7 @@ final class CoreExilePearl implements ExilePearl {
 			return 1.0;
 		}
 
-		long sincePearled = System.currentTimeMillis() - getPearledOn().getTime();
+	  long sincePearled = System.currentTimeMillis() - getPearledOn().getTime();
 		double days = TimeUnit.MILLISECONDS.toDays(sincePearled);
 		return Math.max(1.0, Math.pow(1.25, (days / timer)));
 	}

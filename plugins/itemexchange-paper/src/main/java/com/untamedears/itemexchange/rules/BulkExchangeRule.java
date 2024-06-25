@@ -2,6 +2,13 @@ package com.untamedears.itemexchange.rules;
 
 import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.core.component.DataComponents;
@@ -11,14 +18,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData {
 

@@ -18,6 +18,13 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
+import java.lang.reflect.Field;
+import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
+import java.util.logging.Level;
 import org.bukkit.craftbukkit.inventory.CraftInventoryView;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -63,14 +70,6 @@ import vg.civcraft.mc.civmodcore.inventory.RecipeManager;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
-
-import java.lang.reflect.Field;
-import java.security.SecureRandom;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
-import java.util.logging.Level;
 
 public final class OldEnchanting extends BasicHack {
 

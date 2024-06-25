@@ -4,6 +4,9 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -19,10 +22,6 @@ import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public final class SafeOreBreak extends BasicHack {
 
@@ -111,7 +110,7 @@ public final class SafeOreBreak extends BasicHack {
 		private final Material ore;
 
 		public BooleanOreSetting(JavaPlugin owningPlugin, Boolean defaultValue, String name, String identifier,
-								 String description, Material ore) {
+							  String description, Material ore) {
 			super(owningPlugin, defaultValue, name, identifier, description);
 			this.ore = ore;
 		}

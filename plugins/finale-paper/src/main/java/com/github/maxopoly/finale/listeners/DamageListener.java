@@ -33,7 +33,7 @@ public class DamageListener implements Listener {
 
 	private static final List<Material> ladderBlocks = Arrays.asList(new Material[] { Material.LADDER, Material.VINE });
 	private static Set<Material> swords = new TreeSet<Material>(Arrays.asList(new Material[] { Material.WOODEN_SWORD,
-		Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD }));
+			Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD }));
 
 	private static final String powerMetaDataKey = "shooterPowerLevel";
 
@@ -127,7 +127,7 @@ public class DamageListener implements Listener {
 		}
 		Arrow arrow = (Arrow) e.getEntity();
 		arrow.setMetadata(powerMetaDataKey,
-			new FixedMetadataValue(Finale.getPlugin(), bow.getEnchantmentLevel(Enchantment.POWER)));
+				new FixedMetadataValue(Finale.getPlugin(), bow.getEnchantmentLevel(Enchantment.POWER)));
 	}
 
 	@EventHandler

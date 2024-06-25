@@ -53,8 +53,8 @@ public final class MetaUtils {
 		}
 		if (former.hasDisplayName()) {
 			if (!ChatUtils.areComponentsEqual(
-				former.displayName(),
-				latter.displayName())) {
+					former.displayName(),
+					latter.displayName())) {
 				return false;
 			}
 		}
@@ -63,8 +63,8 @@ public final class MetaUtils {
 		}
 		if (former.hasLore()) {
 			if (!Objects.equals(
-				getComponentLore(former),
-				getComponentLore(latter))) {
+					getComponentLore(former),
+					getComponentLore(latter))) {
 				return false;
 			}
 		}

@@ -66,7 +66,7 @@ import org.bukkit.inventory.InventoryHolder;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class LoggableActionListener implements Listener {
-
+	
 	private final SnitchManager snitchManager;
 	private final Map<UUID, Set<Snitch>> insideFields;
 
@@ -249,7 +249,7 @@ public class LoggableActionListener implements Listener {
 		// TODO Old JA had this listener, is it really needed?
 		handleSnitchLogout(event.getPlayer());
 	}
-
+	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void playerIgniteBlock(BlockIgniteEvent event) {
 		if (event.getCause() != IgniteCause.FLINT_AND_STEEL || event.getPlayer() == null) {

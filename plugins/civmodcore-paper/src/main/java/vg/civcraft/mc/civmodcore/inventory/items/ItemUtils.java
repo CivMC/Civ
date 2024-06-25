@@ -69,8 +69,8 @@ public final class ItemUtils {
 	 */
 	public static boolean isValidItem(@Nullable final ItemStack item) {
 		return !isEmptyItem(item)
-			&& isValidItemMaterial(item.getType())
-			&& isValidItemAmount(item);
+				&& isValidItemMaterial(item.getType())
+				&& isValidItemAmount(item);
 	}
 
 	/**
@@ -84,8 +84,8 @@ public final class ItemUtils {
 	 */
 	public static boolean isValidItemIgnoringAmount(@Nullable final ItemStack item) {
 		return item != null
-			&& isValidItemMaterial(item.getType())
-			&& item.getAmount() > 0;
+				&& isValidItemMaterial(item.getType())
+				&& item.getAmount() > 0;
 	}
 
 	/**
@@ -96,8 +96,8 @@ public final class ItemUtils {
 	 */
 	public static boolean isValidItemAmount(@Nullable final ItemStack item) {
 		return item != null
-			&& item.getAmount() > 0
-			&& item.getAmount() <= item.getMaxStackSize();
+				&& item.getAmount() > 0
+				&& item.getAmount() <= item.getMaxStackSize();
 	}
 
 	/**
@@ -108,9 +108,9 @@ public final class ItemUtils {
 	 */
 	public static boolean isValidItemMaterial(@Nullable final Material material) {
 		return material != null
-			/** Add any null-returns in {@link CraftItemFactory#getItemMeta(Material, org.bukkit.craftbukkit.inventory.CraftMetaItem)} */
-			&& material != Material.AIR
-			&& material.isItem();
+				/** Add any null-returns in {@link CraftItemFactory#getItemMeta(Material, org.bukkit.craftbukkit.inventory.CraftMetaItem)} */
+				&& material != Material.AIR
+				&& material.isItem();
 	}
 
 	/**
@@ -128,8 +128,8 @@ public final class ItemUtils {
 			return true;
 		}
 		return (former != null && latter != null)
-			&& former.getAmount() == latter.getAmount()
-			&& areItemsSimilar(former, latter);
+				&& former.getAmount() == latter.getAmount()
+				&& areItemsSimilar(former, latter);
 	}
 
 	/**
@@ -147,8 +147,8 @@ public final class ItemUtils {
 			return true;
 		}
 		if ((former == null || latter == null)
-			|| former.getType() != latter.getType()
-			|| former.hasItemMeta() != latter.hasItemMeta()) {
+				|| former.getType() != latter.getType()
+				|| former.hasItemMeta() != latter.hasItemMeta()) {
 			return false;
 		}
 		return MetaUtils.areMetasEqual(former.getItemMeta(), latter.getItemMeta());
@@ -255,7 +255,7 @@ public final class ItemUtils {
 	public static void setComponentDisplayName(@Nonnull final ItemStack item,
 											   @Nullable final Component name) {
 		final var meta = Objects.requireNonNull(getItemMeta(item),
-			"Cannot set that display name: item has no meta.");
+				"Cannot set that display name: item has no meta.");
 		meta.displayName(name);
 		item.setItemMeta(meta);
 	}
@@ -300,7 +300,7 @@ public final class ItemUtils {
 	public static void setComponentLore(@Nonnull final ItemStack item,
 										@Nullable final List<Component> lines) {
 		final var meta = Objects.requireNonNull(getItemMeta(item),
-			"Cannot set that lore: item has no meta.");
+				"Cannot set that lore: item has no meta.");
 		MetaUtils.setComponentLore(meta, lines);
 		item.setItemMeta(meta);
 	}
@@ -370,7 +370,7 @@ public final class ItemUtils {
 										final boolean prepend,
 										@Nullable final List<Component> lines) {
 		final var meta = Objects.requireNonNull(getItemMeta(item),
-			"Cannot add that lore: item has no meta.");
+				"Cannot add that lore: item has no meta.");
 		MetaUtils.addComponentLore(meta, prepend, lines);
 		item.setItemMeta(meta);
 	}
@@ -390,8 +390,8 @@ public final class ItemUtils {
 		}
 		final Material material = item.getType();
 		if (isValidItemMaterial(material)
-			&& material.getMaxDurability() > 0
-			&& getItemMeta(item) instanceof Damageable damageable) {
+				&& material.getMaxDurability() > 0
+				&& getItemMeta(item) instanceof Damageable damageable) {
 			return damageable;
 		}
 		return null;
@@ -462,7 +462,7 @@ public final class ItemUtils {
 	public static void setDisplayName(@Nonnull final ItemStack item,
 									  @Nullable final String name) {
 		final var meta = Objects.requireNonNull(getItemMeta(item),
-			"Cannot set that display name: item has no meta.");
+				"Cannot set that display name: item has no meta.");
 		meta.setDisplayName(name);
 		item.setItemMeta(meta);
 	}
@@ -519,7 +519,7 @@ public final class ItemUtils {
 	public static void setLore(@Nonnull final ItemStack item,
 							   @Nullable final List<String> lines) {
 		final var meta = Objects.requireNonNull(getItemMeta(item),
-			"Cannot set that lore: item has no meta.");
+				"Cannot set that lore: item has no meta.");
 		meta.setLore(lines);
 		item.setItemMeta(meta);
 	}
@@ -594,7 +594,7 @@ public final class ItemUtils {
 							   final boolean prepend,
 							   @Nullable final List<String> lines) {
 		final var meta = Objects.requireNonNull(getItemMeta(item),
-			"Cannot add that lore: item has no meta.");
+				"Cannot add that lore: item has no meta.");
 		MetaUtils.addLore(meta, prepend, lines);
 		item.setItemMeta(meta);
 	}

@@ -15,16 +15,6 @@ import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.util.SpawnUtil;
 import com.google.common.base.Preconditions;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Level;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minelink.ctplus.compat.base.NpcIdentity;
@@ -102,6 +92,17 @@ import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Level;
 
 /**
  * Handles events related to prison pearls
@@ -695,9 +696,9 @@ public class PlayerListener implements Listener, Configurable {
 
 
 		if(pearlApi.isPlayerExiled(playerId)
-				&& pearlApi.getPearl(playerId).getPearlType() == PearlType.PRISON
-				&& !pearlApi.getPearl(playerId).isSummoned()
-				&& e.getEntity().getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())){
+		   && pearlApi.getPearl(playerId).getPearlType() == PearlType.PRISON
+		   && !pearlApi.getPearl(playerId).isSummoned()
+		   && e.getEntity().getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())){
 			return;
 		}
 
@@ -771,7 +772,7 @@ public class PlayerListener implements Listener, Configurable {
 
 			// Scan for the smallest stack of normal ender pearls
 			for (Entry<Integer, ? extends ItemStack> entry :
-					inv.all(Material.ENDER_PEARL).entrySet()) {
+				inv.all(Material.ENDER_PEARL).entrySet()) {
 				ItemStack newstack = entry.getValue();
 				int newstacknum = entry.getKey();
 				if (newstack.getEnchantmentLevel(Enchantment.UNBREAKING) == 0) {
@@ -858,7 +859,7 @@ public class PlayerListener implements Listener, Configurable {
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Material m = e.getClickedBlock().getType();
 			if (e.getClickedBlock().getState() instanceof BlockInventoryHolder ||
-					m == Material.CRAFTING_TABLE || m == Material.ANVIL || m == Material.ENCHANTING_TABLE || m == Material.BEACON) {
+				m == Material.CRAFTING_TABLE || m == Material.ANVIL || m == Material.ENCHANTING_TABLE || m == Material.BEACON) {
 				return;
 			}
 		} else if (e.getAction() != Action.RIGHT_CLICK_AIR) {

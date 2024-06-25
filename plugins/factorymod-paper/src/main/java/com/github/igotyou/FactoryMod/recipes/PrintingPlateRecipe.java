@@ -72,7 +72,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 						ChatColor.WHITE + bookMeta.getTitle(),
 						ChatColor.GRAY + "by " + bookMeta.getAuthor(),
 						ChatColor.GRAY + getGenerationName(bookMeta.getGeneration())
-				);
+						);
 				is.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
 				is.editMeta(x -> x.addItemFlags(ItemFlag.HIDE_ENCHANTS));
 				outputInv.addItem(is);
@@ -98,11 +98,11 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 
 	public static String getGenerationName(Generation gen) {
 		switch(gen) {
-			case ORIGINAL: return "Original";
-			case COPY_OF_ORIGINAL: return "Copy of Original";
-			case COPY_OF_COPY: return "Copy of Copy";
-			case TATTERED: return "Tattered";
-			default: return "";
+				case ORIGINAL: return "Original";
+				case COPY_OF_ORIGINAL: return "Copy of Original";
+				case COPY_OF_COPY: return "Copy of Copy";
+				case TATTERED: return "Tattered";
+				default: return "";
 		}
 	}
 
