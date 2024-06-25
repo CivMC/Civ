@@ -98,7 +98,6 @@ public final class CreateCommand extends BaseCommand {
 				player.sendMessage(ChatColor.RED + "You cannot exchange rule blocks!");
 				return;
 			}
-
 			ExchangeRule inputRule = new ExchangeRule(Type.INPUT, inputItem);
 			if (outputItem == null) {
 				Utilities.giveItemsOrDrop(inventory, inputRule.toItem());

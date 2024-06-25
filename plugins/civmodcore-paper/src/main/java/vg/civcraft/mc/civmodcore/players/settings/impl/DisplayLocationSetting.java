@@ -19,23 +19,23 @@ public class DisplayLocationSetting extends LimitedStringSetting {
 	private String displayName;
 
 	public DisplayLocationSetting(JavaPlugin plugin, DisplayLocation defaultValue, String name, String identifier,
-								  					  ItemStack gui, String displayName) {
+			ItemStack gui, String displayName) {
 		super(plugin, defaultValue.toString(), name, identifier, gui, "Set where to display " + displayName,
 				Arrays.stream(DisplayLocation.values()).map(DisplayLocation::toString).collect(Collectors.toList()),
 				false);
 		this.displayName = displayName;
 	}
-
+	
 	public boolean showOnSidebar(UUID uuid) {
 		DisplayLocation location = DisplayLocation.valueOf(getValue(uuid));
 		return location == DisplayLocation.SIDEBAR || location == DisplayLocation.BOTH;
 	}
-
+	
 	public boolean showOnActionbar(UUID uuid) {
 		DisplayLocation location = DisplayLocation.valueOf(getValue(uuid));
 		return location == DisplayLocation.ACTIONBAR || location == DisplayLocation.BOTH;
 	}
-
+	
 	public DisplayLocation getDisplayLocation(UUID uuid) {
 		return DisplayLocation.valueOf(getValue(uuid));
 	}
@@ -73,17 +73,17 @@ public class DisplayLocationSetting extends LimitedStringSetting {
 
 		public static DisplayLocation fromString(String s) {
 			switch (s.toUpperCase()) {
-					case "SIDEBAR":
-						return SIDEBAR;
-					case "ACTIONBAR":
-						return ACTIONBAR;
-					case "BOTH":
-						return BOTH;
-					case "NONE":
-					case "NEITHER":
-						return NONE;
-					default:
-						return null;
+			case "SIDEBAR":
+				return SIDEBAR;
+			case "ACTIONBAR":
+				return ACTIONBAR;
+			case "BOTH":
+				return BOTH;
+			case "NONE":
+			case "NEITHER":
+				return NONE;
+			default:
+				return null;
 			}
 		}
 	}

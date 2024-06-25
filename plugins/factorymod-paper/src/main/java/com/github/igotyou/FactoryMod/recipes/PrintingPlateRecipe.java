@@ -40,7 +40,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 	public PrintingPlateRecipe(String identifier, String name, int productionTime, ItemMap input, ItemMap output) {
 		super(identifier, name, productionTime, input);
 		this.output = output;
-	}
+	}	
 
 	@Override
 	public boolean enoughMaterialAvailable(Inventory inputInv) {
@@ -98,11 +98,11 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 
 	public static String getGenerationName(Generation gen) {
 		switch(gen) {
-				case ORIGINAL: return "Original";
-				case COPY_OF_ORIGINAL: return "Copy of Original";
-				case COPY_OF_COPY: return "Copy of Copy";
-				case TATTERED: return "Tattered";
-				default: return "";
+		case ORIGINAL: return "Original";
+		case COPY_OF_ORIGINAL: return "Copy of Original";
+		case COPY_OF_COPY: return "Copy of Copy";
+		case TATTERED: return "Tattered";
+		default: return "";
 		}
 	}
 
@@ -146,7 +146,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 
 		return stacks;
 	}
-
+	
 	@Override
 	public Material getRecipeRepresentationMaterial() {
 		return getPrintingPlateRepresentation(this.output, getName()).getType();

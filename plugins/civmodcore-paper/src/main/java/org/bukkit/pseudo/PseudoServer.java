@@ -755,12 +755,12 @@ public class PseudoServer implements Server {
 	public Set<OfflinePlayer> getBannedPlayers() {
 		throw new NotImplementedException();
 	}
-
+	
 	@Override
 	public <B extends BanList<E>, E> @NotNull B getBanList(@NotNull BanListType<B> banListType) {
 		return null;
 	}
-
+	
 	@Nonnull
 	@Override
 	public <T extends BanList<?>> T getBanList(@Nonnull final BanList.Type type) {

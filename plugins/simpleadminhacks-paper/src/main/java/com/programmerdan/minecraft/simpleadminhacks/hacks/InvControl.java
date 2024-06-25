@@ -145,7 +145,7 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 			sender.sendMessage(sb.toString());
 		} else {
 			Player admin = (Player) sender;
-	        Inventory inv = Bukkit.createInventory(
+		    Inventory inv = Bukkit.createInventory(
 		        admin, 45, playername + "'s Inventory");
 		    for (int slot = 0; slot < 36; slot++) {
 		      final ItemStack it = pl_inv.getItem(slot);

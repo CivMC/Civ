@@ -217,7 +217,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					ItemUtils.addLore(is, ChatColor.RED
 							+ "You don't have permission to remove",
 							ChatColor.RED + NameAPI.getCurrentName(uuid)
-							  + "from the blacklist");
+						  + "from the blacklist");
 					c = new DecorationStack(is);
 				}
 				clicks.add(c);
@@ -237,36 +237,36 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				ItemUtils.setDisplayName(is, ChatColor.GOLD + playerName);
 				boolean canRevoke = false;
 				switch (entry.getValue()) {
-                        case MEMBERS:
-                            ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Member");
-                            if (gm.hasAccess(g, p.getUniqueId(),
-                                    PermissionType.getPermission("MEMBERS"))) {
-                                canRevoke = true;
-                            }
-                            break;
-                        case MODS:
-                            ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Mod");
-                            if (gm.hasAccess(g, p.getUniqueId(),
-                                    PermissionType.getPermission("MODS"))) {
-                                canRevoke = true;
-                            }
-                            break;
-                        case ADMINS:
-                            ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Admin");
-                            if (gm.hasAccess(g, p.getUniqueId(),
-                                    PermissionType.getPermission("ADMINS"))) {
-                                canRevoke = true;
-                            }
-                            break;
-                        case OWNER:
-                            ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Owner");
-                            if (gm.hasAccess(g, p.getUniqueId(),
-                                    PermissionType.getPermission("OWNER"))) {
-                                canRevoke = true;
-                            }
-                            break;
-                        default:
-                            continue;
+				case MEMBERS:
+					ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Member");
+					if (gm.hasAccess(g, p.getUniqueId(),
+							PermissionType.getPermission("MEMBERS"))) {
+						canRevoke = true;
+					}
+					break;
+				case MODS:
+					ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Mod");
+					if (gm.hasAccess(g, p.getUniqueId(),
+							PermissionType.getPermission("MODS"))) {
+						canRevoke = true;
+					}
+					break;
+				case ADMINS:
+					ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Admin");
+					if (gm.hasAccess(g, p.getUniqueId(),
+							PermissionType.getPermission("ADMINS"))) {
+						canRevoke = true;
+					}
+					break;
+				case OWNER:
+					ItemUtils.addLore(is, ChatColor.AQUA + "Invited as: Owner");
+					if (gm.hasAccess(g, p.getUniqueId(),
+							PermissionType.getPermission("OWNER"))) {
+						canRevoke = true;
+					}
+					break;
+				default:
+					continue;
 				}
 				Clickable c = null;
 				if (canRevoke) {

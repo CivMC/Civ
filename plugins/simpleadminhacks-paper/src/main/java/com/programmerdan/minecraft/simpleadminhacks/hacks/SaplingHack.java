@@ -3,6 +3,7 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.configs.SaplingConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
+import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
@@ -13,8 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.Random;
 
 public class SaplingHack extends SimpleHack<SaplingConfig> implements Listener {
 

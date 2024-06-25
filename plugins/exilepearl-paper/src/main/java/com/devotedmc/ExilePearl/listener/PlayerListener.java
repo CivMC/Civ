@@ -15,6 +15,16 @@ import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.util.SpawnUtil;
 import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Level;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minelink.ctplus.compat.base.NpcIdentity;
@@ -92,17 +102,6 @@ import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Level;
 
 /**
  * Handles events related to prison pearls
@@ -593,7 +592,7 @@ public class PlayerListener implements Listener, Configurable {
 		}
 		else if(event.getAction() == InventoryAction.HOTBAR_SWAP) {
 			PlayerInventory playerInventory = event.getWhoClicked().getInventory();
-
+			
 			ItemStack itemStack = event.getHotbarButton() >= 0
 					? playerInventory.getItem(event.getHotbarButton())
 					: playerInventory.getItem(EquipmentSlot.OFF_HAND);
@@ -681,7 +680,7 @@ public class PlayerListener implements Listener, Configurable {
 
 		final UUID playerId;
 		Player killer = null;
-
+		
 		// If the player was an NPC, grab the ID from it
 		NpcIdentity npcId = null;
 		try {
@@ -693,7 +692,7 @@ public class PlayerListener implements Listener, Configurable {
 			playerId = ((Player)e.getEntity()).getUniqueId();
 		}
 		ExilePearl pearl = pearlApi.getPearl(playerId);
-
+		
 
 		if(pearlApi.isPlayerExiled(playerId)
 		   && pearlApi.getPearl(playerId).getPearlType() == PearlType.PRISON
@@ -704,7 +703,7 @@ public class PlayerListener implements Listener, Configurable {
 
 		// These will be priority sorted according to the configured algorithm
 		List<Player> damagers = pearlApi.getDamageLogger().getSortedDamagers(playerId);
-
+		
 		// Check is player is already exiled
 		if (pearlApi.isPlayerExiled(playerId)) {
 			//Reset bed of exiled player if killer is not null
@@ -733,7 +732,7 @@ public class PlayerListener implements Listener, Configurable {
 
 			// Check if pearl in the hotbar
 			if (pearlApi.getPearlConfig().getMustPrisonPearlHotBar() && firstpearl > 8) {
-				continue;
+				continue; 
 			}
 
 			pearl = pearlApi.exilePlayer(playerId, damager);
@@ -839,7 +838,7 @@ public class PlayerListener implements Listener, Configurable {
 			removeHelpItem(pearl.getPlayer());
 		} else if (pearl != null) {
 			pearl.setLastOnline(new Date());
-			if(pearl.getPearlType() == PearlType.PRISON && !pearl.isSummoned() &&
+			if(pearl.getPearlType() == PearlType.PRISON && !pearl.isSummoned() && 
 					!e.getPlayer().getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())) {
 				SpawnUtil.spawnPlayer(pearl.getPlayer(), pearlApi.getPearlConfig().getPrisonWorld());
 			}
@@ -1289,7 +1288,7 @@ public class PlayerListener implements Listener, Configurable {
 			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			resultItem.setItemMeta(im);
 
-
+			
 			for(PearlType type : PearlType.values()) {
 				repairMaterials.put(type, config.getRepairMaterials(type));
 			}

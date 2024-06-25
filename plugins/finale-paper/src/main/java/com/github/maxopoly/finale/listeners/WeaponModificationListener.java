@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class WeaponModificationListener implements Listener {
-
+	
 	private final WeaponModifier manager = Finale.getPlugin().getManager().getWeaponModifer();
 
 	@EventHandler

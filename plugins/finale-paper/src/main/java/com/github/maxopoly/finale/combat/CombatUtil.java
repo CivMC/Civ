@@ -36,26 +36,26 @@ import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.util.Vector;
 
 public class CombatUtil {
-
+	
 	 private static void sendSoundEffect(net.minecraft.world.entity.player.Player fromEntity, double x, double y, double z, SoundEvent soundEffect, SoundSource soundCategory, float volume, float pitch) {
         fromEntity.playSound(soundEffect, volume, pitch); // This will not send the effect to the entity himself
         if (fromEntity instanceof ServerPlayer) {
             ((ServerPlayer) fromEntity).connection.send(new ClientboundSoundPacket(Holder.direct(soundEffect), soundCategory, x, y, z, volume, pitch, fromEntity.level().getRandom().nextLong()));
         }
     }
-
+	 
 	public static void attack(Player attacker, LivingEntity victim) {
 		/*new BukkitRunnable() {
-
+			
 			@Override
 			public void run() {
 				attack(((CraftPlayer) attacker).getHandle(), ((CraftLivingEntity) victim).getHandle());
 			}
-
+			
 		}.runTask(Finale.getPlugin());*/
 		attack(((CraftPlayer) attacker).getHandle(), victim);
 	}
-
+	
 	//see EntityHuman#attack(Entity) to update this
 	public static void attack(net.minecraft.world.entity.player.Player attacker, Entity victim) {
 		CombatConfig config = Finale.getPlugin().getManager().getCombatConfig();
@@ -315,7 +315,7 @@ public class CombatUtil {
 					// CraftBukkit end
 				}
 			}
-	        }
-	    }
+        }
+    }
 }
 

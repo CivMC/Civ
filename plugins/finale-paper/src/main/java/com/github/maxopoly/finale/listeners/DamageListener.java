@@ -136,7 +136,7 @@ public class DamageListener implements Listener {
 		double critMult = critModifier.modify(e.getCritMultiplier());
 		e.setCritMultiplier(critMult);
 	}
-
+	
 	@EventHandler()
 	public void enderPearlThrown(PlayerTeleportEvent event) {
 		if (event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) return;
@@ -153,7 +153,7 @@ public class DamageListener implements Listener {
 			public void run() {
 				player.setNoDamageTicks(0);
 			}
-
+			
 		}, 1L);
 	}
 

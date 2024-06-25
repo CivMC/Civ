@@ -170,27 +170,27 @@ public class GUIGroupOverview {
 			}
 			ItemStack is = null;
 			switch (pType) {
-                    case MEMBERS:
-                        is = new ItemStack(Material.LEATHER_CHESTPLATE);
-                        ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Member");
-                        break;
-                    case MODS:
-                        is = AbstractGroupGUI.modStack();
-                        ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Mod");
-                        break;
-                    case ADMINS:
-                        is = new ItemStack(Material.IRON_CHESTPLATE);
-                        ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Admin");
-                        break;
-                    case OWNER:
-                        is = new ItemStack(Material.DIAMOND_CHESTPLATE);
-                        if (g.isOwner(p.getUniqueId())) {
-                            ItemUtils.addLore(is, ChatColor.AQUA
-                                    + "Your rank: Primary owner");
-                        } else {
-                            ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Owner");
-                        }
-                        break;
+			case MEMBERS:
+				is = new ItemStack(Material.LEATHER_CHESTPLATE);
+				ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Member");
+				break;
+			case MODS:
+				is = AbstractGroupGUI.modStack();
+				ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Mod");
+				break;
+			case ADMINS:
+				is = new ItemStack(Material.IRON_CHESTPLATE);
+				ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Admin");
+				break;
+			case OWNER:
+				is = new ItemStack(Material.DIAMOND_CHESTPLATE);
+				if (g.isOwner(p.getUniqueId())) {
+					ItemUtils.addLore(is, ChatColor.AQUA
+							+ "Your rank: Primary owner");
+				} else {
+					ItemUtils.addLore(is, ChatColor.AQUA + "Your rank: Owner");
+				}
+				break;
 			}
 			if (is == null) {
 				continue;
@@ -275,7 +275,7 @@ public class GUIGroupOverview {
 						if (NameLayerPlugin.getInstance().getGroupLimit() < gm
 								.countGroups(p.getUniqueId()) + 1
 								&& !(p.isOp() || p
-								        .hasPermission("namelayer.admin"))) {
+										.hasPermission("namelayer.admin"))) {
 							p.sendMessage(ChatColor.RED
 									+ "You cannot create any more groups! Please delete an un-needed group before making more.");
 							showScreen();

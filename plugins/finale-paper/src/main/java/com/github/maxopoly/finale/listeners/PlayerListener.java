@@ -59,7 +59,7 @@ public class PlayerListener implements Listener {
 				}
 				victim.setNoDamageTicks(ticks - 1);
 			}
-
+			
 		}, 1L);
 	}
 
