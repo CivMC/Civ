@@ -15,7 +15,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.data.Ageable;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
-import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 
 /**
  * Fills in the gaps between {@link Tag} and {@link MaterialTags}.
@@ -293,7 +292,7 @@ public final class MoreTags {
         private final Set<T> values;
 
         private BetterTag(final String key, final Set<T> values) {
-            this.key = KeyedUtils.fromParts("civmodcore", key);
+            this.key = new NamespacedKey("civmodcore", key);
             this.values = values;
         }
 
