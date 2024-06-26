@@ -903,15 +903,7 @@ public class ConfigParser {
 	}
 
 	private static ItemStack parseFirstItem(ConfigurationSection config) {
-		if (config == null) {
-			return null;
-		}
-		List<ItemStack> list = new ArrayList<>();
-		for (String key : config.getKeys(false)) {
-			list.add(config.getItemStack(key, ItemStack.empty()));
-		}
-
-		return list.isEmpty() ? null : list.getFirst();
+		return config == null ? null : config.getItemStack(config.getKeys(false).iterator().next());
 	}
 
 	private Map<String, String> parseRenames(ConfigurationSection config) {
