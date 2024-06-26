@@ -7,28 +7,29 @@ import org.bukkit.entity.EntityType;
  * Class of static APIs for Entities.
  */
 public final class EntityUtils {
-	/**
-	 * Attempts to retrieve an entity type by its slug or id.
-	 *
-	 * @param value The value to search for a matching entity type by.
-	 * @return Returns a matched entity type or null.
-	 */
-	@SuppressWarnings("deprecation")
-	public static EntityType getEntityType(final String value) {
-		if (Strings.isNullOrEmpty(value)) {
-			return null;
-		}
-		try {
-			return EntityType.valueOf(value.toUpperCase());
-		}
-		catch (final Throwable ignored) { }
-		try {
-			final EntityType type = EntityType.fromId(Short.parseShort(value));
-			if (type != null) {
-				return type;
-			}
-		}
-		catch (final Throwable ignored) { }
-		return null;
-	}
+
+    /**
+     * Attempts to retrieve an entity type by its slug or id.
+     *
+     * @param value The value to search for a matching entity type by.
+     * @return Returns a matched entity type or null.
+     */
+    @SuppressWarnings("deprecation")
+    public static EntityType getEntityType(final String value) {
+        if (Strings.isNullOrEmpty(value)) {
+            return null;
+        }
+        try {
+            return EntityType.valueOf(value.toUpperCase());
+        } catch (final Throwable ignored) {
+        }
+        try {
+            final EntityType type = EntityType.fromId(Short.parseShort(value));
+            if (type != null) {
+                return type;
+            }
+        } catch (final Throwable ignored) {
+        }
+        return null;
+    }
 }

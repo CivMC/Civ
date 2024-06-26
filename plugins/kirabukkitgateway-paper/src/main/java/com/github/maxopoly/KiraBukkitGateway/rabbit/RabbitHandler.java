@@ -12,79 +12,79 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class RabbitHandler {
 
-	private ConnectionFactory connectionFactory;
-	private String incomingQueue;
-	private String outgoingQueue;
-	private Logger logger;
-	private Connection conn;
-	private Channel incomingChannel;
-	private Channel outgoingChannel;
-	private RabbitInputHandler inputProcessor;
+    private ConnectionFactory connectionFactory;
+    private String incomingQueue;
+    private String outgoingQueue;
+    private Logger logger;
+    private Connection conn;
+    private Channel incomingChannel;
+    private Channel outgoingChannel;
+    private RabbitInputHandler inputProcessor;
 
-	public RabbitHandler(ConnectionFactory connFac, String incomingQueue, String outgoingQueue, Logger logger) {
-		this.connectionFactory = connFac;
-		this.incomingQueue = incomingQueue;
-		this.outgoingQueue = outgoingQueue;
-		this.logger = logger;
-		inputProcessor = new RabbitInputHandler(logger);
-	}
+    public RabbitHandler(ConnectionFactory connFac, String incomingQueue, String outgoingQueue, Logger logger) {
+        this.connectionFactory = connFac;
+        this.incomingQueue = incomingQueue;
+        this.outgoingQueue = outgoingQueue;
+        this.logger = logger;
+        inputProcessor = new RabbitInputHandler(logger);
+    }
 
-	public boolean setup() {
-		try {
-			conn = connectionFactory.newConnection();
-			incomingChannel = conn.createChannel();
-			outgoingChannel = conn.createChannel();
-			incomingChannel.queueDeclare(incomingQueue, false, false, false, null);
-			outgoingChannel.queueDeclare(outgoingQueue, false, false, false, null);
-			return true;
-		} catch (IOException | TimeoutException e) {
-			logger.severe("Failed to setup rabbit connection: " + e.toString());
-			return false;
-		}
-	}
+    public boolean setup() {
+        try {
+            conn = connectionFactory.newConnection();
+            incomingChannel = conn.createChannel();
+            outgoingChannel = conn.createChannel();
+            incomingChannel.queueDeclare(incomingQueue, false, false, false, null);
+            outgoingChannel.queueDeclare(outgoingQueue, false, false, false, null);
+            return true;
+        } catch (IOException | TimeoutException e) {
+            logger.severe("Failed to setup rabbit connection: " + e.toString());
+            return false;
+        }
+    }
 
-	public void beginAsyncListen() {
-		new BukkitRunnable() {
+    public void beginAsyncListen() {
+        new BukkitRunnable() {
 
-			@Override
-			public void run() {
-				DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-					try {
-						String message = new String(delivery.getBody(), "UTF-8");
-						System.out.println(" [x] Received '" + message + "'");
-						inputProcessor.handle(message);
-					} catch (Exception e) {
-						logger.severe("Exception in rabbit handling: " + e.toString());
-						e.printStackTrace();
-					}
-				};
-				try {
-					incomingChannel.basicConsume(incomingQueue, true, deliverCallback, consumerTag -> {
-					});
-				} catch (IOException e) {
-					logger.severe("Error in rabbit listener: " + e.toString());
-				}
-			}
-		}.runTask(KiraBukkitGatewayPlugin.getInstance());
-	}
+            @Override
+            public void run() {
+                DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+                    try {
+                        String message = new String(delivery.getBody(), "UTF-8");
+                        System.out.println(" [x] Received '" + message + "'");
+                        inputProcessor.handle(message);
+                    } catch (Exception e) {
+                        logger.severe("Exception in rabbit handling: " + e.toString());
+                        e.printStackTrace();
+                    }
+                };
+                try {
+                    incomingChannel.basicConsume(incomingQueue, true, deliverCallback, consumerTag -> {
+                    });
+                } catch (IOException e) {
+                    logger.severe("Error in rabbit listener: " + e.toString());
+                }
+            }
+        }.runTask(KiraBukkitGatewayPlugin.getInstance());
+    }
 
-	public void shutdown() {
-		try {
-			incomingChannel.close();
-			outgoingChannel.close();
-			conn.close();
-		} catch (IOException | TimeoutException e) {
-			logger.severe("Failed to close rabbit connection: " + e);
-		}
-	}
+    public void shutdown() {
+        try {
+            incomingChannel.close();
+            outgoingChannel.close();
+            conn.close();
+        } catch (IOException | TimeoutException e) {
+            logger.severe("Failed to close rabbit connection: " + e);
+        }
+    }
 
-	public boolean sendMessage(String msg) {
-		try {
-			outgoingChannel.basicPublish("", outgoingQueue, null, msg.getBytes("UTF-8"));
-			return true;
-		} catch (IOException e) {
-			logger.severe("Failed to send rabbit message: " + e);
-			return false;
-		}
-	}
+    public boolean sendMessage(String msg) {
+        try {
+            outgoingChannel.basicPublish("", outgoingQueue, null, msg.getBytes("UTF-8"));
+            return true;
+        } catch (IOException e) {
+            logger.severe("Failed to send rabbit message: " + e);
+            return false;
+        }
+    }
 }

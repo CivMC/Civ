@@ -4,6 +4,7 @@ Allows to create retractable bridges and gates.
 Supports Citadel, Bastion and Orebfuscator plugins.
 
 ### Requirements:
+
 - Java 1.6 / 1.7 / 1.8
 - Spigot/PaperSpigot and any other fork of CraftBukkit
 

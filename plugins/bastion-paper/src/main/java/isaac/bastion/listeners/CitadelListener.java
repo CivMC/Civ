@@ -13,27 +13,27 @@ import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class CitadelListener implements Listener {
-	
-	private BastionBlockManager blockManager;
-	
-	public CitadelListener() {
-		this.blockManager = Bastion.getBastionManager();
-	}
 
-	@EventHandler(ignoreCancelled = true)
-	public void onReinforcementCreation(ReinforcementCreationEvent event) {
-		Set<BastionBlock> preblocking = blockManager.getBlockingBastionsWithoutPermission(event.getReinforcement().getLocation(), 
-				event.getPlayer().getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
-		for(BastionBlock bastion : preblocking) {
-			BastionType type = bastion.getType();
-			if(type.isBlockReinforcements()) {
-				event.setCancelled(true);
-				if (!Bastion.getSettingManager().getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
-					event.getPlayer().sendMessage(ChatColor.RED + "Bastion prevented reinforcement");
-				}
-				blockManager.erodeFromPlace(event.getPlayer(), preblocking);
-				return;
-			}
-		}
-	}
+    private BastionBlockManager blockManager;
+
+    public CitadelListener() {
+        this.blockManager = Bastion.getBastionManager();
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onReinforcementCreation(ReinforcementCreationEvent event) {
+        Set<BastionBlock> preblocking = blockManager.getBlockingBastionsWithoutPermission(event.getReinforcement().getLocation(),
+            event.getPlayer().getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
+        for (BastionBlock bastion : preblocking) {
+            BastionType type = bastion.getType();
+            if (type.isBlockReinforcements()) {
+                event.setCancelled(true);
+                if (!Bastion.getSettingManager().getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
+                    event.getPlayer().sendMessage(ChatColor.RED + "Bastion prevented reinforcement");
+                }
+                blockManager.erodeFromPlace(event.getPlayer(), preblocking);
+                return;
+            }
+        }
+    }
 }

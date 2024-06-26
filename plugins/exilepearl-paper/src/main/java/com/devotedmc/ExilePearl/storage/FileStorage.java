@@ -19,172 +19,172 @@ import java.util.logging.Level;
 
 /**
  * File storage for pearls. Not done yet
- * @author Gordon
  *
+ * @author Gordon
  */
 class FileStorage implements PluginStorage {
 
-	private final File pearlFile;
-	private final PearlFactory pearlFactory;
-	private final PearlLogger logger;
+    private final File pearlFile;
+    private final PearlFactory pearlFactory;
+    private final PearlLogger logger;
 
-	private Document doc = new Document();
-	private Document pearlDoc;
+    private Document doc = new Document();
+    private Document pearlDoc;
 
-	public FileStorage(final File file, final PearlFactory pearlFactory, final PearlLogger logger) {
-		Preconditions.checkNotNull(file, "file");
-		Preconditions.checkNotNull(pearlFactory, "pearlFactory");
-		Preconditions.checkNotNull(logger, "logger");
+    public FileStorage(final File file, final PearlFactory pearlFactory, final PearlLogger logger) {
+        Preconditions.checkNotNull(file, "file");
+        Preconditions.checkNotNull(pearlFactory, "pearlFactory");
+        Preconditions.checkNotNull(logger, "logger");
 
-		this.pearlFile = file;
-		this.pearlFactory = pearlFactory;
-		this.logger = logger;
-	}
+        this.pearlFile = file;
+        this.pearlFactory = pearlFactory;
+        this.logger = logger;
+    }
 
-	@Override
-	public Collection<ExilePearl> loadAllPearls() {
-		HashSet<ExilePearl> pearls = new HashSet<ExilePearl>();
+    @Override
+    public Collection<ExilePearl> loadAllPearls() {
+        HashSet<ExilePearl> pearls = new HashSet<ExilePearl>();
 
-		FileConfiguration fileConfig = YamlConfiguration.loadConfiguration(pearlFile);
-		doc = new Document(fileConfig);
-		pearlDoc = doc.getDocument("pearls");
-		if (pearlDoc == null) {
-			pearlDoc = new Document();
-			doc.append("pearls", pearlDoc);
-			writeFile();
-			return pearls;
-		}
+        FileConfiguration fileConfig = YamlConfiguration.loadConfiguration(pearlFile);
+        doc = new Document(fileConfig);
+        pearlDoc = doc.getDocument("pearls");
+        if (pearlDoc == null) {
+            pearlDoc = new Document();
+            doc.append("pearls", pearlDoc);
+            writeFile();
+            return pearls;
+        }
 
-		for(Entry<String, Object> entry : pearlDoc.entrySet()) {
-			try {
-				UUID playerId = UUID.fromString(entry.getKey());
-				pearls.add(pearlFactory.createExilePearl(playerId, (Document)entry.getValue()));
-			} catch (Exception ex) {
-				logger.log(Level.WARNING, "Failed to load pearl record: %s", doc.get(entry.getKey()));
-				ex.printStackTrace();
-			}
-		}
+        for (Entry<String, Object> entry : pearlDoc.entrySet()) {
+            try {
+                UUID playerId = UUID.fromString(entry.getKey());
+                pearls.add(pearlFactory.createExilePearl(playerId, (Document) entry.getValue()));
+            } catch (Exception ex) {
+                logger.log(Level.WARNING, "Failed to load pearl record: %s", doc.get(entry.getKey()));
+                ex.printStackTrace();
+            }
+        }
 
-		return pearls;
-	}
+        return pearls;
+    }
 
-	@Override
-	public void pearlInsert(ExilePearl pearl) {
-		Document insert = new Document()
-				.append("player_name", pearl.getPlayerName()) // Not needed, just makes it easier to search file
-				.append("killer_id", pearl.getKillerId().toString())
-				.append("pearl_id", pearl.getPearlId())
-				.append("type", pearl.getPearlType().toInt())
-				.append("location", pearl.getLocation())
-				.append("health", pearl.getHealth())
-				.append("pearled_on", pearl.getPearledOn())
-				.append("last_seen", pearl.getLastOnline())
-				.append("freed_offline", pearl.getFreedOffline())
-				.append("summoned", pearl.isSummoned());
-		if(pearl.isSummoned()) {
-			insert.append("returnLoc", pearl.getReturnLocation());
-		}
+    @Override
+    public void pearlInsert(ExilePearl pearl) {
+        Document insert = new Document()
+            .append("player_name", pearl.getPlayerName()) // Not needed, just makes it easier to search file
+            .append("killer_id", pearl.getKillerId().toString())
+            .append("pearl_id", pearl.getPearlId())
+            .append("type", pearl.getPearlType().toInt())
+            .append("location", pearl.getLocation())
+            .append("health", pearl.getHealth())
+            .append("pearled_on", pearl.getPearledOn())
+            .append("last_seen", pearl.getLastOnline())
+            .append("freed_offline", pearl.getFreedOffline())
+            .append("summoned", pearl.isSummoned());
+        if (pearl.isSummoned()) {
+            insert.append("returnLoc", pearl.getReturnLocation());
+        }
 
-		pearlDoc.append(pearl.getPlayerId().toString(), insert);
-		writeFile();
-	}
+        pearlDoc.append(pearl.getPlayerId().toString(), insert);
+        writeFile();
+    }
 
-	@Override
-	public void pearlRemove(ExilePearl pearl) {
-		pearlDoc.remove(pearl.getPlayerId().toString());
-		writeFile();
-	}
+    @Override
+    public void pearlRemove(ExilePearl pearl) {
+        pearlDoc.remove(pearl.getPlayerId().toString());
+        writeFile();
+    }
 
-	@Override
-	public void updatePearlLocation(ExilePearl pearl) {		
-		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("location", pearl.getLocation());
-		writeFile();
-	}
+    @Override
+    public void updatePearlLocation(ExilePearl pearl) {
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("location", pearl.getLocation());
+        writeFile();
+    }
 
-	@Override
-	public void updatePearlHealth(ExilePearl pearl) {
-		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("health", pearl.getHealth());
-		writeFile();
-	}
+    @Override
+    public void updatePearlHealth(ExilePearl pearl) {
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("health", pearl.getHealth());
+        writeFile();
+    }
 
-	@Override
-	public void updatePearlFreedOffline(ExilePearl pearl) {
-		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("freed_offline", pearl.getFreedOffline());
-		writeFile();
-	}
+    @Override
+    public void updatePearlFreedOffline(ExilePearl pearl) {
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("freed_offline", pearl.getFreedOffline());
+        writeFile();
+    }
 
-	@Override
-	public void updatePearlType(ExilePearl pearl) {
-		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("type", pearl.getPearlType().toInt());
-		writeFile();
-	}
+    @Override
+    public void updatePearlType(ExilePearl pearl) {
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("type", pearl.getPearlType().toInt());
+        writeFile();
+    }
 
-	@Override
-	public void updatePearlKiller(ExilePearl pearl) {
-		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("killer_id", pearl.getKillerId().toString());
-		writeFile();
-	}
+    @Override
+    public void updatePearlKiller(ExilePearl pearl) {
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("killer_id", pearl.getKillerId().toString());
+        writeFile();
+    }
 
-	@Override
-	public void updatePearlLastOnline(ExilePearl pearl) {
-		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("last_seen", pearl.getLastOnline());
-		writeFile();
-	}
+    @Override
+    public void updatePearlLastOnline(ExilePearl pearl) {
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("last_seen", pearl.getLastOnline());
+        writeFile();
+    }
 
-	@Override
-	public void updatePearlSummoned(ExilePearl pearl) {
-		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("summoned", pearl.isSummoned());
-		writeFile();
-	}
+    @Override
+    public void updatePearlSummoned(ExilePearl pearl) {
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("summoned", pearl.isSummoned());
+        writeFile();
+    }
 
-	@Override
-	public void updateReturnLocation(ExilePearl pearl) {
-		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("returnLoc", pearl.getReturnLocation());
-		writeFile();
-	}
+    @Override
+    public void updateReturnLocation(ExilePearl pearl) {
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("returnLoc", pearl.getReturnLocation());
+        writeFile();
+    }
 
-	@Override
-	public void updatePearledOnDate(ExilePearl pearl) {
-		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("pearled_on", pearl.getPearledOn());
-		writeFile();
-	}
+    @Override
+    public void updatePearledOnDate(ExilePearl pearl) {
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("pearled_on", pearl.getPearledOn());
+        writeFile();
+    }
 
-	private void writeFile() {
-		YamlConfiguration config = YamlConfiguration.loadConfiguration(pearlFile);
-		doc.savetoConfig(config);
-		try {
-			config.save(pearlFile);
-		} catch (IOException e) {
-			logger.log(Level.SEVERE, "Failed to write pearl data to file");
-			e.printStackTrace();
-		}
-	}
+    private void writeFile() {
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(pearlFile);
+        doc.savetoConfig(config);
+        try {
+            config.save(pearlFile);
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Failed to write pearl data to file");
+            e.printStackTrace();
+        }
+    }
 
-	@Override
-	public boolean connect() {
-		doc = new Document();
-		pearlDoc = new Document();
-		if (!pearlFile.exists()) {
-			try {
-				pearlFile.createNewFile();
-				try(FileWriter writer = new FileWriter(pearlFile)) {
-					writer.write("# Do not edit this file directly while the server is running!");
-				}
-				doc.append("pearls", pearlDoc);
-				writeFile();
-			} catch (IOException e) {
-				return false;
-			}
-		}
-		return true;
-	}
+    @Override
+    public boolean connect() {
+        doc = new Document();
+        pearlDoc = new Document();
+        if (!pearlFile.exists()) {
+            try {
+                pearlFile.createNewFile();
+                try (FileWriter writer = new FileWriter(pearlFile)) {
+                    writer.write("# Do not edit this file directly while the server is running!");
+                }
+                doc.append("pearls", pearlDoc);
+                writeFile();
+            } catch (IOException e) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	@Override
-	public void disconnect() {
-	}
+    @Override
+    public void disconnect() {
+    }
 
-	@Override
-	public boolean isConnected() {
-		return true;
-	}
+    @Override
+    public boolean isConnected() {
+        return true;
+    }
 }

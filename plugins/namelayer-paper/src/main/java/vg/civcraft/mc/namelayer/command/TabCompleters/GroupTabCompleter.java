@@ -13,6 +13,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
  * Created by isaac on 2/2/2015.
  */
 public class GroupTabCompleter {
+
     public static List<String> complete(String lastArg, PermissionType accessLevel, Player sender) {
         UUID uuid = NameAPI.getUUID(sender.getName());
         GroupManager gm = NameAPI.getGroupManager();
@@ -20,28 +21,28 @@ public class GroupTabCompleter {
         List<String> fittingGroups = new ArrayList<>();
         List<String> result = new ArrayList<>();
 
-        if (lastArg != null){
-            for (String group : groups){
-                if (group.toLowerCase().startsWith(lastArg.toLowerCase())){
+        if (lastArg != null) {
+            for (String group : groups) {
+                if (group.toLowerCase().startsWith(lastArg.toLowerCase())) {
                     fittingGroups.add(group);
                 }
-			}
+            }
         } else {
             fittingGroups = groups;
         }
 
         if (accessLevel == null) {
-            for (String groupName : fittingGroups){
-                Group group  = GroupManager.getGroup(groupName);
+            for (String groupName : fittingGroups) {
+                Group group = GroupManager.getGroup(groupName);
                 if (group != null && group.isMember(uuid)) {
-					        result.add(groupName);
-				        }
+                    result.add(groupName);
+                }
             }
         } else {
             for (String groupName : fittingGroups) {
                 if (gm.hasAccess(groupName, uuid, accessLevel)) {
-					result.add(groupName);
-				}
+                    result.add(groupName);
+                }
             }
         }
         return result;

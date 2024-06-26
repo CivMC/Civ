@@ -2,14 +2,14 @@ package com.github.maxopoly.KiraBukkitGateway.impersonation;
 
 public class InvalidCommandAttemptException extends RuntimeException {
 
-	private static final long serialVersionUID = -7864555241340731587L;
+    private static final long serialVersionUID = -7864555241340731587L;
 
-	public InvalidCommandAttemptException() {
-		super();
-	}
+    public InvalidCommandAttemptException() {
+        super();
+    }
 
-	public InvalidCommandAttemptException(String msg) {
-		super(msg);
-	}
+    public InvalidCommandAttemptException(String msg) {
+        super(msg);
+    }
 
 }

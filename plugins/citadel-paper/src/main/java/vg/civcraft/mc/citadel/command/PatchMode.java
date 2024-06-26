@@ -12,16 +12,16 @@ import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 
 public class PatchMode extends BaseCommand {
 
-	@CommandAlias("ctp|patchmode|patch")
-	@Description("Enters patch mode, which allows you to repair reinforcements. Note that repairing reinforcements will also reset their maturation cycle")
-	@CommandCompletion("@CT_Groups")
-	public void execute(Player player) {
-		PlayerStateManager stateManager = Citadel.getInstance().getStateManager();
-		AbstractPlayerState currentState = Citadel.getInstance().getStateManager().getState(player);
-		if (currentState instanceof PatchState) {
-			stateManager.setState(player, null);
-		} else {
-			stateManager.setState(player, new PatchState(player));
-		}
-	}
+    @CommandAlias("ctp|patchmode|patch")
+    @Description("Enters patch mode, which allows you to repair reinforcements. Note that repairing reinforcements will also reset their maturation cycle")
+    @CommandCompletion("@CT_Groups")
+    public void execute(Player player) {
+        PlayerStateManager stateManager = Citadel.getInstance().getStateManager();
+        AbstractPlayerState currentState = Citadel.getInstance().getStateManager().getState(player);
+        if (currentState instanceof PatchState) {
+            stateManager.setState(player, null);
+        } else {
+            stateManager.setState(player, new PatchState(player));
+        }
+    }
 }

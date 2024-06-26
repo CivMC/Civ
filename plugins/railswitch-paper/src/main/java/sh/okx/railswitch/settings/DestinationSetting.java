@@ -13,7 +13,7 @@ public final class DestinationSetting extends StringSetting {
 
     public DestinationSetting(JavaPlugin plugin) {
         super(plugin, "", "Destination", "dest", new ItemStack(Material.MINECART),
-                "The destination(s) that will be used to route you at rail junctions.");
+            "The destination(s) that will be used to route you at rail junctions.");
     }
 
     @Override

@@ -14,43 +14,43 @@ import org.bukkit.inventory.PlayerInventory;
 
 public class ElytraListener implements Listener {
 
-	private ElytraManager manager;
-	
-	public ElytraListener() {
-		manager = new ElytraManager();
-	}
-	
-	@EventHandler(ignoreCancelled=true)
-	public void onElytraGlide(PlayerMoveEvent event) {
-		Player p = event.getPlayer();
-		if(!p.isGliding()) return;
-		
-		//Bastion.getPlugin().getLogger().info("Gliding");
-		
-		PlayerInventory inv = p.getInventory();
-		if(inv.getChestplate() != null && inv.getChestplate().getType() != Material.ELYTRA) return;
-		
-		//Bastion.getPlugin().getLogger().info("Via elytra");
-		
-		if (manager.handleElytraMovement(p, event.getTo())) {
-			Bastion.getPlugin().getLogger().info("Blocked.");
-			event.setCancelled(true);
-		}
-	}
-	
-	@EventHandler(ignoreCancelled=true) 
-	public void onPlayerDepart(PlayerQuitEvent event) {
-		unwatchPlayer(event);
-	}
-	
-	@EventHandler(ignoreCancelled=true)
-	public void onPlayerKick(PlayerKickEvent event) {
-		unwatchPlayer(event);
-	}
-	
-	private void unwatchPlayer(PlayerEvent event) {
-		Player p = event.getPlayer();
-		if (p == null) return;
-		manager.clearThrottle(p.getUniqueId());
-	}
+    private ElytraManager manager;
+
+    public ElytraListener() {
+        manager = new ElytraManager();
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onElytraGlide(PlayerMoveEvent event) {
+        Player p = event.getPlayer();
+        if (!p.isGliding()) return;
+
+        //Bastion.getPlugin().getLogger().info("Gliding");
+
+        PlayerInventory inv = p.getInventory();
+        if (inv.getChestplate() != null && inv.getChestplate().getType() != Material.ELYTRA) return;
+
+        //Bastion.getPlugin().getLogger().info("Via elytra");
+
+        if (manager.handleElytraMovement(p, event.getTo())) {
+            Bastion.getPlugin().getLogger().info("Blocked.");
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerDepart(PlayerQuitEvent event) {
+        unwatchPlayer(event);
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerKick(PlayerKickEvent event) {
+        unwatchPlayer(event);
+    }
+
+    private void unwatchPlayer(PlayerEvent event) {
+        Player p = event.getPlayer();
+        if (p == null) return;
+        manager.clearThrottle(p.getUniqueId());
+    }
 }

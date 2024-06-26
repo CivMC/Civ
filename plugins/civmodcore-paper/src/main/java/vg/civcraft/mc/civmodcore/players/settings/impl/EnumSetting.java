@@ -18,9 +18,9 @@ import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
 
 public class EnumSetting<T extends Enum<T>> extends PlayerSetting<T> {
 
-	private final Class<T> enumClass;
+    private final Class<T> enumClass;
 
-	public EnumSetting(final JavaPlugin owningPlugin,
+    public EnumSetting(final JavaPlugin owningPlugin,
                        final T defaultValue,
                        final String niceName,
                        final String identifier,
@@ -28,68 +28,68 @@ public class EnumSetting<T extends Enum<T>> extends PlayerSetting<T> {
                        final String description,
                        final boolean canBeChangedByPlayer,
                        final Class<T> enumClass) {
-		super(owningPlugin, defaultValue, niceName, identifier, gui, description, canBeChangedByPlayer);
-		this.enumClass = Objects.requireNonNull(enumClass);
-	}
+        super(owningPlugin, defaultValue, niceName, identifier, gui, description, canBeChangedByPlayer);
+        this.enumClass = Objects.requireNonNull(enumClass);
+    }
 
-	@Override
-	public T deserialize(final String raw) {
-		return EnumUtils.getEnum(this.enumClass, raw, getDefaultValue());
-	}
+    @Override
+    public T deserialize(final String raw) {
+        return EnumUtils.getEnum(this.enumClass, raw, getDefaultValue());
+    }
 
-	@Override
-	public boolean isValidValue(final String raw) {
-		return EnumUtils.isValidEnum(this.enumClass, raw);
-	}
+    @Override
+    public boolean isValidValue(final String raw) {
+        return EnumUtils.isValidEnum(this.enumClass, raw);
+    }
 
-	@Override
-	public String serialize(final T value) {
-		if (value == null) {
-			return null;
-		}
-		return value.name();
-	}
+    @Override
+    public String serialize(final T value) {
+        if (value == null) {
+            return null;
+        }
+        return value.name();
+    }
 
-	@Override
-	public String toText(final T value) {
-		if (value == null) {
-			return "<null>";
-		}
-		return value.name();
-	}
+    @Override
+    public String toText(final T value) {
+        if (value == null) {
+            return "<null>";
+        }
+        return value.name();
+    }
 
-	@Override
-	public void handleMenuClick(final Player player, final MenuSection menu) {
-		final T currentValue = getValue(player);
+    @Override
+    public void handleMenuClick(final Player player, final MenuSection menu) {
+        final T currentValue = getValue(player);
 
-		final var view = new MultiPageView(player,
-				EnumUtils.getEnumList(this.enumClass).stream()
-						.sorted(Comparator.comparing(Enum::name))
-						.map(value -> {
-							final var item = new ItemStack(value == currentValue ? Material.GREEN_DYE : Material.RED_DYE);
-							ItemUtils.setDisplayName(item, ChatColor.GOLD + toText(value));
-							return new Clickable(item) {
-								@Override
-								protected void clicked(final Player ignored) {
-									setValue(player, value);
-									handleMenuClick(player, menu);
-								}
-							};
-						})
-						.collect(Collectors.<IClickable>toList()),
-				getNiceName(),
-				true);
+        final var view = new MultiPageView(player,
+            EnumUtils.getEnumList(this.enumClass).stream()
+                .sorted(Comparator.comparing(Enum::name))
+                .map(value -> {
+                    final var item = new ItemStack(value == currentValue ? Material.GREEN_DYE : Material.RED_DYE);
+                    ItemUtils.setDisplayName(item, ChatColor.GOLD + toText(value));
+                    return new Clickable(item) {
+                        @Override
+                        protected void clicked(final Player ignored) {
+                            setValue(player, value);
+                            handleMenuClick(player, menu);
+                        }
+                    };
+                })
+                .collect(Collectors.<IClickable>toList()),
+            getNiceName(),
+            true);
 
-		final var backButtonItem = new ItemStack(Material.ARROW);
-		ItemUtils.setDisplayName(backButtonItem, ChatColor.AQUA + "Go back to " + menu.getName());
-		view.setMenuSlot(new Clickable(backButtonItem) {
-			@Override
-			public void clicked(final Player clicker) {
-				menu.showScreen(clicker);
-			}
-		}, 0);
+        final var backButtonItem = new ItemStack(Material.ARROW);
+        ItemUtils.setDisplayName(backButtonItem, ChatColor.AQUA + "Go back to " + menu.getName());
+        view.setMenuSlot(new Clickable(backButtonItem) {
+            @Override
+            public void clicked(final Player clicker) {
+                menu.showScreen(clicker);
+            }
+        }, 0);
 
-		view.showScreen();
-	}
+        view.showScreen();
+    }
 
 }

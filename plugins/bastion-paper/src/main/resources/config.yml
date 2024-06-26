@@ -15,15 +15,15 @@ commonSettings:
   cancelPlacementAndDamage:
     - SCAFFOLDING
 bastions:
-#The first bastion in this list will be used as the default type
-#This only really matters the first time your start it up when converting from old bastion
-#All bastions in the db will be flagged as, in this instance, citybastion
+  #The first bastion in this list will be used as the default type
+  #This only really matters the first time your start it up when converting from old bastion
+  #All bastions in the db will be flagged as, in this instance, citybastion
   citybastion:
     block:
       material: NETHER_WART_BLOCK
       durability: 0
       name: City Bastion
-      lore: 
+      lore:
         - This bastion will protect your plot
     shortName: City
     squarefield: true
@@ -59,7 +59,7 @@ bastions:
       material: BONE_BLOCK
       durability: 0
       name: Claim Bastion
-      lore: 
+      lore:
         - This bastion will protect your claims
     squarefield: false
     effectRadius: 300
@@ -94,7 +94,7 @@ bastions:
       material: SPONGE
       durability: 0
       name: Bastion
-      lore: 
+      lore:
         - this one is hellaz
     squarefield: false
     effectRadius: 10

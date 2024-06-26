@@ -1,12 +1,12 @@
 name: CivDuties
 main: vg.civcraft.mc.civduties.CivDuties
 version: ${version}
-depend: [CivModCore]
-softdepend: [Vault]
+depend: [ CivModCore ]
+softdepend: [ Vault ]
 api-version: 1.16
 commands:
-   duty:
-      permission: civduties.duty
+  duty:
+    permission: civduties.duty
 permissions:
   civduties.duty:
-   default: op
+    default: op

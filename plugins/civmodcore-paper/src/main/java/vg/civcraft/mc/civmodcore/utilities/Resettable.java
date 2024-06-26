@@ -5,14 +5,14 @@ package vg.civcraft.mc.civmodcore.utilities;
  */
 public interface Resettable {
 
-	/**
-	 * Initialises this object, which is irrelevant to construction.
-	 */
-	void init();
+    /**
+     * Initialises this object, which is irrelevant to construction.
+     */
+    void init();
 
-	/**
-	 * Resets this object, which is irrelevant to finalisation / closure.
-	 */
-	void reset();
+    /**
+     * Resets this object, which is irrelevant to finalisation / closure.
+     */
+    void reset();
 
 }

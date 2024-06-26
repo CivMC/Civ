@@ -9,8 +9,8 @@ import javax.annotation.Nonnull;
 @FunctionalInterface
 public interface NonNullSupplier<T> extends Supplier<T> {
 
-	@Nonnull
-	@Override
-	T get();
+    @Nonnull
+    @Override
+    T get();
 
 }

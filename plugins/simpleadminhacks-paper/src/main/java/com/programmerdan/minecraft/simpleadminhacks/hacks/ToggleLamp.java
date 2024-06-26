@@ -23,118 +23,118 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 
 public class ToggleLamp extends SimpleHack<ToggleLampConfig> implements Listener {
 
-	public static final String NAME = "ToggleLamp";
+    public static final String NAME = "ToggleLamp";
 
-	private static final String META_COOLDOWN = "ToggleLamp_NextToggle";
-	private static final String META_TOGGLED = "ToggleLamp_Toggled";
+    private static final String META_COOLDOWN = "ToggleLamp_NextToggle";
+    private static final String META_TOGGLED = "ToggleLamp_Toggled";
 
-	private ReinforcementManager rm;
+    private ReinforcementManager rm;
 
-	public ToggleLamp(SimpleAdminHacks plugin, ToggleLampConfig config) {
-		super(plugin, config);
-	}
+    public ToggleLamp(SimpleAdminHacks plugin, ToggleLampConfig config) {
+        super(plugin, config);
+    }
 
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onInteract(PlayerInteractEvent event) {
-		if (!config.isEnabled()) {
-			return;
-		}
-		Block clickedBlock = event.getClickedBlock();
-		if (clickedBlock == null) {
-			return;
-		}
-		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-			return;
-		}
-		if (event.getItem() == null) {
-			return;
-		}
-		if (event.getHand() != EquipmentSlot.HAND || event.getItem().getType() != Material.STICK) {
-			return;
-		}
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onInteract(PlayerInteractEvent event) {
+        if (!config.isEnabled()) {
+            return;
+        }
+        Block clickedBlock = event.getClickedBlock();
+        if (clickedBlock == null) {
+            return;
+        }
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        if (event.getItem() == null) {
+            return;
+        }
+        if (event.getHand() != EquipmentSlot.HAND || event.getItem().getType() != Material.STICK) {
+            return;
+        }
 
-		Player eventPlayer = event.getPlayer();
-		Material clickedBlockMat = clickedBlock.getType();
+        Player eventPlayer = event.getPlayer();
+        Material clickedBlockMat = clickedBlock.getType();
 
-		if (clickedBlockMat != Material.REDSTONE_LAMP) {
-			return;
-		}
+        if (clickedBlockMat != Material.REDSTONE_LAMP) {
+            return;
+        }
 
-		boolean toggled = clickedBlock.hasMetadata(META_TOGGLED)
-				&& clickedBlock.getMetadata(META_TOGGLED).get(0).asBoolean();
+        boolean toggled = clickedBlock.hasMetadata(META_TOGGLED)
+            && clickedBlock.getMetadata(META_TOGGLED).get(0).asBoolean();
 
-		if (clickedBlock.hasMetadata(META_COOLDOWN)) {
-			MetadataValue val = clickedBlock.getMetadata(META_COOLDOWN).get(0);
-			if (((long) val.value()) > System.currentTimeMillis()) {
-				return;
-			}
-		}
+        if (clickedBlock.hasMetadata(META_COOLDOWN)) {
+            MetadataValue val = clickedBlock.getMetadata(META_COOLDOWN).get(0);
+            if (((long) val.value()) > System.currentTimeMillis()) {
+                return;
+            }
+        }
 
-		if (rm != null) {
-			Reinforcement rein = rm.getReinforcement(clickedBlock);
-			if (rein != null) {
-				if (!rein.getGroup().isMember(eventPlayer.getUniqueId())) {
-					return;
-				}
-			}
-		}
-		switchLamp(clickedBlock, !toggled);
-		eventPlayer.getWorld().playSound(clickedBlock.getLocation(), Sound.BLOCK_LEVER_CLICK, 0.5F, 1.0F);
+        if (rm != null) {
+            Reinforcement rein = rm.getReinforcement(clickedBlock);
+            if (rein != null) {
+                if (!rein.getGroup().isMember(eventPlayer.getUniqueId())) {
+                    return;
+                }
+            }
+        }
+        switchLamp(clickedBlock, !toggled);
+        eventPlayer.getWorld().playSound(clickedBlock.getLocation(), Sound.BLOCK_LEVER_CLICK, 0.5F, 1.0F);
 
-	}
+    }
 
-	@Override
-	public void registerListeners() {
-		if (config.isEnabled()) {
-			plugin().log("Registering ToggleLamp listeners");
-			plugin().registerListener(this);
-		}
-	}
+    @Override
+    public void registerListeners() {
+        if (config.isEnabled()) {
+            plugin().log("Registering ToggleLamp listeners");
+            plugin().registerListener(this);
+        }
+    }
 
-	@Override
-	public void registerCommands() {
-	}
+    @Override
+    public void registerCommands() {
+    }
 
-	@Override
-	public void dataBootstrap() {
-		rm = plugin().serverHasPlugin("Citadel") ? Citadel.getInstance().getReinforcementManager() : null;
-	}
+    @Override
+    public void dataBootstrap() {
+        rm = plugin().serverHasPlugin("Citadel") ? Citadel.getInstance().getReinforcementManager() : null;
+    }
 
-	@Override
-	public void unregisterListeners() {
-	}
+    @Override
+    public void unregisterListeners() {
+    }
 
-	@Override
-	public void unregisterCommands() {
-	}
+    @Override
+    public void unregisterCommands() {
+    }
 
-	@Override
-	public void dataCleanup() {
-		rm = null;
-	}
+    @Override
+    public void dataCleanup() {
+        rm = null;
+    }
 
-	@Override
-	public String status() {
-		return config.isEnabled() ? "ToggleLamp enabled." : "ToggleLamp disabled.";
-	}
+    @Override
+    public String status() {
+        return config.isEnabled() ? "ToggleLamp enabled." : "ToggleLamp disabled.";
+    }
 
-	public static ToggleLampConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
-		return new ToggleLampConfig(plugin, config);
-	}
+    public static ToggleLampConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+        return new ToggleLampConfig(plugin, config);
+    }
 
-	private void switchLamp(Block block, boolean lit) {
+    private void switchLamp(Block block, boolean lit) {
 
-		if (block.getType() != Material.REDSTONE_LAMP) {
-			return;
-		}
+        if (block.getType() != Material.REDSTONE_LAMP) {
+            return;
+        }
 
-		Lightable lightable = (Lightable) block.getBlockData();
-		lightable.setLit(lit);
-		block.setBlockData(lightable);
+        Lightable lightable = (Lightable) block.getBlockData();
+        lightable.setLit(lit);
+        block.setBlockData(lightable);
 
-		block.setMetadata(META_TOGGLED, new FixedMetadataValue(plugin(), lit));
-		block.setMetadata(META_COOLDOWN,
-				new FixedMetadataValue(plugin(), System.currentTimeMillis() + config.getCooldownTime()));
-	}
+        block.setMetadata(META_TOGGLED, new FixedMetadataValue(plugin(), lit));
+        block.setMetadata(META_COOLDOWN,
+            new FixedMetadataValue(plugin(), System.currentTimeMillis() + config.getCooldownTime()));
+    }
 
 }

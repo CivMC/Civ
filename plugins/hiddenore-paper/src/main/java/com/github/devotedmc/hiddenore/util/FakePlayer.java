@@ -111,3745 +111,3746 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 public class FakePlayer implements Player {
-	private final ItemStack inHand;
-	private final Location location;
-
-	public FakePlayer(final Location location, final ItemStack inHand) {
-		this.inHand = inHand;
-		this.location = location;
-	}
-
-	@Override
-	public String getName() {
-		return "Spoof";
-	}
-
-	@Override
-	public PlayerInventory getInventory() {
-		return new PlayerInventory() {
-
-			@Override
-			public int getSize() {
-				return 0;
-			}
-
-			@Override
-			public int getMaxStackSize() {
-				return 0;
-			}
-
-			@Override
-			public void setMaxStackSize(int size) {
-			}
-
-			@Override
-			public ItemStack getItem(int index) {
-				return null;
-			}
-
-			@Override
-			public HashMap<Integer, ItemStack> addItem(ItemStack...items) throws IllegalArgumentException {
-				return new HashMap<>();
-			}
-
-			@Override
-			public HashMap<Integer, ItemStack> removeItem(ItemStack...items) throws IllegalArgumentException {
-				return new HashMap<>();
-			}
-
-			@Override
-			public ItemStack[] getContents() {
-				return null;
-			}
-
-			@Override
-			public void setContents(ItemStack[] items) throws IllegalArgumentException {
-			}
-
-			@Override
-			public ItemStack[] getStorageContents() {
-				return null;
-			}
-
-			@Override
-			public void setStorageContents(ItemStack[] items) throws IllegalArgumentException {
-			}
-
-			@Override
-			public boolean contains(Material material) throws IllegalArgumentException {
-				return false;
-			}
-
-			@Override
-			public boolean contains(ItemStack item) {
-				return false;
-			}
-
-			@Override
-			public boolean contains(Material material, int amount) throws IllegalArgumentException {
-				return false;
-			}
-
-			@Override
-			public boolean contains(ItemStack item, int amount) {
-				return false;
-			}
-
-			@Override
-			public boolean containsAtLeast(ItemStack item, int amount) {
-				return false;
-			}
-
-			@Override
-			public HashMap<Integer, ? extends ItemStack> all(Material material) throws IllegalArgumentException {
-				return new HashMap<>();
-			}
-
-			@Override
-			public HashMap<Integer, ? extends ItemStack> all(ItemStack item) {
-				return new HashMap<>();
-			}
-
-			@Override
-			public int first(Material material) throws IllegalArgumentException {
-				return 0;
-			}
-
-			@Override
-			public int first(ItemStack item) {
-				return 0;
-			}
-
-			@Override
-			public int firstEmpty() {
-				return 0;
-			}
-			
-			@Override
-			public void remove(Material material) throws IllegalArgumentException {
-			}
-
-			@Override
-			public void remove(ItemStack item) {
-			}
-
-			@Override
-			public void clear(int index) {
-			}
-
-			@Override
-			public void clear() {
-			}
-
-			@Override
-			public int close() {
-				return 0;
-			}
-
-			@Override
-			public List<HumanEntity> getViewers() {
-				return new ArrayList<>();
-			}
-
-			@Override
-			public InventoryType getType() {
-				return InventoryType.PLAYER;
-			}
-
-			@Override
-			public ListIterator<ItemStack> iterator() {
-				return null;
-			}
-
-			@Override
-			public ListIterator<ItemStack> iterator(int index) {
-				return null;
-			}
-
-			@Override
-			public Location getLocation() {
-				return location;
-			}
-
-			@Override
-			public ItemStack[] getArmorContents() {
-				return null;
-			}
-
-			@Override
-			public ItemStack[] getExtraContents() {
-				return null;
-			}
-
-			@Override
-			public ItemStack getHelmet() {
-				return null;
-			}
-
-			@Override
-			public ItemStack getChestplate() {
-				return null;
-			}
-
-			@Override
-			public ItemStack getLeggings() {
-				return null;
-			}
-
-			@Override
-			public ItemStack getBoots() {
-				return null;
-			}
-
-			@Override
-			public void setItem(int index, ItemStack item) {
-			}
-
-			@Override
-			public void setArmorContents(ItemStack[] items) {
-			}
-
-			@Override
-			public void setExtraContents(ItemStack[] items) {
-			}
-
-			@Override
-			public void setHelmet(ItemStack helmet) {
-			}
-
-			@Override
-			public void setChestplate(ItemStack chestplate) {
-			}
-
-			@Override
-			public void setLeggings(ItemStack leggings) {
-			}
-
-			@Override
-			public void setBoots(ItemStack boots) {
-			}
-
-			@Override
-			public ItemStack getItemInMainHand() {
-				return inHand;
-			}
-
-			@Override
-			public void setItemInMainHand(ItemStack item) {
-			}
-
-			@Override
-			public ItemStack getItemInOffHand() {
-				return null;
-			}
-
-			@Override
-			public void setItemInOffHand(ItemStack item) {
-			}
-
-			@Override
-			public ItemStack getItemInHand() {
-				return inHand;
-			}
-
-			@Override
-			public void setItemInHand(ItemStack stack) {
-			}
-
-			@Override
-			public int getHeldItemSlot() {
-				return 0;
-			}
-
-			@Override
-			public void setHeldItemSlot(int slot) {
-			}
-
-			@Override
-			public HumanEntity getHolder() {
-				return null;
-			}
-
-			@Override
-			public void setItem(EquipmentSlot slot, ItemStack item) {
-			}
-
-			@Override
-			public ItemStack getItem(EquipmentSlot slot) {
-				return null;
-			}
-
-			@Override
-			public InventoryHolder getHolder(boolean arg0) {
-				return null;
-			}
-
-			@Override
-			public boolean isEmpty() {
-				return true;
-			}
-
-			@Override
-			public HashMap<Integer, ItemStack> removeItemAnySlot(ItemStack... arg0) throws IllegalArgumentException {
-				return null;
-			}
-		};
-	}
-
-	@Override
-	public Inventory getEnderChest() {
-		return null;
-	}
-
-	@Override
-	public MainHand getMainHand() {
-		return null;
-	}
-
-	@Override
-	public boolean setWindowProperty(Property prop, int value) {
-		return false;
-	}
-
-	@Override
-	public int getEnchantmentSeed() {
-		return 0;
-	}
-
-	@Override
-	public void setEnchantmentSeed(int i) {
-
-	}
-
-	@Override
-	public InventoryView getOpenInventory() {
-		return null;
-	}
-
-	@Override
-	public InventoryView openInventory(Inventory inventory) {
-		return null;
-	}
-
-	@Override
-	public InventoryView openWorkbench(Location location, boolean force) {
-		return null;
-	}
-
-	@Override
-	public InventoryView openEnchanting(Location location, boolean force) {
-		return null;
-	}
-
-	@Override
-	public void openInventory(InventoryView inventory) {
-	}
-
-	@Override
-	public InventoryView openMerchant(Villager trader, boolean force) {
-		return null;
-	}
-
-	@Override
-	public void closeInventory() {
-	}
-
-	@Override
-	public ItemStack getItemInHand() {
-		return inHand;
-	}
-
-	@Override
-	public void setItemInHand(ItemStack item) {
-	}
-
-	@Override
-	public ItemStack getItemOnCursor() {
-		return null;
-	}
-
-	@Override
-	public void setItemOnCursor(ItemStack item) {
-	}
-
-	@Override
-	public boolean isSleeping() {
-		return false;
-	}
-
-	@Override
-	public boolean isClimbing() {
-		return false;
-	}
-
-	@Override
-	public int getSleepTicks() {
-		return 0;
-	}
-
-	@Override
-	public GameMode getGameMode() {
-		return null;
-	}
-
-	@Override
-	public void setGameMode(GameMode mode) {
-	}
-
-	@Override
-	public boolean isBlocking() {
-		return false;
-	}
-
-	@Override
-	public int getExpToLevel() {
-		return 0;
-	}
-
-	@Override
-	public double getEyeHeight() {
-		return 0;
-	}
-
-	@Override
-	public double getEyeHeight(boolean ignoreSneaking) {
-		return 0;
-	}
-
-	@Override
-	public Location getEyeLocation() {
-		return location;
-	}
-
-	@Override
-	public List<Block> getLineOfSight(Set<Material> transparent, int maxDistance) {
-		return null;
-	}
-
-	public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
-		return null;
-	}
-
-	@Override
-	public Block getTargetBlock(Set<Material> transparent, int maxDistance) {
-		return null;
-	}
-
-	public List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance) {
-		return null;
-	}
-
-	@Override
-	public List<Block> getLastTwoTargetBlocks(Set<Material> transparent, int maxDistance) {
-		return null;
-	}
-
-	@Override
-	public int getRemainingAir() {
-		return 0;
-	}
-
-	@Override
-	public void setRemainingAir(int ticks) {
-	}
-
-	@Override
-	public int getMaximumAir() {
-		return 0;
-	}
-
-	@Override
-	public void setMaximumAir(int ticks) {
-	}
-
-	@Override
-	public int getMaximumNoDamageTicks() {
-		return 0;
-	}
-
-	@Override
-	public void setMaximumNoDamageTicks(int ticks) {
-	}
-
-	@Override
-	public double getLastDamage() {
-		return 0;
-	}
-
-	@Override
-	public void setLastDamage(double damage) {
-
-	}
-
-	@Override
-	public int getNoDamageTicks() {
-
-		return 0;
-	}
-
-	@Override
-	public void setNoDamageTicks(int ticks) {
-
-	}
-
-	@Override
-	public int getNoActionTicks() {
-		return 0;
-	}
-
-	@Override
-	public void setNoActionTicks(int i) {
-
-	}
-
-	@Override
-	public Player getKiller() {
-
-		return null;
-	}
-
-	@Override
-	public boolean addPotionEffect(PotionEffect effect) {
-
-		return false;
-	}
-
-	@Override
-	public boolean addPotionEffect(PotionEffect effect, boolean force) {
-
-		return false;
-	}
-
-	@Override
-	public boolean addPotionEffects(Collection<PotionEffect> effects) {
-
-		return false;
-	}
-
-	@Override
-	public boolean hasPotionEffect(PotionEffectType type) {
-
-		return false;
-	}
 
-	@Override
-	public void removePotionEffect(PotionEffectType type) {
+    private final ItemStack inHand;
+    private final Location location;
+
+    public FakePlayer(final Location location, final ItemStack inHand) {
+        this.inHand = inHand;
+        this.location = location;
+    }
+
+    @Override
+    public String getName() {
+        return "Spoof";
+    }
+
+    @Override
+    public PlayerInventory getInventory() {
+        return new PlayerInventory() {
+
+            @Override
+            public int getSize() {
+                return 0;
+            }
+
+            @Override
+            public int getMaxStackSize() {
+                return 0;
+            }
+
+            @Override
+            public void setMaxStackSize(int size) {
+            }
+
+            @Override
+            public ItemStack getItem(int index) {
+                return null;
+            }
+
+            @Override
+            public HashMap<Integer, ItemStack> addItem(ItemStack... items) throws IllegalArgumentException {
+                return new HashMap<>();
+            }
+
+            @Override
+            public HashMap<Integer, ItemStack> removeItem(ItemStack... items) throws IllegalArgumentException {
+                return new HashMap<>();
+            }
+
+            @Override
+            public ItemStack[] getContents() {
+                return null;
+            }
+
+            @Override
+            public void setContents(ItemStack[] items) throws IllegalArgumentException {
+            }
+
+            @Override
+            public ItemStack[] getStorageContents() {
+                return null;
+            }
+
+            @Override
+            public void setStorageContents(ItemStack[] items) throws IllegalArgumentException {
+            }
+
+            @Override
+            public boolean contains(Material material) throws IllegalArgumentException {
+                return false;
+            }
+
+            @Override
+            public boolean contains(ItemStack item) {
+                return false;
+            }
+
+            @Override
+            public boolean contains(Material material, int amount) throws IllegalArgumentException {
+                return false;
+            }
+
+            @Override
+            public boolean contains(ItemStack item, int amount) {
+                return false;
+            }
+
+            @Override
+            public boolean containsAtLeast(ItemStack item, int amount) {
+                return false;
+            }
+
+            @Override
+            public HashMap<Integer, ? extends ItemStack> all(Material material) throws IllegalArgumentException {
+                return new HashMap<>();
+            }
+
+            @Override
+            public HashMap<Integer, ? extends ItemStack> all(ItemStack item) {
+                return new HashMap<>();
+            }
+
+            @Override
+            public int first(Material material) throws IllegalArgumentException {
+                return 0;
+            }
+
+            @Override
+            public int first(ItemStack item) {
+                return 0;
+            }
+
+            @Override
+            public int firstEmpty() {
+                return 0;
+            }
+
+            @Override
+            public void remove(Material material) throws IllegalArgumentException {
+            }
+
+            @Override
+            public void remove(ItemStack item) {
+            }
+
+            @Override
+            public void clear(int index) {
+            }
+
+            @Override
+            public void clear() {
+            }
+
+            @Override
+            public int close() {
+                return 0;
+            }
+
+            @Override
+            public List<HumanEntity> getViewers() {
+                return new ArrayList<>();
+            }
+
+            @Override
+            public InventoryType getType() {
+                return InventoryType.PLAYER;
+            }
+
+            @Override
+            public ListIterator<ItemStack> iterator() {
+                return null;
+            }
+
+            @Override
+            public ListIterator<ItemStack> iterator(int index) {
+                return null;
+            }
+
+            @Override
+            public Location getLocation() {
+                return location;
+            }
+
+            @Override
+            public ItemStack[] getArmorContents() {
+                return null;
+            }
+
+            @Override
+            public ItemStack[] getExtraContents() {
+                return null;
+            }
+
+            @Override
+            public ItemStack getHelmet() {
+                return null;
+            }
+
+            @Override
+            public ItemStack getChestplate() {
+                return null;
+            }
+
+            @Override
+            public ItemStack getLeggings() {
+                return null;
+            }
+
+            @Override
+            public ItemStack getBoots() {
+                return null;
+            }
+
+            @Override
+            public void setItem(int index, ItemStack item) {
+            }
+
+            @Override
+            public void setArmorContents(ItemStack[] items) {
+            }
+
+            @Override
+            public void setExtraContents(ItemStack[] items) {
+            }
+
+            @Override
+            public void setHelmet(ItemStack helmet) {
+            }
+
+            @Override
+            public void setChestplate(ItemStack chestplate) {
+            }
+
+            @Override
+            public void setLeggings(ItemStack leggings) {
+            }
+
+            @Override
+            public void setBoots(ItemStack boots) {
+            }
+
+            @Override
+            public ItemStack getItemInMainHand() {
+                return inHand;
+            }
+
+            @Override
+            public void setItemInMainHand(ItemStack item) {
+            }
+
+            @Override
+            public ItemStack getItemInOffHand() {
+                return null;
+            }
+
+            @Override
+            public void setItemInOffHand(ItemStack item) {
+            }
+
+            @Override
+            public ItemStack getItemInHand() {
+                return inHand;
+            }
+
+            @Override
+            public void setItemInHand(ItemStack stack) {
+            }
+
+            @Override
+            public int getHeldItemSlot() {
+                return 0;
+            }
+
+            @Override
+            public void setHeldItemSlot(int slot) {
+            }
+
+            @Override
+            public HumanEntity getHolder() {
+                return null;
+            }
+
+            @Override
+            public void setItem(EquipmentSlot slot, ItemStack item) {
+            }
+
+            @Override
+            public ItemStack getItem(EquipmentSlot slot) {
+                return null;
+            }
+
+            @Override
+            public InventoryHolder getHolder(boolean arg0) {
+                return null;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return true;
+            }
+
+            @Override
+            public HashMap<Integer, ItemStack> removeItemAnySlot(ItemStack... arg0) throws IllegalArgumentException {
+                return null;
+            }
+        };
+    }
+
+    @Override
+    public Inventory getEnderChest() {
+        return null;
+    }
+
+    @Override
+    public MainHand getMainHand() {
+        return null;
+    }
+
+    @Override
+    public boolean setWindowProperty(Property prop, int value) {
+        return false;
+    }
+
+    @Override
+    public int getEnchantmentSeed() {
+        return 0;
+    }
+
+    @Override
+    public void setEnchantmentSeed(int i) {
+
+    }
+
+    @Override
+    public InventoryView getOpenInventory() {
+        return null;
+    }
+
+    @Override
+    public InventoryView openInventory(Inventory inventory) {
+        return null;
+    }
+
+    @Override
+    public InventoryView openWorkbench(Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public InventoryView openEnchanting(Location location, boolean force) {
+        return null;
+    }
+
+    @Override
+    public void openInventory(InventoryView inventory) {
+    }
+
+    @Override
+    public InventoryView openMerchant(Villager trader, boolean force) {
+        return null;
+    }
+
+    @Override
+    public void closeInventory() {
+    }
+
+    @Override
+    public ItemStack getItemInHand() {
+        return inHand;
+    }
+
+    @Override
+    public void setItemInHand(ItemStack item) {
+    }
+
+    @Override
+    public ItemStack getItemOnCursor() {
+        return null;
+    }
+
+    @Override
+    public void setItemOnCursor(ItemStack item) {
+    }
+
+    @Override
+    public boolean isSleeping() {
+        return false;
+    }
+
+    @Override
+    public boolean isClimbing() {
+        return false;
+    }
+
+    @Override
+    public int getSleepTicks() {
+        return 0;
+    }
+
+    @Override
+    public GameMode getGameMode() {
+        return null;
+    }
+
+    @Override
+    public void setGameMode(GameMode mode) {
+    }
+
+    @Override
+    public boolean isBlocking() {
+        return false;
+    }
+
+    @Override
+    public int getExpToLevel() {
+        return 0;
+    }
+
+    @Override
+    public double getEyeHeight() {
+        return 0;
+    }
+
+    @Override
+    public double getEyeHeight(boolean ignoreSneaking) {
+        return 0;
+    }
+
+    @Override
+    public Location getEyeLocation() {
+        return location;
+    }
+
+    @Override
+    public List<Block> getLineOfSight(Set<Material> transparent, int maxDistance) {
+        return null;
+    }
+
+    public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
+        return null;
+    }
+
+    @Override
+    public Block getTargetBlock(Set<Material> transparent, int maxDistance) {
+        return null;
+    }
+
+    public List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance) {
+        return null;
+    }
+
+    @Override
+    public List<Block> getLastTwoTargetBlocks(Set<Material> transparent, int maxDistance) {
+        return null;
+    }
+
+    @Override
+    public int getRemainingAir() {
+        return 0;
+    }
+
+    @Override
+    public void setRemainingAir(int ticks) {
+    }
+
+    @Override
+    public int getMaximumAir() {
+        return 0;
+    }
+
+    @Override
+    public void setMaximumAir(int ticks) {
+    }
+
+    @Override
+    public int getMaximumNoDamageTicks() {
+        return 0;
+    }
+
+    @Override
+    public void setMaximumNoDamageTicks(int ticks) {
+    }
+
+    @Override
+    public double getLastDamage() {
+        return 0;
+    }
+
+    @Override
+    public void setLastDamage(double damage) {
+
+    }
+
+    @Override
+    public int getNoDamageTicks() {
+
+        return 0;
+    }
+
+    @Override
+    public void setNoDamageTicks(int ticks) {
+
+    }
+
+    @Override
+    public int getNoActionTicks() {
+        return 0;
+    }
+
+    @Override
+    public void setNoActionTicks(int i) {
+
+    }
+
+    @Override
+    public Player getKiller() {
+
+        return null;
+    }
+
+    @Override
+    public boolean addPotionEffect(PotionEffect effect) {
+
+        return false;
+    }
+
+    @Override
+    public boolean addPotionEffect(PotionEffect effect, boolean force) {
+
+        return false;
+    }
+
+    @Override
+    public boolean addPotionEffects(Collection<PotionEffect> effects) {
 
-	}
+        return false;
+    }
 
-	@Override
-	public Collection<PotionEffect> getActivePotionEffects() {
+    @Override
+    public boolean hasPotionEffect(PotionEffectType type) {
 
-		return null;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean clearActivePotionEffects() {
-		return false;
-	}
+    @Override
+    public void removePotionEffect(PotionEffectType type) {
 
-	@Override
-	public boolean hasLineOfSight(Entity other) {
+    }
 
-		return false;
-	}
+    @Override
+    public Collection<PotionEffect> getActivePotionEffects() {
 
-	@Override
-	public boolean hasLineOfSight(@Nonnull Location location) {
-		return false;
-	}
+        return null;
+    }
 
-	@Override
-	public boolean getRemoveWhenFarAway() {
+    @Override
+    public boolean clearActivePotionEffects() {
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public boolean hasLineOfSight(Entity other) {
 
-	@Override
-	public void setRemoveWhenFarAway(boolean remove) {
+        return false;
+    }
 
-	}
+    @Override
+    public boolean hasLineOfSight(@Nonnull Location location) {
+        return false;
+    }
 
-	@Override
-	public EntityEquipment getEquipment() {
+    @Override
+    public boolean getRemoveWhenFarAway() {
 
-		return null;
-	}
+        return false;
+    }
 
-	@Override
-	public void setCanPickupItems(boolean pickup) {
+    @Override
+    public void setRemoveWhenFarAway(boolean remove) {
 
-	}
+    }
 
-	@Override
-	public boolean getCanPickupItems() {
+    @Override
+    public EntityEquipment getEquipment() {
 
-		return false;
-	}
+        return null;
+    }
 
-	@Override
-	public boolean isLeashed() {
+    @Override
+    public void setCanPickupItems(boolean pickup) {
 
-		return false;
-	}
+    }
 
-	@Override
-	public Entity getLeashHolder() throws IllegalStateException {
+    @Override
+    public boolean getCanPickupItems() {
 
-		return null;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean setLeashHolder(Entity holder) {
+    @Override
+    public boolean isLeashed() {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean isGliding() {
+    @Override
+    public Entity getLeashHolder() throws IllegalStateException {
 
-		return false;
-	}
+        return null;
+    }
 
-	@Override
-	public void setGliding(boolean gliding) {
+    @Override
+    public boolean setLeashHolder(Entity holder) {
 
-	}
+        return false;
+    }
 
-	@Override
-	public void setAI(boolean ai) {
+    @Override
+    public boolean isGliding() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public boolean hasAI() {
+    @Override
+    public void setGliding(boolean gliding) {
 
-		return false;
-	}
+    }
 
-	@Override
-	public void setCollidable(boolean collidable) {
+    @Override
+    public void setAI(boolean ai) {
 
-	}
+    }
 
-	@Override
-	public boolean isCollidable() {
+    @Override
+    public boolean hasAI() {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public AttributeInstance getAttribute(Attribute attribute) {
+    @Override
+    public void setCollidable(boolean collidable) {
 
-		return null;
-	}
+    }
 
-	@Override
-	public void registerAttribute(@Nonnull Attribute attribute) {
+    @Override
+    public boolean isCollidable() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public Location getLocation() {
-		return location;
-	}
+    @Override
+    public AttributeInstance getAttribute(Attribute attribute) {
 
-	@Override
-	public Location getLocation(Location loc) {
-		return location;
-	}
+        return null;
+    }
 
-	@Override
-	public void setVelocity(Vector velocity) {
+    @Override
+    public void registerAttribute(@Nonnull Attribute attribute) {
 
-	}
+    }
 
-	@Override
-	public Vector getVelocity() {
+    @Override
+    public Location getLocation() {
+        return location;
+    }
 
-		return null;
-	}
+    @Override
+    public Location getLocation(Location loc) {
+        return location;
+    }
 
-	@Override
-	public World getWorld() {
-		return location.getWorld();
-	}
+    @Override
+    public void setVelocity(Vector velocity) {
 
-	@Override
-	public boolean teleport(Location location) {
+    }
 
-		return false;
-	}
+    @Override
+    public Vector getVelocity() {
 
-	@Override
-	public boolean teleport(Location location, TeleportCause cause) {
+        return null;
+    }
 
-		return false;
-	}
+    @Override
+    public World getWorld() {
+        return location.getWorld();
+    }
 
-	@Override
-	public boolean teleport(Entity destination) {
+    @Override
+    public boolean teleport(Location location) {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean teleport(Entity destination, TeleportCause cause) {
+    @Override
+    public boolean teleport(Location location, TeleportCause cause) {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public @NotNull CompletableFuture<Boolean> teleportAsync(@NotNull Location location, @NotNull PlayerTeleportEvent.TeleportCause teleportCause, @NotNull TeleportFlag @NotNull ... teleportFlags) {
-		return null;
-	}
+    @Override
+    public boolean teleport(Entity destination) {
 
-	@Override
-	public List<Entity> getNearbyEntities(double x, double y, double z) {
+        return false;
+    }
 
-		return null;
-	}
+    @Override
+    public boolean teleport(Entity destination, TeleportCause cause) {
 
-	@Override
-	public int getEntityId() {
+        return false;
+    }
 
-		return 0;
-	}
+    @Override
+    public @NotNull CompletableFuture<Boolean> teleportAsync(@NotNull Location location, @NotNull PlayerTeleportEvent.TeleportCause teleportCause, @NotNull TeleportFlag @NotNull ... teleportFlags) {
+        return null;
+    }
 
-	@Override
-	public int getFireTicks() {
+    @Override
+    public List<Entity> getNearbyEntities(double x, double y, double z) {
 
-		return 0;
-	}
+        return null;
+    }
 
-	@Override
-	public int getMaxFireTicks() {
+    @Override
+    public int getEntityId() {
 
-		return 0;
-	}
+        return 0;
+    }
 
-	@Override
-	public void setFireTicks(int ticks) {
+    @Override
+    public int getFireTicks() {
 
-	}
+        return 0;
+    }
 
-	@Override
-	public void setVisualFire(boolean bl) {
+    @Override
+    public int getMaxFireTicks() {
 
-	}
+        return 0;
+    }
 
-	@Override
-	public boolean isVisualFire() {
-		return false;
-	}
+    @Override
+    public void setFireTicks(int ticks) {
 
-	@Override
-	public int getFreezeTicks() {
-		return 0;
-	}
+    }
 
-	@Override
-	public int getMaxFreezeTicks() {
-		return 0;
-	}
+    @Override
+    public void setVisualFire(boolean bl) {
 
-	@Override
-	public void setFreezeTicks(int i) {
+    }
 
-	}
+    @Override
+    public boolean isVisualFire() {
+        return false;
+    }
 
-	@Override
-	public boolean isFrozen() {
-		return false;
-	}
+    @Override
+    public int getFreezeTicks() {
+        return 0;
+    }
 
-	@Override
-	public boolean isFreezeTickingLocked() {
-		return false;
-	}
+    @Override
+    public int getMaxFreezeTicks() {
+        return 0;
+    }
 
-	@Override
-	public void lockFreezeTicks(boolean locked) {
+    @Override
+    public void setFreezeTicks(int i) {
 
-	}
+    }
 
-	@Override
-	public void remove() {
+    @Override
+    public boolean isFrozen() {
+        return false;
+    }
 
-	}
+    @Override
+    public boolean isFreezeTickingLocked() {
+        return false;
+    }
 
-	@Override
-	public boolean isDead() {
+    @Override
+    public void lockFreezeTicks(boolean locked) {
 
-		return false;
-	}
+    }
 
-	@Override
-	public boolean isValid() {
+    @Override
+    public void remove() {
 
-		return false;
-	}
+    }
 
-	@Override
-	public Server getServer() {
+    @Override
+    public boolean isDead() {
 
-		return null;
-	}
+        return false;
+    }
 
-	@Override
-	public Entity getPassenger() {
+    @Override
+    public boolean isValid() {
 
-		return null;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean setPassenger(Entity passenger) {
+    @Override
+    public Server getServer() {
 
-		return false;
-	}
+        return null;
+    }
 
-	@Override
-	public boolean isEmpty() {
+    @Override
+    public Entity getPassenger() {
 
-		return false;
-	}
+        return null;
+    }
 
-	@Override
-	public boolean eject() {
+    @Override
+    public boolean setPassenger(Entity passenger) {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public float getFallDistance() {
+    @Override
+    public boolean isEmpty() {
 
-		return 0;
-	}
+        return false;
+    }
 
-	@Override
-	public void setFallDistance(float distance) {
+    @Override
+    public boolean eject() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public void setLastDamageCause(EntityDamageEvent event) {
+    @Override
+    public float getFallDistance() {
 
-	}
+        return 0;
+    }
 
-	@Override
-	public EntityDamageEvent getLastDamageCause() {
+    @Override
+    public void setFallDistance(float distance) {
 
-		return null;
-	}
+    }
 
-	@Override
-	public UUID getUniqueId() {
+    @Override
+    public void setLastDamageCause(EntityDamageEvent event) {
 
-		return null;
-	}
+    }
 
-	@Override
-	public int getTicksLived() {
+    @Override
+    public EntityDamageEvent getLastDamageCause() {
 
-		return 0;
-	}
+        return null;
+    }
 
-	@Override
-	public void setTicksLived(int value) {
+    @Override
+    public UUID getUniqueId() {
 
-	}
+        return null;
+    }
 
-	@Override
-	public void playEffect(EntityEffect type) {
+    @Override
+    public int getTicksLived() {
 
-	}
+        return 0;
+    }
 
-	@Override
-	public EntityType getType() {
+    @Override
+    public void setTicksLived(int value) {
 
-		return null;
-	}
+    }
 
-	@Override
-	public @NotNull Sound getSwimSound() {
-		return null;
-	}
+    @Override
+    public void playEffect(EntityEffect type) {
 
-	@Override
-	public @NotNull Sound getSwimSplashSound() {
-		return null;
-	}
+    }
 
-	@Override
-	public @NotNull Sound getSwimHighSpeedSplashSound() {
-		return null;
-	}
+    @Override
+    public EntityType getType() {
 
-	@Override
-	public boolean isInsideVehicle() {
+        return null;
+    }
 
-		return false;
-	}
+    @Override
+    public @NotNull Sound getSwimSound() {
+        return null;
+    }
 
-	@Override
-	public boolean leaveVehicle() {
+    @Override
+    public @NotNull Sound getSwimSplashSound() {
+        return null;
+    }
 
-		return false;
-	}
+    @Override
+    public @NotNull Sound getSwimHighSpeedSplashSound() {
+        return null;
+    }
 
-	@Override
-	public Entity getVehicle() {
+    @Override
+    public boolean isInsideVehicle() {
 
-		return null;
-	}
+        return false;
+    }
 
-	@Override
-	public void setCustomName(String name) {
+    @Override
+    public boolean leaveVehicle() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public @Nullable
-	Component customName() {
-		return null;
-	}
+    @Override
+    public Entity getVehicle() {
 
-	@Override
-	public void customName(@Nullable Component component) {
+        return null;
+    }
 
-	}
+    @Override
+    public void setCustomName(String name) {
 
-	@Override
-	public String getCustomName() {
+    }
 
-		return "Spoof";
-	}
+    @Override
+    public @Nullable
+    Component customName() {
+        return null;
+    }
 
-	@Override
-	public void setCustomNameVisible(boolean flag) {
+    @Override
+    public void customName(@Nullable Component component) {
 
-	}
+    }
 
-	@Override
-	public boolean isCustomNameVisible() {
+    @Override
+    public String getCustomName() {
 
-		return false;
-	}
+        return "Spoof";
+    }
 
-	@Override
-	public void setVisibleByDefault(boolean b) {
+    @Override
+    public void setCustomNameVisible(boolean flag) {
 
-	}
+    }
 
-	@Override
-	public boolean isVisibleByDefault() {
-		return false;
-	}
+    @Override
+    public boolean isCustomNameVisible() {
 
-	@Override
-	public @NotNull Set<Player> getTrackedBy() {
-		return null;
-	}
+        return false;
+    }
 
-	@Override
-	public void setGlowing(boolean flag) {
+    @Override
+    public void setVisibleByDefault(boolean b) {
 
-	}
+    }
 
-	@Override
-	public boolean isGlowing() {
+    @Override
+    public boolean isVisibleByDefault() {
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public @NotNull Set<Player> getTrackedBy() {
+        return null;
+    }
 
-	@Override
-	public void setInvulnerable(boolean flag) {
+    @Override
+    public void setGlowing(boolean flag) {
 
-	}
+    }
 
-	@Override
-	public boolean isInvulnerable() {
+    @Override
+    public boolean isGlowing() {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
+    @Override
+    public void setInvulnerable(boolean flag) {
 
-	}
+    }
 
-	@Override
-	public List<MetadataValue> getMetadata(String metadataKey) {
+    @Override
+    public boolean isInvulnerable() {
 
-		return null;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean hasMetadata(String metadataKey) {
+    @Override
+    public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
 
-		return false;
-	}
+    }
 
-	@Override
-	public void removeMetadata(String metadataKey, Plugin owningPlugin) {
+    @Override
+    public List<MetadataValue> getMetadata(String metadataKey) {
 
-	}
+        return null;
+    }
 
-	@Override
-	public void sendMessage(String message) {
+    @Override
+    public boolean hasMetadata(String metadataKey) {
 
-	}
+        return false;
+    }
 
-	@Override
-	public void sendMessage(String[] messages) {
+    @Override
+    public void removeMetadata(String metadataKey, Plugin owningPlugin) {
 
-	}
+    }
 
-	@Override
-	public boolean isPermissionSet(String name) {
+    @Override
+    public void sendMessage(String message) {
 
-		return false;
-	}
+    }
 
-	@Override
-	public boolean isPermissionSet(Permission perm) {
+    @Override
+    public void sendMessage(String[] messages) {
 
-		return false;
-	}
+    }
 
-	@Override
-	public boolean hasPermission(String name) {
+    @Override
+    public boolean isPermissionSet(String name) {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public boolean hasPermission(Permission perm) {
+    @Override
+    public boolean isPermissionSet(Permission perm) {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
+    @Override
+    public boolean hasPermission(String name) {
 
-		return null;
-	}
+        return false;
+    }
 
-	@Override
-	public PermissionAttachment addAttachment(Plugin plugin) {
+    @Override
+    public boolean hasPermission(Permission perm) {
 
-		return null;
-	}
+        return false;
+    }
 
-	@Override
-	public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin) {
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public void removeAttachment(PermissionAttachment attachment) {
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
 
-	}
+        return null;
+    }
 
-	@Override
-	public void recalculatePermissions() {
+    @Override
+    public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
 
-	}
+        return null;
+    }
 
-	@Override
-	public Set<PermissionAttachmentInfo> getEffectivePermissions() {
+    @Override
+    public void removeAttachment(PermissionAttachment attachment) {
 
-		return null;
-	}
+    }
 
-	@Override
-	public boolean isOp() {
+    @Override
+    public void recalculatePermissions() {
 
-		return false;
-	}
+    }
 
-	@Override
-	public void setOp(boolean value) {
+    @Override
+    public Set<PermissionAttachmentInfo> getEffectivePermissions() {
 
-	}
+        return null;
+    }
 
-	@Override
-	public void damage(double amount) {
+    @Override
+    public boolean isOp() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public void damage(double amount, Entity source) {
+    @Override
+    public void setOp(boolean value) {
 
-	}
+    }
 
-	@Override
-	public void damage(double v, @NotNull DamageSource damageSource) {
+    @Override
+    public void damage(double amount) {
 
-	}
+    }
 
-	@Override
-	public double getHealth() {
+    @Override
+    public void damage(double amount, Entity source) {
 
-		return 0;
-	}
+    }
 
-	@Override
-	public void setHealth(double health) {
+    @Override
+    public void damage(double v, @NotNull DamageSource damageSource) {
 
-	}
+    }
 
-	@Override
-	public double getMaxHealth() {
+    @Override
+    public double getHealth() {
 
-		return 0;
-	}
+        return 0;
+    }
 
-	@Override
-	public void setMaxHealth(double health) {
+    @Override
+    public void setHealth(double health) {
 
-	}
+    }
 
-	@Override
-	public void resetMaxHealth() {
+    @Override
+    public double getMaxHealth() {
 
-	}
+        return 0;
+    }
 
-	@Override
-	public <T extends Projectile> T launchProjectile(Class<? extends T> projectile) {
+    @Override
+    public void setMaxHealth(double health) {
 
-		return null;
-	}
+    }
 
-	@Override
-	public <T extends Projectile> T launchProjectile(Class<? extends T> projectile, Vector velocity) {
+    @Override
+    public void resetMaxHealth() {
 
-		return null;
-	}
+    }
 
-	@Override
-	public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> aClass, @org.jetbrains.annotations.Nullable Vector vector, @org.jetbrains.annotations.Nullable Consumer<? super T> consumer) {
-		return null;
-	}
+    @Override
+    public <T extends Projectile> T launchProjectile(Class<? extends T> projectile) {
 
-	@Override
-	public boolean isConversing() {
+        return null;
+    }
 
-		return false;
-	}
+    @Override
+    public <T extends Projectile> T launchProjectile(Class<? extends T> projectile, Vector velocity) {
 
-	@Override
-	public void acceptConversationInput(String input) {
+        return null;
+    }
 
-	}
+    @Override
+    public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> aClass, @org.jetbrains.annotations.Nullable Vector vector, @org.jetbrains.annotations.Nullable Consumer<? super T> consumer) {
+        return null;
+    }
 
-	@Override
-	public boolean beginConversation(Conversation conversation) {
+    @Override
+    public boolean isConversing() {
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public void abandonConversation(Conversation conversation) {
+    @Override
+    public void acceptConversationInput(String input) {
 
-	}
+    }
 
-	@Override
-	public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
+    @Override
+    public boolean beginConversation(Conversation conversation) {
 
-	}
+        return false;
+    }
 
-	@Override
-	public boolean isOnline() {
+    @Override
+    public void abandonConversation(Conversation conversation) {
 
-		return false;
-	}
+    }
 
-	@Override
-	public boolean isConnected() {
-		return false;
-	}
+    @Override
+    public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
 
-	@Override
-	public boolean isBanned() {
+    }
 
-		return false;
-	}
+    @Override
+    public boolean isOnline() {
 
-	@Override
-	public <E extends BanEntry<? super PlayerProfile>> @org.jetbrains.annotations.Nullable E ban(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Date date, @org.jetbrains.annotations.Nullable String s1) {
-		return null;
-	}
+        return false;
+    }
 
-	@Override
-	public <E extends BanEntry<? super PlayerProfile>> @org.jetbrains.annotations.Nullable E ban(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Instant instant, @org.jetbrains.annotations.Nullable String s1) {
-		return null;
-	}
+    @Override
+    public boolean isConnected() {
+        return false;
+    }
 
-	@Override
-	public <E extends BanEntry<? super PlayerProfile>> @org.jetbrains.annotations.Nullable E ban(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Duration duration, @org.jetbrains.annotations.Nullable String s1) {
-		return null;
-	}
+    @Override
+    public boolean isBanned() {
 
-	@Override
-	public boolean isWhitelisted() {
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public <E extends BanEntry<? super PlayerProfile>> @org.jetbrains.annotations.Nullable E ban(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Date date, @org.jetbrains.annotations.Nullable String s1) {
+        return null;
+    }
 
-	@Override
-	public void setWhitelisted(boolean value) {
+    @Override
+    public <E extends BanEntry<? super PlayerProfile>> @org.jetbrains.annotations.Nullable E ban(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Instant instant, @org.jetbrains.annotations.Nullable String s1) {
+        return null;
+    }
 
-	}
+    @Override
+    public <E extends BanEntry<? super PlayerProfile>> @org.jetbrains.annotations.Nullable E ban(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Duration duration, @org.jetbrains.annotations.Nullable String s1) {
+        return null;
+    }
 
-	@Override
-	public Player getPlayer() {
+    @Override
+    public boolean isWhitelisted() {
 
-		return null;
-	}
+        return false;
+    }
 
-	@Override
-	public long getFirstPlayed() {
+    @Override
+    public void setWhitelisted(boolean value) {
 
-		return 0;
-	}
+    }
 
-	@Override
-	public long getLastPlayed() {
+    @Override
+    public Player getPlayer() {
 
-		return 0;
-	}
+        return null;
+    }
 
-	@Override
-	public boolean hasPlayedBefore() {
+    @Override
+    public long getFirstPlayed() {
 
-		return false;
-	}
+        return 0;
+    }
 
-	@Override
-	public Map<String, Object> serialize() {
+    @Override
+    public long getLastPlayed() {
 
-		return null;
-	}
+        return 0;
+    }
 
-	@Override
-	public void sendPluginMessage(Plugin source, String channel, byte[] message) {
+    @Override
+    public boolean hasPlayedBefore() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public Set<String> getListeningPluginChannels() {
+    @Override
+    public Map<String, Object> serialize() {
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	public @Nonnull Identity identity() {
-		return Player.super.identity();
-	}
+    @Override
+    public void sendPluginMessage(Plugin source, String channel, byte[] message) {
 
-	@Override
-	public @UnmodifiableView @NotNull Iterable<? extends BossBar> activeBossBars() {
-		return null;
-	}
+    }
 
-	@Override
-	public @Nonnull Component displayName() {
-		return Component.text("Spoof");
-	}
+    @Override
+    public Set<String> getListeningPluginChannels() {
 
-	@Override
-	public void displayName(@Nullable Component component) {
+        return null;
+    }
 
-	}
+    @Override
+    public @Nonnull Identity identity() {
+        return Player.super.identity();
+    }
 
-	@Override
-	public String getDisplayName() {
-		return "Spoof";
-	}
+    @Override
+    public @UnmodifiableView @NotNull Iterable<? extends BossBar> activeBossBars() {
+        return null;
+    }
 
-	@Override
-	public void setDisplayName(String name) {
+    @Override
+    public @Nonnull Component displayName() {
+        return Component.text("Spoof");
+    }
 
-	}
+    @Override
+    public void displayName(@Nullable Component component) {
 
-	@Override
-	public void playerListName(@Nullable Component component) {
+    }
 
-	}
+    @Override
+    public String getDisplayName() {
+        return "Spoof";
+    }
 
-	@Override
-	public @Nullable Component playerListName() {
-		return null;
-	}
+    @Override
+    public void setDisplayName(String name) {
 
-	@Override
-	public @Nullable Component playerListHeader() {
-		return null;
-	}
+    }
 
-	@Override
-	public @Nullable Component playerListFooter() {
-		return null;
-	}
+    @Override
+    public void playerListName(@Nullable Component component) {
 
-	@Override
-	public String getPlayerListName() {
-		return "Spoof";
-	}
+    }
 
-	@Override
-	public void setPlayerListName(String name) {
+    @Override
+    public @Nullable Component playerListName() {
+        return null;
+    }
 
-	}
+    @Override
+    public @Nullable Component playerListHeader() {
+        return null;
+    }
 
-	@Override
-	public void setCompassTarget(Location loc) {
+    @Override
+    public @Nullable Component playerListFooter() {
+        return null;
+    }
 
-	}
+    @Override
+    public String getPlayerListName() {
+        return "Spoof";
+    }
 
-	@Override
-	public Location getCompassTarget() {
+    @Override
+    public void setPlayerListName(String name) {
 
-		return null;
-	}
+    }
 
-	@Override
-	public InetSocketAddress getAddress() {
+    @Override
+    public void setCompassTarget(Location loc) {
 
-		return null;
-	}
+    }
 
-	@Override
-	public void sendRawMessage(String message) {
+    @Override
+    public Location getCompassTarget() {
 
-	}
+        return null;
+    }
 
-	@Override
-	public void kickPlayer(String message) {
+    @Override
+    public InetSocketAddress getAddress() {
 
-	}
+        return null;
+    }
 
-	@Override
-	public void kick() {
+    @Override
+    public void sendRawMessage(String message) {
 
-	}
+    }
 
-	@Override
-	public void kick(@Nullable Component component) {
+    @Override
+    public void kickPlayer(String message) {
 
-	}
+    }
 
-	@Override
-	public void kick(@Nullable Component component,
-					 PlayerKickEvent.Cause cause) {
+    @Override
+    public void kick() {
 
-	}
+    }
 
-	@Override
-	public <E extends BanEntry<? super PlayerProfile>> @org.jetbrains.annotations.Nullable E ban(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Date date, @org.jetbrains.annotations.Nullable String s1, boolean b) {
-		return null;
-	}
+    @Override
+    public void kick(@Nullable Component component) {
 
-	@Override
-	public <E extends BanEntry<? super PlayerProfile>> @org.jetbrains.annotations.Nullable E ban(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Instant instant, @org.jetbrains.annotations.Nullable String s1, boolean b) {
-		return null;
-	}
+    }
 
-	@Override
-	public <E extends BanEntry<? super PlayerProfile>> @org.jetbrains.annotations.Nullable E ban(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Duration duration, @org.jetbrains.annotations.Nullable String s1, boolean b) {
-		return null;
-	}
+    @Override
+    public void kick(@Nullable Component component,
+                     PlayerKickEvent.Cause cause) {
 
-	@Override
-	public @org.jetbrains.annotations.Nullable BanEntry<InetAddress> banIp(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Date date, @org.jetbrains.annotations.Nullable String s1, boolean b) {
-		return null;
-	}
+    }
 
-	@Override
-	public @org.jetbrains.annotations.Nullable BanEntry<InetAddress> banIp(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Instant instant, @org.jetbrains.annotations.Nullable String s1, boolean b) {
-		return null;
-	}
+    @Override
+    public <E extends BanEntry<? super PlayerProfile>> @org.jetbrains.annotations.Nullable E ban(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Date date, @org.jetbrains.annotations.Nullable String s1, boolean b) {
+        return null;
+    }
 
-	@Override
-	public @org.jetbrains.annotations.Nullable BanEntry<InetAddress> banIp(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Duration duration, @org.jetbrains.annotations.Nullable String s1, boolean b) {
-		return null;
-	}
+    @Override
+    public <E extends BanEntry<? super PlayerProfile>> @org.jetbrains.annotations.Nullable E ban(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Instant instant, @org.jetbrains.annotations.Nullable String s1, boolean b) {
+        return null;
+    }
 
-	@Override
-	public void chat(String msg) {
+    @Override
+    public <E extends BanEntry<? super PlayerProfile>> @org.jetbrains.annotations.Nullable E ban(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Duration duration, @org.jetbrains.annotations.Nullable String s1, boolean b) {
+        return null;
+    }
 
-	}
+    @Override
+    public @org.jetbrains.annotations.Nullable BanEntry<InetAddress> banIp(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Date date, @org.jetbrains.annotations.Nullable String s1, boolean b) {
+        return null;
+    }
 
-	@Override
-	public boolean performCommand(String command) {
+    @Override
+    public @org.jetbrains.annotations.Nullable BanEntry<InetAddress> banIp(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Instant instant, @org.jetbrains.annotations.Nullable String s1, boolean b) {
+        return null;
+    }
 
-		return false;
-	}
+    @Override
+    public @org.jetbrains.annotations.Nullable BanEntry<InetAddress> banIp(@org.jetbrains.annotations.Nullable String s, @org.jetbrains.annotations.Nullable Duration duration, @org.jetbrains.annotations.Nullable String s1, boolean b) {
+        return null;
+    }
 
-	@Override
-	public boolean isSneaking() {
+    @Override
+    public void chat(String msg) {
 
-		return false;
-	}
+    }
 
-	@Override
-	public void setSneaking(boolean sneak) {
+    @Override
+    public boolean performCommand(String command) {
 
-	}
+        return false;
+    }
 
-	@Override
-	public void setPose(@NotNull Pose pose, boolean b) {
+    @Override
+    public boolean isSneaking() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public boolean hasFixedPose() {
-		return false;
-	}
+    @Override
+    public void setSneaking(boolean sneak) {
 
-	@Override
-	public boolean isSprinting() {
+    }
 
-		return false;
-	}
+    @Override
+    public void setPose(@NotNull Pose pose, boolean b) {
 
-	@Override
-	public void setSprinting(boolean sprinting) {
+    }
 
-	}
+    @Override
+    public boolean hasFixedPose() {
+        return false;
+    }
 
-	@Override
-	public void saveData() {
+    @Override
+    public boolean isSprinting() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public void loadData() {
+    @Override
+    public void setSprinting(boolean sprinting) {
 
-	}
+    }
 
-	@Override
-	public void setSleepingIgnored(boolean isSleeping) {
+    @Override
+    public void saveData() {
 
-	}
+    }
 
-	@Override
-	public boolean isSleepingIgnored() {
+    @Override
+    public void loadData() {
 
-		return false;
-	}
+    }
 
-	@Override
-	public void playNote(Location loc, byte instrument, byte note) {
+    @Override
+    public void setSleepingIgnored(boolean isSleeping) {
 
-	}
+    }
 
-	@Override
-	public void playNote(Location loc, Instrument instrument, Note note) {
+    @Override
+    public boolean isSleepingIgnored() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public void playSound(Location location, Sound sound, float volume, float pitch) {
+    @Override
+    public void playNote(Location loc, byte instrument, byte note) {
 
-	}
+    }
 
-	@Override
-	public void playSound(Location location, String sound, float volume, float pitch) {
+    @Override
+    public void playNote(Location loc, Instrument instrument, Note note) {
 
-	}
+    }
 
-	@Override
-	public void playEffect(Location loc, Effect effect, int data) {
+    @Override
+    public void playSound(Location location, Sound sound, float volume, float pitch) {
 
-	}
+    }
 
-	@Override
-	public <T> void playEffect(Location loc, Effect effect, T data) {
+    @Override
+    public void playSound(Location location, String sound, float volume, float pitch) {
 
-	}
+    }
 
-	@Override
-	public boolean breakBlock(@Nonnull Block block) {
-		return false;
-	}
+    @Override
+    public void playEffect(Location loc, Effect effect, int data) {
 
-	@Override
-	public void sendBlockChange(Location loc, Material material, byte data) {
+    }
 
-	}
+    @Override
+    public <T> void playEffect(Location loc, Effect effect, T data) {
 
-	@Override
-	public void sendSignChange(Location loc, String[] lines) throws IllegalArgumentException {
+    }
 
-	}
+    @Override
+    public boolean breakBlock(@Nonnull Block block) {
+        return false;
+    }
 
-	@Override
-	public void sendMap(MapView map) {
+    @Override
+    public void sendBlockChange(Location loc, Material material, byte data) {
 
-	}
+    }
 
-	@Override
-	public void showWinScreen() {
+    @Override
+    public void sendSignChange(Location loc, String[] lines) throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public boolean hasSeenWinScreen() {
-		return false;
-	}
+    @Override
+    public void sendMap(MapView map) {
 
-	@Override
-	public void setHasSeenWinScreen(boolean b) {
+    }
 
-	}
+    @Override
+    public void showWinScreen() {
 
-	@Override
-	public void updateInventory() {
+    }
 
-	}
+    @Override
+    public boolean hasSeenWinScreen() {
+        return false;
+    }
 
-	@Override
-	public @Nullable GameMode getPreviousGameMode() {
-		return null;
-	}
+    @Override
+    public void setHasSeenWinScreen(boolean b) {
 
-	@Override
-	public void incrementStatistic(Statistic statistic) throws IllegalArgumentException {
+    }
 
-	}
+    @Override
+    public void updateInventory() {
 
-	@Override
-	public void decrementStatistic(Statistic statistic) throws IllegalArgumentException {
+    }
 
-	}
+    @Override
+    public @Nullable GameMode getPreviousGameMode() {
+        return null;
+    }
 
-	@Override
-	public void incrementStatistic(Statistic statistic, int amount) throws IllegalArgumentException {
+    @Override
+    public void incrementStatistic(Statistic statistic) throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public void decrementStatistic(Statistic statistic, int amount) throws IllegalArgumentException {
+    @Override
+    public void decrementStatistic(Statistic statistic) throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public void setStatistic(Statistic statistic, int newValue) throws IllegalArgumentException {
+    @Override
+    public void incrementStatistic(Statistic statistic, int amount) throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public int getStatistic(Statistic statistic) throws IllegalArgumentException {
+    @Override
+    public void decrementStatistic(Statistic statistic, int amount) throws IllegalArgumentException {
 
-		return 0;
-	}
+    }
 
-	@Override
-	public void incrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
+    @Override
+    public void setStatistic(Statistic statistic, int newValue) throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public void decrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
+    @Override
+    public int getStatistic(Statistic statistic) throws IllegalArgumentException {
 
-	}
+        return 0;
+    }
 
-	@Override
-	public int getStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
+    @Override
+    public void incrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
 
-		return 0;
-	}
+    }
 
-	@Override
-	public void incrementStatistic(Statistic statistic, Material material, int amount) throws IllegalArgumentException {
+    @Override
+    public void decrementStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public void decrementStatistic(Statistic statistic, Material material, int amount) throws IllegalArgumentException {
+    @Override
+    public int getStatistic(Statistic statistic, Material material) throws IllegalArgumentException {
 
-	}
+        return 0;
+    }
 
-	@Override
-	public void setStatistic(Statistic statistic, Material material, int newValue) throws IllegalArgumentException {
+    @Override
+    public void incrementStatistic(Statistic statistic, Material material, int amount) throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public void incrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
+    @Override
+    public void decrementStatistic(Statistic statistic, Material material, int amount) throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public void decrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
+    @Override
+    public void setStatistic(Statistic statistic, Material material, int newValue) throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public int getStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
+    @Override
+    public void incrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
 
-		return 0;
-	}
+    }
 
-	@Override
-	public void incrementStatistic(Statistic statistic, EntityType entityType, int amount)
-			throws IllegalArgumentException {
+    @Override
+    public void decrementStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public void decrementStatistic(Statistic statistic, EntityType entityType, int amount) {
+    @Override
+    public int getStatistic(Statistic statistic, EntityType entityType) throws IllegalArgumentException {
 
-	}
+        return 0;
+    }
 
-	@Override
-	public void setStatistic(Statistic statistic, EntityType entityType, int newValue) {
+    @Override
+    public void incrementStatistic(Statistic statistic, EntityType entityType, int amount)
+        throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public void setPlayerTime(long time, boolean relative) {
+    @Override
+    public void decrementStatistic(Statistic statistic, EntityType entityType, int amount) {
 
-	}
+    }
 
-	@Override
-	public long getPlayerTime() {
+    @Override
+    public void setStatistic(Statistic statistic, EntityType entityType, int newValue) {
 
-		return 0;
-	}
+    }
 
-	@Override
-	public long getPlayerTimeOffset() {
+    @Override
+    public void setPlayerTime(long time, boolean relative) {
 
-		return 0;
-	}
+    }
 
-	@Override
-	public boolean isPlayerTimeRelative() {
+    @Override
+    public long getPlayerTime() {
 
-		return false;
-	}
+        return 0;
+    }
 
-	@Override
-	public void resetPlayerTime() {
+    @Override
+    public long getPlayerTimeOffset() {
 
-	}
+        return 0;
+    }
 
-	@Override
-	public void setPlayerWeather(WeatherType type) {
+    @Override
+    public boolean isPlayerTimeRelative() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public WeatherType getPlayerWeather() {
+    @Override
+    public void resetPlayerTime() {
 
-		return null;
-	}
+    }
 
-	@Override
-	public void resetPlayerWeather() {
+    @Override
+    public void setPlayerWeather(WeatherType type) {
 
-	}
+    }
 
-	@Override
-	public void giveExp(int amount) {
+    @Override
+    public WeatherType getPlayerWeather() {
 
-	}
+        return null;
+    }
 
-	@Override
-	public int getExpCooldown() {
-		return 0;
-	}
+    @Override
+    public void resetPlayerWeather() {
 
-	@Override
-	public void setExpCooldown(int i) {
+    }
 
-	}
+    @Override
+    public void giveExp(int amount) {
 
-	@Override
-	public void giveExpLevels(int amount) {
+    }
 
-	}
+    @Override
+    public int getExpCooldown() {
+        return 0;
+    }
 
-	@Override
-	public float getExp() {
+    @Override
+    public void setExpCooldown(int i) {
 
-		return 0;
-	}
+    }
 
-	@Override
-	public void setExp(float exp) {
+    @Override
+    public void giveExpLevels(int amount) {
 
-	}
+    }
 
-	@Override
-	public int getLevel() {
+    @Override
+    public float getExp() {
 
-		return 0;
-	}
+        return 0;
+    }
 
-	@Override
-	public void setLevel(int level) {
+    @Override
+    public void setExp(float exp) {
 
-	}
+    }
 
-	@Override
-	public int getTotalExperience() {
+    @Override
+    public int getLevel() {
 
-		return 0;
-	}
+        return 0;
+    }
 
-	@Override
-	public void setTotalExperience(int exp) {
+    @Override
+    public void setLevel(int level) {
 
-	}
+    }
 
-	@Override
-	public @Range(from = 0L, to = 2147483647L) int calculateTotalExperiencePoints() {
-		return 0;
-	}
+    @Override
+    public int getTotalExperience() {
 
-	@Override
-	public void setExperienceLevelAndProgress(@Range(from = 0L, to = 2147483647L) int i) {
+        return 0;
+    }
 
-	}
+    @Override
+    public void setTotalExperience(int exp) {
 
-	@Override
-	public int getExperiencePointsNeededForNextLevel() {
-		return 0;
-	}
+    }
 
-	@Override
-	public float getExhaustion() {
+    @Override
+    public @Range(from = 0L, to = 2147483647L) int calculateTotalExperiencePoints() {
+        return 0;
+    }
 
-		return 0;
-	}
+    @Override
+    public void setExperienceLevelAndProgress(@Range(from = 0L, to = 2147483647L) int i) {
 
-	@Override
-	public void setExhaustion(float value) {
+    }
 
-	}
+    @Override
+    public int getExperiencePointsNeededForNextLevel() {
+        return 0;
+    }
 
-	@Override
-	public float getSaturation() {
+    @Override
+    public float getExhaustion() {
 
-		return 0;
-	}
+        return 0;
+    }
 
-	@Override
-	public void setSaturation(float value) {
+    @Override
+    public void setExhaustion(float value) {
 
-	}
+    }
 
-	@Override
-	public int getFoodLevel() {
+    @Override
+    public float getSaturation() {
 
-		return 0;
-	}
+        return 0;
+    }
 
-	@Override
-	public void setFoodLevel(int value) {
+    @Override
+    public void setSaturation(float value) {
 
-	}
+    }
 
-	@Override
-	public int getSaturatedRegenRate() {
-		return 0;
-	}
+    @Override
+    public int getFoodLevel() {
 
-	@Override
-	public void setSaturatedRegenRate(int i) {
+        return 0;
+    }
 
-	}
+    @Override
+    public void setFoodLevel(int value) {
 
-	@Override
-	public int getUnsaturatedRegenRate() {
-		return 0;
-	}
+    }
 
-	@Override
-	public void setUnsaturatedRegenRate(int i) {
+    @Override
+    public int getSaturatedRegenRate() {
+        return 0;
+    }
 
-	}
+    @Override
+    public void setSaturatedRegenRate(int i) {
 
-	@Override
-	public int getStarvationRate() {
-		return 0;
-	}
+    }
 
-	@Override
-	public void setStarvationRate(int i) {
+    @Override
+    public int getUnsaturatedRegenRate() {
+        return 0;
+    }
 
-	}
+    @Override
+    public void setUnsaturatedRegenRate(int i) {
 
-	@Override
-	public @org.jetbrains.annotations.Nullable Location getLastDeathLocation() {
-		return null;
-	}
+    }
 
-	@Override
-	public void setLastDeathLocation(@org.jetbrains.annotations.Nullable Location location) {
+    @Override
+    public int getStarvationRate() {
+        return 0;
+    }
 
-	}
+    @Override
+    public void setStarvationRate(int i) {
 
-	@Override
-	public @org.jetbrains.annotations.Nullable Firework fireworkBoost(@NotNull ItemStack itemStack) {
-		return null;
-	}
+    }
 
-	@Override
-	public Location getBedSpawnLocation() {
+    @Override
+    public @org.jetbrains.annotations.Nullable Location getLastDeathLocation() {
+        return null;
+    }
 
-		return null;
-	}
+    @Override
+    public void setLastDeathLocation(@org.jetbrains.annotations.Nullable Location location) {
 
-	@Override
-	public @org.jetbrains.annotations.Nullable Location getRespawnLocation() {
-		return null;
-	}
+    }
 
-	@Override
-	public void setBedSpawnLocation(Location location) {
+    @Override
+    public @org.jetbrains.annotations.Nullable Firework fireworkBoost(@NotNull ItemStack itemStack) {
+        return null;
+    }
 
-	}
+    @Override
+    public Location getBedSpawnLocation() {
 
-	@Override
-	public void setRespawnLocation(@org.jetbrains.annotations.Nullable Location location) {
+        return null;
+    }
 
-	}
+    @Override
+    public @org.jetbrains.annotations.Nullable Location getRespawnLocation() {
+        return null;
+    }
 
-	@Override
-	public void setBedSpawnLocation(Location location, boolean force) {
+    @Override
+    public void setBedSpawnLocation(Location location) {
 
-	}
+    }
 
-	@Override
-	public void setRespawnLocation(@org.jetbrains.annotations.Nullable Location location, boolean b) {
+    @Override
+    public void setRespawnLocation(@org.jetbrains.annotations.Nullable Location location) {
 
-	}
+    }
 
-	@Override
-	public boolean getAllowFlight() {
+    @Override
+    public void setBedSpawnLocation(Location location, boolean force) {
 
-		return false;
-	}
+    }
 
-	@Override
-	public void setAllowFlight(boolean flight) {
+    @Override
+    public void setRespawnLocation(@org.jetbrains.annotations.Nullable Location location, boolean b) {
 
-	}
+    }
 
-	@Override
-	public void setFlyingFallDamage(@NotNull TriState triState) {
+    @Override
+    public boolean getAllowFlight() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public @NotNull TriState hasFlyingFallDamage() {
-		return null;
-	}
+    @Override
+    public void setAllowFlight(boolean flight) {
 
-	@Override
-	public void hidePlayer(Plugin plugin, Player player) {
+    }
 
-	}
+    @Override
+    public void setFlyingFallDamage(@NotNull TriState triState) {
 
-	@Override
-	public void hidePlayer(Player player) {
+    }
 
-	}
+    @Override
+    public @NotNull TriState hasFlyingFallDamage() {
+        return null;
+    }
 
-	@Override
-	public void showPlayer(Plugin plugin, Player player) {
+    @Override
+    public void hidePlayer(Plugin plugin, Player player) {
 
-	}
+    }
 
-	@Override
-	public void showPlayer(Player player) {
+    @Override
+    public void hidePlayer(Player player) {
 
-	}
+    }
 
-	@Override
-	public boolean canSee(Player player) {
+    @Override
+    public void showPlayer(Plugin plugin, Player player) {
 
-		return false;
-	}
+    }
 
-	@Override
-	public void hideEntity(Plugin plugin,  Entity entity) {
+    @Override
+    public void showPlayer(Player player) {
 
-	}
+    }
 
-	@Override
-	public void showEntity(Plugin plugin,  Entity entity) {
+    @Override
+    public boolean canSee(Player player) {
 
-	}
+        return false;
+    }
 
-	@Override
-	public boolean canSee(Entity entity) {
-		return false;
-	}
+    @Override
+    public void hideEntity(Plugin plugin, Entity entity) {
 
-	@Override
-	public boolean isListed(@NotNull Player player) {
-		return false;
-	}
+    }
 
-	@Override
-	public boolean unlistPlayer(@NotNull Player player) {
-		return false;
-	}
+    @Override
+    public void showEntity(Plugin plugin, Entity entity) {
 
-	@Override
-	public boolean listPlayer(@NotNull Player player) {
-		return false;
-	}
+    }
 
-	@Override
-	public boolean isOnGround() {
+    @Override
+    public boolean canSee(Entity entity) {
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public boolean isListed(@NotNull Player player) {
+        return false;
+    }
 
-	@Override
-	public boolean isFlying() {
+    @Override
+    public boolean unlistPlayer(@NotNull Player player) {
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public boolean listPlayer(@NotNull Player player) {
+        return false;
+    }
 
-	@Override
-	public void setFlying(boolean value) {
+    @Override
+    public boolean isOnGround() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public void setFlySpeed(float value) throws IllegalArgumentException {
+    @Override
+    public boolean isFlying() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public void setWalkSpeed(float value) throws IllegalArgumentException {
+    @Override
+    public void setFlying(boolean value) {
 
-	}
+    }
 
-	@Override
-	public float getFlySpeed() {
+    @Override
+    public void setFlySpeed(float value) throws IllegalArgumentException {
 
-		return 0;
-	}
+    }
 
-	@Override
-	public float getWalkSpeed() {
+    @Override
+    public void setWalkSpeed(float value) throws IllegalArgumentException {
 
-		return 0;
-	}
+    }
 
-	@Override
-	public void setTexturePack(String url) {
+    @Override
+    public float getFlySpeed() {
 
-	}
+        return 0;
+    }
 
-	@Override
-	public void setResourcePack(String url) {
+    @Override
+    public float getWalkSpeed() {
 
-	}
+        return 0;
+    }
 
-	@Override
-	public Scoreboard getScoreboard() {
+    @Override
+    public void setTexturePack(String url) {
 
-		return null;
-	}
+    }
 
-	@Override
-	public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
+    @Override
+    public void setResourcePack(String url) {
 
-	}
+    }
 
-	@Override
-	public @Nullable WorldBorder getWorldBorder() {
-		return null;
-	}
+    @Override
+    public Scoreboard getScoreboard() {
 
-	@Override
-	public void setWorldBorder(@Nullable WorldBorder border) {
+        return null;
+    }
 
-	}
+    @Override
+    public void setScoreboard(Scoreboard scoreboard) throws IllegalArgumentException, IllegalStateException {
 
-	@Override
-	public boolean isHealthScaled() {
+    }
 
-		return false;
-	}
+    @Override
+    public @Nullable WorldBorder getWorldBorder() {
+        return null;
+    }
 
-	@Override
-	public void setHealthScaled(boolean scale) {
+    @Override
+    public void setWorldBorder(@Nullable WorldBorder border) {
 
-	}
+    }
 
-	@Override
-	public void setHealthScale(double scale) throws IllegalArgumentException {
+    @Override
+    public boolean isHealthScaled() {
 
-	}
+        return false;
+    }
 
-	@Override
-	public double getHealthScale() {
+    @Override
+    public void setHealthScaled(boolean scale) {
 
-		return 0;
-	}
+    }
 
-	@Override
-	public void sendHealthUpdate(double v, int i, float v1) {
+    @Override
+    public void setHealthScale(double scale) throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public void sendHealthUpdate() {
+    @Override
+    public double getHealthScale() {
 
-	}
+        return 0;
+    }
 
-	@Override
-	public Entity getSpectatorTarget() {
+    @Override
+    public void sendHealthUpdate(double v, int i, float v1) {
 
-		return null;
-	}
+    }
 
-	@Override
-	public void setSpectatorTarget(Entity entity) {
+    @Override
+    public void sendHealthUpdate() {
 
-	}
+    }
 
-	@Override
-	public void sendTitle(String title, String subtitle) {
+    @Override
+    public Entity getSpectatorTarget() {
 
-	}
+        return null;
+    }
 
-	@Override
-	public void resetTitle() {
+    @Override
+    public void setSpectatorTarget(Entity entity) {
 
-	}
+    }
 
-	@Override
-	public void spawnParticle(Particle particle, Location location, int count) {
+    @Override
+    public void sendTitle(String title, String subtitle) {
 
-	}
+    }
 
-	@Override
-	public void spawnParticle(Particle particle, double x, double y, double z, int count) {
+    @Override
+    public void resetTitle() {
 
-	}
+    }
 
-	@Override
-	public <T> void spawnParticle(Particle particle, Location location, int count, T data) {
+    @Override
+    public void spawnParticle(Particle particle, Location location, int count) {
 
-	}
+    }
 
-	@Override
-	public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, T data) {
+    @Override
+    public void spawnParticle(Particle particle, double x, double y, double z, int count) {
 
-	}
+    }
 
-	@Override
-	public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-			double offsetZ) {
+    @Override
+    public <T> void spawnParticle(Particle particle, Location location, int count, T data) {
 
-	}
+    }
 
-	@Override
-	public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-			double offsetY, double offsetZ) {
+    @Override
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, T data) {
 
-	}
+    }
 
-	@Override
-	public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-			double offsetZ, T data) {
+    @Override
+    public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
+                              double offsetZ) {
 
-	}
+    }
 
-	@Override
-	public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-			double offsetY, double offsetZ, T data) {
+    @Override
+    public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
+                              double offsetY, double offsetZ) {
 
-	}
+    }
 
-	@Override
-	public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-			double offsetZ, double extra) {
+    @Override
+    public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
+                                  double offsetZ, T data) {
 
-	}
+    }
 
-	@Override
-	public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-			double offsetY, double offsetZ, double extra) {
+    @Override
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
+                                  double offsetY, double offsetZ, T data) {
 
-	}
+    }
 
-	@Override
-	public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
-			double offsetZ, double extra, T data) {
+    @Override
+    public void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
+                              double offsetZ, double extra) {
 
-	}
+    }
 
-	@Override
-	public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-			double offsetY, double offsetZ, double extra, T data) {
+    @Override
+    public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
+                              double offsetY, double offsetZ, double extra) {
 
-	}
+    }
 
-	@Override
-	public Spigot spigot() {
-		return null;
-	}
+    @Override
+    public <T> void spawnParticle(Particle particle, Location location, int count, double offsetX, double offsetY,
+                                  double offsetZ, double extra, T data) {
 
-	@Override
-	public  Component name() {
-		return null;
-	}
+    }
 
-	@Override
-	public  Component teamDisplayName() {
-		return null;
-	}
+    @Override
+    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
+                                  double offsetY, double offsetZ, double extra, T data) {
 
-	@Override
-	public boolean isSilent() {
-		return false;
-	}
+    }
 
-	@Override
-	public void setSilent(boolean flag) {
-	}
+    @Override
+    public Spigot spigot() {
+        return null;
+    }
 
-	@Override
-	public boolean hasGravity() {
-		return false;
-	}
+    @Override
+    public Component name() {
+        return null;
+    }
 
-	@Override
-	public void setGravity(boolean gravity) {
-	}
+    @Override
+    public Component teamDisplayName() {
+        return null;
+    }
 
-	@Override
-	public void stopSound(Sound sound) {
-	}
+    @Override
+    public boolean isSilent() {
+        return false;
+    }
 
-	@Override
-	public void stopSound(String sound) {
-	}
+    @Override
+    public void setSilent(boolean flag) {
+    }
 
-	@Override
-	public int getCooldown(Material arg0) {
-		return 0;
-	}
+    @Override
+    public boolean hasGravity() {
+        return false;
+    }
 
-	@Override
-	public Entity getShoulderEntityLeft() {
-		return null;
-	}
+    @Override
+    public void setGravity(boolean gravity) {
+    }
 
-	@Override
-	public Entity getShoulderEntityRight() {
-		return null;
-	}
+    @Override
+    public void stopSound(Sound sound) {
+    }
 
-	@Override
-	public boolean hasCooldown(Material arg0) {
-		return false;
-	}
+    @Override
+    public void stopSound(String sound) {
+    }
 
-	@Override
-	public boolean isHandRaised() {
-		return false;
-	}
+    @Override
+    public int getCooldown(Material arg0) {
+        return 0;
+    }
 
-	@Override
-	public @Nonnull EquipmentSlot getHandRaised() {
-		return null;
-	}
+    @Override
+    public Entity getShoulderEntityLeft() {
+        return null;
+    }
 
-	@Override
-	public @Nullable ItemStack getItemInUse() {
-		return null;
-	}
+    @Override
+    public Entity getShoulderEntityRight() {
+        return null;
+    }
 
-	@Override
-	public int getItemInUseTicks() {
-		return 0;
-	}
+    @Override
+    public boolean hasCooldown(Material arg0) {
+        return false;
+    }
 
-	@Override
-	public void setItemInUseTicks(int i) {
+    @Override
+    public boolean isHandRaised() {
+        return false;
+    }
 
-	}
+    @Override
+    public @Nonnull EquipmentSlot getHandRaised() {
+        return null;
+    }
 
-	@Override
-	public InventoryView openMerchant(Merchant arg0, boolean arg1) {
-		return null;
-	}
+    @Override
+    public @Nullable ItemStack getItemInUse() {
+        return null;
+    }
 
-	@Override
-	public void setCooldown(Material arg0, int arg1) {
+    @Override
+    public int getItemInUseTicks() {
+        return 0;
+    }
 
-	}
+    @Override
+    public void setItemInUseTicks(int i) {
 
-	@Override
-	public boolean isDeeplySleeping() {
-		return false;
-	}
+    }
 
-	@Override
-	public void setShoulderEntityLeft(Entity arg0) {
+    @Override
+    public InventoryView openMerchant(Merchant arg0, boolean arg1) {
+        return null;
+    }
 
-	}
+    @Override
+    public void setCooldown(Material arg0, int arg1) {
 
-	@Override
-	public void setShoulderEntityRight(Entity arg0) {
+    }
 
-	}
+    @Override
+    public boolean isDeeplySleeping() {
+        return false;
+    }
 
-	@Override
-	public PotionEffect getPotionEffect(PotionEffectType arg0) {
-		return null;
-	}
+    @Override
+    public void setShoulderEntityLeft(Entity arg0) {
 
-	@Override
-	public boolean addPassenger(Entity arg0) {
-		return false;
-	}
+    }
 
-	@Override
-	public boolean addScoreboardTag(String arg0) {
-		return false;
-	}
+    @Override
+    public void setShoulderEntityRight(Entity arg0) {
 
-	@Override
-	public double getHeight() {
-		return 1.0;
-	}
+    }
 
-	@Override
-	public List<Entity> getPassengers() {
-		return null;
-	}
+    @Override
+    public PotionEffect getPotionEffect(PotionEffectType arg0) {
+        return null;
+    }
 
-	@Override
-	public int getPortalCooldown() {
-		return 0;
-	}
+    @Override
+    public boolean addPassenger(Entity arg0) {
+        return false;
+    }
 
-	@Override
-	public Set<String> getScoreboardTags() {
-		return null;
-	}
+    @Override
+    public boolean addScoreboardTag(String arg0) {
+        return false;
+    }
 
-	@Override
-	public double getWidth() {
-		return 0.33;
-	}
+    @Override
+    public double getHeight() {
+        return 1.0;
+    }
 
-	@Override
-	public boolean removePassenger(Entity arg0) {
-		return false;
-	}
+    @Override
+    public List<Entity> getPassengers() {
+        return null;
+    }
 
-	@Override
-	public boolean removeScoreboardTag(String arg0) {
-		return false;
-	}
+    @Override
+    public int getPortalCooldown() {
+        return 0;
+    }
 
-	@Override
-	public void setPortalCooldown(int arg0) {
+    @Override
+    public Set<String> getScoreboardTags() {
+        return null;
+    }
 
-	}
+    @Override
+    public double getWidth() {
+        return 0.33;
+    }
 
-	@Override
-	public AdvancementProgress getAdvancementProgress(Advancement arg0) {
-		return null;
-	}
+    @Override
+    public boolean removePassenger(Entity arg0) {
+        return false;
+    }
 
-	@Override
-	public String getLocale() {
-		return null;
-	}
+    @Override
+    public boolean removeScoreboardTag(String arg0) {
+        return false;
+    }
 
-	@Override
-	public void playSound(Location arg0, Sound arg1, SoundCategory arg2, float arg3, float arg4) {
+    @Override
+    public void setPortalCooldown(int arg0) {
 
-	}
+    }
 
-	@Override
-	public void playSound(Location arg0, String arg1, SoundCategory arg2, float arg3, float arg4) {
+    @Override
+    public AdvancementProgress getAdvancementProgress(Advancement arg0) {
+        return null;
+    }
 
-	}
+    @Override
+    public String getLocale() {
+        return null;
+    }
 
-	@Override
-	public void playSound(@NotNull Location location, @NotNull Sound sound, @NotNull SoundCategory soundCategory, float v, float v1, long l) {
+    @Override
+    public void playSound(Location arg0, Sound arg1, SoundCategory arg2, float arg3, float arg4) {
 
-	}
+    }
 
-	@Override
-	public void playSound(@NotNull Location location, @NotNull String s, @NotNull SoundCategory soundCategory, float v, float v1, long l) {
+    @Override
+    public void playSound(Location arg0, String arg1, SoundCategory arg2, float arg3, float arg4) {
 
-	}
+    }
 
-	@Override
-	public void playSound(@NotNull Entity entity, @NotNull Sound sound, float volume, float pitch) {
+    @Override
+    public void playSound(@NotNull Location location, @NotNull Sound sound, @NotNull SoundCategory soundCategory, float v, float v1, long l) {
 
-	}
+    }
 
-	@Override
-	public void playSound(@NotNull Entity entity, @NotNull String s, float v, float v1) {
+    @Override
+    public void playSound(@NotNull Location location, @NotNull String s, @NotNull SoundCategory soundCategory, float v, float v1, long l) {
 
-	}
+    }
 
-	@Override
-	public void playSound(@NotNull Entity entity, @NotNull Sound sound,
-						  @NotNull SoundCategory category, float volume, float pitch) {
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull Sound sound, float volume, float pitch) {
 
-	}
+    }
 
-	@Override
-	public void playSound(@NotNull Entity entity, @NotNull String s, @NotNull SoundCategory soundCategory, float v, float v1) {
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull String s, float v, float v1) {
 
-	}
+    }
 
-	@Override
-	public void playSound(@NotNull Entity entity, @NotNull Sound sound, @NotNull SoundCategory soundCategory, float v, float v1, long l) {
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull Sound sound,
+                          @NotNull SoundCategory category, float volume, float pitch) {
 
-	}
+    }
 
-	@Override
-	public void playSound(@NotNull Entity entity, @NotNull String s, @NotNull SoundCategory soundCategory, float v, float v1, long l) {
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull String s, @NotNull SoundCategory soundCategory, float v, float v1) {
 
-	}
+    }
 
-	@Override
-	public void sendTitle(String arg0, String arg1, int arg2, int arg3, int arg4) {
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull Sound sound, @NotNull SoundCategory soundCategory, float v, float v1, long l) {
 
-	}
+    }
 
-	@Override
-	public void setResourcePack(String arg0, byte[] arg1) {
+    @Override
+    public void playSound(@NotNull Entity entity, @NotNull String s, @NotNull SoundCategory soundCategory, float v, float v1, long l) {
 
-	}
+    }
 
-	@Override
-	public void setResourcePack(@NotNull String url,
-								@Nullable byte[] hash,
-								@Nullable String prompt) {
-	}
+    @Override
+    public void sendTitle(String arg0, String arg1, int arg2, int arg3, int arg4) {
 
-	@Override
-	public void setResourcePack(@NotNull String url, @Nullable byte[] hash, boolean force) {
+    }
 
-	}
+    @Override
+    public void setResourcePack(String arg0, byte[] arg1) {
 
-	@Override
-	public void setResourcePack(@NotNull String url, @Nullable byte[] hash,
-								@Nullable String prompt, boolean force) {
+    }
 
-	}
+    @Override
+    public void setResourcePack(@NotNull String url,
+                                @Nullable byte[] hash,
+                                @Nullable String prompt) {
+    }
 
-	@Override
-	public void setResourcePack(@NotNull String url, @Nullable byte[] hash,
-								@Nullable Component prompt, boolean force) {
+    @Override
+    public void setResourcePack(@NotNull String url, @Nullable byte[] hash, boolean force) {
 
-	}
+    }
 
-	@Override
-	public void setResourcePack(@NotNull UUID uuid, @NotNull String s, @org.jetbrains.annotations.Nullable byte[] bytes, @org.jetbrains.annotations.Nullable String s1, boolean b) {
+    @Override
+    public void setResourcePack(@NotNull String url, @Nullable byte[] hash,
+                                @Nullable String prompt, boolean force) {
 
-	}
+    }
 
-	@Override
-	public void setResourcePack(@NotNull UUID uuid, @NotNull String s, byte @org.jetbrains.annotations.Nullable [] bytes, @org.jetbrains.annotations.Nullable Component component, boolean b) {
+    @Override
+    public void setResourcePack(@NotNull String url, @Nullable byte[] hash,
+                                @Nullable Component prompt, boolean force) {
 
-	}
+    }
 
-	@Override
-	public void stopSound(Sound arg0, SoundCategory arg1) {
+    @Override
+    public void setResourcePack(@NotNull UUID uuid, @NotNull String s, @org.jetbrains.annotations.Nullable byte[] bytes, @org.jetbrains.annotations.Nullable String s1, boolean b) {
 
-	}
+    }
 
-	@Override
-	public void stopSound(String arg0, SoundCategory arg1) {
+    @Override
+    public void setResourcePack(@NotNull UUID uuid, @NotNull String s, byte @org.jetbrains.annotations.Nullable [] bytes, @org.jetbrains.annotations.Nullable Component component, boolean b) {
 
-	}
+    }
 
-	@Override
-	public void stopSound(@NotNull SoundCategory soundCategory) {
+    @Override
+    public void stopSound(Sound arg0, SoundCategory arg1) {
 
-	}
+    }
 
-	@Override
-	public void stopAllSounds() {
+    @Override
+    public void stopSound(String arg0, SoundCategory arg1) {
 
-	}
+    }
 
-	@Override
-	public PistonMoveReaction getPistonMoveReaction() {
-		return null;
-	}
+    @Override
+    public void stopSound(@NotNull SoundCategory soundCategory) {
 
-	@Override
-	public boolean isSwimming() {
-		return false;
-	}
+    }
 
-	@Override
-	public void setSwimming(boolean arg0) {
+    @Override
+    public void stopAllSounds() {
 
-	}
+    }
 
-	@Override
-	public void sendBlockChange(Location arg0, BlockData arg1) {
+    @Override
+    public PistonMoveReaction getPistonMoveReaction() {
+        return null;
+    }
 
-	}
+    @Override
+    public boolean isSwimming() {
+        return false;
+    }
 
-	@Override
-	public void sendBlockChanges(@NotNull Collection<BlockState> collection) {
+    @Override
+    public void setSwimming(boolean arg0) {
 
-	}
+    }
 
-	@Override
-	public void sendBlockChanges(@NotNull Collection<BlockState> collection, boolean b) {
+    @Override
+    public void sendBlockChange(Location arg0, BlockData arg1) {
 
-	}
+    }
 
-	@Override
-	public void sendBlockDamage(@Nonnull Location location, float f) {
+    @Override
+    public void sendBlockChanges(@NotNull Collection<BlockState> collection) {
 
-	}
+    }
 
-	@Override
-	public void sendMultiBlockChange(@NotNull Map<? extends Position, BlockData> map) {
+    @Override
+    public void sendBlockChanges(@NotNull Collection<BlockState> collection, boolean b) {
 
-	}
+    }
 
-	@Override
-	public void sendBlockDamage(@NotNull Location location, float v, @NotNull Entity entity) {
+    @Override
+    public void sendBlockDamage(@Nonnull Location location, float f) {
 
-	}
+    }
 
-	@Override
-	public void sendBlockDamage(@NotNull Location location, float v, int i) {
+    @Override
+    public void sendMultiBlockChange(@NotNull Map<? extends Position, BlockData> map) {
 
-	}
+    }
 
-	@Override
-	public void sendEquipmentChange(LivingEntity livingEntity,  EquipmentSlot equipmentSlot,  ItemStack itemStack) {
+    @Override
+    public void sendBlockDamage(@NotNull Location location, float v, @NotNull Entity entity) {
 
-	}
+    }
 
-	@Override
-	public void sendEquipmentChange(@NotNull LivingEntity livingEntity, @NotNull Map<EquipmentSlot, ItemStack> map) {
+    @Override
+    public void sendBlockDamage(@NotNull Location location, float v, int i) {
 
-	}
+    }
 
-	@Override
-	public void sendSignChange(@NotNull Location location, @org.jetbrains.annotations.Nullable List<? extends Component> list, @NotNull DyeColor dyeColor, boolean b) throws IllegalArgumentException {
+    @Override
+    public void sendEquipmentChange(LivingEntity livingEntity, EquipmentSlot equipmentSlot, ItemStack itemStack) {
 
-	}
+    }
 
-	@Override
-	public boolean isRiptiding() {
-		return false;
-	}
+    @Override
+    public void sendEquipmentChange(@NotNull LivingEntity livingEntity, @NotNull Map<EquipmentSlot, ItemStack> map) {
 
-	@Override
-	public boolean isPersistent() {
-		return false;
-	}
+    }
 
-	@Override
-	public void setPersistent(boolean arg0) {
-	}
+    @Override
+    public void sendSignChange(@NotNull Location location, @org.jetbrains.annotations.Nullable List<? extends Component> list, @NotNull DyeColor dyeColor, boolean b) throws IllegalArgumentException {
 
-	@Override
-	public String getPlayerListFooter() {
-		return null;
-	}
+    }
 
-	@Override
-	public String getPlayerListHeader() {
-		return null;
-	}
+    @Override
+    public boolean isRiptiding() {
+        return false;
+    }
 
-	@Override
-	public void setPlayerListFooter(String arg0) {
-	}
+    @Override
+    public boolean isPersistent() {
+        return false;
+    }
 
-	@Override
-	public void setPlayerListHeader(String arg0) {
-	}
+    @Override
+    public void setPersistent(boolean arg0) {
+    }
 
-	@Override
-	public void setPlayerListHeaderFooter(String arg0, String arg1) {
-	}
+    @Override
+    public String getPlayerListFooter() {
+        return null;
+    }
 
-	@Override
-	public void updateCommands() {
-	}
+    @Override
+    public String getPlayerListHeader() {
+        return null;
+    }
 
-	@Override
-	public boolean sleep(Location location, boolean force) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public void setPlayerListFooter(String arg0) {
+    }
 
-	@Override
-	public void wakeup(boolean setSpawnLocation) {
-		// TODO Auto-generated method stub
+    @Override
+    public void setPlayerListHeader(String arg0) {
+    }
 
-	}
+    @Override
+    public void setPlayerListHeaderFooter(String arg0, String arg1) {
+    }
 
-	@Override
-	public Location getBedLocation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public void updateCommands() {
+    }
 
-	@Override
-	public boolean discoverRecipe(NamespacedKey recipe) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean sleep(Location location, boolean force) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public int discoverRecipes(Collection<NamespacedKey> recipes) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public void wakeup(boolean setSpawnLocation) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public boolean undiscoverRecipe(NamespacedKey recipe) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    }
 
-	@Override
-	public int undiscoverRecipes(Collection<NamespacedKey> recipes) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public Location getBedLocation() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public Block getTargetBlockExact(int maxDistance) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean discoverRecipe(NamespacedKey recipe) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public Block getTargetBlockExact(int maxDistance, FluidCollisionMode fluidCollisionMode) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public int discoverRecipes(Collection<NamespacedKey> recipes) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public RayTraceResult rayTraceBlocks(double maxDistance) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean undiscoverRecipe(NamespacedKey recipe) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public RayTraceResult rayTraceBlocks(double maxDistance, FluidCollisionMode fluidCollisionMode) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public int undiscoverRecipes(Collection<NamespacedKey> recipes) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public <T> T getMemory(MemoryKey<T> memoryKey) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Block getTargetBlockExact(int maxDistance) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public <T> void setMemory(MemoryKey<T> memoryKey, T memoryValue) {
-		// TODO Auto-generated method stub
+    @Override
+    public Block getTargetBlockExact(int maxDistance, FluidCollisionMode fluidCollisionMode) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	}
+    @Override
+    public RayTraceResult rayTraceBlocks(double maxDistance) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public @org.jetbrains.annotations.Nullable Sound getHurtSound() {
-		return null;
-	}
+    @Override
+    public RayTraceResult rayTraceBlocks(double maxDistance, FluidCollisionMode fluidCollisionMode) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public @org.jetbrains.annotations.Nullable Sound getDeathSound() {
-		return null;
-	}
+    @Override
+    public <T> T getMemory(MemoryKey<T> memoryKey) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public @NotNull Sound getFallDamageSound(int i) {
-		return null;
-	}
+    @Override
+    public <T> void setMemory(MemoryKey<T> memoryKey, T memoryValue) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public @NotNull Sound getFallDamageSoundSmall() {
-		return null;
-	}
+    }
 
-	@Override
-	public @NotNull Sound getFallDamageSoundBig() {
-		return null;
-	}
+    @Override
+    public @org.jetbrains.annotations.Nullable Sound getHurtSound() {
+        return null;
+    }
 
-	@Override
-	public @NotNull Sound getDrinkingSound(@NotNull ItemStack itemStack) {
-		return null;
-	}
+    @Override
+    public @org.jetbrains.annotations.Nullable Sound getDeathSound() {
+        return null;
+    }
 
-	@Override
-	public @NotNull Sound getEatingSound(@NotNull ItemStack itemStack) {
-		return null;
-	}
+    @Override
+    public @NotNull Sound getFallDamageSound(int i) {
+        return null;
+    }
 
-	@Override
-	public boolean canBreatheUnderwater() {
-		return false;
-	}
+    @Override
+    public @NotNull Sound getFallDamageSoundSmall() {
+        return null;
+    }
 
-	@Override
-	public double getAbsorptionAmount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public @NotNull Sound getFallDamageSoundBig() {
+        return null;
+    }
 
-	@Override
-	public void setAbsorptionAmount(double arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public @NotNull Sound getDrinkingSound(@NotNull ItemStack itemStack) {
+        return null;
+    }
 
-	}
+    @Override
+    public @NotNull Sound getEatingSound(@NotNull ItemStack itemStack) {
+        return null;
+    }
 
-	@Override
-	public BoundingBox getBoundingBox() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean canBreatheUnderwater() {
+        return false;
+    }
 
-	@Override
-	public void setRotation(float yaw, float pitch) {
-		// TODO Auto-generated method stub
+    @Override
+    public double getAbsorptionAmount() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	}
+    @Override
+    public void setAbsorptionAmount(double arg0) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public boolean teleport(@NotNull Location location, @NotNull PlayerTeleportEvent.TeleportCause teleportCause, @NotNull TeleportFlag @NotNull ... teleportFlags) {
-		return false;
-	}
+    }
 
-	@Override
-	public void lookAt(double v, double v1, double v2, @NotNull LookAnchor lookAnchor) {
+    @Override
+    public BoundingBox getBoundingBox() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	}
+    @Override
+    public void setRotation(float yaw, float pitch) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void lookAt(@NotNull Entity entity, @NotNull LookAnchor lookAnchor, @NotNull LookAnchor lookAnchor1) {
+    }
 
-	}
+    @Override
+    public boolean teleport(@NotNull Location location, @NotNull PlayerTeleportEvent.TeleportCause teleportCause, @NotNull TeleportFlag @NotNull ... teleportFlags) {
+        return false;
+    }
 
-	@Override
-	public void showElderGuardian(boolean b) {
+    @Override
+    public void lookAt(double v, double v1, double v2, @NotNull LookAnchor lookAnchor) {
 
-	}
+    }
 
-	@Override
-	public int getWardenWarningCooldown() {
-		return 0;
-	}
+    @Override
+    public void lookAt(@NotNull Entity entity, @NotNull LookAnchor lookAnchor, @NotNull LookAnchor lookAnchor1) {
 
-	@Override
-	public void setWardenWarningCooldown(int i) {
+    }
 
-	}
+    @Override
+    public void showElderGuardian(boolean b) {
 
-	@Override
-	public int getWardenTimeSinceLastWarning() {
-		return 0;
-	}
+    }
 
-	@Override
-	public void setWardenTimeSinceLastWarning(int i) {
+    @Override
+    public int getWardenWarningCooldown() {
+        return 0;
+    }
 
-	}
+    @Override
+    public void setWardenWarningCooldown(int i) {
 
-	@Override
-	public int getWardenWarningLevel() {
-		return 0;
-	}
+    }
 
-	@Override
-	public void setWardenWarningLevel(int i) {
+    @Override
+    public int getWardenTimeSinceLastWarning() {
+        return 0;
+    }
 
-	}
+    @Override
+    public void setWardenTimeSinceLastWarning(int i) {
 
-	@Override
-	public void increaseWardenWarningLevel() {
+    }
 
-	}
+    @Override
+    public int getWardenWarningLevel() {
+        return 0;
+    }
 
-	@Override
-	public @NotNull Duration getIdleDuration() {
-		return null;
-	}
+    @Override
+    public void setWardenWarningLevel(int i) {
 
-	@Override
-	public void resetIdleDuration() {
+    }
 
-	}
+    @Override
+    public void increaseWardenWarningLevel() {
 
-	@Override
-	public @NotNull @Unmodifiable Set<Long> getSentChunkKeys() {
-		return Collections.emptySet();
-	}
+    }
 
-	@Override
-	public @NotNull @Unmodifiable Set<Chunk> getSentChunks() {
-		return Collections.emptySet();
-	}
+    @Override
+    public @NotNull Duration getIdleDuration() {
+        return null;
+    }
 
-	@Override
-	public boolean isChunkSent(long l) {
-		return false;
-	}
+    @Override
+    public void resetIdleDuration() {
 
-	@Override
-	public BlockFace getFacing() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    }
 
-	@Override
-	public Pose getPose() {
-		// TODO Auto-generated metod stub
-		return null;
-	}
+    @Override
+    public @NotNull @Unmodifiable Set<Long> getSentChunkKeys() {
+        return Collections.emptySet();
+    }
 
-	@Override
-	public @NotNull SpawnCategory getSpawnCategory() {
-		return null;
-	}
+    @Override
+    public @NotNull @Unmodifiable Set<Chunk> getSentChunks() {
+        return Collections.emptySet();
+    }
 
-	@Override
-	public boolean isInWorld() {
-		return false;
-	}
+    @Override
+    public boolean isChunkSent(long l) {
+        return false;
+    }
 
-	@Override
-	public @org.jetbrains.annotations.Nullable EntitySnapshot createSnapshot() {
-		return null;
-	}
+    @Override
+    public BlockFace getFacing() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public @NotNull Entity copy() {
-		return null;
-	}
+    @Override
+    public Pose getPose() {
+        // TODO Auto-generated metod stub
+        return null;
+    }
 
-	@Override
-	public @NotNull Entity copy(@NotNull Location location) {
-		return null;
-	}
+    @Override
+    public @NotNull SpawnCategory getSpawnCategory() {
+        return null;
+    }
 
-	@Override
-	public PersistentDataContainer getPersistentDataContainer() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean isInWorld() {
+        return false;
+    }
 
-	@Override
-	public void sendSignChange(Location loc, String[] lines, DyeColor dyeColor) throws IllegalArgumentException {
-		// TODO Auto-generated method stub
+    @Override
+    public @org.jetbrains.annotations.Nullable EntitySnapshot createSnapshot() {
+        return null;
+    }
 
-	}
+    @Override
+    public @NotNull Entity copy() {
+        return null;
+    }
 
-	@Override
-	public void sendSignChange(@Nonnull Location location,
-							   @Nullable String[] strings,
-							   @Nonnull DyeColor dyeColor, boolean bl)
-			throws IllegalArgumentException {
+    @Override
+    public @NotNull Entity copy(@NotNull Location location) {
+        return null;
+    }
 
-	}
+    @Override
+    public PersistentDataContainer getPersistentDataContainer() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void sendBlockUpdate(@NotNull Location location, @NotNull TileState tileState) throws IllegalArgumentException {
+    @Override
+    public void sendSignChange(Location loc, String[] lines, DyeColor dyeColor) throws IllegalArgumentException {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void sendPotionEffectChange(@NotNull LivingEntity livingEntity, @NotNull PotionEffect potionEffect) {
+    @Override
+    public void sendSignChange(@Nonnull Location location,
+                               @Nullable String[] strings,
+                               @Nonnull DyeColor dyeColor, boolean bl)
+        throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public void sendPotionEffectChangeRemove(@NotNull LivingEntity livingEntity, @NotNull PotionEffectType potionEffectType) {
+    @Override
+    public void sendBlockUpdate(@NotNull Location location, @NotNull TileState tileState) throws IllegalArgumentException {
 
-	}
+    }
 
-	@Override
-	public int getClientViewDistance() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public void sendPotionEffectChange(@NotNull LivingEntity livingEntity, @NotNull PotionEffect potionEffect) {
 
-	@Override
-	public @Nonnull Locale locale() {
-		return Locale.ENGLISH;
-	}
+    }
 
-	@Override
-	public int getPing() {
-		return 0;
-	}
+    @Override
+    public void sendPotionEffectChangeRemove(@NotNull LivingEntity livingEntity, @NotNull PotionEffectType potionEffectType) {
 
-	@Override
-	public void openBook(ItemStack book) {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    @Override
+    public int getClientViewDistance() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public float getAttackCooldown() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public @Nonnull Locale locale() {
+        return Locale.ENGLISH;
+    }
 
-	@Override
-	public boolean hasDiscoveredRecipe(NamespacedKey recipe) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public int getPing() {
+        return 0;
+    }
 
-	@Override
-	public Set<NamespacedKey> getDiscoveredRecipes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public void openBook(ItemStack book) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void attack(Entity target) {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    @Override
+    public float getAttackCooldown() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public void swingMainHand() {
-		// TODO Auto-generated method stub
+    @Override
+    public boolean hasDiscoveredRecipe(NamespacedKey recipe) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	}
+    @Override
+    public Set<NamespacedKey> getDiscoveredRecipes() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void swingOffHand() {
-		// TODO Auto-generated method stub
+    @Override
+    public void attack(Entity target) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void playHurtAnimation(float v) {
+    @Override
+    public void swingMainHand() {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public Set<UUID> getCollidableExemptions() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public void swingOffHand() {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void sendExperienceChange(float progress) {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    @Override
+    public void playHurtAnimation(float v) {
 
-	@Override
-	public void sendExperienceChange(float progress, int level) {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    @Override
+    public Set<UUID> getCollidableExemptions() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void closeInventory(Reason arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public void sendExperienceChange(float progress) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public boolean dropItem(boolean arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public void sendExperienceChange(float progress, int level) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public Location getPotentialBedLocation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    }
 
-	@Override
-	public @org.jetbrains.annotations.Nullable FishHook getFishHook() {
-		return null;
-	}
+    @Override
+    public void closeInventory(Reason arg0) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public InventoryView openAnvil(Location arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    }
 
-	@Override
-	public InventoryView openCartographyTable(Location arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean dropItem(boolean arg0) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public InventoryView openGrindstone(Location arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Location getPotentialBedLocation() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public InventoryView openLoom(Location arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public @org.jetbrains.annotations.Nullable FishHook getFishHook() {
+        return null;
+    }
 
-	@Override
-	public void openSign(Sign arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public InventoryView openAnvil(Location arg0, boolean arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	}
+    @Override
+    public InventoryView openCartographyTable(Location arg0, boolean arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void openSign(@NotNull Sign sign, @NotNull Side side) {
+    @Override
+    public InventoryView openGrindstone(Location arg0, boolean arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	}
+    @Override
+    public InventoryView openLoom(Location arg0, boolean arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void showDemoScreen() {
+    @Override
+    public void openSign(Sign arg0) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public boolean isAllowingServerListings() {
-		return false;
-	}
+    @Override
+    public void openSign(@NotNull Sign sign, @NotNull Side side) {
 
-	@Override
-	public InventoryView openSmithingTable(Location arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    }
 
-	@Override
-	public InventoryView openStonecutter(Location arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public void showDemoScreen() {
 
-	@Override
-	public Entity releaseLeftShoulderEntity() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    }
 
-	@Override
-	public Entity releaseRightShoulderEntity() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean isAllowingServerListings() {
+        return false;
+    }
 
-	@Override
-	public void clearActiveItem() {
-		// TODO Auto-generated method stub
+    @Override
+    public InventoryView openSmithingTable(Location arg0, boolean arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	}
+    @Override
+    public InventoryView openStonecutter(Location arg0, boolean arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public int getActiveItemRemainingTime() {
-		return 0;
-	}
+    @Override
+    public Entity releaseLeftShoulderEntity() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void setActiveItemRemainingTime(@Range(from = 0L, to = 2147483647L) int i) {
+    @Override
+    public Entity releaseRightShoulderEntity() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	}
+    @Override
+    public void clearActiveItem() {
+        // TODO Auto-generated method stub
 
-	@Override
-	public boolean hasActiveItem() {
-		return false;
-	}
+    }
 
-	@Override
-	public int getActiveItemUsedTime() {
-		return 0;
-	}
+    @Override
+    public int getActiveItemRemainingTime() {
+        return 0;
+    }
 
-	@Override
-	public @NotNull EquipmentSlot getActiveItemHand() {
-		return null;
-	}
+    @Override
+    public void setActiveItemRemainingTime(@Range(from = 0L, to = 2147483647L) int i) {
 
-	@Override
-	public float getSidewaysMovement() {
-		return 0;
-	}
+    }
 
-	@Override
-	public float getUpwardsMovement() {
-		return 0;
-	}
+    @Override
+    public boolean hasActiveItem() {
+        return false;
+    }
 
-	@Override
-	public float getForwardsMovement() {
-		return 0;
-	}
+    @Override
+    public int getActiveItemUsedTime() {
+        return 0;
+    }
 
-	@Override
-	public void startUsingItem(@NotNull EquipmentSlot equipmentSlot) {
+    @Override
+    public @NotNull EquipmentSlot getActiveItemHand() {
+        return null;
+    }
 
-	}
+    @Override
+    public float getSidewaysMovement() {
+        return 0;
+    }
 
-	@Override
-	public void completeUsingActiveItem() {
+    @Override
+    public float getUpwardsMovement() {
+        return 0;
+    }
 
-	}
+    @Override
+    public float getForwardsMovement() {
+        return 0;
+    }
 
-	@Override
-	public ItemStack getActiveItem() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public void startUsingItem(@NotNull EquipmentSlot equipmentSlot) {
 
-	@Override
-	public int getArrowCooldown() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    }
 
-	@Override
-	public int getArrowsInBody() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public void completeUsingActiveItem() {
 
-	@Override
-	public int getArrowsStuck() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    }
 
-	@Override
-	public EntityCategory getCategory() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public ItemStack getActiveItem() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public int getHandRaisedTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public int getArrowCooldown() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public float getHurtDirection() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public int getArrowsInBody() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public int getItemUseRemainingTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public int getArrowsStuck() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public int getShieldBlockingDelay() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public EntityCategory getCategory() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public Block getTargetBlock(int arg0, FluidMode arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public int getHandRaisedTime() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public BlockFace getTargetBlockFace(int arg0, FluidMode arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public float getHurtDirection() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public @org.jetbrains.annotations.Nullable BlockFace getTargetBlockFace(int i, @NotNull FluidCollisionMode fluidCollisionMode) {
-		return null;
-	}
+    @Override
+    public int getItemUseRemainingTime() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public TargetBlockInfo getTargetBlockInfo(int arg0, FluidMode arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public int getShieldBlockingDelay() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public Entity getTargetEntity(int arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Block getTargetBlock(int arg0, FluidMode arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public TargetEntityInfo getTargetEntityInfo(int arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public BlockFace getTargetBlockFace(int arg0, FluidMode arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public @org.jetbrains.annotations.Nullable RayTraceResult rayTraceEntities(int i, boolean b) {
-		return null;
-	}
+    @Override
+    public @org.jetbrains.annotations.Nullable BlockFace getTargetBlockFace(int i, @NotNull FluidCollisionMode fluidCollisionMode) {
+        return null;
+    }
 
-	@Override
-	public boolean isInvisible() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public TargetBlockInfo getTargetBlockInfo(int arg0, FluidMode arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void setNoPhysics(boolean b) {
+    @Override
+    public Entity getTargetEntity(int arg0, boolean arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	}
+    @Override
+    public TargetEntityInfo getTargetEntityInfo(int arg0, boolean arg1) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public boolean hasNoPhysics() {
-		return false;
-	}
+    @Override
+    public @org.jetbrains.annotations.Nullable RayTraceResult rayTraceEntities(int i, boolean b) {
+        return null;
+    }
 
-	@Override
-	public boolean isJumping() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean isInvisible() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public void playPickupItemAnimation(Item arg0, int arg1) {
-		// TODO Auto-generated method stub
+    @Override
+    public void setNoPhysics(boolean b) {
 
-	}
+    }
 
-	@Override
-	public void setArrowCooldown(int arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public boolean hasNoPhysics() {
+        return false;
+    }
 
-	}
+    @Override
+    public boolean isJumping() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public void setArrowsInBody(int arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public void playPickupItemAnimation(Item arg0, int arg1) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void setArrowsInBody(int i, boolean b) {
+    @Override
+    public void setArrowCooldown(int arg0) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void setNextArrowRemoval(@Range(from = 0L, to = 2147483647L) int i) {
+    @Override
+    public void setArrowsInBody(int arg0) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public int getNextArrowRemoval() {
-		return 0;
-	}
+    @Override
+    public void setArrowsInBody(int i, boolean b) {
 
-	@Override
-	public int getBeeStingerCooldown() {
-		return 0;
-	}
+    }
 
-	@Override
-	public void setBeeStingerCooldown(int i) {
+    @Override
+    public void setNextArrowRemoval(@Range(from = 0L, to = 2147483647L) int i) {
 
-	}
+    }
 
-	@Override
-	public int getBeeStingersInBody() {
-		return 0;
-	}
+    @Override
+    public int getNextArrowRemoval() {
+        return 0;
+    }
 
-	@Override
-	public void setBeeStingersInBody(int i) {
+    @Override
+    public int getBeeStingerCooldown() {
+        return 0;
+    }
 
-	}
+    @Override
+    public void setBeeStingerCooldown(int i) {
 
-	@Override
-	public void setNextBeeStingerRemoval(@Range(from = 0L, to = 2147483647L) int i) {
+    }
 
-	}
+    @Override
+    public int getBeeStingersInBody() {
+        return 0;
+    }
 
-	@Override
-	public int getNextBeeStingerRemoval() {
-		return 0;
-	}
+    @Override
+    public void setBeeStingersInBody(int i) {
 
-	@Override
-	public void setArrowsStuck(int arg0) {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    @Override
+    public void setNextBeeStingerRemoval(@Range(from = 0L, to = 2147483647L) int i) {
 
-	@Override
-	public void setHurtDirection(float arg0) {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    @Override
+    public int getNextBeeStingerRemoval() {
+        return 0;
+    }
 
-	@Override
-	public void knockback(double v, double v1, double v2) {
+    @Override
+    public void setArrowsStuck(int arg0) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void broadcastSlotBreak(@NotNull EquipmentSlot equipmentSlot) {
+    @Override
+    public void setHurtDirection(float arg0) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void broadcastSlotBreak(@NotNull EquipmentSlot equipmentSlot, @NotNull Collection<Player> collection) {
+    @Override
+    public void knockback(double v, double v1, double v2) {
 
-	}
+    }
 
-	@Override
-	public @NotNull ItemStack damageItemStack(@NotNull ItemStack itemStack, int i) {
-		return null;
-	}
+    @Override
+    public void broadcastSlotBreak(@NotNull EquipmentSlot equipmentSlot) {
 
-	@Override
-	public void damageItemStack(@NotNull EquipmentSlot equipmentSlot, int i) {
+    }
 
-	}
+    @Override
+    public void broadcastSlotBreak(@NotNull EquipmentSlot equipmentSlot, @NotNull Collection<Player> collection) {
 
-	@Override
-	public float getBodyYaw() {
-		return 0;
-	}
+    }
 
-	@Override
-	public void setBodyYaw(float v) {
+    @Override
+    public @NotNull ItemStack damageItemStack(@NotNull ItemStack itemStack, int i) {
+        return null;
+    }
 
-	}
+    @Override
+    public void damageItemStack(@NotNull EquipmentSlot equipmentSlot, int i) {
 
-	@Override
-	public void setInvisible(boolean arg0) {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    @Override
+    public float getBodyYaw() {
+        return 0;
+    }
 
-	@Override
-	public void setJumping(boolean arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public void setBodyYaw(float v) {
 
-	}
+    }
 
-	@Override
-	public void setKiller(Player arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public void setInvisible(boolean arg0) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void setShieldBlockingDelay(int arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public void setJumping(boolean arg0) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public boolean fromMobSpawner() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public void setKiller(Player arg0) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public Chunk getChunk() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    }
 
-	@Override
-	public SpawnReason getEntitySpawnReason() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public void setShieldBlockingDelay(int arg0) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public boolean isUnderWater() {
-		return false;
-	}
+    }
 
-	@Override
-	public Location getOrigin() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean fromMobSpawner() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public boolean isInBubbleColumn() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public Chunk getChunk() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public boolean isInLava() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public SpawnReason getEntitySpawnReason() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public boolean isInRain() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean isUnderWater() {
+        return false;
+    }
 
-	@Override
-	public boolean isInWater() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public Location getOrigin() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public boolean isInWaterOrBubbleColumn() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean isInBubbleColumn() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public boolean isInWaterOrRain() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean isInLava() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public boolean isInWaterOrRainOrBubbleColumn() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean isInRain() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public boolean isTicking() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean isInWater() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public void sendMessage(UUID arg0, String arg1) {
-		// TODO Auto-generated method stub
+    @Override
+    public boolean isInWaterOrBubbleColumn() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	}
+    @Override
+    public boolean isInWaterOrRain() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public void sendMessage(UUID arg0, String[] arg1) {
-		// TODO Auto-generated method stub
+    @Override
+    public boolean isInWaterOrRainOrBubbleColumn() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	}
+    @Override
+    public boolean isTicking() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public void sendRawMessage(UUID arg0, String arg1) {
-		// TODO Auto-generated method stub
+    @Override
+    public void sendMessage(UUID arg0, String arg1) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public long getLastLogin() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public void sendMessage(UUID arg0, String[] arg1) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public long getLastSeen() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    }
 
-	@Override
-	public int getProtocolVersion() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public void sendRawMessage(UUID arg0, String arg1) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public InetSocketAddress getVirtualHost() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    }
 
-	@Override
-	public int applyMending(int arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public long getLastLogin() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public Firework boostElytra(ItemStack arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public long getLastSeen() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public void sendOpLevel(byte b) {
+    @Override
+    public int getProtocolVersion() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	}
+    @Override
+    public InetSocketAddress getVirtualHost() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void addAdditionalChatCompletions(@NotNull Collection<String> collection) {
+    @Override
+    public int applyMending(int arg0) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	}
+    @Override
+    public Firework boostElytra(ItemStack arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void removeAdditionalChatCompletions(@NotNull Collection<String> collection) {
+    @Override
+    public void sendOpLevel(byte b) {
 
-	}
+    }
 
-	@Override
-	public @Nonnull Set<Player> getTrackedPlayers() {
-		return null;
-	}
+    @Override
+    public void addAdditionalChatCompletions(@NotNull Collection<String> collection) {
 
-	@Override
-	public boolean spawnAt(Location location,  SpawnReason spawnReason) {
-		return false;
-	}
+    }
 
-	@Override
-	public boolean isInPowderedSnow() {
-		return false;
-	}
+    @Override
+    public void removeAdditionalChatCompletions(@NotNull Collection<String> collection) {
 
-	@Override
-	public double getX() {
-		return 0;
-	}
+    }
 
-	@Override
-	public double getY() {
-		return 0;
-	}
+    @Override
+    public @Nonnull Set<Player> getTrackedPlayers() {
+        return null;
+    }
 
-	@Override
-	public double getZ() {
-		return 0;
-	}
+    @Override
+    public boolean spawnAt(Location location, SpawnReason spawnReason) {
+        return false;
+    }
 
-	@Override
-	public float getPitch() {
-		return 0;
-	}
+    @Override
+    public boolean isInPowderedSnow() {
+        return false;
+    }
 
-	@Override
-	public float getYaw() {
-		return 0;
-	}
+    @Override
+    public double getX() {
+        return 0;
+    }
 
-	@Override
-	public boolean collidesAt(@NotNull Location location) {
-		return false;
-	}
+    @Override
+    public double getY() {
+        return 0;
+    }
 
-	@Override
-	public boolean wouldCollideUsing(@NotNull BoundingBox boundingBox) {
-		return false;
-	}
+    @Override
+    public double getZ() {
+        return 0;
+    }
 
-	@Override
-	public @NotNull EntityScheduler getScheduler() {
-		return null;
-	}
+    @Override
+    public float getPitch() {
+        return 0;
+    }
 
-	@Override
-	public @NotNull String getScoreboardEntryName() {
-		return null;
-	}
+    @Override
+    public float getYaw() {
+        return 0;
+    }
 
-	@Override
-	public boolean getAffectsSpawning() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean collidesAt(@NotNull Location location) {
+        return false;
+    }
 
-	@Override
-	public String getClientBrandName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public boolean wouldCollideUsing(@NotNull BoundingBox boundingBox) {
+        return false;
+    }
 
-	@Override
-	public <T> T getClientOption(ClientOption<T> arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public @NotNull EntityScheduler getScheduler() {
+        return null;
+    }
 
-	@Override
-	public float getCooldownPeriod() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public @NotNull String getScoreboardEntryName() {
+        return null;
+    }
 
-	@Override
-	public float getCooledAttackStrength(float arg0) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public boolean getAffectsSpawning() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public PlayerProfile getPlayerProfile() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public String getClientBrandName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public String getResourcePackHash() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public <T> T getClientOption(ClientOption<T> arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public Status getResourcePackStatus() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public float getCooldownPeriod() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public int getViewDistance() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public float getCooledAttackStrength(float arg0) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	@Override
-	public void giveExp(int arg0, boolean arg1) {
-		// TODO Auto-generated method stub
+    @Override
+    public PlayerProfile getPlayerProfile() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	}
+    @Override
+    public String getResourcePackHash() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public boolean hasResourcePack() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public Status getResourcePackStatus() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void addResourcePack(@NotNull UUID uuid, @NotNull String s, @org.jetbrains.annotations.Nullable byte[] bytes, @org.jetbrains.annotations.Nullable String s1, boolean b) {
+    @Override
+    public int getViewDistance() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
-	}
+    @Override
+    public void giveExp(int arg0, boolean arg1) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void removeResourcePack(@NotNull UUID uuid) {
+    }
 
-	}
+    @Override
+    public boolean hasResourcePack() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public void removeResourcePacks() {
+    @Override
+    public void addResourcePack(@NotNull UUID uuid, @NotNull String s, @org.jetbrains.annotations.Nullable byte[] bytes, @org.jetbrains.annotations.Nullable String s1, boolean b) {
 
-	}
+    }
 
-	@Override
-	public void hideTitle() {
-		// TODO Auto-generated method stub
+    @Override
+    public void removeResourcePack(@NotNull UUID uuid) {
 
-	}
+    }
 
-	@Override
-	public void sendHurtAnimation(float v) {
+    @Override
+    public void removeResourcePacks() {
 
-	}
+    }
 
-	@Override
-	public void addCustomChatCompletions(@NotNull Collection<String> collection) {
+    @Override
+    public void hideTitle() {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void removeCustomChatCompletions(@NotNull Collection<String> collection) {
+    @Override
+    public void sendHurtAnimation(float v) {
 
-	}
+    }
 
-	@Override
-	public void setCustomChatCompletions(@NotNull Collection<String> collection) {
+    @Override
+    public void addCustomChatCompletions(@NotNull Collection<String> collection) {
 
-	}
+    }
 
-	@Override
-	public void resetCooldown() {
-		// TODO Auto-generated method stub
+    @Override
+    public void removeCustomChatCompletions(@NotNull Collection<String> collection) {
 
-	}
+    }
 
-	@Override
-	public void sendActionBar(String arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public void setCustomChatCompletions(@NotNull Collection<String> collection) {
 
-	}
+    }
 
-	@Override
-	public void sendActionBar(BaseComponent... arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public void resetCooldown() {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void sendActionBar(char arg0, String arg1) {
-		// TODO Auto-generated method stub
+    @Override
+    public void sendActionBar(String arg0) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void sendTitle(Title arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public void sendActionBar(BaseComponent... arg0) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void setAffectsSpawning(boolean arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public void sendActionBar(char arg0, String arg1) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void setPlayerListHeaderFooter(BaseComponent[] arg0, BaseComponent[] arg1) {
-		// TODO Auto-generated method stub
+    @Override
+    public void sendTitle(Title arg0) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void setPlayerListHeaderFooter(BaseComponent arg0, BaseComponent arg1) {
-		// TODO Auto-generated method stub
+    @Override
+    public void setAffectsSpawning(boolean arg0) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void setPlayerProfile(PlayerProfile arg0) {
-		// TODO Auto-generated method stub
+    @Override
+    public void setPlayerListHeaderFooter(BaseComponent[] arg0, BaseComponent[] arg1) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void setResourcePack(String arg0, String arg1) {
-		// TODO Auto-generated method stub
+    @Override
+    public void setPlayerListHeaderFooter(BaseComponent arg0, BaseComponent arg1) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void setResourcePack(@Nonnull String string,
-								@Nonnull String string2, boolean bl) {
+    @Override
+    public void setPlayerProfile(PlayerProfile arg0) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void setResourcePack(@Nonnull String string,
-								@Nonnull String string2, boolean bl,
-								@Nullable Component component) {
+    @Override
+    public void setResourcePack(String arg0, String arg1) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void setSubtitle(BaseComponent[] arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void setResourcePack(@Nonnull String string,
+                                @Nonnull String string2, boolean bl) {
 
-	@Override
-	public void setSubtitle(BaseComponent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public void setTitleTimes(int arg0, int arg1, int arg2) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void setResourcePack(@Nonnull String string,
+                                @Nonnull String string2, boolean bl,
+                                @Nullable Component component) {
 
-	@Override
-	public void setViewDistance(int arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public int getSimulationDistance() {
-		return 0;
-	}
+    @Override
+    public void setSubtitle(BaseComponent[] arg0) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void setSimulationDistance(int simulationDistance) {
+    }
 
-	}
+    @Override
+    public void setSubtitle(BaseComponent arg0) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public int getNoTickViewDistance() {
-		return 0;
-	}
+    }
 
-	@Override
-	public void setNoTickViewDistance(int i) {
+    @Override
+    public void setTitleTimes(int arg0, int arg1, int arg2) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public int getSendViewDistance() {
-		return 0;
-	}
+    @Override
+    public void setViewDistance(int arg0) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void setSendViewDistance(int i) {
+    }
 
-	}
+    @Override
+    public int getSimulationDistance() {
+        return 0;
+    }
 
-	@Override
-	public void showTitle(BaseComponent[] arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void setSimulationDistance(int simulationDistance) {
 
-	@Override
-	public void showTitle(BaseComponent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public void showTitle(BaseComponent[] arg0, BaseComponent[] arg1, int arg2, int arg3, int arg4) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public int getNoTickViewDistance() {
+        return 0;
+    }
 
-	@Override
-	public void showTitle(BaseComponent arg0, BaseComponent arg1, int arg2, int arg3, int arg4) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void setNoTickViewDistance(int i) {
 
-	@Override
-	public void updateTitle(Title arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public @NotNull TriState getFrictionState() {
-		return null;
-	}
+    @Override
+    public int getSendViewDistance() {
+        return 0;
+    }
 
-	@Override
-	public void setFrictionState(@NotNull TriState triState) {
+    @Override
+    public void setSendViewDistance(int i) {
 
-	}
+    }
+
+    @Override
+    public void showTitle(BaseComponent[] arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void showTitle(BaseComponent arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void showTitle(BaseComponent[] arg0, BaseComponent[] arg1, int arg2, int arg3, int arg4) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void showTitle(BaseComponent arg0, BaseComponent arg1, int arg2, int arg3, int arg4) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void updateTitle(Title arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public @NotNull TriState getFrictionState() {
+        return null;
+    }
+
+    @Override
+    public void setFrictionState(@NotNull TriState triState) {
+
+    }
 }

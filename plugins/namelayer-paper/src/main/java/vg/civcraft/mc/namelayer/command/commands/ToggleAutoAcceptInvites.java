@@ -13,23 +13,22 @@ import vg.civcraft.mc.namelayer.group.AutoAcceptHandler;
 
 public class ToggleAutoAcceptInvites extends BaseCommandMiddle {
 
-	private AutoAcceptHandler handler = NameLayerPlugin.getAutoAcceptHandler();
+    private AutoAcceptHandler handler = NameLayerPlugin.getAutoAcceptHandler();
 
-	@CommandAlias("nltaai|autoaccept")
-	@Description("Toggle the acceptance of invites.")
-	public void execute(CommandSender sender) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage("how would this even work");
-			return;
-		}
-		Player p = (Player) sender;
-		UUID uuid = NameAPI.getUUID(p.getName());
-		if (handler.getAutoAccept(uuid)){
-			p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group requests.");
-		}
-		else {
-			p.sendMessage(ChatColor.GREEN + "You will automatically accept group requests.");
-		}
-		handler.toggleAutoAccept(uuid, true);
-	}
+    @CommandAlias("nltaai|autoaccept")
+    @Description("Toggle the acceptance of invites.")
+    public void execute(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("how would this even work");
+            return;
+        }
+        Player p = (Player) sender;
+        UUID uuid = NameAPI.getUUID(p.getName());
+        if (handler.getAutoAccept(uuid)) {
+            p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group requests.");
+        } else {
+            p.sendMessage(ChatColor.GREEN + "You will automatically accept group requests.");
+        }
+        handler.toggleAutoAccept(uuid, true);
+    }
 }

@@ -8,25 +8,25 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class BlockBreakAction extends LoggableBlockAction {
-	
-	public static final String ID = "BLOCK_BREAK";
 
-	public BlockBreakAction(long time, Snitch snitch, UUID player, Location location, String materialString) {
-		this(time, snitch, player, location, JAUtility.parseMaterial(materialString));
-	}
-	
-	public BlockBreakAction(long time, Snitch snitch, UUID player, Location location, Material material) {
-		super(time, snitch, player, location, material);
-	}
+    public static final String ID = "BLOCK_BREAK";
 
-	@Override
-	public String getIdentifier() {
-		return ID;
-	}
+    public BlockBreakAction(long time, Snitch snitch, UUID player, Location location, String materialString) {
+        this(time, snitch, player, location, JAUtility.parseMaterial(materialString));
+    }
 
-	@Override
-	public String getChatRepresentationIdentifier() {
-		return "Break";
-	}
+    public BlockBreakAction(long time, Snitch snitch, UUID player, Location location, Material material) {
+        super(time, snitch, player, location, material);
+    }
+
+    @Override
+    public String getIdentifier() {
+        return ID;
+    }
+
+    @Override
+    public String getChatRepresentationIdentifier() {
+        return "Break";
+    }
 
 }

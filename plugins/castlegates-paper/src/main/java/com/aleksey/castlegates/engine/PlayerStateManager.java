@@ -1,6 +1,5 @@
 /**
  * @author Aleksey Terzi
- *
  */
 
 package com.aleksey.castlegates.engine;
@@ -18,100 +17,101 @@ import com.aleksey.castlegates.types.CommandMode;
 import com.aleksey.castlegates.types.TimerOperation;
 
 public class PlayerStateManager {
-	public static class PlayerState {
-		public CommandMode mode;
-		public Integer timer;
-		public TimerOperation timerOperation;
-		public TimerMode timerMode;
-		public long lastInteracted;
-	}
 
-	private final Map<Player, PlayerState> _states = new HashMap<>();
-	private final Map<Player, Integer> _tasks = new HashMap<>();
+    public static class PlayerState {
 
-	public void clearPlayerMode(Player player) {
-		Integer taskId = _tasks.get(player);
+        public CommandMode mode;
+        public Integer timer;
+        public TimerOperation timerOperation;
+        public TimerMode timerMode;
+        public long lastInteracted;
+    }
 
-		if(taskId != null) {
-			Bukkit.getScheduler().cancelTask(taskId);
-		}
+    private final Map<Player, PlayerState> _states = new HashMap<>();
+    private final Map<Player, Integer> _tasks = new HashMap<>();
 
-		PlayerState state = _states.get(player);
+    public void clearPlayerMode(Player player) {
+        Integer taskId = _tasks.get(player);
 
-		if(state == null) return;
+        if (taskId != null) {
+            Bukkit.getScheduler().cancelTask(taskId);
+        }
 
-		_states.remove(player);
+        PlayerState state = _states.get(player);
 
-		if(player.isOnline()) {
-			player.sendMessage(ChatColor.YELLOW + "Castle Gates " + state.mode.name() + " mode off");
-		}
-	}
+        if (state == null) return;
 
-	public PlayerState getPlayerState(Player player) {
-		return _states.get(player);
-	}
+        _states.remove(player);
 
-	public void setPlayerMode(Player player, CommandMode mode, Integer timer, TimerOperation timerOperation, TimerMode timerMode) {
-		if(mode == CommandMode.OFF) {
-			clearPlayerMode(player);
-			return;
-		}
+        if (player.isOnline()) {
+            player.sendMessage(ChatColor.YELLOW + "Castle Gates " + state.mode.name() + " mode off");
+        }
+    }
 
-		PlayerState state = _states.get(player);
+    public PlayerState getPlayerState(Player player) {
+        return _states.get(player);
+    }
 
-		if(state == null) {
-			if(mode == CommandMode.NORMAL) {
-				player.sendMessage(ChatColor.GREEN + "Castle Gates " + mode.name() + " mode on");
-				return;
-			}
+    public void setPlayerMode(Player player, CommandMode mode, Integer timer, TimerOperation timerOperation, TimerMode timerMode) {
+        if (mode == CommandMode.OFF) {
+            clearPlayerMode(player);
+            return;
+        }
 
-			_states.put(player, state = new PlayerState());
-		}
-		else if(state.mode == mode) {
-			clearPlayerMode(player);
-			return;
-		}
+        PlayerState state = _states.get(player);
 
-		state.mode = mode;
-		state.timer = timer;
-		state.timerOperation = timerOperation;
-		state.timerMode = timerMode;
-		state.lastInteracted = System.currentTimeMillis();
+        if (state == null) {
+            if (mode == CommandMode.NORMAL) {
+                player.sendMessage(ChatColor.GREEN + "Castle Gates " + mode.name() + " mode on");
+                return;
+            }
 
-		addTask(player);
+            _states.put(player, state = new PlayerState());
+        } else if (state.mode == mode) {
+            clearPlayerMode(player);
+            return;
+        }
 
-		player.sendMessage(ChatColor.GREEN + "Castle Gates " + mode.name() + " mode on");
-	}
+        state.mode = mode;
+        state.timer = timer;
+        state.timerOperation = timerOperation;
+        state.timerMode = timerMode;
+        state.lastInteracted = System.currentTimeMillis();
 
-	public void interact(Player player) {
-		PlayerState state = _states.get(player);
+        addTask(player);
 
-		if(state != null) {
-			state.lastInteracted = System.currentTimeMillis();
-		}
-	}
+        player.sendMessage(ChatColor.GREEN + "Castle Gates " + mode.name() + " mode on");
+    }
 
-	private void addTask(final Player player) {
-		if(_tasks.containsKey(player)) return;
+    public void interact(Player player) {
+        PlayerState state = _states.get(player);
 
-		final PlayerStateManager stateManager = this;
+        if (state != null) {
+            state.lastInteracted = System.currentTimeMillis();
+        }
+    }
 
-		int taskId = Bukkit.getScheduler().runTaskTimer(
-				CastleGates.getInstance(),
-				() -> {
-					PlayerState state = stateManager._states.get(player);
-					if(state != null) {
-						long offTime = state.lastInteracted + 1000L * CastleGates.getConfigManager().getPlayerStateResetInSeconds();
+    private void addTask(final Player player) {
+        if (_tasks.containsKey(player)) return;
 
-						if(offTime < System.currentTimeMillis()) {
-							clearPlayerMode(player);
-						}
-					}
-				},
-		        20L * 30,
-		        20L * 30
-			).getTaskId();
+        final PlayerStateManager stateManager = this;
 
-		_tasks.put(player, taskId);
-	}
+        int taskId = Bukkit.getScheduler().runTaskTimer(
+            CastleGates.getInstance(),
+            () -> {
+                PlayerState state = stateManager._states.get(player);
+                if (state != null) {
+                    long offTime = state.lastInteracted + 1000L * CastleGates.getConfigManager().getPlayerStateResetInSeconds();
+
+                    if (offTime < System.currentTimeMillis()) {
+                        clearPlayerMode(player);
+                    }
+                }
+            },
+            20L * 30,
+            20L * 30
+        ).getTaskId();
+
+        _tasks.put(player, taskId);
+    }
 }

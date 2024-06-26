@@ -11,32 +11,32 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public abstract class ConfigurableSnitchAppender<C extends AppenderConfig> extends AbstractSnitchAppender {
 
-	private static Map<String, AppenderConfig> configs = new HashMap<>();
+    private static Map<String, AppenderConfig> configs = new HashMap<>();
 
-	private static AppenderConfig retrieveConfig(Class<? extends AppenderConfig> clazz, ConfigurationSection config) {
-		return configs.computeIfAbsent(config.getCurrentPath(), s -> {
-			try {
-				return clazz.getConstructor(ConfigurationSection.class).newInstance(config);
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				JukeAlert.getInstance().getLogger().log(Level.SEVERE, "Failed to instanciate config", e);
-				return null;
-			}
-		});
-	}
+    private static AppenderConfig retrieveConfig(Class<? extends AppenderConfig> clazz, ConfigurationSection config) {
+        return configs.computeIfAbsent(config.getCurrentPath(), s -> {
+            try {
+                return clazz.getConstructor(ConfigurationSection.class).newInstance(config);
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                     | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+                JukeAlert.getInstance().getLogger().log(Level.SEVERE, "Failed to instanciate config", e);
+                return null;
+            }
+        });
+    }
 
-	protected final C config;
+    protected final C config;
 
-	@SuppressWarnings("unchecked")
-	public ConfigurableSnitchAppender(Snitch snitch, ConfigurationSection configSection) {
-		super(snitch);
-		this.config = (C) retrieveConfig(getConfigClass(), configSection);
-	}
-	
-	public C getConfig() {
-		return config;
-	}
+    @SuppressWarnings("unchecked")
+    public ConfigurableSnitchAppender(Snitch snitch, ConfigurationSection configSection) {
+        super(snitch);
+        this.config = (C) retrieveConfig(getConfigClass(), configSection);
+    }
 
-	public abstract Class<C> getConfigClass();
+    public C getConfig() {
+        return config;
+    }
+
+    public abstract Class<C> getConfigClass();
 
 }

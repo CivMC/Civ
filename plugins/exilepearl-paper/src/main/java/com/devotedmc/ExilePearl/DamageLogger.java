@@ -9,42 +9,44 @@ import org.bukkit.event.Listener;
 
 public interface DamageLogger extends Configurable, Listener, ExilePearlRunnable {
 
-	/**
-	 * Records damage that a player deals to another player
-	 * @param playerId The player ID being harmed
-	 * @param damager The damage dealer
-	 * @param amount The damage amount
-	 */
-	void recordDamage(UUID playerId, Player damager, double amount); 
+    /**
+     * Records damage that a player deals to another player
+     *
+     * @param playerId The player ID being harmed
+     * @param damager  The damage dealer
+     * @param amount   The damage amount
+     */
+    void recordDamage(UUID playerId, Player damager, double amount);
 
-	/**
-	 * Records damage that a player deals to another player
-	 * @param player The player being harmed
-	 * @param damager The damage dealer
-	 * @param amount The damage amount
-	 */
-	void recordDamage(Player player, Player damager, double amount); 
+    /**
+     * Records damage that a player deals to another player
+     *
+     * @param player  The player being harmed
+     * @param damager The damage dealer
+     * @param amount  The damage amount
+     */
+    void recordDamage(Player player, Player damager, double amount);
 
-	/**
-	 * Gets a sorted list of damaging players.
-	 * 
-	 * The player at the front of the collection is the one that should be 
-	 * awarded the pearl according to the configured algorithm.
-	 *  
-	 * @param playerId The player ID being harmed
-	 * @return The damaging players
-	 */
-	List<Player> getSortedDamagers(UUID playerId);
+    /**
+     * Gets a sorted list of damaging players.
+     * <p>
+     * The player at the front of the collection is the one that should be
+     * awarded the pearl according to the configured algorithm.
+     *
+     * @param playerId The player ID being harmed
+     * @return The damaging players
+     */
+    List<Player> getSortedDamagers(UUID playerId);
 
-	/**
-	 * Gets a sorted list of damaging players.
-	 * 
-	 * The player at the front of the collection is the one that should be 
-	 * awarded the pearl according to the configured algorithm.
-	 *  
-	 * @param player The player being harmed
-	 * @return The damaging players
-	 */
-	List<Player> getSortedDamagers(Player player);
+    /**
+     * Gets a sorted list of damaging players.
+     * <p>
+     * The player at the front of the collection is the one that should be
+     * awarded the pearl according to the configured algorithm.
+     *
+     * @param player The player being harmed
+     * @return The damaging players
+     */
+    List<Player> getSortedDamagers(Player player);
 
 }

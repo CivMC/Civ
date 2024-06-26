@@ -8,6 +8,7 @@ import net.minelink.ctplus.util.EmptyChannel;
 import java.lang.reflect.Field;
 
 public class NpcNetworkManager extends Connection {
+
     public NpcNetworkManager() {
         super(PacketFlow.SERVERBOUND);
         channel = new EmptyChannel(null);

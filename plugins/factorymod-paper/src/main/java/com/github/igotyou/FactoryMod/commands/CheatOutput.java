@@ -20,32 +20,32 @@ import org.bukkit.inventory.ItemStack;
 
 public class CheatOutput extends BaseCommand {
 
-	@CommandAlias("fmco")
-	@CommandPermission("fm.op")
-	@Description("Gives you the output of the selected recipe in the factory you are looking at")
-	public void execute(Player sender) {
-		Set<Material> transparent = null;
-		List<Block> view = ((Player) sender).getLineOfSight(transparent, 10);
-		FactoryModManager manager = FactoryMod.getInstance().getManager();
-		Factory exis = manager.getFactoryAt(view.get(view.size() - 1));
-		if (exis != null && exis instanceof FurnCraftChestFactory) {
-			FurnCraftChestFactory fcc = (FurnCraftChestFactory) exis;
-			if (fcc.getCurrentRecipe() == null) {
-				sender.sendMessage(ChatColor.RED + "This factory has no recipe selected");
-				return;
-			}
-			IRecipe rec = fcc.getCurrentRecipe();
-			if (!(rec instanceof ProductionRecipe)) {
-				sender.sendMessage(ChatColor.RED + "The selected recipe is not a production recipe");
-				return;
-			}
-			ProductionRecipe prod = (ProductionRecipe) rec;
-			for (ItemStack is : prod.getOutput().getItemStackRepresentation()) {
-				sender.getInventory().addItem(is);
-			}
-			sender.sendMessage(ChatColor.GREEN + "Gave you all items for recipe " + ChatColor.GREEN + prod.getName());
-		} else {
-			sender.sendMessage(ChatColor.RED + "You are not looking at a valid factory");
-		}
-	}
+    @CommandAlias("fmco")
+    @CommandPermission("fm.op")
+    @Description("Gives you the output of the selected recipe in the factory you are looking at")
+    public void execute(Player sender) {
+        Set<Material> transparent = null;
+        List<Block> view = ((Player) sender).getLineOfSight(transparent, 10);
+        FactoryModManager manager = FactoryMod.getInstance().getManager();
+        Factory exis = manager.getFactoryAt(view.get(view.size() - 1));
+        if (exis != null && exis instanceof FurnCraftChestFactory) {
+            FurnCraftChestFactory fcc = (FurnCraftChestFactory) exis;
+            if (fcc.getCurrentRecipe() == null) {
+                sender.sendMessage(ChatColor.RED + "This factory has no recipe selected");
+                return;
+            }
+            IRecipe rec = fcc.getCurrentRecipe();
+            if (!(rec instanceof ProductionRecipe)) {
+                sender.sendMessage(ChatColor.RED + "The selected recipe is not a production recipe");
+                return;
+            }
+            ProductionRecipe prod = (ProductionRecipe) rec;
+            for (ItemStack is : prod.getOutput().getItemStackRepresentation()) {
+                sender.getInventory().addItem(is);
+            }
+            sender.sendMessage(ChatColor.GREEN + "Gave you all items for recipe " + ChatColor.GREEN + prod.getName());
+        } else {
+            sender.sendMessage(ChatColor.RED + "You are not looking at a valid factory");
+        }
+    }
 }
