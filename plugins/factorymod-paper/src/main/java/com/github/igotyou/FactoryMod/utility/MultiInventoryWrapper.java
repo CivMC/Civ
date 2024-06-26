@@ -41,10 +41,7 @@ public class MultiInventoryWrapper implements Inventory {
 		for (int i = 0; i < wrappedArr.length; i++) {
 			Inventory inv = wrappedArr[i];
 			lslotOffsets[i] = lsize;
-			lsize += inv.getSize();
-			if (inv.getMaxStackSize() != 64) {
-				throw new IllegalArgumentException("Inventory max stack size must be 64");
-			}
+			lsize += inv.getSize(); // TODO: why was inventory max stack size forced to 64? Probably unnecessary but worth looking into
 		}
 		this.size = lsize;
 		this.slotOffsets = lslotOffsets;

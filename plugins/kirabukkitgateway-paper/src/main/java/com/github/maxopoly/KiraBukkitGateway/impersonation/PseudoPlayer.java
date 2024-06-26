@@ -33,9 +33,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R3.scoreboard.CraftScoreboard;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -552,7 +552,7 @@ public class PseudoPlayer extends CraftPlayer {
 	public void setGlowing(boolean arg0) {
 		throw new InvalidCommandAttemptException();
 	}
-	
+
 	public void setGravity(boolean arg0) {
 		throw new InvalidCommandAttemptException();
 	}
@@ -721,7 +721,7 @@ public class PseudoPlayer extends CraftPlayer {
 		throw new InvalidCommandAttemptException();
 	}
 
-	
+
 	public double getHealth() {
 		throw new InvalidCommandAttemptException();
 	}
@@ -986,7 +986,7 @@ public class PseudoPlayer extends CraftPlayer {
 		throw new InvalidCommandAttemptException();
 	}
 
-	
+
 	public int getStatistic(Statistic arg0, EntityType arg1) throws IllegalArgumentException {
 		throw new InvalidCommandAttemptException();
 	}
@@ -1378,43 +1378,43 @@ public class PseudoPlayer extends CraftPlayer {
 
 	
 	public <T> void spawnParticle(Particle arg0, Location arg1, int arg2, double arg3, double arg4, double arg5,
-			T arg6) {
+								  T arg6) {
 		throw new InvalidCommandAttemptException();
 	}
 
 	
 	public void spawnParticle(Particle arg0, Location arg1, int arg2, double arg3, double arg4, double arg5,
-			double arg6) {
+							  double arg6) {
 		throw new InvalidCommandAttemptException();
 	}
 
 	
 	public void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4, double arg5, double arg6,
-			double arg7) {
+							  double arg7) {
 		throw new InvalidCommandAttemptException();
 	}
 
 	
 	public <T> void spawnParticle(Particle arg0, Location arg1, int arg2, double arg3, double arg4, double arg5,
-			double arg6, T arg7) {
+								  double arg6, T arg7) {
 		throw new InvalidCommandAttemptException();
 	}
 
 	
 	public <T> void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4, double arg5,
-			double arg6, double arg7, T arg8) {
+								  double arg6, double arg7, T arg8) {
 		throw new InvalidCommandAttemptException();
 	}
 
 	
 	public void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4, double arg5, double arg6,
-			double arg7, double arg8) {
+							  double arg7, double arg8) {
 		throw new InvalidCommandAttemptException();
 	}
 
 	
 	public <T> void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4, double arg5,
-			double arg6, double arg7, double arg8, T arg9) {
+								  double arg6, double arg7, double arg8, T arg9) {
 		throw new InvalidCommandAttemptException();
 	}
 

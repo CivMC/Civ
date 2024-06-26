@@ -257,7 +257,7 @@ final class CoreExilePearl implements ExilePearl {
 		checkPearlValid();
 
     	if (health < 0) {
-    		health = 0;
+			health = 0;
     	}
     	
     	if (health > pearlApi.getPearlConfig().getPearlHealthMaxValue()) {
@@ -361,7 +361,7 @@ final class CoreExilePearl implements ExilePearl {
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(this.getPlayerName());
 		im.setLore(lore);
-		im.addEnchant(Enchantment.DURABILITY, 1, true);
+		im.addEnchant(Enchantment.UNBREAKING, 1, true);
 		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
 		PersistentDataContainer container = im.getPersistentDataContainer();

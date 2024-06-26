@@ -13,8 +13,8 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R3.util.RandomSourceWrapper;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.util.RandomSourceWrapper;
 
 /**
  * We need to differentiate fungus from other types of saplings thanks

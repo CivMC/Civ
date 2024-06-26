@@ -7,10 +7,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.WrittenBookContent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -74,11 +75,11 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 
 	protected ItemStack createBook(ItemStack printingPlateStack, int amount) {
 		net.minecraft.world.item.ItemStack book = CraftItemStack.asNMSCopy(printingPlateStack);
-		CompoundTag tag = book.getTag().getCompound("Book");
+		WrittenBookContent content = book.get(DataComponents.WRITTEN_BOOK_CONTENT);
 
 		ItemStack bookItem = new ItemStack(Material.WRITTEN_BOOK, amount);
 		net.minecraft.world.item.ItemStack newBook = CraftItemStack.asNMSCopy(bookItem);
-		newBook.setTag(tag);
+		newBook.set(DataComponents.WRITTEN_BOOK_CONTENT, content);
 
 		return CraftItemStack.asBukkitCopy(newBook);
 	}
@@ -147,7 +148,7 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 			ItemMeta itemMeta = is.getItemMeta();
 
 			if (itemMeta.getDisplayName().equals(PrintingPlateRecipe.itemName)
-					&& itemMeta.hasEnchant(Enchantment.DURABILITY)
+					&& itemMeta.hasEnchant(Enchantment.UNBREAKING)
 			) {
 				return is;
 			}

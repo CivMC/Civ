@@ -11,8 +11,6 @@ import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
@@ -186,17 +184,6 @@ public final class MetaUtils {
 			lore.addAll(lines);
 		}
 		meta.lore(lore);
-	}
-
-	/**
-	 * Makes an item glow by adding an enchantment and the flag for hiding enchantments, so it has the enchantment glow
-	 * without an enchantment being visible. Note that this does actually apply an enchantment to an item.
-	 *
-	 * @param meta Item meta to apply glow to.
-	 */
-	public static void addGlow(@Nonnull final ItemMeta meta) {
-		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		meta.addEnchant(Enchantment.DURABILITY, 1, true); // true = ignoreLevelRestriction
 	}
 
 	// ------------------------------------------------------------

@@ -208,7 +208,7 @@ public class EntityListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void spawn(CreatureSpawnEvent cse) {
 		EntityType type = cse.getEntityType();
-		if (type != EntityType.IRON_GOLEM && type != EntityType.SNOWMAN && type != EntityType.WITHER
+		if (type != EntityType.IRON_GOLEM && type != EntityType.SNOW_GOLEM && type != EntityType.WITHER
 				&& type != EntityType.SILVERFISH) {
 			return;
 		}

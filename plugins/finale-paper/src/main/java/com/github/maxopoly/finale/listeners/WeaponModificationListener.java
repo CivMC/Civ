@@ -20,8 +20,6 @@ public class WeaponModificationListener implements Listener {
 			return;
 		}
 
-		is = ItemUtil.newModifiers(is); // there was a bug where modifiers weren't changing for items with already changed modifiers.
-
 		ArmourModifier armourMod = Finale.getPlugin().getManager().getArmourModifier();
 
 		double toughness = armourMod.getToughness(is.getType());
