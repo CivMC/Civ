@@ -444,6 +444,14 @@ hacks:
     #a list of materials players shouldn't be allowed to place at all
     noplace:
      #- GRINDSTONE Leaving this here for reference
+  HorseArmour:
+    enabled: true
+    # Register custom crafting recipes for horse armour?
+    registerRecipes: true
+    # Custom durability implementation
+    customDurability: true
+    # Custom unbreaking implementation
+    customUnbreaking: true
   HorseStats:
     enabled: true
     wand: COMPASS

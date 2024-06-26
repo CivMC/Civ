@@ -396,6 +396,14 @@ hacks:
     rainReduction:
       enabled: false
       rainOccurrenceChance: .5
+  HorseArmour:
+    enabled: true
+    # Register custom crafting recipes for horse armour?
+    registerRecipes: true
+    # Custom durability implementation
+    customDurability: true
+    # Custom unbreaking implementation
+    customUnbreaking: true
   HorseStats:
     enabled: false
     wand: COMPASS
