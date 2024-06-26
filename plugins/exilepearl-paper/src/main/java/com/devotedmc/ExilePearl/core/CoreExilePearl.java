@@ -257,7 +257,7 @@ final class CoreExilePearl implements ExilePearl {
 		checkPearlValid();
 
     	if (health < 0) {
-		    health = 0;
+			health = 0;
     	}
     	
     	if (health > pearlApi.getPearlConfig().getPearlHealthMaxValue()) {
