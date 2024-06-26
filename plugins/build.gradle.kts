@@ -1,4 +1,6 @@
 import io.papermc.paperweight.tasks.RemapJar
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import xyz.jpenilla.runpaper.task.RunServer
 
 subprojects {
@@ -20,6 +22,17 @@ subprojects {
 
     tasks.withType<ProcessResources> {
         filteringCharset = "UTF-8"
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+        testLogging {
+            events(*TestLogEvent.values())
+            exceptionFormat = TestExceptionFormat.FULL
+            showCauses = true
+            showExceptions = true
+            showStackTraces = true
+        }
     }
 
     configure<PublishingExtension> {
