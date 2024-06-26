@@ -4,9 +4,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.pseudo.PseudoServer;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
@@ -14,11 +12,6 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 public class ItemMetaTests {
 
 	private static final ItemStack TEMPLATE_ITEM = new ItemStack(Material.STICK);
-
-	@BeforeAll
-	public static void setupBukkit() {
-		PseudoServer.setup();
-	}
 
 	// TODO: Who knows.
 //	/**

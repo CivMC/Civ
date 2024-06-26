@@ -10,20 +10,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.pseudo.PseudoServer;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 public class NBTTests {
-
-	@BeforeAll
-	public static void setupBukkit() {
-		PseudoServer.setup();
-	}
 
 	@Test
 	public void testStringSerialization() {
