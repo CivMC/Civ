@@ -32,107 +32,107 @@ import org.bukkit.Material;
 
 public class LoggedActionFactory {
 
-	private final Map<String, LoggedActionProvider> providers;
-	private final Object2IntMap<String> identifierToInternal;
+    private final Map<String, LoggedActionProvider> providers;
+    private final Object2IntMap<String> identifierToInternal;
 
-	public LoggedActionFactory() {
-		this.providers = new Object2ObjectAVLTreeMap<>();
-		this.identifierToInternal = new Object2IntAVLTreeMap<>();
-		this.identifierToInternal.defaultReturnValue(-1);
-		registerInternalProviders();
-	}
+    public LoggedActionFactory() {
+        this.providers = new Object2ObjectAVLTreeMap<>();
+        this.identifierToInternal = new Object2IntAVLTreeMap<>();
+        this.identifierToInternal.defaultReturnValue(-1);
+        registerInternalProviders();
+    }
 
-	public void registerProvider(@Nonnull final String identifier,
-								 @Nonnull final LoggedActionProvider provider) {
-		final int internal = JukeAlert.getInstance().getDAO().getOrCreateActionID(Objects.requireNonNull(identifier));
-		if (internal != -1) {
-			this.providers.put(identifier, Objects.requireNonNull(provider));
-			this.identifierToInternal.put(identifier, internal);
-		}
-	}
+    public void registerProvider(@Nonnull final String identifier,
+                                 @Nonnull final LoggedActionProvider provider) {
+        final int internal = JukeAlert.getInstance().getDAO().getOrCreateActionID(Objects.requireNonNull(identifier));
+        if (internal != -1) {
+            this.providers.put(identifier, Objects.requireNonNull(provider));
+            this.identifierToInternal.put(identifier, internal);
+        }
+    }
 
-	public LoggableAction produce(@Nonnull final Snitch snitch,
-								  @Nonnull final String identifier,
-								  final UUID player,
-								  final Location location,
-								  final long time,
-								  final String victim) {
-		final LoggedActionProvider provider = this.providers.get(Objects.requireNonNull(identifier));
-		return provider == null ? null : provider.get(Objects.requireNonNull(snitch), player, location, time, victim);
-	}
+    public LoggableAction produce(@Nonnull final Snitch snitch,
+                                  @Nonnull final String identifier,
+                                  final UUID player,
+                                  final Location location,
+                                  final long time,
+                                  final String victim) {
+        final LoggedActionProvider provider = this.providers.get(Objects.requireNonNull(identifier));
+        return provider == null ? null : provider.get(Objects.requireNonNull(snitch), player, location, time, victim);
+    }
 
-	public int getInternalID(@Nonnull final String name) {
-		return this.identifierToInternal.getInt(Objects.requireNonNull(name));
-	}
+    public int getInternalID(@Nonnull final String name) {
+        return this.identifierToInternal.getInt(Objects.requireNonNull(name));
+    }
 
-	private void registerInternalProviders() {
-		registerProvider(BlockBreakAction.ID,
-				(snitch, player, loc, time, victim) -> new BlockBreakAction(
-						time, snitch, player, loc, victim));
+    private void registerInternalProviders() {
+        registerProvider(BlockBreakAction.ID,
+            (snitch, player, loc, time, victim) -> new BlockBreakAction(
+                time, snitch, player, loc, victim));
 
-		registerProvider(BlockPlaceAction.ID,
-				(snitch, player, loc, time, victim) -> new BlockPlaceAction(
-						time, snitch, player, loc, victim));
+        registerProvider(BlockPlaceAction.ID,
+            (snitch, player, loc, time, victim) -> new BlockPlaceAction(
+                time, snitch, player, loc, victim));
 
-		registerProvider(DestroyVehicleAction.ID,
-				(snitch, player, loc, time, victim) -> new DestroyVehicleAction(
-						time, snitch, player, loc, victim));
+        registerProvider(DestroyVehicleAction.ID,
+            (snitch, player, loc, time, victim) -> new DestroyVehicleAction(
+                time, snitch, player, loc, victim));
 
-		registerProvider(DismountEntityAction.ID,
-				(snitch, player, loc, time, victim) -> new DismountEntityAction(
-						time, snitch, player, loc, victim));
+        registerProvider(DismountEntityAction.ID,
+            (snitch, player, loc, time, victim) -> new DismountEntityAction(
+                time, snitch, player, loc, victim));
 
-		registerProvider(EmptyBucketAction.ID,
-				(snitch, player, loc, time, victim) -> new EmptyBucketAction(
-						time, snitch, player, loc, Material.valueOf(victim)));
+        registerProvider(EmptyBucketAction.ID,
+            (snitch, player, loc, time, victim) -> new EmptyBucketAction(
+                time, snitch, player, loc, Material.valueOf(victim)));
 
-		registerProvider(EnterFieldAction.ID,
-				(snitch, player, loc, time, victim) -> new EnterFieldAction(
-						time, snitch, player));
+        registerProvider(EnterFieldAction.ID,
+            (snitch, player, loc, time, victim) -> new EnterFieldAction(
+                time, snitch, player));
 
-		registerProvider(EnterVehicleAction.ID,
-				(snitch, player, loc, time, victim) -> new EnterVehicleAction(
-						time, snitch, player, loc, victim));
+        registerProvider(EnterVehicleAction.ID,
+            (snitch, player, loc, time, victim) -> new EnterVehicleAction(
+                time, snitch, player, loc, victim));
 
-		registerProvider(ExitVehicleAction.ID,
-				(snitch, player, loc, time, victim) -> new ExitVehicleAction(
-						time, snitch, player, loc, victim));
+        registerProvider(ExitVehicleAction.ID,
+            (snitch, player, loc, time, victim) -> new ExitVehicleAction(
+                time, snitch, player, loc, victim));
 
-		registerProvider(FillBucketAction.ID,
-				(snitch, player, loc, time, victim) -> new FillBucketAction(
-						time, snitch, player, loc, Material.valueOf(victim)));
+        registerProvider(FillBucketAction.ID,
+            (snitch, player, loc, time, victim) -> new FillBucketAction(
+                time, snitch, player, loc, Material.valueOf(victim)));
 
-		registerProvider(IgniteBlockAction.ID,
-				(snitch, player, loc, time, victim) -> new IgniteBlockAction(
-						time, snitch, player, loc));
+        registerProvider(IgniteBlockAction.ID,
+            (snitch, player, loc, time, victim) -> new IgniteBlockAction(
+                time, snitch, player, loc));
 
-		registerProvider(KillLivingEntityAction.ID,
-				(snitch, player, loc, time, victim) -> new KillLivingEntityAction(
-						time, snitch, player, loc, victim));
+        registerProvider(KillLivingEntityAction.ID,
+            (snitch, player, loc, time, victim) -> new KillLivingEntityAction(
+                time, snitch, player, loc, victim));
 
-		registerProvider(KillPlayerAction.ID,
-				(snitch, player, loc, time, victim) -> new KillPlayerAction(
-						time, snitch, player, loc, UUID.fromString(victim)));
+        registerProvider(KillPlayerAction.ID,
+            (snitch, player, loc, time, victim) -> new KillPlayerAction(
+                time, snitch, player, loc, UUID.fromString(victim)));
 
-		registerProvider(LeaveFieldAction.ID,
-				(snitch, player, loc, time, victim) -> new LeaveFieldAction(
-						time, snitch, player));
+        registerProvider(LeaveFieldAction.ID,
+            (snitch, player, loc, time, victim) -> new LeaveFieldAction(
+                time, snitch, player));
 
-		registerProvider(LoginAction.ID,
-				(snitch, player, loc, time, victim) -> new LoginAction(
-						time, snitch, player));
+        registerProvider(LoginAction.ID,
+            (snitch, player, loc, time, victim) -> new LoginAction(
+                time, snitch, player));
 
-		registerProvider(LogoutAction.ID,
-				(snitch, player, loc, time, victim) -> new LogoutAction(
-						time, snitch, player));
+        registerProvider(LogoutAction.ID,
+            (snitch, player, loc, time, victim) -> new LogoutAction(
+                time, snitch, player));
 
-		registerProvider(MountEntityAction.ID,
-				(snitch, player, loc, time, victim) -> new MountEntityAction(
-						time, snitch, player, loc, victim));
+        registerProvider(MountEntityAction.ID,
+            (snitch, player, loc, time, victim) -> new MountEntityAction(
+                time, snitch, player, loc, victim));
 
-		registerProvider(OpenContainerAction.ID,
-				(snitch, player, loc, time, victim) -> new OpenContainerAction(
-						time, snitch, player, loc,  Material.valueOf(victim)));
-	}
+        registerProvider(OpenContainerAction.ID,
+            (snitch, player, loc, time, victim) -> new OpenContainerAction(
+                time, snitch, player, loc, Material.valueOf(victim)));
+    }
 
 }

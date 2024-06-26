@@ -14,23 +14,23 @@ import vg.civcraft.mc.citadel.model.WorldBorderBuffers;
 
 public class WorldBorderListener implements Listener {
 
-	private Map<UUID, WorldBorderBuffers> buffers;
+    private Map<UUID, WorldBorderBuffers> buffers;
 
-	public WorldBorderListener() {
-		this.buffers = Citadel.getInstance().getConfigManager().getWorldBorderBuffers();
-	}
+    public WorldBorderListener() {
+        this.buffers = Citadel.getInstance().getConfigManager().getWorldBorderBuffers();
+    }
 
-	@EventHandler
-	public void onReinCreation (ReinforcementCreationEvent event) {
-		World world = event.getReinforcement().getLocation().getWorld();
-		if (!buffers.containsKey(world.getUID())) {
-			return;
-		}
-		WorldBorderBuffers buffer = buffers.get(world.getUID());
-		Location reinforcementLocation = event.getReinforcement().getLocation();
-		if (buffer.checkIfOutside(reinforcementLocation.getX(), reinforcementLocation.getZ())) {
-			event.getPlayer().sendMessage(Component.text("You cannot reinforce this close to the border!").color(NamedTextColor.RED));
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler
+    public void onReinCreation(ReinforcementCreationEvent event) {
+        World world = event.getReinforcement().getLocation().getWorld();
+        if (!buffers.containsKey(world.getUID())) {
+            return;
+        }
+        WorldBorderBuffers buffer = buffers.get(world.getUID());
+        Location reinforcementLocation = event.getReinforcement().getLocation();
+        if (buffer.checkIfOutside(reinforcementLocation.getX(), reinforcementLocation.getZ())) {
+            event.getPlayer().sendMessage(Component.text("You cannot reinforce this close to the border!").color(NamedTextColor.RED));
+            event.setCancelled(true);
+        }
+    }
 }

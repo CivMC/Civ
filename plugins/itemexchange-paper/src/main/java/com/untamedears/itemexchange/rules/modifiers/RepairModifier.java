@@ -36,134 +36,129 @@ import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 @Modifier(slug = "REPAIR", order = 600)
 public final class RepairModifier extends ModifierData {
 
-	public static final RepairModifier TEMPLATE = new RepairModifier();
+    public static final RepairModifier TEMPLATE = new RepairModifier();
 
-	public static final String LEVEL_KEY = "repairLevel";
+    public static final String LEVEL_KEY = "repairLevel";
 
-	private int level;
+    private int level;
 
-	@Override
-	public RepairModifier construct(ItemStack item) {
-		if (!ItemExchangeConfig.canRepairItem(item.getType())) {
-			return null;
-		}
-		if (!(item.getItemMeta() instanceof final Repairable meta)) {
-			return null;
-		}
-		RepairModifier modifier = new RepairModifier();
-		modifier.level = meta.getRepairCost();
-		return modifier;
-	}
+    @Override
+    public RepairModifier construct(ItemStack item) {
+        if (!ItemExchangeConfig.canRepairItem(item.getType())) {
+            return null;
+        }
+        if (!(item.getItemMeta() instanceof final Repairable meta)) {
+            return null;
+        }
+        RepairModifier modifier = new RepairModifier();
+        modifier.level = meta.getRepairCost();
+        return modifier;
+    }
 
-	@Override
-	public boolean isBroken() {
-		return false;
-	}
+    @Override
+    public boolean isBroken() {
+        return false;
+    }
 
-	@Override
-	public boolean conforms(ItemStack item) {
-		if (!(item.getItemMeta() instanceof final Repairable meta)) {
-			return false;
-		}
-		int itemRepair = meta.getRepairCost();
-		if (this.level < 0) {
-			return itemRepair <= this.level * -1;
-		}
-		else {
-			return itemRepair == this.level;
-		}
-	}
+    @Override
+    public boolean conforms(ItemStack item) {
+        if (!(item.getItemMeta() instanceof final Repairable meta)) {
+            return false;
+        }
+        int itemRepair = meta.getRepairCost();
+        if (this.level < 0) {
+            return itemRepair <= this.level * -1;
+        } else {
+            return itemRepair == this.level;
+        }
+    }
 
-	@Override
-	public void toNBT(@Nonnull final NBTCompound nbt) {
-		nbt.setInt(LEVEL_KEY, getRepairCost());
-	}
+    @Override
+    public void toNBT(@Nonnull final NBTCompound nbt) {
+        nbt.setInt(LEVEL_KEY, getRepairCost());
+    }
 
-	@Nonnull
-	public static RepairModifier fromNBT(@Nonnull final NBTCompound nbt) {
-		final var modifier = new RepairModifier();
-		modifier.setRepairCost(nbt.getInt(LEVEL_KEY));
-		return modifier;
-	}
+    @Nonnull
+    public static RepairModifier fromNBT(@Nonnull final NBTCompound nbt) {
+        final var modifier = new RepairModifier();
+        modifier.setRepairCost(nbt.getInt(LEVEL_KEY));
+        return modifier;
+    }
 
-	@Override
-	public List<String> getDisplayInfo() {
-		List<String> info = Lists.newArrayList();
-		int repairCost = getRepairCost();
-		if (repairCost == 0) {
-			info.add(ChatColor.GOLD + "Never repaired");
-		}
-		else if (repairCost < 0) {
-			info.add(ChatColor.GOLD + "Repair level " + (repairCost * -1 + 2) + " or less");
-		}
-		else {
-			info.add(ChatColor.GOLD + "Repair level " + (repairCost + 2));
-		}
-		return info;
-	}
+    @Override
+    public List<String> getDisplayInfo() {
+        List<String> info = Lists.newArrayList();
+        int repairCost = getRepairCost();
+        if (repairCost == 0) {
+            info.add(ChatColor.GOLD + "Never repaired");
+        } else if (repairCost < 0) {
+            info.add(ChatColor.GOLD + "Repair level " + (repairCost * -1 + 2) + " or less");
+        } else {
+            info.add(ChatColor.GOLD + "Repair level " + (repairCost + 2));
+        }
+        return info;
+    }
 
-	@Override
-	public String toString() {
-		return getSlug() +
-				"{" +
-				"level=" + getRepairCost() +
-				"}";
-	}
+    @Override
+    public String toString() {
+        return getSlug() +
+            "{" +
+            "level=" + getRepairCost() +
+            "}";
+    }
 
-	// ------------------------------------------------------------
-	// Commands
-	// ------------------------------------------------------------
+    // ------------------------------------------------------------
+    // Commands
+    // ------------------------------------------------------------
 
-	@Subcommand("repair|repairlevel")
-	@Description("Sets or resets the exchange's repair level.")
-	@Syntax("[repair level]")
-	public void commandSetRepairLevel(Player player, @Optional @Single String value) {
-		try (ModifierHandler<RepairModifier> handler = new ModifierHandler<>(player, this)) {
-			if (Strings.isNullOrEmpty(value)) {
-				handler.setModifier(null);
-				handler.relay(ChatColor.GREEN + "Successfully removed repair level condition.");
-				return;
-			}
-			RepairModifier modifier = handler.ensureModifier();
-			if (value.startsWith("@")) {
-				int repairLevel = ExchangeRule.ERROR;
-				try {
-					repairLevel = Integer.parseInt(value.substring(1));
-				}
-				catch (final NumberFormatException ignored) { }
-				if (repairLevel < 2) {
-					throw new InvalidCommandArgument("You must enter a valid value, e.g: @9");
-				}
-				modifier.setRepairCost(repairLevel - 2);
-			}
-			else if (StringUtils.equalsIgnoreCase(value, "NEW") || StringUtils.equalsIgnoreCase(value, "MINT")) {
-				modifier.setRepairCost(0);
-			}
-			else {
-				int repairLevel = ExchangeRule.ERROR;
-				try {
-					repairLevel = Integer.parseInt(value);
-				}
-				catch (final NumberFormatException ignored) { }
-				if (repairLevel < 2) {
-					throw new InvalidCommandArgument("You must enter a valid value, e.g: 9");
-				}
-				modifier.setRepairCost((repairLevel - 2) * -1);
-			}
-			handler.relay(ChatColor.GREEN + "Successfully changed repair level condition.");
-		}
-	}
+    @Subcommand("repair|repairlevel")
+    @Description("Sets or resets the exchange's repair level.")
+    @Syntax("[repair level]")
+    public void commandSetRepairLevel(Player player, @Optional @Single String value) {
+        try (ModifierHandler<RepairModifier> handler = new ModifierHandler<>(player, this)) {
+            if (Strings.isNullOrEmpty(value)) {
+                handler.setModifier(null);
+                handler.relay(ChatColor.GREEN + "Successfully removed repair level condition.");
+                return;
+            }
+            RepairModifier modifier = handler.ensureModifier();
+            if (value.startsWith("@")) {
+                int repairLevel = ExchangeRule.ERROR;
+                try {
+                    repairLevel = Integer.parseInt(value.substring(1));
+                } catch (final NumberFormatException ignored) {
+                }
+                if (repairLevel < 2) {
+                    throw new InvalidCommandArgument("You must enter a valid value, e.g: @9");
+                }
+                modifier.setRepairCost(repairLevel - 2);
+            } else if (StringUtils.equalsIgnoreCase(value, "NEW") || StringUtils.equalsIgnoreCase(value, "MINT")) {
+                modifier.setRepairCost(0);
+            } else {
+                int repairLevel = ExchangeRule.ERROR;
+                try {
+                    repairLevel = Integer.parseInt(value);
+                } catch (final NumberFormatException ignored) {
+                }
+                if (repairLevel < 2) {
+                    throw new InvalidCommandArgument("You must enter a valid value, e.g: 9");
+                }
+                modifier.setRepairCost((repairLevel - 2) * -1);
+            }
+            handler.relay(ChatColor.GREEN + "Successfully changed repair level condition.");
+        }
+    }
 
-	// ------------------------------------------------------------
-	// Getters + Setters
-	// ------------------------------------------------------------
+    // ------------------------------------------------------------
+    // Getters + Setters
+    // ------------------------------------------------------------
 
-	public int getRepairCost() {
-		return this.level;
-	}
+    public int getRepairCost() {
+        return this.level;
+    }
 
-	public void setRepairCost(int repairLevel) {
-		this.level = repairLevel;
-	}
+    public void setRepairCost(int repairLevel) {
+        this.level = repairLevel;
+    }
 
 }

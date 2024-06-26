@@ -7,62 +7,62 @@ import org.bukkit.event.player.PlayerEvent;
 
 public class GroupChatEvent extends PlayerEvent implements Cancellable {
 
-	private final String groupName;
+    private final String groupName;
 
-	private final String message;
+    private final String message;
 
-	private boolean cancelled;
+    private boolean cancelled;
 
-	// Handler list for spigot events
-	private static final HandlerList handlers = new HandlerList();
+    // Handler list for spigot events
+    private static final HandlerList handlers = new HandlerList();
 
-	public GroupChatEvent(final Player player, final String groupName, final String message) {
-		super(player);
+    public GroupChatEvent(final Player player, final String groupName, final String message) {
+        super(player);
 
-		this.groupName = groupName;
-		this.message = message;
-	}
+        this.groupName = groupName;
+        this.message = message;
+    }
 
-	/**
-	 * Gets the group name
-	 * 
-	 * @return The group name
-	 */
-	public String getGroup() {
+    /**
+     * Gets the group name
+     *
+     * @return The group name
+     */
+    public String getGroup() {
 
-		return groupName;
-	}
+        return groupName;
+    }
 
-	/**
-	 * Gets the chat message
-	 * 
-	 * @return The chat message
-	 */
-	public String getMessage() {
+    /**
+     * Gets the chat message
+     *
+     * @return The chat message
+     */
+    public String getMessage() {
 
-		return message;
-	}
+        return message;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
+    @Override
+    public HandlerList getHandlers() {
 
-		return handlers;
-	}
+        return handlers;
+    }
 
-	public static HandlerList getHandlerList() {
+    public static HandlerList getHandlerList() {
 
-		return handlers;
-	}
+        return handlers;
+    }
 
-	@Override
-	public boolean isCancelled() {
+    @Override
+    public boolean isCancelled() {
 
-		return cancelled;
-	}
+        return cancelled;
+    }
 
-	@Override
-	public void setCancelled(boolean cancelled) {
+    @Override
+    public void setCancelled(boolean cancelled) {
 
-		this.cancelled = cancelled;
-	}
+        this.cancelled = cancelled;
+    }
 }

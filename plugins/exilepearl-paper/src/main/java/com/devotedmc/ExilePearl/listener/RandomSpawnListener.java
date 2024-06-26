@@ -10,23 +10,24 @@ import org.bukkit.event.EventPriority;
 public class RandomSpawnListener extends RuleListener {
 
 
-	public RandomSpawnListener(ExilePearlApi pearlApi) {
-		super(pearlApi);
-	}
+    public RandomSpawnListener(ExilePearlApi pearlApi) {
+        super(pearlApi);
+    }
 
 
-	/**
-	 * Prevents exiled players from random-spawning within their pearl radius
-	 * @param e The event args
-	 */
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onRandomSpawn(NewPlayerSpawn e) {
-		int radius = config.getRulePearlRadius();
-		if (radius <= 0) {
-			return;
-		}
+    /**
+     * Prevents exiled players from random-spawning within their pearl radius
+     *
+     * @param e The event args
+     */
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onRandomSpawn(NewPlayerSpawn e) {
+        int radius = config.getRulePearlRadius();
+        if (radius <= 0) {
+            return;
+        }
 
-		// TODO: @okx
+        // TODO: @okx
 //		ExilePearl pearl = pearlApi.getPearl(e.getPlayer().getUniqueId());
 //		if (pearl == null) {
 //			return;
@@ -44,5 +45,5 @@ public class RandomSpawnListener extends RuleListener {
 //		if (distance < radius) {
 //			e.setCancelled(true);
 //		}
-	}
+    }
 }

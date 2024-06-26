@@ -14,67 +14,67 @@ import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public final class OneTimeTeleportConfig extends SimpleHackConfig {
 
-	private final CivLogger LOGGER = CivLogger.getLogger(OneTimeTeleportConfig.class);
+    private final CivLogger LOGGER = CivLogger.getLogger(OneTimeTeleportConfig.class);
 
-	private List<Material> materialBlacklist;
-	private List<Material> unsafeMaterials;
-	private long timeLimitOnUsage;
-	private boolean limitToSameWorld;
+    private List<Material> materialBlacklist;
+    private List<Material> unsafeMaterials;
+    private long timeLimitOnUsage;
+    private boolean limitToSameWorld;
 
-	public OneTimeTeleportConfig(
-			final @NotNull SimpleAdminHacks plugin,
-			final @NotNull ConfigurationSection config
-	) {
-		super(plugin, config);
-	}
+    public OneTimeTeleportConfig(
+        final @NotNull SimpleAdminHacks plugin,
+        final @NotNull ConfigurationSection config
+    ) {
+        super(plugin, config);
+    }
 
-	@Override
-	protected void wireup(final ConfigurationSection config) {
-		// Parse blacklisted item materials
-		this.materialBlacklist = config.getStringList("material_blacklist")
-				.stream()
-				.map((raw) -> {
-					final Material material = MaterialUtils.getMaterial(raw);
-					if (!ItemUtils.isValidItemMaterial(material)) {
-						LOGGER.warning("Blacklisted material [" + raw + "] is not a valid item material!");
-						return null;
-					}
-					return material;
-				})
-				.filter(Objects::nonNull)
-				.toList();
-		// Parse unsafe blocks
-		this.unsafeMaterials = config.getStringList("unsafe_materials")
-				.stream()
-				.map((raw) -> {
-					final Material material = MaterialUtils.getMaterial(raw);
-					if (material == null || !material.isBlock()) {
-						LOGGER.warning("Unsafe material [" + raw + "] is not a valid block material!");
-						return null;
-					}
-					return material;
-				})
-				.filter(Objects::nonNull)
-				.toList();
-		// Parse maximum time limit to use OTT
-		this.timeLimitOnUsage = ConfigHelper.parseTime(config.getString("ott_timeout", "2d"));
-		// Parse same-world limit
-		this.limitToSameWorld = config.getBoolean("limitToSameWorld", false);
-	}
+    @Override
+    protected void wireup(final ConfigurationSection config) {
+        // Parse blacklisted item materials
+        this.materialBlacklist = config.getStringList("material_blacklist")
+            .stream()
+            .map((raw) -> {
+                final Material material = MaterialUtils.getMaterial(raw);
+                if (!ItemUtils.isValidItemMaterial(material)) {
+                    LOGGER.warning("Blacklisted material [" + raw + "] is not a valid item material!");
+                    return null;
+                }
+                return material;
+            })
+            .filter(Objects::nonNull)
+            .toList();
+        // Parse unsafe blocks
+        this.unsafeMaterials = config.getStringList("unsafe_materials")
+            .stream()
+            .map((raw) -> {
+                final Material material = MaterialUtils.getMaterial(raw);
+                if (material == null || !material.isBlock()) {
+                    LOGGER.warning("Unsafe material [" + raw + "] is not a valid block material!");
+                    return null;
+                }
+                return material;
+            })
+            .filter(Objects::nonNull)
+            .toList();
+        // Parse maximum time limit to use OTT
+        this.timeLimitOnUsage = ConfigHelper.parseTime(config.getString("ott_timeout", "2d"));
+        // Parse same-world limit
+        this.limitToSameWorld = config.getBoolean("limitToSameWorld", false);
+    }
 
-	public @NotNull List<Material> getMaterialBlacklist() {
-		return Objects.requireNonNullElseGet(this.materialBlacklist, List::of);
-	}
+    public @NotNull List<Material> getMaterialBlacklist() {
+        return Objects.requireNonNullElseGet(this.materialBlacklist, List::of);
+    }
 
-	public @NotNull List<Material> getUnsafeMaterials() {
-		return Objects.requireNonNullElseGet(this.unsafeMaterials, List::of);
-	}
+    public @NotNull List<Material> getUnsafeMaterials() {
+        return Objects.requireNonNullElseGet(this.unsafeMaterials, List::of);
+    }
 
-	public long getTimeLimitOnUsageInMillis() {
-		return this.timeLimitOnUsage;
-	}
+    public long getTimeLimitOnUsageInMillis() {
+        return this.timeLimitOnUsage;
+    }
 
-	public boolean isLimitingToSameWorld() {
-		return this.limitToSameWorld;
-	}
+    public boolean isLimitingToSameWorld() {
+        return this.limitToSameWorld;
+    }
 }

@@ -7,36 +7,37 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 class RegionData {
-	private final Map<Integer, GroupData> data = new HashMap<>();
-	private final AtomicBoolean isLoaded = new AtomicBoolean();
-	private final Set<ChunkCoord> chunks = new HashSet<>();
 
-	public void put(int groupId, GroupData groupData) {
-		data.put(groupId, groupData);
-	}
+    private final Map<Integer, GroupData> data = new HashMap<>();
+    private final AtomicBoolean isLoaded = new AtomicBoolean();
+    private final Set<ChunkCoord> chunks = new HashSet<>();
 
-	public GroupData get(int groupId) {
-		return data.computeIfAbsent(groupId, a -> new GroupData(null));
-	}
+    public void put(int groupId, GroupData groupData) {
+        data.put(groupId, groupData);
+    }
 
-	public void addChunk(ChunkCoord chunkCoord) {
-		chunks.add(chunkCoord);
-	}
+    public GroupData get(int groupId) {
+        return data.computeIfAbsent(groupId, a -> new GroupData(null));
+    }
 
-	public boolean removeChunk(ChunkCoord chunkCoord) {
-		chunks.remove(chunkCoord);
-		return chunks.size() == 0;
-	}
+    public void addChunk(ChunkCoord chunkCoord) {
+        chunks.add(chunkCoord);
+    }
 
-	public boolean isLoaded() {
-		return isLoaded.get();
-	}
+    public boolean removeChunk(ChunkCoord chunkCoord) {
+        chunks.remove(chunkCoord);
+        return chunks.size() == 0;
+    }
 
-	public void setLoaded() {
-		isLoaded.set(true);
-	}
+    public boolean isLoaded() {
+        return isLoaded.get();
+    }
 
-	public Set<Integer> getGroups() {
-		return data.keySet();
-	}
+    public void setLoaded() {
+        isLoaded.set(true);
+    }
+
+    public Set<Integer> getGroups() {
+        return data.keySet();
+    }
 }

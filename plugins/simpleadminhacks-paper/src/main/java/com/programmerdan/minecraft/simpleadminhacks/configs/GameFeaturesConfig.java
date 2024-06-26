@@ -11,183 +11,183 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public class GameFeaturesConfig extends SimpleHackConfig {
 
-	private boolean potatoXPEnabled;
-	private boolean villagerTrading;
-	private boolean witherSpawning;
-	private boolean patrolSpawning;
-	private boolean isPhantomSpawning;
-	private boolean enderChestPlacement;
-	private boolean enderChestUse;
+    private boolean potatoXPEnabled;
+    private boolean villagerTrading;
+    private boolean witherSpawning;
+    private boolean patrolSpawning;
+    private boolean isPhantomSpawning;
+    private boolean enderChestPlacement;
+    private boolean enderChestUse;
     private boolean grindstoneUse;
-	private boolean shulkerBoxUse;
-	private boolean totemPowers;
-	private boolean chorusFruitUse;
+    private boolean shulkerBoxUse;
+    private boolean totemPowers;
+    private boolean chorusFruitUse;
 
-	private boolean weepingAngel;
-	private int weepingAngelEnv;
-	private int weepingAngelPlayer;
+    private boolean weepingAngel;
+    private int weepingAngelEnv;
+    private int weepingAngelPlayer;
 
-	private boolean blockWaterInHell;
+    private boolean blockWaterInHell;
 
-	private boolean minecartTeleport;
-	private boolean obsidianGenerators;
-	private boolean personalDeathMessages;
-	private boolean disableNetheriteCrafting;
-	
-	private boolean goldBlockTeleport;
+    private boolean minecartTeleport;
+    private boolean obsidianGenerators;
+    private boolean personalDeathMessages;
+    private boolean disableNetheriteCrafting;
 
-	public GameFeaturesConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
-		super(plugin, base);
-	}
+    private boolean goldBlockTeleport;
 
-	@Override
-	protected void wireup(ConfigurationSection config) {
-		this.potatoXPEnabled = !config.getBoolean("disablePotatoXP", false);
-		if (!this.potatoXPEnabled) plugin().log("  Potato XP Disabled");
+    public GameFeaturesConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
+        super(plugin, base);
+    }
 
-		this.villagerTrading = config.getBoolean("villagerTrading", false);
-		if (!villagerTrading) plugin().log("  VillagerTrading is disabled");
+    @Override
+    protected void wireup(ConfigurationSection config) {
+        this.potatoXPEnabled = !config.getBoolean("disablePotatoXP", false);
+        if (!this.potatoXPEnabled) plugin().log("  Potato XP Disabled");
 
-		this.witherSpawning = config.getBoolean("witherSpawning", false);
-		if (!this.witherSpawning) plugin().log("  Wither Spawning is disabled");
+        this.villagerTrading = config.getBoolean("villagerTrading", false);
+        if (!villagerTrading) plugin().log("  VillagerTrading is disabled");
 
-		this.patrolSpawning = config.getBoolean("patrolSpawning", false);
-		if (!this.patrolSpawning) plugin().log("Patrol Spawning is disabled");
+        this.witherSpawning = config.getBoolean("witherSpawning", false);
+        if (!this.witherSpawning) plugin().log("  Wither Spawning is disabled");
 
-		this.isPhantomSpawning = config.getBoolean("phantomSpawning", false);
-		if (!this.isPhantomSpawning) plugin().log("Phantom Spawning is disabled");
+        this.patrolSpawning = config.getBoolean("patrolSpawning", false);
+        if (!this.patrolSpawning) plugin().log("Patrol Spawning is disabled");
 
-		this.enderChestPlacement = config.getBoolean("enderChestPlacement", true);
-		if (!this.enderChestPlacement) plugin().log("  Placing EnderChests is disabled");
+        this.isPhantomSpawning = config.getBoolean("phantomSpawning", false);
+        if (!this.isPhantomSpawning) plugin().log("Phantom Spawning is disabled");
 
-		this.enderChestUse = config.getBoolean("enderChestUse", false);
-		if (!this.enderChestUse) plugin().log("  Using EnderChests is disabled");
-		
-		this.grindstoneUse = config.getBoolean("grindstoneUse", false);
-		if (!this.grindstoneUse) plugin().log("  Using Grindstones is disabled");
+        this.enderChestPlacement = config.getBoolean("enderChestPlacement", true);
+        if (!this.enderChestPlacement) plugin().log("  Placing EnderChests is disabled");
 
-		this.shulkerBoxUse = config.getBoolean("shulkerBoxUse", false);
-		if (!this.shulkerBoxUse) plugin().log("  Using Shulker Boxes is disabled");
+        this.enderChestUse = config.getBoolean("enderChestUse", false);
+        if (!this.enderChestUse) plugin().log("  Using EnderChests is disabled");
 
-		this.totemPowers = config.getBoolean("totemPower", false);
-		if (!this.totemPowers) plugin().log("  Undeath via totems is disabled");
+        this.grindstoneUse = config.getBoolean("grindstoneUse", false);
+        if (!this.grindstoneUse) plugin().log("  Using Grindstones is disabled");
 
-		this.chorusFruitUse = config.getBoolean("chorusFruitTeleportation", false);
-		if (!this.chorusFruitUse) {
-			plugin().log("  Chorus Fruit Teleportation is disabled");
-		}
+        this.shulkerBoxUse = config.getBoolean("shulkerBoxUse", false);
+        if (!this.shulkerBoxUse) plugin().log("  Using Shulker Boxes is disabled");
 
- 		this.weepingAngel = config.getBoolean("weepingAngel.enabled", false);
-		if (this.weepingAngel) {
-			this.weepingAngelEnv = config.getInt("weepingAngel.environment", 1);
-			this.weepingAngelPlayer = config.getInt("weepingAngel.playerKill", 5);
+        this.totemPowers = config.getBoolean("totemPower", false);
+        if (!this.totemPowers) plugin().log("  Undeath via totems is disabled");
 
-			plugin().log("  Weeping Angel is enabled. Times | Env[" + weepingAngelEnv + "] PK[" + weepingAngelPlayer + "]");
-		}
+        this.chorusFruitUse = config.getBoolean("chorusFruitTeleportation", false);
+        if (!this.chorusFruitUse) {
+            plugin().log("  Chorus Fruit Teleportation is disabled");
+        }
 
-		this.blockWaterInHell = config.getBoolean("blockWaterInHell", true);
-		if (this.blockWaterInHell) plugin().log("  Blocking bucket use in hell biomes");
+        this.weepingAngel = config.getBoolean("weepingAngel.enabled", false);
+        if (this.weepingAngel) {
+            this.weepingAngelEnv = config.getInt("weepingAngel.environment", 1);
+            this.weepingAngelPlayer = config.getInt("weepingAngel.playerKill", 5);
 
-		this.minecartTeleport = config.getBoolean("minecartTeleport", false);
-		if (this.minecartTeleport) plugin().log("  Minecart teleporter enabled");
+            plugin().log("  Weeping Angel is enabled. Times | Env[" + weepingAngelEnv + "] PK[" + weepingAngelPlayer + "]");
+        }
 
-		this.obsidianGenerators = config.getBoolean("obsidianGenerators", false);
-		if (this.obsidianGenerators) plugin().log("  Obsidian generators enabled.");
+        this.blockWaterInHell = config.getBoolean("blockWaterInHell", true);
+        if (this.blockWaterInHell) plugin().log("  Blocking bucket use in hell biomes");
 
-		this.personalDeathMessages = config.getBoolean("personalDeathMessages", false);
-		if (this.personalDeathMessages) plugin().log("  Personal death messages enabled.");
+        this.minecartTeleport = config.getBoolean("minecartTeleport", false);
+        if (this.minecartTeleport) plugin().log("  Minecart teleporter enabled");
 
-		this.disableNetheriteCrafting = config.getBoolean("disableNetheriteCrafting", true);
-		if (this.disableNetheriteCrafting) plugin().log("  Disable Netherite Crafting enabled.");
-		
-		this.goldBlockTeleport = config.getBoolean("goldBlockTeleport", false);
-		if (this.personalDeathMessages) plugin().log("  Gold block teleporter enabled.");
+        this.obsidianGenerators = config.getBoolean("obsidianGenerators", false);
+        if (this.obsidianGenerators) plugin().log("  Obsidian generators enabled.");
 
-		/* Add additional feature config grabs here. */
-	}
+        this.personalDeathMessages = config.getBoolean("personalDeathMessages", false);
+        if (this.personalDeathMessages) plugin().log("  Personal death messages enabled.");
 
-	/**
-	 * @return If getting XP from potatos is enabled.
-	 */
-	public boolean isPotatoXPEnabled() {
-		return this.potatoXPEnabled;
-	}
+        this.disableNetheriteCrafting = config.getBoolean("disableNetheriteCrafting", true);
+        if (this.disableNetheriteCrafting) plugin().log("  Disable Netherite Crafting enabled.");
 
-	public boolean isVillagerTrading() {
-		return this.villagerTrading;
-	}
+        this.goldBlockTeleport = config.getBoolean("goldBlockTeleport", false);
+        if (this.personalDeathMessages) plugin().log("  Gold block teleporter enabled.");
 
-	public boolean isWitherSpawning() {
-		return this.witherSpawning;
-	}
+        /* Add additional feature config grabs here. */
+    }
 
-	public boolean isPatrolSpawning() {
-		return this.patrolSpawning;
-	}
+    /**
+     * @return If getting XP from potatos is enabled.
+     */
+    public boolean isPotatoXPEnabled() {
+        return this.potatoXPEnabled;
+    }
 
-	public boolean isPhantomSpawning() {
-		return this.isPhantomSpawning;
-	}
+    public boolean isVillagerTrading() {
+        return this.villagerTrading;
+    }
 
-	public boolean isEnderChestPlacement() {
-		return this.enderChestPlacement;
-	}
+    public boolean isWitherSpawning() {
+        return this.witherSpawning;
+    }
 
-	public boolean isEnderChestUse() {
-		return this.enderChestUse;
-	}
-	
-	public boolean isGrindstoneUse() {
-		return this.grindstoneUse;
-	}
+    public boolean isPatrolSpawning() {
+        return this.patrolSpawning;
+    }
 
-	public boolean isShulkerBoxUse() {
-		return this.shulkerBoxUse;
-	}
+    public boolean isPhantomSpawning() {
+        return this.isPhantomSpawning;
+    }
 
-	public boolean isTotemPowers() {
-		return this.totemPowers;
-	}
+    public boolean isEnderChestPlacement() {
+        return this.enderChestPlacement;
+    }
 
-	public boolean isChorusFruitTeleportation() {
-		return this.chorusFruitUse;
-	}
+    public boolean isEnderChestUse() {
+        return this.enderChestUse;
+    }
 
-	public boolean isWeepingAngel() {
-		return this.weepingAngel;
-	}
+    public boolean isGrindstoneUse() {
+        return this.grindstoneUse;
+    }
 
-	public int getWeepingAngelEnv() {
-		return this.weepingAngelEnv;
-	}
+    public boolean isShulkerBoxUse() {
+        return this.shulkerBoxUse;
+    }
 
-	public int getWeepingAngelPlayer() {
-		return this.weepingAngelPlayer;
-	}
+    public boolean isTotemPowers() {
+        return this.totemPowers;
+    }
 
-	public boolean isBlockWaterInHell() {
-		return this.blockWaterInHell;
-	}
+    public boolean isChorusFruitTeleportation() {
+        return this.chorusFruitUse;
+    }
 
-	public boolean isMinecartTeleport() {
-		return this.minecartTeleport;
-	}
+    public boolean isWeepingAngel() {
+        return this.weepingAngel;
+    }
 
-	public boolean isObsidianGenerators() {
-		return this.obsidianGenerators;
-	}
+    public int getWeepingAngelEnv() {
+        return this.weepingAngelEnv;
+    }
 
-	public boolean isPersonalDeathMessages() {
-		return this.personalDeathMessages;
-	}
+    public int getWeepingAngelPlayer() {
+        return this.weepingAngelPlayer;
+    }
 
-	public boolean isDisableNetheriteCrafting() {
-		return this.disableNetheriteCrafting;
-	}
-	
-	public boolean isGoldblockTeleport() {
-		return goldBlockTeleport;
-	}
+    public boolean isBlockWaterInHell() {
+        return this.blockWaterInHell;
+    }
+
+    public boolean isMinecartTeleport() {
+        return this.minecartTeleport;
+    }
+
+    public boolean isObsidianGenerators() {
+        return this.obsidianGenerators;
+    }
+
+    public boolean isPersonalDeathMessages() {
+        return this.personalDeathMessages;
+    }
+
+    public boolean isDisableNetheriteCrafting() {
+        return this.disableNetheriteCrafting;
+    }
+
+    public boolean isGoldblockTeleport() {
+        return goldBlockTeleport;
+    }
 
 }
 

@@ -37,5 +37,5 @@ persistance:
 ## Do we alert people who have this permission, when a name is changed b/c dirty? 
 #  alert_perm: namelayer.alert_dirty_name
 nameRandomizer:
- active: false
- grace: 600000
+  active: false
+  grace: 600000

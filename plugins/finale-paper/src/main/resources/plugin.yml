@@ -2,13 +2,13 @@ name: Finale
 main: com.github.maxopoly.finale.Finale
 author: Maxopoly
 version: ${version}
-depend: [CivModCore, ProtocolLib]
-softdepend: [CombatTagPlus]
+depend: [ CivModCore, ProtocolLib ]
+softdepend: [ CombatTagPlus ]
 api-version: 1.17
 permissions:
-    finale.op:
-        default: op
-    finale.cps:
-        default: op
-    finale.cmv:
-        default: op
+  finale.op:
+    default: op
+  finale.cps:
+    default: op
+  finale.cmv:
+    default: op

@@ -90,7 +90,7 @@ public final class SafeLogoutTask extends BukkitRunnable {
     private boolean hasMoved(Player player) {
         Location l = player.getLocation();
         return loc.getWorld() != l.getWorld() || loc.getBlockX() != l.getBlockX() ||
-                loc.getBlockY() != l.getBlockY() || loc.getBlockZ() != l.getBlockZ();
+            loc.getBlockY() != l.getBlockY() || loc.getBlockZ() != l.getBlockZ();
     }
 
     public static void run(CombatTagPlus plugin, Player player) {

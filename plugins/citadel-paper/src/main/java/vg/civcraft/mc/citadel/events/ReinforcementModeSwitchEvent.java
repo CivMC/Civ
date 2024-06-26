@@ -9,53 +9,52 @@ import vg.civcraft.mc.citadel.playerstate.AbstractPlayerState;
 /**
  * Called when a player changes his reinforcement mode. Not called when the
  * player attempt to switch, but stays in the same mode
- *
  */
 public class ReinforcementModeSwitchEvent extends PlayerEvent implements Cancellable {
 
-	private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	private AbstractPlayerState oldState;
-	private AbstractPlayerState newState;
-	private boolean isCancelled;
+    private AbstractPlayerState oldState;
+    private AbstractPlayerState newState;
+    private boolean isCancelled;
 
-	public ReinforcementModeSwitchEvent(Player who, AbstractPlayerState oldState, AbstractPlayerState newState) {
-		super(who);
-		this.oldState = oldState;
-		this.newState = newState;
-		isCancelled = false;
-	}
+    public ReinforcementModeSwitchEvent(Player who, AbstractPlayerState oldState, AbstractPlayerState newState) {
+        super(who);
+        this.oldState = oldState;
+        this.newState = newState;
+        isCancelled = false;
+    }
 
-	/**
-	 * @return Reinforcement mode before the change
-	 */
-	public AbstractPlayerState getOldMode() {
-		return oldState;
-	}
+    /**
+     * @return Reinforcement mode before the change
+     */
+    public AbstractPlayerState getOldMode() {
+        return oldState;
+    }
 
-	/**
-	 * @return Reinforcement mode after the change
-	 */
-	public AbstractPlayerState getNewMode() {
-		return newState;
-	}
+    /**
+     * @return Reinforcement mode after the change
+     */
+    public AbstractPlayerState getNewMode() {
+        return newState;
+    }
 
-	@Override
-	public boolean isCancelled() {
-		return isCancelled;
-	}
+    @Override
+    public boolean isCancelled() {
+        return isCancelled;
+    }
 
-	@Override
-	public void setCancelled(boolean value) {
-		isCancelled = value;
-	}
+    @Override
+    public void setCancelled(boolean value) {
+        isCancelled = value;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 }

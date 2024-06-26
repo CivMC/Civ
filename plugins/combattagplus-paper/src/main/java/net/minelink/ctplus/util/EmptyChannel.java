@@ -15,6 +15,7 @@ import java.net.SocketAddress;
  * Fake connection channel for NPC players
  */
 public class EmptyChannel extends AbstractChannel {
+
     private final ChannelConfig config = new DefaultChannelConfig(this);
 
     public EmptyChannel(Channel parent) {

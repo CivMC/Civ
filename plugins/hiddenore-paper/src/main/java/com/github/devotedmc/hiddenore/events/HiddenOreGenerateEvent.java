@@ -8,55 +8,56 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class HiddenOreGenerateEvent extends Event implements Cancellable {
-	private static final HandlerList handlers = new HandlerList();
 
-	private final Player player;
-	private final Block transformBlock;
-	private Material transform;
+    private static final HandlerList handlers = new HandlerList();
 
-	public HiddenOreGenerateEvent(final Player player, final Block transformBlock, Material transform) {
-		super(false);
-		this.player = player;
-		this.transformBlock = transformBlock;
-		this.transform = transform;
-	}
+    private final Player player;
+    private final Block transformBlock;
+    private Material transform;
 
-	private boolean cancel = false;
+    public HiddenOreGenerateEvent(final Player player, final Block transformBlock, Material transform) {
+        super(false);
+        this.player = player;
+        this.transformBlock = transformBlock;
+        this.transform = transform;
+    }
 
-	@Override
-	public boolean isCancelled() {
-		return cancel;
-	}
+    private boolean cancel = false;
 
-	@Override
-	public void setCancelled(boolean cancelled) {
-		this.cancel = cancelled;
-	}
+    @Override
+    public boolean isCancelled() {
+        return cancel;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return HiddenOreGenerateEvent.handlers;
-	}
+    @Override
+    public void setCancelled(boolean cancelled) {
+        this.cancel = cancelled;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return HiddenOreGenerateEvent.handlers;
+    }
 
-	public Player getPlayer() {
-		return player;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public Block getBlock() {
-		return transformBlock;
-	}
+    public Player getPlayer() {
+        return player;
+    }
 
-	public Material getTransform() {
-		return transform;
-	}
+    public Block getBlock() {
+        return transformBlock;
+    }
 
-	public void setTransform(Material transform) {
-		if (transform == this.transform) return;
-		this.transform = transform;
-	}
+    public Material getTransform() {
+        return transform;
+    }
+
+    public void setTransform(Material transform) {
+        if (transform == this.transform) return;
+        this.transform = transform;
+    }
 
 }

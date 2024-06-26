@@ -8,24 +8,23 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 /**
- * Prevent players from taking damage if they are within the invulnerability period. 
- *
+ * Prevent players from taking damage if they are within the invulnerability period.
  */
-public class DamageListener implements Listener{
-	
-	RandomSpawn plugin;
-	
-	public DamageListener(RandomSpawn instance){
-		plugin = instance;
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
-	}
-	
-	@EventHandler
-	public void onDamage(EntityDamageEvent event){
-		if(event.getEntity() instanceof Player && event.getEntity().hasMetadata("lasttimerandomspawned") && !event.getCause().equals(DamageCause.SUICIDE)){
-			if((event.getEntity().getMetadata("lasttimerandomspawned").get(0).asLong() + (plugin.yamlHandler.config.getInt("nodamagetime",5)*1000)) > System.currentTimeMillis()){
-				event.setCancelled(true);
-			}
-		}
-	}
+public class DamageListener implements Listener {
+
+    RandomSpawn plugin;
+
+    public DamageListener(RandomSpawn instance) {
+        plugin = instance;
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
+
+    @EventHandler
+    public void onDamage(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player && event.getEntity().hasMetadata("lasttimerandomspawned") && !event.getCause().equals(DamageCause.SUICIDE)) {
+            if ((event.getEntity().getMetadata("lasttimerandomspawned").get(0).asLong() + (plugin.yamlHandler.config.getInt("nodamagetime", 5) * 1000)) > System.currentTimeMillis()) {
+                event.setCancelled(true);
+            }
+        }
+    }
 }

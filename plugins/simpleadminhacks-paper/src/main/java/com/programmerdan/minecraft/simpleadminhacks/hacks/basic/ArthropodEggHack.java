@@ -16,70 +16,70 @@ import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 
 public class ArthropodEggHack extends BasicHack {
 
-	@AutoLoad
-	private double eggChance;
+    @AutoLoad
+    private double eggChance;
 
-	@AutoLoad
-	private double lootingChance;
+    @AutoLoad
+    private double lootingChance;
 
-	@AutoLoad
-	private boolean removeDrops;
+    @AutoLoad
+    private boolean removeDrops;
 
-	@AutoLoad
-	private List<String> allowedTypes;
+    @AutoLoad
+    private List<String> allowedTypes;
 
-	public ArthropodEggHack(SimpleAdminHacks plugin, BasicHackConfig config) {
-		super(plugin, config);
-	}
+    public ArthropodEggHack(SimpleAdminHacks plugin, BasicHackConfig config) {
+        super(plugin, config);
+    }
 
-	@EventHandler
-	public void onEntityDeath(EntityDeathEvent event) {
-		Player targetPlayer = event.getEntity().getKiller();
-		if (null == targetPlayer) {
-			return;
-		}
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent event) {
+        Player targetPlayer = event.getEntity().getKiller();
+        if (null == targetPlayer) {
+            return;
+        }
 
-		String type = event.getEntity().getType().toString();
-		if (allowedTypes == null || !allowedTypes.contains(type)) {
-			return;
-		}
+        String type = event.getEntity().getType().toString();
+        if (allowedTypes == null || !allowedTypes.contains(type)) {
+            return;
+        }
 
-		// Check for a baby animal
-		if (event.getEntity() instanceof Ageable) {
-			Ageable ageableEntity = (Ageable) event.getEntity();
-			if (!ageableEntity.isAdult()) {
-				return;
-			}
-		}
+        // Check for a baby animal
+        if (event.getEntity() instanceof Ageable) {
+            Ageable ageableEntity = (Ageable) event.getEntity();
+            if (!ageableEntity.isAdult()) {
+                return;
+            }
+        }
 
-		// Check the player's currently equipped weapon
-		ItemStack handstack = targetPlayer.getEquipment().getItemInMainHand();
-		// Get the map of enchantments on that item
-		Map<Enchantment, Integer> itemEnchants = handstack.getEnchantments();
-		if (itemEnchants.isEmpty()) {
-			return;
-		}
+        // Check the player's currently equipped weapon
+        ItemStack handstack = targetPlayer.getEquipment().getItemInMainHand();
+        // Get the map of enchantments on that item
+        Map<Enchantment, Integer> itemEnchants = handstack.getEnchantments();
+        if (itemEnchants.isEmpty()) {
+            return;
+        }
 
-		// Check if one enchantment is BaneOfArthropods
-		if (null == itemEnchants.get(Enchantment.DAMAGE_ARTHROPODS)) {
-			return;
-		}
+        // Check if one enchantment is BaneOfArthropods
+        if (null == itemEnchants.get(Enchantment.DAMAGE_ARTHROPODS)) {
+            return;
+        }
 
-		double randomNum = Math.random();
-		double levelOfArthropod = handstack.getEnchantmentLevel(Enchantment.DAMAGE_ARTHROPODS);
-		double levelOfLooting = handstack.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+        double randomNum = Math.random();
+        double levelOfArthropod = handstack.getEnchantmentLevel(Enchantment.DAMAGE_ARTHROPODS);
+        double levelOfLooting = handstack.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
 
-		double targetPercentage = (eggChance * levelOfArthropod) + (lootingChance * levelOfLooting);
+        double targetPercentage = (eggChance * levelOfArthropod) + (lootingChance * levelOfLooting);
 
-		// Check if egg should be spawned
-		if (randomNum < targetPercentage) {
-			ItemStack item = new ItemStack(SpawnEggUtils.getSpawnEgg(event.getEntityType()), 1);
-			if (removeDrops) {
-				event.getDrops().clear();
-				event.setDroppedExp(0);
-			}
-			event.getDrops().add(item);
-		}
-	}
+        // Check if egg should be spawned
+        if (randomNum < targetPercentage) {
+            ItemStack item = new ItemStack(SpawnEggUtils.getSpawnEgg(event.getEntityType()), 1);
+            if (removeDrops) {
+                event.getDrops().clear();
+                event.setDroppedExp(0);
+            }
+            event.getDrops().add(item);
+        }
+    }
 
 }

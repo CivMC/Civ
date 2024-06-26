@@ -12,46 +12,46 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public class ShowOwnerOnDestroyAppender extends AbstractSnitchAppender {
 
-	public static final String ID = "showownerondestroy";
+    public static final String ID = "showownerondestroy";
 
-	public ShowOwnerOnDestroyAppender(Snitch snitch) {
-		super(snitch);
-	}
+    public ShowOwnerOnDestroyAppender(Snitch snitch) {
+        super(snitch);
+    }
 
-	@Override
-	public boolean runWhenSnitchInactive() {
-		return true;
-	}
+    @Override
+    public boolean runWhenSnitchInactive() {
+        return true;
+    }
 
-	@Override
-	public void acceptAction(SnitchAction action) {
-		if (!action.isLifeCycleEvent()) {
-			return;
-		}
-		if (!(action instanceof DestroySnitchAction dsa)) {
-			return;
-		}
-		UUID destroyerUUID = dsa.getPlayer();
-		if (destroyerUUID == null) {
-			return;
-		}
-		Player player = Bukkit.getPlayer(destroyerUUID);
-		if (player == null) {
-			return;
-		}
-		Group group = snitch.getGroup();
-		String groupName;
-		String ownerName;
-		if (group == null) {
-			groupName = "unknown";
-			ownerName = "unknown";
-		} else {
-			groupName = group.getName();
-			ownerName = NameAPI.getCurrentName(group.getOwner());
-		}
-		player.sendMessage(String.format("%s%s %swas reinforced on %s%s%s owned by %s%s", ChatColor.GOLD,
-				snitch.getType().getName(), ChatColor.YELLOW, ChatColor.GREEN, groupName, ChatColor.YELLOW,
-				ChatColor.LIGHT_PURPLE, ownerName));
-	}
+    @Override
+    public void acceptAction(SnitchAction action) {
+        if (!action.isLifeCycleEvent()) {
+            return;
+        }
+        if (!(action instanceof DestroySnitchAction dsa)) {
+            return;
+        }
+        UUID destroyerUUID = dsa.getPlayer();
+        if (destroyerUUID == null) {
+            return;
+        }
+        Player player = Bukkit.getPlayer(destroyerUUID);
+        if (player == null) {
+            return;
+        }
+        Group group = snitch.getGroup();
+        String groupName;
+        String ownerName;
+        if (group == null) {
+            groupName = "unknown";
+            ownerName = "unknown";
+        } else {
+            groupName = group.getName();
+            ownerName = NameAPI.getCurrentName(group.getOwner());
+        }
+        player.sendMessage(String.format("%s%s %swas reinforced on %s%s%s owned by %s%s", ChatColor.GOLD,
+            snitch.getType().getName(), ChatColor.YELLOW, ChatColor.GREEN, groupName, ChatColor.YELLOW,
+            ChatColor.LIGHT_PURPLE, ownerName));
+    }
 
 }

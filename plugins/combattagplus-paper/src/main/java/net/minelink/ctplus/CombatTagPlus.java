@@ -138,7 +138,7 @@ public final class CombatTagPlus extends JavaPlugin {
         Class<?> helperClass;
         try {
             helperClass = Class.forName("net.minelink.ctplus.nms.NpcPlayerHelperImpl");
-        }catch (ClassNotFoundException exception) {
+        } catch (ClassNotFoundException exception) {
             exception.printStackTrace();
             return false;
         }

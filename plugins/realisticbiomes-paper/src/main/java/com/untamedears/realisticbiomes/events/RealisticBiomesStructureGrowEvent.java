@@ -10,26 +10,27 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.world.StructureGrowEvent;
 
 public class RealisticBiomesStructureGrowEvent extends Event {
-	private static final HandlerList handlers = new HandlerList();
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    private static final HandlerList handlers = new HandlerList();
 
-	private StructureGrowEvent wrapped;
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public RealisticBiomesStructureGrowEvent(Location location, TreeType species, boolean bonemeal, Player player,
-			List<BlockState> blocks) {
-		super(false);
-		wrapped = new StructureGrowEvent(location, species, bonemeal, player, blocks);
-	}
+    private StructureGrowEvent wrapped;
 
-	public StructureGrowEvent getEvent() {
-		return wrapped;
-	}
+    public RealisticBiomesStructureGrowEvent(Location location, TreeType species, boolean bonemeal, Player player,
+                                             List<BlockState> blocks) {
+        super(false);
+        wrapped = new StructureGrowEvent(location, species, bonemeal, player, blocks);
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return RealisticBiomesStructureGrowEvent.handlers;
-	}
+    public StructureGrowEvent getEvent() {
+        return wrapped;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return RealisticBiomesStructureGrowEvent.handlers;
+    }
 }

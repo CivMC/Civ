@@ -10,25 +10,27 @@ import org.bukkit.event.EventPriority;
 public class BastionListener extends RuleListener {
 
 
-	public BastionListener(ExilePearlApi pearlApi) {
-		super(pearlApi);
-	}
+    public BastionListener(ExilePearlApi pearlApi) {
+        super(pearlApi);
+    }
 
-	/**
-	 * Prevents exiled players from creating bastions
-	 * @param e The event args
-	 */
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onBastionCreate(BastionCreateEvent e) {
-		checkAndCancelRule(ExileRule.CREATE_BASTION, e, e.getPlayer());
-	}
+    /**
+     * Prevents exiled players from creating bastions
+     *
+     * @param e The event args
+     */
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onBastionCreate(BastionCreateEvent e) {
+        checkAndCancelRule(ExileRule.CREATE_BASTION, e, e.getPlayer());
+    }
 
-	/**
-	 * Prevents exiled players from damaging bastions
-	 * @param e The event args
-	 */
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onBastionDamage(BastionDamageEvent e) {
-		checkAndCancelRule(ExileRule.DAMAGE_BASTION, e, e.getPlayer());
-	}
+    /**
+     * Prevents exiled players from damaging bastions
+     *
+     * @param e The event args
+     */
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onBastionDamage(BastionDamageEvent e) {
+        checkAndCancelRule(ExileRule.DAMAGE_BASTION, e, e.getPlayer());
+    }
 }

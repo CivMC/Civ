@@ -1,6 +1,5 @@
 /**
  * @author Aleksey Terzi
- *
  */
 
 package com.aleksey.castlegates;
@@ -29,43 +28,50 @@ import com.aleksey.castlegates.listener.EntityListener;
 import com.aleksey.castlegates.config.ConfigManager;
 
 public class CastleGates extends JavaPlugin {
+
     private static CastleGates _instance;
+
     public static CastleGates getInstance() {
-    	return _instance;
+        return _instance;
     }
 
     private static CastleGatesManager _manager;
+
     public static CastleGatesManager getManager() {
-    	return _manager;
+        return _manager;
     }
 
     private static ConfigManager _configManager;
+
     public static ConfigManager getConfigManager() {
-    	return _configManager;
+        return _configManager;
     }
 
     private static ICitadelManager _citadelManager;
+
     public static ICitadelManager getCitadelManager() {
-    	return _citadelManager;
+        return _citadelManager;
     }
 
     private static IBastionManager _bastionManager;
+
     public static IBastionManager getBastionManager() {
-    	return _bastionManager;
+        return _bastionManager;
     }
 
     private static IJukeAlertManager _jukeAlertManager;
+
     public static IJukeAlertManager getJukeAlertManager() {
-    	return _jukeAlertManager;
+        return _jukeAlertManager;
     }
 
     public static Logger getPluginLogger() {
-    	return _instance.getLogger();
+        return _instance.getLogger();
     }
 
     @Override
     public void onEnable() {
-    	_instance = this;
+        _instance = this;
         _manager = new CastleGatesManager();
         _configManager = new ConfigManager(getLogger());
 
@@ -77,9 +83,9 @@ public class CastleGates extends JavaPlugin {
 
         SqlDatabase db = initDatabase();
 
-        if(db == null) return;
+        if (db == null) return;
 
-        if(!_manager.init(db))
+        if (!_manager.init(db))
             return;
 
         _citadelManager.init();
@@ -90,7 +96,7 @@ public class CastleGates extends JavaPlugin {
     }
 
     private void enableCivPlugins() {
-        if(getServer().getPluginManager().getPlugin("Citadel") != null) {
+        if (getServer().getPluginManager().getPlugin("Citadel") != null) {
             _citadelManager = new CitadelManager();
             getLogger().log(Level.INFO, "Citadel plugin found.");
         } else {
@@ -98,7 +104,7 @@ public class CastleGates extends JavaPlugin {
             getLogger().log(Level.INFO, "Citadel plugin NOT found.");
         }
 
-        if(getServer().getPluginManager().getPlugin("JukeAlert") != null) {
+        if (getServer().getPluginManager().getPlugin("JukeAlert") != null) {
             _jukeAlertManager = new JukeAlertManager();
             getLogger().log(Level.INFO, "JukeAlert plugin found.");
         } else {
@@ -106,7 +112,7 @@ public class CastleGates extends JavaPlugin {
             getLogger().log(Level.INFO, "JukeAlert plugin NOT found.");
         }
 
-        if(getServer().getPluginManager().getPlugin("Bastion") != null) {
+        if (getServer().getPluginManager().getPlugin("Bastion") != null) {
             _bastionManager = new BastionManager();
             _bastionManager.init();
             getLogger().log(Level.INFO, "Bastion plugin found.");
@@ -117,23 +123,23 @@ public class CastleGates extends JavaPlugin {
     }
 
     private SqlDatabase initDatabase() {
-    	SqlDatabase db = new SqlDatabase(
-    		_configManager.getDatabase().host,
-    		_configManager.getDatabase().port,
-    		_configManager.getDatabase().db,
-    		_configManager.getDatabase().user,
-    		_configManager.getDatabase().password,
-    		getLogger()
-    		);
+        SqlDatabase db = new SqlDatabase(
+            _configManager.getDatabase().host,
+            _configManager.getDatabase().port,
+            _configManager.getDatabase().db,
+            _configManager.getDatabase().user,
+            _configManager.getDatabase().password,
+            getLogger()
+        );
 
-    	if(!db.connect()) return null;
+        if (!db.connect()) return null;
 
-    	if(!db.initDb()) {
-    		db.close();
-    		return null;
-    	}
+        if (!db.initDb()) {
+            db.close();
+            return null;
+        }
 
-    	return db;
+        return db;
     }
 
     @Override
