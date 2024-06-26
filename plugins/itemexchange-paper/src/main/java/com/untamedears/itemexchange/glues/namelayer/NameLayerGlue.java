@@ -1,49 +1,34 @@
 package com.untamedears.itemexchange.glues.namelayer;
 
 import com.untamedears.itemexchange.ItemExchangePlugin;
-import com.untamedears.itemexchange.events.BrowseOrPurchaseEvent;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
-import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.utilities.DependencyGlue;
-import vg.civcraft.mc.civmodcore.utilities.Validation;
+import java.util.List;
+import vg.civcraft.mc.civmodcore.events.PooledListeners;
+import vg.civcraft.mc.civmodcore.gluing.DependencyGlue;
 import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public final class NameLayerGlue extends DependencyGlue {
-
-    static NameLayerGlue instance;
-
-    public NameLayerGlue(final @NotNull ItemExchangePlugin plugin) {
-        super(plugin, "NameLayer");
-        instance = this;
-    }
-
-    private final Listener listener = new Listener() {
-        @EventHandler(ignoreCancelled = true)
-        public void denyPurchaseIfNotGotPerms(final BrowseOrPurchaseEvent event) {
-            final GroupModifier modifier = event.getTrade().getInput().getModifiers().get(GroupModifier.class);
-            if (!Validation.checkValidity(modifier)
-                || PermissionsGlue.PURCHASE_PERMISSION.testPermission(
-                GroupManager.getGroup(modifier.getGroupId()), event.getBrowser())) {
-                return;
-            }
-            event.limitToBrowsing();
-        }
-    };
+public final class NameLayerGlue implements DependencyGlue {
+    private final PooledListeners listeners = new PooledListeners();
 
     @Override
-    protected void onDependencyEnabled() {
-        PermissionsGlue.init();
+    public void enable() {
+        PermissionType.registerPermission(
+            Permissions.PURCHASE_PERMISSION,
+            List.of(
+                GroupManager.PlayerType.MEMBERS,
+                GroupManager.PlayerType.MODS,
+                GroupManager.PlayerType.ADMINS,
+                GroupManager.PlayerType.OWNER
+            ),
+            "Determines whether players can purchase from shops limited to this group."
+        );
         ItemExchangePlugin.modifierRegistrar().registerModifier(GroupModifier.TEMPLATE);
-        ItemExchangePlugin.getInstance().registerListener(this.listener);
+        this.listeners.registerListener(ItemExchangePlugin.getInstance(), new BrowseListener());
     }
 
     @Override
-    protected void onDependencyDisabled() {
-        HandlerList.unregisterAll(this.listener);
+    public void disable() {
+        this.listeners.clearListeners();
         ItemExchangePlugin.modifierRegistrar().deregisterModifier(GroupModifier.TEMPLATE);
-        PermissionsGlue.reset();
     }
-
 }
