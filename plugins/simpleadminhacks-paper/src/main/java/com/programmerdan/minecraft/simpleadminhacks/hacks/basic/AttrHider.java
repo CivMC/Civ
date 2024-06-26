@@ -187,7 +187,7 @@ public final class AttrHider extends BasicHack {
 								oldInfo.getGameMode(),
 								oldInfo.getDisplayName()));
 					}
-					cloned.getPlayerInfoDataLists().write(0, newInfos);
+					cloned.getPlayerInfoDataLists().write(1, newInfos);
 					// The packet data is shared between events, but the event
 					// instance is exclusive to THIS sending of the packet
 					event.setPacket(cloned);
