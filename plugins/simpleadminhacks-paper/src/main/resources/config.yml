@@ -134,6 +134,8 @@ hacks:
     preventUsingEyeOfEnder: true
     disablePiglins: true
     disableGapples: true
+  ItemMetaConverterHack:
+    enabled: true
   ItemSerializerHack:
     enabled: true
   MapCopyProtection:
