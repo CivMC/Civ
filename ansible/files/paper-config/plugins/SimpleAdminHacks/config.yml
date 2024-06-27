@@ -62,6 +62,10 @@ hacks:
      - GOAT
      - PARROT
      - PANDA
+     - CAMEL
+     - SNIFFER
+     - FROG
+     - TADPOLE
   AttrHider:
     enabled: true
     # Hide item data like enchantments, firework effects, book data, potion, etc..
