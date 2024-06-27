@@ -14,7 +14,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.persistence.PersistentDataType;
-import vg.civcraft.mc.civmodcore.pdc.extensions.PersistentDataContainerExtensions;
 
 import java.util.logging.Level;
 
