@@ -19,12 +19,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.bukkit.craftbukkit.v1_20_R3.util.CraftNBTTagConfigSerializer;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
-import vg.civcraft.mc.civmodcore.pdc.extensions.PersistentDataContainerExtensions;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public final class NBTSerialization {
@@ -47,17 +45,6 @@ public final class NBTSerialization {
             return null;
         }
         return new NBTCompound(nmsItem.getOrCreateTag());
-    }
-
-    /**
-     * Generates an NBT compound based on a given persistent data container.
-     *
-     * @param container The container to generate an NBT compound from.
-     * @return Returns a newly generated NBT compound by wrapping the PDC's inner-map.
-     */
-    @NotNull
-    public static NBTCompound fromPDC(@NotNull final PersistentDataContainer container) {
-        return new NBTCompound(PersistentDataContainerExtensions.getRaw(container));
     }
 
     /**
