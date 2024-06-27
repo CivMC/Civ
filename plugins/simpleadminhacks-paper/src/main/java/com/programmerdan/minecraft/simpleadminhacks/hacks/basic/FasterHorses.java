@@ -14,7 +14,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreedEvent;
 import org.bukkit.persistence.PersistentDataType;
-import vg.civcraft.mc.civmodcore.pdc.PersistentDataTypes;
 import vg.civcraft.mc.civmodcore.pdc.extensions.PersistentDataContainerExtensions;
 
 import java.util.logging.Level;
@@ -46,7 +45,7 @@ public class FasterHorses extends BasicHack {
             newSpeed = maxSpeed;
         }
         event.getEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(newSpeed);
-        event.getEntity().getPersistentDataContainer().set(speedChangedKey, PersistentDataTypes.BOOLEAN, true);
+        event.getEntity().getPersistentDataContainer().set(speedChangedKey, PersistentDataType.BOOLEAN, true);
         plugin.getLogger().log(Level.INFO, "Horse bred to have speed: " + newSpeed);
     }
 
@@ -58,7 +57,7 @@ public class FasterHorses extends BasicHack {
         if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.BREEDING) {
             return;
         }
-        if (((Tameable) event.getEntity()).isTamed() || event.getEntity().getPersistentDataContainer().has(speedChangedKey, PersistentDataTypes.BOOLEAN)) {
+        if (((Tameable) event.getEntity()).isTamed() || event.getEntity().getPersistentDataContainer().has(speedChangedKey, PersistentDataType.BOOLEAN)) {
             return;
         }
 
@@ -68,7 +67,7 @@ public class FasterHorses extends BasicHack {
         }
         double irwinHallDist = (Math.random() * 0.3 + Math.random() * 0.3 + Math.random() * 0.3) * ((this.maxSpeed - this.minSpeed) / 0.9) + this.minSpeed;
         moveSpeed.setBaseValue(irwinHallDist);
-        event.getEntity().getPersistentDataContainer().set(speedChangedKey, PersistentDataTypes.BOOLEAN, true);
+        event.getEntity().getPersistentDataContainer().set(speedChangedKey, PersistentDataType.BOOLEAN, true);
         plugin.getLogger().log(Level.INFO, "Setting Horse Speed to: " + irwinHallDist);
     }
 }
