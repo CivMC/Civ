@@ -8,8 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 public final class PersistentDataTypes {
 
-    public static final String DECODER_ERROR = "Was unable to decode that %s! [%s]";
-
     /**
      * Converts Components to Strings and vice versa.
      */
