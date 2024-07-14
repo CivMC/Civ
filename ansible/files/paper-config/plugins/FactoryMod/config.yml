@@ -53,6 +53,9 @@ factories:
       - smelt_quartz_blocks
       - smelt_smooth_quartz
       - smelt_smooth_basalt
+      - crush_disc_stal
+      - crush_disc_strad
+      - crush_disc_pigstep
       - repair_nether_smelter
   charcoal_factory:
     type: FCC
@@ -72,6 +75,10 @@ factories:
       - charcoal_from_crimson_stem
       - charcoal_from_warped_stem
       - charcoal_from_coal
+      - crush_disc_relic
+      - crush_disc_5
+      - crush_disc_11
+      - crush_disc_mellohi
       - repair_charcoal_factory
   aesthetics:
     type: FCC
@@ -98,6 +105,9 @@ factories:
       - make_redstone_lamp
       - pack_ice
       - pack_blue_ice
+      - crush_disc_chirp
+      - crush_disc_far
+      - crush_disc_mall
       - repair_aesthetics
   dye_wool:
     type: FCC
@@ -975,6 +985,22 @@ factories:
       - wordbank_item
       - crack_easter_egg
       - fabricate_netherite_upgrade
+      - fabricate_sentry_trim
+      - fabricate_vex_trim
+      - fabricate_wild_trim
+      - fabricate_coast_trim
+      - fabricate_dune_trim
+      - fabricate_wayfinder_trim
+      - fabricate_raiser_trim
+      - fabricate_shaper_trim
+      - fabricate_host_trim
+      - fabricate_ward_trim
+      - fabricate_silence_trim
+      - fabricate_tide_trim
+      - fabricate_snout_trim
+      - fabricate_rib_trim
+      - fabricate_eye_trim
+      - fabricate_spire_trim
       - repair_station
   concrete_mixer:
     type: FCC
@@ -1020,6 +1046,9 @@ factories:
       - harden_concrete_green
       - harden_concrete_red
       - harden_concrete_black
+      - crush_disc_ward
+      - crush_disc_wait
+      - crush_disc_otherside
       - repair_mixer
   bio_factory:
     type: FCC
@@ -1058,6 +1087,9 @@ factories:
       - form_horn_coral_block
       - form_brain_coral_block
       - form_bubble_coral_block
+      - crush_disc_13
+      - crush_disc_cat
+      - crush_disc_blocks
       - repair_bio
   gold_forge:
     type: FCC
@@ -6752,6 +6784,390 @@ recipes:
       netherite_upgrade_smithing_template:
         material: NETHERITE_UPGRADE_SMITHING_TEMPLATE
         amount: 1
+  fabricate_sentry_trim:
+    type: PRODUCTION
+    name: Fabricate Sentry Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Plains Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      iron_block:
+        material: IRON_BLOCK
+        amount: 64
+      dark_oak_log:
+        material: DARK_OAK_LOG
+        amount: 64
+    output:
+      trim:
+        material: SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_vex_trim:
+    type: PRODUCTION
+    name: Fabricate Vex Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Plains Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      allium:
+        material: ALLIUM
+        amount: 64
+      dark_oak_sapling:
+        material: DARK_OAK_SAPLING
+        amount: 64
+    output:
+      trim:
+        material: VEX_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_wild_trim:
+    type: PRODUCTION
+    name: Fabricate Wild Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Plains Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      mossy_cobblestone:
+        material: MOSSY_COBBLESTONE
+        amount: 64
+      bamboo:
+        material: BAMBOO
+        amount: 64
+    output:
+      trim:
+        material: WILD_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_coast_trim:
+    type: PRODUCTION
+    name: Fabricate Coast Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Relic Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      poisonous_potato:
+        material: POISONOUS_POTATO
+        amount: 64
+      leather:
+        material: LEATHER
+        amount: 64
+    output:
+      trim:
+        material: COAST_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_dune_trim:
+    type: PRODUCTION
+    name: Fabricate Dune Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Arid Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      string:
+        material: STRING
+        amount: 64
+      chiseled_red_sandstone:
+        material: CHISELED_RED_SANDSTONE
+        amount: 64
+    output:
+      trim:
+        material: DUNE_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_wayfinder_trim:
+    type: PRODUCTION
+    name: Fabricate Wayfinder Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Forest Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      lead:
+        material: LEAD
+        amount: 64
+      terracotta:
+        material: TERRACOTTA
+        amount: 64
+    output:
+      trim:
+        material: WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_raiser_trim:
+    type: PRODUCTION
+    name: Fabricate Raiser Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Forest Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      lead:
+        material: LEAD
+        amount: 64
+      packed_mud:
+        material: PACKED_MUD
+        amount: 64
+    output:
+      trim:
+        material: RAISER_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_shaper_trim:
+    type: PRODUCTION
+    name: Fabricate Shaper Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Forest Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      lead:
+        material: LEAD
+        amount: 64
+      coarse_dirt:
+        material: COARSE_DIRT
+        amount: 64
+    output:
+      trim:
+        material: SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_host_trim:
+    type: PRODUCTION
+    name: Fabricate Host Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Forest Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      lead:
+        material: LEAD
+        amount: 64
+      flower_pot:
+        material: FLOWER_POT
+        amount: 64
+    output:
+      trim:
+        material: HOST_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_ward_trim:
+    type: PRODUCTION
+    name: Fabricate Ward Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Relic Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      amethyst_shard:
+        material: AMETHYST_SHARD
+        amount: 64
+      compass:
+        material: COMPASS
+        amount: 64
+    output:
+      trim:
+        material: WARD_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_silence_trim:
+    type: PRODUCTION
+    name: Fabricate Silence Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Relic Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      sculk:
+        material: SCULK
+        amount: 64
+      glow_berries:
+        material: GLOW_BERRIES
+        amount: 64
+    output:
+      trim:
+        material: SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_tide_trim:
+    type: PRODUCTION
+    name: Fabricate Tide Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Barren Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      wet_sponge:
+        material: WET_SPONGE
+        amount: 1
+      ink_sak:
+        material: INK_SAC
+        amount: 64
+    output:
+      trim:
+        material: TIDE_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_snout_trim:
+    type: PRODUCTION
+    name: Fabricate Snout Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Arid Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      blackstone:
+        material: BLACKSTONE
+        amount: 64
+      magma_block:
+        material: MAGMA_BLOCK
+        amount: 64
+    output:
+      trim:
+        material: SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_rib_trim:
+    type: PRODUCTION
+    name: Fabricate Rib Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Arid Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      blaze_rod:
+        material: BLAZE_ROD
+        amount: 64
+      soul_sand:
+        material: SOUL_SAND
+        amount: 64
+    output:
+      trim:
+        material: RIB_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_eye_trim:
+    type: PRODUCTION
+    name: Fabricate Eye Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Barren Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      cobweb:
+        material: COBWEB
+        amount: 64
+      apple:
+        material: APPLE
+        amount: 64
+    output:
+      trim:
+        material: EYE_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_spire_trim:
+    type: PRODUCTION
+    name: Fabricate Spire Trim
+    production_time: 4s
+    input:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Barren Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+      diamond:
+        material: DIAMOND
+        amount: 168
+      beetroot_seeds:
+        material: BEETROOT_SEEDS
+        amount: 64
+      ender_chest:
+        material: ENDER_CHEST
+        amount: 64
+    output:
+      trim:
+        material: SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
   wordbank_item:
     type: WORDBANK
     name: Generate item name
@@ -9637,3 +10053,259 @@ recipes:
             ds:
               enchant: DEPTH_STRIDER
               level: 3
+  crush_disc_13:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''13'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_13
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Plains Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_cat:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Cat'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_CAT
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Plains Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_blocks:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Blocks'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_BLOCKS
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Plains Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_chirp:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Chirp'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_CHIRP
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Relic Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_far:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Far'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_FAR
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Relic Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_relic:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Relic'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_RELIC
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Relic Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_stal:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Stal'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_STAL
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Arid Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_strad:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Strad'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_STRAD
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Arid Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_pigstep:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Pigstep'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_PIGSTEP
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Arid Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_ward:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Ward'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_WARD
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: End Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_wait:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Wait'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_WAIT
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: End Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_otherside:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Otherside'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_OTHERSIDE
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: End Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_mall:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Mall'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_MALL
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Forest Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_5:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''5'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_5
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Forest Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_11:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''11'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_11
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Forest Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
+  crush_disc_mellohi:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Mellohi'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        material: MUSIC_DISC_MELLOHI
+        amount: 1
+    output:
+      fragment:
+        material: PAPER
+        amount: 1  
+        name: Forest Trim Fragment
+        lore:
+        - Used to produce trims in the Research Station
