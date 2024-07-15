@@ -257,7 +257,10 @@ public final class ReinforcementLogic {
             case JUNGLE_DOOR:
             case WARPED_DOOR:
             case CRIMSON_DOOR:
-            case OAK_DOOR: {
+            case OAK_DOOR:
+            case CHERRY_DOOR:
+            case BAMBOO_DOOR:
+            case MANGROVE_DOOR: {
                 if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
                     // block is upper half of a door
                     return block.getRelative(BlockFace.DOWN);
