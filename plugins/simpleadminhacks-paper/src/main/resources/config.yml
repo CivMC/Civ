@@ -546,3 +546,6 @@ hacks:
     maxSpeed: 0.438827582278 # 18.5m/s
   AntiDerailment:
     enabled: true
+  CreeperDiscHack:
+    enabled: true
+    discChance: 0.003
