@@ -10210,7 +10210,7 @@ recipes:
       fragment:
         material: PAPER
         amount: 1  
-        name: End Trim Fragment
+        name: Barren Trim Fragment
         lore:
         - Used to produce trims in the Research Station
   crush_disc_wait:
@@ -10226,7 +10226,7 @@ recipes:
       fragment:
         material: PAPER
         amount: 1  
-        name: End Trim Fragment
+        name: Barren Trim Fragment
         lore:
         - Used to produce trims in the Research Station
   crush_disc_otherside:
@@ -10242,7 +10242,7 @@ recipes:
       fragment:
         material: PAPER
         amount: 1  
-        name: End Trim Fragment
+        name: Barren Trim Fragment
         lore:
         - Used to produce trims in the Research Station
   crush_disc_mall:
