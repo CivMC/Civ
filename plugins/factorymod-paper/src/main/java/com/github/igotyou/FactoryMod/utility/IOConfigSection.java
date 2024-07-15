@@ -87,7 +87,7 @@ public class IOConfigSection extends StaticDisplaySection {
                 .append(Component.text(dirState.displayName).color(TextColor.color(dirState.color)))
                 .asComponent());
         ItemUtils.addComponentLore(display,
-            Component.text("L/M/R click to toggle I/F/O")
+            Component.text("L/LS/R click to toggle I/F/O")
                 .style(Style.style(TextDecoration.BOLD))
                 .color(TextColor.color(255, 255, 255)));
         FactoryModManager fmMgr = FactoryMod.getInstance().getManager();
@@ -129,7 +129,7 @@ public class IOConfigSection extends StaticDisplaySection {
             }
 
             @Override
-            protected void onMiddleClick(Player player) {
+            protected void onShiftLeftClick(Player player) {
                 if (!ioSelector.isFuel(dir)) {
                     if (iofProvider.getFuelCount() >= fmMgr.getMaxFuelChests()) {
                         player.sendMessage(ChatColor.RED + "This factory is at the maximum number of fuel inputs.");
