@@ -6791,7 +6791,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Plains Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -6815,7 +6815,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Plains Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -6839,7 +6839,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Plains Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -6863,7 +6863,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Relic Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -6887,7 +6887,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Arid Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -6911,7 +6911,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Forest Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -6935,7 +6935,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Forest Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -6959,7 +6959,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Forest Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -6983,7 +6983,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Forest Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -7007,7 +7007,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Relic Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -7031,7 +7031,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Relic Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -7055,7 +7055,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Barren Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -7079,7 +7079,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Arid Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -7103,7 +7103,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Arid Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -7127,7 +7127,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Barren Trim Fragment
         lore:
         - Used to produce trims in the Research Station
@@ -7151,7 +7151,7 @@ recipes:
     input:
       fragment:
         material: PAPER
-        amount: 1  
+        amount: 2
         name: Barren Trim Fragment
         lore:
         - Used to produce trims in the Research Station
