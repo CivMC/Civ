@@ -697,7 +697,6 @@ public class BridgeManager {
             craftBlock.getHandle().getMinecraftWorld().updateNeighborsAt(craftBlock.getPosition(), craftBlock.getNMS().getBlock());
         }
 
-
         _storage.setLinkBlocks(link, null);
     }
 
