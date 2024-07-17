@@ -278,6 +278,9 @@ factories:
   adv_ore_smelter:
     type: FCCUPGRADE
     name: Advanced Ore Smelter
+    fuel:
+      fuelidentifier:
+        material: EMERALD
     citadelBreakReduction: 1.0
     recipes:
       - adv_smelt_ancient_debris
@@ -903,6 +906,9 @@ factories:
   advanced_cauldron:
     type: FCCUPGRADE
     name: Advanced Cauldron
+    fuel:
+      fuelidentifier:
+        material: EMERALD
     citadelBreakReduction: 1.0
     recipes:
       - adv_xp_1
