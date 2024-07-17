@@ -829,6 +829,9 @@ factories:
   bastion_factory:
     type: FCC
     name: Bastion Factory
+    fuel:
+      fuelidentifier:
+        material: EMERALD
     citadelBreakReduction: 1.0
     setupcost:
       casing:
@@ -906,9 +909,6 @@ factories:
   advanced_cauldron:
     type: FCCUPGRADE
     name: Advanced Cauldron
-    fuel:
-      fuelidentifier:
-        material: EMERALD
     citadelBreakReduction: 1.0
     recipes:
       - adv_xp_1
