@@ -280,7 +280,10 @@ factories:
     name: Advanced Ore Smelter
     fuel:
       fuelidentifier:
-        material: EMERALD
+        material: ENDER_EYE
+        name: Player Essence
+        lore:
+          - Activity reward used to fuel pearls
     citadelBreakReduction: 1.0
     recipes:
       - adv_smelt_ancient_debris
