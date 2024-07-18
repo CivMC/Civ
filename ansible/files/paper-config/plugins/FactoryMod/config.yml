@@ -909,6 +909,12 @@ factories:
   advanced_cauldron:
     type: FCCUPGRADE
     name: Advanced Cauldron
+    fuel:
+      fuelidentifier:
+        material: ENDER_EYE
+        name: Player Essence
+        lore:
+          - Activity reward used to fuel pearls
     citadelBreakReduction: 1.0
     recipes:
       - adv_xp_1
