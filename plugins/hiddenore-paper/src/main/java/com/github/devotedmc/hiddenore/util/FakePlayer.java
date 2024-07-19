@@ -3397,6 +3397,11 @@ public class FakePlayer implements Player {
     }
 
     @Override
+    public boolean canUseEquipmentSlot(@NotNull EquipmentSlot equipmentSlot) {
+        return false;
+    }
+
+    @Override
     public void setInvisible(boolean arg0) {
         // TODO Auto-generated method stub
 
