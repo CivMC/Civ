@@ -14,142 +14,142 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.BlockBasedChunk
 
 public class GlobalLocationTracker<T extends LocationTrackable> {
 
-	private Map<Location, T> tracked;
-	private GlobalTrackableDAO<T> dao;
-	private Map<Location, T> deleted;
-	private Map<Location, T> modified;
-	private Map<XZWCoord, Map<Location, T>> perChunk;
+    private Map<Location, T> tracked;
+    private GlobalTrackableDAO<T> dao;
+    private Map<Location, T> deleted;
+    private Map<Location, T> modified;
+    private Map<XZWCoord, Map<Location, T>> perChunk;
 
-	public GlobalLocationTracker(GlobalTrackableDAO<T> dao) {
-		this.tracked = new HashMap<>();
-		this.dao = dao;
-		this.deleted = new HashMap<>();
-		this.modified = new HashMap<>();
-		this.perChunk = new HashMap<>();
-	}
-	
-	public synchronized void initFromDB() {
-		dao.loadAll(this::putUnmodified);
-	}
+    public GlobalLocationTracker(GlobalTrackableDAO<T> dao) {
+        this.tracked = new HashMap<>();
+        this.dao = dao;
+        this.deleted = new HashMap<>();
+        this.modified = new HashMap<>();
+        this.perChunk = new HashMap<>();
+    }
 
-	public void handleChunkLoad(Chunk chunk) {
-		Map<Location, T> perChunkMap = perChunk.get(XZWCoord.fromChunk(chunk));
-		if (perChunkMap != null) {
-			for(Map.Entry<Location,T> entry : perChunkMap.entrySet()) {
-				int x = BlockBasedChunkMeta.modulo(entry.getKey().getBlockX());
-				int z = BlockBasedChunkMeta.modulo(entry.getKey().getBlockZ());
-				Block block = chunk.getBlock(x, entry.getKey().getBlockY(), z);
-				entry.getValue().onChunkLoad(block);
-			}
-		}
-	}
+    public synchronized void initFromDB() {
+        dao.loadAll(this::putUnmodified);
+    }
 
-	public void handleChunkUnload(Chunk chunk) {
-		Map<Location, T> perChunkMap = perChunk.get(XZWCoord.fromChunk(chunk));
-		if (perChunkMap != null) {
-			for(Map.Entry<Location,T> entry : perChunkMap.entrySet()) {
-				int x = BlockBasedChunkMeta.modulo(entry.getKey().getBlockX());
-				int z = BlockBasedChunkMeta.modulo(entry.getKey().getBlockZ());
-				Block block = chunk.getBlock(x, entry.getKey().getBlockY(), z);
-				entry.getValue().onChunkUnload(block);
-			}
-		}
-	}
+    public void handleChunkLoad(Chunk chunk) {
+        Map<Location, T> perChunkMap = perChunk.get(XZWCoord.fromChunk(chunk));
+        if (perChunkMap != null) {
+            for (Map.Entry<Location, T> entry : perChunkMap.entrySet()) {
+                int x = BlockBasedChunkMeta.modulo(entry.getKey().getBlockX());
+                int z = BlockBasedChunkMeta.modulo(entry.getKey().getBlockZ());
+                Block block = chunk.getBlock(x, entry.getKey().getBlockY(), z);
+                entry.getValue().onChunkLoad(block);
+            }
+        }
+    }
 
-	public void persist() {
-		persistDeleted();
-		persistModified();
-	}
+    public void handleChunkUnload(Chunk chunk) {
+        Map<Location, T> perChunkMap = perChunk.get(XZWCoord.fromChunk(chunk));
+        if (perChunkMap != null) {
+            for (Map.Entry<Location, T> entry : perChunkMap.entrySet()) {
+                int x = BlockBasedChunkMeta.modulo(entry.getKey().getBlockX());
+                int z = BlockBasedChunkMeta.modulo(entry.getKey().getBlockZ());
+                Block block = chunk.getBlock(x, entry.getKey().getBlockY(), z);
+                entry.getValue().onChunkUnload(block);
+            }
+        }
+    }
 
-	private void persistDeleted() {
-		List<T> list;
+    public void persist() {
+        persistDeleted();
+        persistModified();
+    }
 
-		synchronized (this.deleted) {
-			if (this.deleted.isEmpty())
-				return;
+    private void persistDeleted() {
+        List<T> list;
 
-			list = new ArrayList<>();
-			list.addAll(this.deleted.values());
-			this.deleted.clear();
-		}
+        synchronized (this.deleted) {
+            if (this.deleted.isEmpty())
+                return;
 
-		list.forEach(dao::delete);
-	}
+            list = new ArrayList<>();
+            list.addAll(this.deleted.values());
+            this.deleted.clear();
+        }
 
-	private void persistModified() {
-		List<T> list;
+        list.forEach(dao::delete);
+    }
 
-		synchronized (this.modified) {
-			if (this.modified.isEmpty())
-				return;
+    private void persistModified() {
+        List<T> list;
 
-			list = new ArrayList<>();
-			list.addAll(this.modified.values());
-			this.modified.clear();
-		}
+        synchronized (this.modified) {
+            if (this.modified.isEmpty())
+                return;
 
-		for (T t : list) {
-			switch (t.getCacheState()) {
-				case DELETED:
-					dao.delete(t);
-					break;
-				case MODIFIED:
-					dao.update(t);
-					break;
-				case NEW:
-					dao.insert(t);
-					break;
-				case NORMAL:
-				default:
-					break;
-			}
-			t.setCacheState(CacheState.NORMAL);
-		}
-	}
+            list = new ArrayList<>();
+            list.addAll(this.modified.values());
+            this.modified.clear();
+        }
 
-	public synchronized T get(Location loc) {
-		return tracked.get(loc);
-	}
+        for (T t : list) {
+            switch (t.getCacheState()) {
+                case DELETED:
+                    dao.delete(t);
+                    break;
+                case MODIFIED:
+                    dao.update(t);
+                    break;
+                case NEW:
+                    dao.insert(t);
+                    break;
+                case NORMAL:
+                default:
+                    break;
+            }
+            t.setCacheState(CacheState.NORMAL);
+        }
+    }
 
-	public void put(T trackable) {
-		putUnmodified(trackable);
-		setModified(trackable);
-	}
+    public synchronized T get(Location loc) {
+        return tracked.get(loc);
+    }
 
-	public void setModified(T trackable) {
-		synchronized (this.modified) {
-			this.modified.put(trackable.getLocation(), trackable);
-		}
-	}
+    public void put(T trackable) {
+        putUnmodified(trackable);
+        setModified(trackable);
+    }
 
-	private synchronized void putUnmodified(T trackable) {
-		trackable.setTracker(this);
+    public void setModified(T trackable) {
+        synchronized (this.modified) {
+            this.modified.put(trackable.getLocation(), trackable);
+        }
+    }
 
-		tracked.put(trackable.getLocation(), trackable);
-		Map<Location, T> chunkSpecificData = perChunk.computeIfAbsent(XZWCoord.fromLocation(
-				trackable.getLocation()), s -> new HashMap<>());
-		chunkSpecificData.put(trackable.getLocation(), trackable);
-	}
+    private synchronized void putUnmodified(T trackable) {
+        trackable.setTracker(this);
 
-	public synchronized T remove(Location loc) {
-		T removed = tracked.remove(loc);
-		if (removed != null && removed.getCacheState() != CacheState.NEW) {
-			Map<Location, T> chunkSpecificData = perChunk.computeIfAbsent(XZWCoord.fromLocation(
-					loc), s -> new HashMap<>());
-			if (removed != chunkSpecificData.remove(loc)) {
-				CivModCorePlugin.getInstance().getLogger().severe("Data removed from per chunk tracking did "
-						+ "not match data in global tracking");
-			}
+        tracked.put(trackable.getLocation(), trackable);
+        Map<Location, T> chunkSpecificData = perChunk.computeIfAbsent(XZWCoord.fromLocation(
+            trackable.getLocation()), s -> new HashMap<>());
+        chunkSpecificData.put(trackable.getLocation(), trackable);
+    }
 
-			synchronized (this.deleted) {
-				this.deleted.put(loc, removed);
-			}
-		}
-		return removed;
-	}
+    public synchronized T remove(Location loc) {
+        T removed = tracked.remove(loc);
+        if (removed != null && removed.getCacheState() != CacheState.NEW) {
+            Map<Location, T> chunkSpecificData = perChunk.computeIfAbsent(XZWCoord.fromLocation(
+                loc), s -> new HashMap<>());
+            if (removed != chunkSpecificData.remove(loc)) {
+                CivModCorePlugin.getInstance().getLogger().severe("Data removed from per chunk tracking did "
+                    + "not match data in global tracking");
+            }
 
-	public synchronized T remove(T trackable) {
-		return remove(trackable.getLocation());
-	}
+            synchronized (this.deleted) {
+                this.deleted.put(loc, removed);
+            }
+        }
+        return removed;
+    }
+
+    public synchronized T remove(T trackable) {
+        return remove(trackable.getLocation());
+    }
 
 }

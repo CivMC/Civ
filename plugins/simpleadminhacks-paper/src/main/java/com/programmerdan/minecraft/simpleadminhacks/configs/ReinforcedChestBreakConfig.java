@@ -4,7 +4,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class ReinforcedChestBreakConfig extends SimpleHackConfig{
+public class ReinforcedChestBreakConfig extends SimpleHackConfig {
 
     /**
      * This is the delay between messages

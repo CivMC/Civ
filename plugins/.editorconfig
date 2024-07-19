@@ -6,11 +6,10 @@ root = true
 # Unix-style newlines with a newline ending every file
 [*]
 charset = utf-8
-indent_style = tab
+indent_style = space
 indent_size = 4
 end_of_line = lf
 insert_final_newline = true
-continuation_indent_size = 8
 
 ij_continuation_indent_size = 4
 ij_formatter_off_tag = @formatter:off
@@ -24,17 +23,15 @@ ij_java_blank_lines_after_anonymous_class_header = 0
 ij_java_blank_lines_after_class_header = 1
 ij_java_blank_lines_before_imports = 1
 ij_java_class_count_to_use_import_on_demand = 999
-ij_java_imports_layout = $*,|,*
+ij_java_imports_layout = $*, |, *
 ij_java_layout_static_imports_separately = true
 ij_java_names_count_to_use_import_on_demand = 999
 ij_java_use_single_class_imports = true
 
 [*.java]
-indent_style = tab
-indent_size = 4
 ij_java_imports_layout =
 
-[*.{xml, yml}]
+[*.{xml,yml}]
 indent_style = space
 indent_size = 2
 
@@ -49,7 +46,6 @@ end_of_line = crlf
 
 [*.sh]
 end_of_line = lf
-
 
 [*.properties]
 ij_properties_align_group_field_declarations = false

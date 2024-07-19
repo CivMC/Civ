@@ -13,24 +13,25 @@ import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
 import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 
 public class NameLayerListener implements Listener {
-	private BastionBlockStorage storage;
 
-	public NameLayerListener(BastionBlockStorage storage) {
-		this.storage = storage;
-	}
+    private BastionBlockStorage storage;
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onGroupMergeEvent(GroupMergeEvent event) {
-		int toGroupId = event.getMergingInto().getGroupId();
-		List<Integer> fromGroupIds = event.getToBeMerged().getGroupIds();
+    public NameLayerListener(BastionBlockStorage storage) {
+        this.storage = storage;
+    }
 
-		this.storage.mergeGroups(toGroupId, fromGroupIds);
-	}
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onGroupMergeEvent(GroupMergeEvent event) {
+        int toGroupId = event.getMergingInto().getGroupId();
+        List<Integer> fromGroupIds = event.getToBeMerged().getGroupIds();
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onGroupDeleteEvent(GroupDeleteEvent event) {
-		List<Integer> groupIds = event.getGroup().getGroupIds();
+        this.storage.mergeGroups(toGroupId, fromGroupIds);
+    }
 
-		this.storage.removeGroups(groupIds);
-	}
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onGroupDeleteEvent(GroupDeleteEvent event) {
+        List<Integer> groupIds = event.getGroup().getGroupIds();
+
+        this.storage.removeGroups(groupIds);
+    }
 }

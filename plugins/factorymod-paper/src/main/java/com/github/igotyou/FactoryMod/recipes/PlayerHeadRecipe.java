@@ -20,62 +20,63 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
  * Outputs a player head belonging to a random player who is connected to the server when the recipe is run
  */
 public class PlayerHeadRecipe extends InputRecipe {
-	public PlayerHeadRecipe(String identifier, String name, int productionTime, ItemMap inputs) {
-		super(identifier, name, productionTime, inputs);
-	}
 
-	@Override
-	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		if (i == null) {
-			return input.getItemStackRepresentation();
-		}
-		return createLoredStacksForInfo(i);
-	}
+    public PlayerHeadRecipe(String identifier, String name, int productionTime, ItemMap inputs) {
+        super(identifier, name, productionTime, inputs);
+    }
 
-	@Override
-	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		ItemStack is = new ItemStack(Material.PLAYER_HEAD, 1);
-		ItemUtils.addLore(is,"The player head of a randomly chosen online player");
-		return Collections.singletonList(is);
-	}
+    @Override
+    public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        if (i == null) {
+            return input.getItemStackRepresentation();
+        }
+        return createLoredStacksForInfo(i);
+    }
 
-	@Override
-	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		return Collections.singletonList("The player head of a randomly chosen online player");
-	}
+    @Override
+    public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        ItemStack is = new ItemStack(Material.PLAYER_HEAD, 1);
+        ItemUtils.addLore(is, "The player head of a randomly chosen online player");
+        return Collections.singletonList(is);
+    }
 
-	@Override
-	public Material getRecipeRepresentationMaterial() {
-		return Material.PLAYER_HEAD;
-	}
+    @Override
+    public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        return Collections.singletonList("The player head of a randomly chosen online player");
+    }
 
-	@Override
-	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
-		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
-		logBeforeRecipeRun(combo, fccf);
-		ItemMap toRemove = input.clone();
-		ArrayList<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
-		if (players.isEmpty()) {
-			return false;
-		}
-		if (toRemove.isContainedIn(inputInv)) {
-			if (toRemove.removeSafelyFrom(inputInv)) {
-				Random rand = new Random();
-				Player player = players.get(rand.nextInt(players.size()));
-				ItemStack is = new ItemStack(Material.PLAYER_HEAD, 1);
-				SkullMeta im = (SkullMeta) is.getItemMeta();
-				im.setOwningPlayer(Bukkit.getOfflinePlayer(player.getUniqueId()));
-				im.setDisplayName(player.getDisplayName());
-				is.setItemMeta(im);
-				outputInv.addItem(is);
-			}
-		}
-		logAfterRecipeRun(combo, fccf);
-		return true;
-	}
+    @Override
+    public Material getRecipeRepresentationMaterial() {
+        return Material.PLAYER_HEAD;
+    }
 
-	@Override
-	public String getTypeIdentifier() {
-		return "PLAYERHEAD";
-	}
+    @Override
+    public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+        logBeforeRecipeRun(combo, fccf);
+        ItemMap toRemove = input.clone();
+        ArrayList<Player> players = new ArrayList<>(Bukkit.getOnlinePlayers());
+        if (players.isEmpty()) {
+            return false;
+        }
+        if (toRemove.isContainedIn(inputInv)) {
+            if (toRemove.removeSafelyFrom(inputInv)) {
+                Random rand = new Random();
+                Player player = players.get(rand.nextInt(players.size()));
+                ItemStack is = new ItemStack(Material.PLAYER_HEAD, 1);
+                SkullMeta im = (SkullMeta) is.getItemMeta();
+                im.setOwningPlayer(Bukkit.getOfflinePlayer(player.getUniqueId()));
+                im.setDisplayName(player.getDisplayName());
+                is.setItemMeta(im);
+                outputInv.addItem(is);
+            }
+        }
+        logAfterRecipeRun(combo, fccf);
+        return true;
+    }
+
+    @Override
+    public String getTypeIdentifier() {
+        return "PLAYERHEAD";
+    }
 }

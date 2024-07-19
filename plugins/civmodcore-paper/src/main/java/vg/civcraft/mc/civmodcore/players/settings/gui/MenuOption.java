@@ -7,28 +7,28 @@ import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSetting;
 
 public class MenuOption extends MenuItem {
-	
-	private final PlayerSetting<?> setting;
 
-	public MenuOption(MenuSection menu, PlayerSetting<?> setting) {
-		super(setting.getNiceName(), menu);
-		this.setting = setting;
-	}
+    private final PlayerSetting<?> setting;
 
-	@Override
-	public IClickable getMenuRepresentation(Player player) {
-		ItemStack item = setting.getGuiRepresentation(player.getUniqueId());
-		return new Clickable(item) {
-			
-			@Override
-			public void clicked(Player p) {
-				setting.handleMenuClick(p, getParent());				
-			}
-		};
-	}
+    public MenuOption(MenuSection menu, PlayerSetting<?> setting) {
+        super(setting.getNiceName(), menu);
+        this.setting = setting;
+    }
 
-	public PlayerSetting<?> getSetting() {
-		return this.setting;
-	}
+    @Override
+    public IClickable getMenuRepresentation(Player player) {
+        ItemStack item = setting.getGuiRepresentation(player.getUniqueId());
+        return new Clickable(item) {
+
+            @Override
+            public void clicked(Player p) {
+                setting.handleMenuClick(p, getParent());
+            }
+        };
+    }
+
+    public PlayerSetting<?> getSetting() {
+        return this.setting;
+    }
 
 }

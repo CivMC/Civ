@@ -218,7 +218,7 @@ public final class TagListener implements Listener {
 
         // Send combat tag notification to victim
         if (victim != null && !plugin.getTagManager().isTagged(victim.getUniqueId())
-                && !plugin.getSettings().onlyTagAttacker()) {
+            && !plugin.getSettings().onlyTagAttacker()) {
             if (attacker != null) {
                 String message = plugin.getSettings().getTagMessage();
                 if (!message.isEmpty()) {

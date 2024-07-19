@@ -28,20 +28,21 @@
 * Disallow running back to safety while in combat (can also render a forcefield)
 * Supports WorldGuard PVP deny flag (WorldGuard 5.x and 6.x both supported)
 * Supports Factions PVP flag
-  * _Most mainstream Faction builds are supported:_
-  * Factions 2.7 (MassiveCore 2.7)
-  * Factions 2.6 (MassiveCore 7.4)
-  * FactionsUUID 1.6 (and HCFactions) by @drtshock
-  * FactionsUUID 1.8 by @externo6
+    * _Most mainstream Faction builds are supported:_
+    * Factions 2.7 (MassiveCore 2.7)
+    * Factions 2.6 (MassiveCore 7.4)
+    * FactionsUUID 1.6 (and HCFactions) by @drtshock
+    * FactionsUUID 1.8 by @externo6
 * Supports Towny PVP permission
 * Works with BarAPI to show a boss bar counting down with the player's remaining combat timer
-  * _These custom BarAPI builds by @vemacs are more compatible than the official ones:_
-  * Spigot 1.8.0: [Download](http://ci.minelink.net/job/BarAPI/5/artifact/target/BarAPI.jar)
-  * Spigot 1.7.10 / 1.8 Protocol Patch: [Download](http://ci.minelink.net/job/BarAPI/4/artifact/target/BarAPI.jar)
+    * _These custom BarAPI builds by @vemacs are more compatible than the official ones:_
+    * Spigot 1.8.0: [Download](http://ci.minelink.net/job/BarAPI/5/artifact/target/BarAPI.jar)
+    * Spigot 1.7.10 / 1.8 Protocol Patch: [Download](http://ci.minelink.net/job/BarAPI/4/artifact/target/BarAPI.jar)
 
 ## Development Builds
 
-You can acquire development builds of CombatTagPlus from the [Minelink Network CI server](http://ci.minelink.net/job/CombatTagPlus/).
+You can acquire development builds of CombatTagPlus from
+the [Minelink Network CI server](http://ci.minelink.net/job/CombatTagPlus/).
 
 ## Installation
 
@@ -55,7 +56,7 @@ You can acquire development builds of CombatTagPlus from the [Minelink Network C
 ## Permissions
 
 | **Permission**           | **Description**                            | **Default** |
-| -------------------------| ------------------------------------------ | ----------- |
+|--------------------------|--------------------------------------------|-------------|
 | ctplus.reload            | Reload CombatTagPlus configuration         | operator    |
 | ctplus.bypass.tag        | Bypass combat tagging                      | operator    |
 | ctplus.bypass.command    | Bypass command restrictions in combat      | operator    |
@@ -84,4 +85,6 @@ CombatTagPlus is licensed to you freely under the terms of the [LGPL license](ht
 ![YourKit-Logo](https://www.yourkit.com/images/yklogo.png)
 
 [YourKit](http://www.yourkit.com/) supports open source projects with its full-featured Java Profiler.
-YourKit, LLC is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler/index.jsp) and [YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/index.jsp), innovative and intelligent tools for profiling Java and .NET applications.
+YourKit, LLC is the creator of [YourKit Java Profiler](https://www.yourkit.com/java/profiler/index.jsp)
+and [YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/index.jsp), innovative and intelligent tools for
+profiling Java and .NET applications.

@@ -6,37 +6,37 @@ import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 
 public class DormantCullingConfig implements AppenderConfig {
 
-	private long lifeTime;
-	private long dormantLifeTime;
+    private long lifeTime;
+    private long dormantLifeTime;
 
-	public DormantCullingConfig(ConfigurationSection config) {
-		lifeTime = ConfigHelper.parseTime(config.getString("lifeTime", "2 weeks"), TimeUnit.MILLISECONDS);
-		dormantLifeTime = ConfigHelper.parseTime(config.getString("dormantTime", "2 weeks"), TimeUnit.MILLISECONDS);
-	}
+    public DormantCullingConfig(ConfigurationSection config) {
+        lifeTime = ConfigHelper.parseTime(config.getString("lifeTime", "2 weeks"), TimeUnit.MILLISECONDS);
+        dormantLifeTime = ConfigHelper.parseTime(config.getString("dormantTime", "2 weeks"), TimeUnit.MILLISECONDS);
+    }
 
-	/**
-	 * @return How long should the snitch stay alive until it goes dormant, in milli
-	 *         seconds
-	 */
-	public long getLifetime() {
-		return lifeTime;
-	}
+    /**
+     * @return How long should the snitch stay alive until it goes dormant, in milli
+     * seconds
+     */
+    public long getLifetime() {
+        return lifeTime;
+    }
 
-	/**
-	 * @return How long should the snitch stay dormant until it is removed entirely,
-	 *         in milli seconds
-	 */
-	public long getDormantLifeTime() {
-		return dormantLifeTime;
-	}
+    /**
+     * @return How long should the snitch stay dormant until it is removed entirely,
+     * in milli seconds
+     */
+    public long getDormantLifeTime() {
+        return dormantLifeTime;
+    }
 
-	/**
-	 * @return How long should the snitch stay alive from a refresh until it is
-	 *         removed entirely, meaning the sum of dormant and normal life time, in
-	 *         milli seconds
-	 */
-	public long getTotalLifeTime() {
-		return dormantLifeTime + lifeTime;
-	}
+    /**
+     * @return How long should the snitch stay alive from a refresh until it is
+     * removed entirely, meaning the sum of dormant and normal life time, in
+     * milli seconds
+     */
+    public long getTotalLifeTime() {
+        return dormantLifeTime + lifeTime;
+    }
 
 }

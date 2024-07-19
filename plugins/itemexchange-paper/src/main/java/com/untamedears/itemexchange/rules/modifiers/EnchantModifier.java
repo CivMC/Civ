@@ -41,229 +41,226 @@ import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
 @Modifier(slug = "ENCHANTS", order = 200)
 public final class EnchantModifier extends ModifierData {
 
-	public static final EnchantModifier TEMPLATE = new EnchantModifier();
-	public static final Pattern SET_ENCHANT_PATTERN = Pattern.compile("^([+?\\-])([A-Za-z_]+)([\\d]*)$");
+    public static final EnchantModifier TEMPLATE = new EnchantModifier();
+    public static final Pattern SET_ENCHANT_PATTERN = Pattern.compile("^([+?\\-])([A-Za-z_]+)([\\d]*)$");
 
-	public static final String REQUIRED_KEY = "required";
-	public static final String EXCLUDED_KEY = "excluded";
-	public static final String UNLISTED_KEY = "unlisted";
+    public static final String REQUIRED_KEY = "required";
+    public static final String EXCLUDED_KEY = "excluded";
+    public static final String UNLISTED_KEY = "unlisted";
 
-	private Map<Enchantment, Integer> requiredEnchants;
-	private Set<Enchantment> excludedEnchants;
-	private boolean allowUnlistedEnchants;
+    private Map<Enchantment, Integer> requiredEnchants;
+    private Set<Enchantment> excludedEnchants;
+    private boolean allowUnlistedEnchants;
 
-	@Override
-	public EnchantModifier construct(ItemStack item) {
-		EnchantModifier modifier = new EnchantModifier();
-		modifier.requiredEnchants = item.getEnchantments();
-		return modifier;
-	}
+    @Override
+    public EnchantModifier construct(ItemStack item) {
+        EnchantModifier modifier = new EnchantModifier();
+        modifier.requiredEnchants = item.getEnchantments();
+        return modifier;
+    }
 
-	@Override
-	public boolean isBroken() {
-		for (Map.Entry<Enchantment, Integer> entry : getRequiredEnchants().entrySet()) {
-			if (!MoreMapUtils.validEntry(entry)) {
-				return true;
-			}
-			if (entry.getValue() == ExchangeRule.ANY) {
-				continue;
-			}
-			if (!EnchantUtils.isSafeEnchantment(entry.getKey(), entry.getValue())) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean isBroken() {
+        for (Map.Entry<Enchantment, Integer> entry : getRequiredEnchants().entrySet()) {
+            if (!MoreMapUtils.validEntry(entry)) {
+                return true;
+            }
+            if (entry.getValue() == ExchangeRule.ANY) {
+                continue;
+            }
+            if (!EnchantUtils.isSafeEnchantment(entry.getKey(), entry.getValue())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public boolean conforms(ItemStack item) {
-		Map<Enchantment, Integer> enchants = item.getEnchantments();
-		if (!Utilities.conformsRequiresEnchants(getRequiredEnchants(), enchants, isAllowingUnlistedEnchants())) {
-			return false;
-		}
-		if (!Collections.disjoint(getExcludedEnchants(), enchants.keySet())) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean conforms(ItemStack item) {
+        Map<Enchantment, Integer> enchants = item.getEnchantments();
+        if (!Utilities.conformsRequiresEnchants(getRequiredEnchants(), enchants, isAllowingUnlistedEnchants())) {
+            return false;
+        }
+        if (!Collections.disjoint(getExcludedEnchants(), enchants.keySet())) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public void toNBT(@Nonnull final NBTCompound nbt) {
-		nbt.setCompound(REQUIRED_KEY, NBTEncodings.encodeLeveledEnchants(getRequiredEnchants()));
-		nbt.setStringArray(EXCLUDED_KEY, getExcludedEnchants().stream()
-				.map(KeyedUtils::getString)
-				.filter(Objects::nonNull)
-				.toArray(String[]::new));
-		nbt.setBoolean(UNLISTED_KEY, isAllowingUnlistedEnchants());
-	}
+    @Override
+    public void toNBT(@Nonnull final NBTCompound nbt) {
+        nbt.setCompound(REQUIRED_KEY, NBTEncodings.encodeLeveledEnchants(getRequiredEnchants()));
+        nbt.setStringArray(EXCLUDED_KEY, getExcludedEnchants().stream()
+            .map(KeyedUtils::getString)
+            .filter(Objects::nonNull)
+            .toArray(String[]::new));
+        nbt.setBoolean(UNLISTED_KEY, isAllowingUnlistedEnchants());
+    }
 
-	@Nonnull
-	public static EnchantModifier fromNBT(@Nonnull final NBTCompound nbt) {
-		final var modifier = new EnchantModifier();
-		modifier.setRequiredEnchants(NBTEncodings.decodeLeveledEnchants(nbt.getCompound(REQUIRED_KEY)));
-		modifier.setExcludedEnchants(Arrays.stream(nbt.getStringArray(EXCLUDED_KEY))
-				.map(EnchantUtils::getEnchantment)
-				.filter(Objects::nonNull)
-				.collect(Collectors.toCollection(HashSet::new)));
-		modifier.setAllowUnlistedEnchants(nbt.getBoolean(UNLISTED_KEY));
-		return modifier;
-	}
+    @Nonnull
+    public static EnchantModifier fromNBT(@Nonnull final NBTCompound nbt) {
+        final var modifier = new EnchantModifier();
+        modifier.setRequiredEnchants(NBTEncodings.decodeLeveledEnchants(nbt.getCompound(REQUIRED_KEY)));
+        modifier.setExcludedEnchants(Arrays.stream(nbt.getStringArray(EXCLUDED_KEY))
+            .map(EnchantUtils::getEnchantment)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toCollection(HashSet::new)));
+        modifier.setAllowUnlistedEnchants(nbt.getBoolean(UNLISTED_KEY));
+        return modifier;
+    }
 
-	@Override
-	public List<String> getDisplayInfo() {
-		List<String> info = Lists.newArrayList();
-		for (Map.Entry<Enchantment, Integer> requiredEnchant : getRequiredEnchants().entrySet()) {
-			String name = EnchantUtils.getEnchantNiceName(requiredEnchant.getKey());
-			if (requiredEnchant.getValue() == ExchangeRule.ANY) {
-				info.add(ChatColor.AQUA + name);
-			}
-			else {
-				info.add(ChatColor.AQUA + name + " " + requiredEnchant.getValue());
-			}
-		}
-		for (Enchantment excludedEnchant : getExcludedEnchants()) {
-			info.add(ChatColor.RED + "!" + EnchantUtils.getEnchantNiceName(excludedEnchant));
-		}
-		if (isAllowingUnlistedEnchants()) {
-			info.add(ChatColor.GREEN + "Other enchantments allowed");
-		}
-		return info;
-	}
+    @Override
+    public List<String> getDisplayInfo() {
+        List<String> info = Lists.newArrayList();
+        for (Map.Entry<Enchantment, Integer> requiredEnchant : getRequiredEnchants().entrySet()) {
+            String name = EnchantUtils.getEnchantNiceName(requiredEnchant.getKey());
+            if (requiredEnchant.getValue() == ExchangeRule.ANY) {
+                info.add(ChatColor.AQUA + name);
+            } else {
+                info.add(ChatColor.AQUA + name + " " + requiredEnchant.getValue());
+            }
+        }
+        for (Enchantment excludedEnchant : getExcludedEnchants()) {
+            info.add(ChatColor.RED + "!" + EnchantUtils.getEnchantNiceName(excludedEnchant));
+        }
+        if (isAllowingUnlistedEnchants()) {
+            info.add(ChatColor.GREEN + "Other enchantments allowed");
+        }
+        return info;
+    }
 
-	@Override
-	public String toString() {
-		return getSlug() +
-				"{" +
-				"required=" + Utilities.leveledEnchantsToString(getRequiredEnchants()) + "," +
-				"excluded=" + Utilities.enchantsToString(getExcludedEnchants()) + "," +
-				"allowingUnlisted=" + isAllowingUnlistedEnchants() +
-				"}";
-	}
+    @Override
+    public String toString() {
+        return getSlug() +
+            "{" +
+            "required=" + Utilities.leveledEnchantsToString(getRequiredEnchants()) + "," +
+            "excluded=" + Utilities.enchantsToString(getExcludedEnchants()) + "," +
+            "allowingUnlisted=" + isAllowingUnlistedEnchants() +
+            "}";
+    }
 
-	// ------------------------------------------------------------
-	// Commands
-	// ------------------------------------------------------------
+    // ------------------------------------------------------------
+    // Commands
+    // ------------------------------------------------------------
 
-	@Subcommand("ignoreenchantments|ignoreenchants")
-	@Description("Allows items with unspecified enchantments to be bought and sold.")
-	public void commandIgnoreEnchantments(Player player) {
-		try (ModifierHandler<EnchantModifier> handler = new ModifierHandler<>(player, this)) {
-			handler.setModifier(null);
-			handler.relay(ChatColor.GREEN + "Now ignoring enchantments.");
-		}
-	}
+    @Subcommand("ignoreenchantments|ignoreenchants")
+    @Description("Allows items with unspecified enchantments to be bought and sold.")
+    public void commandIgnoreEnchantments(Player player) {
+        try (ModifierHandler<EnchantModifier> handler = new ModifierHandler<>(player, this)) {
+            handler.setModifier(null);
+            handler.relay(ChatColor.GREEN + "Now ignoring enchantments.");
+        }
+    }
 
-	@Subcommand("allowenchantments|allowenchants")
-	@Description("Allows items with unspecified enchantments to be bought and sold.")
-	public void commandAllowUnlistedEnchantments(Player player) {
-		try (ModifierHandler<EnchantModifier> handler = new ModifierHandler<>(player, this)) {
-			handler.ensureModifier().setAllowUnlistedEnchants(true);
-			handler.relay(ChatColor.GREEN + "Unlisted enchantments are now allowed.");
-		}
-	}
+    @Subcommand("allowenchantments|allowenchants")
+    @Description("Allows items with unspecified enchantments to be bought and sold.")
+    public void commandAllowUnlistedEnchantments(Player player) {
+        try (ModifierHandler<EnchantModifier> handler = new ModifierHandler<>(player, this)) {
+            handler.ensureModifier().setAllowUnlistedEnchants(true);
+            handler.relay(ChatColor.GREEN + "Unlisted enchantments are now allowed.");
+        }
+    }
 
-	@Subcommand("denyenchantments|denyenchants")
-	@Description("Disallows items with unspecified enchantments to be bought and sold.")
-	public void commandDisallowUnlistedEnchantments(Player player) {
-		try (ModifierHandler<EnchantModifier> handler = new ModifierHandler<>(player, this)) {
-			handler.ensureModifier().setAllowUnlistedEnchants(false);
-			handler.relay(ChatColor.GREEN + "Unlisted enchantments are now denied.");
-		}
-	}
+    @Subcommand("denyenchantments|denyenchants")
+    @Description("Disallows items with unspecified enchantments to be bought and sold.")
+    public void commandDisallowUnlistedEnchantments(Player player) {
+        try (ModifierHandler<EnchantModifier> handler = new ModifierHandler<>(player, this)) {
+            handler.ensureModifier().setAllowUnlistedEnchants(false);
+            handler.relay(ChatColor.GREEN + "Unlisted enchantments are now denied.");
+        }
+    }
 
-	@Subcommand("enchantment|enchant|e")
-	@Description("Disallows items with unspecified enchantments to be bought and sold.")
-	@Syntax("<+/?/-><enchantment>[level]")
-	public void commandSetEnchantment(Player player, @Single String details) {
-		try (ModifierHandler<EnchantModifier> handler = new ModifierHandler<>(player, this)) {
-			EnchantModifier modifier = handler.ensureModifier();
-			if (Strings.isNullOrEmpty(details)) {
-				throw new InvalidCommandArgument("You must enter an enchantment.");
-			}
-			Matcher matcher = SET_ENCHANT_PATTERN.matcher(details);
-			if (!matcher.matches()) {
-				throw new InvalidCommandArgument("You must enter a valid instruction.");
-			}
-			Enchantment enchantment = EnchantUtils.getEnchantment(matcher.group(2));
-			if (enchantment == null) {
-				throw new InvalidCommandArgument("You must enter a valid enchantment.");
-			}
-			Map<Enchantment, Integer> required = modifier.getRequiredEnchants();
-			Set<Enchantment> excluded = modifier.getExcludedEnchants();
-			switch (matcher.group(1)) {
-				case "+": {
-					int level = ExchangeRule.ERROR;
-					if (matcher.groupCount() < 3) {
-						level = ExchangeRule.ANY;
-					}
-					else {
-						try {
-							level = Integer.parseInt(matcher.group(3));
-						}
-						catch (Exception ignored) {
-						} // No need to error here because it'll error below
-						if (level < enchantment.getStartLevel() || level > enchantment.getMaxLevel()) {
-							throw new InvalidCommandArgument("You must enter a valid level.");
-						}
-					}
-					required.put(enchantment, level);
-					excluded.remove(enchantment);
-					handler.relay(ChatColor.GREEN + "Successfully added required enchantment.");
-					break;
-				}
-				case "-": {
-					required.remove(enchantment);
-					excluded.add(enchantment);
-					handler.relay(ChatColor.GREEN + "Successfully added excluded enchantment.");
-					break;
-				}
-				case "?": {
-					required.remove(enchantment);
-					excluded.remove(enchantment);
-					handler.relay(ChatColor.GREEN + "Successfully removed rules relating to enchantment.");
-					break;
-				}
-				default: {
-					throw new InvalidCommandArgument("You entered an invalid instruction.");
-				}
-			}
-			modifier.setRequiredEnchants(required);
-			modifier.setExcludedEnchants(excluded);
-		}
-	}
+    @Subcommand("enchantment|enchant|e")
+    @Description("Disallows items with unspecified enchantments to be bought and sold.")
+    @Syntax("<+/?/-><enchantment>[level]")
+    public void commandSetEnchantment(Player player, @Single String details) {
+        try (ModifierHandler<EnchantModifier> handler = new ModifierHandler<>(player, this)) {
+            EnchantModifier modifier = handler.ensureModifier();
+            if (Strings.isNullOrEmpty(details)) {
+                throw new InvalidCommandArgument("You must enter an enchantment.");
+            }
+            Matcher matcher = SET_ENCHANT_PATTERN.matcher(details);
+            if (!matcher.matches()) {
+                throw new InvalidCommandArgument("You must enter a valid instruction.");
+            }
+            Enchantment enchantment = EnchantUtils.getEnchantment(matcher.group(2));
+            if (enchantment == null) {
+                throw new InvalidCommandArgument("You must enter a valid enchantment.");
+            }
+            Map<Enchantment, Integer> required = modifier.getRequiredEnchants();
+            Set<Enchantment> excluded = modifier.getExcludedEnchants();
+            switch (matcher.group(1)) {
+                case "+": {
+                    int level = ExchangeRule.ERROR;
+                    if (matcher.groupCount() < 3) {
+                        level = ExchangeRule.ANY;
+                    } else {
+                        try {
+                            level = Integer.parseInt(matcher.group(3));
+                        } catch (Exception ignored) {
+                        } // No need to error here because it'll error below
+                        if (level < enchantment.getStartLevel() || level > enchantment.getMaxLevel()) {
+                            throw new InvalidCommandArgument("You must enter a valid level.");
+                        }
+                    }
+                    required.put(enchantment, level);
+                    excluded.remove(enchantment);
+                    handler.relay(ChatColor.GREEN + "Successfully added required enchantment.");
+                    break;
+                }
+                case "-": {
+                    required.remove(enchantment);
+                    excluded.add(enchantment);
+                    handler.relay(ChatColor.GREEN + "Successfully added excluded enchantment.");
+                    break;
+                }
+                case "?": {
+                    required.remove(enchantment);
+                    excluded.remove(enchantment);
+                    handler.relay(ChatColor.GREEN + "Successfully removed rules relating to enchantment.");
+                    break;
+                }
+                default: {
+                    throw new InvalidCommandArgument("You entered an invalid instruction.");
+                }
+            }
+            modifier.setRequiredEnchants(required);
+            modifier.setExcludedEnchants(excluded);
+        }
+    }
 
-	// ------------------------------------------------------------
-	// Getters + Setters
-	// ------------------------------------------------------------
+    // ------------------------------------------------------------
+    // Getters + Setters
+    // ------------------------------------------------------------
 
-	public Map<Enchantment, Integer> getRequiredEnchants() {
-		if (this.requiredEnchants == null) {
-			return Maps.newHashMap();
-		}
-		return this.requiredEnchants;
-	}
+    public Map<Enchantment, Integer> getRequiredEnchants() {
+        if (this.requiredEnchants == null) {
+            return Maps.newHashMap();
+        }
+        return this.requiredEnchants;
+    }
 
-	public void setRequiredEnchants(Map<Enchantment, Integer> required) {
-		this.requiredEnchants = required;
-	}
+    public void setRequiredEnchants(Map<Enchantment, Integer> required) {
+        this.requiredEnchants = required;
+    }
 
-	public Set<Enchantment> getExcludedEnchants() {
-		if (this.excludedEnchants == null) {
-			return Sets.newHashSet();
-		}
-		return this.excludedEnchants;
-	}
+    public Set<Enchantment> getExcludedEnchants() {
+        if (this.excludedEnchants == null) {
+            return Sets.newHashSet();
+        }
+        return this.excludedEnchants;
+    }
 
-	public void setExcludedEnchants(Set<Enchantment> excluded) {
-		this.excludedEnchants = excluded;
-	}
+    public void setExcludedEnchants(Set<Enchantment> excluded) {
+        this.excludedEnchants = excluded;
+    }
 
-	public boolean isAllowingUnlistedEnchants() {
-		return this.allowUnlistedEnchants;
-	}
+    public boolean isAllowingUnlistedEnchants() {
+        return this.allowUnlistedEnchants;
+    }
 
-	public void setAllowUnlistedEnchants(boolean allowUnlistedEnchants) {
-		this.allowUnlistedEnchants = allowUnlistedEnchants;
-	}
+    public void setAllowUnlistedEnchants(boolean allowUnlistedEnchants) {
+        this.allowUnlistedEnchants = allowUnlistedEnchants;
+    }
 
 }

@@ -26,52 +26,52 @@ import org.bukkit.craftbukkit.util.RandomSourceWrapper;
  */
 public class FungusGrower extends AgeableGrower {
 
-	private final RandomSource randomSource = new RandomSourceWrapper(new Random());
+    private final RandomSource randomSource = new RandomSourceWrapper(new Random());
 
-	public FungusGrower(final Material material) {
-		super(material, 1, 1);
-	}
+    public FungusGrower(final Material material) {
+        super(material, 1, 1);
+    }
 
-	@Override
-	public int getStage(final Plant plant) {
-		final Block block = plant.getLocation().getBlock();
-		if (block.getType() != this.material) {
-			return -1;
-		}
-		return 0;
-	}
+    @Override
+    public int getStage(final Plant plant) {
+        final Block block = plant.getLocation().getBlock();
+        if (block.getType() != this.material) {
+            return -1;
+        }
+        return 0;
+    }
 
-	@Override
-	public boolean setStage(final Plant plant, final int stage) {
-		if (stage < 1) {
-			return true;
-		}
-		final Block block = plant.getLocation().getBlock();
-		final Material material = block.getType();
-		final ResourceKey<ConfiguredFeature<?, ?>> growth =
-				material == Material.CRIMSON_FUNGUS ? TreeFeatures.CRIMSON_FUNGUS :
-						material == Material.WARPED_FUNGUS ? TreeFeatures.WARPED_FUNGUS :
-								material == Material.FLOWERING_AZALEA ? TreeFeatures.AZALEA_TREE :
-										null;
-		if (growth == null) {
-			return true;
-		}
-		final ServerLevel world = ((CraftWorld) block.getWorld()).getHandle();
-		final BlockPos position = new BlockPos(block.getX(), block.getY(), block.getZ());
-		//Taken from CraftWorld.generateTree()
-		Holder<ConfiguredFeature<?, ?>> growthHolder = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE).getHolder(growth).orElse(null);
+    @Override
+    public boolean setStage(final Plant plant, final int stage) {
+        if (stage < 1) {
+            return true;
+        }
+        final Block block = plant.getLocation().getBlock();
+        final Material material = block.getType();
+        final ResourceKey<ConfiguredFeature<?, ?>> growth =
+            material == Material.CRIMSON_FUNGUS ? TreeFeatures.CRIMSON_FUNGUS :
+                material == Material.WARPED_FUNGUS ? TreeFeatures.WARPED_FUNGUS :
+                    material == Material.FLOWERING_AZALEA ? TreeFeatures.AZALEA_TREE :
+                        null;
+        if (growth == null) {
+            return true;
+        }
+        final ServerLevel world = ((CraftWorld) block.getWorld()).getHandle();
+        final BlockPos position = new BlockPos(block.getX(), block.getY(), block.getZ());
+        //Taken from CraftWorld.generateTree()
+        Holder<ConfiguredFeature<?, ?>> growthHolder = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE).getHolder(growth).orElse(null);
 
-		if (growthHolder == null) return false;
+        if (growthHolder == null) return false;
 
-		if (!growthHolder.value().place(world, world.getChunkSource().getGenerator(), this.randomSource, position)) {
-			block.setType(material);
-		}
-		return true;
-	}
+        if (!growthHolder.value().place(world, world.getChunkSource().getGenerator(), this.randomSource, position)) {
+            block.setType(material);
+        }
+        return true;
+    }
 
-	@Override
-	public boolean deleteOnFullGrowth() {
-		return true;
-	}
+    @Override
+    public boolean deleteOnFullGrowth() {
+        return true;
+    }
 
 }

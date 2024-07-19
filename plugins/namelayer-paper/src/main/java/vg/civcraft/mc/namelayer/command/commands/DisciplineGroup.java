@@ -12,28 +12,27 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public class DisciplineGroup extends BaseCommandMiddle {
 
-	@CommandAlias("nldig|disablegroup|disable|discipline")
-	@CommandPermission("namelayer.admin")
-	@Syntax("<group>")
-	@Description("Disable a group from working.")
-	@CommandCompletion("@NL_Groups")
-	public void execute(Player sender, String groupName) {
-		Player p = (Player) sender;
-		Group g = gm.getGroup(groupName);
-		if (groupIsNull(sender, groupName, g)) {
-			return;
-		}
-		if (!p.isOp() || !p.hasPermission("namelayer.admin")){
-			p.sendMessage(ChatColor.RED + "You do not have permission for this op command.");
-			return;
-		}
-		if (g.isDisciplined()){
-			g.setDisciplined(false);
-			sender.sendMessage(ChatColor.GREEN + "Group has been enabled.");
-		}
-		else{
-			g.setDisciplined(true);
-		sender.sendMessage(ChatColor.GREEN + "Group has been disabled.");
-		}
-	}
+    @CommandAlias("nldig|disablegroup|disable|discipline")
+    @CommandPermission("namelayer.admin")
+    @Syntax("<group>")
+    @Description("Disable a group from working.")
+    @CommandCompletion("@NL_Groups")
+    public void execute(Player sender, String groupName) {
+        Player p = (Player) sender;
+        Group g = gm.getGroup(groupName);
+        if (groupIsNull(sender, groupName, g)) {
+            return;
+        }
+        if (!p.isOp() || !p.hasPermission("namelayer.admin")) {
+            p.sendMessage(ChatColor.RED + "You do not have permission for this op command.");
+            return;
+        }
+        if (g.isDisciplined()) {
+            g.setDisciplined(false);
+            sender.sendMessage(ChatColor.GREEN + "Group has been enabled.");
+        } else {
+            g.setDisciplined(true);
+            sender.sendMessage(ChatColor.GREEN + "Group has been disabled.");
+        }
+    }
 }

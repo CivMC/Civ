@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class StorageManager {
+
     private Map<BlockCoord, Gearblock> _gearblocks;
     private DataWorker _dataWorker;
 
@@ -25,7 +26,7 @@ public class StorageManager {
     }
 
     public void close() {
-        if(_dataWorker != null) {
+        if (_dataWorker != null) {
             _dataWorker.close();
             _dataWorker = null;
         }
@@ -58,15 +59,13 @@ public class StorageManager {
     public void addLink(Gearblock gearblock1, Gearblock gearblock2) {
         GearblockLink link;
 
-        if(gearblock1.getBrokenLink() != null) {
+        if (gearblock1.getBrokenLink() != null) {
             link = gearblock1.getBrokenLink();
             link.setRestored(gearblock2);
-        }
-        else if(gearblock2.getBrokenLink() != null) {
+        } else if (gearblock2.getBrokenLink() != null) {
             link = gearblock2.getBrokenLink();
             link.setRestored(gearblock1);
-        }
-        else {
+        } else {
             link = new GearblockLink(gearblock1, gearblock2);
         }
 
@@ -79,11 +78,11 @@ public class StorageManager {
     public void removeLink(GearblockLink link) {
         link.setRemoved();
 
-        if(link.getGearblock1() != null) {
+        if (link.getGearblock1() != null) {
             link.getGearblock1().setLink(null);
         }
 
-        if(link.getGearblock2() != null) {
+        if (link.getGearblock2() != null) {
             link.getGearblock2().setLink(null);
         }
 

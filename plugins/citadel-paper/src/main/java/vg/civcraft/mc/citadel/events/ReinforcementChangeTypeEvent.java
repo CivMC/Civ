@@ -7,33 +7,31 @@ import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 
 /**
  * Called when a reinforcements type is changed
- *
  */
 public class ReinforcementChangeTypeEvent extends ReinforcementEvent {
 
-	private static final HandlerList handlers = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	private ReinforcementType newType;
+    private ReinforcementType newType;
 
-	public ReinforcementChangeTypeEvent(Player p, Reinforcement rein, ReinforcementType newType) {
-		super(p, rein);
-		this.newType = newType;
-	}
+    public ReinforcementChangeTypeEvent(Player p, Reinforcement rein, ReinforcementType newType) {
+        super(p, rein);
+        this.newType = newType;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
-	/**
-	 * 
-	 * @return Future reinforcement type
-	 */
-	public ReinforcementType getNewType() {
-		return newType;
-	}
+    /**
+     * @return Future reinforcement type
+     */
+    public ReinforcementType getNewType() {
+        return newType;
+    }
 }

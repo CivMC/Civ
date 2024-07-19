@@ -21,49 +21,49 @@ import vg.civcraft.mc.namelayer.NameAPI;
 
 public class GlobalMute extends BaseCommand {
 
-	@CommandAlias("globalmute")
-	@CommandPermission("civchat2.globalmute")
-	@Syntax("<set|check|remove> <player> [time]")
-	@Description("Applies, checks or removes a players global mute timer")
-	@CommandCompletion("set|check|remove @allplayers @nothing")
-	public void execute(CommandSender sender, String getSetOrCheck, String targetPlayer, @Optional String muteTime) {
-		UUID player = NameAPI.getUUID(targetPlayer);
-		if (player == null) {
-			sender.sendMessage(ChatColor.RED + "The player " + targetPlayer + " does not exist");
-			return;
-		}
-		LongSetting banSetting = CivChat2.getInstance().getCivChat2SettingsManager().getGlobalChatMuteSetting();
-		switch (getSetOrCheck.toLowerCase()) {
-		case "set":
-			if (muteTime == null) {
-				sender.sendMessage(ChatColor.RED + "You need to supply a ban timer");
-				return;
-			}
-			long time = ConfigHelper.parseTime(muteTime);
-			if (time <= 0) {
-				sender.sendMessage(ChatColor.RED + "Invalid ban time frame");
-				return;
-			}
-			banSetting.setValue(player, System.currentTimeMillis() + time);
-			sender.sendMessage(ChatColor.GREEN + targetPlayer + " will be banned for " + TextUtil
-					.formatDuration(time, TimeUnit.MILLISECONDS));
-			return;
-		case "remove":
-			banSetting.setValue(player, 0L);
-			sender.sendMessage(Component.text("You have unmuted the player " + targetPlayer, NamedTextColor.GREEN));
-			return;
-		case "check":
-		case "get":
-			long timeForUnban = banSetting.getValue(player);
-			timeForUnban -= System.currentTimeMillis();
-			if (timeForUnban <= 0) {
-				sender.sendMessage(ChatColor.GREEN + targetPlayer + " is not chat muted");
-				return;
-			}
-			sender.sendMessage(ChatColor.GREEN + targetPlayer + " is banned for another " + TextUtil.formatDuration(timeForUnban, TimeUnit.MILLISECONDS));
-			return;
-		default:
-			sender.sendMessage(ChatColor.RED + getSetOrCheck + " is not a valid action");
-		}
-	}
+    @CommandAlias("globalmute")
+    @CommandPermission("civchat2.globalmute")
+    @Syntax("<set|check|remove> <player> [time]")
+    @Description("Applies, checks or removes a players global mute timer")
+    @CommandCompletion("set|check|remove @allplayers @nothing")
+    public void execute(CommandSender sender, String getSetOrCheck, String targetPlayer, @Optional String muteTime) {
+        UUID player = NameAPI.getUUID(targetPlayer);
+        if (player == null) {
+            sender.sendMessage(ChatColor.RED + "The player " + targetPlayer + " does not exist");
+            return;
+        }
+        LongSetting banSetting = CivChat2.getInstance().getCivChat2SettingsManager().getGlobalChatMuteSetting();
+        switch (getSetOrCheck.toLowerCase()) {
+            case "set":
+                if (muteTime == null) {
+                    sender.sendMessage(ChatColor.RED + "You need to supply a ban timer");
+                    return;
+                }
+                long time = ConfigHelper.parseTime(muteTime);
+                if (time <= 0) {
+                    sender.sendMessage(ChatColor.RED + "Invalid ban time frame");
+                    return;
+                }
+                banSetting.setValue(player, System.currentTimeMillis() + time);
+                sender.sendMessage(ChatColor.GREEN + targetPlayer + " will be banned for " + TextUtil
+                    .formatDuration(time, TimeUnit.MILLISECONDS));
+                return;
+            case "remove":
+                banSetting.setValue(player, 0L);
+                sender.sendMessage(Component.text("You have unmuted the player " + targetPlayer, NamedTextColor.GREEN));
+                return;
+            case "check":
+            case "get":
+                long timeForUnban = banSetting.getValue(player);
+                timeForUnban -= System.currentTimeMillis();
+                if (timeForUnban <= 0) {
+                    sender.sendMessage(ChatColor.GREEN + targetPlayer + " is not chat muted");
+                    return;
+                }
+                sender.sendMessage(ChatColor.GREEN + targetPlayer + " is banned for another " + TextUtil.formatDuration(timeForUnban, TimeUnit.MILLISECONDS));
+                return;
+            default:
+                sender.sendMessage(ChatColor.RED + getSetOrCheck + " is not a valid action");
+        }
+    }
 }

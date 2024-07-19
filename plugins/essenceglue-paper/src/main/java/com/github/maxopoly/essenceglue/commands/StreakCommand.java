@@ -12,19 +12,19 @@ import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 
 public class StreakCommand extends BaseCommand {
 
-	@CommandAlias("streak")
-	@Description("Displays stats about your daily login streak")
-	public void execute(Player p) {
-		UUID uuid = StreakManager.getTrueUUID(p.getUniqueId());
-		StreakManager streakMan = EssenceGluePlugin.instance().getStreakManager();
-		p.sendMessage(ChatColor.GREEN + "Your current login streak is " + streakMan.getRecalculatedCurrentStreak(uuid));
-		long cooldown = streakMan.getRewardCooldown(uuid);
-		if (cooldown > 0) {
-			p.sendMessage(ChatColor.YELLOW + "You will be eligible for daily rewards again in " + TextUtil
-					.formatDuration(cooldown));
-		} else {
-			long left = streakMan.untilTodaysReward(uuid);
-			p.sendMessage(ChatColor.GREEN + "You will receive your daily rewards in " + TextUtil.formatDuration(left));
-		}
-	}
+    @CommandAlias("streak")
+    @Description("Displays stats about your daily login streak")
+    public void execute(Player p) {
+        UUID uuid = StreakManager.getTrueUUID(p.getUniqueId());
+        StreakManager streakMan = EssenceGluePlugin.instance().getStreakManager();
+        p.sendMessage(ChatColor.GREEN + "Your current login streak is " + streakMan.getRecalculatedCurrentStreak(uuid));
+        long cooldown = streakMan.getRewardCooldown(uuid);
+        if (cooldown > 0) {
+            p.sendMessage(ChatColor.YELLOW + "You will be eligible for daily rewards again in " + TextUtil
+                .formatDuration(cooldown));
+        } else {
+            long left = streakMan.untilTodaysReward(uuid);
+            p.sendMessage(ChatColor.GREEN + "You will receive your daily rewards in " + TextUtil.formatDuration(left));
+        }
+    }
 }

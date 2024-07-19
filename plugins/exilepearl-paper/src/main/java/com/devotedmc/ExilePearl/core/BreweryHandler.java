@@ -6,9 +6,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class BreweryHandler implements BrewHandler {
 
-	@Override
-	public boolean isBrew(ItemStack item) {
-		return Brew.get(item) != null;
-	}
+    @Override
+    public boolean isBrew(ItemStack item) {
+        return Brew.get(item) != null;
+    }
 
 }

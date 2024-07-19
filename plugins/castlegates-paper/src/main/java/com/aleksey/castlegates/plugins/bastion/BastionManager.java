@@ -1,6 +1,5 @@
 /**
  * @author Aleksey Terzi
- *
  */
 
 package com.aleksey.castlegates.plugins.bastion;
@@ -27,77 +26,78 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionManager implements IBastionManager {
-	private static final String PERMISSION_UNDRAW = "BASTION_BRIDGE_UNDRAW";
 
-	private BastionBlockManager _blockManager;
+    private static final String PERMISSION_UNDRAW = "BASTION_BRIDGE_UNDRAW";
 
-	public void init() {
-		_blockManager = Bastion.getBastionManager();
+    private BastionBlockManager _blockManager;
 
-		LinkedList <PlayerType> memberAndAbove = new LinkedList<>();
-		memberAndAbove.add(PlayerType.MEMBERS);
-		memberAndAbove.add(PlayerType.MODS);
-		memberAndAbove.add(PlayerType.ADMINS);
-		memberAndAbove.add(PlayerType.OWNER);
-		PermissionType.registerPermission(PERMISSION_UNDRAW, memberAndAbove, "Allows undrawing bridges/gates above bastions");
-	}
+    public void init() {
+        _blockManager = Bastion.getBastionManager();
 
-	public boolean canUndraw(List<Player> players, List<Block> bridgeBlocks, ICitadel citadel) {
-		if (players != null) {
-			for(Player player : players) {
-				if(player.hasPermission("Bastion.bypass")) {
-					return true;
-				}
-			}
-		}
+        LinkedList<PlayerType> memberAndAbove = new LinkedList<>();
+        memberAndAbove.add(PlayerType.MEMBERS);
+        memberAndAbove.add(PlayerType.MODS);
+        memberAndAbove.add(PlayerType.ADMINS);
+        memberAndAbove.add(PlayerType.OWNER);
+        PermissionType.registerPermission(PERMISSION_UNDRAW, memberAndAbove, "Allows undrawing bridges/gates above bastions");
+    }
 
-		for(Block block : bridgeBlocks) {
-			if(!hasBastionAccess(players, block, citadel)) {
-				return false;
-			}
-		}
+    public boolean canUndraw(List<Player> players, List<Block> bridgeBlocks, ICitadel citadel) {
+        if (players != null) {
+            for (Player player : players) {
+                if (player.hasPermission("Bastion.bypass")) {
+                    return true;
+                }
+            }
+        }
 
-		return true;
-	}
+        for (Block block : bridgeBlocks) {
+            if (!hasBastionAccess(players, block, citadel)) {
+                return false;
+            }
+        }
 
-	private boolean hasBastionAccess(List<Player> players, Block block, ICitadel citadel) {
-		PermissionType perm = PermissionType.getPermission(PERMISSION_UNDRAW);
-		Location loc = block.getLocation();
-		Set<BastionBlock> bastions = _blockManager.getBlockingBastions(loc);
+        return true;
+    }
 
-		if (bastions == null)
-			return true;
+    private boolean hasBastionAccess(List<Player> players, Block block, ICitadel citadel) {
+        PermissionType perm = PermissionType.getPermission(PERMISSION_UNDRAW);
+        Location loc = block.getLocation();
+        Set<BastionBlock> bastions = _blockManager.getBlockingBastions(loc);
 
-		ReinforcementManager reinManager = Citadel.getInstance().getReinforcementManager();
+        if (bastions == null)
+            return true;
 
-		for(BastionBlock bastion : bastions) {
-			if(bastion.getType().isOnlyDirectDestruction() || !bastion.inField(loc))
-				continue;
+        ReinforcementManager reinManager = Citadel.getInstance().getReinforcementManager();
 
-			Reinforcement rein = reinManager.getReinforcement(bastion.getLocation());
+        for (BastionBlock bastion : bastions) {
+            if (bastion.getType().isOnlyDirectDestruction() || !bastion.inField(loc))
+                continue;
 
-			if(rein == null)
-				continue;
+            Reinforcement rein = reinManager.getReinforcement(bastion.getLocation());
 
-			if(players == null)
-				return false;
+            if (rein == null)
+                continue;
 
-			if(citadel.useJukeAlert() && !rein.getGroup().getName().equalsIgnoreCase(citadel.getGroupName()))
-				return false;
+            if (players == null)
+                return false;
 
-			boolean hasAccess = false;
+            if (citadel.useJukeAlert() && !rein.getGroup().getName().equalsIgnoreCase(citadel.getGroupName()))
+                return false;
 
-			for (Player player : players) {
-				if (bastion.permAccess(player, perm)) {
-					hasAccess = true;
-					break;
-				}
-			}
+            boolean hasAccess = false;
 
-			if (!hasAccess)
-				return false;
-		}
+            for (Player player : players) {
+                if (bastion.permAccess(player, perm)) {
+                    hasAccess = true;
+                    break;
+                }
+            }
 
-		return true;
-	}
+            if (!hasAccess)
+                return false;
+        }
+
+        return true;
+    }
 }

@@ -6,26 +6,26 @@ import com.devotedmc.ExilePearl.Lang;
 
 public class CmdReturn extends PearlCommand {
 
-	public CmdReturn(ExilePearlApi pearlApi) {
-		super(pearlApi);
-		this.aliases.add("return");
+    public CmdReturn(ExilePearlApi pearlApi) {
+        super(pearlApi);
+        this.aliases.add("return");
 
-		this.senderMustBePlayer = true;
-		this.helpShort = "Returns a summoned player";
-	}
+        this.senderMustBePlayer = true;
+        this.helpShort = "Returns a summoned player";
+    }
 
-	@Override
-	public void perform() {
-		ExilePearl pearl = plugin.getPearlFromItemStack(player().getInventory().getItemInMainHand());
-		if(pearl == null) {
-			msg(Lang.pearlMustBeHoldingPearl);
-			return;
-		}
+    @Override
+    public void perform() {
+        ExilePearl pearl = plugin.getPearlFromItemStack(player().getInventory().getItemInMainHand());
+        if (pearl == null) {
+            msg(Lang.pearlMustBeHoldingPearl);
+            return;
+        }
 
-		if(plugin.returnPearl(pearl)) {
-			msg(Lang.pearlReturned, pearl.getPlayerName());
-		} else {
-			msg(Lang.pearlCantReturn);
-		}
-	}
+        if (plugin.returnPearl(pearl)) {
+            msg(Lang.pearlReturned, pearl.getPlayerName());
+        } else {
+            msg(Lang.pearlCantReturn);
+        }
+    }
 }

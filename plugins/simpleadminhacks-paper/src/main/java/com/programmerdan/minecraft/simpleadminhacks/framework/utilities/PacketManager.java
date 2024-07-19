@@ -9,23 +9,23 @@ import java.util.List;
 
 public final class PacketManager {
 
-	private final ProtocolManager manager;
-	private final List<PacketAdapter> adapters;
+    private final ProtocolManager manager;
+    private final List<PacketAdapter> adapters;
 
-	public PacketManager() {
-		this.manager = ProtocolLibrary.getProtocolManager();
-		this.adapters = new ArrayList<>();
-	}
+    public PacketManager() {
+        this.manager = ProtocolLibrary.getProtocolManager();
+        this.adapters = new ArrayList<>();
+    }
 
-	public void addAdapter(final PacketAdapter adapter) {
-		Preconditions.checkNotNull(adapter, "Adapter cannot be null!");
-		this.manager.addPacketListener(adapter);
-		this.adapters.add(adapter);
-	}
+    public void addAdapter(final PacketAdapter adapter) {
+        Preconditions.checkNotNull(adapter, "Adapter cannot be null!");
+        this.manager.addPacketListener(adapter);
+        this.adapters.add(adapter);
+    }
 
-	public void removeAllAdapters() {
-		this.adapters.forEach(this.manager::removePacketListener);
-		this.adapters.clear();
-	}
+    public void removeAllAdapters() {
+        this.adapters.forEach(this.manager::removePacketListener);
+        this.adapters.clear();
+    }
 
 }

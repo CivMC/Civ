@@ -124,6 +124,7 @@ public final class NpcManager {
 
     // Use reflection
     private static final Sound EXPLODE_SOUND;
+
     static {
         Sound sound;
         try {

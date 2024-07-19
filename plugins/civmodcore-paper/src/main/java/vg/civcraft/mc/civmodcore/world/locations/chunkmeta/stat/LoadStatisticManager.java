@@ -10,192 +10,194 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class LoadStatisticManager {
-	public static final int MainThreadIndex = -1;
-	private static final long PollIntervalMilliseconds = 1000L;
 
-	private static class Action {
-		public final UUID worldId;
-		public final int threadIndex;
-		public final short pluginId;
-		public final long timeNanoSec;
-		public final boolean isStarted;
+    public static final int MainThreadIndex = -1;
+    private static final long PollIntervalMilliseconds = 1000L;
 
-		public Action(UUID worldId, int threadIndex, short pluginId, long timeNanoSec, boolean isStarted) {
-			this.worldId = worldId;
-			this.threadIndex = threadIndex;
-			this.pluginId = pluginId;
-			this.timeNanoSec = timeNanoSec;
-			this.isStarted = isStarted;
-		}
-	}
+    private static class Action {
 
-	private static LoadStatisticManager instance;
+        public final UUID worldId;
+        public final int threadIndex;
+        public final short pluginId;
+        public final long timeNanoSec;
+        public final boolean isStarted;
 
-	public static void enable() {
-		instance = new LoadStatisticManager();
-		instance.startPolling();
-	}
+        public Action(UUID worldId, int threadIndex, short pluginId, long timeNanoSec, boolean isStarted) {
+            this.worldId = worldId;
+            this.threadIndex = threadIndex;
+            this.pluginId = pluginId;
+            this.timeNanoSec = timeNanoSec;
+            this.isStarted = isStarted;
+        }
+    }
 
-	public static void disable() {
-		if (instance == null)
-			return;
+    private static LoadStatisticManager instance;
 
-		instance.stopPolling();
-		instance = null;
-	}
+    public static void enable() {
+        instance = new LoadStatisticManager();
+        instance.startPolling();
+    }
 
-	public static void registerPlugin(String name, short id) {
-		if (instance == null)
-			return;
+    public static void disable() {
+        if (instance == null)
+            return;
 
-		instance.plugins.put(id, new PluginStatistic(id, name));
-	}
+        instance.stopPolling();
+        instance = null;
+    }
 
-	public static void start(World world, int threadIndex, short pluginId) {
-		if (instance == null)
-			return;
+    public static void registerPlugin(String name, short id) {
+        if (instance == null)
+            return;
 
-		Action action = new Action(world.getUID(), threadIndex, pluginId, System.nanoTime(), true);
-		instance.actions.add(action);
-	}
+        instance.plugins.put(id, new PluginStatistic(id, name));
+    }
 
-	public static void stop(World world, int threadIndex, short pluginId) {
-		if (instance == null)
-			return;
+    public static void start(World world, int threadIndex, short pluginId) {
+        if (instance == null)
+            return;
 
-		Action action = new Action(world.getUID(), threadIndex, pluginId, System.nanoTime(), false);
-		instance.actions.add(action);
-	}
+        Action action = new Action(world.getUID(), threadIndex, pluginId, System.nanoTime(), true);
+        instance.actions.add(action);
+    }
 
-	public static LoadStatistic getLoadStatistic() {
-		if (instance == null)
-			return null;
+    public static void stop(World world, int threadIndex, short pluginId) {
+        if (instance == null)
+            return;
 
-		instance.poll();
+        Action action = new Action(world.getUID(), threadIndex, pluginId, System.nanoTime(), false);
+        instance.actions.add(action);
+    }
 
-		return instance.getLoadStatisticInternal();
-	}
+    public static LoadStatistic getLoadStatistic() {
+        if (instance == null)
+            return null;
 
-	private final ConcurrentLinkedQueue<Action> actions;
-	private final Map<UUID, Map<Integer, Action>> worlds;
-	private final Map<Short, PluginStatistic> plugins;
-	private final ScheduledExecutorService scheduler;
+        instance.poll();
 
-	private LoadStatisticManager() {
-		this.actions = new ConcurrentLinkedQueue<>();
-		this.worlds = new HashMap<>();
-		this.plugins = new HashMap<>();
-		this.scheduler = Executors.newScheduledThreadPool(1);
-	}
+        return instance.getLoadStatisticInternal();
+    }
 
-	private void startPolling() {
-		scheduler.scheduleWithFixedDelay(() -> {
-			poll();
-		}, PollIntervalMilliseconds, PollIntervalMilliseconds, TimeUnit.MILLISECONDS);
-	}
+    private final ConcurrentLinkedQueue<Action> actions;
+    private final Map<UUID, Map<Integer, Action>> worlds;
+    private final Map<Short, PluginStatistic> plugins;
+    private final ScheduledExecutorService scheduler;
 
-	private void stopPolling() {
-		this.scheduler.shutdown();
+    private LoadStatisticManager() {
+        this.actions = new ConcurrentLinkedQueue<>();
+        this.worlds = new HashMap<>();
+        this.plugins = new HashMap<>();
+        this.scheduler = Executors.newScheduledThreadPool(1);
+    }
 
-		try {
-			if (!this.scheduler.awaitTermination(5, TimeUnit.SECONDS))
-				this.scheduler.shutdownNow();
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-		}
-	}
+    private void startPolling() {
+        scheduler.scheduleWithFixedDelay(() -> {
+            poll();
+        }, PollIntervalMilliseconds, PollIntervalMilliseconds, TimeUnit.MILLISECONDS);
+    }
 
-	private synchronized LoadStatistic getLoadStatisticInternal() {
-		List<PluginStatistic> pluginStatistics = new ArrayList<>();
-		for (PluginStatistic statistic : plugins.values())
-			pluginStatistics.add(statistic.clone());
+    private void stopPolling() {
+        this.scheduler.shutdown();
 
-		Collections.sort(pluginStatistics, (a, b) -> String.CASE_INSENSITIVE_ORDER.compare(a.pluginName, b.pluginName));
+        try {
+            if (!this.scheduler.awaitTermination(5, TimeUnit.SECONDS))
+                this.scheduler.shutdownNow();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
 
-		int threadCount = 0;
+    private synchronized LoadStatistic getLoadStatisticInternal() {
+        List<PluginStatistic> pluginStatistics = new ArrayList<>();
+        for (PluginStatistic statistic : plugins.values())
+            pluginStatistics.add(statistic.clone());
 
-		List<LoadStatistic.WorldThreads> worldThreadsList = new ArrayList<>();
-		for (UUID worldId : this.worlds.keySet()) {
-			Map<Integer, Action> worldActions = this.worlds.get(worldId);
+        Collections.sort(pluginStatistics, (a, b) -> String.CASE_INSENSITIVE_ORDER.compare(a.pluginName, b.pluginName));
 
-			threadCount += worldActions.size();
+        int threadCount = 0;
 
-			LoadStatistic.WorldThreads worldThreads = createWorldThreads(worldId, worldActions);
+        List<LoadStatistic.WorldThreads> worldThreadsList = new ArrayList<>();
+        for (UUID worldId : this.worlds.keySet()) {
+            Map<Integer, Action> worldActions = this.worlds.get(worldId);
 
-			if (worldThreads != null)
-				worldThreadsList.add(worldThreads);
-		}
+            threadCount += worldActions.size();
 
-		Collections.sort(worldThreadsList, (a, b) -> String.CASE_INSENSITIVE_ORDER.compare(a.world.getName(), b.world.getName()));
+            LoadStatistic.WorldThreads worldThreads = createWorldThreads(worldId, worldActions);
 
-		return new LoadStatistic(this.worlds.size(), threadCount,  worldThreadsList, pluginStatistics);
-	}
+            if (worldThreads != null)
+                worldThreadsList.add(worldThreads);
+        }
 
-	private LoadStatistic.WorldThreads createWorldThreads(UUID worldId, Map<Integer, Action> worldActions) {
-		Action mainThreadAction = worldActions.get(MainThreadIndex);
-		Long mainThreadTime = mainThreadAction != null ? System.nanoTime() - mainThreadAction.timeNanoSec : null;
+        Collections.sort(worldThreadsList, (a, b) -> String.CASE_INSENSITIVE_ORDER.compare(a.world.getName(), b.world.getName()));
 
-		World world = Bukkit.getWorld(worldId);
-		LoadStatistic.WorldThreads worldThreads = new LoadStatistic.WorldThreads(world, mainThreadTime, new ArrayList<>());
+        return new LoadStatistic(this.worlds.size(), threadCount, worldThreadsList, pluginStatistics);
+    }
 
-		for (Action threadAction : worldActions.values()) {
-			if (threadAction != null && threadAction.threadIndex != MainThreadIndex) {
-				Long threadTime = System.nanoTime() - threadAction.timeNanoSec;
-				worldThreads.threadTimes.add(new LoadStatistic.ThreadTime(threadAction.threadIndex, threadTime));
-			}
-		}
+    private LoadStatistic.WorldThreads createWorldThreads(UUID worldId, Map<Integer, Action> worldActions) {
+        Action mainThreadAction = worldActions.get(MainThreadIndex);
+        Long mainThreadTime = mainThreadAction != null ? System.nanoTime() - mainThreadAction.timeNanoSec : null;
 
-		if (mainThreadTime == null && worldThreads.threadTimes.size() == 0)
-			return null;
+        World world = Bukkit.getWorld(worldId);
+        LoadStatistic.WorldThreads worldThreads = new LoadStatistic.WorldThreads(world, mainThreadTime, new ArrayList<>());
 
-		Collections.sort(worldThreads.threadTimes, Comparator.comparingInt(a -> a.threadIndex));
+        for (Action threadAction : worldActions.values()) {
+            if (threadAction != null && threadAction.threadIndex != MainThreadIndex) {
+                Long threadTime = System.nanoTime() - threadAction.timeNanoSec;
+                worldThreads.threadTimes.add(new LoadStatistic.ThreadTime(threadAction.threadIndex, threadTime));
+            }
+        }
 
-		return worldThreads;
-	}
+        if (mainThreadTime == null && worldThreads.threadTimes.size() == 0)
+            return null;
 
-	private synchronized void poll() {
-		Action current;
-		while ((current = actions.poll()) != null) {
-			Map<Integer, Action> worldActions = this.worlds.get(current.worldId);
-			if (worldActions == null) {
-				worldActions = new HashMap<>();
-				this.worlds.put(current.worldId, worldActions);
-			}
+        Collections.sort(worldThreads.threadTimes, Comparator.comparingInt(a -> a.threadIndex));
 
-			Action prev = worldActions.get(current.threadIndex);
+        return worldThreads;
+    }
 
-			if (current.isStarted) {
-				worldActions.put(current.threadIndex, current);
-			} else {
-				worldActions.put(current.threadIndex, null);
+    private synchronized void poll() {
+        Action current;
+        while ((current = actions.poll()) != null) {
+            Map<Integer, Action> worldActions = this.worlds.get(current.worldId);
+            if (worldActions == null) {
+                worldActions = new HashMap<>();
+                this.worlds.put(current.worldId, worldActions);
+            }
 
-				if (prev != null) {
-					addStatistic(prev, current);
-				}
-			}
-		}
-	}
+            Action prev = worldActions.get(current.threadIndex);
 
-	private void addStatistic(Action prev, Action current) {
-		if (prev.pluginId != current.pluginId)
-			return;
+            if (current.isStarted) {
+                worldActions.put(current.threadIndex, current);
+            } else {
+                worldActions.put(current.threadIndex, null);
 
-		long time = current.timeNanoSec - prev.timeNanoSec;
+                if (prev != null) {
+                    addStatistic(prev, current);
+                }
+            }
+        }
+    }
 
-		PluginStatistic statistic = this.plugins.get(prev.pluginId);
-		statistic.chunkLoadCount++;
-		statistic.chunkLoadSumNanoSec += time;
+    private void addStatistic(Action prev, Action current) {
+        if (prev.pluginId != current.pluginId)
+            return;
 
-		if (statistic.isInitialized) {
-			if (statistic.chunkLoadMinTimeNanoSec > time)
-				statistic.chunkLoadMinTimeNanoSec = time;
+        long time = current.timeNanoSec - prev.timeNanoSec;
 
-			if (statistic.chunkLoadMaxTimeNanoSec < time)
-				statistic.chunkLoadMaxTimeNanoSec = time;
-		} else {
-			statistic.chunkLoadMinTimeNanoSec = time;
-			statistic.chunkLoadMaxTimeNanoSec = time;
-			statistic.isInitialized = true;
-		}
-	}
+        PluginStatistic statistic = this.plugins.get(prev.pluginId);
+        statistic.chunkLoadCount++;
+        statistic.chunkLoadSumNanoSec += time;
+
+        if (statistic.isInitialized) {
+            if (statistic.chunkLoadMinTimeNanoSec > time)
+                statistic.chunkLoadMinTimeNanoSec = time;
+
+            if (statistic.chunkLoadMaxTimeNanoSec < time)
+                statistic.chunkLoadMaxTimeNanoSec = time;
+        } else {
+            statistic.chunkLoadMinTimeNanoSec = time;
+            statistic.chunkLoadMaxTimeNanoSec = time;
+            statistic.isInitialized = true;
+        }
+    }
 }

@@ -40,14 +40,14 @@ public class SwitchListener implements Listener {
         Block block = event.getBlock();
         // Block must be a detector rail being triggered
         if (!WorldUtils.isValidBlock(block)
-                || block.getType() != Material.DETECTOR_RAIL
-                || event.getNewCurrent() != 15) {
+            || block.getType() != Material.DETECTOR_RAIL
+            || event.getNewCurrent() != 15) {
             return;
         }
         // Check that the block above the rail is a sign
         Block above = block.getRelative(BlockFace.UP);
         if (!Tag.SIGNS.isTagged(above.getType())
-                || !(above.getState() instanceof Sign)) {
+            || !(above.getState() instanceof Sign)) {
             return;
         }
         // Check that the sign has a valid switch type
@@ -59,7 +59,8 @@ public class SwitchListener implements Listener {
         // Check that a player is triggering the switch
         // NOTE: The event doesn't provide the information and so the next best thing is searching for a
         //       player who is nearby and riding a minecart.
-        Player player = null; {
+        Player player = null;
+        {
             double searchDistance = Double.MAX_VALUE;
             for (Entity entity : block.getWorld().getNearbyEntities(block.getLocation(), 3, 3, 3)) {
                 if (!(entity instanceof Player)) {
@@ -68,8 +69,8 @@ public class SwitchListener implements Listener {
                 Entity vehicle = entity.getVehicle();
                 // TODO: This should be abstracted into CivModCore
                 if (vehicle == null
-                        || vehicle.getType() != EntityType.MINECART
-                        || !(vehicle instanceof Minecart)) {
+                    || vehicle.getType() != EntityType.MINECART
+                    || !(vehicle instanceof Minecart)) {
                     continue;
                 }
                 double distance = block.getLocation().distanceSquared(entity.getLocation());
@@ -109,7 +110,7 @@ public class SwitchListener implements Listener {
                         continue;
                     }
                     if (switchDestination.equals(WILDCARD)
-                            || playerDestination.equalsIgnoreCase(switchDestination)) {
+                        || playerDestination.equalsIgnoreCase(switchDestination)) {
                         matched = true;
                         break matcher;
                     }

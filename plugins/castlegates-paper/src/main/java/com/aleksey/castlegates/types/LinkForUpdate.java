@@ -5,9 +5,10 @@ import java.util.List;
 import com.aleksey.castlegates.database.ReinforcementInfo;
 
 public class LinkForUpdate {
-	public GearblockLink original;
-	public Gearblock gearblock1;
-	public Gearblock gearblock2;
-	public String blocks;
-	public List<ReinforcementInfo> reinforcements;
+
+    public GearblockLink original;
+    public Gearblock gearblock1;
+    public Gearblock gearblock2;
+    public String blocks;
+    public List<ReinforcementInfo> reinforcements;
 }

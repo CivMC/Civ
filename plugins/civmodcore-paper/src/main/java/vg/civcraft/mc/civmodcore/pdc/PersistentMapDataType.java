@@ -14,60 +14,68 @@ import org.bukkit.persistence.PersistentDataType;
  */
 public abstract class PersistentMapDataType<K, V> implements PersistentDataType<PersistentDataContainer, Map<K, V>> {
 
-	private final PersistentDataType<NamespacedKey, K> keyEncoder;
-	private final PersistentDataType<?, V> valueEncoder;
+    private final PersistentDataType<NamespacedKey, K> keyEncoder;
+    private final PersistentDataType<?, V> valueEncoder;
 
-	public PersistentMapDataType(@Nonnull final PersistentDataType<NamespacedKey, K> keyEncoder,
-								 @Nonnull final PersistentDataType<?, V> valueEncoder) {
-		this.keyEncoder = Objects.requireNonNull(keyEncoder);
-		this.valueEncoder = Objects.requireNonNull(valueEncoder);
-	}
+    public PersistentMapDataType(@Nonnull final PersistentDataType<NamespacedKey, K> keyEncoder,
+                                 @Nonnull final PersistentDataType<?, V> valueEncoder) {
+        this.keyEncoder = Objects.requireNonNull(keyEncoder);
+        this.valueEncoder = Objects.requireNonNull(valueEncoder);
+    }
 
-	/** {@inheritDoc} */
-	@Nonnull
-	@Override
-	public Class<PersistentDataContainer> getPrimitiveType() {
-		return PersistentDataContainer.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @Override
+    public Class<PersistentDataContainer> getPrimitiveType() {
+        return PersistentDataContainer.class;
+    }
 
-	/** {@inheritDoc} */
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	@Nonnull
-	@Override
-	public Class<Map<K, V>> getComplexType() {
-		return (Class<Map<K, V>>) ((Class<? extends Map>) Map.class);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Nonnull
+    @Override
+    public Class<Map<K, V>> getComplexType() {
+        return (Class<Map<K, V>>) ((Class<? extends Map>) Map.class);
+    }
 
-	/**
-	 * @param initialSize Initial size of the map.
-	 * @return Returns a new map that's used in {@link #fromPrimitive(PersistentDataContainer, PersistentDataAdapterContext)}.
-	 */
-	@Nonnull
-	protected abstract Map<K, V> newMap(int initialSize);
+    /**
+     * @param initialSize Initial size of the map.
+     * @return Returns a new map that's used in {@link #fromPrimitive(PersistentDataContainer, PersistentDataAdapterContext)}.
+     */
+    @Nonnull
+    protected abstract Map<K, V> newMap(int initialSize);
 
-	/** {@inheritDoc} */
-	@Nonnull
-	@Override
-	public PersistentDataContainer toPrimitive(@Nonnull final Map<K, V> map,
-											   @Nonnull final PersistentDataAdapterContext adapter) {
-		final var pdc = adapter.newPersistentDataContainer();
-		map.forEach((key, value) -> pdc.set(
-				this.keyEncoder.toPrimitive(key, adapter),
-				this.valueEncoder, value));
-		return pdc;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @Override
+    public PersistentDataContainer toPrimitive(@Nonnull final Map<K, V> map,
+                                               @Nonnull final PersistentDataAdapterContext adapter) {
+        final var pdc = adapter.newPersistentDataContainer();
+        map.forEach((key, value) -> pdc.set(
+            this.keyEncoder.toPrimitive(key, adapter),
+            this.valueEncoder, value));
+        return pdc;
+    }
 
-	/** {@inheritDoc} */
-	@Nonnull
-	@Override
-	public Map<K, V> fromPrimitive(@Nonnull final PersistentDataContainer pdc,
-								   @Nonnull final PersistentDataAdapterContext adapter) {
-		final Set<NamespacedKey> keys = pdc.getKeys();
-		final Map<K, V> map = newMap(keys.size());
-		keys.forEach((key) -> map.put(
-				this.keyEncoder.fromPrimitive(key, adapter),
-				Objects.requireNonNull(pdc.get(key, this.valueEncoder))));
-		return map;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    @Override
+    public Map<K, V> fromPrimitive(@Nonnull final PersistentDataContainer pdc,
+                                   @Nonnull final PersistentDataAdapterContext adapter) {
+        final Set<NamespacedKey> keys = pdc.getKeys();
+        final Map<K, V> map = newMap(keys.size());
+        keys.forEach((key) -> map.put(
+            this.keyEncoder.fromPrimitive(key, adapter),
+            Objects.requireNonNull(pdc.get(key, this.valueEncoder))));
+        return map;
+    }
 
 }

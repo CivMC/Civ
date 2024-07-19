@@ -8,30 +8,30 @@ import vg.civcraft.mc.civmodcore.utilities.UuidUtils;
 
 public final class NBTHelper {
 
-	// ------------------------------------------------------------
-	// Location
-	// ------------------------------------------------------------
+    // ------------------------------------------------------------
+    // Location
+    // ------------------------------------------------------------
 
-	private static final String LOCATION_WORLD_KEY = "world";
-	private static final String LOCATION_X_KEY = "x";
-	private static final String LOCATION_Y_KEY = "y";
-	private static final String LOCATION_Z_KEY = "z";
-	private static final String LOCATION_YAW_KEY = "yaw";
-	private static final String LOCATION_PITCH_KEY = "pitch";
+    private static final String LOCATION_WORLD_KEY = "world";
+    private static final String LOCATION_X_KEY = "x";
+    private static final String LOCATION_Y_KEY = "y";
+    private static final String LOCATION_Z_KEY = "z";
+    private static final String LOCATION_YAW_KEY = "yaw";
+    private static final String LOCATION_PITCH_KEY = "pitch";
 
-	public static Location locationFromNBT(final NBTCompound nbt) {
-		if (nbt == null) {
-			return null;
-		}
-		final UUID worldUUID = nbt.getUUID(LOCATION_WORLD_KEY);
-		return new Location(
-				UuidUtils.isNullOrIdentity(worldUUID) ? null : Bukkit.getWorld(worldUUID),
-				nbt.getDouble(LOCATION_X_KEY),
-				nbt.getDouble(LOCATION_Y_KEY),
-				nbt.getDouble(LOCATION_Z_KEY),
-				nbt.getFloat(LOCATION_YAW_KEY),
-				nbt.getFloat(LOCATION_PITCH_KEY));
-	}
+    public static Location locationFromNBT(final NBTCompound nbt) {
+        if (nbt == null) {
+            return null;
+        }
+        final UUID worldUUID = nbt.getUUID(LOCATION_WORLD_KEY);
+        return new Location(
+            UuidUtils.isNullOrIdentity(worldUUID) ? null : Bukkit.getWorld(worldUUID),
+            nbt.getDouble(LOCATION_X_KEY),
+            nbt.getDouble(LOCATION_Y_KEY),
+            nbt.getDouble(LOCATION_Z_KEY),
+            nbt.getFloat(LOCATION_YAW_KEY),
+            nbt.getFloat(LOCATION_PITCH_KEY));
+    }
 
 	public static NBTCompound locationToNBT(final Location location) {
 		if (location == null) {

@@ -18,342 +18,342 @@ import org.bukkit.World;
  * kept in a cache, into which is inserted when a chunk is loaded. When a chunk
  * is unloaded, it is placed in an unloading queue and will be unloaded after a
  * certain interval if it hasn't been reloaded in the mean time
- *
  */
 public class WorldChunkMetaManager {
-	private static final org.apache.logging.log4j.Logger CHUNK_META_LOGGER = LogManager.getLogger("Chunk meta");
 
-	/**
-	 * How long should chunk data be kept in memory after the chunk is unloaded? 5
-	 * minutes
-	 */
-	private static final long UNLOAD_DELAY = 5L * 60L * 1000L;
-	private static final long UNLOAD_CHECK_INTERVAL = 60L * 1000L;
-	
-	private static final long REGULAR_SAVE_INTERVAL = 60L * 1000L;
+    private static final org.apache.logging.log4j.Logger CHUNK_META_LOGGER = LogManager.getLogger("Chunk meta");
 
-	private final short worldID;
-	private final Map<ChunkCoord, ChunkCoord> metas;
-	/**
-	 * A synchronized TreeSet holding all chunk metadata belonging to unloaded
-	 * chunks. A comparator based on when the chunk was unloaded is used to
-	 * guarantee an iteration order ascending based on unloading time, which makes
-	 * cleanup trivial
-	 */
-	private final ConcurrentLinkedQueue<ChunkCoord> unloadingQueue;
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
-	private final List<AtomicBoolean> chunkLoadingDisablers;
-	private final List<Thread> chunkLoadingThreads;
-	private final LinkedBlockingQueue<ChunkCoord> chunkLoadingQueue;
-	private final World world;
-	private final Logger logger;
+    /**
+     * How long should chunk data be kept in memory after the chunk is unloaded? 5
+     * minutes
+     */
+    private static final long UNLOAD_DELAY = 5L * 60L * 1000L;
+    private static final long UNLOAD_CHECK_INTERVAL = 60L * 1000L;
 
-	public WorldChunkMetaManager(World world, short worldID, int chunkLoadingThreadCount, Logger logger) {
-		this.worldID = worldID;
-		this.world = world;
-		this.metas = new HashMap<>();
-		this.unloadingQueue = new ConcurrentLinkedQueue<>();
+    private static final long REGULAR_SAVE_INTERVAL = 60L * 1000L;
 
-		this.chunkLoadingQueue = new LinkedBlockingQueue<>();
-		this.chunkLoadingDisablers = new ArrayList<>();
-		this.chunkLoadingThreads = new ArrayList<>();
-		this.logger = logger;
+    private final short worldID;
+    private final Map<ChunkCoord, ChunkCoord> metas;
+    /**
+     * A synchronized TreeSet holding all chunk metadata belonging to unloaded
+     * chunks. A comparator based on when the chunk was unloaded is used to
+     * guarantee an iteration order ascending based on unloading time, which makes
+     * cleanup trivial
+     */
+    private final ConcurrentLinkedQueue<ChunkCoord> unloadingQueue;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+    private final List<AtomicBoolean> chunkLoadingDisablers;
+    private final List<Thread> chunkLoadingThreads;
+    private final LinkedBlockingQueue<ChunkCoord> chunkLoadingQueue;
+    private final World world;
+    private final Logger logger;
 
-		registerUnloadRunnable();
-		startChunkLoadingThreads(chunkLoadingThreadCount);
-		registerRegularSaveRunnable();
-	}
+    public WorldChunkMetaManager(World world, short worldID, int chunkLoadingThreadCount, Logger logger) {
+        this.worldID = worldID;
+        this.world = world;
+        this.metas = new HashMap<>();
+        this.unloadingQueue = new ConcurrentLinkedQueue<>();
 
-	ChunkMeta<?> computeIfAbsent(short pluginID, int x, int z, Supplier<ChunkMeta<?>> computer, boolean alwaysLoaded) {
-		ChunkCoord coord = getChunkCoord(x, z, true, false);
-		ChunkMeta<?> existing = coord.getMeta(pluginID, alwaysLoaded);
-		if (existing != null) {
-			return existing;
-		}
-		existing = computer.get();
-		existing.setChunkCoord(coord);
-		existing.setPluginID(pluginID);
-		coord.addChunkMeta(existing);
-		return existing;
-	}
+        this.chunkLoadingQueue = new LinkedBlockingQueue<>();
+        this.chunkLoadingDisablers = new ArrayList<>();
+        this.chunkLoadingThreads = new ArrayList<>();
+        this.logger = logger;
 
-	void flushPluginData(short pluginID) {
-		synchronized (metas) {
-			for (ChunkCoord coord : metas.values()) {
-				synchronized (coord) {
-					coord.persistPlugin(pluginID);
-				}
-			}
-		}
-	}
+        registerUnloadRunnable();
+        startChunkLoadingThreads(chunkLoadingThreadCount);
+        registerRegularSaveRunnable();
+    }
 
-	/**
-	 * Retrieves or generates a new ChunkCoord instance. ChunkCoord are each
-	 * singletons for their location, which is enforced through this method
-	 * 
-	 * @param x   X-coordinate of the chunk
-	 * @param z   Z-coordinate of the chunk
-	 * @param gen Should a new ChunkCoord be generated if none exists at the given
-	 *            location
-	 * @param gen Should data for the ChunkCoord be loaded from the database if a
-	 *            new one was created
-	 * @return Found/Generated ChunkCoord or null if none existed and none was
-	 *         supposed to be generated
-	 */
-	private ChunkCoord getChunkCoord(int x, int z, boolean gen, boolean populate) {
-		ChunkCoord coord = new ChunkCoord(x, z, worldID, world);
-		synchronized (metas) {
-			ChunkCoord value = metas.get(coord);
-			if (value != null) {
-				if (populate) {
-					// Prevent removal from metas in case we load at the same time
-					// as it unloads
-					value.clearUnloaded();
-				}
-				return value;
-			}
+    ChunkMeta<?> computeIfAbsent(short pluginID, int x, int z, Supplier<ChunkMeta<?>> computer, boolean alwaysLoaded) {
+        ChunkCoord coord = getChunkCoord(x, z, true, false);
+        ChunkMeta<?> existing = coord.getMeta(pluginID, alwaysLoaded);
+        if (existing != null) {
+            return existing;
+        }
+        existing = computer.get();
+        existing.setChunkCoord(coord);
+        existing.setPluginID(pluginID);
+        coord.addChunkMeta(existing);
+        return existing;
+    }
 
-			if (!gen) {
-				return null;
-			}
-			metas.put(coord, coord);
-			if (populate) {
-				// up until here we are still sync from the ChunkLoadEvent, so we need to
-				// offload the actual db load to another thread
-				synchronized (chunkLoadingQueue) {
-					chunkLoadingQueue.add(coord);
-					chunkLoadingQueue.notifyAll();
-				}
-			}
-			return coord;
-		}
-	}
+    void flushPluginData(short pluginID) {
+        synchronized (metas) {
+            for (ChunkCoord coord : metas.values()) {
+                synchronized (coord) {
+                    coord.persistPlugin(pluginID);
+                }
+            }
+        }
+    }
 
-	/**
-	 * Retrieves the chunk meta for a specific chunk for a specific plugin.
-	 * If it is not loaded then just return and do not wait
-	 *
-	 * DO NOT USE THIS FOR UNLOADED CHUNKS, THINGS WILL BREAK HORRIBLY
-	 *
-	 * @param pluginID Internal id of the plugin
-	 * @param x        X-coordinate of the chunk
-	 * @param z        Z-coordinate of the chunk
-	 * @return ChunkMetaLoadStatus for the given parameter
-	 */
-	ChunkMetaLoadStatus getChunkMetaIfLoaded(short pluginID, int x, int z, boolean alwaysLoaded) {
-		ChunkCoord coord = getChunkCoord(x, z, false, false);
-		if (coord == null) {
-			return null;
-		}
-		return coord.getMetaIfLoaded(pluginID, alwaysLoaded);
-	}
+    /**
+     * Retrieves or generates a new ChunkCoord instance. ChunkCoord are each
+     * singletons for their location, which is enforced through this method
+     *
+     * @param x   X-coordinate of the chunk
+     * @param z   Z-coordinate of the chunk
+     * @param gen Should a new ChunkCoord be generated if none exists at the given
+     *            location
+     * @param gen Should data for the ChunkCoord be loaded from the database if a
+     *            new one was created
+     * @return Found/Generated ChunkCoord or null if none existed and none was
+     * supposed to be generated
+     */
+    private ChunkCoord getChunkCoord(int x, int z, boolean gen, boolean populate) {
+        ChunkCoord coord = new ChunkCoord(x, z, worldID, world);
+        synchronized (metas) {
+            ChunkCoord value = metas.get(coord);
+            if (value != null) {
+                if (populate) {
+                    // Prevent removal from metas in case we load at the same time
+                    // as it unloads
+                    value.clearUnloaded();
+                }
+                return value;
+            }
 
-	/**
-	 * Retrieves the chunk meta for a specific chunk for a specific plugin.
-	 * 
-	 * DO NOT USE THIS FOR UNLOADED CHUNKS, THINGS WILL BREAK HORRIBLY
-	 * 
-	 * @param pluginID Internal id of the plugin
-	 * @param x        X-coordinate of the chunk
-	 * @param z        Z-coordinate of the chunk
-	 * @return ChunkMeta for the given parameter, possibly null if none existed
-	 */
-	ChunkMeta<?> getChunkMeta(short pluginID, int x, int z, boolean alwaysLoaded) {
-		ChunkCoord coord = getChunkCoord(x, z, false, false);
-		if (coord == null) {
-			return null;
-		}
-		return coord.getMeta(pluginID, alwaysLoaded);
-	}
+            if (!gen) {
+                return null;
+            }
+            metas.put(coord, coord);
+            if (populate) {
+                // up until here we are still sync from the ChunkLoadEvent, so we need to
+                // offload the actual db load to another thread
+                synchronized (chunkLoadingQueue) {
+                    chunkLoadingQueue.add(coord);
+                    chunkLoadingQueue.notifyAll();
+                }
+            }
+            return coord;
+        }
+    }
 
-	/**
-	 * Inserts new chunk metadata, overwriting any existing one for the same plugin
-	 * and the same chunk
-	 * 
-	 * @param x    X-coordinate of the chunk
-	 * @param z    Z-coordinate of the chunk
-	 * @param meta Metadata to insert
-	 */
-	void insertChunkMeta(int x, int z, ChunkMeta<?> meta) {
-		ChunkCoord coord = getChunkCoord(x, z, true, false);
-		meta.setChunkCoord(coord);
-		coord.addChunkMeta(meta);
-	}
+    /**
+     * Retrieves the chunk meta for a specific chunk for a specific plugin.
+     * If it is not loaded then just return and do not wait
+     * <p>
+     * DO NOT USE THIS FOR UNLOADED CHUNKS, THINGS WILL BREAK HORRIBLY
+     *
+     * @param pluginID Internal id of the plugin
+     * @param x        X-coordinate of the chunk
+     * @param z        Z-coordinate of the chunk
+     * @return ChunkMetaLoadStatus for the given parameter
+     */
+    ChunkMetaLoadStatus getChunkMetaIfLoaded(short pluginID, int x, int z, boolean alwaysLoaded) {
+        ChunkCoord coord = getChunkCoord(x, z, false, false);
+        if (coord == null) {
+            return null;
+        }
+        return coord.getMetaIfLoaded(pluginID, alwaysLoaded);
+    }
 
-	/**
-	 * Called when the underlying minecraft chunk is loaded. Loads the chunk
-	 * metadata from the database if its not already available in the cache
-	 * 
-	 * @param x X-coordinate of the chunk
-	 * @param z Z-coordinate of the chunk
-	 */
-	void loadChunk(int x, int z) {
-		ChunkCoord chunkCoord = getChunkCoord(x, z, true, true);
-		chunkCoord.minecraftChunkLoaded();
-	}
-	
-	private void registerRegularSaveRunnable() {
-		scheduler.scheduleWithFixedDelay(() -> {
-			try {
-				CHUNK_META_LOGGER.debug("World " + worldID + ": Saving all chunks");
-				saveAllChunks();
-			} catch (RuntimeException ex) {
-				ex.printStackTrace();
-			}
-		}, REGULAR_SAVE_INTERVAL, REGULAR_SAVE_INTERVAL, TimeUnit.MILLISECONDS);
-	}
+    /**
+     * Retrieves the chunk meta for a specific chunk for a specific plugin.
+     * <p>
+     * DO NOT USE THIS FOR UNLOADED CHUNKS, THINGS WILL BREAK HORRIBLY
+     *
+     * @param pluginID Internal id of the plugin
+     * @param x        X-coordinate of the chunk
+     * @param z        Z-coordinate of the chunk
+     * @return ChunkMeta for the given parameter, possibly null if none existed
+     */
+    ChunkMeta<?> getChunkMeta(short pluginID, int x, int z, boolean alwaysLoaded) {
+        ChunkCoord coord = getChunkCoord(x, z, false, false);
+        if (coord == null) {
+            return null;
+        }
+        return coord.getMeta(pluginID, alwaysLoaded);
+    }
 
-	private void saveAllChunks() {
-		List<ChunkCoord> saveList;
-		synchronized (metas) {
-			saveList = new ArrayList<>(metas.values());
-		}
+    /**
+     * Inserts new chunk metadata, overwriting any existing one for the same plugin
+     * and the same chunk
+     *
+     * @param x    X-coordinate of the chunk
+     * @param z    Z-coordinate of the chunk
+     * @param meta Metadata to insert
+     */
+    void insertChunkMeta(int x, int z, ChunkMeta<?> meta) {
+        ChunkCoord coord = getChunkCoord(x, z, true, false);
+        meta.setChunkCoord(coord);
+        coord.addChunkMeta(meta);
+    }
 
-		for(ChunkCoord coord : saveList) {
-			synchronized (coord) {
-				if (!coord.isChunkLoaded()) {
-					// to avoid race conditions, we will not write out chunks currently unloaded
-					continue;
-				}
-				coord.fullyPersist();
-			}
-		}
-	}
+    /**
+     * Called when the underlying minecraft chunk is loaded. Loads the chunk
+     * metadata from the database if its not already available in the cache
+     *
+     * @param x X-coordinate of the chunk
+     * @param z Z-coordinate of the chunk
+     */
+    void loadChunk(int x, int z) {
+        ChunkCoord chunkCoord = getChunkCoord(x, z, true, true);
+        chunkCoord.minecraftChunkLoaded();
+    }
 
-	private void registerUnloadRunnable() {
-		scheduler.scheduleWithFixedDelay(() -> {
-			if (unloadingQueue.isEmpty()) {
-				return;
-			}
-			CHUNK_META_LOGGER.debug("World " + worldID + ": Processing unloading queue");
+    private void registerRegularSaveRunnable() {
+        scheduler.scheduleWithFixedDelay(() -> {
+            try {
+                CHUNK_META_LOGGER.debug("World " + worldID + ": Saving all chunks");
+                saveAllChunks();
+            } catch (RuntimeException ex) {
+                ex.printStackTrace();
+            }
+        }, REGULAR_SAVE_INTERVAL, REGULAR_SAVE_INTERVAL, TimeUnit.MILLISECONDS);
+    }
 
-			Set<ChunkCoord> readdList = null;
+    private void saveAllChunks() {
+        List<ChunkCoord> saveList;
+        synchronized (metas) {
+            saveList = new ArrayList<>(metas.values());
+        }
 
-			ChunkCoord coord;
-			while((coord = unloadingQueue.poll()) != null) {
-				if (!coord.isUnloaded()) {
-					CHUNK_META_LOGGER.debug("World " + worldID + ": Skipping chunk " + coord + " because it is loaded at " + coord.getLastLoadedTime() + " after " + coord.getLastUnloadedTime());
-					continue;
-				}
+        for (ChunkCoord coord : saveList) {
+            synchronized (coord) {
+                if (!coord.isChunkLoaded()) {
+                    // to avoid race conditions, we will not write out chunks currently unloaded
+                    continue;
+                }
+                coord.fullyPersist();
+            }
+        }
+    }
 
-				if (System.currentTimeMillis() - coord.getLastUnloadedTime() > UNLOAD_DELAY) {
-					CHUNK_META_LOGGER.debug("World " + worldID + ": Unloading chunk " + coord + " - unloaded: " + coord.getLastUnloadedTime());
-					unloadChunkCoord(coord);
-				} else {
-					if (readdList == null) {
-						readdList = new HashSet<>();
-					}
-					readdList.add(coord);
+    private void registerUnloadRunnable() {
+        scheduler.scheduleWithFixedDelay(() -> {
+            if (unloadingQueue.isEmpty()) {
+                return;
+            }
+            CHUNK_META_LOGGER.debug("World " + worldID + ": Processing unloading queue");
 
-				}
-			}
-			if (readdList != null) {
-				CHUNK_META_LOGGER.debug("World " + worldID + ": Unloaded chunks remaining unsaved: " + readdList);
-				unloadingQueue.addAll(readdList);
-			}
-		}, UNLOAD_CHECK_INTERVAL, UNLOAD_CHECK_INTERVAL, TimeUnit.MILLISECONDS);
-	}
+            Set<ChunkCoord> readdList = null;
 
-	private void unloadChunkCoord(ChunkCoord coord) {
-		// make sure chunk hasnt loaded again since
-		if (!coord.isUnloaded()) {
-			return;
-		}
+            ChunkCoord coord;
+            while ((coord = unloadingQueue.poll()) != null) {
+                if (!coord.isUnloaded()) {
+                    CHUNK_META_LOGGER.debug("World " + worldID + ": Skipping chunk " + coord + " because it is loaded at " + coord.getLastLoadedTime() + " after " + coord.getLastUnloadedTime());
+                    continue;
+                }
 
-		boolean hasPermanentlyLoadedData;
+                if (System.currentTimeMillis() - coord.getLastUnloadedTime() > UNLOAD_DELAY) {
+                    CHUNK_META_LOGGER.debug("World " + worldID + ": Unloading chunk " + coord + " - unloaded: " + coord.getLastUnloadedTime());
+                    unloadChunkCoord(coord);
+                } else {
+                    if (readdList == null) {
+                        readdList = new HashSet<>();
+                    }
+                    readdList.add(coord);
 
-		synchronized (coord) {
-			coord.fullyPersist();
+                }
+            }
+            if (readdList != null) {
+                CHUNK_META_LOGGER.debug("World " + worldID + ": Unloaded chunks remaining unsaved: " + readdList);
+                unloadingQueue.addAll(readdList);
+            }
+        }, UNLOAD_CHECK_INTERVAL, UNLOAD_CHECK_INTERVAL, TimeUnit.MILLISECONDS);
+    }
 
-			hasPermanentlyLoadedData = coord.hasPermanentlyLoadedData();
-			if (hasPermanentlyLoadedData) {
-				// keep chunk coord, but garbage collect the data we dont want to keep inside of
-				// it
-				coord.deleteNonPersistentData();
-			}
-		}
+    private void unloadChunkCoord(ChunkCoord coord) {
+        // make sure chunk hasnt loaded again since
+        if (!coord.isUnloaded()) {
+            return;
+        }
 
-		if (!hasPermanentlyLoadedData) {
-			// coord is up for garbage collection at this point and all of its data has been
-			// written to the db
-			synchronized (metas) {
-				if (coord.isUnloaded()) {
-					CHUNK_META_LOGGER.debug("Chunk no longer being tracked: " + coord);
-					metas.remove(coord);
-					coord.clearUnloaded();
-				}
-			}
-		}
-	}
+        boolean hasPermanentlyLoadedData;
 
-	private void startChunkLoadingThreads(int chunkLoadingCount) {
-		for (int i = 0; i < chunkLoadingCount; i++) {
-			final int threadIndex = i;
+        synchronized (coord) {
+            coord.fullyPersist();
 
-			final AtomicBoolean disabled = new AtomicBoolean(false);
-			this.chunkLoadingDisablers.add(disabled);
+            hasPermanentlyLoadedData = coord.hasPermanentlyLoadedData();
+            if (hasPermanentlyLoadedData) {
+                // keep chunk coord, but garbage collect the data we dont want to keep inside of
+                // it
+                coord.deleteNonPersistentData();
+            }
+        }
 
-			final String threadName = "cmc-chunk-loading-" + this.worldID + "-" + i;
-			Thread thread = new Thread(() -> chunkLoadingThread(threadIndex, threadName, disabled), threadName);
-			this.chunkLoadingThreads.add(thread);
-			thread.start();
-		}
-	}
+        if (!hasPermanentlyLoadedData) {
+            // coord is up for garbage collection at this point and all of its data has been
+            // written to the db
+            synchronized (metas) {
+                if (coord.isUnloaded()) {
+                    CHUNK_META_LOGGER.debug("Chunk no longer being tracked: " + coord);
+                    metas.remove(coord);
+                    coord.clearUnloaded();
+                }
+            }
+        }
+    }
 
-	private void chunkLoadingThread(int threadIndex, String threadName, AtomicBoolean disabled) {
-		this.logger.info("[" + this.world.getName() + "] Thread " + threadName + " is started.");
+    private void startChunkLoadingThreads(int chunkLoadingCount) {
+        for (int i = 0; i < chunkLoadingCount; i++) {
+            final int threadIndex = i;
 
-		while (!disabled.get()) {
-			try {
-				ChunkCoord coord = chunkLoadingQueue.take();
-				coord.loadAll(threadIndex);
-			} catch (InterruptedException e) {
-				if(!disabled.get()) e.printStackTrace();
-			}
-		}
+            final AtomicBoolean disabled = new AtomicBoolean(false);
+            this.chunkLoadingDisablers.add(disabled);
 
-		this.logger.info("[" + this.world.getName() + "] Thread " + threadName + " is stopped.");
-	}
+            final String threadName = "cmc-chunk-loading-" + this.worldID + "-" + i;
+            Thread thread = new Thread(() -> chunkLoadingThread(threadIndex, threadName, disabled), threadName);
+            this.chunkLoadingThreads.add(thread);
+            thread.start();
+        }
+    }
 
-	/**
-	 * Called when the underlying minecraft chunk is unloaded. Does not actually
-	 * unload our data, but instead stages it to be unloaded if the chunk stays
-	 * unloaded for a certain period of time
-	 * 
-	 * @param x X-coordinate of the chunk
-	 * @param z Z-coordinate of the chunk
-	 */
-	void unloadChunk(int x, int z) {
-		ChunkCoord chunkCoord = getChunkCoord(x, z, false, false);
-		CHUNK_META_LOGGER.debug("World " + worldID + ": Add to unloading queue: " + chunkCoord);
-		// chunkCoord can never be null here, otherwise our data structure would be
-		// broken, in which case we'd want to know
-		chunkCoord.minecraftChunkUnloaded();
-		unloadingQueue.add(chunkCoord);
-	}
+    private void chunkLoadingThread(int threadIndex, String threadName, AtomicBoolean disabled) {
+        this.logger.info("[" + this.world.getName() + "] Thread " + threadName + " is started.");
 
-	public void disable() {
-		for (int i = 0; i < this.chunkLoadingDisablers.size(); i++) {
-			AtomicBoolean disabled = this.chunkLoadingDisablers.get(i);
-			disabled.set(true);
+        while (!disabled.get()) {
+            try {
+                ChunkCoord coord = chunkLoadingQueue.take();
+                coord.loadAll(threadIndex);
+            } catch (InterruptedException e) {
+                if (!disabled.get()) e.printStackTrace();
+            }
+        }
 
-			Thread chunkLoadingThread = this.chunkLoadingThreads.get(i);
-			chunkLoadingThread.interrupt();
-		}
+        this.logger.info("[" + this.world.getName() + "] Thread " + threadName + " is stopped.");
+    }
 
-		this.scheduler.shutdown();
+    /**
+     * Called when the underlying minecraft chunk is unloaded. Does not actually
+     * unload our data, but instead stages it to be unloaded if the chunk stays
+     * unloaded for a certain period of time
+     *
+     * @param x X-coordinate of the chunk
+     * @param z Z-coordinate of the chunk
+     */
+    void unloadChunk(int x, int z) {
+        ChunkCoord chunkCoord = getChunkCoord(x, z, false, false);
+        CHUNK_META_LOGGER.debug("World " + worldID + ": Add to unloading queue: " + chunkCoord);
+        // chunkCoord can never be null here, otherwise our data structure would be
+        // broken, in which case we'd want to know
+        chunkCoord.minecraftChunkUnloaded();
+        unloadingQueue.add(chunkCoord);
+    }
 
-		try {
-			if (!this.scheduler.awaitTermination(60, TimeUnit.SECONDS))
-				this.scheduler.shutdownNow();
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-		}
+    public void disable() {
+        for (int i = 0; i < this.chunkLoadingDisablers.size(); i++) {
+            AtomicBoolean disabled = this.chunkLoadingDisablers.get(i);
+            disabled.set(true);
 
-		this.logger.info("[" + this.world.getName() + "] Scheduler and its tasks are shutdown.");
+            Thread chunkLoadingThread = this.chunkLoadingThreads.get(i);
+            chunkLoadingThread.interrupt();
+        }
 
-		saveAllChunks();
+        this.scheduler.shutdown();
 
-		this.logger.info("[" + this.world.getName() + "] All chunks have been saved.");
-	}
+        try {
+            if (!this.scheduler.awaitTermination(60, TimeUnit.SECONDS))
+                this.scheduler.shutdownNow();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+
+        this.logger.info("[" + this.world.getName() + "] Scheduler and its tasks are shutdown.");
+
+        saveAllChunks();
+
+        this.logger.info("[" + this.world.getName() + "] All chunks have been saved.");
+    }
 }

@@ -8,42 +8,43 @@ import org.bukkit.event.entity.EntityCombustByEntityEvent;
 
 /**
  * Helper class for entity cbust event
- * @author Gordon / ProgrammerDan
  *
+ * @author Gordon / ProgrammerDan
  */
 public class EntityCombustEventWrapper {
 
-	private final EntityCombustByEntityEvent event;
+    private final EntityCombustByEntityEvent event;
 
-	public EntityCombustEventWrapper(final EntityCombustByEntityEvent event) {
-		Preconditions.checkNotNull(event, "event");
+    public EntityCombustEventWrapper(final EntityCombustByEntityEvent event) {
+        Preconditions.checkNotNull(event, "event");
 
-		this.event = event;
-	}
+        this.event = event;
+    }
 
-	public EntityCombustByEntityEvent getEvent() {
-		return event;
-	}
+    public EntityCombustByEntityEvent getEvent() {
+        return event;
+    }
 
-	/**
-	 * Gets the damager or indirect damager from any projectile.
-	 * @return The damager player
-	 */
-	public Player getPlayerDamager() {
-		Player damager = null;
-		if (event.getCombuster() instanceof Player) {
-			damager = (Player) event.getCombuster();
-		} else if (event.getCombuster() instanceof Wolf) {
-			Wolf wolf = (Wolf) event.getCombuster();
-			if (wolf.getOwner() instanceof Player) {
-				damager = (Player) wolf.getOwner();
-			}
-		} else if (event.getCombuster() instanceof Projectile) {
-			Projectile projectile = (Projectile) event.getCombuster();
-			if (projectile.getShooter() instanceof Player) {
-				damager = (Player) projectile.getShooter();
-			}
-		}
-		return damager;
-	}
+    /**
+     * Gets the damager or indirect damager from any projectile.
+     *
+     * @return The damager player
+     */
+    public Player getPlayerDamager() {
+        Player damager = null;
+        if (event.getCombuster() instanceof Player) {
+            damager = (Player) event.getCombuster();
+        } else if (event.getCombuster() instanceof Wolf) {
+            Wolf wolf = (Wolf) event.getCombuster();
+            if (wolf.getOwner() instanceof Player) {
+                damager = (Player) wolf.getOwner();
+            }
+        } else if (event.getCombuster() instanceof Projectile) {
+            Projectile projectile = (Projectile) event.getCombuster();
+            if (projectile.getShooter() instanceof Player) {
+                damager = (Player) projectile.getShooter();
+            }
+        }
+        return damager;
+    }
 }
