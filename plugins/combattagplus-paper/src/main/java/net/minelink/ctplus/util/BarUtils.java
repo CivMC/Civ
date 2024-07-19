@@ -116,8 +116,11 @@ public final class BarUtils {
         };
 
         public abstract boolean hasBar(Player player);
+
         public abstract void setMessage(Player player, String message, int timeout);
+
         public abstract void setMessage(Player player, String message, float percent);
+
         public abstract void removeBar(Player player);
     }
 

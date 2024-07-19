@@ -7,25 +7,26 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockGrowEvent;
 
 public final class RealisticBiomesBlockGrowEvent extends Event {
-	private static final HandlerList handlers = new HandlerList();
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    private static final HandlerList handlers = new HandlerList();
 
-	private BlockGrowEvent wrapped;
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public RealisticBiomesBlockGrowEvent(Block block, BlockState newState) {
-		super(false);
-		wrapped = new BlockGrowEvent(block, newState);
-	}
+    private BlockGrowEvent wrapped;
 
-	public BlockGrowEvent getEvent() {
-		return wrapped;
-	}
+    public RealisticBiomesBlockGrowEvent(Block block, BlockState newState) {
+        super(false);
+        wrapped = new BlockGrowEvent(block, newState);
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return RealisticBiomesBlockGrowEvent.handlers;
-	}
+    public BlockGrowEvent getEvent() {
+        return wrapped;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return RealisticBiomesBlockGrowEvent.handlers;
+    }
 }

@@ -5,48 +5,49 @@ import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 
 public class CmdConfigSet extends PearlCommand {
-	private final PearlConfig config;
 
-	public CmdConfigSet(ExilePearlApi pearlApi) {
-		super(pearlApi);
+    private final PearlConfig config;
 
-		config = plugin.getPearlConfig();
+    public CmdConfigSet(ExilePearlApi pearlApi) {
+        super(pearlApi);
 
-		this.senderMustBePlayer = false;		
+        config = plugin.getPearlConfig();
 
-		this.aliases.add("set");
-		this.helpShort = "Sets a exile rule value";
+        this.senderMustBePlayer = false;
 
-		this.commandArgs.add(required("rule", autoTab("exile_rule", "No matching rule found.")));
-		this.commandArgs.add(required("value", autoTab("", "Enter the rule value.")));
-	}
+        this.aliases.add("set");
+        this.helpShort = "Sets a exile rule value";
 
-	@Override
-	public void perform() {
+        this.commandArgs.add(required("rule", autoTab("exile_rule", "No matching rule found.")));
+        this.commandArgs.add(required("value", autoTab("", "Enter the rule value.")));
+    }
 
-		ExileRule rule = ExileRule.fromString(argAsString(0));
-		if (rule == null) {
-			msg("<i>Unknown rule. Use <c>/ep config list <i>to list the rules.");
-			return;
-		}
+    @Override
+    public void perform() {
 
-		Boolean valBool = argAsBool(1);
-		String argStr = "";
+        ExileRule rule = ExileRule.fromString(argAsString(0));
+        if (rule == null) {
+            msg("<i>Unknown rule. Use <c>/ep config list <i>to list the rules.");
+            return;
+        }
 
-		switch(rule) {
+        Boolean valBool = argAsBool(1);
+        String argStr = "";
 
-		case PEARL_RADIUS:
-			config.setRulePearlRadius(argAsInt(1));
-			argStr = argAsInt(1).toString();
-			break;
+        switch (rule) {
 
-		default:
-			config.setRule(rule, valBool);
-			argStr = valBool.toString();
-			break;
-		}
+            case PEARL_RADIUS:
+                config.setRulePearlRadius(argAsInt(1));
+                argStr = argAsInt(1).toString();
+                break;
 
-		msg("<i>Updated the rule <a>%s <i>to <a>%s", rule.toString(), argStr);
-		msg("<i>Use <c>/ep config save <i>to save new values.");
-	}
+            default:
+                config.setRule(rule, valBool);
+                argStr = valBool.toString();
+                break;
+        }
+
+        msg("<i>Updated the rule <a>%s <i>to <a>%s", rule.toString(), argStr);
+        msg("<i>Use <c>/ep config save <i>to save new values.");
+    }
 }

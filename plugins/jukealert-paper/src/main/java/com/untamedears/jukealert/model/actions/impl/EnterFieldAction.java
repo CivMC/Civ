@@ -9,31 +9,31 @@ import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 
 public class EnterFieldAction extends LoggablePlayerAction {
 
-	public static final String ID = "ENTRY";
+    public static final String ID = "ENTRY";
 
-	public EnterFieldAction(long time, Snitch snitch, UUID player) {
-		super(time, snitch, player);
-	}
+    public EnterFieldAction(long time, Snitch snitch, UUID player) {
+        super(time, snitch, player);
+    }
 
-	@Override
-	public String getIdentifier() {
-		return ID;
-	}
+    @Override
+    public String getIdentifier() {
+        return ID;
+    }
 
-	@Override
-	public IClickable getGUIRepresentation() {
-		return getEnrichedClickableSkullFor(getPlayer());
-	}
+    @Override
+    public IClickable getGUIRepresentation() {
+        return getEnrichedClickableSkullFor(getPlayer());
+    }
 
-	@Override
-	public void accept(Snitch s) {
-		if (s.getActiveStatus()) {
-			Bukkit.getPluginManager().callEvent(new PlayerHitSnitchEvent(snitch, Bukkit.getPlayer(player)));
-		}
-	}
+    @Override
+    public void accept(Snitch s) {
+        if (s.getActiveStatus()) {
+            Bukkit.getPluginManager().callEvent(new PlayerHitSnitchEvent(snitch, Bukkit.getPlayer(player)));
+        }
+    }
 
-	@Override
-	public String getChatRepresentationIdentifier() {
-		return "Enter";
-	}
+    @Override
+    public String getChatRepresentationIdentifier() {
+        return "Enter";
+    }
 }

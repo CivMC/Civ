@@ -1,6 +1,5 @@
 /**
  * @author Aleksey Terzi
- *
  */
 
 package com.aleksey.castlegates.database;
@@ -13,113 +12,114 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LinkSource {
-	private static final String countAllScript = "SELECT COUNT(*) FROM cg_link";
-	private static final String selectAllScript = "SELECT * FROM cg_link ORDER BY LinkId";
-	private static final String insertScript = "INSERT INTO cg_link (StartGearblockId, EndGearblockId, Blocks) VALUES (?, ?, ?)";
-	private static final String updateScript = "UPDATE cg_link SET StartGearblockId = ?, EndGearblockId = ?, Blocks = ? WHERE LinkId = ?";
-	private static final String deleteScript = "DELETE FROM cg_link WHERE LinkId = ?";
 
-	private final SqlDatabase _db;
+    private static final String countAllScript = "SELECT COUNT(*) FROM cg_link";
+    private static final String selectAllScript = "SELECT * FROM cg_link ORDER BY LinkId";
+    private static final String insertScript = "INSERT INTO cg_link (StartGearblockId, EndGearblockId, Blocks) VALUES (?, ?, ?)";
+    private static final String updateScript = "UPDATE cg_link SET StartGearblockId = ?, EndGearblockId = ?, Blocks = ? WHERE LinkId = ?";
+    private static final String deleteScript = "DELETE FROM cg_link WHERE LinkId = ?";
 
-	public LinkSource(SqlDatabase db) {
-		_db = db;
-	}
+    private final SqlDatabase _db;
 
-	public int countAll() throws SQLException {
-		try (PreparedStatement sql = _db.prepareStatement(countAllScript)) {
-			try (ResultSet rs = sql.executeQuery()) {
-				if (rs.next()) return rs.getInt(1);
-			}
-		}
+    public LinkSource(SqlDatabase db) {
+        _db = db;
+    }
 
-		return 0;
-	}
+    public int countAll() throws SQLException {
+        try (PreparedStatement sql = _db.prepareStatement(countAllScript)) {
+            try (ResultSet rs = sql.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        }
 
-	public List<LinkInfo> selectAll() throws SQLException {
-		ArrayList<LinkInfo> list = new ArrayList<>();
+        return 0;
+    }
 
-		try (PreparedStatement sql = _db.prepareStatement(selectAllScript)) {
-			try (ResultSet rs = sql.executeQuery()) {
-				while (rs.next()) {
-					LinkInfo info = new LinkInfo();
-					info.LinkId = rs.getInt("LinkId");
+    public List<LinkInfo> selectAll() throws SQLException {
+        ArrayList<LinkInfo> list = new ArrayList<>();
 
-					info.StartGearblockId = rs.getInt("StartGearblockId");
-					if (rs.wasNull()) info.StartGearblockId = null;
+        try (PreparedStatement sql = _db.prepareStatement(selectAllScript)) {
+            try (ResultSet rs = sql.executeQuery()) {
+                while (rs.next()) {
+                    LinkInfo info = new LinkInfo();
+                    info.LinkId = rs.getInt("LinkId");
 
-					info.EndGearblockId = rs.getInt("EndGearblockId");
-					if (rs.wasNull()) info.EndGearblockId = null;
+                    info.StartGearblockId = rs.getInt("StartGearblockId");
+                    if (rs.wasNull()) info.StartGearblockId = null;
 
-					info.Blocks = rs.getString("Blocks");
+                    info.EndGearblockId = rs.getInt("EndGearblockId");
+                    if (rs.wasNull()) info.EndGearblockId = null;
 
-					list.add(info);
-				}
-			}
-		}
+                    info.Blocks = rs.getString("Blocks");
 
-		return list;
-	}
+                    list.add(info);
+                }
+            }
+        }
 
-	public void insert(LinkInfo info) throws SQLException {
-		try (PreparedStatement sql = _db.prepareStatementWithReturn(insertScript)) {
-			if (info.StartGearblockId != null) {
-				sql.setInt(1, info.StartGearblockId);
-			} else {
-				sql.setNull(1, Types.INTEGER);
-			}
+        return list;
+    }
 
-			if (info.EndGearblockId != null) {
-				sql.setInt(2, info.EndGearblockId);
-			} else {
-				sql.setNull(2, Types.INTEGER);
-			}
+    public void insert(LinkInfo info) throws SQLException {
+        try (PreparedStatement sql = _db.prepareStatementWithReturn(insertScript)) {
+            if (info.StartGearblockId != null) {
+                sql.setInt(1, info.StartGearblockId);
+            } else {
+                sql.setNull(1, Types.INTEGER);
+            }
 
-			if (info.Blocks != null) {
-				sql.setString(3, info.Blocks);
-			} else {
-				sql.setNull(3, Types.VARCHAR);
-			}
+            if (info.EndGearblockId != null) {
+                sql.setInt(2, info.EndGearblockId);
+            } else {
+                sql.setNull(2, Types.INTEGER);
+            }
 
-			sql.executeUpdate();
+            if (info.Blocks != null) {
+                sql.setString(3, info.Blocks);
+            } else {
+                sql.setNull(3, Types.VARCHAR);
+            }
 
-			try (ResultSet rs = sql.getGeneratedKeys()) {
-				rs.next();
-				info.LinkId = rs.getInt(1);
-			}
-		}
-	}
+            sql.executeUpdate();
 
-	public void update(LinkInfo info) throws SQLException {
-		try (PreparedStatement sql = _db.prepareStatement(updateScript)) {
-			if (info.StartGearblockId != null) {
-				sql.setInt(1, info.StartGearblockId);
-			} else {
-				sql.setNull(1, Types.INTEGER);
-			}
+            try (ResultSet rs = sql.getGeneratedKeys()) {
+                rs.next();
+                info.LinkId = rs.getInt(1);
+            }
+        }
+    }
 
-			if (info.EndGearblockId != null) {
-				sql.setInt(2, info.EndGearblockId);
-			} else {
-				sql.setNull(2, Types.INTEGER);
-			}
+    public void update(LinkInfo info) throws SQLException {
+        try (PreparedStatement sql = _db.prepareStatement(updateScript)) {
+            if (info.StartGearblockId != null) {
+                sql.setInt(1, info.StartGearblockId);
+            } else {
+                sql.setNull(1, Types.INTEGER);
+            }
 
-			if (info.Blocks != null) {
-				sql.setString(3, info.Blocks);
-			} else {
-				sql.setNull(3, Types.VARCHAR);
-			}
+            if (info.EndGearblockId != null) {
+                sql.setInt(2, info.EndGearblockId);
+            } else {
+                sql.setNull(2, Types.INTEGER);
+            }
 
-			sql.setInt(4, info.LinkId);
+            if (info.Blocks != null) {
+                sql.setString(3, info.Blocks);
+            } else {
+                sql.setNull(3, Types.VARCHAR);
+            }
 
-			sql.executeUpdate();
-		}
-	}
+            sql.setInt(4, info.LinkId);
 
-	public void delete(int link_id) throws SQLException {
-		try (PreparedStatement sql = _db.prepareStatement(deleteScript)) {
-			sql.setInt(1, link_id);
+            sql.executeUpdate();
+        }
+    }
 
-			sql.executeUpdate();
-		}
-	}
+    public void delete(int link_id) throws SQLException {
+        try (PreparedStatement sql = _db.prepareStatement(deleteScript)) {
+            sql.setInt(1, link_id);
+
+            sql.executeUpdate();
+        }
+    }
 }

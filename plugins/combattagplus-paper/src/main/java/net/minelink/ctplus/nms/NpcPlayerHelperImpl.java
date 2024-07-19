@@ -35,6 +35,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public class NpcPlayerHelperImpl implements NpcPlayerHelper {
+
     @Override
     public Player spawn(Player player) {
         NpcPlayer npcPlayer = NpcPlayer.valueOf(player);
@@ -184,7 +185,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
 
         for (ServerPlayer serverPlayer : MinecraftServer.getServer().getPlayerList().getPlayers()) {
             ClientboundPlayerInfoUpdatePacket packet = new ClientboundPlayerInfoUpdatePacket(
-                    ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, serverPlayer);
+                ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, serverPlayer);
             p.connection.send(packet);
         }
     }

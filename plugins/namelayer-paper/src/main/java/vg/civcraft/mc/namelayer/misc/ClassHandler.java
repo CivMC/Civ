@@ -7,42 +7,42 @@ import org.bukkit.Server;
  */
 public class ClassHandler {
 
-	public static ClassHandler ch;
+    public static ClassHandler ch;
 
-	private String version;
+    private String version;
 
-	public static boolean properlyEnabled;
+    public static boolean properlyEnabled;
 
-	public static boolean Initialize(Server server) {
-		ch = new ClassHandler();
-		String packageName = server.getClass().getPackage().getName();
-		ch.version = packageName.substring(packageName.lastIndexOf('.') + 1);
-		try {
-			Class.forName("vg.civcraft.mc.namelayer.misc.ProfileModifier");
-			vg.civcraft.mc.namelayer.gui.AbstractGroupGUI.matsInit();
-			return properlyEnabled = true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return properlyEnabled = false;
-		}
-	}
+    public static boolean Initialize(Server server) {
+        ch = new ClassHandler();
+        String packageName = server.getClass().getPackage().getName();
+        ch.version = packageName.substring(packageName.lastIndexOf('.') + 1);
+        try {
+            Class.forName("vg.civcraft.mc.namelayer.misc.ProfileModifier");
+            vg.civcraft.mc.namelayer.gui.AbstractGroupGUI.matsInit();
+            return properlyEnabled = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return properlyEnabled = false;
+        }
+    }
 
-	public ProfileInterface getProfileClass() {
-		return (ProfileInterface) getObject(ProfileInterface.class, "ProfileModifier");
-	}
+    public ProfileInterface getProfileClass() {
+        return (ProfileInterface) getObject(ProfileInterface.class, "ProfileModifier");
+    }
 
-	public MaterialInterface getMaterialClass() {
-		return (MaterialInterface) getObject(MaterialInterface.class, "MaterialMap");
-	}
+    public MaterialInterface getMaterialClass() {
+        return (MaterialInterface) getObject(MaterialInterface.class, "MaterialMap");
+    }
 
-	private Object getObject(Class<? extends Object> Class, String name) {
-		try {
-			Class<?> internalClass = Class.forName("vg.civcraft.mc.namelayer.misc." + name);
-			if (internalClass.isAssignableFrom(internalClass))
-				return internalClass.getConstructor().newInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    private Object getObject(Class<? extends Object> Class, String name) {
+        try {
+            Class<?> internalClass = Class.forName("vg.civcraft.mc.namelayer.misc." + name);
+            if (internalClass.isAssignableFrom(internalClass))
+                return internalClass.getConstructor().newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -14,70 +14,71 @@ import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 
 public class LeverToggleConfig implements AppenderConfig {
 
-	private Map<BlockFace, SideEntry> sides;
-	private Map<String, List<SideEntry>> sidesByTrigger;
+    private Map<BlockFace, SideEntry> sides;
+    private Map<String, List<SideEntry>> sidesByTrigger;
 
-	public LeverToggleConfig(ConfigurationSection config) {
-		sides = new EnumMap<>(BlockFace.class);
-		sidesByTrigger = new HashMap<>();
-		Logger logger = JukeAlert.getInstance().getLogger();
-		for (String key : config.getKeys(false)) {
-			if (!config.isConfigurationSection(key)) {
-				logger.warning("Ignoring invalid entry " + key + " at " + config.getCurrentPath());
-			}
-			ConfigurationSection current = config.getConfigurationSection(key);
-			BlockFace face;
-			try {
-				face = BlockFace.valueOf(key.toUpperCase());
-			} catch (IllegalArgumentException e) {
-				logger.warning(key + " at " + config.getCurrentPath() + " is not a valid BlockFace, entry was ignored");
-				continue;
-			}
-			long delay = ConfigHelper.parseTime(current.getString("disableDelay", "1 second"));
-			if (!current.isList("trigger")) {
-				logger.warning("No trigger actions specified for lever at " + current.getCurrentPath());
-				continue;
-			}
-			List<String> trigger = current.getStringList("trigger");
-			SideEntry entry = new SideEntry(face, delay, trigger);
-			sides.put(face, entry);
-			for (String action : trigger) {
-				List<SideEntry> existingForTrigger = sidesByTrigger.computeIfAbsent(action, s -> new ArrayList<>());
-				existingForTrigger.add(entry);
-			}
-		}
-	}
+    public LeverToggleConfig(ConfigurationSection config) {
+        sides = new EnumMap<>(BlockFace.class);
+        sidesByTrigger = new HashMap<>();
+        Logger logger = JukeAlert.getInstance().getLogger();
+        for (String key : config.getKeys(false)) {
+            if (!config.isConfigurationSection(key)) {
+                logger.warning("Ignoring invalid entry " + key + " at " + config.getCurrentPath());
+            }
+            ConfigurationSection current = config.getConfigurationSection(key);
+            BlockFace face;
+            try {
+                face = BlockFace.valueOf(key.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                logger.warning(key + " at " + config.getCurrentPath() + " is not a valid BlockFace, entry was ignored");
+                continue;
+            }
+            long delay = ConfigHelper.parseTime(current.getString("disableDelay", "1 second"));
+            if (!current.isList("trigger")) {
+                logger.warning("No trigger actions specified for lever at " + current.getCurrentPath());
+                continue;
+            }
+            List<String> trigger = current.getStringList("trigger");
+            SideEntry entry = new SideEntry(face, delay, trigger);
+            sides.put(face, entry);
+            for (String action : trigger) {
+                List<SideEntry> existingForTrigger = sidesByTrigger.computeIfAbsent(action, s -> new ArrayList<>());
+                existingForTrigger.add(entry);
+            }
+        }
+    }
 
-	public List<SideEntry> getEntries(String actionType) {
-		List<SideEntry> retSides = sidesByTrigger.get(actionType);
-		if (retSides == null) {
-			return Collections.emptyList();
-		}
-		return retSides;
-	}
+    public List<SideEntry> getEntries(String actionType) {
+        List<SideEntry> retSides = sidesByTrigger.get(actionType);
+        if (retSides == null) {
+            return Collections.emptyList();
+        }
+        return retSides;
+    }
 
-	public static class SideEntry {
-		private BlockFace face;
-		private long delay;
-		private List<String> trigger;
+    public static class SideEntry {
 
-		public SideEntry(BlockFace face, long delay, List<String> trigger) {
-			this.face = face;
-			this.delay = delay;
-			this.trigger = trigger;
-		}
+        private BlockFace face;
+        private long delay;
+        private List<String> trigger;
 
-		public BlockFace getFace() {
-			return face;
-		}
+        public SideEntry(BlockFace face, long delay, List<String> trigger) {
+            this.face = face;
+            this.delay = delay;
+            this.trigger = trigger;
+        }
 
-		public long getDelay() {
-			return delay;
-		}
+        public BlockFace getFace() {
+            return face;
+        }
 
-		public List<String> getTrigger() {
-			return trigger;
-		}
-	}
+        public long getDelay() {
+            return delay;
+        }
+
+        public List<String> getTrigger() {
+            return trigger;
+        }
+    }
 
 }

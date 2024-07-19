@@ -9,23 +9,24 @@ import com.aleksey.castlegates.types.BlockCoord;
 import com.aleksey.castlegates.types.Gearblock;
 
 public class ParticleHelper {
-	public enum Type { Info, Warning }
 
-	public static void spawn(Player player, Gearblock gearblock, Type type) {
-		BlockCoord coord = gearblock.getCoord();
-		Location location = new Location(player.getWorld(), 0.5 + coord.getX(), 0.5 + coord.getY(), 0.5 + coord.getZ());
+    public enum Type {Info, Warning}
 
-		spawn(location, type);
-	}
+    public static void spawn(Player player, Gearblock gearblock, Type type) {
+        BlockCoord coord = gearblock.getCoord();
+        Location location = new Location(player.getWorld(), 0.5 + coord.getX(), 0.5 + coord.getY(), 0.5 + coord.getZ());
 
-	public static void spawn(Block block, Type type) {
-		Location location = new Location(block.getWorld(), 0.5 + block.getX(), 0.5 + block.getY(), 0.5 + block.getZ());
+        spawn(location, type);
+    }
 
-		spawn(location, type);
-	}
+    public static void spawn(Block block, Type type) {
+        Location location = new Location(block.getWorld(), 0.5 + block.getX(), 0.5 + block.getY(), 0.5 + block.getZ());
 
-	public static void spawn(Location location, Type type) {
-		final Particle particle = type == Type.Info ? Particle.ENCHANT: Particle.EXPLOSION;
+        spawn(location, type);
+    }
+
+    public static void spawn(Location location, Type type) {
+        final Particle particle = type == Type.Info ? Particle.ENCHANT : Particle.EXPLOSION;
 		final float offsetX = 0;
 		final float offsetY = 0;
 		final float offsetZ = 0;

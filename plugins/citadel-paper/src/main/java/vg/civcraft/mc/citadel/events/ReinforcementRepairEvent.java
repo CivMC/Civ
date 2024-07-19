@@ -6,23 +6,22 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 
 /**
  * Called when a reinforcement is repaired in patch mode
- *
  */
 public class ReinforcementRepairEvent extends ReinforcementEvent {
-	
-	private static final HandlerList handlers = new HandlerList();
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    private static final HandlerList handlers = new HandlerList();
 
-	public ReinforcementRepairEvent(Player who, Reinforcement reinforcement) {
-		super(who, reinforcement);
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    public ReinforcementRepairEvent(Player who, Reinforcement reinforcement) {
+        super(who, reinforcement);
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
 
 }

@@ -10,19 +10,19 @@ import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
 public class RBCommandManager extends CommandManager {
 
-	public RBCommandManager(@Nonnull Plugin plugin) {
-		super(plugin);
-		init();
-	}
+    public RBCommandManager(@Nonnull Plugin plugin) {
+        super(plugin);
+        init();
+    }
 
-	@Override
-	public void registerCommands() {
-		registerCommand(new Menu());
-	}
+    @Override
+    public void registerCommands() {
+        registerCommand(new Menu());
+    }
 
-	@Override
-	public void registerCompletions(@Nonnull CommandCompletions<BukkitCommandCompletionContext> completions) {
-		super.registerCompletions(completions);
-		completions.registerCompletion("RB_Biomes", (context) -> Arrays.stream(Biome.values()).map(Biome::name).toList());
-	}
+    @Override
+    public void registerCompletions(@Nonnull CommandCompletions<BukkitCommandCompletionContext> completions) {
+        super.registerCompletions(completions);
+        completions.registerCompletion("RB_Biomes", (context) -> Arrays.stream(Biome.values()).map(Biome::name).toList());
+    }
 }

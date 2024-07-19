@@ -9,32 +9,32 @@ import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 
 public class CitadelCommandManager extends CommandManager {
 
-	public CitadelCommandManager(Plugin plugin) {
-		super(plugin);
-		init();
-	}
+    public CitadelCommandManager(Plugin plugin) {
+        super(plugin);
+        init();
+    }
 
-	@Override
-	public void registerCommands() {
-		registerCommand(new Acid());
-		registerCommand(new Activity());
-		registerCommand(new AdvancedFortification());
-		registerCommand(new AreaReinforce());
-		registerCommand(new Bypass());
-		registerCommand(new EasyMode());
-		registerCommand(new Fortification());
-		registerCommand(new Information());
-		registerCommand(new Insecure());
-		registerCommand(new Off());
-		registerCommand(new PatchMode());
-		registerCommand(new Reinforce());
-		registerCommand(new ReinforcementsGUI());
-		registerCommand(new Reload());
-	}
+    @Override
+    public void registerCommands() {
+        registerCommand(new Acid());
+        registerCommand(new Activity());
+        registerCommand(new AdvancedFortification());
+        registerCommand(new AreaReinforce());
+        registerCommand(new Bypass());
+        registerCommand(new EasyMode());
+        registerCommand(new Fortification());
+        registerCommand(new Information());
+        registerCommand(new Insecure());
+        registerCommand(new Off());
+        registerCommand(new PatchMode());
+        registerCommand(new Reinforce());
+        registerCommand(new ReinforcementsGUI());
+        registerCommand(new Reload());
+    }
 
-	@Override
-	public void registerCompletions(@Nonnull CommandCompletions<BukkitCommandCompletionContext> completions) {
-		super.registerCompletions(completions);
-		completions.registerCompletion("CT_Groups", (context) -> GroupTabCompleter.complete(context.getInput(), null, context.getPlayer()));
-	}
+    @Override
+    public void registerCompletions(@Nonnull CommandCompletions<BukkitCommandCompletionContext> completions) {
+        super.registerCompletions(completions);
+        completions.registerCompletion("CT_Groups", (context) -> GroupTabCompleter.complete(context.getInput(), null, context.getPlayer()));
+    }
 }

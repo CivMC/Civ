@@ -39,187 +39,188 @@ import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public final class BastionDamageListener implements Listener {
-	private BastionBlockManager blockManager;
-	private EnderPearlManager pearlManager;
 
-	public BastionDamageListener() {
-		blockManager = Bastion.getBastionManager();
-		pearlManager = new EnderPearlManager();
-	}
+    private BastionBlockManager blockManager;
+    private EnderPearlManager pearlManager;
 
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onBlockPlace(BlockPlaceEvent event) {
-		Set<Block> blocks = new CopyOnWriteArraySet<>();
-		blocks.add(event.getBlock());
-		Set<BastionBlock> blocking = blockManager.getBlockingBastionsWithoutPermission(event.getBlock().getLocation(),
-				event.getPlayer().getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
-		for(BastionBlock bastion : blocking) {
-			if (!bastion.getType().isOnlyDirectDestruction()) {
-				event.setCancelled(true);
-				if (!Bastion.getSettingManager().getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
-					event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
-				}
-				Material mat = event.getBlock().getType();
-				if (!Bastion.getCommonSettings().getCancelPlacementAndDamage().contains(mat)) {
-					blockManager.erodeFromPlace(event.getPlayer(), blocking);
-				} else {
-					event.getPlayer().sendMessage(String.format("%s%s cannot be used to damage bastions", ChatColor.RED,
-							ItemUtils.getItemName(mat)));
-				}
-				return;
-			}
-		}
-	}
+    public BastionDamageListener() {
+        blockManager = Bastion.getBastionManager();
+        pearlManager = new EnderPearlManager();
+    }
 
-	@EventHandler(ignoreCancelled = true)
-	public void onWaterFlow(BlockFromToEvent event) {
-		Set<Location> blocks = new HashSet<>();
-		blocks.add(event.getToBlock().getLocation());
-		if (stopBlockEvent(event.getBlock().getLocation(), blocks)) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onBlockPlace(BlockPlaceEvent event) {
+        Set<Block> blocks = new CopyOnWriteArraySet<>();
+        blocks.add(event.getBlock());
+        Set<BastionBlock> blocking = blockManager.getBlockingBastionsWithoutPermission(event.getBlock().getLocation(),
+            event.getPlayer().getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
+        for (BastionBlock bastion : blocking) {
+            if (!bastion.getType().isOnlyDirectDestruction()) {
+                event.setCancelled(true);
+                if (!Bastion.getSettingManager().getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
+                    event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
+                }
+                Material mat = event.getBlock().getType();
+                if (!Bastion.getCommonSettings().getCancelPlacementAndDamage().contains(mat)) {
+                    blockManager.erodeFromPlace(event.getPlayer(), blocking);
+                } else {
+                    event.getPlayer().sendMessage(String.format("%s%s cannot be used to damage bastions", ChatColor.RED,
+                        ItemUtils.getItemName(mat)));
+                }
+                return;
+            }
+        }
+    }
 
-	@EventHandler(ignoreCancelled = true)
-	public void onTreeGrow(StructureGrowEvent event) {
-		List<Location> blocks = new ArrayList<>();
-		for (BlockState state : event.getBlocks()) {
-			blocks.add(state.getLocation());
-		}
-		if (stopBlockEvent(event.getLocation(), blocks)) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler(ignoreCancelled = true)
+    public void onWaterFlow(BlockFromToEvent event) {
+        Set<Location> blocks = new HashSet<>();
+        blocks.add(event.getToBlock().getLocation());
+        if (stopBlockEvent(event.getBlock().getLocation(), blocks)) {
+            event.setCancelled(true);
+        }
+    }
 
-	@EventHandler(ignoreCancelled = true)
-	public void onPistonExtend(BlockPistonExtendEvent event) {
-		handlePistonEvent(event, event.getBlocks());
-	}
+    @EventHandler(ignoreCancelled = true)
+    public void onTreeGrow(StructureGrowEvent event) {
+        List<Location> blocks = new ArrayList<>();
+        for (BlockState state : event.getBlocks()) {
+            blocks.add(state.getLocation());
+        }
+        if (stopBlockEvent(event.getLocation(), blocks)) {
+            event.setCancelled(true);
+        }
+    }
 
-	@EventHandler(ignoreCancelled = true)
-	public void onPistonRetract(BlockPistonRetractEvent event) {
-		handlePistonEvent(event, event.getBlocks());
-	}
-	
-	private void handlePistonEvent(BlockPistonEvent event, List<Block> blocks) {
-		Set<Location> involved = new HashSet<>();
-		blocks.forEach(b -> {
-			involved.add(b.getLocation());
-			involved.add(b.getRelative(event.getDirection()).getLocation());
-		});
-		involved.add(event.getBlock().getRelative(event.getDirection()).getLocation());
-		if (stopBlockEvent(event.getBlock().getLocation(), involved)) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler(ignoreCancelled = true)
+    public void onPistonExtend(BlockPistonExtendEvent event) {
+        handlePistonEvent(event, event.getBlocks());
+    }
 
-	@EventHandler(ignoreCancelled = true)
-	public void onBucketEmpty(PlayerBucketEmptyEvent event) {
-		Set<BastionBlock> blocking = blockManager.getBlockingBastionsWithoutPermission(event.getBlock().getLocation(),
-				event.getPlayer().getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
-		if (!blocking.isEmpty()) {
-			event.setCancelled(true);
-			if (!Bastion.getSettingManager().getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
-				event.getPlayer().sendMessage(ChatColor.RED + "Emptying bucket prevented by Bastion");
-			}
-		}
-	}
+    @EventHandler(ignoreCancelled = true)
+    public void onPistonRetract(BlockPistonRetractEvent event) {
+        handlePistonEvent(event, event.getBlocks());
+    }
 
-	private boolean stopBlockEvent(Location source, Collection<Location> locations) {
-		Set<Group> blocking = blockManager.getEnteredGroupFields(source, locations);
-		return !blocking.isEmpty();
-	}
+    private void handlePistonEvent(BlockPistonEvent event, List<Block> blocks) {
+        Set<Location> involved = new HashSet<>();
+        blocks.forEach(b -> {
+            involved.add(b.getLocation());
+            involved.add(b.getRelative(event.getDirection()).getLocation());
+        });
+        involved.add(event.getBlock().getRelative(event.getDirection()).getLocation());
+        if (stopBlockEvent(event.getBlock().getLocation(), involved)) {
+            event.setCancelled(true);
+        }
+    }
 
-	@EventHandler(ignoreCancelled = true)
-	public void onDispense(BlockDispenseEvent event) {
-		Material material = event.getItem().getType();
-		if (!(material == Material.WATER_BUCKET || material == Material.LAVA_BUCKET
-				|| material == Material.FLINT_AND_STEEL || material == Material.POWDER_SNOW_BUCKET
-				|| material == Material.TROPICAL_FISH_BUCKET || material == Material.AXOLOTL_BUCKET
-				|| material == Material.COD_BUCKET || material == Material.PUFFERFISH_BUCKET
-				|| material == Material.SALMON_SPAWN_EGG || material == Material.BUCKET)) {
-			return;
-		}
-		Set<Location> blocks = new HashSet<>();
-		blocks.add(event.getBlock().getRelative(((Dispenser) event.getBlock().getBlockData()).getFacing()).getLocation());
-		if (stopBlockEvent(event.getBlock().getLocation(), blocks)) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler(ignoreCancelled = true)
+    public void onBucketEmpty(PlayerBucketEmptyEvent event) {
+        Set<BastionBlock> blocking = blockManager.getBlockingBastionsWithoutPermission(event.getBlock().getLocation(),
+            event.getPlayer().getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
+        if (!blocking.isEmpty()) {
+            event.setCancelled(true);
+            if (!Bastion.getSettingManager().getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
+                event.getPlayer().sendMessage(ChatColor.RED + "Emptying bucket prevented by Bastion");
+            }
+        }
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void handleEnderPearlLanded(PlayerTeleportEvent event) {
-		if (event.getCause() != TeleportCause.ENDER_PEARL) {
-			return; // Only handle enderpearl cases
-		}
-		if (event.getPlayer().hasPermission("Bastion.bypass")) {
-			return;
-		}
+    private boolean stopBlockEvent(Location source, Collection<Location> locations) {
+        Set<Group> blocking = blockManager.getEnteredGroupFields(source, locations);
+        return !blocking.isEmpty();
+    }
 
-		Set<BastionBlock> blocking = blockManager.getBlockingBastionsWithoutPermission(event.getTo(), event.getPlayer().getUniqueId(),
-				PermissionType.getPermission(Permissions.BASTION_PEARL));
+    @EventHandler(ignoreCancelled = true)
+    public void onDispense(BlockDispenseEvent event) {
+        Material material = event.getItem().getType();
+        if (!(material == Material.WATER_BUCKET || material == Material.LAVA_BUCKET
+            || material == Material.FLINT_AND_STEEL || material == Material.POWDER_SNOW_BUCKET
+            || material == Material.TROPICAL_FISH_BUCKET || material == Material.AXOLOTL_BUCKET
+            || material == Material.COD_BUCKET || material == Material.PUFFERFISH_BUCKET
+            || material == Material.SALMON_SPAWN_EGG || material == Material.BUCKET)) {
+            return;
+        }
+        Set<Location> blocks = new HashSet<>();
+        blocks.add(event.getBlock().getRelative(((Dispenser) event.getBlock().getBlockData()).getFacing()).getLocation());
+        if (stopBlockEvent(event.getBlock().getLocation(), blocks)) {
+            event.setCancelled(true);
+        }
+    }
 
-		Iterator<BastionBlock> i = blocking.iterator();
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void handleEnderPearlLanded(PlayerTeleportEvent event) {
+        if (event.getCause() != TeleportCause.ENDER_PEARL) {
+            return; // Only handle enderpearl cases
+        }
+        if (event.getPlayer().hasPermission("Bastion.bypass")) {
+            return;
+        }
 
-		while (i.hasNext()) {
-			BastionBlock bastion = i.next();
-			if (bastion.getType().isOnlyDirectDestruction() || !bastion.getType().isBlockPearls()
-					|| (bastion.getType().isRequireMaturity() && !bastion.isMature())) {
-				i.remove();
-			}
-		}
+        Set<BastionBlock> blocking = blockManager.getBlockingBastionsWithoutPermission(event.getTo(), event.getPlayer().getUniqueId(),
+            PermissionType.getPermission(Permissions.BASTION_PEARL));
 
-		if (!blocking.isEmpty()) {
-			blockManager.erodeFromTeleport(event.getPlayer(), blocking);
-			event.getPlayer().sendMessage(ChatColor.RED + "Ender pearl blocked by Bastion Block");
-			boolean consume = false;
-			for (BastionBlock block : blocking) {
-				if (block.getType().isConsumeOnBlock()) {
-					consume = true;
-				}
-			}
-			if (!consume) {
-				event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
-			}
-			event.setCancelled(true);
-			return;
-		}
+        Iterator<BastionBlock> i = blocking.iterator();
 
-		blocking = blockManager.getBlockingBastionsWithoutPermission(event.getFrom(), event.getPlayer().getUniqueId(),
-				PermissionType.getPermission(Permissions.BASTION_PEARL));
+        while (i.hasNext()) {
+            BastionBlock bastion = i.next();
+            if (bastion.getType().isOnlyDirectDestruction() || !bastion.getType().isBlockPearls()
+                || (bastion.getType().isRequireMaturity() && !bastion.isMature())) {
+                i.remove();
+            }
+        }
 
-		i = blocking.iterator();
+        if (!blocking.isEmpty()) {
+            blockManager.erodeFromTeleport(event.getPlayer(), blocking);
+            event.getPlayer().sendMessage(ChatColor.RED + "Ender pearl blocked by Bastion Block");
+            boolean consume = false;
+            for (BastionBlock block : blocking) {
+                if (block.getType().isConsumeOnBlock()) {
+                    consume = true;
+                }
+            }
+            if (!consume) {
+                event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+            }
+            event.setCancelled(true);
+            return;
+        }
 
-		while (i.hasNext()) {
-			BastionBlock bastion = i.next();
-			if (bastion.getType().canPearlOut() || bastion.getType().isOnlyDirectDestruction()
-					|| !bastion.getType().isBlockPearls()
-					|| (bastion.getType().isRequireMaturity() && !bastion.isMature())) {
-				i.remove();
-			}
-		}
+        blocking = blockManager.getBlockingBastionsWithoutPermission(event.getFrom(), event.getPlayer().getUniqueId(),
+            PermissionType.getPermission(Permissions.BASTION_PEARL));
 
-		if (!blocking.isEmpty()) {
-			blockManager.erodeFromTeleport(event.getPlayer(), blocking);
-			event.getPlayer().sendMessage(ChatColor.RED + "Ender pearl blocked by Bastion Block");
-			boolean consume = false;
-			for (BastionBlock block : blocking) {
-				if (block.getType().isConsumeOnBlock()) {
-					consume = true;
-				}
-			}
-			if (!consume) {
-				event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
-			}
-			event.setCancelled(true);
-		}
-	}
+        i = blocking.iterator();
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onProjectileThrownEvent(ProjectileLaunchEvent event) {
-		if (event.getEntity() instanceof EnderPearl) {
-			EnderPearl pearl = (EnderPearl) event.getEntity();
-			pearlManager.handlePearlLaunched(pearl);
-		}
-	}
+        while (i.hasNext()) {
+            BastionBlock bastion = i.next();
+            if (bastion.getType().canPearlOut() || bastion.getType().isOnlyDirectDestruction()
+                || !bastion.getType().isBlockPearls()
+                || (bastion.getType().isRequireMaturity() && !bastion.isMature())) {
+                i.remove();
+            }
+        }
+
+        if (!blocking.isEmpty()) {
+            blockManager.erodeFromTeleport(event.getPlayer(), blocking);
+            event.getPlayer().sendMessage(ChatColor.RED + "Ender pearl blocked by Bastion Block");
+            boolean consume = false;
+            for (BastionBlock block : blocking) {
+                if (block.getType().isConsumeOnBlock()) {
+                    consume = true;
+                }
+            }
+            if (!consume) {
+                event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+            }
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onProjectileThrownEvent(ProjectileLaunchEvent event) {
+        if (event.getEntity() instanceof EnderPearl) {
+            EnderPearl pearl = (EnderPearl) event.getEntity();
+            pearlManager.handlePearlLaunched(pearl);
+        }
+    }
 }

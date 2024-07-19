@@ -12,37 +12,37 @@ import vg.civcraft.mc.citadel.activity.ActivityMap;
 
 public class ActivityListener implements Listener {
 
-	private final ActivityMap map;
+    private final ActivityMap map;
 
-	public ActivityListener(ActivityMap map) {
-		this.map = map;
-	}
+    public ActivityListener(ActivityMap map) {
+        this.map = map;
+    }
 
-	@EventHandler
-	public void onPlayerMove(PlayerMoveEvent event) {
-		Location from = event.getFrom();
-		Location to = event.getTo();
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Location from = event.getFrom();
+        Location to = event.getTo();
 
-		if (to == null || from == null || !event.hasChangedBlock()) {
-			return;
-		}
+        if (to == null || from == null || !event.hasChangedBlock()) {
+            return;
+        }
 
-		map.savePlayerActivity(from, to, event.getPlayer());
-	}
+        map.savePlayerActivity(from, to, event.getPlayer());
+    }
 
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event) {
-		Location location = event.getPlayer().getLocation();
-		map.savePlayerActivity(location, event.getPlayer());
-	}
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Location location = event.getPlayer().getLocation();
+        map.savePlayerActivity(location, event.getPlayer());
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onChunkLoad(ChunkLoadEvent e) {
-		map.loadChunk(e.getChunk());
-	}
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onChunkLoad(ChunkLoadEvent e) {
+        map.loadChunk(e.getChunk());
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onChunkUnload(ChunkUnloadEvent e) {
-		map.unloadChunk(e.getChunk());
-	}
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onChunkUnload(ChunkUnloadEvent e) {
+        map.unloadChunk(e.getChunk());
+    }
 }

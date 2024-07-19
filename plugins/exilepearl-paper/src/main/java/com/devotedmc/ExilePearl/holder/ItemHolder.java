@@ -9,50 +9,51 @@ import org.bukkit.entity.Item;
 
 /**
  * A item holding an exile pearl
- * @author Gordon
  *
+ * @author Gordon
  */
 public class ItemHolder implements PearlHolder {
 
-	private final Item item;
+    private final Item item;
 
-	/**
-	 * Creates a new ItemHolder instance
-	 * @param item The item
-	 */
-	public ItemHolder(final Item item) {
-		Preconditions.checkNotNull(item, "item");
+    /**
+     * Creates a new ItemHolder instance
+     *
+     * @param item The item
+     */
+    public ItemHolder(final Item item) {
+        Preconditions.checkNotNull(item, "item");
 
-		this.item = item;
-	}
+        this.item = item;
+    }
 
-	@Override
-	public String getName() {
-		return "nobody";
-	}
+    @Override
+    public String getName() {
+        return "nobody";
+    }
 
-	@Override
-	public Location getLocation() {
-		return item.getLocation();
-	}
+    @Override
+    public Location getLocation() {
+        return item.getLocation();
+    }
 
-	@Override
-	public HolderVerifyResult validate(ExilePearl pearl) {
-		 // Location holder
-		Chunk chunk = item.getLocation().getChunk();
+    @Override
+    public HolderVerifyResult validate(ExilePearl pearl) {
+        // Location holder
+        Chunk chunk = item.getLocation().getChunk();
 
-		for (Entity entity : chunk.getEntities()) {
-			if (entity.equals(item)) {
-				if (pearl.validateItemStack(item.getItemStack())) {
-					return HolderVerifyResult.ON_GROUND;
-				}
-			}
-		}
-		return HolderVerifyResult.ENTITY_NOT_IN_CHUNK;
-	}
+        for (Entity entity : chunk.getEntities()) {
+            if (entity.equals(item)) {
+                if (pearl.validateItemStack(item.getItemStack())) {
+                    return HolderVerifyResult.ON_GROUND;
+                }
+            }
+        }
+        return HolderVerifyResult.ENTITY_NOT_IN_CHUNK;
+    }
 
-	@Override
-	public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -62,11 +63,11 @@ public class ItemHolder implements PearlHolder {
 
         ItemHolder other = (ItemHolder) o;
 
-		return item.equals(other.item);
-	}
+        return item.equals(other.item);
+    }
 
-	@Override
-	public boolean isBlock() {
-		return false;
-	}
+    @Override
+    public boolean isBlock() {
+        return false;
+    }
 }

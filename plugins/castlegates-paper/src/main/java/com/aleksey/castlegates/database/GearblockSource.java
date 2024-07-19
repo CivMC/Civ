@@ -1,6 +1,5 @@
 /**
  * @author Aleksey Terzi
- *
  */
 
 package com.aleksey.castlegates.database;
@@ -13,110 +12,111 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GearblockSource {
-	private static final String countAllScript = "SELECT COUNT(*) FROM cg_gearblock";
-	private static final String selectAllScript = "SELECT * FROM cg_gearblock ORDER BY GearblockId";
-	private static final String insertScript = "INSERT INTO cg_gearblock (WorldId, X, Y, Z, Timer, TimerOperation) VALUES (?, ?, ?, ?, ?, ?)";
-	private static final String updateScript = "UPDATE cg_gearblock SET WorldId = ?, X = ?, Y = ?, Z = ?, Timer = ?, TimerOperation = ? WHERE GearblockId = ?";
-	private static final String deleteScript = "DELETE FROM cg_gearblock WHERE GearblockId = ?";
 
-	private final SqlDatabase _db;
+    private static final String countAllScript = "SELECT COUNT(*) FROM cg_gearblock";
+    private static final String selectAllScript = "SELECT * FROM cg_gearblock ORDER BY GearblockId";
+    private static final String insertScript = "INSERT INTO cg_gearblock (WorldId, X, Y, Z, Timer, TimerOperation) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String updateScript = "UPDATE cg_gearblock SET WorldId = ?, X = ?, Y = ?, Z = ?, Timer = ?, TimerOperation = ? WHERE GearblockId = ?";
+    private static final String deleteScript = "DELETE FROM cg_gearblock WHERE GearblockId = ?";
 
-	public GearblockSource(SqlDatabase db) {
-		_db = db;
-	}
+    private final SqlDatabase _db;
 
-	public int countAll() throws SQLException {
-		try (PreparedStatement sql = _db.prepareStatement(countAllScript)) {
-			try (ResultSet rs = sql.executeQuery()) {
-				if (rs.next()) return rs.getInt(1);
-			}
-		}
+    public GearblockSource(SqlDatabase db) {
+        _db = db;
+    }
 
-		return 0;
-	}
+    public int countAll() throws SQLException {
+        try (PreparedStatement sql = _db.prepareStatement(countAllScript)) {
+            try (ResultSet rs = sql.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        }
 
-	public List<GearblockInfo> selectAll() throws SQLException {
-		ArrayList<GearblockInfo> list = new ArrayList<>();
+        return 0;
+    }
 
-		try (PreparedStatement sql = _db.prepareStatement(selectAllScript)) {
-			try (ResultSet rs = sql.executeQuery()) {
-				while (rs.next()) {
-					GearblockInfo info = new GearblockInfo();
+    public List<GearblockInfo> selectAll() throws SQLException {
+        ArrayList<GearblockInfo> list = new ArrayList<>();
 
-					info.GearblockId = rs.getInt("GearblockId");
-					info.WorldId = rs.getString("WorldId");
-					info.X = rs.getInt("X");
-					info.Y = rs.getInt("Y");
-					info.Z = rs.getInt("Z");
+        try (PreparedStatement sql = _db.prepareStatement(selectAllScript)) {
+            try (ResultSet rs = sql.executeQuery()) {
+                while (rs.next()) {
+                    GearblockInfo info = new GearblockInfo();
 
-					info.Timer = rs.getInt("Timer");
-					if (rs.wasNull()) info.Timer = null;
+                    info.GearblockId = rs.getInt("GearblockId");
+                    info.WorldId = rs.getString("WorldId");
+                    info.X = rs.getInt("X");
+                    info.Y = rs.getInt("Y");
+                    info.Z = rs.getInt("Z");
 
-					info.TimerOperation = rs.getInt("TimerOperation");
-					if (rs.wasNull()) info.TimerOperation = null;
+                    info.Timer = rs.getInt("Timer");
+                    if (rs.wasNull()) info.Timer = null;
 
-					list.add(info);
-				}
-			}
-		}
+                    info.TimerOperation = rs.getInt("TimerOperation");
+                    if (rs.wasNull()) info.TimerOperation = null;
 
-		return list;
-	}
+                    list.add(info);
+                }
+            }
+        }
 
-	public void insert(GearblockInfo info) throws SQLException {
-		try (PreparedStatement sql = _db.prepareStatementWithReturn(insertScript)) {
-			sql.setString(1, info.WorldId);
-			sql.setInt(2, info.X);
-			sql.setInt(3, info.Y);
-			sql.setInt(4, info.Z);
+        return list;
+    }
 
-			if (info.Timer != null)
-				sql.setInt(5, info.Timer);
-			else
-				sql.setNull(5, Types.INTEGER);
+    public void insert(GearblockInfo info) throws SQLException {
+        try (PreparedStatement sql = _db.prepareStatementWithReturn(insertScript)) {
+            sql.setString(1, info.WorldId);
+            sql.setInt(2, info.X);
+            sql.setInt(3, info.Y);
+            sql.setInt(4, info.Z);
 
-			if (info.TimerOperation != null)
-				sql.setInt(6, info.TimerOperation);
-			else
-				sql.setNull(6, Types.INTEGER);
+            if (info.Timer != null)
+                sql.setInt(5, info.Timer);
+            else
+                sql.setNull(5, Types.INTEGER);
 
-			sql.executeUpdate();
+            if (info.TimerOperation != null)
+                sql.setInt(6, info.TimerOperation);
+            else
+                sql.setNull(6, Types.INTEGER);
 
-			try (ResultSet rs = sql.getGeneratedKeys()) {
-				rs.next();
-				info.GearblockId = rs.getInt(1);
-			}
-		}
-	}
+            sql.executeUpdate();
 
-	public void update(GearblockInfo info) throws SQLException {
-		try (PreparedStatement sql = _db.prepareStatement(updateScript)) {
-			sql.setString(1, info.WorldId);
-			sql.setInt(2, info.X);
-			sql.setInt(3, info.Y);
-			sql.setInt(4, info.Z);
+            try (ResultSet rs = sql.getGeneratedKeys()) {
+                rs.next();
+                info.GearblockId = rs.getInt(1);
+            }
+        }
+    }
 
-			if (info.Timer != null)
-				sql.setInt(5, info.Timer);
-			else
-				sql.setNull(5, Types.INTEGER);
+    public void update(GearblockInfo info) throws SQLException {
+        try (PreparedStatement sql = _db.prepareStatement(updateScript)) {
+            sql.setString(1, info.WorldId);
+            sql.setInt(2, info.X);
+            sql.setInt(3, info.Y);
+            sql.setInt(4, info.Z);
 
-			if (info.TimerOperation != null)
-				sql.setInt(6, info.TimerOperation);
-			else
-				sql.setNull(6, Types.INTEGER);
+            if (info.Timer != null)
+                sql.setInt(5, info.Timer);
+            else
+                sql.setNull(5, Types.INTEGER);
 
-			sql.setInt(7, info.GearblockId);
+            if (info.TimerOperation != null)
+                sql.setInt(6, info.TimerOperation);
+            else
+                sql.setNull(6, Types.INTEGER);
 
-			sql.executeUpdate();
-		}
-	}
+            sql.setInt(7, info.GearblockId);
 
-	public void delete(int gear_id) throws SQLException {
-		try (PreparedStatement sql = _db.prepareStatement(deleteScript)) {
-			sql.setInt(1, gear_id);
+            sql.executeUpdate();
+        }
+    }
 
-			sql.executeUpdate();
-		}
-	}
+    public void delete(int gear_id) throws SQLException {
+        try (PreparedStatement sql = _db.prepareStatement(deleteScript)) {
+            sql.setInt(1, gear_id);
+
+            sql.executeUpdate();
+        }
+    }
 }

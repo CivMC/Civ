@@ -29,74 +29,76 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public class ListCommand extends BaseCommand {
 
-	@CommandAlias("jalist")
-	@Syntax("[group]")
-	@Description("Lists all snitches you have access to if given no arguments or the ones on the given groups")
-	public void execute(final Player player, @Optional final String[] targetGroups) {
-		boolean playerProvidedGroups = false;
-		List<String> groupNames = null;
-		if (targetGroups.length != 0) {
-			groupNames = new ArrayList<String>(Arrays.asList(targetGroups));
-			playerProvidedGroups = true;
-		} else {
-			groupNames = NameAPI.getGroupManager().getAllGroupNames(player.getUniqueId());
-		}
-		final var groupIds = new IntArrayList();
-		for (final String groupName : groupNames) {
-			final Group group = GroupManager.getGroup(groupName);
-			if (group == null) {
-				if (playerProvidedGroups) {
-					player.sendMessage(ChatColor.RED + "The group " + groupName + " does not exist");
-				}
-				continue;
-			}
-			if (!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
-					JukeAlertPermissionHandler.getListSnitches())) {
-				if (playerProvidedGroups) {
-					player.sendMessage(ChatColor.RED + "You do not have permission to list snitches "
-							+ "for the group " + group.getName());
-				}
-				continue;
-			}
-			groupIds.addAll(group.getGroupIds());
-		}
-		if (groupIds.isEmpty()) {
-			player.sendMessage(ChatColor.GREEN + "You do not have access to any group's snitches.");
-			return;
-		}
-		player.sendMessage(ChatColor.GREEN + "Retrieving snitches for a total of " + groupNames.size()
-				+ " group instances. This may take a moment.");
-		JukeAlert.getInstance().getTaskChainFactory().newChain()
-				.async((unused) -> JukeAlert.getInstance().getDAO().loadSnitchesByGroupID(groupIds).parallel()
-						.map((snitch) -> {
-							final DormantCullingAppender appender = snitch.getAppender(DormantCullingAppender.class);
-							if (appender == null) {
-								return null;
-							}
-							return new SnitchCache(snitch, appender.getTimeUntilCulling());
-						})
-						.filter(Objects::nonNull)
-						.sorted(Comparator.comparingLong((entry) -> entry.timeUntilCulling))
-						.map((entry) -> entry.snitch)
-						.collect(Collectors.toList()))
-				.syncLast((snitches) -> new SnitchOverviewGUI(player, snitches, "Your snitches",
-						player.hasPermission("jukealert.admin")).showScreen())
-				.execute();
-	}
+    @CommandAlias("jalist")
+    @Syntax("[group]")
+    @Description("Lists all snitches you have access to if given no arguments or the ones on the given groups")
+    public void execute(final Player player, @Optional final String[] targetGroups) {
+        boolean playerProvidedGroups = false;
+        List<String> groupNames = null;
+        if (targetGroups.length != 0) {
+            groupNames = new ArrayList<String>(Arrays.asList(targetGroups));
+            playerProvidedGroups = true;
+        } else {
+            groupNames = NameAPI.getGroupManager().getAllGroupNames(player.getUniqueId());
+        }
+        final var groupIds = new IntArrayList();
+        for (final String groupName : groupNames) {
+            final Group group = GroupManager.getGroup(groupName);
+            if (group == null) {
+                if (playerProvidedGroups) {
+                    player.sendMessage(ChatColor.RED + "The group " + groupName + " does not exist");
+                }
+                continue;
+            }
+            if (!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
+                JukeAlertPermissionHandler.getListSnitches())) {
+                if (playerProvidedGroups) {
+                    player.sendMessage(ChatColor.RED + "You do not have permission to list snitches "
+                        + "for the group " + group.getName());
+                }
+                continue;
+            }
+            groupIds.addAll(group.getGroupIds());
+        }
+        if (groupIds.isEmpty()) {
+            player.sendMessage(ChatColor.GREEN + "You do not have access to any group's snitches.");
+            return;
+        }
+        player.sendMessage(ChatColor.GREEN + "Retrieving snitches for a total of " + groupNames.size()
+            + " group instances. This may take a moment.");
+        JukeAlert.getInstance().getTaskChainFactory().newChain()
+            .async((unused) -> JukeAlert.getInstance().getDAO().loadSnitchesByGroupID(groupIds).parallel()
+                .map((snitch) -> {
+                    final DormantCullingAppender appender = snitch.getAppender(DormantCullingAppender.class);
+                    if (appender == null) {
+                        return null;
+                    }
+                    return new SnitchCache(snitch, appender.getTimeUntilCulling());
+                })
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparingLong((entry) -> entry.timeUntilCulling))
+                .map((entry) -> entry.snitch)
+                .collect(Collectors.toList()))
+            .syncLast((snitches) -> new SnitchOverviewGUI(player, snitches, "Your snitches",
+                player.hasPermission("jukealert.admin")).showScreen())
+            .execute();
+    }
 
-	private static class SnitchCache {
-		private final Snitch snitch;
-		private final long timeUntilCulling;
-		public SnitchCache(@Nonnull final Snitch snitch,
-						   final long timeUntilCulling) {
-			this.snitch = snitch;
-			this.timeUntilCulling = timeUntilCulling;
-		}
-	}
+    private static class SnitchCache {
 
-	public List<String> tabComplete(final CommandSender sender, final String[] arguments) {
-		final String last = ArrayUtils.isEmpty(arguments) ? "" : arguments[arguments.length - 1];
-		return GroupTabCompleter.complete(last, JukeAlertPermissionHandler.getListSnitches(), (Player) sender);
-	}
+        private final Snitch snitch;
+        private final long timeUntilCulling;
+
+        public SnitchCache(@Nonnull final Snitch snitch,
+                           final long timeUntilCulling) {
+            this.snitch = snitch;
+            this.timeUntilCulling = timeUntilCulling;
+        }
+    }
+
+    public List<String> tabComplete(final CommandSender sender, final String[] arguments) {
+        final String last = ArrayUtils.isEmpty(arguments) ? "" : arguments[arguments.length - 1];
+        return GroupTabCompleter.complete(last, JukeAlertPermissionHandler.getListSnitches(), (Player) sender);
+    }
 
 }

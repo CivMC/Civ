@@ -7,27 +7,27 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class DecorationStack extends Clickable {
 
-	public DecorationStack(ItemStack item) {
-		super(item);
-	}
-	
-	public DecorationStack(Material mat) {
-		this(new ItemStack(mat));
-	}
-	
-	public DecorationStack(Material mat, String name) {
-		this(mat);
-		ItemUtils.setDisplayName(this.item, name);
-	}
-	
-	public DecorationStack(Material mat, String name, String ...lore) {
-		this(mat, name);
-		ItemUtils.addLore(this.item, lore);
-	}
+    public DecorationStack(ItemStack item) {
+        super(item);
+    }
 
-	@Override
-	public void clicked(Player p) {
-		// dont do anything here, it's supposed to be just decoration
-	}
+    public DecorationStack(Material mat) {
+        this(new ItemStack(mat));
+    }
+
+    public DecorationStack(Material mat, String name) {
+        this(mat);
+        ItemUtils.setDisplayName(this.item, name);
+    }
+
+    public DecorationStack(Material mat, String name, String... lore) {
+        this(mat, name);
+        ItemUtils.addLore(this.item, lore);
+    }
+
+    @Override
+    public void clicked(Player p) {
+        // dont do anything here, it's supposed to be just decoration
+    }
 
 }

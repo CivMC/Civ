@@ -32,7 +32,7 @@ snitchConfigs:
       dormantcull:
         lifeTime: 2 weeks
         dormantTime: 2 weeks
-      showownerondestroy: {}
+      showownerondestroy: { }
   juke:
     item:
       ==: org.bukkit.inventory.ItemStack
@@ -50,7 +50,7 @@ snitchConfigs:
       dormantcull:
         lifeTime: 4 weeks
         dormantTime: 4 weeks
-      showownerondestroy: {}
+      showownerondestroy: { }
       levertoggle:
         NORTH:
           trigger:

@@ -9,34 +9,34 @@ import org.bukkit.configuration.ConfigurationSection;
  * Define an "into" list of Strings where the Strings are event classpaths.
  * Can monitor not only bukkit events but also plugin / custom events; just give the
  * valid classpath.
- * 
+ * <p>
  * This bypasses the "safe" bukkit way of registering listeners for events. So it
  * also bypasses Timings.
- * 
+ * <p>
  * This is the only warning I'll give. Be careful with this and prefer to leave it off.
- * 
+ * <p>
  * Wireups only happen on restart, I'm dubious about injecting live for now.
- * 
- * @author ProgrammerDan
  *
+ * @author ProgrammerDan
  */
 public class InsightConfig extends SimpleHackConfig {
-	private List<String> insightOn;
 
-	public InsightConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
-		super(plugin, base);
-	}
+    private List<String> insightOn;
 
-	@Override
-	protected void wireup(ConfigurationSection config) {
-		if (config.contains("into")) {
-			insightOn = config.getStringList("into");
-		} else {
-			insightOn = null;
-		}
-	}
+    public InsightConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
+        super(plugin, base);
+    }
 
-	public List<String> getInsightOn() {
-		return insightOn;
-	}
+    @Override
+    protected void wireup(ConfigurationSection config) {
+        if (config.contains("into")) {
+            insightOn = config.getStringList("into");
+        } else {
+            insightOn = null;
+        }
+    }
+
+    public List<String> getInsightOn() {
+        return insightOn;
+    }
 }

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class ForceFieldTask extends BukkitRunnable {
+
     private final CombatTagPlus plugin;
 
     private final Map<UUID, Location> validLocations = new HashMap<>();

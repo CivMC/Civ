@@ -2,8 +2,8 @@ name: RandomSpawn
 version: ${version}
 main: me.josvth.randomspawn.RandomSpawn
 author: Josvth
-depend: [BanStick]
-softdepend: [Bastion]
+depend: [ BanStick ]
+softdepend: [ Bastion ]
 api-version: 1.20.6
 commands:
   randomspawn:
@@ -96,14 +96,14 @@ permissions:
       RandomSpawn.info: true
       RandomSpawn.placesign: true
   RandomSpawn.reload:
-        description: Allows you to use the /rs reload command.
-        default: op
+    description: Allows you to use the /rs reload command.
+    default: op
   RandomSpawn.configure:
-        description: Allows you to configure Random Spawn.
-        default: op
-        children:
-          RandomSpawn.setfirstspawn: true
-          RandomSpawn.teleporttofirstspawn: true
+    description: Allows you to configure Random Spawn.
+    default: op
+    children:
+      RandomSpawn.setfirstspawn: true
+      RandomSpawn.teleporttofirstspawn: true
   RandomSpawn.help:
     description: Gives you access to the help commands.
     default: false
@@ -111,20 +111,20 @@ permissions:
     description: Gives you access to the world info screen.
     default: true
   RandomSpawn.setfirstspawn:
-        description: Allows you to use the /setfirstspawn command.
-        default: op
+    description: Allows you to use the /setfirstspawn command.
+    default: op
   RandomSpawn.teleporttofirstspawn:
-        description: Allows you to use the /tpfirstspawn command.
-        default: op
+    description: Allows you to use the /tpfirstspawn command.
+    default: op
   RandomSpawn.exclude:
-        description: Excludes you from being randomly spawned.
-        default: false
+    description: Excludes you from being randomly spawned.
+    default: false
   RandomSpawn.placesign:
-        description: Allows you to place Random Spawn Signs.
-        default: op
+    description: Allows you to place Random Spawn Signs.
+    default: op
   RandomSpawn.usesign:
-        description: Allows you to use Random Spawn Signs.
-        default: true
+    description: Allows you to use Random Spawn Signs.
+    default: true
   RandomSpawn.spawncommand:
     description: allows you to use the spawn command.
     default: op

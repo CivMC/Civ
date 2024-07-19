@@ -17,48 +17,47 @@ import vg.civcraft.mc.namelayer.NameAPI;
 
 public class BanRegistrarCommand implements CommandExecutor {
 
-	public static final String name = "banprovider";
+    public static final String name = "banprovider";
 
-	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (args.length == 0) {
-			sender.sendMessage(ChatColor.RED + "You must specify a player whose last provider will be banned");
-			return true;
-		}
-		UUID uuid = NameAPI.getUUID(args[0]);
-		if (uuid == null) {
-			sender.sendMessage(ChatColor.RED + "No player " + args[0] + " is known");
-			return true;
-		}
-		BSPlayer player = BSPlayer.byUUID(uuid);
-		BSSession lastSession = player.getLatestSession();
-		BSIP ip = lastSession.getIP();
-		List<BSIPData> proxyChecks = BSIPData.allByIP(ip);
-		if (proxyChecks.isEmpty()) {
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length == 0) {
+            sender.sendMessage(ChatColor.RED + "You must specify a player whose last provider will be banned");
+            return true;
+        }
+        UUID uuid = NameAPI.getUUID(args[0]);
+        if (uuid == null) {
+            sender.sendMessage(ChatColor.RED + "No player " + args[0] + " is known");
+            return true;
+        }
+        BSPlayer player = BSPlayer.byUUID(uuid);
+        BSSession lastSession = player.getLatestSession();
+        BSIP ip = lastSession.getIP();
+        List<BSIPData> proxyChecks = BSIPData.allByIP(ip);
+        if (proxyChecks.isEmpty()) {
 
-		}
-		BSRegistrars handler = BanStick.getPlugin().getRegistrarHandler();
-		for (BSIPData data : proxyChecks) {
-			if (data.getRegisteredAs() == null || data.getRegisteredAs().isEmpty()) {
-				sender.sendMessage(ChatColor.RED + "Can not ban registrar, because none was known");
-				continue;
-			}
-			if (args.length >= 2) {
-				handler.unbanRegistrar(data);
-				sender.sendMessage(
-						ChatColor.GREEN + "Forgave registrar " + data.getRegisteredAs() + " of " + data.toString());
-			}
-			else {
-				handler.banRegistrar(data);
-				sender.sendMessage(
-						ChatColor.GREEN + "Banning registrar " + data.getRegisteredAs() + " of " + data.toString());
-			}
-		}
-		if (args.length == 1) {
-			//also give them an ip ban on the way if they dont have one already
-			BanHandler.doIPBan(ip, null, null, true, false);
-		}
-		return true;
-	}
+        }
+        BSRegistrars handler = BanStick.getPlugin().getRegistrarHandler();
+        for (BSIPData data : proxyChecks) {
+            if (data.getRegisteredAs() == null || data.getRegisteredAs().isEmpty()) {
+                sender.sendMessage(ChatColor.RED + "Can not ban registrar, because none was known");
+                continue;
+            }
+            if (args.length >= 2) {
+                handler.unbanRegistrar(data);
+                sender.sendMessage(
+                    ChatColor.GREEN + "Forgave registrar " + data.getRegisteredAs() + " of " + data.toString());
+            } else {
+                handler.banRegistrar(data);
+                sender.sendMessage(
+                    ChatColor.GREEN + "Banning registrar " + data.getRegisteredAs() + " of " + data.toString());
+            }
+        }
+        if (args.length == 1) {
+            //also give them an ip ban on the way if they dont have one already
+            BanHandler.doIPBan(ip, null, null, true, false);
+        }
+        return true;
+    }
 
 }

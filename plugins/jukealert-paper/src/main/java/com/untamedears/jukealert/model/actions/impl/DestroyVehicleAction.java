@@ -12,35 +12,35 @@ import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class DestroyVehicleAction extends LoggablePlayerVictimAction {
-	
-	public static final String ID = "DESTROY_VEHICLE";
 
-	public DestroyVehicleAction(long time, Snitch snitch, UUID player, Location location, String victim) {
-		super(time, snitch, player, location, victim);
-	}
+    public static final String ID = "DESTROY_VEHICLE";
 
-	@Override
-	public IClickable getGUIRepresentation() {
-		ItemStack is = new ItemStack(getVehicle());
-		super.enrichGUIItem(is);
-		return new DecorationStack(is);
-	}
-	
-	/**
-	 * @return Material of the vehicle destroyed
-	 */
-	public Material getVehicle() {
-		return JAUtility.getVehicle(victim);
-	}
+    public DestroyVehicleAction(long time, Snitch snitch, UUID player, Location location, String victim) {
+        super(time, snitch, player, location, victim);
+    }
 
-	@Override
-	public String getIdentifier() {
-		return ID;
-	}
+    @Override
+    public IClickable getGUIRepresentation() {
+        ItemStack is = new ItemStack(getVehicle());
+        super.enrichGUIItem(is);
+        return new DecorationStack(is);
+    }
 
-	@Override
-	public String getChatRepresentationIdentifier() {
-		return "Broke " + ItemUtils.getItemName(getVehicle());
-	}
+    /**
+     * @return Material of the vehicle destroyed
+     */
+    public Material getVehicle() {
+        return JAUtility.getVehicle(victim);
+    }
+
+    @Override
+    public String getIdentifier() {
+        return ID;
+    }
+
+    @Override
+    public String getChatRepresentationIdentifier() {
+        return "Broke " + ItemUtils.getItemName(getVehicle());
+    }
 
 }

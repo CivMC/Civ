@@ -6,13 +6,13 @@ import org.bukkit.inventory.ItemStack;
 
 public class NoBrewHandler implements BrewHandler {
 
-	public NoBrewHandler(ExilePearlApi pearlApi) {
-		// no-op
-	}
+    public NoBrewHandler(ExilePearlApi pearlApi) {
+        // no-op
+    }
 
-	@Override
-	public boolean isBrew(ItemStack item) {
-		return false;
-	}
+    @Override
+    public boolean isBrew(ItemStack item) {
+        return false;
+    }
 
 }

@@ -1,6 +1,5 @@
 /**
  * @author Aleksey Terzi
- *
  */
 
 package com.aleksey.castlegates.utils;
@@ -18,17 +17,18 @@ import com.aleksey.castlegates.types.Gearblock;
 import com.aleksey.castlegates.types.TimerBatch;
 
 public class TimerWorker extends Thread implements Runnable {
-	private BridgeManager _bridgeManager;
-	private List<TimerBatch> _batches;
 
-	private long _lastExecute = System.currentTimeMillis();
+    private BridgeManager _bridgeManager;
+    private List<TimerBatch> _batches;
+
+    private long _lastExecute = System.currentTimeMillis();
     private AtomicBoolean _kill = new AtomicBoolean(false);
     private AtomicBoolean _run = new AtomicBoolean(false);
 
     public TimerWorker(BridgeManager bridgeManager) {
-    	_bridgeManager = bridgeManager;
-    	_batches = new ArrayList<TimerBatch>();
-	}
+        _bridgeManager = bridgeManager;
+        _batches = new ArrayList<TimerBatch>();
+    }
 
     public void startThread() {
         _kill.set(false);
@@ -111,23 +111,23 @@ public class TimerWorker extends Thread implements Runnable {
     }
 
     private void runBatch(final TimerBatch batch) {
-    	final BridgeManager bridgeManager = _bridgeManager;
+        final BridgeManager bridgeManager = _bridgeManager;
 
-		CastleGates.runTask(new Runnable() {
+        CastleGates.runTask(new Runnable() {
             public void run() {
-            if(!batch.isInvalid() && bridgeManager.processTimerBatch(batch)) {
-                BlockCoord blockCoord = batch.getGearblock().getCoord();
-                Location location = new Location(batch.getWorld(), blockCoord.getX(), blockCoord.getY(), blockCoord.getZ());
+                if (!batch.isInvalid() && bridgeManager.processTimerBatch(batch)) {
+                    BlockCoord blockCoord = batch.getGearblock().getCoord();
+                    Location location = new Location(batch.getWorld(), blockCoord.getX(), blockCoord.getY(), blockCoord.getZ());
 
-                PowerResultHelper.playSound(location, batch.getProcessStatus());
-            }
+                    PowerResultHelper.playSound(location, batch.getProcessStatus());
+                }
             }
         });
     }
 
     public void addBatch(TimerBatch batch) {
-		synchronized(_batches) {
-			_batches.add(batch);
-		}
-	}
+        synchronized (_batches) {
+            _batches.add(batch);
+        }
+    }
 }

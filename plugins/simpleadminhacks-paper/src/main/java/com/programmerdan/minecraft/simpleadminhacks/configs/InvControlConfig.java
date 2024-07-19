@@ -6,16 +6,16 @@ import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * Stub; this hack just turns on and off, and has some commands.
- * 
- * @author ProgrammerDan
  *
+ * @author ProgrammerDan
  */
 public class InvControlConfig extends SimpleHackConfig {
-	public InvControlConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
-		super(plugin, base);
-	}
 
-	@Override
-	protected void wireup(ConfigurationSection config) {
-	}
+    public InvControlConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
+        super(plugin, base);
+    }
+
+    @Override
+    protected void wireup(ConfigurationSection config) {
+    }
 }

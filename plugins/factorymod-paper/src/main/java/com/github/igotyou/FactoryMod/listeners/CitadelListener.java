@@ -11,25 +11,25 @@ import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 
 public class CitadelListener implements Listener {
 
-	private FactoryModManager manager;
-	private Random rng;
+    private FactoryModManager manager;
+    private Random rng;
 
-	public CitadelListener() {
-		this.manager = FactoryMod.getInstance().getManager();
-		this.rng = new Random();
-	}
+    public CitadelListener() {
+        this.manager = FactoryMod.getInstance().getManager();
+        this.rng = new Random();
+    }
 
-	@EventHandler
-	public void reinDamage(ReinforcementDamageEvent e) {
-		Factory f = manager.getFactoryAt(e.getReinforcement().getLocation());
-		if (!(f instanceof FurnCraftChestFactory)) {
-			return;
-		}
-		FurnCraftChestFactory fccf = (FurnCraftChestFactory) f;
-		if (fccf.getMultiBlockStructure().getCenter().equals(e.getReinforcement().getLocation())) {
-			if (rng.nextDouble() > fccf.getCitadelBreakReduction()) {
-				e.setCancelled(true);
-			}
-		}
-	}
+    @EventHandler
+    public void reinDamage(ReinforcementDamageEvent e) {
+        Factory f = manager.getFactoryAt(e.getReinforcement().getLocation());
+        if (!(f instanceof FurnCraftChestFactory)) {
+            return;
+        }
+        FurnCraftChestFactory fccf = (FurnCraftChestFactory) f;
+        if (fccf.getMultiBlockStructure().getCenter().equals(e.getReinforcement().getLocation())) {
+            if (rng.nextDouble() > fccf.getCitadelBreakReduction()) {
+                e.setCancelled(true);
+            }
+        }
+    }
 }

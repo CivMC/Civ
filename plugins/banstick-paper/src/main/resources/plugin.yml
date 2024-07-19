@@ -4,12 +4,12 @@ main: com.programmerdan.minecraft.banstick.BanStick
 author: ProgrammerDan
 description: A plugin focused on better IP / VPN / CIDR tracking and justice delivery
 api-version: 1.20.6
-depend: [CivModCore]
-softdepend: [IP-Check, NameLayer]
+depend: [ CivModCore ]
+softdepend: [ IP-Check, NameLayer ]
 commands:
   banstick:
     description: Swing that banstick, send nerds flying.
-    aliases: [bst, stickofdoom, banhammer]
+    aliases: [ bst, stickofdoom, banhammer ]
     permission: banstick.ban
     usage: |
       /<command> [ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
@@ -19,7 +19,7 @@ commands:
        For all, optionally include a date and time of unban using the format indicated, and optionally a message to display to player on ban
   doubletap:
     description: Handle unpardoning shares between two players; optionally ban one or both
-    aliases: [bdt, doublebladedaxe]
+    aliases: [ bdt, doublebladedaxe ]
     permission: banstick.ban
     usage: |
       /<command> [+][ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
@@ -39,7 +39,7 @@ commands:
       /<command> [ip]/[CIDR] [number of sessions]
   dowsingrod:
     description: Investigate breakdown of networks by up to three attributes
-    aliases: [bsdr, diviningrod]
+    aliases: [ bsdr, diviningrod ]
     permission: banstick.lovetap
     usage: |
       /<command> [CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] pagenum perpage
@@ -49,7 +49,7 @@ commands:
        Use with care, can be Database intensive.
   drilldown:
     description: Investigate the IPs and IP Networks based on specific values (like, find all networks in China)
-    aliases: [bsdd, deepdive]
+    aliases: [ bsdd, deepdive ]
     permission: banstick.lovetap
     useage: |
       /<command> SUMMARY|PLAYER|IP|IPDATA|IPDATASUMMARY [[CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] "value"]x3
@@ -61,7 +61,7 @@ commands:
        IPDATASUMMARY shows all IPData records, all IPs in them, and all Players that use them. It will be slow probably.
   forgive:
     description: Remove specific IP / CIDR bans, unban specific individuals, or grant exemptions/ignores for a user
-    aliases: [bstf, showmercy]
+    aliases: [ bstf, showmercy ]
     permission: banstick.forgive
     usage: |
       /<command> [ip]
@@ -79,7 +79,7 @@ commands:
         Immediately pardons all shares between these two players. If ALL also expires all bans for all shares between these two players.
   takeitback:
     description: Remove exemptions/ignores with this command.
-    aliases: [unforgive, buryhim]
+    aliases: [ unforgive, buryhim ]
     permission: banstick.forgive
     usage: |
       /<command> [name/uuid] [IP] [PROXY] [SHARED]

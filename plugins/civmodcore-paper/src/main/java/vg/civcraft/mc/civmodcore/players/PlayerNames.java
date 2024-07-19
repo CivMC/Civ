@@ -17,29 +17,29 @@ import org.jetbrains.annotations.NotNull;
 
 public final class PlayerNames implements Listener {
 
-	private static final Set<String> names = new HashSet<>();
+    private static final Set<String> names = new HashSet<>();
 
-	public PlayerNames() {
-		names.clear();
-		names.addAll(
-			Stream.of(Bukkit.getOfflinePlayers())
-				.map(OfflinePlayer::getName)
-				.filter(StringUtils::isNotBlank)
-				.toList()
-		);
-	}
+    public PlayerNames() {
+        names.clear();
+        names.addAll(
+            Stream.of(Bukkit.getOfflinePlayers())
+                .map(OfflinePlayer::getName)
+                .filter(StringUtils::isNotBlank)
+                .toList()
+        );
+    }
 
-	@EventHandler(
-		priority = EventPriority.MONITOR, // Make sure it happens after NameLayer's AssociationListener
-		ignoreCancelled = true
-	)
-	private void onLogin(
-		final @NotNull PlayerLoginEvent event
-	) {
-		names.add(event.getPlayer().getName());
-	}
+    @EventHandler(
+        priority = EventPriority.MONITOR, // Make sure it happens after NameLayer's AssociationListener
+        ignoreCancelled = true
+    )
+    private void onLogin(
+        final @NotNull PlayerLoginEvent event
+    ) {
+        names.add(event.getPlayer().getName());
+    }
 
-	public static @NotNull Collection<String> getPlayerNames() {
-		return Collections.unmodifiableSet(names);
-	}
+    public static @NotNull Collection<String> getPlayerNames() {
+        return Collections.unmodifiableSet(names);
+    }
 }

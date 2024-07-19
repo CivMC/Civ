@@ -216,10 +216,10 @@ hacks:
   SafeOreBreak:
     enabled: true
     ores:
-      - [DIAMOND_ORE,DEEPSLATE_DIAMOND_ORE]
-      - [COAL_ORE,DEEPSLATE_COAL_ORE]
-      - [REDSTONE_ORE,DEEPSLATE_REDSTONE_ORE]
-      - [LAPIS_ORE,DEEPSLATE_LAPIS_ORE]
+      - [ DIAMOND_ORE,DEEPSLATE_DIAMOND_ORE ]
+      - [ COAL_ORE,DEEPSLATE_COAL_ORE ]
+      - [ REDSTONE_ORE,DEEPSLATE_REDSTONE_ORE ]
+      - [ LAPIS_ORE,DEEPSLATE_LAPIS_ORE ]
   ShipOutOfLuck:
     enabled: true
     # The list of Material's that boats cannot be placed on and will eject passengers
@@ -267,7 +267,7 @@ hacks:
     enabled: false
     delay: 10000
     message: '%Victim% was combat tagged by %Attacker%'
-    broadcast: [OP, CONSOLE]
+    broadcast: [ OP, CONSOLE ]
   DisableAI:
     enabled: true
     # Specify below the living entities and their spawning circumstances you want to disable the AI for.
@@ -275,7 +275,7 @@ hacks:
     # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html
     # Note: You can also just state "ALL" for all spawn circumstances
     VILLAGER: ALL
-    ENDERMITE: [DISPENSE_EGG, EGG, SPAWNER_EGG]
+    ENDERMITE: [ DISPENSE_EGG, EGG, SPAWNER_EGG ]
   ElytraFeatures:
     enabled: true
     # Whether Elytra flight should be outright disabled
@@ -366,8 +366,8 @@ hacks:
         REDSTONE_COMPARATOR: 4
         OBSERVER: 2
       exempt:
-      - Steve
-      - Alex
+        - Steve
+        - Alex
     daytimeBed:
       enabled: true
       spawnSetMessage: '&7Your spawn has been set.'
@@ -394,7 +394,7 @@ hacks:
     badOmen: false
     #a list of materials players shouldn't be allowed to place at all
     noplace:
-     - DRAGON_EGG
+      - DRAGON_EGG
     rainReduction:
       enabled: false
       rainOccurrenceChance: .5
@@ -442,40 +442,40 @@ hacks:
     enabled: true
     announce: '&f%Player% is brand new!'
     giveIntroKitToRandomSpawners: true
-    broadcast: [PERM, CONSOLE]
+    broadcast: [ PERM, CONSOLE ]
     helptips: on
     helptips_end: 20m
     introkit:
       enabled: true
       contents:
-       - ==: org.bukkit.inventory.ItemStack
-         v: 1
-         type: COOKIE
-         amount: 32
-         meta:
-           ==: ItemMeta
-           meta-type: UNSPECIFIC
-           display-name: 'Manna'
-           lore:
-            - "Gift from the Admins as you"
-            - "begin your journey on Devotion."
-       - ==: org.bukkit.inventory.ItemStack
-         v: 1
-         type: RED_BED
-         amount: 1
-         meta:
-           ==: ItemMeta
-           meta-type: UNSPECIFIC
-           lore:
-            - "This world is unforgiving."
-            - "Be sure to get a good night's"
-            - "rest soon."
+        - ==: org.bukkit.inventory.ItemStack
+          v: 1
+          type: COOKIE
+          amount: 32
+          meta:
+            ==: ItemMeta
+            meta-type: UNSPECIFIC
+            display-name: 'Manna'
+            lore:
+              - "Gift from the Admins as you"
+              - "begin your journey on Devotion."
+        - ==: org.bukkit.inventory.ItemStack
+          v: 1
+          type: RED_BED
+          amount: 1
+          meta:
+            ==: ItemMeta
+            meta-type: UNSPECIFIC
+            lore:
+              - "This world is unforgiving."
+              - "Be sure to get a good night's"
+              - "rest soon."
   OneTimeTeleport:
     enabled: true
     # Item materials that should be removed from the player upon teleporting
-    material_blacklist: []
+    material_blacklist: [ ]
     # Blocks that will block OTT if in range of the target player
-    unsafe_materials: [LAVA, WATER]
+    unsafe_materials: [ LAVA, WATER ]
     # How long newfriends will have to use OTT before it expires
     ott_timeout: 2d
     # Whether or not to limit OTT to same-world teleports
@@ -548,3 +548,6 @@ hacks:
     maxSpeed: 0.438827582278 # 18.5m/s
   AntiDerailment:
     enabled: true
+  CreeperDiscHack:
+    enabled: true
+    discChance: 0.003

@@ -7,21 +7,21 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class OpenContainerAction extends LoggableBlockAction {
-	
-	public static final String ID = "OPEN_CONTAINER";
 
-	public OpenContainerAction(long time, Snitch snitch, UUID player, Location location, Material material) {
-		super(time, snitch, player, location, material);
-	}
+    public static final String ID = "OPEN_CONTAINER";
 
-	@Override
-	public String getChatRepresentationIdentifier() {
-		return "Opened";
-	}
+    public OpenContainerAction(long time, Snitch snitch, UUID player, Location location, Material material) {
+        super(time, snitch, player, location, material);
+    }
 
-	@Override
-	public String getIdentifier() {
-		return ID;
-	}
+    @Override
+    public String getChatRepresentationIdentifier() {
+        return "Opened";
+    }
+
+    @Override
+    public String getIdentifier() {
+        return ID;
+    }
 
 }

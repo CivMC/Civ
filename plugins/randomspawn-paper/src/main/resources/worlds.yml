@@ -2,13 +2,13 @@
 #remember to change 'exampleworld' into your world name
 exampleworld:
   randomspawnon:
-  - respawn
-  - bedrespawn
-  - firstjoin
+    - respawn
+    - bedrespawn
+    - firstjoin
   keeprandomspawns: false
   spawnpointson:
-  - firstjoin
-  - newplayer
+    - firstjoin
+    - newplayer
   newplayertime: 3000
   spawnpoints:
     '0':
