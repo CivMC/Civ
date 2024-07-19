@@ -13,7 +13,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -434,8 +433,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		is.setItemMeta(im);
 		ItemUtils.setDisplayName(is, ChatColor.GOLD + NameAPI.getCurrentName(toDisplay));
 		if (g.isOwner(toDisplay)) { // special case for primary owner
-			is.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-			is.addEnchantment(Enchantment.DURABILITY, 1);
+			is.editMeta(itemMeta -> itemMeta.setEnchantmentGlintOverride(true));
 			ItemUtils.addLore(is, ChatColor.AQUA + "Rank: Primary Owner");
 			ItemUtils.addLore(is, ChatColor.RED + "You don't have permission",
 					ChatColor.RED + "to modify the rank of this player");

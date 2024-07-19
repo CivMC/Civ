@@ -36,7 +36,7 @@ public class Upgraderecipe extends InputRecipe {
 				FurnCraftChestEgg e = egg;
 				fccf.upgrade(e.getName(),
 						e.getRecipes(), e.getFuel(),
-						e.getFuelConsumptionIntervall(), e.getUpdateTime(), e.getMaximumHealth(), 
+						e.getFuelConsumptionIntervall(), e.getUpdateTime(), e.getMaximumHealth(),
 						e.getDamagePerDamagingPeriod(), e.getBreakGracePeriod(), e.getCitadelBreakReduction());
 			}
 		}
@@ -49,7 +49,7 @@ public class Upgraderecipe extends InputRecipe {
 		ItemStack res = ((InputRecipe)egg.getRecipes().get(0)).getOutputRepresentation(null, null).get(0);
 		res.setAmount(1);
 		ItemMeta im = res.getItemMeta();
-		im.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
+		im.addEnchant(Enchantment.SHARPNESS, 1, true);
 		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		res.setItemMeta(im);
 		ItemUtils.setDisplayName(res, name);

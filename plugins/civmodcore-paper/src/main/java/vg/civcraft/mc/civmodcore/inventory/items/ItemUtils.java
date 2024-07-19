@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.translation.Translatable;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -108,7 +108,7 @@ public final class ItemUtils {
 	 */
 	public static boolean isValidItemMaterial(@Nullable final Material material) {
 		return material != null
-				/** Add any null-returns in {@link CraftItemFactory#getItemMeta(Material, org.bukkit.craftbukkit.v1_17_R1.inventory.CraftMetaItem)} */
+				/** Add any null-returns in {@link CraftItemFactory#getItemMeta(Material, org.bukkit.craftbukkit.inventory.CraftMetaItem)} */
 				&& material != Material.AIR
 				&& material.isItem();
 	}
@@ -395,21 +395,6 @@ public final class ItemUtils {
 			return damageable;
 		}
 		return null;
-	}
-
-	/**
-	 * Makes an item glow by adding an enchantment and the flag for hiding enchantments, so it has the enchantment glow
-	 * without an enchantment being visible. Note that this does actually apply an enchantment to an item.
-	 *
-	 * @param item Item to apply glow to.
-	 *
-	 * @throws IllegalArgumentException Throws when the given item has no meta.
-	 */
-	public static void addGlow(@Nullable final ItemStack item) {
-		handleItemMeta(item, (ItemMeta meta) -> {
-			MetaUtils.addGlow(meta);
-			return true;
-		});
 	}
 
 	/**

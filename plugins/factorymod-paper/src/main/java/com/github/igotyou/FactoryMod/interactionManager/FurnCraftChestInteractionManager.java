@@ -269,7 +269,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			ItemUtils.addLore(recStack, "",ChatColor.AQUA + "Ran " + String.valueOf(runcount) + " times");
 			if (rec == fccf.getCurrentRecipe()) {
 				ItemUtils.addLore(recStack, ChatColor.GREEN + "Currently selected");
-				ItemUtils.addGlow(recStack);
+				recStack.editMeta(itemMeta -> itemMeta.setEnchantmentGlintOverride(true));
 			}
 			if (recipe instanceof ProductionRecipe) {
 				ProductionRecipe prod = (ProductionRecipe) recipe;

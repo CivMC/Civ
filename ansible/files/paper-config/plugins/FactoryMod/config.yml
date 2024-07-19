@@ -6925,7 +6925,7 @@ recipes:
             - Mustard 
             - Paprika 
             - Salt 
-            - Pepper
+            - Pepper 
       recipe6:
         chance: 0.01
         recipe6:
@@ -6956,7 +6956,7 @@ recipes:
       rabbitpunch:
         chance: 0.01
         rabbitkick:
-          material: RABBIT_FEET
+          material: RABBIT_FOOT
           amount: 1
           lore:
             - Rabbit Kick!
@@ -7300,81 +7300,71 @@ recipes:
         vindicator:
           material: VINDICATOR_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:vindication_illager"
+          entity_data:
+            id: "minecraft:vindication_illager"
       vex:
         chance: 0.00047619047
         vex:
           material: VEX_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:vex"
+          entity_data:
+            id: "minecraft:vex"
       silverfish:
         chance: 0.00047619047
         silverfish:
           material: SILVERFISH_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:silverfish"
+          entity_data:
+            id: "minecraft:silverfish"
       endermite:
         chance: 0.00047619047
         endermite:
           material: ENDERMITE_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:endermite"
+          entity_data:
+            id: "minecraft:endermite"
       zombiehorse:
         chance: 0.00047619047
         zombiehorse:
           material: ZOMBIE_HORSE_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:zombie_horse"
+          entity_data:
+            id: "minecraft:zombie_horse"
       skeletonhorse:
         chance: 0.00047619047
         skeletonhorse:
           material: SKELETON_HORSE_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:skeleton_horse"
+          entity_data:
+            id: "minecraft:skeleton_horse"
       donkey:
         chance: 0.00047619047
         donkey:
           material: DONKEY_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:donkey"
+          entity_data:
+            id: "minecraft:donkey"
       polarbear:
         chance: 0.00047619047
         polarbear:
           material: POLAR_BEAR_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:polar_bear"
+          entity_data:
+            id: "minecraft:polar_bear"
       parrot:
         chance: 0.00047619047
         parrot:
           material: PARROT_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:parrot"
+          entity_data:
+            id: "minecraft:parrot"
       llama:
         chance: 0.00047619047
         llama:
           material: LLAMA_SPAWN_EGG
           amount: 1
-          nbt:
-            EntityTag:
-              id: "minecraft:llama"
+          entity_data:
+            id: "minecraft:llama"
       fox:
         chance: 0.00047619047
         fox:

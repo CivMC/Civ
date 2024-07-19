@@ -8,11 +8,15 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
+import io.papermc.paper.adventure.PaperAdventure;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.network.Filterable;
+import net.minecraft.server.network.FilteredText;
+import net.minecraft.world.item.component.WrittenBookContent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -79,25 +83,25 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 		}
 		String serialNumber = UUID.randomUUID().toString();
 
-		String[] pages = String.join("", bookMeta.getPages()).split("<<PAGE>>");
-		ListTag pagesNBT = new ListTag();
+		List<net.kyori.adventure.text.Component> pages = new ArrayList<>(bookMeta.pages().size());
+		pages.addAll(bookMeta.pages());
 
-		for (String page : pages) {
-			pagesNBT.add(StringTag.valueOf(page));
+		List<Filterable<Component>> list = new ArrayList<>();
+		for (net.kyori.adventure.text.Component page : pages) {
+			list.add(Filterable.passThrough(PaperAdventure.asVanilla(page)));
 		}
 
-		CompoundTag bookNBT = new CompoundTag();
-		bookNBT.putInt("generation", bookMeta.getGeneration().ordinal());
-		bookNBT.putString("author", bookMeta.getAuthor());
-		bookNBT.putString("title", bookMeta.getTitle());
-		bookNBT.put("pages", pagesNBT);
+		WrittenBookContent writtenBookContent = new WrittenBookContent(
+				Filterable.from(FilteredText.passThrough(bookMeta.getTitle() == null ? "" : bookMeta.getTitle())),
+				bookMeta.getAuthor() == null ? "" : bookMeta.getAuthor(),
+				bookMeta.getGeneration().ordinal(), list, false);
 
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = output.clone();
 
 		if (toRemove.isContainedIn(inputInv) && toRemove.removeSafelyFrom(inputInv)) {
 			for (ItemStack is : toAdd.getItemStackRepresentation()) {
-				is = addTags(serialNumber, is, bookNBT);
+				is = addTags(serialNumber, is, writtenBookContent);
 
 				ItemUtils.setDisplayName(is, itemName);
 				ItemUtils.setLore(is,
@@ -107,7 +111,7 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 						ChatColor.GRAY + getGenerationName(bookMeta.getGeneration()),
 						ChatColor.GRAY + "(JSON)"
 				);
-				is.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+				is.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
 				is.getItemMeta().addItemFlags(ItemFlag.HIDE_ENCHANTS);
 				outputInv.addItem(is);
 			}
