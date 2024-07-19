@@ -11,10 +11,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import net.minecraft.nbt.CompoundTag;
+
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.WrittenBookContent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -61,7 +64,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 
 		if (toRemove.isContainedIn(inputInv) && toRemove.removeSafelyFrom(inputInv)) {
 			for(ItemStack is: toAdd.getItemStackRepresentation()) {
-				is = addTags(serialNumber, is, CraftItemStack.asNMSCopy(book).getTag());
+				is = addTags(serialNumber, is, CraftItemStack.asNMSCopy(book).get(DataComponents.WRITTEN_BOOK_CONTENT));
 
 				ItemUtils.setDisplayName(is, itemName);
 				ItemUtils.setLore(is,
@@ -70,7 +73,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 						ChatColor.GRAY + "by " + bookMeta.getAuthor(),
 						ChatColor.GRAY + getGenerationName(bookMeta.getGeneration())
 						);
-				is.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+				is.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
 				is.editMeta(x -> x.addItemFlags(ItemFlag.HIDE_ENCHANTS));
 				outputInv.addItem(is);
 			}
@@ -80,15 +83,16 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		return true;
 	}
 
-	public static ItemStack addTags(String serialNumber, ItemStack plate, CompoundTag bookTag) {
+	public static ItemStack addTags(String serialNumber, ItemStack plate, WrittenBookContent bookTag) {
 		net.minecraft.world.item.ItemStack nmsPlate = CraftItemStack.asNMSCopy(plate);
-		CompoundTag plateTag = nmsPlate.getOrCreateTag();
+		CustomData customData = CustomData.EMPTY
+				.update(nbt -> {
+					nbt.putString("SN", serialNumber);
+					nbt.putInt("Version", version);
+				});
+		nmsPlate.set(DataComponents.CUSTOM_DATA, customData);
+		nmsPlate.set(DataComponents.WRITTEN_BOOK_CONTENT, bookTag); // TODO: does this actually work?
 
-		plateTag.putString("SN", serialNumber);
-		plateTag.put("Book", bookTag);
-		plateTag.putInt("Version", version);
-
-		nmsPlate.setTag(plateTag);
 		return CraftItemStack.asBukkitCopy(nmsPlate);
 	}
 

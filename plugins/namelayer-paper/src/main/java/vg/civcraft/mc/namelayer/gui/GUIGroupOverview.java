@@ -13,7 +13,6 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -202,7 +201,7 @@ public class GUIGroupOverview {
 				List<String> lore = im.getLore();
 				lore.add(ChatColor.DARK_AQUA + "Your current default group");
 				im.setLore(lore);
-				im.addEnchant(Enchantment.DURABILITY, 1, true);
+				im.setEnchantmentGlintOverride(true);
 			}
 			is.setItemMeta(im);
 			if (gm.hasAccess(g, p.getUniqueId(),
