@@ -7710,236 +7710,241 @@ recipes:
         terracotta:
           material: TERRACOTTA
           amount: 1
-      # Spawn eggs - 2% of total (0.00047619047 each)
+      # Spawn eggs - 2% of total (0.00046511628 each)
       vindicator:
-        chance: 0.00047619047
+        chance: 0.00046511628
         vindicator:
           material: VINDICATOR_SPAWN_EGG
           amount: 1
           entity_data:
             id: "minecraft:vindication_illager"
       vex:
-        chance: 0.00047619047
+        chance: 0.00046511628
         vex:
           material: VEX_SPAWN_EGG
           amount: 1
           entity_data:
             id: "minecraft:vex"
       silverfish:
-        chance: 0.00047619047
+        chance: 0.00046511628
         silverfish:
           material: SILVERFISH_SPAWN_EGG
           amount: 1
           entity_data:
             id: "minecraft:silverfish"
       endermite:
-        chance: 0.00047619047
+        chance: 0.00046511628
         endermite:
           material: ENDERMITE_SPAWN_EGG
           amount: 1
           entity_data:
             id: "minecraft:endermite"
       zombiehorse:
-        chance: 0.00047619047
+        chance: 0.00046511628
         zombiehorse:
           material: ZOMBIE_HORSE_SPAWN_EGG
           amount: 1
           entity_data:
             id: "minecraft:zombie_horse"
       skeletonhorse:
-        chance: 0.00047619047
+        chance: 0.00046511628
         skeletonhorse:
           material: SKELETON_HORSE_SPAWN_EGG
           amount: 1
           entity_data:
             id: "minecraft:skeleton_horse"
       donkey:
-        chance: 0.00047619047
+        chance: 0.00046511628
         donkey:
           material: DONKEY_SPAWN_EGG
           amount: 1
           entity_data:
             id: "minecraft:donkey"
       polarbear:
-        chance: 0.00047619047
+        chance: 0.00046511628
         polarbear:
           material: POLAR_BEAR_SPAWN_EGG
           amount: 1
           entity_data:
             id: "minecraft:polar_bear"
       parrot:
-        chance: 0.00047619047
+        chance: 0.00046511628
         parrot:
           material: PARROT_SPAWN_EGG
           amount: 1
           entity_data:
             id: "minecraft:parrot"
       llama:
-        chance: 0.00047619047
+        chance: 0.00046511628
         llama:
           material: LLAMA_SPAWN_EGG
           amount: 1
           entity_data:
             id: "minecraft:llama"
       fox:
-        chance: 0.00047619047
+        chance: 0.00046511628
         fox:
           material: FOX_SPAWN_EGG
           amount: 1
       cat:
-        chance: 0.00047619047
+        chance: 0.00046511628
         cat:
           material: CAT_SPAWN_EGG
           amount: 1
       mooshroom:
-        chance: 0.00047619047
+        chance: 0.00046511628
         mooshroom:
           material: MOOSHROOM_SPAWN_EGG
           amount: 1
       horse:
-        chance: 0.00047619047
+        chance: 0.00046511628
         horse:
           material: HORSE_SPAWN_EGG
           amount: 1
       rabbit:
-        chance: 0.00047619047
+        chance: 0.00046511628
         rabbit:
           material: RABBIT_SPAWN_EGG
           amount: 1
       ocelot:
-        chance: 0.00047619047
+        chance: 0.00046511628
         ocelot:
           material: OCELOT_SPAWN_EGG
           amount: 1
       squid:
-        chance: 0.00047619047
+        chance: 0.00046511628
         squid:
           material: SQUID_SPAWN_EGG
           amount: 1
       wolf:
-        chance: 0.00047619047
+        chance: 0.00046511628
         wolf:
           material: WOLF_SPAWN_EGG
           amount: 1
       axolotl:
-        chance: 0.00047619047
+        chance: 0.00046511628
         axolotl:
           material: AXOLOTL_SPAWN_EGG
           amount: 1
       bee:
-        chance: 0.00047619047
+        chance: 0.00046511628
         bee:
           material: BEE_SPAWN_EGG
           amount: 1
       panda:
-        chance: 0.00047619047
+        chance: 0.00046511628
         panda:
           material: PANDA_SPAWN_EGG
           amount: 1
       dolphin:
-        chance: 0.00047619047
+        chance: 0.00046511628
         dolphin:
           material: DOLPHIN_SPAWN_EGG
           amount: 1
       stray:
-        chance: 0.00047619047
+        chance: 0.00046511628
         stray:
           material: STRAY_SPAWN_EGG
           amount: 1
       strider:
-        chance: 0.00047619047
+        chance: 0.00046511628
         strider:
           material: STRIDER_SPAWN_EGG
           amount: 1
       hoglin:
-        chance: 0.00047619047
+        chance: 0.00046511628
         hoglin:
           material: HOGLIN_SPAWN_EGG
           amount: 1
       creeper:
-        chance: 0.00047619047
+        chance: 0.00046511628
         creeper:
           material: CREEPER_SPAWN_EGG
           amount: 1
       zombie:
-        chance: 0.00047619047
+        chance: 0.00046511628
         zombie:
           material: ZOMBIE_SPAWN_EGG
           amount: 1
       skeleton:
-        chance: 0.00047619047
+        chance: 0.00046511628
         skeleton:
           material: SKELETON_SPAWN_EGG
           amount: 1
       spider:
-        chance: 0.00047619047
+        chance: 0.00046511628
         spider:
           material: SPIDER_SPAWN_EGG
           amount: 1
       blaze:
-        chance: 0.00047619047
+        chance: 0.00046511628
         blaze:
           material: BLAZE_SPAWN_EGG
           amount: 1
       ghast:
-        chance: 0.00047619047
+        chance: 0.00046511628
         ghast:
           material: GHAST_SPAWN_EGG
           amount: 1
       guardian:
-        chance: 0.00047619047
+        chance: 0.00046511628
         guardian:
           material: GUARDIAN_SPAWN_EGG
           amount: 1
       magmacube:
-        chance: 0.00047619047
+        chance: 0.00046511628
         magmacube:
           material: MAGMA_CUBE_SPAWN_EGG
           amount: 1
       slime:
-        chance: 0.00047619047
+        chance: 0.00046511628
         slime:
           material: SLIME_SPAWN_EGG
           amount: 1
       witch:
-        chance: 0.00047619047
+        chance: 0.00046511628
         witch:
           material: WITCH_SPAWN_EGG
           amount: 1
       villager:
-        chance: 0.00047619047
+        chance: 0.00046511628
         villager:
           material: VILLAGER_SPAWN_EGG
           amount: 1
       cavespider:
-        chance: 0.00047619047
+        chance: 0.00046511628
         cavespider:
           material: CAVE_SPIDER_SPAWN_EGG
           amount: 1
       enderman:
-        chance: 0.00047619047
+        chance: 0.00046511628
         enderman:
           material: ENDERMAN_SPAWN_EGG
           amount: 1
       zombiepigman:
-        chance: 0.00047619047
+        chance: 0.00046511628
         zombiepigman:
           material: ZOMBIFIED_PIGLIN_SPAWN_EGG
           amount: 1
       Camel:
-        chance: 0.00047619047
+        chance: 0.00046511628
         Camel:
           material: CAMEL_SPAWN_EGG
           amount: 1
       Frog:
-        chance: 0.00047619047
+        chance: 0.00046511628
         Frog:
           material: FROG_SPAWN_EGG
           amount: 1
       Sniffer:
-        chance: 0.00047619047
+        chance: 0.00046511628
         Sniffer:
           material: SNIFFER_EGG
+          amount: 1
+      Armadillo:
+        chance: 0.00046511628
+        Armadillo:
+          material: ARMADILLO_SPAWN_EGG
           amount: 1
       # Music Disks - 1% of total (0.000625 each)
       record_13:
