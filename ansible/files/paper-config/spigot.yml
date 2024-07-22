@@ -103,8 +103,8 @@ world-settings:
       players: 160
       animals: 32
       monsters: 64
-      misc: 16
-      other: 16
+      misc: 32
+      other: 64
     ticks-per:
       hopper-transfer: 16
       hopper-check: 8
