@@ -11,11 +11,14 @@ import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.util.JAUtility;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -28,7 +31,11 @@ public class NameAtCommand extends BaseCommand {
     @CommandAlias("janameat")
     @Syntax("[world] <x> <y> <z> <name>")
     @Description("Name a snitch at the given location")
-    public void execute(Player player, String[] args) throws InvalidCommandArgument {
+    public void execute(CommandSender sender, String[] args) throws InvalidCommandArgument {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         ParsedArgs parsed = parseArgs(player, args);
         renameSnitch(player, parsed.snitchName, parsed.location);
     }

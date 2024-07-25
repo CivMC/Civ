@@ -3,6 +3,8 @@ package vg.civcraft.mc.namelayer.command.commands;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,16 +20,15 @@ public class ToggleAutoAcceptInvites extends BaseCommandMiddle {
     @CommandAlias("nltaai|autoaccept")
     @Description("Toggle the acceptance of invites.")
     public void execute(CommandSender sender) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("how would this even work");
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
             return;
         }
-        Player p = (Player) sender;
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameAPI.getUUID(player.getName());
         if (handler.getAutoAccept(uuid)) {
-            p.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group requests.");
+            player.sendMessage(ChatColor.GREEN + "You will no longer automatically accept group requests.");
         } else {
-            p.sendMessage(ChatColor.GREEN + "You will automatically accept group requests.");
+            player.sendMessage(ChatColor.GREEN + "You will automatically accept group requests.");
         }
         handler.toggleAutoAccept(uuid, true);
     }

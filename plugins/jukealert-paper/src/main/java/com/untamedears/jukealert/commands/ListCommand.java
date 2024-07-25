@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.command.CommandSender;
@@ -32,7 +34,11 @@ public class ListCommand extends BaseCommand {
     @CommandAlias("jalist")
     @Syntax("[group]")
     @Description("Lists all snitches you have access to if given no arguments or the ones on the given groups")
-    public void execute(final Player player, @Optional final String[] targetGroups) {
+    public void execute(final CommandSender sender, @Optional final String[] targetGroups) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         boolean playerProvidedGroups = false;
         List<String> groupNames = null;
         if (targetGroups.length != 0) {

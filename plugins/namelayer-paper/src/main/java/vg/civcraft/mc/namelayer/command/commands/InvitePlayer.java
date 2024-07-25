@@ -6,6 +6,8 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -29,45 +31,47 @@ public class InvitePlayer extends BaseCommandMiddle {
     @Syntax("<group> <player> [rank (eg: MEMBERS)]")
     @Description("Invite a player to a group.")
     @CommandCompletion("@NL_Groups @allplayers @NL_Ranks")
-    public void execute(CommandSender s, String groupName, String playerName, @Optional String playerRank) {
+    public void execute(CommandSender sender, String groupName, String playerName, @Optional String playerRank) {
         final String targetGroup = groupName;
         final String targetPlayer = playerName;
         final String targetType = playerRank;
-        final boolean isPlayer = s instanceof Player;
-        final Player p = isPlayer ? (Player) s : null;
-        final boolean isAdmin = !isPlayer || p.hasPermission("namelayer.admin");
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
+        final boolean isAdmin = player.hasPermission("namelayer.admin");
         final Group group = GroupManager.getGroup(targetGroup);
-        if (groupIsNull(s, targetGroup, group)) {
+        if (groupIsNull(sender, targetGroup, group)) {
             return;
         }
         if (!isAdmin && group.isDisciplined()) {
-            s.sendMessage(ChatColor.RED + "This group is disiplined.");
+            sender.sendMessage(ChatColor.RED + "This group is disiplined.");
             return;
         }
         final UUID targetAccount = NameAPI.getUUID(targetPlayer);
         if (targetAccount == null) {
-            s.sendMessage(ChatColor.RED + "The player has never played before.");
+            sender.sendMessage(ChatColor.RED + "The player has never played before.");
             return;
         }
         final PlayerType pType = targetType != null ? PlayerType.getPlayerType(targetType) : PlayerType.MEMBERS;
         if (pType == null) {
-            if (p != null) {
-                PlayerType.displayPlayerTypes(p);
+            if (player != null) {
+                PlayerType.displayPlayerTypes(player);
             } else {
-                s.sendMessage("Invalid player type");
+                sender.sendMessage("Invalid player type");
             }
             return;
         }
         if (pType == PlayerType.NOT_BLACKLISTED) {
-            p.sendMessage(ChatColor.RED + "I think we both know that this shouldn't be possible.");
+            player.sendMessage(ChatColor.RED + "I think we both know that this shouldn't be possible.");
             return;
         }
         if (!isAdmin) {
             // Perform access check
-            final UUID executor = p.getUniqueId();
+            final UUID executor = player.getUniqueId();
             final PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
             if (t == null) {
-                s.sendMessage(ChatColor.RED + "You are not on that group.");
+                sender.sendMessage(ChatColor.RED + "You are not on that group.");
                 return;
             }
             boolean allowed = false;
@@ -89,27 +93,27 @@ public class InvitePlayer extends BaseCommandMiddle {
                     break;
             }
             if (!allowed) {
-                s.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
+                sender.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
                 return;
             }
         }
 
         if (group.isCurrentMember(targetAccount)) { // So a player can't demote someone who is above them.
-            s.sendMessage(ChatColor.RED + "Player is already a member. "
+            sender.sendMessage(ChatColor.RED + "Player is already a member. "
                 + "Use /promoteplayer to change their PlayerType.");
             return;
         }
         if (NameLayerPlugin.getBlackList().isBlacklisted(group, targetAccount)) {
-            s.sendMessage(ChatColor.RED + "This player is currently blacklisted, you have to unblacklist him with /removeblacklist before inviting him to the group");
+            sender.sendMessage(ChatColor.RED + "This player is currently blacklisted, you have to unblacklist him with /removeblacklist before inviting him to the group");
             return;
         }
         if (!isAdmin) {
-            sendInvitation(group, pType, targetAccount, p.getUniqueId(), true);
+            sendInvitation(group, pType, targetAccount, player.getUniqueId(), true);
         } else {
             sendInvitation(group, pType, targetAccount, null, true);
         }
 
-        s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /revoke to Revoke an invite.");
+        sender.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /revoke to Revoke an invite.");
     }
 
     public static void sendInvitation(Group group, PlayerType pType, UUID invitedPlayer, UUID inviter, boolean saveToDB) {

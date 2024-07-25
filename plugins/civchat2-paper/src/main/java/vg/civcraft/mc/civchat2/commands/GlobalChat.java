@@ -6,6 +6,9 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -22,7 +25,11 @@ public class GlobalChat extends BaseCommand {
     @Description("Enters global group chat or sends a message to global group chat")
     @CommandCompletion("@CC_Groups @nothing")
 
-    public void execute(Player player, @Optional String chatMessage) {
+    public void execute(CommandSender sender, @Optional String chatMessage) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         String globalGroupName = CivChat2.getInstance().getPluginConfig().getGlobalChatGroupName();
         if (globalGroupName == null) {
             return;

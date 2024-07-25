@@ -15,8 +15,7 @@ public class WhoAmI extends BaseCommand {
     @Description("Tells you who you are")
     public void execute(CommandSender sender) {
         final String response = ChatColor.YELLOW + "You are: " + ChatColor.RESET;
-        if (sender instanceof Player) {
-            final Player player = (Player) sender;
+        if (sender instanceof Player player) {
             final String name = NameAPI.getCurrentName(player.getUniqueId());
             if (!Strings.isNullOrEmpty(name)) {
                 player.sendMessage(response + name);

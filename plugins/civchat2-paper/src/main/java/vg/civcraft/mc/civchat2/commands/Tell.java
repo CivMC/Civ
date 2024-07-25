@@ -7,7 +7,10 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -21,7 +24,11 @@ public class Tell extends BaseCommand {
     @Syntax("[player] [message]")
     @Description("Sends a private message to someone or enters a private chat with them")
     @CommandCompletion("@allplayers @nothing")
-    public void execute(Player player, @Optional String targetPlayer, @Optional String chatMessage) {
+    public void execute(CommandSender sender, @Optional String targetPlayer, @Optional String chatMessage) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
         if (targetPlayer == null && chatMessage == null) {
             UUID chattingWith = chatMan.getChannel(player);

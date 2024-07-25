@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -23,33 +25,32 @@ public class ModifyPermissions extends BaseCommandMiddle {
     @Description("Modify the permissions of a group.")
     @CommandCompletion("@NL_Groups add|remove @NL_Ranks @NL_Perms")
     public void execute(CommandSender sender, String groupName, String adding, String playerRank, String permissionName) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "You must be a player. Nuf said.");
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
             return;
         }
-        Player p = (Player) sender;
         Group g = GroupManager.getGroup(groupName);
         if (groupIsNull(sender, groupName, g)) {
             return;
         }
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameAPI.getUUID(player.getName());
         PlayerType type = g.getPlayerType(uuid);
         if (type == null) {
-            p.sendMessage(ChatColor.RED + "You are not on this group.");
+            player.sendMessage(ChatColor.RED + "You are not on this group.");
             return;
         }
         if (g.isDisciplined()) {
-            p.sendMessage(ChatColor.RED + "This group is currently disiplined.");
+            player.sendMessage(ChatColor.RED + "This group is currently disiplined.");
             return;
         }
-        if (!gm.hasAccess(g, uuid, PermissionType.getPermission("PERMS")) && !g.isOwner(uuid) && !(p.isOp() || p.hasPermission("namelayer.admin"))) {
-            p.sendMessage(ChatColor.RED + "You do not have permission for this command.");
+        if (!gm.hasAccess(g, uuid, PermissionType.getPermission("PERMS")) && !g.isOwner(uuid) && !(player.isOp() || player.hasPermission("namelayer.admin"))) {
+            player.sendMessage(ChatColor.RED + "You do not have permission for this command.");
             return;
         }
         String info = adding;
         PlayerType playerType = PlayerType.getPlayerType(playerRank.toUpperCase());
         if (playerType == null) {
-            PlayerType.displayPlayerTypes(p);
+            PlayerType.displayPlayerTypes(player);
             return;
         }
         PermissionType pType = PermissionType.getPermission(permissionName);
@@ -59,7 +60,7 @@ public class ModifyPermissions extends BaseCommandMiddle {
                 sb.append(perm.getName());
                 sb.append(" ");
             }
-            p.sendMessage(ChatColor.RED
+            player.sendMessage(ChatColor.RED
                 + "That PermissionType does not exist.\n"
                 + "The current types are: " + sb.toString());
             return;
@@ -92,7 +93,7 @@ public class ModifyPermissions extends BaseCommandMiddle {
             } else
                 sender.sendMessage(ChatColor.RED + "This PlayerType does not have the PermissionType: " + pType.getName());
         } else {
-            p.sendMessage(ChatColor.RED + "Specify if you want to add or remove.");
+            player.sendMessage(ChatColor.RED + "Specify if you want to add or remove.");
         }
     }
 }

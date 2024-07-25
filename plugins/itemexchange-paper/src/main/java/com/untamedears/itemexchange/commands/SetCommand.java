@@ -11,8 +11,11 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.utility.RuleHandler;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
@@ -24,7 +27,11 @@ public final class SetCommand extends BaseCommand {
     @CatchUnknown
     @Description("Sets a pertinent field to an exchange rule.")
     @Syntax("<field> [...values]")
-    public void base(Player player) {
+    public void base(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         throw new InvalidCommandArgument();
     }
 
@@ -32,7 +39,11 @@ public final class SetCommand extends BaseCommand {
     @Description("Sets the material of an exchange rule.")
     @Syntax("<material>")
     @CommandCompletion("@itemMaterials")
-    public void setMaterial(Player player, @Single String slug) {
+    public void setMaterial(CommandSender sender, @Single String slug) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         try (RuleHandler handler = new RuleHandler(player)) {
             Material material = Material.getMaterial(slug.toUpperCase());
             if (!ItemUtils.isValidItemMaterial(material)) {
@@ -46,7 +57,11 @@ public final class SetCommand extends BaseCommand {
     @Subcommand("amount|num|number|a")
     @Description("Sets the amount of an exchange rule.")
     @Syntax("<amount>")
-    public void setAmount(Player player, int amount) {
+    public void setAmount(CommandSender sender, int amount) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         try (RuleHandler handler = new RuleHandler(player)) {
             if (amount <= 0) {
                 throw new InvalidCommandArgument("You must enter a valid amount.");
@@ -58,7 +73,11 @@ public final class SetCommand extends BaseCommand {
 
     @Subcommand("switchio|switch|swap|swapio")
     @Description("Sets the amount of an exchange rule.")
-    public void switchIO(Player player) {
+    public void switchIO(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         try (RuleHandler handler = new RuleHandler(player)) {
             if (handler.getRule().getType() == ExchangeRule.Type.INPUT) {
                 handler.getRule().setType(ExchangeRule.Type.OUTPUT);

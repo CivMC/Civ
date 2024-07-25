@@ -5,7 +5,10 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -19,8 +22,11 @@ public class LinkGroups extends BaseCommandMiddle {
     @Syntax("<super group> <sub group>")
     @Description("Links two groups to each other as nested groups.")
     @CommandCompletion("@NL_Groups @NL_Groups")
-    public void execute(Player sender, String parentGroup, String childGroup) {
-        Player p = (Player) sender;
+    public void execute(CommandSender sender, String parentGroup, String childGroup) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
 
         String supername = parentGroup, subname = childGroup;
 
@@ -35,37 +41,37 @@ public class LinkGroups extends BaseCommandMiddle {
         }
 
         if (subgroup.getName().equalsIgnoreCase(supergroup.getName())) {
-            p.sendMessage(ChatColor.RED + "Not today");
+            player.sendMessage(ChatColor.RED + "Not today");
             return;
         }
 
         // check if groups are accessible
 
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameAPI.getUUID(player.getName());
 
         if (!supergroup.isMember(uuid) || !subgroup.isMember(uuid)) {
-            p.sendMessage(ChatColor.RED + "You're not on one of the groups.");
+            player.sendMessage(ChatColor.RED + "You're not on one of the groups.");
             return;
         }
 
         if (supergroup.isDisciplined() || subgroup.isDisciplined()) {
-            p.sendMessage(ChatColor.RED + "One of the groups is disciplined.");
+            player.sendMessage(ChatColor.RED + "One of the groups is disciplined.");
             return;
         }
 
         if (!gm.hasAccess(subgroup, uuid, PermissionType.getPermission("LINKING"))) {
-            p.sendMessage(ChatColor.RED
+            player.sendMessage(ChatColor.RED
                 + "You don't have permission to do that on the sub group.");
             return;
         }
         if (!gm.hasAccess(supergroup, uuid, PermissionType.getPermission("LINKING"))) {
-            p.sendMessage(ChatColor.RED
+            player.sendMessage(ChatColor.RED
                 + "You don't have permission to do that on the super group.");
             return;
         }
 
         if (Group.areLinked(supergroup, subgroup)) {
-            p.sendMessage(ChatColor.RED + "These groups are already linked.");
+            player.sendMessage(ChatColor.RED + "These groups are already linked.");
             return;
         }
 
@@ -77,6 +83,6 @@ public class LinkGroups extends BaseCommandMiddle {
         } else {
             message = ChatColor.RED + "Failed to link the groups.";
         }
-        p.sendMessage(message);
+        player.sendMessage(message);
     }
 }

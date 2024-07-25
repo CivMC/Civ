@@ -1,11 +1,14 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.List;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -24,37 +27,30 @@ public class GroupStats extends BaseCommandMiddle {
     @CommandPermission("namelayer.admin")
     @Syntax("<group>")
     @Description("Get stats about a group.")
-    public void execute(Player sender, String groupName) {
-        Player p = (Player) sender;
+    @CommandCompletion("@NL_Groups")
+    public void execute(CommandSender sender, String groupName) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         Group g = gm.getGroup(groupName);
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameAPI.getUUID(player.getName());
 
         if (groupIsNull(sender, groupName, g)) {
             return;
         }
         PlayerType pType = g.getPlayerType(uuid);
-        if (!g.isMember(uuid) && !(p.isOp() || p.hasPermission("namelayer.admin"))) {
-            p.sendMessage(ChatColor.RED + "You are not on this group.");
+        if (!g.isMember(uuid) && !(player.isOp() || player.hasPermission("namelayer.admin"))) {
+            player.sendMessage(ChatColor.RED + "You are not on this group.");
             return;
         }
         boolean hasPerm = NameAPI.getGroupManager().hasAccess(g, uuid, PermissionType.getPermission("GROUPSTATS"));
-        if (!(p.isOp() || p.hasPermission("namelayer.admin")) && !hasPerm) {
-            p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
+        if (!(player.isOp() || player.hasPermission("namelayer.admin")) && !hasPerm) {
+            player.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), new StatsMessage(p, g));
-    }
-
-    public List<String> tabComplete(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player))
-            return null;
-
-        if (args.length > 0)
-            return GroupTabCompleter.complete(args[args.length - 1], null, (Player) sender);
-        else {
-            return GroupTabCompleter.complete(null, null, (Player) sender);
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), new StatsMessage(player, g));
     }
 
     public class StatsMessage implements Runnable {

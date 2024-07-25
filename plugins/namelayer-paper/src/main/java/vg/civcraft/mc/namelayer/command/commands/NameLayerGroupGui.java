@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,7 +24,7 @@ public class NameLayerGroupGui extends BaseCommandMiddle {
     @CommandCompletion("@NL_Groups")
     public void execute(CommandSender sender, @Optional String groupName) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.BLUE + "Go back home console man, we dont want you here");
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
             return;
         }
         if (groupName == null) {

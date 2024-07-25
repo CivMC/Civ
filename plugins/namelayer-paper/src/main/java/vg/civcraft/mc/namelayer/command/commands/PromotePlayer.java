@@ -5,9 +5,12 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -22,20 +25,23 @@ public class PromotePlayer extends BaseCommandMiddle {
     @Syntax("<group> <player> <rank>")
     @Description("Promote/Demote a Player in a Group")
     @CommandCompletion("@NL_Groups @allplayers @NL_Ranks")
-    public void execute(Player sender, String groupName, String playerName, String playerType) {
-        Player p = (Player) sender;
+    public void execute(CommandSender sender, String groupName, String playerName, String playerType) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
 
-        UUID executor = NameAPI.getUUID(p.getName());
+        UUID executor = NameAPI.getUUID(player.getName());
 
         UUID promotee = NameAPI.getUUID(playerName);
 
         if (promotee == null) {
-            p.sendMessage(ChatColor.RED + "That player does not exist");
+            player.sendMessage(ChatColor.RED + "That player does not exist");
             return;
         }
 
         if (promotee.equals(executor)) {
-            p.sendMessage(ChatColor.RED + "You cannot promote yourself");
+            player.sendMessage(ChatColor.RED + "You cannot promote yourself");
             return;
         }
 
@@ -44,25 +50,25 @@ public class PromotePlayer extends BaseCommandMiddle {
             return;
         }
         if (group.isDisciplined()) {
-            p.sendMessage(ChatColor.RED + "This group is disiplined.");
+            player.sendMessage(ChatColor.RED + "This group is disiplined.");
             return;
         }
 
         PlayerType promoteecurrentType = group.getPlayerType(promotee);
         PlayerType promoteeType = PlayerType.getPlayerType(playerType);
         if (promoteeType == null) {
-            PlayerType.displayPlayerTypes(p);
+            PlayerType.displayPlayerTypes(player);
             return;
         }
         if (promoteeType == PlayerType.NOT_BLACKLISTED) {
-            p.sendMessage(ChatColor.RED + "Nice try");
+            player.sendMessage(ChatColor.RED + "Nice try");
             return;
         }
 
         PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 
         if (t == null) {
-            p.sendMessage(ChatColor.RED + "You are not on that group.");
+            player.sendMessage(ChatColor.RED + "You are not on that group.");
             return;
         }
 
@@ -86,7 +92,7 @@ public class PromotePlayer extends BaseCommandMiddle {
         }
 
         if (!allowed) {
-            p.sendMessage(ChatColor.RED + "You do not have permissions to promote to this rank");
+            player.sendMessage(ChatColor.RED + "You do not have permissions to promote to this rank");
             return;
         }
         if (promoteecurrentType != null) {
@@ -112,12 +118,12 @@ public class PromotePlayer extends BaseCommandMiddle {
         }
 
         if (!allowed || !group.isMember(promotee)) { //can't edit a player who isn't in the group
-            p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(promotee) + " is not a member of this group or you do not have permission to edit their rank");
+            player.sendMessage(ChatColor.RED + NameAPI.getCurrentName(promotee) + " is not a member of this group or you do not have permission to edit their rank");
             return;
         }
 
         if (group.isOwner(promotee)) {
-            p.sendMessage(ChatColor.RED + "That player owns the group, you cannot "
+            player.sendMessage(ChatColor.RED + "That player owns the group, you cannot "
                 + "demote the player.");
             return;
         }
@@ -132,7 +138,7 @@ public class PromotePlayer extends BaseCommandMiddle {
             }
             group.removeMember(promotee);
             group.addMember(promotee, promoteeType);
-            p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
+            player.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
                 promoteeType.toString() + " in (Group) " + group.getName());
             oProm.sendMessage(ChatColor.GREEN + "You have been promoted to (PlayerType) " +
                 promoteeType.toString() + " in (Group) " + group.getName());
@@ -140,7 +146,7 @@ public class PromotePlayer extends BaseCommandMiddle {
             //player is offline change their perms
             group.removeMember(promotee);
             group.addMember(promotee, promoteeType);
-            p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
+            player.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
                 promoteeType.toString() + " in (Group) " + group.getName());
         }
     }

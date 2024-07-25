@@ -12,6 +12,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -22,9 +23,11 @@ public final class IgnoreList extends BaseCommand {
 
     @CommandAlias("ignorelist")
     @Description("Lists the players and groups you are ignoring")
-    private void execute(
-        final @NotNull Player sender
-    ) {
+    private void execute(final @NotNull CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         final CivChatDAO db = CivChat2.getInstance().getDatabaseManager();
 
         // Ignored players
@@ -32,7 +35,7 @@ public final class IgnoreList extends BaseCommand {
             Component.text()
                 .content("Ignored players: [")
                 .append(
-                    db.getIgnoredPlayers(sender.getUniqueId())
+                    db.getIgnoredPlayers(player.getUniqueId())
                         .stream()
                         .map(NameAPI::getCurrentName)
                         .filter(Objects::nonNull)
@@ -47,7 +50,7 @@ public final class IgnoreList extends BaseCommand {
             Component.text()
                 .content("Ignored groups: [")
                 .append(
-                    db.getIgnoredGroups(sender.getUniqueId())
+                    db.getIgnoredGroups(player.getUniqueId())
                         .stream()
                         .flatMap(commaSeparatedClickableNames("/ignoregroup %s"))
                         .toList()

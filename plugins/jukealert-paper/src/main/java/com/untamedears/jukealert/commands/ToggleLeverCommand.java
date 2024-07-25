@@ -9,7 +9,10 @@ import co.aikar.commands.annotation.Description;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.appender.LeverToggleAppender;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -17,7 +20,11 @@ public class ToggleLeverCommand extends BaseCommand {
 
     @CommandAlias("jatogglelevers")
     @Description("Toggles flag that indicates if a juke should trigger a lever.")
-    public void execute(Player player, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         if (args.length >= 1) {
             return;
         }

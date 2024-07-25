@@ -13,9 +13,12 @@ import com.untamedears.itemexchange.events.BlockInventoryRequestEvent;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule.Type;
 import com.untamedears.itemexchange.utility.Utilities;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -41,7 +44,11 @@ public final class CreateCommand extends BaseCommand {
 
     @Default
     @Description("Creates an exchange rule based on a shop block.")
-    public void createFromShop(Player player) {
+    public void createFromShop(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         if (!ItemExchangeConfig.canCreateFromShop()) {
             player.sendMessage(ChatColor.RED + "That command is disabled.");
             return;
@@ -126,13 +133,21 @@ public final class CreateCommand extends BaseCommand {
 
     @Subcommand(ALIAS_INPUT_TYPES)
     @Description(HELD_DESCRIPTION)
-    public void createInputFromHeld(Player player) {
+    public void createInputFromHeld(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         createFromHeld(player, Type.INPUT);
     }
 
     @Subcommand(ALIAS_OUTPUT_TYPES)
     @Description(HELD_DESCRIPTION)
-    public void createOutputFromHeld(Player player) {
+    public void createOutputFromHeld(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         createFromHeld(player, Type.OUTPUT);
     }
 
@@ -166,7 +181,11 @@ public final class CreateCommand extends BaseCommand {
     @Syntax(DETAILS_SYNTAX)
     @Description(DETAILS_DESCRIPTION)
     @CommandCompletion(DETAILS_COMPLETION)
-    public void createInputFromDetails(Player player, String slug, @Default("1") int amount) {
+    public void createInputFromDetails(CommandSender sender, String slug, @Default("1") int amount) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         createFromDetails(player, Type.INPUT, slug, amount);
     }
 
@@ -174,7 +193,11 @@ public final class CreateCommand extends BaseCommand {
     @Syntax(DETAILS_SYNTAX)
     @Description(DETAILS_DESCRIPTION)
     @CommandCompletion(DETAILS_COMPLETION)
-    public void createOutputFromDetails(Player player, String slug, @Default("1") int amount) {
+    public void createOutputFromDetails(CommandSender sender, String slug, @Default("1") int amount) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         createFromDetails(player, Type.OUTPUT, slug, amount);
     }
 

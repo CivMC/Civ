@@ -10,6 +10,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CardinalCommand extends BaseCommand {
@@ -18,8 +19,11 @@ public class CardinalCommand extends BaseCommand {
     @Syntax("[direction]")
     @Description("Changes your direction into a cardinal direction")
     @CommandCompletion("NORTH|EAST|SOUTH|WEST|UP|DOWN")
-    public void execute(Player commandSender, @Optional String targetDirection) {
-        Player player = (Player) commandSender;
+    public void execute(CommandSender sender, @Optional String targetDirection) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         Location currLocation = player.getLocation();
 
         if (player.isInsideVehicle()) {

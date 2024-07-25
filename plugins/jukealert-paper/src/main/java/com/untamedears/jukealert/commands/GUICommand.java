@@ -12,14 +12,21 @@ import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class GUICommand extends BaseCommand {
 
     @CommandAlias("ja")
     @Description("Opens snitch log GUI")
-    public void execute(Player player) {
+    public void execute(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         Snitch cursorSnitch = JAUtility.getSnitchUnderCursor(player);
         if (cursorSnitch != null && cursorSnitch.hasPermission(player, JukeAlertPermissionHandler.getReadLogs())) {
             SnitchLogGUI gui = new SnitchLogGUI(player, cursorSnitch);

@@ -4,6 +4,8 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import java.util.List;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,15 +17,18 @@ public class GetDefaultGroup extends BaseCommandMiddle {
 
     @CommandAlias("nlgdg")
     @Description("Get a players default group")
-    public void execute(Player sender) {
-        Player p = (Player) sender;
-        UUID uuid = NameAPI.getUUID(p.getName());
+    public void execute(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
+        UUID uuid = NameAPI.getUUID(player.getName());
 
         String x = gm.getDefaultGroup(uuid);
         if (x == null) {
-            p.sendMessage(ChatColor.RED + "You do not currently have a default group use /nlsdg to set it");
+            player.sendMessage(ChatColor.RED + "You do not currently have a default group use /nlsdg to set it");
         } else {
-            p.sendMessage(ChatColor.GREEN + "Your current default group is " + x);
+            player.sendMessage(ChatColor.GREEN + "Your current default group is " + x);
         }
     }
 

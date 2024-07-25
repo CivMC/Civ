@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,12 +23,11 @@ public class SetPassword extends BaseCommandMiddle {
     @Description("Set a password on a group.")
     @CommandCompletion("@NL_Groups")
     public void execute(CommandSender sender, String groupName, String userPassword) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("You may not use this command, must be a pluer.");
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
             return;
         }
-        Player p = (Player) sender;
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameAPI.getUUID(player.getName());
         Group g = gm.getGroup(groupName);
         if (groupIsNull(sender, groupName, g)) {
             return;
@@ -34,12 +35,12 @@ public class SetPassword extends BaseCommandMiddle {
 
         PlayerType pType = g.getPlayerType(uuid);
         if (pType == null) {
-            p.sendMessage(ChatColor.RED + "You do not have access to that group.");
+            player.sendMessage(ChatColor.RED + "You do not have access to that group.");
             return;
         }
 
         if (!gm.hasAccess(g, uuid, PermissionType.getPermission("PASSWORD"))) {
-            p.sendMessage(ChatColor.RED + "You do not have permission to modify that group.");
+            player.sendMessage(ChatColor.RED + "You do not have permission to modify that group.");
             return;
         }
 
@@ -47,6 +48,6 @@ public class SetPassword extends BaseCommandMiddle {
         if (userPassword != null)
             password = userPassword;
         g.setPassword(password);
-        p.sendMessage(ChatColor.GREEN + "Password has been successfully set to: " + g.getPassword());
+        player.sendMessage(ChatColor.GREEN + "Password has been successfully set to: " + g.getPassword());
     }
 }

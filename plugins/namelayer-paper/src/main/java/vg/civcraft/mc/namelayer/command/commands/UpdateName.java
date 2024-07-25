@@ -7,8 +7,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -22,13 +25,16 @@ public class UpdateName extends BaseCommandMiddle {
     @CommandAlias("nlun|updatename|")
     @Syntax("[confirm]")
     @Description("Updates your name on this server to the one your minecraft account currently has")
-    public void execute(Player sender, String newNameOrConfirm) {
-        final Player p = (Player) sender;
-        final UUID uuid = p.getUniqueId();
+    public void execute(CommandSender sender, String newNameOrConfirm) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
+        final UUID uuid = player.getUniqueId();
         final String oldName = NameAPI.getCurrentName(uuid);
 
         if (NameLayerPlugin.getGroupManagerDao().hasChangedNameBefore(uuid)) {
-            p.sendMessage(ChatColor.RED + "You already changed your name");
+            player.sendMessage(ChatColor.RED + "You already changed your name");
             return;
         }
 
@@ -45,13 +51,13 @@ public class UpdateName extends BaseCommandMiddle {
                             e.printStackTrace();
                         }
                         if (fetchedNames == null) {
-                            p.sendMessage(ChatColor.RED
+                            player.sendMessage(ChatColor.RED
                                 + "An error occured. Try again later");
                             return;
                         }
                         String newName = fetchedNames.get(uuid);
                         if (newName == null) {
-                            p.sendMessage(ChatColor.RED
+                            player.sendMessage(ChatColor.RED
                                 + "An error occured. Try again later");
                             return;
                         }
@@ -59,13 +65,13 @@ public class UpdateName extends BaseCommandMiddle {
                         if (existingNameUUID != null) {
                             if (!uuid.equals(existingNameUUID)) {
                                 // different person has the name
-                                p.sendMessage(ChatColor.RED
+                                player.sendMessage(ChatColor.RED
                                     + "Someone already has the new name of your minecraft account on this server. Because of that you may not update your name");
                                 return;
                             }
                             if (oldName.equals(newName)) {
                                 // name hasnt changed
-                                p.sendMessage(ChatColor.RED
+                                player.sendMessage(ChatColor.RED
                                     + "The name of your minecraft account is the same one as on this server");
                                 return;
                             }
@@ -74,7 +80,7 @@ public class UpdateName extends BaseCommandMiddle {
                             // different capitalization. We'll allow it
                         }
 
-                        p.sendMessage(ChatColor.GREEN
+                        player.sendMessage(ChatColor.GREEN
                             + "The current name of your minecraft account is \""
                             + newName
                             + "\". Run \"/nlun CONFIRM\" to update your name on the server to this name. Be careful though as this change can not be reverted!");

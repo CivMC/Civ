@@ -6,7 +6,10 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -17,7 +20,11 @@ public class Reply extends BaseCommand {
     @CommandAlias("reply|r")
     @Syntax("[message]")
     @Description("Replies to the last person you sent a message to or received one from")
-    public void execute(Player player, @Optional String chatMessage) {
+    public void execute(CommandSender sender, @Optional String chatMessage) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
         UUID receiverUUID = chatMan.getPlayerReply(player);
 

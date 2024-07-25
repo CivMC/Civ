@@ -5,7 +5,10 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
@@ -17,22 +20,25 @@ public class LeaveGroup extends BaseCommandMiddle {
     @Syntax("<group>")
     @Description("Leave a group")
     @CommandCompletion("@NL_Groups")
-    public void execute(Player sender, String groupName) {
-        Player p = (Player) sender;
+    public void execute(CommandSender sender, String groupName) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         Group g = gm.getGroup(groupName);
         if (groupIsNull(sender, groupName, g)) {
             return;
         }
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameAPI.getUUID(player.getName());
         if (!g.isCurrentMember(uuid)) {
-            p.sendMessage(ChatColor.RED + "You are not a member of this group.");
+            player.sendMessage(ChatColor.RED + "You are not a member of this group.");
             return;
         }
         if (g.isDisciplined()) {
-            p.sendMessage(ChatColor.RED + "This group is disciplined.");
+            player.sendMessage(ChatColor.RED + "This group is disciplined.");
             return;
         }
         g.removeMember(uuid);
-        p.sendMessage(ChatColor.GREEN + "You have been removed from the group.");
+        player.sendMessage(ChatColor.GREEN + "You have been removed from the group.");
     }
 }

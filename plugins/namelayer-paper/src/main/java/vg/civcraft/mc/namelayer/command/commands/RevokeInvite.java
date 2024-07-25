@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -23,35 +25,34 @@ public class RevokeInvite extends BaseCommandMiddle {
     @Description("Revoke an Invite.")
     @CommandCompletion("@NL_Groups @allplayers")
     public void execute(CommandSender sender, String groupName, String targetPlayer) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "I'm sorry baby, please run this as a player :)");
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
             return;
         }
-        Player p = (Player) sender;
         Group group = GroupManager.getGroup(groupName);
         if (groupIsNull(sender, groupName, group)) {
             return;
         }
         if (group.isDisciplined()) {
-            p.sendMessage(ChatColor.RED + "This group is disiplined.");
+            player.sendMessage(ChatColor.RED + "This group is disiplined.");
             return;
         }
-        UUID executor = NameAPI.getUUID(p.getName());
+        UUID executor = NameAPI.getUUID(player.getName());
         UUID uuid = NameAPI.getUUID(targetPlayer);
 
         if (uuid == null) {
-            p.sendMessage(ChatColor.RED + "The player has never played before.");
+            player.sendMessage(ChatColor.RED + "The player has never played before.");
             return;
         }
 
         //check invitee has invite
         if (group.getInvite(uuid) == null) {
             if (group.isMember(uuid)) {
-                p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " is already part of that group, "
+                player.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " is already part of that group, "
                     + "use /remove to remove them.");
                 return;
             }
-            p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " does not have an invite to that group.");
+            player.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " does not have an invite to that group.");
             return;
         }
 
@@ -60,7 +61,7 @@ public class RevokeInvite extends BaseCommandMiddle {
 
         PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
         if (t == null) {
-            p.sendMessage(ChatColor.RED + "You are not on that group.");
+            player.sendMessage(ChatColor.RED + "You are not on that group.");
             return;
         }
         boolean allowed = false;
@@ -82,13 +83,13 @@ public class RevokeInvite extends BaseCommandMiddle {
                 break;
         }
         if (!allowed) {
-            p.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
+            player.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
             return;
         }
 
         group.removeInvite(uuid, true);
         PlayerListener.removeNotification(uuid, group);
 
-        p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(uuid) + "'s invitation has been revoked.");
+        player.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(uuid) + "'s invitation has been revoked.");
     }
 }

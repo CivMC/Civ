@@ -8,7 +8,10 @@ import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -20,7 +23,11 @@ public class SyncDiscordChannelAccessCommand extends BaseCommand {
     @CommandAlias("syncdiscordchannel")
     @Description("Syncs access of the linked Discord channel")
     @Syntax("<group>")
-    public void execute(Player player, String groupName) {
+    public void execute(CommandSender sender, String groupName) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         Group group = GroupManager.getGroup(groupName);
         if (group == null) {
             player.sendMessage(ChatColor.RED + "That group does not exist");

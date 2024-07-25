@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,11 +23,10 @@ public class TransferGroup extends BaseCommandMiddle {
     @Description("Transfer one group to another person.")
     @CommandCompletion("@NL_Groups @allplayers")
     public void execute(CommandSender sender, String groupName, String playerName) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("Nope?");
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
             return;
         }
-        Player p = (Player) sender;
         Group g = GroupManager.getGroup(groupName);
         if (groupIsNull(sender, groupName, g)) {
             return;
@@ -34,11 +35,11 @@ public class TransferGroup extends BaseCommandMiddle {
         UUID oPlayer = NameAPI.getUUID(playerName); // uuid of the second player
 
         if (oPlayer == null) {
-            p.sendMessage(ChatColor.RED + "This player has never played before and cannot be given the group.");
+            player.sendMessage(ChatColor.RED + "This player has never played before and cannot be given the group.");
             return;
         }
 
-        attemptTransfer(g, p, oPlayer);
+        attemptTransfer(g, player, oPlayer);
     }
 
     public static boolean attemptTransfer(Group g, Player owner, UUID futureOwner) {

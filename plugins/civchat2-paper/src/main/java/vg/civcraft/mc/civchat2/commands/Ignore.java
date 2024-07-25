@@ -5,7 +5,10 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -17,7 +20,11 @@ public class Ignore extends BaseCommand {
     @Syntax("<player>")
     @Description("Toggles ignoring a player")
     @CommandCompletion("@allplayers")
-    public void execute(Player player, String targetPlayer) {
+    public void execute(CommandSender sender, String targetPlayer) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         Player ignoredPlayer = Bukkit.getServer().getPlayer(targetPlayer);
         if (ignoredPlayer == null) {
             player.sendMessage(ChatStrings.chatPlayerNotFound);

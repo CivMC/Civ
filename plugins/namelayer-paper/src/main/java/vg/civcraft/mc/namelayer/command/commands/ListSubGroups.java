@@ -8,6 +8,8 @@ import com.google.common.collect.Sets;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -26,7 +28,7 @@ public class ListSubGroups extends BaseCommandMiddle {
     @Description("List the nested group hierarchy.")
     public void execute(CommandSender sender, @Optional String targetGroupName) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.LIGHT_PURPLE + "No can do.");
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
             return;
         }
 

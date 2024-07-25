@@ -12,9 +12,12 @@ import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import java.util.List;
 import java.util.Set;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,7 +26,11 @@ public class CheatOutput extends BaseCommand {
     @CommandAlias("fmco")
     @CommandPermission("fm.op")
     @Description("Gives you the output of the selected recipe in the factory you are looking at")
-    public void execute(Player sender) {
+    public void execute(CommandSender sender) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         Set<Material> transparent = null;
         List<Block> view = ((Player) sender).getLineOfSight(transparent, 10);
         FactoryModManager manager = FactoryMod.getInstance().getManager();
@@ -41,7 +48,7 @@ public class CheatOutput extends BaseCommand {
             }
             ProductionRecipe prod = (ProductionRecipe) rec;
             for (ItemStack is : prod.getOutput().getItemStackRepresentation()) {
-                sender.getInventory().addItem(is);
+                player.getInventory().addItem(is);
             }
             sender.sendMessage(ChatColor.GREEN + "Gave you all items for recipe " + ChatColor.GREEN + prod.getName());
         } else {

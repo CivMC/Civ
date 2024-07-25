@@ -8,7 +8,7 @@ import com.github.maxopoly.finale.misc.knockback.KnockbackConfig;
 import com.github.maxopoly.finale.misc.knockback.KnockbackModifier;
 import com.github.maxopoly.finale.misc.knockback.KnockbackType;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
@@ -20,7 +20,7 @@ public class CombatConfigCommand extends BaseCommand {
     @Default
     @Subcommand("view")
     @Description("View combat config values.")
-    public void view(Player sender) {
+    public void view(CommandSender sender) {
         CombatConfig cc = Finale.getPlugin().getManager().getCombatConfig();
         sender.sendMessage(ChatColor.WHITE + "normal: ");
         sender.sendMessage(ChatColor.WHITE + "• ground: " + ChatColor.RED + cc.getNormalConfig().getGroundModifier());
@@ -39,7 +39,7 @@ public class CombatConfigCommand extends BaseCommand {
 
     @Subcommand("save")
     @Description("Save combat config values.")
-    public void save(Player sender) {
+    public void save(CommandSender sender) {
         CombatConfig cc = Finale.getPlugin().getManager().getCombatConfig();
         cc.save();
         sender.sendMessage(ChatColor.GREEN + "You have saved the combat config.");
@@ -48,7 +48,7 @@ public class CombatConfigCommand extends BaseCommand {
     @Subcommand("set")
     @Syntax("<property> <value>|[velX] [velY] [velZ]")
     @Description("Set regular combat config values.")
-    public void setNormal(Player sender, String property, String value, @Optional double velY, @Optional double velZ) {
+    public void setNormal(CommandSender sender, String property, String value, @Optional double velY, @Optional double velZ) {
         CombatConfig cc = Finale.getPlugin().getManager().getCombatConfig();
 
         if (property.equalsIgnoreCase("sprintReset")) {
@@ -86,7 +86,7 @@ public class CombatConfigCommand extends BaseCommand {
     @Subcommand("modifier")
     @Syntax("<config> <property> <type> <velX> <velY> <velZ>")
     @Description("Modify knockback modifier combat config values.")
-    public void setModifier(Player sender, String config, String property, KnockbackType modifierType, @Optional double velX, @Optional double velY, @Optional double velZ) {
+    public void setModifier(CommandSender sender, String config, String property, KnockbackType modifierType, @Optional double velX, @Optional double velY, @Optional double velZ) {
         CombatConfig cc = Finale.getPlugin().getManager().getCombatConfig();
 
         config = config.toLowerCase();

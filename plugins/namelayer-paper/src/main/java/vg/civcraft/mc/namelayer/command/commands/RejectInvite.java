@@ -7,7 +7,10 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.List;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.commands.TabComplete;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -23,8 +26,11 @@ public class RejectInvite extends BaseCommandMiddle {
     @Syntax("<group>")
     @Description("Reject an invitation to a group.")
     @CommandCompletion("@NL_Invites")
-    public void execute(Player sender, String targetGroup) {
-        Player player = (Player) sender;
+    public void execute(CommandSender sender, String targetGroup) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         String groupName = targetGroup;
         Group group = GroupManager.getGroup(groupName);
         if (groupIsNull(sender, groupName, group)) {

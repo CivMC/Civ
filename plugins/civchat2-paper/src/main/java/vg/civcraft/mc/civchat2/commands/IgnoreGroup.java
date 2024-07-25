@@ -4,6 +4,9 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -17,7 +20,11 @@ public class IgnoreGroup extends BaseCommand {
     @CommandAlias("ignoregroup")
     @Syntax("<group>")
     @Description("Toggles ignoring a group")
-    public void execute(Player player, String targetGroup) {
+    public void execute(CommandSender sender, String targetGroup) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         Group group = GroupManager.getGroup(targetGroup);
         if (group == null) {
             player.sendMessage(ChatStrings.chatGroupNotFound);

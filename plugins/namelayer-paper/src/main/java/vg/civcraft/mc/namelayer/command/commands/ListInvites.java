@@ -6,7 +6,10 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import com.google.common.collect.Lists;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
@@ -24,7 +27,11 @@ public class ListInvites extends BaseCommandMiddle {
     @Syntax("<group> [rank (e.g: MEMBERS)]")
     @Description("List the invitees of a group")
     @CommandCompletion("@NL_Groups @NL_Ranks")
-    public void execute(Player sender, String groupName, @Optional String playerType, @Optional String playerName) {
+    public void execute(CommandSender sender, String groupName, @Optional String playerType, @Optional String playerName) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         UUID uuid = NameAPI.getUUID(sender.getName());
 
         Group group = GroupManager.getGroup(groupName);
@@ -61,7 +68,7 @@ public class ListInvites extends BaseCommandMiddle {
             PlayerType filterType = PlayerType.getPlayerType(playerType);
             if (filterType == null) {
                 // user entered invalid type, show them
-                PlayerType.displayPlayerTypes(sender);
+                PlayerType.displayPlayerTypes(player);
                 return;
             }
 

@@ -28,6 +28,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class InfoCommand extends BaseCommand {
@@ -46,18 +47,26 @@ public class InfoCommand extends BaseCommand {
     @CommandAlias("jainfo")
     @Description("Display information from a snitch")
     @Syntax("[next | ([page_number] [censor] [action=action_type] [player=player_name])]")
-    public void execute(Player player) {
+    public void execute(CommandSender sender, String[] args) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         executeCommand(player, new FilterOptions());
     }
 
     @CommandAlias("jainfo")
     @Description("Display information from a snitch")
     @Syntax("[next | ([page_number] [censor] [action=action_type] [player=player_name])]")
-    public void execute(Player player,
+    public void execute(CommandSender sender,
                         String option1,
                         @Optional String option2,
                         @Optional String option3,
                         @Optional String option4) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         if ((option2 == null || option2.length() == 0) && option1.equalsIgnoreCase("next")) {
             executeNextCommand(player);
             return;

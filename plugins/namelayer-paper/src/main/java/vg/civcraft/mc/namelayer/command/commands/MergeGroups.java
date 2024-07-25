@@ -6,6 +6,8 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
 import java.util.logging.Level;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -23,11 +25,10 @@ public class MergeGroups extends BaseCommandMiddle {
     @Description("Merge two groups together.")
     @CommandCompletion("@NL_Groups @NL_Groups")
     public void execute(CommandSender sender, String groupToKeep, String groupToDelete) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.BLUE + "Fight me, bet you wont.\n Just back off you don't belong here.");
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
             return;
         }
-        final Player p = (Player) sender;
         final Group g = GroupManager.getGroup(groupToKeep);
         if (groupIsNull(sender, groupToKeep, g)) {
             return;
@@ -39,31 +40,31 @@ public class MergeGroups extends BaseCommandMiddle {
         }
 
         if (g.isDisciplined() || toMerge.isDisciplined()) {
-            p.sendMessage(ChatColor.RED + "One of the groups is disiplined.");
+            player.sendMessage(ChatColor.RED + "One of the groups is disiplined.");
             return;
         }
 
         if (g == toMerge) {
-            p.sendMessage(ChatColor.RED + "You cannot merge a group into itself");
+            player.sendMessage(ChatColor.RED + "You cannot merge a group into itself");
             return;
         }
 
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameAPI.getUUID(player.getName());
         if (!gm.hasAccess(g, uuid, PermissionType.getPermission("MERGE"))) {
-            p.sendMessage(ChatColor.RED + "You don't have permission on group " + g.getName() + ".");
+            player.sendMessage(ChatColor.RED + "You don't have permission on group " + g.getName() + ".");
             return;
         }
         if (!gm.hasAccess(toMerge, uuid, PermissionType.getPermission("MERGE"))) {
-            p.sendMessage(ChatColor.RED + "You don't have permission on group " + toMerge.getName() + ".");
+            player.sendMessage(ChatColor.RED + "You don't have permission on group " + toMerge.getName() + ".");
             return;
         }
         try {
             gm.mergeGroup(g, toMerge);
-            p.sendMessage(ChatColor.GREEN + "Group merging is completed.");
+            player.sendMessage(ChatColor.GREEN + "Group merging is completed.");
         } catch (Exception e) {
             NameLayerPlugin.getInstance().getLogger().log(Level.SEVERE, "Group merging failed", e);
-            p.sendMessage(ChatColor.GREEN + "Group merging may have failed.");
+            player.sendMessage(ChatColor.GREEN + "Group merging may have failed.");
         }
-        p.sendMessage(ChatColor.GREEN + "Group is under going merge.");
+        player.sendMessage(ChatColor.GREEN + "Group is under going merge.");
     }
 }

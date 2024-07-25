@@ -19,12 +19,15 @@ import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import java.util.List;
 import java.util.Set;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Create extends BaseCommand {
@@ -34,7 +37,11 @@ public class Create extends BaseCommand {
     @Syntax("<factory>")
     @Description("Creates a factory at the blocks you are looking at")
     @CommandCompletion("@FM_Factories")
-    public void execute(Player sender, String factoryName) {
+    public void execute(CommandSender sender, String factoryName) {
+        if (!(sender instanceof Player player)) {
+            sender.sendMessage(Component.text("This command can only be run by players", NamedTextColor.RED));
+            return;
+        }
         FactoryModManager manager = FactoryMod.getInstance().getManager();
         IFactoryEgg egg = manager.getEgg(factoryName);
         if (egg == null) {
@@ -42,7 +49,7 @@ public class Create extends BaseCommand {
             return;
         }
         Set<Material> transparent = null;
-        List<Block> view = sender.getLineOfSight(transparent, 10);
+        List<Block> view = player.getLineOfSight(transparent, 10);
         Factory exis = manager.getFactoryAt(view.get(view.size() - 1));
         if (exis != null) {
             manager.removeFactory(exis);
@@ -66,7 +73,7 @@ public class Create extends BaseCommand {
                     ((Furnace) furnaceBS).setCustomName(fcce.getName());
                     furnaceBS.update(true);
                 }
-                Factory factory = fcce.hatch(fccs, sender);
+                Factory factory = fcce.hatch(fccs, player);
                 ((FurnCraftChestFactory) factory).getTableIOSelector();
                 manager.addFactory(factory);
                 sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());
@@ -84,7 +91,7 @@ public class Create extends BaseCommand {
                         ChatColor.RED + "The required block structure for this factory doesn't exist here");
                     return;
                 }
-                manager.addFactory(fcce.hatch(fccs, (Player) sender));
+                manager.addFactory(fcce.hatch(fccs, player));
                 sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());
             } else {
                 sender.sendMessage(ChatColor.RED + "You are not looking at the right block for this factory");
@@ -100,7 +107,7 @@ public class Create extends BaseCommand {
                         ChatColor.RED + "The required block structure for this factory doesn't exist here");
                     return;
                 }
-                manager.addFactory(fcce.hatch(fccs, (Player) sender));
+                manager.addFactory(fcce.hatch(fccs, player));
                 sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());
             } else {
                 sender.sendMessage(ChatColor.RED + "You are not looking at the right block for this factory");
