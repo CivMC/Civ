@@ -149,11 +149,11 @@ public class Citadel extends ACivMod {
         acidManager = new AcidManager(config.getAcidTypes());
         settingManager = new CitadelSettingManager();
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
-            if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
+            if (Bukkit.getPluginManager().isPluginEnabled("DecentHolograms")) {
                 holoManager = new HologramManager(settingManager);
-                logger.info("HolographicDisplays is loaded, holograms available");
+                logger.info("DecentHolograms is loaded, holograms available");
             } else {
-                logger.info("HolographicDisplays is not loaded, no holograms available");
+                logger.info("DecentHolograms is not loaded, no holograms available");
             }
         });
         commandManager = new CitadelCommandManager(this);
