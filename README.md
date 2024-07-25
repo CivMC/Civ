@@ -10,8 +10,9 @@ This monorepo will eventually contain all civ projects and development
 A docker compose stack is provided to help test containers built from
 this repo. To start the stack, run the following commands:
 
-1. `./gradlew :ansible:build`
-2. `docker compose up`
+1. Linux/MacOS: `./gradlew :ansible:build`  
+   Windows: `.\gradlew :ansible:build`
+3. `docker compose up`
 
 Please note that this stack is NOT suitable for production use.
 
