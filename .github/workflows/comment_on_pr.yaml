@@ -50,12 +50,13 @@ jobs:
           echo "Head SHA: $HEAD_SHA"
           echo "HEAD_SHA=$HEAD_SHA" >> "$GITHUB_ENV"
 
-      - name: Delete old comments
-        uses: izhangzhihao/delete-comment@master
+      - name: Find Comment
+        uses: peter-evans/find-comment@v3
+        id: fc
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          delete_user_name: github-actions[bot]
-          issue_number: ${{ env.PR_NUMBER }}
+          issue-number: ${{ env.PR_NUMBER }}
+          comment-author: 'github-actions[bot]'
+          body-includes: "Build Successful!"
 
       - name: Update Comment
         env:
@@ -65,7 +66,7 @@ jobs:
         uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ env.PR_NUMBER }}
-          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          comment-id: ${{ steps.fc.outputs.comment-id }}
           edit-mode: replace
           body: |-
             ![badge]
