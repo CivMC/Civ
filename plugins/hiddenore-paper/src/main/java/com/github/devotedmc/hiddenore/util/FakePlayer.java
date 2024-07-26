@@ -25,8 +25,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import io.papermc.paper.entity.LookAnchor;
 import io.papermc.paper.entity.TeleportFlag;
@@ -108,6 +106,7 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -659,7 +658,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public boolean hasLineOfSight(@Nonnull Location location) {
+    public boolean hasLineOfSight(@NotNull Location location) {
         return false;
     }
 
@@ -749,7 +748,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public void registerAttribute(@Nonnull Attribute attribute) {
+    public void registerAttribute(@NotNull Attribute attribute) {
 
     }
 
@@ -1360,7 +1359,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public @Nonnull Identity identity() {
+    public @NotNull Identity identity() {
         return Player.super.identity();
     }
 
@@ -1370,7 +1369,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public @Nonnull Component displayName() {
+    public @NotNull Component displayName() {
         return Component.text("Spoof");
     }
 
@@ -1612,7 +1611,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public boolean breakBlock(@Nonnull Block block) {
+    public boolean breakBlock(@NotNull Block block) {
         return false;
     }
 
@@ -2316,7 +2315,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public @Nonnull EquipmentSlot getHandRaised() {
+    public @NotNull EquipmentSlot getHandRaised() {
         return null;
     }
 
@@ -2570,7 +2569,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public void sendBlockDamage(@Nonnull Location location, float f) {
+    public void sendBlockDamage(@NotNull Location location, float f) {
 
     }
 
@@ -2921,9 +2920,9 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public void sendSignChange(@Nonnull Location location,
+    public void sendSignChange(@NotNull Location location,
                                @Nullable String[] strings,
-                               @Nonnull DyeColor dyeColor, boolean bl)
+                               @NotNull DyeColor dyeColor, boolean bl)
         throws IllegalArgumentException {
 
     }
@@ -2950,7 +2949,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public @Nonnull Locale locale() {
+    public @NotNull Locale locale() {
         return Locale.ENGLISH;
     }
 
@@ -3574,7 +3573,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public @Nonnull Set<Player> getTrackedPlayers() {
+    public @NotNull Set<Player> getTrackedPlayers() {
         return null;
     }
 
@@ -3806,14 +3805,14 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public void setResourcePack(@Nonnull String string,
-                                @Nonnull String string2, boolean bl) {
+    public void setResourcePack(@NotNull String string,
+                                @NotNull String string2, boolean bl) {
 
     }
 
     @Override
-    public void setResourcePack(@Nonnull String string,
-                                @Nonnull String string2, boolean bl,
+    public void setResourcePack(@NotNull String string,
+                                @NotNull String string2, boolean bl,
                                 @Nullable Component component) {
 
     }
