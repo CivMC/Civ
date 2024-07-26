@@ -4,7 +4,6 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameTuningConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.TeleportUtil;
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -52,6 +51,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 /**
@@ -467,7 +467,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
     }
 
     @Override
-    public boolean onCommand(@Nonnull CommandSender commandSender, @Nonnull Command command, @Nonnull String s, @Nonnull String[] strings) {
+    public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         Map<Material, Integer> blockLimits = config.getBlockEntityLimits();
 
         StringBuilder stringB = new StringBuilder();

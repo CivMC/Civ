@@ -8,7 +8,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -147,7 +146,7 @@ public class MultiInventoryWrapper implements Inventory {
     }
 
     @Override
-    public @org.checkerframework.checker.nullness.qual.Nullable ItemStack @NonNull [] getContents() {
+    public @Nullable ItemStack @NotNull [] getContents() {
         ItemStack[] combinedContents = new ItemStack[size];
         for (int inv = 0, slot = 0; inv < wrapped.length; inv++) {
             ItemStack[] sub = wrapped[inv].getContents();

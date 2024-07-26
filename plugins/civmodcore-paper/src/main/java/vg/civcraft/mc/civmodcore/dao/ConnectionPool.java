@@ -8,9 +8,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Handy Connection Pool / Database wrapper for use by all plugins.
@@ -30,7 +30,7 @@ public class ConnectionPool {
      *
      * @param credentials The credentials to connect with.
      */
-    public ConnectionPool(@Nonnull final DatabaseCredentials credentials) {
+    public ConnectionPool(@NotNull final DatabaseCredentials credentials) {
         this.credentials = Objects.requireNonNull(credentials,
             "Cannot create a ConnectionPool with a null set of credentials.");
         HikariConfig config = new HikariConfig();
@@ -91,7 +91,7 @@ public class ConnectionPool {
      *
      * @return Returns the credentials being used.
      */
-    @Nonnull
+    @NotNull
     public DatabaseCredentials getCredentials() {
         return this.credentials;
     }
@@ -102,7 +102,7 @@ public class ConnectionPool {
      * @return A new Connection
      * @throws SQLException
      */
-    @Nonnull
+    @NotNull
     public Connection getConnection() throws SQLException {
         available();
         return this.datasource.getConnection();

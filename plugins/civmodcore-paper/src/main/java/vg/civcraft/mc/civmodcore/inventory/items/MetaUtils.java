@@ -6,13 +6,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 /**
@@ -77,8 +77,8 @@ public final class MetaUtils {
      * @param meta The item meta to retrieve the lore from.
      * @return Returns the lore, which is never null.
      */
-    @Nonnull
-    public static List<Component> getComponentLore(@Nonnull final ItemMeta meta) {
+    @NotNull
+    public static List<Component> getComponentLore(@NotNull final ItemMeta meta) {
         final List<Component> lore = meta.lore();
         if (lore == null) {
             return new ArrayList<>(0);
@@ -92,7 +92,7 @@ public final class MetaUtils {
      * @param meta  The meta to set the lore to.
      * @param lines The lore lines to set.
      */
-    public static void setComponentLore(@Nonnull final ItemMeta meta,
+    public static void setComponentLore(@NotNull final ItemMeta meta,
                                         @Nullable final Component... lines) {
         setComponentLore(meta, lines == null ? null : Arrays.asList(lines));
     }
@@ -103,7 +103,7 @@ public final class MetaUtils {
      * @param meta  The meta to set the lore to.
      * @param lines The lore lines to set.
      */
-    public static void setComponentLore(@Nonnull final ItemMeta meta,
+    public static void setComponentLore(@NotNull final ItemMeta meta,
                                         @Nullable List<Component> lines) {
         if (lines == null) {
             clearLore(meta);
@@ -119,7 +119,7 @@ public final class MetaUtils {
      *
      * @param meta The item meta to clear the lore of.
      */
-    public static void clearLore(@Nonnull final ItemMeta meta) {
+    public static void clearLore(@NotNull final ItemMeta meta) {
         meta.lore(null);
     }
 
@@ -129,7 +129,7 @@ public final class MetaUtils {
      * @param meta  The item meta to append the lore to.
      * @param lines The lore to append to the item meta.
      */
-    public static void addComponentLore(@Nonnull final ItemMeta meta,
+    public static void addComponentLore(@NotNull final ItemMeta meta,
                                         @Nullable final Component... lines) {
         addComponentLore(meta, false, lines);
     }
@@ -140,7 +140,7 @@ public final class MetaUtils {
      * @param meta  The item meta to append the lore to.
      * @param lines The lore to append to the item meta.
      */
-    public static void addComponentLore(@Nonnull final ItemMeta meta,
+    public static void addComponentLore(@NotNull final ItemMeta meta,
                                         @Nullable final List<Component> lines) {
         addComponentLore(meta, false, lines);
     }
@@ -152,7 +152,7 @@ public final class MetaUtils {
      * @param prepend If set to true, the lore will be prepended instead of appended.
      * @param lines   The lore to append to the item meta.
      */
-    public static void addComponentLore(@Nonnull final ItemMeta meta,
+    public static void addComponentLore(@NotNull final ItemMeta meta,
                                         final boolean prepend,
                                         @Nullable final Component... lines) {
         addComponentLore(meta, prepend, lines == null ? null : Arrays.asList(lines));
@@ -165,7 +165,7 @@ public final class MetaUtils {
      * @param prepend If set to true, the lore will be prepended instead of appended.
      * @param lines   The lore to append to the item meta.
      */
-    public static void addComponentLore(@Nonnull final ItemMeta meta,
+    public static void addComponentLore(@NotNull final ItemMeta meta,
                                         final boolean prepend,
                                         @Nullable List<Component> lines) {
         if (CollectionUtils.isEmpty(lines)) {
@@ -198,8 +198,8 @@ public final class MetaUtils {
      * Use {@link #getComponentLore(ItemMeta)} instead.
      */
     @Deprecated
-    @Nonnull
-    public static List<String> getLore(@Nonnull final ItemMeta meta) {
+    @NotNull
+    public static List<String> getLore(@NotNull final ItemMeta meta) {
         final List<String> lore = meta.getLore();
         if (lore == null) {
             return new ArrayList<>(0);
@@ -216,7 +216,7 @@ public final class MetaUtils {
      * Use {@link #addComponentLore(ItemMeta, Component...)} instead.
      */
     @Deprecated
-    public static void addLore(@Nonnull final ItemMeta meta,
+    public static void addLore(@NotNull final ItemMeta meta,
                                @Nullable final String... lines) {
         addLore(meta, false, lines);
     }
@@ -230,7 +230,7 @@ public final class MetaUtils {
      * Use {@link #addComponentLore(ItemMeta, List)} instead.
      */
     @Deprecated
-    public static void addLore(@Nonnull final ItemMeta meta,
+    public static void addLore(@NotNull final ItemMeta meta,
                                @Nullable final List<String> lines) {
         addLore(meta, false, lines);
     }
@@ -245,7 +245,7 @@ public final class MetaUtils {
      * Use {@link #addComponentLore(ItemMeta, boolean, Component...)} instead.
      */
     @Deprecated
-    public static void addLore(@Nonnull final ItemMeta meta,
+    public static void addLore(@NotNull final ItemMeta meta,
                                final boolean prepend,
                                @Nullable final String... lines) {
         addLore(meta, prepend, lines == null ? null : Arrays.asList(lines));
@@ -261,7 +261,7 @@ public final class MetaUtils {
      * Use {@link #addComponentLore(ItemMeta, boolean, List)} instead.
      */
     @Deprecated
-    public static void addLore(@Nonnull final ItemMeta meta,
+    public static void addLore(@NotNull final ItemMeta meta,
                                final boolean prepend,
                                @Nullable List<String> lines) {
         if (CollectionUtils.isEmpty(lines)) {

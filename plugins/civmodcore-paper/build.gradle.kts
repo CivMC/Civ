@@ -17,7 +17,6 @@ dependencies {
     api("co.aikar:taskchain-bukkit:3.7.2")
     api("org.apache.commons:commons-lang3:3.12.0")
     api("org.apache.commons:commons-collections4:4.4")
-    api("com.google.code.findbugs:jsr305:3.0.2")
 
     compileOnly("it.unimi.dsi:fastutil:8.5.8")
 
