@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -27,6 +26,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
@@ -73,7 +73,7 @@ public final class Utilities {
      * @param inventory The inventory to give the items to. It must have a location, like a chest inventory.
      * @param items     The items to give to the inventory.
      */
-    public static void giveItemsOrDrop(@Nonnull final Inventory inventory, @Nonnull final ItemStack... items) {
+    public static void giveItemsOrDrop(@NotNull final Inventory inventory, @NotNull final ItemStack... items) {
         Preconditions.checkArgument(InventoryUtils.isValidInventory(inventory));
         Preconditions.checkArgument(WorldUtils.isValidLocation(inventory.getLocation()));
         Preconditions.checkArgument(ArrayUtils.isNotEmpty(items));

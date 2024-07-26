@@ -1,9 +1,9 @@
 package vg.civcraft.mc.civmodcore.pdc;
 
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.persistence.PersistentDataAdapterContext;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This class enables the easy encoding and decoding of enums.
@@ -18,7 +18,7 @@ public class PersistentEnumDataType<T extends Enum<T>> extends AbstractPersisten
      *
      * @param enumClass The class of the enum.
      */
-    public PersistentEnumDataType(@Nonnull final Class<T> enumClass) {
+    public PersistentEnumDataType(@NotNull final Class<T> enumClass) {
         super(String.class, enumClass);
         this.defaultValue = null;
         this.useDefault = false;
@@ -31,7 +31,7 @@ public class PersistentEnumDataType<T extends Enum<T>> extends AbstractPersisten
      *                     return if the raw value is null or invalid.
      */
     @SuppressWarnings("unchecked")
-    public PersistentEnumDataType(@Nonnull final T defaultValue) {
+    public PersistentEnumDataType(@NotNull final T defaultValue) {
         super(String.class, (Class<T>) defaultValue.getClass());
         this.defaultValue = defaultValue;
         this.useDefault = true;
@@ -40,20 +40,20 @@ public class PersistentEnumDataType<T extends Enum<T>> extends AbstractPersisten
     /**
      * {@inheritDoc}
      */
-    @Nonnull
+    @NotNull
     @Override
-    public String toPrimitive(@Nonnull final T instance,
-                              @Nonnull final PersistentDataAdapterContext adapter) {
+    public String toPrimitive(@NotNull final T instance,
+                              @NotNull final PersistentDataAdapterContext adapter) {
         return instance.name();
     }
 
     /**
      * {@inheritDoc}
      */
-    @Nonnull
+    @NotNull
     @Override
-    public T fromPrimitive(@Nonnull final String raw,
-                           @Nonnull final PersistentDataAdapterContext adapter) {
+    public T fromPrimitive(@NotNull final String raw,
+                           @NotNull final PersistentDataAdapterContext adapter) {
         return this.useDefault ?
             EnumUtils.getEnum(this.complexClass, raw, this.defaultValue) :
             Objects.requireNonNull(EnumUtils.getEnum(this.complexClass, raw),

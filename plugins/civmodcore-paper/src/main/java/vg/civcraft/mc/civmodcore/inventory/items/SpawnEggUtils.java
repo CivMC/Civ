@@ -5,10 +5,10 @@ import com.google.common.collect.ImmutableBiMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 /**

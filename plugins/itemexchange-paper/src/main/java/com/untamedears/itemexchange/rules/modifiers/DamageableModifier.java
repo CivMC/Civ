@@ -15,11 +15,11 @@ import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ModifierHandler;
 import java.util.Collections;
 import java.util.List;
-import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
@@ -77,12 +77,12 @@ public final class DamageableModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@Nonnull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NBTCompound nbt) {
         nbt.setInt(DAMAGE_KEY, getDamage());
     }
 
-    @Nonnull
-    public static DamageableModifier fromNBT(@Nonnull final NBTCompound nbt) {
+    @NotNull
+    public static DamageableModifier fromNBT(@NotNull final NBTCompound nbt) {
         final var modifier = new DamageableModifier();
         modifier.setDamage(nbt.getInt(DAMAGE_KEY));
         return modifier;

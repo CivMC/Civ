@@ -9,8 +9,8 @@ import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A storage method for modifiers that puts significance on the modifier's class.
@@ -68,7 +68,7 @@ public final class ModifierStorage implements Iterable<ModifierData> {
      * @return Returns a cast modifier to the given type, or null.
      */
     @Nullable
-    public <T extends ModifierData> T get(@Nonnull final Class<T> clazz) {
+    public <T extends ModifierData> T get(@NotNull final Class<T> clazz) {
         return (T) this.map.getInstance(Objects.requireNonNull(clazz));
     }
 
@@ -81,7 +81,7 @@ public final class ModifierStorage implements Iterable<ModifierData> {
      */
     @Nullable
     @SuppressWarnings("unchecked")
-    public <T extends ModifierData> T get(@Nonnull final T instance) {
+    public <T extends ModifierData> T get(@NotNull final T instance) {
         return get((Class<T>) instance.getClass());
     }
 
@@ -94,10 +94,10 @@ public final class ModifierStorage implements Iterable<ModifierData> {
      * @param supplier A supplier to create a new modifier. MUST NOT RETURN NULL!
      * @return Returns a cast modifier to the given type, or null if the given supplier returned null.
      */
-    @Nonnull
+    @NotNull
     @SuppressWarnings("unchecked")
-    public <T extends ModifierData> T getOrDefault(@Nonnull final Class<T> clazz,
-                                                   @Nonnull final NonNullSupplier<T> supplier) {
+    public <T extends ModifierData> T getOrDefault(@NotNull final Class<T> clazz,
+                                                   @NotNull final NonNullSupplier<T> supplier) {
         return (T) this.map.computeIfAbsent(Objects.requireNonNull(clazz), (_clazz) -> supplier.get());
     }
 
@@ -110,10 +110,10 @@ public final class ModifierStorage implements Iterable<ModifierData> {
      * @param supplier A supplier to create a new modifier. MUST NOT RETURN NULL!
      * @return Returns a cast modifier to the given type, or null if the given supplier returned null.
      */
-    @Nonnull
+    @NotNull
     @SuppressWarnings("unchecked")
-    public <T extends ModifierData> T getOrDefault(@Nonnull final T instance,
-                                                   @Nonnull final NonNullSupplier<T> supplier) {
+    public <T extends ModifierData> T getOrDefault(@NotNull final T instance,
+                                                   @NotNull final NonNullSupplier<T> supplier) {
         return getOrDefault((Class<T>) instance.getClass(), supplier);
     }
 
@@ -124,7 +124,7 @@ public final class ModifierStorage implements Iterable<ModifierData> {
      * @return Returns any previous modifier that was stored, not null.
      */
     @Nullable
-    public ModifierData put(@Nonnull final ModifierData instance) {
+    public ModifierData put(@NotNull final ModifierData instance) {
         return this.map.put(instance.getClass(), instance);
     }
 
@@ -155,19 +155,19 @@ public final class ModifierStorage implements Iterable<ModifierData> {
         return "ModifierStorage" + this.map.values();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Iterator<ModifierData> iterator() {
         return this.map.values().iterator();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Spliterator<ModifierData> spliterator() {
         return this.map.values().spliterator();
     }
 
-    @Nonnull
+    @NotNull
     public Stream<ModifierData> stream() {
         return this.map.values().stream()
             .filter(Objects::nonNull)
@@ -175,7 +175,7 @@ public final class ModifierStorage implements Iterable<ModifierData> {
     }
 
     @Override
-    public void forEach(@Nonnull final Consumer<? super ModifierData> action) {
+    public void forEach(@NotNull final Consumer<? super ModifierData> action) {
         stream().forEachOrdered(action);
     }
 

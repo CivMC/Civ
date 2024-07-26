@@ -5,8 +5,6 @@ import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
@@ -14,6 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.data.Ageable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 
@@ -302,13 +302,13 @@ public final class MoreTags {
             return this.values.contains(value);
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public Set<T> getValues() {
             return this.values;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public NamespacedKey getKey() {
             return this.key;

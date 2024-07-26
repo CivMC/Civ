@@ -2,8 +2,6 @@ package vg.civcraft.mc.civmodcore.utilities;
 
 import java.util.Objects;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -14,6 +12,8 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerLoadEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Class designed to make creating glue classes easier, particularly with soft dependencies where your plugins may use
@@ -35,7 +35,7 @@ public abstract class DependencyGlue implements Listener {
      * @param plugin         The host plugin that requires the glued dependency. Must be enabled.
      * @param dependencyName The name of the plugin you wish to glue.
      */
-    protected DependencyGlue(@Nonnull final Plugin plugin, @Nonnull final String dependencyName) {
+    protected DependencyGlue(@NotNull final Plugin plugin, @NotNull final String dependencyName) {
         this.pluginManager = Bukkit.getPluginManager();
         this.plugin = Objects.requireNonNull(plugin);
         this.logger = CivLogger.getLogger(plugin.getClass(), getClass());
@@ -47,7 +47,7 @@ public abstract class DependencyGlue implements Listener {
      *
      * @return Returns the glue's plugin name.
      */
-    @Nonnull
+    @NotNull
     public String getDependencyName() {
         return this.dependencyName;
     }

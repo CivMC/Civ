@@ -2,8 +2,8 @@ package com.programmerdan.minecraft.simpleadminhacks.configs;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
-import javax.annotation.Nonnull;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public final class ElytraFeaturesConfig extends SimpleHackConfig {
@@ -22,15 +22,15 @@ public final class ElytraFeaturesConfig extends SimpleHackConfig {
     private int heightBuffer;
     private long heightDamageInterval;
 
-    public ElytraFeaturesConfig(@Nonnull final SimpleAdminHacks plugin,
-                                @Nonnull final ConfigurationSection base) {
+    public ElytraFeaturesConfig(@NotNull final SimpleAdminHacks plugin,
+                                @NotNull final ConfigurationSection base) {
         super(plugin, base, false);
         this.logger = CivLogger.getLogger(getClass());
         wireup(base);
     }
 
     @Override
-    protected void wireup(@Nonnull final ConfigurationSection config) {
+    protected void wireup(@NotNull final ConfigurationSection config) {
         this.disableFlight = config.getBoolean("disableFlight", false);
 
         this.disableFlightInCombat = config.getBoolean("disableFlightInCombat", false);

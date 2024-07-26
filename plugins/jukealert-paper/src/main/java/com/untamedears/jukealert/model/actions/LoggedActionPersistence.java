@@ -2,10 +2,10 @@ package com.untamedears.jukealert.model.actions;
 
 import java.util.Objects;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * <p>Produced by actions to encapsulate saving them to the database.</p>
@@ -30,7 +30,7 @@ public final class LoggedActionPersistence {
      * @param extra     Any additional data about the action.
      */
     public LoggedActionPersistence(final long timestamp,
-                                   @Nonnull final UUID actorUUID,
+                                   @NotNull final UUID actorUUID,
                                    final int locationX,
                                    final int locationY,
                                    final int locationZ,
@@ -50,7 +50,7 @@ public final class LoggedActionPersistence {
      * @deprecated Use {@link #LoggedActionPersistence(long, UUID, int, int, int, String)} instead.
      */
     @Deprecated
-    public LoggedActionPersistence(@Nonnull final UUID actorUUID,
+    public LoggedActionPersistence(@NotNull final UUID actorUUID,
                                    final Location location,
                                    final long timestamp,
                                    final String extra) {

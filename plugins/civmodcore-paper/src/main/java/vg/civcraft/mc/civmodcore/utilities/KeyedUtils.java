@@ -1,9 +1,9 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility class to make dealing with namespace keys easier.
@@ -33,8 +33,8 @@ public final class KeyedUtils {
      *                                  combined length is longer than 256.
      */
     @SuppressWarnings("deprecation")
-    @Nonnull
-    public static NamespacedKey fromParts(@Nonnull final String namespace, @Nonnull final String key) {
+    @NotNull
+    public static NamespacedKey fromParts(@NotNull final String namespace, @NotNull final String key) {
         return new NamespacedKey(namespace, key);
     }
 
@@ -65,8 +65,8 @@ public final class KeyedUtils {
      * @return Returns a new {@link NamespacedKey} for testing purposes.
      */
     @SuppressWarnings("deprecation")
-    @Nonnull
-    public static NamespacedKey testKey(@Nonnull final String key) {
+    @NotNull
+    public static NamespacedKey testKey(@NotNull final String key) {
         return new NamespacedKey("test", key);
     }
 

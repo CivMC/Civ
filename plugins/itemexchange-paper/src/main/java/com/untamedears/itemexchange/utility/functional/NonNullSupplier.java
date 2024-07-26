@@ -1,7 +1,7 @@
 package com.untamedears.itemexchange.utility.functional;
 
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This is a version of Supplier with the contract of not returning null.
@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 @FunctionalInterface
 public interface NonNullSupplier<T> extends Supplier<T> {
 
-    @Nonnull
+    @NotNull
     @Override
     T get();
 

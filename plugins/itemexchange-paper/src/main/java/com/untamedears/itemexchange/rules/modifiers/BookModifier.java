@@ -8,13 +8,13 @@ import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.nbt.NBTType;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
@@ -89,7 +89,7 @@ public final class BookModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@Nonnull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NBTCompound nbt) {
         if (hasTitle()) {
             nbt.setString(TITLE_KEY, this.title);
         }
@@ -105,8 +105,8 @@ public final class BookModifier extends ModifierData {
         }
     }
 
-    @Nonnull
-    public static BookModifier fromNBT(@Nonnull final NBTCompound nbt) {
+    @NotNull
+    public static BookModifier fromNBT(@NotNull final NBTCompound nbt) {
         final var modifier = new BookModifier();
         if (nbt.hasKeyOfType(TITLE_KEY, NBTType.STRING)) {
             modifier.setTitle(nbt.getString(TITLE_KEY));

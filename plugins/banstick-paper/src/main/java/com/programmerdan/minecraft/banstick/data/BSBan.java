@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * BSBan object, wraps an actual ban.
@@ -144,7 +144,7 @@ public final class BSBan {
      *
      * @param banEndTo the time to end the ban.
      */
-    public void setBanEndTime(@Nonnull Date banEndTo) {
+    public void setBanEndTime(@NotNull Date banEndTo) {
         setBanEndTime(new Timestamp(banEndTo.getTime()));
     }
 
@@ -153,7 +153,7 @@ public final class BSBan {
      *
      * @param banEndTo the time to end the ban.
      */
-    public void setBanEndTime(@Nonnull Timestamp banEndTo) {
+    public void setBanEndTime(@NotNull Timestamp banEndTo) {
         this.banEnd = banEndTo;
         this.dirty = true;
         dirtyBans.offer(new WeakReference<BSBan>(this));

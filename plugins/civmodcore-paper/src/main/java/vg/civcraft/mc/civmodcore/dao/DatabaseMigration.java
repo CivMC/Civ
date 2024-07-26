@@ -1,8 +1,8 @@
 package vg.civcraft.mc.civmodcore.dao;
 
 import java.sql.SQLException;
-import javax.annotation.Nonnull;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Interface to allow for more object-oriented based migration. I've noticed as plugins get older, their DAOs get
@@ -27,7 +27,7 @@ public interface DatabaseMigration {
     /**
      * @return Returns this migration's queries. Each query will be run in sequences. Must not be null or empty!
      */
-    @Nonnull
+    @NotNull
     String[] getMigrationQueries();
 
     /**
@@ -35,14 +35,14 @@ public interface DatabaseMigration {
      *
      * @return Returns whether the callback completed successfully.
      */
-    default boolean migrationCallback(@Nonnull final ManagedDatasource datasource) throws SQLException {
+    default boolean migrationCallback(@NotNull final ManagedDatasource datasource) throws SQLException {
         return true;
     }
 
     /**
      * @param datasource The datasource to register this migration to.
      */
-    default void registerMigration(@Nonnull final ManagedDatasource datasource) {
+    default void registerMigration(@NotNull final ManagedDatasource datasource) {
         final var queries = getMigrationQueries();
         if (ArrayUtils.isEmpty(queries)) {
             throw new IllegalArgumentException("Migration queries cannot be null or empty!");

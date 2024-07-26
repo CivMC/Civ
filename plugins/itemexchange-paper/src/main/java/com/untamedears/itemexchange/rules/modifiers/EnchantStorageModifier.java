@@ -11,12 +11,12 @@ import com.untamedears.itemexchange.utility.NBTEncodings;
 import com.untamedears.itemexchange.utility.Utilities;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
 import org.apache.commons.collections4.MapUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
@@ -72,12 +72,12 @@ public final class EnchantStorageModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@Nonnull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NBTCompound nbt) {
         nbt.setCompound(ENCHANTS_KEY, NBTEncodings.encodeLeveledEnchants(getEnchants()));
     }
 
-    @Nonnull
-    public static EnchantStorageModifier fromNBT(@Nonnull final NBTCompound nbt) {
+    @NotNull
+    public static EnchantStorageModifier fromNBT(@NotNull final NBTCompound nbt) {
         final var modifier = new EnchantStorageModifier();
         modifier.setEnchants(NBTEncodings.decodeLeveledEnchants(nbt.getCompound(ENCHANTS_KEY)));
         return modifier;
