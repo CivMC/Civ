@@ -8,8 +8,8 @@ import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction;
 import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction.Cause;
 import com.untamedears.jukealert.model.appender.config.DormantCullingConfig;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
-import javax.annotation.Nonnull;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.utilities.BukkitComparators;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 import vg.civcraft.mc.civmodcore.utilities.progress.ProgressTrackable;
@@ -66,7 +66,7 @@ public class DormantCullingAppender
     /**
      * @return Returns this snitch's expected activity status.
      */
-    @Nonnull
+    @NotNull
     public ActivityStatus getActivityStatus() {
         final long timeSinceLastRefresh = getTimeSinceLastRefresh();
         if (timeSinceLastRefresh >= this.config.getTotalLifeTime()) {
@@ -238,7 +238,7 @@ public class DormantCullingAppender
      * {@inheritDoc}
      */
     @Override
-    public int compareTo(@Nonnull final ProgressTrackable other) {
+    public int compareTo(@NotNull final ProgressTrackable other) {
         return BukkitComparators.getLocation().compare(
             ((AbstractSnitchAppender) other).getSnitch().getLocation(),
             getSnitch().getLocation());

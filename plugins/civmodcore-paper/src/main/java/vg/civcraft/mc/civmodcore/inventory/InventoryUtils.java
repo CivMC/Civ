@@ -6,13 +6,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public final class InventoryUtils {
@@ -95,7 +95,7 @@ public final class InventoryUtils {
      *
      * @param inventory The inventory to clear of items.
      */
-    public static void clearInventory(@Nonnull final Inventory inventory) {
+    public static void clearInventory(@NotNull final Inventory inventory) {
         final ItemStack[] contents = inventory.getContents();
         Arrays.fill(contents, new ItemStack(Material.AIR));
         inventory.setContents(contents);

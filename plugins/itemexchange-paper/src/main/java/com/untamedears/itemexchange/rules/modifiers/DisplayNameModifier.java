@@ -10,12 +10,12 @@ import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ModifierHandler;
-import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 @CommandAlias(SetCommand.ALIAS)
@@ -59,7 +59,7 @@ public final class DisplayNameModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@Nonnull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NBTCompound nbt) {
         if (hasDisplayName()) {
             nbt.setString(DISPLAY_NAME_KEY, getDisplayName());
         } else {
@@ -67,8 +67,8 @@ public final class DisplayNameModifier extends ModifierData {
         }
     }
 
-    @Nonnull
-    public static DisplayNameModifier fromNBT(@Nonnull final NBTCompound nbt) {
+    @NotNull
+    public static DisplayNameModifier fromNBT(@NotNull final NBTCompound nbt) {
         final var modifier = new DisplayNameModifier();
         modifier.setDisplayName(nbt.getString(DISPLAY_NAME_KEY));
         return modifier;

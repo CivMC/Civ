@@ -27,11 +27,11 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
@@ -88,7 +88,7 @@ public final class EnchantModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@Nonnull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NBTCompound nbt) {
         nbt.setCompound(REQUIRED_KEY, NBTEncodings.encodeLeveledEnchants(getRequiredEnchants()));
         nbt.setStringArray(EXCLUDED_KEY, getExcludedEnchants().stream()
             .map(KeyedUtils::getString)
@@ -97,8 +97,8 @@ public final class EnchantModifier extends ModifierData {
         nbt.setBoolean(UNLISTED_KEY, isAllowingUnlistedEnchants());
     }
 
-    @Nonnull
-    public static EnchantModifier fromNBT(@Nonnull final NBTCompound nbt) {
+    @NotNull
+    public static EnchantModifier fromNBT(@NotNull final NBTCompound nbt) {
         final var modifier = new EnchantModifier();
         modifier.setRequiredEnchants(NBTEncodings.decodeLeveledEnchants(nbt.getCompound(REQUIRED_KEY)));
         modifier.setExcludedEnchants(Arrays.stream(nbt.getStringArray(EXCLUDED_KEY))

@@ -14,12 +14,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.Nonnull;
 
 import com.untamedears.jukealert.model.actions.ActionCacheState;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.world.locations.SparseQuadTree;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.SingleBlockAPIView;
@@ -118,7 +118,7 @@ public class SnitchManager {
      *
      * @param snitch Snitch to remove
      */
-    public void removeSnitch(@Nonnull final Snitch snitch) {
+    public void removeSnitch(@NotNull final Snitch snitch) {
         snitch.setCacheState(CacheState.DELETED);
         this.api.remove(snitch);
         final SparseQuadTree<SnitchQTEntry> quadTree = getQuadTreeFor(snitch.getLocation());

@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a single playtime of a player.
@@ -70,7 +70,7 @@ public final class BSSession {
      *
      * @param leaveTime the departure / end time of the session.
      */
-    public void setLeaveTime(@Nonnull Date leaveTime) {
+    public void setLeaveTime(@NotNull Date leaveTime) {
         setLeaveTime(new Timestamp(leaveTime.getTime()));
     }
 
@@ -79,7 +79,7 @@ public final class BSSession {
      *
      * @param leaveTime the departure / end time of the session.
      */
-    public void setLeaveTime(@Nonnull Timestamp leaveTime) {
+    public void setLeaveTime(@NotNull Timestamp leaveTime) {
         this.leaveTime = leaveTime;
         this.dirty = true;
         dirtySessions.offer(new WeakReference<BSSession>(this));

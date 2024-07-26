@@ -12,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -21,6 +20,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.chat.Componentify;
 import vg.civcraft.mc.civmodcore.chat.dialog.Dialog;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
@@ -41,15 +41,15 @@ public class SnitchLogGUI {
     private final SnitchManager snitchManager;
     private List<IClickable> buttonCache;
 
-    public SnitchLogGUI(@Nonnull final Player player,
-                        @Nonnull final Snitch snitch) {
+    public SnitchLogGUI(@NotNull final Player player,
+                        @NotNull final Snitch snitch) {
         this.player = Objects.requireNonNull(player);
         this.snitch = Objects.requireNonNull(snitch);
         this.logAppender = snitch.getAppender(SnitchLogAppender.class);
         this.snitchManager = JukeAlert.getInstance().getSnitchManager();
     }
 
-    private boolean INTERNAL_hasPermission(@Nonnull final PermissionType permission) {
+    private boolean INTERNAL_hasPermission(@NotNull final PermissionType permission) {
         return this.snitch.hasPermission(this.player.getUniqueId(), permission);
     }
 
@@ -90,7 +90,7 @@ public class SnitchLogGUI {
         if (INTERNAL_hasPermission(JukeAlertPermissionHandler.getClearLogs())) {
             return new Clickable(item) {
                 @Override
-                public void clicked(@Nonnull final Player _player) {
+                public void clicked(@NotNull final Player _player) {
                     if (INTERNAL_hasPermission(JukeAlertPermissionHandler.getClearLogs())) {
                         SnitchLogGUI.this.logAppender.deleteLogs();
                         if (SnitchLogGUI.this.buttonCache != null) {
@@ -122,7 +122,7 @@ public class SnitchLogGUI {
             .build());
         return new Clickable(item) {
             @Override
-            public void clicked(@Nonnull final Player clicker) {
+            public void clicked(@NotNull final Player clicker) {
                 clicker.sendMessage(Component.text()
                     .color(NamedTextColor.YELLOW)
                     .content("Please enter a new name for the snitch:")
@@ -211,7 +211,7 @@ public class SnitchLogGUI {
         if (INTERNAL_hasPermission(JukeAlertPermissionHandler.getToggleLevers())) {
             return new Clickable(item) {
                 @Override
-                public void clicked(@Nonnull final Player clicker) {
+                public void clicked(@NotNull final Player clicker) {
                     if (INTERNAL_hasPermission(JukeAlertPermissionHandler.getToggleLevers())) {
                         leverAppender.switchState();
                         SnitchLogGUI.this.player.sendMessage(Component.text()
@@ -267,7 +267,7 @@ public class SnitchLogGUI {
         });
         return new Clickable(item) {
             @Override
-            public void clicked(@Nonnull final Player clicker) {
+            public void clicked(@NotNull final Player clicker) {
                 ClickableInventory.forceCloseInventory(clicker);
             }
         };

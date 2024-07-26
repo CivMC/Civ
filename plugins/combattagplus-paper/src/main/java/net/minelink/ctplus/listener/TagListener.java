@@ -28,11 +28,11 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
-import javax.annotation.Nullable;
 
 public final class TagListener implements Listener {
 

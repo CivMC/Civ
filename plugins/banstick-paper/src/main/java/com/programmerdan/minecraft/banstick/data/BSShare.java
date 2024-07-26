@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Defines an explicit 1 to 1 relationship between two players
@@ -76,7 +76,7 @@ public final class BSShare {
      *
      * @param pardonTime The Java Date to pardon on.
      */
-    public void setPardonTime(@Nonnull Date pardonTime) {
+    public void setPardonTime(@NotNull Date pardonTime) {
         setPardonTime(new Timestamp(pardonTime.getTime()));
     }
 
@@ -85,7 +85,7 @@ public final class BSShare {
      *
      * @param pardonTime The SQL Date to pardon on.
      */
-    public void setPardonTime(@Nonnull Timestamp pardonTime) {
+    public void setPardonTime(@NotNull Timestamp pardonTime) {
         this.pardonTime = pardonTime;
         this.dirty = true;
         dirtyShares.offer(new WeakReference<BSShare>(this));

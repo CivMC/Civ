@@ -8,8 +8,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -29,6 +27,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
@@ -48,7 +47,7 @@ public final class ConfigHelper {
      * @param key    The key of the section to retrieve.
      * @return Returns the configuration section at the given key, or returns a new, empty section.
      */
-    @Nonnull
+    @NotNull
     public static ConfigurationSection getSection(@NotNull final ConfigurationSection config,
                                                   @NotNull final String key) {
         ConfigurationSection found = config.getConfigurationSection(key);
@@ -66,7 +65,7 @@ public final class ConfigHelper {
      * @param key    The key to get the list of.
      * @return Returns a list of strings, which is never null.
      */
-    @Nonnull
+    @NotNull
     public static List<String> getStringList(@NotNull final ConfigurationSection config,
                                              @NotNull final String key) {
         if (config.isString(key)) {
@@ -86,7 +85,7 @@ public final class ConfigHelper {
      * @param parser The parser to convert the string value into the correct type.
      * @return Returns a list, or null.
      */
-    @Nonnull
+    @NotNull
     public static <T> List<T> parseList(@NotNull final ConfigurationSection config,
                                         @NotNull final String key,
                                         @NotNull final Function<String, T> parser) {
@@ -111,9 +110,9 @@ public final class ConfigHelper {
      * @param key    The key of the list.
      * @return Returns a list of materials, or null.
      */
-    @Nonnull
-    public static List<Material> parseMaterialList(@Nonnull final ConfigurationSection config,
-                                                   @Nonnull final String key) {
+    @NotNull
+    public static List<Material> parseMaterialList(@NotNull final ConfigurationSection config,
+                                                   @NotNull final String key) {
         return parseList(config, key, MaterialUtils::getMaterial);
     }
 
@@ -124,7 +123,7 @@ public final class ConfigHelper {
      * @param config ConfigurationSection to parse the items from
      * @return The item map created
      */
-    @Nonnull
+    @NotNull
     public static ItemMap parseItemMap(@Nullable final ConfigurationSection config) {
         final var result = new ItemMap();
         if (config == null) {
@@ -138,7 +137,7 @@ public final class ConfigHelper {
         return result;
     }
 
-    @Nonnull
+    @NotNull
     public static ItemMap parseItemMapDirectly(@Nullable final ConfigurationSection current) {
         ItemMap im = new ItemMap();
         if (current == null) {
@@ -282,12 +281,12 @@ public final class ConfigHelper {
         return im;
     }
 
-    public static int parseTimeAsTicks(@Nonnull final String arg) {
+    public static int parseTimeAsTicks(@NotNull final String arg) {
         return (int) (parseTime(arg, TimeUnit.MILLISECONDS) / 50L);
     }
 
-    public static long parseTime(@Nonnull final String arg,
-                                 @Nonnull final TimeUnit unit) {
+    public static long parseTime(@NotNull final String arg,
+                                 @NotNull final TimeUnit unit) {
         long millis = parseTime(arg);
         return unit.convert(millis, TimeUnit.MILLISECONDS);
     }
@@ -307,7 +306,7 @@ public final class ConfigHelper {
      * @param input Parsed string containing the time format
      * @return How many milliseconds the given time value is
      */
-    public static long parseTime(@Nonnull String input) {
+    public static long parseTime(@NotNull String input) {
         input = input.replace(" ", "").replace(",", "").toLowerCase();
         long result = 0;
         try {
@@ -383,9 +382,9 @@ public final class ConfigHelper {
         return result;
     }
 
-    @Nonnull
-    private static String getSuffix(@Nonnull final String arg,
-                                    @Nonnull final Predicate<Character> selector) {
+    @NotNull
+    private static String getSuffix(@NotNull final String arg,
+                                    @NotNull final Predicate<Character> selector) {
         StringBuilder number = new StringBuilder();
         for (int i = arg.length() - 1; i >= 0; i--) {
             if (selector.test(arg.charAt(i))) {
@@ -403,7 +402,7 @@ public final class ConfigHelper {
      * @param configurationSection ConfigurationSection to parse the effect from
      * @return The potion effect parsed
      */
-    @Nonnull
+    @NotNull
     public static List<PotionEffect> parsePotionEffects(@Nullable final ConfigurationSection configurationSection) {
         List<PotionEffect> potionEffects = Lists.newArrayList();
         if (configurationSection != null) {
@@ -516,12 +515,12 @@ public final class ConfigHelper {
      * @param valueConverter Converts strings to type V
      * @param mapToUse       The map to place parsed keys and values.
      */
-    public static <K, V> void parseKeyValueMap(@Nonnull final ConfigurationSection parent,
-                                               @Nonnull final String identifier,
-                                               @Nonnull final Logger logger,
-                                               @Nonnull final Function<String, K> keyConverter,
-                                               @Nonnull final Function<String, V> valueConverter,
-                                               @Nonnull final Map<K, V> mapToUse) {
+    public static <K, V> void parseKeyValueMap(@NotNull final ConfigurationSection parent,
+                                               @NotNull final String identifier,
+                                               @NotNull final Logger logger,
+                                               @NotNull final Function<String, K> keyConverter,
+                                               @NotNull final Function<String, V> valueConverter,
+                                               @NotNull final Map<K, V> mapToUse) {
         if (!parent.isConfigurationSection(identifier)) {
             return;
         }
@@ -550,8 +549,8 @@ public final class ConfigHelper {
      */
     @Nullable
     @Deprecated(forRemoval = true)
-    public static Enchantment parseEnchantment(@Nonnull final ConfigurationSection config,
-                                               @Nonnull final String key) {
+    public static Enchantment parseEnchantment(@NotNull final ConfigurationSection config,
+                                               @NotNull final String key) {
         return EnchantUtils.getEnchantment(config.getString(key));
     }
 
