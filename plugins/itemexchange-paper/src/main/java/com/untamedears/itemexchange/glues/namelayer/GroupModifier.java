@@ -22,14 +22,13 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
 
 /**
- * This is where the group limitation is stored. Don't worry if it doesn't seem to do much, it's actually
- * not supposed to. The logic behind group limitations is done within {@link ItemExchangeListener},
- * so take a look at that. This is basically just a place to store the group value.
+ * This is where the group limitation is stored. Don't worry if it doesn't seem to do much, it's actually not supposed
+ * to. The logic behind group limitations is done within {@link ItemExchangeListener}, so take a look at that. This is
+ * basically just a place to store the group value.
  */
 @CommandAlias(SetCommand.ALIAS) // This is needed to make commands work
 @Modifier(slug = "GROUP", order = 2000)
-public final class GroupModifier extends ModifierData {
-
+final class GroupModifier extends ModifierData {
     // Make sure to have a template instance to make registration easier
     public static final GroupModifier TEMPLATE = new GroupModifier();
 
@@ -40,12 +39,16 @@ public final class GroupModifier extends ModifierData {
     private String groupName;
 
     @Override
-    public GroupModifier construct(final ItemStack item) {
+    public GroupModifier construct(
+        final ItemStack item
+    ) {
         return null; // Group modifiers must be specifically added
     }
 
     @Override
-    public boolean conforms(final ItemStack item) {
+    public boolean conforms(
+        final ItemStack item
+    ) {
         return true; // Do not break anything, the check is done elsewhere.
     }
 
@@ -55,12 +58,16 @@ public final class GroupModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(final @NotNull NBTCompound nbt) {
+    public void toNBT(
+        final @NotNull NBTCompound nbt
+    ) {
         nbt.setInt(ID_KEY, getGroupId());
         nbt.setString(NAME_KEY, getGroupName());
     }
 
-    public static @NotNull GroupModifier fromNBT(final @NotNull NBTCompound nbt) {
+    public static @NotNull GroupModifier fromNBT(
+        final @NotNull NBTCompound nbt
+    ) {
         final var modifier = new GroupModifier();
         modifier.setGroupId(nbt.getInt(ID_KEY));
         modifier.setGroupName(nbt.getString(NAME_KEY));
@@ -69,9 +76,11 @@ public final class GroupModifier extends ModifierData {
 
     @Override
     public List<String> getDisplayInfo() {
-        return List.of(isBroken() ?
-            ChatColor.RED + "BROKEN GROUP MODIFIER" :
-            "Group: " + this.groupName);
+        return List.of(
+            isBroken()
+                ? ChatColor.RED + "BROKEN GROUP MODIFIER"
+                : "Group: " + this.groupName
+        );
     }
 
     @Override
@@ -86,12 +95,10 @@ public final class GroupModifier extends ModifierData {
     @Subcommand("group")
     @Description("Sets (or unsets) the group to limit this trade to.")
     @Syntax("[group name]")
-    public void commandSetGroup(final Player player,
-                                final @Optional @Single String name) {
-        if (!NameLayerGlue.instance.isDependencyEnabled()) {
-            player.sendMessage(ChatColor.RED + "Can't do that right now!");
-            return;
-        }
+    public void commandSetGroup(
+        final @NotNull Player player,
+        final @Optional @Single String name
+    ) {
         try (final var handler = new ModifierHandler<>(player, this)) {
             if (StringUtils.isEmpty(name)) {
                 handler.setModifier(null);
@@ -118,16 +125,19 @@ public final class GroupModifier extends ModifierData {
         return this.groupId;
     }
 
-    public void setGroupId(final int groupId) {
+    public void setGroupId(
+        final int groupId
+    ) {
         this.groupId = groupId;
     }
 
-    public String getGroupName() {
+    public @NotNull String getGroupName() {
         return this.groupName;
     }
 
-    public void setGroupName(final String groupName) {
+    public void setGroupName(
+        final @NotNull String groupName
+    ) {
         this.groupName = groupName;
     }
-
 }

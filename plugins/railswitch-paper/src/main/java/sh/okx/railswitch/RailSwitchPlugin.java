@@ -2,7 +2,6 @@ package sh.okx.railswitch;
 
 import org.bukkit.event.Listener;
 import sh.okx.railswitch.commands.DestinationCommand;
-import sh.okx.railswitch.glue.CitadelGlue;
 import sh.okx.railswitch.settings.SettingsManager;
 import sh.okx.railswitch.switches.SwitchListener;
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -19,7 +18,6 @@ public final class RailSwitchPlugin extends ACivMod implements Listener {
     public void onEnable() {
         super.onEnable();
         SettingsManager.init(this);
-        registerListener(new CitadelGlue(this));
         registerListener(new SwitchListener());
         commandManager = new CommandManager(this);
         commandManager.init();
