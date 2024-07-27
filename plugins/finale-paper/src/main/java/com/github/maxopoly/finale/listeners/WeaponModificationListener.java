@@ -4,14 +4,16 @@ import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.misc.ArmourModifier;
 import com.github.maxopoly.finale.misc.ItemUtil;
 import com.github.maxopoly.finale.misc.WeaponModifier;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import java.util.UUID;
 
 public class WeaponModificationListener implements Listener {
-
-    private final WeaponModifier manager = Finale.getPlugin().getManager().getWeaponModifer();
 
     @EventHandler
     public void weaponMod(InventoryClickEvent e) {
@@ -19,6 +21,8 @@ public class WeaponModificationListener implements Listener {
         if (is == null) {
             return;
         }
+
+        ItemMeta im = is.getItemMeta();
 
         ArmourModifier armourMod = Finale.getPlugin().getManager().getArmourModifier();
 
@@ -36,7 +40,33 @@ public class WeaponModificationListener implements Listener {
             if (knockbackResistance == -1) {
                 knockbackResistance = ItemUtil.getDefaultKnockbackResistance(is);
             }
-            is = ItemUtil.setArmour(ItemUtil.setArmourToughness(ItemUtil.setArmourKnockbackResistance(is, knockbackResistance), toughness), armour);
+
+            im.removeAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS);
+            im.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS,
+                new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(),
+                    "generic.knockbackResistance",
+                    knockbackResistance,
+                    org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
+                    is.getType().getEquipmentSlot())
+            );
+
+            im.removeAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS);
+            im.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS,
+                new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(),
+                    "generic.armorToughness",
+                    toughness,
+                    org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
+                    is.getType().getEquipmentSlot())
+            );
+
+            im.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+            im.addAttributeModifier(Attribute.GENERIC_ARMOR,
+                new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(),
+                    "generic.armor",
+                    armour,
+                    org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
+                    is.getType().getEquipmentSlot())
+            );
         }
 
         WeaponModifier weaponMod = Finale.getPlugin().getManager().getWeaponModifer();
@@ -45,9 +75,25 @@ public class WeaponModificationListener implements Listener {
         double adjustedAttackSpeed = weaponMod.getAttackSpeed(is.getType());
 
         if (adjustedAttackSpeed != -1.0 || adjustedDamage != -1) {
-            is = ItemUtil.setDamage(ItemUtil.setAttackSpeed(is, adjustedAttackSpeed), adjustedDamage);
+            im.removeAttributeModifier(Attribute.GENERIC_ATTACK_SPEED);
+            im.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED,
+                new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(),
+                    "generic.attackSpeed",
+                    adjustedAttackSpeed,
+                    org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
+                    EquipmentSlot.HAND)
+            );
+
+            im.removeAttributeModifier(Attribute.GENERIC_ATTACK_SPEED);
+            im.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED,
+                new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(),
+                    "generic.attackDamage",
+                    adjustedDamage,
+                    org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
+                    EquipmentSlot.HAND)
+            );
         }
-        e.setCurrentItem(is);
+        e.getCurrentItem().setItemMeta(im);
     }
 
 }
