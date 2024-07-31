@@ -103,7 +103,7 @@ services:
       MYSQL_PASSWORD: mariadb
       MYSQL_DATABASE: mariadb
     volumes:
-      - ./containers/provisioning/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./containers/provisioning/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
       - ./containers/data/mariadb:/var/lib/mysql
 
   postgres:
@@ -121,7 +121,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     volumes:
-      - ./containers/provisioning/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./containers/provisioning/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
       - ./containers/data/postgres:/var/lib/postgresql/data
 
   rabbitmq:
@@ -158,4 +158,4 @@ services:
       CIV_INFLUX_ORG: CivMC
       CIV_INFLUX_TOKEN: admintoken
     volumes:
-      - ./containers/provisioning/grafana:/etc/grafana/provisioning
+      - ./containers/provisioning/grafana:/etc/grafana/provisioning:ro
