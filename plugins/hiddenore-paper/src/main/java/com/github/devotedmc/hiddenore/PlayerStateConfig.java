@@ -46,15 +46,15 @@ public class PlayerStateConfig {
         double presentRate = 1.0d;
         for (PotionEffect effect : player.getActivePotionEffects()) {
             int idx = effect.getAmplifier();
-            if (effect.getType().equals(PotionEffectType.FAST_DIGGING)) { // haste
+            if (effect.getType().equals(PotionEffectType.HASTE)) { // haste
                 if (hasteRates != null && idx < hasteRates.size()) {
                     presentRate *= hasteRates.get(idx);
                 }
-            } else if (effect.getType().equals(PotionEffectType.SLOW_DIGGING)) { // fatigue
+            } else if (effect.getType().equals(PotionEffectType.MINING_FATIGUE)) { // fatigue
                 if (fatigueRates != null && idx < fatigueRates.size()) {
                     presentRate *= fatigueRates.get(idx);
                 }
-            } else if (effect.getType().equals(PotionEffectType.CONFUSION)) { // nausea
+            } else if (effect.getType().equals(PotionEffectType.NAUSEA)) { // nausea
                 if (nauseaRates != null && idx < nauseaRates.size()) {
                     presentRate *= nauseaRates.get(idx);
                 }

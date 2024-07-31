@@ -200,7 +200,7 @@ public class PlayerListener implements Listener, Configurable {
         }
 
         if ((item.getType() == Material.PLAYER_HEAD || item.getType() == Material.ENDER_PEARL)
-            && item.getEnchantmentLevel(Enchantment.DURABILITY) != 0) {
+            && item.getEnchantmentLevel(Enchantment.UNBREAKING) != 0) {
             ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
             if (pearl == null || pearl.getFreedOffline()) {
                 return new ItemStack(Material.ENDER_PEARL, 1);
@@ -790,7 +790,7 @@ public class PlayerListener implements Listener, Configurable {
                 inv.all(Material.ENDER_PEARL).entrySet()) {
                 ItemStack newstack = entry.getValue();
                 int newstacknum = entry.getKey();
-                if (newstack.getEnchantmentLevel(Enchantment.DURABILITY) == 0) {
+                if (newstack.getEnchantmentLevel(Enchantment.UNBREAKING) == 0) {
                     if (stack != null) {
                         // don't keep a stack bigger than the previous one
                         if (newstack.getAmount() > stack.getAmount()) {
@@ -1045,7 +1045,7 @@ public class PlayerListener implements Listener, Configurable {
             return;
         }
 
-        if (result.getEnchantmentLevel(Enchantment.DURABILITY) != 1) {
+        if (result.getEnchantmentLevel(Enchantment.UNBREAKING) != 1) {
             //inv.setResult(new ItemStack(Material.AIR)); // Is preventing normal crafting of stone buttons.
             // It would be better to trigger against something that does not get crafted, like spider eyes or something
             return;
@@ -1308,7 +1308,9 @@ public class PlayerListener implements Listener, Configurable {
             // This item is basically used as a trigger to catch the recipe being created
             ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);
             ItemMeta im = resultItem.getItemMeta();
-            im.addEnchant(Enchantment.DURABILITY, 1, true);
+            // TODO: This should use the new enchantment glint component, but because exilepearl
+			//  depends on the unbreaking enchantment to determine whether or not something is a pearl (why?????), it does not
+			im.addEnchant(Enchantment.UNBREAKING, 1, true);
             im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             resultItem.setItemMeta(im);
 
@@ -1333,7 +1335,7 @@ public class PlayerListener implements Listener, Configurable {
         try {
             ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);
             ItemMeta im = resultItem.getItemMeta();
-            im.addEnchant(Enchantment.DURABILITY, 1, true);
+            im.addEnchant(Enchantment.UNBREAKING, 1, true);
             im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             resultItem.setItemMeta(im);
 
@@ -1375,7 +1377,7 @@ public class PlayerListener implements Listener, Configurable {
             return false;
         }
 
-        return im.getEnchantLevel(Enchantment.DURABILITY) == 2;
+        return im.getEnchantLevel(Enchantment.UNBREAKING) == 2;
     }
 
     /**
@@ -1404,7 +1406,7 @@ public class PlayerListener implements Listener, Configurable {
             ItemMeta im = helpItem.getItemMeta();
             im.setDisplayName(helpItemName);
             im.setLore(helpItemText);
-            im.addEnchant(Enchantment.DURABILITY, 2, true);
+            im.addEnchant(Enchantment.UNBREAKING, 2, true);
             im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             helpItem.setItemMeta(im);
             player.getInventory().setItem(0, helpItem);

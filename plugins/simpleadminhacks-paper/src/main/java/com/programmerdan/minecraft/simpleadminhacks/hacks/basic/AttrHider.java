@@ -8,7 +8,7 @@ import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
-import com.comphenix.protocol.wrappers.WrappedWatchableObject;
+import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.destroystokyo.paper.MaterialTags;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
@@ -25,7 +25,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,12 +79,11 @@ public final class AttrHider extends BasicHack {
                                 final LeatherArmorMeta fakeLeatherMeta = (LeatherArmorMeta) fakeMeta;
                                 fakeLeatherMeta.setColor(baseLeatherMeta.getColor());
                             }
-                            if (meta instanceof PotionMeta) {
-                                final PotionMeta basePotionMeta = (PotionMeta) meta;
+                            if (meta instanceof PotionMeta basePotionMeta) {
                                 final PotionMeta fakePotionMeta = (PotionMeta) fakeMeta;
-                                final PotionData basePotion = basePotionMeta.getBasePotionData();
-                                final PotionData fakePotion = new PotionData(basePotion.getType());
-                                fakePotionMeta.setBasePotionData(fakePotion);
+                                final PotionType basePotion = basePotionMeta.getBasePotionType();
+                                final PotionType fakePotion = basePotion;
+                                fakePotionMeta.setBasePotionType(fakePotion);
                             }
                             if (meta instanceof Damageable) {
                                 final Damageable fakeDamageable = (Damageable) fakeMeta;
@@ -94,7 +93,7 @@ public final class AttrHider extends BasicHack {
                                 for (Enchantment enchantment : fakeMeta.getEnchants().keySet()) {
                                     fakeMeta.removeEnchant(enchantment);
                                 }
-                                fakeMeta.addEnchant(Enchantment.DURABILITY, 1, true);
+                                fakeMeta.addEnchant(Enchantment.UNBREAKING, 1, true);
                             }
                             fakeItem.setItemMeta(fakeMeta);
                             slotItemPair.setSecond(fakeItem); // Set item
@@ -144,7 +143,7 @@ public final class AttrHider extends BasicHack {
                         return;
                     }
                     final PacketContainer cloned = packet.deepClone();
-                    for (final WrappedWatchableObject object : cloned.getWatchableCollectionModifier().read(0)) {
+                    for (final WrappedDataValue object : cloned.getDataValueCollectionModifier().read(0)) {
                         // Read the 8th field as a float as that's the living entity's health
                         // https://wiki.vg/Entity_metadata#Living_Entity
                         if (object.getIndex() == 9) {
@@ -172,22 +171,23 @@ public final class AttrHider extends BasicHack {
                     List<PlayerInfoData> newInfos = new ArrayList<>();
                     List<PlayerInfoData> oldInfos = cloned.getPlayerInfoDataLists().read(0);
                     for (PlayerInfoData oldInfo : oldInfos) {
-                        int latency = oldInfo.getLatency();
-                        // Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
-                        // this follows 1.16.5 PlayerTabOverlay#renderPingIcon()
-                        if (latency < 0) latency = -1;
-                        else if (latency < 150) latency = 75; // average of 0 and 150, arbitrary
-                        else if (latency < 300) latency = 225;
-                        else if (latency < 600) latency = 450;
-                        else if (latency < 1000) latency = 800;
-                        else latency = 1000;
-                        newInfos.add(new PlayerInfoData(
-                            oldInfo.getProfile(),
-                            latency,
-                            oldInfo.getGameMode(),
-                            oldInfo.getDisplayName()));
-                    }
-                    cloned.getPlayerInfoDataLists().write(0, newInfos);
+                        if (oldInfo == null) continue;
+						int latency = oldInfo.getLatency();
+						// Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
+						// this follows 1.16.5 PlayerTabOverlay#renderPingIcon()
+						if (latency < 0) latency = -1;
+						else if (latency < 150) latency = 75; // average of 0 and 150, arbitrary
+						else if (latency < 300) latency = 225;
+						else if (latency < 600) latency = 450;
+						else if (latency < 1000) latency = 800;
+						else latency = 1000;
+						newInfos.add(new PlayerInfoData(
+								oldInfo.getProfile(),
+								latency,
+								oldInfo.getGameMode(),
+								oldInfo.getDisplayName()));
+					}
+					cloned.getPlayerInfoDataLists().write(1, newInfos);
                     // The packet data is shared between events, but the event
                     // instance is exclusive to THIS sending of the packet
                     event.setPacket(cloned);

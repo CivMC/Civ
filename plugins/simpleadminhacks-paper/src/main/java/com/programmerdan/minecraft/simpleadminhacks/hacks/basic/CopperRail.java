@@ -6,7 +6,6 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockState;
 import org.bukkit.Effect;
@@ -16,11 +15,11 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R3.event.CraftEventFactory;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.block.CraftBlock;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
@@ -28,7 +27,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -151,9 +149,7 @@ public class CopperRail extends BasicHack {
             damaged = true;
 
             // TODO: In 1.19 or above, this can be replaced with ItemStack#damage thanks to Paper
-            handle.hurtAndBreak(1, player.getHandle(), p -> {
-                p.broadcastBreakEvent(event.getHand() == EquipmentSlot.HAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
-            });
+            item.damage(1, player);
             previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
         }
 
@@ -165,9 +161,7 @@ public class CopperRail extends BasicHack {
             damaged = true;
 
             // TODO: In 1.19 or above, this can be replaced with ItemStack#damage thanks to Paper
-            handle.hurtAndBreak(1, player.getHandle(), p -> {
-                p.broadcastBreakEvent(event.getHand() == EquipmentSlot.HAND ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND);
-            });
+            item.damage(1, player);
             previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
         }
 

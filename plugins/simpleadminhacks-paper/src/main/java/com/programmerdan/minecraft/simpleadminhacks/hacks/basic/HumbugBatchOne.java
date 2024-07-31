@@ -188,7 +188,7 @@ public class HumbugBatchOne extends BasicHack {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void disableEnderCrystal(EntityDamageByEntityEvent e) {
-        if (disableEnderCrystalDamage && e.getDamager().getType() == EntityType.ENDER_CRYSTAL) {
+        if (disableEnderCrystalDamage && e.getDamager().getType() == EntityType.END_CRYSTAL) {
             e.setCancelled(true);
         }
     }
@@ -229,7 +229,7 @@ public class HumbugBatchOne extends BasicHack {
         if (event.getAction() == org.bukkit.event.entity.EntityPotionEffectEvent.Action.REMOVED || event.getCause() == Cause.PLUGIN) {
             return;
         }
-        if (event.getModifiedType() == PotionEffectType.SLOW_DIGGING) {
+        if (event.getModifiedType() == PotionEffectType.MINING_FATIGUE) {
             event.setCancelled(true);
         }
     }
@@ -315,16 +315,16 @@ public class HumbugBatchOne extends BasicHack {
             height = 0.5;
         }
 
-        boolean upperBlockBypass = false;
-        if (height >= 0.5) {
-            Block aboveHeadBlock = aboveBlock.getRelative(BlockFace.UP);
-            if (!aboveHeadBlock.getType().isSolid()) {
-                height = 0.5;
-            } else {
-                upperBlockBypass = true; // Cancel this event. What's happening is the user is going to get stuck due to
-                // the height.
-            }
-        }
+		boolean upperBlockBypass = false;
+		if (height >= 0.5) {
+			Block aboveHeadBlock = aboveBlock.getRelative(BlockFace.UP);
+			if (!aboveHeadBlock.getType().isSolid()) {
+				height = 0.5;
+			} else {
+				upperBlockBypass = true; // Cancel this event. What's happening is the user is going to get stuck due to
+										// the height.
+			}
+		}
 
         // Normalize teleport to the center of the block. Feet ON the ground, plz.
         // Leave Yaw and Pitch alone

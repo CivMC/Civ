@@ -904,17 +904,7 @@ public class ConfigParser {
     }
 
     private static ItemStack parseFirstItem(ConfigurationSection config) {
-        if (config == null) {
-            return null;
-        }
-
-        for (String key : config.getKeys(false)) {
-            ConfigurationSection current = config.getConfigurationSection(key);
-            List<ItemStack> list = ConfigHelper.parseItemMapDirectly(current).getItemStackRepresentation();
-            return list.isEmpty() ? null : list.get(0);
-        }
-
-        return null;
+        return config == null ? null : config.getItemStack(config.getKeys(false).iterator().next());
     }
 
     private Map<String, String> parseRenames(ConfigurationSection config) {

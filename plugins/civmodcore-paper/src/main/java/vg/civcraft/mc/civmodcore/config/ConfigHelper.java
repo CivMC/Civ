@@ -11,23 +11,14 @@ import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
@@ -131,160 +122,16 @@ public final class ConfigHelper {
             return result;
         }
         for (final String key : config.getKeys(false)) {
-            ConfigurationSection current = config.getConfigurationSection(key);
-            ItemMap partMap = parseItemMapDirectly(current);
+            ItemMap partMap = new ItemMap();
+			partMap.addItemStack(config.getItemStack(key, ItemStack.empty()));
             result.merge(partMap);
         }
         return result;
     }
 
-    @Nonnull
-    public static ItemMap parseItemMapDirectly(@Nullable final ConfigurationSection current) {
-        ItemMap im = new ItemMap();
-        if (current == null) {
-            return im;
-        }
-        Material m = null;
-        try {
-            m = Material.valueOf(current.getString("material"));
-        } catch (IllegalArgumentException iae) {
-            m = null;
-        } finally {
-            if (m == null) {
-                LOGGER.severe("Failed to find material " + current.getString("material") + " in section " + current.getCurrentPath());
-                return im;
-            }
-        }
-        ItemStack toAdd = new ItemStack(m);
-        if (current.isInt("durability")) {
-            LOGGER.warning("Item durability as specified at " + current.getCurrentPath() + " is no longer supported");
-        }
-        ItemMeta meta = toAdd.getItemMeta();
-        if (meta == null) {
-            LOGGER.severe("No item meta found for" + current.getCurrentPath());
-        } else {
-            String name = current.getString("name");
-            if (name != null) {
-                meta.setDisplayName(name);
-            }
-            List<String> lore = current.getStringList("lore");
-            if (lore != null) {
-                meta.setLore(lore);
-            }
-            if (current.isBoolean("unbreakable")) {
-                meta.setUnbreakable(current.getBoolean("unbreakable"));
-            }
-            if (current.isBoolean("hideFlags") && current.getBoolean("hideFlags")) {
-                for (ItemFlag flag : ItemFlag.values()) {
-                    meta.addItemFlags(flag);
-                }
-            }
-            if (current.contains("enchants")) {
-                for (String enchantKey : current.getConfigurationSection("enchants").getKeys(false)) {
-                    ConfigurationSection enchantConfig = current.getConfigurationSection("enchants")
-                        .getConfigurationSection(enchantKey);
-                    if (!enchantConfig.isString("enchant")) {
-                        LOGGER.warning("No enchant specified for enchantment entry at " + enchantConfig.getCurrentPath()
-                            + ". Entry was ignored");
-                        continue;
-                    }
-                    Enchantment enchant;
-                    enchant = Enchantment
-                        .getByKey(NamespacedKey.minecraft((enchantConfig.getString("enchant").toLowerCase())));
-                    if (enchant == null) {
-                        LOGGER.severe("Failed to parse enchantment " + enchantConfig.getString("enchant")
-                            + ", the entry was ignored");
-                        continue;
-                    }
-                    int level = enchantConfig.getInt("level", 1);
-                    meta.addEnchant(enchant, level, true);
-                }
-            }
-            if (m == Material.LEATHER_BOOTS || m == Material.LEATHER_CHESTPLATE || m == Material.LEATHER_HELMET
-                || m == Material.LEATHER_LEGGINGS) {
-                ConfigurationSection color = current.getConfigurationSection("color");
-                Color leatherColor = null;
-                if (color != null) {
-                    int red = color.getInt("red");
-                    int blue = color.getInt("blue");
-                    int green = color.getInt("green");
-                    leatherColor = Color.fromRGB(red, green, blue);
-                } else {
-                    String hexColorCode = current.getString("color");
-                    if (hexColorCode != null) {
-                        Integer hexColor = Integer.parseInt(hexColorCode, 16);
-                        if (hexColor != null) {
-                            leatherColor = Color.fromRGB(hexColor);
-                        }
-                    }
-                }
-                if (leatherColor != null) {
-                    ((LeatherArmorMeta) meta).setColor(leatherColor);
-                }
-            }
-            if (m == Material.ENCHANTED_BOOK) {
-                ConfigurationSection storedEnchantSection = current.getConfigurationSection("stored_enchants");
-                if (storedEnchantSection != null) {
-                    EnchantmentStorageMeta enchantMeta = (EnchantmentStorageMeta) meta;
-                    for (String sEKey : storedEnchantSection.getKeys(false)) {
-                        ConfigurationSection currentStoredEnchantSection = storedEnchantSection
-                            .getConfigurationSection(sEKey);
-                        if (currentStoredEnchantSection != null) {
-                            Enchantment enchant = EnchantUtils.getEnchantment(currentStoredEnchantSection.getString("enchant"));
-                            int level = currentStoredEnchantSection.getInt("level", 1);
-                            if (enchant != null) {
-                                enchantMeta.addStoredEnchant(enchant, level, true);
-                            } else {
-                                LOGGER.severe("Failed to parse enchantment at " + currentStoredEnchantSection.getCurrentPath()
-                                    + ", it was not applied");
-                            }
-                        }
-                    }
-                }
-            }
-            if (m == Material.POTION || m == Material.SPLASH_POTION || m == Material.LINGERING_POTION
-                || m == Material.TIPPED_ARROW) {
-                ConfigurationSection potion = current.getConfigurationSection("potion_effects");
-                if (potion != null) {
-                    PotionType potType;
-                    try {
-                        potType = PotionType.valueOf(potion.getString("type", "AWKWARD"));
-                    } catch (IllegalArgumentException e) {
-                        LOGGER.warning("Expected potion type at " + potion.getCurrentPath() + ", but "
-                            + potion.getString("type") + " is not a valid potion type");
-                        potType = PotionType.AWKWARD;
-                    }
-                    boolean upgraded = potion.getBoolean("upgraded", false);
-                    boolean extended = potion.getBoolean("extended", false);
-                    PotionMeta potMeta = (PotionMeta) meta;
-                    potMeta.setBasePotionData(new PotionData(potType, extended, upgraded));
-                    ConfigurationSection customEffects = potion.getConfigurationSection("custom_effects");
-                    if (customEffects != null) {
-                        List<PotionEffect> pots = parsePotionEffects(potion);
-                        for (PotionEffect pe : pots) {
-                            potMeta.addCustomEffect(pe, true);
-                        }
-                    }
-                }
-
-            }
-            toAdd.setItemMeta(meta);
-            if (current.contains("nbt")) {
-                toAdd = ItemMap.enrichWithNBT(toAdd, 1, current.getConfigurationSection("nbt").getValues(true));
-            }
-        }
-        // Setting amount must be last just in cast enrichWithNBT is called,
-        // which
-        // resets the amount to 1.
-        int amount = current.getInt("amount", 1);
-        toAdd.setAmount(amount);
-        im.addItemStack(toAdd);
-        return im;
-    }
-
     public static int parseTimeAsTicks(@Nonnull final String arg) {
-        return (int) (parseTime(arg, TimeUnit.MILLISECONDS) / 50L);
-    }
+		return (int) (parseTime(arg, TimeUnit.MILLISECONDS) / 50L);
+	}
 
     public static long parseTime(@Nonnull final String arg,
                                  @Nonnull final TimeUnit unit) {

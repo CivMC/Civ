@@ -61,13 +61,13 @@ public class ArthropodEggHack extends BasicHack {
         }
 
         // Check if one enchantment is BaneOfArthropods
-        if (null == itemEnchants.get(Enchantment.DAMAGE_ARTHROPODS)) {
+        if (null == itemEnchants.get(Enchantment.BANE_OF_ARTHROPODS)) {
             return;
         }
 
         double randomNum = Math.random();
-        double levelOfArthropod = handstack.getEnchantmentLevel(Enchantment.DAMAGE_ARTHROPODS);
-        double levelOfLooting = handstack.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
+        double levelOfArthropod = handstack.getEnchantmentLevel(Enchantment.BANE_OF_ARTHROPODS);
+        double levelOfLooting = handstack.getEnchantmentLevel(Enchantment.LOOTING);
 
         double targetPercentage = (eggChance * levelOfArthropod) + (lootingChance * levelOfLooting);
 

@@ -7,7 +7,7 @@ import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.CraftWorld;
 
 
 public class PseudoPlayerIdentity extends ServerPlayer {
@@ -18,7 +18,7 @@ public class PseudoPlayerIdentity extends ServerPlayer {
 
     public static ServerPlayer generate(UUID uuid, String name) {
         MinecraftServer minecraftServer = MinecraftServer.getServer();
-        ServerLevel worldServer = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle();
+        ServerLevel worldServer = ((CraftWorld) Bukkit.getWorlds().getFirst()).getHandle();
         GameProfile gameProfile = new GameProfile(uuid, name);
         return new PseudoPlayerIdentity(minecraftServer, worldServer, gameProfile);
     }

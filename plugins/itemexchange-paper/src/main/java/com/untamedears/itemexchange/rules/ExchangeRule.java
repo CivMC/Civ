@@ -9,12 +9,15 @@ import com.untamedears.itemexchange.rules.modifiers.DisplayNameModifier;
 import com.untamedears.itemexchange.rules.modifiers.LoreModifier;
 import com.untamedears.itemexchange.utility.ModifierStorage;
 import com.untamedears.itemexchange.utility.Utilities;
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.component.CustomData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.ChatColor;
@@ -25,7 +28,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
-import vg.civcraft.mc.civmodcore.nbt.NBTType;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
@@ -429,11 +431,16 @@ public final class ExchangeRule implements ExchangeData {
      * @return Returns an itemised representation of this rule.
      */
     public ItemStack toItem() {
-        ItemStack item = NBTSerialization.processItem(ItemExchangeConfig.getRuleItem(), (nbt) -> {
-            final var itemNBT = new NBTCompound();
-            toNBT(itemNBT);
-            nbt.setCompound(RULE_KEY, itemNBT);
-        });
+        ItemStack item = ItemExchangeConfig.getRuleItem();
+		final var itemNBT = new NBTCompound();
+		toNBT(itemNBT);
+
+		CustomData customData = CustomData.EMPTY.update(nbt -> nbt.put(RULE_KEY, itemNBT.getRAW()));
+
+		net.minecraft.world.item.ItemStack nmsItem = ItemUtils.getNMSItemStack(item);
+		nmsItem.set(DataComponents.CUSTOM_DATA, customData);
+		item = nmsItem.getBukkitStack();
+
         ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
             meta.setDisplayName(getRuleTitle());
             meta.setLore(getRuleDetails());
@@ -453,9 +460,9 @@ public final class ExchangeRule implements ExchangeData {
             || item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
             return null;
         }
-        final var itemNBT = NBTSerialization.fromItem(item);
-        if (itemNBT.hasKeyOfType(RULE_KEY, NBTType.COMPOUND)) {
-            return fromNBT(itemNBT.getCompound(RULE_KEY));
+        final CustomData itemNBT = ItemUtils.getNMSItemStack(item).get(DataComponents.CUSTOM_DATA);
+        if (itemNBT.copyTag().contains(RULE_KEY)) {
+            return fromNBT(new NBTCompound((CompoundTag) itemNBT.copyTag().get(RULE_KEY)));
         }
         return null;
     }

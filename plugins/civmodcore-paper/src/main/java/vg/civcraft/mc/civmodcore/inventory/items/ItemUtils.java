@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.translation.Translatable;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -107,7 +107,7 @@ public final class ItemUtils {
      */
     public static boolean isValidItemMaterial(@Nullable final Material material) {
         return material != null
-            /** Add any null-returns in {@link CraftItemFactory#getItemMeta(Material, org.bukkit.craftbukkit.v1_17_R1.inventory.CraftMetaItem)} */
+            /** Add any null-returns in {@link CraftItemFactory#getItemMeta(Material, org.bukkit.craftbukkit.inventory.CraftMetaItem)} */
             && material != Material.AIR
             && material.isItem();
     }
@@ -384,48 +384,35 @@ public final class ItemUtils {
         return null;
     }
 
-    /**
-     * Makes an item glow by adding an enchantment and the flag for hiding enchantments, so it has the enchantment glow
-     * without an enchantment being visible. Note that this does actually apply an enchantment to an item.
-     *
-     * @param item Item to apply glow to.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     */
-    public static void addGlow(@Nullable final ItemStack item) {
-        handleItemMeta(item, (ItemMeta meta) -> {
-            MetaUtils.addGlow(meta);
-            return true;
-        });
-    }
-
-    /**
-     * Handles an item's metadata.
-     *
-     * @param <T>     The item meta type, which might not extend ItemMeta (Damageable for example)
-     * @param item    The item to handle the metadata of.
-     * @param handler The item metadata handler, which should return true if modifications were made.
-     * @return Returns true if the metadata was successfully handled.
-     * @see ItemStack#getItemMeta()
-     */
-    @Contract("null, _ -> false; _, null -> false")
-    @SuppressWarnings("unchecked")
-    public static <T> boolean handleItemMeta(@Nullable final ItemStack item,
-                                             @Nullable final Predicate<T> handler) {
-        if (item == null || handler == null) {
-            return false;
-        }
-        try {
-            final T meta = (T) item.getItemMeta();
-            if (meta == null) {
-                return false;
-            }
-            if (handler.test(meta)) {
-                return item.setItemMeta((ItemMeta) meta);
-            }
-        } catch (ClassCastException ignored) {
-        }
-        return false;
-    }
+	/**
+	 * Handles an item's metadata.
+	 *
+	 * @param <T> The item meta type, which might not extend ItemMeta (Damageable for example)
+	 * @param item The item to handle the metadata of.
+	 * @param handler The item metadata handler, which should return true if modifications were made.
+	 * @return Returns true if the metadata was successfully handled.
+	 *
+	 * @see ItemStack#getItemMeta()
+	 */
+	@Contract("null, _ -> false; _, null -> false")
+	@SuppressWarnings("unchecked")
+	public static <T> boolean handleItemMeta(@Nullable final ItemStack item,
+											 @Nullable final Predicate<T> handler) {
+		if (item == null || handler == null) {
+			return false;
+		}
+		try {
+			final T meta = (T) item.getItemMeta();
+			if (meta == null) {
+				return false;
+			}
+			if (handler.test(meta)) {
+				return item.setItemMeta((ItemMeta) meta);
+			}
+		}
+		catch (ClassCastException ignored) { }
+		return false;
+	}
 
     // ------------------------------------------------------------
     // Deprecated Functions

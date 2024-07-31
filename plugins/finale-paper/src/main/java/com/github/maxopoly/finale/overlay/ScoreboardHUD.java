@@ -38,10 +38,10 @@ public class ScoreboardHUD implements Listener {
     static {
         colorMapping.put(PotionEffectType.FIRE_RESISTANCE, ChatColor.GOLD);
         colorMapping.put(PotionEffectType.SPEED, ChatColor.AQUA);
-        colorMapping.put(PotionEffectType.INCREASE_DAMAGE, ChatColor.RED);
+        colorMapping.put(PotionEffectType.STRENGTH, ChatColor.RED);
         colorMapping.put(PotionEffectType.REGENERATION, ChatColor.LIGHT_PURPLE);
-        colorMapping.put(PotionEffectType.FAST_DIGGING, ChatColor.AQUA);
-        colorMapping.put(PotionEffectType.SLOW, ChatColor.GRAY);
+        colorMapping.put(PotionEffectType.HASTE, ChatColor.AQUA);
+        colorMapping.put(PotionEffectType.SLOWNESS, ChatColor.GRAY);
     }
 
     private List<CivScoreBoard> scoreBoards;

@@ -85,7 +85,7 @@ public class RealisticBiomesGUI {
                 } else {
                     lore.add(ChatColor.DARK_AQUA + "Time: "
                         + ChatColor.GRAY + TextUtil.formatDuration(timeNeeded, TimeUnit.MILLISECONDS));
-                    ItemUtils.addGlow(is);
+                    is.editMeta(itemMeta -> itemMeta.setEnchantmentGlintOverride(true));
                 }
             } else {
                 double baseMultiplier = config.getNaturalProgressChance(currentBiome);
@@ -94,7 +94,7 @@ public class RealisticBiomesGUI {
                 } else {
                     lore.add(ChatColor.DARK_AQUA + "% chance: "
                         + ChatColor.GRAY + decimalFormat.format(baseMultiplier * 100));
-                    ItemUtils.addGlow(is);
+                    is.editMeta(itemMeta -> itemMeta.setEnchantmentGlintOverride(true));
                 }
             }
             lore.add(ChatColor.DARK_AQUA + "Biome Multiplier: " + ChatColor.GRAY + biomeMultiplier);

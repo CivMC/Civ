@@ -76,6 +76,7 @@ import org.bukkit.entity.*;
 import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent.Reason;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -1208,6 +1209,11 @@ public class FakePlayer implements Player {
     }
 
     @Override
+	public void heal(double amount, @NotNull EntityRegainHealthEvent.RegainReason reason) {
+
+	}
+
+	@Override
     public double getMaxHealth() {
 
         return 0;
@@ -1429,6 +1435,31 @@ public class FakePlayer implements Player {
     }
 
     @Override
+	public @org.jetbrains.annotations.Nullable InetSocketAddress getHAProxyAddress() {
+		return null;
+	}
+
+	@Override
+	public boolean isTransferred() {
+		return false;
+	}
+
+	@Override
+	public @NotNull CompletableFuture<byte[]> retrieveCookie(@NotNull NamespacedKey key) {
+		return null;
+	}
+
+	@Override
+	public void storeCookie(@NotNull NamespacedKey key, @NotNull byte[] value) {
+
+	}
+
+	@Override
+	public void transfer(@NotNull String host, int port) {
+
+	}
+
+	@Override
     public void sendRawMessage(String message) {
 
     }
@@ -2188,9 +2219,9 @@ public class FakePlayer implements Player {
 
     }
 
-    @Override
-    public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-                              double offsetY, double offsetZ, double extra) {
+	@Override
+	public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
+				double offsetY, double offsetZ, double extra) {
 
     }
 
@@ -2200,13 +2231,23 @@ public class FakePlayer implements Player {
 
     }
 
-    @Override
-    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-                                  double offsetY, double offsetZ, double extra, T data) {
+	@Override
+	public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
+								  double offsetY, double offsetZ, double extra, T data) {
 
     }
 
     @Override
+	public <T> void spawnParticle(@NotNull Particle particle, @NotNull Location location, int i, double v, double v1, double v2, double v3, @org.jetbrains.annotations.Nullable T t, boolean b) {
+
+	}
+
+	@Override
+	public <T> void spawnParticle(@NotNull Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, @org.jetbrains.annotations.Nullable T t, boolean b) {
+
+	}
+
+	@Override
     public Spigot spigot() {
         return null;
     }
@@ -2846,6 +2887,11 @@ public class FakePlayer implements Player {
     }
 
     @Override
+	public @org.jetbrains.annotations.Nullable String getAsString() {
+		return "";
+	}
+
+	@Override
     public @org.jetbrains.annotations.Nullable EntitySnapshot createSnapshot() {
         return null;
     }
@@ -3348,6 +3394,11 @@ public class FakePlayer implements Player {
     @Override
     public void setBodyYaw(float v) {
 
+    }
+
+    @Override
+    public boolean canUseEquipmentSlot(@NotNull EquipmentSlot equipmentSlot) {
+        return false;
     }
 
     @Override

@@ -120,7 +120,7 @@ public final class SafeOreBreak extends BasicHack {
             ItemStack item;
             if (getValue(player)) {
                 item = new ItemStack(ore);
-                item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+                item.addUnsafeEnchantment(Enchantment.UNBREAKING, 1);
                 item.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             } else {
                 item = new ItemStack(ore);

@@ -38,7 +38,7 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 
     private final Map<UUID, DamageLog> damageLogs = new HashMap<UUID, DamageLog>();
 
-    private List<PotionEffectType> damagePotions = Arrays.asList(PotionEffectType.HARM, PotionEffectType.POISON, PotionEffectType.WEAKNESS);
+    private List<PotionEffectType> damagePotions = Arrays.asList(PotionEffectType.INSTANT_DAMAGE, PotionEffectType.POISON, PotionEffectType.WEAKNESS);
 
     // The bits for indicating whether a given potion is upgraded or extended
     private static final short POTION_UPGRADE_MASK = 1 << 5;

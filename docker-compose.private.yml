@@ -1,0 +1,33 @@
+# Private Config Extension for Docker Compose.
+# Requires PrivateConfig submodule to be cloned.
+
+services:
+
+  #################
+  ### Minecraft ###
+  #################
+
+  paper:
+    environment:
+      # Any Jars need to be here, comma separated so that they are not removed during sync
+      REMOVE_OLD_MODS_EXCLUDE: "Vulcan-2.9.0.jar"
+      SYNC_SKIP_NEWER_IN_DESTINATION: "true"
+    # Note that config and plugins are mounted into the DATA directory, to avoid propagating to the config bind mount
+    volumes:
+      - ./PrivateConfig/paper/plugins/Vulcan-2.9.0.jar:/data/plugins/Vulcan-2.9.0.jar
+      - ./PrivateConfig/paper/config/Vulcan/config.yml:/data/plugins/Vulcan/config.yml
+      - ./PrivateConfig/paper/config/HiddenOre/config.yml:/data/plugins/HiddenOre/config.yml
+      - ./PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/data/plugins/KirraBukkitGateway/cnfig.yml
+      - ./PrivateConfig/paper/config/Brewery/config.yml:/data/plugins/Brewery/config.yml
+      - ./PrivateConfig/paper/config/Terra/packs/CivMC:/data/plugins/Terra/packs/CivMC
+      - ./PrivateConfig/paper/config/Votifier/config.yml:/data/plugins/Votifier/config.yml
+      - ./PrivateConfig/paper/config/Votifier/rsa/public.key:/data/plugins/Votifier/rsa/public.key
+      - ./PrivateConfig/paper/config/Votifier/rsa/private.key:/data/plugins/Votifier/rsa/private.key
+      - ./PrivateConfig/paper/config/DiscordSRV/config.yml:/data/plugins/DiscordSRV/config.yml
+      - ./PrivateConfig/paper/config/DiscordSRV/alerts.yml:/data/plugins/DiscordSRV/alerts.yml
+      - ./PrivateConfig/paper/config/MythicMobs:/data/plugins/MythicMobs
+      - ./PrivateConfig/paper/config/EvenMoreFish/baits.yml:/data/plugins/EvenMoreFish/baits.yml
+      - ./PrivateConfig/paper/config/EvenMoreFish/fish.yml:/data/plugins/EvenMoreFish/fish.yml
+      - ./PrivateConfig/paper/config/EvenMoreFish/rarities.yml:/data/plugins/EvenMoreFish/rarities.yml
+      - ./PrivateConfig/paper/config/EvenMoreFish/competitions.yml:/data/plugins/EvenMoreFish/competitions.yml
+      - ./PrivateConfig/paper/config/RandomSpawn/worlds.yml:/data/plugins/RandomSpawn/worlds.yml
