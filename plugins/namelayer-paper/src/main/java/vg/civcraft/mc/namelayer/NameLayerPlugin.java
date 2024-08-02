@@ -10,7 +10,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.namelayer.command.CommandHandler;
+import vg.civcraft.mc.namelayer.command.NameLayerCommands;
 import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.AutoAcceptHandler;
@@ -30,7 +30,7 @@ public class NameLayerPlugin extends ACivMod {
     private static DefaultGroupHandler defaultGroupHandler;
     private static NameLayerPlugin instance;
     private static AutoAcceptHandler autoAcceptHandler;
-    private CommandHandler handle;
+    private NameLayerCommands handle;
     private static ManagedDatasource db;
     private static boolean loadGroups = true;
     private static int groupLimit = 10;
@@ -59,7 +59,7 @@ public class NameLayerPlugin extends ACivMod {
             groupManagerDao.loadGroupsInvitations();
             defaultGroupHandler = new DefaultGroupHandler();
             autoAcceptHandler = new AutoAcceptHandler(groupManagerDao.loadAllAutoAccept());
-            handle = new CommandHandler(this);
+            handle = new NameLayerCommands(this);
         }
     }
 
