@@ -2,11 +2,12 @@ package vg.civcraft.mc.namelayer.command;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.CommandCompletions;
+import java.util.stream.Stream;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.command.commands.AcceptInvite;
 import vg.civcraft.mc.namelayer.command.commands.AddBlacklist;
 import vg.civcraft.mc.namelayer.command.commands.ChangePlayerName;
@@ -39,14 +40,14 @@ import vg.civcraft.mc.namelayer.command.commands.ShowBlacklist;
 import vg.civcraft.mc.namelayer.command.commands.ToggleAutoAcceptInvites;
 import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
 import vg.civcraft.mc.namelayer.command.commands.UpdateName;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
-public class CommandHandler extends CommandManager {
-
-    public CommandHandler(NameLayerPlugin plugin) {
+public class NameLayerCommands extends CommandManager {
+    public NameLayerCommands(
+        final @NotNull NameLayerPlugin plugin
+    ) {
         super(plugin);
         init();
     }
@@ -89,12 +90,37 @@ public class CommandHandler extends CommandManager {
     }
 
     @Override
-    public void registerCompletions(@NotNull CommandCompletions<BukkitCommandCompletionContext> completions) {
+    public void registerCompletions(
+        final @NotNull CommandCompletions<BukkitCommandCompletionContext> completions
+    ) {
         super.registerCompletions(completions);
-        completions.registerCompletion("NL_Groups", (context) -> GroupTabCompleter.complete(context.getInput(), null, context.getPlayer()));
-        completions.registerAsyncCompletion("NL_Ranks", (context) ->
-            Arrays.asList(GroupManager.PlayerType.getStringOfTypes().split(" ")));
-        completions.registerCompletion("NL_Perms", (context) ->
-            PermissionType.getAllPermissions().stream().map(PermissionType::getName).collect(Collectors.toList()));
+        registerGroupCompletion("NL_Groups", completions);
+
+        completions.registerStaticCompletion("NL_Ranks", () -> {
+            return Stream.of(GroupManager.PlayerType.values())
+                .map(GroupManager.PlayerType::name)
+                .toList();
+        });
+        completions.registerCompletion("NL_Perms", (context) -> {
+            return PermissionType.getAllPermissions()
+                .stream()
+                .map(PermissionType::getName)
+                .toList();
+        });
+        completions.registerCompletion("NL_Invites", (context) -> {
+            return PlayerListener.getNotifications(context.getPlayer().getUniqueId())
+                .stream()
+                .map(Group::getName)
+                .toList();
+        });
+    }
+
+    public static void registerGroupCompletion(
+        final @NotNull String identifier,
+        final @NotNull CommandCompletions<BukkitCommandCompletionContext> completions
+    ) {
+        completions.registerCompletion(identifier, (context) -> {
+            return NameAPI.getGroupManager().getAllGroupNames(context.getPlayer().getUniqueId());
+        });
     }
 }

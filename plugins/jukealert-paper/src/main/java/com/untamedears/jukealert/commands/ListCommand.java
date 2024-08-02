@@ -18,13 +18,10 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import net.md_5.bungee.api.ChatColor;
-import org.apache.commons.lang3.ArrayUtils;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class ListCommand extends BaseCommand {
@@ -95,10 +92,4 @@ public class ListCommand extends BaseCommand {
             this.timeUntilCulling = timeUntilCulling;
         }
     }
-
-    public List<String> tabComplete(final CommandSender sender, final String[] arguments) {
-        final String last = ArrayUtils.isEmpty(arguments) ? "" : arguments[arguments.length - 1];
-        return GroupTabCompleter.complete(last, JukeAlertPermissionHandler.getListSnitches(), (Player) sender);
-    }
-
 }

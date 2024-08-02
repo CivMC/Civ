@@ -5,7 +5,7 @@ import co.aikar.commands.CommandCompletions;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
+import vg.civcraft.mc.namelayer.command.NameLayerCommands;
 
 public class CitadelCommandManager extends CommandManager {
 
@@ -35,6 +35,6 @@ public class CitadelCommandManager extends CommandManager {
     @Override
     public void registerCompletions(@NotNull CommandCompletions<BukkitCommandCompletionContext> completions) {
         super.registerCompletions(completions);
-        completions.registerCompletion("CT_Groups", (context) -> GroupTabCompleter.complete(context.getInput(), null, context.getPlayer()));
+        NameLayerCommands.registerGroupCompletion("CT_Groups", completions);
     }
 }

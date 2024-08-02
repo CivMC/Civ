@@ -4,17 +4,14 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
-import java.util.List;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
-import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -44,17 +41,6 @@ public class GroupStats extends BaseCommandMiddle {
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), new StatsMessage(p, g));
-    }
-
-    public List<String> tabComplete(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player))
-            return null;
-
-        if (args.length > 0)
-            return GroupTabCompleter.complete(args[args.length - 1], null, (Player) sender);
-        else {
-            return GroupTabCompleter.complete(null, null, (Player) sender);
-        }
     }
 
     public class StatsMessage implements Runnable {
