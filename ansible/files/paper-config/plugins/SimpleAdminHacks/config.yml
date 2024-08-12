@@ -190,6 +190,10 @@ hacks:
     enabled: true
   MapCopyProtection:
     enabled: true
+  ModSupport:
+    enabled: true
+    sendWorldName: true
+    sendInventoryLocations: true
   OldEnchanting:
     enabled: true
     # Hides what enchantment will be granted within the Enchanting Table
