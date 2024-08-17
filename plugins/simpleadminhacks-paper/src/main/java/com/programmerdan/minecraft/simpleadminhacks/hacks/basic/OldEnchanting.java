@@ -159,12 +159,12 @@ public final class OldEnchanting extends BasicHack {
                     break;
                 }
             }
+            if (randomiser == null) {
+                this.logger.log(Level.WARNING, "Cannot find randomiser field.");
+            }
         } catch (final Throwable throwable) {
             this.logger.log(Level.WARNING, "An exception was thrown while trying to reflect the enchanting " +
                 "table's randomiser field.", throwable);
-        }
-        if (randomiser == null) {
-            this.logger.log(Level.WARNING, "Cannot find randomiser field.");
         }
         this.enchantingTableRandomiser = randomiser;
         // Setup entity xp modifiers
