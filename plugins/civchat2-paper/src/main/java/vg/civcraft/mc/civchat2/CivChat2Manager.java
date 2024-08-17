@@ -268,6 +268,8 @@ public class CivChat2Manager {
         } else {
             afkPlayers.remove(player.getUniqueId());
         }
+
+        scoreboardHUD.updateAFKScoreboardHUD(player);
         return afkStatus;
     }
 
@@ -281,9 +283,13 @@ public class CivChat2Manager {
         Preconditions.checkNotNull(player, "player");
         if (afkPlayers.contains(player.getUniqueId())) {
             afkPlayers.remove(player.getUniqueId());
+
+            scoreboardHUD.updateAFKScoreboardHUD(player);
             return false;
         }
         afkPlayers.add(player.getUniqueId());
+
+        scoreboardHUD.updateAFKScoreboardHUD(player);
         return true;
     }
 
