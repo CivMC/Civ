@@ -8,7 +8,7 @@ hacks:
   ## Basic Hacks
   ############################################################
   AntiFastBreak:
-    enabled: true
+    enabled: false
     laggLenciency: 1.5
     breakDenyDuration: 3000
   #Prevents pearls from landing that have been in flight for more than the configured amount of time
