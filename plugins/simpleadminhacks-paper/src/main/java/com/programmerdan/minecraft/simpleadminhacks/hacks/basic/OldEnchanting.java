@@ -9,15 +9,6 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
-import net.minecraft.world.inventory.EnchantmentMenu;
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Sound;
-import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import java.lang.reflect.Field;
 import java.security.SecureRandom;
 import java.util.HashMap;
@@ -25,6 +16,17 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.logging.Level;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.EnchantmentMenu;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftInventoryView;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -149,7 +151,16 @@ public final class OldEnchanting extends BasicHack {
         // Setup enchantment randomiser
         Field randomiser = null;
         try {
-            randomiser = FieldUtils.getDeclaredField(EnchantmentMenu.class, "p", true);
+            for (Field field : EnchantmentMenu.class.getDeclaredFields()) {
+                if (field.getType() == DataSlot.class) { // "enchantmentSeed" is the first DataSlot field
+                    field.setAccessible(true);
+                    randomiser = field;
+                    break;
+                }
+            }
+            if (randomiser == null) {
+                this.logger.log(Level.WARNING, "Cannot find randomiser field.");
+            }
         } catch (final Throwable throwable) {
             this.logger.log(Level.WARNING, "An exception was thrown while trying to reflect the enchanting " +
                 "table's randomiser field.", throwable);
@@ -469,11 +480,12 @@ public final class OldEnchanting extends BasicHack {
         final CraftInventoryView view = (CraftInventoryView) event.getView();
         final EnchantmentMenu table = (EnchantmentMenu) view.getHandle();
         if (this.randomiseEnchants) {
+            ServerPlayer player = ((CraftPlayer) event.getEnchanter().getPlayer()).getHandle();
+            player.enchantmentSeed = player.random.nextInt();
             try {
-                final Random tableRandom = (Random) this.enchantingTableRandomiser.get(table);
-                tableRandom.nextDouble();
-            } catch (final IllegalArgumentException | IllegalAccessException | ClassCastException throwable) {
-                this.logger.log(Level.WARNING, "Could not set randomiser!", throwable);
+                ((DataSlot) enchantingTableRandomiser.get(table)).set(player.enchantmentSeed);
+            } catch (IllegalAccessException e) {
+                this.logger.log(Level.WARNING, "Could not set randomiser!", e);
             }
         }
     }
