@@ -185,7 +185,7 @@ hacks:
     disableGapples: true
     disableEndGatewayTP: false
   ItemMetaConverterHack:
-    enabled: false
+    enabled: true
   ItemSerializerHack:
     enabled: true
   MapCopyProtection:
