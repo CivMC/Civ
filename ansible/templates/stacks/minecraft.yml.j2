@@ -90,6 +90,8 @@ services:
       CIV_RABBITMQ_USERNAME: rabbitmq
       CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
 
+      WATCHDOG_TIMEOUT_TIME: 60
+
     volumes:
       # Persistence
       - /opt/stacks/minecraft/paper-data:/data
@@ -114,7 +116,7 @@ services:
       - /opt/PrivateConfig/paper/config/EvenMoreFish/rarities.yml:/config/plugins/EvenMoreFish/rarities.yml
       - /opt/PrivateConfig/paper/config/EvenMoreFish/competitions.yml:/config/plugins/EvenMoreFish/competitions.yml
       - /opt/PrivateConfig/paper/config/RandomSpawn/worlds.yml:/config/plugins/RandomSpawn/worlds.yml
-      
+
     deploy:
       placement:
         constraints: [node.role == manager]
