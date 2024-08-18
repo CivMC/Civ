@@ -1,4 +1,5 @@
 import io.papermc.paperweight.tasks.RemapJar
+import io.papermc.paperweight.userdev.PaperweightUserExtension
 import xyz.jpenilla.runpaper.task.RunServer
 
 subprojects {
@@ -42,16 +43,10 @@ subprojects {
         publications {
             create<MavenPublication>("maven") {
                 from(components["java"])
-                pluginManager.withPlugin("io.papermc.paperweight.userdev") {
-                    artifact(project.tasks.withType<RemapJar>().getByName("reobfJar").outputJar)
-                }
             }
-            pluginManager.withPlugin("com.github.johnrengelman.shadow") {
+            pluginManager.withPlugin("com.gradleup.shadow") {
                 create<MavenPublication>("shadow") {
                     from(components["java"])
-                    pluginManager.withPlugin("io.papermc.paperweight.userdev") {
-                        artifact(project.tasks.withType<RemapJar>().getByName("reobfJar").outputJar)
-                    }
                 }
             }
         }
@@ -62,20 +57,17 @@ subprojects {
     }
 
     pluginManager.withPlugin("io.papermc.paperweight.userdev") {
+        project.extensions.getByName<PaperweightUserExtension>("paperweight")
+            .reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.MOJANG_PRODUCTION
+
         tasks.withType<ProcessResources> {
             filesMatching("plugin.yml") {
                 expand(project.properties)
             }
         }
-
-        tasks {
-            named("build") {
-                dependsOn("reobfJar")
-            }
-        }
     }
 
-    pluginManager.withPlugin("com.github.johnrengelman.shadow") {
+    pluginManager.withPlugin("com.gradleup.shadow") {
         tasks {
             named("build") {
                 dependsOn("shadowJar")
