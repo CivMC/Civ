@@ -461,7 +461,7 @@ public final class ExchangeRule implements ExchangeData {
             return null;
         }
         final CustomData itemNBT = ItemUtils.getNMSItemStack(item).get(DataComponents.CUSTOM_DATA);
-        if (itemNBT.copyTag().contains(RULE_KEY)) {
+        if (itemNBT != null && itemNBT.copyTag().contains(RULE_KEY)) {
             return fromNBT(new NBTCompound((CompoundTag) itemNBT.copyTag().get(RULE_KEY)));
         }
         return null;
