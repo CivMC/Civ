@@ -1,6 +1,6 @@
 plugins {
     id("io.papermc.paperweight.userdev")
-    id("com.gradleup.shadow")
+    id("com.github.johnrengelman.shadow")
     id("xyz.jpenilla.run-paper")
 }
 

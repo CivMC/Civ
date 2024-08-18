@@ -44,7 +44,7 @@ subprojects {
             create<MavenPublication>("maven") {
                 from(components["java"])
             }
-            pluginManager.withPlugin("com.gradleup.shadow") {
+            pluginManager.withPlugin("com.github.johnrengelman.shadow") {
                 create<MavenPublication>("shadow") {
                     from(components["java"])
                 }
@@ -67,7 +67,7 @@ subprojects {
         }
     }
 
-    pluginManager.withPlugin("com.gradleup.shadow") {
+    pluginManager.withPlugin("com.github.johnrengelman.shadow") {
         tasks {
             named("build") {
                 dependsOn("shadowJar")
