@@ -87,24 +87,6 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
             } else {
                 genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
             }
-            genStatus.append("   Hopper self-feed duplication exploit fix ");
-            if (config.isStopHopperDupe()) {
-                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-            } else {
-                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-            }
-            genStatus.append("   Duplications using rails exploit fix ");
-            if (config.isStopRailDupe()) {
-                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-            } else {
-                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-            }
-            genStatus.append("  End Portal removal exploit fix ");
-            if (config.isStopEndPortalDeletion()) {
-                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-            } else {
-                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-            }
             genStatus.append("  Bed Bombing in Nether / Hell Biomes fix ");
             if (config.stopBedBombing()) {
                 genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
@@ -171,88 +153,6 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
         }
         if (event.getEntity() instanceof InventoryHolder) {
             event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onInventoryMoveItem(InventoryMoveItemEvent event) {
-        if (!config.isEnabled() || !config.isStopHopperDupe()) return;
-        // I recollect inventory handling to be the single biggest source of NPEs, so I'll add
-        // back in the nullcheck, although I do hope Spigot has addressed the sources with the
-        // addition of their annotations.
-        //
-        if ((event.getDestination() == null) || (event.getSource() == null) ||
-            !(InventoryType.HOPPER.equals(event.getDestination().getType())) ||
-            !(InventoryType.HOPPER.equals(event.getSource().getType())) ||
-            !(Material.HOPPER.equals(event.getDestination().getLocation().getBlock().getType())) ||
-            !(Material.HOPPER.equals(event.getSource().getLocation().getBlock().getType()))) {
-            return;
-        }
-        Hopper source = (Hopper) event.getSource().getLocation().getBlock().getBlockData();
-        Hopper dest = (Hopper) event.getDestination().getLocation().getBlock().getBlockData();
-        if (source.getFacing().getOppositeFace() == dest.getFacing()) {
-            //They're pointing into each other and will eventually dupe
-            event.setCancelled(true);
-        }
-
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onPistonPushRail(BlockPistonExtendEvent event) {
-        if (config.isEnabled() && config.isStopRailDupe()) {
-            for (Block block : event.getBlocks()) {
-                Material type = block.getType();
-
-                if (config.getRailArray().contains(type)) {
-                    event.setCancelled(true);
-                    return;
-                }
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onRailPlace(BlockPlaceEvent event) {
-        if (config.isEnabled() && config.isStopRailDupe()) {
-            Block block = event.getBlock();
-            Material type = block.getType();
-
-            if (config.getRailArray().contains(type)) {
-                for (BlockFace face : config.getBfArray()) {
-                    type = block.getRelative(face).getType();
-
-                    if (config.getPistonArray().contains(type)) {
-                        event.setCancelled(true);
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
-    //Trying to stop players from deleting end portals
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-        if (config.isEnabled() && config.isStopEndPortalDeletion()) {
-            Block block = event.getBlockClicked().getRelative(event.getBlockFace());
-
-            if (Material.END_PORTAL.equals(block.getType())) {
-                event.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onDispenseEvent(BlockDispenseEvent event) {
-        if (config.isEnabled() && config.isStopEndPortalDeletion()) {
-            if (Material.DISPENSER.equals(event.getBlock().getType())) {
-                Dispenser disp = (Dispenser) event.getBlock().getBlockData();
-                Material type = event.getBlock().getRelative(disp.getFacing()).getType();
-
-                if (Material.END_PORTAL.equals(type)) {
-                    event.setCancelled(true);
-                }
-            }
         }
     }
 

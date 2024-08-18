@@ -340,9 +340,6 @@ hacks:
     blockElytraBreakBug: false
     damageOnElytraBreakBug: 1.0
     canStorageTeleport: false
-    stopHopperDupe: true
-    stopRailDupe: true
-    stopEndPortalDeletion: true
     stopBedBombingInHellBiomes: true
     stopAnchorBombing: true
     preventTreeWraparound: true
