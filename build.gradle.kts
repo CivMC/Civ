@@ -2,7 +2,7 @@ import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
 
 plugins {
     id("io.papermc.paperweight.userdev") version "1.7.2" apply false
-    id("com.gradleup.shadow") version "8.3.0" apply false
+    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     id("xyz.jpenilla.run-paper") version "2.2.2" apply false
 }
 

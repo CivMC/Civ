@@ -146,7 +146,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
             //Although we can use Mojang mappings when developing, We need to use the obfuscated field name
             //until we can run a full Mojmapped server. I personally used this site when updating to 1.20.6:
             // https://mappings.cephx.dev/1.20.6/net/minecraft/world/food/FoodData.html
-            foodTickTimerField = FoodData.class.getDeclaredField("d");
+            foodTickTimerField = FoodData.class.getDeclaredField("d"); // todo fix
             foodTickTimerField.setAccessible(true);
             foodTickTimer = foodTickTimerField.getInt(entity.getFoodData());
         } catch (NoSuchFieldException | IllegalAccessException e) {
