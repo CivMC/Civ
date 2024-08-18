@@ -44,14 +44,26 @@ public class RevokeInvite extends BaseCommandMiddle {
             return;
         }
 
-        //get invitee PlayerType
-        PlayerType pType = group.getInvite(uuid);
-
         PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
         if (t == null) {
             p.sendMessage(ChatColor.RED + "You are not on that group.");
             return;
         }
+
+        //get invitee PlayerType
+        PlayerType pType = group.getInvite(uuid);
+        if (pType == null) {
+            p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " does not have an invite to that group.");
+            return;
+        }
+
+        //check invitee has invite
+        if (group.isMember(uuid)) {
+            p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " is already part of that group, "
+                + "use /remove to remove them.");
+            return;
+        }
+
         boolean allowed = switch (pType) { // depending on the type the executor wants to add the player to
             case MEMBERS -> gm.hasAccess(group, executor, PermissionType.getPermission("MEMBERS"));
             case MODS -> gm.hasAccess(group, executor, PermissionType.getPermission("MODS"));
@@ -61,17 +73,6 @@ public class RevokeInvite extends BaseCommandMiddle {
         };
         if (!allowed) {
             p.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
-            return;
-        }
-
-        //check invitee has invite
-        if (group.getInvite(uuid) == null) {
-            if (group.isMember(uuid)) {
-                p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " is already part of that group, "
-                    + "use /remove to remove them.");
-                return;
-            }
-            p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " does not have an invite to that group.");
             return;
         }
 
