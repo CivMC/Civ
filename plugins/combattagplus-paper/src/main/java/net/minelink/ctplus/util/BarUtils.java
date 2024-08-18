@@ -22,11 +22,7 @@ public final class BarUtils {
     private static Handler handler;
 
     public static void init() {
-        if (ReflectionUtils.getClass("org.bukkit.boss.BossBar") != null) {
-            handler = Handler.NEW_BUKKIT_API;
-        } else if (Bukkit.getPluginManager().isPluginEnabled("BarAPI")) {
-            handler = Handler.CONFUSER_BAR_API;
-        }
+        handler = Handler.NEW_BUKKIT_API;
     }
 
     public static boolean hasBar(Player player) {

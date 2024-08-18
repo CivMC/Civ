@@ -18,7 +18,7 @@ settings:
   save-user-cache-on-stop-only: false
   moved-wrongly-threshold: 1.0625
   moved-too-quickly-multiplier: 50.0
-  timeout-time: 60
+  timeout-time: ${WATCHDOG_TIMEOUT_TIME}
   restart-on-crash: false
   restart-script: ./start.sh
   netty-threads: 4

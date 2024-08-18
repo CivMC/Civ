@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.EnchantmentMenu;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,8 +26,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftInventoryView;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftInventoryView;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
@@ -280,8 +279,8 @@ public final class OldEnchanting extends BasicHack {
                 final ItemStack held = killer.getInventory().getItemInMainHand();
                 if (ItemUtils.isValidItem(held) && held.hasItemMeta()) {
                     final ItemMeta meta = held.getItemMeta();
-                    if (meta.hasEnchant(Enchantment.LOOT_BONUS_MOBS)) {
-                        final double modifier = this.lootModifier * meta.getEnchantLevel(Enchantment.LOOT_BONUS_MOBS);
+                    if (meta.hasEnchant(Enchantment.LOOTING)) {
+                        final double modifier = this.lootModifier * meta.getEnchantLevel(Enchantment.LOOTING);
                         experience = applyModifier(experience, modifier);
                     }
                 }

@@ -8,7 +8,7 @@ services:
   #################
 
   proxy:
-    image: itzg/bungeecord@sha256:7e7eeb9023cc213de2ca7ecbcf2cccc506fd46a31346f7250d2fcc5637cf5bb7
+    image: itzg/mc-proxy@sha256:e0536c92227905b6b0388eb04f640859e674c61068061d2a4db6ba631c79008b
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -37,7 +37,7 @@ services:
       - ./ansible/build/proxy-plugins:/plugins
 
   paper:
-    image: itzg/minecraft-server@sha256:491e37fa63ffef22c9ac1f6ec2fb4cc793735799cd91bafa1e5790aa39e9b313
+    image: itzg/minecraft-server@sha256:ec899160155b3d15c243845bab9ef20ab800d1cc5f38765f45aca1dcc3ccd5c6
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -50,7 +50,7 @@ services:
         condition: service_healthy
     environment:
       TYPE: 'paper'
-      VERSION: '1.20.4'
+      VERSION: '1.20.6'
       EULA: 'TRUE'
 
       REMOVE_OLD_MODS: 'TRUE'
@@ -78,6 +78,11 @@ services:
       CIV_RABBITMQ_HOST: rabbitmq
       CIV_RABBITMQ_USERNAME: rabbitmq
       CIV_RABBITMQ_PASSWORD: rabbitmq
+
+      JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      WATCHDOG_TIMEOUT_TIME: 6000
+    ports:
+      - "5005:5005"
     volumes:
       - ./containers/data/paper:/data
       - ./ansible/files/paper-config:/config
@@ -103,7 +108,7 @@ services:
       MYSQL_PASSWORD: mariadb
       MYSQL_DATABASE: mariadb
     volumes:
-      - ./containers/provisioning/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./containers/provisioning/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
       - ./containers/data/mariadb:/var/lib/mysql
 
   postgres:
@@ -121,7 +126,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     volumes:
-      - ./containers/provisioning/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./containers/provisioning/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
       - ./containers/data/postgres:/var/lib/postgresql/data
 
   rabbitmq:
@@ -158,4 +163,4 @@ services:
       CIV_INFLUX_ORG: CivMC
       CIV_INFLUX_TOKEN: admintoken
     volumes:
-      - ./containers/provisioning/grafana:/etc/grafana/provisioning
+      - ./containers/provisioning/grafana:/etc/grafana/provisioning:ro

@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -17,12 +16,10 @@ import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftNBTTagConfigSerializer;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.craftbukkit.util.CraftNBTTagConfigSerializer;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.pdc.extensions.PersistentDataContainerExtensions;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
@@ -31,25 +28,7 @@ public final class NBTSerialization {
 
     private static final CivLogger LOGGER = CivLogger.getLogger(NBTSerialization.class);
 
-    /**
-     * Retrieves the NBT data from an item.
-     *
-     * @param item The item to retrieve the NBT form.
-     * @return Returns the item's NBT.
-     */
-    @Nullable
-    public static NBTCompound fromItem(final ItemStack item) {
-        if (item == null) {
-            return null;
-        }
-        final net.minecraft.world.item.ItemStack nmsItem = ItemUtils.getNMSItemStack(item);
-        if (nmsItem == net.minecraft.world.item.ItemStack.EMPTY) {
-            return null;
-        }
-        return new NBTCompound(nmsItem.getOrCreateTag());
-    }
-
-    /**
+	/**
      * Generates an NBT compound based on a given persistent data container.
      *
      * @param container The container to generate an NBT compound from.
@@ -60,34 +39,10 @@ public final class NBTSerialization {
         return new NBTCompound(PersistentDataContainerExtensions.getRaw(container));
     }
 
-    /**
-     * Processes an item's NBT before setting again.
-     *
-     * @param item      The item to process.
-     * @param processor The processor.
-     * @return Returns the given item with the processed NBT, or null if it could not be successfully processed.
-     */
-    @Nullable
-    public static ItemStack processItem(final ItemStack item,
-                                        @NotNull final Consumer<NBTCompound> processor) {
-        final net.minecraft.world.item.ItemStack nmsItem = ItemUtils.getNMSItemStack(item);
-        if (nmsItem == net.minecraft.world.item.ItemStack.EMPTY) {
-            return null;
-        }
-        final var nbt = new NBTCompound(nmsItem.getOrCreateTag());
-        try {
-            processor.accept(nbt);
-        } catch (final Throwable exception) {
-            LOGGER.log(Level.WARNING, "Could not process item NBT!", exception);
-            return null;
-        }
-        return nmsItem.getBukkitStack();
-    }
-
     @Beta
-    public static CompoundTag fromMap(final Map<String, Object> data) {
-        return (CompoundTag) CraftNBTTagConfigSerializer.deserialize(data);
-    }
+	public static CompoundTag fromMap(final Map<String, Object> data) {
+		return (CompoundTag) CraftNBTTagConfigSerializer.deserialize(data);
+	}
 
     @Beta
     public static ListTag fromList(final List<Object> data) {
