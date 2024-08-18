@@ -5,7 +5,7 @@ authors: [ ProgrammerDan, Maxopoly ]
 version: ${version}
 depend: [ CivModCore ]
 softdepend: [ CombatTagPlus, NameLayer, Citadel, ProtocolLib, BanStick, ExilePearl ]
-api-version: 1.20
+api-version: 1.20.6
 commands:
   hacks:
     description: Shows the various hacks and fixes supported by this plugin and controls them
@@ -31,9 +31,9 @@ commands:
     usage: /<command>
     permission: simpleadmin.copyprotect
   serialize:
-    description: Print to console the object held as serialized yaml
+    description: Serialize a held item to YAML
     usage: /<command>
-    permission: simpleadmin.hacks
+    permission: simpleadmin.serialize
   introkit:
     description: Give a player the currently configured introkit
     usage: /<command> [playername|UUID]

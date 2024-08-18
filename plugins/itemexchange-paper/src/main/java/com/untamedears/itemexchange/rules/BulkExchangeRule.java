@@ -2,21 +2,21 @@ package com.untamedears.itemexchange.rules;
 
 import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
-import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
-import vg.civcraft.mc.civmodcore.nbt.NBTType;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData {
@@ -52,11 +52,16 @@ public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData
     }
 
     public ItemStack toItem() {
-        final ItemStack item = NBTSerialization.processItem(ItemExchangeConfig.getRuleItem(), (nbt) -> {
-            final var ruleNBT = new NBTCompound();
-            toNBT(ruleNBT);
-            nbt.setCompound(BULK_KEY, ruleNBT);
-        });
+        ItemStack item = ItemExchangeConfig.getRuleItem();
+		final var itemNBT = new NBTCompound();
+		toNBT(itemNBT);
+
+		CustomData customData = CustomData.EMPTY.update(nbt -> nbt.put(BULK_KEY, itemNBT.getRAW()));
+
+		net.minecraft.world.item.ItemStack nmsItem = ItemUtils.getNMSItemStack(item);
+		nmsItem.set(DataComponents.CUSTOM_DATA, customData);
+		item = nmsItem.getBukkitStack();
+
         ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
             meta.displayName(Component.text()
                 .color(NamedTextColor.RED)
@@ -77,14 +82,11 @@ public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData
             || item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
             return null;
         }
-        final var meta = item.getItemMeta();
-        if (meta == null) {
-            return null;
-        }
-        // From NBT
-        final var itemNBT = NBTSerialization.fromItem(item);
-        if (itemNBT.hasKeyOfType(BULK_KEY, NBTType.COMPOUND)) {
-            final var rulesNBT = itemNBT.getCompound(BULK_KEY).getCompoundArray(RULES_KEY);
+        final CustomData itemNBT = ItemUtils.getNMSItemStack(item).get(DataComponents.CUSTOM_DATA);
+        if (itemNBT.copyTag().contains(BULK_KEY)) {
+            var t = new NBTCompound(itemNBT.copyTag());
+
+            final var rulesNBT = t.getCompound(BULK_KEY).getCompoundArray(RULES_KEY);
             final var rules = new ArrayList<ExchangeRule>(rulesNBT.length);
             for (final var ruleNBT : rulesNBT) {
                 rules.add(ExchangeRule.fromNBT(ruleNBT));

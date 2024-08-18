@@ -20,8 +20,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -181,14 +181,14 @@ public final class AntiFastBreak extends BasicHack {
         // calling "getDestroySpeed(this,blockData)" in n.m.s.ItemStack
         float damagePerTick = CraftItemStack.asNMSCopy(tool).getDestroySpeed(blockData);
         // above method does not include efficiency or haste, so we add it ourselves
-        final int effLevel = tool.getEnchantmentLevel(Enchantment.DIG_SPEED);
+        final int effLevel = tool.getEnchantmentLevel(Enchantment.EFFICIENCY);
         int efficiencyBonus = 0;
         if (effLevel > 0 && damagePerTick > 1.0) { //damage per tick greater than 1.0 signals proper tool
             efficiencyBonus = effLevel * effLevel + 1;
         }
         damagePerTick += efficiencyBonus;
         int hasteLevel = 0;
-        final PotionEffect hasteEffect = player.getPotionEffect(PotionEffectType.FAST_DIGGING);
+        final PotionEffect hasteEffect = player.getPotionEffect(PotionEffectType.HASTE);
         if (hasteEffect != null) {
             // amplifier of 0 is potion effect at level one
             hasteLevel = hasteEffect.getAmplifier() + 1;

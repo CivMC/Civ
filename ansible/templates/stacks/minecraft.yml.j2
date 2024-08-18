@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   waterfall:
-    image: itzg/bungeecord@sha256:7e7eeb9023cc213de2ca7ecbcf2cccc506fd46a31346f7250d2fcc5637cf5bb7
+    image: itzg/mc-proxy@sha256:e0536c92227905b6b0388eb04f640859e674c61068061d2a4db6ba631c79008b
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -37,7 +37,7 @@ services:
       - /opt/stacks/minecraft/proxy-plugins:/plugins
 
   paper:
-    image: itzg/minecraft-server@sha256:491e37fa63ffef22c9ac1f6ec2fb4cc793735799cd91bafa1e5790aa39e9b313
+    image: itzg/minecraft-server@sha256:ec899160155b3d15c243845bab9ef20ab800d1cc5f38765f45aca1dcc3ccd5c6
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -51,7 +51,7 @@ services:
         mode: host
     environment:
       TYPE: 'paper'
-      VERSION: '1.20.4'
+      VERSION: '1.20.6'
       EULA: 'TRUE'
 
       REMOVE_OLD_MODS: 'TRUE'
@@ -90,6 +90,8 @@ services:
       CIV_RABBITMQ_USERNAME: rabbitmq
       CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
 
+      WATCHDOG_TIMEOUT_TIME: 60
+
     volumes:
       # Persistence
       - /opt/stacks/minecraft/paper-data:/data
@@ -114,7 +116,7 @@ services:
       - /opt/PrivateConfig/paper/config/EvenMoreFish/rarities.yml:/config/plugins/EvenMoreFish/rarities.yml
       - /opt/PrivateConfig/paper/config/EvenMoreFish/competitions.yml:/config/plugins/EvenMoreFish/competitions.yml
       - /opt/PrivateConfig/paper/config/RandomSpawn/worlds.yml:/config/plugins/RandomSpawn/worlds.yml
-      
+
     deploy:
       placement:
         constraints: [node.role == manager]

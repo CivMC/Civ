@@ -43,11 +43,12 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.craftbukkit.v1_20_R3.block.data.CraftBlockData;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemFactory;
-import org.bukkit.craftbukkit.v1_20_R3.util.CraftMagicNumbers;
-import org.bukkit.craftbukkit.v1_20_R3.util.Versioning;
+import org.bukkit.craftbukkit.block.data.CraftBlockData;
+import org.bukkit.craftbukkit.inventory.CraftItemFactory;
+import org.bukkit.craftbukkit.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.util.Versioning;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityFactory;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
 import org.bukkit.event.inventory.InventoryType;
@@ -122,7 +123,12 @@ public class PseudoServer implements Server {
         return CraftItemFactory.instance();
     }
 
-    @Nonnull
+    @Override
+	public @NotNull EntityFactory getEntityFactory() {
+		return null;
+	}
+
+	@Nonnull
     @Override
     public UnsafeValues getUnsafe() {
         return CraftMagicNumbers.INSTANCE;
@@ -131,7 +137,7 @@ public class PseudoServer implements Server {
     @Nonnull
     @Override
     public BlockData createBlockData(@Nonnull final Material material) {
-        return CraftBlockData.newData(material, null);
+        return CraftBlockData.newData(material.asBlockType(), null);
     }
 
     @Override
@@ -636,6 +642,11 @@ public class PseudoServer implements Server {
     public boolean isEnforcingSecureProfiles() {
         return false;
     }
+
+	@Override
+	public boolean isAcceptingTransfers() {
+		return false;
+	}
 
     @Override
     public boolean getHideOnlinePlayers() {

@@ -30,6 +30,10 @@ dependencies {
 val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {
     dependsOn(paperPlugin)
 
+    doFirst {
+        project.delete(files("$buildDir/paper-plugins"))
+    }
+
     from("$projectDir/src/paper-plugins")
     from(paperPlugin.resolvedConfiguration.resolvedArtifacts.map { it.file })
     into("$buildDir/paper-plugins")
@@ -37,6 +41,10 @@ val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {
 
 val copyProxyPlugins = tasks.register<Copy>("copyProxyPlugins") {
     dependsOn(proxyPlugin)
+
+    doFirst {
+        project.delete(files("$buildDir/proxy-plugins"))
+    }
 
     from("$projectDir/src/proxy-plugins")
     from(proxyPlugin.resolvedConfiguration.resolvedArtifacts.map { it.file })
