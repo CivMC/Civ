@@ -15,6 +15,8 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -26,9 +28,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class AttrHider extends BasicHack {
 
@@ -169,7 +168,7 @@ public final class AttrHider extends BasicHack {
                     }
                     final PacketContainer cloned = packet.deepClone();
                     List<PlayerInfoData> newInfos = new ArrayList<>();
-                    List<PlayerInfoData> oldInfos = cloned.getPlayerInfoDataLists().read(0);
+                    List<PlayerInfoData> oldInfos = cloned.getPlayerInfoDataLists().read(1);
                     for (PlayerInfoData oldInfo : oldInfos) {
                         if (oldInfo == null) continue;
 						int latency = oldInfo.getLatency();
@@ -181,11 +180,15 @@ public final class AttrHider extends BasicHack {
 						else if (latency < 600) latency = 450;
 						else if (latency < 1000) latency = 800;
 						else latency = 1000;
-						newInfos.add(new PlayerInfoData(
-								oldInfo.getProfile(),
-								latency,
-								oldInfo.getGameMode(),
-								oldInfo.getDisplayName()));
+                        newInfos.add(new PlayerInfoData(
+                            oldInfo.getProfileId(),
+                            latency,
+                            oldInfo.isListed(),
+                            oldInfo.getGameMode(),
+                            oldInfo.getProfile(),
+                            oldInfo.getDisplayName(),
+                            oldInfo.getRemoteChatSessionData()
+                        ));
 					}
 					cloned.getPlayerInfoDataLists().write(1, newInfos);
                     // The packet data is shared between events, but the event
