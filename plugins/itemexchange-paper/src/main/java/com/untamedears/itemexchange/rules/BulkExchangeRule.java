@@ -83,7 +83,7 @@ public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData
             return null;
         }
         final CustomData itemNBT = ItemUtils.getNMSItemStack(item).get(DataComponents.CUSTOM_DATA);
-        if (itemNBT.copyTag().contains(BULK_KEY)) {
+        if (itemNBT != null && itemNBT.copyTag().contains(BULK_KEY)) {
             var t = new NBTCompound(itemNBT.copyTag());
 
             final var rulesNBT = t.getCompound(BULK_KEY).getCompoundArray(RULES_KEY);
