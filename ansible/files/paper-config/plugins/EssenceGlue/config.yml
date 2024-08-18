@@ -11,19 +11,29 @@ multiply_pearl_cost: false
 
 login_reward:
   essence:
-     material: ENDER_EYE
-     name: Player Essence
-     amount: 4
-     lore:
-      - Activity reward used to fuel pearls
+    v: 3839
+    ==: org.bukkit.inventory.ItemStack
+    type: ENDER_EYE
+    amount: 4
+    meta:
+      meta-type: UNSPECIFIC
+      ==: ItemMeta
+      display-name: Player Essence
+      lore:
+        - Activity reward used to fuel pearls
 
 voting_reward:
   essence:
-     material: ENDER_EYE
-     name: Player Essence
-     amount: 1
-     lore:
-      - Activity reward used to fuel pearls
+    v: 3839
+    ==: org.bukkit.inventory.ItemStack
+    type: ENDER_EYE
+    amount: 1
+    meta:
+      meta-type: UNSPECIFIC
+      ==: ItemMeta
+      display-name: Player Essence
+      lore:
+        - Activity reward used to fuel pearls
 
 voting_sites:
   minecraftmp:
