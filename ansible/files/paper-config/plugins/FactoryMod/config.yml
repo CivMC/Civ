@@ -1230,6 +1230,8 @@ factories:
       - craft_piglin_banner_pattern
       - craft_creeper_banner_pattern
       - craft_thing_banner_pattern
+      - craft_flow_banner_pattern
+      - craft_guster_banner_pattern
   research_station:
     type: FCC
     name: Research Station
@@ -10655,6 +10657,58 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MOJANG_BANNER_PATTERN
+        amount: 1
+  craft_guster_banner_pattern:
+    type: PRODUCTION
+    name: Craft Guster Banner Pattern
+    production_time: 4s
+    input:
+      paper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 1
+      armadillo_spawn_egg:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ARMADILLO_SPAWN_EGG
+        amount: 1
+      pitcher_plant:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PITCHER_PLANT
+        amount: 8
+    output:
+      guster_banner_pattern:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GUSTER_BANNER_PATTERN
+        amount: 1
+  craft_flow_banner_pattern:
+    type: PRODUCTION
+    name: Craft Flow Banner Pattern
+    production_time: 4s
+    input:
+      paper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 1
+      blaze_rod:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BLAZE_ROD
+        amount: 8
+      flow_template:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: FLOW_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 1
+    output:
+      flow_banner_pattern:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: FLOW_BANNER_PATTERN
         amount: 1
   repair_printer:
     forceInclude: true
