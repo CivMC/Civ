@@ -1,5 +1,3 @@
-import org.gradle.api.artifacts.Dependency.ARCHIVES_CONFIGURATION
-
 val paperPlugin by configurations.creating
 val proxyPlugin by configurations.creating
 
