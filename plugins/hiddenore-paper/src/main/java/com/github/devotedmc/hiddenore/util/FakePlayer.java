@@ -51,6 +51,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Note;
 import org.bukkit.Particle;
 import org.bukkit.Server;
+import org.bukkit.ServerLinks;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.Statistic;
@@ -111,6 +112,7 @@ import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
 
+@SuppressWarnings("removal")
 public class FakePlayer implements Player {
 
     private final ItemStack inHand;
@@ -3720,6 +3722,11 @@ public class FakePlayer implements Player {
 
     @Override
     public void sendHurtAnimation(float v) {
+
+    }
+
+    @Override
+    public void sendLinks(@NotNull ServerLinks serverLinks) {
 
     }
 

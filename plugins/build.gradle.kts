@@ -1,4 +1,3 @@
-import io.papermc.paperweight.tasks.RemapJar
 import io.papermc.paperweight.userdev.PaperweightUserExtension
 import xyz.jpenilla.runpaper.task.RunServer
 
@@ -12,6 +11,12 @@ subprojects {
         }
         withSourcesJar()
         withJavadocJar()
+    }
+
+    tasks.withType<Javadoc> {
+        options {
+            (this as CoreJavadocOptions).addBooleanOption("Xdoclint:none", true)
+        }
     }
 
     tasks.withType<JavaCompile> {
