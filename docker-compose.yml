@@ -20,7 +20,7 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      WATERFALL_VERSION: '1.20'
+      WATERFALL_VERSION: '1.21'
       TYPE: 'WATERFALL'
 
       REPLACE_ENV_VARIABLES: 'true'
@@ -50,7 +50,7 @@ services:
         condition: service_healthy
     environment:
       TYPE: 'paper'
-      VERSION: '1.20.6'
+      VERSION: '1.21.1'
       EULA: 'TRUE'
 
       REMOVE_OLD_MODS: 'TRUE'

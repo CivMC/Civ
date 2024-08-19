@@ -4,18 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import org.bukkit.Location;
-import org.bukkit.pseudo.PseudoServer;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 public class NBTTests {
-
-    @BeforeAll
-    public static void setupBukkit() {
-        PseudoServer.setup();
-    }
 
     @Test
     public void testStringSerialization() {

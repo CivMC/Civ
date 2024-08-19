@@ -1115,6 +1115,9 @@ factories:
     recipes:
       - make_bastion
       - make_city_bastion
+      - crush_disc_precipice
+      - crush_disc_creator
+      - crush_disc_creator_music_box
       - repair_bastion
   basic_cauldron:
     type: FCC
@@ -1278,6 +1281,8 @@ factories:
       - fabricate_rib_trim
       - fabricate_eye_trim
       - fabricate_spire_trim
+      - fabricate_bolt_trim
+      - fabricate_flow_trim
       - repair_station
   concrete_mixer:
     type: FCC
@@ -2140,7 +2145,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GLASS
-        amount: 128      
+        amount: 128
   smelt_netherrack:
     production_time: 4s
     name: Smelt Netherrack
@@ -2434,7 +2439,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BUCKET
-        amount: 1  
+        amount: 1
   make_packed_mud:
     forceInclude: true
     production_time: 4s
@@ -2488,7 +2493,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: YELLOW_DYE
-        amount: 8        
+        amount: 8
     output:
       end_stone:
         v: 3839
@@ -10115,6 +10120,80 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE
         amount: 32
+  fabricate_bolt_trim:
+    type: PRODUCTION
+    name: Fabricate Bolt Trim
+    production_time: 4s
+    input:
+      fragment:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 2
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Tricky Trim Fragment
+          lore:
+          - Used to produce trims in the Research Station
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 168
+      honey_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: HONEY_BLOCK
+        amount: 64
+      copper_bulb:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_BULB
+        amount: 64
+    output:
+      trim:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BOLT_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
+  fabricate_flow_trim:
+    type: PRODUCTION
+    name: Fabricate Flow Trim
+    production_time: 4s
+    input:
+      fragment:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 2
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Tricky Trim Fragment
+          lore:
+          - Used to produce trims in the Research Station
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 168
+      slime_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SLIME_BLOCK
+        amount: 64
+      armadillo_scute:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ARMADILLO_SCUTE
+        amount: 64
+    output:
+      trim:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: FLOW_ARMOR_TRIM_SMITHING_TEMPLATE
+        amount: 32
   wordbank_item:
     type: WORDBANK
     name: Generate item name
@@ -10203,7 +10282,7 @@ recipes:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: BREAD
-          amount: 8             
+          amount: 8
     #Good Loot--- 30%
       ironingot:
         chance: 0.0375
@@ -10343,12 +10422,12 @@ recipes:
             ==: ItemMeta
             display-name: §dDeviled Eggs
             lore:
-              - Egg 
-              - Mayonnaise 
-              - Mustard 
-              - Paprika 
-              - Salt 
-              - Pepper 
+              - Egg
+              - Mayonnaise
+              - Mustard
+              - Paprika
+              - Salt
+              - Pepper
       recipe6:
         chance: 0.01
         recipe6:
@@ -10576,7 +10655,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MOJANG_BANNER_PATTERN
-        amount: 1   
+        amount: 1
   repair_printer:
     forceInclude: true
     type: REPAIR
@@ -10594,7 +10673,7 @@ recipes:
         type: PAPER
         amount: 6
     health_gained: 10000
-  repair_station:     
+  repair_station:
     forceInclude: true
     type: REPAIR
     name: Repair Station
@@ -10854,7 +10933,7 @@ recipes:
           amount: 1
       gravel:
         chance: 0.175
-        gravel: 
+        gravel:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GRAVEL
@@ -10866,9 +10945,9 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: TERRACOTTA
           amount: 1
-      # Spawn eggs - 2% of total (0.00046511628 each)
+      # Spawn eggs - 2% of total (0.00045454545 each)
       vindicator:
-        chance: 0.00046511628
+        chance: 0.00045454545
         vindicator:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
@@ -10877,7 +10956,7 @@ recipes:
           entity_data:
             id: "minecraft:vindication_illager"
       vex:
-        chance: 0.00046511628
+        chance: 0.00045454545
         vex:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
@@ -10886,7 +10965,7 @@ recipes:
           entity_data:
             id: "minecraft:vex"
       silverfish:
-        chance: 0.00046511628
+        chance: 0.00045454545
         silverfish:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
@@ -10895,7 +10974,7 @@ recipes:
           entity_data:
             id: "minecraft:silverfish"
       endermite:
-        chance: 0.00046511628
+        chance: 0.00045454545
         endermite:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
@@ -10904,7 +10983,7 @@ recipes:
           entity_data:
             id: "minecraft:endermite"
       zombiehorse:
-        chance: 0.00046511628
+        chance: 0.00045454545
         zombiehorse:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
@@ -10913,7 +10992,7 @@ recipes:
           entity_data:
             id: "minecraft:zombie_horse"
       skeletonhorse:
-        chance: 0.00046511628
+        chance: 0.00045454545
         skeletonhorse:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
@@ -10922,7 +11001,7 @@ recipes:
           entity_data:
             id: "minecraft:skeleton_horse"
       donkey:
-        chance: 0.00046511628
+        chance: 0.00045454545
         donkey:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
@@ -10931,7 +11010,7 @@ recipes:
           entity_data:
             id: "minecraft:donkey"
       polarbear:
-        chance: 0.00046511628
+        chance: 0.00045454545
         polarbear:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
@@ -10940,7 +11019,7 @@ recipes:
           entity_data:
             id: "minecraft:polar_bear"
       parrot:
-        chance: 0.00046511628
+        chance: 0.00045454545
         parrot:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
@@ -10949,7 +11028,7 @@ recipes:
           entity_data:
             id: "minecraft:parrot"
       llama:
-        chance: 0.00046511628
+        chance: 0.00045454545
         llama:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
@@ -10958,348 +11037,376 @@ recipes:
           entity_data:
             id: "minecraft:llama"
       fox:
-        chance: 0.00046511628
+        chance: 0.00045454545
         fox:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: FOX_SPAWN_EGG
           amount: 1
       cat:
-        chance: 0.00046511628
+        chance: 0.00045454545
         cat:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: CAT_SPAWN_EGG
           amount: 1
       mooshroom:
-        chance: 0.00046511628
+        chance: 0.00045454545
         mooshroom:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MOOSHROOM_SPAWN_EGG
           amount: 1
       horse:
-        chance: 0.00046511628
+        chance: 0.00045454545
         horse:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: HORSE_SPAWN_EGG
           amount: 1
       rabbit:
-        chance: 0.00046511628
+        chance: 0.00045454545
         rabbit:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: RABBIT_SPAWN_EGG
           amount: 1
       ocelot:
-        chance: 0.00046511628
+        chance: 0.00045454545
         ocelot:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: OCELOT_SPAWN_EGG
           amount: 1
       squid:
-        chance: 0.00046511628
+        chance: 0.00045454545
         squid:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: SQUID_SPAWN_EGG
           amount: 1
       wolf:
-        chance: 0.00046511628
+        chance: 0.00045454545
         wolf:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: WOLF_SPAWN_EGG
           amount: 1
       axolotl:
-        chance: 0.00046511628
+        chance: 0.00045454545
         axolotl:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: AXOLOTL_SPAWN_EGG
           amount: 1
       bee:
-        chance: 0.00046511628
+        chance: 0.00045454545
         bee:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: BEE_SPAWN_EGG
           amount: 1
       panda:
-        chance: 0.00046511628
+        chance: 0.00045454545
         panda:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: PANDA_SPAWN_EGG
           amount: 1
       dolphin:
-        chance: 0.00046511628
+        chance: 0.00045454545
         dolphin:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: DOLPHIN_SPAWN_EGG
           amount: 1
       stray:
-        chance: 0.00046511628
+        chance: 0.00045454545
         stray:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: STRAY_SPAWN_EGG
           amount: 1
       strider:
-        chance: 0.00046511628
+        chance: 0.00045454545
         strider:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: STRIDER_SPAWN_EGG
           amount: 1
       hoglin:
-        chance: 0.00046511628
+        chance: 0.00045454545
         hoglin:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: HOGLIN_SPAWN_EGG
           amount: 1
       creeper:
-        chance: 0.00046511628
+        chance: 0.00045454545
         creeper:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: CREEPER_SPAWN_EGG
           amount: 1
       zombie:
-        chance: 0.00046511628
+        chance: 0.00045454545
         zombie:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: ZOMBIE_SPAWN_EGG
           amount: 1
       skeleton:
-        chance: 0.00046511628
+        chance: 0.00045454545
         skeleton:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: SKELETON_SPAWN_EGG
           amount: 1
       spider:
-        chance: 0.00046511628
+        chance: 0.00045454545
         spider:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: SPIDER_SPAWN_EGG
           amount: 1
       blaze:
-        chance: 0.00046511628
+        chance: 0.00045454545
         blaze:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: BLAZE_SPAWN_EGG
           amount: 1
       ghast:
-        chance: 0.00046511628
+        chance: 0.00045454545
         ghast:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GHAST_SPAWN_EGG
           amount: 1
       guardian:
-        chance: 0.00046511628
+        chance: 0.00045454545
         guardian:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GUARDIAN_SPAWN_EGG
           amount: 1
       magmacube:
-        chance: 0.00046511628
+        chance: 0.00045454545
         magmacube:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MAGMA_CUBE_SPAWN_EGG
           amount: 1
       slime:
-        chance: 0.00046511628
+        chance: 0.00045454545
         slime:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: SLIME_SPAWN_EGG
           amount: 1
       witch:
-        chance: 0.00046511628
+        chance: 0.00045454545
         witch:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: WITCH_SPAWN_EGG
           amount: 1
       villager:
-        chance: 0.00046511628
+        chance: 0.00045454545
         villager:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: VILLAGER_SPAWN_EGG
           amount: 1
       cavespider:
-        chance: 0.00046511628
+        chance: 0.00045454545
         cavespider:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: CAVE_SPIDER_SPAWN_EGG
           amount: 1
       enderman:
-        chance: 0.00046511628
+        chance: 0.00045454545
         enderman:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: ENDERMAN_SPAWN_EGG
           amount: 1
       zombiepigman:
-        chance: 0.00046511628
+        chance: 0.00045454545
         zombiepigman:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: ZOMBIFIED_PIGLIN_SPAWN_EGG
           amount: 1
       Camel:
-        chance: 0.00046511628
+        chance: 0.00045454545
         Camel:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: CAMEL_SPAWN_EGG
           amount: 1
       Frog:
-        chance: 0.00046511628
+        chance: 0.00045454545
         Frog:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: FROG_SPAWN_EGG
           amount: 1
       Sniffer:
-        chance: 0.00046511628
+        chance: 0.00045454545
         Sniffer:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: SNIFFER_EGG
           amount: 1
       Armadillo:
-        chance: 0.00046511628
+        chance: 0.00045454545
         Armadillo:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: ARMADILLO_SPAWN_EGG
           amount: 1
-      # Music Disks - 1% of total (0.000625 each)
+      Bogged:
+        chance: 0.00045454545
+        Bogged:
+          v: 3839
+          ==: org.bukkit.inventory.ItemStack
+          type: ARMADILLO_SPAWN_EGG
+          amount: 1
+      # Music Disks - 1% of total (0.000526 each)
       record_13:
-        chance: 0.000625
+        chance: 0.000526
         record_13:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_13
           amount: 1
       record_cats:
-        chance: 0.000625
+        chance: 0.000526
         record_cats:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_CAT
           amount: 1
       record_blocks:
-        chance: 0.000625
+        chance: 0.000526
         record_blocks:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_BLOCKS
           amount: 1
       record_chirp:
-        chance: 0.000625
+        chance: 0.000526
         record_chirp:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_CHIRP
           amount: 1
       record_far:
-        chance: 0.000625
+        chance: 0.000526
         record_far:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_FAR
           amount: 1
       record_mall:
-        chance: 0.000625
+        chance: 0.000526
         record_mall:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_MALL
           amount: 1
       record_mellohi:
-        chance: 0.000625
+        chance: 0.000526
         record_mellohi:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_MELLOHI
           amount: 1
       record_stal:
-        chance: 0.000625
+        chance: 0.000526
         record_stal:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_STAL
           amount: 1
       record_strad:
-        chance: 0.000625
+        chance: 0.000526
         record_strad:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_STRAD
           amount: 1
       record_ward:
-        chance: 0.000625
+        chance: 0.000526
         record_ward:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_WARD
           amount: 1
       record_11:
-        chance: 0.000625
+        chance: 0.000526
         record_11:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_11
           amount: 1
       record_wait:
-        chance: 0.000625
+        chance: 0.000526
         record_wait:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_WAIT
           amount: 1
       record_pigstep:
-        chance: 0.000625
+        chance: 0.000526
         record_pigstep:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_PIGSTEP
           amount: 1
       record_otherside:
-        chance: 0.000625
-        record_otherside: 
+        chance: 0.000526
+        record_otherside:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_OTHERSIDE
           amount: 1
       record_relic:
-        chance: 0.000625
-        record_relic: 
+        chance: 0.000526
+        record_relic:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_RELIC
           amount: 1
       record_5:
-        chance: 0.000625
-        record_5: 
+        chance: 0.000526
+        record_5:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_5
+          amount: 1
+      record_precipice:
+        chance: 0.000526
+        record_5:
+          v: 3839
+          ==: org.bukkit.inventory.ItemStack
+          type: MUSIC_DISC_PRECIPICE
+          amount: 1
+      record_creator:
+        chance: 0.000526
+        record_5:
+          v: 3839
+          ==: org.bukkit.inventory.ItemStack
+          type: MUSIC_DISC_CREATOR
+          amount: 1
+      record_creator_music_box:
+        chance: 0.000526
+        record_5:
+          v: 3839
+          ==: org.bukkit.inventory.ItemStack
+          type: MUSIC_DISC_CREATOR_MUSIC_BOX
           amount: 1
       #Resources - 25% (Divided seperately over all below)
       iron_ingot:
@@ -11485,10 +11592,11 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: ENCHANTED_BOOK
           amount: 1
-          stored_enchants:
-            unbreaking3:
-              enchant: unbreaking
-              level: 3
+          meta:
+            meta-type: ENCHANTED
+            ==: ItemMeta
+            stored-enchants:
+              unbreaking: 3
       efficiency_5_book:
         chance: 0.0005
         efficiency_5_book:
@@ -11496,10 +11604,11 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: ENCHANTED_BOOK
           amount: 1
-          stored_enchants:
-            efficiency5:
-              enchant: efficiency
-              level: 5
+          meta:
+            meta-type: ENCHANTED
+            ==: ItemMeta
+            stored-enchants:
+              efficiency: 5
       silk_touch_book:
         chance: 0.0005
         silk_touch_book:
@@ -11507,10 +11616,11 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: ENCHANTED_BOOK
           amount: 1
-          stored_enchants:
-            silktouch:
-              enchant: silk_touch
-              level: 1
+          meta:
+            meta-type: ENCHANTED
+            ==: ItemMeta
+            stored-enchants:
+              silk_touch: 1
       sharpness_book:
         chance: 0.0005
         sharpness_book:
@@ -11518,10 +11628,11 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: ENCHANTED_BOOK
           amount: 1
-          stored_enchants:
-            sharpness5:
-              enchant: sharpness
-              level: 5
+          meta:
+            meta-type: ENCHANTED
+            ==: ItemMeta
+            stored-enchants:
+              sharpness: 5
       power_5_book:
         chance: 0.0005
         power_5_book:
@@ -11529,10 +11640,11 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: ENCHANTED_BOOK
           amount: 1
-          stored_enchants:
-            power5:
-              enchant: power
-              level: 5
+          meta:
+            meta-type: ENCHANTED
+            ==: ItemMeta
+            stored-enchants:
+              power: 5
       fortune_3_book:
         chance: 0.0005
         fortune_3_book:
@@ -11540,10 +11652,11 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: ENCHANTED_BOOK
           amount: 1
-          stored_enchants:
-            fortune3:
-              enchant: fortune
-              level: 3
+          meta:
+            meta-type: ENCHANTED
+            ==: ItemMeta
+            stored-enchants:
+              fortune: 3
       protection_4_book:
         chance: 0.0005
         protection_4_book:
@@ -11551,10 +11664,11 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: ENCHANTED_BOOK
           amount: 1
-          stored_enchants:
-            protection4:
-              enchant: protection
-              level: 4
+          meta:
+            meta-type: ENCHANTED
+            ==: ItemMeta
+            stored-enchants:
+              protection: 4
       depth_strider_3_book:
         chance: 0.0005
         depth_strider_3_book:
@@ -11562,10 +11676,11 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: ENCHANTED_BOOK
           amount: 1
-          stored_enchants:
-            depthstrider3:
-              enchant: depth_strider
-              level: 3
+          meta:
+            meta-type: ENCHANTED
+            ==: ItemMeta
+            stored-enchants:
+              depth_strider: 3
       aqua_affinity_book:
         chance: 0.0005
         aqua_affinity_book:
@@ -11573,10 +11688,11 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: ENCHANTED_BOOK
           amount: 1
-          stored_enchants:
-            aquaaffinity:
-              enchant: aqua_affinity
-              level: 1
+          meta:
+            meta-type: ENCHANTED
+            ==: ItemMeta
+            stored-enchants:
+              aqua_affinity: 1
       infinity_book:
         chance: 0.0005
         infinity_book:
@@ -11584,10 +11700,11 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: ENCHANTED_BOOK
           amount: 1
-          stored_enchants:
-            infinity:
-              enchant: infinity
-              level: 1
+          meta:
+            meta-type: ENCHANTED
+            ==: ItemMeta
+            stored-enchants:
+              infinity: 1
       looting_3_book:
         chance: 0.0005
         looting_3_book:
@@ -11595,10 +11712,11 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: ENCHANTED_BOOK
           amount: 1
-          stored_enchants:
-            looting3:
-              enchant: looting
-              level: 3
+          meta:
+            meta-type: ENCHANTED
+            ==: ItemMeta
+            stored-enchants:
+              looting: 3
       # special - 1% (Divided seperatly over all below)
       dragon_egg:
         chance: 0.0000000001
@@ -11748,7 +11866,7 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIRT
         amount: 16
-    health_gained: 10000  
+    health_gained: 10000
   repair_gold_forge:
     production_time: 4s
     name: Repair Factory
@@ -11803,7 +11921,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MANGROVE_PROPAGULE
-        amount: 32  
+        amount: 32
   grow_flowering_azalea_leaves:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -11988,7 +12106,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MUSHROOM_STEM
-        amount: 16 
+        amount: 16
   grow_sculk:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -13595,7 +13713,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13618,7 +13736,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13641,7 +13759,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13664,7 +13782,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13687,7 +13805,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13710,7 +13828,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13733,7 +13851,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13756,7 +13874,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13779,7 +13897,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13802,7 +13920,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13825,7 +13943,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13848,7 +13966,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13871,7 +13989,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13894,7 +14012,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13917,7 +14035,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -13940,10 +14058,79 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: PAPER
-        amount: 1  
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           display-name: Forest Trim Fragment
+          lore:
+          - Used to produce trims in the Research Station
+  crush_disc_precipice:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Precipice'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: MUSIC_DISC_PRECIPICE
+        amount: 1
+    output:
+      fragment:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Tricky Trim Fragment
+          lore:
+          - Used to produce trims in the Research Station
+  crush_disc_creator:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Creator'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: MUSIC_DISC_CREATOR
+        amount: 1
+    output:
+      fragment:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Tricky Trim Fragment
+          lore:
+          - Used to produce trims in the Research Station
+  crush_disc_creator_music_box:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: 'Crush ''Creator (Music Box)'' disc'
+    type: PRODUCTION
+    input:
+      disc:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: MUSIC_DISC_CREATOR_MUSIC_BOX
+        amount: 1
+    output:
+      fragment:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PAPER
+        amount: 1
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Tricky Trim Fragment
           lore:
           - Used to produce trims in the Research Station
