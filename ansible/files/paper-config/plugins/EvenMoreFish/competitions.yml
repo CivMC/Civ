@@ -1,6 +1,4 @@
-competitions:
-    # When should the plugin broadcast the time remaining? (time-alert in messages.yml) in the format MM:SS
-    alerts:
+competitions: {}
 
 # By copying and pasting competitions from the "competitions" section, you can make as many as you want. Please make sure that your
 # competition names are all different, otherwise the system may behave unexpectedly.
