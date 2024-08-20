@@ -3,6 +3,7 @@ package com.github.maxopoly.finale.listeners;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.misc.ArmourModifier;
 import com.github.maxopoly.finale.misc.ItemUtil;
+import com.github.maxopoly.finale.misc.Slot;
 import com.github.maxopoly.finale.misc.WeaponModifier;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.event.EventHandler;
@@ -41,9 +42,11 @@ public class WeaponModificationListener implements Listener {
                 knockbackResistance = ItemUtil.getDefaultKnockbackResistance(is);
             }
 
+            Slot slot = Slot.getArmourSlot(is);
+
             im.removeAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS);
             im.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS,
-                new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(),
+                new org.bukkit.attribute.AttributeModifier(new UUID(slot.getUuidMost(), slot.getUuidLeast()),
                     "generic.knockbackResistance",
                     knockbackResistance,
                     org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
@@ -52,7 +55,7 @@ public class WeaponModificationListener implements Listener {
 
             im.removeAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS);
             im.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS,
-                new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(),
+                new org.bukkit.attribute.AttributeModifier(new UUID(slot.getUuidMost(), slot.getUuidLeast()),
                     "generic.armorToughness",
                     toughness,
                     org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
@@ -61,7 +64,7 @@ public class WeaponModificationListener implements Listener {
 
             im.removeAttributeModifier(Attribute.GENERIC_ARMOR);
             im.addAttributeModifier(Attribute.GENERIC_ARMOR,
-                new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(),
+                new org.bukkit.attribute.AttributeModifier(new UUID(slot.getUuidMost(), slot.getUuidLeast()),
                     "generic.armor",
                     armour,
                     org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
@@ -75,9 +78,11 @@ public class WeaponModificationListener implements Listener {
         double adjustedAttackSpeed = weaponMod.getAttackSpeed(is.getType());
 
         if (adjustedAttackSpeed != -1.0 || adjustedDamage != -1) {
+            Slot slot = Slot.MAIN_HAND;
+
             im.removeAttributeModifier(Attribute.GENERIC_ATTACK_SPEED);
             im.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED,
-                new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(),
+                new org.bukkit.attribute.AttributeModifier(new UUID(slot.getUuidMost(), slot.getUuidLeast()),
                     "generic.attackSpeed",
                     adjustedAttackSpeed,
                     org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
@@ -86,14 +91,14 @@ public class WeaponModificationListener implements Listener {
 
             im.removeAttributeModifier(Attribute.GENERIC_ATTACK_SPEED);
             im.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED,
-                new org.bukkit.attribute.AttributeModifier(UUID.randomUUID(),
+                new org.bukkit.attribute.AttributeModifier(new UUID(slot.getUuidMost(), slot.getUuidLeast()),
                     "generic.attackDamage",
                     adjustedDamage,
                     org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
                     EquipmentSlot.HAND)
             );
         }
-        e.getCurrentItem().setItemMeta(im);
+        is.setItemMeta(im);
     }
 
 }
