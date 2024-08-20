@@ -44,8 +44,8 @@ public class WeaponModificationListener implements Listener {
 
             Slot slot = Slot.getArmourSlot(is);
 
-            im.removeAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS);
-            im.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS,
+            im.removeAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
+            im.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE,
                 new org.bukkit.attribute.AttributeModifier(new UUID(slot.getUuidMost(), slot.getUuidLeast()),
                     "generic.knockbackResistance",
                     knockbackResistance,
@@ -89,8 +89,8 @@ public class WeaponModificationListener implements Listener {
                     EquipmentSlot.HAND)
             );
 
-            im.removeAttributeModifier(Attribute.GENERIC_ATTACK_SPEED);
-            im.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED,
+            im.removeAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE);
+            im.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE,
                 new org.bukkit.attribute.AttributeModifier(new UUID(slot.getUuidMost(), slot.getUuidLeast()),
                     "generic.attackDamage",
                     adjustedDamage,
