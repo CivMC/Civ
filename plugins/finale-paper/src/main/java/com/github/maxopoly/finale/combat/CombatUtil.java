@@ -88,9 +88,9 @@ public class CombatUtil {
                     if (config.getCombatSounds().isKnockbackEnabled()) {
                         sendSoundEffect(attacker, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_KNOCKBACK, attacker.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
                     }
-//                    if (!config.isKnockbackSwordsEnabled()) {
+                    if (!config.isKnockbackSwordsEnabled()) {
                         ++knockbackLevel;
-//                    }
+                    }
                     dealtExtraKnockback = true;
                 }
 
@@ -124,7 +124,7 @@ public class CombatUtil {
                 Vec3 victimMot = victim.getDeltaMovement();
                 boolean damagedVictim = victim.hurt(damagesource, damage);
                 if (damagedVictim) {
-                    if (knockbackLevel > 0) {
+                    if (knockbackLevel > 0 || dealtExtraKnockback) {
                         if (victim instanceof LivingEntity) {
                             LivingEntity livingVictim = (LivingEntity) victim;
                             double kbResistance = livingVictim.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
