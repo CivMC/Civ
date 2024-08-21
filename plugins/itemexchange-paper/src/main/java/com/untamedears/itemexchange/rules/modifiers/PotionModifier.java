@@ -37,7 +37,7 @@ public final class PotionModifier extends ModifierData {
 
     @Override
     public PotionModifier construct(ItemStack item) {
-        if (!(item.getItemMeta() instanceof final PotionMeta meta)) {
+        if (!(item.getItemMeta() instanceof final PotionMeta meta) || meta.getBasePotionType() == null) {
             return null;
         }
         PotionModifier modifier = new PotionModifier();
@@ -81,10 +81,13 @@ public final class PotionModifier extends ModifierData {
             .toArray(NBTCompound[]::new));
     }
 
-    @Nonnull
     public static PotionModifier fromNBT(@Nonnull final NBTCompound nbt) {
         final var modifier = new PotionModifier();
-        modifier.setPotionData(NBTEncodings.decodePotionData(nbt.getCompound(BASE_KEY)));
+        PotionType type = NBTEncodings.decodePotionData(nbt.getCompound(BASE_KEY));
+        if (type == null) {
+            return null; // "UNCRAFTABLE" potion which is removed in 1.21
+        }
+        modifier.setPotionData(type);
         modifier.setEffects(Arrays.stream(nbt.getCompoundArray(EFFECTS_KEY))
             .map(NBTEncodings::decodePotionEffect)
             .collect(Collectors.toCollection(ArrayList::new)));

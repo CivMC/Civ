@@ -16,9 +16,9 @@ services:
         protocol: tcp
         mode: host
     environment:
-      WATERFALL_VERSION: '1.20'
+      WATERFALL_VERSION: '1.21'
       TYPE: 'WATERFALL'
-      WATERFALL_BUILD_ID: 577
+      WATERFALL_BUILD_ID: 579
 
       REPLACE_ENV_VARIABLES: 'true'
       REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
@@ -37,7 +37,7 @@ services:
       - /opt/stacks/minecraft/proxy-plugins:/plugins
 
   paper:
-    image: itzg/minecraft-server@sha256:ec899160155b3d15c243845bab9ef20ab800d1cc5f38765f45aca1dcc3ccd5c6
+    image: itzg/minecraft-server@sha256:42a4cff00c7f4d5981a1a40c6c8aedd3bb9c22aedd39c7f79331117114817a57
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -51,7 +51,7 @@ services:
         mode: host
     environment:
       TYPE: 'paper'
-      VERSION: '1.20.6'
+      VERSION: '1.21.1'
       EULA: 'TRUE'
 
       REMOVE_OLD_MODS: 'TRUE'

@@ -2,7 +2,7 @@ name: CivModCore
 version: ${version}
 authors: [ valadian, rourke750, ProgrammerDan, Maxopoly, DeadBeef, Protonull, Okx, mindless728, Tealnerd ]
 main: vg.civcraft.mc.civmodcore.CivModCorePlugin
-api-version: 1.20.6
+api-version: 1.21.1
 permissions:
   cmc.config.save:
     default: op

@@ -19,7 +19,6 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
@@ -35,9 +34,6 @@ import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CopperRail extends BasicHack {
-
-    // ServerLevel has a private version of this so we will make one ourselves
-    private final io.papermc.paper.util.math.ThreadUnsafeRandom randomTickRandom = new io.papermc.paper.util.math.ThreadUnsafeRandom(ThreadLocalRandom.current().nextLong());
 
     @AutoLoad
     private boolean deoxidise;
@@ -108,7 +104,7 @@ public class CopperRail extends BasicHack {
             // by placing waxed copper next to the rail, entirely preventing the rest of the rail from oxidising.
             WeatheringCopper copper = (WeatheringCopper) state.getBlock();
             float chanceModifier = copper.getChanceModifier();
-            if (this.damage * chanceModifier > this.randomTickRandom.nextFloat()) {
+            if (this.damage * chanceModifier > ThreadLocalRandom.current().nextFloat()) {
                 copper.getNext(state).ifPresent((iblockdata2) -> {
                     try {
                         formingBlock = true;
@@ -142,13 +138,11 @@ public class CopperRail extends BasicHack {
 
         boolean damaged = false;
         CraftPlayer player = (CraftPlayer) event.getPlayer();
-        net.minecraft.world.item.ItemStack handle = ((CraftItemStack) item).handle;
 
         while (previous.isPresent() && event.getItem().getType() != Material.AIR) {
             copperBlock.setType(previous.get().getBukkitMaterial());
             damaged = true;
 
-            // TODO: In 1.19 or above, this can be replaced with ItemStack#damage thanks to Paper
             item.damage(1, player);
             previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
         }
@@ -160,7 +154,6 @@ public class CopperRail extends BasicHack {
             copperBlock.setType(previous.get().getBukkitMaterial());
             damaged = true;
 
-            // TODO: In 1.19 or above, this can be replaced with ItemStack#damage thanks to Paper
             item.damage(1, player);
             previous = WeatheringCopper.getPrevious(((CraftBlock) copperBlock).getNMS());
         }
