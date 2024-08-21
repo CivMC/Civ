@@ -60,7 +60,7 @@ public class CombatUtil {
         attack(((CraftPlayer) attacker).getHandle(), victim);
     }
 
-    //see EntityHuman#attack(Entity) to update this
+    //see net.minecraft.world.entity.player.Player#attack(Entity) to update this
     public static void attack(ServerPlayer attacker, Entity victim) {
         CombatConfig config = Finale.getPlugin().getManager().getCombatConfig();
         if (victim.isAttackable() && !victim.skipAttackInteraction(attacker)) {
@@ -75,6 +75,8 @@ public class CombatUtil {
                 shouldKnockback = f2 > 0.9f;
                 damage *= 0.2F + f2 * f2 * 0.8F;
                 f1 *= f2;
+            } else if (victim instanceof LivingEntity living) {
+                shouldKnockback = living.invulnerableTime <= living.invulnerableDuration / 2;
             }
             Level world = attacker.level();
             if (damage > 0.0F || f1 > 0.0F) {
@@ -84,11 +86,11 @@ public class CombatUtil {
 
                 if (attacker.isSprinting() && shouldKnockback) {
                     if (config.getCombatSounds().isKnockbackEnabled()) {
-                        sendSoundEffect(attacker, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_WEAK, attacker.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
+                        sendSoundEffect(attacker, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_KNOCKBACK, attacker.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
                     }
-                    if (!config.isKnockbackSwordsEnabled()) {
+//                    if (!config.isKnockbackSwordsEnabled()) {
                         ++knockbackLevel;
-                    }
+//                    }
                     dealtExtraKnockback = true;
                 }
 
@@ -120,66 +122,68 @@ public class CombatUtil {
                 float victimHealth = 0.0F;
 
                 Vec3 victimMot = victim.getDeltaMovement();
-                boolean damagedVictim = victim.hurt(world.damageSources().playerAttack(attacker), damage);
+                boolean damagedVictim = victim.hurt(damagesource, damage);
                 if (damagedVictim) {
-                    if (victim instanceof LivingEntity) {
-                        LivingEntity livingVictim = (LivingEntity) victim;
-                        double kbResistance = livingVictim.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
-                        double knockbackFactor = (1.0 - kbResistance);
-                        double knockbackLevelModifier = 1 + (knockbackLevel * config.getKnockbackLevelMultiplier());
+                    if (knockbackLevel > 0) {
+                        if (victim instanceof LivingEntity) {
+                            LivingEntity livingVictim = (LivingEntity) victim;
+                            double kbResistance = livingVictim.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+                            double knockbackFactor = (1.0 - kbResistance);
+                            double knockbackLevelModifier = 1 + (knockbackLevel * config.getKnockbackLevelMultiplier());
 
-                        if (knockbackFactor > 0) {
-                            Vector start = new Vector(
-                                -Mth.sin(attacker.getBukkitYaw() * 0.01745329251f),
-                                1.0,
-                                Mth.cos(attacker.getBukkitYaw() * 0.01745329251f)
-                            ).normalize();
-                            Vector dv = start.clone();
+                            if (knockbackFactor > 0) {
+                                Vector start = new Vector(
+                                    -Mth.sin(attacker.getBukkitYaw() * 0.01745329251f),
+                                    1.0,
+                                    Mth.cos(attacker.getBukkitYaw() * 0.01745329251f)
+                                ).normalize();
+                                Vector dv = start.clone();
 
-                            KnockbackConfig knockbackConfig = dealtExtraKnockback ? config.getSprintConfig() : config.getNormalConfig();
+                                KnockbackConfig knockbackConfig = dealtExtraKnockback ? config.getSprintConfig() : config.getNormalConfig();
 
-                            if (victim.isInWater()) {
-                                dv = knockbackConfig.getWaterModifier().modifyKnockback(start, dv);
-                            } else {
-                                if (!victim.onGround()) {
-                                    dv = knockbackConfig.getAirModifier().modifyKnockback(start, dv);
+                                if (victim.isInWater()) {
+                                    dv = knockbackConfig.getWaterModifier().modifyKnockback(start, dv);
                                 } else {
-                                    dv = knockbackConfig.getGroundModifier().modifyKnockback(start, dv);
+                                    if (!victim.onGround()) {
+                                        dv = knockbackConfig.getAirModifier().modifyKnockback(start, dv);
+                                    } else {
+                                        dv = knockbackConfig.getGroundModifier().modifyKnockback(start, dv);
+                                    }
                                 }
+
+                                if (config.isKnockbackSwordsEnabled() && knockbackLevel > 1) {
+                                    dv.setX(dv.getX() * knockbackLevelModifier);
+                                    dv.setZ(dv.getZ() * knockbackLevelModifier);
+                                }
+
+                                dv = dv.multiply(knockbackFactor);
+
+                                victim.hasImpulse = true;
+
+                                Vector victimMotFactor = config.getVictimMotion();
+                                Vector maxVictimMot = config.getMaxVictimMotion();
+                                double motX = Math.min((victimMot.x * victimMotFactor.getX()) + dv.getX(), maxVictimMot.getX());
+                                double motY = Math.min((victimMot.y * victimMotFactor.getY()) + dv.getY(), maxVictimMot.getY());
+                                double motZ = Math.min((victimMot.z * victimMotFactor.getZ()) + dv.getZ(), maxVictimMot.getZ());
+
+                                victimMot = new Vec3(motX, motY, motZ);
+
+                                victim.setDeltaMovement(victimMot);
+                            } else {
+                                victim.push(
+                                    (-Mth.sin(attacker.getBukkitYaw() * 0.017453292f) * knockbackLevel * 0.5f),
+                                    0.1,
+                                    (Mth.cos(attacker.getBukkitYaw() * 0.017453292f) * knockbackLevel * 0.5f)
+                                );
                             }
-
-                            if (config.isKnockbackSwordsEnabled() && knockbackLevel > 1) {
-                                dv.setX(dv.getX() * knockbackLevelModifier);
-                                dv.setZ(dv.getZ() * knockbackLevelModifier);
-                            }
-
-                            dv = dv.multiply(knockbackFactor);
-
-                            victim.hasImpulse = true;
-
-                            Vector victimMotFactor = config.getVictimMotion();
-                            Vector maxVictimMot = config.getMaxVictimMotion();
-                            double motX = Math.min((victimMot.x * victimMotFactor.getX()) + dv.getX(), maxVictimMot.getX());
-                            double motY = Math.min((victimMot.y * victimMotFactor.getY()) + dv.getY(), maxVictimMot.getY());
-                            double motZ = Math.min((victimMot.z * victimMotFactor.getZ()) + dv.getZ(), maxVictimMot.getZ());
-
-                            victimMot = new Vec3(motX, motY, motZ);
-
-                            victim.setDeltaMovement(victimMot);
-                        } else {
-                            victim.push(
-                                (-Mth.sin(attacker.getBukkitYaw() * 0.017453292f) * knockbackLevel * 0.5f),
-                                0.1,
-                                (Mth.cos(attacker.getBukkitYaw() * 0.017453292f) * knockbackLevel * 0.5f)
-                            );
                         }
-                    }
-                    Vector attackerMotion = config.getAttackerMotion();
-                    attacker.setDeltaMovement(attacker.getDeltaMovement().multiply(attackerMotion.getX(), attackerMotion.getY(), attackerMotion.getZ()));
-                    if (attacker.isInWater()) {
-                        attacker.setSprinting(!config.isWaterSprintResetEnabled());
-                    } else {
-                        attacker.setSprinting(!config.isSprintResetEnabled());
+                        Vector attackerMotion = config.getAttackerMotion();
+                        attacker.setDeltaMovement(attacker.getDeltaMovement().multiply(attackerMotion.getX(), attackerMotion.getY(), attackerMotion.getZ()));
+                        if (attacker.isInWater()) {
+                            attacker.setSprinting(!config.isWaterSprintResetEnabled());
+                        } else {
+                            attacker.setSprinting(!config.isSprintResetEnabled());
+                        }
                     }
 
                     //((CraftPlayer)attacker.getBukkitEntity()).sendMessage("motX: " + victim.motX + ", motY: " + victim.motY + ", motZ: " + victim.motZ + ", onGround: " + victim.onGround);
