@@ -71,7 +71,11 @@ public final class NBTEncodings {
         if (nbt == null) {
             return null;
         }
-        return PotionType.valueOf(nbt.getString(TYPE_KEY));
+        String type = nbt.getString(TYPE_KEY);
+        if ("UNCRAFTABLE".equals(type)) {
+            return null;
+        }
+        return PotionType.valueOf(type);
 	}
 
     // ------------------------------------------------------------
