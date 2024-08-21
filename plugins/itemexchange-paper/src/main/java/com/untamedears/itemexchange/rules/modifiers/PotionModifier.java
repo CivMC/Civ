@@ -37,7 +37,7 @@ public final class PotionModifier extends ModifierData {
 
     @Override
     public PotionModifier construct(ItemStack item) {
-        if (!(item.getItemMeta() instanceof final PotionMeta meta)) {
+        if (!(item.getItemMeta() instanceof final PotionMeta meta) || meta.getBasePotionType() == null) {
             return null;
         }
         PotionModifier modifier = new PotionModifier();
