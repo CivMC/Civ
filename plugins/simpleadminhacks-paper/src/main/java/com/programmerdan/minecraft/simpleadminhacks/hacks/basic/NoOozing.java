@@ -5,6 +5,7 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 // Thanks kicky
@@ -16,7 +17,11 @@ public final class NoOozing extends BasicHack {
 
     @EventHandler
     public void on(EntityPotionEffectEvent event) {
-        PotionEffectType type = event.getNewEffect().getType();
+        PotionEffect newEffect = event.getNewEffect();
+        if (newEffect == null) {
+            return;
+        }
+        PotionEffectType type = newEffect.getType();
         // Mojang added some busted potions that break the balance by letting you get stuff too easily
         if (type == PotionEffectType.OOZING || type == PotionEffectType.WEAVING || type == PotionEffectType.INFESTED || type == PotionEffectType.WIND_CHARGED) {
             event.setCancelled(true);
