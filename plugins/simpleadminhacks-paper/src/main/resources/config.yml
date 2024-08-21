@@ -548,3 +548,5 @@ hacks:
   CreeperDiscHack:
     enabled: true
     discChance: 0.003
+  NoOozing:
+    enabled: true
