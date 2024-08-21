@@ -17,16 +17,10 @@ import java.util.UUID;
 
 public class WeaponModificationListener implements Listener {
 
-    private final NamespacedKey KEY_KNOCKBACK_RESISTANCE;
-    private final NamespacedKey KEY_ARMOR_TOUGHNESS;
-    private final NamespacedKey KEY_ARMOR;
     private final NamespacedKey KEY_ATTACK_SPEED;
     private final NamespacedKey KEY_ATTACK_DAMAGE;
 
     {
-        KEY_KNOCKBACK_RESISTANCE = new NamespacedKey(Finale.getPlugin(), "knockback_resistance");
-        KEY_ARMOR_TOUGHNESS = new NamespacedKey(Finale.getPlugin(), "armor_toughness");
-        KEY_ARMOR = new NamespacedKey(Finale.getPlugin(), "armor");
         KEY_ATTACK_SPEED = new NamespacedKey(Finale.getPlugin(), "attack_speed");
         KEY_ATTACK_DAMAGE = new NamespacedKey(Finale.getPlugin(), "attack_damage");
     }
@@ -58,27 +52,30 @@ public class WeaponModificationListener implements Listener {
             }
 
             im.removeAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
-            im.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE,
-                new org.bukkit.attribute.AttributeModifier(KEY_KNOCKBACK_RESISTANCE,
-                    knockbackResistance,
-                    org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
-                    is.getType().getEquipmentSlot().getGroup())
-            );
+            EquipmentSlotGroup group = is.getType().getEquipmentSlot().getGroup();
+            if (knockbackResistance > 0) {
+                im.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE,
+                    new org.bukkit.attribute.AttributeModifier(new NamespacedKey(Finale.getPlugin(), "knockback_resistance" + group),
+                        knockbackResistance,
+                        org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
+                        group)
+                );
+            }
 
             im.removeAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS);
             im.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS,
-                new org.bukkit.attribute.AttributeModifier(KEY_ARMOR_TOUGHNESS,
+                new org.bukkit.attribute.AttributeModifier(new NamespacedKey(Finale.getPlugin(), "armor_toughness_" + group),
                     toughness,
                     org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
-                    is.getType().getEquipmentSlot().getGroup())
+                    group)
             );
 
             im.removeAttributeModifier(Attribute.GENERIC_ARMOR);
             im.addAttributeModifier(Attribute.GENERIC_ARMOR,
-                new org.bukkit.attribute.AttributeModifier(KEY_ARMOR,
+                new org.bukkit.attribute.AttributeModifier(new NamespacedKey(Finale.getPlugin(), "armor_" + group),
                     armour,
                     org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
-                    is.getType().getEquipmentSlot().getGroup())
+                    group)
             );
         }
 
