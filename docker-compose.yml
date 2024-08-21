@@ -37,7 +37,7 @@ services:
       - ./ansible/build/proxy-plugins:/plugins
 
   paper:
-    image: itzg/minecraft-server@sha256:ec899160155b3d15c243845bab9ef20ab800d1cc5f38765f45aca1dcc3ccd5c6
+    image: itzg/minecraft-server@sha256:42a4cff00c7f4d5981a1a40c6c8aedd3bb9c22aedd39c7f79331117114817a57
     restart: unless-stopped
     tty: true
     stdin_open: true
