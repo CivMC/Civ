@@ -81,7 +81,6 @@ public final class PotionModifier extends ModifierData {
             .toArray(NBTCompound[]::new));
     }
 
-    @Nonnull
     public static PotionModifier fromNBT(@Nonnull final NBTCompound nbt) {
         final var modifier = new PotionModifier();
         PotionType type = NBTEncodings.decodePotionData(nbt.getCompound(BASE_KEY));
