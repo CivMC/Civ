@@ -2,7 +2,9 @@ package vg.civcraft.mc.citadel.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -32,31 +34,57 @@ public class AcidManager {
     }
 
     /**
-     * Gets remaining time needed to mature acid block in milli seconds. If the acid
+     * Checks if acid faces are on the same group
+     *
+     * @param acidBlock acid Reinforcement type to check for
+     * @param victim    victim block Reinforcement type
+     * @return True if victim and acid block are on the same group
+     */
+    public boolean isAcidOnSameGroup(Reinforcement acidBlock, Reinforcement victim) {
+        return acidBlock.getGroup().equals(victim.getGroup());
+    }
+
+    /**
+     * Gets remaining time needed to mature acid in milli seconds for each block face. If the acid
      * is ready 0 will be returned
      *
      * @param rein Reinforcement to check for
-     * @return Remaining time in milli seconds or 0 if the acid is ready
+     * @return Current block face being checked, remaining time in milli seconds or 0 if the acid is ready
      */
-    public long getRemainingAcidMaturationTime(Reinforcement rein) {
+    public Map<BlockFace, Long> getRemainingAcidMaturationTime(Reinforcement rein) {
         Block acidBlock = rein.getLocation().getBlock();
         Block targetBlock = acidBlock.getRelative(BlockFace.UP);
 
+        // Get acidMultiplier for the acid type
         double acidMultiplier = acidTypes.stream()
             .filter(acidType -> acidType.material() == acidBlock.getType())
             .findFirst()
             .map(AcidType::modifier)
             .orElse(1D);
 
+        // Get block faces for the acid type
+        List<BlockFace> acidFaces = acidTypes.stream()
+            .filter(acidType -> acidType.material() == acidBlock.getType())
+            .findFirst()
+            .map(AcidType::blockFaces)
+            .orElse(List.of(BlockFace.UP));
+
         double decayMultiplier = 1;
-        if (!MaterialUtils.isAir(targetBlock.getType())) {
-            Reinforcement targetBlockRein = ReinforcementLogic.getReinforcementAt(targetBlock.getLocation());
-            if (targetBlockRein != null) {
-                decayMultiplier = ReinforcementLogic.getDecayDamage(targetBlockRein);
+        Map<BlockFace, Long> remainingTimes = new HashMap<>();
+        for (BlockFace face : acidFaces) {
+            Block relativeBlock = acidBlock.getRelative(face);
+            Reinforcement targetBlockRein = ReinforcementLogic.getReinforcementAt(relativeBlock.getLocation());
+            if (!MaterialUtils.isAir(relativeBlock.getType())) {
+                if (targetBlockRein != null) {
+                    decayMultiplier = ReinforcementLogic.getDecayDamage(targetBlockRein);
+                }
             }
+            long targetAcidTime = (targetBlockRein != null) ? targetBlockRein.getType().getAcidTime() : rein.getType().getAcidTime();
+            long totalTime = Math.round(targetAcidTime / decayMultiplier * acidMultiplier);
+            long remainingTime = Math.max(0, totalTime - rein.getAge());
+            remainingTimes.put(face, remainingTime);
         }
-        long totalTime = Math.round(rein.getType().getAcidTime() / decayMultiplier * acidMultiplier);
-        return Math.max(0, totalTime - rein.getAge());
+        return remainingTimes;
     }
 
     /**

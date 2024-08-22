@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
@@ -54,11 +55,21 @@ public class Acid extends BaseCommand {
                     "You do not have sufficient permission to use acid blocks on this group.");
                 return;
             }
-            long neededTime = acidMan.getRemainingAcidMaturationTime(reinforcement);
-            if (neededTime > 0) {
-                CitadelUtility.sendAndLog(p, ChatColor.RED, "That acid block will be mature in "
-                    + TextUtil.formatDuration(neededTime, TimeUnit.MILLISECONDS));
-                return;
+            Map<BlockFace, Long> remainingTimes = acidMan.getRemainingAcidMaturationTime(reinforcement);
+            for (Map.Entry<BlockFace, Long> entry : remainingTimes.entrySet()) {
+                long neededTime = entry.getValue();
+                BlockFace blockFace = entry.getKey();
+                Block relativeBlock = block.getRelative(blockFace);
+                Reinforcement relativeReinforcement = ReinforcementLogic.getReinforcementProtecting(relativeBlock);
+
+                if (neededTime > 0) {
+                    if (relativeReinforcement != null && !acidMan.canAcidBlock(reinforcement.getType(), relativeReinforcement.getType())) {
+                        CitadelUtility.sendAndLog(p, ChatColor.RED, String.format("The acid facing %s will fail!", blockFace));
+                    }
+                    CitadelUtility.sendAndLog(p, ChatColor.RED, String.format("%s acid will mature in %s.",
+                        blockFace, TextUtil.formatDuration(neededTime, TimeUnit.MILLISECONDS)));
+                    return;
+                }
             }
 
             AcidType acidType = acidMan.getAcidTypeFromMaterial(block.getType());
@@ -71,7 +82,7 @@ public class Acid extends BaseCommand {
                     relativeReinforcement == null
                         || !relativeReinforcement.getType().canBeReinforced(relativeBlock.getType())
                         || !acidMan.canAcidBlock(reinforcement.getType(), relativeReinforcement.getType())
-                        || acidMan.isPossibleAcidBlock(relativeBlock)
+                        || acidMan.isPossibleAcidBlock(relativeBlock) && acidMan.isAcidOnSameGroup(reinforcement, relativeReinforcement)
                 ) {
                     continue;
                 }
