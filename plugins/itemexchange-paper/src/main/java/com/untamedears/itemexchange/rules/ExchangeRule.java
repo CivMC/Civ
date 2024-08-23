@@ -9,7 +9,6 @@ import com.untamedears.itemexchange.rules.modifiers.DisplayNameModifier;
 import com.untamedears.itemexchange.rules.modifiers.LoreModifier;
 import com.untamedears.itemexchange.utility.ModifierStorage;
 import com.untamedears.itemexchange.utility.Utilities;
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,6 +24,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
@@ -209,7 +209,7 @@ public final class ExchangeRule implements ExchangeData {
     }
 
     @Override
-    public void toNBT(@Nonnull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NBTCompound nbt) {
         nbt.setInt(VERSION_KEY, 4);
         nbt.setString(TYPE_KEY, this.type.name());
         nbt.setString(MATERIAL_KEY, this.material.name());
@@ -224,8 +224,8 @@ public final class ExchangeRule implements ExchangeData {
             .toArray(NBTCompound[]::new));
     }
 
-    @Nonnull
-    public static ExchangeRule fromNBT(@Nonnull final NBTCompound nbt) {
+    @NotNull
+    public static ExchangeRule fromNBT(@NotNull final NBTCompound nbt) {
         final var rule = new ExchangeRule();
         rule.type = EnumUtils.getEnum(Type.class, nbt.getString(TYPE_KEY));
         rule.material = EnumUtils.getEnum(Material.class, nbt.getString(MATERIAL_KEY));
