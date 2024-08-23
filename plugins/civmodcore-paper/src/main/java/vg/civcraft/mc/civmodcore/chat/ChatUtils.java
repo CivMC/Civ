@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -23,6 +21,7 @@ import org.bukkit.craftbukkit.util.CraftChatMessage;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public final class ChatUtils {
@@ -59,7 +58,7 @@ public final class ChatUtils {
      * @return Returns a valid Bungee ChatColor.
      * @deprecated Use {@link net.kyori.adventure.text.format.TextColor#color(int, int, int)} instead.
      */
-    @Nonnull
+    @NotNull
     @Deprecated
     public static ChatColor fromRGB(final byte r, final byte g, final byte b) {
         return ChatColor.of(new Color(r, g, b));
@@ -102,9 +101,9 @@ public final class ChatUtils {
      * @deprecated Please use MiniMessage instead.
      * <a href="https://docs.adventure.kyori.net/minimessage.html">Read More</a>.
      */
-    @Nonnull
+    @NotNull
     @Deprecated
-    public static String parseColor(@Nonnull String string) {
+    public static String parseColor(@NotNull String string) {
         string = parseColorAmp(string);
         string = parseColorAcc(string);
         string = parseColorTags(string);
@@ -115,9 +114,9 @@ public final class ChatUtils {
      * @deprecated Please use MiniMessage instead.
      * <a href="https://docs.adventure.kyori.net/minimessage.html">Read More</a>.
      */
-    @Nonnull
+    @NotNull
     @Deprecated
-    public static String parseColorAmp(@Nonnull String string) {
+    public static String parseColorAmp(@NotNull String string) {
         string = string.replace("&&", "&");
         return ChatColor.translateAlternateColorCodes('&', string);
     }
@@ -126,9 +125,9 @@ public final class ChatUtils {
      * @deprecated Please use MiniMessage instead.
      * <a href="https://docs.adventure.kyori.net/minimessage.html">Read More</a>.
      */
-    @Nonnull
+    @NotNull
     @Deprecated
-    public static String parseColorAcc(@Nonnull String string) {
+    public static String parseColorAcc(@NotNull String string) {
         return ChatColor.translateAlternateColorCodes('`', string);
     }
 
@@ -136,9 +135,9 @@ public final class ChatUtils {
      * @deprecated Please use MiniMessage instead.
      * <a href="https://docs.adventure.kyori.net/minimessage.html">Read More</a>.
      */
-    @Nonnull
+    @NotNull
     @Deprecated
-    public static String parseColorTags(@Nonnull String string) {
+    public static String parseColorTags(@NotNull String string) {
         return string
             .replace("<black>", ChatColor.BLACK.toString())
             .replace("<dblue>", ChatColor.DARK_BLUE.toString())
@@ -257,7 +256,7 @@ public final class ChatUtils {
      * @param components The component / components to wrap.
      * @return Returns the normalised component, or empty if no components are passed.
      */
-    @Nonnull
+    @NotNull
     public static Component normaliseComponent(final Component... components) {
         if (ArrayUtils.isEmpty(components)) {
             return Component.empty();
@@ -276,7 +275,7 @@ public final class ChatUtils {
      * @param components The components to wrap.
      * @return Returns the normalised component, or empty if no components are passed.
      */
-    @Nonnull
+    @NotNull
     public static Component normaliseComponent(@Nullable final List<Component> components) {
         if (CollectionUtils.isEmpty(components)) {
             return Component.empty();
@@ -294,7 +293,7 @@ public final class ChatUtils {
      * @param component The component to stringify.
      * @return Returns a stringified version of the given component.
      */
-    @Nonnull
+    @NotNull
     public static String stringify(@Nullable final Component component) {
         return component == null || component == Component.empty() ? "" :
             CraftChatMessage.fromComponent(PaperAdventure.asVanilla(component));
@@ -317,7 +316,7 @@ public final class ChatUtils {
      * @return Generates a new text component that's specifically <i>NOT</i> italicised. Use this for item names and
      * lore.
      */
-    @Nonnull
+    @NotNull
     public static TextComponent newComponent() {
         return newComponent("");
     }
@@ -328,7 +327,7 @@ public final class ChatUtils {
      * @param content The text content for the component.
      * @return Returns the generated text component.
      */
-    @Nonnull
+    @NotNull
     public static TextComponent newComponent(final String content) {
         return Component.text(Objects.requireNonNull(content))
             .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
@@ -399,5 +398,4 @@ public final class ChatUtils {
             //       name and lore, perhaps also enchantments, etc..
         );
     }
-
 }

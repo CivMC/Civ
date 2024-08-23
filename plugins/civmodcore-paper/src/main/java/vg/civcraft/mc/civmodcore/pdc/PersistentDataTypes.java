@@ -1,10 +1,10 @@
 package vg.civcraft.mc.civmodcore.pdc;
 
-import javax.annotation.Nonnull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 public final class PersistentDataTypes {
 
@@ -14,17 +14,17 @@ public final class PersistentDataTypes {
      * Boolean data type... because <i>believe it or not</i> but PDC doesn't already have this ಠ_ಠ
      */
     public static final PersistentDataType<Byte, Boolean> BOOLEAN = new AbstractPersistentDataType<>(Byte.class, Boolean.class) {
-        @Nonnull
+        @NotNull
         @Override
-        public Byte toPrimitive(@Nonnull final Boolean bool,
-                                @Nonnull final PersistentDataAdapterContext adapter) {
+        public Byte toPrimitive(@NotNull final Boolean bool,
+                                @NotNull final PersistentDataAdapterContext adapter) {
             return (byte) (bool ? 1 : 0);
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public Boolean fromPrimitive(@Nonnull final Byte raw,
-                                     @Nonnull final PersistentDataAdapterContext adapter) {
+        public Boolean fromPrimitive(@NotNull final Byte raw,
+                                     @NotNull final PersistentDataAdapterContext adapter) {
             return raw != (byte) 0;
         }
     };
@@ -33,17 +33,17 @@ public final class PersistentDataTypes {
      * Converts Components to Strings and vice versa.
      */
     public static final PersistentDataType<String, Component> COMPONENT = new AbstractPersistentDataType<>(String.class, Component.class) {
-        @Nonnull
+        @NotNull
         @Override
-        public String toPrimitive(@Nonnull final Component component,
-                                  @Nonnull final PersistentDataAdapterContext adapter) {
+        public String toPrimitive(@NotNull final Component component,
+                                  @NotNull final PersistentDataAdapterContext adapter) {
             return GsonComponentSerializer.gson().serialize(component);
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public Component fromPrimitive(@Nonnull final String raw,
-                                       @Nonnull final PersistentDataAdapterContext adapter) {
+        public Component fromPrimitive(@NotNull final String raw,
+                                       @NotNull final PersistentDataAdapterContext adapter) {
             return GsonComponentSerializer.gson().deserialize(raw);
         }
     };

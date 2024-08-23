@@ -2,8 +2,6 @@ package com.untamedears.itemexchange.rules;
 
 import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +13,8 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.CustomData;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
@@ -24,7 +24,7 @@ public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData
     public static final String BULK_KEY = "BulkExchangeRule";
     public static final String RULES_KEY = "rules";
 
-    public BulkExchangeRule(@Nonnull final List<ExchangeRule> rules) {
+    public BulkExchangeRule(@NotNull final List<ExchangeRule> rules) {
         this.rules = Objects.requireNonNull(rules);
     }
 
@@ -34,7 +34,7 @@ public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData
     }
 
     @Override
-    public void toNBT(@Nonnull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NBTCompound nbt) {
         nbt.setCompoundArray(RULES_KEY, this.rules.stream()
             .map((rule) -> {
                 final var ruleNBT = new NBTCompound();
@@ -44,8 +44,8 @@ public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData
             .toArray(NBTCompound[]::new));
     }
 
-    @Nonnull
-    public static BulkExchangeRule fromNBT(@Nonnull final NBTCompound nbt) {
+    @NotNull
+    public static BulkExchangeRule fromNBT(@NotNull final NBTCompound nbt) {
         return new BulkExchangeRule(Arrays.stream(nbt.getCompoundArray(RULES_KEY))
             .map(ExchangeRule::fromNBT)
             .collect(Collectors.toCollection(ArrayList::new)));
