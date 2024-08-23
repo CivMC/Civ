@@ -107,4 +107,8 @@ public class AcidManager {
             .findFirst()
             .orElseThrow();
     }
+
+    public List<AcidType> getAcidTypes() {
+        return acidTypes;
+    }
 }

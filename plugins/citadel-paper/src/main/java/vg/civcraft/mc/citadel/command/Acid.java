@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -55,26 +56,25 @@ public class Acid extends BaseCommand {
                     "You do not have sufficient permission to use acid blocks on this group.");
                 return;
             }
+
             Map<BlockFace, Long> remainingTimes = acidMan.getRemainingAcidMaturationTime(reinforcement);
-            for (Map.Entry<BlockFace, Long> entry : remainingTimes.entrySet()) {
-                long neededTime = entry.getValue();
-                BlockFace blockFace = entry.getKey();
+            Map<BlockFace, Long> filteredEntries = remainingTimes.entrySet().stream()
+                .filter(entry -> entry.getValue() <= 0)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            for (BlockFace blockFace : remainingTimes.keySet()) {
                 Block relativeBlock = block.getRelative(blockFace);
                 Reinforcement relativeReinforcement = ReinforcementLogic.getReinforcementProtecting(relativeBlock);
 
-                if (neededTime > 0) {
+                if (filteredEntries.isEmpty())  {
                     if (relativeReinforcement != null && !acidMan.canAcidBlock(reinforcement.getType(), relativeReinforcement.getType())) {
                         CitadelUtility.sendAndLog(p, ChatColor.RED, String.format("The acid facing %s will fail!", blockFace));
                     }
-                    CitadelUtility.sendAndLog(p, ChatColor.RED, String.format("%s acid will mature in %s.",
-                        blockFace, TextUtil.formatDuration(neededTime, TimeUnit.MILLISECONDS)));
+                    CitadelUtility.sendAndLog(p, ChatColor.RED, String.format("This acid block is not ready yet."));
                     return;
                 }
             }
 
-            AcidType acidType = acidMan.getAcidTypeFromMaterial(block.getType());
-
-            for (BlockFace blockFace : acidType.blockFaces()) {
+            for (BlockFace blockFace : filteredEntries.keySet()) {
                 Block relativeBlock = block.getRelative(blockFace);
 
                 Reinforcement relativeReinforcement = ReinforcementLogic.getReinforcementProtecting(relativeBlock);

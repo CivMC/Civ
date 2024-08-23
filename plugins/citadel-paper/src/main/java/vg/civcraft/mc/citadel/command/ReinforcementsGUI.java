@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import java.text.DecimalFormat;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +15,11 @@ import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.acidtypes.AcidType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
@@ -46,20 +49,33 @@ public class ReinforcementsGUI extends BaseCommand {
         Collections.sort(disallowedTypes, (o1, o2) -> Double.compare(o1.getHealth(), o2.getHealth()));
         List<IClickable> clicks = new LinkedList<>();
 
-        clicks.addAll(getClicks(allowedTypes, true));
+        clicks.addAll(getMaterialClicks(allowedTypes, true));
 
         if (disallowedTypes.size() > 0) {
             for (int i = 0; i < 18 - (allowedTypes.size() % 9); i++) {
                 clicks.add(new DecorationStack(Material.AIR));
             }
         }
-        clicks.addAll(getClicks(disallowedTypes, false));
+        clicks.addAll(getMaterialClicks(disallowedTypes, false));
+
+        List<AcidType> acidTypes = Citadel.getInstance().getAcidManager().getAcidTypes();
+        // check if dimensional reinforcements
+        if (disallowedTypes.size() > 0) {
+            for (int i = 0; i < 18 - (disallowedTypes.size() % 9); i++) {
+                clicks.add(new DecorationStack(Material.AIR));
+            }
+        } else {
+            for (int i = 0; i < 18 - (allowedTypes.size() % 9); i++) {
+                clicks.add(new DecorationStack(Material.AIR));
+            }
+        }
+        clicks.addAll(getAcidTypeClicks(acidTypes));
 
         MultiPageView pageView = new MultiPageView(sender, clicks, ChatColor.BLUE + "Reinforcements", true);
         pageView.showScreen();
     }
 
-    private List<IClickable> getClicks(List<ReinforcementType> types, boolean allowed) {
+    private List<IClickable> getMaterialClicks(List<ReinforcementType> types, boolean allowed) {
         List<IClickable> clickables = new LinkedList<>();
 
         for (ReinforcementType type : types) {
@@ -86,6 +102,23 @@ public class ReinforcementsGUI extends BaseCommand {
             } else {
                 ItemUtils.addComponentLore(is, allowedDimensionComponents);
             }
+            IClickable click = new DecorationStack(is);
+            clickables.add(click);
+        }
+
+        return clickables;
+    }
+
+    private List<IClickable> getAcidTypeClicks(List<AcidType> acidTypes) {
+        List<IClickable> clickables = new LinkedList<>();
+
+        for (AcidType acidType : acidTypes) {
+            ItemStack is = new ItemStack(acidType.material());
+            String blockName = ItemUtils.getItemName(acidType.material());
+            ItemUtils.setComponentDisplayName(is, Component.text(ChatColor.RED + blockName));
+            ItemUtils.addLore(is, ChatColor.GOLD + "Acid Faces: " + (acidType.blockFaces().stream().map(BlockFace::toString).collect(Collectors.joining(", "))));
+            ItemUtils.addLore(is, ChatColor.GOLD + "Maturation Modifier: " + format.format(acidType.modifier()) + "x");
+
             IClickable click = new DecorationStack(is);
             clickables.add(click);
         }
