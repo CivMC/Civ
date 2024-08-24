@@ -60,14 +60,9 @@ public class ReinforcementsGUI extends BaseCommand {
 
         List<AcidType> acidTypes = Citadel.getInstance().getAcidManager().getAcidTypes();
         // check if dimensional reinforcements
-        if (disallowedTypes.size() > 0) {
-            for (int i = 0; i < 18 - (disallowedTypes.size() % 9); i++) {
-                clicks.add(new DecorationStack(Material.AIR));
-            }
-        } else {
-            for (int i = 0; i < 18 - (allowedTypes.size() % 9); i++) {
-                clicks.add(new DecorationStack(Material.AIR));
-            }
+        int size = disallowedTypes.size() > 0 ? disallowedTypes.size() : allowedTypes.size();
+        for (int i = 0; i < 18 - (size % 9); i++) {
+            clicks.add(new DecorationStack(Material.AIR));
         }
         clicks.addAll(getAcidTypeClicks(acidTypes));
 

@@ -53,16 +53,13 @@ public class AcidManager {
      */
     public Map<BlockFace, Long> getRemainingAcidMaturationTime(Reinforcement rein) {
         Block acidBlock = rein.getLocation().getBlock();
-        Block targetBlock = acidBlock.getRelative(BlockFace.UP);
 
-        // Get acidMultiplier for the acid type
         double acidMultiplier = acidTypes.stream()
             .filter(acidType -> acidType.material() == acidBlock.getType())
             .findFirst()
             .map(AcidType::modifier)
             .orElse(1D);
 
-        // Get block faces for the acid type
         List<BlockFace> acidFaces = acidTypes.stream()
             .filter(acidType -> acidType.material() == acidBlock.getType())
             .findFirst()
@@ -74,11 +71,13 @@ public class AcidManager {
         for (BlockFace face : acidFaces) {
             Block relativeBlock = acidBlock.getRelative(face);
             Reinforcement targetBlockRein = ReinforcementLogic.getReinforcementAt(relativeBlock.getLocation());
-            if (!MaterialUtils.isAir(relativeBlock.getType())) {
-                if (targetBlockRein != null) {
-                    decayMultiplier = ReinforcementLogic.getDecayDamage(targetBlockRein);
-                }
+            if (
+                targetBlockRein != null
+                    && !MaterialUtils.isAir(relativeBlock.getType())
+            ) {
+                decayMultiplier = ReinforcementLogic.getDecayDamage(targetBlockRein);
             }
+
             long targetAcidTime = (targetBlockRein != null) ? targetBlockRein.getType().getAcidTime() : rein.getType().getAcidTime();
             long totalTime = Math.round(targetAcidTime / decayMultiplier * acidMultiplier);
             long remainingTime = Math.max(0, totalTime - rein.getAge());

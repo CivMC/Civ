@@ -82,7 +82,7 @@ public class Acid extends BaseCommand {
                     relativeReinforcement == null
                         || !relativeReinforcement.getType().canBeReinforced(relativeBlock.getType())
                         || !acidMan.canAcidBlock(reinforcement.getType(), relativeReinforcement.getType())
-                        || acidMan.isPossibleAcidBlock(relativeBlock) && acidMan.isAcidOnSameGroup(reinforcement, relativeReinforcement)
+                        || (acidMan.isPossibleAcidBlock(relativeBlock) && acidMan.isAcidOnSameGroup(reinforcement, relativeReinforcement))
                 ) {
                     continue;
                 }
