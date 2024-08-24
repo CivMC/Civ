@@ -54,7 +54,7 @@ public final class ScoreBoardAPI {
         }
     }
 
-    static void purge(Player p) {
+    public static void purge(Player p) {
         for (CivScoreBoard board : boards.values()) {
             board.purge(p);
         }
