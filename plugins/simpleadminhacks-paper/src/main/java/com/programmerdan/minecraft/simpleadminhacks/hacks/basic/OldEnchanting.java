@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.DataSlot;
@@ -65,6 +66,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
+import org.bukkit.inventory.view.EnchantmentView;
 import org.bukkit.projectiles.ProjectileSource;
 import vg.civcraft.mc.civmodcore.entities.EntityUtils;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
@@ -82,7 +84,6 @@ public final class OldEnchanting extends BasicHack {
     private final PacketManager packets;
     private final ShapelessRecipe emeraldToExp;
     private final ShapedRecipe expToEmerald;
-    private final Field enchantingTableRandomiser;
     private final Map<EntityType, Double> entityExpDropModifiers;
 
     @AutoLoad
@@ -148,24 +149,6 @@ public final class OldEnchanting extends BasicHack {
             EMERALD_ITEM);
         this.expToEmerald.shape("xxx", "xxx", "xxx");
         this.expToEmerald.setIngredient('x', Material.EXPERIENCE_BOTTLE);
-        // Setup enchantment randomiser
-        Field randomiser = null;
-        try {
-            for (Field field : EnchantmentMenu.class.getDeclaredFields()) {
-                if (field.getType() == DataSlot.class) { // "enchantmentSeed" is the first DataSlot field
-                    field.setAccessible(true);
-                    randomiser = field;
-                    break;
-                }
-            }
-            if (randomiser == null) {
-                this.logger.log(Level.WARNING, "Cannot find randomiser field.");
-            }
-        } catch (final Throwable throwable) {
-            this.logger.log(Level.WARNING, "An exception was thrown while trying to reflect the enchanting " +
-                "table's randomiser field.", throwable);
-        }
-        this.enchantingTableRandomiser = randomiser;
         // Setup entity xp modifiers
         this.entityExpDropModifiers = new HashMap<>();
     }
@@ -477,16 +460,11 @@ public final class OldEnchanting extends BasicHack {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPrepareItemEnchant(final PrepareItemEnchantEvent event) {
-        final CraftInventoryView view = (CraftInventoryView) event.getView();
-        final EnchantmentMenu table = (EnchantmentMenu) view.getHandle();
+        EnchantmentView view = event.getView();
         if (this.randomiseEnchants) {
-            ServerPlayer player = ((CraftPlayer) event.getEnchanter().getPlayer()).getHandle();
-            player.enchantmentSeed = player.random.nextInt();
-            try {
-                ((DataSlot) enchantingTableRandomiser.get(table)).set(player.enchantmentSeed);
-            } catch (IllegalAccessException e) {
-                this.logger.log(Level.WARNING, "Could not set randomiser!", e);
-            }
+            int seed = ThreadLocalRandom.current().nextInt();
+            event.getEnchanter().setEnchantmentSeed(seed);
+            view.setEnchantmentSeed(seed);
         }
     }
 
