@@ -14,6 +14,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
@@ -216,9 +217,9 @@ public abstract class InputRecipe implements IRecipe {
         for (Entry<ItemStack, Integer> entry : ingredients.getEntrySet()) {
             if (entry.getValue() > 0) {
                 if (!entry.getKey().hasItemMeta()) {
-                    result.add(entry.getValue() + " " + ItemUtils.getItemName(entry.getKey()));
+                    result.add(entry.getValue() + " " + ChatUtils.translate(entry.getKey()));
                 } else {
-                    String lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ItemUtils.getItemName(entry.getKey()));
+                    String lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ChatUtils.translate(entry.getKey()));
                     if (entry.getKey().getItemMeta().hasDisplayName()) {
                         lore += String.format("%s [%s]", ChatColor.DARK_AQUA, StringUtils.abbreviate(entry.getKey().getItemMeta().getDisplayName(), 20));
                     }

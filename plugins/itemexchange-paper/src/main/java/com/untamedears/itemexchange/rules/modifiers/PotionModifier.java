@@ -19,6 +19,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
@@ -125,7 +126,7 @@ public final class PotionModifier extends ModifierData {
         if (this.base == null) {
             return null;
         }
-        return PotionUtils.getPotionNiceName(this.base);
+        return ChatUtils.translate(PotionUtils.asTranslatable(this.base));
     }
 
     public PotionType getPotionType() {

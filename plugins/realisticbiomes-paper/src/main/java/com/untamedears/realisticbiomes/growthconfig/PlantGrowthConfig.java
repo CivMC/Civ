@@ -20,7 +20,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Waterlogged;
 import org.bukkit.event.Cancellable;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
@@ -88,7 +88,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
         double lightMultiplier = getLightMultiplier(b);
         StringBuilder sb = new StringBuilder();
         sb.append(ChatColor.GOLD);
-        sb.append(ItemUtils.getItemName(item));
+        sb.append(ChatUtils.translate(item));
         if (biomeGrowthConfig instanceof PersistentGrowthConfig) {
             long time = getPersistentGrowthTime(b);
             if (time == -1) {

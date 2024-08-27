@@ -7,9 +7,9 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class ExitVehicleAction extends LoggablePlayerVictimAction {
 
@@ -40,7 +40,7 @@ public class ExitVehicleAction extends LoggablePlayerVictimAction {
 
     @Override
     public String getChatRepresentationIdentifier() {
-        return "Exited " + ItemUtils.getItemName(getVehicle());
+        return "Exited " + ChatUtils.translate(getVehicle());
     }
 
 }

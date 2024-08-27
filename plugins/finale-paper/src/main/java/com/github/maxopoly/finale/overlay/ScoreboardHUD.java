@@ -20,8 +20,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
@@ -170,9 +170,14 @@ public class ScoreboardHUD implements Listener {
             }
 
             //TODO check deprecated methods
-            String name = PotionUtils.getEffectNiceName(pot.getType());
-            String formatted = String.format("%s %s%s %d | %d:%s", sortingPrefix, effectColor, name, level, minutes,
-                seconds);
+            String formatted = "%s %s%s %d | %d:%s".formatted(
+                sortingPrefix,
+                effectColor,
+                ChatUtils.translate(pot.getType()),
+                level,
+                minutes,
+                seconds
+            );
             scoreBoards.get(boardIndex).set(p, formatted);
             boardIndex++;
         }

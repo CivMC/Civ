@@ -1,67 +1,82 @@
 package vg.civcraft.mc.civmodcore.chat;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public final class Componentify {
-
-    private static Component INTERNAL_addLocationWorld(@Nullable final Location location) {
-        if (location.isWorldLoaded()) {
-            return Component.text(location.getWorld().getName())
-                .hoverEvent(HoverEvent.showText(Component.text("World name")));
-        } else {
-            return Component.text("<null>")
+    private static @NotNull Component INTERNAL_addLocationWorld(
+        final Location location
+    ) {
+        if (location == null || !location.isWorldLoaded()) {
+            return Component.text()
                 .color(NamedTextColor.RED)
-                .hoverEvent(HoverEvent.showText(Component.text("World not specified / loaded")));
+                .content("<null>")
+                .hoverEvent(HoverEvent.showText(Component.text("World not specified / loaded")))
+                .build();
         }
+        return Component.text()
+            .content(location.getWorld().getName())
+            .hoverEvent(HoverEvent.showText(Component.text("World name")))
+            .build();
     }
 
-    public static Component fullLocation(@NotNull final Location location) {
-        final var component = Component.text();
-        component.append(INTERNAL_addLocationWorld(location));
-        component.append(Component.space());
-        component.append(Component.text(location.getX())
-            .color(NamedTextColor.RED)
-            .hoverEvent(HoverEvent.showText(Component.text("X"))));
-        component.append(Component.space());
-        component.append(Component.text(location.getY())
-            .color(NamedTextColor.GREEN)
-            .hoverEvent(HoverEvent.showText(Component.text("Y"))));
-        component.append(Component.space());
-        component.append(Component.text(location.getZ())
-            .color(NamedTextColor.BLUE)
-            .hoverEvent(HoverEvent.showText(Component.text("Z"))));
-        component.append(Component.space());
-        component.append(Component.text(location.getYaw())
-            .color(NamedTextColor.GOLD)
-            .hoverEvent(HoverEvent.showText(Component.text("Yaw"))));
-        component.append(Component.space());
-        component.append(Component.text(location.getPitch())
-            .color(NamedTextColor.AQUA)
-            .hoverEvent(HoverEvent.showText(Component.text("Pitch"))));
-        return component.build();
+    public static @NotNull ComponentLike @NotNull [] fullLocation(
+        final @NotNull Location location
+    ) {
+        return new ComponentLike[] {
+            INTERNAL_addLocationWorld(location),
+            Component.space(),
+            Component.text()
+                .color(NamedTextColor.RED)
+                .content(String.valueOf(location.getX()))
+                .hoverEvent(HoverEvent.showText(Component.text("X"))),
+            Component.space(),
+            Component.text()
+                .color(NamedTextColor.GREEN)
+                .content(String.valueOf(location.getY()))
+                .hoverEvent(HoverEvent.showText(Component.text("Y"))),
+            Component.space(),
+            Component.text()
+                .color(NamedTextColor.BLUE)
+                .content(String.valueOf(location.getZ()))
+                .hoverEvent(HoverEvent.showText(Component.text("Z"))),
+            Component.space(),
+            Component.text()
+                .color(NamedTextColor.GOLD)
+                .content(String.valueOf(location.getYaw()))
+                .hoverEvent(HoverEvent.showText(Component.text("Yaw"))),
+            Component.space(),
+            Component.text()
+                .color(NamedTextColor.AQUA)
+                .content(String.valueOf(location.getPitch()))
+                .hoverEvent(HoverEvent.showText(Component.text("Pitch")))
+        };
     }
 
-    public static Component blockLocation(@NotNull final Location location) {
-        final var component = Component.text();
-        component.append(INTERNAL_addLocationWorld(location));
-        component.append(Component.space());
-        component.append(Component.text(location.getBlockX())
-            .color(NamedTextColor.RED)
-            .hoverEvent(HoverEvent.showText(Component.text("Block X"))));
-        component.append(Component.space());
-        component.append(Component.text(location.getBlockY())
-            .color(NamedTextColor.GREEN)
-            .hoverEvent(HoverEvent.showText(Component.text("Block X"))));
-        component.append(Component.space());
-        component.append(Component.text(location.getBlockZ())
-            .color(NamedTextColor.BLUE)
-            .hoverEvent(HoverEvent.showText(Component.text("Block X"))));
-        return component.build();
+    public static @NotNull ComponentLike @NotNull [] blockLocation(
+        final @NotNull Location location
+    ) {
+        return new ComponentLike[] {
+            INTERNAL_addLocationWorld(location),
+            Component.space(),
+            Component.text()
+                .color(NamedTextColor.RED)
+                .content(String.valueOf(location.getBlockX()))
+                .hoverEvent(HoverEvent.showText(Component.text("Block X"))),
+            Component.space(),
+            Component.text()
+                .color(NamedTextColor.GREEN)
+                .content(String.valueOf(location.getBlockY()))
+                .hoverEvent(HoverEvent.showText(Component.text("Block Y"))),
+            Component.space(),
+            Component.text()
+                .color(NamedTextColor.BLUE)
+                .content(String.valueOf(location.getBlockZ()))
+                .hoverEvent(HoverEvent.showText(Component.text("Block Z")))
+        };
     }
-
 }

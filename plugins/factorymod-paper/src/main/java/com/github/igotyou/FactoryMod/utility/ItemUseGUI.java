@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.components.ComponableInventory;
@@ -82,14 +83,14 @@ public class ItemUseGUI {
         if (itemAsInput.isEmpty()) {
             ItemStack noItems = new ItemStack(Material.BARRIER);
             ItemUtils.setDisplayName(noItems, String.format("%sNo recipes take input %s%s", ChatColor.RED, ChatColor.BOLD,
-                ItemUtils.getItemName(item)));
+                ChatUtils.translate(item)));
             itemAsInput.add(new LClickable(noItems, p -> {
             }));
         }
         if (itemAsOutput.isEmpty()) {
             ItemStack noItems = new ItemStack(Material.BARRIER);
             ItemUtils.setDisplayName(noItems, String.format("%sNo recipes output %s%s", ChatColor.RED, ChatColor.BOLD,
-                ItemUtils.getItemName(item)));
+                ChatUtils.translate(item)));
             itemAsOutput.add(new LClickable(noItems, p -> {
             }));
         }
@@ -168,7 +169,7 @@ public class ItemUseGUI {
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GOLD + "Setup cost:");
         for (Map.Entry<ItemStack, Integer> entry : fccEgg.getSetupCost().getEntrySet()) {
-            String recipeRepresentation = entry.getValue() + " " + ItemUtils.getItemName(entry.getKey());
+            String recipeRepresentation = entry.getValue() + " " + ChatUtils.translate(entry.getKey());
             lore.add(formatIngredient(recipeRepresentation, item));
         }
         ItemUtils.addLore(is, lore);
@@ -176,7 +177,7 @@ public class ItemUseGUI {
     }
 
     private String formatIngredient(String recipeRepresentation, ItemStack is) {
-        if (recipeRepresentation.matches("\\d+ " + ItemUtils.getItemName(is))) {
+        if (recipeRepresentation.matches("\\d+ " + ChatUtils.translate(is))) {
             return String.format("%s - %s%s%s", ChatColor.GRAY, ChatColor.AQUA, ChatColor.BOLD, recipeRepresentation);
         } else {
             return String.format("%s - %s%s", ChatColor.GRAY, ChatColor.AQUA, recipeRepresentation);

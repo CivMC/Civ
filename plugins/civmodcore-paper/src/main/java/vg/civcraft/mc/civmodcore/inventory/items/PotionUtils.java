@@ -4,20 +4,15 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
 import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
-import net.kyori.adventure.translation.Translatable;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 public final class PotionUtils {
-
     private static final Map<Pair<Material, PotionType>, TranslatableComponent> POTION_TRANSLATIONS = new Object2ObjectAVLTreeMap<>();
 
     /**
@@ -48,28 +43,5 @@ public final class PotionUtils {
             });
             return Component.translatable(item.translationKey());
         });
-    }
-
-    /**
-     * @param potion The potion type to get the name of.
-     * @return Returns the name of the potion, or null.
-     * @deprecated Use {@link #asTranslatable(PotionType)} or
-     * {@link #asTranslatable(Material, PotionType)} instead.
-     */
-    @Deprecated
-    @Nullable
-    public static String getPotionNiceName(@Nullable final PotionType potion) {
-        return potion == null ? null : ChatUtils.stringify(asTranslatable(potion));
-    }
-
-    /**
-     * @param effect The potion effect to get the name of.
-     * @return Returns the name of the potion effect, or null.
-     * @deprecated Use {@link Component#translatable(Translatable)} instead.
-     */
-    @Deprecated
-    @Nullable
-    public static String getEffectNiceName(@Nullable final PotionEffectType effect) {
-        return effect == null ? null : ChatUtils.stringify(Component.translatable(effect));
     }
 }

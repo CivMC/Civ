@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.translation.Translatable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -20,7 +18,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 
@@ -100,17 +97,6 @@ public final class EnchantUtils {
             return enchantment;
         }
         return null;
-    }
-
-    /**
-     * @param enchant The enchantment to get the name of.
-     * @return Returns the name of the enchantment, or null.
-     * @deprecated Use {@link Component#translatable(Translatable)} instead.
-     */
-    @Nullable
-    @Deprecated
-    public static String getEnchantNiceName(@Nullable final Enchantment enchant) {
-        return enchant == null ? null : ChatUtils.stringify(Component.translatable(enchant));
     }
 
     /**

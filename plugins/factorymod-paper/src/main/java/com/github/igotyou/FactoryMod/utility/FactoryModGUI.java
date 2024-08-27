@@ -18,6 +18,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
@@ -98,7 +99,7 @@ public class FactoryModGUI {
             ItemStack is = new ItemStack(firstRec.getRecipeRepresentationMaterial());
             ItemUtils.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
             List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.DARK_AQUA + "Fuel: " + ChatColor.GRAY + ItemUtils.getItemName(fccEgg.getFuel().getType()));
+            lore.add(ChatColor.DARK_AQUA + "Fuel: " + ChatColor.GRAY + ChatUtils.translate(fccEgg.getFuel().getType()));
             lore.add("");
             lore.add(ChatColor.GOLD + String.valueOf(fccEgg.getRecipes().size() + " recipes:"));
             for (IRecipe rec : fccEgg.getRecipes()) {
@@ -148,7 +149,7 @@ public class FactoryModGUI {
             lore.add(ChatColor.GOLD + "Required materials:");
             for (Entry<ItemStack, Integer> entry : factory.getSetupCost().getEntrySet()) {
                 lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + entry.getValue() + " "
-                    + ItemUtils.getItemName(entry.getKey()));
+                    + ChatUtils.translate(entry.getKey()));
             }
             ItemUtils.addLore(is, lore);
         } else {
@@ -161,7 +162,7 @@ public class FactoryModGUI {
                     lore.add(ChatColor.GOLD + "Required materials for the upgrade:");
                     for (Entry<ItemStack, Integer> entry : upRec.getInput().getEntrySet()) {
                         lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + entry.getValue() + " "
-                            + ItemUtils.getItemName(entry.getKey()));
+                            + ChatUtils.translate(entry.getKey()));
                     }
                     ItemUtils.addLore(is, lore);
                     return new LClickable(is, p -> showRecipeFor(factory, upRec, true));
@@ -180,7 +181,7 @@ public class FactoryModGUI {
         }
         ItemStack is = factory.getFuel().clone();
         ItemUtils.setDisplayName(is, ChatColor.GOLD + "Fuel cost for recipe");
-        ItemUtils.addLore(is, ChatColor.AQUA + "- " + recipe.getTotalFuelConsumed() + " " + ItemUtils.getItemName(is.getType()));
+        ItemUtils.addLore(is, ChatColor.AQUA + "- " + recipe.getTotalFuelConsumed() + " " + ChatUtils.translate(is.getType()));
         return new DecorationStack(is);
     }
 
