@@ -101,10 +101,10 @@ world-settings:
       ignore-spectators: false
     entity-tracking-range:
       players: 160
-      animals: 32
-      monsters: 64
-      misc: 32
-      other: 64
+      animals: 96
+      monsters: 96
+      misc: 96
+      other: 96
     ticks-per:
       hopper-transfer: 16
       hopper-check: 8
