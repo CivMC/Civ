@@ -25,6 +25,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
@@ -280,7 +281,7 @@ public final class ExchangeRule implements ExchangeData {
         if (!Strings.isNullOrEmpty(listing)) {
             return listing;
         }
-        listing = ItemUtils.getItemName(this.material);
+        listing = ChatUtils.translate(this.material);
         if (!Strings.isNullOrEmpty(listing)) {
             return listing;
         }

@@ -12,7 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
@@ -84,7 +84,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
         for (RandomEnchant re : enchants) {
             ItemUtils.addLore(is,
                 ChatColor.YELLOW + String.valueOf(re.chance * 100)
-                    + " % chance for " + EnchantUtils.getEnchantNiceName(re.enchant)
+                    + " % chance for " + ChatUtils.translate(re.enchant)
                     + " " + re.level);
         }
         ItemUtils.addLore(is, ChatColor.LIGHT_PURPLE

@@ -32,6 +32,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
@@ -113,15 +114,14 @@ public final class EnchantModifier extends ModifierData {
     public List<String> getDisplayInfo() {
         List<String> info = Lists.newArrayList();
         for (Map.Entry<Enchantment, Integer> requiredEnchant : getRequiredEnchants().entrySet()) {
-            String name = EnchantUtils.getEnchantNiceName(requiredEnchant.getKey());
             if (requiredEnchant.getValue() == ExchangeRule.ANY) {
-                info.add(ChatColor.AQUA + name);
+                info.add(ChatColor.AQUA + ChatUtils.translate(requiredEnchant.getKey()));
             } else {
-                info.add(ChatColor.AQUA + name + " " + requiredEnchant.getValue());
+                info.add(ChatColor.AQUA + ChatUtils.translate(requiredEnchant.getKey()) + " " + requiredEnchant.getValue());
             }
         }
         for (Enchantment excludedEnchant : getExcludedEnchants()) {
-            info.add(ChatColor.RED + "!" + EnchantUtils.getEnchantNiceName(excludedEnchant));
+            info.add(ChatColor.RED + "!" + ChatUtils.translate(excludedEnchant));
         }
         if (isAllowingUnlistedEnchants()) {
             info.add(ChatColor.GREEN + "Other enchantments allowed");

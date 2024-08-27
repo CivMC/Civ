@@ -34,7 +34,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -65,7 +65,7 @@ public final class BastionDamageListener implements Listener {
                     blockManager.erodeFromPlace(event.getPlayer(), blocking);
                 } else {
                     event.getPlayer().sendMessage(String.format("%s%s cannot be used to damage bastions", ChatColor.RED,
-                        ItemUtils.getItemName(mat)));
+                        ChatUtils.translate(mat)));
                 }
                 return;
             }
