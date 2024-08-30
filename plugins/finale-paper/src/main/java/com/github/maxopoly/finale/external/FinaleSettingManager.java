@@ -17,8 +17,6 @@ public class FinaleSettingManager {
     private BooleanSetting vanillaItemCooldown;
     private BooleanSetting actionBarItemCooldown;
     private BooleanSetting actionBarPearlCooldown;
-    private BooleanSetting sideBarPearlCooldown;
-    private BooleanSetting sideBarItemCooldown;
     private BooleanSetting showArmor;
     private BooleanSetting showTool;
     private BooleanSetting showPotionEffects;
@@ -61,16 +59,6 @@ public class FinaleSettingManager {
             "Should items cooldown be shown on the action bar at the bottom of your screen");
         PlayerSettingAPI.registerSetting(actionBarItemCooldown, menu);
 
-        sideBarPearlCooldown = new BooleanSetting(plugin, false, "Show pearl cooldown in side bar",
-            "finaleSideBarPearlCooldown",
-            "Should pearl cooldown be shown on the sidebar");
-        PlayerSettingAPI.registerSetting(sideBarPearlCooldown, menu);
-
-        sideBarItemCooldown = new BooleanSetting(plugin, false, "Show item cooldown in side bar",
-            "finaleSideBarItemCooldown",
-            "Should items cooldown be shown on the sidebar");
-        PlayerSettingAPI.registerSetting(sideBarItemCooldown, menu);
-
         showArmor = new BooleanSetting(Finale.getPlugin(), true, "Show armor durability", "finaleArmorDurabilitySidebar", "Should the durability of your worn armor be shown in the scorebard");
         PlayerSettingAPI.registerSetting(showArmor, menu);
 
@@ -83,7 +71,7 @@ public class FinaleSettingManager {
         toolProtection = new BooleanSetting(Finale.getPlugin(), true, "Protect from breaking enchanted tools", "finaleToolProtection", "Do you want to be given mining fatigue if mining with a low durability tool");
         PlayerSettingAPI.registerSetting(toolProtection, menu);
 
-        coordsLocation = new DisplayLocationSetting(Finale.getPlugin(), DisplayLocationSetting.DisplayLocation.SIDEBAR, "Coords location on HUD", "finaleCoordsLocation", new ItemStack(Material.ARROW), "Where to display your location");
+        coordsLocation = new DisplayLocationSetting(Finale.getPlugin(), DisplayLocationSetting.DisplayLocation.NONE, "Coords location on HUD", "finaleCoordsLocation", new ItemStack(Material.ARROW), "Where to display your location");
         PlayerSettingAPI.registerSetting(coordsLocation, menu);
 
         toolProtectionThreshhold = new BoundedIntegerSetting(Finale.getPlugin(), 10, "Threshhold for tool protection", "finaleToolProtectionThreshhold", new ItemStack(Material.DIAMOND_PICKAXE), "Durability at which break protection should trigger", false, 1, 2000);
@@ -124,14 +112,6 @@ public class FinaleSettingManager {
 
     public DisplayLocationSetting getCoordsLocation() {
         return coordsLocation;
-    }
-
-    public boolean sideBarPearlCooldown(UUID uuid) {
-        return sideBarPearlCooldown.getValue(uuid);
-    }
-
-    public boolean sideBarItemCooldown(UUID uuid) {
-        return sideBarItemCooldown.getValue(uuid);
     }
 
     public boolean actionBarPearlCooldown(UUID uuid) {

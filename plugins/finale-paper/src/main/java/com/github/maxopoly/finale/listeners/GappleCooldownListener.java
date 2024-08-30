@@ -16,8 +16,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.utilities.cooldowns.ICoolDownHandler;
 import vg.civcraft.mc.civmodcore.utilities.cooldowns.TickCoolDownHandler;
 
@@ -25,7 +23,6 @@ public class GappleCooldownListener implements Listener {
 
     private ICoolDownHandler<UUID> coolDownHandler;
     private DecimalFormat df = new DecimalFormat("#.0");
-    private CivScoreBoard cooldownBoard;
     private BottomLine cooldownBottomLine;
 
     public GappleCooldownListener(long cooldown) {
@@ -55,14 +52,6 @@ public class GappleCooldownListener implements Listener {
         return cooldownBottomLine;
     }
 
-    public CivScoreBoard getCooldownBoard() {
-        if (cooldownBoard == null) {
-            cooldownBoard = ScoreBoardAPI.createBoard("gappleCooldown");
-            cooldownBoard.updatePeriodically(getCooldownBiFunction(), 1L);
-        }
-        return cooldownBoard;
-    }
-
     public String getCooldownText(Player shooter) {
         return ChatColor.GOLD + "" + ChatColor.BOLD + "Golden Apple: " + ChatColor.GOLD + formatCoolDown(shooter.getUniqueId());
     }
@@ -80,10 +69,6 @@ public class GappleCooldownListener implements Listener {
         if (settings.actionBarItemCooldown(shooter.getUniqueId())) {
             BottomLine bottomLine = getCooldownBottomLine();
             bottomLine.updatePlayer(shooter, getCooldownText(shooter));
-        }
-        if (settings.sideBarItemCooldown(shooter.getUniqueId())) {
-            CivScoreBoard board = getCooldownBoard();
-            board.set(shooter, getCooldownText(shooter));
         }
     }
 

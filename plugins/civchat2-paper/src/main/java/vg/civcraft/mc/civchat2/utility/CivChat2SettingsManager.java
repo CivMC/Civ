@@ -56,8 +56,8 @@ public class CivChat2SettingsManager {
             "Should player chat group be shown?");
         PlayerSettingAPI.registerSetting(showChatGroup, menu);
 
-        chatGroupLocation = new DisplayLocationSetting(CivChat2.getInstance(), DisplayLocationSetting.DisplayLocation.SIDEBAR,
-            "Chat Group Location", "chatGroupLocation", new ItemStack(Material.ARROW), "the current chat group");
+        chatGroupLocation = new DisplayLocationSetting(CivChat2.getInstance(), DisplayLocationSetting.DisplayLocation.ACTIONBAR,
+            "Chat Group HUD", "chatGroupLocation", new ItemStack(Material.ARROW), "the current chat group");
         PlayerSettingAPI.registerSetting(chatGroupLocation, menu);
 
         chatUnmuteTimer = new LongSetting(CivChat2.getInstance(), 0L, "Global chat mute", "chatGlobalMuteTimer");

@@ -27,8 +27,6 @@ import vg.civcraft.mc.citadel.playerstate.AbstractPlayerState;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.players.settings.SettingChangeListener;
 import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
@@ -42,11 +40,8 @@ public class ModeListener implements Listener {
 
     private DoubleInteractFixer interactFixer;
     private BottomLine ctiBottomLine;
-    private CivScoreBoard ctiBoard;
     private BottomLine ctbBottomLine;
-    private CivScoreBoard ctbBoard;
     private BottomLine reinBottomLine;
-    private CivScoreBoard reinBoard;
     private CitadelSettingManager settingMan;
     private PlayerStateManager stateMan;
 
@@ -54,11 +49,8 @@ public class ModeListener implements Listener {
         interactFixer = new DoubleInteractFixer(citadel);
         this.stateMan = citadel.getStateManager();
         this.ctiBottomLine = BottomLineAPI.createBottomLine("ctiDisplay", 3);
-        this.ctiBoard = ScoreBoardAPI.createBoard("ctiDisplay");
         this.ctbBottomLine = BottomLineAPI.createBottomLine("ctbDisplay", 3);
-        this.ctbBoard = ScoreBoardAPI.createBoard("ctbDisplay");
         this.reinBottomLine = BottomLineAPI.createBottomLine("ctreinDisplay", 3);
-        this.reinBoard = ScoreBoardAPI.createBoard("ctreinDisplay");
         this.settingMan = Citadel.getInstance().getSettingManager();
         settingMan.getInformationMode().registerListener(new SettingChangeListener<Boolean>() {
             @Override
@@ -107,24 +99,23 @@ public class ModeListener implements Listener {
 
     private void setCtiOverlay(Player player, boolean state) {
         updateDisplaySetting(player, settingMan.getInformationLocationSetting(), state, ChatColor.GOLD + "CTI",
-            ctiBottomLine, ctiBoard);
+            ctiBottomLine);
     }
 
     private void setCtbOverlay(Player player, boolean state) {
         updateDisplaySetting(player, settingMan.getBypassLocationSetting(), state, ChatColor.AQUA + "CTB",
-            ctbBottomLine, ctbBoard);
+            ctbBottomLine);
     }
 
     private void setReinModeOverlay(Player player, AbstractPlayerState state) {
         if (state == null) {
             return;
         }
-        updateDisplaySetting(player, settingMan.getModeLocationSetting(), true, state.getOverlayText(), reinBottomLine,
-            reinBoard);
+        updateDisplaySetting(player, settingMan.getModeLocationSetting(), true, state.getOverlayText(), reinBottomLine);
     }
 
     private static void updateDisplaySetting(Player player, DisplayLocationSetting locSetting, boolean state, String text,
-                                             BottomLine bottomLine, CivScoreBoard scoreBoard) {
+                                             BottomLine bottomLine) {
         if (player == null) {
             return;
         }
@@ -134,14 +125,8 @@ public class ModeListener implements Listener {
         if (!state) {
             // always clean up, value might have been changed
             bottomLine.removePlayer(player);
-            scoreBoard.hide(player);
-        } else {
-            if (locSetting.showOnActionbar(player.getUniqueId())) {
-                bottomLine.updatePlayer(player, text);
-            }
-            if (locSetting.showOnSidebar(player.getUniqueId())) {
-                scoreBoard.set(player, text);
-            }
+        } else if (locSetting.showOnActionbar(player.getUniqueId())) {
+            bottomLine.updatePlayer(player, text);
         }
     }
 

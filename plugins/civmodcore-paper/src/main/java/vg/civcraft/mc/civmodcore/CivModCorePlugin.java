@@ -20,8 +20,6 @@ import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
 import vg.civcraft.mc.civmodcore.players.PlayerNames;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardListener;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.commands.ConfigCommand;
 import vg.civcraft.mc.civmodcore.utilities.SkinCache;
@@ -84,11 +82,9 @@ public class CivModCorePlugin extends ACivMod {
             warning("Cannot get database from config.", error);
             this.database = null;
         }
-        ScoreBoardAPI.setDefaultHeader(this.config.getScoreboardHeader());
         // Register listeners
         registerListener(new ClickableInventoryListener());
         registerListener(DialogManager.INSTANCE);
-        registerListener(new ScoreBoardListener());
         registerListener(new WorldTracker());
         registerListener(new PlayerNames());
         // Register commands

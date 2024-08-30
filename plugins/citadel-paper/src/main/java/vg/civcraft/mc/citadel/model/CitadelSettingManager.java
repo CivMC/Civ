@@ -132,11 +132,11 @@ public class CitadelSettingManager {
             , "citadelBypassDisplayLocation", new ItemStack(Material.GOLDEN_PICKAXE), "bypass");
         PlayerSettingAPI.registerSetting(ctbLocationSetting, menu);
 
-        ctiLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocationSetting.DisplayLocation.SIDEBAR, "Information mode display location"
+        ctiLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocationSetting.DisplayLocation.ACTIONBAR, "Information mode display location"
             , "citadelInfoModeDisplayLocation", new ItemStack(Material.BOOKSHELF), "reinforcement info mode");
         PlayerSettingAPI.registerSetting(ctiLocationSetting, menu);
 
-        modeLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocationSetting.DisplayLocation.SIDEBAR, "Citadel mode display location"
+        modeLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocationSetting.DisplayLocation.ACTIONBAR, "Citadel mode display location"
             , "citadelReinModeDisplayLocation", new ItemStack(Material.NETHER_STAR), "Citadel mode");
         PlayerSettingAPI.registerSetting(modeLocationSetting, menu);
 
