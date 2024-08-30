@@ -262,9 +262,7 @@ public final class ClonedInventory implements Inventory {
         } else {
             clone = Bukkit.createInventory(inventory.getHolder(), inventory.getType());
         }
-        final ItemStack[] contents = inventory.getContents();
-        MoreArrayUtils.computeElements(contents, (item) -> item == null ? null : item.clone());
-        clone.setContents(contents);
+        clone.setContents(MoreArrayUtils.cloneArrayAndElements(inventory.getContents(), ItemStack::clone));
         return new ClonedInventory(clone);
     }
 
