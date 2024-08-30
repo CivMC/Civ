@@ -8,25 +8,16 @@ import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
 
 public class ScoreboardHUD {
 
     private final BottomLine chatBottomLine;
-    private final CivScoreBoard chatBoard;
-
     private final BottomLine afkBottomLine;
-    private final CivScoreBoard afkBoard;
-
     private final CivChat2SettingsManager settingMan;
 
     public ScoreboardHUD() {
-        this.chatBoard = ScoreBoardAPI.createBoard("CivChatDisplay");
         this.chatBottomLine = BottomLineAPI.createBottomLine("CivChatDisplay", 3);
-
-        this.afkBoard = ScoreBoardAPI.createBoard("CivChatAFKDisplay");
         this.afkBottomLine = BottomLineAPI.createBottomLine("CivChatAFKDisplay", 4);
 
         this.settingMan = CivChat2.getInstance().getCivChat2SettingsManager();
@@ -40,7 +31,6 @@ public class ScoreboardHUD {
     public void updateScoreboardHUD(Player p) {
         // if player disabled chat group display, hide the scoreboard
         if (!settingMan.getShowChatGroup(p.getUniqueId())) {
-            chatBoard.hide(p);
             chatBottomLine.removePlayer(p);
         } else {
             DisplayLocationSetting locSetting = settingMan.getChatGroupLocation();
@@ -51,15 +41,11 @@ public class ScoreboardHUD {
             } else if (chatman.getGroupChatting(p) != null) {
                 text = ChatColor.GOLD + "Chat Group " + ChatColor.LIGHT_PURPLE + chatman.getGroupChatting(p).getName();
             } else {
-                chatBoard.hide(p);
                 chatBottomLine.removePlayer(p);
                 return;
             }
             if (locSetting.showOnActionbar(p.getUniqueId())) {
                 chatBottomLine.updatePlayer(p, text);
-            }
-            if (locSetting.showOnSidebar(p.getUniqueId())) {
-                chatBoard.set(p, text);
             }
         }
     }
@@ -77,11 +63,6 @@ public class ScoreboardHUD {
             afkBottomLine.updatePlayer(p, text);
         } else {
             afkBottomLine.removePlayer(p);
-        }
-        if (chatman.isPlayerAfk(p) && afkStatusLocation.showOnSidebar(p.getUniqueId())) {
-            afkBoard.set(p, text);
-        } else {
-            afkBoard.hide(p);
         }
     }
 

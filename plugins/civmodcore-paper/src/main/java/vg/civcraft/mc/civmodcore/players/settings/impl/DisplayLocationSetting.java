@@ -1,91 +1,121 @@
 package vg.civcraft.mc.civmodcore.players.settings.impl;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
 
 public class DisplayLocationSetting extends LimitedStringSetting {
+    private final String displayName;
 
-    private String displayName;
-
-    public DisplayLocationSetting(JavaPlugin plugin, DisplayLocation defaultValue, String name, String identifier,
-                                  ItemStack gui, String displayName) {
-        super(plugin, defaultValue.toString(), name, identifier, gui, "Set where to display " + displayName,
-            Arrays.stream(DisplayLocation.values()).map(DisplayLocation::toString).collect(Collectors.toList()),
-            false);
+    public DisplayLocationSetting(
+        final @NotNull JavaPlugin plugin,
+        final @NotNull DisplayLocation defaultValue,
+        final @NotNull String name,
+        final @NotNull String identifier,
+        final @NotNull ItemStack gui,
+        final @NotNull String displayName
+    ) {
+        super(
+            plugin,
+            defaultValue.toString(),
+            name,
+            identifier,
+            gui,
+            "Set where to display " + displayName,
+            Arrays.stream(DisplayLocation.values()).map(DisplayLocation::toString).toList(),
+            false
+        );
         this.displayName = displayName;
     }
 
-    public boolean showOnSidebar(UUID uuid) {
-        DisplayLocation location = DisplayLocation.valueOf(getValue(uuid));
-        return location == DisplayLocation.SIDEBAR || location == DisplayLocation.BOTH;
+    public boolean showOnActionbar(
+        final UUID uuid
+    ) {
+        return getDisplayLocation(uuid) == DisplayLocation.ACTIONBAR;
     }
 
-    public boolean showOnActionbar(UUID uuid) {
-        DisplayLocation location = DisplayLocation.valueOf(getValue(uuid));
-        return location == DisplayLocation.ACTIONBAR || location == DisplayLocation.BOTH;
-    }
-
-    public DisplayLocation getDisplayLocation(UUID uuid) {
-        return DisplayLocation.valueOf(getValue(uuid));
+    public @NotNull DisplayLocation getDisplayLocation(
+        final UUID uuid
+    ) {
+        return Objects.requireNonNullElse(
+            DisplayLocation.fromString(getValue(uuid)),
+            DisplayLocation.ACTIONBAR
+        );
     }
 
     @Override
-    public void handleMenuClick(Player player, MenuSection menu) {
-        DisplayLocation currentValue = DisplayLocation.fromString(getValue(player));
-        IClickable sideClick = genLocationClick(Material.YELLOW_BANNER, "%sShow %s only on side bar",
-            DisplayLocation.SIDEBAR, menu, currentValue);
-        IClickable actionClick = genLocationClick(Material.STONE_PRESSURE_PLATE, "%sShow %s only on action bar",
-            DisplayLocation.ACTIONBAR, menu, currentValue);
-        IClickable bothClick = genLocationClick(Material.PAINTING, "%sShow %s both on action and side bar",
-            DisplayLocation.BOTH, menu, currentValue);
-        IClickable noneClick = genLocationClick(Material.BARRIER, "%sShow %s neither on side bar, nor action bar",
-            DisplayLocation.NONE, menu, currentValue);
-        MultiPageView selector = new MultiPageView(player, Arrays.asList(sideClick, actionClick, bothClick, noneClick),
-            "Select where to show " + displayName, true);
+    public void handleMenuClick(
+        final @NotNull Player player,
+        final @NotNull MenuSection menu
+    ) {
+        final DisplayLocation currentValue = getDisplayLocation(player.getUniqueId());
+        final var selector = new MultiPageView(
+            player,
+            List.of(
+                genLocationClick(
+                    Material.STONE_PRESSURE_PLATE,
+                    "%sShow %s on action bar",
+                    DisplayLocation.ACTIONBAR,
+                    menu,
+                    currentValue
+                ),
+                genLocationClick(
+                    Material.BARRIER,
+                    "%sShow %s neither on side bar, nor action bar",
+                    DisplayLocation.NONE,
+                    menu,
+                    currentValue
+                )
+            ),
+            "Select where to show " + this.displayName,
+            true
+        );
         selector.showScreen();
     }
 
-    private IClickable genLocationClick(Material mat, String infoText, DisplayLocation location, MenuSection menu, DisplayLocation currentlySelect) {
-        ItemStack sideStack = new ItemStack(mat);
-        ItemUtils.setDisplayName(sideStack, String.format(infoText, ChatColor.GOLD, displayName));
-        if (location == currentlySelect) {
-            sideStack.editMeta(itemMeta -> itemMeta.setEnchantmentGlintOverride(true));
-        }
-        return new LClickable(sideStack, p -> {
-            setValue(p, location.toString());
-            menu.showScreen(p);
+    private IClickable genLocationClick(
+        final @NotNull Material icon,
+        final @NotNull String label,
+        final @NotNull DisplayLocation location,
+        final @NotNull MenuSection menu,
+        final @NotNull DisplayLocation currentLocation
+    ) {
+        final var item = new ItemStack(icon);
+        item.editMeta((meta) -> {
+            meta.setDisplayName(label.formatted(ChatColor.GOLD, this.displayName));
+            if (location == currentLocation) {
+                meta.setEnchantmentGlintOverride(true);
+            }
+        });
+        return new LClickable(item, (clicker) -> {
+            setValue(clicker, location.toString());
+            menu.showScreen(clicker);
         });
     }
 
     public enum DisplayLocation {
-        SIDEBAR, ACTIONBAR, BOTH, NONE;
+        ACTIONBAR, NONE;
 
-        public static DisplayLocation fromString(String s) {
-            switch (s.toUpperCase()) {
-                case "SIDEBAR":
-                    return SIDEBAR;
-                case "ACTIONBAR":
-                    return ACTIONBAR;
-                case "BOTH":
-                    return BOTH;
-                case "NONE":
-                case "NEITHER":
-                    return NONE;
-                default:
-                    return null;
-            }
+        public static @Nullable DisplayLocation fromString(
+            final @NotNull String string
+        ) {
+            return switch (string.toUpperCase()) {
+                case "ACTIONBAR" -> ACTIONBAR;
+                case "NONE" -> NONE;
+                default -> null;
+            };
         }
     }
-
 }
