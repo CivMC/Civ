@@ -16,7 +16,6 @@ public abstract class ConfigParser {
     protected final Logger logger;
 
     private boolean debug;
-    private boolean logReplies;
 
     public ConfigParser(final Plugin plugin) {
         this.plugin = plugin;
@@ -36,9 +35,6 @@ public abstract class ConfigParser {
         // Parse debug value
         this.debug = config.getBoolean("debug", false);
         this.logger.info("Debug mode: " + (this.debug ? "enabled" : "disabled"));
-        // Parse reply logging value
-        this.logReplies = config.getBoolean("logReplies", false);
-        this.logger.info("Logging replies: " + (this.logReplies ? "enabled" : "disabled"));
         // Allow child class parsing
         final boolean worked = parseInternal(config);
         if (worked) {
@@ -63,7 +59,6 @@ public abstract class ConfigParser {
      */
     public void reset() {
         this.debug = false;
-        this.logReplies = false;
     }
 
     // ------------------------------------------------------------ //
@@ -72,10 +67,6 @@ public abstract class ConfigParser {
 
     public final boolean isDebugEnabled() {
         return this.debug;
-    }
-
-    public final boolean logReplies() {
-        return this.logReplies;
     }
 
 }
