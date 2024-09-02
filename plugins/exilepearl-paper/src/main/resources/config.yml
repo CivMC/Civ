@@ -264,7 +264,7 @@ general:
   max_pearled_message: 'You have too many imprisoned alts'
   can_elytra_with_pearls: true
   can_take_through_portals: false
-  can_pearled_players_pearl_others: false
+  can_pearled_players_pearl_others: true
 pearls:
   free_by_throwing: false
   free_teleport: true

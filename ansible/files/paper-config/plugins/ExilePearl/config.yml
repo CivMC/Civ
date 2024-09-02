@@ -260,7 +260,7 @@ general:
   max_pearled_alts: 1
   max_pearled_message: 'You have too many imprisoned alts'
   can_elytra_with_pearls: true
-  can_pearled_players_pearl_others: false
+  can_pearled_players_pearl_others: true
 pearls:
   autofree_worldborder: true
   free_by_throwing: false

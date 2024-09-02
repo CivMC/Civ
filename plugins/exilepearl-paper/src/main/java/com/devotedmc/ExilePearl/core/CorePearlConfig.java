@@ -544,6 +544,6 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 
     @Override
     public boolean canPearledPlayersPearlOthers() {
-        return doc.getBoolean("general.can_pearled_players_pearl_others", false);
+        return doc.getBoolean("general.can_pearled_players_pearl_others", true);
     }
 }
