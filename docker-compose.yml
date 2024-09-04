@@ -29,6 +29,8 @@ services:
       CIV_POSTGRES_HOST: postgres
       CIV_POSTGRES_USERNAME: postgres
       CIV_POSTGRES_PASSWORD: postgres
+
+      CIV_TIMEOUT_TIME: 3000000
     ports:
       - "25565:25577"
     volumes:
@@ -80,7 +82,7 @@ services:
       CIV_RABBITMQ_PASSWORD: rabbitmq
 
       JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
-      WATCHDOG_TIMEOUT_TIME: 6000
+      CIV_WATCHDOG_TIMEOUT_TIME: 6000
     ports:
       - "5005:5005"
     volumes:
