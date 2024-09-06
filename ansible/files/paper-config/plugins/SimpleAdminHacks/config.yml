@@ -66,6 +66,7 @@ hacks:
      - SNIFFER
      - FROG
      - TADPOLE
+     - ARMADILLO
   AttrHider:
     enabled: true
     # Hide item data like enchantments, firework effects, book data, potion, etc..
