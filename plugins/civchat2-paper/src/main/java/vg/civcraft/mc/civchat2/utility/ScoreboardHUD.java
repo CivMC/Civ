@@ -70,9 +70,10 @@ public class ScoreboardHUD {
      */
     public void updateAFKScoreboardHUD(Player p) {
         CivChat2Manager chatman = CivChat2.getInstance().getCivChat2Manager();
-        DisplayLocationSetting locSetting = settingMan.getChatGroupLocation();
+        DisplayLocationSetting locSetting = settingMan.getAfkStatusLocation();
 
-        if (chatman.isPlayerAfk(p)) {
+        // if afk and enabled display
+        if (chatman.isPlayerAfk(p) && settingMan.getShowAFKStatus(p.getUniqueId())) {
             String text = ChatColor.LIGHT_PURPLE + "AFK";
 
             if (locSetting.showOnActionbar(p.getUniqueId())) {
