@@ -51,7 +51,7 @@ voting_sites:
     voting_url: 'https://minecraftservers.org/vote/636677'
     internal_key: 'MinecraftServers.org'
     name: 'minecraftservers.org'
-  
+
 database:
   ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
   plugin: EssenceGlue
@@ -59,8 +59,8 @@ database:
   password: ${CIV_MYSQL_PASSWORD}
   host: ${CIV_MYSQL_HOST}
   port: 3306
-  database: essenceglue
+  database: ${CIV_DATABASE_PREFIX}essenceglue
   poolsize: 5
   connection_timeout: 10000
   idle_timeout: 600000
-  max_lifetime: 7200000  
+  max_lifetime: 7200000

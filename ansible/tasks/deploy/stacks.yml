@@ -17,6 +17,7 @@
       state: directory
   loop:
       - { path: '/opt/stacks/minecraft/paper-data', enabled: setting.minecraft.enabled }
+      - { path: '/opt/stacks/minecraft/pvp-data', enabled: setting.minecraft.enabled }
       - { path: '/opt/stacks/minecraft/mariadb-data', enabled: setting.minecraft.enabled }
       - { path: '/opt/stacks/minecraft/postgres-data', enabled: setting.minecraft.enabled }
 
@@ -42,6 +43,8 @@
       - { path: 'minecraft/paper-plugins', enabled: setting.minecraft.enabled }
       - { path: 'minecraft/proxy-config', enabled: setting.minecraft.enabled }
       - { path: 'minecraft/proxy-plugins', enabled: setting.minecraft.enabled }
+      - { path: 'minecraft/pvp-config', enabled: setting.minecraft.enabled }
+      - { path: 'minecraft/pvp-plugins', enabled: setting.minecraft.enabled }
 
 - name: Deploy Stacks | Copy Files
   when:
@@ -53,8 +56,10 @@
   loop:
       - { file: '../../files/paper-config', target: 'minecraft', enabled: setting.minecraft.enabled }
       - { file: '../../files/proxy-config', target: 'minecraft', enabled: setting.minecraft.enabled }
+      - { file: '../../files/pvp-config', target: 'minecraft', enabled: setting.minecraft.enabled }
       - { file: '../../build/paper-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
       - { file: '../../build/proxy-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
+      - { file: '../../files/pvp-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
 
 - name: Deploy Stacks | Deploy Stacks
   when:

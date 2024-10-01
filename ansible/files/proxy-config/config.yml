@@ -34,3 +34,7 @@ servers:
     motd: '§2Building with more than just blocks.§r'
     address: "paper:25565"
     restricted: false
+  pvp:
+    motd: '§2Building with more than just blocks.§r'
+    address: "pvp:25565"
+    restricted: false
