@@ -2,7 +2,7 @@ mysql:
   user: ${CIV_MYSQL_USERNAME}
   password: ${CIV_MYSQL_PASSWORD}
   host: ${CIV_MYSQL_HOST}
-  database: bastion
+  database: ${CIV_DATABASE_PREFIX}bastion
   port: 3306
   poolsize: 10
   connectionTimeout: 10000
@@ -23,7 +23,7 @@ bastions:
       material: SPONGE
       durability: 0
       name: Bastion
-      lore: 
+      lore:
         - This bastion will protect you from grief
         - It will also block pearls when they land
         - As well as stop elytra
