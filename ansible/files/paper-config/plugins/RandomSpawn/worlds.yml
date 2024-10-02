@@ -49,7 +49,7 @@ world:
     - "SPRUCE_TRAPDOOR"
     - "WARPED_TRAPDOOR"
   spawnpoints:
-    Bloom: # nobody
+    Bloom: # EVDan
       x: -4107
       y: 250 # overridden in code, but must be set
       z: -5745
