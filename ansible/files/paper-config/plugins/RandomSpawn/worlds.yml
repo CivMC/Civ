@@ -49,10 +49,26 @@ world:
     - "SPRUCE_TRAPDOOR"
     - "WARPED_TRAPDOOR"
   spawnpoints:
+    Bloom: # nobody
+      x: -4107
+      y: 250 # overridden in code, but must be set
+      z: -5745
+      nearby: true # require another player nearby?
+      checkradius: 300 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
     Commonwealth: # reffelruz#5046
       x: -4004
       y: 250 # overridden in code, but must be set
       z: 102
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Danzilona: # nobody
+      x: 5302
+      y: 250 # overridden in code, but must be set
+      z: 4530
       nearby: true # require another player nearby?
       checkradius: 500 # require another player closer than this
       radius: 100 # spawn area outer radius
@@ -96,6 +112,14 @@ world:
       nearby: true # require another player nearby?
       checkradius: 500 # require another player closer than this
       radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Kallos: # Troll_bebek
+      x: 8301
+      y: 250 # overridden in code, but must be set
+      z: 4563
+      nearby: true # require another player nearby?
+      checkradius: 200 # require another player closer than this
+      radius: 50 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
     Khalkedonia: # TophatAlexYt
       x: 7940
@@ -199,6 +223,14 @@ world:
       z: -5550
       nearby: true # require another player nearby?
       checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    TemporalIsles: # dr_bacon_hair
+      x: -1808
+      y: 250 # overridden in code, but must be set
+      z: -5851
+      nearby: true # require another player nearby?
+      checkradius: 200 # require another player closer than this
       radius: 100 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
     The Papal States: # Antares
