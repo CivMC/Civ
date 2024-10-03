@@ -49,6 +49,14 @@ world:
     - "SPRUCE_TRAPDOOR"
     - "WARPED_TRAPDOOR"
   spawnpoints:
+    Amboise: #EVDan#1792
+      x: 3524
+      y: 250 # overridden in code, but must be set
+      z: -4276
+      nearby: true # require another player nearby?
+      checkradius: 300 # require another player closer than this
+      radius: 50 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
     Bloom: # EVDan
       x: -4107
       y: 250 # overridden in code, but must be set
@@ -101,6 +109,14 @@ world:
       x: -3800
       y: 250 # overridden in code, but must be set
       z: -4330
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    IlaKyavul: # Caesar#5029
+      x: 7051
+      y: 250 # overridden in code, but must be set
+      z: 3412
       nearby: true # require another player nearby?
       checkradius: 500 # require another player closer than this
       radius: 100 # spawn area outer radius
