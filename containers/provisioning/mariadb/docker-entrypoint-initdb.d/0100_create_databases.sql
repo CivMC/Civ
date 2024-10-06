@@ -25,3 +25,9 @@ GRANT ALL PRIVILEGES ON `castlegates`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `essenceglue`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `exilepearl`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `realisticbiomes`.* TO 'mariadb'@'%';
+
+CREATE DATABASE pvp_civduties;
+CREATE DATABASE pvp_civmodcore;
+
+GRANT ALL PRIVILEGES ON `pvp_civduties`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `pvp_civmodcore`.* TO 'mariadb'@'%';

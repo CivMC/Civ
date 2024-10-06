@@ -81,7 +81,6 @@ services:
             CIV_MYSQL_HOST: minecraft_mariadb
             CIV_MYSQL_USERNAME: '{{secret.minecraft.mysql.username}}'
             CIV_MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
-            CIV_MYSQL_DATABASE: minecraft
 
             CIV_POSTGRES_HOST: minecraft_postgres
             CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
@@ -154,18 +153,17 @@ services:
             STOP_DURATION: 3600
 
             CIV_SERVER_NAME: prod-server
-    {% if setting.minecraft.whitelist %}
+{% if setting.minecraft.whitelist %}
             ENABLE_WHITELIST: 'true'
             CIV_WHITELIST: 'true'
-    {% else %}
+{% else %}
             ENABLE_WHITELIST: 'false'
             CIV_WHITELIST: 'false'
-    {% endif %}
+{% endif %}
 
             CIV_MYSQL_HOST: minecraft_mariadb
             CIV_MYSQL_USERNAME: '{{secret.minecraft.mysql.username}}'
             CIV_MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
-            CIV_MYSQL_DATABASE: minecraft
 
             CIV_POSTGRES_HOST: minecraft_postgres
             CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
@@ -183,7 +181,6 @@ services:
             # Persistence
             - /opt/stacks/minecraft/pvp-data:/data
             # Config & Plugins
-            - /opt/stacks/minecraft/paper-config:/paper-config
             - /opt/stacks/minecraft/pvp-config:/config
             - /opt/stacks/minecraft/pvp-plugins:/plugins
             # Private Config & Plugins
