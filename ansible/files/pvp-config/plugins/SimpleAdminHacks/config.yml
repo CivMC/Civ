@@ -567,7 +567,7 @@ hacks:
     unsafe_materials: [LAVA, WATER]
     ott_timeout: 1d
   ToggleLamp:
-    enabled: true
+    enabled: false
     cooldownTime: 100
   DespawnFix:
     enabled: true

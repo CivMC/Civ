@@ -32,7 +32,6 @@ dependencies {
     pvpPlugin(project(path = ":plugins:civmodcore-paper", configuration = "shadow"))
     pvpPlugin(project(path = ":plugins:combattagplus-paper"))
     pvpPlugin(project(path = ":plugins:finale-paper"))
-    pvpPlugin(project(path = ":plugins:namecolors-paper"))
     pvpPlugin(project(path = ":plugins:simpleadminhacks-paper"))
 }
 
