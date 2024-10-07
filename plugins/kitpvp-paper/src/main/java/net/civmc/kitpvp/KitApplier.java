@@ -1,15 +1,15 @@
 package net.civmc.kitpvp;
 
-import net.civmc.kitpvp.dao.Kit;
-import net.minecraft.world.food.FoodData;
-import org.bukkit.Material;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import net.civmc.kitpvp.data.Kit;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class KitApplier {
 
     public static void applyKit(Kit kit, Player player) {
+        player.sendMessage(Component.text("Applied kit " + kit.name(), NamedTextColor.GREEN));
+
         player.clearActivePotionEffects();
 
         player.setFoodLevel(20);
