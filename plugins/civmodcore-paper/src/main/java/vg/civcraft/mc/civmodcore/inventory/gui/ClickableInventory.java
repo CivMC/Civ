@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -44,6 +46,7 @@ public class ClickableInventory {
     private List<BukkitTask> runnables;
 
     private String name;
+    private Runnable onClose;
 
     /**
      * Creates a new ClickableInventory
@@ -296,6 +299,9 @@ public class ClickableInventory {
             }
             ClickableInventory inv = openInventories.remove(p.getUniqueId());
             if (inv != null) {
+                if (inv.onClose != null) {
+                    inv.onClose.run();
+                }
                 stopRunnables(inv);
             }
         }
@@ -356,4 +362,10 @@ public class ClickableInventory {
         return p != null ? getOpenInventory(p.getUniqueId()) : null;
     }
 
+    /**
+     * Specifies a callback to be run when this inventory is closed
+     */
+    public void setOnClose(Runnable onClose) {
+        this.onClose = onClose;
+    }
 }
