@@ -59,7 +59,7 @@
       - { file: '../../files/pvp-config', target: 'minecraft', enabled: setting.minecraft.enabled }
       - { file: '../../build/paper-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
       - { file: '../../build/proxy-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
-      - { file: '../../files/pvp-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
+      - { file: '../../build/pvp-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
 
 - name: Deploy Stacks | Deploy Stacks
   when:
