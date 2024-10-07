@@ -76,12 +76,10 @@ public class PotionsSelectionGui extends ItemSelectionGui {
             potion.setItemMeta(meta);
             inventory.setSlot(toClickable(potion), slot++);
         }
-        Runnable redraw = () -> {
-            Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(KitPvpPlugin.class), () -> {
-                inventory.setOnClose(null);
-                this.open();
-            });
-        };
+        Runnable redraw = () -> Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(KitPvpPlugin.class), () -> {
+            inventory.setOnClose(null);
+            this.open();
+        });
 
         if (this.base != Material.POTION) {
             ItemStack showDrinkablePotions = new ItemStack(Material.POTION);
@@ -97,7 +95,7 @@ public class PotionsSelectionGui extends ItemSelectionGui {
                     redraw.run();
                 }
             }, 53);
-        } else if (this.base != Material.SPLASH_POTION) {
+        } else {
             ItemStack showSplashPotions = new ItemStack(Material.SPLASH_POTION);
             PotionMeta meta = (PotionMeta) showSplashPotions.getItemMeta();
             meta.setColor(Color.YELLOW);
