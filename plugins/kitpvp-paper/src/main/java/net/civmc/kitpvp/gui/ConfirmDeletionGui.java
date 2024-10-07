@@ -1,7 +1,7 @@
 package net.civmc.kitpvp.gui;
 
-import net.civmc.kitpvp.dao.Kit;
-import net.civmc.kitpvp.dao.KitPvpDao;
+import net.civmc.kitpvp.data.Kit;
+import net.civmc.kitpvp.data.KitPvpDao;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -15,13 +15,10 @@ import vg.civcraft.mc.civmodcore.inventory.gui.FastMultiPageView;
 
 public class ConfirmDeletionGui {
 
-    private final KitPvpDao dao;
-    private final Player player;
-
     public ConfirmDeletionGui(KitPvpDao dao, Player player, Kit kit, FastMultiPageView parent) {
-        this.dao = dao;
-        this.player = player;
-        ClickableInventory inventory = new ClickableInventory(36, "Confirm deletion");
+        ClickableInventory inventory = new ClickableInventory(27, "Delete " + kit.name());
+        inventory.setOnClose(parent::showScreen);
+
         ItemStack question = new ItemStack(Material.PAPER);
         ItemMeta questionMeta = question.getItemMeta();
         questionMeta.itemName(Component.text("Are you sure you want to delete kit: %s?".formatted(kit.name())));
@@ -30,22 +27,26 @@ public class ConfirmDeletionGui {
 
         ItemStack yes = new ItemStack(Material.GREEN_CONCRETE);
         ItemMeta yesMeta = yes.getItemMeta();
-        yesMeta.itemName(Component.text("Yes, delete kit: %s".formatted(kit.name()), NamedTextColor.GREEN));
+        yesMeta.itemName(Component.text("Yes, delete kit", NamedTextColor.GREEN));
+        yes.setItemMeta(yesMeta);
         inventory.setSlot(new Clickable(yes) {
             @Override
             protected void clicked(@NotNull Player clicker) {
                 dao.deleteKit(kit.id());
                 clicker.sendMessage(Component.text("Deleted kit: %s".formatted(kit.name()), NamedTextColor.GREEN));
+                inventory.setOnClose(null);
                 clicker.closeInventory();
             }
         }, 10);
 
         ItemStack no = new ItemStack(Material.RED_CONCRETE);
         ItemMeta noMeta = yes.getItemMeta();
-        noMeta.itemName(Component.text("No, cancel deleting kit: %s".formatted(kit.name()), NamedTextColor.RED));
+        noMeta.itemName(Component.text("No, cancel deleting kit", NamedTextColor.RED));
+        no.setItemMeta(noMeta);
         inventory.setSlot(new Clickable(no) {
             @Override
             protected void clicked(@NotNull Player clicker) {
+                inventory.setOnClose(null);
                 parent.showScreen();
             }
         }, 16);

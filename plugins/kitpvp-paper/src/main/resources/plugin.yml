@@ -6,4 +6,9 @@ description: KitPvP for CivMC
 api-version: 1.21.1
 depend: [CivModCore]
 commands:
-  kit: {}
+  kit:
+    usage: |-
+      /<command>
+      /<command> copy <player> <their kit name> [your kit name]
+      /<command> load public <kit name>
+      /<command> load <kit name>

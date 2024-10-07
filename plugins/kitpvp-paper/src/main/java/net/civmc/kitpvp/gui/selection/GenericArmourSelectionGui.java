@@ -1,24 +1,17 @@
 package net.civmc.kitpvp.gui.selection;
 
-import net.civmc.kitpvp.dao.Kit;
-import net.civmc.kitpvp.dao.KitPvpDao;
+import net.civmc.kitpvp.data.Kit;
+import net.civmc.kitpvp.data.KitPvpDao;
 import net.civmc.kitpvp.gui.EditKitGui;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
-import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
-
-import java.util.List;
 
 public class GenericArmourSelectionGui extends ItemSelectionGui {
 
-    public GenericArmourSelectionGui(KitPvpDao dao, String title, Player player, int slot, Kit kit, Runnable parent, EditKitGui gui) {
-        super(dao, title, player, slot, kit, parent, gui);
+    public GenericArmourSelectionGui(KitPvpDao dao, Player player, int slot, Kit kit, Runnable parent, EditKitGui gui) {
+        super(dao, "Armour", player, slot, kit, parent, gui);
     }
 
     @Override
@@ -53,6 +46,7 @@ public class GenericArmourSelectionGui extends ItemSelectionGui {
         inventory.setSlot(toClickable(new ItemStack(Material.NETHERITE_LEGGINGS)), 23);
         inventory.setSlot(toClickable(new ItemStack(Material.NETHERITE_BOOTS)), 32);
 
+        inventory.setSlot(toClickable(new ItemStack(Material.TURTLE_HELMET)), 6);
         inventory.setSlot(toClickable(new ItemStack(Material.ELYTRA)), 15);
     }
 }
