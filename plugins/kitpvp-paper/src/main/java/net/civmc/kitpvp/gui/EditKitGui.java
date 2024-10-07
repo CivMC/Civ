@@ -1,6 +1,9 @@
 package net.civmc.kitpvp.gui;
 
 import com.destroystokyo.paper.MaterialTags;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 import net.civmc.kitpvp.KitPvpPlugin;
 import net.civmc.kitpvp.data.Kit;
 import net.civmc.kitpvp.data.KitPvpDao;
@@ -18,7 +21,6 @@ import org.bukkit.Material;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.StringPrompt;
 import org.bukkit.conversations.ValidatingPrompt;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -29,9 +31,6 @@ import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
 
 public class EditKitGui {
 
