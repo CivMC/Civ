@@ -215,6 +215,7 @@ services:
             MYSQL_USER: minecraft
             MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
             MYSQL_ROOT_PASSWORD: '{{secret.minecraft.mysql.root_password}}'
+            MYSQL_ALLOW_EMPTY_PASSWORD: 1
         volumes:
             - /opt/stacks/minecraft/mariadb-data:/var/lib/mysql
         deploy:
