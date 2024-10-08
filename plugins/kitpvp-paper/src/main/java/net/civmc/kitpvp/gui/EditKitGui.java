@@ -115,7 +115,7 @@ public class EditKitGui {
                                 try {
                                     Kit renamedKit = dao.renameKit(kit.id(), input);
                                     if (renamedKit == null) {
-                                        player.sendMessage(Component.text("Invalid name", NamedTextColor.RED));
+                                        player.sendMessage(Component.text("A kit with that name already exists", NamedTextColor.RED));
                                         return null;
                                     }
                                     player.sendMessage(Component.text("Renamed kit to: %s".formatted(renamedKit.name()), NamedTextColor.GOLD));

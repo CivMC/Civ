@@ -171,11 +171,13 @@ public class SqlKitPvpDao implements KitPvpDao {
         }
         try (Connection connection = source.getConnection()) {
             connection.setAutoCommit(false);
-            PreparedStatement update = connection.prepareStatement("UPDATE kits SET name = ? WHERE id = ?");
+            PreparedStatement update = connection.prepareStatement("UPDATE IGNORE kits SET name = ? WHERE id = ?");
             update.setString(1, name);
             update.setInt(2, id);
 
-            update.executeUpdate();
+            if (update.executeUpdate() == 0) {
+                return null;
+            }
 
             Kit kit = queryKit(connection, id);
             connection.commit();
