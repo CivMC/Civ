@@ -5,7 +5,6 @@ author: Okx
 description: KitPvP for CivMC
 api-version: 1.21.1
 depend: [CivModCore]
-load: STARTUP
 commands:
   kit:
     usage: |-
