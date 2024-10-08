@@ -159,7 +159,6 @@ public class EditKitGui {
             inventory.setItem(guide, 8);
         }
 
-        // icon
         if (canEdit) {
             ItemStack icon = new ItemStack(Material.ITEM_FRAME);
             ItemMeta iconMeta = icon.getItemMeta();
