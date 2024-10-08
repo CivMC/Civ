@@ -161,6 +161,8 @@ services:
             CIV_WHITELIST: 'false'
 {% endif %}
 
+            CIV_WORLD_GENERATOR: VoidWorld
+
             CIV_MYSQL_HOST: minecraft_mariadb
             CIV_MYSQL_USERNAME: '{{secret.minecraft.mysql.username}}'
             CIV_MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
