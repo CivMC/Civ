@@ -274,7 +274,7 @@ public class EditKitGui {
 
             @Override
             protected void onShiftRightClick(@NotNull Player clicker) {
-                if (itemIndex >= 36 && itemIndex < 40) {
+                if ((itemIndex >= 36 && itemIndex < 40) || lastItem == null) {
                     return;
                 }
                 ItemStack[] items = kit.items().clone();
