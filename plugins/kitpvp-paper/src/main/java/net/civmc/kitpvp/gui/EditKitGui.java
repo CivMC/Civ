@@ -176,7 +176,7 @@ public class EditKitGui {
             }, 17);
         }
 
-        inventory.setSlot(getSlot(inventory, 39, Material.ORANGE_STAINED_GLASS_PANE, "Head",
+        inventory.setSlot(getSlot(inventory, 39, Material.ORANGE_STAINED_GLASS_PANE, "Helmet",
                 () -> new ArmourSlotSelectionGui(dao, player, 39, kit, this, new ArrayList<>(MaterialTags.HELMETS.getValues())).open()),
             10);
 
