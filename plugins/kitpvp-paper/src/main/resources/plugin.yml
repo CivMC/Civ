@@ -12,3 +12,4 @@ commands:
       /<command> copy <player> <their kit name> [your kit name]
       /<command> load public <kit name>
       /<command> load <kit name>
+  clear: {}

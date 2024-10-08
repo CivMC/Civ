@@ -66,6 +66,19 @@ public class EnchantmentGui extends ItemSelectionGui {
             }
         }
 
+        if (!kitItem.getEnchantments().isEmpty()) {
+            ItemStack clearEnchants = new ItemStack(Material.BARRIER);
+            ItemMeta clearEnchantsMeta = clearEnchants.getItemMeta();
+            clearEnchantsMeta.itemName(Component.text("Clear enchants", NamedTextColor.GOLD));
+            clearEnchants.setItemMeta(clearEnchantsMeta);
+
+            ItemStack clearEnchantsItem = kitItem.clone();
+            ItemMeta clearEnchantsItemMeta = clearEnchantsItem.getItemMeta();
+            clearEnchantsItemMeta.removeEnchantments();
+            clearEnchantsItem.setItemMeta(clearEnchantsItemMeta);
+            inventory.setSlot(toClickable(clearEnchants, clearEnchantsItem), 51);
+        }
+
         // Damageable has a similar interface but for some reason it doesn't work
         if (((CraftItemStack) kitItem).handle.has(DataComponents.MAX_DAMAGE)) {
             if (kitItem.getItemMeta().isUnbreakable()) {
@@ -78,7 +91,7 @@ public class EnchantmentGui extends ItemSelectionGui {
                 ItemMeta breakableItemMeta = breakableItem.getItemMeta();
                 breakableItemMeta.setUnbreakable(false);
                 breakableItem.setItemMeta(breakableItemMeta);
-                inventory.setSlot(toClickable(breakable, breakableItem), 51);
+                inventory.setSlot(toClickable(breakable, breakableItem), 52);
             } else {
                 ItemStack unbreakable = new ItemStack(Material.BEDROCK);
                 ItemMeta unbreakableMeta = unbreakable.getItemMeta();
@@ -89,21 +102,8 @@ public class EnchantmentGui extends ItemSelectionGui {
                 ItemMeta unbreakableItemMeta = unbreakableItem.getItemMeta();
                 unbreakableItemMeta.setUnbreakable(true);
                 unbreakableItem.setItemMeta(unbreakableItemMeta);
-                inventory.setSlot(toClickable(unbreakable, unbreakableItem), 51);
+                inventory.setSlot(toClickable(unbreakable, unbreakableItem), 52);
             }
-        }
-
-        if (!kitItem.getEnchantments().isEmpty()) {
-            ItemStack clearEnchants = new ItemStack(Material.BARRIER);
-            ItemMeta clearEnchantsMeta = clearEnchants.getItemMeta();
-            clearEnchantsMeta.itemName(Component.text("Clear enchants", NamedTextColor.GOLD));
-            clearEnchants.setItemMeta(clearEnchantsMeta);
-
-            ItemStack clearEnchantsItem = kitItem.clone();
-            ItemMeta clearEnchantsItemMeta = clearEnchantsItem.getItemMeta();
-            clearEnchantsItemMeta.removeEnchantments();
-            clearEnchantsItem.setItemMeta(clearEnchantsItemMeta);
-            inventory.setSlot(toClickable(clearEnchants, clearEnchantsItem), 52);
         }
 
         int maxDamage = ((CraftItemStack) kitItem).handle.getMaxDamage();
