@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import net.civmc.kitpvp.KitApplier;
 import net.civmc.kitpvp.KitPvpPlugin;
 import net.civmc.kitpvp.data.Kit;
@@ -19,6 +22,7 @@ import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.ValidatingPrompt;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -152,6 +156,7 @@ public class KitListGui {
             Kit kit = kits.get(i);
             ItemStack icon = new ItemStack(kit.icon());
             ItemMeta iconMeta = icon.getItemMeta();
+            iconMeta.setAttributeModifiers(HashMultimap.create());
             if (kit.isPublic()) {
                 iconMeta.itemName(Component.text("Public Kit", NamedTextColor.GOLD, TextDecoration.BOLD)
                     .appendSpace().append(Component.text(kit.name(), NamedTextColor.GREEN).decoration(TextDecoration.BOLD, false)));

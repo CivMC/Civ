@@ -1,6 +1,8 @@
-package net.civmc.kitpvp;
+package net.civmc.kitpvp.command;
 
 import java.util.logging.Level;
+import net.civmc.kitpvp.KitApplier;
+import net.civmc.kitpvp.KitPvpPlugin;
 import net.civmc.kitpvp.data.Kit;
 import net.civmc.kitpvp.data.KitPvpDao;
 import net.civmc.kitpvp.gui.KitListGui;
@@ -36,6 +38,7 @@ public class KitCommand implements CommandExecutor {
             }
 
             boolean isPublic = args[1].equalsIgnoreCase("public");
+            boolean isAdmin = player.hasPermission("kitpvp.admin");
 
             Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                 Kit kit;
@@ -49,13 +52,27 @@ public class KitCommand implements CommandExecutor {
                     kit = dao.getKit(args[2], copiedPlayer.getUniqueId());
                 }
                 if (kit != null) {
-                    // copy kit
                     try {
                         String kitName = args.length == 4 ? args[3] : args[2];
+                        if (!isAdmin) {
+                            int ownedKits = 0;
+                            for (Kit playerKit : dao.getKits(player.getUniqueId())) {
+                                if (!playerKit.isPublic()) {
+                                    ownedKits++;
+                                }
+                            }
+                            if (ownedKits >= 50) {
+                                player.sendMessage(Component.text("You cannot create any more kits!", NamedTextColor.RED));
+                                return;
+                            }
+                        }
+                        if (!Kit.checkValidName(player, kitName)) {
+                            return;
+                        }
                         Kit newKit = dao.createKit(kitName, player.getUniqueId());
                         if (newKit == null) {
                             player.sendMessage(Component.text("You already have a kit named '" + kitName + "'!", NamedTextColor.RED));
-                            player.sendMessage(Component.text("Try using a different name: /" + label + " copy " + args[1] + " " + args[2] + " <your name>", NamedTextColor.RED));
+                            player.sendMessage(Component.text("Try using a different kit name: /" + label + " copy " + args[1] + " " + args[2] + " <your kit name>", NamedTextColor.RED));
                             return;
                         }
                         dao.updateKit(newKit.id(), kit.icon(), kit.items());
