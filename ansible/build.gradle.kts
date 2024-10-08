@@ -34,6 +34,7 @@ dependencies {
     pvpPlugin(project(path = ":plugins:finale-paper"))
     pvpPlugin(project(path = ":plugins:simpleadminhacks-paper"))
     pvpPlugin(project(path = ":plugins:kitpvp-paper"))
+    pvpPlugin(project(path = ":plugins:voidworld-paper"))
 }
 
 val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {
