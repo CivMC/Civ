@@ -60,7 +60,7 @@ public class EditKitGui {
     }
 
     public void open() {
-        ClickableInventory inventory = new ClickableInventory(54, (canEdit ? "Viewing " : "Editing ") + kit.name());
+        ClickableInventory inventory = new ClickableInventory(54, (canEdit ? "Editing " : "Viewing ") + kit.name());
 
         inventory.setOnClose(gui::open);
 
