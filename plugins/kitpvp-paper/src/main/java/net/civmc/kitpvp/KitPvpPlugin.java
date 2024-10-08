@@ -19,11 +19,4 @@ public class KitPvpPlugin extends ACivMod {
         getCommand("kit").setExecutor(new KitCommand(new SqlKitPvpDao(source)));
         getCommand("clear").setExecutor(new ClearCommand());
     }
-
-    @Override
-    public @Nullable ChunkGenerator getDefaultWorldGenerator(@NotNull String worldName, @Nullable String id) {
-        return new ChunkGenerator() {
-
-        };
-    }
 }
