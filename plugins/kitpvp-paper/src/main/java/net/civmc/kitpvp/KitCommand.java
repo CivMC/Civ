@@ -45,10 +45,6 @@ public class KitCommand implements CommandExecutor {
                     kit = dao.getKit(args[2], null);
                 } else {
                     OfflinePlayer copiedPlayer = Bukkit.getOfflinePlayer(args[1]);
-                    if (!copiedPlayer.hasPlayedBefore()) {
-                        player.sendMessage(Component.text("Unknown player '" + args[1] + "'", NamedTextColor.RED));
-                        return;
-                    }
                     name = copiedPlayer.getName();
                     kit = dao.getKit(args[2], copiedPlayer.getUniqueId());
                 }
