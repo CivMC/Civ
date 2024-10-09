@@ -66,28 +66,23 @@ public class ScoreboardHUD {
 
     /**
      * Updates the scoreboard to display the players AFK status
-     * @param p
      */
     public void updateAFKScoreboardHUD(Player p) {
         CivChat2Manager chatman = CivChat2.getInstance().getCivChat2Manager();
-        DisplayLocationSetting locSetting = settingMan.getAfkStatusLocation();
+        DisplayLocationSetting afkStatusLocation = settingMan.getAfkStatusLocation();
 
-        // if afk and enabled display
-        if (chatman.isPlayerAfk(p) && settingMan.getShowAFKStatus(p.getUniqueId())) {
-            String text = ChatColor.LIGHT_PURPLE + "AFK";
+        String text = ChatColor.LIGHT_PURPLE + "AFK";
 
-            if (locSetting.showOnActionbar(p.getUniqueId())) {
-                afkBottomLine.updatePlayer(p, text);
-            }
-            if (locSetting.showOnSidebar(p.getUniqueId())) {
-                afkBoard.set(p, text);
-            }
+        if (chatman.isPlayerAfk(p) && afkStatusLocation.showOnActionbar(p.getUniqueId())) {
+            afkBottomLine.updatePlayer(p, text);
         } else {
-            afkBoard.hide(p);
             afkBottomLine.removePlayer(p);
         }
-
-
+        if (chatman.isPlayerAfk(p) && afkStatusLocation.showOnSidebar(p.getUniqueId())) {
+            afkBoard.set(p, text);
+        } else {
+            afkBoard.hide(p);
+        }
     }
 
 }
