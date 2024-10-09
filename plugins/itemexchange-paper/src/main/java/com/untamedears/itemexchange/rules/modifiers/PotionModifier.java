@@ -13,13 +13,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
@@ -33,16 +32,16 @@ public final class PotionModifier extends ModifierData {
     public static final String BASE_KEY = "base";
     public static final String EFFECTS_KEY = "effects";
 
-    private PotionData base;
+    private PotionType base;
     private List<PotionEffect> effects;
 
     @Override
     public PotionModifier construct(ItemStack item) {
-        if (!(item.getItemMeta() instanceof final PotionMeta meta)) {
+        if (!(item.getItemMeta() instanceof final PotionMeta meta) || meta.getBasePotionType() == null) {
             return null;
         }
         PotionModifier modifier = new PotionModifier();
-        modifier.base = meta.getBasePotionData();
+        modifier.base = meta.getBasePotionType();
         modifier.effects = meta.getCustomEffects();
         return modifier;
     }
@@ -75,17 +74,20 @@ public final class PotionModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@Nonnull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NBTCompound nbt) {
         nbt.setCompound(BASE_KEY, NBTEncodings.encodePotionData(this.base));
         nbt.setCompoundArray(EFFECTS_KEY, getEffects().stream()
             .map(NBTEncodings::encodePotionEffect)
             .toArray(NBTCompound[]::new));
     }
 
-    @Nonnull
-    public static PotionModifier fromNBT(@Nonnull final NBTCompound nbt) {
+    public static PotionModifier fromNBT(@NotNull final NBTCompound nbt) {
         final var modifier = new PotionModifier();
-        modifier.setPotionData(NBTEncodings.decodePotionData(nbt.getCompound(BASE_KEY)));
+        PotionType type = NBTEncodings.decodePotionData(nbt.getCompound(BASE_KEY));
+        if (type == null) {
+            return null; // "UNCRAFTABLE" potion which is removed in 1.21
+        }
+        modifier.setPotionData(type);
         modifier.setEffects(Arrays.stream(nbt.getCompoundArray(EFFECTS_KEY))
             .map(NBTEncodings::decodePotionEffect)
             .collect(Collectors.toCollection(ArrayList::new)));
@@ -110,7 +112,7 @@ public final class PotionModifier extends ModifierData {
     public String toString() {
         return getSlug() +
             "{" +
-            "base=" + Utilities.potionDataToString(getPotionData()) + "," +
+            "base=" + Utilities.potionDataToString(getPotionType()) + "," +
             "effects=" + Utilities.potionEffectsToString(getEffects()) + "," +
             "}";
     }
@@ -123,17 +125,17 @@ public final class PotionModifier extends ModifierData {
         if (this.base == null) {
             return null;
         }
-        return PotionUtils.getPotionNiceName(this.base.getType());
+        return PotionUtils.getPotionNiceName(this.base);
     }
 
-    public PotionData getPotionData() {
+    public PotionType getPotionType() {
         if (this.base == null) {
-            return new PotionData(PotionType.UNCRAFTABLE, false, false);
+            return PotionType.WATER;
         }
         return this.base;
     }
 
-    public void setPotionData(PotionData data) {
+    public void setPotionData(PotionType data) {
         this.base = data;
     }
 

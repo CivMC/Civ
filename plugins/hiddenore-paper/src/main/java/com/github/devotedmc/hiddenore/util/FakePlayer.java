@@ -25,8 +25,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import io.papermc.paper.entity.LookAnchor;
 import io.papermc.paper.entity.TeleportFlag;
@@ -51,6 +49,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Note;
 import org.bukkit.Particle;
 import org.bukkit.Server;
+import org.bukkit.ServerLinks;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.Statistic;
@@ -76,6 +75,7 @@ import org.bukkit.entity.*;
 import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent.Reason;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -106,10 +106,12 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
 
+@SuppressWarnings("removal")
 public class FakePlayer implements Player {
 
     private final ItemStack inHand;
@@ -656,7 +658,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public boolean hasLineOfSight(@Nonnull Location location) {
+    public boolean hasLineOfSight(@NotNull Location location) {
         return false;
     }
 
@@ -746,7 +748,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public void registerAttribute(@Nonnull Attribute attribute) {
+    public void registerAttribute(@NotNull Attribute attribute) {
 
     }
 
@@ -1208,6 +1210,11 @@ public class FakePlayer implements Player {
     }
 
     @Override
+	public void heal(double amount, @NotNull EntityRegainHealthEvent.RegainReason reason) {
+
+	}
+
+	@Override
     public double getMaxHealth() {
 
         return 0;
@@ -1352,7 +1359,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public @Nonnull Identity identity() {
+    public @NotNull Identity identity() {
         return Player.super.identity();
     }
 
@@ -1362,7 +1369,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public @Nonnull Component displayName() {
+    public @NotNull Component displayName() {
         return Component.text("Spoof");
     }
 
@@ -1429,6 +1436,31 @@ public class FakePlayer implements Player {
     }
 
     @Override
+	public @org.jetbrains.annotations.Nullable InetSocketAddress getHAProxyAddress() {
+		return null;
+	}
+
+	@Override
+	public boolean isTransferred() {
+		return false;
+	}
+
+	@Override
+	public @NotNull CompletableFuture<byte[]> retrieveCookie(@NotNull NamespacedKey key) {
+		return null;
+	}
+
+	@Override
+	public void storeCookie(@NotNull NamespacedKey key, @NotNull byte[] value) {
+
+	}
+
+	@Override
+	public void transfer(@NotNull String host, int port) {
+
+	}
+
+	@Override
     public void sendRawMessage(String message) {
 
     }
@@ -1579,7 +1611,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public boolean breakBlock(@Nonnull Block block) {
+    public boolean breakBlock(@NotNull Block block) {
         return false;
     }
 
@@ -2188,9 +2220,9 @@ public class FakePlayer implements Player {
 
     }
 
-    @Override
-    public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-                              double offsetY, double offsetZ, double extra) {
+	@Override
+	public void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
+				double offsetY, double offsetZ, double extra) {
 
     }
 
@@ -2200,13 +2232,23 @@ public class FakePlayer implements Player {
 
     }
 
-    @Override
-    public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
-                                  double offsetY, double offsetZ, double extra, T data) {
+	@Override
+	public <T> void spawnParticle(Particle particle, double x, double y, double z, int count, double offsetX,
+								  double offsetY, double offsetZ, double extra, T data) {
 
     }
 
     @Override
+	public <T> void spawnParticle(@NotNull Particle particle, @NotNull Location location, int i, double v, double v1, double v2, double v3, @org.jetbrains.annotations.Nullable T t, boolean b) {
+
+	}
+
+	@Override
+	public <T> void spawnParticle(@NotNull Particle particle, double v, double v1, double v2, int i, double v3, double v4, double v5, double v6, @org.jetbrains.annotations.Nullable T t, boolean b) {
+
+	}
+
+	@Override
     public Spigot spigot() {
         return null;
     }
@@ -2273,7 +2315,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public @Nonnull EquipmentSlot getHandRaised() {
+    public @NotNull EquipmentSlot getHandRaised() {
         return null;
     }
 
@@ -2527,7 +2569,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public void sendBlockDamage(@Nonnull Location location, float f) {
+    public void sendBlockDamage(@NotNull Location location, float f) {
 
     }
 
@@ -2846,6 +2888,11 @@ public class FakePlayer implements Player {
     }
 
     @Override
+	public @org.jetbrains.annotations.Nullable String getAsString() {
+		return "";
+	}
+
+	@Override
     public @org.jetbrains.annotations.Nullable EntitySnapshot createSnapshot() {
         return null;
     }
@@ -2873,9 +2920,9 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public void sendSignChange(@Nonnull Location location,
+    public void sendSignChange(@NotNull Location location,
                                @Nullable String[] strings,
-                               @Nonnull DyeColor dyeColor, boolean bl)
+                               @NotNull DyeColor dyeColor, boolean bl)
         throws IllegalArgumentException {
 
     }
@@ -2902,7 +2949,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public @Nonnull Locale locale() {
+    public @NotNull Locale locale() {
         return Locale.ENGLISH;
     }
 
@@ -3351,6 +3398,11 @@ public class FakePlayer implements Player {
     }
 
     @Override
+    public boolean canUseEquipmentSlot(@NotNull EquipmentSlot equipmentSlot) {
+        return false;
+    }
+
+    @Override
     public void setInvisible(boolean arg0) {
         // TODO Auto-generated method stub
 
@@ -3521,7 +3573,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public @Nonnull Set<Player> getTrackedPlayers() {
+    public @NotNull Set<Player> getTrackedPlayers() {
         return null;
     }
 
@@ -3673,6 +3725,11 @@ public class FakePlayer implements Player {
     }
 
     @Override
+    public void sendLinks(@NotNull ServerLinks serverLinks) {
+
+    }
+
+    @Override
     public void addCustomChatCompletions(@NotNull Collection<String> collection) {
 
     }
@@ -3748,14 +3805,14 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public void setResourcePack(@Nonnull String string,
-                                @Nonnull String string2, boolean bl) {
+    public void setResourcePack(@NotNull String string,
+                                @NotNull String string2, boolean bl) {
 
     }
 
     @Override
-    public void setResourcePack(@Nonnull String string,
-                                @Nonnull String string2, boolean bl,
+    public void setResourcePack(@NotNull String string,
+                                @NotNull String string2, boolean bl,
                                 @Nullable Component component) {
 
     }

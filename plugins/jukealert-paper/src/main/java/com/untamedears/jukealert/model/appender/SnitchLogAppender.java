@@ -13,8 +13,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntRBTreeMap;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import javax.annotation.Nonnull;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionTriggerConfig> {
@@ -39,7 +39,7 @@ public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionT
      * @return Returns a list of actions this snitch has recorded, with certain caveats.
      * @see JukeAlertDAO#loadLogs(Snitch, long, int)
      */
-    @Nonnull
+    @NotNull
     public List<LoggableAction> getFullLogs() {
         final List<LoggableAction> actions = getSnitch().getId() == -1 ?
             new ArrayList<>(this.pendingActions.keySet()) :

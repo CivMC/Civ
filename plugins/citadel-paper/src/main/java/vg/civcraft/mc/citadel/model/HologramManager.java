@@ -1,14 +1,16 @@
 package vg.civcraft.mc.citadel.model;
 
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import eu.decentsoftware.holograms.api.DHAPI;
+import eu.decentsoftware.holograms.api.holograms.Hologram;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -108,11 +110,24 @@ public class HologramManager {
             if (hologram != null) {
                 return;
             }
-            hologram = HologramsAPI.createHologram(Citadel.getInstance(), getHoloLocation(reinforcement, player));
+            List<String> lines = createHoloContent(); // Create with content to avoid entity spawn delay
+            hologram = DHAPI.createHologram("citadel-hologram-" + this.hashCode(), getHoloLocation(reinforcement, player), lines);
             cachedPlayerLocation = player.getLocation();
-            hologram.getVisibilityManager().setVisibleByDefault(false);
-            hologram.getVisibilityManager().showTo(player);
-            updateText();
+            hologram.setDefaultVisibleState(false);
+            hologram.setShowPlayer(player);
+        }
+
+        private List<String> createHoloContent() {
+            List<String> lines = new ArrayList<>();
+            lines.add(ModeListener.formatHealth(reinforcement));
+            if (hasPermission) {
+                lines.add(ChatColor.LIGHT_PURPLE + reinforcement.getGroup().getName());
+                lines.add(ChatColor.AQUA + reinforcement.getType().getName());
+                if (!reinforcement.isMature()) {
+                    lines.add(ModeListener.formatProgress(reinforcement.getCreationTime(), reinforcement.getType().getMaturationTime(), ""));
+                }
+            }
+            return lines;
         }
 
         boolean update() {
@@ -125,7 +140,7 @@ public class HologramManager {
                 return false;
             }
             updateLocation();
-            updateText();
+            DHAPI.setHologramLines(hologram, createHoloContent());
             return true;
         }
 
@@ -137,36 +152,11 @@ public class HologramManager {
                 return;
             }
             Location updated = getHoloLocation(reinforcement, player);
-            hologram.teleport(updated);
+            hologram.setLocation(updated);
         }
 
         void refreshTimestamp() {
             this.timeStamp = System.currentTimeMillis();
-        }
-
-        void updateText() {
-            if (reinforcement.getHealth() != cachedHealth || hologram.size() == 0) {
-                if (hologram.size() > 0) {
-                    hologram.removeLine(0);
-                }
-                hologram.insertTextLine(0, ModeListener.formatHealth(reinforcement));
-                cachedHealth = reinforcement.getHealth();
-            }
-            if (!hasPermission) {
-                return;
-            }
-            if (hologram.size() == 1) {
-                // not initialized yet
-                hologram.insertTextLine(1, ChatColor.LIGHT_PURPLE + reinforcement.getGroup().getName());
-                hologram.insertTextLine(2, ChatColor.AQUA + reinforcement.getType().getName());
-            }
-            if (hologram.size() == 4) {
-                hologram.removeLine(3);
-            }
-            if (!reinforcement.isMature()) {
-                hologram.insertTextLine(3, ModeListener.formatProgress(reinforcement.getCreationTime(),
-                    reinforcement.getType().getMaturationTime(), ""));
-            }
         }
 
         void delete() {

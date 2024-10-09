@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
@@ -89,7 +89,7 @@ public class ListCommand extends BaseCommand {
         private final Snitch snitch;
         private final long timeUntilCulling;
 
-        public SnitchCache(@Nonnull final Snitch snitch,
+        public SnitchCache(@NotNull final Snitch snitch,
                            final long timeUntilCulling) {
             this.snitch = snitch;
             this.timeUntilCulling = timeUntilCulling;
