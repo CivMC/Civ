@@ -54,10 +54,12 @@ public class DrugsSelectionGui extends ItemSelectionGui {
             "Nitroglycerin"
         }) {
             BRecipe matching = BRecipe.getMatching(drug);
-            Brew brew = matching.createBrew(10);
-            ItemStack item = brew.createItem(matching);
-            brew.seal(item);
-            inventory.setSlot(toClickable(item), slot++);
+            if (matching != null) {
+                Brew brew = matching.createBrew(10);
+                ItemStack item = brew.createItem(matching);
+                brew.seal(item);
+                inventory.setSlot(toClickable(item), slot++);
+            }
         }
     }
 }
