@@ -1,6 +1,8 @@
 package net.civmc.kitpvp.gui.selection;
 
+import com.dre.brewery.Brew;
 import com.dre.brewery.api.BreweryApi;
+import com.dre.brewery.recipe.BRecipe;
 import net.civmc.kitpvp.KitPvpPlugin;
 import net.civmc.kitpvp.data.Kit;
 import net.civmc.kitpvp.data.KitPvpDao;
@@ -31,7 +33,7 @@ public class DrugsSelectionGui extends ItemSelectionGui {
         int slot = 0;
         for (String drug : new String[]{
             "Cyanide",
-            "Cannbais",
+            "Cannabis",
             "Meth",
             "Blue Meth",
             "Heroin",
@@ -51,7 +53,11 @@ public class DrugsSelectionGui extends ItemSelectionGui {
             "Firefoam",
             "Nitroglycerin"
         }) {
-            inventory.setSlot(toClickable(BreweryApi.createBrewItem(drug, 10)), slot++);
+            BRecipe matching = BRecipe.getMatching(drug);
+            Brew brew = matching.createBrew(10);
+            ItemStack item = brew.createItem(matching);
+            brew.seal(item);
+            inventory.setSlot(toClickable(item), slot++);
         }
     }
 }
