@@ -7,9 +7,7 @@ import org.bukkit.entity.Player;
 
 public class KitApplier {
 
-    public static void applyKit(Kit kit, Player player) {
-        player.sendMessage(Component.text("Applied kit " + kit.name(), NamedTextColor.GREEN));
-
+    public static void reset(Player player) {
         player.clearActivePotionEffects();
 
         player.setFoodLevel(20);
@@ -21,6 +19,12 @@ public class KitApplier {
         player.setFireTicks(0);
 
         player.getInventory().clear();
+    }
+
+    public static void applyKit(Kit kit, Player player) {
+        KitApplier.reset(player);
         player.getInventory().setContents(kit.items());
+
+        player.sendMessage(Component.text("Applied kit " + kit.name(), NamedTextColor.GREEN));
     }
 }
