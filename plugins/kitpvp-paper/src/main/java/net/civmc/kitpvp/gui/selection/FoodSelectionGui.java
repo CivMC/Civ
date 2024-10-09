@@ -18,13 +18,13 @@ public class FoodSelectionGui extends ItemSelectionGui {
     public void addItems(ClickableInventory inventory) {
         inventory.setSlot(toClickable(new ItemStack(Material.COOKED_PORKCHOP)), 0);
         inventory.setSlot(toClickable(new ItemStack(Material.GOLDEN_APPLE)), 1);
-        inventory.setSlot(toClickable(new ItemStack(Material.ENCHANTED_GOLDEN_APPLE)), 2);
+        inventory.setSlot(toClickable(new ItemStack(Material.BAKED_POTATO)), 2);
         inventory.setSlot(toClickable(new ItemStack(Material.COOKED_BEEF)), 3);
         inventory.setSlot(toClickable(new ItemStack(Material.GOLDEN_CARROT)), 4);
         inventory.setSlot(toClickable(new ItemStack(Material.SWEET_BERRIES)), 5);
         inventory.setSlot(toClickable(new ItemStack(Material.PUMPKIN_PIE)), 6);
         inventory.setSlot(toClickable(new ItemStack(Material.BREAD)), 7);
         inventory.setSlot(toClickable(new ItemStack(Material.COOKED_CHICKEN)), 8);
-        inventory.setSlot(toClickable(new ItemStack(Material.BAKED_POTATO)), 8);
+//        inventory.setSlot(toClickable(new ItemStack(Material.CHORUS_FRUIT)), 9);
     }
 }
