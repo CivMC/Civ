@@ -51,7 +51,7 @@ public class ItemCategorySelectionGui extends ItemSelectionGui {
 
         ItemStack potions = new ItemStack(Material.POTION);
         PotionMeta potionsMeta = (PotionMeta) potions.getItemMeta();
-        potionsMeta.setColor(Color.BLUE);
+        potionsMeta.setColor(Color.YELLOW);
         potions.setItemMeta(potionsMeta);
         inventory.setSlot(getSlot(inventory, potions, "Potions",
                 () -> new PotionsSelectionGui(dao, player, slot, kit, this::open, gui).open()),
@@ -64,7 +64,7 @@ public class ItemCategorySelectionGui extends ItemSelectionGui {
         if (Bukkit.getPluginManager().isPluginEnabled("BreweryX")) {
             ItemStack drugs = new ItemStack(Material.POTION);
             PotionMeta drugsMeta = (PotionMeta) drugs.getItemMeta();
-            drugsMeta.setColor(Color.BLUE);
+            drugsMeta.setColor(Color.fromRGB(0x97, 0xFF, 0xFF));
             drugs.setItemMeta(drugsMeta);
             inventory.setSlot(getSlot(inventory, drugs, "Drugs",
                     () -> new DrugsSelectionGui(dao, player, slot, kit, this::open, gui).open()),

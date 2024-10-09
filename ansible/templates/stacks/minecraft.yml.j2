@@ -188,6 +188,7 @@ services:
             # Private Config & Plugins
             - /opt/PrivateConfig/paper/plugins/Vulcan-2.9.0.jar:/config/plugins/Vulcan-2.9.0.jar
             - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
+            - /opt/PrivateConfig/paper/config/BreweryX/config.yml:/config/plugins/BreweryX/config.yml
 
         deploy:
             placement:
