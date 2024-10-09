@@ -1,8 +1,10 @@
 package net.civmc.kitpvp;
 
+import com.dre.brewery.api.BreweryApi;
 import net.civmc.kitpvp.data.Kit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class KitApplier {
@@ -19,6 +21,10 @@ public class KitApplier {
         player.setFireTicks(0);
 
         player.getInventory().clear();
+
+        if (Bukkit.getPluginManager().isPluginEnabled("BreweryX")) {
+            BreweryApi.setPlayerDrunk(player, 0, 10);
+        }
     }
 
     public static void applyKit(Kit kit, Player player) {
