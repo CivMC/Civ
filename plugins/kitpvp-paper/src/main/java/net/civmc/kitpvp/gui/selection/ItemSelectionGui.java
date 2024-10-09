@@ -76,11 +76,14 @@ public abstract class ItemSelectionGui {
                     gui.setLastItem(actualItem);
                 }
 
-                Kit updatedKit = dao.updateKit(kit.id(), kit.icon(), items);
-                gui.updateKit(updatedKit);
-                Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(KitPvpPlugin.class), () -> {
-                    inventory.setOnClose(null);
-                    gui.open();
+                JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                    Kit updatedKit = dao.updateKit(kit.id(), kit.icon(), items);
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        gui.updateKit(updatedKit);
+                        inventory.setOnClose(null);
+                        gui.open();
+                    });
                 });
             }
         };

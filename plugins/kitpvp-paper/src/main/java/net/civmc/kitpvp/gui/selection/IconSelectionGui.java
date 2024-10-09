@@ -81,11 +81,14 @@ public class IconSelectionGui {
         return new Clickable(item) {
             @Override
             protected void clicked(@NotNull Player clicker) {
-                Kit updatedKit = dao.updateKit(kit.id(), icon, kit.items());
-                gui.updateKit(updatedKit);
-                Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(KitPvpPlugin.class), () -> {
-                    inventory.setOnClose(null);
-                    gui.open();
+                JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                    Kit updatedKit = dao.updateKit(kit.id(), icon, kit.items());
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        gui.updateKit(updatedKit);
+                        inventory.setOnClose(null);
+                        gui.open();
+                    });
                 });
             }
         };

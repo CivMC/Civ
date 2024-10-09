@@ -14,3 +14,5 @@ commands:
       /<command> load public <kit name>
       /<command> load <kit name>
   clear: {}
+  viewinventorysnapshot:
+    usage: /<command> <player>
