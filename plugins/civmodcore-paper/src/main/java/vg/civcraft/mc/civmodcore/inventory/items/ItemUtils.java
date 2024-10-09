@@ -5,16 +5,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.translation.Translatable;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 /**
@@ -30,8 +30,8 @@ public final class ItemUtils {
      * @deprecated Use {@link Component#translatable(Translatable)} instead.
      */
     @Deprecated
-    @Nonnull
-    public static String getItemName(@Nonnull final Material material) {
+    @NotNull
+    public static String getItemName(@NotNull final Material material) {
         return ChatUtils.stringify(Component.translatable(Objects.requireNonNull(material)));
     }
 
@@ -107,7 +107,7 @@ public final class ItemUtils {
      */
     public static boolean isValidItemMaterial(@Nullable final Material material) {
         return material != null
-            /** Add any null-returns in {@link CraftItemFactory#getItemMeta(Material, org.bukkit.craftbukkit.v1_17_R1.inventory.CraftMetaItem)} */
+            /** Add any null-returns in {@link CraftItemFactory#getItemMeta(Material, org.bukkit.craftbukkit.inventory.CraftMetaItem)} */
             && material != Material.AIR
             && material.isItem();
     }
@@ -248,7 +248,7 @@ public final class ItemUtils {
      * @param name The display name to set on the item.
      * @throws IllegalArgumentException Throws when the given item has no meta.
      */
-    public static void setComponentDisplayName(@Nonnull final ItemStack item,
+    public static void setComponentDisplayName(@NotNull final ItemStack item,
                                                @Nullable final Component name) {
         final var meta = Objects.requireNonNull(getItemMeta(item),
             "Cannot set that display name: item has no meta.");
@@ -262,7 +262,7 @@ public final class ItemUtils {
      * @param item The item to retrieve the lore from.
      * @return Returns the lore, which is never null.
      */
-    @Nonnull
+    @NotNull
     public static List<Component> getComponentLore(@Nullable final ItemStack item) {
         final var meta = getItemMeta(item);
         return meta == null ? new ArrayList<>(0) : MetaUtils.getComponentLore(meta);
@@ -276,7 +276,7 @@ public final class ItemUtils {
      * @throws IllegalArgumentException Throws when the given item has no meta.
      * @see ItemUtils#clearLore(ItemStack)
      */
-    public static void setComponentLore(@Nonnull final ItemStack item,
+    public static void setComponentLore(@NotNull final ItemStack item,
                                         @Nullable final Component... lines) {
         setComponentLore(item, lines == null ? null : Arrays.asList(lines));
     }
@@ -289,7 +289,7 @@ public final class ItemUtils {
      * @throws IllegalArgumentException Throws when the given item has no meta.
      * @see ItemUtils#clearLore(ItemStack)
      */
-    public static void setComponentLore(@Nonnull final ItemStack item,
+    public static void setComponentLore(@NotNull final ItemStack item,
                                         @Nullable final List<Component> lines) {
         final var meta = Objects.requireNonNull(getItemMeta(item),
             "Cannot set that lore: item has no meta.");
@@ -303,7 +303,7 @@ public final class ItemUtils {
      * @param item The item to clear lore of.
      * @throws IllegalArgumentException Throws when the given item has no meta.
      */
-    public static void clearLore(@Nonnull final ItemStack item) {
+    public static void clearLore(@NotNull final ItemStack item) {
         setComponentLore(item, (List<Component>) null);
     }
 
@@ -314,7 +314,7 @@ public final class ItemUtils {
      * @param lines The lore to append to the item.
      * @throws IllegalArgumentException Throws when the given item has no meta.
      */
-    public static void addComponentLore(@Nonnull final ItemStack item,
+    public static void addComponentLore(@NotNull final ItemStack item,
                                         @Nullable final Component... lines) {
         addComponentLore(item, false, lines);
     }
@@ -326,7 +326,7 @@ public final class ItemUtils {
      * @param lines The lore to append to the item.
      * @throws IllegalArgumentException Throws when the given item has no meta.
      */
-    public static void addComponentLore(@Nonnull final ItemStack item,
+    public static void addComponentLore(@NotNull final ItemStack item,
                                         @Nullable final List<Component> lines) {
         addComponentLore(item, false, lines);
     }
@@ -339,7 +339,7 @@ public final class ItemUtils {
      * @param lines   The lore to append to the item.
      * @throws IllegalArgumentException Throws when the given item has no meta.
      */
-    public static void addComponentLore(@Nonnull final ItemStack item,
+    public static void addComponentLore(@NotNull final ItemStack item,
                                         final boolean prepend,
                                         @Nullable final Component... lines) {
         addComponentLore(item, prepend, lines == null ? null : Arrays.asList(lines));
@@ -353,7 +353,7 @@ public final class ItemUtils {
      * @param lines   The lore to append to the item.
      * @throws IllegalArgumentException Throws when the given item has no meta.
      */
-    public static void addComponentLore(@Nonnull final ItemStack item,
+    public static void addComponentLore(@NotNull final ItemStack item,
                                         final boolean prepend,
                                         @Nullable final List<Component> lines) {
         final var meta = Objects.requireNonNull(getItemMeta(item),
@@ -384,48 +384,35 @@ public final class ItemUtils {
         return null;
     }
 
-    /**
-     * Makes an item glow by adding an enchantment and the flag for hiding enchantments, so it has the enchantment glow
-     * without an enchantment being visible. Note that this does actually apply an enchantment to an item.
-     *
-     * @param item Item to apply glow to.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     */
-    public static void addGlow(@Nullable final ItemStack item) {
-        handleItemMeta(item, (ItemMeta meta) -> {
-            MetaUtils.addGlow(meta);
-            return true;
-        });
-    }
-
-    /**
-     * Handles an item's metadata.
-     *
-     * @param <T>     The item meta type, which might not extend ItemMeta (Damageable for example)
-     * @param item    The item to handle the metadata of.
-     * @param handler The item metadata handler, which should return true if modifications were made.
-     * @return Returns true if the metadata was successfully handled.
-     * @see ItemStack#getItemMeta()
-     */
-    @Contract("null, _ -> false; _, null -> false")
-    @SuppressWarnings("unchecked")
-    public static <T> boolean handleItemMeta(@Nullable final ItemStack item,
-                                             @Nullable final Predicate<T> handler) {
-        if (item == null || handler == null) {
-            return false;
-        }
-        try {
-            final T meta = (T) item.getItemMeta();
-            if (meta == null) {
-                return false;
-            }
-            if (handler.test(meta)) {
-                return item.setItemMeta((ItemMeta) meta);
-            }
-        } catch (ClassCastException ignored) {
-        }
-        return false;
-    }
+	/**
+	 * Handles an item's metadata.
+	 *
+	 * @param <T> The item meta type, which might not extend ItemMeta (Damageable for example)
+	 * @param item The item to handle the metadata of.
+	 * @param handler The item metadata handler, which should return true if modifications were made.
+	 * @return Returns true if the metadata was successfully handled.
+	 *
+	 * @see ItemStack#getItemMeta()
+	 */
+	@Contract("null, _ -> false; _, null -> false")
+	@SuppressWarnings("unchecked")
+	public static <T> boolean handleItemMeta(@Nullable final ItemStack item,
+											 @Nullable final Predicate<T> handler) {
+		if (item == null || handler == null) {
+			return false;
+		}
+		try {
+			final T meta = (T) item.getItemMeta();
+			if (meta == null) {
+				return false;
+			}
+			if (handler.test(meta)) {
+				return item.setItemMeta((ItemMeta) meta);
+			}
+		}
+		catch (ClassCastException ignored) { }
+		return false;
+	}
 
     // ------------------------------------------------------------
     // Deprecated Functions
@@ -456,7 +443,7 @@ public final class ItemUtils {
      * {@link #setComponentDisplayName(ItemStack, Component)} instead.
      */
     @Deprecated
-    public static void setDisplayName(@Nonnull final ItemStack item,
+    public static void setDisplayName(@NotNull final ItemStack item,
                                       @Nullable final String name) {
         final var meta = Objects.requireNonNull(getItemMeta(item),
             "Cannot set that display name: item has no meta.");
@@ -472,7 +459,7 @@ public final class ItemUtils {
      * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use
      * {@link #getComponentLore(ItemStack)} instead.
      */
-    @Nonnull
+    @NotNull
     @Deprecated
     public static List<String> getLore(@Nullable final ItemStack item) {
         final var meta = getItemMeta(item);
@@ -490,7 +477,7 @@ public final class ItemUtils {
      * {@link #setComponentLore(ItemStack, Component...)} instead.
      */
     @Deprecated
-    public static void setLore(@Nonnull final ItemStack item,
+    public static void setLore(@NotNull final ItemStack item,
                                @Nullable final String... lines) {
         setLore(item, lines == null ? null : Arrays.asList(lines));
     }
@@ -506,7 +493,7 @@ public final class ItemUtils {
      * {@link #setComponentLore(ItemStack, List)} instead.
      */
     @Deprecated
-    public static void setLore(@Nonnull final ItemStack item,
+    public static void setLore(@NotNull final ItemStack item,
                                @Nullable final List<String> lines) {
         final var meta = Objects.requireNonNull(getItemMeta(item),
             "Cannot set that lore: item has no meta.");
@@ -524,7 +511,7 @@ public final class ItemUtils {
      * {@link #addComponentLore(ItemStack, Component...)} instead.
      */
     @Deprecated
-    public static void addLore(@Nonnull final ItemStack item,
+    public static void addLore(@NotNull final ItemStack item,
                                @Nullable final String... lines) {
         addLore(item, false, lines);
     }
@@ -539,7 +526,7 @@ public final class ItemUtils {
      * {@link #addComponentLore(ItemStack, List)} instead.
      */
     @Deprecated
-    public static void addLore(@Nonnull final ItemStack item,
+    public static void addLore(@NotNull final ItemStack item,
                                @Nullable final List<String> lines) {
         addLore(item, false, lines);
     }
@@ -555,7 +542,7 @@ public final class ItemUtils {
      * {@link #addComponentLore(ItemStack, boolean, Component...)} instead.
      */
     @Deprecated
-    public static void addLore(@Nonnull final ItemStack item,
+    public static void addLore(@NotNull final ItemStack item,
                                final boolean prepend,
                                @Nullable final String... lines) {
         addLore(item, prepend, lines == null ? null : Arrays.asList(lines));
@@ -572,7 +559,7 @@ public final class ItemUtils {
      * {@link #addComponentLore(ItemStack, boolean, List)} instead.
      */
     @Deprecated
-    public static void addLore(@Nonnull final ItemStack item,
+    public static void addLore(@NotNull final ItemStack item,
                                final boolean prepend,
                                @Nullable final List<String> lines) {
         final var meta = Objects.requireNonNull(getItemMeta(item),

@@ -8,7 +8,7 @@ hacks:
   ## Basic Hacks
   ############################################################
   AntiFastBreak:
-    enabled: true
+    enabled: false
     laggLenciency: 1.5
     breakDenyDuration: 3000
   #Prevents pearls from landing that have been in flight for more than the configured amount of time
@@ -66,6 +66,7 @@ hacks:
      - SNIFFER
      - FROG
      - TADPOLE
+     - ARMADILLO
   AttrHider:
     enabled: true
     # Hide item data like enchantments, firework effects, book data, potion, etc..
@@ -186,6 +187,8 @@ hacks:
     disableEndGatewayTP: false
   ItemMetaConverterHack:
     enabled: true
+  ItemSerializerHack:
+    enabled: true
   MapCopyProtection:
     enabled: true
   OldEnchanting:
@@ -282,8 +285,10 @@ hacks:
       - [LAPIS_ORE,DEEPSLATE_LAPIS_ORE]
       - [GOLD_ORE,DEEPSLATE_GOLD_ORE]
       - [IRON_ORE,DEEPSLATE_IRON_ORE]
+      - [COPPER_ORE,DEEPSLATE_COPPER_ORE]
       - [COAL_ORE,DEEPSLATE_COAL_ORE]
-      - [NETHER_GOLD_ORE,GILDED_BLACKSTONE]
+      - [NETHER_GOLD_ORE]
+      - [GILDED_BLACKSTONE]
       - [NETHER_QUARTZ_ORE]
       - [GLOWSTONE]
       - [SEA_LANTERN]
@@ -600,3 +605,5 @@ hacks:
   CreeperDiscHack:
     enabled: true
     discChance: 0.003
+  NoOozing:
+    enabled: true

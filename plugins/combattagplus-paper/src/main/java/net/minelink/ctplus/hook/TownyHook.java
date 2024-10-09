@@ -13,11 +13,7 @@ public final class TownyHook implements Hook {
     @Override
     public boolean isPvpEnabledAt(Location loc) {
         TownyWorld world;
-        try {
-            world = TownyUniverse.getInstance().getDataSource().getWorld(loc.getWorld().getName());
-        } catch (NotRegisteredException ignore) {
-            return true;
-        }
+        world = TownyUniverse.getInstance().getWorld(loc.getWorld().getName());
 
         TownBlock townBlock = null;
         try {

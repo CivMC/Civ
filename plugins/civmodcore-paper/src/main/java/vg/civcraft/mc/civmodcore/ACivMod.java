@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -15,6 +14,7 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ACivMod extends JavaPlugin {
 
@@ -59,7 +59,7 @@ public abstract class ACivMod extends JavaPlugin {
      *
      * @param listener The listener class to register.
      */
-    public void registerListener(@Nonnull final Listener listener) {
+    public void registerListener(@NotNull final Listener listener) {
         getServer().getPluginManager().registerEvents(
             Objects.requireNonNull(listener, "Cannot register a listener if it's null, you dummy"), this);
     }
@@ -70,7 +70,7 @@ public abstract class ACivMod extends JavaPlugin {
      *
      * @param clazz The serializable class to register and automatically unregister upon disable.
      */
-    public void registerConfigClass(@Nonnull final Class<? extends ConfigurationSerializable> clazz) {
+    public void registerConfigClass(@NotNull final Class<? extends ConfigurationSerializable> clazz) {
         Objects.requireNonNull(clazz, "Cannot register a config class if it's null, you dummy");
         ConfigurationSerialization.registerClass(clazz);
         this.configClasses.add(clazz);
@@ -91,7 +91,7 @@ public abstract class ACivMod extends JavaPlugin {
      * @param path The path of the file relative to the data folder.
      * @return Returns a file instance of the generated path.
      */
-    public File getDataFile(@Nonnull final String path) {
+    public File getDataFile(@NotNull final String path) {
         return new File(getDataFolder(), Objects.requireNonNull(path));
     }
 
@@ -100,7 +100,7 @@ public abstract class ACivMod extends JavaPlugin {
      *
      * @param path The path to the default resource <i>AND</i> the data file.
      */
-    public void saveDefaultResource(@Nonnull final String path) {
+    public void saveDefaultResource(@NotNull final String path) {
         if (!getDataFile(path).exists()) {
             saveResource(path, false);
         }
@@ -112,8 +112,8 @@ public abstract class ACivMod extends JavaPlugin {
      * @param defaultPath The path of the file within the plugin's jar.
      * @param dataPath The path the file should take within the plugin's data folder.
      */
-//	public void saveDefaultResourceAs(@Nonnull String defaultPath,
-//									  @Nonnull String dataPath) {
+//	public void saveDefaultResourceAs(@NotNull String defaultPath,
+//									  @NotNull String dataPath) {
 //		if (getDataFile(defaultPath).exists()) {
 //			return;
 //		}

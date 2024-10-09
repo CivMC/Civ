@@ -7,6 +7,9 @@ border-options:
   sound: entity_enderman_teleport
   prevent-mob-spawns: true
   prevent-enderpearl: true
+  visualizer-enabled: true
+  visualizer-range: 8
+  visualizer-color: 20A0FF
 map-options:
   enable:
     bluemap: true

@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   waterfall:
-    image: itzg/bungeecord@sha256:7e7eeb9023cc213de2ca7ecbcf2cccc506fd46a31346f7250d2fcc5637cf5bb7
+    image: itzg/mc-proxy@sha256:e0536c92227905b6b0388eb04f640859e674c61068061d2a4db6ba631c79008b
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -16,9 +16,9 @@ services:
         protocol: tcp
         mode: host
     environment:
-      WATERFALL_VERSION: '1.20'
+      WATERFALL_VERSION: '1.21'
       TYPE: 'WATERFALL'
-      WATERFALL_BUILD_ID: 577
+      WATERFALL_BUILD_ID: 579
 
       REPLACE_ENV_VARIABLES: 'true'
       REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
@@ -28,6 +28,7 @@ services:
       CIV_POSTGRES_HOST: minecraft_postgres
       CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
       CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
+      CIV_TIMEOUT_TIME: 30000
     deploy:
       placement:
         constraints: [node.role == manager]
@@ -37,7 +38,7 @@ services:
       - /opt/stacks/minecraft/proxy-plugins:/plugins
 
   paper:
-    image: itzg/minecraft-server@sha256:491e37fa63ffef22c9ac1f6ec2fb4cc793735799cd91bafa1e5790aa39e9b313
+    image: itzg/minecraft-server@sha256:42a4cff00c7f4d5981a1a40c6c8aedd3bb9c22aedd39c7f79331117114817a57
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -51,7 +52,7 @@ services:
         mode: host
     environment:
       TYPE: 'paper'
-      VERSION: '1.20.4'
+      VERSION: '1.21.1'
       EULA: 'TRUE'
 
       REMOVE_OLD_MODS: 'TRUE'
@@ -90,6 +91,8 @@ services:
       CIV_RABBITMQ_USERNAME: rabbitmq
       CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
 
+      CIV_WATCHDOG_TIMEOUT_TIME: 60
+
     volumes:
       # Persistence
       - /opt/stacks/minecraft/paper-data:/data
@@ -97,11 +100,11 @@ services:
       - /opt/stacks/minecraft/paper-config:/config
       - /opt/stacks/minecraft/paper-plugins:/plugins
       # Private Config & Plugins
-      - /opt/PrivateConfig/paper/plugins/Vulcan-2.8.5.jar:/config/plugins/Vulcan-2.8.5.jar
+      - /opt/PrivateConfig/paper/plugins/Vulcan-2.9.0.jar:/config/plugins/Vulcan-2.9.0.jar
       - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
       - /opt/PrivateConfig/paper/config/HiddenOre/config.yml:/config/plugins/HiddenOre/config.yml
       - /opt/PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/config/plugins/KirraBukkitGateway/cnfig.yml
-      - /opt/PrivateConfig/paper/config/Brewery/config.yml:/config/plugins/Brewery/config.yml
+      - /opt/PrivateConfig/paper/config/BreweryX/config.yml:/config/plugins/BreweryX/config.yml
       - /opt/PrivateConfig/paper/config/Terra/packs/CivMC:/config/plugins/Terra/packs/CivMC
       - /opt/PrivateConfig/paper/config/Votifier/config.yml:/config/plugins/Votifier/config.yml
       - /opt/PrivateConfig/paper/config/Votifier/rsa/public.key:/config/plugins/Votifier/rsa/public.key
@@ -114,7 +117,7 @@ services:
       - /opt/PrivateConfig/paper/config/EvenMoreFish/rarities.yml:/config/plugins/EvenMoreFish/rarities.yml
       - /opt/PrivateConfig/paper/config/EvenMoreFish/competitions.yml:/config/plugins/EvenMoreFish/competitions.yml
       - /opt/PrivateConfig/paper/config/RandomSpawn/worlds.yml:/config/plugins/RandomSpawn/worlds.yml
-      
+
     deploy:
       placement:
         constraints: [node.role == manager]
