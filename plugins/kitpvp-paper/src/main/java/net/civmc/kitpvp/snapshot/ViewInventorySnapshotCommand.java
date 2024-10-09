@@ -47,7 +47,7 @@ public class ViewInventorySnapshotCommand implements CommandExecutor {
 
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta headMeta = (SkullMeta) head.getItemMeta();
-        headMeta.setOwningPlayer(viewPlayer);
+        headMeta.setPlayerProfile(snapshot.otherPlayerProfile());
         if (snapshot.victim()) {
             headMeta.itemName(Component.text("Died to " + snapshot.otherPlayerProfile().getName(), NamedTextColor.RED));
         } else {
