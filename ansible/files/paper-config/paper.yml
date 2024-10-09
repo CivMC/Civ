@@ -6,8 +6,8 @@
 # join us in our Discord or IRC channel.
 #
 # Discord: https://discord.gg/papermc
-# IRC: #paper @ irc.esper.net ( https://webchat.esper.net/?channels=paper ) 
-# Website: https://papermc.io/ 
+# IRC: #paper @ irc.esper.net ( https://webchat.esper.net/?channels=paper )
+# Website: https://papermc.io/
 # Docs: https://paper.readthedocs.org/
 
 verbose: false
@@ -346,6 +346,7 @@ world-settings:
     alt-item-despawn-rate:
       enabled: true
       items:
+        catus: 1200
         deepslate: 3000
         cobbled_deepslate: 3000
         cobblestone: 3000
