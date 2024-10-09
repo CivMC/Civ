@@ -1,5 +1,6 @@
 package net.civmc.kitpvp.command;
 
+import net.civmc.kitpvp.KitApplier;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
@@ -15,7 +16,7 @@ public class ClearCommand implements CommandExecutor {
         if (!(sender instanceof Player player)) {
             return false;
         }
-        player.getInventory().clear();
+        KitApplier.reset(player);
         player.sendMessage(Component.text("Your inventory has been cleared", NamedTextColor.GREEN));
         return true;
     }
