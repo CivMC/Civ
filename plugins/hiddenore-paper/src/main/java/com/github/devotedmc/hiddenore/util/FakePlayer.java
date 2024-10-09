@@ -2254,6 +2254,11 @@ public class FakePlayer implements Player {
     }
 
     @Override
+    public void sendEntityEffect(@NotNull EntityEffect effect, @NotNull Entity target) {
+
+    }
+
+    @Override
     public Component name() {
         return null;
     }
@@ -2609,6 +2614,11 @@ public class FakePlayer implements Player {
     }
 
     @Override
+    public void setRiptiding(boolean riptiding) {
+
+    }
+
+    @Override
     public boolean isPersistent() {
         return false;
     }
@@ -2652,6 +2662,11 @@ public class FakePlayer implements Player {
     @Override
     public void wakeup(boolean setSpawnLocation) {
         // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void startRiptideAttack(int duration, float attackStrength, @Nullable ItemStack attackItem) {
 
     }
 
@@ -3630,6 +3645,11 @@ public class FakePlayer implements Player {
     @Override
     public @NotNull String getScoreboardEntryName() {
         return null;
+    }
+
+    @Override
+    public void broadcastHurtAnimation(@NotNull Collection<Player> players) {
+
     }
 
     @Override
