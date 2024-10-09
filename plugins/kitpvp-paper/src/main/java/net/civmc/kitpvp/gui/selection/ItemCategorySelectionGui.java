@@ -5,6 +5,7 @@ import net.civmc.kitpvp.data.KitPvpDao;
 import net.civmc.kitpvp.gui.EditKitGui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -40,29 +41,39 @@ public class ItemCategorySelectionGui extends ItemSelectionGui {
         none.setItemMeta(noneMeta);
         inventory.setSlot(toClickable(none, null), 18);
 
-        inventory.setSlot(getSlot(inventory, Material.IRON_CHESTPLATE, "Armour",
+        inventory.setSlot(getSlot(inventory, new ItemStack(Material.IRON_CHESTPLATE), "Armour",
                 () -> new GenericArmourSelectionGui(dao, player, slot, kit, this::open, gui).open()),
             19);
 
-        inventory.setSlot(getSlot(inventory, Material.IRON_SWORD, "Weapons and Tools",
+        inventory.setSlot(getSlot(inventory, new ItemStack(Material.IRON_SWORD), "Weapons and Tools",
                 () -> new WeaponsAndToolsSelectionGui(dao, player, slot, kit, this::open, gui).open()),
             20);
 
-        inventory.setSlot(getSlot(inventory, Material.POTION, "Potions",
+        ItemStack potions = new ItemStack(Material.POTION);
+        PotionMeta potionsMeta = (PotionMeta) potions.getItemMeta();
+        potionsMeta.setColor(Color.BLUE);
+        potions.setItemMeta(potionsMeta);
+        inventory.setSlot(getSlot(inventory, potions, "Potions",
                 () -> new PotionsSelectionGui(dao, player, slot, kit, this::open, gui).open()),
             21);
 
-        inventory.setSlot(getSlot(inventory, Material.GOLDEN_CARROT, "Food",
+        inventory.setSlot(getSlot(inventory, new ItemStack(Material.GOLDEN_CARROT), "Food",
                 () -> new FoodSelectionGui(dao, player, slot, kit, this::open, gui).open()),
             22);
+
+        if (Bukkit.getPluginManager().isPluginEnabled("BreweryX")) {
+            ItemStack drugs = new ItemStack(Material.POTION);
+            PotionMeta drugsMeta = (PotionMeta) drugs.getItemMeta();
+            drugsMeta.setColor(Color.BLUE);
+            drugs.setItemMeta(drugsMeta);
+            inventory.setSlot(getSlot(inventory, drugs, "Drugs",
+                    () -> new DrugsSelectionGui(dao, player, slot, kit, this::open, gui).open()),
+                23);
+        }
     }
 
-    private Clickable getSlot(ClickableInventory inventory, Material icon, String name, Runnable gui) {
-        ItemStack item = new ItemStack(icon);
+    private Clickable getSlot(ClickableInventory inventory, ItemStack item, String name, Runnable gui) {
         ItemMeta meta = item.getItemMeta();
-        if (meta instanceof PotionMeta) {
-            ((PotionMeta) meta).setColor(Color.YELLOW);
-        }
         meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         meta.itemName(Component.text(name, NamedTextColor.GOLD));
         item.setItemMeta(meta);

@@ -10,4 +10,5 @@ dependencies {
     }
 
     compileOnly(project(":plugins:civmodcore-paper"))
+    compileOnly("com.github.Jsinco:BreweryX:3.3.2")
 }
