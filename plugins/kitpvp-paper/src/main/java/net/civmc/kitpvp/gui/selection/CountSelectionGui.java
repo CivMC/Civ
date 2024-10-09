@@ -51,24 +51,23 @@ public class CountSelectionGui extends ItemSelectionGui {
 
                         @Override
                         public @Nullable Prompt acceptValidatedInput(@NotNull ConversationContext context, @NotNull String input) {
-                            try {
-                                int num = Integer.parseInt(input);
+                            int num = Integer.parseInt(input);
 
-                                ItemStack[] items = kit.items().clone();
-                                ItemStack item = kit.items()[slot];
-                                item.setAmount(num);
-                                gui.setLastItem(item);
-                                items[slot] = item;
+                            ItemStack[] items = kit.items().clone();
+                            ItemStack item = kit.items()[slot];
+                            item.setAmount(num);
+                            gui.setLastItem(item);
+                            items[slot] = item;
 
+                            JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
+                            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
                                 Kit updatedKit = dao.updateKit(kit.id(), kit.icon(), items);
-                                gui.updateKit(updatedKit);
-                                Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(KitPvpPlugin.class), () -> {
+                                Bukkit.getScheduler().runTask(plugin, () -> {
+                                    gui.updateKit(updatedKit);
                                     inventory.setOnClose(null);
                                     gui.open();
                                 });
-                            } catch (Exception e) {
-                                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error setting item count", e);
-                            }
+                            });
                             return null;
                         }
 

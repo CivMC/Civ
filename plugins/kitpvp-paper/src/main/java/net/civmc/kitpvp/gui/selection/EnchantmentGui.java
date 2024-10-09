@@ -139,11 +139,14 @@ public class EnchantmentGui extends ItemSelectionGui {
                                     items[EnchantmentGui.this.slot] = item;
                                     gui.setLastItem(item);
 
-                                    Kit updatedKit = dao.updateKit(kit.id(), kit.icon(), items);
-                                    gui.updateKit(updatedKit);
-                                    Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(KitPvpPlugin.class), () -> {
-                                        inventory.setOnClose(null);
-                                        gui.open();
+                                    JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
+                                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                        Kit updatedKit = dao.updateKit(kit.id(), kit.icon(), items);
+                                        Bukkit.getScheduler().runTask(plugin, () -> {
+                                            gui.updateKit(updatedKit);
+                                            inventory.setOnClose(null);
+                                            gui.open();
+                                        });
                                     });
                                 } catch (Exception e) {
                                     JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error setting durability", e);

@@ -82,13 +82,19 @@ public class EditKitGui {
                 isPublicMeta.itemName(Component.text("Make kit public", NamedTextColor.GOLD));
             }
             isPublic.setItemMeta(isPublicMeta);
+            boolean kitIsPublic = kit.isPublic();
             inventory.setSlot(new Clickable(isPublic) {
                 @Override
                 protected void clicked(@NotNull Player clicker) {
-                    Kit updatedKit = dao.setPublicKit(kit.id(), !kit.isPublic());
-                    updateKit(updatedKit);
-                    inventory.setOnClose(null);
-                    open();
+                    JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
+                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                        Kit updatedKit = dao.setPublicKit(kit.id(), !kitIsPublic);
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            updateKit(updatedKit);
+                            inventory.setOnClose(null);
+                            open();
+                        });
+                    });
                 }
             }, 6);
         }
@@ -112,18 +118,25 @@ public class EditKitGui {
 
                             @Override
                             public @Nullable Prompt acceptValidatedInput(@NotNull ConversationContext context, @NotNull String input) {
-                                try {
-                                    Kit renamedKit = dao.renameKit(kit.id(), input);
+                                JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
+                                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                    Kit renamedKit;
+                                    try {
+                                        renamedKit = dao.renameKit(kit.id(), input);
+                                    } catch (Exception e) {
+                                        JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error renaming kit", e);
+                                        return;
+                                    }
                                     if (renamedKit == null) {
                                         player.sendMessage(Component.text("A kit with that name already exists", NamedTextColor.RED));
-                                        return null;
+                                        return;
                                     }
                                     player.sendMessage(Component.text("Renamed kit to: %s".formatted(renamedKit.name()), NamedTextColor.GOLD));
-                                    updateKit(renamedKit);
-                                    open();
-                                } catch (Exception e) {
-                                    JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error renaming kit", e);
-                                }
+                                    Bukkit.getScheduler().runTask(plugin, () -> {
+                                        updateKit(renamedKit);
+                                        open();
+                                    });
+                                });
                                 return null;
                             }
 
@@ -246,11 +259,14 @@ public class EditKitGui {
                 ItemStack[] items = kit.items().clone();
                 items[itemIndex] = null;
 
-                Kit updatedKit = dao.updateKit(kit.id(), kit.icon(), items);
-                updateKit(updatedKit);
-                Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(KitPvpPlugin.class), () -> {
-                    inventory.setOnClose(null);
-                    open();
+                JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                    Kit updatedKit = dao.updateKit(kit.id(), kit.icon(), items);
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        updateKit(updatedKit);
+                        inventory.setOnClose(null);
+                        open();
+                    });
                 });
             }
 
@@ -279,11 +295,14 @@ public class EditKitGui {
                 ItemStack[] items = kit.items().clone();
                 items[itemIndex] = lastItem;
 
-                Kit updatedKit = dao.updateKit(kit.id(), kit.icon(), items);
-                updateKit(updatedKit);
-                Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(KitPvpPlugin.class), () -> {
-                    inventory.setOnClose(null);
-                    open();
+                JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                    Kit updatedKit = dao.updateKit(kit.id(), kit.icon(), items);
+                    Bukkit.getScheduler().runTask(plugin, () -> {
+                        updateKit(updatedKit);
+                        inventory.setOnClose(null);
+                        open();
+                    });
                 });
             }
         };

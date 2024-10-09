@@ -1,13 +1,16 @@
 package net.civmc.kitpvp.gui;
 
+import net.civmc.kitpvp.KitPvpPlugin;
 import net.civmc.kitpvp.data.Kit;
 import net.civmc.kitpvp.data.KitPvpDao;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
@@ -32,7 +35,9 @@ public class ConfirmDeletionGui {
         inventory.setSlot(new Clickable(yes) {
             @Override
             protected void clicked(@NotNull Player clicker) {
-                dao.deleteKit(kit.id());
+                Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
+                    dao.deleteKit(kit.id());
+                });
                 clicker.sendMessage(Component.text("Deleted kit: %s".formatted(kit.name()), NamedTextColor.GREEN));
                 inventory.setOnClose(null);
                 clicker.closeInventory();

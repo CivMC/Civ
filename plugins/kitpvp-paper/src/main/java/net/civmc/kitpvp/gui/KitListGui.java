@@ -83,18 +83,24 @@ public class KitListGui {
 
                         @Override
                         public @Nullable Prompt acceptValidatedInput(@NotNull ConversationContext context, @NotNull String input) {
-                            try {
-                                Kit createdKit = dao.createKit(input, player.getUniqueId());
+                            JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
+                            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                Kit createdKit;
+                                try {
+                                    createdKit = dao.createKit(input, player.getUniqueId());
+                                } catch (Exception e) {
+                                    plugin.getLogger().log(Level.WARNING, "Error creating kit", e);
+                                    return;
+                                }
                                 if (createdKit == null) {
                                     player.sendMessage(Component.text("A kit with that name already exists", NamedTextColor.RED));
-                                    return null;
+                                    return;
                                 }
-                                invalidate();
-                                new EditKitGui(KitListGui.this.dao, clicker, createdKit, KitListGui.this);
-                            } catch (Exception e) {
-                                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error creating kit", e);
-                                return null;
-                            }
+                                Bukkit.getScheduler().runTask(plugin, () -> {
+                                    invalidate();
+                                    new EditKitGui(KitListGui.this.dao, clicker, createdKit, KitListGui.this);
+                                });
+                            });
                             return null;
                         }
 
@@ -167,7 +173,7 @@ public class KitListGui {
             if (kit.isPublic() && !player.hasPermission("kitpvp.admin")) {
                 iconMeta.lore(List.of(
                     Component.text("Left click to load", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)
-                    ));
+                ));
                 icon.setItemMeta(iconMeta);
                 clickables.add(new Clickable(icon) {
                     @Override
@@ -181,7 +187,7 @@ public class KitListGui {
                     Component.text("Left click to load", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false),
                     Component.text("Right click to edit", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false),
                     Component.text("Middle click to delete", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)
-                    ));
+                ));
                 icon.setItemMeta(iconMeta);
                 clickables.add(new Clickable(icon) {
                     @Override
