@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -105,7 +106,7 @@ public class ReinforcementsGUI extends BaseCommand {
     }
 
     private List<IClickable> getAcidTypeClicks(List<AcidType> acidTypes) {
-        List<IClickable> clickables = new LinkedList<>();
+        List<IClickable> clickables = new ArrayList<>();
 
         for (AcidType acidType : acidTypes) {
             ItemStack is = new ItemStack(acidType.material());
