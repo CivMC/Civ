@@ -1,5 +1,6 @@
 package net.civmc.kitpvp;
 
+import dev.drekamor.warp.WarpMain;
 import net.civmc.kitpvp.command.ClearCommand;
 import net.civmc.kitpvp.command.KitCommand;
 import net.civmc.kitpvp.snapshot.DeathListener;
@@ -18,12 +19,12 @@ public class KitPvpPlugin extends ACivMod {
         saveDefaultConfig();
         ManagedDatasource source = ManagedDatasource.construct(this, (DatabaseCredentials) getConfig().get("database"));
         getCommand("kit").setExecutor(new KitCommand(new SqlKitPvpDao(source)));
+        WarpMain warpMain = new WarpMain(this, source);
         getCommand("clear").setExecutor(new ClearCommand());
 
         InventorySnapshotManager inventorySnapshotManager = new InventorySnapshotManager();
         getServer().getPluginManager().registerEvents(new DeathListener(inventorySnapshotManager), this);
         getCommand("viewinventorysnapshot").setExecutor(new ViewInventorySnapshotCommand(inventorySnapshotManager));
-
 
 
         if (Bukkit.getPluginManager().isPluginEnabled("BreweryX")) {

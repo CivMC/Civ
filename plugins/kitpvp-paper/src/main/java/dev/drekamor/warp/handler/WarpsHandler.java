@@ -2,6 +2,7 @@ package dev.drekamor.warp.handler;
 
 import dev.drekamor.warp.WarpMain;
 import static dev.drekamor.warp.util.EnumUtil.getGamemode;
+import dev.drekamor.warp.util.Cache;
 import dev.drekamor.warp.util.Warp;
 import java.util.List;
 import net.civmc.kitpvp.KitPvpPlugin;
@@ -20,7 +21,7 @@ public class WarpsHandler {
     }
 
     public List<String> getWarps() {
-        return main.getCache().getWarpIndex();
+        return Cache.getWarpIndex();
     }
 
     public boolean addWarp(CommandSender sender, String[] args) {
@@ -33,7 +34,7 @@ public class WarpsHandler {
             return true;
         }
 
-        if(main.getCache().getWarpIndex().contains(args[1])) {
+        if(Cache.getWarpIndex().contains(args[1])) {
             sender.sendMessage("Warp %s already exists".formatted(args[1]));
             return true;
         }
@@ -59,7 +60,7 @@ public class WarpsHandler {
             @Override
             public void run() {
                 if(main.getDatabaseManager().addWarp(warp)) {
-                    main.getCache().addWarp(warp);
+                    Cache.addWarp(warp);
                     sender.sendMessage("Successfully saved warp %s".formatted(warp.name()));
                 }
             }
@@ -72,13 +73,13 @@ public class WarpsHandler {
             return false;
         }
 
-        if(main.getCache().getWarpIndex().isEmpty()) {
+        if(Cache.getWarpIndex().isEmpty()) {
             sender.sendMessage("There are no warps");
             return true;
         }
 
         StringBuilder builder = new StringBuilder();
-        for(String s : main.getCache().getWarpIndex()) {
+        for(String s : Cache.getWarpIndex()) {
             builder.append("%s, ".formatted(s));
         }
         builder.deleteCharAt(builder.lastIndexOf(","));
@@ -98,7 +99,7 @@ public class WarpsHandler {
             return true;
         }
 
-        if(!main.getCache().getWarpIndex().contains(args[1])) {
+        if(!Cache.getWarpIndex().contains(args[1])) {
             sender.sendMessage("Warp %s does not exist".formatted(args[1]));
             return true;
         }
@@ -107,7 +108,7 @@ public class WarpsHandler {
             @Override
             public void run() {
                 if(main.getDatabaseManager().deleteWarp(args[1])) {
-                    main.getCache().deleteWarp(args[1]);
+                    Cache.deleteWarp(args[1]);
                     sender.sendMessage("Successfully deleted warp %s".formatted(args[1]));
                 }
             }

@@ -3,43 +3,43 @@ package dev.drekamor.warp.util;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Cache {
-    private List<String> warpIndex = new ArrayList<>();
-    private HashMap<String, Warp> warps = new HashMap<>();
-    private HashMap<Player, Warp> playerLocations = new HashMap<>();
+    private static List<String> warpIndex;
+    private static Map<String, Warp> warps;
+    private static Map<Player, Warp> playerLocations = new HashMap<>();
 
-    public Cache (List<String> warpIndex, HashMap<String, Warp> warps) {
-        this.warpIndex = warpIndex;
-        this.warps = warps;
+    public static void initialiseCache(List<String> index, Map<String, Warp> warpMap) {
+        warpIndex = index;
+        warps = warpMap;
     }
 
-    public List<String> getWarpIndex() {
+    public static  List<String> getWarpIndex() {
         return warpIndex;
     }
 
-    public @Nullable Warp getWarp(String name) {
+    public static @Nullable Warp getWarp(String name) {
         return warps.get(name);
     }
 
-    public void addWarp(Warp warp) {
+    public static void addWarp(Warp warp) {
         warps.put(warp.name(), warp);
         warpIndex.add(warp.name());
     }
 
-    public void deleteWarp(String name){
+    public static void deleteWarp(String name){
         warps.remove(name);
         warpIndex.remove(name);
     }
 
-    public void setPlayerLocation(Player player, Warp warp) {
+    public static void setPlayerLocation(Player player, Warp warp) {
         playerLocations.put(player, warp);
     }
 
-    public Warp getPlayerLocation(Player player) {
+    public static Warp getPlayerLocation(Player player) {
         return playerLocations.get(player);
     }
 }

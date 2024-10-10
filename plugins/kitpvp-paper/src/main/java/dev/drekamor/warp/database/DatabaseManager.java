@@ -1,11 +1,7 @@
 package dev.drekamor.warp.database;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import dev.drekamor.warp.util.Warp;
 import net.civmc.kitpvp.KitPvpPlugin;
-import org.bukkit.Bukkit;
-import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
 import java.sql.Connection;
@@ -16,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseManager {
     private final KitPvpPlugin plugin;
@@ -26,7 +23,9 @@ public class DatabaseManager {
         this.dataSource = dataSource;
         this.plugin.info("Initialised a database connection");
 
+
         initialiseTables();
+        dataSource.updateDatabase();
     }
 
     public Connection getConnection() {
@@ -40,33 +39,25 @@ public class DatabaseManager {
     }
 
     private void initialiseTables() {
-        final Connection connection = this.getConnection();
-        if(connection == null) {
-            plugin.getLogger().severe("Failed to obtain a connection. Aborting table initialisation");
-            return;
-        }
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    connection.prepareStatement("CREATE TABLE IF NOT EXISTS `warps` (name VARCHAR(64) UNIQUE PRIMARY KEY, world VARCHAR(64), x REAL, y REAL, z REAL, pitch REAL, yaw REAL, gamemode VARCHAR(16));").execute();
-                    connection.close();
-                } catch (SQLException e) {
-                    plugin.getLogger().severe("Failed to initialise tables");
-                    plugin.getLogger().severe(Arrays.toString(e.getStackTrace()));
-                }
-            }
-        });
+        dataSource.registerMigration(2, false, """
+            CREATE TABLE IF NOT EXISTS warps (
+                name VARCHAR(64) UNIQUE PRIMARY KEY NOT NULL,
+                world VARCHAR(64) NOT NULL,
+                x REAL NOT NULL,
+                y REAL NOT NULL,
+                z REAL NOT NULL,
+                pitch REAL NOT NULL,
+                yaw REAL NOT NULL,
+                gamemode VARCHAR(16) NOT NULL
+            );
+            """);
+
     }
 
-    public HashMap<String, Warp> getWarps() {
-        Connection connection = this.getConnection();
-        HashMap<String, Warp> warps = new HashMap<>();
-        if(connection == null) {
-            plugin.getLogger().severe("Failed to obtain a connection. Aborting retrieving warps");
-            return warps;
-        }
-        try {
+    public Map<String, Warp> getWarps() {
+
+        Map<String, Warp> warps = new HashMap<>();
+        try (Connection connection = this.getConnection();){
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM warps;");
             ResultSet results = statement.executeQuery();
             while(results.next()) {
@@ -93,13 +84,8 @@ public class DatabaseManager {
     }
 
     public List<String> getWarpNames() {
-        Connection connection = this.getConnection();
         List<String> warps = new ArrayList<>();
-        if(connection == null) {
-            plugin.getLogger().severe("Failed to obtain a connection. Aborting retrieving warp names");
-            return warps;
-        }
-        try {
+        try(Connection connection = this.getConnection()) {
             ResultSet results = connection.prepareStatement("SELECT name FROM warps;").executeQuery();
             while (results.next()) {
                 warps.add(results.getString("name"));
@@ -113,12 +99,7 @@ public class DatabaseManager {
     }
 
     public boolean addWarp(Warp warp) {
-        Connection connection = this.getConnection();
-        if(connection == null) {
-            plugin.getLogger().severe("Failed to obtain a connection. Aborting saving warp %s".formatted(warp.name()));
-            return false;
-        }
-        try {
+        try (Connection connection = this.getConnection()){
             PreparedStatement statement = connection.prepareStatement("INSERT IGNORE INTO warps(name, world, x, y, z, pitch, yaw, gamemode) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             statement.setString(1, warp.name());
             statement.setString(2, warp.world());
@@ -139,12 +120,7 @@ public class DatabaseManager {
     }
 
     public boolean deleteWarp(String name) {
-        Connection connection = this.getConnection();
-        if(connection == null) {
-            plugin.getLogger().severe("Failed to obtain a connection. Aborting deleting warp %s".formatted(name));
-            return false;
-        }
-        try {
+        try (Connection connection = this.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM warps WHERE name=?;");
             statement.setString(1, name);
             statement.execute();
