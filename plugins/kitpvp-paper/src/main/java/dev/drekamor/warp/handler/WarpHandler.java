@@ -2,6 +2,7 @@ package dev.drekamor.warp.handler;
 
 import dev.drekamor.warp.WarpMain;
 import static dev.drekamor.warp.util.EnumUtil.getGamemode;
+import dev.drekamor.warp.util.Cache;
 import dev.drekamor.warp.util.Warp;
 import java.util.List;
 import net.civmc.kitpvp.KitPvpPlugin;
@@ -22,16 +23,16 @@ public class WarpHandler {
 
 
     public List<String> getWarps() {
-        return main.getCache().getWarpIndex();
+        return Cache.getWarpIndex();
     }
 
     public boolean warp(CommandSender sender, String name) {
-        if(!main.getCache().getWarpIndex().contains(name)) {
+        if(!Cache.getWarpIndex().contains(name)) {
             sender.sendMessage("Warp %s does not exist".formatted(name));
             return true;
         }
 
-        Warp warp = main.getCache().getWarp(name);
+        Warp warp = Cache.getWarp(name);
         Player player = (Player) sender;
 
         if(warp == null) {
@@ -52,7 +53,7 @@ public class WarpHandler {
 
         player.teleport(location);
         player.setGameMode(gameMode);
-        main.getCache().setPlayerLocation(player, warp);
+        Cache.setPlayerLocation(player, warp);
 
         return true;
     }

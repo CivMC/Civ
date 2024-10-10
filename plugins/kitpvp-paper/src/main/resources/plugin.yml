@@ -20,11 +20,14 @@ commands:
   warp:
     description: Warp to a location
     permission: warps.use
-    usage: "Usage: /warp <warp>"
+    usage: /<command> <warp>
   warps:
     description: Manage warps
     permission: warps.use
-    usage: "Usage: /warp [add | list | delete] <warp | none> <gamemode | none>"
+    usage: |- 
+      /<command> add <warp> <gamemode>
+      /<command> list
+      /<command> delete <warp>
 
 permissions:
   warps.use:
