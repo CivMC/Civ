@@ -6,6 +6,7 @@ description: KitPvP for CivMC
 api-version: 1.21.1
 depend: [CivModCore]
 softdepend: [BreweryX]
+
 commands:
   kit:
     usage: |-
@@ -16,3 +17,19 @@ commands:
   clear: {}
   viewinventorysnapshot:
     usage: /<command> <player>
+  warp:
+    description: Warp to a location
+    permission: warps.use
+    usage: "Usage: /warp <warp>"
+  warps:
+    description: Manage warps
+    permission: warps.use
+    usage: "Usage: /warp [add | list | delete] <warp | none> <gamemode | none>"
+
+permissions:
+  warps.use:
+    description: Allows using warps
+    default: true
+  warps.manage:
+    description: Allows managing warps
+    default: op

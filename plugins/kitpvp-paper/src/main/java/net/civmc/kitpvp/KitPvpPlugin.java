@@ -24,6 +24,8 @@ public class KitPvpPlugin extends ACivMod {
         getServer().getPluginManager().registerEvents(new DeathListener(inventorySnapshotManager), this);
         getCommand("viewinventorysnapshot").setExecutor(new ViewInventorySnapshotCommand(inventorySnapshotManager));
 
+
+
         if (Bukkit.getPluginManager().isPluginEnabled("BreweryX")) {
             getServer().getPluginManager().registerEvents(new DrunkDeathListener(), this);
         }
