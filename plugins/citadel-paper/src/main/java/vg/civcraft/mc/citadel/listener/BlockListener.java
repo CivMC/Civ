@@ -256,6 +256,17 @@ public class BlockListener implements Listener {
         }
     }
 
+    // prevent concrete hardening if the concrete powder is reinforced
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    public void onConcreteHarden(BlockFormEvent event) {
+        if (!MoreTags.CONCRETES.isTagged(event.getNewState().getType()) &&
+            !MoreTags.POWDERED_CONCRETES.isTagged(event.getBlock().getType())) return;
+
+        if (ReinforcementLogic.getReinforcementProtecting(event.getBlock()) != null) {
+            event.setCancelled(true);
+        }
+    }
+
     // prevent dirt to mud if dirt is reinforced
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onMudCreated(EntityChangeBlockEvent event) {
