@@ -53,7 +53,7 @@ public class BuildLimits extends SimpleHack<BuildLimitsConfig> implements Listen
 			}
 
             if(limit.getType().equals("altitude")){
-                if(loc.getBlock().getY() < limit.getMax_y() && loc.getBlock().getY() > limit.getMin_y()) {
+                if(loc.getBlock().getY() < limit.getMaxY() && loc.getBlock().getY() > limit.getMinY()) {
                     continue;
                 }
                 return false;
