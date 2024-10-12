@@ -89,14 +89,6 @@ world:
       checkradius: 500 # require another player closer than this
       radius: 100 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
-    Fempire Union: # Jindosh
-      x: 5817
-      y: 250 # overridden in code, but must be set
-      z: -6536
-      nearby: true # require another player nearby?
-      checkradius: 500 # require another player closer than this
-      radius: 100 # spawn area outer radius
-      exclusion: 0 # spawn area inner radius
     Icarus: # Zolo#7662
       x: -9110
       y: 250 # overridden in code, but must be set
@@ -186,12 +178,12 @@ world:
       radius: 100 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
     Pavia: #roamingbrit
-      x: 734
+      x: 913
       y: 250 # overridden in code, but must be set
       z: -3041
       nearby: true # require another player nearby?
       checkradius: 500 # require another player closer than this
-      radius: 100 # spawn area outer radius
+      radius: 30 # spawn area outer radius
       exclusion: 0 # spawn area inner radius
     Pridelands: # Gillilaeous#0662
       x: -2238
