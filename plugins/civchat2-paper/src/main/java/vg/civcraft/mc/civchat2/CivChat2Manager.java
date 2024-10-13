@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -48,7 +50,7 @@ public class CivChat2Manager {
     // replyList has (playerName, whotoreplyto)
     private final HashMap<UUID, UUID> replyList;
 
-    private final Set<UUID> afkPlayers;
+    private final HashMap<UUID, Component> afkPlayers;
 
     private ScoreboardHUD scoreboardHUD;
 
@@ -68,7 +70,7 @@ public class CivChat2Manager {
         chatChannels = new HashMap<>();
         groupChatChannels = new HashMap<>();
         replyList = new HashMap<>();
-        afkPlayers = new HashSet<>();
+        afkPlayers = new HashMap<>();
         scoreboardHUD = new ScoreboardHUD();
     }
 
@@ -147,7 +149,7 @@ public class CivChat2Manager {
 
         if (isPlayerAfk(receiver)) {
             receiver.sendMessage(receiverMessage);
-            sender.sendMessage(parse(ChatStrings.chatPlayerAfk));
+            sender.sendMessage(getPlayerAfkMessage(receiver));
             return;
             // Player is ignoring the sender
         } else if (DBM.isIgnoringPlayer(receiver.getUniqueId(), sender.getUniqueId())) {
@@ -251,7 +253,8 @@ public class CivChat2Manager {
      */
     public boolean isPlayerAfk(Player player) {
         Preconditions.checkNotNull(player, "player");
-        return afkPlayers.contains(player.getUniqueId());
+
+        return afkPlayers.get(player.getUniqueId()) != null;
     }
 
     /**
@@ -260,11 +263,13 @@ public class CivChat2Manager {
      * @param player The player to change
      * @return The player AFK status
      */
-    public boolean setPlayerAfk(Player player, boolean afkStatus) {
+    public boolean setPlayerAfk(Player player, boolean afkStatus, Component afkMsg) {
         Preconditions.checkNotNull(player, "player");
+        Preconditions.checkNotNull(afkMsg, "afk message");
 
         if (afkStatus) {
-            afkPlayers.add(player.getUniqueId());
+            afkPlayers.put(player.getUniqueId(), afkMsg);
+            // afkPlayers.add(player.getUniqueId());
         } else {
             afkPlayers.remove(player.getUniqueId());
         }
@@ -279,18 +284,24 @@ public class CivChat2Manager {
      * @param player Player to toggle state for
      * @return Whether afk is turned on afterwards
      */
-    public boolean togglePlayerAfk(Player player) {
+    public boolean togglePlayerAfk(Player player, Component afkMsg) {
         Preconditions.checkNotNull(player, "player");
-        if (afkPlayers.contains(player.getUniqueId())) {
+        Preconditions.checkNotNull(afkMsg, "afk message");
+        if (isPlayerAfk(player)) {
             afkPlayers.remove(player.getUniqueId());
 
             scoreboardHUD.updateAFKScoreboardHUD(player);
             return false;
         }
-        afkPlayers.add(player.getUniqueId());
+        afkPlayers.put(player.getUniqueId(), afkMsg);
 
         scoreboardHUD.updateAFKScoreboardHUD(player);
         return true;
+    }
+
+    public Component getPlayerAfkMessage(Player player) {
+        Preconditions.checkNotNull(player, "player");
+        return afkPlayers.get(player.getUniqueId());
     }
 
     /**

@@ -1,5 +1,7 @@
 package vg.civcraft.mc.civchat2;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 
 public class ChatStrings {
@@ -48,7 +50,7 @@ public class ChatStrings {
 
     public final static String chatNotAfk = ChatColor.BLUE + "You are no longer AFK.";
 
-    public final static String chatPlayerAfk = ChatColor.AQUA + "That player is currently AFK.";
+    public final static Component chatPlayerAfk = Component.text("That player is currently AFK.", NamedTextColor.AQUA);
 
     public final static String chatGroupMessage = ChatColor.GRAY + "[%s] %s: " + ChatColor.WHITE + "%s";
 
