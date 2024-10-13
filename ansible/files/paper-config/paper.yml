@@ -346,7 +346,7 @@ world-settings:
     alt-item-despawn-rate:
       enabled: true
       items:
-        catus: 1200
+        cactus: 1200
         deepslate: 3000
         cobbled_deepslate: 3000
         cobblestone: 3000
