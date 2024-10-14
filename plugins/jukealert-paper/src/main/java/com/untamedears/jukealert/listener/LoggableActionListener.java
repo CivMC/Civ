@@ -34,10 +34,12 @@ import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.entity.ChestBoat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -222,6 +224,12 @@ public class LoggableActionListener implements Listener {
         } else if (holder instanceof StorageMinecart minecart) {
             location = minecart.getLocation();
             material = Material.CHEST_MINECART;
+        } else if (holder instanceof HopperMinecart minecart) {
+            location = minecart.getLocation();
+            material = Material.HOPPER_MINECART;
+        } else if (holder instanceof ChestBoat boat) {
+            location = boat.getLocation();
+            material = boat.getBoatMaterial();
         } else {
             return;
         }
