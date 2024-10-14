@@ -75,6 +75,22 @@ public abstract class LoggableBlockAction extends LoggablePlayerAction {
             case ACACIA_WALL_SIGN -> Material.ACACIA_SIGN;
             case WARPED_WALL_SIGN -> Material.WARPED_SIGN;
             case CRIMSON_WALL_SIGN -> Material.CRIMSON_SIGN;
+            case BAMBOO_WALL_SIGN -> Material.BAMBOO_SIGN;
+            case CHERRY_WALL_SIGN -> Material.CHERRY_SIGN;
+            case MANGROVE_WALL_SIGN -> Material.MANGROVE_SIGN;
+
+            // Hanging Signs
+            case OAK_WALL_HANGING_SIGN -> Material.OAK_HANGING_SIGN;
+            case DARK_OAK_WALL_HANGING_SIGN -> Material.DARK_OAK_HANGING_SIGN;
+            case BIRCH_WALL_HANGING_SIGN -> Material.BIRCH_HANGING_SIGN;
+            case SPRUCE_WALL_HANGING_SIGN -> Material.SPRUCE_HANGING_SIGN;
+            case JUNGLE_WALL_HANGING_SIGN -> Material.JUNGLE_HANGING_SIGN;
+            case ACACIA_WALL_HANGING_SIGN -> Material.ACACIA_HANGING_SIGN;
+            case WARPED_WALL_HANGING_SIGN -> Material.WARPED_HANGING_SIGN;
+            case CRIMSON_WALL_HANGING_SIGN -> Material.CRIMSON_HANGING_SIGN;
+            case BAMBOO_WALL_HANGING_SIGN -> Material.BAMBOO_HANGING_SIGN;
+            case CHERRY_WALL_HANGING_SIGN -> Material.CHERRY_HANGING_SIGN;
+            case MANGROVE_WALL_HANGING_SIGN -> Material.MANGROVE_HANGING_SIGN;
 
             // Torches
             case WALL_TORCH -> Material.TORCH;
