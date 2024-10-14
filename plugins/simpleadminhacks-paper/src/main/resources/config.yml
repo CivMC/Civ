@@ -268,7 +268,7 @@ hacks:
     limits:
       - ==: com.programmerdan.minecraft.simpleadminhacks.framework.utilities.BuildLimit
         world: "world_nether"
-        type: "altitude"
+        type: ALTITUDE
         min_y: -64
         max_y: 128
   CTAnnounce:
