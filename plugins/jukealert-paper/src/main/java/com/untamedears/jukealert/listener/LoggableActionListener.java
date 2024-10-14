@@ -48,6 +48,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityDismountEvent;
 import org.bukkit.event.entity.EntityMountEvent;
@@ -266,6 +267,12 @@ public class LoggableActionListener implements Listener {
         Player player = event.getPlayer();
         handlePlayerAction(player, s -> new IgniteBlockAction(System.currentTimeMillis(), s, player.getUniqueId(),
             event.getBlock().getLocation()));
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void playerEditSign(SignChangeEvent event) {
+        handlePlayerAction(event.getPlayer(), s -> new EditSignAction(System.currentTimeMillis(), s,
+            event.getPlayer().getUniqueId(), event.getBlock().getLocation(), event.getBlock().getType()));
     }
 
     private void handleSnitchLogout(Player player) {
