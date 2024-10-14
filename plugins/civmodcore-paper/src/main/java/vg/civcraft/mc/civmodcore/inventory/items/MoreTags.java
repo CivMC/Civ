@@ -272,46 +272,6 @@ public final class MoreTags {
             .add(Material.WAXED_OXIDIZED_CUT_COPPER_SLAB)
             .build());
 
-    public static final Tag<Material> POWDERED_CONCRETES = new BetterTag<>("powdered_concretes",
-        ImmutableSet.<Material>builder()
-            .add(Material.WHITE_CONCRETE_POWDER)
-            .add(Material.ORANGE_CONCRETE_POWDER)
-            .add(Material.MAGENTA_CONCRETE_POWDER)
-            .add(Material.LIGHT_BLUE_CONCRETE_POWDER)
-            .add(Material.YELLOW_CONCRETE_POWDER)
-            .add(Material.LIME_CONCRETE_POWDER)
-            .add(Material.PINK_CONCRETE_POWDER)
-            .add(Material.GRAY_CONCRETE_POWDER)
-            .add(Material.LIGHT_GRAY_CONCRETE_POWDER)
-            .add(Material.CYAN_CONCRETE_POWDER)
-            .add(Material.PURPLE_CONCRETE_POWDER)
-            .add(Material.BLUE_CONCRETE_POWDER)
-            .add(Material.BROWN_CONCRETE_POWDER)
-            .add(Material.GREEN_CONCRETE_POWDER)
-            .add(Material.RED_CONCRETE_POWDER)
-            .add(Material.BLACK_CONCRETE_POWDER)
-            .build());
-
-    public static final Tag<Material> CONCRETES = new BetterTag<>("concretes",
-    ImmutableSet.<Material>builder()
-        .add(Material.WHITE_CONCRETE)
-        .add(Material.ORANGE_CONCRETE)
-        .add(Material.MAGENTA_CONCRETE)
-        .add(Material.LIGHT_BLUE_CONCRETE)
-        .add(Material.YELLOW_CONCRETE)
-        .add(Material.LIME_CONCRETE)
-        .add(Material.PINK_CONCRETE)
-        .add(Material.GRAY_CONCRETE)
-        .add(Material.LIGHT_GRAY_CONCRETE)
-        .add(Material.CYAN_CONCRETE)
-        .add(Material.PURPLE_CONCRETE)
-        .add(Material.BLUE_CONCRETE)
-        .add(Material.BROWN_CONCRETE)
-        .add(Material.GREEN_CONCRETE)
-        .add(Material.RED_CONCRETE)
-        .add(Material.BLACK_CONCRETE)
-        .build());
-
     /**
      * This is referring to materials that can exist in the world as blocks.
      */
