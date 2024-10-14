@@ -1,54 +1,19 @@
 package com.programmerdan.minecraft.simpleadminhacks.framework.utilities;
 
+import com.programmerdan.minecraft.simpleadminhacks.configs.buildlimit.LimitType;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
-public class BuildLimit implements ConfigurationSerializable {
-	private String world;
-	private String type;
-	private int minY;
-	private int maxY;
-
-	public BuildLimit (String world, String type, int minY, int maxY){
-		this.world = world;
-		this.type = type;
-		this.minY = minY;
-		this.maxY = maxY;
-	}
-
-	public String getWorld() {
-		return this.world;
-	}
-	public String getType() {
-		return this.type;
-	}
-	public int getMinY() {
-		return this.minY;
-	}
-	public int getMaxY() {
-		return this.maxY;
-	}
-
-	public void setWorld(String world) {
-		this.world = world;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
-	public void setMinY(int minY) {
-		this.minY = minY;
-	}
-	public void setMaxY(int maxY) {
-		this.maxY = maxY;
-	}
+public record BuildLimit(String world, String type, int minY, int maxY) implements ConfigurationSerializable {
 
 	@NotNull
 	@Override
-	public final Map<String, Object> serialize(){
-		Map<String, Object> result = new LinkedHashMap<>();
+	public Map<String, Object> serialize(){
+		Map<String, Object> result = new HashMap<>();
 
 		result.put("world", this.world);
 		result.put("type", this.type);
@@ -57,17 +22,21 @@ public class BuildLimit implements ConfigurationSerializable {
 
 		return result;
 	}
-	@NotNull
-	public static BuildLimit deserialize(@NotNull Map<String, Object> args){
-		String world = "world";
-		String type = "altitude";
+	@Nullable
+	public static BuildLimit deserialize(@NotNull final Map<String, Object> args){
+		String world = (String) args.get("world");
+
+        String type = (String) args.get("type");
+        LimitType limitType = LimitType.ALTITUDE;
+        try {
+            limitType = LimitType.valueOf(type);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+
 		int minY = 0;
 		int maxY = 0;
-
-		world = (String) args.get("world");
-		type = (String) args.get("type");
-
-		if(type.equals("altitude")){
+		if(limitType == LimitType.ALTITUDE){
 			if(args.containsKey("min_y")){
 				minY = (Integer) args.get("min_y");
 			}
