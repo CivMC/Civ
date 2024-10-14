@@ -19,16 +19,10 @@ public final class BuildLimitsConfig extends SimpleHackConfig {
 
 	@Override
 	protected void wireup(ConfigurationSection config) {
-		if (this.shouldEnable()) {
-			List<?> rawList = config.getList("limits");
-			if (rawList != null && rawList.size() > 0) {
-				try {
-					this.buildLimits = rawList.toArray(new BuildLimit[rawList.size()]);
-				} catch(ArrayStoreException ase) {
-					ase.printStackTrace();
-				}
-			}
-		}
+        List<?> rawList = config.getList("limits");
+        if (rawList != null && rawList.size() > 0) {
+            this.buildLimits = rawList.toArray(new BuildLimit[rawList.size()]);
+        }
 	}
 	public BuildLimit[] getBuildLimits() {
 		return this.buildLimits;

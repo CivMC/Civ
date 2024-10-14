@@ -27,14 +27,9 @@ public record BuildLimit(String world, String type, int minY, int maxY) implemen
 		String world = (String) args.get("world");
 
         String type = (String) args.get("type");
-        LimitType limitType = LimitType.ALTITUDE;
-        try {
-            limitType = LimitType.valueOf(type);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+        LimitType limitType = LimitType.valueOf(type);
 
-		int minY = 0;
+        int minY = 0;
 		int maxY = 0;
 		if(limitType == LimitType.ALTITUDE){
 			if(args.containsKey("min_y")){
