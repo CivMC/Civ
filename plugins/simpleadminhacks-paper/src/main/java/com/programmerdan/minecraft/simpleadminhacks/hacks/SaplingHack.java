@@ -36,7 +36,7 @@ public class SaplingHack extends SimpleHack<SaplingConfig> implements Listener {
             return;
         }
         if (!this.config.isAllowFortune()) {
-            if (checkIfItemHasFortune(event.getPlayer().getItemInUse())) {
+            if (checkIfItemHasFortune(event.getPlayer().getActiveItem())) {
                 return;
             }
         }
@@ -68,7 +68,7 @@ public class SaplingHack extends SimpleHack<SaplingConfig> implements Listener {
         if (itemStack == null) {
             return false;
         }
-        return itemStack.getEnchantments().containsKey(Enchantment.LOOT_BONUS_BLOCKS);
+        return itemStack.getEnchantments().containsKey(Enchantment.FORTUNE);
     }
 
     private Material getSaplingMaterial(Material material) {

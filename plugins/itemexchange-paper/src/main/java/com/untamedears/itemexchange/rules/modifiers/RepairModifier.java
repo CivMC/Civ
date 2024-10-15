@@ -16,12 +16,12 @@ import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ModifierHandler;
 import java.util.List;
-import javax.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Repairable;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 /**
@@ -74,12 +74,12 @@ public final class RepairModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@Nonnull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NBTCompound nbt) {
         nbt.setInt(LEVEL_KEY, getRepairCost());
     }
 
-    @Nonnull
-    public static RepairModifier fromNBT(@Nonnull final NBTCompound nbt) {
+    @NotNull
+    public static RepairModifier fromNBT(@NotNull final NBTCompound nbt) {
         final var modifier = new RepairModifier();
         modifier.setRepairCost(nbt.getInt(LEVEL_KEY));
         return modifier;

@@ -1,6 +1,6 @@
 package com.github.igotyou.FactoryMod.recipes;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Captures the feasibility of applying a recipe effect along with an optional reason string.

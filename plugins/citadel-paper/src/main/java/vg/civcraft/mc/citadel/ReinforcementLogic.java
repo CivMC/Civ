@@ -249,6 +249,14 @@ public final class ReinforcementLogic {
             case HANGING_ROOTS: {
                 return block.getRelative(BlockFace.UP);
             }
+            case COPPER_DOOR:
+            case EXPOSED_COPPER_DOOR:
+            case OXIDIZED_COPPER_DOOR:
+            case WEATHERED_COPPER_DOOR:
+            case WAXED_COPPER_DOOR:
+            case WAXED_EXPOSED_COPPER_DOOR:
+            case WAXED_OXIDIZED_COPPER_DOOR:
+            case WAXED_WEATHERED_COPPER_DOOR:
             case ACACIA_DOOR:
             case BIRCH_DOOR:
             case DARK_OAK_DOOR:

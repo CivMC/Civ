@@ -19,3 +19,5 @@ disabled:
   - minecraft:rib_armor_trim_smithing_template
   - minecraft:eye_armor_trim_smithing_template
   - minecraft:spire_armor_trim_smithing_template
+  - minecraft:bolt_armor_trim_smithing_template
+  - minecraft:flow_armor_trim_smithing_template

@@ -8,7 +8,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,18 +32,15 @@ public class MultiInventoryWrapper implements Inventory {
         this(new ArrayList<>(Arrays.asList(wrapped)));
     }
 
-    public MultiInventoryWrapper(List<Inventory> wrapped) {
-        Inventory[] wrappedArr = uniquify(wrapped);
-        this.wrapped = wrappedArr;
-        int lsize = 0;
-        int[] lslotOffsets = new int[wrappedArr.length];
-        for (int i = 0; i < wrappedArr.length; i++) {
-            Inventory inv = wrappedArr[i];
-            lslotOffsets[i] = lsize;
-            lsize += inv.getSize();
-            if (inv.getMaxStackSize() != 64) {
-                throw new IllegalArgumentException("Inventory max stack size must be 64");
-            }
+	public MultiInventoryWrapper(List<Inventory> wrapped) {
+		Inventory[] wrappedArr = uniquify(wrapped);
+		this.wrapped = wrappedArr;
+		int lsize = 0;
+		int[] lslotOffsets = new int[wrappedArr.length];
+		for (int i = 0; i < wrappedArr.length; i++) {
+			Inventory inv = wrappedArr[i];
+			lslotOffsets[i] = lsize;
+			lsize += inv.getSize(); // TODO: why was inventory max stack size forced to 64? Probably unnecessary but worth looking into
         }
         this.size = lsize;
         this.slotOffsets = lslotOffsets;
@@ -150,7 +146,7 @@ public class MultiInventoryWrapper implements Inventory {
     }
 
     @Override
-    public @org.checkerframework.checker.nullness.qual.Nullable ItemStack @NonNull [] getContents() {
+    public @Nullable ItemStack @NotNull [] getContents() {
         ItemStack[] combinedContents = new ItemStack[size];
         for (int inv = 0, slot = 0; inv < wrapped.length; inv++) {
             ItemStack[] sub = wrapped[inv].getContents();

@@ -65,7 +65,7 @@ public class DamageListener implements Listener {
         LivingEntity damager = (LivingEntity) e.getDamager();
         DamageModificationConfig strengthModifier = modifiers.get(DamageModificationConfig.Type.STRENGTH_EFFECT);
         if (strengthModifier != null) {
-            PotionEffect strengthEffect = damager.getPotionEffect(PotionEffectType.INCREASE_DAMAGE);
+            PotionEffect strengthEffect = damager.getPotionEffect(PotionEffectType.STRENGTH);
             if (strengthEffect != null) {
                 double damage = strengthModifier.modify(e.getDamage(), strengthEffect.getAmplifier() + 1);
                 e.setDamage(damage);
@@ -83,7 +83,7 @@ public class DamageListener implements Listener {
                 double damage = swordModifier.modify(e.getDamage());
                 e.setDamage(damage);
             }
-            int sharpnessLevel = is.getEnchantmentLevel(Enchantment.DAMAGE_ALL);
+            int sharpnessLevel = is.getEnchantmentLevel(Enchantment.SHARPNESS);
             DamageModificationConfig sharpnessModifier = modifiers.get(DamageModificationConfig.Type.SHARPNESS_ENCHANT);
             if (sharpnessLevel != 0 && sharpnessModifier != null) {
                 double damage = sharpnessModifier.modify(e.getDamage(), sharpnessLevel);
@@ -103,10 +103,8 @@ public class DamageListener implements Listener {
         }
         Arrow arrow = (Arrow) e.getEntity();
         List<MetadataValue> values = arrow.getMetadata(powerMetaDataKey);
-        if (values == null || values.size() == 0) {
-            return;
-        } else {
-            int powerLevel = values.get(0).asInt();
+        if (values != null && !values.isEmpty()) {
+            int powerLevel = values.getFirst().asInt();
             e.setDamage(powerModifier.modify(e.getDamage(), powerLevel));
         }
     }
@@ -129,7 +127,7 @@ public class DamageListener implements Listener {
         }
         Arrow arrow = (Arrow) e.getEntity();
         arrow.setMetadata(powerMetaDataKey,
-            new FixedMetadataValue(Finale.getPlugin(), bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE)));
+            new FixedMetadataValue(Finale.getPlugin(), bow.getEnchantmentLevel(Enchantment.POWER)));
     }
 
     @EventHandler

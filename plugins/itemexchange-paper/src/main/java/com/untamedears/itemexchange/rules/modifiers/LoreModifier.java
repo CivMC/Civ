@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
@@ -64,7 +64,7 @@ public final class LoreModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@Nonnull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NBTCompound nbt) {
         if (this.lore == null) {
             nbt.remove(LORE_KEY);
         } else {
@@ -72,8 +72,8 @@ public final class LoreModifier extends ModifierData {
         }
     }
 
-    @Nonnull
-    public static LoreModifier fromNBT(@Nonnull final NBTCompound nbt) {
+    @NotNull
+    public static LoreModifier fromNBT(@NotNull final NBTCompound nbt) {
         final var modifier = new LoreModifier();
         modifier.setLore(MoreCollectionUtils.collect(ArrayList::new, nbt.getStringArray(LORE_KEY)));
         return modifier;

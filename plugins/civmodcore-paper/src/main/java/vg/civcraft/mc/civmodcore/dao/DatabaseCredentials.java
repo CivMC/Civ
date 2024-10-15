@@ -2,11 +2,11 @@ package vg.civcraft.mc.civmodcore.dao;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.apache.commons.collections4.MapUtils;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.util.NumberConversions;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
 
 /**
@@ -26,7 +26,7 @@ public record DatabaseCredentials(String username,
                                   long maxLifetime)
     implements ConfigurationSerializable {
 
-    @Nonnull
+    @NotNull
     @Override
     public Map<String, Object> serialize() {
         final var data = new HashMap<String, Object>(10);
@@ -44,7 +44,7 @@ public record DatabaseCredentials(String username,
     }
 
     @Nullable
-    public static DatabaseCredentials deserialize(@Nonnull final Map<String, Object> data) {
+    public static DatabaseCredentials deserialize(@NotNull final Map<String, Object> data) {
         if (MapUtils.isEmpty(data)) {
             return null;
         }
