@@ -19,11 +19,6 @@ public class SqlKitPvpDao implements KitPvpDao {
 
     public SqlKitPvpDao(ManagedDatasource source) {
         this.source = source;
-        registerMigrations();
-        source.updateDatabase();
-    }
-
-    private void registerMigrations() {
         source.registerMigration(1, false,
             """
                 CREATE TABLE IF NOT EXISTS kits (

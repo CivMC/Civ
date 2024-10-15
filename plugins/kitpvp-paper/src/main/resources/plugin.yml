@@ -13,6 +13,15 @@ commands:
       /<command> copy <player> <their kit name> [your kit name]
       /<command> load public <kit name>
       /<command> load <kit name>
+  arena:
+    usage: |-
+      /<command>
+      /<command> list
+      /<command> create <name> <icon> (administrators only)
+      /<command> delete <name> (administrators only)
+  spawn: {}
+  setspawn:
+    permission: kitpvp.admin
   clear: {}
   viewinventorysnapshot:
     usage: /<command> <player>

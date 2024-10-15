@@ -28,7 +28,8 @@ allprojects {
         maven("https://repo.codemc.io/repository/maven-public/")
         maven("https://repo.kryptonmc.org/releases")
         maven("https://repo.dmulloy2.net/repository/public")
-
+        maven("https://repo.infernalsuite.com/repository/maven-snapshots/")
+        maven("https://repo.rapture.pw/repository/maven-releases/")
         maven("https://jitpack.io")
     }
 }
