@@ -65,7 +65,6 @@ public class DatabaseManager {
                     )
                 );
             }
-            connection.close();
         } catch (SQLException e) {
             plugin.getLogger().severe("Failed to retrieve warps");
             plugin.getLogger().severe(Arrays.toString(e.getStackTrace()));
@@ -80,7 +79,6 @@ public class DatabaseManager {
             while (results.next()) {
                 warps.add(results.getString("name"));
             }
-            connection.close();
         } catch (SQLException e) {
             plugin.getLogger().severe("Failed to retrieve warp names");
             plugin.getLogger().severe(Arrays.toString(e.getStackTrace()));
@@ -100,7 +98,6 @@ public class DatabaseManager {
             statement.setFloat(7, warp.yaw());
             statement.setString(8, warp.gamemode());
             int updated = statement.executeUpdate();
-            connection.close();
             return updated > 0;
         } catch (SQLException e) {
             plugin.getLogger().severe("Failed to save warp %s".formatted(warp.name()));
@@ -114,7 +111,6 @@ public class DatabaseManager {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM warps WHERE name=?");
             statement.setString(1, name);
             statement.execute();
-            connection.close();
             return true;
         } catch (SQLException e) {
             plugin.getLogger().severe("Failed to delete warp %s".formatted(name));
