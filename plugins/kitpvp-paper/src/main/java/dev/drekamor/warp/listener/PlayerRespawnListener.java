@@ -9,17 +9,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class PlayerRespawnListener implements Listener {
+    private final Cache cache;
 
-    public PlayerRespawnListener() {
+    public PlayerRespawnListener(Cache cache) {
+        this.cache = cache;
     }
 
     @EventHandler
     private void onPlayerRespawn(PlayerRespawnEvent event) {
-        if(Cache.getPlayerLocation(event.getPlayer()) == null) {
+        if(cache.getPlayerLocation(event.getPlayer()) == null) {
             return;
         }
 
-        Warp warp = Cache.getPlayerLocation(event.getPlayer());
+        Warp warp = cache.getPlayerLocation(event.getPlayer());
         Location location = new Location(
                 Bukkit.getWorld(warp.world()),
                 warp.x(),

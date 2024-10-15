@@ -8,38 +8,38 @@ import java.util.List;
 import java.util.Map;
 
 public class Cache {
-    private static List<String> warpIndex;
-    private static Map<String, Warp> warps;
-    private static Map<Player, Warp> playerLocations = new HashMap<>();
+    private List<String> warpIndex;
+    private Map<String, Warp> warps;
+    private Map<Player, Warp> playerLocations = new HashMap<>();
 
-    public static void initialiseCache(List<String> index, Map<String, Warp> warpMap) {
+    public Cache(List<String> index, Map<String, Warp> warpMap) {
         warpIndex = index;
         warps = warpMap;
     }
 
-    public static  List<String> getWarpIndex() {
+    public  List<String> getWarpIndex() {
         return warpIndex;
     }
 
-    public static @Nullable Warp getWarp(String name) {
+    public @Nullable Warp getWarp(String name) {
         return warps.get(name);
     }
 
-    public static void addWarp(Warp warp) {
+    public void addWarp(Warp warp) {
         warps.put(warp.name(), warp);
         warpIndex.add(warp.name());
     }
 
-    public static void deleteWarp(String name){
+    public void deleteWarp(String name){
         warps.remove(name);
         warpIndex.remove(name);
     }
 
-    public static void setPlayerLocation(Player player, Warp warp) {
+    public void setPlayerLocation(Player player, Warp warp) {
         playerLocations.put(player, warp);
     }
 
-    public static Warp getPlayerLocation(Player player) {
+    public Warp getPlayerLocation(Player player) {
         return playerLocations.get(player);
     }
 }

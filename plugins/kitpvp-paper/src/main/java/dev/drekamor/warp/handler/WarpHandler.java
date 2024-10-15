@@ -13,26 +13,26 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class WarpHandler {
-    private final WarpMain main;
     private final KitPvpPlugin plugin;
+    private final Cache cache;
 
-    public WarpHandler (WarpMain main, KitPvpPlugin plugin) {
-        this.main = main;
+    public WarpHandler (KitPvpPlugin plugin, Cache cache) {
         this.plugin = plugin;
+        this.cache = cache;
     }
 
 
     public List<String> getWarps() {
-        return Cache.getWarpIndex();
+        return cache.getWarpIndex();
     }
 
     public boolean warp(CommandSender sender, String name) {
-        if(!Cache.getWarpIndex().contains(name)) {
+        if(!cache.getWarpIndex().contains(name)) {
             sender.sendMessage("Warp %s does not exist".formatted(name));
             return true;
         }
 
-        Warp warp = Cache.getWarp(name);
+        Warp warp = cache.getWarp(name);
         Player player = (Player) sender;
 
         if(warp == null) {
@@ -53,7 +53,7 @@ public class WarpHandler {
 
         player.teleport(location);
         player.setGameMode(gameMode);
-        Cache.setPlayerLocation(player, warp);
+        cache.setPlayerLocation(player, warp);
 
         return true;
     }

@@ -2,6 +2,7 @@ package dev.drekamor.warp.handler;
 
 import dev.drekamor.warp.WarpMain;
 import static dev.drekamor.warp.util.EnumUtil.getGamemode;
+import dev.drekamor.warp.database.DatabaseManager;
 import dev.drekamor.warp.util.Cache;
 import dev.drekamor.warp.util.Warp;
 import java.util.List;
@@ -12,16 +13,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class WarpsHandler {
-    private final WarpMain main;
     private final KitPvpPlugin plugin;
+    private final DatabaseManager databaseManager;
+    private final Cache cache;
 
-    public WarpsHandler (WarpMain main, KitPvpPlugin plugin) {
-        this.main = main;
+    public WarpsHandler (KitPvpPlugin plugin, DatabaseManager databaseManager, Cache cache) {
         this.plugin = plugin;
+        this.databaseManager = databaseManager;
+        this.cache = cache;
     }
 
     public List<String> getWarps() {
-        return Cache.getWarpIndex();
+        return cache.getWarpIndex();
     }
 
     public boolean addWarp(CommandSender sender, String[] args) {
@@ -34,7 +37,7 @@ public class WarpsHandler {
             return true;
         }
 
-        if(Cache.getWarpIndex().contains(args[1])) {
+        if(cache.getWarpIndex().contains(args[1])) {
             sender.sendMessage("Warp %s already exists".formatted(args[1]));
             return true;
         }
@@ -59,8 +62,8 @@ public class WarpsHandler {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                if(main.getDatabaseManager().addWarp(warp)) {
-                    Cache.addWarp(warp);
+                if(databaseManager.addWarp(warp)) {
+                    cache.addWarp(warp);
                     sender.sendMessage("Successfully saved warp %s".formatted(warp.name()));
                 }
             }
@@ -73,13 +76,13 @@ public class WarpsHandler {
             return false;
         }
 
-        if(Cache.getWarpIndex().isEmpty()) {
+        if(cache.getWarpIndex().isEmpty()) {
             sender.sendMessage("There are no warps");
             return true;
         }
 
         StringBuilder builder = new StringBuilder();
-        for(String s : Cache.getWarpIndex()) {
+        for(String s : cache.getWarpIndex()) {
             builder.append("%s, ".formatted(s));
         }
         builder.deleteCharAt(builder.lastIndexOf(","));
@@ -99,7 +102,7 @@ public class WarpsHandler {
             return true;
         }
 
-        if(!Cache.getWarpIndex().contains(args[1])) {
+        if(!cache.getWarpIndex().contains(args[1])) {
             sender.sendMessage("Warp %s does not exist".formatted(args[1]));
             return true;
         }
@@ -107,8 +110,8 @@ public class WarpsHandler {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                if(main.getDatabaseManager().deleteWarp(args[1])) {
-                    Cache.deleteWarp(args[1]);
+                if(databaseManager.deleteWarp(args[1])) {
+                    cache.deleteWarp(args[1]);
                     sender.sendMessage("Successfully deleted warp %s".formatted(args[1]));
                 }
             }
