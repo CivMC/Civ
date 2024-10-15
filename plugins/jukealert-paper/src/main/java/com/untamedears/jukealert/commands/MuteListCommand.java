@@ -23,8 +23,8 @@ public class MuteListCommand extends BaseCommand {
             return;
         }
         for (String group : ignoredGroups) {
-            content.append(group + "\n ");
+            content.append("\n" + group);
         }
-        sender.sendMessage(Component.text("You have the following groups ignored: \n" + content, NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text("You have the following groups ignored:" + content, NamedTextColor.YELLOW));
     }
 }
