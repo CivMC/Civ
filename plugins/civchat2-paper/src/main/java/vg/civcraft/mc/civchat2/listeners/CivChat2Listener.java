@@ -1,5 +1,7 @@
 package vg.civcraft.mc.civchat2.listeners;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -52,13 +54,13 @@ public class CivChat2Listener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent playerQuitEvent) {
-        playerQuitEvent.setQuitMessage(null);
+        playerQuitEvent.quitMessage(null);
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (settings.getShowLeaves(p.getUniqueId()) && !db.isIgnoringPlayer(p.getUniqueId(), playerQuitEvent.getPlayer().getUniqueId())) {
                 if (playerQuitEvent.getPlayer().hasPermission("civchat2.leavejoinimmune")) {
                     continue;
                 }
-                p.sendMessage(playerQuitEvent.getPlayer().getDisplayName() + ChatColor.YELLOW + " has left the game");
+                p.sendMessage(playerQuitEvent.getPlayer().displayName().append(Component.text(" has left the game", NamedTextColor.YELLOW)));
             }
         }
     }
@@ -66,14 +68,14 @@ public class CivChat2Listener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent playerJoinEvent) {
         if (!CivChat2.getInstance().getPluginConfig().getLoginAnnounce()) {
-            playerJoinEvent.setJoinMessage(null);
+            playerJoinEvent.joinMessage(null);
         }
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (settings.getShowJoins(p.getUniqueId()) && !db.isIgnoringPlayer(p.getUniqueId(), playerJoinEvent.getPlayer().getUniqueId())) {
                 if (playerJoinEvent.getPlayer().hasPermission("civchat2.leavejoinimmune")) {
                     continue;
                 }
-                p.sendMessage(playerJoinEvent.getPlayer().getDisplayName() + ChatColor.YELLOW + " has joined the game");
+                p.sendMessage(playerJoinEvent.getPlayer().displayName().append(Component.text(" has joined the game", NamedTextColor.YELLOW)));
             }
         }
 
@@ -84,6 +86,7 @@ public class CivChat2Listener implements Listener {
 
         // Set current chat group in scoreboard
         chatman.getScoreboardHUD().updateScoreboardHUD(playerJoinEvent.getPlayer());
+        chatman.getScoreboardHUD().updateAFKScoreboardHUD(playerJoinEvent.getPlayer());
 
         if (CivChat2.getInstance().getPluginConfig().getChatRangeWarn() && !playerJoinEvent.getPlayer().hasPlayedBefore()) {
             localWarn.add(playerJoinEvent.getPlayer().getUniqueId());

@@ -1,14 +1,15 @@
 package vg.civcraft.mc.civmodcore.chat;
 
-import javax.annotation.Nonnull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class Componentify {
 
-    private static Component INTERNAL_addLocationWorld(final Location location) {
+    private static Component INTERNAL_addLocationWorld(@Nullable final Location location) {
         if (location.isWorldLoaded()) {
             return Component.text(location.getWorld().getName())
                 .hoverEvent(HoverEvent.showText(Component.text("World name")));
@@ -19,7 +20,7 @@ public final class Componentify {
         }
     }
 
-    public static Component fullLocation(@Nonnull final Location location) {
+    public static Component fullLocation(@NotNull final Location location) {
         final var component = Component.text();
         component.append(INTERNAL_addLocationWorld(location));
         component.append(Component.space());
@@ -45,7 +46,7 @@ public final class Componentify {
         return component.build();
     }
 
-    public static Component blockLocation(@Nonnull final Location location) {
+    public static Component blockLocation(@NotNull final Location location) {
         final var component = Component.text();
         component.append(INTERNAL_addLocationWorld(location));
         component.append(Component.space());

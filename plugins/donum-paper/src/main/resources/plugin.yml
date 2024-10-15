@@ -3,7 +3,7 @@ main: com.github.civcraft.donum.Donum
 author: Maxopoly
 version: ${version}
 depend: [ CivModCore, NameLayer ]
-api-version: 1.18
+api-version: 1.21.1
 permissions:
   donum.op:
     default: op

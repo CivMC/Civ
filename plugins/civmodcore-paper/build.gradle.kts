@@ -8,7 +8,7 @@ version = "3.0.6"
 
 dependencies {
     paperweight {
-        paperDevBundle("1.20.4-R0.1-SNAPSHOT")
+        paperDevBundle("1.21.1-R0.1-SNAPSHOT")
     }
 
     api("co.aikar:acf-bukkit:0.5.1-SNAPSHOT")
@@ -17,7 +17,6 @@ dependencies {
     api("co.aikar:taskchain-bukkit:3.7.2")
     api("org.apache.commons:commons-lang3:3.12.0")
     api("org.apache.commons:commons-collections4:4.4")
-    api("com.google.code.findbugs:jsr305:3.0.2")
 
     compileOnly("it.unimi.dsi:fastutil:8.5.8")
 
