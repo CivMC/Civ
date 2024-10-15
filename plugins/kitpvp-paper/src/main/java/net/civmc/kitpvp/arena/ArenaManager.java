@@ -60,15 +60,15 @@ public class ArenaManager {
         return new ArrayList<>(arenas.sequencedValues());
     }
 
-    public void deleteArena(PlayerProfile owner, Player player) {
+    public void deleteArena(PlayerProfile owner) {
         Arena arena = arenas.remove(owner.getId()).arena();
-        String worldName = getArenaName(arena.name(), player.getPlayerProfile());
+        String worldName = getArenaName(arena.name(), owner);
         World world = Bukkit.getWorld(worldName);
         if (world != null) {
             Location spawn = this.spawn.getSpawn();
             for (Player worldPlayer : world.getPlayers()) {
                 if (spawn != null) {
-                    player.sendMessage(Component.text("The arena you were in was deleted, so you have been teleported to spawn.", NamedTextColor.GREEN));
+                    worldPlayer.sendMessage(Component.text("The arena you were in was deleted, so you have been teleported to spawn.", NamedTextColor.GREEN));
                     worldPlayer.teleport(spawn);
                 } else {
                     worldPlayer.kick(Component.text("The arena you were in was deleted"));

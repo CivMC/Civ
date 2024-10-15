@@ -33,7 +33,7 @@ public class ConfirmDeletionGui {
         inventory.setSlot(new Clickable(yes) {
             @Override
             protected void clicked(@NotNull Player clicker) {
-                manager.deleteArena(owner, player);
+                manager.deleteArena(owner);
                 clicker.sendMessage(Component.text("Deleted arena.", NamedTextColor.GREEN));
                 clicker.closeInventory();
             }
