@@ -40,7 +40,7 @@ public class WarpsCommand implements TabExecutor {
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if(!sender.hasPermission("warps.manage")) {
             return switch (args.length) {
-              case 1 -> List.of("list");
+                case 1 -> List.of("list");
                 default -> null;
             };
         }
