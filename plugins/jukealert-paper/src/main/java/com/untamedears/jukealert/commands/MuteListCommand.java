@@ -9,6 +9,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class MuteListCommand extends BaseCommand {
 
@@ -22,7 +23,7 @@ public class MuteListCommand extends BaseCommand {
             sender.sendMessage(Component.text("You do not have any groups ignored.", NamedTextColor.YELLOW));
             return;
         }
-        for (String group : ignoredGroups) {
+        for (String group : new TreeSet<>(ignoredGroups)) {
             content.append("\n" + group);
         }
         sender.sendMessage(Component.text("You have the following groups ignored:" + content, NamedTextColor.YELLOW));
