@@ -3,10 +3,12 @@ package com.programmerdan.minecraft.simpleadminhacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.HackManager;
 import com.programmerdan.minecraft.simpleadminhacks.framework.commands.CommandRegistrar;
 import java.util.logging.Level;
+import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.BuildLimit;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.ACivMod;
 
@@ -34,6 +36,7 @@ public class SimpleAdminHacks extends ACivMod {
     @Override
     public void onEnable() {
         super.onEnable();
+        this.registerSerializations();
         if (!this.config.parse()) {
             setEnabled(false);
             return;
@@ -59,6 +62,10 @@ public class SimpleAdminHacks extends ACivMod {
             warning("Failed to register Executor for " + identifier + ", " +
                 "please define that command in the plugin.yml first.");
         }
+    }
+
+    public void registerSerializations() {
+        ConfigurationSerialization.registerClass(BuildLimit.class);
     }
 
     /**
