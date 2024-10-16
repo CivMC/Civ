@@ -1,0 +1,18 @@
+- name: Restart Kira
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Restart Kira | Include Preflight
+      include_tasks: ../tasks/preflight-checks.yml
+
+    - name: Restart Kira | Expand setting
+      include_tasks: ../tasks/expand-setting.yml
+
+    - name: Restart Kira | Include Stop Tasks
+      include_tasks:
+        file: '../tasks/stop-kira.yml'
+    
+    - name: Restart Kira | Include Start Tasks
+      include_tasks:
+        file: '../tasks/start-kira.yml'

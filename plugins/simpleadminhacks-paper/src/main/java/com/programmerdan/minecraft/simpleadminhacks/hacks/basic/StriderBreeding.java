@@ -36,11 +36,8 @@ public class StriderBreeding extends BasicHack {
 		}
 		double dadSpeed = event.getFather().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
 		double mumSpeed = event.getMother().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
-		double randomSpeed = Math.random() * (this.maxSpeed - this.minSpeed) + this.minSpeed;
-		//the 0.44.... number, I was given this number by Okx#5481, apparently it is the horse speed generation number
-		//Also worth noting he told me it is not exactly a bell curve even if I did name it bellCurve
-		double bellCurve = (0.44999998807907104 + randomSpeed * 0.3 + randomSpeed * 0.3 + randomSpeed * 0.3) * 0.25;
-		double newStriderSpeed = (dadSpeed + mumSpeed + bellCurve) / 3;
+		double irwinHallDist = (0.45 + Math.random() * 0.3 + Math.random() * 0.3 + Math.random() * 0.3) * 0.25;
+		double newStriderSpeed = (dadSpeed + mumSpeed + irwinHallDist) / 3;
 		if (newStriderSpeed < minSpeed) {
 			newStriderSpeed = minSpeed;
 		} else if (newStriderSpeed > maxSpeed) {
@@ -80,15 +77,14 @@ public class StriderBreeding extends BasicHack {
 		if (moveSpeed == null) {
 			return;
 		}
-		double random = Math.random() * (maxSpeed - minSpeed) + minSpeed;
-		double bellCurve = (0.44999998807907104 + random * 0.3 + random * 0.3 + random * 0.3) * 0.25;
-		if (bellCurve < minSpeed) {
-			bellCurve = minSpeed;
-		} else if (bellCurve > maxSpeed) {
-			bellCurve = maxSpeed;
+		double irwinHallDist = (0.45 + Math.random() * 0.3 + Math.random() * 0.3 + Math.random() * 0.3) * 0.25;
+		if (irwinHallDist < minSpeed) {
+			irwinHallDist = minSpeed;
+		} else if (irwinHallDist > maxSpeed) {
+			irwinHallDist = maxSpeed;
 		}
-		moveSpeed.setBaseValue(bellCurve);
-		plugin.getLogger().log(Level.INFO, "Setting Strider Speed to: " + bellCurve);
+		moveSpeed.setBaseValue(irwinHallDist);
+		plugin.getLogger().log(Level.INFO, "Setting Strider Speed to: " + irwinHallDist);
 	}
 
 	public void rollHealthStat(LivingEntity strider, int minHealth, int maxHealth) {

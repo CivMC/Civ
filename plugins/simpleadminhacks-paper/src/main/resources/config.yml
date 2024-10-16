@@ -345,7 +345,6 @@ hacks:
     stopAnchorBombing: true
     preventTreeWraparound: true
     maintainFlatBedrock: false
-    fixPearlGlitch: true
     preventLongSigns: true
     signLengthLimit: 100
     preventLongSignsAbsolute: true
@@ -516,4 +515,34 @@ hacks:
     enabled: false
     cooldownTime: 100
   DespawnFix:
+    enabled: true
+  BetterRails:
+    enabled: true
+    # All in metres per second
+    # Minecraft will prevent you going faster than 30m/s
+    base: 11
+    materials:
+      COBBLESTONE: 8
+      COPPER_BLOCK: 29
+      EXPOSED_COPPER: 23
+      WEATHERED_COPPER: 18
+      OXIDIZED_COPPER: 14
+    skyBase: 12
+    skyMaterials:
+      COBBLESTONE: 8
+      COPPER_BLOCK: 30
+      EXPOSED_COPPER: 24
+      WEATHERED_COPPER: 19
+      OXIDIZED_COPPER: 15
+  CopperRail:
+    enabled: true
+    deoxidise: true
+    # Chance to oxidise copper one level.
+    # Unoxidised copper will oxidise at 75% of this level.
+    damage: 0.03
+  FasterHorses:
+    enabled: true
+    minSpeed: 0.1125
+    maxSpeed: 0.438827582278 # 18.5m/s
+  AntiDerailment:
     enabled: true

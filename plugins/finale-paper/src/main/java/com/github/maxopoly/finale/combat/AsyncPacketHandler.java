@@ -21,15 +21,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_18_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -42,19 +44,19 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class AsyncPacketHandler extends PacketAdapter implements Listener {
 
 	private CombatConfig cc;
-	
+
 	public AsyncPacketHandler(CombatConfig cc) {
 		super(Finale.getPlugin(), ListenerPriority.HIGH, PacketType.Play.Client.USE_ENTITY, PacketType.Play.Client.ARM_ANIMATION, PacketType.Play.Client.BLOCK_DIG, PacketType.Play.Client.ENTITY_ACTION);
 
 		this.cc = cc;
-		
+
 		Bukkit.getPluginManager().registerEvents(this, Finale.getPlugin());
 	}
 
 	private Set<UUID> isDigging = Sets.newConcurrentHashSet();
 	private Map<UUID, Long> lastRemovals = new ConcurrentHashMap<>();
 	private Map<UUID, Long> lastStartBreaks = new ConcurrentHashMap<>();
-	
+
 	@Override
 	public void onPacketReceiving(PacketEvent event) {
 		PacketType packetType = event.getPacketType();
@@ -82,7 +84,8 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 					if (target == null || target.isDead() || target.isInvulnerable() ||
 							!world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
 						if (entity instanceof CraftEntity craftEntity){
-							craftEntity.getHandle().hurt(DamageSource.playerAttack(((CraftPlayer) attacker).getHandle()), (float) ((CraftPlayer) attacker).getHandle().getAttribute(Attributes.ATTACK_DAMAGE).getValue());
+							DamageSources damageSources = ((CraftWorld) world).getHandle().damageSources();
+							craftEntity.getHandle().hurt(damageSources.playerAttack(((CraftPlayer) attacker).getHandle()), (float) ((CraftPlayer) attacker).getHandle().getAttribute(Attributes.ATTACK_DAMAGE).getValue());
 						}
 						return;
 					}
@@ -163,11 +166,11 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onQuit(PlayerQuitEvent e) {
 		Player player = e.getPlayer();
-		
+
 		isDigging.remove(player.getUniqueId());
 		lastRemovals.remove(player.getUniqueId());
 		lastStartBreaks.remove(player.getUniqueId());

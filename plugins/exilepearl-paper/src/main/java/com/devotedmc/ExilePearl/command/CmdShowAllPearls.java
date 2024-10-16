@@ -8,9 +8,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -18,6 +20,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.collections4.ComparatorUtils;
 import org.apache.commons.collections4.list.LazyList;
@@ -43,6 +46,7 @@ public class CmdShowAllPearls extends PearlCommand {
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
 	private static final Map<UUID, Long> COOLDOWNS = new HashMap<>();
 	private static final long COOLDOWN = 10_000; // 10 seconds
+	private static final Set<UUID> TOGGLES = new HashSet<>();
 
 	public CmdShowAllPearls(final ExilePearlApi pearlApi) {
 		super(pearlApi);
@@ -55,16 +59,24 @@ public class CmdShowAllPearls extends PearlCommand {
 	@Override
 	public void perform() {
 		final Player sender = player();
+		if (onCoolDown(sender)) return;
+		generateOpenPearlsMenu(sender);
+	}
 
+	private boolean onCoolDown(Player sender) {
 		final long now = System.currentTimeMillis();
 		final long previousUseTime = COOLDOWNS.compute(sender.getUniqueId(),
 				(uuid, value) -> value == null ? 0L : value); // This is better than getOrDefault()
 		if (previousUseTime > (now - COOLDOWN)) {
 			sender.sendMessage(ChatColor.RED + "You can't do that yet.");
-			return;
+			return true;
 		}
 		COOLDOWNS.put(sender.getUniqueId(), now);
+		return false;
+	}
 
+	private void generateOpenPearlsMenu(Player sender) {
+		final boolean bannedPearlToggle = TOGGLES.contains(sender.getUniqueId());
 		final Location senderLocation = sender.getLocation();
 		final double pearlExclusionRadius = this.plugin.getPearlConfig().getRulePearlRadius() * 1.2;
 		final boolean isBanStickEnabled = this.plugin.isBanStickEnabled();
@@ -72,6 +84,14 @@ public class CmdShowAllPearls extends PearlCommand {
 		final List<Supplier<IClickable>> contentSuppliers = this.plugin.getPearls().stream()
 				// Sort pearls from newest to oldest
 				.sorted(ComparatorUtils.reversedComparator(Comparator.comparing(ExilePearl::getPearledOn)))
+				.filter((pearl) -> {
+					if (!bannedPearlToggle) {
+						final boolean isPlayerBanned = isBanStickEnabled
+								&& BanHandler.isPlayerBanned(pearl.getPlayerId());
+
+						return !isPlayerBanned;
+					} else return true;
+				})
 				.<Supplier<IClickable>>map((pearl) -> () -> {
 					final Location pearlLocation = pearl.getLocation();
 					final boolean isPlayerBanned = isBanStickEnabled
@@ -188,7 +208,43 @@ public class CmdShowAllPearls extends PearlCommand {
 		}
 
 		LazyList<IClickable> lazyContents = MoreCollectionUtils.lazyList(contentSuppliers);
-		new MultiPageView(sender, lazyContents, "All Pearls", true).showScreen();
+		final var pageView = new MultiPageView(sender, lazyContents, "All Pearls", true);
+
+		pageView.setMenuSlot(constructBannedPearlsToggleClick(bannedPearlToggle), 4);
+		pageView.showScreen();
 	}
 
+	private IClickable constructBannedPearlsToggleClick(final boolean bannedPearlToggle) {
+		final var item = new ItemStack(Material.BARRIER);
+		ItemUtils.handleItemMeta(item, (final ItemMeta meta) -> {
+			meta.displayName(Component.text()
+					.decoration(TextDecoration.ITALIC, false)
+					.color(NamedTextColor.GOLD)
+					.content("Toggle banned pearls")
+					.build());
+			MetaUtils.setComponentLore(meta,
+					Component.text()
+							.decoration(TextDecoration.ITALIC, false)
+							.color(NamedTextColor.AQUA)
+							.content("Currently turned " + (bannedPearlToggle ? "on" : "off"))
+							.build());
+			return true;
+		});
+		return new Clickable(item) {
+			@Override
+			public void clicked(final Player clicker) {
+				if (onCoolDown(clicker)) return;
+				if (!bannedPearlToggle) {
+					TOGGLES.add(clicker.getUniqueId());
+				} else {
+					TOGGLES.remove(clicker.getUniqueId());
+				}
+				clicker.sendMessage(Component.text()
+						.color(NamedTextColor.GREEN)
+						.content("Banned pearls toggled " + (!bannedPearlToggle ? "on" : "off"))
+						.build());
+				generateOpenPearlsMenu(clicker);
+			}
+		};
+	}
 }

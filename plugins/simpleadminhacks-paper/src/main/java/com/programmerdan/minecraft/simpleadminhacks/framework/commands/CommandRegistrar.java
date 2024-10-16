@@ -5,8 +5,9 @@ import co.aikar.commands.CommandCompletions;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
 public class CommandRegistrar extends CommandManager {
@@ -31,7 +32,7 @@ public class CommandRegistrar extends CommandManager {
 	public void registerCompletions(final CommandCompletions<BukkitCommandCompletionContext> completions) {
 		super.registerCompletions(completions);
 		completions.registerAsyncCompletion("hacks", (context) -> {
-			final List<String> names = new ArrayList<>();
+			final Set<String> names = new TreeSet<>();
 			for (final SimpleHack<? extends SimpleHackConfig> hack : this.plugin.getHackManager().getHacks()) {
 				names.add(hack.getName());
 			}

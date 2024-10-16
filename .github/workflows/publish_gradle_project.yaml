@@ -1,44 +1,52 @@
-# Publish a project to maven
+# Release a gradle project
+# Publish to maven, and create/update
 name: 🐘 Gradle | Publish Project
 
 on:
-  workflow_dispatch:
-    inputs:
-      category:
-        required: true
-        description: 'The category of project'
-        type: choice
-        options:
-          - plugins
-      project:
-        required: true
-        description: 'The project to publish'
-        type: string
-  workflow_call:
-    inputs:
-      category:
-        required: true
-        description: 'The category of project'
-        type: string
-      project:
-        required: true
-        description: 'The project to publish'
-        type: string
+  push:
+    tags:
+      - 'plugins/*/v*.*.*'
 
 jobs:
+  determine_values:
+    name: 🔎 Determine Values
+    runs-on: ubuntu-latest
+
+    outputs:
+      category: ${{ steps.determine_values.outputs.category }}
+      version: ${{ steps.determine_values.outputs.version }}
+      project: ${{ steps.determine_values.outputs.project }}
+
+    steps:
+      - name: 🔎 Determine Project Values
+        id: determine_values
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          category=${TAG%%/*}
+          echo "category=${category}"
+          echo "category=${category}" >> $GITHUB_OUTPUT
+          
+          version=${TAG##*/}
+          echo "version=${version}"
+          echo "version=${version}" >> $GITHUB_OUTPUT
+          
+          project=${TAG#*/}
+          project=${project%/*}
+          echo "project=${project}"
+          echo "project=${project}" >> $GITHUB_OUTPUT
+
   publish_gradle:
     name: 🐘 Publish Gradle
     runs-on: ubuntu-latest
+    needs: determine_values
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
       - name: 🚩 Checkout Repo
         uses: actions/checkout@v4
-
-      - name: ❓ Ensure Wrapper Permissions
-        run: chmod +x ./gradlew
 
       - name: ☕ Setup Java
         uses: actions/setup-java@v3
@@ -46,10 +54,19 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: 🐘 Gradle Publish
-        uses: gradle/gradle-build-action@v2
-        env:
-          CI: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 🐘 Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+        # TODO: Bump version if not already done
+
+      - name: 🐘 Gradle Build
+        run: CI=true ./gradlew ${{needs.determine_values.outputs.category}}:${{needs.determine_values.outputs.project}}:build --scan
+
+      - name: 🗃️ Create/Update Release
+        uses: softprops/action-gh-release@v1
         with:
-          arguments: "${{inputs.category}}:${{inputs.project}}:publish --scan"
+          tag_name: ${{ needs.determine_values.outputs.category }}/${{ needs.determine_values.outputs.project }}/${{ needs.determine_values.outputs.version }}
+          files: '${{needs.determine_values.outputs.category}}/${{needs.determine_values.outputs.project}}/build/libs/*'
+
+      - name: 🐘 Gradle Publish
+        run: CI=true GITHUB_TOKEN=${{secrets.GITHUB_TOKEN}} ./gradlew ${{needs.determine_values.outputs.category}}:${{needs.determine_values.outputs.project}}:publish --scan

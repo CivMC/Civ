@@ -3,6 +3,8 @@ package vg.civcraft.mc.citadel.listener;
 import com.destroystokyo.paper.MaterialTags;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minecraft.world.level.block.ChangeOverTimeBlock;
+import net.minecraft.world.level.block.SculkBlock;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,21 +17,29 @@ import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Comparator;
 import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.block.data.type.Lectern;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockCookEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
+import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.block.SculkBloomEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTakeLecternBookEvent;
@@ -198,6 +208,22 @@ public class BlockListener implements Listener {
 		}
 	}
 
+	// prevent "enemy" grass spreading to reinforced dirt
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onGrassSpread(BlockSpreadEvent event) {
+		if (event.getSource().getType() != Material.GRASS_BLOCK) return;
+
+		Reinforcement destRein = ReinforcementLogic.getReinforcementProtecting(event.getBlock());
+		if (destRein == null) {
+			return;
+		}
+
+		Reinforcement sourceRein = ReinforcementLogic.getReinforcementProtecting(event.getSource());
+		if (sourceRein == null || sourceRein.getGroupId() != destRein.getGroupId()) {
+			event.setCancelled(true);
+		}
+	}
+
 	// prevent breaking reinforced blocks through plant growth
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onStructureGrow(StructureGrowEvent event) {
@@ -206,6 +232,46 @@ public class BlockListener implements Listener {
 				event.setCancelled(true);
 				return;
 			}
+		}
+	}
+
+	// prevent sculk spread if block is reinforced
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onSculkSpread(BlockSpreadEvent event) {
+		if (event.getSource().getType() != Material.SCULK_CATALYST) return;
+
+		if (ReinforcementLogic.getReinforcementProtecting(event.getBlock()) != null) {
+				event.setCancelled(true);
+        }
+	}
+
+	// prevent drying mud to clay if the mud is reinforced
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onMudDry(BlockFormEvent event) {
+		if (event.getNewState().getType() != Material.CLAY &&
+				event.getBlock().getType() != Material.MUD) return;
+
+		if (ReinforcementLogic.getReinforcementProtecting(event.getBlock()) != null) {
+			event.setCancelled(true);
+		}
+	}
+
+	// prevent dirt to mud if dirt is reinforced
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onMudCreated(EntityChangeBlockEvent event) {
+		if (!Tag.CONVERTABLE_TO_MUD.isTagged(event.getBlock().getType()) ||
+				event.getTo() != Material.MUD) return;
+
+		Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(event.getBlock().getLocation());
+		if (reinforcement == null) return;
+
+		Entity eventEntity = event.getEntity();
+
+		if (!(eventEntity instanceof Player player)) return;
+
+        if (!reinforcement.hasPermission(player, CitadelPermissionHandler.getModifyBlocks())) {
+			player.sendMessage(ChatColor.RED + "You do not have permission to modify this block");
+			event.setCancelled(true);
 		}
 	}
 
@@ -222,21 +288,35 @@ public class BlockListener implements Listener {
 		if (rein == null) {
 			return;
 		}
+		Player player = e.getPlayer();
+
+		// Logic copied from ServerPlayerGameMode#useItemOn
+		// This will let the event happen if the player is not going to actually open/interact with the block
+		boolean flag = player.getInventory().getItemInMainHand().getType() != Material.AIR || player.getInventory().getItemInOffHand().getType() != Material.AIR;
+		if (player.isSneaking() && flag) {
+			return;
+		}
+
+		// Iron trapdoors and doors cannot be opened by right clicking on them
+		if (e.getClickedBlock().getType() == Material.IRON_TRAPDOOR || e.getClickedBlock().getType() == Material.IRON_DOOR) {
+			return;
+		}
+
 		if (e.getClickedBlock().getState() instanceof Container) {
-			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getChests())) {
+			if (!rein.hasPermission(player, CitadelPermissionHandler.getChests())) {
 				e.setCancelled(true);
 				String msg = String.format("%s is locked with %s%s", e.getClickedBlock().getType().name(),
 						ChatColor.AQUA, rein.getType().getName());
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg, e.getClickedBlock().getLocation());
+				CitadelUtility.sendAndLog(player, ChatColor.RED, msg, e.getClickedBlock().getLocation());
 			}
 			return;
 		}
 		if (e.getClickedBlock().getBlockData() instanceof Openable) {
-			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getDoors())) {
+			if (!rein.hasPermission(player, CitadelPermissionHandler.getDoors())) {
 				e.setCancelled(true);
 				String msg = String.format("%s is locked with %s%s", e.getClickedBlock().getType().name(),
 						ChatColor.AQUA, rein.getType().getName());
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg, e.getClickedBlock().getLocation());
+				CitadelUtility.sendAndLog(player, ChatColor.RED, msg, e.getClickedBlock().getLocation());
 			}
 		}
 	}
@@ -632,6 +712,82 @@ public class BlockListener implements Listener {
 		}
 		event.setCancelled(true);
 		CitadelUtility.sendAndLog(clicker, ChatColor.RED, "You cannot use that anvil.", clickedBlock.getLocation());
+	}
+
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void preventTakingBooks(PlayerInteractEvent pie) {
+		if (!pie.hasBlock()) {
+			return;
+		}
+		if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
+		Block block = pie.getClickedBlock();
+		Material type = block.getType();
+		if (type != Material.CHISELED_BOOKSHELF) {
+			return;
+		}
+		EquipmentSlot hand = pie.getHand();
+		if (hand != EquipmentSlot.HAND && hand != EquipmentSlot.OFF_HAND) {
+			return;
+		}
+		ItemStack relevant;
+		Player p = pie.getPlayer();
+		if (hand == EquipmentSlot.HAND) {
+			relevant = p.getInventory().getItemInMainHand();
+		} else {
+			relevant = p.getInventory().getItemInOffHand();
+		}
+		if (relevant.getType() != Material.AIR && !Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(relevant.getType())) {
+			return;
+		}
+		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+		if (rein == null) {
+			return;
+		}
+		if (!rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
+			p.sendMessage(ChatColor.RED + "You do not have permission to " +
+					(Tag.ITEMS_BOOKSHELF_BOOKS.isTagged(relevant.getType()) ? "place books in this shelf" : "take books from this shelf"));
+			pie.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void preventDusting(PlayerInteractEvent pie) { // Maybe this should be changed to brushing? The two terms seem to be used interchangeably.
+		if (!pie.hasBlock()) {
+			return;
+		}
+		if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
+		Block block = pie.getClickedBlock();
+		Material type = block.getType();
+		if (!MoreTags.DUSTABLE.isTagged(type)) {
+			return;
+		}
+		EquipmentSlot hand = pie.getHand();
+		if (hand != EquipmentSlot.HAND && hand != EquipmentSlot.OFF_HAND) {
+			return;
+		}
+		ItemStack relevant;
+		Player p = pie.getPlayer();
+		if (hand == EquipmentSlot.HAND) {
+			relevant = p.getInventory().getItemInMainHand();
+		} else {
+			relevant = p.getInventory().getItemInOffHand();
+		}
+		if (relevant.getType() != Material.BRUSH) {
+			return;
+		}
+		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+		if (rein == null) {
+			return;
+		}
+		if (!rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
+			p.sendMessage(ChatColor.RED + "You do not have permission to dust this block");
+			pie.setCancelled(true);
+		}
 	}
 
 	@EventHandler(ignoreCancelled = true)
