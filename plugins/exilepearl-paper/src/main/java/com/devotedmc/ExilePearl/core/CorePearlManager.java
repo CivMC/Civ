@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl.core;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlManager;
@@ -242,7 +243,6 @@ final class CorePearlManager implements PearlManager {
 
     @Override
     public ExilePearl getPearlFromItemStack(ItemStack is) {
-
         ExilePearl pearl = null;
         int pearlId = pearlApi.getLoreProvider().getPearlIdFromItemStack(is);
         if (pearlId != 0) {
@@ -252,6 +252,8 @@ final class CorePearlManager implements PearlManager {
             }
             return pearl;
         }
+
+        ExilePearlPlugin.getApi().getLogger().info("Pearl with ID 0 found: " + is.toString());
 
         // Check if this is a legacy pearl
         UUID legacyId = pearlApi.getLoreProvider().getPlayerIdFromLegacyPearl(is);
