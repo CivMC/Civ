@@ -30,11 +30,11 @@ public class BanStickListener extends RuleListener {
             return;
         }
         if (pearlApi.getExiledAlts(e.getUniqueId(), false) >= config.maxAltsPearled()) {
-        	if(pearlApi.getPrimaryPearl(e.getUniqueId()).getFreedOffline()) {
-        		//Player is not actually pearled, but technically awaiting pearl logon.
-				//therefore we simply return.
-        		return;
-			}
+            if (pearlApi.getPrimaryPearl(e.getUniqueId()).getFreedOffline()) {
+                //Player is not actually pearled, but technically awaiting pearl logon.
+                //therefore we simply return.
+                return;
+            }
             e.setLoginResult(Result.KICK_OTHER);
             e.setKickMessage(config.altBanMessage());
         }
@@ -45,7 +45,7 @@ public class BanStickListener extends RuleListener {
      *
      * @param e
      */
-	@EventHandler
+    @EventHandler
     public void playerPearl(PlayerPearledEvent e) {
         UUID uuid = e.getPearl().getPlayerId();
         if (pearlApi.getExiledAlts(uuid, false) < config.maxAltsPearled()) {

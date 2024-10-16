@@ -37,15 +37,15 @@ import javax.annotation.Nullable;
 public final class TagListener implements Listener {
 
     private static final Set<PotionEffectType> harmfulEffects = ImmutableSet.of(
-            PotionEffectType.BLINDNESS,
-            PotionEffectType.CONFUSION,
-            PotionEffectType.HARM,
-            PotionEffectType.HUNGER,
-            PotionEffectType.POISON,
-            PotionEffectType.SLOW,
-            PotionEffectType.SLOW_DIGGING,
-            PotionEffectType.WEAKNESS,
-            PotionEffectType.WITHER
+        PotionEffectType.BLINDNESS,
+        PotionEffectType.CONFUSION,
+        PotionEffectType.HARM,
+        PotionEffectType.HUNGER,
+        PotionEffectType.POISON,
+        PotionEffectType.SLOW,
+        PotionEffectType.SLOW_DIGGING,
+        PotionEffectType.WEAKNESS,
+        PotionEffectType.WITHER
     );
 
     private final CombatTagPlus plugin;
@@ -236,7 +236,7 @@ public final class TagListener implements Listener {
 
         // Send combat tag notification to victim
         if (victim != null && !plugin.getTagManager().isTagged(victim.getUniqueId())
-                && !plugin.getSettings().onlyTagAttacker()) {
+            && !plugin.getSettings().onlyTagAttacker()) {
             if (attacker != null) {
                 String message = plugin.getSettings().getTagMessage();
                 if (!message.isEmpty()) {

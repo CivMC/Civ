@@ -10,20 +10,21 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class JukeAlertListener extends RuleListener {
 
 
-	public JukeAlertListener(ExilePearlApi pearlApi) {
-		super(pearlApi);
-	}
+    public JukeAlertListener(ExilePearlApi pearlApi) {
+        super(pearlApi);
+    }
 
 
-	/**
-	 * Prevents exiled players from placing snitches
-	 * @param e The event
-	 */
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onSnitchPlaced(BlockPlaceEvent e) {
-		Material m = e.getBlockPlaced().getType();
-		if (m == Material.JUKEBOX || m == Material.NOTE_BLOCK) {
-			checkAndCancelRule(ExileRule.SNITCH, e, e.getPlayer());
-		}
-	}
+    /**
+     * Prevents exiled players from placing snitches
+     *
+     * @param e The event
+     */
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onSnitchPlaced(BlockPlaceEvent e) {
+        Material m = e.getBlockPlaced().getType();
+        if (m == Material.JUKEBOX || m == Material.NOTE_BLOCK) {
+            checkAndCancelRule(ExileRule.SNITCH, e, e.getPlayer());
+        }
+    }
 }

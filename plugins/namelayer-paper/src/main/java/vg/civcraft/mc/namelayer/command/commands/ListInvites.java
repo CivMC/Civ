@@ -53,7 +53,7 @@ public class ListInvites extends BaseCommandMiddle {
             for (UUID invitee : invitees) {
                 String name = NameAPI.getCurrentName(invitee);
                 if (name.compareToIgnoreCase(playerType) >= 0
-                        && name.compareToIgnoreCase(playerName) <= 0) {
+                    && name.compareToIgnoreCase(playerName) <= 0) {
                     uuids.add(invitee);
                 }
             }

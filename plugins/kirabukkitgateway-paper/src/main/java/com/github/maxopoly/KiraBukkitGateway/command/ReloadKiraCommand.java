@@ -10,11 +10,11 @@ import org.bukkit.command.CommandSender;
 
 public class ReloadKiraCommand extends BaseCommand {
 
-	@CommandAlias("kirareload")
-	@CommandPermission("kira.op")
-	@Description("Reloads KiraBukkitGateway")
-	public void execute(CommandSender sender) {
-		KiraBukkitGatewayPlugin.getInstance().reload();
-		sender.sendMessage(ChatColor.GREEN + "Reloaded KiraBukkitGateway");
-	}
+    @CommandAlias("kirareload")
+    @CommandPermission("kira.op")
+    @Description("Reloads KiraBukkitGateway")
+    public void execute(CommandSender sender) {
+        KiraBukkitGatewayPlugin.getInstance().reload();
+        sender.sendMessage(ChatColor.GREEN + "Reloaded KiraBukkitGateway");
+    }
 }

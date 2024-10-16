@@ -29,82 +29,82 @@ import org.bukkit.entity.Player;
 
 public class Create extends BaseCommand {
 
-	@CommandAlias("fmc")
-	@CommandPermission("fm.op")
-	@Syntax("<factory>")
-	@Description("Creates a factory at the blocks you are looking at")
-	@CommandCompletion("@FM_Factories")
-	public void execute(Player sender, String factoryName) {
-		FactoryModManager manager = FactoryMod.getInstance().getManager();
-		IFactoryEgg egg = manager.getEgg(factoryName);
-		if (egg == null) {
-			sender.sendMessage(ChatColor.RED + "This factory does not exist");
-			return;
-		}
-		Set<Material> transparent = null;
-		List<Block> view = sender.getLineOfSight(transparent, 10);
-		Factory exis = manager.getFactoryAt(view.get(view.size() - 1));
-		if (exis != null) {
-			manager.removeFactory(exis);
-		}
-		if (egg instanceof FurnCraftChestEgg) {
-			FurnCraftChestEgg fcce = (FurnCraftChestEgg) egg;
-			if (view.get(view.size() - 1).getType() == Material.CRAFTING_TABLE) {
-				FurnCraftChestStructure fccs = new FurnCraftChestStructure(view.get(view.size() - 1));
-				if (!fccs.isComplete()) {
-					sender.sendMessage(
-							ChatColor.RED + "The required block structure for this factory doesn't exist here");
-					return;
-				}
-				BlockState chestBS = fccs.getChest().getState();
-				if (((Chest) chestBS).getCustomName() == null) {
-					((Chest) chestBS).setCustomName(fcce.getName());
-					chestBS.update(true);
-				}
-				BlockState furnaceBS = fccs.getFurnace().getState();
-				if (((Furnace) furnaceBS).getCustomName() == null) {
-					((Furnace) furnaceBS).setCustomName(fcce.getName());
-					furnaceBS.update(true);
-				}
-				Factory factory = fcce.hatch(fccs, sender);
-				((FurnCraftChestFactory) factory).getTableIOSelector();
-				manager.addFactory(factory);
-				sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());
-			} else {
-				sender.sendMessage(ChatColor.RED + "You are not looking at the right block for this factory");
-			}
-			return;
-		}
-		if (egg instanceof PipeEgg) {
-			PipeEgg fcce = (PipeEgg) egg;
-			if (view.get(view.size() - 1).getType() == Material.DISPENSER) {
-				PipeStructure fccs = new PipeStructure(view.get(view.size() - 1));
-				if (!fccs.isComplete()) {
-					sender.sendMessage(
-							ChatColor.RED + "The required block structure for this factory doesn't exist here");
-					return;
-				}
-				manager.addFactory(fcce.hatch(fccs, (Player) sender));
-				sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());
-			} else {
-				sender.sendMessage(ChatColor.RED + "You are not looking at the right block for this factory");
-			}
-			return;
-		}
-		if (egg instanceof SorterEgg) {
-			SorterEgg fcce = (SorterEgg) egg;
-			if (view.get(view.size() - 1).getType() == Material.DROPPER) {
-				BlockFurnaceStructure fccs = new BlockFurnaceStructure(view.get(view.size() - 1));
-				if (!fccs.isComplete()) {
-					sender.sendMessage(
-							ChatColor.RED + "The required block structure for this factory doesn't exist here");
-					return;
-				}
-				manager.addFactory(fcce.hatch(fccs, (Player) sender));
-				sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());
-			} else {
-				sender.sendMessage(ChatColor.RED + "You are not looking at the right block for this factory");
-			}
-		}
-	}
+    @CommandAlias("fmc")
+    @CommandPermission("fm.op")
+    @Syntax("<factory>")
+    @Description("Creates a factory at the blocks you are looking at")
+    @CommandCompletion("@FM_Factories")
+    public void execute(Player sender, String factoryName) {
+        FactoryModManager manager = FactoryMod.getInstance().getManager();
+        IFactoryEgg egg = manager.getEgg(factoryName);
+        if (egg == null) {
+            sender.sendMessage(ChatColor.RED + "This factory does not exist");
+            return;
+        }
+        Set<Material> transparent = null;
+        List<Block> view = sender.getLineOfSight(transparent, 10);
+        Factory exis = manager.getFactoryAt(view.get(view.size() - 1));
+        if (exis != null) {
+            manager.removeFactory(exis);
+        }
+        if (egg instanceof FurnCraftChestEgg) {
+            FurnCraftChestEgg fcce = (FurnCraftChestEgg) egg;
+            if (view.get(view.size() - 1).getType() == Material.CRAFTING_TABLE) {
+                FurnCraftChestStructure fccs = new FurnCraftChestStructure(view.get(view.size() - 1));
+                if (!fccs.isComplete()) {
+                    sender.sendMessage(
+                        ChatColor.RED + "The required block structure for this factory doesn't exist here");
+                    return;
+                }
+                BlockState chestBS = fccs.getChest().getState();
+                if (((Chest) chestBS).getCustomName() == null) {
+                    ((Chest) chestBS).setCustomName(fcce.getName());
+                    chestBS.update(true);
+                }
+                BlockState furnaceBS = fccs.getFurnace().getState();
+                if (((Furnace) furnaceBS).getCustomName() == null) {
+                    ((Furnace) furnaceBS).setCustomName(fcce.getName());
+                    furnaceBS.update(true);
+                }
+                Factory factory = fcce.hatch(fccs, sender);
+                ((FurnCraftChestFactory) factory).getTableIOSelector();
+                manager.addFactory(factory);
+                sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());
+            } else {
+                sender.sendMessage(ChatColor.RED + "You are not looking at the right block for this factory");
+            }
+            return;
+        }
+        if (egg instanceof PipeEgg) {
+            PipeEgg fcce = (PipeEgg) egg;
+            if (view.get(view.size() - 1).getType() == Material.DISPENSER) {
+                PipeStructure fccs = new PipeStructure(view.get(view.size() - 1));
+                if (!fccs.isComplete()) {
+                    sender.sendMessage(
+                        ChatColor.RED + "The required block structure for this factory doesn't exist here");
+                    return;
+                }
+                manager.addFactory(fcce.hatch(fccs, (Player) sender));
+                sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());
+            } else {
+                sender.sendMessage(ChatColor.RED + "You are not looking at the right block for this factory");
+            }
+            return;
+        }
+        if (egg instanceof SorterEgg) {
+            SorterEgg fcce = (SorterEgg) egg;
+            if (view.get(view.size() - 1).getType() == Material.DROPPER) {
+                BlockFurnaceStructure fccs = new BlockFurnaceStructure(view.get(view.size() - 1));
+                if (!fccs.isComplete()) {
+                    sender.sendMessage(
+                        ChatColor.RED + "The required block structure for this factory doesn't exist here");
+                    return;
+                }
+                manager.addFactory(fcce.hatch(fccs, (Player) sender));
+                sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());
+            } else {
+                sender.sendMessage(ChatColor.RED + "You are not looking at the right block for this factory");
+            }
+        }
+    }
 }

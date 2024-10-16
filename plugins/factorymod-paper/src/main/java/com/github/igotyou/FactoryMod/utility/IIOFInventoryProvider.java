@@ -8,15 +8,21 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface IIOFInventoryProvider {
 
-	Inventory getInputInventory();
-	Inventory getOutputInventory();
-	@Nullable Inventory getFuelInventory();
+    Inventory getInputInventory();
 
-	int getInputCount();
-	int getOutputCount();
-	int getFuelCount();
-	default int getTotalIOFCount() {
-		return getInputCount() + getOutputCount() + getFuelCount();
-	}
+    Inventory getOutputInventory();
+
+    @Nullable
+    Inventory getFuelInventory();
+
+    int getInputCount();
+
+    int getOutputCount();
+
+    int getFuelCount();
+
+    default int getTotalIOFCount() {
+        return getInputCount() + getOutputCount() + getFuelCount();
+    }
 
 }

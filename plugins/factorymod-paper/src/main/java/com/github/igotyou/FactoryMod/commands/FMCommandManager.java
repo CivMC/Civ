@@ -10,24 +10,24 @@ import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
 public class FMCommandManager extends CommandManager {
 
-	public FMCommandManager(Plugin plugin) {
-		super(plugin);
-		init();
-	}
+    public FMCommandManager(Plugin plugin) {
+        super(plugin);
+        init();
+    }
 
-	@Override
-	public void registerCommands() {
-		registerCommand(new CheatOutput());
-		registerCommand(new Create());
-		registerCommand(new FactoryMenu());
-		registerCommand(new ItemUseMenu());
-		registerCommand(new RunAmountSetterCommand());
-	}
+    @Override
+    public void registerCommands() {
+        registerCommand(new CheatOutput());
+        registerCommand(new Create());
+        registerCommand(new FactoryMenu());
+        registerCommand(new ItemUseMenu());
+        registerCommand(new RunAmountSetterCommand());
+    }
 
-	@Override
-	public void registerCompletions(@Nonnull CommandCompletions<BukkitCommandCompletionContext> completions) {
-		super.registerCompletions(completions);
-		completions.registerCompletion("FM_Factories", (context) -> FactoryMod.getInstance().getManager().getAllFactoryEggs().stream().map(
-				IFactoryEgg::getName).toList());
-	}
+    @Override
+    public void registerCompletions(@Nonnull CommandCompletions<BukkitCommandCompletionContext> completions) {
+        super.registerCompletions(completions);
+        completions.registerCompletion("FM_Factories", (context) -> FactoryMod.getInstance().getManager().getAllFactoryEggs().stream().map(
+            IFactoryEgg::getName).toList());
+    }
 }

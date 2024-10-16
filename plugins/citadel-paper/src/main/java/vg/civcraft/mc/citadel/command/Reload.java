@@ -10,11 +10,11 @@ import vg.civcraft.mc.citadel.Citadel;
 
 public class Reload extends BaseCommand {
 
-	@CommandAlias("citadelreload")
-	@CommandPermission("citadel.admin")
-	@Description("Reloads Citadel entirely")
-	public void execute(CommandSender sender) {
-		Citadel.getInstance().reload();
-		sender.sendMessage(ChatColor.GREEN + "Reloaded Citadel");
-	}
+    @CommandAlias("citadelreload")
+    @CommandPermission("citadel.admin")
+    @Description("Reloads Citadel entirely")
+    public void execute(CommandSender sender) {
+        Citadel.getInstance().reload();
+        sender.sendMessage(ChatColor.GREEN + "Reloaded Citadel");
+    }
 }

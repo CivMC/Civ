@@ -10,29 +10,29 @@ import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 
 public class LoginAction extends LoggablePlayerAction {
 
-	public static final String ID = "LOGIN";
+    public static final String ID = "LOGIN";
 
-	public LoginAction(long time, Snitch snitch, UUID player) {
-		super(time, snitch, player);
-	}
+    public LoginAction(long time, Snitch snitch, UUID player) {
+        super(time, snitch, player);
+    }
 
-	@Override
-	public String getIdentifier() {
-		return ID;
-	}
+    @Override
+    public String getIdentifier() {
+        return ID;
+    }
 
-	@Override
-	public IClickable getGUIRepresentation() {
-		return getEnrichedClickableSkullFor(getPlayer());
-	}
+    @Override
+    public IClickable getGUIRepresentation() {
+        return getEnrichedClickableSkullFor(getPlayer());
+    }
 
-	@Override
-	public void accept(Snitch s) {
-		Bukkit.getPluginManager().callEvent(new PlayerLoginSnitchEvent(snitch, Bukkit.getPlayer(player)));
-	}
+    @Override
+    public void accept(Snitch s) {
+        Bukkit.getPluginManager().callEvent(new PlayerLoginSnitchEvent(snitch, Bukkit.getPlayer(player)));
+    }
 
-	@Override
-	public String getChatRepresentationIdentifier() {
-		return ChatColor.BOLD + "Login";
-	}
+    @Override
+    public String getChatRepresentationIdentifier() {
+        return ChatColor.BOLD + "Login";
+    }
 }

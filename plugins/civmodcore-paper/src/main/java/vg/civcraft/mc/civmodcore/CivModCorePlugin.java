@@ -34,135 +34,136 @@ import vg.civcraft.mc.civmodcore.world.locations.global.WorldIDManager;
 
 public class CivModCorePlugin extends ACivMod {
 
-	/** Primary constructor used by the real server */
-	public CivModCorePlugin() {
-		super();
-	}
+    /**
+     * Primary constructor used by the real server
+     */
+    public CivModCorePlugin() {
+        super();
+    }
 
-	/** Secondary constructor used for testing */
-	protected CivModCorePlugin(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-		super(loader, description, dataFolder, file);
-	}
+    /**
+     * Secondary constructor used for testing
+     */
+    protected CivModCorePlugin(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
+    }
 
-	private static CivModCorePlugin instance;
+    private static CivModCorePlugin instance;
 
-	private CivModCoreConfig config;
-	private GlobalChunkMetaManager chunkMetaManager;
-	private ManagedDatasource database;
-	private WorldIDManager worldIdManager;
-	private CommandManager commands;
-	private SkinCache skinCache;
+    private CivModCoreConfig config;
+    private GlobalChunkMetaManager chunkMetaManager;
+    private ManagedDatasource database;
+    private WorldIDManager worldIdManager;
+    private CommandManager commands;
+    private SkinCache skinCache;
 
-	@Override
-	public void onEnable() {
-		instance = this;
-		registerConfigClass(DatabaseCredentials.class);
-		// Save default resources
-		saveDefaultResource("enchants.yml");
-		super.onEnable();
-		// Load Config
-		this.config = new CivModCoreConfig(this);
-		this.config.parse();
-		// Load Database
-		try {
-			this.database = ManagedDatasource.construct(this, this.config.getDatabaseCredentials());
-			if (this.database != null) {
-				final var dao = new CMCWorldDAO(this.database, this);
-				if (dao.updateDatabase()) {
-					this.worldIdManager = new WorldIDManager(dao);
-					this.chunkMetaManager = new GlobalChunkMetaManager(dao, this.worldIdManager, this.config.getChunkLoadingThreads());
-					info("Setup database successfully");
-				}
-				else {
-					warning("Could not setup database");
-				}
-			}
-		}
-		catch (final Throwable error) {
-			warning("Cannot get database from config.", error);
-			this.database = null;
-		}
-		ScoreBoardAPI.setDefaultHeader(this.config.getScoreboardHeader());
-		// Register listeners
-		registerListener(new ClickableInventoryListener());
-		registerListener(DialogManager.INSTANCE);
-		registerListener(new ScoreBoardListener());
-		registerListener(new WorldTracker());
-		registerListener(new PlayerNames());
-		// Register commands
-		this.commands = new CommandManager(this);
-		this.commands.init();
-		this.commands.registerCommand(new ConfigCommand());
-		this.commands.registerCommand(new StatCommand());
-		this.commands.registerCommand(new ChunkMetaCommand());
-		// Load APIs
-		EnchantUtils.loadEnchantAbbreviations(this);
-		MoreTags.init();
-		SpawnEggUtils.init();
-		TreeTypeUtils.init();
-		BottomLineAPI.init();
-		this.skinCache = new SkinCache(this, this.config.getSkinCacheThreads());
+    @Override
+    public void onEnable() {
+        instance = this;
+        registerConfigClass(DatabaseCredentials.class);
+        // Save default resources
+        saveDefaultResource("enchants.yml");
+        super.onEnable();
+        // Load Config
+        this.config = new CivModCoreConfig(this);
+        this.config.parse();
+        // Load Database
+        try {
+            this.database = ManagedDatasource.construct(this, this.config.getDatabaseCredentials());
+            if (this.database != null) {
+                final var dao = new CMCWorldDAO(this.database, this);
+                if (dao.updateDatabase()) {
+                    this.worldIdManager = new WorldIDManager(dao);
+                    this.chunkMetaManager = new GlobalChunkMetaManager(dao, this.worldIdManager, this.config.getChunkLoadingThreads());
+                    info("Setup database successfully");
+                } else {
+                    warning("Could not setup database");
+                }
+            }
+        } catch (final Throwable error) {
+            warning("Cannot get database from config.", error);
+            this.database = null;
+        }
+        ScoreBoardAPI.setDefaultHeader(this.config.getScoreboardHeader());
+        // Register listeners
+        registerListener(new ClickableInventoryListener());
+        registerListener(DialogManager.INSTANCE);
+        registerListener(new ScoreBoardListener());
+        registerListener(new WorldTracker());
+        registerListener(new PlayerNames());
+        // Register commands
+        this.commands = new CommandManager(this);
+        this.commands.init();
+        this.commands.registerCommand(new ConfigCommand());
+        this.commands.registerCommand(new StatCommand());
+        this.commands.registerCommand(new ChunkMetaCommand());
+        // Load APIs
+        EnchantUtils.loadEnchantAbbreviations(this);
+        MoreTags.init();
+        SpawnEggUtils.init();
+        TreeTypeUtils.init();
+        BottomLineAPI.init();
+        this.skinCache = new SkinCache(this, this.config.getSkinCacheThreads());
 
-		if (this.config.getChunkLoadingStatistics())
-			LoadStatisticManager.enable();
-	}
+        if (this.config.getChunkLoadingStatistics())
+            LoadStatisticManager.enable();
+    }
 
-	@Override
-	public void onDisable() {
-		Bukkit.getOnlinePlayers().forEach(HumanEntity::closeInventory);
-		ChunkMetaAPI.saveAll();
-		this.chunkMetaManager.disableWorlds();
-		this.chunkMetaManager = null;
-		// Disconnect database
-		if (this.database != null) {
-			try {
-				this.database.close();
-			}
-			catch (SQLException error) {
-				warning("Was unable to close the database.", error);
-			}
-			this.database = null;
-		}
-		DialogManager.resetDialogs();
-		WorldTracker.reset();
-		PlayerSettingAPI.saveAll();
-		ConfigurationSerialization.unregisterClass(DatabaseCredentials.class);
-		if (this.commands != null) {
-			this.commands.reset();
-			this.commands = null;
-		}
-		if (this.skinCache != null) {
-			this.skinCache.shutdown();
-			this.skinCache = null;
-		}
+    @Override
+    public void onDisable() {
+        Bukkit.getOnlinePlayers().forEach(HumanEntity::closeInventory);
+        ChunkMetaAPI.saveAll();
+        this.chunkMetaManager.disableWorlds();
+        this.chunkMetaManager = null;
+        // Disconnect database
+        if (this.database != null) {
+            try {
+                this.database.close();
+            } catch (SQLException error) {
+                warning("Was unable to close the database.", error);
+            }
+            this.database = null;
+        }
+        DialogManager.resetDialogs();
+        WorldTracker.reset();
+        PlayerSettingAPI.saveAll();
+        ConfigurationSerialization.unregisterClass(DatabaseCredentials.class);
+        if (this.commands != null) {
+            this.commands.reset();
+            this.commands = null;
+        }
+        if (this.skinCache != null) {
+            this.skinCache.shutdown();
+            this.skinCache = null;
+        }
 
-		LoadStatisticManager.disable();
+        LoadStatisticManager.disable();
 
-		if (this.config != null) {
-			this.config.reset();
-			this.config = null;
-		}
-		super.onDisable();
-	}
+        if (this.config != null) {
+            this.config.reset();
+            this.config = null;
+        }
+        super.onDisable();
+    }
 
-	public static CivModCorePlugin getInstance() {
-		return instance;
-	}
-	
-	public GlobalChunkMetaManager getChunkMetaManager() {
-		return this.chunkMetaManager;
-	}
-	
-	public WorldIDManager getWorldIdManager() {
-		return this.worldIdManager;
-	}
-	
-	public ManagedDatasource getDatabase() {
-		return this.database;
-	}
+    public static CivModCorePlugin getInstance() {
+        return instance;
+    }
 
-	public SkinCache getSkinCache() {
-		return this.skinCache;
-	}
+    public GlobalChunkMetaManager getChunkMetaManager() {
+        return this.chunkMetaManager;
+    }
+
+    public WorldIDManager getWorldIdManager() {
+        return this.worldIdManager;
+    }
+
+    public ManagedDatasource getDatabase() {
+        return this.database;
+    }
+
+    public SkinCache getSkinCache() {
+        return this.skinCache;
+    }
 
 }

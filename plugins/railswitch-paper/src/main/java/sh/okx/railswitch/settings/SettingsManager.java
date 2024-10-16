@@ -46,7 +46,7 @@ public final class SettingsManager {
     /**
      * Sets a player's destination. This is for when the player settings don't themselves provide a way to do so.
      *
-     * @param player The player to set the destination to.
+     * @param player      The player to set the destination to.
      * @param destination The destination to set.
      */
     public static void setDestination(Player player, String destination) {
@@ -55,17 +55,14 @@ public final class SettingsManager {
             if (resetSetting != null) {
                 resetSetting.resetPlayerDestination(player);
                 // Do not put a message here since the message is sent in the method above.
-            }
-            else {
+            } else {
                 player.sendMessage(ChatColor.RED + "Could not reset your destination.");
             }
-        }
-        else {
+        } else {
             if (destSetting != null) {
                 destSetting.setValue(player, destination);
                 player.sendMessage(ChatColor.GREEN + "Destination set to: " + destination);
-            }
-            else {
+            } else {
                 player.sendMessage(ChatColor.RED + "Could not set your destination.");
             }
         }

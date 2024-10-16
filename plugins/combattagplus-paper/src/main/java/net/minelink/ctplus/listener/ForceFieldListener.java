@@ -49,7 +49,8 @@ public final class ForceFieldListener implements Listener {
         executorService.shutdown();
         try {
             executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException ignore) {}
+        } catch (InterruptedException ignore) {
+        }
 
         // Go through all previous updates and revert spoofed blocks
         for (UUID uuid : previousUpdates.keySet()) {
@@ -72,7 +73,7 @@ public final class ForceFieldListener implements Listener {
         Location t = event.getTo();
         Location f = event.getFrom();
         if (t.getBlockX() == f.getBlockX() && t.getBlockY() == f.getBlockY() &&
-                t.getBlockZ() == f.getBlockZ()) {
+            t.getBlockZ() == f.getBlockZ()) {
             return;
         }
 

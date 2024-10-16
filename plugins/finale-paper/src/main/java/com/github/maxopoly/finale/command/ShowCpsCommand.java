@@ -10,18 +10,18 @@ import org.bukkit.entity.Player;
 
 public class ShowCpsCommand extends BaseCommand {
 
-	@CommandAlias("cps")
-	@Description("Shows you how fast you are clicking per second.")
-	public void execute(Player sender) {
-		Player player = (Player) sender;
+    @CommandAlias("cps")
+    @Description("Shows you how fast you are clicking per second.")
+    public void execute(Player sender) {
+        Player player = (Player) sender;
 
-		CPSHandler cpsHandler = Finale.getPlugin().getManager().getCPSHandler();
-		if (cpsHandler.isShowingCPS(player)) {
-			cpsHandler.hideCPS(player);
-			player.sendMessage(ChatColor.RED + "You are no longer viewing your CPS!");
-		} else {
-			cpsHandler.showCPS(player);
-			player.sendMessage(ChatColor.GREEN + "You are now viewing your CPS!");
-		}
-	}
+        CPSHandler cpsHandler = Finale.getPlugin().getManager().getCPSHandler();
+        if (cpsHandler.isShowingCPS(player)) {
+            cpsHandler.hideCPS(player);
+            player.sendMessage(ChatColor.RED + "You are no longer viewing your CPS!");
+        } else {
+            cpsHandler.showCPS(player);
+            player.sendMessage(ChatColor.GREEN + "You are now viewing your CPS!");
+        }
+    }
 }

@@ -10,34 +10,34 @@ import vg.civcraft.mc.civmodcore.utilities.Validation;
  */
 public interface ExchangeData extends Validation, NBTSerializable {
 
-	/**
-	 * Generate data to be displayed, which will be displayed in chat <i>AND</i> on items as law. Ensure you format
-	 * correctly.
-	 *
-	 * @return Returns any display information.
-	 */
-	default List<String> getDisplayInfo() {
-		return new ArrayList<>(0);
-	}
+    /**
+     * Generate data to be displayed, which will be displayed in chat <i>AND</i> on items as law. Ensure you format
+     * correctly.
+     *
+     * @return Returns any display information.
+     */
+    default List<String> getDisplayInfo() {
+        return new ArrayList<>(0);
+    }
 
-	/**
-	 * Use {@link ExchangeData#isBroken()} instead.
-	 *
-	 * @deprecated Do not override this method.
-	 */
-	@Override
-	@Deprecated
-	default boolean isValid() {
-		return !isBroken();
-	}
+    /**
+     * Use {@link ExchangeData#isBroken()} instead.
+     *
+     * @deprecated Do not override this method.
+     */
+    @Override
+    @Deprecated
+    default boolean isValid() {
+        return !isBroken();
+    }
 
-	/**
-	 * Essentially a renamed {@link ExchangeData#isValid()} to bring more clarity. isValid is still being used
-	 * to maintain usage of {@link Validation#checkValidity(Validation)}. This method is intended to convey
-	 * whether this rule is broken, not whether it should be filtered.
-	 *
-	 * @return Returns true if this rule is broken.
-	 */
-	boolean isBroken();
+    /**
+     * Essentially a renamed {@link ExchangeData#isValid()} to bring more clarity. isValid is still being used
+     * to maintain usage of {@link Validation#checkValidity(Validation)}. This method is intended to convey
+     * whether this rule is broken, not whether it should be filtered.
+     *
+     * @return Returns true if this rule is broken.
+     */
+    boolean isBroken();
 
 }

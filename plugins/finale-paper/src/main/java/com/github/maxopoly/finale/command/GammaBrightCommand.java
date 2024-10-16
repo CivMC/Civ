@@ -8,10 +8,10 @@ import org.bukkit.entity.Player;
 
 public class GammaBrightCommand extends BaseCommand {
 
-	@CommandAlias("gamma")
-	@Description("Toggles night vision")
-	public void execute(Player sender) {
-		Player p = (Player) sender;
-		Finale.getPlugin().getSettingsManager().getGammaBrightSetting().toggleValue(p.getUniqueId());
-	}
+    @CommandAlias("gamma")
+    @Description("Toggles night vision")
+    public void execute(Player sender) {
+        Player p = (Player) sender;
+        Finale.getPlugin().getSettingsManager().getGammaBrightSetting().toggleValue(p.getUniqueId());
+    }
 }

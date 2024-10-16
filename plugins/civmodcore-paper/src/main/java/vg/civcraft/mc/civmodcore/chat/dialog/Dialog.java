@@ -14,57 +14,58 @@ import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 public abstract class Dialog {
 
-	protected final Player player;
-	private final Conversation conversation;
+    protected final Player player;
+    private final Conversation conversation;
 
-	public Dialog(final Player player) {
-		this(player, CivModCorePlugin.getInstance());
-	}
+    public Dialog(final Player player) {
+        this(player, CivModCorePlugin.getInstance());
+    }
 
-	public Dialog(final Player player, final String prompt) {
-		this(player, CivModCorePlugin.getInstance(), prompt);
-	}
+    public Dialog(final Player player, final String prompt) {
+        this(player, CivModCorePlugin.getInstance(), prompt);
+    }
 
-	public Dialog(final Player player, final Plugin plugin) {
-		this(player, plugin, null);
-	}
+    public Dialog(final Player player, final Plugin plugin) {
+        this(player, plugin, null);
+    }
 
-	public Dialog(final Player player, final Plugin plugin, final String prompt) {
-		Preconditions.checkNotNull(player, "Player cannot be null!");
-		Preconditions.checkNotNull(plugin, "Plugin cannot be null!");
-		this.player = player;
-		Bukkit.getScheduler().runTask(plugin, (Runnable) player::closeInventory);
-		this.conversation = new ConversationFactory(plugin)
-				.withModality(false)
-				.withLocalEcho(false)
-				.withFirstPrompt(new StringPrompt() {
-					@Override
-					public String getPromptText(final ConversationContext context) {
-						if (prompt != null) {
-							return prompt;
-						}
-						return "";
-					}
-					@Override
-					public Prompt acceptInput(final ConversationContext context, final String input) {
-						onReply(input.split(" "));
-						return Prompt.END_OF_CONVERSATION;
-					}
-				}).buildConversation(player);
-		this.conversation.begin();
-		DialogManager.registerDialog(player.getUniqueId(), this);
-	}
+    public Dialog(final Player player, final Plugin plugin, final String prompt) {
+        Preconditions.checkNotNull(player, "Player cannot be null!");
+        Preconditions.checkNotNull(plugin, "Plugin cannot be null!");
+        this.player = player;
+        Bukkit.getScheduler().runTask(plugin, (Runnable) player::closeInventory);
+        this.conversation = new ConversationFactory(plugin)
+            .withModality(false)
+            .withLocalEcho(false)
+            .withFirstPrompt(new StringPrompt() {
+                @Override
+                public String getPromptText(final ConversationContext context) {
+                    if (prompt != null) {
+                        return prompt;
+                    }
+                    return "";
+                }
 
-	public abstract void onReply(String[] message);
+                @Override
+                public Prompt acceptInput(final ConversationContext context, final String input) {
+                    onReply(input.split(" "));
+                    return Prompt.END_OF_CONVERSATION;
+                }
+            }).buildConversation(player);
+        this.conversation.begin();
+        DialogManager.registerDialog(player.getUniqueId(), this);
+    }
 
-	public abstract List<String> onTabComplete(String lastWord, String[] fullMessage);
+    public abstract void onReply(String[] message);
 
-	public Player getPlayer() {
-		return this.player;
-	}
+    public abstract List<String> onTabComplete(String lastWord, String[] fullMessage);
 
-	public void end() {
-		this.conversation.abandon();
-	}
+    public Player getPlayer() {
+        return this.player;
+    }
+
+    public void end() {
+        this.conversation.abandon();
+    }
 
 }

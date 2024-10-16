@@ -9,30 +9,30 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface AutoLoad {
 
-	//Thanks Angelia
+    //Thanks Angelia
 
-	/**
-	 * The identifier used for this option when reading it from the hacks config yaml section. If
-	 * this is not set, the variable name will be used
-	 *
-	 * @return Identifier used for this option or an empty string if the variable
-	 *         name should be used
-	 */
-	String id() default "";
+    /**
+     * The identifier used for this option when reading it from the hacks config yaml section. If
+     * this is not set, the variable name will be used
+     *
+     * @return Identifier used for this option or an empty string if the variable
+     * name should be used
+     */
+    String id() default "";
 
-	/**
-	 * Is the parameter required? If set to true, an exception will be thrown if no
-	 * default is specified and the option is not specified in the config
-	 *
-	 * @return Whether this option is required
-	 */
-	boolean isRequired() default true;
+    /**
+     * Is the parameter required? If set to true, an exception will be thrown if no
+     * default is specified and the option is not specified in the config
+     *
+     * @return Whether this option is required
+     */
+    boolean isRequired() default true;
 
-	/**
-	 * The type of parser used to process the data retrieved from the config.
-	 *
-	 * @return Returns what processor to use for retrieved config data.
-	 */
-	DataParser processor() default DataParser.DEFAULT;
+    /**
+     * The type of parser used to process the data retrieved from the config.
+     *
+     * @return Returns what processor to use for retrieved config data.
+     */
+    DataParser processor() default DataParser.DEFAULT;
 
 }

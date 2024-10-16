@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class Document implements Map<String, Object> {
+
     private final Map<String, Object> documentAsMap;
 
     /**
@@ -41,7 +42,7 @@ public class Document implements Map<String, Object> {
     public Document(final Map<String, Object> map) {
         documentAsMap = new LinkedHashMap<>(map);
     }
-    
+
     public Document(final ConfigurationSection configSection) {
         documentAsMap = parseConfigurationSection(configSection);
     }
@@ -51,39 +52,40 @@ public class Document implements Map<String, Object> {
      * <pre>
      * doc.append("a", 1).append("b", 2)}
      * </pre>
+     *
      * @param key   key
      * @param value value
      * @return this
      */
     public Document append(final String key, Object value) {
-    	String[] keys = key.split("\\.");
-    	
-    	if (value instanceof Location) {
-    		value = serializeLocation((Location) value);
-    	}
-    	
-    	if (value instanceof UUID) {
-    		value = value.toString();
-    	}
-    	
-    	if (keys.length == 1) {
-    		documentAsMap.put(key, value);
-    		return this;
-    	}
-    	
-    	Document doc = this;
-    	for(int i = 0; i < keys.length - 1; i++) {
-    		Document next = doc.getDocument(keys[i]);
-    		if (next == null) {
-    			next = new Document();
-    			doc.append(keys[i], next);
-    		}
-    		
-    		doc = next;
-    	}
-    	
-    	doc = doc.append(keys[keys.length - 1], value);
-    	return this;
+        String[] keys = key.split("\\.");
+
+        if (value instanceof Location) {
+            value = serializeLocation((Location) value);
+        }
+
+        if (value instanceof UUID) {
+            value = value.toString();
+        }
+
+        if (keys.length == 1) {
+            documentAsMap.put(key, value);
+            return this;
+        }
+
+        Document doc = this;
+        for (int i = 0; i < keys.length - 1; i++) {
+            Document next = doc.getDocument(keys[i]);
+            if (next == null) {
+                next = new Document();
+                doc.append(keys[i], next);
+            }
+
+            doc = next;
+        }
+
+        doc = doc.append(keys[keys.length - 1], value);
+        return this;
     }
 
     /**
@@ -94,10 +96,10 @@ public class Document implements Map<String, Object> {
      * @throws java.lang.ClassCastException if the value is not an integer
      */
     public Integer getInteger(final String key) {
-    	Object value = get(key);
-    	if (value instanceof String) {
-    		return Integer.parseInt((String) value);
-    	}
+        Object value = get(key);
+        if (value instanceof String) {
+            return Integer.parseInt((String) value);
+        }
         return (Integer) value;
     }
 
@@ -112,8 +114,8 @@ public class Document implements Map<String, Object> {
     public int getInteger(final String key, final int defaultValue) {
         Object value = get(key);
         if (value instanceof String) {
-    		return Integer.parseInt((String) value);
-    	}
+            return Integer.parseInt((String) value);
+        }
         return value == null ? defaultValue : (Integer) value;
     }
 
@@ -150,21 +152,21 @@ public class Document implements Map<String, Object> {
      */
     public Double getDouble(final String key) {
         Object value = get(key);
-        
+
         if (value instanceof Integer) {
-        	return new Double((Integer)value);
+            return new Double((Integer) value);
         }
         return (Double) value;
     }
-    
+
     public Double getDouble(final String key, final double defaultValue) {
         Object value = get(key);
         if (value == null) {
-        	return defaultValue;
+            return defaultValue;
         }
-        
+
         if (value instanceof Integer) {
-        	return new Double((Integer)value);
+            return new Double((Integer) value);
         }
         return (Double) value;
     }
@@ -227,50 +229,50 @@ public class Document implements Map<String, Object> {
     public Date getDate(final String key) {
         return (Date) get(key);
     }
-    
+
     public Date getDate(final String key, final Date defaultValue) {
         Object value = get(key);
         return value == null ? defaultValue : (Date) value;
     }
-    
+
     @SuppressWarnings("unchecked")
-	public List<String> getStringList(final String key) {
+    public List<String> getStringList(final String key) {
         Object o = get(key);
-        
+
         if (o == null) {
-        	return new ArrayList<>();
+            return new ArrayList<>();
         }
         List<String> list;
-        
+
         try {
-        	list = (List<String>)o;
-        } catch(Exception ex) {
-        	list = new ArrayList<>();
+            list = (List<String>) o;
+        } catch (Exception ex) {
+            list = new ArrayList<>();
         }
         return list;
     }
-    
+
     public Location getLocation(final String key) {
-    	return deserializeLocation(getDocument(key));
-    }
-    
-    
-    public boolean containsField(final String key) {
-    	Object value = get(key);
-    	return value != null;
-    }
-    
-    public boolean containsDocument(final String key) {
-    	Object value = get(key);
-    	return value != null && value instanceof Document;
-    }
-    
-	public Document getDocument(final String key) {
-    	return (Document)get(key);
+        return deserializeLocation(getDocument(key));
     }
 
-	public UUID getUUID(final String key) {
-    	return UUID.fromString(getString(key));
+
+    public boolean containsField(final String key) {
+        Object value = get(key);
+        return value != null;
+    }
+
+    public boolean containsDocument(final String key) {
+        Object value = get(key);
+        return value != null && value instanceof Document;
+    }
+
+    public Document getDocument(final String key) {
+        return (Document) get(key);
+    }
+
+    public UUID getUUID(final String key) {
+        return UUID.fromString(getString(key));
     }
 
     // Vanilla Map methods delegate to map field
@@ -292,38 +294,38 @@ public class Document implements Map<String, Object> {
 
     @Override
     public boolean containsKey(final Object key) {
-    	return get(key) != null;
+        return get(key) != null;
     }
 
     @Override
     public Object get(final Object key) {
-    	if (!(key instanceof String)) {
-    		return documentAsMap.get(key);
-    	}
-    	
-    	String sKey = (String)key;
-    	String[] keys = sKey.split("\\.");
-    	
-    	if (keys.length == 1) {
-    		return documentAsMap.get(key);
-    	}
-    	
-    	Document doc = this;
-    	for(int i = 0; i < keys.length - 1 && doc != null; i++) {
-    		doc = doc.getDocument(keys[i]);
-    	}
-    	
-    	if (doc == null) {
-    		return null;
-    	}
-    	
+        if (!(key instanceof String)) {
+            return documentAsMap.get(key);
+        }
+
+        String sKey = (String) key;
+        String[] keys = sKey.split("\\.");
+
+        if (keys.length == 1) {
+            return documentAsMap.get(key);
+        }
+
+        Document doc = this;
+        for (int i = 0; i < keys.length - 1 && doc != null; i++) {
+            doc = doc.getDocument(keys[i]);
+        }
+
+        if (doc == null) {
+            return null;
+        }
+
         return doc.get(keys[keys.length - 1]);
     }
 
     @Override
     public Object put(final String key, final Object value) {
-    	append(key, value);
-    	return null;
+        append(key, value);
+        return null;
     }
 
     @Override
@@ -333,9 +335,9 @@ public class Document implements Map<String, Object> {
 
     @Override
     public void putAll(final Map<? extends String, ?> map) {
-    	for(java.util.Map.Entry<? extends String, ?> e : map.entrySet()) {
-    		append(e.getKey(), e.getValue());
-    	}
+        for (java.util.Map.Entry<? extends String, ?> e : map.entrySet()) {
+            append(e.getKey(), e.getValue());
+        }
     }
 
     @Override
@@ -384,77 +386,77 @@ public class Document implements Map<String, Object> {
     @Override
     public String toString() {
         return "Document{"
-               + documentAsMap
-               + '}';
+            + documentAsMap
+            + '}';
     }
-    
-    
+
+
     public void savetoConfig(ConfigurationSection mem) {
-    	documentToConfigurationSection(mem, this);
+        documentToConfigurationSection(mem, this);
     }
-    
-	/**
-	 * Recursively converts Bukkit configuration sections into documents
-	 * @param mem The bukkit configuration section
-	 * @return A document containing all the configuration data
-	 */
+
+    /**
+     * Recursively converts Bukkit configuration sections into documents
+     *
+     * @param mem The bukkit configuration section
+     * @return A document containing all the configuration data
+     */
     private static Map<String, Object> parseConfigurationSection(ConfigurationSection mem) {
-    	Document doc = new Document();
+        Document doc = new Document();
 
-		for(Entry<String, Object> e : mem.getValues(false).entrySet()) {
-			String k = e.getKey();
-			Object o = e.getValue();
-			if (o instanceof ConfigurationSection) {
-				doc.put(k, parseConfigurationSection((ConfigurationSection)o));
-			}
-			else {
-				doc.put(k, o);
-			}
-		}
+        for (Entry<String, Object> e : mem.getValues(false).entrySet()) {
+            String k = e.getKey();
+            Object o = e.getValue();
+            if (o instanceof ConfigurationSection) {
+                doc.put(k, parseConfigurationSection((ConfigurationSection) o));
+            } else {
+                doc.put(k, o);
+            }
+        }
 
-		return doc;
-	}
+        return doc;
+    }
 
-	/**
-	 * Recursively adds all document data to a Bukkit configuration section
-	 * @param mem The bukkit configuration section
-	 * @param doc The document object
-	 * @return The resulting configuration section
-	 */
-	private static ConfigurationSection documentToConfigurationSection(ConfigurationSection mem, Document doc) {
-		for(Entry<String, Object> e : doc.entrySet()) {
-			String k = e.getKey();
-			Object o = e.getValue();
-			if (o instanceof Document) {
-				documentToConfigurationSection(mem.createSection(k), (Document)o);
-			}
-			else {
-				mem.set(k, o);
-			}
-		}
+    /**
+     * Recursively adds all document data to a Bukkit configuration section
+     *
+     * @param mem The bukkit configuration section
+     * @param doc The document object
+     * @return The resulting configuration section
+     */
+    private static ConfigurationSection documentToConfigurationSection(ConfigurationSection mem, Document doc) {
+        for (Entry<String, Object> e : doc.entrySet()) {
+            String k = e.getKey();
+            Object o = e.getValue();
+            if (o instanceof Document) {
+                documentToConfigurationSection(mem.createSection(k), (Document) o);
+            } else {
+                mem.set(k, o);
+            }
+        }
 
-		return mem;
-	}
+        return mem;
+    }
 
-	private static Document serializeLocation(Location l) {
-		Document doc = new Document("world", l.getWorld().getName())
-		.append("x", l.getBlockX())
-		.append("y", l.getBlockY())
-		.append("z", l.getBlockZ());
+    private static Document serializeLocation(Location l) {
+        Document doc = new Document("world", l.getWorld().getName())
+            .append("x", l.getBlockX())
+            .append("y", l.getBlockY())
+            .append("z", l.getBlockZ());
 
-		return doc;
-	}
-    
+        return doc;
+    }
 
-	private static Location deserializeLocation(Document doc) {
-		try {
-			String worldName = doc.getString("world");
-			int x = doc.getInteger("x");
-			int y = doc.getInteger("y");
-			int z = doc.getInteger("z");
-			return new Location(Bukkit.getWorld(worldName), x, y, z);
-		} catch(Exception ex) {
-			return null;
-		}
-	}
+
+    private static Location deserializeLocation(Document doc) {
+        try {
+            String worldName = doc.getString("world");
+            int x = doc.getInteger("x");
+            int y = doc.getInteger("y");
+            int z = doc.getInteger("z");
+            return new Location(Bukkit.getWorld(worldName), x, y, z);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
 }

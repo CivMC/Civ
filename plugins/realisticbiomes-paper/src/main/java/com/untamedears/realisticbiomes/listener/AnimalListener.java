@@ -14,42 +14,42 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 
 public class AnimalListener implements Listener {
 
-	private final AnimalConfigManager animalManager;
+    private final AnimalConfigManager animalManager;
 
-	public AnimalListener(AnimalConfigManager animalManager) {
-		this.animalManager = animalManager;
-	}
+    public AnimalListener(AnimalConfigManager animalManager) {
+        this.animalManager = animalManager;
+    }
 
-	@EventHandler
-	public void spawnEntity(CreatureSpawnEvent event) {
-		if (event.getSpawnReason() == SpawnReason.BREEDING) {
-			EntityType type = event.getEntityType();
-			Block block = event.getLocation().getBlock();
+    @EventHandler
+    public void spawnEntity(CreatureSpawnEvent event) {
+        if (event.getSpawnReason() == SpawnReason.BREEDING) {
+            EntityType type = event.getEntityType();
+            Block block = event.getLocation().getBlock();
 
-			if (!willSpawn(type, block)) {
-				event.setCancelled(true);
-			}
-		}
-	}
+            if (!willSpawn(type, block)) {
+                event.setCancelled(true);
+            }
+        }
+    }
 
-	@EventHandler
-	public void spawnItem(ItemSpawnEvent event) {
-		if (event.getEntity() instanceof Player) {
-			return;
-		}
-		if (event.getEntity().getItemStack().getType() == Material.EGG) {
-			if (!willSpawn(EntityType.CHICKEN, event.getLocation().getBlock())) {
-				event.setCancelled(true);
-			}
-		}
-	}
+    @EventHandler
+    public void spawnItem(ItemSpawnEvent event) {
+        if (event.getEntity() instanceof Player) {
+            return;
+        }
+        if (event.getEntity().getItemStack().getType() == Material.EGG) {
+            if (!willSpawn(EntityType.CHICKEN, event.getLocation().getBlock())) {
+                event.setCancelled(true);
+            }
+        }
+    }
 
-	private boolean willSpawn(EntityType type, Block b) {
-		AnimalMateConfig config = animalManager.getAnimalMateConfig(type);
-		if (config == null) {
-			// vanilla
-			return true;
-		}
-		return Math.random() < config.getRate(b.getBiome());
-	}
+    private boolean willSpawn(EntityType type, Block b) {
+        AnimalMateConfig config = animalManager.getAnimalMateConfig(type);
+        if (config == null) {
+            // vanilla
+            return true;
+        }
+        return Math.random() < config.getRate(b.getBiome());
+    }
 }

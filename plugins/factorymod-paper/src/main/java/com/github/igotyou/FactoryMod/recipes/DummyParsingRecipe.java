@@ -10,38 +10,38 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 public class DummyParsingRecipe extends InputRecipe {
 
-	public DummyParsingRecipe(String identifier, String name, int productionTime, ItemMap input) {
-		super(identifier, name, productionTime, input);
-	}
+    public DummyParsingRecipe(String identifier, String name, int productionTime, ItemMap input) {
+        super(identifier, name, productionTime, input);
+    }
 
-	@Override
-	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
-		return true;
-	}
+    @Override
+    public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        return true;
+    }
 
-	@Override
-	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		return null;
-	}
+    @Override
+    public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        return null;
+    }
 
-	@Override
-	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		return null;
-	}
+    @Override
+    public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        return null;
+    }
 
-	@Override
-	public String getTypeIdentifier() {
-		return "DUMMY";
-	}
+    @Override
+    public String getTypeIdentifier() {
+        return "DUMMY";
+    }
 
-	@Override
-	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		return null;
-	}
+    @Override
+    public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        return null;
+    }
 
-	@Override
-	public Material getRecipeRepresentationMaterial() {
-		return null;
-	}
+    @Override
+    public Material getRecipeRepresentationMaterial() {
+        return null;
+    }
 
 }

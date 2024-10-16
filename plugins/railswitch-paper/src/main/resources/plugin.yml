@@ -1,10 +1,10 @@
 name: RailSwitch
 version: ${version}
 main: sh.okx.railswitch.RailSwitchPlugin
-depend: [CivModCore]
-softdepend: [Citadel, NameLayer]
+depend: [ CivModCore ]
+softdepend: [ Citadel, NameLayer ]
 api-version: 1.17
-authors: [Okx, Protonull]
+authors: [ Okx, Protonull ]
 description: Easily make rail switches for automated destination selection
 commands:
-  dest: {}
+  dest: { }

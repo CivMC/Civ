@@ -16,19 +16,19 @@ import vg.civcraft.mc.civchat2.CivChat2Manager;
 
 public class Exit extends BaseCommand {
 
-	@CommandAlias("exit")
-	@Description("Exit private or group chats")
-	public void execute(Player player, @Optional String message) {
-		CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
-		if (message == null) {
-			chatMan.removeChannel(player);
-			chatMan.removeGroupChat(player);
-			player.sendMessage(ChatStrings.chatMovedToGlobal);
-			return;
-		}
-		StringBuilder chatMsg = new StringBuilder();
-		chatMsg.append(message);
-		Set<Player> players = new HashSet<>(CivChat2.getInstance().getServer().getOnlinePlayers());
-		chatMan.broadcastMessage(player, chatMsg.toString(), localChatFormat, players);
-	}
+    @CommandAlias("exit")
+    @Description("Exit private or group chats")
+    public void execute(Player player, @Optional String message) {
+        CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
+        if (message == null) {
+            chatMan.removeChannel(player);
+            chatMan.removeGroupChat(player);
+            player.sendMessage(ChatStrings.chatMovedToGlobal);
+            return;
+        }
+        StringBuilder chatMsg = new StringBuilder();
+        chatMsg.append(message);
+        Set<Player> players = new HashSet<>(CivChat2.getInstance().getServer().getOnlinePlayers());
+        chatMan.broadcastMessage(player, chatMsg.toString(), localChatFormat, players);
+    }
 }
