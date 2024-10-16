@@ -15,52 +15,52 @@ import java.util.UUID;
 
 public class TridentHandler {
 
-	private boolean returnToOffhand;
-	private boolean bypassFullInv;
-	private long riptideCooldown;
-	private long generalCooldown;
+    private boolean returnToOffhand;
+    private boolean bypassFullInv;
+    private long riptideCooldown;
+    private long generalCooldown;
 
-	private CooldownHandler riptideCooldownHandler;
-	private CooldownHandler generalCooldownHandler;
+    private CooldownHandler riptideCooldownHandler;
+    private CooldownHandler generalCooldownHandler;
 
-	public TridentHandler(boolean returnToOffhand, boolean bypassFullInv, long riptideCooldown, long generalCooldown) {
-		this.returnToOffhand = returnToOffhand;
-		this.bypassFullInv = bypassFullInv;
-		this.riptideCooldown = riptideCooldown;
-		this.generalCooldown = generalCooldown;
+    public TridentHandler(boolean returnToOffhand, boolean bypassFullInv, long riptideCooldown, long generalCooldown) {
+        this.returnToOffhand = returnToOffhand;
+        this.bypassFullInv = bypassFullInv;
+        this.riptideCooldown = riptideCooldown;
+        this.generalCooldown = generalCooldown;
 
-		this.riptideCooldownHandler = new CooldownHandler("riptideCooldown", riptideCooldown, (player, cooldowns) ->
-				ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Riptide: " +
-						ChatColor.GREEN + CooldownHandler.formatCoolDown(cooldowns, player.getUniqueId())
-		);
-		this.generalCooldownHandler = new CooldownHandler("tridentCooldown", generalCooldown, (player, cooldowns) ->
-				ChatColor.DARK_RED + "" + ChatColor.BOLD + "Trident: " +
-						ChatColor.RED + CooldownHandler.formatCoolDown(cooldowns, player.getUniqueId())
-		);
-	}
+        this.riptideCooldownHandler = new CooldownHandler("riptideCooldown", riptideCooldown, (player, cooldowns) ->
+            ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Riptide: " +
+                ChatColor.GREEN + CooldownHandler.formatCoolDown(cooldowns, player.getUniqueId())
+        );
+        this.generalCooldownHandler = new CooldownHandler("tridentCooldown", generalCooldown, (player, cooldowns) ->
+            ChatColor.DARK_RED + "" + ChatColor.BOLD + "Trident: " +
+                ChatColor.RED + CooldownHandler.formatCoolDown(cooldowns, player.getUniqueId())
+        );
+    }
 
-	public boolean isReturnToOffhand() {
-		return returnToOffhand;
-	}
+    public boolean isReturnToOffhand() {
+        return returnToOffhand;
+    }
 
-	public boolean isBypassFullInv() {
-		return bypassFullInv;
-	}
+    public boolean isBypassFullInv() {
+        return bypassFullInv;
+    }
 
-	public void putRiptideOnCooldown(Player shooter) {
-		riptideCooldownHandler.putOnCooldown(shooter);
-	}
+    public void putRiptideOnCooldown(Player shooter) {
+        riptideCooldownHandler.putOnCooldown(shooter);
+    }
 
-	public void putTridentOnCooldown(Player shooter) {
-		generalCooldownHandler.putOnCooldown(shooter);
-	}
+    public void putTridentOnCooldown(Player shooter) {
+        generalCooldownHandler.putOnCooldown(shooter);
+    }
 
-	public boolean isRiptideOnCooldown(Player player) {
-		return riptideCooldownHandler.onCooldown(player);
-	}
+    public boolean isRiptideOnCooldown(Player player) {
+        return riptideCooldownHandler.onCooldown(player);
+    }
 
-	public boolean isTridentOnCooldown(Player player) {
-		return generalCooldownHandler.onCooldown(player);
-	}
+    public boolean isTridentOnCooldown(Player player) {
+        return generalCooldownHandler.onCooldown(player);
+    }
 
 }

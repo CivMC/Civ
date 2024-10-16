@@ -6,9 +6,9 @@ public class CombatSoundConfig {
 	private boolean strongEnabled;
 	private boolean knockbackEnabled;
 	private boolean critEnabled;
-	
+
 	public CombatSoundConfig(boolean weakEnabled, boolean strongEnabled, boolean knockbackEnabled,
-			boolean critEnabled) {
+							 boolean critEnabled) {
 		this.weakEnabled = weakEnabled;
 		this.strongEnabled = strongEnabled;
 		this.knockbackEnabled = knockbackEnabled;
@@ -30,5 +30,5 @@ public class CombatSoundConfig {
 	public boolean isCritEnabled() {
 		return critEnabled;
 	}
-	
+
 }

@@ -33,8 +33,8 @@ public class KnockbackModifier {
 	@Override
 	public String toString() {
 		return "KnockbackModifier{" +
-				"type=" + type +
-				", modifier=" + modifier +
-				'}';
+			"type=" + type +
+			", modifier=" + modifier +
+			'}';
 	}
 }

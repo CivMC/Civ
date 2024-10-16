@@ -105,10 +105,10 @@ public class AllyHandler implements Listener {
 
 	private void createTables(Connection connection) throws SQLException {
 		PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS ALLY(" +
-				"PlayerUUID TEXT," +
-				"AllyUUID TEXT," +
-				"PRIMARY KEY (PlayerUUID, AllyUUID)" +
-				")");
+			"PlayerUUID TEXT," +
+			"AllyUUID TEXT," +
+			"PRIMARY KEY (PlayerUUID, AllyUUID)" +
+			")");
 		preparedStatement.execute();
 	}
 
@@ -125,10 +125,10 @@ public class AllyHandler implements Listener {
 
 				for (UUID allyUUID : allyEntry.getValue()) {
 					PreparedStatement insertAlly = connection.prepareStatement("INSERT INTO ALLY(" +
-							"PlayerUUID, AllyUUID" +
-							") VALUES (" +
-							"?, ?" +
-							")");
+						"PlayerUUID, AllyUUID" +
+						") VALUES (" +
+						"?, ?" +
+						")");
 					insertAlly.setString(1, allyEntry.getKey().toString());
 					insertAlly.setString(2, allyUUID.toString());
 					insertAlly.execute();
@@ -162,8 +162,8 @@ public class AllyHandler implements Listener {
 		}
 
 		final Particle.DustOptions dustOptions = new Particle.DustOptions(addAlly ?
-				Color.fromRGB(66, 135, 245) :
-				Color.fromRGB(143, 10, 25), 1);
+			Color.fromRGB(66, 135, 245) :
+			Color.fromRGB(143, 10, 25), 1);
 
 		new BukkitRunnable() {
 

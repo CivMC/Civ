@@ -18,91 +18,91 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class WarpFruitListener implements Listener {
 
-	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent event) {
-		WarpFruitTracker warpFruitTracker = Finale.getPlugin().getManager().getWarpFruitTracker();
-		Player player = event.getPlayer();
-		warpFruitTracker.quit(player);
-	}
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        WarpFruitTracker warpFruitTracker = Finale.getPlugin().getManager().getWarpFruitTracker();
+        Player player = event.getPlayer();
+        warpFruitTracker.quit(player);
+    }
 
-	@EventHandler
-	public void onPlayerMove(PlayerMoveEvent event) {
-		WarpFruitTracker warpFruitTracker = Finale.getPlugin().getManager().getWarpFruitTracker();
-		warpFruitTracker.logLocation(event.getPlayer());
-	}
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        WarpFruitTracker warpFruitTracker = Finale.getPlugin().getManager().getWarpFruitTracker();
+        warpFruitTracker.logLocation(event.getPlayer());
+    }
 
-	private boolean isChorusHolder(Player player) {
-		ItemStack mainItem = player.getInventory().getItemInMainHand();
-		ItemStack offItem = player.getInventory().getItemInOffHand();
-		return (mainItem != null && mainItem.getType() == Material.CHORUS_FRUIT) || (offItem != null && offItem.getType() == Material.CHORUS_FRUIT);
-	}
+    private boolean isChorusHolder(Player player) {
+        ItemStack mainItem = player.getInventory().getItemInMainHand();
+        ItemStack offItem = player.getInventory().getItemInOffHand();
+        return (mainItem != null && mainItem.getType() == Material.CHORUS_FRUIT) || (offItem != null && offItem.getType() == Material.CHORUS_FRUIT);
+    }
 
-	@EventHandler
-	public void onEatingWarpFruit(PlayerInteractEvent event) {
-		WarpFruitTracker warpFruitTracker = Finale.getPlugin().getManager().getWarpFruitTracker();
-		Player player = event.getPlayer();
-		if (warpFruitTracker.onCooldown(player)) {
-			return;
-		}
-		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (!isChorusHolder(player)) {
-				return;
-			}
-			new BukkitRunnable() {
+    @EventHandler
+    public void onEatingWarpFruit(PlayerInteractEvent event) {
+        WarpFruitTracker warpFruitTracker = Finale.getPlugin().getManager().getWarpFruitTracker();
+        Player player = event.getPlayer();
+        if (warpFruitTracker.onCooldown(player)) {
+            return;
+        }
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (!isChorusHolder(player)) {
+                return;
+            }
+            new BukkitRunnable() {
 
-				@Override
-				public void run() {
-					if (!player.isOnline() || player.isDead()) {
-						if (warpFruitTracker.isSpectralWhileChanneling() && player.hasPotionEffect(PotionEffectType.GLOWING)) {
-							player.removePotionEffect(PotionEffectType.GLOWING);
-						}
-						cancel();
-						return;
-					}
-					if (player.getItemInUse() == null){
-						if (warpFruitTracker.isSpectralWhileChanneling() && player.hasPotionEffect(PotionEffectType.GLOWING)) {
-							player.removePotionEffect(PotionEffectType.GLOWING);
-						}
-						cancel();
-						return;
-					}
-					if (player.getItemInUse().getType() != Material.CHORUS_FRUIT) {
-						if (warpFruitTracker.isSpectralWhileChanneling() && player.hasPotionEffect(PotionEffectType.GLOWING)) {
-							player.removePotionEffect(PotionEffectType.GLOWING);
-						}
-						cancel();
-						return;
-					}
-					if (warpFruitTracker.onCooldown(player)) {
-						if (warpFruitTracker.isSpectralWhileChanneling() && player.hasPotionEffect(PotionEffectType.GLOWING)) {
-							player.removePotionEffect(PotionEffectType.GLOWING);
-						}
-						cancel();
-						return;
-					}
-					if (warpFruitTracker.isSpectralWhileChanneling() && !player.hasPotionEffect(PotionEffectType.GLOWING)) {
-						player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 0));
-					}
-					warpFruitTracker.animate(player);
-				}
-			}.runTaskTimer(Finale.getPlugin(), 0L,1L);
-		}
-	}
+                @Override
+                public void run() {
+                    if (!player.isOnline() || player.isDead()) {
+                        if (warpFruitTracker.isSpectralWhileChanneling() && player.hasPotionEffect(PotionEffectType.GLOWING)) {
+                            player.removePotionEffect(PotionEffectType.GLOWING);
+                        }
+                        cancel();
+                        return;
+                    }
+                    if (player.getItemInUse() == null) {
+                        if (warpFruitTracker.isSpectralWhileChanneling() && player.hasPotionEffect(PotionEffectType.GLOWING)) {
+                            player.removePotionEffect(PotionEffectType.GLOWING);
+                        }
+                        cancel();
+                        return;
+                    }
+                    if (player.getItemInUse().getType() != Material.CHORUS_FRUIT) {
+                        if (warpFruitTracker.isSpectralWhileChanneling() && player.hasPotionEffect(PotionEffectType.GLOWING)) {
+                            player.removePotionEffect(PotionEffectType.GLOWING);
+                        }
+                        cancel();
+                        return;
+                    }
+                    if (warpFruitTracker.onCooldown(player)) {
+                        if (warpFruitTracker.isSpectralWhileChanneling() && player.hasPotionEffect(PotionEffectType.GLOWING)) {
+                            player.removePotionEffect(PotionEffectType.GLOWING);
+                        }
+                        cancel();
+                        return;
+                    }
+                    if (warpFruitTracker.isSpectralWhileChanneling() && !player.hasPotionEffect(PotionEffectType.GLOWING)) {
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, Integer.MAX_VALUE, 0));
+                    }
+                    warpFruitTracker.animate(player);
+                }
+            }.runTaskTimer(Finale.getPlugin(), 0L, 1L);
+        }
+    }
 
-	@EventHandler
-	public void onEatWarpFruit(PlayerItemConsumeEvent event) {
-		WarpFruitTracker warpFruitTracker = Finale.getPlugin().getManager().getWarpFruitTracker();
-		Player player = event.getPlayer();
-		ItemStack itemStack = event.getItem();
-		if (itemStack.getType() == Material.CHORUS_FRUIT) {
-			if (warpFruitTracker.timewarp(player)) {
-				if (warpFruitTracker.isSpectralWhileChanneling() && player.hasPotionEffect(PotionEffectType.GLOWING)) {
-					player.removePotionEffect(PotionEffectType.GLOWING);
-				}
-				event.setCancelled(true);
-			}
-		}
-	}
+    @EventHandler
+    public void onEatWarpFruit(PlayerItemConsumeEvent event) {
+        WarpFruitTracker warpFruitTracker = Finale.getPlugin().getManager().getWarpFruitTracker();
+        Player player = event.getPlayer();
+        ItemStack itemStack = event.getItem();
+        if (itemStack.getType() == Material.CHORUS_FRUIT) {
+            if (warpFruitTracker.timewarp(player)) {
+                if (warpFruitTracker.isSpectralWhileChanneling() && player.hasPotionEffect(PotionEffectType.GLOWING)) {
+                    player.removePotionEffect(PotionEffectType.GLOWING);
+                }
+                event.setCancelled(true);
+            }
+        }
+    }
 
 //	@EventHandler
 //	public void onVanillaChorusTeleport(PlayerTeleportEvent event) {

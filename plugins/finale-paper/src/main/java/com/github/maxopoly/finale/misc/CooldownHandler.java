@@ -19,90 +19,90 @@ import java.util.function.BiFunction;
 
 public class CooldownHandler {
 
-	private String identifier;
-	private ICoolDownHandler<UUID> cooldowns;
-	private BiFunction<Player, ICoolDownHandler<UUID>, String> getCooldownText;
-	private long cooldown;
+    private String identifier;
+    private ICoolDownHandler<UUID> cooldowns;
+    private BiFunction<Player, ICoolDownHandler<UUID>, String> getCooldownText;
+    private long cooldown;
 
-	public CooldownHandler(String identifier, long cooldown, BiFunction<Player, ICoolDownHandler<UUID>, String> getCooldownText) {
-		this.identifier = identifier;
-		this.getCooldownText = getCooldownText;
-		this.cooldown = cooldown;
+    public CooldownHandler(String identifier, long cooldown, BiFunction<Player, ICoolDownHandler<UUID>, String> getCooldownText) {
+        this.identifier = identifier;
+        this.getCooldownText = getCooldownText;
+        this.cooldown = cooldown;
 
-		this.cooldowns = new TickCoolDownHandler<>(Finale.getPlugin(), cooldown / 50);
-	}
+        this.cooldowns = new TickCoolDownHandler<>(Finale.getPlugin(), cooldown / 50);
+    }
 
-	public long getCooldown() {
-		return cooldown;
-	}
+    public long getCooldown() {
+        return cooldown;
+    }
 
-	public void quit(Player player) {
-		cooldowns.removeCooldown(player.getUniqueId());
-	}
+    public void quit(Player player) {
+        cooldowns.removeCooldown(player.getUniqueId());
+    }
 
-	public boolean onCooldown(Player player) {
-		return cooldowns.onCoolDown(player.getUniqueId());
-	}
+    public boolean onCooldown(Player player) {
+        return cooldowns.onCoolDown(player.getUniqueId());
+    }
 
-	public BiFunction<Player, String, String> getCooldownBiFunction() {
-		return (shooter, oldText) -> {
-			if (!cooldowns.onCoolDown(shooter.getUniqueId())) {
-				return null;
-			}
+    public BiFunction<Player, String, String> getCooldownBiFunction() {
+        return (shooter, oldText) -> {
+            if (!cooldowns.onCoolDown(shooter.getUniqueId())) {
+                return null;
+            }
 
-			return getCooldownText.apply(shooter, cooldowns);
-		};
-	}
+            return getCooldownText.apply(shooter, cooldowns);
+        };
+    }
 
-	private BottomLine cooldownBottomLine;
+    private BottomLine cooldownBottomLine;
 
-	public BottomLine getCooldownBottomLine() {
-		if (cooldownBottomLine == null) {
-			cooldownBottomLine = BottomLineAPI.createBottomLine(identifier, 1);
-			cooldownBottomLine.updatePeriodically(getCooldownBiFunction(), 1L);
-		}
-		return cooldownBottomLine;
-	}
+    public BottomLine getCooldownBottomLine() {
+        if (cooldownBottomLine == null) {
+            cooldownBottomLine = BottomLineAPI.createBottomLine(identifier, 1);
+            cooldownBottomLine.updatePeriodically(getCooldownBiFunction(), 1L);
+        }
+        return cooldownBottomLine;
+    }
 
-	private CivScoreBoard cooldownBoard;
+    private CivScoreBoard cooldownBoard;
 
-	public CivScoreBoard getCooldownBoard() {
-		if (cooldownBoard == null) {
-			cooldownBoard = ScoreBoardAPI.createBoard(identifier);
-			cooldownBoard.updatePeriodically(getCooldownBiFunction(), 1L);
-		}
-		return cooldownBoard;
-	}
+    public CivScoreBoard getCooldownBoard() {
+        if (cooldownBoard == null) {
+            cooldownBoard = ScoreBoardAPI.createBoard(identifier);
+            cooldownBoard.updatePeriodically(getCooldownBiFunction(), 1L);
+        }
+        return cooldownBoard;
+    }
 
-	public void putOnCooldown(Player shooter) {
-		cooldowns.putOnCoolDown(shooter.getUniqueId());
-		FinaleSettingManager settings = Finale.getPlugin().getSettingsManager();
-		if (settings.vanillaTimewarpCooldown(shooter.getUniqueId())) {
-			Bukkit.getScheduler().runTaskLater(Finale.getPlugin(), () -> {
-				// -1, because this is delayed by one tick
-				shooter.setCooldown(Material.CHORUS_FRUIT, (int) cooldowns.getTotalCoolDown() - 1);
-			}, 1);
-		}
+    public void putOnCooldown(Player shooter) {
+        cooldowns.putOnCoolDown(shooter.getUniqueId());
+        FinaleSettingManager settings = Finale.getPlugin().getSettingsManager();
+        if (settings.vanillaTimewarpCooldown(shooter.getUniqueId())) {
+            Bukkit.getScheduler().runTaskLater(Finale.getPlugin(), () -> {
+                // -1, because this is delayed by one tick
+                shooter.setCooldown(Material.CHORUS_FRUIT, (int) cooldowns.getTotalCoolDown() - 1);
+            }, 1);
+        }
 
-		if (settings.actionBarTimewarpCooldown(shooter.getUniqueId())) {
-			BottomLine bottomLine = getCooldownBottomLine();
-			bottomLine.updatePlayer(shooter, getCooldownText.apply(shooter, cooldowns));
-		}
-		if (settings.sideBarTimewarpCooldown(shooter.getUniqueId())) {
-			CivScoreBoard board = getCooldownBoard();
-			board.set(shooter, getCooldownText.apply(shooter, cooldowns));
-		}
-	}
+        if (settings.actionBarTimewarpCooldown(shooter.getUniqueId())) {
+            BottomLine bottomLine = getCooldownBottomLine();
+            bottomLine.updatePlayer(shooter, getCooldownText.apply(shooter, cooldowns));
+        }
+        if (settings.sideBarTimewarpCooldown(shooter.getUniqueId())) {
+            CivScoreBoard board = getCooldownBoard();
+            board.set(shooter, getCooldownText.apply(shooter, cooldowns));
+        }
+    }
 
-	private static final DecimalFormat df = new DecimalFormat("#.0");
+    private static final DecimalFormat df = new DecimalFormat("#.0");
 
-	public static String formatCoolDown(ICoolDownHandler<UUID> cooldowns, UUID uuid) {
-		long cd = cooldowns.getRemainingCoolDown(uuid);
-		if (cd <= 0) {
-			return ChatColor.GREEN + "READY";
-		}
-		//convert from ticks to ms
-		return df.format(cd / 20.0) + " sec";
-	}
+    public static String formatCoolDown(ICoolDownHandler<UUID> cooldowns, UUID uuid) {
+        long cd = cooldowns.getRemainingCoolDown(uuid);
+        if (cd <= 0) {
+            return ChatColor.GREEN + "READY";
+        }
+        //convert from ticks to ms
+        return df.format(cd / 20.0) + " sec";
+    }
 
 }
