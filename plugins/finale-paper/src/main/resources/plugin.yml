@@ -2,8 +2,8 @@ name: Finale
 main: com.github.maxopoly.finale.Finale
 author: Maxopoly
 version: ${version}
-depend: [CivModCore, ProtocolLib, Bastion, NameLayer]
-softdepend: [CombatTagPlus]
+depend: [CivModCore, ProtocolLib]
+softdepend: [CombatTagPlus, Citadel, Bastion]
 api-version: 1.21.1
 permissions:
     finale.op:

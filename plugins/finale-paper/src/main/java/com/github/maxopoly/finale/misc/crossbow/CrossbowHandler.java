@@ -109,34 +109,39 @@ public class CrossbowHandler {
         Player shooter = (Player) firework.getShooter();
         Location loc = firework.getLocation();
 
-        BastionBlockManager bastionBlockManager = Bastion.getBastionManager();
-        Set<BastionBlock> bastions = bastionBlockManager.getBlockingBastions(loc);
-        if (!bastions.isEmpty()) {
-            bastionBlockManager.erodeFromPlace(shooter, bastions);
+        if (Bukkit.getPluginManager().isPluginEnabled("Bastion")) {
+            BastionBlockManager bastionBlockManager = Bastion.getBastionManager();
+            Set<BastionBlock> bastions = bastionBlockManager.getBlockingBastions(loc);
+            if (!bastions.isEmpty()) {
+                bastionBlockManager.erodeFromPlace(shooter, bastions);
+            }
         }
 
         List<Location> explodeLocs = getCircle(loc, radius, radius, false, true, 0);
         for (Location explodeLoc : explodeLocs) {
             Block explodeBlock = explodeLoc.getBlock();
             if (explodeBlock.getType() != Material.AIR && explodeBlock.getType() != Material.BEDROCK && explodeBlock.getType() != Material.BARRIER) {
-                Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(explodeBlock);
-                if (rein != null) {
-                    for (int i = 0; i < reinforcementDamage; i++) {
-                        if (rein.isBroken()) {
-                            break;
+                if (Bukkit.getPluginManager().isPluginEnabled("Citadel")) {
+                    Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(explodeBlock);
+                    if (rein != null) {
+                        for (int i = 0; i < reinforcementDamage; i++) {
+                            if (rein.isBroken()) {
+                                break;
+                            }
+                            float damage = ReinforcementLogic.getDamageApplied(rein);
+                            ReinforcementLogic.damageReinforcement(rein, damage, shooter);
                         }
-                        float damage = ReinforcementLogic.getDamageApplied(rein);
-                        ReinforcementLogic.damageReinforcement(rein, damage, shooter);
+                        continue;
                     }
-                } else {
-                    Material type = Material.AIR;
-
-                    if (explodeBlock.getRelative(BlockFace.DOWN, 1).getType().isSolid() && random.nextInt(3) == 0) {
-                        type = Material.FIRE;
-                    }
-
-                    explodeBlock.setType(type);
                 }
+
+                Material type = Material.AIR;
+
+                if (explodeBlock.getRelative(BlockFace.DOWN, 1).getType().isSolid() && random.nextInt(3) == 0) {
+                    type = Material.FIRE;
+                }
+
+                explodeBlock.setType(type);
             }
         }
     }
