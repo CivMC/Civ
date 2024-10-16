@@ -13,6 +13,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 public class SaturationHealthRegenHandler implements Runnable {
+
 	private List<LinkedList<UUID>> ticks;
 	private Map<UUID, Integer> tickMapping;
 	private int currentTick;
@@ -25,7 +26,7 @@ public class SaturationHealthRegenHandler implements Runnable {
 	private boolean blockFoodHealthRegen;
 
 	public SaturationHealthRegenHandler(int interval, double healthPerCycle, int minimumFood, float exhaustionPerHeal,
-			boolean blockPassiveHealthRegen, boolean blockFoodHealthRegen) {
+										boolean blockPassiveHealthRegen, boolean blockFoodHealthRegen) {
 		this.currentTick = 0;
 		this.ticks = new ArrayList<>(interval);
 		for (int i = 0; i < interval; i++) {

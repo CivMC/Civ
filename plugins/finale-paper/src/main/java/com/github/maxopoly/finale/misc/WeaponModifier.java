@@ -5,11 +5,12 @@ import java.util.Map;
 import org.bukkit.Material;
 
 public class WeaponModifier {
-	
+
 	public static final int DAMAGE_NON_ADJUSTED = -1;
 	public static final double ATTACK_SPEED_NON_ADJUSTED = -1.0D;
 
 	private static final class WeaponConfig {
+
 		private Material mat;
 		private double damage;
 		private double attackSpeed;

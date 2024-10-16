@@ -24,68 +24,68 @@ import java.util.List;
 
 public class BlockListener implements Listener {
 
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onPlace(BlockPlaceEvent event) {
-		Player player = event.getPlayer();
-		CombatTagPlusManager ctpManager = Finale.getPlugin().getCombatTagPlusManager();
-		if (!ctpManager.isTagged(player)) {
-			return;
-		}
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlace(BlockPlaceEvent event) {
+        Player player = event.getPlayer();
+        CombatTagPlusManager ctpManager = Finale.getPlugin().getCombatTagPlusManager();
+        if (!ctpManager.isTagged(player)) {
+            return;
+        }
 
-		System.out.println("COMBAT TAGGED PLAYER");
-		BlockRestrictionHandler blockRestrictionHandler = Finale.getPlugin().getManager().getBlockRestrictionHandler();
-		BlockRestrictionHandler.RestrictionMode mode = blockRestrictionHandler.getMode();
-		Block blockPlaced = event.getBlockPlaced();
-		Material blockPlacedType = blockPlaced.getType();
+        System.out.println("COMBAT TAGGED PLAYER");
+        BlockRestrictionHandler blockRestrictionHandler = Finale.getPlugin().getManager().getBlockRestrictionHandler();
+        BlockRestrictionHandler.RestrictionMode mode = blockRestrictionHandler.getMode();
+        Block blockPlaced = event.getBlockPlaced();
+        Material blockPlacedType = blockPlaced.getType();
 
-		if (mode == BlockRestrictionHandler.RestrictionMode.BLACKLIST) {
-			List<Material> blacklist = blockRestrictionHandler.getBlacklist();
-			if (blacklist.contains(blockPlacedType)) {
-				restrictPlacement(event);
-				return;
-			}
-		} else if (mode == BlockRestrictionHandler.RestrictionMode.WHITELIST) {
-			List<Material> whitelist = blockRestrictionHandler.getWhitelist();
-			if (!whitelist.contains(blockPlacedType)) {
-				player.sendMessage(ChatColor.RED + blockPlacedType.toString() + " can't be placed while in combat.");
-				event.setCancelled(true);
-				return;
-			}
-		}
+        if (mode == BlockRestrictionHandler.RestrictionMode.BLACKLIST) {
+            List<Material> blacklist = blockRestrictionHandler.getBlacklist();
+            if (blacklist.contains(blockPlacedType)) {
+                restrictPlacement(event);
+                return;
+            }
+        } else if (mode == BlockRestrictionHandler.RestrictionMode.WHITELIST) {
+            List<Material> whitelist = blockRestrictionHandler.getWhitelist();
+            if (!whitelist.contains(blockPlacedType)) {
+                player.sendMessage(ChatColor.RED + blockPlacedType.toString() + " can't be placed while in combat.");
+                event.setCancelled(true);
+                return;
+            }
+        }
 
-		if (blockRestrictionHandler.isOnCooldown(player, blockPlacedType)) {
-			restrictPlacement(event);
-		} else {
-			blockRestrictionHandler.putOnCooldown(player, blockPlacedType);
-		}
-	}
+        if (blockRestrictionHandler.isOnCooldown(player, blockPlacedType)) {
+            restrictPlacement(event);
+        } else {
+            blockRestrictionHandler.putOnCooldown(player, blockPlacedType);
+        }
+    }
 
-	private void restrictPlacement(BlockPlaceEvent event) {
-		BlockRestrictionHandler blockRestrictionHandler = Finale.getPlugin().getManager().getBlockRestrictionHandler();
-		Integer zoneRadius = blockRestrictionHandler.getZoneRadii().get(event.getBlockPlaced().getType());
-		if (zoneRadius != null) {
-			Collection<LivingEntity> nearbyLivingEntities = event.getBlock().getLocation().getNearbyLivingEntities(zoneRadius);
-			boolean enemyNearby = false;
-			AllyHandler allyHandler = Finale.getPlugin().getManager().getAllyHandler();
-			for (LivingEntity livingEntity : nearbyLivingEntities) {
-				if (livingEntity instanceof Player) {
-					Player nearbyPlayer = (Player) livingEntity;
-					if (!nearbyPlayer.getUniqueId().equals(event.getPlayer().getUniqueId()) && !allyHandler.isAllyOf(nearbyPlayer, event.getPlayer())) {
-						enemyNearby = true;
-						break;
-					}
-				}
-			}
-			if (enemyNearby) {
-				event.getPlayer().sendMessage(ChatColor.RED + event.getBlockPlaced().getType().toString() +
-						" can't be placed within " +
-						zoneRadius + "m of a hostile while in combat.");
-				event.setCancelled(true);
-			}
-		} else {
-			event.getPlayer().sendMessage(ChatColor.RED + event.getBlockPlaced().getType().toString() + " can't be placed while in combat.");
-			event.setCancelled(true);
-		}
-	}
+    private void restrictPlacement(BlockPlaceEvent event) {
+        BlockRestrictionHandler blockRestrictionHandler = Finale.getPlugin().getManager().getBlockRestrictionHandler();
+        Integer zoneRadius = blockRestrictionHandler.getZoneRadii().get(event.getBlockPlaced().getType());
+        if (zoneRadius != null) {
+            Collection<LivingEntity> nearbyLivingEntities = event.getBlock().getLocation().getNearbyLivingEntities(zoneRadius);
+            boolean enemyNearby = false;
+            AllyHandler allyHandler = Finale.getPlugin().getManager().getAllyHandler();
+            for (LivingEntity livingEntity : nearbyLivingEntities) {
+                if (livingEntity instanceof Player) {
+                    Player nearbyPlayer = (Player) livingEntity;
+                    if (!nearbyPlayer.getUniqueId().equals(event.getPlayer().getUniqueId()) && !allyHandler.isAllyOf(nearbyPlayer, event.getPlayer())) {
+                        enemyNearby = true;
+                        break;
+                    }
+                }
+            }
+            if (enemyNearby) {
+                event.getPlayer().sendMessage(ChatColor.RED + event.getBlockPlaced().getType().toString() +
+                    " can't be placed within " +
+                    zoneRadius + "m of a hostile while in combat.");
+                event.setCancelled(true);
+            }
+        } else {
+            event.getPlayer().sendMessage(ChatColor.RED + event.getBlockPlaced().getType().toString() + " can't be placed while in combat.");
+            event.setCancelled(true);
+        }
+    }
 
 }

@@ -10,13 +10,13 @@ import org.bukkit.inventory.ItemStack;
 
 public class ExtraDurabilityListener implements Listener {
 
-	@EventHandler
-	public void onDurabilityChange(PlayerItemDamageEvent e) {
-		ItemStack is = e.getItem();
-		ArmourModifier armourModifier = Finale.getPlugin().getManager().getArmourModifier();
-		ExtraDurabilityTracker extraDurabilityTracker = armourModifier.getExtraDurabilityTracker();
-		boolean reduce = extraDurabilityTracker.reduceDurability(e.getPlayer(), is.getType());
-		e.setCancelled(!reduce);
-	}
+    @EventHandler
+    public void onDurabilityChange(PlayerItemDamageEvent e) {
+        ItemStack is = e.getItem();
+        ArmourModifier armourModifier = Finale.getPlugin().getManager().getArmourModifier();
+        ExtraDurabilityTracker extraDurabilityTracker = armourModifier.getExtraDurabilityTracker();
+        boolean reduce = extraDurabilityTracker.reduceDurability(e.getPlayer(), is.getType());
+        e.setCancelled(!reduce);
+    }
 
 }

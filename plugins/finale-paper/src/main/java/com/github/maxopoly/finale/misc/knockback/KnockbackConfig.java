@@ -39,9 +39,9 @@ public class KnockbackConfig {
 	@Override
 	public String toString() {
 		return "KnockbackConfig{" +
-				"groundModifier=" + groundModifier +
-				", airModifier=" + airModifier +
-				", waterModifier=" + waterModifier +
-				'}';
+			"groundModifier=" + groundModifier +
+			", airModifier=" + airModifier +
+			", waterModifier=" + waterModifier +
+			'}';
 	}
 }

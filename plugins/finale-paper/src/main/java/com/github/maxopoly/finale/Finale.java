@@ -34,106 +34,106 @@ import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
 public class Finale extends ACivMod {
 
-	private static Finale instance;
+    private static Finale instance;
 
-	public static Finale getPlugin() {
-		return instance;
-	}
-	
-	private FinaleManager manager;
-	private CombatTagPlusManager ctpManager;
-	private ConfigParser config;
-	private FinaleSettingManager settingsManager;
-	private CommandManager commandManager;
+    public static Finale getPlugin() {
+        return instance;
+    }
 
-	public CombatTagPlusManager getCombatTagPlusManager() {
-		return ctpManager;
-	}
+    private FinaleManager manager;
+    private CombatTagPlusManager ctpManager;
+    private ConfigParser config;
+    private FinaleSettingManager settingsManager;
+    private CommandManager commandManager;
 
-	public FinaleManager getManager() {
-		return manager;
-	}
-	
-	public FinaleSettingManager getSettingsManager() {
-		return settingsManager;
-	}
+    public CombatTagPlusManager getCombatTagPlusManager() {
+        return ctpManager;
+    }
 
-	private void initExternalManagers() {
-		if (!config.isPearlEnabled())
-			return;
-		// Only set up these managers if pearl cooldown change is in effect, otherwise
-		// move on; better not to put hooks in that go unused.
-		PluginManager plugins = Bukkit.getPluginManager();
-		if (plugins.isPluginEnabled("CombatTagPlus")) {
-			ctpManager = new CombatTagPlusManager();
-		}
-	}
+    public FinaleManager getManager() {
+        return manager;
+    }
 
-	@Override
-	public void onDisable() {
-		if (manager != null) {
-			manager.getAllyHandler().save();
-			manager.getAllyHandler().shutdown();
-		}
+    public FinaleSettingManager getSettingsManager() {
+        return settingsManager;
+    }
 
-		HandlerList.unregisterAll(this);
-		ProtocolLibrary.getProtocolManager().removePacketListeners(this);
-		ProtocolLibrary.getProtocolManager().getAsynchronousManager().unregisterAsyncHandlers(this);
-		Bukkit.getScheduler().cancelTasks(this);
-	}
+    private void initExternalManagers() {
+        if (!config.isPearlEnabled())
+            return;
+        // Only set up these managers if pearl cooldown change is in effect, otherwise
+        // move on; better not to put hooks in that go unused.
+        PluginManager plugins = Bukkit.getPluginManager();
+        if (plugins.isPluginEnabled("CombatTagPlus")) {
+            ctpManager = new CombatTagPlusManager();
+        }
+    }
 
-	@Override
-	public void onEnable() {
-		super.onEnable();
-		instance = this;
-		commandManager = new CommandManager(this);
-		commandManager.init();
-		reload();
-	}
+    @Override
+    public void onDisable() {
+        if (manager != null) {
+            manager.getAllyHandler().save();
+            manager.getAllyHandler().shutdown();
+        }
 
-	private void registerListener() {
-		Bukkit.getPluginManager().registerEvents(new PlayerListener(manager), this);
-		// So far the pearl listener, CTP manager only needed if pearl cooldown changes
-		// are enabled.
-		if (config.isPearlEnabled()) {
-			Bukkit.getPluginManager()
-					.registerEvents(new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(),
-							ctpManager), this);
-		}
-		Bukkit.getPluginManager().registerEvents(new WeaponModificationListener(), this);
-		Bukkit.getPluginManager().registerEvents(new ExtraDurabilityListener(), this);
-		Bukkit.getPluginManager().registerEvents(new EnchantmentDisableListener(config.getDisabledEnchants()), this);
-		Bukkit.getPluginManager().registerEvents(new PotionListener(config.getPotionHandler()), this);
-		Bukkit.getPluginManager().registerEvents(new VelocityFixListener(config.getVelocityHandler()), this);
-		Bukkit.getPluginManager().registerEvents(new DamageListener(config.getDamageModifiers()), this);
-		Bukkit.getPluginManager().registerEvents(new ScoreboardHUD(settingsManager), this);
-		Bukkit.getPluginManager().registerEvents(new ToolProtectionListener(settingsManager), this);
-		Bukkit.getPluginManager().registerEvents(new WarpFruitListener(), this);
-		Bukkit.getPluginManager().registerEvents(new TridentListener(), this);
-		Bukkit.getPluginManager().registerEvents(new ShieldListener(), this);
-		Bukkit.getPluginManager().registerEvents(new BlockListener(), this);
-		Bukkit.getPluginManager().registerEvents(new CrossbowListener(), this);
-		Bukkit.getPluginManager().registerEvents(new GappleListener(), this);
-	}
+        HandlerList.unregisterAll(this);
+        ProtocolLibrary.getProtocolManager().removePacketListeners(this);
+        ProtocolLibrary.getProtocolManager().getAsynchronousManager().unregisterAsyncHandlers(this);
+        Bukkit.getScheduler().cancelTasks(this);
+    }
 
-	private void registerCommands() {
-		commandManager.registerCommand(new CardinalCommand());
-		commandManager.registerCommand(new CombatConfigCommand());
-		commandManager.registerCommand(new GammaBrightCommand());
-		commandManager.registerCommand(new ReloadFinaleCommand());
-		commandManager.registerCommand(new ShowCpsCommand());
-		commandManager.registerCommand(new FinaleCommand());
-		commandManager.registerCommand(new AllyCommand());
-	}
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        instance = this;
+        commandManager = new CommandManager(this);
+        commandManager.init();
+        reload();
+    }
 
-	public void reload() {
-		onDisable();
-		config = new ConfigParser(this);
-		manager = config.parse();
-		settingsManager = new FinaleSettingManager();
-		initExternalManagers();
-		registerListener();
-		registerCommands();
-	}
+    private void registerListener() {
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(manager), this);
+        // So far the pearl listener, CTP manager only needed if pearl cooldown changes
+        // are enabled.
+        if (config.isPearlEnabled()) {
+            Bukkit.getPluginManager()
+                .registerEvents(new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(),
+                    ctpManager), this);
+        }
+        Bukkit.getPluginManager().registerEvents(new WeaponModificationListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ExtraDurabilityListener(), this);
+        Bukkit.getPluginManager().registerEvents(new EnchantmentDisableListener(config.getDisabledEnchants()), this);
+        Bukkit.getPluginManager().registerEvents(new PotionListener(config.getPotionHandler()), this);
+        Bukkit.getPluginManager().registerEvents(new VelocityFixListener(config.getVelocityHandler()), this);
+        Bukkit.getPluginManager().registerEvents(new DamageListener(config.getDamageModifiers()), this);
+        Bukkit.getPluginManager().registerEvents(new ScoreboardHUD(settingsManager), this);
+        Bukkit.getPluginManager().registerEvents(new ToolProtectionListener(settingsManager), this);
+        Bukkit.getPluginManager().registerEvents(new WarpFruitListener(), this);
+        Bukkit.getPluginManager().registerEvents(new TridentListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ShieldListener(), this);
+        Bukkit.getPluginManager().registerEvents(new BlockListener(), this);
+        Bukkit.getPluginManager().registerEvents(new CrossbowListener(), this);
+        Bukkit.getPluginManager().registerEvents(new GappleListener(), this);
+    }
+
+    private void registerCommands() {
+        commandManager.registerCommand(new CardinalCommand());
+        commandManager.registerCommand(new CombatConfigCommand());
+        commandManager.registerCommand(new GammaBrightCommand());
+        commandManager.registerCommand(new ReloadFinaleCommand());
+        commandManager.registerCommand(new ShowCpsCommand());
+        commandManager.registerCommand(new FinaleCommand());
+        commandManager.registerCommand(new AllyCommand());
+    }
+
+    public void reload() {
+        onDisable();
+        config = new ConfigParser(this);
+        manager = config.parse();
+        settingsManager = new FinaleSettingManager();
+        initExternalManagers();
+        registerListener();
+        registerCommands();
+    }
 
 }
