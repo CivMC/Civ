@@ -1,0 +1,4 @@
+# set line endings
+* text=auto eol=lf
+
+gradlew.bat eol=crlf
