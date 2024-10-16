@@ -1,4 +1,5 @@
 val paperPlugin by configurations.creating
+val pvpPlugin by configurations.creating
 val proxyPlugin by configurations.creating
 
 dependencies {
@@ -25,6 +26,15 @@ dependencies {
     paperPlugin(project(path = ":plugins:randomspawn-paper"))
     paperPlugin(project(path = ":plugins:realisticbiomes-paper"))
     paperPlugin(project(path = ":plugins:simpleadminhacks-paper"))
+
+    pvpPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
+    pvpPlugin(project(path = ":plugins:civduties-paper"))
+    pvpPlugin(project(path = ":plugins:civmodcore-paper", configuration = "shadow"))
+    pvpPlugin(project(path = ":plugins:combattagplus-paper"))
+    pvpPlugin(project(path = ":plugins:finale-paper"))
+    pvpPlugin(project(path = ":plugins:simpleadminhacks-paper"))
+    pvpPlugin(project(path = ":plugins:kitpvp-paper"))
+    pvpPlugin(project(path = ":plugins:voidworld-paper"))
 }
 
 val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {
@@ -37,6 +47,18 @@ val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {
     from("$projectDir/src/paper-plugins")
     from(paperPlugin.resolvedConfiguration.resolvedArtifacts.map { it.file })
     into("$buildDir/paper-plugins")
+}
+
+val copyPvpPlugins = tasks.register<Copy>("copyPvpPlugins") {
+    dependsOn(pvpPlugin)
+
+    doFirst {
+        project.delete(files("$buildDir/pvp-plugins"))
+    }
+
+    from("$projectDir/src/pvp-plugins")
+    from(pvpPlugin.resolvedConfiguration.resolvedArtifacts.map { it.file })
+    into("$buildDir/pvp-plugins")
 }
 
 val copyProxyPlugins = tasks.register<Copy>("copyProxyPlugins") {
@@ -54,5 +76,6 @@ val copyProxyPlugins = tasks.register<Copy>("copyProxyPlugins") {
 // TODO: Is build the right name?
 tasks.register("build") {
     dependsOn(copyPaperPlugins)
+    dependsOn(copyPvpPlugins)
     dependsOn(copyProxyPlugins)
 }

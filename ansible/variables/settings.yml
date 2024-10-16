@@ -10,6 +10,7 @@ settings:
       whitelist: false
       resources: &default_minecraft_resources
         memory: 40G
+        pvp_memory: 10G
     # Optional Stacks
     auth:
       enabled: false
@@ -33,6 +34,7 @@ settings:
       resources:
         <<: *default_minecraft_resources
         memory: 8G
+        pvp_memory: 4G
     auth:
       enabled: true # TODO: MOVE
     maven:
