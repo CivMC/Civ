@@ -83,8 +83,8 @@ public abstract class IClickable {
     }
 
     /**
-     * Called when a player middle (mouse wheell) clicks this clickable, overwrite to define
-     * special behavior for this
+     * Called when a player middle (mouse wheel) clicks this clickable, overwrite to define
+     * special behavior for this. Only functions in creative mode.
      *
      * @param clicker Player who clicked
      */
