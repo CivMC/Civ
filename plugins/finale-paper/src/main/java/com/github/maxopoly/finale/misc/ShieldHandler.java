@@ -60,7 +60,7 @@ public class ShieldHandler {
         }
 
         if (shieldBashResistanceEnabled) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, shieldBashResistanceDuration, shieldBashResistanceAmplifier));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, shieldBashResistanceDuration, shieldBashResistanceAmplifier));
         }
 
         Location location = player.getLocation();

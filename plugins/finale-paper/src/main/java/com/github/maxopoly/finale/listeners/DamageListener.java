@@ -67,7 +67,7 @@ public class DamageListener implements Listener {
             if (e.getDamager().getType() == EntityType.TRIDENT) {
                 handleTrident(e);
             }
-            if (e.getDamager().getType() == EntityType.FIREWORK) {
+            if (e.getDamager().getType() == EntityType.FIREWORK_ROCKET) {
                 DamageModificationConfig fireworkModifier = modifiers.get(DamageModificationConfig.Type.FIREWORK);
                 if (fireworkModifier != null) {
                     double damage = fireworkModifier.modify(e.getDamage());

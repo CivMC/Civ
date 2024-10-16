@@ -1,15 +1,20 @@
 package com.github.maxopoly.finale.misc;
 
+import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.misc.ArmourModifier.ArmourConfig;
 import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 public class ItemUtil {
 
@@ -84,4 +89,16 @@ public class ItemUtil {
 	public static boolean isBoots(ItemStack is) {
 		return BOOTS.contains(is.getType());
 	}
+
+    public static ItemStack setAAKey(ItemStack is, String key) {
+        ItemMeta meta = is.getItemMeta();
+        meta.getPersistentDataContainer().set(new NamespacedKey(Finale.getPlugin(), "aa-key"), PersistentDataType.STRING, key);
+        is.setItemMeta(meta);
+        return is;
+    }
+
+    public static String getAAKey(ItemStack is) {
+        ItemMeta meta = is.getItemMeta();
+        return meta.getPersistentDataContainer().get(new NamespacedKey(Finale.getPlugin(), "aa-key"), PersistentDataType.STRING);
+    }
 }

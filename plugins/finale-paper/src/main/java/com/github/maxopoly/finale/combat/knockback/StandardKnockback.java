@@ -4,6 +4,7 @@ import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.combat.CombatConfig;
 import com.github.maxopoly.finale.combat.SprintHandler;
 import com.github.maxopoly.finale.misc.knockback.KnockbackConfig;
+import io.papermc.paper.event.entity.EntityKnockbackEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,7 +16,7 @@ import org.bukkit.util.Vector;
 public class StandardKnockback implements KnockbackStrategy {
 
     @Override
-    public void handleKnockback(Player attacker, Entity entity, int knockbackLevel) {
+    public void handleKnockback(Player attacker, Entity entity, float knockbackLevel) {
         CombatConfig config = Finale.getPlugin().getManager().getCombatConfig();
         SprintHandler sprintHandler = Finale.getPlugin().getManager().getSprintHandler();
 
@@ -49,7 +50,7 @@ public class StandardKnockback implements KnockbackStrategy {
                 if (victim.isInWater()) {
                     dv = knockbackConfig.getWaterModifier().modifyKnockback(start, dv);
                 } else {
-                    if (!victim.isOnGround()) {
+                    if (!victim.onGround()) {
                         dv = knockbackConfig.getAirModifier().modifyKnockback(start, dv);
                     } else {
                         dv = knockbackConfig.getGroundModifier().modifyKnockback(start, dv);
@@ -62,7 +63,7 @@ public class StandardKnockback implements KnockbackStrategy {
                 org.bukkit.util.Vector delta = new org.bukkit.util.Vector(currentMovement.x - vec3d.x, currentMovement.y - vec3d.y, currentMovement.z - vec3d.z);
 
                 victim.setDeltaMovement(vec3d);
-                if (attacker == null || new com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent((org.bukkit.entity.LivingEntity) victim.getBukkitEntity(), attacker.getBukkitEntity(), (float) strength, delta).callEvent()) {
+                if (new com.destroystokyo.paper.event.entity.EntityKnockbackByEntityEvent((org.bukkit.entity.LivingEntity) victim.getBukkitEntity(), attacker.getBukkitEntity(), EntityKnockbackEvent.Cause.ENTITY_ATTACK, (float) strength, delta).callEvent()) {
                     double dmx = vec3d.x + delta.getX();
                     double dmy = vec3d.y + delta.getY();
                     double dmz = vec3d.z + delta.getZ();

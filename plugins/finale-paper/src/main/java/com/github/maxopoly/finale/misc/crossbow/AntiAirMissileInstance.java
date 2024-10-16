@@ -123,7 +123,7 @@ public class AntiAirMissileInstance {
 					}
 
 					loc.getWorld().spawnParticle(Particle.CLOUD, loc, 1, 0, 0, 0, 0, null, true);
-					loc.getWorld().spawnParticle(Particle.SMOKE_LARGE, loc, 1, 0, 0, 0, 0, null, true);
+					loc.getWorld().spawnParticle(Particle.LARGE_SMOKE, loc, 1, 0, 0, 0, 0, null, true);
 					loc.getWorld().spawnParticle(Particle.FLAME, loc, 1, 0, 0, 0, 0, null, true);
 					return false;
 				}, 10);
@@ -134,10 +134,10 @@ public class AntiAirMissileInstance {
 				double damageRadius = antiAirMissile.getDamageRadius();
 
 				this.loc.getWorld().playSound(this.loc, Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f);
-				this.loc.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, this.loc, (int) (10 * damageRadius * damageRadius), damageRadius / 2, damageRadius / 2, damageRadius / 2, 0, null, true);
+//				this.loc.getWorld().spawnParticle(Particle.EXPLOSION, this.loc, (int) (10 * damageRadius * damageRadius), damageRadius / 2, damageRadius / 2, damageRadius / 2, 0, null, true);
 				this.loc.getWorld().spawnParticle(Particle.CLOUD, this.loc, (int) (10 * damageRadius * damageRadius), damageRadius, damageRadius, damageRadius, 0, null, true);
-				this.loc.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, this.loc, (int) (20 * damageRadius * damageRadius), damageRadius, damageRadius, damageRadius, 0, null, true);
-				this.loc.getWorld().spawnParticle(Particle.SMOKE_LARGE, this.loc, (int) (20 * damageRadius * damageRadius), damageRadius, damageRadius, damageRadius, 0, null, true);
+				this.loc.getWorld().spawnParticle(Particle.EXPLOSION, this.loc, (int) (20 * damageRadius * damageRadius), damageRadius, damageRadius, damageRadius, 0, null, true);
+				this.loc.getWorld().spawnParticle(Particle.SMOKE, this.loc, (int) (20 * damageRadius * damageRadius), damageRadius, damageRadius, damageRadius, 0, null, true);
 				this.loc.getWorld().spawnParticle(Particle.FLAME, this.loc, (int) (40 * damageRadius * damageRadius), damageRadius, damageRadius, damageRadius, 0, null, true);
 
 				Collection<LivingEntity> damageEntities = this.loc.getNearbyLivingEntities(damageRadius);

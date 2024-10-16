@@ -3,11 +3,6 @@ package com.github.maxopoly.finale.misc.crossbow;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.misc.CooldownHandler;
 import com.github.maxopoly.finale.misc.ItemUtil;
-import dev.jayms.arsenal.Arsenal;
-import dev.jayms.arsenal.artillery.Artillery;
-import dev.jayms.arsenal.artillery.ArtilleryManager;
-import dev.jayms.arsenal.artillery.event.MissileExplodeEvent;
-import dev.jayms.arsenal.util.LocationTools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,16 +115,10 @@ public class CrossbowHandler {
             bastionBlockManager.erodeFromPlace(shooter, bastions);
         }
 
-        List<Location> explodeLocs = LocationTools.getCircle(loc, radius, radius, false, true, 0);
-        List<Block> explodeBlocks = new ArrayList<>();
+        List<Location> explodeLocs = getCircle(loc, radius, radius, false, true, 0);
         for (Location explodeLoc : explodeLocs) {
             Block explodeBlock = explodeLoc.getBlock();
             if (explodeBlock.getType() != Material.AIR && explodeBlock.getType() != Material.BEDROCK && explodeBlock.getType() != Material.BARRIER) {
-                ArtilleryManager artilleryManager = Arsenal.getInstance().getArtilleryManager();
-                Artillery artillery = artilleryManager.getArtillery(explodeLoc);
-                if (artillery != null) {
-                    artillery.damage(getArtilleryDamage());
-                }
                 Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(explodeBlock);
                 if (rein != null) {
                     for (int i = 0; i < reinforcementDamage; i++) {
@@ -147,13 +136,29 @@ public class CrossbowHandler {
                     }
 
                     explodeBlock.setType(type);
-                    explodeBlocks.add(explodeBlock);
                 }
             }
         }
-
-        MissileExplodeEvent missileExplodeEvent = new MissileExplodeEvent(explodeBlocks);
-        Bukkit.getPluginManager().callEvent(missileExplodeEvent);
     }
 
+    public static List<Location> getCircle(final Location loc, final int radius, final int height, final boolean hollow, final boolean sphere, final int plusY) {
+        final List<Location> circleblocks = new ArrayList<>();
+        final int cx = loc.getBlockX();
+        final int cy = loc.getBlockY();
+        final int cz = loc.getBlockZ();
+
+        for (int x = cx - radius; x <= cx + radius; x++) {
+            for (int z = cz - radius; z <= cz + radius; z++) {
+                for (int y = (sphere ? cy - radius : cy); y < (sphere ? cy + radius : cy + height); y++) {
+                    final double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? (cy - y) * (cy - y) : 0);
+
+                    if (dist < radius * radius && !(hollow && dist < (radius - 1) * (radius - 1))) {
+                        final Location l = new Location(loc.getWorld(), x, y + plusY, z);
+                        circleblocks.add(l);
+                    }
+                }
+            }
+        }
+        return circleblocks;
+    }
 }

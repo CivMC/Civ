@@ -97,15 +97,15 @@ public class WarpFruitTracker {
         List<Player> rest = audience.getRest();
 
         Particle.DustOptions dustOptions = new Particle.DustOptions(Color.PURPLE, 1);
-        loc.getWorld().spawnParticle(Particle.REDSTONE, rest, null, loc.getX(), loc.getY(), loc.getZ(),
+        loc.getWorld().spawnParticle(Particle.DUST, rest, null, loc.getX(), loc.getY(), loc.getZ(),
             1, 0, 0, 0, 0, dustOptions, true);
 
         dustOptions = new Particle.DustOptions(Color.BLUE, 1);
-        loc.getWorld().spawnParticle(Particle.REDSTONE, allies, null, loc.getX(), loc.getY(), loc.getZ(),
+        loc.getWorld().spawnParticle(Particle.DUST, allies, null, loc.getX(), loc.getY(), loc.getZ(),
             1, 0, 0, 0, 0, dustOptions, true);
 
         dustOptions = new Particle.DustOptions(Color.GREEN, 1);
-        loc.getWorld().spawnParticle(Particle.REDSTONE, self, null, loc.getX(), loc.getY(), loc.getZ(),
+        loc.getWorld().spawnParticle(Particle.DUST, self, null, loc.getX(), loc.getY(), loc.getZ(),
             1, 0, 0, 0, 0, dustOptions, true);
     }
 

@@ -178,7 +178,7 @@ public class AllyHandler implements Listener {
 				if (loc == null) {
 					loc = sourcePlayer.getEyeLocation().clone().add(dir);
 
-					loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, dustOptions);
+					loc.getWorld().spawnParticle(Particle.DUST, loc, 1, dustOptions);
 				} else {
 					Location prevLoc = loc;
 					Location newLoc = loc.clone().add(dir);
@@ -195,7 +195,7 @@ public class AllyHandler implements Listener {
 						subLoc.getWorld().spawnParticle(Particle.REDSTONE, subLoc, 1, dustOptions);
 					}*/
 					ParticleUtil.line(prevLoc, newLoc, (loc) -> {
-						loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, dustOptions);
+						loc.getWorld().spawnParticle(Particle.DUST, loc, 1, dustOptions);
 						return false;
 					}, 10);
 
