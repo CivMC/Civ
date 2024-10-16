@@ -1,0 +1,57 @@
+# Build a project
+name: 🐘 Gradle | Build Project
+
+on:
+  workflow_dispatch:
+    inputs:
+      category:
+        required: true
+        description: 'The category of project'
+        type: choice
+        options:
+          - plugins
+      project:
+        required: true
+        description: 'The project to build'
+        type: string
+  workflow_call:
+    inputs:
+      category:
+        required: true
+        description: 'The category of project'
+        type: string
+      project:
+        required: true
+        description: 'The project to build'
+        type: string
+
+jobs:
+  build_gradle:
+    name: 🐘 Build Gradle
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚩 Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: ❓ Ensure Wrapper Permissions
+        run: chmod +x ./gradlew
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 🐘 Gradle Build
+        uses: gradle/gradle-build-action@v2
+        env:
+          CI: true
+        with:
+          arguments: "${{inputs.category}}:${{inputs.project}}:build --scan"
+
+      - name: 🗃️ Upload Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: gradle-build
+          path: '**/build/libs/*'

@@ -1,0 +1,49 @@
+# Publish and release a project when a tag is created.
+# TODO: Currently, this only supports plugins.
+name: 🏷️ Tag Pushed
+
+on:
+  push:
+    tags:
+      - '*/v*.*.*'
+
+jobs:
+  split_values:
+    name: ✂️ Split Values
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.split_version.outputs.version }}
+      project: ${{ steps.split_project.outputs.project }}
+
+    steps:
+      - name: ✂️ Split Project Version
+        id: split_version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: echo "version=${TAG##*/}" >> $GITHUB_OUTPUT
+
+      - name: ✂️ Split Project Name
+        id: split_project
+        env:
+          TAG: ${{ github.ref_name }}
+          VERSION: ${{steps.split_version.outputs.version }}
+        run: echo "project=${TAG///$VERSION}" >> $GITHUB_OUTPUT
+
+  call_publish_gradle:
+    needs: split_values
+    name: ☎️ Call Publish Gradle
+    uses: ./.github/workflows/publish_gradle_project.yaml
+    secrets: inherit
+    with:
+      category: plugins
+      project: ${{ needs.split_values.outputs.project }}
+
+  call_release_gradle:
+    needs: split_values
+    name: ☎️ Call Release Gradle
+    uses: ./.github/workflows/release_gradle_project.yaml
+    secrets: inherit
+    with:
+      category: plugins
+      project: ${{ needs.split_values.outputs.project }}

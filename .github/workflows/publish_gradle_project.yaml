@@ -1,0 +1,55 @@
+# Publish a project to maven
+name: 🐘 Gradle | Publish Project
+
+on:
+  workflow_dispatch:
+    inputs:
+      category:
+        required: true
+        description: 'The category of project'
+        type: choice
+        options:
+          - plugins
+      project:
+        required: true
+        description: 'The project to publish'
+        type: string
+  workflow_call:
+    inputs:
+      category:
+        required: true
+        description: 'The category of project'
+        type: string
+      project:
+        required: true
+        description: 'The project to publish'
+        type: string
+
+jobs:
+  publish_gradle:
+    name: 🐘 Publish Gradle
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: 🚩 Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: ❓ Ensure Wrapper Permissions
+        run: chmod +x ./gradlew
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 🐘 Gradle Publish
+        uses: gradle/gradle-build-action@v2
+        env:
+          CI: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          arguments: "${{inputs.category}}:${{inputs.project}}:publish --scan"

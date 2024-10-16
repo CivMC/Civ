@@ -1,0 +1,10 @@
+mysql:
+ user: bukkit
+ password: bukkit
+ db: bukkit
+ host: localhost
+ port: 3306
+ poolsize: 5
+ connection_timeout: 10000
+ idle_timeout: 600000
+ max_lifetime: 7200000

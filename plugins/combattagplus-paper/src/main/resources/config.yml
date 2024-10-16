@@ -1,0 +1,188 @@
+# Don't touch this. It's here to determine whether you need to refresh your config.
+config-version: 25
+
+# The duration in seconds that both the attacker and victim should be tagged in combat.
+tag-duration: 15
+
+# This message is displayed to both the attacker and victim when newly tagged. Set this to '' to display nothing. {opponent} is the other player.
+tag-message: '&cYou have engaged in combat with &b{opponent}&c. Type &b/ct &cto check your timer.'
+
+# This message is displayed to both the attacker and victim when newly tagged if the opponent is unknown. Set this to '' to display nothing.
+tag-unknown-message: '&cYou have engaged in combat. Type &b/ct &cto check your timer.'
+
+# This message is displayed the player when their tag expires. Set this to '' to display nothing.
+untag-message: '&aYou are no longer in combat.'
+
+# This message is displayed to the player when they attempt to check the remaining time on their tag, while not being tagged
+command-untag-message: '&aYou are not in combat.'
+ 
+# This message is displayed to the player when they check the remaining time on their tag via command. {time} will be replaced with the remaining tag time.
+command-tag-message: '&c{time} seconds remaining on your combat timer.'
+
+# Resets the tag time when the tagged player throws an enderpearl.
+reset-tag-on-pearl: false
+
+# Plays an effect when a player logs off during combat.
+play-effect: true
+
+# Always spawns the NPC even without combat tagged to prevent any chance of running away.
+always-spawn: false
+
+# Allows mobs to combat tag players.
+mob-tagging: false
+
+# Duration in seconds the player must wait without movement to safely logout using the /logout command.
+logout-wait-time: 10
+
+# This message is displayed when the player has attempted to safely log out but moved or entered pvp.
+logout-cancelled-message: '&cLogout cancelled due to movement or pvping.'
+
+# This message is displayed when the player has successfully performed a safe logout.
+logout-success-message: '&aYou were logged out safely.'
+
+# This message is displayed every second when the player is pending a logout. {remaining} is the time remaining.
+logout-pending-message: '&7Logging out safely in &b{remaining}&7...'
+
+# Instantly kills the player when logged in PvP.
+instantly-kill: false
+
+# Untags the player if they are kicked from combat rather than logging.
+untag-on-kick: false
+
+# If a player is kicked with a kick message that contains any of the following, they will not be untagged.
+untag-on-kick-blacklist:
+  - disconnect.spam
+
+# Only the attacker will be tagged if this is set to true.
+only-tag-attacker: false
+
+# Disables players being able to tag themselves.
+disable-self-tagging: true
+
+# Prevent block editing while tagged.
+disable-block-edit: false
+
+# This message is displayed when a player attempts to edit blocks within pvp if block editing is disabled in pvp.
+disable-block-edit-message: '&bBlock editing &cis disabled in combat.'
+
+# Disable a player from accessing storage (like chests and brewing stands) in combat
+disable-storage-access: false
+
+disable-storage-access-message: '&bAccess to storage &cis disabled in combat'
+
+# Prevent players in creative from getting tagged.
+disable-creative-tags: true
+
+# Prevent tagged players throwing enderpearls while tagged.
+disable-enderpearls: false
+
+# This message is displayed when a player attempts to enderpearl within pvp if enderpearls are disabled in pvp.
+disable-enderpearls-message: '&bEnderpearls &care disabled in combat.'
+
+# Prevent tagged players from flying during combat.
+disable-flying: false
+
+# This message is displayed when a player attempts to fly within pvp if flying is disabled in pvp.
+disable-flying-message: '&bFlying &cis disabled in combat.'
+
+# Prevent tagged players from teleporting during combat.
+disable-teleportation: false
+
+# Optionally untag a player if tagged and teleportation is caused by PLUGIN or UNKNOWN
+# Players can avoid CombatTag by abusing some plugins like NoCheatPlus and WorldBorder s both can cause somewhat frequent UNKNOWN and PLUGIN teleport events.
+# This allows server-owners to avoid these issues by keeping the player CombatTagged
+untag-on-plugin-teleport: false
+
+# This message is displayed when a player attempts to teleport within pvp if teleportation is disabled in pvp.
+disable-teleportation-message: '&bTeleportation &cis disabled in combat.'
+
+# Prevents tagged players from crafting during combat.
+disable-crafting: false
+
+# This message is displayed when a player attempts to craft an item while in combat if crafting is disabled.
+disable-crafting-message: '&bCrafting &cis disabled in combat.'
+
+# The duration in seconds to despawn the combat logger's NPC if it hasn't died.
+npc-despawn-time: 60
+
+# Should we reset the NPC despawn time when it gets hit?
+reset-despawn-time-on-hit: true
+
+# Generates a random name for the NPC. Turn this off to use the player name (potentially unsafe!)
+generate-random-name: true
+
+# This is the prefix to use for the random name. 12 characters max.
+random-name-prefix: PvPLogger
+
+# This message is displayed when a player is killed by another player. Set this to '' to display nothing.
+kill-message: '&8&l>> &c{victim} was slain by {attacker}'
+
+# Same as above, this is displayed when a player is killed by another player with an item in hand.
+kill-message-item: '&8&l>> &c{victim} was slain by {attacker} with a {item}'
+
+# Enables BarAPI integration for displaying a boss bar counting down with the remaining tag time.
+barapi: true
+
+# Message to be displayed on BarAPI when players' pvp timer has ended.
+barapi-ended-message: '&aYou are no longer in combat!'
+
+# Message to be displayed on BarAPI when the player is still in pvp.
+barapi-countdown-message: '&eCombatTag: &f{remaining}'
+
+# Deny movement into safezones from PVP enabled areas while combat tagged.
+deny-safezone: true
+
+# Deny teleporting with enderpearls into safezones from PVP enabled areas while combat tagged.
+deny-safezone-enderpearl: true
+
+# Enables force fields around Anti-PvP zones while in combat.
+force-fields: true
+
+# Radius in blocks around the player that should be checked for forcefields (Higher numbers = more laggy)
+force-field-radius: 10
+
+# Material of the forcefield block type.
+force-field-material: STAINED_GLASS
+
+# Damage value of the material specified above.
+force-field-material-damage: 14
+
+# Enables Factions integration for disabling combat tagging in regions with PVP disabled.
+factions: true
+
+# Enables WorldGuard integration for disabling combat tagging in regions with PVP disabled.
+worldguard: true
+
+# Enables Towny integration for disabling combat tagging in regions with PVP disabled.
+towny: true
+
+# This is a list of worlds where combat tagging should be disabled.
+disabled-worlds: [world_the_end]
+
+# This message is displayed when the player tries to execute a disabled command whilst in combat.
+disabled-command-message: '&b{command}&c is disabled in combat.'
+
+# These commands are unusable by players who are combat tagged. Use '*' to blacklist all commands.
+command-blacklist:
+  - '*'
+
+# Customize the words used to describe durations (both singular and plural)
+duration-words:
+  day: "day"
+  days: "days"
+  hour: "hour"
+  hours: "hours"
+  minute: "minute"
+  minutes: "minutes"
+  second: "second"
+  seconds: "seconds"
+
+# These commands are exceptions to the blacklist.
+command-whitelist:
+  - ct
+  - ctplus
+  - combattag
+  - ctlog
+  - logout
+  - ctlogout
+  - ctpluslogout
