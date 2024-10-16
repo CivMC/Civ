@@ -10,20 +10,20 @@ import org.bukkit.inventory.ItemStack;
 
 public class GappleListener implements Listener {
 
-	@EventHandler
-	public void onEatGapple(PlayerItemConsumeEvent event) {
-		ItemStack itemStack = event.getItem();
-		if (itemStack.getType() != Material.GOLDEN_APPLE) {
-			return;
-		}
+    @EventHandler
+    public void onEatGapple(PlayerItemConsumeEvent event) {
+        ItemStack itemStack = event.getItem();
+        if (itemStack.getType() != Material.GOLDEN_APPLE) {
+            return;
+        }
 
-		GappleHandler gappleHandler = Finale.getPlugin().getManager().getGappleHandler();
-		if (gappleHandler.onCooldown(event.getPlayer())) {
-			event.setCancelled(true);
-			return;
-		}
+        GappleHandler gappleHandler = Finale.getPlugin().getManager().getGappleHandler();
+        if (gappleHandler.onCooldown(event.getPlayer())) {
+            event.setCancelled(true);
+            return;
+        }
 
-		gappleHandler.putOnCooldown(event.getPlayer());
-	}
+        gappleHandler.putOnCooldown(event.getPlayer());
+    }
 
 }
