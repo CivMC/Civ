@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,12 +26,15 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SpongeAbsorbEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
+import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -181,6 +186,18 @@ public class BastionInteractListener implements Listener {
                 event.getPlayer().sendMessage(ChatColor.RED + "You lack permission to alter a Bastion with this group");
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void on(SpongeAbsorbEvent event) {
+        BastionType type = blockStorage.getTypeAtLocation(event.getBlock().getLocation());
+        if (type == null) {
+            type = blockStorage.getPendingBastion(event.getBlock().getLocation());
+        }
+        if (type == null) {
+            return;
+        }
+        event.setCancelled(true);
     }
 
     public BastionType blockToType(Block block, ItemStack inHand) {

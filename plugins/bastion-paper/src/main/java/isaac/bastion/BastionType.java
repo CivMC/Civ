@@ -3,6 +3,7 @@ package isaac.bastion;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Level;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -403,7 +404,7 @@ public class BastionType {
             im.setLore(lore);
         }
         if (itemName != null) {
-            im.setDisplayName(itemName);
+            im.displayName(Component.text(itemName));
         }
         is.setItemMeta(im);
         //Bastion.getPlugin().getLogger().log(Level.INFO, "Bastion {0} represented as {1}", new Object[] {name, is.toString()});
