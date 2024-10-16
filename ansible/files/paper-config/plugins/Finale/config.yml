@@ -4,7 +4,7 @@ alterAttack:
   speed: 1024
 #CombatTag player on login?
 ctpOnLogin: true
-
+  
 cleanerCombat:
   maxReach: 6.0
   cps:
@@ -19,40 +19,39 @@ cleanerCombat:
     weak: false
     strong: false
     knockback: false
-    crit: false
-  knockbackLevelMultiplier: 0.5 # a constant to control the knockback sword level
-  strategy: standard
+    crit: true
+  knockbackLevelMultiplier: 0.6 # a constant to control the knockback sword level
   normal:
     groundModifier: # modifies knockback in general.
-      type: MULTIPLY # MULTIPLY or ADD
-      x: 0.85
-      y: 0.8
-      z: 0.85
+      type: DIRECT # MULTIPLY or ADD or DIRECT
+      x: 0.625
+      y: 0.5
+      z: 0.625
     airModifier: # modifies knockback if the victim is in the air.
-      type: MULTIPLY # MULTIPLY or ADD
-      x: 0.95
-      y: 1.0
-      z: 0.95
+      type: DIRECT # MULTIPLY or ADD or DIRECT
+      x: 0.625
+      y: 0.5
+      z: 0.625
     waterModifier: # modifies knockback if the victim is in water.
-      type: MULTIPLY # MULTIPLY or ADD
-      x: 1.0
-      y: 1.0
-      z: 1.0
+      type: DIRECT # MULTIPLY or ADD or DIRECT
+      x: 0.625
+      y: 0.5
+      z: 0.625
   sprint: # modifies knockback if the attacker is sprinting.
     groundModifier: # modifies knockback in general.
-      type: MULTIPLY # MULTIPLY or ADD
+      type: DIRECT # MULTIPLY or ADD or DIRECT
       x: 1.0
-      y: 0.9
+      y: 0.6
       z: 1.0
     airModifier: # modifies knockback if the victim is in the air.
-      type: MULTIPLY
+      type: DIRECT
       x: 1.0
-      y: 1.0
+      y: 0.6
       z: 1.0
     waterModifier: # modifies knockback if the victim is in water.
-      type: MULTIPLY
+      type: DIRECT
       x: 1.0
-      y: 1.0
+      y: 0.6
       z: 1.0
   attackerMotion: # modifies motion of attacker upon attacking.
     x: 0.6
@@ -66,7 +65,7 @@ cleanerCombat:
     x: 10.0
     y: 10.0
     z: 10.0
-
+    
 # gives full control over health / regen, default is full reversion to 1.8 mechanics
 foodHealthRegen:
   enabled: true
@@ -78,21 +77,25 @@ foodHealthRegen:
   blockSaturationRegen: true
 # alters pearl cooldown using vanilla mechanism, optionally combattags on pearl (if combattagplus is available)
 pearls:
-  #Enable custom cooldown?
+#Enable custom cooldown?
   enabled: true
-  #Custom pearl cooldown
+#Custom pearl cooldown
   cooldown: 16s
-  #Combat tag using CTP when pearling?
+#Display in sidebar as score board entry?
+  useSideBar: false
+#Display in actionbar?
+  useActionBar: true
+#Combat tag using CTP when pearling?
   combatTag: true
-gapples:
-  enabled: true
-  cooldown: 30s
-  enchantedCooldown: 5m
-
+#Whether to set the vanilla cooldown (gray overlay) for players upon pearling. This will keep them from pearling client side, 
+#but they wont be able to see a cooldown in chat anymore and sometimes it's a bit laggy
+  setVanillaCooldown: false
+  
 #Config same as above, except with only enabled and cooldown as options
 gappleCooldown:
   enabled: true
   cooldown: 16s
+  
 #allows adjusting the attack damage of any item by its spigot material identifier
 weaponModification:
   netheriteAxe:
@@ -131,119 +134,117 @@ weaponModification:
   woodSword:
     material: WOODEN_SWORD
     damage: 3
-  trident:
-    material: TRIDENT
-    damage: 8
-
+    
 armourModification:
-  diamondHelmet:
-    material: DIAMOND_HELMET
-    armour: 3
-    toughness: 2
-    extraDurabilityHits: 1 # how many extra hits a player needs to take for the durability of the piece to fall
-  diamondChestplate:
-    material: DIAMOND_CHESTPLATE
-    armour: 8
-    toughness: 2
-    extraDurabilityHits: 1
-  diamondLeggings:
-    material: DIAMOND_LEGGINGS
-    armour: 6
-    toughness: 2
-    extraDurabilityHits: 1
-  diamondBoots:
-    material: DIAMOND_BOOTS
-    armour: 3
-    toughness: 2
-    extraDurabilityHits: 1
-  netheriteHelmet:
-    material: NETHERITE_HELMET
-    armour: 4
-    toughness: 3
-    extraDurabilityHits: 1
-    knockbackResistance: 0 # knockback resistance is a value between 0 and 1.
-  netheriteChestplate:
-    material: NETHERITE_CHESTPLATE
-    armour: 8
-    toughness: 3
-    extraDurabilityHits: 1
-    knockbackResistance: 0
-  netheriteLeggings:
-    material: NETHERITE_LEGGINGS
-    armour: 6
-    toughness: 3
-    extraDurabilityHits: 1
-    knockbackResistance: 0
-  netheriteBoots:
-    material: NETHERITE_BOOTS
-    armour: 4
-    toughness: 3
-    extraDurabilityHits: 1
-    knockbackResistance: 0
+   diamondHelmet:
+      material: DIAMOND_HELMET
+      armour: 3
+      toughness: 2
+      extraDurabilityHits: 1 # how many extra hits a player needs to take for the durability of the piece to fall
+   diamondChestplate:
+      material: DIAMOND_CHESTPLATE
+      armour: 8
+      toughness: 2
+      extraDurabilityHits: 1
+   diamondLeggings:
+      material: DIAMOND_LEGGINGS
+      armour: 6
+      toughness: 2
+      extraDurabilityHits: 1
+   diamondBoots:
+      material: DIAMOND_BOOTS
+      armour: 3
+      toughness: 2
+      extraDurabilityHits: 1
+   netheriteHelmet:
+     material: NETHERITE_HELMET
+     armour: 4
+     toughness: 3
+     extraDurabilityHits: 1
+     knockbackResistance: 0 # knockback resistance is a value between 0 and 1.
+   netheriteChestplate:
+     material: NETHERITE_CHESTPLATE
+     armour: 8
+     toughness: 3
+     extraDurabilityHits: 1
+     knockbackResistance: 0.1
+   netheriteLeggings:
+     material: NETHERITE_LEGGINGS
+     armour: 6
+     toughness: 3
+     extraDurabilityHits: 1
+     knockbackResistance: 0.1
+   netheriteBoots:
+     material: NETHERITE_BOOTS
+     armour: 4
+     toughness: 3
+     extraDurabilityHits: 1
+     knockbackResistance: 0
 
 #allows disabling enchantments. Use official spigot identifiers from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
 #This will not remove them from enchanting, but simply remove the enchant as soon as the item is touched
 disabledEnchantments:
-  - MENDING
-  - FROST_WALKER
-
+ - MENDING
+ - FROST_WALKER
+ - RIPTIDE
+ 
 potions:
-  #Allows applying a multiplier to the intensity of potions. Intensities <= 1.0 will always work fine, but intensities > 1
-  #may lead to unintended results for instant effects like INSTANT_HEALTH.
-  #All entries may have the following entries:
-  # type:
-  #   A potion type (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionType.html)
-  # upgraded:
-  #   Boolean to specify whether the pot is upgraded (tier 2)
-  # extended:
-  #   Boolean to specify whether the pot is extended
-  # splash:
-  #   Boolean to specify whether the pot is splash
-  # multiplier:
-  #   Double value, the multiplier applied to the duration. May not be negative and defaults to 1.0
+#Allows applying a multiplier to the intensity of potions. Intensities <= 1.0 will always work fine, but intensities > 1 
+#may lead to unintended results for instant effects like INSTANT_HEALTH.
+#All entries may have the following entries:
+# type:
+#   A potion type (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionType.html)
+# upgraded:
+#   Boolean to specify whether the pot is upgraded (tier 2) 
+# extended:
+#   Boolean to specify whether the pot is extended
+# splash:
+#   Boolean to specify whether the pot is splash 
+# multiplier:
+#   Double value, the multiplier applied to the duration. May not be negative and defaults to 1.0
 
-  #   ---
-  #All values specifying the kind of option are optional and will wildcard if not specified, for example:
+#   ---
+#All values specifying the kind of option are optional and will wildcard if not specified, for example:
 
-  #An entry applying to all extended splash potions:
-  #    splash:
-  #      splash: true
-  #      extended: true
-  #      multiplier: 0.8
+#An entry applying to all extended splash potions:
+#    splash:
+#      splash: true
+#      extended: true
+#      multiplier: 0.8
 
-  #Or one applying only to speed 8, both splash&drinkable
-  #    speed8:
-  #      type: SPEED
-  #      extended: true
-  #      multiplier: 0.8
+#Or one applying only to speed 8, both splash&drinkable
+#    speed8:
+#      type: SPEED
+#      extended: true
+#      multiplier: 0.8
   potIntensity:
     splash:
-      #All splash pots reduced
+#All splash pots reduced
       splash: true
       multiplier: 1.0
-    #Except for health
+#Except for health
     health:
       type: INSTANT_HEAL
       multiplier: 1.0
-  #Multiplier applied to the health gain from all health potions
+#Multiplier applied to the health gain from all health potions
   healthMultiplier: 1.5
   minIntensityCutOff: 0.3 # minimum intensity for non-thrower to steal some health effect.
   minIntensityImpact: 0.5 # minimum intensity for thrower to get full health effect.
-
+  
 velocity:
-  #In newer Minecraft versions when a player launches a projectile the players velocity will be added to the projectiles base velocity. This can lead to
-  #weird behavior sometimes and reverted with this setting. Add entity types (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html)
-  #of projectiles to the list to revert their behavior regarding initial velocity to 1.7
+#In newer Minecraft versions when a player launches a projectile the players velocity will be added to the projectiles base velocity. This can lead to 
+#weird behavior sometimes and reverted with this setting. Add entity types (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html) 
+#of projectiles to the list to revert their behavior regarding initial velocity to 1.7
   ENDER_PEARL:
-    type: REVERTED
-    power: 1.4
+     type: REVERTED
+     power: 1.4
   SPLASH_POTION:
-    type: REVERTED
-    power: 0.5
-    vertical: 0.4
-    horizontal: 0.4
-    pitchOffset: -20
-
+     type: REVERTED
+     power: 0.5
+     vertical: 0.4
+     horizontal: 0.4
+     pitchOffset: -20
+    
 #This option allows modifying the damage dealt by/to players based on certain properties. All entries look like this:
 
 #  SWORD:
@@ -258,12 +259,12 @@ velocity:
 
 #The order in which modifiers are applied is: ALL, ARROW, POWER_ENCHANT, STRENGTH_EFFECT, SWORD, SHARPNESS_ENCHANT, CRIT
 #Note that these effects are applied after vanilla damage additions and before vanilla damage reductions
-damageModifiers:
-  #Decrease all damage by 20 %
+damageModifiers: 
+#Decrease all damage by 20 % 
   ALL:
     multiplier: 0.8
     mode: DIRECT
-  #Increase sword damage by 25 %
+#Increase sword damage by 25 %
   SHARPNESS_ENCHANT:
     multiplier: 1.0
     mode: DIRECT
@@ -272,314 +273,16 @@ damageModifiers:
     multiplier: 1.0
   CRIT:
     mode: DIRECT
-    multiplier: 0.86
+    multiplier: 1.0
   STRENGTH_EFFECT:
     mode: DIRECT
-    multiplier: 0.8
-  ARROW:
-    mode: DIRECT
     multiplier: 1.0
-  POWER_ENCHANT:
-    mode: DIRECT
-    multiplier: 1.0
-  TRIDENT:
-    mode: DIRECT
-    multiplier: 1.0
-  IMPALE_ENCHANT:
-    mode: DIRECT
-    multiplier: 1.0
-  FIREWORK:
-    mode: DIRECT
-    multiplier: 1.0
-
-invulTicksEnabled: false
+    
+invulTicksEnabled: false #disabled because currently it messes up invulnerability with other damage types
 invulnerableTicks:
+  FIRE: 10
+  FIRE_TICK: 10
   POISON: 1
   PROJECTILE: 1
-  ENTITY_ATTACK: 10
-
-# the warp fruit will roll back to 7 seconds ago
-warpFruit: # logSize * logInterval = how far back in time you go
-  logSize: 35 # log queue size
-  logInterval: 200ms # in milliseconds
-  cooldown: 10s
-  maxDistance: 100 # max warp distance
-  spectralWhileChanneling: true
-  afterEffects:
-    slowness:
-      type: SLOW
-      amplifier: 0
-      duration: 40
-
-trident:
-  returnToOffhand:
-    enabled: true # if you throw the trident with your offhand, should it return to your offhand?
-    bypassFullInv: true # work even when player's inventory is full
-  generalCooldown: 10s
-  riptideCooldown: 60s
-
-shield:
-  bash:
-    enabled: true
-    activationResistance:
-      enabled: true
-      amplifier: 1
-      duration: 200
-    power:
-      fromGround:
-        x: 1.5
-        y: 1
-        z: 1.5
-      inAir:
-        x: 1
-        y: 0.5
-        z: 1
-    targetDistance: 3
-    damage: 1
-    cooldown: 10s
-  passive:
-    enabled: true
-    amplifier: 0
-
-crossbow:
-  enabled: true
-  radius: 2
-  artilleryDamage: 1
-  reinforcementDamage: 5
-  bastionDamage: 5
-  cooldown: 4000ms
-  antiAir:
-    standardAA:
-      key: standardAA
-      item:
-        name: Anti Air Missile
-        color:
-          r: 255
-          g: 0
-          b: 0
-      power: 2
-      speed: 2
-      damage: 5
-      damageRadius: 3
-      homingRadius: 10
-      homingStrength: 0.2 # how sharp should homing turns be?
-      activateRadius: 1
-      maxRange: 500
-      gravity: 0.005
-
-ally:
-  enabled: true
-  seeInvis: true # should you be able to see invisible allies?
-  animateLink: # settings for animating adding/removing ally
-    enabled: true
-    maxDistance: 20
-  storage:
-    file: ally.sqlite
-
-enhancedArrows:
-  enabled: true
-  minDistance: 10 # how far should arrow travel for arrows to become area of effect?
-  radius: 1
-  damage: 0.25
-  allyDamageReduction: 1 # how much damage to reduce against allied players? 1 = negate all damage, 0 = full friendly fire
-  allyCollide: false # should arrows collide with allies?
-  allyExemptArrowTypes: # which tipped arrows should apply to allies?
-    - NIGHT_VISION
-    - INVISIBILITY
-    - JUMP
-    - FIRE_RESISTANCE
-    - SPEED
-    - STRENGTH
-    - REGEN
-    - TURTLE_MASTER
-    - LUCK
-    - SLOW_FALLING
-
-# customize tipped arrows
-tippedArrows:
-  nightvision:
-    name: Arrow of Night Vision
-    type: NIGHT_VISION
-    durations:
-      normal: 440
-      extended: 1200
-      amplified: 220
-    color:
-      r: 3
-      g: 32
-      b: 126
-  invisiblity:
-    name: Arrow of Invisibility
-    type: INVISIBILITY
-    durations:
-      normal: 440
-      extended: 1200
-      amplified: 220
-    color:
-      r: 120
-      g: 124
-      b: 131
-  leaping:
-    name: Arrow of Leaping
-    type: JUMP
-    durations:
-      normal: 440
-      extended: 1200
-      amplified: 220
-    color:
-      r: 83
-      g: 230
-      b: 87
-  fire_resistance:
-    name: Arrow of Fire Resistance
-    type: FIRE_RESISTANCE
-    durations:
-      normal: 440
-      extended: 1200
-      amplified: 220
-    color:
-      r: 221
-      g: 147
-      b: 68
-  speed:
-    name: Arrow of Swiftness
-    type: SPEED
-    durations:
-      normal: 440
-      extended: 1200
-      amplified: 220
-    color:
-      r: 104
-      g: 159
-      b: 185
-  slow:
-    name: Arrow of Slowness
-    type: SLOW
-    durations:
-      normal: 220
-      extended: 600
-      amplified: 40
-    color:
-      r: 89
-      g: 103
-      b: 112
-  turtle_master:
-    name: Arrow of Turtle Master
-    type: TURTLE_MASTER
-    durations:
-      normal: 40
-      extended: 100
-      amplified: 40
-    color:
-      r: 119
-      g: 89
-      b: 78
-  water_breathing:
-    name: Arrow of Water Breathing
-    type: WATER_BREATHING
-    durations:
-      normal: 440
-      extended: 1200
-      amplified: 40
-    color:
-      r: 19
-      g: 71
-      b: 134
-  poison:
-    name: Arrow of Poison
-    type: POISON
-    durations:
-      normal: 100
-      extended: 220
-      amplified: 40
-    color:
-      r: 94
-      g: 129
-      b: 43
-  regen:
-    name: Arrow of Regeneration
-    type: REGEN
-    durations: # duration in ticks (20 ticks = 1 second)
-      normal: 100
-      extended: 220
-      amplified: 40
-    color:
-      r: 188
-      g: 102
-      b: 146
-  strength:
-    name: Arrow of Strength
-    type: STRENGTH
-    durations: # duration in ticks (20 ticks = 1 second)
-      normal: 440
-      extended: 1200
-      amplified: 220
-    color:
-      r: 110
-      g: 28
-      b: 31
-  weakness:
-    name: Arrow of Weakness
-    type: WEAKNESS
-    durations: # duration in ticks (20 ticks = 1 second)
-      normal: 220
-      extended: 600
-      amplified: 100
-    color:
-      r: 110
-      g: 28
-      b: 31
-  luck:
-    name: Arrow of Luck
-    type: LUCK
-    durations: # duration in ticks (20 ticks = 1 second)
-      normal: 740
-      extended: 740
-      amplified: 740
-    color:
-      r: 74
-      g: 131
-      b: 18
-  slow_falling:
-    name: Arrow of Slow Falling
-    type: SLOW_FALLING
-    durations: # duration in ticks (20 ticks = 1 second)
-      normal: 220
-      extended: 600
-      amplified: 220
-    color:
-      r: 254
-      g: 232
-      b: 198
-blockPlacementRestrictions:
-  enabled: true
-  mode: BLACKLIST # BLACKLIST, WHITELIST, NOLIST (only cooldowns)
-  reinforce: false # should players be allowed to reinforce while in combat?
-  zones:
-    obsidian:
-      type: OBSIDIAN
-      radius: 10
-    cobweb:
-      type: COBWEB
-      radius: 5
-    waterbucket:
-      type: WATER_BUCKET
-      radius: 5
-    lavabucket:
-      type: LAVA_BUCKET
-      radius: 5
-  blacklist:
-    - COBWEB
-    - OBSIDIAN
-    - WATER_BUCKET
-    - LAVA_BUCKET
-  whitelist:
-    - COBBLESTONE
-    - STONE
-  cooldowns:
-    cobweb:
-      type: COBWEB
-      cooldown: 5s
-    obsidian:
-      type: OBSIDIAN
-      cooldown: 1s
+  DROWNING: 1
+  ENTITY_ATTACK: 9
