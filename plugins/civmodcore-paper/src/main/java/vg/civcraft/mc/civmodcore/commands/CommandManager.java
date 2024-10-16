@@ -17,9 +17,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 /**
@@ -34,7 +34,7 @@ public class CommandManager extends BukkitCommandManager {
      *
      * @param plugin The plugin to bind this manager to.
      */
-    public CommandManager(@Nonnull final Plugin plugin) {
+    public CommandManager(@NotNull final Plugin plugin) {
         super(Objects.requireNonNull(plugin));
         this.logger = CivLogger.getLogger(plugin.getClass(), getClass());
     }
@@ -65,7 +65,7 @@ public class CommandManager extends BukkitCommandManager {
      * @param completions The completion manager is given. It is the same manager that can be reached via
      *                    {@link #getCommandCompletions()}.
      */
-    public void registerCompletions(@Nonnull final CommandCompletions<BukkitCommandCompletionContext> completions) {
+    public void registerCompletions(@NotNull final CommandCompletions<BukkitCommandCompletionContext> completions) {
         CommandHelpers.registerNoneCompletion(completions);
         CommandHelpers.registerMaterialsCompletion(completions);
         CommandHelpers.registerItemMaterialsCompletion(completions);
@@ -79,7 +79,7 @@ public class CommandManager extends BukkitCommandManager {
      * @param contexts The context manager is given. It is the same manager that can be reached via
      *                 {@link #getCommandContexts()}.
      */
-    public void registerContexts(@Nonnull final CommandContexts<BukkitCommandExecutionContext> contexts) {
+    public void registerContexts(@NotNull final CommandContexts<BukkitCommandExecutionContext> contexts) {
         CommandHelpers.registerConsoleSenderContext(contexts);
     }
 
@@ -90,7 +90,7 @@ public class CommandManager extends BukkitCommandManager {
      * @param forceReplace Whether to force replace any existing command.
      */
     @Override
-    public final void registerCommand(@Nonnull final BaseCommand command, final boolean forceReplace) {
+    public final void registerCommand(@NotNull final BaseCommand command, final boolean forceReplace) {
         super.registerCommand(Objects.requireNonNull(command), forceReplace);
         this.logger.info("Command [" + command.getClass().getSimpleName() + "] registered.");
         getTabCompletions(command.getClass()).forEach((method, annotation) -> {
@@ -110,7 +110,7 @@ public class CommandManager extends BukkitCommandManager {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public final void unregisterCommand(@Nonnull final BaseCommand command) {
+    public final void unregisterCommand(@NotNull final BaseCommand command) {
         super.unregisterCommand(Objects.requireNonNull(command));
         this.logger.info("Command [" + command.getClass().getSimpleName() + "] unregistered.");
         final Map<String, CommandCompletionHandler<BukkitCommandCompletionContext>> internal;

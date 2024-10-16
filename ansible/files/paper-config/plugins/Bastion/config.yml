@@ -30,9 +30,9 @@ bastions:
     squarefield: true
     effectRadius: 10
     includeY: true
-    startScaleFactor: 10
-    finalScaleFactor: 1.111111111111111
-    warmupTime: 172800000
+    startScaleFactor: 250
+    finalScaleFactor: 1
+    warmupTime: 86400000
     erosionPerDay: 0
     regenPerDay: 5
     blocksToErode: -1
@@ -70,9 +70,9 @@ bastions:
     squarefield: true
     effectRadius: 50
     includeY: true
-    startScaleFactor: 10
-    finalScaleFactor: 0.75
-    warmupTime: 172800000
+    startScaleFactor: 250
+    finalScaleFactor: 1
+    warmupTime: 86400000
     erosionPerDay: 0
     regenPerDay: 5
     blocksToErode: -1

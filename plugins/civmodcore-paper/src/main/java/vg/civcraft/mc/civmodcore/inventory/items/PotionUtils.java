@@ -2,8 +2,6 @@ package vg.civcraft.mc.civmodcore.inventory.items;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.translation.Translatable;
@@ -14,6 +12,8 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 public final class PotionUtils {
@@ -24,8 +24,8 @@ public final class PotionUtils {
      * @param type The potion type to get a translatable component for.
      * @return Returns a translatable component for the given potion type.
      */
-    @Nonnull
-    public static TranslatableComponent asTranslatable(@Nonnull final PotionType type) {
+    @NotNull
+    public static TranslatableComponent asTranslatable(@NotNull final PotionType type) {
         return asTranslatable(Material.POTION, type);
     }
 
@@ -34,9 +34,9 @@ public final class PotionUtils {
      * @param type     The potion type to get a translatable component for.
      * @return Returns a translatable component for the given potion type.
      */
-    @Nonnull
-    public static TranslatableComponent asTranslatable(@Nonnull final Material material,
-                                                       @Nonnull final PotionType type) {
+    @NotNull
+    public static TranslatableComponent asTranslatable(@NotNull final Material material,
+                                                       @NotNull final PotionType type) {
         if (!MoreTags.POTIONS.isTagged(material)) {
             throw new IllegalArgumentException("That is not a recognised potion material! [" + material.name() + "]");
         }

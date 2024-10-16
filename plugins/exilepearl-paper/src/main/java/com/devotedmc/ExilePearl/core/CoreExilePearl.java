@@ -262,19 +262,19 @@ final class CoreExilePearl implements ExilePearl {
     public void setHealth(int health) {
         checkPearlValid();
 
-        if (health < 0) {
-            health = 0;
-        }
-
-        if (health > pearlApi.getPearlConfig().getPearlHealthMaxValue()) {
-            health = pearlApi.getPearlConfig().getPearlHealthMaxValue();
-        }
-
-        this.health = health;
-
-        if (storageEnabled) {
-            storage.updatePearlHealth(this);
-        }
+    	if (health < 0) {
+			health = 0;
+    	}
+    	
+    	if (health > pearlApi.getPearlConfig().getPearlHealthMaxValue()) {
+    		health = pearlApi.getPearlConfig().getPearlHealthMaxValue();
+    	}
+    	
+    	this.health = health;
+    	
+		if(storageEnabled) {
+			storage.updatePearlHealth(this);
+		}
     }
 
     /**
@@ -371,7 +371,7 @@ final class CoreExilePearl implements ExilePearl {
         ItemMeta im = is.getItemMeta();
         im.setDisplayName(this.getPlayerName());
         im.setLore(lore);
-        im.addEnchant(Enchantment.DURABILITY, 1, true);
+        im.addEnchant(Enchantment.UNBREAKING, 1, true);
         im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         PersistentDataContainer container = im.getPersistentDataContainer();

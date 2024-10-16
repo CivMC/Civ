@@ -8,7 +8,7 @@ hacks:
   ## Basic Hacks
   ############################################################
   AntiFastBreak:
-    enabled: true
+    enabled: false
     laggLenciency: 1.5
     breakDenyDuration: 3000
   #Prevents pearls from landing that have been in flight for more than the configured amount of time
@@ -62,6 +62,11 @@ hacks:
      - GOAT
      - PARROT
      - PANDA
+     - CAMEL
+     - SNIFFER
+     - FROG
+     - TADPOLE
+     - ARMADILLO
   AttrHider:
     enabled: true
     # Hide item data like enchantments, firework effects, book data, potion, etc..
@@ -132,7 +137,7 @@ hacks:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Make sure to reinforce your buildings/chests to protect them from others. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/essential/citadel"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Jukeboxes and Noteblocks act as CCTV, when reinforced they record player actions. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/jukealert"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Killing someone with an ender pearl in your hotbar will lock them in the nether! Player essence is used to keep the players trapped. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/essential/exilepearl"}}]'
-  
+
   ElytraFeatures:
     enabled: false
     # Whether Elytra flight should be outright disabled
@@ -181,6 +186,8 @@ hacks:
     disableGapples: true
     disableEndGatewayTP: false
   ItemMetaConverterHack:
+    enabled: true
+  ItemSerializerHack:
     enabled: true
   MapCopyProtection:
     enabled: true
@@ -278,8 +285,10 @@ hacks:
       - [LAPIS_ORE,DEEPSLATE_LAPIS_ORE]
       - [GOLD_ORE,DEEPSLATE_GOLD_ORE]
       - [IRON_ORE,DEEPSLATE_IRON_ORE]
+      - [COPPER_ORE,DEEPSLATE_COPPER_ORE]
       - [COAL_ORE,DEEPSLATE_COAL_ORE]
-      - [NETHER_GOLD_ORE,GILDED_BLACKSTONE]
+      - [NETHER_GOLD_ORE]
+      - [GILDED_BLACKSTONE]
       - [NETHER_QUARTZ_ORE]
       - [GLOWSTONE]
       - [SEA_LANTERN]
@@ -461,12 +470,12 @@ hacks:
       - org.bukkit.event.weather
       - org.bukkit.event.world
   Introbook:
-    enabled: true  
+    enabled: true
     follow: true
     contents:
       title: Welcome ${player}!
       author: RedDevel
-      pages: 
+      pages:
         - "&5    Welcome &2${player}!\n         &5to CivMC!&r\n\nThis book will guide your first steps!\nIf you die or lose it you can open it via the /introbook command\n\nLet's begin your journey!"
         - "You've just spawned near another player or town, say something in chat!\n\nIf nobody responds try out global chat instead by using the /global command!\n\nMany nations will want a potential new productive member.\nTake your pick!"
         - "Maybe you've joined at a time of lower activity, and nobody is responding.\n\nThen you can join the official discord and take your pick of the nation ads there!\n\n      &9discord.gg/\n      HkD79GfmQQ&r"
@@ -488,14 +497,14 @@ hacks:
     announce: '&f%Player% is brand new!'
     giveIntroKitToRandomSpawners: false
     broadcast: [CONSOLE, ALL]
-    helptips: on 
+    helptips: on
     helptips_end: 20m
-    introkit:  
+    introkit:
       enabled: true
-      contents:  
+      contents:
        - ==: org.bukkit.inventory.ItemStack
          type: COOKIE
-         amount: 32  
+         amount: 32
          meta:
            ==: ItemMeta
            meta-type: UNSPECIFIC
@@ -504,7 +513,7 @@ hacks:
             - "begin your journey on CivMC"
        - ==: org.bukkit.inventory.ItemStack
          type: BED
-         amount: 1  
+         amount: 1
          meta:
            ==: ItemMeta
            meta-type: UNSPECIFIC
@@ -530,7 +539,7 @@ hacks:
             - "This will help you"
             - "get on track."
   ReinforcedChestBreak:
-    enabled: true    
+    enabled: true
     # in seconds
     delay: 180
     message: "&4%player% is raiding a chest at %x% %y% %z%."
@@ -592,4 +601,9 @@ hacks:
     minSpeed: 0.1125
     maxSpeed: 0.438827582278 # 18.5m/s
   AntiDerailment:
+    enabled: true
+  CreeperDiscHack:
+    enabled: true
+    discChance: 0.003
+  NoOozing:
     enabled: true

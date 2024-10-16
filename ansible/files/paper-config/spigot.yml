@@ -18,7 +18,7 @@ settings:
   save-user-cache-on-stop-only: false
   moved-wrongly-threshold: 1.0625
   moved-too-quickly-multiplier: 50.0
-  timeout-time: 60
+  timeout-time: ${CIV_WATCHDOG_TIMEOUT_TIME}
   restart-on-crash: false
   restart-script: ./start.sh
   netty-threads: 4
@@ -101,10 +101,10 @@ world-settings:
       ignore-spectators: false
     entity-tracking-range:
       players: 160
-      animals: 32
-      monsters: 64
-      misc: 16
-      other: 16
+      animals: 96
+      monsters: 96
+      misc: 96
+      other: 96
     ticks-per:
       hopper-transfer: 16
       hopper-check: 8

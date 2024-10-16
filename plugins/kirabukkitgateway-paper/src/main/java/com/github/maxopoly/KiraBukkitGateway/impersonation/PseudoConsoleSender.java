@@ -5,8 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Server;
 import org.bukkit.command.ConsoleCommandSender;
@@ -17,6 +15,7 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PseudoConsoleSender implements ConsoleCommandSender {
 
@@ -69,12 +68,12 @@ public class PseudoConsoleSender implements ConsoleCommandSender {
     }
 
     @Override
-    public void sendMessage(@Nullable final UUID uuid, @Nonnull final String message) {
+    public void sendMessage(@Nullable final UUID uuid, @NotNull final String message) {
         this.actualSender.sendMessage(uuid, message);
     }
 
     @Override
-    public void sendMessage(@Nullable final UUID uuid, @Nonnull final String[] messages) {
+    public void sendMessage(@Nullable final UUID uuid, @NotNull final String[] messages) {
         this.actualSender.sendMessage(uuid, messages);
     }
 
@@ -185,7 +184,7 @@ public class PseudoConsoleSender implements ConsoleCommandSender {
     }
 
     @Override
-    public void sendRawMessage(@Nullable final UUID uuid, @Nonnull final String s) {
+    public void sendRawMessage(@Nullable final UUID uuid, @NotNull final String s) {
 
     }
 
