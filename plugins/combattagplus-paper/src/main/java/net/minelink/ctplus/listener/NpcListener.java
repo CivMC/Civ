@@ -76,7 +76,8 @@ public final class NpcListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
     public void onNPCDamage(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player)) return; // Check if the attacker is a player
-        if (!(event.getEntity() instanceof Player) || !plugin.getNpcPlayerHelper().isNpc((Player) event.getEntity())) return; // Check if the defender is an entity
+        if (!(event.getEntity() instanceof Player) || !plugin.getNpcPlayerHelper().isNpc((Player) event.getEntity()))
+            return; // Check if the defender is an entity
         Player attacker = (Player) event.getDamager();
         Player npc = (Player) event.getEntity();
         UUID npcPlayerId = plugin.getNpcPlayerHelper().getIdentity(npc).getId();

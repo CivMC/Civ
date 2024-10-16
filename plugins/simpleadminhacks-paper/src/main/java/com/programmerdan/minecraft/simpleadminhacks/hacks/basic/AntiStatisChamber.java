@@ -20,49 +20,49 @@ import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 
 public class AntiStatisChamber extends BasicHack {
 
-	@AutoLoad
-	private String pearlLifetime;
-	private long lifetimeValue;
-	private NamespacedKey key;
+    @AutoLoad
+    private String pearlLifetime;
+    private long lifetimeValue;
+    private NamespacedKey key;
 
-	public AntiStatisChamber(SimpleAdminHacks plugin, BasicHackConfig config) {
-		super(plugin, config);
-		this.key = new NamespacedKey(plugin, "pearl_thrown_time");
-	}
+    public AntiStatisChamber(SimpleAdminHacks plugin, BasicHackConfig config) {
+        super(plugin, config);
+        this.key = new NamespacedKey(plugin, "pearl_thrown_time");
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerThrowPearl(PlayerLaunchProjectileEvent event) {
-		Projectile projectile = event.getProjectile();
-		if (!(projectile instanceof EnderPearl)) {
-			return;
-		}
-		EnderPearl pearl = (EnderPearl) projectile;
-		PersistentDataContainer pdc = pearl.getPersistentDataContainer();
-		pdc.set(key, PersistentDataType.LONG, System.currentTimeMillis());
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerThrowPearl(PlayerLaunchProjectileEvent event) {
+        Projectile projectile = event.getProjectile();
+        if (!(projectile instanceof EnderPearl)) {
+            return;
+        }
+        EnderPearl pearl = (EnderPearl) projectile;
+        PersistentDataContainer pdc = pearl.getPersistentDataContainer();
+        pdc.set(key, PersistentDataType.LONG, System.currentTimeMillis());
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPearlLand(ProjectileHitEvent event) {
-		this.lifetimeValue = ConfigHelper.parseTime(this.pearlLifetime);
-		Projectile projectile = event.getEntity();
-		if (!(projectile instanceof EnderPearl)) {
-			return;
-		}
-		EnderPearl pearl = (EnderPearl) projectile;
-		PersistentDataContainer pdc = pearl.getPersistentDataContainer();
-		Long pearlThrownTime = pdc.get(key, PersistentDataType.LONG);
-		if (pearlThrownTime == null) {
-			pearl.remove();
-			event.setCancelled(true);
-			return;
-		}
-		if ((System.currentTimeMillis() - pearlThrownTime) > lifetimeValue) {
-			//We remove the pearl here because cancelling the event doesn't prevent the pearl from actually landing
-			pearl.remove();
-			if (pearl.getShooter() instanceof Player) {
-				((Player) pearl.getShooter()).sendMessage(Component.text("Your pearl failed to land for being in flight for more than " + pearlLifetime).color(NamedTextColor.RED));
-			}
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPearlLand(ProjectileHitEvent event) {
+        this.lifetimeValue = ConfigHelper.parseTime(this.pearlLifetime);
+        Projectile projectile = event.getEntity();
+        if (!(projectile instanceof EnderPearl)) {
+            return;
+        }
+        EnderPearl pearl = (EnderPearl) projectile;
+        PersistentDataContainer pdc = pearl.getPersistentDataContainer();
+        Long pearlThrownTime = pdc.get(key, PersistentDataType.LONG);
+        if (pearlThrownTime == null) {
+            pearl.remove();
+            event.setCancelled(true);
+            return;
+        }
+        if ((System.currentTimeMillis() - pearlThrownTime) > lifetimeValue) {
+            //We remove the pearl here because cancelling the event doesn't prevent the pearl from actually landing
+            pearl.remove();
+            if (pearl.getShooter() instanceof Player) {
+                ((Player) pearl.getShooter()).sendMessage(Component.text("Your pearl failed to land for being in flight for more than " + pearlLifetime).color(NamedTextColor.RED));
+            }
+            event.setCancelled(true);
+        }
+    }
 }

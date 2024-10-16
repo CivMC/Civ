@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 public class InvalidLinkLogger {
+
     private static final DateFormat fileDateFormat = new SimpleDateFormat("yyyy_MM_dd_HHmmss");
     private static final String folderName = "castlegates_logs";
 
@@ -26,13 +27,12 @@ public class InvalidLinkLogger {
             PrintWriter writer = getWriter();
 
             try {
-                for(LinkInfo link : links) {
+                for (LinkInfo link : links) {
                     writeLink(link, writer);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-            finally {
+            } finally {
                 writer.flush();
                 writer.close();
             }
@@ -59,7 +59,7 @@ public class InvalidLinkLogger {
     private PrintWriter getWriter() throws FileNotFoundException {
         File folder = new File(folderName);
 
-        if(!folder.exists())
+        if (!folder.exists())
             folder.mkdirs();
 
         _filePath = folder + "/InvalidLinks_" + fileDateFormat.format(new Date()) + ".txt";
@@ -67,7 +67,7 @@ public class InvalidLinkLogger {
         File file = new File(_filePath);
 
         return file.exists()
-                ? new PrintWriter(new FileOutputStream(file, true))
-                : new PrintWriter(_filePath);
+            ? new PrintWriter(new FileOutputStream(file, true))
+            : new PrintWriter(_filePath);
     }
 }

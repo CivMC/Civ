@@ -13,26 +13,26 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public class LeaveGroup extends BaseCommandMiddle {
 
-	@CommandAlias("nlleg|leave|leavegroup")
-	@Syntax("<group>")
-	@Description("Leave a group")
-	@CommandCompletion("@NL_Groups")
-	public void execute(Player sender, String groupName) {
-		Player p = (Player) sender;
-		Group g = gm.getGroup(groupName);
-		if (groupIsNull(sender, groupName, g)) {
-			return;
-		}
-		UUID uuid = NameAPI.getUUID(p.getName());
-		if (!g.isCurrentMember(uuid)){
-			p.sendMessage(ChatColor.RED + "You are not a member of this group.");
-			return;
-		}
-		if (g.isDisciplined()){
-			p.sendMessage(ChatColor.RED + "This group is disciplined.");
-			return;
-		}
-		g.removeMember(uuid);
-		p.sendMessage(ChatColor.GREEN + "You have been removed from the group.");
-	}
+    @CommandAlias("nlleg|leave|leavegroup")
+    @Syntax("<group>")
+    @Description("Leave a group")
+    @CommandCompletion("@NL_Groups")
+    public void execute(Player sender, String groupName) {
+        Player p = (Player) sender;
+        Group g = gm.getGroup(groupName);
+        if (groupIsNull(sender, groupName, g)) {
+            return;
+        }
+        UUID uuid = NameAPI.getUUID(p.getName());
+        if (!g.isCurrentMember(uuid)) {
+            p.sendMessage(ChatColor.RED + "You are not a member of this group.");
+            return;
+        }
+        if (g.isDisciplined()) {
+            p.sendMessage(ChatColor.RED + "This group is disciplined.");
+            return;
+        }
+        g.removeMember(uuid);
+        p.sendMessage(ChatColor.GREEN + "You have been removed from the group.");
+    }
 }

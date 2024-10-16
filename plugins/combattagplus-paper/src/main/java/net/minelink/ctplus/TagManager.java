@@ -112,8 +112,8 @@ public final class TagManager {
         Tag tag = tags.get(playerId);
 
         if (tag == null || tag.isExpired() ||
-                (!includeHidden && plugin.getSettings().onlyTagAttacker() &&
-                        tag.getVictimId().equals(playerId))) {
+            (!includeHidden && plugin.getSettings().onlyTagAttacker() &&
+                tag.getVictimId().equals(playerId))) {
             return null;
         }
 

@@ -435,14 +435,14 @@ public final class Settings {
     public String getCommandUntagMessage() {
         return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("command-untag-message"));
     }
-    
+
     public String getCommandTagMessage() {
         return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("command-tag-message"));
     }
 
     public String formatDuration(long seconds) {
         List<String> parts = new ArrayList<>();
-        for (TimeUnit timeUnit : new TimeUnit[] { DAYS, HOURS, MINUTES, SECONDS }) {
+        for (TimeUnit timeUnit : new TimeUnit[]{DAYS, HOURS, MINUTES, SECONDS}) {
             long duration = seconds / SECONDS.convert(1, timeUnit);
             if (duration > 0) {
                 seconds -= SECONDS.convert(duration, timeUnit);

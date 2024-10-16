@@ -47,345 +47,346 @@ import org.bukkit.inventory.InventoryHolder;
 
 public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 
-	public static final String NAME = "GameFixes";
+    public static final String NAME = "GameFixes";
 
-	private final PacketManager protocol = new PacketManager();
+    private final PacketManager protocol = new PacketManager();
 
-	public GameFixes(SimpleAdminHacks plugin, GameFixesConfig config) {
-		super(plugin, config);
-	}
+    public GameFixes(SimpleAdminHacks plugin, GameFixesConfig config) {
+        super(plugin, config);
+    }
 
-	@Override
-	public void onDisable() {
-		this.protocol.removeAllAdapters();
-		HandlerList.unregisterAll(this);
-		super.onDisable();
-	}
+    @Override
+    public void onDisable() {
+        this.protocol.removeAllAdapters();
+        HandlerList.unregisterAll(this);
+        super.onDisable();
+    }
 
-	@Override
-	public void onEnable() {
-		Bukkit.getPluginManager().registerEvents(this, plugin);
-		super.onEnable();
-	}
+    @Override
+    public void onEnable() {
+        Bukkit.getPluginManager().registerEvents(this, plugin);
+        super.onEnable();
+    }
 
-	@Override
-	public String status() {
-		StringBuilder genStatus = new StringBuilder();
-		genStatus.append("GameFixes is ");
-		if (config != null && config.isEnabled()) {
-			genStatus.append(ChatColor.GREEN).append("active\n").append(ChatColor.RESET);
-			genStatus.append("   Block elytra break bug is ");
-			if (config.isBlockElytraBreakBug()) {
-				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-				genStatus.append("   Will deal " + config.getDamageOnElytraBreakBug() + " damage to players\n");
-			} else {
-				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-			}
-			genStatus.append("   Block storage entities from teleporting to prevents exploits ");
-			if (!config.canStorageTeleport()) {
-				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-			} else {
-				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-			}
-			genStatus.append("   Hopper self-feed duplication exploit fix ");
-			if (config.isStopHopperDupe()) {
-				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-			} else {
-				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-			}
-			genStatus.append("   Duplications using rails exploit fix ");
-			if (config.isStopRailDupe()) {
-				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-			} else {
-				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-			}
-			genStatus.append("  End Portal removal exploit fix ");
-			if (config.isStopEndPortalDeletion()) {
-				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-			} else {
-				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-			}
-			genStatus.append("  Bed Bombing in Nether / Hell Biomes fix ");
-			if (config.stopBedBombing()) {
-				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-			} else {
-				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-			}
-			genStatus.append("  Tree wraparound fix ");
-			if (config.stopTreeWraparound()) {
-				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-			} else {
-				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-			}
-			genStatus.append("  Maintain flat bedrock ");
-			if (config.maintainFlatBedrock()) {
-				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-			} else {
-				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-			}
-			genStatus.append("  Maintain flat bedrock ");
-			if (config.maintainFlatBedrock()) {
-				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-			} else {
-				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-			}
-			genStatus.append("  Prevent long signs ");
-			if (config.isPreventLongSigns()) {
-				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-			} else {
-				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-			}
-		} else {
-			genStatus.append(ChatColor.RED).append("inactive").append(ChatColor.RESET);
-		}
-		return genStatus.toString();
-	}
+    @Override
+    public String status() {
+        StringBuilder genStatus = new StringBuilder();
+        genStatus.append("GameFixes is ");
+        if (config != null && config.isEnabled()) {
+            genStatus.append(ChatColor.GREEN).append("active\n").append(ChatColor.RESET);
+            genStatus.append("   Block elytra break bug is ");
+            if (config.isBlockElytraBreakBug()) {
+                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+                genStatus.append("   Will deal " + config.getDamageOnElytraBreakBug() + " damage to players\n");
+            } else {
+                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+            }
+            genStatus.append("   Block storage entities from teleporting to prevents exploits ");
+            if (!config.canStorageTeleport()) {
+                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+            } else {
+                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+            }
+            genStatus.append("   Hopper self-feed duplication exploit fix ");
+            if (config.isStopHopperDupe()) {
+                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+            } else {
+                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+            }
+            genStatus.append("   Duplications using rails exploit fix ");
+            if (config.isStopRailDupe()) {
+                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+            } else {
+                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+            }
+            genStatus.append("  End Portal removal exploit fix ");
+            if (config.isStopEndPortalDeletion()) {
+                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+            } else {
+                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+            }
+            genStatus.append("  Bed Bombing in Nether / Hell Biomes fix ");
+            if (config.stopBedBombing()) {
+                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+            } else {
+                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+            }
+            genStatus.append("  Tree wraparound fix ");
+            if (config.stopTreeWraparound()) {
+                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+            } else {
+                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+            }
+            genStatus.append("  Maintain flat bedrock ");
+            if (config.maintainFlatBedrock()) {
+                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+            } else {
+                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+            }
+            genStatus.append("  Maintain flat bedrock ");
+            if (config.maintainFlatBedrock()) {
+                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+            } else {
+                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+            }
+            genStatus.append("  Prevent long signs ");
+            if (config.isPreventLongSigns()) {
+                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+            } else {
+                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+            }
+        } else {
+            genStatus.append(ChatColor.RED).append("inactive").append(ChatColor.RESET);
+        }
+        return genStatus.toString();
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onBlockBreak(BlockBreakEvent event) {
-		if (!config.isEnabled() || !config.isBlockElytraBreakBug()) return;
-		Block block = event.getBlock();
-		Player player = event.getPlayer();
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (!config.isEnabled() || !config.isBlockElytraBreakBug()) return;
+        Block block = event.getBlock();
+        Player player = event.getPlayer();
 
-		if (!player.getLocation().equals(block.getLocation())
-				&& player.getEyeLocation().getBlock().getType() != Material.AIR) {
-			event.setCancelled(true);
-			player.damage(config.getDamageOnElytraBreakBug());
-		}
-	}
+        if (!player.getLocation().equals(block.getLocation())
+            && player.getEyeLocation().getBlock().getType() != Material.AIR) {
+            event.setCancelled(true);
+            player.damage(config.getDamageOnElytraBreakBug());
+        }
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onEntityTeleport(EntityTeleportEvent event) {
-		if (!config.isEnabled() || config.canStorageTeleport()) {
-			return;
-		}
-		if (event.getEntity() instanceof InventoryHolder) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onEntityTeleport(EntityTeleportEvent event) {
+        if (!config.isEnabled() || config.canStorageTeleport()) {
+            return;
+        }
+        if (event.getEntity() instanceof InventoryHolder) {
+            event.setCancelled(true);
+        }
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onEntityPortal(EntityPortalEvent event) {
-		if (!config.isEnabled() || config.canStorageTeleport()) {
-			return;
-		}
-		if (event.getEntity() instanceof InventoryHolder) {
-			event.setCancelled(true);
-		}
-	}
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onEntityPortal(EntityPortalEvent event) {
+        if (!config.isEnabled() || config.canStorageTeleport()) {
+            return;
+        }
+        if (event.getEntity() instanceof InventoryHolder) {
+            event.setCancelled(true);
+        }
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onInventoryMoveItem(InventoryMoveItemEvent event) {
-		if (!config.isEnabled() || !config.isStopHopperDupe()) return;
-		// I recollect inventory handling to be the single biggest source of NPEs, so I'll add
-		// back in the nullcheck, although I do hope Spigot has addressed the sources with the
-		// addition of their annotations.
-		//
-		if ((event.getDestination() == null) || (event.getSource() == null) ||
-				!(InventoryType.HOPPER.equals(event.getDestination().getType())) ||
-				!(InventoryType.HOPPER.equals(event.getSource().getType())) ||
-				!(Material.HOPPER.equals(event.getDestination().getLocation().getBlock().getType())) || 
-				!(Material.HOPPER.equals(event.getSource().getLocation().getBlock().getType()))) {
-			return;
-		}
-		Hopper source = (Hopper) event.getSource().getLocation().getBlock().getBlockData();
-		Hopper dest = (Hopper) event.getDestination().getLocation().getBlock().getBlockData();
-		if (source.getFacing().getOppositeFace() == dest.getFacing()) {
-			//They're pointing into each other and will eventually dupe
-			event.setCancelled(true);
-		}
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onInventoryMoveItem(InventoryMoveItemEvent event) {
+        if (!config.isEnabled() || !config.isStopHopperDupe()) return;
+        // I recollect inventory handling to be the single biggest source of NPEs, so I'll add
+        // back in the nullcheck, although I do hope Spigot has addressed the sources with the
+        // addition of their annotations.
+        //
+        if ((event.getDestination() == null) || (event.getSource() == null) ||
+            !(InventoryType.HOPPER.equals(event.getDestination().getType())) ||
+            !(InventoryType.HOPPER.equals(event.getSource().getType())) ||
+            !(Material.HOPPER.equals(event.getDestination().getLocation().getBlock().getType())) ||
+            !(Material.HOPPER.equals(event.getSource().getLocation().getBlock().getType()))) {
+            return;
+        }
+        Hopper source = (Hopper) event.getSource().getLocation().getBlock().getBlockData();
+        Hopper dest = (Hopper) event.getDestination().getLocation().getBlock().getBlockData();
+        if (source.getFacing().getOppositeFace() == dest.getFacing()) {
+            //They're pointing into each other and will eventually dupe
+            event.setCancelled(true);
+        }
 
-	}
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onPistonPushRail(BlockPistonExtendEvent event) {
-		if (config.isEnabled() && config.isStopRailDupe()) {
-			for (Block block : event.getBlocks()) {
-				Material type = block.getType();
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPistonPushRail(BlockPistonExtendEvent event) {
+        if (config.isEnabled() && config.isStopRailDupe()) {
+            for (Block block : event.getBlocks()) {
+                Material type = block.getType();
 
-				if (config.getRailArray().contains(type)) {
-					event.setCancelled(true);
-					return;
-				}
-			}
-		}
-	}
+                if (config.getRailArray().contains(type)) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onRailPlace(BlockPlaceEvent event) {
-		if (config.isEnabled() && config.isStopRailDupe()) {
-			Block block = event.getBlock();
-			Material type = block.getType();
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onRailPlace(BlockPlaceEvent event) {
+        if (config.isEnabled() && config.isStopRailDupe()) {
+            Block block = event.getBlock();
+            Material type = block.getType();
 
-			if (config.getRailArray().contains(type)) {
-				for (BlockFace face : config.getBfArray()) {
-					type = block.getRelative(face).getType();
+            if (config.getRailArray().contains(type)) {
+                for (BlockFace face : config.getBfArray()) {
+                    type = block.getRelative(face).getType();
 
-					if (config.getPistonArray().contains(type)) {
-						event.setCancelled(true);
-						return;
-					}
-				}
-			}
-		}
-	}
+                    if (config.getPistonArray().contains(type)) {
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            }
+        }
+    }
 
-	//Trying to stop players from deleting end portals
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-		if (config.isEnabled() && config.isStopEndPortalDeletion()) {
-			Block block = event.getBlockClicked().getRelative(event.getBlockFace());
+    //Trying to stop players from deleting end portals
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+        if (config.isEnabled() && config.isStopEndPortalDeletion()) {
+            Block block = event.getBlockClicked().getRelative(event.getBlockFace());
 
-			if (Material.END_PORTAL.equals(block.getType())) {
-				event.setCancelled(true);
-			}
-		}
-	}
+            if (Material.END_PORTAL.equals(block.getType())) {
+                event.setCancelled(true);
+            }
+        }
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onDispenseEvent(BlockDispenseEvent event) {
-		if (config.isEnabled() && config.isStopEndPortalDeletion()) {
-			if (Material.DISPENSER.equals(event.getBlock().getType())) {
-				Dispenser disp = (Dispenser) event.getBlock().getBlockData();
-				Material type = event.getBlock().getRelative(disp.getFacing()).getType();
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onDispenseEvent(BlockDispenseEvent event) {
+        if (config.isEnabled() && config.isStopEndPortalDeletion()) {
+            if (Material.DISPENSER.equals(event.getBlock().getType())) {
+                Dispenser disp = (Dispenser) event.getBlock().getBlockData();
+                Material type = event.getBlock().getRelative(disp.getFacing()).getType();
 
-				if (Material.END_PORTAL.equals(type)) {
-					event.setCancelled(true);
-				}
-			}
-		}
-	}
+                if (Material.END_PORTAL.equals(type)) {
+                    event.setCancelled(true);
+                }
+            }
+        }
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerEnterBed(BlockPlaceEvent event) {
-		if (!config.isEnabled() || !config.stopBedBombing()) return;
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerEnterBed(BlockPlaceEvent event) {
+        if (!config.isEnabled() || !config.stopBedBombing()) return;
 
-		Block b = event.getBlock();
-		switch (b.getType()) {
-			case BLACK_BED:
-			case BLUE_BED:
-			case BROWN_BED:
-			case CYAN_BED:
-			case GRAY_BED:
-			case GREEN_BED:
-			case LIME_BED:
-			case MAGENTA_BED:
-			case LIGHT_GRAY_BED:
-			case PURPLE_BED:
-			case PINK_BED:
-			case YELLOW_BED:
-			case WHITE_BED:
-			case RED_BED:
-			case ORANGE_BED:
-			case LIGHT_BLUE_BED:
-				break;
-			default:
-				return;
-		}
-		Environment env = b.getLocation().getWorld().getEnvironment();
-		Biome biome = b.getLocation().getBlock().getBiome();
-		if (Environment.NETHER.equals(env) || Environment.THE_END.equals(env) || Biome.NETHER_WASTES.equals(biome) 
-				|| Biome.END_BARRENS.equals(biome) || Biome.END_HIGHLANDS.equals(biome)
-				|| Biome.END_MIDLANDS.equals(biome) || Biome.SMALL_END_ISLANDS.equals(biome)
-				|| Biome.THE_END.equals(biome)) {
-			event.setCancelled(true);
-		}
-	}
+        Block b = event.getBlock();
+        switch (b.getType()) {
+            case BLACK_BED:
+            case BLUE_BED:
+            case BROWN_BED:
+            case CYAN_BED:
+            case GRAY_BED:
+            case GREEN_BED:
+            case LIME_BED:
+            case MAGENTA_BED:
+            case LIGHT_GRAY_BED:
+            case PURPLE_BED:
+            case PINK_BED:
+            case YELLOW_BED:
+            case WHITE_BED:
+            case RED_BED:
+            case ORANGE_BED:
+            case LIGHT_BLUE_BED:
+                break;
+            default:
+                return;
+        }
+        Environment env = b.getLocation().getWorld().getEnvironment();
+        Biome biome = b.getLocation().getBlock().getBiome();
+        if (Environment.NETHER.equals(env) || Environment.THE_END.equals(env) || Biome.NETHER_WASTES.equals(biome)
+            || Biome.END_BARRENS.equals(biome) || Biome.END_HIGHLANDS.equals(biome)
+            || Biome.END_MIDLANDS.equals(biome) || Biome.SMALL_END_ISLANDS.equals(biome)
+            || Biome.THE_END.equals(biome)) {
+            event.setCancelled(true);
+        }
+    }
 
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onAnchorInteraction(PlayerInteractEvent event) {
-		if (!config.isEnabled() || !config.stopAnchorBombing()) {
-			return;
-		}
-		if (event.getClickedBlock() == null) {
-			return;
-		}
-		if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-			return;
-		}
-		if (!event.getClickedBlock().getType().equals(Material.RESPAWN_ANCHOR)) {
-			return;
-		}
-		RespawnAnchor anchor = (RespawnAnchor) event.getClickedBlock().getBlockData();
-		if (!event.getMaterial().equals(Material.GLOWSTONE) || anchor.getCharges() == anchor.getMaximumCharges()) {
-			boolean flag = event.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR || event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR;
-			boolean flag1 = event.getPlayer().isSneaking() && flag;
-			if (!flag1) {
-				event.setUseInteractedBlock(Event.Result.DENY);
-				event.getPlayer().sendMessage(ChatColor.RED + "Respawn anchor bombing is disabled");
-			}
-		}
-	}
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onAnchorInteraction(PlayerInteractEvent event) {
+        if (!config.isEnabled() || !config.stopAnchorBombing()) {
+            return;
+        }
+        if (event.getClickedBlock() == null) {
+            return;
+        }
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        if (!event.getClickedBlock().getType().equals(Material.RESPAWN_ANCHOR)) {
+            return;
+        }
+        RespawnAnchor anchor = (RespawnAnchor) event.getClickedBlock().getBlockData();
+        if (!event.getMaterial().equals(Material.GLOWSTONE) || anchor.getCharges() == anchor.getMaximumCharges()) {
+            boolean flag = event.getPlayer().getInventory().getItemInMainHand().getType() != Material.AIR || event.getPlayer().getInventory().getItemInOffHand().getType() != Material.AIR;
+            boolean flag1 = event.getPlayer().isSneaking() && flag;
+            if (!flag1) {
+                event.setUseInteractedBlock(Event.Result.DENY);
+                event.getPlayer().sendMessage(ChatColor.RED + "Respawn anchor bombing is disabled");
+            }
+        }
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
-	public void onStructureGrow(StructureGrowEvent event) {
-		if(config.isEnabled() && config.stopTreeWraparound()) {
-			int maxY = 0;
-			int minY = 257;
-			for(BlockState bs : event.getBlocks()) {
-				final int y = bs.getLocation().getBlockY();
-				maxY = Math.max(maxY, y);
-				minY = Math.min(minY, y);
-			}
-			if(maxY - minY > 240) {
-				event.setCancelled(true);
-				final Location loc = event.getLocation();
-				plugin().log(Level.INFO, String.format("Prevented structure wraparound at %s: %d, %d, %d", 
-						loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
-			}
-		}
-	}
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onStructureGrow(StructureGrowEvent event) {
+        if (config.isEnabled() && config.stopTreeWraparound()) {
+            int maxY = 0;
+            int minY = 257;
+            for (BlockState bs : event.getBlocks()) {
+                final int y = bs.getLocation().getBlockY();
+                maxY = Math.max(maxY, y);
+                minY = Math.min(minY, y);
+            }
+            if (maxY - minY > 240) {
+                event.setCancelled(true);
+                final Location loc = event.getLocation();
+                plugin().log(Level.INFO, String.format("Prevented structure wraparound at %s: %d, %d, %d",
+                    loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+            }
+        }
+    }
 
-	@EventHandler
-	public void onTouchBedrock(PlayerInteractEvent event) {
-		if(config.isEnabled() && config.maintainFlatBedrock() && event.getClickedBlock() != null 
-				&& event.getClickedBlock().getType() == Material.BEDROCK && event.getClickedBlock().getY() > 0) {
-			Bukkit.getScheduler().runTask(plugin(), () -> {
-				event.getClickedBlock().setType(Material.STONE);
-			});
-		}
-	}
+    @EventHandler
+    public void onTouchBedrock(PlayerInteractEvent event) {
+        if (config.isEnabled() && config.maintainFlatBedrock() && event.getClickedBlock() != null
+            && event.getClickedBlock().getType() == Material.BEDROCK && event.getClickedBlock().getY() > 0) {
+            Bukkit.getScheduler().runTask(plugin(), () -> {
+                event.getClickedBlock().setType(Material.STONE);
+            });
+        }
+    }
 
-	//fixes a small side effect of the above
-	BlockFace[] faces = new BlockFace[] {BlockFace.NORTH,BlockFace.SOUTH,BlockFace.EAST,BlockFace.WEST};
-	@EventHandler
-	public void preventWrongIce(BlockFormEvent event) {
-		Block block = event.getBlock();
-		if(event.getNewState().getType() == Material.ICE) {
-			for(BlockFace face : faces) {
-				if(block.getRelative(face).getType().isSolid()) return;
-			}
-			event.setCancelled(true);
-		}
-	}
+    //fixes a small side effect of the above
+    BlockFace[] faces = new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
 
-	@EventHandler(ignoreCancelled = true)
-	public void onSignChange(SignChangeEvent event) {
-		if(config.isEnabled() && config.isPreventLongSigns()) {
-			String[] signdata = event.getLines();
-			for(int i = 0; i < signdata.length; i++) {
-				if(signdata[i] != null && signdata[i].length() > config.getSignLengthLimit()) {
-					Player player = event.getPlayer();
-					Location loc = event.getBlock().getLocation();
-					plugin().log(Level.WARNING, String.format("Player '%s' [%s] attempted to place sign at ([%s] %d, %d, %d) with line %d having length %d > %d. Preventing.",
-							player.getDisplayName(), player.getUniqueId(), loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(),
-							i, signdata[i], config.getSignLengthLimit()));
-					if(config.isCancelLongSignEvent()) {
-						event.setCancelled(true);
-						return;
-					}
-					if(config.isPreventLongSignsAbsolute()) {
-						event.setLine(i, "");
-					} else {
-						event.setLine(i, signdata[i].substring(0, config.getSignLengthLimit()));
-					}
-				}
-			}
-		}
-	}
+    @EventHandler
+    public void preventWrongIce(BlockFormEvent event) {
+        Block block = event.getBlock();
+        if (event.getNewState().getType() == Material.ICE) {
+            for (BlockFace face : faces) {
+                if (block.getRelative(face).getType().isSolid()) return;
+            }
+            event.setCancelled(true);
+        }
+    }
 
-	public static GameFixesConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
-		return new GameFixesConfig(plugin, config);
-	}
+    @EventHandler(ignoreCancelled = true)
+    public void onSignChange(SignChangeEvent event) {
+        if (config.isEnabled() && config.isPreventLongSigns()) {
+            String[] signdata = event.getLines();
+            for (int i = 0; i < signdata.length; i++) {
+                if (signdata[i] != null && signdata[i].length() > config.getSignLengthLimit()) {
+                    Player player = event.getPlayer();
+                    Location loc = event.getBlock().getLocation();
+                    plugin().log(Level.WARNING, String.format("Player '%s' [%s] attempted to place sign at ([%s] %d, %d, %d) with line %d having length %d > %d. Preventing.",
+                        player.getDisplayName(), player.getUniqueId(), loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(),
+                        i, signdata[i], config.getSignLengthLimit()));
+                    if (config.isCancelLongSignEvent()) {
+                        event.setCancelled(true);
+                        return;
+                    }
+                    if (config.isPreventLongSignsAbsolute()) {
+                        event.setLine(i, "");
+                    } else {
+                        event.setLine(i, signdata[i].substring(0, config.getSignLengthLimit()));
+                    }
+                }
+            }
+        }
+    }
+
+    public static GameFixesConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+        return new GameFixesConfig(plugin, config);
+    }
 
 }

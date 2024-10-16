@@ -29,148 +29,148 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableStor
 
 public class Citadel extends ACivMod {
 
-	private static Citadel instance;
+    private static Citadel instance;
 
-	public static Citadel getInstance() {
-		return instance;
-	}
+    public static Citadel getInstance() {
+        return instance;
+    }
 
-	private Logger logger;
-	private ReinforcementManager reinManager;
-	private CitadelConfigManager config;
-	private AcidManager acidManager;
-	private ReinforcementTypeManager typeManager;
-	private HologramManager holoManager;
-	private CitadelSettingManager settingManager;
-	private CitadelDAO dao;
-	private ActivityMap activityMap;
-	private CitadelCommandManager commandManager;
+    private Logger logger;
+    private ReinforcementManager reinManager;
+    private CitadelConfigManager config;
+    private AcidManager acidManager;
+    private ReinforcementTypeManager typeManager;
+    private HologramManager holoManager;
+    private CitadelSettingManager settingManager;
+    private CitadelDAO dao;
+    private ActivityMap activityMap;
+    private CitadelCommandManager commandManager;
 
-	private PlayerStateManager stateManager;
+    private PlayerStateManager stateManager;
 
-	/**
-	 * @return Acid block manager
-	 */
-	public AcidManager getAcidManager() {
-		return acidManager;
-	}
+    /**
+     * @return Acid block manager
+     */
+    public AcidManager getAcidManager() {
+        return acidManager;
+    }
 
-	public CitadelConfigManager getConfigManager() {
-		return config;
-	}
+    public CitadelConfigManager getConfigManager() {
+        return config;
+    }
 
-	public ReinforcementManager getReinforcementManager() {
-		return reinManager;
-	}
+    public ReinforcementManager getReinforcementManager() {
+        return reinManager;
+    }
 
-	public ReinforcementTypeManager getReinforcementTypeManager() {
-		return typeManager;
-	}
+    public ReinforcementTypeManager getReinforcementTypeManager() {
+        return typeManager;
+    }
 
-	public CitadelSettingManager getSettingManager() {
-		return settingManager;
-	}
+    public CitadelSettingManager getSettingManager() {
+        return settingManager;
+    }
 
-	public PlayerStateManager getStateManager() {
-		return stateManager;
-	}
+    public PlayerStateManager getStateManager() {
+        return stateManager;
+    }
 
-	public HologramManager getHologramManager() {
-		return holoManager;
-	}
+    public HologramManager getHologramManager() {
+        return holoManager;
+    }
 
-	public ActivityMap getActivityMap() {
-		return activityMap;
-	}
-	
-	CitadelDAO getDAO() {
-		return dao;
-	}
+    public ActivityMap getActivityMap() {
+        return activityMap;
+    }
 
-	@Override
-	public void onDisable() {
-		activityMap.disable();
-		dao.setBatchMode(true);
-		reinManager.shutDown();
-		dao.cleanupBatches();
-		HandlerList.unregisterAll(this);
-		Bukkit.getScheduler().cancelTasks(this);
-	}
+    CitadelDAO getDAO() {
+        return dao;
+    }
 
-	public void reload() {
-		onDisable();
-		onEnable();
-	}
+    @Override
+    public void onDisable() {
+        activityMap.disable();
+        dao.setBatchMode(true);
+        reinManager.shutDown();
+        dao.cleanupBatches();
+        HandlerList.unregisterAll(this);
+        Bukkit.getScheduler().cancelTasks(this);
+    }
 
-	@Override
-	public void onEnable() {
-		super.onEnable();
-		instance = this;
-		logger = getLogger();
-		if (!Bukkit.getPluginManager().isPluginEnabled("NameLayer")) {
-			logger.info("Citadel is shutting down because it could not find NameLayer");
-			Bukkit.shutdown();
-			return;
-		}
-		config = new CitadelConfigManager(this);
-		if (!config.parse()) {
-			logger.severe("Errors in config file, shutting down");
-			Bukkit.shutdown();
-			return;
-		}
-		typeManager = new ReinforcementTypeManager();
-		config.getReinforcementTypes().forEach(t ->
-		{
-			if (!typeManager.register(t)) {
-				logger.severe("Errors in the config file, shutting down");
-				Bukkit.shutdown();
-				return;
-			}
-		});
-		dao = new CitadelDAO(this.logger, config.getDatabase());
-		if (!dao.updateDatabase()) {
-			logger.severe("Errors setting up database, shutting down");
-			Bukkit.shutdown();
-			return;
-		}
+    public void reload() {
+        onDisable();
+        onEnable();
+    }
 
-		activityMap = new ActivityMap(this.logger, config.getDatabase());
-		activityMap.enable();
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        instance = this;
+        logger = getLogger();
+        if (!Bukkit.getPluginManager().isPluginEnabled("NameLayer")) {
+            logger.info("Citadel is shutting down because it could not find NameLayer");
+            Bukkit.shutdown();
+            return;
+        }
+        config = new CitadelConfigManager(this);
+        if (!config.parse()) {
+            logger.severe("Errors in config file, shutting down");
+            Bukkit.shutdown();
+            return;
+        }
+        typeManager = new ReinforcementTypeManager();
+        config.getReinforcementTypes().forEach(t ->
+        {
+            if (!typeManager.register(t)) {
+                logger.severe("Errors in the config file, shutting down");
+                Bukkit.shutdown();
+                return;
+            }
+        });
+        dao = new CitadelDAO(this.logger, config.getDatabase());
+        if (!dao.updateDatabase()) {
+            logger.severe("Errors setting up database, shutting down");
+            Bukkit.shutdown();
+            return;
+        }
 
-		BlockBasedChunkMetaView<CitadelChunkData, TableBasedDataObject, TableStorageEngine<Reinforcement>> chunkMetaData =
-				ChunkMetaAPI.registerBlockBasedPlugin(this, () -> new CitadelChunkData(false, dao),dao, true);
-		if (chunkMetaData == null) {
-			logger.severe("Errors setting up chunk metadata API, shutting down");
-			Bukkit.shutdown();
-			return;
-		}
-		reinManager = new ReinforcementManager(chunkMetaData);
-		stateManager = new PlayerStateManager();
-		acidManager = new AcidManager(config.getAcidTypes());
-		settingManager = new CitadelSettingManager();
-		Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
-			if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
-				holoManager = new HologramManager(settingManager);
-				logger.info("HolographicDisplays is loaded, holograms available");
-			}
-			else {
-				logger.info("HolographicDisplays is not loaded, no holograms available");
-			}});
-		commandManager = new CitadelCommandManager(this);
-		CitadelPermissionHandler.setup();
-		registerListeners();
-	}
+        activityMap = new ActivityMap(this.logger, config.getDatabase());
+        activityMap.enable();
 
-	/**
-	 * Registers the listeners for Citadel.
-	 */
-	private void registerListeners() {
-		getServer().getPluginManager().registerEvents(new BlockListener(this), this);
-		getServer().getPluginManager().registerEvents(new EntityListener(), this);
-		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
-		getServer().getPluginManager().registerEvents(new ModeListener(this), this);
-		getServer().getPluginManager().registerEvents(new RedstoneListener(config.getMaxRedstoneDistance()), this);
-		getServer().getPluginManager().registerEvents(new ActivityListener(activityMap), this);
-		getServer().getPluginManager().registerEvents(new WorldBorderListener(), this);
-	}
+        BlockBasedChunkMetaView<CitadelChunkData, TableBasedDataObject, TableStorageEngine<Reinforcement>> chunkMetaData =
+            ChunkMetaAPI.registerBlockBasedPlugin(this, () -> new CitadelChunkData(false, dao), dao, true);
+        if (chunkMetaData == null) {
+            logger.severe("Errors setting up chunk metadata API, shutting down");
+            Bukkit.shutdown();
+            return;
+        }
+        reinManager = new ReinforcementManager(chunkMetaData);
+        stateManager = new PlayerStateManager();
+        acidManager = new AcidManager(config.getAcidTypes());
+        settingManager = new CitadelSettingManager();
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+            if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
+                holoManager = new HologramManager(settingManager);
+                logger.info("HolographicDisplays is loaded, holograms available");
+            } else {
+                logger.info("HolographicDisplays is not loaded, no holograms available");
+            }
+        });
+        commandManager = new CitadelCommandManager(this);
+        CitadelPermissionHandler.setup();
+        registerListeners();
+    }
+
+    /**
+     * Registers the listeners for Citadel.
+     */
+    private void registerListeners() {
+        getServer().getPluginManager().registerEvents(new BlockListener(this), this);
+        getServer().getPluginManager().registerEvents(new EntityListener(), this);
+        getServer().getPluginManager().registerEvents(new InventoryListener(), this);
+        getServer().getPluginManager().registerEvents(new ModeListener(this), this);
+        getServer().getPluginManager().registerEvents(new RedstoneListener(config.getMaxRedstoneDistance()), this);
+        getServer().getPluginManager().registerEvents(new ActivityListener(activityMap), this);
+        getServer().getPluginManager().registerEvents(new WorldBorderListener(), this);
+    }
 }

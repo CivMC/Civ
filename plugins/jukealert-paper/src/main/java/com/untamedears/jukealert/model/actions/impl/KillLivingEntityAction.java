@@ -10,28 +10,28 @@ import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 
 public class KillLivingEntityAction extends LoggablePlayerVictimAction {
-	
-	public static final String ID = "KILL_MOB";
 
-	public KillLivingEntityAction(long time, Snitch snitch, UUID player, Location location,String victimName) {
-		super(time, snitch, player, location, victimName);
-	}
+    public static final String ID = "KILL_MOB";
 
-	@Override
-	public IClickable getGUIRepresentation() {
-		ItemStack is = new ItemStack(Material.DIAMOND_SWORD);
-		super.enrichGUIItem(is);
-		return new DecorationStack(is);
-	}
+    public KillLivingEntityAction(long time, Snitch snitch, UUID player, Location location, String victimName) {
+        super(time, snitch, player, location, victimName);
+    }
 
-	@Override
-	public String getIdentifier() {
-		return ID;
-	}
-	
-	@Override
-	public String getChatRepresentationIdentifier() {
-		return "Killed " + getVictim();
-	}
+    @Override
+    public IClickable getGUIRepresentation() {
+        ItemStack is = new ItemStack(Material.DIAMOND_SWORD);
+        super.enrichGUIItem(is);
+        return new DecorationStack(is);
+    }
+
+    @Override
+    public String getIdentifier() {
+        return ID;
+    }
+
+    @Override
+    public String getChatRepresentationIdentifier() {
+        return "Killed " + getVictim();
+    }
 
 }

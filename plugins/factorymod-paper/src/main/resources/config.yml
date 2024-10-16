@@ -150,10 +150,10 @@ default_update_time: 1s
 #write this option
 
 default_fuel:
-    charcoal:
-        material: COAL
-        durability: 1
- 
+  charcoal:
+    material: COAL
+    durability: 1
+
 
 #default_fuel_consumption_intervall specifies a default for how often factories consume fuel. Basically every time a 
 #factory which consumes fuel has run for the time specified here, one fuel unit will be consumed. This value should
@@ -732,36 +732,36 @@ renames:
 #this is only meant to provide messages to teach the game mechanic as a whole.
 
 CivMenu:
-    events:
-        #Called when a FCC factory is successfully created
-        FactoryCreation:
-        
-        #Called when a player attempt to create a FCC factory with invalid materials
-        WrongFactoryCreationItems:
-        
-        #Called when a player attempts to create a FCC factory with a wrong block setup
-        WrongFactoryBlockSetup:
-        
-        #Called when a pipe is successfully created
-        PipeCreation:
-        
-        #Called when a player attempt to create a pipe with invalid materials
-        WrongPipeCreationItems:
-        
-        #Called when a player attempts to create a pipe with a wrong block setup
-        WrongPipeBlockSetup:
-        
-        #Called when a sorter is successfully created
-        SorterCreation:
-        
-        #Called when a player attempt to create a sorter with invalid materials
-        WrongSorterCreationItems:
-        
-        #Called when a player attempts to create a sorter with a wrong block setup
-        WrongSorterBlockSetup:
-        
-        #Called when someone attempts to interact with any type of factory, but doesnt have the correct permissions
-        FactoryNoPermission:
+  events:
+    #Called when a FCC factory is successfully created
+    FactoryCreation:
+
+    #Called when a player attempt to create a FCC factory with invalid materials
+    WrongFactoryCreationItems:
+
+    #Called when a player attempts to create a FCC factory with a wrong block setup
+    WrongFactoryBlockSetup:
+
+    #Called when a pipe is successfully created
+    PipeCreation:
+
+    #Called when a player attempt to create a pipe with invalid materials
+    WrongPipeCreationItems:
+
+    #Called when a player attempts to create a pipe with a wrong block setup
+    WrongPipeBlockSetup:
+
+    #Called when a sorter is successfully created
+    SorterCreation:
+
+    #Called when a player attempt to create a sorter with invalid materials
+    WrongSorterCreationItems:
+
+    #Called when a player attempts to create a sorter with a wrong block setup
+    WrongSorterBlockSetup:
+
+    #Called when someone attempts to interact with any type of factory, but doesnt have the correct permissions
+    FactoryNoPermission:
         
         
         

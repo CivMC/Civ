@@ -18,107 +18,108 @@ import vg.civcraft.mc.civmodcore.players.PlayerNames;
  * need their own item-material completions (like CivChat2).
  */
 public final class CommandHelpers {
-	/**
-	 * ACF has an automatic help generator, but it's currently considered an unstable API.
-	 * <a href="https://github.com/aikar/commands/wiki/Command-Help">Read more</a>.
-	 *
-	 * <pre><code>
-	 * // Somewhere in your plugin enable process
-	 * CommandHelpers.enableCommandHelp(this.commandManager);
-	 *
-	 * // Example Command
-	 * &#64;CommandAlias("example")
-	 * public class ExampleCommand extends BaseCommand {
-	 *     &#64;Default
-	 *     public void showHelp(final &#64;NotNull Player sender) {
-	 *         throw new ShowCommandHelp(); // Sends a help page to the player
-	 *     }
-	 * }
-	 * </code></pre>
-	 */
-	@SuppressWarnings("deprecation")
-	public static void enableCommandHelp(
-		final @NotNull co.aikar.commands.CommandManager<?, ?, ?, ?, ?, ?> manager
-	) {
-		manager.enableUnstableAPI("help");
-	}
 
-	// ============================================================
-	// Completions
-	// ============================================================
+    /**
+     * ACF has an automatic help generator, but it's currently considered an unstable API.
+     * <a href="https://github.com/aikar/commands/wiki/Command-Help">Read more</a>.
+     *
+     * <pre><code>
+     * // Somewhere in your plugin enable process
+     * CommandHelpers.enableCommandHelp(this.commandManager);
+     *
+     * // Example Command
+     * &#64;CommandAlias("example")
+     * public class ExampleCommand extends BaseCommand {
+     *     &#64;Default
+     *     public void showHelp(final &#64;NotNull Player sender) {
+     *         throw new ShowCommandHelp(); // Sends a help page to the player
+     *     }
+     * }
+     * </code></pre>
+     */
+    @SuppressWarnings("deprecation")
+    public static void enableCommandHelp(
+        final @NotNull co.aikar.commands.CommandManager<?, ?, ?, ?, ?, ?> manager
+    ) {
+        manager.enableUnstableAPI("help");
+    }
 
-	/**
-	 * ACF already has the "@nothing" completion, but that seems less intuitive than "@none", so this adds "@none".
-	 */
-	public static void registerNoneCompletion(
-		final @NotNull CommandCompletions<?> completions
-	) {
-		completions.registerStaticCompletion(
-			"none",
-			List.of()
-		);
-	}
+    // ============================================================
+    // Completions
+    // ============================================================
 
-	/**
-	 * Completion for all Bukkit materials.
-	 */
-	public static void registerMaterialsCompletion(
-		final @NotNull CommandCompletions<?> completions
-	) {
-		completions.registerStaticCompletion(
-			"materials",
-			Arrays.stream(Material.values())
-				.map(Enum::name)
-				.toList()
-		);
-	}
+    /**
+     * ACF already has the "@nothing" completion, but that seems less intuitive than "@none", so this adds "@none".
+     */
+    public static void registerNoneCompletion(
+        final @NotNull CommandCompletions<?> completions
+    ) {
+        completions.registerStaticCompletion(
+            "none",
+            List.of()
+        );
+    }
 
-	/**
-	 * Completion for all Bukkit materials that are items, excluding Air.
-	 */
-	public static void registerItemMaterialsCompletion(
-		final @NotNull CommandCompletions<?> completions
-	) {
-		completions.registerStaticCompletion(
-			"itemMaterials",
-			Arrays.stream(Material.values())
-				.filter(ItemUtils::isValidItemMaterial)
-				.map(Enum::name)
-				.toList()
-		);
-	}
+    /**
+     * Completion for all Bukkit materials.
+     */
+    public static void registerMaterialsCompletion(
+        final @NotNull CommandCompletions<?> completions
+    ) {
+        completions.registerStaticCompletion(
+            "materials",
+            Arrays.stream(Material.values())
+                .map(Enum::name)
+                .toList()
+        );
+    }
 
-	/**
-	 * Completion for all known player names.
-	 */
-	public static void registerKnownPlayersCompletion(
-		final @NotNull CommandCompletions<?> completions
-	) {
-		completions.registerCompletion(
-			"allplayers",
-			(context) -> PlayerNames.getPlayerNames()
-		);
-		completions.setDefaultCompletion(
-			"allplayers",
-			OfflinePlayer.class
-		);
-	}
+    /**
+     * Completion for all Bukkit materials that are items, excluding Air.
+     */
+    public static void registerItemMaterialsCompletion(
+        final @NotNull CommandCompletions<?> completions
+    ) {
+        completions.registerStaticCompletion(
+            "itemMaterials",
+            Arrays.stream(Material.values())
+                .filter(ItemUtils::isValidItemMaterial)
+                .map(Enum::name)
+                .toList()
+        );
+    }
 
-	// ============================================================
-	// Contexts
-	// ============================================================
+    /**
+     * Completion for all known player names.
+     */
+    public static void registerKnownPlayersCompletion(
+        final @NotNull CommandCompletions<?> completions
+    ) {
+        completions.registerCompletion(
+            "allplayers",
+            (context) -> PlayerNames.getPlayerNames()
+        );
+        completions.setDefaultCompletion(
+            "allplayers",
+            OfflinePlayer.class
+        );
+    }
 
-	/**
-	 * Registers a context that requires the command-sender to be the console.
-	 */
-	public static void registerConsoleSenderContext(
-		final @NotNull CommandContexts<?> contexts
-	) {
-		contexts.registerIssuerAwareContext(ConsoleCommandSender.class, (context) -> {
-			if (context.getIssuer().getIssuer() instanceof final ConsoleCommandSender console) {
-				return console;
-			}
-			throw new InvalidCommandArgument("Command can only be called from console!", false);
-		});
-	}
+    // ============================================================
+    // Contexts
+    // ============================================================
+
+    /**
+     * Registers a context that requires the command-sender to be the console.
+     */
+    public static void registerConsoleSenderContext(
+        final @NotNull CommandContexts<?> contexts
+    ) {
+        contexts.registerIssuerAwareContext(ConsoleCommandSender.class, (context) -> {
+            if (context.getIssuer().getIssuer() instanceof final ConsoleCommandSender console) {
+                return console;
+            }
+            throw new InvalidCommandArgument("Command can only be called from console!", false);
+        });
+    }
 }

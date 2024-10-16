@@ -1,6 +1,5 @@
 /**
  * @author Aleksey Terzi
- *
  */
 
 package com.aleksey.castlegates.engine;
@@ -28,104 +27,107 @@ import java.util.List;
 import java.util.logging.Level;
 
 public class CastleGatesManager {
-	private SqlDatabase _db;
-	private StorageManager _storage;
-	private BridgeManager _bridgeManager;
-	private BridgeEventHandler _bridgeEventHandler;
-	private PlayerStateManager _stateManager;
 
-	public boolean init(SqlDatabase db) {
-		_db = db;
+    private SqlDatabase _db;
+    private StorageManager _storage;
+    private BridgeManager _bridgeManager;
+    private BridgeEventHandler _bridgeEventHandler;
+    private PlayerStateManager _stateManager;
 
-		try {
-			_storage = new StorageManager();
-			_storage.init(db);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+    public boolean init(SqlDatabase db) {
+        _db = db;
 
-		_bridgeManager = new BridgeManager();
-		_bridgeManager.init(_storage);
+        try {
+            _storage = new StorageManager();
+            _storage.init(db);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
 
-		_bridgeEventHandler = new BridgeEventHandler(_storage, _bridgeManager);
+        _bridgeManager = new BridgeManager();
+        _bridgeManager.init(_storage);
 
-		_stateManager = new PlayerStateManager();
+        _bridgeEventHandler = new BridgeEventHandler(_storage, _bridgeManager);
 
-		return true;
-	}
+        _stateManager = new PlayerStateManager();
 
-	public void reinit() {
-		CastleGates.getPluginLogger().log(Level.INFO, "Start reload process...");
+        return true;
+    }
 
-		_bridgeManager.close();
+    public void reinit() {
+        CastleGates.getPluginLogger().log(Level.INFO, "Start reload process...");
 
-		try {
-			_storage.close();
-			_storage.init(_db);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return;
-		}
+        _bridgeManager.close();
 
-		_bridgeManager.init(_storage);
+        try {
+            _storage.close();
+            _storage.init(_db);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
 
-		CastleGates.getPluginLogger().log(Level.INFO, "Reload process completed.");
-	}
+        _bridgeManager.init(_storage);
 
-	public void close() {
-		if(_bridgeManager != null) {
-			_bridgeManager.close();
-		}
+        CastleGates.getPluginLogger().log(Level.INFO, "Reload process completed.");
+    }
 
-		if(_storage != null) {
-			_storage.close();
-		}
+    public void close() {
+        if (_bridgeManager != null) {
+            _bridgeManager.close();
+        }
 
-		if(_db != null) {
-			_db.close();
-		}
-	}
+        if (_storage != null) {
+            _storage.close();
+        }
 
-	public void setPlayerMode(Player player, CommandMode mode, Integer timer, TimerOperation timerOperation, TimerMode timerMode) {
-		_stateManager.setPlayerMode(player, mode, timer, timerOperation, timerMode);
-	}
+        if (_db != null) {
+            _db.close();
+        }
+    }
 
-	public void handlePlayerJoin(PlayerJoinEvent event) {
-		_stateManager.clearPlayerMode(event.getPlayer());
-	}
+    public void setPlayerMode(Player player, CommandMode mode, Integer timer, TimerOperation timerOperation, TimerMode timerMode) {
+        _stateManager.setPlayerMode(player, mode, timer, timerOperation, timerMode);
+    }
 
-	public void handlePlayerQuit(PlayerQuitEvent event) {
-		_stateManager.clearPlayerMode(event.getPlayer());
-	}
+    public void handlePlayerJoin(PlayerJoinEvent event) {
+        _stateManager.clearPlayerMode(event.getPlayer());
+    }
 
-	public void handleBlockClicked(PlayerInteractEvent event) {
-		boolean interacted = _bridgeEventHandler.handleBlockClicked(event, _stateManager.getPlayerState(event.getPlayer()));
+    public void handlePlayerQuit(PlayerQuitEvent event) {
+        _stateManager.clearPlayerMode(event.getPlayer());
+    }
 
-		if(interacted) {
-			_stateManager.interact(event.getPlayer());
-		}
-	}
+    public void handleBlockClicked(PlayerInteractEvent event) {
+        boolean interacted = _bridgeEventHandler.handleBlockClicked(event, _stateManager.getPlayerState(event.getPlayer()));
 
-	public void handleBlockBreak(BlockBreakEvent event) {
-		_bridgeEventHandler.handleBlockBreak(event);
-	}
+        if (interacted) {
+            _stateManager.interact(event.getPlayer());
+        }
+    }
 
-	public void handleBlockRedstone(BlockRedstoneEvent event) {
+    public void handleBlockBreak(BlockBreakEvent event) {
+        _bridgeEventHandler.handleBlockBreak(event);
+    }
+
+    public void handleBlockRedstone(BlockRedstoneEvent event) {
         _bridgeEventHandler.handleBlockRedstone(event);
-	}
+    }
 
-	public void handleBlockPhysics(BlockPhysicsEvent event) {
-		_bridgeEventHandler.handleBlockPhysics(event);
-	}
+    public void handleBlockPhysics(BlockPhysicsEvent event) {
+        _bridgeEventHandler.handleBlockPhysics(event);
+    }
 
-	public void handleEntityExplode(EntityExplodeEvent event) {
-		_bridgeEventHandler.handleEntityExplode(event);
-	}
+    public void handleEntityExplode(EntityExplodeEvent event) {
+        _bridgeEventHandler.handleEntityExplode(event);
+    }
 
-	public void handleEntityChangeBlock(EntityChangeBlockEvent event) { _bridgeEventHandler.handleEntityChangeBlock(event); }
+    public void handleEntityChangeBlock(EntityChangeBlockEvent event) {
+        _bridgeEventHandler.handleEntityChangeBlock(event);
+    }
 
-	public void handlePistonEvent(List<Block> blocks) {
-		_bridgeEventHandler.handlePistonEvent(blocks);
-	}
+    public void handlePistonEvent(List<Block> blocks) {
+        _bridgeEventHandler.handlePistonEvent(blocks);
+    }
 }

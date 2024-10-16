@@ -21,77 +21,77 @@ import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData {
 
-	public static final String BULK_KEY = "BulkExchangeRule";
-	public static final String RULES_KEY = "rules";
+    public static final String BULK_KEY = "BulkExchangeRule";
+    public static final String RULES_KEY = "rules";
 
-	public BulkExchangeRule(@Nonnull final List<ExchangeRule> rules) {
-		this.rules = Objects.requireNonNull(rules);
-	}
+    public BulkExchangeRule(@Nonnull final List<ExchangeRule> rules) {
+        this.rules = Objects.requireNonNull(rules);
+    }
 
-	@Override
-	public boolean isBroken() {
-		return this.rules.isEmpty();
-	}
+    @Override
+    public boolean isBroken() {
+        return this.rules.isEmpty();
+    }
 
-	@Override
-	public void toNBT(@Nonnull final NBTCompound nbt) {
-		nbt.setCompoundArray(RULES_KEY, this.rules.stream()
-				.map((rule) -> {
-					final var ruleNBT = new NBTCompound();
-					rule.toNBT(ruleNBT);
-					return ruleNBT;
-				})
-				.toArray(NBTCompound[]::new));
-	}
+    @Override
+    public void toNBT(@Nonnull final NBTCompound nbt) {
+        nbt.setCompoundArray(RULES_KEY, this.rules.stream()
+            .map((rule) -> {
+                final var ruleNBT = new NBTCompound();
+                rule.toNBT(ruleNBT);
+                return ruleNBT;
+            })
+            .toArray(NBTCompound[]::new));
+    }
 
-	@Nonnull
-	public static BulkExchangeRule fromNBT(@Nonnull final NBTCompound nbt) {
-		return new BulkExchangeRule(Arrays.stream(nbt.getCompoundArray(RULES_KEY))
-				.map(ExchangeRule::fromNBT)
-				.collect(Collectors.toCollection(ArrayList::new)));
-	}
+    @Nonnull
+    public static BulkExchangeRule fromNBT(@Nonnull final NBTCompound nbt) {
+        return new BulkExchangeRule(Arrays.stream(nbt.getCompoundArray(RULES_KEY))
+            .map(ExchangeRule::fromNBT)
+            .collect(Collectors.toCollection(ArrayList::new)));
+    }
 
-	public ItemStack toItem() {
-		final ItemStack item = NBTSerialization.processItem(ItemExchangeConfig.getRuleItem(), (nbt) -> {
-			final var ruleNBT = new NBTCompound();
-			toNBT(ruleNBT);
-			nbt.setCompound(BULK_KEY, ruleNBT);
-		});
-		ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
-			meta.displayName(Component.text()
-					.color(NamedTextColor.RED)
-					.content("Bulk Rule Block")
-					.build());
-			MetaUtils.setComponentLore(meta, Component.text(
-					String.format(
-							"This rule block holds %s exchange rule%s.",
-							this.rules.size(), this.rules.size() == 1 ? "" : "s")));
-			return true;
-		});
-		return item;
-	}
+    public ItemStack toItem() {
+        final ItemStack item = NBTSerialization.processItem(ItemExchangeConfig.getRuleItem(), (nbt) -> {
+            final var ruleNBT = new NBTCompound();
+            toNBT(ruleNBT);
+            nbt.setCompound(BULK_KEY, ruleNBT);
+        });
+        ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
+            meta.displayName(Component.text()
+                .color(NamedTextColor.RED)
+                .content("Bulk Rule Block")
+                .build());
+            MetaUtils.setComponentLore(meta, Component.text(
+                String.format(
+                    "This rule block holds %s exchange rule%s.",
+                    this.rules.size(), this.rules.size() == 1 ? "" : "s")));
+            return true;
+        });
+        return item;
+    }
 
-	@Nullable
-	public static BulkExchangeRule fromItem(final ItemStack item) {
-		if (!ItemUtils.isValidItem(item)
-				|| item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
-			return null;
-		}
-		final var meta = item.getItemMeta();
-		if (meta == null) {
-			return null;
-		}
-		// From NBT
-		final var itemNBT = NBTSerialization.fromItem(item);
-		if (itemNBT.hasKeyOfType(BULK_KEY, NBTType.COMPOUND)) {
-			final var rulesNBT = itemNBT.getCompound(BULK_KEY).getCompoundArray(RULES_KEY);
-			final var rules = new ArrayList<ExchangeRule>(rulesNBT.length);
-			for (final var ruleNBT : rulesNBT) {
-				rules.add(ExchangeRule.fromNBT(ruleNBT));
-			}
-			return new BulkExchangeRule(rules);
-		}
-		return null;
-	}
+    @Nullable
+    public static BulkExchangeRule fromItem(final ItemStack item) {
+        if (!ItemUtils.isValidItem(item)
+            || item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
+            return null;
+        }
+        final var meta = item.getItemMeta();
+        if (meta == null) {
+            return null;
+        }
+        // From NBT
+        final var itemNBT = NBTSerialization.fromItem(item);
+        if (itemNBT.hasKeyOfType(BULK_KEY, NBTType.COMPOUND)) {
+            final var rulesNBT = itemNBT.getCompound(BULK_KEY).getCompoundArray(RULES_KEY);
+            final var rules = new ArrayList<ExchangeRule>(rulesNBT.length);
+            for (final var ruleNBT : rulesNBT) {
+                rules.add(ExchangeRule.fromNBT(ruleNBT));
+            }
+            return new BulkExchangeRule(rules);
+        }
+        return null;
+    }
 
 }

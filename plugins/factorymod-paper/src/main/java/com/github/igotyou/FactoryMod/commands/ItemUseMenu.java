@@ -14,22 +14,22 @@ import org.bukkit.inventory.ItemStack;
 
 public class ItemUseMenu extends BaseCommand {
 
-	@CommandAlias("item")
-	@Syntax("[material]")
-	@Description("Opens a GUI allowing you to browse all recipes which use or output the item in your main hand")
-	@CommandCompletion("@materials")
-	public void execute(Player p, @Optional String material) {
-		if (material == null) {
-			ItemUseGUI gui = new ItemUseGUI(p);
-			gui.showItemOverview(p.getInventory().getItemInMainHand());
-		} else {
-			Material mat = Material.getMaterial(material);
-			if (mat == null) {
-				p.sendMessage(ChatColor.RED + "The item " + material + " does not exist");
-				return;
-			}
-			ItemUseGUI gui = new ItemUseGUI(p);
-			gui.showItemOverview(new ItemStack(mat));
-		}
-	}
+    @CommandAlias("item")
+    @Syntax("[material]")
+    @Description("Opens a GUI allowing you to browse all recipes which use or output the item in your main hand")
+    @CommandCompletion("@materials")
+    public void execute(Player p, @Optional String material) {
+        if (material == null) {
+            ItemUseGUI gui = new ItemUseGUI(p);
+            gui.showItemOverview(p.getInventory().getItemInMainHand());
+        } else {
+            Material mat = Material.getMaterial(material);
+            if (mat == null) {
+                p.sendMessage(ChatColor.RED + "The item " + material + " does not exist");
+                return;
+            }
+            ItemUseGUI gui = new ItemUseGUI(p);
+            gui.showItemOverview(new ItemStack(mat));
+        }
+    }
 }

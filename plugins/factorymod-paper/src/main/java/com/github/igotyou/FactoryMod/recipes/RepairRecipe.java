@@ -18,68 +18,68 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 /**
  * Used to repair FurnCraftChest factories. Once one of those factories is in
  * disrepair the only recipe that can be run is one of this kind
- *
  */
 public class RepairRecipe extends InputRecipe {
-	private int healthPerRun;
 
-	public RepairRecipe(String identifier, String name, int productionTime, ItemMap input,
-			int healthPerRun) {
-		super(identifier, name, productionTime, input);
-		this.healthPerRun = healthPerRun;
-	}
+    private int healthPerRun;
 
-	@Override
-	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> result = new LinkedList<>();
-		ItemStack furn = new ItemStack(Material.FURNACE);
-		ItemUtils.setLore(furn, "+" + String.valueOf(healthPerRun) + " health");
-		result.add(furn);
-		return result;
-	}
+    public RepairRecipe(String identifier, String name, int productionTime, ItemMap input,
+                        int healthPerRun) {
+        super(identifier, name, productionTime, input);
+        this.healthPerRun = healthPerRun;
+    }
 
-	@Override
-	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		if (i == null) {
-			return input.getItemStackRepresentation();
-		}
-		return createLoredStacksForInfo(i);
-	}
+    @Override
+    public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        List<ItemStack> result = new LinkedList<>();
+        ItemStack furn = new ItemStack(Material.FURNACE);
+        ItemUtils.setLore(furn, "+" + String.valueOf(healthPerRun) + " health");
+        result.add(furn);
+        return result;
+    }
 
-	@Override
-	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
-		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
-		logBeforeRecipeRun(combo, fccf);
-		if (enoughMaterialAvailable(inputInv)) {
-			if (input.removeSafelyFrom(inputInv)) {
-				((PercentageHealthRepairManager) (fccf.getRepairManager()))
-						.repair(healthPerRun);
-				LoggingUtils.log(((PercentageHealthRepairManager) (fccf
-						.getRepairManager())).getHealth()
-						+ " for "
-						+ fccf.getLogData() + " after repairing");
-			}
-		}
-		logAfterRecipeRun(combo, fccf);
-		return true;
-	}
-	
-	@Override
-	public Material getRecipeRepresentationMaterial() {
-		return Material.FURNACE;
-	}
+    @Override
+    public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        if (i == null) {
+            return input.getItemStackRepresentation();
+        }
+        return createLoredStacksForInfo(i);
+    }
 
-	@Override
-	public String getTypeIdentifier() {
-		return "REPAIR";
-	}
+    @Override
+    public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+        logBeforeRecipeRun(combo, fccf);
+        if (enoughMaterialAvailable(inputInv)) {
+            if (input.removeSafelyFrom(inputInv)) {
+                ((PercentageHealthRepairManager) (fccf.getRepairManager()))
+                    .repair(healthPerRun);
+                LoggingUtils.log(((PercentageHealthRepairManager) (fccf
+                    .getRepairManager())).getHealth()
+                    + " for "
+                    + fccf.getLogData() + " after repairing");
+            }
+        }
+        logAfterRecipeRun(combo, fccf);
+        return true;
+    }
 
-	public int getHealth() {
-		return healthPerRun;
-	}
+    @Override
+    public Material getRecipeRepresentationMaterial() {
+        return Material.FURNACE;
+    }
 
-	@Override
-	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		return Arrays.asList(ChatColor.YELLOW + "Repairs the factory by " + healthPerRun + " health");
-	}
+    @Override
+    public String getTypeIdentifier() {
+        return "REPAIR";
+    }
+
+    public int getHealth() {
+        return healthPerRun;
+    }
+
+    @Override
+    public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        return Arrays.asList(ChatColor.YELLOW + "Repairs the factory by " + healthPerRun + " health");
+    }
 }

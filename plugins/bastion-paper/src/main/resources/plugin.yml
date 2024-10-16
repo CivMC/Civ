@@ -2,54 +2,54 @@ name: Bastion
 version: ${version}
 main: isaac.bastion.Bastion
 author: spaceFountain
-authors: [Rourke750, ProgrammerDan, Maxopoly, TealNerd, Aleksey-Terzi]
-depend: [CivModCore, Citadel, NameLayer]
+authors: [ Rourke750, ProgrammerDan, Maxopoly, TealNerd, Aleksey-Terzi ]
+depend: [ CivModCore, Citadel, NameLayer ]
 api-version: 1.20
 commands:
-   Bastion:
-      description: Base command for Bastion
-      usage: /Bastion <About or License>
-      permission: Bastion.normal
-   bsi:
-      description: Gives info on blocks that are clicked
-      usage: /bsi and right click a block
-      permission: Bastion.normal
-   bsd:
-      description: Removes Bastion Block when clicked
-      usage: /bsd and right click a block
-      permission: Bastion.normal
-   bso:
-      description: Returns to normal
-      usage: /bso set the mode back to normal
-      permission: Bastion.normal
-   bsb:
-      description: Turns mode to BASTION mode
-      usage: /bsb set the mode to BASTION. When clicking a reinforced target block it becomes a Bastion 
-      permission: Bastion.normal
-   bsf:
-      description: Changes mode to OFF mode where reinforcing the target block does not create a Bastion
-      usage: /bsb set the mode OFF. When a target block is reinforced it does not create a bastion
-      permission: Bastion.normal
-   bsm:
-      description: Insta matures any bastion left clicked 
-      usage: /bsm
-      permission: Bastion.admin
+  Bastion:
+    description: Base command for Bastion
+    usage: /Bastion <About or License>
+    permission: Bastion.normal
+  bsi:
+    description: Gives info on blocks that are clicked
+    usage: /bsi and right click a block
+    permission: Bastion.normal
+  bsd:
+    description: Removes Bastion Block when clicked
+    usage: /bsd and right click a block
+    permission: Bastion.normal
+  bso:
+    description: Returns to normal
+    usage: /bso set the mode back to normal
+    permission: Bastion.normal
+  bsb:
+    description: Turns mode to BASTION mode
+    usage: /bsb set the mode to BASTION. When clicking a reinforced target block it becomes a Bastion
+    permission: Bastion.normal
+  bsf:
+    description: Changes mode to OFF mode where reinforcing the target block does not create a Bastion
+    usage: /bsb set the mode OFF. When a target block is reinforced it does not create a bastion
+    permission: Bastion.normal
+  bsm:
+    description: Insta matures any bastion left clicked
+    usage: /bsm
+    permission: Bastion.admin
 permissions:
-    Bastion.*:
-        description: Gives access to all Bastion commands
-        default: false
-    Bastion.normal:
-        description: All a normal player should ever need
-        default: true
-    Bastion.admin:
-        description: Special power for admins
-        default: false
-        children:
-            Bastion.bypass: true
-            Bastion.dev: true
-    Bastion.bypass:
-        description: Bastions do not effect members
-        default: false
-    Bastion.dev:
-        description: Special debug commands and different responses to existing commands
-        default: op
+  Bastion.*:
+    description: Gives access to all Bastion commands
+    default: false
+  Bastion.normal:
+    description: All a normal player should ever need
+    default: true
+  Bastion.admin:
+    description: Special power for admins
+    default: false
+    children:
+      Bastion.bypass: true
+      Bastion.dev: true
+  Bastion.bypass:
+    description: Bastions do not effect members
+    default: false
+  Bastion.dev:
+    description: Special debug commands and different responses to existing commands
+    default: op

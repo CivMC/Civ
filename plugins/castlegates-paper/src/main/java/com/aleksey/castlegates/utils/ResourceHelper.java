@@ -1,6 +1,5 @@
 /**
  * @author Aleksey Terzi
- *
  */
 
 package com.aleksey.castlegates.utils;
@@ -14,38 +13,38 @@ import java.util.ArrayList;
 import com.aleksey.castlegates.CastleGates;
 
 public class ResourceHelper {
-	public static ArrayList<String> readScriptList(String resourcePath) {
-		InputStream stream = CastleGates.class.getResourceAsStream(resourcePath);
 
-		if(stream == null)
-			return null;
+    public static ArrayList<String> readScriptList(String resourcePath) {
+        InputStream stream = CastleGates.class.getResourceAsStream(resourcePath);
 
-    	StringBuilder script = new StringBuilder();
-    	ArrayList<String> list = new ArrayList<>();
+        if (stream == null)
+            return null;
 
-    	try {
-    		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-    		String line;
+        StringBuilder script = new StringBuilder();
+        ArrayList<String> list = new ArrayList<>();
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            String line;
 
             while ((line = reader.readLine()) != null) {
-            	if(line.endsWith(";")) {
-            		script.append(line);
-            		list.add(script.toString());
-            		script.delete(0, script.length());
-            	}
-            	else {
-                	script.append(line);
-                	script.append("\n");
-            	}
+                if (line.endsWith(";")) {
+                    script.append(line);
+                    list.add(script.toString());
+                    script.delete(0, script.length());
+                } else {
+                    script.append(line);
+                    script.append("\n");
+                }
             }
 
-            if(script.length() > 0) {
-            	list.add(script.toString());
+            if (script.length() > 0) {
+                list.add(script.toString());
             }
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    	return list;
-	}
+        return list;
+    }
 }

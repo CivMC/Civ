@@ -1,6 +1,5 @@
 /**
  * @author Aleksey Terzi
- *
  */
 
 package com.github.igotyou.FactoryMod.recipes;
@@ -25,148 +24,154 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class PrintingPlateRecipe extends PrintingPressRecipe {
-	public static final String itemName = "Printing Plate";
-	private static final int version = 1;
 
-	protected ItemMap output;
+    public static final String itemName = "Printing Plate";
+    private static final int version = 1;
 
-	public ItemMap getOutput() {
-		return this.output;
-	}
+    protected ItemMap output;
 
-	public PrintingPlateRecipe(String identifier, String name, int productionTime, ItemMap input, ItemMap output) {
-		super(identifier, name, productionTime, input);
-		this.output = output;
-	}	
+    public ItemMap getOutput() {
+        return this.output;
+    }
 
-	@Override
-	public boolean enoughMaterialAvailable(Inventory inputInv) {
-		return this.input.isContainedIn(inputInv) && getBook(inputInv) != null;
-	}
+    public PrintingPlateRecipe(String identifier, String name, int productionTime, ItemMap input, ItemMap output) {
+        super(identifier, name, productionTime, input);
+        this.output = output;
+    }
 
-	@Override
-	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
-		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
-		logBeforeRecipeRun(combo, fccf);
+    @Override
+    public boolean enoughMaterialAvailable(Inventory inputInv) {
+        return this.input.isContainedIn(inputInv) && getBook(inputInv) != null;
+    }
 
-		ItemStack book = getBook(inputInv);
-		BookMeta bookMeta = (BookMeta)book.getItemMeta();
-		if (!bookMeta.hasGeneration()){
-			bookMeta.setGeneration(Generation.ORIGINAL);
-		}
-		String serialNumber = UUID.randomUUID().toString();
+    @Override
+    public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+        logBeforeRecipeRun(combo, fccf);
 
-		ItemMap toRemove = input.clone();
-		ItemMap toAdd = output.clone();
+        ItemStack book = getBook(inputInv);
+        BookMeta bookMeta = (BookMeta) book.getItemMeta();
+        if (!bookMeta.hasGeneration()) {
+            bookMeta.setGeneration(Generation.ORIGINAL);
+        }
+        String serialNumber = UUID.randomUUID().toString();
 
-		if (toRemove.isContainedIn(inputInv) && toRemove.removeSafelyFrom(inputInv)) {
-			for(ItemStack is: toAdd.getItemStackRepresentation()) {
-				is = addTags(serialNumber, is, CraftItemStack.asNMSCopy(book).getTag());
+        ItemMap toRemove = input.clone();
+        ItemMap toAdd = output.clone();
 
-				ItemUtils.setDisplayName(is, itemName);
-				ItemUtils.setLore(is,
-						serialNumber,
-						ChatColor.WHITE + bookMeta.getTitle(),
-						ChatColor.GRAY + "by " + bookMeta.getAuthor(),
-						ChatColor.GRAY + getGenerationName(bookMeta.getGeneration())
-						);
-				is.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
-				is.editMeta(x -> x.addItemFlags(ItemFlag.HIDE_ENCHANTS));
-				outputInv.addItem(is);
-			}
-		}
+        if (toRemove.isContainedIn(inputInv) && toRemove.removeSafelyFrom(inputInv)) {
+            for (ItemStack is : toAdd.getItemStackRepresentation()) {
+                is = addTags(serialNumber, is, CraftItemStack.asNMSCopy(book).getTag());
 
-		logAfterRecipeRun(combo, fccf);
-		return true;
-	}
+                ItemUtils.setDisplayName(is, itemName);
+                ItemUtils.setLore(is,
+                    serialNumber,
+                    ChatColor.WHITE + bookMeta.getTitle(),
+                    ChatColor.GRAY + "by " + bookMeta.getAuthor(),
+                    ChatColor.GRAY + getGenerationName(bookMeta.getGeneration())
+                );
+                is.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+                is.editMeta(x -> x.addItemFlags(ItemFlag.HIDE_ENCHANTS));
+                outputInv.addItem(is);
+            }
+        }
 
-	public static ItemStack addTags(String serialNumber, ItemStack plate, CompoundTag bookTag) {
-		net.minecraft.world.item.ItemStack nmsPlate = CraftItemStack.asNMSCopy(plate);
-		CompoundTag plateTag = nmsPlate.getOrCreateTag();
+        logAfterRecipeRun(combo, fccf);
+        return true;
+    }
 
-		plateTag.putString("SN", serialNumber);
-		plateTag.put("Book", bookTag);
-		plateTag.putInt("Version", version);
+    public static ItemStack addTags(String serialNumber, ItemStack plate, CompoundTag bookTag) {
+        net.minecraft.world.item.ItemStack nmsPlate = CraftItemStack.asNMSCopy(plate);
+        CompoundTag plateTag = nmsPlate.getOrCreateTag();
 
-		nmsPlate.setTag(plateTag);
-		return CraftItemStack.asBukkitCopy(nmsPlate);
-	}
+        plateTag.putString("SN", serialNumber);
+        plateTag.put("Book", bookTag);
+        plateTag.putInt("Version", version);
 
-	public static String getGenerationName(Generation gen) {
-		switch(gen) {
-		case ORIGINAL: return "Original";
-		case COPY_OF_ORIGINAL: return "Copy of Original";
-		case COPY_OF_COPY: return "Copy of Copy";
-		case TATTERED: return "Tattered";
-		default: return "";
-		}
-	}
+        nmsPlate.setTag(plateTag);
+        return CraftItemStack.asBukkitCopy(nmsPlate);
+    }
 
-	@Override
-	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> result = new LinkedList<>();
+    public static String getGenerationName(Generation gen) {
+        switch (gen) {
+            case ORIGINAL:
+                return "Original";
+            case COPY_OF_ORIGINAL:
+                return "Copy of Original";
+            case COPY_OF_COPY:
+                return "Copy of Copy";
+            case TATTERED:
+                return "Tattered";
+            default:
+                return "";
+        }
+    }
 
-		if (i == null) {
-			result.add(new ItemStack(Material.WRITTEN_BOOK, 1));
-			result.addAll(this.input.getItemStackRepresentation());
-			return result;
-		}
+    @Override
+    public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        List<ItemStack> result = new LinkedList<>();
 
-		result = createLoredStacksForInfo(i);
+        if (i == null) {
+            result.add(new ItemStack(Material.WRITTEN_BOOK, 1));
+            result.addAll(this.input.getItemStackRepresentation());
+            return result;
+        }
 
-		ItemStack book = getBook(i);
+        result = createLoredStacksForInfo(i);
 
-		if(book != null) {
-			result.add(book.clone());
-		}
+        ItemStack book = getBook(i);
 
-		return result;
-	}
+        if (book != null) {
+            result.add(book.clone());
+        }
 
-	@Override
-	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> stacks = new ArrayList<>();
-		stacks.add(getPrintingPlateRepresentation(this.output, itemName));
-		stacks.add(new ItemStack(Material.WRITTEN_BOOK));
+        return result;
+    }
 
-		if (i == null) {
-			return stacks;
-		}
+    @Override
+    public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        List<ItemStack> stacks = new ArrayList<>();
+        stacks.add(getPrintingPlateRepresentation(this.output, itemName));
+        stacks.add(new ItemStack(Material.WRITTEN_BOOK));
 
-		int possibleRuns = this.input.getMultiplesContainedIn(i);
+        if (i == null) {
+            return stacks;
+        }
 
-		for (ItemStack is : stacks) {
-			ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
-					+ String.valueOf(possibleRuns) + " runs");
-		}
+        int possibleRuns = this.input.getMultiplesContainedIn(i);
 
-		return stacks;
-	}
-	
-	@Override
-	public Material getRecipeRepresentationMaterial() {
-		return getPrintingPlateRepresentation(this.output, getName()).getType();
-	}
+        for (ItemStack is : stacks) {
+            ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
+                + String.valueOf(possibleRuns) + " runs");
+        }
 
-	public ItemStack getBook(Inventory i) {
-		for (ItemStack is : i.getContents()) {
-			if (is != null &&
-					is.getType() == Material.WRITTEN_BOOK &&
-					((BookMeta) is.getItemMeta()).getGeneration() != Generation.TATTERED) {
-				return is;
-			}
-		}
+        return stacks;
+    }
 
-		return null;
-	}
+    @Override
+    public Material getRecipeRepresentationMaterial() {
+        return getPrintingPlateRepresentation(this.output, getName()).getType();
+    }
 
-	@Override
-	public String getTypeIdentifier() {
-		return "PRINTINGPLATE";
-	}
+    public ItemStack getBook(Inventory i) {
+        for (ItemStack is : i.getContents()) {
+            if (is != null &&
+                is.getType() == Material.WRITTEN_BOOK &&
+                ((BookMeta) is.getItemMeta()).getGeneration() != Generation.TATTERED) {
+                return is;
+            }
+        }
 
-	@Override
-	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		return formatLore(output);
-	}
+        return null;
+    }
+
+    @Override
+    public String getTypeIdentifier() {
+        return "PRINTINGPLATE";
+    }
+
+    @Override
+    public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        return formatLore(output);
+    }
 }

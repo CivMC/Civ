@@ -12,7 +12,7 @@ public final class RailSwitchMenu extends MenuSection {
 
     public RailSwitchMenu() {
         super("RailSwitch", "Settings relating to RailSwitch", PlayerSettingAPI.getMainMenu(),
-                new ItemStack(Material.RAIL));
+            new ItemStack(Material.RAIL));
     }
 
 }

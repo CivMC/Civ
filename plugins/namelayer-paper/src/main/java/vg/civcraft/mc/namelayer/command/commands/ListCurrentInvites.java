@@ -9,10 +9,10 @@ import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 
 public class ListCurrentInvites extends BaseCommandMiddle {
 
-	@CommandAlias("nllci|listinvites|invites")
-	@Description("List your current invites.")
-	public void execute(Player sender) {
-		Player p = (Player) sender;
-		p.sendMessage(PlayerListener.getNotificationsInStringForm(NameAPI.getUUID(p.getName())));
-	}
+    @CommandAlias("nllci|listinvites|invites")
+    @Description("List your current invites.")
+    public void execute(Player sender) {
+        Player p = (Player) sender;
+        p.sendMessage(PlayerListener.getNotificationsInStringForm(NameAPI.getUUID(p.getName())));
+    }
 }

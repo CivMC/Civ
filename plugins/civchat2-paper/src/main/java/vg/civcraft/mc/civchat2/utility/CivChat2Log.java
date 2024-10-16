@@ -5,31 +5,32 @@ import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civchat2.CivChat2;
 
 public class CivChat2Log {
-	private Logger log;
 
-	public void initializeLogger(JavaPlugin jp) {
+    private Logger log;
 
-		log = jp.getLogger();
-	}
+    public void initializeLogger(JavaPlugin jp) {
 
-	public void info(String msg) {
+        log = jp.getLogger();
+    }
 
-		log.info(msg);
-	}
+    public void info(String msg) {
 
-	public void warning(String msg) {
+        log.info(msg);
+    }
 
-		log.warning(msg);
-	}
+    public void warning(String msg) {
 
-	public void severe(String msg) {
+        log.warning(msg);
+    }
 
-		log.severe(msg);
-	}
+    public void severe(String msg) {
 
-	public void debug(String msg) {
-		if (CivChat2.getInstance().debugEnabled()) {
-			log.info("[Debug] " + msg);
-		}
-	}
+        log.severe(msg);
+    }
+
+    public void debug(String msg) {
+        if (CivChat2.getInstance().debugEnabled()) {
+            log.info("[Debug] " + msg);
+        }
+    }
 }

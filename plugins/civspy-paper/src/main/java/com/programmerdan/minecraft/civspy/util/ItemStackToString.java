@@ -29,199 +29,201 @@ import org.bukkit.potion.PotionEffect;
 
 public class ItemStackToString {
 
-	private ItemStackToString(){}
+    private ItemStackToString() {
+    }
 
-	/**
-	 * For 1.13 ItemStacks.
-	 */
-	public static String toString(ItemStack itemStack) {
-		if (itemStack == null) {
-			return "Nothing";
-		}
-		StringBuilder toString = new StringBuilder();
+    /**
+     * For 1.13 ItemStacks.
+     */
+    public static String toString(ItemStack itemStack) {
+        if (itemStack == null) {
+            return "Nothing";
+        }
+        StringBuilder toString = new StringBuilder();
 
-		Material material = itemStack.getType();
-		ItemMeta meta = itemStack.getItemMeta();
-		int amount = itemStack.getAmount();
-				
-		if (amount != 1) {
-			toString.append(amount).append("x");
-		}
-		
-		toString.append(material.toString());
-		
-		if (meta != null) {
-			Map<Enchantment, Integer> enchants = meta.getEnchants();
-			String customName = meta.getDisplayName();
-			// Set<ItemFlag> flags = meta.getItemFlags(); // maybe some other time.
-			List<String> lore = meta.getLore();
-			
-			if (meta.hasDisplayName()) {
-				toString.append('/').append(customName);
-			}
-			
-			if (meta.hasEnchants()) {
-				toString.append('[');
-				for (Map.Entry<Enchantment, Integer> enchant : enchants.entrySet()) {
-					toString.append(enchant.getKey().getKey()).append('/')
-							.append(enchant.getValue()).append('|');
-				}
-				toString.deleteCharAt(toString.length() - 1);
-				toString.append(']');
-			}
-			
-			if (meta.hasLore()) {
-				toString.append('{');
-				for (String line : lore) {
-					toString.append(line).append('/');
-				}
-				toString.deleteCharAt(toString.length() - 1);
-				toString.append('}');
-			}
-			
-			// custom metas
-			if (meta instanceof BannerMeta) {
-				BannerMeta banner = (BannerMeta) meta;
-				toString.append('/').append("Pattern");
-						// color embedded in 1.13: .append(':').append(banner.getBaseColor());
-				if (banner.numberOfPatterns() > 0) {
-					toString.append('[');
-					for (Pattern pattern : banner.getPatterns()) {
-						toString.append(pattern.getColor())
-								.append(':').append((pattern.getPattern() != null ? pattern.getPattern().getIdentifier() : pattern.toString()))
-								.append('|');
-					}
-					toString.deleteCharAt(toString.length() - 1);
-					toString.append(']');
- 				}
-			} else if (meta instanceof BlockStateMeta) {
-				BlockStateMeta bsm = (BlockStateMeta) meta;
-				if (bsm.hasBlockState()) {
-					toString.append('/').append(toString(bsm.getBlockState()));
-				}
-			} else if (meta instanceof KnowledgeBookMeta){
-				KnowledgeBookMeta kbmeta = (KnowledgeBookMeta) meta;
-				if (kbmeta.hasRecipes()) {
-					toString.append("_Recipes[");
-					for (NamespacedKey nk : kbmeta.getRecipes()) {
-						toString.append(nk.toString()).append('|');
-					}
-					toString.deleteCharAt(toString.length() - 1);
-				}
-				toString.append(']');
-			} else if (meta instanceof BookMeta) {
-				BookMeta bookmeta = (BookMeta) meta;
-				toString.append('/');
-				if (bookmeta.hasTitle()) {
-					toString.append('"');
-					toString.append(bookmeta.getTitle());
-					toString.append('"');
-				}
-				if (bookmeta.hasAuthor()) {
-					toString.append("by_").append(bookmeta.getAuthor());
-				}
-				if (bookmeta.hasGeneration()) {
-					if (bookmeta.getGeneration() != BookMeta.Generation.ORIGINAL)
-					toString.append("_").append(bookmeta.getGeneration().toString());
-				}
-				if (bookmeta.hasPages()) {
-					toString.append("_").append(bookmeta.getPageCount()).append("pgs");
-				}
-			} else if (meta instanceof EnchantmentStorageMeta) {
-				toString.append("_Stored");
-				toString.append('[');
-				EnchantmentStorageMeta esm = (EnchantmentStorageMeta) meta;
-				if (esm.hasStoredEnchants()) {
-					for (Map.Entry<Enchantment, Integer> enchant : esm.getStoredEnchants().entrySet()) {
-						toString.append(enchant.getKey().getKey()).append('/')
-								.append(enchant.getValue()).append('|');
-					}
-					toString.deleteCharAt(toString.length() - 1);
-				}
-				toString.append(']');
-			} else if (meta instanceof FireworkEffectMeta) {
-				FireworkEffectMeta fe = (FireworkEffectMeta) meta;
-				toString.append("_").append(fe.toString());
-			} else if (meta instanceof FireworkMeta) {
-				FireworkMeta fm = (FireworkMeta) meta;
-				if (fm.hasEffects()) {
-					toString.append("_Effects[");
-					for (FireworkEffect fe : fm.getEffects()) {
-						toString.append(fe.toString()).append('|');
-					}
-					toString.deleteCharAt(toString.length() - 1);
-				}
-				toString.append(']');
-			} else if (meta instanceof LeatherArmorMeta) {
-				toString.append('/').append("Color:").append(((LeatherArmorMeta) meta).getColor().toString());
-			} else if (meta instanceof MapMeta) {
-				MapMeta mmeta = (MapMeta) meta;
-				if (mmeta.hasLocationName()) {
-					toString.append("_").append(mmeta.getLocationName());
-				}
-				if (mmeta.isScaling()) {
-					toString.append("_Scaling");
-				}
-				if (mmeta.hasColor()) {
-					toString.append("/Color:").append(mmeta.getColor().toString());
-				}
-			} else if (meta instanceof PotionMeta) {
-				PotionMeta potionMeta = (PotionMeta) meta;
-				PotionData baseData = potionMeta.getBasePotionData();
-				toString.append("_").append(baseData.getType());
-				if (baseData.isExtended()) {
-					toString.append("_Ext");
-				} else if (baseData.isUpgraded()) {
-					toString.append("_Upd");
-				}
-				if (potionMeta.hasCustomEffects()) {
-					toString.append('[');
-					for (PotionEffect effect : potionMeta.getCustomEffects()){
-						toString.append(effect.getType().getName())
-								.append("x").append(effect.getAmplifier())
-								.append("t").append(effect.getDuration())
-								.append("c").append(effect.getType().getColor());
-						if (effect.isAmbient()) {
-							toString.append('/').append("Ambient");
-						} else if (effect.hasParticles()) {
-							toString.append('/').append("Particles");
-						}
-						toString.append('|');
-					}
-					toString.deleteCharAt(toString.length() - 1);
-					toString.append(']');
-				}
-			} else if (meta instanceof SkullMeta) {
-				SkullMeta skull = (SkullMeta) meta;
-				if (skull.hasOwner()) {
-					toString.append('/').append("Owner:").append(skull.getOwningPlayer().getName());
-				}
-			} else if (meta instanceof TropicalFishBucketMeta) {
-				TropicalFishBucketMeta bucket = (TropicalFishBucketMeta) meta;
-				if (bucket.hasVariant()) {
-					toString.append("/Body:").append(bucket.getBodyColor() == null ? "null" : bucket.getBodyColor().toString())
-						.append("_Pattern:").append(bucket.getPattern() == null ? "null" : bucket.getPattern().toString())
-						.append("_PatColor:").append(bucket.getPatternColor() == null ? "null" : bucket.getPatternColor().toString());
-				}
-			}
-		}
-		
-		return toString.toString();
-	}
-	
-	/**
-	 * For 1.13
-	 * @param block
-	 * @return
-	 */
-	public static String toString(BlockState block) {
-		if (block == null) return "Empty";
-		//StringBuilder toString = new StringBuilder();
+        Material material = itemStack.getType();
+        ItemMeta meta = itemStack.getItemMeta();
+        int amount = itemStack.getAmount();
 
-		//Material material = block.getType();
-		BlockData data = block.getBlockData();
-		
-		return data.getAsString(); // Should be best
+        if (amount != 1) {
+            toString.append(amount).append("x");
+        }
+
+        toString.append(material.toString());
+
+        if (meta != null) {
+            Map<Enchantment, Integer> enchants = meta.getEnchants();
+            String customName = meta.getDisplayName();
+            // Set<ItemFlag> flags = meta.getItemFlags(); // maybe some other time.
+            List<String> lore = meta.getLore();
+
+            if (meta.hasDisplayName()) {
+                toString.append('/').append(customName);
+            }
+
+            if (meta.hasEnchants()) {
+                toString.append('[');
+                for (Map.Entry<Enchantment, Integer> enchant : enchants.entrySet()) {
+                    toString.append(enchant.getKey().getKey()).append('/')
+                        .append(enchant.getValue()).append('|');
+                }
+                toString.deleteCharAt(toString.length() - 1);
+                toString.append(']');
+            }
+
+            if (meta.hasLore()) {
+                toString.append('{');
+                for (String line : lore) {
+                    toString.append(line).append('/');
+                }
+                toString.deleteCharAt(toString.length() - 1);
+                toString.append('}');
+            }
+
+            // custom metas
+            if (meta instanceof BannerMeta) {
+                BannerMeta banner = (BannerMeta) meta;
+                toString.append('/').append("Pattern");
+                // color embedded in 1.13: .append(':').append(banner.getBaseColor());
+                if (banner.numberOfPatterns() > 0) {
+                    toString.append('[');
+                    for (Pattern pattern : banner.getPatterns()) {
+                        toString.append(pattern.getColor())
+                            .append(':').append((pattern.getPattern() != null ? pattern.getPattern().getIdentifier() : pattern.toString()))
+                            .append('|');
+                    }
+                    toString.deleteCharAt(toString.length() - 1);
+                    toString.append(']');
+                }
+            } else if (meta instanceof BlockStateMeta) {
+                BlockStateMeta bsm = (BlockStateMeta) meta;
+                if (bsm.hasBlockState()) {
+                    toString.append('/').append(toString(bsm.getBlockState()));
+                }
+            } else if (meta instanceof KnowledgeBookMeta) {
+                KnowledgeBookMeta kbmeta = (KnowledgeBookMeta) meta;
+                if (kbmeta.hasRecipes()) {
+                    toString.append("_Recipes[");
+                    for (NamespacedKey nk : kbmeta.getRecipes()) {
+                        toString.append(nk.toString()).append('|');
+                    }
+                    toString.deleteCharAt(toString.length() - 1);
+                }
+                toString.append(']');
+            } else if (meta instanceof BookMeta) {
+                BookMeta bookmeta = (BookMeta) meta;
+                toString.append('/');
+                if (bookmeta.hasTitle()) {
+                    toString.append('"');
+                    toString.append(bookmeta.getTitle());
+                    toString.append('"');
+                }
+                if (bookmeta.hasAuthor()) {
+                    toString.append("by_").append(bookmeta.getAuthor());
+                }
+                if (bookmeta.hasGeneration()) {
+                    if (bookmeta.getGeneration() != BookMeta.Generation.ORIGINAL)
+                        toString.append("_").append(bookmeta.getGeneration().toString());
+                }
+                if (bookmeta.hasPages()) {
+                    toString.append("_").append(bookmeta.getPageCount()).append("pgs");
+                }
+            } else if (meta instanceof EnchantmentStorageMeta) {
+                toString.append("_Stored");
+                toString.append('[');
+                EnchantmentStorageMeta esm = (EnchantmentStorageMeta) meta;
+                if (esm.hasStoredEnchants()) {
+                    for (Map.Entry<Enchantment, Integer> enchant : esm.getStoredEnchants().entrySet()) {
+                        toString.append(enchant.getKey().getKey()).append('/')
+                            .append(enchant.getValue()).append('|');
+                    }
+                    toString.deleteCharAt(toString.length() - 1);
+                }
+                toString.append(']');
+            } else if (meta instanceof FireworkEffectMeta) {
+                FireworkEffectMeta fe = (FireworkEffectMeta) meta;
+                toString.append("_").append(fe.toString());
+            } else if (meta instanceof FireworkMeta) {
+                FireworkMeta fm = (FireworkMeta) meta;
+                if (fm.hasEffects()) {
+                    toString.append("_Effects[");
+                    for (FireworkEffect fe : fm.getEffects()) {
+                        toString.append(fe.toString()).append('|');
+                    }
+                    toString.deleteCharAt(toString.length() - 1);
+                }
+                toString.append(']');
+            } else if (meta instanceof LeatherArmorMeta) {
+                toString.append('/').append("Color:").append(((LeatherArmorMeta) meta).getColor().toString());
+            } else if (meta instanceof MapMeta) {
+                MapMeta mmeta = (MapMeta) meta;
+                if (mmeta.hasLocationName()) {
+                    toString.append("_").append(mmeta.getLocationName());
+                }
+                if (mmeta.isScaling()) {
+                    toString.append("_Scaling");
+                }
+                if (mmeta.hasColor()) {
+                    toString.append("/Color:").append(mmeta.getColor().toString());
+                }
+            } else if (meta instanceof PotionMeta) {
+                PotionMeta potionMeta = (PotionMeta) meta;
+                PotionData baseData = potionMeta.getBasePotionData();
+                toString.append("_").append(baseData.getType());
+                if (baseData.isExtended()) {
+                    toString.append("_Ext");
+                } else if (baseData.isUpgraded()) {
+                    toString.append("_Upd");
+                }
+                if (potionMeta.hasCustomEffects()) {
+                    toString.append('[');
+                    for (PotionEffect effect : potionMeta.getCustomEffects()) {
+                        toString.append(effect.getType().getName())
+                            .append("x").append(effect.getAmplifier())
+                            .append("t").append(effect.getDuration())
+                            .append("c").append(effect.getType().getColor());
+                        if (effect.isAmbient()) {
+                            toString.append('/').append("Ambient");
+                        } else if (effect.hasParticles()) {
+                            toString.append('/').append("Particles");
+                        }
+                        toString.append('|');
+                    }
+                    toString.deleteCharAt(toString.length() - 1);
+                    toString.append(']');
+                }
+            } else if (meta instanceof SkullMeta) {
+                SkullMeta skull = (SkullMeta) meta;
+                if (skull.hasOwner()) {
+                    toString.append('/').append("Owner:").append(skull.getOwningPlayer().getName());
+                }
+            } else if (meta instanceof TropicalFishBucketMeta) {
+                TropicalFishBucketMeta bucket = (TropicalFishBucketMeta) meta;
+                if (bucket.hasVariant()) {
+                    toString.append("/Body:").append(bucket.getBodyColor() == null ? "null" : bucket.getBodyColor().toString())
+                        .append("_Pattern:").append(bucket.getPattern() == null ? "null" : bucket.getPattern().toString())
+                        .append("_PatColor:").append(bucket.getPatternColor() == null ? "null" : bucket.getPatternColor().toString());
+                }
+            }
+        }
+
+        return toString.toString();
+    }
+
+    /**
+     * For 1.13
+     *
+     * @param block
+     * @return
+     */
+    public static String toString(BlockState block) {
+        if (block == null) return "Empty";
+        //StringBuilder toString = new StringBuilder();
+
+        //Material material = block.getType();
+        BlockData data = block.getBlockData();
+
+        return data.getAsString(); // Should be best
 		
 /*		if (data instanceof Directional && ((Directional) data).getFacing() != null) {
 			toString.append(((Directional) data).getFacing().toString()).append("_");
@@ -495,5 +497,5 @@ public class ItemStackToString {
 			}
 		}
 		return toString.toString();*/
-	}
+    }
 }

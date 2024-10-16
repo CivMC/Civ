@@ -7,13 +7,13 @@ import org.bukkit.command.CommandSender;
 
 public class BanSaveCommand implements CommandExecutor {
 
-	public static String name = "bansave";
-		
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
-		BanStick.getPlugin().saveCache();
-		
-		return true;
-	}
+    public static String name = "bansave";
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
+        BanStick.getPlugin().saveCache();
+
+        return true;
+    }
 
 }

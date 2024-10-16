@@ -16,54 +16,55 @@ import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public final class BedLocator extends BasicHack {
 
-	private final CommandManager commands;
+    private final CommandManager commands;
 
-	public BedLocator(final SimpleAdminHacks plugin, final BasicHackConfig config) {
-		super(plugin, config);
-		this.commands = new CommandManager(plugin()) {
-			@Override
-			public void registerCommands() {
-				registerCommand(new BedLocatorCommand());
-			}
-		};
-	}
+    public BedLocator(final SimpleAdminHacks plugin, final BasicHackConfig config) {
+        super(plugin, config);
+        this.commands = new CommandManager(plugin()) {
+            @Override
+            public void registerCommands() {
+                registerCommand(new BedLocatorCommand());
+            }
+        };
+    }
 
-	@Override
-	public void onEnable() {
-		super.onEnable();
-		commands.init();
-	}
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        commands.init();
+    }
 
-	@Override
-	public void onDisable() {
-		commands.reset();
-		super.onDisable();
-	}
+    @Override
+    public void onDisable() {
+        commands.reset();
+        super.onDisable();
+    }
 
-	@CommandPermission("simpleadmin.bedlocator")
-	public static class BedLocatorCommand extends BaseCommand {
-		@CommandAlias("wheresmybed|locatebed")
-		@Description("Tells you where your bed is")
-		public void giveWand(final Player sender) {
-			final var bedLocation = sender.getBedSpawnLocation();
-			if (bedLocation == null) {
-				sender.sendMessage(Component.text("You do not a set bed.")
-						.color(NamedTextColor.GREEN));
-				return;
-			}
-			sender.sendMessage(Component.text()
-					.color(NamedTextColor.GREEN)
-					.append(Component.text("Your bed is at "))
-					.append(Componentify.blockLocation(bedLocation)));
-			if (WorldUtils.doLocationsHaveSameWorld(sender.getLocation(), bedLocation)) {
-				sender.sendMessage('['
-						+ "name:Bed Location,"
-						+ "x:" + bedLocation.getBlockX() + ','
-						+ "y:" + bedLocation.getBlockY() + ','
-						+ "z:" + bedLocation.getBlockZ()
-						+ ']');
-			}
-		}
-	}
+    @CommandPermission("simpleadmin.bedlocator")
+    public static class BedLocatorCommand extends BaseCommand {
+
+        @CommandAlias("wheresmybed|locatebed")
+        @Description("Tells you where your bed is")
+        public void giveWand(final Player sender) {
+            final var bedLocation = sender.getBedSpawnLocation();
+            if (bedLocation == null) {
+                sender.sendMessage(Component.text("You do not a set bed.")
+                    .color(NamedTextColor.GREEN));
+                return;
+            }
+            sender.sendMessage(Component.text()
+                .color(NamedTextColor.GREEN)
+                .append(Component.text("Your bed is at "))
+                .append(Componentify.blockLocation(bedLocation)));
+            if (WorldUtils.doLocationsHaveSameWorld(sender.getLocation(), bedLocation)) {
+                sender.sendMessage('['
+                    + "name:Bed Location,"
+                    + "x:" + bedLocation.getBlockX() + ','
+                    + "y:" + bedLocation.getBlockY() + ','
+                    + "z:" + bedLocation.getBlockZ()
+                    + ']');
+            }
+        }
+    }
 
 }
