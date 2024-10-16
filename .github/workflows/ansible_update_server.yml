@@ -21,17 +21,13 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'gradle'
 
       - name: 🐘 Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
       - name: 🐘 Gradle Build
-        uses: burrunan/gradle-cache-action@v1
-        env:
-          CI: true
-        with:
-          concurrent: true
-          arguments: :ansible:build
+        run: CI=true ./gradlew :ansible:build --no-daemon
 
       - name: Inject secrets
         run: 'echo "$SECRETS_YML" > variables/secrets.yml'
