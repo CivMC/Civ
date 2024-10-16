@@ -136,6 +136,8 @@ hacks:
     disableGapples: true
   ItemMetaConverterHack:
     enabled: true
+  ItemSerializerHack:
+    enabled: true
   MapCopyProtection:
     enabled: true
   OldEnchanting:
@@ -338,9 +340,6 @@ hacks:
     blockElytraBreakBug: false
     damageOnElytraBreakBug: 1.0
     canStorageTeleport: false
-    stopHopperDupe: true
-    stopRailDupe: true
-    stopEndPortalDeletion: true
     stopBedBombingInHellBiomes: true
     stopAnchorBombing: true
     preventTreeWraparound: true
@@ -545,4 +544,9 @@ hacks:
     minSpeed: 0.1125
     maxSpeed: 0.438827582278 # 18.5m/s
   AntiDerailment:
+    enabled: true
+  CreeperDiscHack:
+    enabled: true
+    discChance: 0.003
+  NoOozing:
     enabled: true

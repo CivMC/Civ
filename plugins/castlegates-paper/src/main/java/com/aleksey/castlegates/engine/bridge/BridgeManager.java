@@ -19,6 +19,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.entity.Player;
 
 import com.aleksey.castlegates.CastleGates;
@@ -688,8 +689,13 @@ public class BridgeManager {
         }
 
         // Apply physics
-        for (Block block : worldBlocks)
+        for (Block block : worldBlocks) {
             block.setBlockData(block.getBlockData(), true);
+
+            CraftBlock craftBlock = ((CraftBlock) block);
+
+            craftBlock.getHandle().getMinecraftWorld().updateNeighborsAt(craftBlock.getPosition(), craftBlock.getNMS().getBlock());
+        }
 
         _storage.setLinkBlocks(link, null);
     }

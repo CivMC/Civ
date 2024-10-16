@@ -4,19 +4,19 @@ import com.destroystokyo.paper.utils.PaperPluginLogger;
 import java.util.Objects;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.PluginClassLoader;
+import org.jetbrains.annotations.NotNull;
 
 public final class CivLogger extends Logger {
 
     private final String prefix;
 
-    private CivLogger(@Nonnull final Logger logger, @Nonnull final String prefix) {
+    private CivLogger(@NotNull final Logger logger, @NotNull final String prefix) {
         super(logger.getName(), logger.getResourceBundleName());
         setParent(logger);
         this.prefix = Objects.requireNonNull(prefix);
@@ -35,8 +35,8 @@ public final class CivLogger extends Logger {
      * @param clazz The class to base the logger on.
      * @return Returns a new civ logger.
      */
-    @Nonnull
-    public static CivLogger getLogger(@Nonnull final Class<?> clazz) {
+    @NotNull
+    public static CivLogger getLogger(@NotNull final Class<?> clazz) {
         return INTERNAL_generateLogger(clazz.getClassLoader(), clazz);
     }
 
@@ -50,14 +50,14 @@ public final class CivLogger extends Logger {
      * @param targetClass The target class to log about.
      * @return Returns a new civ logger.
      */
-    @Nonnull
-    public static CivLogger getLogger(@Nonnull final Class<? extends Plugin> pluginClass,
-                                      @Nonnull final Class<?> targetClass) {
+    @NotNull
+    public static CivLogger getLogger(@NotNull final Class<? extends Plugin> pluginClass,
+                                      @NotNull final Class<?> targetClass) {
         return INTERNAL_generateLogger(pluginClass.getClassLoader(), targetClass);
     }
 
-    private static CivLogger INTERNAL_generateLogger(@Nonnull final ClassLoader loader,
-                                                     @Nonnull final Class<?> clazz) {
+    private static CivLogger INTERNAL_generateLogger(@NotNull final ClassLoader loader,
+                                                     @NotNull final Class<?> clazz) {
         if (loader instanceof final PluginClassLoader pluginClassLoader) {
             final var plugin = pluginClassLoader.getPlugin();
             if (plugin != null) {
