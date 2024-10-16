@@ -97,7 +97,7 @@ public class ArrowFragment {
                 }
             }
 
-            loc.getWorld().spawnParticle(Particle.REDSTONE, loc, 1, 0, 0, 0, 0, dustOptions, true);
+            loc.getWorld().spawnParticle(Particle.DUST, loc, 1, 0, 0, 0, 0, dustOptions, true);
             return false;
         }, 3)) {
             return true;

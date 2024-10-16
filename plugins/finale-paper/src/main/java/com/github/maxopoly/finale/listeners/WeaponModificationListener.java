@@ -137,7 +137,7 @@ public class WeaponModificationListener implements Listener {
             Integer duration = durations.get(potionCategory);
             System.out.println("duration: " + duration);
             if (duration != null) {
-                potionMeta.setBasePotionData(new PotionData(PotionType.UNCRAFTABLE, false, false));
+                potionMeta.setBasePotionType(null);
                 potionMeta.clearCustomEffects();
                 potionMeta.setColor(tippedArrowConfig.getColor());
 
@@ -145,7 +145,7 @@ public class WeaponModificationListener implements Listener {
                 potionMeta.addCustomEffect(newEffect, true);
 
                 if (potionType == PotionType.TURTLE_MASTER) {
-                    PotionEffect resEffect = new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, duration, basePotionData.isUpgraded() ? 1 : 0);
+                    PotionEffect resEffect = new PotionEffect(PotionEffectType.RESISTANCE, duration, basePotionData.isUpgraded() ? 1 : 0);
                     potionMeta.addCustomEffect(resEffect, true);
                 }
 

@@ -107,7 +107,7 @@ public class ShieldListener implements Listener {
 					addPassiveResistance(player);
 				} else {
 					if (hasPassiveResistance.contains(player.getUniqueId())) {
-						player.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
+						player.removePotionEffect(PotionEffectType.RESISTANCE);
 						hasPassiveResistance.remove(player.getUniqueId());
 					}
 				}
@@ -118,10 +118,10 @@ public class ShieldListener implements Listener {
 
 	private void addPassiveResistance(Player player) {
 		ShieldHandler shieldHandler = Finale.getPlugin().getManager().getShieldHandler();
-		if (player.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+		if (player.hasPotionEffect(PotionEffectType.RESISTANCE)) {
 			return;
 		}
-		player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Integer.MAX_VALUE, shieldHandler.getPassiveResistanceAmplifier()));
+		player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, Integer.MAX_VALUE, shieldHandler.getPassiveResistanceAmplifier()));
 		hasPassiveResistance.add(player.getUniqueId());
 	}
 
