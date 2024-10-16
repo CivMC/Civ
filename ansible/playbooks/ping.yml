@@ -1,0 +1,12 @@
+- name: Ping
+  hosts: all
+
+  tasks:
+    - name: Ping | Include Preflight
+      include_tasks: ../tasks/preflight-checks.yml
+
+    - name: Configure | Expand setting
+      include_tasks: ../tasks/expand-setting.yml
+
+    - name: Ping
+      ping:

@@ -19,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
-import vg.civcraft.mc.civmodcore.utilities.MoreClassUtils;
 import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
 
 @CommandAlias(SetCommand.ALIAS)
@@ -34,8 +33,7 @@ public final class EnchantStorageModifier extends ModifierData {
 
 	@Override
 	public EnchantStorageModifier construct(ItemStack item) {
-		EnchantmentStorageMeta meta = MoreClassUtils.castOrNull(EnchantmentStorageMeta.class, item.getItemMeta());
-		if (meta == null) {
+		if (!(item.getItemMeta() instanceof final EnchantmentStorageMeta meta)) {
 			return null;
 		}
 		EnchantStorageModifier modifier = new EnchantStorageModifier();
@@ -61,8 +59,7 @@ public final class EnchantStorageModifier extends ModifierData {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		EnchantmentStorageMeta meta = MoreClassUtils.castOrNull(EnchantmentStorageMeta.class, item.getItemMeta());
-		if (meta == null) {
+		if (!(item.getItemMeta() instanceof final EnchantmentStorageMeta meta)) {
 			return false;
 		}
 		if (hasEnchants() != meta.hasStoredEnchants()) {

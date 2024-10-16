@@ -2,11 +2,11 @@ plugins {
 	id("io.papermc.paperweight.userdev")
 }
 
-version = "2.2.0"
+version = "2.2.2"
 
 dependencies {
 	paperweight {
-		paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+		paperDevBundle("1.20.4-R0.1-SNAPSHOT")
 	}
 
 	compileOnly(project(":plugins:civmodcore-paper"))

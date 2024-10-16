@@ -5,6 +5,7 @@ import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.ActionCacheState;
 import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
 import com.untamedears.jukealert.util.JAUtility;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -78,7 +79,8 @@ public abstract class LoggablePlayerAction extends PlayerAction implements Logga
 			if (referenceLoc != snitch.getLocation()) {
 				comp.addExtra(String.format("%s%s ", ChatColor.YELLOW, referenceLocText));
 			}
-			comp.addExtra(new TextComponent(ChatColor.AQUA + getFormattedTime()));
+			// Example: 2011-12-03T10:15:30
+			comp.addExtra(new TextComponent(ChatColor.AQUA + getFormattedTime(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
 		}
 		return comp;
 	}
@@ -89,7 +91,8 @@ public abstract class LoggablePlayerAction extends PlayerAction implements Logga
 			item = new ItemStack(Material.STONE);
 		}
 		ItemUtils.addLore(item, String.format("%sPlayer: %s", ChatColor.GOLD, getPlayerName()),
-				String.format("%sTime: %s", ChatColor.LIGHT_PURPLE,getFormattedTime()));
+			// Example: Tue, 3 Jun 2008 11:05:30 GMT
+			String.format("%sTime: %s", ChatColor.LIGHT_PURPLE, getFormattedTime(DateTimeFormatter.RFC_1123_DATE_TIME)));
 		ItemUtils.setDisplayName(item, ChatColor.GOLD + getGUIName());
 	}
 	

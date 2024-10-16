@@ -35,7 +35,7 @@ public class ScoreboardHUD {
 			DisplayLocationSetting locSetting = settingMan.getChatGroupLocation();
 			CivChat2Manager chatman = CivChat2.getInstance().getCivChat2Manager();
 			String text;
-			if (chatman.getChannel(p) != null ) {
+			if (chatman.getChannel(p) != null && Bukkit.getPlayer(chatman.getChannel(p)) != null) {
 				text = ChatColor.GOLD + "Messaging " + ChatColor.LIGHT_PURPLE + Bukkit.getPlayer(chatman.getChannel(p)).getName();
 			} else if (chatman.getGroupChatting(p) != null) {
 				text = ChatColor.GOLD + "Chat Group " + ChatColor.LIGHT_PURPLE + chatman.getGroupChatting(p).getName();

@@ -1,0 +1,22 @@
+- name: Configure Backups | Create folder
+  when:
+    - "'swarm_manager' in group_names"
+  file:
+    path: /opt/backups
+    state: directory
+
+- name: Configure Backups | Copy Script
+  when: "'swarm_manager' in group_names"
+  template:
+    src: ../../templates/backup-and-restart.sh
+    dest: /opt/backup-and-restart.sh
+
+- name: Configure Backups | Setup Cron
+  when: "'swarm_manager' in group_names"
+  cron:
+    name: "backup"
+    minute: 0
+    hour: 6
+    user: root
+    job: /opt/backup-and-restart.sh
+    cron_file: /etc/cron.d/minecraft

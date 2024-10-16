@@ -6,9 +6,11 @@ import co.aikar.commands.InvalidCommandArgument;
 import java.util.Arrays;
 import java.util.List;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.players.PlayerNames;
 
 /**
  * This is a separate helper class that allows plugins to use ACF without needing to commit to {@link CommandManager}
@@ -83,6 +85,22 @@ public final class CommandHelpers {
 				.filter(ItemUtils::isValidItemMaterial)
 				.map(Enum::name)
 				.toList()
+		);
+	}
+
+	/**
+	 * Completion for all known player names.
+	 */
+	public static void registerKnownPlayersCompletion(
+		final @NotNull CommandCompletions<?> completions
+	) {
+		completions.registerCompletion(
+			"allplayers",
+			(context) -> PlayerNames.getPlayerNames()
+		);
+		completions.setDefaultCompletion(
+			"allplayers",
+			OfflinePlayer.class
 		);
 	}
 
