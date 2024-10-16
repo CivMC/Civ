@@ -44,6 +44,7 @@ import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -113,6 +114,12 @@ public class EntityListener implements Listener {
             return;
         }
         if (ecbe.getBlock().getType() == Material.CAVE_VINES || ecbe.getBlock().getType() == Material.CAVE_VINES_PLANT) {
+            return;
+        }
+        if (MoreTags.LOGS.isTagged(ecbe.getBlock().getType())) {
+            return;
+        }
+        if (MoreTags.COPPER_BLOCKS.isTagged(ecbe.getBlock().getType())) {
             return;
         }
         ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein), ecbe.getEntity());
