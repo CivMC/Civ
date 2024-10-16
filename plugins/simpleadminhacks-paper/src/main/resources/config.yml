@@ -1,0 +1,519 @@
+# Effectively Modern Humbug. For 1.10 ground up.
+
+configuration_file_version: 1
+
+debug: true
+broadcast_permission: simpleadmin.broadcast
+
+hacks:
+  ############################################################
+  ## Basic Hacks
+  ############################################################
+  AntiFastBreak:
+    enabled: true
+    breakDenyDuration: 3000
+    laggLenciency: 1.2
+  #Prevents pearls from landing that have been in flight for more than the configured amount of time
+  AntiStatisChamber:
+    enabled: true
+    pearlLifetime: 5m
+  #Bounds armour to specific players disallowing others to wear the same armour piece after first equip
+  ArmourBound:
+    enabled: true
+    whitelist:
+      - DIAMOND_HELMET
+      - DIAMOND_CHESTPLATE
+      - DIAMOND_LEGGINGS
+      - DIAMOND_BOOTS
+      - NETHERITE_HELMET
+      - NETHERITE_CHESTPLATE
+      - NETHERITE_LEGGINGS
+      - NETHERITE_BOOTS
+  ArthropodEggHack:
+    enabled: true
+    eggChance: 0.03
+    lootingChance: 0.02
+    removeDrops: true
+    allowedTypes:
+      - SHEEP
+      - PIG
+      - COW
+      - BAT
+      - CHICKEN
+      - WOLF
+      - SQUID
+      - MUSHROOM_COW
+      - RABBIT
+      - HORSE
+      - VILLAGER
+      - LLAMA
+      - OCELOT
+      - FOX
+      - COD
+      - TROPICAL_FISH
+      - SALMON
+      - TURTLE
+      - DOLPHIN
+  AttrHider:
+    enabled: true
+    # Hide item data like enchantments, firework effects, book data, potion, etc..
+    hideItemMeta: true
+    # Hide potion effects on entities, except for particles
+    hideEffects: true
+    # Hide the health of entities
+    hideHealth: true
+    # Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
+    roundPlayerListPing: true
+  AutoRespawn:
+    enabled: true
+    # Delay in MS
+    # Default: 300000 (five minutes)
+    respawnDelay: 300000
+    # The respawn delay (in MS) if someone logs in dead
+    # Default 0 (instant)
+    loginRespawnDelay: 0
+    # Jokey joke messages sent to the player if auto-respawned
+    # Deactivate by removing all the quotes below
+    respawnQuotes:
+      - <gold>Wait... how did I get here?
+      - <gold>Must've been a rough night o.o
+      - <gold>Why does my entire body ache?
+      - <gold>That <it>really<gold> hurt!
+  BedLocator:
+    enabled: true
+  BeeKeeping:
+    enabled: true
+    # Value between 0 and 1 that determines the percentage chance that a bee will replace
+    # the natural spawning of a passive creature should certain conditions be met.
+    # Default: 0.2 (20%)
+    spawnChance: 0.2
+    # Value between 0 and 1 that determines the percentage chance that a bee will lose
+    # its stinger and thus die when successfully attacking an entity.
+    # Default: 1.0 (100%)
+    severStingerChance: 1.0
+  BuffSpanker:
+    enabled: true
+    # The list of PotionEffectType's that you do not wish players to receive.
+    naughty:
+      - DOLPHINS_GRACE
+      - BAD_OMEN
+      - SLOW_DIGGING
+      - SLOW_FALLING
+  DebugWand:
+    enabled: true
+  DogFacts:
+    enabled: false
+    intervalTime: 30m
+    #Since we use the tellraw command to dispatch dogfacts now, all our announcements **MUST** be in JSON format
+    #YAML also doesn't like JSON's usage of "" so we have to add escape characters (\) to counteract that.
+    #Here's the site I used to make these ones: https://minecraft.tools/en/json_text.php
+    announcements:
+      - "[\"\",{\"text\":\"Buy \"},{\"text\":\"Dogecoin\",\"color\":\"dark_red\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://www.coindesk.com/price/dogecoin\"}},{\"text\":\"!\"}]"
+      - "[\"\",{\"text\":\"Very \"},{\"text\":\"Wow!\",\"italic\":true,\"hoverEvent\":{\"action\":\"show_text\",\"contents\":\"Wow!\"}}]"
+  EventDebugHack:
+    enabled: true
+  EventHandlerList:
+    enabled: true
+  GoldBlockElevators:
+    enabled: true
+    elevatorBlock: LODESTONE
+  HumbugBatchOne:
+    enabled: true
+    allowSheepDying: true
+    allowUsingAnvils: true
+    allowUsingEnchantingTables: true
+    infiniteCauldrons: true
+    disableEnderDragon: true
+    disableIronFarms: true
+    disableEnderCrystalDamage: true
+    disableMiningFatigue: true
+    canEquipBanners: true
+    disableLavaCobbleMountains: true
+    disableWanderingTrader: true
+    preventPearlGlitching: true
+    preventUsingEyeOfEnder: true
+    disablePiglins: true
+    disableGapples: true
+  ItemMetaConverterHack:
+    enabled: true
+  MapCopyProtection:
+    enabled: true
+  OldEnchanting:
+    enabled: true
+    # Hides what enchantment will be granted within the Enchanting Table
+    hideEnchants: true
+    # Automatically fills the consumable slot with the Enchanting Table with Lapis Lazuli that cannot be taken
+    fillLapis: true
+    # Randomises the enchantment offers each time the item is placed in an Enchanting Table
+    randomiseEnchants: true
+    # Force enchantments to cost what they appear in the Enchanting Table
+    fixEnchantCosts: true
+    # Experience modifier, all experience drops will be multiplied by this (does not apply to player exp)
+    # NOTE: Modifier must be 0 or greater
+    experienceModifier: 0.2
+    # Loot modifier, multiply the amount of exp dropped from each level of Looting (does not apply to player exp)
+    # NOTE: Modifier must be 0 or greater
+    lootModifier: 1.5
+    # Enables xp bottles to be crafted from emeralds and vice versa
+    emeraldCrafting: true
+    # Enables gaining xp from emeralds directly if emeraldCrafting is enabled
+    emeraldLeveling: true
+    # Disables exp from mobs, fishing, mining, breeding, furnace extracting, etc
+    disableGrindExp: true
+    # Prevents exp orbs from granting xp
+    preventOrbExp: true
+    # Ensures that the player who threw the xp bottle is the one to get the xp (experienceModifier does not apply)
+    directBottleExp: true
+    # Defines the maximum repair cost of an item
+    # NOTE: Value must be 2 or greater, or -1 to disable
+    maxRepairCost: 33
+    # Defines the set amount of xp that xp bottles will produce
+    # NOTE: Value must be a 0 or greater, or -1 for vanilla random
+    expPerBottle: 10
+    # Allows player's to store their levels in bottles if expPerBottle has a value higher than 0
+    allowExpRecovery: true
+    # Disallows players from creating enchanted books
+    disableEnchantedBookCreation: true
+    # Disallows players from using enchanted books
+    disableEnchantedBookUsage: true
+    # Modifies the exp drops for specific mob types, which will be used in lieu of experienceModifier
+    # NOTE: Players have an implicit modifier of 1.0
+    # NOTE: Modifiers must be 0 or greater
+    entityExpDropModifiers:
+      ENDER_DRAGON: 0.1
+  PhantomMenace:
+    enabled: true
+    # Players have a statistic called TIME_SINCE_REST. If a player's value is above 72k (3 days minecraft time) then
+    # they will start spawning phantoms. Setting the cap to below 72k will effectively disable phantoms. Setting the
+    # cap to -1 will disable the cap. Default: 80k (10% chance per two minutes during the night and thunder storms.)
+    # Read more here: https://minecraft.gamepedia.com/Phantom#Java_Edition
+    timeSinceRestCap: 80000
+    # Determines whether phantoms are allowed to spawn during the night.
+    nightSpawn: true
+    # Determines whether phantoms are allowed to spawn during thunder storms.
+    stormSpawn: true
+    # Determines what the maximum light level is that phantoms can spawn to.
+    maximumLightSpawn: 7
+  PlayerRevive:
+    enabled: true
+  PlayerStatistics:
+    enabled: true
+  #Alters end portals to send you to a target dimension instead of just the end
+  #This is a very specific hack made for CivMC, it is not recommended to enable
+  #Unless you want to fully mimic their behaviour
+  PortalModifyHack:
+    enabled: false
+    targetWorld: world_nether
+    homeWorld: world
+  PortalSpawnModifier:
+    enabled: true
+    pigManChance: 0.5
+    ghastChance: 0.07
+    witherSkeletonChance: 0.05
+    witherHeadDropChance: 0.04
+  SafeOreBreak:
+    enabled: true
+    ores:
+      - [DIAMOND_ORE,DEEPSLATE_DIAMOND_ORE]
+      - [COAL_ORE,DEEPSLATE_COAL_ORE]
+      - [REDSTONE_ORE,DEEPSLATE_REDSTONE_ORE]
+      - [LAPIS_ORE,DEEPSLATE_LAPIS_ORE]
+  ShipOutOfLuck:
+    enabled: true
+    # The list of Material's that boats cannot be placed on and will eject passengers
+    boatBreakers:
+      - ICE
+      - PACKED_ICE
+      - FROSTED_ICE
+      - BLUE_ICE
+  StrayStats:
+    enabled: true
+  TestConfigHack:
+    enabled: true
+    # Please do not change any of the values below, otherwise it will undermine the test.
+    boolValue: true
+    byteValue: 8
+    shortValue: 14646
+    intValue: 33822776
+    longValue: 2486941267899177
+    maybeLongValue: 6543
+    floatValue: 3847.1234
+    doubleValue: 345978623.178569873
+    charValue: 'c'
+  ############################################################
+  ## Simple Hacks
+  ############################################################
+  BadBoyWatch:
+    enabled: true
+    trackingDepth: 16
+    clearOnMatch: true
+    watchedMaterials:
+      - CHEST
+      - FURNACE
+      - DROPPER
+      - DISPENSER
+      - JUKEBOX
+      - NOTE_BLOCK
+      - BEACON
+      - ENDER_CHEST
+      - SPONGE
+      - HOPPER
+      - PISTON_BASE
+      - PISTON_STICKY_BASE
+      - OBSERVER
+  CTAnnounce:
+    enabled: false
+    delay: 10000
+    message: '%Victim% was combat tagged by %Attacker%'
+    broadcast: [OP, CONSOLE]
+  DisableAI:
+    enabled: true
+    # Specify below the living entities and their spawning circumstances you want to disable the AI for.
+    # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/entity/EntityType.html
+    # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html
+    # Note: You can also just state "ALL" for all spawn circumstances
+    VILLAGER: ALL
+    ENDERMITE: [DISPENSE_EGG, EGG, SPAWNER_EGG]
+  ElytraFeatures:
+    enabled: true
+    # Whether Elytra flight should be outright disabled
+    disableFlight: false
+    # Whether Elytra flight should be disabled in combat
+    disableFlightInCombat: false
+    # Whether firework boosting should be outright disabled
+    disableFireworkBoosting: false
+    # Whether firework boosting should be disabled in combat
+    disableFireworkBoostingInCombat: false
+    # Whether to restrict firework boosting to explosive fireworks
+    disableSafeFireworkBoosting: false
+    # This regulates player damage when Elytra flying above world height.
+    heightDamage:
+      # The amount of damage (in half-hearts) the flier should take.
+      # NOTE: Setting to 0 will disable the damage.
+      damage: 1
+      # The damage is multiplied by the number of blocks above world height multiplied by this number.
+      scales: 1.0
+      # The amount of blocks above height limit where damage is not applied.
+      buffer: 5
+      # The interval (in milliseconds) between damage ticks.
+      interval: 1000
+  Experimental:
+    enabled: true
+    combatspy: false
+    teleportspy: false
+    postteleport:
+      spy: false
+      count: 10
+  GameFeatures:
+    enabled: true
+    disablePotatoXP: false
+    # Villager trading is not like above and true = able to trade and false = not able
+    villagerTrading: false
+    # Wither spawn is also true = enabled and false = disabled
+    witherSpawning: false
+    # Prevent or allow pillager patrols from spawning
+    # Patrols spawning is also true = enabled and false = disabled
+    patrolSpawning: false
+    # Phantom spawn is also true = enabled and false = disabled
+    phantomSpawning: false
+    # Enderchests is also true = enabled and false = disabled
+    enderChestPlacement: true
+    enderChestUse: false
+    chorusFruitTeleportation: false
+    # WeepingAngel bans people when they die, the numbers are in milliseconds.
+    weepingAngel:
+      enabled: false
+      environment: 60000 # 1 Minute
+      playerKill: 300000 # 5 Minutes
+    # prevent use of buckets or dispensing water in hell biomes
+    blockWaterInHell: true
+    minecartTeleport: true
+    obsidianGenerators: true
+    personalDeathMessages: true
+    disableNetheriteCrafting: true
+    goldBlockTeleport: false
+  GameFixes:
+    enabled: true
+    # Does not fully work atm
+    blockElytraBreakBug: false
+    damageOnElytraBreakBug: 1.0
+    canStorageTeleport: false
+    stopHopperDupe: true
+    stopRailDupe: true
+    stopEndPortalDeletion: true
+    stopBedBombingInHellBiomes: true
+    stopAnchorBombing: true
+    preventTreeWraparound: true
+    maintainFlatBedrock: false
+    fixPearlGlitch: true
+    preventLongSigns: true
+    signLengthLimit: 100
+    preventLongSignsAbsolute: true
+    cancelLongSignEvent: false
+    hardLimitBookPageCount: true
+  GameTuning:
+    enabled: true
+    chunkLimits:
+      enabled: true
+      exceededMessage: '&9Limit reached for this chunk, you cannot place more of this type of block.'
+      tileEntities:
+        HOPPER: 4
+        PISTON_BASE: 4
+        PISTON_STICKY_BASE: 4
+        DISPENSER: 4
+        DROPPER: 4
+        REDSTONE_COMPARATOR: 4
+        OBSERVER: 2
+      exempt:
+      - Steve
+      - Alex
+    daytimeBed:
+      enabled: true
+      spawnSetMessage: '&7Your spawn has been set.'
+    # Makes nether ratio 1 to 1
+    oneToOneNether: false
+    # Return nether portal, true = enabled    false = disabled
+    returnNetherPortal: true
+    allowNetherTravel: false
+    # Disables minecart inventories (trying to fix dupe issues)
+    # enabled = able to right click   disabled = not able to right click
+    chestedMinecartInventories: true
+    hopperMinecartInventories: true
+    enderChestInventories: false
+    stopTrapHorses: true
+    killTrapHorses: true
+    changeSpawnerType: false
+    allowVillagerTrading: false
+    enderGrief: false
+    witherGrief: false
+    dragonGrief: true
+    allowEnchantedApples: false
+    preventFallingThroughBedrock: true
+    # Disable the Bad Omen effect that player receive when killing pillager patrols
+    badOmen: false
+    #a list of materials players shouldn't be allowed to place at all
+    noplace:
+     - DRAGON_EGG
+    rainReduction:
+      enabled: false
+      rainOccurrenceChance: .5
+  HorseStats:
+    enabled: false
+    wand: COMPASS
+  Insight:
+    enabled: false
+    into:
+      - org.bukkit.event.player
+      - org.bukkit.event.entity
+      - org.bukkit.event.block
+      - org.bukkit.event.inventory
+      - org.bukkit.event.enchantment
+      - org.bukkit.event.hanging
+      - org.bukkit.event.painting
+      - org.bukkit.event.vehicle
+      - org.bukkit.event.weather
+      - org.bukkit.event.world
+  Introbook:
+    enabled: true
+    follow: true
+    contents:
+      title: Welcome, ${player}
+      author: Bonkill
+      pages:
+        - "   &oWelcome to Devoted, ${player}!"
+        - "    &oWhat is Devoted?\n\"A new type of Minecraft server built towards providing a competitive, high stakes, immersive experience controlled by the players.\"&r\n-ShadedJon, server owner"
+        - "    &oWhat is Devoted?&r\n&lNOT just survival&r\nAdmins are hands-off and only handle glitches and hackers\n&lNOT just chaos&r\nPlugins allow players and towns to enforce their own rules\n&lNOT just roleplay&r\nNobody pretends -- conflict is genuine and heated"
+        - "    &oBasic Mechanics&r\n-The world is custom generated\n-Many custom biomes\n-Limited chat range\n-Respawn in random area unless you sleep\n-Mobs spawn sparsely\n-Vanilla Nether\n-Ore veins and custom ore spawning."
+        - "   &oDevoted Mods&r\n   &lCitadel&r:\n Reinforces things so it takes numerous breaks to destroy them. Locks some things too.\n&lMore Info:&r &oVisual Guide:&r imgur.com/BnlL2 &oWiki Page:&r tinyurl.com/citadelmod\n&oType \"/help citadel\" in chat to get commands"
+        - "   &lPrison Pearl&r:\n Ender Pearls trap players in the end. Others can steal back your pearl and free you -- you always know where it is so they cannot hide it\n&lMore Info:&r &oVisual Guide:&r imgur.com/XbhkK &oWiki Page:&r tinyurl.com/prisperl"
+        - "   &lJuke Alert&r:\n Creates 'Juke' blocks that record player activity in radius. If you steal, grief, or trespass -- people will know about it & put a bounty for you to be pearled.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/snitchblock"
+        - "   &lMythicMobs&r:\n Some custom mobs to increase the risk and thrill on specific islands and areas throughout Devoted.\n&lMore Info:&r &oBukkit Page:&r dev.bukkit.org/bukkit-plugins/mythicmobs"
+        - "   &lItem Exchange&r:\n It's a minecraft shop mod that enables different chests (and other inventory blocks) to perform an exchange of items with a player.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/itemxchng"
+        - "   &lHumbug&r:\n Disables some features of minecraft -- see wiki for short list. Please read it to ensure you don't waste resources on a useless block.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/humbugwiki"
+        - "   &lRealistic Biomes&r:\n Biomes are large, crops grow different in different biomes. Hit ground with seed to see growth rate. Farms need sunlight. Crops grow with nobody around.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/realbiome"
+        - "   &lArthropod Egg&r:\n Allows you to capture passive mobs into spawn eggs using Bane of Arthropod enchantment.\n&lMore Info:&r &oGithub Page:&r tinyurl.com/arthrop"
+        - "   &lBrewery&r:\n Custom brewing of booze and more.\n&lMore Info:&r &oBukkit Page:&r tinyurl.com/bukkitbrewp"
+        - "   &oFurther Info&r\nVisit our subreddit at: &oreddit.com/r/Devoted&r"
+        - "We extend our appreciation to the devs, admins, and players at: &oreddit.com/r/Civcraft"
+  InvControl:
+    enabled: true
+  NewfriendAssist:
+    enabled: true
+    announce: '&f%Player% is brand new!'
+    giveIntroKitToRandomSpawners: true
+    broadcast: [PERM, CONSOLE]
+    helptips: on
+    helptips_end: 20m
+    introkit:
+      enabled: true
+      contents:
+       - ==: org.bukkit.inventory.ItemStack
+         v: 1
+         type: COOKIE
+         amount: 32
+         meta:
+           ==: ItemMeta
+           meta-type: UNSPECIFIC
+           display-name: 'Manna'
+           lore:
+            - "Gift from the Admins as you"
+            - "begin your journey on Devotion."
+       - ==: org.bukkit.inventory.ItemStack
+         v: 1
+         type: RED_BED
+         amount: 1
+         meta:
+           ==: ItemMeta
+           meta-type: UNSPECIFIC
+           lore:
+            - "This world is unforgiving."
+            - "Be sure to get a good night's"
+            - "rest soon."
+  OneTimeTeleport:
+    enabled: true
+    # Item materials that should be removed from the player upon teleporting
+    material_blacklist: []
+    # Blocks that will block OTT if in range of the target player
+    unsafe_materials: [LAVA, WATER]
+    # How long newfriends will have to use OTT before it expires
+    ott_timeout: 2d
+    # Whether or not to limit OTT to same-world teleports
+    limitToSameWorld: false
+  ReinforcedChestBreak:
+    enabled: true
+    # in seconds
+    delay: 180
+    message: "&4%player% is raiding a chest at %x% %y% %z%."
+  #Used to roll a dice on whether to drop an additional sapling on block break or leaf decay
+  SaplingHack:
+    enabled: true
+    #Should we still roll the dice for people when using a fortune enchanted tool?
+    allow_fortune: true
+    blocks:
+      JUNGLE_LEAVES: 0.5
+      DARK_OAK_LEAVES: 0.5
+  SanityHack:
+    enabled: true
+    trackPlace: true
+    trackBreak: true
+    belowYLevel: 7
+  #Currently changes a striders speed to be between 0.175 (Default) and 0.3375 (Horse max speed)
+  #aswell as default health to between 20 (Default) and 50 (2.5 heart bars)
+  #Only works on newly spawned striders, not pre-existing mobs
+  StriderBreeding:
+    enabled: true
+    #Default strider speed is 0.175
+    minSpeed: 0.175
+    #Max horse speed is 0.3375
+    maxSpeed: 0.3375
+    #10 Hearts
+    minHealth: 20
+    #25 Hearts
+    maxHealth: 50
+  TimingsHack:
+    enabled: true
+  ToggleLamp:
+    enabled: false
+    cooldownTime: 100
+  DespawnFix:
+    enabled: true

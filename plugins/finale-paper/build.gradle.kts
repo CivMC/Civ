@@ -1,46 +1,12 @@
-import net.civmc.civgradle.CivGradleExtension
-
 plugins {
-	id("net.civmc.civgradle") version "2.+" apply false
+	id("io.papermc.paperweight.userdev")
 }
 
-// Temporary hack:
-// Remove the root build directory
-gradle.buildFinished {
-	project.buildDir.deleteRecursively()
-}
+version = "2.1.0"
 
-subprojects {
-	apply(plugin = "java-library")
-	apply(plugin = "maven-publish")
-	apply(plugin = "net.civmc.civgradle")
-
-	configure<CivGradleExtension> {
-		pluginName = project.property("pluginName") as String
-	}
-
-	repositories {
-		mavenLocal()
-		mavenCentral()
-		//maven("https://repo.civmc.net/repository/maven-public")
-		maven("https://repo.dmulloy2.net/content/groups/public/")
-
-		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/CivMC/CivModCore")
-			credentials {
-				username = System.getenv("GITHUB_ACTOR")
-				password = System.getenv("GITHUB_TOKEN")
-			}
-		}
-
-		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/CivMC/Finale")
-			credentials {
-				username = System.getenv("GITHUB_ACTOR")
-				password = System.getenv("GITHUB_TOKEN")
-			}
-		}
-	}
+dependencies {
+    paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+	compileOnly(project(":plugins:civmodcore-paper"))
+	compileOnly(project(":plugins:combattagplus-paper"))
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0")
 }
