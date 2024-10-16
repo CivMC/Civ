@@ -1,0 +1,27 @@
+name: KitPvP
+version: ${version}
+main: net.civmc.kitpvp.KitPvpPlugin
+author: Okx
+description: KitPvP for CivMC
+api-version: 1.21.1
+depend: [CivModCore]
+softdepend: [BreweryX]
+commands:
+  kit:
+    usage: |-
+      /<command>
+      /<command> copy <player> <their kit name> [your kit name]
+      /<command> load public <kit name>
+      /<command> load <kit name>
+  arena:
+    usage: |-
+      /<command>
+      /<command> list
+      /<command> create <name> <icon> (administrators only)
+      /<command> delete <name> (administrators only)
+  spawn: {}
+  setspawn:
+    permission: kitpvp.admin
+  clear: {}
+  viewinventorysnapshot:
+    usage: /<command> <player>

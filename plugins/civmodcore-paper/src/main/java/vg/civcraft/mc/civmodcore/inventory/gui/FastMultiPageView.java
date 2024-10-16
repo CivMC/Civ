@@ -105,6 +105,11 @@ public class FastMultiPageView {
         ci.showInventory(p);
     }
 
+    public void showScreen(boolean eventSafe) {
+        ClickableInventory ci = constructInventory();
+        ci.showInventory(p, eventSafe);
+    }
+
     /**
      * Allows setting a menu slot at the bottom of the gui. The slot must be a number between 0 and 6 (inclusive on both
      * ends), because only 7 slots are available

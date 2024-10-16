@@ -1,0 +1,7 @@
+name: VoidWorld
+version: ${version}
+main: net.civmc.voidworld.VoidWorldPlugin
+author: Okx
+description: Provides a void world
+api-version: 1.21.1
+load: STARTUP

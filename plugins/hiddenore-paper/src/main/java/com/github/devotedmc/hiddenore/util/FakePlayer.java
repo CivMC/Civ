@@ -2254,7 +2254,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public void sendEntityEffect(@NotNull EntityEffect effect, @NotNull Entity target) {
+    public void sendEntityEffect(@NotNull EntityEffect entityEffect, @NotNull Entity entity) {
 
     }
 
@@ -3648,7 +3648,7 @@ public class FakePlayer implements Player {
     }
 
     @Override
-    public void broadcastHurtAnimation(@NotNull Collection<Player> players) {
+    public void broadcastHurtAnimation(@NotNull Collection<Player> collection) {
 
     }
 
