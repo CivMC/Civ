@@ -50,45 +50,45 @@ public class ItemUtil {
         .put(Material.NETHERITE_HELMET, new ArmourConfig(3, 3, 0.1))
         .build();
 
-	public static double getDefaultArmourToughness(ItemStack is) {
-		if (!(DEFAULT_ARMOUR.containsKey(is.getType()))) {
-			return 0;
-		}
+    public static double getDefaultArmourToughness(ItemStack is) {
+        if (!(DEFAULT_ARMOUR.containsKey(is.getType()))) {
+            return 0;
+        }
 
-		return DEFAULT_ARMOUR.get(is.getType()).getToughness();
-	}
+        return DEFAULT_ARMOUR.get(is.getType()).getToughness();
+    }
 
-	public static double getDefaultArmour(ItemStack is) {
-		if (!(DEFAULT_ARMOUR.containsKey(is.getType()))) {
-			return 0;
-		}
+    public static double getDefaultArmour(ItemStack is) {
+        if (!(DEFAULT_ARMOUR.containsKey(is.getType()))) {
+            return 0;
+        }
 
-		return DEFAULT_ARMOUR.get(is.getType()).getArmour();
-	}
+        return DEFAULT_ARMOUR.get(is.getType()).getArmour();
+    }
 
-	public static double getDefaultKnockbackResistance(ItemStack is) {
-		if (!(DEFAULT_ARMOUR.containsKey(is.getType()))) {
-			return 0;
-		}
+    public static double getDefaultKnockbackResistance(ItemStack is) {
+        if (!(DEFAULT_ARMOUR.containsKey(is.getType()))) {
+            return 0;
+        }
 
-		return DEFAULT_ARMOUR.get(is.getType()).getKnockbackResistance();
-	}
+        return DEFAULT_ARMOUR.get(is.getType()).getKnockbackResistance();
+    }
 
-	public static boolean isHelmet(ItemStack is) {
-		return HELMET.contains(is.getType());
-	}
+    public static boolean isHelmet(ItemStack is) {
+        return HELMET.contains(is.getType());
+    }
 
-	public static boolean isChestplate(ItemStack is) {
-		return CHEST.contains(is.getType());
-	}
+    public static boolean isChestplate(ItemStack is) {
+        return CHEST.contains(is.getType());
+    }
 
-	public static boolean isLeggings(ItemStack is) {
-		return LEGS.contains(is.getType());
-	}
+    public static boolean isLeggings(ItemStack is) {
+        return LEGS.contains(is.getType());
+    }
 
-	public static boolean isBoots(ItemStack is) {
-		return BOOTS.contains(is.getType());
-	}
+    public static boolean isBoots(ItemStack is) {
+        return BOOTS.contains(is.getType());
+    }
 
     public static ItemStack setAAKey(ItemStack is, String key) {
         ItemMeta meta = is.getItemMeta();

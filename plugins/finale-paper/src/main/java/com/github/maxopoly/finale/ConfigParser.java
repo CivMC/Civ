@@ -43,6 +43,7 @@ import org.bukkit.util.Vector;
 import org.json.simple.JSONArray;
 
 public class ConfigParser {
+
     private Finale plugin;
     private FinaleManager manager;
     private boolean pearlEnabled;

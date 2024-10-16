@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.misc.ally.AllyHandler;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -15,76 +16,83 @@ import java.util.UUID;
 @CommandPermission("finale.ally")
 public class AllyCommand extends BaseCommand {
 
-	@Subcommand("add")
-	@Description("Mark your friend as an ally.")
-	public void ally(Player sender, String targetName) {
-		AllyHandler allyHandler = Finale.getPlugin().getManager().getAllyHandler();
-		if (!allyHandler.isEnabled()) {
-			sender.sendMessage(ChatColor.RED + "Finale Allies are not enabled.");
-			return;
-		}
+    @Default
+    public void help(Player sender) {
+        sender.sendMessage(Component.text("/ally add <player>"));
+        sender.sendMessage(Component.text("/ally remove <player>"));
+        sender.sendMessage(Component.text("/ally list"));
+    }
 
-		Player target = Bukkit.getPlayer(targetName);
-		if (target == null || !target.isOnline()) {
-			sender.sendMessage(ChatColor.RED + targetName + " is not online.");
-			return;
-		}
+    @Subcommand("add")
+    @Description("Mark your friend as an ally.")
+    public void ally(Player sender, String targetName) {
+        AllyHandler allyHandler = Finale.getPlugin().getManager().getAllyHandler();
+        if (!allyHandler.isEnabled()) {
+            sender.sendMessage(ChatColor.RED + "Finale Allies are not enabled.");
+            return;
+        }
 
-		if (target.getUniqueId().equals(sender.getUniqueId())) {
-			sender.sendMessage(ChatColor.RED + "You can't ally yourself.");
-			return;
-		}
+        Player target = Bukkit.getPlayer(targetName);
+        if (target == null || !target.isOnline()) {
+            sender.sendMessage(ChatColor.RED + targetName + " is not online.");
+            return;
+        }
 
-		allyHandler.addAlly(sender, target);
+        if (target.getUniqueId().equals(sender.getUniqueId())) {
+            sender.sendMessage(ChatColor.RED + "You can't ally yourself.");
+            return;
+        }
 
-		target.sendMessage(sender.getName() + " has marked you as an ally.");
-		sender.sendMessage(target.getName() + " is marked as your ally.");
-	}
+        allyHandler.addAlly(sender, target);
 
-	@Subcommand("remove")
-	@Description("Mark your friend as an ally.")
-	public void unally(Player sender, String targetName) {
-		AllyHandler allyHandler = Finale.getPlugin().getManager().getAllyHandler();
-		if (!allyHandler.isEnabled()) {
-			sender.sendMessage(ChatColor.RED + "Finale Allies are not enabled.");
-			return;
-		}
+        target.sendMessage(sender.getName() + " has marked you as an ally.");
+        sender.sendMessage(target.getName() + " is marked as your ally.");
+    }
 
-		Player target = Bukkit.getPlayer(targetName);
-		if (target == null || !target.isOnline()) {
-			sender.sendMessage(ChatColor.RED + targetName + " is not online.");
-			return;
-		}
+    @Subcommand("remove")
+    @Description("Mark your friend as an ally.")
+    public void unally(Player sender, String targetName) {
+        AllyHandler allyHandler = Finale.getPlugin().getManager().getAllyHandler();
+        if (!allyHandler.isEnabled()) {
+            sender.sendMessage(ChatColor.RED + "Finale Allies are not enabled.");
+            return;
+        }
+
+        Player target = Bukkit.getPlayer(targetName);
+        if (target == null || !target.isOnline()) {
+            sender.sendMessage(ChatColor.RED + targetName + " is not online.");
+            return;
+        }
 
 		/*if (target.getUniqueId().equals(sender.getUniqueId())) {
 			sender.sendMessage(ChatColor.RED + "You can't unally yourself.");
 			return;
 		}*/
 
-		allyHandler.removeAlly(sender, target);
+        allyHandler.removeAlly(sender, target);
 
-		target.sendMessage(sender.getName() + " has unmarked you as an ally.");
-		sender.sendMessage(target.getName() + " is no longer marked as your ally.");
-	}
+        target.sendMessage(sender.getName() + " has unmarked you as an ally.");
+        sender.sendMessage(target.getName() + " is no longer marked as your ally.");
+    }
 
-	@Subcommand("list")
-	@Description("List your allies")
-	public void list(Player sender) {
-		AllyHandler allyHandler = Finale.getPlugin().getManager().getAllyHandler();
-		if (!allyHandler.isEnabled()) {
-			sender.sendMessage(ChatColor.RED + "Finale Allies are not enabled.");
-			return;
-		}
+    @Subcommand("list")
+    @Description("List your allies")
+    public void list(Player sender) {
+        AllyHandler allyHandler = Finale.getPlugin().getManager().getAllyHandler();
+        if (!allyHandler.isEnabled()) {
+            sender.sendMessage(ChatColor.RED + "Finale Allies are not enabled.");
+            return;
+        }
 
-		Set<UUID> allies = allyHandler.getAllies(sender);
-		if (allies.isEmpty()) {
-			sender.sendMessage("No allies");
-			return;
-		}
-		for (UUID uuid : allies) {
-			Player ally = Bukkit.getPlayer(uuid);
-			sender.sendMessage(ally.getName());
-		}
-	}
+        Set<UUID> allies = allyHandler.getAllies(sender);
+        if (allies.isEmpty()) {
+            sender.sendMessage("No allies");
+            return;
+        }
+        for (UUID uuid : allies) {
+            Player ally = Bukkit.getPlayer(uuid);
+            sender.sendMessage(ally.getName());
+        }
+    }
 
 }

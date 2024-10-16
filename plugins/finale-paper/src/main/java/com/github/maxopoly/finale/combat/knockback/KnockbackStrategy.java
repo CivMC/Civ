@@ -8,6 +8,6 @@ import org.bukkit.util.Vector;
 
 public interface KnockbackStrategy {
 
-	void handleKnockback(Player attacker, Entity victim, float knockbackLevel);
+    void handleKnockback(Player attacker, Entity victim, float knockbackLevel);
 
 }
