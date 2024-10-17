@@ -104,6 +104,7 @@ public class ArenaManager {
             }
 
             world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+            world.setGameRule(GameRule.DO_FIRE_TICK, false);
             world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
             world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
             world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
