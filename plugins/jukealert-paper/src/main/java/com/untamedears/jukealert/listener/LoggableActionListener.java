@@ -40,6 +40,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.SpawnCategory;
 import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
@@ -155,7 +156,7 @@ public class LoggableActionListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEnterVehicle(VehicleEnterEvent event) {
-        if (event.getEntered().getType() != EntityType.PLAYER) {
+        if (event.getEntered().getType() != EntityType.PLAYER || event.getVehicle().getSpawnCategory() != SpawnCategory.MISC) {
             return;
         }
 
@@ -167,7 +168,7 @@ public class LoggableActionListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onExitVehicle(VehicleExitEvent event) {
-        if (event.getExited().getType() != EntityType.PLAYER) {
+        if (event.getExited().getType() != EntityType.PLAYER || event.getVehicle().getSpawnCategory() != SpawnCategory.MISC) {
             return;
         }
 
@@ -191,7 +192,7 @@ public class LoggableActionListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMountEntity(EntityMountEvent event) {
-        if (event.getEntityType() != EntityType.PLAYER) {
+        if (event.getEntityType() != EntityType.PLAYER || event.getMount().getSpawnCategory() != SpawnCategory.ANIMAL) {
             return;
         }
         Player player = (Player) event.getEntity();
@@ -202,7 +203,7 @@ public class LoggableActionListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDismountEntity(EntityDismountEvent event) {
-        if (event.getEntityType() != EntityType.PLAYER) {
+        if (event.getEntityType() != EntityType.PLAYER || event.getDismounted().getSpawnCategory() != SpawnCategory.ANIMAL) {
             return;
         }
         Player player = (Player) event.getEntity();
