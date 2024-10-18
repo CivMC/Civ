@@ -35,12 +35,14 @@ import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.entity.Boat;
 import org.bukkit.entity.ChestBoat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
@@ -163,7 +165,7 @@ public class LoggableActionListener implements Listener {
         Player player = (Player) event.getEntered();
 
         handlePlayerAction(player, s -> new EnterVehicleAction(System.currentTimeMillis(), s,
-            player.getUniqueId(), event.getVehicle().getLocation(), getEntityName(event.getVehicle())));
+            player.getUniqueId(), event.getVehicle().getLocation(), getVehicleName(event.getVehicle())));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -175,7 +177,7 @@ public class LoggableActionListener implements Listener {
         Player player = (Player) event.getExited();
 
         handlePlayerAction(player, s -> new ExitVehicleAction(System.currentTimeMillis(), s,
-            player.getUniqueId(), event.getVehicle().getLocation(), getEntityName(event.getVehicle())));
+            player.getUniqueId(), event.getVehicle().getLocation(), getVehicleName(event.getVehicle())));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -325,6 +327,14 @@ public class LoggableActionListener implements Listener {
             return entity.getCustomName();
         } else {
             return entity.getType().toString();
+        }
+    }
+
+    private String getVehicleName(Vehicle vehicle) {
+        if (vehicle instanceof Boat boat) {
+            return boat.getBoatMaterial().name();
+        } else {
+            return vehicle.getType().toString();
         }
     }
 
