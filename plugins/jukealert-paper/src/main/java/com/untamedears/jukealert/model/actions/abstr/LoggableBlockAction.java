@@ -120,6 +120,7 @@ public abstract class LoggableBlockAction extends LoggablePlayerAction {
             case PLAYER_WALL_HEAD -> Material.PLAYER_HEAD;
             case ZOMBIE_WALL_HEAD -> Material.ZOMBIE_HEAD;
             case CREEPER_WALL_HEAD -> Material.CREEPER_HEAD;
+            case PIGLIN_WALL_HEAD -> Material.PIGLIN_HEAD;
             case SKELETON_WALL_SKULL -> Material.SKELETON_SKULL;
             case WITHER_SKELETON_WALL_SKULL -> Material.WITHER_SKELETON_SKULL;
 
@@ -138,7 +139,8 @@ public abstract class LoggableBlockAction extends LoggablePlayerAction {
                  POTTED_WHITE_TULIP, POTTED_PINK_TULIP, POTTED_OXEYE_DAISY, POTTED_CORNFLOWER,
                  POTTED_LILY_OF_THE_VALLEY, POTTED_WITHER_ROSE, POTTED_RED_MUSHROOM, POTTED_BROWN_MUSHROOM,
                  POTTED_DEAD_BUSH, POTTED_CACTUS, POTTED_BAMBOO, POTTED_CRIMSON_FUNGUS, POTTED_WARPED_FUNGUS,
-                 POTTED_CRIMSON_ROOTS, POTTED_WARPED_ROOTS, POTTED_AZALEA_BUSH, POTTED_FLOWERING_AZALEA_BUSH ->
+                 POTTED_CRIMSON_ROOTS, POTTED_WARPED_ROOTS, POTTED_AZALEA_BUSH, POTTED_FLOWERING_AZALEA_BUSH,
+                 POTTED_CHERRY_SAPLING, POTTED_TORCHFLOWER, POTTED_MANGROVE_PROPAGULE ->
                 Material.FLOWER_POT;
 
             // Plants
@@ -156,6 +158,8 @@ public abstract class LoggableBlockAction extends LoggablePlayerAction {
             case TWISTING_VINES_PLANT -> Material.TWISTING_VINES;
             case CAVE_VINES, CAVE_VINES_PLANT -> Material.GLOW_BERRIES;
             case BIG_DRIPLEAF_STEM -> Material.BIG_DRIPLEAF;
+            case PITCHER_CROP -> Material.PITCHER_POD;
+            case TORCHFLOWER_CROP -> Material.TORCHFLOWER_SEEDS;
 
             // Coral
             case TUBE_CORAL_WALL_FAN -> Material.TUBE_CORAL_FAN;
