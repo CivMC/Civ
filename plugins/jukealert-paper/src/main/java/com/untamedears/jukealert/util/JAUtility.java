@@ -200,7 +200,7 @@ public final class JAUtility {
                 return Material.BAMBOO_CHEST_RAFT;
             default:
                 JukeAlert.getInstance().getLogger().info("Failed to parse vehicle into material: " + vehicle);
-                return Material.STONE;
+                return Material.SADDLE;
         }
     }
 }
