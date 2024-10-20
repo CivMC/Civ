@@ -1,4 +1,4 @@
-package dev.drekamor.warp.util;
+package net.civmc.kitpvp.warp.util;
 
 import javax.annotation.Nullable;
 import org.bukkit.GameMode;

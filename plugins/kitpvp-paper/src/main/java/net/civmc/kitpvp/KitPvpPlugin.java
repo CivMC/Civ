@@ -1,6 +1,6 @@
 package net.civmc.kitpvp;
 
-import dev.drekamor.warp.WarpMain;
+import net.civmc.kitpvp.warp.WarpMain;
 import net.civmc.kitpvp.command.ClearCommand;
 import net.civmc.kitpvp.command.KitCommand;
 import net.civmc.kitpvp.snapshot.DeathListener;

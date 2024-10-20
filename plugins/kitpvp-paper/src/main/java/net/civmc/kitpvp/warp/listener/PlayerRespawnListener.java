@@ -1,7 +1,7 @@
-package dev.drekamor.warp.listener;
+package net.civmc.kitpvp.warp.listener;
 
-import dev.drekamor.warp.util.Cache;
-import dev.drekamor.warp.util.Warp;
+import net.civmc.kitpvp.warp.util.Cache;
+import net.civmc.kitpvp.warp.util.Warp;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;

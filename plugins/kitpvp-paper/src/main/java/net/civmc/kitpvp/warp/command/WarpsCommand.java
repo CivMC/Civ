@@ -1,6 +1,6 @@
-package dev.drekamor.warp.command;
+package net.civmc.kitpvp.warp.command;
 
-import dev.drekamor.warp.handler.WarpsHandler;
+import net.civmc.kitpvp.warp.handler.WarpsHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
