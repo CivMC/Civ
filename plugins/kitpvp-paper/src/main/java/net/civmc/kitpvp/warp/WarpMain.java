@@ -1,12 +1,12 @@
-package dev.drekamor.warp;
+package net.civmc.kitpvp.warp;
 
-import dev.drekamor.warp.command.WarpCommand;
-import dev.drekamor.warp.command.WarpsCommand;
-import dev.drekamor.warp.database.DatabaseManager;
-import dev.drekamor.warp.handler.WarpHandler;
-import dev.drekamor.warp.handler.WarpsHandler;
-import dev.drekamor.warp.listener.PlayerRespawnListener;
-import dev.drekamor.warp.util.Cache;
+import net.civmc.kitpvp.warp.command.WarpCommand;
+import net.civmc.kitpvp.warp.command.WarpsCommand;
+import net.civmc.kitpvp.warp.database.DatabaseManager;
+import net.civmc.kitpvp.warp.handler.WarpHandler;
+import net.civmc.kitpvp.warp.handler.WarpsHandler;
+import net.civmc.kitpvp.warp.listener.PlayerRespawnListener;
+import net.civmc.kitpvp.warp.util.Cache;
 import net.civmc.kitpvp.KitPvpPlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 

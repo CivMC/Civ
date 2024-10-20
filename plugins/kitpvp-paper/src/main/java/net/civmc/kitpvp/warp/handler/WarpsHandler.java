@@ -1,12 +1,11 @@
-package dev.drekamor.warp.handler;
+package net.civmc.kitpvp.warp.handler;
 
-import dev.drekamor.warp.WarpMain;
-import static dev.drekamor.warp.util.EnumUtil.getGamemode;
-import dev.drekamor.warp.database.DatabaseManager;
-import dev.drekamor.warp.util.Cache;
-import dev.drekamor.warp.util.Warp;
+import net.civmc.kitpvp.warp.database.DatabaseManager;
+import net.civmc.kitpvp.warp.util.Cache;
+import net.civmc.kitpvp.warp.util.Warp;
 import java.util.List;
 import net.civmc.kitpvp.KitPvpPlugin;
+import net.civmc.kitpvp.warp.util.EnumUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -42,7 +41,7 @@ public class WarpsHandler {
             return true;
         }
 
-        if(getGamemode(args[2]) == null) {
+        if(EnumUtil.getGamemode(args[2]) == null) {
             sender.sendMessage("Unknown gamemode");
             return false;
         }

@@ -1,6 +1,6 @@
-package dev.drekamor.warp.command;
+package net.civmc.kitpvp.warp.command;
 
-import dev.drekamor.warp.handler.WarpHandler;
+import net.civmc.kitpvp.warp.handler.WarpHandler;
 import java.util.List;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

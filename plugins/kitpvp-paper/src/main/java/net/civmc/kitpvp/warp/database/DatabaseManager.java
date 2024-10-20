@@ -1,6 +1,6 @@
-package dev.drekamor.warp.database;
+package net.civmc.kitpvp.warp.database;
 
-import dev.drekamor.warp.util.Warp;
+import net.civmc.kitpvp.warp.util.Warp;
 import net.civmc.kitpvp.KitPvpPlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
