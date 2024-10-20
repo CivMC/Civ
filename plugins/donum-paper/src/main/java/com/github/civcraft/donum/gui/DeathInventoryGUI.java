@@ -133,7 +133,7 @@ public class DeathInventoryGUI {
                     @Override
                     public void clicked(Player p) {
                         Donum.getManager().returnDeathInventory(i);
-                        Donum.getInstance().info(p.getName() + " returned inventory " + i.getID());
+                        Donum.getInstance().info(p.getName() + " returned inventory " + i.getID() + " to delivery inventory of " + NameAPI.getCurrentName(viewer));
                         p.sendMessage(ChatColor.GREEN + "Successfully returned inventory with id " + i.getID()
                             + " with a total of " + i.getInventory().getTotalItemAmount() + " items");
                         showScreen();
