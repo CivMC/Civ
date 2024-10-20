@@ -4,6 +4,7 @@ import net.civmc.kitpvp.arena.ArenaCommand;
 import net.civmc.kitpvp.arena.ArenaManager;
 import net.civmc.kitpvp.arena.MysqlLoader;
 import net.civmc.kitpvp.arena.data.SqlArenaDao;
+import net.civmc.kitpvp.warp.WarpMain;
 import net.civmc.kitpvp.command.ClearCommand;
 import net.civmc.kitpvp.command.KitCommand;
 import net.civmc.kitpvp.snapshot.DeathListener;
@@ -29,6 +30,7 @@ public class KitPvpPlugin extends ACivMod {
         DatabaseCredentials credentials = (DatabaseCredentials) getConfig().get("database");
         ManagedDatasource source = ManagedDatasource.construct(this, credentials);
         getCommand("kit").setExecutor(new KitCommand(new SqlKitPvpDao(source)));
+        WarpMain warpMain = new WarpMain(this, source);
         getCommand("clear").setExecutor(new ClearCommand());
 
         InventorySnapshotManager inventorySnapshotManager = new InventorySnapshotManager();
