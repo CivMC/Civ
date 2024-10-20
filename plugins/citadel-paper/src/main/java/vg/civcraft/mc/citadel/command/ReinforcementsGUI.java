@@ -112,8 +112,8 @@ public class ReinforcementsGUI extends BaseCommand {
             ItemStack is = new ItemStack(acidType.material());
             String blockName = ItemUtils.getItemName(acidType.material());
             ItemUtils.setComponentDisplayName(is, Component.text(ChatColor.RED + blockName));
-            ItemUtils.addLore(is, ChatColor.GOLD + "Acid Faces: " + (acidType.blockFaces().stream().map(BlockFace::toString).collect(Collectors.joining(", "))));
-            ItemUtils.addLore(is, ChatColor.GOLD + "Maturation Modifier: " + format.format(acidType.modifier()) + "x");
+            ItemUtils.addLore(is, ChatColor.GOLD + "Acid faces: " + (acidType.blockFaces().stream().map(BlockFace::toString).collect(Collectors.joining(", "))));
+            ItemUtils.addLore(is, ChatColor.GOLD + "Maturation modifier: " + format.format(acidType.modifier()) + "x");
 
             IClickable click = new DecorationStack(is);
             clickables.add(click);
