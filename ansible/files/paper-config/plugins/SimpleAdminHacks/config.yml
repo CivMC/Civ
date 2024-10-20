@@ -607,3 +607,11 @@ hacks:
     discChance: 0.003
   NoOozing:
     enabled: true
+  BuildLimits:
+    enabled: true
+    limits:
+      - ==: com.programmerdan.minecraft.simpleadminhacks.framework.utilities.BuildLimit
+        world: "world_nether"
+        type: ALTITUDE
+        min_y: -64
+        max_y: 128
