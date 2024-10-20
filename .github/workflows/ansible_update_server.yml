@@ -5,7 +5,7 @@ on:
       environment:
         description: 'Environment to Update'
         type: environment
-        required: true 
+        required: true
         default: Test
 
 jobs:
@@ -26,7 +26,12 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: 🐘 Gradle Build
-        run: CI=true ./gradlew :ansible:build
+        uses: burrunan/gradle-cache-action@v1
+        env:
+          CI: true
+        with:
+          concurrent: true
+          arguments: :ansible:build
 
       - name: Inject secrets
         run: 'echo "$SECRETS_YML" > variables/secrets.yml'
