@@ -416,8 +416,8 @@ hacks:
         BLAST_FURNACE: 48
         BREWING_STAND: 48
         SMOKER: 48
-        ITEM_FRAME: 48
-        GLOW_ITEM_FRAME: 48
+        ITEM_FRAME: 64
+        GLOW_ITEM_FRAME: 64
         ARMOR_STAND: 48
         PAINTING: 48
       exempt:
