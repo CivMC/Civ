@@ -66,6 +66,7 @@ hacks:
      - SNIFFER
      - FROG
      - TADPOLE
+     - ARMADILLO
   AttrHider:
     enabled: true
     # Hide item data like enchantments, firework effects, book data, potion, etc..
@@ -284,8 +285,10 @@ hacks:
       - [LAPIS_ORE,DEEPSLATE_LAPIS_ORE]
       - [GOLD_ORE,DEEPSLATE_GOLD_ORE]
       - [IRON_ORE,DEEPSLATE_IRON_ORE]
+      - [COPPER_ORE,DEEPSLATE_COPPER_ORE]
       - [COAL_ORE,DEEPSLATE_COAL_ORE]
-      - [NETHER_GOLD_ORE,GILDED_BLACKSTONE]
+      - [NETHER_GOLD_ORE]
+      - [GILDED_BLACKSTONE]
       - [NETHER_QUARTZ_ORE]
       - [GLOWSTONE]
       - [SEA_LANTERN]

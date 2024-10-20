@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.annotation.Nonnull;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.collections4.list.LazyList;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Utility class that fills in the gaps of {@link CollectionUtils}.
@@ -127,7 +127,7 @@ public final class MoreCollectionUtils {
      * @param size           The size to ensure.
      * @param defaultElement The element to place into the collection if expanded.
      */
-    public static <T> void ensureMinimumSize(@Nonnull final Collection<T> collection,
+    public static <T> void ensureMinimumSize(@NotNull final Collection<T> collection,
                                              final int size,
                                              final T defaultElement) {
         if (size < 0 || size < collection.size()) {

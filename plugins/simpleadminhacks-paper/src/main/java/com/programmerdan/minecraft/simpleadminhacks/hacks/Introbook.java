@@ -56,6 +56,7 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
             plugin().log("Registering introbook command");
             plugin().registerCommand("introbook", this);
             plugin().registerCommand("giveintrobook", this);
+            plugin().registerCommand("spawnbook", this);
         }
     }
 

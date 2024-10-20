@@ -8,7 +8,6 @@ import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.NBTEncodings;
 import com.untamedears.itemexchange.utility.Utilities;
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
@@ -74,14 +74,14 @@ public final class PotionModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@Nonnull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NBTCompound nbt) {
         nbt.setCompound(BASE_KEY, NBTEncodings.encodePotionData(this.base));
         nbt.setCompoundArray(EFFECTS_KEY, getEffects().stream()
             .map(NBTEncodings::encodePotionEffect)
             .toArray(NBTCompound[]::new));
     }
 
-    public static PotionModifier fromNBT(@Nonnull final NBTCompound nbt) {
+    public static PotionModifier fromNBT(@NotNull final NBTCompound nbt) {
         final var modifier = new PotionModifier();
         PotionType type = NBTEncodings.decodePotionData(nbt.getCompound(BASE_KEY));
         if (type == null) {
