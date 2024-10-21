@@ -2,7 +2,7 @@
   when:
     - "'swarm_manager' in group_names"
     - item.enabled
-  file:ceh
+  file:
       path: '{{item.path}}'
       state: directory
   loop:
