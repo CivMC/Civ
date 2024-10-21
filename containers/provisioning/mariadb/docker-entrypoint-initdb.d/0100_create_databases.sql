@@ -11,6 +11,7 @@ CREATE DATABASE castlegates;
 CREATE DATABASE essenceglue;
 CREATE DATABASE exilepearl;
 CREATE DATABASE realisticbiomes;
+CREATE DATABASE heliodor;
 
 GRANT ALL PRIVILEGES ON `donum`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `banstick`.* TO 'mariadb'@'%';
@@ -25,3 +26,4 @@ GRANT ALL PRIVILEGES ON `castlegates`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `essenceglue`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `exilepearl`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `realisticbiomes`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `heliodor`.* TO 'mariadb'@'%';

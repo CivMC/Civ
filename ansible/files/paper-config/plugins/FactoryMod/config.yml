@@ -16,6 +16,42 @@ log_inventories: true
 force_include_default: true
 
 factories:
+  gem_factory:
+    type: FCC
+    name: Gem Factory
+    citadelBreakReduction: 1.0
+    setupcost:
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_BLOCK
+        amount: 128
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 128
+      coal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COAL_BLOCK
+        amount: 128
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - facet_heliodor
+      - refill_heliodor
+      - finish_heliodor
+      - repair_gem_factory
   stone_smelter:
     type: FCC
     name: Basic Smelter
@@ -1453,6 +1489,84 @@ factories:
      - repair_copper_workshop
 #RECIPES
 recipes:
+  facet_heliodor:
+    production_time: 4s
+    name: Facet Heliodor Gem
+    type: HELIODOR_CREATE
+    input:
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_BLOCK
+        amount: 128
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 128
+      coal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COAL_BLOCK
+        amount: 256
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE_BLOCK
+        amount: 64
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    output_count: 128
+    max_charge: 10
+  refill_heliodor:
+    production_time: 4s
+    name: Refill Heliodor Gem
+    type: HELIODOR_REFILL
+    input:
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 128
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    count: 128
+    add_max_charge: 10
+  finish_heliodor:
+    production_time: 4s
+    name: Polish Heliodor Gem
+    type: HELIODOR_FINISH
+    input:
+      brush:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BRUSH
+        amount: 1
+      shears:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SHEARS
+        amount: 1
+    input_count: 8
+    output_count: 1
   smelt_stone:
     production_time: 4s
     name: Smelt Stone
@@ -5365,6 +5479,38 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: BUCKET
         amount: 1
+  repair_gem_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_BLOCK
+        amount: 16
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 16
+      coal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COAL_BLOCK
+        amount: 16
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
   repair_stone_smelter:
     production_time: 4s
     name: Repair Factory

@@ -2,7 +2,7 @@ plugins {
     id("io.papermc.paperweight.userdev")
 }
 
-version = "3.1.0"
+version = "1.0.0"
 
 dependencies {
     paperweight {
@@ -10,7 +10,4 @@ dependencies {
     }
 
     compileOnly(project(":plugins:civmodcore-paper"))
-    compileOnly(project(":plugins:namelayer-paper"))
-    compileOnly(project(":plugins:citadel-paper"))
-    compileOnly(project(":plugins:heliodor-paper"))
 }

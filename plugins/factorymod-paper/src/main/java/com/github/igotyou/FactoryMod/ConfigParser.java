@@ -26,6 +26,9 @@ import com.github.igotyou.FactoryMod.recipes.RecipeScalingUpgradeRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.recipes.WordBankRecipe;
+import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorCreateRecipe;
+import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorFinishRecipe;
+import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorRefillRecipe;
 import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
@@ -33,6 +36,7 @@ import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.FactoryGarbageCollector;
 import com.github.igotyou.FactoryMod.utility.FactoryModGUI;
 import org.apache.commons.lang.WordUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -884,6 +888,66 @@ public class ConfigParser {
                 break;
             case "PLAYERHEAD":
                 result = new PlayerHeadRecipe(identifier, name, productionTime, input);
+                break;
+            case "HELIODOR_CREATE":
+                if (!Bukkit.getPluginManager().isPluginEnabled("Heliodor")) {
+                    plugin.warning("Heliodor plugin must be enabled for Heliodor gems");
+                    result = null;
+                    break;
+                }
+                int outputCount = config.getInt("output_count");
+                if (outputCount == 0) {
+                    plugin.warning("Output count of HELIODOR_CREATE recipe not set");
+                    result = null;
+                    break;
+                }
+                int maxCharge = config.getInt("max_charge");
+                if (maxCharge == 0) {
+                    plugin.warning("Max charge of HELIODOR_CREATE recipe not set");
+                    result = null;
+                    break;
+                }
+                result = new HeliodorCreateRecipe(identifier, name, productionTime, input, outputCount, maxCharge);
+                break;
+            case "HELIODOR_REFILL":
+                if (!Bukkit.getPluginManager().isPluginEnabled("Heliodor")) {
+                    plugin.warning("Heliodor plugin must be enabled for Heliodor gems");
+                    result = null;
+                    break;
+                }
+                int count = config.getInt("count");
+                if (count == 0) {
+                    plugin.warning("Count of HELIODOR_REFILL recipe not set");
+                    result = null;
+                    break;
+                }
+                int addMaxCharge = config.getInt("add_max_charge");
+                if (addMaxCharge == 0) {
+                    plugin.warning("Add max charge of HELIODOR_REFILL recipe not set");
+                    result = null;
+                    break;
+                }
+                result = new HeliodorRefillRecipe(identifier, name, productionTime, input, count, addMaxCharge);
+                break;
+            case "HELIODOR_FINISH":
+                if (!Bukkit.getPluginManager().isPluginEnabled("Heliodor")) {
+                    plugin.warning("Heliodor plugin must be enabled for Heliodor gems");
+                    result = null;
+                    break;
+                }
+                int inputCount = config.getInt("input_count");
+                if (inputCount == 0) {
+                    plugin.warning("Input count of HELIODOR_FINISH recipe not set");
+                    result = null;
+                    break;
+                }
+                int outputCountFinish = config.getInt("output_count");
+                if (outputCountFinish == 0) {
+                    plugin.warning("Output count of HELIODOR_FINISH recipe not set");
+                    result = null;
+                    break;
+                }
+                result = new HeliodorFinishRecipe(identifier, name, productionTime, input, inputCount, outputCountFinish);
                 break;
             default:
                 plugin.severe("Could not identify type " + config.getString("type") + " as a valid recipe identifier");
