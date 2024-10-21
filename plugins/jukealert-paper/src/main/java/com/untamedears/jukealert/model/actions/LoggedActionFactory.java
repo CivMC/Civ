@@ -7,6 +7,7 @@ import com.untamedears.jukealert.model.actions.impl.BlockBreakAction;
 import com.untamedears.jukealert.model.actions.impl.BlockPlaceAction;
 import com.untamedears.jukealert.model.actions.impl.DestroyVehicleAction;
 import com.untamedears.jukealert.model.actions.impl.DismountEntityAction;
+import com.untamedears.jukealert.model.actions.impl.EditSignAction;
 import com.untamedears.jukealert.model.actions.impl.EmptyBucketAction;
 import com.untamedears.jukealert.model.actions.impl.EnterFieldAction;
 import com.untamedears.jukealert.model.actions.impl.EnterVehicleAction;
@@ -132,6 +133,10 @@ public class LoggedActionFactory {
 
         registerProvider(OpenContainerAction.ID,
             (snitch, player, loc, time, victim) -> new OpenContainerAction(
+                time, snitch, player, loc, Material.valueOf(victim)));
+
+        registerProvider(EditSignAction.ID,
+            (snitch, player, loc, time, victim) -> new EditSignAction(
                 time, snitch, player, loc, Material.valueOf(victim)));
     }
 
