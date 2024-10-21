@@ -79,10 +79,8 @@
   loop:
     - { file: '../../files/paper-config', target: 'minecraft', enabled: setting.minecraft.enabled }
     - { file: '../../files/proxy-config', target: 'minecraft', enabled: setting.minecraft.enabled }
-    - { file: '../../files/pvp-config', target: 'minecraft', enabled: setting.minecraft.enabled }
     - { file: '../../build/paper-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
     - { file: '../../build/proxy-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
-    - { file: '../../build/pvp-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
 
 - name: Deploy Stacks | Copy Files
   shell: 'cp -r /home/{{ansible_user}}/stacks/{{item.file}} /opt/stacks/{{item.file}}'
@@ -92,10 +90,8 @@
   loop:
     - { file: 'minecraft/paper-config', enabled: setting.minecraft.enabled }
     - { file: 'minecraft/proxy-config', enabled: setting.minecraft.enabled }
-    - { file: 'minecraft/pvp-config', enabled: setting.minecraft.enabled }
     - { file: 'minecraft/paper-plugins', enabled: setting.minecraft.enabled }
     - { file: 'minecraft/proxy-plugins', enabled: setting.minecraft.enabled }
-    - { file: 'minecraft/pvp-plugins', enabled: setting.minecraft.enabled }
 
 - name: Deploy Stacks | Deploy Stacks
   when:
