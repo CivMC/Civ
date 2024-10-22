@@ -52,7 +52,7 @@ public class ArenaGui {
             if (isOwner) {
                 meta.setEnchantmentGlintOverride(true);
             }
-            meta.itemName(Component.text(arena.displayName(), NamedTextColor.LIGHT_PURPLE));
+            meta.itemName(Component.text(arena.displayName(), NamedTextColor.YELLOW));
 
             List<Component> lore = new ArrayList<>();
             lore.add(Component.text("Created by " + loadedArena.owner().getName(), NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
