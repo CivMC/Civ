@@ -9,4 +9,6 @@ public interface ArenaDao {
     boolean newArena(Arena arena);
 
     boolean deleteArena(String arenaName);
+
+    boolean setDisplayName(String arenaName, String displayName);
 }

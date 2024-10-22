@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -77,7 +78,7 @@ public class ArenaCommand implements CommandExecutor {
                     throw new RuntimeException(e);
                 }
 
-                boolean success = dao.newArena(new Arena(arenaName, player.getLocation(), icon));
+                boolean success = dao.newArena(new Arena(arenaName, null, player.getLocation(), icon));
                 if (success) {
                     player.sendMessage(Component.text("Created arena", NamedTextColor.GREEN));
                 } else {
@@ -105,6 +106,26 @@ public class ArenaCommand implements CommandExecutor {
                 }
             });
             return true;
+        } else if (args.length > 0 && args[0].equalsIgnoreCase("displayname")) {
+            if (args.length < 3) {
+                return false;
+            }
+            if (!player.hasPermission("kitpvp.admin")) {
+                player.sendMessage(Component.text("No permission", NamedTextColor.RED));
+                return true;
+            }
+
+            String arenaName = args[1];
+            String displayName = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                boolean success = dao.setDisplayName(arenaName, displayName);
+                if (success) {
+                    player.sendMessage(Component.text("Set display name of arena", NamedTextColor.GREEN));
+                } else {
+                    player.sendMessage(Component.text("Could not set display name of arena. Does it exist?", NamedTextColor.RED));
+                }
+            });
         } else if (args.length == 0) {
             new ArenaGui(dao, manager).open(player);
             return true;

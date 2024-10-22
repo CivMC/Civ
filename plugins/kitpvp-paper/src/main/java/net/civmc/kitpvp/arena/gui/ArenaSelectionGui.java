@@ -46,7 +46,7 @@ public class ArenaSelectionGui {
         for (Arena arena : arenaDao.getArenas()) {
             ItemStack item = new ItemStack(arena.icon());
             ItemMeta meta = item.getItemMeta();
-            meta.itemName(Component.text(arena.name(), NamedTextColor.WHITE));
+            meta.itemName(Component.text(arena.displayName(), NamedTextColor.LIGHT_PURPLE));
             item.setItemMeta(meta);
             inventory.setSlot(new Clickable(item) {
                 @Override

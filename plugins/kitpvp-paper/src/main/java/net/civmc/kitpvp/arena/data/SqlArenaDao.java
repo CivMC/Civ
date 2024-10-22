@@ -32,6 +32,10 @@ public class SqlArenaDao implements ArenaDao {
                     PRIMARY KEY (name)
                 )
                 """);
+        source.registerMigration(5, false,
+            """
+                ALTER TABLE arenas ADD COLUMN IF NOT EXISTS display_name VARCHAR(64)
+                """);
     }
 
     @Override
@@ -42,6 +46,7 @@ public class SqlArenaDao implements ArenaDao {
             while (resultSet.next()) {
                 arenas.add(new Arena(
                     resultSet.getString("name"),
+                    resultSet.getString("display_name"),
                     new Location(null, resultSet.getDouble("spawn_x"), resultSet.getDouble("spawn_y"), resultSet.getDouble("spawn_z"), resultSet.getFloat("spawn_yaw"), 0),
                     Material.valueOf(resultSet.getString("icon"))
                 ));
@@ -80,6 +85,20 @@ public class SqlArenaDao implements ArenaDao {
             return statement.executeUpdate() == 1;
         } catch (SQLException ex) {
             JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error deleting arena", ex);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean setDisplayName(String arenaName, String displayName) {
+        try (Connection connection = source.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("UPDATE arenas SET display_name = ? WHERE name = ?");
+            statement.setString(1, displayName);
+            statement.setString(2, arenaName);
+
+            return statement.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error setting display name of arena", ex);
             return false;
         }
     }
