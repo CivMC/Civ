@@ -126,6 +126,7 @@ public class ArenaCommand implements CommandExecutor {
                     player.sendMessage(Component.text("Could not set display name of arena. Does it exist?", NamedTextColor.RED));
                 }
             });
+            return true;
         } else if (args.length == 0) {
             new ArenaGui(dao, manager).open(player);
             return true;
