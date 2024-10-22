@@ -29,7 +29,7 @@ public class DatabaseManager {
     }
 
     private void initialiseTables() {
-        dataSource.registerMigration(2, false, """
+        dataSource.registerMigration(4, false, """
             CREATE TABLE IF NOT EXISTS warps (
                 name VARCHAR(64) PRIMARY KEY,
                 world VARCHAR(64) NOT NULL,

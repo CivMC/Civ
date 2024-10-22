@@ -186,7 +186,7 @@ public class KitListGui {
                 iconMeta.lore(List.of(
                     Component.text("Left click to load", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false),
                     Component.text("Right click to edit", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false),
-                    Component.text("Middle click to delete", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)
+                    Component.text("Shift right click to delete", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)
                 ));
                 icon.setItemMeta(iconMeta);
                 clickables.add(new Clickable(icon) {
@@ -202,7 +202,7 @@ public class KitListGui {
                     }
 
                     @Override
-                    protected void onMiddleClick(@NotNull Player clicker) {
+                    protected void onShiftRightClick(@NotNull Player clicker) {
                         new ConfirmDeletionGui(KitListGui.this.dao, clicker, kit, KitListGui.this.view);
                     }
                 });

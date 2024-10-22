@@ -52,13 +52,13 @@ public class ArenaGui {
             if (isOwner) {
                 meta.setEnchantmentGlintOverride(true);
             }
-            meta.itemName(Component.text(arena.name(), NamedTextColor.WHITE));
+            meta.itemName(Component.text(arena.displayName(), NamedTextColor.LIGHT_PURPLE));
 
             List<Component> lore = new ArrayList<>();
             lore.add(Component.text("Created by " + loadedArena.owner().getName(), NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             lore.add(Component.text("Click to teleport", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             if (hasAccess) {
-                lore.add(Component.text("Middle click to delete", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+                lore.add(Component.text("Shift right click to delete", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             }
             World world = Bukkit.getWorld(manager.getArenaName(arena.name(), loadedArena.owner()));
             if (world != null && world.getPlayerCount() > 0) {
@@ -79,9 +79,9 @@ public class ArenaGui {
                 }
 
                 @Override
-                protected void onMiddleClick(@NotNull Player clicker) {
+                protected void onShiftRightClick(@NotNull Player clicker) {
                     if (!hasAccess) {
-                        super.onMiddleClick(clicker);
+                        super.onShiftRightClick(clicker);
                     }
 
                     new ConfirmDeletionGui(manager, loadedArena.owner(), clicker);

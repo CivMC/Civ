@@ -5,8 +5,11 @@ import org.bukkit.Material;
 
 public record Arena(
     String name,
+    String displayName,
     Location spawn,
     Material icon
 ) {
-
+    public String displayName() {
+        return this.displayName == null ? this.name : this.displayName;
+    }
 }
