@@ -115,6 +115,8 @@ factories:
       - make_sea_lantern
       - make_end_rods
       - make_redstone_lamp
+      - make_flower_pot
+      - make_decorated_pot
       - pack_ice
       - pack_blue_ice
       - crush_disc_chirp
@@ -2645,6 +2647,40 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: REDSTONE_LAMP
         amount: 32
+  make_flower_pot:
+    forceInclude: true
+    production_time: 4s
+    name: Make Flower Pots
+    type: PRODUCTION
+    input:
+      clay_ball:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CLAY_BALL
+        amount: 64
+    output:
+      flower_pot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: FLOWER_POT
+        amount: 24
+  make_decorated_pot:
+    forceInclude: true
+    production_time: 4s
+    name: Make Decorated Pots
+    type: PRODUCTION
+    input:
+      clay_ball:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CLAY_BALL
+        amount: 64
+    output:
+      decorated_pot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DECORATED_POT
+        amount: 16
   make_diamond_helm:
     production_time: 4s
     name: Make Diamond Helmets
