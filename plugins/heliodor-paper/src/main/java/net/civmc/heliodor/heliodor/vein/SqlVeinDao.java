@@ -37,10 +37,7 @@ public class SqlVeinDao implements VeinDao {
             blocks_available_estimate INT NOT NULL,
             blocks_mined INT NOT NULL,
             discovered BOOL NOT NULL,
-            ores INT NOT NULL,
-            INDEX chunk (chunk_x, chunk_z, world_id),
-            INDEX pos (x_offset, y, z_offset, world_id),
-            CONSTRAINT loc UNIQUE (chunk_x,chunk_z,x_offset,y,z_offset,world_id))
+            ores INT NOT NULL)
             """);
     }
 

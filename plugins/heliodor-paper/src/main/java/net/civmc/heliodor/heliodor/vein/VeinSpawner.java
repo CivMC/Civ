@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,12 +36,17 @@ public class VeinSpawner {
 
     private void trySpawns() {
         for (int i = 0; i < 10; i++) {
+            boolean attemptedSpawn = false;
             Map<String, Boolean> spawnableTypes = dao.getSpawnableTypes(
                 Map.of(MeteoriteVeinConfig.TYPE_NAME, meteoriteVeinConfig.config().frequencyMinutes()),
                 Map.of(MeteoriteVeinConfig.TYPE_NAME, meteoriteVeinConfig.config().maxSpawns()));
             if (spawnableTypes.getOrDefault(MeteoriteVeinConfig.TYPE_NAME, true)) {
-                logger.info("Attempting meteorite spawn");
+                attemptedSpawn = true;
+                logger.info("Attempting meteorite vein spawn");
                 trySpawnMeteorite();
+            }
+            if (!attemptedSpawn) {
+                break;
             }
         }
     }
@@ -55,8 +59,8 @@ public class VeinSpawner {
         List<Location> positions = meteoriteVeinConfig.positions();
         Location position = positions.get(ThreadLocalRandom.current().nextInt(positions.size())).clone();
 
-        int x = 0;
-        int z = 0;
+        int x;
+        int z;
 
         while (true) {
             x = ThreadLocalRandom.current().nextInt(-meteoriteVeinConfig.maxPositionRadius(), meteoriteVeinConfig.maxPositionRadius() + 1);
@@ -72,7 +76,8 @@ public class VeinSpawner {
         }
 
         int bury = ThreadLocalRandom.current().nextInt(meteoriteVeinConfig.maxBury());
-        MeteoritePos mpos = getEligibleMeteoricIronVeinBlocks(world, position.getBlockX(), position.getBlockZ(), bury, meteoriteVeinConfig.config().spawnRadius());
+        int radius = meteoriteVeinConfig.config().spawnRadius();
+        MeteoritePos mpos = getMeteoricVeinPositionAndBlocks(world, position.getBlockX(), position.getBlockZ(), bury, radius);
         if (mpos == null || mpos.blocks() < meteoriteVeinConfig.config().minBlocks()) {
             return;
         }
@@ -82,7 +87,7 @@ public class VeinSpawner {
             MeteoriteVeinConfig.TYPE_NAME,
             System.currentTimeMillis(),
             world.getName(),
-            meteoriteVeinConfig.config().spawnRadius(),
+            radius,
             position.getBlockX(),
             mpos.y(),
             position.getBlockZ(),
@@ -99,7 +104,7 @@ public class VeinSpawner {
         dao.addVein(vein);
     }
 
-    private MeteoritePos getEligibleMeteoricIronVeinBlocks(World world, int x, int z, int bury, int radius) {
+    private MeteoritePos getMeteoricVeinPositionAndBlocks(World world, int x, int z, int bury, int radius) {
         List<ChunkPos> tickets = new ArrayList<>();
 
         try {
