@@ -300,6 +300,13 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
     }
 
     /**
+     * Sets how long the bastion has been in the world in ms
+     */
+    public void setPlaced(long placed) {
+        this.placed = placed;
+    }
+
+    /**
      * Sets the id of this bastion
      */
     public void setId(int id) {
