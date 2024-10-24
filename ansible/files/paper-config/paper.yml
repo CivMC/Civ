@@ -112,7 +112,7 @@ settings:
     limits:
       all:
         interval: 7.0
-        max-packet-rate: 500.0
+        max-packet-rate: 2000.0
       PacketPlayInAutoRecipe:
         interval: 4.0
         max-packet-rate: 5.0
