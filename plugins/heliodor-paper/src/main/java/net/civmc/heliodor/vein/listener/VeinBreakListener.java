@@ -1,9 +1,11 @@
-package net.civmc.heliodor.heliodor.vein;
+package net.civmc.heliodor.vein.listener;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.civmc.heliodor.vein.VeinCache;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -16,22 +18,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class BreakListener implements Listener {
+public class VeinBreakListener implements Listener {
 
     private final List<Location> minedBlocksCache = new ArrayList<>();
 
-    private final Plugin plugin;
     private final NamespacedKey oreLocationsKey;
     private final VeinCache dao;
 
-    public BreakListener(Plugin plugin, VeinCache dao) {
-        this.plugin = plugin;
-        this.oreLocationsKey = new NamespacedKey(plugin, "ore_locations");
+    public VeinBreakListener(NamespacedKey oreLocationsKey, VeinCache dao) {
+        this.oreLocationsKey = oreLocationsKey;
         this.dao = dao;
     }
 
@@ -63,12 +62,14 @@ public class BreakListener implements Listener {
         Block oreBlock = block.getRelative(face);
 
         oreBlock.setType(Material.RAW_IRON_BLOCK);
-        event.getPlayer().sendMessage(Component.text("You found a chunk of meteoric iron", NamedTextColor.GRAY));
+        event.getPlayer().sendMessage(Component.text("You found a chunk of meteoric iron", NamedTextColor.GRAY, TextDecoration.ITALIC));
 
         PersistentDataContainer chunkPdc = block.getChunk().getPersistentDataContainer();
         int[] ints = chunkPdc.get(oreLocationsKey, PersistentDataType.INTEGER_ARRAY);
         IntList list = ints == null ? new IntArrayList() : new IntArrayList(ints);
-        list.add()
+        list.add(oreBlock.getX());
+        list.add(oreBlock.getY());
+        list.add(oreBlock.getZ());
 
         chunkPdc.set(oreLocationsKey, PersistentDataType.INTEGER_ARRAY, list.toIntArray());
     }

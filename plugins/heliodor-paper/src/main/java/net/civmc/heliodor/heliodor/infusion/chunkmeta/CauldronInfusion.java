@@ -1,4 +1,4 @@
-package net.civmc.heliodor.heliodor.chunkmeta;
+package net.civmc.heliodor.heliodor.infusion.chunkmeta;
 
 import org.bukkit.Location;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;

@@ -1,4 +1,4 @@
-package net.civmc.heliodor.heliodor;
+package net.civmc.heliodor.heliodor.infusion;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import net.civmc.heliodor.HeliodorPlugin;
-import net.civmc.heliodor.heliodor.chunkmeta.CauldronInfusion;
+import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfusion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

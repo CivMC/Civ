@@ -1,14 +1,14 @@
-package net.civmc.heliodor.heliodor;
+package net.civmc.heliodor.heliodor.infusion;
 
-import net.civmc.heliodor.heliodor.chunkmeta.CauldronInfuseData;
-import net.civmc.heliodor.heliodor.chunkmeta.CauldronInfusion;
+import net.civmc.heliodor.heliodor.HeliodorGem;
+import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfuseData;
+import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfusion;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;

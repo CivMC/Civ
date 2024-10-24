@@ -1,7 +1,7 @@
-package net.civmc.heliodor.heliodor.chunkmeta;
+package net.civmc.heliodor.heliodor.infusion.chunkmeta;
 
 import net.civmc.heliodor.HeliodorPlugin;
-import net.civmc.heliodor.heliodor.InfusionManager;
+import net.civmc.heliodor.heliodor.infusion.InfusionManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;

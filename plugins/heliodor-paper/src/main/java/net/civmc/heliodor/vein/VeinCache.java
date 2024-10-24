@@ -1,4 +1,4 @@
-package net.civmc.heliodor.heliodor.vein;
+package net.civmc.heliodor.vein;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;

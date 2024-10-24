@@ -1,4 +1,4 @@
-package net.civmc.heliodor.heliodor.vein;
+package net.civmc.heliodor.vein;
 
 public record Vein(
     String type,
