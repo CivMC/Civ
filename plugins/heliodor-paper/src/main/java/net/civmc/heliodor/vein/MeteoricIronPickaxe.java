@@ -1,6 +1,5 @@
-package net.civmc.heliodor.heliodor.recipe;
+package net.civmc.heliodor.vein;
 
-import net.civmc.heliodor.heliodor.HeliodorGem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -17,7 +16,7 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.plugin.Plugin;
 import java.util.List;
 
-public interface MeteoritePickaxe {
+public interface MeteoricIronPickaxe {
 
     @SuppressWarnings("UnstableApiUsage")
     static ItemStack getItem(boolean silk) {
@@ -26,7 +25,7 @@ public interface MeteoritePickaxe {
 
         // TODO cancel repairs
 
-        meta.displayName(Component.text("Meteorite Pickaxe", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
+        meta.displayName(Component.text("Meteoric Iron Pickaxe", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
         meta.lore(List.of(
             Component.text("Instantly breaks deepslate and stone,", NamedTextColor.WHITE),
@@ -49,14 +48,14 @@ public interface MeteoritePickaxe {
     }
 
     static List<ShapedRecipe> getRecipes(Plugin plugin) {
-        return List.of(categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteorite_pickaxe_silk_touch"), MeteoritePickaxe.getItem(true))
+        return List.of(categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteorite_pickaxe_silk_touch"), MeteoricIronPickaxe.getItem(true))
                 .shape("xxx", "asa", " s ")
-                .setIngredient('x', Material.IRON_BLOCK)
+                .setIngredient('x', MeteoricIron.createMeteoricIronIngot())
                 .setIngredient('a', Material.AMETHYST_SHARD)
                 .setIngredient('s', Material.STICK)),
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteorite_pickaxe_fortune"), MeteoritePickaxe.getItem(false))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteorite_pickaxe_fortune"), MeteoricIronPickaxe.getItem(false))
                 .shape("xxx", " s ", " s ")
-                .setIngredient('x', Material.IRON_BLOCK)
+                .setIngredient('x', MeteoricIron.createMeteoricIronIngot())
                 .setIngredient('s', Material.STICK)));
     }
 

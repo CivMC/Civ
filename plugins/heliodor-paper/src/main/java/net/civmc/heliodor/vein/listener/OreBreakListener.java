@@ -16,20 +16,14 @@ import org.bukkit.persistence.PersistentDataType;
 public class OreBreakListener implements Listener {
 
     private final NamespacedKey oreLocationsKey;
-    private final VeinCache dao;
 
-    public OreBreakListener(NamespacedKey oreLocationsKey, VeinCache dao) {
+    public OreBreakListener(NamespacedKey oreLocationsKey) {
         this.oreLocationsKey = oreLocationsKey;
-        this.dao = dao;
     }
 
     @EventHandler
     public void on(BlockBreakEvent event) {
         Block block = event.getBlock();
-
-        if (block.getType() != Material.RAW_IRON_BLOCK) {
-            return;
-        }
 
         PersistentDataContainer chunkPdc = block.getChunk().getPersistentDataContainer();
         int[] ints = chunkPdc.get(oreLocationsKey, PersistentDataType.INTEGER_ARRAY);
@@ -49,11 +43,14 @@ public class OreBreakListener implements Listener {
             return;
         }
 
-        event.setDropItems(false);
-        event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), MeteoricIron.createMeteoricIronNugget());
-
         list.removeElements(index, index + 3);
         chunkPdc.set(oreLocationsKey, PersistentDataType.INTEGER_ARRAY, list.toIntArray());
 
+        if (block.getType() != Material.RAW_IRON_BLOCK) {
+            return;
+        }
+
+        event.setDropItems(false);
+        event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), MeteoricIron.createMeteoricIronNugget());
     }
 }

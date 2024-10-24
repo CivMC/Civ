@@ -1,14 +1,12 @@
-package net.civmc.heliodor.heliodor.recipe;
+package net.civmc.heliodor.heliodor;
 
 import java.util.List;
-import net.civmc.heliodor.heliodor.HeliodorGem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -45,14 +43,11 @@ public interface HeliodorPickaxe {
     }
 
     static List<ShapedRecipe> getRecipes(Plugin plugin) {
-        return List.of(categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "heliodor_pickaxe"), HeliodorPickaxe.getItem())
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, "heliodor_pickaxe"), HeliodorPickaxe.getItem())
             .shape("xxx", " s ", " s ")
             .setIngredient('x', HeliodorGem.createFinishedHeliodorGem())
-            .setIngredient('s', Material.STICK)));
-    }
-
-    private static ShapedRecipe categoryEquipment(ShapedRecipe recipe) {
+            .setIngredient('s', Material.STICK);
         recipe.setCategory(CraftingBookCategory.EQUIPMENT);
-        return recipe;
+        return List.of(recipe);
     }
 }

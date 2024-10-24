@@ -9,6 +9,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.civmc.heliodor.vein.data.MeteoricIronVeinConfig;
+import net.civmc.heliodor.vein.data.Vein;
+import net.civmc.heliodor.vein.data.VerticalBlockPos;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Tag;
@@ -45,9 +48,11 @@ public class VeinSpawner {
                 Map.of(MeteoricIronVeinConfig.TYPE_NAME, meteoriteVeinConfig.config().frequencyMinutes()),
                 Map.of(MeteoricIronVeinConfig.TYPE_NAME, meteoriteVeinConfig.config().maxSpawns()));
             if (spawnableTypes.getOrDefault(MeteoricIronVeinConfig.TYPE_NAME, true)) {
-                attemptedSpawn = true;
-                logger.info("Attempting meteorite vein spawn");
-                trySpawnMeteorite();
+                if (checkValidMeteoricIronConfig()) {
+                    attemptedSpawn = true;
+                    logger.info("Attempting meteorite vein spawn");
+                    trySpawnMeteoricIron();
+                }
             }
             if (!attemptedSpawn) {
                 break;
@@ -55,11 +60,25 @@ public class VeinSpawner {
         }
     }
 
-    private void trySpawnMeteorite() {
+    public boolean checkValidMeteoricIronConfig() {
         World world = Bukkit.getWorld(meteoriteVeinConfig.config().world());
         if (world == null) {
-            return;
+            return false;
         }
+        List<VerticalBlockPos> positions = meteoriteVeinConfig.positions();
+        if (positions.isEmpty()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean trySpawnMeteoricIron() {
+        if (Bukkit.isPrimaryThread()) {
+            return false;
+        }
+
+        World world = Bukkit.getWorld(meteoriteVeinConfig.config().world());
         List<VerticalBlockPos> positions = meteoriteVeinConfig.positions();
         VerticalBlockPos position = positions.get(ThreadLocalRandom.current().nextInt(positions.size()));
 
@@ -79,11 +98,14 @@ public class VeinSpawner {
             }
         }
 
-        int bury = ThreadLocalRandom.current().nextInt(meteoriteVeinConfig.maxBury());
+        x += position.x();
+        z += position.z();
+
+        int bury = ThreadLocalRandom.current().nextInt(meteoriteVeinConfig.maxBury() + 1);
         int radius = meteoriteVeinConfig.config().spawnRadius();
-        MeteoritePos mpos = getMeteoricVeinPositionAndBlocks(world, position.x(), position.z(), bury, radius);
+        MeteoritePos mpos = getMeteoricVeinPositionAndBlocks(world, x, z, bury, radius);
         if (mpos == null || mpos.blocks() < meteoriteVeinConfig.config().minBlocks()) {
-            return;
+            return false;
         }
 
         int inaccuracy = meteoriteVeinConfig.config().inaccuracy();
@@ -92,12 +114,12 @@ public class VeinSpawner {
             System.currentTimeMillis(),
             world.getName(),
             radius,
-            position.x(),
+            x,
             mpos.y(),
-            position.z(),
-            ThreadLocalRandom.current().nextInt(inaccuracy),
-            ThreadLocalRandom.current().nextInt(inaccuracy),
-            ThreadLocalRandom.current().nextInt(inaccuracy),
+            z,
+            ThreadLocalRandom.current().nextInt(-inaccuracy, inaccuracy + 1),
+            ThreadLocalRandom.current().nextInt(-inaccuracy, inaccuracy + 1),
+            ThreadLocalRandom.current().nextInt(-inaccuracy, inaccuracy + 1),
             mpos.blocks(),
             0,
             false,
@@ -105,7 +127,7 @@ public class VeinSpawner {
         );
 
         logger.info("Meteorite vein submitted to database: " + vein);
-        cache.addVein(vein);
+        return cache.addVein(vein);
     }
 
     private MeteoritePos getMeteoricVeinPositionAndBlocks(World world, int x, int z, int bury, int radius) {
@@ -139,16 +161,19 @@ public class VeinSpawner {
                 int blocks = 0;
                 Block spawnBlock = world.getHighestBlockAt(x, z);
                 if (spawnBlock.getY() <= world.getMinHeight()) {
+                    logger.log(Level.INFO, "Failed spawn attempt at x = " + x + ", z = " + z);
                     return;
                 }
                 while (!Tag.BASE_STONE_OVERWORLD.isTagged(spawnBlock.getType())) {
                     spawnBlock = spawnBlock.getRelative(BlockFace.DOWN);
                     if (spawnBlock.getY() <= world.getMinHeight()) {
+                        logger.log(Level.INFO, "Failed spawn attempt at x = " + x + ", z = " + z);
                         return;
                     }
                 }
                 spawnBlock = spawnBlock.getRelative(BlockFace.DOWN, bury + radius);
                 if (spawnBlock.getY() <= world.getMinHeight() + radius) {
+                    logger.log(Level.INFO, "Failed spawn attempt at x = " + x + ", z = " + z);
                     return;
                 }
 

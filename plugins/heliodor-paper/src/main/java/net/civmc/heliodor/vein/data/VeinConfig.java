@@ -1,4 +1,4 @@
-package net.civmc.heliodor.vein;
+package net.civmc.heliodor.vein.data;
 
 public record VeinConfig(
     String world,

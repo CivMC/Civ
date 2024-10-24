@@ -1,5 +1,6 @@
 package net.civmc.heliodor.vein;
 
+import net.civmc.heliodor.vein.data.Vein;
 import java.util.List;
 import java.util.Map;
 

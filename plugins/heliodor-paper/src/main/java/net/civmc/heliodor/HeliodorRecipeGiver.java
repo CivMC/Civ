@@ -1,6 +1,9 @@
-package net.civmc.heliodor.heliodor.recipe;
+package net.civmc.heliodor;
 
 import net.civmc.heliodor.heliodor.HeliodorGem;
+import net.civmc.heliodor.heliodor.HeliodorPickaxe;
+import net.civmc.heliodor.vein.MeteoricIron;
+import net.civmc.heliodor.vein.MeteoricIronPickaxe;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -9,26 +12,28 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.Plugin;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
-public class HeliodorRecipes {
+public class HeliodorRecipeGiver {
 
     private final List<NamespacedKey> heliodorRecipes = new ArrayList<>();
 
-    public HeliodorRecipes(Plugin plugin) {
+    public HeliodorRecipeGiver(Plugin plugin) {
         register(HeliodorPickaxe.getRecipes(plugin));
-        register(MeteoritePickaxe.getRecipes(plugin));
+        register(MeteoricIronPickaxe.getRecipes(plugin));
+        register(MeteoricIron.getRecipes(plugin));
 
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             try {
                 if (heliodorRecipes.isEmpty()) {
                     return;
                 }
-                NamespacedKey first = heliodorRecipes.getFirst();
+                NamespacedKey first = heliodorRecipes.get(ThreadLocalRandom.current().nextInt(heliodorRecipes.size()));
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (!player.hasDiscoveredRecipe(first)) {
                         for (ItemStack item : player.getInventory().getStorageContents()) {
-                            if (HeliodorGem.isFinished(item)) {
+                            if (HeliodorGem.isFinished(item) || MeteoricIron.isNugget(item)) {
                                 player.discoverRecipes(heliodorRecipes);
                                 break;
                             }
@@ -38,7 +43,7 @@ public class HeliodorRecipes {
             } catch (RuntimeException ex) {
                 plugin.getLogger().log(Level.WARNING, "Iterating inventories for heliodor", ex);
             }
-        }, 10 * 20, 10 * 20);
+        }, 15 * 20, 15 * 20);
     }
 
     private void register(List<ShapedRecipe> recipes) {

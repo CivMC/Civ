@@ -15,7 +15,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 
 public class BlockProtector implements Listener {
 
-    private List<Predicate<Location>> predicates = new ArrayList<>();
+    private final List<Predicate<Location>> predicates = new ArrayList<>();
 
     public void addPredicate(Predicate<Location> predicate) {
         this.predicates.add(predicate);
@@ -51,12 +51,12 @@ public class BlockProtector implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onExplosion(BlockExplodeEvent event) {
+    public void on(BlockExplodeEvent event) {
         event.blockList().removeIf(block -> isProtected(block.getLocation()));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onExplosion(EntityExplodeEvent event) {
+    public void on(EntityExplodeEvent event) {
         event.blockList().removeIf(block -> isProtected(block.getLocation()));
     }
 }

@@ -1,4 +1,4 @@
-package net.civmc.heliodor.vein;
+package net.civmc.heliodor.vein.data;
 
 public record Vein(
     String type,
@@ -15,8 +15,8 @@ public record Vein(
     // there may be mess than that when the vein is found, but that's fine,
     // it just means the amount of ore will be slightly lower
     int blocksAvailableEstimate,
-    int blocksMined,
+    int blocksMined, // unused
     boolean discovered,
-    int ores
+    int ores // unused
 ) {
 }

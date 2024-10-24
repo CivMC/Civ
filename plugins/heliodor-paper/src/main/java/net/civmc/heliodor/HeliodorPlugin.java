@@ -1,19 +1,18 @@
 package net.civmc.heliodor;
 
+import net.civmc.heliodor.command.HeliodorDebugCommand;
 import net.civmc.heliodor.heliodor.infusion.InfusionListener;
 import net.civmc.heliodor.heliodor.infusion.InfusionManager;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronDao;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfuseData;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfusion;
-import net.civmc.heliodor.heliodor.recipe.HeliodorRecipes;
-import net.civmc.heliodor.vein.MeteoricIronVeinConfig;
+import net.civmc.heliodor.vein.data.MeteoricIronVeinConfig;
 import net.civmc.heliodor.vein.OrePredicate;
 import net.civmc.heliodor.vein.SqlVeinDao;
 import net.civmc.heliodor.vein.VeinCache;
-import net.civmc.heliodor.vein.VeinConfig;
-import net.civmc.heliodor.vein.VeinDao;
+import net.civmc.heliodor.vein.data.VeinConfig;
 import net.civmc.heliodor.vein.VeinSpawner;
-import net.civmc.heliodor.vein.VerticalBlockPos;
+import net.civmc.heliodor.vein.data.VerticalBlockPos;
 import net.civmc.heliodor.vein.listener.OreBreakListener;
 import net.civmc.heliodor.vein.listener.VeinBreakListener;
 import org.bukkit.Bukkit;
@@ -37,7 +36,10 @@ public class HeliodorPlugin extends ACivMod {
     private ManagedDatasource database;
     private BlockProtector protector;
     private BlockBasedChunkMetaView<CauldronInfuseData, TableBasedDataObject, TableStorageEngine<CauldronInfusion>> chunkMetaView;
-    private HeliodorRecipes recipes;
+    private HeliodorRecipeGiver recipes;
+    private VeinSpawner veinSpawner;
+    private NamespacedKey oreLocationsKey;
+    private VeinCache veinCache;
 
     @Override
     public void onEnable() {
@@ -52,30 +54,36 @@ public class HeliodorPlugin extends ACivMod {
         }
 
         protector = new BlockProtector();
+        getServer().getPluginManager().registerEvents(protector, this);
 
         InfusionManager infusionManager = new InfusionManager();
         CauldronDao dao = new CauldronDao(this.getLogger(), database, infusionManager);
         dao.registerMigrations();
-        Supplier<CauldronInfuseData> newData = () -> new CauldronInfuseData(false, dao, infusionManager);
-        this.chunkMetaView = ChunkMetaAPI.registerBlockBasedPlugin(this, newData, dao, true);
-
-        protector.addPredicate(l -> chunkMetaView.get(l) != null);
-        getServer().getPluginManager().registerEvents(new InfusionListener(infusionManager, chunkMetaView), this);
-
-        this.recipes = new HeliodorRecipes(this);
 
         initVeins();
 
         if (!database.updateDatabase()) {
             Bukkit.shutdown();
         }
+
+        this.veinCache.load();
+
+        Supplier<CauldronInfuseData> newData = () -> new CauldronInfuseData(false, dao, infusionManager);
+        this.chunkMetaView = ChunkMetaAPI.registerBlockBasedPlugin(this, newData, dao, true);
+
+        protector.addPredicate(l -> chunkMetaView.get(l) != null);
+        getServer().getPluginManager().registerEvents(new InfusionListener(infusionManager, chunkMetaView), this);
+
+        this.recipes = new HeliodorRecipeGiver(this);
+
+        getCommand("heliodor").setExecutor(new HeliodorDebugCommand(veinCache, veinSpawner, oreLocationsKey));
     }
 
     public BlockBasedChunkMetaView<CauldronInfuseData, TableBasedDataObject, TableStorageEngine<CauldronInfusion>> getChunkMetaView() {
         return chunkMetaView;
     }
 
-    public HeliodorRecipes getRecipes() {
+    public HeliodorRecipeGiver getRecipes() {
         return recipes;
     }
 
@@ -110,12 +118,14 @@ public class HeliodorPlugin extends ACivMod {
             meteoricIronConfigSection.getInt("max_bury")
         );
 
-        VeinDao veinDao = new SqlVeinDao(database);
-        VeinCache cache = new VeinCache(this, veinDao);
-        NamespacedKey oreLocationsKey = new NamespacedKey(this, "ore_locations");
-        getServer().getPluginManager().registerEvents(new OreBreakListener(oreLocationsKey, cache), this);
-        getServer().getPluginManager().registerEvents(new VeinBreakListener(oreLocationsKey, cache), this);
+        SqlVeinDao veinDao = new SqlVeinDao(database);
+        veinDao.registerMigrations();
+        veinCache = new VeinCache(this, veinDao);
+        oreLocationsKey = new NamespacedKey(this, "ore_locations");
+        getServer().getPluginManager().registerEvents(new OreBreakListener(oreLocationsKey), this);
+        getServer().getPluginManager().registerEvents(new VeinBreakListener(oreLocationsKey, veinCache), this);
         protector.addPredicate(new OrePredicate(oreLocationsKey));
-        new VeinSpawner(this, veinDao, cache, meteoriteIronConfig).start();
+        veinSpawner = new VeinSpawner(this, veinDao, veinCache, meteoriteIronConfig);
+        veinSpawner.start();
     }
 }

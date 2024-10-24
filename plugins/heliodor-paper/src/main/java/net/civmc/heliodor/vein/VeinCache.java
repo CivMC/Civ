@@ -1,5 +1,6 @@
 package net.civmc.heliodor.vein;
 
+import net.civmc.heliodor.vein.data.Vein;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.NumberConversions;
@@ -15,22 +16,28 @@ public class VeinCache {
     public VeinCache(Plugin plugin, VeinDao dao) {
         this.plugin = plugin;
         this.dao = dao;
-        this.veins = new ArrayList<>(dao.getVeins());
+        this.veins = new ArrayList<>();
     }
 
-    public List<CachedVein> getVeinsInRadius(String world, int x, int y, int z) {
-        List<CachedVein> inRadius = new ArrayList<>();
-        List<Vein> veinList = this.veins;
-        for (int i = 0; i < veinList.size(); i++) {
-            Vein vein = veinList.get(i);
+    public void load() {
+        this.veins.addAll(dao.getVeins());
+    }
+
+    public List<Vein> getVeinsInRadius(String world, int x, int y, int z) {
+        List<Vein> veinList = new ArrayList<>();
+        for (Vein vein : this.veins) {
             if (!vein.world().equals(world)) {
                 continue;
             }
             if (NumberConversions.square(vein.x() - x) + NumberConversions.square(vein.y() - y) + NumberConversions.square(vein.z() - z) <= NumberConversions.square(vein.radius())) {
-                inRadius.add(new CachedVein(vein, i));
+                veinList.add(vein);
             }
         }
-        return inRadius;
+        return veinList;
+    }
+
+    public List<Vein> getVeins() {
+        return veins;
     }
 
     public boolean addVein(Vein vein) {
@@ -40,28 +47,5 @@ public class VeinCache {
         } else {
             return false;
         }
-    }
-
-    public void incrementVeinMined(int index, boolean spawnedOre) {
-        Vein vein = this.veins.get(index);
-        this.veins.set(index, new Vein(
-            vein.type(),
-            vein.spawnedAt(),
-            vein.world(),
-            vein.radius(),
-            vein.x(),
-            vein.y(),
-            vein.z(),
-            vein.offsetX(),
-            vein.offsetY(),
-            vein.offsetZ(),
-            vein.blocksAvailableEstimate(),
-            vein.blocksMined() + 1,
-            true,
-            vein.ores() - (spawnedOre ? 1 : 0)
-        ));
-    }
-
-    public record CachedVein(Vein vein, int index) {
     }
 }

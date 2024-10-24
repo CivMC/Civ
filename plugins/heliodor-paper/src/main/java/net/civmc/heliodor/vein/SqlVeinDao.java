@@ -1,6 +1,7 @@
 package net.civmc.heliodor.vein;
 
 import net.civmc.heliodor.HeliodorPlugin;
+import net.civmc.heliodor.vein.data.Vein;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
@@ -8,8 +9,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -74,11 +78,44 @@ public class SqlVeinDao implements VeinDao {
     }
 
     @Override
+    public List<Vein> getVeins() {
+        try (Connection connection = source.getConnection()) {
+            ResultSet resultSet = connection.createStatement()
+                .executeQuery("SELECT * FROM veins");
+
+            List<Vein> veins = new ArrayList<>();
+            while (resultSet.next()) {
+                veins.add(new Vein(
+                    resultSet.getString("type"),
+                    resultSet.getTimestamp("spawned_at").getTime(),
+                    resultSet.getString("world"),
+                    resultSet.getInt("radius"),
+                    resultSet.getInt("x"),
+                    resultSet.getInt("y"),
+                    resultSet.getInt("z"),
+                    resultSet.getInt("offset_x"),
+                    resultSet.getInt("offset_y"),
+                    resultSet.getInt("offset_z"),
+                    resultSet.getInt("blocks_available_estimate"),
+                    resultSet.getInt("blocks_mined"),
+                    resultSet.getBoolean("discovered"),
+                    resultSet.getInt("ores")
+                ));
+            }
+
+            return veins;
+        } catch (SQLException ex) {
+            JavaPlugin.getPlugin(HeliodorPlugin.class).getLogger().log(Level.WARNING, "Getting veins", ex);
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
     public boolean addVein(Vein vein) {
         try (Connection connection = source.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO veins (type, spawned_at, world, radius, x, y, z, offset_x, offset_y, offset_z, blocks_available_estimate, blocks_mined, discovered, ores) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             statement.setString(1, vein.type());
-            statement.setLong(2, vein.spawnedAt());
+            statement.setTimestamp(2, new Timestamp(vein.spawnedAt()));
             statement.setString(3, vein.world());
             statement.setInt(4, vein.radius());
             statement.setInt(5, vein.x());

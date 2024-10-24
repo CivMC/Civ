@@ -2,6 +2,7 @@ package net.civmc.heliodor.vein;
 
 import java.util.function.Predicate;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -19,6 +20,10 @@ public class OrePredicate implements Predicate<Location> {
         PersistentDataContainer chunkPdc = location.getChunk().getPersistentDataContainer();
         int[] ints = chunkPdc.get(oreLocationsKey, PersistentDataType.INTEGER_ARRAY);
         if (ints == null) {
+            return false;
+        }
+
+        if (location.getBlock().getType() != Material.RAW_IRON_BLOCK) {
             return false;
         }
 
