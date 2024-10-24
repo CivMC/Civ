@@ -22,13 +22,15 @@ public class VeinSpawner {
     private final Logger logger;
     private final Plugin plugin;
     private final VeinDao dao;
+    private final VeinCache cache;
 
     private final MeteoriteVeinConfig meteoriteVeinConfig;
 
-    public VeinSpawner(Plugin plugin, VeinDao dao, MeteoriteVeinConfig meteoriteVeinConfig) {
+    public VeinSpawner(Plugin plugin, VeinDao dao, VeinCache cache, MeteoriteVeinConfig meteoriteVeinConfig) {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
         this.dao = dao;
+        this.cache = cache;
         this.meteoriteVeinConfig = meteoriteVeinConfig;
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::trySpawns, 20 * 60, 20 * 60);
@@ -101,7 +103,7 @@ public class VeinSpawner {
         );
 
         logger.info("Meteorite vein submitted to database: " + vein);
-        dao.addVein(vein);
+        cache.addVein(vein);
     }
 
     private MeteoritePos getMeteoricVeinPositionAndBlocks(World world, int x, int z, int bury, int radius) {

@@ -5,6 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -44,7 +45,6 @@ public class SqlVeinDao implements VeinDao {
     @Override
     public Map<String, Boolean> getSpawnableTypes(Map<String, Integer> spawnFrequencyMinutes, Map<String, Integer> maxSpawns) {
         try (Connection connection = source.getConnection()) {
-            // Could use HAVING here and do all the filtering in SQL but that would require complicated SQL builders
             ResultSet resultSet = connection.createStatement()
                 .executeQuery("SELECT type, MAX(spawned_at) AS max_spawned_at, COUNT(*) AS count FROM veins GROUP BY type");
 
@@ -70,6 +70,32 @@ public class SqlVeinDao implements VeinDao {
         } catch (SQLException ex) {
             JavaPlugin.getPlugin(HeliodorPlugin.class).getLogger().log(Level.WARNING, "Getting spawnable types", ex);
             return Collections.emptyMap();
+        }
+    }
+
+    @Override
+    public boolean addVein(Vein vein) {
+        try (Connection connection = source.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO veins (type, spawned_at, world, radius, x, y, z, offset_x, offset_y, offset_z, blocks_available_estimate, blocks_mined, discovered, ores) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            statement.setString(1, vein.type());
+            statement.setLong(2, vein.spawnedAt());
+            statement.setString(3, vein.world());
+            statement.setInt(4, vein.radius());
+            statement.setInt(5, vein.x());
+            statement.setInt(6, vein.y());
+            statement.setInt(7, vein.z());
+            statement.setInt(8, vein.offsetX());
+            statement.setInt(9, vein.offsetY());
+            statement.setInt(10, vein.offsetZ());
+            statement.setInt(11, vein.blocksAvailableEstimate());
+            statement.setInt(12, vein.blocksMined());
+            statement.setBoolean(13, vein.discovered());
+            statement.setInt(14, vein.ores());
+
+            return statement.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            JavaPlugin.getPlugin(HeliodorPlugin.class).getLogger().log(Level.WARNING, "Adding vein", ex);
+            return false;
         }
     }
 }
