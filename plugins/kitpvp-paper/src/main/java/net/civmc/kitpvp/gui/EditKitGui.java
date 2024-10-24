@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import net.civmc.kitpvp.KitPvpPlugin;
+import net.civmc.kitpvp.anvil.AnvilGui;
+import net.civmc.kitpvp.anvil.AnvilGuiListener;
 import net.civmc.kitpvp.data.Kit;
 import net.civmc.kitpvp.data.KitPvpDao;
 import net.civmc.kitpvp.gui.selection.ArmourSlotSelectionGui;
@@ -16,18 +18,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.ConversationFactory;
-import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.ValidatingPrompt;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
@@ -35,14 +31,16 @@ import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 public class EditKitGui {
 
     private final KitPvpDao dao;
+    private final AnvilGui anvilGui;
     private final Player player;
     private Kit kit;
     private ItemStack lastItem;
     private final KitListGui gui;
     private final boolean canEdit;
 
-    public EditKitGui(KitPvpDao dao, Player player, Kit kit, KitListGui gui) {
+    public EditKitGui(KitPvpDao dao, AnvilGui anvilGui, Player player, Kit kit, KitListGui gui) {
         this.dao = dao;
+        this.anvilGui = anvilGui;
         this.player = player;
         this.kit = kit;
         this.gui = gui;
@@ -108,54 +106,40 @@ public class EditKitGui {
                 protected void clicked(@NotNull Player clicker) {
                     inventory.setOnClose(null);
                     player.closeInventory();
-                    clicker.beginConversation(new ConversationFactory(JavaPlugin.getPlugin(KitPvpPlugin.class))
-                        .withFirstPrompt(new ValidatingPrompt() {
-                            @SuppressWarnings("deprecation")
-                            @Override
-                            public @NotNull String getPromptText(@NotNull ConversationContext context) {
-                                return ChatColor.GOLD + "Enter name to rename kit to or 'cancel' to cancel:";
-                            }
+                    anvilGui.open(player, new AnvilGuiListener() {
+                        @Override
+                        public void onClose() {
+                            JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
+                            Bukkit.getScheduler().runTask(plugin, EditKitGui.this::open);
+                        }
 
-                            @Override
-                            public @Nullable Prompt acceptValidatedInput(@NotNull ConversationContext context, @NotNull String input) {
-                                JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
-                                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                                    Kit renamedKit;
-                                    try {
-                                        renamedKit = dao.renameKit(kit.id(), input);
-                                    } catch (Exception e) {
-                                        JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error renaming kit", e);
-                                        return;
-                                    }
-                                    if (renamedKit == null) {
-                                        player.sendMessage(Component.text("A kit with that name already exists", NamedTextColor.RED));
-                                        return;
-                                    }
-                                    player.sendMessage(Component.text("Renamed kit to: %s".formatted(renamedKit.name()), NamedTextColor.GOLD));
-                                    Bukkit.getScheduler().runTask(plugin, () -> {
-                                        updateKit(renamedKit);
-                                        open();
-                                    });
+                        @Override
+                        public boolean onRename(String name) {
+                            if (!Kit.checkValidName(player, name)) {
+                                return false;
+                            }
+                            JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
+                            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                Kit renamedKit;
+                                try {
+                                    renamedKit = dao.renameKit(kit.id(), name);
+                                } catch (Exception e) {
+                                    JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error renaming kit", e);
+                                    return;
+                                }
+                                if (renamedKit == null) {
+                                    player.sendMessage(Component.text("A kit with that name already exists", NamedTextColor.RED));
+                                    return;
+                                }
+                                player.sendMessage(Component.text("Renamed kit to: %s".formatted(renamedKit.name()), NamedTextColor.GOLD));
+                                Bukkit.getScheduler().runTask(plugin, () -> {
+                                    updateKit(renamedKit);
+                                    open();
                                 });
-                                return null;
-                            }
-
-                            @Override
-                            protected boolean isInputValid(@NotNull ConversationContext context, @NotNull String input) {
-                                return Kit.checkValidName(player, input);
-                            }
-                        })
-                        .addConversationAbandonedListener(abandonedEvent -> {
-                            if (!abandonedEvent.gracefulExit()) {
-                                player.sendMessage(Component.text("Cancelled renaming kit", NamedTextColor.GOLD));
-                                open();
-                            }
-                        })
-                        .withTimeout(30)
-                        .withModality(false)
-                        .withLocalEcho(false)
-                        .withEscapeSequence("cancel")
-                        .buildConversation(clicker));
+                            });
+                            return true;
+                        }
+                    });
                 }
             }, 7);
 
@@ -277,12 +261,12 @@ public class EditKitGui {
                 if (kitItem.getMaxStackSize() > 1) {
                     Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(KitPvpPlugin.class), () -> {
                         inventory.setOnClose(null);
-                        new CountSelectionGui(dao, player, itemIndex, kit, EditKitGui.this).open();
+                        new CountSelectionGui(dao, anvilGui, player, itemIndex, kit, EditKitGui.this).open();
                     });
                 } else if (!kitItem.isEmpty()) {
                     Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(KitPvpPlugin.class), () -> {
                         inventory.setOnClose(null);
-                        new EnchantmentGui(dao, player, itemIndex, kit, EditKitGui.this).open();
+                        new EnchantmentGui(dao, anvilGui, player, itemIndex, kit, EditKitGui.this).open();
                     });
                 }
             }

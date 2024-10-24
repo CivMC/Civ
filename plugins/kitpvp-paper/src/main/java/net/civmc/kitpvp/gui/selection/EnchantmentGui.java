@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import net.civmc.kitpvp.KitPvpPlugin;
+import net.civmc.kitpvp.anvil.AnvilGui;
+import net.civmc.kitpvp.anvil.AnvilGuiListener;
 import net.civmc.kitpvp.data.Kit;
 import net.civmc.kitpvp.data.KitPvpDao;
 import net.civmc.kitpvp.gui.EditKitGui;
@@ -13,12 +15,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.core.component.DataComponents;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.ConversationFactory;
-import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.ValidatingPrompt;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -27,7 +24,6 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 
@@ -35,8 +31,11 @@ public class EnchantmentGui extends ItemSelectionGui {
 
     private static final int[] ENCHANT_START_SLOTS = new int[]{0, 9, 18, 27, 36, 5, 14, 23, 32, 41};
 
-    public EnchantmentGui(KitPvpDao dao, Player player, int slot, Kit kit, EditKitGui gui) {
+    private final AnvilGui anvilGui;
+
+    public EnchantmentGui(KitPvpDao dao, AnvilGui anvilGui, Player player, int slot, Kit kit, EditKitGui gui) {
         super(dao, "Enchant", player, slot, kit, gui::open, gui);
+        this.anvilGui = anvilGui;
     }
 
     @Override
@@ -118,69 +117,51 @@ public class EnchantmentGui extends ItemSelectionGui {
                 protected void clicked(@NotNull Player clicker) {
                     inventory.setOnClose(null);
                     clicker.closeInventory();
-                    clicker.beginConversation(new ConversationFactory(JavaPlugin.getPlugin(KitPvpPlugin.class))
-                        .withFirstPrompt(new ValidatingPrompt() {
-                            @SuppressWarnings("deprecation")
-                            @Override
-                            public @NotNull String getPromptText(@NotNull ConversationContext context) {
-                                return ChatColor.GOLD + "Enter durability (between %s and %s) or 'cancel' to cancel:".formatted(1, maxDamage);
-                            }
+                    anvilGui.open(clicker, new AnvilGuiListener() {
+                        @Override
+                        public void onClose() {
+                            JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
+                            Bukkit.getScheduler().runTask(plugin, EnchantmentGui.this::open);
+                        }
 
-                            @Override
-                            public @Nullable Prompt acceptValidatedInput(@NotNull ConversationContext context, @NotNull String input) {
-                                try {
-                                    int num = Integer.parseInt(input);
-
-                                    ItemStack[] items = kit.items().clone();
-                                    ItemStack item = kit.items()[EnchantmentGui.this.slot];
-                                    Damageable meta = (Damageable) item.getItemMeta();
-                                    meta.setDamage(maxDamage - num);
-                                    item.setItemMeta(meta);
-                                    items[EnchantmentGui.this.slot] = item;
-                                    gui.setLastItem(item);
-
-                                    JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
-                                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                                        Kit updatedKit = dao.updateKit(kit.id(), kit.icon(), items);
-                                        Bukkit.getScheduler().runTask(plugin, () -> {
-                                            gui.updateKit(updatedKit);
-                                            inventory.setOnClose(null);
-                                            gui.open();
-                                        });
-                                    });
-                                } catch (Exception e) {
-                                    JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error setting durability", e);
-                                }
-                                return null;
-                            }
-
-                            @Override
-                            protected boolean isInputValid(@NotNull ConversationContext context, @NotNull String input) {
-                                try {
-                                    int num = Integer.parseInt(input);
-                                    if (num >= 1 && num <= maxDamage) {
-                                        return true;
-                                    } else {
-                                        clicker.sendMessage(Component.text("Must be between 1 and " + maxDamage, NamedTextColor.RED));
-                                        return false;
-                                    }
-                                } catch (NumberFormatException e) {
-                                    clicker.sendMessage(Component.text("Must be a number", NamedTextColor.RED));
+                        @Override
+                        public boolean onRename(String name) {
+                            int num;
+                            try {
+                                num = Integer.parseInt(name);
+                                if (num < 1 || num > maxDamage) {
+                                    clicker.sendMessage(Component.text("Must be between 1 and " + maxDamage, NamedTextColor.RED));
                                     return false;
                                 }
+                            } catch (NumberFormatException e) {
+                                clicker.sendMessage(Component.text("Must be a number", NamedTextColor.RED));
+                                return false;
                             }
-                        })
-                        .addConversationAbandonedListener(abandonedEvent -> {
-                            if (!abandonedEvent.gracefulExit()) {
-                                clicker.sendMessage(Component.text("Cancelled updating durability", NamedTextColor.GOLD));
-                                open();
+
+                            try {
+                                ItemStack[] items = kit.items().clone();
+                                ItemStack item = kit.items()[EnchantmentGui.this.slot];
+                                Damageable meta = (Damageable) item.getItemMeta();
+                                meta.setDamage(maxDamage - num);
+                                item.setItemMeta(meta);
+                                items[EnchantmentGui.this.slot] = item;
+                                gui.setLastItem(item);
+
+                                JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
+                                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                                    Kit updatedKit = dao.updateKit(kit.id(), kit.icon(), items);
+                                    Bukkit.getScheduler().runTask(plugin, () -> {
+                                        gui.updateKit(updatedKit);
+                                        inventory.setOnClose(null);
+                                        gui.open();
+                                    });
+                                });
+                            } catch (Exception e) {
+                                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error setting durability", e);
                             }
-                        })
-                        .withTimeout(30)
-                        .withModality(false)
-                        .withLocalEcho(false)
-                        .withEscapeSequence("cancel")
-                        .buildConversation(clicker));
+                            return true;
+                        }
+                    });
                 }
             }, 53);
         }

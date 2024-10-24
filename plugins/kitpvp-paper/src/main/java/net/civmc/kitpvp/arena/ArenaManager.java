@@ -82,6 +82,10 @@ public class ArenaManager {
         return "dynamicarena." + owner.getName() + "." + arena;
     }
 
+    public boolean isArena(String worldName) {
+        return worldName.startsWith("dynamicarena.");
+    }
+
     public void createArena(Player player, Arena arena) {
         AdvancedSlimePaperAPI api = AdvancedSlimePaperAPI.instance();
         SlimeWorld slimeWorld;
