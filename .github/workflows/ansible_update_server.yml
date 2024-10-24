@@ -26,12 +26,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: 🐘 Gradle Build
-        uses: burrunan/gradle-cache-action@v1
-        env:
-          CI: true
-        with:
-          concurrent: true
-          arguments: :ansible:build
+        run: CI=true ./gradlew :ansible:build
 
       - name: Inject secrets
         run: 'echo "$SECRETS_YML" > variables/secrets.yml'
