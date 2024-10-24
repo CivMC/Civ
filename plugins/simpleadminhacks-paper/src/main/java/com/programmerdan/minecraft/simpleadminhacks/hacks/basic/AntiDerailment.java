@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.util.Vector;
 
@@ -49,7 +50,7 @@ public class AntiDerailment extends BasicHack {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onDerailment(VehicleMoveEvent e) {
         // This method is EXTREMELY fucked but basically if it detects a super fast minecart is going to derail, it will
         // undo one tick of movement and redo it at 8m/s (the default minecart speed)
