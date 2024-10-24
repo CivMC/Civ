@@ -3,6 +3,7 @@ package net.civmc.kitpvp.command;
 import java.util.logging.Level;
 import net.civmc.kitpvp.KitApplier;
 import net.civmc.kitpvp.KitPvpPlugin;
+import net.civmc.kitpvp.anvil.AnvilGui;
 import net.civmc.kitpvp.data.Kit;
 import net.civmc.kitpvp.data.KitPvpDao;
 import net.civmc.kitpvp.gui.KitListGui;
@@ -20,9 +21,11 @@ import org.jetbrains.annotations.NotNull;
 public class KitCommand implements CommandExecutor {
 
     private final KitPvpDao dao;
+    private final AnvilGui anvilGui;
 
-    public KitCommand(KitPvpDao dao) {
+    public KitCommand(KitPvpDao dao, AnvilGui anvilGui) {
         this.dao = dao;
+        this.anvilGui = anvilGui;
     }
 
     @Override
@@ -110,7 +113,7 @@ public class KitCommand implements CommandExecutor {
             });
             return true;
         } else if (args.length == 0) {
-            new KitListGui(dao, player);
+            new KitListGui(dao, anvilGui, player);
             return true;
         }
         return false;

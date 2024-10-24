@@ -1,33 +1,26 @@
 package net.civmc.kitpvp.gui;
 
+import com.google.common.collect.HashMultimap;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import net.civmc.kitpvp.KitApplier;
 import net.civmc.kitpvp.KitPvpPlugin;
+import net.civmc.kitpvp.anvil.AnvilGui;
+import net.civmc.kitpvp.anvil.AnvilGuiListener;
 import net.civmc.kitpvp.data.Kit;
 import net.civmc.kitpvp.data.KitPvpDao;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.ConversationFactory;
-import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.ValidatingPrompt;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.FastMultiPageView;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
@@ -44,6 +37,7 @@ public class KitListGui {
     }
 
     private final KitPvpDao dao;
+    private final AnvilGui anvilGui;
     private final Player player;
     private final List<Kit> kits = new ArrayList<>();
     private final FastMultiPageView view;
@@ -51,8 +45,9 @@ public class KitListGui {
     private boolean ready = false;
     private boolean openWhenReady = true;
 
-    public KitListGui(KitPvpDao dao, Player player) {
+    public KitListGui(KitPvpDao dao, AnvilGui anvilGui, Player player) {
         this.dao = dao;
+        this.anvilGui = anvilGui;
         this.player = player;
         this.view = new FastMultiPageView(player, this::kitSupplier, "Kits", 6);
         this.view.setMenuSlot(new Clickable(CREATE_KIT_ITEM) {
@@ -73,53 +68,41 @@ public class KitListGui {
                 }
 
                 clicker.closeInventory();
-                clicker.beginConversation(new ConversationFactory(JavaPlugin.getPlugin(KitPvpPlugin.class))
-                    .withFirstPrompt(new ValidatingPrompt() {
-                        @SuppressWarnings("deprecation")
-                        @Override
-                        public @NotNull String getPromptText(@NotNull ConversationContext context) {
-                            return ChatColor.GOLD + "Enter name to create kit to or 'cancel' to cancel:";
-                        }
+                clicker.sendMessage(Component.text("Enter kit name to create", NamedTextColor.GOLD));
+                anvilGui.open(player, new AnvilGuiListener() {
+                    @Override
+                    public void onClose() {
+                        JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
+                        Bukkit.getScheduler().runTask(plugin, KitListGui.this::open);
+                    }
 
-                        @Override
-                        public @Nullable Prompt acceptValidatedInput(@NotNull ConversationContext context, @NotNull String input) {
-                            JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
-                            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                                Kit createdKit;
-                                try {
-                                    createdKit = dao.createKit(input, player.getUniqueId());
-                                } catch (Exception e) {
-                                    plugin.getLogger().log(Level.WARNING, "Error creating kit", e);
-                                    return;
-                                }
-                                if (createdKit == null) {
-                                    player.sendMessage(Component.text("A kit with that name already exists", NamedTextColor.RED));
-                                    return;
-                                }
-                                Bukkit.getScheduler().runTask(plugin, () -> {
-                                    invalidate();
-                                    new EditKitGui(KitListGui.this.dao, clicker, createdKit, KitListGui.this);
-                                });
+                    @Override
+                    public boolean onRename(String name) {
+                        if (!Kit.checkValidName(player, name)) {
+                            return false;
+                        }
+                        JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
+                        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+
+                            Kit createdKit;
+                            try {
+                                createdKit = dao.createKit(name, player.getUniqueId());
+                            } catch (Exception e) {
+                                plugin.getLogger().log(Level.WARNING, "Error creating kit", e);
+                                return;
+                            }
+                            if (createdKit == null) {
+                                player.sendMessage(Component.text("A kit with that name already exists", NamedTextColor.RED));
+                                return;
+                            }
+                            Bukkit.getScheduler().runTask(plugin, () -> {
+                                invalidate();
+                                new EditKitGui(KitListGui.this.dao, anvilGui, clicker, createdKit, KitListGui.this);
                             });
-                            return null;
-                        }
-
-                        @Override
-                        protected boolean isInputValid(@NotNull ConversationContext context, @NotNull String input) {
-                            return Kit.checkValidName(player, input);
-                        }
-                    })
-                    .addConversationAbandonedListener(abandonedEvent -> {
-                        if (!abandonedEvent.gracefulExit()) {
-                            player.sendMessage(Component.text("Cancelled creating kit", NamedTextColor.GOLD));
-                            open();
-                        }
-                    })
-                    .withTimeout(30)
-                    .withModality(false)
-                    .withLocalEcho(false)
-                    .withEscapeSequence("cancel")
-                    .buildConversation(clicker));
+                        });
+                        return true;
+                    }
+                });
             }
         }, 0);
 
@@ -198,7 +181,7 @@ public class KitListGui {
 
                     @Override
                     protected void onRightClick(@NotNull Player clicker) {
-                        new EditKitGui(KitListGui.this.dao, clicker, kit, KitListGui.this);
+                        new EditKitGui(KitListGui.this.dao, KitListGui.this.anvilGui, clicker, kit, KitListGui.this);
                     }
 
                     @Override
