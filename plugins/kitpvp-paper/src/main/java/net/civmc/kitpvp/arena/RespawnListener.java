@@ -19,10 +19,12 @@ public class RespawnListener implements Listener {
 
     @EventHandler
     public void on(PlayerRespawnEvent event) {
-        if (manager.isArena(event.getPlayer().getWorld().getName())) {
-            Location spawn = this.provider.getSpawn();
-            if (spawn != null) {
-                event.setRespawnLocation(spawn);
+        String worldName = event.getPlayer().getWorld().getName();
+        if (manager.isArena(worldName)) {
+            for (LoadedArena arena : manager.getArenas()) {
+                if (manager.getArenaName(arena.arena().name(), arena.owner()).equals(worldName)) {
+                    event.setRespawnLocation(arena.arena().spawn());
+                }
             }
         }
     }

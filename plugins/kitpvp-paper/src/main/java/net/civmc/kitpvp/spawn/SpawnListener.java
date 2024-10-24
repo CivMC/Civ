@@ -29,7 +29,7 @@ public class SpawnListener implements Listener {
     @EventHandler
     public void on(PlayerSpawnLocationEvent event) {
         // handles players joining after their arena was deleted
-        if (event.getPlayer().getLocation().distanceSquared(Bukkit.getWorld("world").getSpawnLocation()) <= 1) {
+        if (event.getSpawnLocation().distanceSquared(Bukkit.getWorld("world").getSpawnLocation()) <= 1) {
             Location spawn = this.provider.getSpawn();
             if (spawn != null) {
                 event.setSpawnLocation(spawn);
