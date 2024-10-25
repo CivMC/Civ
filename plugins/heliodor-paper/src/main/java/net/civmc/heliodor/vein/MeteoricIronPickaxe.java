@@ -48,12 +48,12 @@ public interface MeteoricIronPickaxe {
     }
 
     static List<ShapedRecipe> getRecipes(Plugin plugin) {
-        return List.of(categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteorite_pickaxe_silk_touch"), MeteoricIronPickaxe.getItem(true))
+        return List.of(categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_pickaxe_silk_touch"), MeteoricIronPickaxe.getItem(true))
                 .shape("xxx", "asa", " s ")
                 .setIngredient('x', MeteoricIron.createMeteoricIronIngot())
                 .setIngredient('a', Material.AMETHYST_SHARD)
                 .setIngredient('s', Material.STICK)),
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteorite_pickaxe_fortune"), MeteoricIronPickaxe.getItem(false))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_pickaxe_fortune"), MeteoricIronPickaxe.getItem(false))
                 .shape("xxx", " s ", " s ")
                 .setIngredient('x', MeteoricIron.createMeteoricIronIngot())
                 .setIngredient('s', Material.STICK)));

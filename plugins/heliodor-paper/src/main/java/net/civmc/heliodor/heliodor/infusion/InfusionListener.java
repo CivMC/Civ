@@ -3,6 +3,7 @@ package net.civmc.heliodor.heliodor.infusion;
 import net.civmc.heliodor.heliodor.HeliodorGem;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfuseData;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfusion;
+import net.civmc.heliodor.vein.MeteoricIron;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -45,8 +46,7 @@ public class InfusionListener implements Listener {
     @EventHandler
     public void onFinishedPlace(BlockPlaceEvent event) {
         ItemStack hand = event.getItemInHand();
-        boolean finished = HeliodorGem.isFinished(hand);
-        if (finished) {
+        if (HeliodorGem.isFinished(hand) || MeteoricIron.isIngot(hand)) {
             event.setCancelled(true);
         }
     }

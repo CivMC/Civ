@@ -56,7 +56,6 @@ public class PickaxeBreakListener implements Listener {
             return;
         }
 
-
         VeinPing ping = cache.getVeinPing(block.getWorld().getName(), MeteoricIronVeinConfig.TYPE_NAME, meteoricIronLow, meteoricIronHigh, block.getX(), block.getY(), block.getZ());
         if (ping == null) {
             player.sendMessage(Component.text("No veins nearby", NamedTextColor.GRAY, TextDecoration.ITALIC).hoverEvent(meteoricIronHint));

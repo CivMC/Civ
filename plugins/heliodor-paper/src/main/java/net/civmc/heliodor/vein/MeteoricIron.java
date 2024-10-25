@@ -56,6 +56,13 @@ public interface MeteoricIron {
         return item.getItemMeta().getPersistentDataContainer().has(NUGGET_KEY);
     }
 
+    static boolean isIngot(ItemStack item) {
+        if (item == null || item.getType() != Material.HEAVY_WEIGHTED_PRESSURE_PLATE) {
+            return false;
+        }
+        return item.getItemMeta().getPersistentDataContainer().has(INGOT_KEY);
+    }
+
     static List<ShapedRecipe> getRecipes(Plugin plugin) {
         ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_ingot"), MeteoricIron.createMeteoricIronIngot())
             .shape("xxx", "xxx", "xxx")
@@ -63,5 +70,4 @@ public interface MeteoricIron {
         recipe.setCategory(CraftingBookCategory.MISC);
         return List.of(recipe);
     }
-
 }
