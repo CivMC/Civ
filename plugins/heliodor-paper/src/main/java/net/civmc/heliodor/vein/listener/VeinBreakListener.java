@@ -77,6 +77,10 @@ public class VeinBreakListener implements Listener {
             list.add(oreBlock.getY());
             list.add(oreBlock.getZ());
 
+            // TODO limitations on how much a vein can be tapped, ie deleting, or implementing ore limit,
+            // so you can't just replace and break all the blocks after restart
+            // Also increase the probably so all ores can actually get mined. randomness is needed
+            // so db is used less
             chunkPdc.set(oreLocationsKey, PersistentDataType.INTEGER_ARRAY, list.toIntArray());
         }
     }

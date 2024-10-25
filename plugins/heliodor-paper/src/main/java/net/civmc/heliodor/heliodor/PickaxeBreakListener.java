@@ -39,8 +39,7 @@ public class PickaxeBreakListener implements Listener {
         this.meteoricIronHint = HoverEvent.showText(Component.text("""
             A "Low" reading indicates a vein within %s blocks, ignoring Y levels
             A "High" reading indicates a vein within %s blocks
-            Note that vein readings can be randomly offset from their
-            true location by up to %s blocks."""
+            Note that vein readings can be inaccurate up to %s blocks."""
             .formatted(meteoricIronLow, meteoricIronHigh, meteoricIronHigh - spawnRadius)));
     }
 
