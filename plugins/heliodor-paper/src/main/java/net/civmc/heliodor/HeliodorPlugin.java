@@ -1,6 +1,7 @@
 package net.civmc.heliodor;
 
 import net.civmc.heliodor.command.HeliodorDebugCommand;
+import net.civmc.heliodor.heliodor.PickaxeBreakListener;
 import net.civmc.heliodor.heliodor.infusion.InfusionListener;
 import net.civmc.heliodor.heliodor.infusion.InfusionManager;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronDao;
@@ -99,7 +100,7 @@ public class HeliodorPlugin extends ACivMod {
             configPosList.add(new VerticalBlockPos((int) position.get("x"), (int) position.get("z")));
         }
 
-        MeteoricIronVeinConfig meteoriteIronConfig = new MeteoricIronVeinConfig(
+        MeteoricIronVeinConfig meteoricIronConfig = new MeteoricIronVeinConfig(
             new VeinConfig(
                 meteoricIronConfigSection.getString("world"),
                 meteoricIronConfigSection.getInt("frequency_minutes"),
@@ -125,7 +126,12 @@ public class HeliodorPlugin extends ACivMod {
         getServer().getPluginManager().registerEvents(new OreBreakListener(oreLocationsKey), this);
         getServer().getPluginManager().registerEvents(new VeinBreakListener(oreLocationsKey, veinCache), this);
         protector.addPredicate(new OrePredicate(oreLocationsKey));
-        veinSpawner = new VeinSpawner(this, veinDao, veinCache, meteoriteIronConfig);
+        veinSpawner = new VeinSpawner(this, veinDao, veinCache, meteoricIronConfig);
         veinSpawner.start();
+
+        getServer().getPluginManager().registerEvents(new PickaxeBreakListener(veinCache,
+            meteoricIronConfig.config().lowDistance(),
+            meteoricIronConfig.config().highDistance(),
+            meteoricIronConfig.config().spawnRadius()), this);
     }
 }

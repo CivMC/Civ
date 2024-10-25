@@ -19,6 +19,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.NumberConversions;
 
 public class VeinSpawner {
 
@@ -109,6 +110,16 @@ public class VeinSpawner {
         }
 
         int inaccuracy = meteoriteVeinConfig.config().inaccuracy();
+
+        int offsetX;
+        int offsetY;
+        int offsetZ;
+        do {
+            offsetX = ThreadLocalRandom.current().nextInt(-inaccuracy, inaccuracy + 1);
+            offsetY = ThreadLocalRandom.current().nextInt(-inaccuracy, inaccuracy + 1);
+            offsetZ = ThreadLocalRandom.current().nextInt(-inaccuracy, inaccuracy + 1);
+        } while(NumberConversions.square(offsetX) + NumberConversions.square(offsetY) + NumberConversions.square(offsetZ) > NumberConversions.square(meteoriteVeinConfig.config().highDistance() - meteoriteVeinConfig.config().spawnRadius()));
+
         Vein vein = new Vein(
             MeteoricIronVeinConfig.TYPE_NAME,
             System.currentTimeMillis(),
@@ -117,9 +128,9 @@ public class VeinSpawner {
             x,
             mpos.y(),
             z,
-            ThreadLocalRandom.current().nextInt(-inaccuracy, inaccuracy + 1),
-            ThreadLocalRandom.current().nextInt(-inaccuracy, inaccuracy + 1),
-            ThreadLocalRandom.current().nextInt(-inaccuracy, inaccuracy + 1),
+            offsetX,
+            offsetY,
+            offsetZ,
             mpos.blocks(),
             0,
             false,

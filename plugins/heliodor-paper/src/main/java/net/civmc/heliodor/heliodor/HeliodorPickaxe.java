@@ -1,6 +1,7 @@
 package net.civmc.heliodor.heliodor;
 
 import java.util.List;
+import net.civmc.heliodor.HeliodorPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -13,9 +14,13 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public interface HeliodorPickaxe {
+
+    NamespacedKey PICKAXE_KEY = new NamespacedKey(JavaPlugin.getPlugin(HeliodorPlugin.class), "heliodor_pickaxe");
 
     @SuppressWarnings("UnstableApiUsage")
     static ItemStack getItem() {
@@ -38,8 +43,16 @@ public interface HeliodorPickaxe {
         meta.setTool(tool);
         meta.setEnchantmentGlintOverride(true);
         meta.setFireResistant(true);
+        meta.getPersistentDataContainer().set(PICKAXE_KEY, PersistentDataType.BOOLEAN, true);
         pickaxe.setItemMeta(meta);
         return pickaxe;
+    }
+
+    static boolean isPickaxe(ItemStack item) {
+        if (item == null || item.getType() != Material.GOLDEN_PICKAXE) {
+            return false;
+        }
+        return item.getPersistentDataContainer().has(PICKAXE_KEY);
     }
 
     static List<ShapedRecipe> getRecipes(Plugin plugin) {

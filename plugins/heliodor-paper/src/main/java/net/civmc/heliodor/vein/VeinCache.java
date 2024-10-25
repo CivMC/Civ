@@ -1,6 +1,7 @@
 package net.civmc.heliodor.vein;
 
 import net.civmc.heliodor.vein.data.Vein;
+import net.civmc.heliodor.vein.data.VeinPing;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.NumberConversions;
@@ -34,6 +35,24 @@ public class VeinCache {
             }
         }
         return veinList;
+    }
+
+    public VeinPing getVeinPing(String world, String type, int low, int high, int x, int y, int z) {
+        for (Vein vein : this.veins) {
+            if (!vein.world().equals(world) || !vein.type().equals(type)) {
+                continue;
+            }
+            int vx = vein.x() + vein.offsetX();
+            int vy = vein.y() + vein.offsetY();
+            int vz = vein.z() + vein.offsetZ();
+            if (NumberConversions.square(vx - x) + NumberConversions.square(vy - y) + NumberConversions.square(vz - z) <= NumberConversions.square(high + vein.radius())) {
+                return VeinPing.HIGH;
+            }
+            if (NumberConversions.square(vx - x) + NumberConversions.square(vz - z) <= NumberConversions.square(low + vein.radius())) {
+                return VeinPing.LOW;
+            }
+        }
+        return null;
     }
 
     public List<Vein> getVeins() {
