@@ -37,7 +37,7 @@ public interface MeteoricIron {
     static ItemStack createMeteoricIronIngot() {
         ItemStack item = new ItemStack(Material.HEAVY_WEIGHTED_PRESSURE_PLATE);
         ItemMeta meta = item.getItemMeta();
-        meta.itemName(Component.text("Meteoric Iron Ingot", NamedTextColor.AQUA));
+        meta.itemName(Component.text("Meteoric Iron Ingot", NamedTextColor.LIGHT_PURPLE));
         meta.lore(List.of(Component.text("A buried fragment from another world", NamedTextColor.WHITE),
             Component.text("Used for its unique magical properties", NamedTextColor.WHITE)));
         meta.setEnchantmentGlintOverride(true);
