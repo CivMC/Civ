@@ -23,6 +23,7 @@ public class BlockSelectionGui extends ItemSelectionGui {
             Material.IRON_DOOR,
             Material.OAK_DOOR,
             Material.OAK_PLANKS,
+            Material.OAK_LOG,
             Material.CRAFTING_TABLE,
             Material.WHITE_WOOL,
             Material.BONE_BLOCK,
