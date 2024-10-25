@@ -70,5 +70,6 @@ public class WeaponsAndToolsSelectionGui extends ItemSelectionGui {
 
         inventory.setSlot(toClickable(new ItemStack(Material.BOW)), 42);
         inventory.setSlot(toClickable(new ItemStack(Material.CROSSBOW)), 43);
+        inventory.setSlot(toClickable(new ItemStack(Material.FISHING_ROD)), 44);
     }
 }
