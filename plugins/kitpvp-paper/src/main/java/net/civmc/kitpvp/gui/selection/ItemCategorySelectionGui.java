@@ -61,6 +61,10 @@ public class ItemCategorySelectionGui extends ItemSelectionGui {
                 () -> new FoodSelectionGui(dao, player, slot, kit, this::open, gui).open()),
             22);
 
+        inventory.setSlot(getSlot(inventory, new ItemStack(Material.COBBLESTONE), "Blocks",
+                () -> new BlockSelectionGui(dao, player, slot, kit, this::open, gui).open()),
+            23);
+
         if (Bukkit.getPluginManager().isPluginEnabled("BreweryX")) {
             ItemStack drugs = new ItemStack(Material.POTION);
             PotionMeta drugsMeta = (PotionMeta) drugs.getItemMeta();
@@ -68,7 +72,7 @@ public class ItemCategorySelectionGui extends ItemSelectionGui {
             drugs.setItemMeta(drugsMeta);
             inventory.setSlot(getSlot(inventory, drugs, "Drugs",
                     () -> new DrugsSelectionGui(dao, player, slot, kit, this::open, gui).open()),
-                23);
+                24);
         }
     }
 
