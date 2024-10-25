@@ -54,7 +54,7 @@ public class KitPvpPlugin extends ACivMod {
         try {
             ArenaManager manager = new ArenaManager(this, spawnProvider, new MysqlLoader(source));
             getCommand("arena").setExecutor(new ArenaCommand(this, new SqlArenaDao(source), manager));
-            getServer().getPluginManager().registerEvents(new RespawnListener(manager, spawnProvider), this);
+            getServer().getPluginManager().registerEvents(new RespawnListener(manager), this);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
