@@ -62,7 +62,7 @@ public final class PotionModifier extends ModifierData {
         if (!(item.getItemMeta() instanceof final PotionMeta meta)) {
             return false;
         }
-        if (!NullUtils.equalsNotNull(this.base, meta.getBasePotionData())) {
+        if (!NullUtils.equalsNotNull(this.base, meta.getBasePotionType())) {
             return false;
         }
         List<PotionEffect> heldEffects = getEffects();
