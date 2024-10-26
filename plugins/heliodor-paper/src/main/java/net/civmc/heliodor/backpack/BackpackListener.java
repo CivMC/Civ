@@ -162,14 +162,16 @@ public class BackpackListener implements Listener {
         }
         switch (item.getType()) {
             case OBSIDIAN,
+                CRYING_OBSIDIAN,
+                RESPAWN_ANCHOR,
                 ENDER_PEARL,
+                NETHERITE_BLOCK,
+                ENDER_CHEST,
                 GOLDEN_APPLE,
                 ENCHANTED_GOLDEN_APPLE,
+                ANCIENT_DEBRIS,
                 CHORUS_FRUIT:
                 return true;
-        }
-        if (item.getPersistentDataContainer().has(Backpack.BACKPACK_KEY)) {
-            return true;
         }
         if (item.getMaxStackSize() == 1) {
             return true;
