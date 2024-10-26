@@ -29,6 +29,7 @@ public class SqlVeinDao implements VeinDao {
     public void registerMigrations() {
         source.registerMigration(2, false, """
             CREATE TABLE IF NOT EXISTS veins (
+            id INT NOT NULL AUTO_INCREMENT,
             type VARCHAR(64) NOT NULL,
             spawned_at TIMESTAMP NOT NULL,
             world VARCHAR(64) NOT NULL,
@@ -39,10 +40,11 @@ public class SqlVeinDao implements VeinDao {
             offset_x INT NOT NULL,
             offset_y INT NOT NULL,
             offset_z INT NOT NULL,
-            blocks_available_estimate INT NOT NULL,
-            blocks_mined INT NOT NULL,
+            blocks_available INT NOT NULL,
             discovered BOOL NOT NULL,
-            ores INT NOT NULL)
+            ores INT NOT NULL,
+            ores_remaining INT NOT NULL,
+            PRIMARY KEY (id))
             """);
     }
 
@@ -50,7 +52,7 @@ public class SqlVeinDao implements VeinDao {
     public Map<String, Boolean> getSpawnableTypes(Map<String, Integer> spawnFrequencyMinutes, Map<String, Integer> maxSpawns) {
         try (Connection connection = source.getConnection()) {
             ResultSet resultSet = connection.createStatement()
-                .executeQuery("SELECT type, MAX(spawned_at) AS max_spawned_at, COUNT(*) AS count FROM veins GROUP BY type");
+                .executeQuery("SELECT type, MAX(spawned_at) AS max_spawned_at, COUNT(*) AS count FROM veins WHERE ores_remaining > 0 GROUP BY type");
 
             Map<String, Boolean> possibleTypes = new HashMap<>();
             while (resultSet.next()) {
@@ -81,11 +83,12 @@ public class SqlVeinDao implements VeinDao {
     public List<Vein> getVeins() {
         try (Connection connection = source.getConnection()) {
             ResultSet resultSet = connection.createStatement()
-                .executeQuery("SELECT * FROM veins");
+                .executeQuery("SELECT * FROM veins WHERE ores_remaining > 0");
 
             List<Vein> veins = new ArrayList<>();
             while (resultSet.next()) {
                 veins.add(new Vein(
+                    resultSet.getInt("id"),
                     resultSet.getString("type"),
                     resultSet.getTimestamp("spawned_at").getTime(),
                     resultSet.getString("world"),
@@ -96,10 +99,10 @@ public class SqlVeinDao implements VeinDao {
                     resultSet.getInt("offset_x"),
                     resultSet.getInt("offset_y"),
                     resultSet.getInt("offset_z"),
-                    resultSet.getInt("blocks_available_estimate"),
-                    resultSet.getInt("blocks_mined"),
+                    resultSet.getInt("blocks_available"),
                     resultSet.getBoolean("discovered"),
-                    resultSet.getInt("ores")
+                    resultSet.getInt("ores"),
+                    resultSet.getInt("ores_remaining")
                 ));
             }
 
@@ -111,9 +114,9 @@ public class SqlVeinDao implements VeinDao {
     }
 
     @Override
-    public boolean addVein(Vein vein) {
+    public int addVein(Vein vein) {
         try (Connection connection = source.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO veins (type, spawned_at, world, radius, x, y, z, offset_x, offset_y, offset_z, blocks_available_estimate, blocks_mined, discovered, ores) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO veins (type, spawned_at, world, radius, x, y, z, offset_x, offset_y, offset_z, blocks_available, discovered, ores, ores_remaining) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setString(1, vein.type());
             statement.setTimestamp(2, new Timestamp(vein.spawnedAt()));
             statement.setString(3, vein.world());
@@ -124,10 +127,52 @@ public class SqlVeinDao implements VeinDao {
             statement.setInt(8, vein.offsetX());
             statement.setInt(9, vein.offsetY());
             statement.setInt(10, vein.offsetZ());
-            statement.setInt(11, vein.blocksAvailableEstimate());
-            statement.setInt(12, vein.blocksMined());
-            statement.setBoolean(13, vein.discovered());
-            statement.setInt(14, vein.ores());
+            statement.setInt(11, vein.blocksAvailable());
+            statement.setBoolean(12, vein.discovered());
+            statement.setInt(13, vein.ores());
+            statement.setInt(14, vein.oresRemaining());
+
+            if (statement.executeUpdate() != 1) {
+                return -1;
+            }
+
+            ResultSet keys = statement.getGeneratedKeys();
+            if (keys.next()) {
+                return keys.getInt(1);
+            }
+            return -1;
+        } catch (SQLException ex) {
+            JavaPlugin.getPlugin(HeliodorPlugin.class).getLogger().log(Level.WARNING, "Adding vein", ex);
+            return -1;
+        }
+    }
+
+    @Override
+    public boolean updateVein(int veinId, Integer blocksMined, Integer oresMined, boolean discovered) {
+        if (blocksMined == null && oresMined == null && !discovered) {
+            return true;
+        }
+        try (Connection connection = source.getConnection()) {
+            List<String> updates = new ArrayList<>();
+            if (blocksMined != null) {
+                updates.add("blocks_available = blocks_available - ?");
+            }
+            if (oresMined != null) {
+                updates.add("ores_remaining = ores_remaining - ?");
+            }
+            if (discovered) {
+                updates.add("discovered = TRUE");
+            }
+            PreparedStatement statement = connection.prepareStatement("UPDATE veins SET " + String.join(", ", updates) + " WHERE id = ?");
+            int index = 1;
+            if (blocksMined != null) {
+                statement.setInt(index++, blocksMined);
+            }
+            if (oresMined != null) {
+                statement.setInt(index++, oresMined);
+            }
+
+            statement.setInt(index, veinId);
 
             return statement.executeUpdate() == 1;
         } catch (SQLException ex) {

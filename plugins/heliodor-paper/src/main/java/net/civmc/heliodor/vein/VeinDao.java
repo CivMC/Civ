@@ -9,5 +9,7 @@ public interface VeinDao {
 
     List<Vein> getVeins();
 
-    boolean addVein(Vein vein);
+    int addVein(Vein vein);
+
+    boolean updateVein(int veinId, Integer blocksMined, Integer oresMined, boolean discovered);
 }

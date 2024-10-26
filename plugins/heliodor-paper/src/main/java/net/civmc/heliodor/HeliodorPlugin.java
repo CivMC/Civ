@@ -78,6 +78,8 @@ public class HeliodorPlugin extends ACivMod {
         this.recipes = new HeliodorRecipeGiver(this);
 
         getCommand("heliodor").setExecutor(new HeliodorDebugCommand(veinCache, veinSpawner, oreLocationsKey));
+
+        getServer().getPluginManager().registerEvents(new AnvilRepairListener(), this);
     }
 
     public BlockBasedChunkMetaView<CauldronInfuseData, TableBasedDataObject, TableStorageEngine<CauldronInfusion>> getChunkMetaView() {
@@ -133,5 +135,11 @@ public class HeliodorPlugin extends ACivMod {
             meteoricIronConfig.config().lowDistance(),
             meteoricIronConfig.config().highDistance(),
             meteoricIronConfig.config().spawnRadius()), this);
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        this.veinCache.save();
     }
 }

@@ -1,6 +1,7 @@
 package net.civmc.heliodor.heliodor;
 
 import java.util.List;
+import net.civmc.heliodor.AnvilRepairListener;
 import net.civmc.heliodor.HeliodorPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -43,6 +44,7 @@ public interface HeliodorPickaxe {
         meta.setTool(tool);
         meta.setEnchantmentGlintOverride(true);
         meta.setFireResistant(true);
+        AnvilRepairListener.setNoCombine(meta);
         meta.getPersistentDataContainer().set(PICKAXE_KEY, PersistentDataType.BOOLEAN, true);
         pickaxe.setItemMeta(meta);
         return pickaxe;

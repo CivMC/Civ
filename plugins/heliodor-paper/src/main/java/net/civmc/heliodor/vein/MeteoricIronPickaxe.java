@@ -1,5 +1,6 @@
 package net.civmc.heliodor.vein;
 
+import net.civmc.heliodor.AnvilRepairListener;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -43,6 +44,7 @@ public interface MeteoricIronPickaxe {
             meta.addEnchant(Enchantment.FORTUNE, 3, false);
         }
         meta.setFireResistant(true);
+        AnvilRepairListener.setNoCombine(meta);
         pickaxe.setItemMeta(meta);
         return pickaxe;
     }

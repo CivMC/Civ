@@ -120,7 +120,9 @@ public class VeinSpawner {
             offsetZ = ThreadLocalRandom.current().nextInt(-inaccuracy, inaccuracy + 1);
         } while(NumberConversions.square(offsetX) + NumberConversions.square(offsetY) + NumberConversions.square(offsetZ) > NumberConversions.square(meteoriteVeinConfig.config().highDistance() - meteoriteVeinConfig.config().spawnRadius()));
 
+        int ores = ThreadLocalRandom.current().nextInt(meteoriteVeinConfig.config().minOre(), meteoriteVeinConfig.config().maxOre() + 1);
         Vein vein = new Vein(
+            -1,
             MeteoricIronVeinConfig.TYPE_NAME,
             System.currentTimeMillis(),
             world.getName(),
@@ -132,9 +134,9 @@ public class VeinSpawner {
             offsetY,
             offsetZ,
             mpos.blocks(),
-            0,
             false,
-            ThreadLocalRandom.current().nextInt(meteoriteVeinConfig.config().minOre(), meteoriteVeinConfig.config().maxOre() + 1)
+            ores,
+            ores
         );
 
         logger.info("Meteorite vein submitted to database: " + vein);
@@ -192,7 +194,7 @@ public class VeinSpawner {
                     for (int sy = spawnBlock.getY() - radius; sy <= spawnBlock.getY() + radius; sy++) {
                         for (int sz = spawnBlock.getZ() - radius; sz < spawnBlock.getZ() + radius; sz++) {
                             Location spawn = new Location(world, sx, sy, sz);
-                            if (spawn.distanceSquared(spawn.getBlock().getLocation()) <= radius * radius) {
+                            if (spawnBlock.getLocation().distanceSquared(spawn.getBlock().getLocation()) <= radius * radius) {
                                 if (Tag.BASE_STONE_OVERWORLD.isTagged(spawn.getBlock().getType())) {
                                     blocks++;
                                 }
