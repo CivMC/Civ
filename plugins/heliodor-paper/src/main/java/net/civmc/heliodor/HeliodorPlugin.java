@@ -1,5 +1,6 @@
 package net.civmc.heliodor;
 
+import net.civmc.heliodor.backpack.BackpackListener;
 import net.civmc.heliodor.command.HeliodorDebugCommand;
 import net.civmc.heliodor.heliodor.PickaxeBreakListener;
 import net.civmc.heliodor.heliodor.infusion.InfusionListener;
@@ -80,6 +81,8 @@ public class HeliodorPlugin extends ACivMod {
         getCommand("heliodor").setExecutor(new HeliodorDebugCommand(veinCache, veinSpawner, oreLocationsKey));
 
         getServer().getPluginManager().registerEvents(new AnvilRepairListener(), this);
+
+        getServer().getPluginManager().registerEvents(new BackpackListener(), this);
     }
 
     public BlockBasedChunkMetaView<CauldronInfuseData, TableBasedDataObject, TableStorageEngine<CauldronInfusion>> getChunkMetaView() {

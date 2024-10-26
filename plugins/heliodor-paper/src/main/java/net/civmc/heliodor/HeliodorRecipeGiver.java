@@ -1,5 +1,6 @@
 package net.civmc.heliodor;
 
+import net.civmc.heliodor.backpack.Backpack;
 import net.civmc.heliodor.heliodor.HeliodorGem;
 import net.civmc.heliodor.heliodor.HeliodorPickaxe;
 import net.civmc.heliodor.vein.MeteoricIron;
@@ -23,6 +24,7 @@ public class HeliodorRecipeGiver {
         register(HeliodorPickaxe.getRecipes(plugin));
         register(MeteoricIronPickaxe.getRecipes(plugin));
         register(MeteoricIron.getRecipes(plugin));
+        register(Backpack.getRecipes(plugin));
 
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             try {
@@ -33,7 +35,9 @@ public class HeliodorRecipeGiver {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (!player.hasDiscoveredRecipe(first)) {
                         for (ItemStack item : player.getInventory().getStorageContents()) {
-                            if (HeliodorGem.isFinished(item) || MeteoricIron.isNugget(item)) {
+                            if ((item != null && !item.isEmpty()) && (HeliodorGem.isFinished(item)
+                                || MeteoricIron.isNugget(item)
+                                || MeteoricIron.isIngot(item))) {
                                 player.discoverRecipes(heliodorRecipes);
                                 break;
                             }
