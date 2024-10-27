@@ -148,11 +148,15 @@ public class VeinCache {
 
     public float getVeinOreProbability(Vein vein, int offset) {
         int id = vein.id();
-        int available = vein.blocksAvailable() - additionalVeinBlocksMined.getOrDefault(id, 0) - offset;
-        if (available <= 0) {
+        int available = vein.blocksAvailable() - additionalVeinBlocksMined.getOrDefault(id, 0);
+        if (vein.blocksAvailable() <= 0) {
             return 0;
         }
+        int availableOffset = available - offset;
         int ores = vein.oresRemaining() - veinOresMined.getOrDefault(id, 0);
+        if (availableOffset <= 0) {
+            return ores > 0 ? 1 : 0;
+        }
         return ores / (float) available;
     }
 
