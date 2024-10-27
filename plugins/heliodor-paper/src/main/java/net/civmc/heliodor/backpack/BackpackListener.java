@@ -1,6 +1,5 @@
 package net.civmc.heliodor.backpack;
 
-import com.destroystokyo.paper.MaterialTags;
 import net.civmc.heliodor.HeliodorPlugin;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
