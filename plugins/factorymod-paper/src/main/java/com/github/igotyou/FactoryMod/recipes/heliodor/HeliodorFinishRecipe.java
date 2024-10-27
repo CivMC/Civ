@@ -117,7 +117,7 @@ public class HeliodorFinishRecipe extends InputRecipe {
                 continue;
             }
             Integer charge = HeliodorGem.getCharge(inventoryStack);
-            if (charge == 100) {
+            if (charge != null && charge == 100) {
                 count += inventoryStack.getAmount();
             }
         }
