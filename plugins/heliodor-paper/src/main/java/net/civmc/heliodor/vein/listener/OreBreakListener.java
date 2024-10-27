@@ -3,11 +3,11 @@ package net.civmc.heliodor.vein.listener;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.civmc.heliodor.vein.MeteoricIron;
-import net.civmc.heliodor.vein.VeinCache;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -21,7 +21,7 @@ public class OreBreakListener implements Listener {
         this.oreLocationsKey = oreLocationsKey;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void on(BlockBreakEvent event) {
         Block block = event.getBlock();
 

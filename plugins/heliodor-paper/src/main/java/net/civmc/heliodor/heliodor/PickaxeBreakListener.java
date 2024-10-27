@@ -12,6 +12,7 @@ import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFormEvent;
@@ -44,7 +45,7 @@ public class PickaxeBreakListener implements Listener {
             .formatted(meteoricIronLow, meteoricIronHigh, meteoricIronHigh - spawnRadius)));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void on(BlockBreakEvent event) {
         Block block = event.getBlock();
         if (!Tag.BASE_STONE_OVERWORLD.isTagged(block.getType()) || placedStone.contains(block.getLocation())) {
@@ -67,7 +68,7 @@ public class PickaxeBreakListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void on(BlockPlaceEvent event) {
         Block block = event.getBlock();
         if (Tag.BASE_STONE_OVERWORLD.isTagged(block.getType())) {
@@ -75,7 +76,7 @@ public class PickaxeBreakListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void on(BlockFormEvent event) {
         if (Tag.BASE_STONE_OVERWORLD.isTagged(event.getNewState().getType())) {
             placedStone.add(event.getBlock().getLocation());
