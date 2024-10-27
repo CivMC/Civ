@@ -61,7 +61,7 @@ public class BackpackListener implements Listener {
     public void on(PlayerInteractEvent event) {
         Action action = event.getAction();
         Block block = event.getClickedBlock();
-        if (block.getType() != Material.ENDER_CHEST || action != Action.RIGHT_CLICK_BLOCK) {
+        if (block == null || block.getType() != Material.ENDER_CHEST || action != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
 
