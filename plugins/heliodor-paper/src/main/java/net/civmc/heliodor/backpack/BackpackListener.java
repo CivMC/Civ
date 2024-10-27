@@ -2,6 +2,7 @@ package net.civmc.heliodor.backpack;
 
 import net.civmc.heliodor.HeliodorPlugin;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -155,7 +156,7 @@ public class BackpackListener implements Listener {
         }
         List<Component> lore = item.lore();
         if (lore != null && !lore.isEmpty()) {
-            if (lore.getFirst().equals(Component.text("Compacted Item"))) {
+            if (PlainTextComponentSerializer.plainText().serialize(lore.getFirst()).equals("Compacted Item")) {
                 return true;
             }
         }
