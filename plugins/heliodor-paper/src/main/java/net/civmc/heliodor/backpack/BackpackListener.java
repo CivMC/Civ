@@ -28,7 +28,7 @@ public class BackpackListener implements Listener {
 
     public static final NamespacedKey BACKPACK_ENDER_CHEST_KEY = new NamespacedKey(JavaPlugin.getPlugin(HeliodorPlugin.class), "backpack");
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void on(BlockPlaceEvent event) {
         ItemStack item = event.getItemInHand();
         if (!Backpack.isBackpack(item)) {
@@ -41,7 +41,7 @@ public class BackpackListener implements Listener {
         type.getPersistentDataContainer().set(BACKPACK_ENDER_CHEST_KEY, PersistentDataType.BOOLEAN, true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void on(BlockBreakEvent event) {
         Block block = event.getBlock();
         if (block.getType() != Material.ENDER_CHEST) {
@@ -58,7 +58,7 @@ public class BackpackListener implements Listener {
         block.getWorld().dropItemNaturally(block.getLocation(), Backpack.createBackpack());
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler
     public void on(PlayerInteractEvent event) {
         Action action = event.getAction();
         Block block = event.getClickedBlock();
@@ -73,7 +73,7 @@ public class BackpackListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void on(InventoryOpenEvent event) {
         if (!isBackpackInventory(event.getInventory())) {
             return;
@@ -123,7 +123,7 @@ public class BackpackListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void on(PlayerDeathEvent event) {
         Inventory enderChest = event.getPlayer().getEnderChest();
         for (ItemStack item : enderChest.getStorageContents()) {
