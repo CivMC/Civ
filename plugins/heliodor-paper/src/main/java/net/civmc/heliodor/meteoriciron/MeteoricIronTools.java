@@ -1,26 +1,34 @@
 package net.civmc.heliodor.meteoriciron;
 
 import net.civmc.heliodor.AnvilRepairListener;
+import net.civmc.heliodor.HeliodorPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
 public interface MeteoricIronTools {
 
     int DURABILITY = 54_000;
+
+    NamespacedKey SWORD_KEY = new NamespacedKey(JavaPlugin.getPlugin(HeliodorPlugin.class), "meteoric_iron_sword");
 
     static ItemStack createPickaxe(boolean silk) {
         ItemStack pickaxe = new ItemStack(Material.IRON_PICKAXE);
@@ -89,6 +97,35 @@ public interface MeteoricIronTools {
         return pickaxe;
     }
 
+    static ItemStack createSword(boolean knocback) {
+        ItemStack pickaxe = new ItemStack(Material.IRON_SWORD);
+        Damageable meta = (Damageable) pickaxe.getItemMeta();
+
+        meta.displayName(Component.text("Meteoric Iron Sword", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
+        meta.setRarity(ItemRarity.EPIC);
+        meta.lore(List.of(
+            Component.text("+0.75 damage for each piece of netherite armour", NamedTextColor.WHITE),
+            Component.text("that the opponent is wearing", NamedTextColor.WHITE)));
+        meta.setMaxDamage(DURABILITY);
+        meta.addEnchant(Enchantment.EFFICIENCY, 5, false);
+        if (knocback) {
+            meta.addEnchant(Enchantment.KNOCKBACK, 2, false);
+        } else {
+            meta.addEnchant(Enchantment.SHARPNESS, 5, false);
+        }
+        meta.setFireResistant(true);
+        meta.getPersistentDataContainer().set(SWORD_KEY, PersistentDataType.BOOLEAN, true);
+        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE,
+            new AttributeModifier(SWORD_KEY,
+                1, // difference between iron and diamond
+                AttributeModifier.Operation.ADD_NUMBER,
+                EquipmentSlotGroup.MAINHAND)
+        );
+        AnvilRepairListener.setNoCombine(meta);
+        pickaxe.setItemMeta(meta);
+        return pickaxe;
+    }
+
     static List<ShapedRecipe> getRecipes(Plugin plugin) {
         return List.of(
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_pickaxe_silk_touch"), MeteoricIronTools.createPickaxe(true))
@@ -107,6 +144,15 @@ public interface MeteoricIronTools {
                 .setIngredient('s', Material.STICK)),
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_axe_fortune"), MeteoricIronTools.createAxe(false))
                 .shape("xx ", "xs ", " s ")
+                .setIngredient('x', MeteoricIron.createIngot())
+                .setIngredient('s', Material.STICK)),
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_knockback"), MeteoricIronTools.createSword(true))
+                .shape("axa", " x ", " s ")
+                .setIngredient('x', MeteoricIron.createIngot())
+                .setIngredient('a', Material.AMETHYST_SHARD)
+                .setIngredient('s', Material.STICK)),
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_sharpness"), MeteoricIronTools.createSword(false))
+                .shape(" x ", " x ", " s ")
                 .setIngredient('x', MeteoricIron.createIngot())
                 .setIngredient('s', Material.STICK))
         );
