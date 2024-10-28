@@ -33,8 +33,8 @@ settings:
       whitelist: true
       resources:
         <<: *default_minecraft_resources
-        memory: 8G
-        pvp_memory: 4G
+        memory: 6G
+        pvp_memory: 7G
     auth:
       enabled: true # TODO: MOVE
     maven:
