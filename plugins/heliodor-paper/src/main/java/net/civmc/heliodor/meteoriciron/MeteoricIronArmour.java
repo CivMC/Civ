@@ -20,6 +20,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -32,14 +33,14 @@ public interface MeteoricIronArmour {
 
         meta.displayName(Component.text("Meteoric Iron Helmet", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
-        meta.setMaxDamage(9768);
+        meta.setMaxDamage(7810);
         meta.addEnchant(Enchantment.UNBREAKING, 5, false);
         meta.addEnchant(Enchantment.RESPIRATION, 3, false);
         meta.addEnchant(Enchantment.AQUA_AFFINITY, 1, false);
         meta.addEnchant(Enchantment.PROTECTION, 4, false);
         meta.addEnchant(Enchantment.BLAST_PROTECTION, 4, false);
         meta.setFireResistant(true);
-        setAttributes(meta, 3, 2, 0.025, "helmet", EquipmentSlotGroup.HEAD);
+        setAttributesAndFinaleKey(meta, 3, 2, 0.025, "helmet", EquipmentSlotGroup.HEAD);
         AnvilRepairListener.setNoCombine(meta);
         item.setItemMeta(meta);
         return item;
@@ -51,12 +52,12 @@ public interface MeteoricIronArmour {
 
         meta.displayName(Component.text("Meteoric Iron Chestplate", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
-        meta.setMaxDamage(14208);
+        meta.setMaxDamage(11360);
         meta.addEnchant(Enchantment.UNBREAKING, 5, false);
         meta.addEnchant(Enchantment.PROTECTION, 4, false);
         meta.addEnchant(Enchantment.BLAST_PROTECTION, 4, false);
         meta.setFireResistant(true);
-        setAttributes(meta, 8, 2, 0.025, "chestplate", EquipmentSlotGroup.CHEST);
+        setAttributesAndFinaleKey(meta, 8, 2, 0.025, "chestplate", EquipmentSlotGroup.CHEST);
         AnvilRepairListener.setNoCombine(meta);
         item.setItemMeta(meta);
         return item;
@@ -68,13 +69,13 @@ public interface MeteoricIronArmour {
 
         meta.displayName(Component.text("Meteoric Iron Leggings", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
-        meta.setMaxDamage(13320);
+        meta.setMaxDamage(10650);
         meta.addEnchant(Enchantment.UNBREAKING, 5, false);
         meta.addEnchant(Enchantment.SWIFT_SNEAK, 3, false);
         meta.addEnchant(Enchantment.PROTECTION, 4, false);
         meta.addEnchant(Enchantment.BLAST_PROTECTION, 4, false);
         meta.setFireResistant(true);
-        setAttributes(meta, 6, 2, 0.025, "leggings", EquipmentSlotGroup.LEGS);
+        setAttributesAndFinaleKey(meta, 6, 2, 0.025, "leggings", EquipmentSlotGroup.LEGS);
         AnvilRepairListener.setNoCombine(meta);
         item.setItemMeta(meta);
         return item;
@@ -86,27 +87,29 @@ public interface MeteoricIronArmour {
 
         meta.displayName(Component.text("Meteoric Iron Boots", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
-        meta.setMaxDamage(11544);
+        meta.setMaxDamage(9230);
         meta.addEnchant(Enchantment.UNBREAKING, 5, false);
         meta.addEnchant(Enchantment.FEATHER_FALLING, 5, false);
         meta.addEnchant(Enchantment.DEPTH_STRIDER, 5, false);
         meta.addEnchant(Enchantment.PROTECTION, 4, false);
         meta.addEnchant(Enchantment.BLAST_PROTECTION, 4, false);
         meta.setFireResistant(true);
-        setAttributes(meta, 3, 2, 0.025, "boots", EquipmentSlotGroup.FEET);
+        setAttributesAndFinaleKey(meta, 3, 2, 0.025, "boots", EquipmentSlotGroup.FEET);
         AnvilRepairListener.setNoCombine(meta);
         item.setItemMeta(meta);
         return item;
     }
 
-    private static void setAttributes(ItemMeta meta, int armour, int toughness, double speed, String name, EquipmentSlotGroup group) {
-        String prefix = "meteoric_iron_" + name + "_";
+    private static void setAttributesAndFinaleKey(ItemMeta meta, int armour, int toughness, double speed, String name, EquipmentSlotGroup group) {
+        String prefix = "meteoric_iron_" + name;
         Multimap<Attribute, AttributeModifier> ams = HashMultimap.create();
         HeliodorPlugin plugin = JavaPlugin.getPlugin(HeliodorPlugin.class);
-        ams.put(Attribute.GENERIC_ARMOR, new AttributeModifier(new NamespacedKey(plugin, prefix + "armour"), armour, AttributeModifier.Operation.ADD_NUMBER, group));
-        ams.put(Attribute.GENERIC_ARMOR_TOUGHNESS, new AttributeModifier(new NamespacedKey(plugin, prefix + "toughness"), toughness, AttributeModifier.Operation.ADD_NUMBER, group));
-        ams.put(Attribute.GENERIC_MOVEMENT_SPEED, new AttributeModifier(new NamespacedKey(plugin, prefix + "speed"), speed, AttributeModifier.Operation.MULTIPLY_SCALAR_1, group));
+        ams.put(Attribute.GENERIC_ARMOR, new AttributeModifier(new NamespacedKey(plugin, prefix + "_armour"), armour, AttributeModifier.Operation.ADD_NUMBER, group));
+        ams.put(Attribute.GENERIC_ARMOR_TOUGHNESS, new AttributeModifier(new NamespacedKey(plugin, prefix + "_toughness"), toughness, AttributeModifier.Operation.ADD_NUMBER, group));
+        ams.put(Attribute.GENERIC_MOVEMENT_SPEED, new AttributeModifier(new NamespacedKey(plugin, prefix + "_speed"), speed, AttributeModifier.Operation.MULTIPLY_SCALAR_1, group));
         meta.setAttributeModifiers(ams);
+
+        meta.getPersistentDataContainer().set(new NamespacedKey("finale", "custom_armour"), PersistentDataType.STRING, prefix);
     }
 
     static List<ShapedRecipe> getRecipes(Plugin plugin) {

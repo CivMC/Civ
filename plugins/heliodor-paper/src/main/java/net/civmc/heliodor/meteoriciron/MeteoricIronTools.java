@@ -28,8 +28,6 @@ public interface MeteoricIronTools {
 
     int DURABILITY = 54_000;
 
-    NamespacedKey SWORD_KEY = new NamespacedKey(JavaPlugin.getPlugin(HeliodorPlugin.class), "meteoric_iron_sword");
-
     static ItemStack createPickaxe(boolean silk) {
         ItemStack pickaxe = new ItemStack(Material.IRON_PICKAXE);
         Damageable meta = (Damageable) pickaxe.getItemMeta();
@@ -92,6 +90,7 @@ public interface MeteoricIronTools {
             meta.addEnchant(Enchantment.FORTUNE, 3, false);
         }
         meta.setFireResistant(true);
+        meta.getPersistentDataContainer().set(new NamespacedKey("finale", "custom_weapon"), PersistentDataType.STRING, "meteoric_iron_axe");
         AnvilRepairListener.setNoCombine(meta);
         pickaxe.setItemMeta(meta);
         return pickaxe;
@@ -104,23 +103,17 @@ public interface MeteoricIronTools {
         meta.displayName(Component.text("Meteoric Iron Sword", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
         meta.lore(List.of(
-            Component.text("+0.75 damage for each piece of netherite armour", NamedTextColor.WHITE),
-            Component.text("that the opponent is wearing", NamedTextColor.WHITE)));
+            Component.text("+0.75 damage for each piece of netherite", NamedTextColor.WHITE),
+            Component.text("armour the opponent is wearing", NamedTextColor.WHITE)));
         meta.setMaxDamage(DURABILITY);
-        meta.addEnchant(Enchantment.EFFICIENCY, 5, false);
+        meta.addEnchant(Enchantment.FIRE_ASPECT, 2, false);
         if (knocback) {
             meta.addEnchant(Enchantment.KNOCKBACK, 2, false);
         } else {
             meta.addEnchant(Enchantment.SHARPNESS, 5, false);
         }
         meta.setFireResistant(true);
-        meta.getPersistentDataContainer().set(SWORD_KEY, PersistentDataType.BOOLEAN, true);
-        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE,
-            new AttributeModifier(SWORD_KEY,
-                1, // difference between iron and diamond
-                AttributeModifier.Operation.ADD_NUMBER,
-                EquipmentSlotGroup.MAINHAND)
-        );
+        meta.getPersistentDataContainer().set(new NamespacedKey("finale", "custom_weapon"), PersistentDataType.STRING, "meteoric_iron_sword");
         AnvilRepairListener.setNoCombine(meta);
         pickaxe.setItemMeta(meta);
         return pickaxe;

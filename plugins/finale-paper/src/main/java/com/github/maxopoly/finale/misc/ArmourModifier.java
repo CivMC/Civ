@@ -3,8 +3,13 @@ package com.github.maxopoly.finale.misc;
 import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 public class ArmourModifier {
+
+    private static final NamespacedKey CUSTOM_ARMOUR_KEY = new NamespacedKey("finale", "custom_armour");
 
     public static class ArmourConfig {
 
@@ -49,42 +54,60 @@ public class ArmourModifier {
 
     private ExtraDurabilityTracker extraDurabilityTracker;
     private Map<Material, ArmourConfig> armour;
+    private Map<String, ArmourConfig> customArmour;
 
     public ArmourModifier() {
         this.extraDurabilityTracker = new ExtraDurabilityTracker(this);
-        this.armour = new HashMap<Material, ArmourConfig>();
+        this.armour = new HashMap<>();
+        this.customArmour = new HashMap<>();
     }
 
     public void addArmour(Material m, double toughness, double armour, double knockbackResistance, int extraDurabilityHits) {
         this.armour.put(m, new ArmourConfig(toughness, armour, knockbackResistance, extraDurabilityHits));
     }
 
-    public double getToughness(Material m) {
-        ArmourConfig config = armour.get(m);
+    public void addCustomArmour(String k, double toughness, double armour, double knockbackResistance, int extraDurabilityHits) {
+        this.customArmour.put(k, new ArmourConfig(toughness, armour, knockbackResistance, extraDurabilityHits));
+    }
+
+    private ArmourConfig getArmourConfig(ItemStack item) {
+        if (item == null || item.isEmpty()) {
+            return null;
+        }
+        String key = item.getPersistentDataContainer().get(CUSTOM_ARMOUR_KEY, PersistentDataType.STRING);
+        if (key != null && customArmour.containsKey(key)) {
+            return customArmour.get(key);
+        } else {
+            return armour.get(item.getType());
+        }
+    }
+
+    public double getToughness(ItemStack m) {
+        ArmourConfig config = getArmourConfig(m);
         if (config == null) {
             return -1;
         }
         return config.getToughness();
     }
 
-    public double getArmour(Material m) {
-        ArmourConfig config = armour.get(m);
+    public double getArmour(ItemStack m) {
+        ArmourConfig config = getArmourConfig(m);
         if (config == null) {
             return -1;
         }
         return config.getArmour();
     }
 
-    public double getKnockbackResistance(Material m) {
-        ArmourConfig config = armour.get(m);
+    public double getKnockbackResistance(ItemStack m) {
+        ArmourConfig config = getArmourConfig(m);
         if (config == null) {
             return -1;
         }
         return config.getKnockbackResistance();
     }
 
-    public int getExtraDurabilityHits(Material m) {
-        ArmourConfig config = armour.get(m);
+    public int getExtraDurabilityHits(ItemStack m) {
+        ArmourConfig config = getArmourConfig(m);
         if (config == null) {
             return -1;
         }
