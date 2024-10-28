@@ -1,4 +1,4 @@
-package net.civmc.heliodor.vein;
+package net.civmc.heliodor.meteoriciron;
 
 import net.civmc.heliodor.HeliodorPlugin;
 import net.kyori.adventure.text.Component;
@@ -34,7 +34,7 @@ public interface MeteoricIron {
         return item;
     }
 
-    static ItemStack createMeteoricIronIngot() {
+    static ItemStack createIngot() {
         ItemStack item = new ItemStack(Material.HEAVY_WEIGHTED_PRESSURE_PLATE);
         ItemMeta meta = item.getItemMeta();
         meta.itemName(Component.text("Meteoric Iron Ingot", NamedTextColor.LIGHT_PURPLE));
@@ -64,7 +64,7 @@ public interface MeteoricIron {
     }
 
     static List<ShapedRecipe> getRecipes(Plugin plugin) {
-        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_ingot"), MeteoricIron.createMeteoricIronIngot())
+        ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_ingot"), MeteoricIron.createIngot())
             .shape("xxx", "xxx", "xxx")
             .setIngredient('x', MeteoricIron.createMeteoricIronNugget());
         recipe.setCategory(CraftingBookCategory.MISC);

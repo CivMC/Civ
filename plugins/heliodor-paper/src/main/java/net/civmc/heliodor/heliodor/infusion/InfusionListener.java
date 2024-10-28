@@ -3,7 +3,7 @@ package net.civmc.heliodor.heliodor.infusion;
 import net.civmc.heliodor.heliodor.HeliodorGem;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfuseData;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfusion;
-import net.civmc.heliodor.vein.MeteoricIron;
+import net.civmc.heliodor.meteoriciron.MeteoricIron;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

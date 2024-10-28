@@ -1,7 +1,7 @@
 package net.civmc.heliodor.backpack;
 
 import net.civmc.heliodor.HeliodorPlugin;
-import net.civmc.heliodor.vein.MeteoricIron;
+import net.civmc.heliodor.meteoriciron.MeteoricIron;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
@@ -43,7 +43,7 @@ public interface Backpack {
     static List<ShapedRecipe> getRecipes(Plugin plugin) {
         ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, "backpack"), Backpack.createBackpack())
             .shape("xxx", "xex", "xxx")
-            .setIngredient('x', MeteoricIron.createMeteoricIronIngot())
+            .setIngredient('x', MeteoricIron.createIngot())
             .setIngredient('e', Material.ENDER_CHEST);
         recipe.setCategory(CraftingBookCategory.MISC);
         return List.of(recipe);

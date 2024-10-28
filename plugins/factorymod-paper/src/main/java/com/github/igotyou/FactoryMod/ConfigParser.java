@@ -30,6 +30,9 @@ import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorCreateRecipe;
 import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorFinishRecipe;
 import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorRefillRecipe;
 import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
+import com.github.igotyou.FactoryMod.recipes.upgrade.CharcoalConsumptionUpgradeRecipe;
+import com.github.igotyou.FactoryMod.recipes.upgrade.ResetUpgradesRecipe;
+import com.github.igotyou.FactoryMod.recipes.upgrade.SpeedUpgradeRecipe;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
@@ -152,10 +155,11 @@ public class ConfigParser {
         int maxOutputChests = config.getInt("max_output_chests", 10);
         int maxFuelChests = config.getInt("max_fuel_chests", 10);
         int maxTotalIOFChests = config.getInt("max_iof_chests", 15);
+        boolean canUpgrade = config.getBoolean("can_upgrade", false);
 
         manager = new FactoryModManager(plugin, factoryInteractionMaterial, citadelEnabled, nameLayerEnabled,
             redstonePowerOn, redstoneRecipeChange, logInventories, maxInputChests, maxOutputChests, maxFuelChests,
-            maxTotalIOFChests, factoryRenames);
+            maxTotalIOFChests, factoryRenames, canUpgrade);
         upgradeEggs = new HashMap<>();
         recipeLists = new HashMap<>();
         recipeScalingUpgradeMapping = new HashMap<>();
@@ -257,6 +261,11 @@ public class ConfigParser {
                     manager.registerRecipe(recipe);
                 }
             }
+        }
+        if (manager.canUpgrade()) {
+            manager.registerRecipe(new ResetUpgradesRecipe());
+            manager.registerRecipe(new CharcoalConsumptionUpgradeRecipe());
+            manager.registerRecipe(new SpeedUpgradeRecipe());
         }
     }
 

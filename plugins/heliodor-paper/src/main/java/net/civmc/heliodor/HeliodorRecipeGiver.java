@@ -3,8 +3,10 @@ package net.civmc.heliodor;
 import net.civmc.heliodor.backpack.Backpack;
 import net.civmc.heliodor.heliodor.HeliodorGem;
 import net.civmc.heliodor.heliodor.HeliodorPickaxe;
-import net.civmc.heliodor.vein.MeteoricIron;
-import net.civmc.heliodor.vein.MeteoricIronPickaxe;
+import net.civmc.heliodor.meteoriciron.FactoryUpgrade;
+import net.civmc.heliodor.meteoriciron.MeteoricIron;
+import net.civmc.heliodor.meteoriciron.MeteoricIronArmour;
+import net.civmc.heliodor.meteoriciron.MeteoricIronTools;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -22,9 +24,11 @@ public class HeliodorRecipeGiver {
 
     public HeliodorRecipeGiver(Plugin plugin) {
         register(HeliodorPickaxe.getRecipes(plugin));
-        register(MeteoricIronPickaxe.getRecipes(plugin));
+        register(MeteoricIronTools.getRecipes(plugin));
         register(MeteoricIron.getRecipes(plugin));
+        register(MeteoricIronArmour.getRecipes(plugin));
         register(Backpack.getRecipes(plugin));
+        register(FactoryUpgrade.getRecipes(plugin));
 
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             try {

@@ -2,7 +2,7 @@ package net.civmc.heliodor.vein.listener;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.civmc.heliodor.vein.MeteoricIron;
+import net.civmc.heliodor.meteoriciron.MeteoricIron;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;

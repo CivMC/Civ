@@ -115,7 +115,7 @@ public abstract class Factory implements Runnable {
 
     public void scheduleUpdate() {
         threadId = FactoryMod.getInstance().getServer().getScheduler()
-            .scheduleSyncDelayedTask(FactoryMod.getInstance(), this, (long) updateTime);
+            .scheduleSyncDelayedTask(FactoryMod.getInstance(), this, getUpdateTime());
     }
 
     public void turnFurnaceOn(Block f) {

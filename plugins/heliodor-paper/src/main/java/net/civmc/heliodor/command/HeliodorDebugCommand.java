@@ -2,7 +2,7 @@ package net.civmc.heliodor.command;
 
 import net.civmc.heliodor.HeliodorPlugin;
 import net.civmc.heliodor.heliodor.HeliodorGem;
-import net.civmc.heliodor.vein.MeteoricIron;
+import net.civmc.heliodor.meteoriciron.MeteoricIron;
 import net.civmc.heliodor.vein.data.Vein;
 import net.civmc.heliodor.vein.VeinCache;
 import net.civmc.heliodor.vein.VeinSpawner;
