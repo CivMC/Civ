@@ -250,13 +250,11 @@ public class AllyHandler implements Listener {
     private Team getAllyTeam(Player player) {
         Scoreboard scoreboard = player.getScoreboard();
         String allyTeamName = player.getUniqueId() + "-ally";
-        Team allyTeam;
-        try {
+        Team allyTeam = scoreboard.getTeam(allyTeamName);
+        if (allyTeam == null) {
             allyTeam = scoreboard.registerNewTeam(allyTeamName);
             allyTeam.setCanSeeFriendlyInvisibles(isSeeInvisAlly());
             allyTeam.setColor(ChatColor.BLUE);
-        } catch (IllegalArgumentException e) {
-            allyTeam = scoreboard.getTeam(allyTeamName);
         }
         return allyTeam;
     }
