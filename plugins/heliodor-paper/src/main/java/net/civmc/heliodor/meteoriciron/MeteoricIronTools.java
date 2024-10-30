@@ -104,7 +104,12 @@ public interface MeteoricIronTools {
         meta.setRarity(ItemRarity.EPIC);
         meta.lore(List.of(
             Component.text("+0.75 damage for each piece of netherite", NamedTextColor.WHITE),
-            Component.text("armour the opponent is wearing", NamedTextColor.WHITE)));
+            Component.text("armour the opponent is wearing", NamedTextColor.WHITE),
+            Component.text("Instantly breaks cobwebs")));
+        ToolComponent tool = meta.getTool();
+        tool.setDamagePerBlock(1);
+        tool.addRule(Material.COBWEB, 200f, true);
+        meta.setTool(tool);
         meta.setMaxDamage(DURABILITY);
         meta.addEnchant(Enchantment.FIRE_ASPECT, 2, false);
         if (knocback) {
