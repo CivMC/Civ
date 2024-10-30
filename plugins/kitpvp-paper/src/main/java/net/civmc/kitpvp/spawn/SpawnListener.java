@@ -1,6 +1,5 @@
 package net.civmc.kitpvp.spawn;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,7 +28,7 @@ public class SpawnListener implements Listener {
     @EventHandler
     public void on(PlayerSpawnLocationEvent event) {
         // handles players joining after their arena was deleted
-        if (event.getSpawnLocation().distanceSquared(Bukkit.getWorld("world").getSpawnLocation()) <= 1) {
+        if (event.getSpawnLocation().getWorld().getName().equals("world")) {
             Location spawn = this.provider.getSpawn();
             if (spawn != null) {
                 event.setSpawnLocation(spawn);
