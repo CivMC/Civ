@@ -106,7 +106,7 @@ public class EditKitGui {
                 protected void clicked(@NotNull Player clicker) {
                     inventory.setOnClose(null);
                     player.closeInventory();
-                    anvilGui.open(player, new AnvilGuiListener() {
+                    anvilGui.open(player, Component.text("Kit name"), new AnvilGuiListener() {
                         @Override
                         public void onClose() {
                             JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);

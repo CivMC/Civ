@@ -39,7 +39,7 @@ public class CountSelectionGui extends ItemSelectionGui {
             protected void clicked(@NotNull Player clicker) {
                 inventory.setOnClose(null);
                 clicker.closeInventory();
-                anvilGui.open(clicker, new AnvilGuiListener() {
+                anvilGui.open(clicker, Component.text("Amount"), new AnvilGuiListener() {
                     @Override
                     public void onClose() {
                         JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
@@ -53,7 +53,6 @@ public class CountSelectionGui extends ItemSelectionGui {
                             num = Integer.parseInt(name);
                             if (num < 1 || num > kitItem.getMaxStackSize()) {
                                 clicker.sendMessage(Component.text("Must be between 1 and " + kitItem.getMaxStackSize(), NamedTextColor.RED));
-                                open();
                                 return false;
                             }
                         } catch (NumberFormatException e) {

@@ -1,11 +1,13 @@
 package net.civmc.kitpvp.anvil;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -15,15 +17,29 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AnvilGui implements Listener {
+    private final Map<Player, Component> names = new HashMap<>();
     private final Map<Player, Inventory> anvils = new HashMap<>();
     private final Map<Player, AnvilGuiListener> listeners = new HashMap<>();
 
-    public void open(Player player, AnvilGuiListener listener) {
+    public void open(Player player, Component name, AnvilGuiListener listener) {
+        names.put(player, name);
         InventoryView view = player.openAnvil(null, true);
+        if (view == null) {
+            names.remove(player);
+            return;
+        }
         anvils.put(player, view.getTopInventory());
         listeners.put(player, listener);
 
         view.getTopInventory().setItem(0, new ItemStack(Material.WRITABLE_BOOK));
+    }
+
+    @EventHandler
+    public void on(InventoryOpenEvent event) {
+        Component title = names.remove(event.getPlayer());
+        if (title != null) {
+            event.titleOverride(title);
+        }
     }
 
     @EventHandler

@@ -69,7 +69,7 @@ public class KitListGui {
 
                 clicker.closeInventory();
                 clicker.sendMessage(Component.text("Enter kit name to create", NamedTextColor.GOLD));
-                anvilGui.open(player, new AnvilGuiListener() {
+                anvilGui.open(player, Component.text("Kit name"), new AnvilGuiListener() {
                     @Override
                     public void onClose() {
                         JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
