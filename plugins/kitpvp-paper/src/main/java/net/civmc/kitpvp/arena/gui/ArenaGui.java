@@ -11,6 +11,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -57,6 +58,7 @@ public class ArenaGui {
             List<Component> lore = new ArrayList<>();
             lore.add(Component.text("Created by " + loadedArena.owner().getName(), NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             lore.add(Component.text("Click to teleport", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text("Shift left click to join as spectator", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             if (hasAccess) {
                 lore.add(Component.text("Shift right click to delete", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             }
@@ -74,6 +76,17 @@ public class ArenaGui {
                 @Override
                 protected void clicked(@NotNull Player clicker) {
                     if (world != null) {
+                        if (player.getGameMode() == GameMode.SPECTATOR && !player.hasPermission("kitpvp.admin")) {
+                            player.setGameMode(GameMode.SURVIVAL);
+                        }
+                        player.teleport(arena.spawn().toLocation(world));
+                    }
+                }
+
+                @Override
+                protected void onShiftLeftClick(@NotNull Player clicker) {
+                    if (world != null) {
+                        player.setGameMode(GameMode.SPECTATOR);
                         player.teleport(arena.spawn().toLocation(world));
                     }
                 }

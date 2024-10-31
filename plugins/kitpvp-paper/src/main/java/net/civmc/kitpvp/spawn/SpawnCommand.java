@@ -2,6 +2,7 @@ package net.civmc.kitpvp.spawn;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -24,6 +25,9 @@ public class SpawnCommand implements CommandExecutor {
         }
         Location spawn = spawnProvider.getSpawn();
         if (spawn != null) {
+            if (player.getGameMode() == GameMode.SPECTATOR && !player.hasPermission("kitpvp.admin")) {
+                player.setGameMode(GameMode.SURVIVAL);
+            }
             player.teleport(spawn);
             player.sendMessage(Component.text("Teleported to spawn", NamedTextColor.GREEN));
         }

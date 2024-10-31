@@ -60,7 +60,7 @@ public class ArenaCategorySelectionGui {
 
         int slot = 0;
         for (Map.Entry<String, List<Arena>> entry : arenasByCategory.entrySet()) {
-            inventory.setSlot(toClickable(entry.getKey(), NamedTextColor.WHITE, entry.getValue()), slot++);
+            inventory.setSlot(toClickable(entry.getKey(), NamedTextColor.GOLD, entry.getValue()), slot++);
         }
         if (!uncategorised.isEmpty()) {
             inventory.setSlot(toClickable("Uncategorised", NamedTextColor.GRAY, uncategorised), slot);

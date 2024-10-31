@@ -1,5 +1,7 @@
 package net.civmc.kitpvp.spawn;
 
+import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,6 +33,9 @@ public class SpawnListener implements Listener {
         if (event.getSpawnLocation().getWorld().getName().equals("world")) {
             Location spawn = this.provider.getSpawn();
             if (spawn != null) {
+                if (event.getPlayer().getGameMode() == GameMode.SPECTATOR && !event.getPlayer().hasPermission("kitpvp.admin")) {
+                    event.getPlayer().setGameMode(GameMode.SURVIVAL);
+                }
                 event.setSpawnLocation(spawn);
             }
         }
@@ -43,6 +48,15 @@ public class SpawnListener implements Listener {
             if (spawn != null) {
                 event.setRespawnLocation(spawn);
             }
+        }
+    }
+
+    @EventHandler
+    public void on(PlayerPostRespawnEvent event) {
+        if (event.getRespawnedLocation().getWorld().getName().equals("world")
+            && event.getPlayer().getGameMode() == GameMode.SPECTATOR
+            && !event.getPlayer().hasPermission("kitpvp.admin")) {
+            event.getPlayer().setGameMode(GameMode.SURVIVAL);
         }
     }
 }
