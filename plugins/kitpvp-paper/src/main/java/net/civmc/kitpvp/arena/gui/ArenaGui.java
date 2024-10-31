@@ -82,6 +82,7 @@ public class ArenaGui {
                 protected void onShiftRightClick(@NotNull Player clicker) {
                     if (!hasAccess) {
                         super.onShiftRightClick(clicker);
+                        return;
                     }
 
                     new ConfirmDeletionGui(manager, loadedArena.owner(), clicker);
@@ -103,7 +104,7 @@ public class ArenaGui {
                     return;
                 }
 
-                new ArenaSelectionGui(dao, manager).open(clicker);
+                new ArenaCategorySelectionGui(dao, manager).open(clicker);
             }
         }, 0);
         view.showScreen();

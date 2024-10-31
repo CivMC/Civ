@@ -35,7 +35,7 @@ public class SetSpawnCommand implements CommandExecutor {
             if (spawnProvider.setSpawn(location)) {
                 player.sendMessage(Component.text("Set spawn", NamedTextColor.GREEN));
             } else {
-                player.sendMessage(Component.text("Could not set spawn", NamedTextColor.GREEN));
+                player.sendMessage(Component.text("Could not set spawn", NamedTextColor.RED));
             }
         });
         return true;

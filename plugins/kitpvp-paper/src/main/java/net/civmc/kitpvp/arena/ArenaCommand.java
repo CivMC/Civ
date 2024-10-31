@@ -78,7 +78,7 @@ public class ArenaCommand implements CommandExecutor {
                     throw new RuntimeException(e);
                 }
 
-                boolean success = dao.newArena(new Arena(arenaName, null, player.getLocation(), icon));
+                boolean success = dao.newArena(new Arena(arenaName, null, null, player.getLocation(), icon));
                 if (success) {
                     player.sendMessage(Component.text("Created arena", NamedTextColor.GREEN));
                 } else {
@@ -124,6 +124,27 @@ public class ArenaCommand implements CommandExecutor {
                     player.sendMessage(Component.text("Set display name of arena", NamedTextColor.GREEN));
                 } else {
                     player.sendMessage(Component.text("Could not set display name of arena. Does it exist?", NamedTextColor.RED));
+                }
+            });
+            return true;
+        } else if (args.length > 0 && args[0].equalsIgnoreCase("category")) {
+            if (args.length < 3) {
+                return false;
+            }
+            if (!player.hasPermission("kitpvp.admin")) {
+                player.sendMessage(Component.text("No permission", NamedTextColor.RED));
+                return true;
+            }
+
+            String arenaName = args[1];
+            String category = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                boolean success = dao.setCategory(arenaName, category);
+                if (success) {
+                    player.sendMessage(Component.text("Set category of arena", NamedTextColor.GREEN));
+                } else {
+                    player.sendMessage(Component.text("Could not set category of arena. Does it exist?", NamedTextColor.RED));
                 }
             });
             return true;

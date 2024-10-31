@@ -2,6 +2,7 @@ package net.civmc.kitpvp;
 
 import java.sql.SQLException;
 import net.civmc.kitpvp.anvil.AnvilGui;
+import net.civmc.kitpvp.arena.ArenaCleaner;
 import net.civmc.kitpvp.arena.ArenaCommand;
 import net.civmc.kitpvp.arena.ArenaManager;
 import net.civmc.kitpvp.arena.MysqlLoader;
@@ -55,6 +56,7 @@ public class KitPvpPlugin extends ACivMod {
             ArenaManager manager = new ArenaManager(this, spawnProvider, new MysqlLoader(source));
             getCommand("arena").setExecutor(new ArenaCommand(this, new SqlArenaDao(source), manager));
             getServer().getPluginManager().registerEvents(new RespawnListener(manager), this);
+            Bukkit.getScheduler().runTaskTimer(this, new ArenaCleaner(manager), 20, 20);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -36,6 +36,10 @@ public class SqlArenaDao implements ArenaDao {
             """
                 ALTER TABLE arenas ADD COLUMN IF NOT EXISTS display_name VARCHAR(64)
                 """);
+        source.registerMigration(6, false,
+            """
+                ALTER TABLE arenas ADD COLUMN IF NOT EXISTS category VARCHAR(64)
+                """);
     }
 
     @Override
@@ -47,6 +51,7 @@ public class SqlArenaDao implements ArenaDao {
                 arenas.add(new Arena(
                     resultSet.getString("name"),
                     resultSet.getString("display_name"),
+                    resultSet.getString("category"),
                     new Location(null, resultSet.getDouble("spawn_x"), resultSet.getDouble("spawn_y"), resultSet.getDouble("spawn_z"), resultSet.getFloat("spawn_yaw"), 0),
                     Material.valueOf(resultSet.getString("icon"))
                 ));
@@ -94,6 +99,20 @@ public class SqlArenaDao implements ArenaDao {
         try (Connection connection = source.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("UPDATE arenas SET display_name = ? WHERE name = ?");
             statement.setString(1, displayName);
+            statement.setString(2, arenaName);
+
+            return statement.executeUpdate() == 1;
+        } catch (SQLException ex) {
+            JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error setting display name of arena", ex);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean setCategory(String arenaName, String category) {
+        try (Connection connection = source.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("UPDATE arenas SET category = ? WHERE name = ?");
+            statement.setString(1, "null".equalsIgnoreCase(category) ? null : category);
             statement.setString(2, arenaName);
 
             return statement.executeUpdate() == 1;

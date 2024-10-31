@@ -6,6 +6,7 @@ import org.bukkit.Material;
 public record Arena(
     String name,
     String displayName,
+    String category,
     Location spawn,
     Material icon
 ) {
