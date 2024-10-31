@@ -13,13 +13,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
@@ -34,6 +35,7 @@ public final class PotionModifier extends ModifierData {
 
     private PotionType base;
     private List<PotionEffect> effects;
+    private boolean splash;
 
     @Override
     public PotionModifier construct(ItemStack item) {
@@ -43,6 +45,7 @@ public final class PotionModifier extends ModifierData {
         PotionModifier modifier = new PotionModifier();
         modifier.base = meta.getBasePotionType();
         modifier.effects = meta.getCustomEffects();
+        modifier.splash = item.getType() == Material.SPLASH_POTION;
         return modifier;
     }
 
@@ -59,7 +62,7 @@ public final class PotionModifier extends ModifierData {
         if (!(item.getItemMeta() instanceof final PotionMeta meta)) {
             return false;
         }
-        if (!NullUtils.equalsNotNull(this.base, meta.getBasePotionData())) {
+        if (!NullUtils.equalsNotNull(this.base, meta.getBasePotionType())) {
             return false;
         }
         List<PotionEffect> heldEffects = getEffects();
@@ -125,7 +128,8 @@ public final class PotionModifier extends ModifierData {
         if (this.base == null) {
             return null;
         }
-        return PotionUtils.getPotionNiceName(this.base);
+        return (splash ? "Splash " : "")
+            + WordUtils.capitalize(this.base.getKey().getKey().replace("_", " "));
     }
 
     public PotionType getPotionType() {
