@@ -1,16 +1,16 @@
 # alters the base CPS for all players, set enabled to false to disable
 alterAttack:
   enabled: true
-  speed: 1024
+  speed: 8
 #CombatTag player on login?
 ctpOnLogin: true
 
 cleanerCombat:
   maxReach: 6.0
   cps:
-    limit: 9
+    limit: 100
     counterInterval: 1000
-  attackCooldownEnabled: false
+  attackCooldownEnabled: true
   sweepEnabled: false
   sprintResetEnabled: true # should the sprint of the attacker reset upon hitting the victim?
   waterSprintResetEnabled: false # should the sprint of the attacker reset upon hitting if they are in water?
@@ -19,20 +19,20 @@ cleanerCombat:
     weak: false
     strong: false
     knockback: false
-    crit: false
-  knockbackLevelMultiplier: 0.5 # a constant to control the knockback sword level
+    crit: true
+  knockbackLevelMultiplier: 0.67 # a constant to control the knockback sword level
   strategy: standard
   normal:
     groundModifier: # modifies knockback in general.
       type: MULTIPLY # MULTIPLY or ADD
-      x: 0.85
-      y: 0.8
-      z: 0.85
+      x: 0.57
+      y: 0.95
+      z: 0.57
     airModifier: # modifies knockback if the victim is in the air.
       type: MULTIPLY # MULTIPLY or ADD
-      x: 0.95
-      y: 1.0
-      z: 0.95
+      x: 1.0
+      y: 0.56
+      z: 1.0
     waterModifier: # modifies knockback if the victim is in water.
       type: MULTIPLY # MULTIPLY or ADD
       x: 1.0
@@ -41,13 +41,13 @@ cleanerCombat:
   sprint: # modifies knockback if the attacker is sprinting.
     groundModifier: # modifies knockback in general.
       type: MULTIPLY # MULTIPLY or ADD
-      x: 1.0
-      y: 0.9
-      z: 1.0
+      x: 0.72
+      y: 0.95
+      z: 0.72
     airModifier: # modifies knockback if the victim is in the air.
       type: MULTIPLY
       x: 1.0
-      y: 1.0
+      y: 0.6
       z: 1.0
     waterModifier: # modifies knockback if the victim is in water.
       type: MULTIPLY
@@ -55,24 +55,24 @@ cleanerCombat:
       y: 1.0
       z: 1.0
   attackerMotion: # modifies motion of attacker upon attacking.
-    x: 0.6
+    x: 0.75
     y: 1.0
-    z: 0.6
+    z: 0.75
   victimMotion: # modifies motion of victim upon getting hit.
-    x: 0.5
-    y: 0.5
-    z: 0.5
+    x: 0.65
+    y: 1.0
+    z: 0.65
   maxVictimMotion: # maximum motion of victim upon getting hit.
     x: 10.0
-    y: 10.0
+    y: 1.1
     z: 10.0
 
 # gives full control over health / regen, default is full reversion to 1.8 mechanics
 foodHealthRegen:
   enabled: true
-  interval: 4s
-  exhaustionPerHeal: 3.0
-  minimumFood: 18
+  interval: 3s
+  exhaustionPerHeal: 1.5
+  minimumFood: 17
   healthPerCycle: 1.0
   blockFoodRegen: true
   blockSaturationRegen: true
@@ -86,13 +86,9 @@ pearls:
   combatTag: true
 gapples:
   enabled: true
-  cooldown: 30s
+  cooldown: 15s
   enchantedCooldown: 5m
 
-#Config same as above, except with only enabled and cooldown as options
-gappleCooldown:
-  enabled: true
-  cooldown: 16s
 #allows adjusting the attack damage of any item by its spigot material identifier
 weaponModification:
   netheriteAxe:
@@ -115,7 +111,7 @@ weaponModification:
     damage: 1
   netheriteSword:
     material: NETHERITE_SWORD
-    damage: 8
+    damage: 9
   diamondSword:
     material: DIAMOND_SWORD
     damage: 7
@@ -138,7 +134,6 @@ weaponModification:
 armourModification:
   diamondHelmet:
     material: DIAMOND_HELMET
-    armour: 3
     toughness: 2
     extraDurabilityHits: 1 # how many extra hits a player needs to take for the durability of the piece to fall
   diamondChestplate:
@@ -158,25 +153,25 @@ armourModification:
     extraDurabilityHits: 1
   netheriteHelmet:
     material: NETHERITE_HELMET
-    armour: 4
+    armour: 3.2
     toughness: 3
     extraDurabilityHits: 1
     knockbackResistance: 0 # knockback resistance is a value between 0 and 1.
   netheriteChestplate:
     material: NETHERITE_CHESTPLATE
-    armour: 8
+    armour: 8.3
     toughness: 3
     extraDurabilityHits: 1
     knockbackResistance: 0
   netheriteLeggings:
     material: NETHERITE_LEGGINGS
-    armour: 6
+    armour: 6.3
     toughness: 3
     extraDurabilityHits: 1
     knockbackResistance: 0
   netheriteBoots:
     material: NETHERITE_BOOTS
-    armour: 4
+    armour: 3.2
     toughness: 3
     extraDurabilityHits: 1
     knockbackResistance: 0
@@ -227,7 +222,7 @@ potions:
       multiplier: 1.0
   #Multiplier applied to the health gain from all health potions
   healthMultiplier: 1.5
-  minIntensityCutOff: 0.3 # minimum intensity for non-thrower to steal some health effect.
+  minIntensityCutOff: 0.223 # minimum intensity for non-thrower to steal some health effect.
   minIntensityImpact: 0.5 # minimum intensity for thrower to get full health effect.
 
 velocity:
@@ -265,17 +260,17 @@ damageModifiers:
     mode: DIRECT
   #Increase sword damage by 25 %
   SHARPNESS_ENCHANT:
-    multiplier: 1.0
+    multiplier: 1.23
     mode: DIRECT
   SWORD:
     mode: DIRECT
     multiplier: 1.0
   CRIT:
     mode: DIRECT
-    multiplier: 0.86
+    multiplier: 0.82
   STRENGTH_EFFECT:
     mode: DIRECT
-    multiplier: 0.8
+    multiplier: 0.86
   ARROW:
     mode: DIRECT
     multiplier: 1.0
@@ -300,16 +295,11 @@ invulnerableTicks:
 
 # the warp fruit will roll back to 7 seconds ago
 warpFruit: # logSize * logInterval = how far back in time you go
-  logSize: 35 # log queue size
+  logSize: 60 # log queue size
   logInterval: 200ms # in milliseconds
   cooldown: 10s
   maxDistance: 100 # max warp distance
   spectralWhileChanneling: true
-  afterEffects:
-    slowness:
-      type: SLOW
-      amplifier: 0
-      duration: 40
 
 trident:
   returnToOffhand:
@@ -336,7 +326,7 @@ shield:
         z: 1
     targetDistance: 3
     damage: 1
-    cooldown: 10s
+    cooldown: 5s
   passive:
     enabled: true
     amplifier: 0
@@ -344,7 +334,6 @@ shield:
 crossbow:
   enabled: true
   radius: 2
-  artilleryDamage: 1
   reinforcementDamage: 5
   bastionDamage: 5
   cooldown: 4000ms
@@ -579,7 +568,8 @@ blockPlacementRestrictions:
   cooldowns:
     cobweb:
       type: COBWEB
-      cooldown: 5s
+      cooldown: 10s
     obsidian:
       type: OBSIDIAN
       cooldown: 1s
+
