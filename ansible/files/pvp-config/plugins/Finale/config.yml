@@ -10,7 +10,7 @@ cleanerCombat:
   cps:
     limit: 100
     counterInterval: 1000
-  attackCooldownEnabled: true
+  attackCooldownEnabled: false
   sweepEnabled: false
   sprintResetEnabled: true # should the sprint of the attacker reset upon hitting the victim?
   waterSprintResetEnabled: false # should the sprint of the attacker reset upon hitting if they are in water?
