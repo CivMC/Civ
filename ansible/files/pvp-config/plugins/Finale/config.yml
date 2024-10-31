@@ -541,7 +541,7 @@ tippedArrows:
       g: 232
       b: 198
 blockPlacementRestrictions:
-  enabled: true
+  enabled: false
   mode: BLACKLIST # BLACKLIST, WHITELIST, NOLIST (only cooldowns)
   reinforce: false # should players be allowed to reinforce while in combat?
   zones:
@@ -566,9 +566,6 @@ blockPlacementRestrictions:
     - COBBLESTONE
     - STONE
   cooldowns:
-    cobweb:
-      type: COBWEB
-      cooldown: 10s
     obsidian:
       type: OBSIDIAN
       cooldown: 1s
