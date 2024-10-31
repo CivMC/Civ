@@ -38,7 +38,7 @@ public class ArenaSelectionGui {
         }
         ClickableInventory inventory = new ClickableInventory(Math.ceilDiv(arenas.size(), 9) * 9, "Arena types");
         int slot = 0;
-        for (Arena arena : arenaDao.getArenas()) {
+        for (Arena arena : arenas) {
             ItemStack item = new ItemStack(arena.icon());
             ItemMeta meta = item.getItemMeta();
             meta.itemName(Component.text(arena.displayName(), NamedTextColor.YELLOW));
