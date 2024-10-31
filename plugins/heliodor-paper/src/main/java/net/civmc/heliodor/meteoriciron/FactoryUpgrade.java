@@ -41,8 +41,10 @@ public interface FactoryUpgrade {
 
 
     static List<ShapedRecipe> getRecipes(Plugin plugin) {
+        ItemStack upgrade = FactoryUpgrade.createUpgrade();
+        upgrade.setAmount(3);
         return List.of(
-            new ShapedRecipe(new NamespacedKey(plugin, "factory_upgrade"), FactoryUpgrade.createUpgrade())
+            new ShapedRecipe(new NamespacedKey(plugin, "factory_upgrade"), upgrade)
                 .shape("#c#", "#r#", "#f#")
                 .setIngredient('#', MeteoricIron.createIngot())
                 .setIngredient('c', Material.CHEST)
