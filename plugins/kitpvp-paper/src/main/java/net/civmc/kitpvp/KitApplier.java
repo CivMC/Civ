@@ -6,11 +6,17 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class KitApplier {
 
     public static void reset(Player player) {
-        player.clearActivePotionEffects();
+        for (PotionEffect effect : player.getActivePotionEffects()) {
+            if (effect.getType() != PotionEffectType.NIGHT_VISION) {
+                player.removePotionEffect(effect.getType());
+            }
+        }
 
         player.setFoodLevel(20);
         player.setSaturation(0);
