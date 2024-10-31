@@ -20,6 +20,7 @@ import net.civmc.kitpvp.spawn.SpawnProvider;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -73,6 +74,9 @@ public class ArenaManager {
             for (Player worldPlayer : world.getPlayers()) {
                 if (spawn != null) {
                     worldPlayer.sendMessage(Component.text("The arena you were in was deleted, so you have been teleported to spawn.", NamedTextColor.GREEN));
+                    if (worldPlayer.getGameMode() == GameMode.SPECTATOR && !worldPlayer.hasPermission("kitpvp.admin")) {
+                        worldPlayer.setGameMode(GameMode.SURVIVAL);
+                    }
                     worldPlayer.teleport(spawn);
                 } else {
                     worldPlayer.kick(Component.text("The arena you were in was deleted"));
