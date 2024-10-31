@@ -80,6 +80,9 @@ public interface MeteoricIronTools {
         tool.addRule(Material.IRON_DOOR, 50f, true);
         tool.addRule(Material.IRON_TRAPDOOR, 50f, true);
         tool.addRule(Material.IRON_BARS, 50f, true);
+        tool.addRule(Material.DISPENSER, 50f, true);
+        tool.addRule(Material.DROPPER, 50f, true);
+        tool.addRule(Material.HOPPER, 50f, true);
         tool.addRule(Tag.MINEABLE_AXE, 8f, true);
         meta.setTool(tool);
         meta.setMaxDamage(DURABILITY);
