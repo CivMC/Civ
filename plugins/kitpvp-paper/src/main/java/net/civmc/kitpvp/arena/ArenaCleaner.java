@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class ArenaCleaner implements Runnable {
-    private static final long EMPTY_ARENA_DURATION = TimeUnit.SECONDS.toMillis(20);
+    private static final long EMPTY_ARENA_DURATION = TimeUnit.MINUTES.toMillis(10);
 
     private final Map<LoadedArena, Long> emptyArenas = new HashMap<>();
     private final ArenaManager arenaManager;
@@ -30,7 +30,7 @@ public class ArenaCleaner implements Runnable {
                     continue;
                 }
 
-                if (world.getPlayerCount() == 0) {
+                if (world.getPlayerCount() == 0 && Bukkit.getPlayer(loadedArena.owner().getId()) == null) {
                     emptyArenas.putIfAbsent(loadedArena, System.currentTimeMillis());
                 } else {
                     emptyArenas.remove(loadedArena);
