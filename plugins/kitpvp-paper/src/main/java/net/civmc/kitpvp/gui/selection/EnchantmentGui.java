@@ -117,7 +117,7 @@ public class EnchantmentGui extends ItemSelectionGui {
                 protected void clicked(@NotNull Player clicker) {
                     inventory.setOnClose(null);
                     clicker.closeInventory();
-                    anvilGui.open(clicker, new AnvilGuiListener() {
+                    anvilGui.open(clicker, Component.text("Durability"), new AnvilGuiListener() {
                         @Override
                         public void onClose() {
                             JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);
