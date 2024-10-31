@@ -1,14 +1,14 @@
 # alters the base CPS for all players, set enabled to false to disable
 alterAttack:
   enabled: true
-  speed: 8
+  speed: 1024
 #CombatTag player on login?
 ctpOnLogin: true
 
 cleanerCombat:
   maxReach: 6.0
   cps:
-    limit: 100
+    limit: 9
     counterInterval: 1000
   attackCooldownEnabled: false
   sweepEnabled: false
