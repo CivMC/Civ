@@ -21,20 +21,15 @@ public class ArenaSelectionGui {
     private final JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
     private final ArenaDao arenaDao;
     private final ArenaManager manager;
+    private final ArenaCategorySelectionGui parent;
 
-    public ArenaSelectionGui(ArenaDao arenaDao, ArenaManager manager) {
+    public ArenaSelectionGui(ArenaDao arenaDao, ArenaCategorySelectionGui parent, ArenaManager manager) {
         this.arenaDao = arenaDao;
+        this.parent = parent;
         this.manager = manager;
     }
 
-    public void open(Player player) {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            List<Arena> arenas = arenaDao.getArenas();
-            Bukkit.getScheduler().runTask(plugin, () -> open(player, arenas));
-        });
-    }
-
-    private void open(Player player, List<Arena> arenas) {
+    public void open(Player player, List<Arena> arenas) {
         if (arenas.size() > 54) {
             throw new IllegalArgumentException("too many arenas");
         } else if (arenas.isEmpty()) {
@@ -51,11 +46,13 @@ public class ArenaSelectionGui {
             inventory.setSlot(new Clickable(item) {
                 @Override
                 protected void clicked(@NotNull Player clicker) {
+                    inventory.setOnClose(null);
                     clicker.closeInventory();
                     Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> manager.createArena(clicker, arena));
                 }
             }, slot++);
         }
+        inventory.setOnClose(() -> parent.open(player));
         inventory.showInventory(player, false);
     }
 }

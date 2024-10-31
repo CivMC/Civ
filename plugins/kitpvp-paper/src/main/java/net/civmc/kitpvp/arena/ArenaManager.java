@@ -61,7 +61,11 @@ public class ArenaManager {
     }
 
     public void deleteArena(PlayerProfile owner) {
-        Arena arena = arenas.remove(owner.getId()).arena();
+        LoadedArena removedArena = arenas.remove(owner.getId());
+        if (removedArena == null) {
+            return;
+        }
+        Arena arena = removedArena.arena();
         String worldName = getArenaName(arena.name(), owner);
         World world = Bukkit.getWorld(worldName);
         if (world != null) {
