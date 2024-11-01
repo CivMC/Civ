@@ -27,13 +27,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 @SuppressWarnings("UnstableApiUsage")
 public interface MeteoricIronArmour {
 
+    int CHESPLATE_DURABILITY = 9648;
+
     static ItemStack createHelmet() {
         ItemStack item = new ItemStack(Material.IRON_HELMET);
         Damageable meta = (Damageable) item.getItemMeta();
 
         meta.displayName(Component.text("Meteoric Iron Helmet", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
-        meta.setMaxDamage(7810);
+        meta.setMaxDamage(CHESPLATE_DURABILITY * 11 / 16);
         meta.addEnchant(Enchantment.UNBREAKING, 5, false);
         meta.addEnchant(Enchantment.RESPIRATION, 3, false);
         meta.addEnchant(Enchantment.AQUA_AFFINITY, 1, false);
@@ -52,7 +54,7 @@ public interface MeteoricIronArmour {
 
         meta.displayName(Component.text("Meteoric Iron Chestplate", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
-        meta.setMaxDamage(11360);
+        meta.setMaxDamage(CHESPLATE_DURABILITY);
         meta.addEnchant(Enchantment.UNBREAKING, 5, false);
         meta.addEnchant(Enchantment.PROTECTION, 4, false);
         meta.addEnchant(Enchantment.BLAST_PROTECTION, 4, false);
@@ -69,7 +71,7 @@ public interface MeteoricIronArmour {
 
         meta.displayName(Component.text("Meteoric Iron Leggings", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
-        meta.setMaxDamage(10650);
+        meta.setMaxDamage(CHESPLATE_DURABILITY * 15 / 16);
         meta.addEnchant(Enchantment.UNBREAKING, 5, false);
         meta.addEnchant(Enchantment.SWIFT_SNEAK, 3, false);
         meta.addEnchant(Enchantment.PROTECTION, 4, false);
@@ -87,7 +89,7 @@ public interface MeteoricIronArmour {
 
         meta.displayName(Component.text("Meteoric Iron Boots", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
-        meta.setMaxDamage(9230);
+        meta.setMaxDamage(CHESPLATE_DURABILITY * 13 / 16);
         meta.addEnchant(Enchantment.UNBREAKING, 5, false);
         meta.addEnchant(Enchantment.FEATHER_FALLING, 5, false);
         meta.addEnchant(Enchantment.DEPTH_STRIDER, 5, false);
