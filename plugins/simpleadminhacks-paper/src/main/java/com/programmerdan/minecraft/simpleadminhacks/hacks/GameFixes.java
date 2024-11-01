@@ -6,6 +6,7 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
 import java.util.logging.Level;
 
+import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.item.ItemStack;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -142,6 +143,10 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
             return;
         }
         if (event.getEntity() instanceof InventoryHolder) {
+            Location location = event.getEntity().getLocation();
+            if(location.x() * location.x() + location.z() * location.z() > config.getWorldRadius() * config.getWorldRadius()) {
+                return;
+            }
             event.setCancelled(true);
         }
     }
