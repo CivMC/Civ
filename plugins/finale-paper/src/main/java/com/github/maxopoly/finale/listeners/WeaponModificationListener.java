@@ -40,6 +40,10 @@ public class WeaponModificationListener implements Listener {
             return;
         }
 
+        this.update(is);
+    }
+
+    public void update(ItemStack is) {
         ItemMeta im = is.getItemMeta();
 
         ArmourModifier armourMod = Finale.getPlugin().getManager().getArmourModifier();
@@ -155,7 +159,7 @@ public class WeaponModificationListener implements Listener {
             }
         }
 
-        e.getCurrentItem().setItemMeta(im);
+        is.setItemMeta(im);
     }
 
 }

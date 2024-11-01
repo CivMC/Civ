@@ -4,7 +4,7 @@ main: net.civmc.kitpvp.KitPvpPlugin
 author: Okx
 description: KitPvP for CivMC
 api-version: 1.21.1
-depend: [CivModCore]
+depend: [CivModCore, Finale]
 softdepend: [BreweryX]
 
 commands:
