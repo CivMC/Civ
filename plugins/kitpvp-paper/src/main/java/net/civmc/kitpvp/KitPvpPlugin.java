@@ -27,6 +27,8 @@ import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
 public class KitPvpPlugin extends ACivMod {
 
+    private ManagedDatasource source;
+
     @Override
     public void onEnable() {
         AnvilGui anvilGui = new AnvilGui();
@@ -34,7 +36,7 @@ public class KitPvpPlugin extends ACivMod {
 
         saveDefaultConfig();
         DatabaseCredentials credentials = (DatabaseCredentials) getConfig().get("database");
-        ManagedDatasource source = ManagedDatasource.construct(this, credentials);
+        source = ManagedDatasource.construct(this, credentials);
         getCommand("kit").setExecutor(new KitCommand(new SqlKitPvpDao(source), anvilGui));
         WarpMain warpMain = new WarpMain(this, source);
         getCommand("clear").setExecutor(new ClearCommand());
@@ -62,5 +64,10 @@ public class KitPvpPlugin extends ACivMod {
         }
 
         source.updateDatabase();
+    }
+
+    @Override
+    public void onDisable() {
+        this.source.close();
     }
 }
