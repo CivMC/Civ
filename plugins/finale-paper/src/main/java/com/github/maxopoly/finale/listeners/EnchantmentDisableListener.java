@@ -24,8 +24,8 @@ public class EnchantmentDisableListener implements Listener {
         this.disabledEnchants = Set.copyOf(disabledEnchants);
     }
 
-    private void removeEnchants(final ItemStack item, final Entity owner) {
-        if (item == null || owner == null) {
+    public void removeEnchants(final ItemStack item, final Entity owner) {
+        if (item == null) {
             return;
         }
         final Map<Enchantment, Integer> enchants = item.getEnchantments();
@@ -34,9 +34,11 @@ public class EnchantmentDisableListener implements Listener {
                 continue;
             }
             item.removeEnchantment(enchant);
-            owner.sendMessage(ChatColor.RED + "The enchantment "
-                + EnchantUtils.getEnchantNiceName(enchant) + " is disabled and has "
-                + "been removed from your item!");
+            if (owner != null) {
+                owner.sendMessage(ChatColor.RED + "The enchantment "
+                    + EnchantUtils.getEnchantNiceName(enchant) + " is disabled and has "
+                    + "been removed from your item!");
+            }
         }
     }
 

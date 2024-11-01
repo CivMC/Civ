@@ -28,6 +28,7 @@ import com.github.maxopoly.finale.listeners.WeaponModificationListener;
 import com.github.maxopoly.finale.overlay.ScoreboardHUD;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
@@ -45,6 +46,9 @@ public class Finale extends ACivMod {
     private ConfigParser config;
     private FinaleSettingManager settingsManager;
     private CommandManager commandManager;
+
+    private EnchantmentDisableListener enchantmentDisableListener;
+    private WeaponModificationListener weaponModificationListener;
 
     public CombatTagPlusManager getCombatTagPlusManager() {
         return ctpManager;
@@ -100,9 +104,9 @@ public class Finale extends ACivMod {
                 .registerEvents(new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(),
                     ctpManager), this);
         }
-        Bukkit.getPluginManager().registerEvents(new WeaponModificationListener(), this);
+        Bukkit.getPluginManager().registerEvents(weaponModificationListener = new WeaponModificationListener(), this);
         Bukkit.getPluginManager().registerEvents(new ExtraDurabilityListener(), this);
-        Bukkit.getPluginManager().registerEvents(new EnchantmentDisableListener(config.getDisabledEnchants()), this);
+        Bukkit.getPluginManager().registerEvents(enchantmentDisableListener = new EnchantmentDisableListener(config.getDisabledEnchants()), this);
         Bukkit.getPluginManager().registerEvents(new PotionListener(config.getPotionHandler()), this);
         Bukkit.getPluginManager().registerEvents(new VelocityFixListener(config.getVelocityHandler()), this);
         Bukkit.getPluginManager().registerEvents(new DamageListener(config.getDamageModifiers()), this);
@@ -136,4 +140,8 @@ public class Finale extends ACivMod {
         registerCommands();
     }
 
+    public void update(ItemStack item) {
+        this.enchantmentDisableListener.removeEnchants(item, null);
+        this.weaponModificationListener.update(item);
+    }
 }
