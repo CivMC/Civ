@@ -100,7 +100,11 @@ class MySqlStorage implements PluginStorage {
     @Override
     public void disconnect() {
         isConnected = false;
-        db.close();
+        try {
+            db.close();
+        } catch (SQLException e) {
+
+        }
     }
 
     @Override
