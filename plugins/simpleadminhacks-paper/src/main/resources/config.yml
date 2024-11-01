@@ -347,7 +347,6 @@ hacks:
     # Does not fully work atm
     blockElytraBreakBug: false
     damageOnElytraBreakBug: 1.0
-    canStorageTeleport: false
     stopBedBombingInHellBiomes: true
     stopAnchorBombing: true
     preventTreeWraparound: true
