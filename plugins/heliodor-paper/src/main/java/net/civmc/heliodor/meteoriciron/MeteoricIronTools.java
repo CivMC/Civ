@@ -26,7 +26,7 @@ import java.util.List;
 @SuppressWarnings("UnstableApiUsage")
 public interface MeteoricIronTools {
 
-    int DURABILITY = 51_000;
+    int DURABILITY = 48_600;
 
     static ItemStack createPickaxe(boolean silk) {
         ItemStack pickaxe = new ItemStack(Material.IRON_PICKAXE);
