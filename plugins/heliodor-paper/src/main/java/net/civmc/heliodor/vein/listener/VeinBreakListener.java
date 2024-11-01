@@ -2,6 +2,7 @@ package net.civmc.heliodor.vein.listener;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.civmc.heliodor.HeliodorPlugin;
 import net.civmc.heliodor.vein.data.Vein;
 import net.civmc.heliodor.vein.VeinCache;
 import net.kyori.adventure.text.Component;
@@ -21,6 +22,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +79,7 @@ public class VeinBreakListener implements Listener {
             }
             if (validFaces.isEmpty()) {
                 this.dao.incrementBlocksMined(vein, 1);
-                return;
+                continue;
             }
             BlockFace face = validFaces.get(ThreadLocalRandom.current().nextInt(validFaces.size()));
             Block oreBlock = block.getRelative(face);
@@ -95,6 +97,8 @@ public class VeinBreakListener implements Listener {
             chunkPdc.set(oreLocationsKey, PersistentDataType.INTEGER_ARRAY, list.toIntArray());
 
             this.minedBlocksCache.computeIfAbsent(ChunkPos.from(oreBlock.getChunk()), k -> new ArrayList<>()).add(block.getLocation());
+            JavaPlugin.getPlugin(HeliodorPlugin.class).getLogger()
+                .info("Player " + event.getPlayer().getName() + " found meteoric iron ore at " + oreBlock.getWorld().getName() + " " + oreBlock.getX() + " " + oreBlock.getY() + " " + oreBlock.getZ());
             this.dao.incrementBlocksMined(vein, 2);
             this.dao.decrementOres(vein);
         }

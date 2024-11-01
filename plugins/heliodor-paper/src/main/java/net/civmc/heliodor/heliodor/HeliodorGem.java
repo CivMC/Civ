@@ -46,6 +46,10 @@ public interface HeliodorGem {
         ItemStack item = new ItemStack(Material.LIGHT_WEIGHTED_PRESSURE_PLATE);
         ItemMeta meta = item.getItemMeta();
         meta.itemName(Component.text("Heliodor Gem", NamedTextColor.LIGHT_PURPLE));
+        meta.lore(List.of(
+            Component.text("Seems to have special magnetic properties", NamedTextColor.WHITE),
+            Component.text("Can be crafted into a pickaxe", NamedTextColor.WHITE)
+        ));
         meta.setEnchantmentGlintOverride(true);
         meta.setFireResistant(true);
         meta.getPersistentDataContainer().set(FINISHED_KEY, PersistentDataType.BOOLEAN, true);

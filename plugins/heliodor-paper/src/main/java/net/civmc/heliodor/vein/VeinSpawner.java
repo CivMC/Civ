@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.civmc.heliodor.ChunkPos;
 import net.civmc.heliodor.vein.data.MeteoricIronVeinConfig;
 import net.civmc.heliodor.vein.data.Vein;
 import net.civmc.heliodor.vein.data.VerticalBlockPos;
@@ -153,7 +154,7 @@ public class VeinSpawner {
                         tickets.add(new ChunkPos(chunkX, chunkZ));
                     } else {
                         for (ChunkPos ticket : tickets) {
-                            world.removePluginChunkTicket(ticket.x, ticket.z, plugin);
+                            world.removePluginChunkTicket(ticket.x(), ticket.z(), plugin);
                         }
                         return null;
                     }
@@ -162,7 +163,7 @@ public class VeinSpawner {
         } catch (RuntimeException ex) {
             logger.log(Level.WARNING, "Adding chunk tickets to determine location", ex);
             for (ChunkPos ticket : tickets) {
-                world.removePluginChunkTicket(ticket.x, ticket.z, plugin);
+                world.removePluginChunkTicket(ticket.x(), ticket.z(), plugin);
             }
             return null;
         }
@@ -206,7 +207,7 @@ public class VeinSpawner {
                 blocksAtomic.set(new MeteoritePos(blocks, spawnBlock.getY()));
             } finally {
                 for (ChunkPos ticket : tickets) {
-                    world.removePluginChunkTicket(ticket.x, ticket.z, plugin);
+                    world.removePluginChunkTicket(ticket.x(), ticket.z(), plugin);
                 }
                 blocksReady.countDown();
             }
@@ -219,10 +220,6 @@ public class VeinSpawner {
             return null;
         }
         return blocksAtomic.get();
-
-    }
-
-    private record ChunkPos(int x, int z) {
 
     }
 

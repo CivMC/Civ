@@ -27,7 +27,7 @@ public interface FactoryUpgrade {
         meta.displayName(Component.text("Factory Upgrade", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
         meta.lore(List.of(
-            Component.text("Factories can be upgraded with one of two paths:", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false),
+            Component.text("Factories can be upgraded with one of two paths", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false),
             Component.text("Charcoal consumption: ", NamedTextColor.GOLD).append(Component.text("1/4 -> 1/8 -> 1/12 -> 1/16", NamedTextColor.YELLOW)).decoration(TextDecoration.ITALIC, false),
             Component.text("Factory speed: ", NamedTextColor.GOLD).append(Component.text("x2 -> x3 -> x4 -> x5", NamedTextColor.YELLOW)).decoration(TextDecoration.ITALIC, false)
         ));

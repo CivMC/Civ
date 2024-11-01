@@ -28,8 +28,6 @@ public interface HeliodorPickaxe {
         ItemStack pickaxe = new ItemStack(Material.GOLDEN_PICKAXE);
         Damageable meta = (Damageable) pickaxe.getItemMeta();
 
-        // TODO cancel repairs
-
         meta.displayName(Component.text("Heliodor Pickaxe", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
         meta.lore(List.of(
