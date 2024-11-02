@@ -595,3 +595,4 @@ blockPlacementRestrictions:
       cooldown: 1s
 
 netheriteFireResistance: true
+meteoricIronSlowness: true
