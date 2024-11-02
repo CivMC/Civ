@@ -6,6 +6,7 @@ import net.civmc.kitpvp.gui.EditKitGui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 
 public class WeaponsAndToolsSelectionGui extends ItemSelectionGui {
@@ -71,5 +72,9 @@ public class WeaponsAndToolsSelectionGui extends ItemSelectionGui {
         inventory.setSlot(toClickable(new ItemStack(Material.BOW)), 42);
         inventory.setSlot(toClickable(new ItemStack(Material.CROSSBOW)), 43);
         inventory.setSlot(toClickable(new ItemStack(Material.FISHING_ROD)), 44);
+
+        inventory.setSlot(toClickable(CustomItem.getCustomItem("meteoric_iron_sword")), 47);
+        inventory.setSlot(toClickable(CustomItem.getCustomItem("meteoric_iron_axe")), 48);
+        inventory.setSlot(toClickable(CustomItem.getCustomItem("meteoric_iron_pickaxe")), 49);
     }
 }
