@@ -5,12 +5,15 @@ import com.github.maxopoly.finale.misc.ArmourModifier;
 import com.github.maxopoly.finale.misc.ItemUtil;
 import com.github.maxopoly.finale.misc.TippedArrowModifier;
 import com.github.maxopoly.finale.misc.WeaponModifier;
+import java.util.Map;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
@@ -20,8 +23,6 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-
-import java.util.Map;
 
 public class WeaponModificationListener implements Listener {
 
@@ -48,9 +49,9 @@ public class WeaponModificationListener implements Listener {
 
         ArmourModifier armourMod = Finale.getPlugin().getManager().getArmourModifier();
 
-        double toughness = armourMod.getToughness(is.getType());
-        double armour = armourMod.getArmour(is.getType());
-        double knockbackResistance = armourMod.getKnockbackResistance(is.getType());
+        double toughness = armourMod.getToughness(is);
+        double armour = armourMod.getArmour(is);
+        double knockbackResistance = armourMod.getKnockbackResistance(is);
 
         if (toughness != -1 || armour != -1 || knockbackResistance != -1) {
             if (toughness == -1) {
@@ -93,8 +94,8 @@ public class WeaponModificationListener implements Listener {
 
         WeaponModifier weaponMod = Finale.getPlugin().getManager().getWeaponModifer();
 
-        double adjustedDamage = weaponMod.getDamage(is.getType());
-        double adjustedAttackSpeed = weaponMod.getAttackSpeed(is.getType());
+        double adjustedDamage = weaponMod.getDamage(is);
+        double adjustedAttackSpeed = weaponMod.getAttackSpeed(is);
 
         if (adjustedAttackSpeed != -1.0 || adjustedDamage != -1) {
             im.removeAttributeModifier(Attribute.GENERIC_ATTACK_SPEED);
@@ -162,4 +163,25 @@ public class WeaponModificationListener implements Listener {
         is.setItemMeta(im);
     }
 
+    @EventHandler
+    public void damageEntity(EntityDamageByEntityEvent e) {
+        if (!(e.getEntity() instanceof Player victim) || !(e.getDamager() instanceof Player attacker)) {
+            return;
+        }
+        WeaponModifier weaponMod = Finale.getPlugin().getManager().getWeaponModifer();
+        ItemStack item = attacker.getInventory().getItemInMainHand();
+
+        int pieces = 0;
+        for (ItemStack armour : victim.getInventory().getArmorContents()) {
+            if (armour == null) {
+                continue;
+            }
+            Material type = armour.getType();
+            switch (type) {
+                case NETHERITE_BOOTS, NETHERITE_HELMET, NETHERITE_CHESTPLATE, NETHERITE_LEGGINGS -> pieces++;
+            }
+        }
+
+        e.setDamage(e.getDamage() + pieces * weaponMod.getBonusDamagePerNetheritePiece(item));
+    }
 }

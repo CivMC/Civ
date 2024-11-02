@@ -167,7 +167,7 @@ public class ItemUseGUI {
         ItemUtils.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GOLD + "Setup cost:");
-        for (Map.Entry<ItemStack, Integer> entry : fccEgg.getSetupCost().getEntrySet()) {
+        for (Map.Entry<ItemStack, Integer> entry : fccEgg.getSetupCost().getAllItems().entrySet()) {
             String recipeRepresentation = entry.getValue() + " " + ItemUtils.getItemName(entry.getKey());
             lore.add(formatIngredient(recipeRepresentation, item));
         }

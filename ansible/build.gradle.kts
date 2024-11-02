@@ -26,6 +26,7 @@ dependencies {
     paperPlugin(project(path = ":plugins:randomspawn-paper"))
     paperPlugin(project(path = ":plugins:realisticbiomes-paper"))
     paperPlugin(project(path = ":plugins:simpleadminhacks-paper"))
+    paperPlugin(project(path = ":plugins:heliodor-paper"))
 
     pvpPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
     pvpPlugin(project(path = ":plugins:civduties-paper"))
@@ -35,6 +36,7 @@ dependencies {
     pvpPlugin(project(path = ":plugins:simpleadminhacks-paper"))
     pvpPlugin(project(path = ":plugins:kitpvp-paper"))
     pvpPlugin(project(path = ":plugins:voidworld-paper"))
+    pvpPlugin(project(path = ":plugins:heliodor-paper"))
 }
 
 val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {

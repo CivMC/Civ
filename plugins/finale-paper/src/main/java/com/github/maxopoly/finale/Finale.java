@@ -16,6 +16,7 @@ import com.github.maxopoly.finale.listeners.DamageListener;
 import com.github.maxopoly.finale.listeners.EnchantmentDisableListener;
 import com.github.maxopoly.finale.listeners.ExtraDurabilityListener;
 import com.github.maxopoly.finale.listeners.GappleListener;
+import com.github.maxopoly.finale.listeners.NetheriteFireResistanceListener;
 import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
 import com.github.maxopoly.finale.listeners.PlayerListener;
 import com.github.maxopoly.finale.listeners.PotionListener;
@@ -112,6 +113,9 @@ public class Finale extends ACivMod {
         Bukkit.getPluginManager().registerEvents(new DamageListener(config.getDamageModifiers()), this);
         Bukkit.getPluginManager().registerEvents(new ScoreboardHUD(settingsManager), this);
         Bukkit.getPluginManager().registerEvents(new ToolProtectionListener(settingsManager), this);
+        if (config.isNetheriteFireResistanceEnabled()) {
+            new NetheriteFireResistanceListener(this).start();
+        }
         Bukkit.getPluginManager().registerEvents(new WarpFruitListener(), this);
         Bukkit.getPluginManager().registerEvents(new TridentListener(), this);
         Bukkit.getPluginManager().registerEvents(new ShieldListener(), this);
