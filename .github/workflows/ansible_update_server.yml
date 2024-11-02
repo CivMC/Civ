@@ -5,7 +5,7 @@ on:
       environment:
         description: 'Environment to Update'
         type: environment
-        required: true 
+        required: true
         default: Test
 
 jobs:

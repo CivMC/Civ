@@ -136,6 +136,8 @@ hacks:
     disableGapples: true
   ItemMetaConverterHack:
     enabled: true
+  ItemSerializerHack:
+    enabled: true
   MapCopyProtection:
     enabled: true
   OldEnchanting:
@@ -261,6 +263,14 @@ hacks:
       - PISTON_BASE
       - PISTON_STICKY_BASE
       - OBSERVER
+  BuildLimits:
+    enabled: true
+    limits:
+      - ==: com.programmerdan.minecraft.simpleadminhacks.framework.utilities.BuildLimit
+        world: "world_nether"
+        type: ALTITUDE
+        min_y: -64
+        max_y: 128
   CTAnnounce:
     enabled: false
     delay: 10000
@@ -337,7 +347,6 @@ hacks:
     # Does not fully work atm
     blockElytraBreakBug: false
     damageOnElytraBreakBug: 1.0
-    canStorageTeleport: false
     stopBedBombingInHellBiomes: true
     stopAnchorBombing: true
     preventTreeWraparound: true
@@ -546,3 +555,5 @@ hacks:
   CreeperDiscHack:
     enabled: true
     discChance: 0.003
+  NoOozing:
+    enabled: true

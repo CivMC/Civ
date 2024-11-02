@@ -4,14 +4,26 @@ import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.misc.ArmourModifier;
 import com.github.maxopoly.finale.misc.ItemUtil;
 import com.github.maxopoly.finale.misc.WeaponModifier;
+import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import java.util.UUID;
 
 public class WeaponModificationListener implements Listener {
 
-    private final WeaponModifier manager = Finale.getPlugin().getManager().getWeaponModifer();
+    private final NamespacedKey KEY_ATTACK_SPEED;
+    private final NamespacedKey KEY_ATTACK_DAMAGE;
+
+    {
+        KEY_ATTACK_SPEED = new NamespacedKey(Finale.getPlugin(), "attack_speed");
+        KEY_ATTACK_DAMAGE = new NamespacedKey(Finale.getPlugin(), "attack_damage");
+    }
 
     @EventHandler
     public void weaponMod(InventoryClickEvent e) {
@@ -20,7 +32,7 @@ public class WeaponModificationListener implements Listener {
             return;
         }
 
-        is = ItemUtil.newModifiers(is); // there was a bug where modifiers weren't changing for items with already changed modifiers.
+        ItemMeta im = is.getItemMeta();
 
         ArmourModifier armourMod = Finale.getPlugin().getManager().getArmourModifier();
 
@@ -38,7 +50,33 @@ public class WeaponModificationListener implements Listener {
             if (knockbackResistance == -1) {
                 knockbackResistance = ItemUtil.getDefaultKnockbackResistance(is);
             }
-            is = ItemUtil.setArmour(ItemUtil.setArmourToughness(ItemUtil.setArmourKnockbackResistance(is, knockbackResistance), toughness), armour);
+
+            im.removeAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
+            EquipmentSlotGroup group = is.getType().getEquipmentSlot().getGroup();
+            if (knockbackResistance > 0) {
+                im.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE,
+                    new org.bukkit.attribute.AttributeModifier(new NamespacedKey(Finale.getPlugin(), "knockback_resistance" + group),
+                        knockbackResistance,
+                        org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
+                        group)
+                );
+            }
+
+            im.removeAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS);
+            im.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS,
+                new org.bukkit.attribute.AttributeModifier(new NamespacedKey(Finale.getPlugin(), "armor_toughness_" + group),
+                    toughness,
+                    org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
+                    group)
+            );
+
+            im.removeAttributeModifier(Attribute.GENERIC_ARMOR);
+            im.addAttributeModifier(Attribute.GENERIC_ARMOR,
+                new org.bukkit.attribute.AttributeModifier(new NamespacedKey(Finale.getPlugin(), "armor_" + group),
+                    armour,
+                    org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
+                    group)
+            );
         }
 
         WeaponModifier weaponMod = Finale.getPlugin().getManager().getWeaponModifer();
@@ -47,9 +85,23 @@ public class WeaponModificationListener implements Listener {
         double adjustedAttackSpeed = weaponMod.getAttackSpeed(is.getType());
 
         if (adjustedAttackSpeed != -1.0 || adjustedDamage != -1) {
-            is = ItemUtil.setDamage(ItemUtil.setAttackSpeed(is, adjustedAttackSpeed), adjustedDamage);
+            im.removeAttributeModifier(Attribute.GENERIC_ATTACK_SPEED);
+            im.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED,
+                new org.bukkit.attribute.AttributeModifier(KEY_ATTACK_SPEED,
+                    adjustedAttackSpeed,
+                    org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
+                    EquipmentSlotGroup.MAINHAND)
+            );
+
+            im.removeAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE);
+            im.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE,
+                new org.bukkit.attribute.AttributeModifier(KEY_ATTACK_DAMAGE,
+                    adjustedDamage,
+                    org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
+                    EquipmentSlotGroup.MAINHAND)
+            );
         }
-        e.setCurrentItem(is);
+        e.getCurrentItem().setItemMeta(im);
     }
 
 }

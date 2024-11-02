@@ -3,11 +3,10 @@ package com.untamedears.itemexchange.utility;
 import com.google.common.collect.Maps;
 import java.util.Map;
 import java.util.Objects;
-import org.apache.commons.lang3.EnumUtils;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
@@ -17,12 +16,10 @@ import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
 public final class NBTEncodings {
 
     private static final String TYPE_KEY = "type";
-    private static final String EXTENDED_KEY = "extended";
-    private static final String UPGRADED_KEY = "upgraded";
     private static final String DURATION_KEY = "duration";
-    private static final String AMPLIFIER_KEY = "amplifier";
-    private static final String AMBIENT_KEY = "ambient";
-    private static final String PARTICLES_KEY = "particles";
+	private static final String AMPLIFIER_KEY = "amplifier";
+	private static final String AMBIENT_KEY = "ambient";
+	private static final String PARTICLES_KEY = "particles";
 
     // ------------------------------------------------------------
     // Leveled Enchantments
@@ -61,26 +58,25 @@ public final class NBTEncodings {
     // Potion Data
     // ------------------------------------------------------------
 
-    public static NBTCompound encodePotionData(PotionData data) {
+    public static NBTCompound encodePotionData(PotionType type) {
         NBTCompound nbt = new NBTCompound();
-        if (data == null) {
+        if (type == null) {
             return nbt;
         }
-        nbt.setString(TYPE_KEY, data.getType().name());
-        nbt.setBoolean(EXTENDED_KEY, data.isExtended());
-        nbt.setBoolean(UPGRADED_KEY, data.isUpgraded());
+        nbt.setString(TYPE_KEY, type.name());
         return nbt;
     }
 
-    public static PotionData decodePotionData(NBTCompound nbt) {
+    public static PotionType decodePotionData(NBTCompound nbt) {
         if (nbt == null) {
             return null;
         }
-        return new PotionData(
-            EnumUtils.getEnum(PotionType.class, nbt.getString(TYPE_KEY)),
-            nbt.getBoolean(EXTENDED_KEY),
-            nbt.getBoolean(UPGRADED_KEY));
-    }
+        String type = nbt.getString(TYPE_KEY);
+        if ("UNCRAFTABLE".equals(type)) {
+            return null;
+        }
+        return PotionType.valueOf(type);
+	}
 
     // ------------------------------------------------------------
     // Potion Effect
@@ -91,7 +87,7 @@ public final class NBTEncodings {
         if (effect == null) {
             return nbt;
         }
-        nbt.setString(TYPE_KEY, effect.getType().getName());
+        nbt.setString(TYPE_KEY, String.valueOf(effect.getType().getKey()));
         nbt.setInt(DURATION_KEY, effect.getDuration());
         nbt.setInt(AMPLIFIER_KEY, effect.getAmplifier());
         nbt.setBoolean(AMBIENT_KEY, effect.isAmbient());
@@ -104,7 +100,7 @@ public final class NBTEncodings {
             return null;
         }
         return new PotionEffect(
-            Objects.requireNonNull(PotionEffectType.getByName(nbt.getString(TYPE_KEY))),
+            Objects.requireNonNull(Registry.POTION_EFFECT_TYPE.get(NamespacedKey.minecraft(nbt.getString(TYPE_KEY)))),
             nbt.getInt(DURATION_KEY),
             nbt.getInt(AMPLIFIER_KEY),
             nbt.getBoolean(AMBIENT_KEY),

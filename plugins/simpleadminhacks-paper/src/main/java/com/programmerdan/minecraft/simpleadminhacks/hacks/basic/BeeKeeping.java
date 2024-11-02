@@ -5,19 +5,11 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.animal.Bee;
@@ -28,9 +20,9 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R3.block.CraftBlock;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftEntity;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.block.CraftBlock;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -43,9 +35,19 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
+
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class BeeKeeping extends BasicHack {
 
@@ -185,7 +187,7 @@ public final class BeeKeeping extends BasicHack {
         player.sendMessage(response);
     }
 
-    private static BeehiveBlockEntity getBeeHive(@Nonnull final Block block) {
+    private static BeehiveBlockEntity getBeeHive(@NotNull final Block block) {
         final CraftBlock craftBlock = (CraftBlock) block;
         final CraftWorld craftWorld = craftBlock.getCraftWorld();
         final ServerLevel worldServer = craftWorld.getHandle();
@@ -193,18 +195,17 @@ public final class BeeKeeping extends BasicHack {
         return (BeehiveBlockEntity) Objects.requireNonNull(tileEntity);
     }
 
-    private static List<BeeData> getBeesFromHive(@Nonnull final BeehiveBlockEntity hive) {
-        return hive.writeBees().stream()
-            .map(bee -> ((CompoundTag) bee).getCompound(BEE_DATA_KEY))
-            .map(BeeData::new)
-            .collect(Collectors.toCollection(ArrayList::new));
-    }
+    private static List<BeeData> getBeesFromHive(@NotNull final BeehiveBlockEntity hive) {
+        List<BeehiveBlockEntity.Occupant> bees = hive.components().get(DataComponents.BEES);
+
+		return bees == null ? null : bees.stream().map(bee -> bee.entityData().copyTag()).map(BeeData::new).collect(Collectors.toCollection(ArrayList::new));
+	}
 
     private static final class BeeData {
 
         public final Component name;
 
-        public BeeData(@Nonnull final CompoundTag nbt) {
+        public BeeData(@NotNull final CompoundTag nbt) {
             // Parse name
             final String rawName = nbt.getString(BEE_NAME_KEY);
             if (Strings.isNullOrEmpty(rawName)) {
