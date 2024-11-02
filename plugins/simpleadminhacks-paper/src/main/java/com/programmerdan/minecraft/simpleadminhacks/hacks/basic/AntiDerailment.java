@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.util.Vector;
 
@@ -25,7 +26,6 @@ import java.util.Map;
 public class AntiDerailment extends BasicHack {
 
     private Map<Minecart, Vector> previousTickMinecartVelocity;
-    private boolean ticking = false;
 
     public AntiDerailment(SimpleAdminHacks plugin, BasicHackConfig config) {
         super(plugin, config);
@@ -50,11 +50,8 @@ public class AntiDerailment extends BasicHack {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onDerailment(VehicleMoveEvent e) {
-        if (ticking) {
-            return;
-        }
         // This method is EXTREMELY fucked but basically if it detects a super fast minecart is going to derail, it will
         // undo one tick of movement and redo it at 8m/s (the default minecart speed)
         // To do this it also needs to store the velocity from the previous tick to recreate the movement properly
@@ -91,12 +88,7 @@ public class AntiDerailment extends BasicHack {
         minecart.setVelocity(previousTickMinecartVelocity.get(minecart));
         double maxSpeed = minecart.getMaxSpeed();
         minecart.setMaxSpeed(0.4D); // 8m/s, default minecart speed
-        try {
-            ticking = true;
-            handle.tick();
-        } finally {
-            ticking = false;
-        }
+        handle.tick();
         minecart.setMaxSpeed(maxSpeed);
         previousTickMinecartVelocity.put(minecart, minecart.getVelocity());
     }

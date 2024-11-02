@@ -12,7 +12,6 @@ public class GameFixesConfig extends SimpleHackConfig {
 
     private boolean blockElytraBreakBug;
     private double damageOnElytraBreakBug;
-    private boolean canStorageTeleport;
     private boolean stopBedBombing;
     private boolean stopAnchorBombing;
     private boolean preventTreeWrap;
@@ -32,9 +31,6 @@ public class GameFixesConfig extends SimpleHackConfig {
         damageOnElytraBreakBug = config.getDouble("damageOnElytraBreakBug", 0.0d);
         if (blockElytraBreakBug)
             plugin().log(Level.INFO, "  Block Elytra 1height break bug is enabled, doing {} damage to violators", damageOnElytraBreakBug);
-
-        canStorageTeleport = config.getBoolean("canStorageTeleport");
-        if (!canStorageTeleport) plugin().log("  Storage holder teleportation is disabled.");
 
         stopBedBombing = config.getBoolean("stopBedBombingInHellBiomes", true);
         if (stopBedBombing) plugin().log("  Stop Bed Bombing In Hell Biomes is enabled.");
@@ -61,10 +57,6 @@ public class GameFixesConfig extends SimpleHackConfig {
 
     public double getDamageOnElytraBreakBug() {
         return damageOnElytraBreakBug;
-    }
-
-    public boolean canStorageTeleport() {
-        return canStorageTeleport;
     }
 
     public boolean stopBedBombing() {

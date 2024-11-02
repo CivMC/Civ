@@ -27,7 +27,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: 🐘 Gradle Build
-        run: CI=true ./gradlew :ansible:build --no-daemon
+        run: CI=true ./gradlew :ansible:build
 
       - name: Inject secrets
         run: 'echo "$SECRETS_YML" > variables/secrets.yml'
