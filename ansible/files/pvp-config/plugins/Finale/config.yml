@@ -130,6 +130,10 @@ weaponModification:
   trident:
     material: TRIDENT
     damage: 8
+  meteoricIronSword:
+    key: meteoric_iron_sword
+    damage: 7
+    bonusDamagePerNetheritePiece: 0.75
 
 armourModification:
   diamondHelmet:
@@ -175,6 +179,26 @@ armourModification:
     toughness: 3
     extraDurabilityHits: 1
     knockbackResistance: 0
+  meteoricIronHelmet:
+    key: meteoric_iron_helmet
+    armour: 3
+    toughness: 2
+    extraDurabilityHits: 1
+  meteoricIronChestplate:
+    key: meteoric_iron_chestplate
+    armour: 8
+    toughness: 2
+    extraDurabilityHits: 1
+  meteoricIronLeggings:
+    key: meteoric_iron_leggings
+    armour: 6
+    toughness: 2
+    extraDurabilityHits: 1
+  meteoricIronBoots:
+    key: meteoric_iron_boots
+    armour: 3
+    toughness: 2
+    extraDurabilityHits: 1
 
 #allows disabling enchantments. Use official spigot identifiers from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
 #This will not remove them from enchanting, but simply remove the enchant as soon as the item is touched
@@ -570,3 +594,4 @@ blockPlacementRestrictions:
       type: OBSIDIAN
       cooldown: 1s
 
+netheriteFireResistance: true
