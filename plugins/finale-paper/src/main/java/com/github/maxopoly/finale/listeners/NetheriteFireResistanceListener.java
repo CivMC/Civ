@@ -10,7 +10,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class NetheriteFireResistanceListener implements Listener {
+public class NetheriteFireResistanceListener {
 
     private final Plugin plugin;
 
