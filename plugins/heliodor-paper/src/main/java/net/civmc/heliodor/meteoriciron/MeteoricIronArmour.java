@@ -95,8 +95,8 @@ public interface MeteoricIronArmour {
         meta.setRarity(ItemRarity.EPIC);
         meta.setMaxDamage(CHESPLATE_DURABILITY * 13 / 16);
         meta.addEnchant(Enchantment.UNBREAKING, 5, false);
-        meta.addEnchant(Enchantment.FEATHER_FALLING, 5, false);
-        meta.addEnchant(Enchantment.DEPTH_STRIDER, 5, false);
+        meta.addEnchant(Enchantment.FEATHER_FALLING, 4, false);
+        meta.addEnchant(Enchantment.DEPTH_STRIDER, 3, false);
         meta.addEnchant(Enchantment.PROTECTION, 4, false);
         meta.addEnchant(Enchantment.BLAST_PROTECTION, 4, false);
         meta.setFireResistant(true);
