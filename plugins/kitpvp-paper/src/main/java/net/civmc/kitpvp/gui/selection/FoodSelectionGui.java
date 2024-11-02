@@ -25,6 +25,6 @@ public class FoodSelectionGui extends ItemSelectionGui {
         inventory.setSlot(toClickable(new ItemStack(Material.PUMPKIN_PIE)), 6);
         inventory.setSlot(toClickable(new ItemStack(Material.BREAD)), 7);
         inventory.setSlot(toClickable(new ItemStack(Material.COOKED_CHICKEN)), 8);
-//        inventory.setSlot(toClickable(new ItemStack(Material.CHORUS_FRUIT)), 9);
+        inventory.setSlot(toClickable(new ItemStack(Material.CHORUS_FRUIT)), 9);
     }
 }
