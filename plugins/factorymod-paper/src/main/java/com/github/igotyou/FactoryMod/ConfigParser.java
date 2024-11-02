@@ -49,6 +49,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.civmodcore.config.ConfigHelper;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 import java.io.File;
@@ -977,7 +978,24 @@ public class ConfigParser {
     }
 
     private static ItemStack parseFirstItem(ConfigurationSection config) {
-        return config == null ? null : config.getItemStack(config.getKeys(false).iterator().next());
+        if (config == null) {
+            return null;
+        }
+        String key = config.getKeys(false).iterator().next();
+        ConfigurationSection section = config.getConfigurationSection(key);
+        String custom = section == null ? null : section.getString("custom-key");
+        if (custom != null) {
+            ItemStack item = CustomItem.getCustomItem(custom);
+            if (item == null) {
+                throw new IllegalArgumentException("Unknown custom item key " + custom);
+            } else {
+                int amount = section.getInt("amount", 1);
+                item.setAmount(amount);
+                return item;
+            }
+        } else {
+            return config.getItemStack(key);
+        }
     }
 
     private Map<String, String> parseRenames(ConfigurationSection config) {

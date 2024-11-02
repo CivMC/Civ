@@ -21,6 +21,7 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import java.util.List;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -52,12 +53,13 @@ public interface MeteoricIronTools {
         meta.setFireResistant(true);
         AnvilRepairListener.setNoCombine(meta);
         pickaxe.setItemMeta(meta);
+        CustomItem.registerCustomItem("meteoric_iron_pickaxe", pickaxe);
         return pickaxe;
     }
 
     static ItemStack createAxe(boolean silk) {
-        ItemStack pickaxe = new ItemStack(Material.IRON_AXE);
-        Damageable meta = (Damageable) pickaxe.getItemMeta();
+        ItemStack axe = new ItemStack(Material.IRON_AXE);
+        Damageable meta = (Damageable) axe.getItemMeta();
 
         meta.displayName(Component.text("Meteoric Iron Axe", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
@@ -93,22 +95,22 @@ public interface MeteoricIronTools {
             meta.addEnchant(Enchantment.FORTUNE, 3, false);
         }
         meta.setFireResistant(true);
-        meta.getPersistentDataContainer().set(new NamespacedKey("finale", "custom_weapon"), PersistentDataType.STRING, "meteoric_iron_axe");
         AnvilRepairListener.setNoCombine(meta);
-        pickaxe.setItemMeta(meta);
-        return pickaxe;
+        axe.setItemMeta(meta);
+        CustomItem.registerCustomItem("meteoric_iron_axe", axe);
+        return axe;
     }
 
     static ItemStack createSword(boolean knocback) {
-        ItemStack pickaxe = new ItemStack(Material.IRON_SWORD);
-        Damageable meta = (Damageable) pickaxe.getItemMeta();
+        ItemStack sword = new ItemStack(Material.IRON_SWORD);
+        Damageable meta = (Damageable) sword.getItemMeta();
 
         meta.displayName(Component.text("Meteoric Iron Sword", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
         meta.lore(List.of(
             Component.text("+0.75 damage for each piece of netherite", NamedTextColor.WHITE),
             Component.text("armour the opponent is wearing", NamedTextColor.WHITE),
-            Component.text("Instantly breaks cobwebs")));
+            Component.text("Instantly breaks cobwebs", NamedTextColor.WHITE)));
         ToolComponent tool = meta.getTool();
         tool.setDamagePerBlock(1);
         tool.addRule(Material.COBWEB, 200f, true);
@@ -121,10 +123,10 @@ public interface MeteoricIronTools {
             meta.addEnchant(Enchantment.SHARPNESS, 5, false);
         }
         meta.setFireResistant(true);
-        meta.getPersistentDataContainer().set(new NamespacedKey("finale", "custom_weapon"), PersistentDataType.STRING, "meteoric_iron_sword");
         AnvilRepairListener.setNoCombine(meta);
-        pickaxe.setItemMeta(meta);
-        return pickaxe;
+        sword.setItemMeta(meta);
+        CustomItem.registerCustomItem("meteoric_iron_sword", sword);
+        return sword;
     }
 
     static List<ShapedRecipe> getRecipes(Plugin plugin) {

@@ -6,10 +6,9 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 public class ArmourModifier {
-
-    private static final NamespacedKey CUSTOM_ARMOUR_KEY = new NamespacedKey("finale", "custom_armour");
 
     public static class ArmourConfig {
 
@@ -74,7 +73,7 @@ public class ArmourModifier {
         if (item == null || item.isEmpty()) {
             return null;
         }
-        String key = item.getPersistentDataContainer().get(CUSTOM_ARMOUR_KEY, PersistentDataType.STRING);
+        String key = CustomItem.getCustomItemKey(item);
         if (key != null && customArmour.containsKey(key)) {
             return customArmour.get(key);
         } else {

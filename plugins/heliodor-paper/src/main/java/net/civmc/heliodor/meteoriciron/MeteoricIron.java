@@ -12,13 +12,11 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 import java.util.List;
 
 public interface MeteoricIron {
-
-    NamespacedKey NUGGET_KEY = new NamespacedKey(JavaPlugin.getPlugin(HeliodorPlugin.class), "meteoric_iron_nugget");
-    NamespacedKey INGOT_KEY = new NamespacedKey(JavaPlugin.getPlugin(HeliodorPlugin.class), "meteoric_iron_ingot");
 
     static ItemStack createMeteoricIronNugget() {
         ItemStack item = new ItemStack(Material.IRON_NUGGET);
@@ -28,8 +26,8 @@ public interface MeteoricIron {
             Component.text("Used for its unique magical properties", NamedTextColor.WHITE)));
         meta.setEnchantmentGlintOverride(true);
         meta.setFireResistant(true);
-        meta.getPersistentDataContainer().set(NUGGET_KEY, PersistentDataType.BOOLEAN, true);
         item.setItemMeta(meta);
+        CustomItem.registerCustomItem("meteoric_iron_nugget", item);
 
         return item;
     }
@@ -42,25 +40,19 @@ public interface MeteoricIron {
             Component.text("Used for its unique magical properties", NamedTextColor.WHITE)));
         meta.setEnchantmentGlintOverride(true);
         meta.setFireResistant(true);
-        meta.getPersistentDataContainer().set(INGOT_KEY, PersistentDataType.BOOLEAN, true);
         item.setItemMeta(meta);
+        CustomItem.registerCustomItem("meteoric_iron_ingot", item);
 
         return item;
     }
 
 
     static boolean isNugget(ItemStack item) {
-        if (item == null || item.getType() != Material.IRON_NUGGET) {
-            return false;
-        }
-        return item.getItemMeta().getPersistentDataContainer().has(NUGGET_KEY);
+        return CustomItem.isCustomItem(item, "meteoric_iron_nugget");
     }
 
     static boolean isIngot(ItemStack item) {
-        if (item == null || item.getType() != Material.HEAVY_WEIGHTED_PRESSURE_PLATE) {
-            return false;
-        }
-        return item.getItemMeta().getPersistentDataContainer().has(INGOT_KEY);
+        return CustomItem.isCustomItem(item, "meteoric_iron_ingot");
     }
 
     static List<ShapedRecipe> getRecipes(Plugin plugin) {

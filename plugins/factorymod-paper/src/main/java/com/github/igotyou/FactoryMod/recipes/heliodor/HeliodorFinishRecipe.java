@@ -103,7 +103,7 @@ public class HeliodorFinishRecipe extends InputRecipe {
         List<ItemStack> result = new ArrayList<>();
         ItemMap inventoryMap = new ItemMap(i);
         ItemMap possibleRuns = new ItemMap();
-        for (Map.Entry<ItemStack, Integer> entry : input.getEntrySet()) {
+        for (Map.Entry<ItemStack, Integer> entry : input.getAllItems().entrySet()) {
             if (inventoryMap.getAmount(entry.getKey()) != 0) {
                 possibleRuns.addItemAmount(entry.getKey(), inventoryMap.getAmount(entry.getKey()) / entry.getValue());
             } else {

@@ -85,7 +85,7 @@ public class PercentageHealthRepairManager implements IRepairManager {
         if (rate == 0.0) {
             return;
         }
-        for (Entry<ItemStack, Integer> items : FactoryMod.getInstance().getManager().getTotalSetupCost(factory).getEntrySet()) {
+        for (Entry<ItemStack, Integer> items : FactoryMod.getInstance().getManager().getTotalSetupCost(factory).getAllItems().entrySet()) {
             int returnAmount = (int) (items.getValue() * rate);
             ItemMap im = new ItemMap();
             im.addItemAmount(items.getKey(), returnAmount);

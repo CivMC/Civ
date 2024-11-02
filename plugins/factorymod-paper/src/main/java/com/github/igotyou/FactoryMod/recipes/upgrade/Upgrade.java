@@ -1,14 +1,14 @@
 package com.github.igotyou.FactoryMod.recipes.upgrade;
 
-import net.civmc.heliodor.meteoriciron.FactoryUpgrade;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 public interface Upgrade {
 
     static boolean hasUpgrade(ItemStack[] items) {
         for (ItemStack item : items) {
-            if (item != null && item.getPersistentDataContainer().has(FactoryUpgrade.FACTORY_UPGRADE_KEY)) {
+            if (CustomItem.isCustomItem(item, "factory_upgrade")) {
                 return true;
             }
         }
@@ -19,7 +19,7 @@ public interface Upgrade {
         ItemStack[] storageContents = inventory.getStorageContents();
         for (int i = 0; i < storageContents.length; i++) {
             ItemStack item = storageContents[i];
-            if (item != null && item.getPersistentDataContainer().has(FactoryUpgrade.FACTORY_UPGRADE_KEY)) {
+            if (CustomItem.isCustomItem(item, "factory_upgrade")) {
                 if (item.getAmount() == 1) {
                     inventory.removeItem(item);
                 } else {

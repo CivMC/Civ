@@ -44,6 +44,11 @@ public class HeliodorPlugin extends ACivMod {
     private VeinCache veinCache;
 
     @Override
+    public void onLoad() {
+        this.recipes = new HeliodorRecipeGiver(this);
+    }
+
+    @Override
     public void onEnable() {
         super.onEnable();
 
@@ -76,7 +81,7 @@ public class HeliodorPlugin extends ACivMod {
         protector.addPredicate(l -> chunkMetaView.get(l) != null);
         getServer().getPluginManager().registerEvents(new InfusionListener(infusionManager, chunkMetaView), this);
 
-        this.recipes = new HeliodorRecipeGiver(this);
+        Bukkit.getScheduler().runTaskTimer(this, this.recipes, 15 * 20, 15 * 20);
 
         getCommand("heliodor").setExecutor(new HeliodorDebugCommand(veinCache, veinSpawner, oreLocationsKey));
 

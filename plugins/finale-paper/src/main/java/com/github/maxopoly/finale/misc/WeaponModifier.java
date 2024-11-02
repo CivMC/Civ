@@ -3,13 +3,10 @@ package com.github.maxopoly.finale.misc;
 import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 public class WeaponModifier {
-
-    private static final NamespacedKey CUSTOM_WEAPON_KEY = new NamespacedKey("finale", "custom_weapon");
 
     public static final int DAMAGE_NON_ADJUSTED = -1;
     public static final double ATTACK_SPEED_NON_ADJUSTED = -1.0D;
@@ -66,7 +63,7 @@ public class WeaponModifier {
         if (item == null || item.getType().isEmpty()) {
             return null;
         }
-        String key = item.getPersistentDataContainer().get(CUSTOM_WEAPON_KEY, PersistentDataType.STRING);
+        String key = CustomItem.getCustomItemKey(item);
         if (key != null && customWeapons.containsKey(key)) {
             return customWeapons.get(key);
         } else {

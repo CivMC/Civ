@@ -23,6 +23,7 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 @SuppressWarnings("UnstableApiUsage")
 public interface MeteoricIronArmour {
@@ -42,9 +43,10 @@ public interface MeteoricIronArmour {
         meta.addEnchant(Enchantment.PROTECTION, 4, false);
         meta.addEnchant(Enchantment.BLAST_PROTECTION, 4, false);
         meta.setFireResistant(true);
-        setAttributesAndFinaleKey(meta, 3, 2, 0.025, "helmet", EquipmentSlotGroup.HEAD);
+        setAttributes(meta, 3, 2, 0.03, "helmet", EquipmentSlotGroup.HEAD);
         AnvilRepairListener.setNoCombine(meta);
         item.setItemMeta(meta);
+        CustomItem.registerCustomItem("meteoric_iron_helmet", item);
         return item;
     }
 
@@ -59,9 +61,10 @@ public interface MeteoricIronArmour {
         meta.addEnchant(Enchantment.PROTECTION, 4, false);
         meta.addEnchant(Enchantment.BLAST_PROTECTION, 4, false);
         meta.setFireResistant(true);
-        setAttributesAndFinaleKey(meta, 8, 2, 0.025, "chestplate", EquipmentSlotGroup.CHEST);
+        setAttributes(meta, 8, 2, 0.03, "chestplate", EquipmentSlotGroup.CHEST);
         AnvilRepairListener.setNoCombine(meta);
         item.setItemMeta(meta);
+        CustomItem.registerCustomItem("meteoric_iron_chestplate", item);
         return item;
     }
 
@@ -77,9 +80,10 @@ public interface MeteoricIronArmour {
         meta.addEnchant(Enchantment.PROTECTION, 4, false);
         meta.addEnchant(Enchantment.BLAST_PROTECTION, 4, false);
         meta.setFireResistant(true);
-        setAttributesAndFinaleKey(meta, 6, 2, 0.025, "leggings", EquipmentSlotGroup.LEGS);
+        setAttributes(meta, 6, 2, 0.03, "leggings", EquipmentSlotGroup.LEGS);
         AnvilRepairListener.setNoCombine(meta);
         item.setItemMeta(meta);
+        CustomItem.registerCustomItem("meteoric_iron_leggings", item);
         return item;
     }
 
@@ -96,13 +100,14 @@ public interface MeteoricIronArmour {
         meta.addEnchant(Enchantment.PROTECTION, 4, false);
         meta.addEnchant(Enchantment.BLAST_PROTECTION, 4, false);
         meta.setFireResistant(true);
-        setAttributesAndFinaleKey(meta, 3, 2, 0.025, "boots", EquipmentSlotGroup.FEET);
+        setAttributes(meta, 3, 2, 0.03, "boots", EquipmentSlotGroup.FEET);
         AnvilRepairListener.setNoCombine(meta);
         item.setItemMeta(meta);
+        CustomItem.registerCustomItem("meteoric_iron_boots", item);
         return item;
     }
 
-    private static void setAttributesAndFinaleKey(ItemMeta meta, int armour, int toughness, double speed, String name, EquipmentSlotGroup group) {
+    private static void setAttributes(ItemMeta meta, int armour, int toughness, double speed, String name, EquipmentSlotGroup group) {
         String prefix = "meteoric_iron_" + name;
         Multimap<Attribute, AttributeModifier> ams = HashMultimap.create();
         HeliodorPlugin plugin = JavaPlugin.getPlugin(HeliodorPlugin.class);

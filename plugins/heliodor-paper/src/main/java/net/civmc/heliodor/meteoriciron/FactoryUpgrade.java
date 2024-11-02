@@ -14,15 +14,14 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import java.util.List;
 
 public interface FactoryUpgrade {
 
-    NamespacedKey FACTORY_UPGRADE_KEY = new NamespacedKey(JavaPlugin.getPlugin(HeliodorPlugin.class), "factory_upgrade");
-
     static ItemStack createUpgrade() {
-        ItemStack pickaxe = new ItemStack(Material.REDSTONE_TORCH);
-        Damageable meta = (Damageable) pickaxe.getItemMeta();
+        ItemStack upgrade = new ItemStack(Material.REDSTONE_TORCH);
+        Damageable meta = (Damageable) upgrade.getItemMeta();
 
         meta.displayName(Component.text("Factory Upgrade", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
@@ -33,10 +32,10 @@ public interface FactoryUpgrade {
         ));
         meta.setFireResistant(true);
         meta.setEnchantmentGlintOverride(true);
-        meta.getPersistentDataContainer().set(FACTORY_UPGRADE_KEY, PersistentDataType.BOOLEAN, true);
         AnvilRepairListener.setNoCombine(meta);
-        pickaxe.setItemMeta(meta);
-        return pickaxe;
+        upgrade.setItemMeta(meta);
+        CustomItem.registerCustomItem("factory_upgrade", upgrade);
+        return upgrade;
     }
 
 
