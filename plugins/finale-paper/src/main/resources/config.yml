@@ -274,3 +274,5 @@ invulnerableTicks:
   POISON: 1
   PROJECTILE: 1
   ENTITY_ATTACK: 10
+
+netheriteFireResistance: false

@@ -131,7 +131,7 @@ public class DonumManager {
         Donum.getInstance().debug("Old inventory: " + oldInventory.toString());
         Donum.getInstance().debug("New inventory: " + newInventory.toString());
         ItemMap diff = new ItemMap();
-        for (Entry<ItemStack, Integer> entry : oldInventory.getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : oldInventory.getAllItems().entrySet()) {
             ItemStack is = entry.getKey();
             int oldAmount = entry.getValue();
             int newAmount = newInventory.getAmount(is);

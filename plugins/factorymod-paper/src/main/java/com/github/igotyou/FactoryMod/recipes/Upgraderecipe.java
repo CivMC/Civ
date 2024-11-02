@@ -70,7 +70,7 @@ public class Upgraderecipe extends InputRecipe {
         LinkedList<ItemStack> result = new LinkedList<>();
         ItemMap inventoryMap = new ItemMap(i);
         ItemMap possibleRuns = new ItemMap();
-        for (Entry<ItemStack, Integer> entry : input.getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : input.getAllItems().entrySet()) {
             if (inventoryMap.getAmount(entry.getKey()) != 0) {
                 possibleRuns.addItemAmount(
                     entry.getKey(),

@@ -3,9 +3,13 @@ package com.github.igotyou.FactoryMod.interactionManager;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
+import com.github.igotyou.FactoryMod.recipes.upgrade.CharcoalConsumptionUpgradeRecipe;
+import com.github.igotyou.FactoryMod.recipes.upgrade.ResetUpgradesRecipe;
+import com.github.igotyou.FactoryMod.recipes.upgrade.SpeedUpgradeRecipe;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
@@ -15,6 +19,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,6 +29,7 @@ import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
@@ -103,7 +110,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
             }
         }
         if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure()).getChest())) { // chest interaction
-            if (p.isSneaking()) { // sneaking, so showing detailed recipe stuff
+            if (p.isSneaking() && fccf.getCurrentRecipe() instanceof InputRecipe) { // sneaking, so showing detailed recipe stuff
                 ClickableInventory ci = new ClickableInventory(54, fccf.getCurrentRecipe().getName());
                 int index = 4;
                 List<ItemStack> inp = ((InputRecipe) fccf.getCurrentRecipe())
@@ -214,10 +221,14 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
     private ComponableInventory buildRecipeInventory(Player p) {
         ComponableInventory compInv = new ComponableInventory("Select a recipe", 6, p);
 
+        boolean upgrades = FactoryMod.getInstance().getManager().canUpgrade();
+        Clickable resetUpgrades = upgrades ? buildResetUpgrades() : null;
+        Clickable upgradeSpeed = upgrades ? buildUpgradeSpeed() : null;
+        Clickable upgradeCharcoalConsumption = upgrades ? buildUpgradeCharcoalConsumption() : null;
         Clickable autoClick = buildAutoSelectToggle();
         Clickable menuC = buildMenuClickable();
         Clickable menuModeButton = buildMenuModeCycleButton(p);
-        Clickable[] buddons = new Clickable[]{autoClick, menuC, menuModeButton};
+        Clickable[] buddons = new Clickable[]{resetUpgrades, upgradeSpeed, upgradeCharcoalConsumption, autoClick, menuC, menuModeButton};
         StaticDisplaySection lowerSection = new StaticDisplaySection(buddons);
 
         Block fblock = fccf.getFurnace();
@@ -252,7 +263,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
             default: {
                 Scrollbar recipeScroller = buildRecipeScrollbar(5);
                 compInv.addComponent(recipeScroller, SlotPredicates.offsetRectangle(5, 9, 0, 0));
-                compInv.addComponent(lowerSection, SlotPredicates.offsetRectangle(1, 3, 5, 6));
+                compInv.addComponent(lowerSection, SlotPredicates.offsetRectangle(1, 6, 5, 3));
             }
         }
         return compInv;
@@ -297,6 +308,125 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
         Scrollbar recipeScroller = new Scrollbar(recipeClickList, rows * 9);
         recipeScroller.setBackwardsClickSlot(rows == 1 ? 0 : 8);
         return recipeScroller;
+    }
+
+    private static final String[] CHARCOAL_STAGES = new String[] { "1", "1/4", "1/8", "1/12", "1/16"};
+
+    private Clickable buildUpgradeCharcoalConsumption() {
+        ItemStack upgradeCharcoal = new ItemStack(Material.REDSTONE_TORCH);
+        ItemMeta meta = upgradeCharcoal.getItemMeta();
+        meta.displayName(Component.text("Upgrade charcoal consumption"));
+        if (fccf.getSpeedLevel() > 0) {
+            meta.lore(List.of(Component.text("Cannot be upgraded", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)));
+        } else if (fccf.getCharcoalLevel() == CHARCOAL_STAGES.length - 1) {
+            meta.lore(List.of(Component.empty().decoration(TextDecoration.ITALIC, false)
+                .append(Component.text(CHARCOAL_STAGES[fccf.getCharcoalLevel()], NamedTextColor.YELLOW))
+                .append(Component.text(" Max level!", NamedTextColor.GOLD))));
+        } else if (((FurnacePowerManager) fccf.getPowerManager()).getFuel().getType() != Material.CHARCOAL) {
+            meta.lore(List.of(Component.text("This factory does not use charcoal", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false)));
+        } else {
+            meta.lore(List.of(
+                Component.empty().decoration(TextDecoration.ITALIC, false)
+                    .append(Component.text(CHARCOAL_STAGES[fccf.getCharcoalLevel()], NamedTextColor.YELLOW))
+                    .append(Component.text(" -> ", NamedTextColor.GOLD))
+                    .append(Component.text(CHARCOAL_STAGES[fccf.getCharcoalLevel() + 1], NamedTextColor.YELLOW)),
+                Component.text("Requires 1 Factory Upgrade", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false),
+                Component.text("Mutually exclusive with speed upgrade", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false),
+                Component.text("Not refundable", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false)
+            ));
+        }
+        meta.setEnchantmentGlintOverride(true);
+        upgradeCharcoal.setItemMeta(meta);
+
+        return new Clickable(upgradeCharcoal) {
+            @Override
+            protected void clicked(Player p) {
+                if (fccf.getCharcoalLevel() == CHARCOAL_STAGES.length - 1 || fccf.getSpeedLevel() > 0 || ((FurnacePowerManager) fccf.getPowerManager()).getFuel().getType() != Material.CHARCOAL) {
+                    return;
+                }
+
+                if (fccf.isActive()) {
+                    p.sendMessage(Component.text("You can't switch recipes while the factory is running", NamedTextColor.RED));
+                } else {
+                    fccf.setRecipeForce(FactoryMod.getInstance().getManager().getRecipe(CharcoalConsumptionUpgradeRecipe.IDENTIFIER));
+                    p.sendMessage(ChatColor.GREEN + "Switched recipe to " + fccf.getCurrentRecipe().getName());
+                }
+            }
+        };
+    }
+
+    private static final String[] SPEED_STAGES = new String[] { "x1", "x2", "x3", "x4", "x5"};
+
+    private Clickable buildUpgradeSpeed() {
+        ItemStack upgradeSpeed = new ItemStack(Material.SOUL_TORCH);
+        ItemMeta meta = upgradeSpeed.getItemMeta();
+        meta.displayName(Component.text("Upgrade speed"));
+        if (fccf.getCharcoalLevel() > 0) {
+            meta.lore(List.of(Component.text("Cannot be upgraded", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)));
+        } else if (fccf.getSpeedLevel() == SPEED_STAGES.length - 1) {
+            meta.lore(List.of(Component.empty().decoration(TextDecoration.ITALIC, false)
+                .append(Component.text(SPEED_STAGES[fccf.getSpeedLevel()], NamedTextColor.YELLOW))
+                .append(Component.text(" Max level!", NamedTextColor.GOLD))));
+        } else {
+            meta.lore(List.of(
+                Component.empty().decoration(TextDecoration.ITALIC, false)
+                    .append(Component.text(SPEED_STAGES[fccf.getSpeedLevel()], NamedTextColor.YELLOW))
+                    .append(Component.text(" -> ", NamedTextColor.GOLD))
+                    .append(Component.text(SPEED_STAGES[fccf.getSpeedLevel() + 1], NamedTextColor.YELLOW)),
+                Component.text("Requires 1 Factory Upgrade", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false),
+                Component.text("Mutually exclusive with charcoal upgrade", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false),
+                Component.text("Not refundable", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false)
+            ));
+        }
+        meta.setEnchantmentGlintOverride(true);
+        upgradeSpeed.setItemMeta(meta);
+
+        return new Clickable(upgradeSpeed) {
+            @Override
+            protected void clicked(Player p) {
+                if (fccf.getSpeedLevel() == SPEED_STAGES.length - 1 || fccf.getCharcoalLevel() > 0) {
+                    return;
+                }
+
+                if (fccf.isActive()) {
+                    p.sendMessage(Component.text("You can't switch recipes while the factory is running", NamedTextColor.RED));
+                } else {
+                    fccf.setRecipeForce(FactoryMod.getInstance().getManager().getRecipe(SpeedUpgradeRecipe.IDENTIFIER));
+                    p.sendMessage(ChatColor.GREEN + "Switched recipe to " + fccf.getCurrentRecipe().getName());
+                }
+            }
+        };
+    }
+
+    private Clickable buildResetUpgrades() {
+        ItemStack upgradeSpeed = new ItemStack(Material.LEVER);
+        ItemMeta meta = upgradeSpeed.getItemMeta();
+        meta.displayName(Component.text("Reset upgrades"));
+        if (fccf.getCharcoalLevel() == 0 && fccf.getSpeedLevel() == 0) {
+            meta.lore(List.of(Component.text("You do not have any upgrades", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)));
+        } else {
+            meta.lore(List.of(
+                Component.text("Permanently deletes all upgrades for this factory", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false)
+            ));
+        }
+        meta.setEnchantmentGlintOverride(true);
+        upgradeSpeed.setItemMeta(meta);
+
+        return new Clickable(upgradeSpeed) {
+            @Override
+            protected void clicked(Player p) {
+                if (fccf.getCharcoalLevel() == 0 && fccf.getSpeedLevel() == 0) {
+                    return;
+                }
+
+                if (fccf.isActive()) {
+                    p.sendMessage(Component.text("You can't switch recipes while the factory is running", NamedTextColor.RED));
+                } else {
+                    fccf.setRecipeForce(FactoryMod.getInstance().getManager().getRecipe(ResetUpgradesRecipe.IDENTIFIER));
+                    p.sendMessage(ChatColor.GREEN + "Switched recipe to " + fccf.getCurrentRecipe().getName());
+                }
+            }
+        };
     }
 
     private Clickable buildAutoSelectToggle() {

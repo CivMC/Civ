@@ -41,6 +41,8 @@ import org.bukkit.util.Vector;
 
 public class CombatUtil {
 
+    public static org.bukkit.inventory.ItemStack DAMAGING_ITEM = null;
+
     private static void sendSoundEffect(net.minecraft.world.entity.player.Player fromEntity, double x, double y, double z, SoundEvent soundEffect, SoundSource soundCategory, float volume, float pitch) {
         fromEntity.playSound(soundEffect, volume, pitch); // This will not send the effect to the entity himself
         if (fromEntity instanceof ServerPlayer) {
@@ -123,7 +125,13 @@ public class CombatUtil {
 
                 Vec3 victimMot = victim.getDeltaMovement();
                 if (shouldDamage) {
-                    boolean damagedVictim = victim.hurt(damagesource, damage);
+                    boolean damagedVictim;
+                    try {
+                        DAMAGING_ITEM = attacker.getBukkitEntity().getInventory().getItemInMainHand();
+                        damagedVictim = victim.hurt(damagesource, damage);
+                    } finally {
+                        DAMAGING_ITEM = null;
+                    }
                     if (damagedVictim) {
                         if (knockbackLevel > 0 || dealtExtraKnockback) {
                             if (victim instanceof LivingEntity) {
