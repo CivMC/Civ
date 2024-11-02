@@ -118,8 +118,7 @@ public interface MeteoricIronTools {
         meta.displayName(Component.text("Meteoric Iron Sword", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
         meta.lore(List.of(
-            Component.text("+0.75 damage for each piece of netherite", NamedTextColor.WHITE),
-            Component.text("armour the opponent is wearing", NamedTextColor.WHITE),
+            Component.text("Deals 1 second of Slowness I on hit", NamedTextColor.WHITE),
             Component.text("Instantly breaks cobwebs", NamedTextColor.WHITE)));
         ToolComponent tool = meta.getTool();
         tool.setDamagePerBlock(1);
