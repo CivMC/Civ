@@ -53,7 +53,11 @@ public interface MeteoricIronTools {
         meta.setFireResistant(true);
         AnvilRepairListener.setNoCombine(meta);
         pickaxe.setItemMeta(meta);
-        CustomItem.registerCustomItem("meteoric_iron_pickaxe", pickaxe);
+        if (silk) {
+            CustomItem.registerCustomItem("meteoric_iron_pickaxe_silk", pickaxe);
+        } else {
+            CustomItem.registerCustomItem("meteoric_iron_pickaxe", pickaxe);
+        }
         return pickaxe;
     }
 
@@ -97,7 +101,11 @@ public interface MeteoricIronTools {
         meta.setFireResistant(true);
         AnvilRepairListener.setNoCombine(meta);
         axe.setItemMeta(meta);
-        CustomItem.registerCustomItem("meteoric_iron_axe", axe);
+        if (silk) {
+            CustomItem.registerCustomItem("meteoric_iron_axe_silk", axe);
+        } else {
+            CustomItem.registerCustomItem("meteoric_iron_axe", axe);
+        }
         return axe;
     }
 
@@ -117,15 +125,18 @@ public interface MeteoricIronTools {
         meta.setTool(tool);
         meta.setMaxDamage(DURABILITY);
         meta.addEnchant(Enchantment.FIRE_ASPECT, 2, false);
+        meta.addEnchant(Enchantment.SHARPNESS, 5, false);
         if (knocback) {
             meta.addEnchant(Enchantment.KNOCKBACK, 2, false);
-        } else {
-            meta.addEnchant(Enchantment.SHARPNESS, 5, false);
         }
         meta.setFireResistant(true);
         AnvilRepairListener.setNoCombine(meta);
         sword.setItemMeta(meta);
-        CustomItem.registerCustomItem("meteoric_iron_sword", sword);
+        if (knocback) {
+            CustomItem.registerCustomItem("meteoric_iron_sword_knockback", sword);
+        } else {
+            CustomItem.registerCustomItem("meteoric_iron_sword", sword);
+        }
         return sword;
     }
 
