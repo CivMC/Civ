@@ -9,16 +9,19 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 import java.util.List;
 
 public class ArmourSlotSelectionGui extends ItemSelectionGui {
 
     private final List<Material> items;
+    private final List<String> custom;
 
-    public ArmourSlotSelectionGui(KitPvpDao dao, Player player, int slot, Kit kit, EditKitGui gui, List<Material> items) {
+    public ArmourSlotSelectionGui(KitPvpDao dao, Player player, int slot, Kit kit, EditKitGui gui, List<Material> items, List<String> custom) {
         super(dao, "Armour", player, slot, kit, gui::open, gui);
         this.items = items;
+        this.custom = custom;
     }
 
     @Override
@@ -29,8 +32,11 @@ public class ArmourSlotSelectionGui extends ItemSelectionGui {
         none.setItemMeta(noneMeta);
         inventory.setSlot(toClickable(none, null), 18);
 
-        for (int i = 0; i < Math.min(items.size(), 8); i++) {
+        for (int i = 0; i < items.size(); i++) {
             inventory.setSlot(toClickable(new ItemStack(items.get(i))), 19 + i);
+        }
+        for (int i = 0; i < custom.size(); i++) {
+            inventory.setSlot(toClickable(CustomItem.getCustomItem(custom.get(i))), 19 + items.size() + i);
         }
     }
 }

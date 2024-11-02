@@ -173,19 +173,19 @@ public class EditKitGui {
         }
 
         inventory.setSlot(getSlot(inventory, 39, Material.ORANGE_STAINED_GLASS_PANE, "Helmet",
-                () -> new ArmourSlotSelectionGui(dao, player, 39, kit, this, new ArrayList<>(MaterialTags.HELMETS.getValues())).open()),
+                () -> new ArmourSlotSelectionGui(dao, player, 39, kit, this, new ArrayList<>(MaterialTags.HELMETS.getValues()), List.of("meteoric_iron_helmet")).open()),
             10);
 
         inventory.setSlot(getSlot(inventory, 38, Material.ORANGE_STAINED_GLASS_PANE, "Chestplate",
-                () -> new ArmourSlotSelectionGui(dao, player, 38, kit, this, new ArrayList<>(MaterialTags.CHEST_EQUIPPABLE.getValues())).open()),
+                () -> new ArmourSlotSelectionGui(dao, player, 38, kit, this, new ArrayList<>(MaterialTags.CHEST_EQUIPPABLE.getValues()), List.of("meteoric_iron_chestplate")).open()),
             11);
 
         inventory.setSlot(getSlot(inventory, 37, Material.ORANGE_STAINED_GLASS_PANE, "Leggings",
-                () -> new ArmourSlotSelectionGui(dao, player, 37, kit, this, new ArrayList<>(MaterialTags.LEGGINGS.getValues())).open()),
+                () -> new ArmourSlotSelectionGui(dao, player, 37, kit, this, new ArrayList<>(MaterialTags.LEGGINGS.getValues()), List.of("meteoric_iron_leggings")).open()),
             12);
 
         inventory.setSlot(getSlot(inventory, 36, Material.ORANGE_STAINED_GLASS_PANE, "Boots",
-                () -> new ArmourSlotSelectionGui(dao, player, 36, kit, this, new ArrayList<>(MaterialTags.BOOTS.getValues())).open()),
+                () -> new ArmourSlotSelectionGui(dao, player, 36, kit, this, new ArrayList<>(MaterialTags.BOOTS.getValues()), List.of("meteoric_iron_boots")).open()),
             13);
 
         inventory.setSlot(getSlot(inventory, 40, Material.ORANGE_STAINED_GLASS_PANE, "Offhand",
