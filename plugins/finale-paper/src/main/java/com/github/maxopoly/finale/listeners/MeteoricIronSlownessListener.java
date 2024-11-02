@@ -20,17 +20,11 @@ public class MeteoricIronSlownessListener implements Listener {
             return;
         }
 
-        int pieces = 0;
-        for (ItemStack armour : player.getInventory().getArmorContents()) {
-            String customItem = CustomItem.getCustomItemKey(armour);
-            if (customItem != null || customItem.startsWith("meteoric_iron_")) {
-                pieces++;
-            }
-        }
-        if (pieces != 4) {
+        ItemStack hand = player.getInventory().getItemInMainHand();
+        String customItem = CustomItem.getCustomItemKey(hand);
+        if (!"meteoric_iron_sword".equals(customItem)) {
             return;
         }
-
         if (event.getDamageSource().getDamageType() != DamageType.PLAYER_ATTACK || event.getDamageSource().isIndirect()) {
             return;
         }
