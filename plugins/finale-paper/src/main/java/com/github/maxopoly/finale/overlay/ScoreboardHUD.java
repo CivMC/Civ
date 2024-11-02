@@ -221,7 +221,7 @@ public class ScoreboardHUD implements Listener {
         if (damageable == null) {
             return null;
         }
-        int maxDura = is.getType().getMaxDurability();
+        int maxDura = damageable.hasMaxDamage() ? damageable.getMaxDamage() : is.getType().getMaxDurability();
         int damage = damageable.getDamage();
         int remainingHealth = maxDura - damage;
         float damagedRatio = ((float) remainingHealth) / maxDura;

@@ -102,6 +102,9 @@ public class FileHandler {
                     config.set(current + ".furnace-io", fccf.getFurnaceIOSelector().toConfigSection());
                     config.set(current + ".table-io", fccf.getTableIOSelector().toConfigSection());
                     config.set(current + ".ui-menu-mode", fccf.getUiMenuMode().name());
+                    config.set(current + ".charcoal-level", fccf.getCharcoalLevel());
+                    config.set(current + ".speed-level", fccf.getSpeedLevel());
+                    config.set(current + ".charcoal-absorbed", fccf.getCharcoalAbsorbed());
                 } else if (f instanceof Pipe) {
                     Pipe p = (Pipe) f;
                     config.set(current + ".type", "PIPE");
@@ -258,8 +261,11 @@ public class FileHandler {
                     }
 
                     boolean autoSelect = current.getBoolean("autoSelect", false);
+                    int charcoalLevel = current.getInt("charcoal-level", 0);
+                    int speedLevel = current.getInt("speed-level", 0);
+                    int charcoalAbsorbed = current.getInt("charcoal-absorbed", 0);
                     FurnCraftChestFactory fac = (FurnCraftChestFactory) egg.revive(blocks, health, selectedRecipe,
-                        runtime, breakTime, recipes);
+                        runtime, breakTime, recipes, charcoalLevel, speedLevel, charcoalAbsorbed);
                     String activator = current.getString("activator", "null");
                     UUID acti;
                     if (activator.equals("null")) {
