@@ -50,6 +50,7 @@ public class ConfigParser {
     private long pearlCooldown;
     private boolean combatTagOnPearl;
     private boolean netheriteFireResistanceEnabled;
+    private boolean meteoricIronSlowness;
     private PotionHandler potionHandler;
     private Collection<Enchantment> disabledEnchants;
     private VelocityHandler velocityHandler;
@@ -94,6 +95,10 @@ public class ConfigParser {
 
     public boolean isNetheriteFireResistanceEnabled() {
         return netheriteFireResistanceEnabled;
+    }
+
+    public boolean isMeteoricIronSlownessEnabled() {
+        return meteoricIronSlowness;
     }
 
     public FinaleManager parse() {
@@ -162,6 +167,7 @@ public class ConfigParser {
         WarpFruitTracker warpFruitTracker = new WarpFruitTracker(warpFruitLogSize, warpFruitLogInterval, warpFruitCooldown, warpFruitMaxDistance, warpFruitSpectralWhileChanneling, afterEffects);
 
         netheriteFireResistanceEnabled = config.getBoolean("netheriteFireResistance");
+        meteoricIronSlowness = config.getBoolean("meteoricIronSlowness");
 
         // Initialize the manager
         manager = new FinaleManager(debug, attackEnabled, attackSpeed, invulTicksEnabled, invulnerableTicks, regenEnabled, ctpOnLogin, regenhandler, weapMod, armourMod,
