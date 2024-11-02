@@ -39,6 +39,7 @@ public class ConfigParser {
     private long itemCooldown;
     private boolean combatTagOnPearl;
     private boolean netheriteFireResistanceEnabled;
+    private boolean meteoricIronSlowness;
     private PotionHandler potionHandler;
     private Collection<Enchantment> disabledEnchants;
     private VelocityHandler velocityHandler;
@@ -93,6 +94,10 @@ public class ConfigParser {
         return netheriteFireResistanceEnabled;
     }
 
+    public boolean isMeteoricIronSlownessEnabled() {
+        return meteoricIronSlowness;
+    }
+
     public FinaleManager parse() {
         plugin.info("Parsing Finale config...");
         plugin.saveDefaultConfig();
@@ -133,6 +138,7 @@ public class ConfigParser {
         combatConfig = parseCombatConfig(config.getConfigurationSection("cleanerCombat"));
 
         netheriteFireResistanceEnabled = config.getBoolean("netheriteFireResistance");
+        meteoricIronSlowness = config.getBoolean("meteoricIronSlowness");
 
         // Initialize the manager
         manager = new FinaleManager(debug, attackEnabled, attackSpeed, invulTicksEnabled, invulnerableTicks, regenEnabled, ctpOnLogin, regenhandler, weapMod, armourMod,

@@ -12,6 +12,7 @@ import com.github.maxopoly.finale.listeners.DamageListener;
 import com.github.maxopoly.finale.listeners.EnchantmentDisableListener;
 import com.github.maxopoly.finale.listeners.ExtraDurabilityListener;
 import com.github.maxopoly.finale.listeners.GappleCooldownListener;
+import com.github.maxopoly.finale.listeners.MeteoricIronSlownessListener;
 import com.github.maxopoly.finale.listeners.NetheriteFireResistanceListener;
 import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
 import com.github.maxopoly.finale.listeners.PlayerListener;
@@ -102,6 +103,9 @@ public class Finale extends ACivMod {
         Bukkit.getPluginManager().registerEvents(new ToolProtectionListener(settingsManager), this);
         if (config.isNetheriteFireResistanceEnabled()) {
             new NetheriteFireResistanceListener(this).start();
+        }
+        if (config.isMeteoricIronSlownessEnabled()) {
+            Bukkit.getPluginManager().registerEvents(new MeteoricIronSlownessListener(), this);
         }
     }
 
