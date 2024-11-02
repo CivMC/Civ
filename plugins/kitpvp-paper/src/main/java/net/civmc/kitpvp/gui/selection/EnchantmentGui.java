@@ -24,6 +24,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 
@@ -41,44 +42,45 @@ public class EnchantmentGui extends ItemSelectionGui {
     @Override
     public void addItems(ClickableInventory inventory) {
         ItemStack kitItem = kit.items()[this.slot].clone();
-        int slot = 0;
-        List<Enchantment> enchants = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).stream()
-            .sorted(Comparator.comparingInt(Enchantment::getMaxLevel).reversed())
-            .toList();
-        for (Enchantment enchantment : enchants) {
-            if (enchantment.canEnchantItem(kitItem)
-                && !enchantment.isCursed()
-                && enchantment != Enchantment.BANE_OF_ARTHROPODS
-                && enchantment != Enchantment.SMITE
-                && enchantment != Enchantment.MENDING) {
-                int pos = ENCHANT_START_SLOTS[slot++];
-                for (int level = 1; level <= enchantment.getMaxLevel(); level++) {
-                    ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
-                    ItemMeta meta = book.getItemMeta();
-                    meta.itemName(enchantment.displayName(level).color(NamedTextColor.GOLD));
-                    book.setItemMeta(meta);
+        if (!CustomItem.isCustomItem(kitItem)) {
+            int slot = 0;
+            List<Enchantment> enchants = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).stream()
+                .sorted(Comparator.comparingInt(Enchantment::getMaxLevel).reversed())
+                .toList();
+            for (Enchantment enchantment : enchants) {
+                if (enchantment.canEnchantItem(kitItem)
+                    && !enchantment.isCursed()
+                    && enchantment != Enchantment.BANE_OF_ARTHROPODS
+                    && enchantment != Enchantment.SMITE
+                    && enchantment != Enchantment.MENDING) {
+                    int pos = ENCHANT_START_SLOTS[slot++];
+                    for (int level = 1; level <= enchantment.getMaxLevel(); level++) {
+                        ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+                        ItemMeta meta = book.getItemMeta();
+                        meta.itemName(enchantment.displayName(level).color(NamedTextColor.GOLD));
+                        book.setItemMeta(meta);
 
-                    ItemStack enchantedKitItem = kitItem.clone();
-                    enchantedKitItem.addEnchantment(enchantment, level);
-                    inventory.setSlot(toClickable(book, enchantedKitItem), pos++);
+                        ItemStack enchantedKitItem = kitItem.clone();
+                        enchantedKitItem.addEnchantment(enchantment, level);
+                        inventory.setSlot(toClickable(book, enchantedKitItem), pos++);
+                    }
                 }
+            }
+
+            if (!kitItem.getEnchantments().isEmpty()) {
+                ItemStack clearEnchants = new ItemStack(Material.BARRIER);
+                ItemMeta clearEnchantsMeta = clearEnchants.getItemMeta();
+                clearEnchantsMeta.itemName(Component.text("Clear enchants", NamedTextColor.GOLD));
+                clearEnchants.setItemMeta(clearEnchantsMeta);
+
+                ItemStack clearEnchantsItem = kitItem.clone();
+                ItemMeta clearEnchantsItemMeta = clearEnchantsItem.getItemMeta();
+                clearEnchantsItemMeta.removeEnchantments();
+                clearEnchantsItem.setItemMeta(clearEnchantsItemMeta);
+                inventory.setSlot(toClickable(clearEnchants, clearEnchantsItem), 51);
             }
         }
 
-        if (!kitItem.getEnchantments().isEmpty()) {
-            ItemStack clearEnchants = new ItemStack(Material.BARRIER);
-            ItemMeta clearEnchantsMeta = clearEnchants.getItemMeta();
-            clearEnchantsMeta.itemName(Component.text("Clear enchants", NamedTextColor.GOLD));
-            clearEnchants.setItemMeta(clearEnchantsMeta);
-
-            ItemStack clearEnchantsItem = kitItem.clone();
-            ItemMeta clearEnchantsItemMeta = clearEnchantsItem.getItemMeta();
-            clearEnchantsItemMeta.removeEnchantments();
-            clearEnchantsItem.setItemMeta(clearEnchantsItemMeta);
-            inventory.setSlot(toClickable(clearEnchants, clearEnchantsItem), 51);
-        }
-
-        // Damageable has a similar interface but for some reason it doesn't work
         if (((CraftItemStack) kitItem).handle.has(DataComponents.MAX_DAMAGE)) {
             if (kitItem.getItemMeta().isUnbreakable()) {
                 ItemStack breakable = new ItemStack(Material.CRACKED_STONE_BRICKS);
