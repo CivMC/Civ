@@ -299,6 +299,7 @@ invulnerableTicks:
   ENTITY_ATTACK: 10
 
 netheriteFireResistance: false
+meteoricIronSlowness: false
 
 # the warp fruit will roll back to 7 seconds ago
 warpFruit: # logSize * logInterval = how far back in time you go
