@@ -14,8 +14,75 @@ disable_nether: false
 use_recipe_yamlidentifiers: true
 log_inventories: true
 force_include_default: true
+can_upgrade: true
 
 factories:
+  meteoric_iron_sword:
+    type: FCC
+    name: Meteoric Iron Sword Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 7
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 49
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - make_meteoric_iron_sword
+      - repair_meteoric_iron_sword_factory
+  meteoric_iron_pickaxe:
+    type: FCC
+    name: Meteoric Iron Pickaxe Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 11
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 77
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - make_meteoric_iron_pickaxe
+      - repair_meteoric_iron_pickaxe_factory
+  meteoric_iron_axe:
+    type: FCC
+    name: Meteoric Iron Axe Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 10
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 70
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - make_meteoric_iron_axe
+      - repair_meteoric_iron_axe_factory
   stone_smelter:
     type: FCC
     name: Basic Smelter
@@ -1445,14 +1512,14 @@ factories:
         type: HONEYCOMB
         amount: 32
     recipes:
-     - wax_copper_block
-     - wax_exposed_copper
-     - wax_weathered_copper
-     - wax_oxidized_copper
-     - weather_copper_block
-     - weather_exposed_copper
-     - weather_weathered_copper
-     - repair_copper_workshop
+      - wax_copper_block
+      - wax_exposed_copper
+      - wax_weathered_copper
+      - wax_oxidized_copper
+      - weather_copper_block
+      - weather_exposed_copper
+      - weather_weathered_copper
+      - repair_copper_workshop
 #RECIPES
 recipes:
   smelt_stone:
@@ -7686,10 +7753,10 @@ recipes:
     type: PRODUCTION
     input:
       iron_ingot:
-          v: 3839
-          ==: org.bukkit.inventory.ItemStack
-          type: IRON_INGOT
-          amount: 6
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 6
       lava_bucket:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9581,7 +9648,7 @@ recipes:
           ==: ItemMeta
           display-name: Plains Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9618,7 +9685,7 @@ recipes:
           ==: ItemMeta
           display-name: Plains Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9655,7 +9722,7 @@ recipes:
           ==: ItemMeta
           display-name: Plains Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9692,7 +9759,7 @@ recipes:
           ==: ItemMeta
           display-name: Relic Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9729,7 +9796,7 @@ recipes:
           ==: ItemMeta
           display-name: Arid Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9766,7 +9833,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9803,7 +9870,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9840,7 +9907,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9877,7 +9944,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9914,7 +9981,7 @@ recipes:
           ==: ItemMeta
           display-name: Relic Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9951,7 +10018,7 @@ recipes:
           ==: ItemMeta
           display-name: Relic Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9988,7 +10055,7 @@ recipes:
           ==: ItemMeta
           display-name: Barren Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10025,7 +10092,7 @@ recipes:
           ==: ItemMeta
           display-name: Arid Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10062,7 +10129,7 @@ recipes:
           ==: ItemMeta
           display-name: Arid Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10099,7 +10166,7 @@ recipes:
           ==: ItemMeta
           display-name: Barren Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10136,7 +10203,7 @@ recipes:
           ==: ItemMeta
           display-name: Barren Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10173,7 +10240,7 @@ recipes:
           ==: ItemMeta
           display-name: Tricky Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10210,7 +10277,7 @@ recipes:
           ==: ItemMeta
           display-name: Tricky Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10292,7 +10359,7 @@ recipes:
           lore:
             - Crack it open for a surprise!
     outputs:
-    #Food--- 60%
+      #Food--- 60%
       egg:
         chance: 0.15
         egg:
@@ -10321,7 +10388,7 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: BREAD
           amount: 8
-    #Good Loot--- 30%
+      #Good Loot--- 30%
       ironingot:
         chance: 0.0375
         ironingot:
@@ -10378,7 +10445,7 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: GOLDEN_APPLE
           amount: 4
-    #Unique--- 10%
+      #Unique--- 10%
       recipe1:
         chance: 0.01
         recipe1:
@@ -13809,7 +13876,7 @@ recipes:
           ==: ItemMeta
           display-name: Plains Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_cat:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -13832,7 +13899,7 @@ recipes:
           ==: ItemMeta
           display-name: Plains Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_blocks:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -13855,7 +13922,7 @@ recipes:
           ==: ItemMeta
           display-name: Plains Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_chirp:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -13878,7 +13945,7 @@ recipes:
           ==: ItemMeta
           display-name: Relic Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_far:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -13901,7 +13968,7 @@ recipes:
           ==: ItemMeta
           display-name: Relic Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_relic:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -13924,7 +13991,7 @@ recipes:
           ==: ItemMeta
           display-name: Relic Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_stal:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -13947,7 +14014,7 @@ recipes:
           ==: ItemMeta
           display-name: Arid Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_strad:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -13970,7 +14037,7 @@ recipes:
           ==: ItemMeta
           display-name: Arid Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_pigstep:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -13993,7 +14060,7 @@ recipes:
           ==: ItemMeta
           display-name: Arid Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_ward:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14016,7 +14083,7 @@ recipes:
           ==: ItemMeta
           display-name: Barren Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_wait:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14039,7 +14106,7 @@ recipes:
           ==: ItemMeta
           display-name: Barren Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_otherside:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14062,7 +14129,7 @@ recipes:
           ==: ItemMeta
           display-name: Barren Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_mall:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14085,7 +14152,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_5:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14108,7 +14175,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_11:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14131,7 +14198,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_mellohi:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14154,7 +14221,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_precipice:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14177,7 +14244,7 @@ recipes:
           ==: ItemMeta
           display-name: Tricky Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_creator:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14200,7 +14267,7 @@ recipes:
           ==: ItemMeta
           display-name: Tricky Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_creator_music_box:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14223,4 +14290,100 @@ recipes:
           ==: ItemMeta
           display-name: Tricky Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
+  make_meteoric_iron_sword:
+    production_time: 4s
+    name: Make Meteoric Iron Sword
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 6
+    output:
+      meteoric_iron_sword:
+        custom-key: meteoric_iron_sword
+        amount: 5
+  repair_meteoric_iron_sword_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 7
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
+  make_meteoric_iron_pickaxe:
+    production_time: 4s
+    name: Make Meteoric Iron Pickaxe
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 10
+    output:
+      meteoric_iron_pickaxe:
+        custom-key: meteoric_iron_pickaxe
+        amount: 5
+  repair_meteoric_iron_pickaxe_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 11
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
+  make_meteoric_iron_axe:
+    production_time: 4s
+    name: Make Meteoric Iron Axe
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 9
+    output:
+      meteoric_iron_axe:
+        custom-key: meteoric_iron_axe
+        amount: 5
+  repair_meteoric_iron_axe_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 10
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000

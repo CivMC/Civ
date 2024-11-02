@@ -64,12 +64,15 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
     private @Nullable IOSelector furnaceIoSelector;
     private @Nullable IOSelector tableIoSelector;
     private UiMenuMode uiMenuMode;
+    private int charcoalLevel;
+    private int speedLevel;
+    private int charcoalAbsorbed;
 
     private static HashSet<FurnCraftChestFactory> pylonFactories;
 
     public FurnCraftChestFactory(IInteractionManager im, IRepairManager rm, IPowerManager ipm,
                                  FurnCraftChestStructure mbs, int updateTime, String name, List<IRecipe> recipes,
-                                 double citadelBreakReduction) {
+                                 double citadelBreakReduction, int charcoalLevel, int speedLevel, int charcoalAbsorbed) {
         super(im, rm, ipm, mbs, updateTime, name);
         if (ipm instanceof FurnacePowerManager) {
             ((FurnacePowerManager) ipm).setIofProvider(this);
@@ -81,6 +84,9 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         this.citadelBreakReduction = citadelBreakReduction;
         this.autoSelect = false;
         this.uiMenuMode = UiMenuMode.SIMPLE;
+        this.charcoalLevel = charcoalLevel;
+        this.speedLevel = speedLevel;
+        this.charcoalAbsorbed = charcoalAbsorbed;
         for (IRecipe rec : recipes) {
             addRecipe(rec);
         }
@@ -363,11 +369,13 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
             return;
         }
         if (p != null) {
-            int consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() > 0 ? ((InputRecipe) currentRecipe)
-                .getFuelConsumptionIntervall() : pm.getPowerConsumptionIntervall();
-            if (((FurnacePowerManager) pm).getFuelAmountAvailable() < (currentRecipe.getProductionTime() / consumptionIntervall)) {
-                p.sendMessage(ChatColor.RED
-                    + "You don't have enough fuel, the factory will run out of it before completing");
+            if (currentRecipe instanceof InputRecipe) {
+                int consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() > 0 ? ((InputRecipe) currentRecipe)
+                    .getFuelConsumptionIntervall() : pm.getPowerConsumptionIntervall();
+                if (((FurnacePowerManager) pm).getFuelAmountAvailable() < (currentRecipe.getProductionTime() / consumptionIntervall)) {
+                    p.sendMessage(ChatColor.RED
+                        + "You don't have enough fuel, the factory will run out of it before completing");
+                }
             }
             p.sendMessage(ChatColor.GREEN + "Activated " + name + " with recipe: " + currentRecipe.getName());
             activator = p.getUniqueId();
@@ -472,9 +480,14 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
                 // if the factory has been working for less than the required
                 // time for the recipe
                 if (currentProductionTimer < currentRecipe.getProductionTime()) {
-                    int consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() > 0
-                        ? ((InputRecipe) currentRecipe).getFuelConsumptionIntervall()
-                        : pm.getPowerConsumptionIntervall();
+                    int consumptionIntervall;
+                    if (currentRecipe instanceof InputRecipe) {
+                        consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() > 0
+                            ? ((InputRecipe) currentRecipe).getFuelConsumptionIntervall()
+                            : pm.getPowerConsumptionIntervall();
+                    } else {
+                        consumptionIntervall = Integer.MAX_VALUE;
+                    }
 
                     int powerCounter = pm.getPowerCounter() + updateTime;
                     int fuelCount = powerCounter / consumptionIntervall;
@@ -488,7 +501,20 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
                         // if we need to consume fuel - then do it
                         if (fuelCount >= 1) {
                             // remove fuel.
-                            pm.consumePower(fuelCount);
+                            int maxCharcoalAbsorbed = (((FurnacePowerManager) getPowerManager()).getFuel().getType() != Material.CHARCOAL) ? 1 : switch (charcoalLevel) {
+                                case 0 -> 1;
+                                case 1 -> 4;
+                                case 2 -> 8;
+                                case 3 -> 12;
+                                case 4 -> 16;
+                                default -> throw new IllegalStateException("charcoalLevel " + charcoalLevel);
+                            };
+                            if (charcoalAbsorbed + 1 >= maxCharcoalAbsorbed) {
+                                pm.consumePower(fuelCount);
+                                charcoalAbsorbed = 0;
+                            } else {
+                                charcoalAbsorbed++;
+                            }
                             // update power counter to remained time
                             pm.setPowerCounter(powerCounter % consumptionIntervall);
                         }
@@ -513,16 +539,18 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
                 // time remove input from chest, and add output material
                 else {
                     LoggingUtils.log("Executing recipe " + currentRecipe.getName() + " for " + getLogData());
-                    RecipeExecuteEvent ree = new RecipeExecuteEvent(this, (InputRecipe) currentRecipe);
-                    Bukkit.getPluginManager().callEvent(ree);
-                    if (ree.isCancelled()) {
-                        LoggingUtils.log("Executing recipe " + currentRecipe.getName() + " for " + getLogData()
-                            + " was cancelled over the event");
-                        deactivate();
-                        return;
+                    if (currentRecipe instanceof InputRecipe) {
+                        RecipeExecuteEvent ree = new RecipeExecuteEvent(this, (InputRecipe) currentRecipe);
+                        Bukkit.getPluginManager().callEvent(ree);
+                        if (ree.isCancelled()) {
+                            LoggingUtils.log("Executing recipe " + currentRecipe.getName() + " for " + getLogData()
+                                + " was cancelled over the event");
+                            deactivate();
+                            return;
+                        }
                     }
                     sendActivatorMessage(ChatColor.GOLD + currentRecipe.getName() + " in " + name + " completed");
-                    if (currentRecipe instanceof Upgraderecipe || currentRecipe instanceof RecipeScalingUpgradeRecipe) {
+                    if (currentRecipe instanceof Upgraderecipe || currentRecipe instanceof RecipeScalingUpgradeRecipe || !(currentRecipe instanceof InputRecipe)) {
                         // this if else might look a bit weird, but because
                         // upgrading changes the current recipe and a lot of
                         // other stuff, this is needed
@@ -617,6 +645,10 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
         if (recipes.contains(pr)) {
             currentRecipe = pr;
         }
+    }
+
+    public void setRecipeForce(IRecipe pr) {
+        currentRecipe = pr;
     }
 
     public int getRunCount(IRecipe r) {
@@ -750,6 +782,38 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
 
     public double getCitadelBreakReduction() {
         return citadelBreakReduction;
+    }
+
+    public void setCharcoalLevel(int charcoalLevel) {
+        this.charcoalLevel = charcoalLevel;
+    }
+
+    public int getCharcoalLevel() {
+        return charcoalLevel;
+    }
+
+    public int getSpeedLevel() {
+        return speedLevel;
+    }
+
+    public void setSpeedLevel(int speedLevel) {
+        this.speedLevel = speedLevel;
+    }
+
+    @Override
+    public int getUpdateTime() {
+        return switch (speedLevel) {
+            case 0 -> updateTime;
+            case 1 -> Math.ceilDiv(updateTime, 2);
+            case 2 -> Math.ceilDiv(updateTime, 3);
+            case 3 -> Math.ceilDiv(updateTime, 4);
+            case 4 -> Math.ceilDiv(updateTime, 5);
+            default -> throw new IllegalStateException("speedLevel " + speedLevel);
+        };
+    }
+
+    public int getCharcoalAbsorbed() {
+        return charcoalAbsorbed;
     }
 
     public enum UiMenuMode {

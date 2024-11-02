@@ -33,7 +33,8 @@ public class ToolProtectionListener implements Listener {
         if (meta == null) {
             return;
         }
-        int health = is.getType().getMaxDurability() - meta.getDamage();
+        int maxDura = meta.hasMaxDamage() ? meta.getMaxDamage() : is.getType().getMaxDurability();
+        int health = maxDura - meta.getDamage();
         if (health <= settingMan.getToolProtectionThreshhold(e.getPlayer().getUniqueId())) {
             for (int i = 0; i < 5; i++) {
                 e.getPlayer().sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "Your tool is almost broken");
