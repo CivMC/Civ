@@ -74,8 +74,9 @@ public class WeaponsAndToolsSelectionGui extends ItemSelectionGui {
         inventory.setSlot(toClickable(new ItemStack(Material.FISHING_ROD)), 44);
 
         inventory.setSlot(toClickable(CustomItem.getCustomItem("meteoric_iron_sword")), 47);
-        inventory.setSlot(toClickable(CustomItem.getCustomItem("meteoric_iron_axe")), 48);
-        inventory.setSlot(toClickable(CustomItem.getCustomItem("meteoric_iron_pickaxe")), 49);
-        inventory.setSlot(toClickable(CustomItem.getCustomItem("backpack")), 50);
+        inventory.setSlot(toClickable(CustomItem.getCustomItem("meteoric_iron_sword_knockback")), 48);
+        inventory.setSlot(toClickable(CustomItem.getCustomItem("meteoric_iron_axe")), 49);
+        inventory.setSlot(toClickable(CustomItem.getCustomItem("meteoric_iron_pickaxe")), 50);
+        inventory.setSlot(toClickable(CustomItem.getCustomItem("backpack")), 51);
     }
 }
