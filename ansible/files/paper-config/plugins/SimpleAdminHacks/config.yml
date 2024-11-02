@@ -391,7 +391,6 @@ hacks:
     # Does not fully work atm
     blockElytraBreakBug: false
     damageOnElytraBreakBug: 0.0
-    canStorageTeleport: false
     stopHopperDupe: false
     stopRailDupe: true
     stopEndPortalDeletion: true
