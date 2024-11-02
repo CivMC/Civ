@@ -7,6 +7,7 @@ import com.untamedears.jukealert.model.actions.impl.BlockBreakAction;
 import com.untamedears.jukealert.model.actions.impl.BlockPlaceAction;
 import com.untamedears.jukealert.model.actions.impl.DestroyVehicleAction;
 import com.untamedears.jukealert.model.actions.impl.DismountEntityAction;
+import com.untamedears.jukealert.model.actions.impl.EditSignAction;
 import com.untamedears.jukealert.model.actions.impl.EmptyBucketAction;
 import com.untamedears.jukealert.model.actions.impl.EnterFieldAction;
 import com.untamedears.jukealert.model.actions.impl.EnterVehicleAction;
@@ -34,10 +35,15 @@ import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.ChestBoat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.SpawnCategory;
+import org.bukkit.entity.Vehicle;
+import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,6 +52,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityDismountEvent;
 import org.bukkit.event.entity.EntityMountEvent;
@@ -151,26 +158,26 @@ public class LoggableActionListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEnterVehicle(VehicleEnterEvent event) {
-        if (event.getEntered().getType() != EntityType.PLAYER) {
+        if (event.getEntered().getType() != EntityType.PLAYER || event.getVehicle().getSpawnCategory() != SpawnCategory.MISC) {
             return;
         }
 
         Player player = (Player) event.getEntered();
 
         handlePlayerAction(player, s -> new EnterVehicleAction(System.currentTimeMillis(), s,
-            player.getUniqueId(), event.getVehicle().getLocation(), getEntityName(event.getVehicle())));
+            player.getUniqueId(), event.getVehicle().getLocation(), getVehicleName(event.getVehicle())));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onExitVehicle(VehicleExitEvent event) {
-        if (event.getExited().getType() != EntityType.PLAYER) {
+        if (event.getExited().getType() != EntityType.PLAYER || event.getVehicle().getSpawnCategory() != SpawnCategory.MISC) {
             return;
         }
 
         Player player = (Player) event.getExited();
 
         handlePlayerAction(player, s -> new ExitVehicleAction(System.currentTimeMillis(), s,
-            player.getUniqueId(), event.getVehicle().getLocation(), getEntityName(event.getVehicle())));
+            player.getUniqueId(), event.getVehicle().getLocation(), getVehicleName(event.getVehicle())));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -187,7 +194,7 @@ public class LoggableActionListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onMountEntity(EntityMountEvent event) {
-        if (event.getEntityType() != EntityType.PLAYER) {
+        if (event.getEntityType() != EntityType.PLAYER || event.getMount().getSpawnCategory() != SpawnCategory.ANIMAL) {
             return;
         }
         Player player = (Player) event.getEntity();
@@ -198,7 +205,7 @@ public class LoggableActionListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDismountEntity(EntityDismountEvent event) {
-        if (event.getEntityType() != EntityType.PLAYER) {
+        if (event.getEntityType() != EntityType.PLAYER || event.getDismounted().getSpawnCategory() != SpawnCategory.ANIMAL) {
             return;
         }
         Player player = (Player) event.getEntity();
@@ -222,6 +229,12 @@ public class LoggableActionListener implements Listener {
         } else if (holder instanceof StorageMinecart minecart) {
             location = minecart.getLocation();
             material = Material.CHEST_MINECART;
+        } else if (holder instanceof HopperMinecart minecart) {
+            location = minecart.getLocation();
+            material = Material.HOPPER_MINECART;
+        } else if (holder instanceof ChestBoat boat) {
+            location = boat.getLocation();
+            material = boat.getBoatMaterial();
         } else {
             return;
         }
@@ -258,6 +271,12 @@ public class LoggableActionListener implements Listener {
         Player player = event.getPlayer();
         handlePlayerAction(player, s -> new IgniteBlockAction(System.currentTimeMillis(), s, player.getUniqueId(),
             event.getBlock().getLocation()));
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void playerEditSign(SignChangeEvent event) {
+        handlePlayerAction(event.getPlayer(), s -> new EditSignAction(System.currentTimeMillis(), s,
+            event.getPlayer().getUniqueId(), event.getBlock().getLocation(), event.getBlock().getType()));
     }
 
     private void handleSnitchLogout(Player player) {
@@ -308,6 +327,14 @@ public class LoggableActionListener implements Listener {
             return entity.getCustomName();
         } else {
             return entity.getType().toString();
+        }
+    }
+
+    private String getVehicleName(Vehicle vehicle) {
+        if (vehicle instanceof Boat boat) {
+            return boat.getBoatMaterial().name();
+        } else {
+            return vehicle.getType().toString();
         }
     }
 

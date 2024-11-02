@@ -81,12 +81,6 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
             } else {
                 genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
             }
-            genStatus.append("   Block storage entities from teleporting to prevents exploits ");
-            if (!config.canStorageTeleport()) {
-                genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
-            } else {
-                genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
-            }
             genStatus.append("  Bed Bombing in Nether / Hell Biomes fix ");
             if (config.stopBedBombing()) {
                 genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
@@ -133,26 +127,6 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
             && player.getEyeLocation().getBlock().getType() != Material.AIR) {
             event.setCancelled(true);
             player.damage(config.getDamageOnElytraBreakBug());
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onEntityTeleport(EntityTeleportEvent event) {
-        if (!config.isEnabled() || config.canStorageTeleport()) {
-            return;
-        }
-        if (event.getEntity() instanceof InventoryHolder) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onEntityPortal(EntityPortalEvent event) {
-        if (!config.isEnabled() || config.canStorageTeleport()) {
-            return;
-        }
-        if (event.getEntity() instanceof InventoryHolder) {
-            event.setCancelled(true);
         }
     }
 
