@@ -370,7 +370,7 @@ hacks:
     patrolSpawning: true
     phantomSpawning: false
     enderChestPlacement: true
-    enderChestUse: false
+    enderChestUse: true
     grindstoneUse: false
     shulkerBoxUse: false
     totemPower: true
