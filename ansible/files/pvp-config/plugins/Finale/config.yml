@@ -133,7 +133,6 @@ weaponModification:
   meteoricIronSword:
     key: meteoric_iron_sword
     damage: 7
-    bonusDamagePerNetheritePiece: 0.75
 
 armourModification:
   diamondHelmet:
