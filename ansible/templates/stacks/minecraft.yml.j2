@@ -211,7 +211,7 @@ services:
     mariadb:
         image: mariadb:10.7.1
         restart: unless-stopped
-        command: --max-connections 500 --max-allowed-packet 1073741824
+        command: --max-connections 1000 --max-allowed-packet 1073741824
         networks:
             - monitoring
             - minecraft_default
