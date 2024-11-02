@@ -6,6 +6,7 @@ import net.civmc.kitpvp.gui.EditKitGui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 
 public class GenericArmourSelectionGui extends ItemSelectionGui {
@@ -46,7 +47,13 @@ public class GenericArmourSelectionGui extends ItemSelectionGui {
         inventory.setSlot(toClickable(new ItemStack(Material.NETHERITE_LEGGINGS)), 23);
         inventory.setSlot(toClickable(new ItemStack(Material.NETHERITE_BOOTS)), 32);
 
-        inventory.setSlot(toClickable(new ItemStack(Material.TURTLE_HELMET)), 6);
-        inventory.setSlot(toClickable(new ItemStack(Material.ELYTRA)), 15);
+
+        inventory.setSlot(toClickable(CustomItem.getCustomItem("meteoric_iron_helmet")), 6);
+        inventory.setSlot(toClickable(CustomItem.getCustomItem("meteoric_iron_chestplate")), 15);
+        inventory.setSlot(toClickable(CustomItem.getCustomItem("meteoric_iron_leggings")), 24);
+        inventory.setSlot(toClickable(CustomItem.getCustomItem("meteoric_iron_boots")), 33);
+
+        inventory.setSlot(toClickable(new ItemStack(Material.TURTLE_HELMET)), 7);
+        inventory.setSlot(toClickable(new ItemStack(Material.ELYTRA)), 16);
     }
 }

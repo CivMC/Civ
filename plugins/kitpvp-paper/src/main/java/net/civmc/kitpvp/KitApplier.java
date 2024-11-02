@@ -20,6 +20,8 @@ public class KitApplier {
             }
         }
 
+        player.getEnderChest().clear();
+
         player.setFoodLevel(20);
         player.setSaturation(0);
         player.setExhaustion(0);
