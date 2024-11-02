@@ -18,7 +18,7 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
 
 public class InfusionManager {
 
-    private static final int LAVA_TICKS = 30 * 4; // 30 seconds
+    private static final int LAVA_TICKS = 100 * 4; // 1m 40s
     private static final int CHARGE_AMOUNT = 5;
 
     private final List<CauldronInfusion> infusions = new ArrayList<>();
