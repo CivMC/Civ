@@ -15,7 +15,7 @@ public class MeteoricIronSlownessListener implements Listener {
 
     @SuppressWarnings("UnstableApiUsage")
     @EventHandler
-    public void on(EntityDamageByEntityEvent event) {
+    public void onSword(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player player) || !(event.getDamager() instanceof LivingEntity damager)) {
             return;
         }
@@ -30,5 +30,31 @@ public class MeteoricIronSlownessListener implements Listener {
         }
 
         damager.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0, false));
+    }
+
+
+    @SuppressWarnings("UnstableApiUsage")
+    @EventHandler
+    public void onArmour(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        int pieces = 0;
+        for (ItemStack armour : player.getInventory().getArmorContents()) {
+            String customItem = CustomItem.getCustomItemKey(armour);
+            if (customItem != null || customItem.startsWith("meteoric_iron_")) {
+                pieces++;
+            }
+        }
+        if (pieces != 4) {
+            return;
+        }
+
+        if (event.getDamageSource().getDamageType() != DamageType.FALL) {
+            return;
+        }
+
+        event.setDamage(0);
     }
 }
