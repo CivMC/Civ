@@ -115,8 +115,6 @@ public interface MeteoricIronArmour {
         ams.put(Attribute.GENERIC_ARMOR_TOUGHNESS, new AttributeModifier(new NamespacedKey(plugin, prefix + "_toughness"), toughness, AttributeModifier.Operation.ADD_NUMBER, group));
         ams.put(Attribute.GENERIC_MOVEMENT_SPEED, new AttributeModifier(new NamespacedKey(plugin, prefix + "_speed"), speed, AttributeModifier.Operation.MULTIPLY_SCALAR_1, group));
         meta.setAttributeModifiers(ams);
-
-        meta.getPersistentDataContainer().set(new NamespacedKey("finale", "custom_armour"), PersistentDataType.STRING, prefix);
     }
 
     static List<ShapedRecipe> getRecipes(Plugin plugin) {
