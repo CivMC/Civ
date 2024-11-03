@@ -17,11 +17,11 @@ public class MeteoricIronSlownessListener implements Listener {
     @SuppressWarnings("UnstableApiUsage")
     @EventHandler
     public void onSword(EntityDamageByEntityEvent event) {
-        if (!(event.getEntity() instanceof Player player) || !(event.getDamager() instanceof LivingEntity damager)) {
+        if (!(event.getEntity() instanceof Player player) || !(event.getDamager() instanceof Player damager)) {
             return;
         }
 
-        ItemStack hand = player.getInventory().getItemInMainHand();
+        ItemStack hand = damager.getInventory().getItemInMainHand();
         String customItem = CustomItem.getCustomItemKey(hand);
         if (!"meteoric_iron_sword".equals(customItem)) {
             return;
@@ -30,7 +30,7 @@ public class MeteoricIronSlownessListener implements Listener {
             return;
         }
 
-        damager.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 20, 0, false));
     }
 
 
