@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -35,7 +36,7 @@ public class MeteoricIronSlownessListener implements Listener {
 
     @SuppressWarnings("UnstableApiUsage")
     @EventHandler
-    public void onArmour(EntityDamageByEntityEvent event) {
+    public void onArmour(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player player)) {
             return;
         }
@@ -43,7 +44,7 @@ public class MeteoricIronSlownessListener implements Listener {
         int pieces = 0;
         for (ItemStack armour : player.getInventory().getArmorContents()) {
             String customItem = CustomItem.getCustomItemKey(armour);
-            if (customItem != null || customItem.startsWith("meteoric_iron_")) {
+            if (customItem != null && customItem.startsWith("meteoric_iron_")) {
                 pieces++;
             }
         }
