@@ -486,6 +486,7 @@ factories:
       - adv_smelt_deepslate_lapis_ore
       - make_refractor
       - crack_fossil
+      - upgrade_to_elite_ore_smelter
       - repair_adv_ore_smelter
   elite_ore_smelter:
     type: FCCUPGRADE
@@ -506,7 +507,6 @@ factories:
       - elite_smelt_deepslate_lapis_ore
       - make_refractor
       - crack_fossil
-      - upgrade_to_elite_ore_smelter
       - repair_elite_ore_smelter
   diamond_helm:
     type: FCC
