@@ -487,6 +487,27 @@ factories:
       - make_refractor
       - crack_fossil
       - repair_adv_ore_smelter
+  elite_ore_smelter:
+    type: FCCUPGRADE
+    name: Elite Ore Smelter
+    citadelBreakReduction: 1.0
+    recipes:
+      - elite_smelt_ancient_debris
+      - smelt_coal_ore
+      - elite_smelt_raw_copper
+      - elite_smelt_raw_iron
+      - elite_smelt_diamond_ore
+      - elite_smelt_deepslate_diamond_ore
+      - elite_smelt_raw_gold
+      - elite_smelt_nether_gold_ore
+      - elite_smelt_redstone_ore
+      - elite_smelt_deepslate_redstone_ore
+      - elite_smelt_lapis_ore
+      - elite_smelt_deepslate_lapis_ore
+      - make_refractor
+      - crack_fossil
+      - upgrade_to_elite_ore_smelter
+      - repair_elite_ore_smelter
   diamond_helm:
     type: FCC
     name: Diamond Helmet Smith
@@ -1900,6 +1921,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_BLOCK
         amount: 20
+  elite_smelt_raw_copper:
+    production_time: 4s
+    name: Elite Smelt Copper Ore
+    type: PRODUCTION
+    input:
+      raw_copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_COPPER
+        amount: 128
+    output:
+      copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_BLOCK
+        amount: 24
   smelt_raw_iron:
     production_time: 4s
     name: Smelt Iron Ore
@@ -1932,6 +1969,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 80
+  elite_smelt_raw_iron:
+    production_time: 4s
+    name: Elite Smelt Iron Ore
+    type: PRODUCTION
+    input:
+      raw_iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_IRON
+        amount: 48
+    output:
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 96
   smelt_diamond_ore:
     production_time: 4s
     name: Smelt Diamond Ore
@@ -1980,6 +2033,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 56
+  elite_smelt_diamond_ore:
+    production_time: 4s
+    name: Elite Smelt Diamond Ore
+    type: PRODUCTION
+    input:
+      diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND_ORE
+        amount: 16
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 64
   adv_smelt_deepslate_diamond_ore:
     production_time: 4s
     name: Advanced Smelt Deepslate Diamond Ore
@@ -1996,6 +2065,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 56
+  elite_smelt_deepslate_diamond_ore:
+    production_time: 4s
+    name: Elite Smelt Deepslate Diamond Ore
+    type: PRODUCTION
+    input:
+      deepslate_diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DEEPSLATE_DIAMOND_ORE
+        amount: 16
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 64
   smelt_raw_gold:
     production_time: 4s
     name: Smelt Gold Ore
@@ -2044,6 +2129,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: GOLD_INGOT
         amount: 80
+  elite_smelt_raw_gold:
+    production_time: 4s
+    name: Elite Smelt Gold Ore
+    type: PRODUCTION
+    input:
+      raw_gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_GOLD
+        amount: 48
+    output:
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_INGOT
+        amount: 96
   adv_smelt_nether_gold_ore:
     production_time: 4s
     name: Advanced Smelt Nether Gold Ore
@@ -2060,6 +2161,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: GOLD_INGOT
         amount: 64
+  elite_smelt_nether_gold_ore:
+    production_time: 4s
+    name: Elite Smelt Nether Gold Ore
+    type: PRODUCTION
+    input:
+      nether_gold_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: NETHER_GOLD_ORE
+        amount: 16
+    output:
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_INGOT
+        amount: 80
   smelt_redstone_ore:
     production_time: 4s
     name: Smelt Redstone Ore
@@ -2108,6 +2225,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: REDSTONE_BLOCK
         amount: 64
+  elite_smelt_redstone_ore:
+    production_time: 4s
+    name: Elite Smelt Redstone Ore
+    type: PRODUCTION
+    input:
+      redstone_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE_ORE
+        amount: 64
+    output:
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE_BLOCK
+        amount: 80
   adv_smelt_deepslate_redstone_ore:
     production_time: 4s
     name: Advanced Smelt Deepslate Redstone Ore
@@ -2124,6 +2257,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: REDSTONE_BLOCK
         amount: 64
+  elite_smelt_deepslate_redstone_ore:
+    production_time: 4s
+    name: Elite Smelt Deepslate Redstone Ore
+    type: PRODUCTION
+    input:
+      deepslate_redstone_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DEEPSLATE_REDSTONE_ORE
+        amount: 64
+    output:
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE_BLOCK
+        amount: 80
   smelt_lapis_ore:
     production_time: 4s
     name: Smelt Lapis Ore
@@ -2172,6 +2321,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_BLOCK
         amount: 80
+  elite_smelt_lapis_ore:
+    production_time: 4s
+    name: Elite Smelt Lapis Ore
+    type: PRODUCTION
+    input:
+      lapis_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_ORE
+        amount: 32
+    output:
+      lapis:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 96
   adv_smelt_deepslate_lapis_ore:
     production_time: 4s
     name: Advanced Smelt Deepslate Lapis Ore
@@ -2188,6 +2353,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_BLOCK
         amount: 80
+  elite_smelt_deepslate_lapis_ore:
+    production_time: 4s
+    name: Elite Smelt Deepslate Lapis Ore
+    type: PRODUCTION
+    input:
+      deepslate_lapis_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DEEPSLATE_LAPIS_ORE
+        amount: 32
+    output:
+      lapis:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 96
   adv_smelt_ancient_debris:
     production_time: 4s
     name: Smelt Ancient Debris
@@ -2225,6 +2406,43 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: NETHERITE_INGOT
         amount: 1
+  elite_smelt_ancient_debris:
+    production_time: 4s
+    name: Elite Smelt Ancient Debris
+    type: PRODUCTION
+    input:
+      ancient_debris:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ANCIENT_DEBRIS
+        amount: 18
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD
+        amount: 36
+      gold_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_INGOT
+        amount: 12
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 12
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    output:
+      netherite_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: NETHERITE_INGOT
+        amount: 2
   upgrade_to_adv_ore_smelter:
     production_time: 4s
     name: Upgrade to Advanced Ore Smelter
@@ -2257,6 +2475,36 @@ recipes:
           lore:
             - Activity reward used to fuel pearls
     factory: Advanced Ore Smelter
+  upgrade_to_elite_ore_smelter:
+    production_time: 4s
+    name: Upgrade to Elite Ore Smelter
+    type: UPGRADE
+    input:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 128
+      emerald_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 64
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 16
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 96
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    factory: Elite Ore Smelter
   smelt_glass:
     type: PRODUCTION
     production_time: 4s
