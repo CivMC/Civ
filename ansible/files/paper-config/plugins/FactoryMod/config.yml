@@ -17,6 +17,42 @@ force_include_default: true
 can_upgrade: true
 
 factories:
+  gem_factory:
+    type: FCC
+    name: Gem Factory
+    citadelBreakReduction: 1.0
+    setupcost:
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_BLOCK
+        amount: 128
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 128
+      coal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COAL_BLOCK
+        amount: 128
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - facet_heliodor
+      - refill_heliodor
+      - finish_heliodor
+      - repair_gem_factory
   meteoric_iron_sword:
     type: FCC
     name: Meteoric Iron Sword Smith
@@ -14894,3 +14930,76 @@ recipes:
           lore:
             - Activity reward used to fuel pearls
     health_gained: 10000
+  facet_heliodor:
+    production_time: 4s
+    name: Facet Heliodor Gem
+    type: HELIODOR_CREATE
+    input:
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_BLOCK
+        amount: 128
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 128
+      coal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COAL_BLOCK
+        amount: 256
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    output_count: 128
+    max_charge: 10
+  refill_heliodor:
+    production_time: 4s
+    name: Refill Heliodor Gem
+    type: HELIODOR_REFILL
+    input:
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 128
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    count: 128
+    add_max_charge: 10
+  finish_heliodor:
+    production_time: 4s
+    name: Polish Heliodor Gem
+    type: HELIODOR_FINISH
+    input:
+      brush:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BRUSH
+        amount: 1
+      shears:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SHEARS
+        amount: 1
+    input_count: 8
+    output_count: 1
