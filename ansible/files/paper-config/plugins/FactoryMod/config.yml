@@ -493,6 +493,7 @@ factories:
     name: Elite Ore Smelter
     citadelBreakReduction: 1.0
     recipes:
+      - smelt_meteoric_nuggets
       - elite_smelt_ancient_debris
       - smelt_coal_ore
       - elite_smelt_raw_copper
@@ -2443,6 +2444,18 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: NETHERITE_INGOT
         amount: 2
+  smelt_meteoric_nuggets:
+    production_time: 4s
+    name: Smelt Meteoric Iron Nuggets
+    type: PRODUCTION
+    input:
+      meteoric_iron_nugget:
+        custom-key: meteoric_iron_nugget
+        amount: 22
+    output:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 4
   upgrade_to_adv_ore_smelter:
     production_time: 4s
     name: Upgrade to Advanced Ore Smelter
