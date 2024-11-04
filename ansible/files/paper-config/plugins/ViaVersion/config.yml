@@ -20,7 +20,7 @@ block-versions: ["<1.20.5"]
 # List of all Minecraft protocol versions: https://wiki.vg/Protocol_version_numbers, or use a generator: https://via.krusic22.com
 block-protocols: []
 # Change the blocked disconnect message
-block-disconnect-msg: "You must use Minecraft version 1.18 or higher"
+block-disconnect-msg: "You must use Minecraft version 1.20.5 or higher"
 # If you use ProtocolLib, we can't reload without kicking the players.
 # (We don't suggest using reload either, use a plugin manager)
 # You can customise the message we kick people with if you use ProtocolLib here.
