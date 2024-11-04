@@ -14475,7 +14475,7 @@ recipes:
           lore:
             - Activity reward used to fuel pearls
     health_gained: 10000
-  make_meteoric_iron_helm:
+  make_meteoric_helm:
     production_time: 4s
     name: Make Meteoric Helmet
     type: PRODUCTION
@@ -14487,7 +14487,7 @@ recipes:
       meteoric_iron_helm:
         custom-key: meteoric_iron_helmet
         amount: 5
-  repair_meteoric_iron_helm_factory:
+  repair_meteoric_helm_factory:
     production_time: 4s
     name: Repair Factory
     type: REPAIR
@@ -14507,7 +14507,7 @@ recipes:
           lore:
             - Activity reward used to fuel pearls
     health_gained: 10000
-  make_meteoric_iron_chest:
+  make_meteoric_chest:
     production_time: 4s
     name: Make Meteoric Chestplate
     type: PRODUCTION
@@ -14519,7 +14519,7 @@ recipes:
       meteoric_iron_chest:
         custom-key: meteoric_iron_chestplate
         amount: 5
-  repair_meteoric_iron_chest_factory:
+  repair_meteoric_chest_factory:
     production_time: 4s
     name: Repair Factory
     type: REPAIR
@@ -14539,7 +14539,7 @@ recipes:
           lore:
             - Activity reward used to fuel pearls
     health_gained: 10000
-  make_meteoric_iron_legs:
+  make_meteoric_legs:
     production_time: 4s
     name: Make Meteoric Leggings
     type: PRODUCTION
@@ -14551,7 +14551,7 @@ recipes:
       meteoric_iron_legs:
         custom-key: meteoric_iron_leggings
         amount: 5
-  repair_meteoric_iron_legs_factory:
+  repair_meteoric_legs_factory:
     production_time: 4s
     name: Repair Factory
     type: REPAIR
@@ -14571,7 +14571,7 @@ recipes:
           lore:
             - Activity reward used to fuel pearls
     health_gained: 10000
-  make_meteoric_iron_boots:
+  make_meteoric_boots:
     production_time: 4s
     name: Make Meteoric Boots
     type: PRODUCTION
@@ -14583,7 +14583,7 @@ recipes:
       meteoric_iron_boots:
         custom-key: meteoric_iron_boots
         amount: 5
-  repair_meteoric_iron_boots_factory:
+  repair_meteoric_boots_factory:
     production_time: 4s
     name: Repair Factory
     type: REPAIR
