@@ -5988,6 +5988,36 @@ recipes:
           lore:
             - Activity reward used to fuel pearls
     health_gained: 10000
+  repair_elite_ore_smelter:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 16
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD
+        amount: 16
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
   make_fences:
     production_time: 4s
     name: Make Fences
