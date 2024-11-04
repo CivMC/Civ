@@ -5853,38 +5853,6 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: BUCKET
         amount: 1
-  repair_gem_factory:
-    production_time: 4s
-    name: Repair Factory
-    type: REPAIR
-    input:
-      gold:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: GOLD_BLOCK
-        amount: 16
-      emerald:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: EMERALD_BLOCK
-        amount: 16
-      coal:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: COAL_BLOCK
-        amount: 16
-      essence:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: ENDER_EYE
-        amount: 16
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Player Essence
-          lore:
-            - Activity reward used to fuel pearls
-    health_gained: 10000
   repair_stone_smelter:
     production_time: 4s
     name: Repair Factory
