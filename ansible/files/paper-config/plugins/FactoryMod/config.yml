@@ -83,6 +83,94 @@ factories:
     recipes:
       - make_meteoric_iron_axe
       - repair_meteoric_iron_axe_factory
+  meteoric_helm:
+    type: FCC
+    name: Meteoric Helmet Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 18
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 126
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - make_meteoric_helm
+      - repair_meteoric_helm_factory
+  meteoric_chest:
+    type: FCC
+    name: Meteoric Chestplate Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 28
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 196
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - make_meteoric_chest
+      - repair_meteoric_chest_factory
+  meteoric_legs:
+    type: FCC
+    name: Meteoric Leggings Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 24
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 168
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - make_meteoric_legs
+      - repair_meteoric_legs_factory
+  meteoric_boots:
+    type: FCC
+    name: Meteoric Boots Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 14
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 98
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    recipes:
+      - make_meteoric_boots
+      - repair_meteoric_boots_factory
   stone_smelter:
     type: FCC
     name: Basic Smelter
@@ -14380,6 +14468,134 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: ENDER_EYE
         amount: 10
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
+  make_meteoric_iron_helm:
+    production_time: 4s
+    name: Make Meteoric Helmet
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 15
+    output:
+      meteoric_iron_helm:
+        custom-key: meteoric_iron_helmet
+        amount: 5
+  repair_meteoric_iron_helm_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 18
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
+  make_meteoric_iron_chest:
+    production_time: 4s
+    name: Make Meteoric Chestplate
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 24
+    output:
+      meteoric_iron_chest:
+        custom-key: meteoric_iron_chestplate
+        amount: 5
+  repair_meteoric_iron_chest_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 28
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
+  make_meteoric_iron_legs:
+    production_time: 4s
+    name: Make Meteoric Leggings
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 21
+    output:
+      meteoric_iron_legs:
+        custom-key: meteoric_iron_leggings
+        amount: 5
+  repair_meteoric_iron_legs_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 24
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
+  make_meteoric_iron_boots:
+    production_time: 4s
+    name: Make Meteoric Boots
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 12
+    output:
+      meteoric_iron_boots:
+        custom-key: meteoric_iron_Boots
+        amount: 5
+  repair_meteoric_iron_boots_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 14
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
