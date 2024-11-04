@@ -14581,7 +14581,7 @@ recipes:
         amount: 12
     output:
       meteoric_iron_boots:
-        custom-key: meteoric_iron_Boots
+        custom-key: meteoric_iron_boots
         amount: 5
   repair_meteoric_iron_boots_factory:
     production_time: 4s
