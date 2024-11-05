@@ -560,3 +560,4 @@ hacks:
   PortalConnect:
     enabled: false
     server: main
+    world: world

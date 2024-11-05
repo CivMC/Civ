@@ -608,3 +608,4 @@ hacks:
   PortalConnect:
     enabled: true
     server: main
+    world: world
