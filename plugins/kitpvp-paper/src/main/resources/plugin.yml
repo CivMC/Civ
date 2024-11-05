@@ -22,6 +22,7 @@ commands:
       /<command> delete <name> (administrators only)
       /<command> displayname <name> <display name> (administrators only)
       /<command> category <name> <category> (administrators only)
+      /<command> cap <arenas> (administrators only)
   spawn: {}
   setspawn:
     permission: kitpvp.admin
