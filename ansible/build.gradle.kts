@@ -30,12 +30,13 @@ dependencies {
     pvpPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
     pvpPlugin(project(path = ":plugins:civduties-paper"))
     pvpPlugin(project(path = ":plugins:civmodcore-paper", configuration = "shadow"))
-    pvpPlugin(project(path = ":plugins:combattagplus-paper"))
     pvpPlugin(project(path = ":plugins:finale-paper"))
     pvpPlugin(project(path = ":plugins:simpleadminhacks-paper"))
     pvpPlugin(project(path = ":plugins:kitpvp-paper"))
     pvpPlugin(project(path = ":plugins:voidworld-paper"))
     pvpPlugin(project(path = ":plugins:heliodor-paper"))
+    pvpPlugin(project(path = ":plugins:namelayer-paper"))
+    pvpPlugin(project(path = ":plugins:civchat2-paper"))
 }
 
 val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {

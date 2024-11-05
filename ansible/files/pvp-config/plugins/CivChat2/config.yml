@@ -1,6 +1,6 @@
 chat:
   #globalChatRange: The base chat distance that people will message across def=1000
-  globalChatRange: 1000
+  globalChatRange: 0
   #defaultChatColor: The default chatcolor to use for global chat def=BLUE
   defaultChatColor: WHITE
   #color for console and OP "say" command
@@ -11,7 +11,7 @@ chat:
   #so yIncreaseScale=10 will be 10 extra radius per block they go up, 1 would be 1 extra radius per block
   #Coded formula globalChatRange = globalChatRange + (globalChatRange * ((yIncreaseScale/1000) * #blocksaboveydist)))
   yIncreaseScale: 1
-  killRange: 30000
+  killRange: 0
   dynamicColoring: false
   colors:
     near:

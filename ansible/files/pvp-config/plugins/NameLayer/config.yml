@@ -1,0 +1,20 @@
+sql:
+  hostname: ${CIV_MYSQL_HOST}
+  port: 3306
+  dbname: namelayer
+  username: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}
+  poolsize: 10
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
+groups:
+  enable: true
+  interact: false
+  grouplimit: 35
+  creationOnFirstJoin: true
+persistance:
+  forceloadnamecaching: true
+nameRandomizer:
+ active: false
+ grace: 600000
