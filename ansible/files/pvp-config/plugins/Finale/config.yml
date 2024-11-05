@@ -133,7 +133,7 @@ weaponModification:
     damage: 8
   meteoricIronSword:
     key: meteoric_iron_sword
-    damage: 7
+    damage: 8
 
 armourModification:
   diamondHelmet:
