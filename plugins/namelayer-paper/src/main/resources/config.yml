@@ -10,6 +10,7 @@ sql:
   max_lifetime: 7200000
 groups:
   enable: true
+  interact: true
   grouplimit: 25
   creationOnFirstJoin: true
 persistance:
@@ -34,7 +35,7 @@ persistance:
 #  clean_names: true
 ## Do we alert OPs when a name is changed b/c dirty?
 #  alert_ops: true
-## Do we alert people who have this permission, when a name is changed b/c dirty? 
+## Do we alert people who have this permission, when a name is changed b/c dirty?
 #  alert_perm: namelayer.alert_dirty_name
 nameRandomizer:
   active: false
