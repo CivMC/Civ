@@ -12,10 +12,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class WarpHandler {
+
     private final KitPvpPlugin plugin;
     private final Cache cache;
 
-    public WarpHandler (KitPvpPlugin plugin, Cache cache) {
+    public WarpHandler(KitPvpPlugin plugin, Cache cache) {
         this.plugin = plugin;
         this.cache = cache;
     }
@@ -26,7 +27,7 @@ public class WarpHandler {
     }
 
     public boolean warp(CommandSender sender, String name) {
-        if(!cache.getWarpIndex().contains(name)) {
+        if (!cache.getWarpIndex().contains(name)) {
             sender.sendMessage("Warp %s does not exist".formatted(name));
             return true;
         }
@@ -34,19 +35,19 @@ public class WarpHandler {
         Warp warp = cache.getWarp(name);
         Player player = (Player) sender;
 
-        if(warp == null) {
+        if (warp == null) {
             plugin.getLogger().warning("Failed to retrieve a warp assumed to be available");
             sender.sendMessage("Failed to warp to %s".formatted(name));
             return true;
         }
 
         Location location = new Location(
-                Bukkit.getWorld(warp.world()),
-                warp.x(),
-                warp.y(),
-                warp.z(),
-                warp.yaw(),
-                warp.pitch()
+            Bukkit.getWorld(warp.world()),
+            warp.x(),
+            warp.y(),
+            warp.z(),
+            warp.yaw(),
+            warp.pitch()
         );
         GameMode gameMode = EnumUtil.getGamemode(warp.gamemode());
 

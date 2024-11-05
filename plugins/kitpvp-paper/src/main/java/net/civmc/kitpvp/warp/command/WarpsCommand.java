@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class WarpsCommand implements TabExecutor {
+
     private final WarpsHandler handler;
 
     public WarpsCommand(WarpsHandler handler) {
@@ -19,12 +20,12 @@ public class WarpsCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if(!(sender instanceof Player)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage("Only a player can execute this command");
             return true;
         }
 
-        if(args.length < 1 || args.length > 3) {
+        if (args.length < 1 || args.length > 3) {
             return false;
         }
 
@@ -38,7 +39,7 @@ public class WarpsCommand implements TabExecutor {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if(!sender.hasPermission("warps.manage")) {
+        if (!sender.hasPermission("warps.manage")) {
             return switch (args.length) {
                 case 1 -> List.of("list");
                 default -> null;

@@ -17,22 +17,22 @@ public class Cache {
         warps = warpMap;
     }
 
-    public  List<String> getWarpIndex() {
+    public List<String> getWarpIndex() {
         return warpIndex;
     }
 
     public @Nullable Warp getWarp(String name) {
-        return warps.get(name);
+        return warps.get(name.toLowerCase());
     }
 
     public void addWarp(Warp warp) {
-        warps.put(warp.name(), warp);
-        warpIndex.add(warp.name());
+        warps.put(warp.name().toLowerCase(), warp);
+        warpIndex.add(warp.name().toLowerCase());
     }
 
-    public void deleteWarp(String name){
-        warps.remove(name);
-        warpIndex.remove(name);
+    public void deleteWarp(String name) {
+        warps.remove(name.toLowerCase());
+        warpIndex.remove(name.toLowerCase());
     }
 
     public void setPlayerLocation(Player player, Warp warp) {

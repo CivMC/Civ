@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import org.bukkit.GameMode;
 
 public class EnumUtil {
+
     public static @Nullable GameMode getGamemode(String s) {
         return switch (s) {
             case "survival" -> GameMode.SURVIVAL;
