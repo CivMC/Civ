@@ -157,25 +157,25 @@ armourModification:
     extraDurabilityHits: 1
   netheriteHelmet:
     material: NETHERITE_HELMET
-    armour: 3.2
+    armour: 4
     toughness: 3
     extraDurabilityHits: 1
     knockbackResistance: 0 # knockback resistance is a value between 0 and 1.
   netheriteChestplate:
     material: NETHERITE_CHESTPLATE
-    armour: 8.3
+    armour: 8
     toughness: 3
     extraDurabilityHits: 1
-    knockbackResistance: 0
+    knockbackResistance: 0.1
   netheriteLeggings:
     material: NETHERITE_LEGGINGS
-    armour: 6.3
+    armour: 6
     toughness: 3
     extraDurabilityHits: 1
-    knockbackResistance: 0
+    knockbackResistance: 0.1
   netheriteBoots:
     material: NETHERITE_BOOTS
-    armour: 3.2
+    armour: 4
     toughness: 3
     extraDurabilityHits: 1
     knockbackResistance: 0
