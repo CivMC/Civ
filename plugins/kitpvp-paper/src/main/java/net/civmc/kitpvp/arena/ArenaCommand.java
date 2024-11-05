@@ -159,7 +159,7 @@ public class ArenaCommand implements CommandExecutor {
 
             int arenas = Integer.parseInt(args[1]);
             manager.setMaxArenas(arenas);
-            player.sendMessage(Component.text("Set arena cap to" + arenas, NamedTextColor.GREEN));
+            player.sendMessage(Component.text("Set arena cap to " + arenas, NamedTextColor.GREEN));
             return true;
         } else if (args.length == 0) {
             new ArenaGui(dao, manager).open(player);
