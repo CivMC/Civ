@@ -19,7 +19,7 @@ public class SpawnListener implements Listener {
 
     @EventHandler
     public void on(PlayerJoinEvent event) {
-        if (!event.getPlayer().hasPlayedBefore()) {
+        if (event.getPlayer().getWorld().getName().equals("world")) {
             Location spawn = this.provider.getSpawn();
             if (spawn != null) {
                 event.getPlayer().teleport(spawn);

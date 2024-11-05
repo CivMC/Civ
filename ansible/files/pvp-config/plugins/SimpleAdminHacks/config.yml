@@ -267,7 +267,7 @@ hacks:
   #This is a very specific hack made for CivMC, it is not recommended to enable
   #Unless you want to fully mimic their behaviour
   PortalModifyHack:
-    enabled: true
+    enabled: false
     targetWorld: world_nether
     homeWorld: world
   PortalSpawnModifier:
@@ -605,3 +605,6 @@ hacks:
     discChance: 0.003
   NoOozing:
     enabled: true
+  PortalConnect:
+    enabled: true
+    server: main
