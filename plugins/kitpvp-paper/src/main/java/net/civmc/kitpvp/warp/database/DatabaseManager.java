@@ -53,7 +53,7 @@ public class DatabaseManager {
             ResultSet results = statement.executeQuery();
             while (results.next()) {
                 warps.put(
-                    results.getString("name"),
+                    results.getString("name").toLowerCase(),
                     new Warp(
                         results.getString("name"),
                         results.getString("world"),
