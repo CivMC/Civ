@@ -34,6 +34,9 @@ public class PortalConnect extends BasicHack {
     @AutoLoad
     private String server;
 
+    @AutoLoad
+    private String world;
+
     private final Map<UUID, Long> onCooldown = new HashMap<>();
 
     public PortalConnect(SimpleAdminHacks plugin, BasicHackConfig config) {
@@ -54,6 +57,10 @@ public class PortalConnect extends BasicHack {
         if (event.getBlock().getType() != Material.END_PORTAL) {
             return;
         }
+        if (!event.getBlock().getWorld().getName().equals(world)) {
+            return;
+        }
+
         event.setCancelled(true);
 
         if (onCooldown.containsKey(player.getUniqueId())) {
