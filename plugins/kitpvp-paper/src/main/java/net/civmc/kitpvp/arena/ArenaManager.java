@@ -38,15 +38,21 @@ public class ArenaManager {
         SLIME_PROPERTIES.setValue(SlimeProperties.DIFFICULTY, "hard");
     }
 
+    private int maxArenas;
     private final JavaPlugin plugin;
     private final SpawnProvider spawn;
     private final MysqlLoader templateLoader;
     private final SequencedMap<UUID, LoadedArena> arenas = new LinkedHashMap<>();
 
-    public ArenaManager(JavaPlugin plugin, SpawnProvider spawn, MysqlLoader templateLoader) {
+    public ArenaManager(int maxArenas, JavaPlugin plugin, SpawnProvider spawn, MysqlLoader templateLoader) {
+        this.maxArenas = maxArenas;
         this.plugin = plugin;
         this.spawn = spawn;
         this.templateLoader = templateLoader;
+    }
+
+    public void setMaxArenas(int maxArenas) {
+        this.maxArenas = maxArenas;
     }
 
     public List<String> listArenas() throws IOException {
@@ -95,6 +101,11 @@ public class ArenaManager {
     }
 
     public void createArena(Player player, Arena arena) {
+        if (maxArenas >= 0 && this.arenas.size() >= maxArenas && !player.hasPermission("kitpvp.admin")) {
+            player.sendMessage(Component.text("You cannot create an arena because there are too many arenas loaded", NamedTextColor.RED));
+            return;
+        }
+
         AdvancedSlimePaperAPI api = AdvancedSlimePaperAPI.instance();
         SlimeWorld slimeWorld;
         try {

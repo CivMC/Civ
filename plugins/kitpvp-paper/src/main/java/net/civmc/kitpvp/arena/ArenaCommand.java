@@ -148,6 +148,19 @@ public class ArenaCommand implements CommandExecutor {
                 }
             });
             return true;
+        } else if (args.length > 0 && args[0].equalsIgnoreCase("cap")) {
+            if (args.length < 2) {
+                return false;
+            }
+            if (!player.hasPermission("kitpvp.admin")) {
+                player.sendMessage(Component.text("No permission", NamedTextColor.RED));
+                return true;
+            }
+
+            int arenas = Integer.parseInt(args[1]);
+            manager.setMaxArenas(arenas);
+            player.sendMessage(Component.text("Set arena cap to" + arenas, NamedTextColor.GREEN));
+            return true;
         } else if (args.length == 0) {
             new ArenaGui(dao, manager).open(player);
             return true;
