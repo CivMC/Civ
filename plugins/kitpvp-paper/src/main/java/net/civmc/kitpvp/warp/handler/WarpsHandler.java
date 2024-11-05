@@ -12,11 +12,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class WarpsHandler {
+
     private final KitPvpPlugin plugin;
     private final DatabaseManager databaseManager;
     private final Cache cache;
 
-    public WarpsHandler (KitPvpPlugin plugin, DatabaseManager databaseManager, Cache cache) {
+    public WarpsHandler(KitPvpPlugin plugin, DatabaseManager databaseManager, Cache cache) {
         this.plugin = plugin;
         this.databaseManager = databaseManager;
         this.cache = cache;
@@ -27,41 +28,41 @@ public class WarpsHandler {
     }
 
     public boolean addWarp(CommandSender sender, String[] args) {
-        if(args.length != 3) {
+        if (args.length != 3) {
             return false;
         }
 
-        if(!sender.hasPermission("warps.manage")) {
+        if (!sender.hasPermission("warps.manage")) {
             sender.sendMessage("You do not have permission to execute this command");
             return true;
         }
 
-        if(cache.getWarpIndex().contains(args[1])) {
+        if (cache.getWarpIndex().contains(args[1])) {
             sender.sendMessage("Warp %s already exists".formatted(args[1]));
             return true;
         }
 
-        if(EnumUtil.getGamemode(args[2]) == null) {
+        if (EnumUtil.getGamemode(args[2]) == null) {
             sender.sendMessage("Unknown gamemode");
             return false;
         }
 
         Location loc = ((Player) sender).getLocation();
         Warp warp = new Warp(
-                args[1],
-                loc.getWorld().getName(),
-                loc.getX(),
-                loc.getY(),
-                loc.getZ(),
-                loc.getPitch(),
-                loc.getYaw(),
-                args[2]
+            args[1],
+            loc.getWorld().getName(),
+            loc.getX(),
+            loc.getY(),
+            loc.getZ(),
+            loc.getPitch(),
+            loc.getYaw(),
+            args[2]
         );
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                if(databaseManager.addWarp(warp)) {
+                if (databaseManager.addWarp(warp)) {
                     cache.addWarp(warp);
                     sender.sendMessage("Successfully saved warp %s".formatted(warp.name()));
                 }
@@ -71,17 +72,17 @@ public class WarpsHandler {
     }
 
     public boolean listWarps(CommandSender sender, String[] args) {
-        if(args.length != 1) {
+        if (args.length != 1) {
             return false;
         }
 
-        if(cache.getWarpIndex().isEmpty()) {
+        if (cache.getWarpIndex().isEmpty()) {
             sender.sendMessage("There are no warps");
             return true;
         }
 
         StringBuilder builder = new StringBuilder();
-        for(String s : cache.getWarpIndex()) {
+        for (String s : cache.getWarpIndex()) {
             builder.append("%s, ".formatted(s));
         }
         builder.deleteCharAt(builder.lastIndexOf(","));
@@ -92,16 +93,16 @@ public class WarpsHandler {
     }
 
     public boolean deleteWarp(CommandSender sender, String[] args) {
-        if(args.length != 2) {
+        if (args.length != 2) {
             return false;
         }
 
-        if(!sender.hasPermission("warps.manage")) {
+        if (!sender.hasPermission("warps.manage")) {
             sender.sendMessage("You do not have permission to execute this command");
             return true;
         }
 
-        if(!cache.getWarpIndex().contains(args[1])) {
+        if (!cache.getWarpIndex().contains(args[1])) {
             sender.sendMessage("Warp %s does not exist".formatted(args[1]));
             return true;
         }
@@ -109,7 +110,7 @@ public class WarpsHandler {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
             public void run() {
-                if(databaseManager.deleteWarp(args[1])) {
+                if (databaseManager.deleteWarp(args[1])) {
                     cache.deleteWarp(args[1]);
                     sender.sendMessage("Successfully deleted warp %s".formatted(args[1]));
                 }

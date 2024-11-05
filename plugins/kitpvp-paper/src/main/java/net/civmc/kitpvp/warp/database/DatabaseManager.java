@@ -15,10 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 public class DatabaseManager {
+
     private final KitPvpPlugin plugin;
     private final ManagedDatasource dataSource;
 
-    public DatabaseManager (KitPvpPlugin plugin, ManagedDatasource dataSource) {
+    public DatabaseManager(KitPvpPlugin plugin, ManagedDatasource dataSource) {
         this.plugin = plugin;
         this.dataSource = dataSource;
         this.plugin.info("Initialised a database connection");
@@ -47,10 +48,10 @@ public class DatabaseManager {
     public Map<String, Warp> getWarps() {
 
         Map<String, Warp> warps = new HashMap<>();
-        try (Connection connection = this.dataSource.getConnection()){
+        try (Connection connection = this.dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT * FROM warps");
             ResultSet results = statement.executeQuery();
-            while(results.next()) {
+            while (results.next()) {
                 warps.put(
                     results.getString("name"),
                     new Warp(
@@ -74,7 +75,7 @@ public class DatabaseManager {
 
     public List<String> getWarpNames() {
         List<String> warps = new ArrayList<>();
-        try(Connection connection = this.dataSource.getConnection()) {
+        try (Connection connection = this.dataSource.getConnection()) {
             ResultSet results = connection.prepareStatement("SELECT name FROM warps").executeQuery();
             while (results.next()) {
                 warps.add(results.getString("name"));
@@ -87,7 +88,7 @@ public class DatabaseManager {
     }
 
     public boolean addWarp(Warp warp) {
-        try (Connection connection = this.dataSource.getConnection()){
+        try (Connection connection = this.dataSource.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("INSERT IGNORE INTO warps(name, world, x, y, z, pitch, yaw, gamemode) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             statement.setString(1, warp.name());
             statement.setString(2, warp.world());

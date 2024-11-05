@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class WarpCommand implements TabExecutor {
+
     private final WarpHandler handler;
 
     public WarpCommand(WarpHandler handler) {
@@ -18,12 +19,12 @@ public class WarpCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if(!(sender instanceof Player)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage("Only a player can execute this command");
             return true;
         }
 
-        if(args.length != 1) {
+        if (args.length != 1) {
             return false;
         }
 
