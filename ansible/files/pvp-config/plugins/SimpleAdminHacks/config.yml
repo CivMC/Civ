@@ -172,7 +172,7 @@ hacks:
     allowUsingAnvils: true
     allowUsingEnchantingTables: true
     infiniteCauldrons: true
-    disableEnderDragon: true
+    disableEnderDragon: false
     disableIronFarms: true
     disableEnderCrystalDamage: true
     disableMiningFatigue: true
