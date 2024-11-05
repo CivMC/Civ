@@ -27,7 +27,7 @@ public class WarpHandler {
     }
 
     public boolean warp(CommandSender sender, String name) {
-        if (!cache.getWarpIndex().contains(name)) {
+        if (!cache.getWarpIndex().contains(name.toLowerCase())) {
             sender.sendMessage("Warp %s does not exist".formatted(name));
             return true;
         }

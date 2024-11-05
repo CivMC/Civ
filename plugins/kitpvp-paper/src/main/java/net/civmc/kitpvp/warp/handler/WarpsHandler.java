@@ -37,7 +37,7 @@ public class WarpsHandler {
             return true;
         }
 
-        if (cache.getWarpIndex().contains(args[1])) {
+        if (cache.getWarpIndex().contains(args[1].toLowerCase())) {
             sender.sendMessage("Warp %s already exists".formatted(args[1]));
             return true;
         }

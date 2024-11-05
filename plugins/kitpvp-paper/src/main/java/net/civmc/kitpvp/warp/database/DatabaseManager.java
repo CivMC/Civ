@@ -78,7 +78,7 @@ public class DatabaseManager {
         try (Connection connection = this.dataSource.getConnection()) {
             ResultSet results = connection.prepareStatement("SELECT name FROM warps").executeQuery();
             while (results.next()) {
-                warps.add(results.getString("name"));
+                warps.add(results.getString("name").toLowerCase());
             }
         } catch (SQLException e) {
             plugin.getLogger().severe("Failed to retrieve warp names");
