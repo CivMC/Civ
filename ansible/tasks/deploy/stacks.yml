@@ -57,22 +57,6 @@
       - { path: 'minecraft/pvp-config', enabled: setting.minecraft.enabled }
       - { path: 'minecraft/pvp-plugins', enabled: setting.minecraft.enabled }
 
-- name: Deploy Stacks | Copy Files
-  become: false
-  when:
-      - "'swarm_manager' in group_names"
-      - item.enabled
-  ansible.posix.synchronize:
-      src: '{{item.file}}'
-      dest: '~/stacks/{{item.target}}'
-  loop:
-      - { file: '../../files/paper-config', target: 'minecraft', enabled: setting.minecraft.enabled }
-      - { file: '../../files/proxy-config', target: 'minecraft', enabled: setting.minecraft.enabled }
-      - { file: '../../files/pvp-config', target: 'minecraft', enabled: setting.minecraft.enabled }
-      - { file: '../../build/paper-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
-      - { file: '../../build/proxy-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
-      - { file: '../../build/pvp-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
-
 - name: Deploy Stacks | Synchronize Files
   become: false
   when:
@@ -81,6 +65,7 @@
   ansible.posix.synchronize:
     src: '{{item.file}}'
     dest: '~/stacks/{{item.target}}'
+    delete: true
   loop:
     - { file: '../../files/paper-config', target: 'minecraft', enabled: setting.minecraft.enabled }
     - { file: '../../files/proxy-config', target: 'minecraft', enabled: setting.minecraft.enabled }
@@ -101,31 +86,6 @@
     - { file: 'minecraft/paper-plugins', enabled: setting.minecraft.enabled }
     - { file: 'minecraft/proxy-plugins', enabled: setting.minecraft.enabled }
     - { file: 'minecraft/pvp-plugins', enabled: setting.minecraft.enabled }
-
-- name: Deploy Stacks | Synchronize Files
-  become: false
-  when:
-    - "'swarm_manager' in group_names"
-    - item.enabled
-  ansible.posix.synchronize:
-    src: '{{item.file}}'
-    dest: '~/stacks/{{item.target}}'
-  loop:
-    - { file: '../../files/paper-config', target: 'minecraft', enabled: setting.minecraft.enabled }
-    - { file: '../../files/proxy-config', target: 'minecraft', enabled: setting.minecraft.enabled }
-    - { file: '../../build/paper-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
-    - { file: '../../build/proxy-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
-
-- name: Deploy Stacks | Copy Files
-  shell: 'cp -r /home/{{ansible_user}}/stacks/{{item.file}} /opt/stacks/{{item.file}}'
-  when:
-    - "'swarm_manager' in group_names"
-    - item.enabled
-  loop:
-    - { file: 'minecraft/paper-config', enabled: setting.minecraft.enabled }
-    - { file: 'minecraft/proxy-config', enabled: setting.minecraft.enabled }
-    - { file: 'minecraft/paper-plugins', enabled: setting.minecraft.enabled }
-    - { file: 'minecraft/proxy-plugins', enabled: setting.minecraft.enabled }
 
 - name: Deploy Stacks | Deploy Stacks
   when:
