@@ -619,3 +619,6 @@ hacks:
         type: ALTITUDE
         min_y: -64
         max_y: 128
+  PortalConnect:
+    enabled: false
+    server: main
