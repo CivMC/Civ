@@ -11,7 +11,10 @@ listeners:
     host: "0.0.0.0:25577"
     max_players: 125
     tab_size: 60
-    force_default_server: true
+    force_default_server: false
+    forced_hosts:
+      ${CIV_PVP_HOSTNAME}: pvp
+      ${CIV_HOSTNAME}: main
 remote_ping_cache: -1
 network_compression_threshold: 256
 permissions:
@@ -29,8 +32,6 @@ stats: b074eed2-e7a2-4cda-bc1c-badda2fb5223
 online_mode: true
 forge_support: true
 disabled_commands:
-forced_hosts:
-  ${CIV_PVP_HOSTNAME}: pvp
 servers:
   main:
     motd: '§2Building with more than just blocks.§r'
