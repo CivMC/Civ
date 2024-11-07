@@ -6,6 +6,7 @@ import net.civmc.kitpvp.arena.ArenaCleaner;
 import net.civmc.kitpvp.arena.ArenaCommand;
 import net.civmc.kitpvp.arena.ArenaManager;
 import net.civmc.kitpvp.arena.MysqlLoader;
+import net.civmc.kitpvp.arena.PrivateArenaListener;
 import net.civmc.kitpvp.arena.RespawnListener;
 import net.civmc.kitpvp.arena.data.SqlArenaDao;
 import net.civmc.kitpvp.command.ClearCommand;
@@ -57,7 +58,9 @@ public class KitPvpPlugin extends ACivMod {
         int maxArenas = getConfig().getInt("max_arenas");
         try {
             ArenaManager manager = new ArenaManager(maxArenas, this, spawnProvider, new MysqlLoader(source));
-            getCommand("arena").setExecutor(new ArenaCommand(this, new SqlArenaDao(source), manager));
+            PrivateArenaListener privateArenaListener = new PrivateArenaListener(spawnProvider, manager);
+            getServer().getPluginManager().registerEvents(privateArenaListener, this);
+            getCommand("arena").setExecutor(new ArenaCommand(this, new SqlArenaDao(source), manager, privateArenaListener));
             getServer().getPluginManager().registerEvents(new RespawnListener(manager), this);
             Bukkit.getScheduler().runTaskTimer(this, new ArenaCleaner(manager), 20 * 60, 20 * 60);
         } catch (SQLException e) {

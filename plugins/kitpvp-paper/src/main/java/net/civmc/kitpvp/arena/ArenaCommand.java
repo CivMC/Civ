@@ -1,5 +1,6 @@
 package net.civmc.kitpvp.arena;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
 import net.civmc.kitpvp.arena.data.Arena;
 import net.civmc.kitpvp.arena.data.ArenaDao;
 import net.civmc.kitpvp.arena.gui.ArenaGui;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -25,11 +27,13 @@ public class ArenaCommand implements CommandExecutor {
     private final JavaPlugin plugin;
     private final ArenaDao dao;
     private final ArenaManager manager;
+    private final PrivateArenaListener privateArenaListener;
 
-    public ArenaCommand(JavaPlugin plugin, ArenaDao dao, ArenaManager manager) {
+    public ArenaCommand(JavaPlugin plugin, ArenaDao dao, ArenaManager manager, PrivateArenaListener privateArenaListener) {
         this.plugin = plugin;
         this.dao = dao;
         this.manager = manager;
+        this.privateArenaListener = privateArenaListener;
     }
 
     @Override
@@ -160,6 +164,86 @@ public class ArenaCommand implements CommandExecutor {
             int arenas = Integer.parseInt(args[1]);
             manager.setMaxArenas(arenas);
             player.sendMessage(Component.text("Set arena cap to " + arenas, NamedTextColor.GREEN));
+            return true;
+        } else if (args.length > 0 && args[0].equalsIgnoreCase("add")) {
+            if (args.length < 2) {
+                return false;
+            }
+
+            LoadedArena playerArena = null;
+            for (LoadedArena arena : manager.getArenas()) {
+                if (arena.owner().equals(player.getPlayerProfile())) {
+                    playerArena = arena;
+                    break;
+                }
+            }
+            if (playerArena == null) {
+                player.sendMessage(Component.text("You do not currently have an arena", NamedTextColor.RED));
+                return true;
+            }
+
+            Player invited = Bukkit.getPlayer(args[1]);
+            if (invited == null) {
+                player.sendMessage(Component.text("Could not find a player with that name", NamedTextColor.RED));
+                return true;
+            }
+
+            if (invited.equals(player)) {
+                player.sendMessage(Component.text("You cannot invite yourself to your own arena", NamedTextColor.RED));
+                return true;
+            }
+
+            List<PlayerProfile> invitedPlayers = playerArena.invitedPlayers();
+            if (invitedPlayers.contains(invited.getPlayerProfile())) {
+                player.sendMessage(Component.text("You have already invited that player to your arena", NamedTextColor.RED));
+                return true;
+            }
+
+            invitedPlayers.add(invited.getPlayerProfile());
+            player.sendMessage(Component.text("Invited " + invited.getName() + " to your arena. They can join via /arena", NamedTextColor.GREEN));
+            String suffix = player.getName().toLowerCase().endsWith("s") ? "'" : "'s";
+            invited.sendMessage(Component.text("You have been invited to " + player.getName() + suffix + " private arena. You can join via /arena", NamedTextColor.GREEN));
+            return true;
+        } else if (args.length > 0 && args[0].equalsIgnoreCase("remove")) {
+            if (args.length < 2) {
+                return false;
+            }
+
+            LoadedArena playerArena = null;
+            for (LoadedArena arena : manager.getArenas()) {
+                if (arena.owner().equals(player.getPlayerProfile())) {
+                    playerArena = arena;
+                    break;
+                }
+            }
+            if (playerArena == null) {
+                player.sendMessage(Component.text("You do not currently have an arena", NamedTextColor.RED));
+                return true;
+            }
+
+            PlayerProfile removed = null;
+            List<PlayerProfile> invitedPlayers = playerArena.invitedPlayers();
+            for (Iterator<PlayerProfile> iterator = invitedPlayers.iterator(); iterator.hasNext(); ) {
+                PlayerProfile invitedPlayer = iterator.next();
+                if (invitedPlayer.getName().equalsIgnoreCase(args[1])) {
+                    iterator.remove();
+                    removed = invitedPlayer;
+                    break;
+                }
+            }
+            if (removed == null) {
+                player.sendMessage(Component.text("That player has not been invited to your arena", NamedTextColor.RED));
+                return true;
+            }
+
+            player.sendMessage(Component.text("Removed " + removed.getName() + " from your arena.", NamedTextColor.GREEN));
+
+            String suffix = player.getName().toLowerCase().endsWith("s") ? "'" : "'s";
+            Player removedPlayer = Bukkit.getPlayer(removed.getId());
+            if (removedPlayer != null) {
+                removedPlayer.sendMessage(Component.text("You have been removed from " + player.getName() + suffix + " private arena.", NamedTextColor.YELLOW));
+                privateArenaListener.remove(playerArena, removedPlayer);
+            }
             return true;
         } else if (args.length == 0) {
             new ArenaGui(dao, manager).open(player);

@@ -26,10 +26,12 @@ public class ArenaCategorySelectionGui {
     private final JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
     private final ArenaDao arenaDao;
     private final ArenaManager manager;
+    private final boolean isPublic;
 
-    public ArenaCategorySelectionGui(ArenaDao arenaDao, ArenaManager manager) {
+    public ArenaCategorySelectionGui(ArenaDao arenaDao, ArenaManager manager, boolean isPublic) {
         this.arenaDao = arenaDao;
         this.manager = manager;
+        this.isPublic = isPublic;
     }
 
     public void open(Player player) {
@@ -76,7 +78,7 @@ public class ArenaCategorySelectionGui {
         return new Clickable(item) {
             @Override
             protected void clicked(@NotNull Player clicker) {
-                ArenaSelectionGui gui = new ArenaSelectionGui(arenaDao, ArenaCategorySelectionGui.this, manager);
+                ArenaSelectionGui gui = new ArenaSelectionGui(ArenaCategorySelectionGui.this, manager, isPublic);
                 Bukkit.getScheduler().runTask(plugin, () -> gui.open(clicker, arenas));
             }
         };

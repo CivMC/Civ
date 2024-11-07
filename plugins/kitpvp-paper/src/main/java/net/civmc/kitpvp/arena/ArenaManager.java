@@ -100,7 +100,7 @@ public class ArenaManager {
         return worldName.startsWith("dynamicarena.");
     }
 
-    public void createArena(Player player, Arena arena) {
+    public void createArena(Player player, Arena arena, boolean isPublic) {
         if (maxArenas >= 0 && this.arenas.size() >= maxArenas && !player.hasPermission("kitpvp.admin")) {
             player.sendMessage(Component.text("You cannot create an arena because there are too many arenas loaded", NamedTextColor.RED));
             return;
@@ -133,11 +133,16 @@ public class ArenaManager {
             world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
             world.setFullTime(6000);
 
-            arenas.put(player.getUniqueId(), new LoadedArena(player.getPlayerProfile(), arena));
+            arenas.put(player.getUniqueId(), new LoadedArena(player.getPlayerProfile(), arena, isPublic ? null : new ArrayList<>()));
 
             player.sendMessage(Component.text("Your world is ready. Open ", NamedTextColor.GOLD)
                 .append(Component.text("/arena", NamedTextColor.YELLOW))
                 .append(Component.text(" to go to your world.", NamedTextColor.GOLD)));
+            if (!isPublic) {
+                player.sendMessage(Component.text("Use ", NamedTextColor.GOLD)
+                    .append(Component.text("/arena add <player>", NamedTextColor.YELLOW))
+                    .append(Component.text(" to allow other players to join.", NamedTextColor.GOLD)));
+            }
         });
     }
 }

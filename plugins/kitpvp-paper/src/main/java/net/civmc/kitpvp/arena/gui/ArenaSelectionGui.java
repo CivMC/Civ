@@ -19,14 +19,14 @@ import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 public class ArenaSelectionGui {
 
     private final JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
-    private final ArenaDao arenaDao;
     private final ArenaManager manager;
     private final ArenaCategorySelectionGui parent;
+    private final boolean isPublic;
 
-    public ArenaSelectionGui(ArenaDao arenaDao, ArenaCategorySelectionGui parent, ArenaManager manager) {
-        this.arenaDao = arenaDao;
+    public ArenaSelectionGui(ArenaCategorySelectionGui parent, ArenaManager manager, boolean isPublic) {
         this.parent = parent;
         this.manager = manager;
+        this.isPublic = isPublic;
     }
 
     public void open(Player player, List<Arena> arenas) {
@@ -48,7 +48,7 @@ public class ArenaSelectionGui {
                 protected void clicked(@NotNull Player clicker) {
                     inventory.setOnClose(null);
                     clicker.closeInventory();
-                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> manager.createArena(clicker, arena));
+                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> manager.createArena(clicker, arena, isPublic));
                 }
             }, slot++);
         }
