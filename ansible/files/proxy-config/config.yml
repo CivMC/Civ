@@ -29,6 +29,8 @@ stats: b074eed2-e7a2-4cda-bc1c-badda2fb5223
 online_mode: true
 forge_support: true
 disabled_commands:
+forced_hosts:
+  ${CIV_PVP_HOSTNAME}: pvp
 servers:
   main:
     motd: '§2Building with more than just blocks.§r'
