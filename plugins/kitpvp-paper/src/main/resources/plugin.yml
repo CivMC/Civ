@@ -18,6 +18,8 @@ commands:
     usage: |-
       /<command>
       /<command> list
+      /<command> add <player>
+      /<command> remove <player>
       /<command> create <name> <icon> (administrators only)
       /<command> delete <name> (administrators only)
       /<command> displayname <name> <display name> (administrators only)

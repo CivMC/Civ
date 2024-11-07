@@ -46,6 +46,13 @@ public class ArenaGui {
         }));
         for (LoadedArena loadedArena : loadedArenas) {
             Arena arena = loadedArena.arena();
+            if (!player.hasPermission("kitpvp.admin")
+                && loadedArena.invitedPlayers() != null
+                && !loadedArena.invitedPlayers().contains(player.getPlayerProfile())
+                && !loadedArena.owner().equals(player.getPlayerProfile())) {
+                continue;
+            }
+
             ItemStack item = new ItemStack(arena.icon());
             ItemMeta meta = item.getItemMeta();
             boolean isOwner = loadedArena.owner().getId().equals(player.getUniqueId());
@@ -56,7 +63,10 @@ public class ArenaGui {
             meta.itemName(Component.text(arena.displayName(), NamedTextColor.YELLOW));
 
             List<Component> lore = new ArrayList<>();
-            lore.add(Component.text("Created by " + loadedArena.owner().getName(), NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
+            lore.add(Component.text("Created by " + loadedArena.owner().getName(), NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
+            if (loadedArena.invitedPlayers() != null) {
+                lore.add(Component.text("Private arena", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
+            }
             lore.add(Component.text("Click to teleport", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             lore.add(Component.text("Shift left click to join as spectator", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             if (hasAccess) {
@@ -108,18 +118,36 @@ public class ArenaGui {
         createArenaMeta.itemName(Component.text("Create new arena", NamedTextColor.GREEN));
         createArena.setItemMeta(createArenaMeta);
 
-        MultiPageView view = new MultiPageView(player, arenas, "Arenas", true);
-        view.setMenuSlot(new Clickable(createArena) {
-            @Override
-            protected void clicked(@NotNull Player clicker) {
-                if (manager.hasArena(clicker)) {
-                    clicker.sendMessage(Component.text("You already have an arena! Delete it to create a new one.", NamedTextColor.RED));
-                    return;
-                }
+        ItemStack createPrivateArena = new ItemStack(Material.PAPER);
+        ItemMeta createPrivateArenaMeta = createPrivateArena.getItemMeta();
+        createPrivateArenaMeta.itemName(Component.text("Create new private arena", NamedTextColor.LIGHT_PURPLE));
+        createPrivateArena.setItemMeta(createPrivateArenaMeta);
 
-                new ArenaCategorySelectionGui(dao, manager).open(clicker);
-            }
-        }, 0);
+        MultiPageView view = new MultiPageView(player, arenas, "Arenas", true);
+        view.setMenuSlot(new ArenaClickable(createArena, true), 0);
+        view.setMenuSlot(new ArenaClickable(createPrivateArena, false), 1);
+
         view.showScreen();
     }
+
+    class ArenaClickable extends Clickable {
+
+        private final boolean isPublic;
+
+        public ArenaClickable(ItemStack item, boolean isPublic) {
+            super(item);
+            this.isPublic = isPublic;
+        }
+
+        @Override
+        protected void clicked(@NotNull Player clicker) {
+            if (manager.hasArena(clicker)) {
+                clicker.sendMessage(Component.text("You already have an arena! Delete it to create a new one.", NamedTextColor.RED));
+                return;
+            }
+
+            new ArenaCategorySelectionGui(dao, manager, isPublic).open(clicker);
+        }
+    }
+
 }
