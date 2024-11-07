@@ -21,10 +21,9 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'
 
       - name: 🐘 Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
       - name: 🐘 Gradle Build
         run: CI=true ./gradlew :ansible:build --parallel --no-daemon
