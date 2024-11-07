@@ -8,6 +8,8 @@ settings:
     minecraft: &default_minecraft
       enabled: true
       whitelist: false
+      pvp_hostname: 'pvp.civmc.net'
+      hostname: 'play.civmc.net'
       resources: &default_minecraft_resources
         memory: 40G
         pvp_memory: 10G
@@ -22,7 +24,6 @@ settings:
     environment: Production
     minecraft:
       <<: *default_minecraft
-      pvp_hostname: 'pvp.civmc.net'
     auth:
       enabled: false # TODO: MOVE
 
@@ -33,6 +34,7 @@ settings:
       <<: *default_minecraft
       whitelist: true
       pvp_hostname: 'pvp-test.civmc.net'
+      hostname: 'test.civmc.net'
       resources:
         <<: *default_minecraft_resources
         memory: 6G

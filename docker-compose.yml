@@ -32,6 +32,7 @@ services:
 
       CIV_TIMEOUT_TIME: 3000000
       CIV_PVP_HOSTNAME: 'pvp.localhost'
+      CIV_HOSTNAME: 'main.localhost'
     ports:
       - "25565:25577"
     volumes:
