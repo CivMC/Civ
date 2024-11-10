@@ -2049,7 +2049,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
-        amount: 64
+        amount: 60
   adv_smelt_deepslate_diamond_ore:
     production_time: 4s
     name: Advanced Smelt Deepslate Diamond Ore
@@ -2081,7 +2081,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
-        amount: 64
+        amount: 60
   smelt_raw_gold:
     production_time: 4s
     name: Smelt Gold Ore
