@@ -73,12 +73,15 @@ final class CoreLoreGenerator implements LoreProvider {
 
         lore.add(parse("<l>%s", pearl.getItemName()));
         lore.add(parse(PlayerNameStringFormat, pearl.getPlayerName(), Integer.toString(pearl.getPearlId(), 36).toUpperCase()));
-        lore.add(parse("<a>Health: <n>%s/%s", health, config.getPearlHealthMaxValue()));
         lore.add(parse("<a>Exiled on: <n>%s", dateFormat.format(pearl.getPearledOn())));
         lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
         if (ExilePearlPlugin.getApi().isBanStickEnabled() && BanHandler.isPlayerBanned(pearl.getPlayerId())) {
             lore.add(parse("<b>Player is banned."));
         }
+
+        lore.add(parse(""));
+
+        lore.add(parse("<a>Health: <n>%s/%s", health, config.getPearlHealthMaxValue()));
         Set<RepairMaterial> repair = config.getRepairMaterials(pearl.getPearlType());
         if (repair != null) {
             for (RepairMaterial rep : repair) {
