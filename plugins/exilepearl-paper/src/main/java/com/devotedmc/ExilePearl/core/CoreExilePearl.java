@@ -237,17 +237,6 @@ final class CoreExilePearl implements ExilePearl {
      * @return The strength value
      */
     @Override
-    public Integer getHealthPercent() {
-        return (int) Math.round(((double) health / pearlApi.getPearlConfig().getPearlHealthMaxValue()) * 100);
-    }
-
-
-    /**
-     * Gets the pearl health value
-     *
-     * @return The strength value
-     */
-    @Override
     public int getHealth() {
         return this.health;
     }
