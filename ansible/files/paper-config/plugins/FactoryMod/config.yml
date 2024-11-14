@@ -36,8 +36,14 @@ factories:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 56
     recipes:
       - make_meteoric_iron_sword
+      - make_meteoric_iron_sword_kb
       - repair_meteoric_iron_sword_factory
   meteoric_iron_pickaxe:
     type: FCC
@@ -58,8 +64,14 @@ factories:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 88
     recipes:
-      - make_meteoric_iron_pickaxe
+      - make_meteoric_iron_pickaxe_loot
+      - make_meteoric_iron_pickaxe_silk
       - repair_meteoric_iron_pickaxe_factory
   meteoric_iron_axe:
     type: FCC
@@ -80,8 +92,14 @@ factories:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 80
     recipes:
-      - make_meteoric_iron_axe
+      - make_meteoric_iron_axe_loot
+      - make_meteoric_iron_axe_silk
       - repair_meteoric_iron_axe_factory
   meteoric_helm:
     type: FCC
@@ -102,6 +120,11 @@ factories:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 144
     recipes:
       - make_meteoric_helm
       - repair_meteoric_helm_factory
@@ -124,6 +147,11 @@ factories:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 224
     recipes:
       - make_meteoric_chest
       - repair_meteoric_chest_factory
@@ -146,6 +174,11 @@ factories:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 192
     recipes:
       - make_meteoric_legs
       - repair_meteoric_legs_factory
@@ -168,6 +201,11 @@ factories:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 112
     recipes:
       - make_meteoric_boots
       - repair_meteoric_boots_factory
@@ -14682,6 +14720,23 @@ recipes:
       meteoric_iron_sword:
         custom-key: meteoric_iron_sword
         amount: 5
+  make_meteoric_iron_sword_kb:
+    production_time: 4s
+    name: Make Meteoric Iron Knockback Sword
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 6
+      amesthyst_shard:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 10
+    output:
+      meteoric_iron_sword_kb:
+        custom-key: meteoric_iron_sword_knockback
+        amount: 5
   repair_meteoric_iron_sword_factory:
     production_time: 4s
     name: Repair Factory
@@ -14701,8 +14756,13 @@ recipes:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 28
     health_gained: 10000
-  make_meteoric_iron_pickaxe:
+  make_meteoric_iron_pickaxe_loot:
     production_time: 4s
     name: Make Meteoric Iron Pickaxe
     type: PRODUCTION
@@ -14713,6 +14773,23 @@ recipes:
     output:
       meteoric_iron_pickaxe:
         custom-key: meteoric_iron_pickaxe
+        amount: 5
+  make_meteoric_iron_pickaxe_silk:
+    production_time: 4s
+    name: Make Meteoric Iron Silk-Touch Pickaxe
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 10
+      amesthyst_shard:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 10
+    output:
+      meteoric_iron_pickaxe_silk:
+        custom-key: meteoric_iron_pickaxe_silk
         amount: 5
   repair_meteoric_iron_pickaxe_factory:
     production_time: 4s
@@ -14733,8 +14810,13 @@ recipes:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 44
     health_gained: 10000
-  make_meteoric_iron_axe:
+  make_meteoric_iron_axe_loot:
     production_time: 4s
     name: Make Meteoric Iron Axe
     type: PRODUCTION
@@ -14745,6 +14827,23 @@ recipes:
     output:
       meteoric_iron_axe:
         custom-key: meteoric_iron_axe
+        amount: 5
+  make_meteoric_iron_axe_silk:
+    production_time: 4s
+    name: Make Meteoric Iron Silk-Touch Axe
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 9
+      amesthyst_shard:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 10
+    output:
+      meteoric_iron_axe:
+        custom-key: meteoric_iron_axe_silk
         amount: 5
   repair_meteoric_iron_axe_factory:
     production_time: 4s
@@ -14765,6 +14864,11 @@ recipes:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 40
     health_gained: 10000
   make_meteoric_helm:
     production_time: 4s
@@ -14797,6 +14901,11 @@ recipes:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 72
     health_gained: 10000
   make_meteoric_chest:
     production_time: 4s
@@ -14829,6 +14938,11 @@ recipes:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 112
     health_gained: 10000
   make_meteoric_legs:
     production_time: 4s
@@ -14861,6 +14975,11 @@ recipes:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 96
     health_gained: 10000
   make_meteoric_boots:
     production_time: 4s
@@ -14893,4 +15012,9 @@ recipes:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 56
     health_gained: 10000
