@@ -389,10 +389,6 @@ public final class Settings {
         return plugin.getConfig().getBoolean("factions");
     }
 
-    public boolean useTowny() {
-        return plugin.getConfig().getBoolean("towny");
-    }
-
     public boolean useWorldGuard() {
         return plugin.getConfig().getBoolean("worldguard");
     }

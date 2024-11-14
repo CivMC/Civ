@@ -9,7 +9,6 @@ import net.minelink.ctplus.compat.base.NpcNameGeneratorFactory;
 import net.minelink.ctplus.compat.base.NpcPlayerHelper;
 import net.minelink.ctplus.hook.Hook;
 import net.minelink.ctplus.hook.HookManager;
-import net.minelink.ctplus.hook.TownyHook;
 import net.minelink.ctplus.listener.ForceFieldListener;
 import net.minelink.ctplus.listener.InstakillListener;
 import net.minelink.ctplus.listener.NpcListener;
@@ -93,7 +92,6 @@ public final class CombatTagPlus extends JavaPlugin {
         NpcNameGeneratorFactory.setNameGenerator(new NpcNameGeneratorImpl(this));
 
         integrateFactions();
-        integrateTowny();
         integrateWorldGuard();
 
         BarUtils.init();
@@ -214,17 +212,6 @@ public final class CombatTagPlus extends JavaPlugin {
 
             // Let's leave a stack trace in console for reporting
             e.printStackTrace();
-        }
-    }
-
-    private void integrateTowny() {
-        if (!getSettings().useTowny()) {
-            return;
-        }
-
-        // Determine if Towny is loaded
-        if (Bukkit.getPluginManager().isPluginEnabled("Towny")) {
-            getHookManager().addHook(new TownyHook());
         }
     }
 
