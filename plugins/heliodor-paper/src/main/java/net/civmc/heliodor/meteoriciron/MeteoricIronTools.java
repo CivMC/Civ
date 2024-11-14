@@ -144,7 +144,7 @@ public interface MeteoricIronTools {
     static List<ShapedRecipe> getRecipes(Plugin plugin) {
         return List.of(
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_pickaxe_silk_touch"), MeteoricIronTools.createPickaxe(true))
-                .shape("xxx", "asa", "asa")
+                .shape("xxx", "asa", " s ")
                 .setIngredient('x', MeteoricIron.createIngot())
                 .setIngredient('a', Material.AMETHYST_SHARD)
                 .setIngredient('s', Material.STICK)),
