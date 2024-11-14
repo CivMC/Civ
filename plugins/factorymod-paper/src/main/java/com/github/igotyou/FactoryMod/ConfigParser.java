@@ -31,7 +31,6 @@ import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorFinishRecipe;
 import com.github.igotyou.FactoryMod.recipes.heliodor.HeliodorRefillRecipe;
 import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
 import com.github.igotyou.FactoryMod.recipes.upgrade.CharcoalConsumptionUpgradeRecipe;
-import com.github.igotyou.FactoryMod.recipes.upgrade.ResetUpgradesRecipe;
 import com.github.igotyou.FactoryMod.recipes.upgrade.SpeedUpgradeRecipe;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
@@ -264,7 +263,6 @@ public class ConfigParser {
             }
         }
         if (manager.canUpgrade()) {
-            manager.registerRecipe(new ResetUpgradesRecipe());
             manager.registerRecipe(new CharcoalConsumptionUpgradeRecipe());
             manager.registerRecipe(new SpeedUpgradeRecipe());
         }
