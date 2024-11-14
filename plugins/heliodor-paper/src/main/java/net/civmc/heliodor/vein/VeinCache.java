@@ -139,7 +139,7 @@ public class VeinCache {
             if (NumberConversions.square(vx - x) + NumberConversions.square(vy - y) + NumberConversions.square(vz - z) <= NumberConversions.square(high + vein.radius())) {
                 return VeinPing.HIGH;
             }
-            if (NumberConversions.square(vx - x) + NumberConversions.square(vz - z) <= NumberConversions.square(low + vein.radius())) {
+            if (NumberConversions.square(vx - x) + NumberConversions.square(vy - y) + NumberConversions.square(vz - z) <= NumberConversions.square(low + vein.radius())) {
                 return VeinPing.LOW;
             }
         }
