@@ -21,6 +21,7 @@ chat:
       range: 800
       color: GRAY
   globalGroup: '!'
+  joinGlobalGroupByDefault: true
 info:
   #debug: lots of debugging logging will show up in the console def=false
   debug: false
