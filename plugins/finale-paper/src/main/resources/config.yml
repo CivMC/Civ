@@ -400,160 +400,198 @@ enhancedArrows:
 
 # customize tipped arrows
 tippedArrows:
-  nightvision:
+  night_vision: &nightvision
     name: Arrow of Night Vision
-    type: NIGHT_VISION
-    durations:
-      normal: 440
-      extended: 1200
-      amplified: 220
+    type: night_vision
+    duration: 440
     color:
       r: 3
       g: 32
       b: 126
-  invisiblity:
+  long_night_vision:
+    <<: *nightvision
+    type: long_night_vision
+    duration: 1200
+  invisibility: &invisibility
     name: Arrow of Invisibility
-    type: INVISIBILITY
-    durations:
-      normal: 440
-      extended: 1200
-      amplified: 220
+    type: invisibility
+    duration: 440
     color:
       r: 120
       g: 124
       b: 131
-  leaping:
+  long_invisibility:
+    <<: *invisibility
+    type: long_invisibility
+    duration: 1200
+  leaping: &leaping
     name: Arrow of Leaping
-    type: JUMP
-    durations:
-      normal: 440
-      extended: 1200
-      amplified: 220
+    type: leaping
+    duration: 440
     color:
       r: 83
       g: 230
       b: 87
-  fire_resistance:
+  long_leaping:
+    <<: *leaping
+    type: long_leaping
+    duration: 1200
+  strong_leaping:
+    <<: *leaping
+    type: strong_leaping
+    duration: 220
+  fire_resistance: &fire_resistance
     name: Arrow of Fire Resistance
-    type: FIRE_RESISTANCE
-    durations:
-      normal: 440
-      extended: 1200
-      amplified: 220
+    type: fire_resistance
+    duration: 440
     color:
       r: 221
       g: 147
       b: 68
-  speed:
+  long_fire_resistance:
+    <<: *fire_resistance
+    type: long_fire_resistance
+    duration: 1200
+  speed: &speed
     name: Arrow of Swiftness
-    type: SPEED
-    durations:
-      normal: 440
-      extended: 1200
-      amplified: 220
+    type: swiftness
+    duration: 440
     color:
       r: 104
       g: 159
       b: 185
-  slow:
+  long_speed:
+    <<: *speed
+    type: long_swiftness
+    duration: 1200
+  strong_speed:
+    <<: *speed
+    type: strong_swiftness
+    duration: 220
+  slow: &slow
     name: Arrow of Slowness
-    type: SLOW
-    durations:
-      normal: 220
-      extended: 600
-      amplified: 40
+    type: slowness
+    duration: 220
     color:
       r: 89
       g: 103
       b: 112
-  turtle_master:
+  long_slow:
+    <<: *slow
+    type: long_slowness
+    duration: 600
+  strong_slow:
+    <<: *slow
+    type: strong_slowness
+    duration: 40
+  turtle_master: &turtle_master
     name: Arrow of Turtle Master
-    type: TURTLE_MASTER
-    durations:
-      normal: 40
-      extended: 100
-      amplified: 40
+    type: turtle_master
+    duration: 40
     color:
       r: 119
       g: 89
       b: 78
-  water_breathing:
+  long_turtle_master:
+    <<: *turtle_master
+    type: long_turtle_master
+    duration: 100
+  strong_turtle_master:
+    <<: *turtle_master
+    type: strong_turtle_master
+    duration: 40
+  water_breathing: &water_breathing
     name: Arrow of Water Breathing
-    type: WATER_BREATHING
-    durations:
-      normal: 440
-      extended: 1200
-      amplified: 40
+    type: water_breathing
+    duration: 440
     color:
       r: 19
       g: 71
       b: 134
-  poison:
+  long_water_breathing:
+    <<: *water_breathing
+    type: long_water_breathing
+    duration: 1200
+  poison: &poison
     name: Arrow of Poison
-    type: POISON
-    durations:
-      normal: 100
-      extended: 220
-      amplified: 40
+    type: poison
+    duration: 100
     color:
       r: 94
       g: 129
       b: 43
-  regen:
+  long_poison:
+    <<: *poison
+    type: long_poison
+    duration: 220
+  strong_poison:
+    <<: *poison
+    type: strong_poison
+    duration: 40
+  regen: &regen
     name: Arrow of Regeneration
-    type: REGEN
-    durations: # duration in ticks (20 ticks = 1 second)
-      normal: 100
-      extended: 220
-      amplified: 40
+    type: regeneration
+    duration: 100
     color:
       r: 188
       g: 102
       b: 146
-  strength:
+  long_regen:
+    <<: *regen
+    type: long_regeneration
+    duration: 220
+  strong_regen:
+    <<: *regen
+    type: strong_regeneration
+    duration: 40
+  strength: &strength
     name: Arrow of Strength
-    type: STRENGTH
-    durations: # duration in ticks (20 ticks = 1 second)
-      normal: 440
-      extended: 1200
-      amplified: 220
+    type: strength
+    duration: 440
     color:
       r: 110
       g: 28
       b: 31
-  weakness:
+  long_strength:
+    <<: *strength
+    type: long_strength
+    duration: 1200
+  strong_strength:
+    <<: *strength
+    type: strong_strength
+    duration: 220
+  weakness: &weakness
     name: Arrow of Weakness
-    type: WEAKNESS
-    durations: # duration in ticks (20 ticks = 1 second)
-      normal: 220
-      extended: 600
-      amplified: 100
+    type: weakness
+    duration: 220
     color:
       r: 110
       g: 28
       b: 31
+  long_weakness:
+    <<: *weakness
+    type: long_weakness
+    duration: 600
   luck:
     name: Arrow of Luck
-    type: LUCK
-    durations: # duration in ticks (20 ticks = 1 second)
-      normal: 740
-      extended: 740
-      amplified: 740
+    type: luck
+    duration: 740
     color:
       r: 74
       g: 131
       b: 18
-  slow_falling:
+  slow_falling: &slow_falling
     name: Arrow of Slow Falling
-    type: SLOW_FALLING
-    durations: # duration in ticks (20 ticks = 1 second)
-      normal: 220
-      extended: 600
-      amplified: 220
+    type: slow_falling
+    duration: 220
     color:
       r: 254
       g: 232
       b: 198
+  long_slow_falling:
+    <<: *slow_falling
+    type: long_slow_falling
+    duration: 600
 blockPlacementRestrictions:
   enabled: true
   mode: BLACKLIST # BLACKLIST, WHITELIST, NOLIST (only cooldowns)

@@ -5,8 +5,11 @@ import com.github.maxopoly.finale.misc.ArmourModifier;
 import com.github.maxopoly.finale.misc.ItemUtil;
 import com.github.maxopoly.finale.misc.TippedArrowModifier;
 import com.github.maxopoly.finale.misc.WeaponModifier;
+import java.util.List;
 import java.util.Map;
+import io.papermc.paper.potion.PotionMix;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -115,12 +118,18 @@ public class WeaponModificationListener implements Listener {
             );
         }
 
+        is.setItemMeta(im);
+
         if (is.getType() == Material.TIPPED_ARROW) {
             ItemMeta itemMeta = is.getItemMeta();
             PotionMeta potionMeta = (PotionMeta) itemMeta;
             potionMeta = potionMeta.clone();
-            PotionData basePotionData = potionMeta.getBasePotionData();
-            PotionType potionType = basePotionData.getType();
+            PotionType potionType = potionMeta.getBasePotionType();
+            if (potionType == null) {
+                return;
+            }
+
+            List<PotionEffect> effects = potionType.getPotionEffects();
 
             TippedArrowModifier tippedArrowModifier = Finale.getPlugin().getManager().getTippedArrowModifier();
             TippedArrowModifier.TippedArrowConfig tippedArrowConfig = tippedArrowModifier.getTippedArrowConfig(potionType);
@@ -128,39 +137,19 @@ public class WeaponModificationListener implements Listener {
                 return;
             }
 
-            TippedArrowModifier.PotionCategory potionCategory;
-            if (basePotionData.isExtended()) {
-                potionCategory = TippedArrowModifier.PotionCategory.EXTENDED;
-            } else if (basePotionData.isUpgraded()) {
-                potionCategory = TippedArrowModifier.PotionCategory.AMPLIFIED;
-            } else {
-                potionCategory = TippedArrowModifier.PotionCategory.NORMAL;
+            int duration = tippedArrowConfig.getDuration();
+            potionMeta.setBasePotionType(null);
+            potionMeta.clearCustomEffects();
+            potionMeta.setColor(tippedArrowConfig.getColor());
+
+            for (PotionEffect effect : effects) {
+                potionMeta.addCustomEffect(effect.withDuration(duration * 8), true);
             }
 
-            Map<TippedArrowModifier.PotionCategory, Integer> durations = tippedArrowConfig.getDurations();
-            System.out.println("durations: " + durations);
-            Integer duration = durations.get(potionCategory);
-            System.out.println("duration: " + duration);
-            if (duration != null) {
-                potionMeta.setBasePotionType(null);
-                potionMeta.clearCustomEffects();
-                potionMeta.setColor(tippedArrowConfig.getColor());
+            potionMeta.itemName(Component.text(tippedArrowConfig.getName()));
 
-                PotionEffect newEffect = new PotionEffect(potionType.getEffectType(), duration, basePotionData.isUpgraded() ? 1 : 0);
-                potionMeta.addCustomEffect(newEffect, true);
-
-                if (potionType == PotionType.TURTLE_MASTER) {
-                    PotionEffect resEffect = new PotionEffect(PotionEffectType.RESISTANCE, duration, basePotionData.isUpgraded() ? 1 : 0);
-                    potionMeta.addCustomEffect(resEffect, true);
-                }
-
-                potionMeta.displayName(Component.text(tippedArrowConfig.getName()));
-
-                is.setItemMeta(potionMeta);
-            }
+            is.setItemMeta(potionMeta);
         }
-
-        is.setItemMeta(im);
     }
 
     @EventHandler

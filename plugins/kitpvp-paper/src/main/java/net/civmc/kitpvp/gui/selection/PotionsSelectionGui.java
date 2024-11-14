@@ -95,7 +95,8 @@ public class PotionsSelectionGui extends ItemSelectionGui {
                     redraw.run();
                 }
             }, 53);
-        } else {
+        }
+        if (this.base != Material.SPLASH_POTION) {
             ItemStack showSplashPotions = new ItemStack(Material.SPLASH_POTION);
             PotionMeta meta = (PotionMeta) showSplashPotions.getItemMeta();
             meta.setColor(Color.YELLOW);
@@ -108,7 +109,22 @@ public class PotionsSelectionGui extends ItemSelectionGui {
                     base = Material.SPLASH_POTION;
                     redraw.run();
                 }
-            }, 53);
+            }, 52);
+        }
+        if (this.base != Material.TIPPED_ARROW) {
+            ItemStack showTippedArrows = new ItemStack(Material.TIPPED_ARROW);
+            PotionMeta meta = (PotionMeta) showTippedArrows.getItemMeta();
+            meta.setColor(Color.YELLOW);
+            meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+            meta.itemName(Component.text("Show tipped arrows", NamedTextColor.GOLD));
+            showTippedArrows.setItemMeta(meta);
+            inventory.setSlot(new Clickable(showTippedArrows) {
+                @Override
+                protected void clicked(@NotNull Player clicker) {
+                    base = Material.TIPPED_ARROW;
+                    redraw.run();
+                }
+            }, 51);
         }
     }
 }
