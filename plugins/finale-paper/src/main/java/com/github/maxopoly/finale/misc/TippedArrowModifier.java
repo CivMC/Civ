@@ -8,26 +8,18 @@ import java.util.Map;
 
 public class TippedArrowModifier {
 
-    public enum PotionCategory {
-
-        NORMAL,
-        EXTENDED,
-        AMPLIFIED;
-
-    }
-
     public static class TippedArrowConfig {
 
         private String name;
         private PotionType potionType;
         private Color color;
-        private Map<PotionCategory, Integer> durations;
+        private int duration;
 
-        public TippedArrowConfig(String name, PotionType effectType, Color color, Map<PotionCategory, Integer> durations) {
+        public TippedArrowConfig(String name, PotionType effectType, Color color, int duration) {
             this.name = name;
             this.potionType = effectType;
             this.color = color;
-            this.durations = durations;
+            this.duration = duration;
         }
 
         public String getName() {
@@ -42,10 +34,9 @@ public class TippedArrowModifier {
             return color;
         }
 
-        public Map<PotionCategory, Integer> getDurations() {
-            return durations;
+        public int getDuration() {
+            return duration;
         }
-
     }
 
     private Map<PotionType, TippedArrowConfig> tippedArrows;

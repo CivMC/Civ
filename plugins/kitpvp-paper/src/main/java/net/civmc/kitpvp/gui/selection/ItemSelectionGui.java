@@ -1,5 +1,6 @@
 package net.civmc.kitpvp.gui.selection;
 
+import com.github.maxopoly.finale.Finale;
 import net.civmc.kitpvp.KitPvpPlugin;
 import net.civmc.kitpvp.data.Kit;
 import net.civmc.kitpvp.data.KitPvpDao;
@@ -67,13 +68,21 @@ public abstract class ItemSelectionGui {
     }
 
     protected Clickable toClickable(ItemStack displayItem, ItemStack actualItem) {
-        return new Clickable(displayItem) {
+        ItemStack cloned = displayItem == null ? null : displayItem.clone();
+        if (cloned != null) {
+            Finale.getPlugin().update(cloned);
+        }
+        ItemStack actualCloned = actualItem == null ? null : actualItem.clone();
+        if (actualCloned != null) {
+            Finale.getPlugin().update(actualCloned);
+        }
+        return new Clickable(cloned) {
             @Override
             protected void clicked(@NotNull Player clicker) {
                 ItemStack[] items = kit.items().clone();
-                items[slot] = actualItem;
-                if (actualItem != null) {
-                    gui.setLastItem(actualItem);
+                items[slot] = actualCloned;
+                if (actualCloned != null) {
+                    gui.setLastItem(actualCloned);
                 }
 
                 JavaPlugin plugin = JavaPlugin.getProvidingPlugin(KitPvpPlugin.class);

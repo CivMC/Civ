@@ -663,22 +663,16 @@ public class ConfigParser {
                 continue;
             }
             String name = current.getString("name");
-            ConfigurationSection durationsSection = current.getConfigurationSection("durations");
-            Map<TippedArrowModifier.PotionCategory, Integer> durations = new HashMap<>();
-            for (String durationKey : durationsSection.getKeys(false)) {
-                TippedArrowModifier.PotionCategory potionCategory = TippedArrowModifier.PotionCategory.valueOf(durationKey.toUpperCase());
-                int duration = durationsSection.getInt(durationKey);
-                durations.put(potionCategory, duration);
-            }
+            int duration = current.getInt("duration");
             ConfigurationSection colorSection = current.getConfigurationSection("color");
             int red = colorSection.getInt("r");
             int green = colorSection.getInt("g");
             int blue = colorSection.getInt("b");
 
             TippedArrowModifier.TippedArrowConfig tippedArrowConfig = new TippedArrowModifier.TippedArrowConfig(
-                name, potionType, Color.fromRGB(red, green, blue), durations
+                name, potionType, Color.fromRGB(red, green, blue), duration
             );
-            plugin.info("Modifying " + potionType + " tipped arrow: durations: " + durations);
+            plugin.info("Modifying " + potionType + " tipped arrow: duration: " + duration);
             tam.addTippedArrowConfig(tippedArrowConfig);
         }
         return tam;
