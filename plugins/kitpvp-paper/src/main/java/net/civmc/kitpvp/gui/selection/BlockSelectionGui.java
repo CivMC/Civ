@@ -45,7 +45,10 @@ public class BlockSelectionGui extends ItemSelectionGui {
             Material.HONEY_BLOCK,
             Material.GLOWSTONE,
             Material.GLASS,
-            Material.NETHERRACK
+            Material.NETHERRACK,
+            Material.RAIL,
+            Material.IRON_BLOCK,
+            Material.GOLD_BLOCK
         };
         for (int i = 0; i < types.length; i++) {
             inventory.setSlot(toClickable(new ItemStack(types[i])), i);
