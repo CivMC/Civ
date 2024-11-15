@@ -122,7 +122,7 @@ public interface MeteoricIronTools {
             Component.text("Instantly breaks cobwebs", NamedTextColor.WHITE)));
         ToolComponent tool = meta.getTool();
         tool.setDamagePerBlock(1);
-        tool.addRule(Material.COBWEB, 1000f, true);
+        tool.addRule(Material.COBWEB, 200f, true);
         meta.setTool(tool);
         meta.setMaxDamage(DURABILITY);
         meta.addEnchant(Enchantment.FIRE_ASPECT, 2, false);
