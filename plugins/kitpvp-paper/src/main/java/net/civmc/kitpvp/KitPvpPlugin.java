@@ -39,7 +39,7 @@ public class KitPvpPlugin extends ACivMod {
         DatabaseCredentials credentials = (DatabaseCredentials) getConfig().get("database");
         source = ManagedDatasource.construct(this, credentials);
         getCommand("kit").setExecutor(new KitCommand(new SqlKitPvpDao(source), anvilGui));
-        WarpMain warpMain = new WarpMain(this, source);
+        new WarpMain(this, source);
         getCommand("clear").setExecutor(new ClearCommand());
 
         InventorySnapshotManager inventorySnapshotManager = new InventorySnapshotManager();
