@@ -83,6 +83,8 @@ public interface MeteoricIronTools {
         tool.addRule(Tag.WOODEN_FENCES, 1000f, true);
         tool.addRule(Tag.WOODEN_DOORS, 1000f, true);
         tool.addRule(Tag.PLANKS, 1000f, true);
+        tool.addRule(Tag.WOODEN_SLABS, 1000f, true);
+        tool.addRule(Tag.WOODEN_STAIRS, 1000f, true);
         tool.addRule(Material.CRAFTING_TABLE, 1000f, true);
         // 2 ticks for iron stuff
         tool.addRule(Material.IRON_DOOR, 50f, true);
