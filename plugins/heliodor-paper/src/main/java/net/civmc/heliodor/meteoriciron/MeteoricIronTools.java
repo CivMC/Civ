@@ -122,7 +122,7 @@ public interface MeteoricIronTools {
             Component.text("Instantly breaks cobwebs", NamedTextColor.WHITE)));
         ToolComponent tool = meta.getTool();
         tool.setDamagePerBlock(1);
-        tool.addRule(Material.COBWEB, 200f, true);
+        tool.addRule(Material.COBWEB, 1000f, true);
         meta.setTool(tool);
         meta.setMaxDamage(DURABILITY);
         meta.addEnchant(Enchantment.FIRE_ASPECT, 2, false);
@@ -144,7 +144,7 @@ public interface MeteoricIronTools {
     static List<ShapedRecipe> getRecipes(Plugin plugin) {
         return List.of(
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_pickaxe_silk_touch"), MeteoricIronTools.createPickaxe(true))
-                .shape("xxx", "asa", "asa")
+                .shape("xxx", "asa", " s ")
                 .setIngredient('x', MeteoricIron.createIngot())
                 .setIngredient('a', Material.AMETHYST_SHARD)
                 .setIngredient('s', Material.STICK)),
