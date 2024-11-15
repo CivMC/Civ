@@ -2,6 +2,12 @@
   hosts: all
   become: true
 
+  vars:
+    servers:
+      - pvp
+      - paper
+      - proxy
+
   tasks:
     - name: Stop Server| Include Preflight
       include_tasks: ../tasks/preflight-checks.yml
