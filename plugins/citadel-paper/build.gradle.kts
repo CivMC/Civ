@@ -11,5 +11,6 @@ dependencies {
 
     compileOnly(project(":plugins:civmodcore-paper"))
     compileOnly(project(":plugins:namelayer-paper"))
-    compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.9")
+
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.2.0-SNAPSHOT")
 }
