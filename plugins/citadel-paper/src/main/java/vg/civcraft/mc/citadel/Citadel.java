@@ -148,14 +148,7 @@ public class Citadel extends ACivMod {
         stateManager = new PlayerStateManager();
         acidManager = new AcidManager(config.getAcidTypes());
         settingManager = new CitadelSettingManager();
-        Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
-            if (Bukkit.getPluginManager().isPluginEnabled("DecentHolograms")) {
-                holoManager = new HologramManager(settingManager);
-                logger.info("DecentHolograms is loaded, holograms available");
-            } else {
-                logger.info("DecentHolograms is not loaded, no holograms available");
-            }
-        });
+        holoManager = new HologramManager(settingManager);
         commandManager = new CitadelCommandManager(this);
         CitadelPermissionHandler.setup();
         registerListeners();
