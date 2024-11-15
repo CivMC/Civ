@@ -24,7 +24,7 @@ factories:
     setupcost:
       meteoric_iron_ingot:
         custom-key: meteoric_iron_ingot
-        amount: 7
+        amount: 8
       essence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -52,7 +52,7 @@ factories:
     setupcost:
       meteoric_iron_ingot:
         custom-key: meteoric_iron_ingot
-        amount: 11
+        amount: 12
       essence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -80,7 +80,7 @@ factories:
     setupcost:
       meteoric_iron_ingot:
         custom-key: meteoric_iron_ingot
-        amount: 10
+        amount: 11
       essence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -103,12 +103,12 @@ factories:
       - repair_meteoric_iron_axe_factory
   meteoric_helm:
     type: FCC
-    name: Meteoric Helmet Smith
+    name: Meteoric Iron Helmet Smith
     citadelBreakReduction: 1.0
     setupcost:
       meteoric_iron_ingot:
         custom-key: meteoric_iron_ingot
-        amount: 18
+        amount: 21
       essence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -130,12 +130,12 @@ factories:
       - repair_meteoric_helm_factory
   meteoric_chest:
     type: FCC
-    name: Meteoric Chestplate Smith
+    name: Meteoric Iron Chestplate Smith
     citadelBreakReduction: 1.0
     setupcost:
       meteoric_iron_ingot:
         custom-key: meteoric_iron_ingot
-        amount: 28
+        amount: 33
       essence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -157,12 +157,12 @@ factories:
       - repair_meteoric_chest_factory
   meteoric_legs:
     type: FCC
-    name: Meteoric Leggings Smith
+    name: Meteoric Iron Leggings Smith
     citadelBreakReduction: 1.0
     setupcost:
       meteoric_iron_ingot:
         custom-key: meteoric_iron_ingot
-        amount: 24
+        amount: 30
       essence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -189,7 +189,7 @@ factories:
     setupcost:
       meteoric_iron_ingot:
         custom-key: meteoric_iron_ingot
-        amount: 14
+        amount: 17
       essence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
