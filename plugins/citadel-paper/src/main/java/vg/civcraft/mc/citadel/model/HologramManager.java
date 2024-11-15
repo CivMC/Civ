@@ -172,7 +172,7 @@ public class HologramManager {
             values.add(new WrappedDataValue(15, WrappedDataWatcher.Registry.get(Byte.class), (byte) 3));
             values.add(new WrappedDataValue(23, WrappedDataWatcher.Registry.getChatComponentSerializer(),
                 new AdventureComponent(createHoloContent())));
-            values.add(new WrappedDataValue(25, WrappedDataWatcher.Registry.get(Integer.class), 0));
+//            values.add(new WrappedDataValue(25, WrappedDataWatcher.Registry.get(Integer.class), 0));
             // Add shadow when MC-260529 is fixed
             values.add(new WrappedDataValue(27, WrappedDataWatcher.Registry.get(Byte.class), (byte) (0x02)));
             fakeMetadata.getDataValueCollectionModifier().write(0, values);

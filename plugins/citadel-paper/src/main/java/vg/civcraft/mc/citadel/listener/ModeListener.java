@@ -199,8 +199,8 @@ public class ModeListener implements Listener {
             TextColor.color(0x71aa00),
             TextColor.color(0x55aa00),
             TextColor.color(0x39aa00),
-            TextColor.color(0x1caa00),
-            TextColor.color(0x00aa00),
+            TextColor.color(0x68f84c),
+            TextColor.color(0x55ff00),
         }[slot];
         return Component.text(String.format("%s%% (%s/%s)",
             commaFormat.format(rein.getHealth() / rein.getType().getHealth() * 100),
