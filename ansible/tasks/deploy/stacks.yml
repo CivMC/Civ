@@ -27,8 +27,8 @@
       path: '{{item.path}}'
       state: directory
   loop:
-      - { path: '/opt/stacks/minecraft/paper-data', enabled: setting.minecraft.enabled }
-      - { path: '/opt/stacks/minecraft/pvp-data', enabled: setting.minecraft.enabled }
+      - { path: '/opt/stacks/minecraft/paper-data', enabled: '{{ setting.minecraft.enabled and "''paper''" in servers }}' }
+      - { path: '/opt/stacks/minecraft/pvp-data', enabled: '{{ setting.minecraft.enabled and "''pvp''" in servers }}' }
       - { path: '/opt/stacks/minecraft/mariadb-data', enabled: setting.minecraft.enabled }
       - { path: '/opt/stacks/minecraft/postgres-data', enabled: setting.minecraft.enabled }
 
@@ -50,12 +50,12 @@
       path: '/opt/stacks/{{item.path}}'
       state: absent
   loop:
-      - { path: 'minecraft/paper-config', enabled: setting.minecraft.enabled }
-      - { path: 'minecraft/paper-plugins', enabled: setting.minecraft.enabled }
-      - { path: 'minecraft/proxy-config', enabled: setting.minecraft.enabled }
-      - { path: 'minecraft/proxy-plugins', enabled: setting.minecraft.enabled }
-      - { path: 'minecraft/pvp-config', enabled: setting.minecraft.enabled }
-      - { path: 'minecraft/pvp-plugins', enabled: setting.minecraft.enabled }
+      - { path: 'minecraft/paper-config', enabled: '{{ setting.minecraft.enabled and "''paper''" in servers }}' }
+      - { path: 'minecraft/paper-plugins', enabled: '{{ setting.minecraft.enabled and "''paper''" in servers }}' }
+      - { path: 'minecraft/proxy-config', enabled: '{{ setting.minecraft.enabled and "''proxy''" in servers }}' }
+      - { path: 'minecraft/proxy-plugins', enabled: '{{ setting.minecraft.enabled and "''proxy''" in servers }}' }
+      - { path: 'minecraft/pvp-config', enabled: '{{ setting.minecraft.enabled and "''pvp''" in servers }}' }
+      - { path: 'minecraft/pvp-plugins', enabled: '{{ setting.minecraft.enabled and "''pvp''" in servers }}' }
 
 - name: Deploy Stacks | Synchronize Files
   become: false
@@ -67,12 +67,12 @@
     dest: '~/stacks/{{item.target}}'
     delete: true
   loop:
-    - { file: '../../files/paper-config', target: 'minecraft', enabled: setting.minecraft.enabled }
-    - { file: '../../files/proxy-config', target: 'minecraft', enabled: setting.minecraft.enabled }
-    - { file: '../../files/pvp-config', target: 'minecraft', enabled: setting.minecraft.enabled }
-    - { file: '../../build/paper-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
-    - { file: '../../build/proxy-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
-    - { file: '../../build/pvp-plugins', target: 'minecraft', enabled: setting.minecraft.enabled }
+    - { file: '../../files/paper-config', enabled: '{{ setting.minecraft.enabled and "''paper''" in servers }}' }
+    - { file: '../../files/proxy-config', enabled: '{{ setting.minecraft.enabled and "''proxy''" in servers }}' }
+    - { file: '../../files/pvp-config', enabled: '{{ setting.minecraft.enabled and "''pvp''" in servers }}' }
+    - { file: '../../build/paper-plugins', enabled: '{{ setting.minecraft.enabled and "''paper''" in servers }}' }
+    - { file: '../../build/proxy-plugins', enabled: '{{ setting.minecraft.enabled and "''proxy''" in servers }}' }
+    - { file: '../../build/pvp-plugins', enabled: '{{ setting.minecraft.enabled and "''pvp''" in servers }}' }
 
 - name: Deploy Stacks | Copy Files
   shell: 'cp -r /home/{{ansible_user}}/stacks/{{item.file}} /opt/stacks/{{item.file}}'
@@ -80,12 +80,12 @@
     - "'swarm_manager' in group_names"
     - item.enabled
   loop:
-    - { file: 'minecraft/paper-config', enabled: setting.minecraft.enabled }
-    - { file: 'minecraft/proxy-config', enabled: setting.minecraft.enabled }
-    - { file: 'minecraft/pvp-config', enabled: setting.minecraft.enabled }
-    - { file: 'minecraft/paper-plugins', enabled: setting.minecraft.enabled }
-    - { file: 'minecraft/proxy-plugins', enabled: setting.minecraft.enabled }
-    - { file: 'minecraft/pvp-plugins', enabled: setting.minecraft.enabled }
+    - { file: 'minecraft/paper-config', enabled: '{{ setting.minecraft.enabled and "''paper''" in servers }}' }
+    - { file: 'minecraft/proxy-config', enabled: '{{ setting.minecraft.enabled and "''proxy''" in servers }}' }
+    - { file: 'minecraft/pvp-config', enabled: '{{ setting.minecraft.enabled and "''pvp''" in servers }}' }
+    - { file: 'minecraft/paper-plugins', enabled: '{{ setting.minecraft.enabled and "''paper''" in servers }}' }
+    - { file: 'minecraft/proxy-plugins', enabled: '{{ setting.minecraft.enabled and "''proxy''" in servers }}' }
+    - { file: 'minecraft/pvp-plugins', enabled: '{{ setting.minecraft.enabled and "''pvp''" in servers }}' }
 
 - name: Deploy Stacks | Deploy Stacks
   when:

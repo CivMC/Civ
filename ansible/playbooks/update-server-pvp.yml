@@ -5,8 +5,6 @@
   vars:
     servers:
       - pvp
-      - paper
-      - proxy
 
   tasks:
     - name: Update Serer | Include Preflight
