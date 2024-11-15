@@ -322,9 +322,9 @@ invulnerableTicks:
 
 # the warp fruit will roll back to 7 seconds ago
 warpFruit: # logSize * logInterval = how far back in time you go
-  logSize: 60 # log queue size
+  logSize: 35 # log queue size
   logInterval: 200ms # in milliseconds
-  cooldown: 10s
+  cooldown: 180s
   maxDistance: 100 # max warp distance
   spectralWhileChanneling: true
 
