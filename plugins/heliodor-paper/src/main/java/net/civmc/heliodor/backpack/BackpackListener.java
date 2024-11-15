@@ -170,6 +170,7 @@ public class BackpackListener implements Listener {
                 GOLDEN_APPLE,
                 ENCHANTED_GOLDEN_APPLE,
                 ANCIENT_DEBRIS,
+                COBWEB,
                 CHORUS_FRUIT:
                 return true;
         }
