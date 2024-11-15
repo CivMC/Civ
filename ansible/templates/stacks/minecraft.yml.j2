@@ -156,7 +156,7 @@ services:
             STOP_DURATION: 3600
 
             CIV_SERVER_NAME: prod-server
-{% if setting.minecraft.whitelist %}
+{% if setting.minecraft.pvp_whitelist %}
             ENABLE_WHITELIST: 'true'
             CIV_WHITELIST: 'true'
 {% else %}

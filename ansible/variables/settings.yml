@@ -8,6 +8,7 @@ settings:
     minecraft: &default_minecraft
       enabled: true
       whitelist: false
+      pvp_whitelist: true
       pvp_hostname: 'pvp.civmc.net'
       hostname: 'play.civmc.net'
       resources: &default_minecraft_resources
@@ -33,6 +34,7 @@ settings:
     minecraft:
       <<: *default_minecraft
       whitelist: true
+      pvp_whitelist: true
       pvp_hostname: 'pvp-test.civmc.net'
       hostname: 'test.civmc.net'
       resources:
