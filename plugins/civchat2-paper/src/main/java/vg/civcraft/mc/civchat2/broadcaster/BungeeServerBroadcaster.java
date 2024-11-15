@@ -29,6 +29,7 @@ public class BungeeServerBroadcaster implements ServerBroadcaster {
         DataOutputStream msgout = new DataOutputStream(msgbytes);
         try {
             msgout.writeUTF("group");
+            msgout.writeLong(System.currentTimeMillis());
             msgout.writeUTF(senderId.toString());
             msgout.writeUTF(senderName);
             msgout.writeUTF(senderDisplayName);

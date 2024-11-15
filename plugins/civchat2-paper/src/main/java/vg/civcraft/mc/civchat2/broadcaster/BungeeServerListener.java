@@ -36,6 +36,10 @@ public class BungeeServerListener implements PluginMessageListener {
             String type = msgIn.readUTF();
             CivChat2Manager manager = CivChat2.getInstance().getCivChat2Manager();
             if (type.equals("group")) {
+                long timestamp = msgIn.readLong();
+                if (System.currentTimeMillis() - timestamp > 5000) {
+                    return;
+                }
                 manager.sendRemoteGroupMsg(UUID.fromString(msgIn.readUTF()), msgIn.readUTF(), msgIn.readUTF(), msgIn.readUTF(), msgIn.readUTF());
             } else {
                 CivChat2.getInstance().getLogger().log(Level.WARNING, "Unknown type '" + type + "' in CivChat2 plugin message");
