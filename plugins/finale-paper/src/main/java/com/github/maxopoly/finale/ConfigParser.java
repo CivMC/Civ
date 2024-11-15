@@ -38,6 +38,8 @@ public class ConfigParser {
     private long pearlCooldown;
     private long itemCooldown;
     private boolean combatTagOnPearl;
+    private boolean netheriteFireResistanceEnabled;
+    private boolean meteoricIronSlowness;
     private PotionHandler potionHandler;
     private Collection<Enchantment> disabledEnchants;
     private VelocityHandler velocityHandler;
@@ -88,6 +90,14 @@ public class ConfigParser {
         return combatConfig;
     }
 
+    public boolean isNetheriteFireResistanceEnabled() {
+        return netheriteFireResistanceEnabled;
+    }
+
+    public boolean isMeteoricIronSlownessEnabled() {
+        return meteoricIronSlowness;
+    }
+
     public FinaleManager parse() {
         plugin.info("Parsing Finale config...");
         plugin.saveDefaultConfig();
@@ -126,6 +136,9 @@ public class ConfigParser {
         velocityHandler = parseVelocityModification(config.getConfigurationSection("velocity"));
         damageModifiers = parseDamageModifiers(config.getConfigurationSection("damageModifiers"));
         combatConfig = parseCombatConfig(config.getConfigurationSection("cleanerCombat"));
+
+        netheriteFireResistanceEnabled = config.getBoolean("netheriteFireResistance");
+        meteoricIronSlowness = config.getBoolean("meteoricIronSlowness");
 
         // Initialize the manager
         manager = new FinaleManager(debug, attackEnabled, attackSpeed, invulTicksEnabled, invulnerableTicks, regenEnabled, ctpOnLogin, regenhandler, weapMod, armourMod,
@@ -334,24 +347,31 @@ public class ConfigParser {
                 plugin.warning("Found invalid value " + key + " at " + config + " only mapping values allowed here");
                 continue;
             }
-            String matString = current.getString("material");
-            if (matString == null) {
-                plugin.warning("Found no material specified at " + current + ". Skipping attack damage adjustment");
-                continue;
-            }
-            Material mat;
-            try {
-
-                mat = Material.valueOf(matString);
-            } catch (IllegalArgumentException e) {
-                plugin.warning("Found invalid material " + matString + " specified at " + current
-                    + ". Skipping attack damage adjustment for it");
-                continue;
-            }
             int damage = current.getInt("damage", -1);
             double attackSpeed = current.getDouble("attackSpeed", -1.0);
-            plugin.info("Modifying " + matString + ": attackSpeed: " + attackSpeed + ", damage: " + damage);
-            wm.addWeapon(mat, damage, attackSpeed);
+            double bonusDamagePerNetheritePiece = current.getDouble("bonusDamagePerNetheritePiece", 0.0);
+            double armourDamageMultiplier = current.getDouble("armourDamageMultiplier", 1.0);
+            String customKey = current.getString("key");
+            if (customKey != null) {
+                plugin.info("Modifying custom " + customKey + ": attackSpeed: " + attackSpeed + ", damage: " + damage + ", bonusDamagePerNetheritePiece: " + bonusDamagePerNetheritePiece + ", armourDamageMultiplier: " + armourDamageMultiplier);
+                wm.addCustomWeapon(customKey, damage, attackSpeed, bonusDamagePerNetheritePiece, armourDamageMultiplier);
+            } else {
+                String matString = current.getString("material");
+                if (matString == null) {
+                    plugin.warning("Found no material specified at " + current + ". Skipping attack damage adjustment");
+                    continue;
+                }
+                Material mat;
+                try {
+                    mat = Material.valueOf(matString);
+                } catch (IllegalArgumentException e) {
+                    plugin.warning("Found invalid material " + matString + " specified at " + current
+                        + ". Skipping attack damage adjustment for it");
+                    continue;
+                }
+                plugin.info("Modifying " + matString + ": attackSpeed: " + attackSpeed + ", damage: " + damage + ", bonusDamagePerNetheritePiece: " + bonusDamagePerNetheritePiece + ", armourDamageMultiplier: " + armourDamageMultiplier);
+                wm.addWeapon(mat, damage, attackSpeed, bonusDamagePerNetheritePiece, armourDamageMultiplier);
+            }
         }
         return wm;
     }
@@ -367,26 +387,34 @@ public class ConfigParser {
                 plugin.warning("Found invalid value " + key + " at " + config + " only mapping values allowed here");
                 continue;
             }
-            String matString = current.getString("material");
-            if (matString == null) {
-                plugin.warning("Found no material specified at " + current + ". Skipping attack damage adjustment");
-                continue;
-            }
-            Material mat;
-            try {
-                mat = Material.valueOf(matString);
-            } catch (IllegalArgumentException e) {
-                plugin.warning("Found invalid material " + matString + " specified at " + current
-                    + ". Skipping attack damage adjustment for it");
-                continue;
-            }
             double toughness = current.getDouble("toughness", -1);
             double armour = current.getDouble("armour", -1);
             double knockbackResistance = current.getDouble("knockbackResistance", -1);
             int extraDurabilityHits = current.getInt("extraDurabilityHits", 0);
-            plugin.info("Modifying " + matString + ": toughness: " + toughness + ", armour: " + armour
-                + ", knockbackResistance: " + knockbackResistance, ", extraDurabilityHits: " + extraDurabilityHits);
-            am.addArmour(mat, toughness, armour, knockbackResistance, extraDurabilityHits);
+
+            String customKey = current.getString("key");
+            if (customKey != null) {
+                plugin.info("Modifying custom " + customKey + ": toughness: " + toughness + ", armour: " + armour
+                    + ", knockbackResistance: " + knockbackResistance, ", extraDurabilityHits: " + extraDurabilityHits);
+                am.addCustomArmour(customKey, toughness, armour, knockbackResistance, extraDurabilityHits);
+            } else {
+                String matString = current.getString("material");
+                if (matString == null) {
+                    plugin.warning("Found no material specified at " + current + ". Skipping attack damage adjustment");
+                    continue;
+                }
+                Material mat;
+                try {
+                    mat = Material.valueOf(matString);
+                } catch (IllegalArgumentException e) {
+                    plugin.warning("Found invalid material " + matString + " specified at " + current
+                        + ". Skipping attack damage adjustment for it");
+                    continue;
+                }
+                plugin.info("Modifying " + matString + ": toughness: " + toughness + ", armour: " + armour
+                    + ", knockbackResistance: " + knockbackResistance, ", extraDurabilityHits: " + extraDurabilityHits);
+                am.addArmour(mat, toughness, armour, knockbackResistance, extraDurabilityHits);
+            }
         }
         return am;
     }
