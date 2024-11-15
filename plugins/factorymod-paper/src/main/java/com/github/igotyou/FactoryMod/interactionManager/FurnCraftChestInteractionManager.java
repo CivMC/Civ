@@ -255,7 +255,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
                     compInv.addComponent(furnaceConfigSection, SlotPredicates.offsetRectangle(3, 3, 3, 0));
                     compInv.addComponent(tableConfigSection, SlotPredicates.offsetRectangle(3, 3, 3, 4));
                 }
-                compInv.addComponent(lowerSection, SlotPredicates.offsetRectangle(3, 1, 3, 8));
+                compInv.addComponent(lowerSection, SlotPredicates.offsetRectangle(5, 2, 3, 7));
                 break;
             }
             default: {
