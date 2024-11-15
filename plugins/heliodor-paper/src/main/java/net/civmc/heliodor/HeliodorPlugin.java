@@ -54,36 +54,35 @@ public class HeliodorPlugin extends ACivMod {
 
         saveDefaultConfig();
 
-        database = ManagedDatasource.construct(this, (DatabaseCredentials) getConfig().get("database"));
-        if (database == null) {
-            Bukkit.shutdown();
-            return;
-        }
-
         protector = new BlockProtector();
         getServer().getPluginManager().registerEvents(protector, this);
 
-        InfusionManager infusionManager = new InfusionManager();
-        CauldronDao dao = new CauldronDao(this.getLogger(), database, infusionManager);
-        dao.registerMigrations();
-
         if (getConfig().getBoolean("enable_heliodor")) {
+            database = ManagedDatasource.construct(this, (DatabaseCredentials) getConfig().get("database"));
+            if (database == null) {
+                Bukkit.shutdown();
+                return;
+            }
+            InfusionManager infusionManager = new InfusionManager();
+            CauldronDao dao = new CauldronDao(this.getLogger(), database, infusionManager);
+            dao.registerMigrations();
+
             initVeins();
             if (!database.updateDatabase()) {
                 Bukkit.shutdown();
             }
             this.veinCache.load();
+
+            Supplier<CauldronInfuseData> newData = () -> new CauldronInfuseData(false, dao, infusionManager);
+            this.chunkMetaView = ChunkMetaAPI.registerBlockBasedPlugin(this, newData, dao, true);
+
+            protector.addPredicate(l -> chunkMetaView.get(l) != null);
+            getServer().getPluginManager().registerEvents(new InfusionListener(infusionManager, chunkMetaView), this);
         } else {
             if (!database.updateDatabase()) {
                 Bukkit.shutdown();
             }
         }
-
-        Supplier<CauldronInfuseData> newData = () -> new CauldronInfuseData(false, dao, infusionManager);
-        this.chunkMetaView = ChunkMetaAPI.registerBlockBasedPlugin(this, newData, dao, true);
-
-        protector.addPredicate(l -> chunkMetaView.get(l) != null);
-        getServer().getPluginManager().registerEvents(new InfusionListener(infusionManager, chunkMetaView), this);
 
         Bukkit.getScheduler().runTaskTimer(this, this.recipes, 15 * 20, 15 * 20);
 
