@@ -1,26 +1,31 @@
 package com.github.maxopoly.finale.listeners;
 
 import com.github.maxopoly.finale.Finale;
-import com.github.maxopoly.finale.combat.CombatUtil;
 import com.github.maxopoly.finale.misc.ArmourModifier;
 import com.github.maxopoly.finale.misc.ItemUtil;
+import com.github.maxopoly.finale.misc.TippedArrowModifier;
 import com.github.maxopoly.finale.misc.WeaponModifier;
+import java.util.List;
+import java.util.Map;
+import io.papermc.paper.potion.PotionMix;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import java.util.UUID;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 public class WeaponModificationListener implements Listener {
 
@@ -39,6 +44,10 @@ public class WeaponModificationListener implements Listener {
             return;
         }
 
+        this.update(is);
+    }
+
+    public void update(ItemStack is) {
         ItemMeta im = is.getItemMeta();
 
         ArmourModifier armourMod = Finale.getPlugin().getManager().getArmourModifier();
@@ -108,7 +117,39 @@ public class WeaponModificationListener implements Listener {
                     EquipmentSlotGroup.MAINHAND)
             );
         }
-        e.getCurrentItem().setItemMeta(im);
+
+        is.setItemMeta(im);
+
+        if (is.getType() == Material.TIPPED_ARROW) {
+            ItemMeta itemMeta = is.getItemMeta();
+            PotionMeta potionMeta = (PotionMeta) itemMeta;
+            potionMeta = potionMeta.clone();
+            PotionType potionType = potionMeta.getBasePotionType();
+            if (potionType == null) {
+                return;
+            }
+
+            List<PotionEffect> effects = potionType.getPotionEffects();
+
+            TippedArrowModifier tippedArrowModifier = Finale.getPlugin().getManager().getTippedArrowModifier();
+            TippedArrowModifier.TippedArrowConfig tippedArrowConfig = tippedArrowModifier.getTippedArrowConfig(potionType);
+            if (tippedArrowConfig == null) {
+                return;
+            }
+
+            int duration = tippedArrowConfig.getDuration();
+            potionMeta.setBasePotionType(null);
+            potionMeta.clearCustomEffects();
+            potionMeta.setColor(tippedArrowConfig.getColor());
+
+            for (PotionEffect effect : effects) {
+                potionMeta.addCustomEffect(effect.withDuration(duration * 8), true);
+            }
+
+            potionMeta.itemName(Component.text(tippedArrowConfig.getName()));
+
+            is.setItemMeta(potionMeta);
+        }
     }
 
     @EventHandler

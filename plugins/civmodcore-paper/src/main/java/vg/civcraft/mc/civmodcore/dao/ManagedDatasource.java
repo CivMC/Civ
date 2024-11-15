@@ -504,10 +504,8 @@ public class ManagedDatasource {
 
     /**
      * Passthrough; closes the underlying pool. Cannot be undone.
-     *
-     * @throws SQLException Something went horribly wrong.
      */
-    public void close() throws SQLException {
+    public void close() {
         this.connections.close();
     }
 

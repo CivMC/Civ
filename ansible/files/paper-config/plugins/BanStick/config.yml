@@ -6,7 +6,7 @@
 database:
   host: ${CIV_MYSQL_HOST}
   port: 3306
-  database: banstick
+  database: banstick # shared (TODO is this safe?)
   user: ${CIV_MYSQL_USERNAME}
   password: ${CIV_MYSQL_PASSWORD}
   poolsize: 15
@@ -66,7 +66,7 @@ log:
 #                To ban but not kick, turn on proxyBans, and newProxyBans.
 #                To kick but not ban, turn on proxyKicks and newProxyBans.
 #                To only leverage existing proxy bans (direct import?) use either proxyKicks or proxyBans but leave newProxyBans off.
-#  
+#
 #   - shareBans: If banstick should enforce the share threshold with bans.
 #   Usage notes: Set share.threshold to > 0 to allow some multiaccounting. If exceeded, will ban only the newest.
 events:

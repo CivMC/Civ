@@ -38,3 +38,6 @@ mysql:
   port: 3306
   username: ${CIV_MYSQL_USERNAME}
   password: ${CIV_MYSQL_PASSWORD}
+
+# true if chat should be broadcasted to all servers via bungeecord
+serverBroadcastChat: true

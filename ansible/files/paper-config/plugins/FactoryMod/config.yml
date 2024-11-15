@@ -14,8 +14,201 @@ disable_nether: false
 use_recipe_yamlidentifiers: true
 log_inventories: true
 force_include_default: true
+can_upgrade: true
 
 factories:
+  meteoric_iron_sword:
+    type: FCC
+    name: Meteoric Iron Sword Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 7
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 49
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 56
+    recipes:
+      - make_meteoric_iron_sword
+      - make_meteoric_iron_sword_kb
+      - repair_meteoric_iron_sword_factory
+  meteoric_iron_pickaxe:
+    type: FCC
+    name: Meteoric Iron Pickaxe Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 11
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 77
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 88
+    recipes:
+      - make_meteoric_iron_pickaxe_loot
+      - make_meteoric_iron_pickaxe_silk
+      - repair_meteoric_iron_pickaxe_factory
+  meteoric_iron_axe:
+    type: FCC
+    name: Meteoric Iron Axe Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 10
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 70
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 80
+    recipes:
+      - make_meteoric_iron_axe_loot
+      - make_meteoric_iron_axe_silk
+      - repair_meteoric_iron_axe_factory
+  meteoric_helm:
+    type: FCC
+    name: Meteoric Helmet Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 18
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 126
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 144
+    recipes:
+      - make_meteoric_helm
+      - repair_meteoric_helm_factory
+  meteoric_chest:
+    type: FCC
+    name: Meteoric Chestplate Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 28
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 196
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 224
+    recipes:
+      - make_meteoric_chest
+      - repair_meteoric_chest_factory
+  meteoric_legs:
+    type: FCC
+    name: Meteoric Leggings Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 24
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 168
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 192
+    recipes:
+      - make_meteoric_legs
+      - repair_meteoric_legs_factory
+  meteoric_boots:
+    type: FCC
+    name: Meteoric Boots Smith
+    citadelBreakReduction: 1.0
+    setupcost:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 14
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 98
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 112
+    recipes:
+      - make_meteoric_boots
+      - repair_meteoric_boots_factory
   gem_factory:
     type: FCC
     name: Gem Factory
@@ -367,7 +560,29 @@ factories:
       - adv_smelt_deepslate_lapis_ore
       - make_refractor
       - crack_fossil
+      - upgrade_to_elite_ore_smelter
       - repair_adv_ore_smelter
+  elite_ore_smelter:
+    type: FCCUPGRADE
+    name: Elite Ore Smelter
+    citadelBreakReduction: 1.0
+    recipes:
+      - smelt_meteoric_nuggets
+      - elite_smelt_ancient_debris
+      - smelt_coal_ore
+      - elite_smelt_raw_copper
+      - elite_smelt_raw_iron
+      - elite_smelt_diamond_ore
+      - elite_smelt_deepslate_diamond_ore
+      - elite_smelt_raw_gold
+      - elite_smelt_nether_gold_ore
+      - elite_smelt_redstone_ore
+      - elite_smelt_deepslate_redstone_ore
+      - elite_smelt_lapis_ore
+      - elite_smelt_deepslate_lapis_ore
+      - make_refractor
+      - crack_fossil
+      - repair_elite_ore_smelter
   diamond_helm:
     type: FCC
     name: Diamond Helmet Smith
@@ -1481,14 +1696,14 @@ factories:
         type: HONEYCOMB
         amount: 32
     recipes:
-     - wax_copper_block
-     - wax_exposed_copper
-     - wax_weathered_copper
-     - wax_oxidized_copper
-     - weather_copper_block
-     - weather_exposed_copper
-     - weather_weathered_copper
-     - repair_copper_workshop
+      - wax_copper_block
+      - wax_exposed_copper
+      - wax_weathered_copper
+      - wax_oxidized_copper
+      - weather_copper_block
+      - weather_exposed_copper
+      - weather_weathered_copper
+      - repair_copper_workshop
 #RECIPES
 recipes:
   facet_heliodor:
@@ -1859,6 +2074,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_BLOCK
         amount: 20
+  elite_smelt_raw_copper:
+    production_time: 4s
+    name: Elite Smelt Copper Ore
+    type: PRODUCTION
+    input:
+      raw_copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_COPPER
+        amount: 128
+    output:
+      copper:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_BLOCK
+        amount: 24
   smelt_raw_iron:
     production_time: 4s
     name: Smelt Iron Ore
@@ -1891,6 +2122,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
         amount: 80
+  elite_smelt_raw_iron:
+    production_time: 4s
+    name: Elite Smelt Iron Ore
+    type: PRODUCTION
+    input:
+      raw_iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_IRON
+        amount: 48
+    output:
+      iron:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 96
   smelt_diamond_ore:
     production_time: 4s
     name: Smelt Diamond Ore
@@ -1939,6 +2186,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 56
+  elite_smelt_diamond_ore:
+    production_time: 4s
+    name: Elite Smelt Diamond Ore
+    type: PRODUCTION
+    input:
+      diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND_ORE
+        amount: 16
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 60
   adv_smelt_deepslate_diamond_ore:
     production_time: 4s
     name: Advanced Smelt Deepslate Diamond Ore
@@ -1955,6 +2218,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: DIAMOND
         amount: 56
+  elite_smelt_deepslate_diamond_ore:
+    production_time: 4s
+    name: Elite Smelt Deepslate Diamond Ore
+    type: PRODUCTION
+    input:
+      deepslate_diamond_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DEEPSLATE_DIAMOND_ORE
+        amount: 16
+    output:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 60
   smelt_raw_gold:
     production_time: 4s
     name: Smelt Gold Ore
@@ -2003,6 +2282,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: GOLD_INGOT
         amount: 80
+  elite_smelt_raw_gold:
+    production_time: 4s
+    name: Elite Smelt Gold Ore
+    type: PRODUCTION
+    input:
+      raw_gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RAW_GOLD
+        amount: 48
+    output:
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_INGOT
+        amount: 96
   adv_smelt_nether_gold_ore:
     production_time: 4s
     name: Advanced Smelt Nether Gold Ore
@@ -2019,6 +2314,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: GOLD_INGOT
         amount: 64
+  elite_smelt_nether_gold_ore:
+    production_time: 4s
+    name: Elite Smelt Nether Gold Ore
+    type: PRODUCTION
+    input:
+      nether_gold_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: NETHER_GOLD_ORE
+        amount: 16
+    output:
+      gold:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_INGOT
+        amount: 80
   smelt_redstone_ore:
     production_time: 4s
     name: Smelt Redstone Ore
@@ -2067,6 +2378,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: REDSTONE_BLOCK
         amount: 64
+  elite_smelt_redstone_ore:
+    production_time: 4s
+    name: Elite Smelt Redstone Ore
+    type: PRODUCTION
+    input:
+      redstone_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE_ORE
+        amount: 64
+    output:
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE_BLOCK
+        amount: 80
   adv_smelt_deepslate_redstone_ore:
     production_time: 4s
     name: Advanced Smelt Deepslate Redstone Ore
@@ -2083,6 +2410,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: REDSTONE_BLOCK
         amount: 64
+  elite_smelt_deepslate_redstone_ore:
+    production_time: 4s
+    name: Elite Smelt Deepslate Redstone Ore
+    type: PRODUCTION
+    input:
+      deepslate_redstone_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DEEPSLATE_REDSTONE_ORE
+        amount: 64
+    output:
+      redstone:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: REDSTONE_BLOCK
+        amount: 80
   smelt_lapis_ore:
     production_time: 4s
     name: Smelt Lapis Ore
@@ -2131,6 +2474,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_BLOCK
         amount: 80
+  elite_smelt_lapis_ore:
+    production_time: 4s
+    name: Elite Smelt Lapis Ore
+    type: PRODUCTION
+    input:
+      lapis_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_ORE
+        amount: 32
+    output:
+      lapis:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 96
   adv_smelt_deepslate_lapis_ore:
     production_time: 4s
     name: Advanced Smelt Deepslate Lapis Ore
@@ -2147,6 +2506,22 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_BLOCK
         amount: 80
+  elite_smelt_deepslate_lapis_ore:
+    production_time: 4s
+    name: Elite Smelt Deepslate Lapis Ore
+    type: PRODUCTION
+    input:
+      deepslate_lapis_ore:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DEEPSLATE_LAPIS_ORE
+        amount: 32
+    output:
+      lapis:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 96
   adv_smelt_ancient_debris:
     production_time: 4s
     name: Smelt Ancient Debris
@@ -2184,6 +2559,55 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: NETHERITE_INGOT
         amount: 1
+  elite_smelt_ancient_debris:
+    production_time: 4s
+    name: Elite Smelt Ancient Debris
+    type: PRODUCTION
+    input:
+      ancient_debris:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ANCIENT_DEBRIS
+        amount: 18
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD
+        amount: 36
+      gold_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GOLD_INGOT
+        amount: 12
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 12
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    output:
+      netherite_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: NETHERITE_INGOT
+        amount: 2
+  smelt_meteoric_nuggets:
+    production_time: 4s
+    name: Smelt Meteoric Iron Nuggets
+    type: PRODUCTION
+    input:
+      meteoric_iron_nugget:
+        custom-key: meteoric_iron_nugget
+        amount: 22
+    output:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 4
   upgrade_to_adv_ore_smelter:
     production_time: 4s
     name: Upgrade to Advanced Ore Smelter
@@ -2216,6 +2640,36 @@ recipes:
           lore:
             - Activity reward used to fuel pearls
     factory: Advanced Ore Smelter
+  upgrade_to_elite_ore_smelter:
+    production_time: 4s
+    name: Upgrade to Elite Ore Smelter
+    type: UPGRADE
+    input:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 128
+      emerald_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD_BLOCK
+        amount: 64
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 16
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 96
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    factory: Elite Ore Smelter
   smelt_glass:
     type: PRODUCTION
     production_time: 4s
@@ -5731,6 +6185,36 @@ recipes:
           lore:
             - Activity reward used to fuel pearls
     health_gained: 10000
+  repair_elite_ore_smelter:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      diamond:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DIAMOND
+        amount: 16
+      emerald:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EMERALD
+        amount: 16
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 8
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+    health_gained: 10000
   make_fences:
     production_time: 4s
     name: Make Fences
@@ -7832,10 +8316,10 @@ recipes:
     type: PRODUCTION
     input:
       iron_ingot:
-          v: 3839
-          ==: org.bukkit.inventory.ItemStack
-          type: IRON_INGOT
-          amount: 6
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 6
       lava_bucket:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9727,7 +10211,7 @@ recipes:
           ==: ItemMeta
           display-name: Plains Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9764,7 +10248,7 @@ recipes:
           ==: ItemMeta
           display-name: Plains Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9801,7 +10285,7 @@ recipes:
           ==: ItemMeta
           display-name: Plains Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9838,7 +10322,7 @@ recipes:
           ==: ItemMeta
           display-name: Relic Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9875,7 +10359,7 @@ recipes:
           ==: ItemMeta
           display-name: Arid Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9912,7 +10396,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9949,7 +10433,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9986,7 +10470,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10023,7 +10507,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10060,7 +10544,7 @@ recipes:
           ==: ItemMeta
           display-name: Relic Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10097,7 +10581,7 @@ recipes:
           ==: ItemMeta
           display-name: Relic Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10134,7 +10618,7 @@ recipes:
           ==: ItemMeta
           display-name: Barren Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10171,7 +10655,7 @@ recipes:
           ==: ItemMeta
           display-name: Arid Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10208,7 +10692,7 @@ recipes:
           ==: ItemMeta
           display-name: Arid Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10245,7 +10729,7 @@ recipes:
           ==: ItemMeta
           display-name: Barren Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10282,7 +10766,7 @@ recipes:
           ==: ItemMeta
           display-name: Barren Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10319,7 +10803,7 @@ recipes:
           ==: ItemMeta
           display-name: Tricky Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10356,7 +10840,7 @@ recipes:
           ==: ItemMeta
           display-name: Tricky Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
       diamond:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10438,7 +10922,7 @@ recipes:
           lore:
             - Crack it open for a surprise!
     outputs:
-    #Food--- 60%
+      #Food--- 60%
       egg:
         chance: 0.15
         egg:
@@ -10467,7 +10951,7 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: BREAD
           amount: 8
-    #Good Loot--- 30%
+      #Good Loot--- 30%
       ironingot:
         chance: 0.0375
         ironingot:
@@ -10524,7 +11008,7 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: GOLDEN_APPLE
           amount: 4
-    #Unique--- 10%
+      #Unique--- 10%
       recipe1:
         chance: 0.01
         recipe1:
@@ -13955,7 +14439,7 @@ recipes:
           ==: ItemMeta
           display-name: Plains Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_cat:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -13978,7 +14462,7 @@ recipes:
           ==: ItemMeta
           display-name: Plains Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_blocks:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14001,7 +14485,7 @@ recipes:
           ==: ItemMeta
           display-name: Plains Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_chirp:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14024,7 +14508,7 @@ recipes:
           ==: ItemMeta
           display-name: Relic Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_far:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14047,7 +14531,7 @@ recipes:
           ==: ItemMeta
           display-name: Relic Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_relic:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14070,7 +14554,7 @@ recipes:
           ==: ItemMeta
           display-name: Relic Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_stal:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14093,7 +14577,7 @@ recipes:
           ==: ItemMeta
           display-name: Arid Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_strad:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14116,7 +14600,7 @@ recipes:
           ==: ItemMeta
           display-name: Arid Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_pigstep:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14139,7 +14623,7 @@ recipes:
           ==: ItemMeta
           display-name: Arid Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_ward:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14162,7 +14646,7 @@ recipes:
           ==: ItemMeta
           display-name: Barren Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_wait:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14185,7 +14669,7 @@ recipes:
           ==: ItemMeta
           display-name: Barren Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_otherside:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14208,7 +14692,7 @@ recipes:
           ==: ItemMeta
           display-name: Barren Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_mall:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14231,7 +14715,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_5:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14254,7 +14738,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_11:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14277,7 +14761,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_mellohi:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14300,7 +14784,7 @@ recipes:
           ==: ItemMeta
           display-name: Forest Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_precipice:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14323,7 +14807,7 @@ recipes:
           ==: ItemMeta
           display-name: Tricky Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_creator:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14346,7 +14830,7 @@ recipes:
           ==: ItemMeta
           display-name: Tricky Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
   crush_disc_creator_music_box:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -14369,4 +14853,314 @@ recipes:
           ==: ItemMeta
           display-name: Tricky Trim Fragment
           lore:
-          - Used to produce trims in the Research Station
+            - Used to produce trims in the Research Station
+  make_meteoric_iron_sword:
+    production_time: 4s
+    name: Make Meteoric Iron Sword
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 6
+    output:
+      meteoric_iron_sword:
+        custom-key: meteoric_iron_sword
+        amount: 5
+  make_meteoric_iron_sword_kb:
+    production_time: 4s
+    name: Make Meteoric Iron Knockback Sword
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 6
+      amesthyst_shard:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 10
+    output:
+      meteoric_iron_sword_kb:
+        custom-key: meteoric_iron_sword_knockback
+        amount: 5
+  repair_meteoric_iron_sword_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 7
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 28
+    health_gained: 10000
+  make_meteoric_iron_pickaxe_loot:
+    production_time: 4s
+    name: Make Meteoric Iron Pickaxe
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 10
+    output:
+      meteoric_iron_pickaxe:
+        custom-key: meteoric_iron_pickaxe
+        amount: 5
+  make_meteoric_iron_pickaxe_silk:
+    production_time: 4s
+    name: Make Meteoric Iron Silk-Touch Pickaxe
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 10
+      amesthyst_shard:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 10
+    output:
+      meteoric_iron_pickaxe_silk:
+        custom-key: meteoric_iron_pickaxe_silk
+        amount: 5
+  repair_meteoric_iron_pickaxe_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 11
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 44
+    health_gained: 10000
+  make_meteoric_iron_axe_loot:
+    production_time: 4s
+    name: Make Meteoric Iron Axe
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 9
+    output:
+      meteoric_iron_axe:
+        custom-key: meteoric_iron_axe
+        amount: 5
+  make_meteoric_iron_axe_silk:
+    production_time: 4s
+    name: Make Meteoric Iron Silk-Touch Axe
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 9
+      amesthyst_shard:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 10
+    output:
+      meteoric_iron_axe:
+        custom-key: meteoric_iron_axe_silk
+        amount: 5
+  repair_meteoric_iron_axe_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 10
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 40
+    health_gained: 10000
+  make_meteoric_helm:
+    production_time: 4s
+    name: Make Meteoric Helmet
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 15
+    output:
+      meteoric_iron_helm:
+        custom-key: meteoric_iron_helmet
+        amount: 5
+  repair_meteoric_helm_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 18
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 72
+    health_gained: 10000
+  make_meteoric_chest:
+    production_time: 4s
+    name: Make Meteoric Chestplate
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 24
+    output:
+      meteoric_iron_chest:
+        custom-key: meteoric_iron_chestplate
+        amount: 5
+  repair_meteoric_chest_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 28
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 112
+    health_gained: 10000
+  make_meteoric_legs:
+    production_time: 4s
+    name: Make Meteoric Leggings
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 21
+    output:
+      meteoric_iron_legs:
+        custom-key: meteoric_iron_leggings
+        amount: 5
+  repair_meteoric_legs_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 24
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 96
+    health_gained: 10000
+  make_meteoric_boots:
+    production_time: 4s
+    name: Make Meteoric Boots
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 12
+    output:
+      meteoric_iron_boots:
+        custom-key: meteoric_iron_boots
+        amount: 5
+  repair_meteoric_boots_factory:
+    production_time: 4s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 1
+      essence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ENDER_EYE
+        amount: 14
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          display-name: Player Essence
+          lore:
+            - Activity reward used to fuel pearls
+      lapis_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LAPIS_BLOCK
+        amount: 56
+    health_gained: 10000

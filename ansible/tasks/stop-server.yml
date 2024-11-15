@@ -2,7 +2,7 @@
 - name: Stop Server | Stop Waterfall
   when:
     - "'swarm_manager' in group_names"
-    - - "'proxy' in servers"
+    - "'proxy' in servers"
     - setting.minecraft.enabled
   command: docker service scale minecraft_waterfall=0
 
@@ -12,3 +12,11 @@
     - "'paper' in servers"
     - setting.minecraft.enabled
   command: docker service scale minecraft_paper=0
+
+- name: Stop Server | Stop PvP
+  when:
+    - "'swarm_manager' in group_names"
+    - "'pvp' in servers"
+    - setting.minecraft.enabled
+  ignore_errors: true
+  command: docker service scale minecraft_pvp=0
