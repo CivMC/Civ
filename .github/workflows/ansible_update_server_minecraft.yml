@@ -1,4 +1,4 @@
-name: 🏗️ Ansible | Update Server
+name: 🏗️ Ansible | Update Server (Minecraft)
 on:
   workflow_dispatch:
     inputs:
@@ -36,10 +36,10 @@ jobs:
           SECRETS_YML: ${{secrets.SECRETS_YML}}
           SUDO_PASSWORD: ${{secrets.SUDO_PASSWORD}}
 
-      - name: Update Server
+      - name: Update Server (Minecraft)
         uses: dawidd6/action-ansible-playbook@v2
         with:
-          playbook: ansible/playbooks/update-server.yml
+          playbook: ansible/playbooks/update-server-minecraft.yml
           requirements: ansible/requirements.yml
           key: ${{secrets.SSH_PRIVATE_KEY}}
           known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}
