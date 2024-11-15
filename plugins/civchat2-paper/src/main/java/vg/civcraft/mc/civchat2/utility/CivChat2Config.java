@@ -18,6 +18,10 @@ public class CivChat2Config {
         return config.getBoolean("info.groups");
     }
 
+    public boolean getServerBroadcastChat() {
+        return config.getBoolean("serverBroadcastChat");
+    }
+
     public boolean getDebug() {
         return config.getBoolean("info.debug");
     }

@@ -3,6 +3,7 @@ package com.github.igotyou.FactoryMod.recipes;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,6 +15,8 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
@@ -183,7 +186,7 @@ public abstract class InputRecipe implements IRecipe {
         LinkedList<ItemStack> result = new LinkedList<>();
         ItemMap inventoryMap = new ItemMap(i);
         ItemMap possibleRuns = new ItemMap();
-        for (Entry<ItemStack, Integer> entry : input.getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : input.getAllItems().entrySet()) {
             if (inventoryMap.getAmount(entry.getKey()) != 0) {
                 possibleRuns.addItemAmount(entry.getKey(), inventoryMap.getAmount(entry.getKey()) / entry.getValue());
             } else {
@@ -213,14 +216,33 @@ public abstract class InputRecipe implements IRecipe {
 
     protected List<String> formatLore(ItemMap ingredients) {
         List<String> result = new ArrayList<>();
-        for (Entry<ItemStack, Integer> entry : ingredients.getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : ingredients.getItems().entrySet()) {
             if (entry.getValue() > 0) {
                 if (!entry.getKey().hasItemMeta()) {
                     result.add(entry.getValue() + " " + ItemUtils.getItemName(entry.getKey()));
                 } else {
                     String lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ItemUtils.getItemName(entry.getKey()));
                     if (entry.getKey().getItemMeta().hasDisplayName()) {
-                        lore += String.format("%s [%s]", ChatColor.DARK_AQUA, StringUtils.abbreviate(entry.getKey().getItemMeta().getDisplayName(), 20));
+                        lore += String.format("%s [%s%1$s]", ChatColor.DARK_AQUA, StringUtils.abbreviate(entry.getKey().getItemMeta().getDisplayName(), 20));
+                    }
+                    result.add(lore);
+                }
+            }
+        }
+        // Custom items should have their custom name displayed more prominently, their actual item type is irrelevant
+        for (Entry<String, Integer> entry : ingredients.getCustomItems().entrySet()) {
+            if (entry.getValue() > 0) {
+                ItemStack item = CustomItem.getCustomItem(entry.getKey());
+                if (!item.hasItemMeta()) {
+                    result.add(entry.getValue() + " " + ItemUtils.getItemName(item));
+                } else {
+                    String lore;
+                    if (item.getItemMeta().hasDisplayName()) {
+                        lore = String.format("%s %s", entry.getValue(), StringUtils.abbreviate(item.getItemMeta().getDisplayName(), 35));
+                    } else if (item.getItemMeta().hasItemName()) {
+                        lore = String.format("%s %s", entry.getValue(), StringUtils.abbreviate(item.getItemMeta().getItemName(), 35));
+                    } else {
+                        lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ItemUtils.getItemName(item));
                     }
                     result.add(lore);
                 }

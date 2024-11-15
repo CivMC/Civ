@@ -31,3 +31,13 @@ services:
       - ./PrivateConfig/paper/config/EvenMoreFish/rarities.yml:/data/plugins/EvenMoreFish/rarities.yml
       - ./PrivateConfig/paper/config/EvenMoreFish/competitions.yml:/data/plugins/EvenMoreFish/competitions.yml
       - ./PrivateConfig/paper/config/RandomSpawn/worlds.yml:/data/plugins/RandomSpawn/worlds.yml
+
+  pvp:
+    environment:
+      # Any Jars need to be here, comma separated so that they are not removed during sync
+      REMOVE_OLD_MODS_EXCLUDE: "Vulcan-2.9.0.jar"
+      SYNC_SKIP_NEWER_IN_DESTINATION: "true"
+    # Note that config and plugins are mounted into the DATA directory, to avoid propagating to the config bind mount
+    volumes:
+      - ./PrivateConfig/paper/plugins/Vulcan-2.9.0.jar:/data/plugins/Vulcan-2.9.0.jar
+      - ./PrivateConfig/paper/config/Vulcan/config.yml:/data/plugins/Vulcan/config.yml

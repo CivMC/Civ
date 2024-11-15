@@ -3,6 +3,10 @@ package vg.civcraft.mc.civchat2;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import vg.civcraft.mc.civchat2.broadcaster.BungeeServerBroadcaster;
+import vg.civcraft.mc.civchat2.broadcaster.BungeeServerListener;
+import vg.civcraft.mc.civchat2.broadcaster.NoopServerBroadcaster;
+import vg.civcraft.mc.civchat2.broadcaster.ServerBroadcaster;
 import vg.civcraft.mc.civchat2.commands.CivChatCommandManager;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
@@ -30,6 +34,7 @@ public class CivChat2 extends ACivMod {
     private CivChat2FileLogger fileLog;
     private CivChatDAO databaseManager;
     private CivChatCommandManager commandManager;
+    private ServerBroadcaster broadcaster;
 
     @Override
     public void onEnable() {
@@ -43,7 +48,16 @@ public class CivChat2 extends ACivMod {
         fileLog = new CivChat2FileLogger();
         databaseManager = new CivChatDAO();
         settingsManager = new CivChat2SettingsManager();
-        chatMan = new CivChat2Manager(instance);
+
+        if (config.getServerBroadcastChat()) {
+            broadcaster = new BungeeServerBroadcaster();
+            this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+            this.getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new BungeeServerListener());
+        } else {
+            broadcaster = new NoopServerBroadcaster();
+        }
+
+        chatMan = new CivChat2Manager(instance, broadcaster);
         log.debug("Debug Enabled");
         commandManager = new CivChatCommandManager(this);
         registerNameLayerPermissions();
@@ -56,6 +70,10 @@ public class CivChat2 extends ACivMod {
 
     public CivChat2Manager getCivChat2Manager() {
         return chatMan;
+    }
+
+    public ServerBroadcaster getBroadcaster() {
+        return broadcaster;
     }
 
     public boolean debugEnabled() {

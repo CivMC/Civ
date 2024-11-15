@@ -59,11 +59,12 @@ public class FactoryModManager {
     private Set<String> compactLore;
     private Set<String> forceInclude;
     private FactoryModPlayerSettings playerSettings;
+    private boolean canUpgrade;
 
     public FactoryModManager(FactoryMod plugin, Material factoryInteractionMaterial, boolean citadelEnabled,
                              boolean nameLayerEnabled, int redstonePowerOn, int redstoneRecipeChange, boolean logInventories,
                              int maxInputChests, int maxOutputChests, int maxFuelChests, int maxTotalIOFChests,
-                             Map<String, String> factoryRenames) {
+                             Map<String, String> factoryRenames, boolean canUpgrade) {
         this.plugin = plugin;
         this.factoryInteractionMaterial = factoryInteractionMaterial;
         this.citadelEnabled = citadelEnabled;
@@ -74,6 +75,7 @@ public class FactoryModManager {
         this.maxFuelChests = maxFuelChests;
         this.maxTotalIOFChests = maxTotalIOFChests;
         this.fileHandler = new FileHandler(this, factoryRenames);
+        this.canUpgrade = canUpgrade;
 
         factoryCreationRecipes = new HashMap<>();
         locations = new HashMap<>();
@@ -184,6 +186,10 @@ public class FactoryModManager {
      */
     public Material getFactoryInteractionMaterial() {
         return factoryInteractionMaterial;
+    }
+
+    public boolean canUpgrade() {
+        return canUpgrade;
     }
 
     /**

@@ -1,4 +1,4 @@
-- name: Update Server (Minecraft)
+- name: Update Paper Server
   hosts: all
   become: true
 

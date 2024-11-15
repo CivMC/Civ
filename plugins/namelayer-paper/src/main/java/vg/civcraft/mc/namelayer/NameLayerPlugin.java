@@ -56,10 +56,12 @@ public class NameLayerPlugin extends ACivMod {
         if (loadGroups) {
             PermissionType.initialize();
             blackList = new BlackList();
-            groupManagerDao.loadGroupsInvitations();
-            defaultGroupHandler = new DefaultGroupHandler();
-            autoAcceptHandler = new AutoAcceptHandler(groupManagerDao.loadAllAutoAccept());
-            handle = new CommandHandler(this);
+            if (config.getBoolean("groups.interact", true)) {
+                groupManagerDao.loadGroupsInvitations();
+                defaultGroupHandler = new DefaultGroupHandler();
+                autoAcceptHandler = new AutoAcceptHandler(groupManagerDao.loadAllAutoAccept());
+                handle = new CommandHandler(this);
+            }
         }
     }
 

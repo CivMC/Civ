@@ -557,3 +557,7 @@ hacks:
     discChance: 0.003
   NoOozing:
     enabled: true
+  PortalConnect:
+    enabled: false
+    server: main
+    world: world

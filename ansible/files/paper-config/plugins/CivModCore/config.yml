@@ -6,7 +6,7 @@ database:
   password: ${CIV_MYSQL_PASSWORD}
   host: ${CIV_MYSQL_HOST}
   port: 3306
-  database: civmodcore
+  database: ${CIV_DATABASE_PREFIX}civmodcore
   poolsize: 20
   connection_timeout: 10000
   idle_timeout: 600000

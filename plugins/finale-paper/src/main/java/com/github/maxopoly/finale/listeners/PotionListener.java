@@ -2,8 +2,10 @@ package com.github.maxopoly.finale.listeners;
 
 import com.github.maxopoly.finale.potion.PotionHandler;
 import com.github.maxopoly.finale.potion.PotionModification;
+
 import java.util.List;
 import java.util.function.Consumer;
+
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -65,6 +67,9 @@ public class PotionListener implements Listener {
         }
 
         for (LivingEntity entity : e.getAffectedEntities()) {
+            if (entity.isDead()) {
+                continue;
+            }
             double maxHealth = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
             double modifiedHealth = entity.getHealth();
             double intensity = e.getIntensity(entity);
@@ -87,14 +92,13 @@ public class PotionListener implements Listener {
         }
         PotionMeta potMeta = (PotionMeta) e.getItem().getItemMeta();
         List<PotionEffect> potEffects = potMeta.getBasePotionType().getPotionEffects();
-		for (PotionEffect potEffect : potEffects) {
-			PotionEffect toReplace = new PotionEffect(potEffect.getType(),
-				(int) (potEffect.getDuration() * potMod.getMultiplier()), potEffect.getAmplifier());
-			e.getPlayer().addPotionEffect(toReplace);
-		}
-		e.setItem(null);
-
-	}
+        for (PotionEffect potEffect : potEffects) {
+            PotionEffect toReplace = new PotionEffect(potEffect.getType(),
+                (int) (potEffect.getDuration() * potMod.getMultiplier()), potEffect.getAmplifier());
+            e.getPlayer().addPotionEffect(toReplace);
+        }
+        e.setItem(null);
+    }
 
     @EventHandler
     public void potionSplash(PotionSplashEvent e) {
