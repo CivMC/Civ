@@ -67,12 +67,12 @@
     dest: '~/stacks/{{item.target}}'
     delete: true
   loop:
-    - { file: '../../files/paper-config', enabled: 'setting.minecraft.enabled and ''paper'' in servers' }
-    - { file: '../../files/proxy-config', enabled: 'setting.minecraft.enabled and ''proxy'' in servers' }
-    - { file: '../../files/pvp-config', enabled: 'setting.minecraft.enabled and ''pvp'' in servers' }
-    - { file: '../../build/paper-plugins', enabled: 'setting.minecraft.enabled and ''paper'' in servers' }
-    - { file: '../../build/proxy-plugins', enabled: 'setting.minecraft.enabled and ''proxy'' in servers' }
-    - { file: '../../build/pvp-plugins', enabled: 'setting.minecraft.enabled and ''pvp'' in servers' }
+    - { file: '../../files/paper-config', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''paper'' in servers' }
+    - { file: '../../files/proxy-config', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''proxy'' in servers' }
+    - { file: '../../files/pvp-config', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''pvp'' in servers' }
+    - { file: '../../build/paper-plugins', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''paper'' in servers' }
+    - { file: '../../build/proxy-plugins', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''proxy'' in servers' }
+    - { file: '../../build/pvp-plugins', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''pvp'' in servers' }
 
 - name: Deploy Stacks | Copy Files
   shell: 'cp -r /home/{{ansible_user}}/stacks/{{item.file}} /opt/stacks/{{item.file}}'
