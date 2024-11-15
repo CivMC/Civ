@@ -8,7 +8,6 @@ import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.upgrade.CharcoalConsumptionUpgradeRecipe;
-import com.github.igotyou.FactoryMod.recipes.upgrade.ResetUpgradesRecipe;
 import com.github.igotyou.FactoryMod.recipes.upgrade.SpeedUpgradeRecipe;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
@@ -222,13 +221,12 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
         ComponableInventory compInv = new ComponableInventory("Select a recipe", 6, p);
 
         boolean upgrades = FactoryMod.getInstance().getManager().canUpgrade();
-        Clickable resetUpgrades = upgrades ? buildResetUpgrades() : null;
         Clickable upgradeSpeed = upgrades ? buildUpgradeSpeed() : null;
         Clickable upgradeCharcoalConsumption = upgrades ? buildUpgradeCharcoalConsumption() : null;
         Clickable autoClick = buildAutoSelectToggle();
         Clickable menuC = buildMenuClickable();
         Clickable menuModeButton = buildMenuModeCycleButton(p);
-        Clickable[] buddons = new Clickable[]{resetUpgrades, upgradeSpeed, upgradeCharcoalConsumption, autoClick, menuC, menuModeButton};
+        Clickable[] buddons = new Clickable[]{upgradeSpeed, upgradeCharcoalConsumption, autoClick, menuC, menuModeButton};
         StaticDisplaySection lowerSection = new StaticDisplaySection(buddons);
 
         Block fblock = fccf.getFurnace();
@@ -263,7 +261,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
             default: {
                 Scrollbar recipeScroller = buildRecipeScrollbar(5);
                 compInv.addComponent(recipeScroller, SlotPredicates.offsetRectangle(5, 9, 0, 0));
-                compInv.addComponent(lowerSection, SlotPredicates.offsetRectangle(1, 6, 5, 3));
+                compInv.addComponent(lowerSection, SlotPredicates.offsetRectangle(1, 5, 5, 4));
             }
         }
         return compInv;
@@ -392,37 +390,6 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
                     p.sendMessage(Component.text("You can't switch recipes while the factory is running", NamedTextColor.RED));
                 } else {
                     fccf.setRecipeForce(FactoryMod.getInstance().getManager().getRecipe(SpeedUpgradeRecipe.IDENTIFIER));
-                    p.sendMessage(ChatColor.GREEN + "Switched recipe to " + fccf.getCurrentRecipe().getName());
-                }
-            }
-        };
-    }
-
-    private Clickable buildResetUpgrades() {
-        ItemStack upgradeSpeed = new ItemStack(Material.LEVER);
-        ItemMeta meta = upgradeSpeed.getItemMeta();
-        meta.displayName(Component.text("Reset upgrades"));
-        if (fccf.getCharcoalLevel() == 0 && fccf.getSpeedLevel() == 0) {
-            meta.lore(List.of(Component.text("You do not have any upgrades", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)));
-        } else {
-            meta.lore(List.of(
-                Component.text("Permanently deletes all upgrades for this factory", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false)
-            ));
-        }
-        meta.setEnchantmentGlintOverride(true);
-        upgradeSpeed.setItemMeta(meta);
-
-        return new Clickable(upgradeSpeed) {
-            @Override
-            protected void clicked(Player p) {
-                if (fccf.getCharcoalLevel() == 0 && fccf.getSpeedLevel() == 0) {
-                    return;
-                }
-
-                if (fccf.isActive()) {
-                    p.sendMessage(Component.text("You can't switch recipes while the factory is running", NamedTextColor.RED));
-                } else {
-                    fccf.setRecipeForce(FactoryMod.getInstance().getManager().getRecipe(ResetUpgradesRecipe.IDENTIFIER));
                     p.sendMessage(ChatColor.GREEN + "Switched recipe to " + fccf.getCurrentRecipe().getName());
                 }
             }
