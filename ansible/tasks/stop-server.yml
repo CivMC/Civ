@@ -18,4 +18,5 @@
     - "'swarm_manager' in group_names"
     - "'pvp' in servers"
     - setting.minecraft.enabled
+  ignore_errors: true
   command: docker service scale minecraft_pvp=0
