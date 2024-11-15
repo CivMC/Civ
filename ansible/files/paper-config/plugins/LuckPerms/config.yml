@@ -99,7 +99,7 @@ data:
 
   # The name of the database to store LuckPerms data in.
   # - This must be created already. Don't worry about this setting if you're using MongoDB.
-  database: luckperms
+  database: luckperms # should be shared
 
   # Credentials for the database.
   username: ${CIV_POSTGRES_USERNAME}

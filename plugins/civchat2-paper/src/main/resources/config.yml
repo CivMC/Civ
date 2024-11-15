@@ -38,3 +38,6 @@ mysql:
   port: 3306
   username: ''
   password: ''
+
+# true if chat should be broadcasted to all servers via bungeecord
+serverBroadcastChat: false

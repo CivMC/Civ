@@ -2,6 +2,7 @@ package com.github.maxopoly.finale.misc;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,14 +18,14 @@ public class ExtraDurabilityTracker {
     }
 
     // returns true if durability should reduce, false if durability shouldn't reduce.
-    public boolean reduceDurability(Player player, Material material) {
+    public boolean reduceDurability(Player player, ItemStack item) {
         Map<Material, Integer> materialExtraHits = playerExtraHits.getOrDefault(player.getUniqueId(), new HashMap<>());
-        int extraHits = materialExtraHits.containsKey(material) ? materialExtraHits.get(material) : armourModifier.getExtraDurabilityHits(material);
+        int extraHits = materialExtraHits.containsKey(item.getType()) ? materialExtraHits.get(item.getType()) : armourModifier.getExtraDurabilityHits(item);
         boolean reduce = extraHits <= 0;
         if (reduce) {
-            materialExtraHits.put(material, armourModifier.getExtraDurabilityHits(material));
+            materialExtraHits.put(item.getType(), armourModifier.getExtraDurabilityHits(item));
         } else {
-            materialExtraHits.put(material, extraHits - 1);
+            materialExtraHits.put(item.getType(), extraHits - 1);
         }
         playerExtraHits.put(player.getUniqueId(), materialExtraHits);
         return reduce;

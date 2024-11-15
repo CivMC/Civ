@@ -1,0 +1,52 @@
+name: KitPvP
+version: ${version}
+main: net.civmc.kitpvp.KitPvpPlugin
+author: Okx
+description: KitPvP for CivMC
+api-version: 1.21.1
+depend: [CivModCore, Finale]
+softdepend: [BreweryX]
+
+commands:
+  kit:
+    usage: |-
+      /<command>
+      /<command> copy <player> <their kit name> [your kit name]
+      /<command> load public <kit name>
+      /<command> load <kit name>
+  arena:
+    usage: |-
+      /<command>
+      /<command> list
+      /<command> add <player>
+      /<command> remove <player>
+      /<command> create <name> <icon> (administrators only)
+      /<command> delete <name> (administrators only)
+      /<command> displayname <name> <display name> (administrators only)
+      /<command> category <name> <category> (administrators only)
+      /<command> cap <arenas> (administrators only)
+  spawn: {}
+  setspawn:
+    permission: kitpvp.admin
+  clear: {}
+  viewinventorysnapshot:
+    usage: /<command> <player>
+  warp:
+    description: Warp to a location
+    permission: warps.use
+    usage: /<command> <warp>
+  warps:
+    description: Manage warps
+    permission: warps.use
+    usage: |- 
+      /<command> add <warp> <gamemode>
+      /<command> list
+      /<command> delete <warp>
+
+permissions:
+  warps.use:
+    description: Allows using warps
+    default: true
+  warps.manage:
+    description: Allows managing warps
+    default: op

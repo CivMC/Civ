@@ -19,6 +19,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
@@ -122,7 +124,19 @@ public final class ConfigHelper {
         }
         for (final String key : config.getKeys(false)) {
             ItemMap partMap = new ItemMap();
-			partMap.addItemStack(config.getItemStack(key, ItemStack.empty()));
+            ConfigurationSection section = config.getConfigurationSection(key);
+            String custom = section == null ? null : section.getString("custom-key");
+            if (custom != null) {
+                ItemStack item = CustomItem.getCustomItem(custom);
+                if (item == null) {
+                    throw new IllegalArgumentException("Unknown custom item key " + custom);
+                } else {
+                    int amount = section.getInt("amount", 1);
+                    partMap.addItemAmount(item, amount);
+                }
+            } else {
+                partMap.addItemStack(config.getItemStack(key, ItemStack.empty()));
+            }
             result.merge(partMap);
         }
         return result;

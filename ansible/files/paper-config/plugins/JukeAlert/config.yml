@@ -40,13 +40,13 @@ snitchConfigs:
           trigger:
            - ENTRY
            - LOGIN
-        SOUTH: 
+        SOUTH:
           trigger:
            - OPEN_CONTAINER
-        EAST: 
+        EAST:
           trigger:
            - BLOCK_PLACE
-        WEST: 
+        WEST:
           trigger:
            - BLOCK_BREAK
       log:
@@ -60,7 +60,7 @@ database:
   password: ${CIV_MYSQL_PASSWORD}
   host: ${CIV_MYSQL_HOST}
   port: 3306
-  database: jukealert
+  database: ${CIV_DATABASE_PREFIX}jukealert
   poolsize: 20
   connection_timeout: 10000
   idle_timeout: 600000

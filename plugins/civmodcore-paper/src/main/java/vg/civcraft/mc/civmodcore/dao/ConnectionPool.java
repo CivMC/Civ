@@ -110,13 +110,12 @@ public class ConnectionPool {
 
     /**
      * Closes all connections and this connection pool.
-     *
-     * @throws SQLException
      */
-    public void close() throws SQLException {
-        available();
-        this.datasource.close();
-        this.datasource = null;
+    public void close() {
+        if (this.datasource != null) {
+            this.datasource.close();
+            this.datasource = null;
+        }
     }
 
     /**

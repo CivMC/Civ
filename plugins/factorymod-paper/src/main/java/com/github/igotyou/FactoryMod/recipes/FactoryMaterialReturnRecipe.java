@@ -82,7 +82,7 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
                         .getCenter();
                     for (Entry<ItemStack, Integer> items : FactoryMod.getInstance().
                         getManager().getTotalSetupCost(fccf)
-                        .getEntrySet()) {
+                        .getAllItems().entrySet()) {
                         int returnAmount = (int) (items.getValue() * factor);
                         ItemMap im = new ItemMap();
                         im.addItemAmount(items.getKey(), returnAmount);
