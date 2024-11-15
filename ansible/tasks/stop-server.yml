@@ -2,7 +2,7 @@
 - name: Stop Server | Stop Waterfall
   when:
     - "'swarm_manager' in group_names"
-    - - "'proxy' in servers"
+    - "'proxy' in servers"
     - setting.minecraft.enabled
   command: docker service scale minecraft_waterfall=0
 
