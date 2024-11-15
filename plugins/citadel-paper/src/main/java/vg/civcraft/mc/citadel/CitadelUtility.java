@@ -225,7 +225,7 @@ public class CitadelUtility {
                 if (
                     relativeReinforcement == null
                         || !relativeReinforcement.getType().canBeReinforced(relativeBlock.getType())
-                        || acidMan.isPossibleAcidBlock(relativeBlock)
+                        || (acidMan.isPossibleAcidBlock(relativeBlock) && acidMan.isAcidOnSameGroup(newRein, relativeReinforcement))
                 ) {
                     continue;
                 }
