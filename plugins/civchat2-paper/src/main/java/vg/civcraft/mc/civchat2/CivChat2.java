@@ -11,6 +11,7 @@ import vg.civcraft.mc.civchat2.commands.CivChatCommandManager;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
 import vg.civcraft.mc.civchat2.listeners.KillListener;
+import vg.civcraft.mc.civchat2.listeners.NewPlayerListener;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
@@ -86,6 +87,9 @@ public class CivChat2 extends ACivMod {
     private void registerCivChatEvents() {
         getServer().getPluginManager().registerEvents(new CivChat2Listener(chatMan), this);
         getServer().getPluginManager().registerEvents(new KillListener(config, databaseManager, settingsManager), this);
+        if (config.isJoinGlobalGroupByDefault()) {
+            getServer().getPluginManager().registerEvents(new NewPlayerListener(), this);
+        }
     }
 
     public void registerNameLayerPermissions() {

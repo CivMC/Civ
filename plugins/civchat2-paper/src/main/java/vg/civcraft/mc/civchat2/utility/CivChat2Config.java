@@ -86,6 +86,10 @@ public class CivChat2Config {
         return config.getString("chat.globalGroup", null);
     }
 
+    public boolean isJoinGlobalGroupByDefault() {
+        return config.getBoolean("chat.joinGlobalGroupByDefault", false);
+    }
+
     public boolean useDynamicRangeColoring() {
         return config.getBoolean("chat.dynamicColoring");
     }

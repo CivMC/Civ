@@ -155,7 +155,6 @@ public class BastionInteractListener implements Listener {
             if (!NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(ChatColor.RED + "You lack permission to create a Bastion on this group");
-                blockStorage.addPendingBastion(block.getLocation(), type);
                 return;
             }
             // end Check Permissions.BASTION_PLACE
