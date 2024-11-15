@@ -23,7 +23,7 @@ public class ItemUseMenu extends BaseCommand {
             ItemUseGUI gui = new ItemUseGUI(p);
             gui.showItemOverview(p.getInventory().getItemInMainHand());
         } else {
-            Material mat = Material.getMaterial(material);
+            Material mat = Material.matchMaterial(material);
             if (mat == null) {
                 p.sendMessage(ChatColor.RED + "The item " + material + " does not exist");
                 return;
