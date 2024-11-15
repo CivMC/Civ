@@ -67,13 +67,17 @@ public class HeliodorPlugin extends ACivMod {
         CauldronDao dao = new CauldronDao(this.getLogger(), database, infusionManager);
         dao.registerMigrations();
 
-        initVeins();
-
-        if (!database.updateDatabase()) {
-            Bukkit.shutdown();
+        if (getConfig().getBoolean("enable_heliodor")) {
+            initVeins();
+            if (!database.updateDatabase()) {
+                Bukkit.shutdown();
+            }
+            this.veinCache.load();
+        } else {
+            if (!database.updateDatabase()) {
+                Bukkit.shutdown();
+            }
         }
-
-        this.veinCache.load();
 
         Supplier<CauldronInfuseData> newData = () -> new CauldronInfuseData(false, dao, infusionManager);
         this.chunkMetaView = ChunkMetaAPI.registerBlockBasedPlugin(this, newData, dao, true);
