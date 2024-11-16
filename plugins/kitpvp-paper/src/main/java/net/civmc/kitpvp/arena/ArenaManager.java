@@ -133,6 +133,7 @@ public class ArenaManager {
             world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
             world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
             world.setGameRule(GameRule.DO_VINES_SPREAD, false);
+            world.setGameRule(GameRule.KEEP_INVENTORY, false);
             world.setFullTime(6000);
 
             arenas.put(player.getUniqueId(), new LoadedArena(player.getPlayerProfile(), arena, isPublic ? null : new ArrayList<>()));

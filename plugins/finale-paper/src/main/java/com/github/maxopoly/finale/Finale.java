@@ -124,7 +124,7 @@ public class Finale extends ACivMod {
         Bukkit.getPluginManager().registerEvents(new TridentListener(), this);
         Bukkit.getPluginManager().registerEvents(new ShieldListener(), this);
         Bukkit.getPluginManager().registerEvents(new BlockListener(), this);
-        Bukkit.getPluginManager().registerEvents(new CrossbowListener(), this);
+//        Bukkit.getPluginManager().registerEvents(new CrossbowListener(), this);
         Bukkit.getPluginManager().registerEvents(new GappleListener(), this);
     }
 
