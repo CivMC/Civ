@@ -40,10 +40,12 @@ public class InfusionManager {
             CauldronInfusion infusion = iterator.next();
             if (infusion.getCacheState() == CacheState.DELETED) {
                 iterator.remove();
+                continue;
             }
             Location location = infusion.getLocation();
             if (!location.getChunk().isLoaded()) {
                 iterator.remove();
+                continue;
             }
 
             if (!isValidInfusion(infusion)) {
