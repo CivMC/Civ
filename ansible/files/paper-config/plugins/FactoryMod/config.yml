@@ -2089,7 +2089,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_BLOCK
-        amount: 24
+        amount: 22
   smelt_raw_iron:
     production_time: 4s
     name: Smelt Iron Ore
@@ -2137,7 +2137,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
-        amount: 96
+        amount: 88
   smelt_diamond_ore:
     production_time: 4s
     name: Smelt Diamond Ore
@@ -2297,7 +2297,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GOLD_INGOT
-        amount: 96
+        amount: 88
   adv_smelt_nether_gold_ore:
     production_time: 4s
     name: Advanced Smelt Nether Gold Ore
@@ -2329,7 +2329,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GOLD_INGOT
-        amount: 80
+        amount: 72
   smelt_redstone_ore:
     production_time: 4s
     name: Smelt Redstone Ore
@@ -2393,7 +2393,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: REDSTONE_BLOCK
-        amount: 80
+        amount: 72
   adv_smelt_deepslate_redstone_ore:
     production_time: 4s
     name: Advanced Smelt Deepslate Redstone Ore
@@ -2425,7 +2425,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: REDSTONE_BLOCK
-        amount: 80
+        amount: 72
   smelt_lapis_ore:
     production_time: 4s
     name: Smelt Lapis Ore
@@ -2489,7 +2489,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_BLOCK
-        amount: 96
+        amount: 88
   adv_smelt_deepslate_lapis_ore:
     production_time: 4s
     name: Advanced Smelt Deepslate Lapis Ore
@@ -2521,7 +2521,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_BLOCK
-        amount: 96
+        amount: 88
   adv_smelt_ancient_debris:
     production_time: 4s
     name: Smelt Ancient Debris
@@ -2568,12 +2568,12 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ANCIENT_DEBRIS
-        amount: 18
+        amount: 20
       emerald:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: EMERALD
-        amount: 36
+        amount: 40
       gold_ingot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
