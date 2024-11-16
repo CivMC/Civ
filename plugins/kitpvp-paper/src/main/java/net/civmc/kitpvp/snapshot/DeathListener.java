@@ -3,6 +3,7 @@ package net.civmc.kitpvp.snapshot;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,10 +31,10 @@ public class DeathListener implements Listener {
 
         player.getInventory();
         event.getDrops().clear();
-        event.deathMessage(
+        Bukkit.broadcast(
             Component.empty().append(createComponent(player).color(NamedTextColor.GOLD))
-            .append(Component.text(" was killed by ", NamedTextColor.YELLOW)
-            .append(createComponent(killer).color(NamedTextColor.GOLD))));
+                .append(Component.text(" was killed by ", NamedTextColor.YELLOW)
+                    .append(createComponent(killer).color(NamedTextColor.GOLD))));
     }
 
     private Component createComponent(Player player) {
