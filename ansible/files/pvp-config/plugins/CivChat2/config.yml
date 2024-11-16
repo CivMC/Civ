@@ -30,7 +30,7 @@ info:
   afkmessage: Player is currently AFK
   loginAnnounce: false
   #chatRangeWarn: warns new players about the local chat limit.
-  chatRangeWarn: true
+  chatRangeWarn: false
 mysql:
   host: ${CIV_MYSQL_HOST}
   dbname: civchat2

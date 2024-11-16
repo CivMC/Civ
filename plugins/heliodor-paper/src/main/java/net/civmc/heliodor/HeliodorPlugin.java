@@ -78,10 +78,6 @@ public class HeliodorPlugin extends ACivMod {
 
             protector.addPredicate(l -> chunkMetaView.get(l) != null);
             getServer().getPluginManager().registerEvents(new InfusionListener(infusionManager, chunkMetaView), this);
-        } else {
-            if (!database.updateDatabase()) {
-                Bukkit.shutdown();
-            }
         }
 
         Bukkit.getScheduler().runTaskTimer(this, this.recipes, 15 * 20, 15 * 20);
