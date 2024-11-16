@@ -184,7 +184,7 @@ factories:
       - repair_meteoric_legs_factory
   meteoric_boots:
     type: FCC
-    name: Meteoric Boots Smith
+    name: Meteoric Iron Boots Smith
     citadelBreakReduction: 1.0
     setupcost:
       meteoric_iron_ingot:
