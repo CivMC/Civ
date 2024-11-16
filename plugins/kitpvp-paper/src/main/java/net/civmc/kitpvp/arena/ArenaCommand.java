@@ -194,6 +194,10 @@ public class ArenaCommand implements CommandExecutor {
             }
 
             List<PlayerProfile> invitedPlayers = playerArena.invitedPlayers();
+            if (invitedPlayers == null) {
+                player.sendMessage(Component.text("Your arena is public, so you cannot add any players", NamedTextColor.RED));
+                return true;
+            }
             if (invitedPlayers.contains(invited.getPlayerProfile())) {
                 player.sendMessage(Component.text("You have already invited that player to your arena", NamedTextColor.RED));
                 return true;
@@ -223,6 +227,10 @@ public class ArenaCommand implements CommandExecutor {
 
             PlayerProfile removed = null;
             List<PlayerProfile> invitedPlayers = playerArena.invitedPlayers();
+            if (invitedPlayers == null) {
+                player.sendMessage(Component.text("Your arena is public, so you cannot add any players", NamedTextColor.RED));
+                return true;
+            }
             for (Iterator<PlayerProfile> iterator = invitedPlayers.iterator(); iterator.hasNext(); ) {
                 PlayerProfile invitedPlayer = iterator.next();
                 if (invitedPlayer.getName().equalsIgnoreCase(args[1])) {
