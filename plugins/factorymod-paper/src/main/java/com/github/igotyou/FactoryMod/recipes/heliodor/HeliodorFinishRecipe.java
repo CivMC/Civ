@@ -60,7 +60,7 @@ public class HeliodorFinishRecipe extends InputRecipe {
                     continue;
                 }
                 Integer charge = HeliodorGem.getCharge(inventoryStack);
-                if (charge == 100) {
+                if (charge != null && charge == 100) {
                     int removeAmount = Math.min(amountToRemove, inventoryStack.getAmount());
                     if (removeAmount != 0) {
                         ItemStack cloneStack = inventoryStack.clone();
