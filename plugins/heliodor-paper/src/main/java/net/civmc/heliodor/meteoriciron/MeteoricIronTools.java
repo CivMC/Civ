@@ -93,6 +93,14 @@ public interface MeteoricIronTools {
         tool.addRule(Material.DISPENSER, 50f, true);
         tool.addRule(Material.DROPPER, 50f, true);
         tool.addRule(Material.HOPPER, 50f, true);
+        tool.addRule(Material.COPPER_TRAPDOOR, 50f, true);
+        tool.addRule(Material.EXPOSED_COPPER_TRAPDOOR, 50f, true);
+        tool.addRule(Material.OXIDIZED_COPPER_TRAPDOOR, 50f, true);
+        tool.addRule(Material.WEATHERED_COPPER_TRAPDOOR, 50f, true);
+        tool.addRule(Material.WAXED_COPPER_TRAPDOOR, 50f, true);
+        tool.addRule(Material.WAXED_EXPOSED_COPPER_TRAPDOOR, 50f, true);
+        tool.addRule(Material.WAXED_OXIDIZED_COPPER_TRAPDOOR, 50f, true);
+        tool.addRule(Material.WAXED_WEATHERED_COPPER_TRAPDOOR, 50f, true);
         tool.addRule(Tag.MINEABLE_AXE, 8f, true);
         meta.setTool(tool);
         meta.setMaxDamage(DURABILITY);
