@@ -68,14 +68,14 @@ public class CauldronDao extends TableStorageEngine<CauldronInfusion> {
                 INSERT INTO cauldrons (chunk_x, chunk_z, world_id, x_offset, y, z_offset, charge, max_charge)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """);
-            statement.setInt(1, data.getCharge());
-            statement.setInt(2, data.getMaxCharge());
-            statement.setInt(3, coord.getX());
-            statement.setInt(4, coord.getZ());
-            statement.setShort(5, coord.getWorldID());
-            statement.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
-            statement.setShort(7, (short) data.getLocation().getBlockY());
-            statement.setByte(8, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
+            statement.setInt(1, coord.getX());
+            statement.setInt(2, coord.getZ());
+            statement.setInt(3, coord.getWorldID());
+            statement.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
+            statement.setShort(5, (short) data.getLocation().getBlockY());
+            statement.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
+            statement.setInt(7, data.getCharge());
+            statement.setInt(8, data.getMaxCharge());
             statement.execute();
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Failed to update cauldron in db: ", e);
