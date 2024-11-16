@@ -126,6 +126,7 @@ public class VeinCache {
     }
 
     public VeinPing getVeinPing(String world, String type, int low, int high, int x, int y, int z) {
+        VeinPing ping = null;
         for (Vein vein : this.veins) {
             if (!vein.world().equals(world) || !vein.type().equals(type)) {
                 continue;
@@ -137,13 +138,15 @@ public class VeinCache {
             int vy = vein.y() + vein.offsetY();
             int vz = vein.z() + vein.offsetZ();
             if (NumberConversions.square(vx - x) + NumberConversions.square(vy - y) + NumberConversions.square(vz - z) <= NumberConversions.square(high + vein.radius())) {
-                return VeinPing.HIGH;
+                ping = VeinPing.HIGH;
             }
             if (NumberConversions.square(vx - x) + NumberConversions.square(vy - y) + NumberConversions.square(vz - z) <= NumberConversions.square(low + vein.radius())) {
-                return VeinPing.LOW;
+                if (ping != VeinPing.HIGH) {
+                    return VeinPing.LOW;
+                }
             }
         }
-        return null;
+        return ping;
     }
 
     public float getVeinOreProbability(Vein vein, int offset) {
