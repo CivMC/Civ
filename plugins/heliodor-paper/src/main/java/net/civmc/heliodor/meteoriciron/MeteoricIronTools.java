@@ -129,7 +129,7 @@ public interface MeteoricIronTools {
         return axe;
     }
 
-    static ItemStack createSword(boolean knocback) {
+    static ItemStack createSword(int knocback) {
         ItemStack sword = new ItemStack(Material.IRON_SWORD);
         Damageable meta = (Damageable) sword.getItemMeta();
 
@@ -145,14 +145,16 @@ public interface MeteoricIronTools {
         meta.setMaxDamage(DURABILITY);
         meta.addEnchant(Enchantment.FIRE_ASPECT, 2, false);
         meta.addEnchant(Enchantment.SHARPNESS, 5, false);
-        if (knocback) {
-            meta.addEnchant(Enchantment.KNOCKBACK, 2, false);
+        if (knocback > 0) {
+            meta.addEnchant(Enchantment.KNOCKBACK, knocback, false);
         }
         meta.setFireResistant(true);
         AnvilRepairListener.setNoCombine(meta);
         sword.setItemMeta(meta);
-        if (knocback) {
+        if (knocback == 2) {
             CustomItem.registerCustomItem("meteoric_iron_sword_knockback", sword);
+        } else if (knocback == 1) {
+            CustomItem.registerCustomItem("meteoric_iron_sword_knockback1", sword);
         } else {
             CustomItem.registerCustomItem("meteoric_iron_sword", sword);
         }
@@ -179,12 +181,17 @@ public interface MeteoricIronTools {
                 .shape("xx ", "xs ", " s ")
                 .setIngredient('x', MeteoricIron.createIngot())
                 .setIngredient('s', Material.STICK)),
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_knockback"), MeteoricIronTools.createSword(true))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_knockback"), MeteoricIronTools.createSword(2))
                 .shape("axa", " x ", " s ")
                 .setIngredient('x', MeteoricIron.createIngot())
                 .setIngredient('a', Material.AMETHYST_SHARD)
                 .setIngredient('s', Material.STICK)),
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_sharpness"), MeteoricIronTools.createSword(false))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_knockback1"), MeteoricIronTools.createSword(1))
+                .shape("ax ", " x ", " s ")
+                .setIngredient('x', MeteoricIron.createIngot())
+                .setIngredient('a', Material.AMETHYST_SHARD)
+                .setIngredient('s', Material.STICK)),
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_sharpness"), MeteoricIronTools.createSword(0))
                 .shape(" x ", " x ", " s ")
                 .setIngredient('x', MeteoricIron.createIngot())
                 .setIngredient('s', Material.STICK))

@@ -44,6 +44,7 @@ factories:
     recipes:
       - make_meteoric_iron_sword
       - make_meteoric_iron_sword_kb
+      - make_meteoric_iron_sword_kb1
       - repair_meteoric_iron_sword_factory
   meteoric_iron_pickaxe:
     type: FCC
@@ -14877,6 +14878,23 @@ recipes:
     output:
       meteoric_iron_sword_kb:
         custom-key: meteoric_iron_sword_knockback
+        amount: 5
+  make_meteoric_iron_sword_kb1:
+    production_time: 4s
+    name: Make Meteoric Iron Knockback 1 Sword
+    type: PRODUCTION
+    input:
+      meteoric_iron_ingot:
+        custom-key: meteoric_iron_ingot
+        amount: 6
+      amesthyst_shard:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: AMETHYST_SHARD
+        amount: 5
+    output:
+      meteoric_iron_sword_kb1:
+        custom-key: meteoric_iron_sword_knockback1
         amount: 5
   repair_meteoric_iron_sword_factory:
     production_time: 4s
