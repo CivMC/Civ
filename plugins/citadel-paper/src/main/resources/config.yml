@@ -4,7 +4,7 @@ logHostileBreaks: true
 #Log when a player bypasses friendly reinforcements?
 logFriendlyBreaks: true
 
-#Log every time damage is done to a reinforcement? Only recommended for debugging        
+#Log every time damage is done to a reinforcement? Only recommended for debugging
 logDamage: true
 
 #Log creation of reinforcements?
@@ -267,3 +267,5 @@ world-border-buffers:
     center:
       x: 0.5
       z: 0.5
+
+reinforcementBreakMultipliers: []

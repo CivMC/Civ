@@ -73,7 +73,7 @@ public abstract class AbstractPlayerState {
                 e.getBlock().getLocation());
         }
         e.setCancelled(true);
-        float damage = ReinforcementLogic.getDamageApplied(rein);
+        float damage = ReinforcementLogic.getDamageApplied(rein, e.getBlock().getType(), e.getPlayer().getInventory().getItemInMainHand());
         ReinforcementDamageEvent dre = new ReinforcementDamageEvent(e.getPlayer(), rein, damage);
         Bukkit.getPluginManager().callEvent(dre);
         if (dre.isCancelled()) {

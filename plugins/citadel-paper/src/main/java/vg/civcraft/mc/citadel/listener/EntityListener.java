@@ -59,7 +59,7 @@ public class EntityListener implements Listener {
     public void breakDoor(EntityBreakDoorEvent ebde) {
         Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(ebde.getBlock());
         if (rein != null) {
-            ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein), ebde.getEntity());
+            ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein, null, null), ebde.getEntity());
             if (!rein.isBroken()) {
                 ebde.setCancelled(true);
             }
@@ -122,7 +122,7 @@ public class EntityListener implements Listener {
         if (MoreTags.COPPER_BLOCKS.isTagged(ecbe.getBlock().getType())) {
             return;
         }
-        ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein), ecbe.getEntity());
+        ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein, null, null), ecbe.getEntity());
         if (rein.isBroken()) {
             return;
         }
@@ -140,7 +140,7 @@ public class EntityListener implements Listener {
             if (rein == null) {
                 continue;
             }
-            ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein), eee.getEntity());
+            ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein, null, null), eee.getEntity());
             if (!rein.isBroken()) {
                 iterator.remove();
             }

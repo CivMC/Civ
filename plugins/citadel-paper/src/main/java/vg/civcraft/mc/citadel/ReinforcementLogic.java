@@ -15,6 +15,7 @@ import org.bukkit.block.data.type.PointedDripstone;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.activity.ActivityMap;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDestructionEvent;
@@ -74,13 +75,16 @@ public final class ReinforcementLogic {
         }
     }
 
-    public static float getDamageApplied(Reinforcement reinforcement) {
+    public static float getDamageApplied(Reinforcement reinforcement, Material type, ItemStack item) {
         float damageAmount = 1.0F;
         if (!reinforcement.isMature()) {
             double timeExisted = System.currentTimeMillis() - reinforcement.getCreationTime();
             double progress = timeExisted / reinforcement.getType().getMaturationTime();
             damageAmount /= progress;
             damageAmount *= reinforcement.getType().getMaturationScale();
+        }
+        if (type != null && item != null) {
+            damageAmount *= Citadel.getInstance().getMultiplier().getMultiplier(type, item);
         }
         damageAmount *= getDecayDamage(reinforcement);
         return damageAmount;

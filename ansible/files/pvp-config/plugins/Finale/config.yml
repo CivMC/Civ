@@ -137,6 +137,9 @@ weaponModification:
   meteoricIronSwordKb:
     key: meteoric_iron_sword_knockback
     damage: 8
+  meteoricIronSwordKb1:
+    key: meteoric_iron_sword_knockback1
+    damage: 8
 
 armourModification:
   diamondHelmet:

@@ -45,6 +45,7 @@ public class Citadel extends ACivMod {
     private CitadelDAO dao;
     private ActivityMap activityMap;
     private CitadelCommandManager commandManager;
+    private ReinforcementMultiplier multiplier;
 
     private PlayerStateManager stateManager;
 
@@ -81,6 +82,10 @@ public class Citadel extends ACivMod {
 
     public ActivityMap getActivityMap() {
         return activityMap;
+    }
+
+    public ReinforcementMultiplier getMultiplier() {
+        return multiplier;
     }
 
     CitadelDAO getDAO() {
@@ -156,6 +161,7 @@ public class Citadel extends ACivMod {
                 logger.info("DecentHolograms is not loaded, no holograms available");
             }
         });
+        multiplier = config.getMultiplier();
         commandManager = new CitadelCommandManager(this);
         CitadelPermissionHandler.setup();
         registerListeners();

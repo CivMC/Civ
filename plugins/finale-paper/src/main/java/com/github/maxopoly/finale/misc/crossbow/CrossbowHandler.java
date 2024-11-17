@@ -128,7 +128,7 @@ public class CrossbowHandler {
                             if (rein.isBroken()) {
                                 break;
                             }
-                            float damage = ReinforcementLogic.getDamageApplied(rein);
+                            float damage = ReinforcementLogic.getDamageApplied(rein, null, null);
                             ReinforcementLogic.damageReinforcement(rein, damage, shooter);
                         }
                         continue;
