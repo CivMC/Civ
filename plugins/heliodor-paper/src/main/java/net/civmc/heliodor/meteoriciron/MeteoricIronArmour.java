@@ -14,6 +14,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.craftbukkit.inventory.CraftComplexRecipe;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
@@ -135,7 +136,7 @@ public interface MeteoricIronArmour {
         meta.setAttributeModifiers(ams);
     }
 
-    static List<Recipe> getRecipes(Plugin plugin) {
+    static List<CraftingRecipe> getRecipes(Plugin plugin) {
         return List.of(
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_helmet"), MeteoricIronArmour.createHelmet(false))
                 .shape("xxx", "x x")

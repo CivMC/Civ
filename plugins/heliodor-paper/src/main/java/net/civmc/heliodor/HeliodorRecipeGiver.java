@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
@@ -58,10 +59,10 @@ public class HeliodorRecipeGiver implements Runnable {
         }
     }
 
-    private void register(List<Recipe> recipes) {
-        for (Recipe recipe : recipes) {
+    private void register(List<CraftingRecipe> recipes) {
+        for (CraftingRecipe recipe : recipes) {
             Bukkit.getServer().addRecipe(recipe);
-            this.heliodorRecipes.add(((Keyed) recipe).getKey());
+            this.heliodorRecipes.add(recipe.getKey());
         }
     }
 }

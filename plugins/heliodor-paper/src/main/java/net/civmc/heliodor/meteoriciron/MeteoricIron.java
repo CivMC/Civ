@@ -5,7 +5,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
@@ -55,7 +57,7 @@ public interface MeteoricIron {
         return CustomItem.isCustomItem(item, "meteoric_iron_ingot");
     }
 
-    static List<ShapedRecipe> getRecipes(Plugin plugin) {
+    static List<CraftingRecipe> getRecipes(Plugin plugin) {
         ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_ingot"), MeteoricIron.createIngot())
             .shape("xxx", "xxx", "xxx")
             .setIngredient('x', MeteoricIron.createMeteoricIronNugget());

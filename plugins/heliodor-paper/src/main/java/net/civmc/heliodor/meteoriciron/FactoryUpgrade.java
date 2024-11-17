@@ -7,6 +7,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -39,7 +40,7 @@ public interface FactoryUpgrade {
     }
 
 
-    static List<ShapedRecipe> getRecipes(Plugin plugin) {
+    static List<CraftingRecipe> getRecipes(Plugin plugin) {
         ItemStack upgrade = FactoryUpgrade.createUpgrade();
         upgrade.setAmount(3);
         return List.of(

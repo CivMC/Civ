@@ -9,6 +9,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
+import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -55,7 +56,7 @@ public interface HeliodorPickaxe {
         return item.getPersistentDataContainer().has(PICKAXE_KEY);
     }
 
-    static List<ShapedRecipe> getRecipes(Plugin plugin) {
+    static List<CraftingRecipe> getRecipes(Plugin plugin) {
         ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, "heliodor_pickaxe"), HeliodorPickaxe.getItem())
             .shape("xxx", " s ", " s ")
             .setIngredient('x', HeliodorGem.createFinishedHeliodorGem())

@@ -11,6 +11,7 @@ import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
@@ -160,7 +161,7 @@ public interface MeteoricIronTools {
         return sword;
     }
 
-    static List<ShapedRecipe> getRecipes(Plugin plugin) {
+    static List<CraftingRecipe> getRecipes(Plugin plugin) {
         return List.of(
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_pickaxe_silk_touch"), MeteoricIronTools.createPickaxe(true))
                 .shape("xxx", "asa", " s ")
