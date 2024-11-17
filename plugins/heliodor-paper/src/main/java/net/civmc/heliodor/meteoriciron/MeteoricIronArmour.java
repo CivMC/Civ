@@ -47,9 +47,9 @@ public interface MeteoricIronArmour {
         meta.setFireResistant(true);
         setAttributes(meta, 3, 2, 0.03, "helmet", EquipmentSlotGroup.HEAD);
         AnvilRepairListener.setNoCombine(meta);
-        if (bind) {
+        if (!bind) {
             meta.getPersistentDataContainer().set(new NamespacedKey("simpleadminhacks", "no_bind"), PersistentDataType.BOOLEAN, true);
-            meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_unbindable"), PersistentDataType.BOOLEAN, true);
+            meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
         }
         item.setItemMeta(meta);
         CustomItem.registerCustomItem(bind ? "meteoric_iron_helmet_bound" : "meteoric_iron_helmet", item);
@@ -69,9 +69,9 @@ public interface MeteoricIronArmour {
         meta.setFireResistant(true);
         setAttributes(meta, 8, 2, 0.03, "chestplate", EquipmentSlotGroup.CHEST);
         AnvilRepairListener.setNoCombine(meta);
-        if (bind) {
+        if (!bind) {
             meta.getPersistentDataContainer().set(new NamespacedKey("simpleadminhacks", "no_bind"), PersistentDataType.BOOLEAN, true);
-            meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_unbindable"), PersistentDataType.BOOLEAN, true);
+            meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
         }
         item.setItemMeta(meta);
         CustomItem.registerCustomItem(bind ? "meteoric_iron_chestplate_bound" : "meteoric_iron_chestplate", item);
@@ -92,9 +92,9 @@ public interface MeteoricIronArmour {
         meta.setFireResistant(true);
         setAttributes(meta, 6, 2, 0.03, "leggings", EquipmentSlotGroup.LEGS);
         AnvilRepairListener.setNoCombine(meta);
-        if (bind) {
+        if (!bind) {
             meta.getPersistentDataContainer().set(new NamespacedKey("simpleadminhacks", "no_bind"), PersistentDataType.BOOLEAN, true);
-            meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_unbindable"), PersistentDataType.BOOLEAN, true);
+            meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
         }
         item.setItemMeta(meta);
         CustomItem.registerCustomItem(bind ? "meteoric_iron_leggings_bound" : "meteoric_iron_leggings", item);
@@ -116,9 +116,9 @@ public interface MeteoricIronArmour {
         meta.setFireResistant(true);
         setAttributes(meta, 3, 2, 0.03, "boots", EquipmentSlotGroup.FEET);
         AnvilRepairListener.setNoCombine(meta);
-        if (bind) {
+        if (!bind) {
             meta.getPersistentDataContainer().set(new NamespacedKey("simpleadminhacks", "no_bind"), PersistentDataType.BOOLEAN, true);
-            meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_unbindable"), PersistentDataType.BOOLEAN, true);
+            meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
         }
         item.setItemMeta(meta);
         CustomItem.registerCustomItem(bind ? "meteoric_iron_boots_bound" : "meteoric_iron_boots", item);
