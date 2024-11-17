@@ -31,7 +31,7 @@ public class SqlVeinDao implements VeinDao {
             CREATE TABLE IF NOT EXISTS veins (
             id INT NOT NULL AUTO_INCREMENT,
             type VARCHAR(64) NOT NULL,
-            spawned_at TIMESTAMP NOT NULL,
+            spawned_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
             world VARCHAR(64) NOT NULL,
             radius INT NOT NULL,
             x INT NOT NULL,
