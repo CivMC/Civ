@@ -8,9 +8,11 @@ import net.civmc.heliodor.meteoriciron.MeteoricIron;
 import net.civmc.heliodor.meteoriciron.MeteoricIronArmour;
 import net.civmc.heliodor.meteoriciron.MeteoricIronTools;
 import org.bukkit.Bukkit;
+import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -56,10 +58,10 @@ public class HeliodorRecipeGiver implements Runnable {
         }
     }
 
-    private void register(List<ShapedRecipe> recipes) {
-        for (ShapedRecipe recipe : recipes) {
+    private void register(List<Recipe> recipes) {
+        for (Recipe recipe : recipes) {
             Bukkit.getServer().addRecipe(recipe);
-            this.heliodorRecipes.add(recipe.getKey());
+            this.heliodorRecipes.add(((Keyed) recipe).getKey());
         }
     }
 }
