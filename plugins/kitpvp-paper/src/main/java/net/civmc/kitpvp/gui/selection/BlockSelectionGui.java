@@ -49,7 +49,11 @@ public class BlockSelectionGui extends ItemSelectionGui {
             Material.RAIL,
             Material.IRON_BLOCK,
             Material.GOLD_BLOCK,
-            Material.BEACON
+            Material.BEACON,
+            Material.COBBLED_DEEPSLATE,
+            Material.LAPIS_BLOCK,
+            Material.REDSTONE_BLOCK,
+            Material.COPPER_BLOCK
         };
         for (int i = 0; i < types.length; i++) {
             inventory.setSlot(toClickable(new ItemStack(types[i])), i);
