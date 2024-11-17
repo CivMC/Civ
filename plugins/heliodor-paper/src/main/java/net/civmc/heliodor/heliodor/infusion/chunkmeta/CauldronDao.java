@@ -40,7 +40,21 @@ public class CauldronDao extends TableStorageEngine<CauldronInfusion> {
 
     @Override
     public Collection<XZWCoord> getAllDataChunks() {
-        return null;
+        List<XZWCoord> result = new ArrayList<>();
+        try (Connection insertConn = db.getConnection();
+             PreparedStatement selectChunks = insertConn.prepareStatement(
+                 "SELECT chunk_x, chunk_z, world_id FROM cauldrons GROUP BY chunk_x, chunk_z, world_id");
+             ResultSet rs = selectChunks.executeQuery()) {
+            while (rs.next()) {
+                int chunkX = rs.getInt(1);
+                int chunkZ = rs.getInt(2);
+                short worldID = rs.getShort(3);
+                result.add(new XZWCoord(chunkX, chunkZ, worldID));
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Failed to select populated chunks from db: ", e);
+        }
+        return result;
     }
 
     @Override
