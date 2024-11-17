@@ -68,8 +68,8 @@ public interface MeteoricIronTools {
         meta.displayName(Component.text("Meteoric Iron Axe", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
         meta.lore(List.of(
-            Component.text("Instantly breaks many wood products,", NamedTextColor.WHITE),
-            Component.text("and can break some iron ones too", NamedTextColor.WHITE)));
+            Component.text("Deals 2.5x reinforcement damage on wood products", NamedTextColor.WHITE),
+            Component.text("Deals 2x reinforcement damage on iron and copper products", NamedTextColor.WHITE)));
         ToolComponent tool = meta.getTool();
         tool.setDamagePerBlock(1);
         tool.addRule(Material.CHEST, 50f, true);
