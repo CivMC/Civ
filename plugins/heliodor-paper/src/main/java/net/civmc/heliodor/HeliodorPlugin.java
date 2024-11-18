@@ -1,5 +1,9 @@
 package net.civmc.heliodor;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
 import net.civmc.heliodor.backpack.BackpackListener;
 import net.civmc.heliodor.command.HeliodorDebugCommand;
 import net.civmc.heliodor.heliodor.PickaxeBreakListener;
@@ -8,12 +12,12 @@ import net.civmc.heliodor.heliodor.infusion.InfusionManager;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronDao;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfuseData;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfusion;
-import net.civmc.heliodor.vein.data.MeteoricIronVeinConfig;
 import net.civmc.heliodor.vein.OrePredicate;
 import net.civmc.heliodor.vein.SqlVeinDao;
 import net.civmc.heliodor.vein.VeinCache;
-import net.civmc.heliodor.vein.data.VeinConfig;
 import net.civmc.heliodor.vein.VeinSpawner;
+import net.civmc.heliodor.vein.data.MeteoricIronVeinConfig;
+import net.civmc.heliodor.vein.data.VeinConfig;
 import net.civmc.heliodor.vein.data.VerticalBlockPos;
 import net.civmc.heliodor.vein.listener.OreBreakListener;
 import net.civmc.heliodor.vein.listener.VeinBreakListener;
@@ -27,11 +31,6 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.BlockBasedChunkMe
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableStorageEngine;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 
 public class HeliodorPlugin extends ACivMod {
 

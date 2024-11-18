@@ -12,13 +12,11 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.craftbukkit.inventory.CraftComplexRecipe;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -53,7 +51,9 @@ public interface MeteoricIronArmour {
             meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
         }
         item.setItemMeta(meta);
-        CustomItem.registerCustomItem(bind ? "meteoric_iron_helmet_bound" : "meteoric_iron_helmet", item);
+        if (!bind) {
+            CustomItem.registerCustomItem("meteoric_iron_helmet", item);
+        }
         return item;
     }
 
@@ -75,7 +75,9 @@ public interface MeteoricIronArmour {
             meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
         }
         item.setItemMeta(meta);
-        CustomItem.registerCustomItem(bind ? "meteoric_iron_chestplate_bound" : "meteoric_iron_chestplate", item);
+        if (!bind) {
+        CustomItem.registerCustomItem("meteoric_iron_chestplate", item);
+        }
         return item;
     }
 
@@ -98,7 +100,9 @@ public interface MeteoricIronArmour {
             meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
         }
         item.setItemMeta(meta);
-        CustomItem.registerCustomItem(bind ? "meteoric_iron_leggings_bound" : "meteoric_iron_leggings", item);
+        if (!bind) {
+            CustomItem.registerCustomItem("meteoric_iron_leggings", item);
+        }
         return item;
     }
 
@@ -122,7 +126,9 @@ public interface MeteoricIronArmour {
             meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
         }
         item.setItemMeta(meta);
-        CustomItem.registerCustomItem(bind ? "meteoric_iron_boots_bound" : "meteoric_iron_boots", item);
+        if (!bind) {
+            CustomItem.registerCustomItem("meteoric_iron_boots", item);
+        }
         return item;
     }
 
