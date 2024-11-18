@@ -343,7 +343,7 @@ shield:
     enabled: true
     activationResistance:
       enabled: true
-      amplifier: 1
+      amplifier: 0
       duration: 200
     power:
       fromGround:
@@ -358,7 +358,7 @@ shield:
     damage: 1
     cooldown: 5s
   passive:
-    enabled: true
+    enabled: false
     amplifier: 0
 
 crossbow:
