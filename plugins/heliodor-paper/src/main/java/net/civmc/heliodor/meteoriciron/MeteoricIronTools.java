@@ -77,7 +77,7 @@ public interface MeteoricIronTools {
         tool.addRule(Material.TRAPPED_CHEST, 30f, true);
         tool.addRule(Tag.FENCE_GATES, 30f, true);
         tool.addRule(Tag.WOODEN_PRESSURE_PLATES, 30f, true);
-        tool.addRule(Tag.LOGS, 30f, true);
+        tool.addRule(Tag.LOGS, 1000f, true);
         tool.addRule(Material.JUKEBOX, 30f, true);
         tool.addRule(Material.BARREL, 30f, true);
         tool.addRule(Tag.WOODEN_TRAPDOORS, 30f, true);
