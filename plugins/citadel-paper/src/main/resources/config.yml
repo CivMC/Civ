@@ -269,3 +269,7 @@ world-border-buffers:
       z: 0.5
 
 reinforcementBreakMultipliers: []
+
+# number of times a tool can break a reinforcement before it gets damaged by one durability
+# set to 0 to disable
+reinforcementBreaksPerToolDamage: 50

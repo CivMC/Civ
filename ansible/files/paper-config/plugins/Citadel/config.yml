@@ -435,3 +435,7 @@ reinforcementBreakMultipliers:
         - WAXED_EXPOSED_COPPER_DOOR
         - WAXED_OXIDIZED_COPPER_DOOR
         - WAXED_WEATHERED_COPPER_DOOR
+
+# number of times a tool can break a reinforcement before it gets damaged by one durability
+# set to 0 to disable
+reinforcementBreaksPerToolDamage: 50
