@@ -412,6 +412,7 @@ reinforcementBreakMultipliers:
         - WOODEN_BUTTONS
     - multiplier: 2
       types:
+        - FURNACE
         - IRON_DOOR
         - IRON_TRAPDOOR
         - IRON_BARS
