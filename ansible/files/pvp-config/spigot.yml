@@ -31,7 +31,7 @@ settings:
       max: 2048.0
   log-villager-deaths: true
   log-named-deaths: true
-  bungeecord: true
+  bungeecord: false
 commands:
   spam-exclusions:
   - /skill

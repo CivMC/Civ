@@ -20,8 +20,8 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      WATERFALL_VERSION: '1.21'
-      TYPE: 'WATERFALL'
+      VELOCITY_VERSION: '3.4.0-SNAPSHOT'
+      TYPE: 'VELOCITY'
 
       REPLACE_ENV_VARIABLES: 'true'
       REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
@@ -33,6 +33,8 @@ services:
       CIV_TIMEOUT_TIME: 3000000
       CIV_PVP_HOSTNAME: 'pvp.localhost'
       CIV_HOSTNAME: 'main.localhost'
+
+      CIV_FORWARDING_SECRET: '1234'
     ports:
       - "25565:25577"
     volumes:
@@ -87,6 +89,7 @@ services:
 
       JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       CIV_WATCHDOG_TIMEOUT_TIME: 6000
+      CIV_FORWARDING_SECRET: '1234'
     ports:
       - "5005:5005"
     volumes:
@@ -141,6 +144,7 @@ services:
 
       JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006
       CIV_WATCHDOG_TIMEOUT_TIME: 6000
+      CIV_FORWARDING_SECRET: '1234'
     ports:
       - "5006:5006"
     volumes:

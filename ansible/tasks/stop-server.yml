@@ -1,5 +1,5 @@
 # TODO: Use docker module, currently it doesn't seem to support updating.
-- name: Stop Server | Stop Waterfall
+- name: Stop Server | Stop Velocity
   when:
     - "'swarm_manager' in group_names"
     - "'proxy' in servers"
