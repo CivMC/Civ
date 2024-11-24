@@ -2,6 +2,7 @@ package vg.civcraft.mc.citadel.listener;
 
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
@@ -10,6 +11,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.GameMode;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -270,11 +273,26 @@ public class ModeListener implements Listener {
             AcidManager acidMan = Citadel.getInstance().getAcidManager();
             if (acidMan.isPossibleAcidBlock(e.getClickedBlock())) {
                 sb.append(ChatColor.GOLD);
-                long remainingTime = acidMan.getRemainingAcidMaturationTime(rein);
-                if (remainingTime == 0) {
-                    sb.append("Acid ready");
-                } else {
-                    sb.append(String.format("%sAcid block mature in %s", ChatColor.YELLOW, TextUtil.formatDuration(remainingTime, TimeUnit.MILLISECONDS)));
+                Map<BlockFace, Long> times = acidMan.getRemainingAcidMaturationTime(rein);
+                Block acidBlock = rein.getLocation().getBlock();
+                for (Map.Entry<BlockFace, Long> entry : times.entrySet()) {
+                    Reinforcement relativeReinforcement = ReinforcementLogic.getReinforcementProtecting(acidBlock.getRelative(entry.getKey()));
+                    if (relativeReinforcement != null) {
+                        if (!acidMan.canAcidBlock(rein.getType(), relativeReinforcement.getType())) {
+                            sb.append(String.format("\n%s%s acid will fail!", ChatColor.RED, entry.getKey()));
+                            continue;
+                        }
+                        if (acidMan.isPossibleAcidBlock(relativeReinforcement.getLocation().getBlock()) && acidMan.isAcidOnSameGroup(rein, relativeReinforcement)) {
+                            continue;
+                        }
+                        if (entry.getValue() == 0) {
+                            sb.append(String.format("\n%s%s acid ready", ChatColor.YELLOW, entry.getKey()));
+                            continue;
+                        }
+                        sb.append(String.format("\n%s%s acid will be ready in %s",
+                            ChatColor.YELLOW, entry.getKey(),
+                            TextUtil.formatDuration(entry.getValue(), TimeUnit.MILLISECONDS)));
+                    }
                 }
             }
             if (e.getPlayer().hasPermission("citadel.admin")) {
