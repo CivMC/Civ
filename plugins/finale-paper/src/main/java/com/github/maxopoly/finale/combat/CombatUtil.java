@@ -108,9 +108,10 @@ public class CombatUtil {
                 }
                 damage += f1;
                 boolean shouldSweep = false;
-                double d0 = attacker.walkDist - attacker.walkDistO;
+                double d0 = attacker.getKnownMovement().horizontalDistanceSqr();
+                double d1 = (double) attacker.getSpeed() * 2.5D;
 
-                if (shouldDamage && !shouldCrit && !dealtExtraKnockback && attacker.onGround() && d0 < (double) attacker.getSpeed()) {
+                if (shouldDamage && !shouldCrit && !dealtExtraKnockback && attacker.onGround() && d0 < Mth.square(d1)) {
                     ItemStack itemstack = attacker.getItemInHand(InteractionHand.MAIN_HAND);
                     if (itemstack.getItem() instanceof SwordItem) {
                         shouldSweep = true;
@@ -124,7 +125,7 @@ public class CombatUtil {
                     boolean damagedVictim;
                     try {
                         DAMAGING_ITEM = attacker.getBukkitEntity().getInventory().getItemInMainHand();
-                        damagedVictim = victim.hurt(damagesource, damage);
+                        damagedVictim = victim.hurtServer(victim.level().getMinecraftWorld(), damagesource, damage);
                     } finally {
                         DAMAGING_ITEM = null;
                     }
@@ -150,7 +151,7 @@ public class CombatUtil {
 
                                 if (entityliving != attacker && entityliving != victim && !attacker.skipAttackInteraction(entityliving) && (!(entityliving instanceof ArmorStand) || !((ArmorStand) entityliving).isMarker()) && attacker.distanceToSqr(entityliving) < 9.0D) {
                                     // CraftBukkit start - Only apply knockback if the damage hits
-                                    if (entityliving.hurt(world.damageSources().playerAttack(attacker).sweep(), f4)) {
+                                    if (entityliving.hurtServer(entityliving.level().getMinecraftWorld(), world.damageSources().playerAttack(attacker).sweep(), f4)) {
                                         entityliving.knockback(0.4F, (double) Mth.sin(attacker.getBukkitYaw() * 0.017453292F), (double) (-Mth.cos(attacker.getBukkitYaw() * 0.017453292F)));
                                     }
                                     // CraftBukkit end

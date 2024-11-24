@@ -59,7 +59,7 @@ public class FungusGrower extends AgeableGrower {
         final ServerLevel world = ((CraftWorld) block.getWorld()).getHandle();
         final BlockPos position = new BlockPos(block.getX(), block.getY(), block.getZ());
         //Taken from CraftWorld.generateTree()
-        Holder<ConfiguredFeature<?, ?>> growthHolder = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE).getHolder(growth).orElse(null);
+        Holder<ConfiguredFeature<?, ?>> growthHolder = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE).get(growth).orElse(null);
 
         if (growthHolder == null) return false;
 

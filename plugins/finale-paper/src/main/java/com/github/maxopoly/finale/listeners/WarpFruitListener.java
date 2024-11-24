@@ -59,14 +59,14 @@ public class WarpFruitListener implements Listener {
                         cancel();
                         return;
                     }
-                    if (player.getItemInUse() == null) {
+                    if (!player.getActiveItem().isEmpty()) {
                         if (warpFruitTracker.isSpectralWhileChanneling() && player.hasPotionEffect(PotionEffectType.GLOWING)) {
                             player.removePotionEffect(PotionEffectType.GLOWING);
                         }
                         cancel();
                         return;
                     }
-                    if (player.getItemInUse().getType() != Material.CHORUS_FRUIT) {
+                    if (player.getActiveItem().getType() != Material.CHORUS_FRUIT) {
                         if (warpFruitTracker.isSpectralWhileChanneling() && player.hasPotionEffect(PotionEffectType.GLOWING)) {
                             player.removePotionEffect(PotionEffectType.GLOWING);
                         }
