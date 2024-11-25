@@ -124,6 +124,13 @@ public interface ExilePearl {
     int getHealth();
 
     /**
+     * Gets the pearl health percent value
+     *
+     * @return The health percent value
+     */
+    Integer getHealthPercent();
+
+    /**
      * Sets the pearl health value
      *
      * @param health The health value

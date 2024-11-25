@@ -1107,15 +1107,15 @@ public class PlayerListener implements Listener, Configurable {
             return;
         }
 
-        // Get the total possible repair amount and new health value
+        // Get the total possible repair amount. This doesn't need to be limited
+        // because the lore generator will cap at 100%
         int repairAmount = invItems.getAmount(repairItem.getStack()) * repairItem.getRepairAmount();
         repairAmount = (int) Math.ceil(repairAmount / pearl.getLongTimeMultiplier());
-        int newHealth = Math.min(pearlApi.getPearlConfig().getPearlHealthMaxValue(), pearl.getHealth() + repairAmount);
 
         // Generate a new item with the updated health value as the crafting result
         ItemStack resultStack = pearl.createItemStack();
         ItemMeta im = resultStack.getItemMeta();
-        im.setLore(pearlApi.getLoreProvider().generateLoreWithModifiedHealth(pearl, newHealth));
+        im.setLore(pearlApi.getLoreProvider().generateLoreWithModifiedHealth(pearl, pearl.getHealth() + repairAmount));
         resultStack.setItemMeta(im);
 
         e.getInventory().setResult(resultStack);
@@ -1146,12 +1146,11 @@ public class PlayerListener implements Listener, Configurable {
         // Quit if no repair items were found in the crafting inventory
         if (repairItem != null) {
             int maxHealth = pearlApi.getPearlConfig().getPearlHealthMaxValue();
+            int repairPerItem = repairItem.getRepairAmount();
             int repairMatsAvailable = invItems.getAmount(repairItem.getStack());
-            int healthToFill = maxHealth - pearl.getHealth();
-            double repairPerItem = repairItem.getRepairAmount() / pearl.getLongTimeMultiplier();
-            int repairMatsToUse = Math.min((int) Math.ceil(healthToFill / repairPerItem), repairMatsAvailable);
-            int repairAmount = (int) (repairMatsToUse * repairPerItem);
-            int newHealth = Math.min(pearlApi.getPearlConfig().getPearlHealthMaxValue(), pearl.getHealth() + repairAmount);
+            int repairMatsToUse = Math.min((int) Math.ceil((maxHealth - pearl.getHealth()) / (double) repairPerItem), repairMatsAvailable);
+            int repairAmount = repairMatsToUse * repairPerItem;
+            repairAmount = (int) Math.ceil(repairAmount / pearl.getLongTimeMultiplier());
 
             // Changing the value of the crafting items results in a dupe glitch so any remaining
             // materials need to be placed back into the player's inventory.
@@ -1179,7 +1178,7 @@ public class PlayerListener implements Listener, Configurable {
             inv.clear();
 
             // Repair the pearl and update the item stack
-            pearl.setHealth(newHealth);
+            pearl.setHealth(pearl.getHealth() + repairAmount);
             inv.setResult(pearl.createItemStack());
             pearlApi.log("The pearl for player %s was repaired by %d points.", pearl.getPlayerName(), repairAmount);
             return;
