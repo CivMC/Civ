@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.inventory.PrepareResultEvent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -28,6 +29,14 @@ public class AnvilRepairListener implements Listener {
             }
         } else if (secondItem != null && secondItem.getPersistentDataContainer().has(NO_COMBINE)) {
             event.setResult(null);
+        }
+    }
+
+    @EventHandler
+    public void on(PrepareItemEnchantEvent event) {
+        ItemStack item = event.getItem();
+        if (item.getPersistentDataContainer().has(NO_COMBINE)) {
+            event.setCancelled(true);
         }
     }
 
