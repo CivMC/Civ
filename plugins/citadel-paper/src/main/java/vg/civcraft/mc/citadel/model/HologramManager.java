@@ -19,7 +19,6 @@ import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.world.entity.PositionMoveRotation;
-import net.minecraft.world.entity.Relative;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -233,9 +232,6 @@ public class HologramManager {
                         new Vec3(0, 0, 0),
                         0,
                         0));
-
-            fakeTeleport.getModifier().withType(Set.class)
-                    .write(0, Relative.DELTA);
 
             fakeTeleport.getBooleans()
                 .write(0, false);
