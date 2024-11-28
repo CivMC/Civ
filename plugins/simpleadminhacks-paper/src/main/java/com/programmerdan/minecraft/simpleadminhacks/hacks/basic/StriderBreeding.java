@@ -35,8 +35,8 @@ public class StriderBreeding extends BasicHack {
         if (event.getEntity().getType() != EntityType.STRIDER) {
             return;
         }
-        double dadSpeed = event.getFather().getAttribute(Attribute.MOVEMENT_SPEED).getBaseValue();
-        double mumSpeed = event.getMother().getAttribute(Attribute.MOVEMENT_SPEED).getBaseValue();
+        double dadSpeed = event.getFather().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
+        double mumSpeed = event.getMother().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
         double irwinHallDist = (0.45 + Math.random() * 0.3 + Math.random() * 0.3 + Math.random() * 0.3) * 0.25;
         double newStriderSpeed = (dadSpeed + mumSpeed + irwinHallDist) / 3;
         if (newStriderSpeed < minSpeed) {
@@ -44,10 +44,10 @@ public class StriderBreeding extends BasicHack {
         } else if (newStriderSpeed > maxSpeed) {
             newStriderSpeed = maxSpeed;
         }
-        event.getEntity().getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(newStriderSpeed);
+        event.getEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(newStriderSpeed);
 
-        double dadHealth = event.getFather().getAttribute(Attribute.MAX_HEALTH).getBaseValue();
-        double mumHealth = event.getFather().getAttribute(Attribute.MAX_HEALTH).getBaseValue();
+        double dadHealth = event.getFather().getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+        double mumHealth = event.getFather().getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         double randomHealth = Math.random() * (this.maxHealth - this.minHealth) + this.minHealth;
         double newStriderHealth = Math.round(((float) dadHealth + (float) mumHealth + (float) randomHealth) / 3);
         if (newStriderHealth < minHealth) {
@@ -55,7 +55,7 @@ public class StriderBreeding extends BasicHack {
         } else if (newStriderHealth > maxHealth) {
             newStriderHealth = maxHealth;
         }
-        event.getEntity().getAttribute(Attribute.MAX_HEALTH).setBaseValue(newStriderHealth);
+        event.getEntity().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(newStriderHealth);
         event.getEntity().setHealth(newStriderHealth);
         plugin.getLogger().log(Level.INFO, "Strider breed to have speed: " + newStriderSpeed
             + " and health: " + newStriderHealth);
@@ -74,7 +74,7 @@ public class StriderBreeding extends BasicHack {
     }
 
     public void rollSpeedStat(LivingEntity strider, double minSpeed, double maxSpeed) {
-        AttributeInstance moveSpeed = strider.getAttribute(Attribute.MOVEMENT_SPEED);
+        AttributeInstance moveSpeed = strider.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
         if (moveSpeed == null) {
             return;
         }
@@ -89,7 +89,7 @@ public class StriderBreeding extends BasicHack {
     }
 
     public void rollHealthStat(LivingEntity strider, int minHealth, int maxHealth) {
-        AttributeInstance moveSpeed = strider.getAttribute(Attribute.MAX_HEALTH);
+        AttributeInstance moveSpeed = strider.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         if (moveSpeed == null) {
             return;
         }

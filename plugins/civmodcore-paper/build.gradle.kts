@@ -8,7 +8,7 @@ version = "3.0.6"
 
 dependencies {
     paperweight {
-        paperDevBundle("1.21.3-R0.1-SNAPSHOT")
+        paperDevBundle("1.21.1-R0.1-SNAPSHOT")
     }
 
     api("co.aikar:acf-bukkit:0.5.1-SNAPSHOT")

@@ -36,8 +36,8 @@ public class FasterHorses extends BasicHack {
         if (event.getEntity().getType() != EntityType.HORSE) {
             return;
         }
-        double dadSpeed = event.getFather().getAttribute(Attribute.MOVEMENT_SPEED).getBaseValue();
-        double mumSpeed = event.getMother().getAttribute(Attribute.MOVEMENT_SPEED).getBaseValue();
+        double dadSpeed = event.getFather().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
+        double mumSpeed = event.getMother().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).getBaseValue();
         double irwinHallDist = (Math.random() * 0.3 + Math.random() * 0.3 + Math.random() * 0.3) * ((this.maxSpeed - this.minSpeed) / 0.9) + this.minSpeed;
         double newSpeed = (dadSpeed + mumSpeed + irwinHallDist) / 3;
         if (newSpeed < minSpeed) {
@@ -45,7 +45,7 @@ public class FasterHorses extends BasicHack {
         } else if (newSpeed > maxSpeed) {
             newSpeed = maxSpeed;
         }
-        event.getEntity().getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(newSpeed);
+        event.getEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(newSpeed);
         event.getEntity().getPersistentDataContainer().set(speedChangedKey, PersistentDataTypes.BOOLEAN, true);
         plugin.getLogger().log(Level.INFO, "Horse bred to have speed: " + newSpeed);
     }
@@ -62,7 +62,7 @@ public class FasterHorses extends BasicHack {
             return;
         }
 
-        AttributeInstance moveSpeed = event.getEntity().getAttribute(Attribute.MOVEMENT_SPEED);
+        AttributeInstance moveSpeed = event.getEntity().getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
         if (moveSpeed == null) {
             return;
         }

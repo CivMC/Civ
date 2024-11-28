@@ -18,7 +18,6 @@ import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Boat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Vehicle;
@@ -79,7 +78,7 @@ public final class ShipOutOfLuck extends BasicHack {
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void preventBoatUsage(final VehicleMoveEvent event) {
         final Vehicle vehicle = event.getVehicle();
-        if (!(vehicle instanceof Boat)) {
+        if (vehicle.getType() != EntityType.BOAT) {
             return;
         }
         final List<Entity> passengers = vehicle.getPassengers();

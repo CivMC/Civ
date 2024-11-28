@@ -44,7 +44,7 @@ val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {
     dependsOn(paperPlugin)
 
     doFirst {
-        project.delete(files("$projectDir/build/paper-plugins"))
+        project.delete(files("$buildDir/paper-plugins"))
     }
 
     from("$projectDir/src/paper-plugins")
@@ -56,24 +56,24 @@ val copyPvpPlugins = tasks.register<Copy>("copyPvpPlugins") {
     dependsOn(pvpPlugin)
 
     doFirst {
-        project.delete(files("$projectDir/build/pvp-plugins"))
+        project.delete(files("$buildDir/pvp-plugins"))
     }
 
     from("$projectDir/src/pvp-plugins")
     from(pvpPlugin.resolvedConfiguration.resolvedArtifacts.map { it.file })
-    into("$projectDir/build/pvp-plugins")
+    into("$buildDir/pvp-plugins")
 }
 
 val copyProxyPlugins = tasks.register<Copy>("copyProxyPlugins") {
     dependsOn(proxyPlugin)
 
     doFirst {
-        project.delete(files("$projectDir/build/proxy-plugins"))
+        project.delete(files("$buildDir/proxy-plugins"))
     }
 
     from("$projectDir/src/proxy-plugins")
     from(proxyPlugin.resolvedConfiguration.resolvedArtifacts.map { it.file })
-    into("$projectDir/build/proxy-plugins")
+    into("$buildDir/proxy-plugins")
 }
 
 // TODO: Is build the right name?
