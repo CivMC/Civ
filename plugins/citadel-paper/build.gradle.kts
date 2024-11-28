@@ -12,5 +12,5 @@ dependencies {
     compileOnly(project(":plugins:civmodcore-paper"))
     compileOnly(project(":plugins:namelayer-paper"))
 
-    compileOnly(files("../../ansible/src/paper-plugins/ProtocolLib.jar"))
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.2.0-SNAPSHOT")
 }

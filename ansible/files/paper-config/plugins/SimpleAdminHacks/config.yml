@@ -19,6 +19,10 @@ hacks:
   ArmourBound:
     enabled: true
     whitelist:
+      - IRON_HELMET
+      - IRON_CHESTPLATE
+      - IRON_LEGGINGS
+      - IRON_BOOTS
       - DIAMOND_HELMET
       - DIAMOND_CHESTPLATE
       - DIAMOND_LEGGINGS
