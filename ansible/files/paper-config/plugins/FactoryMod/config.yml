@@ -11614,7 +11614,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_DOOR
-        amount: 128
+        amount: 80
   wax_copper_doors:
     production_time: 4s
     name: Wax Copper Doors
@@ -11795,7 +11795,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_TRAPDOOR
-        amount: 128
+        amount: 48
   wax_copper_trapdoors:
     production_time: 4s
     name: Wax Copper Trap Doors
