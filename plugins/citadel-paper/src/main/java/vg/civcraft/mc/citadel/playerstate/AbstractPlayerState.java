@@ -2,6 +2,7 @@ package vg.civcraft.mc.citadel.playerstate;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -10,6 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
@@ -78,6 +80,10 @@ public abstract class AbstractPlayerState {
         Bukkit.getPluginManager().callEvent(dre);
         if (dre.isCancelled()) {
             return;
+        }
+        int reinforcementBreaksPerToolDamage = Citadel.getInstance().getConfigManager().getReinforcementBreaksPerToolDamage();
+        if (reinforcementBreaksPerToolDamage > 0 && ThreadLocalRandom.current().nextInt(reinforcementBreaksPerToolDamage) == 0) {
+            e.getPlayer().getInventory().getItemInMainHand().damage(1, e.getPlayer());
         }
         damage = dre.getDamageDone();
         ReinforcementLogic.damageReinforcement(rein, damage, e.getPlayer());

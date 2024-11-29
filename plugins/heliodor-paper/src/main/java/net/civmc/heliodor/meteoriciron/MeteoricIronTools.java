@@ -93,6 +93,7 @@ public interface MeteoricIronTools {
         tool.addRule(Material.DISPENSER, 50f, true);
         tool.addRule(Material.DROPPER, 50f, true);
         tool.addRule(Material.HOPPER, 50f, true);
+        tool.addRule(Material.FURNACE, 50f, true);
         tool.addRule(Material.COPPER_TRAPDOOR, 50f, true);
         tool.addRule(Material.EXPOSED_COPPER_TRAPDOOR, 50f, true);
         tool.addRule(Material.OXIDIZED_COPPER_TRAPDOOR, 50f, true);

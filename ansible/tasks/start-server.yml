@@ -11,7 +11,7 @@
     - setting.minecraft.enabled
   command: docker service scale minecraft_pvp=1
 
-- name: Start Server | Start Waterfall
+- name: Start Server | Start Velocity
   when:
     - "'swarm_manager' in group_names"
     - setting.minecraft.enabled

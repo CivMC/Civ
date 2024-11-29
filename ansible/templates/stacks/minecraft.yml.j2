@@ -16,9 +16,8 @@ services:
               protocol: tcp
               mode: host
         environment:
-            WATERFALL_VERSION: '1.21'
-            TYPE: 'WATERFALL'
-            WATERFALL_BUILD_ID: 579
+            VELOCITY_VERSION: '3.4.0-SNAPSHOT'
+            TYPE: 'VELOCITY'
 
             REPLACE_ENV_VARIABLES: 'true'
             REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
@@ -28,6 +27,7 @@ services:
             CIV_POSTGRES_HOST: minecraft_postgres
             CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
             CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
+            CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
             CIV_TIMEOUT_TIME: 30000
             CIV_PVP_HOSTNAME: '{{setting.minecraft.pvp_hostname}}'
             CIV_HOSTNAME: '{{setting.minecraft.hostname}}'
@@ -95,6 +95,7 @@ services:
             CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
 
             CIV_WATCHDOG_TIMEOUT_TIME: 60
+            CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
 
         volumes:
             # Persistence
@@ -182,6 +183,7 @@ services:
             CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
 
             CIV_WATCHDOG_TIMEOUT_TIME: 60
+            CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
 
         volumes:
             # Persistence
