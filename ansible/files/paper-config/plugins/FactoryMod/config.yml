@@ -1704,6 +1704,22 @@ factories:
       - weather_copper_block
       - weather_exposed_copper
       - weather_weathered_copper
+      - make_copper_doors
+      - wax_copper_doors
+      - wax_exposed_copper_doors
+      - wax_weathered_copper_doors
+      - wax_oxidized_copper_doors
+      - weather_copper_doors
+      - weather_exposed_copper_doors
+      - weather_weathered_copper_doors
+      - make_copper_trapdoors
+      - wax_copper_trapdoors
+      - wax_exposed_copper_trapdoors
+      - wax_weathered_copper_trapdoors
+      - wax_oxidized_copper_trapdoors
+      - weather_copper_trapdoors
+      - weather_exposed_copper_trapdoors
+      - weather_weathered_copper_trapdoors
       - repair_copper_workshop
 #RECIPES
 recipes:
@@ -11577,6 +11593,368 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: OXIDIZED_COPPER
+        amount: 64
+      bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BUCKET
+        amount: 1
+  make_copper_doors:
+    production_time: 4s
+    name: Make Copper Doors
+    type: PRODUCTION
+    input:
+      copper_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_BLOCK
+        amount: 12
+    output:
+      copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_DOOR
+        amount: 128
+  wax_copper_doors:
+    production_time: 4s
+    name: Wax Copper Doors
+    type: PRODUCTION
+    input:
+      copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_DOOR
+        amount: 64
+      honeycomb:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: HONEYCOMB
+        amount: 16
+    output:
+      waxed_copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WAXED_COPPER_DOOR
+        amount: 64
+  wax_exposed_copper_doors:
+    production_time: 4s
+    name: Wax Exposed Copper Doors
+    type: PRODUCTION
+    input:
+      exposed_copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EXPOSED_COPPER_DOOR
+        amount: 64
+      honeycomb:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: HONEYCOMB
+        amount: 16
+    output:
+      waxed_exposed_copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WAXED_EXPOSED_COPPER_DOOR
+        amount: 64
+  wax_weathered_copper_doors:
+    production_time: 4s
+    name: Wax Weathered Copper Doors
+    type: PRODUCTION
+    input:
+      weathered_copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WEATHERED_COPPER_DOOR
+        amount: 64
+      honeycomb:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: HONEYCOMB
+        amount: 16
+    output:
+      waxed_weathered_copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WAXED_WEATHERED_COPPER_DOOR
+        amount: 64
+  wax_oxidized_copper_doors:
+    production_time: 4s
+    name: Wax Oxidized Copper Doors
+    type: PRODUCTION
+    input:
+      oxidized_copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: OXIDIZED_COPPER_DOOR
+        amount: 64
+      honeycomb:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: HONEYCOMB
+        amount: 16
+    output:
+      waxed_oxidized_copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WAXED_OXIDIZED_COPPER_DOOR
+        amount: 64
+  weather_copper_doors:
+    production_time: 4s
+    fuel_consumption_intervall: 2s
+    name: Weather Copper Doors
+    type: PRODUCTION
+    input:
+      copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_DOOR
+        amount: 64
+      water_bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WATER_BUCKET
+        amount: 1
+    output:
+      exposed_copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EXPOSED_COPPER_DOOR
+        amount: 64
+      bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BUCKET
+        amount: 1
+  weather_exposed_copper_doors:
+    production_time: 6s
+    fuel_consumption_intervall: 2s
+    name: Weather Exposed Copper Doors
+    type: PRODUCTION
+    input:
+      exposed_copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EXPOSED_COPPER_DOOR
+        amount: 64
+      water_bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WATER_BUCKET
+        amount: 1
+    output:
+      weathered_copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WEATHERED_COPPER_DOOR
+        amount: 64
+      bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BUCKET
+        amount: 1
+  weather_weathered_copper_doors:
+    production_time: 8s
+    fuel_consumption_intervall: 2s
+    name: Weather Weathered Copper Doors
+    type: PRODUCTION
+    input:
+      weathered_copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WEATHERED_COPPER_DOOR
+        amount: 64
+      water_bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WATER_BUCKET
+        amount: 1
+    output:
+      oxidized_copper_door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: OXIDIZED_COPPER_DOOR
+        amount: 64
+      bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BUCKET
+        amount: 1
+  make_copper_trapdoors:
+    production_time: 4s
+    name: Make Copper Trap Doors
+    type: PRODUCTION
+    input:
+      copper_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_BLOCK
+        amount: 16
+    output:
+      copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_TRAPDOOR
+        amount: 128
+  wax_copper_trapdoors:
+    production_time: 4s
+    name: Wax Copper Trap Doors
+    type: PRODUCTION
+    input:
+      copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_TRAPDOOR
+        amount: 64
+      honeycomb:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: HONEYCOMB
+        amount: 16
+    output:
+      waxed_copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WAXED_COPPER_TRAPDOOR
+        amount: 64
+  wax_exposed_copper_trapdoors:
+    production_time: 4s
+    name: Wax Exposed Copper Trap Doors
+    type: PRODUCTION
+    input:
+      exposed_copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EXPOSED_COPPER_TRAPDOOR
+        amount: 64
+      honeycomb:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: HONEYCOMB
+        amount: 16
+    output:
+      waxed_exposed_copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WAXED_EXPOSED_COPPER_TRAPDOOR
+        amount: 64
+  wax_weathered_copper_trapdoors:
+    production_time: 4s
+    name: Wax Weathered Copper Trap Doors
+    type: PRODUCTION
+    input:
+      weathered_copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WEATHERED_COPPER_TRAPDOOR
+        amount: 64
+      honeycomb:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: HONEYCOMB
+        amount: 16
+    output:
+      waxed_weathered_copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WAXED_WEATHERED_COPPER_TRAPDOOR
+        amount: 64
+  wax_oxidized_copper_trapdoors:
+    production_time: 4s
+    name: Wax Oxidized Copper Trap Doors
+    type: PRODUCTION
+    input:
+      oxidized_copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: OXIDIZED_COPPER_TRAPDOOR
+        amount: 64
+      honeycomb:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: HONEYCOMB
+        amount: 16
+    output:
+      waxed_oxidized_copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WAXED_OXIDIZED_COPPER_TRAPDOOR
+        amount: 64
+  weather_copper_trapdoors:
+    production_time: 4s
+    fuel_consumption_intervall: 2s
+    name: Weather Copper Trap Doors
+    type: PRODUCTION
+    input:
+      copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: COPPER_TRAPDOOR
+        amount: 64
+      water_bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WATER_BUCKET
+        amount: 1
+    output:
+      exposed_copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EXPOSED_COPPER_TRAPDOOR
+        amount: 64
+      bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BUCKET
+        amount: 1
+  weather_exposed_copper_trapdoors:
+    production_time: 6s
+    fuel_consumption_intervall: 2s
+    name: Weather Exposed Copper Trap Doors
+    type: PRODUCTION
+    input:
+      exposed_copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: EXPOSED_COPPER_TRAPDOOR
+        amount: 64
+      water_bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WATER_BUCKET
+        amount: 1
+    output:
+      weathered_copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WEATHERED_COPPER_TRAPDOOR
+        amount: 64
+      bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BUCKET
+        amount: 1
+  weather_weathered_copper_trapdoors:
+    production_time: 8s
+    fuel_consumption_intervall: 2s
+    name: Weather Weathered Copper Trap Doors
+    type: PRODUCTION
+    input:
+      weathered_copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WEATHERED_COPPER_TRAPDOOR
+        amount: 64
+      water_bucket:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WATER_BUCKET
+        amount: 1
+    output:
+      oxidized_copper_trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: OXIDIZED_COPPER_TRAPDOOR
         amount: 64
       bucket:
         v: 3839
