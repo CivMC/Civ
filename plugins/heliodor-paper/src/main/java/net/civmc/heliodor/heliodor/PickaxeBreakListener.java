@@ -52,7 +52,7 @@ public class PickaxeBreakListener implements Listener {
             .formatted(meteoricIronLow, meteoricIronHigh, meteoricIronHigh - spawnRadius)));
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(BlockBreakEvent event) {
         Block block = event.getBlock();
         ChunkPos chunkPos = new ChunkPos(block.getChunk().getX(), block.getChunk().getZ());
@@ -82,7 +82,7 @@ public class PickaxeBreakListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(BlockPlaceEvent event) {
         Block block = event.getBlock();
         if (Tag.BASE_STONE_OVERWORLD.isTagged(block.getType())) {
@@ -91,7 +91,7 @@ public class PickaxeBreakListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(BlockFormEvent event) {
         if (Tag.BASE_STONE_OVERWORLD.isTagged(event.getNewState().getType())) {
             Block block = event.getBlock();

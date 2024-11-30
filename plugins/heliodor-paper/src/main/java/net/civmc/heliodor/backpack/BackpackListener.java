@@ -28,7 +28,7 @@ public class BackpackListener implements Listener {
 
     public static final NamespacedKey BACKPACK_ENDER_CHEST_KEY = new NamespacedKey(JavaPlugin.getPlugin(HeliodorPlugin.class), "backpack");
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(BlockPlaceEvent event) {
         ItemStack item = event.getItemInHand();
         if (!Backpack.isBackpack(item)) {
@@ -41,7 +41,7 @@ public class BackpackListener implements Listener {
         type.getPersistentDataContainer().set(BACKPACK_ENDER_CHEST_KEY, PersistentDataType.BOOLEAN, true);
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(BlockBreakEvent event) {
         Block block = event.getBlock();
         if (block.getType() != Material.ENDER_CHEST) {
@@ -73,7 +73,7 @@ public class BackpackListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(InventoryOpenEvent event) {
         if (!isBackpackInventory(event.getInventory())) {
             return;
@@ -123,7 +123,7 @@ public class BackpackListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(PlayerDeathEvent event) {
         Inventory enderChest = event.getPlayer().getEnderChest();
         for (ItemStack item : enderChest.getStorageContents()) {

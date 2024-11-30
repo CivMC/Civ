@@ -21,7 +21,7 @@ public class OreBreakListener implements Listener {
         this.oreLocationsKey = oreLocationsKey;
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(BlockBreakEvent event) {
         Block block = event.getBlock();
 

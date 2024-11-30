@@ -29,7 +29,7 @@ public class InfusionListener implements Listener {
         this.chunkMetaView = chunkMetaView;
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(BlockPlaceEvent event) {
         ItemStack hand = event.getItemInHand();
         Integer charge = HeliodorGem.getCharge(hand);
