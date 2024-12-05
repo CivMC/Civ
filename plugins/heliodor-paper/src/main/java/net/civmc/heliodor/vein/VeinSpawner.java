@@ -91,7 +91,7 @@ public class VeinSpawner {
             x = ThreadLocalRandom.current().nextInt(-meteoriteVeinConfig.maxPositionRadius(), meteoriteVeinConfig.maxPositionRadius() + 1);
             z = ThreadLocalRandom.current().nextInt(-meteoriteVeinConfig.maxPositionRadius(), meteoriteVeinConfig.maxPositionRadius() + 1);
 
-            if (x * x + z * z < meteoriteVeinConfig.minPositionRadius()) {
+            if (x * x + z * z < meteoriteVeinConfig.minPositionRadius() * meteoriteVeinConfig.minPositionRadius()) {
                 continue;
             }
 
