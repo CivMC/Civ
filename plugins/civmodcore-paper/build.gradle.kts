@@ -11,7 +11,7 @@ dependencies {
         paperDevBundle("1.21.1-R0.1-SNAPSHOT")
     }
 
-    api("co.aikar:acf-bukkit:0.5.1-SNAPSHOT")
+    api("co.aikar:acf-paper:0.5.1-SNAPSHOT")
     api("com.mojang:datafixerupper:1.0.20")
     api("com.zaxxer:HikariCP:5.0.1")
     api("co.aikar:taskchain-bukkit:3.7.2")
