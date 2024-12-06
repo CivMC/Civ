@@ -28,8 +28,6 @@ import java.util.List;
 @SuppressWarnings("UnstableApiUsage")
 public interface MeteoricIronTools {
 
-    int DURABILITY = 48_600;
-
     static ItemStack createPickaxe(boolean silk) {
         ItemStack pickaxe = new ItemStack(Material.IRON_PICKAXE);
         Damageable meta = (Damageable) pickaxe.getItemMeta();
@@ -44,7 +42,7 @@ public interface MeteoricIronTools {
         tool.addRule(Tag.BASE_STONE_OVERWORLD, 1000f, true);
         tool.addRule(Tag.MINEABLE_PICKAXE, 8f, true);
         meta.setTool(tool);
-        meta.setMaxDamage(DURABILITY);
+        meta.setMaxDamage(72_900);
         meta.addEnchant(Enchantment.EFFICIENCY, 5, false);
         if (silk) {
             meta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
@@ -112,7 +110,7 @@ public interface MeteoricIronTools {
         tool.addRule(Material.WAXED_WEATHERED_COPPER_DOOR, 50f, true);
         tool.addRule(Tag.MINEABLE_AXE, 8f, true);
         meta.setTool(tool);
-        meta.setMaxDamage(DURABILITY);
+        meta.setMaxDamage(48_600);
         meta.addEnchant(Enchantment.EFFICIENCY, 5, false);
         if (silk) {
             meta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
@@ -143,7 +141,7 @@ public interface MeteoricIronTools {
         tool.setDamagePerBlock(1);
         tool.addRule(Material.COBWEB, 200f, true);
         meta.setTool(tool);
-        meta.setMaxDamage(DURABILITY);
+        meta.setMaxDamage(48_600);
         meta.addEnchant(Enchantment.FIRE_ASPECT, 2, false);
         meta.addEnchant(Enchantment.SHARPNESS, 5, false);
         if (knocback > 0) {
