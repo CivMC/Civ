@@ -16,7 +16,7 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 @CommandAlias("essence")
 public class EssenceCommand extends BaseCommand {
 
-    private static final TextColor NICE_BLUE = TextColor.color(55, 159, 163);
+    public static final TextColor NICE_BLUE = TextColor.color(55, 159, 163);
 
     private final VirtualEssenceManager manager;
     private final ItemMap essence;
