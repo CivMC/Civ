@@ -33,7 +33,10 @@ public interface HeliodorPickaxe {
         meta.setRarity(ItemRarity.EPIC);
         meta.lore(List.of(
             Component.text("Break a block to determine", NamedTextColor.WHITE),
-            Component.text("presence of nearby veins", NamedTextColor.WHITE)));
+            Component.text("presence of nearby veins", NamedTextColor.WHITE),
+            Component.empty(),
+            Component.text("Shift right click while sneaking to count", NamedTextColor.WHITE),
+            Component.text("global veins (costs " + VeinDetectListener.DURABILITY_COST + " durability)", NamedTextColor.WHITE)));
         meta.setMaxDamage(288); // expect 8 veins per pick
         ToolComponent tool = meta.getTool();
         tool.setDefaultMiningSpeed(0.25f);

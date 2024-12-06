@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import net.civmc.heliodor.backpack.BackpackListener;
 import net.civmc.heliodor.command.HeliodorDebugCommand;
 import net.civmc.heliodor.heliodor.PickaxeBreakListener;
+import net.civmc.heliodor.heliodor.VeinDetectListener;
 import net.civmc.heliodor.heliodor.infusion.InfusionListener;
 import net.civmc.heliodor.heliodor.infusion.InfusionManager;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronDao;
@@ -141,6 +142,8 @@ public class HeliodorPlugin extends ACivMod {
             meteoricIronConfig.config().lowDistance(),
             meteoricIronConfig.config().highDistance(),
             meteoricIronConfig.config().spawnRadius()), this);
+
+        getServer().getPluginManager().registerEvents(new VeinDetectListener(veinCache, meteoricIronConfig.config().maxSpawns()), this);
     }
 
     @Override
