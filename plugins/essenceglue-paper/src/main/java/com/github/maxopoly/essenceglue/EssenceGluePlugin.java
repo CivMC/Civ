@@ -1,7 +1,11 @@
 package com.github.maxopoly.essenceglue;
 
+import com.github.maxopoly.essenceglue.commands.EssenceCommand;
 import com.github.maxopoly.essenceglue.commands.StreakCommand;
 import com.github.maxopoly.essenceglue.commands.VoteCommand;
+import com.github.maxopoly.essenceglue.reward.PhysicalRewarder;
+import com.github.maxopoly.essenceglue.reward.Rewarder;
+import com.github.maxopoly.essenceglue.reward.VirtualRewarder;
 import org.bukkit.Bukkit;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
@@ -42,7 +46,16 @@ public final class EssenceGluePlugin extends ACivMod {
                 return;
             }
         }
-        rewardMan = new RewardManager(configMan.getLoginReward(), configMan.getVotingReward());
+        Rewarder rewarder;
+        if (configMan.isPhysical()) {
+            rewarder = new PhysicalRewarder(configMan.getRewards());
+        } else {
+            VirtualEssenceManager essenceManager = new VirtualEssenceManager(this, configMan.getVirtualCap());
+            commandManager.registerCommand(new EssenceCommand(essenceManager, configMan.getRewards()));
+            rewarder = new VirtualRewarder(essenceManager);
+        }
+
+        rewardMan = new RewardManager(rewarder, configMan.getLoginReward(), configMan.getVotingReward());
         if (Bukkit.getPluginManager().isPluginEnabled("Votifier")) {
             votifyMan = new VotifyManager(rewardMan, configMan.getVotingCooldowns());
             Bukkit.getPluginManager().registerEvents(votifyMan, this);
