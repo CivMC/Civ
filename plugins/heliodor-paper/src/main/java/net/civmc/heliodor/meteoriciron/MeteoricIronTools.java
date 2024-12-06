@@ -42,7 +42,7 @@ public interface MeteoricIronTools {
         tool.addRule(Tag.BASE_STONE_OVERWORLD, 1000f, true);
         tool.addRule(Tag.MINEABLE_PICKAXE, 8f, true);
         meta.setTool(tool);
-        meta.setMaxDamage(72_900);
+        meta.setMaxDamage(78_200);
         meta.addEnchant(Enchantment.EFFICIENCY, 5, false);
         if (silk) {
             meta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
