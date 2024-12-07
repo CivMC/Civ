@@ -52,7 +52,7 @@ public class SqlVeinDao implements VeinDao {
     public Map<String, Boolean> getSpawnableTypes(Map<String, Integer> spawnFrequencyMinutes, Map<String, Integer> maxSpawns) {
         try (Connection connection = source.getConnection()) {
             ResultSet resultSet = connection.createStatement()
-                .executeQuery("SELECT type, MAX(spawned_at) AS max_spawned_at, COUNT(*) AS count FROM veins WHERE ores_remaining >= ores * 0.5 GROUP BY type");
+                .executeQuery("SELECT type, MAX(spawned_at) AS max_spawned_at, COUNT(IF(ores_remaining >= ores * 0.5, TRUE, NULL)) AS count FROM veins GROUP BY type");
 
             Map<String, Boolean> possibleTypes = new HashMap<>();
             while (resultSet.next()) {
