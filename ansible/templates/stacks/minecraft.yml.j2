@@ -15,6 +15,10 @@ services:
               published: 25565
               protocol: tcp
               mode: host
+            - target: 25577
+              published: 25565
+              protocol: udp
+              mode: host
         environment:
             VELOCITY_VERSION: '3.4.0-SNAPSHOT'
             TYPE: 'VELOCITY'
