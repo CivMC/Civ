@@ -595,7 +595,7 @@ hacks:
     deoxidise: true
     # Chance to oxidise copper one level.
     # Unoxidised copper will oxidise at 75% of this level.
-    damage: 0.02
+    damage: 0.0175
   FasterHorses:
     enabled: true
     minSpeed: 0.1125
