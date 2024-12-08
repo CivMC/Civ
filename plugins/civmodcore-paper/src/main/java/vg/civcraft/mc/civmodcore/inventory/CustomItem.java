@@ -6,8 +6,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class CustomItem {
 
@@ -46,5 +51,9 @@ public class CustomItem {
         } else {
             return null;
         }
+    }
+
+    public static Set<String> getKeys() {
+        return Collections.unmodifiableSet(customItems.keySet());
     }
 }
