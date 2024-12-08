@@ -23,6 +23,6 @@ public class VirtualRewarder implements Rewarder {
         player.sendMessage(Component.empty().color(EssenceCommand.NICE_BLUE)
             .append(Component.text("Use "))
             .append(Component.text("/essence withdraw", NamedTextColor.AQUA))
-            .append(Component.text(" to claim your essence.")));
+            .append(Component.text(" to materialise all of your essence as an item.")));
     }
 }
