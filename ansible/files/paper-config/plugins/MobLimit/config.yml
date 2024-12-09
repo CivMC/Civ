@@ -1,0 +1,14 @@
+chunk: -1
+global: -1
+reasons:
+  breeding:
+    pig:
+      dumb: true
+    cow:
+      dumb: true
+    mooshroom:
+      dumb: true
+    sheep:
+      dumb: true
+    chicken:
+      dumb: true
