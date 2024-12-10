@@ -16,6 +16,7 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.LuckPermsIntegration;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class DeleteGroup extends BaseCommandMiddle {
@@ -49,9 +50,14 @@ public class DeleteGroup extends BaseCommandMiddle {
                     //if it has been less than 15 seconds
                     if (now.getTime() < Long.parseLong(entry[1])) {
                         //good to go delete the group
-                        if (gm.deleteGroup(gD.getName()))
+                        if (gm.deleteGroup(gD.getName())) {
                             p.sendMessage(Component.text("Group was successfully deleted.").color(NamedTextColor.GREEN));
-                        else
+                            
+                            // Remove LuckPerms permissions for all members
+                            for (UUID memberId : gD.getAllMembers()) {
+                                LuckPermsIntegration.removePlayerFromGroup(gD.getName(), memberId);
+                            }
+                        } else
                             p.sendMessage(Component.text("Group is now disciplined. Check back later to see if group is deleted.").color(NamedTextColor.GREEN));
 
                         confirmDeleteGroup.remove(uuid);

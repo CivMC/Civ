@@ -20,6 +20,7 @@ import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionHandler;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
+import vg.civcraft.mc.namelayer.permission.LuckPermsIntegration;
 
 public class GroupManager {
 
@@ -139,15 +140,31 @@ public class GroupManager {
     }
 
     private int internalCreateGroup(Group group, boolean savetodb, String name, UUID owner, String password) {
+        NameLayerPlugin.getInstance().getLogger().info("Creating group: " + name + ", saveToDb: " + savetodb);
         int id;
         if (savetodb) {
+            // First create the LuckPerms permission node
+            NameLayerPlugin.getInstance().getLogger().info("Creating LuckPerms permission for group: " + name);
+            LuckPermsIntegration.createGroupPermission(name);
+
+            // Then create the group in database
             id = groupManagerDao.createGroup(name, owner, password);
+            NameLayerPlugin.getInstance().getLogger().info("Group creation returned ID: " + id);
             if (id > -1) {
                 initiateDefaultPerms(id); // give default perms to a newly create group
                 GroupManager.getGroup(id); // force a recache from DB.
+                
+                // Explicitly add owner to LuckPerms after group creation
+                if (owner != null) {
+                    NameLayerPlugin.getInstance().getLogger().info("Adding owner " + owner + " to group permission");
+                    LuckPermsIntegration.addPlayerToGroup(name, owner);
+                }
+            } else {
+                NameLayerPlugin.getInstance().getLogger().warning("Failed to create group: " + name + " - received invalid ID");
             }
         } else {
             id = group.getGroupId();
+            NameLayerPlugin.getInstance().getLogger().info("Using existing group ID: " + id);
         }
         return id;
     }
@@ -190,6 +207,10 @@ public class GroupManager {
         group.setDisciplined(true);
         group.setValid(false);
         if (savetodb) {
+            // Remove all members' LuckPerms permissions before deleting
+            for (UUID member : group.getAllMembers()) {
+                LuckPermsIntegration.removePlayerFromGroup(groupName, member);
+            }
             groupManagerDao.deleteGroup(groupName);
         }
         return true;
@@ -282,9 +303,23 @@ public class GroupManager {
 
                     @Override
                     public void run() {
-                        groupManagerDao.mergeGroup(group.getName(), toMerge.getName());
+                        // Get all members of the group being merged before we merge
+                        List<UUID> membersToMerge = new ArrayList<>(toMerge.getAllMembers());
+                        String oldGroupName = toMerge.getName();
+                        
+                        groupManagerDao.mergeGroup(group.getName(), oldGroupName);
                         // At this point, at the DB level all non-overlap members are in target group, name is reset to target,
                         // unique group header record is removed, and faction_id all point to new name.
+
+                        // Handle LuckPerms permissions
+                        // Remove old group permission from all members of the merged group
+                        for (UUID member : membersToMerge) {
+                            LuckPermsIntegration.removePlayerFromGroup(toMerge.getName(), member);
+                            // Add the new group permission if they're not already a member
+                            if (!group.isMember(member)) {
+                                LuckPermsIntegration.addPlayerToGroup(group.getName(), member);
+                            }
+                        }
 
                         // We handle supergroup right here right now; does its own mercury message to update in cache.
                         if (toMerge.getSuperGroup() != null) {

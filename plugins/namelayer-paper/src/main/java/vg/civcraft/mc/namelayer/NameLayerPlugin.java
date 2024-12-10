@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.namelayer.permission.LuckPermsIntegration;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.command.CommandHandler;
@@ -61,6 +62,9 @@ public class NameLayerPlugin extends ACivMod {
                 defaultGroupHandler = new DefaultGroupHandler();
                 autoAcceptHandler = new AutoAcceptHandler(groupManagerDao.loadAllAutoAccept());
                 handle = new CommandHandler(this);
+                
+                // Initialize LuckPerms integration
+                LuckPermsIntegration.initialize();
             }
         }
     }
