@@ -3,6 +3,7 @@ package com.untamedears.itemexchange.rules.modifiers;
 import co.aikar.commands.annotation.CommandAlias;
 import com.google.common.base.Strings;
 import com.untamedears.itemexchange.commands.SetCommand;
+import com.untamedears.itemexchange.rules.interfaces.DisplayContext;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import java.util.ArrayList;
@@ -133,7 +134,9 @@ public final class BookModifier extends ModifierData {
     }
 
     @Override
-    public List<String> getDisplayInfo() {
+    public List<String> getDisplayInfo(
+        final @NotNull DisplayContext context
+    ) {
         final var lines = new ArrayList<String>(2);
         if (hasAuthor()) {
             lines.add(ChatColor.DARK_AQUA + "Author: " + ChatColor.GRAY + getAuthor());
