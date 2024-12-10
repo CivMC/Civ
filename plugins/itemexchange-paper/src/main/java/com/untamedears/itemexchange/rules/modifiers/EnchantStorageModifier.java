@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
+import com.untamedears.itemexchange.rules.interfaces.DisplayContext;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.NBTEncodings;
@@ -84,7 +85,9 @@ public final class EnchantStorageModifier extends ModifierData {
     }
 
     @Override
-    public List<String> getDisplayInfo() {
+    public List<String> getDisplayInfo(
+        final @NotNull DisplayContext context
+    ) {
         List<String> info = Lists.newArrayList();
         for (Map.Entry<Enchantment, Integer> entry : getEnchants().entrySet()) {
             String name = EnchantUtils.getEnchantNiceName(entry.getKey());

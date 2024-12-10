@@ -9,6 +9,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -310,6 +311,36 @@ public final class ChatUtils {
     public static Component upgradeLegacyString(@Nullable final String string) {
         return string == null ? null : string.isEmpty() ? Component.empty() :
             LegacyComponentSerializer.legacySection().deserialize(string);
+    }
+
+    /**
+     * Creates a new component builder that is explicitly non-italic, good for item display components like display
+     * names and lore.
+     */
+    public static @NotNull TextComponent.Builder nonItalic() {
+        return Component.text()
+            .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+    }
+
+    /**
+     * Creates a new component builder that is explicitly non-italic, good for item display components like display
+     * names and lore.
+     */
+    public static @NotNull TextComponent.Builder nonItalic(
+        final @NotNull String content
+    ) {
+        return nonItalic().content(content);
+    }
+
+    /**
+     * Creates a new component builder that is explicitly non-italic, good for item display components like display
+     * names and lore.
+     */
+    public static @NotNull TextComponent.Builder nonItalic(
+        final @NotNull String content,
+        final @NotNull TextColor color
+    ) {
+        return nonItalic(content).color(color);
     }
 
     /**

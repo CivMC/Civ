@@ -12,7 +12,9 @@ import com.untamedears.itemexchange.rules.modifiers.EnchantModifier;
 import com.untamedears.itemexchange.rules.modifiers.EnchantStorageModifier;
 import com.untamedears.itemexchange.rules.modifiers.LoreModifier;
 import com.untamedears.itemexchange.rules.modifiers.PotionModifier;
+import com.untamedears.itemexchange.rules.modifiers.ReceiptModifier;
 import com.untamedears.itemexchange.rules.modifiers.RepairModifier;
+import com.untamedears.itemexchange.utility.ReceiptUtils;
 import java.util.List;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
@@ -52,8 +54,11 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
         modifiers.registerModifier(DamageableModifier.TEMPLATE); // 500
         modifiers.registerModifier(RepairModifier.TEMPLATE); // 600
         modifiers.registerModifier(BookModifier.TEMPLATE); // 1000
+        modifiers.registerModifier(ReceiptModifier.TEMPLATE); // Short.MAX
         registerListener(new ItemExchangeListener());
         this.glues.forEach(DependencyGlue::registerGlue);
+        ReceiptUtils.init();
+        ItemExchangeSettings.init();
     }
 
     @Override

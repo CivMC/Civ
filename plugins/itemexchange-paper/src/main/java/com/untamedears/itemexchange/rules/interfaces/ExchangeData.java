@@ -2,6 +2,7 @@ package com.untamedears.itemexchange.rules.interfaces;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
 import vg.civcraft.mc.civmodcore.utilities.Validation;
 
@@ -16,7 +17,9 @@ public interface ExchangeData extends Validation, NBTSerializable {
      *
      * @return Returns any display information.
      */
-    default List<String> getDisplayInfo() {
+    default List<String> getDisplayInfo(
+        final @NotNull DisplayContext context
+    ) {
         return new ArrayList<>(0);
     }
 

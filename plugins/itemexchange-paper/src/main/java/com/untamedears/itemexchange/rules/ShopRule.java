@@ -7,6 +7,7 @@ import com.google.common.collect.Sets;
 import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.events.BlockInventoryRequestEvent;
+import com.untamedears.itemexchange.rules.interfaces.DisplayContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -86,11 +87,11 @@ public final class ShopRule implements Validation {
         }
         player.sendMessage(String.format("%s(%d/%d) exchanges present.",
             ChatColor.YELLOW, this.currentTradeIndex + 1, this.trades.size()));
-        for (String line : trade.getInput().getDisplayInfo()) {
+        for (String line : trade.getInput().getDisplayInfo(DisplayContext.CHAT_OUTPUT)) {
             player.sendMessage(line);
         }
         if (trade.getOutput() != null) {
-            for (String line : trade.getOutput().getDisplayInfo()) {
+            for (String line : trade.getOutput().getDisplayInfo(DisplayContext.CHAT_OUTPUT)) {
                 player.sendMessage(line);
             }
             PLUGIN.debug("[ShopRule] Calculating stock.");
