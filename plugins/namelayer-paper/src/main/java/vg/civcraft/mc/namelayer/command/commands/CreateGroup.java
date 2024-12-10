@@ -17,6 +17,7 @@ import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.RunnableOnGroup;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.LuckPermsIntegration;
 
 public class CreateGroup extends BaseCommandMiddle {
 
@@ -80,11 +81,18 @@ public class CreateGroup extends BaseCommandMiddle {
                 if (p != null) {
                     if (g.getGroupId() == -1) { // failure
                         p.sendMessage(ChatColor.RED + "That group is already taken or creation failed.");
+                    } else {
+                        p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
+                        // Add LuckPerms integration
+                        LuckPermsIntegration.createGroupPermission(g.getName());
+                        LuckPermsIntegration.addPlayerToGroup(g.getName(), uuid);
                     }
-                    p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
                 } else {
                     NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group {0} creation complete resulting in group id: {1}",
                         new Object[]{g.getName(), g.getGroupId()});
+                    // Add LuckPerms integration even if player is offline
+                    LuckPermsIntegration.createGroupPermission(g.getName());
+                    LuckPermsIntegration.addPlayerToGroup(g.getName(), uuid);
                 }
             }
         }, false);

@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
+import vg.civcraft.mc.namelayer.permission.LuckPermsIntegration;
 
 public class Group {
 
@@ -58,6 +59,8 @@ public class Group {
             List<UUID> list = db.getAllMembers(name, permission);
             for (UUID uuid : list) {
                 players.put(uuid, permission);
+                // Ensure LuckPerms permissions are set for existing members
+                LuckPermsIntegration.addPlayerToGroup(name, uuid);
             }
         }
 
@@ -407,6 +410,9 @@ public class Group {
             db.addMember(uuid, name, type);
         }
         players.put(uuid, type);
+        
+        // Add LuckPerms permission
+        LuckPermsIntegration.addPlayerToGroup(name, uuid);
     }
 
     /**
@@ -423,6 +429,9 @@ public class Group {
             db.removeMember(uuid, name);
         }
         players.remove(uuid);
+        
+        // Remove LuckPerms permission
+        LuckPermsIntegration.removePlayerFromGroup(name, uuid);
     }
 
     public void removeAllMembers() {
@@ -430,6 +439,12 @@ public class Group {
     }
 
     public void removeAllMembers(boolean savetodb) {
+        // Remove LuckPerms permissions for all members before clearing
+        List<UUID> members = new ArrayList<>(players.keySet());
+        for (UUID uuid : members) {
+            LuckPermsIntegration.removePlayerFromGroup(name, uuid);
+        }
+        
         if (savetodb) {
             db.removeAllMembers(this.name);
         }
