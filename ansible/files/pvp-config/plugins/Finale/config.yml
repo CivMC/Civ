@@ -187,7 +187,7 @@ armourModification:
     knockbackResistance: 0
   meteoricIronHelmet:
     key: meteoric_iron_helmet
-    armour: 3
+    armour: 4
     toughness: 2
     extraDurabilityHits: 1
   meteoricIronChestplate:
@@ -202,7 +202,7 @@ armourModification:
     extraDurabilityHits: 1
   meteoricIronBoots:
     key: meteoric_iron_boots
-    armour: 3
+    armour: 4
     toughness: 2
     extraDurabilityHits: 1
 
