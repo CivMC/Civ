@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.untamedears.itemexchange.ItemExchangeListener;
 import com.untamedears.itemexchange.commands.SetCommand;
+import com.untamedears.itemexchange.rules.interfaces.DisplayContext;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ModifierHandler;
@@ -68,7 +69,9 @@ public final class GroupModifier extends ModifierData {
     }
 
     @Override
-    public List<String> getDisplayInfo() {
+    public List<String> getDisplayInfo(
+        final @NotNull DisplayContext context
+    ) {
         return List.of(isBroken() ?
             ChatColor.RED + "BROKEN GROUP MODIFIER" :
             "Group: " + this.groupName);
