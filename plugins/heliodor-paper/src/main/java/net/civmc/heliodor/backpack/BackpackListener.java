@@ -154,12 +154,6 @@ public class BackpackListener implements Listener {
         if (item == null || item.isEmpty()) {
             return false;
         }
-        List<Component> lore = item.lore();
-        if (lore != null && !lore.isEmpty()) {
-            if (PlainTextComponentSerializer.plainText().serialize(lore.getFirst()).equals("Compacted Item")) {
-                return true;
-            }
-        }
         switch (item.getType()) {
             case OBSIDIAN,
                 CRYING_OBSIDIAN,

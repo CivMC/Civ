@@ -42,7 +42,7 @@ public interface FactoryUpgrade {
 
     static List<CraftingRecipe> getRecipes(Plugin plugin) {
         ItemStack upgrade = FactoryUpgrade.createUpgrade();
-        upgrade.setAmount(4);
+        upgrade.setAmount(6);
         return List.of(
             new ShapedRecipe(new NamespacedKey(plugin, "factory_upgrade"), upgrade)
                 .shape("#c#", "#r#", "#f#")
