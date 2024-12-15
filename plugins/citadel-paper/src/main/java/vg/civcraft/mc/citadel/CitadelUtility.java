@@ -166,7 +166,7 @@ public class CitadelUtility {
             CitadelUtility.sendAndLog(player, ChatColor.RED,
                 type.getName() + " can not reinforce " + block.getType(),
                 block.getLocation());
-            return true;
+            return false;
         }
         // check if reinforcement is allowed in the current world
         if (!type.isAllowedInWorld(block.getWorld().getName())) {
