@@ -67,10 +67,10 @@ public class WeaponModificationListener implements Listener {
                 knockbackResistance = ItemUtil.getDefaultKnockbackResistance(is);
             }
 
-            im.removeAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE);
+            im.removeAttributeModifier(Attribute.KNOCKBACK_RESISTANCE);
             EquipmentSlotGroup group = is.getType().getEquipmentSlot().getGroup();
             if (knockbackResistance > 0) {
-                im.addAttributeModifier(Attribute.GENERIC_KNOCKBACK_RESISTANCE,
+                im.addAttributeModifier(Attribute.KNOCKBACK_RESISTANCE,
                     new org.bukkit.attribute.AttributeModifier(new NamespacedKey(Finale.getPlugin(), "knockback_resistance" + group),
                         knockbackResistance,
                         org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
@@ -78,16 +78,16 @@ public class WeaponModificationListener implements Listener {
                 );
             }
 
-            im.removeAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS);
-            im.addAttributeModifier(Attribute.GENERIC_ARMOR_TOUGHNESS,
+            im.removeAttributeModifier(Attribute.ARMOR_TOUGHNESS);
+            im.addAttributeModifier(Attribute.ARMOR_TOUGHNESS,
                 new org.bukkit.attribute.AttributeModifier(new NamespacedKey(Finale.getPlugin(), "armor_toughness_" + group),
                     toughness,
                     org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
                     group)
             );
 
-            im.removeAttributeModifier(Attribute.GENERIC_ARMOR);
-            im.addAttributeModifier(Attribute.GENERIC_ARMOR,
+            im.removeAttributeModifier(Attribute.ARMOR);
+            im.addAttributeModifier(Attribute.ARMOR,
                 new org.bukkit.attribute.AttributeModifier(new NamespacedKey(Finale.getPlugin(), "armor_" + group),
                     armour,
                     org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
@@ -101,16 +101,16 @@ public class WeaponModificationListener implements Listener {
         double adjustedAttackSpeed = weaponMod.getAttackSpeed(is);
 
         if (adjustedAttackSpeed != -1.0 || adjustedDamage != -1) {
-            im.removeAttributeModifier(Attribute.GENERIC_ATTACK_SPEED);
-            im.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED,
+            im.removeAttributeModifier(Attribute.ATTACK_SPEED);
+            im.addAttributeModifier(Attribute.ATTACK_SPEED,
                 new org.bukkit.attribute.AttributeModifier(KEY_ATTACK_SPEED,
                     adjustedAttackSpeed,
                     org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,
                     EquipmentSlotGroup.MAINHAND)
             );
 
-            im.removeAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE);
-            im.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE,
+            im.removeAttributeModifier(Attribute.ATTACK_DAMAGE);
+            im.addAttributeModifier(Attribute.ATTACK_DAMAGE,
                 new org.bukkit.attribute.AttributeModifier(KEY_ATTACK_DAMAGE,
                     adjustedDamage,
                     org.bukkit.attribute.AttributeModifier.Operation.ADD_NUMBER,

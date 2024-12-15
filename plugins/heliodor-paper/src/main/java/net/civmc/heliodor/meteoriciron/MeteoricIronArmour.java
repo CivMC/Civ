@@ -136,9 +136,9 @@ public interface MeteoricIronArmour {
         String prefix = "meteoric_iron_" + name;
         Multimap<Attribute, AttributeModifier> ams = HashMultimap.create();
         HeliodorPlugin plugin = JavaPlugin.getPlugin(HeliodorPlugin.class);
-        ams.put(Attribute.GENERIC_ARMOR, new AttributeModifier(new NamespacedKey(plugin, prefix + "_armour"), armour, AttributeModifier.Operation.ADD_NUMBER, group));
-        ams.put(Attribute.GENERIC_ARMOR_TOUGHNESS, new AttributeModifier(new NamespacedKey(plugin, prefix + "_toughness"), toughness, AttributeModifier.Operation.ADD_NUMBER, group));
-        ams.put(Attribute.GENERIC_MOVEMENT_SPEED, new AttributeModifier(new NamespacedKey(plugin, prefix + "_speed"), speed, AttributeModifier.Operation.MULTIPLY_SCALAR_1, group));
+        ams.put(Attribute.ARMOR, new AttributeModifier(new NamespacedKey(plugin, prefix + "_armour"), armour, AttributeModifier.Operation.ADD_NUMBER, group));
+        ams.put(Attribute.ARMOR_TOUGHNESS, new AttributeModifier(new NamespacedKey(plugin, prefix + "_toughness"), toughness, AttributeModifier.Operation.ADD_NUMBER, group));
+        ams.put(Attribute.MOVEMENT_SPEED, new AttributeModifier(new NamespacedKey(plugin, prefix + "_speed"), speed, AttributeModifier.Operation.MULTIPLY_SCALAR_1, group));
         meta.setAttributeModifiers(ams);
     }
 

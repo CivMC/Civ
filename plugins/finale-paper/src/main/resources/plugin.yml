@@ -4,7 +4,7 @@ author: Maxopoly
 version: ${version}
 depend: [CivModCore, ProtocolLib]
 softdepend: [CombatTagPlus, Citadel, Bastion]
-api-version: 1.21.1
+api-version: 1.21.3
 permissions:
     finale.op:
         default: op

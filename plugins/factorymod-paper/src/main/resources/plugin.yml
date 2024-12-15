@@ -9,4 +9,4 @@ permissions:
     default: true
   fm.op:
     default: op
-api-version: 1.21.1
+api-version: 1.21.3

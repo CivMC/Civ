@@ -3,7 +3,7 @@ version: ${version}
 main: com.programmerdan.minecraft.banstick.BanStick
 author: ProgrammerDan
 description: A plugin focused on better IP / VPN / CIDR tracking and justice delivery
-api-version: 1.21.1
+api-version: 1.21.3
 depend: [ CivModCore ]
 softdepend: [ IP-Check, NameLayer ]
 commands:

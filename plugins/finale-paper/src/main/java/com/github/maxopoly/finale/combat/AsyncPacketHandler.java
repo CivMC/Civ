@@ -120,7 +120,7 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
             PacketContainer packet = event.getPacket();
             Hand hand = packet.getHands().getValues().get(0);
             if (hand == Hand.MAIN_HAND && !isDigging.contains(attacker.getUniqueId())) {
-                Block targetBlock = attacker.getTargetBlock(4);
+                Block targetBlock = attacker.getTargetBlockExact(4);
                 if (targetBlock != null && targetBlock.getType() != Material.AIR) {
                     return;
                 }
