@@ -18,6 +18,9 @@ import java.util.TreeMap;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minecraft.world.entity.PositionMoveRotation;
+import net.minecraft.world.entity.Relative;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -223,14 +226,16 @@ public class HologramManager {
             PacketContainer fakeTeleport = protocolLib.createPacket(PacketType.Play.Server.ENTITY_TELEPORT);
             fakeTeleport.getIntegers().write(0, hologramId);
 
-            fakeTeleport.getDoubles()
-                .write(0, updated.getX())
-                .write(1, updated.getY())
-                .write(2, updated.getZ());
+            fakeTeleport.getModifier().withType(PositionMoveRotation.class)
+                .write(0,
+                    new PositionMoveRotation(
+                        new Vec3(updated.getX(), updated.getY(), updated.getZ()),
+                        new Vec3(0, 0, 0),
+                        0,
+                        0));
 
-            fakeTeleport.getBytes()
-                .write(0, (byte) 0)
-                .write(1, (byte) 0);
+            fakeTeleport.getModifier().withType(Set.class)
+                    .write(0, Relative.DELTA);
 
             fakeTeleport.getBooleans()
                 .write(0, false);
