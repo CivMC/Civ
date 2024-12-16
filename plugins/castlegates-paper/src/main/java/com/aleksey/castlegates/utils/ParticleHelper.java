@@ -26,13 +26,12 @@ public class ParticleHelper {
     }
 
     public static void spawn(Location location, Type type) {
-        final Particle particle = type == Type.Info ? Particle.ENCHANTMENT_TABLE : Particle.EXPLOSION_NORMAL;
-        final float offsetX = 0;
-        final float offsetY = 0;
-        final float offsetZ = 0;
-        final float speed = 0.5f;
-        final int particleCount = 80;
-
-        location.getWorld().spawnParticle(particle, location, particleCount, offsetX, offsetY, offsetZ, speed, null);
-    }
+        final Particle particle = type == Type.Info ? Particle.ENCHANT : Particle.EXPLOSION;
+		final float offsetX = 0;
+		final float offsetY = 0;
+		final float offsetZ = 0;
+		final float speed = 0.5f;
+		final int particleCount = 80;
+		location.getWorld().spawnParticle(particle, location, particleCount, offsetX, offsetY, offsetZ, speed, null);
+	}
 }

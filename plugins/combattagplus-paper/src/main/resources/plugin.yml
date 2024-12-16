@@ -3,8 +3,8 @@ description: Tag players in combat
 version: ${version}
 authors: [ Byteflux, Sudzzy ]
 main: net.minelink.ctplus.CombatTagPlus
-softdepend: [ BarAPI, PlayerHeads, WorldGuard, Factions, Towny, BossBarAPI, ActionBarAPI, mcMMO ]
-api-version: 1.20
+softdepend: [ BarAPI, PlayerHeads, WorldGuard, Factions, BossBarAPI, ActionBarAPI, mcMMO ]
+api-version: 1.21.3
 commands:
   combattagplus:
     aliases: [ ctplus, ct, combattag ]

@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -77,7 +77,7 @@ public class PlayerListener implements Listener {
             // satiation.
             Player p = (Player) e.getEntity();
 
-            double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+            double maxHealth = p.getAttribute(Attribute.MAX_HEALTH).getValue();
             @SuppressWarnings("resource")
             double spigotRegenExhaustion = ((CraftWorld) p
                 .getWorld()).getHandle().spigotConfig.regenExhaustion;
@@ -107,7 +107,7 @@ public class PlayerListener implements Listener {
         }
         if (e.getRegainReason() == RegainReason.EATING && manager.getPassiveRegenHandler().blockFoodHealthRegen()) {
             Player p = (Player) e.getEntity();
-            double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+            double maxHealth = p.getAttribute(Attribute.MAX_HEALTH).getValue();
             if (manager.isDebug()) {
                 StringBuilder alterHealth = new StringBuilder("EATING:" + p.getName());
                 alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
@@ -138,7 +138,7 @@ public class PlayerListener implements Listener {
     }
 
     private void fixAttackSpeed(Player p) {
-        AttributeInstance attr = p.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+        AttributeInstance attr = p.getAttribute(Attribute.ATTACK_SPEED);
         if (attr != null) {
             attr.setBaseValue(manager.getAttackSpeed());
         }

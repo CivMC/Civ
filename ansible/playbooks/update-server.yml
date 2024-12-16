@@ -2,6 +2,12 @@
   hosts: all
   become: true
 
+  vars:
+    servers:
+      - pvp
+      - paper
+      - proxy
+
   tasks:
     - name: Update Serer | Include Preflight
       include_tasks: ../tasks/preflight-checks.yml
@@ -33,7 +39,7 @@
         - ufw
       loop_control:
         loop_var: configure_task
-    
+
     - name: Update Server | Include Deployment Tasks
       include_tasks:
         file: '../tasks/deploy/{{deploy_task}}.yml'

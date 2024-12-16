@@ -8,8 +8,12 @@ settings:
     minecraft: &default_minecraft
       enabled: true
       whitelist: false
+      pvp_whitelist: false
+      pvp_hostname: 'pvp.civmc.net'
+      hostname: 'play.civmc.net'
       resources: &default_minecraft_resources
         memory: 40G
+        pvp_memory: 10G
     # Optional Stacks
     auth:
       enabled: false
@@ -30,9 +34,13 @@ settings:
     minecraft:
       <<: *default_minecraft
       whitelist: true
+      pvp_whitelist: true
+      pvp_hostname: 'pvp-test.civmc.net'
+      hostname: 'test.civmc.net'
       resources:
         <<: *default_minecraft_resources
-        memory: 8G
+        memory: 6G
+        pvp_memory: 7G
     auth:
       enabled: true # TODO: MOVE
     maven:

@@ -27,11 +27,11 @@ public final class TextUtil {
         }
         if (minutes > 0) {
             sb.append(minutes);
-            sb.append(" min ");
+            sb.append("m ");
         }
         if (seconds > 0) {
             sb.append(seconds);
-            sb.append(" sec");
+            sb.append("s");
         }
         return sb.toString().trim();
     }

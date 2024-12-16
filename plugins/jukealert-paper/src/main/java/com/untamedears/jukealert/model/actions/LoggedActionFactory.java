@@ -7,6 +7,7 @@ import com.untamedears.jukealert.model.actions.impl.BlockBreakAction;
 import com.untamedears.jukealert.model.actions.impl.BlockPlaceAction;
 import com.untamedears.jukealert.model.actions.impl.DestroyVehicleAction;
 import com.untamedears.jukealert.model.actions.impl.DismountEntityAction;
+import com.untamedears.jukealert.model.actions.impl.EditSignAction;
 import com.untamedears.jukealert.model.actions.impl.EmptyBucketAction;
 import com.untamedears.jukealert.model.actions.impl.EnterFieldAction;
 import com.untamedears.jukealert.model.actions.impl.EnterVehicleAction;
@@ -26,9 +27,9 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.jetbrains.annotations.NotNull;
 
 public class LoggedActionFactory {
 
@@ -42,8 +43,8 @@ public class LoggedActionFactory {
         registerInternalProviders();
     }
 
-    public void registerProvider(@Nonnull final String identifier,
-                                 @Nonnull final LoggedActionProvider provider) {
+    public void registerProvider(@NotNull final String identifier,
+                                 @NotNull final LoggedActionProvider provider) {
         final int internal = JukeAlert.getInstance().getDAO().getOrCreateActionID(Objects.requireNonNull(identifier));
         if (internal != -1) {
             this.providers.put(identifier, Objects.requireNonNull(provider));
@@ -51,8 +52,8 @@ public class LoggedActionFactory {
         }
     }
 
-    public LoggableAction produce(@Nonnull final Snitch snitch,
-                                  @Nonnull final String identifier,
+    public LoggableAction produce(@NotNull final Snitch snitch,
+                                  @NotNull final String identifier,
                                   final UUID player,
                                   final Location location,
                                   final long time,
@@ -61,7 +62,7 @@ public class LoggedActionFactory {
         return provider == null ? null : provider.get(Objects.requireNonNull(snitch), player, location, time, victim);
     }
 
-    public int getInternalID(@Nonnull final String name) {
+    public int getInternalID(@NotNull final String name) {
         return this.identifierToInternal.getInt(Objects.requireNonNull(name));
     }
 
@@ -132,6 +133,10 @@ public class LoggedActionFactory {
 
         registerProvider(OpenContainerAction.ID,
             (snitch, player, loc, time, victim) -> new OpenContainerAction(
+                time, snitch, player, loc, Material.valueOf(victim)));
+
+        registerProvider(EditSignAction.ID,
+            (snitch, player, loc, time, victim) -> new EditSignAction(
                 time, snitch, player, loc, Material.valueOf(victim)));
     }
 

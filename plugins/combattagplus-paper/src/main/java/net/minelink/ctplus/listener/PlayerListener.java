@@ -1,7 +1,6 @@
 package net.minelink.ctplus.listener;
 
 import java.util.UUID;
-import javax.annotation.Nullable;
 
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.Tag;
@@ -31,6 +30,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public final class PlayerListener implements Listener {
 

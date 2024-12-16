@@ -33,7 +33,6 @@
     * Factions 2.6 (MassiveCore 7.4)
     * FactionsUUID 1.6 (and HCFactions) by @drtshock
     * FactionsUUID 1.8 by @externo6
-* Supports Towny PVP permission
 * Works with BarAPI to show a boss bar counting down with the player's remaining combat timer
     * _These custom BarAPI builds by @vemacs are more compatible than the official ones:_
     * Spigot 1.8.0: [Download](http://ci.minelink.net/job/BarAPI/5/artifact/target/BarAPI.jar)

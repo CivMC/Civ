@@ -19,9 +19,7 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -35,7 +33,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 
 public final class AttrHider extends BasicHack {
 
@@ -87,12 +85,11 @@ public final class AttrHider extends BasicHack {
                                 final LeatherArmorMeta fakeLeatherMeta = (LeatherArmorMeta) fakeMeta;
                                 fakeLeatherMeta.setColor(baseLeatherMeta.getColor());
                             }
-                            if (meta instanceof PotionMeta) {
-                                final PotionMeta basePotionMeta = (PotionMeta) meta;
+                            if (meta instanceof PotionMeta basePotionMeta) {
                                 final PotionMeta fakePotionMeta = (PotionMeta) fakeMeta;
-                                final PotionData basePotion = basePotionMeta.getBasePotionData();
-                                final PotionData fakePotion = new PotionData(basePotion.getType());
-                                fakePotionMeta.setBasePotionData(fakePotion);
+                                final PotionType basePotion = basePotionMeta.getBasePotionType();
+                                final PotionType fakePotion = basePotion;
+                                fakePotionMeta.setBasePotionType(fakePotion);
                             }
                             if (meta instanceof Damageable) {
                                 final Damageable fakeDamageable = (Damageable) fakeMeta;
@@ -102,7 +99,7 @@ public final class AttrHider extends BasicHack {
                                 for (Enchantment enchantment : fakeMeta.getEnchants().keySet()) {
                                     fakeMeta.removeEnchant(enchantment);
                                 }
-                                fakeMeta.addEnchant(Enchantment.DURABILITY, 1, true);
+                                fakeMeta.addEnchant(Enchantment.UNBREAKING, 1, true);
                             }
                             fakeItem.setItemMeta(fakeMeta);
                             slotItemPair.setSecond(fakeItem); // Set item
@@ -180,7 +177,7 @@ public final class AttrHider extends BasicHack {
                     }
                     final PacketContainer cloned = packet.deepClone();
                     List<PlayerInfoData> newInfos = new ArrayList<>();
-                    List<PlayerInfoData> oldInfos = cloned.getPlayerInfoDataLists().read(0);
+                    List<PlayerInfoData> oldInfos = cloned.getPlayerInfoDataLists().read(1);
                     for (PlayerInfoData oldInfo : oldInfos) {
                         if (oldInfo  == null) continue;
                         int latency = oldInfo.getLatency();
@@ -193,12 +190,16 @@ public final class AttrHider extends BasicHack {
                         else if (latency < 1000) latency = 800;
                         else latency = 1000;
                         newInfos.add(new PlayerInfoData(
-                            oldInfo.getProfile(),
+                            oldInfo.getProfileId(),
                             latency,
+                            oldInfo.isListed(),
                             oldInfo.getGameMode(),
-                            oldInfo.getDisplayName()));
-                    }
-                    cloned.getPlayerInfoDataLists().write(0, newInfos);
+                            oldInfo.getProfile(),
+                            oldInfo.getDisplayName(),
+                            oldInfo.getRemoteChatSessionData()
+                        ));
+					}
+					cloned.getPlayerInfoDataLists().write(1, newInfos);
                     // The packet data is shared between events, but the event
                     // instance is exclusive to THIS sending of the packet
                     event.setPacket(cloned);

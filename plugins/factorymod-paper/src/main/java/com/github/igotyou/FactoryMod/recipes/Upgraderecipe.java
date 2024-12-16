@@ -50,7 +50,7 @@ public class Upgraderecipe extends InputRecipe {
         ItemStack res = ((InputRecipe) egg.getRecipes().get(0)).getOutputRepresentation(null, null).get(0);
         res.setAmount(1);
         ItemMeta im = res.getItemMeta();
-        im.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
+        im.addEnchant(Enchantment.SHARPNESS, 1, true);
         im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         res.setItemMeta(im);
         ItemUtils.setDisplayName(res, name);
@@ -70,7 +70,7 @@ public class Upgraderecipe extends InputRecipe {
         LinkedList<ItemStack> result = new LinkedList<>();
         ItemMap inventoryMap = new ItemMap(i);
         ItemMap possibleRuns = new ItemMap();
-        for (Entry<ItemStack, Integer> entry : input.getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : input.getAllItems().entrySet()) {
             if (inventoryMap.getAmount(entry.getKey()) != 0) {
                 possibleRuns.addItemAmount(
                     entry.getKey(),

@@ -1,0 +1,52 @@
+# if disabled, will only keep meteoric iron stuff
+enable_heliodor: true
+
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  user: 'root'
+  password: 'root'
+  host: 'localhost'
+  port: 3306
+  database: 'database'
+  poolsize: 5
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
+
+meteoric_iron_vein:
+  enabled: false
+  world: world
+  # number of minutes between vein spawns
+  frequency_minutes: 1
+  # the maximum number of undiscovered veins in the world at any time
+  # discovering a vein with a heliodor pickaxe will discard it
+  # for the purposes of counting towards this value
+  max_spawns: 1
+  # the positions that this vein should spawn around, e.g. nether portals
+  positions: []
+  # the minimum distance from a nether portal the centre of a vein should spawn from
+  min_position_radius: 1
+  # the maximum distance from a nether portal the centre of a vein should spawn from
+  max_position_radius: 1
+  # the radius of the sphere around the centre of the vein where ores can spawn
+  spawn_radius: 1
+  # the minimum number of ores in one vein
+  min_ore: 1
+  # the maximum number of ores in one vein
+  max_ore: 1
+  # readings are picked up if the EDGE of a vein is within X blocks
+  # distance for heliodor pickaxes to pick up a 'low' reading
+  # low readings ignore y levels
+  low_distance: 1
+  # distance for heliodor pickaxes to pick up a 'high' reading
+  high_distance: 1
+  # when the vein is generated, this is the maximum number of blocks to randomly offset the vein by
+  # when it is measured by a heliodor pickaxe, to make triangulation strategies less useful
+  veinfinder_inaccuracy: 1
+  # maximum number of blocks below the highest possible generation point (so the highest stone, not dirt)
+  # that the top of the vein (centre + radius) should reach
+  # at 0, the vein would just touch the dirt layer of the surface
+  # actual buried amount is randomly uniformly generated between 0 and this
+  max_bury: 1
+  # if there are less than this many stone blocks at a prospective vein spawn location, the location will be skipped
+  min_blocks: 1

@@ -15,6 +15,7 @@ import org.bukkit.block.data.type.PointedDripstone;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.activity.ActivityMap;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDestructionEvent;
@@ -74,13 +75,16 @@ public final class ReinforcementLogic {
         }
     }
 
-    public static float getDamageApplied(Reinforcement reinforcement) {
+    public static float getDamageApplied(Reinforcement reinforcement, Material type, ItemStack item) {
         float damageAmount = 1.0F;
         if (!reinforcement.isMature()) {
             double timeExisted = System.currentTimeMillis() - reinforcement.getCreationTime();
             double progress = timeExisted / reinforcement.getType().getMaturationTime();
             damageAmount /= progress;
             damageAmount *= reinforcement.getType().getMaturationScale();
+        }
+        if (type != null && item != null) {
+            damageAmount *= Citadel.getInstance().getMultiplier().getMultiplier(type, item);
         }
         damageAmount *= getDecayDamage(reinforcement);
         return damageAmount;
@@ -249,6 +253,14 @@ public final class ReinforcementLogic {
             case HANGING_ROOTS: {
                 return block.getRelative(BlockFace.UP);
             }
+            case COPPER_DOOR:
+            case EXPOSED_COPPER_DOOR:
+            case OXIDIZED_COPPER_DOOR:
+            case WEATHERED_COPPER_DOOR:
+            case WAXED_COPPER_DOOR:
+            case WAXED_EXPOSED_COPPER_DOOR:
+            case WAXED_OXIDIZED_COPPER_DOOR:
+            case WAXED_WEATHERED_COPPER_DOOR:
             case ACACIA_DOOR:
             case BIRCH_DOOR:
             case DARK_OAK_DOOR:
@@ -257,7 +269,10 @@ public final class ReinforcementLogic {
             case JUNGLE_DOOR:
             case WARPED_DOOR:
             case CRIMSON_DOOR:
-            case OAK_DOOR: {
+            case OAK_DOOR:
+            case CHERRY_DOOR:
+            case BAMBOO_DOOR:
+            case MANGROVE_DOOR: {
                 if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
                     // block is upper half of a door
                     return block.getRelative(BlockFace.DOWN);

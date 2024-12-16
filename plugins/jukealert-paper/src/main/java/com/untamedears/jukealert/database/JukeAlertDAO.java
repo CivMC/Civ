@@ -33,8 +33,6 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
@@ -43,6 +41,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
@@ -59,7 +59,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 
     public static final int NOT_YET_INSERTED_ID = -1;
 
-    public JukeAlertDAO(@Nonnull final ManagedDatasource datasource) {
+    public JukeAlertDAO(@NotNull final ManagedDatasource datasource) {
         super(CivLogger.getLogger(JukeAlertDAO.class), Objects.requireNonNull(datasource));
     }
 
@@ -262,7 +262,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
     // ------------------------------------------------------------
 
     @Override
-    public void insert(@Nonnull final Snitch snitch) {
+    public void insert(@NotNull final Snitch snitch) {
         if (snitch.getId() != NOT_YET_INSERTED_ID) {
             this.logger.warning("Skipping snitch insert of [" + snitch + "] because its id is already set :s");
             return;
@@ -299,7 +299,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
     }
 
     @Override
-    public void update(@Nonnull final Snitch snitch) {
+    public void update(@NotNull final Snitch snitch) {
         if (snitch.getId() == NOT_YET_INSERTED_ID) {
             this.logger.warning("Skipping snitch update of [" + snitch + "] because its id is invalid!");
             return;
@@ -324,7 +324,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
     }
 
     @Override
-    public void delete(@Nonnull final Snitch snitch) {
+    public void delete(@NotNull final Snitch snitch) {
         if (snitch.getId() == NOT_YET_INSERTED_ID) {
             this.logger.warning("Skipping snitch deletion of [" + snitch + "] because its id is invalid!");
             return;
@@ -340,7 +340,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
     }
 
     @Override
-    public void loadAll(@Nonnull final Consumer<Snitch> callback) {
+    public void loadAll(@NotNull final Consumer<Snitch> callback) {
         final SnitchTypeManager snitchTypeManager = JukeAlert.getInstance().getSnitchConfigManager();
         final SnitchManager snitchManager = JukeAlert.getInstance().getSnitchManager();
         final WorldIDManager worldIDManager = CivModCorePlugin.getInstance().getWorldIdManager();
@@ -406,7 +406,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
     private Map<Location, Snitch> INTERNAL_snitchMap;
 
     @SuppressWarnings("unchecked")
-    @Nonnull
+    @NotNull
     public Stream<Snitch> loadSnitchesByGroupID(@Nullable final IntList groupIDs) {
         if (CollectionUtils.isEmpty(groupIDs)) {
             return Stream.empty();
@@ -454,7 +454,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
     // Actions
     // ------------------------------------------------------------
 
-    public int getOrCreateActionID(@Nonnull final String name) {
+    public int getOrCreateActionID(@NotNull final String name) {
         Objects.requireNonNull(name);
         try (final Connection connection = this.db.getConnection();
              final PreparedStatement statement = connection.prepareStatement(
@@ -499,7 +499,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
      * @param allowedActionAge The maximum allowed age (as a UNIX timestamp) for actions.
      * @param actionLimit      The maximum number of actions to load.
      */
-    public List<LoggableAction> loadLogs(@Nonnull final Snitch snitch,
+    public List<LoggableAction> loadLogs(@NotNull final Snitch snitch,
                                          final long allowedActionAge,
                                          final int actionLimit) {
         final int snitchId = snitch.getId();
@@ -551,8 +551,8 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
      * @return Returns the snitch log's new database ID.
      */
     public int insertLog(final int actionTypeID,
-                         @Nonnull final Snitch snitch,
-                         @Nonnull final LoggedActionPersistence actionData) {
+                         @NotNull final Snitch snitch,
+                         @NotNull final LoggedActionPersistence actionData) {
         try (final Connection connection = this.db.getConnection();
              final PreparedStatement statement = connection.prepareStatement(
                  "INSERT INTO ja_snitch_entries (snitch_id,type_id,uuid,x,y,z,creation_time,victim) "
@@ -584,7 +584,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
      *
      * @param log The log to delete.
      */
-    public void deleteLog(@Nonnull final LoggableAction log) {
+    public void deleteLog(@NotNull final LoggableAction log) {
         if (log.getID() == NOT_YET_INSERTED_ID) {
             return;
         }
@@ -603,7 +603,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
      *
      * @param snitch The snitch to delete all logs for.
      */
-    public void deleteAllLogsForSnitch(@Nonnull final Snitch snitch) {
+    public void deleteAllLogsForSnitch(@NotNull final Snitch snitch) {
         final int snitchID = snitch.getId();
         if (snitchID == NOT_YET_INSERTED_ID) {
             throw new IllegalArgumentException("Cannot delete logs for unknown snitch!");
@@ -625,7 +625,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
      * @param allowedSnitchAge The maximum allowed age (as a UNIX timestamp), all actions dated before this will be
      *                         deleted.
      */
-    public void deleteOldLogsForSnitch(@Nonnull final Snitch snitch,
+    public void deleteOldLogsForSnitch(@NotNull final Snitch snitch,
                                        final long allowedSnitchAge) {
         final int snitchID = snitch.getId();
         if (snitchID == NOT_YET_INSERTED_ID) {

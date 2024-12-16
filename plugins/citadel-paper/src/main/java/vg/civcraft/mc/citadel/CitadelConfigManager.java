@@ -57,7 +57,11 @@ public class CitadelConfigManager extends ConfigParser {
     private long activityDefault;
     private List<String> activityWorlds;
 
+    private int reinforcementBreaksPerToolDamage;
+
     private Map<UUID, WorldBorderBuffers> buffers;
+
+    private ReinforcementMultiplier multiplier;
 
     public CitadelConfigManager(ACivMod plugin) {
         super(plugin);
@@ -105,6 +109,14 @@ public class CitadelConfigManager extends ConfigParser {
 
     public Map<UUID, WorldBorderBuffers> getWorldBorderBuffers() {
         return Collections.unmodifiableMap(this.buffers);
+    }
+
+    public ReinforcementMultiplier getMultiplier() {
+        return multiplier;
+    }
+
+    public int getReinforcementBreaksPerToolDamage() {
+        return reinforcementBreaksPerToolDamage;
     }
 
     private ReinforcementEffect getReinforcementEffect(ConfigurationSection config) {
@@ -178,6 +190,8 @@ public class CitadelConfigManager extends ConfigParser {
         activityRadiusRefreshAfterMs = config.getLong("activity-radius-refresh-after-ms", 3 * 60L * 60L * 1000L);
         activityDefault = config.getLong("activity-default", System.currentTimeMillis());
         activityWorlds = config.getStringList("activity-map-worlds");
+        multiplier = ReinforcementMultiplier.parse(config.getMapList("reinforcementBreakMultipliers"));
+        reinforcementBreaksPerToolDamage = config.getInt("reinforcementBreaksPerToolDamage");
 
         parseWorldBorderBuffers(config.getConfigurationSection("world-border-buffers"));
 

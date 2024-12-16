@@ -44,43 +44,33 @@ public class RevokeInvite extends BaseCommandMiddle {
             return;
         }
 
-        //check invitee has invite
-        if (group.getInvite(uuid) == null) {
-            if (group.isMember(uuid)) {
-                p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " is already part of that group, "
-                    + "use /remove to remove them.");
-                return;
-            }
-            p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " does not have an invite to that group.");
-            return;
-        }
-
-        //get invitee PlayerType
-        PlayerType pType = group.getInvite(uuid);
-
         PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
         if (t == null) {
             p.sendMessage(ChatColor.RED + "You are not on that group.");
             return;
         }
-        boolean allowed = false;
-        switch (pType) { // depending on the type the executor wants to add the player to
-            case MEMBERS:
-                allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MEMBERS"));
-                break;
-            case MODS:
-                allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MODS"));
-                break;
-            case ADMINS:
-                allowed = gm.hasAccess(group, executor, PermissionType.getPermission("ADMINS"));
-                break;
-            case OWNER:
-                allowed = gm.hasAccess(group, executor, PermissionType.getPermission("OWNER"));
-                break;
-            default:
-                allowed = false;
-                break;
+
+        //get invitee PlayerType
+        PlayerType pType = group.getInvite(uuid);
+        if (pType == null) {
+            p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " does not have an invite to that group.");
+            return;
         }
+
+        //check invitee has invite
+        if (group.isMember(uuid)) {
+            p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(uuid) + " is already part of that group, "
+                + "use /remove to remove them.");
+            return;
+        }
+
+        boolean allowed = switch (pType) { // depending on the type the executor wants to add the player to
+            case MEMBERS -> gm.hasAccess(group, executor, PermissionType.getPermission("MEMBERS"));
+            case MODS -> gm.hasAccess(group, executor, PermissionType.getPermission("MODS"));
+            case ADMINS -> gm.hasAccess(group, executor, PermissionType.getPermission("ADMINS"));
+            case OWNER -> gm.hasAccess(group, executor, PermissionType.getPermission("OWNER"));
+            default -> false;
+        };
         if (!allowed) {
             p.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
             return;

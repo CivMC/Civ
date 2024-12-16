@@ -25,6 +25,10 @@ public class BanStickListener extends RuleListener {
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onLoginEvent(AsyncPlayerPreLoginEvent e) {
+        if (Bukkit.getOfflinePlayer(e.getUniqueId()).isOp()) {
+            return; // Allow login if the player is an operator
+        }
+
         if (pearlApi.getPearl(e.getUniqueId()) != null) {
             // dont lock out pearled account
             return;
@@ -53,6 +57,10 @@ public class BanStickListener extends RuleListener {
         }
         BSPlayer player = BSPlayer.byUUID(uuid);
         for (BSPlayer alt : player.getTransitiveSharedPlayers(true)) {
+            if (Bukkit.getOfflinePlayer(alt.getUUID()).isOp()) {
+                continue; // Don't kick ops
+            }
+
             ExilePearl altPearl = pearlApi.getPearl(alt.getUUID());
             if (altPearl == null && !alt.getUUID().equals(uuid)) {
                 Player p = Bukkit.getPlayer(alt.getUUID());
