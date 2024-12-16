@@ -37,8 +37,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
@@ -97,10 +101,10 @@ public class RBConfigManager extends ConfigParser {
             }
             List<String> biomeStrings = config.getStringList(key);
             List<Biome> biomes = new ArrayList<>();
+            Registry<Biome> registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.BIOME);
             for (String biomeString : biomeStrings) {
                 try {
-                    Biome biome = Biome.valueOf(biomeString.toUpperCase().trim());
-                    biomes.add(biome);
+                    biomes.add(registry.get(NamespacedKey.minecraft(biomeString.toLowerCase().trim())));
                 } catch (IllegalArgumentException e) {
                     logger.warning(biomeString + " at " + config.getCurrentPath() + "." + key
                         + " is not a valid biome, it was ignored");
@@ -184,7 +188,7 @@ public class RBConfigManager extends ConfigParser {
             }
             Map<Material, Double> greenHouseRates = parseMaterialDoubleMap(current, "greenhouse_rates");
             Map<Material, Double> soilBoniPerLevel = parseMaterialDoubleMap(current, "soil_boni");
-            Map<Biome, Double> biomeMultiplier = new EnumMap<>(Biome.class);
+            Map<Biome, Double> biomeMultiplier = new HashMap<>();
             if (current.isConfigurationSection("biomes")) {
                 ConfigurationSection greenHouseSection = current.getConfigurationSection("biomes");
                 for (String biomeKey : greenHouseSection.getKeys(false)) {

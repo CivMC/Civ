@@ -22,6 +22,8 @@ public class CivChat2SettingsManager {
     private DisplayLocationSetting chatGroupLocation;
     private LongSetting chatUnmuteTimer;
     private EnumSetting<KillMessageFormat> killMessageFormat;
+    private BooleanSetting showAFKStatus;
+    private DisplayLocationSetting afkStatusLocation;
 
     public CivChat2SettingsManager() {
         initSettings();
@@ -65,6 +67,10 @@ public class CivChat2SettingsManager {
 
         killMessageFormat = new EnumSetting<>(CivChat2.getInstance(), KillMessageFormat.WITH, "Kill Message Format", "killMessageFormat", new ItemStack(Material.WRITABLE_BOOK), "Choose your kill message format", true, KillMessageFormat.class);
         PlayerSettingAPI.registerSetting(killMessageFormat, menu);
+
+        afkStatusLocation = new DisplayLocationSetting(CivChat2.getInstance(), DisplayLocationSetting.DisplayLocation.SIDEBAR,
+            "AFK Status Location", "afkStatusLocation", new ItemStack(Material.ARROW), "the AFK status");
+        PlayerSettingAPI.registerSetting(afkStatusLocation, menu);
     }
 
     public LongSetting getGlobalChatMuteSetting() {
@@ -102,6 +108,10 @@ public class CivChat2SettingsManager {
     public KillMessageFormat getKillMessageFormat(UUID uuid) {
         return killMessageFormat.getValue(uuid);
     }
+
+    public boolean getShowAFKStatus(UUID uuid) {return showAFKStatus.getValue(uuid); }
+
+    public DisplayLocationSetting getAfkStatusLocation() { return afkStatusLocation; }
 
     public enum KillMessageFormat {
         FOR(

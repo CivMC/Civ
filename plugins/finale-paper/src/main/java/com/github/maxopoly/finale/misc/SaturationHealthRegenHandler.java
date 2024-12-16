@@ -101,7 +101,7 @@ public class SaturationHealthRegenHandler implements Runnable {
                 if (p.isDead() || p.getHealth() <= 0.0) {
                     continue;
                 }
-                double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+                double maxHealth = p.getAttribute(Attribute.MAX_HEALTH).getValue();
                 if (p.getFoodLevel() >= minimumFood && p.getHealth() < maxHealth) {
                     StringBuilder alterHealth = null;
 

@@ -1,19 +1,28 @@
 package vg.civcraft.mc.citadel.listener;
 
+import java.awt.*;
 import java.text.DecimalFormat;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.GameMode;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
@@ -178,6 +187,29 @@ public class ModeListener implements Listener {
             roundingFormat.format(rein.getHealth()), roundingFormat.format(rein.getType().getHealth()));
     }
 
+    public static Component formatHealthRgb(Reinforcement rein) {
+        double broken = rein.getHealth() / rein.getType().getHealth();
+        int slot = (int) (broken * 12);
+        TextColor colour = new TextColor[] {
+            TextColor.color(0xaa0000),
+            TextColor.color(0xaa1c00),
+            TextColor.color(0xaa3900),
+            TextColor.color(0xaa5500),
+            TextColor.color(0xaa7100),
+            TextColor.color(0xaa8e00),
+            TextColor.color(0xaaaa00),
+            TextColor.color(0x8eaa00),
+            TextColor.color(0x71aa00),
+            TextColor.color(0x55aa00),
+            TextColor.color(0x39aa00),
+            TextColor.color(0x68f84c),
+            TextColor.color(0x55ff00),
+        }[slot];
+        return Component.text(String.format("%s%% (%s/%s)",
+            commaFormat.format(rein.getHealth() / rein.getType().getHealth() * 100),
+            roundingFormat.format(rein.getHealth()), roundingFormat.format(rein.getType().getHealth())), colour);
+    }
+
     public static String formatProgress(long start, long timeNeeded, String text) {
         long timeTaken = System.currentTimeMillis() - start;
         timeTaken = Math.min(timeTaken, timeNeeded);
@@ -241,11 +273,26 @@ public class ModeListener implements Listener {
             AcidManager acidMan = Citadel.getInstance().getAcidManager();
             if (acidMan.isPossibleAcidBlock(e.getClickedBlock())) {
                 sb.append(ChatColor.GOLD);
-                long remainingTime = acidMan.getRemainingAcidMaturationTime(rein);
-                if (remainingTime == 0) {
-                    sb.append("Acid ready");
-                } else {
-                    sb.append(String.format("%sAcid block mature in %s", ChatColor.YELLOW, TextUtil.formatDuration(remainingTime, TimeUnit.MILLISECONDS)));
+                Map<BlockFace, Long> times = acidMan.getRemainingAcidMaturationTime(rein);
+                Block acidBlock = rein.getLocation().getBlock();
+                for (Map.Entry<BlockFace, Long> entry : times.entrySet()) {
+                    Reinforcement relativeReinforcement = ReinforcementLogic.getReinforcementProtecting(acidBlock.getRelative(entry.getKey()));
+                    if (relativeReinforcement != null) {
+                        if (!acidMan.canAcidBlock(rein.getType(), relativeReinforcement.getType())) {
+                            sb.append(String.format("\n%s%s acid will fail!", ChatColor.RED, entry.getKey()));
+                            continue;
+                        }
+                        if (acidMan.isPossibleAcidBlock(relativeReinforcement.getLocation().getBlock()) && acidMan.isAcidOnSameGroup(rein, relativeReinforcement)) {
+                            continue;
+                        }
+                        if (entry.getValue() == 0) {
+                            sb.append(String.format("\n%s%s acid ready", ChatColor.YELLOW, entry.getKey()));
+                            continue;
+                        }
+                        sb.append(String.format("\n%s%s acid will be ready in %s",
+                            ChatColor.YELLOW, entry.getKey(),
+                            TextUtil.formatDuration(entry.getValue(), TimeUnit.MILLISECONDS)));
+                    }
                 }
             }
             if (e.getPlayer().hasPermission("citadel.admin")) {
@@ -273,6 +320,22 @@ public class ModeListener implements Listener {
             return;
         }
         showHolo(rein, player);
+    }
+
+    @EventHandler
+    public void on(PlayerQuitEvent event) {
+        HologramManager holoManager = Citadel.getInstance().getHologramManager();
+        if (holoManager != null) {
+            holoManager.deleteHolos(event.getPlayer());
+        }
+    }
+
+    @EventHandler
+    public void on(PlayerChangedWorldEvent event) {
+        HologramManager holoManager = Citadel.getInstance().getHologramManager();
+        if (holoManager != null) {
+            holoManager.deleteHolos(event.getPlayer());
+        }
     }
 
     private static void showHolo(Reinforcement rein, Player player) {

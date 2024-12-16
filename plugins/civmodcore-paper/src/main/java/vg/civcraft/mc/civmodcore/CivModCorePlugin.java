@@ -117,11 +117,7 @@ public class CivModCorePlugin extends ACivMod {
         this.chunkMetaManager = null;
         // Disconnect database
         if (this.database != null) {
-            try {
-                this.database.close();
-            } catch (SQLException error) {
-                warning("Was unable to close the database.", error);
-            }
+            this.database.close();
             this.database = null;
         }
         DialogManager.resetDialogs();

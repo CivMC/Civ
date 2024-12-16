@@ -34,7 +34,6 @@ import com.github.devotedmc.hiddenore.ToolConfig;
 import com.github.devotedmc.hiddenore.VeinConfig;
 import com.github.devotedmc.hiddenore.events.HiddenOreEvent;
 import com.github.devotedmc.hiddenore.events.HiddenOreGenerateEvent;
-import com.github.devotedmc.hiddenore.util.FakePlayer;
 
 /**
  * Heart of ore generation, handles breaks.
@@ -64,9 +63,11 @@ public class BlockBreakListener implements Listener {
     }
 
     public static void spoofBlockBreak(Location playerLoc, Block block, ItemStack inHand) {
-        HiddenOre.getPlugin().getBreakListener().doBlockBreak(
-            new BlockBreakEvent(block, new FakePlayer(playerLoc, inHand))
-        );
+        throw new UnsupportedOperationException("FakePlayer has been deleted because it's too much of a hassle." +
+            "Re-add it and uncomment the code in this function to get ore dusting.");
+//        HiddenOre.getPlugin().getBreakListener().doBlockBreak(
+//            new BlockBreakEvent(block, new FakePlayer(playerLoc, inHand))
+//        );
     }
 
     /**

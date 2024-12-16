@@ -200,7 +200,7 @@ public class PlayerListener implements Listener, Configurable {
         }
 
         if ((item.getType() == Material.PLAYER_HEAD || item.getType() == Material.ENDER_PEARL)
-            && item.getEnchantmentLevel(Enchantment.DURABILITY) != 0) {
+            && item.getEnchantmentLevel(Enchantment.UNBREAKING) != 0) {
             ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
             if (pearl == null || pearl.getFreedOffline()) {
                 return new ItemStack(Material.ENDER_PEARL, 1);
@@ -790,7 +790,7 @@ public class PlayerListener implements Listener, Configurable {
                 inv.all(Material.ENDER_PEARL).entrySet()) {
                 ItemStack newstack = entry.getValue();
                 int newstacknum = entry.getKey();
-                if (newstack.getEnchantmentLevel(Enchantment.DURABILITY) == 0) {
+                if (newstack.getEnchantmentLevel(Enchantment.UNBREAKING) == 0) {
                     if (stack != null) {
                         // don't keep a stack bigger than the previous one
                         if (newstack.getAmount() > stack.getAmount()) {
@@ -1045,7 +1045,7 @@ public class PlayerListener implements Listener, Configurable {
             return;
         }
 
-        if (result.getEnchantmentLevel(Enchantment.DURABILITY) != 1) {
+        if (result.getEnchantmentLevel(Enchantment.UNBREAKING) != 1) {
             //inv.setResult(new ItemStack(Material.AIR)); // Is preventing normal crafting of stone buttons.
             // It would be better to trigger against something that does not get crafted, like spider eyes or something
             return;
@@ -1107,15 +1107,15 @@ public class PlayerListener implements Listener, Configurable {
             return;
         }
 
-        // Get the total possible repair amount. This doesn't need to be limited
-        // because the lore generator will cap at 100%
+        // Get the total possible repair amount and new health value
         int repairAmount = invItems.getAmount(repairItem.getStack()) * repairItem.getRepairAmount();
         repairAmount = (int) Math.ceil(repairAmount / pearl.getLongTimeMultiplier());
+        int newHealth = Math.min(pearlApi.getPearlConfig().getPearlHealthMaxValue(), pearl.getHealth() + repairAmount);
 
         // Generate a new item with the updated health value as the crafting result
         ItemStack resultStack = pearl.createItemStack();
         ItemMeta im = resultStack.getItemMeta();
-        im.setLore(pearlApi.getLoreProvider().generateLoreWithModifiedHealth(pearl, pearl.getHealth() + repairAmount));
+        im.setLore(pearlApi.getLoreProvider().generateLoreWithModifiedHealth(pearl, newHealth));
         resultStack.setItemMeta(im);
 
         e.getInventory().setResult(resultStack);
@@ -1146,11 +1146,12 @@ public class PlayerListener implements Listener, Configurable {
         // Quit if no repair items were found in the crafting inventory
         if (repairItem != null) {
             int maxHealth = pearlApi.getPearlConfig().getPearlHealthMaxValue();
-            int repairPerItem = repairItem.getRepairAmount();
             int repairMatsAvailable = invItems.getAmount(repairItem.getStack());
-            int repairMatsToUse = Math.min((int) Math.ceil((maxHealth - pearl.getHealth()) / (double) repairPerItem), repairMatsAvailable);
-            int repairAmount = repairMatsToUse * repairPerItem;
-            repairAmount = (int) Math.ceil(repairAmount / pearl.getLongTimeMultiplier());
+            int healthToFill = maxHealth - pearl.getHealth();
+            double repairPerItem = repairItem.getRepairAmount() / pearl.getLongTimeMultiplier();
+            int repairMatsToUse = Math.min((int) Math.ceil(healthToFill / repairPerItem), repairMatsAvailable);
+            int repairAmount = (int) (repairMatsToUse * repairPerItem);
+            int newHealth = Math.min(pearlApi.getPearlConfig().getPearlHealthMaxValue(), pearl.getHealth() + repairAmount);
 
             // Changing the value of the crafting items results in a dupe glitch so any remaining
             // materials need to be placed back into the player's inventory.
@@ -1178,7 +1179,7 @@ public class PlayerListener implements Listener, Configurable {
             inv.clear();
 
             // Repair the pearl and update the item stack
-            pearl.setHealth(pearl.getHealth() + repairAmount);
+            pearl.setHealth(newHealth);
             inv.setResult(pearl.createItemStack());
             pearlApi.log("The pearl for player %s was repaired by %d points.", pearl.getPlayerName(), repairAmount);
             return;
@@ -1308,7 +1309,9 @@ public class PlayerListener implements Listener, Configurable {
             // This item is basically used as a trigger to catch the recipe being created
             ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);
             ItemMeta im = resultItem.getItemMeta();
-            im.addEnchant(Enchantment.DURABILITY, 1, true);
+            // TODO: This should use the new enchantment glint component, but because exilepearl
+			//  depends on the unbreaking enchantment to determine whether or not something is a pearl (why?????), it does not
+			im.addEnchant(Enchantment.UNBREAKING, 1, true);
             im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             resultItem.setItemMeta(im);
 
@@ -1333,7 +1336,7 @@ public class PlayerListener implements Listener, Configurable {
         try {
             ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);
             ItemMeta im = resultItem.getItemMeta();
-            im.addEnchant(Enchantment.DURABILITY, 1, true);
+            im.addEnchant(Enchantment.UNBREAKING, 1, true);
             im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             resultItem.setItemMeta(im);
 
@@ -1375,7 +1378,7 @@ public class PlayerListener implements Listener, Configurable {
             return false;
         }
 
-        return im.getEnchantLevel(Enchantment.DURABILITY) == 2;
+        return im.getEnchantLevel(Enchantment.UNBREAKING) == 2;
     }
 
     /**
@@ -1404,7 +1407,7 @@ public class PlayerListener implements Listener, Configurable {
             ItemMeta im = helpItem.getItemMeta();
             im.setDisplayName(helpItemName);
             im.setLore(helpItemText);
-            im.addEnchant(Enchantment.DURABILITY, 2, true);
+            im.addEnchant(Enchantment.UNBREAKING, 2, true);
             im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             helpItem.setItemMeta(im);
             player.getInventory().setItem(0, helpItem);

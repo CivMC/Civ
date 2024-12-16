@@ -23,24 +23,14 @@ public class GroupChat extends BaseCommand {
     @CommandCompletion("@CC_Groups @nothing")
     public void execute(Player player, @Optional String targetGroup, @Optional String chatMessage) {
         CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
-        GroupManager gm = NameAPI.getGroupManager();
         boolean isGroupChatting = chatMan.getGroupChatting(player) != null;
         Group group;
-        boolean defGroup = false;
         if (targetGroup == null && chatMessage == null) {
             // Check if player is in groupchat and move them to normal chat
             if (isGroupChatting) {
                 player.sendMessage(ChatStrings.chatMovedToGlobal);
                 chatMan.removeGroupChat(player);
                 return;
-            } else {
-                String defGroupName = gm.getDefaultGroup(player.getUniqueId());
-                if (defGroupName != null) {
-                    group = GroupManager.getGroup(defGroupName);
-                    defGroup = true;
-                } else {
-                    return;
-                }
             }
         }
         if (targetGroup == null) {

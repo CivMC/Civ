@@ -34,6 +34,10 @@ public class KillListener implements Listener {
         if (victim.getKiller() == null) {
             return;
         }
+        int killBroadcastRange = config.getKillBroadcastRange();
+        if (killBroadcastRange <= 0) {
+            return;
+        }
         Player killer = victim.getKiller();
         if (!settingsMan.getSendOwnKills(killer.getUniqueId())) {
             return;
@@ -73,7 +77,7 @@ public class KillListener implements Listener {
             if (!loc.getWorld().equals(killLoc.getWorld())) {
                 continue;
             }
-            if (loc.distance(killLoc) > config.getKillBroadcastRange()) {
+            if (loc.distance(killLoc) > killBroadcastRange) {
                 continue;
             }
             if (!settingsMan.getReceiveKills(p.getUniqueId())) {

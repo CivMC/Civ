@@ -1,6 +1,5 @@
 package net.minelink.ctplus.listener;
 
-import com.google.common.collect.ImmutableSet;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.Tag;
 import net.minelink.ctplus.TagManager;
@@ -28,25 +27,12 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 import java.util.Objects;
-import java.util.Set;
-import javax.annotation.Nullable;
 
 public final class TagListener implements Listener {
-
-    private static final Set<PotionEffectType> harmfulEffects = ImmutableSet.of(
-        PotionEffectType.BLINDNESS,
-        PotionEffectType.CONFUSION,
-        PotionEffectType.HARM,
-        PotionEffectType.HUNGER,
-        PotionEffectType.POISON,
-        PotionEffectType.SLOW,
-        PotionEffectType.SLOW_DIGGING,
-        PotionEffectType.WEAKNESS,
-        PotionEffectType.WITHER
-    );
 
     private final CombatTagPlus plugin;
 
@@ -105,8 +91,7 @@ public final class TagListener implements Listener {
         // Find attacker
         if (attackerEntity instanceof Creature && plugin.getSettings().mobTagging()) {
             return (LivingEntity) attackerEntity;
-        } else if (attackerEntity instanceof Projectile) {
-            Projectile p = (Projectile) attackerEntity;
+        } else if (attackerEntity instanceof Projectile p) {
             Entity source;
             if (p.getShooter() instanceof Entity) {
                 source = (Entity) p.getShooter();
@@ -135,14 +120,13 @@ public final class TagListener implements Listener {
     public void tagPlayer(PotionSplashEvent event) {
         // Do nothing if thrower is not a player
         ProjectileSource source = event.getEntity().getShooter();
-        if (!(source instanceof Player)) return;
+        if (!(source instanceof Player attacker)) return;
 
-        Player attacker = (Player) source;
         boolean isHarmful = false;
 
         // Try to determine if the potion is harmful
         for (PotionEffect effect : event.getPotion().getEffects()) {
-            if (harmfulEffects.contains(effect.getType())) {
+            if (effect.getType().getEffectCategory() == PotionEffectType.Category.HARMFUL) {
                 isHarmful = true;
                 break;
             }
@@ -153,10 +137,9 @@ public final class TagListener implements Listener {
 
         // Tag the attacker and any affected players
         for (LivingEntity entity : event.getAffectedEntities()) {
-            if (!(entity instanceof Player)) continue;
+            if (!(entity instanceof Player victim)) continue;
 
             // Do nothing if the affected player is the thrower
-            Player victim = (Player) entity;
             if (victim == attacker) continue;
 
             if (!plugin.getNpcPlayerHelper().isNpc(victim)) {
@@ -175,10 +158,9 @@ public final class TagListener implements Listener {
         if (entity.getType() != EntityType.ENDER_PEARL) return;
 
         // Do nothing if projectile source is not a player
-        if (!(entity.getShooter() instanceof Player)) return;
+        if (!(entity.getShooter() instanceof Player player)) return;
 
         // Do nothign if player has permission to bypass tagging
-        Player player = (Player) entity.getShooter();
         if (player.hasPermission("ctplus.bypass.tag")) return;
 
         // Do nothing if player is not tagged

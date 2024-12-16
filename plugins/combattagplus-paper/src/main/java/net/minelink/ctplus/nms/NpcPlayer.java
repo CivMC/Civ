@@ -3,20 +3,17 @@ package net.minelink.ctplus.nms;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
-import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.CommonListenerCookie;
 import net.minelink.ctplus.compat.base.NpcIdentity;
 import net.minelink.ctplus.compat.base.NpcNameGeneratorFactory;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class NpcPlayer extends ServerPlayer {

@@ -1,16 +1,16 @@
 package vg.civcraft.mc.civmodcore.inventory.gui;
 
-import javax.annotation.Nonnull;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class IClickable {
 
     /**
      * @return Which item stack represents this clickable when it is initially loaded into the inventory.
      */
-    @Nonnull
+    @NotNull
     public abstract ItemStack getItemStack();
 
     /**
@@ -20,7 +20,7 @@ public abstract class IClickable {
      * @param inventory Inventory it was added to
      * @param slot      Slot in which it was added
      */
-    public abstract void addedToInventory(@Nonnull final ClickableInventory inventory, final int slot);
+    public abstract void addedToInventory(@NotNull final ClickableInventory inventory, final int slot);
 
     /**
      * General method called whenever this clickable is clicked with a type that did
@@ -28,7 +28,7 @@ public abstract class IClickable {
      *
      * @param clicker Player who clicked
      */
-    protected abstract void clicked(@Nonnull final Player clicker);
+    protected abstract void clicked(@NotNull final Player clicker);
 
     /**
      * Called when a player double clicks this clickable, overwrite to define
@@ -36,7 +36,7 @@ public abstract class IClickable {
      *
      * @param clicker Player who clicked
      */
-    protected void onDoubleClick(@Nonnull final Player clicker) {
+    protected void onDoubleClick(@NotNull final Player clicker) {
         clicked(clicker);
     }
 
@@ -47,7 +47,7 @@ public abstract class IClickable {
      *
      * @param clicker Player who clicked
      */
-    protected void onDrop(@Nonnull final Player clicker) {
+    protected void onDrop(@NotNull final Player clicker) {
         clicked(clicker);
     }
 
@@ -58,7 +58,7 @@ public abstract class IClickable {
      *
      * @param clicker Player who clicked
      */
-    protected void onControlDrop(@Nonnull final Player clicker) {
+    protected void onControlDrop(@NotNull final Player clicker) {
         clicked(clicker);
     }
 
@@ -68,7 +68,7 @@ public abstract class IClickable {
      *
      * @param clicker Player who clicked
      */
-    protected void onLeftClick(@Nonnull final Player clicker) {
+    protected void onLeftClick(@NotNull final Player clicker) {
         clicked(clicker);
     }
 
@@ -78,7 +78,7 @@ public abstract class IClickable {
      *
      * @param clicker Player who clicked
      */
-    protected void onRightClick(@Nonnull final Player clicker) {
+    protected void onRightClick(@NotNull final Player clicker) {
         clicked(clicker);
     }
 
@@ -88,7 +88,7 @@ public abstract class IClickable {
      *
      * @param clicker Player who clicked
      */
-    protected void onMiddleClick(@Nonnull final Player clicker) {
+    protected void onMiddleClick(@NotNull final Player clicker) {
         clicked(clicker);
     }
 
@@ -98,7 +98,7 @@ public abstract class IClickable {
      *
      * @param clicker Player who clicked
      */
-    protected void onShiftLeftClick(@Nonnull final Player clicker) {
+    protected void onShiftLeftClick(@NotNull final Player clicker) {
         clicked(clicker);
     }
 
@@ -108,12 +108,12 @@ public abstract class IClickable {
      *
      * @param clicker Player who clicked
      */
-    protected void onShiftRightClick(@Nonnull final Player clicker) {
+    protected void onShiftRightClick(@NotNull final Player clicker) {
         clicked(clicker);
     }
 
-    public void handleClick(@Nonnull final Player clicker,
-                            @Nonnull final ClickType type) {
+    public void handleClick(@NotNull final Player clicker,
+                            @NotNull final ClickType type) {
         switch (type) {
             case CONTROL_DROP -> onControlDrop(clicker);
             case DOUBLE_CLICK -> onDoubleClick(clicker);

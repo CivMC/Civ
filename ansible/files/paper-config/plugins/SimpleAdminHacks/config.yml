@@ -8,7 +8,7 @@ hacks:
   ## Basic Hacks
   ############################################################
   AntiFastBreak:
-    enabled: true
+    enabled: false
     laggLenciency: 1.5
     breakDenyDuration: 3000
   #Prevents pearls from landing that have been in flight for more than the configured amount of time
@@ -62,6 +62,11 @@ hacks:
      - GOAT
      - PARROT
      - PANDA
+     - CAMEL
+     - SNIFFER
+     - FROG
+     - TADPOLE
+     - ARMADILLO
   AttrHider:
     enabled: true
     # Hide item data like enchantments, firework effects, book data, potion, etc..
@@ -116,7 +121,7 @@ hacks:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit the community wiki at civwiki.org","color":"green","clickEvent":{"action":"open_url","value":"https://civwiki.org/wiki/Main_Page"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit our wiki at wiki.civmc.net","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player made map at civmc-map.github.io","color":"green","clickEvent":{"action":"open_url","value":"https://civmc-map.github.io/"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /g ! to talk in global chat","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /global to talk in global chat","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /vote to vote for CivMC and receive essence!","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Consider donating to the server at patreon.com/civ_mc! And get some unique perks!","color":"blue","clickEvent":{"action":"open_url","value":"https://www.patreon.com/civ_mc"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"All ores except coal and copper can spawn in big veins. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/hiddenore"}}]'
@@ -124,6 +129,7 @@ hacks:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"The command /config will let you adjust various settings","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /rb to see the crop information for the biome you are in","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /chunklimits to see the restrictions on how many blocks can be placed in a chunk","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /emf toggle to turn off/on fishing of decorative heads and custom loot","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"If you type /fm you can see all the types of factories you can make","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Please review the server rules at reddit.com/r/civmc/wiki/index","color":"green","clickEvent":{"action":"open_url","value":"https://www.reddit.com/r/civmc/wiki/index/"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"The use of VPNs or multiple accounts is not allowed, Logging in from the same place as a friend will result in an automatic ban. Accidental use of either may be resolved via a ticket on the official CivMC Discord","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/zp63BaX3Uf"}}]'
@@ -132,7 +138,7 @@ hacks:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Make sure to reinforce your buildings/chests to protect them from others. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/essential/citadel"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Jukeboxes and Noteblocks act as CCTV, when reinforced they record player actions. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/jukealert"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Killing someone with an ender pearl in your hotbar will lock them in the nether! Player essence is used to keep the players trapped. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/essential/exilepearl"}}]'
-  
+
   ElytraFeatures:
     enabled: false
     # Whether Elytra flight should be outright disabled
@@ -181,6 +187,8 @@ hacks:
     disableGapples: true
     disableEndGatewayTP: false
   ItemMetaConverterHack:
+    enabled: true
+  ItemSerializerHack:
     enabled: true
   MapCopyProtection:
     enabled: true
@@ -278,8 +286,10 @@ hacks:
       - [LAPIS_ORE,DEEPSLATE_LAPIS_ORE]
       - [GOLD_ORE,DEEPSLATE_GOLD_ORE]
       - [IRON_ORE,DEEPSLATE_IRON_ORE]
+      - [COPPER_ORE,DEEPSLATE_COPPER_ORE]
       - [COAL_ORE,DEEPSLATE_COAL_ORE]
-      - [NETHER_GOLD_ORE,GILDED_BLACKSTONE]
+      - [NETHER_GOLD_ORE]
+      - [GILDED_BLACKSTONE]
       - [NETHER_QUARTZ_ORE]
       - [GLOWSTONE]
       - [SEA_LANTERN]
@@ -362,7 +372,7 @@ hacks:
     patrolSpawning: true
     phantomSpawning: false
     enderChestPlacement: true
-    enderChestUse: false
+    enderChestUse: true
     grindstoneUse: false
     shulkerBoxUse: false
     totemPower: true
@@ -381,7 +391,6 @@ hacks:
     # Does not fully work atm
     blockElytraBreakBug: false
     damageOnElytraBreakBug: 0.0
-    canStorageTeleport: false
     stopHopperDupe: false
     stopRailDupe: true
     stopEndPortalDeletion: true
@@ -407,8 +416,8 @@ hacks:
         BLAST_FURNACE: 48
         BREWING_STAND: 48
         SMOKER: 48
-        ITEM_FRAME: 48
-        GLOW_ITEM_FRAME: 48
+        ITEM_FRAME: 64
+        GLOW_ITEM_FRAME: 64
         ARMOR_STAND: 48
         PAINTING: 48
       exempt:
@@ -461,12 +470,12 @@ hacks:
       - org.bukkit.event.weather
       - org.bukkit.event.world
   Introbook:
-    enabled: true  
+    enabled: true
     follow: true
     contents:
       title: Welcome ${player}!
       author: RedDevel
-      pages: 
+      pages:
         - "&5    Welcome &2${player}!\n         &5to CivMC!&r\n\nThis book will guide your first steps!\nIf you die or lose it you can open it via the /introbook command\n\nLet's begin your journey!"
         - "You've just spawned near another player or town, say something in chat!\n\nIf nobody responds try out global chat instead by using the /global command!\n\nMany nations will want a potential new productive member.\nTake your pick!"
         - "Maybe you've joined at a time of lower activity, and nobody is responding.\n\nThen you can join the official discord and take your pick of the nation ads there!\n\n      &9discord.gg/\n      HkD79GfmQQ&r"
@@ -488,14 +497,14 @@ hacks:
     announce: '&f%Player% is brand new!'
     giveIntroKitToRandomSpawners: false
     broadcast: [CONSOLE, ALL]
-    helptips: on 
+    helptips: on
     helptips_end: 20m
-    introkit:  
+    introkit:
       enabled: true
-      contents:  
+      contents:
        - ==: org.bukkit.inventory.ItemStack
          type: COOKIE
-         amount: 32  
+         amount: 32
          meta:
            ==: ItemMeta
            meta-type: UNSPECIFIC
@@ -504,7 +513,7 @@ hacks:
             - "begin your journey on CivMC"
        - ==: org.bukkit.inventory.ItemStack
          type: BED
-         amount: 1  
+         amount: 1
          meta:
            ==: ItemMeta
            meta-type: UNSPECIFIC
@@ -530,7 +539,7 @@ hacks:
             - "This will help you"
             - "get on track."
   ReinforcedChestBreak:
-    enabled: true    
+    enabled: true
     # in seconds
     delay: 180
     message: "&4%player% is raiding a chest at %x% %y% %z%."
@@ -586,10 +595,27 @@ hacks:
     deoxidise: true
     # Chance to oxidise copper one level.
     # Unoxidised copper will oxidise at 75% of this level.
-    damage: 0.02
+    damage: 0.0175
   FasterHorses:
     enabled: true
     minSpeed: 0.1125
     maxSpeed: 0.438827582278 # 18.5m/s
   AntiDerailment:
     enabled: true
+  CreeperDiscHack:
+    enabled: true
+    discChance: 0.003
+  NoOozing:
+    enabled: true
+  BuildLimits:
+    enabled: true
+    limits:
+      - ==: com.programmerdan.minecraft.simpleadminhacks.framework.utilities.BuildLimit
+        world: "world_nether"
+        type: ALTITUDE
+        min_y: -64
+        max_y: 128
+  PortalConnect:
+    enabled: false
+    server: main
+    world: world

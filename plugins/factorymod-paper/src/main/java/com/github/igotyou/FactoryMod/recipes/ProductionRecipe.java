@@ -63,7 +63,7 @@ public class ProductionRecipe extends InputRecipe {
         }
         ItemMap adjusted = new ItemMap();
         double factor = modifier.getFactor(rank, runs);
-        for (Entry<ItemStack, Integer> entry : output.getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : output.getAllItems().entrySet()) {
             adjusted.addItemAmount(entry.getKey(), (int) (Math.floor(entry.getValue() * factor)));
         }
         return adjusted;
@@ -81,7 +81,7 @@ public class ProductionRecipe extends InputRecipe {
         ItemMap currentOut = getGuaranteedOutput(fccf.getRecipeLevel(this), fccf.getRunCount(this));
         List<ItemStack> stacks = currentOut.getItemStackRepresentation();
         double factor = (modifier != null) ? (modifier.getFactor(fccf.getRecipeLevel(this), fccf.getRunCount(this))) : 1.0;
-        for (Entry<ItemStack, Integer> entry : output.getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : output.getAllItems().entrySet()) {
             double additionalChance = (((double) entry.getValue()) * factor) - currentOut.getAmount(entry.getKey());
             if (Math.abs(additionalChance) > 0.00000001) {
                 ItemStack is = entry.getKey().clone();
@@ -132,7 +132,7 @@ public class ProductionRecipe extends InputRecipe {
         } else {
             toAdd = getGuaranteedOutput(fccf.getRecipeLevel(this), fccf.getRunCount(this));
             double factor = modifier.getFactor(fccf.getRecipeLevel(this), fccf.getRunCount(this));
-            for (Entry<ItemStack, Integer> entry : output.getEntrySet()) {
+            for (Entry<ItemStack, Integer> entry : output.getAllItems().entrySet()) {
                 double additionalChance = (((double) entry.getValue()) * factor) - toAdd.getAmount(entry.getKey());
                 if (rng.nextDouble() <= additionalChance) {
                     toAdd.addItemAmount(entry.getKey(), 1);

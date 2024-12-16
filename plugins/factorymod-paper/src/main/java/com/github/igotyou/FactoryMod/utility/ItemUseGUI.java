@@ -150,11 +150,11 @@ public class ItemUseGUI {
         ItemUtils.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.DARK_AQUA + recipe.getName());
-        lore.add(ChatColor.GOLD + "input:");
+        lore.add(ChatColor.GOLD + "Input:");
         for (String input : recipe.getTextualInputRepresentation(null, null)) {
             lore.add(formatIngredient(input, item));
         }
-        lore.add(ChatColor.GOLD + "output:");
+        lore.add(ChatColor.GOLD + "Output:");
         for (String output : recipe.getTextualOutputRepresentation(null, null)) {
             lore.add(formatIngredient(output, item));
         }
@@ -167,7 +167,7 @@ public class ItemUseGUI {
         ItemUtils.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GOLD + "Setup cost:");
-        for (Map.Entry<ItemStack, Integer> entry : fccEgg.getSetupCost().getEntrySet()) {
+        for (Map.Entry<ItemStack, Integer> entry : fccEgg.getSetupCost().getAllItems().entrySet()) {
             String recipeRepresentation = entry.getValue() + " " + ItemUtils.getItemName(entry.getKey());
             lore.add(formatIngredient(recipeRepresentation, item));
         }

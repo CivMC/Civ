@@ -115,7 +115,7 @@ public class PylonRecipe extends InputRecipe {
             / (float) globalLimit);
         double multiplier = 1.0 / overload;
         ItemMap actualOutput = new ItemMap();
-        for (Entry<ItemStack, Integer> entry : output.getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : output.getAllItems().entrySet()) {
             actualOutput.addItemAmount(entry.getKey(),
                 (int) (entry.getValue() * multiplier));
         }
@@ -142,7 +142,7 @@ public class PylonRecipe extends InputRecipe {
     @Override
     public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
         List<String> result = new ArrayList<>();
-        for (Entry<ItemStack, Integer> entry : output.getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : output.getAllItems().entrySet()) {
             if (entry.getValue() > 0) {
                 result.add(entry.getValue() + " " + ItemUtils.getItemName(entry.getKey()));
             }

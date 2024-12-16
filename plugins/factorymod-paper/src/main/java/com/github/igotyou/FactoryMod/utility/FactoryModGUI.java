@@ -146,7 +146,7 @@ public class FactoryModGUI {
             ItemUtils.addLore(is, ChatColor.GREEN + factory.getName() + " can be created directly");
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.GOLD + "Required materials:");
-            for (Entry<ItemStack, Integer> entry : factory.getSetupCost().getEntrySet()) {
+            for (Entry<ItemStack, Integer> entry : factory.getSetupCost().getAllItems().entrySet()) {
                 lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + entry.getValue() + " "
                     + ItemUtils.getItemName(entry.getKey()));
             }
@@ -159,7 +159,7 @@ public class FactoryModGUI {
                 if (upRec != null) {
                     List<String> lore = new ArrayList<>();
                     lore.add(ChatColor.GOLD + "Required materials for the upgrade:");
-                    for (Entry<ItemStack, Integer> entry : upRec.getInput().getEntrySet()) {
+                    for (Entry<ItemStack, Integer> entry : upRec.getInput().getAllItems().entrySet()) {
                         lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + entry.getValue() + " "
                             + ItemUtils.getItemName(entry.getKey()));
                     }
