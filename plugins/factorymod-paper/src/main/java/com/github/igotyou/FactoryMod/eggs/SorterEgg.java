@@ -19,97 +19,98 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 public class SorterEgg implements IFactoryEgg {
-	private String name;
-	private int updateTime;
-	private ItemStack fuel;
-	private int fuelConsumptionIntervall;
-	private int sortTime;
-	private int matsPerSide;
-	private int sortAmount;
-	private double returnRate;
 
-	public SorterEgg(String name, int updateTime, ItemStack fuel,
-			int fuelConsumptionIntervall, int sortTime, int matsPerSide,
-			int sortAmount, double returnRate) {
-		this.name = name;
-		this.fuel = fuel;
-		this.updateTime = updateTime;
-		this.fuelConsumptionIntervall = fuelConsumptionIntervall;
-		this.sortTime = sortTime;
-		this.sortAmount = sortAmount;
-		this.returnRate = returnRate;
-		this.matsPerSide = matsPerSide;
-	}
+    private String name;
+    private int updateTime;
+    private ItemStack fuel;
+    private int fuelConsumptionIntervall;
+    private int sortTime;
+    private int matsPerSide;
+    private int sortAmount;
+    private double returnRate;
 
-	public Factory hatch(MultiBlockStructure mbs, Player p) {
-		IInteractionManager im = new SorterInteractionManager();
-		IRepairManager rm = new NoRepairDestroyOnBreakManager();
-		IPowerManager pm = new FurnacePowerManager(
-				((BlockFurnaceStructure) mbs).getFurnace(), fuel,
-				fuelConsumptionIntervall);
-		Sorter sorter = new Sorter(im, rm, pm, mbs, updateTime, name, sortTime,
-				matsPerSide, sortAmount);
-		((NoRepairDestroyOnBreakManager) rm).setFactory(sorter);
-		((SorterInteractionManager) im).setSorter(sorter);
-		return sorter;
-	}
+    public SorterEgg(String name, int updateTime, ItemStack fuel,
+                     int fuelConsumptionIntervall, int sortTime, int matsPerSide,
+                     int sortAmount, double returnRate) {
+        this.name = name;
+        this.fuel = fuel;
+        this.updateTime = updateTime;
+        this.fuelConsumptionIntervall = fuelConsumptionIntervall;
+        this.sortTime = sortTime;
+        this.sortAmount = sortAmount;
+        this.returnRate = returnRate;
+        this.matsPerSide = matsPerSide;
+    }
 
-	public Factory revive(List<Location> blocks,
-						  Map<BlockFace, ItemMap> assignments, int runTime) {
-		MultiBlockStructure ps = new BlockFurnaceStructure(blocks);
-		SorterInteractionManager im = new SorterInteractionManager();
-		IRepairManager rm = new NoRepairDestroyOnBreakManager();
-		IPowerManager pm = new FurnacePowerManager(
-				((BlockFurnaceStructure) ps).getFurnace(), fuel,
-				fuelConsumptionIntervall);
-		Sorter sorter = new Sorter(im, rm, pm, ps, updateTime, name, sortTime,
-				matsPerSide, sortAmount);
-		((SorterInteractionManager) im).setSorter(sorter);
-		((NoRepairDestroyOnBreakManager) rm).setFactory(sorter);
-		sorter.setAssignments(assignments);
-		if (runTime != 0) {
-			sorter.attemptToActivate(null, true);
-			if (sorter.isActive()) {
-				sorter.setRunTime(runTime);
-			}
-		}
-		return sorter;
-	}
+    public Factory hatch(MultiBlockStructure mbs, Player p) {
+        IInteractionManager im = new SorterInteractionManager();
+        IRepairManager rm = new NoRepairDestroyOnBreakManager();
+        IPowerManager pm = new FurnacePowerManager(
+            ((BlockFurnaceStructure) mbs).getFurnace(), fuel,
+            fuelConsumptionIntervall);
+        Sorter sorter = new Sorter(im, rm, pm, mbs, updateTime, name, sortTime,
+            matsPerSide, sortAmount);
+        ((NoRepairDestroyOnBreakManager) rm).setFactory(sorter);
+        ((SorterInteractionManager) im).setSorter(sorter);
+        return sorter;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public Factory revive(List<Location> blocks,
+                          Map<BlockFace, ItemMap> assignments, int runTime) {
+        MultiBlockStructure ps = new BlockFurnaceStructure(blocks);
+        SorterInteractionManager im = new SorterInteractionManager();
+        IRepairManager rm = new NoRepairDestroyOnBreakManager();
+        IPowerManager pm = new FurnacePowerManager(
+            ((BlockFurnaceStructure) ps).getFurnace(), fuel,
+            fuelConsumptionIntervall);
+        Sorter sorter = new Sorter(im, rm, pm, ps, updateTime, name, sortTime,
+            matsPerSide, sortAmount);
+        ((SorterInteractionManager) im).setSorter(sorter);
+        ((NoRepairDestroyOnBreakManager) rm).setFactory(sorter);
+        sorter.setAssignments(assignments);
+        if (runTime != 0) {
+            sorter.attemptToActivate(null, true);
+            if (sorter.isActive()) {
+                sorter.setRunTime(runTime);
+            }
+        }
+        return sorter;
+    }
 
-	public int getUpdateTime() {
-		return updateTime;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public ItemStack getFuel() {
-		return fuel;
-	}
+    public int getUpdateTime() {
+        return updateTime;
+    }
 
-	public double getReturnRate() {
-		return returnRate;
-	}
+    public ItemStack getFuel() {
+        return fuel;
+    }
 
-	public int getFuelConsumptionIntervall() {
-		return fuelConsumptionIntervall;
-	}
+    public double getReturnRate() {
+        return returnRate;
+    }
 
-	public int getSortTime() {
-		return sortTime;
-	}
+    public int getFuelConsumptionIntervall() {
+        return fuelConsumptionIntervall;
+    }
 
-	public int getMaterialsPerSide() {
-		return matsPerSide;
-	}
+    public int getSortTime() {
+        return sortTime;
+    }
 
-	public int getSortAmount() {
-		return sortAmount;
-	}
+    public int getMaterialsPerSide() {
+        return matsPerSide;
+    }
 
-	public Class <BlockFurnaceStructure> getMultiBlockStructure() {
-		return BlockFurnaceStructure.class;
-	}
+    public int getSortAmount() {
+        return sortAmount;
+    }
+
+    public Class<BlockFurnaceStructure> getMultiBlockStructure() {
+        return BlockFurnaceStructure.class;
+    }
 
 }

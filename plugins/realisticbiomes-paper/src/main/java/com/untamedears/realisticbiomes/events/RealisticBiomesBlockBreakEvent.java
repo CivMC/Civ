@@ -7,26 +7,27 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 
 public class RealisticBiomesBlockBreakEvent extends Event {
-	private static final HandlerList handlers = new HandlerList();
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    private static final HandlerList handlers = new HandlerList();
 
-	private BlockBreakEvent wrapped;
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
 
-	public RealisticBiomesBlockBreakEvent(Block theBlock, Player player) {
-		super(false);
-		wrapped = new BlockBreakEvent(theBlock, player);
-	}
+    private BlockBreakEvent wrapped;
 
-	public BlockBreakEvent getEvent() {
-		return wrapped;
-	}
+    public RealisticBiomesBlockBreakEvent(Block theBlock, Player player) {
+        super(false);
+        wrapped = new BlockBreakEvent(theBlock, player);
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return RealisticBiomesBlockBreakEvent.handlers;
-	}
+    public BlockBreakEvent getEvent() {
+        return wrapped;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return RealisticBiomesBlockBreakEvent.handlers;
+    }
 
 }

@@ -14,21 +14,21 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class DeleteDiscordGroupChatCommand extends BaseCommand {
 
-	@CommandAlias("deletediscordchannel")
-	@Description("Delete the Discord channel linked to a group")
-	@Syntax("<group>")
-	public void execute(Player player, String groupName) {
-		Group group = GroupManager.getGroup(groupName);
-		if (group == null) {
-			player.sendMessage(ChatColor.RED + "That group does not exist");
-			return;
-		}
-		if (!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
-				PermissionType.getPermission("KIRA_MANAGE_CHANNEL"))) {
-			player.sendMessage(ChatColor.RED + "You do not have permission to do that");
-			return;
-		}
-		KiraBukkitGatewayPlugin.getInstance().getRabbit().deleteGroupChatChannel(group.getName(),player.getUniqueId());
-		player.sendMessage(ChatColor.GREEN + "Attempting to delete channel...");
-	}
+    @CommandAlias("deletediscordchannel")
+    @Description("Delete the Discord channel linked to a group")
+    @Syntax("<group>")
+    public void execute(Player player, String groupName) {
+        Group group = GroupManager.getGroup(groupName);
+        if (group == null) {
+            player.sendMessage(ChatColor.RED + "That group does not exist");
+            return;
+        }
+        if (!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
+            PermissionType.getPermission("KIRA_MANAGE_CHANNEL"))) {
+            player.sendMessage(ChatColor.RED + "You do not have permission to do that");
+            return;
+        }
+        KiraBukkitGatewayPlugin.getInstance().getRabbit().deleteGroupChatChannel(group.getName(), player.getUniqueId());
+        player.sendMessage(ChatColor.GREEN + "Attempting to delete channel...");
+    }
 }

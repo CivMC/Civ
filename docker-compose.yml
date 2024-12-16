@@ -1,5 +1,3 @@
-version: '3.9'
-
 # Development stack for Civ. This stack can be used to develop and test the server and plugins locally.
 # Please note that this stack is NOT suitable for production use, as it exposes all service ports, and uses default passwords.
 
@@ -9,8 +7,8 @@ services:
   ### Minecraft ###
   #################
 
-  pvp:
-    build: containers/pvp
+  proxy:
+    image: itzg/mc-proxy@sha256:e0536c92227905b6b0388eb04f640859e674c61068061d2a4db6ba631c79008b
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -19,11 +17,61 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     environment:
+      VELOCITY_VERSION: '3.4.0-SNAPSHOT'
+      TYPE: 'VELOCITY'
+
+      REPLACE_ENV_VARIABLES: 'true'
+      REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+
+      CIV_POSTGRES_HOST: postgres
+      CIV_POSTGRES_USERNAME: postgres
+      CIV_POSTGRES_PASSWORD: postgres
+
+      CIV_TIMEOUT_TIME: 3000000
+      CIV_PVP_HOSTNAME: 'pvp.localhost'
+      CIV_HOSTNAME: 'main.localhost'
+
+      CIV_FORWARDING_SECRET: '1234'
+    ports:
+      - "25565:25577"
+    volumes:
+      - ./containers/data/proxy:/data
+      - ./ansible/files/proxy-config:/config
+      - ./ansible/build/proxy-plugins:/plugins
+
+  paper:
+    image: itzg/minecraft-server@sha256:edd1968cb701da6a7a358170ad6503323e35fb6ec6984eb31ec1a8a4687b75ec
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      TYPE: 'paper'
+      VERSION: '1.21.3'
+      EULA: 'TRUE'
+
+      REMOVE_OLD_MODS: 'TRUE'
+      COPY_CONFIG_DEST: '/data'
+      SYNC_SKIP_NEWER_IN_DESTINATION: 'false'
+      REPLACE_ENV_DURING_SYNC: 'TRUE'
+      REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+
       INIT_MEMORY: 1G
       MAX_MEMORY: 5G
 
-      CIV_SERVER_NAME: local-pvp
+      CIV_SERVER_NAME: local
+
+      CIV_WORLD_GENERATOR: Terra:DEFAULT
+      CIV_WORDBANK_SEED: wordbank
 
       CIV_MYSQL_HOST: mariadb
       CIV_MYSQL_USERNAME: mariadb
@@ -33,11 +81,77 @@ services:
       CIV_POSTGRES_USERNAME: postgres
       CIV_POSTGRES_PASSWORD: postgres
 
+      CIV_DATABASE_PREFIX: ''
+
       CIV_RABBITMQ_HOST: rabbitmq
       CIV_RABBITMQ_USERNAME: rabbitmq
       CIV_RABBITMQ_PASSWORD: rabbitmq
+
+      JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      CIV_WATCHDOG_TIMEOUT_TIME: 6000
+      CIV_FORWARDING_SECRET: '1234'
+    ports:
+      - "5005:5005"
+    volumes:
+      - ./containers/data/paper:/data
+      - ./ansible/files/paper-config:/config
+      - ./ansible/build/paper-plugins:/plugins
+
+  pvp:
+    image: itzg/minecraft-server@sha256:edd1968cb701da6a7a358170ad6503323e35fb6ec6984eb31ec1a8a4687b75ec
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      TYPE: 'paper'
+      VERSION: '1.21.3'
+      EULA: 'TRUE'
+      PAPER_CUSTOM_JAR: 'asp-server.jar'
+
+      REMOVE_OLD_MODS: 'TRUE'
+      COPY_CONFIG_DEST: '/data'
+      SYNC_SKIP_NEWER_IN_DESTINATION: 'false'
+      REPLACE_ENV_DURING_SYNC: 'TRUE'
+      REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+
+      INIT_MEMORY: 1G
+      MAX_MEMORY: 5G
+
+      CIV_SERVER_NAME: local
+
+      CIV_WORDBANK_SEED: wordbank
+
+      CIV_MYSQL_HOST: mariadb
+      CIV_MYSQL_USERNAME: mariadb
+      CIV_MYSQL_PASSWORD: mariadb
+
+      CIV_POSTGRES_HOST: postgres
+      CIV_POSTGRES_USERNAME: postgres
+      CIV_POSTGRES_PASSWORD: postgres
+
+      CIV_DATABASE_PREFIX: 'pvp_'
+
+      CIV_RABBITMQ_HOST: rabbitmq
+      CIV_RABBITMQ_USERNAME: rabbitmq
+      CIV_RABBITMQ_PASSWORD: rabbitmq
+
+      JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006
+      CIV_WATCHDOG_TIMEOUT_TIME: 6000
+      CIV_FORWARDING_SECRET: '1234'
+    ports:
+      - "5006:5006"
     volumes:
       - ./containers/data/pvp:/data
+      - ./ansible/files/paper-config:/paper-config
+      - ./ansible/files/pvp-config:/config
+      - ./ansible/build/pvp-plugins:/plugins
 
   #################
   ### Databases ###
@@ -59,7 +173,7 @@ services:
       MYSQL_PASSWORD: mariadb
       MYSQL_DATABASE: mariadb
     volumes:
-      - ./containers/provisioning/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./containers/provisioning/mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
       - ./containers/data/mariadb:/var/lib/mysql
 
   postgres:
@@ -77,7 +191,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
     volumes:
-      - ./containers/provisioning/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./containers/provisioning/postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
       - ./containers/data/postgres:/var/lib/postgresql/data
 
   rabbitmq:
@@ -114,4 +228,4 @@ services:
       CIV_INFLUX_ORG: CivMC
       CIV_INFLUX_TOKEN: admintoken
     volumes:
-      - ./containers/provisioning/grafana:/etc/grafana/provisioning
+      - ./containers/provisioning/grafana:/etc/grafana/provisioning:ro

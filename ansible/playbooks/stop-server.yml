@@ -1,0 +1,20 @@
+- name: Stop Server
+  hosts: all
+  become: true
+
+  vars:
+    servers:
+      - pvp
+      - paper
+      - proxy
+
+  tasks:
+    - name: Stop Server| Include Preflight
+      include_tasks: ../tasks/preflight-checks.yml
+
+    - name: Stop Server | Expand setting
+      include_tasks: ../tasks/expand-setting.yml
+
+    - name: Stop Server | Include Stop Tasks
+      include_tasks:
+        file: '../tasks/stop-server.yml'

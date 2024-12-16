@@ -2,25 +2,25 @@ name: HiddenOre
 version: ${version}
 main: com.github.devotedmc.hiddenore.HiddenOre
 author: Soerxpso
-authors: [ProgrammerDan]
+authors: [ ProgrammerDan ]
 load: STARTUP
-api-version: 1.18
+api-version: 1.21.3
 website: https://www.github.com/DevotedMC/HiddenOre
 description: HiddenOre allows the complete disguising of ores from players by not generating them in the first place, instead using a probability model to generate configurable ore layouts in response to player mining.
 commands:
-   hiddenore:
-      description: HiddenOre allows the hiding of cool drops underground. This reloads the config.
-      usage: |
-       /hiddenore    -- reloads
-       /hiddenore save -- forces save of tracking
-       /hiddenore generate [num] -- drops all drops near the player issuing the command, use sparingly. 
-      permission: hiddenore.adv
+  hiddenore:
+    description: HiddenOre allows the hiding of cool drops underground. This reloads the config.
+    usage: |
+      /hiddenore    -- reloads
+      /hiddenore save -- forces save of tracking
+      /hiddenore generate [num] -- drops all drops near the player issuing the command, use sparingly.
+    permission: hiddenore.adv
 permissions:
-    hiddenore.*:
-      description: Gives access to all HiddenOre commands
-      default: op
-      children:
-        hiddenore.adv: true
-    hiddenore.adv:
-      description: Allows access to  HiddenOre commands.
-      default: op
+  hiddenore.*:
+    description: Gives access to all HiddenOre commands
+    default: op
+    children:
+      hiddenore.adv: true
+  hiddenore.adv:
+    description: Allows access to  HiddenOre commands.
+    default: op

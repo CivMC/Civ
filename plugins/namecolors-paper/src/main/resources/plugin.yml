@@ -1,11 +1,11 @@
 name: NameColors
 main: com.biggestnerd.namecolors.NameColors
 version: ${version}
-authors: [biggestnerd, Maxopoly]
-depend: [CivModCore, CivChat2]
+authors: [ biggestnerd, Maxopoly ]
+depend: [ CivModCore, CivChat2 ]
 softdepend:
   - TAB
-api-version: 1.17
+api-version: 1.21.3
 commands:
   namecolor:
     description: "Give your name a nice color!"

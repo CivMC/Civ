@@ -19,88 +19,88 @@ import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 
 public class MenuSection extends MenuItem {
 
-	private final Map<String, MenuItem> content;
+    private final Map<String, MenuItem> content;
 
-	private final ItemStack itemRepresentation;
+    private final ItemStack itemRepresentation;
 
-	public MenuSection(String name, String description, MenuSection parent) {
-		this(name, description, parent, new ItemStack(Material.BOOK));
-	}
+    public MenuSection(String name, String description, MenuSection parent) {
+        this(name, description, parent, new ItemStack(Material.BOOK));
+    }
 
-	public MenuSection(String name, String description, MenuSection parent, ItemStack itemRepresentation) {
-		super(name, parent);
-		this.content = new TreeMap<>();
-		this.itemRepresentation = itemRepresentation;
-		ItemUtils.setDisplayName(itemRepresentation, ChatColor.AQUA + name);
-		ItemUtils.addLore(itemRepresentation, ChatColor.GOLD + description);
-	}
+    public MenuSection(String name, String description, MenuSection parent, ItemStack itemRepresentation) {
+        super(name, parent);
+        this.content = new TreeMap<>();
+        this.itemRepresentation = itemRepresentation;
+        ItemUtils.setDisplayName(itemRepresentation, ChatColor.AQUA + name);
+        ItemUtils.addLore(itemRepresentation, ChatColor.GOLD + description);
+    }
 
-	public void addItem(MenuItem item) {
-		content.put(item.getName(), item);
-	}
+    public void addItem(MenuItem item) {
+        content.put(item.getName(), item);
+    }
 
-	public Collection<MenuItem> getItems() {
-		return this.content.values();
-	}
-	
-	public MenuSection createMenuSection(String name, String description) {
-		return createMenuSection(name, description, new ItemStack(Material.BOOK));
-	}
+    public Collection<MenuItem> getItems() {
+        return this.content.values();
+    }
 
-	public MenuSection createMenuSection(String name, String description, ItemStack itemRepresentation) {
-		MenuSection section = new MenuSection(name, description, this, itemRepresentation);
-		addItem(section);
-		return section;
-	}
+    public MenuSection createMenuSection(String name, String description) {
+        return createMenuSection(name, description, new ItemStack(Material.BOOK));
+    }
 
-	@Override
-	public IClickable getMenuRepresentation(Player player) {
-		return new Clickable(itemRepresentation) {
+    public MenuSection createMenuSection(String name, String description, ItemStack itemRepresentation) {
+        MenuSection section = new MenuSection(name, description, this, itemRepresentation);
+        addItem(section);
+        return section;
+    }
 
-			@Override
-			public void clicked(Player p) {
-				showScreen(player);
-			}
-		};
-	}
+    @Override
+    public IClickable getMenuRepresentation(Player player) {
+        return new Clickable(itemRepresentation) {
 
-	public void showScreen(Player player) {
-		List<IClickable> clickables = new ArrayList<>(content.size());
-		for (MenuItem item : content.values()) {
-			clickables.add(item.getMenuRepresentation(player));
-		}
-		MultiPageView pageView = new MultiPageView(player, clickables, getName(), true);
-		if (parent != null) {
-			ItemStack parentItem = new ItemStack(Material.ARROW);
-			ItemUtils.setDisplayName(parentItem, ChatColor.AQUA + "Go back to " + parent.getName());
-			pageView.setMenuSlot(new Clickable(parentItem) {
+            @Override
+            public void clicked(Player p) {
+                showScreen(player);
+            }
+        };
+    }
 
-				@Override
-				public void clicked(Player p) {
-					parent.showScreen(p);
-				}
-			}, 2);
-		}
-		pageView.showScreen();
-	}
+    public void showScreen(Player player) {
+        List<IClickable> clickables = new ArrayList<>(content.size());
+        for (MenuItem item : content.values()) {
+            clickables.add(item.getMenuRepresentation(player));
+        }
+        MultiPageView pageView = new MultiPageView(player, clickables, getName(), true);
+        if (parent != null) {
+            ItemStack parentItem = new ItemStack(Material.ARROW);
+            ItemUtils.setDisplayName(parentItem, ChatColor.AQUA + "Go back to " + parent.getName());
+            pageView.setMenuSlot(new Clickable(parentItem) {
 
-	/**
-	 * Registers this menu with its parent.
-	 */
-	public void registerToParentMenu() {
-		if (this.parent != null) {
-			this.parent.addItem(this);
-		}
-	}
+                @Override
+                public void clicked(Player p) {
+                    parent.showScreen(p);
+                }
+            }, 2);
+        }
+        pageView.showScreen();
+    }
 
-	/**
-	 * Registers a setting with this menu.
-	 *
-	 * @param setting The setting to register.
-	 */
-	public void registerSetting(PlayerSetting<?> setting) {
-		Preconditions.checkArgument(setting != null);
-		PlayerSettingAPI.registerSetting(setting, this);
-	}
+    /**
+     * Registers this menu with its parent.
+     */
+    public void registerToParentMenu() {
+        if (this.parent != null) {
+            this.parent.addItem(this);
+        }
+    }
+
+    /**
+     * Registers a setting with this menu.
+     *
+     * @param setting The setting to register.
+     */
+    public void registerSetting(PlayerSetting<?> setting) {
+        Preconditions.checkArgument(setting != null);
+        PlayerSettingAPI.registerSetting(setting, this);
+    }
 
 }

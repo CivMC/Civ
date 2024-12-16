@@ -1,0 +1,337 @@
+world:
+  randomspawnon:
+    - firstjoin
+    - respawn
+  # - bedrespawn
+  spawnpointson:
+    - firstjoin
+    - newplayer
+  keeprandomspawns: false
+  newplayertime: 3000
+  spawnarea:
+    type: "circle"
+    radius: 7000
+  spawnbyplayer: false
+  spawnbyplayerarea:
+    exclusionradius: 300
+    radius: 900
+  spawnblacklist:
+    - "WATER" # 8, 9 # water
+    - "LAVA" # 10, 11 # lava
+    - "FIRE" # 51 # fire
+    - "CACTUS" # 81 # cactus
+    - "OBSIDIAN" # 49 # obsidian - don't spawn in military infrastructure
+    - "BEDROCK"
+    - "MAGMA_BLOCK"
+    - "BLACK_CARPET" # 171 # carpet - don't spawn in military infrastructure
+    - "BLUE_CARPET"
+    - "BROWN_CARPET"
+    - "CYAN_CARPET"
+    - "GRAY_CARPET"
+    - "GREEN_CARPET"
+    - "LIGHT_BLUE_CARPET"
+    - "LIGHT_GRAY_CARPET"
+    - "LIME_CARPET"
+    - "MAGENTA_CARPET"
+    - "ORANGE_CARPET"
+    - "PINK_CARPET"
+    - "PURPLE_CARPET"
+    - "RED_CARPET"
+    - "WHITE_CARPET"
+    - "YELLOW_CARPET"
+    - "ACACIA_TRAPDOOR"
+    - "BIRCH_TRAPDOOR"
+    - "CRIMSON_TRAPDOOR"
+    - "DARK_OAK_TRAPDOOR"
+    - "IRON_TRAPDOOR"
+    - "JUNGLE_TRAPDOOR"
+    - "OAK_TRAPDOOR"
+    - "SPRUCE_TRAPDOOR"
+    - "WARPED_TRAPDOOR"
+  spawnpoints:
+    Amboise: #EVDan#1792
+      x: 3524
+      y: 250 # overridden in code, but must be set
+      z: -4276
+      nearby: true # require another player nearby?
+      checkradius: 300 # require another player closer than this
+      radius: 50 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Bloom: # EVDan
+      x: -4107
+      y: 250 # overridden in code, but must be set
+      z: -5745
+      nearby: true # require another player nearby?
+      checkradius: 300 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Commonwealth: # reffelruz#5046
+      x: -4004
+      y: 250 # overridden in code, but must be set
+      z: 102
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Danzilona: # nobody
+      x: 5302
+      y: 250 # overridden in code, but must be set
+      z: 4530
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Estalia: # Walkers#9999
+      x: 0
+      y: 250 # overridden in code, but must be set
+      z: 0
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Icarus: # Zolo#7662
+      x: -9110
+      y: 250 # overridden in code, but must be set
+      z: -500
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Icenia: # chrischrispie#7502
+      x: -3800
+      y: 250 # overridden in code, but must be set
+      z: -4330
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    IlaKyavul: # Caesar#5029
+      x: 7051
+      y: 250 # overridden in code, but must be set
+      z: 3412
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Imperial Federation: #destroh.
+      x: -3312
+      y: 250 # overridden in code, but must be set
+      z: 8063
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Kallos: # Troll_bebek
+      x: 8301
+      y: 250 # overridden in code, but must be set
+      z: 4563
+      nearby: true # require another player nearby?
+      checkradius: 200 # require another player closer than this
+      radius: 50 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Khalkedonia: # TophatAlexYt
+      x: 7940
+      y: 250 # overridden in code, but must be set
+      z: -4664
+      nearby: true # require another player nearby?
+      checkradius: 300 # require another player closer than this
+      radius: 70 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Kingdom of Baile: # catiststudy
+      x: 2270
+      y: 250 # overridden in code, but must be set
+      z: -9489
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    MtAugusta: # ComradeNick#9912
+      x: 4632
+      y: 250 # overridden in code, but must be set
+      z: -3033
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 250 # spawn area outer radius
+      exclusion: 150 # spawn area inner radius
+    Nara: # bronnakus#1195
+      x: 3313
+      y: 250 # overridden in code, but must be set
+      z: 4912
+      nearby: true # require another player nearby?
+      checkradius: 600 # require another player closer than this
+      radius: 250 # spawn area outer radius
+      exclusion: 100 # spawn area inner radius
+    Nara: # Orestraya
+      x: 3764
+      y: 250 # overridden in code, but must be set
+      z: 6985
+      nearby: true # require another player nearby?
+      checkradius: 300 # require another player closer than this
+      radius: 20 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Pacem: # Wheaties#7056
+      x: -5214
+      y: 250 # overridden in code, but must be set
+      z: -1074
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Pavia: #roamingbrit
+      x: 913
+      y: 250 # overridden in code, but must be set
+      z: -3041
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 30 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Pridelands: # Gillilaeous#0662
+      x: -2238
+      y: 250 # overridden in code, but must be set
+      z: 9216
+      nearby: true # require another player nearby?
+      checkradius: 900 # require another player closer than this
+      radius: 200 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    PrideRock: # Britisher#3253
+      x: -2235
+      y: 250 # overridden in code, but must be set
+      z: 9200
+      nearby: true # require another player nearby?
+      checkradius: 300 # require another player closer than this
+      radius: 50 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Qbarra: # Loobiz#1628
+      x: 7058
+      y: 250 # overridden in code, but must be set
+      z: 715
+      nearby: true # require another player nearby?
+      checkradius: 200 # require another player closer than this
+      radius: 50 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    RepublicOfTransylvania: # TransylvaniaMan#4471
+      x: 5344
+      y: 250 # overridden in code, but must be set
+      z: 5627
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Salerno: #israelinetanyahu
+      x: -7244
+      y: 250 # overridden in code, but must be set
+      z: 4703
+      nearby: true # require another player nearby?
+      checkradius: 300 # require another player closer than this
+      radius: 50 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    SPQR: # Antonius_Jones#1007 
+      x: 2950
+      y: 250 # overridden in code, but must be set
+      z: -5550
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    TemporalIsles: # dr_bacon_hair
+      x: -1808
+      y: 250 # overridden in code, but must be set
+      z: -5851
+      nearby: true # require another player nearby?
+      checkradius: 200 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    The Papal States: # Antares
+      x: -6700
+      y: 250 # overridden in code, but must be set
+      z: 625
+      nearby: true # require another player nearby?
+      checkradius: 300 # require another player closer than this
+      radius: 50 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Truidencia: # Hylian Cellist#8553
+      x: 6681
+      y: 250 # overridden in code, but must be set
+      z: 6376
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Volterra: # Mickale#6186
+      x: -1070
+      y: 250 # overridden in code, but must be set
+      z: -1171
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Winterbourne: # 795046514363727923
+      x: -37
+      y: 250 # overridden in code, but must be set
+      z: -7585
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 100 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+    Yoahtl: # Solitaire7#3180
+      x: 7478
+      y: 250 # overridden in code, but must be set
+      z: -726
+      nearby: true # require another player nearby?
+      checkradius: 500 # require another player closer than this
+      radius: 15 # spawn area outer radius
+      exclusion: 0 # spawn area inner radius
+world_nether:
+  randomspawnon:
+    - respawn
+  keeprandomspawns: false
+  newplayertime: 3000
+  spawnarea:
+    type: "circle"
+    radius: 9000
+  spawnbyplayer: false
+  spawnbyplayerarea:
+    exclusionradius: 300
+    radius: 900
+  spawnblacklist:
+    - "WATER" # 8, 9 # water
+    - "LAVA" # 10, 11 # lava
+    # - 18 # leaves
+    - "FIRE" # 51 # fire
+    - "CACTUS" # 81 # cactus
+    - "OBSIDIAN" # 49 # obsidian - don't spawn in military infrastructure
+    - "BEDROCK"
+    - "MAGMA_BLOCK"
+    - "BLACK_CARPET" # 171 # carpet - don't spawn in military infrastructure
+    - "BLUE_CARPET"
+    - "BROWN_CARPET"
+    - "CYAN_CARPET"
+    - "GRAY_CARPET"
+    - "GREEN_CARPET"
+    - "LIGHT_BLUE_CARPET"
+    - "LIGHT_GRAY_CARPET"
+    - "LIME_CARPET"
+    - "MAGENTA_CARPET"
+    - "ORANGE_CARPET"
+    - "PINK_CARPET"
+    - "PURPLE_CARPET"
+    - "RED_CARPET"
+    - "WHITE_CARPET"
+    - "YELLOW_CARPET"
+  spawnpoints:
+#    Acadia: #SpacemanSpleef#0212
+#      x: 3600
+#      y: 250 # overridden in code, but must be set
+#      z: -9950
+#      nearby: true # require another player nearby?
+#      checkradius: 900 # require another player closer than this
+#      radius: 200 # spawn area outer radius
+#      exclusion: 0 # spawn area inner radius
+#    Yoahtl: # @Aki#3250
+#      x: -4989
+#      y: 250 # overridden in code, but must be set
+#      z: 6887
+#      nearby: true # require another player nearby?
+#      checkradius: 900 # require another player closer than this
+#      radius: 215 # spawn area outer radius
+#      exclusion: 78 # spawn area inner radius

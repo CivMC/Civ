@@ -18,7 +18,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface TabComplete {
-	String value();
 
-	boolean async() default false;
+    String value();
+
+    boolean async() default false;
 }

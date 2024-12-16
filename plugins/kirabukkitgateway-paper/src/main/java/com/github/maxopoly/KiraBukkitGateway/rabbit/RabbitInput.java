@@ -4,16 +4,16 @@ import com.google.gson.JsonObject;
 
 public abstract class RabbitInput {
 
-	private String identifier;
+    private String identifier;
 
-	public RabbitInput(String identifier) {
-		this.identifier = identifier;
-	}
+    public RabbitInput(String identifier) {
+        this.identifier = identifier;
+    }
 
-	public String getIdentifier() {
-		return identifier;
-	}
+    public String getIdentifier() {
+        return identifier;
+    }
 
-	public abstract void handle(JsonObject input);
+    public abstract void handle(JsonObject input);
 
 }

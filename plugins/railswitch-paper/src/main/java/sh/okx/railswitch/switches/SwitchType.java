@@ -6,12 +6,12 @@ import org.apache.commons.lang3.StringUtils;
  * Switch type matcher, will match a type to a tag.
  */
 public enum SwitchType {
-    
+
     NORMAL("[destination]"),
     INVERTED("[!destination]");
-    
+
     private final String tag;
-    
+
     /**
      * Defines a new switch type by its tag. Should there be a duplicate tag, the {@link SwitchType#find(String) find()}
      * function will return the first value found.
@@ -21,7 +21,7 @@ public enum SwitchType {
     SwitchType(String tag) {
         this.tag = tag;
     }
-    
+
     /**
      * Attempts to match a switch type to a switch tag.
      *
@@ -39,5 +39,5 @@ public enum SwitchType {
         }
         return null;
     }
-    
+
 }

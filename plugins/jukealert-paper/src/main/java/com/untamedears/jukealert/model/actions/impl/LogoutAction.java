@@ -10,29 +10,29 @@ import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 
 public class LogoutAction extends LoggablePlayerAction {
 
-	public static final String ID = "LOGOUT";
+    public static final String ID = "LOGOUT";
 
-	public LogoutAction(long time, Snitch snitch, UUID player) {
-		super(time, snitch, player);
-	}
+    public LogoutAction(long time, Snitch snitch, UUID player) {
+        super(time, snitch, player);
+    }
 
-	@Override
-	public String getIdentifier() {
-		return ID;
-	}
+    @Override
+    public String getIdentifier() {
+        return ID;
+    }
 
-	@Override
-	public IClickable getGUIRepresentation() {
-		return getEnrichedClickableSkullFor(getPlayer());
-	}
-	
-	@Override
-	public void accept(Snitch s) {
-		Bukkit.getPluginManager().callEvent(new PlayerLogoutSnitchEvent(snitch, Bukkit.getPlayer(player)));
-	}
+    @Override
+    public IClickable getGUIRepresentation() {
+        return getEnrichedClickableSkullFor(getPlayer());
+    }
 
-	@Override
-	public String getChatRepresentationIdentifier() {
-		return ChatColor.BOLD + "Logout";
-	}
+    @Override
+    public void accept(Snitch s) {
+        Bukkit.getPluginManager().callEvent(new PlayerLogoutSnitchEvent(snitch, Bukkit.getPlayer(player)));
+    }
+
+    @Override
+    public String getChatRepresentationIdentifier() {
+        return ChatColor.BOLD + "Logout";
+    }
 }

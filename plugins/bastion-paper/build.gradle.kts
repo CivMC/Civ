@@ -1,13 +1,15 @@
 plugins {
-	id("io.papermc.paperweight.userdev")
+    id("io.papermc.paperweight.userdev")
 }
 
 version = "3.0.1"
 
 dependencies {
-	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+    paperweight {
+        paperDevBundle("1.21.3-R0.1-SNAPSHOT")
+    }
 
-	compileOnly(project(":plugins:civmodcore-paper"))
-	compileOnly(project(":plugins:namelayer-paper"))
-	compileOnly(project(":plugins:citadel-paper"))
+    compileOnly(project(":plugins:civmodcore-paper"))
+    compileOnly(project(":plugins:namelayer-paper"))
+    compileOnly(project(":plugins:citadel-paper"))
 }

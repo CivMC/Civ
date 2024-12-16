@@ -20,102 +20,102 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.SingleBlockAPIVie
 
 public class JukeAlert extends ACivMod {
 
-	private static JukeAlert instance;
+    private static JukeAlert instance;
 
-	public static JukeAlert getInstance() {
-		return instance;
-	}
+    public static JukeAlert getInstance() {
+        return instance;
+    }
 
-	private JukeAlertDAO dao;
-	private JAConfigManager configManager;
-	private SnitchTypeManager snitchConfigManager;
-	private SnitchManager snitchManager;
-	private LoggedActionFactory loggedActionFactory;
-	private JASettingsManager settingsManager;
-	private SnitchCullManager cullManager;
-	private TaskChainFactory taskChainFactory;
-	private JACommandManager commandManager;
+    private JukeAlertDAO dao;
+    private JAConfigManager configManager;
+    private SnitchTypeManager snitchConfigManager;
+    private SnitchManager snitchManager;
+    private LoggedActionFactory loggedActionFactory;
+    private JASettingsManager settingsManager;
+    private SnitchCullManager cullManager;
+    private TaskChainFactory taskChainFactory;
+    private JACommandManager commandManager;
 
-	public JAConfigManager getConfigManager() {
-		return configManager;
-	}
+    public JAConfigManager getConfigManager() {
+        return configManager;
+    }
 
-	public JASettingsManager getSettingsManager() {
-		return settingsManager;
-	}
+    public JASettingsManager getSettingsManager() {
+        return settingsManager;
+    }
 
-	public LoggedActionFactory getLoggedActionFactory() {
-		return loggedActionFactory;
-	}
+    public LoggedActionFactory getLoggedActionFactory() {
+        return loggedActionFactory;
+    }
 
-	public SnitchTypeManager getSnitchConfigManager() {
-		return snitchConfigManager;
-	}
+    public SnitchTypeManager getSnitchConfigManager() {
+        return snitchConfigManager;
+    }
 
-	public JukeAlertDAO getDAO() {
-		return dao;
-	}
+    public JukeAlertDAO getDAO() {
+        return dao;
+    }
 
-	public SnitchManager getSnitchManager() {
-		return snitchManager;
-	}
+    public SnitchManager getSnitchManager() {
+        return snitchManager;
+    }
 
-	public SnitchCullManager getSnitchCullManager() {
-		return cullManager;
-	}
+    public SnitchCullManager getSnitchCullManager() {
+        return cullManager;
+    }
 
-	public TaskChainFactory getTaskChainFactory() {
-		return this.taskChainFactory;
-	}
+    public TaskChainFactory getTaskChainFactory() {
+        return this.taskChainFactory;
+    }
 
-	@Override
-	public void onDisable() {
-		snitchManager.shutdown();
-		if (this.taskChainFactory != null) {
-			this.taskChainFactory.shutdown(10, TimeUnit.SECONDS);
-			this.taskChainFactory = null;
-		}
-	}
+    @Override
+    public void onDisable() {
+        snitchManager.shutdown();
+        if (this.taskChainFactory != null) {
+            this.taskChainFactory.shutdown(10, TimeUnit.SECONDS);
+            this.taskChainFactory = null;
+        }
+    }
 
-	@Override
-	public void onEnable() {
-		instance = this;
-		super.onEnable();
-		snitchConfigManager = new SnitchTypeManager();
-		cullManager = new SnitchCullManager();
-		configManager = new JAConfigManager(this, snitchConfigManager);
-		saveDefaultConfig();
-		dao = new JukeAlertDAO(configManager.getDatabase(getConfig()));
-		if (!dao.updateDatabase()) {
-			getLogger().severe("Errors setting up database, shutting down");
-			Bukkit.shutdown();
-			return;
-		}
-		loggedActionFactory = new LoggedActionFactory();
-		SingleBlockAPIView<Snitch> api = ChunkMetaAPI.registerSingleTrackingPlugin(this, dao);
-		if (api == null) {
-			getLogger().severe("Errors setting up chunk metadata API, shutting down");
-			Bukkit.shutdown();
-			return;
-		}
-		if (!configManager.parse()) {
-			Bukkit.shutdown();
-			return;
-		}
+    @Override
+    public void onEnable() {
+        instance = this;
+        super.onEnable();
+        snitchConfigManager = new SnitchTypeManager();
+        cullManager = new SnitchCullManager();
+        configManager = new JAConfigManager(this, snitchConfigManager);
+        saveDefaultConfig();
+        dao = new JukeAlertDAO(configManager.getDatabase(getConfig()));
+        if (!dao.updateDatabase()) {
+            getLogger().severe("Errors setting up database, shutting down");
+            Bukkit.shutdown();
+            return;
+        }
+        loggedActionFactory = new LoggedActionFactory();
+        SingleBlockAPIView<Snitch> api = ChunkMetaAPI.registerSingleTrackingPlugin(this, dao);
+        if (api == null) {
+            getLogger().severe("Errors setting up chunk metadata API, shutting down");
+            Bukkit.shutdown();
+            return;
+        }
+        if (!configManager.parse()) {
+            Bukkit.shutdown();
+            return;
+        }
 
-		snitchManager = new SnitchManager(api);
-		snitchManager.enable();
+        snitchManager = new SnitchManager(api);
+        snitchManager.enable();
 
-		settingsManager = new JASettingsManager();
-		commandManager = new JACommandManager(this);
-		registerJukeAlertEvents();
-		JukeAlertPermissionHandler.setup();
-		this.taskChainFactory = BukkitTaskChainFactory.create(this);
-	}
+        settingsManager = new JASettingsManager();
+        commandManager = new JACommandManager(this);
+        registerJukeAlertEvents();
+        JukeAlertPermissionHandler.setup();
+        this.taskChainFactory = BukkitTaskChainFactory.create(this);
+    }
 
-	private void registerJukeAlertEvents() {
-		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(new LoggableActionListener(snitchManager), this);
-		pm.registerEvents(new SnitchLifeCycleListener(snitchManager, snitchConfigManager, getLogger()), this);
-	}
+    private void registerJukeAlertEvents() {
+        PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(new LoggableActionListener(snitchManager), this);
+        pm.registerEvents(new SnitchLifeCycleListener(snitchManager, snitchConfigManager, getLogger()), this);
+    }
 }

@@ -7,25 +7,25 @@ import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 
 public class LeaveFieldAction extends LoggablePlayerAction {
 
-	public static final String ID = "LEAVE";
+    public static final String ID = "LEAVE";
 
-	public LeaveFieldAction(long time, Snitch snitch, UUID player) {
-		super(time, snitch, player);
-	}
+    public LeaveFieldAction(long time, Snitch snitch, UUID player) {
+        super(time, snitch, player);
+    }
 
-	@Override
-	public IClickable getGUIRepresentation() {
-		return getEnrichedClickableSkullFor(getPlayer());
-	}
+    @Override
+    public IClickable getGUIRepresentation() {
+        return getEnrichedClickableSkullFor(getPlayer());
+    }
 
-	@Override
-	public String getIdentifier() {
-		return ID;
-	}
+    @Override
+    public String getIdentifier() {
+        return ID;
+    }
 
-	@Override
-	public String getChatRepresentationIdentifier() {
-		return "Leave";
-	}
+    @Override
+    public String getChatRepresentationIdentifier() {
+        return "Leave";
+    }
 
 }

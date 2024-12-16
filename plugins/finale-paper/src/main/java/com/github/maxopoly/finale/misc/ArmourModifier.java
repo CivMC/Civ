@@ -2,96 +2,120 @@ package com.github.maxopoly.finale.misc;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 public class ArmourModifier {
-	
-	public static class ArmourConfig {
 
-		private double toughness;
-		private double armour;
-		private double knockbackResistance;
-		private int extraDurabilityHits;
+    public static class ArmourConfig {
 
-		public ArmourConfig(double toughness, double armour, double knockbackResistance) {
-			this(toughness, armour, knockbackResistance, 0);
-		}
-		public ArmourConfig(double toughness, double armour, double knockbackResistance, int extraDurabilityHits) {
-			this.toughness = toughness;
-			this.armour = armour;
-			this.knockbackResistance = knockbackResistance;
-			this.extraDurabilityHits = extraDurabilityHits;
-		}
+        private double toughness;
+        private double armour;
+        private double knockbackResistance;
+        private int extraDurabilityHits;
 
-		public double getToughness() {
-			return toughness;
-		}
-		
-		public double getArmour() {
-			return armour;
-		}
+        public ArmourConfig(double toughness, double armour, double knockbackResistance) {
+            this(toughness, armour, knockbackResistance, 0);
+        }
 
-		public double getKnockbackResistance() {
-			return knockbackResistance;
-		}
+        public ArmourConfig(double toughness, double armour, double knockbackResistance, int extraDurabilityHits) {
+            this.toughness = toughness;
+            this.armour = armour;
+            this.knockbackResistance = knockbackResistance;
+            this.extraDurabilityHits = extraDurabilityHits;
+        }
 
-		public int getExtraDurabilityHits() {
-			return extraDurabilityHits;
-		}
+        public double getToughness() {
+            return toughness;
+        }
 
-		@Override
-		public String toString() {
-			return "Armour [toughness=" + toughness + ", armour=" + armour + ", kb_resistance=" + knockbackResistance + "]";
-		}
-		
-	}
+        public double getArmour() {
+            return armour;
+        }
 
-	private ExtraDurabilityTracker extraDurabilityTracker;
-	private Map<Material, ArmourConfig> armour;
+        public double getKnockbackResistance() {
+            return knockbackResistance;
+        }
 
-	public ArmourModifier() {
-		this.extraDurabilityTracker = new ExtraDurabilityTracker(this);
-		this.armour = new HashMap<Material, ArmourConfig>();
-	}
+        public int getExtraDurabilityHits() {
+            return extraDurabilityHits;
+        }
 
-	public void addArmour(Material m, double toughness, double armour, double knockbackResistance, int extraDurabilityHits) {
-		this.armour.put(m, new ArmourConfig(toughness, armour, knockbackResistance, extraDurabilityHits));
-	}
+        @Override
+        public String toString() {
+            return "Armour [toughness=" + toughness + ", armour=" + armour + ", kb_resistance=" + knockbackResistance + "]";
+        }
 
-	public double getToughness(Material m) {
-		ArmourConfig config = armour.get(m);
-		if (config == null) {
-			return -1;
-		}
-		return config.getToughness();
-	}
+    }
 
-	public double getArmour(Material m) {
-		ArmourConfig config = armour.get(m);
-		if (config == null) {
-			return -1;
-		}
-		return config.getArmour();
-	}
+    private ExtraDurabilityTracker extraDurabilityTracker;
+    private Map<Material, ArmourConfig> armour;
+    private Map<String, ArmourConfig> customArmour;
 
-	public double getKnockbackResistance(Material m) {
-		ArmourConfig config = armour.get(m);
-		if (config == null) {
-			return -1;
-		}
-		return config.getKnockbackResistance();
-	}
+    public ArmourModifier() {
+        this.extraDurabilityTracker = new ExtraDurabilityTracker(this);
+        this.armour = new HashMap<>();
+        this.customArmour = new HashMap<>();
+    }
 
-	public int getExtraDurabilityHits(Material m) {
-		ArmourConfig config = armour.get(m);
-		if (config == null) {
-			return -1;
-		}
+    public void addArmour(Material m, double toughness, double armour, double knockbackResistance, int extraDurabilityHits) {
+        this.armour.put(m, new ArmourConfig(toughness, armour, knockbackResistance, extraDurabilityHits));
+    }
 
-		return config.getExtraDurabilityHits();
-	}
+    public void addCustomArmour(String k, double toughness, double armour, double knockbackResistance, int extraDurabilityHits) {
+        this.customArmour.put(k, new ArmourConfig(toughness, armour, knockbackResistance, extraDurabilityHits));
+    }
 
-	public ExtraDurabilityTracker getExtraDurabilityTracker() {
-		return extraDurabilityTracker;
-	}
+    private ArmourConfig getArmourConfig(ItemStack item) {
+        if (item == null || item.isEmpty()) {
+            return null;
+        }
+        String key = CustomItem.getCustomItemKey(item);
+        if (key != null && customArmour.containsKey(key)) {
+            return customArmour.get(key);
+        } else {
+            return armour.get(item.getType());
+        }
+    }
+
+    public double getToughness(ItemStack m) {
+        ArmourConfig config = getArmourConfig(m);
+        if (config == null) {
+            return -1;
+        }
+        return config.getToughness();
+    }
+
+    public double getArmour(ItemStack m) {
+        ArmourConfig config = getArmourConfig(m);
+        if (config == null) {
+            return -1;
+        }
+        return config.getArmour();
+    }
+
+    public double getKnockbackResistance(ItemStack m) {
+        ArmourConfig config = getArmourConfig(m);
+        if (config == null) {
+            return -1;
+        }
+        return config.getKnockbackResistance();
+    }
+
+    public int getExtraDurabilityHits(ItemStack m) {
+        ArmourConfig config = getArmourConfig(m);
+        if (config == null) {
+            return -1;
+        }
+
+        return config.getExtraDurabilityHits();
+    }
+
+    public ExtraDurabilityTracker getExtraDurabilityTracker() {
+        return extraDurabilityTracker;
+    }
 }

@@ -18,34 +18,35 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 import java.util.Objects;
 
 public class NameCommand extends BaseCommand {
-	@CommandAlias("janame")
-	@Syntax("<name>")
-	@Description("Name a snitch")
-	public void execute(Player player, String snitchName) {
-		Snitch snitch = findLookingAtOrClosestSnitch(player, getPermission());
-		if (snitch == null) {
-			player.sendMessage(
-					ChatColor.RED + "You do not own any snitches nearby or lack permission to view their logs!");
-			return;
-		}
 
-		renameSnitch(player, snitchName, snitch);
-	}
+    @CommandAlias("janame")
+    @Syntax("<name>")
+    @Description("Name a snitch")
+    public void execute(Player player, String snitchName) {
+        Snitch snitch = findLookingAtOrClosestSnitch(player, getPermission());
+        if (snitch == null) {
+            player.sendMessage(
+                ChatColor.RED + "You do not own any snitches nearby or lack permission to view their logs!");
+            return;
+        }
 
-	private static void renameSnitch(Player player, String name, Snitch snitch) {
-		String newName = name.length() > 40
-			? name.substring(0, 40)
-			: name;
+        renameSnitch(player, snitchName, snitch);
+    }
 
-		String prevName = snitch.getName();
-		JukeAlert.getInstance().getSnitchManager().renameSnitch(snitch, newName);
-		TextComponent lineText = new TextComponent(ChatColor.AQUA + (Objects.equals(prevName, "") ? "Set " : "Changed ") + "snitch name to ");
-		lineText.addExtra(JAUtility.genTextComponent(snitch));
-		lineText.addExtra(Objects.equals(prevName, "") ? "" : ChatColor.AQUA + " from " + ChatColor.GOLD + prevName);
-		player.spigot().sendMessage(lineText);
-	}
+    private static void renameSnitch(Player player, String name, Snitch snitch) {
+        String newName = name.length() > 40
+            ? name.substring(0, 40)
+            : name;
 
-	private static PermissionType getPermission() {
-		return JukeAlertPermissionHandler.getRenameSnitch();
-	}
+        String prevName = snitch.getName();
+        JukeAlert.getInstance().getSnitchManager().renameSnitch(snitch, newName);
+        TextComponent lineText = new TextComponent(ChatColor.AQUA + (Objects.equals(prevName, "") ? "Set " : "Changed ") + "snitch name to ");
+        lineText.addExtra(JAUtility.genTextComponent(snitch));
+        lineText.addExtra(Objects.equals(prevName, "") ? "" : ChatColor.AQUA + " from " + ChatColor.GOLD + prevName);
+        player.spigot().sendMessage(lineText);
+    }
+
+    private static PermissionType getPermission() {
+        return JukeAlertPermissionHandler.getRenameSnitch();
+    }
 }

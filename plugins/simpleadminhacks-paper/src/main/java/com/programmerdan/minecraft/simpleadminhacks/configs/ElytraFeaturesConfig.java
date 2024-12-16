@@ -2,102 +2,103 @@ package com.programmerdan.minecraft.simpleadminhacks.configs;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
-import javax.annotation.Nonnull;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public final class ElytraFeaturesConfig extends SimpleHackConfig {
-	private final CivLogger logger;
 
-	private boolean disableFlight;
-	private boolean disableFlightInCombat;
+    private final CivLogger logger;
 
-	private boolean disableFireworkBoosting;
-	private boolean disableFireworkBoostingInCombat;
-	private boolean disableSafeFireworkBoosting;
+    private boolean disableFlight;
+    private boolean disableFlightInCombat;
 
-	private int heightDamage;
-	private double heightDamageScaling;
-	private int heightBuffer;
-	private long heightDamageInterval;
+    private boolean disableFireworkBoosting;
+    private boolean disableFireworkBoostingInCombat;
+    private boolean disableSafeFireworkBoosting;
 
-	public ElytraFeaturesConfig(@Nonnull final SimpleAdminHacks plugin,
-								@Nonnull final ConfigurationSection base) {
-		super(plugin, base, false);
-		this.logger = CivLogger.getLogger(getClass());
-		wireup(base);
-	}
+    private int heightDamage;
+    private double heightDamageScaling;
+    private int heightBuffer;
+    private long heightDamageInterval;
 
-	@Override
-	protected void wireup(@Nonnull final ConfigurationSection config) {
-		this.disableFlight = config.getBoolean("disableFlight", false);
+    public ElytraFeaturesConfig(@NotNull final SimpleAdminHacks plugin,
+                                @NotNull final ConfigurationSection base) {
+        super(plugin, base, false);
+        this.logger = CivLogger.getLogger(getClass());
+        wireup(base);
+    }
 
-		this.disableFlightInCombat = config.getBoolean("disableFlightInCombat", false);
+    @Override
+    protected void wireup(@NotNull final ConfigurationSection config) {
+        this.disableFlight = config.getBoolean("disableFlight", false);
 
-		this.disableFireworkBoosting = config.getBoolean("disableFireworkBoosting", false);
+        this.disableFlightInCombat = config.getBoolean("disableFlightInCombat", false);
 
-		this.disableFireworkBoostingInCombat = config.getBoolean("disableFireworkBoostingInCombat", false);
+        this.disableFireworkBoosting = config.getBoolean("disableFireworkBoosting", false);
 
-		this.disableSafeFireworkBoosting = config.getBoolean("disableSafeFireworkBoosting", false);
+        this.disableFireworkBoostingInCombat = config.getBoolean("disableFireworkBoostingInCombat", false);
 
-		this.heightDamage = config.getInt("heightDamage.damage", 1);
-		if (this.heightDamage < 0) {
-			this.logger.warning("[heightDamage.damage] was set to [" + this.heightDamage + "], " +
-					"which is invalid, defaulting to: 1");
-			this.heightDamage = 1;
-		}
+        this.disableSafeFireworkBoosting = config.getBoolean("disableSafeFireworkBoosting", false);
 
-		this.heightDamageScaling = config.getDouble("heightDamage.scales", 1d);
-		if (this.heightDamageScaling <= 0d) {
-			this.logger.warning("[heightDamage.scales] was set to [" + this.heightDamageScaling + "], " +
-					"which is invalid, defaulting to: 1.0d");
-			this.heightDamageScaling = 1d;
-		}
+        this.heightDamage = config.getInt("heightDamage.damage", 1);
+        if (this.heightDamage < 0) {
+            this.logger.warning("[heightDamage.damage] was set to [" + this.heightDamage + "], " +
+                "which is invalid, defaulting to: 1");
+            this.heightDamage = 1;
+        }
 
-		this.heightBuffer = config.getInt("heightDamage.buffer", 5);
+        this.heightDamageScaling = config.getDouble("heightDamage.scales", 1d);
+        if (this.heightDamageScaling <= 0d) {
+            this.logger.warning("[heightDamage.scales] was set to [" + this.heightDamageScaling + "], " +
+                "which is invalid, defaulting to: 1.0d");
+            this.heightDamageScaling = 1d;
+        }
 
-		this.heightDamageInterval = config.getLong("heightDamage.interval", 1000L);
-		if (this.heightDamageInterval < 1L) {
-			this.logger.warning("[heightDamage.interval] was set to [" + this.heightDamageInterval + "], " +
-					"which is invalid, defaulting to: 1000L");
-			this.heightDamageInterval = 1000L;
-		}
-	}
+        this.heightBuffer = config.getInt("heightDamage.buffer", 5);
 
-	public boolean isFlightDisabled() {
-		return this.disableFlight;
-	}
+        this.heightDamageInterval = config.getLong("heightDamage.interval", 1000L);
+        if (this.heightDamageInterval < 1L) {
+            this.logger.warning("[heightDamage.interval] was set to [" + this.heightDamageInterval + "], " +
+                "which is invalid, defaulting to: 1000L");
+            this.heightDamageInterval = 1000L;
+        }
+    }
 
-	public boolean isFlightDisabledInCombat() {
-		return this.disableFlightInCombat;
-	}
+    public boolean isFlightDisabled() {
+        return this.disableFlight;
+    }
 
-	public boolean isBoostingDisabled() {
-		return this.disableFireworkBoosting;
-	}
+    public boolean isFlightDisabledInCombat() {
+        return this.disableFlightInCombat;
+    }
 
-	public boolean isBoostingDisabledInCombat() {
-		return this.disableFireworkBoostingInCombat;
-	}
+    public boolean isBoostingDisabled() {
+        return this.disableFireworkBoosting;
+    }
 
-	public boolean isSafeBoostingDisabled() {
-		return this.disableSafeFireworkBoosting;
-	}
+    public boolean isBoostingDisabledInCombat() {
+        return this.disableFireworkBoostingInCombat;
+    }
 
-	public int getHeightDamage() {
-		return this.heightDamage;
-	}
+    public boolean isSafeBoostingDisabled() {
+        return this.disableSafeFireworkBoosting;
+    }
 
-	public double isHeightDamageScaling() {
-		return this.heightDamageScaling;
-	}
+    public int getHeightDamage() {
+        return this.heightDamage;
+    }
 
-	public int getHeightBuffer() {
-		return this.heightBuffer;
-	}
+    public double isHeightDamageScaling() {
+        return this.heightDamageScaling;
+    }
 
-	public long getHeightDamageInterval() {
-		return this.heightDamageInterval;
-	}
+    public int getHeightBuffer() {
+        return this.heightBuffer;
+    }
+
+    public long getHeightDamageInterval() {
+        return this.heightDamageInterval;
+    }
 
 }

@@ -8,8 +8,8 @@ import org.bukkit.Location;
 
 public class SingleCuboidRangeManager extends VariableSizeCuboidRangeManager {
 
-	public SingleCuboidRangeManager(int range, Snitch snitch) {
-		super(range, range, snitch);
-	}
+    public SingleCuboidRangeManager(int range, Snitch snitch) {
+        super(range, range, snitch);
+    }
 
 }

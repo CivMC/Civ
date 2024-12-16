@@ -16,18 +16,18 @@ import org.bukkit.command.CommandSender;
 @CommandAlias("cmc")
 public class ChunkMetaCommand extends BaseCommand {
 
-	private static final Logger CHUNK_META_LOGGER = LogManager.getLogger("Chunk meta");
+    private static final Logger CHUNK_META_LOGGER = LogManager.getLogger("Chunk meta");
 
-	@Subcommand("togglechunkmeta")
-	@Description("Toggle showing chunk meta logs")
-	@CommandPermission("cmc.debug")
-	public void chunkmeta(CommandSender sender) {
-		if (!CHUNK_META_LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
-			Configurator.setLevel("Chunk meta", Level.INFO);
-			sender.sendMessage(Component.text("Chunk meta logs disabled.", NamedTextColor.RED));
-		} else {
-			Configurator.setLevel("Chunk meta", Level.DEBUG);
-			sender.sendMessage(Component.text("Chunk meta logs enabled.", NamedTextColor.GREEN));
-		}
-	}
+    @Subcommand("togglechunkmeta")
+    @Description("Toggle showing chunk meta logs")
+    @CommandPermission("cmc.debug")
+    public void chunkmeta(CommandSender sender) {
+        if (!CHUNK_META_LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
+            Configurator.setLevel("Chunk meta", Level.INFO);
+            sender.sendMessage(Component.text("Chunk meta logs disabled.", NamedTextColor.RED));
+        } else {
+            Configurator.setLevel("Chunk meta", Level.DEBUG);
+            sender.sendMessage(Component.text("Chunk meta logs enabled.", NamedTextColor.GREEN));
+        }
+    }
 }

@@ -1,0 +1,47 @@
+competitions: {}
+
+# By copying and pasting competitions from the "competitions" section, you can make as many as you want. Please make sure that your
+# competition names are all different, otherwise the system may behave unexpectedly.
+
+general:
+
+  # This is the minimum needed amount of players for an automatic competition to start.
+  minimum-players: 1
+
+  # Should broadcasted catches (defined in rarities.yml) only be shown to players holding fishing rods?
+  broadcast-only-rods: true
+
+  # This is the allowed-rarities value used for /emf admin competition start <time> specific_fish
+  allowed-rarities:
+
+  # The colour of the bossbar shown at the top of the screen, (defaults to GREEN)
+  bossbar-colour: GREEN
+  # The title of the bossbar (defaults to the one set in messages.yml) - like messages.yml, this won't include the "_s left"
+  bossbar-prefix: "&a&lFishing Contest: "
+
+  # This is the number-needed value used for /emf admin competition start <time> specific_fish
+  number-needed: 1
+
+  # Fish will only be entered into the competition if they're in this world.
+  #required-worlds:
+  #  - "competition_world"
+
+leaderboard:
+
+  # This is the colours used in the variable {pos_colour} for each position, if you aren't using this variable, it isn't needed.
+  # Start from #1 then go down as many as you like
+  position-colours:
+    - "&6"
+    - "&e"
+    - "&7"
+    - "&7"
+    - "&#888888"
+
+rewards:
+  participation:
+    - "MESSAGE:&eUnfortunately only the top 3 players receive awards for fishing. Better luck next time. :)"
+  # Add as many more places as you need
+
+# ATTENTION ATTENTION ATTENTION
+# DO NOT EDIT THIS VALUE UNLESS YOU'RE UPDATING THE CONFIG.
+config-version: 1

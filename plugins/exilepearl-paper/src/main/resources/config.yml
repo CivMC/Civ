@@ -264,6 +264,7 @@ general:
   max_pearled_message: 'You have too many imprisoned alts'
   can_elytra_with_pearls: true
   can_take_through_portals: false
+  can_pearled_players_pearl_others: true
 pearls:
   free_by_throwing: false
   free_teleport: true
@@ -291,7 +292,7 @@ pearls:
       material: DIAMOND
       repair: 1
       lore:
-       - This is used to upgrade exile pearls to prison pearls
+        - This is used to upgrade exile pearls to prison pearls
   allow_pearl_stealing: true
   allow_summoning: true
   prison_world: world_the_end
@@ -301,11 +302,11 @@ help_item:
   enabled: true
   item_name: "You've been pearled!"
   item_text:
-  - "<a>You have been pearled."
-  - ""
-  - "<n>Another player has imprisoned you in an ender pearl."
-  - "<n>Your in-game actions will be limited until you are freed."
-  - "<n>You can type <c>/ep locate to see the location of your pearl."
+    - "<a>You have been pearled."
+    - ""
+    - "<n>Another player has imprisoned you in an ender pearl."
+    - "<n>Your in-game actions will be limited until you are freed."
+    - "<n>You can type <c>/ep locate to see the location of your pearl."
 damage_log:
   enabled: true
   algorithm: 0
@@ -342,9 +343,9 @@ rules:
   damage_reinforcement: false
   place_snitch: false
   protected_mobs:
-  - Sheep
-  - Cow
-  - Pig
-  - Horse
+    - Sheep
+    - Cow
+    - Pig
+    - Horse
   disallowed_worlds:
 

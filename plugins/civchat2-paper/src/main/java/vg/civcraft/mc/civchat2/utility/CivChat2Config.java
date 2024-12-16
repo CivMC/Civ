@@ -7,100 +7,108 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class CivChat2Config {
 
-	private FileConfiguration config;
-	private TreeMap<Double, String> chatColor = null;
+    private FileConfiguration config;
+    private TreeMap<Double, String> chatColor = null;
 
-	public CivChat2Config(FileConfiguration config) {
-		this.config = config;
-	}
+    public CivChat2Config(FileConfiguration config) {
+        this.config = config;
+    }
 
-	public boolean getGroupsEnabled() {
-		return config.getBoolean("info.groups");
-	}
+    public boolean getGroupsEnabled() {
+        return config.getBoolean("info.groups");
+    }
 
-	public boolean getDebug() {
-		return config.getBoolean("info.debug");
-	}
+    public boolean getServerBroadcastChat() {
+        return config.getBoolean("serverBroadcastChat");
+    }
 
-	public String getAfkMessage() {
-		return config.getString("info.afkmessage");
-	}
+    public boolean getDebug() {
+        return config.getBoolean("info.debug");
+    }
 
-	public boolean getLoginAnnounce() {
-		return config.getBoolean("info.loginAnnounce", false);
-	}
+    public String getAfkMessage() {
+        return config.getString("info.afkmessage");
+    }
 
-	public boolean getChatRangeWarn() {
-		return config.getBoolean("info.chatRangeWarn", true);
-	}
+    public boolean getLoginAnnounce() {
+        return config.getBoolean("info.loginAnnounce", false);
+    }
 
-	public int getChatRange() {
-		return config.getInt("chat.globalChatRange");
-	}
+    public boolean getChatRangeWarn() {
+        return config.getBoolean("info.chatRangeWarn", true);
+    }
 
-	public String getDefaultColor() {
-		return config.getString("chat.defaultChatColor");
-	}
-	
-	public int getKillBroadcastRange() {
-		return config.getInt("chat.killRange", 1000);
-	}
+    public int getChatRange() {
+        return config.getInt("chat.globalChatRange");
+    }
 
-	public String getOpChatColor() {
-		return config.getString("chat.opChatColor");
-	}
+    public String getDefaultColor() {
+        return config.getString("chat.defaultChatColor");
+    }
 
-	public int getYInc() {
-		return config.getInt("chat.yIncreaseDist");
-	}
+    public int getKillBroadcastRange() {
+        return config.getInt("chat.killRange", 1000);
+    }
 
-	public double getYScale() {
-		return config.getDouble("chat.yIncreaseScale");
-	}
+    public String getOpChatColor() {
+        return config.getString("chat.opChatColor");
+    }
 
-	public String getMysqlUsername() {
-		return config.getString("mysql.username");
-	}
+    public int getYInc() {
+        return config.getInt("chat.yIncreaseDist");
+    }
 
-	public String getMysqlHost() {
-		return config.getString("mysql.host");
-	}
+    public double getYScale() {
+        return config.getDouble("chat.yIncreaseScale");
+    }
 
-	public int getMysqlPort() {
-		return config.getInt("mysql.port");
-	}
+    public String getMysqlUsername() {
+        return config.getString("mysql.username");
+    }
 
-	public String getMysqlPassword() {
-		return config.getString("mysql.password");
-	}
+    public String getMysqlHost() {
+        return config.getString("mysql.host");
+    }
 
-	public String getMysqlDBname() {
-		return config.getString("mysql.dbname");
-	}
-	
-	public String getGlobalChatGroupName() {
-		return config.getString("chat.globalGroup", null);
-	}
-	
-	public boolean useDynamicRangeColoring() {
-		return config.getBoolean("chat.dynamicColoring");
-	}
+    public int getMysqlPort() {
+        return config.getInt("mysql.port");
+    }
 
-	public synchronized String getColorAtDistance(double distance) {
+    public String getMysqlPassword() {
+        return config.getString("mysql.password");
+    }
 
-		if (chatColor == null) {
-			chatColor = new TreeMap<>();
-			chatColor.put(0.0, getDefaultColor());
-			if (config.contains("chat.colors")) {
-				ConfigurationSection section = config.getConfigurationSection("chat.colors");
-				for (String s : section.getKeys(false)) {
-					chatColor.put(section.getDouble(s + ".range"), section.getString(s + ".color"));
-				}
-			}
-		}
+    public String getMysqlDBname() {
+        return config.getString("mysql.dbname");
+    }
 
-		String ret = "-";
-		Map.Entry<Double, String> let = chatColor.floorEntry(distance);
-		return let == null ? ret : let.getValue();
-	}
+    public String getGlobalChatGroupName() {
+        return config.getString("chat.globalGroup", null);
+    }
+
+    public boolean isJoinGlobalGroupByDefault() {
+        return config.getBoolean("chat.joinGlobalGroupByDefault", false);
+    }
+
+    public boolean useDynamicRangeColoring() {
+        return config.getBoolean("chat.dynamicColoring");
+    }
+
+    public synchronized String getColorAtDistance(double distance) {
+
+        if (chatColor == null) {
+            chatColor = new TreeMap<>();
+            chatColor.put(0.0, getDefaultColor());
+            if (config.contains("chat.colors")) {
+                ConfigurationSection section = config.getConfigurationSection("chat.colors");
+                for (String s : section.getKeys(false)) {
+                    chatColor.put(section.getDouble(s + ".range"), section.getString(s + ".color"));
+                }
+            }
+        }
+
+        String ret = "-";
+        Map.Entry<Double, String> let = chatColor.floorEntry(distance);
+        return let == null ? ret : let.getValue();
+    }
 }

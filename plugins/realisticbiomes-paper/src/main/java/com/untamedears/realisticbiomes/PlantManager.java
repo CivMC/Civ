@@ -12,39 +12,39 @@ import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.block.table.TableStor
 
 public class PlantManager {
 
-	private BlockBasedChunkMetaView<RBChunkCache, TableBasedDataObject, TableStorageEngine<Plant>> chunkMetaData;
+    private BlockBasedChunkMetaView<RBChunkCache, TableBasedDataObject, TableStorageEngine<Plant>> chunkMetaData;
 
-	PlantManager(BlockBasedChunkMetaView<RBChunkCache, TableBasedDataObject, TableStorageEngine<Plant>> chunkMetaData) {
-		this.chunkMetaData = chunkMetaData;
-	}
+    PlantManager(BlockBasedChunkMetaView<RBChunkCache, TableBasedDataObject, TableStorageEngine<Plant>> chunkMetaData) {
+        this.chunkMetaData = chunkMetaData;
+    }
 
-	public void deletePlant(Plant plant) {
-		chunkMetaData.remove(plant);
-	}
+    public void deletePlant(Plant plant) {
+        chunkMetaData.remove(plant);
+    }
 
-	public Plant getPlant(Block block) {
-		return getPlant(block.getLocation());
-	}
+    public Plant getPlant(Block block) {
+        return getPlant(block.getLocation());
+    }
 
-	public Plant getPlant(Location location) {
-		return (Plant) chunkMetaData.get(location);
-	}
+    public Plant getPlant(Location location) {
+        return (Plant) chunkMetaData.get(location);
+    }
 
-	public PlantLoadState getPlantIfLoaded(Block block) {
-		return getPlantIfLoaded(block.getLocation());
-	}
+    public PlantLoadState getPlantIfLoaded(Block block) {
+        return getPlantIfLoaded(block.getLocation());
+    }
 
-	public PlantLoadState getPlantIfLoaded(Location location) {
-		BlockDataObjectLoadStatus<TableBasedDataObject> status = chunkMetaData.getIfLoaded(location);
-		return new PlantLoadState((Plant)status.data, status.isLoaded);
-	}
+    public PlantLoadState getPlantIfLoaded(Location location) {
+        BlockDataObjectLoadStatus<TableBasedDataObject> status = chunkMetaData.getIfLoaded(location);
+        return new PlantLoadState((Plant) status.data, status.isLoaded);
+    }
 
-	public void putPlant(Plant plant) {
-		chunkMetaData.put(plant);
-	}
+    public void putPlant(Plant plant) {
+        chunkMetaData.put(plant);
+    }
 
-	void shutDown() {
-		chunkMetaData.disable();
-	}
+    void shutDown() {
+        chunkMetaData.disable();
+    }
 
 }
