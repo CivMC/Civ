@@ -4,11 +4,11 @@ import com.destroystokyo.paper.MaterialTags;
 import com.google.common.math.IntMath;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.Tag;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * <p>See <a href="https://github.com/Protonull/BukkitReport/tree/master/reports">BukkitReports</a>.</p>
@@ -57,7 +57,7 @@ public final class MaterialUtils {
      * @param object Object to base returned material on
      * @return Material hash of the given object
      */
-    @Nonnull
+    @NotNull
     public static Material getMaterialHash(@Nullable final Object object) {
         if (object == null) {
             return HASH_MATERIALS.get(0);

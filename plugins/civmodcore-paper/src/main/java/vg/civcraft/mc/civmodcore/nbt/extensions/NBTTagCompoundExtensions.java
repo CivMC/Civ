@@ -15,34 +15,6 @@ public final class NBTTagCompoundExtensions {
     private static final String UUID_LEAST_SUFFIX = "Least";
 
     /**
-     * @param self The NBTTagCompound to get the size of.
-     * @return Returns the number of key-value pairs.
-     */
-    public static int size(@NotNull final CompoundTag self) {
-        return self.tags.size();
-    }
-
-    /**
-     * @param self The NBTTagCompound to clear.
-     */
-    public static void clear(@NotNull final CompoundTag self) {
-        self.tags.clear();
-    }
-
-    /**
-     * @param self  The NBTTagCompound to do the adopting.
-     * @param other The NBTTagCompound to adopt.
-     */
-    public static void adopt(@NotNull final CompoundTag self,
-                             @NotNull final CompoundTag other) {
-        if (self == other || self.tags == other.tags) { // Ignore highlighter
-            return;
-        }
-        self.tags.clear();
-        self.tags.putAll(other.tags);
-    }
-
-    /**
      * @param self The NBTTagCompound to check if there's a UUID on.
      * @param key  The key of the UUID.
      * @return Returns true if there's a UUID value for that key.

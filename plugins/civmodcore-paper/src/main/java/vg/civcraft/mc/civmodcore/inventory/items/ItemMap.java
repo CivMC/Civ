@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.inventory.items;
 
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayList;
@@ -10,31 +11,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
-import net.minecraft.nbt.ByteArrayTag;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.DoubleTag;
-import net.minecraft.nbt.FloatTag;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongTag;
-import net.minecraft.nbt.ShortTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
+import java.util.function.BiFunction;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.keyvalue.UnmodifiableMapEntry;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.Repairable;
-import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
-import vg.civcraft.mc.civmodcore.utilities.CivLogger;
-import vg.civcraft.mc.civmodcore.utilities.MoreMath;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 /**
  * Allows the storage and comparison of item stacks while ignoring their maximum possible stack sizes. This offers
@@ -54,10 +42,9 @@ import vg.civcraft.mc.civmodcore.utilities.MoreMath;
  */
 public class ItemMap {
 
-    private static final CivLogger LOGGER = CivLogger.getLogger(ItemMap.class);
-
     private final Object2IntMap<ItemStack> items;
-    private int totalItems;
+    private final Object2IntOpenHashMap<String> customItems;
+	private int totalItems;
 
     /**
      * Empty constructor to create empty item map
@@ -65,6 +52,8 @@ public class ItemMap {
     public ItemMap() {
         this.items = new Object2IntOpenHashMap<>(0);
         this.items.defaultReturnValue(0);
+        this.customItems = new Object2IntOpenHashMap<>();
+        this.customItems.defaultReturnValue(0);
         this.totalItems = 0;
     }
 
@@ -76,6 +65,8 @@ public class ItemMap {
     public ItemMap(final ItemStack item) {
         this.items = new Object2IntOpenHashMap<>(1);
         this.items.defaultReturnValue(0);
+        this.customItems = new Object2IntOpenHashMap<>();
+        this.customItems.defaultReturnValue(0);
         this.totalItems = 0;
         addItemStack(item);
     }
@@ -88,6 +79,8 @@ public class ItemMap {
     public ItemMap(final Collection<ItemStack> stacks) {
         this.items = new Object2IntOpenHashMap<>(stacks.size());
         this.items.defaultReturnValue(0);
+        this.customItems = new Object2IntOpenHashMap<>();
+        this.customItems.defaultReturnValue(0);
         addAll(stacks);
     }
 
@@ -100,6 +93,8 @@ public class ItemMap {
     public ItemMap(final Inventory inventory) {
         this.items = new Object2IntOpenHashMap<>(inventory.getSize());
         this.items.defaultReturnValue(0);
+        this.customItems = new Object2IntOpenHashMap<>();
+        this.customItems.defaultReturnValue(0);
         this.totalItems = 0;
         update(inventory);
     }
@@ -108,55 +103,27 @@ public class ItemMap {
         return item.asOne();
     }
 
-
-    //getAmount
-    //getTotalItemAmount
-    //getTotalUniqueItemAmount
-    //getStacksByMaterial
-    //getStacksByMaterialEnchant
-    //getStacksByLore
-    //getEntrySet
-    //getItemStackRepresentation
-    //getLoredItemCountRepresentation
-
-    //addAll
-    //addItemStack
-    //addItemAmount
-    //addToInventory
-    //addToEntrySet
-
-    //removeItemStack
-    //removeItemStackCompletely
-    //removeSafelyFrom
-
-    //fitsIn
-    //isContainedIn
-    //containedExactlyIn
-    //getMultiplesContainedIn
-    //multiplyContent
-
-    //createMapConformCopy
-    //enrichWithNBT
-    //clone
-    //merge
-    //update
-
-
-    /**
-     * Clones the given item stack, sets its amount to one and checks whether a stack equaling the created one exists
-     * in the item map. If yes the amount of the given stack (before the amount was set to 1) will be added to the
-     * current amount in the item map, if not a new entry in the map with the correct amount will be created.
-     *
-     * @param input ItemStack to insert
-     */
-    public void addItemStack(final ItemStack input) {
-        if (!ItemUtils.isValidItemIgnoringAmount(input)) {
-            return;
+	/**
+	 * Clones the given item stack, sets its amount to one and checks whether a stack equaling the created one exists
+	 * in the item map. If yes the amount of the given stack (before the amount was set to 1) will be added to the
+	 * current amount in the item map, if not a new entry in the map with the correct amount will be created.
+	 *
+	 * @param input ItemStack to insert
+	 */
+	public void addItemStack(final ItemStack input) {
+		if (!ItemUtils.isValidItemIgnoringAmount(input)) {
+			return;
+		}
+        BiFunction<Object, Integer, Integer> addFn = (key, amount) ->
+            amount == null ? input.getAmount() : amount + input.getAmount();
+        String customItemKey = CustomItem.getCustomItemKey(input);
+        if (customItemKey != null) {
+            this.customItems.computeInt(customItemKey, addFn);
+        } else {
+            this.items.computeInt(INTERNAL_createKey(input), addFn);
         }
-        this.items.computeInt(INTERNAL_createKey(input), (key, amount) ->
-            amount == null ? input.getAmount() : amount + input.getAmount());
-        this.totalItems += input.getAmount();
-    }
+		this.totalItems += input.getAmount();
+	}
 
     /**
      * Adds all the items contained in this instance to the given inventory
@@ -184,7 +151,13 @@ public class ItemMap {
         if (key == null) {
             return;
         }
-        this.items.computeIntIfPresent(key, (_key, amount) -> (amount -= input.getAmount()) <= 0 ? null : amount);
+        BiFunction<Object, Integer, Integer> subFun = (_key, amount) -> (amount -= input.getAmount()) <= 0 ? null : amount;
+        String customItemKey = CustomItem.getCustomItemKey(input);
+        if (customItemKey != null) {
+            this.customItems.computeIntIfPresent(customItemKey, subFun);
+        } else {
+            this.items.computeIntIfPresent(key, subFun);
+        }
     }
 
     /**
@@ -201,7 +174,7 @@ public class ItemMap {
 
     @Override
     public int hashCode() {
-        return this.items.hashCode();
+        return Objects.hash(this.items.hashCode(), this.customItems.hashCode());
     }
 
     /**
@@ -223,25 +196,23 @@ public class ItemMap {
      * @param im ItemMap to merge
      */
     public void merge(ItemMap im) {
-        for (Entry<ItemStack, Integer> entry : im.getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : im.items.object2IntEntrySet()) {
             addItemAmount(entry.getKey(), entry.getValue());
+        }
+        for (Entry<String, Integer> entry : im.customItems.object2IntEntrySet()) {
+            addItemAmount(CustomItem.getCustomItem(entry.getKey()), entry.getValue());
         }
     }
 
     public void update(final Inventory inventory) {
         this.items.clear();
+        this.customItems.clear();
         this.totalItems = 0;
         for (int i = 0; i < inventory.getSize(); i++) {
             final ItemStack item = inventory.getItem(i);
             if (item != null) {
                 addItemStack(item);
             }
-        }
-    }
-
-    public void addEntrySet(Set<Entry<ItemStack, Integer>> entries) {
-        for (Entry<ItemStack, Integer> entry : entries) {
-            addItemAmount(entry.getKey(), entry.getValue());
         }
     }
 
@@ -275,6 +246,12 @@ public class ItemMap {
                 result.addItemAmount(is.clone(), items.get(is));
             }
         }
+        for (String is : customItems.keySet()) {
+            ItemStack item = CustomItem.getCustomItem(is);
+            if (item.getType() == m) {
+                result.addItemAmount(item, customItems.get(is));
+            }
+        }
         return result;
     }
 
@@ -283,58 +260,6 @@ public class ItemMap {
     }
 
     /**
-     * Gets a submap of this instance which contains all stacks with the same material and enchants as the given one
-     * and their respective amounts.
-     *
-     * @param m        Material to search for
-     * @param enchants Enchants to search for
-     * @return New ItemMap with all ItemStack and their amount whose material and enchants matches the given one
-     */
-    public ItemMap getStacksByMaterialEnchants(Material m, Map<Enchantment, Integer> enchants) {
-        ItemMap result = new ItemMap();
-        for (ItemStack is : items.keySet()) {
-            if (is.getType() == m && is.getItemMeta() != null && is.getItemMeta().getEnchants().equals(enchants)) {
-                result.addItemAmount(is.clone(), items.get(is));
-            }
-        }
-        return result;
-    }
-
-    public ItemMap getStacksByMaterialEnchants(ItemStack is) {
-        if (is.getItemMeta() != null) {
-            return getStacksByMaterialEnchants(is.getType(), is.getItemMeta().getEnchants());
-        } else {
-            return getStacksByMaterialEnchants(is.getType(), new HashMap<>());
-        }
-    }
-
-    /**
-     * Gets a submap of this instance which contains all stacks with the same lore as the given and their respective
-     * amount.
-     *
-     * @param lore Lore to search for
-     * @return New ItemMap with all ItemStacks and their amount whose lore matches the given one
-     */
-    public ItemMap getStacksByLore(final List<String> lore) {
-        final boolean gaveLore = CollectionUtils.isNotEmpty(lore);
-        final ItemMap result = new ItemMap();
-        for (final ItemStack key : this.items.keySet()) {
-            if (!key.hasItemMeta()) {
-                continue;
-            }
-            final var keyMeta = key.getItemMeta();
-            if (gaveLore != keyMeta.hasLore()) {
-                continue;
-            }
-            final var keyLore = keyMeta.getLore();
-            if (!Objects.equals(lore, keyLore)) {
-                continue;
-            }
-            result.addItemAmount(key.clone(), this.items.getInt(key));
-        }
-        return result;
-    }
-
     /**
      * Gets how many items of the given stack are in this map. Be aware that if a stack doesnt equal with the given one,
      * for example because of mismatched NBT tags, it wont be included in the result
@@ -345,9 +270,14 @@ public class ItemMap {
     public int getAmount(ItemStack is) {
         ItemMap matSubMap = getStacksByMaterial(is);
         int amount = 0;
-        for (Entry<ItemStack, Integer> entry : matSubMap.getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : matSubMap.items.object2IntEntrySet()) {
             ItemStack current = entry.getKey();
             if (MetaUtils.areMetasEqual(is.getItemMeta(), current.getItemMeta())) {
+                amount += entry.getValue();
+            }
+        }
+        for (Entry<String, Integer> entry : matSubMap.customItems.object2IntEntrySet()) {
+            if (entry.getKey().equals(CustomItem.getCustomItemKey(is))) {
                 amount += entry.getValue();
             }
         }
@@ -365,12 +295,23 @@ public class ItemMap {
      * @return How many unique items are stored in this map
      */
     public int getTotalUniqueItemAmount() {
-        return items.keySet().size();
+        return items.keySet().size() + customItems.keySet().size();
     }
 
-    @SuppressWarnings("deprecation")
-    public Set<Entry<ItemStack, Integer>> getEntrySet() {
-        return this.items.entrySet();
+    public Map<ItemStack, Integer> getAllItems() {
+        Object2IntOpenHashMap<ItemStack> map = new Object2IntOpenHashMap<>(this.items);
+        for (Object2IntMap.Entry<String> entry : this.customItems.object2IntEntrySet()) {
+            map.put(CustomItem.getCustomItem(entry.getKey()), entry.getIntValue());
+        }
+        return map;
+    }
+
+    public Object2IntMap<ItemStack> getItems() {
+        return items;
+    }
+
+    public Object2IntOpenHashMap<String> getCustomItems() {
+        return customItems;
     }
 
     /**
@@ -381,7 +322,7 @@ public class ItemMap {
      */
     public boolean containedExactlyIn(Inventory i) {
         ItemMap invMap = new ItemMap(i);
-        for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : getAllItems().entrySet()) {
             if (!entry.getValue().equals(invMap.getAmount(entry.getKey()))) {
                 return false;
             }
@@ -407,7 +348,7 @@ public class ItemMap {
      */
     public boolean isContainedIn(Inventory i) {
         ItemMap invMap = new ItemMap(i);
-        for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : getAllItems().entrySet()) {
             if (entry.getValue() > invMap.getAmount(entry.getKey())) {
                 return false;
             }
@@ -434,7 +375,7 @@ public class ItemMap {
     public int getMultiplesContainedIn(Inventory i) {
         ItemMap invMap = new ItemMap(i);
         int res = Integer.MAX_VALUE;
-        for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : getAllItems().entrySet()) {
             int pulledAmount = invMap.getAmount(entry.getKey());
             int multiples = pulledAmount / entry.getValue();
             res = Math.min(res, multiples);
@@ -449,8 +390,12 @@ public class ItemMap {
      */
     public void multiplyContent(double multiplier) {
         totalItems = 0;
-        for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : this.items.object2IntEntrySet()) {
             items.put(entry.getKey(), (int) (entry.getValue() * multiplier));
+            totalItems += (int) (entry.getValue() * multiplier);
+        }
+        for (Entry<String, Integer> entry : this.customItems.object2IntEntrySet()) {
+            customItems.put(entry.getKey(), (int) (entry.getValue() * multiplier));
             totalItems += (int) (entry.getValue() * multiplier);
         }
     }
@@ -463,20 +408,19 @@ public class ItemMap {
      */
     public List<ItemStack> getItemStackRepresentation() {
         List<ItemStack> result = new ArrayList<>();
-        for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : getAllItems().entrySet()) {
             ItemStack is = entry.getKey();
             Integer amount = entry.getValue();
             while (amount != 0) {
                 ItemStack toAdd = is.clone();
                 int addAmount = Math.min(amount, is.getMaxStackSize());
                 toAdd.setAmount(addAmount);
-                // log.info("Adding {0} as ItemStack", toAdd.toString());
                 result.add(toAdd);
-                amount -= addAmount;
-            }
-        }
-        return result;
-    }
+				amount -= addAmount;
+			}
+		}
+		return result;
+	}
 
     /**
      * Clones this map
@@ -484,7 +428,7 @@ public class ItemMap {
     @Override
     public ItemMap clone() {
         ItemMap clone = new ItemMap();
-        for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : this.getAllItems().entrySet()) {
             clone.addItemAmount(entry.getKey(), entry.getValue());
         }
         return clone;
@@ -520,7 +464,7 @@ public class ItemMap {
      * @return UI representation of large ItemMap
      */
     public List<ItemStack> getLoredItemCountRepresentation() {
-        Set<Entry<ItemStack, Integer>> entrySet = getEntrySet();
+        Set<Entry<ItemStack, Integer>> entrySet = getAllItems().entrySet();
         List<ItemStack> items = new ArrayList<>(entrySet.size());
         for (Entry<ItemStack, Integer> entry : entrySet) {
             ItemStack is = entry.getKey().clone();
@@ -551,7 +495,7 @@ public class ItemMap {
      * @return True if everything was successfully removed, false if not
      */
     public boolean removeSafelyFrom(Inventory i) {
-        for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : getAllItems().entrySet()) {
             int amountToRemove = entry.getValue();
             ItemStack is = entry.getKey();
             for (ItemStack inventoryStack : i.getStorageContents()) {
@@ -602,143 +546,13 @@ public class ItemMap {
         return true;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof ItemMap im) {
-            if (im.getTotalItemAmount() == getTotalItemAmount()) {
-                return im.getEntrySet().equals(getEntrySet());
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Utility to add NBT tags to an item and produce a custom stack size
-     *
-     * @param item   Template Bukkit ItemStack
-     * @param amount Output Stack Size
-     * @param map    Java Maps and Lists representing NBT data
-     * @return Cloned ItemStack with amount set to amt and NBT set to map.
-     */
-    public static ItemStack enrichWithNBT(ItemStack item, int amount, Map<String, Object> map) {
-        LOGGER.fine("Received request to enrich " + item.toString());
-        item = item.clone();
-        item.setAmount(MoreMath.clamp(amount, 1, item.getMaxStackSize()));
-        item = NBTSerialization.processItem(item, (nbt) -> mapToNBT(nbt.getRAW(), map));
-        return item;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static CompoundTag mapToNBT(CompoundTag base, Map<String, Object> map) {
-        LOGGER.fine("Representing map --> NBTTagCompound");
-        if (map == null || base == null) {
-            return base;
-        }
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            Object object = entry.getValue();
-            if (object instanceof Map) {
-                LOGGER.fine("Adding map at key " + entry.getKey());
-                base.put(entry.getKey(), mapToNBT(new CompoundTag(), (Map<String, Object>) object));
-            } else if (object instanceof MemorySection) {
-                LOGGER.fine("Adding map from MemorySection at key " + entry.getKey());
-                base.put(entry.getKey(), mapToNBT(new CompoundTag(), ((MemorySection) object).getValues(true)));
-            } else if (object instanceof List) {
-                LOGGER.fine("Adding list at key " + entry.getKey());
-                base.put(entry.getKey(), listToNBT(new ListTag(), (List<Object>) object));
-            } else if (object instanceof String) {
-                LOGGER.fine("Adding String " + object + " at key " + entry.getKey());
-                base.putString(entry.getKey(), (String) object);
-            } else if (object instanceof Double) {
-                LOGGER.fine("Adding Double " + object + " at key " + entry.getKey());
-                base.putDouble(entry.getKey(), (Double) object);
-            } else if (object instanceof Float) {
-                LOGGER.fine("Adding Float " + object + " at key " + entry.getKey());
-                base.putFloat(entry.getKey(), (Float) object);
-            } else if (object instanceof Boolean) {
-                LOGGER.fine("Adding Boolean " + object + " at key " + entry.getKey());
-                base.putBoolean(entry.getKey(), (Boolean) object);
-            } else if (object instanceof Byte) {
-                LOGGER.fine("Adding Byte " + object + " at key " + entry.getKey());
-                base.putByte(entry.getKey(), (Byte) object);
-            } else if (object instanceof Short) {
-                LOGGER.fine("Adding Short " + object + " at key " + entry.getKey());
-                base.putShort(entry.getKey(), (Short) object);
-            } else if (object instanceof Integer) {
-                LOGGER.fine("Adding Integer " + object + " at key " + entry.getKey());
-                base.putInt(entry.getKey(), (Integer) object);
-            } else if (object instanceof Long) {
-                LOGGER.fine("Adding Long " + object + " at key " + entry.getKey());
-                base.putLong(entry.getKey(), (Long) object);
-            } else if (object instanceof byte[]) {
-                LOGGER.fine("Adding bytearray at key " + entry.getKey());
-                base.putByteArray(entry.getKey(), (byte[]) object);
-            } else if (object instanceof int[]) {
-                LOGGER.fine("Adding intarray at key " + entry.getKey());
-                base.putIntArray(entry.getKey(), (int[]) object);
-            } else if (object instanceof UUID) {
-                LOGGER.fine("Adding UUID " + object + " at key " + entry.getKey());
-                base.putUUID(entry.getKey(), (UUID) object);
-            } else if (object instanceof Tag) {
-                LOGGER.fine("Adding nbtobject at key " + entry.getKey());
-                base.put(entry.getKey(), (Tag) object);
-            } else {
-                LOGGER.warning("Unrecognized entry in map-->NBT: " + object.toString());
-            }
-        }
-        return base;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static ListTag listToNBT(ListTag base, List<Object> list) {
-        LOGGER.fine("Representing list --> NBTTagList");
-        if (list == null || base == null) {
-            return base;
-        }
-        for (Object object : list) {
-            if (object instanceof Map) {
-                LOGGER.fine("Adding map to list");
-                base.add(mapToNBT(new CompoundTag(), (Map<String, Object>) object));
-            } else if (object instanceof MemorySection) {
-                LOGGER.fine("Adding map from MemorySection to list");
-                base.add(mapToNBT(new CompoundTag(), ((MemorySection) object).getValues(true)));
-            } else if (object instanceof List) {
-                LOGGER.fine("Adding list to list");
-                base.add(listToNBT(new ListTag(), (List<Object>) object));
-            } else if (object instanceof String) {
-                LOGGER.fine("Adding string " + object + " to list");
-                base.add(StringTag.valueOf((String) object));
-            } else if (object instanceof Double) {
-                LOGGER.fine("Adding double " + object + " to list");
-                base.add(DoubleTag.valueOf((Double) object));
-            } else if (object instanceof Float) {
-                LOGGER.fine("Adding float " + object + " to list");
-                base.add(FloatTag.valueOf((Float) object));
-            } else if (object instanceof Byte) {
-                LOGGER.fine("Adding byte " + object + " to list");
-                base.add(ByteTag.valueOf((Byte) object));
-            } else if (object instanceof Short) {
-                LOGGER.fine("Adding short " + object + " to list");
-                base.add(ShortTag.valueOf((Short) object));
-            } else if (object instanceof Integer) {
-                LOGGER.fine("Adding integer " + object + " to list");
-                base.add(IntTag.valueOf((Integer) object));
-            } else if (object instanceof Long) {
-                LOGGER.fine("Adding long " + object + " to list");
-                base.add(LongTag.valueOf((Long) object));
-            } else if (object instanceof byte[]) {
-                LOGGER.fine("Adding byte array to list");
-                base.add(new ByteArrayTag((byte[]) object));
-            } else if (object instanceof int[]) {
-                LOGGER.fine("Adding int array to list");
-                base.add(new IntArrayTag((int[]) object));
-            } else if (object instanceof Tag) {
-                LOGGER.fine("Adding nbt object to list");
-                base.add((Tag) object);
-            } else {
-                LOGGER.warning("Unrecognized entry in list-->NBT: " + base);
-            }
-        }
-        return base;
-    }
-
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof ItemMap im) {
+			if (im.getTotalItemAmount() == getTotalItemAmount()) {
+				return im.items.equals(items) && im.customItems.equals(customItems);
+			}
+		}
+		return false;
+	}
 }

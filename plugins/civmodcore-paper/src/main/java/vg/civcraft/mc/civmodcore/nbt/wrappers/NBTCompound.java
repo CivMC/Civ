@@ -69,7 +69,7 @@ public class NBTCompound {
      * @return The size of the tag compound.
      */
     public int size() {
-        return this.tag.tags.size();
+        return this.tag.size();
     }
 
     /**
@@ -78,7 +78,7 @@ public class NBTCompound {
      * @return Returns true if the tag compound is empty.
      */
     public boolean isEmpty() {
-        return this.tag.tags.isEmpty();
+        return this.tag.isEmpty();
     }
 
     /**
@@ -88,7 +88,7 @@ public class NBTCompound {
      * @return Returns true if the contains the given key.
      */
     public boolean hasKey(final String key) {
-        return this.tag.tags.containsKey(key);
+        return this.tag.getAllKeys().contains(key);
     }
 
     /**
@@ -110,24 +110,7 @@ public class NBTCompound {
      */
     @NotNull
     public Set<String> getKeys() {
-        return this.tag.tags.keySet();
-    }
-
-    /**
-     * Moves a value from one key to another.
-     *
-     * @param fromKey The previous key.
-     * @param toKey   The new key.
-     */
-    public void switchKey(@NotNull final String fromKey,
-                          @NotNull final String toKey) {
-        if (StringUtils.equals(fromKey, toKey)) {
-            return;
-        }
-        this.tag.tags.computeIfPresent(fromKey, (_key, value) -> {
-            this.tag.tags.put(toKey, value);
-            return null;
-        });
+        return this.tag.getAllKeys();
     }
 
     /**
@@ -138,14 +121,14 @@ public class NBTCompound {
      * @param key The key to remove.
      */
     public void remove(final String key) {
-        this.tag.tags.remove(key);
+        this.tag.remove(key);
     }
 
     /**
      * Clears all values from the tag compound.
      */
     public void clear() {
-        this.tag.tags.clear();
+        this.tag.getAllKeys().clear();
     }
 
     /**
@@ -158,8 +141,10 @@ public class NBTCompound {
         if (this == nbt || this.tag == nbt.tag) {
             return;
         }
-        this.tag.tags.clear();
-        this.tag.tags.putAll(nbt.tag.tags);
+        this.tag.getAllKeys().clear();
+        for (String key : nbt.tag.getAllKeys()) {
+            this.tag.put(key, nbt.tag.get(key));
+        }
     }
 
     /**
@@ -471,7 +456,7 @@ public class NBTCompound {
     @Nullable
     public NBTCompound getNullableCompound(@NotNull final String key) {
         Objects.requireNonNull(key);
-        final var found = this.tag.tags.get(key);
+        final var found = this.tag.get(key);
         if (found instanceof CompoundTag compound) {
             return new NBTCompound(compound);
         }
@@ -879,7 +864,7 @@ public class NBTCompound {
             return true;
         }
         if (object instanceof NBTCompound other) {
-            return Objects.equals(this.tag.tags, other.tag.tags);
+            return Objects.equals(this.tag, other.tag);
         }
         return false;
     }
@@ -887,7 +872,7 @@ public class NBTCompound {
     @NotNull
     @Override
     public String toString() {
-        return "NBTCompound" + this.tag.tags;
+        return "NBTCompound" + this.tag;
     }
 
 }

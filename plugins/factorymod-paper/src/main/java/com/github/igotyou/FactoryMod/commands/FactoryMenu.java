@@ -18,7 +18,7 @@ public class FactoryMenu extends BaseCommand {
     @CommandAlias("fm")
     @Syntax("[factory]")
     @Description("Opens a GUI allowing you to browse through all factories")
-    @CommandCompletion("@FM_Factories")
+    @CommandCompletion("@FM_Factories @nothing")
     public void execute(Player sender, @Optional String factoryName) {
         if (factoryName == null) {
             FactoryModGUI gui = new FactoryModGUI(sender);

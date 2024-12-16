@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -20,8 +21,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.PotionUtils;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
@@ -38,10 +39,10 @@ public class ScoreboardHUD implements Listener {
     static {
         colorMapping.put(PotionEffectType.FIRE_RESISTANCE, ChatColor.GOLD);
         colorMapping.put(PotionEffectType.SPEED, ChatColor.AQUA);
-        colorMapping.put(PotionEffectType.INCREASE_DAMAGE, ChatColor.RED);
+        colorMapping.put(PotionEffectType.STRENGTH, ChatColor.RED);
         colorMapping.put(PotionEffectType.REGENERATION, ChatColor.LIGHT_PURPLE);
-        colorMapping.put(PotionEffectType.FAST_DIGGING, ChatColor.AQUA);
-        colorMapping.put(PotionEffectType.SLOW, ChatColor.GRAY);
+        colorMapping.put(PotionEffectType.HASTE, ChatColor.AQUA);
+        colorMapping.put(PotionEffectType.SLOWNESS, ChatColor.GRAY);
     }
 
     private List<CivScoreBoard> scoreBoards;
@@ -170,7 +171,7 @@ public class ScoreboardHUD implements Listener {
             }
 
             //TODO check deprecated methods
-            String name = PotionUtils.getEffectNiceName(pot.getType());
+            String name = ChatUtils.stringify(Component.translatable(pot.getType()));
             String formatted = String.format("%s %s%s %d | %d:%s", sortingPrefix, effectColor, name, level, minutes,
                 seconds);
             scoreBoards.get(boardIndex).set(p, formatted);
@@ -221,7 +222,7 @@ public class ScoreboardHUD implements Listener {
         if (damageable == null) {
             return null;
         }
-        int maxDura = is.getType().getMaxDurability();
+        int maxDura = damageable.hasMaxDamage() ? damageable.getMaxDamage() : is.getType().getMaxDurability();
         int damage = damageable.getDamage();
         int remainingHealth = maxDura - damage;
         float damagedRatio = ((float) remainingHealth) / maxDura;

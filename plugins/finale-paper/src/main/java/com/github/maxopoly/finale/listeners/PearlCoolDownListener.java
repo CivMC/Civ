@@ -3,9 +3,11 @@ package com.github.maxopoly.finale.listeners;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
 import com.github.maxopoly.finale.external.FinaleSettingManager;
+
 import java.text.DecimalFormat;
 import java.util.UUID;
 import java.util.function.BiFunction;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

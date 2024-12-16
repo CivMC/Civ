@@ -15,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import vg.civcraft.mc.civchat2.broadcaster.ServerBroadcaster;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
 import vg.civcraft.mc.civchat2.event.GroupChatEvent;
@@ -58,9 +59,12 @@ public class CivChat2Manager {
 
     private static Map<UUID, String> customNames = new HashMap<>();
 
-    public CivChat2Manager(CivChat2 pluginInstance) {
+    private final ServerBroadcaster broadcaster;
+
+    public CivChat2Manager(CivChat2 pluginInstance, ServerBroadcaster broadcaster) {
 
         instance = pluginInstance;
+        this.broadcaster = broadcaster;
         config = instance.getPluginConfig();
         chatLog = instance.getCivChat2FileLogger();
         DBM = instance.getDatabaseManager();
@@ -200,23 +204,20 @@ public class CivChat2Manager {
         int y = location.getBlockY();
         double scale = (config.getYScale()) / 1000;
 
-        StringBuilder sb = new StringBuilder();
-
         // Do height check
         // Player is above chat increase range
-        if (y > height) {
+        if (range > 0 && y > height) {
             int above = y - height;
             int newRange = (int) (range + (range * (scale * above)));
             range = newRange;
-            sb.delete(0, sb.length());
         }
 
         Set<String> receivers = new HashSet<>();
         // Loop through players and send to those that are close enough
         for (Player receiver : recipients) {
             if (!DBM.isIgnoringPlayer(receiver.getUniqueId(), sender.getUniqueId())) {
-                if (receiver.getWorld().equals(sender.getWorld())) {
-                    double receiverDistance = location.distance(receiver.getLocation());
+                if (range <= 0 || receiver.getWorld().equals(sender.getWorld())) {
+                    double receiverDistance = range <= 0 ? 0 : location.distance(receiver.getLocation());
                     if (receiverDistance <= range) {
                         net.md_5.bungee.api.ChatColor newColor;
                         if (config.useDynamicRangeColoring()) {
@@ -268,6 +269,8 @@ public class CivChat2Manager {
         } else {
             afkPlayers.remove(player.getUniqueId());
         }
+
+        scoreboardHUD.updateAFKScoreboardHUD(player);
         return afkStatus;
     }
 
@@ -281,9 +284,13 @@ public class CivChat2Manager {
         Preconditions.checkNotNull(player, "player");
         if (afkPlayers.contains(player.getUniqueId())) {
             afkPlayers.remove(player.getUniqueId());
+
+            scoreboardHUD.updateAFKScoreboardHUD(player);
             return false;
         }
         afkPlayers.add(player.getUniqueId());
+
+        scoreboardHUD.updateAFKScoreboardHUD(player);
         return true;
     }
 
@@ -353,6 +360,24 @@ public class CivChat2Manager {
         if (event.isCancelled()) {
             return;
         }
+
+        String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId())
+            : sender.getDisplayName();
+        Set<String> players = doSendGroupMsg(sender.getUniqueId(), senderName, group, message);
+        chatLog.logGroupMessage(sender, message, group.getName(), players);
+        broadcaster.broadcastGroup(sender.getUniqueId(), sender.getName(), senderName, group.getName(), message);
+    }
+
+    public void sendRemoteGroupMsg(UUID senderId, String senderName, String senderDisplayName, String groupName, String message) {
+        Group group = GroupManager.getGroup(groupName);
+        if (group == null) {
+            return;
+        }
+        Set<String> players = doSendGroupMsg(senderId, senderDisplayName, group, message);
+        chatLog.logRemoteGroupMessage(senderName, message, group.getName(), players);
+    }
+
+    private Set<String> doSendGroupMsg(UUID senderId, String senderName, Group group, String message) {
         List<Player> members = new ArrayList<>();
         List<UUID> membersUUID = group.getAllMembers();
         for (UUID uuid : membersUUID) {
@@ -364,15 +389,13 @@ public class CivChat2Manager {
             }
         }
 
-        String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId())
-            : sender.getDisplayName();
         String formatted = parse(ChatStrings.chatGroupMessage, group.getName(), senderName, message);
 
         for (Player receiver : members) {
             if (DBM.isIgnoringGroup(receiver.getUniqueId(), group.getName())) {
                 continue;
             }
-            if (DBM.isIgnoringPlayer(receiver.getUniqueId(), sender.getUniqueId())) {
+            if (DBM.isIgnoringPlayer(receiver.getUniqueId(), senderId)) {
                 continue;
             }
             receiver.sendMessage(formatted);
@@ -383,7 +406,7 @@ public class CivChat2Manager {
             players.add(NameAPI.getCurrentName(player.getUniqueId()));
         }
         players.remove(senderName);
-        chatLog.logGroupMessage(sender, message, group.getName(), players);
+        return players;
     }
 
     /**

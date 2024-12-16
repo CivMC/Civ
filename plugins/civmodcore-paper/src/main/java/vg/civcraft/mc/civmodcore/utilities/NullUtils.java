@@ -1,6 +1,6 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Protonull
@@ -49,7 +49,7 @@ public final class NullUtils {
      * @param object The object that isn't null.
      * @return Returns the object highlighted as non-null.
      */
-    @Nonnull
+    @NotNull
     public static <T> T isNotNull(final T object) {
         return object;
     }

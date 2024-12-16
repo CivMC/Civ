@@ -40,8 +40,8 @@ public class HorseStats extends SimpleHack<HorseStatsConfig> implements Listener
         Entity entity = event.getRightClicked();
         if (entity instanceof AbstractHorse) {
             AbstractHorse horse = (AbstractHorse) entity;
-            AttributeInstance attrHealth = horse.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-            AttributeInstance attrSpeed = horse.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+            AttributeInstance attrHealth = horse.getAttribute(Attribute.MAX_HEALTH);
+            AttributeInstance attrSpeed = horse.getAttribute(Attribute.MOVEMENT_SPEED);
             event.getPlayer().sendMessage(String.format("%sHealth = %f, Speed = %fm/s, Jump height = %f blocks",
                 ChatColor.YELLOW,
                 attrHealth.getBaseValue(),
@@ -50,8 +50,8 @@ public class HorseStats extends SimpleHack<HorseStatsConfig> implements Listener
             event.setCancelled(true);
         } else if (entity instanceof Strider) {
             Strider strider = (Strider) entity;
-            AttributeInstance attrHealth = strider.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-            AttributeInstance attrSpeed = strider.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
+            AttributeInstance attrHealth = strider.getAttribute(Attribute.MAX_HEALTH);
+            AttributeInstance attrSpeed = strider.getAttribute(Attribute.MOVEMENT_SPEED);
             event.getPlayer().sendMessage(String.format("%sHealth = %f, Speed = %fm/s",
                 ChatColor.YELLOW,
                 attrHealth.getBaseValue(),

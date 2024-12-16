@@ -17,11 +17,14 @@ public class EssenceConfigManager extends ConfigParser {
     private long streakDelay;
     private long streakGracePeriod;
     private long timeForGain;
-    private ItemMap loginReward;
-    private ItemMap votingReward;
+    private ItemMap rewards;
+    private int loginReward;
+    private int votingReward;
     private Map<String, VotingSite> votingCooldowns;
     private boolean giveRewardToPearled;
     private boolean multiplyPearlCost;
+    private boolean physical;
+    private int virtualCap;
 
     public EssenceConfigManager(ACivMod plugin) {
         super(plugin);
@@ -36,8 +39,11 @@ public class EssenceConfigManager extends ConfigParser {
         streakDelay = ConfigHelper.parseTime(config.getString("streak_delay", "20 hours"));
         streakGracePeriod = ConfigHelper.parseTime(config.getString("streak_grace_period", "1 day"));
         timeForGain = ConfigHelper.parseTime(config.getString("online_for_reward", "30 minutes"));
-        loginReward = ConfigHelper.parseItemMap(config.getConfigurationSection("login_reward"));
-        votingReward = ConfigHelper.parseItemMap(config.getConfigurationSection("voting_reward"));
+        rewards = ConfigHelper.parseItemMap(config.getConfigurationSection("rewards"));
+        loginReward = config.getInt("login_reward", 1);
+        votingReward = config.getInt("voting_reward", 1);
+        physical = config.getBoolean("physical", true);
+        virtualCap = config.getInt("virtual_cap", 64);
         votingCooldowns = new HashMap<>();
         if (config.isConfigurationSection("voting_sites")) {
             ConfigurationSection votingKeySection = config.getConfigurationSection("voting_sites");
@@ -75,12 +81,16 @@ public class EssenceConfigManager extends ConfigParser {
         return multiplyPearlCost;
     }
 
-    public ItemMap getVotingReward() {
-        return votingReward;
+    public ItemMap getRewards() {
+        return rewards;
     }
 
-    public ItemMap getLoginReward() {
+    public int getLoginReward() {
         return loginReward;
+    }
+
+    public int getVotingReward() {
+        return votingReward;
     }
 
     public int getMaxStreak() {
@@ -99,4 +109,11 @@ public class EssenceConfigManager extends ConfigParser {
         return timeForGain;
     }
 
+    public boolean isPhysical() {
+        return physical;
+    }
+
+    public int getVirtualCap() {
+        return virtualCap;
+    }
 }

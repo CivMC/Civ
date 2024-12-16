@@ -21,6 +21,7 @@ chat:
       range: 800
       color: GRAY
   globalGroup: '!'
+  joinGlobalGroupByDefault: true
 info:
   #debug: lots of debugging logging will show up in the console def=false
   debug: false
@@ -37,3 +38,6 @@ mysql:
   port: 3306
   username: ${CIV_MYSQL_USERNAME}
   password: ${CIV_MYSQL_PASSWORD}
+
+# true if chat should be broadcasted to all servers via bungeecord
+serverBroadcastChat: true

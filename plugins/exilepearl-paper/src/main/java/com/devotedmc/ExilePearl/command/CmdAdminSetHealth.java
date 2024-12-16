@@ -11,10 +11,10 @@ public class CmdAdminSetHealth extends PearlCommand {
         super(pearlApi);
         this.aliases.add("sethealth");
 
-        this.setHelpShort("Sets the health % value of a pearl.");
+        this.setHelpShort("Sets the health value of a pearl.");
 
         this.commandArgs.add(requiredPearlPlayer());
-        this.commandArgs.add(required("health %", autoTab("", "Enter the desired health percent")));
+        this.commandArgs.add(required("health", autoTab("", "Enter the desired health")));
 
         this.permission = Permission.SET_HEALTH.node;
         this.visibility = CommandVisibility.SECRET;
@@ -34,17 +34,13 @@ public class CmdAdminSetHealth extends PearlCommand {
             return;
         }
 
-        Integer arg = argAsInt(1);
-        if (arg == null) {
-            msg("<b>Pearl health must be an integer between 0 and 100.");
+        Integer health = argAsInt(1);
+        if (health == null) {
+            msg("<b>Pearl health must be an integer");
             return;
         }
 
-        int percent = Math.min(100, Math.max(1, arg));
-
-        // calculate the actual value
-        int healthValue = (int) (plugin.getPearlConfig().getPearlHealthMaxValue() * ((double) percent / 100));
-        pearl.setHealth(healthValue);
-        msg("<g>You updated the pearl health of player %s to %d%%", pearl.getPlayerName(), percent);
+        pearl.setHealth(health);
+        msg("<g>You updated the pearl health of player %s to %d", pearl.getPlayerName(), health);
     }
 }
