@@ -45,6 +45,7 @@ public class CitadelListener implements Listener {
         BastionBlock bastionBlock = Bastion.getBastionStorage().getBastionBlock(event.getReinforcement().getLocation());
         if (bastionBlock == null) return;
         bastionBlock.setPlaced(System.currentTimeMillis());
+        Bastion.getBastionStorage().updated(bastionBlock);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -52,6 +53,7 @@ public class CitadelListener implements Listener {
         BastionBlock bastionBlock = Bastion.getBastionStorage().getBastionBlock(event.getReinforcement().getLocation());
         if (bastionBlock == null) return;
         bastionBlock.setPlaced(System.currentTimeMillis());
+        Bastion.getBastionStorage().updated(bastionBlock);
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -59,5 +61,6 @@ public class CitadelListener implements Listener {
         BastionBlock bastionBlock = Bastion.getBastionStorage().getBastionBlock(event.getReinforcement().getLocation());
         if (bastionBlock == null) return;
         bastionBlock.setPlaced(System.currentTimeMillis());
+        Bastion.getBastionStorage().updated(bastionBlock);
     }
 }
