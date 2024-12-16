@@ -1,8 +1,8 @@
 package vg.civcraft.mc.civmodcore;
 
-import javax.annotation.Nonnull;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.config.ConfigParser;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 
@@ -25,14 +25,14 @@ public final class CivModCoreConfig extends ConfigParser {
     private int chunkLoadingThreads;
     private static final int DEFAULT_CHUNK_LOADING_THREADS = 1;
 
-    CivModCoreConfig(@Nonnull final CivModCorePlugin plugin) {
+    CivModCoreConfig(@NotNull final CivModCorePlugin plugin) {
         super(plugin);
         Objects.requireNonNull(plugin);
         reset();
     }
 
     @Override
-    protected boolean parseInternal(@Nonnull final ConfigurationSection config) {
+    protected boolean parseInternal(@NotNull final ConfigurationSection config) {
         this.databaseCredentials = config.getObject("database",
             DatabaseCredentials.class, DEFAULT_DATABASE_CREDENTIALS);
         this.scoreboardHeader = ChatColor.translateAlternateColorCodes('&',

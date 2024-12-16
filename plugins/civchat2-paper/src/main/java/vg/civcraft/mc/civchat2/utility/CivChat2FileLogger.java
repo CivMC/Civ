@@ -15,33 +15,46 @@ public class CivChat2FileLogger {
         logger = LogManager.getLogger("ChatLogs");
     }
 
-    public void logGlobalMessage(Player sender, String message, Set<String> recivers) {
+    public void logGlobalMessage(Player sender, String message, Set<String> receivers) {
 
-        String reciversNames = getPlayersNames(recivers);
+        String reciversNames = getPlayersNames(receivers);
         Location playerLocation = sender.getLocation();
         String messageToLog = String.format(
-            "Sender: [%s], Message: [%s], Location: [%d, %d, %d], Channel: [GLOBAL], Recivers: [%s]",
+            "Sender: [%s], Message: [%s], Location: [%d, %d, %d], Channel: [GLOBAL], Receivers: [%s]",
             sender.getName(), message, playerLocation.getBlockX(), playerLocation.getBlockY(),
             playerLocation.getBlockZ(), reciversNames);
         logger.info(messageToLog);
     }
 
-    public void logPrivateMessage(Player sender, String message, String reciverName) {
-
-        Location playerLocation = sender.getLocation();
+    public void logRemotePrivateMessage(String sender, String message, String receiverName) {
         String messageToLog = String.format(
-            "Sender: [%s], Message: [%s], Location: [%d, %d, %d], Channel: [PRIVATE], Reciver: [%s]",
-            sender.getName(), message, playerLocation.getBlockX(), playerLocation.getBlockY(),
-            playerLocation.getBlockZ(), reciverName);
+            "Sender: [%s], Message: [%s], Location: REMOTE, Channel: [PRIVATE], Receiver: [%s]",
+            sender, message, receiverName);
         logger.info(messageToLog);
     }
 
-    public void logGroupMessage(Player sender, String message, String groupName, Set<String> recivers) {
-
-        String reciversNames = getPlayersNames(recivers);
+    public void logPrivateMessage(Player sender, String message, String receiverName) {
         Location playerLocation = sender.getLocation();
         String messageToLog = String.format(
-            "Sender: [%s], Message: [%s], Location: [%d, %d, %d], Channel: [GROUP], GroupName: [%s], Recivers: [%s]",
+            "Sender: [%s], Message: [%s], Location: [%d, %d, %d], Channel: [PRIVATE], Receiver: [%s]",
+            sender.getName(), message, playerLocation.getBlockX(), playerLocation.getBlockY(),
+            playerLocation.getBlockZ(), receiverName);
+        logger.info(messageToLog);
+    }
+
+    public void logRemoteGroupMessage(String sender, String message, String groupName, Set<String> receivers) {
+        String reciversNames = getPlayersNames(receivers);
+        String messageToLog = String.format(
+            "Sender: [%s], Message: [%s], Location: REMOTE, Channel: [GROUP], GroupName: [%s], Receivers: [%s]",
+            sender, message, groupName, reciversNames);
+        logger.info(messageToLog);
+    }
+
+    public void logGroupMessage(Player sender, String message, String groupName, Set<String> receivers) {
+        String reciversNames = getPlayersNames(receivers);
+        Location playerLocation = sender.getLocation();
+        String messageToLog = String.format(
+            "Sender: [%s], Message: [%s], Location: [%d, %d, %d], Channel: [GROUP], GroupName: [%s], Receivers: [%s]",
             sender.getName(), message, playerLocation.getBlockX(), playerLocation.getBlockY(),
             playerLocation.getBlockZ(), groupName, reciversNames);
         logger.info(messageToLog);

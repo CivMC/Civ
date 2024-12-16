@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
@@ -64,6 +65,9 @@ public class WordBankRecipe extends InputRecipe {
             if (!ItemUtils.isValidItem(is)) {
                 continue;
             }
+            if (CustomItem.isCustomItem(is)) {
+                continue;
+            }
             input.addItemStack(is);
             inputInv.setItem(i, null);
         }
@@ -71,7 +75,7 @@ public class WordBankRecipe extends InputRecipe {
         StringBuilder sb = new StringBuilder();
         sb.append(ChatColor.GOLD);
         sb.append("Wordbank recipe complete and turned ");
-        for (Entry<ItemStack, Integer> entry : input.getEntrySet()) {
+        for (Entry<ItemStack, Integer> entry : input.getItems().entrySet()) {
             sb.append(entry.getValue());
             sb.append(" ");
             sb.append(ItemUtils.getItemName(entry.getKey()));
@@ -137,6 +141,9 @@ public class WordBankRecipe extends InputRecipe {
             if (!ItemUtils.isValidItem(is)) {
                 continue;
             }
+            if (!CustomItem.isCustomItem(is)) {
+                continue;
+            }
             return true;
         }
         return false;
@@ -144,7 +151,7 @@ public class WordBankRecipe extends InputRecipe {
 
     private synchronized String getHash(ItemMap items) {
         digest.update(key.getBytes());
-        List<Entry<ItemStack, Integer>> entries = new ArrayList<>(items.getEntrySet());
+        List<Entry<ItemStack, Integer>> entries = new ArrayList<>(items.getItems().object2IntEntrySet());
         //sort because hashmaps dont guarantee iteration order
         Collections.sort(entries,
             (a, b) -> a.getKey().getType().getKey().getKey().compareTo(b.getKey().getType().getKey().getKey()));

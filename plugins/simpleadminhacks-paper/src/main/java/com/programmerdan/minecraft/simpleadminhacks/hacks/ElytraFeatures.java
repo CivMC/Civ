@@ -7,7 +7,6 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import java.util.Comparator;
-import javax.annotation.Nonnull;
 import net.minelink.ctplus.CombatTagPlus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,16 +21,17 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.NotNull;
 
 public final class ElytraFeatures extends SimpleHack<ElytraFeaturesConfig> implements Listener {
 
-    public ElytraFeatures(@Nonnull final SimpleAdminHacks plugin,
-                          @Nonnull final ElytraFeaturesConfig config) {
+    public ElytraFeatures(@NotNull final SimpleAdminHacks plugin,
+                          @NotNull final ElytraFeaturesConfig config) {
         super(plugin, config);
     }
 
-    public static ElytraFeaturesConfig generate(@Nonnull final SimpleAdminHacks plugin,
-                                                @Nonnull final ConfigurationSection config) {
+    public static ElytraFeaturesConfig generate(@NotNull final SimpleAdminHacks plugin,
+                                                @NotNull final ConfigurationSection config) {
         return new ElytraFeaturesConfig(plugin, config);
     }
 
@@ -67,7 +67,7 @@ public final class ElytraFeatures extends SimpleHack<ElytraFeaturesConfig> imple
     // ------------------------------------------------------------
 
     @EventHandler(ignoreCancelled = true)
-    public void regulateElytraFlight(@Nonnull final EntityToggleGlideEvent event) {
+    public void regulateElytraFlight(@NotNull final EntityToggleGlideEvent event) {
         boolean disableFlight = false;
         if (config().isFlightDisabled()) {
             disableFlight = true;
@@ -88,7 +88,7 @@ public final class ElytraFeatures extends SimpleHack<ElytraFeaturesConfig> imple
     // ------------------------------------------------------------
 
     @EventHandler(ignoreCancelled = true)
-    public void regulateElytraBoosting(@Nonnull final PlayerElytraBoostEvent event) {
+    public void regulateElytraBoosting(@NotNull final PlayerElytraBoostEvent event) {
         boolean disableBoosting = false;
         if (config().isBoostingDisabled()) {
             disableBoosting = true;

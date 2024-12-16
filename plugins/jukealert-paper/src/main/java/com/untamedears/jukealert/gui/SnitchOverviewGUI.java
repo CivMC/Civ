@@ -9,8 +9,6 @@ import java.util.List;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,9 +16,7 @@ import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.FastMultiPageView;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
-import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
@@ -60,7 +56,7 @@ public class SnitchOverviewGUI {
                     final var cull = snitch.getAppender(DormantCullingAppender.class);
                     if (cull.isActive()) {
                         lore.add(ChatUtils.newComponent("Will go dormant in " + TextUtil.formatDuration(cull.getTimeUntilDormant())).color(NamedTextColor.AQUA));
-                        MetaUtils.addGlow(meta);
+                        meta.setEnchantmentGlintOverride(true);
                     } else if (cull.isDormant()) {
                         lore.add(ChatUtils.newComponent("Will cull in " + TextUtil.formatDuration(cull.getTimeUntilCulling())).color(NamedTextColor.AQUA));
                     }

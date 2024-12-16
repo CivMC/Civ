@@ -2,6 +2,7 @@ package vg.civcraft.mc.namelayer.command;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.CommandCompletions;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -40,7 +41,6 @@ import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
 import vg.civcraft.mc.namelayer.command.commands.UpdateName;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -89,7 +89,7 @@ public class CommandHandler extends CommandManager {
     }
 
     @Override
-    public void registerCompletions(@Nonnull CommandCompletions<BukkitCommandCompletionContext> completions) {
+    public void registerCompletions(@NotNull CommandCompletions<BukkitCommandCompletionContext> completions) {
         super.registerCompletions(completions);
         completions.registerCompletion("NL_Groups", (context) -> GroupTabCompleter.complete(context.getInput(), null, context.getPlayer()));
         completions.registerAsyncCompletion("NL_Ranks", (context) ->

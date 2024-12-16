@@ -40,10 +40,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
+import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
+import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -58,7 +61,7 @@ public class EntityListener implements Listener {
     public void breakDoor(EntityBreakDoorEvent ebde) {
         Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(ebde.getBlock());
         if (rein != null) {
-            ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein), ebde.getEntity());
+            ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein, null, null), ebde.getEntity());
             if (!rein.isBroken()) {
                 ebde.setCancelled(true);
             }
@@ -102,24 +105,37 @@ public class EntityListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void changeBlock(EntityChangeBlockEvent ecbe) {
-        Block block = ecbe.getBlock();
+    public void changeBlock(EntityChangeBlockEvent event) {
+        Block block = event.getBlock();
         Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
         // Do not allow a falling block entity to damage reinforcements.
-        if (rein == null || ecbe.getEntityType() == EntityType.FALLING_BLOCK) {
+        if (rein == null || event.getEntityType() == EntityType.FALLING_BLOCK) {
             return;
         }
-        if (ecbe.getBlock().getType() == Material.BIG_DRIPLEAF) {
+        if (event.getBlock().getType() == Material.BIG_DRIPLEAF) {
             return;
         }
-        if (ecbe.getBlock().getType() == Material.CAVE_VINES || ecbe.getBlock().getType() == Material.CAVE_VINES_PLANT) {
+        if (event.getBlock().getType() == Material.CAVE_VINES || event.getBlock().getType() == Material.CAVE_VINES_PLANT) {
             return;
         }
-        ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein), ecbe.getEntity());
-        if (rein.isBroken()) {
+
+        if (!(event.getEntity() instanceof Player player)) {
+            event.setCancelled(true);
             return;
         }
-        ecbe.setCancelled(true);
+
+        boolean hasAccess = rein.hasPermission(player, CitadelPermissionHandler.getBypass());
+        BooleanSetting setting = (BooleanSetting) PlayerSettingAPI.getSetting("citadelBypass");
+        boolean hasBypass = setting.getValue(player);
+        if (hasAccess && !hasBypass) {
+            CitadelUtility.sendAndLog(player, ChatColor.GREEN,
+                "You could bypass this reinforcement if you turn bypass mode on with '/ctb'",
+                block.getLocation());
+            event.setCancelled(true);
+        } else if (!hasAccess && !hasBypass) {
+            player.sendMessage(Component.text("You do not have permission to bypass this block!").color(NamedTextColor.RED));
+            event.setCancelled(true);
+        }
     }
 
     // apply explosion damage to reinforcements
@@ -133,7 +149,7 @@ public class EntityListener implements Listener {
             if (rein == null) {
                 continue;
             }
-            ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein), eee.getEntity());
+            ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein, null, null), eee.getEntity());
             if (!rein.isBroken()) {
                 iterator.remove();
             }
@@ -208,7 +224,7 @@ public class EntityListener implements Listener {
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void spawn(CreatureSpawnEvent cse) {
         EntityType type = cse.getEntityType();
-        if (type != EntityType.IRON_GOLEM && type != EntityType.SNOWMAN && type != EntityType.WITHER
+        if (type != EntityType.IRON_GOLEM && type != EntityType.SNOW_GOLEM && type != EntityType.WITHER
             && type != EntityType.SILVERFISH) {
             return;
         }

@@ -16,9 +16,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
@@ -181,7 +181,7 @@ public class ManagedDatasource {
      * @return Returns
      */
     @Nullable
-    public static ManagedDatasource construct(@Nonnull final ACivMod plugin,
+    public static ManagedDatasource construct(@NotNull final ACivMod plugin,
                                               @Nullable final DatabaseCredentials credentials) {
         final var logger = CivLogger.getLogger(plugin.getClass(), ManagedDatasource.class);
         if (credentials == null) {
@@ -504,10 +504,8 @@ public class ManagedDatasource {
 
     /**
      * Passthrough; closes the underlying pool. Cannot be undone.
-     *
-     * @throws SQLException Something went horribly wrong.
      */
-    public void close() throws SQLException {
+    public void close() {
         this.connections.close();
     }
 

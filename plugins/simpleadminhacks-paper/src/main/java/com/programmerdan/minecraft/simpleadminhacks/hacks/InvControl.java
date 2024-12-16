@@ -16,8 +16,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_20_R3.CraftServer;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -69,7 +69,7 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
         if (player == null && playerUID != null) { // Go deep into NBT.
             @SuppressWarnings("resource")
             PlayerDataStorage storage = ((CraftServer) plugin().getServer()).getServer().playerDataStorage;
-            CompoundTag rawPlayer = storage.getPlayerData(playerUID.toString());
+            CompoundTag rawPlayer = storage.load(playername, playerUID.toString()).orElse(null);
 
             if (rawPlayer != null) {
                 plugin().debug("Player {0} found in NBT data, read-only access enabled.", playername);

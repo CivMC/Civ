@@ -146,18 +146,20 @@ public final class JAUtility {
                 return Material.PIG_SPAWN_EGG;
             case "HORSE":
                 return Material.HORSE_SPAWN_EGG;
-            case "MINECART":
-                return Material.MINECART;
-            case "MINECART_CHEST":
-                return Material.CHEST_MINECART;
-            case "MINECART_FURNACE":
-                return Material.FURNACE_MINECART;
-            case "MINECART_TNT":
-                return Material.TNT_MINECART;
-            case "MINECART_HOPPER":
-                return Material.HOPPER_MINECART;
             case "STRIDER":
                 return Material.STRIDER_SPAWN_EGG;
+            case "CAMEL":
+                return Material.CAMEL_SPAWN_EGG;
+            case "MINECART":
+                return Material.MINECART;
+            case "CHEST_MINECART":
+                return Material.CHEST_MINECART;
+            case "FURNACE_MINECART":
+                return Material.FURNACE_MINECART;
+            case "TNT_MINECART":
+                return Material.TNT_MINECART;
+            case "HOPPER_MINECART":
+                return Material.HOPPER_MINECART;
             case "BOAT":
             case "OAK_BOAT":
                 return Material.OAK_BOAT;
@@ -171,9 +173,34 @@ public final class JAUtility {
                 return Material.ACACIA_BOAT;
             case "DARK_OAK_BOAT":
                 return Material.DARK_OAK_BOAT;
+            case "MANGROVE_BOAT":
+                return Material.MANGROVE_BOAT;
+            case "CHERRY_BOAT":
+                return Material.CHERRY_BOAT;
+            case "BAMBOO_RAFT":
+                return Material.BAMBOO_RAFT;
+            case "CHEST_BOAT":
+            case "OAK_CHEST_BOAT":
+                return Material.OAK_CHEST_BOAT;
+            case "BIRCH_CHEST_BOAT":
+                return Material.BIRCH_CHEST_BOAT;
+            case "SPRUCE_CHEST_BOAT":
+                return Material.SPRUCE_CHEST_BOAT;
+            case "JUNGLE_CHEST_BOAT":
+                return Material.JUNGLE_CHEST_BOAT;
+            case "ACACIA_CHEST_BOAT":
+                return Material.ACACIA_CHEST_BOAT;
+            case "DARK_OAK_CHEST_BOAT":
+                return Material.DARK_OAK_CHEST_BOAT;
+            case "MANGROVE_CHEST_BOAT":
+                return Material.MANGROVE_CHEST_BOAT;
+            case "CHERRY_CHEST_BOAT":
+                return Material.CHERRY_CHEST_BOAT;
+            case "BAMBOO_CHEST_RAFT":
+                return Material.BAMBOO_CHEST_RAFT;
             default:
                 JukeAlert.getInstance().getLogger().info("Failed to parse vehicle into material: " + vehicle);
-                return Material.STONE;
+                return Material.SADDLE;
         }
     }
 }

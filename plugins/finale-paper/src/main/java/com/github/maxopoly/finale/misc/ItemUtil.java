@@ -1,18 +1,20 @@
 package com.github.maxopoly.finale.misc;
 
+import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.misc.ArmourModifier.ArmourConfig;
 import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.DoubleTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack;
+import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 public class ItemUtil {
 
@@ -88,71 +90,15 @@ public class ItemUtil {
         return BOOTS.contains(is.getType());
     }
 
-    public static boolean isArmour(ItemStack is) {
-        return isHelmet(is) || isChestplate(is) || isLeggings(is) || isBoots(is);
+    public static ItemStack setAAKey(ItemStack is, String key) {
+        ItemMeta meta = is.getItemMeta();
+        meta.getPersistentDataContainer().set(new NamespacedKey(Finale.getPlugin(), "aa-key"), PersistentDataType.STRING, key);
+        is.setItemMeta(meta);
+        return is;
     }
 
-    public static ItemStack newModifiers(ItemStack is) {
-        net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
-        CompoundTag compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new CompoundTag();
-        compound.put("AttributeModifiers", new ListTag());
-        nmsStack.setTag(compound);
-        return CraftItemStack.asBukkitCopy(nmsStack);
+    public static String getAAKey(ItemStack is) {
+        ItemMeta meta = is.getItemMeta();
+        return meta.getPersistentDataContainer().get(new NamespacedKey(Finale.getPlugin(), "aa-key"), PersistentDataType.STRING);
     }
-
-    public static net.minecraft.world.item.ItemStack getNMSStack(ItemStack is) {
-        net.minecraft.world.item.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
-        CompoundTag compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new CompoundTag();
-        if (!compound.contains("AttributeModifiers")) {
-            compound.put("AttributeModifiers", new ListTag());
-        }
-        nmsStack.setTag(compound);
-        return nmsStack;
-    }
-
-    public static ItemStack setDamage(ItemStack is, double adjustedDamage) {
-        return modifyAttribute(is, AttributeModifier.attackDamage(adjustedDamage));
-    }
-
-    public static ItemStack setAttackSpeed(ItemStack is, double adjustedAttackSpeed) {
-        return modifyAttribute(is, AttributeModifier.attackSpeed(adjustedAttackSpeed));
-    }
-
-    public static ItemStack setArmour(ItemStack is, double adjustedArmour) {
-        return modifyAttribute(is, AttributeModifier.armour(adjustedArmour, Slot.getArmourSlot(is)));
-    }
-
-    public static ItemStack setArmourToughness(ItemStack is, double adjustedArmourToughness) {
-        return modifyAttribute(is, AttributeModifier.toughness(adjustedArmourToughness, Slot.getArmourSlot(is)));
-    }
-
-    public static ItemStack setArmourKnockbackResistance(ItemStack is, double adjustedArmourKnockbackResistance) {
-        return modifyAttribute(is, AttributeModifier.knockbackResistance(adjustedArmourKnockbackResistance, Slot.getArmourSlot(is)));
-    }
-
-    public static ItemStack modifyAttribute(ItemStack is, AttributeModifier attribute) {
-        net.minecraft.world.item.ItemStack nmsStack = getNMSStack(is);
-        CompoundTag compound = nmsStack.getTag();
-        ListTag modifiers = compound.getList("AttributeModifiers", 10); // 10 for compound
-
-        Number value = attribute.getValue();
-        Tag valueTag = (value instanceof Double) ? DoubleTag.valueOf((Double) value) : IntTag.valueOf((Integer) value);
-
-        Slot slot = attribute.getSlot();
-
-        CompoundTag attributeTag = new CompoundTag();
-        attributeTag.putString("AttributeName", attribute.getName());
-        attributeTag.putString("Name", attribute.getName());
-        attributeTag.putInt("Operation", 0);
-        attributeTag.put("Amount", valueTag);
-        attributeTag.putString("Slot", slot.getName());
-        attributeTag.put("UUIDLeast", IntTag.valueOf(slot.getUuidLeast()));
-        attributeTag.put("UUIDMost", IntTag.valueOf(slot.getUuidMost()));
-        modifiers.add(attributeTag);
-
-        compound.put("AttributeModifiers", modifiers);
-        nmsStack.setTag(compound);
-        return CraftItemStack.asBukkitCopy(nmsStack);
-    }
-
 }

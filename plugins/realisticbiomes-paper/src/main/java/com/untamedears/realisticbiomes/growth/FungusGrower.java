@@ -13,8 +13,8 @@ import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_20_R3.util.RandomSourceWrapper;
+import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.util.RandomSourceWrapper;
 
 /**
  * We need to differentiate fungus from other types of saplings thanks
@@ -59,7 +59,7 @@ public class FungusGrower extends AgeableGrower {
         final ServerLevel world = ((CraftWorld) block.getWorld()).getHandle();
         final BlockPos position = new BlockPos(block.getX(), block.getY(), block.getZ());
         //Taken from CraftWorld.generateTree()
-        Holder<ConfiguredFeature<?, ?>> growthHolder = world.registryAccess().registryOrThrow(Registries.CONFIGURED_FEATURE).getHolder(growth).orElse(null);
+        Holder<ConfiguredFeature<?, ?>> growthHolder = world.registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE).get(growth).orElse(null);
 
         if (growthHolder == null) return false;
 

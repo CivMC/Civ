@@ -8,27 +8,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
@@ -48,7 +40,7 @@ public final class ConfigHelper {
      * @param key    The key of the section to retrieve.
      * @return Returns the configuration section at the given key, or returns a new, empty section.
      */
-    @Nonnull
+    @NotNull
     public static ConfigurationSection getSection(@NotNull final ConfigurationSection config,
                                                   @NotNull final String key) {
         ConfigurationSection found = config.getConfigurationSection(key);
@@ -66,7 +58,7 @@ public final class ConfigHelper {
      * @param key    The key to get the list of.
      * @return Returns a list of strings, which is never null.
      */
-    @Nonnull
+    @NotNull
     public static List<String> getStringList(@NotNull final ConfigurationSection config,
                                              @NotNull final String key) {
         if (config.isString(key)) {
@@ -86,7 +78,7 @@ public final class ConfigHelper {
      * @param parser The parser to convert the string value into the correct type.
      * @return Returns a list, or null.
      */
-    @Nonnull
+    @NotNull
     public static <T> List<T> parseList(@NotNull final ConfigurationSection config,
                                         @NotNull final String key,
                                         @NotNull final Function<String, T> parser) {
@@ -111,9 +103,9 @@ public final class ConfigHelper {
      * @param key    The key of the list.
      * @return Returns a list of materials, or null.
      */
-    @Nonnull
-    public static List<Material> parseMaterialList(@Nonnull final ConfigurationSection config,
-                                                   @Nonnull final String key) {
+    @NotNull
+    public static List<Material> parseMaterialList(@NotNull final ConfigurationSection config,
+                                                   @NotNull final String key) {
         return parseList(config, key, MaterialUtils::getMaterial);
     }
 
@@ -124,170 +116,38 @@ public final class ConfigHelper {
      * @param config ConfigurationSection to parse the items from
      * @return The item map created
      */
-    @Nonnull
+    @NotNull
     public static ItemMap parseItemMap(@Nullable final ConfigurationSection config) {
         final var result = new ItemMap();
         if (config == null) {
             return result;
         }
         for (final String key : config.getKeys(false)) {
-            ConfigurationSection current = config.getConfigurationSection(key);
-            ItemMap partMap = parseItemMapDirectly(current);
+            ItemMap partMap = new ItemMap();
+            ConfigurationSection section = config.getConfigurationSection(key);
+            String custom = section == null ? null : section.getString("custom-key");
+            if (custom != null) {
+                ItemStack item = CustomItem.getCustomItem(custom);
+                if (item == null) {
+                    throw new IllegalArgumentException("Unknown custom item key " + custom);
+                } else {
+                    int amount = section.getInt("amount", 1);
+                    partMap.addItemAmount(item, amount);
+                }
+            } else {
+                partMap.addItemStack(config.getItemStack(key, ItemStack.empty()));
+            }
             result.merge(partMap);
         }
         return result;
     }
 
-    @Nonnull
-    public static ItemMap parseItemMapDirectly(@Nullable final ConfigurationSection current) {
-        ItemMap im = new ItemMap();
-        if (current == null) {
-            return im;
-        }
-        Material m = null;
-        try {
-            m = Material.valueOf(current.getString("material"));
-        } catch (IllegalArgumentException iae) {
-            m = null;
-        } finally {
-            if (m == null) {
-                LOGGER.severe("Failed to find material " + current.getString("material") + " in section " + current.getCurrentPath());
-                return im;
-            }
-        }
-        ItemStack toAdd = new ItemStack(m);
-        if (current.isInt("durability")) {
-            LOGGER.warning("Item durability as specified at " + current.getCurrentPath() + " is no longer supported");
-        }
-        ItemMeta meta = toAdd.getItemMeta();
-        if (meta == null) {
-            LOGGER.severe("No item meta found for" + current.getCurrentPath());
-        } else {
-            String name = current.getString("name");
-            if (name != null) {
-                meta.setDisplayName(name);
-            }
-            List<String> lore = current.getStringList("lore");
-            if (lore != null) {
-                meta.setLore(lore);
-            }
-            if (current.isBoolean("unbreakable")) {
-                meta.setUnbreakable(current.getBoolean("unbreakable"));
-            }
-            if (current.isBoolean("hideFlags") && current.getBoolean("hideFlags")) {
-                for (ItemFlag flag : ItemFlag.values()) {
-                    meta.addItemFlags(flag);
-                }
-            }
-            if (current.contains("enchants")) {
-                for (String enchantKey : current.getConfigurationSection("enchants").getKeys(false)) {
-                    ConfigurationSection enchantConfig = current.getConfigurationSection("enchants")
-                        .getConfigurationSection(enchantKey);
-                    if (!enchantConfig.isString("enchant")) {
-                        LOGGER.warning("No enchant specified for enchantment entry at " + enchantConfig.getCurrentPath()
-                            + ". Entry was ignored");
-                        continue;
-                    }
-                    Enchantment enchant;
-                    enchant = Enchantment
-                        .getByKey(NamespacedKey.minecraft((enchantConfig.getString("enchant").toLowerCase())));
-                    if (enchant == null) {
-                        LOGGER.severe("Failed to parse enchantment " + enchantConfig.getString("enchant")
-                            + ", the entry was ignored");
-                        continue;
-                    }
-                    int level = enchantConfig.getInt("level", 1);
-                    meta.addEnchant(enchant, level, true);
-                }
-            }
-            if (m == Material.LEATHER_BOOTS || m == Material.LEATHER_CHESTPLATE || m == Material.LEATHER_HELMET
-                || m == Material.LEATHER_LEGGINGS) {
-                ConfigurationSection color = current.getConfigurationSection("color");
-                Color leatherColor = null;
-                if (color != null) {
-                    int red = color.getInt("red");
-                    int blue = color.getInt("blue");
-                    int green = color.getInt("green");
-                    leatherColor = Color.fromRGB(red, green, blue);
-                } else {
-                    String hexColorCode = current.getString("color");
-                    if (hexColorCode != null) {
-                        Integer hexColor = Integer.parseInt(hexColorCode, 16);
-                        if (hexColor != null) {
-                            leatherColor = Color.fromRGB(hexColor);
-                        }
-                    }
-                }
-                if (leatherColor != null) {
-                    ((LeatherArmorMeta) meta).setColor(leatherColor);
-                }
-            }
-            if (m == Material.ENCHANTED_BOOK) {
-                ConfigurationSection storedEnchantSection = current.getConfigurationSection("stored_enchants");
-                if (storedEnchantSection != null) {
-                    EnchantmentStorageMeta enchantMeta = (EnchantmentStorageMeta) meta;
-                    for (String sEKey : storedEnchantSection.getKeys(false)) {
-                        ConfigurationSection currentStoredEnchantSection = storedEnchantSection
-                            .getConfigurationSection(sEKey);
-                        if (currentStoredEnchantSection != null) {
-                            Enchantment enchant = EnchantUtils.getEnchantment(currentStoredEnchantSection.getString("enchant"));
-                            int level = currentStoredEnchantSection.getInt("level", 1);
-                            if (enchant != null) {
-                                enchantMeta.addStoredEnchant(enchant, level, true);
-                            } else {
-                                LOGGER.severe("Failed to parse enchantment at " + currentStoredEnchantSection.getCurrentPath()
-                                    + ", it was not applied");
-                            }
-                        }
-                    }
-                }
-            }
-            if (m == Material.POTION || m == Material.SPLASH_POTION || m == Material.LINGERING_POTION
-                || m == Material.TIPPED_ARROW) {
-                ConfigurationSection potion = current.getConfigurationSection("potion_effects");
-                if (potion != null) {
-                    PotionType potType;
-                    try {
-                        potType = PotionType.valueOf(potion.getString("type", "AWKWARD"));
-                    } catch (IllegalArgumentException e) {
-                        LOGGER.warning("Expected potion type at " + potion.getCurrentPath() + ", but "
-                            + potion.getString("type") + " is not a valid potion type");
-                        potType = PotionType.AWKWARD;
-                    }
-                    boolean upgraded = potion.getBoolean("upgraded", false);
-                    boolean extended = potion.getBoolean("extended", false);
-                    PotionMeta potMeta = (PotionMeta) meta;
-                    potMeta.setBasePotionData(new PotionData(potType, extended, upgraded));
-                    ConfigurationSection customEffects = potion.getConfigurationSection("custom_effects");
-                    if (customEffects != null) {
-                        List<PotionEffect> pots = parsePotionEffects(potion);
-                        for (PotionEffect pe : pots) {
-                            potMeta.addCustomEffect(pe, true);
-                        }
-                    }
-                }
-
-            }
-            toAdd.setItemMeta(meta);
-            if (current.contains("nbt")) {
-                toAdd = ItemMap.enrichWithNBT(toAdd, 1, current.getConfigurationSection("nbt").getValues(true));
-            }
-        }
-        // Setting amount must be last just in cast enrichWithNBT is called,
-        // which
-        // resets the amount to 1.
-        int amount = current.getInt("amount", 1);
-        toAdd.setAmount(amount);
-        im.addItemStack(toAdd);
-        return im;
-    }
-
-    public static int parseTimeAsTicks(@Nonnull final String arg) {
+    public static int parseTimeAsTicks(@NotNull final String arg) {
         return (int) (parseTime(arg, TimeUnit.MILLISECONDS) / 50L);
     }
 
-    public static long parseTime(@Nonnull final String arg,
-                                 @Nonnull final TimeUnit unit) {
+    public static long parseTime(@NotNull final String arg,
+                                 @NotNull final TimeUnit unit) {
         long millis = parseTime(arg);
         return unit.convert(millis, TimeUnit.MILLISECONDS);
     }
@@ -307,7 +167,7 @@ public final class ConfigHelper {
      * @param input Parsed string containing the time format
      * @return How many milliseconds the given time value is
      */
-    public static long parseTime(@Nonnull String input) {
+    public static long parseTime(@NotNull String input) {
         input = input.replace(" ", "").replace(",", "").toLowerCase();
         long result = 0;
         try {
@@ -383,9 +243,9 @@ public final class ConfigHelper {
         return result;
     }
 
-    @Nonnull
-    private static String getSuffix(@Nonnull final String arg,
-                                    @Nonnull final Predicate<Character> selector) {
+    @NotNull
+    private static String getSuffix(@NotNull final String arg,
+                                    @NotNull final Predicate<Character> selector) {
         StringBuilder number = new StringBuilder();
         for (int i = arg.length() - 1; i >= 0; i--) {
             if (selector.test(arg.charAt(i))) {
@@ -403,7 +263,7 @@ public final class ConfigHelper {
      * @param configurationSection ConfigurationSection to parse the effect from
      * @return The potion effect parsed
      */
-    @Nonnull
+    @NotNull
     public static List<PotionEffect> parsePotionEffects(@Nullable final ConfigurationSection configurationSection) {
         List<PotionEffect> potionEffects = Lists.newArrayList();
         if (configurationSection != null) {
@@ -516,12 +376,12 @@ public final class ConfigHelper {
      * @param valueConverter Converts strings to type V
      * @param mapToUse       The map to place parsed keys and values.
      */
-    public static <K, V> void parseKeyValueMap(@Nonnull final ConfigurationSection parent,
-                                               @Nonnull final String identifier,
-                                               @Nonnull final Logger logger,
-                                               @Nonnull final Function<String, K> keyConverter,
-                                               @Nonnull final Function<String, V> valueConverter,
-                                               @Nonnull final Map<K, V> mapToUse) {
+    public static <K, V> void parseKeyValueMap(@NotNull final ConfigurationSection parent,
+                                               @NotNull final String identifier,
+                                               @NotNull final Logger logger,
+                                               @NotNull final Function<String, K> keyConverter,
+                                               @NotNull final Function<String, V> valueConverter,
+                                               @NotNull final Map<K, V> mapToUse) {
         if (!parent.isConfigurationSection(identifier)) {
             return;
         }
@@ -550,8 +410,8 @@ public final class ConfigHelper {
      */
     @Nullable
     @Deprecated(forRemoval = true)
-    public static Enchantment parseEnchantment(@Nonnull final ConfigurationSection config,
-                                               @Nonnull final String key) {
+    public static Enchantment parseEnchantment(@NotNull final ConfigurationSection config,
+                                               @NotNull final String key) {
         return EnchantUtils.getEnchantment(config.getString(key));
     }
 
