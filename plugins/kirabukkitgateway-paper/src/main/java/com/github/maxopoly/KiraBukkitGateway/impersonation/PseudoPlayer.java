@@ -457,10 +457,6 @@ public class PseudoPlayer extends CraftPlayer {
         throw new InvalidCommandAttemptException();
     }
 
-    public UUID getUniqueId() {
-        return uuid;
-    }
-
     public Entity getVehicle() {
         throw new InvalidCommandAttemptException();
     }
@@ -1376,43 +1372,43 @@ public class PseudoPlayer extends CraftPlayer {
         throw new InvalidCommandAttemptException();
     }
 
-	
+
 	public <T> void spawnParticle(Particle arg0, Location arg1, int arg2, double arg3, double arg4, double arg5,
 								  T arg6) {
 		throw new InvalidCommandAttemptException();
 	}
 
-	
+
 	public void spawnParticle(Particle arg0, Location arg1, int arg2, double arg3, double arg4, double arg5,
 							  double arg6) {
 		throw new InvalidCommandAttemptException();
 	}
 
-	
+
 	public void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4, double arg5, double arg6,
 							  double arg7) {
 		throw new InvalidCommandAttemptException();
 	}
 
-	
+
 	public <T> void spawnParticle(Particle arg0, Location arg1, int arg2, double arg3, double arg4, double arg5,
 								  double arg6, T arg7) {
 		throw new InvalidCommandAttemptException();
 	}
 
-	
+
 	public <T> void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4, double arg5,
 								  double arg6, double arg7, T arg8) {
 		throw new InvalidCommandAttemptException();
 	}
 
-	
+
 	public void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4, double arg5, double arg6,
 							  double arg7, double arg8) {
 		throw new InvalidCommandAttemptException();
 	}
 
-	
+
 	public <T> void spawnParticle(Particle arg0, double arg1, double arg2, double arg3, int arg4, double arg5,
 								  double arg6, double arg7, double arg8, T arg9) {
 		throw new InvalidCommandAttemptException();

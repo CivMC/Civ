@@ -8,7 +8,7 @@ services:
   #################
 
   proxy:
-    image: itzg/mc-proxy@sha256:e0536c92227905b6b0388eb04f640859e674c61068061d2a4db6ba631c79008b
+    image: itzg/mc-proxy@sha256:4e2e20b6ef7739429dff34b7f7a5c26816004be2d499ad7d7940de197aa7a130
     restart: unless-stopped
     tty: true
     stdin_open: true
