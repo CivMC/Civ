@@ -4,9 +4,9 @@ junit = "5.8.2"
 nuotifier = "2.7.2"
 
 [plugins]
-paper-userdev = { id = "io.papermc.paperweight.userdev", version = "1.7.2" }
+paper-userdev = { id = "io.papermc.paperweight.userdev", version = "2.0.0-beta.11" }
 shadow = {  id = "com.github.johnrengelman.shadow", version = "8.1.1" }
-runpaper = { id = "xyz.jpenilla.run-paper", version = "2.2.2" }
+runpaper = { id = "xyz.jpenilla.run-paper", version = "2.3.1" }
 
 [libraries]
 paper-api = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }
@@ -28,8 +28,6 @@ luckperms-api = { group = "net.luckperms", name = "api", version = "5.0" }
 
 aswm-api = { group = "com.infernalsuite.aswm", name = "api", version = "3.0.0-SNAPSHOT"}
 
-# TODO
-brewery = { group = "com.github.DieReicheErethons", name = "Brewery", version = "3.1" }
 breweryx = { group = "com.github.Jsinco", name = "BreweryX", version = "3.3.2" }
 
 worldedit = { group = "com.sk89q.worldedit", name = "worldedit-bukkit", version = "7.2.8" }

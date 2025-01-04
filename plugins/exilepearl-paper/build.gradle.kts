@@ -18,5 +18,5 @@ dependencies {
     compileOnly(project(":plugins:banstick-paper"))
     compileOnly(project(":plugins:randomspawn-paper"))
 
-    compileOnly(libs.brewery)
+    compileOnly(libs.breweryx)
 }
