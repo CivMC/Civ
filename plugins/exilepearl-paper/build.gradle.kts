@@ -18,5 +18,5 @@ dependencies {
     compileOnly(project(":plugins:banstick-paper"))
     compileOnly(project(":plugins:randomspawn-paper"))
 
-    compileOnly("com.github.DieReicheErethons:Brewery:3.1")
+    compileOnly(libs.brewery)
 }

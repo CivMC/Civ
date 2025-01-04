@@ -10,6 +10,7 @@ dependencies {
     }
 
     compileOnly(project(":plugins:civmodcore-paper"))
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly(project(":plugins:combattagplus-paper"))
+
+    compileOnly(libs.vault.api)
 }

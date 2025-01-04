@@ -11,6 +11,7 @@ dependencies {
     }
 
     compileOnly(project(":plugins:civmodcore-paper"))
-    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.8")
-    implementation("org.apache.commons:commons-math3:3.6.1")
+
+    compileOnly(libs.worldedit)
+    implementation(libs.commons.math3)
 }

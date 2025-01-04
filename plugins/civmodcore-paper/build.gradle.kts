@@ -11,15 +11,14 @@ dependencies {
         paperDevBundle(libs.versions.paper)
     }
 
-    api("co.aikar:acf-bukkit:0.5.1-SNAPSHOT")
-    api("com.mojang:datafixerupper:1.0.20")
-    api("com.zaxxer:HikariCP:5.0.1")
-    api("co.aikar:taskchain-bukkit:3.7.2")
-    api("org.apache.commons:commons-lang3:3.12.0")
-    api("org.apache.commons:commons-collections4:4.4")
+    api(libs.aikar.acf)
+    api(libs.aikar.taskchain)
+    api(libs.datafixerupper)
+    api(libs.hikaricp)
+    api(libs.commons.lang3)
+    api(libs.commons.collections4)
 
-    compileOnly("it.unimi.dsi:fastutil:8.5.8")
+    compileOnly(libs.fastutil)
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+    testImplementation(libs.bundles.junit)
 }

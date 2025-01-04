@@ -10,5 +10,5 @@ dependencies {
         paperDevBundle(libs.versions.paper)
     }
 
-    compileOnly("me.confuser:BarAPI:3.5")
+    compileOnly(libs.barapi)
 }

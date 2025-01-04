@@ -12,6 +12,7 @@ dependencies {
 
     compileOnly(project(":plugins:civmodcore-paper"))
     compileOnly(project(":plugins:finale-paper"))
-    compileOnly("com.github.Jsinco:BreweryX:3.3.2")
-    compileOnly("com.infernalsuite.aswm:api:3.0.0-SNAPSHOT")
+
+    compileOnly(libs.breweryx)
+    compileOnly(libs.aswm.api)
 }
