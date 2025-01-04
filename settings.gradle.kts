@@ -1,5 +1,12 @@
 rootProject.name = "Civ"
 
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven("https://repo.papermc.io/repository/maven-public/")
+    }
+}
+
 plugins {
     id("com.gradle.enterprise") version "3.16.2"
 }

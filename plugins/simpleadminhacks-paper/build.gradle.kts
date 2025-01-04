@@ -6,7 +6,7 @@ version = "2.3.2"
 
 dependencies {
     paperweight {
-        paperDevBundle("1.21.3-R0.1-SNAPSHOT")
+        paperDevBundle(libs.versions.paper)
     }
 
     compileOnly(project(":plugins:civmodcore-paper"))
@@ -17,5 +17,5 @@ dependencies {
     compileOnly(project(":plugins:bastion-paper"))
     compileOnly(project(":plugins:exilepearl-paper"))
 
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.2.0-SNAPSHOT")
+    compileOnly(libs.protocollib)
 }
