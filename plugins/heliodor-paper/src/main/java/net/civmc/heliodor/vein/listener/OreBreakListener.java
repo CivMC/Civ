@@ -51,6 +51,6 @@ public class OreBreakListener implements Listener {
         }
 
         event.setDropItems(false);
-        event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), MeteoricIron.createMeteoricIronNugget());
+        event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation().add(0.5, 0.5, 0.5), MeteoricIron.createMeteoricIronNugget());
     }
 }

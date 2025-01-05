@@ -78,7 +78,7 @@ public class InfusionListener implements Listener {
         }
         chunkMetaView.remove(event.getBlock());
         event.setDropItems(false);
-        event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), HeliodorGem.createHeliodorGem(infusion.getCharge(), infusion.getMaxCharge()));
+        event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation().add(0.5, 0.5, 0.5), HeliodorGem.createHeliodorGem(infusion.getCharge(), infusion.getMaxCharge()));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
