@@ -148,8 +148,7 @@ public final class AttrHider extends BasicHack {
                     if (!(entity instanceof LivingEntity)
                         || player.getEntityId() == entity.getEntityId()
                         || entity.getPassengers().contains(player)
-                        || customPackets.contains(packet.getHandle())) {
-                        customPackets.remove(packet.getHandle());
+                        || customPackets.remove(packet.getHandle())) {
                         return;
                     }
                     final PacketContainer cloned = packet.deepClone();
@@ -181,7 +180,7 @@ public final class AttrHider extends BasicHack {
                     List<PlayerInfoData> newInfos = new ArrayList<>();
                     List<PlayerInfoData> oldInfos = cloned.getPlayerInfoDataLists().read(1);
                     for (PlayerInfoData oldInfo : oldInfos) {
-                        if (oldInfo  == null) continue;
+                        if (oldInfo == null) continue;
                         int latency = oldInfo.getLatency();
                         // Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
                         // this follows 1.16.5 PlayerTabOverlay#renderPingIcon()
