@@ -89,7 +89,7 @@ public class IOConfigSection extends StaticDisplaySection {
                 .asComponent());
         ItemUtils.addComponentLore(display,
             Component.text("Left click to toggle Input", NamedTextColor.WHITE, TextDecoration.BOLD),
-            Component.text("Shift + left click to toggle Fuel", NamedTextColor.WHITE, TextDecoration.BOLD),
+            Component.text("Shift right click to toggle Fuel", NamedTextColor.WHITE, TextDecoration.BOLD),
             Component.text("Right click to toggle Output", NamedTextColor.WHITE, TextDecoration.BOLD)
             );
         FactoryModManager fmMgr = FactoryMod.getInstance().getManager();
@@ -131,7 +131,7 @@ public class IOConfigSection extends StaticDisplaySection {
             }
 
             @Override
-            protected void onShiftLeftClick(Player player) {
+            protected void onShiftRightClick(Player player) {
                 if (!ioSelector.isFuel(dir)) {
                     if (iofProvider.getFuelCount() >= fmMgr.getMaxFuelChests()) {
                         player.sendMessage(ChatColor.RED + "This factory is at the maximum number of fuel inputs.");
