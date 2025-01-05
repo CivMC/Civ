@@ -15,3 +15,8 @@ reasons:
   egg:
     chicken:
       dumb: true
+  natural:
+    turtle:
+      count: 8
+      # The radius to check for
+      radius: 32
