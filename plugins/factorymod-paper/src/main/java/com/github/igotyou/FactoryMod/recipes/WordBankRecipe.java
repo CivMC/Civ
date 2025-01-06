@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import static vg.civcraft.mc.civmodcore.inventory.CustomItem.CUSTOM_ITEM;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
@@ -141,7 +142,7 @@ public class WordBankRecipe extends InputRecipe {
             if (!ItemUtils.isValidItem(is)) {
                 continue;
             }
-            if (!CustomItem.isCustomItem(is)) {
+            if (CustomItem.isCustomItem(is)) {
                 continue;
             }
             return true;
