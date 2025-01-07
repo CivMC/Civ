@@ -141,7 +141,7 @@ public class WordBankRecipe extends InputRecipe {
             if (!ItemUtils.isValidItem(is)) {
                 continue;
             }
-            if (!CustomItem.isCustomItem(is)) {
+            if (CustomItem.isCustomItem(is)) {
                 continue;
             }
             return true;
