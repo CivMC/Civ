@@ -5,6 +5,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.entity.CraftMinecart;
@@ -14,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -26,6 +28,7 @@ import java.util.Map;
 public class AntiDerailment extends BasicHack {
 
     private Map<Minecart, Vector> previousTickMinecartVelocity;
+    private final NamespacedKey ticking = new NamespacedKey(SimpleAdminHacks.instance(), "ticking");
 
     public AntiDerailment(SimpleAdminHacks plugin, BasicHackConfig config) {
         super(plugin, config);
@@ -56,7 +59,7 @@ public class AntiDerailment extends BasicHack {
         // undo one tick of movement and redo it at 8m/s (the default minecart speed)
         // To do this it also needs to store the velocity from the previous tick to recreate the movement properly
 
-        if (!(e.getVehicle() instanceof Minecart minecart)) {
+        if (!(e.getVehicle() instanceof Minecart minecart) || minecart.getPersistentDataContainer().has(ticking)) {
             return;
         }
 
@@ -88,7 +91,12 @@ public class AntiDerailment extends BasicHack {
         minecart.setVelocity(previousTickMinecartVelocity.get(minecart));
         double maxSpeed = minecart.getMaxSpeed();
         minecart.setMaxSpeed(0.4D); // 8m/s, default minecart speed
-        handle.tick();
+        minecart.getPersistentDataContainer().set(ticking, PersistentDataType.BOOLEAN, true);
+        try {
+            handle.tick();
+        } finally {
+            minecart.getPersistentDataContainer().remove(ticking);
+        }
         minecart.setMaxSpeed(maxSpeed);
         previousTickMinecartVelocity.put(minecart, minecart.getVelocity());
     }
