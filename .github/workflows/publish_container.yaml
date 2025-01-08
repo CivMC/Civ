@@ -9,7 +9,7 @@ on:
 jobs:
   determine_values:
     name: 🔎 Determine Values
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     outputs:
       category: ${{ steps.determine_values.outputs.category }}
@@ -38,7 +38,7 @@ jobs:
   publish_container:
     name: 🐋 Publish Container
     needs: determine_values
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     permissions:
       contents: write
       packages: write

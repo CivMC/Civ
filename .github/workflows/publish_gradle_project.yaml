@@ -10,7 +10,7 @@ on:
 jobs:
   determine_values:
     name: 🔎 Determine Values
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     outputs:
       category: ${{ steps.determine_values.outputs.category }}
@@ -38,7 +38,7 @@ jobs:
 
   publish_gradle:
     name: 🐘 Publish Gradle
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     needs: determine_values
     permissions:
       contents: write
