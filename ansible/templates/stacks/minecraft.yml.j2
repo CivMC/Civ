@@ -56,6 +56,10 @@ services:
               published: 8192
               protocol: tcp
               mode: host
+            - target: 5004
+              published: 5004
+              protocol: udp
+              mode: host
         environment:
             TYPE: 'paper'
             VERSION: '1.21.3'
