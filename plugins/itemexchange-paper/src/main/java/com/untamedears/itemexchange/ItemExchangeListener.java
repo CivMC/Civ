@@ -6,12 +6,18 @@ import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ShopRule;
 import com.untamedears.itemexchange.rules.TradeRule;
+import com.untamedears.itemexchange.rules.modifiers.ReceiptModifier;
+import com.untamedears.itemexchange.utility.ReceiptUtils;
 import com.untamedears.itemexchange.utility.Utilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -206,6 +212,35 @@ public final class ItemExchangeListener implements Listener {
             player.sendMessage(ChatColor.GREEN + "Successful exchange!");
         } else {
             player.sendMessage(ChatColor.GREEN + "Successful donation!");
+        }
+        // Generate and give the player a receipt of the transaction
+        final ReceiptModifier receiptModifier = Objects.requireNonNullElseGet(
+            inputRule.getModifiers().get(ReceiptModifier.class),
+            ReceiptModifier::new
+        );
+        if (ItemExchangeSettings.RECEIVE_RECEIPTS.getValue(player) || receiptModifier.forceReceiptGeneration) {
+            final ItemStack receiptItem = ReceiptUtils.generateReceipt(
+                player,
+                clicked,
+                trade.getBlock(),
+                inputRule,
+                outputRule,
+                receiptModifier.footerText
+            );
+            Utilities.giveItemsOrDrop(player.getInventory(), receiptItem);
+            player.sendMessage(
+                Component.text()
+                    .color(NamedTextColor.GREEN)
+                    .content("You have been given a ")
+                    .append(
+                        Component.text()
+                            .decoration(TextDecoration.ITALIC, TextDecoration.State.TRUE)
+                            .decoration(TextDecoration.UNDERLINED, TextDecoration.State.TRUE)
+                            .content("receipt")
+                            .hoverEvent(receiptItem.asHoverEvent()),
+                        Component.text("!")
+                    )
+            );
         }
     }
 

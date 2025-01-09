@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.Syntax;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.untamedears.itemexchange.commands.SetCommand;
+import com.untamedears.itemexchange.rules.interfaces.DisplayContext;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ModifierHandler;
@@ -80,7 +81,9 @@ public final class LoreModifier extends ModifierData {
     }
 
     @Override
-    public List<String> getDisplayInfo() {
+    public List<String> getDisplayInfo(
+        final @NotNull DisplayContext context
+    ) {
         return this.lore.stream()
             .map(line -> "" + ChatColor.DARK_PURPLE + ChatColor.ITALIC + line)
             .collect(Collectors.toCollection(ArrayList::new));
