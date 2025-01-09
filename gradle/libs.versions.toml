@@ -31,7 +31,6 @@ aswm-api = { group = "com.infernalsuite.aswm", name = "api", version = "3.0.0-SN
 breweryx = { group = "com.github.Jsinco", name = "BreweryX", version = "3.3.2" }
 
 worldedit = { group = "com.sk89q.worldedit", name = "worldedit-bukkit", version = "7.2.8" }
-datafixerupper = { group = "com.mojang", name = "datafixerupper", version = "1.0.20" }
 hikaricp = { group = "com.zaxxer", name = "HikariCP", version = "5.0.1" }
 fastutil = { group = "it.unimi.dsi", name = "fastutil", version = "8.5.8" }
 protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version = "5.2.0-SNAPSHOT" }
