@@ -13,7 +13,6 @@ dependencies {
 
     api(libs.aikar.acf)
     api(libs.aikar.taskchain)
-    api(libs.datafixerupper)
     api(libs.hikaricp)
     api(libs.commons.lang3)
     api(libs.commons.collections4)
