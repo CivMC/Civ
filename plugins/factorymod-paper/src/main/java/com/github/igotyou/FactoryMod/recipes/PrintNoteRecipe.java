@@ -8,8 +8,11 @@ import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import io.papermc.paper.adventure.PaperAdventure;
+import net.kyori.adventure.text.Component;
 import net.minecraft.core.component.DataComponents;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -103,7 +106,6 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 
         for (String line : lines) {
             fixedLines.add(ChatColor.GRAY + line
-                .replaceAll("(?<!§x(§[\\da-f]){0,5})" + ChatColor.BLACK, ChatColor.GRAY.toString())
                 .replaceAll(ChatColor.RESET.toString(), ChatColor.GRAY.toString()));
         }
 
