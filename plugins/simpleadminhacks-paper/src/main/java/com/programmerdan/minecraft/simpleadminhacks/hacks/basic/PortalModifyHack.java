@@ -14,6 +14,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -59,6 +60,34 @@ public class PortalModifyHack extends BasicHack {
         }
         event.setCancelled(true);
         teleports.put(player, to);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPlayerMoveEvent(PlayerMoveEvent event) {
+        World world = Bukkit.getWorld(targetWorld);
+        if (world == null) {
+            return;
+        }
+        Player player = event.getPlayer();
+        World targetWorld = getTargetWorld(player);
+        if (targetWorld.getEnvironment() != World.Environment.NETHER) {
+            return;
+        }
+        Location to = event.getTo();
+        if (to.getBlockY() >= player.getWorld().getMinHeight() || to.getBlockY() == event.getFrom().getBlockY()) {
+            return;
+        }
+
+        for (int x = -4; x <= 4; x++) {
+            for (int z = -4; z <= 4; z++) {
+                int bx = to.getBlockX() + x;
+                int bz = to.getBlockZ() + z;
+                if (player.getWorld().getBlockAt(bx, player.getWorld().getMinHeight(), bz).getType() == Material.END_PORTAL) {
+                    teleports.put(player, new Location(targetWorld, bx + 0.5, 125, bz + 0.5));
+                    return;
+                }
+            }
+        }
     }
 
     @EventHandler
