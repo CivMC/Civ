@@ -217,6 +217,7 @@ public interface MeteoricIronTools {
         meta.setMaxDamage(48_600);
         meta.addEnchant(Enchantment.FIRE_ASPECT, 2, false);
         meta.addEnchant(Enchantment.SHARPNESS, 5, false);
+        meta.addEnchant(Enchantment.LOOTING, 3, false);
         if (knocback > 0) {
             meta.addEnchant(Enchantment.KNOCKBACK, knocback, false);
         }
