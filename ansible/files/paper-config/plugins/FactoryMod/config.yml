@@ -10698,7 +10698,7 @@ recipes:
           ==: ItemMeta
           display-name: Compact Repair Kit
           lore:
-            - One kit will repair a Compactor to full health.
+            - One kit will repair a compactor to full health.
     health_gained: 10000
   make_compact_repair_kit:
     production_time: 4s
@@ -10741,7 +10741,7 @@ recipes:
           ==: ItemMeta
           display-name: Compact Repair Kit
           lore:
-            - One kit will repair a Compactor to full health.
+            - One kit will repair a compactor to full health.
   make_crates:
     production_time: 4s
     name: Make Crates
