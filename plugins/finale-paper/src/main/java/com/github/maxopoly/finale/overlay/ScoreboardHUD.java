@@ -126,7 +126,7 @@ public class ScoreboardHUD implements Listener {
     private void updateGammaBright(Player player) {
         player.removePotionEffect(PotionEffectType.NIGHT_VISION);
         //after being logged in for 14 days straight, players may have to relog to refresh the effect
-        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20 * 60 * 60 * 24 * 14, 1, false, false, false));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20 * 60 * 60 * 24 * 14, 0, false, false, false));
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
