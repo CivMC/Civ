@@ -6,17 +6,20 @@ hero:
   name: "CivMC"
   actions:
     - theme: brand
-      text: Getting Started
-      link: /wiki
-    - theme: brand
+      text: What is CivMC?
+      link: /wiki/server-overview
+    - theme: alt
       text: Contributing to CivMC
-      link: /api-examples
+      link: /dev/
 
 features:
-  - title: Wiki
-    details: All the information you'll ever need when playing on CivMC!
-    link: '/wiki'
-  - title: Developer Docs
-    details: Information for developers who want to contribute to CivMC!
-    link: '/dev'
+    - title: New Player Guide
+      details: A full guide to start your journey!
+      link: /wiki/new-player-guide
+    - title: Server Overview
+      details: What is CivMC? and helpful links.
+      link: /wiki/server-overview
+    - title: Unique Mechanics
+      details: A list of plugins unique to CivMC.
+      link: /wiki/plugins/unique/index
 ---
