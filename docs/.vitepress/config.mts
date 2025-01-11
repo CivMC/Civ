@@ -21,7 +21,7 @@ export default defineConfig({
                 text: "Wiki",
                     items: [
                         { text: "New Player Guide", link: "/wiki/new-player-guide" },
-                        { text: "Server Overview", link: "/wiki/server-overview" },
+                        { text: "Server Overview", link: "/wiki/index" },
                         { text: "Change Log", link: "/wiki/changelog" },
                         {
                             text: "Plugins",

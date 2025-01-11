@@ -8,7 +8,7 @@ hero:
   actions:
     - theme: brand
       text: What is CivMC?
-      link: /wiki/server-overview
+      link: /wiki/index
     - theme: alt
       text: Contributing to CivMC
       link: /dev/
@@ -19,7 +19,7 @@ features:
       link: /wiki/new-player-guide
     - title: Server Overview
       details: What is CivMC? and helpful links.
-      link: /wiki/server-overview
+      link: /wiki/index
     - title: Unique Mechanics
       details: A list of plugins unique to CivMC.
       link: /wiki/plugins/unique/index
