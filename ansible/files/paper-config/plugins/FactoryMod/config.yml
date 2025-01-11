@@ -15,7 +15,6 @@ use_recipe_yamlidentifiers: true
 log_inventories: true
 force_include_default: true
 can_upgrade: true
-
 factories:
   meteoric_iron_sword:
     type: FCC
@@ -312,6 +311,8 @@ factories:
       - charcoal_from_jungle_log
       - charcoal_from_acacia_log
       - charcoal_from_dark_oak_log
+      - charcoal_from_cherry_log
+      - charcoal_from_mangrove_log
       - charcoal_from_crimson_stem
       - charcoal_from_warped_stem
       - charcoal_from_coal
@@ -2941,6 +2942,38 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DARK_OAK_LOG
+        amount: 64
+    output:
+      charcoal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CHARCOAL
+        amount: 128
+  charcoal_from_cherry_log:
+    production_time: 4s
+    name: Make Charcoal from Cherry Logs
+    type: PRODUCTION
+    input:
+      log:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CHERRY_LOG
+        amount: 64
+    output:
+      charcoal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CHARCOAL
+        amount: 128
+  charcoal_from_mangrove_log:
+    production_time: 4s
+    name: Make Charcoal from Mangrove Logs
+    type: PRODUCTION
+    input:
+      log:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: MANGROVE_LOG
         amount: 64
     output:
       charcoal:
@@ -6043,7 +6076,7 @@ recipes:
           ==: ItemMeta
           display-name: Gem Factory Repair Kit
           lore:
-            - One kit will repair a Gem Factory to full health.        
+            - One kit will repair a Gem Factory to full health.
   repair_gem_factory:
     production_time: 4s
     name: Repair Factory
@@ -6196,7 +6229,7 @@ recipes:
           ==: ItemMeta
           display-name: Concrete Mixer Repair Kit
           lore:
-            - One kit will repair a Concrete Mixer to full health.          
+            - One kit will repair a Concrete Mixer to full health.
   repair_mixer:
     production_time: 4s
     name: Repair Factory
@@ -6228,7 +6261,7 @@ recipes:
           ==: ItemMeta
           display-name: Concrete Mixer Repair Kit
           lore:
-            - One kit will repair a Concrete Mixer to full health. 
+            - One kit will repair a Concrete Mixer to full health.
     health_gained: 10000
   make_grill_kit:
     production_time: 4s
@@ -6256,7 +6289,7 @@ recipes:
           ==: ItemMeta
           display-name: Grill Factory Repair Kit
           lore:
-            - One kit will repair a Grill Factory to full health.        
+            - One kit will repair a Grill Factory to full health.
   repair_grill:
     production_time: 4s
     name: Repair Factory
@@ -6343,7 +6376,7 @@ recipes:
           ==: ItemMeta
           display-name: Ore Smelter Repair Kit
           lore:
-            - One kit will repair a Ore Smelter to full health.        
+            - One kit will repair an Ore Smelter to full health.
   repair_ore_smelter:
     production_time: 4s
     name: Repair Factory
@@ -6391,7 +6424,7 @@ recipes:
           ==: ItemMeta
           display-name: Ore Smelter Repair Kit
           lore:
-            - One kit will repair a Ore Smelter to full health.
+            - One kit will repair an Ore Smelter to full health.
     health_gained: 10000
   make_adv_ore_smelter_kit:
     production_time: 4s
@@ -6435,7 +6468,7 @@ recipes:
           ==: ItemMeta
           display-name: Advanced Ore Smelter Repair Kit
           lore:
-            - One kit will repair a Advanced Ore Smelter to full health.  
+            - One kit will repair an Advanced Ore Smelter to full health.
   repair_adv_ore_smelter:
     production_time: 4s
     name: Repair Factory
@@ -6483,7 +6516,7 @@ recipes:
           ==: ItemMeta
           display-name: Advanced Ore Smelter Repair Kit
           lore:
-            - One kit will repair a Advanced Ore Smelter to full health.
+            - One kit will repair an Advanced Ore Smelter to full health.
     health_gained: 10000
   make_elite_ore_smelter_kit:
     production_time: 4s
@@ -6525,7 +6558,7 @@ recipes:
           ==: ItemMeta
           display-name: Elite Ore Smelter Repair Kit
           lore:
-            - One kit will repair a Elite Ore Smelter to full health.  
+            - One kit will repair an Elite Ore Smelter to full health.
   repair_elite_ore_smelter:
     production_time: 4s
     name: Repair Factory
@@ -6571,7 +6604,7 @@ recipes:
           ==: ItemMeta
           display-name: Elite Ore Smelter Repair Kit
           lore:
-            - One kit will repair a Elite Ore Smelter to full health.
+            - One kit will repair an Elite Ore Smelter to full health.
     health_gained: 10000
   make_fences:
     production_time: 4s
@@ -7826,7 +7859,7 @@ recipes:
           ==: ItemMeta
           display-name: Rail Factory Repair Kit
           lore:
-            - One kit will repair a Rail Factory to full health.          
+            - One kit will repair a Rail Factory to full health.
   repair_rails:
     production_time: 4s
     name: Repair Factory
@@ -7858,7 +7891,7 @@ recipes:
           ==: ItemMeta
           display-name: Rail Factory Repair Kit
           lore:
-            - One kit will repair a Rail Factory to full health.  
+            - One kit will repair a Rail Factory to full health.
     health_gained: 10000
   make_saddle:
     production_time: 4s
@@ -8032,7 +8065,7 @@ recipes:
           ==: ItemMeta
           display-name: Redstone Factory Repair Kit
           lore:
-            - One kit will repair a Redstone Factory to full health.        
+            - One kit will repair a Redstone Factory to full health.
   repair_redstone:
     production_time: 4s
     name: Repair Factory
@@ -9095,7 +9128,7 @@ recipes:
           ==: ItemMeta
           display-name: Iron Forge Repair Kit
           lore:
-            - One kit will repair a Iron Forge to full health.
+            - One kit will repair an Iron Forge to full health.
   repair_forge:
     production_time: 4s
     name: Repair Factory
@@ -9127,7 +9160,7 @@ recipes:
           ==: ItemMeta
           display-name: Iron Forge Repair Kit
           lore:
-            - One kit will repair a Iron Forge to full health.
+            - One kit will repair an Iron Forge to full health.
     health_gained: 10000
   make_lead:
     production_time: 4s
@@ -9181,7 +9214,7 @@ recipes:
           ==: ItemMeta
           display-name: Animal Husbandry Repair Kit
           lore:
-            - One kit will repair a Animal Husbandry to full health.
+            - One kit will repair an Animal Husbandry to full health.
   repair_husbandry:
     production_time: 4s
     name: Repair Factory
@@ -9218,7 +9251,7 @@ recipes:
           ==: ItemMeta
           display-name: Animal Husbandry Repair Kit
           lore:
-            - One kit will repair a Animal Husbandry to full health.
+            - One kit will repair an Animal Husbandry to full health.
     health_gained: 10000
   smelt_bricks:
     production_time: 4s
@@ -10665,7 +10698,7 @@ recipes:
           ==: ItemMeta
           display-name: Compact Repair Kit
           lore:
-            - One kit will repair a compactor to full health.
+            - One kit will repair a Compactor to full health.
     health_gained: 10000
   make_compact_repair_kit:
     production_time: 4s
@@ -10708,7 +10741,7 @@ recipes:
           ==: ItemMeta
           display-name: Compact Repair Kit
           lore:
-            - One kit will repair a compactor to full health.
+            - One kit will repair a Compactor to full health.
   make_crates:
     production_time: 4s
     name: Make Crates
@@ -11890,7 +11923,6 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: EMERALD
           amount: 1
-
   print_note:
     type: PRINTNOTE
     name: Print Note
