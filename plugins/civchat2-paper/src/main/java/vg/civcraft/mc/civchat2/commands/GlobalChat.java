@@ -32,29 +32,29 @@ public class GlobalChat extends BaseCommand {
         Group currentGroup = chatMan.getGroupChatting(player);
 
         if (globalGroup == null) {
-            player.sendMessage(ChatStrings.chatGroupNotFound);
+            player.sendRichMessage(ChatStrings.chatGroupNotFound);
             return;
         }
         if (!NameAPI.getGroupManager().hasAccess(globalGroup, player.getUniqueId(),
             PermissionType.getPermission("WRITE_CHAT"))) {
-            player.sendMessage(ChatStrings.chatGroupNoPerms);
+            player.sendRichMessage(ChatStrings.chatGroupNoPerms);
             return;
         }
         if (CivChat2.getInstance().getDatabaseManager().isIgnoringGroup(player.getUniqueId(), globalGroupName)) {
-            player.sendMessage(String.format(ChatStrings.chatNeedToUnignore, globalGroupName));
+            player.sendRichMessage(String.format(ChatStrings.chatNeedToUnignore, globalGroupName));
             return;
         }
         if (chatMessage == null) {
             if (currentGroup != null) { // Check if currently in group
                 if (currentGroup == globalGroup) { // Check if current group global
-                    player.sendMessage(ChatStrings.chatGroupAlreadyChatting);
+                    player.sendRichMessage(ChatStrings.chatGroupAlreadyChatting);
                 } else { // Switch to global group from current group
-                    player.sendMessage(String.format(ChatStrings.chatGroupNowChattingIn, globalGroupName));
+                    player.sendRichMessage(String.format(ChatStrings.chatGroupNowChattingIn, globalGroupName));
                     chatMan.removeGroupChat(player);
                     chatMan.addGroupChat(player, globalGroup);
                 }
             } else { // Switch to global group
-                player.sendMessage(String.format(ChatStrings.chatGroupNowChattingIn, globalGroupName));
+                player.sendRichMessage(String.format(ChatStrings.chatGroupNowChattingIn, globalGroupName));
                 if (chatMan.getChannel(player) != null) {
                     chatMan.removeChannel(player);
                 }
