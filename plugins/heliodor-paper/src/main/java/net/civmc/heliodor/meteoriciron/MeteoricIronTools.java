@@ -34,6 +34,16 @@ public interface MeteoricIronTools {
         ToolComponent tool = meta.getTool();
         tool.setDamagePerBlock(1);
         tool.addRule(Tag.BASE_STONE_OVERWORLD, 1000f, true);
+        tool.addRule(Material.PRISMARINE, 1000f, true);
+        tool.addRule(Material.PRISMARINE_STAIRS, 1000f, true);
+        tool.addRule(Material.PRISMARINE_SLAB, 1000f, true);
+        tool.addRule(Material.PRISMARINE_WALL, 1000f, true);
+        tool.addRule(Material.PRISMARINE_BRICKS, 1000f, true);
+        tool.addRule(Material.PRISMARINE_BRICK_STAIRS, 1000f, true);
+        tool.addRule(Material.PRISMARINE_BRICK_SLAB, 1000f, true);
+        tool.addRule(Material.DARK_PRISMARINE, 1000f, true);
+        tool.addRule(Material.DARK_PRISMARINE_STAIRS, 1000f, true);
+        tool.addRule(Material.DARK_PRISMARINE_SLAB, 1000f, true);
         tool.addRule(Material.STONE_STAIRS, 1000f, true);
         tool.addRule(Material.STONE_SLAB, 1000f, true);
         tool.addRule(Material.COBBLESTONE, 1000f, true);
