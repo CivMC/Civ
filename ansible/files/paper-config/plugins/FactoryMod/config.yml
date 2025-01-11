@@ -1708,22 +1708,7 @@ factories:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COPPER_BLOCK
-        amount: 64
-      exposed_copper:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: EXPOSED_COPPER
-        amount: 64
-      weathered_copper:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WEATHERED_COPPER
-        amount: 64
-      oxidized_copper:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: OXIDIZED_COPPER
-        amount: 64
+        amount: 256
       honeycomb:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
