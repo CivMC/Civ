@@ -4,6 +4,7 @@ layout: home
 
 hero:
   name: "CivMC"
+  tagline: "A Minecraft server focused on civilization building"
   actions:
     - theme: brand
       text: What is CivMC?
