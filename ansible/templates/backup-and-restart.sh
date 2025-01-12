@@ -17,9 +17,7 @@ restic \
   /opt/stacks/minecraft/ \
   --exclude '**orebfuscator_cache'\
   --exclude '**civmodcore_cache'\
-  --exclude '**dynmap'\
   --exclude '**postgres-data'\
-  --exclude '**plugins'
 
 echo "$(date) Starting services after backup..."
 docker service scale minecraft_paper=1
