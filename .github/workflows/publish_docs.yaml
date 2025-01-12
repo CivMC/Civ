@@ -1,0 +1,46 @@
+name: 📖 Docs | Publish
+
+on:
+    workflow_dispatch: {}
+    push:
+        branches:
+            - main
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+
+        defaults:
+            run:
+                working-directory: ./docs
+
+        permissions:
+            pages: write
+            id-token: write
+
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 16
+                  cache: npm
+                  cache-dependency-path: ./docs/package-lock.json
+
+            - name: NPM Install
+              run: npm ci
+
+            - name: NPM Build
+              run: npm run build
+
+            - uses: actions/configure-pages@v2
+
+            - uses: actions/upload-pages-artifact@v1
+              with:
+                  path: docs/.vitepress/dist
+
+            - name: Deploy
+              id: deployment
+              uses: actions/deploy-pages@v1
