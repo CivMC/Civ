@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -82,6 +83,7 @@ public class NameColorSetting extends PlayerSetting<Component> {
         }
         if (player.hasPermission(RAINBOW_PERMISSION)) {
             clicks.add(getRainbowButton(player));
+            clicks.add(getLegacyRainbowButton());
         }
         if (player.hasPermission(RGB_COLOR_PERMISSION)) {
             clicks.add(getRGBButton(menu));
@@ -170,6 +172,34 @@ public class NameColorSetting extends PlayerSetting<Component> {
                 setValue(player, MiniMessage.miniMessage().deserialize("<rainbow>" + player.getName()));
             }
         };
+    }
+
+    public Clickable getLegacyRainbowButton() {
+        ItemStack is = new ItemStack(Material.GREEN_STAINED_GLASS);
+        ItemUtils.setComponentDisplayName(is, Component.text("Change the color of your name to legacy ").append(rainbowify("rainbow")));
+        return new Clickable(is) {
+
+            @Override
+            public void clicked(Player p) {
+                p.sendMessage(Component.text("The color of your name was changed to ", NamedTextColor.GREEN).append(rainbowify(p.getName())));
+                setValue(p, rainbowify(p.getName()));
+            }
+        };
+    }
+
+    public Component rainbowify(String string) {
+        NamedTextColor[] rainbow = {NamedTextColor.RED, NamedTextColor.GOLD, NamedTextColor.YELLOW, NamedTextColor.GREEN,
+            NamedTextColor.DARK_AQUA, NamedTextColor.AQUA, NamedTextColor.DARK_PURPLE, NamedTextColor.LIGHT_PURPLE};
+        List<Component> rainbowChars = new ArrayList<>();
+        char[] letters = string.toCharArray();
+        for (int i = 0; i < letters.length; i++) {
+            rainbowChars.add(Component.text(letters[i]).color(rainbow[i % rainbow.length]));
+        }
+        TextComponent.Builder rainbowName = Component.text().content("");
+        for (Component comp : rainbowChars) {
+            rainbowName.append(comp);
+        }
+        return rainbowName.build();
     }
 
     @Override
