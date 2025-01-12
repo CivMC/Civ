@@ -194,7 +194,7 @@ public class CivChat2Manager {
                             int comp = (int) (255 - (128.0 * receiverDistance) / range);
                             newColor = TextColor.color(comp, comp, comp);
                         } else {
-                            newColor = TextColor.fromHexString(config.getColorAtDistance(receiverDistance));
+                            newColor = NamedTextColor.NAMES.value((config.getColorAtDistance(receiverDistance)));
                         }
                         newColor = newColor != null ? newColor : TextColor.fromHexString(defaultColor);
                         Component compMessage = Component.text("<", NamedTextColor.WHITE)
