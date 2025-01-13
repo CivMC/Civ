@@ -217,7 +217,7 @@ public final class AttrHider extends BasicHack {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onMountEntity(EntityMountEvent event) {
-        if (this.hideItemMeta && event.getEntity() instanceof Player player && event.getMount() instanceof LivingEntity mountedEntity) {
+        if (this.hideHealth && event.getEntity() instanceof Player player && event.getMount() instanceof LivingEntity mountedEntity) {
             WrappedDataWatcher watcher = new WrappedDataWatcher();
             List<WrappedDataValue> wrappedDataValueList = new ArrayList<>();
 

@@ -17,5 +17,5 @@ dependencies {
     compileOnly(project(":plugins:bastion-paper"))
     compileOnly(project(":plugins:exilepearl-paper"))
 
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.2.0-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.3.0")
 }
