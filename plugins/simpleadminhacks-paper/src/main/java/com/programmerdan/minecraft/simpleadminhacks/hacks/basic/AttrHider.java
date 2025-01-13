@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
 import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
@@ -9,6 +10,8 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import com.comphenix.protocol.wrappers.PlayerInfoData;
 import com.comphenix.protocol.wrappers.WrappedDataValue;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher;
+import com.comphenix.protocol.wrappers.WrappedWatchableObject;
 import com.destroystokyo.paper.MaterialTags;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
@@ -24,6 +27,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityMountEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -36,6 +42,7 @@ public final class AttrHider extends BasicHack {
     public static final String BYPASS_PERMISSION = "attrhider.bypass";
 
     private final PacketManager packets = new PacketManager();
+    private Set<Object> customPackets = new HashSet<>();
 
     @AutoLoad
     private boolean hideItemMeta;
@@ -140,7 +147,8 @@ public final class AttrHider extends BasicHack {
                     final Entity entity = packet.getEntityModifier(event).read(0);
                     if (!(entity instanceof LivingEntity)
                         || player.getEntityId() == entity.getEntityId()
-                        || entity.getPassengers().contains(player)) {
+                        || entity.getPassengers().contains(player)
+                        || customPackets.remove(packet.getHandle())) {
                         return;
                     }
                     final PacketContainer cloned = packet.deepClone();
@@ -173,15 +181,15 @@ public final class AttrHider extends BasicHack {
                     List<PlayerInfoData> oldInfos = cloned.getPlayerInfoDataLists().read(1);
                     for (PlayerInfoData oldInfo : oldInfos) {
                         if (oldInfo == null) continue;
-						int latency = oldInfo.getLatency();
-						// Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
-						// this follows 1.16.5 PlayerTabOverlay#renderPingIcon()
-						if (latency < 0) latency = -1;
-						else if (latency < 150) latency = 75; // average of 0 and 150, arbitrary
-						else if (latency < 300) latency = 225;
-						else if (latency < 600) latency = 450;
-						else if (latency < 1000) latency = 800;
-						else latency = 1000;
+                        int latency = oldInfo.getLatency();
+                        // Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
+                        // this follows 1.16.5 PlayerTabOverlay#renderPingIcon()
+                        if (latency < 0) latency = -1;
+                        else if (latency < 150) latency = 75; // average of 0 and 150, arbitrary
+                        else if (latency < 300) latency = 225;
+                        else if (latency < 600) latency = 450;
+                        else if (latency < 1000) latency = 800;
+                        else latency = 1000;
                         newInfos.add(new PlayerInfoData(
                             oldInfo.getProfileId(),
                             latency,
@@ -205,6 +213,30 @@ public final class AttrHider extends BasicHack {
     public void onDisable() {
         this.packets.removeAllAdapters();
         super.onDisable();
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onMountEntity(EntityMountEvent event) {
+        if (this.hideHealth && event.getEntity() instanceof Player player && event.getMount() instanceof LivingEntity mountedEntity) {
+            WrappedDataWatcher watcher = new WrappedDataWatcher();
+            List<WrappedDataValue> wrappedDataValueList = new ArrayList<>();
+
+            watcher.setEntity(mountedEntity);
+            watcher.setObject(9, WrappedDataWatcher.Registry.get(Float.class), (float) mountedEntity.getHealth());
+            for (WrappedWatchableObject entry : watcher.getWatchableObjects()) {
+                if (entry == null) continue;
+
+                WrappedDataWatcher.WrappedDataWatcherObject watcherObject = entry.getWatcherObject();
+
+                wrappedDataValueList.add(new WrappedDataValue(watcherObject.getIndex(), watcherObject.getSerializer(), entry.getRawValue()));
+            }
+
+            PacketContainer packet = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
+            packet.getIntegers().write(0, mountedEntity.getEntityId());
+            packet.getDataValueCollectionModifier().write(0, wrappedDataValueList);
+            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+            customPackets.add(packet.getHandle()); // Allow ignoring this packet when hiding health because EntityMountEvent fires *before* the player is actually a passenger
+        }
     }
 
     private static boolean shouldBeObfuscated(final Material material) {
