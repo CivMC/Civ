@@ -33,7 +33,7 @@ breweryx = { group = "com.github.Jsinco", name = "BreweryX", version = "3.3.2" }
 worldedit = { group = "com.sk89q.worldedit", name = "worldedit-bukkit", version = "7.2.8" }
 hikaricp = { group = "com.zaxxer", name = "HikariCP", version = "5.0.1" }
 fastutil = { group = "it.unimi.dsi", name = "fastutil", version = "8.5.8" }
-protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version = "5.2.0-SNAPSHOT" }
+protocollib = { group = "com.comphenix.protocol", name = "ProtocolLib", version = "5.3.0" }
 barapi = { group = "me.confuser", name = "BarAPI", version = "3.5" }
 ipaddress = { group = "com.github.seancfoley", name = "ipaddress", version = "2.0.2" }
 jsoup = { group = "org.jsoup", name = "jsoup", version = "1.18.3" }
