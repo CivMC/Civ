@@ -447,6 +447,9 @@ or by way of donating a high amount to the server via patreon.
 |   Leo's Orange Creamsicle    |         6         |   800023   |
 |    Colton's Love Martini     |         3         |   800024   |
 |      Golden Pick Stout       |         4         |   800025   |
+|      Katz Catnip Kaffee      |         3         |   800026   |
+|      Astro's Pill            |         6         |   800027   |
+| Jeremy's Slippy-Sloppy Screwdriver |    3        |   800028   |
 
     
 ## List of Custom Ingredients
@@ -514,15 +517,16 @@ or by way of donating a high amount to the server via patreon.
 | 59  |      Quinine       |        100061        |
 | 60  |     Mayonnaise     |        100062        |
 | 61  |      Mustard       |        100063        |
-| 62  |       Helium       |        200001        |
-| 63  |       Carbon       |        200002        |
-| 64  |       Oxygen       |        200003        |
-| 65  |      Nitrogen      |        200004        |
-| 66  |     Phosphorus     |        200006        |
-| 67  |      Chlorine      |        200007        |
-| 68  |       Dough        |        200008        |
-| 69  |       Butter       |        200009        |
-| 70  |      Pomace        |        200010        |
+| 62  |      Sulfur        |        100064        |
+| 63  |       Helium       |        200001        |
+| 64  |       Carbon       |        200002        |
+| 65  |       Oxygen       |        200003        |
+| 66  |      Nitrogen      |        200004        |
+| 67  |     Phosphorus     |        200006        |
+| 68  |      Chlorine      |        200007        |
+| 69  |       Dough        |        200008        |
+| 70  |       Butter       |        200009        |
+| 71  |      Pomace        |        200010        |
     
 ## List of Vanilla Ingredients.
 
