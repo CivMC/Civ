@@ -1,12 +1,10 @@
 package com.biggestnerd.namecolors;
 
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import static com.biggestnerd.namecolors.NameColorSetting.COLOR_PERMISSION;
@@ -43,10 +41,8 @@ public class NameColors extends ACivMod implements Listener {
             player.displayName(player.name());
             player.playerListName(player.name());
         } else {
-            if (doesPlayerHavePermissions(player)) {
-                player.displayName(setting.getValue(player.getUniqueId()));
-                player.playerListName(setting.getValue(player.getUniqueId()));
-            }
+            player.displayName(setting.getValue(player.getUniqueId()));
+            player.playerListName(setting.getValue(player.getUniqueId()));
         }
     }
 

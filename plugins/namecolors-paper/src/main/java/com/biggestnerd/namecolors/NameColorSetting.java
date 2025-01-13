@@ -1,7 +1,6 @@
 package com.biggestnerd.namecolors;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +19,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import vg.civcraft.mc.civmodcore.chat.ChatUtils;
-import vg.civcraft.mc.civmodcore.chat.Componentify;
-import vg.civcraft.mc.civmodcore.chat.dialog.Dialog;
-import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
@@ -108,21 +103,24 @@ public class NameColorSetting extends PlayerSetting<Component> {
     public Clickable getRGBButton(MenuSection menu) {
         Clickable button;
         ItemStack is = new ItemStack(Material.WRITABLE_BOOK);
-        ItemUtils.setComponentDisplayName(is, MiniMessage.miniMessage().deserialize("Change to color of your name to any RGB value"));
+        ItemUtils.setComponentDisplayName(is, MiniMessage.miniMessage().deserialize("Change the color of your name to any hex value"));
         button = new Clickable(is) {
 
             @Override
             public void clicked(Player target) {
-                new MenuDialog(target, NameColors.getInstance().setting, menu, "Please input a valid hex color") {
+                new MenuDialog(target, NameColors.getInstance().setting, menu, "Please input a valid hex color. (ex: #ff0000)") {
                     @Override
                     public void onReply(String[] message) {
                         if (message.length > 1) {
-                            target.sendRichMessage("<red>RGB values cannot have spaces.</red>");
+                            target.sendRichMessage("<red>Hex values cannot have spaces.</red>");
                             return;
                         }
-                        String result = message[0];
+                        String result = message[0].trim();
+                        if (!result.startsWith("#")) {
+                            result = "#" + result;
+                        }
                         if (!isValidValue(result)) {
-                            target.sendMessage(ChatColor.RED + "You did not enter a valid RGB value");
+                            target.sendMessage(ChatColor.RED + "You did not enter a valid hex value. (ex: #ff0000)");
                             menu.showScreen(target);
                             return;
                         }
@@ -147,7 +145,7 @@ public class NameColorSetting extends PlayerSetting<Component> {
         for (Entry<TextColor, Material> entry : colorToGui.entrySet()) {
             ItemStack is = new ItemStack(entry.getValue());
             ItemUtils.setDisplayName(is,
-                "Change to color of your name to " + entry.getKey());
+                "Change the color of your name to " + entry.getKey());
             buttons.add(new Clickable(is) {
 
                 @Override
@@ -163,7 +161,7 @@ public class NameColorSetting extends PlayerSetting<Component> {
 
     public Clickable getRainbowButton(Player player) {
         ItemStack is = new ItemStack(Material.YELLOW_STAINED_GLASS);
-        ItemUtils.setComponentDisplayName(is, MiniMessage.miniMessage().deserialize("Change to color of your name to <rainbow>rainbow</rainbow>"));
+        ItemUtils.setComponentDisplayName(is, MiniMessage.miniMessage().deserialize("Change the color of your name to <rainbow>rainbow</rainbow>"));
         return new Clickable(is) {
 
             @Override
