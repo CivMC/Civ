@@ -23,17 +23,17 @@ public class Reply extends BaseCommand {
 
         Player receiver = Bukkit.getPlayer(receiverUUID);
         if (receiver == null) {
-            player.sendMessage(ChatStrings.chatNoOneToReplyTo);
+            player.sendRichMessage(ChatStrings.chatNoOneToReplyTo);
             return;
         }
 
         if (!(receiver.isOnline())) {
-            player.sendMessage(ChatStrings.chatPlayerIsOffline);
+            player.sendRichMessage(ChatStrings.chatPlayerIsOffline);
             return;
         }
 
         if (player.getUniqueId().equals(receiver.getUniqueId())) {
-            player.sendMessage(ChatStrings.chatCantMessageSelf);
+            player.sendRichMessage(ChatStrings.chatCantMessageSelf);
             return;
         }
 
@@ -44,6 +44,6 @@ public class Reply extends BaseCommand {
         // Player to chat with reply user
         chatMan.removeChannel(player);
         chatMan.addChatChannel(player, receiver);
-        player.sendMessage(String.format(ChatStrings.chatNowChattingWith, receiver.getName()));
+        player.sendRichMessage(String.format(ChatStrings.chatNowChattingWith, receiver.getName()));
     }
 }

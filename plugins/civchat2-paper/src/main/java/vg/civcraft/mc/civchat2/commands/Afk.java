@@ -14,9 +14,9 @@ public class Afk extends BaseCommand {
     public void execute(Player player) {
         boolean isAfk = CivChat2.getInstance().getCivChat2Manager().togglePlayerAfk(player);
         if (isAfk) {
-            player.sendMessage(ChatStrings.chatAfk);
+            player.sendRichMessage(ChatStrings.chatAfk);
         } else {
-            player.sendMessage(ChatStrings.chatNotAfk);
+            player.sendRichMessage(ChatStrings.chatNotAfk);
         }
     }
 }
