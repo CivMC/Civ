@@ -346,6 +346,8 @@ factories:
       - make_prismarine_bricks
       - make_dark_prismarine
       - make_sea_lantern
+      - dye_froglight_verdant
+      - dye_froglight_ochre
       - make_end_rods
       - make_redstone_lamp
       - make_flower_pot
@@ -3237,6 +3239,48 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: SEA_LANTERN
         amount: 32
+  dye_froglight_verdant:
+    production_time: 4s
+    name: Dye Verdant Froglight
+    type: PRODUCTION
+    input:
+      pearlescent_froglight:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PEARLESCENT_FROGLIGHT
+        amount: 16
+      lime_dye:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LIME_DYE
+        amount: 4
+    output:
+      verdant_froglight:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: VERDANT_FROGLIGHT
+        amount: 16
+  dye_froglight_ochre:
+    production_time: 4s
+    name: Dye Ochre Froglight
+    type: PRODUCTION
+    input:
+      pearlescent_froglight:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PEARLESCENT_FROGLIGHT
+        amount: 16
+      orange_dye:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: ORANGE_DYE
+        amount: 4
+    output:
+      Ochre_froglight:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: OCHRE_FROGLIGHT
+        amount: 16
   make_end_rods:
     production_time: 4s
     name: Make End Rods
