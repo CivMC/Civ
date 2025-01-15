@@ -173,28 +173,44 @@ entities:
     despawn-range-shape: ELLIPSOID
     despawn-ranges:
       ambient:
-        hard: 96
+        hard:
+          horizontal: 32
+          vertical: 96
         soft: 24
       axolotls:
-        hard: 128
+        hard:
+          horizontal: 32
+          vertical: 128
         soft: 24
       creature:
-        hard: 128
+        hard:
+          horizontal: 32
+          vertical: 128
         soft: 24
       misc:
-        hard: 96
+        hard:
+          horizontal: 32
+          vertical: 96
         soft: 24
       monster:
-        hard: 128
+        hard:
+          horizontal: 32
+          vertical: 128
         soft: 24
       underground_water_creature:
-        hard: 96
+        hard:
+          horizontal: 32
+          vertical: 96
         soft: 24
       water_ambient:
-        hard: 96
+        hard:
+          horizontal: 32
+          vertical: 96
         soft: 24
       water_creature:
-        hard: 96
+        hard:
+          horizontal: 32
+          vertical: 96
         soft: 24
     disable-mob-spawner-spawn-egg-transformation: true
     duplicate-uuid:
