@@ -174,42 +174,42 @@ entities:
     despawn-ranges:
       ambient:
         hard:
-          horizontal: 32
+          horizontal: 36
           vertical: 96
         soft: 24
       axolotls:
         hard:
-          horizontal: 32
+          horizontal: 36
           vertical: 128
         soft: 24
       creature:
         hard:
-          horizontal: 32
+          horizontal: 36
           vertical: 128
         soft: 24
       misc:
         hard:
-          horizontal: 32
+          horizontal: 36
           vertical: 96
         soft: 24
       monster:
         hard:
-          horizontal: 32
+          horizontal: 36
           vertical: 128
         soft: 24
       underground_water_creature:
         hard:
-          horizontal: 32
+          horizontal: 36
           vertical: 96
         soft: 24
       water_ambient:
         hard:
-          horizontal: 32
+          horizontal: 36
           vertical: 96
         soft: 24
       water_creature:
         hard:
-          horizontal: 32
+          horizontal: 36
           vertical: 96
         soft: 24
     disable-mob-spawner-spawn-egg-transformation: true
