@@ -40,7 +40,7 @@ As seen the small barrel, is 2x2 made from wooden stairs, with the sign placed o
 
 The large one is 4x4 and consist of a total of: 20 planks and 16 stairs of the same type of wood, 1 fence post for the tap, and 1 sign in exactly the configuration shown. When correctly made a message in chat will notify the player that they have successfully made a barrel. The large barrel has two empty blocks in the center- you can put anything you like here (like snitches!) or leave it completely empty.
 
-When and how long to age a brew for is found out by experimentation through trail and error. (1 year of aging is equal to 1 Minecraft day or 20 minutes real time)
+Knowing when and how long to age a brew for is found out by experimentation through trail and error. (1 year of aging is equal to 1 Minecraft day or 20 minutes real time)
 
 *Note that barrels can be any type of wood, and that the wood type used can matter to the brew put inside to age. 
 
@@ -499,7 +499,7 @@ or by way of donating a high amount to the server via patreon.
 | 21  |       Fennel       |        100021        |
 | 22  |  Sugarcane Juice   |        100022        |
 | 23  |      Fish Oil      | 100023/100043/100044 |
-| 24  |  BlueBerry Juice   |        100024        |
+| 24  |  Blueberry Juice   |        100024        |
 | 25  |      Cinnamon      |        100025        |
 | 26  |       Banana       |        100026        |
 | 27  |       Thyme        |        100027        |
