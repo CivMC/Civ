@@ -74,10 +74,10 @@ public class NameColorSetting extends PlayerSetting<Component> {
     public void handleMenuClick(Player player, MenuSection menu) {
         List<IClickable> clicks = new ArrayList<>();
         if (player.hasPermission(COLOR_PERMISSION)) {
-            clicks.addAll(getNamedColorButton(player));
+            clicks.addAll(getNamedColorButton());
         }
         if (player.hasPermission(RAINBOW_PERMISSION)) {
-            clicks.add(getRainbowButton(player));
+            clicks.add(getRainbowButton());
             clicks.add(getLegacyRainbowButton());
         }
         if (player.hasPermission(RGB_COLOR_PERMISSION)) {
@@ -140,7 +140,7 @@ public class NameColorSetting extends PlayerSetting<Component> {
         return button;
     }
 
-    public List<Clickable> getNamedColorButton(Player player) {
+    public List<Clickable> getNamedColorButton() {
         List<Clickable> buttons = new ArrayList<>();
         for (Entry<TextColor, Material> entry : colorToGui.entrySet()) {
             ItemStack is = new ItemStack(entry.getValue());
@@ -149,9 +149,8 @@ public class NameColorSetting extends PlayerSetting<Component> {
             buttons.add(new Clickable(is) {
 
                 @Override
-                public void clicked(Player p) {
-                    player.sendMessage("The color of your name was changed to " + entry.getKey());
-                    //TODO: make message use colour selected
+                public void clicked(Player player) {
+                    player.sendMessage(Component.text("The color of your name was changed to ", NamedTextColor.GREEN).append(Component.text(entry.getKey().toString()).color(entry.getKey())));
                     setValue(player, Component.text(player.getName()).color(entry.getKey()));
                 }
             });
@@ -159,13 +158,13 @@ public class NameColorSetting extends PlayerSetting<Component> {
         return buttons;
     }
 
-    public Clickable getRainbowButton(Player player) {
+    public Clickable getRainbowButton() {
         ItemStack is = new ItemStack(Material.YELLOW_STAINED_GLASS);
         ItemUtils.setComponentDisplayName(is, MiniMessage.miniMessage().deserialize("Change the color of your name to <rainbow>rainbow</rainbow>"));
         return new Clickable(is) {
 
             @Override
-            public void clicked(Player p) {
+            public void clicked(Player player) {
                 player.sendRichMessage("The color of your name was changed to <rainbow>" + player.getName());
                 setValue(player, MiniMessage.miniMessage().deserialize("<rainbow>" + player.getName()));
             }
@@ -178,9 +177,9 @@ public class NameColorSetting extends PlayerSetting<Component> {
         return new Clickable(is) {
 
             @Override
-            public void clicked(Player p) {
-                p.sendMessage(Component.text("The color of your name was changed to ", NamedTextColor.GREEN).append(rainbowify(p.getName())));
-                setValue(p, rainbowify(p.getName()));
+            public void clicked(Player player) {
+                player.sendMessage(Component.text("The color of your name was changed to ", NamedTextColor.GREEN).append(rainbowify(player.getName())));
+                setValue(player, rainbowify(player.getName()));
             }
         };
     }
