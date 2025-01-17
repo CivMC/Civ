@@ -9,7 +9,7 @@ Brewery is a plugin that allows players to produce alcoholic drink, foods and ev
 ## Setting up
 Setting up a brewery is very easy and only requires 3 separate things, all of which play a different part in the brewing process. These are as described below
 
-![Cauldron example](media/Cauldron.png)
+![Cauldron example](./media/Cauldron.png)
 
 ### Cauldron
 First up is the start of all brews. A Cauldron placed above fire, lava, a magma block or a campfire will allow you to use it for brewing, simply add some water to the cauldron and right click your ingredients in. You'll know the cooking process has started when the item disappears from your hand, and swirling potion particles come out of the cauldron.
@@ -19,7 +19,7 @@ You can right click a clock on the cauldron to see how long it has been cooking 
 ### Distilling
 Second is a brewing stand, with the odd addition of placing 1 glowstone dust in the top slot, like so:
 
-![Distilling setup](media/Distilling.png)
+![Distilling setup](./media/Distilling.png)
 
 Brews taken out of the cauldron and put below the glowstone dust will be distilled. (The glowstone dust does not get used up) Every cycle of the downward arrow counts as 1 distill run. The brew will display how many times it has been distilled while hovering over it with you mouse. (1 distill run takes 40 seconds)
 
@@ -34,20 +34,20 @@ There are 2 versions. a small one which can hold and age 9 brews, and a large on
 
 | Small Barrel | Large Barrel | Different kind of wood |
 |:------------:|:------------:|:----------------------:|
-|     ![Small Barrel](media/Smallbarrel.png)     |     ![Large Barrel](media/Largebarrel.png)     |          ![Different wood types](media/2largebarrels.png)          |
+|     ![Small Barrel](./media/Smallbarrel.png)     |     ![Large Barrel](./media/Largebarrel.png)     |          ![Different wood types](./media/2largebarrels.png)          |
 
 As seen the small barrel, is 2x2 made from wooden stairs, with the sign placed on the lower right corner.
 
-The large one is 4x4 and consist of a total of: 20 planks and 16 stairs of the same type of wood, 1 fence post for the tap, and 1 sign in exactly the configuration shown. When correctly made a message in chat will notify the player that they have successfully made a barrel. The large barrel has two empty blocks in the center- you can put anything you like here (like snitches!) or leave it completely empty.
+The large one is 4x4 and consist of a total of: 20 planks, 16 stairs, 5 fence posts, 1 sign in exactly the configuration shown. When correctly made a message in chat will notify the player that they have successfully made a barrel.
 
-Knowing when and how long to age a brew for is found out by experimentation through trail and error. (1 year of aging is equal to 1 Minecraft day or 20 minutes real time)
+knowing when and how long to age a brew for is found out by experimentation through trail and error. (1 year of aging is equal to 1 Minecraft day or 20 minutes real time)
 
 *Note that barrels can be any type of wood, and that the wood type used can matter to the brew put inside to age. 
 
 ### Sealing
 Don't forget this critical step if you're planning to sell your brews! Sealing your brews makes it so their recipe details are no longer displayed in its lore. So you're not giving out recipes for free! You can make a sealing station with 4 planks and 2 glass bottles in a crafting table. 
 
-![Sealing table crafting recipe](media/Sealingtable.png)
+![Sealing table crafting recipe](./media/Sealingtable.png)
 
 Just place it down, and put your finished brews in it;s crafting grid for a second or 2. The brew is sealed when there are [brackets] surrounding the stars in the lore. 
 
@@ -117,7 +117,7 @@ The most simple form of brews, made with either base and/or custom ingredients.
 |        Champagne        |         2         |   300020   |
 |        Riesling         |         2         |   300021   |
 |          Rose           |         2         |   300022   |
-|         Whiskey         |         2         |   300023   |
+|         Wiskey          |         2         |   300023   |
 |         Scotch          |         2         |   300024   |
 |      White Whiskey      |         3         |   300025   |
 |      Corn Whiskey       |         2         |   300026   |
@@ -261,7 +261,7 @@ Brews made from other brews, sometimes with extra ingredients
 |  Pan Galactic Gargle Blaster  |         5         |   500016   |
 
 ### Drug Brews
-Brews that provide unique/useful effects
+Brews that provide unique/usefull effects
 
 |     Name      | Ingredient Amount | Texture ID |
 |:-------------:|:-----------------:|:----------:|
@@ -289,167 +289,187 @@ Brews that provide unique/useful effects
 ### Nation Brews
 Brews that are part of a nation or group's PR/culture and were submitted by them.
 
-|  Nation/Group   |             Name             | Ingredient Amount | Texture ID |
-|:---------------:|:----------------------------:|:-----------------:|:----------:|
-|     Icenia      |       Icenian Pale Ale       |         4         |   700001   |
-|     Dalgon      |         Dalgon Pale          |         3         |   700002   |
-|      Pacem      |        Pacem Pilsner         |         3         |   700003   |
-|       MTA       |        Augustan Cider        |         2         |   700004   |
-|     Wolken      |       Wolken White Ale       |         5         |   700005   |
-|   Southshire    |       Southshire Stout       |         6         |   700006   |
-|       MTS       |  Septembrian Summer Breeze   |         2         |   700007   |
-|  Commonwealth   |   Commonwealth Chardonnay    |         4         |   700008   |
-|       CDM       |      Cortesian Chianti       |         3         |   700009   |
-|      Sovia      |       Cabernet Sovian        |         2         |   700010   |
-|    Lusitania    |         Lusitan Wine         |         3         |   700011   |
-|     Fempire     |    Fempire Sparkling Rose    |         4         |   700012   |
-|      Nara       |     Nara Pufferfish Wine     |         4         |   700013   |
-|      CCTT       |      CCTT Pumpkin Wine       |         3         |   700014   |
-|      Dirt       |          Dirt Wine           |         3         |   700015   |
-|      Pavia      |        Pavian Wiskey         |         4         |   700016   |
-|     Fempire     |          Fembourbon          |         4         |   700017   |
-|     Griffin     |     Griffin Gold Whiskey     |         4         |   700018   |
-|      Nara       |        Nara no Uisuki        |         4         |   700019   |
-|    Gensokyo     |    Gensokyo no Ginjo Sake    |         3         |   700020   |
-|      Venne      |         Venne Vodka          |         4         |   700021   |
-|  Winterbourne   |   Winterbourne Wheat Vodka   |         4         |   700022   |
-|     Estalia     |      Estalian Schnapps       |         5         |   700023   |
-|   Southshire    |   Southshire Cream Liquer    |         5         |   700024   |
-|       Ku        |           Kubucha            |         5         |   700025   |
-|     Yoathl      |           Yoahpple           |         3         |   700026   |
-|     Lambat      |          Lambasiat           |         4         |   700027   |
-|     Yoathl      |       Chicha Alchuahtl       |         6         |   700028   |
-| Banana Republic |     Banana Republic Mead     |         4         |   700029   |
-|      Venne      |           Vennessy           |         3         |   700030   |
-|      Mery       |      Smiles of T'shola       |         3         |   700031   |
-|   Danzelonia    |       Dandedanzilonia        |         5         |   700032   |
-|    Maseters     |        JaegerMaester         |         8         |   700033   |
-|   Southshire    |   Shaken Southsire Sunset    |         4         |   700034   |
-|      Pacem      |         Pacem Proper         |         4         |   700035   |
-|      Venne      |       Venne Cream Soda       |         4         |   700036   |
-|     Valyria     |     Valyrian Dragonwine      |         4         |   700037   |
-|   Wheatistan    | Wheatistan Whimsical Whiskey |         3         |   700038   |
-|   Danzilonia    |       Danzilonian Wine       |         4         |   700039   |
-|    Butternut    |  Butternut Pumpkin Bourbon   |         6         |   700040   |
-|   New Phoenix   |   New Phoenix Fire Whiskey   |         3         |   700041   |
-|   Pridelands    |       Pridelands Mead        |         3         |   700042   |
-|     Acadia      |       Acadian Absinthe       |         4         |   700043   |
-|     Icenia      |      Icenian Icebreaker      |         4         |   700044   |
-|    Civmarket    |      CivMarket Chowder       |         6         |   700045   |
-| Margaritaville  |   Margaritaville Margarita   |         6         |   700046   |
-|     Estalia     |        Vault Breaker         |         2         |   700047   |
-|     Icarus      |         Nuclear Milk         |         4         |   700048   |
-|     Amboise     |       Amboise Red Wine       |         3         |   700049   |
-|      Atlas      |       Atlas Corp Cuban       |         4         |   700050   |
-|      Eire       |        Irish whiskey         |         3         |   700051   |
-| Grand Imperium  |       Imperian Whiskey       |         3         |   700052   |
-|     Warmia      |        Warmian Nitro         |         3         |   700053   |
-|      Nara       |        Shiroyama Sake        |         4         |   700054   |
-| Grand Imperium  |             Ixi              |         2         |   700055   |
-| Grand Imperium  |    Imperian Carrot Juice     |         2         |   700056   |
-|     Warmia      |         Angmar Vodka         |         3         |   700057   |
-|      SPQR       |    Mint Chocolate Martini    |         4         |   700058   |
-|     Reggio      |          Reggio Rum          |         5         |   700059   |
-|    Gang Shi     |   The Shitter's Brown Ale    |         3         |   700060   |
-| Temporal Isles  |   Temporal Sweet Red Wine    |         4         |   700061   |
-|    Attoprak     |        Secret Sprite         |         4         |   700062   |
-|     Icarus      |         Boar Bourbon         |         3         |   700063   |
-|      Joja       |          Joja Cola           |         4         |   700064   |
-|    Brunsvilk    |      Brunsvilk Jenever       |         5         |   700065   |
-|     Zanaris     | Zanarian Razzleberry Delight |         5         |   700066   |
-|     Zanaris     |        Faerie's Kiss         |         4         |   700067   |
-|     XXXCIOS     |       Fruity Tooty Mix       |         4         |   700068   |
-|   Bazariškės    |         Naminė Gira          |         4         |   700069   |
-|     Griffin     |      Griffin Rose Wine       |         3         |   700070   |
-| Temporal Isles  |   Temporal Tropical Punch    |         4         |   700071   |
-|  Transylvania   |         Cluj pálinka         |         3         |   700072   |
-|     Griffin     |       Sealeo Rum Punch       |         3         |   700073   |
-|      Spqr       |     Spicy Vodka Espresso     |         4         |   700074   |
-|     Griffin     |     Griffin Melon Cider      |         2         |   700075   |
-|     Reggio      |       Reggio Surprise        |         4         |   700076   |
-|    Tortugain    |           Rosy Rum           |         3         |   700077   |
-|    Bergburg     |         Bergburgbier         |         4         |   700078   |
-|    Brunsvilk    |    Brunsvilk Sewage Water    |         5         |   700079   |
-|      Iria       |     Irian Jungle Coffee      |         4         |   700080   |
-|     Thoria      |        Thorian Cider         |         4         |   700081   |
-|    Nro'meagh    |        Jevoghnya Brew        |         4         |   700082   |
-|   Ila'Kyavul    |          Greek Fire          |         3         |   700083   |
-|     Larauve     |    Larauve Medicinal Tea     |         4         |   700084   |
-|      Bloom      |            Slushy            |         4         |   700085   |
-|    Volterra     |         Tendie Tonic         |         4         |   700086   |
-|    Volterra     |          Volt Vodka          |         3         |   700087   |
-|      Aeros      |          Aeros Ale           |         3         |   700088   |
-|     Cordoba     |         VB Longneck          |         3         |   700089   |
-|     Yoathl      |         Gin of Rails         |         3         |   700090   |
-|     Yoathl      |         Kobeerlinski         |         3         |   700091   |
-|    Freeport     |     Frihavn Juniper Ale      |         4         |   700092   |
-|    Freeport     |          Fen Fyool           |         5         |   700093   |
-|     Midgar      |       Burning Blizzard       |         4         |   700094   |
-|     Larauve     |      Larauve Bubble Tea      |         4         |   700095   |
-|  Winterbourne   |  Winterbourne Lamb Knuckle   |         3         |   700096   |
-|  Winterbourne   |          Winterale           |         3         |   700097   |
-|  Winterbourne   |    Winterbourne Blue Ice     |         3         |   700098   |
-| Banana Republic |  Banana Republic Pickleback  |         2         |   700099   |
-|    Meracydia    |   Meracydian Mulled Cider    |         7         |   700100   |
-|    Meracydia    |   Valar Winter Cheesecake    |         7         |   700101   |
-|    Meracydia    |       Meracydian Mule        |         5         |   700102   |
-|    Meracydia    |    Valar Steamfired Soda     |         6         |   700103   |
-|     Larauve     |       Larauve Shortcut       |         5         |   700104   |
-|      Vald       |          Vald Mead           |         4         |   700105   |
-|     Estalia     |            Donut             |         5         |   700106   |
-|      Gmall      |          Gmall Grog          |         4         |   700107   |
-|    Doom City    |         Doom Delight         |         5         |   700108   |
-|  Grebada State  |    Grenada Club White Rum    |         3         |   700109   |
-|   New Jersey    |   Cranberry Juice Cocktail   |         4         |   700110   |
-|    Hispania     |    Walloon Guard Whiskey     |         3         |   700111   |
-|    Hispania     |     Line Infantry Lager      |         3         |   700112   |
-| Catholic Church |       Sacramental Wine       |         2         |   700113   |
-|       SEC       |  Security Enhancement Cider  |         3         |   700114   |
-|   Greenfaith    |      Greenfaith Goulash      |         4         |   700115   |
-|   Greenfaith    |     Trailblazer's Toddy      |         4         |   700116   |
-|     Icaraki     |           Icaraki            |         2         |   700117   |
-|   Truidencia    |       Nidaros Akevitt        |         2         |   700118   |
-|   Truidencia    |          Warm Milk           |         2         |   700119   |
-|    Amicitia     |       Amicitian Lager        |         4         |   700120   |
-|     Kaowta      |     Kaowtanese Melonale      |         3         |   700121   |
-|    ICE Labs     |         Cocaine Cola         |         6         |   700122   |
-|      Bloom      |        Bloomin' Onion        |         1         |   700123   |
-|      Baile      |         Azarath Mead         |         4         |   700124   |
+|  Nation/Group   |             Name              | Ingredient Amount | Texture ID |
+|:---------------:|:-----------------------------:|:-----------------:|:----------:|
+|     Icenia      |       Icenian Pale Ale        |         4         |   700001   |
+|     Dalgon      |          Dalgon Pale          |         3         |   700002   |
+|      Pacem      |         Pacem Pilsner         |         3         |   700003   |
+|       MTA       |        Augustan Cider         |         2         |   700004   |
+|     Wolken      |       Wolken White Ale        |         5         |   700005   |
+|   Southshire    |       Southshire Stout        |         6         |   700006   |
+|       MTS       |   Septembrian Summer Breeze   |         2         |   700007   |
+|  Commonwealth   |    Commonwealth Chardonnay    |         4         |   700008   |
+|       CDM       |       Cortesian Chianti       |         3         |   700009   |
+|      Sovia      |        Cabernet Sovian        |         2         |   700010   |
+|    Lusitania    |         Lusitan Wine          |         3         |   700011   |
+|     Fempire     |    Fempire Sparkling Rose     |         4         |   700012   |
+|      Nara       |     Nara Pufferfish Wine      |         4         |   700013   |
+|      CCTT       |       CCTT Pumpkin Wine       |         3         |   700014   |
+|      Dirt       |           Dirt Wine           |         3         |   700015   |
+|      Pavia      |         Pavian Wiskey         |         4         |   700016   |
+|     Fempire     |          Fembourbon           |         4         |   700017   |
+|     Griffin     |     Griffin Gold Whiskey      |         4         |   700018   |
+|      Nara       |        Nara no Uisuki         |         4         |   700019   |
+|    Gensokyo     |    Gensokyo no Ginjo Sake     |         3         |   700020   |
+|      Venne      |          Venne Vodka          |         4         |   700021   |
+|  Winterbourne   |   Winterbourne Wheat Vodka    |         4         |   700022   |
+|     Estalia     |       Estalian Schnapps       |         5         |   700023   |
+|   Southshire    |    Southshire Cream Liquer    |         5         |   700024   |
+|       Ku        |            Kubucha            |         5         |   700025   |
+|     Yoathl      |           Yoahpple            |         3         |   700026   |
+|     Lambat      |           Lambasiat           |         4         |   700027   |
+|     Yoathl      |       Chicha Alchuahtl        |         6         |   700028   |
+| Banana Republic |     Banana Republic Mead      |         4         |   700029   |
+|      Venne      |           Vennessy            |         3         |   700030   |
+|      Mery       |       Smiles of T'shola       |         3         |   700031   |
+|   Danzelonia    |        Dandedanzilonia        |         5         |   700032   |
+|    Maseters     |         JaegerMaester         |         8         |   700033   |
+|   Southshire    |    Shaken Southsire Sunset    |         4         |   700034   |
+|      Pacem      |         Pacem Proper          |         4         |   700035   |
+|      Venne      |       Venne Cream Soda        |         4         |   700036   |
+|     Valyria     |      Valyrian Dragonwine      |         4         |   700037   |
+|   Wheatistan    | Wheatistan Whimsical Whiskey  |         3         |   700038   |
+|   Danzilonia    |       Danzilonian Wine        |         4         |   700039   |
+|    Butternut    |   Butternut Pumpkin Bourbon   |         6         |   700040   |
+|   New Phoenix   |   New Phoenix Fire Whiskey    |         3         |   700041   |
+|   Pridelands    |        Pridelands Mead        |         3         |   700042   |
+|     Acadia      |       Acadian Absinthe        |         4         |   700043   |
+|     Icenia      |      Icenian Icebreaker       |         4         |   700044   |
+|    Civmarket    |       CivMarket Chowder       |         6         |   700045   |
+| Margaritaville  |   Margaritaville Margarita    |         6         |   700046   |
+|     Estalia     |         Vault Breaker         |         2         |   700047   |
+|     Icarus      |         Nuclear Milk          |         4         |   700048   |
+|     Amboise     |       Amboise Red Wine        |         3         |   700049   |
+|      Atlas      |       Atlas Corp Cuban        |         4         |   700050   |
+|      Eire       |         Irish whiskey         |         3         |   700051   |
+| Grand Imperium  |       Imperian Whiskey        |         3         |   700052   |
+|     Warmia      |         Warmian Nitro         |         3         |   700053   |
+|      Nara       |        Shiroyama Sake         |         4         |   700054   |
+| Grand Imperium  |              Ixi              |         2         |   700055   |
+| Grand Imperium  |     Imperian Carrot Juice     |         2         |   700056   |
+|     Warmia      |         Angmar Vodka          |         3         |   700057   |
+|      SPQR       |    Mint Chocolate Martini     |         4         |   700058   |
+|     Reggio      |          Reggio Rum           |         5         |   700059   |
+|    Gang Shi     |    The Shitter's Brown Ale    |         3         |   700060   |
+| Temporal Isles  |    Temporal Sweet Red Wine    |         4         |   700061   |
+|    Attoprak     |         Secret Sprite         |         4         |   700062   |
+|     Icarus      |         Boar Bourbon          |         3         |   700063   |
+|      Joja       |           Joja Cola           |         4         |   700064   |
+|    Brunsvilk    |       Brunsvilk Jenever       |         5         |   700065   |
+|     Zanaris     | Zanarian Razzleberry Delight  |         5         |   700066   |
+|     Zanaris     |         Faerie's Kiss         |         4         |   700067   |
+|     XXXCIOS     |       Fruity Tooty Mix        |         4         |   700068   |
+|   Bazariškės    |          Naminė Gira          |         4         |   700069   |
+|     Griffin     |       Griffin Rose Wine       |         3         |   700070   |
+| Temporal Isles  |    Temporal Tropical Punch    |         4         |   700071   |
+|  Transylvania   |         Cluj pálinka          |         3         |   700072   |
+|     Griffin     |       Sealeo Rum Punch        |         3         |   700073   |
+|      Spqr       |     Spicy Vodka Espresso      |         4         |   700074   |
+|     Griffin     |      Griffin Melon Cider      |         2         |   700075   |
+|     Reggio      |        Reggio Surprise        |         4         |   700076   |
+|    Tortugain    |           Rosy Rum            |         3         |   700077   |
+|    Bergburg     |         Bergburgbier          |         4         |   700078   |
+|    Brunsvilk    |    Brunsvilk Sewage Water     |         5         |   700079   |
+|      Iria       |      Irian Jungle Coffee      |         4         |   700080   |
+|     Thoria      |         Thorian Cider         |         4         |   700081   |
+|    Nro'meagh    |        Jevoghnya Brew         |         4         |   700082   |
+|   Ila'Kyavul    |          Greek Fire           |         3         |   700083   |
+|     Larauve     |     Larauve Medicinal Tea     |         4         |   700084   |
+|      Bloom      |            Slushy             |         4         |   700085   |
+|    Volterra     |         Tendie Tonic          |         4         |   700086   |
+|    Volterra     |          Volt Vodka           |         3         |   700087   |
+|      Aeros      |           Aeros Ale           |         3         |   700088   |
+|     Cordoba     |          VB Longneck          |         3         |   700089   |
+|     Yoathl      |         Gin of Rails          |         3         |   700090   |
+|     Yoathl      |         Kobeerlinski          |         3         |   700091   |
+|    Freeport     |      Frihavn Juniper Ale      |         4         |   700092   |
+|    Freeport     |           Fen Fyool           |         5         |   700093   |
+|     Midgar      |       Burning Blizzard        |         4         |   700094   |
+|     Larauve     |      Larauve Bubble Tea       |         4         |   700095   |
+|  Winterbourne   |   Winterbourne Lamb Knuckle   |         3         |   700096   |
+|  Winterbourne   |           Winterale           |         3         |   700097   |
+|  Winterbourne   |     Winterbourne Blue Ice     |         3         |   700098   |
+| Banana Republic |  Banana Republic Pickleback   |         2         |   700099   |
+|    Meracydia    |    Meracydian Mulled Cider    |         7         |   700100   |
+|    Meracydia    |    Valar Winter Cheesecake    |         7         |   700101   |
+|    Meracydia    |        Meracydian Mule        |         5         |   700102   |
+|    Meracydia    |     Valar Steamfired Soda     |         6         |   700103   |
+|     Larauve     |       Larauve Shortcut        |         5         |   700104   |
+|      Vald       |           Vald Mead           |         4         |   700105   |
+|     Estalia     |             Donut             |         5         |   700106   |
+|      Gmall      |          Gmall Grog           |         4         |   700107   |
+|    Doom City    |         Doom Delight          |         5         |   700108   |
+|  Grebada State  |    Grenada Club White Rum     |         3         |   700109   |
+|   New Jersey    |   Cranberry Juice Cocktail    |         4         |   700110   |
+|    Hispania     |     Walloon Guard Whiskey     |         3         |   700111   |
+|    Hispania     |      Line Infantry Lager      |         3         |   700112   |
+| Catholic Church |       Sacramental Wine        |         2         |   700113   |
+|       SEC       |  Security Enhancement Cider   |         3         |   700114   |
+|   Greenfaith    |      Greenfaith Goulash       |         4         |   700115   |
+|   Greenfaith    |      Trailblazer's Toddy      |         4         |   700116   |
+|     Icaraki     |            Icaraki            |         2         |   700117   |
+|   Truidencia    |        Nidaros Akevitt        |         2         |   700118   |
+|   Truidencia    |           Warm Milk           |         2         |   700119   |
+|    Amicitia     |        Amicitian Lager        |         4         |   700120   |
+|     Kaowta      |      Kaowtanese Melonale      |         3         |   700121   |
+|    ICE Labs     |         Cocaine Cola          |         6         |   700122   |
+|      Bloom      |        Bloomin' Onion         |         1         |   700123   |
+|      Baile      |         Azarath Mead          |         4         |   700124   |
+|  CityOfEngland  |      Long Live The King!      |         4         |   700125   |
+|   Khalkedonia   | Khalkedonian Crimson Cabernet |         4         |   700126   |
+|    Snowpeak     |    Drunken Boxer’s Delight    |         2         |   700127   |
+|     Artonia     |    Artonia Cherry slurpee     |         3         |   700128   |
+|       CFA       |           Motor Oil           |         3         |   700129   |
+|     Madeira     |   Madeirense Oceanic Rakija   |         4         |   700130   |
+|      SPQR       |       Pine Grove Elixer       |         3         |   700131   |
+|     Exyria      |             fent              |         3         |   700132   |
+|   Khalkedonia   |             Ayran             |         4         |   700133   |
+|     Eldoria     |      Eldorian Grand Wine      |         6         |   700134   |
+|     Q'Barra     |       Q'Barran Hist Sap       |         5         |   700135   |
+|     Q'Barra     |      Q'Barran Phlegmwine      |         4         |   700136   |
+|    BEBO INC     |         Rust And Rot          |         2         |   700137   |
+|    Alcantara    |          Spruce Raki          |         3         |   700138   |
+|     Nalora      |       Minty Blue Juice        |         3         |   700139   |
+|      Baile      |          Baile Deep           |         4         |   700140   |
+|     Nalora      |           Blue Star           |         7         |   700141   |
+|     Exyria      |        Piwo Tesc-mole         |         3         |   700142   |
+|       IF        |    New Callisto Coppertop     |         4         |   700143   |
+|     Mayguow     |      Erynorian Root Beer      |         3         |   700144   |
 
 ### Player Brews
 Brews specific to individuals either for their contribution to the genre/server
 or by way of donating a high amount to the server via patreon.
 
-|             Name             | Ingredient Amount | Texture ID |
-|:----------------------------:|:-----------------:|:----------:|
-|        Lord Marzenpan        |         2         |   800001   |
-|    SoundTech's Soundcheck    |         3         |   800002   |
-|      WingZero's Wingman      |         3         |   800003   |
-|    Ahri's Touhou Twister     |         3         |   800004   |
-|   Maxoplopy's Beer Garden    |         3         |   800005   |
-|   Diet_Cola's Rum and Cola   |         3         |   800006   |
-|     Icekeeper's Icepick      |         3         |   800007   |
-| ProgrammerDan's Power Coffee |         1         |   800008   |
-|    TTK2's Closing Speech     |         3         |   800009   |
-|    Infra's Code Injection    |         3         |   800010   |
-| Rourke750's Vermouth Reviver |         3         |   800011   |
-| TealNerd's Sneaker Schnapps  |         3         |   800012   |
-|    Eroc's Top of the Rock    |         4         |   800013   |
-|   RedDevel's Devilish Wine   |         3         |   800014   |
-|       Xfier's Firesnap       |         4         |   800015   |
-|     Orinnari's Amaretto      |         3         |   800016   |
-|  Awoo's Git reset Hard Head  |         3         |   800017   |
-|  Gjum's Grape Juice on Ice   |         4         |   800018   |
-|   NoTruePunkin Spiced Mead   |         4         |   800019   |
-|  Kingtell's Royal Absinthe   |         5         |   800020   |
-|     Gamer Gwua Bathwater     |         3         |   800021   |
-|      Okx's Oxeye Oxkick      |         3         |   800022   |
-|   Leo's Orange Creamsicle    |         6         |   800023   |
-|    Colton's Love Martini     |         3         |   800024   |
-|      Golden Pick Stout       |         4         |   800025   |
-|      Katz Catnip Kaffee      |         3         |   800026   |
-|      Astro's Pill            |         6         |   800027   |
-| Jeremy's Slippy-Sloppy Screwdriver |    3        |   800028   |
+|                Name                | Ingredient Amount | Texture ID |
+|:----------------------------------:|:-----------------:|:----------:|
+|           Lord Marzenpan           |         2         |   800001   |
+|       SoundTech's Soundcheck       |         3         |   800002   |
+|         WingZero's Wingman         |         3         |   800003   |
+|       Ahri's Touhou Twister        |         3         |   800004   |
+|      Maxoplopy's Beer Garden       |         3         |   800005   |
+|      Diet_Cola's Rum and Cola      |         3         |   800006   |
+|        Icekeeper's Icepick         |         3         |   800007   |
+|    ProgrammerDan's Power Coffee    |         1         |   800008   |
+|       TTK2's Closing Speech        |         3         |   800009   |
+|       Infra's Code Injection       |         3         |   800010   |
+|    Rourke750's Vermouth Reviver    |         3         |   800011   |
+|    TealNerd's Sneaker Schnapps     |         3         |   800012   |
+|       Eroc's Top of the Rock       |         4         |   800013   |
+|      RedDevel's Devilish Wine      |         3         |   800014   |
+|          Xfier's Firesnap          |         4         |   800015   |
+|        Orinnari's Amaretto         |         3         |   800016   |
+|     Awoo's Git reset Hard Head     |         3         |   800017   |
+|     Gjum's Grape Juice on Ice      |         4         |   800018   |
+|      NoTruePunkin Spiced Mead      |         4         |   800019   |
+|     Kingtell's Royal Absinthe      |         5         |   800020   |
+|        Gamer Gwua Bathwater        |         3         |   800021   |
+|         Okx's Oxeye Oxkick         |         3         |   800022   |
+|      Leo's Orange Creamsicle       |         6         |   800023   |
+|       Colton's Love Martini        |         3         |   800024   |
+|         Golden Pick Stout          |         4         |   800025   |
+|            Astro's Pill            |         6         |   800027   |
+| Jeremy's Slippy-Sloppy Screwdriver |         3         |   800028   |
+|   Trizzzx's Worcestershire sauce   |         4         |   800029   |
 
     
 ## List of Custom Ingredients
@@ -479,7 +499,7 @@ or by way of donating a high amount to the server via patreon.
 | 21  |       Fennel       |        100021        |
 | 22  |  Sugarcane Juice   |        100022        |
 | 23  |      Fish Oil      | 100023/100043/100044 |
-| 24  |  Blueberry Juice   |        100024        |
+| 24  |  BlueBerry Juice   |        100024        |
 | 25  |      Cinnamon      |        100025        |
 | 26  |       Banana       |        100026        |
 | 27  |       Thyme        |        100027        |
@@ -512,12 +532,12 @@ or by way of donating a high amount to the server via patreon.
 | 54  |      Hydrogen      |        100056        |
 | 55  |        Corn        |        100057        |
 | 56  |     Pine Cone      |        100058        |
-| 57  | Exotic Fruit Syrup |        100059        |
+| 57  | Exotic Fruit Sirup |        100059        |
 | 58  |       Acorn        |        100060        |
 | 59  |      Quinine       |        100061        |
 | 60  |     Mayonnaise     |        100062        |
 | 61  |      Mustard       |        100063        |
-| 62  |      Sulfur        |        100064        |
+| 62  |       Sulfur       |        100064        |
 | 63  |       Helium       |        200001        |
 | 64  |       Carbon       |        200002        |
 | 65  |       Oxygen       |        200003        |
@@ -526,7 +546,7 @@ or by way of donating a high amount to the server via patreon.
 | 68  |      Chlorine      |        200007        |
 | 69  |       Dough        |        200008        |
 | 70  |       Butter       |        200009        |
-| 71  |      Pomace        |        200010        |
+| 71  |      Pornace       |        200010        |
     
 ## List of Vanilla Ingredients.
 
@@ -674,3 +694,9 @@ or by way of donating a high amount to the server via patreon.
 | 140 |                Cookie                 |
 | 141 |             Crimson Roots             |
 | 142 |             Gold Pickaxe              |
+| 143 |             Golden Ingot              |
+| 144 |                  Mud                  |
+| 145 |            Mangrove Roots             |
+| 146 |            Jungle Sapling             |
+| 147 |              Moss Block               |
+| 148 |             Copper Ingot              |
