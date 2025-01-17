@@ -117,7 +117,7 @@ The most simple form of brews, made with either base and/or custom ingredients.
 |        Champagne        |         2         |   300020   |
 |        Riesling         |         2         |   300021   |
 |          Rose           |         2         |   300022   |
-|         Wiskey          |         2         |   300023   |
+|         Whiskey          |         2         |   300023   |
 |         Scotch          |         2         |   300024   |
 |      White Whiskey      |         3         |   300025   |
 |      Corn Whiskey       |         2         |   300026   |
