@@ -41,7 +41,6 @@ public class CivChat2Manager {
     private final HashMap<UUID, Group> groupChatChannels;
     // replyList has (playerName, whotoreplyto)
     private final HashMap<UUID, UUID> replyList;
-    private final Set<UUID> afkPlayers;
     private final HashMap<UUID, Component> afkPlayers;
     private ScoreboardHUD scoreboardHUD;
     private String defaultColor;
@@ -220,7 +219,6 @@ public class CivChat2Manager {
      */
     public boolean isPlayerAfk(Player player) {
         Preconditions.checkNotNull(player, "player");
-
         return afkPlayers.get(player.getUniqueId()) != null;
     }
 
