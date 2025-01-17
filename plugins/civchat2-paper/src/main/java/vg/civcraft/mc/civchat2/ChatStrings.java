@@ -1,7 +1,5 @@
 package vg.civcraft.mc.civchat2;
 
-import org.bukkit.ChatColor;
-
 public class ChatStrings {
 
     public final static String localChatFormat = "<%1$s> %2$s";
