@@ -9,7 +9,7 @@ Brewery is a plugin that allows players to produce alcoholic drink, foods and ev
 ## Setting up
 Setting up a brewery is very easy and only requires 3 separate things, all of which play a different part in the brewing process. These are as described below
 
-![Cauldron example](./media/Cauldron.png)
+![Cauldron example](media/Cauldron.png)
 
 ### Cauldron
 First up is the start of all brews. A Cauldron placed above fire, lava, a magma block or a campfire will allow you to use it for brewing, simply add some water to the cauldron and right click your ingredients in. You'll know the cooking process has started when the item disappears from your hand, and swirling potion particles come out of the cauldron.
@@ -19,7 +19,7 @@ You can right click a clock on the cauldron to see how long it has been cooking 
 ### Distilling
 Second is a brewing stand, with the odd addition of placing 1 glowstone dust in the top slot, like so:
 
-![Distilling setup](./media/Distilling.png)
+![Distilling setup](media/Distilling.png)
 
 Brews taken out of the cauldron and put below the glowstone dust will be distilled. (The glowstone dust does not get used up) Every cycle of the downward arrow counts as 1 distill run. The brew will display how many times it has been distilled while hovering over it with you mouse. (1 distill run takes 40 seconds)
 
@@ -34,20 +34,20 @@ There are 2 versions. a small one which can hold and age 9 brews, and a large on
 
 | Small Barrel | Large Barrel | Different kind of wood |
 |:------------:|:------------:|:----------------------:|
-|     ![Small Barrel](./media/Smallbarrel.png)     |     ![Large Barrel](./media/Largebarrel.png)     |          ![Different wood types](./media/2largebarrels.png)          |
+|     ![Small Barrel](media/Smallbarrel.png)     |     ![Large Barrel](media/Largebarrel.png)     |          ![Different wood types](media/2largebarrels.png)          |
 
 As seen the small barrel, is 2x2 made from wooden stairs, with the sign placed on the lower right corner.
 
-The large one is 4x4 and consist of a total of: 20 planks, 16 stairs, 5 fence posts, 1 sign in exactly the configuration shown. When correctly made a message in chat will notify the player that they have successfully made a barrel.
+The large one is 4x4 and consist of a total of: 20 planks and 16 stairs of the same type of wood, 1 fence post for the tap, and 1 sign in exactly the configuration shown. When correctly made a message in chat will notify the player that they have successfully made a barrel. The large barrel has two empty blocks in the center- you can put anything you like here (like snitches!) or leave it completely empty.
 
-knowing when and how long to age a brew for is found out by experimentation through trail and error. (1 year of aging is equal to 1 Minecraft day or 20 minutes real time)
+When and how long to age a brew for is found out by experimentation through trail and error. (1 year of aging is equal to 1 Minecraft day or 20 minutes real time)
 
 *Note that barrels can be any type of wood, and that the wood type used can matter to the brew put inside to age. 
 
 ### Sealing
 Don't forget this critical step if you're planning to sell your brews! Sealing your brews makes it so their recipe details are no longer displayed in its lore. So you're not giving out recipes for free! You can make a sealing station with 4 planks and 2 glass bottles in a crafting table. 
 
-![Sealing table crafting recipe](./media/Sealingtable.png)
+![Sealing table crafting recipe](media/Sealingtable.png)
 
 Just place it down, and put your finished brews in it;s crafting grid for a second or 2. The brew is sealed when there are [brackets] surrounding the stars in the lore. 
 
@@ -261,7 +261,7 @@ Brews made from other brews, sometimes with extra ingredients
 |  Pan Galactic Gargle Blaster  |         5         |   500016   |
 
 ### Drug Brews
-Brews that provide unique/usefull effects
+Brews that provide unique/useful effects
 
 |     Name      | Ingredient Amount | Texture ID |
 |:-------------:|:-----------------:|:----------:|
@@ -532,7 +532,7 @@ or by way of donating a high amount to the server via patreon.
 | 54  |      Hydrogen      |        100056        |
 | 55  |        Corn        |        100057        |
 | 56  |     Pine Cone      |        100058        |
-| 57  | Exotic Fruit Sirup |        100059        |
+| 57  | Exotic Fruit Syrup |        100059        |
 | 58  |       Acorn        |        100060        |
 | 59  |      Quinine       |        100061        |
 | 60  |     Mayonnaise     |        100062        |
@@ -546,7 +546,7 @@ or by way of donating a high amount to the server via patreon.
 | 68  |      Chlorine      |        200007        |
 | 69  |       Dough        |        200008        |
 | 70  |       Butter       |        200009        |
-| 71  |      Pornace       |        200010        |
+| 71  |       Pomace       |        200010        |
     
 ## List of Vanilla Ingredients.
 
