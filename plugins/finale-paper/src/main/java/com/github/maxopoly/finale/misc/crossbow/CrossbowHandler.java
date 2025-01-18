@@ -15,12 +15,14 @@ import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.ExplosionResult;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.FireworkExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -117,9 +119,14 @@ public class CrossbowHandler {
             }
         }
 
-        List<Location> explodeLocs = getCircle(loc, radius, radius, false, true, 0);
-        for (Location explodeLoc : explodeLocs) {
-            Block explodeBlock = explodeLoc.getBlock();
+        List<Block> explodeLocs = getCircle(loc, radius, radius, false, true, 0);
+        BlockExplodeEvent explodeEvent = new BlockExplodeEvent(loc.getBlock(), loc.getBlock().getState(), explodeLocs, 0, ExplosionResult.DESTROY_WITH_DECAY);
+        Bukkit.getPluginManager().callEvent(explodeEvent);
+        if (explodeEvent.isCancelled()) {
+            return;
+        }
+
+        for (Block explodeBlock : explodeLocs) {
             if (explodeBlock.getType() != Material.AIR && explodeBlock.getType() != Material.BEDROCK && explodeBlock.getType() != Material.BARRIER) {
                 if (Bukkit.getPluginManager().isPluginEnabled("Citadel")) {
                     Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(explodeBlock);
@@ -146,8 +153,8 @@ public class CrossbowHandler {
         }
     }
 
-    public static List<Location> getCircle(final Location loc, final int radius, final int height, final boolean hollow, final boolean sphere, final int plusY) {
-        final List<Location> circleblocks = new ArrayList<>();
+    public static List<Block> getCircle(final Location loc, final int radius, final int height, final boolean hollow, final boolean sphere, final int plusY) {
+        final List<Block> circleblocks = new ArrayList<>();
         final int cx = loc.getBlockX();
         final int cy = loc.getBlockY();
         final int cz = loc.getBlockZ();
@@ -159,7 +166,7 @@ public class CrossbowHandler {
 
                     if (dist < radius * radius && !(hollow && dist < (radius - 1) * (radius - 1))) {
                         final Location l = new Location(loc.getWorld(), x, y + plusY, z);
-                        circleblocks.add(l);
+                        circleblocks.add(l.getBlock());
                     }
                 }
             }

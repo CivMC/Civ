@@ -32,7 +32,6 @@ public class BlockListener implements Listener {
             return;
         }
 
-        System.out.println("COMBAT TAGGED PLAYER");
         BlockRestrictionHandler blockRestrictionHandler = Finale.getPlugin().getManager().getBlockRestrictionHandler();
         BlockRestrictionHandler.RestrictionMode mode = blockRestrictionHandler.getMode();
         Block blockPlaced = event.getBlockPlaced();

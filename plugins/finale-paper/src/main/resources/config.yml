@@ -301,6 +301,8 @@ invulnerableTicks:
 netheriteFireResistance: false
 meteoricIronSlowness: false
 
+fireworkExplosions: true
+
 # the warp fruit will roll back to 7 seconds ago
 warpFruit: # logSize * logInterval = how far back in time you go
   logSize: 35 # log queue size
