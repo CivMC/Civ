@@ -21,7 +21,12 @@ import java.util.UUID;
 
 public class CrossbowListener implements Listener {
 
-    private Set<UUID> firedFireworks = new HashSet<>();
+    private final boolean fireworkExplosions;
+    private final Set<UUID> firedFireworks = new HashSet<>();
+
+    public CrossbowListener(boolean fireworkExplosions) {
+        this.fireworkExplosions = fireworkExplosions;
+    }
 
     @EventHandler
     public void onShootCrossbow(EntityShootBowEvent event) {
@@ -43,7 +48,7 @@ public class CrossbowListener implements Listener {
         }
 
         ItemStack consumable = event.getConsumable();
-        if (consumable.getType() == Material.FIREWORK_ROCKET) {
+        if (consumable.getType() == Material.FIREWORK_ROCKET && fireworkExplosions) {
             firedFireworks.add(event.getProjectile().getUniqueId());
             crossbowHandler.putOnCooldown(shooter);
             return;

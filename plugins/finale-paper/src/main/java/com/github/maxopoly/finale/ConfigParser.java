@@ -56,6 +56,7 @@ public class ConfigParser {
     private VelocityHandler velocityHandler;
     private List<DamageModificationConfig> damageModifiers;
     private CombatConfig combatConfig;
+    private boolean fireworkExplosions;
 
     public ConfigParser(Finale plugin) {
         this.plugin = plugin;
@@ -99,6 +100,10 @@ public class ConfigParser {
 
     public boolean isMeteoricIronSlownessEnabled() {
         return meteoricIronSlowness;
+    }
+
+    public boolean isFireworkExplosions() {
+        return fireworkExplosions;
     }
 
     public FinaleManager parse() {
@@ -168,6 +173,7 @@ public class ConfigParser {
 
         netheriteFireResistanceEnabled = config.getBoolean("netheriteFireResistance");
         meteoricIronSlowness = config.getBoolean("meteoricIronSlowness");
+        fireworkExplosions = config.getBoolean("fireworkExplosions");
 
         // Initialize the manager
         manager = new FinaleManager(debug, attackEnabled, attackSpeed, invulTicksEnabled, invulnerableTicks, regenEnabled, ctpOnLogin, regenhandler, weapMod, armourMod,

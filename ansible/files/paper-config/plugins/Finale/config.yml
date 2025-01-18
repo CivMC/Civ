@@ -318,3 +318,5 @@ invulnerableTicks:
 
 netheriteFireResistance: true
 meteoricIronSlowness: true
+
+fireworkExplosions: true
