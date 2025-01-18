@@ -13,6 +13,6 @@ dependencies {
     compileOnly(project(":plugins:civmodcore-paper"))
     compileOnly(project(":plugins:finale-paper"))
 
-    compileOnly(files("../../ansible/src/paper-plugins/TAB v5.0.3.jar"))
+    compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.2.7.jar"))
     compileOnly(libs.aswm.api)
 }
