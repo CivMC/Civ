@@ -364,9 +364,9 @@ shield:
 crossbow:
   enabled: true
   radius: 2
-  reinforcementDamage: 5
+  reinforcementDamage: 1
   bastionDamage: 5
-  cooldown: 4000ms
+  cooldown: 60000ms
   antiAir:
     standardAA:
       key: standardAA
