@@ -134,7 +134,7 @@ public class CrossbowHandler {
         loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 2, ThreadLocalRandom.current().nextFloat(0.56f, 0.84f));
 
         for (Block explodeBlock : explodeLocs) {
-            if (explodeBlock.getType() != Material.AIR && explodeBlock.getType().getBlastResistance() < 10) {
+            if (explodeBlock.getType() != Material.AIR && explodeBlock.getType() != Material.BEDROCK && explodeBlock.getType() != Material.BARRIER) {
                 if (Bukkit.getPluginManager().isPluginEnabled("Citadel")) {
                     Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(explodeBlock);
                     if (rein != null) {
@@ -149,13 +149,15 @@ public class CrossbowHandler {
                     }
                 }
 
-                Material type = Material.AIR;
+                if (explodeBlock.getType().getBlastResistance() < 10) {
+                    Material type = Material.AIR;
 
-                if (explodeBlock.getRelative(BlockFace.DOWN, 1).getType().isSolid() && random.nextInt(3) == 0) {
-                    type = Material.FIRE;
+                    if (explodeBlock.getRelative(BlockFace.DOWN, 1).getType().isSolid() && random.nextInt(3) == 0) {
+                        type = Material.FIRE;
+                    }
+
+                    explodeBlock.setType(type);
                 }
-
-                explodeBlock.setType(type);
             }
         }
     }
