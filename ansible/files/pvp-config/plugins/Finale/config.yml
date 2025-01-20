@@ -342,7 +342,7 @@ shield:
   bash:
     enabled: true
     activationResistance:
-      enabled: true
+      enabled: false
       amplifier: 0
       duration: 200
     power:
@@ -640,3 +640,5 @@ blockPlacementRestrictions:
 
 netheriteFireResistance: true
 meteoricIronSlowness: true
+
+fireworkExplosions: true
