@@ -2,7 +2,6 @@ package com.devotedmc.ExilePearl.core;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlFreeReason;
@@ -259,8 +258,6 @@ final class CorePearlManager implements PearlManager {
             }
             return pearl;
         }
-
-        ExilePearlPlugin.getApi().getLogger().info("Pearl with ID 0 found: " + is.toString());
 
         // Check if this is a legacy pearl
         UUID legacyId = pearlApi.getLoreProvider().getPlayerIdFromLegacyPearl(is);
