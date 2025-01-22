@@ -444,6 +444,11 @@ hacks:
     enabled: true
   ModSupport:
     enabled: true
+    send-server-tags: true
+    # Tags are bits of information the server wants the client to know. These could be anything. For example, the server
+    # could send a "no-elevation" tag to tell client mods to disable any elevation data. Or just a "CivMC" tag, letting
+    # the client figure out what that means. Or neither. It's entirely optional.
+    server-tags: ["CivMC"]
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'
