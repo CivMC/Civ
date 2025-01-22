@@ -5,6 +5,7 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
 import java.util.List;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.bytes.Length;
 
 public final class ModSupportConfig extends SimpleHackConfig {
     // Server info
@@ -31,7 +32,7 @@ public final class ModSupportConfig extends SimpleHackConfig {
         // Server info
         this.sendServerTags = config.getBoolean("send-server-tags", true);
         this.serverTags = config.getList("server-tags", null) instanceof final List<?> tags
-            ? tags.stream().limit(255).map(String::valueOf).toList()
+            ? tags.stream().limit(Length.u8.max).map(String::valueOf).toList()
             : List.of();
 
         // World info
