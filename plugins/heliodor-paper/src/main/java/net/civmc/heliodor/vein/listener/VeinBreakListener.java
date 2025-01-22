@@ -44,7 +44,12 @@ public class VeinBreakListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if (!Tag.BASE_STONE_OVERWORLD.isTagged(block.getType())) {
+        if (!Tag.BASE_STONE_OVERWORLD.isTagged(block.getType())
+            && block.getType() != Material.SMOOTH_BASALT
+            && block.getType() != Material.COPPER_ORE
+            && block.getType() != Material.IRON_ORE
+            && block.getType() != Material.COAL_ORE
+        ) {
             return;
         }
         ChunkPos chunkPos = ChunkPos.from(block.getChunk());
