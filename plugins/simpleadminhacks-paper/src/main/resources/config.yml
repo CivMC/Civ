@@ -451,6 +451,8 @@ hacks:
     server-tags: ["CivMC"]
     # Whether to send world name and uuid
     send-world-info: true
+    # Whether to send contextual inventory information
+    send-inventory-location: true
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'

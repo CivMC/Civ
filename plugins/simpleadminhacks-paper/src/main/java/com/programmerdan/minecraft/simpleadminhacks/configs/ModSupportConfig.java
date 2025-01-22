@@ -14,6 +14,9 @@ public final class ModSupportConfig extends SimpleHackConfig {
     // World info
     public boolean sendWorldInfo;
 
+    // Inventories
+    public boolean sendInventoryLocation;
+
     public ModSupportConfig(
         final @NotNull SimpleAdminHacks plugin,
         final @NotNull ConfigurationSection config
@@ -33,5 +36,8 @@ public final class ModSupportConfig extends SimpleHackConfig {
 
         // World info
         this.sendWorldInfo = config.getBoolean("send-world-info", true);
+
+        // Inventory
+        this.sendInventoryLocation = config.getBoolean("send-inventory-location", true);
     }
 }

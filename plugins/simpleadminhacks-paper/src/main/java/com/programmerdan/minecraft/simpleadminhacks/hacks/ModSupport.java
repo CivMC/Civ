@@ -7,12 +7,18 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.ModSupportConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.plugin.messaging.PluginMessageRecipient;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.bytes.ByteHelpers;
@@ -123,5 +129,54 @@ public final class ModSupport extends SimpleHack<ModSupportConfig> implements Li
         out.writeUTF(world.getUID().toString());
 
         recipient.sendPluginMessage(plugin(), MOD_SUPPORT_CHANNEL, out.toByteArray());
+    }
+
+    // ============================================================
+    // Send Inventory Location(s)
+    //
+    // Sends the block-location(s) of an opened inventory to the client. This will allow for QOL chest management mods
+    // without violating block reading rules.
+    // ============================================================
+
+    @EventHandler(
+        ignoreCancelled = true,
+        priority = EventPriority.MONITOR
+    )
+    private void sendOpenedInventoryLocation(
+        final @NotNull InventoryOpenEvent event
+    ) {
+        if (!this.config.sendInventoryLocation) {
+            return;
+        }
+        if (!(event.getPlayer() instanceof final Player viewer)) {
+            return;
+        }
+
+        final ByteArrayDataOutput out = ByteHelpers.newPacketWriter(256);
+        out.writeUTF("INVENTORY_LOCATION");
+        out.writeByte(1); // Packet schema id
+        switch (event.getInventory().getHolder()) {
+            case null -> out.writeByte(-1); // GUI
+            case final BlockInventoryHolder blockHolder -> {
+                out.writeByte(1); // Single block
+                final Block block = blockHolder.getBlock();
+                out.writeInt(block.getX());
+                out.writeInt(block.getY());
+                out.writeInt(block.getZ());
+            }
+            case final DoubleChest doubleChest -> {
+                out.writeByte(2); // Two blocks
+                final var lhsChest = (Chest) doubleChest.getLeftSide(); assert lhsChest != null;
+                out.writeInt(lhsChest.getX());
+                out.writeInt(lhsChest.getY());
+                out.writeInt(lhsChest.getZ());
+                final var rhsChest = (Chest) doubleChest.getRightSide(); assert rhsChest != null;
+                out.writeInt(rhsChest.getX());
+                out.writeInt(rhsChest.getY());
+                out.writeInt(rhsChest.getZ());
+            }
+            default -> out.writeByte(0); // Not supported
+        }
+        viewer.sendPluginMessage(plugin(), MOD_SUPPORT_CHANNEL, out.toByteArray());
     }
 }
