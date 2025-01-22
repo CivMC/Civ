@@ -449,6 +449,8 @@ hacks:
     # could send a "no-elevation" tag to tell client mods to disable any elevation data. Or just a "CivMC" tag, letting
     # the client figure out what that means. Or neither. It's entirely optional.
     server-tags: ["CivMC"]
+    # Whether to send world name and uuid
+    send-world-info: true
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'

@@ -11,6 +11,9 @@ public final class ModSupportConfig extends SimpleHackConfig {
     public boolean sendServerTags;
     public @NotNull List<@NotNull String> serverTags = List.of();
 
+    // World info
+    public boolean sendWorldInfo;
+
     public ModSupportConfig(
         final @NotNull SimpleAdminHacks plugin,
         final @NotNull ConfigurationSection config
@@ -27,5 +30,8 @@ public final class ModSupportConfig extends SimpleHackConfig {
         this.serverTags = config.getList("server-tags", null) instanceof final List<?> tags
             ? tags.stream().limit(255).map(String::valueOf).toList()
             : List.of();
+
+        // World info
+        this.sendWorldInfo = config.getBoolean("send-world-info", true);
     }
 }
