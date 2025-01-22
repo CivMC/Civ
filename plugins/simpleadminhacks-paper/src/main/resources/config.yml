@@ -442,6 +442,8 @@ hacks:
         - "We extend our appreciation to the devs, admins, and players at: &oreddit.com/r/Civcraft"
   InvControl:
     enabled: true
+  ModSupport:
+    enabled: true
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'
