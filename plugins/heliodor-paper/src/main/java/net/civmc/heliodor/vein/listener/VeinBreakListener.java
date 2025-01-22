@@ -96,7 +96,7 @@ public class VeinBreakListener implements Listener {
 
             chunkPdc.set(oreLocationsKey, PersistentDataType.INTEGER_ARRAY, list.toIntArray());
 
-            this.minedBlocksCache.computeIfAbsent(ChunkPos.from(oreBlock.getChunk()), k -> new ArrayList<>()).add(block.getLocation());
+            this.minedBlocksCache.computeIfAbsent(ChunkPos.from(oreBlock.getChunk()), k -> new ArrayList<>()).add(oreBlock.getLocation());
             JavaPlugin.getPlugin(HeliodorPlugin.class).getLogger()
                 .info("Player " + event.getPlayer().getName() + " found meteoric iron ore at " + oreBlock.getWorld().getName() + " " + oreBlock.getX() + " " + oreBlock.getY() + " " + oreBlock.getZ());
             this.dao.incrementBlocksMined(vein, 2);
