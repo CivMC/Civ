@@ -14,6 +14,18 @@ public final class ByteHelpers {
         return ByteStreams.newDataOutput(initialCapacity);
     }
 
+    public static void writeLength(
+        final @NotNull ByteArrayDataOutput out,
+        final @NotNull Length type,
+        final int length
+    ) {
+        switch (type) {
+            case u8 -> out.writeByte(length & (int) type.max);
+            case u16 -> out.writeShort(length & (int) type.max);
+            case u31 -> out.writeInt(length & (int) type.max);
+        }
+    }
+
     public static <T> void writeArray(
         final @NotNull ByteArrayDataOutput out,
         final T @NotNull [] array,
@@ -21,11 +33,7 @@ public final class ByteHelpers {
         final @NotNull BiConsumer<@NotNull ByteArrayDataOutput, T> elementWriter
     ) {
         final int length = lengthPrefix.assertValidLength("array.length", array.length);
-        switch (lengthPrefix) {
-            case u8 -> out.writeByte(length);
-            case u16 -> out.writeShort(length);
-            case u31 -> out.writeInt(length);
-        }
+        writeLength(out, lengthPrefix, length);
         for (final T element : array) {
             elementWriter.accept(out, element);
         }
@@ -39,11 +47,7 @@ public final class ByteHelpers {
     ) {
         collection = new ArrayList<>(collection); // Just in case
         final int length = lengthPrefix.assertValidLength("collection.size()", collection.size());
-        switch (lengthPrefix) {
-            case u8 -> out.writeByte(length);
-            case u16 -> out.writeShort(length);
-            case u31 -> out.writeInt(length);
-        }
+        writeLength(out, lengthPrefix, length);
         for (final T element : collection) {
             elementWriter.accept(out, element);
         }
