@@ -18,6 +18,9 @@ public final class ModSupportConfig extends SimpleHackConfig {
     // Inventories
     public boolean sendInventoryLocation;
 
+    // Botting
+    public boolean sendNibble;
+
     public ModSupportConfig(
         final @NotNull SimpleAdminHacks plugin,
         final @NotNull ConfigurationSection config
@@ -40,5 +43,8 @@ public final class ModSupportConfig extends SimpleHackConfig {
 
         // Inventory
         this.sendInventoryLocation = config.getBoolean("send-inventory-location", true);
+
+        // Botting
+        this.sendNibble = config.getBoolean("send-nibble", true);
     }
 }

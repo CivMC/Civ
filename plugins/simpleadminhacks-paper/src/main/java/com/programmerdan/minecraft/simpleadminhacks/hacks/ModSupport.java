@@ -17,6 +17,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.plugin.messaging.PluginMessageRecipient;
@@ -178,5 +179,31 @@ public final class ModSupport extends SimpleHack<ModSupportConfig> implements Li
             default -> out.writeByte(0); // Not supported
         }
         viewer.sendPluginMessage(plugin(), MOD_SUPPORT_CHANNEL, out.toByteArray());
+    }
+
+    // ============================================================
+    // Send Nibble
+    //
+    // Sends a notification when a player has caught something on their fishing rod.
+    // ============================================================
+
+    @EventHandler(
+        ignoreCancelled = true,
+        priority = EventPriority.MONITOR
+    )
+    private void sendNibble(
+        final @NotNull PlayerFishEvent event
+    ) {
+        final PluginMessageRecipient recipient = event.getPlayer();
+        if (!this.config.sendNibble) {
+            return;
+        }
+        if (event.getState() != PlayerFishEvent.State.BITE) {
+            return;
+        }
+        final ByteArrayDataOutput out = ByteHelpers.newPacketWriter(32);
+        out.writeUTF("NIBBLE");
+        out.writeByte(1); // Packet schema id
+        recipient.sendPluginMessage(plugin(), MOD_SUPPORT_CHANNEL, out.toByteArray());
     }
 }

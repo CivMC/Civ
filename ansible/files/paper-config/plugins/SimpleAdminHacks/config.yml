@@ -503,6 +503,8 @@ hacks:
     send-world-info: true
     # Whether to send contextual inventory information
     send-inventory-location: true
+    # Whether to notify the player whether their fishing rod has caught something
+    send-nibble: false
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'
