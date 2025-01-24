@@ -86,6 +86,7 @@ export default defineConfig({
                         items: [
                             { text: 'Project Overview', link: '/dev/getting-started/projects' },
                             { text: 'Building with Gradle', link: '/dev/getting-started/building-with-gradle' },
+                            { text: 'Development Process', link: '/dev/getting-started/development-process' },
                         ]
                     },
                     {
