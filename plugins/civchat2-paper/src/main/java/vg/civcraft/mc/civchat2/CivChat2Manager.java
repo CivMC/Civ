@@ -357,7 +357,9 @@ public class CivChat2Manager {
             }
         }
 
-        Component compMessage = Component.text("[" + group.getName() + "] ", NamedTextColor.GRAY)
+        Component compMessage = Component.text("[",NamedTextColor.GRAY)
+            .append(group.getGroupNameColored())
+            .append(Component.text("] ", NamedTextColor.GRAY))
             .append(Bukkit.getPlayer(senderName).displayName())
             .append(Component.text(": " + message, NamedTextColor.GRAY));
 

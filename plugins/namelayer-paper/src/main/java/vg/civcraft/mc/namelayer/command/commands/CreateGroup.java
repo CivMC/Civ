@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.logging.Level;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -70,7 +71,7 @@ public class CreateGroup extends BaseCommandMiddle {
             password = null;
         }
         final UUID uuid = NameAPI.getUUID(p.getName());
-        Group g = new Group(name, uuid, false, password, -1, System.currentTimeMillis());
+        Group g = new Group(name, uuid, false, password, -1, System.currentTimeMillis(), "GRAY");
         gm.createGroupAsync(g, new RunnableOnGroup() {
             @Override
             public void run() {
