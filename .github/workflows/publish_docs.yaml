@@ -5,6 +5,8 @@ on:
     push:
         branches:
             - main
+        paths:
+            - docs/**
 
 jobs:
     publish:
@@ -19,21 +21,26 @@ jobs:
             id-token: write
 
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v4
               with:
+                  # need depth so vitepress knows the last time a file was changed
                   fetch-depth: 0
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 10
 
             - uses: actions/setup-node@v4
               with:
-                  node-version: 16
-                  cache: npm
-                  cache-dependency-path: ./docs/package-lock.json
+                  node-version: 22
+                  cache: "pnpm"
 
-            - name: NPM Install
-              run: npm ci
+            - name: Install dependencies
+              run: pnpm install
 
-            - name: NPM Build
-              run: npm run build
+            - name: Build Docs
+              run: pnpm run build
 
             - uses: actions/configure-pages@v2
 
