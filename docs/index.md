@@ -33,7 +33,7 @@ features:
       details: Banish players to the nether
       link: /wiki/plugins/essential/exilepearl
     - icon: ⚔️
-      title: Fight Enimes
+      title: Fight Your Enemies
       details: Engage in combat with other players with a unique PvP experiance
       link: /wiki/plugins/unique/finale
 ---
