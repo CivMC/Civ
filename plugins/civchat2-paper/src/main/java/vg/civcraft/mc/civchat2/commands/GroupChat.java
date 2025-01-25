@@ -28,7 +28,7 @@ public class GroupChat extends BaseCommand {
         if (targetGroup == null && chatMessage == null) {
             // Check if player is in groupchat and move them to normal chat
             if (isGroupChatting) {
-                player.sendMessage(ChatStrings.chatMovedToGlobal);
+                player.sendRichMessage(ChatStrings.chatMovedToGlobal);
                 chatMan.removeGroupChat(player);
                 return;
             }
@@ -38,16 +38,16 @@ public class GroupChat extends BaseCommand {
         }
         group = GroupManager.getGroup(targetGroup);
         if (group == null) {
-            player.sendMessage(ChatStrings.chatGroupNotFound);
+            player.sendRichMessage(ChatStrings.chatGroupNotFound);
             return;
         }
         if (!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
             PermissionType.getPermission("WRITE_CHAT"))) {
-            player.sendMessage(ChatStrings.chatGroupNoPerms);
+            player.sendRichMessage(ChatStrings.chatGroupNoPerms);
             return;
         }
         if (CivChat2.getInstance().getDatabaseManager().isIgnoringGroup(player.getUniqueId(), group.getName())) {
-            player.sendMessage(String.format(ChatStrings.chatNeedToUnignore, group.getName()));
+            player.sendRichMessage(String.format(ChatStrings.chatNeedToUnignore, group.getName()));
             return;
         }
         if (chatMessage == null) {
@@ -55,14 +55,14 @@ public class GroupChat extends BaseCommand {
                 // Player already groupchatting check if it's this group
                 Group curGroup = chatMan.getGroupChatting(player);
                 if (curGroup == group) {
-                    player.sendMessage(ChatStrings.chatGroupAlreadyChatting);
+                    player.sendRichMessage(ChatStrings.chatGroupAlreadyChatting);
                 } else {
-                    player.sendMessage(String.format(ChatStrings.chatGroupNowChattingIn, group.getName()));
+                    player.sendRichMessage(String.format(ChatStrings.chatGroupNowChattingIn, group.getName()));
                     chatMan.removeGroupChat(player);
                     chatMan.addGroupChat(player, group);
                 }
             } else {
-                player.sendMessage(String.format(ChatStrings.chatGroupNowChattingIn, group.getName()));
+                player.sendRichMessage(String.format(ChatStrings.chatGroupNowChattingIn, group.getName()));
                 if (chatMan.getChannel(player) != null) {
                     chatMan.removeChannel(player);
                 }

@@ -20,7 +20,7 @@ public class IgnoreGroup extends BaseCommand {
     public void execute(Player player, String targetGroup) {
         Group group = GroupManager.getGroup(targetGroup);
         if (group == null) {
-            player.sendMessage(ChatStrings.chatGroupNotFound);
+            player.sendRichMessage(ChatStrings.chatGroupNotFound);
             return;
         }
         String ignore = group.getName();
@@ -28,15 +28,15 @@ public class IgnoreGroup extends BaseCommand {
         if (!db.isIgnoringGroup(player.getUniqueId(), ignore)) {
             db.addIgnoredGroup(player.getUniqueId(), ignore);
             CivChat2Manager chatMan = CivChat2.getInstance().getCivChat2Manager();
-            player.sendMessage(String.format(ChatStrings.chatNowIgnoring, ignore));
+            player.sendRichMessage(String.format(ChatStrings.chatNowIgnoring, ignore));
             if (group.equals(chatMan.getGroupChatting(player))) {
                 chatMan.removeGroupChat(player);
-                player.sendMessage(ChatStrings.chatMovedToGlobal);
+                player.sendRichMessage(ChatStrings.chatMovedToGlobal);
             }
             return;
         } else {
             db.removeIgnoredGroup(player.getUniqueId(), ignore);
-            player.sendMessage(String.format(ChatStrings.chatStoppedIgnoring, ignore));
+            player.sendRichMessage(String.format(ChatStrings.chatStoppedIgnoring, ignore));
         }
     }
 }
