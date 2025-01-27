@@ -29,7 +29,7 @@ public abstract class AbstractCollectionSetting<C extends Collection<T>, T> exte
     private static final String ESCAPE_REPLACE = ESCAPE_STRING + ESCAPE_STRING;
     private static final String SEPARATOR_REPLACE = ESCAPE_STRING + SEPARATOR_STRING;
 
-    private PlayerSetting<T> elementSetting;
+    protected PlayerSetting<T> elementSetting;
     private Function<C, C> newFunction;
 
     public AbstractCollectionSetting(JavaPlugin owningPlugin, C defaultValue, String name, String identifier,
