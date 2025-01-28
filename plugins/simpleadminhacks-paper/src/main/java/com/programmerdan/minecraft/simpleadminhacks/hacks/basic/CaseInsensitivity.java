@@ -15,6 +15,10 @@ public class CaseInsensitivity extends BasicHack {
     @EventHandler
     public void onCommandPreProcess(PlayerCommandPreprocessEvent event) {
         String[] splitMessage = event.getMessage().split(" ", 2);
-        event.setMessage(splitMessage[0].toLowerCase() + " " + splitMessage[1]);
+        if (splitMessage.length == 1) {
+            event.setMessage(splitMessage[0].toLowerCase());
+        } else {
+            event.setMessage(splitMessage[0].toLowerCase() + " " + splitMessage[1]);
+        }
     }
 }
