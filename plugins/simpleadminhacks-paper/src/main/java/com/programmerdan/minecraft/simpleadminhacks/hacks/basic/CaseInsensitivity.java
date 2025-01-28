@@ -4,6 +4,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 public class CaseInsensitivity extends BasicHack {
@@ -12,7 +13,7 @@ public class CaseInsensitivity extends BasicHack {
         super(plugin, config);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onCommandPreProcess(PlayerCommandPreprocessEvent event) {
         String[] splitMessage = event.getMessage().split(" ", 2);
         if (splitMessage.length == 1) {
