@@ -41,3 +41,6 @@ mysql:
 
 # true if chat should be broadcasted to all servers via bungeecord
 serverBroadcastChat: true
+
+# Available options: DISABLED, VANILLA, CUSTOM
+deathMessages: "CUSTOM"

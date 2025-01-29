@@ -3,12 +3,12 @@ package vg.civcraft.mc.civchat2.utility;
 import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
-import vg.civcraft.mc.civmodcore.players.settings.impl.EnumSetting;
 import vg.civcraft.mc.civmodcore.players.settings.impl.LongSetting;
 
 public class CivChat2SettingsManager {
@@ -21,7 +21,7 @@ public class CivChat2SettingsManager {
     private BooleanSetting showChatGroup;
     private DisplayLocationSetting chatGroupLocation;
     private LongSetting chatUnmuteTimer;
-    private EnumSetting<KillMessageFormat> killMessageFormat;
+    private BooleanSetting killMessageFormat;
     private BooleanSetting showAFKStatus;
     private DisplayLocationSetting afkStatusLocation;
 
@@ -65,8 +65,13 @@ public class CivChat2SettingsManager {
         chatUnmuteTimer = new LongSetting(CivChat2.getInstance(), 0L, "Global chat mute", "chatGlobalMuteTimer");
         PlayerSettingAPI.registerSetting(chatUnmuteTimer, null);
 
-        killMessageFormat = new EnumSetting<>(CivChat2.getInstance(), KillMessageFormat.WITH, "Kill Message Format", "killMessageFormat", new ItemStack(Material.WRITABLE_BOOK), "Choose your kill message format", true, KillMessageFormat.class);
-        PlayerSettingAPI.registerSetting(killMessageFormat, menu);
+        PlayerSettingAPI.registerSetting(killMessageFormat = new BooleanSetting(
+            CivChat2.getInstance(),
+            true,
+            "Show weapon in kill broadcast",
+            "include-weapon-in-kill-broadcasts",
+            "Should your kill broadcasts include what weapon was used?"
+        ), menu);
 
         afkStatusLocation = new DisplayLocationSetting(CivChat2.getInstance(), DisplayLocationSetting.DisplayLocation.SIDEBAR,
             "AFK Status Location", "afkStatusLocation", new ItemStack(Material.ARROW), "the AFK status");
@@ -105,38 +110,13 @@ public class CivChat2SettingsManager {
         return chatGroupLocation;
     }
 
-    public KillMessageFormat getKillMessageFormat(UUID uuid) {
-        return killMessageFormat.getValue(uuid);
+    public boolean includeWeaponInKillBroadcasts(
+        final @NotNull UUID uuid
+    ) {
+        return this.killMessageFormat.getValue(uuid);
     }
 
     public boolean getShowAFKStatus(UUID uuid) {return showAFKStatus.getValue(uuid); }
 
     public DisplayLocationSetting getAfkStatusLocation() { return afkStatusLocation; }
-
-    public enum KillMessageFormat {
-        FOR(
-            "for"
-        ),
-        WHILE(
-            "while"
-        ),
-        BLANK(
-            ""
-        ),
-        USING(
-            "using"
-        ),
-        BY(
-            "by"
-        ),
-        WITH(
-            "with"
-        );
-
-        public final String simpleDescription;
-
-        private KillMessageFormat(String simpleDescription) {
-            this.simpleDescription = simpleDescription;
-        }
-    }
 }
