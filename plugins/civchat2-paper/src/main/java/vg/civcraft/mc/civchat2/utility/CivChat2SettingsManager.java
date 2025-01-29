@@ -21,7 +21,7 @@ public class CivChat2SettingsManager {
     private BooleanSetting showChatGroup;
     private DisplayLocationSetting chatGroupLocation;
     private LongSetting chatUnmuteTimer;
-    private BooleanSetting killMessageFormat;
+    private BooleanSetting includeWeaponInKillBroadcasts;
     private BooleanSetting showAFKStatus;
     private DisplayLocationSetting afkStatusLocation;
 
@@ -65,7 +65,7 @@ public class CivChat2SettingsManager {
         chatUnmuteTimer = new LongSetting(CivChat2.getInstance(), 0L, "Global chat mute", "chatGlobalMuteTimer");
         PlayerSettingAPI.registerSetting(chatUnmuteTimer, null);
 
-        PlayerSettingAPI.registerSetting(killMessageFormat = new BooleanSetting(
+        PlayerSettingAPI.registerSetting(includeWeaponInKillBroadcasts = new BooleanSetting(
             CivChat2.getInstance(),
             true,
             "Show weapon in kill broadcast",
@@ -113,7 +113,7 @@ public class CivChat2SettingsManager {
     public boolean includeWeaponInKillBroadcasts(
         final @NotNull UUID uuid
     ) {
-        return this.killMessageFormat.getValue(uuid);
+        return this.includeWeaponInKillBroadcasts.getValue(uuid);
     }
 
     public boolean getShowAFKStatus(UUID uuid) {return showAFKStatus.getValue(uuid); }
