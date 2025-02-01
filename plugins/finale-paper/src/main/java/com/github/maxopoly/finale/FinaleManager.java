@@ -80,7 +80,7 @@ public class FinaleManager {
 
         this.cpsHandler = new CPSHandler();
         this.sprintHandler = new SprintHandler();
-        this.combatHandler = new AsyncPacketHandler(combatConfig);
+        Bukkit.getScheduler().runTaskAsynchronously(Finale.getPlugin(), () -> ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(combatHandler = new AsyncPacketHandler(combatConfig)).start());
     }
 
     public AsyncPacketHandler getCombatHandler() {
