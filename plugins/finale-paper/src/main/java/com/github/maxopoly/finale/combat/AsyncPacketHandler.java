@@ -78,7 +78,7 @@ public class AsyncPacketHandler implements Listener {
                                 !world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
                                 if (entity instanceof CraftEntity craftEntity) {
                                     DamageSources damageSources = ((CraftWorld) world).getHandle().damageSources();
-                                    craftEntity.getHandle().hurt(damageSources.playerAttack(((CraftPlayer) attacker).getHandle()), (float) ((CraftPlayer) attacker).getHandle().getAttribute(Attributes.ATTACK_DAMAGE).getValue());
+                                    craftEntity.getHandle().hurtServer(craftEntity.getHandle().level().getMinecraftWorld(), damageSources.playerAttack(((CraftPlayer) attacker).getHandle()), (float) ((CraftPlayer) attacker).getHandle().getAttributeValue(Attributes.ATTACK_DAMAGE));
                                 }
                                 return;
                             }
