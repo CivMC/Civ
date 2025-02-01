@@ -14,12 +14,10 @@ import com.comphenix.protocol.wrappers.EnumWrappers.PlayerDigType;
 import com.comphenix.protocol.wrappers.WrappedEnumEntityUseAction;
 import com.github.maxopoly.finale.Finale;
 import com.google.common.collect.Sets;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import net.md_5.bungee.api.ChatColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSources;
@@ -31,7 +29,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -86,7 +83,7 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
                         !world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
                         if (entity instanceof CraftEntity craftEntity) {
                             DamageSources damageSources = ((CraftWorld) world).getHandle().damageSources();
-                            craftEntity.getHandle().hurt(damageSources.playerAttack(((CraftPlayer) attacker).getHandle()), (float) ((CraftPlayer) attacker).getHandle().getAttribute(Attributes.ATTACK_DAMAGE).getValue());
+                            craftEntity.getHandle().hurtServer(craftEntity.getHandle().level().getMinecraftWorld(), damageSources.playerAttack(((CraftPlayer) attacker).getHandle()), (float) ((CraftPlayer) attacker).getHandle().getAttributeValue(Attributes.ATTACK_DAMAGE));
                         }
                         return;
                     }
