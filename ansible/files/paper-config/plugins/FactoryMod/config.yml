@@ -1126,6 +1126,7 @@ factories:
       - make_casing
       - make_crates
       - sticks_to_chest
+      - sticks_to_barrel
       - make_fences
       - make_fence_gates
       - make_signs
@@ -6856,6 +6857,22 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CHEST
+        amount: 4
+  sticks_to_barrel:
+    production_time: 4s
+    name: Reconstitute Sticks to Barrels
+    type: PRODUCTION
+    input:
+      stick:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: STICK
+        amount: 64
+    output:
+      barrel:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BARREL
         amount: 4
   repair_carpentry:
     production_time: 4s
