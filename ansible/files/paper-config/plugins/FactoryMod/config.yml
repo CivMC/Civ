@@ -6867,13 +6867,13 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CHEST
-        amount: 12
+        amount: 16
     output:
       barrel:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BARREL
-        amount: 14
+        amount: 20
   repair_carpentry:
     production_time: 4s
     name: Repair Factory
