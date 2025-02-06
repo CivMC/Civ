@@ -689,7 +689,7 @@ public class PlayerListener implements Listener, Configurable {
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityDeath(EntityDeathEvent e) {
-        if (!(e.getEntity() instanceof Player)) {
+        if (!(e.getEntity() instanceof final Player victim)) {
             return;
         }
 
@@ -836,6 +836,10 @@ public class PlayerListener implements Listener, Configurable {
             }
 
             inv.setItem(pearlnum, pearl.createItemStack());
+        }
+
+        if (pearl != null) {
+            pearl.setCaptureLocation(victim.getLocation());
         }
     }
 
