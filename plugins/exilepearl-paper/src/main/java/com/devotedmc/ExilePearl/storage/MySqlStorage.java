@@ -366,18 +366,12 @@ class MySqlStorage implements PluginStorage {
     @Override
     public void pearlRemove(ExilePearl pearl) {
         Preconditions.checkNotNull(pearl, "pearl");
-        try (final Connection conn = this.db.getConnection()) {
-            try (final PreparedStatement stmt = conn.prepareStatement("DELETE FROM exilepearls WHERE uid = ?;")) {
-                stmt.setString(1, pearl.getPlayerId().toString());
-                stmt.executeUpdate();
-            }
-            try (final PreparedStatement stmt = conn.prepareStatement("DELETE FROM ep_capturelocations where pearl_id = ?;")) {
-                stmt.setInt(1, pearl.getPearlId());
-                stmt.executeUpdate();
-            }
-        }
-        catch (final SQLException ex) {
-            ex.printStackTrace();
+
+        try (Connection connection = db.getConnection();
+             PreparedStatement ps = connection.prepareStatement("DELETE FROM exilepearls WHERE uid = ?");) {
+            ps.setString(1, pearl.getPlayerId().toString());
+            ps.executeUpdate();
+        } catch (SQLException ex) {
             logFailedPearlOperation(ex, pearl, "delete record");
         }
     }
