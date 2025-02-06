@@ -12,6 +12,8 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class Document implements Map<String, Object> {
 
@@ -439,24 +441,42 @@ public class Document implements Map<String, Object> {
         return mem;
     }
 
-    private static Document serializeLocation(Location l) {
-        Document doc = new Document(StorageKeys.LOCATION_WORLD, l.getWorld().getName())
-            .append(StorageKeys.LOCATION_X, l.getBlockX())
-            .append(StorageKeys.LOCATION_Y, l.getBlockY())
-            .append(StorageKeys.LOCATION_Z, l.getBlockZ());
-
-        return doc;
+    public static @NotNull Document serializeLocation(
+        final @NotNull Location location
+    ) {
+        return serializeLocation(
+            location.getWorld().getName(),
+            location.getBlockX(),
+            location.getBlockY(),
+            location.getBlockZ()
+        );
     }
 
+    public static @NotNull Document serializeLocation(
+        final @NotNull String worldName,
+        final int x,
+        final int y,
+        final int z
+    ) {
+        return new Document()
+            .append(StorageKeys.LOCATION_WORLD, worldName)
+            .append(StorageKeys.LOCATION_X, x)
+            .append(StorageKeys.LOCATION_Y, y)
+            .append(StorageKeys.LOCATION_Z, z);
+    }
 
-    private static Location deserializeLocation(Document doc) {
+    public static @Nullable Location deserializeLocation(
+        final @NotNull Document doc
+    ) {
         try {
-            String worldName = doc.getString(StorageKeys.LOCATION_WORLD);
-            int x = doc.getInteger(StorageKeys.LOCATION_X);
-            int y = doc.getInteger(StorageKeys.LOCATION_Y);
-            int z = doc.getInteger(StorageKeys.LOCATION_Z);
-            return new Location(Bukkit.getWorld(worldName), x, y, z);
-        } catch (Exception ex) {
+            return new Location(
+                Bukkit.getWorld(doc.getString(StorageKeys.LOCATION_WORLD)),
+                doc.getInteger(StorageKeys.LOCATION_X),
+                doc.getInteger(StorageKeys.LOCATION_Y),
+                doc.getInteger(StorageKeys.LOCATION_Z)
+            );
+        }
+        catch (Exception ex) {
             return null;
         }
     }

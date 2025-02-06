@@ -256,12 +256,12 @@ class MySqlStorage implements PluginStorage {
                     doc.append(StorageKeys.PEARL_TYPE, results.getInt("pearl_type"));
                     doc.append(StorageKeys.VICTIM_UUID, results.getString("victim_uuid"));
                     doc.append(StorageKeys.KILLER_UUID, results.getString("killer_uuid"));
-                    doc.append(StorageKeys.PEARL_LOCATION, new Document()
-                        .append(StorageKeys.LOCATION_WORLD, results.getString("world"))
-                        .append(StorageKeys.LOCATION_X, results.getInt("x"))
-                        .append(StorageKeys.LOCATION_Y, results.getInt("y"))
-                        .append(StorageKeys.LOCATION_Z, results.getInt("z"))
-                    );
+                    doc.append(StorageKeys.PEARL_LOCATION, Document.serializeLocation(
+                        results.getString("world"),
+                        results.getInt("x"),
+                        results.getInt("y"),
+                        results.getInt("z")
+                    ));
                     doc.append(StorageKeys.PEARL_HEALTH, results.getInt("health"));
                     doc.append(StorageKeys.PEARL_CAPTURE_DATE, new Date(results.getLong("pearled_on")));
                     doc.append(StorageKeys.PEARL_FREED_WHILE_OFFLINE, results.getBoolean("freed_offline"));
@@ -286,12 +286,12 @@ class MySqlStorage implements PluginStorage {
                         this.logger.log(Level.WARNING, "Cannot find pearl for [" + victimUuid + "] to set a return location for!");
                         continue;
                     }
-                    doc.append(StorageKeys.VICTIM_RETURN_LOCATION, new Document()
-                        .append(StorageKeys.LOCATION_WORLD, results.getString("world"))
-                        .append(StorageKeys.LOCATION_X, results.getInt("x"))
-                        .append(StorageKeys.LOCATION_Y, results.getInt("y"))
-                        .append(StorageKeys.LOCATION_Z, results.getInt("z"))
-                    );
+                    doc.append(StorageKeys.VICTIM_RETURN_LOCATION, Document.serializeLocation(
+                        results.getString("world"),
+                        results.getInt("x"),
+                        results.getInt("y"),
+                        results.getInt("z")
+                    ));
                 }
             }
             // Load all capture locations
@@ -304,12 +304,12 @@ class MySqlStorage implements PluginStorage {
                         this.logger.log(Level.WARNING, "Cannot find pearl for [" + pearlId + "] to set a capture location for!");
                         continue;
                     }
-                    doc.append(StorageKeys.PEARL_CAPTURE_LOCATION, new Document()
-                        .append(StorageKeys.LOCATION_WORLD, results.getString("world"))
-                        .append(StorageKeys.LOCATION_X, results.getInt("x"))
-                        .append(StorageKeys.LOCATION_Y, results.getInt("y"))
-                        .append(StorageKeys.LOCATION_Z, results.getInt("z"))
-                    );
+                    doc.append(StorageKeys.PEARL_CAPTURE_LOCATION, Document.serializeLocation(
+                        results.getString("world"),
+                        results.getInt("x"),
+                        results.getInt("y"),
+                        results.getInt("z")
+                    ));
                 }
             }
             // Convert all pearl documents into pearls
