@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.config;
 
+import com.devotedmc.ExilePearl.storage.StorageKeys;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -439,10 +440,10 @@ public class Document implements Map<String, Object> {
     }
 
     private static Document serializeLocation(Location l) {
-        Document doc = new Document("world", l.getWorld().getName())
-            .append("x", l.getBlockX())
-            .append("y", l.getBlockY())
-            .append("z", l.getBlockZ());
+        Document doc = new Document(StorageKeys.LOCATION_WORLD, l.getWorld().getName())
+            .append(StorageKeys.LOCATION_X, l.getBlockX())
+            .append(StorageKeys.LOCATION_Y, l.getBlockY())
+            .append(StorageKeys.LOCATION_Z, l.getBlockZ());
 
         return doc;
     }
@@ -450,10 +451,10 @@ public class Document implements Map<String, Object> {
 
     private static Location deserializeLocation(Document doc) {
         try {
-            String worldName = doc.getString("world");
-            int x = doc.getInteger("x");
-            int y = doc.getInteger("y");
-            int z = doc.getInteger("z");
+            String worldName = doc.getString(StorageKeys.LOCATION_WORLD);
+            int x = doc.getInteger(StorageKeys.LOCATION_X);
+            int y = doc.getInteger(StorageKeys.LOCATION_Y);
+            int z = doc.getInteger(StorageKeys.LOCATION_Z);
             return new Location(Bukkit.getWorld(worldName), x, y, z);
         } catch (Exception ex) {
             return null;

@@ -15,6 +15,7 @@ import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
+import com.devotedmc.ExilePearl.storage.StorageKeys;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.google.common.base.Preconditions;
 import java.util.Date;
@@ -56,33 +57,35 @@ public final class CorePluginFactory implements PearlFactory {
         Preconditions.checkNotNull(doc, "doc");
 
         try {
-            UUID killedBy = UUID.fromString(doc.getString("killer_id"));
-            int pearlId = doc.getInteger("pearl_id");
-            Location loc = doc.getLocation("location");
-            int health = doc.getInteger("health");
-            Date pearledOn = doc.getDate("pearled_on", new Date());
-            Date lastSeen = doc.getDate("last_seen", new Date());
-            boolean freedOffline = doc.getBoolean("freed_offline", false);
-            boolean summoned = doc.getBoolean("summoned", false);
-            Location returnLoc = doc.getLocation("returnLoc");
+            UUID killerUuid = doc.getUUID(StorageKeys.KILLER_UUID);
+            int pearlId = doc.getInteger(StorageKeys.PEARL_ID);
+            Location loc = doc.getLocation(StorageKeys.PEARL_LOCATION);
+            int health = doc.getInteger(StorageKeys.PEARL_HEALTH);
+            Date pearledOn = doc.getDate(StorageKeys.PEARL_CAPTURE_DATE, new Date());
+            Date lastSeen = doc.getDate(StorageKeys.VICTIM_LAST_SEEN, new Date());
+            boolean freedOffline = doc.getBoolean(StorageKeys.PEARL_FREED_WHILE_OFFLINE, false);
+            boolean summoned = doc.getBoolean(StorageKeys.VICTIM_SUMMONED, false);
+            Location returnLoc = doc.getLocation(StorageKeys.VICTIM_RETURN_LOCATION);
+            Location captureLoc = doc.getLocation(StorageKeys.PEARL_CAPTURE_LOCATION);
 
             ExilePearl pearl = new CoreExilePearl(
                 pearlApi,
                 pearlApi.getStorageProvider().getStorage(),
                 uid,
-                killedBy,
+                killerUuid,
                 pearlId,
                 new BlockHolder(loc.getBlock()),
                 pearlApi.getPearlConfig().getDefaultPearlType(),
                 pearlApi.getPearlConfig().getPearlHealthDecayTimeout()
             );
-            pearl.setPearlType(PearlType.valueOf(doc.getInteger("type", 0)));
+            pearl.setPearlType(PearlType.valueOf(doc.getInteger(StorageKeys.PEARL_TYPE, 0)));
             pearl.setHealth(health);
             pearl.setPearledOn(pearledOn);
             pearl.setLastOnline(lastSeen);
             pearl.setFreedOffline(freedOffline);
             pearl.setSummoned(summoned);
             pearl.setReturnLocation(returnLoc);
+            pearl.setCaptureLocation(captureLoc);
             pearl.enableStorage();
             return pearl;
 
@@ -136,7 +139,7 @@ public final class CorePluginFactory implements PearlFactory {
         Preconditions.checkNotNull(uid, "uid");
         Preconditions.checkNotNull(doc, "doc");
 
-        doc.append("health", pearlApi.getPearlConfig().getPearlHealthMaxValue() / 2); // set health to half max health
+        doc.append(StorageKeys.PEARL_HEALTH, pearlApi.getPearlConfig().getPearlHealthMaxValue() / 2); // set health to half max health
         return createExilePearl(uid, doc);
     }
 

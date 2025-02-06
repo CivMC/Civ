@@ -24,6 +24,7 @@ class AsyncPearlRecord {
         UPDATE_LAST_SEEN,
         UPDATE_SUMMONED,
         UPDATE_RETURN_LOCATION,
+        UPDATE_CAPTURE_LOCATION,
         UPDATE_PEARLED_ON
     }
 

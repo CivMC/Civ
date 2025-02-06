@@ -6,9 +6,15 @@ import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.MySqlConfig;
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import java.util.List;
+import java.util.Set;
+import net.kyori.adventure.util.Index;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
 
 import java.sql.*;
@@ -140,6 +146,7 @@ class MySqlStorage implements PluginStorage {
 
             applyMigration0001();
             applyMigration0002();
+            applyMigration0003();
 
             if (config.getMigratePrisonPearl()) {
                 migratePrisonPearl();
@@ -159,8 +166,11 @@ class MySqlStorage implements PluginStorage {
             if (getDatabaseVersion() < 3) {
                 success &= applyMigration0002();
             }
+            if (getDatabaseVersion() < 4) {
+                success &= applyMigration0003();
+            }
             // and new migrations here.
-            // if (getDatabaseVersion() < 4) { // next migration
+            // if (getDatabaseVersion() < 5) { // next migration
 
             if (success) {
                 updateDatabaseVersion();
@@ -202,75 +212,152 @@ class MySqlStorage implements PluginStorage {
         return false;
     }
 
+    private boolean applyMigration0003() {
+        try (final Connection conn = this.db.getConnection()) {
+            try (final PreparedStatement stmt = conn.prepareStatement("ALTER TABLE exilepearls ADD CONSTRAINT unique_pearl_id UNIQUE (pearl_id);")) {
+                stmt.execute();
+            }
+            try (final PreparedStatement stmt = conn.prepareStatement(
+                """
+                create table if not exists ep_capturelocations(
+                    pearl_id int not null,
+                    world varchar(36) not null,
+                    x int not null,
+                    y int not null,
+                    z int not null,
+                    FOREIGN KEY (pearl_id) REFERENCES exilepearls(pearl_id) ON UPDATE CASCADE ON DELETE CASCADE
+                );
+                """
+            )) {
+                stmt.execute();
+            }
+            return true;
+        }
+        catch (final SQLException ex) {
+            this.logger.log(Level.SEVERE, "Failed to apply migration 0003", ex);
+        }
+        return false;
+    }
+
     @Override
     public Collection<ExilePearl> loadAllPearls() {
-        HashSet<ExilePearl> pearls = new HashSet<ExilePearl>();
+        final Set<ExilePearl> pearls = new HashSet<>();
+        this.logger.log("Loading ExilePearl pearls.");
+        try (final Connection conn = this.db.getConnection()) {
+            final Int2ObjectMap<Document> pearlsById = new Int2ObjectArrayMap<>();
+            // Load all pearls
+            try (final PreparedStatement stmt = conn.prepareStatement("SELECT pearl_id, ptype as pearl_type, uid as victim_uuid, killer_id as killer_uuid, world, x, y, z, health, pearled_on, freed_offline, last_seen, summoned FROM exilepearls;")) {
+                final ResultSet results = stmt.executeQuery();
+                while (results.next()) {
+                    final var doc = new Document();
 
-        logger.log("Loading ExilePearl pearls.");
+                    final int pearlId;
+                    doc.append(StorageKeys.PEARL_ID, pearlId = results.getInt("pearl_id"));
+                    doc.append(StorageKeys.PEARL_TYPE, results.getInt("pearl_type"));
+                    doc.append(StorageKeys.VICTIM_UUID, results.getString("victim_uuid"));
+                    doc.append(StorageKeys.KILLER_UUID, results.getString("killer_uuid"));
+                    doc.append(StorageKeys.PEARL_LOCATION, new Document()
+                        .append(StorageKeys.LOCATION_WORLD, results.getString("world"))
+                        .append(StorageKeys.LOCATION_X, results.getInt("x"))
+                        .append(StorageKeys.LOCATION_Y, results.getInt("y"))
+                        .append(StorageKeys.LOCATION_Z, results.getInt("z"))
+                    );
+                    doc.append(StorageKeys.PEARL_HEALTH, results.getInt("health"));
+                    doc.append(StorageKeys.PEARL_CAPTURE_DATE, new Date(results.getLong("pearled_on")));
+                    doc.append(StorageKeys.PEARL_FREED_WHILE_OFFLINE, results.getBoolean("freed_offline"));
+                    doc.append(StorageKeys.VICTIM_LAST_SEEN, new Date(results.getLong("last_seen")));
+                    doc.append(StorageKeys.VICTIM_SUMMONED, new Date(results.getLong("summoned")));
 
-        try (Connection connection = db.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM exilepearls");) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            ResultSetMetaData meta = resultSet.getMetaData();
-            while (resultSet.next()) {
-                try {
-                    // Translate the SQL data into a document
-                    Document doc = new Document();
-                    for (int i = 1; i <= meta.getColumnCount(); i++) {
-                        String key = meta.getColumnName(i);
-                        Object value = resultSet.getObject(key);
-                        doc.put(key, value);
-                    }
-
-                    // Translate the date and location to the expected format
-                    doc.append("pearled_on", new Date(Long.parseLong(doc.getString("pearled_on"))));
-                    doc.append("last_seen", new Date(Long.parseLong(doc.getString("last_seen"))));
-                    doc.append("location", new Document("world", doc.getString("world"))
-                        .append("x", doc.getInteger("x"))
-                        .append("y", doc.getInteger("y"))
-                        .append("z", doc.getInteger("z")));
-                    doc.append("type", doc.getInteger("ptype", 0));
-                    doc.append("summoned", doc.getBoolean("summoned"));
-
-                    pearls.add(pearlFactory.createExilePearl(doc.getUUID("uid"), doc));
-                } catch (Exception ex) {
-                    logger.log(Level.WARNING, "Failed to load pearl record: %s", resultSet.toString());
-                    ex.printStackTrace();
+                    pearlsById.put(pearlId, doc);
                 }
             }
-
-        } catch (SQLException ex) {
-            logger.log(Level.SEVERE, "An error occurred when loading pearls.");
+            // This is necessary because return locations are relationally linked via the victim's uuid
+            final Index<UUID, Document> pearlsByVictimUuid = Index.create(
+                (doc) -> doc.getUUID(StorageKeys.VICTIM_UUID),
+                List.copyOf(pearlsById.values())
+            );
+            // Load all return locations
+            try (final PreparedStatement stmt = conn.prepareStatement("SELECT uid as victim_uuid, world, x, y, z FROM returnlocations;")) {
+                final ResultSet results = stmt.executeQuery();
+                while (results.next()) {
+                    final UUID victimUuid = UUID.fromString(results.getString("victim_uuid"));
+                    final Document doc = pearlsByVictimUuid.value(victimUuid);
+                    if (doc == null) {
+                        this.logger.log(Level.WARNING, "Cannot find pearl for [" + victimUuid + "] to set a return location for!");
+                        continue;
+                    }
+                    doc.append(StorageKeys.VICTIM_RETURN_LOCATION, new Document()
+                        .append(StorageKeys.LOCATION_WORLD, results.getString("world"))
+                        .append(StorageKeys.LOCATION_X, results.getInt("x"))
+                        .append(StorageKeys.LOCATION_Y, results.getInt("y"))
+                        .append(StorageKeys.LOCATION_Z, results.getInt("z"))
+                    );
+                }
+            }
+            // Load all capture locations
+            try (final PreparedStatement stmt = conn.prepareStatement("SELECT pearl_id, world, x, y, z FROM ep_capturelocations;")) {
+                final ResultSet results = stmt.executeQuery();
+                while (results.next()) {
+                    final int pearlId = results.getInt("pearl_id");
+                    final Document doc = pearlsById.get(pearlId);
+                    if (doc == null) {
+                        this.logger.log(Level.WARNING, "Cannot find pearl for [" + pearlId + "] to set a capture location for!");
+                        continue;
+                    }
+                    doc.append(StorageKeys.PEARL_CAPTURE_LOCATION, new Document()
+                        .append(StorageKeys.LOCATION_WORLD, results.getString("world"))
+                        .append(StorageKeys.LOCATION_X, results.getInt("x"))
+                        .append(StorageKeys.LOCATION_Y, results.getInt("y"))
+                        .append(StorageKeys.LOCATION_Z, results.getInt("z"))
+                    );
+                }
+            }
+            // Convert all pearl documents into pearls
+            for (final Document doc : pearlsById.values()) {
+                final UUID victimUuid = doc.getUUID(StorageKeys.VICTIM_UUID);
+                pearls.add(this.pearlFactory.createExilePearl(victimUuid, doc));
+            }
         }
-
+        catch (final SQLException ex) {
+            this.logger.log(Level.SEVERE, "An error occurred when loading pearls.", ex);
+        }
         return pearls;
     }
 
     @Override
     public void pearlInsert(ExilePearl pearl) {
         Preconditions.checkNotNull(pearl, "pearl");
-
-        try (Connection connection = db.getConnection();
-             PreparedStatement ps = connection.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");) {
-
-            Location l = pearl.getLocation();
-
-            ps.setString(1, pearl.getPlayerId().toString());
-            ps.setString(2, pearl.getKillerId().toString());
-            ps.setInt(3, pearl.getPearlId());
-            ps.setInt(4, pearl.getPearlType().toInt());
-            ps.setString(5, l.getWorld().getName());
-            ps.setInt(6, l.getBlockX());
-            ps.setInt(7, l.getBlockY());
-            ps.setInt(8, l.getBlockZ());
-            ps.setInt(9, pearl.getHealth());
-            ps.setLong(10, pearl.getPearledOn().getTime());
-            ps.setBoolean(11, pearl.getFreedOffline());
-            ps.setLong(12, pearl.getLastOnline().getTime());
-            ps.setBoolean(13, pearl.isSummoned());
-            ps.executeUpdate();
-
-        } catch (SQLException ex) {
+        try (final Connection conn = this.db.getConnection()) {
+            try (final PreparedStatement stmt = conn.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);")) {
+                final Location pearlLocation = pearl.getLocation();
+                stmt.setString(1, pearl.getPlayerId().toString());
+                stmt.setString(2, pearl.getKillerId().toString());
+                stmt.setInt(3, pearl.getPearlId());
+                stmt.setInt(4, pearl.getPearlType().toInt());
+                stmt.setString(5, pearlLocation.getWorld().getName());
+                stmt.setInt(6, pearlLocation.getBlockX());
+                stmt.setInt(7, pearlLocation.getBlockY());
+                stmt.setInt(8, pearlLocation.getBlockZ());
+                stmt.setInt(9, pearl.getHealth());
+                stmt.setLong(10, pearl.getPearledOn().getTime());
+                stmt.setBoolean(11, pearl.getFreedOffline());
+                stmt.setLong(12, pearl.getLastOnline().getTime());
+                stmt.setBoolean(13, pearl.isSummoned());
+                stmt.executeUpdate();
+            }
+            final Location captureLocation = pearl.getCaptureLocation();
+            if (captureLocation != null) {
+                try (final PreparedStatement stmt = conn.prepareStatement("INSERT INTO ep_capturelocations VALUES (?, ?, ?, ?, ?);")) {
+                    stmt.setInt(1, pearl.getPearlId());
+                    stmt.setString(2, captureLocation.getWorld().getName());
+                    stmt.setInt(3, captureLocation.getBlockX());
+                    stmt.setInt(4, captureLocation.getBlockY());
+                    stmt.setInt(5, captureLocation.getBlockZ());
+                    stmt.executeUpdate();
+                }
+            }
+        }
+        catch (final SQLException ex) {
             ex.printStackTrace();
             logFailedPearlOperation(ex, pearl, "insert record");
         }
@@ -279,12 +366,18 @@ class MySqlStorage implements PluginStorage {
     @Override
     public void pearlRemove(ExilePearl pearl) {
         Preconditions.checkNotNull(pearl, "pearl");
-
-        try (Connection connection = db.getConnection();
-             PreparedStatement ps = connection.prepareStatement("DELETE FROM exilepearls WHERE uid = ?");) {
-            ps.setString(1, pearl.getPlayerId().toString());
-            ps.executeUpdate();
-        } catch (SQLException ex) {
+        try (final Connection conn = this.db.getConnection()) {
+            try (final PreparedStatement stmt = conn.prepareStatement("DELETE FROM exilepearls WHERE uid = ?;")) {
+                stmt.setString(1, pearl.getPlayerId().toString());
+                stmt.executeUpdate();
+            }
+            try (final PreparedStatement stmt = conn.prepareStatement("DELETE FROM ep_capturelocations where pearl_id = ?;")) {
+                stmt.setInt(1, pearl.getPearlId());
+                stmt.executeUpdate();
+            }
+        }
+        catch (final SQLException ex) {
+            ex.printStackTrace();
             logFailedPearlOperation(ex, pearl, "delete record");
         }
     }
@@ -424,6 +517,41 @@ class MySqlStorage implements PluginStorage {
             }
         } catch (SQLException ex) {
             logFailedPearlOperation(ex, pearl, "update return location");
+        }
+    }
+
+    @Override
+    public void updateCaptureLocation(
+        final @NotNull ExilePearl pearl
+    ) {
+        Preconditions.checkNotNull(pearl, "pearl");
+        try (final Connection conn = this.db.getConnection()) {
+            final Location captureLocation = pearl.getCaptureLocation();
+            if (captureLocation == null) {
+                try (final PreparedStatement stmt = conn.prepareStatement("DELETE FROM ep_capturelocations WHERE pearl_id = ?;")) {
+                    stmt.setInt(1, pearl.getPearlId());
+                    stmt.executeUpdate();
+                }
+                catch (final SQLException ex) {
+                    logFailedPearlOperation(ex, pearl, "delete capture location");
+                }
+            }
+            else {
+                try (final PreparedStatement stmt = conn.prepareStatement("INSERT INTO ep_capturelocations (pearl_id, world, x, y, z) VALUES (?, ?, ?, ?, ?);")) {
+                    stmt.setInt(1, pearl.getPearlId());
+                    stmt.setString(2, captureLocation.getWorld().getName());
+                    stmt.setInt(3, captureLocation.getBlockX());
+                    stmt.setInt(4, captureLocation.getBlockY());
+                    stmt.setInt(5, captureLocation.getBlockZ());
+                    stmt.executeUpdate();
+                }
+                catch (final SQLException ex) {
+                    logFailedPearlOperation(ex, pearl, "insert capture location");
+                }
+            }
+        }
+        catch (final SQLException ex) {
+            logFailedPearlOperation(ex, pearl, "update capture location");
         }
     }
 
