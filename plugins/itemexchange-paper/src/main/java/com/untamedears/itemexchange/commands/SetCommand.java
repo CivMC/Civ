@@ -10,10 +10,13 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.modifiers.ReceiptModifier;
 import com.untamedears.itemexchange.utility.ModifierHandler;
 import com.untamedears.itemexchange.utility.RuleHandler;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -88,6 +91,11 @@ public final class SetCommand extends BaseCommand {
     ) {
         try (final var handler = new ModifierHandler<>(sender, ReceiptModifier.TEMPLATE)) {
             if (handler.getModifier() == null) {
+                // Putting it here so players can remove receipt modifiers if receipts are disabled at a later date
+                if (!ItemExchangeConfig.areReceiptsEnabled()) {
+                    sender.sendMessage(Component.text("Receipts are not enabled!", NamedTextColor.RED));
+                    return;
+                }
                 handler.ensureModifier();
                 switch (handler.getRule().getType()) {
                     case INPUT -> handler.relay(ChatColor.GREEN + "Added receipt modifier!");
@@ -106,6 +114,10 @@ public final class SetCommand extends BaseCommand {
     public void toggleForcedReceipts(
         final @NotNull Player sender
     ) {
+        if (!ItemExchangeConfig.areReceiptsEnabled()) {
+            sender.sendMessage(Component.text("Receipts are not enabled!", NamedTextColor.RED));
+            return;
+        }
         try (final var handler = new ModifierHandler<>(sender, ReceiptModifier.TEMPLATE)) {
             final ReceiptModifier modifier = handler.ensureModifier();
             if (modifier.forceReceiptGeneration) {
@@ -124,6 +136,10 @@ public final class SetCommand extends BaseCommand {
     public void resetReceiptFooter(
         final @NotNull Player sender
     ) {
+        if (!ItemExchangeConfig.areReceiptsEnabled()) {
+            sender.sendMessage(Component.text("Receipts are not enabled!", NamedTextColor.RED));
+            return;
+        }
         try (final var handler = new ModifierHandler<>(sender, ReceiptModifier.TEMPLATE)) {
             final ReceiptModifier modifier = handler.getModifier();
             if (modifier == null) {
@@ -145,6 +161,10 @@ public final class SetCommand extends BaseCommand {
         final @NotNull Player sender,
         final @Optional String footer
     ) {
+        if (!ItemExchangeConfig.areReceiptsEnabled()) {
+            sender.sendMessage(Component.text("Receipts are not enabled!", NamedTextColor.RED));
+            return;
+        }
         try (final var handler = new ModifierHandler<>(sender, ReceiptModifier.TEMPLATE)) {
             final ReceiptModifier modifier = handler.ensureModifier();
             if (StringUtils.isBlank(footer)) {

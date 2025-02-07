@@ -29,6 +29,7 @@ public final class ItemExchangeConfig extends ConfigParser {
     private static int RELAY_REACH_DISTANCE;
     private static final Set<Material> RELAY_PERMEABLE_BLOCKS = new HashSet<>();
     private static ShapelessRecipe BULK_RULE_RECIPE;
+    private static boolean RECEIPTS;
 
     public ItemExchangeConfig(final ItemExchangePlugin plugin) {
         super(plugin);
@@ -42,6 +43,7 @@ public final class ItemExchangeConfig extends ConfigParser {
         parseCreateFromShop(config.getBoolean("createShopFromChest", true));
         parseRepairableItems(config.getStringList("repairables"));
         parseShopRelay(config.getConfigurationSection("shopRelay"));
+        parseReceipts(config.getConfigurationSection("receipts"));
         return true;
     }
 
@@ -213,6 +215,17 @@ public final class ItemExchangeConfig extends ConfigParser {
         }
     }
 
+    private void parseReceipts(
+        final ConfigurationSection config
+    ) {
+        if (config == null) {
+            LOGGER.info("Skipping receipt parsing: section is missing.");
+            return;
+        }
+        RECEIPTS = config.getBoolean("enabled");
+        LOGGER.info("Receipts enabled: {}", RECEIPTS);
+    }
+
     // ------------------------------------------------------------
     // Getters
     // ------------------------------------------------------------
@@ -287,4 +300,7 @@ public final class ItemExchangeConfig extends ConfigParser {
         return RELAY_PERMEABLE_BLOCKS.contains(material);
     }
 
+    public static boolean areReceiptsEnabled() {
+        return RECEIPTS;
+    }
 }

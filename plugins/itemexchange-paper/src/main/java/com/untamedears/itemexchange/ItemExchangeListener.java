@@ -213,34 +213,36 @@ public final class ItemExchangeListener implements Listener {
         } else {
             player.sendMessage(ChatColor.GREEN + "Successful donation!");
         }
-        // Generate and give the player a receipt of the transaction
-        final ReceiptModifier receiptModifier = Objects.requireNonNullElseGet(
-            inputRule.getModifiers().get(ReceiptModifier.class),
-            ReceiptModifier::new
-        );
-        if (ItemExchangeSettings.RECEIVE_RECEIPTS.getValue(player) || receiptModifier.forceReceiptGeneration) {
-            final ItemStack receiptItem = ReceiptUtils.generateReceipt(
-                player,
-                clicked,
-                trade.getBlock(),
-                inputRule,
-                outputRule,
-                receiptModifier.footerText
+        if (ItemExchangeConfig.areReceiptsEnabled()) {
+            // Generate and give the player a receipt of the transaction
+            final ReceiptModifier receiptModifier = Objects.requireNonNullElseGet(
+                inputRule.getModifiers().get(ReceiptModifier.class),
+                ReceiptModifier::new
             );
-            Utilities.giveItemsOrDrop(player.getInventory(), receiptItem);
-            player.sendMessage(
-                Component.text()
-                    .color(NamedTextColor.GREEN)
-                    .content("You have been given a ")
-                    .append(
-                        Component.text()
-                            .decoration(TextDecoration.ITALIC, TextDecoration.State.TRUE)
-                            .decoration(TextDecoration.UNDERLINED, TextDecoration.State.TRUE)
-                            .content("receipt")
-                            .hoverEvent(receiptItem.asHoverEvent()),
-                        Component.text("!")
-                    )
-            );
+            if (ItemExchangeSettings.RECEIVE_RECEIPTS.getValue(player) || receiptModifier.forceReceiptGeneration) {
+                final ItemStack receiptItem = ReceiptUtils.generateReceipt(
+                    player,
+                    clicked,
+                    trade.getBlock(),
+                    inputRule,
+                    outputRule,
+                    receiptModifier.footerText
+                );
+                Utilities.giveItemsOrDrop(player.getInventory(), receiptItem);
+                player.sendMessage(
+                    Component.text()
+                        .color(NamedTextColor.GREEN)
+                        .content("You have been given a ")
+                        .append(
+                            Component.text()
+                                .decoration(TextDecoration.ITALIC, TextDecoration.State.TRUE)
+                                .decoration(TextDecoration.UNDERLINED, TextDecoration.State.TRUE)
+                                .content("receipt")
+                                .hoverEvent(receiptItem.asHoverEvent()),
+                            Component.text("!")
+                        )
+                );
+            }
         }
     }
 
