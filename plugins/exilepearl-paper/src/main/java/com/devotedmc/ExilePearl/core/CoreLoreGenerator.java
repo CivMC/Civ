@@ -43,7 +43,7 @@ final class CoreLoreGenerator implements LoreProvider {
         Preconditions.checkNotNull(config, "config");
 
         this.config = config;
-        this.dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        this.dateFormat = new SimpleDateFormat("dd MMM yyyy");
         this.exilePearlid = exilePearLid;
     }
 
