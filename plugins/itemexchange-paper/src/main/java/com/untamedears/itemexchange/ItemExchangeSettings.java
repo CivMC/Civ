@@ -16,7 +16,7 @@ public final class ItemExchangeSettings {
 
     public static final BooleanSetting RECEIVE_RECEIPTS = new BooleanSetting(
         ItemExchangePlugin.getInstance(),
-        true,
+        false,
         "Receive receipts?",
         "ie_receive_receipts",
         "Would you like your purchases to print a receipt? (Some exchanges will always produce a receipt regardless of this setting!)"
