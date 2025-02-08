@@ -34,11 +34,13 @@ public class ItemMetaConverterHack extends BasicHack implements UpdateInventoryI
     }
 
     @Override
-    public void updateItem(
+    public boolean updateItem(
         final @NotNull ItemStack item
     ) {
         if (item.isSimilar(BAD_CRATE)) {
             item.setItemMeta(GOOD_CRATE);
+            return true;
         }
+        return false;
     }
 }

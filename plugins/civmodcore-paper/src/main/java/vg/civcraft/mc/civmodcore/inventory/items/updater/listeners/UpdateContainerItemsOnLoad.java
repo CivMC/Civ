@@ -21,8 +21,9 @@ public interface UpdateContainerItemsOnLoad extends ItemUpdater, Listener {
         final Chunk chunk = event.getChunk();
         for (final BlockState state : chunk.getTileEntities()) {
             if (state instanceof final TileStateInventoryHolder holder) {
-                ItemUpdater.updateInventory(this, holder.getInventory());
-                holder.update();
+                if (ItemUpdater.updateInventory(this, holder.getInventory())) {
+                    holder.update();
+                }
             }
         }
     }

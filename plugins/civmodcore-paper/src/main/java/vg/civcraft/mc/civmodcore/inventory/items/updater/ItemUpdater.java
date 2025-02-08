@@ -11,22 +11,26 @@ public interface ItemUpdater {
      * Updates the item however the implementer sees fit.
      *
      * @param item The item to update, which is guaranteed to be a non-empty item, as determined by a {@link ItemUtils#isEmptyItem(ItemStack)} check.
+     * @return Whether the item was updated.
      */
-    void updateItem(
+    boolean updateItem(
         @NotNull ItemStack item
     );
 
     /**
      * Updates all non-empty items (as determined by {@link ItemUtils#isEmptyItem(ItemStack)}) within a given inventory.
+     * @return Whether any of the items in the inventory were updated.
      */
-    static void updateInventory(
+    static boolean updateInventory(
         final @NotNull ItemUpdater updater,
         final @NotNull Inventory inventory
     ) {
+        boolean updated = false;
         for (final ItemStack item : inventory) {
             if (!ItemUtils.isEmptyItem(item)) {
-                updater.updateItem(item);
+                updated |= updater.updateItem(item);
             }
         }
+        return updated;
     }
 }
