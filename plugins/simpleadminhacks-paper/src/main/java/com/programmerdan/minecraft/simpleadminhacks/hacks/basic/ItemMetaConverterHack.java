@@ -9,9 +9,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.inventory.items.updater.listeners.UpdateContainerItemsOnOpen;
+import vg.civcraft.mc.civmodcore.inventory.items.updater.listeners.UpdateInventoryItemsOnOpen;
 
-public class ItemMetaConverterHack extends BasicHack implements UpdateContainerItemsOnOpen {
+public class ItemMetaConverterHack extends BasicHack implements UpdateInventoryItemsOnOpen {
     private static final ItemStack BAD_CRATE;
     private static final ItemMeta GOOD_CRATE;
 

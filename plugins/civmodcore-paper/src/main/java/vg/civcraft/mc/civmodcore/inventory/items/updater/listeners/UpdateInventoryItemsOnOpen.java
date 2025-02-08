@@ -8,12 +8,12 @@ import org.bukkit.inventory.Inventory;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.updater.ItemUpdater;
 
-public interface UpdateContainerItemsOnOpen extends ItemUpdater, Listener {
+public interface UpdateInventoryItemsOnOpen extends ItemUpdater, Listener {
     @EventHandler(
         priority = EventPriority.LOWEST,
         ignoreCancelled = true
     )
-    default void updateContainerItemsOnOpen(
+    default void updateInventoryItemsOnOpen(
         final @NotNull InventoryOpenEvent event
     ) {
         final Inventory inventory = event.getInventory();
