@@ -92,6 +92,10 @@ public class ItemMigrations {
                     meta = item.getItemMeta();
                     metaMigration.doMigration(meta);
                 }
+                case final ItemMigration.ItemStackMigration itemMigration -> {
+                    itemMigration.doMigration(item);
+                    meta = item.getItemMeta();
+                }
             }
             setMigrationVersion(meta, entry.getKey());
             item.setItemMeta(meta);
