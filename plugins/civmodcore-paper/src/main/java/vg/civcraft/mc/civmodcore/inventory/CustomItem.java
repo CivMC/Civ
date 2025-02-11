@@ -6,16 +6,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 public class CustomItem {
-
     public static NamespacedKey CUSTOM_ITEM = new NamespacedKey(JavaPlugin.getPlugin(CivModCorePlugin.class), "custom_item");
 
     private static final Map<String, ItemStack> customItems = new HashMap<>();
@@ -37,6 +33,10 @@ public class CustomItem {
         return itemStack == null ? null : itemStack.clone();
     }
 
+    /**
+     * Just remember that has-then-get is an anti-pattern: use {@link #isCustomItem(org.bukkit.inventory.ItemStack, String)}
+     * or {@link #getCustomItemKey(org.bukkit.inventory.ItemStack)} instead.
+     */
     public static boolean isCustomItem(ItemStack item) {
         return item != null && !item.isEmpty() && item.getPersistentDataContainer().has(CUSTOM_ITEM);
     }
@@ -46,7 +46,7 @@ public class CustomItem {
     }
 
     public static String getCustomItemKey(ItemStack item) {
-        if (isCustomItem(item)) {
+        if (item != null && !item.isEmpty()) {
             return item.getPersistentDataContainer().get(CUSTOM_ITEM, PersistentDataType.STRING);
         } else {
             return null;
