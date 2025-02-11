@@ -67,6 +67,12 @@ public class ItemMigrations {
         meta.getPersistentDataContainer().set(this.versionKey, PersistentDataType.INTEGER, version);
     }
 
+    /**
+     * Attempts to update the given item according to a series of pre-registered migrations.
+     *
+     * @param item The item to update, which MUST NOT be an empty item, as determined by a {@link vg.civcraft.mc.civmodcore.inventory.items.ItemUtils#isEmptyItem(ItemStack)} check.
+     * @return Whether the item was updated.
+     */
     public boolean attemptMigration(
         final @NotNull ItemStack item
     ) {

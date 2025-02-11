@@ -10,7 +10,7 @@ public interface ItemUpdater {
     /**
      * Updates the item however the implementer sees fit.
      *
-     * @param item The item to update, which is guaranteed to be a non-empty item, as determined by a {@link ItemUtils#isEmptyItem(ItemStack)} check.
+     * @param item The item to update, which MUST NOT be an empty item, as determined by a {@link ItemUtils#isEmptyItem(ItemStack)} check.
      * @return Whether the item was updated.
      */
     boolean updateItem(
