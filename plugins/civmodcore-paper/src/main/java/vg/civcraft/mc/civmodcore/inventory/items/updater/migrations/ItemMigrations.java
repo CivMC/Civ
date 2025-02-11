@@ -8,11 +8,13 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 public class ItemMigrations {
-    public static final NamespacedKey DEFAULT_VERSION_KEY = new NamespacedKey("civmodcore", "item_version");
+    public static final NamespacedKey DEFAULT_VERSION_KEY = new NamespacedKey(JavaPlugin.getPlugin(CivModCorePlugin.class), "item_version");
 
     public final NamespacedKey versionKey;
     protected final TreeMap<Integer, ItemMigration<?>> migrations = new TreeMap<>(Integer::compareTo);
