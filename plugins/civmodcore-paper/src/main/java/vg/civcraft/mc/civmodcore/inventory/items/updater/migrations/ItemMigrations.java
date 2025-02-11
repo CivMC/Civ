@@ -48,6 +48,10 @@ public class ItemMigrations {
         registerMigration(migrationId, updater);
     }
 
+    public void clearMigrations() {
+        this.migrations.clear();
+    }
+
     public int getMigrationVersion(
         final @NotNull ItemStack item
     ) {

@@ -10,6 +10,11 @@ import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.updater.ItemUpdater;
 import vg.civcraft.mc.civmodcore.inventory.items.updater.migrations.ItemMigrations;
 
+/**
+ * Use this in lieu of {@link vg.civcraft.mc.civmodcore.inventory.items.updater.impl.CustomItemsUpdater} when you only
+ * have a single custom item that needs updating, as to avoid the overhead of searching a HashMap for your singular
+ * custom item type.
+ */
 public class CustomItemUpdater implements ItemUpdater {
     public final String customKey;
     public final ItemMigrations migrations;
