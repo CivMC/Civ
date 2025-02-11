@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
 public class ItemMigrations {
-    public static final NamespacedKey DEFAULT_VERSION_KEY = new NamespacedKey("civ", "item_version");
+    public static final NamespacedKey DEFAULT_VERSION_KEY = new NamespacedKey("civmodcore", "item_version");
 
     public final NamespacedKey versionKey;
     protected final TreeMap<Integer, ItemMigration<?>> migrations = new TreeMap<>(Integer::compareTo);
