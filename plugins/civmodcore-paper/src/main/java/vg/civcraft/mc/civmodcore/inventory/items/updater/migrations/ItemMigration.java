@@ -1,8 +1,8 @@
 package vg.civcraft.mc.civmodcore.inventory.items.updater.migrations;
 
+import net.minecraft.core.component.DataComponentHolder;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.datacomponent.DataComponentHolder;
 
 public sealed interface ItemMigration<T> {
     void doMigration(

@@ -4,12 +4,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
-import vg.civcraft.mc.civmodcore.datacomponent.DataComponentHolder;
 
 public class ItemMigrations {
     public static final NamespacedKey DEFAULT_VERSION_KEY = new NamespacedKey("civ", "item_version");
@@ -85,7 +85,7 @@ public class ItemMigrations {
             final ItemMeta meta;
             switch (entry.getValue()) {
                 case final ItemMigration.DataMigration dataMigration -> {
-                    dataMigration.doMigration(DataComponentHolder.ofItem(item));
+                    dataMigration.doMigration(CraftItemStack.unwrap(item));
                     meta = item.getItemMeta();
                 }
                 case final ItemMigration.MetaMigration metaMigration -> {
