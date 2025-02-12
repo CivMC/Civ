@@ -8,4 +8,4 @@ all:
       hosts:
         prod-swarm-1:
   vars:
-    setting: test
+    setting: production
