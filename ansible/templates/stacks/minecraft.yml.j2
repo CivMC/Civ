@@ -138,7 +138,7 @@ services:
             placement:
                 constraints: [node.role == manager]
             limits:
-                memory: '{{settings.minecraft.resources.memory_limit}}'
+                memory: '{{setting.minecraft.resources.memory_limit}}'
 
     pvp:
         image: itzg/minecraft-server@sha256:edd1968cb701da6a7a358170ad6503323e35fb6ec6984eb31ec1a8a4687b75ec
@@ -214,7 +214,7 @@ services:
             placement:
                 constraints: [node.role == manager]
             limits:
-                memory: '{{settings.minecraft.resources.pvp_memory_limit}}'
+                memory: '{{setting.minecraft.resources.pvp_memory_limit}}'
 
     kira:
         image: ghcr.io/civmc/kira:2.1.1
