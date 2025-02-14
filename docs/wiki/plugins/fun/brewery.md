@@ -54,18 +54,19 @@ Just place it down, and put your finished brews in it;s crafting grid for a seco
 ## Starter Brews
 Below are some simple recipes to help you get started in your brewing career. Some may require custom ingredients you'll have to discover first however.
 
-| Brew Name      |                      Cauldron <br> ingredients:Amount                       | Cauldron <br> Time | Distilling <br> Runs | Aging <br> Time | Wood <br> Type |
-| -------------- |:---------------------------------------------------------------------------:|:------------------:|:--------------------:|:---------------:|:--------------:|
-| Tea            |                                Oak Leaves: 4                                |       3 min        |          0           |        0        |       -        |
-| Lemonade       |                        Citrus Juice: 3 <br> Sugar: 8                        |       2 min        |          0           |        0        |       -        |
-| Cider          |                                  Apple: 6                                   |       4 min        |          0           |     6 years     |      Any       |
-| Red wine       |                                   Vine: 6                                   |       6 min        |          0           |     8 years     |      Any       |
-| Champagne      |                   Glow berries: 12 <br> Carbon Dioxide: 1                   |       10 min       |          0           |     4 years     |     Birch      |
-| Wheatbeer      |                           Wheat: 12 <br> Malt: 1                            |       4 min        |          0           |     2 years     |      Oak       |
-| Vodka          |                          Potato: 13 <br> Yeast: 1                           |       13 min       |        8 runs        |        0        |       -        |
-| Irish Cream    |                 Wheat: 18 <br> Milk Bucket: 1 <br> Yeast: 1                 |       6 min        |        5 runs        |     4 years     |      Any       |
-| Rice Porridge  |                            Rice: 1 <br> Salt: 1                             |       15 min       |          0           |        0        |       -        |
-| Vegetable Soup | Potato: 3 <br> Carrot 3 <br> Beetroot: 2 <br> Salt: 1 <br> Chicken Broth: 1 |       25 min       |          0           |        0        |       -        |
+| Brew Name            |                        Cauldron <br> ingredients:Amount                        | Cauldron <br> Time | Distilling <br> Runs | Aging <br> Time | Wood <br> Type |
+| -------------------- |:------------------------------------------------------------------------------:|:------------------:|:--------------------:|:---------------:|:--------------:|
+| Tea                  |                                 Oak Leaves: 4                                  |       3 min        |          0           |        0        |       -        |
+| Lemonade             |                         Citrus Juice: 3 <br> Sugar: 8                          |       2 min        |          0           |        0        |       -        |
+| Cider                |                                    Apple: 6                                    |       4 min        |          0           |     6 years     |      Any       |
+| Red wine             |                                    Vine: 6                                     |       6 min        |          0           |     8 years     |      Any       |
+| Champagne            |                    Glow berries: 12 <br> Carbon Dioxide: 1                     |       10 min       |          0           |     4 years     |     Birch      |
+| Wheatbeer            |                             Wheat: 12 <br> Malt: 1                             |       4 min        |          0           |     2 years     |      Oak       |
+| Vodka                |                            Potato: 13 <br> Yeast: 1                            |       13 min       |        8 runs        |        0        |       -        |
+| Irish Cream          |                  Wheat: 18 <br> Milk Bucket: 1 <br> Yeast: 1                   |       6 min        |        5 runs        |     4 years     |      Any       |
+| Rice Porridge        |                              Rice: 1 <br> Salt: 1                              |       15 min       |          0           |        0        |       -        |
+| Vegetable Soup       |  Potato: 3 <br> Carrot 3 <br> Beetroot: 2 <br> Salt: 1 <br> Chicken Broth: 1   |       25 min       |          0           |        0        |       -        |
+| Valentines Chocolate | Cocoa Beans: 3 <br> Milk Bucket 3 <br> Honey Bottle: 2 <br> Vanilla Extract: 1 |       7 min        |          0           |        0        |       -         |
 
 ### Texture pack
 Texture ID's are provided below with the list to be used while making a texture pack, allowing players to create a custom texture for each brew and ingredient. 
@@ -117,7 +118,7 @@ The most simple form of brews, made with either base and/or custom ingredients.
 |        Champagne        |         2         |   300020   |
 |        Riesling         |         2         |   300021   |
 |          Rose           |         2         |   300022   |
-|         Whiskey          |         2         |   300023   |
+|         Whiskey         |         2         |   300023   |
 |         Scotch          |         2         |   300024   |
 |      White Whiskey      |         3         |   300025   |
 |      Corn Whiskey       |         2         |   300026   |
@@ -206,38 +207,40 @@ The most simple form of brews, made with either base and/or custom ingredients.
 |         Phantom         |         4         |   300109   |
 |         Eggnog          |         8         |   300110   |
 |        Advocaat         |         5         |   300111   |
+|       Love Potion       |         3         |   300112   |
 
 ### Food Brews
 Brews that restore saturation
 
-|        Name         | Ingredient Amount | Texture ID |
-|:-------------------:|:-----------------:|:----------:|
-|   Vegetable Soup    |         5         |   400001   |
-|     Ratatouille     |         4         |   400002   |
-|        Laksa        |         7         |   400003   |
-|     Minestrone      |         7         |   400004   |
-|         Pho         |        12         |   400005   |
-| Chicken Noodle Soup |        10         |   400006   |
-|    Dumpling Soup    |         9         |   400007   |
-|    Corn Chowder     |        11         |   400008   |
-|       Goulash       |         7         |   400009   |
-|   Tonkatsu Ramen    |         5         |   400010   |
-|       Borscht       |         8         |   400011   |
-|     Balti Gosht     |        12         |   400012   |
-|    Rice Porridge    |         2         |   400013   |
-|    Cranberry Pie    |         8         |   400014   |
-|      Fish Soup      |         9         |   400015   |
-|   Poached Salmon    |         6         |   400016   |
-|       Marmite       |         3         |   400017   |
-|   Mais con Hielo    |         4         |   400018   |
-| Mediterranean Medly |        11         |   400019   |
-|   Halloween Candy   |         3         |   400020   |
-|       Cheese        |         3         |   400021   |
-|    Easter Bread     |         6         |   400022   |
-|   Candied Carrots   |         5         |   400023   |
-|      Dyed Eggs      |         2         |   400024   |
-|    Deviled Eggs     |         6         |   400025   |
-|     Carrot Cake     |         6         |   400026   |
+|         Name         | Ingredient Amount | Texture ID |
+|:--------------------:|:-----------------:| ----------:|
+|    Vegetable Soup    |         5         |     400001 |
+|     Ratatouille      |         4         |     400002 |
+|        Laksa         |         7         |     400003 |
+|      Minestrone      |         7         |     400004 |
+|         Pho          |        12         |     400005 |
+| Chicken Noodle Soup  |        10         |     400006 |
+|    Dumpling Soup     |         9         |     400007 |
+|     Corn Chowder     |        11         |     400008 |
+|       Goulash        |         7         |     400009 |
+|    Tonkatsu Ramen    |         5         |     400010 |
+|       Borscht        |         8         |     400011 |
+|     Balti Gosht      |        12         |     400012 |
+|    Rice Porridge     |         2         |     400013 |
+|    Cranberry Pie     |         8         |     400014 |
+|      Fish Soup       |         9         |     400015 |
+|    Poached Salmon    |         6         |     400016 |
+|       Marmite        |         3         |     400017 |
+|    Mais con Hielo    |         4         |     400018 |
+| Mediterranean Medly  |        11         |     400019 |
+|   Halloween Candy    |         3         |     400020 |
+|        Cheese        |         3         |     400021 |
+|     Easter Bread     |         6         |     400022 |
+|   Candied Carrots    |         5         |     400023 |
+|      Dyed Eggs       |         2         |     400024 |
+|     Deviled Eggs     |         6         |     400025 |
+|     Carrot Cake      |         6         |     400026 |
+| Valentines Chocolate |         4         |     400026 |
 
 ### Cocktail Brews
 Brews made from other brews, sometimes with extra ingredients
@@ -440,11 +443,24 @@ Brews that are part of a nation or group's PR/culture and were submitted by them
 |       Griffin       | Griffin Steak Co Liquid Lunch |         2         |   700147   |
 |       Grenada       |     Grenada Club Dark Rum     |         3         |   700148   |
 |       Salerno       |        Salerno Shandy         |         2         |   700149   |
-|       Salerno       |      Brunsvik Bread Soup      |         7         |   700154   |
-|     Khalkedonia     |           Shawarma            |        10         |   700154   |
-|     Wellington      |   Wellington Cherry Liquor    |         4         |   700154   |
-|         IF          |        Imperial Stout         |         5         |   700154   |
+|       Salerno       |      Brunsvik Bread Soup      |         7         |   700150   |
+|     Khalkedonia     |           Shawarma            |        10         |   700151   |
+|     Wellington      |   Wellington Cherry Liquor    |         4         |   700152   |
+|         IF          |        Imperial Stout         |         5         |   700153   |
 | Hello Kitty Islands |     Hello Kitty Hurricane     |         3         |   700154   |
+|       Exyria        |        The White Raven        |         3         |   700155   |
+|       Estalia       |     Suramirian Star Gazer     |         4         |   700156   |
+|       Exyria        |             Melen             |         3         |   700157   |
+|        Pavia        |        Bedfordian Mead        |         4         |   700158   |
+|        Rivia        |      Syndicate's spirit       |         4         |   700159   |
+|        Rivia        |        Worker's Stout         |         4         |   700160   |
+|        Pavia        |         Banker's Dust         |         5         |   700161   |
+|        Pavia        |      Wyepoint Moonshine       |         5         |   700162   |
+|      Northfort      |      Northfortian vodka       |         2         |   700163   |
+|      Northfort      |     Proletarian Strength      |         5         |   700164   |
+|      BEBO Inc       |          Starch Cola          |         2         |   700165   |
+|      Micronook      |        Mulled Melonade        |         3         |   700166   |
+| Dr.Urzork Pharmancy |           Snake Oil           |         5         |   700167   |
 
 ### Player Brews
 Brews specific to individuals either for their contribution to the genre/server
@@ -710,3 +726,9 @@ or by way of donating a high amount to the server via patreon.
 | 146 |            Jungle Sapling             |
 | 147 |              Moss Block               |
 | 148 |             Copper Ingot              |
+| 149 |            Crying Obsidian            |
+| 150 |          Lily Of The Valley           |
+| 151 |             Cherry Planks             |
+| 152 |             Spore Blossom             |
+| 153 |           Prismarine Shard            |
+| 154 |             Cherry Leaves             |
