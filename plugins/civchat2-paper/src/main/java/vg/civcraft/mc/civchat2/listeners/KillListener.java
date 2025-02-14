@@ -59,14 +59,13 @@ public final class KillListener implements Listener {
             }
         }
         final Player victim = event.getEntity();
-        if (victim.getKiller() == null) {
+        if (!(victim.getKiller() instanceof final Player killer)) { // null check
             return;
         }
         final int killBroadcastRange = this.config.getKillBroadcastRange();
         if (killBroadcastRange <= 0) {
             return;
         }
-        final Player killer = victim.getKiller();
         if (!this.settings.getSendOwnKills(killer.getUniqueId())) {
             return;
         }
