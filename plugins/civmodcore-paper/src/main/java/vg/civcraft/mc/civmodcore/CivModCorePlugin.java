@@ -98,7 +98,7 @@ public class CivModCorePlugin extends ACivMod {
         this.commands.registerCommand(new StatCommand());
         this.commands.registerCommand(new ChunkMetaCommand());
         // Load APIs
-        EnchantUtils.loadEnchantAbbreviations(this);
+        EnchantUtils.loadEnchantAbbreviations();
         MoreTags.init();
         SpawnEggUtils.init();
         TreeTypeUtils.init();
