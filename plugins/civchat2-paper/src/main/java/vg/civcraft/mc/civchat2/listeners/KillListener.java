@@ -47,10 +47,16 @@ public final class KillListener implements Listener {
         final @NotNull PlayerDeathEvent event
     ) {
         switch (this.config.getDeathMessageType()) {
-            case DISABLED:
+            case DISABLED -> {
                 event.deathMessage(null);
-            case VANILLA:
                 return;
+            }
+            case VANILLA -> {
+                return;
+            }
+            case CUSTOM -> {
+                event.deathMessage(null);
+            }
         }
         final Player victim = event.getEntity();
         if (victim.getKiller() == null) {
