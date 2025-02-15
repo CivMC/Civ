@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.EventHandler;
@@ -15,6 +14,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.events.EventUtils;
 
 public abstract class ACivMod extends JavaPlugin {
 
@@ -59,9 +59,10 @@ public abstract class ACivMod extends JavaPlugin {
      *
      * @param listener The listener class to register.
      */
-    public void registerListener(@NotNull final Listener listener) {
-        getServer().getPluginManager().registerEvents(
-            Objects.requireNonNull(listener, "Cannot register a listener if it's null, you dummy"), this);
+    public void registerListener(
+        final @NotNull Listener listener
+    ) {
+        EventUtils.registerListener(this, listener);
     }
 
     /**
