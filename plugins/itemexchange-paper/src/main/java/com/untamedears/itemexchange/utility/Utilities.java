@@ -176,7 +176,7 @@ public final class Utilities {
         }
         return "[" +
             leveledEnchants.entrySet().stream()
-                .map(entry -> KeyedUtils.getString(entry.getKey()) + ":" + entry.getValue())
+                .map((entry) -> KeyedUtils.getString(entry.getKey()) + ":" + entry.getValue())
                 .collect(Collectors.joining(",")) +
             "]";
     }
@@ -187,7 +187,7 @@ public final class Utilities {
         }
         return "[" +
             enchants.stream()
-                .map(entry -> KeyedUtils.getString(entry.getKey()))
+                .map(KeyedUtils::getString)
                 .collect(Collectors.joining(",")) +
             "]";
     }

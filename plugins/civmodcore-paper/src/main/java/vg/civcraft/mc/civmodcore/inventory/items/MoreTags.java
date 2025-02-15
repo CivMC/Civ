@@ -14,6 +14,7 @@ import org.bukkit.Tag;
 import org.bukkit.block.data.Ageable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 
@@ -293,7 +294,7 @@ public final class MoreTags {
         private final Set<T> values;
 
         private BetterTag(final String key, final Set<T> values) {
-            this.key = KeyedUtils.fromParts("civmodcore", key);
+            this.key = KeyedUtils.pluginKey(CivModCorePlugin.class, key);
             this.values = values;
         }
 
