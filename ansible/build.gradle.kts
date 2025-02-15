@@ -38,6 +38,8 @@ dependencies {
     pvpPlugin(project(path = ":plugins:namelayer-paper"))
     pvpPlugin(project(path = ":plugins:civchat2-paper"))
     pvpPlugin(project(path = ":plugins:namecolors-paper"))
+
+    proxyPlugin(project(path = ":plugins:announcements-velocity", configuration = "shadow"))
 }
 
 val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {

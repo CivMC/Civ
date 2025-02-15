@@ -1,0 +1,10 @@
+
+# messages must be in json format
+# https://minecraft.tools/en/json_text.php
+scheduledAnnouncements:
+  - cron: "45 1 * * *"
+    message: "{\"text\":\"Restart in 15 minutes\",\"color\":\"gold\"}"
+  - cron: "55 1 * * *"
+    message: "{\"text\":\"Restart in 5 minutes\",\"color\":\"gold\"}"
+  - cron: "59 1 * * *"
+    message: "{\"text\":\"Restart in 1 minute\",\"color\":\"gold\"}"
