@@ -24,8 +24,8 @@ public class DecompactingRecipe extends InputRecipe {
     private String compactedLore;
 
     public DecompactingRecipe(String identifier, ItemMap input, String name, int productionTime,
-                              String compactedLore) {
-        super(identifier, name, productionTime, input);
+                              String compactedLore, int damagePerRun) {
+        super(identifier, name, productionTime, input, damagePerRun);
         this.compactedLore = compactedLore;
     }
 
@@ -66,6 +66,7 @@ public class DecompactingRecipe extends InputRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
         if (input.isContainedIn(inputInv)) {

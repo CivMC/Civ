@@ -23,13 +23,14 @@ public class Upgraderecipe extends InputRecipe {
     private FurnCraftChestEgg egg;
 
     public Upgraderecipe(String identifier, String name, int productionTime, ItemMap input,
-                         FurnCraftChestEgg egg) {
-        super(identifier, name, productionTime, input);
+                         FurnCraftChestEgg egg, int damagePerRun) {
+        super(identifier, name, productionTime, input, damagePerRun);
         this.egg = egg;
     }
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
         if (input.isContainedIn(inputInv)) {

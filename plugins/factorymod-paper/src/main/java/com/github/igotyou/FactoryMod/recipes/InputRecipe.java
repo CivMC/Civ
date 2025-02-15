@@ -2,6 +2,7 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 import java.awt.*;
 import java.util.ArrayList;
@@ -31,12 +32,18 @@ public abstract class InputRecipe implements IRecipe {
     protected ItemMap input;
     protected int fuel_consumption_intervall = -1;
     protected String identifier;
+    protected int damagePerRun;
 
     public InputRecipe(String identifier, String name, int productionTime, ItemMap input) {
+        this(identifier, name, productionTime, input, 0);
+    }
+
+    public InputRecipe(String identifier, String name, int productionTime, ItemMap input, int damagePerRun) {
         this.name = name;
         this.productionTime = productionTime;
         this.input = input;
         this.identifier = identifier;
+        this.damagePerRun = damagePerRun;
     }
 
     /**
@@ -165,9 +172,23 @@ public abstract class InputRecipe implements IRecipe {
         lore.add("");
         lore.add(ChatColor.DARK_AQUA + "Time: " + ChatColor.GRAY + TextUtil
             .formatDuration(getProductionTime() * 50, TimeUnit.MILLISECONDS));
+        if (getDamagePerRun() > 0) {
+            lore.add("");
+            lore.add(ChatColor.YELLOW + "This recipe will damage the factory by "
+                + getDamagePerRun() + " health per run");
+        }
+
         im.setLore(lore);
         res.setItemMeta(im);
         return res;
+    }
+
+    @Override
+    public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        if (fccf.getRepairManager() instanceof PercentageHealthRepairManager repairManager) {
+            repairManager.setHealth(repairManager.getRawHealth() - this.damagePerRun);
+        }
+        return false;
     }
 
     public abstract Material getRecipeRepresentationMaterial();
@@ -207,6 +228,10 @@ public abstract class InputRecipe implements IRecipe {
 
     protected void logAfterRecipeRun(Inventory i, Factory f) {
         LoggingUtils.logInventory(i, "After executing recipe " + name + " for " + f.getLogData());
+    }
+
+    public int getDamagePerRun() {
+        return this.damagePerRun;
     }
 
     @Override

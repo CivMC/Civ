@@ -15,14 +15,15 @@ public class HeliodorCreateRecipe extends InputRecipe {
     private final int outputCount;
     private final int maxCharge;
 
-    public HeliodorCreateRecipe(String identifier, String name, int productionTime, ItemMap input, int outputCount, int maxCharge) {
-        super(identifier, name, productionTime, input);
+    public HeliodorCreateRecipe(String identifier, String name, int productionTime, ItemMap input, int outputCount, int maxCharge, int damagePerRun) {
+        super(identifier, name, productionTime, input, damagePerRun);
         this.outputCount = outputCount;
         this.maxCharge = maxCharge;
     }
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
         ItemMap toRemove = input.clone();

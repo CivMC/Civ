@@ -18,8 +18,8 @@ public class RecipeScalingUpgradeRecipe extends InputRecipe {
     private RecipeScalingUpgradeRecipe followUpRecipe;
 
     public RecipeScalingUpgradeRecipe(String identifier, String name, int productionTime, ItemMap input,
-                                      ProductionRecipe toUpgrade, int newRank, RecipeScalingUpgradeRecipe followUpRecipe) {
-        super(identifier, name, productionTime, input);
+                                      ProductionRecipe toUpgrade, int newRank, RecipeScalingUpgradeRecipe followUpRecipe, int damagePerRun) {
+        super(identifier, name, productionTime, input, damagePerRun);
         this.toUpgrade = toUpgrade;
         this.newRank = newRank;
         this.followUpRecipe = followUpRecipe;
@@ -27,6 +27,7 @@ public class RecipeScalingUpgradeRecipe extends InputRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
         if (toUpgrade == null || !fccf.getRecipes().contains(toUpgrade)) {

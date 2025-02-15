@@ -24,8 +24,8 @@ public class RepairRecipe extends InputRecipe {
     private int healthPerRun;
 
     public RepairRecipe(String identifier, String name, int productionTime, ItemMap input,
-                        int healthPerRun) {
-        super(identifier, name, productionTime, input);
+                        int healthPerRun, int damagePerRun) {
+        super(identifier, name, productionTime, input, damagePerRun);
         this.healthPerRun = healthPerRun;
     }
 
@@ -48,6 +48,7 @@ public class RepairRecipe extends InputRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
         if (enoughMaterialAvailable(inputInv)) {

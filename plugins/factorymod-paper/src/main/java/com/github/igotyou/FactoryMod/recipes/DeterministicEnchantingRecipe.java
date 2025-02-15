@@ -22,8 +22,8 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
     private ItemMap tool;
 
     public DeterministicEnchantingRecipe(String identifier, String name, int productionTime, ItemMap input,
-                                         ItemMap tool, Enchantment enchant, int level) {
-        super(identifier, name, productionTime, input);
+                                         ItemMap tool, Enchantment enchant, int level, int damagePerRun) {
+        super(identifier, name, productionTime, input, damagePerRun);
         this.enchant = enchant;
         this.tool = tool;
         this.level = level;
@@ -84,6 +84,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
         if (input.removeSafelyFrom(inputInv)) {

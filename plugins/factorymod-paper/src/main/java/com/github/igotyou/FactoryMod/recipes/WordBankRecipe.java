@@ -35,8 +35,8 @@ public class WordBankRecipe extends InputRecipe {
     private SecureRandom preview;
 
     public WordBankRecipe(String identifier, String name, int productionTime, String key, List<String> words,
-                          List<ChatColor> colors, int wordCount) {
-        super(identifier, name, productionTime, new ItemMap());
+                          List<ChatColor> colors, int wordCount, int damagePerRun) {
+        super(identifier, name, productionTime, new ItemMap(), damagePerRun);
         try {
             this.digest = MessageDigest.getInstance("SHA-512");
         } catch (NoSuchAlgorithmException e) {
@@ -51,6 +51,7 @@ public class WordBankRecipe extends InputRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         ItemStack toApply = inputInv.getItem(0);
         if (!ItemUtils.isValidItem(toApply)) {

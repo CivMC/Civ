@@ -27,8 +27,8 @@ public class AOERepairRecipe extends InputRecipe {
     private int range;
 
     public AOERepairRecipe(String identifier, String name, int productionTime, ItemStack essence,
-                           int range, int repairPerEssence) {
-        super(identifier, name, productionTime, new ItemMap(essence));
+                           int range, int repairPerEssence, int damagePerRun) {
+        super(identifier, name, productionTime, new ItemMap(essence), damagePerRun);
         this.essence = essence;
         this.range = range;
         this.repairPerEssence = repairPerEssence;
@@ -136,6 +136,7 @@ public class AOERepairRecipe extends InputRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         Location loc = fccf.getChest().getLocation();
         List<FurnCraftChestFactory> facs = getNearbyFactoriesSortedByDistance(loc);
         int essenceCount = new ItemMap(inputInv).getAmount(essence);

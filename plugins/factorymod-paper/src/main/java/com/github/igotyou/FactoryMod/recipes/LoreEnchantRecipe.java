@@ -24,8 +24,8 @@ public class LoreEnchantRecipe extends InputRecipe {
     private ItemStack exampleOutput;
 
     public LoreEnchantRecipe(String identifier, String name, int productionTime, ItemMap input, ItemMap tool, List<String> appliedLore,
-                             List<String> overwritenLore) {
-        super(identifier, name, productionTime, input);
+                             List<String> overwritenLore, int damagePerRun) {
+        super(identifier, name, productionTime, input, damagePerRun);
         this.overwritenLore = overwritenLore;
         this.appliedLore = appliedLore;
         this.tool = tool;
@@ -91,6 +91,7 @@ public class LoreEnchantRecipe extends InputRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
         if (input.removeSafelyFrom(inputInv)) {

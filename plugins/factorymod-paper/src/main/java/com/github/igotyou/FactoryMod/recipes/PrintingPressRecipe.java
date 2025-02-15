@@ -12,8 +12,8 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public abstract class PrintingPressRecipe extends InputRecipe {
 
-    public PrintingPressRecipe(String identifier, String name, int productionTime, ItemMap input) {
-        super(identifier, name, productionTime, input);
+    public PrintingPressRecipe(String identifier, String name, int productionTime, ItemMap input, int damagePerRun) {
+        super(identifier, name, productionTime, input, damagePerRun);
     }
 
     protected ItemStack getPrintingPlateRepresentation(ItemMap printingPlate, String name) {

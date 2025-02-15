@@ -23,14 +23,15 @@ public class PylonRecipe extends InputRecipe {
     private int weight;
 
     public PylonRecipe(String identifier, String name, int productionTime, ItemMap input,
-                       ItemMap output, int weight) {
-        super(identifier, name, productionTime, input);
+                       ItemMap output, int weight, int damagePerRun) {
+        super(identifier, name, productionTime, input, damagePerRun);
         this.output = output;
         this.weight = weight;
     }
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         if (!input.isContainedIn(inputInv)) {
             return false;

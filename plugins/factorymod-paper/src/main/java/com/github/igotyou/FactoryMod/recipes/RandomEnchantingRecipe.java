@@ -36,8 +36,8 @@ public class RandomEnchantingRecipe extends InputRecipe {
     }
 
     public RandomEnchantingRecipe(String identifier, String name, int productionTime,
-                                  ItemMap input, Material tool, List<RandomEnchant> enchants) {
-        super(identifier, name, productionTime, input);
+                                  ItemMap input, Material tool, List<RandomEnchant> enchants, int damagePerRun) {
+        super(identifier, name, productionTime, input, damagePerRun);
         this.enchants = enchants;
         this.tool = tool;
         if (rng == null) {
@@ -96,6 +96,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
         for (ItemStack is : input.getItemStackRepresentation()) {

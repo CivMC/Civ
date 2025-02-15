@@ -23,8 +23,8 @@ public class RandomOutputRecipe extends InputRecipe {
     private ItemMap lowestChanceMap;
 
     public RandomOutputRecipe(String identifier, String name, int productionTime, ItemMap input,
-                              Map<ItemMap, Double> outputs, ItemMap displayOutput) {
-        super(identifier, name, productionTime, input);
+                              Map<ItemMap, Double> outputs, ItemMap displayOutput, int damagePerRun) {
+        super(identifier, name, productionTime, input, damagePerRun);
         this.outputs = outputs;
         if (rng == null) {
             rng = new Random();
@@ -49,6 +49,7 @@ public class RandomOutputRecipe extends InputRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
         ItemMap toRemove = input.clone();

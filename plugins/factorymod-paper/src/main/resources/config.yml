@@ -425,6 +425,8 @@ factories:
 
 #production_time is simply how long this recipe takes to complete one run
 
+#damage_per_run is an optional flag with all recipes that will damage the factory they are run in every time a successful run is completed.
+#The default value if not defined is 0.
 
 #Now on to the actual recipes:
 
@@ -438,6 +440,7 @@ factories:
 #   type: PRODUCTION
 #   name: Productionrecipeexample
 #   production_time: 10s
+#   damage_per_run: 50
 #   forceInclude: false
 #   input:
 #       item1:
@@ -454,7 +457,7 @@ factories:
 #input is a list of items that gets consumed when the recipe completes, those items are required to even activate a factory
 #with this recipe
 
-#output is a list of items that will get returned after the the input materials were consumed.
+#output is a list of items that will get returned after the input materials were consumed.
 # FOR MINECRAFT 1.9:
 # For a particular item you can now specify custom NBT data to be attached. This should only be used for output (currently) as it is not checked when comparing item stacks on input.
 

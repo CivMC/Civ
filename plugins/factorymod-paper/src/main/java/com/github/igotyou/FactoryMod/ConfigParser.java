@@ -537,6 +537,7 @@ public class ConfigParser {
             plugin.warning("No type specified for recipe at " + config.getCurrentPath() + ". Skipping the recipe.");
             return null;
         }
+        int damagePerRun = config.getInt("damage_per_run", 0);
         // Force This Recipe to Show Up Even on Existing Factories (idempotently, ish)
         boolean forceAddExisting = config.getBoolean("forceInclude", forceIncludeAll);
         if (forceAddExisting) {
@@ -576,7 +577,7 @@ public class ConfigParser {
                 if (modi == null && parentRecipe instanceof ProductionRecipe) {
                     modi = ((ProductionRecipe) parentRecipe).getModifier().clone();
                 }
-                result = new ProductionRecipe(identifier, name, productionTime, input, output, recipeRepresentation, modi);
+                result = new ProductionRecipe(identifier, name, productionTime, input, output, recipeRepresentation, modi, damagePerRun);
                 break;
             case "COMPACT":
                 String compactedLore = config.getString("compact_lore",
@@ -606,7 +607,7 @@ public class ConfigParser {
                     }
                     // otherwise just leave list empty, as nothing is specified, which is fine
                 }
-                result = new CompactingRecipe(identifier, input, excluded, name, productionTime, compactedLore);
+                result = new CompactingRecipe(identifier, input, excluded, name, productionTime, compactedLore, damagePerRun);
                 break;
             case "DECOMPACT":
                 String decompactedLore = config.getString("compact_lore",
@@ -619,7 +620,7 @@ public class ConfigParser {
                     break;
                 }
                 manager.addCompactLore(decompactedLore);
-                result = new DecompactingRecipe(identifier, input, name, productionTime, decompactedLore);
+                result = new DecompactingRecipe(identifier, input, name, productionTime, decompactedLore, damagePerRun);
                 break;
             case "REPAIR":
                 int health = config.getInt("health_gained",
@@ -628,7 +629,7 @@ public class ConfigParser {
                     plugin.warning("Health gained from repair recipe " + name
                         + " is set to or was defaulted to 0, this might not be what was intended");
                 }
-                result = new RepairRecipe(identifier, name, productionTime, input, health);
+                result = new RepairRecipe(identifier, name, productionTime, input, health, damagePerRun);
                 break;
             case "UPGRADE":
                 String upgradeName = config.getString("factory");
@@ -646,7 +647,7 @@ public class ConfigParser {
                     plugin.warning("Could not find factory " + upgradeName + " for upgrade recipe " + name);
                     result = null;
                 } else {
-                    result = new Upgraderecipe(identifier, name, productionTime, input, (FurnCraftChestEgg) egg);
+                    result = new Upgraderecipe(identifier, name, productionTime, input, (FurnCraftChestEgg) egg, damagePerRun);
                 }
                 break;
             case "AOEREPAIR":
@@ -658,7 +659,7 @@ public class ConfigParser {
                     ItemStack essence = tessence.getItemStackRepresentation().get(0);
                     int repPerEssence = config.getInt("repair_per_essence");
                     int range = config.getInt("range");
-                    result = new AOERepairRecipe(identifier, name, productionTime, essence, range, repPerEssence);
+                    result = new AOERepairRecipe(identifier, name, productionTime, essence, range, repPerEssence, damagePerRun);
                 } else {
                     plugin.severe("No essence specified for AOEREPAIR " + config.getCurrentPath());
                     result = null;
@@ -681,7 +682,7 @@ public class ConfigParser {
                 }
                 int weight = config.getInt("weight",
                     (parentRecipe instanceof PylonRecipe) ? ((PylonRecipe) parentRecipe).getWeight() : 20);
-                result = new PylonRecipe(identifier, name, productionTime, input, outputMap, weight);
+                result = new PylonRecipe(identifier, name, productionTime, input, outputMap, weight, damagePerRun);
                 break;
             case "ENCHANT":
                 Enchantment enchant;
@@ -717,7 +718,7 @@ public class ConfigParser {
                     result = null;
                     break;
                 }
-                result = new DeterministicEnchantingRecipe(identifier, name, productionTime, input, tool, enchant, level);
+                result = new DeterministicEnchantingRecipe(identifier, name, productionTime, input, tool, enchant, level, damagePerRun);
                 break;
             case "RANDOM":
                 ConfigurationSection outputSect = config.getConfigurationSection("outputs");
@@ -756,7 +757,7 @@ public class ConfigParser {
                             "Sum of output chances for recipe " + name + " is not 1.0. Total sum is: " + totalChance);
                     }
                 }
-                result = new RandomOutputRecipe(identifier, name, productionTime, input, outputs, displayThis);
+                result = new RandomOutputRecipe(identifier, name, productionTime, input, outputs, displayThis, damagePerRun);
                 break;
             case "COSTRETURN":
                 double factor = config.getDouble("factor",
@@ -802,7 +803,7 @@ public class ConfigParser {
                     }
                 }
                 result = new LoreEnchantRecipe(identifier, name, productionTime, input, toolMap, appliedLore,
-                    overwrittenLore);
+                    overwrittenLore, damagePerRun);
                 break;
             case "RECIPEMODIFIERUPGRADE":
                 int rank = config.getInt("rank");
@@ -812,7 +813,7 @@ public class ConfigParser {
                     return null;
                 }
                 String followUpRecipe = config.getString("followUpRecipe");
-                result = new RecipeScalingUpgradeRecipe(identifier, name, productionTime, input, null, rank, null);
+                result = new RecipeScalingUpgradeRecipe(identifier, name, productionTime, input, null, rank, null, damagePerRun);
                 String[] data = {toUpgrade, followUpRecipe};
                 recipeScalingUpgradeMapping.put((RecipeScalingUpgradeRecipe) result, data);
                 break;
@@ -831,7 +832,7 @@ public class ConfigParser {
                 } else {
                     printingPlateOutput = ConfigHelper.parseItemMap(printingPlateOutputSection);
                 }
-                result = new PrintingPlateRecipe(identifier, name, productionTime, input, printingPlateOutput);
+                result = new PrintingPlateRecipe(identifier, name, productionTime, input, printingPlateOutput, damagePerRun);
                 break;
             case "PRINTINGPLATEJSON":
                 ConfigurationSection printingPlateJsonOutputSection = config.getConfigurationSection("output");
@@ -845,13 +846,13 @@ public class ConfigParser {
                 } else {
                     printingPlateJsonOutput = ConfigHelper.parseItemMap(printingPlateJsonOutputSection);
                 }
-                result = new PrintingPlateJsonRecipe(identifier, name, productionTime, input, printingPlateJsonOutput);
+                result = new PrintingPlateJsonRecipe(identifier, name, productionTime, input, printingPlateJsonOutput, damagePerRun);
                 break;
             case "PRINTBOOK":
                 ItemMap printBookPlate = ConfigHelper.parseItemMap(config.getConfigurationSection("printingplate"));
                 int printBookOutputAmount = config.getInt("outputamount", 1);
                 result = new PrintBookRecipe(identifier, name, productionTime, input, printBookPlate,
-                    printBookOutputAmount);
+                    printBookOutputAmount, damagePerRun);
                 break;
             case "PRINTNOTE":
                 ItemMap printNotePlate = ConfigHelper.parseItemMap(config.getConfigurationSection("printingplate"));
@@ -859,7 +860,7 @@ public class ConfigParser {
                 boolean secureNote = config.getBoolean("securenote", false);
                 String noteTitle = config.getString("title");
                 result = new PrintNoteRecipe(identifier, name, productionTime, input, printNotePlate, printBookNoteAmount,
-                    secureNote, noteTitle);
+                    secureNote, noteTitle, damagePerRun);
                 break;
             case "WORDBANK":
                 String key = config.getString("seed", "defaultSeed");
@@ -892,10 +893,10 @@ public class ConfigParser {
                     }
                 }
                 int wordCount = config.getInt("word_count", 2);
-                result = new WordBankRecipe(identifier, name, productionTime, key, words, colors, wordCount);
+                result = new WordBankRecipe(identifier, name, productionTime, key, words, colors, wordCount, damagePerRun);
                 break;
             case "PLAYERHEAD":
-                result = new PlayerHeadRecipe(identifier, name, productionTime, input);
+                result = new PlayerHeadRecipe(identifier, name, productionTime, input, damagePerRun);
                 break;
             case "HELIODOR_CREATE":
                 if (!Bukkit.getPluginManager().isPluginEnabled("Heliodor")) {
@@ -915,7 +916,7 @@ public class ConfigParser {
                     result = null;
                     break;
                 }
-                result = new HeliodorCreateRecipe(identifier, name, productionTime, input, outputCount, maxCharge);
+                result = new HeliodorCreateRecipe(identifier, name, productionTime, input, outputCount, maxCharge, damagePerRun);
                 break;
             case "HELIODOR_REFILL":
                 if (!Bukkit.getPluginManager().isPluginEnabled("Heliodor")) {
@@ -935,7 +936,7 @@ public class ConfigParser {
                     result = null;
                     break;
                 }
-                result = new HeliodorRefillRecipe(identifier, name, productionTime, input, count, addMaxCharge);
+                result = new HeliodorRefillRecipe(identifier, name, productionTime, input, count, addMaxCharge, damagePerRun);
                 break;
             case "HELIODOR_FINISH":
                 if (!Bukkit.getPluginManager().isPluginEnabled("Heliodor")) {
@@ -955,7 +956,7 @@ public class ConfigParser {
                     result = null;
                     break;
                 }
-                result = new HeliodorFinishRecipe(identifier, name, productionTime, input, inputCount, outputCountFinish);
+                result = new HeliodorFinishRecipe(identifier, name, productionTime, input, inputCount, outputCountFinish, damagePerRun);
                 break;
             default:
                 plugin.severe("Could not identify type " + config.getString("type") + " as a valid recipe identifier");
