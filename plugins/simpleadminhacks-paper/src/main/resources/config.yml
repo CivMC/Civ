@@ -99,6 +99,8 @@ hacks:
       - BAD_OMEN
       - SLOW_DIGGING
       - SLOW_FALLING
+  CaseInsensitivity:
+    enabled: true
   DebugWand:
     enabled: true
   DogFacts:
