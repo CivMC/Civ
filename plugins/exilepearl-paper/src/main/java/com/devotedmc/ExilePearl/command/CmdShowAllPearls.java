@@ -140,7 +140,20 @@ public class CmdShowAllPearls extends PearlCommand {
                             ChatUtils.newComponent("Killed by: ")
                                 .color(NamedTextColor.GOLD)
                                 .append(Component.text(pearl.getKillerName())
-                                    .color(NamedTextColor.GRAY))));
+                                    .color(NamedTextColor.GRAY)),
+                            // Capture location
+                            ChatUtils.newComponent()
+                                .append(Component.text("Captured at: ", NamedTextColor.GOLD))
+                                .append(Component.text(switch (pearl.getCaptureLocation()) {
+                                    case null -> "<unknown>";
+                                    case final Location location -> "%s %d %d %d".formatted(
+                                        location.getWorld().getName(),
+                                        location.getBlockX(),
+                                        location.getBlockY(),
+                                        location.getBlockZ()
+                                    );
+                                }, NamedTextColor.GRAY))
+                        ));
 
                         if (showLocation) {
                             MetaUtils.addComponentLore(meta,
