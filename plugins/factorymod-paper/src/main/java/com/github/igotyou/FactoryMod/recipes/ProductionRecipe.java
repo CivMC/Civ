@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 
+import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -34,9 +35,10 @@ public class ProductionRecipe extends InputRecipe {
         ItemMap inputs,
         ItemMap output,
         ItemStack recipeRepresentation,
-        ProductionRecipeModifier modifier
+        ProductionRecipeModifier modifier,
+        int damagePerRun
     ) {
-        super(identifier, name, productionTime, inputs);
+        super(identifier, name, productionTime, inputs, damagePerRun);
         this.output = output;
         this.modifier = modifier;
         this.rng = new Random();
@@ -123,6 +125,7 @@ public class ProductionRecipe extends InputRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
         ItemMap toRemove = input.clone();
