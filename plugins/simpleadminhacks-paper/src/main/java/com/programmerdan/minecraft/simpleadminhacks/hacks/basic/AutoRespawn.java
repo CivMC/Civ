@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -112,7 +113,7 @@ public final class AutoRespawn extends BasicHack {
 
     private void autoRespawnPlayer(final Player player) {
         player.spigot().respawn();
-        final String message = MoreCollectionUtils.randomElement(this.respawnQuotes);
+        final String message = MoreCollectionUtils.randomElement(this.respawnQuotes, ThreadLocalRandom.current());
         if (Strings.isNullOrEmpty(message)) {
             return;
         }

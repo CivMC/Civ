@@ -6,7 +6,6 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
@@ -14,6 +13,7 @@ import com.untamedears.itemexchange.utility.ModifierHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
-import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "LORE", order = 300)
@@ -75,7 +74,10 @@ public final class LoreModifier extends ModifierData {
     @NotNull
     public static LoreModifier fromNBT(@NotNull final NBTCompound nbt) {
         final var modifier = new LoreModifier();
-        modifier.setLore(MoreCollectionUtils.collect(ArrayList::new, nbt.getStringArray(LORE_KEY)));
+        modifier.setLore(switch (nbt.getStringArray(LORE_KEY)) {
+            case final String[] lines -> Arrays.asList(lines);
+            case null -> null;
+        });
         return modifier;
     }
 
@@ -133,15 +135,13 @@ public final class LoreModifier extends ModifierData {
         return CollectionUtils.isNotEmpty(this.lore);
     }
 
-    public List<String> getLore() {
-        if (this.lore == null) {
-            return Lists.newArrayList();
-        }
-        return this.lore;
+    public @NotNull List<@NotNull String> getLore() {
+        return Objects.requireNonNullElseGet(this.lore, ArrayList::new);
     }
 
-    public void setLore(List<String> lore) {
-        this.lore = lore;
+    public void setLore(
+        final List<@NotNull String> lore
+    ) {
+        this.lore = CollectionUtils.isEmpty(lore) ? null : new ArrayList<>(lore);
     }
-
 }
