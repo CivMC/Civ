@@ -13,7 +13,9 @@ settings:
       hostname: 'play.civmc.net'
       resources: &default_minecraft_resources
         memory: 40G
+        memory_limit: 50G
         pvp_memory: 10G
+        pvp_memory_limit: 13G
     # Optional Stacks
     auth:
       enabled: false
@@ -40,7 +42,9 @@ settings:
       resources:
         <<: *default_minecraft_resources
         memory: 6G
+        memory_limit: 8G
         pvp_memory: 7G
+        pvp_memory_limit: 9G
     auth:
       enabled: true # TODO: MOVE
     maven:

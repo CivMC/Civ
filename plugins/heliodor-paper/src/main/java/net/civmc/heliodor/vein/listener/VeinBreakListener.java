@@ -44,7 +44,12 @@ public class VeinBreakListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if (!Tag.BASE_STONE_OVERWORLD.isTagged(block.getType())) {
+        if (!Tag.BASE_STONE_OVERWORLD.isTagged(block.getType())
+            && block.getType() != Material.SMOOTH_BASALT
+            && block.getType() != Material.COPPER_ORE
+            && block.getType() != Material.IRON_ORE
+            && block.getType() != Material.COAL_ORE
+        ) {
             return;
         }
         ChunkPos chunkPos = ChunkPos.from(block.getChunk());
@@ -61,7 +66,7 @@ public class VeinBreakListener implements Listener {
         this.minedBlocksCache.computeIfAbsent(chunkPos, k -> new ArrayList<>()).add(block.getLocation());
 
         for (Vein vein : veins) {
-            float probability = this.dao.getVeinOreProbability(vein, 100);
+            float probability = this.dao.getVeinOreProbability(vein, 120);
             if (probability == 0) {
                 continue;
             }
@@ -96,7 +101,7 @@ public class VeinBreakListener implements Listener {
 
             chunkPdc.set(oreLocationsKey, PersistentDataType.INTEGER_ARRAY, list.toIntArray());
 
-            this.minedBlocksCache.computeIfAbsent(ChunkPos.from(oreBlock.getChunk()), k -> new ArrayList<>()).add(block.getLocation());
+            this.minedBlocksCache.computeIfAbsent(ChunkPos.from(oreBlock.getChunk()), k -> new ArrayList<>()).add(oreBlock.getLocation());
             JavaPlugin.getPlugin(HeliodorPlugin.class).getLogger()
                 .info("Player " + event.getPlayer().getName() + " found meteoric iron ore at " + oreBlock.getWorld().getName() + " " + oreBlock.getX() + " " + oreBlock.getY() + " " + oreBlock.getZ());
             this.dao.incrementBlocksMined(vein, 2);

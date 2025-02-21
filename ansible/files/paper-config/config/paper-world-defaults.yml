@@ -1,13 +1,13 @@
 # This is the world defaults configuration file for Paper.
 # As you can see, there's a lot to configure. Some options may impact gameplay, so use
 # with caution, and make sure you know what each option does before configuring.
-# 
+#
 # If you need help with the configuration or have any questions related to Paper,
 # join us in our Discord or check the docs page.
-# 
+#
 # Configuration options here apply to all worlds, unless you specify overrides inside
 # the world-specific config file inside each world folder.
-# 
+#
 # Docs: https://docs.papermc.io/
 # Discord: https://discord.gg/papermc
 # Website: https://papermc.io/
@@ -341,7 +341,7 @@ misc:
   redstone-implementation: EIGENCRAFT
   shield-blocking-delay: 5
   show-sign-click-command-failure-msgs-to-player: false
-  update-pathfinding-on-block-update: true
+  update-pathfinding-on-block-update: false
 scoreboards:
   allow-non-player-entities-on-scoreboards: false
   use-vanilla-world-scoreboard-name-coloring: false

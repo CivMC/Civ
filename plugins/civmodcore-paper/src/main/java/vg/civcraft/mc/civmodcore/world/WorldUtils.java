@@ -23,8 +23,8 @@ import org.bukkit.block.data.Levelled;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.Switch;
 import org.bukkit.util.BlockIterator;
+import org.jetbrains.annotations.Contract;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 /**
@@ -509,15 +509,16 @@ public final class WorldUtils {
     }
 
     /**
-     * Determines whether a given block is liquid source.
-     *
-     * @param block The block to check.
-     * @return Returns true if the block is a liquid source.
+     * Determines whether a given block is liquid source, meaning that it will spill out where possible and sustain the
+     * spill until the source-block is removed.
      */
-    public static boolean isSourceBlock(final Block block) {
+    @Contract("null -> false")
+    public static boolean isSourceBlock(
+        final Block block
+    ) {
         return block != null
-            && MoreTags.LIQUID_BLOCKS.isTagged(block.getType())
-            && ((Levelled) block.getBlockData()).getLevel() == 0;
+            && switch (block.getType()) { case WATER, LAVA -> true; default -> false; }
+            && block.getBlockData() instanceof final Levelled levelled
+            && levelled.getLevel() == 0;
     }
-
 }

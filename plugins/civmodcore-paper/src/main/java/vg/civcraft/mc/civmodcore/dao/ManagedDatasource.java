@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -21,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
-import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 
 /**
  * Plugins should replace their custom Database handlers with an instance of ManagedDatasource.
@@ -512,7 +510,7 @@ public class ManagedDatasource {
     private static record Migration(boolean ignoreErrors, Callable<Boolean> postMigration, List<String> migrations) {
 
         public Migration(boolean ignoreErrors, Callable<Boolean> postMigration, String... migrations) {
-            this(ignoreErrors, postMigration, MoreCollectionUtils.collect(ArrayList::new, migrations));
+            this(ignoreErrors, postMigration, List.of(migrations));
         }
     }
 

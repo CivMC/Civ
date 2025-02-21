@@ -43,5 +43,5 @@ jobs:
           key: ${{secrets.SSH_PRIVATE_KEY}}
           known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}
           options: |
-            --inventory ./ansible/inventories/civmc-${{inputs.environment}}.yml
+            --inventory "./ansible/inventories/civmc-${{inputs.environment}}.yml"
 

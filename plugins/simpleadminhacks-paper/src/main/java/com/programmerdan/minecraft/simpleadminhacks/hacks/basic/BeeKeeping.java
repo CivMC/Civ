@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.animal.Bee;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.apache.commons.collections4.IterableUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,7 +39,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -150,7 +150,7 @@ public final class BeeKeeping extends BasicHack {
             return;
         }
         final List<BeeData> bees = getBeesFromHive(beehive);
-        final int numberOfUnnamed = MoreCollectionUtils.numberOfMatches(bees, BeeData::isNameless);
+        final int numberOfUnnamed = (int) IterableUtils.countMatches(bees, BeeData::isNameless);
         bees.removeIf(BeeData::isNameless);
         // Start building response
         final var response = Component.text().color(NamedTextColor.GOLD);

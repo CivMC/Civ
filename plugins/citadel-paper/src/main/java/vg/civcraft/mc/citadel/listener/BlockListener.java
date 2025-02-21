@@ -12,6 +12,7 @@ import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
+import org.bukkit.block.data.Brushable;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Comparator;
@@ -46,13 +47,14 @@ import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.utilities.DoubleInteractFixer;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -361,40 +363,51 @@ public class BlockListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void preventStrippingLogs(PlayerInteractEvent pie) {
-        if (!pie.hasBlock()) {
+    @EventHandler(
+        priority = EventPriority.LOW,
+        ignoreCancelled = true
+    )
+    private void preventStrippingLogs(
+        final @NotNull PlayerInteractEvent event
+    ) {
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
-        if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
+        final Block block = event.getClickedBlock();
+        if (block == null) { // This shouldn't happen, but just in case
             return;
         }
-        Block block = pie.getClickedBlock();
-        if (!MoreTags.LOGS.isTagged(block.getType())) {
+        switch (block.getType()) {
+            case ACACIA_LOG:
+            case BIRCH_LOG:
+            case CHERRY_LOG:
+            case DARK_OAK_LOG:
+            case JUNGLE_LOG:
+            case MANGROVE_LOG:
+            case OAK_LOG:
+            case SPRUCE_LOG:
+                break;
+            default:
+                return;
+        }
+        final Player player = event.getPlayer();
+        final ItemStack tool = switch (event.getHand()) {
+            case HAND -> player.getInventory().getItemInMainHand();
+            case OFF_HAND -> player.getInventory().getItemInOffHand();
+            case null, default -> null;
+        };
+        if (ItemUtils.isEmptyItem(tool) || !MaterialTags.AXES.isTagged(tool)) {
             return;
         }
-        EquipmentSlot hand = pie.getHand();
-        if (hand != EquipmentSlot.HAND && hand != EquipmentSlot.OFF_HAND) {
+        final Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+        if (rein == null || rein.hasPermission(player, CitadelPermissionHandler.getModifyBlocks())) {
             return;
         }
-        ItemStack relevant;
-        Player p = pie.getPlayer();
-        if (hand == EquipmentSlot.HAND) {
-            relevant = p.getInventory().getItemInMainHand();
-        } else {
-            relevant = p.getInventory().getItemInOffHand();
-        }
-        if (!MaterialTags.AXES.isTagged(relevant.getType())) {
-            return;
-        }
-        Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
-        if (rein == null) {
-            return;
-        }
-        if (!rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
-            p.sendMessage(ChatColor.RED + "You do not have permission to modify this block");
-            pie.setCancelled(true);
-        }
+        event.setCancelled(true);
+        player.sendMessage(Component.text(
+            "You do not have permission to modify this block",
+            NamedTextColor.RED
+        ));
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -417,7 +430,7 @@ public class BlockListener implements Listener {
      */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void preventWaxingCopper(BlockPlaceEvent event) {
-        if (!MoreTags.COPPER_BLOCKS.isTagged(event.getBlockPlaced().getType())) {
+        if (!MaterialTags.COPPER_BLOCKS.isTagged(event.getBlockPlaced().getType())) {
             return;
         }
         Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(event.getBlockPlaced());
@@ -552,7 +565,7 @@ public class BlockListener implements Listener {
         }
         Block block = pie.getClickedBlock();
         Material type = block.getType();
-        if (!MoreTags.LIGHTABLE_CANDLES.isTagged(type)) {
+        if (!Tag.CANDLES.isTagged(type) && !Tag.CANDLE_CAKES.isTagged(type)) {
             return;
         }
         if (!pie.hasItem()) {
@@ -774,7 +787,7 @@ public class BlockListener implements Listener {
         }
         Block block = pie.getClickedBlock();
         Material type = block.getType();
-        if (!MoreTags.DUSTABLE.isTagged(type)) {
+        if (!(block.getBlockData() instanceof Brushable)) {
             return;
         }
         EquipmentSlot hand = pie.getHand();

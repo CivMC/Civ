@@ -109,9 +109,9 @@ These also have vastly higher durability to their diamond/netherite counterpart,
 - Meteoric iron swords instantly break cobwebs.
 
 ##### Meteoric Iron Pickaxe
-The Meteoric Iron Pickaxe can insta-mine all stone types, this includes deepslate. A formerly impossible
+The Meteoric Iron Pickaxe can insta-mine all stone types, this includes deepslate, a formerly impossible to insta-mine block. And also includes all stonecutter variants of these blocks. 
 
-##### Meteoric Iron Axe
+ ##### Meteoric Iron Axe
 The meteoric Iron axe mimics a diamond axe mining speed except for the following blocks, these get broken in 2 ticks instead. (7 ticket with the server break delay.)<br>
 The blocks below also take 2.5x reinforcement damage. Meaning that a stone reinforced chest needs to be broken 20 times instead of 50 to destroy the reinforcement. 
 - Chest, trapped chest
@@ -122,6 +122,8 @@ The blocks below also take 2.5x reinforcement damage. Meaning that a stone reinf
 - Barrel
 - Wooden trapdoors
 - Wooden fences
+- Wooden stairs
+- wooden slabs
 - Doors
 - Planks
 - Wooden slabs
@@ -180,7 +182,6 @@ Backpacks have a few restrictions on what can be put inside them. Here is a list
 - Obsidian, crying obsidian, or respawn anchors
 - Ancient debris
 - Netherite blocks
-- Compacted items
 
 #### Factory Upgrades
 Factory upgrades can be used to speed up or lower the fuel cost of factories, saving you time and resources in the long run for an upfront investment.
@@ -195,3 +196,4 @@ To activate this upgrade, input your factory upgrade and run the "Upgrade consum
 
 To craft the Factory Upgrade item you follow the recipe pattern below with Meteoric Iron on the sides in a normal crafting table:
 ![Factory Upgrade](media/upgrade.png)
+This recipe results in 6 upgrade items. Meaning in actuality a factory upgrade costs 1 meteoric ingot. 
