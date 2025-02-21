@@ -18,6 +18,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -73,8 +74,6 @@ public class CombatUtil {
                 shouldDamage = f2 > 0.9f;
                 damage *= 0.2F + f2 * f2 * 0.8F;
                 f1 *= f2;
-            } else if (victim instanceof LivingEntity living) {
-                shouldDamage = living.invulnerableTime <= living.invulnerableDuration / 2;
             }
             Level world = attacker.level();
             if (damage > 0.0F || f1 > 0.0F) {
@@ -123,6 +122,7 @@ public class CombatUtil {
                 Vec3 victimMot = victim.getDeltaMovement();
                 if (shouldDamage) {
                     boolean damagedVictim;
+                    boolean wasInvulnerable = victim instanceof LivingEntity living && living.invulnerableTime > (float) living.invulnerableDuration / 2.0F && !damagesource.is(DamageTypeTags.BYPASSES_COOLDOWN);
                     try {
                         DAMAGING_ITEM = attacker.getBukkitEntity().getInventory().getItemInMainHand();
                         damagedVictim = victim.hurtServer(victim.level().getMinecraftWorld(), damagesource, damage);
@@ -130,12 +130,13 @@ public class CombatUtil {
                         DAMAGING_ITEM = null;
                     }
                     if (damagedVictim) {
-                        if (knockbackLevel > 0 || dealtExtraKnockback) {
-                            if (victim instanceof LivingEntity) {
-                                KnockbackStrategy knockbackStrategy = config.getKnockbackStrategy();
-                                LivingEntity livingVictim = (LivingEntity) victim;
+                        if ((knockbackLevel > 0 || dealtExtraKnockback)) {
+                            if (victim instanceof LivingEntity living) {
+                                if (!wasInvulnerable) {
+                                    KnockbackStrategy knockbackStrategy = config.getKnockbackStrategy();
 
-                                knockbackStrategy.handleKnockback(attacker, livingVictim, knockbackLevel);
+                                    knockbackStrategy.handleKnockback(attacker, living, knockbackLevel);
+                                }
                             }
                         }
 
