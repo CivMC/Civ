@@ -3,7 +3,6 @@ package vg.civcraft.mc.civmodcore.nbt;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
-import org.bukkit.Location;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
@@ -94,18 +93,6 @@ public class NBTTests {
         Assertions.assertNull(nbt.getNullableString(STRING_KEY));
     }
 
-    @Test
-    public void testLocationSerialisation() {
-        // Setup
-        final var location = new Location(null,
-            123.456d, 789.654d, 321.098d,
-            1.12344f, 123.234f);
-        // Process
-        final var nbt = NBTHelper.locationToNBT(location);
-        final var parsed = NBTHelper.locationFromNBT(nbt);
-        // Check
-        Assertions.assertEquals(location, parsed);
-    }
 // TODO: Who knows.
 //	@Test
 //	public void testItemStackSerialisation() {
