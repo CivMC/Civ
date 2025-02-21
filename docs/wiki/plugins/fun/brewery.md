@@ -496,6 +496,7 @@ or by way of donating a high amount to the server via patreon.
 |            Astro's Pill            |         6         |   800027   |
 | Jeremy's Slippy-Sloppy Screwdriver |         3         |   800028   |
 |   Trizzzx's Worcestershire sauce   |         4         |   800029   |
+|         StrawBeary Dreams          |         6         |   800030   |
 
     
 ## List of Custom Ingredients
@@ -564,15 +565,16 @@ or by way of donating a high amount to the server via patreon.
 | 60  |     Mayonnaise     |        100062        |
 | 61  |      Mustard       |        100063        |
 | 62  |       Sulfur       |        100064        |
-| 63  |       Helium       |        200001        |
-| 64  |       Carbon       |        200002        |
-| 65  |       Oxygen       |        200003        |
-| 66  |      Nitrogen      |        200004        |
-| 67  |     Phosphorus     |        200006        |
-| 68  |      Chlorine      |        200007        |
-| 69  |       Dough        |        200008        |
-| 70  |       Butter       |        200009        |
-| 71  |       Pomace       |        200010        |
+| 63  |     Strawberry     |        100065        |
+| 64  |       Helium       |        200001        |
+| 65  |       Carbon       |        200002        |
+| 66  |       Oxygen       |        200003        |
+| 67  |      Nitrogen      |        200004        |
+| 68  |     Phosphorus     |        200006        |
+| 69  |      Chlorine      |        200007        |
+| 70  |       Dough        |        200008        |
+| 71  |       Butter       |        200009        |
+| 72  |       Pomace       |        200010        |
     
 ## List of Vanilla Ingredients.
 
@@ -732,3 +734,4 @@ or by way of donating a high amount to the server via patreon.
 | 152 |             Spore Blossom             |
 | 153 |           Prismarine Shard            |
 | 154 |             Cherry Leaves             |
+| 155 |            Cherry Sapling             |
