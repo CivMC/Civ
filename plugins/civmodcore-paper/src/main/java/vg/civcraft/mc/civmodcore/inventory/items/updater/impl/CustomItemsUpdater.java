@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vg.civcraft.mc.civmodcore.events.EventUtils;
 import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.updater.ItemUpdater;
 import vg.civcraft.mc.civmodcore.inventory.items.updater.migrations.ItemMigrations;
@@ -91,7 +91,7 @@ public class CustomItemsUpdater implements ItemUpdater {
         final @NotNull JavaPlugin plugin
     ) {
         final var updater = new CustomItemsUpdater();
-        EventUtils.registerListener(plugin, DefaultItemUpdaterListeners.wrap(updater));
+        Bukkit.getPluginManager().registerEvents(DefaultItemUpdaterListeners.wrap(updater), plugin);
         return updater;
     }
 }
