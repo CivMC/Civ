@@ -23,7 +23,6 @@ import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardListener;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.commands.ConfigCommand;
 import vg.civcraft.mc.civmodcore.utilities.SkinCache;
-import vg.civcraft.mc.civmodcore.world.WorldTracker;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.stat.LoadStatisticManager;
@@ -87,7 +86,6 @@ public class CivModCorePlugin extends ACivMod {
         registerListener(new ClickableInventoryListener());
         registerListener(DialogManager.INSTANCE);
         registerListener(new ScoreBoardListener());
-        registerListener(new WorldTracker());
         registerListener(new PlayerNames());
         // Register commands
         this.commands = new CommandManager(this);
@@ -117,7 +115,6 @@ public class CivModCorePlugin extends ACivMod {
             this.database = null;
         }
         DialogManager.resetDialogs();
-        WorldTracker.reset();
         PlayerSettingAPI.saveAll();
         ConfigurationSerialization.unregisterClass(DatabaseCredentials.class);
         if (this.commands != null) {
