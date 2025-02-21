@@ -390,7 +390,7 @@ database:
 
 reinforcementBreakMultipliers:
   - custom-key: meteoric_iron_axe
-    multipliers:
+    multipliers: &meteoric_iron_axe_multipliers
     - multiplier: 2.5
       types:
         - CHEST
@@ -435,6 +435,9 @@ reinforcementBreakMultipliers:
         - WAXED_EXPOSED_COPPER_DOOR
         - WAXED_OXIDIZED_COPPER_DOOR
         - WAXED_WEATHERED_COPPER_DOOR
+  - custom-key: meteoric_iron_axe_silk
+    multipliers:
+      <<: *meteoric_iron_axe_multipliers
 
 # number of times a tool can break a reinforcement before it gets damaged by one durability
 # set to 0 to disable
