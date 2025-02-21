@@ -396,6 +396,7 @@ reinforcementBreakMultipliers:
         - CHEST
         - TRAPPED_CHEST
         - JUKEBOX
+        - NOTE_BLOCK
         - BARREL
         - CRAFTING_TABLE
       tags:
