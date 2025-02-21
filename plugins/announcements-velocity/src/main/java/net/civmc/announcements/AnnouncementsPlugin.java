@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import org.slf4j.Logger;
 import org.yaml.snakeyaml.LoaderOptions;
@@ -53,7 +54,8 @@ public class AnnouncementsPlugin {
     }
 
     private void scheduleTasks() {
-        var serializer = JSONComponentSerializer.json();
+        var jsonSerializer = JSONComponentSerializer.json();
+        var minimessageSerializer = MiniMessage.miniMessage();
 
         // ensure config exists
         if (config == null) {
@@ -64,7 +66,14 @@ public class AnnouncementsPlugin {
         for (AnnouncementsConfig.ScheduledAnnouncement item : config.getScheduledAnnouncements()) {
             Cron cron = parser.parse(item.getCron());
             // convert json message to Component
-            var formatedMsg = serializer.deserialize(item.getMessage());
+            Component formatedMsg;
+
+            if (item.isMinimessage()) {
+                formatedMsg = minimessageSerializer.deserialize(item.getMessage());
+            } else {
+                // message is in json format
+                formatedMsg = jsonSerializer.deserialize(item.getMessage());
+            }
 
             scheduledAnnouncements.put(cron, formatedMsg);
         }

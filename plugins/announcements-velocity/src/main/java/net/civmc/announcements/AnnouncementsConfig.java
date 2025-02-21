@@ -10,6 +10,7 @@ public class AnnouncementsConfig {
     public static class ScheduledAnnouncement {
         private String cron;
         private String message;
+        private boolean minimessage = false;
 
         public String getMessage() {
             return message;
@@ -23,6 +24,10 @@ public class AnnouncementsConfig {
         public void setCron(String cron) {
             this.cron = cron;
         }
+
+        public boolean isMinimessage() {return minimessage;}
+        public boolean getMinimessage() {return minimessage;}
+        public void setMinimessage(boolean minimessage) {this.minimessage = minimessage;}
     }
 
     private List<ScheduledAnnouncement> scheduledAnnouncements;
