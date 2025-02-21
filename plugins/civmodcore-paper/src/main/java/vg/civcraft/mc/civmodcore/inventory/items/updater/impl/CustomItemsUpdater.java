@@ -15,11 +15,6 @@ import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.updater.ItemUpdater;
 import vg.civcraft.mc.civmodcore.inventory.items.updater.migrations.ItemMigrations;
 
-/**
- * Use this in lieu of {@link vg.civcraft.mc.civmodcore.inventory.items.updater.impl.CustomItemUpdater} when you have
- * more than one custom item that your plugin needs to migration update, since the overhead of the HashMap is likely
- * less than the overhead of all those listeners for each and every custom item type.
- */
 public class CustomItemsUpdater implements ItemUpdater {
     public final NamespacedKey versionKey;
     private final Map<String, ItemMigrations> targets;
