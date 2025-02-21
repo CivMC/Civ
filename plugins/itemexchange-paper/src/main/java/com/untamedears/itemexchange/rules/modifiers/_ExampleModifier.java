@@ -3,6 +3,7 @@ package com.untamedears.itemexchange.rules.modifiers;
 import co.aikar.commands.annotation.CommandAlias;
 import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
+import com.untamedears.itemexchange.rules.interfaces.DisplayContext;
 import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
@@ -100,7 +101,9 @@ public final class _ExampleModifier extends ModifierData {
      * empty lists are supported and convey to not list anything.
      */
     @Override
-    public List<String> getDisplayInfo() {
+    public List<String> getDisplayInfo(
+        final @NotNull DisplayContext context
+    ) {
         return null;
     }
 

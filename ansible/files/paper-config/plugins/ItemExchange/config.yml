@@ -141,3 +141,6 @@ shopRelay:
     - GREEN_STAINED_GLASS_PANE
     - RED_STAINED_GLASS_PANE
     - BLACK_STAINED_GLASS_PANE
+
+receipts:
+  enabled: false

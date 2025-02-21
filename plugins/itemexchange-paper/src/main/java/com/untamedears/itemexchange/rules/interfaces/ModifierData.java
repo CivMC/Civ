@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang.IllegalClassException;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
 import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
@@ -96,7 +97,9 @@ public abstract class ModifierData extends BaseCommand
      * are supported and convey to not list anything.
      */
     @Override
-    public List<String> getDisplayInfo() {
+    public List<String> getDisplayInfo(
+        final @NotNull DisplayContext context
+    ) {
         return null;
     }
 

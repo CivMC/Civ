@@ -6,14 +6,22 @@ import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.rules.ExchangeRule;
+import com.untamedears.itemexchange.rules.modifiers.ReceiptModifier;
+import com.untamedears.itemexchange.utility.ModifierHandler;
 import com.untamedears.itemexchange.utility.RuleHandler;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 @CommandAlias(SetCommand.ALIAS)
@@ -72,4 +80,101 @@ public final class SetCommand extends BaseCommand {
         }
     }
 
+    // ------------------------------------------------------------
+    // Receipts
+    // ------------------------------------------------------------
+
+    @Subcommand("receipt")
+    @Description("Adds or removes a receipt modifier from an exchange rule.")
+    public void toggleReceiptModifier(
+        final @NotNull Player sender
+    ) {
+        try (final var handler = new ModifierHandler<>(sender, ReceiptModifier.TEMPLATE)) {
+            if (handler.getModifier() == null) {
+                // Putting it here so players can remove receipt modifiers if receipts are disabled at a later date
+                if (!ItemExchangeConfig.areReceiptsEnabled()) {
+                    sender.sendMessage(Component.text("Receipts are not enabled!", NamedTextColor.RED));
+                    return;
+                }
+                handler.ensureModifier();
+                switch (handler.getRule().getType()) {
+                    case INPUT -> handler.relay(ChatColor.GREEN + "Added receipt modifier!");
+                    case OUTPUT -> handler.relay(ChatColor.GOLD + "Added receipt modifier, but it will only work if you swap this rule to an input!");
+                }
+            }
+            else {
+                handler.setModifier(null);
+                handler.relay(ChatColor.GREEN + "Removed receipt modifier!");
+            }
+        }
+    }
+
+    @Subcommand("receipt alwaysprint|forceprint")
+    @Description("Toggles whether to override customer preferences and always give a receipt. (Will create modifier if it doesn't already exist)")
+    public void toggleForcedReceipts(
+        final @NotNull Player sender
+    ) {
+        if (!ItemExchangeConfig.areReceiptsEnabled()) {
+            sender.sendMessage(Component.text("Receipts are not enabled!", NamedTextColor.RED));
+            return;
+        }
+        try (final var handler = new ModifierHandler<>(sender, ReceiptModifier.TEMPLATE)) {
+            final ReceiptModifier modifier = handler.ensureModifier();
+            if (modifier.forceReceiptGeneration) {
+                modifier.forceReceiptGeneration = false;
+                handler.relay(ChatColor.GREEN + "Customers will now only be given receipts if preferred!");
+            }
+            else {
+                modifier.forceReceiptGeneration = true;
+                handler.relay(ChatColor.GREEN + "Customers will now be given receipts regardless of preference!");
+            }
+        }
+    }
+
+    @Subcommand("receipt footer|slogan clear")
+    @Description("Resets any footer/slogan text.")
+    public void resetReceiptFooter(
+        final @NotNull Player sender
+    ) {
+        if (!ItemExchangeConfig.areReceiptsEnabled()) {
+            sender.sendMessage(Component.text("Receipts are not enabled!", NamedTextColor.RED));
+            return;
+        }
+        try (final var handler = new ModifierHandler<>(sender, ReceiptModifier.TEMPLATE)) {
+            final ReceiptModifier modifier = handler.getModifier();
+            if (modifier == null) {
+                handler.relay(ChatColor.GREEN + "That rule doesn't have a receipt modifier!");
+                return;
+            }
+            if (modifier.footerText == null) {
+                handler.relay(ChatColor.GREEN + "Receipt modifier already has no footer text!");
+                return;
+            }
+            modifier.footerText = null;
+            handler.relay(ChatColor.GREEN + "Receipt modifier footer text has been reset!");
+        }
+    }
+
+    @Subcommand("receipt footer|slogan set")
+    @Description("Sets or resets any footer/slogan text. (Will create modifier if it doesn't already exist)")
+    public void setReceiptFooter(
+        final @NotNull Player sender,
+        final @Optional String footer
+    ) {
+        if (!ItemExchangeConfig.areReceiptsEnabled()) {
+            sender.sendMessage(Component.text("Receipts are not enabled!", NamedTextColor.RED));
+            return;
+        }
+        try (final var handler = new ModifierHandler<>(sender, ReceiptModifier.TEMPLATE)) {
+            final ReceiptModifier modifier = handler.ensureModifier();
+            if (StringUtils.isBlank(footer)) {
+                modifier.footerText = null;
+                handler.relay(ChatColor.GREEN + "Reset receipt footer text!");
+            }
+            else {
+                modifier.footerText = footer;
+                handler.relay(ChatColor.GREEN + "Receipt footer text set!");
+            }
+        }
+    }
 }

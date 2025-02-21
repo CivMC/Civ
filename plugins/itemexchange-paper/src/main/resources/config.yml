@@ -106,3 +106,6 @@ shopRelay:
     - "VOID_AIR"
     - "WATER"
     - "LAVA"
+
+receipts:
+  enabled: true

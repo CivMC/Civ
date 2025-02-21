@@ -3,6 +3,7 @@ package com.untamedears.itemexchange.rules;
 import com.google.common.base.Strings;
 import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.ItemExchangePlugin;
+import com.untamedears.itemexchange.rules.interfaces.DisplayContext;
 import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.rules.modifiers.DisplayNameModifier;
@@ -339,20 +340,24 @@ public final class ExchangeRule implements ExchangeData {
         return builder.toString();
     }
 
-    private List<String> getRuleDetails() {
+    private List<String> getRuleDetails(
+        final @NotNull DisplayContext context
+    ) {
         List<String> info = new ArrayList<>();
         this.modifiers.stream()
-            .map(ModifierData::getDisplayInfo)
+            .map((modifier) -> modifier.getDisplayInfo(context))
             .filter(CollectionUtils::isNotEmpty)
             .forEachOrdered(info::addAll);
         return info;
     }
 
     @Override
-    public List<String> getDisplayInfo() {
+    public List<String> getDisplayInfo(
+        final @NotNull DisplayContext context
+    ) {
         List<String> info = new ArrayList<>();
         info.add(getRuleTitle());
-        info.addAll(getRuleDetails());
+        info.addAll(getRuleDetails(context));
         return info;
     }
 
@@ -445,7 +450,7 @@ public final class ExchangeRule implements ExchangeData {
 
         ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
             meta.setDisplayName(getRuleTitle());
-            meta.setLore(getRuleDetails());
+            meta.setLore(getRuleDetails(DisplayContext.BUTTON_LORE));
             return true;
         });
         return item;
