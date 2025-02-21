@@ -40,7 +40,6 @@ import com.github.maxopoly.finale.misc.velocity.VelocityHandler;
 import com.github.maxopoly.finale.potion.PotionHandler;
 import com.github.maxopoly.finale.potion.PotionModification;
 import org.bukkit.util.Vector;
-import org.json.simple.JSONArray;
 
 public class ConfigParser {
 
