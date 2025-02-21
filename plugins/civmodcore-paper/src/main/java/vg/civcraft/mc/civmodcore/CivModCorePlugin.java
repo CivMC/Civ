@@ -16,7 +16,6 @@ import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
 import vg.civcraft.mc.civmodcore.players.PlayerNames;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
@@ -99,7 +98,6 @@ public class CivModCorePlugin extends ACivMod {
         // Load APIs
         EnchantUtils.loadEnchantAbbreviations();
         SpawnEggUtils.init();
-        TreeTypeUtils.init();
         BottomLineAPI.init();
         this.skinCache = new SkinCache(this, this.config.getSkinCacheThreads());
 
