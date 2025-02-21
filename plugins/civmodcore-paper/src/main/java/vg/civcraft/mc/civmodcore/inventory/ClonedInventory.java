@@ -15,7 +15,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vg.civcraft.mc.civmodcore.utilities.MoreArrayUtils;
 
 /**
  * Wrapper for cloned inventories intended to ensure that ClonedInventories aren't themselves cloned.
@@ -262,7 +261,14 @@ public final class ClonedInventory implements Inventory {
         } else {
             clone = Bukkit.createInventory(inventory.getHolder(), inventory.getType());
         }
-        clone.setContents(MoreArrayUtils.cloneArrayAndElements(inventory.getContents(), ItemStack::clone));
+        final ItemStack[] contents = inventory.getContents().clone();
+        for (int i = 0; i < contents.length; i++) {
+            final ItemStack item = contents[i];
+            if (item != null) {
+                contents[i] = item.clone();
+            }
+        }
+        clone.setContents(contents);
         return new ClonedInventory(clone);
     }
 
