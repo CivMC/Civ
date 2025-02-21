@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl.core;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlManager;
@@ -42,6 +43,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.utilities.cooldowns.ICoolDownHandler;
 import vg.civcraft.mc.civmodcore.utilities.cooldowns.MilliSecCoolDownHandler;
 
@@ -125,6 +127,11 @@ final class CorePearlManager implements PearlManager {
         Preconditions.checkNotNull(killer, "killer");
 
         if (!killer.isOnline()) {
+            return null;
+        }
+        // Cancel if killer is pearled
+        if (!pearlApi.getPearlConfig().canPearledPlayersPearlOthers() && pearlApi.isPlayerExiled(killer)) {
+            killer.sendMessage(ChatUtils.parseColor(String.format(Lang.pearlKillerIsPearled)));
             return null;
         }
 
@@ -242,7 +249,6 @@ final class CorePearlManager implements PearlManager {
 
     @Override
     public ExilePearl getPearlFromItemStack(ItemStack is) {
-
         ExilePearl pearl = null;
         int pearlId = pearlApi.getLoreProvider().getPearlIdFromItemStack(is);
         if (pearlId != 0) {

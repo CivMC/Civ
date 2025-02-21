@@ -6,10 +6,11 @@ version = "5.2.4"
 
 dependencies {
     paperweight {
-        paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+        paperDevBundle(libs.versions.paper)
     }
 
     compileOnly(project(":plugins:civmodcore-paper"))
     compileOnly(project(":plugins:namelayer-paper"))
-    compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.9")
+
+    compileOnly(libs.protocollib)
 }

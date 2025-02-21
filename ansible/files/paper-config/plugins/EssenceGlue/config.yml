@@ -9,20 +9,10 @@ online_for_reward: 30 minutes
 give_reward_to_pearled: false
 multiply_pearl_cost: false
 
-login_reward:
-  essence:
-    v: 3839
-    ==: org.bukkit.inventory.ItemStack
-    type: ENDER_EYE
-    amount: 4
-    meta:
-      meta-type: UNSPECIFIC
-      ==: ItemMeta
-      display-name: Player Essence
-      lore:
-        - Activity reward used to fuel pearls
+physical: false
+virtual_cap: 64
 
-voting_reward:
+rewards:
   essence:
     v: 3839
     ==: org.bukkit.inventory.ItemStack
@@ -34,6 +24,9 @@ voting_reward:
       display-name: Player Essence
       lore:
         - Activity reward used to fuel pearls
+
+login_reward: 4
+voting_reward: 1
 
 voting_sites:
   minecraftmp:
@@ -51,7 +44,7 @@ voting_sites:
     voting_url: 'https://minecraftservers.org/vote/636677'
     internal_key: 'MinecraftServers.org'
     name: 'minecraftservers.org'
-  
+
 database:
   ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
   plugin: EssenceGlue
@@ -59,8 +52,8 @@ database:
   password: ${CIV_MYSQL_PASSWORD}
   host: ${CIV_MYSQL_HOST}
   port: 3306
-  database: essenceglue
+  database: ${CIV_DATABASE_PREFIX}essenceglue
   poolsize: 5
   connection_timeout: 10000
   idle_timeout: 600000
-  max_lifetime: 7200000  
+  max_lifetime: 7200000

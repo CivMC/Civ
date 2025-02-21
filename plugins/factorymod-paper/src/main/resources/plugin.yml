@@ -3,10 +3,10 @@ main: com.github.igotyou.FactoryMod.FactoryMod
 author: Maxopoly, igotyou
 version: ${version}
 depend: [ CivModCore ]
-softdepend: [ CivMenu, NameLayer, Citadel ]
+softdepend: [ CivMenu, NameLayer, Citadel, Heliodor ]
 permissions:
   fm.public:
     default: true
   fm.op:
     default: op
-api-version: 1.21.1
+api-version: 1.21.3

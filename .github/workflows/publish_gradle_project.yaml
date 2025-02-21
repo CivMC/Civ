@@ -10,7 +10,7 @@ on:
 jobs:
   determine_values:
     name: 🔎 Determine Values
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     outputs:
       category: ${{ steps.determine_values.outputs.category }}
@@ -38,7 +38,7 @@ jobs:
 
   publish_gradle:
     name: 🐘 Publish Gradle
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: determine_values
     permissions:
       contents: write
@@ -51,7 +51,7 @@ jobs:
       - name: ☕ Setup Java
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: 🐘 Setup Gradle

@@ -15,7 +15,6 @@ import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.MoreTags;
 import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.TreeTypeUtils;
 import vg.civcraft.mc.civmodcore.players.PlayerNames;
@@ -98,8 +97,7 @@ public class CivModCorePlugin extends ACivMod {
         this.commands.registerCommand(new StatCommand());
         this.commands.registerCommand(new ChunkMetaCommand());
         // Load APIs
-        EnchantUtils.loadEnchantAbbreviations(this);
-        MoreTags.init();
+        EnchantUtils.loadEnchantAbbreviations();
         SpawnEggUtils.init();
         TreeTypeUtils.init();
         BottomLineAPI.init();
@@ -117,11 +115,7 @@ public class CivModCorePlugin extends ACivMod {
         this.chunkMetaManager = null;
         // Disconnect database
         if (this.database != null) {
-            try {
-                this.database.close();
-            } catch (SQLException error) {
-                warning("Was unable to close the database.", error);
-            }
+            this.database.close();
             this.database = null;
         }
         DialogManager.resetDialogs();

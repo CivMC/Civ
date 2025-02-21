@@ -45,6 +45,7 @@ public class Citadel extends ACivMod {
     private CitadelDAO dao;
     private ActivityMap activityMap;
     private CitadelCommandManager commandManager;
+    private ReinforcementMultiplier multiplier;
 
     private PlayerStateManager stateManager;
 
@@ -81,6 +82,10 @@ public class Citadel extends ACivMod {
 
     public ActivityMap getActivityMap() {
         return activityMap;
+    }
+
+    public ReinforcementMultiplier getMultiplier() {
+        return multiplier;
     }
 
     CitadelDAO getDAO() {
@@ -148,14 +153,8 @@ public class Citadel extends ACivMod {
         stateManager = new PlayerStateManager();
         acidManager = new AcidManager(config.getAcidTypes());
         settingManager = new CitadelSettingManager();
-        Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
-            if (Bukkit.getPluginManager().isPluginEnabled("DecentHolograms")) {
-                holoManager = new HologramManager(settingManager);
-                logger.info("DecentHolograms is loaded, holograms available");
-            } else {
-                logger.info("DecentHolograms is not loaded, no holograms available");
-            }
-        });
+        holoManager = new HologramManager(settingManager);
+        multiplier = config.getMultiplier();
         commandManager = new CitadelCommandManager(this);
         CitadelPermissionHandler.setup();
         registerListeners();

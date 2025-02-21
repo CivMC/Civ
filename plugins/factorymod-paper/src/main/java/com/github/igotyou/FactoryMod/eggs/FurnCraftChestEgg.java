@@ -54,7 +54,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
         FurnCraftChestInteractionManager fccim = new FurnCraftChestInteractionManager();
         PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(maximumHealth, maximumHealth, 0, healthPerDamagePeriod, breakGracePeriod);
         FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
-            fpm, fccs, updateTime, name, recipes, citadelBreakReduction);
+            fpm, fccs, updateTime, name, recipes, citadelBreakReduction, 0, 0, 0);
         fccim.setFactory(fccf);
         phrm.setFactory(fccf);
         if (!recipes.isEmpty()) {
@@ -106,7 +106,8 @@ public class FurnCraftChestEgg implements IFactoryEgg {
     }
 
     public Factory revive(List<Location> blocks, int health,
-                          String selectedRecipe, int productionTimer, long breakTime, List<String> recipeStrings) {
+                          String selectedRecipe, int productionTimer, long breakTime, List<String> recipeStrings,
+                          int charcoalLevel, int speedLevel, int charcoalAbsorbed) {
         FurnCraftChestStructure fccs = new FurnCraftChestStructure(blocks);
         FurnacePowerManager fpm = new FurnacePowerManager(fccs.getFurnace(),
             fuel, fuelConsumptionIntervall);
@@ -131,7 +132,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
             }
         }
         FurnCraftChestFactory fccf = new FurnCraftChestFactory(fccim, phrm,
-            fpm, fccs, updateTime, name, currRecipes, citadelBreakReduction);
+            fpm, fccs, updateTime, name, currRecipes, citadelBreakReduction, charcoalLevel, speedLevel, charcoalAbsorbed);
         fccim.setFactory(fccf);
         phrm.setFactory(fccf);
         for (IRecipe recipe : currRecipes) {

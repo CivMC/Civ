@@ -31,7 +31,7 @@ settings:
       max: 2048.0
   log-villager-deaths: true
   log-named-deaths: true
-  bungeecord: true
+  bungeecord: false
 commands:
   spam-exclusions:
   - /skill
@@ -101,8 +101,8 @@ world-settings:
       ignore-spectators: false
     entity-tracking-range:
       players: 160
-      animals: 96
-      monsters: 96
+      animals: 32
+      monsters: 32
       misc: 96
       other: 96
     ticks-per:

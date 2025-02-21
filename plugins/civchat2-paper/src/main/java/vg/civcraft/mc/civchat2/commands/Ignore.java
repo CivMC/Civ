@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -18,26 +19,32 @@ public class Ignore extends BaseCommand {
     @Description("Toggles ignoring a player")
     @CommandCompletion("@allplayers")
     public void execute(Player player, String targetPlayer) {
-        Player ignoredPlayer = Bukkit.getServer().getPlayer(targetPlayer);
-        if (ignoredPlayer == null) {
-            player.sendMessage(ChatStrings.chatPlayerNotFound);
-            return;
-        }
-        if (player == ignoredPlayer) {
-            player.sendMessage(ChatStrings.chatCantIgnoreSelf);
-            return;
-        }
-        CivChatDAO db = CivChat2.getInstance().getDatabaseManager();
-        if (!db.isIgnoringPlayer(player.getUniqueId(), ignoredPlayer.getUniqueId())) {
-            // Player added to the list
-            db.addIgnoredPlayer(player.getUniqueId(), ignoredPlayer.getUniqueId());
-            player.sendMessage(String.format(ChatStrings.chatNowIgnoring, ignoredPlayer.getDisplayName()));
-            return;
-        } else {
-            // Player removed from the list
-            db.removeIgnoredPlayer(player.getUniqueId(), ignoredPlayer.getUniqueId());
-            player.sendMessage(String.format(ChatStrings.chatStoppedIgnoring, ignoredPlayer.getDisplayName()));
-            return;
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(CivChat2.getInstance(), () -> {
+            OfflinePlayer ignoredPlayerNonFinal = Bukkit.getServer().getPlayer(targetPlayer);
+            if (ignoredPlayerNonFinal == null) {
+                ignoredPlayerNonFinal = Bukkit.getServer().getOfflinePlayer(targetPlayer);
+            }
+            if (!ignoredPlayerNonFinal.hasPlayedBefore() && !ignoredPlayerNonFinal.isOnline()) {
+                player.sendMessage(ChatStrings.chatPlayerNotFound);
+                return;
+            }
+            OfflinePlayer ignoredPlayer = ignoredPlayerNonFinal;
+            Bukkit.getScheduler().runTask(CivChat2.getInstance(), () -> {
+                if (player.equals(ignoredPlayer)) {
+                    player.sendMessage(ChatStrings.chatCantIgnoreSelf);
+                    return;
+                }
+                CivChatDAO db = CivChat2.getInstance().getDatabaseManager();
+                if (!db.isIgnoringPlayer(player.getUniqueId(), ignoredPlayer.getUniqueId())) {
+                    // Player added to the list
+                    db.addIgnoredPlayer(player.getUniqueId(), ignoredPlayer.getUniqueId());
+                    player.sendMessage(String.format(ChatStrings.chatNowIgnoring, ignoredPlayer.getName()));
+                } else {
+                    // Player removed from the list
+                    db.removeIgnoredPlayer(player.getUniqueId(), ignoredPlayer.getUniqueId());
+                    player.sendMessage(String.format(ChatStrings.chatStoppedIgnoring, ignoredPlayer.getName()));
+                }
+            });
+        });
     }
 }

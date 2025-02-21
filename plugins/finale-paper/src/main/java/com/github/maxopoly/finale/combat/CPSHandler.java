@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,6 +28,10 @@ public class CPSHandler implements Listener {
 
     private Map<UUID, ArrayDeque<Long>> playerClicks = new ConcurrentHashMap<>();
     private Set<Player> showCps = Sets.newConcurrentHashSet();
+
+    public CPSHandler() {
+        Bukkit.getPluginManager().registerEvents(this, Finale.getPlugin());
+    }
 
     public int getCPS(UUID uuid) {
         ArrayDeque<Long> clicks = this.playerClicks.get(uuid);

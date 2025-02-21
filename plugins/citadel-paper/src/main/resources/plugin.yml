@@ -5,7 +5,7 @@ authors:
   - Rourke750
   - Maxopoly
   - ProgrammerDan
-  - okx-code
+  - Okx
   - Cranite
   - FeatherCrown
   - Lazersmoke
@@ -15,9 +15,9 @@ depend:
   - NameLayer
   - CivModCore
 softdepend:
-  - HolographicDisplays
+  - ProtocolLib
 description: Citadel allows you to make blocks difficult to break. When a block is reinforced, it must be broken many times before it is destroyed.
-api-version: 1.21.1
+api-version: 1.21.3
 permissions:
   citadel.admin:
     default: op

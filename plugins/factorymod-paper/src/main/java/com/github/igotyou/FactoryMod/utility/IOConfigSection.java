@@ -5,6 +5,7 @@ import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.FactoryModPlayerSettings;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -87,9 +88,10 @@ public class IOConfigSection extends StaticDisplaySection {
                 .append(Component.text(dirState.displayName).color(TextColor.color(dirState.color)))
                 .asComponent());
         ItemUtils.addComponentLore(display,
-            Component.text("L/M/R click to toggle I/F/O")
-                .style(Style.style(TextDecoration.BOLD))
-                .color(TextColor.color(255, 255, 255)));
+            Component.text("Left click to toggle Input", NamedTextColor.WHITE, TextDecoration.BOLD),
+            Component.text("Shift right click to toggle Fuel", NamedTextColor.WHITE, TextDecoration.BOLD),
+            Component.text("Right click to toggle Output", NamedTextColor.WHITE, TextDecoration.BOLD)
+            );
         FactoryModManager fmMgr = FactoryMod.getInstance().getManager();
         return new Clickable(display) {
             private ClickableInventory inventory;
@@ -129,7 +131,7 @@ public class IOConfigSection extends StaticDisplaySection {
             }
 
             @Override
-            protected void onMiddleClick(Player player) {
+            protected void onShiftRightClick(Player player) {
                 if (!ioSelector.isFuel(dir)) {
                     if (iofProvider.getFuelCount() >= fmMgr.getMaxFuelChests()) {
                         player.sendMessage(ChatColor.RED + "This factory is at the maximum number of fuel inputs.");

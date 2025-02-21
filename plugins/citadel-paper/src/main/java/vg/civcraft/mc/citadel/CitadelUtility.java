@@ -8,9 +8,12 @@ import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.citadel.acidtypes.AcidType;
+import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
@@ -163,7 +166,7 @@ public class CitadelUtility {
             CitadelUtility.sendAndLog(player, ChatColor.RED,
                 type.getName() + " can not reinforce " + block.getType(),
                 block.getLocation());
-            return true;
+            return false;
         }
         // check if reinforcement is allowed in the current world
         if (!type.isAllowedInWorld(block.getWorld().getName())) {
@@ -211,6 +214,26 @@ public class CitadelUtility {
         if (Citadel.getInstance().getConfigManager().logCreation()) {
             Citadel.getInstance().getLogger().info(player.getName() + " created reinforcement with " + type.getName()
                 + " for " + block.getType().toString() + " at " + block.getLocation().toString());
+        }
+        // warn if acid cannot complete
+        if (Citadel.getInstance().getAcidManager().isPossibleAcidBlock(block)) {
+            AcidManager acidMan = Citadel.getInstance().getAcidManager();
+            AcidType acidType = acidMan.getAcidTypeFromMaterial(block.getType());
+            for (BlockFace blockFace : acidType.blockFaces()) {
+                Block relativeBlock = block.getRelative(blockFace);
+                Reinforcement relativeReinforcement = ReinforcementLogic.getReinforcementProtecting(relativeBlock);
+                if (
+                    relativeReinforcement == null
+                        || !relativeReinforcement.getType().canBeReinforced(relativeBlock.getType())
+                        || (acidMan.isPossibleAcidBlock(relativeBlock) && acidMan.isAcidOnSameGroup(newRein, relativeReinforcement))
+                ) {
+                    continue;
+                }
+                if (!acidMan.canAcidBlock(type, relativeReinforcement.getType())) {
+                    CitadelUtility.sendAndLog(player, ChatColor.RED,
+                        "The " + blockFace.toString() + " acid will fail as it cannot acid tougher reinforcements!");
+                }
+            }
         }
         ReinforcementLogic.createReinforcement(newRein);
         return false;

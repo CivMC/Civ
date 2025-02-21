@@ -86,6 +86,7 @@ public class CivChat2Listener implements Listener {
 
         // Set current chat group in scoreboard
         chatman.getScoreboardHUD().updateScoreboardHUD(playerJoinEvent.getPlayer());
+        chatman.getScoreboardHUD().updateAFKScoreboardHUD(playerJoinEvent.getPlayer());
 
         if (CivChat2.getInstance().getPluginConfig().getChatRangeWarn() && !playerJoinEvent.getPlayer().hasPlayedBefore()) {
             localWarn.add(playerJoinEvent.getPlayer().getUniqueId());
@@ -93,7 +94,7 @@ public class CivChat2Listener implements Listener {
         String globalChat = CivChat2.getInstance().getPluginConfig().getGlobalChatGroupName();
         if (globalChat != null && !playerJoinEvent.getPlayer().hasPlayedBefore()) {
             Group group = GroupManager.getGroup(globalChat);
-            if (group != null) {
+            if (group != null && !group.isCurrentMember(playerJoinEvent.getPlayer().getUniqueId())) {
                 group.addMember(playerJoinEvent.getPlayer().getUniqueId(), PlayerType.MEMBERS);
                 playerJoinEvent.getPlayer().sendMessage(ChatColor.GREEN + "You autojoined global chat, which is called '!'. Use it like this: '/g ! Hello'");
             }

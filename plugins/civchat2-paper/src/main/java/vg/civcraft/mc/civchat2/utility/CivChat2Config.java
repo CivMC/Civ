@@ -18,6 +18,10 @@ public class CivChat2Config {
         return config.getBoolean("info.groups");
     }
 
+    public boolean getServerBroadcastChat() {
+        return config.getBoolean("serverBroadcastChat");
+    }
+
     public boolean getDebug() {
         return config.getBoolean("info.debug");
     }
@@ -80,6 +84,10 @@ public class CivChat2Config {
 
     public String getGlobalChatGroupName() {
         return config.getString("chat.globalGroup", null);
+    }
+
+    public boolean isJoinGlobalGroupByDefault() {
+        return config.getBoolean("chat.joinGlobalGroupByDefault", false);
     }
 
     public boolean useDynamicRangeColoring() {

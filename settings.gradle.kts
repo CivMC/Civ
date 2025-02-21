@@ -1,5 +1,12 @@
 rootProject.name = "Civ"
 
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven("https://repo.papermc.io/repository/maven-public/")
+    }
+}
+
 plugins {
     id("com.gradle.enterprise") version "3.16.2"
 }
@@ -30,3 +37,6 @@ include(":plugins:railswitch-paper")
 include(":plugins:civduties-paper")
 include(":plugins:namecolors-paper")
 include(":plugins:kirabukkitgateway-paper")
+include(":plugins:kitpvp-paper")
+include(":plugins:voidworld-paper")
+include(":plugins:heliodor-paper")

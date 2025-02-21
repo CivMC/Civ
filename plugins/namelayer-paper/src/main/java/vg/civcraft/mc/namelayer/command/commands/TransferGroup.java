@@ -43,7 +43,7 @@ public class TransferGroup extends BaseCommandMiddle {
 
     public static boolean attemptTransfer(Group g, Player owner, UUID futureOwner) {
         GroupManager gm = NameAPI.getGroupManager();
-        if (!g.isOwner(owner.getUniqueId())) {
+        if (!g.isOwner(owner.getUniqueId()) && !(owner.isOp() || owner.hasPermission("namelayer.admin"))) {
             owner.sendMessage(ChatColor.RED
                 + "You don't own this group");
             return false;

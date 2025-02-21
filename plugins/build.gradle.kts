@@ -28,6 +28,10 @@ subprojects {
         filteringCharset = "UTF-8"
     }
 
+    tasks.withType<Javadoc> {
+        enabled = false
+    }
+
     configure<PublishingExtension> {
         val githubActor = System.getenv("GITHUB_ACTOR")
         val githubToken = System.getenv("GITHUB_TOKEN")

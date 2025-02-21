@@ -1,7 +1,9 @@
 package com.github.maxopoly.finale.external;
 
 import com.github.maxopoly.finale.Finale;
+
 import java.util.UUID;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
@@ -13,12 +15,22 @@ import vg.civcraft.mc.civmodcore.players.settings.impl.IntegerSetting;
 
 public class FinaleSettingManager {
 
+    private BooleanSetting vanillaTimeWarpCooldown;
+    private BooleanSetting actionBarTimeWarpCooldown;
+    private BooleanSetting sideBarTimeWarpCooldown;
     private BooleanSetting vanillaPearlCooldown;
     private BooleanSetting vanillaItemCooldown;
     private BooleanSetting actionBarItemCooldown;
     private BooleanSetting actionBarPearlCooldown;
     private BooleanSetting sideBarPearlCooldown;
-    private BooleanSetting sideBarItemCooldown;
+
+    private BooleanSetting vanillaRiptideCooldown;
+    private BooleanSetting actionBarRiptideCooldown;
+    private BooleanSetting sideBarRiptideCooldown;
+    private BooleanSetting vanillaTridentCooldown;
+    private BooleanSetting actionBarTridentCooldown;
+    private BooleanSetting sideBarTridentCooldown;
+
     private BooleanSetting showArmor;
     private BooleanSetting showTool;
     private BooleanSetting showPotionEffects;
@@ -40,6 +52,21 @@ public class FinaleSettingManager {
             "finaleGammaBright",
             "Do you want permanent night vision");
         PlayerSettingAPI.registerSetting(permanentNightVision, menu);
+
+        vanillaTimeWarpCooldown = new BooleanSetting(plugin, false, "Use vanilla timewarp cooldown",
+            "finaleVanillaTimewarpCooldown",
+            "Should timewarp cooldown be shown as an overlay on the item, the way it is done in vanilla");
+        PlayerSettingAPI.registerSetting(vanillaTimeWarpCooldown, menu);
+
+        actionBarTimeWarpCooldown = new BooleanSetting(plugin, true, "Show timewarp cooldown on action bar",
+            "finaleActionBarTimewarpCooldown",
+            "Should timewarp cooldown be shown on the action bar at the bottom of your screen");
+        PlayerSettingAPI.registerSetting(actionBarTimeWarpCooldown, menu);
+
+        sideBarTimeWarpCooldown = new BooleanSetting(plugin, false, "Show timewarp cooldown in side bar",
+            "finaleSideBarTimewarpCooldown",
+            "Should timewarp cooldown be shown on the sidebar");
+        PlayerSettingAPI.registerSetting(sideBarTimeWarpCooldown, menu);
 
         vanillaPearlCooldown = new BooleanSetting(plugin, false, "Use vanilla pearl cooldown",
             "finaleVanillaPearlCooldown",
@@ -66,10 +93,35 @@ public class FinaleSettingManager {
             "Should pearl cooldown be shown on the sidebar");
         PlayerSettingAPI.registerSetting(sideBarPearlCooldown, menu);
 
-        sideBarItemCooldown = new BooleanSetting(plugin, false, "Show item cooldown in side bar",
-            "finaleSideBarItemCooldown",
-            "Should items cooldown be shown on the sidebar");
-        PlayerSettingAPI.registerSetting(sideBarItemCooldown, menu);
+        vanillaRiptideCooldown = new BooleanSetting(plugin, false, "Use vanilla riptide cooldown",
+            "finaleVanillaRiptideCooldown",
+            "Should riptide cooldown be shown as an overlay on the item, the way it is done in vanilla");
+        PlayerSettingAPI.registerSetting(vanillaRiptideCooldown, menu);
+
+        actionBarRiptideCooldown = new BooleanSetting(plugin, true, "Show riptide cooldown on action bar",
+            "finaleActionBarRiptideCooldown",
+            "Should riptide cooldown be shown on the action bar at the bottom of your screen");
+        PlayerSettingAPI.registerSetting(actionBarRiptideCooldown, menu);
+
+        sideBarRiptideCooldown = new BooleanSetting(plugin, false, "Show riptide cooldown in side bar",
+            "finaleSideBarRiptideCooldown",
+            "Should riptide cooldown be shown on the sidebar");
+        PlayerSettingAPI.registerSetting(sideBarRiptideCooldown, menu);
+
+        vanillaTridentCooldown = new BooleanSetting(plugin, false, "Use vanilla trident cooldown",
+            "finaleVanillaTridentCooldown",
+            "Should trident cooldown be shown as an overlay on the item, the way it is done in vanilla");
+        PlayerSettingAPI.registerSetting(vanillaTridentCooldown, menu);
+
+        actionBarTridentCooldown = new BooleanSetting(plugin, true, "Show trident cooldown on action bar",
+            "finaleActionBarTridentCooldown",
+            "Should trident cooldown be shown on the action bar at the bottom of your screen");
+        PlayerSettingAPI.registerSetting(actionBarTridentCooldown, menu);
+
+        sideBarTridentCooldown = new BooleanSetting(plugin, false, "Show trident cooldown in side bar",
+            "finaleSideBarTridentCooldown",
+            "Should trident cooldown be shown on the sidebar");
+        PlayerSettingAPI.registerSetting(sideBarTridentCooldown, menu);
 
         showArmor = new BooleanSetting(Finale.getPlugin(), true, "Show armor durability", "finaleArmorDurabilitySidebar", "Should the durability of your worn armor be shown in the scorebard");
         PlayerSettingAPI.registerSetting(showArmor, menu);
@@ -126,12 +178,20 @@ public class FinaleSettingManager {
         return coordsLocation;
     }
 
-    public boolean sideBarPearlCooldown(UUID uuid) {
-        return sideBarPearlCooldown.getValue(uuid);
+    public boolean vanillaTimewarpCooldown(UUID uuid) {
+        return vanillaTimeWarpCooldown.getValue(uuid);
     }
 
-    public boolean sideBarItemCooldown(UUID uuid) {
-        return sideBarItemCooldown.getValue(uuid);
+    public boolean sideBarTimewarpCooldown(UUID uuid) {
+        return sideBarTimeWarpCooldown.getValue(uuid);
+    }
+
+    public boolean actionBarTimewarpCooldown(UUID uuid) {
+        return actionBarTimeWarpCooldown.getValue(uuid);
+    }
+
+    public boolean sideBarPearlCooldown(UUID uuid) {
+        return sideBarPearlCooldown.getValue(uuid);
     }
 
     public boolean actionBarPearlCooldown(UUID uuid) {

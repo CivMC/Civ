@@ -121,7 +121,7 @@ hacks:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit the community wiki at civwiki.org","color":"green","clickEvent":{"action":"open_url","value":"https://civwiki.org/wiki/Main_Page"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit our wiki at wiki.civmc.net","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player made map at civmc-map.github.io","color":"green","clickEvent":{"action":"open_url","value":"https://civmc-map.github.io/"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /g ! to talk in global chat","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /global to talk in global chat","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /vote to vote for CivMC and receive essence!","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Consider donating to the server at patreon.com/civ_mc! And get some unique perks!","color":"blue","clickEvent":{"action":"open_url","value":"https://www.patreon.com/civ_mc"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"All ores except coal and copper can spawn in big veins. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/hiddenore"}}]'
@@ -129,6 +129,7 @@ hacks:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"The command /config will let you adjust various settings","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /rb to see the crop information for the biome you are in","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /chunklimits to see the restrictions on how many blocks can be placed in a chunk","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /emf toggle to turn off/on fishing of decorative heads and custom loot","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"If you type /fm you can see all the types of factories you can make","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Please review the server rules at reddit.com/r/civmc/wiki/index","color":"green","clickEvent":{"action":"open_url","value":"https://www.reddit.com/r/civmc/wiki/index/"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"The use of VPNs or multiple accounts is not allowed, Logging in from the same place as a friend will result in an automatic ban. Accidental use of either may be resolved via a ticket on the official CivMC Discord","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/zp63BaX3Uf"}}]'
@@ -371,7 +372,7 @@ hacks:
     patrolSpawning: true
     phantomSpawning: false
     enderChestPlacement: true
-    enderChestUse: false
+    enderChestUse: true
     grindstoneUse: false
     shulkerBoxUse: false
     totemPower: true
@@ -390,7 +391,6 @@ hacks:
     # Does not fully work atm
     blockElytraBreakBug: false
     damageOnElytraBreakBug: 0.0
-    canStorageTeleport: false
     stopHopperDupe: false
     stopRailDupe: true
     stopEndPortalDeletion: true
@@ -416,8 +416,8 @@ hacks:
         BLAST_FURNACE: 48
         BREWING_STAND: 48
         SMOKER: 48
-        ITEM_FRAME: 48
-        GLOW_ITEM_FRAME: 48
+        ITEM_FRAME: 64
+        GLOW_ITEM_FRAME: 64
         ARMOR_STAND: 48
         PAINTING: 48
       exempt:
@@ -595,7 +595,7 @@ hacks:
     deoxidise: true
     # Chance to oxidise copper one level.
     # Unoxidised copper will oxidise at 75% of this level.
-    damage: 0.02
+    damage: 0.0175
   FasterHorses:
     enabled: true
     minSpeed: 0.1125
@@ -607,3 +607,15 @@ hacks:
     discChance: 0.003
   NoOozing:
     enabled: true
+  BuildLimits:
+    enabled: true
+    limits:
+      - ==: com.programmerdan.minecraft.simpleadminhacks.framework.utilities.BuildLimit
+        world: "world_nether"
+        type: ALTITUDE
+        min_y: -64
+        max_y: 128
+  PortalConnect:
+    enabled: false
+    server: main
+    world: world

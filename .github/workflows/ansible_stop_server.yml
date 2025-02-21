@@ -10,7 +10,7 @@ on:
 
 jobs:
   stop-server:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     environment: ${{inputs.environment}}
     steps:
       - name: Checkout code
@@ -19,7 +19,7 @@ jobs:
       - name: ☕ Setup Java
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: 🐘 Setup Gradle
@@ -44,5 +44,5 @@ jobs:
           key: ${{secrets.SSH_PRIVATE_KEY}}
           known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}
           options: |
-            --inventory ./ansible/inventories/civmc-${{inputs.environment}}.yml
+            --inventory "./ansible/inventories/civmc-${{inputs.environment}}.yml"
             -e "ansible_become_password=${{secrets.SUDO_PASSWORD}}"

@@ -1,0 +1,54 @@
+name: 📖 Docs | Publish
+
+on:
+    workflow_dispatch: {}
+    push:
+        branches:
+            - main
+        paths:
+            - docs/**
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+
+        defaults:
+            run:
+                working-directory: ./docs
+
+        permissions:
+            pages: write
+            id-token: write
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  # need depth so vitepress knows the last time a file was changed
+                  fetch-depth: 0
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: 10
+
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: "pnpm"
+                  cache-dependency-path: docs/pnpm-lock.yaml
+
+            - name: Install dependencies
+              run: pnpm install
+
+            - name: Build Docs
+              run: pnpm run build
+
+            - uses: actions/configure-pages@v2
+
+            - uses: actions/upload-pages-artifact@v3
+              with:
+                  path: docs/.vitepress/dist
+
+            - name: Deploy
+              id: deployment
+              uses: actions/deploy-pages@v4

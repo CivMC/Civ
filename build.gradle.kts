@@ -1,9 +1,9 @@
 import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
 
 plugins {
-    id("io.papermc.paperweight.userdev") version "1.7.2" apply false
-    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
-    id("xyz.jpenilla.run-paper") version "2.2.2" apply false
+    alias(libs.plugins.paper.userdev) apply false
+    alias(libs.plugins.shadow) apply false
+    alias(libs.plugins.runpaper) apply false
 }
 
 project.extensions.configure<GradleEnterpriseExtension> {
@@ -22,13 +22,13 @@ allprojects {
     repositories {
         mavenCentral()
         maven("https://oss.sonatype.org/content/repositories/snapshots")
-        maven("https://papermc.io/repo/repository/maven-public/")
+        maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://repo.aikar.co/content/groups/aikar/")
         maven("https://libraries.minecraft.net")
         maven("https://repo.codemc.io/repository/maven-public/")
-        maven("https://repo.kryptonmc.org/releases")
         maven("https://repo.dmulloy2.net/repository/public")
-
+        maven("https://repo.infernalsuite.com/repository/maven-snapshots/")
+        maven("https://repo.rapture.pw/repository/maven-releases/")
         maven("https://jitpack.io")
     }
 }

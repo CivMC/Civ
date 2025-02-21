@@ -29,7 +29,6 @@ import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
-import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 /**
@@ -255,7 +254,10 @@ public final class ExchangeRule implements ExchangeData {
             LoreModifier lore = rule.modifiers.get(LoreModifier.class);
             if (lore == null) {
                 lore = (LoreModifier) LoreModifier.TEMPLATE.construct();
-                lore.setLore(MoreCollectionUtils.collect(ArrayList::new, nbt.getStringArray(LEGACY_LORE_KEY)));
+                lore.setLore(switch (nbt.getStringArray(LEGACY_LORE_KEY)) {
+                    case final String[] lines -> Arrays.asList(lines);
+                    case null -> null;
+                });
                 rule.modifiers.put(lore);
             }
         }

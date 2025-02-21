@@ -6,10 +6,11 @@ version = "1.5.0-SNAPSHOT"
 
 dependencies {
     paperweight {
-        paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+        paperDevBundle(libs.versions.paper)
     }
 
     compileOnly(project(":plugins:civmodcore-paper"))
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly(project(":plugins:combattagplus-paper"))
+
+    compileOnly(libs.vault.api)
 }

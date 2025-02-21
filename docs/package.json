@@ -1,0 +1,21 @@
+{
+    "name": "@civmc/civ-dev-docs",
+    "private": true,
+    "version": "1.0.0",
+    "license": "MIT",
+    "scripts": {
+        "dev": "vitepress dev .",
+        "build": "vitepress build .",
+        "preview": "vitepress preview ."
+    },
+    "devDependencies": {
+        "@types/node": "^20.2.5",
+        "eslint": "^8.41.0",
+        "eslint-plugin-vue": "^9.14.1",
+        "vite": "6.0.11",
+        "vitepress": "1.6.3"
+    },
+    "dependencies": {
+        "vue": "^3.3.4"
+    }
+}

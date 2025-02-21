@@ -2,197 +2,293 @@ version: '3.8'
 
 services:
 
-  waterfall:
-    image: itzg/mc-proxy@sha256:e0536c92227905b6b0388eb04f640859e674c61068061d2a4db6ba631c79008b
-    restart: unless-stopped
-    tty: true
-    stdin_open: true
-    networks:
-      - minecraft_default
-    ports:
-      # Open port in host mode, to bypass swarm ingress
-      - target: 25577
-        published: 25565
-        protocol: tcp
-        mode: host
-    environment:
-      WATERFALL_VERSION: '1.21'
-      TYPE: 'WATERFALL'
-      WATERFALL_BUILD_ID: 579
+    waterfall:
+        image: itzg/mc-proxy@sha256:4e2e20b6ef7739429dff34b7f7a5c26816004be2d499ad7d7940de197aa7a130
+        restart: unless-stopped
+        tty: true
+        stdin_open: true
+        networks:
+            - minecraft_default
+        ports:
+            # Open port in host mode, to bypass swarm ingress
+            - target: 25577
+              published: 25565
+              protocol: tcp
+              mode: host
+            - target: 25577
+              published: 25577
+              protocol: udp
+              mode: host
+        environment:
+            VELOCITY_VERSION: '3.4.0-SNAPSHOT'
+            TYPE: 'VELOCITY'
 
-      REPLACE_ENV_VARIABLES: 'true'
-      REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+            REPLACE_ENV_VARIABLES: 'true'
+            REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
 
-      INIT_MEMORY: 2G
-      MAX_MEMORY: 2G
-      CIV_POSTGRES_HOST: minecraft_postgres
-      CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
-      CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
-      CIV_TIMEOUT_TIME: 30000
-    deploy:
-      placement:
-        constraints: [node.role == manager]
-    volumes:
-      # Config & Plugins
-      - /opt/stacks/minecraft/proxy-config:/config
-      - /opt/stacks/minecraft/proxy-plugins:/plugins
+            INIT_MEMORY: 2G
+            MAX_MEMORY: 2G
+            CIV_POSTGRES_HOST: minecraft_postgres
+            CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
+            CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
+            CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
+            CIV_TIMEOUT_TIME: 30000
+            CIV_PVP_HOSTNAME: '{{setting.minecraft.pvp_hostname}}'
+            CIV_HOSTNAME: '{{setting.minecraft.hostname}}'
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+        volumes:
+            # Config & Plugins
+            - /opt/stacks/minecraft/proxy-config:/config
+            - /opt/stacks/minecraft/proxy-plugins:/plugins
 
-  paper:
-    image: itzg/minecraft-server@sha256:42a4cff00c7f4d5981a1a40c6c8aedd3bb9c22aedd39c7f79331117114817a57
-    restart: unless-stopped
-    tty: true
-    stdin_open: true
-    stop_grace_period: 60m
-    networks:
-      - minecraft_default
-    ports:
-      - target: 8192
-        published: 8192
-        protocol: tcp
-        mode: host
-    environment:
-      TYPE: 'paper'
-      VERSION: '1.21.1'
-      EULA: 'TRUE'
+    paper:
+        image: itzg/minecraft-server@sha256:edd1968cb701da6a7a358170ad6503323e35fb6ec6984eb31ec1a8a4687b75ec
+        restart: unless-stopped
+        tty: true
+        stdin_open: true
+        stop_grace_period: 60m
+        networks:
+            - minecraft_default
+        ports:
+            - target: 8192
+              published: 8192
+              protocol: tcp
+              mode: host
+            - target: 5004
+              published: 5004
+              protocol: tcp
+              mode: host
+        environment:
+            TYPE: 'paper'
+            VERSION: '1.21.3'
+            EULA: 'TRUE'
 
-      REMOVE_OLD_MODS: 'TRUE'
-      COPY_CONFIG_DEST: '/data'
-      SYNC_SKIP_NEWER_IN_DESTINATION: 'false'
-      REPLACE_ENV_DURING_SYNC: 'TRUE'
-      REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+            REMOVE_OLD_MODS: 'TRUE'
+            COPY_CONFIG_DEST: '/data'
+            SYNC_SKIP_NEWER_IN_DESTINATION: 'false'
+            REPLACE_ENV_DURING_SYNC: 'TRUE'
+            REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
 
-      INIT_MEMORY: '{{setting.minecraft.resources.memory}}'
-      MAX_MEMORY: '{{setting.minecraft.resources.memory}}'
-      USE_AIKAR_FLAGS: 'TRUE'
-      STOP_DURATION: 3600
+            INIT_MEMORY: '{{setting.minecraft.resources.memory}}'
+            MAX_MEMORY: '{{setting.minecraft.resources.memory}}'
+            USE_AIKAR_FLAGS: 'TRUE'
+            STOP_DURATION: 3600
 
-      CIV_SERVER_NAME: prod-server
+            CIV_SERVER_NAME: prod-server
 {% if setting.minecraft.whitelist %}
-      ENABLE_WHITELIST: 'true'
-      CIV_WHITELIST: 'true'
+            ENABLE_WHITELIST: 'true'
+            CIV_WHITELIST: 'true'
 {% else %}
-      ENABLE_WHITELIST: 'false'
-      CIV_WHITELIST: 'false'
+            ENABLE_WHITELIST: 'false'
+            CIV_WHITELIST: 'false'
 {% endif %}
 
-      CIV_WORLD_GENERATOR: Terra:CIVMC
-      CIV_WORDBANK_SEED: '{{secret.minecraft.wordbank_seed}}'
+            CIV_WORLD_GENERATOR: Terra:CIVMC
+            CIV_WORDBANK_SEED: '{{secret.minecraft.wordbank_seed}}'
 
-      CIV_MYSQL_HOST: minecraft_mariadb
-      CIV_MYSQL_USERNAME: '{{secret.minecraft.mysql.username}}'
-      CIV_MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
-      CIV_MYSQL_DATABASE: minecraft
+            CIV_MYSQL_HOST: minecraft_mariadb
+            CIV_MYSQL_USERNAME: '{{secret.minecraft.mysql.username}}'
+            CIV_MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
 
-      CIV_POSTGRES_HOST: minecraft_postgres
-      CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
-      CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
+            CIV_POSTGRES_HOST: minecraft_postgres
+            CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
+            CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
 
-      CIV_RABBITMQ_HOST: minecraft_rabbitmq
-      CIV_RABBITMQ_USERNAME: rabbitmq
-      CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
+            CIV_DATABASE_PREFIX: ''
 
-      CIV_WATCHDOG_TIMEOUT_TIME: 60
+            CIV_RABBITMQ_HOST: minecraft_rabbitmq
+            CIV_RABBITMQ_USERNAME: rabbitmq
+            CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
 
-    volumes:
-      # Persistence
-      - /opt/stacks/minecraft/paper-data:/data
-      # Config & Plugins
-      - /opt/stacks/minecraft/paper-config:/config
-      - /opt/stacks/minecraft/paper-plugins:/plugins
-      # Private Config & Plugins
-      - /opt/PrivateConfig/paper/plugins/Vulcan-2.9.0.jar:/config/plugins/Vulcan-2.9.0.jar
-      - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
-      - /opt/PrivateConfig/paper/config/HiddenOre/config.yml:/config/plugins/HiddenOre/config.yml
-      - /opt/PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/config/plugins/KirraBukkitGateway/cnfig.yml
-      - /opt/PrivateConfig/paper/config/BreweryX/config.yml:/config/plugins/BreweryX/config.yml
-      - /opt/PrivateConfig/paper/config/Terra/packs/CivMC:/config/plugins/Terra/packs/CivMC
-      - /opt/PrivateConfig/paper/config/Votifier/config.yml:/config/plugins/Votifier/config.yml
-      - /opt/PrivateConfig/paper/config/Votifier/rsa/public.key:/config/plugins/Votifier/rsa/public.key
-      - /opt/PrivateConfig/paper/config/Votifier/rsa/private.key:/config/plugins/Votifier/rsa/private.key
-      - /opt/PrivateConfig/paper/config/DiscordSRV/config.yml:/config/plugins/DiscordSRV/config.yml
-      - /opt/PrivateConfig/paper/config/DiscordSRV/alerts.yml:/config/plugins/DiscordSRV/alerts.yml
-      - /opt/PrivateConfig/paper/config/MythicMobs:/config/plugins/MythicMobs
-      - /opt/PrivateConfig/paper/config/EvenMoreFish/baits.yml:/config/plugins/EvenMoreFish/baits.yml
-      - /opt/PrivateConfig/paper/config/EvenMoreFish/fish.yml:/config/plugins/EvenMoreFish/fish.yml
-      - /opt/PrivateConfig/paper/config/EvenMoreFish/rarities.yml:/config/plugins/EvenMoreFish/rarities.yml
-      - /opt/PrivateConfig/paper/config/EvenMoreFish/competitions.yml:/config/plugins/EvenMoreFish/competitions.yml
-      - /opt/PrivateConfig/paper/config/RandomSpawn/worlds.yml:/config/plugins/RandomSpawn/worlds.yml
+            CIV_WATCHDOG_TIMEOUT_TIME: 60
+            CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
 
-    deploy:
-      placement:
-        constraints: [node.role == manager]
+            JVM_OPTS: -agentpath:./libti.so
 
-  kira:
-    image: ghcr.io/civmc/kira:2.1.1
-    restart: unless-stopped
-    tty: true
-    stdin_open: true
-    networks:
-      - minecraft_default
-    volumes:
-      - /opt/PrivateConfig/kira/{{setting.environment}}-config.json:/app/config.json
-    deploy:
-      placement:
-        constraints: [node.role == manager]
+        volumes:
+            # Persistence
+            - /opt/stacks/minecraft/paper-data:/data
+            # Config & Plugins
+            - /opt/stacks/minecraft/paper-config:/config
+            - /opt/stacks/minecraft/paper-plugins:/plugins
+            # Private Config & Plugins
+            - /opt/PrivateConfig/paper/plugins/Vulcan-2.9.2.2.jar:/config/plugins/Vulcan-2.9.2.2.jar
+            - /opt/PrivateConfig/paper/plugins/packetevents-spigot-2.7.0.jar:/config/plugins/packetevents-spgiot-2.7.0.jar
+            - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
+            - /opt/PrivateConfig/paper/config/HiddenOre/config.yml:/config/plugins/HiddenOre/config.yml
+            - /opt/PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/config/plugins/KirraBukkitGateway/cnfig.yml
+            - /opt/PrivateConfig/paper/config/BreweryX/config.yml:/config/plugins/BreweryX/config.yml
+            - /opt/PrivateConfig/paper/config/Terra/packs/CivMC:/config/plugins/Terra/packs/CivMC
+            - /opt/PrivateConfig/paper/config/Votifier/config.yml:/config/plugins/Votifier/config.yml
+            - /opt/PrivateConfig/paper/config/Votifier/rsa/public.key:/config/plugins/Votifier/rsa/public.key
+            - /opt/PrivateConfig/paper/config/Votifier/rsa/private.key:/config/plugins/Votifier/rsa/private.key
+            - /opt/PrivateConfig/paper/config/DiscordSRV/config.yml:/config/plugins/DiscordSRV/config.yml
+            - /opt/PrivateConfig/paper/config/DiscordSRV/alerts.yml:/config/plugins/DiscordSRV/alerts.yml
+            - /opt/PrivateConfig/paper/config/MythicMobs:/config/plugins/MythicMobs
+            - /opt/PrivateConfig/paper/config/EvenMoreFish/baits.yml:/config/plugins/EvenMoreFish/baits.yml
+            - /opt/PrivateConfig/paper/config/EvenMoreFish/fish.yml:/config/plugins/EvenMoreFish/fish.yml
+            - /opt/PrivateConfig/paper/config/EvenMoreFish/rarities.yml:/config/plugins/EvenMoreFish/rarities.yml
+            - /opt/PrivateConfig/paper/config/EvenMoreFish/competitions.yml:/config/plugins/EvenMoreFish/competitions.yml
+            - /opt/PrivateConfig/paper/config/RandomSpawn/worlds.yml:/config/plugins/RandomSpawn/worlds.yml
+            - /opt/PrivateConfig/paper/config/Heliodor/config.yml:/config/plugins/Heliodor/config.yml
 
-  mariadb:
-    image: mariadb:10.7.1
-    restart: unless-stopped
-    command: --max-connections 500
-    networks:
-      - monitoring
-      - minecraft_default
-    environment:
-      MYSQL_USER: minecraft
-      MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
-      MYSQL_ROOT_PASSWORD: '{{secret.minecraft.mysql.root_password}}'
-    volumes:
-      - /opt/stacks/minecraft/mariadb-data:/var/lib/mysql
-    deploy:
-      placement:
-        constraints: [node.role == manager]
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+            resources:
+                limits:
+                    memory: '{{setting.minecraft.resources.memory_limit}}'
 
-  postgres:
-    image: timescale/timescaledb:2.10.3-pg14
-    restart: unless-stopped
-    command: postgres -c 'max_connections=500'
-    networks:
-      - monitoring
-      - minecraft_default
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    environment:
-      POSTGRES_USER: minecraft
-      POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
-    volumes:
-      - /opt/stacks/minecraft/postgres-data:/var/lib/postgresql/data
-    deploy:
-      placement:
-        constraints: [node.role == manager]
+    pvp:
+        image: itzg/minecraft-server@sha256:edd1968cb701da6a7a358170ad6503323e35fb6ec6984eb31ec1a8a4687b75ec
+        restart: unless-stopped
+        tty: true
+        stdin_open: true
+        stop_grace_period: 60m
+        networks:
+            - minecraft_default
+        ports:
+            - target: 8193
+              published: 8193
+              protocol: tcp
+              mode: host
+        environment:
+            TYPE: 'paper'
+            VERSION: '1.21.3'
+            EULA: 'TRUE'
+            PAPER_CUSTOM_JAR: 'asp-server.jar'
 
-  rabbitmq:
-    image: rabbitmq:3.9.16-management
-    restart: unless-stopped
-    networks:
-      - minecraft_default
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      interval: 60s
-      timeout: 10s
-      retries: 5
-    environment:
-      RABBITMQ_DEFAULT_USER: rabbitmq
-      RABBITMQ_DEFAULT_PASS: '{{secret.minecraft.rabbitmq.password}}'
-    deploy:
-      placement:
-        constraints: [node.role == manager]
+            REMOVE_OLD_MODS: 'TRUE'
+            COPY_CONFIG_DEST: '/data'
+            SYNC_SKIP_NEWER_IN_DESTINATION: 'false'
+            REPLACE_ENV_DURING_SYNC: 'TRUE'
+            REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+
+            INIT_MEMORY: '{{setting.minecraft.resources.pvp_memory}}'
+            MAX_MEMORY: '{{setting.minecraft.resources.pvp_memory}}'
+            USE_AIKAR_FLAGS: 'TRUE'
+            STOP_DURATION: 3600
+
+            CIV_SERVER_NAME: prod-server
+{% if setting.minecraft.pvp_whitelist %}
+            ENABLE_WHITELIST: 'true'
+            CIV_WHITELIST: 'true'
+{% else %}
+            ENABLE_WHITELIST: 'false'
+            CIV_WHITELIST: 'false'
+{% endif %}
+
+            CIV_WORLD_GENERATOR: VoidWorld
+
+            CIV_MYSQL_HOST: minecraft_mariadb
+            CIV_MYSQL_USERNAME: '{{secret.minecraft.mysql.username}}'
+            CIV_MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
+
+            CIV_POSTGRES_HOST: minecraft_postgres
+            CIV_POSTGRES_USERNAME: '{{secret.minecraft.postgres.username}}'
+            CIV_POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
+
+            CIV_DATABASE_PREFIX: 'pvp_'
+
+            CIV_RABBITMQ_HOST: minecraft_rabbitmq
+            CIV_RABBITMQ_USERNAME: rabbitmq
+            CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
+
+            CIV_WATCHDOG_TIMEOUT_TIME: 60
+            CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
+
+        volumes:
+            # Persistence
+            - /opt/stacks/minecraft/pvp-data:/data
+            # Config & Plugins
+            - /opt/stacks/minecraft/pvp-config:/config
+            - /opt/stacks/minecraft/pvp-plugins:/plugins
+            # Private Config & Plugins
+            - /opt/PrivateConfig/paper/plugins/Vulcan-2.9.2.2.jar:/config/plugins/Vulcan-2.9.2.2.jar
+            - /opt/PrivateConfig/paper/plugins/packetevents-spigot-2.7.0.jar:/config/plugins/packetevents-spgiot-2.7.0.jar
+            - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
+            - /opt/PrivateConfig/paper/config/BreweryX/config.yml:/config/plugins/BreweryX/config.yml
+
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+            resources:
+                limits:
+                    memory: '{{setting.minecraft.resources.pvp_memory_limit}}'
+
+    kira:
+        image: ghcr.io/civmc/kira:2.1.1
+        restart: unless-stopped
+        tty: true
+        stdin_open: true
+        networks:
+            - minecraft_default
+        volumes:
+            - /opt/PrivateConfig/kira/{{setting.environment}}-config.json:/app/config.json
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+
+    mariadb:
+        image: mariadb:10.7.1
+        restart: unless-stopped
+        command: --max-connections 1000 --max-allowed-packet 1073741824
+        networks:
+            - monitoring
+            - minecraft_default
+        environment:
+            MYSQL_USER: minecraft
+            MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
+            MYSQL_ROOT_PASSWORD: '{{secret.minecraft.mysql.root_password}}'
+        volumes:
+            - /opt/stacks/minecraft/mariadb-data:/var/lib/mysql
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+
+    postgres:
+        image: timescale/timescaledb:2.10.3-pg14
+        restart: unless-stopped
+        command: postgres -c 'max_connections=500'
+        networks:
+            - monitoring
+            - minecraft_default
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        environment:
+            POSTGRES_USER: minecraft
+            POSTGRES_PASSWORD: '{{secret.minecraft.postgres.password}}'
+        volumes:
+            - /opt/stacks/minecraft/postgres-data:/var/lib/postgresql/data
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+
+    rabbitmq:
+        image: rabbitmq:3.9.16-management
+        restart: unless-stopped
+        networks:
+            - minecraft_default
+        healthcheck:
+            test: ["CMD", "rabbitmq-diagnostics", "ping"]
+            interval: 60s
+            timeout: 10s
+            retries: 5
+        environment:
+            RABBITMQ_DEFAULT_USER: rabbitmq
+            RABBITMQ_DEFAULT_PASS: '{{secret.minecraft.rabbitmq.password}}'
+        deploy:
+            placement:
+                constraints: [node.role == manager]
 
 networks:
-  minecraft_default:
-  traefik-public:
-    external: true
-  monitoring:
-    external: true
+    minecraft_default:
+    traefik-public:
+        external: true
+    monitoring:
+        external: true

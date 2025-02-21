@@ -31,6 +31,7 @@ public class ArmourBound extends BasicHack {
 
     private SimpleAdminHacks plugin;
     private NamespacedKey key;
+    private NamespacedKey noBindKey;
     @AutoLoad
     private List<String> whitelist;
 
@@ -38,6 +39,7 @@ public class ArmourBound extends BasicHack {
         super(plugin, config);
         this.plugin = plugin;
         this.key = new NamespacedKey(plugin, "SAH_ArmourBound");
+        this.noBindKey = new NamespacedKey(plugin, "no_bind");
     }
 
     @EventHandler
@@ -56,7 +58,7 @@ public class ArmourBound extends BasicHack {
         }
         //From here, we take over from the copy, get the actual itemstack ourselves
         newItem = player.getInventory().getItem(realSlot);
-        if (!whitelist.contains(newItem.getType().toString())) {
+        if (!whitelist.contains(newItem.getType().toString()) || newItem.getPersistentDataContainer().has(noBindKey)) {
             return;
         }
         ItemMeta meta = newItem.getItemMeta();
@@ -92,7 +94,7 @@ public class ArmourBound extends BasicHack {
             if (item == null) {
                 continue;
             }
-            if (!whitelist.contains(item.getType().toString())) {
+            if (!whitelist.contains(item.getType().toString()) || item.getPersistentDataContainer().has(noBindKey)) {
                 continue;
             }
             meta = item.getItemMeta();

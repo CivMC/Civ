@@ -6,7 +6,7 @@ version = "2.1.6"
 
 dependencies {
     paperweight {
-        paperDevBundle("1.21.1-R0.1-SNAPSHOT")
+        paperDevBundle(libs.versions.paper)
     }
 
     compileOnly(project(":plugins:civmodcore-paper"))
@@ -18,5 +18,5 @@ dependencies {
     compileOnly(project(":plugins:banstick-paper"))
     compileOnly(project(":plugins:randomspawn-paper"))
 
-    compileOnly("com.github.DieReicheErethons:Brewery:3.1")
+    compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.2.7.jar"))
 }
