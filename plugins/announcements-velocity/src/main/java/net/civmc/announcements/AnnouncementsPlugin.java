@@ -72,8 +72,6 @@ public class AnnouncementsPlugin {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        // when server is initialized, register listeners
-        server.getEventManager().register(this, new ProxyListener());
 
         // task to check if a scheduled announcement should be sent
         server.getScheduler().buildTask(this, this::sendScheduledMessages).repeat(1, TimeUnit.SECONDS).schedule();
