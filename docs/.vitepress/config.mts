@@ -155,7 +155,7 @@ export default defineConfig({
                                 },
                                 {
                                     text: "Unique",
-                                    link: "pages/plugins/unique/index",
+                                    link: "wiki/plugins/unique/index",
                                     collapsed: false,
                                     items: [
                                         {
