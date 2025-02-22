@@ -84,7 +84,7 @@ public final class LoreModifier extends ModifierData {
 
     @Override
     public List<String> getDisplayInfo() {
-        return this.lore.stream()
+        return getLore().stream()
             .map(line -> "" + ChatColor.DARK_PURPLE + ChatColor.ITALIC + line)
             .collect(Collectors.toCollection(ArrayList::new));
     }
