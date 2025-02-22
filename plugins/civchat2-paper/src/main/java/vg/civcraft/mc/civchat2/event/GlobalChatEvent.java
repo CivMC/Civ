@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civchat2.event;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -7,7 +8,7 @@ import org.bukkit.event.player.PlayerEvent;
 
 public class GlobalChatEvent extends PlayerEvent implements Cancellable {
 
-    private final String message;
+    private final Component message;
 
     private final String format;
 
@@ -16,7 +17,7 @@ public class GlobalChatEvent extends PlayerEvent implements Cancellable {
     // Handler list for spigot events
     private static final HandlerList handlers = new HandlerList();
 
-    public GlobalChatEvent(final Player player, final String message, final String format) {
+    public GlobalChatEvent(final Player player, final Component message, final String format) {
 
         super(player);
 
@@ -29,7 +30,7 @@ public class GlobalChatEvent extends PlayerEvent implements Cancellable {
      *
      * @return The chat message
      */
-    public String getMessage() {
+    public Component getMessage() {
 
         return message;
     }
