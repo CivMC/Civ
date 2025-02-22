@@ -143,6 +143,6 @@ public final class LoreModifier extends ModifierData {
     public void setLore(
         final List<@NotNull String> lore
     ) {
-        this.lore = CollectionUtils.isEmpty(lore) ? null : new ArrayList<>(lore);
+        this.lore = lore;
     }
 }
