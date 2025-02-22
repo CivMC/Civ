@@ -40,8 +40,8 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
      * This is because this recipe creates a printing plate, like the super class.
      */
 
-    public PrintingPlateJsonRecipe(String identifier, String name, int productionTime, ItemMap input, ItemMap output) {
-        super(identifier, name, productionTime, input, output);
+    public PrintingPlateJsonRecipe(String identifier, String name, int productionTime, ItemMap input, ItemMap output, int damagePerRun) {
+        super(identifier, name, productionTime, input, output, damagePerRun);
     }
 
     @Override
@@ -73,6 +73,7 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
 
