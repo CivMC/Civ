@@ -1,6 +1,5 @@
 package vg.civcraft.mc.civmodcore.config;
 
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,15 +12,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.inventory.CustomItem;
-import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.world.model.EllipseArea;
@@ -257,37 +251,6 @@ public final class ConfigHelper {
         return number.toString();
     }
 
-    /**
-     * Parses a potion effect
-     *
-     * @param configurationSection ConfigurationSection to parse the effect from
-     * @return The potion effect parsed
-     */
-    @NotNull
-    public static List<PotionEffect> parsePotionEffects(@Nullable final ConfigurationSection configurationSection) {
-        List<PotionEffect> potionEffects = Lists.newArrayList();
-        if (configurationSection != null) {
-            for (String name : configurationSection.getKeys(false)) {
-                ConfigurationSection configEffect = configurationSection.getConfigurationSection(name);
-                String type = configEffect.getString("type");
-                if (type == null) {
-                    LOGGER.severe("Expected potion type to be specified, but found no \"type\" option at "
-                        + configEffect.getCurrentPath());
-                    continue;
-                }
-                PotionEffectType effect = PotionEffectType.getByName(type);
-                if (effect == null) {
-                    LOGGER.severe("Expected potion type to be specified at " + configEffect.getCurrentPath()
-                        + " but found " + type + " which is no valid type");
-                }
-                int duration = configEffect.getInt("duration", 200);
-                int amplifier = configEffect.getInt("amplifier", 0);
-                potionEffects.add(new PotionEffect(effect, duration, amplifier));
-            }
-        }
-        return potionEffects;
-    }
-
     @Nullable
     public static IArea parseArea(@Nullable final ConfigurationSection config) {
         if (config == null) {
@@ -404,15 +367,4 @@ public final class ConfigHelper {
             mapToUse.put(keyinstance, value);
         }
     }
-
-    /**
-     * @deprecated Use {@link EnchantUtils#getEnchantment(String)} instead.
-     */
-    @Nullable
-    @Deprecated(forRemoval = true)
-    public static Enchantment parseEnchantment(@NotNull final ConfigurationSection config,
-                                               @NotNull final String key) {
-        return EnchantUtils.getEnchantment(config.getString(key));
-    }
-
 }
