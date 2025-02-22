@@ -390,7 +390,7 @@ database:
 
 reinforcementBreakMultipliers:
   - custom-key: meteoric_iron_axe
-    multipliers: &meteoric_iron_axe_multipliers
+    multipliers:
     - multiplier: 2.5
       types:
         - CHEST
@@ -438,7 +438,51 @@ reinforcementBreakMultipliers:
         - WAXED_WEATHERED_COPPER_DOOR
   - custom-key: meteoric_iron_axe_silk
     multipliers:
-      <<: *meteoric_iron_axe_multipliers
+      - multiplier: 2.5
+        types:
+          - CHEST
+          - TRAPPED_CHEST
+          - JUKEBOX
+          - NOTE_BLOCK
+          - BARREL
+          - CRAFTING_TABLE
+        tags:
+          - FENCE_GATES
+          - WOODEN_PRESSURE_PLATES
+          - LOGS
+          - WOODEN_TRAPDOORS
+          - WOODEN_FENCES
+          - WOODEN_DOORS
+          - PLANKS
+          - WOODEN_SLABS
+          - WOODEN_STAIRS
+          - ALL_SIGNS
+          - WOODEN_BUTTONS
+      - multiplier: 2
+        types:
+          - FURNACE
+          - IRON_DOOR
+          - IRON_TRAPDOOR
+          - IRON_BARS
+          - DISPENSER
+          - DROPPER
+          - HOPPER
+          - COPPER_TRAPDOOR
+          - EXPOSED_COPPER_TRAPDOOR
+          - OXIDIZED_COPPER_TRAPDOOR
+          - WEATHERED_COPPER_TRAPDOOR
+          - WAXED_COPPER_TRAPDOOR
+          - WAXED_EXPOSED_COPPER_TRAPDOOR
+          - WAXED_OXIDIZED_COPPER_TRAPDOOR
+          - WAXED_WEATHERED_COPPER_TRAPDOOR
+          - COPPER_DOOR
+          - EXPOSED_COPPER_DOOR
+          - OXIDIZED_COPPER_DOOR
+          - WEATHERED_COPPER_DOOR
+          - WAXED_COPPER_DOOR
+          - WAXED_EXPOSED_COPPER_DOOR
+          - WAXED_OXIDIZED_COPPER_DOOR
+          - WAXED_WEATHERED_COPPER_DOOR
 
 # number of times a tool can break a reinforcement before it gets damaged by one durability
 # set to 0 to disable
