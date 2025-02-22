@@ -10,6 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Interface for a player who is imprisoned in an exile pearl
@@ -286,6 +287,20 @@ public interface ExilePearl {
      * @param loc The location
      */
     void setReturnLocation(Location loc);
+
+    /**
+     * Gets the location where the player was captured (where they died when they were pearled).
+     */
+    @Nullable Location getCaptureLocation();
+
+    /**
+     * Sets the pearl's capture location (where the pearlee died when they were pearled).
+     *
+     * @param loc The capture location, which can be null.
+     */
+    void setCaptureLocation(
+        Location loc
+    );
 
     /**
      * Gets the multiplier to apply to the amount of repair materials needed to repair the pearl

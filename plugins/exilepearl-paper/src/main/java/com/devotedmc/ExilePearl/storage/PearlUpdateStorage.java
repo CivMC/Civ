@@ -1,6 +1,7 @@
 package com.devotedmc.ExilePearl.storage;
 
 import com.devotedmc.ExilePearl.ExilePearl;
+import org.jetbrains.annotations.NotNull;
 
 public interface PearlUpdateStorage {
 
@@ -59,6 +60,15 @@ public interface PearlUpdateStorage {
      * @param pearl The pearl instance to update
      */
     void updateReturnLocation(ExilePearl pearl);
+
+    /**
+     * Updates where the player was captured (where they died when they were pearled).
+     *
+     * @param pearl The pearl instance to update.
+     */
+    void updateCaptureLocation(
+        @NotNull ExilePearl pearl
+    );
 
     /**
      * Updates the date on which the pearl was created
