@@ -256,7 +256,7 @@ public final class ExchangeRule implements ExchangeData {
                 lore = (LoreModifier) LoreModifier.TEMPLATE.construct();
                 lore.setLore(switch (nbt.getStringArray(LEGACY_LORE_KEY)) {
                     case final String[] lines -> Arrays.asList(lines);
-                    case null -> null;
+                    case null -> Collections.emptyList();
                 });
                 rule.modifiers.put(lore);
             }
