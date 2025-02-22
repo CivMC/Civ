@@ -54,6 +54,7 @@ public final class ItemUtils {
      * @param item The item to check.
      * @return Returns true if the item can be interpreted as an empty slot.
      */
+    @Contract("null -> true")
     public static boolean isEmptyItem(final ItemStack item) {
         return item == null || item.getType() == Material.AIR;
     }
