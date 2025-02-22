@@ -2,13 +2,16 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.WrittenBookContent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -75,13 +78,25 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 
     protected ItemStack createBook(ItemStack printingPlateStack, int amount) {
         net.minecraft.world.item.ItemStack book = CraftItemStack.asNMSCopy(printingPlateStack);
-        WrittenBookContent content = book.get(DataComponents.WRITTEN_BOOK_CONTENT);
-
+        CompoundTag bookData = (CompoundTag) book.get(DataComponents.CUSTOM_DATA).copyTag().get("Book");
         ItemStack bookItem = new ItemStack(Material.WRITTEN_BOOK, amount);
-        net.minecraft.world.item.ItemStack newBook = CraftItemStack.asNMSCopy(bookItem);
-        newBook.set(DataComponents.WRITTEN_BOOK_CONTENT, content);
+        if (printingPlateStack.hasData(DataComponentTypes.WRITTEN_BOOK_CONTENT)) {
+            bookItem.setData(DataComponentTypes.WRITTEN_BOOK_CONTENT, printingPlateStack.getData(DataComponentTypes.WRITTEN_BOOK_CONTENT));
+        } else { // Handle legacy (pre-1.20.5) plates
+            bookItem.editMeta(BookMeta.class, meta -> {
+                meta.title(Component.text(bookData.get("title").getAsString()));
+                meta.author(Component.text(bookData.get("author").getAsString()));
+                meta.setGeneration(BookMeta.Generation.values()[((IntTag) bookData.get("generation")).getAsInt()]);
 
-        return CraftItemStack.asBukkitCopy(newBook);
+                List<Component> pages = new ArrayList<>();
+                ((ListTag) bookData.get("pages")).forEach(page -> {
+                    pages.add(GsonComponentSerializer.gson().deserialize(page.getAsString()));
+                });
+                meta.pages(pages);
+            });
+        }
+        
+        return bookItem;
     }
 
     protected BookMeta.Generation getNextGeneration(@Nullable BookMeta.Generation generation) {
