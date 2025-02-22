@@ -15,7 +15,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 /**
@@ -47,7 +47,7 @@ public class BlockHolder implements PearlHolder {
                 customNameString = String.format(" %scalled %s", ChatColor.RESET, customName);
             }
         }
-        return String.format("a %s%s", ItemUtils.getItemName(block.getType()), customNameString);
+        return String.format("a %s%s", ChatUtils.translate(block.getType()), customNameString);
     }
 
     @Override

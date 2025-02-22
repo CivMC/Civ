@@ -14,7 +14,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 public class EnchantmentDisableListener implements Listener {
 
@@ -36,7 +36,7 @@ public class EnchantmentDisableListener implements Listener {
             item.removeEnchantment(enchant);
             if (owner != null) {
                 owner.sendMessage(ChatColor.RED + "The enchantment "
-                    + EnchantUtils.getEnchantNiceName(enchant) + " is disabled and has "
+                    + ChatUtils.translate(enchant) + " is disabled and has "
                     + "been removed from your item!");
             }
         }
