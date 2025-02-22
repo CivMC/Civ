@@ -27,26 +27,26 @@ public class Tell extends BaseCommand {
             UUID chattingWith = chatMan.getChannel(player);
             if (chattingWith != null) {
                 chatMan.removeChannel(player);
-                player.sendMessage(ChatStrings.chatRemovedFromChat);
+                player.sendRichMessage(ChatStrings.chatRemovedFromChat);
             } else {
-                player.sendMessage(ChatStrings.chatNotInPrivateChat);
+                player.sendRichMessage(ChatStrings.chatNotInPrivateChat);
             }
             return;
         }
 
         Player receiver = Bukkit.getPlayer(targetPlayer);
         if (receiver == null) {
-            player.sendMessage(ChatStrings.chatPlayerNotFound);
+            player.sendRichMessage(ChatStrings.chatPlayerNotFound);
             return;
         }
 
         if (!(receiver.isOnline())) {
-            player.sendMessage(ChatStrings.chatPlayerIsOffline);
+            player.sendRichMessage(ChatStrings.chatPlayerIsOffline);
             return;
         }
 
         if (player == receiver) {
-            player.sendMessage(ChatStrings.chatCantMessageSelf);
+            player.sendRichMessage(ChatStrings.chatCantMessageSelf);
             return;
         }
 
@@ -56,16 +56,16 @@ public class Tell extends BaseCommand {
         } else {
             CivChatDAO db = CivChat2.getInstance().getDatabaseManager();
             if (db.isIgnoringPlayer(player.getUniqueId(), receiver.getUniqueId())) {
-                player.sendMessage(String.format(ChatStrings.chatNeedToUnignore, receiver.getDisplayName()));
+                player.sendRichMessage(String.format(ChatStrings.chatNeedToUnignore, receiver.getDisplayName()));
                 return;
             }
 
             if (db.isIgnoringPlayer(receiver.getUniqueId(), player.getUniqueId())) {
-                player.sendMessage(ChatStrings.chatPlayerIgnoringYou);
+                player.sendRichMessage(ChatStrings.chatPlayerIgnoringYou);
                 return;
             }
             chatMan.addChatChannel(player, receiver);
-            player.sendMessage(String.format(ChatStrings.chatNowChattingWith, receiver.getDisplayName()));
+            player.sendRichMessage(String.format(ChatStrings.chatNowChattingWith, receiver.getDisplayName()));
         }
     }
 }
