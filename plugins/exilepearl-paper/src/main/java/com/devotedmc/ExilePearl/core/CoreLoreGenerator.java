@@ -7,10 +7,13 @@ import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.google.common.base.Preconditions;
 import com.programmerdan.minecraft.banstick.handler.BanHandler;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,6 +48,8 @@ final class CoreLoreGenerator implements LoreProvider {
         this.config = config;
         this.dateFormat = new SimpleDateFormat("dd MMM yyyy");
         this.exilePearlid = exilePearLid;
+
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
     /**
