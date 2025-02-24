@@ -2,18 +2,14 @@ package com.devotedmc.ExilePearl.core;
 
 import com.devotedmc.ExilePearl.*;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
+import com.devotedmc.ExilePearl.command.CmdShowAllPearls;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.google.common.base.Preconditions;
 import com.programmerdan.minecraft.banstick.handler.BanHandler;
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,17 +35,13 @@ final class CoreLoreGenerator implements LoreProvider {
     private static String PlayerNameStringFormatRegex = "<a>Player: <n>.+ <gray>#(.+)";
 
     private final PearlConfig config;
-    private final SimpleDateFormat dateFormat;
     private final NamespacedKey exilePearlid;
 
     public CoreLoreGenerator(PearlConfig config, NamespacedKey exilePearLid) {
         Preconditions.checkNotNull(config, "config");
 
         this.config = config;
-        this.dateFormat = new SimpleDateFormat("dd MMM yyyy");
         this.exilePearlid = exilePearLid;
-
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
     /**
@@ -78,7 +70,7 @@ final class CoreLoreGenerator implements LoreProvider {
 
         lore.add(parse("<l>%s", pearl.getItemName()));
         lore.add(parse(PlayerNameStringFormat, pearl.getPlayerName(), Integer.toString(pearl.getPearlId(), 36).toUpperCase()));
-        lore.add(parse("<a>Exiled on: <n>%s", dateFormat.format(pearl.getPearledOn())));
+        lore.add(parse("<a>Exiled on: <n>%s", CmdShowAllPearls.DATE_FORMAT.format(pearl.getPearledOn())));
         lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
         if (ExilePearlPlugin.getApi().isBanStickEnabled() && BanHandler.isPlayerBanned(pearl.getPlayerId())) {
             lore.add(parse("<b>Player is banned."));

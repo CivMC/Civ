@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -42,7 +43,11 @@ import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class CmdShowAllPearls extends PearlCommand {
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
+    static {
+        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
+
     private static final Map<UUID, Long> COOLDOWNS = new HashMap<>();
     private static final long COOLDOWN = 10_000; // 10 seconds
     private static final Set<UUID> TOGGLES = new HashSet<>();
