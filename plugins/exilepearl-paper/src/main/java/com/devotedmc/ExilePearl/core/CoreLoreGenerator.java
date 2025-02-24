@@ -2,11 +2,12 @@ package com.devotedmc.ExilePearl.core;
 
 import com.devotedmc.ExilePearl.*;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
-import com.devotedmc.ExilePearl.command.CmdShowAllPearls;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
+import com.devotedmc.ExilePearl.util.PearlDateFormatFactory;
 import com.google.common.base.Preconditions;
 import com.programmerdan.minecraft.banstick.handler.BanHandler;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +30,7 @@ import vg.civcraft.mc.civmodcore.chat.ChatUtils;
  * @author Gordon
  */
 final class CoreLoreGenerator implements LoreProvider {
+    private static final DateFormat DATE_FORMAT = PearlDateFormatFactory.buildPearlDateFormat();
 
     // These need to match!
     private static String PlayerNameStringFormat = "<a>Player: <n>%s <gray>#%s";
@@ -70,7 +72,7 @@ final class CoreLoreGenerator implements LoreProvider {
 
         lore.add(parse("<l>%s", pearl.getItemName()));
         lore.add(parse(PlayerNameStringFormat, pearl.getPlayerName(), Integer.toString(pearl.getPearlId(), 36).toUpperCase()));
-        lore.add(parse("<a>Exiled on: <n>%s", CmdShowAllPearls.DATE_FORMAT.format(pearl.getPearledOn())));
+        lore.add(parse("<a>Exiled on: <n>%s", DATE_FORMAT.format(pearl.getPearledOn())));
         lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
         if (ExilePearlPlugin.getApi().isBanStickEnabled() && BanHandler.isPlayerBanned(pearl.getPlayerId())) {
             lore.add(parse("<b>Player is banned."));

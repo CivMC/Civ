@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.util.PearlDateFormatFactory;
 import com.programmerdan.minecraft.banstick.handler.BanHandler;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -43,11 +44,7 @@ import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class CmdShowAllPearls extends PearlCommand {
 
-    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
-    static {
-        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
-    }
-
+    private static final DateFormat DATE_FORMAT = PearlDateFormatFactory.buildPearlDateFormat();
     private static final Map<UUID, Long> COOLDOWNS = new HashMap<>();
     private static final long COOLDOWN = 10_000; // 10 seconds
     private static final Set<UUID> TOGGLES = new HashSet<>();
