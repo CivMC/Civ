@@ -24,4 +24,12 @@ public class VirtualEssenceManager {
     public void setEssence(UUID playerId, int essence) {
         playerEssence.setValue(playerId, Math.min(essence, this.virtualCap));
     }
+
+    public boolean isAtEssenceCapacity(UUID playerId) {
+        Integer value = playerEssence.getValue(playerId);
+        if (value == null) {
+            return false;
+        }
+        return value >= this.virtualCap;
+    }
 }
