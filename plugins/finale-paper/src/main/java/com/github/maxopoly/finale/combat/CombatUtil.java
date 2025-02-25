@@ -97,12 +97,13 @@ public class CombatUtil {
                 if (shouldCrit) {
                     double critMultiplier = 1.5d;
                     if (victim.getBukkitEntity() instanceof org.bukkit.entity.LivingEntity) {
-                        CritHitEvent critHitEvent = new CritHitEvent(((Player) attacker.getBukkitEntity()), ((org.bukkit.entity.LivingEntity) victim.getBukkitEntity()), critMultiplier);
+                        CritHitEvent critHitEvent = new CritHitEvent(attacker.getBukkitEntity(), ((org.bukkit.entity.LivingEntity) victim.getBukkitEntity()), critMultiplier);
                         org.bukkit.Bukkit.getPluginManager().callEvent(critHitEvent);
 
                         critMultiplier = critHitEvent.getCritMultiplier();
                     }
 
+                    damagesource.critical();
                     damage *= critMultiplier;
                 }
                 damage += f1;
@@ -152,7 +153,7 @@ public class CombatUtil {
 
                                 if (entityliving != attacker && entityliving != victim && !attacker.skipAttackInteraction(entityliving) && (!(entityliving instanceof ArmorStand) || !((ArmorStand) entityliving).isMarker()) && attacker.distanceToSqr(entityliving) < 9.0D) {
                                     // CraftBukkit start - Only apply knockback if the damage hits
-                                    if (entityliving.hurtServer(entityliving.level().getMinecraftWorld(), world.damageSources().playerAttack(attacker).sweep(), f4)) {
+                                    if (entityliving.hurtServer(entityliving.level().getMinecraftWorld(), world.damageSources().playerAttack(attacker).sweep().critical(shouldCrit), f4)) {
                                         entityliving.knockback(0.4F, (double) Mth.sin(attacker.getBukkitYaw() * 0.017453292F), (double) (-Mth.cos(attacker.getBukkitYaw() * 0.017453292F)));
                                     }
                                     // CraftBukkit end
