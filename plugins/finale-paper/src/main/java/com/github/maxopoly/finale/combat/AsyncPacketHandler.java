@@ -31,7 +31,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -75,6 +74,7 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
                 return;
             }
             event.setCancelled(true);
+            float fallDistance = attacker.getFallDistance();
             new BukkitRunnable() {
 
                 @Override

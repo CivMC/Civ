@@ -3,7 +3,6 @@ package com.github.maxopoly.finale.combat;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.combat.event.CritHitEvent;
 import com.github.maxopoly.finale.combat.knockback.KnockbackStrategy;
-import com.github.maxopoly.finale.misc.knockback.KnockbackConfig;
 
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +21,6 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,9 +34,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftVector;
-import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityExhaustionEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.util.Vector;
@@ -91,7 +87,7 @@ public class CombatUtil {
                     dealtExtraKnockback = true;
                 }
 
-                boolean shouldCrit = shouldDamage && attacker.fallDistance > 0.0F && !attacker.onGround() && !attacker.onClimbable() && !attacker.isInWater()
+                boolean shouldCrit = shouldDamage && attacker.fallDistance > attacker.yOld - attacker.getY() && !attacker.onGround() && !attacker.onClimbable() && !attacker.isInWater()
                     && !attacker.hasEffect(MobEffects.BLINDNESS) && !attacker.isPassenger() && victim instanceof LivingEntity;
                 shouldCrit = shouldCrit && !sprintHandler.isSprinting(attacker);
                 if (shouldCrit) {
@@ -188,7 +184,7 @@ public class CombatUtil {
                             // CraftBukkit end
                         }
 
-                        if (shouldCrit) {
+                        if (shouldCrit && !wasInvulnerable) {
                             if (config.getCombatSounds().isCritEnabled()) {
                                 sendSoundEffect(attacker, attacker.getX(), attacker.getY(), attacker.getZ(),
                                     SoundEvents.PLAYER_ATTACK_CRIT, attacker.getSoundSource(), 1.0F, 1.0F);
@@ -196,7 +192,7 @@ public class CombatUtil {
                             attacker.crit(victim);
                         }
 
-                        if (shouldCrit || shouldSweep) {
+                        if ((shouldCrit || shouldSweep) && !wasInvulnerable) {
                             if (shouldDamage && config.getCombatSounds().isStrongEnabled()) {
                                 attacker.level().playSound(attacker, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, attacker.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
                             } else if (config.getCombatSounds().isWeakEnabled()) {
