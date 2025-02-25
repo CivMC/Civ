@@ -12,6 +12,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
@@ -123,13 +124,13 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
     @Override
     public List<String> getTextualInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
         List<String> res = super.getTextualInputRepresentation(i, fccf);
-        res.add("1 " + ItemUtils.getItemName(tool.getItemStackRepresentation().get(0)));
+        res.add("1 " + ChatUtils.translate(tool.getItemStackRepresentation().get(0)));
         return res;
     }
 
     @Override
     public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-        return Arrays.asList("1 " + ItemUtils.getItemName(tool.getItemStackRepresentation().get(0)) + " with "
+        return Arrays.asList("1 " + ChatUtils.translate(tool.getItemStackRepresentation().get(0)) + " with "
             + enchant.toString() + " " + level);
     }
 }
