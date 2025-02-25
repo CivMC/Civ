@@ -348,12 +348,12 @@ shield:
     power:
       fromGround:
         x: 1.5
-        y: 1
+        y: 0.7
         z: 1.5
       inAir:
-        x: 1
-        y: 0.5
-        z: 1
+        x: 0.75
+        y: 0.35
+        z: 0.75
     targetDistance: 3
     damage: 1
     cooldown: 5s

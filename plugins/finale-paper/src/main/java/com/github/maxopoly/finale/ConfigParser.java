@@ -331,7 +331,7 @@ public class ConfigParser {
         double fgpy = fromGroundSection.getDouble("y");
         double fgpz = fromGroundSection.getDouble("z");
         Vector fromGroundPower = new Vector(fgpx, fgpy, fgpz);
-        ConfigurationSection inAirSection = powerSection.getConfigurationSection("fromGround");
+        ConfigurationSection inAirSection = powerSection.getConfigurationSection("inAir");
         double iapx = inAirSection.getDouble("x");
         double iapy = inAirSection.getDouble("y");
         double iapz = inAirSection.getDouble("z");
