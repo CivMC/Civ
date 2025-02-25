@@ -2,6 +2,7 @@
 paper = "1.21.3-R0.1-SNAPSHOT"
 junit = "5.8.2"
 nuotifier = "2.7.2"
+velocity = "3.4.0-SNAPSHOT"
 
 [plugins]
 paper-userdev = { id = "io.papermc.paperweight.userdev", version = "2.0.0-beta.11" }
@@ -10,6 +11,7 @@ runpaper = { id = "xyz.jpenilla.run-paper", version = "2.3.1" }
 
 [libraries]
 paper-api = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }
+velocity-api = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity"}
 
 aikar-acf = { group = "co.aikar", name = "acf-bukkit", version = "0.5.1-SNAPSHOT" }
 aikar-taskchain = { group = "co.aikar", name = "taskchain-bukkit", version = "3.7.2" }
@@ -17,6 +19,9 @@ aikar-taskchain = { group = "co.aikar", name = "taskchain-bukkit", version = "3.
 commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version = "3.12.0" }
 commons-collections4 = { group = "org.apache.commons", name = "commons-collections4", version = "4.4" }
 commons-math3 = { group = "org.apache.commons", name = "commons-math3", version = "3.6.1" }
+
+cron-utils = { group = "com.cronutils", name = "cron-utils", version = "9.2.1" }
+snakeyaml = { group = "org.yaml", name = "snakeyaml", version = "2.3"}
 
 rabbitmq-client = { group = "com.rabbitmq", name = "amqp-client", version = "5.17.1" }
 
