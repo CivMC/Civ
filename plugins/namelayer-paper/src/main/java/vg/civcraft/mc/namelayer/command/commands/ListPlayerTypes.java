@@ -9,14 +9,14 @@ import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 
 public class ListPlayerTypes extends BaseCommandMiddle {
 
-	@CommandAlias("nllpt|ranks")
-	@Description("List PlayerTypes.")
-	public void execute(CommandSender sender) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage("wereyjukqswedfrgyjukl.");
-			return;
-		}
-		Player p = (Player) sender;
-		PlayerType.displayPlayerTypesnllpt(p);
-	}
+    @CommandAlias("nllpt|ranks")
+    @Description("List PlayerTypes.")
+    public void execute(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("wereyjukqswedfrgyjukl.");
+            return;
+        }
+        Player p = (Player) sender;
+        PlayerType.displayPlayerTypesnllpt(p);
+    }
 }

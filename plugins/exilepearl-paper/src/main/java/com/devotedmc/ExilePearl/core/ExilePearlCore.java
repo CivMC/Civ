@@ -19,6 +19,8 @@ import com.devotedmc.ExilePearl.util.Clock;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.devotedmc.ExilePearl.util.NameLayerPermissions;
 import com.google.common.base.Preconditions;
+import io.papermc.paper.plugin.configuration.PluginMeta;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
@@ -57,443 +59,448 @@ import java.util.logging.Logger;
  * The reason for putting this in a separate class is two-fold.
  * 1. It forces any development to reference the API instead of the implementation.
  * 2. It's much easier for testing because creating instances of JavaPlugin inside
- * 		a test case isn't trivial.
- *
+ * a test case isn't trivial.
  *
  * @author Gordon
  */
 final class ExilePearlCore implements ExilePearlApi {
 
-	private final Plugin plugin;
-	private final CorePluginFactory pearlFactory;
-	private final PearlConfig pearlConfig;
-	private final CoreStorageProvider storageProvider;
-	private final PearlManager pearlManager;
-	private final LoreProvider loreGenerator;
-	private final ExilePearlRunnable pearlDecayWorker;;
-	private final BorderHandler borderHandler;
-	private final SuicideHandler suicideHandler;
-	private final DamageLogger damageLogger;
-	private BrewHandler brewHandler;
+    private final Plugin plugin;
+    private final CorePluginFactory pearlFactory;
+    private final PearlConfig pearlConfig;
+    private final CoreStorageProvider storageProvider;
+    private final PearlManager pearlManager;
+    private final LoreProvider loreGenerator;
+    private final ExilePearlRunnable pearlDecayWorker;
+    ;
+    private final BorderHandler borderHandler;
+    private final SuicideHandler suicideHandler;
+    private final DamageLogger damageLogger;
+    private BrewHandler brewHandler;
 
-	private final PlayerListener playerListener;
-	private final ExileListener exileListener;
-	private final CitadelListener citadelListener;
-	private final CivChatListener chatListener;
-	private final BastionListener bastionListener;
-	private final JukeAlertListener jukeAlertListener;
-	private final RandomSpawnListener randomSpawnListener;
-	private final BanStickListener banStickListener;
+    private final PlayerListener playerListener;
+    private final ExileListener exileListener;
+    private final CitadelListener citadelListener;
+    private final CivChatListener chatListener;
+    private final BastionListener bastionListener;
+    private final JukeAlertListener jukeAlertListener;
+    private final RandomSpawnListener randomSpawnListener;
+    private final BanStickListener banStickListener;
 
-	private final HashSet<BaseCommand<?>> commands;
-	private final CmdAutoHelp autoHelp;
-	private CoreClock clock;
+    private final HashSet<BaseCommand<?>> commands;
+    private final CmdAutoHelp autoHelp;
+    private CoreClock clock;
 
-	private PluginStorage storage;
-	private CombatTagPlus combatTag;
+    private PluginStorage storage;
+    private CombatTagPlus combatTag;
 
-	public ExilePearlCore(final Plugin plugin) {
-		Preconditions.checkNotNull(plugin, "plugin");
+    public ExilePearlCore(final Plugin plugin) {
+        Preconditions.checkNotNull(plugin, "plugin");
 
-		this.plugin = plugin;
+        this.plugin = plugin;
 
-		pearlFactory = new CorePluginFactory(this);
-		pearlConfig = pearlFactory.createPearlConfig();
-		storageProvider = new CoreStorageProvider(this, pearlFactory);
-		pearlManager = pearlFactory.createPearlManager();
-		loreGenerator = pearlFactory.createLoreGenerator();
-		pearlDecayWorker = pearlFactory.createPearlDecayWorker();
-		borderHandler = pearlFactory.createPearlBorderHandler();
-		suicideHandler = pearlFactory.createSuicideHandler();
-		damageLogger = pearlFactory.createDamageLogger();
+        pearlFactory = new CorePluginFactory(this);
+        pearlConfig = pearlFactory.createPearlConfig();
+        storageProvider = new CoreStorageProvider(this, pearlFactory);
+        pearlManager = pearlFactory.createPearlManager();
+        loreGenerator = pearlFactory.createLoreGenerator();
+        pearlDecayWorker = pearlFactory.createPearlDecayWorker();
+        borderHandler = pearlFactory.createPearlBorderHandler();
+        suicideHandler = pearlFactory.createSuicideHandler();
+        damageLogger = pearlFactory.createDamageLogger();
 
-		playerListener = new PlayerListener(this);
-		exileListener = new ExileListener(this);
-		citadelListener = new CitadelListener(this);
-		chatListener = new CivChatListener(this);
-		bastionListener = new BastionListener(this);
-		jukeAlertListener = new JukeAlertListener(this);
-		randomSpawnListener = new RandomSpawnListener(this);
-		banStickListener = new BanStickListener(this);
+        playerListener = new PlayerListener(this);
+        exileListener = new ExileListener(this);
+        citadelListener = new CitadelListener(this);
+        chatListener = new CivChatListener(this);
+        bastionListener = new BastionListener(this);
+        jukeAlertListener = new JukeAlertListener(this);
+        randomSpawnListener = new RandomSpawnListener(this);
+        banStickListener = new BanStickListener(this);
 
-		commands = new HashSet<>();
-		autoHelp = new CmdAutoHelp(this);
-		clock = new CoreClock();
-	}
+        commands = new HashSet<>();
+        autoHelp = new CmdAutoHelp(this);
+        clock = new CoreClock();
+    }
 
-	@Override
-	public void onLoad() {
-	}
+    @Override
+    public void onLoad() {
+    }
 
-	/**
-	 * Spigot enable method
-	 */
-	@Override
-	public void onEnable() {
-		log("=== ENABLE START ===");
-		long timeEnableStart = System.currentTimeMillis();
+    /**
+     * Spigot enable method
+     */
+    @Override
+    public void onEnable() {
+        log("=== ENABLE START ===");
+        long timeEnableStart = System.currentTimeMillis();
 
-		pearlConfig.addConfigurable(playerListener);
-		pearlConfig.addConfigurable(exileListener);
-		pearlConfig.addConfigurable(pearlDecayWorker);
-		pearlConfig.addConfigurable(borderHandler);
-		pearlConfig.addConfigurable(suicideHandler);
-		pearlConfig.addConfigurable(damageLogger);
+        pearlConfig.addConfigurable(playerListener);
+        pearlConfig.addConfigurable(exileListener);
+        pearlConfig.addConfigurable(pearlDecayWorker);
+        pearlConfig.addConfigurable(borderHandler);
+        pearlConfig.addConfigurable(suicideHandler);
+        pearlConfig.addConfigurable(damageLogger);
 
-		saveDefaultConfig();
-		pearlConfig.reload();
+        saveDefaultConfig();
+        pearlConfig.reload();
 
-		// Storage connect and load
-		if (storageProvider.getStorage() == null) {
-			storage = storageProvider.createStorage();
-		}
-		if (storage.connect()) {
-			pearlManager.loadPearls();
-		} else {
-			log(Level.SEVERE, "Failed to connect to storage.");
-		}
-
-		// Add commands
-		commands.add(new CmdExilePearl(this));
-		commands.add(new CmdLegacy(this));
-		commands.add(new CmdSuicide(this));
-
-		// Register events
-		getServer().getPluginManager().registerEvents(playerListener, this);
-		getServer().getPluginManager().registerEvents(suicideHandler, this);
-		getServer().getPluginManager().registerEvents(borderHandler, this);
-		getServer().getPluginManager().registerEvents(exileListener, this);
-		if (isCitadelEnabled()) {
-			this.getServer().getPluginManager().registerEvents(citadelListener, this);
-		} else {
-			logIgnoringHooks("Citadel");
-		}
-		if (isCivChatEnabled()) {
-			this.getServer().getPluginManager().registerEvents(chatListener, this);
-		} else {
-			logIgnoringHooks("CivChat");
-		}
-
-		registerExileBroadcastPermissions();
-
-		if (isBastionEnabled()) {
-			this.getServer().getPluginManager().registerEvents(bastionListener, this);
-			registerBastionPermissions();
-		} else {
-			logIgnoringHooks("Bastion");
-		}
-		if (isJukeAlertEnabled()) {
-			this.getServer().getPluginManager().registerEvents(jukeAlertListener, this);
-		} else {
-			logIgnoringHooks("JukeAlert");
-		}
-		if (isRandomSpawnEnabled()) {
-			this.getServer().getPluginManager().registerEvents(randomSpawnListener, this);
-		} else {
-			logIgnoringHooks("RandomSpawn");
-		}
-		if(isBanStickEnabled()) {
-		    this.getServer().getPluginManager().registerEvents(banStickListener, this);
+        // Storage connect and load
+        if (storageProvider.getStorage() == null) {
+            storage = storageProvider.createStorage();
         }
-		brewHandler = pearlFactory.createBrewHandler();
+        if (storage.connect()) {
+            pearlManager.loadPearls();
+        } else {
+            log(Level.SEVERE, "Failed to connect to storage.");
+        }
 
-		// Start tasks
-		pearlDecayWorker.start();
-		borderHandler.start();
-		suicideHandler.start();
-		if (pearlConfig.getDamageLogEnabled()) {
-			damageLogger.start();
-			this.getServer().getPluginManager().registerEvents(damageLogger, this);
-		} else {
-			logIgnoringTask(damageLogger);
-		}
+        // Add commands
+        commands.add(new CmdExilePearl(this));
+        commands.add(new CmdLegacy(this));
+        commands.add(new CmdSuicide(this));
 
-		Plugin combatPlugin = Bukkit.getPluginManager().getPlugin("CombatTagPlus");
-		if(combatPlugin != null) {
-			combatTag = (CombatTagPlus)combatPlugin;
-		}
+        // Register events
+        getServer().getPluginManager().registerEvents(playerListener, this);
+        getServer().getPluginManager().registerEvents(suicideHandler, this);
+        getServer().getPluginManager().registerEvents(borderHandler, this);
+        getServer().getPluginManager().registerEvents(exileListener, this);
+        if (isCitadelEnabled()) {
+            this.getServer().getPluginManager().registerEvents(citadelListener, this);
+        } else {
+            logIgnoringHooks("Citadel");
+        }
+        if (isCivChatEnabled()) {
+            this.getServer().getPluginManager().registerEvents(chatListener, this);
+        } else {
+            logIgnoringHooks("CivChat");
+        }
 
-		log("=== ENABLE DONE (Took "+(System.currentTimeMillis() - timeEnableStart)+"ms) ===");
-	}
+        registerExileBroadcastPermissions();
 
-	private void registerBastionPermissions() {
-		if(!this.getServer().getPluginManager().isPluginEnabled("NameLayer")) return;
+        if (isBastionEnabled()) {
+            this.getServer().getPluginManager().registerEvents(bastionListener, this);
+            registerBastionPermissions();
+        } else {
+            logIgnoringHooks("Bastion");
+        }
+        if (isJukeAlertEnabled()) {
+            this.getServer().getPluginManager().registerEvents(jukeAlertListener, this);
+        } else {
+            logIgnoringHooks("JukeAlert");
+        }
+        if (isRandomSpawnEnabled()) {
+            this.getServer().getPluginManager().registerEvents(randomSpawnListener, this);
+        } else {
+            logIgnoringHooks("RandomSpawn");
+        }
+        if (isBanStickEnabled()) {
+            this.getServer().getPluginManager().registerEvents(banStickListener, this);
+        }
+        brewHandler = pearlFactory.createBrewHandler();
 
-		LinkedList<GroupManager.PlayerType> memberAndAbove = new LinkedList<>();
-		memberAndAbove.add(GroupManager.PlayerType.MEMBERS);
-		memberAndAbove.add(GroupManager.PlayerType.MODS);
-		memberAndAbove.add(GroupManager.PlayerType.ADMINS);
-		memberAndAbove.add(GroupManager.PlayerType.OWNER);
+        // Start tasks
+        pearlDecayWorker.start();
+        borderHandler.start();
+        suicideHandler.start();
+        if (pearlConfig.getDamageLogEnabled()) {
+            damageLogger.start();
+            this.getServer().getPluginManager().registerEvents(damageLogger, this);
+        } else {
+            logIgnoringTask(damageLogger);
+        }
 
-		PermissionType.registerPermission(NameLayerPermissions.BASTION_ALLOW_EXILED, memberAndAbove);
-	}
+        Plugin combatPlugin = Bukkit.getPluginManager().getPlugin("CombatTagPlus");
+        if (combatPlugin != null) {
+            combatTag = (CombatTagPlus) combatPlugin;
+        }
 
-	private void registerExileBroadcastPermissions() {
-		if (!this.getServer().getPluginManager().isPluginEnabled("NameLayer")) return;
+        log("=== ENABLE DONE (Took " + (System.currentTimeMillis() - timeEnableStart) + "ms) ===");
+    }
 
-		LinkedList<GroupManager.PlayerType> memberAndAbove = new LinkedList<>();
-		memberAndAbove.add(GroupManager.PlayerType.MEMBERS);
-		memberAndAbove.add(GroupManager.PlayerType.MODS);
-		memberAndAbove.add(GroupManager.PlayerType.ADMINS);
-		memberAndAbove.add(GroupManager.PlayerType.OWNER);
+    private void registerBastionPermissions() {
+        if (!this.getServer().getPluginManager().isPluginEnabled("NameLayer")) return;
 
-		PermissionType.registerPermission(NameLayerPermissions.ALLOW_EXILE_BROADCAST, memberAndAbove);
-	}
+        LinkedList<GroupManager.PlayerType> memberAndAbove = new LinkedList<>();
+        memberAndAbove.add(GroupManager.PlayerType.MEMBERS);
+        memberAndAbove.add(GroupManager.PlayerType.MODS);
+        memberAndAbove.add(GroupManager.PlayerType.ADMINS);
+        memberAndAbove.add(GroupManager.PlayerType.OWNER);
 
+        PermissionType.registerPermission(NameLayerPermissions.BASTION_ALLOW_EXILED, memberAndAbove);
+    }
 
-	/**
-	 * Spigot disable method
-	 */
-	@Override
-	public void onDisable() {
-		HandlerList.unregisterAll(this);
-		pearlDecayWorker.stop();
-		borderHandler.stop();
-		suicideHandler.stop();
-		storage.disconnect();
-	}
+    private void registerExileBroadcastPermissions() {
+        if (!this.getServer().getPluginManager().isPluginEnabled("NameLayer")) return;
 
-	private void logIgnoringHooks(String pluginName) {
-		log(Level.WARNING, "Ignoring hooks for '%s' since it's not enabled.", pluginName);
-	}
+        LinkedList<GroupManager.PlayerType> memberAndAbove = new LinkedList<>();
+        memberAndAbove.add(GroupManager.PlayerType.MEMBERS);
+        memberAndAbove.add(GroupManager.PlayerType.MODS);
+        memberAndAbove.add(GroupManager.PlayerType.ADMINS);
+        memberAndAbove.add(GroupManager.PlayerType.OWNER);
 
-	private void logIgnoringTask(ExilePearlRunnable task) {
-		log(Level.WARNING, "Ignoring the task '%s' since it's not enabled.", task.getTaskName());
-	}
-
-	/**
-	 * Gets the pearl configuration
-	 * @return The pearl configuration
-	 */
-	@Override
-	public PearlConfig getPearlConfig() {
-		return pearlConfig;
-	}
-
-	/**
-	 * Gets the plugin storage provider
-	 * @return The storage instance provider
-	 */
-	@Override
-	public StorageProvider getStorageProvider() {
-		return storageProvider;
-	}
-
-	/**
-	 * Gets the pearl manager
-	 * @return The pearl manager instance
-	 */
-	@Override
-	public PearlManager getPearlManager() {
-		return pearlManager;
-	}
-
-	@Override
-	public DamageLogger getDamageLogger() {
-		return damageLogger;
-	}
-
-	/**
-	 * Gets the auto-help command
-	 * @return The auto-help command
-	 */
-	@Override
-	public PearlCommand getAutoHelp() {
-		return autoHelp;
-	}
-
-	/**
-	 * Gets the suicide handler
-	 * @return The suicide handler
-	 */
-	@Override
-	public SuicideHandler getSuicideHandler() {
-		return suicideHandler;
-	}
-
-	/**
-	 * Handles a bukkit command event
-	 */
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
-		for (BaseCommand<?> c : commands) {
-			List<String> aliases = c.getAliases();
-			if (aliases.contains(cmd.getLabel())) {
-
-				// Set the label to the default alias
-				cmd.setLabel(aliases.get(0));
-
-				c.execute(sender, new ArrayList<>(Arrays.asList(args)));
-				return true;
-			}
-		}
-
-		return false;
-	}
+        PermissionType.registerPermission(NameLayerPermissions.ALLOW_EXILE_BROADCAST, memberAndAbove);
+    }
 
 
-	/**
-	 * Handles a tab complete event
-	 */
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
-		for (BaseCommand<?> c : commands) {
-			List<String> aliases = c.getAliases();
-			if (aliases.contains(cmd.getLabel())) {
+    /**
+     * Spigot disable method
+     */
+    @Override
+    public void onDisable() {
+        HandlerList.unregisterAll(this);
+        pearlDecayWorker.stop();
+        borderHandler.stop();
+        suicideHandler.stop();
+        storage.disconnect();
+    }
 
-				// Set the label to the default alias
-				cmd.setLabel(aliases.get(0));
+    private void logIgnoringHooks(String pluginName) {
+        log(Level.WARNING, "Ignoring hooks for '%s' since it's not enabled.", pluginName);
+    }
 
-				return c.getTabList(sender, new ArrayList<>(Arrays.asList(args)));
-			}
-		}
-		return null;
-	}
+    private void logIgnoringTask(ExilePearlRunnable task) {
+        log(Level.WARNING, "Ignoring the task '%s' since it's not enabled.", task.getTaskName());
+    }
 
-	@Override
-	public void log(Level level, String msg, Object... args) {
-		logInternal(level, String.format(msg, args));
-	}
+    /**
+     * Gets the pearl configuration
+     *
+     * @return The pearl configuration
+     */
+    @Override
+    public PearlConfig getPearlConfig() {
+        return pearlConfig;
+    }
 
-	@Override
-	public void log(String msg, Object... args) {
-		logInternal(Level.INFO, String.format(msg, args));
-	}
+    /**
+     * Gets the plugin storage provider
+     *
+     * @return The storage instance provider
+     */
+    @Override
+    public StorageProvider getStorageProvider() {
+        return storageProvider;
+    }
 
-	@Override
-	public Logger getPluginLogger() {
-		return plugin.getLogger();
-	}
+    /**
+     * Gets the pearl manager
+     *
+     * @return The pearl manager instance
+     */
+    @Override
+    public PearlManager getPearlManager() {
+        return pearlManager;
+    }
 
-	private void logInternal(Level level, String msg) {
-		getLogger().log(level, msg);
-	}
+    @Override
+    public DamageLogger getDamageLogger() {
+        return damageLogger;
+    }
 
-	@Override
-	public ExilePearl exilePlayer(UUID exiledId, UUID killerId, PearlHolder holder) {
-		return pearlManager.exilePlayer(exiledId, killerId, holder);
-	}
+    /**
+     * Gets the auto-help command
+     *
+     * @return The auto-help command
+     */
+    @Override
+    public PearlCommand getAutoHelp() {
+        return autoHelp;
+    }
 
-	@Override
-	public ExilePearl exilePlayer(UUID exiledId, UUID killerId, Location location) {
-		return pearlManager.exilePlayer(exiledId, killerId, location);
-	}
+    /**
+     * Gets the suicide handler
+     *
+     * @return The suicide handler
+     */
+    @Override
+    public SuicideHandler getSuicideHandler() {
+        return suicideHandler;
+    }
 
-	@Override
-	public ExilePearl exilePlayer(UUID exiledId, Player killer) {
-		return pearlManager.exilePlayer(exiledId, killer);
-	}
+    /**
+     * Handles a bukkit command event
+     */
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
+        for (BaseCommand<?> c : commands) {
+            List<String> aliases = c.getAliases();
+            if (aliases.contains(cmd.getLabel())) {
 
-	@Override
-	public ExilePearl getPearl(String name) {
-		return pearlManager.getPearl(name);
-	}
+                // Set the label to the default alias
+                cmd.setLabel(aliases.get(0));
 
-	@Override
-	public ExilePearl getPearl(UUID uid) {
-		return pearlManager.getPearl(uid);
-	}
+                c.execute(sender, new ArrayList<>(Arrays.asList(args)));
+                return true;
+            }
+        }
 
-	@Override
-	public Collection<ExilePearl> getPearls() {
-		return pearlManager.getPearls();
-	}
-
-	@Override
-	public boolean isPlayerExiled(Player player) {
-		return pearlManager.isPlayerExiled(player);
-	}
-
-	@Override
-	public boolean isPlayerExiled(UUID uid) {
-		return pearlManager.isPlayerExiled(uid);
-	}
-
-	@Override
-	public ExilePearl getPearlFromItemStack(ItemStack is) {
-		return pearlManager.getPearlFromItemStack(is);
-	}
-
-	@Override
-	public boolean freePearl(ExilePearl pearl, PearlFreeReason reason) {
-		return pearlManager.freePearl(pearl, reason);
-	}
-
-	@Override
-	public boolean summonPearl(ExilePearl pearl, Player summoner) {
-		return pearlManager.summonPearl(pearl, summoner);
-	}
-
-	@Override
-	public boolean returnPearl(ExilePearl pearl) {
-		return pearlManager.returnPearl(pearl);
-	}
-
-	@Override
-	public Player getPlayer(UUID uid) {
-		return Bukkit.getPlayer(uid);
-	}
-
-	@Override
-	public Player getPlayer(String name) {
-		return Bukkit.getPlayer(name);
-	}
-
-	@Override
-	public String getRealPlayerName(UUID uid) {
-		if (isNameLayerEnabled()) {
-			return NameAPI.getCurrentName(uid);
-		}
-		OfflinePlayer player = Bukkit.getOfflinePlayer(uid);
-		if (player == null) {
-			return null;
-		}
-		return player.getName();
-	}
+        return false;
+    }
 
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public UUID getUniqueId(String name) {
-		if (isNameLayerEnabled()) {
-			return NameAPI.getUUID(name);
-		}
-		OfflinePlayer offline = Bukkit.getOfflinePlayer(name);
-		if (offline != null)  {
-			return offline.getUniqueId();
-		}
-		return null;
-	}
+    /**
+     * Handles a tab complete event
+     */
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
+        for (BaseCommand<?> c : commands) {
+            List<String> aliases = c.getAliases();
+            if (aliases.contains(cmd.getLabel())) {
 
-	@Override
-	public boolean isNameLayerEnabled() {
-		return Bukkit.getPluginManager().isPluginEnabled("NameLayer");
-	}
+                // Set the label to the default alias
+                cmd.setLabel(aliases.get(0));
 
-	@Override
-	public boolean isCitadelEnabled() {
-		return Bukkit.getPluginManager().isPluginEnabled("Citadel");
-	}
+                return c.getTabList(sender, new ArrayList<>(Arrays.asList(args)));
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public boolean isCivChatEnabled() {
-		return Bukkit.getPluginManager().isPluginEnabled("CivChat2");
-	}
+    @Override
+    public void log(Level level, String msg, Object... args) {
+        logInternal(level, String.format(msg, args));
+    }
 
-	@Override
-	public boolean isBastionEnabled() {
-		return Bukkit.getPluginManager().isPluginEnabled("Bastion");
-	}
+    @Override
+    public void log(String msg, Object... args) {
+        logInternal(Level.INFO, String.format(msg, args));
+    }
 
-	@Override
-	public boolean isJukeAlertEnabled() {
-		return Bukkit.getPluginManager().isPluginEnabled("JukeAlert");
-	}
+    @Override
+    public Logger getPluginLogger() {
+        return plugin.getLogger();
+    }
 
-	@Override
-	public boolean isRandomSpawnEnabled() {
-		return Bukkit.getPluginManager().isPluginEnabled("RandomSpawn");
-	}
+    private void logInternal(Level level, String msg) {
+        getLogger().log(level, msg);
+    }
+
+    @Override
+    public ExilePearl exilePlayer(UUID exiledId, UUID killerId, PearlHolder holder) {
+        return pearlManager.exilePlayer(exiledId, killerId, holder);
+    }
+
+    @Override
+    public ExilePearl exilePlayer(UUID exiledId, UUID killerId, Location location) {
+        return pearlManager.exilePlayer(exiledId, killerId, location);
+    }
+
+    @Override
+    public ExilePearl exilePlayer(UUID exiledId, Player killer) {
+        return pearlManager.exilePlayer(exiledId, killer);
+    }
+
+    @Override
+    public ExilePearl getPearl(String name) {
+        return pearlManager.getPearl(name);
+    }
+
+    @Override
+    public ExilePearl getPearl(UUID uid) {
+        return pearlManager.getPearl(uid);
+    }
+
+    @Override
+    public Collection<ExilePearl> getPearls() {
+        return pearlManager.getPearls();
+    }
+
+    @Override
+    public boolean isPlayerExiled(Player player) {
+        return pearlManager.isPlayerExiled(player);
+    }
+
+    @Override
+    public boolean isPlayerExiled(UUID uid) {
+        return pearlManager.isPlayerExiled(uid);
+    }
+
+    @Override
+    public ExilePearl getPearlFromItemStack(ItemStack is) {
+        return pearlManager.getPearlFromItemStack(is);
+    }
+
+    @Override
+    public boolean freePearl(ExilePearl pearl, PearlFreeReason reason) {
+        return pearlManager.freePearl(pearl, reason);
+    }
+
+    @Override
+    public boolean summonPearl(ExilePearl pearl, Player summoner) {
+        return pearlManager.summonPearl(pearl, summoner);
+    }
+
+    @Override
+    public boolean returnPearl(ExilePearl pearl) {
+        return pearlManager.returnPearl(pearl);
+    }
+
+    @Override
+    public Player getPlayer(UUID uid) {
+        return Bukkit.getPlayer(uid);
+    }
+
+    @Override
+    public Player getPlayer(String name) {
+        return Bukkit.getPlayer(name);
+    }
+
+    @Override
+    public String getRealPlayerName(UUID uid) {
+        if (isNameLayerEnabled()) {
+            return NameAPI.getCurrentName(uid);
+        }
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uid);
+        if (player == null) {
+            return null;
+        }
+        return player.getName();
+    }
+
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public UUID getUniqueId(String name) {
+        if (isNameLayerEnabled()) {
+            return NameAPI.getUUID(name);
+        }
+        OfflinePlayer offline = Bukkit.getOfflinePlayer(name);
+        if (offline != null) {
+            return offline.getUniqueId();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean isNameLayerEnabled() {
+        return Bukkit.getPluginManager().isPluginEnabled("NameLayer");
+    }
+
+    @Override
+    public boolean isCitadelEnabled() {
+        return Bukkit.getPluginManager().isPluginEnabled("Citadel");
+    }
+
+    @Override
+    public boolean isCivChatEnabled() {
+        return Bukkit.getPluginManager().isPluginEnabled("CivChat2");
+    }
+
+    @Override
+    public boolean isBastionEnabled() {
+        return Bukkit.getPluginManager().isPluginEnabled("Bastion");
+    }
+
+    @Override
+    public boolean isJukeAlertEnabled() {
+        return Bukkit.getPluginManager().isPluginEnabled("JukeAlert");
+    }
+
+    @Override
+    public boolean isRandomSpawnEnabled() {
+        return Bukkit.getPluginManager().isPluginEnabled("RandomSpawn");
+    }
 
 
     @Override
@@ -501,194 +508,204 @@ final class ExilePearlCore implements ExilePearlApi {
         return Bukkit.getPluginManager().isPluginEnabled("BanStick");
     }
 
-	@Override
-	public boolean isCombatTagEnabled() {
-		return combatTag != null;
-	}
+    @Override
+    public boolean isCombatTagEnabled() {
+        return combatTag != null;
+    }
 
-	@Override
-	public LoreProvider getLoreProvider() {
-		return loreGenerator;
-	}
+    @Override
+    public LoreProvider getLoreProvider() {
+        return loreGenerator;
+    }
 
-	@Override
-	public boolean isPlayerTagged(UUID uid) {
-		if (isCombatTagEnabled()) {
-			return combatTag.getTagManager().isTagged(uid);
-		}
-		return false;
-	}
+    @Override
+    public boolean isPlayerTagged(UUID uid) {
+        if (isCombatTagEnabled()) {
+            return combatTag.getTagManager().isTagged(uid);
+        }
+        return false;
+    }
 
-	@Override
-	public NpcIdentity getPlayerAsTaggedNpc(Player player) {
-		if (isCombatTagEnabled()) {
-			return combatTag.getNpcPlayerHelper().getIdentity(player);
-		}
-		return null;
-	}
+    @Override
+    public NpcIdentity getPlayerAsTaggedNpc(Player player) {
+        if (isCombatTagEnabled()) {
+            return combatTag.getNpcPlayerHelper().getIdentity(player);
+        }
+        return null;
+    }
 
-	@Override
-	public FileConfiguration getConfig() {
-		return plugin.getConfig();
-	}
+    @Override
+    public FileConfiguration getConfig() {
+        return plugin.getConfig();
+    }
 
-	@Override
-	public File getDataFolder() {
-		return plugin.getDataFolder();
-	}
+    @Override
+    public File getDataFolder() {
+        return plugin.getDataFolder();
+    }
 
-	@Override
-	public ChunkGenerator getDefaultWorldGenerator(String arg0, String arg1) {
-		return plugin.getDefaultWorldGenerator(arg0, arg1);
-	}
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(String arg0, String arg1) {
+        return plugin.getDefaultWorldGenerator(arg0, arg1);
+    }
 
-	@Override
-	public @Nullable BiomeProvider getDefaultBiomeProvider(@NotNull String string, @Nullable String string2) {
-		return plugin.getDefaultBiomeProvider(string, string2);
-	}
+    @Override
+    public @Nullable BiomeProvider getDefaultBiomeProvider(@NotNull String string, @Nullable String string2) {
+        return plugin.getDefaultBiomeProvider(string, string2);
+    }
 
-	@Override
-	public PluginDescriptionFile getDescription() {
-		return plugin.getDescription();
-	}
+    @Override
+    public PluginDescriptionFile getDescription() {
+        return plugin.getDescription();
+    }
 
-	@Override
-	public Logger getLogger() {
-		return plugin.getLogger();
-	}
+    @Override
+    public @NotNull PluginMeta getPluginMeta() {
+        return plugin.getDescription();
+    }
 
-	@Override
-	public String getName() {
-		return plugin.getName();
-	}
+    @Override
+    public Logger getLogger() {
+        return plugin.getLogger();
+    }
 
-	@Override
-	public PluginLoader getPluginLoader() {
-		return plugin.getPluginLoader();
-	}
+    @Override
+    public String getName() {
+        return plugin.getName();
+    }
 
-	@Override
-	public InputStream getResource(String arg0) {
-		return plugin.getResource(arg0);
-	}
+    @Override
+    public @NotNull LifecycleEventManager<Plugin> getLifecycleManager() {
+        return plugin.getLifecycleManager();
+    }
 
-	@Override
-	public Server getServer() {
-		return plugin.getServer();
-	}
+    @Override
+    public PluginLoader getPluginLoader() {
+        return plugin.getPluginLoader();
+    }
 
-	@Override
-	public boolean isEnabled() {
-		return plugin.isEnabled();
-	}
+    @Override
+    public InputStream getResource(String arg0) {
+        return plugin.getResource(arg0);
+    }
 
-	@Override
-	public boolean isNaggable() {
-		return plugin.isNaggable();
-	}
+    @Override
+    public Server getServer() {
+        return plugin.getServer();
+    }
 
-	@Override
-	public void reloadConfig() {
-		plugin.reloadConfig();
-	}
+    @Override
+    public boolean isEnabled() {
+        return plugin.isEnabled();
+    }
 
-	@Override
-	public void saveConfig() {
-		plugin.saveConfig();
-	}
+    @Override
+    public boolean isNaggable() {
+        return plugin.isNaggable();
+    }
 
-	@Override
-	public void saveDefaultConfig() {
-		plugin.saveDefaultConfig();
-	}
+    @Override
+    public void reloadConfig() {
+        plugin.reloadConfig();
+    }
 
-	@Override
-	public void saveResource(String arg0, boolean arg1) {
-		plugin.saveResource(arg0, arg1);
-	}
+    @Override
+    public void saveConfig() {
+        plugin.saveConfig();
+    }
 
-	@Override
-	public void setNaggable(boolean arg0) {
-		plugin.setNaggable(arg0);
-	}
+    @Override
+    public void saveDefaultConfig() {
+        plugin.saveDefaultConfig();
+    }
 
-	@Override
-	public boolean isPlayerInUnpermittedBastion(Player player) {
-		if (!isBastionEnabled()) {
-			return false;
-		}
+    @Override
+    public void saveResource(String arg0, boolean arg1) {
+        plugin.saveResource(arg0, arg1);
+    }
 
-		try {
-			final BastionBlockManager manager = Bastion.getBastionManager();
+    @Override
+    public void setNaggable(boolean arg0) {
+        plugin.setNaggable(arg0);
+    }
 
-			Set<BastionBlock> bastions = manager.getBlockingBastions(player.getLocation());
-			PermissionType perm = PermissionType.getPermission(NameLayerPermissions.BASTION_ALLOW_EXILED);
+    @Override
+    public boolean isPlayerInUnpermittedBastion(Player player) {
+        if (!isBastionEnabled()) {
+            return false;
+        }
 
-			for (BastionBlock bastion : bastions) {
-				if (!bastion.permAccess(player, perm)) {
-					return true;
-				}
-			}
-		} catch(Exception ex) {
-			ex.printStackTrace();
-		}
+        try {
+            final BastionBlockManager manager = Bastion.getBastionManager();
 
-		return false;
-	}
+            Set<BastionBlock> bastions = manager.getBlockingBastions(player.getLocation());
+            PermissionType perm = PermissionType.getPermission(NameLayerPermissions.BASTION_ALLOW_EXILED);
 
-	@Override
-	public Clock getClock() {
-		return clock;
-	}
+            for (BastionBlock bastion : bastions) {
+                if (!bastion.permAccess(player, perm)) {
+                    return true;
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-	@Override
-	public BrewHandler getBrewHandler() {
-		return this.brewHandler;
-	}
+        return false;
+    }
 
-	@Override
-	public List<BastionWrapper> getPlayerInUnpermittedBastion(Player player) {
-		if (!isBastionEnabled()) {
-			return new ArrayList<>();
-		}
+    @Override
+    public Clock getClock() {
+        return clock;
+    }
 
-		try {
-			final BastionBlockManager manager = Bastion.getBastionManager();
+    @Override
+    public BrewHandler getBrewHandler() {
+        return this.brewHandler;
+    }
 
-			Set<BastionBlock> bastions = manager.getBlockingBastions(player.getLocation());
-			List<BastionWrapper> wrapper = new LinkedList<>();
-			PermissionType perm = PermissionType.getPermission(NameLayerPermissions.BASTION_ALLOW_EXILED);
+    @Override
+    public List<BastionWrapper> getPlayerInUnpermittedBastion(Player player) {
+        if (!isBastionEnabled()) {
+            return new ArrayList<>();
+        }
 
-			for (BastionBlock bastion : bastions) {
-				if (!bastion.permAccess(player, perm)) {
-					wrapper.add(new BastionWrapper(bastion));
-				}
-			}
-			return wrapper;
-		} catch(Exception ex) {
-			ex.printStackTrace();
-		}
+        try {
+            final BastionBlockManager manager = Bastion.getBastionManager();
 
-		return new ArrayList<>();
-	}
+            Set<BastionBlock> bastions = manager.getBlockingBastions(player.getLocation());
+            List<BastionWrapper> wrapper = new LinkedList<>();
+            PermissionType perm = PermissionType.getPermission(NameLayerPermissions.BASTION_ALLOW_EXILED);
 
-	@Override
-	public boolean requestSummon(ExilePearl pearl) {
-		return pearlManager.requestSummon(pearl);
-	}
+            for (BastionBlock bastion : bastions) {
+                if (!bastion.permAccess(player, perm)) {
+                    wrapper.add(new BastionWrapper(bastion));
+                }
+            }
+            return wrapper;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
-	@Override
-	public boolean awaitingSummon(ExilePearl pearl) {
-		return pearlManager.awaitingSummon(pearl);
-	}
+        return new ArrayList<>();
+    }
 
-	@Override
-	public int getExiledAlts(UUID player, boolean includeSelf) {
-		return pearlManager.getExiledAlts(player, includeSelf);
-	}
+    @Override
+    public boolean requestSummon(ExilePearl pearl) {
+        return pearlManager.requestSummon(pearl);
+    }
 
-	@Override
-	public ExilePearl getPrimaryPearl(UUID player) {
-		return pearlManager.getPrimaryPearl(player);
-	}
+    @Override
+    public boolean awaitingSummon(ExilePearl pearl) {
+        return pearlManager.awaitingSummon(pearl);
+    }
+
+    @Override
+    public int getExiledAlts(UUID player, boolean includeSelf) {
+        return pearlManager.getExiledAlts(player, includeSelf);
+    }
+
+    @Override
+    public ExilePearl getPrimaryPearl(UUID player) {
+        return pearlManager.getPrimaryPearl(player);
+    }
 }

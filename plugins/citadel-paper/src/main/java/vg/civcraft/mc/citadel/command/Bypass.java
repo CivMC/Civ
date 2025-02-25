@@ -11,17 +11,17 @@ import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 
 public class Bypass extends BaseCommand {
 
-	@CommandAlias("ctb|bypass")
-	@Description("Toggles bypass state. In bypass state you can break blocks reinforced on groups you have access to in a single break")
-	public void execute(Player player) {
-		BooleanSetting setting = Citadel.getInstance().getSettingManager().getBypass();
-		boolean enabled = setting.getValue(player);
-		if (enabled) {
-			CitadelUtility.sendAndLog(player, ChatColor.GREEN, "Bypass mode has been disabled.");
-		} else {
-			CitadelUtility.sendAndLog(player, ChatColor.GREEN,
-					"Bypass mode has been enabled. You will be able to break reinforced blocks if you are on the group.");
-		}
-		setting.toggleValue(player.getUniqueId());
-	}
+    @CommandAlias("ctb|bypass")
+    @Description("Toggles bypass state. In bypass state you can break blocks reinforced on groups you have access to in a single break")
+    public void execute(Player player) {
+        BooleanSetting setting = Citadel.getInstance().getSettingManager().getBypass();
+        boolean enabled = setting.getValue(player);
+        if (enabled) {
+            CitadelUtility.sendAndLog(player, ChatColor.GREEN, "Bypass mode has been disabled.");
+        } else {
+            CitadelUtility.sendAndLog(player, ChatColor.GREEN,
+                "Bypass mode has been enabled. You will be able to break reinforced blocks if you are on the group.");
+        }
+        setting.toggleValue(player.getUniqueId());
+    }
 }

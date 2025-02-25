@@ -34,3 +34,13 @@ build
 run
 
 temp
+
+### Docker ###
+containers/data
+
+# npm
+node_modules
+
+# vitepress
+docs/.vitepress/cache
+docs/.vitepress/dist

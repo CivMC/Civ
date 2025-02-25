@@ -1,0 +1,49 @@
+name: 🏗️ Ansible | Update Server
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to Update'
+        type: environment
+        required: true
+        default: Test
+
+jobs:
+  update-server:
+    runs-on: ubuntu-22.04
+    environment: ${{inputs.environment}}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: 🐘 Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: 🐘 Gradle Build
+        run: CI=true ./gradlew :ansible:build --parallel --no-daemon
+
+      - name: Inject secrets
+        run: 'echo "$SECRETS_YML" > variables/secrets.yml'
+        shell: bash
+        working-directory: ./ansible
+        env:
+          SECRETS_YML: ${{secrets.SECRETS_YML}}
+          SUDO_PASSWORD: ${{secrets.SUDO_PASSWORD}}
+
+      - name: Update Server
+        uses: dawidd6/action-ansible-playbook@v2
+        with:
+          playbook: ansible/playbooks/update-server.yml
+          requirements: ansible/requirements.yml
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          known_hosts: ${{secrets.SSH_KNOWN_HOSTS}}
+          options: |
+            --inventory "./ansible/inventories/civmc-${{inputs.environment}}.yml"
+            -e "ansible_become_password=${{secrets.SUDO_PASSWORD}}"

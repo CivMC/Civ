@@ -9,17 +9,18 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public abstract class BaseCommandMiddle extends BaseCommand {
 
-	public BaseCommandMiddle() {}
+    public BaseCommandMiddle() {
+    }
 
-	protected GroupManager gm = NameAPI.getGroupManager();
-	
-	protected boolean groupIsNull(CommandSender sender, String groupname, Group group) {
-	    if (group == null) {
-	        sender.sendMessage(String.format(
-	                "%sThe group \"%s\" does not exist.", 
-	                ChatColor.RED, groupname));
-	        return true;
-	    }
-	    return false;
-	}
-	}
+    protected GroupManager gm = NameAPI.getGroupManager();
+
+    protected boolean groupIsNull(CommandSender sender, String groupname, Group group) {
+        if (group == null) {
+            sender.sendMessage(String.format(
+                "%sThe group \"%s\" does not exist.",
+                ChatColor.RED, groupname));
+            return true;
+        }
+        return false;
+    }
+}

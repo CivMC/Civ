@@ -9,33 +9,34 @@ import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public abstract class PlayerAction extends SnitchAction {
-	protected final UUID player;
 
-	public PlayerAction(long time, Snitch snitch, UUID player) {
-		super(time, snitch);
-		this.player = player;
-	}
+    protected final UUID player;
 
-	/**
-	 * @return Player who commited the action
-	 */
-	public UUID getPlayer() {
-		return player;
-	}
+    public PlayerAction(long time, Snitch snitch, UUID player) {
+        super(time, snitch);
+        this.player = player;
+    }
 
-	@Override
-	public boolean hasPlayer() {
-		return true;
-	}
+    /**
+     * @return Player who commited the action
+     */
+    public UUID getPlayer() {
+        return player;
+    }
 
-	protected String getFormattedTime(
-		final @NotNull DateTimeFormatter formatter
-	) {
-		return formatter.format(Instant.ofEpochMilli(this.time).atOffset(ZoneOffset.UTC));
-	}
+    @Override
+    public boolean hasPlayer() {
+        return true;
+    }
 
-	public String getPlayerName() {
-		return NameAPI.getCurrentName(player);
-	}
+    protected String getFormattedTime(
+        final @NotNull DateTimeFormatter formatter
+    ) {
+        return formatter.format(Instant.ofEpochMilli(this.time).atOffset(ZoneOffset.UTC));
+    }
+
+    public String getPlayerName() {
+        return NameAPI.getCurrentName(player);
+    }
 
 }

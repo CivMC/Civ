@@ -1,0 +1,30 @@
+file:
+  path: slime_worlds
+mysql:
+  enabled: true
+  host: ${CIV_MYSQL_HOST}
+  port: 3306
+  username: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}
+  database: ${CIV_DATABASE_PREFIX}kitpvp
+  usessl: false
+  sqlUrl: jdbc:mysql://{host}:{port}/{database}?autoReconnect=true&allowMultiQueries=true&useSSL={usessl}
+mongodb:
+  enabled: false
+  host: 127.0.0.1
+  port: 27017
+  auth: admin
+  username: slimeworldmanager
+  password: ''
+  database: slimeworldmanager
+  collection: worlds
+  uri: ''
+redis:
+  enabled: false
+  uri: redis://127.0.0.1/
+api:
+  enabled: false
+  ignoreSslCertificate: false
+  username: ''
+  token: ''
+  url: ''

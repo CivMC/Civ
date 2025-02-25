@@ -19,114 +19,115 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class Upgraderecipe extends InputRecipe {
-	private FurnCraftChestEgg egg;
 
-	public Upgraderecipe(String identifier, String name, int productionTime, ItemMap input,
-			FurnCraftChestEgg egg) {
-		super(identifier, name, productionTime, input);
-		this.egg = egg;
-	}
+    private FurnCraftChestEgg egg;
 
-	@Override
-	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
-		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
-		logBeforeRecipeRun(combo, fccf);
-		if (input.isContainedIn(inputInv)) {
-			if (input.removeSafelyFrom(inputInv)) {
-				FurnCraftChestEgg e = egg;
-				fccf.upgrade(e.getName(),
-						e.getRecipes(), e.getFuel(),
-						e.getFuelConsumptionIntervall(), e.getUpdateTime(), e.getMaximumHealth(), 
-						e.getDamagePerDamagingPeriod(), e.getBreakGracePeriod(), e.getCitadelBreakReduction());
-			}
-		}
-		logAfterRecipeRun(combo, fccf);
-		return true;
-	}
+    public Upgraderecipe(String identifier, String name, int productionTime, ItemMap input,
+                         FurnCraftChestEgg egg) {
+        super(identifier, name, productionTime, input);
+        this.egg = egg;
+    }
 
-	@Override
-	public ItemStack getRecipeRepresentation() {
-		ItemStack res = ((InputRecipe)egg.getRecipes().get(0)).getOutputRepresentation(null, null).get(0);
-		res.setAmount(1);
-		ItemMeta im = res.getItemMeta();
-		im.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
-		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		res.setItemMeta(im);
-		ItemUtils.setDisplayName(res, name);
-		return res;
-	}
-	
-	@Override
-	public Material getRecipeRepresentationMaterial() {
-		return ((InputRecipe)egg.getRecipes().get(0)).getOutputRepresentation(null, null).get(0).getType();
-	}
+    @Override
+    public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+        logBeforeRecipeRun(combo, fccf);
+        if (input.isContainedIn(inputInv)) {
+            if (input.removeSafelyFrom(inputInv)) {
+                FurnCraftChestEgg e = egg;
+                fccf.upgrade(e.getName(),
+                    e.getRecipes(), e.getFuel(),
+                    e.getFuelConsumptionIntervall(), e.getUpdateTime(), e.getMaximumHealth(),
+                    e.getDamagePerDamagingPeriod(), e.getBreakGracePeriod(), e.getCitadelBreakReduction());
+            }
+        }
+        logAfterRecipeRun(combo, fccf);
+        return true;
+    }
 
-	@Override
-	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		if (i == null) {
-			return input.getItemStackRepresentation();
-		}
-		LinkedList<ItemStack> result = new LinkedList<>();
-		ItemMap inventoryMap = new ItemMap(i);
-		ItemMap possibleRuns = new ItemMap();
-		for (Entry<ItemStack, Integer> entry : input.getEntrySet()) {
-			if (inventoryMap.getAmount(entry.getKey()) != 0) {
-				possibleRuns.addItemAmount(
-						entry.getKey(),
-						inventoryMap.getAmount(entry.getKey())
-								/ entry.getValue());
-			} else {
-				possibleRuns.addItemAmount(entry.getKey(), 0);
-			}
-		}
-		for (ItemStack is : input.getItemStackRepresentation()) {
-			if (possibleRuns.getAmount(is) != 0) {
-				ItemUtils.addLore(is, ChatColor.GREEN
-						+ "Enough of this material available to upgrade");
-			} else {
-				ItemUtils.addLore(is, ChatColor.RED
-						+ "Not enough of this materials available to upgrade");
-			}
-			result.add(is);
-		}
-		return result;
-	}
+    @Override
+    public ItemStack getRecipeRepresentation() {
+        ItemStack res = ((InputRecipe) egg.getRecipes().get(0)).getOutputRepresentation(null, null).get(0);
+        res.setAmount(1);
+        ItemMeta im = res.getItemMeta();
+        im.addEnchant(Enchantment.SHARPNESS, 1, true);
+        im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        res.setItemMeta(im);
+        ItemUtils.setDisplayName(res, name);
+        return res;
+    }
 
-	@Override
-	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> res = new LinkedList<>();
-		ItemStack cr = new ItemStack(Material.CRAFTING_TABLE);
-		ItemUtils.setDisplayName(cr, egg.getName());
-		ItemUtils.setLore(cr, ChatColor.LIGHT_PURPLE
-				+ "Upgrade to get new and better recipes");
-		res.add(cr);
-		ItemStack fur = new ItemStack(Material.FURNACE);
-		ItemUtils.setDisplayName(fur, egg.getName());
-		ItemUtils.setLore(fur, ChatColor.LIGHT_PURPLE + "Recipes:");
-		for (IRecipe rec : egg.getRecipes()) {
-			ItemUtils.addLore(fur, ChatColor.YELLOW + rec.getName());
-		}
-		res.add(fur);
-		ItemStack che = new ItemStack(Material.CHEST);
-		ItemUtils.setLore(che, ChatColor.LIGHT_PURPLE + "Careful, you can not",
-				ChatColor.LIGHT_PURPLE + "revert upgrades!");
-		ItemUtils.setDisplayName(che, egg.getName());
-		res.add(che);
-		return res;
-	}
+    @Override
+    public Material getRecipeRepresentationMaterial() {
+        return ((InputRecipe) egg.getRecipes().get(0)).getOutputRepresentation(null, null).get(0).getType();
+    }
 
-	public FurnCraftChestEgg getEgg() {
-		return egg;
-	}
+    @Override
+    public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        if (i == null) {
+            return input.getItemStackRepresentation();
+        }
+        LinkedList<ItemStack> result = new LinkedList<>();
+        ItemMap inventoryMap = new ItemMap(i);
+        ItemMap possibleRuns = new ItemMap();
+        for (Entry<ItemStack, Integer> entry : input.getAllItems().entrySet()) {
+            if (inventoryMap.getAmount(entry.getKey()) != 0) {
+                possibleRuns.addItemAmount(
+                    entry.getKey(),
+                    inventoryMap.getAmount(entry.getKey())
+                        / entry.getValue());
+            } else {
+                possibleRuns.addItemAmount(entry.getKey(), 0);
+            }
+        }
+        for (ItemStack is : input.getItemStackRepresentation()) {
+            if (possibleRuns.getAmount(is) != 0) {
+                ItemUtils.addLore(is, ChatColor.GREEN
+                    + "Enough of this material available to upgrade");
+            } else {
+                ItemUtils.addLore(is, ChatColor.RED
+                    + "Not enough of this materials available to upgrade");
+            }
+            result.add(is);
+        }
+        return result;
+    }
 
-	@Override
-	public String getTypeIdentifier() {
-		return "UPGRADE";
-	}
+    @Override
+    public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        List<ItemStack> res = new LinkedList<>();
+        ItemStack cr = new ItemStack(Material.CRAFTING_TABLE);
+        ItemUtils.setDisplayName(cr, egg.getName());
+        ItemUtils.setLore(cr, ChatColor.LIGHT_PURPLE
+            + "Upgrade to get new and better recipes");
+        res.add(cr);
+        ItemStack fur = new ItemStack(Material.FURNACE);
+        ItemUtils.setDisplayName(fur, egg.getName());
+        ItemUtils.setLore(fur, ChatColor.LIGHT_PURPLE + "Recipes:");
+        for (IRecipe rec : egg.getRecipes()) {
+            ItemUtils.addLore(fur, ChatColor.YELLOW + rec.getName());
+        }
+        res.add(fur);
+        ItemStack che = new ItemStack(Material.CHEST);
+        ItemUtils.setLore(che, ChatColor.LIGHT_PURPLE + "Careful, you can not",
+            ChatColor.LIGHT_PURPLE + "revert upgrades!");
+        ItemUtils.setDisplayName(che, egg.getName());
+        res.add(che);
+        return res;
+    }
 
-	@Override
-	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		return Arrays.asList("Upgrades the factory to " + egg.getName());
-	}
+    public FurnCraftChestEgg getEgg() {
+        return egg;
+    }
+
+    @Override
+    public String getTypeIdentifier() {
+        return "UPGRADE";
+    }
+
+    @Override
+    public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        return Arrays.asList("Upgrades the factory to " + egg.getName());
+    }
 
 }

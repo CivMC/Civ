@@ -7,9 +7,8 @@ version = "2.0.1"
 
 dependencies {
     paperweight {
-        paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+        paperDevBundle(libs.versions.paper)
     }
 
-    compileOnly("com.github.TownyAdvanced:towny:0.97.5.0")
-    compileOnly("me.confuser:BarAPI:3.5")
+    compileOnly(libs.barapi)
 }

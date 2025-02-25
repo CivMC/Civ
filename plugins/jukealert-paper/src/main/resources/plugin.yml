@@ -1,33 +1,33 @@
 name: JukeAlert
 main: com.untamedears.jukealert.JukeAlert
 version: ${version}
-authors: [mgrandi, Maxopoly]
-depend: [CivModCore, NameLayer, Citadel]
-softdepend: [VanishNoPacket]
-api-version: 1.16
+authors: [ mgrandi, Maxopoly ]
+depend: [ CivModCore, NameLayer, Citadel ]
+softdepend: [ VanishNoPacket ]
+api-version: 1.21.3
 description: JukeAlert provides an easy-to-use means by which one can record player activity within an 11 block radius. Anything
-   someone does while within eleven blocks of a jukebox you've reinforced will be logged on it, and can be read by looking
-   at the jukebox and typing '/jainfo'.
+  someone does while within eleven blocks of a jukebox you've reinforced will be logged on it, and can be read by looking
+  at the jukebox and typing '/jainfo'.
 permissions:
-   jukealert.admin.jagroup:
-      description: Use /jagroup even when not the owner
-      default: false
-   jukealert.admin.lookupany:
-      description: Use /jalookup even when not the owner
-      default: false
-   jukealert.admin.jaconfig:
-      description: Ability to use /jaconfig
-      default: false
-   jukealert.admin:
-      description: Grants permission to JukeAlert admin commands.
-      default: op
-      children:
-         jukealert.admin.jagroup: true
-         jukealert.admin.lookupany: true
-         jukealert.admin.jaconfig: true
-   jukealert.jalookup:
-      description: Ability to use /jalookup
-      default: true
-   jukealert.vanish:
-      description: Ability to avoid snitches.
-      default: op
+  jukealert.admin.jagroup:
+    description: Use /jagroup even when not the owner
+    default: false
+  jukealert.admin.lookupany:
+    description: Use /jalookup even when not the owner
+    default: false
+  jukealert.admin.jaconfig:
+    description: Ability to use /jaconfig
+    default: false
+  jukealert.admin:
+    description: Grants permission to JukeAlert admin commands.
+    default: op
+    children:
+      jukealert.admin.jagroup: true
+      jukealert.admin.lookupany: true
+      jukealert.admin.jaconfig: true
+  jukealert.jalookup:
+    description: Ability to use /jalookup
+    default: true
+  jukealert.vanish:
+    description: Ability to avoid snitches.
+    default: op

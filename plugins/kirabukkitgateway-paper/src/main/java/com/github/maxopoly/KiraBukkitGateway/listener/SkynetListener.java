@@ -14,7 +14,6 @@ public class SkynetListener implements Listener {
 		if (!e.getPlayer().hasPlayedBefore()) {
 			KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginFirstTime(e.getPlayer());
 		}
-
 		KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginOut(e.getPlayer(), "LOGIN");
 	}
 

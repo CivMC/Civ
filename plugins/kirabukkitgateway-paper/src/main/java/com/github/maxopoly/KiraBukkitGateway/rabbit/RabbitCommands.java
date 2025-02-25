@@ -33,8 +33,8 @@ public class RabbitCommands {
 		}
 		JsonObject json = new JsonObject();
 		json.addProperty("group", group);
-		json.addProperty("senderUUID", sender.getUniqueId().toString());
-		json.addProperty("sender", sender.getName());
+        json.addProperty("senderUUID", sender.getUniqueId().toString());
+        json.addProperty("sender", sender.getName());
 		json.addProperty("msg", msg);
 		sendInternal("groupchatmessage", json);
 	}
@@ -55,16 +55,16 @@ public class RabbitCommands {
 	public void playerLoginFirstTime(Player player) {
 		nonNullArgs(player);
 		JsonObject json = new JsonObject();
-		json.addProperty("player", player.getName());
-		json.addProperty("playerUUID", player.getUniqueId().toString());
+        json.addProperty("player", player.getName());
+        json.addProperty("playerUUID", player.getUniqueId().toString());
 		sendInternal("newplayer", json);
 	}
 
 	public void playerLoginOut(Player player, String action) {
 		nonNullArgs(player, action);
 		JsonObject json = new JsonObject();
-		json.addProperty("player", player.getName());
-		json.addProperty("playerUUID", player.getUniqueId().toString());
+        json.addProperty("player", player.getName());
+        json.addProperty("playerUUID", player.getUniqueId().toString());
 		json.addProperty("action", action);
 		sendInternal("skynet", json);
 	}

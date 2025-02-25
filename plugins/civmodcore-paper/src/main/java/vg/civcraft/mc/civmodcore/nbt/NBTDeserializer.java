@@ -1,6 +1,6 @@
 package vg.civcraft.mc.civmodcore.nbt;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 /**
@@ -10,7 +10,7 @@ import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 @FunctionalInterface
 public interface NBTDeserializer<T extends NBTSerializable> {
 
-	@Nonnull
-	T fromNBT(@Nonnull final NBTCompound nbt);
+    @NotNull
+    T fromNBT(@NotNull final NBTCompound nbt);
 
 }

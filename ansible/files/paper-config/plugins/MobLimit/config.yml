@@ -1,0 +1,26 @@
+chunk: -1
+global: -1
+reasons:
+  breeding:
+    pig:
+      dumb: true
+    cow:
+      dumb: true
+    mooshroom:
+      dumb: true
+    sheep:
+      dumb: true
+    chicken:
+      dumb: true
+  egg:
+    chicken:
+      dumb: true
+  natural:
+    turtle:
+      count: 8
+      # The radius to check for
+      radius: 32
+    dolphin:
+      count: 1
+      # The radius to check for
+      radius: 128

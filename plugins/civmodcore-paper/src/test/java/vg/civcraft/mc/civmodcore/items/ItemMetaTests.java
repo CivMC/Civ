@@ -4,23 +4,16 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.pseudo.PseudoServer;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class ItemMetaTests {
 
-	private static final ItemStack TEMPLATE_ITEM = new ItemStack(Material.STICK);
+    private static final ItemStack TEMPLATE_ITEM = new ItemStack(Material.STICK);
 
-	@BeforeAll
-	public static void setupBukkit() {
-		PseudoServer.setup();
-	}
-
-	// TODO: Who knows.
+    // TODO: Who knows.
 //	/**
 //	 * Tests whether a basic string display name can match with a component.
 //	 */
@@ -42,7 +35,7 @@ public class ItemMetaTests {
 //				ItemUtils.getComponentDisplayName(latterItem)));
 //	}
 
-	// TODO: Who knows.
+    // TODO: Who knows.
 //	/**
 //	 * Tests whether a json primitive display name can match with a component.
 //	 */
@@ -67,52 +60,52 @@ public class ItemMetaTests {
 //				ItemUtils.getComponentDisplayName(latterItem)));
 //	}
 
-	/**
-	 * How do different API methods of setting the display name fare?
-	 */
-	@Test
-	@SuppressWarnings("deprecation")
-	public void testAdvancedDisplayNameEquality() {
-		// Setup
-		final var formerItem = TEMPLATE_ITEM.clone();
-		ItemUtils.handleItemMeta(formerItem, (ItemMeta meta) -> {
-			meta.setDisplayName("Hello!");
-			return true;
-		});
-		final var latterItem = TEMPLATE_ITEM.clone();
-		ItemUtils.handleItemMeta(latterItem, (ItemMeta meta) -> {
-			meta.displayName(Component.text("Hello!"));
-			return true;
-		});
-		// Check
-		Assertions.assertTrue(ChatUtils.areComponentsEqual(
-				ItemUtils.getComponentDisplayName(formerItem),
-				ItemUtils.getComponentDisplayName(latterItem)));
-		Assertions.assertTrue(ItemUtils.areItemsSimilar(formerItem, latterItem));
-	}
+    /**
+     * How do different API methods of setting the display name fare?
+     */
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testAdvancedDisplayNameEquality() {
+        // Setup
+        final var formerItem = TEMPLATE_ITEM.clone();
+        ItemUtils.handleItemMeta(formerItem, (ItemMeta meta) -> {
+            meta.setDisplayName("Hello!");
+            return true;
+        });
+        final var latterItem = TEMPLATE_ITEM.clone();
+        ItemUtils.handleItemMeta(latterItem, (ItemMeta meta) -> {
+            meta.displayName(Component.text("Hello!"));
+            return true;
+        });
+        // Check
+        Assertions.assertTrue(ChatUtils.areComponentsEqual(
+            ItemUtils.getComponentDisplayName(formerItem),
+            ItemUtils.getComponentDisplayName(latterItem)));
+        Assertions.assertTrue(ItemUtils.areItemsSimilar(formerItem, latterItem));
+    }
 
-	/**
-	 * Tests whether {@link ChatUtils#isBaseComponent(Component)} works.
-	 */
-	@Test
-	@SuppressWarnings("deprecation")
-	public void testBaseComponent() {
-		// Setup
-		final var formerItem = TEMPLATE_ITEM.clone();
-		ItemUtils.handleItemMeta(formerItem, (ItemMeta meta) -> {
-			meta.setDisplayName("Hello!");
-			return true;
-		});
-		final var latterItem = TEMPLATE_ITEM.clone();
-		ItemUtils.handleItemMeta(latterItem, (ItemMeta meta) -> {
-			meta.displayName(Component.text("Hello!"));
-			return true;
-		});
-		// Check
-		Assertions.assertTrue(ChatUtils.isBaseComponent(
-				ItemUtils.getComponentDisplayName(formerItem)));
-		Assertions.assertFalse(ChatUtils.isBaseComponent(
-				ItemUtils.getComponentDisplayName(latterItem)));
-	}
+    /**
+     * Tests whether {@link ChatUtils#isBaseComponent(Component)} works.
+     */
+    @Test
+    @SuppressWarnings("deprecation")
+    public void testBaseComponent() {
+        // Setup
+        final var formerItem = TEMPLATE_ITEM.clone();
+        ItemUtils.handleItemMeta(formerItem, (ItemMeta meta) -> {
+            meta.setDisplayName("Hello!");
+            return true;
+        });
+        final var latterItem = TEMPLATE_ITEM.clone();
+        ItemUtils.handleItemMeta(latterItem, (ItemMeta meta) -> {
+            meta.displayName(Component.text("Hello!"));
+            return true;
+        });
+        // Check
+        Assertions.assertTrue(ChatUtils.isBaseComponent(
+            ItemUtils.getComponentDisplayName(formerItem)));
+        Assertions.assertFalse(ChatUtils.isBaseComponent(
+            ItemUtils.getComponentDisplayName(latterItem)));
+    }
 
 }

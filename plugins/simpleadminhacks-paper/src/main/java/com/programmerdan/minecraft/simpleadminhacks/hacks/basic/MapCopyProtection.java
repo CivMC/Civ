@@ -10,7 +10,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftInventoryCrafting;
+import org.bukkit.craftbukkit.inventory.CraftInventoryCrafting;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -24,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class MapCopyProtection extends BasicHack implements CommandExecutor {
+
     final NamespacedKey copyKey = new NamespacedKey(plugin, "copy-protected");
 
     public MapCopyProtection(SimpleAdminHacks plugin, BasicHackConfig config) {
@@ -50,7 +51,8 @@ public class MapCopyProtection extends BasicHack implements CommandExecutor {
 
         if (item == null) return;
 
-        if (item.getType() == Material.GLASS_PANE || item.getType() == Material.PAPER) return; // Allow locking and scaling of copy protected maps
+        if (item.getType() == Material.GLASS_PANE || item.getType() == Material.PAPER)
+            return; // Allow locking and scaling of copy protected maps
 
         handleCopyProtection(event);
     }
@@ -71,9 +73,9 @@ public class MapCopyProtection extends BasicHack implements CommandExecutor {
         if (isCopy(item)) {
             event.setCancelled(true);
             event.getWhoClicked().sendMessage(
-                    Component.text()
-                            .color(NamedTextColor.RED)
-                            .content("You can not clone copy protected maps")
+                Component.text()
+                    .color(NamedTextColor.RED)
+                    .content("You can not clone copy protected maps")
             );
         }
     }
@@ -82,9 +84,9 @@ public class MapCopyProtection extends BasicHack implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(
-                    Component.text()
-                            .color(NamedTextColor.RED)
-                            .content("This command can only be run by players")
+                Component.text()
+                    .color(NamedTextColor.RED)
+                    .content("This command can only be run by players")
             );
             return true;
         }
@@ -93,18 +95,18 @@ public class MapCopyProtection extends BasicHack implements CommandExecutor {
 
         if (item.getType() != Material.FILLED_MAP) {
             sender.sendMessage(
-                    Component.text()
-                            .color(NamedTextColor.RED)
-                            .content("Only filled maps can be copy protected")
+                Component.text()
+                    .color(NamedTextColor.RED)
+                    .content("Only filled maps can be copy protected")
             );
             return true; // Command failed, but was syntactically correct, so no need to tell the player how to use it
         }
 
         if (isCopy(item)) {
             sender.sendMessage(
-                    Component.text()
-                            .color(NamedTextColor.RED)
-                            .content("You can not copy protect copy protected maps")
+                Component.text()
+                    .color(NamedTextColor.RED)
+                    .content("You can not copy protect copy protected maps")
             );
             return true; // Command failed, but was syntactically correct, so no need to tell the player how to use it
         }

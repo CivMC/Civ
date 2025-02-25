@@ -15,36 +15,35 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public class SetDefaultGroup extends BaseCommandMiddle {
 
-	@CommandAlias("nlsdg")
-	@Syntax("<group>")
-	@Description("Set or change a default group")
-	@CommandCompletion("@NL_Groups")
-	public void execute(CommandSender sender, String groupName) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage("I don't think you need to do that.");
-			return;
-		}
-		Player p = (Player) sender;
-		UUID uuid = NameAPI.getUUID(p.getName());
-		Group g = gm.getGroup(groupName);
-		if (groupIsNull(sender, groupName, g)) {
-			return;
-		}
-		
-		PlayerType pType = g.getPlayerType(uuid);
-		if (pType == null){
-			p.sendMessage(ChatColor.RED + "You do not have access to that group.");
-			return;
-		}
+    @CommandAlias("nlsdg")
+    @Syntax("<group>")
+    @Description("Set or change a default group")
+    @CommandCompletion("@NL_Groups")
+    public void execute(CommandSender sender, String groupName) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage("I don't think you need to do that.");
+            return;
+        }
+        Player p = (Player) sender;
+        UUID uuid = NameAPI.getUUID(p.getName());
+        Group g = gm.getGroup(groupName);
+        if (groupIsNull(sender, groupName, g)) {
+            return;
+        }
 
-		String x = gm.getDefaultGroup(uuid);
-		if(x == null){
-			g.setDefaultGroup(uuid);
-			p.sendMessage(ChatColor.GREEN + "You have set your default group to " + g.getName());
-		}
-		else{
-			g.changeDefaultGroup(uuid);
-			p.sendMessage(ChatColor.GREEN + "You changed your default group from " + x + " to " + gm.getDefaultGroup(uuid));
-		}
-	}
+        PlayerType pType = g.getPlayerType(uuid);
+        if (pType == null) {
+            p.sendMessage(ChatColor.RED + "You do not have access to that group.");
+            return;
+        }
+
+        String x = gm.getDefaultGroup(uuid);
+        if (x == null) {
+            g.setDefaultGroup(uuid);
+            p.sendMessage(ChatColor.GREEN + "You have set your default group to " + g.getName());
+        } else {
+            g.changeDefaultGroup(uuid);
+            p.sendMessage(ChatColor.GREEN + "You changed your default group from " + x + " to " + gm.getDefaultGroup(uuid));
+        }
+    }
 }

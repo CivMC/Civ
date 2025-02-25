@@ -14,83 +14,84 @@ import vg.civcraft.mc.civduties.listeners.PlayerListener;
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class CivDuties extends ACivMod {
-	private static CivDuties pluginInstance;
-	private DutiesConfigManager config;
-	private DatabaseManager db;
-	private ModeManager modeManager;
-	private VaultManager vaultManager;
-	private CivDutiesCommandHandler commandHandler;
 
-	public CivDuties() {
-		pluginInstance = this;
-	}
+    private static CivDuties pluginInstance;
+    private DutiesConfigManager config;
+    private DatabaseManager db;
+    private ModeManager modeManager;
+    private VaultManager vaultManager;
+    private CivDutiesCommandHandler commandHandler;
 
-	@Override
-	public void onEnable() {
-		super.onEnable();
-		config = new DutiesConfigManager(this);
-		config.parse();
-		if (config.getDatabase() == null) {
-			getLogger().severe("Invalid database credentials, shutting down");
-			Bukkit.getPluginManager().disablePlugin(this);
-			return;
-		}
-		db = new DatabaseManager(config.getDatabase());
-		vaultManager = new VaultManager();
-		modeManager = new ModeManager();
-		commandHandler = new CivDutiesCommandHandler(this);
-		registerListeners();
-	}
+    public CivDuties() {
+        pluginInstance = this;
+    }
 
-	@Override
-	public void onDisable() {
-		for(Player player : Bukkit.getOnlinePlayers()){
-			if(modeManager.isInDuty(player)){
-				Tier tier = config.getTier(db.getPlayerData(player.getUniqueId()).getTierName());
-				for(Command command: tier.getCommands()){
-					if(command.getTiming() == Timing.LOGOUT){
-						command.execute(player);
-					}
-				}
-				vaultManager.addPermissionsToPlayer(player, tier.getTemporaryPermissions());
-				vaultManager.addPlayerToGroups(player, tier.getTemporaryGroups());
-			}
-		}
-	}
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        config = new DutiesConfigManager(this);
+        config.parse();
+        if (config.getDatabase() == null) {
+            getLogger().severe("Invalid database credentials, shutting down");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+        db = new DatabaseManager(config.getDatabase());
+        vaultManager = new VaultManager();
+        modeManager = new ModeManager();
+        commandHandler = new CivDutiesCommandHandler(this);
+        registerListeners();
+    }
 
-	public static CivDuties getInstance() {
-		return pluginInstance;
-	}
+    @Override
+    public void onDisable() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (modeManager.isInDuty(player)) {
+                Tier tier = config.getTier(db.getPlayerData(player.getUniqueId()).getTierName());
+                for (Command command : tier.getCommands()) {
+                    if (command.getTiming() == Timing.LOGOUT) {
+                        command.execute(player);
+                    }
+                }
+                vaultManager.addPermissionsToPlayer(player, tier.getTemporaryPermissions());
+                vaultManager.addPlayerToGroups(player, tier.getTemporaryGroups());
+            }
+        }
+    }
 
-	public DutiesConfigManager getConfigManager() {
-		return config;
-	}
+    public static CivDuties getInstance() {
+        return pluginInstance;
+    }
 
-	public DatabaseManager getDatabaseManager() {
-		return db;
-	}
+    public DutiesConfigManager getConfigManager() {
+        return config;
+    }
 
-	public ModeManager getModeManager() {
-		return modeManager;
-	}
+    public DatabaseManager getDatabaseManager() {
+        return db;
+    }
 
-	public VaultManager getVaultManager() {
-		return vaultManager;
-	}
-	
-	public boolean isVaultEnabled() {
-		return Bukkit.getPluginManager().isPluginEnabled("Vault");
-	}
+    public ModeManager getModeManager() {
+        return modeManager;
+    }
 
-	public boolean isCombatTagPlusEnabled() {
-		return Bukkit.getPluginManager().isPluginEnabled("CombatTagPlus");
-	}
+    public VaultManager getVaultManager() {
+        return vaultManager;
+    }
+
+    public boolean isVaultEnabled() {
+        return Bukkit.getPluginManager().isPluginEnabled("Vault");
+    }
+
+    public boolean isCombatTagPlusEnabled() {
+        return Bukkit.getPluginManager().isPluginEnabled("CombatTagPlus");
+    }
 
 
-	private void registerListeners() {
-		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-		if (isCombatTagPlusEnabled()) {
-			getServer().getPluginManager().registerEvents(new CombatTagHandler(), this);
-		}
-	}
+    private void registerListeners() {
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        if (isCombatTagPlusEnabled()) {
+            getServer().getPluginManager().registerEvents(new CombatTagHandler(), this);
+        }
+    }
 }

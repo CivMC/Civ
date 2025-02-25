@@ -5,15 +5,15 @@ import vg.civcraft.mc.civmodcore.world.locations.QTBoxImpl;
 
 public class SnitchQTEntry extends QTBoxImpl {
 
-	private final Snitch snitch;
+    private final Snitch snitch;
 
-	public SnitchQTEntry(Snitch snitch, Location loc, int range) {
-		super(loc, range);
-		this.snitch = snitch;
-	}
-	
-	public Snitch getSnitch() {
-		return snitch;
-	}
+    public SnitchQTEntry(Snitch snitch, Location loc, int range) {
+        super(loc, range);
+        this.snitch = snitch;
+    }
+
+    public Snitch getSnitch() {
+        return snitch;
+    }
 
 }

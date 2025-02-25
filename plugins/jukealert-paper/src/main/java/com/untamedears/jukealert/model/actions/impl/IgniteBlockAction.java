@@ -10,49 +10,49 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 
-public class IgniteBlockAction extends LoggablePlayerAction  {
-	
-	public static final String ID = "IGNITE_BLOCK";
+public class IgniteBlockAction extends LoggablePlayerAction {
 
-	private Location location;
-	
-	public IgniteBlockAction(long time, Snitch snitch, UUID player, Location location) {
-		super(time, snitch, player);
-		this.location = location;
-	}
+    public static final String ID = "IGNITE_BLOCK";
 
-	@Override
-	public IClickable getGUIRepresentation() {
-		ItemStack is = new ItemStack(Material.FLINT_AND_STEEL);
-		super.enrichGUIItem(is);
-		return new DecorationStack(is);
-	}
-	
-	@Override
-	protected Location getLocationForStringRepresentation() {
-		return location;
-	}
-	
-	@Override
-	public LoggedActionPersistence getPersistence() {
-		return new LoggedActionPersistence(getPlayer(), location, time, null);
-	}
+    private Location location;
 
-	@Override
-	public String getIdentifier() {
-		return ID;
-	}
-	
-	/**
-	 * @return Location the fire was put at
-	 */
-	public Location getLocation() {
-		return location;
-	}
+    public IgniteBlockAction(long time, Snitch snitch, UUID player, Location location) {
+        super(time, snitch, player);
+        this.location = location;
+    }
 
-	@Override
-	public String getChatRepresentationIdentifier() {
-		return "Ignited";
-	}
+    @Override
+    public IClickable getGUIRepresentation() {
+        ItemStack is = new ItemStack(Material.FLINT_AND_STEEL);
+        super.enrichGUIItem(is);
+        return new DecorationStack(is);
+    }
+
+    @Override
+    protected Location getLocationForStringRepresentation() {
+        return location;
+    }
+
+    @Override
+    public LoggedActionPersistence getPersistence() {
+        return new LoggedActionPersistence(getPlayer(), location, time, null);
+    }
+
+    @Override
+    public String getIdentifier() {
+        return ID;
+    }
+
+    /**
+     * @return Location the fire was put at
+     */
+    public Location getLocation() {
+        return location;
+    }
+
+    @Override
+    public String getChatRepresentationIdentifier() {
+        return "Ignited";
+    }
 
 }

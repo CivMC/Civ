@@ -7,10 +7,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class ScoreBoardListener implements Listener {
-	
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void join(PlayerJoinEvent e) {
-		e.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-	}
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void join(PlayerJoinEvent e) {
+        e.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+    }
 
 }

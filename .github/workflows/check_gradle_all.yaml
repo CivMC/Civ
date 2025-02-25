@@ -1,0 +1,27 @@
+# Check all projects
+name: 🐘 Gradle | Check All
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  check_gradle:
+    name: 🐘 Check Gradle
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: 🚩 Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: 🐘 Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: 🐘 Gradle Check
+        run: CI=true ./gradlew check --scan

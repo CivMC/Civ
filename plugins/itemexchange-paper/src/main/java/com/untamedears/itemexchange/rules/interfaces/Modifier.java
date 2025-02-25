@@ -12,14 +12,14 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Modifier {
 
-	/**
-	 *
-	 */
-	String slug();
+    /**
+     *
+     */
+    String slug();
 
-	/**
-	 *
-	 */
-	int order() default Integer.MAX_VALUE;
+    /**
+     *
+     */
+    int order() default Integer.MAX_VALUE;
 
 }
