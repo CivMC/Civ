@@ -112,7 +112,7 @@ weaponModification:
     damage: 1
   netheriteSword:
     material: NETHERITE_SWORD
-    damage: 9
+    damage: 8
   diamondSword:
     material: DIAMOND_SWORD
     damage: 7
@@ -144,6 +144,7 @@ weaponModification:
 armourModification:
   diamondHelmet:
     material: DIAMOND_HELMET
+    armour: 3
     toughness: 2
     extraDurabilityHits: 1 # how many extra hits a player needs to take for the durability of the piece to fall
   diamondChestplate:
@@ -284,11 +285,9 @@ velocity:
 #The order in which modifiers are applied is: ALL, ARROW, POWER_ENCHANT, STRENGTH_EFFECT, SWORD, SHARPNESS_ENCHANT, CRIT
 #Note that these effects are applied after vanilla damage additions and before vanilla damage reductions
 damageModifiers:
-  #Decrease all damage by 20 %
   ALL:
     multiplier: 0.8
     mode: DIRECT
-  #Increase sword damage by 25 %
   SHARPNESS_ENCHANT:
     multiplier: 1.23
     mode: DIRECT
