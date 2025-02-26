@@ -53,9 +53,9 @@ public class ItemCategorySelectionGui extends ItemSelectionGui {
         ItemStack potions = new ItemStack(Material.POTION);
         PotionMeta potionsMeta = (PotionMeta) potions.getItemMeta();
         potionsMeta.setColor(Color.YELLOW);
+        potionsMeta.displayName(Component.text("Potions", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         potions.setItemMeta(potionsMeta);
         // item name doesn't work on potion
-        potionsMeta.displayName(Component.text("Potions", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         inventory.setSlot(getSlot(inventory, potions, "Potions",
                 () -> new PotionsSelectionGui(dao, player, slot, kit, this::open, gui).open()),
             21);
