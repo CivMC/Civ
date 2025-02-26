@@ -120,21 +120,19 @@ public class CombatUtil {
                 if (shouldDamage) {
                     boolean damagedVictim;
                     boolean wasInvulnerable = victim instanceof LivingEntity living && living.invulnerableTime > (float) living.invulnerableDuration / 2.0F && !damagesource.is(DamageTypeTags.BYPASSES_COOLDOWN);
+                    float lastHurt = victim instanceof LivingEntity living ? living.lastHurt : 0;
                     try {
                         DAMAGING_ITEM = attacker.getBukkitEntity().getInventory().getItemInMainHand();
                         damagedVictim = victim.hurtServer(victim.level().getMinecraftWorld(), damagesource, damage);
                     } finally {
                         DAMAGING_ITEM = null;
                     }
+                    boolean tookDamage = victim instanceof LivingEntity living && living.lastHurt != lastHurt;
                     if (damagedVictim) {
-                        if ((knockbackLevel > 0 || dealtExtraKnockback)) {
-                            if (victim instanceof LivingEntity living) {
-                                if (!wasInvulnerable) {
-                                    KnockbackStrategy knockbackStrategy = config.getKnockbackStrategy();
+                        if ((knockbackLevel > 1 || dealtExtraKnockback) && tookDamage) {
+                            KnockbackStrategy knockbackStrategy = config.getKnockbackStrategy();
 
-                                    knockbackStrategy.handleKnockback(attacker, living, knockbackLevel);
-                                }
-                            }
+                            knockbackStrategy.handleKnockback(attacker, victim, knockbackLevel);
                         }
 
                         //((CraftPlayer)attacker.getBukkitEntity()).sendMessage("motX: " + victim.motX + ", motY: " + victim.motY + ", motZ: " + victim.motZ + ", onGround: " + victim.onGround);

@@ -37,8 +37,7 @@ public class StandardKnockback implements KnockbackStrategy {
                 Vector victimMotion = config.getVictimMotion();
 
                 double dx = (vec3d.x * victimMotion.getX()) - vec3d1.x;
-                //double dy = victim.onGround ? Math.min(0.4D, (vec3d.y * victimMotion.getY()) + strength) : vec3d.y;
-                double dy = (vec3d.y * victimMotion.getY());
+                double dy = victim.onGround ? Math.min(0.4D, (vec3d.y * victimMotion.getY()) + strength) : vec3d.y;
                 double dz = (vec3d.z * victimMotion.getZ()) - vec3d1.z;
 
                 Vector start = new Vector(vec3d.x, vec3d.y, vec3d.z);
