@@ -5,6 +5,7 @@ import net.civmc.kitpvp.data.KitPvpDao;
 import net.civmc.kitpvp.gui.EditKitGui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -53,6 +54,8 @@ public class ItemCategorySelectionGui extends ItemSelectionGui {
         PotionMeta potionsMeta = (PotionMeta) potions.getItemMeta();
         potionsMeta.setColor(Color.YELLOW);
         potions.setItemMeta(potionsMeta);
+        // item name doesn't work on potion
+        potionsMeta.displayName(Component.text("Potions", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         inventory.setSlot(getSlot(inventory, potions, "Potions",
                 () -> new PotionsSelectionGui(dao, player, slot, kit, this::open, gui).open()),
             21);
