@@ -21,7 +21,7 @@ import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
 public abstract class ItemSelectionGui {
     protected final KitPvpDao dao;
     private final String title;
-    private final Player player;
+    protected final Player player;
     private final Runnable parent;
     protected final EditKitGui gui;
     protected final int slot;
