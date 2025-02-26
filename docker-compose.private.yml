@@ -19,7 +19,10 @@ services:
       - ./PrivateConfig/paper/config/Vulcan/config.yml:/data/plugins/Vulcan/config.yml
       - ./PrivateConfig/paper/config/HiddenOre/config.yml:/data/plugins/HiddenOre/config.yml
       - ./PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/data/plugins/KiraBukkitGateway/config.yml
-      - ./PrivateConfig/paper/config/Brewery/config.yml:/data/plugins/Brewery/config.yml
+      - ./PrivateConfig/paper/config/Breweryx/config.yml:/data/plugins/Breweryx/config.yml
+      - ./PrivateConfig/paper/config/Breweryx/cauldron.yml:/data/plugins/Breweryx/cauldron.yml
+      - ./PrivateConfig/paper/config/Breweryx/custom-items.yml:/data/plugins/Breweryx/custom-items.yml
+      - ./PrivateConfig/paper/config/Breweryx/recipes.yml:/data/plugins/Breweryx/recipes.yml
       - ./PrivateConfig/paper/config/Terra/packs/CivMC:/data/plugins/Terra/packs/CivMC
       - ./PrivateConfig/paper/config/Votifier/config.yml:/data/plugins/Votifier/config.yml
       - ./PrivateConfig/paper/config/Votifier/rsa/public.key:/data/plugins/Votifier/rsa/public.key
