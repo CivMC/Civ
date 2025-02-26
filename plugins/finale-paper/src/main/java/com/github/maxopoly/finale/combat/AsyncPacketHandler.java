@@ -74,7 +74,6 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
                 return;
             }
             event.setCancelled(true);
-            float fallDistance = attacker.getFallDistance();
             new BukkitRunnable() {
 
                 @Override
