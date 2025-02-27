@@ -41,6 +41,7 @@ public class CivDuties extends ACivMod {
         modeManager = new ModeManager();
         commandHandler = new CivDutiesCommandHandler(this);
         registerListeners();
+        ready();
     }
 
     @Override

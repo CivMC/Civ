@@ -27,6 +27,7 @@ public class FactoryMod extends ACivMod {
         commandManager = new FMCommandManager(this);
         registerListeners();
         info("Successfully enabled");
+        ready();
     }
 
     @Override

@@ -100,6 +100,7 @@ public class RealisticBiomes extends ACivMod {
         plantLogicManager = new PlantLogicManager(plantManager, growthConfigManager);
         commandManager = new RBCommandManager(this);
         registerListeners();
+        ready();
     }
 
     private void registerListeners() {

@@ -87,6 +87,7 @@ public class HeliodorPlugin extends ACivMod {
         getServer().getPluginManager().registerEvents(new AnvilRepairListener(), this);
 
         getServer().getPluginManager().registerEvents(new BackpackListener(), this);
+        ready();
     }
 
     public BlockBasedChunkMetaView<CauldronInfuseData, TableBasedDataObject, TableStorageEngine<CauldronInfusion>> getChunkMetaView() {

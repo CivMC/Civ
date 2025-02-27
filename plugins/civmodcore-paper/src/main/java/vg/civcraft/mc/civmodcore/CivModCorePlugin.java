@@ -101,6 +101,7 @@ public class CivModCorePlugin extends ACivMod {
 
         if (this.config.getChunkLoadingStatistics())
             LoadStatisticManager.enable();
+        ready();
     }
 
     @Override

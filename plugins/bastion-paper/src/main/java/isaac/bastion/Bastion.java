@@ -52,6 +52,7 @@ public final class Bastion extends ACivMod {
         BastionType.startRegenAndErosionTasks();
         registerListeners();
         setupCommands();
+        ready();
     }
 
     @Override

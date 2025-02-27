@@ -24,6 +24,7 @@ public final class RailSwitchPlugin extends ACivMod implements Listener {
         commandManager = new CommandManager(this);
         commandManager.init();
         commandManager.registerCommand(new DestinationCommand());
+        ready();
     }
 
     @Override

@@ -95,6 +95,7 @@ public class Finale extends ACivMod {
         commandManager = new CommandManager(this);
         commandManager.init();
         reload();
+        ready();
     }
 
     private void registerListener() {

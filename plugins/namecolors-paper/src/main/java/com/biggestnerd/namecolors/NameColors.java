@@ -42,6 +42,7 @@ public class NameColors extends ACivMod implements Listener {
         setting = new NameColorSetting(this);
         PlayerSettingAPI.registerSetting(setting, PlayerSettingAPI.getMainMenu());
         getServer().getPluginManager().registerEvents(this, this);
+        ready();
     }
 
     @EventHandler

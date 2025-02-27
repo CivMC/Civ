@@ -26,6 +26,7 @@ public class Donum extends ACivMod {
         handle = new DonumCommandHandler(this);
         handle.registerCommands();
         registerListeners();
+        ready();
     }
 
     public void onDisable() {

@@ -58,6 +58,7 @@ public class BanStick extends ACivMod {
         registerImportHandler();
         registerLogHandler();
         registerRegistrarHandler();
+        ready();
     }
 
     @Override
