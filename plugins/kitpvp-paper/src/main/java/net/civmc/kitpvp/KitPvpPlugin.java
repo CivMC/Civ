@@ -68,7 +68,6 @@ public class KitPvpPlugin extends ACivMod {
         }
 
         source.updateDatabase();
-        ready();
     }
 
     @Override

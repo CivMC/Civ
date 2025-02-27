@@ -49,7 +49,6 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
         commandManager = new CommandManager(this);
         commandManager.init();
         registerCommands();
-        ready();
     }
 
     private void registerCommands() {

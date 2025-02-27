@@ -111,7 +111,6 @@ public class JukeAlert extends ACivMod {
         registerJukeAlertEvents();
         JukeAlertPermissionHandler.setup();
         this.taskChainFactory = BukkitTaskChainFactory.create(this);
-        ready();
     }
 
     private void registerJukeAlertEvents() {

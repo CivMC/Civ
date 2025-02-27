@@ -44,7 +44,6 @@ public class SimpleAdminHacks extends ACivMod {
         this.commands = new CommandRegistrar(this);
         this.manager.loadAllHacks();
         this.manager.enableAllHacks();
-        ready();
     }
 
     @Override

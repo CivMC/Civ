@@ -63,7 +63,6 @@ public class NameLayerPlugin extends ACivMod {
                 handle = new CommandHandler(this);
             }
         }
-        ready();
     }
 
     public void registerListeners() {

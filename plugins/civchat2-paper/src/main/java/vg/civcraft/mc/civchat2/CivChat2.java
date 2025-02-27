@@ -62,7 +62,6 @@ public class CivChat2 extends ACivMod {
         commandManager = new CivChatCommandManager(this);
         registerNameLayerPermissions();
         registerCivChatEvents();
-        ready();
     }
 
     @Override
