@@ -109,61 +109,57 @@ public class Citadel extends ACivMod {
 
     @Override
     public void onEnable() {
-        try {
-            super.onEnable();
-            instance = this;
-            logger = getLogger();
-            if (!Bukkit.getPluginManager().isPluginEnabled("NameLayer")) {
-                logger.info("Citadel is shutting down because it could not find NameLayer");
-                Bukkit.shutdown();
-                return;
-            }
-            config = new CitadelConfigManager(this);
-            if (!config.parse()) {
-                logger.severe("Errors in config file, shutting down");
-                Bukkit.shutdown();
-                return;
-            }
-            typeManager = new ReinforcementTypeManager();
-            config.getReinforcementTypes().forEach(t ->
-            {
-                if (!typeManager.register(t)) {
-                    logger.severe("Errors in the config file, shutting down");
-                    Bukkit.shutdown();
-                    return;
-                }
-            });
-            dao = new CitadelDAO(this.logger, config.getDatabase());
-            if (!dao.updateDatabase()) {
-                logger.severe("Errors setting up database, shutting down");
-                Bukkit.shutdown();
-                return;
-            }
-
-            activityMap = new ActivityMap(this.logger, config.getDatabase());
-            activityMap.enable();
-
-            BlockBasedChunkMetaView<CitadelChunkData, TableBasedDataObject, TableStorageEngine<Reinforcement>> chunkMetaData =
-                ChunkMetaAPI.registerBlockBasedPlugin(this, () -> new CitadelChunkData(false, dao), dao, true);
-            if (chunkMetaData == null) {
-                logger.severe("Errors setting up chunk metadata API, shutting down");
-                Bukkit.shutdown();
-                return;
-            }
-            reinManager = new ReinforcementManager(chunkMetaData);
-            stateManager = new PlayerStateManager();
-            acidManager = new AcidManager(config.getAcidTypes());
-            settingManager = new CitadelSettingManager();
-            holoManager = new HologramManager(settingManager);
-            multiplier = config.getMultiplier();
-            commandManager = new CitadelCommandManager(this);
-            CitadelPermissionHandler.setup();
-            registerListeners();
-
-            ready();
-        } catch (Exception e) {
-            throw e;
+        super.onEnable();
+        instance = this;
+        logger = getLogger();
+        if (!Bukkit.getPluginManager().isPluginEnabled("NameLayer")) {
+            logger.info("Citadel is shutting down because it could not find NameLayer");
+            Bukkit.shutdown();
+            return;
         }
+        config = new CitadelConfigManager(this);
+        if (!config.parse()) {
+            logger.severe("Errors in config file, shutting down");
+            Bukkit.shutdown();
+            return;
+        }
+        typeManager = new ReinforcementTypeManager();
+        config.getReinforcementTypes().forEach(t ->
+        {
+            if (!typeManager.register(t)) {
+                logger.severe("Errors in the config file, shutting down");
+                Bukkit.shutdown();
+                return;
+            }
+        });
+        dao = new CitadelDAO(this.logger, config.getDatabase());
+        if (!dao.updateDatabase()) {
+            logger.severe("Errors setting up database, shutting down");
+            Bukkit.shutdown();
+            return;
+        }
+
+        activityMap = new ActivityMap(this.logger, config.getDatabase());
+        activityMap.enable();
+
+        BlockBasedChunkMetaView<CitadelChunkData, TableBasedDataObject, TableStorageEngine<Reinforcement>> chunkMetaData =
+            ChunkMetaAPI.registerBlockBasedPlugin(this, () -> new CitadelChunkData(false, dao), dao, true);
+        if (chunkMetaData == null) {
+            logger.severe("Errors setting up chunk metadata API, shutting down");
+            Bukkit.shutdown();
+            return;
+        }
+        reinManager = new ReinforcementManager(chunkMetaData);
+        stateManager = new PlayerStateManager();
+        acidManager = new AcidManager(config.getAcidTypes());
+        settingManager = new CitadelSettingManager();
+        holoManager = new HologramManager(settingManager);
+        multiplier = config.getMultiplier();
+        commandManager = new CitadelCommandManager(this);
+        CitadelPermissionHandler.setup();
+        registerListeners();
+
+        ready();
     }
 
     /**
