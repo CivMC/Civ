@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
-import org.bukkit.Bukkit;
+import net.civmc.secureboot.paper.SecureBootAPI;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.EventHandler;
@@ -36,6 +36,8 @@ public abstract class ACivMod extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        SecureBootAPI.markDependent(getName());
+
         // Self disable when a hard dependency is disabled
         registerListener(new Listener() {
             @EventHandler
@@ -133,6 +135,14 @@ public abstract class ACivMod extends JavaPlugin {
 //			exception.printStackTrace();
 //		}
 //	}
+
+    /**
+     * Marks the plugin as ready
+     * @return
+     */
+    public boolean ready() {
+        return SecureBootAPI.markPluginAsReady(getName());
+    }
 
     /**
      * Disables this plugin.
