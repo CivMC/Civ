@@ -1,0 +1,11 @@
+
+# Plugin names that SecureBoot will require to be enabled
+required_plugins:
+  - NameLayer
+#  - Bastion
+#  - CivChat2
+#  - JukeAlert
+#  - Citadel
+#  - ExilePearl
+#  - CombatTagPlus
+#  - BanStick
