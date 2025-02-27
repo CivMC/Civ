@@ -158,8 +158,6 @@ public class Citadel extends ACivMod {
         commandManager = new CitadelCommandManager(this);
         CitadelPermissionHandler.setup();
         registerListeners();
-
-        ready();
     }
 
     /**
