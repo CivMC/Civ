@@ -15,7 +15,7 @@ database:
   max_lifetime: 7200000
 
 meteoric_iron_vein:
-  enabled: false
+  enabled: true
   world: world
   # number of minutes between vein spawns
   frequency_minutes: 1
