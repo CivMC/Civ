@@ -1648,8 +1648,7 @@ factories:
         type: DIRT
         amount: 64
     recipes:
-      - splice_cherry_sapling
-      - splice_mangrove_propagule
+      - splice_pale_oak_sapling
       - grow_flowering_azalea_leaves
       - grow_azalea_leaves
       - grow_spore_blossom
@@ -13954,49 +13953,27 @@ recipes:
         type: GOLD_INGOT
         amount: 16
     health_gained: 10000
-  splice_cherry_sapling:
+  splice_pale_oak_sapling:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: Splice cherry sapling
+    name: Splice pale oak sapling
     type: PRODUCTION
     input:
-      oak_sapling:
+      pale_oak_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: OAK_SAPLING
+        type: DARK_OAK_SAPLING
         amount: 32
-      spore_blossom:
+      white_dye:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: SPORE_BLOSSOM
+        type: WHITE_DYE
         amount: 16
     output:
-      cherry_sapling:
+      pale_oak_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: CHERRY_SAPLING
-        amount: 32
-  splice_mangrove_propagule:
-    production_time: 4s
-    fuel_consumption_intervall: 1s
-    name: Splice mangrove propagule
-    type: PRODUCTION
-    input:
-      oak_sapling:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: OAK_SAPLING
-        amount: 32
-      vine:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: VINE
-        amount: 16
-    output:
-      mangrove_propagule:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: MANGROVE_PROPAGULE
+        type: PALE_OAK_SAPLING
         amount: 32
   grow_flowering_azalea_leaves:
     production_time: 4s
