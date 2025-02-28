@@ -601,13 +601,6 @@ plants:
       v: 1
     greenhouse_rates:
       GLOWSTONE: 0.5
-      REDSTONE_LAMP: 0.5
-      SEA_LANTERN: 0.5
-      SHROOMLIGHT: 0.5
-      LANTERN: 0.25
-      SOUL_LANTERN: 0.25
-      TORCH: 0.1
-      SOUL_TORCH: 0.1
     biomes:
       cold_water: 0.5
       cold: 1.5
