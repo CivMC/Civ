@@ -36,6 +36,7 @@ no_bonemeal_blocks:
   - SPRUCE_SAPLING
   - JUNGLE_SAPLING
   - DARK_OAK_SAPLING
+  - PALE_OAK_SAPLING
   - ACACIA_SAPLING
   - FLOWERING_AZALEA
   - AZALEA
@@ -118,6 +119,8 @@ biome_aliases:
     - BAMBOO_JUNGLE
   dark_forest:
     - DARK_FOREST
+  pale_garden:
+    - PALE_GARDEN
   mushroom:
     - MUSHROOM_FIELDS
   swamp:
