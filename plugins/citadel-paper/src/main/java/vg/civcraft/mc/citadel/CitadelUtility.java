@@ -42,8 +42,6 @@ public class CitadelUtility {
             case WHITE_TULIP:
             case OXEYE_DAISY:
             case PINK_PETALS:
-            case CLOSED_EYEBLOSSOM:
-            case OPEN_EYEBLOSSOM:
             case ACACIA_SAPLING:
             case BIRCH_SAPLING:
             case DARK_OAK_SAPLING:
@@ -54,7 +52,6 @@ public class CitadelUtility {
             case CHERRY_SAPLING:
             case MANGROVE_PROPAGULE:
             case PALE_OAK_SAPLING:
-            case CHERRY_SAPLING:
             case WHEAT:
             case CARROTS:
             case POTATOES:
