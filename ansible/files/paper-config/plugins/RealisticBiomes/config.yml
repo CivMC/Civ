@@ -83,7 +83,6 @@ biome_aliases:
   meadows:
     - MEADOW
     - CHERRY_GROVE
-
   taigas:
     - TAIGA
     - OLD_GROWTH_SPRUCE_TAIGA
@@ -605,9 +604,10 @@ plants:
     greenhouse_rates:
       GLOWSTONE: 0.5
     biomes:
-      cold_water: 0.5
-      cold: 1.5
-      cold_forest: 2.0
+      cold_taiga: 1.0
+      tundra: 1.5
+      cold_mountain: 0.25
+      pale_garden: 2.0
 
   CHERRY_SAPLING:
     persistent_growth_period: 12h
