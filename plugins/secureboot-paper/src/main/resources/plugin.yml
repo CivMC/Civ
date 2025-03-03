@@ -1,8 +1,6 @@
-name: SecureBoot
-version: ${version}
-main: net.civmc.secureboot.paper.SecureBootPlugin
-author: Huskydog9988
-description: A plugin that ensures registered plugins are enabled correctly
-api-version: 1.21.3
-depend: [  ]
-softdepend: [  ]
+name: "SecureBoot"
+version: "${version}"
+main: "net.civmc.secureboot.paper.SecureBootPlugin"
+author: "Huskydog9988"
+description: "A plugin that ensures registered plugins are enabled correctly"
+api-version: "1.21.3"

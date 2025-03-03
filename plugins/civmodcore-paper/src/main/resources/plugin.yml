@@ -3,8 +3,6 @@ version: ${version}
 authors: [ valadian, rourke750, ProgrammerDan, Maxopoly, DeadBeef, Protonull, Okx, mindless728, Tealnerd ]
 main: vg.civcraft.mc.civmodcore.CivModCorePlugin
 api-version: 1.21.3
-depend:
-  - SecureBoot
 permissions:
   cmc.config.save:
     default: op

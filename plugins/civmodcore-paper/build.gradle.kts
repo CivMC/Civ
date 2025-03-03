@@ -18,7 +18,6 @@ dependencies {
     api(libs.commons.collections4)
 
     compileOnly(libs.fastutil)
-    compileOnly(project(":plugins:secureboot-paper"))
 
     testImplementation(libs.bundles.junit)
 }
