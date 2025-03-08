@@ -1,5 +1,5 @@
 [versions]
-paper = "1.21.3-R0.1-SNAPSHOT"
+paper = "1.21.4-R0.1-SNAPSHOT"
 junit = "5.8.2"
 nuotifier = "2.7.2"
 
