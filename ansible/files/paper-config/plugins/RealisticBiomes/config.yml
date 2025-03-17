@@ -589,7 +589,7 @@ plants:
       meadows: 0.5
 
   PALE_OAK_SAPLING:
-    persistent_growth_period: 6h
+    persistent_growth_period: 12h
     name: Pale Oak Tree
     grower:
       type: tree
