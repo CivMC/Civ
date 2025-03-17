@@ -556,8 +556,6 @@ hacks:
       BIRCH_LEAVES: 0
       ACACIA_LEAVES: 0
       SPRUCE_LEAVES: 0
-  TimingsHack:
-    enabled: false
   OneTimeTeleport:
     enabled: false
     material_blacklist: []
