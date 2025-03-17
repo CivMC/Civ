@@ -42,6 +42,7 @@ import org.bukkit.util.Vector;
 public class CombatUtil {
 
     public static org.bukkit.inventory.ItemStack DAMAGING_ITEM = null;
+    public static boolean DAMAGED = false;
 
     private static void sendSoundEffect(net.minecraft.world.entity.player.Player fromEntity, double x, double y, double z, SoundEvent soundEffect, SoundSource soundCategory, float volume, float pitch) {
         fromEntity.playSound(soundEffect, volume, pitch); // This will not send the effect to the entity himself
@@ -120,14 +121,14 @@ public class CombatUtil {
                 if (shouldDamage) {
                     boolean damagedVictim;
                     boolean wasInvulnerable = victim instanceof LivingEntity living && living.invulnerableTime > (float) living.invulnerableDuration / 2.0F && !damagesource.is(DamageTypeTags.BYPASSES_COOLDOWN);
-                    float lastHurt = victim instanceof LivingEntity living ? living.lastHurt : 0;
                     try {
+                        DAMAGED = false;
                         DAMAGING_ITEM = attacker.getBukkitEntity().getInventory().getItemInMainHand();
                         damagedVictim = victim.hurtServer(victim.level().getMinecraftWorld(), damagesource, damage);
                     } finally {
                         DAMAGING_ITEM = null;
                     }
-                    boolean tookDamage = victim instanceof LivingEntity living && living.lastHurt != lastHurt;
+                    boolean tookDamage = victim instanceof LivingEntity && DAMAGED;
                     if (damagedVictim) {
                         if ((knockbackLevel > 1 || dealtExtraKnockback) && tookDamage) {
                             KnockbackStrategy knockbackStrategy = config.getKnockbackStrategy();
