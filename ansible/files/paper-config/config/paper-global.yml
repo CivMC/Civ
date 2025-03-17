@@ -21,6 +21,8 @@ anticheat:
         dont-obfuscate:
           - minecraft:lodestone_tracker
         sanitize-count: true
+      # don't enable until paper fixes issues
+      # https://github.com/PaperMC/Paper/issues/12294
       enable-item-obfuscation: false
       model-overrides:
         minecraft:elytra:
