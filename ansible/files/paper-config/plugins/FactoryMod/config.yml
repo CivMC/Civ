@@ -1650,6 +1650,7 @@ factories:
     recipes:
       - splice_pale_oak_sapling
       - grow_eyeblossom
+      - grow_pale_moss
       - grow_pale_hanging_moss
       - wake_creaking_heart
       - grow_flowering_azalea_leaves
@@ -14000,10 +14001,10 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: OPEN_EYEBLOSSOM
         amount: 8
-  grow_pale_hanging_moss:
+  grow_pale_moss:
     production_time: 4s
     fuel_consumption_intervall: 1s
-    name: Grow pale hanging moss
+    name: Grow pale moss block
     type: PRODUCTION
     input:
       moss_block:
@@ -14016,6 +14017,23 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: WHITE_DYE
         amount: 16
+    output:
+      pale_moss_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_MOSS_BLOCK
+        amount: 32
+  grow_pale_hanging_moss:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow pale hanging moss
+    type: PRODUCTION
+    input:
+      pale_moss_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_MOSS_BLOCK
+        amount: 32
     output:
       pale_hanging_moss:
         v: 3839
