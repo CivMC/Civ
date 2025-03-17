@@ -21,12 +21,19 @@ anticheat:
         dont-obfuscate:
           - minecraft:lodestone_tracker
         sanitize-count: true
-      enable-item-obfuscation: true
+      enable-item-obfuscation: false
       model-overrides:
         minecraft:elytra:
           also-obfuscate: []
           dont-obfuscate:
             - minecraft:damage
+          sanitize-count: true
+        minecraft:filled_map:
+          also-obfuscate: []
+          dont-obfuscate:
+            - minecraft:map_id
+            - minecraft:map_decorations
+            - minecraft:map_color
           sanitize-count: true
 block-updates:
   disable-chorus-plant-updates: false
