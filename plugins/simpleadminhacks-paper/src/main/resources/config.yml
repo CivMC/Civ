@@ -513,7 +513,6 @@ hacks:
     minHealth: 20
     #25 Hearts
     maxHealth: 50
-    enabled: true
   ToggleLamp:
     enabled: false
     cooldownTime: 100
