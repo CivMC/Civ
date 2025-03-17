@@ -1649,6 +1649,9 @@ factories:
         amount: 64
     recipes:
       - splice_pale_oak_sapling
+      - grow_eyeblossom
+      - grow_pale_hanging_moss
+      - wake_creaking_heart
       - grow_flowering_azalea_leaves
       - grow_azalea_leaves
       - grow_spore_blossom
@@ -13959,7 +13962,7 @@ recipes:
     name: Splice pale oak sapling
     type: PRODUCTION
     input:
-      pale_oak_sapling:
+      dark_oak_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: DARK_OAK_SAPLING
@@ -13975,6 +13978,72 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: PALE_OAK_SAPLING
         amount: 32
+  grow_eyeblossom:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow Eyeblossom
+    type: PRODUCTION
+    input:
+      wither_rose:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WITHER_ROSE
+        amount: 8
+      resin_clump:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RESIN_CLUMP
+        amount: 8
+    output:
+      open_eyeblossom:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: OPEN_EYEBLOSSOM
+        amount: 8
+  grow_pale_hanging_moss:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Grow pale hanging moss
+    type: PRODUCTION
+    input:
+      moss_block:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: MOSS_BLOCK
+        amount: 32
+      white_dye:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WHITE_DYE
+        amount: 16
+    output:
+      pale_hanging_moss:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_HANGING_MOSS
+        amount: 32
+  wake_creaking_heart:
+    production_time: 4s
+    fuel_consumption_intervall: 1s
+    name: Wake creaking heart
+    type: PRODUCTION
+    input:
+      pale_oak_log:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_LOG
+        amount: 8
+      shroomlight:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SHROOMLIGHT
+        amount: 4
+    output:
+      creaking_heart:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CREAKING_HEART
+        amount: 4
   grow_flowering_azalea_leaves:
     production_time: 4s
     fuel_consumption_intervall: 1s
