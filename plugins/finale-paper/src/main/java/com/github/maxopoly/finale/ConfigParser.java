@@ -395,6 +395,7 @@ public class ConfigParser {
 
     public BlockRestrictionHandler parseBlockRestrictionHandler(ConfigurationSection config) {
         boolean enabled = config.getBoolean("enabled");
+        boolean reinforce = config.getBoolean("reinforce");
         BlockRestrictionHandler.RestrictionMode restrictionMode = BlockRestrictionHandler.RestrictionMode.valueOf(config.getString("mode"));
         List<Material> blacklist = config.getStringList("blacklist").stream()
             .map(s -> Material.valueOf(s.toUpperCase()))
@@ -428,7 +429,7 @@ public class ConfigParser {
             }
         }
 
-        return new BlockRestrictionHandler(enabled, restrictionMode, zoneRadii, blacklist, whitelist, materialCooldowns);
+        return new BlockRestrictionHandler(enabled, reinforce, restrictionMode, zoneRadii, blacklist, whitelist, materialCooldowns);
     }
 
     public AllyHandler parseAllyHandler(ConfigurationSection config) {
