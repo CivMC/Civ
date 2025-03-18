@@ -104,6 +104,8 @@ public class PermissionType {
         //allows to see general group stats
         registerPermission("GROUPSTATS", new ArrayList<>(adminAndAbove), "Gives access to various group statistics such as member "
             + "counts by permission type, who owns the group etc");
+        //allows editing a groups color
+        registerPermission("EDIT_COLOR", new ArrayList<>(adminAndAbove), "Allows editing the color of the group");
         //allows to add/remove admins
         registerPermission("ADMINS", new ArrayList<>(owner), "Allows inviting new admins and removing existing admins");
         //allows to add/remove owners
