@@ -610,7 +610,7 @@ tippedArrows:
 blockPlacementRestrictions:
   enabled: false
   mode: BLACKLIST # BLACKLIST, WHITELIST, NOLIST (only cooldowns)
-  reinforce: false # should players be allowed to reinforce while in combat?
+  reinforce: true # should players be allowed to reinforce while in combat?
   zones:
     obsidian:
       type: OBSIDIAN
