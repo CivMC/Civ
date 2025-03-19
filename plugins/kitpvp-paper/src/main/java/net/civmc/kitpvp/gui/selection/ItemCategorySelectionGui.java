@@ -72,6 +72,7 @@ public class ItemCategorySelectionGui extends ItemSelectionGui {
             ItemStack drugs = new ItemStack(Material.POTION);
             PotionMeta drugsMeta = (PotionMeta) drugs.getItemMeta();
             drugsMeta.setColor(Color.fromRGB(0x97, 0xFF, 0xFF));
+            drugsMeta.displayName(Component.text("Drugs", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
             drugs.setItemMeta(drugsMeta);
             inventory.setSlot(getSlot(inventory, drugs, "Drugs",
                     () -> new DrugsSelectionGui(dao, player, slot, kit, this::open, gui).open()),
