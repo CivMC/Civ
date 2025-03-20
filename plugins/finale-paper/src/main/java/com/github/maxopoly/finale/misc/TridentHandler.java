@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
 import vg.civcraft.mc.civmodcore.utilities.cooldowns.ICoolDownHandler;
 import vg.civcraft.mc.civmodcore.utilities.cooldowns.TickCoolDownHandler;
 

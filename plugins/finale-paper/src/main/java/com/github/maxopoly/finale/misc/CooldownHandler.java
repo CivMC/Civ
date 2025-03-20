@@ -8,8 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.utilities.cooldowns.ICoolDownHandler;
 import vg.civcraft.mc.civmodcore.utilities.cooldowns.TickCoolDownHandler;
 
@@ -64,16 +62,6 @@ public class CooldownHandler {
         return cooldownBottomLine;
     }
 
-    private CivScoreBoard cooldownBoard;
-
-    public CivScoreBoard getCooldownBoard() {
-        if (cooldownBoard == null) {
-            cooldownBoard = ScoreBoardAPI.createBoard(identifier);
-            cooldownBoard.updatePeriodically(getCooldownBiFunction(), 1L);
-        }
-        return cooldownBoard;
-    }
-
     public void putOnCooldown(Player shooter) {
         cooldowns.putOnCoolDown(shooter.getUniqueId());
         FinaleSettingManager settings = Finale.getPlugin().getSettingsManager();
@@ -87,10 +75,6 @@ public class CooldownHandler {
         if (settings.actionBarTimewarpCooldown(shooter.getUniqueId())) {
             BottomLine bottomLine = getCooldownBottomLine();
             bottomLine.updatePlayer(shooter, getCooldownText.apply(shooter, cooldowns));
-        }
-        if (settings.sideBarTimewarpCooldown(shooter.getUniqueId())) {
-            CivScoreBoard board = getCooldownBoard();
-            board.set(shooter, getCooldownText.apply(shooter, cooldowns));
         }
     }
 

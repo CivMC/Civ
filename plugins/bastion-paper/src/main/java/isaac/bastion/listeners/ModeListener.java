@@ -22,8 +22,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.players.settings.SettingChangeListener;
 import vg.civcraft.mc.civmodcore.players.settings.impl.DisplayLocationSetting;
@@ -33,13 +31,11 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class ModeListener implements Listener {
 
     private BottomLine bsiBottomLine;
-    private CivScoreBoard bsiBoard;
     private BastionSettingManager settingMan;
 
     private PermissionType placePerm;
 
     public ModeListener() {
-        this.bsiBoard = ScoreBoardAPI.createBoard("bsiDisplay");
         this.bsiBottomLine = BottomLineAPI.createBottomLine("bsiDisplay", 3);
         this.settingMan = Bastion.getSettingManager();
         settingMan.getBsiOverlay().registerListener(new SettingChangeListener<Boolean>() {
@@ -154,13 +150,9 @@ public class ModeListener implements Listener {
         if (locSetting.showOnActionbar(player.getUniqueId())) {
             bsiBottomLine.updatePlayer(player, text);
         }
-        if (locSetting.showOnSidebar(player.getUniqueId())) {
-            bsiBoard.set(player, text);
-        }
     }
 
     private void hideAll(Player player) {
         bsiBottomLine.removePlayer(player);
-        bsiBoard.hide(player);
     }
 }
