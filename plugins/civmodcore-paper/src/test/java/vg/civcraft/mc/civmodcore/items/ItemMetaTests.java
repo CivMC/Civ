@@ -84,28 +84,4 @@ public class ItemMetaTests {
         Assertions.assertTrue(ItemUtils.areItemsSimilar(formerItem, latterItem));
     }
 
-    /**
-     * Tests whether {@link ChatUtils#isBaseComponent(Component)} works.
-     */
-    @Test
-    @SuppressWarnings("deprecation")
-    public void testBaseComponent() {
-        // Setup
-        final var formerItem = TEMPLATE_ITEM.clone();
-        ItemUtils.handleItemMeta(formerItem, (ItemMeta meta) -> {
-            meta.setDisplayName("Hello!");
-            return true;
-        });
-        final var latterItem = TEMPLATE_ITEM.clone();
-        ItemUtils.handleItemMeta(latterItem, (ItemMeta meta) -> {
-            meta.displayName(Component.text("Hello!"));
-            return true;
-        });
-        // Check
-        Assertions.assertTrue(ChatUtils.isBaseComponent(
-            ItemUtils.getComponentDisplayName(formerItem)));
-        Assertions.assertFalse(ChatUtils.isBaseComponent(
-            ItemUtils.getComponentDisplayName(latterItem)));
-    }
-
 }

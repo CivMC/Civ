@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.translation.Translatable;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
@@ -15,39 +14,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 /**
  * Class of static APIs for Items. Replaces ISUtils.
  */
 public final class ItemUtils {
-
-    /**
-     * Gets the name of an item based off a material, e.g: POLISHED_GRANITE to Polished Granite
-     *
-     * @param material The material to get the name of.
-     * @return Returns the material name.
-     * @deprecated Use {@link Component#translatable(Translatable)} instead.
-     */
-    @Deprecated
-    @NotNull
-    public static String getItemName(@NotNull final Material material) {
-        return ChatUtils.stringify(Component.translatable(Objects.requireNonNull(material)));
-    }
-
-    /**
-     * Gets the name of an item either based off its material or its custom item tag.
-     *
-     * @param item The item to get the name of.
-     * @return Returns the item's name.
-     * @deprecated Use {@link Component#translatable(Translatable)} instead.
-     */
-    @Deprecated
-    @Nullable
-    public static String getItemName(@Nullable final ItemStack item) {
-        return item == null ? null : ChatUtils.stringify(Component.translatable(item));
-    }
-
     /**
      * Checks whether the given item can be interpreted as an empty slot.
      *

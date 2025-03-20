@@ -13,7 +13,7 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 public class SorterInteractionManager implements IInteractionManager {
 
@@ -74,11 +74,11 @@ public class SorterInteractionManager implements IInteractionManager {
             BlockFace side = sorter.getSide(is);
             if (side == null) {
                 sorter.addAssignment(bf, is);
-                p.sendMessage(ChatColor.GREEN + "Added " + ItemUtils.getItemName(is) + " to " + bf.toString());
+                p.sendMessage(ChatColor.GREEN + "Added " + ChatUtils.translate(is) + " to " + bf.toString());
             } else {
                 if (side == bf) {
                     sorter.removeAssignment(is);
-                    p.sendMessage(ChatColor.GOLD + "Removed " + ItemUtils.getItemName(is) + " from " + side.toString());
+                    p.sendMessage(ChatColor.GOLD + "Removed " + ChatUtils.translate(is) + " from " + side.toString());
                 } else {
                     p.sendMessage(ChatColor.RED + "This item is already associated with " + side.toString());
                 }
