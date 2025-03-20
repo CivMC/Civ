@@ -304,6 +304,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
      */
     public void setPlaced(long placed) {
         this.placed = placed;
+        Bastion.getBastionStorage().updated(this);
     }
 
     /**
