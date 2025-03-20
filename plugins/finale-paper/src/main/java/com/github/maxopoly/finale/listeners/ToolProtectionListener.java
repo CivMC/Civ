@@ -5,8 +5,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -21,26 +22,29 @@ public class ToolProtectionListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    public void onBlockBreak(BlockBreakEvent e) {
+    public void onItemDamageByPlayer(PlayerItemDamageEvent e) {
         if (!settingMan.useToolProtection(e.getPlayer().getUniqueId())) {
             return;
         }
-        ItemStack is = e.getPlayer().getInventory().getItemInMainHand();
-        if (is.getEnchantments().isEmpty()) {
+        ItemStack is = e.getItem();
+        PlayerInventory inventory = e.getPlayer().getInventory();
+        if (is.getEnchantments().isEmpty()
+            || !(inventory.getItemInMainHand() != is
+            || inventory.getItemInOffHand() != is)) {
             return;
         }
         Damageable meta = ItemUtils.getDamageable(is);
         if (meta == null) {
             return;
         }
-        int maxDura = meta.hasMaxDamage() ? meta.getMaxDamage() : is.getType().getMaxDurability();
-        int health = maxDura - meta.getDamage();
+        int health = is.getType().getMaxDurability() - meta.getDamage();
         if (health <= settingMan.getToolProtectionThreshhold(e.getPlayer().getUniqueId())) {
             for (int i = 0; i < 5; i++) {
-                e.getPlayer().sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "Your tool is almost broken");
+                e.getPlayer().sendMessage(ChatColor.RED.toString() + ChatColor.BOLD + "Your %s is almost broken".formatted(
+                    e.getItem().getType().name().replace('_', ' ').toLowerCase()
+                ));
             }
             e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.MINING_FATIGUE, 10, 4));
         }
     }
-
 }
