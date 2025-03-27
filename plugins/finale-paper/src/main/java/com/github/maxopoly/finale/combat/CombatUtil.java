@@ -88,7 +88,7 @@ public class CombatUtil {
                     dealtExtraKnockback = true;
                 }
 
-                boolean shouldCrit = shouldDamage && attacker.fallDistance > attacker.yOld - attacker.getY() && !attacker.onGround() && !attacker.onClimbable() && !attacker.isInWater()
+                boolean shouldCrit = shouldDamage && attacker.fallDistance > 0 && attacker.fallDistance > (float) (attacker.yOld - attacker.getY()) && !attacker.onGround() && !attacker.onClimbable() && !attacker.isInWater()
                     && !attacker.hasEffect(MobEffects.BLINDNESS) && !attacker.isPassenger() && victim instanceof LivingEntity;
                 shouldCrit = shouldCrit && !sprintHandler.isSprinting(attacker);
                 if (shouldCrit) {
