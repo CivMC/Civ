@@ -323,7 +323,7 @@ public class CivChat2Manager {
                 return;
             }
         }
-        GroupChatEvent event = new GroupChatEvent(sender, group.getName(), Component.text(message));
+        GroupChatEvent event = new GroupChatEvent(sender, group.getName(), message);
         Bukkit.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {

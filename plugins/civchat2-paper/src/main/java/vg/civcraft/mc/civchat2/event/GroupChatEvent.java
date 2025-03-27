@@ -10,14 +10,14 @@ public class GroupChatEvent extends PlayerEvent implements Cancellable {
 
     private final String groupName;
 
-    private final Component message;
+    private final String message;
 
     private boolean cancelled;
 
     // Handler list for spigot events
     private static final HandlerList handlers = new HandlerList();
 
-    public GroupChatEvent(final Player player, final String groupName, final Component message) {
+    public GroupChatEvent(final Player player, final String groupName, final String message) {
         super(player);
 
         this.groupName = groupName;
@@ -39,7 +39,7 @@ public class GroupChatEvent extends PlayerEvent implements Cancellable {
      *
      * @return The chat message
      */
-    public Component getMessage() {
+    public String getMessage() {
         return message;
     }
 
