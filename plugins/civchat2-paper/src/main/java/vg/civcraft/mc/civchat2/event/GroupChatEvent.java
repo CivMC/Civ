@@ -1,6 +1,5 @@
 package vg.civcraft.mc.civchat2.event;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
