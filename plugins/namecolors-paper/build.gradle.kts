@@ -13,5 +13,5 @@ dependencies {
     compileOnly(project(":plugins:namelayer-paper"))
     compileOnly(project(":plugins:civchat2-paper"))
 
-    compileOnly(files("../../ansible/src/paper-plugins/TAB v5.0.3.jar"))
+    compileOnly(files("../../ansible/src/paper-plugins/TAB v5.0.7.jar"))
 }

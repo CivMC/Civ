@@ -20,6 +20,9 @@ public class VirtualRewarder implements Rewarder {
     @Override
     public void reward(Player player, int amount) {
         manager.setEssence(player.getUniqueId(), manager.getEssence(player.getUniqueId()) + amount);
+        if (manager.isAtEssenceCapacity(player.getUniqueId())) {
+            player.sendMessage(Component.text("Essence capacity reached, please withdraw", NamedTextColor.RED));
+        }
         player.sendMessage(Component.empty().color(EssenceCommand.NICE_BLUE)
             .append(Component.text("Use "))
             .append(Component.text("/essence withdraw", NamedTextColor.AQUA))

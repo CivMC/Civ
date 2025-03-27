@@ -12,5 +12,7 @@ dependencies {
     compileOnly(project(":plugins:civmodcore-paper"))
     compileOnly(project(":plugins:combattagplus-paper"))
 
-    compileOnly(libs.vault.api)
+    compileOnly(libs.vault.api) {
+        exclude(group = "org.bukkit")
+    }
 }

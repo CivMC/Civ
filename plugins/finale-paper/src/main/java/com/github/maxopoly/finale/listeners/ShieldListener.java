@@ -29,12 +29,10 @@ public class ShieldListener implements Listener {
     @EventHandler
     public void onShieldBash(PlayerInteractEvent event) {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            //System.out.println("RIGHT CLICKING");
             ItemStack item = event.getItem();
             if (item == null || item.getType() != Material.SHIELD) {
                 return;
             }
-            //System.out.println("RIGHT CLICKING ON SHIELD");
 
             Player player = event.getPlayer();
             new BukkitRunnable() {
@@ -42,14 +40,12 @@ public class ShieldListener implements Listener {
                 @Override
                 public void run() {
                     if (player.isBlocking()) {
-                        //System.out.println("BLOCKING");
                         ShieldHandler shieldHandler = Finale.getPlugin().getManager().getShieldHandler();
                         shieldHandler.activateShieldBash(player);
                         cancel();
                         return;
                     }
-                    if (player.isHandRaised()) {
-                        //System.out.println("HAND RAISED");
+                    if (player.hasActiveItem()) {
                         return;
                     }
                     cancel();

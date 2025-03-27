@@ -1323,7 +1323,7 @@ public class PlayerListener implements Listener, Configurable {
                 for (RepairMaterial mat : set) {
                     ShapelessRecipe r1 = new ShapelessRecipe(new NamespacedKey(pearlApi, "repairPearl"), resultItem);
                     r1.addIngredient(1, Material.ENDER_PEARL);
-                    r1.addIngredient(1, mat.getStack().getData());
+                    r1.addIngredient(1, mat.getStack());
 
                     Bukkit.getServer().addRecipe(r1);
                 }

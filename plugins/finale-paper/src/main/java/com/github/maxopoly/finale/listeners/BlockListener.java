@@ -32,7 +32,6 @@ public class BlockListener implements Listener {
             return;
         }
 
-        System.out.println("COMBAT TAGGED PLAYER");
         BlockRestrictionHandler blockRestrictionHandler = Finale.getPlugin().getManager().getBlockRestrictionHandler();
         BlockRestrictionHandler.RestrictionMode mode = blockRestrictionHandler.getMode();
         Block blockPlaced = event.getBlockPlaced();
@@ -53,10 +52,12 @@ public class BlockListener implements Listener {
             }
         }
 
-        if (blockRestrictionHandler.isOnCooldown(player, blockPlacedType)) {
-            restrictPlacement(event);
-        } else {
-            blockRestrictionHandler.putOnCooldown(player, blockPlacedType);
+        if (!blockRestrictionHandler.isReinforce()) {
+            if (blockRestrictionHandler.isOnCooldown(player, blockPlacedType)) {
+                restrictPlacement(event);
+            } else {
+                blockRestrictionHandler.putOnCooldown(player, blockPlacedType);
+            }
         }
     }
 

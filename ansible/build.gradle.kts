@@ -10,6 +10,7 @@ dependencies {
     paperPlugin(project(path = ":plugins:civchat2-paper"))
     paperPlugin(project(path = ":plugins:civduties-paper"))
     paperPlugin(project(path = ":plugins:civmodcore-paper", configuration = "shadow"))
+    paperPlugin(project(path = ":plugins:finale-paper"))
     paperPlugin(project(path = ":plugins:combattagplus-paper"))
     paperPlugin(project(path = ":plugins:donum-paper"))
     paperPlugin(project(path = ":plugins:essenceglue-paper"))
