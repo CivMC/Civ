@@ -3,15 +3,11 @@ package isaac.bastion;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
@@ -33,7 +29,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
     private long placed; //time when the bastion block was created
     private BastionType type;
     private Integer listGroupId;
-    private Set<Location> fieldBlocks;
 
     /**
      * constructor for blocks loaded from database
@@ -47,7 +42,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
         this.id = id;
         this.location = location;
         this.type = type;
-        this.fieldBlocks = new HashSet<>();
 
         this.placed = placed;
 
@@ -245,97 +239,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
     public void mature() {
         placed -= type.getWarmupTime();
         Bastion.getBastionStorage().updated(this);
-    }
-
-    /**
-     * This method generates a frame outline of a bastions effect field.
-     * It is your responsibility on usage to verfiy locations inside this set are
-     * valid blocks to modify
-     * @return A wireframe copy of the bastions effect field
-     */
-    public Set<Location> getFieldFrame() {
-        if (!this.fieldBlocks.isEmpty()) {
-            //We do this so we are running this logic once per bastion loaded
-            return this.fieldBlocks;
-        }
-        Set<Location> blocksToChange = new HashSet<>();
-        int radius = this.getType().getEffectRadius();
-
-        int x1 = location.getBlockX() - radius;
-        int y1 = location.getBlockY();
-        int z1 = location.getBlockZ() - radius;
-
-        int x2 = x1 + (radius * 2);
-        int y2 = location.getWorld().getMaxHeight();
-        int z2 = z1 + (radius * 2);
-
-        World world = location.getWorld();
-        //Circle field
-        if (!this.getType().isSquare()) {
-            Set<Location> circleField = new HashSet<>();
-            for (int x = x1; x <= x2; x++) {
-                for (int z = z1; z <= z2; z++){
-                    Location newLoc = new Location(world, x, y1, z);
-                    if (newLoc.equals(location)) {
-                        continue;
-                    }
-                    if (location.distanceSquared(newLoc) > (radius - 1) * (radius - 1) && this.inField(newLoc)) {
-                        circleField.add(newLoc);
-                    }
-                }
-            }
-            circleField.add(location.clone().add(0, 0, (radius - 1)));
-            circleField.add(location.clone().add((radius - 1), 0, 0));
-            circleField.add(location.clone().subtract((radius - 1), 0, 0));
-            circleField.add(location.clone().subtract(0, 0, (radius - 1)));
-            Set<Location> verticality = new HashSet<>();
-            circleField.forEach(loc -> {
-                for (int y = loc.getBlockY(); y <= world.getMaxHeight(); y++) {
-                    verticality.add(loc.clone().set(loc.x(), y, loc.z()));
-                }
-            });
-            circleField.addAll(verticality);
-            circleField.forEach(block -> {
-                blocksToChange.add(block);
-            });
-            this.fieldBlocks.addAll(blocksToChange);
-            return Set.copyOf(blocksToChange);
-        }
-        //Square field
-        for (int xPoint = x1; xPoint <= x2; xPoint++) {
-            for (int yPoint = y1; yPoint <= y2; yPoint++) {
-                Location newLoc = new Location(world, xPoint, yPoint, z1);
-                if (this.inField(newLoc)) {
-                    blocksToChange.add(newLoc);
-                }
-            }
-        }
-        for (int xPoint = x1; xPoint <= x2; xPoint++) {
-            for (int yPoint = y1; yPoint <= y2; yPoint++) {
-                Location newLoc = new Location(world, xPoint, yPoint, z2);
-                if (this.inField(newLoc)) {
-                    blocksToChange.add(newLoc);
-                }
-            }
-        }
-        for (int zPoint = z1; zPoint <= z2; zPoint++) {
-            for (int yPoint = y1; yPoint <= y2; yPoint++) {
-                Location newLoc = new Location(world, x1, yPoint, zPoint);
-                if (this.inField(newLoc)) {
-                    blocksToChange.add(newLoc);
-                }
-            }
-        }
-        for (int zPoint = z1; zPoint <= z2; zPoint++) {
-            for (int yPoint = y1; yPoint <= y2; yPoint++) {
-                Location newLoc = new Location(world, x2, yPoint, zPoint);
-                if (this.inField(newLoc)) {
-                    blocksToChange.add(newLoc);
-                }
-            }
-        }
-        this.fieldBlocks.addAll(blocksToChange);
-        return Set.copyOf(blocksToChange);
     }
 
     /**
