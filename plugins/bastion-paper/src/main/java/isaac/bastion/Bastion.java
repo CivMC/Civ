@@ -10,6 +10,7 @@ import isaac.bastion.listeners.CitadelListener;
 import isaac.bastion.listeners.ElytraListener;
 import isaac.bastion.listeners.ModeListener;
 import isaac.bastion.listeners.NameLayerListener;
+import isaac.bastion.listeners.VisualisationListener;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.storage.BastionBlockStorage;
 import isaac.bastion.storage.BastionGroupStorage;
@@ -45,6 +46,7 @@ public final class Bastion extends ACivMod {
         registerNameLayerPermissions();
         blockManager = new BastionBlockManager();
         settingManager = new BastionSettingManager();
+        visualiserUtils = new BastionVisualiserUtils();
 
         if (!this.isEnabled()) //check that the plugin was not disabled in setting up any of the static variables
             return;
@@ -73,6 +75,7 @@ public final class Bastion extends ACivMod {
         getServer().getPluginManager().registerEvents(new NameLayerListener(blockStorage), this);
         getServer().getPluginManager().registerEvents(new CitadelListener(), this);
         getServer().getPluginManager().registerEvents(new ModeListener(), this);
+        getServer().getPluginManager().registerEvents(new VisualisationListener(getVisualiserUtils()), this);
     }
 
     private void setupDatabase() {
