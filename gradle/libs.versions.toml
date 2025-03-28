@@ -1,5 +1,5 @@
 [versions]
-paper = "1.21.3-R0.1-SNAPSHOT"
+paper = "1.21.4-R0.1-SNAPSHOT"
 junit = "5.8.2"
 nuotifier = "2.7.2"
 
@@ -26,7 +26,7 @@ nuvotifier-bukkit = { group = "com.github.NuVotifier.NuVotifier", name = "nuvoti
 vault-api = { group = "com.github.MilkBowl", name = "VaultAPI", version = "1.7" }
 luckperms-api = { group = "net.luckperms", name = "api", version = "5.0" }
 
-aswm-api = { group = "com.infernalsuite.aswm", name = "api", version = "3.0.0-SNAPSHOT"}
+aswm-api = { group = "com.infernalsuite.asp", name = "api", version = "4.0.0-SNAPSHOT"}
 
 worldedit = { group = "com.sk89q.worldedit", name = "worldedit-bukkit", version = "7.2.8" }
 hikaricp = { group = "com.zaxxer", name = "HikariCP", version = "5.0.1" }

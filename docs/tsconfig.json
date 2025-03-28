@@ -16,11 +16,6 @@
             "~/*": ["./docs/*"]
         }
     },
-    "include": [
-        "docs/**/*.ts",
-        "docs/**/*.d.ts",
-        "docs/**/*.tsx",
-        "docs/**/*.vue",
-    ],
+    "include": ["docs/**/*"],
     "exclude": ["docs/dist/**", "docs/cache/**"]
 }

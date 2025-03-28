@@ -41,6 +41,7 @@ public class CitadelUtility {
             case PINK_TULIP:
             case WHITE_TULIP:
             case OXEYE_DAISY:
+            case PINK_PETALS:
             case ACACIA_SAPLING:
             case BIRCH_SAPLING:
             case DARK_OAK_SAPLING:
@@ -48,6 +49,9 @@ public class CitadelUtility {
             case OAK_SAPLING:
             case SPRUCE_SAPLING:
             case FLOWERING_AZALEA:
+            case CHERRY_SAPLING:
+            case MANGROVE_PROPAGULE:
+            case PALE_OAK_SAPLING:
             case WHEAT:
             case CARROTS:
             case POTATOES:
@@ -62,14 +66,23 @@ public class CitadelUtility {
             case SUNFLOWER:
             case LILAC:
             case PEONY:
+            case ROSE_BUSH:
+            case TORCHFLOWER:
+            case PITCHER_PLANT:
             case TALL_GRASS:
             case SHORT_GRASS:
             case TWISTING_VINES:
             case TWISTING_VINES_PLANT:
             case WEEPING_VINES:
             case WEEPING_VINES_PLANT:
+            case CRIMSON_FUNGUS:
+            case CRIMSON_ROOTS:
+            case WARPED_FUNGUS:
+            case WARPED_ROOTS:
+            case NETHER_SPROUTS:
             case KELP:
             case KELP_PLANT:
+            case SPORE_BLOSSOM:
             case BIG_DRIPLEAF:
             case BIG_DRIPLEAF_STEM:
             case CAVE_VINES:

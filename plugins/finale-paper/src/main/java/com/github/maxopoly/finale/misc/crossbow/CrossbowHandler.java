@@ -4,7 +4,10 @@ import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.misc.CooldownHandler;
 import com.github.maxopoly.finale.misc.ItemUtil;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -16,7 +19,6 @@ import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.ExplosionResult;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -71,26 +73,6 @@ public class CrossbowHandler {
         }.runTaskTimer(Finale.getPlugin(), 0L, 1L);
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public double getRadius() {
-        return radius;
-    }
-
-    public float getArtilleryDamage() {
-        return artilleryDamage;
-    }
-
-    public double getReinforcementDamage() {
-        return reinforcementDamage;
-    }
-
-    public double getBastionDamage() {
-        return bastionDamage;
-    }
-
     public boolean onCooldown(Player shooter) {
         return cooldowns.onCooldown(shooter);
     }
@@ -123,8 +105,29 @@ public class CrossbowHandler {
             }
         }
 
-        List<Block> explodeLocs = getCircle(loc, radius, radius, false, true, 0);
-        BlockExplodeEvent explodeEvent = new BlockExplodeEvent(loc.getBlock(), loc.getBlock().getState(), explodeLocs, 0, ExplosionResult.DESTROY_WITH_DECAY);
+        Block block = loc.getBlock();
+
+        Set<Block> explodeLocs = new HashSet<>();
+        explodeLocs.add(block);
+        Deque<Block> explodeLocQueue = new ArrayDeque<>();
+        explodeLocQueue.add(block);
+
+        Block queueExplodeBlock;
+        while ((queueExplodeBlock = explodeLocQueue.poll()) != null) {
+            if (!queueExplodeBlock.isEmpty()) {
+                continue;
+            }
+            for (BlockFace face : new BlockFace[] {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
+                Block relative = queueExplodeBlock.getRelative(face);
+                double dist = relative.getLocation().distanceSquared(block.getLocation());
+                if (dist < radius * radius && explodeLocs.add(relative)) {
+                    explodeLocQueue.add(relative);
+                }
+            }
+        }
+
+        List<Block> explodeLocsList = new ArrayList<>(explodeLocs);
+        BlockExplodeEvent explodeEvent = new BlockExplodeEvent(block, block.getState(), explodeLocsList, 0, ExplosionResult.DESTROY_WITH_DECAY);
         Bukkit.getPluginManager().callEvent(explodeEvent);
         if (explodeEvent.isCancelled()) {
             return;
@@ -133,7 +136,7 @@ public class CrossbowHandler {
         loc.getWorld().spawnParticle(Particle.EXPLOSION, loc, 1, 0, 0, 0, 0);
         loc.getWorld().playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 2, ThreadLocalRandom.current().nextFloat(0.56f, 0.84f));
 
-        for (Block explodeBlock : explodeLocs) {
+        for (Block explodeBlock : explodeLocsList) {
             if (explodeBlock.getType() != Material.AIR && explodeBlock.getType() != Material.BEDROCK && explodeBlock.getType() != Material.BARRIER) {
                 if (Bukkit.getPluginManager().isPluginEnabled("Citadel")) {
                     Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(explodeBlock);
@@ -160,26 +163,5 @@ public class CrossbowHandler {
                 }
             }
         }
-    }
-
-    public static List<Block> getCircle(final Location loc, final int radius, final int height, final boolean hollow, final boolean sphere, final int plusY) {
-        final List<Block> circleblocks = new ArrayList<>();
-        final int cx = loc.getBlockX();
-        final int cy = loc.getBlockY();
-        final int cz = loc.getBlockZ();
-
-        for (int x = cx - radius; x <= cx + radius; x++) {
-            for (int z = cz - radius; z <= cz + radius; z++) {
-                for (int y = (sphere ? cy - radius : cy); y < (sphere ? cy + radius : cy + height); y++) {
-                    final double dist = (cx - x) * (cx - x) + (cz - z) * (cz - z) + (sphere ? (cy - y) * (cy - y) : 0);
-
-                    if (dist < radius * radius && !(hollow && dist < (radius - 1) * (radius - 1))) {
-                        final Location l = new Location(loc.getWorld(), x, y + plusY, z);
-                        circleblocks.add(l.getBlock());
-                    }
-                }
-            }
-        }
-        return circleblocks;
     }
 }

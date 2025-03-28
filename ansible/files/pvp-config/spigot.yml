@@ -74,12 +74,12 @@ world-settings:
       cavevines-modifier: 100
       glowberry-modifier: 100
     entity-activation-range:
-      animals: 8
-      monsters: 8
-      raiders: 8
-      misc: 8
-      water: 8
-      villagers: 8
+      animals: 16
+      monsters: 16
+      raiders: 16
+      misc: 16
+      water: 16
+      villagers: 16
       flying-monsters: 32
       wake-up-inactive:
         animals-max-per-tick: 4

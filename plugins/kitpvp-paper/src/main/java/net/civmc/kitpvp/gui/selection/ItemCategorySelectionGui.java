@@ -5,6 +5,7 @@ import net.civmc.kitpvp.data.KitPvpDao;
 import net.civmc.kitpvp.gui.EditKitGui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -52,7 +53,9 @@ public class ItemCategorySelectionGui extends ItemSelectionGui {
         ItemStack potions = new ItemStack(Material.POTION);
         PotionMeta potionsMeta = (PotionMeta) potions.getItemMeta();
         potionsMeta.setColor(Color.YELLOW);
+        potionsMeta.displayName(Component.text("Potions", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
         potions.setItemMeta(potionsMeta);
+        // item name doesn't work on potion
         inventory.setSlot(getSlot(inventory, potions, "Potions",
                 () -> new PotionsSelectionGui(dao, player, slot, kit, this::open, gui).open()),
             21);
@@ -69,6 +72,7 @@ public class ItemCategorySelectionGui extends ItemSelectionGui {
             ItemStack drugs = new ItemStack(Material.POTION);
             PotionMeta drugsMeta = (PotionMeta) drugs.getItemMeta();
             drugsMeta.setColor(Color.fromRGB(0x97, 0xFF, 0xFF));
+            drugsMeta.displayName(Component.text("Drugs", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
             drugs.setItemMeta(drugsMeta);
             inventory.setSlot(getSlot(inventory, drugs, "Drugs",
                     () -> new DrugsSelectionGui(dao, player, slot, kit, this::open, gui).open()),

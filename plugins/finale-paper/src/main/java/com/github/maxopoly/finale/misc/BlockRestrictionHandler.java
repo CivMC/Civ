@@ -16,14 +16,16 @@ public class BlockRestrictionHandler {
     }
 
     private boolean enabled;
+    private boolean reinforce;
     private RestrictionMode mode;
     private Map<Material, Integer> zoneRadii;
     private List<Material> blacklist;
     private List<Material> whitelist;
     private Map<Material, CooldownHandler> materialCooldownHandlers;
 
-    public BlockRestrictionHandler(boolean enabled, RestrictionMode mode, Map<Material, Integer> zoneRadii, List<Material> blacklist, List<Material> whitelist, Map<Material, CooldownHandler> materialCooldownHandlers) {
+    public BlockRestrictionHandler(boolean enabled, boolean reinforce, RestrictionMode mode, Map<Material, Integer> zoneRadii, List<Material> blacklist, List<Material> whitelist, Map<Material, CooldownHandler> materialCooldownHandlers) {
         this.enabled = enabled;
+        this.reinforce = reinforce;
         this.mode = mode;
         this.zoneRadii = zoneRadii;
         this.blacklist = blacklist;
@@ -33,6 +35,10 @@ public class BlockRestrictionHandler {
 
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public boolean isReinforce() {
+        return reinforce;
     }
 
     public RestrictionMode getMode() {

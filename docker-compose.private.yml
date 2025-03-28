@@ -18,8 +18,11 @@ services:
       - ./PrivateConfig/paper/plugins/packetevents-spigot-2.7.0.jar:/data/plugins/packetevents-spgiot-2.7.0.jar
       - ./PrivateConfig/paper/config/Vulcan/config.yml:/data/plugins/Vulcan/config.yml
       - ./PrivateConfig/paper/config/HiddenOre/config.yml:/data/plugins/HiddenOre/config.yml
-      - ./PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/data/plugins/KirraBukkitGateway/cnfig.yml
-      - ./PrivateConfig/paper/config/Brewery/config.yml:/data/plugins/Brewery/config.yml
+      - ./PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/data/plugins/KiraBukkitGateway/config.yml
+      - ./PrivateConfig/paper/config/BreweryX/config.yml:/data/plugins/BreweryX/config.yml
+      - ./PrivateConfig/paper/config/BreweryX/cauldron.yml:/data/plugins/BreweryX/cauldron.yml
+      - ./PrivateConfig/paper/config/BreweryX/custom-items.yml:/data/plugins/BreweryX/custom-items.yml
+      - ./PrivateConfig/paper/config/BreweryX/recipes.yml:/data/plugins/BreweryX/recipes.yml
       - ./PrivateConfig/paper/config/Terra/packs/CivMC:/data/plugins/Terra/packs/CivMC
       - ./PrivateConfig/paper/config/Votifier/config.yml:/data/plugins/Votifier/config.yml
       - ./PrivateConfig/paper/config/Votifier/rsa/public.key:/data/plugins/Votifier/rsa/public.key

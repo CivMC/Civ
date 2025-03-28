@@ -13,6 +13,30 @@
 # Website: https://papermc.io/
 
 _version: 29
+anticheat:
+  obfuscation:
+    items:
+      all-models:
+        also-obfuscate: []
+        dont-obfuscate:
+          - minecraft:lodestone_tracker
+        sanitize-count: true
+      # don't enable until paper fixes issues
+      # https://github.com/PaperMC/Paper/issues/12294
+      enable-item-obfuscation: false
+      model-overrides:
+        minecraft:elytra:
+          also-obfuscate: []
+          dont-obfuscate:
+            - minecraft:damage
+          sanitize-count: true
+        minecraft:filled_map:
+          also-obfuscate: []
+          dont-obfuscate:
+            - minecraft:map_id
+            - minecraft:map_decorations
+            - minecraft:map_color
+          sanitize-count: true
 block-updates:
   disable-chorus-plant-updates: false
   disable-mushroom-block-updates: false

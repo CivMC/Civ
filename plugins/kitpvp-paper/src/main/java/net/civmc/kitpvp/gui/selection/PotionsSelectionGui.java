@@ -6,6 +6,7 @@ import net.civmc.kitpvp.data.KitPvpDao;
 import net.civmc.kitpvp.gui.EditKitGui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -86,7 +87,7 @@ public class PotionsSelectionGui extends ItemSelectionGui {
             PotionMeta meta = (PotionMeta) showDrinkablePotions.getItemMeta();
             meta.setColor(Color.YELLOW);
             meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-            meta.itemName(Component.text("Show drinkable potions", NamedTextColor.GOLD));
+            meta.displayName(Component.text("Show drinkable potions", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
             showDrinkablePotions.setItemMeta(meta);
             inventory.setSlot(new Clickable(showDrinkablePotions) {
                 @Override
@@ -101,7 +102,7 @@ public class PotionsSelectionGui extends ItemSelectionGui {
             PotionMeta meta = (PotionMeta) showSplashPotions.getItemMeta();
             meta.setColor(Color.YELLOW);
             meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-            meta.itemName(Component.text("Show splash potions", NamedTextColor.GOLD));
+            meta.displayName(Component.text("Show splash potions", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
             showSplashPotions.setItemMeta(meta);
             inventory.setSlot(new Clickable(showSplashPotions) {
                 @Override
@@ -116,7 +117,7 @@ public class PotionsSelectionGui extends ItemSelectionGui {
             PotionMeta meta = (PotionMeta) showTippedArrows.getItemMeta();
             meta.setColor(Color.YELLOW);
             meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
-            meta.itemName(Component.text("Show tipped arrows", NamedTextColor.GOLD));
+            meta.displayName(Component.text("Show tipped arrows", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
             showTippedArrows.setItemMeta(meta);
             inventory.setSlot(new Clickable(showTippedArrows) {
                 @Override

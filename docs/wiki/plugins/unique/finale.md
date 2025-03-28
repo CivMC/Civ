@@ -90,7 +90,7 @@ The below commands apply to this feature:
 - /ally list (this shows a list of players marked as an ally to you)
 
 ### Small features
-#### Netherite Axes (Currently only available on PvP server)
+#### Netherite Axes
 - Netherite axes do 2x extra damage to your opponents armor.
 
 #### Netherite Armor Bonus
