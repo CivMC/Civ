@@ -50,7 +50,7 @@ public class NameColorSetting extends PlayerSetting<Component> {
     }
 
     public NameColorSetting(JavaPlugin owningPlugin) {
-        super(owningPlugin, Component.empty(), "Name color", "namecolors.choser", new ItemStack(Material.RED_WOOL),
+        super(owningPlugin, null, "Name color", "namecolors.choser", new ItemStack(Material.RED_WOOL),
             "Lets you chose the color of your name", true);
     }
 

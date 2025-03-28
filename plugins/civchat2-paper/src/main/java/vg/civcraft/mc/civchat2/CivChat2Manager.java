@@ -361,7 +361,8 @@ public class CivChat2Manager {
             .append(group.getGroupNameColored())
             .append(Component.text("] ", NamedTextColor.GRAY))
             .append(Bukkit.getPlayer(senderName).displayName())
-            .append(Component.text(": " + message, NamedTextColor.GRAY));
+            .append(Component.text(": ", NamedTextColor.GRAY))
+            .append(Component.text(message, NamedTextColor.WHITE));
 
         for (Player receiver : members) {
             if (DBM.isIgnoringGroup(receiver.getUniqueId(), group.getName())) {

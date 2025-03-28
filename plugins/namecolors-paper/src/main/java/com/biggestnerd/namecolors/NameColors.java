@@ -32,6 +32,10 @@ public class NameColors extends ACivMod implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        if(setting.getValue(event.getPlayer()) == null) {
+            setting.setValue(event.getPlayer(), event.getPlayer().name());
+            return;
+        }
         updatePlayerName(event.getPlayer());
     }
 
