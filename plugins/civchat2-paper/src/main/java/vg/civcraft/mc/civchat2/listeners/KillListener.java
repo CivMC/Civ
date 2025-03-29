@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civchat2.listeners;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import java.util.Objects;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -14,7 +15,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
@@ -105,11 +105,8 @@ public final class KillListener implements Listener {
                 );
             }
             else if (getWordbankName(weapon) instanceof final Component name) {
-                final var hoverItem = new ItemStack(weapon.getType(), weapon.getAmount()); {
-                    final ItemMeta hoverMeta = hoverItem.getItemMeta();
-                    hoverMeta.displayName(name);
-                    hoverItem.setItemMeta(hoverMeta);
-                }
+                final var hoverItem = new ItemStack(weapon.getType(), weapon.getAmount());
+                hoverItem.setData(DataComponentTypes.CUSTOM_NAME, name);
                 builder.append(
                     Component.text(" with "),
                     name.hoverEvent(hoverItem.asHoverEvent())
@@ -129,11 +126,7 @@ public final class KillListener implements Listener {
     private static @Nullable Component getWordbankName(
         final @NotNull ItemStack item
     ) {
-        final ItemMeta meta = item.getItemMeta();
-        if (meta == null) {
-            return null;
-        }
-        final Component displayName = meta.displayName();
+        final Component displayName = item.getData(DataComponentTypes.CUSTOM_NAME);
         if (displayName == null || Component.empty().equals(displayName)) {
             return null;
         }
