@@ -69,41 +69,7 @@ public final class KillListener implements Listener {
         if (!this.settings.getSendOwnKills(killer.getUniqueId())) {
             return;
         }
-        final Component killMessage; {
-            final TextComponent.Builder killMessageBuilder = Component.text().color(NamedTextColor.DARK_GRAY).append(
-                Component.text(victim.getName(), ITALIC),
-                Component.text(" was killed by "),
-                Component.text(killer.getName(), ITALIC)
-            );
-            if (this.settings.includeWeaponInKillBroadcasts(killer.getUniqueId())) {
-                final ItemStack weapon = killer.getInventory().getItemInMainHand();
-                if (ItemUtils.isEmptyItem(weapon)) {
-                    killMessageBuilder.append(
-                        Component.text(" by hand")
-                    );
-                }
-                else if (getWordbankName(weapon) instanceof final Component name) {
-                    final var hoverItem = new ItemStack(weapon.getType(), weapon.getAmount()); {
-                        final ItemMeta hoverMeta = hoverItem.getItemMeta();
-                        hoverMeta.displayName(name);
-                        hoverItem.setItemMeta(hoverMeta);
-                    }
-                    killMessageBuilder.append(
-                        Component.text(" with "),
-                        name.hoverEvent(hoverItem.asHoverEvent())
-                    );
-                }
-                else {
-                    final var hoverItem = new ItemStack(weapon.getType(), weapon.getAmount());
-                    killMessageBuilder.append(
-                        Component.text(" with a "),
-                        Component.translatable(hoverItem.translationKey()).hoverEvent(hoverItem.asHoverEvent())
-                    );
-                }
-            }
-            killMessage = killMessageBuilder.build();
-        }
-
+        final Component killMessage = generateKillMessage(victim, killer);
         final Location victimLocation = victim.getLocation();
         for (final Player recipient : Bukkit.getOnlinePlayers()) {
             if (!Objects.equals(victim.getWorld(), recipient.getWorld())) {
@@ -120,6 +86,44 @@ public final class KillListener implements Listener {
             }
             recipient.sendMessage(killMessage);
         }
+    }
+
+    private @NotNull Component generateKillMessage(
+        final @NotNull Player victim,
+        final @NotNull Player killer
+    ) {
+        final TextComponent.Builder builder = Component.text().color(NamedTextColor.DARK_GRAY).append(
+            Component.text(victim.getName(), ITALIC),
+            Component.text(" was killed by "),
+            Component.text(killer.getName(), ITALIC)
+        );
+        if (this.settings.includeWeaponInKillBroadcasts(killer.getUniqueId())) {
+            final ItemStack weapon = killer.getInventory().getItemInMainHand();
+            if (ItemUtils.isEmptyItem(weapon)) {
+                builder.append(
+                    Component.text(" by hand")
+                );
+            }
+            else if (getWordbankName(weapon) instanceof final Component name) {
+                final var hoverItem = new ItemStack(weapon.getType(), weapon.getAmount()); {
+                    final ItemMeta hoverMeta = hoverItem.getItemMeta();
+                    hoverMeta.displayName(name);
+                    hoverItem.setItemMeta(hoverMeta);
+                }
+                builder.append(
+                    Component.text(" with "),
+                    name.hoverEvent(hoverItem.asHoverEvent())
+                );
+            }
+            else {
+                final var hoverItem = new ItemStack(weapon.getType(), weapon.getAmount());
+                builder.append(
+                    Component.text(" with a "),
+                    Component.translatable(hoverItem.translationKey()).hoverEvent(hoverItem.asHoverEvent())
+                );
+            }
+        }
+        return builder.build();
     }
 
     private static @Nullable Component getWordbankName(
