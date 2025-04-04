@@ -8,6 +8,7 @@ import isaac.bastion.manager.BastionBlockManager;
 import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import vg.civcraft.mc.citadel.events.ReinforcementChangeTypeEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
@@ -40,21 +41,21 @@ public class CitadelListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onReinforcementRepair(ReinforcementRepairEvent event) {
         BastionBlock bastionBlock = Bastion.getBastionStorage().getBastionBlock(event.getReinforcement().getLocation());
         if (bastionBlock == null) return;
         bastionBlock.setPlaced(System.currentTimeMillis());
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onReinforcementRepair(ReinforcementChangeTypeEvent event) {
         BastionBlock bastionBlock = Bastion.getBastionStorage().getBastionBlock(event.getReinforcement().getLocation());
         if (bastionBlock == null) return;
         bastionBlock.setPlaced(System.currentTimeMillis());
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onReinforcementRepair(ReinforcementGroupChangeEvent event) {
         BastionBlock bastionBlock = Bastion.getBastionStorage().getBastionBlock(event.getReinforcement().getLocation());
         if (bastionBlock == null) return;
