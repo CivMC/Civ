@@ -9,7 +9,10 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import vg.civcraft.mc.citadel.events.ReinforcementChangeTypeEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
+import vg.civcraft.mc.citadel.events.ReinforcementGroupChangeEvent;
+import vg.civcraft.mc.citadel.events.ReinforcementRepairEvent;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class CitadelListener implements Listener {
@@ -35,5 +38,26 @@ public class CitadelListener implements Listener {
                 return;
             }
         }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onReinforcementRepair(ReinforcementRepairEvent event) {
+        BastionBlock bastionBlock = Bastion.getBastionStorage().getBastionBlock(event.getReinforcement().getLocation());
+        if (bastionBlock == null) return;
+        bastionBlock.setPlaced(System.currentTimeMillis());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onReinforcementRepair(ReinforcementChangeTypeEvent event) {
+        BastionBlock bastionBlock = Bastion.getBastionStorage().getBastionBlock(event.getReinforcement().getLocation());
+        if (bastionBlock == null) return;
+        bastionBlock.setPlaced(System.currentTimeMillis());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onReinforcementRepair(ReinforcementGroupChangeEvent event) {
+        BastionBlock bastionBlock = Bastion.getBastionStorage().getBastionBlock(event.getReinforcement().getLocation());
+        if (bastionBlock == null) return;
+        bastionBlock.setPlaced(System.currentTimeMillis());
     }
 }
