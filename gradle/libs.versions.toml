@@ -11,7 +11,7 @@ runpaper = { id = "xyz.jpenilla.run-paper", version = "2.3.1" }
 [libraries]
 paper-api = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }
 
-aikar-acf = { group = "co.aikar", name = "acf-bukkit", version = "0.5.1-SNAPSHOT" }
+aikar-acf = { group = "co.aikar", name = "acf-paper", version = "0.5.1-SNAPSHOT" }
 aikar-taskchain = { group = "co.aikar", name = "taskchain-bukkit", version = "3.7.2" }
 
 commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version = "3.12.0" }
