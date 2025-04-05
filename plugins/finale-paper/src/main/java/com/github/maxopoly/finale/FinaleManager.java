@@ -1,7 +1,6 @@
 package com.github.maxopoly.finale;
 
 import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.async.AsyncListenerHandler;
 import com.github.maxopoly.finale.combat.AsyncPacketHandler;
 import com.github.maxopoly.finale.combat.CPSHandler;
 import com.github.maxopoly.finale.combat.CombatConfig;
@@ -82,7 +81,8 @@ public class FinaleManager {
         this.cpsHandler = new CPSHandler();
         this.sprintHandler = new SprintHandler();
 
-        Bukkit.getScheduler().runTaskAsynchronously(Finale.getPlugin(), () -> ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(combatHandler = new AsyncPacketHandler(combatConfig)).start());
+        this.combatHandler = new AsyncPacketHandler(combatConfig);
+        ProtocolLibrary.getProtocolManager().addPacketListener(this.combatHandler);
     }
 
     public AsyncPacketHandler getCombatHandler() {
