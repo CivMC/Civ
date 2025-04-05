@@ -1,6 +1,7 @@
 package com.github.maxopoly.finale;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.async.AsyncListenerHandler;
 import com.github.maxopoly.finale.combat.AsyncPacketHandler;
 import com.github.maxopoly.finale.combat.CPSHandler;
 import com.github.maxopoly.finale.combat.CombatConfig;
