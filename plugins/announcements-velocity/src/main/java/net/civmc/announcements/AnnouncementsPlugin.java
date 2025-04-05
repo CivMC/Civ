@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,6 +39,7 @@ public class AnnouncementsPlugin {
     private final Path dataDirectory;
 
     private final Map<Cron, Component> scheduledAnnouncements = new ConcurrentHashMap<>();
+    private final Map<Cron, ZonedDateTime> lastExecutionTimes = new ConcurrentHashMap<>();
     private AnnouncementsConfig config;
 
 
@@ -83,22 +85,27 @@ public class AnnouncementsPlugin {
     public void onProxyInitialization(ProxyInitializeEvent event) {
 
         // task to check if a scheduled announcement should be sent
-        server.getScheduler().buildTask(this, this::sendScheduledMessages).repeat(1, TimeUnit.SECONDS).schedule();
+        server.getScheduler().buildTask(this, this::sendScheduledMessages).repeat(5, TimeUnit.SECONDS).schedule();
     }
 
     /**
      * Checks if a scheduled message needs to be sent, and sends them if so
      */
     private void sendScheduledMessages() {
-        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime now = ZonedDateTime.now().withNano(0);
 
         for (Cron cron : scheduledAnnouncements.keySet()) {
             var executionTime = ExecutionTime.forCron(cron);
 
-            // if now is a time the
-            if (executionTime.isMatch(now)) {
-                server.sendMessage(scheduledAnnouncements.get(cron));
-            }
+            // get last time a cron *should* have run
+            executionTime.lastExecution(now).ifPresent(lastExecution -> {
+                // Check if we should execute, and if con already executed at that time
+                if (executionTime.isMatch(now) && !lastExecution.equals(lastExecutionTimes.get(cron))) {
+                    // Execute and update the last execution time
+                    server.sendMessage(scheduledAnnouncements.get(cron));
+                    lastExecutionTimes.put(cron, lastExecution);
+                }
+            });
         }
     }
 
