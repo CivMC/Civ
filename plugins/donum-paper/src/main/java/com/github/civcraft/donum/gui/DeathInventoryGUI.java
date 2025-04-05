@@ -37,7 +37,7 @@ public class DeathInventoryGUI {
             return;
         }
         ClickableInventory.forceCloseInventory(p);
-        ClickableInventory ci = new ClickableInventory(54, "DeathInventory " + NameAPI.getCurrentName(viewer));
+        ClickableInventory ci = new ClickableInventory(54, "DeathInventory");
         if (inventories.size() < 45 * currentPage) {
             // would show an empty page, so go to previous
             currentPage--;
