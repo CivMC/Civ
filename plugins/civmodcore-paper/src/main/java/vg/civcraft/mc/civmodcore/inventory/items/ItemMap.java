@@ -248,7 +248,7 @@ public class ItemMap {
         }
         for (String is : customItems.keySet()) {
             ItemStack item = CustomItem.getCustomItem(is);
-            if (item.getType() == m) {
+            if (item != null && item.getType() == m) {
                 result.addItemAmount(item, customItems.get(is));
             }
         }

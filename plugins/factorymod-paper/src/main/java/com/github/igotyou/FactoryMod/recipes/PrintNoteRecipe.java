@@ -103,7 +103,6 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 
         for (String line : lines) {
             fixedLines.add(ChatColor.GRAY + line
-                .replaceAll("(?<!§x(§[\\da-f]){0,5})" + ChatColor.BLACK, ChatColor.GRAY.toString())
                 .replaceAll(ChatColor.RESET.toString(), ChatColor.GRAY.toString()));
         }
 
