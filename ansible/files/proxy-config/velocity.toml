@@ -76,13 +76,13 @@ main = "paper:25565"
 pvp = "pvp:25565"
 
 # In what order we should try servers when a player logs in or is kicked from a server.
-try = ["main"]
+try = ["pvp"]
 
 [forced-hosts]
 # Configure your forced hosts here.
-"${CIV_HOSTNAME}" = [
-    "main"
-]
+#"${CIV_HOSTNAME}" = [
+#    "main"
+#]
 "${CIV_PVP_HOSTNAME}" = [
     "pvp"
 ]
