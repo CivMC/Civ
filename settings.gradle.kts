@@ -13,6 +13,7 @@ plugins {
 
 include(":ansible")
 
+include(":plugins:announcements-velocity")
 include(":plugins:banstick-paper")
 include(":plugins:bastion-paper")
 include(":plugins:castlegates-paper")
