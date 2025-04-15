@@ -1,6 +1,5 @@
 [versions]
 paper = "1.21.4-R0.1-SNAPSHOT"
-junit = "5.8.2"
 nuotifier = "2.7.2"
 
 [plugins]
@@ -36,9 +35,5 @@ barapi = { group = "me.confuser", name = "BarAPI", version = "3.5" }
 ipaddress = { group = "com.github.seancfoley", name = "ipaddress", version = "2.0.2" }
 jsoup = { group = "org.jsoup", name = "jsoup", version = "1.18.3" }
 
-junit-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit" }
-junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
-
 [bundles]
-junit = ["junit-api", "junit-engine"]
 nuvotifier = ["nuvotifier-api", "nuvotifier-bukkit"]

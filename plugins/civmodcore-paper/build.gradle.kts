@@ -18,6 +18,4 @@ dependencies {
     api(libs.commons.collections4)
 
     compileOnly(libs.fastutil)
-
-    testImplementation(libs.bundles.junit)
 }
