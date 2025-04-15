@@ -18,8 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.players.scoreboard.bottom.BottomLineAPI;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.CivScoreBoard;
-import vg.civcraft.mc.civmodcore.players.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.utilities.cooldowns.ICoolDownHandler;
 import vg.civcraft.mc.civmodcore.utilities.cooldowns.TickCoolDownHandler;
 
@@ -59,16 +57,6 @@ public class PearlCoolDownListener implements Listener {
         return cooldownBottomLine;
     }
 
-    private CivScoreBoard cooldownBoard;
-
-    public CivScoreBoard getCooldownBoard() {
-        if (cooldownBoard == null) {
-            cooldownBoard = ScoreBoardAPI.createBoard("pearlCooldown");
-            cooldownBoard.updatePeriodically(getCooldownBiFunction(), 1L);
-        }
-        return cooldownBoard;
-    }
-
     public String getCooldownText(Player shooter) {
         return ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Enderpearl: " + ChatColor.LIGHT_PURPLE + formatCoolDown(shooter.getUniqueId());
     }
@@ -86,10 +74,6 @@ public class PearlCoolDownListener implements Listener {
         if (settings.actionBarPearlCooldown(shooter.getUniqueId())) {
             BottomLine bottomLine = getCooldownBottomLine();
             bottomLine.updatePlayer(shooter, getCooldownText(shooter));
-        }
-        if (settings.sideBarPearlCooldown(shooter.getUniqueId())) {
-            CivScoreBoard board = getCooldownBoard();
-            board.set(shooter, getCooldownText(shooter));
         }
     }
 
