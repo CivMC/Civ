@@ -18,7 +18,7 @@ dependencies {
     paperPlugin(project(path = ":plugins:factorymod-paper"))
     paperPlugin(project(path = ":plugins:hiddenore-paper"))
     paperPlugin(project(path = ":plugins:itemexchange-paper"))
-    paperPlugin(project(path = ":plugins:jukealert-paper"))
+    paperPlugin(project(path = ":plugins:jukealert-paper", configuration = "shadow"))
     paperPlugin(project(path = ":plugins:kirabukkitgateway-paper", configuration = "shadow"))
     paperPlugin(project(path = ":plugins:namecolors-paper"))
     paperPlugin(project(path = ":plugins:namelayer-paper"))
