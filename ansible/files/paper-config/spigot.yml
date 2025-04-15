@@ -157,7 +157,7 @@ world-settings:
     verbose: false
 messages:
   restart: Server is restarting
-  whitelist: Sorry, we have turned off the server while we look into some technical issues!
+  whitelist: You are not whitelisted on this server!
   unknown-command: Unknown command. Type "/help" for help.
   server-full: The server is full!
   outdated-client: Outdated client! Please use {0}
