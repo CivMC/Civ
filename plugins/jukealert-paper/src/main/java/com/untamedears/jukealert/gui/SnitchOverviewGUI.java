@@ -43,28 +43,61 @@ public class SnitchOverviewGUI {
             ItemUtils.handleItemMeta(icon, (ItemMeta meta) -> {
                 meta.displayName(Component.text(snitch.getName(), NamedTextColor.GOLD));
                 final var location = snitch.getLocation();
-                List<Component> lore = new ArrayList<>();
-                lore.add(ChatUtils.newComponent("Location: ").color(NamedTextColor.AQUA)
-                    .append(Component.text(location.getWorld().getName() + " ").color(NamedTextColor.WHITE))
-                    .append(Component.text(location.getBlockX()).color(NamedTextColor.RED))
-                    .append(Component.text(", ").color(NamedTextColor.WHITE))
-                    .append(Component.text(location.getBlockY()).color(NamedTextColor.GREEN))
-                    .append(Component.text(", ").color(NamedTextColor.WHITE))
-                    .append(Component.text(location.getBlockZ()).color(NamedTextColor.BLUE)));
-                lore.add(ChatUtils.newComponent("Group: " + snitch.getGroup().getName()).color(NamedTextColor.YELLOW));
+                final var lore = new ArrayList<Component>();
+                lore.add(
+                    ChatUtils.nonItalic()
+                        .color(NamedTextColor.AQUA)
+                        .content("Location: ")
+                        .append(
+                            Component.text(location.getWorld().getName(), NamedTextColor.WHITE),
+                            Component.space(),
+                            Component.text(location.getBlockX(), NamedTextColor.RED),
+                            Component.text(", ", NamedTextColor.WHITE),
+                            Component.text(location.getBlockY(), NamedTextColor.GREEN),
+                            Component.text(", ", NamedTextColor.WHITE),
+                            Component.text(location.getBlockZ(), NamedTextColor.BLUE)
+                        )
+                        .build()
+                );
+                lore.add(
+                    ChatUtils.nonItalic()
+                        .color(NamedTextColor.YELLOW)
+                        .content("Group: " + snitch.getGroup().getName())
+                        .build()
+                );
                 if (snitch.hasAppender(DormantCullingAppender.class)) {
                     final var cull = snitch.getAppender(DormantCullingAppender.class);
                     if (cull.isActive()) {
-                        lore.add(ChatUtils.newComponent("Will go dormant in " + TextUtil.formatDuration(cull.getTimeUntilDormant())).color(NamedTextColor.AQUA));
+                        lore.add(
+                            ChatUtils.nonItalic()
+                                .color(NamedTextColor.AQUA)
+                                .content("Will go dormant in " + TextUtil.formatDuration(cull.getTimeUntilDormant()))
+                                .build()
+                        );
                         meta.setEnchantmentGlintOverride(true);
                     } else if (cull.isDormant()) {
-                        lore.add(ChatUtils.newComponent("Will cull in " + TextUtil.formatDuration(cull.getTimeUntilCulling())).color(NamedTextColor.AQUA));
+                        lore.add(
+                            ChatUtils.nonItalic()
+                                .color(NamedTextColor.AQUA)
+                                .content("Will cull in " + TextUtil.formatDuration(cull.getTimeUntilCulling()))
+                                .build()
+                        );
                     }
                 }
                 if (this.canShowDetails) {
-                    lore.add(ChatUtils.newComponent("Click to show details").color(NamedTextColor.GREEN));
+                    lore.add(
+                        ChatUtils.nonItalic()
+                            .color(NamedTextColor.GREEN)
+                            .content("Click to show details")
+                            .build()
+                    );
                 }
-                lore.add(ChatUtils.newComponent("Right click to send waypoint").color(NamedTextColor.GOLD));
+                lore.add(
+                    ChatUtils.nonItalic()
+                        .color(NamedTextColor.GOLD)
+                        .content("Right click to send waypoint")
+                        .build()
+                );
                 meta.lore(lore);
                 return true;
             });

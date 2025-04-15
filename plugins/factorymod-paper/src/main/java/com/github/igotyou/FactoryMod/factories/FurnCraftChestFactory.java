@@ -42,7 +42,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -331,7 +331,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
             if (p != null) {
                 ItemStack fuel = ((FurnacePowerManager) pm).getFuel().clone();
                 if (fuel != null) {
-                    p.sendMessage(ChatColor.RED + "Failed to activate factory, there is no fuel (" + ItemUtils.getItemName(fuel) + ") in the furnace");
+                    p.sendMessage(ChatColor.RED + "Failed to activate factory, there is no fuel (" + ChatUtils.translate(fuel) + ") in the furnace");
                 } else {
                     p.sendMessage(ChatColor.RED + "Failed to activate factory, there is no fuel in the furnace");
                 }
