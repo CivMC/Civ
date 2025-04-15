@@ -1,7 +1,9 @@
 package vg.civcraft.mc.civmodcore.utilities;
 
-import org.bukkit.Keyed;
+import net.kyori.adventure.key.Keyed;
 import org.bukkit.NamespacedKey;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,65 +11,75 @@ import org.jetbrains.annotations.Nullable;
  * Utility class to make dealing with namespace keys easier.
  */
 public final class KeyedUtils {
-
     /**
-     * Converts a stringified namespaced-key back into a {@link NamespacedKey}.
+     * Convenience shortcut for constructing a key namespaced to a plugin.
      *
-     * @param key The stringified namespace-key, which MUST be formatted as {@code namespace:name}
-     * @return Returns a valid {@link NamespacedKey}, or null.
-     * @throws IllegalArgumentException Will throw if the stringified key fails a "[a-z0-9._-]+" check, or if the
-     *                                  total length is longer than 256.
+     * <pre><code>
+     * // If you used NamespacedKey as intended
+     * new NamespacedKey(ExamplePlugin.getInstance(), "example");
+     *
+     * // Using KeyedUtils.pluginKey()
+     * KeyedUtils.pluginKey(ExamplePlugin.class, "example");
+     * </code></pre>
      */
-    @Nullable
-    public static NamespacedKey fromString(@Nullable final String key) {
-        return key == null ? null : NamespacedKey.fromString(key);
+    public static <T extends JavaPlugin> @NotNull NamespacedKey pluginKey(
+        final @NotNull Class<T> pluginClass,
+        final @NotNull String key
+    ) {
+        return new NamespacedKey(JavaPlugin.getPlugin(pluginClass), key);
     }
 
     /**
-     * Converts a namespace and a key into a {@link NamespacedKey}.
+     * Retrieves a {@link net.kyori.adventure.key.Keyed}'s {@link net.kyori.adventure.key.Key} and converts it to a
+     * string.
      *
-     * @param namespace The namespace name.
-     * @param key       The namespaced key.
-     * @return Returns a valid {@link NamespacedKey}, or null.
-     * @throws IllegalArgumentException Will throw if either part fails a "[a-z0-9._-]+" check, or if the total
-     *                                  combined length is longer than 256.
+     * @return Returns the stringified key, or null if the given keyed was null.
      */
-    @SuppressWarnings("deprecation")
-    @NotNull
-    public static NamespacedKey fromParts(@NotNull final String namespace, @NotNull final String key) {
-        return new NamespacedKey(namespace, key);
+    @Contract("!null -> !null")
+    public static @Nullable String getString(
+        final Keyed keyed
+    ) {
+        return keyed == null ? null : keyed.key().asString();
     }
 
     /**
-     * Converts a {@link NamespacedKey} into a string.
-     *
-     * @param key The {@link NamespacedKey} to convert.
-     * @return Returns the stringified {@link NamespacedKey}, or null.
+     * Creates a new {@link NamespacedKey} for testing purposes.
      */
-    @Nullable
-    public static String getString(@Nullable final NamespacedKey key) {
-        return key == null ? null : key.toString();
-    }
-
-    /**
-     * Retrieves a {@link Keyed}'s {@link NamespacedKey} and converts it to a string.
-     *
-     * @param keyed The {@link Keyed} instance.
-     * @return Returns the stringified {@link Keyed}'s {@link NamespacedKey}, or null.
-     */
-    @Nullable
-    public static String getString(@Nullable final Keyed keyed) {
-        return keyed == null ? null : getString(keyed.getKey());
-    }
-
-    /**
-     * @param key The namespaced-key.
-     * @return Returns a new {@link NamespacedKey} for testing purposes.
-     */
-    @SuppressWarnings("deprecation")
-    @NotNull
-    public static NamespacedKey testKey(@NotNull final String key) {
+    public static @NotNull NamespacedKey testKey(
+        final @NotNull String key
+    ) {
         return new NamespacedKey("test", key);
     }
 
+    /**
+     * Creates a <a href="https://dictionary.cambridge.org/dictionary/english/ditto">ditto</a> key, primarily for child
+     * keys within {@link org.bukkit.persistence.PersistentDataContainer PersistentDataContainers}.
+     *
+     * <pre><code>
+     * // If you used PDCs as intended
+     * {
+     *     "CivModCore:players": [
+     *         {
+     *             "CivModCore:name": "Example",
+     *             "CivModCore:uuid": "61629d9c-c2a1-4379-b98e-4b538c6628c5"
+     *         }
+     *     ]
+     * }
+     *
+     * // Using ditto keys
+     * {
+     *     "CivModCore:players": [
+     *         {
+     *             "_:name": "Example",
+     *             "_:uuid": "61629d9c-c2a1-4379-b98e-4b538c6628c5"
+     *         }
+     *     ]
+     * }
+     * </code></pre>
+     */
+    public static @NotNull NamespacedKey dittoKey(
+        final @NotNull String key
+    ) {
+        return new NamespacedKey("_", key);
+    }
 }
