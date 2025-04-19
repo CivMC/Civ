@@ -1,4 +1,5 @@
 [versions]
+minecraft = "1.21.4"
 paper = "1.21.4-R0.1-SNAPSHOT"
 junit = "5.8.2"
 nuotifier = "2.7.2"
