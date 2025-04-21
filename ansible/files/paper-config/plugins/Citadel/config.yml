@@ -26,6 +26,7 @@ reinforcements:
     item:
       ==: org.bukkit.inventory.ItemStack
       type: STONE
+      v: 1
     creation_effect:
       type: PORTAL
       speed: 0.8
