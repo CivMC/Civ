@@ -10,7 +10,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
@@ -352,29 +351,31 @@ public final class ChatUtils {
     /**
      * Determines whether two given components are equal to each other.
      *
-     * @param former The left hand side component.
-     * @param latter The right hand side component.
-     * @return Returns whether the two given components are equal.
+     * @apiNote This is intended for <i>display</i> components, not for chat components with links and hover events.
+     *          This method may disregard any included non-display component related context.
      */
-    public static boolean areComponentsEqual(@Nullable final Component former,
-                                             @Nullable final Component latter) {
-        if (Objects.equals(former, latter)) {
+    public static boolean areComponentsEqual(
+        Component lhs,
+        Component rhs
+    ) {
+        if (lhs == rhs) {
             return true;
         }
-        if (former == null || latter == null) {
+        if (lhs == null ^ rhs == null) {
             return false;
         }
-        if (StringUtils.equals(
-            MiniMessage.miniMessage().serialize(former),
-            MiniMessage.miniMessage().serialize(latter))) {
+        if (lhs.equals(rhs)) {
             return true;
         }
-        if (StringUtils.equals(
-            LegacyComponentSerializer.legacyAmpersand().serialize(former),
-            LegacyComponentSerializer.legacyAmpersand().serialize(latter))) {
+        lhs = lhs.compact();
+        rhs = rhs.compact();
+        if (lhs.equals(rhs)) {
             return true;
         }
-        return false;
+        return StringUtils.equals(
+            LegacyComponentSerializer.legacySection().serialize(lhs),
+            LegacyComponentSerializer.legacySection().serialize(rhs)
+        );
     }
 
     /**

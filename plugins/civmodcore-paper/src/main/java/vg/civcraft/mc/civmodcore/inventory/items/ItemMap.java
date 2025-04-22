@@ -272,7 +272,7 @@ public class ItemMap {
         int amount = 0;
         for (Entry<ItemStack, Integer> entry : matSubMap.items.object2IntEntrySet()) {
             ItemStack current = entry.getKey();
-            if (MetaUtils.areMetasEqual(is.getItemMeta(), current.getItemMeta())) {
+            if (ItemUtils.areItemsSimilar(is, current)) {
                 amount += entry.getValue();
             }
         }
@@ -468,7 +468,7 @@ public class ItemMap {
         List<ItemStack> items = new ArrayList<>(entrySet.size());
         for (Entry<ItemStack, Integer> entry : entrySet) {
             ItemStack is = entry.getKey().clone();
-            ItemUtils.addLore(is, ChatColor.GOLD + "Total item count: " + entry.getValue());
+            ItemUtils.appendLegacyLore(is, ChatColor.GOLD + "Total item count: " + entry.getValue());
             if (entry.getValue() > entry.getKey().getType().getMaxStackSize()) {
                 int stacks = entry.getValue() / is.getType().getMaxStackSize();
                 int extra = entry.getValue() % is.getType().getMaxStackSize();
@@ -480,7 +480,7 @@ public class ItemMap {
                     out.append(" and ").append(extra);
                     out.append(" item").append(extra == 1 ? "" : "s");
                 }
-                ItemUtils.addLore(is, out.toString());
+                ItemUtils.appendLegacyLore(is, out.toString());
             }
             items.add(is);
         }

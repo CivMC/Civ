@@ -3,9 +3,6 @@ package vg.civcraft.mc.civmodcore.inventory.items;
 import com.google.common.base.Strings;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.ImmutableMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
@@ -14,9 +11,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.translation.Translatable;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
@@ -171,75 +165,4 @@ public final class EnchantUtils {
             && level >= enchantment.getStartLevel()
             && level <= enchantment.getMaxLevel();
     }
-
-    /**
-     * Gets the enchantments from an item.
-     *
-     * @param item The item to retrieve the enchantments from.
-     * @return Returns the item's enchantments, which are never null.
-     */
-    @NotNull
-    public static Map<Enchantment, Integer> getEnchantments(@Nullable final ItemStack item) {
-        return item == null ? ImmutableMap.of() : item.getEnchantments();
-    }
-
-    /**
-     * Adds a safe enchantment to an item.
-     *
-     * @param item        The item to add the enchantment to.
-     * @param enchantment The enchantment to add to the item.
-     * @param level       The level of the enchantment to add to the item.
-     * @return Returns true if the enchantment was successfully added.
-     * @see EnchantUtils#isSafeEnchantment(Enchantment, int)
-     */
-    public static boolean addEnchantment(@NotNull final ItemStack item,
-                                         @NotNull final Enchantment enchantment,
-                                         final int level) {
-        return addEnchantment(item, enchantment, level, true);
-    }
-
-    /**
-     * Adds an enchantment to an item.
-     *
-     * @param item                      The item to add the enchantment to.
-     * @param enchantment               The enchantment to add to the item.
-     * @param level                     The level of the enchantment to add to the item.
-     * @param onlyAllowSafeEnchantments Requires enchantments to be safe if set to true.
-     * @return Returns true if the enchantment was successfully added.
-     * @see EnchantUtils#isSafeEnchantment(Enchantment, int)
-     */
-    public static boolean addEnchantment(@NotNull final ItemStack item,
-                                         @NotNull final Enchantment enchantment,
-                                         final int level,
-                                         final boolean onlyAllowSafeEnchantments) {
-        return ItemUtils.handleItemMeta(Objects.requireNonNull(item), (ItemMeta meta) ->
-            meta.addEnchant(enchantment, level, !onlyAllowSafeEnchantments));
-    }
-
-    /**
-     * Removes an enchantment from an item.
-     *
-     * @param item    The item to remove the enchantment from.
-     * @param enchant The enchantment to remove from the item.
-     * @return Returns true if the enchantment was successfully removed.
-     */
-    public static boolean removeEnchantment(@NotNull final ItemStack item,
-                                            @Nullable final Enchantment enchant) {
-        return enchant == null
-            || ItemUtils.handleItemMeta(Objects.requireNonNull(item),
-            (ItemMeta meta) -> meta.removeEnchant(enchant));
-    }
-
-    /**
-     * Removes all enchantments from an item.
-     *
-     * @param item The item to clear enchantment from.
-     */
-    public static void clearEnchantments(@NotNull final ItemStack item) {
-        ItemUtils.handleItemMeta(Objects.requireNonNull(item), (ItemMeta meta) -> {
-            meta.getEnchants().forEach((key, value) -> meta.removeEnchant(key));
-            return true;
-        });
-    }
-
 }

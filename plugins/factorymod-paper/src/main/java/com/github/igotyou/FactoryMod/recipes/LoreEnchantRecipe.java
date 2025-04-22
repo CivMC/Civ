@@ -31,11 +31,11 @@ public class LoreEnchantRecipe extends InputRecipe {
         this.tool = tool;
         exampleInput = tool.getItemStackRepresentation().get(0);
         for (String s : overwritenLore) {
-            ItemUtils.addLore(exampleInput, s);
+            ItemUtils.appendLegacyLore(exampleInput, s);
         }
         exampleOutput = tool.getItemStackRepresentation().get(0);
         for (String s : appliedLore) {
-            ItemUtils.addLore(exampleOutput, s);
+            ItemUtils.appendLegacyLore(exampleOutput, s);
         }
     }
 
@@ -61,7 +61,7 @@ public class LoreEnchantRecipe extends InputRecipe {
     public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
         ItemStack is = exampleOutput.clone();
         if (i != null) {
-            ItemUtils.addLore(
+            ItemUtils.appendLegacyLore(
                 is,
                 ChatColor.GREEN
                     + "Enough materials for "
@@ -81,9 +81,9 @@ public class LoreEnchantRecipe extends InputRecipe {
         List<ItemStack> returns = createLoredStacksForInfo(i);
         ItemStack toSt = tool.getItemStackRepresentation().get(0);
         for (String s : overwritenLore) {
-            ItemUtils.addLore(toSt, s);
+            ItemUtils.appendLegacyLore(toSt, s);
         }
-        ItemUtils.addLore(toSt, ChatColor.GREEN + "Enough materials for " + new ItemMap(toSt).getMultiplesContainedIn(i)
+        ItemUtils.appendLegacyLore(toSt, ChatColor.GREEN + "Enough materials for " + new ItemMap(toSt).getMultiplesContainedIn(i)
             + " runs");
         returns.add(toSt);
         return returns;

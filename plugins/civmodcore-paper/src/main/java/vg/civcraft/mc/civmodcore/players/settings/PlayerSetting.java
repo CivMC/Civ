@@ -47,10 +47,10 @@ public abstract class PlayerSetting<T> {
     }
 
     protected void applyInfoToItemStack(ItemStack item, UUID player) {
-        ItemUtils.setDisplayName(item, niceName);
-        ItemUtils.addLore(item, ChatColor.LIGHT_PURPLE + "Value: " + ChatColor.RESET + toText(getValue(player)));
+        ItemUtils.setLegacyDisplayName(item, niceName);
+        ItemUtils.appendLegacyLore(item, ChatColor.LIGHT_PURPLE + "Value: " + ChatColor.RESET + toText(getValue(player)));
         if (description != null) {
-            ItemUtils.addLore(item, Arrays.stream(WordUtils.wrap(description, 32, "@", false).split("@")).toList());
+            ItemUtils.appendLegacyLore(item, Arrays.stream(WordUtils.wrap(description, 32, "@", false).split("@")).toList());
         }
     }
 

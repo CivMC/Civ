@@ -52,8 +52,8 @@ public class KillListener implements Listener {
                 ChatColor.DARK_GRAY, killerFormattedName, ChatColor.DARK_GRAY);
         } else {
             String itemName = ItemUtils.getItemName(item);
-            String displayName = ItemUtils.getDisplayName(item);
-            Boolean hasWordBank = Optional.ofNullable(ItemUtils.getItemMeta(item))
+            String displayName = ItemUtils.getLegacyDisplayName(item);
+            Boolean hasWordBank = Optional.ofNullable(item.getItemMeta())
                 .map(r -> r.displayName())
                 .map(f -> f.children().size() > 0)
                 .orElse(false);

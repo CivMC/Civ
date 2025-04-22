@@ -48,8 +48,8 @@ public class DeliveryGUI {
         if (stacks.size() == 0) {
             //item to indicate that there is nothing to claim
             ItemStack noClaim = new ItemStack(Material.BARRIER);
-            ItemUtils.setDisplayName(noClaim, ChatColor.GOLD + "No items available");
-            ItemUtils.addLore(noClaim, ChatColor.RED + "You currently have no items you could claim");
+            ItemUtils.setLegacyDisplayName(noClaim, ChatColor.GOLD + "No items available");
+            ItemUtils.appendLegacyLore(noClaim, ChatColor.RED + "You currently have no items you could claim");
             ci.setSlot(new DecorationStack(noClaim), 4);
         } else {
             for (int i = 45 * currentPage; i < 45 * (currentPage + 1) && i < stacks.size(); i++) {
@@ -59,7 +59,7 @@ public class DeliveryGUI {
         // previous button
         if (currentPage > 0) {
             ItemStack back = new ItemStack(Material.ARROW);
-            ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
+            ItemUtils.setLegacyDisplayName(back, ChatColor.GOLD + "Go to previous page");
             Clickable baCl = new Clickable(back) {
 
                 @Override
@@ -75,7 +75,7 @@ public class DeliveryGUI {
         // next button
         if ((45 * (currentPage + 1)) <= stacks.size()) {
             ItemStack forward = new ItemStack(Material.ARROW);
-            ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
+            ItemUtils.setLegacyDisplayName(forward, ChatColor.GOLD + "Go to next page");
             Clickable forCl = new Clickable(forward) {
 
                 @Override
@@ -90,7 +90,7 @@ public class DeliveryGUI {
         }
         // exit button
         ItemStack backToOverview = new ItemStack(Material.OAK_DOOR);
-        ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Close");
+        ItemUtils.setLegacyDisplayName(backToOverview, ChatColor.GOLD + "Close");
         ci.setSlot(new Clickable(backToOverview) {
 
             @Override
@@ -101,8 +101,8 @@ public class DeliveryGUI {
 
         // complain button
         ItemStack gibStuffBack = new ItemStack(Material.OAK_SIGN);
-        ItemUtils.setDisplayName(gibStuffBack, ChatColor.GOLD + "Request item return");
-        ItemUtils.addLore(gibStuffBack, ChatColor.AQUA + "If you think you lost items due to a glitch", ChatColor.AQUA
+        ItemUtils.setLegacyDisplayName(gibStuffBack, ChatColor.GOLD + "Request item return");
+        ItemUtils.appendLegacyLore(gibStuffBack, ChatColor.AQUA + "If you think you lost items due to a glitch", ChatColor.AQUA
             + "you can send us a message", ChatColor.AQUA + "to get your items back", ChatColor.GREEN
             + "Click here to do so");
         Clickable openComplaintForm = new Clickable(gibStuffBack) {
@@ -123,8 +123,8 @@ public class DeliveryGUI {
 
         // claim all button
         ItemStack gibAll = new ItemStack(Material.BLAZE_POWDER);
-        ItemUtils.setDisplayName(gibAll, ChatColor.GOLD + "Claim all items");
-        ItemUtils.addLore(gibAll, ChatColor.AQUA
+        ItemUtils.setLegacyDisplayName(gibAll, ChatColor.GOLD + "Claim all items");
+        ItemUtils.appendLegacyLore(gibAll, ChatColor.AQUA
             + "Click to automatically claim items until your inventory is full or your delivery inventory is empty");
         Clickable autoClaimClick = new Clickable(gibAll) {
 

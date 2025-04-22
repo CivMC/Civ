@@ -49,7 +49,7 @@ public class DeathInventoryGUI {
         // previous button
         if (currentPage > 0) {
             ItemStack back = new ItemStack(Material.ARROW);
-            ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
+            ItemUtils.setLegacyDisplayName(back, ChatColor.GOLD + "Go to previous page");
             Clickable baCl = new Clickable(back) {
 
                 @Override
@@ -65,7 +65,7 @@ public class DeathInventoryGUI {
         // next button
         if ((45 * (currentPage + 1)) <= inventories.size()) {
             ItemStack forward = new ItemStack(Material.ARROW);
-            ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
+            ItemUtils.setLegacyDisplayName(forward, ChatColor.GOLD + "Go to next page");
             Clickable forCl = new Clickable(forward) {
 
                 @Override
@@ -80,7 +80,7 @@ public class DeathInventoryGUI {
         }
         // exit button
         ItemStack backToOverview = new ItemStack(Material.OAK_DOOR);
-        ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Close");
+        ItemUtils.setLegacyDisplayName(backToOverview, ChatColor.GOLD + "Close");
         ci.setSlot(new Clickable(backToOverview) {
 
             @Override
@@ -94,13 +94,13 @@ public class DeathInventoryGUI {
 
     private Clickable createInventoryClickable(final DeathInventory i) {
         ItemStack is = new ItemStack(Material.BOOK);
-        ItemUtils.addLore(is, ChatColor.GREEN + "Owner: " + NameAPI.getCurrentName(i.getOwner()));
-        ItemUtils.addLore(is, ChatColor.GOLD + "Died at " + dateFormat.format(i.getDeathTime()));
-        ItemUtils.addLore(is, ChatColor.LIGHT_PURPLE + "Unique ID: " + i.getID());
+        ItemUtils.appendLegacyLore(is, ChatColor.GREEN + "Owner: " + NameAPI.getCurrentName(i.getOwner()));
+        ItemUtils.appendLegacyLore(is, ChatColor.GOLD + "Died at " + dateFormat.format(i.getDeathTime()));
+        ItemUtils.appendLegacyLore(is, ChatColor.LIGHT_PURPLE + "Unique ID: " + i.getID());
         if (i.wasReturned()) {
-            ItemUtils.addLore(is, ChatColor.RED + "This inventory was already returned");
+            ItemUtils.appendLegacyLore(is, ChatColor.RED + "This inventory was already returned");
         } else {
-            ItemUtils.addLore(is, ChatColor.AQUA + "This inventory was not returned yet");
+            ItemUtils.appendLegacyLore(is, ChatColor.AQUA + "This inventory was not returned yet");
         }
 
         return new Clickable(is) {
@@ -113,7 +113,7 @@ public class DeathInventoryGUI {
                 }
                 // back button
                 ItemStack backToOverview = new ItemStack(Material.OAK_DOOR);
-                ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Go back to overview");
+                ItemUtils.setLegacyDisplayName(backToOverview, ChatColor.GOLD + "Go back to overview");
                 ci.setSlot(new Clickable(backToOverview) {
 
                     @Override
@@ -122,12 +122,12 @@ public class DeathInventoryGUI {
                     }
                 }, 49);
                 ItemStack returnStack = new ItemStack(Material.ANVIL);
-                ItemUtils.setDisplayName(returnStack, ChatColor.GOLD + "Return items");
-                ItemUtils.addLore(
+                ItemUtils.setLegacyDisplayName(returnStack, ChatColor.GOLD + "Return items");
+                ItemUtils.appendLegacyLore(
                     returnStack,
                     ChatColor.GOLD
                         + "This inventory was already returned previously. You may return it again, if you know what you are doing");
-                ItemUtils.addLore(returnStack, ChatColor.RED + "You can not undo this!");
+                ItemUtils.appendLegacyLore(returnStack, ChatColor.RED + "You can not undo this!");
                 ci.setSlot(new Clickable(returnStack) {
 
                     @Override

@@ -67,7 +67,7 @@ public class EnumSetting<T extends Enum<T>> extends PlayerSetting<T> {
                 .sorted(Comparator.comparing(Enum::name))
                 .map(value -> {
                     final var item = new ItemStack(value == currentValue ? Material.GREEN_DYE : Material.RED_DYE);
-                    ItemUtils.setDisplayName(item, ChatColor.GOLD + toText(value));
+                    ItemUtils.setLegacyDisplayName(item, ChatColor.GOLD + toText(value));
                     return new Clickable(item) {
                         @Override
                         protected void clicked(final Player ignored) {
@@ -81,7 +81,7 @@ public class EnumSetting<T extends Enum<T>> extends PlayerSetting<T> {
             true);
 
         final var backButtonItem = new ItemStack(Material.ARROW);
-        ItemUtils.setDisplayName(backButtonItem, ChatColor.AQUA + "Go back to " + menu.getName());
+        ItemUtils.setLegacyDisplayName(backButtonItem, ChatColor.AQUA + "Go back to " + menu.getName());
         view.setMenuSlot(new Clickable(backButtonItem) {
             @Override
             public void clicked(final Player clicker) {

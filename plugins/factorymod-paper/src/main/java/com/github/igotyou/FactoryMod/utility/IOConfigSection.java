@@ -3,6 +3,7 @@ package com.github.igotyou.FactoryMod.utility;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.FactoryModPlayerSettings;
+import java.util.List;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -68,30 +69,33 @@ public class IOConfigSection extends StaticDisplaySection {
         ItemStack display;
         if (chestMissing) {
             display = new ItemStack(Material.BARRIER);
-            ItemUtils.addComponentLore(display, Component
-                .text("<no chest>")
-                .style(Style.style(TextDecoration.BOLD))
-                .color(TextColor.color(255, 0, 0)));
+            ItemUtils.appendLore(display, List.of(
+                Component
+                    .text("<no chest>")
+                    .style(Style.style(TextDecoration.BOLD))
+                    .color(TextColor.color(255, 0, 0))
+            ));
         } else {
             display = dirState.getUIVisual();
         }
         if (ioDirectionMode != null) {
             for (String descLine : ioDirectionMode.fullDescription) {
-                ItemUtils.addComponentLore(display,
-                    Component.text(descLine).color(TextColor.color(255, 255, 192)));
+                ItemUtils.appendLore(display, List.of(
+                    Component.text(descLine).color(TextColor.color(255, 255, 192))
+                ));
             }
         }
-        ItemUtils.setComponentDisplayName(display,
+        ItemUtils.setDisplayName(display,
             Component.text("\u00a7r")
                 .append(Component.text(dirLabel).color(TextColor.color(192, 192, 192)))
                 .append(Component.text(": "))
                 .append(Component.text(dirState.displayName).color(TextColor.color(dirState.color)))
                 .asComponent());
-        ItemUtils.addComponentLore(display,
+        ItemUtils.appendLore(display, List.of(
             Component.text("Left click to toggle Input", NamedTextColor.WHITE, TextDecoration.BOLD),
             Component.text("Shift right click to toggle Fuel", NamedTextColor.WHITE, TextDecoration.BOLD),
             Component.text("Right click to toggle Output", NamedTextColor.WHITE, TextDecoration.BOLD)
-            );
+        ));
         FactoryModManager fmMgr = FactoryMod.getInstance().getManager();
         return new Clickable(display) {
             private ClickableInventory inventory;
@@ -160,7 +164,7 @@ public class IOConfigSection extends StaticDisplaySection {
                 IOSelector.IOState newState = ioSelector.getState(dir);
                 ItemStack curStack = getItemStack();
                 curStack.setType(newState.getUIVisual().getType());
-                ItemUtils.setComponentDisplayName(curStack,
+                ItemUtils.setDisplayName(curStack,
                     Component.text("\u00a7r")
                         .append(Component.text(dirLabel).color(TextColor.color(192, 192, 192)))
                         .append(Component.text(": "))

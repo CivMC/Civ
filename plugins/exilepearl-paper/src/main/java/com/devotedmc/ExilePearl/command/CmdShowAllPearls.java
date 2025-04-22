@@ -27,7 +27,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
@@ -36,7 +35,6 @@ import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
@@ -108,62 +106,60 @@ public class CmdShowAllPearls extends PearlCommand {
                     () -> new ItemStack(Material.ENDER_PEARL),
                     itemReadyFuture::complete);
 
-                Consumer<ItemStack> itemMetaMod = itemToMod ->
-                    ItemUtils.handleItemMeta(itemToMod, (ItemMeta meta) -> {
-                        // Pearled player's name
-                        meta.displayName(ChatUtils.newComponent(pearl.getPlayerName())
+                Consumer<ItemStack> itemMetaMod = (itemToMod) -> {
+                    // Pearled player's name
+                    ItemUtils.setDisplayName(itemToMod,
+                        ChatUtils.newComponent(pearl.getPlayerName())
                             .color(NamedTextColor.AQUA)
-                            .append(isPlayerBanned ?
-                                Component.text(" <banned>")
-                                    .color(NamedTextColor.RED) :
-                                Component.empty()));
+                            .append(isPlayerBanned ? Component.text(" <banned>", NamedTextColor.RED) : Component.empty())
+                    );
 
-                        meta.lore(List.of(
-                            // Pearl type
-                            ChatUtils.newComponent(pearl.getItemName())
-                                .color(NamedTextColor.GREEN),
-                            // Pearled player's name and hash
-                            ChatUtils.newComponent("Player: ")
+                    ItemUtils.setLore(item, List.of(
+                        // Pearl type
+                        ChatUtils.newComponent(pearl.getItemName())
+                            .color(NamedTextColor.GREEN),
+                        // Pearled player's name and hash
+                        ChatUtils.newComponent("Player: ")
+                            .color(NamedTextColor.GOLD)
+                            .append(Component.text(pearl.getPlayerName())
+                                .color(NamedTextColor.GRAY))
+                            .append(Component.space())
+                            .append(Component.text(Integer.toString(pearl.getPearlId(), 36).toUpperCase())
+                                .color(NamedTextColor.DARK_GRAY)),
+                        // Pearled Date
+                        ChatUtils.newComponent("Pearled: ")
+                            .color(NamedTextColor.GOLD)
+                            .append(Component.text(DATE_FORMAT.format(pearl.getPearledOn()))
+                                .color(NamedTextColor.GRAY)),
+                        ChatUtils.newComponent("Killed by: ")
+                            .color(NamedTextColor.GOLD)
+                            .append(Component.text(pearl.getKillerName())
+                                .color(NamedTextColor.GRAY))
+                    ));
+
+                    if (showLocation) {
+                        ItemUtils.appendLore(item, List.of(
+                            // Pearl location
+                            ChatUtils.newComponent("Location: ")
                                 .color(NamedTextColor.GOLD)
-                                .append(Component.text(pearl.getPlayerName())
-                                    .color(NamedTextColor.GRAY))
+                                .append(Component.text(pearlLocation.getWorld().getName())
+                                    .color(NamedTextColor.WHITE))
                                 .append(Component.space())
-                                .append(Component.text(Integer.toString(pearl.getPearlId(), 36).toUpperCase())
-                                    .color(NamedTextColor.DARK_GRAY)),
-                            // Pearled Date
-                            ChatUtils.newComponent("Pearled: ")
-                                .color(NamedTextColor.GOLD)
-                                .append(Component.text(DATE_FORMAT.format(pearl.getPearledOn()))
-                                    .color(NamedTextColor.GRAY)),
-                            // Killer's name
-                            ChatUtils.newComponent("Killed by: ")
-                                .color(NamedTextColor.GOLD)
-                                .append(Component.text(pearl.getKillerName())
-                                    .color(NamedTextColor.GRAY))));
-
-                        if (showLocation) {
-                            MetaUtils.addComponentLore(meta,
-                                // Pearl location
-                                ChatUtils.newComponent("Location: ")
-                                    .color(NamedTextColor.GOLD)
-                                    .append(Component.text(pearlLocation.getWorld().getName())
-                                        .color(NamedTextColor.WHITE))
-                                    .append(Component.space())
-                                    .append(Component.text(pearlLocation.getBlockX())
-                                        .color(NamedTextColor.RED))
-                                    .append(Component.space())
-                                    .append(Component.text(pearlLocation.getBlockY())
-                                        .color(NamedTextColor.GREEN))
-                                    .append(Component.space())
-                                    .append(Component.text(pearlLocation.getBlockZ())
-                                        .color(NamedTextColor.BLUE)),
-                                // Waypoint
-                                Component.space(),
-                                ChatUtils.newComponent("Click to receive a waypoint")
-                                    .color(NamedTextColor.GREEN));
-                        }
-                        return true;
-                    });
+                                .append(Component.text(pearlLocation.getBlockX())
+                                    .color(NamedTextColor.RED))
+                                .append(Component.space())
+                                .append(Component.text(pearlLocation.getBlockY())
+                                    .color(NamedTextColor.GREEN))
+                                .append(Component.space())
+                                .append(Component.text(pearlLocation.getBlockZ())
+                                    .color(NamedTextColor.BLUE)),
+                            // Waypoint
+                            Component.space(),
+                            ChatUtils.newComponent("Click to receive a waypoint")
+                                .color(NamedTextColor.GREEN)
+                        ));
+                    }
+                };
 
                 itemMetaMod.accept(item);
 
@@ -200,7 +196,7 @@ public class CmdShowAllPearls extends PearlCommand {
 
         if (contentSuppliers.isEmpty()) {
             final var item = new ItemStack(Material.BARRIER);
-            ItemUtils.setComponentDisplayName(item,
+            ItemUtils.setDisplayName(item,
                 ChatUtils.newComponent("There are currently no pearls.")
                     .color(NamedTextColor.RED));
             contentSuppliers.add(() -> new DecorationStack(item));
@@ -215,20 +211,20 @@ public class CmdShowAllPearls extends PearlCommand {
 
     private IClickable constructBannedPearlsToggleClick(final boolean bannedPearlToggle) {
         final var item = new ItemStack(Material.BARRIER);
-        ItemUtils.handleItemMeta(item, (final ItemMeta meta) -> {
-            meta.displayName(Component.text()
+        ItemUtils.setDisplayName(item,
+            Component.text()
                 .decoration(TextDecoration.ITALIC, false)
                 .color(NamedTextColor.GOLD)
                 .content("Toggle banned pearls")
-                .build());
-            MetaUtils.setComponentLore(meta,
-                Component.text()
-                    .decoration(TextDecoration.ITALIC, false)
-                    .color(NamedTextColor.AQUA)
-                    .content("Currently turned " + (bannedPearlToggle ? "on" : "off"))
-                    .build());
-            return true;
-        });
+                .build()
+        );
+        ItemUtils.setLore(item, List.of(
+            Component.text()
+                .decoration(TextDecoration.ITALIC, false)
+                .color(NamedTextColor.AQUA)
+                .content("Currently turned " + (bannedPearlToggle ? "on" : "off"))
+                .build()
+        ));
         return new Clickable(item) {
             @Override
             public void clicked(final Player clicker) {

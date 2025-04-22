@@ -39,7 +39,7 @@ public final class LoreModifier extends ModifierData {
     @Override
     public LoreModifier construct(ItemStack item) {
         LoreModifier modifier = new LoreModifier();
-        modifier.lore = ItemUtils.getLore(item);
+        modifier.lore = ItemUtils.getLegacyLore(item);
         return modifier;
     }
 

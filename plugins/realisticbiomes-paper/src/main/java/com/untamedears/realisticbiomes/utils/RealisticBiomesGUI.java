@@ -74,7 +74,7 @@ public class RealisticBiomesGUI {
                 representation = Material.BARRIER;
             }
             ItemStack is = new ItemStack(representation);
-            ItemUtils.setDisplayName(is, ChatColor.DARK_GREEN + plant.getName());
+            ItemUtils.setLegacyDisplayName(is, ChatColor.DARK_GREEN + plant.getName());
             List<String> lore = new ArrayList<>();
             BiomeGrowthConfig config = plant.getBiomeGrowthConfig();
             double biomeMultiplier = config.getBiomeMultiplier(currentBiome);
@@ -125,7 +125,7 @@ public class RealisticBiomesGUI {
                 lore.add(String.format("%sGreen House Rate: %s%s (%.2f)", ChatColor.DARK_AQUA,
                     ChatColor.GRAY, ItemUtils.getItemName(entry.getKey()), entry.getValue()));
             }
-            ItemUtils.addLore(is, lore);
+            ItemUtils.appendLegacyLore(is, lore);
             IClickable click = new DecorationStack(is);
             clicks.add(click);
         }

@@ -55,7 +55,7 @@ public class FastMultiPageView {
         // back button
         if (currentPage > 0) {
             ItemStack back = new ItemStack(Material.ARROW);
-            ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
+            ItemUtils.setLegacyDisplayName(back, ChatColor.GOLD + "Go to previous page");
             Clickable baCl = new Clickable(back) {
 
                 @Override
@@ -71,7 +71,7 @@ public class FastMultiPageView {
         // next button
         if (pageClickables.size() > contentSize) {
             ItemStack forward = new ItemStack(Material.ARROW);
-            ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
+            ItemUtils.setLegacyDisplayName(forward, ChatColor.GOLD + "Go to next page");
             Clickable forCl = new Clickable(forward) {
 
                 @Override

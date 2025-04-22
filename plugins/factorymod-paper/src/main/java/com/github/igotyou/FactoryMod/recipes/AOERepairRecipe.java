@@ -64,7 +64,7 @@ public class AOERepairRecipe extends InputRecipe {
         List<ItemStack> bla = imp.getItemStackRepresentation();
         for (ItemStack item : bla) {
             item.setAmount(new ItemMap(i).getAmount(essence) - essenceCount);
-            ItemUtils.addLore(item, ChatColor.YELLOW + "Will repair "
+            ItemUtils.appendLegacyLore(item, ChatColor.YELLOW + "Will repair "
                 + facCounter + " nearby factories total");
         }
         return bla;
@@ -110,7 +110,7 @@ public class AOERepairRecipe extends InputRecipe {
                 .getRepairManager();
             int diff = 100 - rm.getRawHealth();
             if (diff >= repairPerEssence) {
-                ItemUtils.addLore(
+                ItemUtils.appendLegacyLore(
                     is,
                     ChatColor.LIGHT_PURPLE
                         + "Will repair "
