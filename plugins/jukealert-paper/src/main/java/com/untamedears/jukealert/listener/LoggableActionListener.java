@@ -299,7 +299,7 @@ public class LoggableActionListener implements Listener {
         if (isPlayerSnitchImmune(player)) {
             return;
         }
-        if (!player.getMetadata("NPC").isEmpty()) {
+        if (!player.getMetadata("NPC").isEmpty() || NameAPI.getCurrentName(player.getUniqueId()) == null) {
             //CombatTagPlus
             return;
         }
