@@ -991,7 +991,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
     private Clickable getAdminStuffClickable() {
         ItemStack is = new ItemStack(Material.DIAMOND);
-        ItemUtils.setDisplayName(is, ChatColor.GOLD + "Owner functions");
+        ItemUtils.setDisplayName(is, ChatColor.GOLD + "Admin/Owner functions");
         return new Clickable(is) {
 
             @Override
