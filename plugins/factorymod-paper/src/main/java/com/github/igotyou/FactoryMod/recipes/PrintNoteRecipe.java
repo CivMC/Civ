@@ -51,9 +51,10 @@ public class PrintNoteRecipe extends PrintBookRecipe {
         ItemMap printingPlate,
         int outputAmount,
         boolean secureNote,
-        String title
+        String title,
+        int damagePerRun
     ) {
-        super(identifier, name, productionTime, input, printingPlate, outputAmount);
+        super(identifier, name, productionTime, input, printingPlate, outputAmount, damagePerRun);
 
         this.secureNote = secureNote;
 
@@ -66,6 +67,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
 
