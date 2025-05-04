@@ -1,6 +1,5 @@
 package com.devotedmc.ExilePearl.util;
 
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import me.josvth.randomspawn.RandomSpawn;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,7 +21,7 @@ public class SpawnUtil {
 
     public static Location chooseSpawn(World world) {
         Location spawn = null;
-        if (ExilePearlPlugin.getApi().isRandomSpawnEnabled()) {
+        if (Bukkit.getPluginManager().isPluginEnabled("RandomSpawn")) {
             RandomSpawn randomSpawn = (RandomSpawn) Bukkit.getPluginManager().getPlugin("RandomSpawn");
             spawn = randomSpawn.chooseSpawn(world);
         }

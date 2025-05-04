@@ -20,3 +20,7 @@ reasons:
       count: 8
       # The radius to check for
       radius: 32
+    dolphin:
+      count: 1
+      # The radius to check for
+      radius: 128

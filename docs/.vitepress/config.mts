@@ -136,7 +136,7 @@ export default defineConfig({
                             items: [
                                 {
                                     text: "Essential",
-                                    link: "wiki/plugins/essential/",
+                                    link: "wiki/plugins/essential/index",
                                     collapsed: false,
                                     items: [
                                         {
@@ -155,7 +155,7 @@ export default defineConfig({
                                 },
                                 {
                                     text: "Unique",
-                                    link: "pages/plugins/unique/",
+                                    link: "wiki/plugins/unique/index",
                                     collapsed: false,
                                     items: [
                                         {
@@ -202,7 +202,7 @@ export default defineConfig({
                                 },
                                 {
                                     text: "Fun",
-                                    link: "wiki/plugins/fun/",
+                                    link: "wiki/plugins/fun/index",
                                     collapsed: true,
                                     items: [
                                         {

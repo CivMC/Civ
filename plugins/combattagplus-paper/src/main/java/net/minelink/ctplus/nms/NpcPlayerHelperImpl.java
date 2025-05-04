@@ -45,7 +45,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         npcPlayer.spawnIn(worldServer);
         npcPlayer.forceSetPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
         npcPlayer.gameMode.setLevel(worldServer);
-        npcPlayer.spawnInvulnerableTime = 0;
+        npcPlayer.invulnerableTime = 0;
 
         for (ServerPlayer serverPlayer : MinecraftServer.getServer().getPlayerList().getPlayers()) {
             if (serverPlayer instanceof NpcPlayer) continue;

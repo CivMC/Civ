@@ -1,5 +1,10 @@
 package com.untamedears.jukealert;
 
+import com.github.davidmoten.rtree2.Entry;
+import com.github.davidmoten.rtree2.RTree;
+import com.github.davidmoten.rtree2.geometry.Rectangle;
+import com.github.davidmoten.rtree2.geometry.internal.PointDouble;
+import com.github.davidmoten.rtree2.geometry.internal.RectangleDouble;
 import com.untamedears.jukealert.database.JukeAlertDAO;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.SnitchQTEntry;
@@ -20,7 +25,6 @@ import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.world.locations.SparseQuadTree;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.api.SingleBlockAPIView;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -34,13 +38,13 @@ public class SnitchManager {
     }
 
     private final SingleBlockAPIView<Snitch> api;
-    private final Map<UUID, SparseQuadTree<SnitchQTEntry>> quadTreesByWorld;
+    private final Map<UUID, RTree<Snitch, Rectangle>> treesByWorld;
     private final ScheduledExecutorService scheduler;
     private final ConcurrentLinkedQueue<LogItem> logs;
 
     public SnitchManager(SingleBlockAPIView<Snitch> api) {
         this.api = api;
-        this.quadTreesByWorld = new TreeMap<>();
+        this.treesByWorld = new TreeMap<>();
         this.scheduler = Executors.newScheduledThreadPool(1);
         this.logs = new ConcurrentLinkedQueue<>();
     }
@@ -94,18 +98,18 @@ public class SnitchManager {
     }
 
     public void addSnitchToQuadTree(Snitch snitch) {
-        SparseQuadTree<SnitchQTEntry> quadTree = getQuadTreeFor(snitch.getLocation());
+        RTree<Snitch, Rectangle> tree = getTreeFor(snitch.getLocation());
         for (SnitchQTEntry qt : snitch.getFieldManager().getQTEntries()) {
-            quadTree.add(qt);
+            treesByWorld.put(snitch.getLocation().getWorld().getUID(), tree.add(qt.getSnitch(), RectangleDouble.create(qt.qtXMin(), qt.qtZMin(), qt.qtXMax(), qt.qtZMax())));
         }
     }
 
-    private SparseQuadTree<SnitchQTEntry> getQuadTreeFor(Location loc) {
-        SparseQuadTree<SnitchQTEntry> tree = quadTreesByWorld.get(loc.getWorld().getUID());
+    private RTree<Snitch, Rectangle> getTreeFor(Location loc) {
+        RTree<Snitch, Rectangle> tree = treesByWorld.get(loc.getWorld().getUID());
         if (tree == null) {
-            JukeAlert.getInstance().getLogger().info("Quad tree for world  " + loc.getWorld().getUID() + " does not exist, creating");
-            tree = new SparseQuadTree<>(1);
-            quadTreesByWorld.put(loc.getWorld().getUID(), tree);
+            JukeAlert.getInstance().getLogger().info("Tree for world  " + loc.getWorld().getUID() + " does not exist, creating");
+            tree = RTree.create();
+            treesByWorld.put(loc.getWorld().getUID(), tree);
         }
         return tree;
     }
@@ -121,18 +125,18 @@ public class SnitchManager {
     public void removeSnitch(@NotNull final Snitch snitch) {
         snitch.setCacheState(CacheState.DELETED);
         this.api.remove(snitch);
-        final SparseQuadTree<SnitchQTEntry> quadTree = getQuadTreeFor(snitch.getLocation());
+        final RTree<Snitch, Rectangle> quadTree = getTreeFor(snitch.getLocation());
         for (final SnitchQTEntry qt : snitch.getFieldManager().getQTEntries()) {
-            quadTree.remove(qt);
+            treesByWorld.put(snitch.getLocation().getWorld().getUID(), quadTree.delete(qt.getSnitch(), RectangleDouble.create(qt.qtXMin(), qt.qtZMin(), qt.qtXMax(), qt.qtZMax())));
         }
     }
 
     public Set<Snitch> getSnitchesCovering(Location location) {
-        Set<SnitchQTEntry> entries = getQuadTreeFor(location).find(location.getBlockX(), location.getBlockZ(), true);
+        Iterable<Entry<Snitch, Rectangle>> search = getTreeFor(location).search(PointDouble.create(location.getBlockX(), location.getBlockZ()));
         Set<Snitch> result = new HashSet<>();
-        for (SnitchQTEntry qt : entries) {
-            if (qt.getSnitch().getFieldManager().isInside(location)) {
-                result.add(qt.getSnitch());
+        for (Entry<Snitch, Rectangle> qt : search) {
+            if (qt.value().getFieldManager().isInside(location)) {
+                result.add(qt.value());
             }
         }
         Iterator<Snitch> iter = result.iterator();

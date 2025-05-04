@@ -56,8 +56,6 @@ hacks:
       - DOLPHIN
   AttrHider:
     enabled: true
-    # Hide item data like enchantments, firework effects, book data, potion, etc..
-    hideItemMeta: true
     # Hide potion effects on entities, except for particles
     hideEffects: true
     # Hide the health of entities
@@ -515,8 +513,6 @@ hacks:
     minHealth: 20
     #25 Hearts
     maxHealth: 50
-  TimingsHack:
-    enabled: true
   ToggleLamp:
     enabled: false
     cooldownTime: 100

@@ -52,10 +52,12 @@ public class BlockListener implements Listener {
             }
         }
 
-        if (blockRestrictionHandler.isOnCooldown(player, blockPlacedType)) {
-            restrictPlacement(event);
-        } else {
-            blockRestrictionHandler.putOnCooldown(player, blockPlacedType);
+        if (!blockRestrictionHandler.isReinforce()) {
+            if (blockRestrictionHandler.isOnCooldown(player, blockPlacedType)) {
+                restrictPlacement(event);
+            } else {
+                blockRestrictionHandler.putOnCooldown(player, blockPlacedType);
+            }
         }
     }
 

@@ -60,14 +60,15 @@ public final class CreateCommand extends BaseCommand {
                     continue;
                 }
             }
-            Inventory inventory = BlockInventoryRequestEvent.emit(block, player,
-                BlockInventoryRequestEvent.Purpose.ACCESS).getInventory();
-            if (inventory == null) {
+            BlockInventoryRequestEvent event = BlockInventoryRequestEvent.emit(block, player,
+                BlockInventoryRequestEvent.Purpose.ACCESS);
+            if (event.isCancelled()) {
                 player.sendMessage(ChatColor.RED + "You do not have access to that.");
                 return;
             }
             ItemStack inputItem = null;
             ItemStack outputItem = null;
+            Inventory inventory = event.getInventory();
             for (ItemStack item : inventory.getContents()) {
                 if (!ItemUtils.isValidItem(item)) {
                     continue;

@@ -17,27 +17,14 @@ import net.minecraft.nbt.NbtIo;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.bukkit.craftbukkit.util.CraftNBTTagConfigSerializer;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
-import vg.civcraft.mc.civmodcore.pdc.extensions.PersistentDataContainerExtensions;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public final class NBTSerialization {
 
     private static final CivLogger LOGGER = CivLogger.getLogger(NBTSerialization.class);
-
-	/**
-     * Generates an NBT compound based on a given persistent data container.
-     *
-     * @param container The container to generate an NBT compound from.
-     * @return Returns a newly generated NBT compound by wrapping the PDC's inner-map.
-     */
-    @NotNull
-    public static NBTCompound fromPDC(@NotNull final PersistentDataContainer container) {
-        return new NBTCompound(PersistentDataContainerExtensions.getRaw(container));
-    }
 
     @Beta
 	public static CompoundTag fromMap(final Map<String, Object> data) {

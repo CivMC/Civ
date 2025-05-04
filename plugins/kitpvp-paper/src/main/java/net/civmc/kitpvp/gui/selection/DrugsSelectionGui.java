@@ -57,7 +57,7 @@ public class DrugsSelectionGui extends ItemSelectionGui {
             if (matching != null) {
                 Brew brew = matching.createBrew(10);
                 ItemStack item = brew.createItem(matching);
-                brew.seal(item);
+                brew.seal(item, null);
                 inventory.setSlot(toClickable(item), slot++);
             }
         }

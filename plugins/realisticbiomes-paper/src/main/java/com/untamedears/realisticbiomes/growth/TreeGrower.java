@@ -37,6 +37,7 @@ public class TreeGrower extends AgeableGrower {
             case DARK_OAK_SAPLING:
             case JUNGLE_SAPLING:
             case SPRUCE_SAPLING:
+            case PALE_OAK_SAPLING:
                 return true;
             default:
                 return false;
@@ -129,6 +130,8 @@ public class TreeGrower extends AgeableGrower {
                 return big ? TreeType.TALL_MANGROVE : TreeType.MANGROVE;
             case DARK_OAK_SAPLING:
                 return big ? TreeType.DARK_OAK : null;
+            case PALE_OAK_SAPLING:
+                return big ? TreeType.PALE_OAK : null;
             case JUNGLE_SAPLING:
                 return big ? TreeType.JUNGLE : TreeType.SMALL_JUNGLE;
             case SPRUCE_SAPLING:
