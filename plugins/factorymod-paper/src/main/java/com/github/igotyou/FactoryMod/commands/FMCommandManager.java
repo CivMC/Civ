@@ -41,7 +41,7 @@ public class FMCommandManager extends CommandManager {
             for (Material m : Material.values()) {
                 allCompletions.add(m.name().toLowerCase());
             }
-            allCompletions.addAll(CustomItem.getKeys());
+            allCompletions.addAll(CustomItem.getRegisteredKeys());
             return allCompletions;
         });
     }
