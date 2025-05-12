@@ -6,7 +6,7 @@ import net.civmc.kitpvp.gui.EditKitGui;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 
 public class WeaponsAndToolsSelectionGui extends ItemSelectionGui {

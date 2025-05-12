@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.inventory;
+package vg.civcraft.mc.civmodcore.inventory.items.custom;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
