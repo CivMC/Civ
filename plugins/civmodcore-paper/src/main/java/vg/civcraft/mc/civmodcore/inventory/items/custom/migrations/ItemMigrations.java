@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
@@ -55,11 +56,11 @@ public class ItemMigrations {
         this.migrations.clear();
     }
 
-    public int getMigrationVersion(
+    public @Nullable Integer getMigrationVersion(
         final @NotNull ItemStack item
     ) {
         // This is a readonly PDC
-        return item.getPersistentDataContainer().getOrDefault(VERSION_KEY, PersistentDataType.INTEGER, 0);
+        return item.getPersistentDataContainer().get(VERSION_KEY, PersistentDataType.INTEGER);
     }
 
     public void setMigrationVersion(
@@ -78,7 +79,11 @@ public class ItemMigrations {
     public boolean attemptMigration(
         final @NotNull ItemStack item
     ) {
-        final Map<Integer, ItemMigration<?>> pendingMigrations = this.migrations.tailMap(getMigrationVersion(item), false);
+        final Integer currentVersion = getMigrationVersion(item);
+        final Map<Integer, ItemMigration<?>> pendingMigrations = this.migrations.tailMap(
+            Objects.requireNonNullElse(currentVersion, 0),
+            currentVersion == null // Include the 0th migration if the version was missing
+        );
         boolean updated = false;
         for (final Map.Entry<Integer, ItemMigration<?>> entry : pendingMigrations.entrySet()) {
             ItemMigration.migrate(item, entry.getValue());
