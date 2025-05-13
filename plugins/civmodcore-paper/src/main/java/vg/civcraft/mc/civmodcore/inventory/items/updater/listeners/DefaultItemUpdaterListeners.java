@@ -1,10 +1,7 @@
-package vg.civcraft.mc.civmodcore.inventory.items.updater.impl;
+package vg.civcraft.mc.civmodcore.inventory.items.updater.listeners;
 
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.updater.ItemUpdater;
-import vg.civcraft.mc.civmodcore.inventory.items.updater.listeners.UpdateInventoryItemsOnOpen;
-import vg.civcraft.mc.civmodcore.inventory.items.updater.listeners.UpdateItemOnCommand;
-import vg.civcraft.mc.civmodcore.inventory.items.updater.listeners.UpdatePlayerItemsOnJoin;
 
 public interface DefaultItemUpdaterListeners extends UpdatePlayerItemsOnJoin, UpdateInventoryItemsOnOpen, UpdateItemOnCommand {
     /**

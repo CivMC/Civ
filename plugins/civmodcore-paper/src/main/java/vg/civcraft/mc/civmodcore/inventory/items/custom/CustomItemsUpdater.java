@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.inventory.items.custom.migrations.ItemMigrations;
 import vg.civcraft.mc.civmodcore.inventory.items.updater.ItemUpdater;
-import vg.civcraft.mc.civmodcore.inventory.items.updater.impl.DefaultItemUpdaterListeners;
+import vg.civcraft.mc.civmodcore.inventory.items.updater.listeners.DefaultItemUpdaterListeners;
 
 public abstract class CustomItemsUpdater implements ItemUpdater {
     protected final Logger logger = LoggerFactory.getLogger(getClass());

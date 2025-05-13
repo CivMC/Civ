@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.inventory.items.updater.impl;
+package vg.civcraft.mc.civmodcore.inventory.items.updater.command;
 
 import java.util.Objects;
 import org.bukkit.event.Event;
@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.updater.ItemUpdater;
 
 /**
- * This is emitted by {@link vg.civcraft.mc.civmodcore.commands.DebugCommands#updateHeldItem(org.bukkit.entity.Player)},
+ * This is emitted by {@link ItemUpdaterCommand#updateHeldItem(org.bukkit.entity.Player)},
  * which is reserved for admins (or anyone else with the "cmc.debug" permission). This MUST NOT be emitted for an empty
  * item (as determined by {@link vg.civcraft.mc.civmodcore.inventory.items.ItemUtils#isEmptyItem(org.bukkit.inventory.ItemStack)})!
  */

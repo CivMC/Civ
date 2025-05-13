@@ -5,7 +5,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.updater.ItemUpdater;
-import vg.civcraft.mc.civmodcore.inventory.items.updater.impl.CommandedUpdateItemEvent;
+import vg.civcraft.mc.civmodcore.inventory.items.updater.command.CommandedUpdateItemEvent;
 
 public interface UpdateItemOnCommand extends ItemUpdater, Listener {
     @EventHandler(

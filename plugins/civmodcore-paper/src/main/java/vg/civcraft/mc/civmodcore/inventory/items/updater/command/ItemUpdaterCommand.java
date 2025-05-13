@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.commands;
+package vg.civcraft.mc.civmodcore.inventory.items.updater.command;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
@@ -15,11 +15,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.updater.impl.CommandedUpdateItemEvent;
 
 @CommandAlias("debugging")
 @CommandPermission("cmc.debug")
-public final class DebugCommands extends BaseCommand {
+public final class ItemUpdaterCommand extends BaseCommand {
     @Subcommand("rawheld")
     public void printHeldItemNbt(
         final @NotNull Player sender
@@ -53,14 +52,16 @@ public final class DebugCommands extends BaseCommand {
         sender.sendMessage(
             Component.text()
                 .color(NamedTextColor.GREEN)
-                .append(Component.text("Showing NBT for "))
-                .append(held.displayName())
-                .append(Component.text(":"))
-                .append(Component.newline())
-                .append(Component.text(
-                    NbtUtils.structureToSnbt(heldNbt),
-                    NamedTextColor.WHITE
-                ))
+                .append(
+                    Component.text("Showing NBT for "),
+                    held.displayName(),
+                    Component.text(":"),
+                    Component.newline(),
+                    Component.text(
+                        NbtUtils.structureToSnbt(heldNbt),
+                        NamedTextColor.WHITE
+                    )
+                )
         );
     }
 
