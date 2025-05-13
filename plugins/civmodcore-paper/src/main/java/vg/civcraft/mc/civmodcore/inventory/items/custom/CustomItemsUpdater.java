@@ -1,34 +1,24 @@
-package vg.civcraft.mc.civmodcore.inventory.items.updater.impl;
+package vg.civcraft.mc.civmodcore.inventory.items.custom;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.migrations.ItemMigrations;
 import vg.civcraft.mc.civmodcore.inventory.items.updater.ItemUpdater;
-import vg.civcraft.mc.civmodcore.inventory.items.updater.migrations.ItemMigrations;
+import vg.civcraft.mc.civmodcore.inventory.items.updater.impl.DefaultItemUpdaterListeners;
 
-public class CustomItemsUpdater implements ItemUpdater {
-    public final NamespacedKey versionKey;
-    private final Map<String, ItemMigrations> targets;
-
-    public CustomItemsUpdater() {
-        this(ItemMigrations.DEFAULT_VERSION_KEY);
-    }
-
-    public CustomItemsUpdater(
-        final @NotNull NamespacedKey versionKey
-    ) {
-        this.versionKey = Objects.requireNonNull(versionKey);
-        this.targets = new HashMap<>();
-    }
+public abstract class CustomItemsUpdater implements ItemUpdater {
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Map<String, ItemMigrations> targets = new HashMap<>();
 
     /**
      * Retrieves a migration list for the given custom key, creating one if it didn't already exist.
@@ -36,7 +26,7 @@ public class CustomItemsUpdater implements ItemUpdater {
     public @NotNull ItemMigrations getMigrationsFor(
         final @NotNull String customKey
     ) {
-        return getMigrationsFor(customKey, true);
+        return getMigrationsFor(Objects.requireNonNull(customKey), true);
     }
 
     /**
@@ -49,8 +39,9 @@ public class CustomItemsUpdater implements ItemUpdater {
         final @NotNull String customKey,
         final boolean createIfAbsent
     ) {
+        Objects.requireNonNull(customKey);
         if (createIfAbsent) {
-            return this.targets.computeIfAbsent(customKey, (_k) -> new ItemMigrations(this.versionKey));
+            return this.targets.computeIfAbsent(customKey, (_k) -> new ItemMigrations(customKey));
         }
         return this.targets.get(customKey);
     }
@@ -58,7 +49,7 @@ public class CustomItemsUpdater implements ItemUpdater {
     public void removeMigrationsFor(
         final @NotNull String customKey
     ) {
-        final ItemMigrations migrations = this.targets.remove(customKey);
+        final ItemMigrations migrations = this.targets.remove(Objects.requireNonNull(customKey));
         if (migrations != null) {
             migrations.clearMigrations();
         }
@@ -72,11 +63,21 @@ public class CustomItemsUpdater implements ItemUpdater {
         }
     }
 
+    /**
+     * This is how this class determines whether an item is a custom item. You can just override with <i>just</i> a call
+     * to {@link vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem#getCustomItemKey(org.bukkit.inventory.ItemStack)},
+     * but you can also include some logic that allows support for pre-{@link vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem}
+     * custom items.
+     */
+    protected abstract @Nullable String getCustomKeyFrom(
+        @NotNull ItemStack item
+    );
+
     @Override
     public boolean updateItem(
         final @NotNull ItemStack item
     ) {
-        final String customKey = CustomItem.getCustomItemKey(item);
+        final String customKey = getCustomKeyFrom(item);
         if (customKey == null) {
             return false;
         }
@@ -87,10 +88,15 @@ public class CustomItemsUpdater implements ItemUpdater {
         return migrations.attemptMigration(item);
     }
 
-    public static @NotNull CustomItemsUpdater init(
-        final @NotNull JavaPlugin plugin
+    // ============================================================
+    // Defaults
+    // ============================================================
+
+    @Contract("_, _ -> param2")
+    public static <T extends CustomItemsUpdater> @NotNull T init(
+        final @NotNull JavaPlugin plugin,
+        final @NotNull T updater
     ) {
-        final var updater = new CustomItemsUpdater();
         Bukkit.getPluginManager().registerEvents(DefaultItemUpdaterListeners.wrap(updater), plugin);
         return updater;
     }
