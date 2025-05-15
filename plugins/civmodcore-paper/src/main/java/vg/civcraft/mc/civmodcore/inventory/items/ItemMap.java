@@ -22,7 +22,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
 
 /**
  * Allows the storage and comparison of item stacks while ignoring their maximum possible stack sizes. This offers
