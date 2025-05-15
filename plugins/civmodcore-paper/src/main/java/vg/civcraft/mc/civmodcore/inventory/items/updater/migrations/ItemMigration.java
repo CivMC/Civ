@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.inventory.items.custom.migrations;
+package vg.civcraft.mc.civmodcore.inventory.items.updater.migrations;
 
 import net.minecraft.core.component.DataComponentHolder;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
