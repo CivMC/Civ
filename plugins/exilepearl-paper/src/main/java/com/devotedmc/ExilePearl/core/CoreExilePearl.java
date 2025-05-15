@@ -26,6 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 import java.util.*;
@@ -62,6 +63,7 @@ final class CoreExilePearl implements ExilePearl {
     private boolean storageEnabled;
     private boolean summoned;
     private Location returnLoc;
+    private Location captureLoc;
     private long decayTimeoutMs;
 
     /**
@@ -574,6 +576,20 @@ final class CoreExilePearl implements ExilePearl {
         }
     }
 
+    @Override
+    public @Nullable Location getCaptureLocation() {
+        return this.captureLoc;
+    }
+
+    @Override
+    public void setCaptureLocation(
+        final Location loc
+    ) {
+        this.captureLoc = loc;
+        if (this.storageEnabled) {
+            this.storage.updateCaptureLocation(this);
+        }
+    }
 
     @Override
     public double getLongTimeMultiplier() {

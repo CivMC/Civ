@@ -4,6 +4,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
+import org.jetbrains.annotations.NotNull;
 
 class RamStorage implements PluginStorage {
 
@@ -72,6 +73,13 @@ class RamStorage implements PluginStorage {
 
     @Override
     public void updateReturnLocation(ExilePearl pearl) {
+    }
+
+    @Override
+    public void updateCaptureLocation(
+        final @NotNull ExilePearl pearl
+    ) {
+
     }
 
     @Override
