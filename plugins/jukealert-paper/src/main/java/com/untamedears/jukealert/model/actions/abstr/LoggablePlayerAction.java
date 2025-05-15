@@ -89,10 +89,10 @@ public abstract class LoggablePlayerAction extends PlayerAction implements Logga
             JukeAlert.getInstance().getLogger().info("Tried to enrich air");
             item = new ItemStack(Material.STONE);
         }
-        ItemUtils.addLore(item, String.format("%sPlayer: %s", ChatColor.GOLD, getPlayerName()),
+        ItemUtils.appendLegacyLore(item, String.format("%sPlayer: %s", ChatColor.GOLD, getPlayerName()),
             // Example: Tue, 3 Jun 2008 11:05:30 GMT
             String.format("%sTime: %s", ChatColor.LIGHT_PURPLE, getFormattedTime(DateTimeFormatter.RFC_1123_DATE_TIME)));
-        ItemUtils.setDisplayName(item, ChatColor.GOLD + getGUIName());
+        ItemUtils.setLegacyDisplayName(item, ChatColor.GOLD + getGUIName());
     }
 
     protected String getGUIName() {

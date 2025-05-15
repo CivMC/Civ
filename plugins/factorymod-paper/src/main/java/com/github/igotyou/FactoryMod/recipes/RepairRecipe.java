@@ -33,7 +33,7 @@ public class RepairRecipe extends InputRecipe {
     public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
         List<ItemStack> result = new LinkedList<>();
         ItemStack furn = new ItemStack(Material.FURNACE);
-        ItemUtils.setLore(furn, "+" + String.valueOf(healthPerRun) + " health");
+        ItemUtils.setLegacyLore(furn, "+" + String.valueOf(healthPerRun) + " health");
         result.add(furn);
         return result;
     }

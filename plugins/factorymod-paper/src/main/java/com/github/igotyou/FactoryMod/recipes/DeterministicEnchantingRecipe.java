@@ -56,7 +56,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
         im.addEnchant(enchant, level, true);
         is.setItemMeta(im);
         if (i != null) {
-            ItemUtils.addLore(is,
+            ItemUtils.appendLegacyLore(is,
                 ChatColor.GREEN + "Enough materials for "
                     + String.valueOf(
                     Math.min(tool.getMultiplesContainedIn(i), input.getMultiplesContainedIn(i)))
@@ -76,7 +76,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
         }
         List<ItemStack> returns = createLoredStacksForInfo(i);
         ItemStack toSt = tool.getItemStackRepresentation().get(0);
-        ItemUtils.addLore(toSt,
+        ItemUtils.appendLegacyLore(toSt,
             ChatColor.GREEN + "Enough materials for " + new ItemMap(toSt).getMultiplesContainedIn(i) + " runs");
         returns.add(toSt);
         return returns;

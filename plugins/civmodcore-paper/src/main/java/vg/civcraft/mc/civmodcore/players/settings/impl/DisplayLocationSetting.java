@@ -58,7 +58,7 @@ public class DisplayLocationSetting extends LimitedStringSetting {
 
     private IClickable genLocationClick(Material mat, String infoText, DisplayLocation location, MenuSection menu, DisplayLocation currentlySelect) {
         ItemStack sideStack = new ItemStack(mat);
-        ItemUtils.setDisplayName(sideStack, String.format(infoText, ChatColor.GOLD, displayName));
+        ItemUtils.setLegacyDisplayName(sideStack, String.format(infoText, ChatColor.GOLD, displayName));
         if (location == currentlySelect) {
             sideStack.editMeta(itemMeta -> itemMeta.setEnchantmentGlintOverride(true));
         }

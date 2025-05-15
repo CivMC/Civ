@@ -60,7 +60,7 @@ public class PylonRecipe extends InputRecipe {
         ItemMap currOut = getCurrentOutput();
         List<ItemStack> res = new LinkedList<ItemStack>();
         for (ItemStack is : currOut.getItemStackRepresentation()) {
-            ItemUtils.setLore(is, ChatColor.GOLD + "Currently there are "
+            ItemUtils.setLegacyLore(is, ChatColor.GOLD + "Currently there are "
                 + FurnCraftChestFactory.getPylonFactories() == null ? "0"
                 : FurnCraftChestFactory.getPylonFactories().size()
                 + " pylons on the map", ChatColor.RED

@@ -42,8 +42,8 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
     public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
         if (i == null) {
             ItemStack is = new ItemStack(Material.PAPER);
-            ItemUtils.setDisplayName(is, "Total setupcost");
-            ItemUtils.addLore(is, ChatColor.AQUA + "All the materials invested into setting up and upgrading this factory");
+            ItemUtils.setLegacyDisplayName(is, "Total setupcost");
+            ItemUtils.appendLegacyLore(is, ChatColor.AQUA + "All the materials invested into setting up and upgrading this factory");
             List<ItemStack> stacks = new LinkedList<>();
             stacks.add(is);
             return stacks;

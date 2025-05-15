@@ -3,6 +3,7 @@ package com.untamedears.itemexchange.glues.jukealert;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
+import java.util.List;
 import java.util.UUID;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -47,7 +48,7 @@ public final class ShopPurchaseAction extends LoggablePlayerAction {
     public IClickable getGUIRepresentation() {
         final var icon = new ItemStack(Material.CHEST);
         super.enrichGUIItem(icon);
-        ItemUtils.addComponentLore(icon,
+        ItemUtils.appendLore(icon, List.of(
             Component.text()
                 .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE)
                 .color(NamedTextColor.GOLD)
@@ -61,7 +62,8 @@ public final class ShopPurchaseAction extends LoggablePlayerAction {
                     Component.space(),
                     Component.text(this.location.getBlockZ(), NamedTextColor.BLUE)
                 )
-                .build());
+                .build()
+        ));
         return new DecorationStack(icon);
     }
 

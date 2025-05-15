@@ -111,7 +111,7 @@ public class RandomOutputRecipe extends InputRecipe {
     public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
         List<ItemStack> items = lowestChanceMap.getItemStackRepresentation();
         for (ItemStack is : items) {
-            ItemUtils.addLore(is, ChatColor.LIGHT_PURPLE + "Randomized output");
+            ItemUtils.appendLegacyLore(is, ChatColor.LIGHT_PURPLE + "Randomized output");
         }
         return items;
     }

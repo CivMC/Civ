@@ -62,10 +62,10 @@ public class CommandReplySetting extends StringSetting {
     @Override
     public ItemStack getGuiRepresentation(UUID player) {
         ItemStack item = super.getGuiRepresentation(player);
-        ItemUtils.addLore(item, ChatColor.GOLD + "Example: " + ChatColor.RESET + getExampleReply(player));
+        ItemUtils.appendLegacyLore(item, ChatColor.GOLD + "Example: " + ChatColor.RESET + getExampleReply(player));
         for (CommandArgument cArg : exampleArguments.values()) {
-            ItemUtils.addLore(item, ChatColor.BLACK + "-------");
-            ItemUtils.addLore(item, ChatColor.YELLOW + "%%" + cArg.identifier + "%% will be replaced with " + cArg.description);
+            ItemUtils.appendLegacyLore(item, ChatColor.BLACK + "-------");
+            ItemUtils.appendLegacyLore(item, ChatColor.YELLOW + "%%" + cArg.identifier + "%% will be replaced with " + cArg.description);
         }
         return item;
     }
