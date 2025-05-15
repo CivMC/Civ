@@ -58,8 +58,6 @@ public class CivModCorePlugin extends ACivMod {
     public void onEnable() {
         instance = this;
         registerConfigClass(DatabaseCredentials.class);
-        // Save default resources
-        saveDefaultResource("enchants.yml");
         super.onEnable();
         // Load Config
         this.config = new CivModCoreConfig(this);
