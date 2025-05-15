@@ -16,5 +16,11 @@
     "name": "Okx",
     "level": 4,
     "bypassesPlayerLimit": true
+  },
+  {
+    "uuid": "7d4af441-a721-4e4c-9848-4e92a679f182",
+    "name": "HaKr_",
+    "level": 4,
+    "bypassesPlayerLimit": true
   }
 ]
