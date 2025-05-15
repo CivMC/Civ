@@ -52,7 +52,7 @@ import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 
 /**
  * This is a grab-bag class to hold any _tuning_ related configurations that impact the
@@ -243,7 +243,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
                         event.setCancelled(true);
                         player.sendMessage(config.getChunkLimitsExceededMessage()
                             .replaceAll("%Limit%", Integer.toString(limit))
-                            .replaceAll("%Material%", ItemUtils.getItemName(mat))
+                            .replaceAll("%Material%", ChatUtils.translate(mat))
                         );
                         return;
                     }

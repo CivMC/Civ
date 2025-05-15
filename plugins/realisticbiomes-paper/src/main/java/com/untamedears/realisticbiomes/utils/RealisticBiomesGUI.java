@@ -16,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.components.ComponableInventory;
@@ -111,7 +112,7 @@ public class RealisticBiomesGUI {
             }
             for (Map.Entry<Material, Double> entry : plant.getSoilBoniPerLevel().entrySet()) {
                 lore.add(String.format("%sSoil Bonus: %s%s (%.2f)", ChatColor.DARK_AQUA,
-                    ChatColor.GRAY, ItemUtils.getItemName(entry.getKey()), entry.getValue()));
+                    ChatColor.GRAY, ChatUtils.translate(entry.getKey()), entry.getValue()));
             }
             if (plant.getMaximumSoilLayers() != 0) {
                 lore.add(String.format("%sMax Soil Layers: %s%d", ChatColor.DARK_AQUA,
@@ -123,7 +124,7 @@ public class RealisticBiomesGUI {
             }
             for (Map.Entry<Material, Double> entry : plant.getGreenHouseRates().entrySet()) {
                 lore.add(String.format("%sGreen House Rate: %s%s (%.2f)", ChatColor.DARK_AQUA,
-                    ChatColor.GRAY, ItemUtils.getItemName(entry.getKey()), entry.getValue()));
+                    ChatColor.GRAY, ChatUtils.translate(entry.getKey()), entry.getValue()));
             }
             ItemUtils.addLore(is, lore);
             IClickable click = new DecorationStack(is);

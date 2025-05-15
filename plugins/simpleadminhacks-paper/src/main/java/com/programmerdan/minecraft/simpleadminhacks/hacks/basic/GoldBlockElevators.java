@@ -20,7 +20,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
@@ -47,7 +47,7 @@ public class GoldBlockElevators extends BasicHack {
         if (elevatorBlock == null)
             elevatorBlock = Material.GOLD_BLOCK;
 
-        this.blockName = ItemUtils.getItemName(this.elevatorBlock).toLowerCase();
+        this.blockName = ChatUtils.translate(this.elevatorBlock).toLowerCase();
 
         if (this.blockName.startsWith("block of"))
             this.blockName = this.blockName.substring("block of ".length());

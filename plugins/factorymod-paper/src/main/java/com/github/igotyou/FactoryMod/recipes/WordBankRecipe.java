@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
@@ -78,7 +79,7 @@ public class WordBankRecipe extends InputRecipe {
         for (Entry<ItemStack, Integer> entry : input.getItems().entrySet()) {
             sb.append(entry.getValue());
             sb.append(" ");
-            sb.append(ItemUtils.getItemName(entry.getKey()));
+            sb.append(ChatUtils.translate(entry.getKey()));
             sb.append(", ");
         }
         String result = sb.substring(0, sb.length() - 2);
