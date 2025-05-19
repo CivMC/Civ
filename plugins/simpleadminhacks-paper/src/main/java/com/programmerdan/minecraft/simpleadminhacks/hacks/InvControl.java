@@ -17,6 +17,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -85,7 +86,19 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
             // Fun NMS inventory reconstruction from file data.
             net.minecraft.world.entity.player.Inventory nms_pl_inv = new net.minecraft.world.entity.player.Inventory(null);
             ListTag inv = rawPlayer.getList("Inventory", rawPlayer.getId());
-            nms_pl_inv.load(inv); // We use this to bypass the Craft code which requires a player object, unlike NMS.
+
+            for(int i = 0; i < inv.size(); ++i) {
+                CompoundTag compound = inv.getCompound(i);
+                int i1 = compound.getByte("Slot") & 255;
+                net.minecraft.world.item.ItemStack itemStack = net.minecraft.world.item.ItemStack.parse((((CraftServer) Bukkit.getServer()).getServer().registryAccess()), compound).orElse(net.minecraft.world.item.ItemStack.EMPTY);
+                if (i1 >= 0 && i1 < nms_pl_inv.items.size()) {
+                    nms_pl_inv.items.set(i1, itemStack);
+                } else if (i1 >= 100 && i1 < nms_pl_inv.armor.size() + 100) {
+                    nms_pl_inv.armor.set(i1 - 100, itemStack);
+                } else if (i1 >= 150 && i1 < nms_pl_inv.offhand.size() + 150) {
+                    nms_pl_inv.offhand.set(i1 - 150, itemStack);
+                }
+            }
             PlayerInventory pl_inv = new CraftInventoryPlayer(nms_pl_inv);
 
             invSee(sender, pl_inv, health, food, playername);

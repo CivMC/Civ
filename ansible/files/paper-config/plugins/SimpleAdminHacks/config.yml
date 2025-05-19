@@ -489,7 +489,7 @@ hacks:
         - "      &5Bugs/Issues&r\n\nIf you've found a bug or have any other issues that require an admin.\nThen you can either raise a ticket on the discord or send a modmail via our reddit.\n\n         &9R/CivMC&r"
         - "        &5Goodluck!&r\nThere are many things to do on CivMC. Let your ambitions run wild!\n\nLeave something behind people will remember for years to come.\n\nBe it your actions, your creations or your destruction..."
   InvControl:
-    enabled: true
+    enabled: false
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'

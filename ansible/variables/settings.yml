@@ -7,7 +7,7 @@ settings:
       enabled: true
     minecraft: &default_minecraft
       enabled: true
-      whitelist: false
+      whitelist: true
       pvp_whitelist: false
       pvp_hostname: 'pvp.civmc.net'
       hostname: 'play.civmc.net'
