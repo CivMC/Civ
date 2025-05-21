@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,14 +20,19 @@ public final class PlayerNames implements Listener {
 
     private static final Set<String> names = new HashSet<>();
 
-    public PlayerNames() {
+    public PlayerNames(Plugin plugin) {
         names.clear();
-        names.addAll(
-            Stream.of(Bukkit.getOfflinePlayers())
-                .map(OfflinePlayer::getName)
-                .filter(StringUtils::isNotBlank)
-                .toList()
-        );
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            OfflinePlayer[] players = Bukkit.getOfflinePlayers();
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                names.addAll(
+                    Stream.of(players)
+                        .map(OfflinePlayer::getName)
+                        .filter(StringUtils::isNotBlank)
+                        .toList()
+                );
+            });
+        });
     }
 
     @EventHandler(

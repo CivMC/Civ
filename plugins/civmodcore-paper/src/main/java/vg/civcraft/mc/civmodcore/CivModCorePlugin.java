@@ -86,7 +86,7 @@ public class CivModCorePlugin extends ACivMod {
         registerListener(new ClickableInventoryListener());
         registerListener(DialogManager.INSTANCE);
         registerListener(new ScoreBoardListener());
-        registerListener(new PlayerNames());
+        registerListener(new PlayerNames(this));
         // Register commands
         this.commands = new CommandManager(this);
         this.commands.init();
