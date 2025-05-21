@@ -91,7 +91,7 @@ public class ActivityDB {
 
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        int groupId = resultSet.getShort("group_id");
+                        int groupId = resultSet.getInt("group_id");
                         Instant activity = resultSet.getTimestamp("activity").toInstant();
 
                         var activityItem = new ActivityItem(worldId, groupId, x, z, activity, resolution);
