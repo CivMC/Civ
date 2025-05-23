@@ -39,7 +39,6 @@ public class GroupChatEvent extends PlayerEvent implements Cancellable {
      * @return The chat message
      */
     public String getMessage() {
-
         return message;
     }
 
