@@ -17,6 +17,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
@@ -87,11 +88,10 @@ public final class EnchantStorageModifier extends ModifierData {
     public List<String> getDisplayInfo() {
         List<String> info = Lists.newArrayList();
         for (Map.Entry<Enchantment, Integer> entry : getEnchants().entrySet()) {
-            String name = EnchantUtils.getEnchantNiceName(entry.getKey());
             if (entry.getValue() == ExchangeRule.ANY) {
-                info.add(ChatColor.AQUA + name + " %");
+                info.add(ChatColor.AQUA + ChatUtils.translate(entry.getKey()) + " %");
             } else {
-                info.add(ChatColor.AQUA + name + " " + entry.getValue());
+                info.add(ChatColor.AQUA + ChatUtils.translate(entry.getKey()) + " " + entry.getValue());
             }
         }
         return info;

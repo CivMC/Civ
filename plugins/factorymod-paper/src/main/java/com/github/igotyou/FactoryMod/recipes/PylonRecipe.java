@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
@@ -144,7 +145,7 @@ public class PylonRecipe extends InputRecipe {
         List<String> result = new ArrayList<>();
         for (Entry<ItemStack, Integer> entry : output.getAllItems().entrySet()) {
             if (entry.getValue() > 0) {
-                result.add(entry.getValue() + " " + ItemUtils.getItemName(entry.getKey()));
+                result.add(entry.getValue() + " " + ChatUtils.translate(entry.getKey()));
             }
         }
         return result;

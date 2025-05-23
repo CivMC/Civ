@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.acidtypes.AcidType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
@@ -110,7 +111,7 @@ public class ReinforcementsGUI extends BaseCommand {
 
         for (AcidType acidType : acidTypes) {
             ItemStack is = new ItemStack(acidType.material());
-            String blockName = ItemUtils.getItemName(acidType.material());
+            String blockName = ChatUtils.translate(acidType.material());
             ItemUtils.setComponentDisplayName(is, Component.text(ChatColor.RED + blockName));
             ItemUtils.addLore(is, ChatColor.GOLD + "Acid faces: " + (acidType.blockFaces().stream().map(BlockFace::toString).collect(Collectors.joining(", "))));
             ItemUtils.addLore(is, ChatColor.GOLD + "Maturation modifier: " + format.format(acidType.modifier()) + "x");
