@@ -474,6 +474,14 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
     @Override
     public void run() {
         if (active && mbs.isComplete()) {
+            //Check if the factory has fallen into disrepair. Added after damage_per_run was implemented
+            if (getRepairManager() instanceof IRepairManager repairManager) {
+                if (repairManager.inDisrepair()) {
+                    sendActivatorMessage(ChatColor.RED + this.getName() + " has stopped due to falling into disrepair.");
+                    deactivate();
+                    return;
+                }
+            }
             // if the materials required to produce the current recipe are in
             // the factory inventory
             if (hasInputMaterials()) {
