@@ -275,17 +275,17 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
             InputRecipe recipe = (InputRecipe) (rec);
             ItemStack recStack = recipe.getRecipeRepresentation();
             int runcount = fccf.getRunCount(recipe);
-            ItemUtils.addLore(recStack, "", ChatColor.AQUA + "Ran " + String.valueOf(runcount) + " times");
+            ItemUtils.appendLegacyLore(recStack, "", ChatColor.AQUA + "Ran " + String.valueOf(runcount) + " times");
             if (rec == fccf.getCurrentRecipe()) {
-                ItemUtils.addLore(recStack, ChatColor.GREEN + "Currently selected");
+                ItemUtils.appendLegacyLore(recStack, ChatColor.GREEN + "Currently selected");
                 recStack.editMeta(itemMeta -> itemMeta.setEnchantmentGlintOverride(true));
             }
             if (recipe instanceof ProductionRecipe) {
                 ProductionRecipe prod = (ProductionRecipe) recipe;
                 if (prod.getModifier() != null) {
-                    ItemUtils.addLore(recStack, ChatColor.BOLD + "   " + ChatColor.GOLD
+                    ItemUtils.appendLegacyLore(recStack, ChatColor.BOLD + "   " + ChatColor.GOLD
                         + fccf.getRecipeLevel(recipe) + " ★");
-                    ItemUtils.addLore(recStack, ChatColor.GREEN + "Current output multiplier: " + decimalFormatting
+                    ItemUtils.appendLegacyLore(recStack, ChatColor.GREEN + "Current output multiplier: " + decimalFormatting
                         .format(prod.getModifier().getFactor(fccf.getRecipeLevel(recipe), runcount)));
                 }
             }
@@ -398,8 +398,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 
     private Clickable buildAutoSelectToggle() {
         ItemStack autoSelectStack = new ItemStack(Material.REDSTONE_BLOCK);
-        ItemUtils.setDisplayName(autoSelectStack, "Toggle auto select");
-        ItemUtils.addLore(autoSelectStack,
+        ItemUtils.setLegacyDisplayName(autoSelectStack, "Toggle auto select");
+        ItemUtils.appendLegacyLore(autoSelectStack,
             ChatColor.GOLD + "Make the factory automatically select any",
             ChatColor.GOLD + "recipe it can run whenever you activate it",
             ChatColor.AQUA + "Click to turn it " + (fccf.isAutoSelect() ? "off" : "on"));
@@ -417,8 +417,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 
     private Clickable buildMenuClickable() {
         ItemStack menuStack = new ItemStack(Material.PAINTING);
-        ItemUtils.setDisplayName(menuStack, "Open menu");
-        ItemUtils.addLore(menuStack, ChatColor.LIGHT_PURPLE + "Click to open a detailed menu");
+        ItemUtils.setLegacyDisplayName(menuStack, "Open menu");
+        ItemUtils.appendLegacyLore(menuStack, ChatColor.LIGHT_PURPLE + "Click to open a detailed menu");
         Clickable menuC = new Clickable(menuStack) {
             @Override
             public void clicked(Player p) {
@@ -434,7 +434,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
         FurnCraftChestFactory.UiMenuMode curMode = fccf.getUiMenuMode();
         FurnCraftChestFactory.UiMenuMode nextMode = modes[(curMode.ordinal() + 1) % modes.length];
         ItemStack display = new ItemStack(nextMode.uiMaterial);
-        ItemUtils.setComponentDisplayName(display, Component.text(nextMode.uiDescription));
+        ItemUtils.setDisplayName(display, Component.text(nextMode.uiDescription));
 
         Clickable menuModeButton = new Clickable(display) {
             private ClickableInventory inventory;
@@ -462,7 +462,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
                 ItemStack innerCurStack = getItemStack();
                 FurnCraftChestFactory.UiMenuMode innerNextMode = modes[(innerCurMode.ordinal() + 1) % modes.length];
                 innerCurStack.setType(innerNextMode.uiMaterial);
-                ItemUtils.setComponentDisplayName(innerCurStack, Component.text(innerNextMode.uiDescription));
+                ItemUtils.setDisplayName(innerCurStack, Component.text(innerNextMode.uiDescription));
 
                 if (inventory != null && inventory.getSlot(slot) == this) {
                     inventory.setSlot(this, slot);

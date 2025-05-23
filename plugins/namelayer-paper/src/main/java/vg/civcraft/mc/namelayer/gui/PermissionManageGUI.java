@@ -59,7 +59,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
             produceSelectionClickable(Material.DIAMOND_CHESTPLATE,
                 PlayerType.OWNER), 17);
         ItemStack backStack = new ItemStack(Material.ARROW);
-        ItemUtils.setDisplayName(backStack, ChatColor.GOLD
+        ItemUtils.setLegacyDisplayName(backStack, ChatColor.GOLD
             + "Go back to member management");
         ci.setSlot(new Clickable(backStack) {
 
@@ -78,11 +78,11 @@ public class PermissionManageGUI extends AbstractGroupGUI {
         im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         is.setItemMeta(im);
         Clickable c;
-        ItemUtils.setDisplayName(is, ChatColor.GOLD + "View and edit permissions for "
+        ItemUtils.setLegacyDisplayName(is, ChatColor.GOLD + "View and edit permissions for "
             + PlayerType.getNiceRankName(pType));
         if (!gm.hasAccess(g, p.getUniqueId(),
             PermissionType.getPermission("LIST_PERMS"))) {
-            ItemUtils.addLore(is, ChatColor.RED + "You are not allowed to list",
+            ItemUtils.appendLegacyLore(is, ChatColor.RED + "You are not allowed to list",
                 ChatColor.RED + "permissions for this group");
             c = new DecorationStack(is);
         } else {
@@ -123,7 +123,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 
             if (hasPerm) {
                 is = yesStack();
-                ItemUtils.addLore(
+                ItemUtils.appendLegacyLore(
                     is,
                     ChatColor.DARK_AQUA
                         + PlayerType.getNiceRankName(pType)
@@ -131,14 +131,14 @@ public class PermissionManageGUI extends AbstractGroupGUI {
                         + "this permission");
             } else {
                 is = noStack();
-                ItemUtils.addLore(
+                ItemUtils.appendLegacyLore(
                     is,
                     ChatColor.DARK_AQUA
                         + PlayerType.getNiceRankName(pType)
                         + "s currently don't have", ChatColor.DARK_AQUA
                         + "this permission");
             }
-            ItemUtils.setDisplayName(is, perm.getName());
+            ItemUtils.setLegacyDisplayName(is, perm.getName());
             String desc = perm.getDescription();
             if (desc != null) {
                 final int MAX_CHARS = 35;
@@ -147,7 +147,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
                 for (int i = 0; i < words.length; i++) {
                     line.append(words[i]).append(" ");
                     if (line.length() >= MAX_CHARS || i == words.length - 1) {
-                        ItemUtils.addLore(is, ChatColor.GREEN + line.toString().trim());
+                        ItemUtils.appendLegacyLore(is, ChatColor.GREEN + line.toString().trim());
                         line = new StringBuilder();
                     }
                 }
@@ -155,7 +155,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
             if (pType == PlayerType.NOT_BLACKLISTED && !perm.getCanBeBlacklisted()) {
                 canEdit = false;
 
-                ItemUtils.addLore(
+                ItemUtils.appendLegacyLore(
                     is,
                     ChatColor.AQUA
                         + "This permission cannot be toggled for "
@@ -164,7 +164,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
             }
 
             if (canEdit) {
-                ItemUtils.addLore(is, ChatColor.AQUA + "Click to toggle");
+                ItemUtils.appendLegacyLore(is, ChatColor.AQUA + "Click to toggle");
                 c = new Clickable(is) {
 
                     @Override
@@ -202,7 +202,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 
         if (currentPage > 0) {
             ItemStack back = new ItemStack(Material.ARROW);
-            ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
+            ItemUtils.setLegacyDisplayName(back, ChatColor.GOLD + "Go to previous page");
             Clickable baCl = new Clickable(back) {
 
                 @Override
@@ -218,7 +218,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
         // next button
         if ((45 * (currentPage + 1)) < clicks.size()) {
             ItemStack forward = new ItemStack(Material.ARROW);
-            ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
+            ItemUtils.setLegacyDisplayName(forward, ChatColor.GOLD + "Go to next page");
             Clickable forCl = new Clickable(forward) {
 
                 @Override
@@ -233,7 +233,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
         }
 
         ItemStack backToOverview = goBackStack();
-        ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Go back");
+        ItemUtils.setLegacyDisplayName(backToOverview, ChatColor.GOLD + "Go back");
         ci.setSlot(new Clickable(backToOverview) {
 
             @Override

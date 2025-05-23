@@ -125,12 +125,12 @@ public class HeliodorFinishRecipe extends InputRecipe {
         ItemStack gem = HeliodorGem.createHeliodorGem(100, 100);
         gem.setAmount(this.inputCount);
         for (ItemStack is : new ItemMap(gem).getItemStackRepresentation()) {
-            ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for " + (count / this.inputCount) + " runs");
+            ItemUtils.appendLegacyLore(is, ChatColor.GREEN + "Enough materials for " + (count / this.inputCount) + " runs");
             result.add(is);
         }
 
         for (ItemStack is : input.getItemStackRepresentation()) {
-            ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for " + possibleRuns.getAmount(is) + " runs");
+            ItemUtils.appendLegacyLore(is, ChatColor.GREEN + "Enough materials for " + possibleRuns.getAmount(is) + " runs");
             result.add(is);
         }
         return result;

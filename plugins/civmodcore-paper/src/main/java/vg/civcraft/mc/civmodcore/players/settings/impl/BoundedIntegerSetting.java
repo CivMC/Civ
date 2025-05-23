@@ -34,7 +34,7 @@ public class BoundedIntegerSetting extends IntegerSetting {
     @Override
     public ItemStack getGuiRepresentation(UUID player) {
         ItemStack stack = super.getGuiRepresentation(player);
-        ItemUtils.addLore(stack,
+        ItemUtils.appendLegacyLore(stack,
             String.format("%sMust be at least %d and at most %d", ChatColor.GOLD, lowerBound, upperBound));
         return stack;
     }

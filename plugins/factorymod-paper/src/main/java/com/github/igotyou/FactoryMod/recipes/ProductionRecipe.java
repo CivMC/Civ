@@ -85,13 +85,13 @@ public class ProductionRecipe extends InputRecipe {
             double additionalChance = (((double) entry.getValue()) * factor) - currentOut.getAmount(entry.getKey());
             if (Math.abs(additionalChance) > 0.00000001) {
                 ItemStack is = entry.getKey().clone();
-                ItemUtils.addLore(is, ChatColor.GOLD + decimalFormatting.format(additionalChance) + " chance for additional item");
+                ItemUtils.appendLegacyLore(is, ChatColor.GOLD + decimalFormatting.format(additionalChance) + " chance for additional item");
                 stacks.add(is);
             }
         }
         int possibleRuns = input.getMultiplesContainedIn(i);
         for (ItemStack is : stacks) {
-            ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for " + String.valueOf(possibleRuns) + " runs");
+            ItemUtils.appendLegacyLore(is, ChatColor.GREEN + "Enough materials for " + String.valueOf(possibleRuns) + " runs");
         }
         return stacks;
     }

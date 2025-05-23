@@ -194,7 +194,7 @@ public abstract class InputRecipe implements IRecipe {
             }
         }
         for (ItemStack is : input.getItemStackRepresentation()) {
-            ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for " + String.valueOf(possibleRuns.getAmount(is))
+            ItemUtils.appendLegacyLore(is, ChatColor.GREEN + "Enough materials for " + String.valueOf(possibleRuns.getAmount(is))
                 + " runs");
             result.add(is);
         }

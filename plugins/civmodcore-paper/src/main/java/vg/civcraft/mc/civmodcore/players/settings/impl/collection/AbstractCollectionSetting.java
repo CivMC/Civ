@@ -166,7 +166,7 @@ public abstract class AbstractCollectionSetting<C extends Collection<T>, T> exte
         for (T element : value) {
             elementSetting.setValue(player, element);
             ItemStack is = elementSetting.getGuiRepresentation(player.getUniqueId());
-            ItemUtils.setDisplayName(is, ChatColor.GOLD + elementSetting.toText(element));
+            ItemUtils.setLegacyDisplayName(is, ChatColor.GOLD + elementSetting.toText(element));
             clickables.add(new Clickable(is) {
 
                 @Override
@@ -180,7 +180,7 @@ public abstract class AbstractCollectionSetting<C extends Collection<T>, T> exte
         }
         MultiPageView pageView = new MultiPageView(player, clickables, getNiceName(), true);
         ItemStack parentItem = new ItemStack(Material.ARROW);
-        ItemUtils.setDisplayName(parentItem, ChatColor.AQUA + "Go back to " + menu.getName());
+        ItemUtils.setLegacyDisplayName(parentItem, ChatColor.AQUA + "Go back to " + menu.getName());
         pageView.setMenuSlot(new Clickable(parentItem) {
 
             @Override
@@ -189,7 +189,7 @@ public abstract class AbstractCollectionSetting<C extends Collection<T>, T> exte
             }
         }, 0);
         ItemStack addItemStack = new ItemStack(Material.GREEN_CONCRETE);
-        ItemUtils.setDisplayName(addItemStack, ChatColor.GOLD + "Add new entry");
+        ItemUtils.setLegacyDisplayName(addItemStack, ChatColor.GOLD + "Add new entry");
         pageView.setMenuSlot(new Clickable(addItemStack) {
 
             @Override

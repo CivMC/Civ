@@ -81,14 +81,14 @@ public class ItemUseGUI {
         }
         if (itemAsInput.isEmpty()) {
             ItemStack noItems = new ItemStack(Material.BARRIER);
-            ItemUtils.setDisplayName(noItems, String.format("%sNo recipes take input %s%s", ChatColor.RED, ChatColor.BOLD,
+            ItemUtils.setLegacyDisplayName(noItems, String.format("%sNo recipes take input %s%s", ChatColor.RED, ChatColor.BOLD,
                 ItemUtils.getItemName(item)));
             itemAsInput.add(new LClickable(noItems, p -> {
             }));
         }
         if (itemAsOutput.isEmpty()) {
             ItemStack noItems = new ItemStack(Material.BARRIER);
-            ItemUtils.setDisplayName(noItems, String.format("%sNo recipes output %s%s", ChatColor.RED, ChatColor.BOLD,
+            ItemUtils.setLegacyDisplayName(noItems, String.format("%sNo recipes output %s%s", ChatColor.RED, ChatColor.BOLD,
                 ItemUtils.getItemName(item)));
             itemAsOutput.add(new LClickable(noItems, p -> {
             }));
@@ -110,7 +110,7 @@ public class ItemUseGUI {
 
     private IClickable getDividerClick() {
         ItemStack is = new ItemStack(Material.WHITE_STAINED_GLASS_PANE);
-        ItemUtils.setDisplayName(is, "Divider");
+        ItemUtils.setLegacyDisplayName(is, "Divider");
         return new LClickable(is, p -> {
         });
     }
@@ -138,7 +138,7 @@ public class ItemUseGUI {
         }
         if (recipe instanceof CompactingRecipe) {
             CompactingRecipe output = (CompactingRecipe) recipe;
-            if (String.join("", ItemUtils.getLore(item)).equals(output.getCompactedLore())) {
+            if (String.join("", ItemUtils.getLegacyLore(item)).equals(output.getCompactedLore())) {
                 return getItemRecipeStack(fccEgg, recipe, item);
             }
         }
@@ -147,7 +147,7 @@ public class ItemUseGUI {
 
     private ItemStack getItemRecipeStack(FurnCraftChestEgg fccEgg, InputRecipe recipe, ItemStack item) {
         ItemStack is = new ItemStack(recipe.getRecipeRepresentationMaterial());
-        ItemUtils.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
+        ItemUtils.setLegacyDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.DARK_AQUA + recipe.getName());
         lore.add(ChatColor.GOLD + "Input:");
@@ -158,20 +158,20 @@ public class ItemUseGUI {
         for (String output : recipe.getTextualOutputRepresentation(null, null)) {
             lore.add(formatIngredient(output, item));
         }
-        ItemUtils.addLore(is, lore);
+        ItemUtils.appendLegacyLore(is, lore);
         return is;
     }
 
     private ItemStack getItemSetupStack(FurnCraftChestEgg fccEgg, ItemStack item) {
         ItemStack is = new ItemStack(Material.CRAFTING_TABLE);
-        ItemUtils.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
+        ItemUtils.setLegacyDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GOLD + "Setup cost:");
         for (Map.Entry<ItemStack, Integer> entry : fccEgg.getSetupCost().getAllItems().entrySet()) {
             String recipeRepresentation = entry.getValue() + " " + ItemUtils.getItemName(entry.getKey());
             lore.add(formatIngredient(recipeRepresentation, item));
         }
-        ItemUtils.addLore(is, lore);
+        ItemUtils.appendLegacyLore(is, lore);
         return is;
     }
 

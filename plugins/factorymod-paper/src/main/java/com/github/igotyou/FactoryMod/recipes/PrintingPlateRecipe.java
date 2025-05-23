@@ -66,8 +66,8 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
             for (ItemStack is : toAdd.getItemStackRepresentation()) {
                 is = addTags(serialNumber, is, CraftItemStack.asNMSCopy(book).get(DataComponents.WRITTEN_BOOK_CONTENT));
 
-                ItemUtils.setDisplayName(is, itemName);
-                ItemUtils.setLore(is,
+                ItemUtils.setLegacyDisplayName(is, itemName);
+                ItemUtils.setLegacyLore(is,
                     serialNumber,
                     ChatColor.WHITE + bookMeta.getTitle(),
                     ChatColor.GRAY + "by " + bookMeta.getAuthor(),
@@ -145,7 +145,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
         int possibleRuns = this.input.getMultiplesContainedIn(i);
 
         for (ItemStack is : stacks) {
-            ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
+            ItemUtils.appendLegacyLore(is, ChatColor.GREEN + "Enough materials for "
                 + String.valueOf(possibleRuns) + " runs");
         }
 

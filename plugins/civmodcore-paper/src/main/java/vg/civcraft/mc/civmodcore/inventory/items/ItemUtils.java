@@ -1,12 +1,20 @@
 package vg.civcraft.mc.civmodcore.inventory.items;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.ItemLore;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.translation.Translatable;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.component.CustomData;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
@@ -16,12 +24,12 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
+import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 
 /**
  * Class of static APIs for Items. Replaces ISUtils.
  */
 public final class ItemUtils {
-
     /**
      * Gets the name of an item based off a material, e.g: POLISHED_GRANITE to Polished Granite
      *
@@ -30,9 +38,10 @@ public final class ItemUtils {
      * @deprecated Use {@link Component#translatable(Translatable)} instead.
      */
     @Deprecated
-    @NotNull
-    public static String getItemName(@NotNull final Material material) {
-        return ChatUtils.stringify(Component.translatable(Objects.requireNonNull(material)));
+    public static @NotNull String getItemName(
+        final @NotNull Material material
+    ) {
+        return ChatUtils.stringify(Component.translatable(material));
     }
 
     /**
@@ -43,8 +52,9 @@ public final class ItemUtils {
      * @deprecated Use {@link Component#translatable(Translatable)} instead.
      */
     @Deprecated
-    @Nullable
-    public static String getItemName(@Nullable final ItemStack item) {
+    public static @Nullable String getItemName(
+        final ItemStack item
+    ) {
         return item == null ? null : ChatUtils.stringify(Component.translatable(item));
     }
 
@@ -54,7 +64,10 @@ public final class ItemUtils {
      * @param item The item to check.
      * @return Returns true if the item can be interpreted as an empty slot.
      */
-    public static boolean isEmptyItem(final ItemStack item) {
+    @Contract("null -> true")
+    public static boolean isEmptyItem(
+        final ItemStack item
+    ) {
         return item == null || item.getType() == Material.AIR;
     }
 
@@ -66,7 +79,10 @@ public final class ItemUtils {
      * @param item The item to validate.
      * @return Returns true if the item is valid.
      */
-    public static boolean isValidItem(@Nullable final ItemStack item) {
+    @Contract("null -> false")
+    public static boolean isValidItem(
+        final ItemStack item
+    ) {
         return !isEmptyItem(item)
             && isValidItemMaterial(item.getType())
             && isValidItemAmount(item);
@@ -81,7 +97,10 @@ public final class ItemUtils {
      * @param item The item to validate.
      * @return Returns true if the item is valid.
      */
-    public static boolean isValidItemIgnoringAmount(@Nullable final ItemStack item) {
+    @Contract("null -> false")
+    public static boolean isValidItemIgnoringAmount(
+        final ItemStack item
+    ) {
         return item != null
             && isValidItemMaterial(item.getType())
             && item.getAmount() > 0;
@@ -93,7 +112,10 @@ public final class ItemUtils {
      * @param item The item to validate.
      * @return Returns true if the item has a valid amount.
      */
-    public static boolean isValidItemAmount(@Nullable final ItemStack item) {
+    @Contract("null -> false")
+    public static boolean isValidItemAmount(
+        final ItemStack item
+    ) {
         return item != null
             && item.getAmount() > 0
             && item.getAmount() <= item.getMaxStackSize();
@@ -105,71 +127,72 @@ public final class ItemUtils {
      * @param material The material to check.
      * @return Returns true if the material would be considered a valid item.
      */
-    public static boolean isValidItemMaterial(@Nullable final Material material) {
+    @Contract("null -> false")
+    public static boolean isValidItemMaterial(
+        final Material material
+    ) {
         return material != null
-            /** Add any null-returns in {@link CraftItemFactory#getItemMeta(Material, org.bukkit.craftbukkit.inventory.CraftMetaItem)} */
+            /** Add any null-returns in {@link org.bukkit.craftbukkit.inventory.CraftItemFactory#getItemMeta(Material, org.bukkit.craftbukkit.inventory.CraftMetaItem)} */
             && material != Material.AIR
             && material.isItem();
     }
 
     /**
-     * Determines whether two item stacks are functionally identical.
-     *
-     * @param former The first item.
-     * @param latter The second item.
-     * @return Returns true if both items are functionally identical.
-     * @see ItemStack#isSimilar(ItemStack)
-     */
-    public static boolean areItemsEqual(@Nullable final ItemStack former,
-                                        @Nullable final ItemStack latter) {
-        if (former == latter) {
-            return true;
-        }
-        return (former != null && latter != null)
-            && former.getAmount() == latter.getAmount()
-            && areItemsSimilar(former, latter);
-    }
-
-    /**
      * Determines whether two item stacks are similar.
      *
-     * @param former The first item.
-     * @param latter The second item.
+     * @param lhs The first item.
+     * @param rhs The second item.
      * @return Returns true if both items are similar.
      * @see ItemStack#isSimilar(ItemStack)
      */
-    public static boolean areItemsSimilar(@Nullable final ItemStack former,
-                                          @Nullable final ItemStack latter) {
-        if (former == latter) {
+    @SuppressWarnings("UnstableApiUsage")
+    @Contract("null, null -> true; !null, null -> false; null, !null -> false")
+    public static boolean areItemsSimilar(
+        final ItemStack lhs,
+        final ItemStack rhs
+    ) {
+        if (lhs == rhs) {
             return true;
         }
-        if ((former == null || latter == null)
-            || former.getType() != latter.getType()
-            || former.hasItemMeta() != latter.hasItemMeta()) {
+        if (isEmptyItem(lhs) ^ isEmptyItem(rhs)) {
             return false;
         }
-        return MetaUtils.areMetasEqual(former.getItemMeta(), latter.getItemMeta());
+        if (!lhs.matchesWithoutData(rhs, Set.of(DataComponentTypes.CUSTOM_NAME, DataComponentTypes.LORE), true)) {
+            return false;
+        }
+        if (!ChatUtils.areComponentsEqual(
+            lhs.getData(DataComponentTypes.CUSTOM_NAME),
+            rhs.getData(DataComponentTypes.CUSTOM_NAME)
+        )) {
+            return false;
+        }
+        if (!MoreCollectionUtils.areListsEqual(
+            lhs.getData(DataComponentTypes.LORE) instanceof final ItemLore lhsLore ? lhsLore.lines() : null,
+            rhs.getData(DataComponentTypes.LORE) instanceof final ItemLore rhsLore ? rhsLore.lines() : null,
+            ChatUtils::areComponentsEqual
+        )) {
+            return false;
+        }
+        return true;
     }
 
     /**
-     * Returns the NMS version of a given item, preferring the item's craft handle but will fall back upon creating an
-     * NMS copy.
+     * Unwraps a given Bukkit item to retrieve the internal NMS item.
      *
-     * @param item The item to get the NMS version of.
-     * @return The NMS version, either handle or copy.
+     * @return Returns the internal NMS item, or null. Will return null if the given item is "empty" (as determined by
+     *         Bukkit).
      */
-    @Contract("!null -> !null")
-    @Nullable
-    public static net.minecraft.world.item.ItemStack getNMSItemStack(@Nullable final ItemStack item) {
+    public static @Nullable net.minecraft.world.item.ItemStack getNMSItemStack(
+        final ItemStack item
+    ) {
         if (item == null) {
             return null;
         }
-        if (item instanceof CraftItemStack craftItem) {
-            if (craftItem.handle != null) {
-                return craftItem.handle;
-            }
+        final net.minecraft.world.item.ItemStack nms = CraftItemStack.unwrap(item);
+        if (nms == net.minecraft.world.item.ItemStack.EMPTY) {
+            return null;
         }
-        return CraftItemStack.asNMSCopy(item);
+        return nms;
     }
 
     /**
@@ -178,8 +201,9 @@ public final class ItemUtils {
      * @param item The item to decrement in amount.
      * @return Returns the given item with a decremented amount, or null.
      */
-    @Nullable
-    public static ItemStack decrementItem(final ItemStack item) {
+    public static @Nullable ItemStack decrementItem(
+        final ItemStack item
+    ) {
         return decrementItem(item, 1);
     }
 
@@ -189,83 +213,53 @@ public final class ItemUtils {
      * @param item The item to decrement in amount. Will return the item unchanged if the amount is zero of less.
      * @return Returns the given item with a decremented amount, or null.
      */
-    @Nullable
-    public static ItemStack decrementItem(final ItemStack item,
-                                          final int amount) {
+    public static @Nullable ItemStack decrementItem(
+        final ItemStack item,
+        final int amount
+    ) {
         return item == null ? null : amount < 1 ? item : item.subtract(amount).getAmount() < 1 ? null : item;
     }
 
-    /**
-     * Normalizes an item.
-     *
-     * @param item The item to normalize.
-     * @return The normalized item.
-     */
-    @Contract("!null -> !null")
-    @Nullable
-    public static ItemStack normalizeItem(@Nullable final ItemStack item) {
-        return item == null ? null : item.clone().asOne();
+    @SuppressWarnings("UnstableApiUsage")
+    public static @Nullable Component getDisplayName(
+        final ItemStack item
+    ) {
+        return item == null ? null : item.getData(DataComponentTypes.CUSTOM_NAME);
     }
 
     /**
-     * Retrieves the ItemMeta from an item.
-     *
-     * @param item The item to retrieve meta from.
-     * @return Returns the item meta.
+     * Sets a display name to an item. Null will reset the display name from the item.
      */
-    @Nullable
-    public static ItemMeta getItemMeta(@Nullable final ItemStack item) {
-        return item == null ? null : item.getItemMeta();
-    }
-
-    /**
-     * Determines whether an item has a display name.
-     *
-     * @param item The item to check the display name of.
-     * @return Returns true if the item has a display name.
-     */
-    public static boolean hasDisplayName(@Nullable final ItemStack item) {
-        final var meta = getItemMeta(item);
-        return meta != null && meta.hasDisplayName();
-    }
-
-    /**
-     * Retrieves the display name from an item.
-     *
-     * @param item The item to retrieve the display name from.
-     * @return Returns the display name of an item.
-     */
-    @Nullable
-    public static Component getComponentDisplayName(@Nullable final ItemStack item) {
-        final var meta = getItemMeta(item);
-        return meta == null ? null : meta.displayName();
-    }
-
-    /**
-     * Sets a display name to an item. A null or empty name will remove the display name from the item.
-     *
-     * @param item The item to set the display name to.
-     * @param name The display name to set on the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     */
-    public static void setComponentDisplayName(@NotNull final ItemStack item,
-                                               @Nullable final Component name) {
-        final var meta = Objects.requireNonNull(getItemMeta(item),
-            "Cannot set that display name: item has no meta.");
-        meta.displayName(name);
-        item.setItemMeta(meta);
+    @SuppressWarnings("UnstableApiUsage")
+    public static void setDisplayName(
+        final @NotNull ItemStack item,
+        final ComponentLike name
+    ) {
+        if (name == null) {
+            item.resetData(DataComponentTypes.CUSTOM_NAME);
+        }
+        else {
+            item.setData(DataComponentTypes.CUSTOM_NAME, name.asComponent());
+        }
     }
 
     /**
      * Retrieves the lore from an item.
      *
      * @param item The item to retrieve the lore from.
-     * @return Returns the lore, which is never null.
+     * @return Returns the lore, which is mutable and never null.
      */
-    @NotNull
-    public static List<Component> getComponentLore(@Nullable final ItemStack item) {
-        final var meta = getItemMeta(item);
-        return meta == null ? new ArrayList<>(0) : MetaUtils.getComponentLore(meta);
+    @SuppressWarnings("UnstableApiUsage")
+    public static @NotNull List<@NotNull Component> getLore(
+        final ItemStack item
+    ) {
+        if (item == null) {
+            return new ArrayList<>(0);
+        }
+        return switch (item.getData(DataComponentTypes.LORE)) {
+            case final ItemLore lore -> new ArrayList<>(lore.lines());
+            case null -> new ArrayList<>(0);
+        };
     }
 
     /**
@@ -273,38 +267,13 @@ public final class ItemUtils {
      *
      * @param item  The item to set the lore to.
      * @param lines The lore to set to the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     * @see ItemUtils#clearLore(ItemStack)
      */
-    public static void setComponentLore(@NotNull final ItemStack item,
-                                        @Nullable final Component... lines) {
-        setComponentLore(item, lines == null ? null : Arrays.asList(lines));
-    }
-
-    /**
-     * Sets the lore for an item, replacing any lore that may have already been set.
-     *
-     * @param item  The item to set the lore to.
-     * @param lines The lore to set to the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     * @see ItemUtils#clearLore(ItemStack)
-     */
-    public static void setComponentLore(@NotNull final ItemStack item,
-                                        @Nullable final List<Component> lines) {
-        final var meta = Objects.requireNonNull(getItemMeta(item),
-            "Cannot set that lore: item has no meta.");
-        MetaUtils.setComponentLore(meta, lines);
-        item.setItemMeta(meta);
-    }
-
-    /**
-     * Clears the lore from an item.
-     *
-     * @param item The item to clear lore of.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     */
-    public static void clearLore(@NotNull final ItemStack item) {
-        setComponentLore(item, (List<Component>) null);
+    @SuppressWarnings("UnstableApiUsage")
+    public static void setLore(
+        final @NotNull ItemStack item,
+        final @NotNull List<? extends @NotNull ComponentLike> lines
+    ) {
+        item.setData(DataComponentTypes.LORE, ItemLore.lore(List.copyOf(lines)));
     }
 
     /**
@@ -312,54 +281,29 @@ public final class ItemUtils {
      *
      * @param item  The item to append the lore to.
      * @param lines The lore to append to the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
      */
-    public static void addComponentLore(@NotNull final ItemStack item,
-                                        @Nullable final Component... lines) {
-        addComponentLore(item, false, lines);
+    public static void appendLore(
+        final @NotNull ItemStack item,
+        final @NotNull List<? extends @NotNull ComponentLike> lines
+    ) {
+        final List<Component> lore = getLore(item);
+        lore.addAll(ComponentLike.asComponents(lines));
+        setLore(item, lore);
     }
 
     /**
-     * Appends lore to an item.
+     * Prepends lore to an item.
      *
-     * @param item  The item to append the lore to.
-     * @param lines The lore to append to the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
+     * @param item  The item to prepend the lore to.
+     * @param lines The lore to prepend to the item.
      */
-    public static void addComponentLore(@NotNull final ItemStack item,
-                                        @Nullable final List<Component> lines) {
-        addComponentLore(item, false, lines);
-    }
-
-    /**
-     * Adds lore to an item, either by appending or prepending.
-     *
-     * @param item    The item to append the lore to.
-     * @param prepend If set to true, the lore will be prepended instead of appended.
-     * @param lines   The lore to append to the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     */
-    public static void addComponentLore(@NotNull final ItemStack item,
-                                        final boolean prepend,
-                                        @Nullable final Component... lines) {
-        addComponentLore(item, prepend, lines == null ? null : Arrays.asList(lines));
-    }
-
-    /**
-     * Adds lore to an item, either by appending or prepending.
-     *
-     * @param item    The item to append the lore to.
-     * @param prepend If set to true, the lore will be prepended instead of appended.
-     * @param lines   The lore to append to the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     */
-    public static void addComponentLore(@NotNull final ItemStack item,
-                                        final boolean prepend,
-                                        @Nullable final List<Component> lines) {
-        final var meta = Objects.requireNonNull(getItemMeta(item),
-            "Cannot add that lore: item has no meta.");
-        MetaUtils.addComponentLore(meta, prepend, lines);
-        item.setItemMeta(meta);
+    public static void prependLore(
+        final @NotNull ItemStack item,
+        final @NotNull List<? extends @NotNull ComponentLike> lines
+    ) {
+        final List<Component> lore = new ArrayList<>(ComponentLike.asComponents(lines));
+        lore.addAll(getLore(item));
+        setLore(item, lore);
     }
 
     /**
@@ -370,18 +314,57 @@ public final class ItemUtils {
      * @param item The item to get the Damageable meta from.
      * @return Returns an instance of Damageable, or null.
      */
-    @Nullable
-    public static Damageable getDamageable(@Nullable final ItemStack item) {
+    public static @Nullable Damageable getDamageable(
+        final ItemStack item
+    ) {
         if (item == null) {
             return null;
         }
         final Material material = item.getType();
         if (isValidItemMaterial(material)
             && material.getMaxDurability() > 0
-            && getItemMeta(item) instanceof Damageable damageable) {
+            && item.getItemMeta() instanceof final Damageable damageable
+        ) {
             return damageable;
         }
         return null;
+    }
+
+    /**
+     * Retrieves the "minecraft:custom_data" component from an item.
+     *
+     * @param item Cannot be null or "empty" (as determined by Bukkit).
+     *
+     * @apiNote This should only be used for inspection, hence the lack of a setter method. If you want to set data,
+     *          use {@link #editCustomData(org.bukkit.inventory.ItemStack, java.util.function.Consumer)} instead.
+     */
+    public static @Nullable CompoundTag getCustomData(
+        final @NotNull ItemStack item
+    ) {
+        final net.minecraft.world.item.ItemStack nms = Objects.requireNonNull(getNMSItemStack(item));
+        if (nms.get(DataComponents.CUSTOM_DATA) instanceof final CustomData data) {
+            return data.copyTag();
+        }
+        return null;
+    }
+
+    /**
+     * Edits the "minecraft:custom_data" component of an item. If the provided NBT is empty after being edited, the
+     * component is removed from the item.
+     *
+     * @param item Cannot be null or "empty" (as determined by Bukkit).
+     *
+     * @apiNote It is good practice to use a "namespace" tag, instead of setting data directly onto the provided nbt.
+     */
+    public static void editCustomData(
+        final @NotNull ItemStack item,
+        final @NotNull Consumer<@NotNull CompoundTag> editor
+    ) {
+        CustomData.update(
+            DataComponents.CUSTOM_DATA,
+            Objects.requireNonNull(getNMSItemStack(item)),
+            editor
+        );
     }
 
 	/**
@@ -393,11 +376,15 @@ public final class ItemUtils {
 	 * @return Returns true if the metadata was successfully handled.
 	 *
 	 * @see ItemStack#getItemMeta()
+     * @deprecated Just store the meta in a variable, it's not that hard. Or you could pattern match or use
+     *             {@link org.bukkit.inventory.ItemStack#editMeta(java.util.function.Consumer)} instead.
 	 */
 	@Contract("null, _ -> false; _, null -> false")
 	@SuppressWarnings("unchecked")
-	public static <T> boolean handleItemMeta(@Nullable final ItemStack item,
-											 @Nullable final Predicate<T> handler) {
+	public static <T> boolean handleItemMeta(
+        final ItemStack item,
+        final Predicate<T> handler
+    ) {
 		if (item == null || handler == null) {
 			return false;
 		}
@@ -419,153 +406,93 @@ public final class ItemUtils {
     // ------------------------------------------------------------
 
     /**
-     * Retrieves the display name from an item.
-     *
-     * @param item The item to retrieve the display name from.
-     * @return Returns the display name of an item.
-     * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use
-     * {@link #getComponentDisplayName(ItemStack)} instead.
+     * @deprecated Use {@link #getDisplayName(ItemStack)} instead.
      */
-    @Nullable
     @Deprecated
-    public static String getDisplayName(@Nullable final ItemStack item) {
-        final var meta = getItemMeta(item);
-        return meta == null ? null : meta.getDisplayName();
+    public static @Nullable String getLegacyDisplayName(
+        final ItemStack item
+    ) {
+        if (item.getItemMeta() instanceof final ItemMeta meta) {
+            return meta.getDisplayName();
+        }
+        return null;
     }
 
     /**
-     * Sets a display name to an item.
-     *
-     * @param item The item to set the display name to.
-     * @param name The display name to set on the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use
-     * {@link #setComponentDisplayName(ItemStack, Component)} instead.
+     * @deprecated Use {@link #setDisplayName(org.bukkit.inventory.ItemStack, net.kyori.adventure.text.ComponentLike)}
+     *             instead.
      */
     @Deprecated
-    public static void setDisplayName(@NotNull final ItemStack item,
-                                      @Nullable final String name) {
-        final var meta = Objects.requireNonNull(getItemMeta(item),
-            "Cannot set that display name: item has no meta.");
+    public static void setLegacyDisplayName(
+        final @NotNull ItemStack item,
+        final String name
+    ) {
+        final ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(name);
         item.setItemMeta(meta);
     }
 
     /**
-     * Retrieves the lore from an item.
-     *
-     * @param item The item to retrieve the lore from.
-     * @return Returns the lore, which is never null.
-     * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use
-     * {@link #getComponentLore(ItemStack)} instead.
+     * @deprecated Use {@link #getLore(ItemStack)} instead.
      */
-    @NotNull
     @Deprecated
-    public static List<String> getLore(@Nullable final ItemStack item) {
-        final var meta = getItemMeta(item);
-        return meta == null ? new ArrayList<>(0) : MetaUtils.getLore(meta);
+    public static @NotNull List<@NotNull String> getLegacyLore(
+        final ItemStack item
+    ) {
+        if (item != null
+            && item.getItemMeta() instanceof final ItemMeta meta
+            && meta.getLore() instanceof final List<String> lore
+        ) {
+            return new ArrayList<>(lore);
+        }
+        return new ArrayList<>(0);
     }
 
     /**
-     * Sets the lore for an item, replacing any lore that may have already been set.
-     *
-     * @param item  The item to set the lore to.
-     * @param lines The lore to set to the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     * @see ItemUtils#clearLore(ItemStack)
-     * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use
-     * {@link #setComponentLore(ItemStack, Component...)} instead.
+     * @deprecated Use {@link #setLore(org.bukkit.inventory.ItemStack, java.util.List)} instead.
      */
     @Deprecated
-    public static void setLore(@NotNull final ItemStack item,
-                               @Nullable final String... lines) {
-        setLore(item, lines == null ? null : Arrays.asList(lines));
+    public static void setLegacyLore(
+        final @NotNull ItemStack item,
+        final @NotNull String @NotNull ... lines
+    ) {
+        setLegacyLore(item, Arrays.asList(lines));
     }
 
     /**
-     * Sets the lore for an item, replacing any lore that may have already been set.
-     *
-     * @param item  The item to set the lore to.
-     * @param lines The lore to set to the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     * @see ItemUtils#clearLore(ItemStack)
-     * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use
-     * {@link #setComponentLore(ItemStack, List)} instead.
+     * @deprecated Use {@link #setLore(org.bukkit.inventory.ItemStack, java.util.List)} instead.
      */
     @Deprecated
-    public static void setLore(@NotNull final ItemStack item,
-                               @Nullable final List<String> lines) {
-        final var meta = Objects.requireNonNull(getItemMeta(item),
-            "Cannot set that lore: item has no meta.");
-        meta.setLore(lines);
+    public static void setLegacyLore(
+        final @NotNull ItemStack item,
+        final @NotNull List<@NotNull String> lines
+    ) {
+        final ItemMeta meta = item.getItemMeta();
+        meta.setLore(List.copyOf(lines));
         item.setItemMeta(meta);
     }
 
     /**
-     * Appends lore to an item.
-     *
-     * @param item  The item to append the lore to.
-     * @param lines The lore to append to the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use
-     * {@link #addComponentLore(ItemStack, Component...)} instead.
+     * @deprecated Use {@link #appendLore(org.bukkit.inventory.ItemStack, java.util.List)} instead.
      */
     @Deprecated
-    public static void addLore(@NotNull final ItemStack item,
-                               @Nullable final String... lines) {
-        addLore(item, false, lines);
+    public static void appendLegacyLore(
+        final @NotNull ItemStack item,
+        final @NotNull String @NotNull ... lines
+    ) {
+        appendLegacyLore(item, Arrays.asList(lines));
     }
 
     /**
-     * Appends lore to an item.
-     *
-     * @param item  The item to append the lore to.
-     * @param lines The lore to append to the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use
-     * {@link #addComponentLore(ItemStack, List)} instead.
+     * @deprecated Use {@link #prependLore(org.bukkit.inventory.ItemStack, java.util.List)} instead.
      */
     @Deprecated
-    public static void addLore(@NotNull final ItemStack item,
-                               @Nullable final List<String> lines) {
-        addLore(item, false, lines);
+    public static void appendLegacyLore(
+        final @NotNull ItemStack item,
+        final @NotNull List<@NotNull String> lines
+    ) {
+        final List<String> lore = getLegacyLore(item);
+        lore.addAll(List.copyOf(lines));
+        setLegacyLore(item, lore);
     }
-
-    /**
-     * Adds lore to an item, either by appending or prepending.
-     *
-     * @param item    The item to append the lore to.
-     * @param prepend If set to true, the lore will be prepended instead of appended.
-     * @param lines   The lore to append to the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use
-     * {@link #addComponentLore(ItemStack, boolean, Component...)} instead.
-     */
-    @Deprecated
-    public static void addLore(@NotNull final ItemStack item,
-                               final boolean prepend,
-                               @Nullable final String... lines) {
-        addLore(item, prepend, lines == null ? null : Arrays.asList(lines));
-    }
-
-    /**
-     * Adds lore to an item, either by appending or prepending.
-     *
-     * @param item    The item to append the lore to.
-     * @param prepend If set to true, the lore will be prepended instead of appended.
-     * @param lines   The lore to append to the item.
-     * @throws IllegalArgumentException Throws when the given item has no meta.
-     * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure. Use
-     * {@link #addComponentLore(ItemStack, boolean, List)} instead.
-     */
-    @Deprecated
-    public static void addLore(@NotNull final ItemStack item,
-                               final boolean prepend,
-                               @Nullable final List<String> lines) {
-        final var meta = Objects.requireNonNull(getItemMeta(item),
-            "Cannot add that lore: item has no meta.");
-        MetaUtils.addLore(meta, prepend, lines);
-        item.setItemMeta(meta);
-    }
-
 }

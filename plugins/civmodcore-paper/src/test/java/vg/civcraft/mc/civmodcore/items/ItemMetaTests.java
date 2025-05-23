@@ -79,8 +79,8 @@ public class ItemMetaTests {
         });
         // Check
         Assertions.assertTrue(ChatUtils.areComponentsEqual(
-            ItemUtils.getComponentDisplayName(formerItem),
-            ItemUtils.getComponentDisplayName(latterItem)));
+            ItemUtils.getDisplayName(formerItem),
+            ItemUtils.getDisplayName(latterItem)));
         Assertions.assertTrue(ItemUtils.areItemsSimilar(formerItem, latterItem));
     }
 
@@ -103,9 +103,9 @@ public class ItemMetaTests {
         });
         // Check
         Assertions.assertTrue(ChatUtils.isBaseComponent(
-            ItemUtils.getComponentDisplayName(formerItem)));
+            ItemUtils.getDisplayName(formerItem)));
         Assertions.assertFalse(ChatUtils.isBaseComponent(
-            ItemUtils.getComponentDisplayName(latterItem)));
+            ItemUtils.getDisplayName(latterItem)));
     }
 
 }

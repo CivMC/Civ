@@ -8,6 +8,8 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import java.util.Objects;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.nbt.CompoundTag;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -23,15 +25,17 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public final class DebugWand extends BasicHack {
-
     private static final String PERMISSION = "simpleadmin.debugwand";
-    private static final ItemStack WAND = new ItemStack(Material.BLAZE_ROD);
 
-    static {
-        ItemUtils.setDisplayName(WAND, ChatColor.GOLD + "Block Wand");
+    private static final String WAND_KEY = "cmc:debug_wand";
+    private static final ItemStack WAND; static {
+        WAND = new ItemStack(Material.BLAZE_ROD);
+        ItemUtils.setDisplayName(WAND, Component.text("Block Wand", NamedTextColor.GOLD));
+        CustomItem.registerCustomItem(WAND_KEY, WAND);
     }
 
     private final CommandManager commands;
@@ -79,7 +83,7 @@ public final class DebugWand extends BasicHack {
             return;
         }
         final ItemStack held = event.getItem();
-        if (!ItemUtils.isValidItem(held) || !ItemUtils.areItemsSimilar(held, WAND)) {
+        if (!ItemUtils.isValidItem(held) || !CustomItem.isCustomItem(held, WAND_KEY)) {
             return;
         }
         final Block block = Objects.requireNonNull(event.getClickedBlock());
@@ -104,7 +108,7 @@ public final class DebugWand extends BasicHack {
             return;
         }
         final ItemStack held = player.getInventory().getItem(event.getHand());
-        if (!ItemUtils.isValidItem(held) || !ItemUtils.areItemsSimilar(held, WAND)) {
+        if (!ItemUtils.isValidItem(held) || !CustomItem.isCustomItem(held, WAND_KEY)) {
             return;
         }
         final Entity entity = event.getRightClicked();

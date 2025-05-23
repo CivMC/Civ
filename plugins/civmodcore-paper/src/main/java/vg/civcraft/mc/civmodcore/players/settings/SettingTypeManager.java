@@ -25,7 +25,7 @@ public final class SettingTypeManager {
     static {
         settings = new HashMap<>();
         ItemStack is = new ItemStack(Material.BARRIER);
-        ItemUtils.addLore(is, ChatColor.RED + "You should never see this text ingame");
+        ItemUtils.appendLegacyLore(is, ChatColor.RED + "You should never see this text ingame");
         registerType(Boolean.class, new BooleanSetting(null, false, null, null, null));
         registerType(Integer.class, new IntegerSetting(null, 0, null, null, is, null, false));
         registerType(Float.class, new FloatSetting(null, 0.0F, null, null, is, null));

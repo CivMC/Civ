@@ -19,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.chat.Componentify;
 import vg.civcraft.mc.civmodcore.chat.dialog.Dialog;
@@ -29,7 +28,6 @@ import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -56,7 +54,7 @@ public class SnitchLogGUI {
     private List<IClickable> INTERNAL_constructContent() {
         if (this.logAppender == null) {
             final var item = new ItemStack(Material.BARRIER);
-            ItemUtils.setComponentDisplayName(item, Component.text()
+            ItemUtils.setDisplayName(item, Component.text()
                 .decoration(TextDecoration.ITALIC, false)
                 .color(NamedTextColor.RED)
                 .content("This snitch can not create logs")
@@ -66,7 +64,7 @@ public class SnitchLogGUI {
         final var actions = this.logAppender.getFullLogs();
         if (actions.isEmpty()) {
             final var item = new ItemStack(Material.BARRIER);
-            ItemUtils.setComponentDisplayName(item, Component.text()
+            ItemUtils.setDisplayName(item, Component.text()
                 .decoration(TextDecoration.ITALIC, false)
                 .color(NamedTextColor.RED)
                 .content("This snitch has no logs currently")
@@ -82,7 +80,7 @@ public class SnitchLogGUI {
 
     private IClickable INTERNAL_constructClearClick() {
         final var item = new ItemStack(Material.TNT);
-        ItemUtils.setComponentDisplayName(item, Component.text()
+        ItemUtils.setDisplayName(item, Component.text()
             .decoration(TextDecoration.ITALIC, false)
             .color(NamedTextColor.GOLD)
             .content("Clear all logs")
@@ -106,16 +104,18 @@ public class SnitchLogGUI {
                 }
             };
         }
-        ItemUtils.addComponentLore(item, Component.text()
-            .color(NamedTextColor.RED)
-            .content("You do not have permission to do this")
-            .build());
+        ItemUtils.appendLore(item, List.of(
+            Component.text()
+                .color(NamedTextColor.RED)
+                .content("You do not have permission to do this")
+                .build()
+        ));
         return new DecorationStack(item);
     }
 
     private IClickable INTERNAL_constructNameChangeClick() {
         final var item = new ItemStack(Material.OAK_SIGN);
-        ItemUtils.setComponentDisplayName(item, Component.text()
+        ItemUtils.setDisplayName(item, Component.text()
             .decoration(TextDecoration.ITALIC, false)
             .color(NamedTextColor.GOLD)
             .content("Rename this snitch")
@@ -160,54 +160,54 @@ public class SnitchLogGUI {
 
     private IClickable INTERNAL_constructInfoStack() {
         final var item = new ItemStack(Material.PAPER);
-        ItemUtils.handleItemMeta(item, (final ItemMeta meta) -> {
-            meta.displayName(Component.text()
+        ItemUtils.setDisplayName(item,
+            Component.text()
                 .decoration(TextDecoration.ITALIC, false)
                 .color(NamedTextColor.GOLD)
                 .content("Logs for ")
                 .append(Component.text(this.snitch.getName()))
-                .build());
-            MetaUtils.setComponentLore(meta,
-                Component.text()
-                    .decoration(TextDecoration.ITALIC, false)
-                    .color(NamedTextColor.AQUA)
-                    .content("Location: ")
-                    .append(Componentify.blockLocation(this.snitch.getLocation()))
-                    .build(),
-                Component.text()
-                    .decoration(TextDecoration.ITALIC, false)
-                    .color(NamedTextColor.YELLOW)
-                    .content("Group: ")
-                    .append(Component.text(this.snitch.getGroup().getName()))
-                    .build(),
-                Component.text()
-                    .decoration(TextDecoration.ITALIC, false)
-                    .color(NamedTextColor.YELLOW)
-                    .content("Type: ")
-                    .append(Component.text(this.snitch.getType().getName()))
-                    .build());
-            return true;
-        });
+                .build()
+        );
+        ItemUtils.setLore(item, List.of(
+            Component.text()
+                .decoration(TextDecoration.ITALIC, false)
+                .color(NamedTextColor.AQUA)
+                .content("Location: ")
+                .append(Componentify.blockLocation(this.snitch.getLocation()))
+                .build(),
+            Component.text()
+                .decoration(TextDecoration.ITALIC, false)
+                .color(NamedTextColor.YELLOW)
+                .content("Group: ")
+                .append(Component.text(this.snitch.getGroup().getName()))
+                .build(),
+            Component.text()
+                .decoration(TextDecoration.ITALIC, false)
+                .color(NamedTextColor.YELLOW)
+                .content("Type: ")
+                .append(Component.text(this.snitch.getType().getName()))
+                .build()
+        ));
         return new DecorationStack(item);
     }
 
     private IClickable INTERNAL_constructLeverToggleClick() {
         final var leverAppender = this.snitch.getAppender(LeverToggleAppender.class);
         final var item = new ItemStack(Material.LEVER);
-        ItemUtils.handleItemMeta(item, (final ItemMeta meta) -> {
-            meta.displayName(Component.text()
+        ItemUtils.setDisplayName(item,
+            Component.text()
                 .decoration(TextDecoration.ITALIC, false)
                 .color(NamedTextColor.GOLD)
                 .content("Toggle lever activation by redstone")
-                .build());
-            MetaUtils.setComponentLore(meta,
-                Component.text()
-                    .decoration(TextDecoration.ITALIC, false)
-                    .color(NamedTextColor.AQUA)
-                    .content("Currently turned " + (leverAppender.shouldToggle() ? "on" : "off"))
-                    .build());
-            return true;
-        });
+                .build()
+        );
+        ItemUtils.setLore(item, List.of(
+            Component.text()
+                .decoration(TextDecoration.ITALIC, false)
+                .color(NamedTextColor.AQUA)
+                .content("Currently turned " + (leverAppender.shouldToggle() ? "on" : "off"))
+                .build()
+        ));
         if (INTERNAL_hasPermission(JukeAlertPermissionHandler.getToggleLevers())) {
             return new Clickable(item) {
                 @Override
@@ -223,11 +223,13 @@ public class SnitchLogGUI {
                 }
             };
         }
-        ItemUtils.addComponentLore(item, Component.text()
-            .decoration(TextDecoration.ITALIC, false)
-            .color(NamedTextColor.RED)
-            .content("You do not have permission to do this")
-            .build());
+        ItemUtils.appendLore(item, List.of(
+            Component.text()
+                .decoration(TextDecoration.ITALIC, false)
+                .color(NamedTextColor.RED)
+                .content("You do not have permission to do this")
+                .build()
+        ));
         return new DecorationStack(item);
     }
 
@@ -251,20 +253,20 @@ public class SnitchLogGUI {
 
     public static IClickable constructExitClick() {
         final var item = new ItemStack(Material.OAK_DOOR);
-        ItemUtils.handleItemMeta(item, (final ItemMeta meta) -> {
-            meta.displayName(Component.text()
+        ItemUtils.setDisplayName(item,
+            Component.text()
                 .decoration(TextDecoration.ITALIC, false)
                 .color(NamedTextColor.GOLD)
                 .content("Exit")
-                .build());
-            MetaUtils.setComponentLore(meta,
-                Component.text()
-                    .decoration(TextDecoration.ITALIC, false)
-                    .color(NamedTextColor.AQUA)
-                    .content("Click to exit GUI")
-                    .build());
-            return true;
-        });
+                .build()
+        );
+        ItemUtils.setLore(item, List.of(
+            Component.text()
+                .decoration(TextDecoration.ITALIC, false)
+                .color(NamedTextColor.AQUA)
+                .content("Click to exit GUI")
+                .build()
+        ));
         return new Clickable(item) {
             @Override
             public void clicked(@NotNull final Player clicker) {

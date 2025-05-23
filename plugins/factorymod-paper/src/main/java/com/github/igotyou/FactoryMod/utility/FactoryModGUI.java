@@ -96,7 +96,7 @@ public class FactoryModGUI {
             FurnCraftChestEgg fccEgg = (FurnCraftChestEgg) egg;
             InputRecipe firstRec = (InputRecipe) fccEgg.getRecipes().get(0);
             ItemStack is = new ItemStack(firstRec.getRecipeRepresentationMaterial());
-            ItemUtils.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
+            ItemUtils.setLegacyDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.DARK_AQUA + "Fuel: " + ChatColor.GRAY + ItemUtils.getItemName(fccEgg.getFuel().getType()));
             lore.add("");
@@ -108,7 +108,7 @@ public class FactoryModGUI {
                     lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + rec.getName());
                 }
             }
-            ItemUtils.addLore(is, lore);
+            ItemUtils.appendLegacyLore(is, lore);
             clicks.add(new LClickable(is, p -> {
                 showForFactory(fccEgg);
             }));
@@ -141,20 +141,20 @@ public class FactoryModGUI {
 
     private IClickable getSetupClick(FurnCraftChestEgg factory) {
         ItemStack is = new ItemStack(Material.CRAFTING_TABLE);
-        ItemUtils.setDisplayName(is, ChatColor.GOLD + "Show creation cost");
+        ItemUtils.setLegacyDisplayName(is, ChatColor.GOLD + "Show creation cost");
         if (factory.getSetupCost() != null) {
-            ItemUtils.addLore(is, ChatColor.GREEN + factory.getName() + " can be created directly");
+            ItemUtils.appendLegacyLore(is, ChatColor.GREEN + factory.getName() + " can be created directly");
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.GOLD + "Required materials:");
             for (Entry<ItemStack, Integer> entry : factory.getSetupCost().getAllItems().entrySet()) {
                 lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + entry.getValue() + " "
                     + ItemUtils.getItemName(entry.getKey()));
             }
-            ItemUtils.addLore(is, lore);
+            ItemUtils.appendLegacyLore(is, lore);
         } else {
             FurnCraftChestEgg parent = getParent(factory);
             if (parent != null) {
-                ItemUtils.addLore(is, ChatColor.GREEN + factory.getName() + " is an upgrade of " + parent.getName());
+                ItemUtils.appendLegacyLore(is, ChatColor.GREEN + factory.getName() + " is an upgrade of " + parent.getName());
                 Upgraderecipe upRec = getUpgradeRecipe(factory, parent);
                 if (upRec != null) {
                     List<String> lore = new ArrayList<>();
@@ -163,7 +163,7 @@ public class FactoryModGUI {
                         lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + entry.getValue() + " "
                             + ItemUtils.getItemName(entry.getKey()));
                     }
-                    ItemUtils.addLore(is, lore);
+                    ItemUtils.appendLegacyLore(is, lore);
                     return new LClickable(is, p -> showRecipeFor(factory, upRec, true));
                 }
             }
@@ -174,13 +174,13 @@ public class FactoryModGUI {
     private DecorationStack getFuelClick(FurnCraftChestEgg factory, InputRecipe recipe) {
         if (factory == null || recipe == null) {
             ItemStack is = new ItemStack(factory.getFuel().clone());
-            ItemUtils.setDisplayName(is, ChatColor.GOLD + "Fuel setup cost for this factory");
-            ItemUtils.addLore(is, ChatColor.AQUA + "No fuel setup cost");
+            ItemUtils.setLegacyDisplayName(is, ChatColor.GOLD + "Fuel setup cost for this factory");
+            ItemUtils.appendLegacyLore(is, ChatColor.AQUA + "No fuel setup cost");
             return new DecorationStack(is);
         }
         ItemStack is = factory.getFuel().clone();
-        ItemUtils.setDisplayName(is, ChatColor.GOLD + "Fuel cost for recipe");
-        ItemUtils.addLore(is, ChatColor.AQUA + "- " + recipe.getTotalFuelConsumed() + " " + ItemUtils.getItemName(is.getType()));
+        ItemUtils.setLegacyDisplayName(is, ChatColor.GOLD + "Fuel cost for recipe");
+        ItemUtils.appendLegacyLore(is, ChatColor.AQUA + "- " + recipe.getTotalFuelConsumed() + " " + ItemUtils.getItemName(is.getType()));
         return new DecorationStack(is);
     }
 
@@ -193,7 +193,7 @@ public class FactoryModGUI {
             FMCHistoryItem actualPrevious = history.goBack();
             actualPrevious.setStateTo();
         });
-        ItemUtils.addLore(click.getItemStack(), ChatColor.GREEN + previous.toText());
+        ItemUtils.appendLegacyLore(click.getItemStack(), ChatColor.GREEN + previous.toText());
         return click;
     }
 

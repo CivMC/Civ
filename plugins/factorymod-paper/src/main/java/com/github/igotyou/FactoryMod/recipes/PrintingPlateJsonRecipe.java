@@ -103,8 +103,8 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
             for (ItemStack is : toAdd.getItemStackRepresentation()) {
                 is = addTags(serialNumber, is, writtenBookContent);
 
-                ItemUtils.setDisplayName(is, itemName);
-                ItemUtils.setLore(is,
+                ItemUtils.setLegacyDisplayName(is, itemName);
+                ItemUtils.setLegacyLore(is,
                     serialNumber,
                     ChatColor.WHITE + bookMeta.getTitle(),
                     ChatColor.GRAY + "by " + bookMeta.getAuthor(),

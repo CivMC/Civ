@@ -31,8 +31,8 @@ public class MenuSection extends MenuItem {
         super(name, parent);
         this.content = new TreeMap<>();
         this.itemRepresentation = itemRepresentation;
-        ItemUtils.setDisplayName(itemRepresentation, ChatColor.AQUA + name);
-        ItemUtils.addLore(itemRepresentation, ChatColor.GOLD + description);
+        ItemUtils.setLegacyDisplayName(itemRepresentation, ChatColor.AQUA + name);
+        ItemUtils.appendLegacyLore(itemRepresentation, ChatColor.GOLD + description);
     }
 
     public void addItem(MenuItem item) {
@@ -72,7 +72,7 @@ public class MenuSection extends MenuItem {
         MultiPageView pageView = new MultiPageView(player, clickables, getName(), true);
         if (parent != null) {
             ItemStack parentItem = new ItemStack(Material.ARROW);
-            ItemUtils.setDisplayName(parentItem, ChatColor.AQUA + "Go back to " + parent.getName());
+            ItemUtils.setLegacyDisplayName(parentItem, ChatColor.AQUA + "Go back to " + parent.getName());
             pageView.setMenuSlot(new Clickable(parentItem) {
 
                 @Override

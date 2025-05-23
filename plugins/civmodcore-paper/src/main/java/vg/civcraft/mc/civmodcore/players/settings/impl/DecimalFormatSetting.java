@@ -46,7 +46,7 @@ public class DecimalFormatSetting extends PlayerSetting<DecimalFormat> {
     @Override
     public ItemStack getGuiRepresentation(UUID player) {
         ItemStack item = super.getGuiRepresentation(player);
-        ItemUtils.addLore(item, ChatColor.GOLD + "Example: " + ChatColor.RESET + getValue(player).format(exampleValue));
+        ItemUtils.appendLegacyLore(item, ChatColor.GOLD + "Example: " + ChatColor.RESET + getValue(player).format(exampleValue));
         return item;
     }
 

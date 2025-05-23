@@ -59,7 +59,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
         }
         List<ItemStack> returns = createLoredStacksForInfo(i);
         ItemStack toSt = new ItemStack(tool);
-        ItemUtils.addLore(toSt, ChatColor.GREEN + "Enough materials for "
+        ItemUtils.appendLegacyLore(toSt, ChatColor.GREEN + "Enough materials for "
             + new ItemMap(toSt).getMultiplesContainedIn(i) + " runs");
         returns.add(toSt);
         return returns;
@@ -72,7 +72,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
             is.addEnchantment(re.enchant, re.level);
         }
         if (i != null) {
-            ItemUtils.addLore(
+            ItemUtils.appendLegacyLore(
                 is,
                 ChatColor.GREEN
                     + "Enough materials for "
@@ -82,12 +82,12 @@ public class RandomEnchantingRecipe extends InputRecipe {
                     .getMultiplesContainedIn(i))) + " runs");
         }
         for (RandomEnchant re : enchants) {
-            ItemUtils.addLore(is,
+            ItemUtils.appendLegacyLore(is,
                 ChatColor.YELLOW + String.valueOf(re.chance * 100)
                     + " % chance for " + EnchantUtils.getEnchantNiceName(re.enchant)
                     + " " + re.level);
         }
-        ItemUtils.addLore(is, ChatColor.LIGHT_PURPLE
+        ItemUtils.appendLegacyLore(is, ChatColor.LIGHT_PURPLE
             + "At least one guaranteed");
         List<ItemStack> stacks = new LinkedList<>();
         stacks.add(is);
