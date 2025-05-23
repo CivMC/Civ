@@ -8,6 +8,7 @@ import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.util.Permission;
 import java.util.UUID;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -128,12 +129,13 @@ public class CmdAdminExileAny extends PearlCommand {
             return;
         }
 
-        Player player = Bukkit.getPlayer(playerId);
-        if (player != null) {
+        final OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerId);
+        pearl.setCaptureLocation(offlinePlayer.getLocation());
+        if (offlinePlayer.getPlayer() instanceof final Player onlinePlayer) {
             //Kill the player here if everything was successful
             //This was originally implemented in CorePearlManager.exilePlayer
             //However resulted in a 'double' death scenario
-            player.setHealth(0);
+            onlinePlayer.setHealth(0);
         }
 
         // Place the pearl in the inventory
