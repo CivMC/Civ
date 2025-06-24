@@ -20,8 +20,8 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      VELOCITY_VERSION: '3.4.0-SNAPSHOT'
-      TYPE: 'VELOCITY'
+      TYPE: 'CUSTOM'
+      BUNGEE_JAR_URL: 'https://api.papermc.io/v2/projects/velocity/versions/3.4.0-SNAPSHOT/builds/515/downloads/velocity-3.4.0-SNAPSHOT-515.jar'
 
       REPLACE_ENV_VARIABLES: 'true'
       REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
