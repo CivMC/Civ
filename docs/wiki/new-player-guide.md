@@ -25,7 +25,7 @@ The subreddit is the other place where most of the discussion about the server h
 https://civwiki.org/wiki/Main_Page 
 Here you can read up on CivMC’s 2 year history as well as the rest of the Civ genre! Reading about past servers, especially CivClassic, can help you understand the community better. You can read up on the histories of past wars, nations, and players, which have all shaped what CivMC is today.
 ### World Map
-https://civmc-map.github.io/
+https://map.civinfo.net/
 This is a player created and maintained map of the world. It includes many layers of information, but is mainly used by players for the political map. This map shows you what land is currently "Claimed" by nations on the server. This layer is updated about every month and may not be 100% accurate.
 
 ## Basic Mechanics
