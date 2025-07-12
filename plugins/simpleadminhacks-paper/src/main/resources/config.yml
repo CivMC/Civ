@@ -218,6 +218,8 @@ hacks:
       - [COAL_ORE,DEEPSLATE_COAL_ORE]
       - [REDSTONE_ORE,DEEPSLATE_REDSTONE_ORE]
       - [LAPIS_ORE,DEEPSLATE_LAPIS_ORE]
+  SafeAddBreweryIngredient:
+    enabled: false
   ShipOutOfLuck:
     enabled: true
     # The list of Material's that boats cannot be placed on and will eject passengers
