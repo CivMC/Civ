@@ -214,10 +214,10 @@ hacks:
   SafeOreBreak:
     enabled: true
     ores:
-      - [DIAMOND_ORE,DEEPSLATE_DIAMOND_ORE]
-      - [COAL_ORE,DEEPSLATE_COAL_ORE]
-      - [REDSTONE_ORE,DEEPSLATE_REDSTONE_ORE]
-      - [LAPIS_ORE,DEEPSLATE_LAPIS_ORE]
+      - [ DIAMOND_ORE,DEEPSLATE_DIAMOND_ORE ]
+      - [ COAL_ORE,DEEPSLATE_COAL_ORE ]
+      - [ REDSTONE_ORE,DEEPSLATE_REDSTONE_ORE ]
+      - [ LAPIS_ORE,DEEPSLATE_LAPIS_ORE ]
   SafeAddBreweryIngredient:
     enabled: false
   ShipOutOfLuck:
