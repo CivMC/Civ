@@ -1,0 +1,14 @@
+- name: Start Server
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Start Server | Include Preflight
+      include_tasks: ../tasks/preflight-checks.yml
+
+    - name: Start Server | Expand setting
+      include_tasks: ../tasks/expand-setting.yml
+
+    - name: Start Server | Include Start Tasks
+      include_tasks:
+        file: '../tasks/start-server.yml'

@@ -15,55 +15,55 @@ import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 
 public class DogFacts extends BasicHack {
 
-	@AutoLoad
-	private List<String> announcements;
-	@AutoLoad
-	private String intervalTime;
-	private BooleanSetting disableAnnouncements;
-	private int counter = 0;
+    @AutoLoad
+    private List<String> announcements;
+    @AutoLoad
+    private String intervalTime;
+    private BooleanSetting disableAnnouncements;
+    private int counter = 0;
 
-	public DogFacts(SimpleAdminHacks plugin, BasicHackConfig config) {
-		super(plugin, config);
-	}
+    public DogFacts(SimpleAdminHacks plugin, BasicHackConfig config) {
+        super(plugin, config);
+    }
 
-	@Override
-	public void onEnable() {
-		super.onEnable();
-		startRunnable(announcements);
-		initSettings();
-	}
+    @Override
+    public void onEnable() {
+        super.onEnable();
+        startRunnable(announcements);
+        initSettings();
+    }
 
-	public void startRunnable(List<String> announcements){
-		long interval = ConfigHelper.parseTimeAsTicks(intervalTime);
-		int tickOffset = (int) (Math.random() * (interval));
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin ,() -> {
-			if (announcements.isEmpty()) {
-				return;
-			}
-			if (counter >= announcements.size()) {
-				counter = 0;
-			}
-			String message = announcements.get(counter);
-			plugin.info("Broadcasting DogFact #" + counter);
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				if (getDisableAnnouncements(player.getUniqueId())){
-					continue;
-				}
-				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player.getDisplayName() + " " + message);
-			}
-			counter++;
-		}, tickOffset, interval);
-	}
+    public void startRunnable(List<String> announcements) {
+        long interval = ConfigHelper.parseTimeAsTicks(intervalTime);
+        int tickOffset = (int) (Math.random() * (interval));
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
+            if (announcements.isEmpty()) {
+                return;
+            }
+            if (counter >= announcements.size()) {
+                counter = 0;
+            }
+            String message = announcements.get(counter);
+            plugin.info("Broadcasting DogFact #" + counter);
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (getDisableAnnouncements(player.getUniqueId())) {
+                    continue;
+                }
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + player.getDisplayName() + " " + message);
+            }
+            counter++;
+        }, tickOffset, interval);
+    }
 
-	private void initSettings() {
-		MenuSection menu = plugin.getSettingManager().getMainMenu();
-		disableAnnouncements =
-				new BooleanSetting(plugin, false, "Disable Announcements", "disableAnnouncements",
-						"Disable Announcements?");
-		PlayerSettingAPI.registerSetting(disableAnnouncements, menu);
-	}
+    private void initSettings() {
+        MenuSection menu = plugin.getSettingManager().getMainMenu();
+        disableAnnouncements =
+            new BooleanSetting(plugin, false, "Disable Announcements", "disableAnnouncements",
+                "Disable Announcements?");
+        PlayerSettingAPI.registerSetting(disableAnnouncements, menu);
+    }
 
-	public boolean getDisableAnnouncements(UUID uuid) {
-		return disableAnnouncements.getValue(uuid);
-	}
+    public boolean getDisableAnnouncements(UUID uuid) {
+        return disableAnnouncements.getValue(uuid);
+    }
 }

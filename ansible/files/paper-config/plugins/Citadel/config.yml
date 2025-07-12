@@ -1,0 +1,490 @@
+#Log when a player forcefully breaks reinforcements?
+logHostileBreaks: true
+
+#Log when a player bypasses friendly reinforcements?
+logFriendlyBreaks: true
+
+#Log every time damage is done to a reinforcement? Only recommended for debugging
+logDamage: true
+
+#Log creation of reinforcements?
+logCreation: true
+
+#Log message replies sent to users? Very useful
+logMessages: true
+
+#General debug messages
+debug: true
+
+#Still used in calculating the localized decay. The difference is localized decay uses different last activity timers for each region.
+global_decay_timer: 2 months
+global_decay_multiplier: 2.0
+
+reinforcements:
+  stone:
+    id: 1
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: STONE
+      v: 1
+    creation_effect:
+      type: PORTAL
+      speed: 0.8
+      particleCount: 200
+      offset: 0.0
+    damage_effect:
+      type: SMOKE_NORMAL
+      speed: 0.06
+      particleCount: 40
+      offset: 0
+    destruction_effect:
+      type: SMOKE_LARGE
+      speed: 0.04
+      particleCount: 80
+      offset: 0.0
+    mature_time: 30m
+    acid_time: 30m
+    acid_priority: 2
+    name: Stone
+    hit_points: 50
+    allowed_worlds:
+      - world
+  netherbrick:
+    id: 4
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1
+      type: NETHER_BRICK
+    creation_effect:
+      type: PORTAL
+      speed: 0.8
+      particleCount: 200
+      offset: 0.0
+    damage_effect:
+      type: SMOKE_NORMAL
+      speed: 0.06
+      particleCount: 40
+      offset: 0
+    destruction_effect:
+      type: SMOKE_LARGE
+      speed: 0.04
+      particleCount: 80
+      offset: 0.0
+    mature_time: 30m
+    acid_time: 30m
+    acid_priority: 2
+    name: Netherbrick
+    hit_points: 50
+    allowed_worlds:
+      - world_nether
+  iron:
+    id: 2
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1
+      type: IRON_INGOT
+    creation_effect:
+      type: ENCHANTMENT_TABLE
+      speed: 1
+      particleCount: 100
+      offset: 0.1
+    damage_effect:
+      type: END_ROD
+      speed: 0.045
+      particleCount: 15
+      offset: 0.0
+    destruction_effect:
+      type: END_ROD
+      speed: 0.13
+      particleCount: 200
+      offset: 0
+    mature_time: 4h
+    acid_time: 6h
+    acid_priority: 5
+    name: Iron
+    hit_points: 300
+    allowed_worlds:
+      - world
+  gold:
+    id: 5
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1
+      type: GOLD_INGOT
+    creation_effect:
+      type: ENCHANTMENT_TABLE
+      speed: 1
+      particleCount: 100
+      offset: 0.1
+    damage_effect:
+      type: END_ROD
+      speed: 0.045
+      particleCount: 15
+      offset: 0.0
+    destruction_effect:
+      type: END_ROD
+      speed: 0.13
+      particleCount: 200
+      offset: 0
+    mature_time: 4h
+    acid_time: 6h
+    acid_priority: 5
+    name: Gold
+    hit_points: 300
+    allowed_worlds:
+      - world_nether
+  diamond:
+    id: 3
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1
+      type: DIAMOND
+    creation_effect:
+      type: NAUTILUS
+      speed: 0.6
+      particleCount: 100
+      offset: 0.1
+    damage_effect:
+      type: BUBBLE_POP
+      speed: 0.2
+      particleCount: 100
+      offset: 0.1
+    destruction_effect:
+      type: BUBBLE_POP
+      speed: 0.5
+      particleCount: 500
+      offset: 0.1
+    mature_time: 12h
+    acid_time: 24h
+    acid_priority: 10
+    name: Diamond
+    hit_points: 2000
+    allowed_worlds:
+      - world
+  gildedblackstone:
+    id: 6
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1
+      type: GILDED_BLACKSTONE
+    creation_effect:
+      type: NAUTILUS
+      speed: 0.6
+      particleCount: 100
+      offset: 0.1
+    damage_effect:
+      type: BUBBLE_POP
+      speed: 0.2
+      particleCount: 100
+      offset: 0.1
+    destruction_effect:
+      type: BUBBLE_POP
+      speed: 0.5
+      particleCount: 500
+      offset: 0.1
+    mature_time: 12h
+    acid_time: 24h
+    acid_priority: 10
+    name: GildedBlackstone
+    hit_points: 2000
+    allowed_worlds:
+      - world_nether
+  bedrock:
+    id: 10
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      v: 1
+      type: BEDROCK
+    effect:
+      type: ENCHANTING_TABLE
+      speed: 0.5
+      particleCount: 50
+    mature_time: 1s
+    acid_time: 1s
+    name: Bedrock
+    hit_points: 420420420
+
+acids:
+  gold:
+    material: GOLD_BLOCK
+    maturation_time_multiplier: 1
+    faces:
+        - UP
+  diamond:
+    material: DIAMOND_BLOCK
+    maturation_time_multiplier: 2
+    faces:
+        - UP
+        - DOWN
+  netherite:
+    material: NETHERITE_BLOCK
+    maturation_time_multiplier: 4
+    faces:
+        - UP
+        - DOWN
+        - NORTH
+        - SOUTH
+        - EAST
+        - WEST
+
+non_reinforceables:
+ - BEDROCK
+ - END_PORTAL
+ - END_PORTAL_FRAME
+ - OAK_SAPLING
+ - BIRCH_SAPLING
+ - SPRUCE_SAPLING
+ - JUNGLE_SAPLING
+ - DARK_OAK_SAPLING
+ - ACACIA_SAPLING
+ - BAMBOO_SAPLING
+ - TALL_GRASS
+ - DEAD_BUSH
+ - PISTON
+ - STICKY_PISTON
+ - MOVING_PISTON
+ - PISTON_HEAD
+ - POPPY
+ - DANDELION
+ - BLUE_ORCHID
+ - ALLIUM
+ - RED_TULIP
+ - ORANGE_TULIP
+ - WHITE_TULIP
+ - PINK_TULIP
+ - OXEYE_DAISY
+ - CORNFLOWER
+ - LILY_OF_THE_VALLEY
+ - SUNFLOWER
+ - SEA_PICKLE
+ - LILAC
+ - PEONY
+ - ROSE_BUSH
+ - BROWN_MUSHROOM
+ - RED_MUSHROOM
+ - CRIMSON_FUNGUS
+ - WARPED_FUNGUS
+ - CRIMSON_ROOTS
+ - WARPED_ROOTS
+ - NETHER_SPROUTS
+ - WEEPING_VINES
+ - TWISTING_VINES
+ - TWISTING_VINES_PLANT
+ - WEEPING_VINES_PLANT
+ - TNT
+ - WHEAT
+ - BEETROOTS
+ - POTATOES
+ - CARROTS
+ - FERN
+ - LARGE_FERN
+ - GRASS
+ - SEAGRASS
+ - TALL_SEAGRASS
+ - BAMBOO
+ - SUGAR_CANE
+ - SWEET_BERRIES
+ - BROWN_MUSHROOM
+ - RED_MUSHROOM
+ - KELP
+ - NETHER_WART
+ - CHORUS_FRUIT
+ - FIRE
+ - SOUL_FIRE
+ - SNOW
+ - POWDER_SNOW
+ - ICE
+ - CACTUS
+ - KELP_PLANT
+ - NETHER_PORTAL
+ - CAKE
+ - PUMPKIN_STEM
+ - MELON_STEM
+ - VINE
+ - BRAIN_CORAL
+ - BRAIN_CORAL_FAN
+ - BRAIN_CORAL_WALL_FAN
+ - BUBBLE_CORAL
+ - BUBBLE_CORAL_FAN
+ - BUBBLE_CORAL_WALL_FAN
+ - FIRE_CORAL
+ - FIRE_CORAL_FAN
+ - FIRE_CORAL_WALL_FAN
+ - HORN_CORAL
+ - HORN_CORAL_FAN
+ - HORN_CORAL_WALL_FAN
+ - TUBE_CORAL
+ - TUBE_CORAL_FAN
+ - TUBE_CORAL_WALL_FAN
+ - DEAD_BRAIN_CORAL
+ - DEAD_BRAIN_CORAL_FAN
+ - DEAD_BRAIN_CORAL_WALL_FAN
+ - DEAD_BUBBLE_CORAL
+ - DEAD_BUBBLE_CORAL_FAN
+ - DEAD_BUBBLE_CORAL_WALL_FAN
+ - DEAD_FIRE_CORAL
+ - DEAD_FIRE_CORAL_FAN
+ - DEAD_FIRE_CORAL_WALL_FAN
+ - DEAD_HORN_CORAL
+ - DEAD_HORN_CORAL_FAN
+ - DEAD_HORN_CORAL_WALL_FAN
+ - DEAD_TUBE_CORAL
+ - DEAD_TUBE_CORAL_FAN
+ - DEAD_TUBE_CORAL_WALL_FAN
+ - SCAFFOLDING
+ - COBWEB
+
+# Determines whether hanging entities (such as Item Frames) can be protected by their host block
+hangers_inherit_reinforcement: true
+
+# reinforcement_damageMultiplier is m where BlockDamage = 2 ^ (n/m) where n is equal to the number of days the group has been inactive
+reinforcement_damageMultiplier: 365
+
+# This will prevent reinforcements being made within a configurable distance of your border
+# Supports 'circle' and 'square' world_border_shape's
+world-border-buffers:
+  #Has to be the world name
+  world:
+    #'CIRCLE' or 'SQUARE' supported only
+    shape: CIRCLE
+    #Radius from border center you want the no reinforcement zone to kick in
+    starting_radius: 9900
+    #Center of the border
+    center:
+      x: 0.0
+      z: 0.0
+  world_nether:
+    #'CIRCLE' or 'SQUARE' supported only
+    shape: CIRCLE
+    #Radius from border center you want the no reinforcement zone to kick in
+    starting_radius: 9900
+    #Center of the border
+    center:
+      x: 0.0
+      z: 0.0
+
+# Set this to the unix timestamp in seconds when the activity feature is being added,
+# this is the time used when a player has not entered a region yet
+# activity-default: 1646588117
+
+activity-map-worlds:
+  - world
+  - world_nether
+
+# Ideally should be a power of two
+activity-map-resolution: 128
+# Radius around each area to also refresh
+activity-map-radius: 4
+
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  plugin: Citadel
+  user: ${CIV_MYSQL_USERNAME}
+  password: ${CIV_MYSQL_PASSWORD}
+  host: ${CIV_MYSQL_HOST}
+  port: 3306
+  database: ${CIV_DATABASE_PREFIX}citadel
+  poolsize: 20
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
+
+reinforcementBreakMultipliers:
+  - custom-key: meteoric_iron_axe
+    multipliers:
+    - multiplier: 2.5
+      types:
+        - CHEST
+        - TRAPPED_CHEST
+        - JUKEBOX
+        - NOTE_BLOCK
+        - BARREL
+        - CRAFTING_TABLE
+      tags:
+        - FENCE_GATES
+        - WOODEN_PRESSURE_PLATES
+        - LOGS
+        - WOODEN_TRAPDOORS
+        - WOODEN_FENCES
+        - WOODEN_DOORS
+        - PLANKS
+        - WOODEN_SLABS
+        - WOODEN_STAIRS
+        - ALL_SIGNS
+        - WOODEN_BUTTONS
+    - multiplier: 2
+      types:
+        - FURNACE
+        - IRON_DOOR
+        - IRON_TRAPDOOR
+        - IRON_BARS
+        - DISPENSER
+        - DROPPER
+        - HOPPER
+        - COPPER_TRAPDOOR
+        - EXPOSED_COPPER_TRAPDOOR
+        - OXIDIZED_COPPER_TRAPDOOR
+        - WEATHERED_COPPER_TRAPDOOR
+        - WAXED_COPPER_TRAPDOOR
+        - WAXED_EXPOSED_COPPER_TRAPDOOR
+        - WAXED_OXIDIZED_COPPER_TRAPDOOR
+        - WAXED_WEATHERED_COPPER_TRAPDOOR
+        - COPPER_DOOR
+        - EXPOSED_COPPER_DOOR
+        - OXIDIZED_COPPER_DOOR
+        - WEATHERED_COPPER_DOOR
+        - WAXED_COPPER_DOOR
+        - WAXED_EXPOSED_COPPER_DOOR
+        - WAXED_OXIDIZED_COPPER_DOOR
+        - WAXED_WEATHERED_COPPER_DOOR
+  - custom-key: meteoric_iron_axe_silk
+    multipliers:
+      - multiplier: 2.5
+        types:
+          - CHEST
+          - TRAPPED_CHEST
+          - JUKEBOX
+          - NOTE_BLOCK
+          - BARREL
+          - CRAFTING_TABLE
+        tags:
+          - FENCE_GATES
+          - WOODEN_PRESSURE_PLATES
+          - LOGS
+          - WOODEN_TRAPDOORS
+          - WOODEN_FENCES
+          - WOODEN_DOORS
+          - PLANKS
+          - WOODEN_SLABS
+          - WOODEN_STAIRS
+          - ALL_SIGNS
+          - WOODEN_BUTTONS
+      - multiplier: 2
+        types:
+          - FURNACE
+          - IRON_DOOR
+          - IRON_TRAPDOOR
+          - IRON_BARS
+          - DISPENSER
+          - DROPPER
+          - HOPPER
+          - COPPER_TRAPDOOR
+          - EXPOSED_COPPER_TRAPDOOR
+          - OXIDIZED_COPPER_TRAPDOOR
+          - WEATHERED_COPPER_TRAPDOOR
+          - WAXED_COPPER_TRAPDOOR
+          - WAXED_EXPOSED_COPPER_TRAPDOOR
+          - WAXED_OXIDIZED_COPPER_TRAPDOOR
+          - WAXED_WEATHERED_COPPER_TRAPDOOR
+          - COPPER_DOOR
+          - EXPOSED_COPPER_DOOR
+          - OXIDIZED_COPPER_DOOR
+          - WEATHERED_COPPER_DOOR
+          - WAXED_COPPER_DOOR
+          - WAXED_EXPOSED_COPPER_DOOR
+          - WAXED_OXIDIZED_COPPER_DOOR
+          - WAXED_WEATHERED_COPPER_DOOR
+
+# number of times a tool can break a reinforcement before it gets damaged by one durability
+# set to 0 to disable
+reinforcementBreaksPerToolDamage: 50

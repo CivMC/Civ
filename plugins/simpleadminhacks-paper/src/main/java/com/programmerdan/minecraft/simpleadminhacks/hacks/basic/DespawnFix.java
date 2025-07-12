@@ -17,37 +17,37 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.world.EntitiesUnloadEvent;
 
 /**
- Allows for high hard despawn distance and low simulation distance by forcibly removing mobs
- that are inside the simulation distance yet, still in the hard despawn distance.
+ * Allows for high hard despawn distance and low simulation distance by forcibly removing mobs
+ * that are inside the simulation distance yet, still in the hard despawn distance.
  */
 public class DespawnFix extends BasicHack {
 
-	public DespawnFix(SimpleAdminHacks plugin, BasicHackConfig config) {
-		super(plugin, config);
-	}
+    public DespawnFix(SimpleAdminHacks plugin, BasicHackConfig config) {
+        super(plugin, config);
+    }
 
-	@EventHandler
-	public void on(EntitiesUnloadEvent event) {
-		for (Entity entity : event.getEntities()) {
-			if (!(entity instanceof LivingEntity living)) {
-				continue;
-			}
+    @EventHandler
+    public void on(EntitiesUnloadEvent event) {
+        for (Entity entity : event.getEntities()) {
+            if (!(entity instanceof LivingEntity living)) {
+                continue;
+            }
 
-			if (entity.getVehicle() != null) {
-				continue;
-			}
+            if (entity.getVehicle() != null) {
+                continue;
+            }
 
-			if (entity instanceof EnderDragon || entity instanceof Shulker || entity instanceof Wither) {
-				continue;
-			}
+            if (entity instanceof EnderDragon || entity instanceof Shulker || entity instanceof Wither) {
+                continue;
+            }
 
-			if (!(entity instanceof Monster || entity instanceof Ghast || entity instanceof Hoglin || entity instanceof Phantom || entity instanceof Slime)) {
-				continue;
-			}
+            if (!(entity instanceof Monster || entity instanceof Ghast || entity instanceof Hoglin || entity instanceof Phantom || entity instanceof Slime)) {
+                continue;
+            }
 
-			if (living.getRemoveWhenFarAway()) {
-				entity.remove();
-			}
-		}
-	}
+            if (living.getRemoveWhenFarAway()) {
+                entity.remove();
+            }
+        }
+    }
 }

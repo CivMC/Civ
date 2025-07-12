@@ -12,6 +12,7 @@ import org.bukkit.event.Listener;
 import static com.google.common.base.Preconditions.*;
 
 public class InstakillListener implements Listener {
+
     private final CombatTagPlus plugin;
 
     public InstakillListener(CombatTagPlus plugin) {

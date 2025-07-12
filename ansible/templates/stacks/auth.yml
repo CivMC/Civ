@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+
+  keycloak:
+    image: keycloak/keycloak:latest
+    restart: always
+    networks:
+      - auth_default
+      - traefik-public
+    environment:
+      KEYCLOAK_ADMIN: '{{secret.auth.keycloak.user}}'
+      KEYCLOAK_ADMIN_PASSWORD: '{{secret.auth.keycloak.password}}'
+
+      KC_HOSTNAME: '{{secret.auth.keycloak.host}}'
+      KC_HOSTNAME_STRICT: 'false'
+      KC_PROXY: edge
+      KC_PROXY_ADDRESS_FORWARDING: 'true'
+      KC_HTTP_ENABLED: 'true'
+
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: '{{secret.auth.postgres.password}}'
+    command: start-dev
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.keycloak-public-http.rule=Host(`{{secret.auth.keycloak.host}}`)
+        - traefik.http.routers.keycloak-public-http.entrypoints=http
+        - traefik.http.routers.keycloak-public-http.middlewares=https-redirect
+        - traefik.http.routers.keycloak-public-https.rule=Host(`{{secret.auth.keycloak.host}}`)
+        - traefik.http.routers.keycloak-public-https.entrypoints=https
+        - traefik.http.routers.keycloak-public-https.tls=true
+        - traefik.http.routers.keycloak-public-https.tls.certresolver=le
+        - traefik.http.services.keycloak-public.loadbalancer.server.port=8080
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
+
+  postgres:
+    image: postgres:14
+    restart: always
+    networks:
+      - auth_default
+    volumes:
+      - /opt/stacks/auth/postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: '{{secret.auth.postgres.password}}'
+      POSTGRES_DB: keycloak
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "keycloak", "-U", "$keycloak" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    logging:
+        driver: grafana/loki-docker-driver
+        options:
+          loki-url: "http://localhost:3100/loki/api/v1/push"
+          loki-retries: "5"
+          loki-batch-size: "400"
+
+networks:
+  auth_default:
+  traefik-public:
+    external: true

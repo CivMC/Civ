@@ -6,7 +6,9 @@ import org.bukkit.block.BlockFace;
 import java.util.List;
 
 public record AcidType(
-		Material material,
-		double modifier,
-		List<BlockFace> blockFaces
-) { }
+    Material material,
+    double modifier,
+    List<BlockFace> blockFaces
+) {
+
+}

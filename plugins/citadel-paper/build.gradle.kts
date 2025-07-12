@@ -1,13 +1,16 @@
 plugins {
-	id("io.papermc.paperweight.userdev")
+    id("io.papermc.paperweight.userdev")
 }
 
 version = "5.2.4"
 
 dependencies {
-	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+    paperweight {
+        paperDevBundle(libs.versions.paper)
+    }
 
-	compileOnly(project(":plugins:civmodcore-paper"))
-	compileOnly(project(":plugins:namelayer-paper"))
-	compileOnly("com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9")
+    compileOnly(project(":plugins:civmodcore-paper"))
+    compileOnly(project(":plugins:namelayer-paper"))
+
+    compileOnly(libs.protocollib)
 }

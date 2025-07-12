@@ -11,18 +11,18 @@ import vg.civcraft.mc.namelayer.NameAPI;
 
 public class WhoAmI extends BaseCommand {
 
-	@CommandAlias("whoami")
-	@Description("Tells you who you are")
-	public void execute(CommandSender sender) {
-		final String response = ChatColor.YELLOW + "You are: " + ChatColor.RESET;
-		if (sender instanceof Player) {
-			final Player player = (Player) sender;
-			final String name = NameAPI.getCurrentName(player.getUniqueId());
-			if (!Strings.isNullOrEmpty(name)) {
-				player.sendMessage(response + name);
-				return;
-			}
-		}
-		sender.sendMessage(response + sender.getName());
-	}
+    @CommandAlias("whoami")
+    @Description("Tells you who you are")
+    public void execute(CommandSender sender) {
+        final String response = ChatColor.YELLOW + "You are: " + ChatColor.RESET;
+        if (sender instanceof Player) {
+            final Player player = (Player) sender;
+            final String name = NameAPI.getCurrentName(player.getUniqueId());
+            if (!Strings.isNullOrEmpty(name)) {
+                player.sendMessage(response + name);
+                return;
+            }
+        }
+        sender.sendMessage(response + sender.getName());
+    }
 }

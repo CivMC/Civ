@@ -1,0 +1,3 @@
+[submodule "PrivateConfig"]
+	path = PrivateConfig
+	url = git@github.com:CivMC/PrivateConfig

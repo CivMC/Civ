@@ -31,202 +31,198 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class InfoCommand extends BaseCommand {
-	private class FilterOptions {
-		public Integer snitchId;
-		public Integer pageNumber;
-		public String actionType;
-		public String playerName;
-		public boolean censor;
-	}
 
-	private static final Map<UUID, FilterOptions> _history = new ConcurrentHashMap<>();
+    private class FilterOptions {
 
-	@CommandAlias("jainfo")
-	@Description("Display information from a snitch")
-	@Syntax("[next | ([page_number] [censor] [action=action_type] [player=player_name])]")
-	public void execute(Player player) {
-		executeCommand(player, new FilterOptions());
-	}
+        public Integer snitchId;
+        public Integer pageNumber;
+        public String actionType;
+        public String playerName;
+        public boolean censor;
+    }
 
-	@CommandAlias("jainfo")
-	@Description("Display information from a snitch")
-	@Syntax("[next | ([page_number] [censor] [action=action_type] [player=player_name])]")
-	public void execute(Player player,
-			String option1,
-			@Optional String option2,
-			@Optional String option3,
-			@Optional String option4)
-	{
-		if ((option2 == null || option2.length() == 0) && option1.equalsIgnoreCase("next")) {
-			executeNextCommand(player);
-			return;
-		}
+    private static final Map<UUID, FilterOptions> _history = new ConcurrentHashMap<>();
 
-		var options = new FilterOptions();
+    @CommandAlias("jainfo")
+    @Description("Display information from a snitch")
+    @Syntax("[next | ([page_number] [censor] [action=action_type] [player=player_name])]")
+    public void execute(Player player) {
+        executeCommand(player, new FilterOptions());
+    }
 
-		if (parseOption(player, option1, options, true)
-				&& parseOption(player, option2, options, false)
-				&& parseOption(player, option3, options, false)
-				&& parseOption(player, option4, options, false))
-		{
-			executeCommand(player, options);
-		}
-	}
+    @CommandAlias("jainfo")
+    @Description("Display information from a snitch")
+    @Syntax("[next | ([page_number] [censor] [action=action_type] [player=player_name])]")
+    public void execute(Player player,
+                        String option1,
+                        @Optional String option2,
+                        @Optional String option3,
+                        @Optional String option4) {
+        if ((option2 == null || option2.length() == 0) && option1.equalsIgnoreCase("next")) {
+            executeNextCommand(player);
+            return;
+        }
 
-	private static boolean parseOption(
-			Player player,
-			String optionText,
-			FilterOptions options,
-			boolean allowPageNumber)
-	{
-		if (optionText == null || optionText.length() == 0) {
-			return true;
-		}
+        var options = new FilterOptions();
 
-		if (allowPageNumber && parsePageNumber(optionText, options)) {
-			return true;
-		}
+        if (parseOption(player, option1, options, true)
+            && parseOption(player, option2, options, false)
+            && parseOption(player, option3, options, false)
+            && parseOption(player, option4, options, false)) {
+            executeCommand(player, options);
+        }
+    }
 
-		String loweredOptionText = optionText.toLowerCase();
+    private static boolean parseOption(
+        Player player,
+        String optionText,
+        FilterOptions options,
+        boolean allowPageNumber) {
+        if (optionText == null || optionText.length() == 0) {
+            return true;
+        }
 
-		if (loweredOptionText.equals("censor")) {
-			if (options.censor) {
-				player.sendMessage(Component.text("The option 'censor' is declared more than once", NamedTextColor.RED));
-				return false;
-			}
-			options.censor = true;
-		} else if (loweredOptionText.startsWith("action=")) {
-			if (options.actionType != null) {
-				player.sendMessage(Component.text("The option 'action' is declared more than once", NamedTextColor.RED));
-				return false;
-			}
-			options.actionType = optionText.substring("action=".length());
-		} else if (loweredOptionText.startsWith("player=")) {
-			if (options.playerName != null) {
-				player.sendMessage(Component.text("The option 'player' is declared more than once", NamedTextColor.RED));
-				return false;
-			}
-			options.playerName = optionText.substring("player=".length());
-		} else if (loweredOptionText.equals("next")) {
-			player.sendMessage(Component.text("The keyword 'next' cannot be used in this context", NamedTextColor.RED));
-			return false;
-		} else {
-			player.sendMessage(Component.text("The unknown option: " + optionText, NamedTextColor.RED));
-			return false;
-		}
+        if (allowPageNumber && parsePageNumber(optionText, options)) {
+            return true;
+        }
 
-		return true;
-	}
+        String loweredOptionText = optionText.toLowerCase();
 
-	private static boolean parsePageNumber(String optionText, FilterOptions options) {
-		try {
-			int pageNumber = Integer.parseInt(optionText);
-			options.pageNumber = pageNumber;
-		} catch (NumberFormatException e) {
-			return false;
-		}
+        if (loweredOptionText.equals("censor")) {
+            if (options.censor) {
+                player.sendMessage(Component.text("The option 'censor' is declared more than once", NamedTextColor.RED));
+                return false;
+            }
+            options.censor = true;
+        } else if (loweredOptionText.startsWith("action=")) {
+            if (options.actionType != null) {
+                player.sendMessage(Component.text("The option 'action' is declared more than once", NamedTextColor.RED));
+                return false;
+            }
+            options.actionType = optionText.substring("action=".length());
+        } else if (loweredOptionText.startsWith("player=")) {
+            if (options.playerName != null) {
+                player.sendMessage(Component.text("The option 'player' is declared more than once", NamedTextColor.RED));
+                return false;
+            }
+            options.playerName = optionText.substring("player=".length());
+        } else if (loweredOptionText.equals("next")) {
+            player.sendMessage(Component.text("The keyword 'next' cannot be used in this context", NamedTextColor.RED));
+            return false;
+        } else {
+            player.sendMessage(Component.text("The unknown option: " + optionText, NamedTextColor.RED));
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	private void executeNextCommand(Player player) {
-		FilterOptions options = _history.get(player.getUniqueId());
+    private static boolean parsePageNumber(String optionText, FilterOptions options) {
+        try {
+            int pageNumber = Integer.parseInt(optionText);
+            options.pageNumber = pageNumber;
+        } catch (NumberFormatException e) {
+            return false;
+        }
 
-		if (options != null) {
-			options.pageNumber++;
-		} else {
-			options = new FilterOptions();
-		}
+        return true;
+    }
 
-		executeCommand(player, options);
-	}
+    private void executeNextCommand(Player player) {
+        FilterOptions options = _history.get(player.getUniqueId());
 
-	private void executeCommand(Player player, FilterOptions options)
-	{
-		Snitch snitch = findLookingAtOrClosestSnitch(player, JukeAlertPermissionHandler.getReadLogs());
-		if (snitch == null) {
-			player.sendMessage(Component.text("You do not own any snitches nearby or lack permission to view their logs!",
-					NamedTextColor.RED));
-			return;
-		}
-		if (!snitch.hasAppender(SnitchLogAppender.class)) {
-			player.sendMessage(Component.text("This " + snitch.getType().getName() + " named " + snitch.getName()
-							+ " can not save logs",
-					NamedTextColor.RED));
-			return;
-		}
+        if (options != null) {
+            options.pageNumber++;
+        } else {
+            options = new FilterOptions();
+        }
 
-		if (options.snitchId != null && options.snitchId != snitch.getId()) {
-			options = new FilterOptions();
-		}
+        executeCommand(player, options);
+    }
 
-		options.snitchId = snitch.getId();
+    private void executeCommand(Player player, FilterOptions options) {
+        Snitch snitch = findLookingAtOrClosestSnitch(player, JukeAlertPermissionHandler.getReadLogs());
+        if (snitch == null) {
+            player.sendMessage(Component.text("You do not own any snitches nearby or lack permission to view their logs!",
+                NamedTextColor.RED));
+            return;
+        }
+        if (!snitch.hasAppender(SnitchLogAppender.class)) {
+            player.sendMessage(Component.text("This " + snitch.getType().getName() + " named " + snitch.getName()
+                    + " can not save logs",
+                NamedTextColor.RED));
+            return;
+        }
 
-		if (options.pageNumber == null) {
-			options.pageNumber = 0;
-		}
-		else if (options.pageNumber < 0) {
-			player.sendMessage(Component.text("You cannot input a negative number here").color(NamedTextColor.RED));
-			return;
-		}
+        if (options.snitchId != null && options.snitchId != snitch.getId()) {
+            options = new FilterOptions();
+        }
 
-		_history.put(player.getUniqueId(), options);
+        options.snitchId = snitch.getId();
 
-		int pageLength = JukeAlert.getInstance().getSettingsManager().getJaInfoLength(player.getUniqueId());
+        if (options.pageNumber == null) {
+            options.pageNumber = 0;
+        } else if (options.pageNumber < 0) {
+            player.sendMessage(Component.text("You cannot input a negative number here").color(NamedTextColor.RED));
+            return;
+        }
 
-		sendSnitchLog(player, snitch, options.pageNumber, pageLength, options.actionType, options.playerName, options.censor);
-	}
+        _history.put(player.getUniqueId(), options);
 
-	public void sendSnitchLog(
-			Player player,
-			Snitch snitch,
-			int offset,
-			int pageLength,
-			String actionType,
-			String playerName,
-			boolean censor)
-	{
-		SnitchLogAppender logAppender = snitch.getAppender(SnitchLogAppender.class);
-		List<LoggableAction> logs = new ArrayList<>(logAppender.getFullLogs());
-		if (playerName != null) {
-			String playerNameLowered = playerName.toLowerCase();
-			List<LoggableAction> logCopy = new LinkedList<>();
-			for (LoggableAction log : logs) {
-				if (!((SnitchAction) log).hasPlayer()) {
-					continue;
-				}
-				PlayerAction playerAc = (PlayerAction) log;
-				if (playerAc.getPlayerName().toLowerCase().contains(playerNameLowered)) {
-					logCopy.add(log);
-				}
-			}
-			logs = logCopy;
-		}
-		if (actionType != null) {
-			String actionTypeLowered = actionType.toLowerCase();
-			List<LoggableAction> logCopy = new LinkedList<>();
-			for (LoggableAction log : logs) {
-				if (log.getChatRepresentationIdentifier().toLowerCase().contains(actionTypeLowered)) {
-					logCopy.add(log);
-				}
-			}
-			logs = logCopy;
-		}
-		int initialOffset = pageLength * offset;
-		if (initialOffset >= logs.size()) {
-			TextComponent reply = JAUtility.genTextComponent(snitch);
-			reply.addExtra(ChatColor.GOLD + " has only " + logs.size() + " logs fitting your criteria");
-			player.spigot().sendMessage(reply);
-			return;
-		}
-		int currentPageSize = Math.min(pageLength, logs.size() - initialOffset);
-		ListIterator<LoggableAction> iter = logs.listIterator(initialOffset);
-		int currentSlot = 0;
-		TextComponent reply = new TextComponent(ChatColor.GOLD + "--- Page " + offset + " for ");
-		reply.addExtra(JAUtility.genTextComponent(snitch));
-		player.spigot().sendMessage(reply);
-		while (currentSlot++ < currentPageSize) {
-			player.spigot().sendMessage(iter.next().getChatRepresentation(player.getLocation(), false, censor));
-		}
-	}
+        int pageLength = JukeAlert.getInstance().getSettingsManager().getJaInfoLength(player.getUniqueId());
+
+        sendSnitchLog(player, snitch, options.pageNumber, pageLength, options.actionType, options.playerName, options.censor);
+    }
+
+    public void sendSnitchLog(
+        Player player,
+        Snitch snitch,
+        int offset,
+        int pageLength,
+        String actionType,
+        String playerName,
+        boolean censor) {
+        SnitchLogAppender logAppender = snitch.getAppender(SnitchLogAppender.class);
+        List<LoggableAction> logs = new ArrayList<>(logAppender.getFullLogs());
+        if (playerName != null) {
+            String playerNameLowered = playerName.toLowerCase();
+            List<LoggableAction> logCopy = new LinkedList<>();
+            for (LoggableAction log : logs) {
+                if (!((SnitchAction) log).hasPlayer()) {
+                    continue;
+                }
+                PlayerAction playerAc = (PlayerAction) log;
+                if (playerAc.getPlayerName().toLowerCase().contains(playerNameLowered)) {
+                    logCopy.add(log);
+                }
+            }
+            logs = logCopy;
+        }
+        if (actionType != null) {
+            String actionTypeLowered = actionType.toLowerCase();
+            List<LoggableAction> logCopy = new LinkedList<>();
+            for (LoggableAction log : logs) {
+                if (log.getChatRepresentationIdentifier().toLowerCase().contains(actionTypeLowered)) {
+                    logCopy.add(log);
+                }
+            }
+            logs = logCopy;
+        }
+        int initialOffset = pageLength * offset;
+        if (initialOffset >= logs.size()) {
+            TextComponent reply = JAUtility.genTextComponent(snitch);
+            reply.addExtra(ChatColor.GOLD + " has only " + logs.size() + " logs fitting your criteria");
+            player.spigot().sendMessage(reply);
+            return;
+        }
+        int currentPageSize = Math.min(pageLength, logs.size() - initialOffset);
+        ListIterator<LoggableAction> iter = logs.listIterator(initialOffset);
+        int currentSlot = 0;
+        TextComponent reply = new TextComponent(ChatColor.GOLD + "--- Page " + offset + " for ");
+        reply.addExtra(JAUtility.genTextComponent(snitch));
+        player.spigot().sendMessage(reply);
+        while (currentSlot++ < currentPageSize) {
+            player.spigot().sendMessage(iter.next().getChatRepresentation(player.getLocation(), false, censor));
+        }
+    }
 }

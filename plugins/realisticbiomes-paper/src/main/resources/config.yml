@@ -702,6 +702,83 @@ plants:
       foresty: 1.0
       cold_forest: 0.5
       freshwater: 0.5
+
+  PALE_OAK_SAPLING:
+    persistent_growth_period: 6h
+    name: Pale Oak Tree
+    grower:
+      type: tree
+      material: PALE_OAK_SAPLING
+    vanilla_materials:
+      - PALE_OAK_SAPLING
+    id: 19
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: PALE_OAK_SAPLING
+      v: 1
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+      REDSTONE_LAMP: 0.5
+      SEA_LANTERN: 0.5
+      SHROOMLIGHT: 0.5
+      LANTERN: 0.25
+      SOUL_LANTERN: 0.25
+      TORCH: 0.1
+      SOUL_TORCH: 0.1
+    biomes:
+      cold_water: 0.5
+      cold: 1.5
+      cold_forest: 2.0
+
+  CHERRY_SAPLING:
+    persistent_growth_period: 0h
+    name: Cherry Tree
+    grower:
+      type: tree
+      material: CHERRY_SAPLING
+    vanilla_materials:
+    - CHERRY_SAPLING
+    id: 20
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: CHERRY_SAPLING
+      v: 1
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      jungles: 0.25
+      forests: 0.6
+      taigas: 0.8
+      birch_forests: 0.5
+      dark_forest: 0.25
+      swamp: 0.25
+      meadows: 1.0
+      taigas: 0.25
+      cold_taiga: 0.1
+      tundra: 0.1
+      cold_mountain: 0.25
+      flatlands: 0.5
+
+  MANGROVE_PROPAGULE:
+    persistent_growth_period: 0h
+    name: Mangrove Tree
+    grower:
+      type: tree
+      material: MANGROVE_PROPAGULE
+    vanilla_materials:
+    - MANGROVE_PROPAGULE
+    id: 21
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: MANGROVE_PROPAGULE
+      v: 1
+    greenhouse_rates:
+      GLOWSTONE: 0.5
+    biomes:
+      jungles: 0.25
+      dark_forest: 0.25
+      swamp: 1.0
+
   GLOW_BERRIES:
     persistent_growth_period: 6h
     name: Glow Berries
@@ -711,7 +788,7 @@ plants:
       stem_material: CAVE_VINES_PLANT
       growth_direction: DOWN
       max_height: 25
-    id: 19
+    id: 22
     item:
       ==: org.bukkit.inventory.ItemStack
       type: GLOW_BERRIES
@@ -736,7 +813,7 @@ plants:
       stem_material: TWISTING_VINES_PLANT
       growth_direction: UP
       max_height: 25
-    id: 20
+    id: 23
     item:
       ==: org.bukkit.inventory.ItemStack
       type: TWISTING_VINES
@@ -761,7 +838,7 @@ plants:
       stem_material: WEEPING_VINES_PLANT
       growth_direction: DOWN
       max_height: 25
-    id: 21
+    id: 24
     item:
       ==: org.bukkit.inventory.ItemStack
       type: WEEPING_VINES
@@ -783,7 +860,7 @@ plants:
     grower:
       type: kelp
       max_height: 25
-    id: 22
+    id: 25
     item:
       ==: org.bukkit.inventory.ItemStack
       type: KELP
@@ -814,7 +891,7 @@ plants:
         - STONE
         - MYCELIUM
         - PODZOL
-    id: 23
+    id: 26
     item:
       ==: org.bukkit.inventory.ItemStack
       type: RED_MUSHROOM
@@ -840,7 +917,7 @@ plants:
         - STONE
         - MYCELIUM
         - PODZOL
-    id: 24
+    id: 27
     item:
       ==: org.bukkit.inventory.ItemStack
       type: BROWN_MUSHROOM
@@ -851,13 +928,49 @@ plants:
       foresty: 1.0
       cold_forest: 1.0
       freshwater: 1.0
+  CRIMSON_FUNGUS:
+    persistent_growth_period: 12h
+    name: Crimson Fungus
+    grower:
+      type: fungus
+      material: CRIMSON_FUNGUS
+    vanilla_materials:
+      - CRIMSON_FUNGUS
+    id: 28
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: CRIMSON_FUNGUS
+      v: 2730
+    needs_sun_light: false
+    biomes:
+      CRIMSON_FOREST: 1.0
+      NETHER_WASTES: 0.5
+      SOUL_SAND_VALLEY: 0.3
+  WARPED_FUNGUS:
+    persistent_growth_period: 12h
+    name: Warped Fungus
+    grower:
+      type: fungus
+      material: WARPED_FUNGUS
+    vanilla_materials:
+      - WARPED_FUNGUS
+    id: 29
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: WARPED_FUNGUS
+      v: 2730
+    needs_sun_light: false
+    biomes:
+      WARPED_FOREST: 1.0
+      NETHER_WASTES: 0.5
+      SOUL_SAND_VALLEY: 0.3
   BAMBOO:
     persistent_growth_period: 12h
     name: Bamboo
     grower:
       type: bamboo
       max_height: 12
-    id: 25
+    id: 30
     item:
       ==: org.bukkit.inventory.ItemStack
       type: BAMBOO
@@ -879,7 +992,7 @@ plants:
   SWEET_BERRY:
     persistent_growth_period: 12h
     name: Sweet Berry
-    id: 26
+    id: 31
     item:
       ==: org.bukkit.inventory.ItemStack
       type: SWEET_BERRIES
@@ -924,7 +1037,7 @@ plants:
       stem_material: BIG_DRIPLEAF_STEM
       growth_direction: UP
       max_height: 25
-    id: 27
+    id: 32
     item:
       ==: org.bukkit.inventory.ItemStack
       type: BIG_DRIPLEAF

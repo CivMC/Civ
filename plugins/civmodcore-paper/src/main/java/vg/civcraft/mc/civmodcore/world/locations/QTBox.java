@@ -2,16 +2,16 @@ package vg.civcraft.mc.civmodcore.world.locations;
 
 public interface QTBox {
 
-	int qtXMin();
+    int qtXMin();
 
-	int qtXMid();
+    int qtXMid();
 
-	int qtXMax();
+    int qtXMax();
 
-	int qtZMin();
+    int qtZMin();
 
-	int qtZMid();
+    int qtZMid();
 
-	int qtZMax();
+    int qtZMax();
 
 }

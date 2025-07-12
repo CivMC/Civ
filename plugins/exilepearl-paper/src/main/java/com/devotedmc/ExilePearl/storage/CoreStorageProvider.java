@@ -9,44 +9,42 @@ import java.util.logging.Level;
 
 public class CoreStorageProvider implements StorageProvider {
 
-	private final ExilePearlApi pearlApi;
-	private final PearlFactory pearlFactory;
+    private final ExilePearlApi pearlApi;
+    private final PearlFactory pearlFactory;
 
-	private PluginStorage storage;
+    private PluginStorage storage;
 
-	public CoreStorageProvider(final ExilePearlApi pearlApi, final PearlFactory pearlFactory) {
-		Preconditions.checkNotNull(pearlApi, "pearlApi");
-		Preconditions.checkNotNull(pearlFactory, "pearlFactory");
+    public CoreStorageProvider(final ExilePearlApi pearlApi, final PearlFactory pearlFactory) {
+        Preconditions.checkNotNull(pearlApi, "pearlApi");
+        Preconditions.checkNotNull(pearlFactory, "pearlFactory");
 
-		this.pearlApi = pearlApi;
-		this.pearlFactory = pearlFactory;
-	}
+        this.pearlApi = pearlApi;
+        this.pearlFactory = pearlFactory;
+    }
 
-	public PluginStorage createStorage() {
-		if (storage != null) {
-			throw new RuntimeException("Can't re-create the storage instance.");
-		}
+    public PluginStorage createStorage() {
+        if (storage != null) {
+            throw new RuntimeException("Can't re-create the storage instance.");
+        }
 
-		StorageType storageType = pearlApi.getPearlConfig().getStorageType();
+        StorageType storageType = pearlApi.getPearlConfig().getStorageType();
 
-		if (storageType == StorageType.RAM) {
-			pearlApi.log(Level.WARNING, "Using RAM storage. Data will not be saved.");
-			storage = new RamStorage();
-		}
-		else if (storageType == StorageType.MYSQL) {
-			storage = new AsyncStorageWriter(new MySqlStorage(pearlFactory, pearlApi, pearlApi.getPearlConfig()), pearlApi);
-			pearlApi.log(Level.INFO, "Using MySQL storage.");
-		}
-		else {
-			File storageFile = new File("plugins/ExilePearl/pearls.yml");
-			storage = new AsyncStorageWriter(new FileStorage(storageFile, pearlFactory, pearlApi), pearlApi);
-			pearlApi.log(Level.INFO, "Using File storage.");
-		}
-		return storage; 
-	}
+        if (storageType == StorageType.RAM) {
+            pearlApi.log(Level.WARNING, "Using RAM storage. Data will not be saved.");
+            storage = new RamStorage();
+        } else if (storageType == StorageType.MYSQL) {
+            storage = new AsyncStorageWriter(new MySqlStorage(pearlFactory, pearlApi, pearlApi.getPearlConfig()), pearlApi);
+            pearlApi.log(Level.INFO, "Using MySQL storage.");
+        } else {
+            File storageFile = new File("plugins/ExilePearl/pearls.yml");
+            storage = new AsyncStorageWriter(new FileStorage(storageFile, pearlFactory, pearlApi), pearlApi);
+            pearlApi.log(Level.INFO, "Using File storage.");
+        }
+        return storage;
+    }
 
-	@Override
-	public PluginStorage getStorage() {
-		return storage;
-	}
+    @Override
+    public PluginStorage getStorage() {
+        return storage;
+    }
 }

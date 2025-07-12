@@ -33,367 +33,367 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class FileHandler {
-	private FactoryMod plugin;
-	private FactoryModManager manager;
-	private File saveFile;
-	private File backup;
 
-	private Map <String, String> factoryRenames;
+    private FactoryMod plugin;
+    private FactoryModManager manager;
+    private File saveFile;
+    private File backup;
 
-	private static int saveFileVersion = 2;
+    private Map<String, String> factoryRenames;
 
-	public FileHandler(FactoryModManager manager, Map <String, String> factoryRenames) {
-		plugin = FactoryMod.getInstance();
-		this.factoryRenames = factoryRenames;
-		this.manager = manager;
-		saveFile = new File(plugin.getDataFolder().getAbsolutePath()
-				+ File.separator + "factoryData.yml");
-		backup = new File(plugin.getDataFolder().getAbsolutePath()
-				+ File.separator + "factoryDataPreviousSave.yml");
-	}
+    private static int saveFileVersion = 2;
 
-	public void save(Collection<Factory> factories) {
-		if (saveFile.exists()) {
-			// old save file exists, so it is our new backup now
-			if (backup.exists()) {
-				backup.delete();
-			}
-			saveFile.renameTo(backup);
-		}
-		try {
-			saveFile.createNewFile();
-			YamlConfiguration config = YamlConfiguration
-					.loadConfiguration(saveFile);
-			config.set("version", saveFileVersion);
-			for (Factory f : factories) {
-				String current = serializeLocation(f.getMultiBlockStructure()
-						.getCenter());
-				config.set(current + ".name", f.getName());
-				ConfigurationSection blockSection = config.getConfigurationSection(current).createSection("blocks");
-				configureLocation(blockSection, f.getMultiBlockStructure().getAllBlocks());
-				if (f instanceof FurnCraftChestFactory) {
-					FurnCraftChestFactory fccf = (FurnCraftChestFactory) f;
-					config.set(current + ".type", "FCC");
-					config.set(current + ".health",
-							((PercentageHealthRepairManager) fccf
-									.getRepairManager()).getRawHealth());
-					config.set(current + ".breakTime",
-							((PercentageHealthRepairManager) fccf
-									.getRepairManager()).getBreakTime());
-					config.set(current + ".runtime", fccf.getRunningTime());
-					config.set(current + ".selectedRecipe", fccf
-							.getCurrentRecipe().getName());
-					config.set(current + ".autoSelect", fccf.isAutoSelect());
-					List <String> recipeList = new LinkedList<String>();
-					for(IRecipe rec : fccf.getRecipes()) {
-						recipeList.add(rec.getIdentifier());
-					}
-					config.set(current + ".recipes", recipeList);
-					if (fccf.getActivator() == null) {
-						config.set(current + ".activator", "null");
-					}
-					else {
-						config.set(current + ".activator", fccf.getActivator().toString());
-					}
-					for(IRecipe i : ((FurnCraftChestFactory) f).getRecipes()) {
-						config.set(current + ".runcounts." + i.getName(), fccf.getRunCount(i));
-						config.set(current + ".recipeLevels." + i.getName(), fccf.getRecipeLevel(i));
-					}
-					config.set(current + ".furnace-io", fccf.getFurnaceIOSelector().toConfigSection());
-					config.set(current + ".table-io", fccf.getTableIOSelector().toConfigSection());
-					config.set(current + ".ui-menu-mode", fccf.getUiMenuMode().name());
-				} else if (f instanceof Pipe) {
-					Pipe p = (Pipe) f;
-					config.set(current + ".type", "PIPE");
-					config.set(current + ".runtime", p.getRunTime());
-					List<String> mats = new LinkedList<>();
-					List<Material> materials = p.getAllowedMaterials();
-					if (materials != null) {
-						for (Material m : materials) {
-							mats.add(m.toString());
-						}
-					}
-					config.set(current + ".materials", mats);
-				} else if (f instanceof Sorter) {
-					Sorter s = (Sorter) f;
-					config.set(current + ".runtime", s.getRunTime());
-					config.set(current + ".type", "SORTER");
-					for (BlockFace face : WorldUtils.ALL_SIDES) {
-						config.set(current + ".faces." + face.toString(), s
-								.getItemsForSide(face)
-								.getItemStackRepresentation().toArray());
-					}
-				}
-			}
-			config.save(saveFile);
-			plugin.info("Successfully saved factory data");
-		} catch (Exception e) {
-			// In case anything goes wrong while saving we always keep the
-			// latest valid backup
-			plugin.severe("Fatal error while trying to save factory data");
-			e.printStackTrace();
-			saveFile.delete();
-		}
-	}
+    public FileHandler(FactoryModManager manager, Map<String, String> factoryRenames) {
+        plugin = FactoryMod.getInstance();
+        this.factoryRenames = factoryRenames;
+        this.manager = manager;
+        saveFile = new File(plugin.getDataFolder().getAbsolutePath()
+            + File.separator + "factoryData.yml");
+        backup = new File(plugin.getDataFolder().getAbsolutePath()
+            + File.separator + "factoryDataPreviousSave.yml");
+    }
 
-	private void configureLocation(ConfigurationSection config, List <Location> locations) {
-		int count = 0;
-		for(Location loc : locations) {
-			String identifier = "a" + count++ + serializeLocation(loc);
-			config.set(identifier + ".world", loc.getWorld().getName());
-			config.set(identifier + ".x", loc.getBlockX());
-			config.set(identifier + ".y", loc.getBlockY());
-			config.set(identifier + ".z", loc.getBlockZ());
-		}
-	}
+    public void save(Collection<Factory> factories) {
+        if (saveFile.exists()) {
+            // old save file exists, so it is our new backup now
+            if (backup.exists()) {
+                backup.delete();
+            }
+            saveFile.renameTo(backup);
+        }
+        try {
+            saveFile.createNewFile();
+            YamlConfiguration config = YamlConfiguration
+                .loadConfiguration(saveFile);
+            config.set("version", saveFileVersion);
+            for (Factory f : factories) {
+                String current = serializeLocation(f.getMultiBlockStructure()
+                    .getCenter());
+                config.set(current + ".name", f.getName());
+                ConfigurationSection blockSection = config.getConfigurationSection(current).createSection("blocks");
+                configureLocation(blockSection, f.getMultiBlockStructure().getAllBlocks());
+                if (f instanceof FurnCraftChestFactory) {
+                    FurnCraftChestFactory fccf = (FurnCraftChestFactory) f;
+                    config.set(current + ".type", "FCC");
+                    config.set(current + ".health",
+                        ((PercentageHealthRepairManager) fccf
+                            .getRepairManager()).getRawHealth());
+                    config.set(current + ".breakTime",
+                        ((PercentageHealthRepairManager) fccf
+                            .getRepairManager()).getBreakTime());
+                    config.set(current + ".runtime", fccf.getRunningTime());
+                    config.set(current + ".selectedRecipe", fccf
+                        .getCurrentRecipe().getName());
+                    config.set(current + ".autoSelect", fccf.isAutoSelect());
+                    List<String> recipeList = new LinkedList<String>();
+                    for (IRecipe rec : fccf.getRecipes()) {
+                        recipeList.add(rec.getIdentifier());
+                    }
+                    config.set(current + ".recipes", recipeList);
+                    if (fccf.getActivator() == null) {
+                        config.set(current + ".activator", "null");
+                    } else {
+                        config.set(current + ".activator", fccf.getActivator().toString());
+                    }
+                    for (IRecipe i : ((FurnCraftChestFactory) f).getRecipes()) {
+                        config.set(current + ".runcounts." + i.getName(), fccf.getRunCount(i));
+                        config.set(current + ".recipeLevels." + i.getName(), fccf.getRecipeLevel(i));
+                    }
+                    config.set(current + ".furnace-io", fccf.getFurnaceIOSelector().toConfigSection());
+                    config.set(current + ".table-io", fccf.getTableIOSelector().toConfigSection());
+                    config.set(current + ".ui-menu-mode", fccf.getUiMenuMode().name());
+                    config.set(current + ".charcoal-level", fccf.getCharcoalLevel());
+                    config.set(current + ".speed-level", fccf.getSpeedLevel());
+                    config.set(current + ".charcoal-absorbed", fccf.getCharcoalAbsorbed());
+                } else if (f instanceof Pipe) {
+                    Pipe p = (Pipe) f;
+                    config.set(current + ".type", "PIPE");
+                    config.set(current + ".runtime", p.getRunTime());
+                    List<String> mats = new LinkedList<>();
+                    List<Material> materials = p.getAllowedMaterials();
+                    if (materials != null) {
+                        for (Material m : materials) {
+                            mats.add(m.toString());
+                        }
+                    }
+                    config.set(current + ".materials", mats);
+                } else if (f instanceof Sorter) {
+                    Sorter s = (Sorter) f;
+                    config.set(current + ".runtime", s.getRunTime());
+                    config.set(current + ".type", "SORTER");
+                    for (BlockFace face : WorldUtils.ALL_SIDES) {
+                        config.set(current + ".faces." + face.toString(), s
+                            .getItemsForSide(face)
+                            .getItemStackRepresentation().toArray());
+                    }
+                }
+            }
+            config.save(saveFile);
+            plugin.info("Successfully saved factory data");
+        } catch (Exception e) {
+            // In case anything goes wrong while saving we always keep the
+            // latest valid backup
+            plugin.severe("Fatal error while trying to save factory data");
+            e.printStackTrace();
+            saveFile.delete();
+        }
+    }
 
-	private String serializeLocation(Location loc) {
-		return loc.getWorld().getName() + "#" + loc.getBlockX() + "#"
-				+ loc.getBlockY() + "#" + loc.getBlockZ();
-	}
+    private void configureLocation(ConfigurationSection config, List<Location> locations) {
+        int count = 0;
+        for (Location loc : locations) {
+            String identifier = "a" + count++ + serializeLocation(loc);
+            config.set(identifier + ".world", loc.getWorld().getName());
+            config.set(identifier + ".x", loc.getBlockX());
+            config.set(identifier + ".y", loc.getBlockY());
+            config.set(identifier + ".z", loc.getBlockZ());
+        }
+    }
 
-	public void load(Map<String, IFactoryEgg> eggs) {
-		if (saveFile.exists()) {
-			loadFromFile(saveFile, eggs);
-		} else {
-			plugin.warning("No default save file found");
-			if (backup.exists()) {
-				plugin.info("Backup file found, loading backup");
-				loadFromFile(backup, eggs);
-			} else {
-				plugin.warning("No backup save file found. If you are not starting this plugin for the first time you should be worried now");
-			}
-		}
-	}
+    private String serializeLocation(Location loc) {
+        return loc.getWorld().getName() + "#" + loc.getBlockX() + "#"
+            + loc.getBlockY() + "#" + loc.getBlockZ();
+    }
 
-	private void loadFromFile(File f, Map<String, IFactoryEgg> eggs) {
-		int counter = 0;
-		YamlConfiguration config = YamlConfiguration
-				.loadConfiguration(saveFile);
-		int loadedVersion = config.getInt("version", 1);
-		for (String key : config.getKeys(false)) {
-			ConfigurationSection current = config.getConfigurationSection(key);
-			if (current == null) {
-				continue;
-			}
-			String type = current.getString("type");
-			String name = current.getString("name");
-			int runtime = current.getInt("runtime");
-			List<Location> blocks = new LinkedList<>();
-			Set <String> blockKeys = current.getConfigurationSection("blocks").getKeys(false);
-			Collections.sort(new LinkedList <String> (blockKeys));
-			for (String blockKey : blockKeys) {
-				ConfigurationSection currSec = current.getConfigurationSection(
-						"blocks").getConfigurationSection(blockKey);
-				String worldName = currSec.getString("world");
-				int x = currSec.getInt("x");
-				int y = currSec.getInt("y");
-				int z = currSec.getInt("z");
-				World w = Bukkit.getWorld(worldName);
-				blocks.add(new Location(w, x, y, z));
-			}
-			switch (type) {
-			case "FCC":
-				if (loadedVersion == 1) {
-					//need to sort the locations properly, because they werent previously
-					List <Location> sortedList = new LinkedList<>();
-					int totalX = 0;
-					int totalY = 0;
-					int totalZ = 0;
-					for(Location loc : blocks) {
-						totalX += loc.getBlockX();
-						totalY += loc.getBlockY();
-						totalZ += loc.getBlockZ();
-					}
-					Location center = new Location(blocks.get(0).getWorld(), totalX / 3, totalY / 3, totalZ / 3);
-					if (!blocks.contains(center)) {
-						plugin.warning("Failed to convert location for factory at " + blocks.get(0).toString() + "; calculated center: " + center.toString());
-					}
-					else {
-					blocks.remove(center);
-					sortedList.add(center);
-					//we cant guarantee that this will work, it might very well fail for partially broken factories, but it's the best thing I got
-						if (blocks.get(0).getBlock().getType() == Material.CHEST
-								|| blocks.get(0).getBlock().getType() == Material.TRAPPED_CHEST) {
-							sortedList.add(blocks.get(1));
-							sortedList.add(blocks.get(0));
-						}
-						else {
-							sortedList.add(blocks.get(0));
-							sortedList.add(blocks.get(1));
-						}
-						blocks = sortedList;
-					}
+    public void load(Map<String, IFactoryEgg> eggs) {
+        if (saveFile.exists()) {
+            loadFromFile(saveFile, eggs);
+        } else {
+            plugin.warning("No default save file found");
+            if (backup.exists()) {
+                plugin.info("Backup file found, loading backup");
+                loadFromFile(backup, eggs);
+            } else {
+                plugin.warning("No backup save file found. If you are not starting this plugin for the first time you should be worried now");
+            }
+        }
+    }
+
+    private void loadFromFile(File f, Map<String, IFactoryEgg> eggs) {
+        int counter = 0;
+        YamlConfiguration config = YamlConfiguration
+            .loadConfiguration(saveFile);
+        int loadedVersion = config.getInt("version", 1);
+        for (String key : config.getKeys(false)) {
+            ConfigurationSection current = config.getConfigurationSection(key);
+            if (current == null) {
+                continue;
+            }
+            String type = current.getString("type");
+            String name = current.getString("name");
+            int runtime = current.getInt("runtime");
+            List<Location> blocks = new LinkedList<>();
+            Set<String> blockKeys = current.getConfigurationSection("blocks").getKeys(false);
+            Collections.sort(new LinkedList<String>(blockKeys));
+            for (String blockKey : blockKeys) {
+                ConfigurationSection currSec = current.getConfigurationSection(
+                    "blocks").getConfigurationSection(blockKey);
+                String worldName = currSec.getString("world");
+                int x = currSec.getInt("x");
+                int y = currSec.getInt("y");
+                int z = currSec.getInt("z");
+                World w = Bukkit.getWorld(worldName);
+                blocks.add(new Location(w, x, y, z));
+            }
+            switch (type) {
+                case "FCC":
+                    if (loadedVersion == 1) {
+                        //need to sort the locations properly, because they werent previously
+                        List<Location> sortedList = new LinkedList<>();
+                        int totalX = 0;
+                        int totalY = 0;
+                        int totalZ = 0;
+                        for (Location loc : blocks) {
+                            totalX += loc.getBlockX();
+                            totalY += loc.getBlockY();
+                            totalZ += loc.getBlockZ();
+                        }
+                        Location center = new Location(blocks.get(0).getWorld(), totalX / 3, totalY / 3, totalZ / 3);
+                        if (!blocks.contains(center)) {
+                            plugin.warning("Failed to convert location for factory at " + blocks.get(0).toString() + "; calculated center: " + center.toString());
+                        } else {
+                            blocks.remove(center);
+                            sortedList.add(center);
+                            //we cant guarantee that this will work, it might very well fail for partially broken factories, but it's the best thing I got
+                            if (blocks.get(0).getBlock().getType() == Material.CHEST
+                                || blocks.get(0).getBlock().getType() == Material.TRAPPED_CHEST) {
+                                sortedList.add(blocks.get(1));
+                                sortedList.add(blocks.get(0));
+                            } else {
+                                sortedList.add(blocks.get(0));
+                                sortedList.add(blocks.get(1));
+                            }
+                            blocks = sortedList;
+                        }
 
 
-				}
-				FurnCraftChestEgg egg = (FurnCraftChestEgg) eggs.get(name.toLowerCase());
-				if (egg == null) {
-					String replaceName = factoryRenames.get(name);
-					if (replaceName != null) {
-						egg = (FurnCraftChestEgg) eggs.get(replaceName);
-					}
-					if (egg == null) {
-						plugin.warning("Save file contained factory named "
-								+ name
-								+ " , but no factory with this name was found in the config");
-						continue;
-					}
-					else {
-						name = replaceName;
-					}
-				}
-				int health = current.getInt("health");
-				long breakTime = current.getLong("breakTime", 0);
-				String selectedRecipe = current.getString("selectedRecipe");
-				List <String> recipes = current.getStringList("recipes");
+                    }
+                    FurnCraftChestEgg egg = (FurnCraftChestEgg) eggs.get(name.toLowerCase());
+                    if (egg == null) {
+                        String replaceName = factoryRenames.get(name);
+                        if (replaceName != null) {
+                            egg = (FurnCraftChestEgg) eggs.get(replaceName);
+                        }
+                        if (egg == null) {
+                            plugin.warning("Save file contained factory named "
+                                + name
+                                + " , but no factory with this name was found in the config");
+                            continue;
+                        } else {
+                            name = replaceName;
+                        }
+                    }
+                    int health = current.getInt("health");
+                    long breakTime = current.getLong("breakTime", 0);
+                    String selectedRecipe = current.getString("selectedRecipe");
+                    List<String> recipes = current.getStringList("recipes");
 
-				// Now check for recipes marked as force include that should be on this list.
-				for (IRecipe irecipe : egg.getRecipes()) {
-					if (manager.isForceInclude(irecipe.getIdentifier())) {
-						if (!recipes.contains(irecipe.getIdentifier())) { // it's not there, add it.
-							plugin.info("Augmenting prior " + name + " factory at " + 
-									blocks.get(0).toString() + " with force include recipe " +
-									irecipe.getName());
-							recipes.add(irecipe.getIdentifier());
-						}
-					}
-				}
+                    // Now check for recipes marked as force include that should be on this list.
+                    for (IRecipe irecipe : egg.getRecipes()) {
+                        if (manager.isForceInclude(irecipe.getIdentifier())) {
+                            if (!recipes.contains(irecipe.getIdentifier())) { // it's not there, add it.
+                                plugin.info("Augmenting prior " + name + " factory at " +
+                                    blocks.get(0).toString() + " with force include recipe " +
+                                    irecipe.getName());
+                                recipes.add(irecipe.getIdentifier());
+                            }
+                        }
+                    }
 
-				boolean autoSelect = current.getBoolean("autoSelect", false);
-				FurnCraftChestFactory fac = (FurnCraftChestFactory) egg.revive(blocks, health, selectedRecipe,
-						runtime, breakTime, recipes);
-				String activator = current.getString("activator", "null");
-				UUID acti;
-				if (activator.equals("null")) {
-					acti = null;
-				}
-				else {
-					acti = UUID.fromString(activator);
-				}
-				fac.setActivator(acti);
-				ConfigurationSection runCounts = current.getConfigurationSection("runcounts");
-				if(runCounts != null) {
-					for(String countKey : runCounts.getKeys(false)) {
-						int runs = runCounts.getInt(countKey);
-						for(IRecipe r : fac.getRecipes()) {
-							if (r.getName().equals(countKey)) {
-								fac.setRunCount(r, runs);
-								break;
-							}
-						}
-					}
-				}
-				ConfigurationSection recipeLevels = current.getConfigurationSection("recipeLevels");
-				if(recipeLevels != null) {
-					for(String countKey : recipeLevels.getKeys(false)) {
-						int runs = recipeLevels.getInt(countKey);
-						for(IRecipe r : fac.getRecipes()) {
-							if (r.getName().equals(countKey)) {
-								fac.setRecipeLevel(r, runs);
-								break;
-							}
-						}
-					}
-				}
-				fac.setAutoSelect(autoSelect);
-				{
-					ConfigurationSection iosec = current.getConfigurationSection("furnace-io");
-					if (iosec != null) {
-						IOSelector furnaceIoSelector = IOSelector.fromConfigSection(iosec);
-						fac.setFurnaceIOSelector(furnaceIoSelector);
-					} else {
-						// Nothing I guess, the furnace has no default state.
-					}
-					iosec = current.getConfigurationSection("table-io");
-					if (iosec != null) {
-						IOSelector tableIoSelector = IOSelector.fromConfigSection(iosec);
-						fac.setTableIOSelector(tableIoSelector);
-					} else {
-						// Default table-side IO moved to FCCF.getTableIoSelector() lazy init
-					}
-				}
-				String menuModeRaw = current.getString("ui-menu-mode");
-				FurnCraftChestFactory.UiMenuMode menuMode;
-				if (menuModeRaw == null) {
-					menuMode = FurnCraftChestFactory.UiMenuMode.SIMPLE;
-				} else {
-					try {
-						menuMode = FurnCraftChestFactory.UiMenuMode.valueOf(menuModeRaw);
-					} catch (IllegalArgumentException iae) {
-						menuMode = FurnCraftChestFactory.UiMenuMode.SIMPLE;
-					}
-				}
-				fac.setUiMenuMode(menuMode);
-				manager.addFactory(fac);
-				counter++;
-				break;
-			case "PIPE":
-				PipeEgg pipeEgg = (PipeEgg) eggs.get(name);
-				if (pipeEgg == null) {
-					String replaceName = factoryRenames.get(name);
-					if (replaceName != null) {
-						pipeEgg = (PipeEgg) eggs.get(replaceName);
-					}
-					if (pipeEgg == null) {
-						plugin.warning("Save file contained factory named "
-								+ name
-								+ " , but no factory with this name was found in the config");
-						continue;
-					}
-					else {
-						name = replaceName;
-					}
-				}
-				List<Material> mats = new LinkedList<>();
-				if (current.isSet("materials")) {
-					for (String mat : current.getStringList("materials")) {
-						mats.add(Material.valueOf(mat));
-					}
-				} else {
-					mats = null;
-				}
-				if (mats.isEmpty()) {
-					mats = null;
-				}
-				Factory p = pipeEgg.revive(blocks, mats, runtime);
-				manager.addFactory(p);
-				counter++;
-				break;
-			case "SORTER":
-				Map<BlockFace, ItemMap> assignments = new HashMap<>();
-				SorterEgg sorterEgg = (SorterEgg) eggs.get(name);
-				if (sorterEgg == null) {
-					String replaceName = factoryRenames.get(name);
-					if (replaceName != null) {
-						sorterEgg = (SorterEgg) eggs.get(replaceName);
-					}
-					if (sorterEgg == null) {
-						plugin.warning("Save file contained factory named "
-								+ name
-								+ " , but no factory with this name was found in the config");
-						continue;
-					}
-					else {
-						name = replaceName;
-					}
-				}
-				for (String face : current.getConfigurationSection("faces")
-						.getKeys(false)) {
+                    boolean autoSelect = current.getBoolean("autoSelect", false);
+                    int charcoalLevel = current.getInt("charcoal-level", 0);
+                    int speedLevel = current.getInt("speed-level", 0);
+                    int charcoalAbsorbed = current.getInt("charcoal-absorbed", 0);
+                    FurnCraftChestFactory fac = (FurnCraftChestFactory) egg.revive(blocks, health, selectedRecipe,
+                        runtime, breakTime, recipes, charcoalLevel, speedLevel, charcoalAbsorbed);
+                    String activator = current.getString("activator", "null");
+                    UUID acti;
+                    if (activator.equals("null")) {
+                        acti = null;
+                    } else {
+                        acti = UUID.fromString(activator);
+                    }
+                    fac.setActivator(acti);
+                    ConfigurationSection runCounts = current.getConfigurationSection("runcounts");
+                    if (runCounts != null) {
+                        for (String countKey : runCounts.getKeys(false)) {
+                            int runs = runCounts.getInt(countKey);
+                            for (IRecipe r : fac.getRecipes()) {
+                                if (r.getName().equals(countKey)) {
+                                    fac.setRunCount(r, runs);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    ConfigurationSection recipeLevels = current.getConfigurationSection("recipeLevels");
+                    if (recipeLevels != null) {
+                        for (String countKey : recipeLevels.getKeys(false)) {
+                            int runs = recipeLevels.getInt(countKey);
+                            for (IRecipe r : fac.getRecipes()) {
+                                if (r.getName().equals(countKey)) {
+                                    fac.setRecipeLevel(r, runs);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    fac.setAutoSelect(autoSelect);
+                {
+                    ConfigurationSection iosec = current.getConfigurationSection("furnace-io");
+                    if (iosec != null) {
+                        IOSelector furnaceIoSelector = IOSelector.fromConfigSection(iosec);
+                        fac.setFurnaceIOSelector(furnaceIoSelector);
+                    } else {
+                        // Nothing I guess, the furnace has no default state.
+                    }
+                    iosec = current.getConfigurationSection("table-io");
+                    if (iosec != null) {
+                        IOSelector tableIoSelector = IOSelector.fromConfigSection(iosec);
+                        fac.setTableIOSelector(tableIoSelector);
+                    } else {
+                        // Default table-side IO moved to FCCF.getTableIoSelector() lazy init
+                    }
+                }
+                String menuModeRaw = current.getString("ui-menu-mode");
+                FurnCraftChestFactory.UiMenuMode menuMode;
+                if (menuModeRaw == null) {
+                    menuMode = FurnCraftChestFactory.UiMenuMode.SIMPLE;
+                } else {
+                    try {
+                        menuMode = FurnCraftChestFactory.UiMenuMode.valueOf(menuModeRaw);
+                    } catch (IllegalArgumentException iae) {
+                        menuMode = FurnCraftChestFactory.UiMenuMode.SIMPLE;
+                    }
+                }
+                fac.setUiMenuMode(menuMode);
+                manager.addFactory(fac);
+                counter++;
+                break;
+                case "PIPE":
+                    PipeEgg pipeEgg = (PipeEgg) eggs.get(name);
+                    if (pipeEgg == null) {
+                        String replaceName = factoryRenames.get(name);
+                        if (replaceName != null) {
+                            pipeEgg = (PipeEgg) eggs.get(replaceName);
+                        }
+                        if (pipeEgg == null) {
+                            plugin.warning("Save file contained factory named "
+                                + name
+                                + " , but no factory with this name was found in the config");
+                            continue;
+                        } else {
+                            name = replaceName;
+                        }
+                    }
+                    List<Material> mats = new LinkedList<>();
+                    if (current.isSet("materials")) {
+                        for (String mat : current.getStringList("materials")) {
+                            mats.add(Material.valueOf(mat));
+                        }
+                    } else {
+                        mats = null;
+                    }
+                    if (mats.isEmpty()) {
+                        mats = null;
+                    }
+                    Factory p = pipeEgg.revive(blocks, mats, runtime);
+                    manager.addFactory(p);
+                    counter++;
+                    break;
+                case "SORTER":
+                    Map<BlockFace, ItemMap> assignments = new HashMap<>();
+                    SorterEgg sorterEgg = (SorterEgg) eggs.get(name);
+                    if (sorterEgg == null) {
+                        String replaceName = factoryRenames.get(name);
+                        if (replaceName != null) {
+                            sorterEgg = (SorterEgg) eggs.get(replaceName);
+                        }
+                        if (sorterEgg == null) {
+                            plugin.warning("Save file contained factory named "
+                                + name
+                                + " , but no factory with this name was found in the config");
+                            continue;
+                        } else {
+                            name = replaceName;
+                        }
+                    }
+                    for (String face : current.getConfigurationSection("faces")
+                        .getKeys(false)) {
 
-					@SuppressWarnings("unchecked")
-					List<ItemStack> stacks = (List<ItemStack>) current.getConfigurationSection("faces").get(face);
+                        @SuppressWarnings("unchecked")
+                        List<ItemStack> stacks = (List<ItemStack>) current.getConfigurationSection("faces").get(face);
 
-					// it works, okay?
-					ItemMap map = new ItemMap(stacks);
-					assignments.put(BlockFace.valueOf(face), map);
-				}
-				Factory s = sorterEgg.revive(blocks, assignments, runtime);
-				manager.addFactory(s);
-				counter++;
-				break;
-			}
-		}
-		plugin.info("Loaded " + counter + " factory from save file");
-	}
+                        // it works, okay?
+                        ItemMap map = new ItemMap(stacks);
+                        assignments.put(BlockFace.valueOf(face), map);
+                    }
+                    Factory s = sorterEgg.revive(blocks, assignments, runtime);
+                    manager.addFactory(s);
+                    counter++;
+                    break;
+            }
+        }
+        plugin.info("Loaded " + counter + " factory from save file");
+    }
 }

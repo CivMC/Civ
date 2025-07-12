@@ -10,23 +10,23 @@ import net.luckperms.api.query.QueryOptions;
 import net.luckperms.api.util.Tristate;
 
 public class KiraLuckPermsWrapper {
-	
-	private LuckPerms api;
-	
-	public KiraLuckPermsWrapper() {
-		api = LuckPermsProvider.get();
-	}
-	
-	public boolean hasPermission(UUID uuid, String permission) {
-		User user = api.getUserManager().getUser(uuid);
-		if (user == null) {
-			return false;
-		}
-		ContextManager cm = api.getContextManager();
-		QueryOptions queryOptions = cm.getQueryOptions(user).orElse(cm.getStaticQueryOptions());
-		CachedPermissionData permissionData = user.getCachedData().getPermissionData(queryOptions);
-		Tristate checkResult = permissionData.checkPermission(permission);
-		return checkResult.asBoolean();
-	}
+
+    private LuckPerms api;
+
+    public KiraLuckPermsWrapper() {
+        api = LuckPermsProvider.get();
+    }
+
+    public boolean hasPermission(UUID uuid, String permission) {
+        User user = api.getUserManager().getUser(uuid);
+        if (user == null) {
+            return false;
+        }
+        ContextManager cm = api.getContextManager();
+        QueryOptions queryOptions = cm.getQueryOptions(user).orElse(cm.getStaticQueryOptions());
+        CachedPermissionData permissionData = user.getCachedData().getPermissionData(queryOptions);
+        Tristate checkResult = permissionData.checkPermission(permission);
+        return checkResult.asBoolean();
+    }
 
 }

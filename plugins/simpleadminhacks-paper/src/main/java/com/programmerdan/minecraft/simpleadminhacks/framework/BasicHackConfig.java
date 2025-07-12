@@ -10,11 +10,12 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public final class BasicHackConfig extends SimpleHackConfig {
 
-	public BasicHackConfig(final SimpleAdminHacks plugin, final ConfigurationSection base) {
-		super(plugin, base);
-	}
+    public BasicHackConfig(final SimpleAdminHacks plugin, final ConfigurationSection base) {
+        super(plugin, base);
+    }
 
-	@Override
-	protected void wireup(final ConfigurationSection config) { }
+    @Override
+    protected void wireup(final ConfigurationSection config) {
+    }
 
 }

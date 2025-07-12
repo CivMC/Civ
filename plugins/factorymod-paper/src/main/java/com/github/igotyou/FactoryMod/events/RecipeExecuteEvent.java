@@ -10,52 +10,52 @@ import org.bukkit.event.HandlerList;
  * Event called when executing a recipe in a FurnCraftChestFactory
  */
 public class RecipeExecuteEvent extends Event implements Cancellable {
-	
-	private static final HandlerList handlers = new HandlerList();
-	
-	private FurnCraftChestFactory fccf;
-	private InputRecipe rec;
 
-	private boolean cancelled;
+    private static final HandlerList handlers = new HandlerList();
 
-	public RecipeExecuteEvent(FurnCraftChestFactory fccf, InputRecipe rec) {
-		this.rec = rec;
-		this.fccf = fccf;
-	}
+    private FurnCraftChestFactory fccf;
+    private InputRecipe rec;
 
-	/**
-	 * @return The factory executing the recipe
-	 */
-	public FurnCraftChestFactory getFactory() {
-		return fccf;
-	}
+    private boolean cancelled;
 
-	/**
-	 * @return The recipe being executed
-	 */
-	public InputRecipe getRecipe() {
-		return rec;
-	}
-	
+    public RecipeExecuteEvent(FurnCraftChestFactory fccf, InputRecipe rec) {
+        this.rec = rec;
+        this.fccf = fccf;
+    }
 
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    /**
+     * @return The factory executing the recipe
+     */
+    public FurnCraftChestFactory getFactory() {
+        return fccf;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-	
+    /**
+     * @return The recipe being executed
+     */
+    public InputRecipe getRecipe() {
+        return rec;
+    }
 
-	@Override
-	public boolean isCancelled() {
-		return cancelled;
-	}
 
-	@Override
-	public void setCancelled(boolean cancelled) {
-		this.cancelled = cancelled;		
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
+    }
 
 }

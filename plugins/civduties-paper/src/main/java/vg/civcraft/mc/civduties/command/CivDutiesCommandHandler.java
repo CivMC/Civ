@@ -6,14 +6,14 @@ import vg.civcraft.mc.civmodcore.commands.CommandManager;
 
 public class CivDutiesCommandHandler extends CommandManager {
 
-	public CivDutiesCommandHandler(Plugin plugin) {
-		super(plugin);
-		init();
-	}
+    public CivDutiesCommandHandler(Plugin plugin) {
+        super(plugin);
+        init();
+    }
 
-	@Override
-	public void registerCommands() {
-		registerCommand(new Duty());
-	}
-	
+    @Override
+    public void registerCommands() {
+        registerCommand(new Duty());
+    }
+
 }

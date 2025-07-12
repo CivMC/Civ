@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "strict": true,
+        "useDefineForClassFields": true,
+        "moduleResolution": "node",
+        "jsx": "preserve",
+        "sourceMap": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "lib": ["esnext", "dom"],
+        "types": ["node"],
+        "skipLibCheck": true,
+        "paths": {
+            "~/*": ["./docs/*"]
+        }
+    },
+    "include": ["docs/**/*"],
+    "exclude": ["docs/dist/**", "docs/cache/**"]
+}

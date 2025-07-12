@@ -15,80 +15,80 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class HiddenOre extends JavaPlugin {
 
-	private static HiddenOre plugin;
+    private static HiddenOre plugin;
 
-	private static CommandHandler commandHandler;
+    private static CommandHandler commandHandler;
 
-	private static BreakTracking tracking;
-	private BukkitTask trackingSave;
-	private BukkitTask trackingMapSave;
-	
-	private static BlockBreakListener breakHandler;
-	private static ExploitListener exploitHandler;
-	private static List<WorldGenerationListener> worldGen;
+    private static BreakTracking tracking;
+    private BukkitTask trackingSave;
+    private BukkitTask trackingMapSave;
 
-	@Override
-	public void onEnable() {
-		plugin = this;
-		
-		saveDefaultConfig();
-		reloadConfig();
-		Config.loadConfig();
-		
-		tracking = new BreakTracking();
-		tracking.load();
-		trackingSave = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
-			public void run() {
-				tracking.save();
-			}
-		}, Config.trackSave, Config.trackSave);
+    private static BlockBreakListener breakHandler;
+    private static ExploitListener exploitHandler;
+    private static List<WorldGenerationListener> worldGen;
 
-		trackingMapSave = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
-			public void run() {
-				tracking.saveMap();
-			}
-		}, Config.mapSave, Config.mapSave);
+    @Override
+    public void onEnable() {
+        plugin = this;
 
-		
-		exploitHandler = new ExploitListener(plugin);
-		this.getServer().getPluginManager().registerEvents(exploitHandler, this);
+        saveDefaultConfig();
+        reloadConfig();
+        Config.loadConfig();
 
-		breakHandler = new BlockBreakListener(plugin);
-		this.getServer().getPluginManager().registerEvents(breakHandler, this);
-				
-		commandHandler = new CommandHandler(this);
-		this.getCommand("hiddenore").setExecutor(commandHandler);
+        tracking = new BreakTracking();
+        tracking.load();
+        trackingSave = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
+            public void run() {
+                tracking.save();
+            }
+        }, Config.trackSave, Config.trackSave);
 
-		worldGen = new ArrayList<>();
+        trackingMapSave = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
+            public void run() {
+                tracking.saveMap();
+            }
+        }, Config.mapSave, Config.mapSave);
 
-		ConfigurationSection worldGenConfig = Config.instance.getWorldGenerations();
-		if (worldGenConfig != null) {
-			for (String key : worldGenConfig.getKeys(false)) {
-				this.getLogger().log(Level.INFO, "Registered Ore Generation Suppression Listener for World {0}", key);
-				WorldGenerationListener list = new WorldGenerationListener(worldGenConfig.getConfigurationSection(key));
-				this.getServer().getPluginManager().registerEvents(list, this);
-				worldGen.add(list);
-			}
-		}
-	}
 
-	@Override
-	public void onDisable() {
-		trackingSave.cancel();
-		trackingMapSave.cancel();
-		tracking.save();
-		tracking.saveMap();
-	}
+        exploitHandler = new ExploitListener(plugin);
+        this.getServer().getPluginManager().registerEvents(exploitHandler, this);
 
-	public static HiddenOre getPlugin() {
-		return plugin;
-	}
+        breakHandler = new BlockBreakListener(plugin);
+        this.getServer().getPluginManager().registerEvents(breakHandler, this);
 
-	public BreakTracking getTracking() {
-		return tracking;
-	}
-	
-	public BlockBreakListener getBreakListener() {
-		return breakHandler;
-	}
+        commandHandler = new CommandHandler(this);
+        this.getCommand("hiddenore").setExecutor(commandHandler);
+
+        worldGen = new ArrayList<>();
+
+        ConfigurationSection worldGenConfig = Config.instance.getWorldGenerations();
+        if (worldGenConfig != null) {
+            for (String key : worldGenConfig.getKeys(false)) {
+                this.getLogger().log(Level.INFO, "Registered Ore Generation Suppression Listener for World {0}", key);
+                WorldGenerationListener list = new WorldGenerationListener(worldGenConfig.getConfigurationSection(key));
+                this.getServer().getPluginManager().registerEvents(list, this);
+                worldGen.add(list);
+            }
+        }
+    }
+
+    @Override
+    public void onDisable() {
+        trackingSave.cancel();
+        trackingMapSave.cancel();
+        tracking.save();
+        tracking.saveMap();
+    }
+
+    public static HiddenOre getPlugin() {
+        return plugin;
+    }
+
+    public BreakTracking getTracking() {
+        return tracking;
+    }
+
+    public BlockBreakListener getBreakListener() {
+        return breakHandler;
+    }
 }

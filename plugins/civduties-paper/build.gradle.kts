@@ -5,9 +5,14 @@ plugins {
 version = "1.5.0-SNAPSHOT"
 
 dependencies {
-    paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+    paperweight {
+        paperDevBundle(libs.versions.paper)
+    }
 
     compileOnly(project(":plugins:civmodcore-paper"))
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly(project(":plugins:combattagplus-paper"))
+
+    compileOnly(libs.vault.api) {
+        exclude(group = "org.bukkit")
+    }
 }

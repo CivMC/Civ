@@ -15,23 +15,23 @@ import org.bukkit.entity.Player;
 
 public class FactoryMenu extends BaseCommand {
 
-	@CommandAlias("fm")
-	@Syntax("[factory]")
-	@Description("Opens a GUI allowing you to browse through all factories")
-	@CommandCompletion("@FM_Factories")
-	public void execute(Player sender, @Optional String factoryName) {
-		if (factoryName == null) {
-			FactoryModGUI gui = new FactoryModGUI(sender);
-			gui.showFactoryOverview(true);
-		} else {
-			IFactoryEgg egg = FactoryMod.getInstance().getManager().getEgg(factoryName);
-			if (egg == null) {
-				sender.sendMessage(ChatColor.RED + "The factory " + factoryName + " does not exist");
-				return;
-			}
-			FactoryModGUI gui = new FactoryModGUI(sender);
-			gui.showForFactory((FurnCraftChestEgg) egg);
-		}
-	}
+    @CommandAlias("fm")
+    @Syntax("[factory]")
+    @Description("Opens a GUI allowing you to browse through all factories")
+    @CommandCompletion("@FM_Factories @nothing")
+    public void execute(Player sender, @Optional String factoryName) {
+        if (factoryName == null) {
+            FactoryModGUI gui = new FactoryModGUI(sender);
+            gui.showFactoryOverview(true);
+        } else {
+            IFactoryEgg egg = FactoryMod.getInstance().getManager().getEgg(factoryName);
+            if (egg == null) {
+                sender.sendMessage(ChatColor.RED + "The factory " + factoryName + " does not exist");
+                return;
+            }
+            FactoryModGUI gui = new FactoryModGUI(sender);
+            gui.showForFactory((FurnCraftChestEgg) egg);
+        }
+    }
 
 }

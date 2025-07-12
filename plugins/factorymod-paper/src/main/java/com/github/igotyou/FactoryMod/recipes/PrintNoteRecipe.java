@@ -10,10 +10,10 @@ import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -22,145 +22,146 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class PrintNoteRecipe extends PrintBookRecipe {
-	private static class BookInfo {
-		public String title;
-		public List<String> lines;
-	}
 
-	private static final String pamphletName = "Pamphlet";
-	private static final String secureNoteName = "Secure Note";
+    private static class BookInfo {
 
-	private boolean secureNote;
-	private String title;
+        public String title;
+        public List<String> lines;
+    }
 
-	public boolean isSecurityNote() {
-		return this.secureNote;
-	}
+    private static final String pamphletName = "Pamphlet";
+    private static final String secureNoteName = "Secure Note";
 
-	public String getTitle() {
-		return this.title;
-	}
+    private boolean secureNote;
+    private String title;
 
-	public PrintNoteRecipe(
-			String identifier,
-			String name,
-			int productionTime,
-			ItemMap input,
-			ItemMap printingPlate,
-			int outputAmount,
-			boolean secureNote,
-			String title
-	) {
-		super(identifier, name, productionTime, input, printingPlate, outputAmount);
+    public boolean isSecurityNote() {
+        return this.secureNote;
+    }
 
-		this.secureNote = secureNote;
+    public String getTitle() {
+        return this.title;
+    }
 
-		if (title != null && title.length() > 0) {
-			this.title = title;
-		} else {
-			this.title = secureNote ? secureNoteName : pamphletName;
-		}
-	}
+    public PrintNoteRecipe(
+        String identifier,
+        String name,
+        int productionTime,
+        ItemMap input,
+        ItemMap printingPlate,
+        int outputAmount,
+        boolean secureNote,
+        String title
+    ) {
+        super(identifier, name, productionTime, input, printingPlate, outputAmount);
 
-	@Override
-	public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
-		MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
-		logBeforeRecipeRun(combo, fccf);
+        this.secureNote = secureNote;
 
-		ItemStack printingPlateStack = getPrintingPlateItemStack(inputInv, getPrintingPlate());
-		ItemMap toRemove = this.input.clone();
+        if (title != null && title.length() > 0) {
+            this.title = title;
+        } else {
+            this.title = secureNote ? secureNoteName : pamphletName;
+        }
+    }
 
-		if (printingPlateStack != null
-				&& toRemove.isContainedIn(inputInv)
-				&& toRemove.removeSafelyFrom(inputInv)
-		) {
-			BookInfo info = getBookInfo(printingPlateStack);
-			ItemStack paper = new ItemStack(Material.PAPER, getOutputAmount());
+    @Override
+    public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
+        logBeforeRecipeRun(combo, fccf);
 
-			ItemMeta paperMeta = paper.getItemMeta();
-			paperMeta.setDisplayName(ChatColor.RESET + info.title);
-			paperMeta.setLore(info.lines);
-			paper.setItemMeta(paperMeta);
+        ItemStack printingPlateStack = getPrintingPlateItemStack(inputInv, getPrintingPlate());
+        ItemMap toRemove = this.input.clone();
 
-			outputInv.addItem(paper);
-		}
+        if (printingPlateStack != null
+            && toRemove.isContainedIn(inputInv)
+            && toRemove.removeSafelyFrom(inputInv)
+        ) {
+            BookInfo info = getBookInfo(printingPlateStack);
+            ItemStack paper = new ItemStack(Material.PAPER, getOutputAmount());
 
-		logAfterRecipeRun(combo, fccf);
-		return true;
-	}
+            ItemMeta paperMeta = paper.getItemMeta();
+            paperMeta.setDisplayName(ChatColor.RESET + info.title);
+            paperMeta.setLore(info.lines);
+            paper.setItemMeta(paperMeta);
 
-	private BookInfo getBookInfo(ItemStack printingPlateStack) {
-		ItemStack book = createBook(printingPlateStack, 1);
-		BookMeta bookMeta = (BookMeta) book.getItemMeta();
-		int version = getVersion(printingPlateStack);
-		String text = bookMeta.getPageCount() > 0 ?
-				version == 0 ? bookMeta.getPage(1) 	: String.join("", bookMeta.getPages())
-				: "";
-		String[] lines = text.split("\n");
-		List<String> fixedLines = new ArrayList<>();
+            outputInv.addItem(paper);
+        }
 
-		for (String line : lines) {
-			fixedLines.add(ChatColor.GRAY + line
-					.replaceAll("(?<!§x(§[\\da-f]){0,5})" + ChatColor.BLACK, ChatColor.GRAY.toString())
-					.replaceAll(ChatColor.RESET.toString(), ChatColor.GRAY.toString()));
-		}
+        logAfterRecipeRun(combo, fccf);
+        return true;
+    }
 
-		String bookTitle = bookMeta.getTitle();
+    private BookInfo getBookInfo(ItemStack printingPlateStack) {
+        ItemStack book = createBook(printingPlateStack, 1);
+        BookMeta bookMeta = (BookMeta) book.getItemMeta();
+        int version = getVersion(printingPlateStack);
+        String text = bookMeta.getPageCount() > 0 ?
+            version == 0 ? bookMeta.getPage(1) : String.join("", bookMeta.getPages())
+            : "";
+        String[] lines = text.split("\n");
+        List<String> fixedLines = new ArrayList<>();
 
-		BookInfo info = new BookInfo();
-		info.lines = fixedLines;
-		info.title = bookTitle != null && bookTitle.length() > 0 ? bookTitle : this.title;
+        for (String line : lines) {
+            fixedLines.add(ChatColor.GRAY + line
+                .replaceAll(ChatColor.RESET.toString(), ChatColor.GRAY.toString()));
+        }
 
-		if (this.secureNote) {
-			net.minecraft.world.item.ItemStack bookItem = CraftItemStack.asNMSCopy(printingPlateStack);
-			String bookSN = bookItem.getTag().getString("SN");
-			info.lines.add(bookSN);
-		}
+        String bookTitle = bookMeta.getTitle();
 
-		return info;
-	}
+        BookInfo info = new BookInfo();
+        info.lines = fixedLines;
+        info.title = bookTitle != null && !bookTitle.isEmpty() ? bookTitle : this.title;
 
-	private int getVersion(ItemStack item) {
-		var book = CraftItemStack.asNMSCopy(item);
-		var tag = book.getTag();
-		if (tag != null && tag.contains("Version")) return tag.getInt("Version");
-		return 0;
-	}
+        if (this.secureNote) {
+            net.minecraft.world.item.ItemStack bookItem = CraftItemStack.asNMSCopy(printingPlateStack);
+            String bookSN = bookItem.get(DataComponents.CUSTOM_DATA).copyTag().getString("SN");
+            info.lines.add(bookSN);
+        }
 
-	@Override
-	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		ItemStack paper = new ItemStack(Material.PAPER, getOutputAmount());
-		ItemUtils.setDisplayName(paper, this.title);
+        return info;
+    }
 
-		List<ItemStack> stacks = new ArrayList<>();
-		stacks.add(paper);
-		stacks.add(getPrintingPlateRepresentation(getPrintingPlate(), PrintingPlateRecipe.itemName));
+    private int getVersion(ItemStack item) {
+        var book = CraftItemStack.asNMSCopy(item);
+        var tag = book.get(DataComponents.WRITTEN_BOOK_CONTENT);
+        if (tag != null) return tag.generation();
+        return 0;
+    }
 
-		if (i == null) {
-			return stacks;
-		}
+    @Override
+    public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+        ItemStack paper = new ItemStack(Material.PAPER, getOutputAmount());
+        ItemUtils.setDisplayName(paper, this.title);
 
-		int possibleRuns = input.getMultiplesContainedIn(i);
+        List<ItemStack> stacks = new ArrayList<>();
+        stacks.add(paper);
+        stacks.add(getPrintingPlateRepresentation(getPrintingPlate(), PrintingPlateRecipe.itemName));
 
-		for (ItemStack is : stacks) {
-			ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
-					+ String.valueOf(possibleRuns) + " runs");
-		}
+        if (i == null) {
+            return stacks;
+        }
 
-		return stacks;
-	}
+        int possibleRuns = input.getMultiplesContainedIn(i);
 
-	@Override
-	public ItemStack getRecipeRepresentation() {
-		ItemStack res = new ItemStack(Material.PAPER);
+        for (ItemStack is : stacks) {
+            ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
+                + String.valueOf(possibleRuns) + " runs");
+        }
 
-		ItemUtils.setDisplayName(res, getName());
+        return stacks;
+    }
 
-		return res;
-	}
+    @Override
+    public ItemStack getRecipeRepresentation() {
+        ItemStack res = new ItemStack(Material.PAPER);
 
-	@Override
-	public String getTypeIdentifier() {
-		return "PRINTNOTE";
-	}
+        ItemUtils.setDisplayName(res, getName());
+
+        return res;
+    }
+
+    @Override
+    public String getTypeIdentifier() {
+        return "PRINTNOTE";
+    }
 }

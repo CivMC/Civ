@@ -6,8 +6,8 @@ import org.bukkit.Location;
 
 public interface FieldManager {
 
-	boolean isInside(Location location);
-	
-	Collection<SnitchQTEntry> getQTEntries();
-	
+    boolean isInside(Location location);
+
+    Collection<SnitchQTEntry> getQTEntries();
+
 }

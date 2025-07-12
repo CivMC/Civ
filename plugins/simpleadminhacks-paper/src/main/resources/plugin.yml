@@ -1,11 +1,11 @@
 name: SimpleAdminHacks
 main: com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks
 author: ProgrammerDan
-authors: [ProgrammerDan, Maxopoly]
+authors: [ ProgrammerDan, Maxopoly ]
 version: ${version}
-depend: [CivModCore]
-softdepend: [CombatTagPlus, NameLayer, Citadel, ProtocolLib, BanStick, ExilePearl, BreweryX]
-api-version: 1.18
+depend: [ CivModCore ]
+softdepend: [ CombatTagPlus, NameLayer, Citadel, ProtocolLib, BanStick, ExilePearl, BreweryX ]
+api-version: 1.21.3
 commands:
   hacks:
     description: Shows the various hacks and fixes supported by this plugin and controls them
@@ -31,9 +31,9 @@ commands:
     usage: /<command>
     permission: simpleadmin.copyprotect
   serialize:
-    description: Print to console the object held as serialized yaml
+    description: Serialize a held item to YAML
     usage: /<command>
-    permission: simpleadmin.hacks
+    permission: simpleadmin.serialize
   introkit:
     description: Give a player the currently configured introkit
     usage: /<command> [playername|UUID]
@@ -96,7 +96,7 @@ commands:
     description: Allows debugging of an event and its handlers
     usage: /<command> full.path.to.event
     permission: simpleadmin.eventdebug
-  stats: {} # Defined in (basic) PlayerStats
+  stats: { } # Defined in (basic) PlayerStats
 permissions:
   simpleadmin.*:
     description: Gives access to all SimpleAdminHacks commands

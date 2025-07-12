@@ -24,173 +24,173 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * Implementation of ProxyLoader, for Cloud9 data. Had been able to find some published
  * lists that were easy to implement at the time, so this captures that effort.
- * 
+ *
  * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  */
 public final class Cloud9ProxyLoader extends ProxyLoader {
 
-	private String loadUrl;
-	private float proxyScore;
-	private boolean autoBan;
-	private long banLength;
-	private String banMessage;
-	
-	public Cloud9ProxyLoader(ConfigurationSection config) {
-		super(config);
-	}
-	
-	private BigInteger addressToLong(IPAddress convert) {
-		BigInteger output = BigInteger.ZERO;
-		int offset = 0;
-		String[] segments = convert.getSegmentStrings();
-		for (int a = segments.length - 1; a >= 0; a --) {
-			BigInteger inject = BigInteger.valueOf(Long.valueOf(segments[a]));
-			output = output.add(inject.shiftLeft(offset));
-			offset += convert.getBitsPerSegment();
-		}
-		return output;
-	}
+    private String loadUrl;
+    private float proxyScore;
+    private boolean autoBan;
+    private long banLength;
+    private String banMessage;
 
-	@Override
-	public void run() {
-		try {
-			URL connection = new URL(this.loadUrl);
-			InputStream readIn = connection.openStream();
-			BufferedReader in = new BufferedReader(new InputStreamReader(readIn));
-			String line = in.readLine();
-			int errors = 0;
-			long lines = 0;
-			while (line != null) {
-				lines ++;
-				if (lines % 50 == 0) {
-					BanStick.getPlugin().info("Checked {0} entries from Cloud9 so far", lines);
-				}
-				if (errors > 10) {
-					break;
-				}
-				try {
-					ArrayList<IPAddress> cidrFromRange = new ArrayList<>();
-					String[] fields = line.split(",");
-					IPAddressString lowbound = new IPAddressString(fields[0]);
-					IPAddressString highbound = new IPAddressString(fields[1]);
-					IPAddress lowboundAddr = lowbound.getAddress();
-					IPAddress highboundAddr = highbound.getAddress();
-					BanStick.getPlugin().debug("Starting with range: {0} vs {1}", lowboundAddr, highboundAddr);
-					BigInteger end = addressToLong(highboundAddr);
-					BigInteger start = addressToLong(lowboundAddr);
-					
-					// Borrowed wholesale from http://stackoverflow.com/a/5032908
-					// Little hard to explain, but basically, finds the minimal set of CIDRs that fit the range,
-					//  using bit math.
-					// TODO: Refactor into a utility.
-					while (end.compareTo(start) >= 0) {
-						try {
-							byte[] arr = start.toByteArray();
-							if (arr[0] == 0) {
-								arr = Arrays.copyOfRange(arr, 1, arr.length);
-							}
-							lowboundAddr = IPAddress.from(arr);
-						} catch (IllegalArgumentException iae) {
-							BanStick.getPlugin().debug("Failed on byte array {0}", start.toByteArray());
-						}
+    public Cloud9ProxyLoader(ConfigurationSection config) {
+        super(config);
+    }
 
-						int mask = lowboundAddr.isIPv4() ? 32 : 128;
-						while (mask > 0) {
-							IPAddress maskAddr = lowboundAddr.toSubnet(mask - 1);
-							if (maskAddr.getLower().compareTo(lowboundAddr) != 0) {
-								break;
-							}
-							mask --;
-						}
-						int x = BigIntegerMath.log2(end.subtract(start).add(BigInteger.ONE), RoundingMode.FLOOR);
-						int maxd = (lowboundAddr.isIPv4() ? 32 : 128) - x;
-						if (mask < maxd) {
-							mask = maxd;
-						}
-						
-						BanStick.getPlugin().debug("  Found sub-CIDR: {0}", 
-								lowboundAddr.toSubnet(mask).toCanonicalString());
-						cidrFromRange.add(lowboundAddr.toSubnet(mask));
-						
-						BigInteger migrate = BigInteger.valueOf(2).pow((lowboundAddr.isIPv4() ? 32 : 128) - mask);
-						start = start.add(migrate);
-					}
+    private BigInteger addressToLong(IPAddress convert) {
+        BigInteger output = BigInteger.ZERO;
+        int offset = 0;
+        String[] segments = convert.getSegmentStrings();
+        for (int a = segments.length - 1; a >= 0; a--) {
+            BigInteger inject = BigInteger.valueOf(Long.valueOf(segments[a]));
+            output = output.add(inject.shiftLeft(offset));
+            offset += convert.getBitsPerSegment();
+        }
+        return output;
+    }
 
-					String registeredAs = fields[2];
-					String domain = (fields.length > 3) ? fields[3] : null;
+    @Override
+    public void run() {
+        try {
+            URL connection = new URL(this.loadUrl);
+            InputStream readIn = connection.openStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(readIn));
+            String line = in.readLine();
+            int errors = 0;
+            long lines = 0;
+            while (line != null) {
+                lines++;
+                if (lines % 50 == 0) {
+                    BanStick.getPlugin().info("Checked {0} entries from Cloud9 so far", lines);
+                }
+                if (errors > 10) {
+                    break;
+                }
+                try {
+                    ArrayList<IPAddress> cidrFromRange = new ArrayList<>();
+                    String[] fields = line.split(",");
+                    IPAddressString lowbound = new IPAddressString(fields[0]);
+                    IPAddressString highbound = new IPAddressString(fields[1]);
+                    IPAddress lowboundAddr = lowbound.getAddress();
+                    IPAddress highboundAddr = highbound.getAddress();
+                    BanStick.getPlugin().debug("Starting with range: {0} vs {1}", lowboundAddr, highboundAddr);
+                    BigInteger end = addressToLong(highboundAddr);
+                    BigInteger start = addressToLong(lowboundAddr);
 
-					for (IPAddress address : cidrFromRange) {
-						BSIP found = BSIP.byCIDR(address.getLower().toString(), address.getNetworkPrefixLength());
-						if (found == null) {
-							found = BSIP.create(address.getLower(), address.getNetworkPrefixLength());
-						}
-						
-						BSIPData data = BSIPData.byExactIP(found);
-						if (data == null) {
-							data = BSIPData.create(found, null, null, null, null, null, null, null, 
-									domain, null, registeredAs, null, proxyScore, "Cloud9 Proxy Loader", null);
-						}
-						
-						if (autoBan) {
-							boolean wasmatch = false;
-	
-							List<BSBan> ban = BSBan.byProxy(data, true);
-							if (!(ban == null || ban.isEmpty())) {
-								// look for match; if unexpired, extend.
-								for (int i = ban.size() - 1 ; i >= 0; i--) {
-									BSBan pickOne = ban.get(i);
-									if (pickOne.isAdminBan()) {
-										continue; // skip admin entered bans.
-									}
-									if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().after(new Date())) {
-										if (this.banLength < 0) { // endless
-											pickOne.clearBanEndTime();
-										} else {
-											pickOne.setBanEndTime(new Date(System.currentTimeMillis() 
-													+ this.banLength));
-										}
-										wasmatch = true;
-										break;
-									}
-								}
-							}
-							if (!wasmatch) {
-								BSBan.create(data, this.banMessage, 
-										this.banLength < 0 ? null : new Date(System.currentTimeMillis() 
-												+ this.banLength), false);
-							}
-						}
-					}
-					
-				} catch (Exception e) {
-					BanStick.getPlugin().debug("Failed to load: {0} due to {1}", line, e.getMessage());
-					BanStick.getPlugin().warning("  Failure:", e);
-					e.printStackTrace();
-					errors ++;
-				}
-				line = in.readLine();
-			}
-			if (errors > 10) {
-				BanStick.getPlugin().warning("Cancelled cloud9 load due to too many errors.");
-			}
-		} catch (IOException  e) {
-			BanStick.getPlugin().debug("Failed reading from Cloud9-style list: " + loadUrl);
-		}
-	}
+                    // Borrowed wholesale from http://stackoverflow.com/a/5032908
+                    // Little hard to explain, but basically, finds the minimal set of CIDRs that fit the range,
+                    //  using bit math.
+                    // TODO: Refactor into a utility.
+                    while (end.compareTo(start) >= 0) {
+                        try {
+                            byte[] arr = start.toByteArray();
+                            if (arr[0] == 0) {
+                                arr = Arrays.copyOfRange(arr, 1, arr.length);
+                            }
+                            lowboundAddr = IPAddress.from(arr);
+                        } catch (IllegalArgumentException iae) {
+                            BanStick.getPlugin().debug("Failed on byte array {0}", start.toByteArray());
+                        }
 
-	@Override
-	public void setup(ConfigurationSection config) {
-		this.loadUrl = config.getString("url");
-		this.proxyScore = (float) config.getDouble("defaultScore", 3.0d);
-		this.autoBan = config.isConfigurationSection("ban");
-		if (this.autoBan) {
-			this.banLength = config.getLong("ban.length", -1L);
-			this.banMessage = config.getString("ban.message", null);
-		}
-	}
+                        int mask = lowboundAddr.isIPv4() ? 32 : 128;
+                        while (mask > 0) {
+                            IPAddress maskAddr = lowboundAddr.toSubnet(mask - 1);
+                            if (maskAddr.getLower().compareTo(lowboundAddr) != 0) {
+                                break;
+                            }
+                            mask--;
+                        }
+                        int x = BigIntegerMath.log2(end.subtract(start).add(BigInteger.ONE), RoundingMode.FLOOR);
+                        int maxd = (lowboundAddr.isIPv4() ? 32 : 128) - x;
+                        if (mask < maxd) {
+                            mask = maxd;
+                        }
 
-	@Override
-	public String name() {
-		return "cloud9";
-	}
+                        BanStick.getPlugin().debug("  Found sub-CIDR: {0}",
+                            lowboundAddr.toSubnet(mask).toCanonicalString());
+                        cidrFromRange.add(lowboundAddr.toSubnet(mask));
+
+                        BigInteger migrate = BigInteger.valueOf(2).pow((lowboundAddr.isIPv4() ? 32 : 128) - mask);
+                        start = start.add(migrate);
+                    }
+
+                    String registeredAs = fields[2];
+                    String domain = (fields.length > 3) ? fields[3] : null;
+
+                    for (IPAddress address : cidrFromRange) {
+                        BSIP found = BSIP.byCIDR(address.getLower().toString(), address.getNetworkPrefixLength());
+                        if (found == null) {
+                            found = BSIP.create(address.getLower(), address.getNetworkPrefixLength());
+                        }
+
+                        BSIPData data = BSIPData.byExactIP(found);
+                        if (data == null) {
+                            data = BSIPData.create(found, null, null, null, null, null, null, null,
+                                domain, null, registeredAs, null, proxyScore, "Cloud9 Proxy Loader", null);
+                        }
+
+                        if (autoBan) {
+                            boolean wasmatch = false;
+
+                            List<BSBan> ban = BSBan.byProxy(data, true);
+                            if (!(ban == null || ban.isEmpty())) {
+                                // look for match; if unexpired, extend.
+                                for (int i = ban.size() - 1; i >= 0; i--) {
+                                    BSBan pickOne = ban.get(i);
+                                    if (pickOne.isAdminBan()) {
+                                        continue; // skip admin entered bans.
+                                    }
+                                    if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().after(new Date())) {
+                                        if (this.banLength < 0) { // endless
+                                            pickOne.clearBanEndTime();
+                                        } else {
+                                            pickOne.setBanEndTime(new Date(System.currentTimeMillis()
+                                                + this.banLength));
+                                        }
+                                        wasmatch = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!wasmatch) {
+                                BSBan.create(data, this.banMessage,
+                                    this.banLength < 0 ? null : new Date(System.currentTimeMillis()
+                                        + this.banLength), false);
+                            }
+                        }
+                    }
+
+                } catch (Exception e) {
+                    BanStick.getPlugin().debug("Failed to load: {0} due to {1}", line, e.getMessage());
+                    BanStick.getPlugin().warning("  Failure:", e);
+                    e.printStackTrace();
+                    errors++;
+                }
+                line = in.readLine();
+            }
+            if (errors > 10) {
+                BanStick.getPlugin().warning("Cancelled cloud9 load due to too many errors.");
+            }
+        } catch (IOException e) {
+            BanStick.getPlugin().debug("Failed reading from Cloud9-style list: " + loadUrl);
+        }
+    }
+
+    @Override
+    public void setup(ConfigurationSection config) {
+        this.loadUrl = config.getString("url");
+        this.proxyScore = (float) config.getDouble("defaultScore", 3.0d);
+        this.autoBan = config.isConfigurationSection("ban");
+        if (this.autoBan) {
+            this.banLength = config.getLong("ban.length", -1L);
+            this.banMessage = config.getString("ban.message", null);
+        }
+    }
+
+    @Override
+    public String name() {
+        return "cloud9";
+    }
 }

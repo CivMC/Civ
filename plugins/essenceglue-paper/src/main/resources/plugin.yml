@@ -1,10 +1,10 @@
 name: EssenceGlue
 version: ${version}
 main: com.github.maxopoly.essenceglue.EssenceGluePlugin
-api-version: 1.17
-depend: [CivModCore, BanStick, ExilePearl]
-softdepend: [Votifier]
-authors: [Maxopoly]
+api-version: 1.21.3
+depend: [ CivModCore, BanStick, ExilePearl ]
+softdepend: [ Votifier ]
+authors: [ Maxopoly ]
 permissions:
   eg.public:
     default: true

@@ -6,92 +6,93 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 class ActivityMapTimePoll {
-	private static final long POLL_INTERVAL_MS = 1000L;
 
-	private final ConcurrentLinkedQueue<Long> nanoTimes = new ConcurrentLinkedQueue<>();
-	private final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1);
-	private final Object syncRoot = new Object();
+    private static final long POLL_INTERVAL_MS = 1000L;
 
-	private long regionLoadCount;
-	private long regionLoadSumNano;
-	private long regionLoadMinTimeNano;
-	private long regionLoadMaxTimeNano;
+    private final ConcurrentLinkedQueue<Long> nanoTimes = new ConcurrentLinkedQueue<>();
+    private final ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(1);
+    private final Object syncRoot = new Object();
 
-	private void poll() {
-		long currentRegionLoadCount = 0;
-		long currentRegionLoadSumNano = 0;
-		long currentRegionLoadMinTimeNano = Long.MAX_VALUE;
-		long currentRegionLoadMaxTimeNano = Long.MIN_VALUE;
+    private long regionLoadCount;
+    private long regionLoadSumNano;
+    private long regionLoadMinTimeNano;
+    private long regionLoadMaxTimeNano;
 
-		Long current;
-		while ((current = nanoTimes.poll()) != null) {
-			if (currentRegionLoadCount > 0) {
-				if (current < currentRegionLoadMinTimeNano) {
-					currentRegionLoadMinTimeNano = current;
-				}
-				if (current > currentRegionLoadMaxTimeNano) {
-					currentRegionLoadMaxTimeNano = current;
-				}
-			} else {
-				currentRegionLoadMinTimeNano = current;
-				currentRegionLoadMaxTimeNano = current;
-			}
+    private void poll() {
+        long currentRegionLoadCount = 0;
+        long currentRegionLoadSumNano = 0;
+        long currentRegionLoadMinTimeNano = Long.MAX_VALUE;
+        long currentRegionLoadMaxTimeNano = Long.MIN_VALUE;
 
-			currentRegionLoadCount++;
-			currentRegionLoadSumNano += current;
-		}
+        Long current;
+        while ((current = nanoTimes.poll()) != null) {
+            if (currentRegionLoadCount > 0) {
+                if (current < currentRegionLoadMinTimeNano) {
+                    currentRegionLoadMinTimeNano = current;
+                }
+                if (current > currentRegionLoadMaxTimeNano) {
+                    currentRegionLoadMaxTimeNano = current;
+                }
+            } else {
+                currentRegionLoadMinTimeNano = current;
+                currentRegionLoadMaxTimeNano = current;
+            }
 
-		if (currentRegionLoadCount == 0) {
-			return;
-		}
+            currentRegionLoadCount++;
+            currentRegionLoadSumNano += current;
+        }
 
-		synchronized (syncRoot) {
-			if (regionLoadCount > 0) {
-				if (currentRegionLoadMinTimeNano < regionLoadMinTimeNano) {
-					regionLoadMinTimeNano = currentRegionLoadMinTimeNano;
-				}
-				if (currentRegionLoadMaxTimeNano > regionLoadMaxTimeNano) {
-					regionLoadMaxTimeNano = currentRegionLoadMaxTimeNano;
-				}
-			} else {
-				regionLoadMinTimeNano = currentRegionLoadMinTimeNano;
-				regionLoadMaxTimeNano = currentRegionLoadMaxTimeNano;
-			}
+        if (currentRegionLoadCount == 0) {
+            return;
+        }
 
-			regionLoadCount += currentRegionLoadCount;
-			regionLoadSumNano += currentRegionLoadSumNano;
-		}
-	}
+        synchronized (syncRoot) {
+            if (regionLoadCount > 0) {
+                if (currentRegionLoadMinTimeNano < regionLoadMinTimeNano) {
+                    regionLoadMinTimeNano = currentRegionLoadMinTimeNano;
+                }
+                if (currentRegionLoadMaxTimeNano > regionLoadMaxTimeNano) {
+                    regionLoadMaxTimeNano = currentRegionLoadMaxTimeNano;
+                }
+            } else {
+                regionLoadMinTimeNano = currentRegionLoadMinTimeNano;
+                regionLoadMaxTimeNano = currentRegionLoadMaxTimeNano;
+            }
 
-	void startPolling() {
-		scheduler.scheduleWithFixedDelay(() -> {
-			poll();
-		}, POLL_INTERVAL_MS, POLL_INTERVAL_MS, TimeUnit.MILLISECONDS);
-	}
+            regionLoadCount += currentRegionLoadCount;
+            regionLoadSumNano += currentRegionLoadSumNano;
+        }
+    }
 
-	void stopPolling() {
-		this.scheduler.shutdown();
+    void startPolling() {
+        scheduler.scheduleWithFixedDelay(() -> {
+            poll();
+        }, POLL_INTERVAL_MS, POLL_INTERVAL_MS, TimeUnit.MILLISECONDS);
+    }
 
-		try {
-			if (!this.scheduler.awaitTermination(5, TimeUnit.SECONDS))
-				this.scheduler.shutdownNow();
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-		}
-	}
+    void stopPolling() {
+        this.scheduler.shutdown();
 
-	void pushTimeNano(long nano) {
-		nanoTimes.add(nano);
-	}
+        try {
+            if (!this.scheduler.awaitTermination(5, TimeUnit.SECONDS))
+                this.scheduler.shutdownNow();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
 
-	void getStat(ActivityMapStat stat) {
-		poll();
+    void pushTimeNano(long nano) {
+        nanoTimes.add(nano);
+    }
 
-		synchronized (syncRoot) {
-			stat.regionLoadCount = regionLoadCount;
-			stat.regionLoadSumNano = regionLoadSumNano;
-			stat.regionLoadMinTimeNano = regionLoadMinTimeNano;
-			stat.regionLoadMaxTimeNano = regionLoadMaxTimeNano;
-		}
-	}
+    void getStat(ActivityMapStat stat) {
+        poll();
+
+        synchronized (syncRoot) {
+            stat.regionLoadCount = regionLoadCount;
+            stat.regionLoadSumNano = regionLoadSumNano;
+            stat.regionLoadMinTimeNano = regionLoadMinTimeNano;
+            stat.regionLoadMaxTimeNano = regionLoadMaxTimeNano;
+        }
+    }
 }

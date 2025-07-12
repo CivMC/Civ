@@ -50,8 +50,8 @@ public final class CitadelGlue extends DependencyGlue {
             return false;
         }
         return NullUtils.equalsNotNull(
-                signReinforcement.getGroup(),
-                railReinforcement.getGroup());
+            signReinforcement.getGroup(),
+            railReinforcement.getGroup());
     }
 
     @Override

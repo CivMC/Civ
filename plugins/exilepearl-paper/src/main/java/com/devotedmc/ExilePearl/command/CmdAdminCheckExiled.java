@@ -8,42 +8,42 @@ import java.util.UUID;
 
 public class CmdAdminCheckExiled extends PearlCommand {
 
-	public CmdAdminCheckExiled(ExilePearlApi pearlApi) {
-		super(pearlApi);
-		this.aliases.add("check");
+    public CmdAdminCheckExiled(ExilePearlApi pearlApi) {
+        super(pearlApi);
+        this.aliases.add("check");
 
-		this.setHelpShort("Checks if a player is Pearled");
+        this.setHelpShort("Checks if a player is Pearled");
 
-		this.commandArgs.add(requiredPearlPlayer());
+        this.commandArgs.add(requiredPearlPlayer());
 
-		this.permission = Permission.CHECK.node;
-		this.visibility = CommandVisibility.SECRET;
-	}
+        this.permission = Permission.CHECK.node;
+        this.visibility = CommandVisibility.SECRET;
+    }
 
-	@Override
-	public void perform() {
-		UUID playerId = argAsPlayerOrUUID(0);
+    @Override
+    public void perform() {
+        UUID playerId = argAsPlayerOrUUID(0);
 
-		if (playerId == null) {
-			msg(Lang.unknownPlayer);
-			return;
-		}
-		String playerName = plugin.getRealPlayerName(playerId);
+        if (playerId == null) {
+            msg(Lang.unknownPlayer);
+            return;
+        }
+        String playerName = plugin.getRealPlayerName(playerId);
 
-		ExilePearl pearl = plugin.getPearl(playerId);
-		if (pearl == null) {
-			msg("<i>The player <c>%s is not exiled.", playerName);
-			return;
-		}
-		if(pearl.getFreedOffline()) {
-			msg("<i>%s has been freed but hasn't logged in yet.", playerName);
-			return;
-		}
+        ExilePearl pearl = plugin.getPearl(playerId);
+        if (pearl == null) {
+            msg("<i>The player <c>%s is not exiled.", playerName);
+            return;
+        }
+        if (pearl.getFreedOffline()) {
+            msg("<i>%s has been freed but hasn't logged in yet.", playerName);
+            return;
+        }
 
-		msg("<g>Found exile pearl for player %s", playerName);
+        msg("<g>Found exile pearl for player %s", playerName);
 
-		for (String s : plugin.getLoreProvider().generatePearlInfo(pearl)) {
-			msg(s);
-		}
-	}
+        for (String s : plugin.getLoreProvider().generatePearlInfo(pearl)) {
+            msg(s);
+        }
+    }
 }

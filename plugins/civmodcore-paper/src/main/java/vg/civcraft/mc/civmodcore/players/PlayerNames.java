@@ -12,34 +12,40 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 public final class PlayerNames implements Listener {
 
-	private static final Set<String> names = new HashSet<>();
+    private static final Set<String> names = new HashSet<>();
 
-	public PlayerNames() {
-		names.clear();
-		names.addAll(
-			Stream.of(Bukkit.getOfflinePlayers())
-				.map(OfflinePlayer::getName)
-				.filter(StringUtils::isNotBlank)
-				.toList()
-		);
-	}
+    public PlayerNames(Plugin plugin) {
+        names.clear();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            OfflinePlayer[] players = Bukkit.getOfflinePlayers();
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                names.addAll(
+                    Stream.of(players)
+                        .map(OfflinePlayer::getName)
+                        .filter(StringUtils::isNotBlank)
+                        .toList()
+                );
+            });
+        });
+    }
 
-	@EventHandler(
-		priority = EventPriority.MONITOR, // Make sure it happens after NameLayer's AssociationListener
-		ignoreCancelled = true
-	)
-	private void onLogin(
-		final @NotNull PlayerLoginEvent event
-	) {
-		names.add(event.getPlayer().getName());
-	}
+    @EventHandler(
+        priority = EventPriority.MONITOR, // Make sure it happens after NameLayer's AssociationListener
+        ignoreCancelled = true
+    )
+    private void onLogin(
+        final @NotNull PlayerLoginEvent event
+    ) {
+        names.add(event.getPlayer().getName());
+    }
 
-	public static @NotNull Collection<String> getPlayerNames() {
-		return Collections.unmodifiableSet(names);
-	}
+    public static @NotNull Collection<String> getPlayerNames() {
+        return Collections.unmodifiableSet(names);
+    }
 }

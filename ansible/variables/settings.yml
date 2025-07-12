@@ -1,0 +1,51 @@
+settings:
+  default: &default
+    # Default Stacks
+    traefik:
+      enabled: true
+    monitoring:
+      enabled: true
+    minecraft: &default_minecraft
+      enabled: true
+      whitelist: false
+      pvp_whitelist: false
+      pvp_hostname: 'pvp.civmc.net'
+      hostname: 'play.civmc.net'
+      resources: &default_minecraft_resources
+        memory: 40G
+        memory_limit: 50G
+        pvp_memory: 10G
+        pvp_memory_limit: 13G
+    # Optional Stacks
+    auth:
+      enabled: false
+    maven:
+      enabled: false
+
+  production:
+    <<: *default
+    environment: Production
+    minecraft:
+      <<: *default_minecraft
+    auth:
+      enabled: false # TODO: MOVE
+
+  test:
+    <<: *default
+    environment: Test
+    minecraft:
+      <<: *default_minecraft
+      whitelist: true
+      pvp_whitelist: true
+      pvp_hostname: 'pvp-test.civmc.net'
+      hostname: 'test.civmc.net'
+      resources:
+        <<: *default_minecraft_resources
+        memory: 6G
+        memory_limit: 8G
+        pvp_memory: 7G
+        pvp_memory_limit: 9G
+    auth:
+      enabled: true # TODO: MOVE
+    maven:
+      enabled: true # TODO: MOVE

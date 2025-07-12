@@ -16,40 +16,40 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public final class CitadelGlue extends DependencyGlue {
 
-	public CitadelGlue(final @NotNull ItemExchangePlugin plugin) {
-		super(plugin, "Citadel");
-	}
+    public CitadelGlue(final @NotNull ItemExchangePlugin plugin) {
+        super(plugin, "Citadel");
+    }
 
-	private final Listener listener = new Listener() {
-		@EventHandler(ignoreCancelled = true)
-		public void denyCreationIfNotGotPerms(final BlockInventoryRequestEvent event) {
-			if (event.getPurpose() != BlockInventoryRequestEvent.Purpose.ACCESS) {
-				return;
-			}
-			final Player requester = event.getRequester();
-			if (requester == null) {
-				return;
-			}
-			final Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(event.getBlock());
-			if (reinforcement == null) {
-				return;
-			}
-			final Group group = reinforcement.getGroup();
-			if (!PermissionsGlue.CHESTS.testPermission(group, requester)) {
-				return;
-			}
-			event.setCancelled(true);
-		}
-	};
+    private final Listener listener = new Listener() {
+        @EventHandler(ignoreCancelled = true)
+        public void denyCreationIfNotGotPerms(final BlockInventoryRequestEvent event) {
+            if (event.getPurpose() != BlockInventoryRequestEvent.Purpose.ACCESS) {
+                return;
+            }
+            final Player requester = event.getRequester();
+            if (requester == null) {
+                return;
+            }
+            final Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(event.getBlock());
+            if (reinforcement == null) {
+                return;
+            }
+            final Group group = reinforcement.getGroup();
+            if (PermissionsGlue.CHESTS.testPermission(group, requester)) {
+                return;
+            }
+            event.setCancelled(true);
+        }
+    };
 
-	@Override
-	protected void onDependencyEnabled() {
-		Bukkit.getPluginManager().registerEvents(this.listener, this.plugin);
-	}
+    @Override
+    protected void onDependencyEnabled() {
+        Bukkit.getPluginManager().registerEvents(this.listener, this.plugin);
+    }
 
-	@Override
-	protected void onDependencyDisabled() {
-		HandlerList.unregisterAll(this.listener);
-	}
+    @Override
+    protected void onDependencyDisabled() {
+        HandlerList.unregisterAll(this.listener);
+    }
 
 }

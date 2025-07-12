@@ -16,8 +16,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_18_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_18_R2.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -29,196 +30,208 @@ import vg.civcraft.mc.namelayer.NameAPI;
 
 public class InvControl extends SimpleHack<InvControlConfig> implements CommandExecutor, Listener {
 
-	public static final String NAME = "InvControl";
+    public static final String NAME = "InvControl";
 
-	private boolean hasNameAPI;
+    private boolean hasNameAPI;
 
-	private Set<UUID> adminsWithInv;
+    private Set<UUID> adminsWithInv;
 
-	public InvControl(SimpleAdminHacks plugin, InvControlConfig config) {
-		super(plugin, config);
-	}
+    public InvControl(SimpleAdminHacks plugin, InvControlConfig config) {
+        super(plugin, config);
+    }
 
-	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (args.length < 1) {
-			return false;
-		}
-		String playername = args[0];
-		UUID playerUID = null;
-		Player player = null;
-		if (this.hasNameAPI) {
-			plugin().debug("Using NameAPI to look up {0}", playername);
-			playerUID = NameAPI.getUUID(playername);
-			plugin().debug("Found UUID match: {0}", playerUID);
-			player = Bukkit.getPlayer(playerUID);
-		}
-		if (player == null) { // no NameAPI or failure.
-			plugin().debug("Using Bukkit byname to look up {0}", playername);
-			player = Bukkit.getPlayer(playername);
-		}
-		if (player == null) { // By name failed... is it a UUID?
-			try {
-				plugin().debug("Using Bukkit by UUID to look up {0}", playername);
-				player = Bukkit.getPlayer(UUID.fromString(playername));
-				playerUID = UUID.fromString(playername);
-			} catch (IllegalArgumentException iae) {
-				player = null;
-			}
-		}
-		if (player == null && playerUID != null) { // Go deep into NBT.
-			@SuppressWarnings("resource")
-			PlayerDataStorage storage = ((CraftServer) plugin().getServer()).getServer().playerDataStorage;
-			CompoundTag rawPlayer = storage.getPlayerData(playerUID.toString());
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length < 1) {
+            return false;
+        }
+        String playername = args[0];
+        UUID playerUID = null;
+        Player player = null;
+        if (this.hasNameAPI) {
+            plugin().debug("Using NameAPI to look up {0}", playername);
+            playerUID = NameAPI.getUUID(playername);
+            plugin().debug("Found UUID match: {0}", playerUID);
+            player = Bukkit.getPlayer(playerUID);
+        }
+        if (player == null) { // no NameAPI or failure.
+            plugin().debug("Using Bukkit byname to look up {0}", playername);
+            player = Bukkit.getPlayer(playername);
+        }
+        if (player == null) { // By name failed... is it a UUID?
+            try {
+                plugin().debug("Using Bukkit by UUID to look up {0}", playername);
+                player = Bukkit.getPlayer(UUID.fromString(playername));
+                playerUID = UUID.fromString(playername);
+            } catch (IllegalArgumentException iae) {
+                player = null;
+            }
+        }
+        if (player == null && playerUID != null) { // Go deep into NBT.
+            @SuppressWarnings("resource")
+            PlayerDataStorage storage = ((CraftServer) plugin().getServer()).getServer().playerDataStorage;
+            CompoundTag rawPlayer = storage.load(playername, playerUID.toString()).orElse(null);
 
-			if (rawPlayer != null) {
-				plugin().debug("Player {0} found in NBT data, read-only access enabled.", playername);
-				sender.sendMessage("Player found via alternate lookup, read-only access enabled.");
-			} else {
-				sender.sendMessage("Player " + playername + " does not exist or cannot be opened.");
-				return false;
-			}
+            if (rawPlayer != null) {
+                plugin().debug("Player {0} found in NBT data, read-only access enabled.", playername);
+                sender.sendMessage("Player found via alternate lookup, read-only access enabled.");
+            } else {
+                sender.sendMessage("Player " + playername + " does not exist or cannot be opened.");
+                return false;
+            }
 
-			float health = rawPlayer.getFloat("Health");
-			int food = rawPlayer.getInt("foodLevel");
+            float health = rawPlayer.getFloat("Health");
+            int food = rawPlayer.getInt("foodLevel");
 
-			// Fun NMS inventory reconstruction from file data.
-			net.minecraft.world.entity.player.Inventory nms_pl_inv = new net.minecraft.world.entity.player.Inventory(null);
-			ListTag inv = rawPlayer.getList("Inventory", rawPlayer.getId());
-			nms_pl_inv.load(inv); // We use this to bypass the Craft code which requires a player object, unlike NMS.
-			PlayerInventory pl_inv = new CraftInventoryPlayer(nms_pl_inv);
+            // Fun NMS inventory reconstruction from file data.
+            net.minecraft.world.entity.player.Inventory nms_pl_inv = new net.minecraft.world.entity.player.Inventory(null);
+            ListTag inv = rawPlayer.getList("Inventory", rawPlayer.getId());
 
-			invSee(sender, pl_inv, health, food, playername);
-			return true;
-		}
-		if (player == null) {
-			sender.sendMessage("Player " + playername + " does not exist or cannot be opened.");
-			return false;
-		}
-		if (command.getName().equalsIgnoreCase("invsee")) { // see
-			if (player.equals(sender)) {
-				sender.sendMessage(ChatColor.RED + " Just open your inventory, silly.");
-				return true;
-			}
-			final PlayerInventory pl_inv = player.getInventory();
-			invSee(sender, pl_inv, player.getHealth(), player.getFoodLevel(), playername);
-		} else if (command.getName().equalsIgnoreCase("invmod")) { // mod
-			if (!(sender instanceof Player)) { // send text only.
-				sender.sendMessage(ChatColor.RED + "Apologies, this is only for in-game operators");
-			} else {
-				Player admin = (Player) sender;
+            for(int i = 0; i < inv.size(); ++i) {
+                CompoundTag compound = inv.getCompound(i);
+                int i1 = compound.getByte("Slot") & 255;
+                net.minecraft.world.item.ItemStack itemStack = net.minecraft.world.item.ItemStack.parse((((CraftServer) Bukkit.getServer()).getServer().registryAccess()), compound).orElse(net.minecraft.world.item.ItemStack.EMPTY);
+                if (i1 >= 0 && i1 < nms_pl_inv.items.size()) {
+                    nms_pl_inv.items.set(i1, itemStack);
+                } else if (i1 >= 100 && i1 < nms_pl_inv.armor.size() + 100) {
+                    nms_pl_inv.armor.set(i1 - 100, itemStack);
+                } else if (i1 >= 150 && i1 < nms_pl_inv.offhand.size() + 150) {
+                    nms_pl_inv.offhand.set(i1 - 150, itemStack);
+                }
+            }
+            PlayerInventory pl_inv = new CraftInventoryPlayer(nms_pl_inv);
 
-				if (admin.equals(player)) {
-					sender.sendMessage(ChatColor.RED + "You cannot modify your own inventory in this manner.");
-				} else {
-					sender.sendMessage(ChatColor.RED + "Feature not yet implemented");
-					//this.adminsWithInv.add(admin.getUniqueId());
-				}
-			}
-		} else {
-			return false;
-		}
-		return true;
-	}
+            invSee(sender, pl_inv, health, food, playername);
+            return true;
+        }
+        if (player == null) {
+            sender.sendMessage("Player " + playername + " does not exist or cannot be opened.");
+            return false;
+        }
+        if (command.getName().equalsIgnoreCase("invsee")) { // see
+            if (player.equals(sender)) {
+                sender.sendMessage(ChatColor.RED + " Just open your inventory, silly.");
+                return true;
+            }
+            final PlayerInventory pl_inv = player.getInventory();
+            invSee(sender, pl_inv, player.getHealth(), player.getFoodLevel(), playername);
+        } else if (command.getName().equalsIgnoreCase("invmod")) { // mod
+            if (!(sender instanceof Player)) { // send text only.
+                sender.sendMessage(ChatColor.RED + "Apologies, this is only for in-game operators");
+            } else {
+                Player admin = (Player) sender;
 
-	public void adminCloseInventory(InventoryCloseEvent event) {
-		if (this.adminsWithInv.contains(event.getPlayer().getUniqueId())) {
-			this.adminsWithInv.remove(event.getPlayer().getUniqueId());
-		}
-	}
+                if (admin.equals(player)) {
+                    sender.sendMessage(ChatColor.RED + "You cannot modify your own inventory in this manner.");
+                } else {
+                    sender.sendMessage(ChatColor.RED + "Feature not yet implemented");
+                    //this.adminsWithInv.add(admin.getUniqueId());
+                }
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
 
-	private void invSee(CommandSender sender, PlayerInventory pl_inv, double health, int food, String playername) {
-		if (!(sender instanceof Player)) { // send text only.
-			StringBuilder sb = new StringBuilder();
-			sb.append(playername).append("'s\n   Health: ").append((int)health*2);
-			sb.append("\n   Food: ").append(food);
-			sb.append("\n   Inventory: ");
-			sb.append("\n      Offhand: ").append(pl_inv.getItemInOffHand());
-			sb.append("\n      Helmet: ").append(pl_inv.getHelmet());
-			sb.append("\n      Chest: ").append(pl_inv.getChestplate());
-			sb.append("\n      Legs: ").append(pl_inv.getLeggings());
-			sb.append("\n      Feet: ").append(pl_inv.getBoots());
-			for (int slot = 0; slot < 36; slot++) {
-				final ItemStack it = pl_inv.getItem(slot);
-				sb.append("\n      ").append(slot).append(":").append(it).append(ChatColor.RESET);
-			}
-			sender.sendMessage(sb.toString());
-		} else {
-			Player admin = (Player) sender;
-		    Inventory inv = Bukkit.createInventory(
-		        admin, 45, playername + "'s Inventory");
-		    for (int slot = 0; slot < 36; slot++) {
-		      final ItemStack it = pl_inv.getItem(slot);
-		      inv.setItem(slot, it);
-		    }
-		    inv.setItem(36, pl_inv.getItemInOffHand());
-		    inv.setItem(38, pl_inv.getHelmet());
-		    inv.setItem(39, pl_inv.getChestplate());
-		    inv.setItem(40, pl_inv.getLeggings());
-		    inv.setItem(41, pl_inv.getBoots());
-		    ItemStack ihealth = new ItemStack(Material.APPLE, (int)health*2);
-		    ItemMeta hdata = ihealth.getItemMeta();
-		    hdata.setDisplayName("Player Health");
-		    ihealth.setItemMeta(hdata);
-		    inv.setItem(43, ihealth);
-		    ItemStack hunger = new ItemStack(Material.COOKED_BEEF, food);
-		    hdata = hunger.getItemMeta();
-		    hdata.setDisplayName("Player Hunger");
-		    hunger.setItemMeta(hdata);
-		    inv.setItem(44, hunger);
-		    admin.openInventory(inv);
-		    admin.updateInventory();
-		}
-	}
+    public void adminCloseInventory(InventoryCloseEvent event) {
+        if (this.adminsWithInv.contains(event.getPlayer().getUniqueId())) {
+            this.adminsWithInv.remove(event.getPlayer().getUniqueId());
+        }
+    }
 
-	@Override
-	public void registerListeners() {
+    private void invSee(CommandSender sender, PlayerInventory pl_inv, double health, int food, String playername) {
+        if (!(sender instanceof Player)) { // send text only.
+            StringBuilder sb = new StringBuilder();
+            sb.append(playername).append("'s\n   Health: ").append((int) health * 2);
+            sb.append("\n   Food: ").append(food);
+            sb.append("\n   Inventory: ");
+            sb.append("\n      Offhand: ").append(pl_inv.getItemInOffHand());
+            sb.append("\n      Helmet: ").append(pl_inv.getHelmet());
+            sb.append("\n      Chest: ").append(pl_inv.getChestplate());
+            sb.append("\n      Legs: ").append(pl_inv.getLeggings());
+            sb.append("\n      Feet: ").append(pl_inv.getBoots());
+            for (int slot = 0; slot < 36; slot++) {
+                final ItemStack it = pl_inv.getItem(slot);
+                sb.append("\n      ").append(slot).append(":").append(it).append(ChatColor.RESET);
+            }
+            sender.sendMessage(sb.toString());
+        } else {
+            Player admin = (Player) sender;
+            Inventory inv = Bukkit.createInventory(
+                admin, 45, playername + "'s Inventory");
+            for (int slot = 0; slot < 36; slot++) {
+                final ItemStack it = pl_inv.getItem(slot);
+                inv.setItem(slot, it);
+            }
+            inv.setItem(36, pl_inv.getItemInOffHand());
+            inv.setItem(38, pl_inv.getHelmet());
+            inv.setItem(39, pl_inv.getChestplate());
+            inv.setItem(40, pl_inv.getLeggings());
+            inv.setItem(41, pl_inv.getBoots());
+            ItemStack ihealth = new ItemStack(Material.APPLE, (int) health * 2);
+            ItemMeta hdata = ihealth.getItemMeta();
+            hdata.setDisplayName("Player Health");
+            ihealth.setItemMeta(hdata);
+            inv.setItem(43, ihealth);
+            ItemStack hunger = new ItemStack(Material.COOKED_BEEF, food);
+            hdata = hunger.getItemMeta();
+            hdata.setDisplayName("Player Hunger");
+            hunger.setItemMeta(hdata);
+            inv.setItem(44, hunger);
+            admin.openInventory(inv);
+            admin.updateInventory();
+        }
+    }
 
-	}
+    @Override
+    public void registerListeners() {
 
-	@Override
-	public void registerCommands() {
-		if (config.isEnabled()) {
-			plugin().log("Registering invsee and invmod commands");
-			plugin().registerCommand("invsee", this);
-			plugin().registerCommand("invmod", this);
-		}
-	}
+    }
 
-	@Override
-	public void dataBootstrap() {
-		if (config.isEnabled()) {
-			if (plugin().serverHasPlugin("NameLayer")) {
-				this.hasNameAPI = true;
-			} else {
-				this.hasNameAPI = false;
-			}
-			this.adminsWithInv = new HashSet<UUID>();
-		}
-	}
+    @Override
+    public void registerCommands() {
+        if (config.isEnabled()) {
+            plugin().log("Registering invsee and invmod commands");
+            plugin().registerCommand("invsee", this);
+            plugin().registerCommand("invmod", this);
+        }
+    }
 
-	@Override
-	public void unregisterListeners() {
-	}
+    @Override
+    public void dataBootstrap() {
+        if (config.isEnabled()) {
+            if (plugin().serverHasPlugin("NameLayer")) {
+                this.hasNameAPI = true;
+            } else {
+                this.hasNameAPI = false;
+            }
+            this.adminsWithInv = new HashSet<UUID>();
+        }
+    }
 
-	@Override
-	public void unregisterCommands() {
-	}
+    @Override
+    public void unregisterListeners() {
+    }
 
-	@Override
-	public void dataCleanup() {
-	}
+    @Override
+    public void unregisterCommands() {
+    }
 
-	@Override
-	public String status() {
-		if (config.isEnabled()) {
-			return "Listening for invsee and invmod commands";
-		} else {
-			return "Inventory Control disabled.";
-		}
-	}
+    @Override
+    public void dataCleanup() {
+    }
 
-	public static InvControlConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
-		return new InvControlConfig(plugin, config);
-	}
+    @Override
+    public String status() {
+        if (config.isEnabled()) {
+            return "Listening for invsee and invmod commands";
+        } else {
+            return "Inventory Control disabled.";
+        }
+    }
+
+    public static InvControlConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+        return new InvControlConfig(plugin, config);
+    }
 }

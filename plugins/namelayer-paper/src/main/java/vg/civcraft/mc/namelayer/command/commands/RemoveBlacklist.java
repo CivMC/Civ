@@ -18,39 +18,39 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class RemoveBlacklist extends BaseCommandMiddle {
 
-	@CommandAlias("nlubl|unblacklist")
-	@Syntax("<group> <player>")
-	@Description("Removes a player from the blacklist for a specific group")
-	@CommandCompletion("@NL_Groups @allplayers")
-	public void execute(CommandSender sender, String groupName, String targetPlayer) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED
-					+ "Why do you have to make this so difficult?");
-			return;
-		}
-		Player p = (Player) sender;
-		Group g = GroupManager.getGroup(groupName);
-		if (g == null) {
-			p.sendMessage(ChatColor.RED + "This group does not exist");
-			return;
-		}
-		if (!gm.hasAccess(g, p.getUniqueId(),
-				PermissionType.getPermission("BLACKLIST"))
-				&& !(p.isOp() || p.hasPermission("namelayer.admin"))) {
-			p.sendMessage(ChatColor.RED + "You do not have the required permissions to do this");
-			return;
-		}
-		UUID targetUUID = NameAPI.getUUID(targetPlayer);
-		if (targetUUID == null) {
-			p.sendMessage(ChatColor.RED + "This player does not exist");
-			return;
-		}
-		BlackList bl = NameLayerPlugin.getBlackList();
-		if (!bl.isBlacklisted(g, targetUUID)) {
-			p.sendMessage(ChatColor.RED + "This player is not blacklisted");
-			return;
-		}
-		bl.removeBlacklistMember(g, targetUUID, true);
-		p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(targetUUID) + " was successfully removed from the blacklist for the group " + g.getName());
-	}
+    @CommandAlias("nlubl|unblacklist")
+    @Syntax("<group> <player>")
+    @Description("Removes a player from the blacklist for a specific group")
+    @CommandCompletion("@NL_Groups @allplayers")
+    public void execute(CommandSender sender, String groupName, String targetPlayer) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED
+                + "Why do you have to make this so difficult?");
+            return;
+        }
+        Player p = (Player) sender;
+        Group g = GroupManager.getGroup(groupName);
+        if (g == null) {
+            p.sendMessage(ChatColor.RED + "This group does not exist");
+            return;
+        }
+        if (!gm.hasAccess(g, p.getUniqueId(),
+            PermissionType.getPermission("BLACKLIST"))
+            && !(p.isOp() || p.hasPermission("namelayer.admin"))) {
+            p.sendMessage(ChatColor.RED + "You do not have the required permissions to do this");
+            return;
+        }
+        UUID targetUUID = NameAPI.getUUID(targetPlayer);
+        if (targetUUID == null) {
+            p.sendMessage(ChatColor.RED + "This player does not exist");
+            return;
+        }
+        BlackList bl = NameLayerPlugin.getBlackList();
+        if (!bl.isBlacklisted(g, targetUUID)) {
+            p.sendMessage(ChatColor.RED + "This player is not blacklisted");
+            return;
+        }
+        bl.removeBlacklistMember(g, targetUUID, true);
+        p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(targetUUID) + " was successfully removed from the blacklist for the group " + g.getName());
+    }
 }

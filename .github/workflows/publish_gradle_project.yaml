@@ -10,7 +10,7 @@ on:
 jobs:
   determine_values:
     name: 🔎 Determine Values
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     outputs:
       category: ${{ steps.determine_values.outputs.category }}
@@ -38,7 +38,7 @@ jobs:
 
   publish_gradle:
     name: 🐘 Publish Gradle
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: determine_values
     permissions:
       contents: write
@@ -48,23 +48,19 @@ jobs:
       - name: 🚩 Checkout Repo
         uses: actions/checkout@v4
 
-      - name: ❓ Ensure Wrapper Permissions
-        run: chmod +x ./gradlew
-
       - name: ☕ Setup Java
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
-      # TODO: Bump version if not already done
+      - name: 🐘 Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+        # TODO: Bump version if not already done
 
       - name: 🐘 Gradle Build
-        uses: gradle/gradle-build-action@v2
-        env:
-          CI: true
-        with:
-          arguments: "${{needs.determine_values.outputs.category}}:${{needs.determine_values.outputs.project}}:build --scan"
+        run: CI=true ./gradlew ${{needs.determine_values.outputs.category}}:${{needs.determine_values.outputs.project}}:build --scan
 
       - name: 🗃️ Create/Update Release
         uses: softprops/action-gh-release@v1
@@ -73,9 +69,4 @@ jobs:
           files: '${{needs.determine_values.outputs.category}}/${{needs.determine_values.outputs.project}}/build/libs/*'
 
       - name: 🐘 Gradle Publish
-        uses: gradle/gradle-build-action@v2
-        env:
-          CI: true
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          arguments: "${{needs.determine_values.outputs.category}}:${{needs.determine_values.outputs.project}}:publish --scan"
+        run: CI=true GITHUB_TOKEN=${{secrets.GITHUB_TOKEN}} ./gradlew ${{needs.determine_values.outputs.category}}:${{needs.determine_values.outputs.project}}:publish --scan
