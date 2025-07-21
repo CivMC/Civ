@@ -1,4 +1,5 @@
 import io.papermc.paperweight.userdev.PaperweightUserExtension
+import io.papermc.paperweight.util.path
 import xyz.jpenilla.runpaper.task.RunServer
 
 subprojects {
@@ -62,7 +63,10 @@ subprojects {
     }
 
     tasks.withType<RunServer> {
-        minecraftVersion("1.18")
+        minecraftVersion(libs.versions.minecraft.get())
+        doFirst {
+            runDirectory.path.resolve("eula.txt").toFile().writeText("eula=true")
+        }
     }
 
     pluginManager.withPlugin("io.papermc.paperweight.userdev") {
