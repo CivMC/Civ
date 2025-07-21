@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.translation.Translatable;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
-import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 
 /**
  * Class of static utilities for Enchantments.
@@ -117,7 +117,7 @@ public final class EnchantUtils {
         }
         Enchantment enchantment;
         // From NamespacedKey
-        final var enchantmentKey = KeyedUtils.fromString(value);
+        final NamespacedKey enchantmentKey = NamespacedKey.fromString(value);
         if (enchantmentKey != null) {
             enchantment = Enchantment.getByKey(enchantmentKey);
             if (enchantment != null) {
