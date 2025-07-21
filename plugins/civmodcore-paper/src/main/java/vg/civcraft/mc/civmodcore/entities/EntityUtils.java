@@ -9,7 +9,7 @@ import org.bukkit.entity.EntityType;
 public final class EntityUtils {
 
     /**
-     * Attempts to retrieve an entity type by its slug or id.
+     * Attempts to retrieve an entity type by its slug.
      *
      * @param value The value to search for a matching entity type by.
      * @return Returns a matched entity type or null.
@@ -21,13 +21,6 @@ public final class EntityUtils {
         }
         try {
             return EntityType.valueOf(value.toUpperCase());
-        } catch (final Throwable ignored) {
-        }
-        try {
-            final EntityType type = EntityType.fromId(Short.parseShort(value));
-            if (type != null) {
-                return type;
-            }
         } catch (final Throwable ignored) {
         }
         return null;

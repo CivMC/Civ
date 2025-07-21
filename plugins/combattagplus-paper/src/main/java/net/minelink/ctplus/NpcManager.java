@@ -66,8 +66,7 @@ public final class NpcManager {
         if (plugin.getSettings().playEffect()) {
             Location l = entity.getLocation();
             l.getWorld().playEffect(l, Effect.MOBSPAWNER_FLAMES, 0, 64);
-            // NOTE: Do not directly access the values in the sound enum, as that can change across versions\
-            l.getWorld().playSound(l, EXPLODE_SOUND, 0.9F, 0);
+            l.getWorld().playSound(l, Sound.ENTITY_GENERIC_EXPLODE, 0.9F, 0);
         }
 
         // Create and start the NPCs despawn task
@@ -121,22 +120,4 @@ public final class NpcManager {
     public boolean hasDespawnTask(Npc npc) {
         return despawnTasks.containsKey(npc);
     }
-
-    // Use reflection
-    private static final Sound EXPLODE_SOUND;
-
-    static {
-        Sound sound;
-        try {
-            sound = Sound.valueOf("ENTITY_GENERIC_EXPLODE"); // 1.9 name
-        } catch (IllegalArgumentException e) {
-            try {
-                sound = Sound.valueOf("EXPLODE"); // 1.8 name
-            } catch (IllegalArgumentException e2) {
-                throw new AssertionError("Unable to find explosion sound");
-            }
-        }
-        EXPLODE_SOUND = sound;
-    }
-
 }

@@ -4,6 +4,7 @@ import com.destroystokyo.paper.utils.PaperPluginLogger;
 import java.util.Objects;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import io.papermc.paper.plugin.configuration.PluginMeta;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bukkit.Bukkit;
@@ -67,7 +68,7 @@ public final class CivLogger extends Logger {
             final var descriptionField = FieldUtils.getDeclaredField(PluginClassLoader.class, "description", true);
             try {
                 final var description = (PluginDescriptionFile) descriptionField.get(loader);
-                final var logger = PaperPluginLogger.getLogger(description);
+                final var logger = PaperPluginLogger.getLogger((PluginMeta) description);
                 return new CivLogger(logger, clazz.getSimpleName());
             } catch (final IllegalAccessException ignored) {
             }

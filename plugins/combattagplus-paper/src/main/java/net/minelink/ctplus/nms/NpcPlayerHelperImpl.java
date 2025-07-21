@@ -13,6 +13,8 @@ import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -20,6 +22,7 @@ import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.PlayerDataStorage;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minelink.ctplus.compat.base.NpcIdentity;
 import net.minelink.ctplus.compat.base.NpcPlayerHelper;
 import org.bukkit.Bukkit;
@@ -73,7 +76,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
             serverPlayer.connection.send(packet);
         }
 
-        ServerLevel worldServer = entity.serverLevel();
+        ServerLevel worldServer = entity.level();
         worldServer.chunkSource.removeEntity(entity);
         worldServer.getPlayers(serverPlayer -> serverPlayer instanceof NpcPlayer).remove(entity);
         removePlayerList(player);
@@ -120,7 +123,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
             List<Pair<EquipmentSlot, ItemStack>> list = Lists.newArrayList();
             list.add(Pair.of(slot, item));
             Packet<ClientGamePacketListener> packet = new ClientboundSetEquipmentPacket(entity.getId(), list);
-            entity.serverLevel().chunkSource.broadcast(entity, packet);
+            entity.level().chunkSource.broadcast(entity, packet);
         }
     }
 
@@ -137,7 +140,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         if (p != null && p.isOnline()) return;
 
         PlayerDataStorage worldStorage = ((CraftWorld) Bukkit.getWorlds().getFirst()).getHandle().getServer().playerDataStorage;
-        CompoundTag playerNbt = worldStorage.load(identity.getName(), identity.getId().toString()).orElse(null);
+        CompoundTag playerNbt = worldStorage.load(identity.getName(), identity.getId().toString(), ProblemReporter.DISCARDING).orElse(null);
 
         // foodTickTimer is now private in 1.8.3 -- still private in 1.12 -- still private in 1.20.6
         Field foodTickTimerField;
@@ -163,7 +166,8 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         playerNbt.putFloat("foodSaturationLevel", entity.getFoodData().getSaturationLevel());
         playerNbt.putFloat("foodExhaustionLevel", entity.getFoodData().exhaustionLevel);
         playerNbt.putShort("Fire", (short) entity.getRemainingFireTicks());
-        playerNbt.put("Inventory", npcPlayer.getInventory().save(new ListTag()));
+        TagValueOutput output = TagValueOutput.createWrappingGlobal(ProblemReporter.DISCARDING, playerNbt);
+        npcPlayer.getInventory().save(output.list("Inventory", ItemStackWithSlot.CODEC));
 
         File file1 = new File(worldStorage.getPlayerDir(), identity.getId() + ".dat.tmp");
         File file2 = new File(worldStorage.getPlayerDir(), identity.getId() + ".dat");

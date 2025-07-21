@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.translation.Translatable;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -98,7 +99,7 @@ public final class EnchantUtils {
         if (!missing.isEmpty()) {
             //noinspection deprecation
             LOGGER.warning("The following enchants are missing abbreviations: %s.".formatted(
-                missing.stream().map(Enchantment::getName).collect(Collectors.joining(","))
+                missing.stream().map(Enchantment::getKey).map(NamespacedKey::asString).collect(Collectors.joining(","))
             ));
         }
     }

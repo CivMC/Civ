@@ -20,18 +20,8 @@ public abstract class ACivMod extends JavaPlugin {
 
     private final Set<Class<? extends ConfigurationSerializable>> configClasses = new HashSet<>(0);
 
-    /**
-     * Primary constructor used by the real server
-     */
     protected ACivMod() {
         super();
-    }
-
-    /**
-     * Secondary constructor used for testing
-     */
-    protected ACivMod(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-        super(loader, description, dataFolder, file);
     }
 
     @Override
