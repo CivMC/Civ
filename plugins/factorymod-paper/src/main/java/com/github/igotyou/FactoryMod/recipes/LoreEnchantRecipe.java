@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
@@ -162,11 +163,11 @@ public class LoreEnchantRecipe extends InputRecipe {
 
     @Override
     public List<String> getTextualInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-        return Arrays.asList("1 " + ItemUtils.getItemName(exampleInput));
+        return Arrays.asList("1 " + ChatUtils.translate(exampleInput));
     }
 
     @Override
     public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-        return Arrays.asList("1 " + ItemUtils.getItemName(exampleOutput));
+        return Arrays.asList("1 " + ChatUtils.translate(exampleOutput));
     }
 }

@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2SettingsManager;
+import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 
@@ -51,7 +52,7 @@ public class KillListener implements Listener {
             msg = String.format("%s%s %swas killed by %s %sby hand", ChatColor.DARK_GRAY, victimFormattedName,
                 ChatColor.DARK_GRAY, killerFormattedName, ChatColor.DARK_GRAY);
         } else {
-            String itemName = ItemUtils.getItemName(item);
+            String itemName = ChatUtils.translate(item);
             String displayName = ItemUtils.getDisplayName(item);
             Boolean hasWordBank = Optional.ofNullable(ItemUtils.getItemMeta(item))
                 .map(r -> r.displayName())

@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -170,10 +169,14 @@ public class ScoreboardHUD implements Listener {
                 seconds = "0" + seconds;
             }
 
-            //TODO check deprecated methods
-            String name = ChatUtils.stringify(Component.translatable(pot.getType()));
-            String formatted = String.format("%s %s%s %d | %d:%s", sortingPrefix, effectColor, name, level, minutes,
-                seconds);
+            String formatted = "%s %s%s %d | %d:%s".formatted(
+                sortingPrefix,
+                effectColor,
+                ChatUtils.translate(pot.getType()), // name
+                level,
+                minutes,
+                seconds
+            );
             scoreBoards.get(boardIndex).set(p, formatted);
             boardIndex++;
         }

@@ -219,9 +219,9 @@ public abstract class InputRecipe implements IRecipe {
         for (Entry<ItemStack, Integer> entry : ingredients.getItems().entrySet()) {
             if (entry.getValue() > 0) {
                 if (!entry.getKey().hasItemMeta()) {
-                    result.add(entry.getValue() + " " + ItemUtils.getItemName(entry.getKey()));
+                    result.add(entry.getValue() + " " + ChatUtils.translate(entry.getKey()));
                 } else {
-                    String lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ItemUtils.getItemName(entry.getKey()));
+                    String lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ChatUtils.translate(entry.getKey()));
                     if (entry.getKey().getItemMeta().hasDisplayName()) {
                         lore += String.format("%s [%s%1$s]", ChatColor.DARK_AQUA, StringUtils.abbreviate(entry.getKey().getItemMeta().getDisplayName(), 20));
                     }
@@ -234,7 +234,7 @@ public abstract class InputRecipe implements IRecipe {
             if (entry.getValue() > 0) {
                 ItemStack item = CustomItem.getCustomItem(entry.getKey());
                 if (!item.hasItemMeta()) {
-                    result.add(entry.getValue() + " " + ItemUtils.getItemName(item));
+                    result.add(entry.getValue() + " " + ChatUtils.translate(item));
                 } else {
                     String lore;
                     if (item.getItemMeta().hasDisplayName()) {
@@ -242,7 +242,7 @@ public abstract class InputRecipe implements IRecipe {
                     } else if (item.getItemMeta().hasItemName()) {
                         lore = String.format("%s %s", entry.getValue(), StringUtils.abbreviate(item.getItemMeta().getItemName(), 35));
                     } else {
-                        lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ItemUtils.getItemName(item));
+                        lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ChatUtils.translate(item));
                     }
                     result.add(lore);
                 }
