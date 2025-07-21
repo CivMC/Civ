@@ -36,7 +36,7 @@ public class PlayerHeadRecipe extends InputRecipe {
     @Override
     public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
         ItemStack is = new ItemStack(Material.PLAYER_HEAD, 1);
-        ItemUtils.addLore(is, "The player head of a randomly chosen online player");
+        ItemUtils.appendLegacyLore(is, "The player head of a randomly chosen online player");
         return Collections.singletonList(is);
     }
 

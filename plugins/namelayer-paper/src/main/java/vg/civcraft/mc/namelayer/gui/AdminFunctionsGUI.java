@@ -35,20 +35,20 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
         ClickableInventory ci = new ClickableInventory(27, g.getName());
         // linking
         ItemStack linkStack = new ItemStack(Material.GOLD_INGOT);
-        ItemUtils.setDisplayName(linkStack, ChatColor.GOLD + "Link group");
+        ItemUtils.setLegacyDisplayName(linkStack, ChatColor.GOLD + "Link group");
         Clickable linkClick;
 
-        ItemUtils.addLore(linkStack, ChatColor.RED
+        ItemUtils.appendLegacyLore(linkStack, ChatColor.RED
             + "Sorry, group linking is not a currently supported feature.");
         linkClick = new DecorationStack(linkStack);
 
         ci.setSlot(linkClick, 10);
         // merging
         ItemStack mergeStack = new ItemStack(Material.SPONGE);
-        ItemUtils.setDisplayName(mergeStack, ChatColor.GOLD + "Merge group");
+        ItemUtils.setLegacyDisplayName(mergeStack, ChatColor.GOLD + "Merge group");
         Clickable mergeClick;
 
-        ItemUtils.addLore(mergeStack, ChatColor.RED
+        ItemUtils.appendLegacyLore(mergeStack, ChatColor.RED
             + "Sorry, group merging is not a currently supported feature.");
         mergeClick = new DecorationStack(mergeStack);
 
@@ -68,7 +68,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
         ci.setSlot(mergeClick, 12);
         // transferring group
         ItemStack transferStack = new ItemStack(Material.PACKED_ICE);
-        ItemUtils.setDisplayName(transferStack, ChatColor.GOLD
+        ItemUtils.setLegacyDisplayName(transferStack, ChatColor.GOLD
             + "Transfer group to new primary owner");
         Clickable transferClick;
         if (g.isOwner(p.getUniqueId())) {
@@ -79,14 +79,14 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                 }
             };
         } else {
-            ItemUtils.addLore(transferStack, ChatColor.RED
+            ItemUtils.appendLegacyLore(transferStack, ChatColor.RED
                 + "You don't have permission to do this");
             transferClick = new DecorationStack(transferStack);
         }
         ci.setSlot(transferClick, 14);
         // deleting group
         ItemStack deletionStack = new ItemStack(Material.BARRIER);
-        ItemUtils.setDisplayName(deletionStack, ChatColor.GOLD + "Delete group");
+        ItemUtils.setLegacyDisplayName(deletionStack, ChatColor.GOLD + "Delete group");
         Clickable deletionClick;
         if (gm.hasAccess(g, p.getUniqueId(),
             PermissionType.getPermission("DELETE"))) {
@@ -97,7 +97,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                 }
             };
         } else {
-            ItemUtils.addLore(deletionStack, ChatColor.RED
+            ItemUtils.appendLegacyLore(deletionStack, ChatColor.RED
                 + "You don't have permission to do this");
             deletionClick = new DecorationStack(deletionStack);
         }
@@ -105,7 +105,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 
         // back button
         ItemStack backToOverview = goBackStack();
-        ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Back to overview");
+        ItemUtils.setLegacyDisplayName(backToOverview, ChatColor.GOLD + "Back to overview");
         ci.setSlot(new Clickable(backToOverview) {
 
             @Override
@@ -165,17 +165,17 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                 ClickableInventory confirmInv = new ClickableInventory(27,
                     g.getName());
                 ItemStack info = new ItemStack(Material.PAPER);
-                ItemUtils.setDisplayName(info, ChatColor.GOLD + "Transfer group to "
+                ItemUtils.setLegacyDisplayName(info, ChatColor.GOLD + "Transfer group to "
                     + playerName);
-                ItemUtils.addLore(info, ChatColor.RED
+                ItemUtils.appendLegacyLore(info, ChatColor.RED
                     + "Are you sure that you want to", ChatColor.RED
                     + "transfer this group? You can not undo this!");
                 ItemStack yes = yesStack();
-                ItemUtils.setDisplayName(yes,
+                ItemUtils.setLegacyDisplayName(yes,
                     ChatColor.GOLD + "Yes, transfer " + g.getName()
                         + " to " + playerName);
                 ItemStack no = noStack();
-                ItemUtils.setDisplayName(no,
+                ItemUtils.setLegacyDisplayName(no,
                     ChatColor.GOLD + "No, don't transfer " + g.getName());
                 confirmInv.setSlot(new Clickable(yes) {
 
@@ -212,14 +212,14 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
     private void showDeletionMenu() {
         ClickableInventory confirmInv = new ClickableInventory(27, g.getName());
         ItemStack info = new ItemStack(Material.PAPER);
-        ItemUtils.setDisplayName(info, ChatColor.GOLD + "Delete group");
-        ItemUtils.addLore(info, ChatColor.RED + "Are you sure that you want to",
+        ItemUtils.setLegacyDisplayName(info, ChatColor.GOLD + "Delete group");
+        ItemUtils.appendLegacyLore(info, ChatColor.RED + "Are you sure that you want to",
             ChatColor.RED + "delete this group? You can not undo this!");
 
         ItemStack yes = yesStack();
-        ItemUtils.setDisplayName(yes, ChatColor.GOLD + "Yes, delete " + g.getName());
+        ItemUtils.setLegacyDisplayName(yes, ChatColor.GOLD + "Yes, delete " + g.getName());
         ItemStack no = noStack();
-        ItemUtils.setDisplayName(no, ChatColor.GOLD + "No, keep " + g.getName());
+        ItemUtils.setLegacyDisplayName(no, ChatColor.GOLD + "No, keep " + g.getName());
         confirmInv.setSlot(new Clickable(yes) {
 
             @Override

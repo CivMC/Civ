@@ -69,7 +69,7 @@ public class NameColorSetting extends PlayerSetting<ChatColor> {
         applyInfoToItemStack(item, player);
         Player play = Bukkit.getPlayer(player);
         if (play != null && !play.hasPermission(COLOR_PERMISSION) && !play.hasPermission(RAINBOW_PERMISSION)) {
-            ItemUtils.addLore(item, ChatColor.RED + "You do not have permission to do this");
+            ItemUtils.appendLegacyLore(item, ChatColor.RED + "You do not have permission to do this");
         }
         return item;
     }
@@ -81,7 +81,7 @@ public class NameColorSetting extends PlayerSetting<ChatColor> {
 
             for (Entry<ChatColor, Material> entry : colorToGui.entrySet()) {
                 ItemStack is = new ItemStack(entry.getValue());
-                ItemUtils.setDisplayName(is,
+                ItemUtils.setLegacyDisplayName(is,
                     "Change to color of your name to " + entry.getKey() + entry.getKey().name());
                 clicks.add(new Clickable(is) {
 
@@ -96,7 +96,7 @@ public class NameColorSetting extends PlayerSetting<ChatColor> {
         }
         if (player.hasPermission(RAINBOW_PERMISSION)) {
             ItemStack is = new ItemStack(Material.YELLOW_STAINED_GLASS);
-            ItemUtils.setDisplayName(is, "Change to color of your name to " + NameColors.rainbowify("rainbow"));
+            ItemUtils.setLegacyDisplayName(is, "Change to color of your name to " + NameColors.rainbowify("rainbow"));
             clicks.add(new Clickable(is) {
 
                 @Override
@@ -112,7 +112,7 @@ public class NameColorSetting extends PlayerSetting<ChatColor> {
         }
         MultiPageView view = new MultiPageView(player, clicks, "Select a name color", true);
         ItemStack returnStack = new ItemStack(Material.BOOK);
-        ItemUtils.setDisplayName(returnStack, "Return to previous menu");
+        ItemUtils.setLegacyDisplayName(returnStack, "Return to previous menu");
         view.setMenuSlot(new Clickable(returnStack) {
 
             @Override

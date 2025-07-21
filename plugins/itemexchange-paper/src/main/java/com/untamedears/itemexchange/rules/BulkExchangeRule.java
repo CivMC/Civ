@@ -9,14 +9,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.component.CustomData;
+import net.minecraft.nbt.CompoundTag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData {
@@ -51,49 +48,53 @@ public record BulkExchangeRule(List<ExchangeRule> rules) implements ExchangeData
             .collect(Collectors.toCollection(ArrayList::new)));
     }
 
-    public ItemStack toItem() {
-        ItemStack item = ItemExchangeConfig.getRuleItem();
-		final var itemNBT = new NBTCompound();
-		toNBT(itemNBT);
-
-		CustomData customData = CustomData.EMPTY.update(nbt -> nbt.put(BULK_KEY, itemNBT.getRAW()));
-
-		net.minecraft.world.item.ItemStack nmsItem = ItemUtils.getNMSItemStack(item);
-		nmsItem.set(DataComponents.CUSTOM_DATA, customData);
-		item = nmsItem.getBukkitStack();
-
-        ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
-            meta.displayName(Component.text()
+    public @NotNull ItemStack toItem() {
+        final ItemStack item = ItemExchangeConfig.getRuleItem();
+        ItemUtils.editCustomData(item, (nbt) -> {
+            final var bulkNBT = new CompoundTag();
+            toNBT(new NBTCompound(bulkNBT));
+            nbt.put(BULK_KEY, bulkNBT);
+        });
+        ItemUtils.setDisplayName(item,
+            Component.text()
                 .color(NamedTextColor.RED)
                 .content("Bulk Rule Block")
-                .build());
-            MetaUtils.setComponentLore(meta, Component.text(
-                String.format(
-                    "This rule block holds %s exchange rule%s.",
-                    this.rules.size(), this.rules.size() == 1 ? "" : "s")));
-            return true;
-        });
+                .build()
+        );
+        ItemUtils.setLore(item, List.of(
+            Component.text("This rule block holds %s exchange rule%s.".formatted(
+                this.rules.size(),
+                this.rules.size() == 1 ? "" : "s"
+            ))
+        ));
         return item;
     }
 
-    @Nullable
-    public static BulkExchangeRule fromItem(final ItemStack item) {
-        if (!ItemUtils.isValidItem(item)
-            || item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
+    public static @Nullable BulkExchangeRule fromItem(
+        final ItemStack item
+    ) {
+        if (item == null || item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
             return null;
         }
-        final CustomData itemNBT = ItemUtils.getNMSItemStack(item).get(DataComponents.CUSTOM_DATA);
-        if (itemNBT != null && itemNBT.copyTag().contains(BULK_KEY)) {
-            var t = new NBTCompound(itemNBT.copyTag());
-
-            final var rulesNBT = t.getCompound(BULK_KEY).getCompoundArray(RULES_KEY);
-            final var rules = new ArrayList<ExchangeRule>(rulesNBT.length);
-            for (final var ruleNBT : rulesNBT) {
-                rules.add(ExchangeRule.fromNBT(ruleNBT));
-            }
-            return new BulkExchangeRule(rules);
+        final CompoundTag root = ItemUtils.getCustomData(item);
+        if (root == null) {
+            return null;
         }
-        return null;
+        final NBTCompound bulkNBT;
+        if (root.get(BULK_KEY) instanceof final CompoundTag nbt) {
+            bulkNBT = new NBTCompound(nbt);
+        }
+        else {
+            return null;
+        }
+        final ExchangeRule[] rules; {
+            final NBTCompound[] rulesNBT = bulkNBT.getCompoundArray(RULES_KEY);
+            rules = new ExchangeRule[rulesNBT.length];
+            for (int i = 0; i < rulesNBT.length; i++) {
+                rules[i] = ExchangeRule.fromNBT(rulesNBT[i]);
+            }
+        }
+        return new BulkExchangeRule(Arrays.asList(rules));
     }
 
 }

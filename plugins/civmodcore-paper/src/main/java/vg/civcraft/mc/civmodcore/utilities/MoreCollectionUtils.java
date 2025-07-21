@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import java.util.random.RandomGenerator;
 import org.apache.commons.collections4.list.LazyList;
@@ -53,6 +54,33 @@ public final class MoreCollectionUtils {
             case 1 -> list.get(0); // Ignore highlighter: .getFirst() does a size check, and we've already done that
             default -> list.get(random.nextInt(size));
         };
+    }
+
+    /**
+     * Determines whether two lists are equal, using a given predicate to test element equality. Keep in mind that the
+     * ordering matters: the 0th element of "lhs" must equal the 0th element of "rhs", and so on.
+     */
+    public static <T> boolean areListsEqual(
+        final List<T> lhs,
+        final List<T> rhs,
+        final @NotNull BiPredicate<T, T> equals
+    ) {
+        if (lhs == rhs) {
+            return true;
+        }
+        if (lhs == null ^ rhs == null) {
+            return false;
+        }
+        final int length = lhs.size();
+        if (length != rhs.size()) {
+            return false;
+        }
+        for (int i = 0; i < length; i++) {
+            if (!equals.test(lhs.get(i), rhs.get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

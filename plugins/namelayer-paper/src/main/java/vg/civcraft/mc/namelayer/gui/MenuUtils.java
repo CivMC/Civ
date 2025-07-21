@@ -18,17 +18,17 @@ public class MenuUtils {
         }
         if (initState) {
             if (canModify) {
-                ItemUtils.addLore(is, ChatColor.GOLD + "Currently turned on", ChatColor.AQUA + "Click to turn off");
+                ItemUtils.appendLegacyLore(is, ChatColor.GOLD + "Currently turned on", ChatColor.AQUA + "Click to turn off");
             }
         } else {
             if (canModify) {
-                ItemUtils.addLore(is, ChatColor.GOLD + "Currently turned off", ChatColor.AQUA + "Click to turn on");
+                ItemUtils.appendLegacyLore(is, ChatColor.GOLD + "Currently turned off", ChatColor.AQUA + "Click to turn on");
             }
         }
         if (!canModify) {
-            ItemUtils.addLore(is, ChatColor.RED + "You don't have permission to", ChatColor.RED + "modify this setting");
+            ItemUtils.appendLegacyLore(is, ChatColor.RED + "You don't have permission to", ChatColor.RED + "modify this setting");
         }
-        ItemUtils.setDisplayName(is, name);
+        ItemUtils.setLegacyDisplayName(is, name);
         return is;
     }
 

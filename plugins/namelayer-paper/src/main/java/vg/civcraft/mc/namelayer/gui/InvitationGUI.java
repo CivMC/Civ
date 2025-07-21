@@ -40,8 +40,8 @@ public class InvitationGUI extends AbstractGroupGUI {
         ClickableInventory ci = new ClickableInventory(27, g.getName());
 
         ItemStack explain = new ItemStack(Material.PAPER);
-        ItemUtils.setDisplayName(explain, ChatColor.GOLD + "Select an option");
-        ItemUtils.addLore(explain, ChatColor.AQUA + "Please select the rank ", ChatColor.AQUA + "you want the invited player to have");
+        ItemUtils.setLegacyDisplayName(explain, ChatColor.GOLD + "Select an option");
+        ItemUtils.appendLegacyLore(explain, ChatColor.AQUA + "Please select the rank ", ChatColor.AQUA + "you want the invited player to have");
         ci.setSlot(new DecorationStack(explain), 4);
         ci.setSlot(produceOptionStack(Material.LEATHER_CHESTPLATE, "member", PlayerType.MEMBERS, PermissionType.getPermission("MEMBERS")), 10);
         ci.setSlot(produceOptionStack(modMat(), "mod", PlayerType.MODS, PermissionType.getPermission("MODS")), 12);
@@ -55,7 +55,7 @@ public class InvitationGUI extends AbstractGroupGUI {
         ItemMeta im = is.getItemMeta();
         im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         is.setItemMeta(im);
-        ItemUtils.setDisplayName(is, ChatColor.GOLD + "Invite as " + niceRankName);
+        ItemUtils.setLegacyDisplayName(is, ChatColor.GOLD + "Invite as " + niceRankName);
         Clickable c;
         if (gm.hasAccess(g, p.getUniqueId(), perm)) {
             c = new Clickable(is) {
@@ -116,7 +116,7 @@ public class InvitationGUI extends AbstractGroupGUI {
                 }
             };
         } else {
-            ItemUtils.addLore(is, ChatColor.RED + "You don't have permission to invite " + niceRankName);
+            ItemUtils.appendLegacyLore(is, ChatColor.RED + "You don't have permission to invite " + niceRankName);
             c = new DecorationStack(is);
         }
         return c;

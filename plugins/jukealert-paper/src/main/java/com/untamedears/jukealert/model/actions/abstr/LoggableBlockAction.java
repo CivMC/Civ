@@ -3,6 +3,7 @@ package com.untamedears.jukealert.model.actions.abstr;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
 import com.untamedears.jukealert.util.JAUtility;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -16,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
 import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 
 public abstract class LoggableBlockAction extends LoggablePlayerAction {
@@ -198,17 +198,14 @@ public abstract class LoggableBlockAction extends LoggablePlayerAction {
                 yield Material.STONE;
             }
         });
-        guiRepresentation.editMeta((meta) -> {
-            MetaUtils.addComponentLore(
-                meta,
-                Component.text().append(
-                    Component.text("Material: ", NamedTextColor.GOLD),
-                    Component.translatable(getMaterial(), NamedTextColor.AQUA)
-                ).build()
-            );
-        });
+        ItemUtils.appendLore(guiRepresentation, List.of(
+            Component.empty().append(
+                Component.text("Material: ", NamedTextColor.GOLD),
+                Component.translatable(getMaterial(), NamedTextColor.AQUA)
+            )
+        ));
         super.enrichGUIItem(guiRepresentation);
-        ItemUtils.addLore(guiRepresentation, ChatColor.GOLD + JAUtility.formatLocation(getLocation(), false));
+        ItemUtils.appendLegacyLore(guiRepresentation, ChatColor.GOLD + JAUtility.formatLocation(getLocation(), false));
         return new DecorationStack(guiRepresentation);
     }
 

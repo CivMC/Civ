@@ -17,12 +17,12 @@ public class DecorationStack extends Clickable {
 
     public DecorationStack(Material mat, String name) {
         this(mat);
-        ItemUtils.setDisplayName(this.item, name);
+        ItemUtils.setLegacyDisplayName(this.item, name);
     }
 
     public DecorationStack(Material mat, String name, String... lore) {
         this(mat, name);
-        ItemUtils.addLore(this.item, lore);
+        ItemUtils.appendLegacyLore(this.item, lore);
     }
 
     @Override

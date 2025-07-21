@@ -76,27 +76,27 @@ public class ReinforcementsGUI extends BaseCommand {
 
         for (ReinforcementType type : types) {
             ItemStack is = type.getItem().clone();
-            ItemUtils.setComponentDisplayName(is, Component.text(ChatColor.AQUA + type.getName() + (allowed ? ChatColor.GREEN + " (Allowed in current dimension)" : ChatColor.RED + " (Not allowed in current dimension)")));
-            ItemUtils.addLore(is, ChatColor.GREEN + "Health: " + format.format(type.getHealth()));
-            ItemUtils.addLore(is, ChatColor.GOLD + "Maturation time: "
+            ItemUtils.setDisplayName(is, Component.text(ChatColor.AQUA + type.getName() + (allowed ? ChatColor.GREEN + " (Allowed in current dimension)" : ChatColor.RED + " (Not allowed in current dimension)")));
+            ItemUtils.appendLegacyLore(is, ChatColor.GREEN + "Health: " + format.format(type.getHealth()));
+            ItemUtils.appendLegacyLore(is, ChatColor.GOLD + "Maturation time: "
                 + TextUtil.formatDuration(type.getMaturationTime(), TimeUnit.MILLISECONDS));
             if (type.getAcidTime() > 0) {
-                ItemUtils.addLore(is, ChatColor.GOLD + "Acid maturation time: "
+                ItemUtils.appendLegacyLore(is, ChatColor.GOLD + "Acid maturation time: "
                     + TextUtil.formatDuration(type.getAcidTime(), TimeUnit.MILLISECONDS));
             } else {
-                ItemUtils.addLore(is, ChatColor.GOLD + "Can not be used for acid");
+                ItemUtils.appendLegacyLore(is, ChatColor.GOLD + "Can not be used for acid");
             }
-            ItemUtils.addLore(is,
+            ItemUtils.appendLegacyLore(is,
                 ChatColor.WHITE + "Return chance: " + format.format(type.getReturnChance() * 100.0) + " %");
 
-            ItemUtils.addComponentLore(is, Component.text(ChatColor.GOLD + "Allowed dimensions:"));
+            ItemUtils.appendLore(is, List.of(Component.text(ChatColor.GOLD + "Allowed dimensions:")));
             List<Component> allowedDimensionComponents = type.getAllowedWorlds().stream().map(e ->
                 Component.text(ChatColor.GREEN + " - " + e)).collect(Collectors.toList());
 
             if (allowedDimensionComponents.isEmpty()) {
-                ItemUtils.addComponentLore(is, Component.text(ChatColor.DARK_GREEN + " * Everywhere"));
+                ItemUtils.appendLore(is, List.of(Component.text(ChatColor.DARK_GREEN + " * Everywhere")));
             } else {
-                ItemUtils.addComponentLore(is, allowedDimensionComponents);
+                ItemUtils.appendLore(is, allowedDimensionComponents);
             }
             IClickable click = new DecorationStack(is);
             clickables.add(click);
@@ -111,9 +111,9 @@ public class ReinforcementsGUI extends BaseCommand {
         for (AcidType acidType : acidTypes) {
             ItemStack is = new ItemStack(acidType.material());
             String blockName = ItemUtils.getItemName(acidType.material());
-            ItemUtils.setComponentDisplayName(is, Component.text(ChatColor.RED + blockName));
-            ItemUtils.addLore(is, ChatColor.GOLD + "Acid faces: " + (acidType.blockFaces().stream().map(BlockFace::toString).collect(Collectors.joining(", "))));
-            ItemUtils.addLore(is, ChatColor.GOLD + "Maturation modifier: " + format.format(acidType.modifier()) + "x");
+            ItemUtils.setDisplayName(is, Component.text(ChatColor.RED + blockName));
+            ItemUtils.appendLegacyLore(is, ChatColor.GOLD + "Acid faces: " + (acidType.blockFaces().stream().map(BlockFace::toString).collect(Collectors.joining(", "))));
+            ItemUtils.appendLegacyLore(is, ChatColor.GOLD + "Maturation modifier: " + format.format(acidType.modifier()) + "x");
 
             IClickable click = new DecorationStack(is);
             clickables.add(click);

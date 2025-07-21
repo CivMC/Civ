@@ -25,7 +25,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public class ArmourBound extends BasicHack {
 
@@ -66,8 +66,8 @@ public class ArmourBound extends BasicHack {
         if (itemContainer.get(this.key, PersistentDataType.STRING) == null) {
             itemContainer.set(this.key, PersistentDataType.STRING, player.getUniqueId().toString());
             Component boundComponent = Component.text("This armor is bound to: ").decoration(TextDecoration.ITALIC, false).color(NamedTextColor.WHITE).append(Component.text(player.getName()).color(NamedTextColor.GOLD));
-            MetaUtils.addComponentLore(meta, boundComponent);
             newItem.setItemMeta(meta);
+            ItemUtils.appendLore(newItem, List.of(boundComponent));
             return;
         }
         UUID boundUUID = UUID.fromString(itemContainer.get(this.key, PersistentDataType.STRING));

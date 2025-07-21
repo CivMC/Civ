@@ -144,7 +144,7 @@ public class PrintBookRecipe extends PrintingPressRecipe {
         int possibleRuns = input.getMultiplesContainedIn(i);
 
         for (ItemStack is : stacks) {
-            ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
+            ItemUtils.appendLegacyLore(is, ChatColor.GREEN + "Enough materials for "
                 + String.valueOf(possibleRuns) + " runs");
         }
 

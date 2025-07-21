@@ -30,13 +30,13 @@ public class MergeGUI extends AbstractGroupGUI {
     public void showScreen() {
         ClickableInventory ci = new ClickableInventory(27, g.getName());
         ItemStack mergeThisIntoOtherStack = new ItemStack(Material.MINECART);
-        ItemUtils.setDisplayName(mergeThisIntoOtherStack, ChatColor.GOLD + "Merge this group into a different one");
-        ItemUtils.addLore(mergeThisIntoOtherStack, ChatColor.AQUA
+        ItemUtils.setLegacyDisplayName(mergeThisIntoOtherStack, ChatColor.GOLD + "Merge this group into a different one");
+        ItemUtils.appendLegacyLore(mergeThisIntoOtherStack, ChatColor.AQUA
             + "This action will transfer all members, reinforcements, snitches of this group to the one you chose next. "
             + "This group will be deleted in the process");
         ItemStack mergeOtherIntoThisStack = mergeStack();
-        ItemUtils.setDisplayName(mergeOtherIntoThisStack, ChatColor.GOLD + "Merge a different group into this one");
-        ItemUtils.addLore(mergeOtherIntoThisStack, ChatColor.AQUA
+        ItemUtils.setLegacyDisplayName(mergeOtherIntoThisStack, ChatColor.GOLD + "Merge a different group into this one");
+        ItemUtils.appendLegacyLore(mergeOtherIntoThisStack, ChatColor.AQUA
             + "This action will transfer all members, reinforcements and snitches of the group you chose next to this group. "
             + "The group chosen will be deleted in the process");
         ci.setSlot(new Clickable(mergeOtherIntoThisStack) {
@@ -57,7 +57,7 @@ public class MergeGUI extends AbstractGroupGUI {
         }, 15);
         // exit button
         ItemStack backToOverview = goBackStack();
-        ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Go back to previous menu");
+        ItemUtils.setLegacyDisplayName(backToOverview, ChatColor.GOLD + "Go back to previous menu");
         ci.setSlot(new Clickable(backToOverview) {
 
             @Override
@@ -87,7 +87,7 @@ public class MergeGUI extends AbstractGroupGUI {
                 continue;
             }
             ItemStack is = new ItemStack(Material.MAGMA_CREAM);
-            ItemUtils.setDisplayName(is, ChatColor.GOLD + currentName);
+            ItemUtils.setLegacyDisplayName(is, ChatColor.GOLD + currentName);
             ci.setSlot(new Clickable(is) {
 
                 @Override
@@ -99,7 +99,7 @@ public class MergeGUI extends AbstractGroupGUI {
         // back button
         if (currentPage > 0) {
             ItemStack back = new ItemStack(Material.ARROW);
-            ItemUtils.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
+            ItemUtils.setLegacyDisplayName(back, ChatColor.GOLD + "Go to previous page");
             Clickable baCl = new Clickable(back) {
 
                 @Override
@@ -115,7 +115,7 @@ public class MergeGUI extends AbstractGroupGUI {
         // next button
         if ((45 * (currentPage + 1)) <= gName.size()) {
             ItemStack forward = new ItemStack(Material.ARROW);
-            ItemUtils.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
+            ItemUtils.setLegacyDisplayName(forward, ChatColor.GOLD + "Go to next page");
             Clickable forCl = new Clickable(forward) {
 
                 @Override
@@ -131,7 +131,7 @@ public class MergeGUI extends AbstractGroupGUI {
 
         // exit button
         ItemStack backToOverview = goBackStack();
-        ItemUtils.setDisplayName(backToOverview, ChatColor.GOLD + "Exit selection");
+        ItemUtils.setLegacyDisplayName(backToOverview, ChatColor.GOLD + "Exit selection");
         ci.setSlot(new Clickable(backToOverview) {
 
             @Override
@@ -147,15 +147,15 @@ public class MergeGUI extends AbstractGroupGUI {
         String fromGroup = mergeIntoThisGroup ? groupName : g.getName();
         String targetGroup = mergeIntoThisGroup ? g.getName() : groupName;
         ItemStack info = new ItemStack(Material.PAPER);
-        ItemUtils.setDisplayName(info, ChatColor.GOLD + "Merge group");
-        ItemUtils.addLore(info, ChatColor.RED + "Are you sure that you want to merge " + fromGroup + " into "
+        ItemUtils.setLegacyDisplayName(info, ChatColor.GOLD + "Merge group");
+        ItemUtils.appendLegacyLore(info, ChatColor.RED + "Are you sure that you want to merge " + fromGroup + " into "
             + targetGroup + "? You can not undo this!");
-        ItemUtils.addLore(info, ChatColor.AQUA + "This will transfer all members, reinforcements, snitches etc. from "
+        ItemUtils.appendLegacyLore(info, ChatColor.AQUA + "This will transfer all members, reinforcements, snitches etc. from "
             + fromGroup + " to " + targetGroup + ". " + fromGroup + " will be deleted in the process");
         ItemStack yes = yesStack();
-        ItemUtils.setDisplayName(yes, ChatColor.GOLD + "Yes, merge " + fromGroup + " into " + targetGroup);
+        ItemUtils.setLegacyDisplayName(yes, ChatColor.GOLD + "Yes, merge " + fromGroup + " into " + targetGroup);
         ItemStack no = noStack();
-        ItemUtils.setDisplayName(no, ChatColor.GOLD + "No, don't merge " + g.getName());
+        ItemUtils.setLegacyDisplayName(no, ChatColor.GOLD + "No, don't merge " + g.getName());
         confirmInv.setSlot(new Clickable(yes) {
 
             @Override

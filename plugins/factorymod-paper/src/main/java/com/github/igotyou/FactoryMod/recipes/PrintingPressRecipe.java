@@ -19,7 +19,7 @@ public abstract class PrintingPressRecipe extends InputRecipe {
     protected ItemStack getPrintingPlateRepresentation(ItemMap printingPlate, String name) {
         List<ItemStack> out = printingPlate.getItemStackRepresentation();
         ItemStack res = out.size() == 0 ? new ItemStack(Material.STONE) : out.get(0).clone();
-        ItemUtils.setDisplayName(res, name);
+        ItemUtils.setLegacyDisplayName(res, name);
 
         return res;
     }

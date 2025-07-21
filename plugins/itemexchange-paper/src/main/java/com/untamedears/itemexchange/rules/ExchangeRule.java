@@ -14,9 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.component.CustomData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.ChatColor;
@@ -25,6 +23,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
@@ -432,21 +431,16 @@ public final class ExchangeRule implements ExchangeData {
      *
      * @return Returns an itemised representation of this rule.
      */
-    public ItemStack toItem() {
-        ItemStack item = ItemExchangeConfig.getRuleItem();
-		final var itemNBT = new NBTCompound();
-		toNBT(itemNBT);
-
-		CustomData customData = CustomData.EMPTY.update(nbt -> nbt.put(RULE_KEY, itemNBT.getRAW()));
-
-		net.minecraft.world.item.ItemStack nmsItem = ItemUtils.getNMSItemStack(item);
-		nmsItem.set(DataComponents.CUSTOM_DATA, customData);
-		item = nmsItem.getBukkitStack();
-
-        ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
+    public @NotNull ItemStack toItem() {
+        final ItemStack item = ItemExchangeConfig.getRuleItem();
+        ItemUtils.editCustomData(item, (nbt) -> {
+            final var ruleNBT = new CompoundTag();
+            toNBT(new NBTCompound(ruleNBT));
+            nbt.put(RULE_KEY, ruleNBT);
+        });
+        item.editMeta((meta) -> {
             meta.setDisplayName(getRuleTitle());
             meta.setLore(getRuleDetails());
-            return true;
         });
         return item;
     }
@@ -457,16 +451,19 @@ public final class ExchangeRule implements ExchangeData {
      * @param item The item to retrieve the Exchange rule from.
      * @return Returns an exchange rule if found, or null.
      */
-    public static ExchangeRule fromItem(ItemStack item) {
-        if (!ItemUtils.isValidItem(item)
-            || item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
+    public static @Nullable ExchangeRule fromItem(
+        final ItemStack item
+    ) {
+        if (item == null || item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
             return null;
         }
-        final CustomData itemNBT = ItemUtils.getNMSItemStack(item).get(DataComponents.CUSTOM_DATA);
-        if (itemNBT != null && itemNBT.copyTag().contains(RULE_KEY)) {
-            return fromNBT(new NBTCompound((CompoundTag) itemNBT.copyTag().get(RULE_KEY)));
+        final CompoundTag root = ItemUtils.getCustomData(item);
+        if (root == null) {
+            return null;
         }
-        return null;
+        if (!(root.get(RULE_KEY) instanceof final CompoundTag ruleNBT)) {
+            return null;
+        }
+        return fromNBT(new NBTCompound(ruleNBT));
     }
-
 }

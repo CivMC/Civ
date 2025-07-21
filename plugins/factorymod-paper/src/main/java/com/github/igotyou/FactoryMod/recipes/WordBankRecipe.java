@@ -56,7 +56,7 @@ public class WordBankRecipe extends InputRecipe {
         if (!ItemUtils.isValidItem(toApply)) {
             return false;
         }
-        if (!ItemUtils.getDisplayName(toApply).isEmpty()) {
+        if (!ItemUtils.getLegacyDisplayName(toApply).isEmpty()) {
             return false;
         }
         ItemMap input = new ItemMap();
@@ -83,7 +83,7 @@ public class WordBankRecipe extends InputRecipe {
         }
         String result = sb.substring(0, sb.length() - 2);
         String name = getHash(input);
-        ItemUtils.setDisplayName(toApply, name);
+        ItemUtils.setLegacyDisplayName(toApply, name);
         if (fccf.getActivator() != null) {
             Player player = Bukkit.getPlayer(fccf.getActivator());
             if (player != null) {
@@ -102,7 +102,7 @@ public class WordBankRecipe extends InputRecipe {
     @Override
     public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
         ItemStack is = new ItemStack(Material.RED_WOOL);
-        ItemUtils.addLore(is, ChatColor.GOLD + "A tool or piece of armor and any other random amount of items");
+        ItemUtils.appendLegacyLore(is, ChatColor.GOLD + "A tool or piece of armor and any other random amount of items");
         return Collections.singletonList(is);
     }
 
@@ -118,7 +118,7 @@ public class WordBankRecipe extends InputRecipe {
             }
             output.append(word);
         }
-        ItemUtils.setDisplayName(is, output.toString());
+        ItemUtils.setLegacyDisplayName(is, output.toString());
         return Collections.singletonList(is);
     }
 
@@ -133,7 +133,7 @@ public class WordBankRecipe extends InputRecipe {
         if (!ItemUtils.isValidItem(toApply)) {
             return false;
         }
-        if (!ItemUtils.getDisplayName(toApply).isEmpty()) {
+        if (!ItemUtils.getLegacyDisplayName(toApply).isEmpty()) {
             return false;
         }
         for (int i = 1; i < inputInv.getSize(); i++) {

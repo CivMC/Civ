@@ -123,11 +123,11 @@ public class HeliodorRefillRecipe extends InputRecipe {
         }
         gem.setAmount(this.count);
         for (ItemStack is : new ItemMap(gem).getItemStackRepresentation()) {
-            ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for " + (amount / this.count) + " runs");
+            ItemUtils.appendLegacyLore(is, ChatColor.GREEN + "Enough materials for " + (amount / this.count) + " runs");
             result.add(is);
         }
         for (ItemStack is : input.getItemStackRepresentation()) {
-            ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for " + possibleRuns.getAmount(is) + " runs");
+            ItemUtils.appendLegacyLore(is, ChatColor.GREEN + "Enough materials for " + possibleRuns.getAmount(is) + " runs");
             result.add(is);
         }
         return result;

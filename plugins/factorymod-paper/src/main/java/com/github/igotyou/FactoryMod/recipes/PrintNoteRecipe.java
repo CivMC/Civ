@@ -131,7 +131,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
     @Override
     public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
         ItemStack paper = new ItemStack(Material.PAPER, getOutputAmount());
-        ItemUtils.setDisplayName(paper, this.title);
+        ItemUtils.setLegacyDisplayName(paper, this.title);
 
         List<ItemStack> stacks = new ArrayList<>();
         stacks.add(paper);
@@ -144,7 +144,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
         int possibleRuns = input.getMultiplesContainedIn(i);
 
         for (ItemStack is : stacks) {
-            ItemUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
+            ItemUtils.appendLegacyLore(is, ChatColor.GREEN + "Enough materials for "
                 + String.valueOf(possibleRuns) + " runs");
         }
 
@@ -155,7 +155,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
     public ItemStack getRecipeRepresentation() {
         ItemStack res = new ItemStack(Material.PAPER);
 
-        ItemUtils.setDisplayName(res, getName());
+        ItemUtils.setLegacyDisplayName(res, getName());
 
         return res;
     }

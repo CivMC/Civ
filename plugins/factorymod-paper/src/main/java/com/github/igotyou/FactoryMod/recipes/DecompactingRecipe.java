@@ -103,7 +103,7 @@ public class DecompactingRecipe extends InputRecipe {
         List<ItemStack> result = new LinkedList<>();
         if (i == null) {
             ItemStack is = new ItemStack(Material.STONE, 64);
-            ItemUtils.addLore(is, compactedLore);
+            ItemUtils.appendLegacyLore(is, compactedLore);
             is.setAmount(1);
             result.add(is);
             return result;
