@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.EventHandler;

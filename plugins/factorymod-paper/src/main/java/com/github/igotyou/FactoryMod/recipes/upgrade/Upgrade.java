@@ -2,7 +2,7 @@ package com.github.igotyou.FactoryMod.recipes.upgrade;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
 
 public interface Upgrade {
 
