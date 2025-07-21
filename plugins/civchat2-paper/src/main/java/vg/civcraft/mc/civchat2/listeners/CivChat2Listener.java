@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -45,11 +44,6 @@ public class CivChat2Listener implements Listener {
         db = CivChat2.getInstance().getDatabaseManager();
         settings = CivChat2.getInstance().getCivChat2SettingsManager();
         localWarn = new HashSet<>();
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerDeath(PlayerDeathEvent playerDeathEvent) {
-        playerDeathEvent.setDeathMessage(null);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

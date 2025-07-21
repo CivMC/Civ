@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 public class CivChat2Config {
 
@@ -92,6 +93,20 @@ public class CivChat2Config {
 
     public boolean useDynamicRangeColoring() {
         return config.getBoolean("chat.dynamicColoring");
+    }
+
+    public enum DeathMessageType { DISABLED, VANILLA, CUSTOM }
+    public @NotNull DeathMessageType getDeathMessageType() {
+        final String raw = this.config.getString("deathMessages", null);
+        if (raw == null) {
+            return DeathMessageType.DISABLED;
+        }
+        try {
+            return DeathMessageType.valueOf(raw);
+        }
+        catch (final IllegalArgumentException e) {
+            return DeathMessageType.DISABLED;
+        }
     }
 
     public synchronized String getColorAtDistance(double distance) {
