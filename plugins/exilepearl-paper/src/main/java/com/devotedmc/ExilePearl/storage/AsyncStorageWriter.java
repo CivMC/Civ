@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Wrapper class for PluginStorage that performs asynchronous writes
@@ -142,6 +143,15 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
     }
 
     @Override
+    public void updateCaptureLocation(
+        final @NotNull ExilePearl pearl
+    ) {
+        Preconditions.checkNotNull(pearl, "pearl");
+        checkRunning();
+        this.queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_CAPTURE_LOCATION));
+    }
+
+    @Override
     public void updatePearledOnDate(ExilePearl pearl) {
         Preconditions.checkNotNull(pearl, "pearl");
         checkRunning();
@@ -210,6 +220,10 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 
             case UPDATE_RETURN_LOCATION:
                 storage.updateReturnLocation(record.getPearl());
+                break;
+
+            case UPDATE_CAPTURE_LOCATION:
+                storage.updateCaptureLocation(record.getPearl());
                 break;
 
             case UPDATE_PEARLED_ON:

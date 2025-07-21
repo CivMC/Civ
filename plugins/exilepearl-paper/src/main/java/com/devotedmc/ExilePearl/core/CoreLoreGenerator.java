@@ -75,6 +75,15 @@ final class CoreLoreGenerator implements LoreProvider {
         lore.add(parse(PlayerNameStringFormat, pearl.getPlayerName(), Integer.toString(pearl.getPearlId(), 36).toUpperCase()));
         lore.add(parse("<a>Exiled on: <n>%s", dateFormat.format(pearl.getPearledOn())));
         lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
+        lore.add(parse("<a>Captured at: <n>") + switch (pearl.getCaptureLocation()) {
+            case null -> "<unknown>";
+            case final Location location -> "%s %d %d %d".formatted(
+                location.getWorld().getName(),
+                location.getBlockX(),
+                location.getBlockY(),
+                location.getBlockZ()
+            );
+        });
         if (ExilePearlPlugin.getApi().isBanStickEnabled() && BanHandler.isPlayerBanned(pearl.getPlayerId())) {
             lore.add(parse("<b>Player is banned."));
         }

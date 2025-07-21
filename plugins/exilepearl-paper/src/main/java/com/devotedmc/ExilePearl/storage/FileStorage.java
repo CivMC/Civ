@@ -5,6 +5,7 @@ import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.config.Document;
 import com.google.common.base.Preconditions;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -16,6 +17,7 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * File storage for pearls. Not done yet
@@ -23,6 +25,7 @@ import java.util.logging.Level;
  * @author Gordon
  */
 class FileStorage implements PluginStorage {
+    private static final String PEARLS_KEY = "pearls";
 
     private final File pearlFile;
     private final PearlFactory pearlFactory;
@@ -47,10 +50,10 @@ class FileStorage implements PluginStorage {
 
         FileConfiguration fileConfig = YamlConfiguration.loadConfiguration(pearlFile);
         doc = new Document(fileConfig);
-        pearlDoc = doc.getDocument("pearls");
+        pearlDoc = doc.getDocument(PEARLS_KEY);
         if (pearlDoc == null) {
             pearlDoc = new Document();
-            doc.append("pearls", pearlDoc);
+            doc.append(PEARLS_KEY, pearlDoc);
             writeFile();
             return pearls;
         }
@@ -72,17 +75,21 @@ class FileStorage implements PluginStorage {
     public void pearlInsert(ExilePearl pearl) {
         Document insert = new Document()
             .append("player_name", pearl.getPlayerName()) // Not needed, just makes it easier to search file
-            .append("killer_id", pearl.getKillerId().toString())
-            .append("pearl_id", pearl.getPearlId())
-            .append("type", pearl.getPearlType().toInt())
-            .append("location", pearl.getLocation())
-            .append("health", pearl.getHealth())
-            .append("pearled_on", pearl.getPearledOn())
-            .append("last_seen", pearl.getLastOnline())
-            .append("freed_offline", pearl.getFreedOffline())
-            .append("summoned", pearl.isSummoned());
+            .append(StorageKeys.KILLER_UUID, pearl.getKillerId().toString())
+            .append(StorageKeys.PEARL_ID, pearl.getPearlId())
+            .append(StorageKeys.PEARL_TYPE, pearl.getPearlType().toInt())
+            .append(StorageKeys.PEARL_LOCATION, pearl.getLocation())
+            .append(StorageKeys.PEARL_HEALTH, pearl.getHealth())
+            .append(StorageKeys.PEARL_CAPTURE_DATE, pearl.getPearledOn())
+            .append(StorageKeys.VICTIM_LAST_SEEN, pearl.getLastOnline())
+            .append(StorageKeys.PEARL_FREED_WHILE_OFFLINE, pearl.getFreedOffline())
+            .append(StorageKeys.VICTIM_SUMMONED, pearl.isSummoned());
         if (pearl.isSummoned()) {
-            insert.append("returnLoc", pearl.getReturnLocation());
+            insert.append(StorageKeys.VICTIM_RETURN_LOCATION, pearl.getReturnLocation());
+        }
+        final Location captureLocation = pearl.getCaptureLocation();
+        if (captureLocation != null) {
+            insert.append(StorageKeys.PEARL_CAPTURE_LOCATION, captureLocation);
         }
 
         pearlDoc.append(pearl.getPlayerId().toString(), insert);
@@ -97,55 +104,70 @@ class FileStorage implements PluginStorage {
 
     @Override
     public void updatePearlLocation(ExilePearl pearl) {
-        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("location", pearl.getLocation());
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append(StorageKeys.PEARL_LOCATION, pearl.getLocation());
         writeFile();
     }
 
     @Override
     public void updatePearlHealth(ExilePearl pearl) {
-        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("health", pearl.getHealth());
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append(StorageKeys.PEARL_HEALTH, pearl.getHealth());
         writeFile();
     }
 
     @Override
     public void updatePearlFreedOffline(ExilePearl pearl) {
-        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("freed_offline", pearl.getFreedOffline());
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append(StorageKeys.PEARL_FREED_WHILE_OFFLINE, pearl.getFreedOffline());
         writeFile();
     }
 
     @Override
     public void updatePearlType(ExilePearl pearl) {
-        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("type", pearl.getPearlType().toInt());
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append(StorageKeys.PEARL_TYPE, pearl.getPearlType().toInt());
         writeFile();
     }
 
     @Override
     public void updatePearlKiller(ExilePearl pearl) {
-        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("killer_id", pearl.getKillerId().toString());
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append(StorageKeys.KILLER_UUID, pearl.getKillerId().toString());
         writeFile();
     }
 
     @Override
     public void updatePearlLastOnline(ExilePearl pearl) {
-        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("last_seen", pearl.getLastOnline());
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append(StorageKeys.VICTIM_LAST_SEEN, pearl.getLastOnline());
         writeFile();
     }
 
     @Override
     public void updatePearlSummoned(ExilePearl pearl) {
-        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("summoned", pearl.isSummoned());
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append(StorageKeys.VICTIM_SUMMONED, pearl.isSummoned());
         writeFile();
     }
 
     @Override
     public void updateReturnLocation(ExilePearl pearl) {
-        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("returnLoc", pearl.getReturnLocation());
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append(StorageKeys.VICTIM_RETURN_LOCATION, pearl.getReturnLocation());
+        writeFile();
+    }
+
+    @Override
+    public void updateCaptureLocation(
+        final @NotNull ExilePearl pearl
+    ) {
+        final Document pearlDoc = this.pearlDoc.getDocument(pearl.getPlayerId().toString());
+        final Location location = pearl.getCaptureLocation();
+        if (location == null) {
+            pearlDoc.remove(StorageKeys.PEARL_CAPTURE_LOCATION);
+        }
+        else {
+            pearlDoc.append(StorageKeys.PEARL_CAPTURE_LOCATION, location);
+        }
         writeFile();
     }
 
     @Override
     public void updatePearledOnDate(ExilePearl pearl) {
-        pearlDoc.getDocument(pearl.getPlayerId().toString()).append("pearled_on", pearl.getPearledOn());
+        pearlDoc.getDocument(pearl.getPlayerId().toString()).append(StorageKeys.PEARL_CAPTURE_DATE, pearl.getPearledOn());
         writeFile();
     }
 
@@ -170,7 +192,7 @@ class FileStorage implements PluginStorage {
                 try (FileWriter writer = new FileWriter(pearlFile)) {
                     writer.write("# Do not edit this file directly while the server is running!");
                 }
-                doc.append("pearls", pearlDoc);
+                doc.append(PEARLS_KEY, pearlDoc);
                 writeFile();
             } catch (IOException e) {
                 return false;

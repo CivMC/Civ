@@ -12,6 +12,7 @@ public enum Permission {
     SET_TYPE("settype"),
     SET_KILLER("setkiller"),
     SET_DATE("setdate"),
+    SET_CAPTURE_LOC("setcaptureloc"),
     CONFIG("config"),
     DOWNGRADE("downgrade"),
     SUMMON("summon"),
