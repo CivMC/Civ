@@ -21,7 +21,7 @@ services:
         condition: service_healthy
     environment:
       TYPE: 'CUSTOM'
-      BUNGEE_JAR_URL: 'https://api.papermc.io/v2/projects/velocity/versions/3.4.0-SNAPSHOT/builds/515/downloads/velocity-3.4.0-SNAPSHOT-515.jar'
+      BUNGEE_JAR_URL: 'https://api.papermc.io/v2/projects/velocity/versions/3.4.0-SNAPSHOT/builds/522/downloads/velocity-3.4.0-SNAPSHOT-522.jar'
 
       REPLACE_ENV_VARIABLES: 'true'
       REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
