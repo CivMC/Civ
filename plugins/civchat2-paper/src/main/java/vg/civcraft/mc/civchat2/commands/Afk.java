@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -19,17 +20,17 @@ public class Afk extends BaseCommand {
     public void execute(Player player, @Optional String afkMessageRaw) {
         Component afkMessage;
         if (afkMessageRaw == null) {
-            afkMessage = ChatStrings.chatPlayerAfk;
+            afkMessage = MiniMessage.miniMessage().deserialize(ChatStrings.chatPlayerAfk);
         } else {
             afkMessage = Component.text(afkMessageRaw, NamedTextColor.AQUA);
         }
 
         boolean isAfk = CivChat2.getInstance().getCivChat2Manager().togglePlayerAfk(player, afkMessage);
         if (!isAfk) {
-            player.sendMessage(ChatStrings.chatNotAfk);
+            player.sendRichMessage(ChatStrings.chatNotAfk);
             return;
         }
 
-        player.sendMessage(ChatStrings.chatAfk);
+        player.sendRichMessage(ChatStrings.chatAfk);
     }
 }
