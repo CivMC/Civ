@@ -137,6 +137,7 @@ hacks:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Make sure to reinforce your buildings/chests to protect them from others. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://civmc.net/wiki/plugins/essential/citadel"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Jukeboxes and Noteblocks act as CCTV, when reinforced they record player actions. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://civmc.net/wiki/plugins/unique/jukealert"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Killing someone with an ender pearl in your hotbar will lock them in the nether! Player essence is used to keep the players trapped. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://civmc.net/wiki/plugins/essential/exilepearl"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Install Simple Voice Chat to use proximity voice chat!","color":"green","clickEvent":{"action":"open_url","value":"https://civmc.net/wiki/plugins/fun/simplevoicechat"}}]'
 
   ElytraFeatures:
     enabled: false
