@@ -261,12 +261,12 @@ entities:
       maximum: default
       minimum: default
   tracking-range-y:
-    animal: default
-    display: default
-    enabled: false
-    misc: default
-    monster: default
-    other: default
+    enabled: true
+    animal: 64
+    display: 64
+    misc: 64
+    monster: 64
+    other: 64
     player: default
 environment:
   disable-explosion-knockback: false
