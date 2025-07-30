@@ -30,9 +30,10 @@ public final class PROXYListLoader extends ProxyLoader {
 
     @Override
     public void run() {
-        BanStick.getPlugin().info("Running proxylist loader: {0}", name());
         for (String url : this.urls) {
             try {
+                BanStick.getPlugin().debug("Scraping {0}", url);
+
                 URL connection = new URI(url).toURL();
                 InputStream readIn = connection.openStream();
                 BufferedReader in = new BufferedReader(new InputStreamReader(readIn));
@@ -54,6 +55,7 @@ public final class PROXYListLoader extends ProxyLoader {
                         continue;
                     }
                     String ip = parts[0];
+                    String port = parts[1];
                     IPAddressString ipAddressString = new IPAddressString(ip);
                     ipAddressString.validate();
                     IPAddress ipAddress = ipAddressString.toAddress();
@@ -66,7 +68,7 @@ public final class PROXYListLoader extends ProxyLoader {
                     BSIPData data = BSIPData.byExactIP(found);
                     if (data == null) {
                         data = BSIPData.create(found, null, null, null, null, null, null, null,
-                            null, null, null, null, proxyScore, "proxylist Proxy Loader", null);
+                            null, null, null, null, proxyScore, "proxylist Proxy Loader", "Anon Proxy on Port: " + port);
                     }
 
                     if (autoBan) {
