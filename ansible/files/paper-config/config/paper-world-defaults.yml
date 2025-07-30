@@ -134,6 +134,16 @@ entities:
     hatch-time: default
   spawning:
     all-chunks-are-slime-chunks: false
+    despawn-time:
+      llama_spit: 1200
+      snowball: 1200
+      fireball: 1200
+      dragon_fireball: 1200
+      small_fireball: 1200
+      arrow: 3000
+      shulker_bullet: 3000
+      wither_skull: 3000
+      trident: 3000
     alt-item-despawn-rate:
       enabled: true
       items:
@@ -355,13 +365,13 @@ tick-rates:
     villager:
       validatenearbypoi: -1
   container-update: 3
-  dry-farmland: 1
+  dry-farmland: 2
   grass-spread: 2
   mob-spawner: 2
   sensor:
     villager:
       secondarypoisensor: 40
-  wet-farmland: 1
+  wet-farmland: 2
 unsupported-settings:
   disable-world-ticking-when-empty: false
   fix-invulnerable-end-crystal-exploit: true
