@@ -3,6 +3,7 @@ package vg.civcraft.mc.civmodcore.players;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
@@ -24,13 +25,12 @@ public final class PlayerNames implements Listener {
         names.clear();
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             OfflinePlayer[] players = Bukkit.getOfflinePlayers();
+            List<String> namesList = Stream.of(players)
+                .map(OfflinePlayer::getName)
+                .filter(StringUtils::isNotBlank)
+                .toList();
             Bukkit.getScheduler().runTask(plugin, () -> {
-                names.addAll(
-                    Stream.of(players)
-                        .map(OfflinePlayer::getName)
-                        .filter(StringUtils::isNotBlank)
-                        .toList()
-                );
+                names.addAll(namesList);
             });
         });
     }
