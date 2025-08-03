@@ -4,6 +4,10 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -41,11 +45,11 @@ public class ModeManager {
     }
 
     public boolean enableDutyMode(Player player, Tier tier) {
-        CompoundTag nmsCompound = new CompoundTag();
+        TagValueOutput nmsCompound = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
         CraftPlayer cPlayer = (CraftPlayer) player;
         cPlayer.getHandle().saveWithoutId(nmsCompound);
         String serverName = Bukkit.getServer().getName();
-        db.savePlayerData(player.getUniqueId(), nmsCompound, serverName, tier.getName());
+        db.savePlayerData(player.getUniqueId(), nmsCompound.buildResult(), serverName, tier.getName());
 
         vaultManager.addPermissionsToPlayer(player, tier.getTemporaryPermissions());
         vaultManager.addPlayerToGroups(player, tier.getTemporaryGroups());
@@ -79,7 +83,7 @@ public class ModeManager {
             player.teleport(targetLocation);
         }, 3L);
         CraftPlayer cPlayer = (CraftPlayer) player;
-        cPlayer.getHandle().load(input.internal());
+        cPlayer.getHandle().load(TagValueInput.createGlobal(ProblemReporter.DISCARDING, input.internal()));
 
         db.removePlayerData(player.getUniqueId());
 

@@ -7,7 +7,6 @@ import com.untamedears.itemexchange.utility.nbt.NBTSerialization;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
-import org.apache.commons.lang.IllegalClassException;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
@@ -52,7 +51,7 @@ public abstract class ModifierData extends BaseCommand
             return getClass().getConstructor().newInstance();
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException |
                  InvocationTargetException error) {
-            throw new IllegalClassException("That Modifier cannot be constructed... please make sure it has a " +
+            throw new IllegalStateException("That Modifier cannot be constructed... please make sure it has a " +
                 "public, zero argument constructor.");
         }
     }

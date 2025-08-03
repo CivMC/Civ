@@ -348,13 +348,6 @@ hacks:
     delay: 10000
     message: '%Victim% was combat tagged by %Attacker%'
     broadcast: [OP, CONSOLE]
-  DisableAI:
-    enabled: false
-    # Specify below the living entities and their spawning circumstances you want to disable the AI for.
-    # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/entity/EntityType.html
-    # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html
-    # Note: You can also just state "ALL" for all spawn circumstances
-    VILLAGER: ALL
   Experimental:
     enabled: true
     combatspy: false
@@ -488,8 +481,6 @@ hacks:
         - "            &5TOS&r\nCivMC is not complete anarchy. You can and will be banned if you break the server rules.\n (Find on the discord)\n\nRefrain from using hacks or spouting slurs.\nAct like a decent human being and all will be well."
         - "      &5Bugs/Issues&r\n\nIf you've found a bug or have any other issues that require an admin.\nThen you can either raise a ticket on the discord or send a modmail via our reddit.\n\n         &9R/CivMC&r"
         - "        &5Goodluck!&r\nThere are many things to do on CivMC. Let your ambitions run wild!\n\nLeave something behind people will remember for years to come.\n\nBe it your actions, your creations or your destruction..."
-  InvControl:
-    enabled: false
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'

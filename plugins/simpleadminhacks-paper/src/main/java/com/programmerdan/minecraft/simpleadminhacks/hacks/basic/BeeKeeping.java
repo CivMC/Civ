@@ -113,7 +113,7 @@ public final class BeeKeeping extends BasicHack {
             // Reset the above values
             bee.setLastHurtByMob(lastDamageCause);
             bee.setPersistentAngerTarget(angerTarget);
-            bee.setTarget(goalTarget, EntityTargetEvent.TargetReason.FORGOT_TARGET, false); // Params: target, cause, emit event
+            bee.setTarget(goalTarget, EntityTargetEvent.TargetReason.FORGOT_TARGET); // Params: target, cause, emit event
             bee.setRemainingPersistentAngerTime(angerLevel);
         });
     }
@@ -196,7 +196,7 @@ public final class BeeKeeping extends BasicHack {
     }
 
     private static List<BeeData> getBeesFromHive(@NotNull final BeehiveBlockEntity hive) {
-        List<BeehiveBlockEntity.Occupant> bees = hive.components().get(DataComponents.BEES);
+        List<BeehiveBlockEntity.Occupant> bees = hive.components().get(DataComponents.BEES).bees();
 
 		return bees == null ? null : bees.stream().map(bee -> bee.entityData().copyTag()).map(BeeData::new).collect(Collectors.toCollection(ArrayList::new));
 	}
@@ -207,7 +207,7 @@ public final class BeeKeeping extends BasicHack {
 
         public BeeData(@NotNull final CompoundTag nbt) {
             // Parse name
-            final String rawName = nbt.getString(BEE_NAME_KEY);
+            final String rawName = nbt.getString(BEE_NAME_KEY).get();
             if (Strings.isNullOrEmpty(rawName)) {
                 this.name = null;
             } else {

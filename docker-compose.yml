@@ -56,8 +56,7 @@ services:
         condition: service_healthy
     environment:
       TYPE: 'paper'
-      VERSION: '1.21.4'
-      PAPER_CUSTOM_JAR: 'civpaper.jar'
+      VERSION: '1.21.8'
       EULA: 'TRUE'
 
       REMOVE_OLD_MODS: 'TRUE'
@@ -112,7 +111,7 @@ services:
         condition: service_healthy
     environment:
       TYPE: 'paper'
-      VERSION: '1.21.4'
+      VERSION: '1.21.8'
       EULA: 'TRUE'
       PAPER_CUSTOM_JAR: 'asp-server.jar'
 

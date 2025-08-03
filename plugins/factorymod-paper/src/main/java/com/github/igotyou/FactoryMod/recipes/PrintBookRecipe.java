@@ -84,18 +84,18 @@ public class PrintBookRecipe extends PrintingPressRecipe {
             bookItem.setData(DataComponentTypes.WRITTEN_BOOK_CONTENT, printingPlateStack.getData(DataComponentTypes.WRITTEN_BOOK_CONTENT));
         } else { // Handle legacy (pre-1.20.5) plates
             bookItem.editMeta(BookMeta.class, meta -> {
-                meta.title(Component.text(bookData.get("title").getAsString()));
-                meta.author(Component.text(bookData.get("author").getAsString()));
-                meta.setGeneration(BookMeta.Generation.values()[((IntTag) bookData.get("generation")).getAsInt()]);
+                meta.title(Component.text(bookData.get("title").asString().get()));
+                meta.author(Component.text(bookData.get("author").asString().get()));
+                meta.setGeneration(BookMeta.Generation.values()[((IntTag) bookData.get("generation")).intValue()]);
 
                 List<Component> pages = new ArrayList<>();
                 ((ListTag) bookData.get("pages")).forEach(page -> {
-                    pages.add(GsonComponentSerializer.gson().deserialize(page.getAsString()));
+                    pages.add(GsonComponentSerializer.gson().deserialize(page.asString().get()));
                 });
                 meta.pages(pages);
             });
         }
-        
+
         return bookItem;
     }
 
