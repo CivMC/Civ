@@ -15,7 +15,7 @@ import vg.civcraft.mc.civduties.configuration.Command.Timing;
 import vg.civcraft.mc.civduties.configuration.Tier;
 import vg.civcraft.mc.civduties.database.DatabaseManager;
 import vg.civcraft.mc.civduties.external.VaultManager;
-import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 
 public class ModeManager {
 
@@ -44,9 +44,8 @@ public class ModeManager {
         CompoundTag nmsCompound = new CompoundTag();
         CraftPlayer cPlayer = (CraftPlayer) player;
         cPlayer.getHandle().saveWithoutId(nmsCompound);
-        NBTCompound compound = new NBTCompound(nmsCompound);
         String serverName = Bukkit.getServer().getName();
-        db.savePlayerData(player.getUniqueId(), compound.getRAW(), serverName, tier.getName());
+        db.savePlayerData(player.getUniqueId(), nmsCompound, serverName, tier.getName());
 
         vaultManager.addPermissionsToPlayer(player, tier.getTemporaryPermissions());
         vaultManager.addPlayerToGroups(player, tier.getTemporaryGroups());
@@ -66,21 +65,21 @@ public class ModeManager {
         if (!isInDuty(player)) {
             return false;
         }
-        NBTCompound input = new NBTCompound(db.getPlayerData(player.getUniqueId()).getData());
+        NbtCompound input = new NbtCompound(db.getPlayerData(player.getUniqueId()).getData());
         // Inform the client the gamemode was changed to fix graphical issues on the
         // client side
         // Teleport the players using the bukkit api to avoid triggering nocheat
         // movement detection
-        double[] location = input.getDoubleArray("Pos");
-        UUID worldUUID = new UUID(input.getLong("WorldUUIDMost"), input.getLong("WorldUUIDLeast"));
+        double[] location = input.getDoubleArray("Pos", true);
+        UUID worldUUID = new UUID(input.getLong("WorldUUIDMost", 0L), input.getLong("WorldUUIDLeast", 0L));
         Location targetLocation = new Location(Bukkit.getWorld(worldUUID), location[0], location[1], location[2]);
         player.teleport(targetLocation);
-        player.setGameMode(getGameModeByValue(input.getInt("playerGameType")));
+        player.setGameMode(getGameModeByValue(input.getInt("playerGameType", 0)));
         Bukkit.getScheduler().scheduleSyncDelayedTask(CivDuties.getInstance(), () -> {
             player.teleport(targetLocation);
         }, 3L);
         CraftPlayer cPlayer = (CraftPlayer) player;
-        cPlayer.getHandle().load(input.getRAW());
+        cPlayer.getHandle().load(input.internal());
 
         db.removePlayerData(player.getUniqueId());
 

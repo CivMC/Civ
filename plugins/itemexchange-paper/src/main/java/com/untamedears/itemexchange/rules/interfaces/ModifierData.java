@@ -2,15 +2,15 @@ package com.untamedears.itemexchange.rules.interfaces;
 
 import co.aikar.commands.BaseCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
+import com.untamedears.itemexchange.utility.nbt.NBTSerializable;
+import com.untamedears.itemexchange.utility.nbt.NBTSerialization;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.lang.IllegalClassException;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
-import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
-import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 
 /**
  * Abstract class that represents a modifier.
@@ -70,7 +70,7 @@ public abstract class ModifierData extends BaseCommand
      * Duplicates this modifier.
      */
     public final ModifierData duplicate() {
-        final var nbt = new NBTCompound();
+        final var nbt = new NbtCompound();
         toNBT(nbt);
         return NBTSerialization.getDeserializer(getClass()).fromNBT(nbt);
     }

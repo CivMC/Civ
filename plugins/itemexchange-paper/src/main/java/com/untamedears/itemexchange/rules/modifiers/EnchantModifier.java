@@ -33,7 +33,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
-import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
 
@@ -88,7 +88,7 @@ public final class EnchantModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@NotNull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NbtCompound nbt) {
         nbt.setCompound(REQUIRED_KEY, NBTEncodings.encodeLeveledEnchants(getRequiredEnchants()));
         nbt.setStringArray(EXCLUDED_KEY, getExcludedEnchants().stream()
             .map(KeyedUtils::getString)
@@ -98,14 +98,14 @@ public final class EnchantModifier extends ModifierData {
     }
 
     @NotNull
-    public static EnchantModifier fromNBT(@NotNull final NBTCompound nbt) {
+    public static EnchantModifier fromNBT(@NotNull final NbtCompound nbt) {
         final var modifier = new EnchantModifier();
-        modifier.setRequiredEnchants(NBTEncodings.decodeLeveledEnchants(nbt.getCompound(REQUIRED_KEY)));
-        modifier.setExcludedEnchants(Arrays.stream(nbt.getStringArray(EXCLUDED_KEY))
+        modifier.setRequiredEnchants(NBTEncodings.decodeLeveledEnchants(nbt.getCompound(REQUIRED_KEY, true)));
+        modifier.setExcludedEnchants(Arrays.stream(nbt.getStringArray(EXCLUDED_KEY, true))
             .map(EnchantUtils::getEnchantment)
             .filter(Objects::nonNull)
             .collect(Collectors.toCollection(HashSet::new)));
-        modifier.setAllowUnlistedEnchants(nbt.getBoolean(UNLISTED_KEY));
+        modifier.setAllowUnlistedEnchants(nbt.getBoolean(UNLISTED_KEY, false));
         return modifier;
     }
 

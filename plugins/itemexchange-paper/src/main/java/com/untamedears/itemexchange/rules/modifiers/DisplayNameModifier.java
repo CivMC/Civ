@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "DISPLAY", order = 100)
@@ -59,7 +59,7 @@ public final class DisplayNameModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@NotNull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NbtCompound nbt) {
         if (hasDisplayName()) {
             nbt.setString(DISPLAY_NAME_KEY, getDisplayName());
         } else {
@@ -68,9 +68,9 @@ public final class DisplayNameModifier extends ModifierData {
     }
 
     @NotNull
-    public static DisplayNameModifier fromNBT(@NotNull final NBTCompound nbt) {
+    public static DisplayNameModifier fromNBT(@NotNull final NbtCompound nbt) {
         final var modifier = new DisplayNameModifier();
-        modifier.setDisplayName(nbt.getString(DISPLAY_NAME_KEY));
+        modifier.setDisplayName(nbt.getString(DISPLAY_NAME_KEY, null));
         return modifier;
     }
 

@@ -1,8 +1,8 @@
 package com.untamedears.itemexchange.rules.interfaces;
 
+import com.untamedears.itemexchange.utility.nbt.NBTSerializable;
 import java.util.ArrayList;
 import java.util.List;
-import vg.civcraft.mc.civmodcore.nbt.NBTSerializable;
 import vg.civcraft.mc.civmodcore.utilities.Validation;
 
 /**

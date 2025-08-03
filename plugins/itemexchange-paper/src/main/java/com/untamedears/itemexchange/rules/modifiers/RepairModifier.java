@@ -22,7 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Repairable;
 import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 
 /**
  * <p>This additional represents a repair level condition.</p>
@@ -74,14 +74,14 @@ public final class RepairModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@NotNull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NbtCompound nbt) {
         nbt.setInt(LEVEL_KEY, getRepairCost());
     }
 
     @NotNull
-    public static RepairModifier fromNBT(@NotNull final NBTCompound nbt) {
+    public static RepairModifier fromNBT(@NotNull final NbtCompound nbt) {
         final var modifier = new RepairModifier();
-        modifier.setRepairCost(nbt.getInt(LEVEL_KEY));
+        modifier.setRepairCost(nbt.getInt(LEVEL_KEY, 0));
         return modifier;
     }
 
