@@ -274,7 +274,7 @@ entities:
     enabled: true
     animal: 64
     display: 64
-    misc: 64
+    misc: default
     monster: 64
     other: 64
     player: default
