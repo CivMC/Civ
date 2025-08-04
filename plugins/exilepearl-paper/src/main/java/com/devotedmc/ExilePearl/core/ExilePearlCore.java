@@ -688,4 +688,9 @@ final class ExilePearlCore implements ExilePearlApi {
     public ExilePearl getPrimaryPearl(UUID player) {
         return pearlManager.getPrimaryPearl(player);
     }
+
+    @Override
+    public @NotNull String namespace() {
+        return plugin.namespace();
+    }
 }
