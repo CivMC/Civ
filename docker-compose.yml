@@ -90,8 +90,6 @@ services:
       JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       CIV_WATCHDOG_TIMEOUT_TIME: 6000
       CIV_FORWARDING_SECRET: '1234'
-
-      DISABLE_HEALTHCHECK: true
     ports:
       - "5005:5005"
     volumes:
