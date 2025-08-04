@@ -8,7 +8,7 @@ services:
   #################
 
   proxy:
-    image: itzg/mc-proxy@sha256:4e2e20b6ef7739429dff34b7f7a5c26816004be2d499ad7d7940de197aa7a130
+    image: itzg/mc-proxy:java24
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -43,7 +43,7 @@ services:
       - ./ansible/build/proxy-plugins:/plugins
 
   paper:
-    image: itzg/minecraft-server@sha256:edd1968cb701da6a7a358170ad6503323e35fb6ec6984eb31ec1a8a4687b75ec
+    image: itzg/minecraft-server:stable-java24-graalvm
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -98,7 +98,7 @@ services:
       - ./ansible/build/paper-plugins:/plugins
 
   pvp:
-    image: itzg/minecraft-server@sha256:edd1968cb701da6a7a358170ad6503323e35fb6ec6984eb31ec1a8a4687b75ec
+    image: itzg/minecraft-server:stable-java24-graalvm
     restart: unless-stopped
     tty: true
     stdin_open: true
