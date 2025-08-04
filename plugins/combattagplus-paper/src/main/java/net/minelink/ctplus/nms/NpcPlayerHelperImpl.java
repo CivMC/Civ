@@ -23,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.PlayerDataStorage;
 import net.minecraft.world.level.storage.TagValueOutput;
+import net.minelink.ctplus.Tag;
 import net.minelink.ctplus.compat.base.NpcIdentity;
 import net.minelink.ctplus.compat.base.NpcPlayerHelper;
 import org.bukkit.Bukkit;
@@ -142,19 +143,9 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         PlayerDataStorage worldStorage = ((CraftWorld) Bukkit.getWorlds().getFirst()).getHandle().getServer().playerDataStorage;
         CompoundTag playerNbt = worldStorage.load(identity.getName(), identity.getId().toString(), ProblemReporter.DISCARDING).orElse(null);
 
-        // foodTickTimer is now private in 1.8.3 -- still private in 1.12 -- still private in 1.20.6
-        Field foodTickTimerField;
-        int foodTickTimer;
-        try {
-            //Although we can use Mojang mappings when developing, We need to use the obfuscated field name
-            //until we can run a full Mojmapped server. I personally used this site when updating to 1.20.6:
-            // https://mappings.cephx.dev/1.20.6/net/minecraft/world/food/FoodData.html
-            foodTickTimerField = FoodData.class.getDeclaredField("d"); // todo fix
-            foodTickTimerField.setAccessible(true);
-            foodTickTimer = foodTickTimerField.getInt(entity.getFoodData());
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        TagValueOutput foodTag = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+        entity.getFoodData().addAdditionalSaveData(foodTag);
+        int foodTickTimer = foodTag.buildResult().getInt("foodTickTimer").get();
 
         playerNbt.putShort("Air", (short) entity.getAirSupply());
         // Health is now just a float; fractional is not stored separately. (1.12)
