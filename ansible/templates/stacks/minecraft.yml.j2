@@ -106,8 +106,6 @@ services:
             CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
 
             JVM_OPTS: -agentpath:./libti.so
-
-            DISABLE_HEALTHCHECK: "true"
         volumes:
             # Persistence
             - /opt/stacks/minecraft/paper-data:/data
