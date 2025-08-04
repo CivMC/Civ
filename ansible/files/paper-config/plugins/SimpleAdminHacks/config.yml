@@ -606,3 +606,5 @@ hacks:
     enabled: false
     server: main
     world: world
+  TooHappyGhasts:
+    enabled: true
