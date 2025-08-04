@@ -107,7 +107,7 @@ services:
 
             JVM_OPTS: -agentpath:./libti.so
 
-            DISABLE_HEALTHCHECK: true
+            DISABLE_HEALTHCHECK: "true"
         volumes:
             # Persistence
             - /opt/stacks/minecraft/paper-data:/data
