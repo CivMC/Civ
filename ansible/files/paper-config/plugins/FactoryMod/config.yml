@@ -1239,6 +1239,7 @@ factories:
         amount: 32
     recipes:
       - make_saddle
+      - make_harness
       - make_lead
       - make_bio_component
       - make_husbandry_kit
@@ -7966,22 +7967,43 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LEATHER
-        amount: 32
-      wool:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHITE_WOOL
         amount: 16
       iron:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: IRON_INGOT
-        amount: 16
+        amount: 3
     output:
       saddle:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SADDLE
+        amount: 8
+  make_harness:
+    production_time: 4s
+    name: Make Harnesses
+    type: PRODUCTION
+    input:
+      leather:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: LEATHER
+        amount: 16
+      glass:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLASS
+        amount: 6
+      wool:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WHITE_WOOL
+        amount: 3
+    output:
+      saddle:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WHITE_HARNESS
         amount: 8
   make_torch:
     production_time: 4s
@@ -13309,139 +13331,153 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: ARMADILLO_SPAWN_EGG
           amount: 1
-      # Music Disks - 1% of total (0.000526 each)
+      # Music Disks - 1% of total (0.000476 each)
       record_13:
-        chance: 0.000526
+        chance: 0.000476
         record_13:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_13
           amount: 1
       record_cats:
-        chance: 0.000526
+        chance: 0.000476
         record_cats:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_CAT
           amount: 1
       record_blocks:
-        chance: 0.000526
+        chance: 0.000476
         record_blocks:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_BLOCKS
           amount: 1
       record_chirp:
-        chance: 0.000526
+        chance: 0.000476
         record_chirp:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_CHIRP
           amount: 1
       record_far:
-        chance: 0.000526
+        chance: 0.000476
         record_far:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_FAR
           amount: 1
       record_mall:
-        chance: 0.000526
+        chance: 0.000476
         record_mall:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_MALL
           amount: 1
       record_mellohi:
-        chance: 0.000526
+        chance: 0.000476
         record_mellohi:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_MELLOHI
           amount: 1
       record_stal:
-        chance: 0.000526
+        chance: 0.000476
         record_stal:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_STAL
           amount: 1
       record_strad:
-        chance: 0.000526
+        chance: 0.000476
         record_strad:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_STRAD
           amount: 1
       record_ward:
-        chance: 0.000526
+        chance: 0.000476
         record_ward:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_WARD
           amount: 1
       record_11:
-        chance: 0.000526
+        chance: 0.000476
         record_11:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_11
           amount: 1
       record_wait:
-        chance: 0.000526
+        chance: 0.000476
         record_wait:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_WAIT
           amount: 1
       record_pigstep:
-        chance: 0.000526
+        chance: 0.000476
         record_pigstep:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_PIGSTEP
           amount: 1
       record_otherside:
-        chance: 0.000526
+        chance: 0.000476
         record_otherside:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_OTHERSIDE
           amount: 1
       record_relic:
-        chance: 0.000526
+        chance: 0.000476
         record_relic:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_RELIC
           amount: 1
       record_5:
-        chance: 0.000526
+        chance: 0.000476
         record_5:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_5
           amount: 1
       record_precipice:
-        chance: 0.000526
+        chance: 0.000476
         record_5:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_PRECIPICE
           amount: 1
       record_creator:
-        chance: 0.000526
+        chance: 0.000476
         record_5:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_CREATOR
           amount: 1
       record_creator_music_box:
-        chance: 0.000526
+        chance: 0.000476
         record_5:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_CREATOR_MUSIC_BOX
+          amount: 1
+      record_tears:
+        chance: 0.000476
+        record_5:
+          v: 3839
+          ==: org.bukkit.inventory.ItemStack
+          type: MUSIC_DISC_TEARS
+          amount: 1
+      record_lava_chicken:
+        chance: 0.000476
+        record_5:
+          v: 3839
+          ==: org.bukkit.inventory.ItemStack
+          type: MUSIC_DISC_LAVA_CHICKEN
           amount: 1
       #Resources - 25% (Divided seperately over all below)
       iron_ingot:
