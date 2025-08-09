@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
@@ -153,6 +154,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         playerNbt.putFloat("foodExhaustionLevel", entity.getFoodData().exhaustionLevel);
         playerNbt.putShort("Fire", (short) entity.getRemainingFireTicks());
         TagValueOutput output = TagValueOutput.createWrappingGlobal(ProblemReporter.DISCARDING, playerNbt);
+        NbtUtils.addCurrentDataVersion(output);
         npcPlayer.getInventory().save(output.list("Inventory", ItemStackWithSlot.CODEC));
 
         File file1 = new File(worldStorage.getPlayerDir(), identity.getId() + ".dat.tmp");
