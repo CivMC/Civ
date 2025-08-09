@@ -66,6 +66,7 @@ chunks:
   flush-regions-on-save: false
   max-auto-save-chunks-per-tick: 6
   prevent-moving-into-unloaded-chunks: true
+  random-tick-scale: 10
 collisions:
   allow-player-cramming-damage: false
   allow-vehicle-collisions: true
