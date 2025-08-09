@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HappyGhast;
+import org.bukkit.entity.Player;
 
 public class TooHappyGhasts extends BasicHack {
 
@@ -22,7 +23,11 @@ public class TooHappyGhasts extends BasicHack {
         Bukkit.getScheduler().runTaskTimer(SimpleAdminHacks.instance(), () -> {
             try {
                 for (World world : Bukkit.getWorlds()) {
-                    for (HappyGhast entity : world.getEntitiesByClass(HappyGhast.class)) {
+                    for (Player player : world.getPlayers()) {
+                        Entity entity = player.getVehicle();
+                        if (!(entity instanceof HappyGhast)) {
+                            continue;
+                        }
                         if (entity.getY() > 316) {
                             Location loc = entity.getLocation();
                             loc.setY(315.5);
