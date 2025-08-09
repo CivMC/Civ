@@ -2,6 +2,7 @@ disabled:
   - minecraft:netherite_scrap
   - minecraft:netherite_scrap_from_blasting
   - minecraft:netherite_ingot
+  - minecraft:lodestone
   - minecraft:netherite_upgrade_smithing_template
   - minecraft:sentry_armor_trim_smithing_template
   - minecraft:vex_armor_trim_smithing_template
