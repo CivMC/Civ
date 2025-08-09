@@ -25,7 +25,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.PlayerDataStorage;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minelink.ctplus.compat.base.NpcIdentity;
 import net.minelink.ctplus.compat.base.NpcPlayerHelper;
 import org.bukkit.Bukkit;
@@ -139,21 +141,14 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         PlayerDataStorage worldStorage = ((CraftWorld) Bukkit.getWorlds().getFirst()).getHandle().getServer().playerDataStorage;
         CompoundTag playerNbt = worldStorage.load(identity.getName(), identity.getId().toString(), ProblemReporter.DISCARDING).orElse(null);
 
-        TagValueOutput foodTag = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
-        entity.getFoodData().addAdditionalSaveData(foodTag);
-        int foodTickTimer = foodTag.buildResult().getInt("foodTickTimer").get();
-
         playerNbt.putShort("Air", (short) entity.getAirSupply());
         // Health is now just a float; fractional is not stored separately. (1.12)
         playerNbt.putFloat("Health", entity.getHealth());
         playerNbt.putFloat("AbsorptionAmount", entity.getAbsorptionAmount());
         playerNbt.putInt("XpTotal", entity.experienceLevel);
-        playerNbt.putInt("foodLevel", entity.getFoodData().getFoodLevel());
-        playerNbt.putInt("foodTickTimer", foodTickTimer);
-        playerNbt.putFloat("foodSaturationLevel", entity.getFoodData().getSaturationLevel());
-        playerNbt.putFloat("foodExhaustionLevel", entity.getFoodData().exhaustionLevel);
         playerNbt.putShort("Fire", (short) entity.getRemainingFireTicks());
-        TagValueOutput output = TagValueOutput.createWrappingGlobal(ProblemReporter.DISCARDING, playerNbt);
+        TagValueOutput output = TagValueOutput.createWrappingWithContext(ProblemReporter.DISCARDING, ((CraftPlayer) player).getHandle().registryAccess(), playerNbt);
+        entity.getFoodData().addAdditionalSaveData(output);
         NbtUtils.addCurrentDataVersion(output);
         npcPlayer.getInventory().save(output.list("Inventory", ItemStackWithSlot.CODEC));
 
@@ -161,7 +156,7 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         File file2 = new File(worldStorage.getPlayerDir(), identity.getId() + ".dat");
 
         try {
-            NbtIo.writeCompressed(playerNbt, new FileOutputStream(file1));
+            NbtIo.writeCompressed(output.buildResult(), new FileOutputStream(file1));
         } catch (IOException e) {
             throw new RuntimeException("Failed to save player data for " + identity.getName(), e);
         }
