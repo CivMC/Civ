@@ -45,7 +45,7 @@ public class ModeManager {
     }
 
     public boolean enableDutyMode(Player player, Tier tier) {
-        TagValueOutput nmsCompound = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
+        TagValueOutput nmsCompound = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, ((CraftPlayer) player).getHandle().registryAccess());
         CraftPlayer cPlayer = (CraftPlayer) player;
         cPlayer.getHandle().saveWithoutId(nmsCompound);
         String serverName = Bukkit.getServer().getName();
