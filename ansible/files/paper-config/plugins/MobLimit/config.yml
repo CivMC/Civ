@@ -69,7 +69,7 @@ reasons:
       radius: 32
   place:
     hopper_minecart:
-      count: 5
+      count: 8
       radius: 32
     chest_minecart:
       count: 5
