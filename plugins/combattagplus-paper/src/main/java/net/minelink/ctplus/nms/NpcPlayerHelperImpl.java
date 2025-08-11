@@ -5,6 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.EnumMap;
 import java.util.List;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -19,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.ItemStackWithSlot;
+import net.minecraft.world.entity.EntityEquipment;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -151,12 +153,18 @@ public class NpcPlayerHelperImpl implements NpcPlayerHelper {
         entity.getFoodData().addAdditionalSaveData(output);
         NbtUtils.addCurrentDataVersion(output);
         npcPlayer.getInventory().save(output.list("Inventory", ItemStackWithSlot.CODEC));
+        EntityEquipment equipment = new EntityEquipment();
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            equipment.set(slot, npcPlayer.getItemBySlot(slot));
+        }
+        output.store("equipment", EntityEquipment.CODEC, equipment);
 
         File file1 = new File(worldStorage.getPlayerDir(), identity.getId() + ".dat.tmp");
         File file2 = new File(worldStorage.getPlayerDir(), identity.getId() + ".dat");
 
         try {
-            NbtIo.writeCompressed(output.buildResult(), new FileOutputStream(file1));
+            CompoundTag compoundTag = output.buildResult();
+            NbtIo.writeCompressed(compoundTag, new FileOutputStream(file1));
         } catch (IOException e) {
             throw new RuntimeException("Failed to save player data for " + identity.getName(), e);
         }

@@ -31,14 +31,18 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Boat;
 import org.bukkit.entity.ChestBoat;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.HappyGhast;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
@@ -70,6 +74,7 @@ import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class LoggableActionListener implements Listener {
@@ -80,6 +85,24 @@ public class LoggableActionListener implements Listener {
     public LoggableActionListener(SnitchManager snitchManager) {
         this.snitchManager = snitchManager;
         this.insideFields = new TreeMap<>();
+    }
+
+    public void setupScheduler(Plugin plugin) {
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            try {
+                for (World world : Bukkit.getWorlds()) {
+                    for (Player player : world.getPlayers()) {
+                        Entity entity = player.getVehicle();
+                        if (!(entity instanceof HappyGhast)) {
+                            continue;
+                        }
+                        handleSnitchEntry(player, entity.getLocation());
+                    }
+                }
+            } catch (RuntimeException ex) {
+                plugin.getLogger().log(Level.WARNING, "Ticking ghast positions", ex);
+            }
+        }, 0, 1);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
