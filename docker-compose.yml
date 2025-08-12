@@ -38,7 +38,7 @@ services:
     ports:
       - "25565:25577"
     volumes:
-      - ./containers/data/proxy:/data
+      - ./containers/data/proxy:/server
       - ./ansible/files/proxy-config:/config
       - ./ansible/build/proxy-plugins:/plugins
 
