@@ -132,16 +132,17 @@ public class CivProxyPlugin {
         // Players who just disconnected get 5 minutes of queue priority
 
         UserManager userManager = LuckPermsProvider.get().getUserManager();
-        User user = userManager.getUser(player.getUniqueId());
-        if (user == null) {
-            return;
-        }
-        user.data().add(
-            PermissionNode.builder()
-                .permission("ajqueue.priority.1")
-                .expiry(5, TimeUnit.MINUTES)
-                .build(),
-            TemporaryNodeMergeStrategy.REPLACE_EXISTING_IF_DURATION_LONGER);
-        userManager.saveUser(user);
+        userManager.loadUser(player.getUniqueId()).thenAccept(user -> {
+            if (user == null) {
+                return;
+            }
+            user.data().add(
+                PermissionNode.builder()
+                    .permission("ajqueue.priority.1")
+                    .expiry(5, TimeUnit.MINUTES)
+                    .build(),
+                TemporaryNodeMergeStrategy.REPLACE_EXISTING_IF_DURATION_LONGER);
+            userManager.saveUser(user);
+        });
     }
 }
