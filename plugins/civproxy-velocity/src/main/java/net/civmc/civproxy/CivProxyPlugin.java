@@ -116,6 +116,16 @@ public class CivProxyPlugin {
     }
 
     @Subscribe
+    public void onKick(KickedFromServerEvent event) {
+        RegisteredServer server = event.getServer();
+        if (!server.getServerInfo().getName().equals("main")) {
+            return;
+        }
+
+        addPriority(event.getPlayer());
+    }
+
+    @Subscribe
     public void onDisconnect(DisconnectEvent event) {
         ServerConnection server = event.getPlayer().getCurrentServer().orElse(null);
         if (server == null) {
