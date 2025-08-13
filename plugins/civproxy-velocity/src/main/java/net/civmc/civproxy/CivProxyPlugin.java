@@ -66,7 +66,7 @@ public class CivProxyPlugin {
             return;
         }
         String reason = event.getServerKickReason().map(s -> PlainTextComponentSerializer.plainText().serialize(s)).orElse("");
-        if (reason.toLowerCase().contains("ban") || reason.toLowerCase().contains("logged out safely")) {
+        if (reason.toLowerCase().contains("ban")) {
             return;
         }
         event.setResult(KickedFromServerEvent.RedirectPlayer.create(server.getServer("pvp").get()));
