@@ -363,7 +363,7 @@ check-last-player-sent-time: true
 # This will print several lines to the console when a player joins a queue,
 # so you should probably only use this for debugging purposes
 #  Default: false
-priority-queue-debug: true
+priority-queue-debug: false
 
 # What protocols do servers support?
 # The protocol version number list can be found here: https://minecraft.wiki/w/Minecraft_Wiki:Projects/wiki.vg_merge/Protocol_version_numbers
