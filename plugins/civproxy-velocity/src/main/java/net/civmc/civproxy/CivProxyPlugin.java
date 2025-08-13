@@ -74,7 +74,7 @@ public class CivProxyPlugin {
             return;
         }
 
-        if (mainServer.getPlayersConnected().size() >= 100) {
+        if (mainServer.getPlayersConnected().size() >= 100 && !event.getPlayer().hasPermission("joinbypass.use")) {
             event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("pvp").get()));
 
             players.put(event.getPlayer(), Instant.now());
