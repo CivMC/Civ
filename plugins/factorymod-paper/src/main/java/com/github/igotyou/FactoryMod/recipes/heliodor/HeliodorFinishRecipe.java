@@ -20,14 +20,15 @@ public class HeliodorFinishRecipe extends InputRecipe {
     private final int inputCount;
     private final int outputCount;
 
-    public HeliodorFinishRecipe(String identifier, String name, int productionTime, ItemMap input, int inputCount, int outputCount) {
-        super(identifier, name, productionTime, input);
+    public HeliodorFinishRecipe(String identifier, String name, int productionTime, ItemMap input, int inputCount, int outputCount, int damagePerRun) {
+        super(identifier, name, productionTime, input, damagePerRun);
         this.inputCount = inputCount;
         this.outputCount = outputCount;
     }
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
 
