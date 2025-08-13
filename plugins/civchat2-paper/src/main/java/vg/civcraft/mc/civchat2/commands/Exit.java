@@ -23,7 +23,7 @@ public class Exit extends BaseCommand {
         if (message == null) {
             chatMan.removeChannel(player);
             chatMan.removeGroupChat(player);
-            player.sendMessage(ChatStrings.chatMovedToGlobal);
+            player.sendRichMessage(ChatStrings.chatMovedToGlobal);
             return;
         }
         StringBuilder chatMsg = new StringBuilder();
