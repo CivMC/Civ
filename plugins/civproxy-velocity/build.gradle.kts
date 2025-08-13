@@ -9,5 +9,6 @@ repositories {
 dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
     compileOnly("us.ajg0702.queue.api:api:2.8.0")
+    compileOnly("net.luckperms:api:5.4")
     annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
 }

@@ -206,7 +206,7 @@ enable-send-alias: false
 # Should we enable priority messages?
 # Configure the priority messages in the option below.
 #  Default: false
-enable-priority-messages: false
+enable-priority-messages: true
 
 # Messages we send to players with priority queue when they join the queue
 # In the free version, "priority" is 1.
@@ -214,8 +214,7 @@ enable-priority-messages: false
 # The format is <priority>:<message>
 # Example: 1:You have a priority of 1!
 priority-messages:
-  - "*:<green>Joining the queue with a priority of {PRIORITY}!"
-  - "100:<yellow>Wow! You have a priority of 100!"
+  - "1:<green>You have priority because you just left the server!"
 
 
 # Should the plugin send a title to the player?
@@ -298,7 +297,7 @@ prevent-joining-paused: false
 
 # When a server goes back online, should we send all players in the queue instantly?
 # Default: false
-send-all-when-back-online: false
+send-all-when-back-online: true
 
 # Should we allow tab-completing in the /queue command?
 # Any server the player doesn't have permission for (require-permission)
@@ -354,7 +353,7 @@ make-room-kick-longest-playtime: true
 # Should we check every 4 seconds if a player has a higher priority permission than before
 # If they do, they are removed and re-added to the queue (only if they would be put in a higher position)
 #  Default: false
-re-check-priority: false
+re-check-priority: true
 
 # Should we check to make sure that people don't get sent quicker than wait-time?
 #  Default: true
@@ -364,7 +363,7 @@ check-last-player-sent-time: true
 # This will print several lines to the console when a player joins a queue,
 # so you should probably only use this for debugging purposes
 #  Default: false
-priority-queue-debug: false
+priority-queue-debug: true
 
 # What protocols do servers support?
 # The protocol version number list can be found here: https://minecraft.wiki/w/Minecraft_Wiki:Projects/wiki.vg_merge/Protocol_version_numbers
