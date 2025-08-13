@@ -149,7 +149,7 @@ public class CivProxyPlugin {
             user.data().add(
                 PermissionNode.builder()
                     .permission("ajqueue.priority.1")
-                    .expiry(5, TimeUnit.MINUTES)
+                    .expiry(1, TimeUnit.MINUTES)
                     .build(),
                 TemporaryNodeMergeStrategy.REPLACE_EXISTING_IF_DURATION_LONGER);
             userManager.saveUser(user);
