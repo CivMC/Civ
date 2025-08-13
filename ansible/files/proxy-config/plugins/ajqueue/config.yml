@@ -323,7 +323,7 @@ require-queueserver-permission: false
 # After how many (unsuccessful) attempts of sending the player should we remove them from the queue?
 # Set to -1 to make it unlimited (not recommended)
 #  Default: 10
-max-tries: 10
+max-tries: 1000
 
 # What QueueHolder should we use?
 # By default, the only QueueHolder available is 'default'
