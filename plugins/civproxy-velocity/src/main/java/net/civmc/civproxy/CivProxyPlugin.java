@@ -65,6 +65,23 @@ public class CivProxyPlugin {
     }
 
     @Subscribe
+    public void onConnect(ServerPreConnectEvent event) {
+        if (event.getPreviousServer() != null) {
+            return;
+        }
+        RegisteredServer mainServer = event.getOriginalServer();
+        if (!mainServer.getServerInfo().getName().equals("main")) {
+            return;
+        }
+
+        if (mainServer.getPlayersConnected().size() >= 100) {
+            event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("pvp").get()));
+
+            players.put(event.getPlayer(), Instant.now());
+        }
+    }
+
+    @Subscribe
     public void onConnect(ServerPostConnectEvent event) {
         Instant timestamp = players.remove(event.getPlayer());
         if (timestamp != null && timestamp.isAfter(Instant.now().minusSeconds(60))) {
