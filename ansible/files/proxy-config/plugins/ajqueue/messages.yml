@@ -8,7 +8,7 @@ status:
         paused: paused
         whitelisted: whitelisted
     online:
-        base: '&7You are in position &f{POS}&7 of &f{LEN}&7. Estimated time: {TIME}'
+        base: '&7You are in position &f{POS}&7 of &f{LEN}&7'
     left-last-queue: '&aYou left the last queue you were in.'
     now-in-queue: |-
         &aYou are now queued for {SERVER}! &7You are in position &f{POS}&7 of &f{LEN}&7.
