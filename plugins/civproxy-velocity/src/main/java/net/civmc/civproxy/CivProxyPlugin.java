@@ -38,8 +38,6 @@ public class CivProxyPlugin {
 
         RegisteredServer prev = event.getServer();
         KickedFromServerEvent.ServerKickResult result = event.getResult();
-        System.out.println("kick");
-        System.out.println(result);
         if (prev.getServerInfo().getName().equals("pvp") && result instanceof KickedFromServerEvent.RedirectPlayer rd && rd.getServer().getServerInfo().getName().equals("main")) {
             event.setResult(KickedFromServerEvent.DisconnectPlayer.create(event.getServerKickReason().orElse(Component.text("Kicked"))));
         }
