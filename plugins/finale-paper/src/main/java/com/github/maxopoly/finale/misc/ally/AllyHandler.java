@@ -51,7 +51,7 @@ public class AllyHandler implements Listener {
                     Team allyTeam = getAllyTeam(player);
                     for (UUID allyID : playerAlliesEntry.getValue()) {
                         Player ally = Bukkit.getPlayer(allyID);
-                        if (ally.isOnline()) {
+                        if (ally != null && ally.isOnline()) {
                             allyTeam.addEntry(ally.getName());
                         }
                     }
