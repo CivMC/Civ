@@ -79,7 +79,6 @@ public class BlockHolder implements PearlHolder {
 
         // In the container inventory?
         List<ItemStack> potentialPearls = new ArrayList<>();
-        potentialPearls.addAll(inv.all(Material.PLAYER_HEAD).values());
         potentialPearls.addAll(inv.all(Material.ENDER_PEARL).values());
         for (ItemStack item : potentialPearls) {
             if (pearl.validateItemStack(item)) {
@@ -101,7 +100,6 @@ public class BlockHolder implements PearlHolder {
                 Inventory relInv = ((InventoryHolder) relState).getInventory();
 
                 potentialPearls = new ArrayList<>();
-                potentialPearls.addAll(relInv.all(Material.PLAYER_HEAD).values());
                 potentialPearls.addAll(relInv.all(Material.ENDER_PEARL).values());
                 for (ItemStack item : potentialPearls) {
                     if (pearl.validateItemStack(item)) {
