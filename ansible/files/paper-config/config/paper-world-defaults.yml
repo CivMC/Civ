@@ -272,7 +272,7 @@ entities:
       maximum: default
       minimum: default
   tracking-range-y:
-    enabled: true
+    enabled: false
     animal: 64
     display: 64
     misc: default
