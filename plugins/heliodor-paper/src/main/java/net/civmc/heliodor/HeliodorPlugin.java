@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import net.civmc.heliodor.backpack.BackpackListener;
 import net.civmc.heliodor.command.HeliodorDebugCommand;
+import net.civmc.heliodor.farmbeacon.FarmBeaconListener;
 import net.civmc.heliodor.heliodor.PickaxeBreakListener;
 import net.civmc.heliodor.heliodor.VeinDetectListener;
 import net.civmc.heliodor.heliodor.infusion.InfusionListener;
@@ -79,6 +80,10 @@ public class HeliodorPlugin extends ACivMod {
             protector.addPredicate(l -> chunkMetaView.get(l) != null);
             getServer().getPluginManager().registerEvents(new InfusionListener(infusionManager, chunkMetaView), this);
         }
+
+        FarmBeaconListener farmBeaconListener = new FarmBeaconListener();
+        getServer().getPluginManager().registerEvents(farmBeaconListener, this);
+        farmBeaconListener.protect(protector);
 
         Bukkit.getScheduler().runTaskTimer(this, this.recipes, 15 * 20, 15 * 20);
 

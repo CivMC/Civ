@@ -4,17 +4,15 @@ import net.civmc.heliodor.backpack.Backpack;
 import net.civmc.heliodor.heliodor.HeliodorGem;
 import net.civmc.heliodor.heliodor.HeliodorPickaxe;
 import net.civmc.heliodor.meteoriciron.FactoryUpgrade;
+import net.civmc.heliodor.farmbeacon.FarmBeacon;
 import net.civmc.heliodor.meteoriciron.MeteoricIron;
 import net.civmc.heliodor.meteoriciron.MeteoricIronArmour;
 import net.civmc.heliodor.meteoriciron.MeteoricIronTools;
 import org.bukkit.Bukkit;
-import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
@@ -33,6 +31,7 @@ public class HeliodorRecipeGiver implements Runnable {
         register(MeteoricIronArmour.getRecipes(plugin));
         register(Backpack.getRecipes(plugin));
         register(FactoryUpgrade.getRecipes(plugin));
+        register(FarmBeacon.getRecipes(plugin));
     }
 
     @Override
