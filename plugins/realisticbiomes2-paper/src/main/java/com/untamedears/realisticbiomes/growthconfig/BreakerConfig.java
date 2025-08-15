@@ -10,6 +10,8 @@ public record BreakerConfig(Material type, int maxYield) {
         if (section == null) {
             return null;
         }
-        return new BreakerConfig(Objects.requireNonNull(Material.matchMaterial(section.getString("type"))), section.getInt("max_yield"));
+        String type = section.getString("type");
+        Material material = Objects.requireNonNull(Material.matchMaterial(type), "Unknown material: " + type);
+        return new BreakerConfig(material, section.getInt("max_yield"));
     }
 }

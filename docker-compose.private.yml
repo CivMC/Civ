@@ -12,63 +12,68 @@ services:
       # Any Jars need to be here, comma separated so that they are not removed during sync
       REMOVE_OLD_MODS_EXCLUDE: "Vulcan.jar,packetevents-spigot-2.9.4.jar"
       SYNC_SKIP_NEWER_IN_DESTINATION: "true"
+
+      COPY_CONFIG_SRC: /config,/privateconfig
     # Note that config and plugins are mounted into the DATA directory, to avoid propagating to the config bind mount
     volumes:
-      - ./PrivateConfig/paper/plugins/Vulcan.jar:/data/plugins/Vulcan.jar
-      - ./PrivateConfig/paper/plugins/packetevents-spigot-2.9.4.jar:/data/plugins/packetevents-spgiot-2.9.4.jar
-      - ./PrivateConfig/paper/config/Vulcan/config.yml:/data/plugins/Vulcan/config.yml
-      - ./PrivateConfig/paper/config/HiddenOre/config.yml:/data/plugins/HiddenOre/config.yml
-      - ./PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/data/plugins/KirraBukkitGateway/config.yml
-      - ./PrivateConfig/paper/config/BreweryX/config.yml:/data/plugins/BreweryX/config.yml
-      - ./PrivateConfig/paper/config/BreweryX/cauldron.yml:/data/plugins/BreweryX/cauldron.yml
-      - ./PrivateConfig/paper/config/BreweryX/custom-items.yml:/data/plugins/BreweryX/custom-items.yml
-      - ./PrivateConfig/paper/config/BreweryX/recipes.yml:/data/plugins/BreweryX/recipes.yml
-      - ./PrivateConfig/paper/config/Terra/packs/CivMC:/data/plugins/Terra/packs/CivMC
-      - ./PrivateConfig/paper/config/Votifier/config.yml:/data/plugins/Votifier/config.yml
-      - ./PrivateConfig/paper/config/Votifier/rsa/public.key:/data/plugins/Votifier/rsa/public.key
-      - ./PrivateConfig/paper/config/Votifier/rsa/private.key:/data/plugins/Votifier/rsa/private.key
-      - ./PrivateConfig/paper/config/DiscordSRV/config.yml:/data/plugins/DiscordSRV/config.yml
-      - ./PrivateConfig/paper/config/DiscordSRV/alerts.yml:/data/plugins/DiscordSRV/alerts.yml
-      - ./PrivateConfig/paper/config/MythicMobs:/data/plugins/MythicMobs
-      - ./PrivateConfig/paper/config/EvenMoreFish/baits.yml:/data/plugins/EvenMoreFish/baits.yml
-      - ./PrivateConfig/paper/config/EvenMoreFish/fish.yml:/data/plugins/EvenMoreFish/fish.yml
-      - ./PrivateConfig/paper/config/EvenMoreFish/rarities.yml:/data/plugins/EvenMoreFish/rarities.yml
-      - ./PrivateConfig/paper/config/EvenMoreFish/competitions.yml:/data/plugins/EvenMoreFish/competitions.yml
-      - ./PrivateConfig/paper/config/RandomSpawn/worlds.yml:/data/plugins/RandomSpawn/worlds.yml
-      - ./PrivateConfig/paper/config/Heliodor/config.yml:/data/plugins/Heliodor/config.yml
+      - ./PrivateConfig/paper/plugins/Vulcan.jar:/privateconfig/plugins/Vulcan.jar
+      - ./PrivateConfig/paper/plugins/packetevents-spigot-2.9.4.jar:/privateconfig/plugins/packetevents-spgiot-2.9.4.jar
+      - ./PrivateConfig/paper/config/Vulcan/config.yml:/privateconfig/plugins/Vulcan/config.yml
+      - ./PrivateConfig/paper/config/HiddenOre/config.yml:/privateconfig/plugins/HiddenOre/config.yml
+      - ./PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/privateconfig/plugins/KirraBukkitGateway/config.yml
+      - ./PrivateConfig/paper/config/BreweryX/config.yml:/privateconfig/plugins/BreweryX/config.yml
+      - ./PrivateConfig/paper/config/BreweryX/cauldron.yml:/privateconfig/plugins/BreweryX/cauldron.yml
+      - ./PrivateConfig/paper/config/BreweryX/custom-items.yml:/privateconfig/plugins/BreweryX/custom-items.yml
+      - ./PrivateConfig/paper/config/BreweryX/recipes.yml:/privateconfig/plugins/BreweryX/recipes.yml
+      - ./PrivateConfig/paper/config/Terra/packs/CivMC:/privateconfig/plugins/Terra/packs/CivMC
+      - ./PrivateConfig/paper/config/Votifier/config.yml:/privateconfig/plugins/Votifier/config.yml
+      - ./PrivateConfig/paper/config/Votifier/rsa/public.key:/privateconfig/plugins/Votifier/rsa/public.key
+      - ./PrivateConfig/paper/config/Votifier/rsa/private.key:/privateconfig/plugins/Votifier/rsa/private.key
+      - ./PrivateConfig/paper/config/DiscordSRV/config.yml:/privateconfig/plugins/DiscordSRV/config.yml
+      - ./PrivateConfig/paper/config/DiscordSRV/alerts.yml:/privateconfig/plugins/DiscordSRV/alerts.yml
+      - ./PrivateConfig/paper/config/MythicMobs:/privateconfig/plugins/MythicMobs
+      - ./PrivateConfig/paper/config/EvenMoreFish/baits.yml:/privateconfig/plugins/EvenMoreFish/baits.yml
+      - ./PrivateConfig/paper/config/EvenMoreFish/fish.yml:/privateconfig/plugins/EvenMoreFish/fish.yml
+      - ./PrivateConfig/paper/config/EvenMoreFish/rarities.yml:/privateconfig/plugins/EvenMoreFish/rarities.yml
+      - ./PrivateConfig/paper/config/EvenMoreFish/competitions.yml:/privateconfig/plugins/EvenMoreFish/competitions.yml
+      - ./PrivateConfig/paper/config/RandomSpawn/worlds.yml:/privateconfig/plugins/RandomSpawn/worlds.yml
+      - ./PrivateConfig/paper/config/Heliodor/config.yml:/privateconfig/plugins/Heliodor/config.yml
 
   gamma:
     environment:
       REMOVE_OLD_MODS_EXCLUDE: "Vulcan.jar,packetevents-spigot-2.9.4.jar"
       SYNC_SKIP_NEWER_IN_DESTINATION: "true"
+
+      COPY_CONFIG_SRC: /config,/privateconfig
     volumes:
-      - ./PrivateConfig/gamma/config/RealisticBiomes/config.yml:/data/plugins/RealisticBiomes/config.yml
-      - ./PrivateConfig/gamma/config/HiddenOre/config.yml:/data/plugins/HiddenOre/worlds.yml
-      - ./PrivateConfig/gamma/config/RandomSpawn/worlds.yml:/data/plugins/RandomSpawn/worlds.yml
-      - ./PrivateConfig/gamma/config/Heliodor/config.yml:/data/plugins/Heliodor/config.yml
-      - ./PrivateConfig/paper/plugins/Vulcan.jar:/data/plugins/Vulcan.jar
-      - ./PrivateConfig/paper/plugins/packetevents-spigot-2.9.4.jar:/data/plugins/packetevents-spigot-2.9.4.jar
-      - ./PrivateConfig/paper/config/Vulcan/config.yml:/data/plugins/Vulcan/config.yml
-      - ./PrivateConfig/paper/config/HiddenOre/config.yml:/data/plugins/HiddenOre/config.yml
-      - ./PrivateConfig/paper/config/BreweryX/config.yml:/data/plugins/BreweryX/config.yml
-      - ./PrivateConfig/paper/config/BreweryX/cauldron.yml:/data/plugins/BreweryX/cauldron.yml
-      - ./PrivateConfig/paper/config/BreweryX/custom-items.yml:/data/plugins/BreweryX/custom-items.yml
-      - ./PrivateConfig/paper/config/BreweryX/recipes.yml:/data/plugins/BreweryX/recipes.yml
-      - ./PrivateConfig/paper/config/Votifier/config.yml:/data/plugins/Votifier/config.yml
-      - ./PrivateConfig/paper/config/Votifier/rsa/public.key:/data/plugins/Votifier/rsa/public.key
-      - ./PrivateConfig/paper/config/Votifier/rsa/private.key:/data/plugins/Votifier/rsa/private.key
-      - ./PrivateConfig/paper/config/EvenMoreFish/baits.yml:/data/plugins/EvenMoreFish/baits.yml
-      - ./PrivateConfig/paper/config/EvenMoreFish/fish.yml:/data/plugins/EvenMoreFish/fish.yml
-      - ./PrivateConfig/paper/config/EvenMoreFish/rarities.yml:/data/plugins/EvenMoreFish/rarities.yml
-      - ./PrivateConfig/paper/config/EvenMoreFish/competitions.yml:/data/plugins/EvenMoreFish/competitions.yml
+      - ./PrivateConfig/gamma/config/RealisticBiomes/config.yml:/privateconfig/plugins/RealisticBiomes/config.yml
+      - ./PrivateConfig/gamma/config/HiddenOre/config.yml:/privateconfig/plugins/HiddenOre/worlds.yml
+      - ./PrivateConfig/gamma/config/RandomSpawn/worlds.yml:/privateconfig/plugins/RandomSpawn/worlds.yml
+      - ./PrivateConfig/gamma/config/Heliodor/config.yml:/privateconfig/plugins/Heliodor/config.yml
+      - ./PrivateConfig/paper/plugins/Vulcan.jar:/privateconfig/plugins/Vulcan.jar
+      - ./PrivateConfig/paper/plugins/packetevents-spigot-2.9.4.jar:/privateconfig/plugins/packetevents-spigot-2.9.4.jar
+      - ./PrivateConfig/paper/config/Vulcan/config.yml:/privateconfig/plugins/Vulcan/config.yml
+      - ./PrivateConfig/paper/config/HiddenOre/config.yml:/privateconfig/plugins/HiddenOre/config.yml
+      - ./PrivateConfig/paper/config/BreweryX/config.yml:/privateconfig/plugins/BreweryX/config.yml
+      - ./PrivateConfig/paper/config/BreweryX/cauldron.yml:/privateconfig/plugins/BreweryX/cauldron.yml
+      - ./PrivateConfig/paper/config/BreweryX/custom-items.yml:/privateconfig/plugins/BreweryX/custom-items.yml
+      - ./PrivateConfig/paper/config/BreweryX/recipes.yml:/privateconfig/plugins/BreweryX/recipes.yml
+      - ./PrivateConfig/paper/config/Votifier/config.yml:/privateconfig/plugins/Votifier/config.yml
+      - ./PrivateConfig/paper/config/Votifier/rsa/public.key:/privateconfig/plugins/Votifier/rsa/public.key
+      - ./PrivateConfig/paper/config/Votifier/rsa/private.key:/privateconfig/plugins/Votifier/rsa/private.key
+      - ./PrivateConfig/paper/config/EvenMoreFish/baits.yml:/privateconfig/plugins/EvenMoreFish/baits.yml
+      - ./PrivateConfig/paper/config/EvenMoreFish/fish.yml:/privateconfig/plugins/EvenMoreFish/fish.yml
+      - ./PrivateConfig/paper/config/EvenMoreFish/rarities.yml:/privateconfig/plugins/EvenMoreFish/rarities.yml
+      - ./PrivateConfig/paper/config/EvenMoreFish/competitions.yml:/privateconfig/plugins/EvenMoreFish/competitions.yml
 
   pvp:
     environment:
       # Any Jars need to be here, comma separated so that they are not removed during sync
       REMOVE_OLD_MODS_EXCLUDE: "Vulcan.jar,packetevents-spigot-2.9.4.jar"
       SYNC_SKIP_NEWER_IN_DESTINATION: "true"
+      COPY_CONFIG_SRC: /config,/privateconfig
     # Note that config and plugins are mounted into the DATA directory, to avoid propagating to the config bind mount
     volumes:
-      - ./PrivateConfig/paper/plugins/Vulcan.jar:/data/plugins/Vulcan.jar
-      - ./PrivateConfig/paper/plugins/packetevents-spigot-2.9.4.jar:/data/plugins/packetevents-spigot-2.9.4.jar
-      - ./PrivateConfig/paper/config/Vulcan/config.yml:/data/plugins/Vulcan/config.yml
+      - ./PrivateConfig/paper/plugins/Vulcan.jar:/privateconfig/plugins/Vulcan.jar
+      - ./PrivateConfig/paper/plugins/packetevents-spigot-2.9.4.jar:/privateconfig/plugins/packetevents-spigot-2.9.4.jar
+      - ./PrivateConfig/paper/config/Vulcan/config.yml:/privateconfig/plugins/Vulcan/config.yml

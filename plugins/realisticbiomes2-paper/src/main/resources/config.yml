@@ -845,7 +845,7 @@ plants:
     ideal_temperature: 0.5
     ideal_humidity: 0.5
     breaker:
-      type: SWEET_BERRY
+      type: SWEET_BERRY_BUSH
       max_yield: 64
 
   BIG_DRIPLEAF:
