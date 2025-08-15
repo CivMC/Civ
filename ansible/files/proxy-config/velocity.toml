@@ -74,6 +74,7 @@ enable-player-address-logging = true
 # represents the IP address of the server to connect to.
 main = "paper:25565"
 pvp = "pvp:25565"
+gamma = "gamma:25565"
 
 # In what order we should try servers when a player logs in or is kicked from a server.
 try = ["main"]
@@ -85,6 +86,9 @@ try = ["main"]
 ]
 "${CIV_PVP_HOSTNAME}" = [
     "pvp"
+]
+"${CIV_GAMMA_HOSTNAME}" = [
+    "gamma"
 ]
 
 [advanced]

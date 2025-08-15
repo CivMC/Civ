@@ -29,6 +29,7 @@
   loop:
       - { path: '/opt/stacks/minecraft/paper-data', enabled: 'setting.minecraft.enabled and "''paper''" in servers' }
       - { path: '/opt/stacks/minecraft/pvp-data', enabled: 'setting.minecraft.enabled and "''pvp''" in servers' }
+      - { path: '/opt/stacks/minecraft/gamma-data', enabled: 'setting.minecraft.enabled and "''gamma''" in servers' }
       - { path: '/opt/stacks/minecraft/mariadb-data', enabled: setting.minecraft.enabled }
       - { path: '/opt/stacks/minecraft/postgres-data', enabled: setting.minecraft.enabled }
 
