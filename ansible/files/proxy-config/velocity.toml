@@ -10,7 +10,7 @@ motd = "<#3bad4c>Building with more than just blocks.<reset>"
 
 # What should we display for the maximum number of players? (Velocity does not support a cap
 # on the number of players online.)
-show-max-players = 115
+show-max-players = 110
 
 # Should we authenticate players with Mojang? By default, this is on.
 online-mode = true
