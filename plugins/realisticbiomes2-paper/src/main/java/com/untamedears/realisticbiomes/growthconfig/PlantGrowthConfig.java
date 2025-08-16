@@ -95,7 +95,6 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
     public String getInfoString(Block b) {
         double soilMultiplier = 1.0 + getSoilBonus(b);
         double lightMultiplier = getLightMultiplier(b);
-        double beaconMultiplier = getBeaconMultiplier(b);
         StringBuilder sb = new StringBuilder();
         sb.append(ChatColor.GOLD);
         sb.append(ItemUtils.getItemName(item));
@@ -122,7 +121,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
         if (lightMultiplier != 1.0) {
             sb.append("\n" + ChatColor.GOLD + "Light multiplier: " + lightMultiplier);
         }
-        if (beaconMultiplier != 1.0) {
+        if (this.farmBeaconManager.isNearBeacon(b.getLocation())) {
              sb.append("\n" + ChatColor.LIGHT_PURPLE + "Farm beacon nearby");
         }
         return sb.toString();
@@ -166,7 +165,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 
     // affects growth time
     private double getBeaconMultiplier(Block block) {
-        return this.farmBeaconManager.isNearBeacon(block.getLocation()) ? 2.0 : 1.0;
+        return this.farmBeaconManager.isNearBeacon(block.getLocation()) ? this.farmBeaconManager.getFarmBeaconGrowthMultiplier() : 1.0;
     }
 
     /**

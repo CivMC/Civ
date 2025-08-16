@@ -16,18 +16,21 @@ public class FarmBeaconManager {
     private final NamespacedKey farmBeaconKey;
     private final int beaconRange;
     private final double farmBeaconFertility;
+    private final double farmBeaconGrowthMultiplier;
 
-    public FarmBeaconManager(NamespacedKey farmBeaconKey, int beaconRange, double farmBeaconFertility) {
+    public FarmBeaconManager(NamespacedKey farmBeaconKey, int beaconRange, double farmBeaconFertility, double farmBeaconGrowthMultiplier) {
         this.farmBeaconKey = farmBeaconKey;
         this.beaconRange = beaconRange;
         this.farmBeaconFertility = farmBeaconFertility;
+        this.farmBeaconGrowthMultiplier = farmBeaconGrowthMultiplier;
     }
 
     public static FarmBeaconManager fromConfiguration(ConfigurationSection section) {
         return new FarmBeaconManager(
             NamespacedKey.fromString(section.getString("farm_beacon_key")),
             section.getInt("farm_beacon_range"),
-            section.getDouble("farm_beacon_fertility")
+            section.getDouble("farm_beacon_fertility"),
+            section.getDouble("farm_beacon_growth_multiplier")
         );
     }
 
@@ -62,6 +65,10 @@ public class FarmBeaconManager {
         }
 
         return false;
+    }
+
+    public double getFarmBeaconGrowthMultiplier() {
+        return farmBeaconGrowthMultiplier;
     }
 
     public double getFarmBeaconFertility() {
