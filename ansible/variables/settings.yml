@@ -12,7 +12,7 @@ settings:
       pvp_hostname: 'pvp.civmc.net'
       hostname: 'play.civmc.net'
       resources: &default_minecraft_resources
-        memory: 40G
+        memory: 42G
         memory_limit: 50G
         pvp_memory: 10G
         pvp_memory_limit: 13G
