@@ -118,6 +118,7 @@ public class CivProxyPlugin {
     @Subscribe
     public void onKick(KickedFromServerEvent event) {
         RegisteredServer server = event.getServer();
+        System.out.println(event.kickedDuringServerConnect());
         if (!server.getServerInfo().getName().equals("main") || event.kickedDuringServerConnect()) {
             return;
         }
@@ -149,7 +150,7 @@ public class CivProxyPlugin {
             user.data().add(
                 PermissionNode.builder()
                     .permission("ajqueue.priority.1")
-                    .expiry(4, TimeUnit.MINUTES)
+                    .expiry(5, TimeUnit.MINUTES)
                     .build(),
                 TemporaryNodeMergeStrategy.REPLACE_EXISTING_IF_DURATION_LONGER);
             userManager.saveUser(user);
