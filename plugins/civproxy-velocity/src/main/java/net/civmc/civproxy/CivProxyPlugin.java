@@ -108,7 +108,7 @@ public class CivProxyPlugin {
 
     @Subscribe
     public void onChangeFromMain(ServerPreConnectEvent event) {
-        if (event.getOriginalServer() == null || !event.getOriginalServer().getServerInfo().getName().equals("main")) {
+        if (event.getPreviousServer() == null || !event.getPreviousServer().getServerInfo().getName().equals("main")) {
             return;
         }
 
@@ -118,7 +118,7 @@ public class CivProxyPlugin {
     @Subscribe
     public void onKick(KickedFromServerEvent event) {
         RegisteredServer server = event.getServer();
-        if (!server.getServerInfo().getName().equals("main")) {
+        if (!server.getServerInfo().getName().equals("main") || event.kickedDuringServerConnect()) {
             return;
         }
 
