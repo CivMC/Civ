@@ -172,7 +172,6 @@ performance:
     activation-dist-mod: 8
     # A list of entities to ignore for activation
     blacklisted-entities:
-    - axolotl
     - blaze
     - cave_spider
     - creeper
