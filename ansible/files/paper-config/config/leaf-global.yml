@@ -155,10 +155,10 @@ performance:
   # Optimizes entity brains when
   # they're far away from the player
   dab:
-    enabled: false
+    enabled: true
     # After enabling this, non-aquatic entities in the water will not be affected by DAB.
     # This could fix entities suffocate in the water.
-    dont-enable-if-in-water: false
+    dont-enable-if-in-water: true
     # This value determines how far away an entity has to be
     # from the player to start being effected by DEAR.
     start-distance: 12
@@ -172,11 +172,26 @@ performance:
     activation-dist-mod: 8
     # A list of entities to ignore for activation
     blacklisted-entities:
-    - villager
     - axolotl
-    - hoglin
-    - zombified_piglin
+    - blaze
+    - cave_spider
+    - creeper
+    - enderman
+    - ghast
     - goat
+    - hoglin
+    - husk
+    - piglin
+    - piglin_brute
+    - silverfish
+    - skeleton
+    - spider
+    - stray
+    - villager
+    - witch
+    - wither_skeleton
+    - zombie
+    - zombified_piglin
   dont-save-entity:
     # Disable save primed tnt on chunk unloads.
     # Useful for redstone/technical servers, can prevent machines from being exploded by TNT,
