@@ -27,14 +27,14 @@ async:
     enabled: false
   async-pathfinding:
     enabled: true
-    max-threads: 0
+    max-threads: 12
     keepalive: 60
     queue-size: 0
     # The policy to use when the queue is full and a new task is submitted.
     # FLUSH_ALL: All pending tasks will be run on server thread.
     # CALLER_RUNS: Newly submitted task will be run on server thread.
     # DISCARD: Newly submitted task will be dropped directly.
-    reject-policy: FLUSH_ALL
+    reject-policy: CALLER_RUNS
   # Whether or not asynchronous mob spawning should be enabled.
   # On servers with many entities, this can improve performance by up to 15%. You must have
   # paper's per-player-mob-spawns setting set to true for this to work.
