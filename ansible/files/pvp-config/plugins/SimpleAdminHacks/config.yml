@@ -598,3 +598,5 @@ hacks:
     world: world
   TooHappyGhasts:
     enabled: true
+  PlayerCap:
+    enabled: true
