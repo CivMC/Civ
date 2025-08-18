@@ -77,15 +77,17 @@ public class AllyHandler implements Listener {
         }
 
         new BukkitRunnable() {
-
             @Override
             public void run() {
-                for (Map.Entry<UUID, Set<UUID>> entry : playerAllies.entrySet()) {
+                for (Iterator<Map.Entry<UUID, Set<UUID>>> iterator = playerAllies.entrySet().iterator(); iterator.hasNext(); ) {
+                    Map.Entry<UUID, Set<UUID>> entry = iterator.next();
                     Player player = Bukkit.getPlayer(entry.getKey());
+                    if (player == null) {
+                        iterator.remove();
+                        continue;
+                    }
                     Set<UUID> allyIDs = entry.getValue();
-                    Iterator<UUID> allyIDIterator = allyIDs.iterator();
-                    while (allyIDIterator.hasNext()) {
-                        UUID allyID = allyIDIterator.next();
+                    for (UUID allyID : allyIDs) {
                         Player ally = Bukkit.getPlayer(allyID);
                         if (ally != null && ally.isOnline()) {
                             Team allyTeam = getAllyTeam(player);
