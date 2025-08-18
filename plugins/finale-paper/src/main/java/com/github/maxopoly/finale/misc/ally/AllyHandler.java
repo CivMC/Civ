@@ -83,7 +83,6 @@ public class AllyHandler implements Listener {
                     Map.Entry<UUID, Set<UUID>> entry = iterator.next();
                     Player player = Bukkit.getPlayer(entry.getKey());
                     if (player == null) {
-                        iterator.remove();
                         continue;
                     }
                     Set<UUID> allyIDs = entry.getValue();
