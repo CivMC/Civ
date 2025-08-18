@@ -21,7 +21,7 @@ settings:
   timeout-time: ${CIV_WATCHDOG_TIMEOUT_TIME}
   restart-on-crash: false
   restart-script: ./start.sh
-  netty-threads: 4
+  netty-threads: 6
   attribute:
     maxHealth:
       max: 2048.0
@@ -51,7 +51,7 @@ world-settings:
     verbose: false
     merge-radius:
       exp: 3.0
-      item: 2.5
+      item: 3.0
     growth:
       cactus-modifier: 100
       cane-modifier: 100
