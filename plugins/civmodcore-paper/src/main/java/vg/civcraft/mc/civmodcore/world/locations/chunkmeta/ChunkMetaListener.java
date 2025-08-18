@@ -38,8 +38,8 @@ public class ChunkMetaListener implements Listener {
                 try {
                     Chunk chunk = unloadQueue.take();
                     manager.unloadChunkData(chunk);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } catch (RuntimeException | InterruptedException e) {
+                    CHUNK_META_LOGGER.warn("Handling chunk unloads", e);
                 }
             }
         }, "CivModCore chunk unload handler");
