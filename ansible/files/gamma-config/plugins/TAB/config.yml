@@ -4,7 +4,7 @@ header-footer:
   disable-in-worlds:
     - disabledworld
   header:
-    - '&6&kAAAA&r&6&l Welcome to CivMC &x&3&e&c&0&d&1Gamma&6&l!&r&6&kAAAA'
+    - '&6&kAAAA&r&6&l Welcome to CivMC &x&3&e&c&0&d&1Mini&6&l!&r&6&kAAAA'
     - "&7Online players: &f%online%"
   footer:
     - '&9Modmail at &6reddit.com/r/civmc'

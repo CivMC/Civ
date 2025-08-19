@@ -24,6 +24,8 @@ meteoric_iron_vein:
   max_spawns: 1
   # the positions that this vein should spawn around, e.g. nether portals
   positions: []
+  # true if ender eye targets should be forced to target the positions
+  override-ender-eyes: false
   # the minimum distance from a nether portal the centre of a vein should spawn from
   min_position_radius: 1
   # the maximum distance from a nether portal the centre of a vein should spawn from

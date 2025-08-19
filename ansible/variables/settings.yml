@@ -12,7 +12,7 @@ settings:
       gamma_whitelist: false
       pvp_hostname: 'pvp.civmc.net'
       hostname: 'play.civmc.net'
-      gamma_hostname: 'gamma.civmc.net'
+      gamma_hostname: 'mini.civmc.net'
       resources: &default_minecraft_resources
         memory: 40G
         memory_limit: 50G
@@ -41,7 +41,7 @@ settings:
       <<: *default_minecraft
       whitelist: true
       pvp_whitelist: true
-      gamma_hostname: 'gamma-test.civmc.net'
+      gamma_hostname: 'mini-test.civmc.net'
       pvp_hostname: 'pvp-test.civmc.net'
       hostname: 'test.civmc.net'
       resources:

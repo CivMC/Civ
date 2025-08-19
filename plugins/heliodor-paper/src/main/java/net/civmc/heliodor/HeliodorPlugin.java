@@ -14,6 +14,7 @@ import net.civmc.heliodor.heliodor.infusion.InfusionManager;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronDao;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfuseData;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfusion;
+import net.civmc.heliodor.vein.EnderEyeListener;
 import net.civmc.heliodor.vein.OrePredicate;
 import net.civmc.heliodor.vein.SqlVeinDao;
 import net.civmc.heliodor.vein.VeinCache;
@@ -142,6 +143,8 @@ public class HeliodorPlugin extends ACivMod {
         protector.addPredicate(new OrePredicate(oreLocationsKey));
         veinSpawner = new VeinSpawner(this, veinDao, veinCache, meteoricIronConfig);
         veinSpawner.start();
+
+        getServer().getPluginManager().registerEvents(new EnderEyeListener(meteoricIronConfig.config().world(), meteoricIronConfig.positions()), this);
 
         getServer().getPluginManager().registerEvents(new PickaxeBreakListener(veinCache,
             meteoricIronConfig.config().lowDistance(),
