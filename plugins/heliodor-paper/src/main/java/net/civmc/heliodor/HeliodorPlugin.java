@@ -131,7 +131,8 @@ public class HeliodorPlugin extends ACivMod {
             configPosList,
             meteoricIronConfigSection.getInt("min_position_radius"),
             meteoricIronConfigSection.getInt("max_position_radius"),
-            meteoricIronConfigSection.getInt("max_bury")
+            meteoricIronConfigSection.getInt("max_bury"),
+            meteoricIronConfigSection.getBoolean("override-ender-eyes")
         );
 
         SqlVeinDao veinDao = new SqlVeinDao(database);
@@ -144,7 +145,9 @@ public class HeliodorPlugin extends ACivMod {
         veinSpawner = new VeinSpawner(this, veinDao, veinCache, meteoricIronConfig);
         veinSpawner.start();
 
-        getServer().getPluginManager().registerEvents(new EnderEyeListener(meteoricIronConfig.config().world(), meteoricIronConfig.positions()), this);
+        if (meteoricIronConfig.overrideEnderEyes()) {
+            getServer().getPluginManager().registerEvents(new EnderEyeListener(meteoricIronConfig.config().world(), meteoricIronConfig.positions()), this);
+        }
 
         getServer().getPluginManager().registerEvents(new PickaxeBreakListener(veinCache,
             meteoricIronConfig.config().lowDistance(),
