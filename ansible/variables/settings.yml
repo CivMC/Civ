@@ -12,7 +12,7 @@ settings:
       pvp_hostname: 'pvp.civmc.net'
       hostname: 'play.civmc.net'
       resources: &default_minecraft_resources
-        memory: 40G
+        memory: 46G
         memory_limit: 50G
         pvp_memory: 10G
         pvp_memory_limit: 13G
@@ -41,10 +41,10 @@ settings:
       hostname: 'test.civmc.net'
       resources:
         <<: *default_minecraft_resources
-        memory: 6G
-        memory_limit: 8G
-        pvp_memory: 7G
-        pvp_memory_limit: 9G
+        memory: 4G
+        memory_limit: 6G
+        pvp_memory: 4G
+        pvp_memory_limit: 6G
     auth:
       enabled: true # TODO: MOVE
     maven:

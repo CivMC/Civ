@@ -249,7 +249,7 @@ public class CivChatDAO {
             getIgnoredGroups.setString(1, playerUUID.toString());
             ResultSet rs = getIgnoredGroups.executeQuery();
             while (rs.next()) {
-                ignoredGroupsList.add(rs.getString("group"));
+                ignoredGroupsList.add(rs.getString("ignoredGroup"));
             }
             ignoredGroups.put(playerUUID, ignoredGroupsList);
             return ignoredGroupsList;

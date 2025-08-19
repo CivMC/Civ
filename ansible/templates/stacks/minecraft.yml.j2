@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
     waterfall:
-        image: itzg/mc-proxy@sha256:4e2e20b6ef7739429dff34b7f7a5c26816004be2d499ad7d7940de197aa7a130
+        image: itzg/mc-proxy:java24
         restart: unless-stopped
         tty: true
         stdin_open: true
@@ -21,7 +21,7 @@ services:
               mode: host
         environment:
             TYPE: 'CUSTOM'
-            BUNGEE_JAR_URL: 'https://api.papermc.io/v2/projects/velocity/versions/3.4.0-SNAPSHOT/builds/515/downloads/velocity-3.4.0-SNAPSHOT-515.jar'
+            BUNGEE_JAR_FILE: 'velocity-528.jar'
 
             REPLACE_ENV_VARIABLES: 'true'
             REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
@@ -44,7 +44,7 @@ services:
             - /opt/stacks/minecraft/proxy-plugins:/plugins
 
     paper:
-        image: itzg/minecraft-server@sha256:edd1968cb701da6a7a358170ad6503323e35fb6ec6984eb31ec1a8a4687b75ec
+        image: itzg/minecraft-server:stable-java24-graalvm
         restart: unless-stopped
         tty: true
         stdin_open: true
@@ -62,8 +62,9 @@ services:
               mode: host
         environment:
             TYPE: 'paper'
-            VERSION: '1.21.4'
+            VERSION: '1.21.8'
             EULA: 'TRUE'
+            PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.8/builds/79/downloads/leaf-1.21.8-79.jar'
 
             REMOVE_OLD_MODS: 'TRUE'
             COPY_CONFIG_DEST: '/data'
@@ -106,7 +107,6 @@ services:
             CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
 
             JVM_OPTS: -agentpath:./libti.so
-
         volumes:
             # Persistence
             - /opt/stacks/minecraft/paper-data:/data
@@ -115,7 +115,7 @@ services:
             - /opt/stacks/minecraft/paper-plugins:/plugins
             # Private Config & Plugins
             - /opt/PrivateConfig/paper/plugins/Vulcan.jar:/config/plugins/Vulcan.jar
-            - /opt/PrivateConfig/paper/plugins/packetevents-spigot-2.7.0.jar:/config/plugins/packetevents-spgiot-2.7.0.jar
+            - /opt/PrivateConfig/paper/plugins/packetevents-spigot-2.9.4.jar:/config/plugins/packetevents-spgiot-2.9.4.jar
             - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
             - /opt/PrivateConfig/paper/config/HiddenOre/config.yml:/config/plugins/HiddenOre/config.yml
             - /opt/PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/config/plugins/KirraBukkitGateway/config.yml
@@ -145,7 +145,7 @@ services:
                     memory: '{{setting.minecraft.resources.memory_limit}}'
 
     pvp:
-        image: itzg/minecraft-server@sha256:edd1968cb701da6a7a358170ad6503323e35fb6ec6984eb31ec1a8a4687b75ec
+        image: itzg/minecraft-server:stable-java24-graalvm
         restart: unless-stopped
         tty: true
         stdin_open: true
@@ -159,7 +159,7 @@ services:
               mode: host
         environment:
             TYPE: 'paper'
-            VERSION: '1.21.4'
+            VERSION: '1.21.8'
             EULA: 'TRUE'
             PAPER_CUSTOM_JAR: 'asp-server.jar'
 
@@ -210,7 +210,7 @@ services:
             - /opt/stacks/minecraft/pvp-plugins:/plugins
             # Private Config & Plugins
             - /opt/PrivateConfig/paper/plugins/Vulcan.jar:/config/plugins/Vulcan.jar
-            - /opt/PrivateConfig/paper/plugins/packetevents-spigot-2.7.0.jar:/config/plugins/packetevents-spgiot-2.7.0.jar
+            - /opt/PrivateConfig/paper/plugins/packetevents-spigot-2.9.4.jar:/config/plugins/packetevents-spgiot-2.9.4.jar
             - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
             - /opt/PrivateConfig/paper/config/BreweryX/config.yml:/config/plugins/BreweryX/config.yml
             - /opt/PrivateConfig/paper/config/BreweryX/cauldron.yml:/config/plugins/BreweryX/cauldron.yml

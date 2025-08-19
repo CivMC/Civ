@@ -108,7 +108,7 @@ public class CopperRail extends BasicHack {
                 copper.getNext(state).ifPresent((iblockdata2) -> {
                     try {
                         formingBlock = true;
-                        CraftEventFactory.handleBlockFormEvent(level, craftBlock.getPosition(), iblockdata2);
+                        CraftEventFactory.handleBlockFormEvent(level, craftBlock.getPosition(), iblockdata2, 3);
                     } finally {
                         formingBlock = false;
                     }

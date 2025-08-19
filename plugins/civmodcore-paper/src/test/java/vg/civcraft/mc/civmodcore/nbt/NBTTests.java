@@ -1,14 +1,10 @@
 package vg.civcraft.mc.civmodcore.nbt;
 
-import java.util.HashMap;
-import java.util.Map;
 import net.minecraft.nbt.CompoundTag;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
 
 public class NBTTests {
-
     @Test
     public void testStringSerialization() {
         // Setup
@@ -19,10 +15,10 @@ public class NBTTests {
             "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non " +
             "proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
         // Process
-        final var nbt = new NBTCompound();
+        final var nbt = new NbtCompound();
         nbt.setString(STRING_KEY, expectedString);
         // Check
-        Assertions.assertEquals(expectedString, nbt.getString(STRING_KEY));
+        Assertions.assertEquals(expectedString, nbt.getString(STRING_KEY, null));
     }
 
     @Test
@@ -31,10 +27,10 @@ public class NBTTests {
         String STRING_ARRAY_KEY = "test_string_array";
         String[] expectedStringArray = {"one", "two", "three"};
         // Process
-        final var nbt = new NBTCompound();
+        final var nbt = new NbtCompound();
         nbt.setStringArray(STRING_ARRAY_KEY, expectedStringArray);
         // Check
-        Assertions.assertArrayEquals(expectedStringArray, nbt.getStringArray(STRING_ARRAY_KEY));
+        Assertions.assertArrayEquals(expectedStringArray, nbt.getStringArray(STRING_ARRAY_KEY, false));
     }
 
     @Test
@@ -49,13 +45,13 @@ public class NBTTests {
             "Proin fermentum leo vel orci porta non pulvinar. Facilisis magna etiam tempor orci eu lobortis " +
             "elementum nibh tellus. Aliquet eget sit amet tellus cras adipiscing enim.";
         // Process
-        final var nbt = new NBTCompound();
+        final var nbt = new NbtCompound();
         nbt.setString(STRING_KEY, expectedString);
-        final byte[] data = NBTSerialization.toBytes(nbt.getRAW());
-        final CompoundTag actual = NBTSerialization.fromBytes(data);
+        final byte[] data = NbtUtils.toBytes(nbt.internal());
+        final CompoundTag actual = NbtUtils.fromBytes(data);
         // Check
         Assertions.assertNotNull(actual);
-        Assertions.assertEquals(expectedString, actual.getString(STRING_KEY));
+        Assertions.assertEquals(expectedString, actual.getString(STRING_KEY).orElseThrow());
     }
 
     @Test
@@ -63,12 +59,12 @@ public class NBTTests {
         // Setup
         String STRING_KEY = "test_null_string";
         // Process
-        final var nbt = new NBTCompound();
+        final var nbt = new NbtCompound();
         nbt.setString(STRING_KEY, null);
-        final byte[] data = NBTSerialization.toBytes(nbt.getRAW());
-        final var actual = new NBTCompound(NBTSerialization.fromBytes(data));
+        final byte[] data = NbtUtils.toBytes(nbt.internal());
+        final var actual = new NbtCompound(NbtUtils.fromBytes(data));
         // Check
-        Assertions.assertNull(actual.getNullableString(STRING_KEY));
+        Assertions.assertNull(actual.getString(STRING_KEY, null));
     }
 
     @Test
@@ -86,48 +82,10 @@ public class NBTTests {
             "euismod. Cras semper auctor neque vitae tempus. Leo a diam sollicitudin tempor id eu. Non sodales " +
             "neque sodales ut etiam. Elementum integer enim neque volutpat ac tincidunt vitae semper quis.";
         // Process
-        final var nbt = new NBTCompound();
+        final var nbt = new NbtCompound();
         nbt.setString(STRING_KEY, expectedString);
         nbt.clear();
         // Check
-        Assertions.assertNull(nbt.getNullableString(STRING_KEY));
+        Assertions.assertNull(nbt.getString(STRING_KEY, null));
     }
-
-// TODO: Who knows.
-//	@Test
-//	public void testItemStackSerialisation() {
-//		// Setup
-//		final var item = new ItemStack(Material.STONE);
-//		ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
-//			meta.displayName(Component.text("Hello World!"));
-//			MetaUtils.setComponentLore(meta, Component.text("Testing!",
-//					NamedTextColor.YELLOW, TextDecoration.UNDERLINED));
-//			return true;
-//		});
-//		// Process
-//		final var nbt = NBTHelper.itemStackToNBT(item);
-//		final var parsed = NBTHelper.itemStackFromNBT(nbt);
-//		// Check
-//		Assertions.assertEquals(item, parsed);
-//	}
-
-    @Test
-    public void testMapDeserialisation() {
-        // Setup
-        final CompoundTag targetNBT = new CompoundTag() {{
-            put("EntityTag", new CompoundTag() {{
-                putString("id", "minecraft:vex");
-            }});
-        }};
-        final Map<String, Object> testData = new HashMap<>() {{
-            put("EntityTag", new HashMap<String, Object>() {{
-                put("id", "minecraft:vex");
-            }});
-        }};
-        // Process
-        final CompoundTag convertedNBT = NBTSerialization.fromMap(testData);
-        // Check
-        Assertions.assertEquals(targetNBT, convertedNBT);
-    }
-
 }

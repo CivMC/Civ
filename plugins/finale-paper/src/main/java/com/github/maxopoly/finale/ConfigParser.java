@@ -19,7 +19,7 @@ import com.github.maxopoly.finale.misc.knockback.KnockbackConfig;
 import com.github.maxopoly.finale.misc.knockback.KnockbackModifier;
 import com.github.maxopoly.finale.misc.knockback.KnockbackType;
 import com.github.maxopoly.finale.misc.warpfruit.WarpFruitTracker;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;

@@ -21,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "DAMAGE", order = 500)
@@ -77,14 +77,14 @@ public final class DamageableModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@NotNull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NbtCompound nbt) {
         nbt.setInt(DAMAGE_KEY, getDamage());
     }
 
     @NotNull
-    public static DamageableModifier fromNBT(@NotNull final NBTCompound nbt) {
+    public static DamageableModifier fromNBT(@NotNull final NbtCompound nbt) {
         final var modifier = new DamageableModifier();
-        modifier.setDamage(nbt.getInt(DAMAGE_KEY));
+        modifier.setDamage(nbt.getInt(DAMAGE_KEY, 0));
         return modifier;
     }
 

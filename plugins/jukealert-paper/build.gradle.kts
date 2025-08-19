@@ -1,6 +1,6 @@
 plugins {
     id("io.papermc.paperweight.userdev")
-    id("com.github.johnrengelman.shadow")
+    id("com.gradleup.shadow")
 }
 
 version = "3.0.8"

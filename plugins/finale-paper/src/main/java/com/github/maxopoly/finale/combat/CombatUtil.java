@@ -28,10 +28,9 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.boss.EnderDragonPart;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.bukkit.Tag;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftVector;
 import org.bukkit.entity.Player;
@@ -62,7 +61,7 @@ public class CombatUtil {
         if (victim.isAttackable() && !victim.skipAttackInteraction(attacker)) {
             float damage = (float) attacker.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
             DamageSource damagesource = attacker.damageSources().playerAttack(attacker);
-            float f1 = EnchantmentHelper.modifyDamage(attacker.serverLevel(), attacker.getWeaponItem(), victim, damagesource, damage) - damage;
+            float f1 = EnchantmentHelper.modifyDamage(attacker.level(), attacker.getWeaponItem(), victim, damagesource, damage) - damage;
 
             float f2;
             boolean shouldDamage = true;
@@ -72,11 +71,11 @@ public class CombatUtil {
                 damage *= 0.2F + f2 * f2 * 0.8F;
                 f1 *= f2;
             }
-            Level world = attacker.level();
+            ServerLevel world = attacker.level();
             if (damage > 0.0F || f1 > 0.0F) {
                 boolean dealtExtraKnockback = false;
                 byte baseKnockbackLevel = 1;
-                float knockbackLevel = baseKnockbackLevel + EnchantmentHelper.modifyKnockback(attacker.serverLevel(), attacker.getWeaponItem(), victim, damagesource, (float) attacker.getAttributeValue(Attributes.ATTACK_KNOCKBACK));
+                float knockbackLevel = baseKnockbackLevel + EnchantmentHelper.modifyKnockback(attacker.level(), attacker.getWeaponItem(), victim, damagesource, (float) attacker.getAttributeValue(Attributes.ATTACK_KNOCKBACK));
 
                 if (sprintHandler.isSprinting(attacker) && shouldDamage) {
                     if (config.getCombatSounds().isKnockbackEnabled()) {
@@ -110,7 +109,7 @@ public class CombatUtil {
 
                 if (shouldDamage && !shouldCrit && !dealtExtraKnockback && attacker.onGround() && d0 < Mth.square(d1)) {
                     ItemStack itemstack = attacker.getItemInHand(InteractionHand.MAIN_HAND);
-                    if (itemstack.getItem() instanceof SwordItem) {
+                    if (Tag.ITEMS_SWORDS.isTagged(itemstack.asBukkitMirror().getType())) {
                         shouldSweep = true;
                     }
                 }
@@ -153,7 +152,7 @@ public class CombatUtil {
                                     }
                                     // CraftBukkit end
 
-                                    EnchantmentHelper.doPostAttackEffects(attacker.serverLevel(), victim, damagesource);
+                                    EnchantmentHelper.doPostAttackEffects(attacker.level(), victim, damagesource);
                                 }
                             }
 
@@ -218,7 +217,7 @@ public class CombatUtil {
                             doPostHurtEnemy = attacker.getWeaponItem().hurtEnemy(livingVictim, attacker);
                         }
 
-                        EnchantmentHelper.doPostAttackEffects(attacker.serverLevel(), victim, damagesource);
+                        EnchantmentHelper.doPostAttackEffects(attacker.level(), victim, damagesource);
 
                         if (!itemstack1.isEmpty() && object instanceof LivingEntity) {
                             if (doPostHurtEnemy) {
@@ -238,10 +237,10 @@ public class CombatUtil {
 
                             attacker.awardStat(Stats.DAMAGE_DEALT, Math.round(f5 * 10.0F));
 
-                            if (world instanceof ServerLevel && f5 > 2.0F) {
+                            if (f5 > 2.0F) {
                                 int k = (int) ((double) f5 * 0.5D);
 
-                                ((ServerLevel) world).sendParticles(ParticleTypes.DAMAGE_INDICATOR, victim.getX(),
+                                world.sendParticles(ParticleTypes.DAMAGE_INDICATOR, victim.getX(),
                                     victim.getY() + (double) (victim.getEyeHeight() * 0.5F), victim.getZ(), k, 0.1D, 0.0D, 0.1D,
                                     0.2D);
                             }

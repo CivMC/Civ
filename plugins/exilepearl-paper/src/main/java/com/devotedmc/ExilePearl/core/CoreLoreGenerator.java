@@ -212,7 +212,7 @@ final class CoreLoreGenerator implements LoreProvider {
      * @return true if it's valid
      */
     private List<String> getValidLore(ItemStack is, ItemMeta im) {
-        if (!(is.getType().equals(Material.PLAYER_HEAD) || is.getType().equals(Material.ENDER_PEARL))) {
+        if (!(is.getType().equals(Material.ENDER_PEARL))) {
             return null;
         }
 

@@ -80,7 +80,7 @@ events:
     ipBans: true
     subnetBans: true
     proxyKicks: true
-    proxyBans: true
+    proxyBans: false
     newProxyBans: true
     shareBans: true
     transitiveBans: true

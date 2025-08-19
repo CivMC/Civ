@@ -11,12 +11,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-import net.minecraft.nbt.CompoundTag;
 import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.scheduler.BukkitTask;
-import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
+import vg.civcraft.mc.civmodcore.nbt.NbtUtils;
 import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
 import vg.civcraft.mc.namelayer.listeners.AssociationListener;
 
@@ -53,8 +52,8 @@ public final class MojangNames {
         PROFILES.clear();
         try {
             final byte[] data = Files.readAllBytes(file);
-            final CompoundTag nbt = NBTSerialization.fromBytes(data);
-            nbt.getAllKeys().forEach(key -> PROFILES.put(key, nbt.getUUID(key)));
+            final var nbt = new NbtCompound(NbtUtils.fromBytes(data));
+            nbt.keys().forEach(key -> PROFILES.put(key, nbt.getUuid(key, null)));
             plugin.info("[MojangNames] Mojang profiles loaded!");
         } catch (final NoSuchFileException ignored) {
         } catch (final IOException exception) {
@@ -63,9 +62,9 @@ public final class MojangNames {
     }
 
     private static void save(final NameLayerPlugin plugin, final Path file) {
-        final CompoundTag nbt = new CompoundTag();
-        PROFILES.forEach((name, uuid) -> nbt.putUUID(name, uuid)); // Ignore highlighter
-        final byte[] data = NBTSerialization.toBytes(nbt);
+        final var nbt = new NbtCompound();
+        PROFILES.forEach(nbt::setUuid);
+        final byte[] data = NbtUtils.toBytes(nbt.internal());
         try {
             Files.write(file, data,
                 StandardOpenOption.CREATE,

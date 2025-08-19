@@ -1,11 +1,11 @@
 [versions]
-paper = "1.21.4-R0.1-SNAPSHOT"
+paper = "1.21.8-R0.1-SNAPSHOT"
 junit = "5.8.2"
 nuotifier = "2.7.2"
 
 [plugins]
-paper-userdev = { id = "io.papermc.paperweight.userdev", version = "2.0.0-beta.11" }
-shadow = {  id = "com.github.johnrengelman.shadow", version = "8.1.1" }
+paper-userdev = { id = "io.papermc.paperweight.userdev", version = "2.0.0-beta.17" }
+shadow = {  id = "com.gradleup.shadow", version = "8.3.8" }
 runpaper = { id = "xyz.jpenilla.run-paper", version = "2.3.1" }
 
 [libraries]
