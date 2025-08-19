@@ -8,7 +8,7 @@ status:
         paused: paused
         whitelisted: whitelisted
     online:
-        base: '&7You are in position &f{POS}&7 of &f{LEN}&7. Estimated time: {TIME}'
+        base: '&7You are in position &f{POS}&7 of &f{LEN}&7'
     left-last-queue: '&aYou left the last queue you were in.'
     now-in-queue: |-
         &aYou are now queued for {SERVER}! &7You are in position &f{POS}&7 of &f{LEN}&7.
@@ -93,9 +93,9 @@ list:
 spigot:
     actionbar:
         online: '&7You are queued for &f{SERVER}&7. You are in position &f{POS}&7
-            of &f{LEN}&7. Estimated time: {TIME}'
+            of &f{LEN}&7'
         offline: '&7You are queued for &f{SERVER}&7. &7You are in position &f{POS}&7
-            of &f{LEN}&7.'
+            of &f{LEN}&7'
 send: '&aAdded &f{PLAYER}&a to the queue for &f{SERVER}'
 remove: '&aRemoved &f{PLAYER} from all queues they were in.'
 placeholders:
