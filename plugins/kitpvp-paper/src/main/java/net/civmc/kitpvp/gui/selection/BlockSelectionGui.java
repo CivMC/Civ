@@ -53,7 +53,9 @@ public class BlockSelectionGui extends ItemSelectionGui {
             Material.COBBLED_DEEPSLATE,
             Material.LAPIS_BLOCK,
             Material.REDSTONE_BLOCK,
-            Material.COPPER_BLOCK
+            Material.COPPER_BLOCK,
+            Material.BIRCH_PLANKS,
+            Material.DARK_OAK_PLANKS,
         };
         for (int i = 0; i < types.length; i++) {
             inventory.setSlot(toClickable(new ItemStack(types[i])), i);
