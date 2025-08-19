@@ -21,7 +21,7 @@ services:
               mode: host
         environment:
             TYPE: 'CUSTOM'
-            BUNGEE_JAR_URL: 'https://api.papermc.io/v2/projects/velocity/versions/3.4.0-SNAPSHOT/builds/525/downloads/velocity-3.4.0-SNAPSHOT-525.jar'
+            BUNGEE_JAR_FILE: 'velocity-528.jar'
 
             REPLACE_ENV_VARIABLES: 'true'
             REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
@@ -65,7 +65,7 @@ services:
             TYPE: 'paper'
             VERSION: '1.21.8'
             EULA: 'TRUE'
-            PAPER_CUSTOM_JAR: 'civpaper.jar'
+            PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.8/builds/83/downloads/leaf-1.21.8-83.jar'
 
             REMOVE_OLD_MODS: 'TRUE'
             COPY_CONFIG_DEST: '/data'

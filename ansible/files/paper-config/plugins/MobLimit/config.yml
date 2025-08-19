@@ -9,7 +9,8 @@ reasons:
     mooshroom:
       dumb: true
     sheep:
-      dumb: true
+      count: 6
+      radius: 32
     chicken:
       dumb: true
       count: 5
@@ -38,7 +39,6 @@ reasons:
       count: 5
       radius: 32
     sniffer:
-      dumb: true
       count: 5
       radius: 32
     turtle:

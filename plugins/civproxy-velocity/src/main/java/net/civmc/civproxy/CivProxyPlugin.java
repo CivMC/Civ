@@ -108,7 +108,7 @@ public class CivProxyPlugin {
 
     @Subscribe
     public void onChangeFromMain(ServerPreConnectEvent event) {
-        if (event.getOriginalServer() == null || !event.getOriginalServer().getServerInfo().getName().equals("main")) {
+        if (event.getPreviousServer() == null || !event.getPreviousServer().getServerInfo().getName().equals("main")) {
             return;
         }
 
@@ -118,7 +118,9 @@ public class CivProxyPlugin {
     @Subscribe
     public void onKick(KickedFromServerEvent event) {
         RegisteredServer server = event.getServer();
-        if (!server.getServerInfo().getName().equals("main")) {
+        if (!server.getServerInfo().getName().equals("main")
+            || event.kickedDuringServerConnect()
+            || !event.getPlayer().getCurrentServer().map(c -> c.getServerInfo().getName().equals("main")).orElse(false)) {
             return;
         }
 
@@ -149,7 +151,7 @@ public class CivProxyPlugin {
             user.data().add(
                 PermissionNode.builder()
                     .permission("ajqueue.priority.1")
-                    .expiry(1, TimeUnit.MINUTES)
+                    .expiry(5, TimeUnit.MINUTES)
                     .build(),
                 TemporaryNodeMergeStrategy.REPLACE_EXISTING_IF_DURATION_LONGER);
             userManager.saveUser(user);

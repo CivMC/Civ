@@ -96,6 +96,10 @@ commands:
     description: Allows debugging of an event and its handlers
     usage: /<command> full.path.to.event
     permission: simpleadmin.eventdebug
+  setplayercap:
+    description: Set player cap
+    usage: /<command> <cap>
+    permission: simpleadmin.setplayercap
   stats: { } # Defined in (basic) PlayerStats
 permissions:
   simpleadmin.*:
@@ -119,6 +123,7 @@ permissions:
       simpleadmin.bedlocator: true
       simpleadmin.elytrabypass: true
       simpleadmin.grantott: true
+      simpleadmin.setplayercap: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
@@ -169,4 +174,7 @@ permissions:
       default: op
     simpleadmin.grantott:
       description: Gives the ability to grant players OTT usages
+      default: op
+    simpleadmin.setplayercap:
+      description: Gives the ability to set the player cap
       default: op
