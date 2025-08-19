@@ -34,7 +34,7 @@ async:
     # FLUSH_ALL: All pending tasks will be run on server thread.
     # CALLER_RUNS: Newly submitted task will be run on server thread.
     # DISCARD: Newly submitted task will be dropped directly.
-    reject-policy: CALLER_RUNS
+    reject-policy: DISCARD
   # Whether or not asynchronous mob spawning should be enabled.
   # On servers with many entities, this can improve performance by up to 15%. You must have
   # paper's per-player-mob-spawns setting set to true for this to work.
@@ -164,32 +164,26 @@ performance:
     start-distance: 12
     # This value defines how often in ticks, the furthest entity
     # will get their pathfinders and behaviors ticked. 20 = 1s
-    max-tick-freq: 20
+    max-tick-freq: 25
     # This value defines how much distance modifies an entity's
     # tick frequency. freq = (distanceToPlayer^2) / (2^value)",
     # If you want further away entities to tick less often, use 7.
     # If you want further away entities to tick more often, try 9.
-    activation-dist-mod: 8
+    activation-dist-mod: 7
     # A list of entities to ignore for activation
     blacklisted-entities:
     - blaze
     - cave_spider
-    - creeper
-    - enderman
     - ghast
     - goat
     - hoglin
     - husk
-    - piglin
     - piglin_brute
     - silverfish
-    - skeleton
-    - spider
     - stray
     - villager
     - witch
     - wither_skeleton
-    - zombie
     - zombified_piglin
   dont-save-entity:
     # Disable save primed tnt on chunk unloads.

@@ -51,7 +51,7 @@ world-settings:
     verbose: false
     merge-radius:
       exp: 3.0
-      item: 3.0
+      item: 4.0
     growth:
       cactus-modifier: 100
       cane-modifier: 100
@@ -77,21 +77,21 @@ world-settings:
       animals: 16
       monsters: 16
       raiders: 16
-      misc: 16
-      water: 16
+      misc: 12
+      water: 12
       villagers: 16
       flying-monsters: 32
       wake-up-inactive:
-        animals-max-per-tick: 4
+        animals-max-per-tick: 2
         animals-every: 1200
-        animals-for: 100
+        animals-for: 40
         monsters-max-per-tick: 8
         monsters-every: 400
         monsters-for: 100
         villagers-max-per-tick: 1
         villagers-every: 600
         villagers-for: 10
-        flying-monsters-max-per-tick: 8
+        flying-monsters-max-per-tick: 1
         flying-monsters-every: 200
         flying-monsters-for: 100
       villagers-work-immunity-after: 200
