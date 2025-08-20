@@ -25,24 +25,24 @@ public class Ignore extends BaseCommand {
                 ignoredPlayerNonFinal = Bukkit.getServer().getOfflinePlayer(targetPlayer);
             }
             if (!ignoredPlayerNonFinal.hasPlayedBefore() && !ignoredPlayerNonFinal.isOnline()) {
-                player.sendMessage(ChatStrings.chatPlayerNotFound);
+                player.sendRichMessage(ChatStrings.chatPlayerNotFound);
                 return;
             }
             OfflinePlayer ignoredPlayer = ignoredPlayerNonFinal;
             Bukkit.getScheduler().runTask(CivChat2.getInstance(), () -> {
                 if (player.equals(ignoredPlayer)) {
-                    player.sendMessage(ChatStrings.chatCantIgnoreSelf);
+                    player.sendRichMessage(ChatStrings.chatCantIgnoreSelf);
                     return;
                 }
                 CivChatDAO db = CivChat2.getInstance().getDatabaseManager();
                 if (!db.isIgnoringPlayer(player.getUniqueId(), ignoredPlayer.getUniqueId())) {
                     // Player added to the list
                     db.addIgnoredPlayer(player.getUniqueId(), ignoredPlayer.getUniqueId());
-                    player.sendMessage(String.format(ChatStrings.chatNowIgnoring, ignoredPlayer.getName()));
+                    player.sendRichMessage(String.format(ChatStrings.chatNowIgnoring, ignoredPlayer.getName()));
                 } else {
                     // Player removed from the list
                     db.removeIgnoredPlayer(player.getUniqueId(), ignoredPlayer.getUniqueId());
-                    player.sendMessage(String.format(ChatStrings.chatStoppedIgnoring, ignoredPlayer.getName()));
+                    player.sendRichMessage(String.format(ChatStrings.chatStoppedIgnoring, ignoredPlayer.getName()));
                 }
             });
         });
