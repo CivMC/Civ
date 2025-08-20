@@ -15,14 +15,6 @@ commands:
       /<command> <hackname> enable|disable
       /<command> <hackname> get|set <config> [value]
     permission: simpleadmin.hacks
-  invsee:
-    description: See any player inventory, online or not.
-    usage: /<command> [playername|UUID]
-    permission: simpleadmin.invsee
-  invmod:
-    description: Modify any player inventory, online or not.
-    usage: /<command> [playername|UUID]
-    permission: simpleadmin.invmod
   chunklimits:
     description: Display block chunk limit in chat
     usage: /<command>
@@ -107,9 +99,7 @@ permissions:
     default: op
     children:
       simpleadmin.hacks: true
-      simpleadmin.invsee: true
       simpleadmin.chestsee: true
-      simpleadmin.invmod: true
       simpleadmin.chestmod: true
       simpleadmin.kit: true
       simpleadmin.book: true
@@ -127,14 +117,8 @@ permissions:
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
-    simpleadmin.invsee:
-      description: Allows viewing player inventory
-      default: op
     simpleadmin.chestsee:
       description: Allows viewing any chests
-      default: op
-    simpleadmin.invmod:
-      description: Allows modifying player inventory
       default: op
     simpleadmin.chestmod:
       description: Allows modifying any chests

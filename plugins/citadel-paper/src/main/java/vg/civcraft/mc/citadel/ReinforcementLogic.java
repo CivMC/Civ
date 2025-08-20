@@ -1,7 +1,9 @@
 package vg.civcraft.mc.citadel;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,6 +22,7 @@ import vg.civcraft.mc.citadel.activity.ActivityMap;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDestructionEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.citadel.model.WorldBorderBuffers;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -91,17 +94,36 @@ public final class ReinforcementLogic {
     }
 
     public static double getDecayDamage(Reinforcement reinforcement) {
+        double inactiveDecay;
+
         if (reinforcement.getGroup() != null) {
-            //long lastRefresh = reinforcement.getGroup().getActivityTimeStamp();
             ActivityMap map = Citadel.getInstance().getActivityMap();
-            return map.getLastActivityTime(reinforcement.getGroup(), reinforcement.getLocation())
+            inactiveDecay = map.getLastActivityTime(reinforcement.getGroup(), reinforcement.getLocation())
                 .map(Instant::toEpochMilli)
                 .map(lastRefresh -> reinforcement.getType().getDecayDamageMultipler(lastRefresh))
                 .orElse(1d);
         } else {
-            return reinforcement.getType().getDeletedGroupMultiplier();
+            inactiveDecay = reinforcement.getType().getDeletedGroupMultiplier();
         }
+
+        return inactiveDecay * getBufferDecayDamage(reinforcement);
     }
+
+    private static double getBufferDecayDamage(Reinforcement reinforcement) {
+        Location location = reinforcement.getLocation();
+        WorldBorderBuffers buffer = Citadel.getInstance().getConfigManager().getWorldBorderBuffers()
+            .get(location.getWorld().getUID());
+        if (!buffer.decay()) {
+            return 1;
+        }
+
+        if (!buffer.checkIfOutside(location.getX(), location.getZ())) {
+            return 1;
+        }
+
+        return reinforcement.getType().getDecayDamageMultipler(reinforcement.getCreationTime());
+    }
+
 
     public static Reinforcement getReinforcementAt(Location location) {
         return Citadel.getInstance().getReinforcementManager().getReinforcement(location);

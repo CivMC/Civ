@@ -18,7 +18,7 @@ debug: true
 
 #Still used in calculating the localized decay. The difference is localized decay uses different last activity timers for each region.
 global_decay_timer: 6 weeks
-global_decay_multiplier: 2.0
+global_decay_multiplier: 2.5
 
 reinforcements:
   stone:
@@ -349,7 +349,9 @@ world-border-buffers:
     #'CIRCLE' or 'SQUARE' supported only
     shape: CIRCLE
     #Radius from border center you want the no reinforcement zone to kick in
-    starting_radius: 9900
+    starting_radius: 4440
+    # force decay instead of preventing reinforcements
+    decay: true
     #Center of the border
     center:
       x: 0.0
@@ -358,7 +360,9 @@ world-border-buffers:
     #'CIRCLE' or 'SQUARE' supported only
     shape: CIRCLE
     #Radius from border center you want the no reinforcement zone to kick in
-    starting_radius: 9900
+    starting_radius: 4440
+    # force decay instead of preventing reinforcements
+    decay: true
     #Center of the border
     center:
       x: 0.0
@@ -488,4 +492,4 @@ reinforcementBreakMultipliers:
 
 # number of times a tool can break a reinforcement before it gets damaged by one durability
 # set to 0 to disable
-reinforcementBreaksPerToolDamage: 50
+reinforcementBreaksPerToolDamage: 45
