@@ -370,7 +370,7 @@ Brews that are part of a nation or group's PR/culture and were submitted by them
 |       Griffin       |       Sealeo Rum Punch        |         3         |       6        |   700073   |
 |        Spqr         |     Spicy Vodka Espresso      |         4         |       6        |   700074   |
 |       Griffin       |      Griffin Melon Cider      |         2         |       6        |   700075   |
-|       Reggio        |        Reggio Surprise        |         4         |       6        |   700076   |
+|       Reggio        |        Reggio Surprise        |         3         |       6        |   700076   |
 |      Tortugain      |           Rosy Rum            |         3         |       6        |   700077   |
 |      Bergburg       |         Bergburgbier          |         4         |       6        |   700078   |
 |      Brunsvilk      |    Brunsvilk Sewage Water     |         5         |       6        |   700079   |
