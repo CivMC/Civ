@@ -38,7 +38,7 @@ public class FarmBeaconListener implements Listener {
         Block block = event.getBlock();
         Beacon type = (Beacon) block.getState(false);
 
-        type.getPersistentDataContainer().set(FARM_BEACON_KEY, PersistentDataType.BOOLEAN, true);
+        type.getPersistentDataContainer().set(FARM_BEACON_KEY, PersistentDataType.LONG, System.currentTimeMillis());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

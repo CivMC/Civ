@@ -186,6 +186,8 @@ climate:
 farm_beacon_key: "heliodor:farm_beacon"
 farm_beacon_range: 20
 farm_beacon_fertility: 0.05
+farm_beacon_growth_multiplier: 1
+farm_beacon_warmup: 518400000
 
 plants:
 
