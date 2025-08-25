@@ -47,13 +47,12 @@ services:
       COPY_CONFIG_SRC: /config,/privateconfig
     volumes:
       - ./PrivateConfig/gamma/config/RealisticBiomes/config.yml:/privateconfig/plugins/RealisticBiomes/config.yml
-      - ./PrivateConfig/gamma/config/HiddenOre/config.yml:/privateconfig/plugins/HiddenOre/worlds.yml
+      - ./PrivateConfig/gamma/config/HiddenOre/config.yml:/privateconfig/plugins/HiddenOre/config.yml
       - ./PrivateConfig/gamma/config/RandomSpawn/worlds.yml:/privateconfig/plugins/RandomSpawn/worlds.yml
       - ./PrivateConfig/gamma/config/Heliodor/config.yml:/privateconfig/plugins/Heliodor/config.yml
       - ./PrivateConfig/paper/plugins/Vulcan.jar:/privateconfig/plugins/Vulcan.jar
       - ./PrivateConfig/paper/plugins/packetevents-spigot-2.9.4.jar:/privateconfig/plugins/packetevents-spigot-2.9.4.jar
       - ./PrivateConfig/paper/config/Vulcan/config.yml:/privateconfig/plugins/Vulcan/config.yml
-      - ./PrivateConfig/paper/config/HiddenOre/config.yml:/privateconfig/plugins/HiddenOre/config.yml
       - ./PrivateConfig/paper/config/BreweryX/config.yml:/privateconfig/plugins/BreweryX/config.yml
       - ./PrivateConfig/paper/config/BreweryX/cauldron.yml:/privateconfig/plugins/BreweryX/cauldron.yml
       - ./PrivateConfig/paper/config/BreweryX/custom-items.yml:/privateconfig/plugins/BreweryX/custom-items.yml
