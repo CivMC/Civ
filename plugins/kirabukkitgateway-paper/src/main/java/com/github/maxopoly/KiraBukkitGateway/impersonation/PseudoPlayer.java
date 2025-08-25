@@ -2,7 +2,6 @@ package com.github.maxopoly.KiraBukkitGateway.impersonation;
 
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import java.net.InetSocketAddress;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -85,16 +84,6 @@ public class PseudoPlayer extends CraftPlayer {
         this.uuid = uuid;
         this.spigotPlayer = new PseudoSpigotPlayer(this);
         replies = new LinkedList<>();
-    }
-
-    public synchronized List<String> collectReplies() {
-        List<String> replyCopy = replies;
-        replies = null;
-        return replyCopy;
-    }
-
-    public OfflinePlayer getOfflinePlayer() {
-        return offlinePlayer;
     }
 
     public void closeInventory() {
@@ -615,23 +604,6 @@ public class PseudoPlayer extends CraftPlayer {
     public void setMetadata(String arg0, MetadataValue arg1) {
         throw new InvalidCommandAttemptException();
     }
-
-
-    public synchronized void sendMessage(String msg) {
-        if (replies == null) {
-            KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(uuid, msg, discordChannelId);
-        } else {
-            replies.add(msg);
-        }
-    }
-
-
-    public void sendMessage(String[] arg0) {
-        StringBuilder sb = new StringBuilder();
-        Arrays.stream(arg0).forEach(s -> sb.append(s + '\n'));
-        sendMessage(sb.toString());
-    }
-
 
     public PermissionAttachment addAttachment(Plugin arg0) {
         throw new InvalidCommandAttemptException();
@@ -1154,11 +1126,6 @@ public class PseudoPlayer extends CraftPlayer {
 
 
     public void sendBlockChange(Location arg0, Material arg1, byte arg2) {
-        throw new InvalidCommandAttemptException();
-    }
-
-
-    public boolean sendChunkChange(Location arg0, int arg1, int arg2, int arg3, byte[] arg4) {
         throw new InvalidCommandAttemptException();
     }
 
