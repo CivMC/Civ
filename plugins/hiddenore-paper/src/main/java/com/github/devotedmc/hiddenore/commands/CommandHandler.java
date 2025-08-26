@@ -100,8 +100,9 @@ public class CommandHandler implements CommandExecutor {
                                 return true;
                             }
                         }
-                    } else if ("isprocessed".equals(args[0])) {
                         sender.sendMessage("No world generation listener found");
+                        return true;
+                    } else if ("isprocessed".equals(args[0])) {
                         if (!(sender instanceof Player player)) {
                             return false;
                         }
