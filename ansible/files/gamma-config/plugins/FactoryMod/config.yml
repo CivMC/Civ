@@ -1429,8 +1429,6 @@ factories:
       - basic_xp_1
       - basic_xp_2
       - basic_xp_3
-      - basic_xp_4
-      - basic_xp_5
       - wither_skull
       - upgrade_to_advanced_cauldron
       - make_basic_cauldron_kit
@@ -1444,7 +1442,6 @@ factories:
       - adv_xp_1
       - adv_xp_2
       - adv_xp_3
-      - adv_xp_4
       - wither_skull
       - make_energizer
       - make_advanced_cauldron_kit
@@ -9707,30 +9704,30 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: GLASS_BOTTLE
         amount: 32
-      beetroot:
+      carrot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: BEETROOT
+        type: CARROT
         amount: 512
-      pumpkin:
+      kelp:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: PUMPKIN
-        amount: 128
-      potato:
+        type: KELP
+        amount: 256
+      melon:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: POTATO
-        amount: 128
-      coal:
+        type: MELON
+        amount: 64
+      birch_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: COAL
+        type: BIRCH_SAPLING
         amount: 16
-      spruce_sapling:
+      redstone:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: SPRUCE_SAPLING
+        type: REDSTONE
         amount: 16
       rotten_flesh:
         v: 3839
@@ -9753,30 +9750,35 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: GLASS_BOTTLE
         amount: 32
-      melon:
+      cocoa_beans:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: MELON
-        amount: 384
+        type: COCOA_BEANS
+        amount: 512
+      sugar_cane:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SUGAR_CANE
+        amount: 256
       cactus:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: CACTUS
-        amount: 384
-      raw_copper:
+        amount: 64
+      jungle_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: RAW_COPPER
+        type: JUNGLE_SAPLING
         amount: 16
-      birch_sapling:
+      raw_gold:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: BIRCH_SAPLING
+        type: RAW_GOLD
         amount: 16
-      bone:
+      string:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: BONE
+        type: STRING
         amount: 16
     output:
       exp:
@@ -9794,127 +9796,35 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: GLASS_BOTTLE
         amount: 32
-      wheat:
+      potato:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: WHEAT
+        type: POTATO
         amount: 512
-      carrot:
+      sweet_berries:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: CARROT
+        type: SWEET_BERRIES
         amount: 256
-      redstone_dust:
+      pumpkin:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: REDSTONE
-        amount: 16
-      oak_sapling:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: OAK_SAPLING
-        amount: 32
-      spider_eye:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: SPIDER_EYE
-        amount: 8
-    output:
-      exp:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: EXPERIENCE_BOTTLE
+        type: PUMPKIN
         amount: 64
-  basic_xp_4:
-    production_time: 4s
-    name: Make Exp 4
-    type: PRODUCTION
-    input:
-      glass_bottle:
+      spruce_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: GLASS_BOTTLE
-        amount: 32
-      sugar_cane:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: SUGAR_CANE
-        amount: 512
-      cocoa_beans:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: COCOA_BEANS
-        amount: 128
-      vine:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: VINE
-        amount: 128
+        type: SPRUCE_SAPLING
+        amount: 16
       lapis_lazuli:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: LAPIS_LAZULI
         amount: 16
-      jungle_sapling:
+      bone:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: JUNGLE_SAPLING
-        amount: 16
-      gunpowder:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: GUNPOWDER
-        amount: 16
-    output:
-      exp:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: EXPERIENCE_BOTTLE
-        amount: 64
-  basic_xp_5:
-    production_time: 4s
-    name: Make Exp 5
-    type: PRODUCTION
-    input:
-      glass_bottle:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: GLASS_BOTTLE
-        amount: 32
-      nether_wart:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: NETHER_WART
-        amount: 384
-      weeping_vines:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WEEPING_VINES
-        amount: 192
-      twisting_vines:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: TWISTING_VINES
-        amount: 192
-      quartz:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: QUARTZ
-        amount: 16
-      crimson_stem:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: CRIMSON_STEM
-        amount: 256
-      warped_stem:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WARPED_STEM
-        amount: 256
-      blaze_rod:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BLAZE_ROD
+        type: BONE
         amount: 16
     output:
       exp:
@@ -10030,7 +9940,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WHEAT
-        amount: 128
+        amount: 96
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10207,7 +10117,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WHEAT
-        amount: 128
+        amount: 96
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10384,7 +10294,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: WHEAT
-        amount: 128
+        amount: 96
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
