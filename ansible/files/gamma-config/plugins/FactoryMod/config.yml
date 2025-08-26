@@ -10031,21 +10031,81 @@ recipes:
     name: Make Exp 1
     type: PRODUCTION
     input:
-      potato:
+      wheat:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: POTATO
-        amount: 256
+        type: WHEAT
+        amount: 128
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
             - Compacted Item
-      carrot:
+      short_grass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: CARROT
+        type: SHORT_GRASS
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      bamboo:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BAMBOO
         amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      potato:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: POTATO
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      sugar_cane:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SUGAR_CANE
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      glow_berries:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: GLOW_BERRIES
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      oak_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: OAK_SAPLING
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      pale_oak_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_SAPLING
+        amount: 32
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10055,36 +10115,26 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MELON
-        amount: 128
+        amount: 32
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
             - Compacted Item
-      cocoa_beans:
+      brown_mushroom:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: COCOA_BEANS
-        amount: 128
+        type: BROWN_MUSHROOM
+        amount: 32
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
             - Compacted Item
-      kelp:
+      nether_wart:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: KELP
-        amount: 64
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      red_mushroom:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: RED_MUSHROOM
+        type: NETHER_WART
         amount: 32
         meta:
           meta-type: UNSPECIFIC
@@ -10095,17 +10145,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: TWISTING_VINES
-        amount: 64
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      nether_wart:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: NETHER_WART
-        amount: 64
+        amount: 32
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10122,30 +10162,20 @@ recipes:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
-      coal:
+      redstone:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: COAL
-        amount: 3
+        type: REDSTONE
+        amount: 2
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
             - Compacted Item
-      oak_sapling:
+      rotten_flesh:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: OAK_SAPLING
-        amount: 32
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      bone:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BONE
+        type: ROTTEN_FLESH
         amount: 2
         meta:
           meta-type: UNSPECIFIC
@@ -10156,7 +10186,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GLASS_BOTTLE
-        amount: 128
+        amount: 64
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10178,36 +10208,6 @@ recipes:
     name: Make Exp 2
     type: PRODUCTION
     input:
-      cactus:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: CACTUS
-        amount: 256
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      vine:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: VINE
-        amount: 128
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      pumpkin:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: PUMPKIN
-        amount: 128
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
       wheat:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10218,31 +10218,91 @@ recipes:
           ==: ItemMeta
           lore:
             - Compacted Item
-      bamboo:
+      short_grass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: BAMBOO
+        type: SHORT_GRASS
         amount: 64
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
             - Compacted Item
-      brown_mushroom:
+      kelp:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: BROWN_MUSHROOM
+        type: KELP
+        amount: 129
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      carrot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CARROT
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      sugar_cane:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SUGAR_CANE
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      birch_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BIRCH_SAPLING
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      spruce_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SPRUCE_SAPLING
         amount: 32
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
             - Compacted Item
-      weeping_vines:
+      cactus:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: WEEPING_VINES
-        amount: 64
+        type: CACTUS
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      pumpkin:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PUMPKIN
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      red_mushroom:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: RED_MUSHROOM
+        amount: 32
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10252,7 +10312,17 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: NETHER_WART
-        amount: 64
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      WEEPING_vines:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: WEEPING_VINES
+        amount: 32
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10269,31 +10339,21 @@ recipes:
           display-name: Player Essence
           lore:
             - Activity reward used to fuel pearls
-      redstone:
+      coal:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: REDSTONE
-        amount: 3
+        type: COAL
+        amount: 2
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
             - Compacted Item
-      spruce_sapling:
+      bone:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: SPRUCE_SAPLING
-        amount: 16
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      spider_eye:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: SPIDER_EYE
-        amount: 1
+        type: BONE
+        amount: 2
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10303,7 +10363,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GLASS_BOTTLE
-        amount: 128
+        amount: 64
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10325,11 +10385,31 @@ recipes:
     name: Make Exp 3
     type: PRODUCTION
     input:
-      carrot:
+      wheat:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: CARROT
-        amount: 256
+        type: WHEAT
+        amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      short_grass:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SHORT_GRASS
+        amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      kelp:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: KELP
+        amount: 129
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10339,17 +10419,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BEETROOT
-        amount: 128
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      melon:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: MELON
-        amount: 128
+        amount: 64
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10359,7 +10429,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COCOA_BEANS
-        amount: 128
+        amount: 64
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10375,11 +10445,51 @@ recipes:
           ==: ItemMeta
           lore:
             - Compacted Item
-      bamboo:
+      cherry_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: BAMBOO
+        type: CHERRY_SAPLING
         amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      dark_oak_sapling:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: DARK_OAK_SAPLING
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      pumpkin:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PUMPKIN
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      brown_mushroom:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: BROWN_MUSHROOM
+        amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      nether_wart:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: NETHER_WART
+        amount: 32
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10389,16 +10499,6 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: TWISTING_VINES
-        amount: 64
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      crimson_stem:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: CRIMSON_STEM
         amount: 32
         meta:
           meta-type: UNSPECIFIC
@@ -10420,27 +10520,17 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: RAW_COPPER
-        amount: 3
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      birch_sapling:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BIRCH_SAPLING
-        amount: 32
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      gunpowder:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: GUNPOWDER
         amount: 2
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Compacted Item
+      spider_eye:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: SPIDER_EYE
+        amount: 1
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10450,154 +10540,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: GLASS_BOTTLE
-        amount: 128
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-    output:
-      exp:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: EMERALD_BLOCK
-        amount: 2
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-  adv_xp_4:
-    production_time: 4s
-    name: Make Exp 4
-    type: PRODUCTION
-    input:
-      sugar_cane:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: SUGAR_CANE
-        amount: 256
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      cactus:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: CACTUS
-        amount: 128
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      wheat:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WHEAT
-        amount: 128
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      potato:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: POTATO
-        amount: 128
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      sweet_berries:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: SWEET_BERRIES
         amount: 64
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      kelp:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: KELP
-        amount: 64
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      weeping_vines:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WEEPING_VINES
-        amount: 64
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      warped_stem:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: WARPED_STEM
-        amount: 32
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      essence:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: ENDER_EYE
-        amount: 32
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Player Essence
-          lore:
-            - Activity reward used to fuel pearls
-      lapis_lazuli:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: LAPIS_LAZULI
-        amount: 3
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      jungle_sapling:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: JUNGLE_SAPLING
-        amount: 16
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      rotten_flesh:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: ROTTEN_FLESH
-        amount: 2
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Compacted Item
-      glass_bottle:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: GLASS_BOTTLE
-        amount: 128
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
