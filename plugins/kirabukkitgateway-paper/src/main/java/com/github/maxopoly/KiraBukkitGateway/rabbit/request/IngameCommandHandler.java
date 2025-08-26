@@ -1,6 +1,7 @@
 package com.github.maxopoly.KiraBukkitGateway.rabbit.request;
 
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
+import com.github.maxopoly.KiraBukkitGateway.impersonation.PseudoPlayer;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -22,13 +23,9 @@ public class IngameCommandHandler extends AbstractRequestHandler {
         logger.info("Running command '" + command + "' for " + runner);
         Bukkit.getScheduler().runTask(KiraBukkitGatewayPlugin.getInstance(), () -> {
             ArrayList<String> messages = new ArrayList<>();
+            PseudoPlayer pseudoPlayerSender = new PseudoPlayer(runner, channelId, component -> messages.add(PlainTextComponentSerializer.plainText().serialize(component)));
             try {
-                Bukkit.getServer().dispatchCommand(
-                    Bukkit.createCommandSender(
-                        component -> messages.add(PlainTextComponentSerializer.plainText().serialize(component))
-                    ),
-                    command
-                );
+                dispatchCommand(pseudoPlayerSender, command);
             } catch (Exception e) {
                 output.addProperty("reply", "You can not run this command from out of game");
                 logger.warning("Failed to run command from external source: " + e.getMessage());
@@ -46,5 +43,4 @@ public class IngameCommandHandler extends AbstractRequestHandler {
         });
 
     }
-
 }

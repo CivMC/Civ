@@ -21,7 +21,7 @@ public class GroupChatMessageHandler extends RabbitInput {
         final var groupName = input.get("group").getAsString();
         final var message = input.get("message").getAsString();
 
-        final var fakeSender = new PseudoPlayer(senderUUID, -1);
+        final var fakeSender = new PseudoPlayer(senderUUID, -1, null);
         final var logger = KiraBukkitGatewayPlugin.getInstance().getLogger();
 
         final var foundGroup = GroupManager.getGroup(groupName);

@@ -3,11 +3,15 @@ package com.github.maxopoly.KiraBukkitGateway.impersonation;
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import java.net.InetSocketAddress;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
+import net.kyori.adventure.audience.MessageType;
+import net.kyori.adventure.identity.Identity;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
@@ -66,11 +70,11 @@ public class PseudoPlayer extends CraftPlayer {
     private String name;
     private UUID uuid;
     private OfflinePlayer offlinePlayer;
-    private List<String> replies;
     private long discordChannelId;
     private PseudoSpigotPlayer spigotPlayer;
+    private Consumer <? super Component> feedback;
 
-    public PseudoPlayer(UUID uuid, long channelId) {
+    public PseudoPlayer(UUID uuid, long channelId, Consumer <? super Component> feedback) {
         super((CraftServer) Bukkit.getServer(), PseudoPlayerIdentity.generate(uuid, ""));
         if (uuid == null) {
             throw new IllegalArgumentException("No null uuid allowed");
@@ -83,7 +87,25 @@ public class PseudoPlayer extends CraftPlayer {
         this.discordChannelId = channelId;
         this.uuid = uuid;
         this.spigotPlayer = new PseudoSpigotPlayer(this);
-        replies = new LinkedList<>();
+        this.feedback = feedback;
+    }
+
+    public OfflinePlayer getOfflinePlayer() {
+        return offlinePlayer;
+    }
+
+    public void sendMessage(String message) {
+        this.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+    }
+
+    public void sendMessage(String... messages) {
+        for (String message : messages) {
+            this.sendMessage(message);
+        }
+    }
+
+    public void sendMessage(Identity identity, Component message, MessageType type) {
+        this.feedback.accept(message);
     }
 
     public void closeInventory() {
