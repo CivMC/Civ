@@ -125,7 +125,11 @@ public class WorldGenerationListener implements Listener {
                     }));
                 }
                 for (CompletableFuture<?> c : futures) {
-                    c.join();
+                    try {
+                        c.join();
+                    } catch (RuntimeException ex) {
+                        HiddenOre.getPlugin().getLogger().log(Level.WARNING, "Processing chunk", ex);
+                    }
                     processed++;
                     nextProgress--;
                     if (nextProgress == 0) {
