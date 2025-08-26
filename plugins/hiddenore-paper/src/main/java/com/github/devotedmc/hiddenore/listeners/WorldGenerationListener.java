@@ -155,12 +155,16 @@ public class WorldGenerationListener implements Listener {
                     processed++;
                     nextProgress--;
                     if (nextProgress == 0) {
-                        sender.sendMessage("Processed " + processed + "/" + total + " chunks");
+                        String message = "Processed " + processed + "/" + total + " chunks";
+                        sender.sendMessage(message);
+                        Bukkit.getConsoleSender().sendMessage(message);
                         nextProgress = Math.ceilDiv(total, 100);
                     }
                 }
             }
-            sender.sendMessage("Processed " + total + "/" + total + " chunks");
+            String message = "Processed " + total + "/" + total + " chunks";
+            sender.sendMessage(message);
+            Bukkit.getConsoleSender().sendMessage(message);
         });
     }
 
