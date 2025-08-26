@@ -130,7 +130,7 @@ public class WorldGenerationListener implements Listener {
                     nextProgress--;
                     if (nextProgress == 0) {
                         sender.sendMessage("Processed " + processed + "/" + total + " chunks");
-                        nextProgress = processed + Math.ceilDiv(total, 100);
+                        nextProgress = Math.ceilDiv(total, 100);
                     }
                 }
             }
