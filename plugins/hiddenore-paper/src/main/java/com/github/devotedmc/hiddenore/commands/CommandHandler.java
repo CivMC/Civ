@@ -10,6 +10,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.BreezeWindCharge;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 
@@ -27,11 +28,11 @@ import com.github.devotedmc.hiddenore.HiddenOre;
 public class CommandHandler implements CommandExecutor {
 
     private final HiddenOre plugin;
-    private final WorldGenerationListener worldGenerationListener;
+    private final List<WorldGenerationListener> worldGenerationListeners;
 
-    public CommandHandler(HiddenOre instance, WorldGenerationListener worldGenerationListener) {
+    public CommandHandler(HiddenOre instance, List<WorldGenerationListener> worldGenerationListeners) {
         this.plugin = instance;
-        this.worldGenerationListener = worldGenerationListener;
+        this.worldGenerationListeners = worldGenerationListeners;
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -91,11 +92,28 @@ public class CommandHandler implements CommandExecutor {
 
                         return true;
                     } else if ("clearores".equals(args[0])) {
-                        if (this.worldGenerationListener == null) {
-                            sender.sendMessage("World generation listener not enabled");
-                        } else {
-                            this.worldGenerationListener.clearManually(sender, Integer.parseInt(args[1]));
+                        if (!(sender instanceof Player player)) {
+                            return false;
                         }
+                        for (WorldGenerationListener worldGenerationListener : worldGenerationListeners) {
+                            if (worldGenerationListener.getWorldName().equals(player.getWorld().getName())) {
+                                worldGenerationListener.clearManually(sender, Integer.parseInt(args[1]));
+                                return true;
+                            }
+                        }
+                    } else if ("isprocessed".equals(args[0])) {
+                        sender.sendMessage("No world generation listener found");
+                        if (!(sender instanceof Player player)) {
+                            return false;
+                        }
+                        for (WorldGenerationListener worldGenerationListener : worldGenerationListeners) {
+                            if (worldGenerationListener.getWorldName().equals(player.getWorld().getName())) {
+                                sender.sendMessage("Chunk processed: " + worldGenerationListener.isProcessed(player.getChunk()));
+                                return true;
+                            }
+                        }
+                        sender.sendMessage("No world generation listener found");
+                        return true;
                     }
                 } else {
                     Bukkit.getPluginManager().disablePlugin(plugin);

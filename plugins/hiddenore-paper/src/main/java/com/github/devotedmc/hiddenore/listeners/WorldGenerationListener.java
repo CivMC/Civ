@@ -3,6 +3,7 @@ package com.github.devotedmc.hiddenore.listeners;
 import com.github.devotedmc.hiddenore.BlockConfig;
 import com.github.devotedmc.hiddenore.Config;
 import com.github.devotedmc.hiddenore.HiddenOre;
+import java.lang.ref.PhantomReference;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -18,6 +19,7 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -28,6 +30,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 /**
  * Populator to strip out blocks selectively from a world during generation.
@@ -39,6 +42,8 @@ public class WorldGenerationListener implements Listener {
     Map<Material, Material> replacements = null;
     String worldName = null;
     UUID worldUUID = null;
+
+    private final NamespacedKey processedKey;
 
     /**
      * When creating, pass in a config with three sub-elements. Now supports UUID reference of world.
@@ -80,6 +85,12 @@ public class WorldGenerationListener implements Listener {
                 }
             }
         }
+
+        this.processedKey = new NamespacedKey(HiddenOre.getPlugin(), "ore_processed");
+    }
+
+    public String getWorldName() {
+        return worldName;
     }
 
     public void clearManually(CommandSender sender, int radius) {
@@ -103,10 +114,14 @@ public class WorldGenerationListener implements Listener {
                         break;
                     }
                     futures.add(world.getChunkAtAsync(poll.firstInt(), poll.secondInt()).thenAccept(chunk -> {
+                        if (chunk.getPersistentDataContainer().getOrDefault(processedKey, PersistentDataType.BOOLEAN, false)) {
+                            return;
+                        }
                         clear(chunk);
                         if (Config.caveOres) {
                             generateCaveOres(chunk);
                         }
+                        chunk.getPersistentDataContainer().set(processedKey, PersistentDataType.BOOLEAN, true);
                     }));
                 }
                 for (CompletableFuture<?> c : futures) {
@@ -175,6 +190,7 @@ public class WorldGenerationListener implements Listener {
         if (Config.caveOres) {
             generateCaveOres(chunk);
         }
+        chunk.getPersistentDataContainer().set(processedKey, PersistentDataType.BOOLEAN, true);
     }
 
     private void clear(Chunk chunk) {
@@ -230,5 +246,9 @@ public class WorldGenerationListener implements Listener {
                 }
             }
         }
+    }
+
+    public boolean isProcessed(Chunk chunk) {
+        return chunk.getPersistentDataContainer().getOrDefault(processedKey, PersistentDataType.BOOLEAN, false);
     }
 }

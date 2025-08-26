@@ -58,19 +58,17 @@ public class HiddenOre extends JavaPlugin {
 
         worldGen = new ArrayList<>();
 
-        WorldGenerationListener list = null;
-
         ConfigurationSection worldGenConfig = Config.instance.getWorldGenerations();
         if (worldGenConfig != null) {
             for (String key : worldGenConfig.getKeys(false)) {
                 this.getLogger().log(Level.INFO, "Registered Ore Generation Suppression Listener for World {0}", key);
-                list = new WorldGenerationListener(worldGenConfig.getConfigurationSection(key));
+                WorldGenerationListener list = new WorldGenerationListener(worldGenConfig.getConfigurationSection(key));
                 this.getServer().getPluginManager().registerEvents(list, this);
                 worldGen.add(list);
             }
         }
 
-        commandHandler = new CommandHandler(this, list);
+        commandHandler = new CommandHandler(this, worldGen);
         this.getCommand("hiddenore").setExecutor(commandHandler);
 
     }
