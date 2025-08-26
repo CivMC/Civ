@@ -9723,7 +9723,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BIRCH_SAPLING
-        amount: 16
+        amount: 32
       redstone:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9769,7 +9769,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: JUNGLE_SAPLING
-        amount: 16
+        amount: 32
       raw_gold:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -9815,7 +9815,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: SPRUCE_SAPLING
-        amount: 16
+        amount: 32
       lapis_lazuli:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
