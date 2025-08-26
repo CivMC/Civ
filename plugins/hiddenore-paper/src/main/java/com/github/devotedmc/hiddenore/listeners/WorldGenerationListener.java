@@ -108,7 +108,7 @@ public class WorldGenerationListener implements Listener {
             int nextProgress = Math.ceilDiv(total, 100);
             while (!chunks.isEmpty()) {
                 List<CompletableFuture<?>> futures = new ArrayList<>();
-                for (int i = 0; i < 256; i++) {
+                for (int i = 0; i < 32; i++) {
                     IntIntPair poll = chunks.poll();
                     if (poll == null) {
                         break;
