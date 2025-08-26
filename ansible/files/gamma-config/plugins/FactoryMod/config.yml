@@ -10232,7 +10232,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: KELP
-        amount: 129
+        amount: 128
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
@@ -10409,7 +10409,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: KELP
-        amount: 129
+        amount: 128
         meta:
           meta-type: UNSPECIFIC
           ==: ItemMeta
