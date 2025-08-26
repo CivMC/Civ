@@ -1,5 +1,6 @@
 package com.github.devotedmc.hiddenore.listeners;
 
+import ca.spottedleaf.moonrise.common.util.TickThread;
 import com.github.devotedmc.hiddenore.BlockConfig;
 import com.github.devotedmc.hiddenore.Config;
 import com.github.devotedmc.hiddenore.HiddenOre;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
@@ -31,6 +33,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkPopulateEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitTask;
+import org.checkerframework.checker.units.qual.C;
+import org.spigotmc.AsyncCatcher;
 
 /**
  * Populator to strip out blocks selectively from a world during generation.
@@ -114,14 +119,31 @@ public class WorldGenerationListener implements Listener {
                         break;
                     }
                     futures.add(world.getChunkAtAsync(poll.firstInt(), poll.secondInt()).thenAccept(chunk -> {
-                        if (chunk.getPersistentDataContainer().getOrDefault(processedKey, PersistentDataType.BOOLEAN, false)) {
-                            return;
+                        Runnable r = () -> {
+                            if (chunk.getPersistentDataContainer().getOrDefault(processedKey, PersistentDataType.BOOLEAN, false)) {
+                                return;
+                            }
+                            clear(chunk);
+                            if (Config.caveOres) {
+                                generateCaveOres(chunk);
+                            }
+                            chunk.getPersistentDataContainer().set(processedKey, PersistentDataType.BOOLEAN, true);
+                        };
+                        if (!Bukkit.isPrimaryThread()) {
+                            HiddenOre.getPlugin().getLogger().log(Level.WARNING, "Chunk not loaded on primary thread");
+                            CountDownLatch latch = new CountDownLatch(1);
+                            Bukkit.getScheduler().runTask(HiddenOre.getPlugin(), () -> {
+                                r.run();
+                                latch.countDown();
+                            });
+                            try {
+                                latch.await();
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            }
+                        } else {
+                            r.run();
                         }
-                        clear(chunk);
-                        if (Config.caveOres) {
-                            generateCaveOres(chunk);
-                        }
-                        chunk.getPersistentDataContainer().set(processedKey, PersistentDataType.BOOLEAN, true);
                     }));
                 }
                 for (CompletableFuture<?> c : futures) {
