@@ -3,15 +3,25 @@ package com.github.devotedmc.hiddenore.listeners;
 import com.github.devotedmc.hiddenore.BlockConfig;
 import com.github.devotedmc.hiddenore.Config;
 import com.github.devotedmc.hiddenore.HiddenOre;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -70,6 +80,47 @@ public class WorldGenerationListener implements Listener {
                 }
             }
         }
+    }
+
+    public void clearManually(CommandSender sender, int radius) {
+        Deque<IntIntPair> chunks = new ArrayDeque<>();
+        World world = HiddenOre.getPlugin().getServer().getWorld(worldName);
+        for (int cx = -radius; cx <= radius; cx += 16) {
+            for (int cz = -radius; cz <= radius; cz += 16) {
+                chunks.add(new IntIntImmutablePair(cx >> 4, cz >> 4));
+            }
+        }
+        sender.sendMessage("Clearing " + chunks.size() + " chunks...");
+        Bukkit.getScheduler().runTaskAsynchronously(HiddenOre.getPlugin(), () -> {
+            int total = chunks.size();
+            int processed = 0;
+            int nextProgress = Math.ceilDiv(total, 100);
+            while (!chunks.isEmpty()) {
+                List<CompletableFuture<?>> futures = new ArrayList<>();
+                for (int i = 0; i < 256; i++) {
+                    IntIntPair poll = chunks.poll();
+                    if (poll == null) {
+                        break;
+                    }
+                    futures.add(world.getChunkAtAsync(poll.firstInt(), poll.secondInt()).thenAccept(chunk -> {
+                        clear(chunk);
+                        if (Config.caveOres) {
+                            generateCaveOres(chunk);
+                        }
+                    }));
+                }
+                for (CompletableFuture<?> c : futures) {
+                    c.join();
+                    processed++;
+                    nextProgress--;
+                    if (nextProgress == 0) {
+                        sender.sendMessage("Processed " + processed + "/" + total + " chunks");
+                        nextProgress = processed + Math.ceilDiv(total, 100);
+                    }
+                }
+            }
+            sender.sendMessage("Processed " + total + "/" + total + " chunks");
+        });
     }
 
     /**
