@@ -14,6 +14,7 @@ import com.untamedears.realisticbiomes.model.RBDAO;
 import com.untamedears.realisticbiomes.breaker.AutoReplantListener;
 import com.untamedears.realisticbiomes.noise.MeasureCommand;
 import com.untamedears.realisticbiomes.noise.MeasureListener;
+import com.untamedears.realisticbiomes.noise.SetYieldCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -111,6 +112,7 @@ public class RealisticBiomes extends ACivMod {
         getServer().getPluginManager().registerEvents(new TreeBlockListener(), this);
 
         commandManager.registerCommand(new MeasureCommand(configManager.getBiomeConfiguration(), breakManager));
+        commandManager.registerCommand(new SetYieldCommand(configManager.getBiomeConfiguration()));
 
         plantLogicManager = new PlantLogicManager(plantManager, growthConfigManager);
 

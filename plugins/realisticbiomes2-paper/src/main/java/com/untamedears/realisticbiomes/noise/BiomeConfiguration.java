@@ -16,6 +16,7 @@ public class BiomeConfiguration {
     private final CropNoise noise;
     private final FarmBeaconManager farmBeaconManager;
     private final Map<Biome, Climate> biomeClimates;
+    private double yieldOverride = -1;
 
     private BiomeConfiguration(CropNoise noise, FarmBeaconManager farmBeaconManager, Map<Biome, Climate> biomeClimates) {
         this.noise = noise;
@@ -64,7 +65,14 @@ public class BiomeConfiguration {
         return noise.getHumidityScale();
     }
 
+    public void setYieldOverride(double yieldOverride) {
+        this.yieldOverride = yieldOverride;
+    }
+
     public double getYield(Block block, Climate climate, Material mat, int maxYield) {
+        if (yieldOverride != -1) {
+            return yieldOverride;
+        }
         Climate biomeClimate = biomeClimates.get(block.getBiome());
         if (biomeClimate == null || biomeClimate.saline() != climate.saline() || biomeClimate.hell() != climate.hell()) {
             return 0;
