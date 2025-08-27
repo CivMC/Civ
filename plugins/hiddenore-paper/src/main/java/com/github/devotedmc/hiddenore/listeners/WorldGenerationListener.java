@@ -179,6 +179,9 @@ public class WorldGenerationListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void postGenerationOreClear(ChunkPopulateEvent event) {
+        if (true) {
+            return;
+        }
         if (replacements == null || (worldName == null && worldUUID == null)) {
             return;
         }
