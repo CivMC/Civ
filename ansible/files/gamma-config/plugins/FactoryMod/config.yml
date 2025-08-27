@@ -9739,7 +9739,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: EXPERIENCE_BOTTLE
-        amount: 64
+        amount: 96
   basic_xp_2:
     production_time: 4s
     name: Make Exp 2
@@ -9785,7 +9785,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: EXPERIENCE_BOTTLE
-        amount: 64
+        amount: 96
   basic_xp_3:
     production_time: 4s
     name: Make Exp 3
@@ -9831,7 +9831,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: EXPERIENCE_BOTTLE
-        amount: 64
+        amount: 96
   wither_skull:
     forceInclude: true
     production_time: 2s
