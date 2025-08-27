@@ -184,6 +184,10 @@ public class WorldGenerationListener implements Listener {
         }
 
         Chunk chunk = event.getChunk();
+        if (chunk.getPersistentDataContainer().getOrDefault(processedKey, PersistentDataType.BOOLEAN, false)) {
+            return;
+        }
+
 
         World world = chunk.getWorld();
 
@@ -193,30 +197,6 @@ public class WorldGenerationListener implements Listener {
 
         clear(chunk);
 
-        int x = chunk.getX();
-        int z = chunk.getZ();
-
-        // check adjacent chunks, which by contract
-        // might have been updated.
-        if (world.isChunkLoaded(x - 1, z)) {
-            chunk = world.getChunkAt(x - 1, z);
-            clear(chunk);
-        }
-
-        if (world.isChunkLoaded(x + 1, z)) {
-            chunk = world.getChunkAt(x + 1, z);
-            clear(chunk);
-        }
-
-        if (world.isChunkLoaded(x, z - 1)) {
-            chunk = world.getChunkAt(x, z - 1);
-            clear(chunk);
-        }
-
-        if (world.isChunkLoaded(x, z + 1)) {
-            chunk = world.getChunkAt(x, z + 1);
-            clear(chunk);
-        }
         if (Config.caveOres) {
             generateCaveOres(chunk);
         }
