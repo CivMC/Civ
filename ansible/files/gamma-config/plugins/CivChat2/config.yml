@@ -1,6 +1,6 @@
 chat:
   #globalChatRange: The base chat distance that people will message across def=1000
-  globalChatRange: 1000
+  globalChatRange: 600
   #defaultChatColor: The default chatcolor to use for global chat def=BLUE
   defaultChatColor: WHITE
   #color for console and OP "say" command
@@ -18,7 +18,7 @@ chat:
       range: 0
       color: WHITE
     far:
-      range: 800
+      range: 500
       color: GRAY
   globalGroup: '!'
   joinGlobalGroupByDefault: true
@@ -40,4 +40,4 @@ mysql:
   password: ${CIV_MYSQL_PASSWORD}
 
 # true if chat should be broadcasted to all servers via bungeecord
-serverBroadcastChat: true
+serverBroadcastChat: false

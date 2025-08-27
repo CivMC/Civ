@@ -159,6 +159,7 @@ humidity:
 
 fertility_seed: 3
 fertility_power: 1
+fertility_scale: 1
 
 temperature_measure: CLOCK
 humidity_measure: LIGHTNING_ROD

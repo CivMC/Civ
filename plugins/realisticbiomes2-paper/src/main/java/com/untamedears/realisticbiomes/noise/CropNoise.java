@@ -5,7 +5,6 @@ import org.bukkit.configuration.ConfigurationSection;
 public class CropNoise {
 
     private static final double SCALE = 64;
-    private static final double FERTILITY_SCALE = 307;
 
     private final SimplexNoise temperatureNoise;
     private final NoiseConfiguration temperatureConfiguration;
@@ -16,8 +15,9 @@ public class CropNoise {
     private final double yieldPowerFactor;
 
     private final double fertilityPower;
+    private final double fertilityScale;
 
-    private CropNoise(NoiseConfiguration temperature, NoiseConfiguration humidity, long fertilitySeed, double yieldPowerFactor, double fertilityPower) {
+    private CropNoise(NoiseConfiguration temperature, NoiseConfiguration humidity, long fertilitySeed, double yieldPowerFactor, double fertilityPower, double fertilityScale) {
         this.temperatureNoise = new SimplexNoise(temperature.seed());
         this.temperatureConfiguration = temperature;
         this.humidityNoise = new SimplexNoise(humidity.seed());
@@ -25,6 +25,7 @@ public class CropNoise {
         this.fertilitySeed = new SimplexNoise(fertilitySeed);
         this.yieldPowerFactor = yieldPowerFactor;
         this.fertilityPower = fertilityPower;
+        this.fertilityScale = fertilityScale;
     }
 
     public static CropNoise fromConfiguration(ConfigurationSection section) {
@@ -33,12 +34,13 @@ public class CropNoise {
             NoiseConfiguration.fromConfiguration(section.getConfigurationSection("humidity")),
             section.getLong("fertility_seed"),
             section.getDouble("yield_power_factor"),
-            section.getDouble("fertility_power")
+            section.getDouble("fertility_power"),
+            section.getDouble("fertility_scale")
         );
     }
 
     public double getFertility(int x, int z) {
-        return Math.pow((this.fertilitySeed.noise(x / FERTILITY_SCALE, z / FERTILITY_SCALE) + 1) / 2, this.fertilityPower);
+        return Math.pow((this.fertilitySeed.noise(x / fertilityPower, z / fertilityPower) + 1) / 2, this.fertilityPower);
     }
 
     public double getHumidity(int x, int z) {
