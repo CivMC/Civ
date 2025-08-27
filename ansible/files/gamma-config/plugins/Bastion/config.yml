@@ -42,7 +42,7 @@ bastions:
     blockReinforcements: true
     destroyOnRemoveWhileImmature: true #doesn't matter anyway if destroyOnRemove=true
     proximityDamageRange: 18
-    proximityDamageFactor: 1.2
+    proximityDamageFactor: 1.15
     overlay_name: Va
     pearls:
       block: true
@@ -82,7 +82,7 @@ bastions:
     blockReinforcements: true
     destroyOnRemoveWhileImmature: true
     proximityDamageRange: 25
-    proximityDamageFactor: 0.6
+    proximityDamageFactor: 0.575
     overlay_name: Ci
     pearls:
       block: false
