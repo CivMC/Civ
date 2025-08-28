@@ -41,6 +41,7 @@ settings:
       <<: *default_minecraft
       whitelist: true
       pvp_whitelist: true
+      gamma_whitelist: true
       gamma_hostname: 'mini-test.civmc.net'
       pvp_hostname: 'pvp-test.civmc.net'
       hostname: 'test.civmc.net'
