@@ -9,7 +9,7 @@ settings:
       enabled: true
       whitelist: false
       pvp_whitelist: false
-      gamma_whitelist: false
+      gamma_whitelist: true
       pvp_hostname: 'pvp.civmc.net'
       hostname: 'play.civmc.net'
       gamma_hostname: 'mini.civmc.net'
