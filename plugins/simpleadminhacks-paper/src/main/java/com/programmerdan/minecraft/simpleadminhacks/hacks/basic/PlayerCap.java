@@ -38,6 +38,10 @@ public class PlayerCap extends BasicHack implements CommandExecutor {
             return false;
         }
 
+        if (args.length < 1) {
+            return false;
+        }
+
         int cap;
         try {
             cap = Integer.parseInt(args[0]);
@@ -48,7 +52,7 @@ public class PlayerCap extends BasicHack implements CommandExecutor {
             return false;
         }
 
-        ((CraftServer) Bukkit.getServer()).getHandle().maxPlayers = cap;
+        Bukkit.getServer().setMaxPlayers(cap);
         sender.sendMessage("Changed player cap to " + cap);
         return true;
     }

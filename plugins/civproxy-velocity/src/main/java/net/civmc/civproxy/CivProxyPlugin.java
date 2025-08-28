@@ -41,37 +41,10 @@ public class CivProxyPlugin {
         this.logger = logger;
     }
 
-    @Subscribe
-    public void onProxyInitialization(KickedFromServerEvent event) {
-        // Prevent players from inadvertently going from the pvp server to the main server
-        // Velocity doesn't seem to have a config option for this
+    private final Map<Player, QueueRecord> players = new ConcurrentHashMap<>();
 
-        RegisteredServer prev = event.getServer();
-        KickedFromServerEvent.ServerKickResult result = event.getResult();
-        if (prev.getServerInfo().getName().equals("pvp") && result instanceof KickedFromServerEvent.RedirectPlayer rd && rd.getServer().getServerInfo().getName().equals("main")) {
-            event.setResult(KickedFromServerEvent.DisconnectPlayer.create(event.getServerKickReason().orElse(Component.text("Kicked"))));
-        }
-    }
+    record QueueRecord(Instant instant, String server) {
 
-    private final Map<Player, Instant> players = new ConcurrentHashMap<>();
-
-    @Subscribe
-    public void onToMain(KickedFromServerEvent event) {
-        // Other than banned players, kicked servers should go to the queue on the PvP server
-
-        if (!event.getServer().getServerInfo().getName().equals("main")) {
-            return;
-        }
-        if (event.getPlayer().getCurrentServer().isPresent()) {
-            return;
-        }
-        String reason = event.getServerKickReason().map(s -> PlainTextComponentSerializer.plainText().serialize(s)).orElse("");
-        if (reason.toLowerCase().contains("ban")) {
-            return;
-        }
-        event.setResult(KickedFromServerEvent.RedirectPlayer.create(server.getServer("pvp").get()));
-
-        players.put(event.getPlayer(), Instant.now());
     }
 
     @Subscribe
@@ -83,14 +56,20 @@ public class CivProxyPlugin {
             return;
         }
         RegisteredServer mainServer = event.getOriginalServer();
-        if (!mainServer.getServerInfo().getName().equals("main")) {
+        String name = mainServer.getServerInfo().getName();
+        if (name.equals("pvp")) {
             return;
         }
 
-        if (mainServer.getPlayersConnected().size() >= 100 && !event.getPlayer().hasPermission("joinbypass.use")) {
-            event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("pvp").get()));
+        if (mainServer.getPlayersConnected().size() >= 110 && !event.getPlayer().hasPermission("joinbypass.use")) {
+//            RegisteredServer mini = server.getServer("mini").orElse(null);
+//            if (mini != null && mini.getPlayersConnected().size() < 110) {
+//                event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("mini").get()));
+//            } else {
+                event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("pvp").get()));
+//            }
 
-            players.put(event.getPlayer(), Instant.now());
+            players.put(event.getPlayer(), new QueueRecord(Instant.now(), name));
         }
     }
 
@@ -98,33 +77,38 @@ public class CivProxyPlugin {
     public void onConnect(ServerPostConnectEvent event) {
         // Add players coming from the main server to the queue
 
-        Instant timestamp = players.remove(event.getPlayer());
-        if (timestamp != null && timestamp.isAfter(Instant.now().minusSeconds(60))) {
+        QueueRecord record = players.remove(event.getPlayer());
+        if (record != null && record.instant().isAfter(Instant.now().minusSeconds(60))) {
             QueueManager queueManager = AjQueueAPI.getInstance().getQueueManager();
             AdaptedPlayer player = AjQueueAPI.getInstance().getPlatformMethods().getPlayer(event.getPlayer().getUniqueId());
-            queueManager.addToQueue(player, "main");
+            queueManager.addToQueue(player, record.server());
         }
     }
 
     @Subscribe
     public void onChangeFromMain(ServerPreConnectEvent event) {
-        if (event.getPreviousServer() == null || !event.getPreviousServer().getServerInfo().getName().equals("main")) {
+        if (event.getPreviousServer() == null) {
+            return;
+        }
+        String name = event.getPreviousServer().getServerInfo().getName();
+        if (name.equals("pvp")) {
             return;
         }
 
-        addPriority(event.getPlayer());
+        addPriority(event.getPlayer(), name);
     }
 
     @Subscribe
     public void onKick(KickedFromServerEvent event) {
         RegisteredServer server = event.getServer();
-        if (!server.getServerInfo().getName().equals("main")
+        String name = server.getServerInfo().getName();
+        if (name.equals("pvp")
             || event.kickedDuringServerConnect()
-            || !event.getPlayer().getCurrentServer().map(c -> c.getServerInfo().getName().equals("main")).orElse(false)) {
+            || event.getPlayer().getCurrentServer().map(c -> c.getServerInfo().getName().equals("pvp")).orElse(true)) {
             return;
         }
 
-        addPriority(event.getPlayer());
+        addPriority(event.getPlayer(), name);
     }
 
     @Subscribe
@@ -133,14 +117,15 @@ public class CivProxyPlugin {
         if (server == null) {
             return;
         }
-        if (!server.getServerInfo().getName().equals("main")) {
+        String name = server.getServerInfo().getName();
+        if (name.equals("pvp")) {
             return;
         }
 
-        addPriority(event.getPlayer());
+        addPriority(event.getPlayer(), name);
     }
 
-    private void addPriority(Player player) {
+    private void addPriority(Player player, String server) {
         // Players who just disconnected get 5 minutes of queue priority
 
         UserManager userManager = LuckPermsProvider.get().getUserManager();
@@ -150,7 +135,7 @@ public class CivProxyPlugin {
             }
             user.data().add(
                 PermissionNode.builder()
-                    .permission("ajqueue.priority.1")
+                    .permission("ajqueue.serverpriority." + server + ".1")
                     .expiry(5, TimeUnit.MINUTES)
                     .build(),
                 TemporaryNodeMergeStrategy.REPLACE_EXISTING_IF_DURATION_LONGER);
