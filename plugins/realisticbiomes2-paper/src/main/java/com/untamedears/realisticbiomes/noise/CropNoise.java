@@ -40,7 +40,7 @@ public class CropNoise {
     }
 
     public double getFertility(int x, int z) {
-        return Math.pow((this.fertilitySeed.noise(x / fertilityPower, z / fertilityPower) + 1) / 2, this.fertilityPower);
+        return Math.pow((this.fertilitySeed.noise(x / fertilityScale, z / fertilityScale) + 1) / 2, this.fertilityPower);
     }
 
     public double getHumidity(int x, int z) {
