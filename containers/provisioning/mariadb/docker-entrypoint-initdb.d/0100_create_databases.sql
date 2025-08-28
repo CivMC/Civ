@@ -38,7 +38,6 @@ GRANT ALL PRIVILEGES ON `pvp_kitpvp`.* TO 'mariadb'@'%';
 
 CREATE DATABASE gamma_civduties;
 CREATE DATABASE gamma_civmodcore;
-CREATE DATABASE gamma_kitpvp;
 CREATE DATABASE gamma_bastion;
 CREATE DATABASE gamma_castlegates;
 CREATE DATABASE gamma_citadel;
@@ -46,12 +45,13 @@ CREATE DATABASE gamma_civchat2;
 CREATE DATABASE gamma_donum;
 CREATE DATABASE gamma_essenceglue;
 CREATE DATABASE gamma_jukealert;
+CREATE DATABASE gamma_namelayer;
+CREATE DATABASE gamma_exilepearl;
 CREATE DATABASE gamma_heliodor;
 CREATE DATABASE gamma_realisticbiomes;
 
 GRANT ALL PRIVILEGES ON `gamma_civduties`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_civmodcore`.* TO 'mariadb'@'%';
-GRANT ALL PRIVILEGES ON `gamma_kitpvp`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_bastion`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_castlegates`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_citadel`.* TO 'mariadb'@'%';
@@ -61,3 +61,5 @@ GRANT ALL PRIVILEGES ON `gamma_essenceglue`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_jukealert`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_heliodor`.* TO 'mariadb'@'%';
 GRANT ALL PRIVILEGES ON `gamma_realisticbiomes`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `gamma_namelayer`.* TO 'mariadb'@'%';
+GRANT ALL PRIVILEGES ON `gamma_exilepearl`.* TO 'mariadb'@'%';
