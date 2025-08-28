@@ -48,6 +48,26 @@ public class CivProxyPlugin {
     }
 
     @Subscribe
+    public void onToMain(KickedFromServerEvent event) {
+        // Other than banned players, kicked servers should go to the queue on the PvP server
+
+        String name = event.getServer().getServerInfo().getName();
+        if (name.equals("pvp")) {
+            return;
+        }
+        if (event.getPlayer().getCurrentServer().isPresent()) {
+            return;
+        }
+        String reason = event.getServerKickReason().map(s -> PlainTextComponentSerializer.plainText().serialize(s)).orElse("");
+        if (reason.toLowerCase().contains("ban")) {
+            return;
+        }
+        event.setResult(KickedFromServerEvent.RedirectPlayer.create(server.getServer("pvp").get()));
+
+        players.put(event.getPlayer(), new QueueRecord(Instant.now(), name));
+    }
+
+    @Subscribe
     public void onConnect(ServerPreConnectEvent event) {
         // If we are close to the cap, don't allow direct connections to the server and force them to go to the queue
         // This prevents players being able to snipe positions and bypass the queue
