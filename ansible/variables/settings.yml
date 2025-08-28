@@ -14,10 +14,10 @@ settings:
       hostname: 'play.civmc.net'
       gamma_hostname: 'mini.civmc.net'
       resources: &default_minecraft_resources
-        memory: 40G
-        memory_limit: 50G
-        pvp_memory: 10G
-        pvp_memory_limit: 13G
+        memory: 39G
+        memory_limit: 48G
+        pvp_memory: 9G
+        pvp_memory_limit: 12G
         gamma_memory: 23G
         gamma_memory_limit: 26G
     # Optional Stacks
