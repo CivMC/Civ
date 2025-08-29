@@ -134,6 +134,10 @@ export default defineConfig({
                             text: "New Player Guide",
                             link: "/wiki/new-player-guide",
                         },
+                        {
+                            text: "CivMini",
+                            link: "/wiki/CivMini",
+                        },
                         { text: "Change Log", link: "/wiki/changelog" },
                         {
                             text: "Plugins",

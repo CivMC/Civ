@@ -64,4 +64,6 @@ Below are explanations on the plugins CivMC uses, and detailed information about
 * [Arthropod Egg](./plugins/fun/arthropodegg) - Killing animals to put them in eggs. 
 
 #### Other pages
-[Change log](./changelog) - A list of all server updates. 
+[Change log](./changelog) - A list of all server updates.
+[CivMini](./CivMini) - All things different or new on CivMini.
+
