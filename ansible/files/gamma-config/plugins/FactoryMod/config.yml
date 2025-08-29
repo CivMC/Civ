@@ -9707,21 +9707,45 @@ recipes:
       carrot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
         type: CARROT
         amount: 512
       kelp:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
         type: KELP
         amount: 256
       melon:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
         type: MELON
         amount: 64
       birch_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
         type: BIRCH_SAPLING
         amount: 32
       redstone:
@@ -9753,21 +9777,45 @@ recipes:
       cocoa_beans:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
         type: COCOA_BEANS
         amount: 512
       sugar_cane:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
         type: SUGAR_CANE
         amount: 256
       cactus:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
         type: CACTUS
         amount: 64
       jungle_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
         type: JUNGLE_SAPLING
         amount: 32
       raw_gold:
@@ -9799,21 +9847,45 @@ recipes:
       potato:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
         type: POTATO
         amount: 512
       sweet_berries:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
         type: SWEET_BERRIES
         amount: 256
       pumpkin:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
         type: PUMPKIN
         amount: 64
       spruce_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
         type: SPRUCE_SAPLING
         amount: 32
       lapis_lazuli:
@@ -9945,6 +10017,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       short_grass:
         v: 3839
@@ -9965,6 +10039,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       potato:
         v: 3839
@@ -9975,6 +10051,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       sugar_cane:
         v: 3839
@@ -9985,6 +10063,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       glow_berries:
         v: 3839
@@ -9995,6 +10075,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       oak_sapling:
         v: 3839
@@ -10005,6 +10087,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       pale_oak_sapling:
         v: 3839
@@ -10015,6 +10099,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       melon:
         v: 3839
@@ -10025,6 +10111,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       brown_mushroom:
         v: 3839
@@ -10035,6 +10123,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       nether_wart:
         v: 3839
@@ -10045,6 +10135,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       twitsing_vines:
         v: 3839
@@ -10055,6 +10147,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       essence:
         v: 3839
@@ -10122,6 +10216,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       short_grass:
         v: 3839
@@ -10142,6 +10238,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       carrot:
         v: 3839
@@ -10152,6 +10250,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       sugar_cane:
         v: 3839
@@ -10162,6 +10262,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       birch_sapling:
         v: 3839
@@ -10172,6 +10274,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       spruce_sapling:
         v: 3839
@@ -10182,6 +10286,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       cactus:
         v: 3839
@@ -10192,6 +10298,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       pumpkin:
         v: 3839
@@ -10202,6 +10310,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       red_mushroom:
         v: 3839
@@ -10212,6 +10322,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       nether_wart:
         v: 3839
@@ -10222,6 +10334,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       WEEPING_vines:
         v: 3839
@@ -10232,6 +10346,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       essence:
         v: 3839
@@ -10299,6 +10415,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       short_grass:
         v: 3839
@@ -10319,6 +10437,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       beetroot:
         v: 3839
@@ -10329,6 +10449,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       cocoa_beans:
         v: 3839
@@ -10339,6 +10461,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       sweet_berries:
         v: 3839
@@ -10349,6 +10473,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       cherry_sapling:
         v: 3839
@@ -10359,6 +10485,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       dark_oak_sapling:
         v: 3839
@@ -10369,6 +10497,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       pumpkin:
         v: 3839
@@ -10379,6 +10509,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       brown_mushroom:
         v: 3839
@@ -10389,6 +10521,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       nether_wart:
         v: 3839
@@ -10399,6 +10533,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       twisting_vines:
         v: 3839
@@ -10409,6 +10545,8 @@ recipes:
           meta-type: UNSPECIFIC
           ==: ItemMeta
           lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
             - Compacted Item
       essence:
         v: 3839
