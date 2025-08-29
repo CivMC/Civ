@@ -44,7 +44,8 @@ public class BreakManager {
         Map.entry(Material.SUGAR_CANE, Material.SUGAR_CANE),
         Map.entry(Material.BAMBOO, Material.BAMBOO),
         Map.entry(Material.RED_MUSHROOM_BLOCK, Material.RED_MUSHROOM),
-        Map.entry(Material.BROWN_MUSHROOM_BLOCK, Material.BROWN_MUSHROOM)
+        Map.entry(Material.BROWN_MUSHROOM_BLOCK, Material.BROWN_MUSHROOM),
+        Map.entry(Material.NETHER_WART, Material.NETHER_WART)
     );
 
     private final BiomeConfiguration biomes;
