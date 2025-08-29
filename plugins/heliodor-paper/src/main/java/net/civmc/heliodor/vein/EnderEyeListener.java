@@ -41,6 +41,7 @@ public class EnderEyeListener implements Listener {
             double portalDistanceSquared = portal.distanceSquared(eye.getLocation());
             if (portalDistanceSquared < distanceSquared) {
                 closestLocation = portal;
+                distanceSquared = portalDistanceSquared;
             }
         }
 
