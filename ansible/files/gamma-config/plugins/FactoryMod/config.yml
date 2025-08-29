@@ -10082,10 +10082,10 @@ recipes:
             - Unbruised and suitable for use in XP production
             - Compacted Item
           PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
-      glow_berries:
+      sweet_berries:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
-        type: GLOW_BERRIES
+        type: SWEET_BERRIES
         amount: 64
         meta:
           meta-type: UNSPECIFIC
