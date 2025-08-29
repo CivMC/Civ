@@ -15,8 +15,8 @@ public class HandPicked {
     public static ItemStack markHandPicked(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         meta.lore(List.of(
-            Component.text("Hand picked"),
-            Component.text("Unbruised and suitable for use in XP production")
+            Component.empty().append(Component.text("Hand picked")),
+            Component.empty().append(Component.text("Unbruised and suitable for use in XP production"))
         ));
         meta.getPersistentDataContainer().set(KEY, PersistentDataType.BOOLEAN, true);
         item.setItemMeta(meta);

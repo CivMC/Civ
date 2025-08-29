@@ -9713,6 +9713,7 @@ recipes:
           lore:
             - Hand picked
             - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
         type: CARROT
         amount: 512
       kelp:
@@ -9724,6 +9725,7 @@ recipes:
           lore:
             - Hand picked
             - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
         type: KELP
         amount: 256
       melon:
@@ -9735,6 +9737,7 @@ recipes:
           lore:
             - Hand picked
             - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
         type: MELON
         amount: 64
       birch_sapling:
@@ -9746,6 +9749,7 @@ recipes:
           lore:
             - Hand picked
             - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
         type: BIRCH_SAPLING
         amount: 32
       redstone:
@@ -9783,6 +9787,7 @@ recipes:
           lore:
             - Hand picked
             - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
         type: COCOA_BEANS
         amount: 512
       sugar_cane:
@@ -9794,6 +9799,7 @@ recipes:
           lore:
             - Hand picked
             - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
         type: SUGAR_CANE
         amount: 256
       cactus:
@@ -9805,6 +9811,7 @@ recipes:
           lore:
             - Hand picked
             - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
         type: CACTUS
         amount: 64
       jungle_sapling:
@@ -9816,6 +9823,7 @@ recipes:
           lore:
             - Hand picked
             - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
         type: JUNGLE_SAPLING
         amount: 32
       raw_gold:
@@ -9853,6 +9861,7 @@ recipes:
           lore:
             - Hand picked
             - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
         type: POTATO
         amount: 512
       sweet_berries:
@@ -9864,6 +9873,7 @@ recipes:
           lore:
             - Hand picked
             - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
         type: SWEET_BERRIES
         amount: 256
       pumpkin:
@@ -9875,6 +9885,7 @@ recipes:
           lore:
             - Hand picked
             - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
         type: PUMPKIN
         amount: 64
       spruce_sapling:
@@ -9886,6 +9897,7 @@ recipes:
           lore:
             - Hand picked
             - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
         type: SPRUCE_SAPLING
         amount: 32
       lapis_lazuli:
@@ -10020,6 +10032,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       short_grass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10042,6 +10055,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       potato:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10054,6 +10068,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       sugar_cane:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10066,6 +10081,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       glow_berries:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10078,6 +10094,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       oak_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10090,6 +10107,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       pale_oak_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10102,6 +10120,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       melon:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10114,6 +10133,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       brown_mushroom:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10126,6 +10146,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       nether_wart:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10138,6 +10159,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       twitsing_vines:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10150,6 +10172,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       essence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10219,6 +10242,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       short_grass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10241,6 +10265,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       carrot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10253,6 +10278,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       sugar_cane:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10265,6 +10291,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       birch_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10277,6 +10304,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       spruce_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10289,6 +10317,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       cactus:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10301,6 +10330,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       pumpkin:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10313,6 +10343,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       red_mushroom:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10325,6 +10356,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       nether_wart:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10337,6 +10369,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       WEEPING_vines:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10349,6 +10382,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       essence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10418,6 +10452,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       short_grass:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10440,6 +10475,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       beetroot:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10452,6 +10488,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       cocoa_beans:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10464,6 +10501,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       sweet_berries:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10476,6 +10514,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       cherry_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10488,6 +10527,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       dark_oak_sapling:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10500,6 +10540,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       pumpkin:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10512,6 +10553,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       brown_mushroom:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10524,6 +10566,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       nether_wart:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10536,6 +10579,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       twisting_vines:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
@@ -10548,6 +10592,7 @@ recipes:
             - Hand picked
             - Unbruised and suitable for use in XP production
             - Compacted Item
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       essence:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
