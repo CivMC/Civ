@@ -44,6 +44,7 @@ public class BreakManager {
         Map.entry(Material.WEEPING_VINES_PLANT, Material.WEEPING_VINES),
         Map.entry(Material.WEEPING_VINES, Material.WEEPING_VINES),
         Map.entry(Material.TWISTING_VINES_PLANT, Material.TWISTING_VINES),
+        Map.entry(Material.TWISTING_VINES, Material.TWISTING_VINES),
         Map.entry(Material.SUGAR_CANE, Material.SUGAR_CANE),
         Map.entry(Material.BAMBOO, Material.BAMBOO),
         Map.entry(Material.RED_MUSHROOM_BLOCK, Material.RED_MUSHROOM),
@@ -69,6 +70,10 @@ public class BreakManager {
             if (breaker != null) {
                 maxYield.put(breaker.type(), breaker.maxYield());
                 climates.put(breaker.type(), config.getClimate());
+                if (breaker.type2() != null) {
+                    maxYield.put(breaker.type2(), breaker.maxYield());
+                    climates.put(breaker.type2(), config.getClimate());
+                }
             }
         }
         return new BreakManager(biomes, maxYield, climates);
