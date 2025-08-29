@@ -56,10 +56,6 @@ public class BreakListener implements Listener {
         event.getItemsHarvested().addAll(drops);
     }
 
-    private boolean isSelfSeed(Material material) {
-        return RBUtils.getGrowthDirection(material) != BlockFace.SELF;
-    }
-
     private boolean isFarmable(Material material) {
         return material == Material.BEETROOTS || material == Material.WHEAT || material == Material.POTATOES || material == Material.CARROTS || material == Material.COCOA  || material == Material.NETHER_WART;
     }
@@ -67,14 +63,15 @@ public class BreakListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(BlockPlaceEvent event) {
         Material type = event.getBlock().getType();
-        if (!isSelfSeed(type)) {
+        BlockFace direction = RBUtils.getGrowthDirection(type);
+        if (direction == BlockFace.SELF) {
             return;
         }
         if (!breakManager.isControlledCrop(event.getBlock())) {
             return;
         }
 
-        if (type != event.getBlock().getRelative(RBUtils.getGrowthDirection(type).getOppositeFace()).getType()) {
+        if (type != event.getBlock().getRelative(direction.getOppositeFace()).getType()) {
             return;
         }
 
@@ -158,8 +155,9 @@ public class BreakListener implements Listener {
             return;
         }
 
-        if (isSelfSeed(type)) {
-            Block below = event.getBlock().getRelative(RBUtils.getGrowthDirection(type).getOppositeFace());
+        BlockFace direction = RBUtils.getGrowthDirection(type);
+        if (direction != BlockFace.SELF) {
+            Block below = event.getBlock().getRelative(direction.getOppositeFace());
             if (!this.wasColumnLastTick.contains(below)) {
                 if (below.getType() != type && below.getType() != Material.AIR) {
                     // base blocks have normal drops
@@ -192,9 +190,10 @@ public class BreakListener implements Listener {
             return;
         }
 
-        if (isSelfSeed(block.getType())) {
+        BlockFace direction = RBUtils.getGrowthDirection(block.getType());
+        if (direction != BlockFace.SELF) {
             this.wasColumnLastTick.add(event.getBlock());
-            if (event.getBlock().getType() != event.getBlock().getRelative(RBUtils.getGrowthDirection(event.getBlock().getType()).getOppositeFace()).getType()) {
+            if (event.getBlock().getType() != event.getBlock().getRelative(direction.getOppositeFace()).getType()) {
                 // base blocks have normal drops
                 return;
             }

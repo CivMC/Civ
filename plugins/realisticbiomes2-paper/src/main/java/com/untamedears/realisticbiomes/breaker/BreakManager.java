@@ -41,6 +41,8 @@ public class BreakManager {
         Map.entry(Material.JUNGLE_LEAVES, Material.JUNGLE_SAPLING),
         Map.entry(Material.SWEET_BERRY_BUSH, Material.SWEET_BERRIES),
         Map.entry(Material.CACTUS, Material.CACTUS),
+        Map.entry(Material.WEEPING_VINES_PLANT, Material.WEEPING_VINES),
+        Map.entry(Material.TWISTING_VINES_PLANT, Material.TWISTING_VINES),
         Map.entry(Material.SUGAR_CANE, Material.SUGAR_CANE),
         Map.entry(Material.BAMBOO, Material.BAMBOO),
         Map.entry(Material.RED_MUSHROOM_BLOCK, Material.RED_MUSHROOM),
