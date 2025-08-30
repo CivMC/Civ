@@ -293,14 +293,14 @@ public class BastionBlockManager {
                 }
             }
             if (alliedBastions.isEmpty()) {
-                sb.append(ChatColor.RED).append(String.format("Enemy %s prevent you from building",
+                sb.append(ChatColor.RED).append(String.format("Foreign %s prevent you from building",
                     String.join(" ", enemyBastions.stream().map(BastionType::getName).collect(Collectors.toList()))));
             } else {
                 if (enemyBastions.isEmpty()) {
-                    sb.append(ChatColor.GREEN).append(String.format("Allied %s prevent others from building",
+                    sb.append(ChatColor.GREEN).append(String.format("Friendly %s prevent others from building",
                         String.join(" ", alliedBastions.stream().map(BastionType::getName).collect(Collectors.toList()))));
                 } else {
-                    sb.append(ChatColor.RED).append(String.format("Enemy %s prevent you from building and allied %s prevent others from building",
+                    sb.append(ChatColor.RED).append(String.format("Foreign %s prevent you from building and friendly %s prevent others from building",
                         String.join(" ", enemyBastions.stream().map(BastionType::getName).collect(Collectors.toList())),
                         String.join(" ", alliedBastions.stream().map(BastionType::getName).collect(Collectors.toList()))));
                 }
