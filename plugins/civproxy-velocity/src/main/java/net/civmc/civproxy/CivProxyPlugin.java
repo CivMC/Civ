@@ -12,22 +12,19 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
-import net.kyori.adventure.text.Component;
+import java.time.Instant;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.data.TemporaryNodeMergeStrategy;
-import net.luckperms.api.model.user.User;
 import net.luckperms.api.model.user.UserManager;
 import net.luckperms.api.node.types.PermissionNode;
 import org.slf4j.Logger;
 import us.ajg0702.queue.api.AjQueueAPI;
 import us.ajg0702.queue.api.QueueManager;
 import us.ajg0702.queue.api.players.AdaptedPlayer;
-import java.time.Instant;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "civproxy", name = "CivProxy", version = "1.0.0", authors = {"Okx"}, dependencies = {@Dependency(id = "ajqueue"), @Dependency(id = "luckperms")})
 public class CivProxyPlugin {
@@ -59,7 +56,7 @@ public class CivProxyPlugin {
             return;
         }
         String reason = event.getServerKickReason().map(s -> PlainTextComponentSerializer.plainText().serialize(s)).orElse("");
-        if (reason.toLowerCase().contains("ban")) {
+        if (reason.toLowerCase().contains("ban") || reason.toLowerCase().contains("multiaccounting")) {
             return;
         }
         event.setResult(KickedFromServerEvent.RedirectPlayer.create(server.getServer("pvp").get()));
