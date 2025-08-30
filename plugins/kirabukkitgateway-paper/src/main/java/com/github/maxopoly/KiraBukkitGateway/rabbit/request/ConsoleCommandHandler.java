@@ -35,7 +35,7 @@ public class ConsoleCommandHandler extends AbstractRequestHandler {
         }
         PseudoConsoleSender console = new PseudoConsoleSender(sender, Bukkit.getConsoleSender(), channelId);
         Bukkit.getScheduler().runTask(KiraBukkitGatewayPlugin.getInstance(), () -> {
-            Bukkit.getServer().dispatchCommand(console, command);
+            dispatchCommand(console, command);
             StringBuilder sb = new StringBuilder();
             for (String s : console.getRepliesAndFinish()) {
                 sb.append(KiraUtil.cleanUp(s));
