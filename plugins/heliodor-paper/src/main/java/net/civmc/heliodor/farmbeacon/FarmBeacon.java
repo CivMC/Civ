@@ -21,7 +21,7 @@ public interface FarmBeacon {
         ItemMeta meta = item.getItemMeta();
         meta.itemName(Component.text("Farm Beacon", NamedTextColor.LIGHT_PURPLE));
         meta.lore(List.of(Component.text("Allows crops to grow larger and more bountiful", NamedTextColor.WHITE),
-            Component.text("Increases soil fertility +5%", NamedTextColor.WHITE),
+            Component.text("Increases soil fertility +6%", NamedTextColor.WHITE),
             Component.text("within a 20 block radius.", NamedTextColor.WHITE),
             Component.text("Takes 6 days to become effective.", NamedTextColor.WHITE),
             Component.text("Requires a beacon base and sky exposure", NamedTextColor.WHITE)));
