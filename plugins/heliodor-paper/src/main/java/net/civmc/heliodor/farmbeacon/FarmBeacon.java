@@ -39,10 +39,8 @@ public interface FarmBeacon {
 
     static List<CraftingRecipe> getRecipes(Plugin plugin) {
         ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, "meteoric_farm_beacon"), FarmBeacon.createFarmBeacon())
-            .shape("ene", "xbx", "exe")
+            .shape("nnn", "nbn", "nnn")
             .setIngredient('n', Material.NETHERITE_INGOT)
-            .setIngredient('x', MeteoricIron.createIngot())
-            .setIngredient('e', Material.END_CRYSTAL)
             .setIngredient('b', Material.BEACON);
         recipe.setCategory(CraftingBookCategory.MISC);
         return List.of(recipe);
