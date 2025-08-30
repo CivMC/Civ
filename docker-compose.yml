@@ -36,6 +36,8 @@ services:
       CIV_HOSTNAME: 'main.localhost'
 
       CIV_FORWARDING_SECRET: '1234'
+
+      TZ: "UTC"
     ports:
       - "25565:25577"
     volumes:
@@ -92,6 +94,8 @@ services:
       JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       CIV_WATCHDOG_TIMEOUT_TIME: 6000
       CIV_FORWARDING_SECRET: '1234'
+
+      TZ: "UTC"
     ports:
       - "5005:5005"
     volumes:
@@ -202,6 +206,8 @@ services:
       JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006
       CIV_WATCHDOG_TIMEOUT_TIME: 6000
       CIV_FORWARDING_SECRET: '1234'
+
+      TZ: "UTC"
     ports:
       - "5006:5006"
     volumes:
