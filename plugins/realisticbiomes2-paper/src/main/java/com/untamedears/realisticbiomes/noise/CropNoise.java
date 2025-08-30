@@ -11,18 +11,25 @@ public class CropNoise {
     private final SimplexNoise humidityNoise;
     private final NoiseConfiguration humidityConfiguration;
     private final SimplexNoise fertilitySeed;
+    private final SimplexNoise fertilitySeed2;
 
     private final double yieldPowerFactor;
 
     private final double fertilityPower;
     private final double fertilityScale;
 
-    private CropNoise(NoiseConfiguration temperature, NoiseConfiguration humidity, long fertilitySeed, double yieldPowerFactor, double fertilityPower, double fertilityScale) {
+    private final double fertilityScale2;
+    private final double fertilityMul2;
+
+    private CropNoise(NoiseConfiguration temperature, NoiseConfiguration humidity, long fertilitySeed, long fertilitySeed2, double fertilityScale2, double fertilityMul2, double yieldPowerFactor, double fertilityPower, double fertilityScale) {
         this.temperatureNoise = new SimplexNoise(temperature.seed());
         this.temperatureConfiguration = temperature;
         this.humidityNoise = new SimplexNoise(humidity.seed());
         this.humidityConfiguration = humidity;
         this.fertilitySeed = new SimplexNoise(fertilitySeed);
+        this.fertilitySeed2 = new SimplexNoise(fertilitySeed2);
+        this.fertilityScale2 = fertilityScale2;
+        this.fertilityMul2 = fertilityMul2;
         this.yieldPowerFactor = yieldPowerFactor;
         this.fertilityPower = fertilityPower;
         this.fertilityScale = fertilityScale;
@@ -33,6 +40,9 @@ public class CropNoise {
             NoiseConfiguration.fromConfiguration(section.getConfigurationSection("temperature")),
             NoiseConfiguration.fromConfiguration(section.getConfigurationSection("humidity")),
             section.getLong("fertility_seed"),
+            section.getLong("fertility_seed2"),
+            section.getDouble("fertility2_scale"),
+            section.getDouble("fertility2_mul"),
             section.getDouble("yield_power_factor"),
             section.getDouble("fertility_power"),
             section.getDouble("fertility_scale")
@@ -40,7 +50,7 @@ public class CropNoise {
     }
 
     public double getFertility(int x, int z) {
-        return Math.pow((this.fertilitySeed.noise(x / fertilityScale, z / fertilityScale) + 1) / 2, this.fertilityPower);
+        return Math.pow((Math.max(this.fertilitySeed2.noise(x / fertilityScale2, z / fertilityScale2) * fertilityMul2, this.fertilitySeed.noise(x / fertilityScale, z / fertilityScale)) + 1) / 2, this.fertilityPower);
     }
 
     public double getHumidity(int x, int z) {
