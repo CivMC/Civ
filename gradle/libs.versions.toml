@@ -24,7 +24,6 @@ commons-math3 = { group = "org.apache.commons", name = "commons-math3", version 
 cron-utils = { group = "com.cronutils", name = "cron-utils", version = "9.2.1" }
 
 configurate-yaml = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
-configurate-kotlin = { group = "org.spongepowered", name = "configurate-extra-kotlin", version.ref = "configurate" }
 
 rabbitmq-client = { group = "com.rabbitmq", name = "amqp-client", version = "5.17.1" }
 
