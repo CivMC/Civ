@@ -6,7 +6,6 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
@@ -14,6 +13,7 @@ import com.untamedears.itemexchange.utility.ModifierHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bukkit.ChatColor;
@@ -23,8 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
-import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "LORE", order = 300)
@@ -64,7 +63,7 @@ public final class LoreModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@NotNull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NbtCompound nbt) {
         if (this.lore == null) {
             nbt.remove(LORE_KEY);
         } else {
@@ -73,15 +72,18 @@ public final class LoreModifier extends ModifierData {
     }
 
     @NotNull
-    public static LoreModifier fromNBT(@NotNull final NBTCompound nbt) {
+    public static LoreModifier fromNBT(@NotNull final NbtCompound nbt) {
         final var modifier = new LoreModifier();
-        modifier.setLore(MoreCollectionUtils.collect(ArrayList::new, nbt.getStringArray(LORE_KEY)));
+        modifier.setLore(switch (nbt.getStringArray(LORE_KEY, false)) {
+            case final String[] lines -> Arrays.asList(lines);
+            case null -> null;
+        });
         return modifier;
     }
 
     @Override
     public List<String> getDisplayInfo() {
-        return this.lore.stream()
+        return getLore().stream()
             .map(line -> "" + ChatColor.DARK_PURPLE + ChatColor.ITALIC + line)
             .collect(Collectors.toCollection(ArrayList::new));
     }
@@ -133,15 +135,13 @@ public final class LoreModifier extends ModifierData {
         return CollectionUtils.isNotEmpty(this.lore);
     }
 
-    public List<String> getLore() {
-        if (this.lore == null) {
-            return Lists.newArrayList();
-        }
-        return this.lore;
+    public @NotNull List<@NotNull String> getLore() {
+        return Objects.requireNonNullElseGet(this.lore, ArrayList::new);
     }
 
-    public void setLore(List<String> lore) {
+    public void setLore(
+        final List<@NotNull String> lore
+    ) {
         this.lore = lore;
     }
-
 }

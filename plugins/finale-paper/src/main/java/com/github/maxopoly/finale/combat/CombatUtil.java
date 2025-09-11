@@ -3,7 +3,6 @@ package com.github.maxopoly.finale.combat;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.combat.event.CritHitEvent;
 import com.github.maxopoly.finale.combat.knockback.KnockbackStrategy;
-import com.github.maxopoly.finale.misc.knockback.KnockbackConfig;
 
 import java.util.Iterator;
 import java.util.List;
@@ -18,10 +17,10 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,15 +28,12 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.boss.EnderDragonPart;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.bukkit.Tag;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftVector;
-import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityExhaustionEvent;
 import org.bukkit.event.player.PlayerVelocityEvent;
 import org.bukkit.util.Vector;
@@ -45,6 +41,7 @@ import org.bukkit.util.Vector;
 public class CombatUtil {
 
     public static org.bukkit.inventory.ItemStack DAMAGING_ITEM = null;
+    public static boolean DAMAGED = false;
 
     private static void sendSoundEffect(net.minecraft.world.entity.player.Player fromEntity, double x, double y, double z, SoundEvent soundEffect, SoundSource soundCategory, float volume, float pitch) {
         fromEntity.playSound(soundEffect, volume, pitch); // This will not send the effect to the entity himself
@@ -64,7 +61,7 @@ public class CombatUtil {
         if (victim.isAttackable() && !victim.skipAttackInteraction(attacker)) {
             float damage = (float) attacker.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
             DamageSource damagesource = attacker.damageSources().playerAttack(attacker);
-            float f1 = EnchantmentHelper.modifyDamage(attacker.serverLevel(), attacker.getWeaponItem(), victim, damagesource, damage) - damage;
+            float f1 = EnchantmentHelper.modifyDamage(attacker.level(), attacker.getWeaponItem(), victim, damagesource, damage) - damage;
 
             float f2;
             boolean shouldDamage = true;
@@ -73,14 +70,12 @@ public class CombatUtil {
                 shouldDamage = f2 > 0.9f;
                 damage *= 0.2F + f2 * f2 * 0.8F;
                 f1 *= f2;
-            } else if (victim instanceof LivingEntity living) {
-                shouldDamage = living.invulnerableTime <= living.invulnerableDuration / 2;
             }
-            Level world = attacker.level();
+            ServerLevel world = attacker.level();
             if (damage > 0.0F || f1 > 0.0F) {
                 boolean dealtExtraKnockback = false;
                 byte baseKnockbackLevel = 1;
-                float knockbackLevel = baseKnockbackLevel + EnchantmentHelper.modifyKnockback(attacker.serverLevel(), attacker.getWeaponItem(), victim, damagesource, (float) attacker.getAttributeValue(Attributes.ATTACK_KNOCKBACK));
+                float knockbackLevel = baseKnockbackLevel + EnchantmentHelper.modifyKnockback(attacker.level(), attacker.getWeaponItem(), victim, damagesource, (float) attacker.getAttributeValue(Attributes.ATTACK_KNOCKBACK));
 
                 if (sprintHandler.isSprinting(attacker) && shouldDamage) {
                     if (config.getCombatSounds().isKnockbackEnabled()) {
@@ -92,18 +87,19 @@ public class CombatUtil {
                     dealtExtraKnockback = true;
                 }
 
-                boolean shouldCrit = shouldDamage && attacker.fallDistance > 0.0F && !attacker.onGround() && !attacker.onClimbable() && !attacker.isInWater()
+                boolean shouldCrit = shouldDamage && attacker.fallDistance > 0 && attacker.fallDistance > (float) (attacker.yOld - attacker.getY()) && !attacker.onGround() && !attacker.onClimbable() && !attacker.isInWater()
                     && !attacker.hasEffect(MobEffects.BLINDNESS) && !attacker.isPassenger() && victim instanceof LivingEntity;
                 shouldCrit = shouldCrit && !sprintHandler.isSprinting(attacker);
                 if (shouldCrit) {
                     double critMultiplier = 1.5d;
                     if (victim.getBukkitEntity() instanceof org.bukkit.entity.LivingEntity) {
-                        CritHitEvent critHitEvent = new CritHitEvent(((Player) attacker.getBukkitEntity()), ((org.bukkit.entity.LivingEntity) victim.getBukkitEntity()), critMultiplier);
+                        CritHitEvent critHitEvent = new CritHitEvent(attacker.getBukkitEntity(), ((org.bukkit.entity.LivingEntity) victim.getBukkitEntity()), critMultiplier);
                         org.bukkit.Bukkit.getPluginManager().callEvent(critHitEvent);
 
                         critMultiplier = critHitEvent.getCritMultiplier();
                     }
 
+                    damagesource.critical();
                     damage *= critMultiplier;
                 }
                 damage += f1;
@@ -113,7 +109,7 @@ public class CombatUtil {
 
                 if (shouldDamage && !shouldCrit && !dealtExtraKnockback && attacker.onGround() && d0 < Mth.square(d1)) {
                     ItemStack itemstack = attacker.getItemInHand(InteractionHand.MAIN_HAND);
-                    if (itemstack.getItem() instanceof SwordItem) {
+                    if (Tag.ITEMS_SWORDS.isTagged(itemstack.asBukkitMirror().getType())) {
                         shouldSweep = true;
                     }
                 }
@@ -123,20 +119,20 @@ public class CombatUtil {
                 Vec3 victimMot = victim.getDeltaMovement();
                 if (shouldDamage) {
                     boolean damagedVictim;
+                    boolean wasInvulnerable = victim instanceof LivingEntity living && living.invulnerableTime > (float) living.invulnerableDuration / 2.0F && !damagesource.is(DamageTypeTags.BYPASSES_COOLDOWN);
                     try {
+                        DAMAGED = false;
                         DAMAGING_ITEM = attacker.getBukkitEntity().getInventory().getItemInMainHand();
                         damagedVictim = victim.hurtServer(victim.level().getMinecraftWorld(), damagesource, damage);
                     } finally {
                         DAMAGING_ITEM = null;
                     }
+                    boolean tookDamage = victim instanceof LivingEntity && DAMAGED;
                     if (damagedVictim) {
-                        if (knockbackLevel > 0 || dealtExtraKnockback) {
-                            if (victim instanceof LivingEntity) {
-                                KnockbackStrategy knockbackStrategy = config.getKnockbackStrategy();
-                                LivingEntity livingVictim = (LivingEntity) victim;
+                        if ((knockbackLevel > 1 || dealtExtraKnockback) && tookDamage) {
+                            KnockbackStrategy knockbackStrategy = config.getKnockbackStrategy();
 
-                                knockbackStrategy.handleKnockback(attacker, livingVictim, knockbackLevel);
-                            }
+                            knockbackStrategy.handleKnockback(attacker, victim, knockbackLevel);
                         }
 
                         //((CraftPlayer)attacker.getBukkitEntity()).sendMessage("motX: " + victim.motX + ", motY: " + victim.motY + ", motZ: " + victim.motZ + ", onGround: " + victim.onGround);
@@ -151,12 +147,12 @@ public class CombatUtil {
 
                                 if (entityliving != attacker && entityliving != victim && !attacker.skipAttackInteraction(entityliving) && (!(entityliving instanceof ArmorStand) || !((ArmorStand) entityliving).isMarker()) && attacker.distanceToSqr(entityliving) < 9.0D) {
                                     // CraftBukkit start - Only apply knockback if the damage hits
-                                    if (entityliving.hurtServer(entityliving.level().getMinecraftWorld(), world.damageSources().playerAttack(attacker).sweep(), f4)) {
+                                    if (entityliving.hurtServer(entityliving.level().getMinecraftWorld(), world.damageSources().playerAttack(attacker), f4)) {
                                         entityliving.knockback(0.4F, (double) Mth.sin(attacker.getBukkitYaw() * 0.017453292F), (double) (-Mth.cos(attacker.getBukkitYaw() * 0.017453292F)));
                                     }
                                     // CraftBukkit end
 
-                                    EnchantmentHelper.doPostAttackEffects(attacker.serverLevel(), victim, damagesource);
+                                    EnchantmentHelper.doPostAttackEffects(attacker.level(), victim, damagesource);
                                 }
                             }
 
@@ -186,7 +182,7 @@ public class CombatUtil {
                             // CraftBukkit end
                         }
 
-                        if (shouldCrit) {
+                        if (shouldCrit && !wasInvulnerable) {
                             if (config.getCombatSounds().isCritEnabled()) {
                                 sendSoundEffect(attacker, attacker.getX(), attacker.getY(), attacker.getZ(),
                                     SoundEvents.PLAYER_ATTACK_CRIT, attacker.getSoundSource(), 1.0F, 1.0F);
@@ -194,7 +190,7 @@ public class CombatUtil {
                             attacker.crit(victim);
                         }
 
-                        if (shouldCrit || shouldSweep) {
+                        if ((shouldCrit || shouldSweep) && !wasInvulnerable) {
                             if (shouldDamage && config.getCombatSounds().isStrongEnabled()) {
                                 attacker.level().playSound(attacker, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, attacker.getSoundSource(), 1.0F, 1.0F); // Paper - send while respecting visibility
                             } else if (config.getCombatSounds().isWeakEnabled()) {
@@ -221,7 +217,7 @@ public class CombatUtil {
                             doPostHurtEnemy = attacker.getWeaponItem().hurtEnemy(livingVictim, attacker);
                         }
 
-                        EnchantmentHelper.doPostAttackEffects(attacker.serverLevel(), victim, damagesource);
+                        EnchantmentHelper.doPostAttackEffects(attacker.level(), victim, damagesource);
 
                         if (!itemstack1.isEmpty() && object instanceof LivingEntity) {
                             if (doPostHurtEnemy) {
@@ -241,10 +237,10 @@ public class CombatUtil {
 
                             attacker.awardStat(Stats.DAMAGE_DEALT, Math.round(f5 * 10.0F));
 
-                            if (world instanceof ServerLevel && f5 > 2.0F) {
+                            if (f5 > 2.0F) {
                                 int k = (int) ((double) f5 * 0.5D);
 
-                                ((ServerLevel) world).sendParticles(ParticleTypes.DAMAGE_INDICATOR, victim.getX(),
+                                world.sendParticles(ParticleTypes.DAMAGE_INDICATOR, victim.getX(),
                                     victim.getY() + (double) (victim.getEyeHeight() * 0.5F), victim.getZ(), k, 0.1D, 0.0D, 0.1D,
                                     0.2D);
                             }

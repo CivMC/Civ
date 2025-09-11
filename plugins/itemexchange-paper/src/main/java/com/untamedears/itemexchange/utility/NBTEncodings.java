@@ -9,7 +9,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import vg.civcraft.mc.civmodcore.inventory.items.EnchantUtils;
-import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
 
@@ -25,8 +25,8 @@ public final class NBTEncodings {
     // Leveled Enchantments
     // ------------------------------------------------------------
 
-    public static NBTCompound encodeLeveledEnchants(Map<Enchantment, Integer> enchants) {
-        NBTCompound nbt = new NBTCompound();
+    public static NbtCompound encodeLeveledEnchants(Map<Enchantment, Integer> enchants) {
+        NbtCompound nbt = new NbtCompound();
         if (enchants == null) {
             return nbt;
         }
@@ -39,17 +39,17 @@ public final class NBTEncodings {
         return nbt;
     }
 
-    public static Map<Enchantment, Integer> decodeLeveledEnchants(NBTCompound nbt) {
+    public static Map<Enchantment, Integer> decodeLeveledEnchants(NbtCompound nbt) {
         Map<Enchantment, Integer> enchants = Maps.newHashMap();
         if (nbt == null) {
             return enchants;
         }
-        for (String slug : nbt.getKeys()) {
+        for (String slug : nbt.keys()) {
             Enchantment enchantment = EnchantUtils.getEnchantment(slug);
             if (enchantment == null) {
                 continue;
             }
-            enchants.put(enchantment, nbt.getInt(slug));
+            enchants.put(enchantment, nbt.getInt(slug, 0));
         }
         return enchants;
     }
@@ -58,20 +58,17 @@ public final class NBTEncodings {
     // Potion Data
     // ------------------------------------------------------------
 
-    public static NBTCompound encodePotionData(PotionType type) {
-        NBTCompound nbt = new NBTCompound();
-        if (type == null) {
-            return nbt;
-        }
-        nbt.setString(TYPE_KEY, type.name());
+    public static NbtCompound encodePotionData(PotionType type) {
+        NbtCompound nbt = new NbtCompound();
+        nbt.setEnum(TYPE_KEY, type);
         return nbt;
     }
 
-    public static PotionType decodePotionData(NBTCompound nbt) {
+    public static PotionType decodePotionData(NbtCompound nbt) {
         if (nbt == null) {
             return null;
         }
-        String type = nbt.getString(TYPE_KEY);
+        String type = nbt.getString(TYPE_KEY, null);
         if ("UNCRAFTABLE".equals(type)) {
             return null;
         }
@@ -82,8 +79,8 @@ public final class NBTEncodings {
     // Potion Effect
     // ------------------------------------------------------------
 
-    public static NBTCompound encodePotionEffect(PotionEffect effect) {
-        NBTCompound nbt = new NBTCompound();
+    public static NbtCompound encodePotionEffect(PotionEffect effect) {
+        NbtCompound nbt = new NbtCompound();
         if (effect == null) {
             return nbt;
         }
@@ -95,16 +92,16 @@ public final class NBTEncodings {
         return nbt;
     }
 
-    public static PotionEffect decodePotionEffect(NBTCompound nbt) {
+    public static PotionEffect decodePotionEffect(NbtCompound nbt) {
         if (nbt == null) {
             return null;
         }
         return new PotionEffect(
-            Objects.requireNonNull(Registry.POTION_EFFECT_TYPE.get(NamespacedKey.minecraft(nbt.getString(TYPE_KEY)))),
-            nbt.getInt(DURATION_KEY),
-            nbt.getInt(AMPLIFIER_KEY),
-            nbt.getBoolean(AMBIENT_KEY),
-            nbt.getBoolean(PARTICLES_KEY));
+            Objects.requireNonNull(Registry.POTION_EFFECT_TYPE.get(NamespacedKey.minecraft(nbt.getString(TYPE_KEY, null)))),
+            nbt.getInt(DURATION_KEY, null),
+            nbt.getInt(AMPLIFIER_KEY, null),
+            nbt.getBoolean(AMBIENT_KEY, null),
+            nbt.getBoolean(PARTICLES_KEY, null));
     }
 
 }

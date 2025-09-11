@@ -1,6 +1,8 @@
 package vg.civcraft.mc.civmodcore.world.locations.chunkmeta;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -52,14 +54,20 @@ public class ChunkCoord extends XZWCoord {
 
     void addChunkMeta(ChunkMeta<?> chunkMeta) {
         chunkMeta.setWorld(this.world);
-        chunkMetas.put(chunkMeta.getPluginID(), chunkMeta);
+        synchronized (chunkMetas) {
+            chunkMetas.put(chunkMeta.getPluginID(), chunkMeta);
+        }
     }
 
     /**
      * Writes all data held by this instance to the database
      */
     void fullyPersist() {
-        for (ChunkMeta<?> chunkMeta : chunkMetas.values()) {
+        List<ChunkMeta<?>> values;
+        synchronized (chunkMetas) {
+            values = new ArrayList<>(chunkMetas.values());
+        }
+        for (ChunkMeta<?> chunkMeta : values) {
             persistChunkMeta(chunkMeta);
         }
     }
@@ -70,7 +78,10 @@ public class ChunkCoord extends XZWCoord {
      * @param id Internal id of the plugin to save data for
      */
     void persistPlugin(short id) {
-        ChunkMeta<?> chunkMeta = chunkMetas.get(id);
+        ChunkMeta<?> chunkMeta;
+        synchronized (chunkMetas) {
+            chunkMeta = chunkMetas.get(id);
+        }
         if (chunkMeta != null) {
             persistChunkMeta(chunkMeta);
         }
@@ -99,11 +110,13 @@ public class ChunkCoord extends XZWCoord {
      * Forget all data which is not supposed to be held in memory permanently
      */
     void deleteNonPersistentData() {
-        Iterator<Entry<Short, ChunkMeta<?>>> iter = chunkMetas.entrySet().iterator();
-        while (iter.hasNext()) {
-            ChunkMeta<?> meta = iter.next().getValue();
-            if (!meta.loadAlways()) {
-                iter.remove();
+        synchronized (chunkMetas) {
+            Iterator<Entry<Short, ChunkMeta<?>>> iter = chunkMetas.entrySet().iterator();
+            while (iter.hasNext()) {
+                ChunkMeta<?> meta = iter.next().getValue();
+                if (!meta.loadAlways()) {
+                    iter.remove();
+                }
             }
         }
     }
@@ -143,13 +156,17 @@ public class ChunkCoord extends XZWCoord {
         if (!alwaysLoaded)
             loadAll(LoadStatisticManager.MainThreadIndex);
 
-        return chunkMetas.get(pluginID);
+        synchronized (chunkMetas) {
+            return chunkMetas.get(pluginID);
+        }
     }
 
     boolean hasPermanentlyLoadedData() {
-        for (ChunkMeta<?> meta : chunkMetas.values()) {
-            if (meta.loadAlways()) {
-                return true;
+        synchronized (chunkMetas) {
+            for (ChunkMeta<?> meta : chunkMetas.values()) {
+                if (meta.loadAlways()) {
+                    return true;
+                }
             }
         }
         return false;
@@ -213,11 +230,13 @@ public class ChunkCoord extends XZWCoord {
         boolean hasBeenLoadedBefore = this.lastLoadedTime != INVALID_TIME;
         this.lastLoadedTime = System.currentTimeMillis();
         if (hasBeenLoadedBefore) {
-            for (ChunkMeta<?> meta : chunkMetas.values()) {
-                try {
-                    meta.handleChunkCacheReuse();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+            synchronized (chunkMetas) {
+                for (ChunkMeta<?> meta : chunkMetas.values()) {
+                    try {
+                        meta.handleChunkCacheReuse();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         }
@@ -237,11 +256,13 @@ public class ChunkCoord extends XZWCoord {
      */
     void minecraftChunkUnloaded() {
         this.lastUnloadedTime = System.currentTimeMillis();
-        for (ChunkMeta<?> meta : chunkMetas.values()) {
-            try {
-                meta.handleChunkUnload();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+        synchronized (chunkMetas) {
+            for (ChunkMeta<?> meta : chunkMetas.values()) {
+                try {
+                    meta.handleChunkUnload();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         }
     }

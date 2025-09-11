@@ -61,7 +61,7 @@ public class SnitchLogGUI {
                 .color(NamedTextColor.RED)
                 .content("This snitch can not create logs")
                 .build());
-            return MoreCollectionUtils.lazyList(Collections.singletonList(() -> new DecorationStack(item)));
+            return MoreCollectionUtils.asLazyList(Collections.singletonList(() -> new DecorationStack(item)));
         }
         final var actions = this.logAppender.getFullLogs();
         if (actions.isEmpty()) {
@@ -71,13 +71,13 @@ public class SnitchLogGUI {
                 .color(NamedTextColor.RED)
                 .content("This snitch has no logs currently")
                 .build());
-            return MoreCollectionUtils.lazyList(Collections.singletonList(() -> new DecorationStack(item)));
+            return MoreCollectionUtils.asLazyList(Collections.singletonList(() -> new DecorationStack(item)));
         }
         final var buttons = new ArrayList<Supplier<IClickable>>(actions.size());
         for (final LoggableAction action : actions) {
             buttons.add(action::getGUIRepresentation);
         }
-        return MoreCollectionUtils.lazyList(buttons);
+        return MoreCollectionUtils.asLazyList(buttons);
     }
 
     private IClickable INTERNAL_constructClearClick() {

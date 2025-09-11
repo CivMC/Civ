@@ -18,5 +18,5 @@ dependencies {
     compileOnly(project(":plugins:banstick-paper"))
     compileOnly(project(":plugins:randomspawn-paper"))
 
-    compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.2.7.jar"))
+    compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.4.10.jar"))
 }

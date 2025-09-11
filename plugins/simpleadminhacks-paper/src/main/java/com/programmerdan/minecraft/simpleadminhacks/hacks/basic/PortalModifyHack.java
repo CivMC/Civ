@@ -90,6 +90,21 @@ public class PortalModifyHack extends BasicHack {
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void on(PlayerTeleportEvent event) {
+        if (event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
+            return;
+        }
+
+        if (event.getTo().getWorld().getEnvironment() != World.Environment.NETHER) {
+            return;
+        }
+
+        if (event.getTo().getY() >= 128) {
+            event.setCancelled(true);
+        }
+    }
+
     @EventHandler
     public void onTick(ServerTickEndEvent event) {
         for (Map.Entry<Player, Location> entry : teleports.entrySet()) {

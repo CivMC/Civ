@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
  *     <li>See also:</li>
  *     <li>{@link MoreTags MoreTags}</li>
  *     <li>{@link SpawnEggUtils SpawnEggUtils}</li>
- *     <li>{@link TreeTypeUtils TreeTypeUtils}</li>
  * </ul>
  */
 public final class MaterialUtils {

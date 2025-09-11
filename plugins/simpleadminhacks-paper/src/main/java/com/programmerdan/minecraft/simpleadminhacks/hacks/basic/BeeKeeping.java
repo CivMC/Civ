@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.animal.Bee;
 import net.minecraft.world.level.block.entity.BeehiveBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.apache.commons.collections4.IterableUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -38,7 +39,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.utilities.MoreCollectionUtils;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -113,7 +113,7 @@ public final class BeeKeeping extends BasicHack {
             // Reset the above values
             bee.setLastHurtByMob(lastDamageCause);
             bee.setPersistentAngerTarget(angerTarget);
-            bee.setTarget(goalTarget, EntityTargetEvent.TargetReason.FORGOT_TARGET, false); // Params: target, cause, emit event
+            bee.setTarget(goalTarget, EntityTargetEvent.TargetReason.FORGOT_TARGET); // Params: target, cause, emit event
             bee.setRemainingPersistentAngerTime(angerLevel);
         });
     }
@@ -150,7 +150,7 @@ public final class BeeKeeping extends BasicHack {
             return;
         }
         final List<BeeData> bees = getBeesFromHive(beehive);
-        final int numberOfUnnamed = MoreCollectionUtils.numberOfMatches(bees, BeeData::isNameless);
+        final int numberOfUnnamed = (int) IterableUtils.countMatches(bees, BeeData::isNameless);
         bees.removeIf(BeeData::isNameless);
         // Start building response
         final var response = Component.text().color(NamedTextColor.GOLD);
@@ -196,7 +196,7 @@ public final class BeeKeeping extends BasicHack {
     }
 
     private static List<BeeData> getBeesFromHive(@NotNull final BeehiveBlockEntity hive) {
-        List<BeehiveBlockEntity.Occupant> bees = hive.components().get(DataComponents.BEES);
+        List<BeehiveBlockEntity.Occupant> bees = hive.components().get(DataComponents.BEES).bees();
 
 		return bees == null ? null : bees.stream().map(bee -> bee.entityData().copyTag()).map(BeeData::new).collect(Collectors.toCollection(ArrayList::new));
 	}
@@ -207,7 +207,7 @@ public final class BeeKeeping extends BasicHack {
 
         public BeeData(@NotNull final CompoundTag nbt) {
             // Parse name
-            final String rawName = nbt.getString(BEE_NAME_KEY);
+            final String rawName = nbt.getString(BEE_NAME_KEY).get();
             if (Strings.isNullOrEmpty(rawName)) {
                 this.name = null;
             } else {

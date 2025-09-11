@@ -2,6 +2,7 @@ package com.github.civcraft.donum.commands.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
@@ -16,6 +17,7 @@ public class Deliver extends BaseCommand {
     @CommandAlias("deliver")
     @Description("Opens an inventory to which you can add items to forward them to the players delivery inventory")
     @Syntax("<player>")
+    @CommandCompletion("@players")
     @CommandPermission("donum.op")
     public void execute(Player player, String targetPlayer) {
         //TODO make namelayer soft dependency

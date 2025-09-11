@@ -66,7 +66,7 @@ public class VeinBreakListener implements Listener {
         this.minedBlocksCache.computeIfAbsent(chunkPos, k -> new ArrayList<>()).add(block.getLocation());
 
         for (Vein vein : veins) {
-            float probability = this.dao.getVeinOreProbability(vein, 100);
+            float probability = this.dao.getVeinOreProbability(vein, 120);
             if (probability == 0) {
                 continue;
             }

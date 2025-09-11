@@ -23,7 +23,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.collections4.ComparatorUtils;
-import org.apache.commons.collections4.list.LazyList;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -45,7 +44,7 @@ public class CmdShowAllPearls extends PearlCommand {
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
     private static final Map<UUID, Long> COOLDOWNS = new HashMap<>();
-    private static final long COOLDOWN = 10_000; // 10 seconds
+    private static final long COOLDOWN = 2_000;
     private static final Set<UUID> TOGGLES = new HashSet<>();
 
     public CmdShowAllPearls(final ExilePearlApi pearlApi) {
@@ -207,7 +206,7 @@ public class CmdShowAllPearls extends PearlCommand {
             contentSuppliers.add(() -> new DecorationStack(item));
         }
 
-        LazyList<IClickable> lazyContents = MoreCollectionUtils.lazyList(contentSuppliers);
+        List<IClickable> lazyContents = MoreCollectionUtils.asLazyList(contentSuppliers);
         final var pageView = new MultiPageView(sender, lazyContents, "All Pearls", true);
 
         pageView.setMenuSlot(constructBannedPearlsToggleClick(bannedPearlToggle), 4);

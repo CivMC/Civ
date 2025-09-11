@@ -43,7 +43,7 @@ final class CoreLoreGenerator implements LoreProvider {
         Preconditions.checkNotNull(config, "config");
 
         this.config = config;
-        this.dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        this.dateFormat = new SimpleDateFormat("dd MMM yyyy");
         this.exilePearlid = exilePearLid;
     }
 
@@ -212,7 +212,7 @@ final class CoreLoreGenerator implements LoreProvider {
      * @return true if it's valid
      */
     private List<String> getValidLore(ItemStack is, ItemMeta im) {
-        if (!(is.getType().equals(Material.PLAYER_HEAD) || is.getType().equals(Material.ENDER_PEARL))) {
+        if (!(is.getType().equals(Material.ENDER_PEARL))) {
             return null;
         }
 

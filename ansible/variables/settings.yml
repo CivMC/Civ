@@ -9,11 +9,17 @@ settings:
       enabled: true
       whitelist: false
       pvp_whitelist: false
+      gamma_whitelist: false
       pvp_hostname: 'pvp.civmc.net'
       hostname: 'play.civmc.net'
+      gamma_hostname: 'mini.civmc.net'
       resources: &default_minecraft_resources
-        memory: 40G
-        pvp_memory: 10G
+        memory: 39G
+        memory_limit: 48G
+        pvp_memory: 9G
+        pvp_memory_limit: 12G
+        gamma_memory: 23G
+        gamma_memory_limit: 26G
     # Optional Stacks
     auth:
       enabled: false
@@ -35,12 +41,18 @@ settings:
       <<: *default_minecraft
       whitelist: true
       pvp_whitelist: true
+      gamma_whitelist: true
+      gamma_hostname: 'mini-test.civmc.net'
       pvp_hostname: 'pvp-test.civmc.net'
       hostname: 'test.civmc.net'
       resources:
         <<: *default_minecraft_resources
-        memory: 6G
-        pvp_memory: 7G
+        memory: 4G
+        memory_limit: 6G
+        pvp_memory: 3G
+        pvp_memory_limit: 5G
+        gamma_memory: 4G
+        gamma_memory_limit: 6G
     auth:
       enabled: true # TODO: MOVE
     maven:
