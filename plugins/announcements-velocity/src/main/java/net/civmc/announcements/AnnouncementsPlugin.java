@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -39,10 +40,11 @@ public class AnnouncementsPlugin {
     private final Logger logger;
     private final Path dataDirectory;
 
-    private final Map<Cron, Component> scheduledAnnouncements = new ConcurrentHashMap<>();
+    private record Announcement(Component message, Boolean showTitle) {}
+
+    private final Map<Cron, Announcement> scheduledAnnouncements = new ConcurrentHashMap<>();
     private final Map<Cron, ZonedDateTime> lastExecutionTimes = new ConcurrentHashMap<>();
     private @Nullable CommentedConfigurationNode config;
-
 
     @Inject
     public AnnouncementsPlugin(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
@@ -77,7 +79,8 @@ public class AnnouncementsPlugin {
             Cron cron = cronParser.parse(Objects.requireNonNull(announcement.node("cron").getString()));
             // convert message to Component
             Component formatedMsg = minimessageSerializer.deserialize(Objects.requireNonNull(announcement.node("message").getString()));
-            scheduledAnnouncements.put(cron, formatedMsg);
+            Boolean showTitle = announcement.node("showTitle").getBoolean();
+            scheduledAnnouncements.put(cron, new Announcement(formatedMsg, showTitle));
         }
     }
 
@@ -95,8 +98,18 @@ public class AnnouncementsPlugin {
                 // Check if we should execute, and if con already executed at that time
                 if (executionTime.isMatch(now) && !lastExecution.equals(lastExecutionTimes.get(cron))) {
                     // Execute and update the last execution time
-                    server.sendMessage(scheduledAnnouncements.get(cron));
+                    var announcement = scheduledAnnouncements.get(cron);
+                    server.sendMessage(announcement.message);
                     lastExecutionTimes.put(cron, lastExecution);
+                    if (announcement.showTitle) {
+                        // send title to all players
+                        var title = Title.title(announcement.message, Component.empty());
+                        server.getAllPlayers().parallelStream().forEach(player ->
+                            player.showTitle(title)
+                        );
+                    }
+
+                    logger.info("Announcement sent: {}", announcement.message);
                 }
             });
         }

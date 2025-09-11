@@ -1,11 +1,15 @@
 
-# messages must be in json format
-# https://minecraft.tools/en/json_text.php
-# or minimessage if selected
+# messages must be in minimessage format
+# https://webui.advntr.dev/
 scheduledAnnouncements:
+  - cron: "0 1 * * *"
+    message: "<gold>Restart in 1 hour</gold>"
   - cron: "45 1 * * *"
     message: "<gold>Restart in 15 minutes</gold>"
+    showTitle: false
   - cron: "55 1 * * *"
     message: "<gold>Restart in 5 minutes</gold>"
+    showTitle: true
   - cron: "59 1 * * *"
     message: "<gold>Restart in 1 minute</gold>"
+    showTitle: true
