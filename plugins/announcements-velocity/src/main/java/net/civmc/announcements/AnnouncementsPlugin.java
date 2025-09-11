@@ -15,24 +15,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
-import org.yaml.snakeyaml.LoaderOptions;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 @Plugin(id = "civannouncements", name = "Civ Announcements", version = "1.0.0",
     url = "https://civmc.net", description = "Sends various announcements", authors = {"Huskydog9988"})
 public class AnnouncementsPlugin {
 
-    private final CronParser parser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+    private final CronParser cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
 
     private final ProxyServer server;
     private final Logger logger;
@@ -40,7 +41,7 @@ public class AnnouncementsPlugin {
 
     private final Map<Cron, Component> scheduledAnnouncements = new ConcurrentHashMap<>();
     private final Map<Cron, ZonedDateTime> lastExecutionTimes = new ConcurrentHashMap<>();
-    private AnnouncementsConfig config;
+    private @Nullable CommentedConfigurationNode config;
 
 
     @Inject
@@ -48,15 +49,20 @@ public class AnnouncementsPlugin {
         this.server = server;
         this.logger = logger;
         this.dataDirectory = dataDirectory;
+    }
 
+    @Subscribe
+    public void onProxyInitialization(ProxyInitializeEvent event) {
         logger.info("Initializing Announcements plugin");
 
         loadConfig();
         scheduleTasks();
+
+        // task to check if a scheduled announcement should be sent
+        server.getScheduler().buildTask(this, this::sendScheduledMessages).repeat(5, TimeUnit.SECONDS).schedule();
     }
 
     private void scheduleTasks() {
-        var jsonSerializer = JSONComponentSerializer.json();
         var minimessageSerializer = MiniMessage.miniMessage();
 
         // ensure config exists
@@ -65,27 +71,14 @@ public class AnnouncementsPlugin {
             return;
         }
 
-        for (AnnouncementsConfig.ScheduledAnnouncement item : config.getScheduledAnnouncements()) {
-            Cron cron = parser.parse(item.getCron());
-            // convert json message to Component
-            Component formatedMsg;
-
-            if (item.isMinimessage()) {
-                formatedMsg = minimessageSerializer.deserialize(item.getMessage());
-            } else {
-                // message is in json format
-                formatedMsg = jsonSerializer.deserialize(item.getMessage());
-            }
-
+        // read scheduled announcements from config
+        List<? extends ConfigurationNode> announcements = config.node("scheduledAnnouncements").childrenList();
+        for (ConfigurationNode announcement : announcements) {
+            Cron cron = cronParser.parse(Objects.requireNonNull(announcement.node("cron").getString()));
+            // convert message to Component
+            Component formatedMsg = minimessageSerializer.deserialize(Objects.requireNonNull(announcement.node("message").getString()));
             scheduledAnnouncements.put(cron, formatedMsg);
         }
-    }
-
-    @Subscribe
-    public void onProxyInitialization(ProxyInitializeEvent event) {
-
-        // task to check if a scheduled announcement should be sent
-        server.getScheduler().buildTask(this, this::sendScheduledMessages).repeat(5, TimeUnit.SECONDS).schedule();
     }
 
     /**
@@ -114,6 +107,7 @@ public class AnnouncementsPlugin {
      */
     private void loadConfig() {
         try {
+            // ensure data directory exists
             if (!Files.exists(dataDirectory)) {
                 Files.createDirectories(dataDirectory);
             }
@@ -122,6 +116,7 @@ public class AnnouncementsPlugin {
             return;
         }
 
+        // create config file if it doesn't exist
         Path configFile = dataDirectory.resolve("config.yml");
         if (!Files.exists(configFile)) {
             try (InputStream in = getClass().getResourceAsStream("/config.yml")) {
@@ -137,12 +132,12 @@ public class AnnouncementsPlugin {
             }
         }
 
-        try (InputStream in = Files.newInputStream(configFile)) {
-            // register config class with snakeyaml so it knows how to populate the config
-            Yaml yaml = new Yaml(new Constructor(AnnouncementsConfig.class, new LoaderOptions()));
-            config = yaml.load(in);
+        YamlConfigurationLoader loader = YamlConfigurationLoader.builder().path(configFile).build();
+        try {
+            config = loader.load();
         } catch (IOException e) {
             logger.error("Could not read config file: {}", configFile, e);
+            throw new RuntimeException("Could not load configuration file: " + configFile, e);
         }
     }
 }

@@ -4,9 +4,8 @@
 # or minimessage if selected
 scheduledAnnouncements:
   - cron: "45 1 * * *"
-    message: "{\"text\":\"Restart in 15 minutes\",\"color\":\"gold\"}"
+    message: "<gold>Restart in 15 minutes</gold>"
   - cron: "55 1 * * *"
-    message: "{\"text\":\"Restart in 5 minutes\",\"color\":\"gold\"}"
+    message: "<gold>Restart in 5 minutes</gold>"
   - cron: "59 1 * * *"
-    message: "<rainbow>Restart</rainbow> in 1 minute"
-    minimessage: true
+    message: "<gold>Restart in 1 minute</gold>"

@@ -1,5 +1,5 @@
 plugins {
-    id("com.github.johnrengelman.shadow")
+    alias(libs.plugins.shadow)
 }
 
 version = "1.0.0"
@@ -9,5 +9,5 @@ dependencies {
     annotationProcessor(libs.velocity.api)
 
     implementation(libs.cron.utils)
-    implementation(libs.snakeyaml)
+    implementation(libs.configurate.yaml)
 }
