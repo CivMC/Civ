@@ -136,7 +136,6 @@ public class AnnouncementsPlugin {
         try {
             config = loader.load();
         } catch (IOException e) {
-            logger.error("Could not read config file: {}", configFile, e);
             throw new RuntimeException("Could not load configuration file: " + configFile, e);
         }
     }
