@@ -1,9 +1,5 @@
 plugins {
-    id("io.papermc.paperweight.userdev")
-}
-
-repositories {
-    maven("https://repo.dmulloy2.net/repository/public")
+    alias(libs.plugins.paper.userdev)
 }
 
 version = "2.1.0"
