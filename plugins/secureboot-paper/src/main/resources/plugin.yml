@@ -1,6 +1,7 @@
 name: "SecureBoot"
-version: "${version}"
+version: "1.0.0"
 main: "net.civmc.secureboot.paper.SecureBootPlugin"
 author: "Huskydog9988"
 description: "A plugin that ensures registered plugins are enabled correctly"
 api-version: "1.21.3"
+load: "STARTUP"
