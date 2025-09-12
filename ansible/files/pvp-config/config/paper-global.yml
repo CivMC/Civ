@@ -13,6 +13,21 @@
 # Website: https://papermc.io/
 
 _version: 29
+anticheat:
+  obfuscation:
+    items:
+      all-models:
+        also-obfuscate: []
+        dont-obfuscate:
+          - minecraft:lodestone_tracker
+        sanitize-count: true
+      enable-item-obfuscation: true
+      model-overrides:
+        minecraft:elytra:
+          also-obfuscate: []
+          dont-obfuscate:
+            - minecraft:damage
+          sanitize-count: true
 block-updates:
   disable-chorus-plant-updates: false
   disable-mushroom-block-updates: false

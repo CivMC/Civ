@@ -17,6 +17,9 @@ export default defineConfig({
     title: "CivMC",
     description: DESCRIPTION,
 
+    // don't force ".html" in URLs, works with github pages
+    cleanUrls: true,
+
     sitemap: {
         hostname: SITE_URL,
         lastmodDateOnly: false,
@@ -107,6 +110,7 @@ export default defineConfig({
             provider: "local",
         },
 
+        externalLinkIcon: true,
         // enables showing the last time the page was updated
         lastUpdated: {},
 
@@ -116,8 +120,8 @@ export default defineConfig({
 
         nav: [
             { text: "Home", link: "/" },
-            { text: "Wiki", link: "/wiki/" },
-            { text: "Developer Docs", link: "/dev/" },
+            { text: "Wiki", link: "/wiki/", activeMatch: "/wiki/" },
+            { text: "Developer Docs", link: "/dev/", activeMatch: "/dev/" },
         ],
 
         sidebar: {
@@ -125,11 +129,15 @@ export default defineConfig({
                 {
                     text: "Wiki",
                     items: [
+                        { text: "Server Overview", link: "/wiki/index" },
                         {
                             text: "New Player Guide",
                             link: "/wiki/new-player-guide",
                         },
-                        { text: "Server Overview", link: "/wiki/index" },
+                        {
+                            text: "CivMini",
+                            link: "/wiki/CivMini",
+                        },
                         { text: "Change Log", link: "/wiki/changelog" },
                         {
                             text: "Plugins",
@@ -203,7 +211,7 @@ export default defineConfig({
                                 {
                                     text: "Fun",
                                     link: "wiki/plugins/fun/index",
-                                    collapsed: true,
+                                    collapsed: false,
                                     items: [
                                         {
                                             text: "Item Exchange",
@@ -236,6 +244,10 @@ export default defineConfig({
                                         {
                                             text: "Arthropod Egg",
                                             link: "wiki/plugins/fun/arthropodegg",
+                                        },
+                                        {
+                                            text: "Simple Voice Chat",
+                                            link: "wiki/plugins/fun/simplevoicechat",
                                         },
                                     ],
                                 },

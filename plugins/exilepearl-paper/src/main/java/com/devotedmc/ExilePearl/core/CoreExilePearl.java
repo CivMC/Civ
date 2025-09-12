@@ -9,8 +9,6 @@ import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.holder.*;
 import com.devotedmc.ExilePearl.storage.PearlUpdateStorage;
 import com.google.common.base.Preconditions;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -254,13 +252,13 @@ final class CoreExilePearl implements ExilePearl {
     	if (health < 0) {
 			health = 0;
     	}
-    	
+
     	if (health > pearlApi.getPearlConfig().getPearlHealthMaxValue()) {
     		health = pearlApi.getPearlConfig().getPearlHealthMaxValue();
     	}
-    	
+
     	this.health = health;
-    	
+
 		if(storageEnabled) {
 			storage.updatePearlHealth(this);
 		}
@@ -458,14 +456,7 @@ final class CoreExilePearl implements ExilePearl {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 31) // two randomly chosen prime numbers
-            .append(playerId)
-            .append(killedBy)
-            .append(getLocation())
-            .append(health)
-            .append(pearledOn)
-            .append(freedOffline)
-            .toHashCode();
+        return Objects.hash(playerId, killedBy, getLocation(), health, pearlApi, freedOffline);
     }
 
     @Override
@@ -479,14 +470,7 @@ final class CoreExilePearl implements ExilePearl {
 
         CoreExilePearl other = (CoreExilePearl) o;
 
-        return new EqualsBuilder()
-            .append(playerId, other.playerId)
-            .append(killedBy, other.killedBy)
-            .append(getLocation(), other.getLocation())
-            .append(health, other.health)
-            .append(pearledOn, other.pearledOn)
-            .append(freedOffline, other.freedOffline)
-            .isEquals();
+        return Objects.equals(playerId, other.playerId) && Objects.equals(killedBy, other.killedBy) && Objects.equals(getLocation(), other.getLastOnline()) && Objects.equals(health, other.health) && Objects.equals(pearledOn, other.pearledOn) && Objects.equals(freedOffline, other.freedOffline);
     }
 
 

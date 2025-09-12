@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.nbt.CompoundTag;
 import vg.civcraft.mc.civduties.CivDuties;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
+import vg.civcraft.mc.civmodcore.nbt.NbtUtils;
 
 public class DatabaseManager {
 
@@ -38,7 +38,7 @@ public class DatabaseManager {
              PreparedStatement addPlayerData = conn.prepareStatement(
                  "insert into DutiesPlayerData(uuid, entity, serverName, tierName) values(?,?,?,?);")) {
             addPlayerData.setString(1, uuid.toString());
-            addPlayerData.setBytes(2, NBTSerialization.toBytes(compound));
+            addPlayerData.setBytes(2, NbtUtils.toBytes(compound));
             addPlayerData.setString(3, serverName);
             addPlayerData.setString(4, tierName);
             addPlayerData.execute();
@@ -57,7 +57,7 @@ public class DatabaseManager {
             getPlayerData.setString(1, uuid.toString());
             try (ResultSet rs = getPlayerData.executeQuery()) {
                 if (rs.next()) {
-                    CompoundTag compound = NBTSerialization.fromBytes(rs.getBytes("entity"));
+                    CompoundTag compound = NbtUtils.fromBytes(rs.getBytes("entity"));
                     String server = rs.getString("serverName");
                     String tierName = rs.getString("tierName");
                     PlayerData data = new PlayerData(compound, server, tierName);

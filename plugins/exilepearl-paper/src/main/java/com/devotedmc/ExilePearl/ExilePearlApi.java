@@ -128,13 +128,6 @@ public interface ExilePearlApi extends Plugin, PearlAccess, PearlLogger, PlayerP
     boolean isBanStickEnabled();
 
     /**
-     * Gets whether RandomSpawn hooks are enabled
-     *
-     * @return True if it is enabled
-     */
-    boolean isRandomSpawnEnabled();
-
-    /**
      * Gets whether CombatTag hooks are enabled
      *
      * @return True if it is enabled

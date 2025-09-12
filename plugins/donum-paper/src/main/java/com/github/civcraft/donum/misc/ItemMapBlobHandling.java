@@ -34,11 +34,9 @@ public class ItemMapBlobHandling {
     public static byte[] turnItemMapIntoBlob(ItemMap im) {
         YamlConfiguration yaml = new YamlConfiguration();
         int count = 0;
-        for (Entry<ItemStack, Integer> entry : im.getAllItems().entrySet()) {
-            ItemStack is = entry.getKey().clone();
-            is.setAmount(entry.getValue());
+        for (ItemStack is : im.getItemStackRepresentation()) {
             //yaml doesnt allow int as keys, so we have to add a string
-            yaml.set("bla" + String.valueOf(count), is);
+            yaml.set("bla" + count, is);
             count++;
         }
         return compress(yaml.saveToString());

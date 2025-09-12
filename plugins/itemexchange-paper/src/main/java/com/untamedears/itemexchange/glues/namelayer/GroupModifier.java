@@ -17,7 +17,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
 
@@ -55,15 +55,15 @@ public final class GroupModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(final @NotNull NBTCompound nbt) {
+    public void toNBT(final @NotNull NbtCompound nbt) {
         nbt.setInt(ID_KEY, getGroupId());
         nbt.setString(NAME_KEY, getGroupName());
     }
 
-    public static @NotNull GroupModifier fromNBT(final @NotNull NBTCompound nbt) {
+    public static @NotNull GroupModifier fromNBT(final @NotNull NbtCompound nbt) {
         final var modifier = new GroupModifier();
-        modifier.setGroupId(nbt.getInt(ID_KEY));
-        modifier.setGroupName(nbt.getString(NAME_KEY));
+        modifier.setGroupId(nbt.getInt(ID_KEY, 0));
+        modifier.setGroupName(nbt.getString(NAME_KEY, null));
         return modifier;
     }
 

@@ -1,13 +1,6 @@
 package net.civmc.kitpvp.arena;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
-import com.infernalsuite.aswm.api.AdvancedSlimePaperAPI;
-import com.infernalsuite.aswm.api.exceptions.CorruptedWorldException;
-import com.infernalsuite.aswm.api.exceptions.NewerFormatException;
-import com.infernalsuite.aswm.api.exceptions.UnknownWorldException;
-import com.infernalsuite.aswm.api.world.SlimeWorld;
-import com.infernalsuite.aswm.api.world.properties.SlimeProperties;
-import com.infernalsuite.aswm.api.world.properties.SlimePropertyMap;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -15,6 +8,13 @@ import java.util.List;
 import java.util.SequencedMap;
 import java.util.UUID;
 import java.util.logging.Level;
+import com.infernalsuite.asp.api.AdvancedSlimePaperAPI;
+import com.infernalsuite.asp.api.exceptions.CorruptedWorldException;
+import com.infernalsuite.asp.api.exceptions.NewerFormatException;
+import com.infernalsuite.asp.api.exceptions.UnknownWorldException;
+import com.infernalsuite.asp.api.world.SlimeWorld;
+import com.infernalsuite.asp.api.world.properties.SlimeProperties;
+import com.infernalsuite.asp.api.world.properties.SlimePropertyMap;
 import net.civmc.kitpvp.arena.data.Arena;
 import net.civmc.kitpvp.spawn.SpawnProvider;
 import net.kyori.adventure.text.Component;
@@ -134,6 +134,8 @@ public class ArenaManager {
             world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
             world.setGameRule(GameRule.DO_VINES_SPREAD, false);
             world.setGameRule(GameRule.KEEP_INVENTORY, false);
+            world.setGameRule(GameRule.LOCATOR_BAR, false);
+            world.setGameRule(GameRule.DO_INSOMNIA, false);
             world.setFullTime(6000);
 
             arenas.put(player.getUniqueId(), new LoadedArena(player.getPlayerProfile(), arena, isPublic ? null : new ArrayList<>()));

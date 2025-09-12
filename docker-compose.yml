@@ -8,7 +8,7 @@ services:
   #################
 
   proxy:
-    image: itzg/mc-proxy@sha256:4e2e20b6ef7739429dff34b7f7a5c26816004be2d499ad7d7940de197aa7a130
+    image: itzg/mc-proxy:java24
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -20,8 +20,8 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      VELOCITY_VERSION: '3.4.0-SNAPSHOT'
-      TYPE: 'VELOCITY'
+      TYPE: 'CUSTOM'
+      BUNGEE_JAR_FILE: 'velocity-528.jar'
 
       REPLACE_ENV_VARIABLES: 'true'
       REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
@@ -32,18 +32,19 @@ services:
 
       CIV_TIMEOUT_TIME: 3000000
       CIV_PVP_HOSTNAME: 'pvp.localhost'
+      CIV_GAMMA_HOSTNAME: 'mini.localhost'
       CIV_HOSTNAME: 'main.localhost'
 
       CIV_FORWARDING_SECRET: '1234'
     ports:
       - "25565:25577"
     volumes:
-      - ./containers/data/proxy:/data
+      - ./containers/data/proxy:/server
       - ./ansible/files/proxy-config:/config
       - ./ansible/build/proxy-plugins:/plugins
 
   paper:
-    image: itzg/minecraft-server@sha256:edd1968cb701da6a7a358170ad6503323e35fb6ec6984eb31ec1a8a4687b75ec
+    image: itzg/minecraft-server:stable-java24-graalvm
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -56,8 +57,9 @@ services:
         condition: service_healthy
     environment:
       TYPE: 'paper'
-      VERSION: '1.21.3'
+      VERSION: '1.21.8'
       EULA: 'TRUE'
+      PAPER_DOWNLOAD_URL: 'https://api.leafmc.one/v2/projects/leaf/versions/1.21.8/builds/95/downloads/leaf-1.21.8-95.jar'
 
       REMOVE_OLD_MODS: 'TRUE'
       COPY_CONFIG_DEST: '/data'
@@ -97,8 +99,8 @@ services:
       - ./ansible/files/paper-config:/config
       - ./ansible/build/paper-plugins:/plugins
 
-  pvp:
-    image: itzg/minecraft-server@sha256:edd1968cb701da6a7a358170ad6503323e35fb6ec6984eb31ec1a8a4687b75ec
+  gamma:
+    image: itzg/minecraft-server:stable-java24-graalvm
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -111,7 +113,62 @@ services:
         condition: service_healthy
     environment:
       TYPE: 'paper'
-      VERSION: '1.21.3'
+      VERSION: '1.21.8'
+      EULA: 'TRUE'
+      PAPER_CUSTOM_JAR: 'civpaper.jar'
+
+      REMOVE_OLD_MODS: 'TRUE'
+      COPY_CONFIG_DEST: '/data'
+      SYNC_SKIP_NEWER_IN_DESTINATION: 'false'
+      REPLACE_ENV_DURING_SYNC: 'TRUE'
+      REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+
+      INIT_MEMORY: 1G
+      MAX_MEMORY: 3G
+
+      CIV_SERVER_NAME: local
+
+      CIV_WORDBANK_SEED: wordbank
+
+      CIV_MYSQL_HOST: mariadb
+      CIV_MYSQL_USERNAME: mariadb
+      CIV_MYSQL_PASSWORD: mariadb
+
+      CIV_POSTGRES_HOST: postgres
+      CIV_POSTGRES_USERNAME: postgres
+      CIV_POSTGRES_PASSWORD: postgres
+
+      CIV_DATABASE_PREFIX: 'gamma_'
+
+      CIV_RABBITMQ_HOST: rabbitmq
+      CIV_RABBITMQ_USERNAME: rabbitmq
+      CIV_RABBITMQ_PASSWORD: rabbitmq
+
+      JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007
+      CIV_WATCHDOG_TIMEOUT_TIME: 6000
+      CIV_FORWARDING_SECRET: '1234'
+    ports:
+      - "5007:5007"
+    volumes:
+      - ./containers/data/gamma:/data
+      - ./ansible/files/gamma-config:/config
+      - ./ansible/build/gamma-plugins:/plugins
+
+  pvp:
+    image: itzg/minecraft-server:stable-java24-graalvm
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      TYPE: 'paper'
+      VERSION: '1.21.8'
       EULA: 'TRUE'
       PAPER_CUSTOM_JAR: 'asp-server.jar'
 
@@ -122,7 +179,7 @@ services:
       REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
 
       INIT_MEMORY: 1G
-      MAX_MEMORY: 5G
+      MAX_MEMORY: 3G
 
       CIV_SERVER_NAME: local
 

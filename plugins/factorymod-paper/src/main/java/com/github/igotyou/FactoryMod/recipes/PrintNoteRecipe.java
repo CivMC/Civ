@@ -103,7 +103,6 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 
         for (String line : lines) {
             fixedLines.add(ChatColor.GRAY + line
-                .replaceAll("(?<!§x(§[\\da-f]){0,5})" + ChatColor.BLACK, ChatColor.GRAY.toString())
                 .replaceAll(ChatColor.RESET.toString(), ChatColor.GRAY.toString()));
         }
 
@@ -115,7 +114,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 
         if (this.secureNote) {
             net.minecraft.world.item.ItemStack bookItem = CraftItemStack.asNMSCopy(printingPlateStack);
-            String bookSN = bookItem.get(DataComponents.CUSTOM_DATA).copyTag().getString("SN");
+            String bookSN = bookItem.get(DataComponents.CUSTOM_DATA).copyTag().getString("SN").get();
             info.lines.add(bookSN);
         }
 

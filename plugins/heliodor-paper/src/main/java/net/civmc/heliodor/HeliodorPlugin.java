@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import net.civmc.heliodor.backpack.BackpackListener;
 import net.civmc.heliodor.command.HeliodorDebugCommand;
+import net.civmc.heliodor.farmbeacon.FarmBeaconListener;
 import net.civmc.heliodor.heliodor.PickaxeBreakListener;
 import net.civmc.heliodor.heliodor.VeinDetectListener;
 import net.civmc.heliodor.heliodor.infusion.InfusionListener;
@@ -13,6 +14,7 @@ import net.civmc.heliodor.heliodor.infusion.InfusionManager;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronDao;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfuseData;
 import net.civmc.heliodor.heliodor.infusion.chunkmeta.CauldronInfusion;
+import net.civmc.heliodor.vein.EnderEyeListener;
 import net.civmc.heliodor.vein.OrePredicate;
 import net.civmc.heliodor.vein.SqlVeinDao;
 import net.civmc.heliodor.vein.VeinCache;
@@ -80,6 +82,10 @@ public class HeliodorPlugin extends ACivMod {
             getServer().getPluginManager().registerEvents(new InfusionListener(infusionManager, chunkMetaView), this);
         }
 
+        FarmBeaconListener farmBeaconListener = new FarmBeaconListener();
+        getServer().getPluginManager().registerEvents(farmBeaconListener, this);
+        farmBeaconListener.protect(protector);
+
         Bukkit.getScheduler().runTaskTimer(this, this.recipes, 15 * 20, 15 * 20);
 
         getCommand("heliodor").setExecutor(new HeliodorDebugCommand(veinCache, veinSpawner, oreLocationsKey));
@@ -125,7 +131,8 @@ public class HeliodorPlugin extends ACivMod {
             configPosList,
             meteoricIronConfigSection.getInt("min_position_radius"),
             meteoricIronConfigSection.getInt("max_position_radius"),
-            meteoricIronConfigSection.getInt("max_bury")
+            meteoricIronConfigSection.getInt("max_bury"),
+            meteoricIronConfigSection.getBoolean("override-ender-eyes")
         );
 
         SqlVeinDao veinDao = new SqlVeinDao(database);
@@ -137,6 +144,10 @@ public class HeliodorPlugin extends ACivMod {
         protector.addPredicate(new OrePredicate(oreLocationsKey));
         veinSpawner = new VeinSpawner(this, veinDao, veinCache, meteoricIronConfig);
         veinSpawner.start();
+
+        if (meteoricIronConfig.overrideEnderEyes()) {
+            getServer().getPluginManager().registerEvents(new EnderEyeListener(meteoricIronConfig.config().world(), meteoricIronConfig.positions()), this);
+        }
 
         getServer().getPluginManager().registerEvents(new PickaxeBreakListener(veinCache,
             meteoricIronConfig.config().lowDistance(),

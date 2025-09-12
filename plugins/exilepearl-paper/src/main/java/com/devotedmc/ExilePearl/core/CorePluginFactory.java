@@ -1,6 +1,5 @@
 package com.devotedmc.ExilePearl.core;
 
-import com.devotedmc.ExilePearl.BorderHandler;
 import com.devotedmc.ExilePearl.BrewHandler;
 import com.devotedmc.ExilePearl.DamageLogger;
 import com.devotedmc.ExilePearl.ExilePearl;
@@ -150,10 +149,6 @@ public final class CorePluginFactory implements PearlFactory {
 
     public SuicideHandler createSuicideHandler() {
         return new PlayerSuicideTask(pearlApi);
-    }
-
-    public BorderHandler createPearlBorderHandler() {
-        return new PearlBoundaryTask(pearlApi);
     }
 
     public BrewHandler createBrewHandler() {

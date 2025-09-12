@@ -69,8 +69,6 @@ hacks:
      - ARMADILLO
   AttrHider:
     enabled: true
-    # Hide item data like enchantments, firework effects, book data, potion, etc..
-    hideItemMeta: false
     # Hide potion effects on entities, except for particles
     hideEffects: true
     # Hide the health of entities
@@ -119,25 +117,27 @@ hacks:
     announcements:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Join the Official Discord at https://discord.gg/zp63BaX3Uf","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/zp63BaX3Uf"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit the community wiki at civwiki.org","color":"green","clickEvent":{"action":"open_url","value":"https://civwiki.org/wiki/Main_Page"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit our wiki at wiki.civmc.net","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player made map at civmc-map.github.io","color":"green","clickEvent":{"action":"open_url","value":"https://civmc-map.github.io/"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit our wiki at civmc.net","color":"green","clickEvent":{"action":"open_url","value":"https://civmc.net/"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player made map at map.civinfo.net","color":"green","clickEvent":{"action":"open_url","value":"https://map.civinfo.net/"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /global to talk in global chat","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /vote to vote for CivMC and receive essence!","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Consider donating to the server at patreon.com/civ_mc! And get some unique perks!","color":"blue","clickEvent":{"action":"open_url","value":"https://www.patreon.com/civ_mc"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"All ores except coal and copper can spawn in big veins. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/hiddenore"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"All ores except diamond spawn randomly as you dig. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/hiddenore"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"All ores except coal and copper can spawn in big veins. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://civmc.net/wiki/plugins/unique/hiddenore"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"All ores except diamond spawn randomly as you dig. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://civmc.net/wiki/plugins/unique/hiddenore"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"The command /config will let you adjust various settings","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /rb to see the crop information for the biome you are in","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /chunklimits to see the restrictions on how many blocks can be placed in a chunk","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /emf toggle to turn off/on fishing of decorative heads and custom loot","color":"green"}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"If you type /fm you can see all the types of factories you can make","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Please review the server rules at reddit.com/r/civmc/wiki/index","color":"green","clickEvent":{"action":"open_url","value":"https://www.reddit.com/r/civmc/wiki/index/"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Please review the server rules at reddit.com/r/civmc/wiki/index","color":"green","clickEvent":{"action":"open_url","value":"https://www.reddit.com/r/CivMC/wiki/index/"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Join the Official SubReddit at reddit.com/r/CivMC","color":"green","clickEvent":{"action":"open_url","value":"https://www.reddit.com/r/CivMC/hot/"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"The use of VPNs or multiple accounts is not allowed, Logging in from the same place as a friend will result in an automatic ban. Accidental use of either may be resolved via a ticket on the official CivMC Discord","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/zp63BaX3Uf"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player run newsletter at https://civwiki.news/ to see whats been going on!","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the starter guide at wiki.civmc.net/pages/getting-started","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/getting-started"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Make sure to reinforce your buildings/chests to protect them from others. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/essential/citadel"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Jukeboxes and Noteblocks act as CCTV, when reinforced they record player actions. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/jukealert"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Killing someone with an ender pearl in your hotbar will lock them in the nether! Player essence is used to keep the players trapped. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/essential/exilepearl"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the starter guide at civmc.net/wiki/new-player-guide","color":"green","clickEvent":{"action":"open_url","value":"https://civmc.net/wiki/new-player-guide"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Make sure to reinforce your buildings/chests to protect them from others. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://civmc.net/wiki/plugins/essential/citadel"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Jukeboxes and Noteblocks act as CCTV, when reinforced they record player actions. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://civmc.net/wiki/plugins/unique/jukealert"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Killing someone with an ender pearl in your hotbar will lock them in the nether! Player essence is used to keep the players trapped. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://civmc.net/wiki/plugins/essential/exilepearl"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Install Simple Voice Chat to use proximity voice chat!","color":"green","clickEvent":{"action":"open_url","value":"https://civmc.net/wiki/plugins/fun/simplevoicechat"}}]'
 
   ElytraFeatures:
     enabled: false
@@ -350,13 +350,6 @@ hacks:
     delay: 10000
     message: '%Victim% was combat tagged by %Attacker%'
     broadcast: [OP, CONSOLE]
-  DisableAI:
-    enabled: false
-    # Specify below the living entities and their spawning circumstances you want to disable the AI for.
-    # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/entity/EntityType.html
-    # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html
-    # Note: You can also just state "ALL" for all spawn circumstances
-    VILLAGER: ALL
   Experimental:
     enabled: true
     combatspy: false
@@ -482,7 +475,7 @@ hacks:
         - "Is the nation you want to join far away?\nWell you're in luck!\n\nEvery new player in their first 24 hours on the server gets a singular free tp!\n\nSimply use the command below:\n\n    &c/ott to <player>&r"
         - "Want to start your own settlement?\nVery possible! but incredibly difficult.\n\nNot just because of a lack of resources!\n\nKnowledge and connections are power in CivMC. You'd be better off building those up first."
         - "Joining a nation never ties you down. You can even join multiple at once! That's why it's important to remember that you can always start your own nation at a later time.\nThere's not rush!\nTake your time to learn the game first\n\nOn that note:"
-        - "          &5Plugins!&r\n\nCivMC has many many different features and mechanics that make it unique.\nYou can learn about all of them on our handy Wiki!\n\n      &9wiki.civmc.net\n\n&4IT IS VITAL YOU LOOK\n     AT THIS WIKI&r"
+        - "          &5Plugins!&r\n\nCivMC has many many different features and mechanics that make it unique.\nYou can learn about all of them on our handy Wiki!\n\n      &9civmc.net\n\n&4IT IS VITAL YOU LOOK\n     AT THIS WIKI&r"
         - "When you join a nation the players there will likely explain some of the basic important plugins to you\n\nThese are:\nCitadel (protect your stuff)\nJukeAlert (know who's breaking your stuff)\nExilepearl (Jail people who broke your stuff)"
         - "       &5AVOID DOING\n     THE FOLLOWING\n     IF YOU WANT TO\n         SURVIVE\n\n&r1. Breaking people's stuff\n2. Jumping into obsidian pits\n3. Crossing into excluded areas\n4. Anything people would kill you for."
         - "  &5THEY WILL KILL YOU&r\nLeave the raiding until you understand how to get away with it.\nCameras are watching!\n\nLoot stolen without care is easily taken away, and damages your reputation with others!\nOr will find you killed and banished to the nether"
@@ -490,8 +483,6 @@ hacks:
         - "            &5TOS&r\nCivMC is not complete anarchy. You can and will be banned if you break the server rules.\n (Find on the discord)\n\nRefrain from using hacks or spouting slurs.\nAct like a decent human being and all will be well."
         - "      &5Bugs/Issues&r\n\nIf you've found a bug or have any other issues that require an admin.\nThen you can either raise a ticket on the discord or send a modmail via our reddit.\n\n         &9R/CivMC&r"
         - "        &5Goodluck!&r\nThere are many things to do on CivMC. Let your ambitions run wild!\n\nLeave something behind people will remember for years to come.\n\nBe it your actions, your creations or your destruction..."
-  InvControl:
-    enabled: true
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'
@@ -560,8 +551,6 @@ hacks:
       BIRCH_LEAVES: 0
       ACACIA_LEAVES: 0
       SPRUCE_LEAVES: 0
-  TimingsHack:
-    enabled: false
   OneTimeTeleport:
     enabled: true
     material_blacklist: []
@@ -619,3 +608,7 @@ hacks:
     enabled: false
     server: main
     world: world
+  TooHappyGhasts:
+    enabled: true
+  PlayerCap:
+    enabled: true

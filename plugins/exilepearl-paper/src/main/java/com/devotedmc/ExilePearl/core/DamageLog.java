@@ -9,9 +9,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.entity.Player;
 
 /**
@@ -23,7 +22,7 @@ class DamageLog {
 
     private final Clock clock;
     private final UUID playerId;
-    private final Map<UUID, DamageRecord> damagers = new HashMap<UUID, DamageRecord>();
+    private final Map<UUID, DamageRecord> damagers = new HashMap<>();
 
     /**
      * Creates a new DamageLog instance
@@ -138,10 +137,7 @@ class DamageLog {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 31)
-            .append(playerId)
-            .append(damagers)
-            .toHashCode();
+        return Objects.hash(playerId, damagers);
     }
 
     @Override
@@ -155,9 +151,6 @@ class DamageLog {
 
         DamageLog other = (DamageLog) o;
 
-        return new EqualsBuilder()
-            .append(playerId, other.playerId)
-            .append(damagers, other.damagers)
-            .isEquals();
+        return Objects.equals(playerId, other.playerId) && Objects.equals(damagers, other.damagers);
     }
 }

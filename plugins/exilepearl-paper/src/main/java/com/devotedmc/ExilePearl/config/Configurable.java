@@ -12,5 +12,5 @@ public interface Configurable {
      *
      * @param config The config
      */
-    public void loadConfig(PearlConfig config);
+    void loadConfig(PearlConfig config);
 }

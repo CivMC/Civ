@@ -26,7 +26,7 @@ public abstract class PlayerAction extends SnitchAction {
 
     @Override
     public boolean hasPlayer() {
-        return true;
+        return player != null;
     }
 
     protected String getFormattedTime(

@@ -14,7 +14,7 @@ import com.github.maxopoly.finale.listeners.BlockListener;
 import com.github.maxopoly.finale.listeners.CrossbowListener;
 import com.github.maxopoly.finale.listeners.DamageListener;
 import com.github.maxopoly.finale.listeners.EnchantmentDisableListener;
-import com.github.maxopoly.finale.listeners.ExtraDurabilityListener;
+import com.github.maxopoly.finale.listeners.FinaleListener;
 import com.github.maxopoly.finale.listeners.GappleListener;
 import com.github.maxopoly.finale.listeners.MeteoricIronSlownessListener;
 import com.github.maxopoly.finale.listeners.NetheriteFireResistanceListener;
@@ -107,7 +107,7 @@ public class Finale extends ACivMod {
                     ctpManager), this);
         }
         Bukkit.getPluginManager().registerEvents(weaponModificationListener = new WeaponModificationListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ExtraDurabilityListener(), this);
+        Bukkit.getPluginManager().registerEvents(new FinaleListener(), this);
         Bukkit.getPluginManager().registerEvents(enchantmentDisableListener = new EnchantmentDisableListener(config.getDisabledEnchants()), this);
         Bukkit.getPluginManager().registerEvents(new PotionListener(config.getPotionHandler()), this);
         Bukkit.getPluginManager().registerEvents(new VelocityFixListener(config.getVelocityHandler()), this);
@@ -123,7 +123,9 @@ public class Finale extends ACivMod {
         Bukkit.getPluginManager().registerEvents(new WarpFruitListener(), this);
         Bukkit.getPluginManager().registerEvents(new TridentListener(), this);
         Bukkit.getPluginManager().registerEvents(new ShieldListener(), this);
-        Bukkit.getPluginManager().registerEvents(new BlockListener(), this);
+        if (manager.getBlockRestrictionHandler().isEnabled()) {
+            Bukkit.getPluginManager().registerEvents(new BlockListener(), this);
+        }
         Bukkit.getPluginManager().registerEvents(new CrossbowListener(config.isFireworkExplosions()), this);
         Bukkit.getPluginManager().registerEvents(new GappleListener(), this);
     }
