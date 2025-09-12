@@ -21,6 +21,11 @@ public class LClickable extends Clickable {
         ItemUtils.setComponentDisplayName(this.item, Component.text(name));
     }
 
+    public LClickable(Material mat, Component component, Consumer<Player> clickFunction) {
+        this(mat, clickFunction);
+        ItemUtils.setComponentDisplayName(this.item, component);
+    }
+
     public LClickable(Material mat, String name, Consumer<Player> clickFunction, String... lore) {
         this(mat, name, clickFunction);
         if (lore.length > 0) {
