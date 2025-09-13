@@ -1,3 +1,6 @@
+# kick message sent to users if secureboot finds a required plugin missing or disabled
+kick_message: "<red>Server did not startup properly, please contact an @Admin!</red>"
+
 # Plugin names that SecureBoot will require to be enabled
 required_plugins:
   - "CivModCore"

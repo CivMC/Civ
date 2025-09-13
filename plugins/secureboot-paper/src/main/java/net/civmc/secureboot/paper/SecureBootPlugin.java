@@ -1,13 +1,15 @@
 package net.civmc.secureboot.paper;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerLoadEvent;
@@ -27,6 +29,8 @@ enum PluginStatus {
 @SuppressWarnings("UnstableApiUsage")
 public final class SecureBootPlugin extends JavaPlugin implements Listener {
     private final Map<String, PluginStatus> pluginState = Collections.synchronizedMap(new TreeMap<>(String.CASE_INSENSITIVE_ORDER));
+    private final MiniMessage mm = MiniMessage.miniMessage();
+    private @NotNull Component kickMessage = Component.text("Server is in maintenance mode.");
     private boolean acceptLogins = false;
 
     @Override
@@ -35,6 +39,10 @@ public final class SecureBootPlugin extends JavaPlugin implements Listener {
         // ensure required plugins have a status
         getConfig().getStringList("required_plugins").forEach((plugin) -> this.pluginState.put(plugin, PluginStatus.AWAITING_STATUS));
         getSLF4JLogger().info("Awaiting status for: {}", String.join(", ", this.pluginState.keySet()));
+
+        // set kick message from config
+        String rawKickMessage = getConfig().getString("kick_message", "Server is in maintenance mode.");
+        kickMessage = mm.deserialize(rawKickMessage);
     }
 
     @Override
@@ -73,7 +81,7 @@ public final class SecureBootPlugin extends JavaPlugin implements Listener {
     private void detectPluginDisabled(
         final @NotNull PluginDisableEvent event
     ) {
-        // mark disabled plugin as enabled
+        // mark disabled plugin as loaded
         this.pluginState.replace(event.getPlugin().getPluginMeta().getName(), PluginStatus.ENABLED, PluginStatus.LOADED);
     }
 
@@ -120,7 +128,20 @@ public final class SecureBootPlugin extends JavaPlugin implements Listener {
         }
         event.disallow(
             AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
-            Component.text("Server did not startup properly, please contact an @Admin!", TextColor.color(0xC6_19_19))
+            kickMessage
         );
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    private void onPlayerJoin(PlayerJoinEvent event) {
+        if (this.acceptLogins) {
+            return;
+        }
+
+        // notify admins that server is in invalid state
+        Player player = event.getPlayer();
+        if (player.isOp()) {
+            player.sendMessage(mm.deserialize("<red>[Secureboot] Server started in invalid state</red>"));
+        }
     }
 }
