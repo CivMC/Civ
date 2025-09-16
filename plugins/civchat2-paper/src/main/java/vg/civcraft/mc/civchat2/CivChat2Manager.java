@@ -10,6 +10,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Arrays;
+import java.util.regex.Pattern;
+import java.nio.file.Files;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -25,12 +35,14 @@ import vg.civcraft.mc.civchat2.event.PrivateMessageEvent;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.utility.ScoreboardHUD;
+import vg.civcraft.mc.civmodcore.players.settings.impl.LongSetting;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
+
 
 public class CivChat2Manager {
 
@@ -199,6 +211,30 @@ public class CivChat2Manager {
                 return;
             }
         }
+            
+        LongSetting banSetting = instance.getCivChat2SettingsManager().getGlobalChatMuteSetting();
+
+        // Chat filter check - block message if it contains banned words
+        if (containsBannedWord(chatMessage)) {
+            //Flag inappropriate message, mute sender for 1 hour
+            sender.sendMessage(ChatColor.RED + "Your message has been flagged for inappropriate content.");
+            banSetting.setValue(sender, System.currentTimeMillis() + 3600000L); // 1 hour mute
+                
+            // Log the filtered message to console and mods
+            String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId())
+                : sender.getDisplayName();
+
+            //Set<String> players = doSendGroupMsg(sender.getUniqueId(), senderName, group, message);
+
+            Group modsGroup = GroupManager.getGroup("Mods");
+
+            Set<String> modPlayers = doSendGroupMsg(sender.getUniqueId(), senderName, modsGroup, ChatColor.RED + "[Filtered]: " + chatMessage);
+
+            broadcaster.broadcastGroup(sender.getUniqueId(), senderName, sender.getDisplayName(), modsGroup.getName(), chatMessage);
+
+            chatLog.logGroupMessage(sender, chatMessage, modsGroup.getName(), modPlayers);
+            return;
+        }
 
         int range = config.getChatRange();
         int height = config.getYInc();
@@ -345,6 +381,40 @@ public class CivChat2Manager {
         scoreboardHUD.updateScoreboardHUD(player);
     }
 
+
+    //method to check if a message contains a banned word
+    private boolean containsBannedWord(String message) {
+    String lowerMessage = message.toLowerCase();
+    
+    // Load banned words from resources
+    List<String> bannedWords = new ArrayList<>();
+    try (InputStream is = getClass().getResourceAsStream("/banned-words.txt");
+         BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+        
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String cleanWord = line.trim().toLowerCase();
+            if (!cleanWord.isEmpty() && !cleanWord.startsWith("#")) {
+                bannedWords.add(cleanWord);
+            }
+        }
+    } catch (IOException e) {
+        System.err.println("Error reading banned words from resources: " + e.getMessage());
+        return false;
+    }
+    
+    System.out.println("Loaded banned words: " + bannedWords);
+    
+    String[] words = lowerMessage.split("\\s+|[.,!?;:]");
+    for (String word : words) {
+        word = word.replaceAll("[^a-zA-Z]", ""); // Remove punctuation
+        if (bannedWords.contains(word)) {
+            return true;
+        }
+    }
+    return false;
+}
+
     /**
      * Method to send a message to a group
      *
@@ -365,6 +435,33 @@ public class CivChat2Manager {
                 return;
             }
         }
+        LongSetting banSetting = instance.getCivChat2SettingsManager().getGlobalChatMuteSetting();
+
+        if (group.getName().equals(config.getGlobalChatGroupName())) {
+            // Chat filter check - block message if it contains banned words
+            if (containsBannedWord(message)) {
+                //Flag inappropriate message, mute sender for 1 hour
+                sender.sendMessage(ChatColor.RED + "Your message has been flagged for inappropriate content.");
+                banSetting.setValue(sender, System.currentTimeMillis() + 3600000L); // 1 hour mute
+                
+                // Log the filtered message to console and mods
+                String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId())
+                    : sender.getDisplayName();
+                
+                
+                //Set<String> players = doSendGroupMsg(sender.getUniqueId(), senderName, group, message);
+
+                Group modsGroup = GroupManager.getGroup("Mods");
+
+                Set<String> modPlayers = doSendGroupMsg(sender.getUniqueId(), senderName, modsGroup, ChatColor.RED + "[Filtered]: " + message);
+
+                broadcaster.broadcastGroup(sender.getUniqueId(), senderName, sender.getDisplayName(), modsGroup.getName(), message);
+
+                chatLog.logGroupMessage(sender, message, modsGroup.getName(), modPlayers);
+                return;
+            }
+        }
+
         GroupChatEvent event = new GroupChatEvent(sender, group.getName(), message);
         Bukkit.getPluginManager().callEvent(event);
 

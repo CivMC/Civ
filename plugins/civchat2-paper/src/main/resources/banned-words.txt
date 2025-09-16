@@ -1,0 +1,3 @@
+ThisIsAnExampleMessageThatNoNormalPlayerWillType
+ThisIsASecondExampleMessageThatNoNormalPlayerWillType
+ThisIsAThirdExampleMessageThatNoNormalPlayerWillType
