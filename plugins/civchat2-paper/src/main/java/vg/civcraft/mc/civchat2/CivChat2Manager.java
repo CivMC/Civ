@@ -77,6 +77,8 @@ public class CivChat2Manager {
 
     private LongSetting banSetting;
 
+    private Group modsGroup;
+
     public CivChat2Manager(CivChat2 pluginInstance, ServerBroadcaster broadcaster) {
 
 
@@ -92,9 +94,14 @@ public class CivChat2Manager {
         afkPlayers = new HashMap<>();
         scoreboardHUD = new ScoreboardHUD();
         bannedWords = loadBannedWords();
+        modsGroup = GroupManager.getGroup(filterRelay);
 
         banSetting = instance.getCivChat2SettingsManager().getGlobalChatMuteSetting();
     }
+
+    //Set group to relay filtered messages to
+    private final String filterRelay = "Mods";
+
 
     
 
@@ -232,7 +239,7 @@ public class CivChat2Manager {
 
             //Set<String> players = doSendGroupMsg(sender.getUniqueId(), senderName, group, message);
 
-            Group modsGroup = GroupManager.getGroup("Mods");
+            
 
             Set<String> modPlayers = doSendGroupMsg(sender.getUniqueId(), senderName, modsGroup, ChatColor.RED + "[Filtered]: " + chatMessage);
 
@@ -390,6 +397,7 @@ public class CivChat2Manager {
     private final Set<String> bannedWords;
 
     private Set<String> loadBannedWords() {
+        
         Set<String> words = new HashSet<>();
         try {
             File file = new File(instance.getDataFolder(), "banned-words.txt");
@@ -455,7 +463,7 @@ public class CivChat2Manager {
                 
                 //Set<String> players = doSendGroupMsg(sender.getUniqueId(), senderName, group, message);
 
-                Group modsGroup = GroupManager.getGroup("Mods");
+                
 
                 Set<String> modPlayers = doSendGroupMsg(sender.getUniqueId(), senderName, modsGroup, ChatColor.RED + "[Filtered]: " + message);
 
