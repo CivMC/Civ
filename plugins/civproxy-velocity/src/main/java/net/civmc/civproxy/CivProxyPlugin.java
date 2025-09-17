@@ -57,11 +57,6 @@ public class CivProxyPlugin {
         if (event.getPlayer().getCurrentServer().isPresent()) {
             return;
         }
-        String reason = event.getServerKickReason().map(s -> PlainTextComponentSerializer.plainText().serialize(s)).orElse("");
-        if (reason.toLowerCase().contains("ban") || reason.toLowerCase().contains("multiaccounting")) {
-            return;
-        }
-        System.out.println("go to pvp: " + event.getServer().getServerInfo().getName() + " " + event.getPlayer().getCurrentServer());
         event.setResult(KickedFromServerEvent.RedirectPlayer.create(server.getServer("pvp").get()));
 
         players.put(event.getPlayer(), new QueueRecord(Instant.now(), name));
