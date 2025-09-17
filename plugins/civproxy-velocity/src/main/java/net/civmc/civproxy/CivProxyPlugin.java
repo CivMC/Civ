@@ -13,9 +13,11 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.data.TemporaryNodeMergeStrategy;
@@ -59,9 +61,24 @@ public class CivProxyPlugin {
         if (reason.toLowerCase().contains("ban") || reason.toLowerCase().contains("multiaccounting")) {
             return;
         }
+        System.out.println("go to pvp: " + event.getServer().getServerInfo().getName() + " " + event.getPlayer().getCurrentServer());
         event.setResult(KickedFromServerEvent.RedirectPlayer.create(server.getServer("pvp").get()));
 
         players.put(event.getPlayer(), new QueueRecord(Instant.now(), name));
+    }
+
+    @Subscribe
+    public void onFromPvP(KickedFromServerEvent event) {
+        String name = event.getServer().getServerInfo().getName();
+        if (!name.equals("pvp")) {
+            return;
+        }
+
+        if (!(event.getResult() instanceof KickedFromServerEvent.RedirectPlayer)) {
+            return;
+        }
+
+        event.setResult(KickedFromServerEvent.DisconnectPlayer.create(event.getServerKickReason().orElse(Component.text("Disconnected"))));
     }
 
     @Subscribe
@@ -83,6 +100,7 @@ public class CivProxyPlugin {
 //            if (mini != null && mini.getPlayersConnected().size() < 110) {
 //                event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("mini").get()));
 //            } else {
+            System.out.println("go to pvp 2");
                 event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("pvp").get()));
 //            }
 
@@ -98,6 +116,7 @@ public class CivProxyPlugin {
         if (record != null && record.instant().isAfter(Instant.now().minusSeconds(60))) {
             QueueManager queueManager = AjQueueAPI.getInstance().getQueueManager();
             AdaptedPlayer player = AjQueueAPI.getInstance().getPlatformMethods().getPlayer(event.getPlayer().getUniqueId());
+            System.out.println("connected");
             queueManager.addToQueue(player, record.server());
         }
     }
