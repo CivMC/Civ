@@ -39,6 +39,9 @@ jsoup = { group = "org.jsoup", name = "jsoup", version = "1.18.3" }
 junit-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit" }
 junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
 
+minestom = { group = "net.minestom", name = "minestom", version = "2025.09.13-1.21.8" }
+logback-classic = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.18" }
+
 [bundles]
 junit = ["junit-api", "junit-engine"]
 nuvotifier = ["nuvotifier-api", "nuvotifier-bukkit"]

@@ -12,6 +12,7 @@ plugins {
 }
 
 include(":ansible")
+include(":apps:queue")
 
 include(":plugins:banstick-paper")
 include(":plugins:bastion-paper")

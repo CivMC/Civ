@@ -2,6 +2,7 @@ val paperPlugin by configurations.creating
 val gammaPlugin by configurations.creating
 val pvpPlugin by configurations.creating
 val proxyPlugin by configurations.creating
+val civApp by configurations.creating
 
 dependencies {
     paperPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
@@ -66,6 +67,8 @@ dependencies {
     pvpPlugin(project(path = ":plugins:namecolors-paper"))
 
     proxyPlugin(project(path = ":plugins:civproxy-velocity"))
+
+    civApp(project(path = ":apps:queue", configuration = "shadow"))
 }
 
 val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {
@@ -116,10 +119,22 @@ val copyProxyPlugins = tasks.register<Copy>("copyProxyPlugins") {
     into("$projectDir/build/proxy-plugins")
 }
 
+val copyCivApps = tasks.register<Copy>("copyCivApps") {
+    dependsOn(civApp)
+
+    doFirst {
+        project.delete(files("$projectDir/build/civ-apps"))
+    }
+
+    from(civApp.resolvedConfiguration.resolvedArtifacts.map { it.file })
+    into("$projectDir/build/civ-apps")
+}
+
 // TODO: Is build the right name?
 tasks.register("build") {
     dependsOn(copyPaperPlugins)
     dependsOn(copyGammaPlugins)
     dependsOn(copyPvpPlugins)
     dependsOn(copyProxyPlugins)
+    dependsOn(copyCivApps)
 }
