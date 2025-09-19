@@ -30,5 +30,11 @@ allprojects {
         maven("https://repo.infernalsuite.com/repository/maven-snapshots/")
         maven("https://repo.rapture.pw/repository/maven-releases/")
         maven("https://jitpack.io")
+
+        // all viaversion stuff below
+        maven("https://repo.viaversion.com")
+        maven("https://maven.lenni0451.net/everything")
+        maven("https://repo.opencollab.dev/maven-releases")
+        maven("https://repo.opencollab.dev/maven-snapshots")
     }
 }

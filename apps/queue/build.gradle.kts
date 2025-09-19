@@ -10,6 +10,11 @@ version = "1.0.0"
 dependencies {
     implementation(libs.minestom)
     implementation(libs.logback.classic)
+
+    implementation(libs.via.proxy) {
+        exclude(group = "org.apache.logging.log4j", module = "log4j-core")
+        exclude(group = "org.apache.logging.log4j", module = "log4j-slf4j-impl")
+    }
 }
 
 application {

@@ -41,6 +41,8 @@ junit-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", ver
 
 minestom = { group = "net.minestom", name = "minestom", version = "2025.09.13-1.21.8" }
 logback-classic = { group = "ch.qos.logback", name = "logback-classic", version = "1.5.18" }
+via-proxy = { group = "net.raphimc", name = "ViaProxy", version = "3.4.4" }
+
 
 [bundles]
 junit = ["junit-api", "junit-engine"]
