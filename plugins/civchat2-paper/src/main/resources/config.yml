@@ -23,6 +23,8 @@ chat:
   globalGroup: '!'
   joinGlobalGroupByDefault: false
 info:
+  # Namelayer to send filtered messages to for moderation
+  filterRelayGroup: 'Mods'
   #debug: lots of debugging logging will show up in the console def=false
   debug: false
   #groups: if NameLayer groups is enabled def=true

@@ -77,6 +77,8 @@ public class CivChat2Manager {
 
     private LongSetting banSetting;
 
+    private String filterRelayGroup;
+    
     private Group modsGroup;
 
     public CivChat2Manager(CivChat2 pluginInstance, ServerBroadcaster broadcaster) {
@@ -94,14 +96,11 @@ public class CivChat2Manager {
         afkPlayers = new HashMap<>();
         scoreboardHUD = new ScoreboardHUD();
         bannedWords = loadBannedWords();
-        modsGroup = GroupManager.getGroup(filterRelay);
-
         banSetting = instance.getCivChat2SettingsManager().getGlobalChatMuteSetting();
+        filterRelayGroup = config.getFilterRelayGroup();
     }
 
-    //Set group to relay filtered messages to
-    private final String filterRelay = "Mods";
-
+    
 
     
 
@@ -232,6 +231,8 @@ public class CivChat2Manager {
             //Flag inappropriate message, mute sender for 1 hour
             sender.sendMessage(ChatColor.RED + "Your message has been flagged for inappropriate content.");
             banSetting.setValue(sender, System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1)); // 1 hour mute
+
+            Group modsGroup = GroupManager.getGroup(filterRelayGroup);
 
             // Log the filtered message to console and mods
             String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId())
@@ -393,6 +394,8 @@ public class CivChat2Manager {
         groupChatChannels.put(player.getUniqueId(), group);
         scoreboardHUD.updateScoreboardHUD(player);
     }
+
+    
     // Load banned words once when CivChat2Manager is created
     private final Set<String> bannedWords;
 
@@ -447,11 +450,9 @@ public class CivChat2Manager {
                 return;
             }
         }
-        //LongSetting banSetting = instance.getCivChat2SettingsManager().getGlobalChatMuteSetting();
 
-        if (group.getName().equals(config.getGlobalChatGroupName())) {
+        if (group.getName().equals(config.getGlobalChatGroupName()) && containsBannedWord(message)) {
             // Chat filter check - block message if it contains banned words
-            if (containsBannedWord(message)) {
                 //Flag inappropriate message, mute sender for 1 hour
                 sender.sendMessage(ChatColor.RED + "Your message has been flagged for inappropriate content.");
                 banSetting.setValue(sender, System.currentTimeMillis() + 3600000L); // 1 hour mute
@@ -459,20 +460,16 @@ public class CivChat2Manager {
                 // Log the filtered message to console and mods
                 String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId())
                     : sender.getDisplayName();
-                
-                
-                //Set<String> players = doSendGroupMsg(sender.getUniqueId(), senderName, group, message);
-
-                
 
                 Set<String> modPlayers = doSendGroupMsg(sender.getUniqueId(), senderName, modsGroup, ChatColor.RED + "[Filtered]: " + message);
+
+
 
                 broadcaster.broadcastGroup(sender.getUniqueId(), senderName, sender.getDisplayName(), modsGroup.getName(), message);
 
                 chatLog.logGroupMessage(sender, message, modsGroup.getName(), modPlayers);
                 return;
             }
-        }
 
         GroupChatEvent event = new GroupChatEvent(sender, group.getName(), message);
         Bukkit.getPluginManager().callEvent(event);
