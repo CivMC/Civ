@@ -335,8 +335,9 @@ public class CitadelConfigManager extends ConfigParser {
             }
             double centerX = insideCenter.getDouble("x", 0.0);
             double centerZ = insideCenter.getDouble("z", 0.0);
-            logger.info("Parsed World Border Buffer zone for world " + world.getName() + " with radius " + worldBorderBufferSize + " in shape " + worldBorderShape + " centered at  " + centerX + ", " + centerZ);
-            buffers.put(world.getUID(), new WorldBorderBuffers(centerX, centerZ, worldBorderShape, worldBorderBufferSize));
+            boolean decay = insideWorld.getBoolean("decay", false);
+            logger.info("Parsed World Border Buffer zone for world " + world.getName() + " with radius " + worldBorderBufferSize + " in shape " + worldBorderShape + " centered at  " + centerX + ", " + centerZ + ", decay: " + decay);
+            buffers.put(world.getUID(), new WorldBorderBuffers(centerX, centerZ, worldBorderShape, worldBorderBufferSize, decay));
         }
 
     }

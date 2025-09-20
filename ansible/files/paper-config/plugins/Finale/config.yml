@@ -296,7 +296,7 @@ damageModifiers:
     multiplier: 1.0
   CRIT:
     mode: DIRECT
-    multiplier: 0.82
+    multiplier: 0.825
   STRENGTH_EFFECT:
     mode: DIRECT
     multiplier: 0.86

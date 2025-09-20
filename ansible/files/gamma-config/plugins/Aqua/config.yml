@@ -1,0 +1,17 @@
+# Experimental - detection of auto fishing mods based on movement
+autoFishDetection: false
+
+# Use & for format codes
+messages:
+  # For admin messages
+  messagePrefix: "&8[&bAqua&8] "
+
+  afkForPlayer: "&cAFK fishing is not allowed on this server"
+  # %p% %u% placeholders for username and uuid required
+  afkForAdmin: "&3Detected player &a%p%&3 for &aAFK Fishing machine \n&3 UUID: (%u%)"
+
+  autoForPlayer: "&aAuto fishing is not allowed on this server"
+  # %p% %u% placeholders for username and uuid required
+  autoForAdmin: "&3Kicked player &a%p%&3 for &aAuto Fishing \n&3 UUID: (%u%)"
+
+configVersionDoNotModify: 1.1

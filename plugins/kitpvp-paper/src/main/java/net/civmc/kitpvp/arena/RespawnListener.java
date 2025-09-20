@@ -1,6 +1,5 @@
 package net.civmc.kitpvp.arena;
 
-import net.civmc.kitpvp.spawn.SpawnProvider;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;

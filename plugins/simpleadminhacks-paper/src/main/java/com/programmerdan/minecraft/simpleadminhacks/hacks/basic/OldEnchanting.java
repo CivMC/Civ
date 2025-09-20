@@ -302,6 +302,15 @@ public final class OldEnchanting extends BasicHack {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBreakExp(final BlockBreakEvent event) {
+        if (this.disableGrindExp) {
+            event.setExpToDrop(0);
+        }  else {
+            event.setExpToDrop(applyModifier(event.getExpToDrop(), this.experienceModifier));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onMerchantRecipe(final InventoryOpenEvent event) {
         if (!this.disableGrindExp) {
             return;

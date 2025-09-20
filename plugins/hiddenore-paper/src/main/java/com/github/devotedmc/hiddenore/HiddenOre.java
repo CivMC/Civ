@@ -56,9 +56,6 @@ public class HiddenOre extends JavaPlugin {
         breakHandler = new BlockBreakListener(plugin);
         this.getServer().getPluginManager().registerEvents(breakHandler, this);
 
-        commandHandler = new CommandHandler(this);
-        this.getCommand("hiddenore").setExecutor(commandHandler);
-
         worldGen = new ArrayList<>();
 
         ConfigurationSection worldGenConfig = Config.instance.getWorldGenerations();
@@ -70,6 +67,10 @@ public class HiddenOre extends JavaPlugin {
                 worldGen.add(list);
             }
         }
+
+        commandHandler = new CommandHandler(this, worldGen);
+        this.getCommand("hiddenore").setExecutor(commandHandler);
+
     }
 
     @Override

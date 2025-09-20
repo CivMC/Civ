@@ -1,0 +1,26 @@
+- name: Update Gamma Server
+  hosts: all
+  become: true
+
+  vars:
+    servers:
+      - gamma
+
+  tasks:
+    - name: Update Serer | Include Preflight
+      include_tasks: ../tasks/preflight-checks.yml
+
+    - name: Update Server | Expand setting
+      include_tasks: ../tasks/expand-setting.yml
+
+    - name: Update Server | Include Stop Tasks
+      include_tasks:
+        file: '../tasks/stop-server.yml'
+
+    - name: Update Server | Include Deployment Tasks
+      include_tasks:
+        file: '../tasks/deploy/{{deploy_task}}.yml'
+      loop:
+        - stacks
+      loop_control:
+        loop_var: deploy_task

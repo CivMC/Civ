@@ -34,6 +34,7 @@ Current services and exposed ports are:
 | proxy    | 25565 | TCP, Minecraft      |            |
 | paper    |       |                     |            |
 | pvp      |       |                     |            |
+| gamma    |       |                     |            |
 | mariadb  | 3306  | TCP, Database       |            |
 | postgres | 5432  | TCP, Database       |            |
 | rabbitmq | 5672  | TCP, AMQP           |            |

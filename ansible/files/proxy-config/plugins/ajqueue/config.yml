@@ -270,7 +270,7 @@ reload-servers-interval: 0
 # If enabled, players will be able to be in multiple queues at once.
 # If disabled, players will be removed from the previous queue when joining a new queue
 #  Default: true
-allow-multiple-queues: false
+allow-multiple-queues: true
 
 # If the player is queued for multiple servers, which server should we pick to use in things like placeholders and actionbars
 # Options are first and last

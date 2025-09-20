@@ -1,0 +1,614 @@
+configuration_file_version: 1
+
+debug: true
+broadcast_permission: simpleadmin.broadcast
+
+hacks:
+  ############################################################
+  ## Basic Hacks
+  ############################################################
+  AntiFastBreak:
+    enabled: false
+    laggLenciency: 1.5
+    breakDenyDuration: 3000
+  #Prevents pearls from landing that have been in flight for more than the configured amount of time
+  AntiStatisChamber:
+    enabled: true
+    pearlLifetime: 2m
+  #Bounds armour to specific players disallowing others to wear the same armour piece after first equip
+  ArmourBound:
+    enabled: true
+    whitelist:
+      - DIAMOND_HELMET
+      - DIAMOND_CHESTPLATE
+      - DIAMOND_LEGGINGS
+      - DIAMOND_BOOTS
+      - NETHERITE_HELMET
+      - NETHERITE_CHESTPLATE
+      - NETHERITE_LEGGINGS
+      - NETHERITE_BOOTS
+  ArthropodEggHack:
+    enabled: true
+    eggChance: 0.03
+    lootingChance: 0.02
+    removeDrops: true
+    allowedTypes:
+     - SHEEP
+     - PIG
+     - COW
+     - BAT
+     - CHICKEN
+     - WOLF
+     - SQUID
+     - MOOSHROOM
+     - RABBIT
+     - HORSE
+     - DONKEY
+     - MULE
+     - VILLAGER
+     - LLAMA
+     - OCELOT
+     - FOX
+     - COD
+     - TROPICAL_FISH
+     - SALMON
+     - TURTLE
+     - DOLPHIN
+     - BEE
+     - STRIDER
+     - GLOW_SQUID
+     - CAT
+     - AXOLOTL
+     - GOAT
+     - PARROT
+     - PANDA
+     - CAMEL
+     - SNIFFER
+     - FROG
+     - TADPOLE
+     - ARMADILLO
+  AttrHider:
+    enabled: true
+    # Hide potion effects on entities, except for particles
+    hideEffects: true
+    # Hide the health of entities
+    hideHealth: true
+    # Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
+    roundPlayerListPing: true
+  AutoRespawn:
+    enabled: true
+    # Delay in MS
+    # Default: 300000 (five minutes)
+    respawnDelay: 10000
+    # The respawn delay (in MS) if someone logs in dead
+    # Default 0 (instant)
+    loginRespawnDelay: 0
+    # Jokey joke messages sent to the player if auto-respawned
+    # Deactivate by removing all the quotes below
+    respawnQuotes:
+    - You wake up in an unfamiliar place...
+  # Allows any player with the "simpleadmin.bedlocator" permission to request their bed location.
+  BedLocator:
+    enabled: false
+  BeeKeeping:
+    enabled: true
+    # Value between 0 and 1 that determines the percentage chance that a bee will replace
+    # the natural spawning of a passive creature should certain conditions be met.
+    # Default: 0.2 (20%)
+    spawnChance: 0.0
+    # Value between 0 and 1 that determines the percentage chance that a bee will lose
+    # its stinger and thus die when successfully attacking an entity.
+    # Default: 1.0 (100%)
+    severStingerChance: 0.7
+  BuffSpanker:
+    enabled: true
+    # The list of PotionEffectType's that you do not wish players to receive.
+    naughty:
+      - DOLPHINS_GRACE
+      - BAD_OMEN
+      - SLOW_DIGGING
+      - SLOW_FALLING
+      - UNLUCK
+  DebugWand:
+    enabled: true
+  DogFacts:
+    enabled: true
+    intervalTime: 15m
+    announcements:
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Join the Official Discord at https://discord.gg/zp63BaX3Uf","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/zp63BaX3Uf"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit the community wiki at civwiki.org","color":"green","clickEvent":{"action":"open_url","value":"https://civwiki.org/wiki/Main_Page"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit our wiki at wiki.civmc.net","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player made map at civmc-map.github.io","color":"green","clickEvent":{"action":"open_url","value":"https://civmc-map.github.io/"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /global to talk in global chat","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /vote to vote for CivMC and receive essence!","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Consider donating to the server at patreon.com/civ_mc! And get some unique perks!","color":"blue","clickEvent":{"action":"open_url","value":"https://www.patreon.com/civ_mc"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"All ores except coal and copper can spawn in big veins. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/hiddenore"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"All ores except diamond spawn randomly as you dig. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/hiddenore"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"The command /config will let you adjust various settings","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /rb to see the crop information for the biome you are in","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /chunklimits to see the restrictions on how many blocks can be placed in a chunk","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Type /emf toggle to turn off/on fishing of decorative heads and custom loot","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"If you type /fm you can see all the types of factories you can make","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Please review the server rules at reddit.com/r/civmc/wiki/index","color":"green","clickEvent":{"action":"open_url","value":"https://www.reddit.com/r/civmc/wiki/index/"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"The use of VPNs or multiple accounts is not allowed, Logging in from the same place as a friend will result in an automatic ban. Accidental use of either may be resolved via a ticket on the official CivMC Discord","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/zp63BaX3Uf"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player run newsletter at https://civwiki.news/ to see whats been going on!","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the starter guide at wiki.civmc.net/pages/getting-started","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/getting-started"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Make sure to reinforce your buildings/chests to protect them from others. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/essential/citadel"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Jukeboxes and Noteblocks act as CCTV, when reinforced they record player actions. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/unique/jukealert"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Killing someone with an ender pearl in your hotbar will lock them in the nether! Player essence is used to keep the players trapped. Click for more info","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/plugins/essential/exilepearl"}}]'
+
+  ElytraFeatures:
+    enabled: false
+    # Whether Elytra flight should be outright disabled
+    disableFlight: false
+    # Whether Elytra flight should be disabled in combat
+    disableFlightInCombat: false
+    # Whether firework boosting should be outright disabled
+    disableFireworkBoosting: false
+    # Whether firework boosting should be disabled in combat
+    disableFireworkBoostingInCombat: true
+    # Whether to restrict firework boosting to explosive fireworks
+    disableSafeFireworkBoosting: false
+    # This regulates player damage when Elytra flying above world height.
+    heightDamage:
+      # The amount of damage (in half-hearts) the flier should take.
+      # NOTE: Setting to 0 will disable the damage.
+      damage: 1
+      # The damage is multiplied by the number of blocks above world height multiplied by this number.
+      scales: 1.0
+      # The amount of blocks above height limit where damage is not applied.
+      buffer: 5
+      # The interval (in milliseconds) between damage ticks.
+      interval: 1000
+  EventDebugHack:
+    enabled: true
+  EventHandlerList:
+    enabled: true
+  GoldBlockElevators:
+    enabled: true
+  HumbugBatchOne:
+    enabled: true
+    allowSheepDying: true
+    allowUsingAnvils: true
+    allowUsingEnchantingTables: true
+    infiniteCauldrons: true
+    disableEnderDragon: true
+    disableIronFarms: true
+    disableEnderCrystalDamage: true
+    disableMiningFatigue: true
+    canEquipBanners: true
+    disableLavaCobbleMountains: true
+    disableWanderingTrader: false
+    preventPearlGlitching: true
+    preventUsingEyeOfEnder: false
+    disablePiglins: false
+    disableGapples: true
+    disableEndGatewayTP: false
+  ItemMetaConverterHack:
+    enabled: true
+  ItemSerializerHack:
+    enabled: true
+  MapCopyProtection:
+    enabled: true
+  OldEnchanting:
+    enabled: true
+    # Hides what enchantment will be granted within the Enchanting Table
+    hideEnchants: true
+    # Automatically fills the consumable slot with the Enchanting Table with Lapis Lazuli that cannot be taken
+    fillLapis: false
+    # Randomises the enchantment offers each time the item is placed in an Enchanting Table
+    randomiseEnchants: true
+    # Force enchantments to cost what they appear in the Enchanting Table
+    fixEnchantCosts: true
+    # Experience modifier, all experience drops will be multiplied by this (does not apply to player exp)
+    # NOTE: Modifier must be 0 or greater
+    experienceModifier: 0.2
+    # Loot modifier, multiply the amount of exp dropped from each level of Looting (does not apply to player exp)
+    # NOTE: Modifier must be 0 or greater
+    lootModifier: 1.5
+    # Enables xp bottles to be crafted from emeralds and vice versa
+    emeraldCrafting: true
+    # Enables gaining xp from emeralds directly if emeraldCrafting is enabled
+    emeraldLeveling: true
+    # Disables exp from mobs, fishing, mining, breeding, furnace extracting, etc
+    disableGrindExp: true
+    # Prevents exp orbs from granting xp
+    preventOrbExp: true
+    # Ensures that the player who threw the xp bottle is the one to get the xp (experienceModifier does not apply)
+    directBottleExp: true
+    # Defines the maximum repair cost of an item
+    # NOTE: Value must be 2 or greater, or -1 to disable
+    maxRepairCost: -1
+    # Defines the set amount of xp that xp bottles will produce
+    # NOTE: Value must be a 0 or greater, or -1 for vanilla random
+    expPerBottle: 10
+    # Allows player's to store their levels in bottles if expPerBottle has a value higher than 0
+    allowExpRecovery: true
+    # Disallows players from creating enchanted books
+    disableEnchantedBookCreation: true
+    # Disallows players from using enchanted books
+    disableEnchantedBookUsage: false
+    # Modifies the exp drops for specific mob types, which will be used in lieu of experienceModifier
+    # NOTE: Players have an implicit modifier of 1.0
+    # NOTE: Modifiers must be 0 or greater
+    entityExpDropModifiers:
+      ENDER_DRAGON: 0.0
+  PhantomMenace:
+    enabled: false
+    # Players have a statistic called TIME_SINCE_REST. If a player's value is above 72k (3 days minecraft time) then
+    # they will start spawning phantoms. Setting the cap to below 72k will effectively disable phantoms. Setting the
+    # cap to -1 will disable the cap. Default: 80k (10% chance per two minutes during the night and thunder storms.)
+    # Read more here: https://minecraft.gamepedia.com/Phantom#Java_Edition
+    timeSinceRestCap: 75000
+    # Determines whether phantoms are allowed to spawn during the night.
+    nightSpawn: true
+    # Determines whether phantoms are allowed to spawn during thunder storms.
+    stormSpawn: true
+    # Determines the maximum light level at the spawning entity's location that phantoms are allowed to spawn at.
+    # Note: 15 will enable spawning at all light levels.
+    maximumLightSpawn: 7
+  PlayerRevive:
+    enabled: true
+  PlayerStatistics:
+    enabled: true
+  MobCondenser:
+    enabled: false
+    mobSpawnModifiers:
+      ZOMBIFIED_PIGLIN: 0.10
+    materialModificationWhitelist:
+      - GHAST_TEAR
+      - WITHER_SKELETON_SKULL
+      - GUNPOWDER
+      - BONE
+      - COAL
+      - ROTTEN_FLESH
+      - GOLD_NUGGET
+  #Alters end portals to send you to a target dimension instead of just the end
+  #This is a very specific hack made for CivMC, it is not recommended to enable
+  #Unless you want to fully mimic their behaviour
+  PortalModifyHack:
+    enabled: true
+    targetWorld: world_nether
+    homeWorld: world
+  PortalSpawnModifier:
+    enabled: false
+    pigManChance: 0.15
+    ghastChance: 0.001
+    witherSkeletonChance: 0.02
+    witherHeadDropChance: 0.01
+  SafeOreBreak:
+    enabled: true
+    ores:
+      - [DIAMOND_ORE,DEEPSLATE_DIAMOND_ORE]
+      - [REDSTONE_ORE,DEEPSLATE_REDSTONE_ORE]
+      - [LAPIS_ORE,DEEPSLATE_LAPIS_ORE]
+      - [GOLD_ORE,DEEPSLATE_GOLD_ORE]
+      - [IRON_ORE,DEEPSLATE_IRON_ORE]
+      - [COPPER_ORE,DEEPSLATE_COPPER_ORE]
+      - [COAL_ORE,DEEPSLATE_COAL_ORE]
+      - [NETHER_GOLD_ORE]
+      - [GILDED_BLACKSTONE]
+      - [NETHER_QUARTZ_ORE]
+      - [GLOWSTONE]
+      - [SEA_LANTERN]
+      - [BOOKSHELF]
+  ShipOutOfLuck:
+    enabled: true
+    boatBreakers:
+      - ICE
+      - PACKED_ICE
+      - FROSTED_ICE
+      - BLUE_ICE
+  # Currently changes a striders speed to be between 0.175 (Default) and 0.3375 (Horse max speed)
+  # aswell as default health to between 20 (Default) and 50 (2.5 heart bars)
+  # Only works on newly spawned striders, not pre-existing mobs
+  StriderBreeding:
+    enabled: true
+    #Default strider speed is 0.175
+    minSpeed: 0.175
+    #Max horse speed is 0.3375
+    maxSpeed: 0.3375
+    #10 Hearts
+    minHealth: 20
+    #25 Hearts
+    maxHealth: 50
+  StrayStats:
+    enabled: true
+  TestConfigHack:
+    enabled: true
+    # Please do not change any of the values below, otherwise it will undermine the test.
+    boolValue: true
+    byteValue: 8
+    shortValue: 14646
+    intValue: 33822776
+    longValue: 2486941267899177
+    maybeLongValue: 6543
+    floatValue: 3847.1234
+    doubleValue: 345978623.178569873
+    charValue: 'c'
+  ############################################################
+  ## Simple Hacks
+  ############################################################
+  BadBoyWatch:
+  # tracks players breaking these blocks and logs information
+    enabled: true
+    trackingDepth: 16
+    clearOnMatch: true
+    minDepthToMatch: 2
+    watchedMaterials:
+      - CHEST
+      - FURNACE
+      - JUKEBOX
+      - NOTE_BLOCK
+      - BEACON
+      - SPONGE
+      - HOPPER
+  CTAnnounce:
+    enabled: true
+    delay: 10000
+    message: '%Victim% was combat tagged by %Attacker%'
+    broadcast: [OP, CONSOLE]
+  Experimental:
+    enabled: true
+    combatspy: false
+    teleportspy: false
+    postteleport:
+      spy: false
+      count: 10
+  GameFeatures:
+    enabled: true
+    disablePotatoXP: false
+    villagerTrading: false
+    witherSpawning: true
+    patrolSpawning: true
+    phantomSpawning: false
+    enderChestPlacement: true
+    enderChestUse: true
+    grindstoneUse: false
+    shulkerBoxUse: false
+    totemPower: true
+    chorusFruitTeleportation: false
+    weepingAngel:
+      enabled: false
+      environment: 5000
+      playerKill: 5000
+    blockWaterInHell: true
+    minecartTeleport: false
+    obsidianGenerators: false
+    personalDeathMessages: false
+    disableNetheriteCrafting: false
+  GameFixes:
+    enabled: true
+    # Does not fully work atm
+    blockElytraBreakBug: false
+    damageOnElytraBreakBug: 0.0
+    stopHopperDupe: false
+    stopRailDupe: true
+    stopEndPortalDeletion: true
+    stopBedBombingInHellBiomes: true
+    stopAnchorBombing: true
+    preventTreeWraparound: true
+    maintainFlatBedrock: false
+    preventLongSigns: true
+    signLengthLimit: 100
+    preventLongSignsAbsolute: true
+    cancelLongSignEvent: false
+    hardLimitBookPageCount: true
+  GameTuning:
+    enabled: true
+    chunkLimits:
+      enabled: false
+      exceededMessage: '&9Limit (%Limit%) reached for this chunk, you cannot place more of this type of block (%Material%).'
+      tileEntities:
+        HOPPER: 16
+        PISTON: 128
+        STICKY_PISTON: 128
+        FURNACE: 48
+        BLAST_FURNACE: 48
+        BREWING_STAND: 48
+        SMOKER: 48
+        ITEM_FRAME: 64
+        GLOW_ITEM_FRAME: 64
+        ARMOR_STAND: 48
+        PAINTING: 48
+      exempt:
+      - Steve
+      - Alex
+    daytimeBed:
+      enabled: true
+      spawnSetMessage: '&bYour spawn has been set.'
+    rainReduction:
+      enabled: false
+      rainOccurrenceChance: .5
+    # Makes nether ratio 1 to 1
+    oneToOneNether: true
+    # Return nether portal, true = enabled    false = disabled
+    returnNetherPortal: true
+    allowNetherTravel: false
+    # Disables minecart inventories (trying to fix dupe issues)
+    # enabled = able to right click   disabled = not able to right click
+    chestedMinecartInventories: true #These were false to prevent a chestcart dupe, think it's patched now?
+    hopperMinecartInventories: true #These were false to prevent a chestcart dupe, think it's patched now?
+    enderChestInventories: false
+    stopTrapHorses: true
+    killTrapHorses: true
+    changeSpawnerType: false
+    allowVillagerTrading: false
+    enderGrief: false
+    witherGrief: false
+    dragonGrief: true
+    allowEnchantedApples: false
+    preventFallingThroughBedrock: false
+    # Disable the Bad Omen effect that player receive when killing pillager patrols
+    badOmen: false
+    #a list of materials players shouldn't be allowed to place at all
+    noplace:
+     #- GRINDSTONE Leaving this here for reference
+  HorseStats:
+    enabled: true
+    wand: COMPASS
+  Insight:
+    enabled: false
+    into:
+      - org.bukkit.event.player
+      - org.bukkit.event.entity
+      - org.bukkit.event.block
+      - org.bukkit.event.inventory
+      - org.bukkit.event.enchantment
+      - org.bukkit.event.hanging
+      - org.bukkit.event.painting
+      - org.bukkit.event.vehicle
+      - org.bukkit.event.weather
+      - org.bukkit.event.world
+  Introbook:
+    enabled: true
+    follow: true
+    contents:
+      title: Welcome ${player}!
+      author: RedDevel
+      pages:
+        - "&5    Welcome &2${player}!\n         &5to CivMC!&r\n\nThis book will guide your first steps!\nIf you die or lose it you can open it via the /introbook command\n\nLet's begin your journey!"
+        - "You've just spawned near another player or town, say something in chat!\n\nIf nobody responds try out global chat instead by using the /global command!\n\nMany nations will want a potential new productive member.\nTake your pick!"
+        - "Maybe you've joined at a time of lower activity, and nobody is responding.\n\nThen you can join the official discord and take your pick of the nation ads there!\n\n      &9discord.gg/\n      HkD79GfmQQ&r"
+        - "Is the nation you want to join far away?\nWell you're in luck!\n\nEvery new player in their first 24 hours on the server gets a singular free tp!\n\nSimply use the command below:\n\n    &c/ott to <player>&r"
+        - "Want to start your own settlement?\nVery possible! but incredibly difficult.\n\nNot just because of a lack of resources!\n\nKnowledge and connections are power in CivMC. You'd be better off building those up first."
+        - "Joining a nation never ties you down. You can even join multiple at once! That's why it's important to remember that you can always start your own nation at a later time.\nThere's not rush!\nTake your time to learn the game first\n\nOn that note:"
+        - "          &5Plugins!&r\n\nCivMC has many many different features and mechanics that make it unique.\nYou can learn about all of them on our handy Wiki!\n\n      &9wiki.civmc.net\n\n&4IT IS VITAL YOU LOOK\n     AT THIS WIKI&r"
+        - "When you join a nation the players there will likely explain some of the basic important plugins to you\n\nThese are:\nCitadel (protect your stuff)\nJukeAlert (know who's breaking your stuff)\nExilepearl (Jail people who broke your stuff)"
+        - "       &5AVOID DOING\n     THE FOLLOWING\n     IF YOU WANT TO\n         SURVIVE\n\n&r1. Breaking people's stuff\n2. Jumping into obsidian pits\n3. Crossing into excluded areas\n4. Anything people would kill you for."
+        - "  &5THEY WILL KILL YOU&r\nLeave the raiding until you understand how to get away with it.\nCameras are watching!\n\nLoot stolen without care is easily taken away, and damages your reputation with others!\nOr will find you killed and banished to the nether"
+        - "It is always important to remember this:\n\nOn CivMC your actions have consequences.\n\nYou have 1 account. 1 name. Don't dirty it the first chance you get.\n\nThat is if you want to make something of yourself.\nWhatever that may be."
+        - "            &5TOS&r\nCivMC is not complete anarchy. You can and will be banned if you break the server rules.\n (Find on the discord)\n\nRefrain from using hacks or spouting slurs.\nAct like a decent human being and all will be well."
+        - "      &5Bugs/Issues&r\n\nIf you've found a bug or have any other issues that require an admin.\nThen you can either raise a ticket on the discord or send a modmail via our reddit.\n\n         &9R/CivMC&r"
+        - "        &5Goodluck!&r\nThere are many things to do on CivMC. Let your ambitions run wild!\n\nLeave something behind people will remember for years to come.\n\nBe it your actions, your creations or your destruction..."
+  NewfriendAssist:
+    enabled: true
+    announce: '&f%Player% is brand new!'
+    giveIntroKitToRandomSpawners: false
+    broadcast: [CONSOLE, ALL]
+    helptips: on
+    helptips_end: 20m
+    introkit:
+      enabled: true
+      contents:
+       - ==: org.bukkit.inventory.ItemStack
+         type: COOKIE
+         amount: 32
+         meta:
+           ==: ItemMeta
+           meta-type: UNSPECIFIC
+           lore:
+            - "Gift from the Admins as you"
+            - "begin your journey on CivMC"
+       - ==: org.bukkit.inventory.ItemStack
+         type: BED
+         amount: 1
+         meta:
+           ==: ItemMeta
+           meta-type: UNSPECIFIC
+           lore:
+            - "This world is unforgiving."
+            - "Be sure to get a good night's"
+            - "rest soon."
+       - ==: org.bukkit.inventory.ItemStack
+         type: BOAT
+         amount: 1
+         meta:
+           ==: ItemMeta
+           meta-type: UNSPECIFIC
+           lore:
+            - "The world is your oyster"
+       - ==: org.bukkit.inventory.ItemStack
+         type: MINECART
+         amount: 1
+         meta:
+           ==: ItemMeta
+           meta-type: UNSPECIFIC
+           lore:
+            - "This will help you"
+            - "get on track."
+  ReinforcedChestBreak:
+    enabled: true
+    # in seconds
+    delay: 180
+    message: "&4%player% is raiding a chest at %x% %y% %z%."
+  SanityHack:
+    enabled: false
+    trackPlace: false
+    trackBreak: false
+    belowYLevel: 7
+  #Used to roll a dice on whether to drop an additional sapling on block break or leaf decay
+  SaplingHack:
+    enabled: true
+    #Should we still roll the dice for people when using a fortune enchanted tool?
+    allow_fortune: true
+    blocks:
+      JUNGLE_LEAVES: 0.025
+      DARK_OAK_LEAVES: 0.05
+      OAK_LEAVES: 0
+      BIRCH_LEAVES: 0
+      ACACIA_LEAVES: 0
+      SPRUCE_LEAVES: 0
+  OneTimeTeleport:
+    enabled: true
+    material_blacklist: []
+    unsafe_materials: [LAVA, WATER]
+    ott_timeout: 1d
+  ToggleLamp:
+    enabled: true
+    cooldownTime: 100
+  DespawnFix:
+    enabled: true
+  BetterRails:
+    enabled: true
+    # All in metres per second
+    # Minecraft will prevent you going faster than 30m/s
+    base: 9
+    materials:
+      COBBLESTONE: 8
+      COPPER_BLOCK: 29
+      EXPOSED_COPPER: 23
+      WEATHERED_COPPER: 18
+      OXIDIZED_COPPER: 14
+    skyBase: 10
+    skyMaterials:
+      COBBLESTONE: 8
+      COPPER_BLOCK: 30
+      EXPOSED_COPPER: 24
+      WEATHERED_COPPER: 19
+      OXIDIZED_COPPER: 15
+  CopperRail:
+    enabled: true
+    deoxidise: true
+    # Chance to oxidise copper one level.
+    # Unoxidised copper will oxidise at 75% of this level.
+    damage: 0.0175
+  FasterHorses:
+    enabled: true
+    minSpeed: 0.1125
+    maxSpeed: 0.438827582278 # 18.5m/s
+  AntiDerailment:
+    enabled: true
+  CreeperDiscHack:
+    enabled: true
+    discChance: 0.003
+  NoOozing:
+    enabled: true
+  BuildLimits:
+    enabled: true
+    limits:
+      - ==: com.programmerdan.minecraft.simpleadminhacks.framework.utilities.BuildLimit
+        world: "world_nether"
+        type: ALTITUDE
+        min_y: -64
+        max_y: 128
+  PortalConnect:
+    enabled: false
+    server: main
+    world: world
+  TooHappyGhasts:
+    enabled: true
+  PlayerCap:
+    enabled: true
+  FairPlay:
+    enabled: true
