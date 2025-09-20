@@ -130,7 +130,7 @@ public class RealisticBiomesGUI {
             clicks.add(click);
         }
         Scrollbar middleBar = new Scrollbar(
-            clicks, 45, 5, ContentAligners.getCenteredInOrder(clicks.size(), 45, 9));
+            clicks, 45, 45, 9, ContentAligners.getCenteredInOrder(clicks.size(), 45, 9));
         inventory.addComponent(middleBar, SlotPredicates.rows(5));
         StaticDisplaySection bottomLine = new StaticDisplaySection(9);
         inventory.addComponent(bottomLine, SlotPredicates.rows(1));
