@@ -13,7 +13,7 @@ disable-v1-protocol: false
 # All tokens, labeled by the serviceName of each server list.
 tokens:
   # Default token for all server lists, if another isn't supplied.
-  default: ""
+  default: "1"
 
 # Configuration section for all vote forwarding to NuVotifier
 forwarding:
