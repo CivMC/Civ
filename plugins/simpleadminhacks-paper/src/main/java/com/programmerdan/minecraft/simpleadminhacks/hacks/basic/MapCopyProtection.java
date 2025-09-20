@@ -5,6 +5,7 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -21,9 +22,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class MapCopyProtection extends BasicHack implements CommandExecutor {
+
+    private static final String COPY_PROTECTED = "Copy protected by ";
 
     final NamespacedKey copyKey = new NamespacedKey(plugin, "copy-protected");
 
@@ -70,7 +75,7 @@ public class MapCopyProtection extends BasicHack implements CommandExecutor {
 
         if (item == null || item.getType() == Material.AIR) return;
 
-        if (isCopy(item)) {
+        if (isCopy(item) && !isCreatorOfCopy(event.getWhoClicked().getName(), item)) {
             event.setCancelled(true);
             event.getWhoClicked().sendMessage(
                 Component.text()
@@ -115,7 +120,7 @@ public class MapCopyProtection extends BasicHack implements CommandExecutor {
 
         itemMeta.getPersistentDataContainer().set(copyKey, PersistentDataType.INTEGER, 1);
 
-        itemMeta.lore(List.of(Component.text(String.format("Copy protected by %s", sender.getName()))));
+        itemMeta.lore(List.of(Component.text("%s%s".formatted(COPY_PROTECTED, sender.getName()))));
 
         player.getInventory().getItemInMainHand().setItemMeta(itemMeta);
 
@@ -124,5 +129,16 @@ public class MapCopyProtection extends BasicHack implements CommandExecutor {
 
     private boolean isCopy(ItemStack item) {
         return item.getItemMeta().getPersistentDataContainer().has(copyKey, PersistentDataType.INTEGER);
+    }
+
+    private boolean isCreatorOfCopy(final String playerName, final ItemStack item) {
+        return Optional.ofNullable(item.getItemMeta().lore())
+            .flatMap(lores -> lores.stream()
+                .map(c -> PlainTextComponentSerializer.plainText().serialize(c))
+                .filter(lore -> lore.contains(COPY_PROTECTED))
+                .map(lore -> lore.replace(COPY_PROTECTED, ""))
+                .map(playerName::equals)
+                .findFirst())
+            .orElse(false);
     }
 }
