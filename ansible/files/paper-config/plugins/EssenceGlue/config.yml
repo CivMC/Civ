@@ -30,7 +30,7 @@ voting_reward: 1
 
 voting_sites:
   minecraftmp:
-    voting_cooldown: 24 hours
+    voting_cooldown: 23 hours
     voting_url: 'https://minecraft-mp.com/server/305231/vote/?username=%PLAYER%'
     internal_key: 'Minecraft-MP.com'
     name: 'minecraft-mp.com'
@@ -40,7 +40,7 @@ voting_sites:
     internal_key: 'MCSL'
     name: 'minecraft-server-list.com'
   minecraftservers:
-    voting_cooldown: 24 hours
+    voting_cooldown: 23 hours
     voting_url: 'https://minecraftservers.org/vote/636677'
     internal_key: 'MinecraftServers.org'
     name: 'minecraftservers.org'
