@@ -47,9 +47,9 @@ services:
             # Config & Plugins
             - /opt/stacks/minecraft/proxy-config:/config
             - /opt/stacks/minecraft/proxy-plugins:/plugins
-            - /opt/PrivateConfig/proxy/config/Votifier/config.toml:/config/plugins/Votifier/config.yml
-            - /opt/PrivateConfig/proxy/config/Votifier/rsa/public.key:/config/plugins/Votifier/rsa/public.key
-            - /opt/PrivateConfig/proxy/config/Votifier/rsa/private.key:/config/plugins/Votifier/rsa/private.key
+            - /opt/PrivateConfig/proxy/config/nuvotifier/config.toml:/config/plugins/nuvotifier/config.yml
+            - /opt/PrivateConfig/proxy/config/nuvotifier/rsa/public.key:/config/plugins/nuvotifier/rsa/public.key
+            - /opt/PrivateConfig/proxy/config/nuvotifier/rsa/private.key:/config/plugins/nuvotifier/rsa/private.key
 
     paper:
         image: itzg/minecraft-server:stable-java24-graalvm
