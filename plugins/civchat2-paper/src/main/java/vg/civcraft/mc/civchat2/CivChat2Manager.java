@@ -291,7 +291,7 @@ public class CivChat2Manager {
      * @param chatMessage The message content
      */
     public void flagMessage(Player sender, String chatMessage) {
-        //Flag inappropriate message, mute sender for X minutes (defined in config)
+        //Flag inappropriate message, mute sender for X seconds (defined in config)
         sender.sendMessage(ChatColor.RED + "Your message has been flagged for inappropriate content.");
         if (muteTimeSeconds > 0) {
             banSetting.setValue(sender, System.currentTimeMillis() + TimeUnit.SECONDS.toMillis((long)muteTimeSeconds)); // mute player automatically
