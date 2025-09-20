@@ -110,7 +110,6 @@ public class CivProxyPlugin {
         if (record != null && record.instant().isAfter(Instant.now().minusSeconds(60))) {
             QueueManager queueManager = AjQueueAPI.getInstance().getQueueManager();
             AdaptedPlayer player = AjQueueAPI.getInstance().getPlatformMethods().getPlayer(event.getPlayer().getUniqueId());
-            System.out.println("connected");
             queueManager.addToQueue(player, record.server());
         }
     }
