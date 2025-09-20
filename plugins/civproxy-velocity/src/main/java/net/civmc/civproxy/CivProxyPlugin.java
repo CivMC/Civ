@@ -95,7 +95,6 @@ public class CivProxyPlugin {
 //            if (mini != null && mini.getPlayersConnected().size() < 110) {
 //                event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("mini").get()));
 //            } else {
-            System.out.println("go to pvp 2");
                 event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("pvp").get()));
 //            }
 
