@@ -21,8 +21,8 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
  */
 public class PlayerHeadRecipe extends InputRecipe {
 
-    public PlayerHeadRecipe(String identifier, String name, int productionTime, ItemMap inputs) {
-        super(identifier, name, productionTime, inputs);
+    public PlayerHeadRecipe(String identifier, String name, int productionTime, ItemMap inputs, int damagePerRun) {
+        super(identifier, name, productionTime, inputs, damagePerRun);
     }
 
     @Override
@@ -52,6 +52,7 @@ public class PlayerHeadRecipe extends InputRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
         ItemMap toRemove = input.clone();
