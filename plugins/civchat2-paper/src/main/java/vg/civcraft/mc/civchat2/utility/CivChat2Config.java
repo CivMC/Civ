@@ -94,6 +94,21 @@ public class CivChat2Config {
         return config.getBoolean("chat.dynamicColoring");
     }
 
+    private String filterRelayGroup;
+   
+    public String getFilterRelayGroup() {
+        return config.getString("info.filterRelayGroup");
+    }
+
+    private int muteTimeHours;
+    
+    public int getMuteTimeHours() {
+        return config.getInt("info.muteTimeHours", 1);
+    }
+
+
+    
+
     public synchronized String getColorAtDistance(double distance) {
 
         if (chatColor == null) {

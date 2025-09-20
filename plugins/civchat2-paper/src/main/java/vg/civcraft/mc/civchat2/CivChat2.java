@@ -79,10 +79,11 @@ public class CivChat2 extends ACivMod {
     public boolean debugEnabled() {
         return config.getDebug();
     }
-
     public CivChat2Log getCivChat2Log() {
         return log;
     }
+   
+    
 
     private void registerCivChatEvents() {
         getServer().getPluginManager().registerEvents(new CivChat2Listener(chatMan), this);
