@@ -23,7 +23,9 @@ services:
       TYPE: 'CUSTOM'
       BUNGEE_JAR_FILE: 'velocity.jar'
 
-      REPLACE_ENV_VARIABLES: 'true'
+      REMOVE_OLD_MODS: 'TRUE'
+      SYNC_SKIP_NEWER_IN_DESTINATION: 'false'
+      REPLACE_ENV_DURING_SYNC: 'TRUE'
       REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
 
       CIV_POSTGRES_HOST: postgres
@@ -226,6 +228,8 @@ services:
       test: [ "CMD-SHELL", 'mysqladmin ping --user "$$MYSQL_USER" --password="$$MYSQL_PASSWORD"' ]
       timeout: 20s
       retries: 10
+      start_period: 40s
+      start_interval: 5s
     ports:
       - "3306:3306"
     environment:
@@ -245,6 +249,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 40s
+      start_interval: 5s
     ports:
       - "5432:5432"
     environment:
@@ -263,6 +269,8 @@ services:
       interval: 60s
       timeout: 10s
       retries: 5
+      start_period: 40s
+      start_interval: 5s
     ports:
       - "5672:5672"
       - "15672:15672"
