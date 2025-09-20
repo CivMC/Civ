@@ -23,8 +23,10 @@ chat:
   globalGroup: '!'
   joinGlobalGroupByDefault: false
 info:
-  # Namelayer to send filtered messages to for moderation
-  filterRelayGroup: 'Mods'
+  ##FilterRelayGroup: Namelayer to send filtered messages from ! and local to for moderation - leave blank to disable
+  filterRelayGroup: ''
+  #muteTimeHours: How long to automute someone for sending a message with a banned word - 0 to disable
+  muteTimeHours: 1
   #debug: lots of debugging logging will show up in the console def=false
   debug: false
   #groups: if NameLayer groups is enabled def=true
