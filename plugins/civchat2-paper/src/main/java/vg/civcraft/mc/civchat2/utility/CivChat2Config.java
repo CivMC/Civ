@@ -100,10 +100,10 @@ public class CivChat2Config {
         return config.getString("info.filterRelayGroup");
     }
 
-    private int muteTimeHours;
-    
-    public int getMuteTimeHours() {
-        return config.getInt("info.muteTimeHours", 1);
+    private int muteTimeSeconds;
+
+    public int getMuteTimeSeconds() {
+        return config.getInt("info.muteTimeSeconds");
     }
 
 

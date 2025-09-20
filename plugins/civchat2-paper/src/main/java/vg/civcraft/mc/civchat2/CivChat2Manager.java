@@ -79,7 +79,7 @@ public class CivChat2Manager {
 
     private String filterRelayGroup;
 
-    private int muteTimeHours;
+    private int muteTimeSeconds;
     
     private Group modsGroup;
 
@@ -98,7 +98,7 @@ public class CivChat2Manager {
         afkPlayers = new HashMap<>();
         scoreboardHUD = new ScoreboardHUD();
         bannedWords = loadBannedWords();
-        muteTimeHours = config.getMuteTimeHours();
+        muteTimeSeconds = config.getMuteTimeSeconds();
         banSetting = instance.getCivChat2SettingsManager().getGlobalChatMuteSetting();
         filterRelayGroup = config.getFilterRelayGroup();
     }
@@ -291,17 +291,18 @@ public class CivChat2Manager {
      * @param chatMessage The message content
      */
     public void flagMessage(Player sender, String chatMessage) {
-        //Flag inappropriate message, mute sender for 1 hour
+        //Flag inappropriate message, mute sender for X minutes (defined in config)
         sender.sendMessage(ChatColor.RED + "Your message has been flagged for inappropriate content.");
-        if (muteTimeHours > 0) {
-            banSetting.setValue(sender, System.currentTimeMillis() + TimeUnit.HOURS.toMillis(muteTimeHours)); // mute player automatically
+        if (muteTimeSeconds > 0) {
+            banSetting.setValue(sender, System.currentTimeMillis() + TimeUnit.SECONDS.toMillis((long)muteTimeSeconds)); // mute player automatically
         }
 
         Group modsGroup = GroupManager.getGroup(filterRelayGroup);
         if (modsGroup == null) {
-            Bukkit.getLogger().warning("CivChat2: No filter relay group is set up, if this is unintentional please set info.filterRelayGroup in config.yml. Logged filtered message: " + sender.getName() + ": " + chatMessage);
+            instance.getLogger().warning(sender.getName() + " sent a filtered message: " + chatMessage + " No filter relay group set, if this is unintentional please set filterRelayGroup in the config.yml");
             return;
         }
+        
 
         // Log the filtered message to console and mods
         String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId())

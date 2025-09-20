@@ -22,10 +22,10 @@ chat:
       color: GRAY
   globalGroup: '!'
 info:
-  # Namelayer to send filtered messages to for moderation - leave blank to disable nl logging
-  filterRelayGroup: ''
-  #How long to automute someone for sending a message with a banned word (0 = disable automute)
-  muteTimeHours: 1
+  ##FilterRelayGroup: Namelayer to send filtered messages from ! and local to for moderation - set to null to disable
+  filterRelayGroup: "Mods"
+  #muteTimeSeconds: How long to automute someone for sending a message with a banned word - 0 to disable
+  muteTimeSeconds: 3600
   #debug: lots of debugging logging will show up in the console def=false
   debug: false
   #groups: if NameLayer groups is enabled def=true
