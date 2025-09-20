@@ -243,7 +243,7 @@ watch-files: true
 #                configured below.
 #   => custom    Uses a messaging service provided using the LuckPerms API.
 #   => auto      Attempts to automatically setup a messaging service using redis or sql.
-messaging-service: none
+messaging-service: pluginmsg
 
 # If LuckPerms should automatically push updates after a change has been made with a command.
 auto-push-updates: true
@@ -256,7 +256,7 @@ push-log-entries: true
 # - If you have LuckPerms installed on your backend servers as well as a BungeeCord proxy, you
 #   should set this option to false on either your backends or your proxies, to avoid players being
 #   messaged twice about log entries.
-broadcast-received-log-entries: true
+broadcast-received-log-entries: false
 
 # Settings for Redis.
 # Port 6379 is used by default; set address to "host:port" if differs
