@@ -66,6 +66,7 @@ dependencies {
     pvpPlugin(project(path = ":plugins:namecolors-paper"))
 
     proxyPlugin(project(path = ":plugins:civproxy-velocity"))
+    proxyPlugin(project(path = ":plugins:announcements-velocity", configuration = "shadow"))
 }
 
 val copyPaperPlugins = tasks.register<Copy>("copyPaperPlugins") {
