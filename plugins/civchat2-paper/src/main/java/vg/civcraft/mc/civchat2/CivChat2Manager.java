@@ -425,7 +425,7 @@ public class CivChat2Manager {
             if (file.exists()) {
                 List<String> lines = Files.readAllLines(file.toPath());
                 for (String line : lines) {
-                    String cleanWord = line.trim().toLowerCase();
+                    String cleanWord = line.strip().toLowerCase();
                     if (!cleanWord.isEmpty()) {
                         words.add(cleanWord);
                     }
