@@ -3,6 +3,7 @@ package net.civmc.kitpvp.arena;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.SequencedMap;
@@ -92,6 +93,13 @@ public class ArenaManager {
                 } else {
                     worldPlayer.kick(Component.text("The arena you were in was deleted"));
                 }
+            }
+        }
+        for (Iterator<LoadedArena> iterator = rankedArenas.iterator(); iterator.hasNext(); ) {
+            LoadedArena rankedArena = iterator.next();
+            if (rankedArena.equals(removedArena)) {
+                iterator.remove();
+                break;
             }
         }
         Bukkit.unloadWorld(worldName, false);
