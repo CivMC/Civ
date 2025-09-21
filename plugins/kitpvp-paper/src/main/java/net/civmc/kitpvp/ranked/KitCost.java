@@ -36,6 +36,7 @@ public class KitCost {
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.FEATHER_FALLING, 1);
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.DEPTH_STRIDER, 1);
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.THORNS, 1);
+        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.SWIFT_SNEAK, 100);
     }
 
     public static ItemStack setPoints(ItemStack item, int points) {
