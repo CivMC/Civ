@@ -375,8 +375,20 @@ public class RankedQueueManager {
         boolean created = arenaManager.createRankedArena(arena, loaded -> {
             World world = Bukkit.getWorld(arenaManager.getArenaName(loaded));
             Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
-                Kit playerKit = kitDao.getKit(dao.getKit(player.getUniqueId()));
-                Kit opponentKit = kitDao.getKit(dao.getKit(opponent.getUniqueId()));
+                int playerKitId = dao.getKit(player.getUniqueId());
+                Kit playerKit;
+                if (playerKitId == -1) {
+                    playerKit = kitDao.getKit("Ranked", null);
+                } else {
+                    playerKit = kitDao.getKit(playerKitId);
+                }
+                int opponentKitId = dao.getKit(opponent.getUniqueId());
+                Kit opponentKit;
+                if (opponentKitId == -1) {
+                    opponentKit = kitDao.getKit("Ranked", null);
+                } else {
+                    opponentKit = kitDao.getKit(opponentKitId);
+                }
                 Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
                     if (!player.isOnline() || !opponent.isOnline() || playerKit == null || opponentKit == null || KitCost.getCost(playerKit.items()) > KitCost.MAX_POINTS || KitCost.getCost(opponentKit.items()) > KitCost.MAX_POINTS) {
                         // TODO better error handling
