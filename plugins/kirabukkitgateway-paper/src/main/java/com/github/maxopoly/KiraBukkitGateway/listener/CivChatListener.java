@@ -1,6 +1,7 @@
 package com.github.maxopoly.KiraBukkitGateway.listener;
 
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import vg.civcraft.mc.civchat2.event.GroupChatEvent;
