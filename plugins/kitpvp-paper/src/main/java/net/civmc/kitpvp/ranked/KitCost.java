@@ -2,12 +2,15 @@ package net.civmc.kitpvp.ranked;
 
 import net.civmc.kitpvp.kit.KitCustomItem;
 import net.civmc.kitpvp.kit.KitItem;
+import net.civmc.kitpvp.kit.KitPotion;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,31 +19,24 @@ import java.util.Map;
 
 public class KitCost {
 
-    public static final int MAX_POINTS = 200;
+    public static final int MAX_POINTS = 50;
 
     public static final Map<Enchantment, Integer> ENCHANTMENT_COST_PER_LEVEL = new HashMap<>();
 
     static {
-        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.PROTECTION, 4);
-        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.PROJECTILE_PROTECTION, 1);
-        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.BLAST_PROTECTION, 2);
-        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.FIRE_PROTECTION, 1);
+        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.PROTECTION, 1);
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.SHARPNESS, 1);
-        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.FIRE_ASPECT, 1);
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.KNOCKBACK, 1);
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.POWER, 1);
-        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.PUNCH, 1);
-        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.FLAME, 1);
-        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.AQUA_AFFINITY, 1);
-        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.RESPIRATION, 1);
-        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.FEATHER_FALLING, 1);
-        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.DEPTH_STRIDER, 1);
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.THORNS, 1);
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.SWIFT_SNEAK, 100);
     }
 
     public static ItemStack setPoints(ItemStack item, int points) {
         ItemStack cloned = item.clone();
+        if (points == 0) {
+            return cloned;
+        }
         ItemMeta clonedMeta = cloned.getItemMeta();
         List<Component> lore = clonedMeta.hasLore() ? clonedMeta.lore() : new ArrayList<>();
         lore.add(0, Component.text(points + " point" + (points == 1 ? "" : "s"), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
@@ -81,6 +77,15 @@ public class KitCost {
             if (item.getType() == kitItem.getItem()) {
                 cost += kitItem.getCost();
                 break;
+            }
+        }
+
+        if (item.getType() == Material.POTION) {
+            PotionMeta meta = (PotionMeta) item.getItemMeta();
+            for (KitPotion potion : KitPotion.values()) {
+                if (meta.getBasePotionType() == potion.getType()) {
+                    cost += potion.getCost();
+                }
             }
         }
 
