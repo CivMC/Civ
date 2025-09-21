@@ -134,7 +134,7 @@ public enum KitItem {
     CROSSBOW(Material.CROSSBOW, KitCategory.TOOL, 1),
     FISHING_ROD(Material.FISHING_ROD, KitCategory.TOOL, 1),
     OAK_BOAT(Material.OAK_BOAT, KitCategory.TOOL, 1),
-    TNT_MINECART(Material.TNT_MINECART, KitCategory.TOOL, 6),
+    TNT_MINECART(Material.TNT_MINECART, KitCategory.TOOL, 5),
 
     ELYTRA(Material.ELYTRA, KitCategory.ARMOUR, 100),
     TURTLE_HELMET(Material.TURTLE_HELMET, KitCategory.ARMOUR, 2),
