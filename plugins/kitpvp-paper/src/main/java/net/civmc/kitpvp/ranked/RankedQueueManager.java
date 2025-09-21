@@ -260,20 +260,19 @@ public class RankedQueueManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             int kitId = dao.getKit(player.getUniqueId());
             double elo = dao.getElo(player.getUniqueId());
+            Kit defaultKit;
             if (kitId == -1) {
-                Kit ranked = kitDao.getKit("Ranked", null);
-                if (ranked != null) {
-                    kitId = ranked.id();
-                }
+                defaultKit = kitDao.getKit("Ranked", null);
+            } else {
+                defaultKit = null;
             }
-            int fKitId = kitId;
             Bukkit.getScheduler().runTask(plugin, () -> {
-                if (fKitId == -1) {
+                if (kitId == -1 && defaultKit == null) {
                     player.sendMessage(Component.text("You cannot join the ranked queue because you do not have a kit selected!", NamedTextColor.RED));
                     player.sendMessage(Component.text("Open a kit in /kit and click on the diamond sword to select it", NamedTextColor.RED));
                     return;
                 }
-                Kit kit = kitDao.getKit(fKitId);
+                Kit kit = defaultKit == null ? kitDao.getKit(kitId) : defaultKit;
                 int points = KitCost.getCost(kit.items());
                 if (points > KitCost.MAX_POINTS) {
                     player.sendMessage(Component.text("Your kit is too expensive! Kits may cost a maximum of " + KitCost.MAX_POINTS + " points, but your kit costs " + points + " points.", NamedTextColor.RED));
@@ -293,20 +292,19 @@ public class RankedQueueManager {
         JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             int kitId = dao.getKit(player.getUniqueId());
+            Kit defaultKit;
             if (kitId == -1) {
-                Kit ranked = kitDao.getKit("Ranked", null);
-                if (ranked != null) {
-                    kitId = ranked.id();
-                }
+                defaultKit = kitDao.getKit("Ranked", null);
+            } else {
+                defaultKit = null;
             }
-            int fKitId = kitId;
             Bukkit.getScheduler().runTask(plugin, () -> {
-                if (fKitId == -1) {
-                    player.sendMessage(Component.text("You cannot join the unranked queue because you do not have a kit selected!", NamedTextColor.RED));
+                if (kitId == -1 && defaultKit == null) {
+                    player.sendMessage(Component.text("You cannot join the ranked queue because you do not have a kit selected!", NamedTextColor.RED));
                     player.sendMessage(Component.text("Open a kit in /kit and click on the diamond sword to select it", NamedTextColor.RED));
                     return;
                 }
-                Kit kit = kitDao.getKit(fKitId);
+                Kit kit = defaultKit == null ? kitDao.getKit(kitId) : defaultKit;
                 int points = KitCost.getCost(kit.items());
                 if (points > KitCost.MAX_POINTS) {
                     player.sendMessage(Component.text("Your kit is too expensive! Kits may cost a maximum of " + KitCost.MAX_POINTS + " points, but your kit costs " + points + " points.", NamedTextColor.RED));
