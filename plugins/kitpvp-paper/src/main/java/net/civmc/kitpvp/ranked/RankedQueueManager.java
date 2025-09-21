@@ -279,6 +279,8 @@ public class RankedQueueManager {
                 if (player.isOnline()) {
                     queued.put(player, new QueuedPlayer(elo, Instant.now()));
                     scanQueue();
+
+                    JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s join the ranked queue".formatted(player.getName()));
                 }
                 player.sendMessage(Component.text("You have joined the ranked queue", NamedTextColor.YELLOW));
             });
@@ -310,6 +312,8 @@ public class RankedQueueManager {
                 if (player.isOnline()) {
                     unrankedQueued.put(player, new QueuedPlayer(0, Instant.now()));
                     scanQueueUnranked();
+
+                    JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s join the unranked queue".formatted(player.getName()));
                 }
                 player.sendMessage(Component.text("You have joined the unranked queue", NamedTextColor.YELLOW));
             });
@@ -330,11 +334,11 @@ public class RankedQueueManager {
                     earlier = opponentEntry.getValue().joined();
                 }
                 double maxTime = earlier.until(Instant.now(), ChronoUnit.SECONDS);
-                if (maxTime > 30) {
+                if (maxTime > 60) {
                     maxGap = 10000;
-                } else if (maxTime > 20) {
+                } else if (maxTime > 40) {
                     maxGap = 400;
-                } else if (maxTime > 10) {
+                } else if (maxTime > 20) {
                     maxGap = 300;
                 }
 
@@ -413,9 +417,16 @@ public class RankedQueueManager {
                     if (unranked) {
                         player.sendMessage(Component.text("You have been paired with " + opponent.getName() + ". You are playing unranked", NamedTextColor.YELLOW));
                         opponent.sendMessage(Component.text("You have been paired with " + player.getName() + ". You are playing unranked", NamedTextColor.YELLOW));
+
+                        JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s started an unranked ranked fight against %s".formatted(player.getName(), opponent.getName()));
                     } else {
                         Elo.EloChange playerChange = Elo.getChange(playerElo, opponentElo);
                         Elo.EloChange opponentChange = Elo.getChange(opponentElo, playerElo);
+
+                        JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s (elo: %s, win: %s, loss: %s) started a ranked fight against %s (elo: %s, win: %s, loss: %s)"
+                            .formatted(player.getName(), Math.round(playerElo), Math.round(playerChange.win()), Math.round(playerChange.loss()),
+                                opponent.getName(), Math.round(opponentElo), Math.round(opponentChange.win()), Math.round(opponentChange.loss())));
+
                         player.sendMessage(Component.text("You (elo: " + ((int) Math.round(playerElo)) + ") have been paired with " + opponent.getName() + " (elo: " + ((int) Math.round(opponentElo)) + ")", NamedTextColor.YELLOW));
                         player.sendMessage(Component.text("Win: +" + Math.round(playerChange.win()) + " elo, lose: " + Math.round(playerChange.loss()) + " elo", NamedTextColor.GRAY));
 

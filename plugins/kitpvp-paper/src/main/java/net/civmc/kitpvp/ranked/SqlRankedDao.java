@@ -123,6 +123,8 @@ public class SqlRankedDao implements RankedDao {
                 playerElo += Elo.getChange(playerElo, opponentElo).loss();
                 opponentElo += Elo.getChange(opponentElo, playerElo).win();
             }
+            playerElo = Math.max(playerElo, 200);
+            opponentElo = Math.max(opponentElo, 200);
 
             PreparedStatement update = connection.prepareStatement("INSERT INTO ranked_elo (player, elo) VALUES (?, ?) ON DUPLICATE KEY UPDATE elo = ?");
             update.setString(1, player.toString());
