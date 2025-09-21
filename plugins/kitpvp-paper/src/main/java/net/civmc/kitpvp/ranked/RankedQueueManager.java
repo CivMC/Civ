@@ -490,6 +490,8 @@ public class RankedQueueManager {
                     border.setDamageBuffer(0);
                     border.setDamageAmount(3);
 
+                    player.closeInventory();
+                    opponent.closeInventory();
                     player.teleport(new Location(world, 42.5, 72, 33.5, -45, 0));
                     opponent.teleport(new Location(world, 96.5, 72, 89.5, 135, 0));
                     player.setGameMode(GameMode.SURVIVAL);
