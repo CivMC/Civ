@@ -218,16 +218,37 @@ public class RankedQueueManager {
             opponent.sendMessage(Component.text("The match has ended in a draw because it timed out! (10 minutes)", NamedTextColor.GRAY));
             playerElo += playerChange.draw();
             opponentElo += opponentChange.draw();
+            if (match.unranked()) {
+                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s drew against %s".formatted(player.getName(), opponent.name()));
+            } else {
+                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s (elo: %s, change: %s) drew against %s (elo: %s, change: %s)"
+                    .formatted(player.getName(), Math.round(playerElo), formatChange(playerChange.draw()),
+                        opponent.getName(), Math.round(opponentElo), formatChange(opponentChange.draw())));
+            }
         } else if (winner.equals(player.getUniqueId())) {
             player.sendMessage(Component.text("You have won!", NamedTextColor.GREEN));
             opponent.sendMessage(Component.text("You lost", NamedTextColor.RED));
             playerElo += playerChange.win();
             opponentElo += opponentChange.loss();
+            if (match.unranked()) {
+                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s drew won %s".formatted(player.getName(), opponent.name()));
+            } else {
+                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s (elo: %s, change: %s) won against %s (elo: %s, change: %s)"
+                    .formatted(player.getName(), Math.round(playerElo), formatChange(playerChange.win()),
+                        opponent.getName(), Math.round(opponentElo), formatChange(opponentChange.loss())));
+            }
         } else {
             opponent.sendMessage(Component.text("You have won!", NamedTextColor.GREEN));
             player.sendMessage(Component.text("You lost", NamedTextColor.RED));
             playerElo += playerChange.loss();
             opponentElo += opponentChange.win();
+            if (match.unranked()) {
+                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s lost against %s".formatted(player.getName(), opponent.name()));
+            } else {
+                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s (elo: %s, change: %s) lost against %s (elo: %s, change: %s)"
+                    .formatted(player.getName(), Math.round(playerElo), formatChange(playerChange.loss()),
+                        opponent.getName(), Math.round(opponentElo), formatChange(opponentChange.win())));
+            }
         }
 
         if (!match.unranked()) {
