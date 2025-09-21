@@ -118,7 +118,7 @@ public enum KitItem {
     TRIDENT(Material.TRIDENT, KitCategory.TOOL, 4),
     FLINT_AND_STEEL(Material.FLINT_AND_STEEL, KitCategory.TOOL, 0),
 
-    SHEARS(Material.SHEARS, KitCategory.TOOL, 1),
+    SHEARS(Material.SHEARS, KitCategory.TOOL, 0),
     ENDER_PEARL(Material.ENDER_PEARL, KitCategory.TOOL, 2),
     FIREWORK_ROCKET(Material.FIREWORK_ROCKET, KitCategory.TOOL, 1),
 
