@@ -314,7 +314,7 @@ public class RankedQueueManager {
 
                     JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s joined the ranked queue".formatted(player.getName()));
                 }
-                if (auto) {
+                if (!auto) {
                     player.sendMessage(Component.text("You have joined the ranked queue", NamedTextColor.YELLOW));
                 } else {
                     player.sendMessage(Component.text("You will rejoin the ranked queue in 10 seconds. Type /ranked to leave.", NamedTextColor.YELLOW));
