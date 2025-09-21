@@ -151,7 +151,7 @@ public class RankedQueueManager {
 
     public void leaveQueue(Player player) {
         if (this.queued.remove(player) != null) {
-            JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s joined the ranked queue".formatted(player.getName()));
+            JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s left the ranked queue".formatted(player.getName()));
         }
     }
 
