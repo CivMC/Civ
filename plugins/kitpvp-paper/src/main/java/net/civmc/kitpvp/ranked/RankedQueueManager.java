@@ -66,7 +66,7 @@ public class RankedQueueManager {
             try {
                 for (Iterator<RankedMatch> iterator = matches.iterator(); iterator.hasNext(); ) {
                     RankedMatch match = iterator.next();
-                    if (Instant.now().isAfter(match.started().plus(15, ChronoUnit.MINUTES))) {
+                    if (Instant.now().isAfter(match.started().plus(10, ChronoUnit.MINUTES))) {
                         mostPotsWinsOrDraw(match);
                         iterator.remove();
                     }
