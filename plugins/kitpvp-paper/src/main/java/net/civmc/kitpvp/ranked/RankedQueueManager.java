@@ -437,12 +437,12 @@ public class RankedQueueManager {
                 }
 
                 RecentMatch recent = recentMatches.get(playerEntry.getKey().getUniqueId());
-                if (recent.time().until(Instant.now(), ChronoUnit.SECONDS) < 30) {
+                if (recent != null && recent.other().equals(opponentEntry.getKey().getUniqueId()) && recent.time().until(Instant.now(), ChronoUnit.SECONDS) < 45) {
                     continue;
                 }
 
                 RecentMatch recent2 = recentMatches.get(opponentEntry.getKey().getUniqueId());
-                if (recent2.time().until(Instant.now(), ChronoUnit.SECONDS) < 30) {
+                if (recent2 != null && recent2.other().equals(playerEntry.getKey().getUniqueId()) && recent2.time().until(Instant.now(), ChronoUnit.SECONDS) < 45) {
                     continue;
                 }
 
