@@ -23,7 +23,7 @@ public class RankedPlaceholders extends PlaceholderExpansion {
                 this.elo = all;
             });
             this.elo = all;
-        }, 20 * 60 * 10, 20 * 60 * 10);
+        }, 20 * 60 * 5, 20 * 60 * 5);
     }
 
     @Override
