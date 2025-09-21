@@ -212,8 +212,8 @@ public class RankedQueueManager {
         Elo.EloChange opponentChange = Elo.getChange(match.opponentElo(), match.playerElo());
 
         if (winner == null) {
-            player.sendMessage(Component.text("The match has ended in a draw because it timed out! (15 minutes)", NamedTextColor.GRAY));
-            opponent.sendMessage(Component.text("The match has ended in a draw because it timed out! (15 minutes)", NamedTextColor.GRAY));
+            player.sendMessage(Component.text("The match has ended in a draw because it timed out! (10 minutes)", NamedTextColor.GRAY));
+            opponent.sendMessage(Component.text("The match has ended in a draw because it timed out! (10 minutes)", NamedTextColor.GRAY));
             playerElo += playerChange.draw();
             opponentElo += opponentChange.draw();
         } else if (winner.equals(player.getUniqueId())) {
