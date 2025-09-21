@@ -150,7 +150,7 @@ public enum KitItem {
     PUMPKIN_PIE(Material.PUMPKIN_PIE, KitCategory.FOOD, 0),
     BREAD(Material.BREAD, KitCategory.FOOD, 0),
     COOKED_CHICKEN(Material.COOKED_CHICKEN, KitCategory.FOOD, 0),
-    CHORUS_FRUIT(Material.CHORUS_FRUIT, KitCategory.FOOD, 100),
+    CHORUS_FRUIT(Material.CHORUS_FRUIT, KitCategory.FOOD, 10),
     ;
 
     private static final Map<KitCategory, List<KitItem>> itemsByCategory = new EnumMap<>(KitCategory.class);
