@@ -44,6 +44,9 @@ public class RankedQueueListener implements Listener {
         }
 
         RankedMatch match = rankedQueueManager.getMatch(player);
+        if (match == null) {
+            return;
+        }
         if (match.opponent().equals(player)) {
             match.addPlayerDamageDealt(event.getFinalDamage());
         } else {
