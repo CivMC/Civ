@@ -36,6 +36,8 @@ import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class RankedQueueManager {
 
@@ -69,6 +71,14 @@ public class RankedQueueManager {
                     }
                 }
                 scanQueue();
+                for (RankedMatch match : matches) {
+                    if (match.opponent().getY() > 90) {
+                        match.opponent().addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 50, 1, false, false));
+                    }
+                    if (match.player().getY() > 90) {
+                        match.player().addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 50, 1, false, false));
+                    }
+                }
             } catch (RuntimeException ex) {
                 JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Ticking matches", ex);
             }
