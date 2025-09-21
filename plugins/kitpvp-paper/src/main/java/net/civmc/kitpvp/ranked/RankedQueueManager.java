@@ -280,7 +280,7 @@ public class RankedQueueManager {
                     queued.put(player, new QueuedPlayer(elo, Instant.now()));
                     scanQueue();
 
-                    JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s join the ranked queue".formatted(player.getName()));
+                    JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s joined the ranked queue".formatted(player.getName()));
                 }
                 player.sendMessage(Component.text("You have joined the ranked queue", NamedTextColor.YELLOW));
             });
