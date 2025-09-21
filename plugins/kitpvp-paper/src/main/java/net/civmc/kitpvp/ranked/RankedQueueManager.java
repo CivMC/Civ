@@ -150,7 +150,9 @@ public class RankedQueueManager {
     }
 
     public void leaveQueue(Player player) {
-        this.queued.remove(player);
+        if (this.queued.remove(player) != null) {
+            JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s joined the ranked queue".formatted(player.getName()));
+        }
     }
 
     public boolean isInUnrankedQueue(Player player) {
@@ -158,7 +160,9 @@ public class RankedQueueManager {
     }
 
     public void leaveUnrankedQueue(Player player) {
-        this.unrankedQueued.remove(player);
+        if (this.unrankedQueued.remove(player) != null) {
+            JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s left the unranked queue".formatted(player.getName()));
+        }
     }
 
     public void loseMatch(Player player) {
@@ -313,7 +317,7 @@ public class RankedQueueManager {
                     unrankedQueued.put(player, new QueuedPlayer(0, Instant.now()));
                     scanQueueUnranked();
 
-                    JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s join the unranked queue".formatted(player.getName()));
+                    JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s joined the unranked queue".formatted(player.getName()));
                 }
                 player.sendMessage(Component.text("You have joined the unranked queue", NamedTextColor.YELLOW));
             });
