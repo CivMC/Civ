@@ -38,7 +38,7 @@ public enum KitItem {
     NETHERITE_LEGGINGS(Material.NETHERITE_LEGGINGS, KitCategory.ARMOUR, 6),
     NETHERITE_BOOTS(Material.NETHERITE_BOOTS, KitCategory.ARMOUR, 7),
 
-    OBSIDIAN(Material.OBSIDIAN, KitCategory.BLOCK, 4),
+    OBSIDIAN(Material.OBSIDIAN, KitCategory.BLOCK, 3),
     COBBLESTONE(Material.COBBLESTONE, KitCategory.BLOCK, 0),
     COBWEB(Material.COBWEB, KitCategory.BLOCK, 6),
     IRON_DOOR(Material.IRON_DOOR, KitCategory.BLOCK, 0),
