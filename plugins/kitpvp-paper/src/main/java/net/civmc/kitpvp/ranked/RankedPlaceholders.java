@@ -13,14 +13,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class RankedPlaceholders extends PlaceholderExpansion {
 
-    private final RankedDao dao;
-
-    private Map<UUID, Double> elo = Collections.emptyMap();
+    private Map<UUID, Double> elo;
 
     public RankedPlaceholders(RankedDao dao) {
-        this.dao = dao;
-        Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
-            this.elo = dao.getAll();
+        this.elo = dao.getAll();
+        Bukkit.getScheduler().runTaskTimerAsynchronously(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
+            Map<UUID, Double> all = dao.getAll();
+            Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
+                this.elo = all;
+            });
+            this.elo = all;
         }, 20 * 60 * 10, 20 * 60 * 10);
     }
 
