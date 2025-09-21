@@ -138,15 +138,15 @@ public class ArenaGui {
         ));
         queueArena.setItemMeta(queueArenaMeta);
 
-        ItemStack queueUnrankedArena = new ItemStack(Material.BEDROCK);
-        ItemMeta queueUnrankedArenaMeta = queueUnrankedArena.getItemMeta();
-        queueUnrankedArenaMeta.itemName(Component.text("Queue for unranked 1v1", NamedTextColor.GOLD));
-        queueUnrankedArenaMeta.lore(List.of(
-            Component.empty().append(Component.text("Maximum kit cost: ", darkishBlue).append(Component.text(KitCost.MAX_POINTS + " points", NamedTextColor.AQUA)).decoration(TextDecoration.ITALIC, false)),
-            Component.empty().append(Component.text("Or type /unranked to join or leave the queue", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)),
-            Component.empty().append(Component.text("Change your kit by clicking the diamond sword in a /kit", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
-        ));
-        queueUnrankedArena.setItemMeta(queueUnrankedArenaMeta);
+//        ItemStack queueUnrankedArena = new ItemStack(Material.BEDROCK);
+//        ItemMeta queueUnrankedArenaMeta = queueUnrankedArena.getItemMeta();
+//        queueUnrankedArenaMeta.itemName(Component.text("Queue for unranked 1v1", NamedTextColor.GOLD));
+//        queueUnrankedArenaMeta.lore(List.of(
+//            Component.empty().append(Component.text("Maximum kit cost: ", darkishBlue).append(Component.text(KitCost.MAX_POINTS + " points", NamedTextColor.AQUA)).decoration(TextDecoration.ITALIC, false)),
+//            Component.empty().append(Component.text("Or type /unranked to join or leave the queue", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)),
+//            Component.empty().append(Component.text("Change your kit by clicking the diamond sword in a /kit", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+//        ));
+//        queueUnrankedArena.setItemMeta(queueUnrankedArenaMeta);
 
         ItemStack createArena = new ItemStack(Material.PAPER);
         ItemMeta createArenaMeta = createArena.getItemMeta();
@@ -160,10 +160,10 @@ public class ArenaGui {
 
         MultiPageView view = new MultiPageView(player, arenas, "Arenas", true);
         view.setMenuSlot(new QueueClickable(queueArena), 0);
-        view.setMenuSlot(new QueueUnrankedClickable(queueUnrankedArena), 1);
-        view.setMenuSlot(new DecorationStack(new ItemStack(Material.AIR)), 2);
-        view.setMenuSlot(new ArenaClickable(createArena, true), 3);
-        view.setMenuSlot(new ArenaClickable(createPrivateArena, false), 4);
+//        view.setMenuSlot(new QueueUnrankedClickable(queueUnrankedArena), 1);
+        view.setMenuSlot(new DecorationStack(new ItemStack(Material.AIR)), 1);
+        view.setMenuSlot(new ArenaClickable(createArena, true), 2);
+        view.setMenuSlot(new ArenaClickable(createPrivateArena, false), 3);
 
         view.showScreen();
     }
