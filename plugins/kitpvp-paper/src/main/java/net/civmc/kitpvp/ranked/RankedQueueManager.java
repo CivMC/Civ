@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,6 +51,8 @@ public class RankedQueueManager {
 
     private final SequencedMap<Player, QueuedPlayer> queued = new LinkedHashMap<>();
     private final SequencedMap<Player, QueuedPlayer> unrankedQueued = new LinkedHashMap<>();
+
+    private final Map<UUID, RecentMatch> recentMatches = new HashMap<>();
 
     private final List<RankedMatch> matches = new ArrayList<>();
 
@@ -280,12 +283,18 @@ public class RankedQueueManager {
 
             arenaManager.deleteLoadedArena(match.arena());
 
+            recentMatches.put(player.getUniqueId(), new RecentMatch(opponent.getUniqueId(), Instant.now()));
+            recentMatches.put(opponent.getUniqueId(), new RecentMatch(player.getUniqueId(), Instant.now()));
+
             joinQueue(player, true);
             joinQueue(opponent, true);
         });
     }
 
     public void joinQueue(Player player, boolean auto) {
+        if (getMatch(player) != null) {
+            return;
+        }
         JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             int kitId = dao.getKit(player.getUniqueId());
@@ -324,6 +333,9 @@ public class RankedQueueManager {
     }
 
     public void joinUnrankedQueue(Player player, boolean auto) {
+        if (getMatch(player) != null) {
+            return;
+        }
         JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             int kitId = dao.getKit(player.getUniqueId());
@@ -388,6 +400,16 @@ public class RankedQueueManager {
                     maxGap = 300;
                 }
 
+                RecentMatch recent = recentMatches.get(playerEntry.getKey().getUniqueId());
+                if (recent.time().until(Instant.now(), ChronoUnit.SECONDS) < 30) {
+                    continue;
+                }
+
+                RecentMatch recent2 = recentMatches.get(opponentEntry.getKey().getUniqueId());
+                if (recent2.time().until(Instant.now(), ChronoUnit.SECONDS) < 30) {
+                    continue;
+                }
+
                 if (Math.abs(playerEntry.getValue().elo() - opponentEntry.getValue().elo()) < maxGap) {
                     if (ThreadLocalRandom.current().nextBoolean()) {
                         var temp = playerEntry;
@@ -411,6 +433,16 @@ public class RankedQueueManager {
             for (int j = i + 1; j < entries.size(); j++) {
                 Map.Entry<Player, QueuedPlayer> opponentEntry = entries.get(j);
                 if (!opponentEntry.getValue().valid()) {
+                    continue;
+                }
+
+                RecentMatch recent = recentMatches.get(playerEntry.getKey().getUniqueId());
+                if (recent.time().until(Instant.now(), ChronoUnit.SECONDS) < 30) {
+                    continue;
+                }
+
+                RecentMatch recent2 = recentMatches.get(opponentEntry.getKey().getUniqueId());
+                if (recent2.time().until(Instant.now(), ChronoUnit.SECONDS) < 30) {
                     continue;
                 }
 
@@ -512,5 +544,8 @@ public class RankedQueueManager {
                 return joined.until(Instant.now(), ChronoUnit.SECONDS) >= 10;
             }
         }
+    }
+
+    record RecentMatch(UUID other, Instant time) {
     }
 }
