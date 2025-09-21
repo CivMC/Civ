@@ -209,12 +209,6 @@ public class RankedQueueManager {
         UUID matchPlayer = player.getUniqueId();
         UUID matchOpponent = opponent.getUniqueId();
 
-        if (!match.unranked()) {
-            Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
-                dao.updateElo(matchPlayer, matchOpponent, winner);
-            });
-        }
-
         double playerElo = match.playerElo();
         double opponentElo = match.opponentElo();
 
@@ -268,27 +262,32 @@ public class RankedQueueManager {
                 .append(Component.text(" (change: " + formatChange(opponentElo - match.opponentElo()) + ")", NamedTextColor.GRAY)));
         }
 
-        Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
-            KitApplier.reset(player);
-            if (!player.isDead()) {
-                player.teleport(spawnProvider.getSpawn());
-            } else {
-                player.setRespawnLocation(spawnProvider.getSpawn());
+        Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
+            if (!match.unranked()) {
+                dao.updateElo(matchPlayer, matchOpponent, winner);
             }
-            KitApplier.reset(opponent);
-            if (!opponent.isDead()) {
-                opponent.teleport(spawnProvider.getSpawn());
-            } else {
-                opponent.setRespawnLocation(spawnProvider.getSpawn());
-            }
+            Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
+                KitApplier.reset(player);
+                if (!player.isDead()) {
+                    player.teleport(spawnProvider.getSpawn());
+                } else {
+                    player.setRespawnLocation(spawnProvider.getSpawn());
+                }
+                KitApplier.reset(opponent);
+                if (!opponent.isDead()) {
+                    opponent.teleport(spawnProvider.getSpawn());
+                } else {
+                    opponent.setRespawnLocation(spawnProvider.getSpawn());
+                }
 
-            arenaManager.deleteLoadedArena(match.arena());
+                arenaManager.deleteLoadedArena(match.arena());
 
-            recentMatches.put(player.getUniqueId(), new RecentMatch(opponent.getUniqueId(), Instant.now()));
-            recentMatches.put(opponent.getUniqueId(), new RecentMatch(player.getUniqueId(), Instant.now()));
+                recentMatches.put(player.getUniqueId(), new RecentMatch(opponent.getUniqueId(), Instant.now()));
+                recentMatches.put(opponent.getUniqueId(), new RecentMatch(player.getUniqueId(), Instant.now()));
 
-            joinQueue(player, true);
-            joinQueue(opponent, true);
+                joinQueue(player, true);
+                joinQueue(opponent, true);
+            });
         });
     }
 
@@ -538,6 +537,7 @@ public class RankedQueueManager {
     }
 
     record QueuedPlayer(double elo, Instant joined, boolean auto) {
+
         public boolean valid() {
             if (!auto) {
                 return true;
@@ -548,5 +548,6 @@ public class RankedQueueManager {
     }
 
     record RecentMatch(UUID other, Instant time) {
+
     }
 }

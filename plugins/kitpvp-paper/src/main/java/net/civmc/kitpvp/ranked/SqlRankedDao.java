@@ -92,7 +92,7 @@ public class SqlRankedDao implements RankedDao {
                 return 1000;
             }
         } catch (SQLException ex) {
-            JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error getting leo", ex);
+            JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error getting elo", ex);
             return -1;
         }
     }
@@ -126,14 +126,12 @@ public class SqlRankedDao implements RankedDao {
             playerElo = Math.max(playerElo, 200);
             opponentElo = Math.max(opponentElo, 200);
 
-            PreparedStatement update = connection.prepareStatement("INSERT INTO ranked_elo (player, elo) VALUES (?, ?) ON DUPLICATE KEY UPDATE elo = ?");
+            PreparedStatement update = connection.prepareStatement("REPLACE INTO ranked_elo (player, elo) VALUES (?, ?)");
             update.setString(1, player.toString());
             update.setDouble(2, playerElo);
-            update.setDouble(3, playerElo);
             update.addBatch();
             update.setString(1, opponent.toString());
             update.setDouble(2, opponentElo);
-            update.setDouble(3, opponentElo);
             update.addBatch();
             update.executeBatch();
 
