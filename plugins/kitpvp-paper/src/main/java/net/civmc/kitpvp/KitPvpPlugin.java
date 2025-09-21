@@ -2,6 +2,7 @@ package net.civmc.kitpvp;
 
 import java.sql.SQLException;
 import java.util.List;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.civmc.kitpvp.anvil.AnvilGui;
 import net.civmc.kitpvp.arena.ArenaCleaner;
 import net.civmc.kitpvp.arena.ArenaCommand;
@@ -14,6 +15,7 @@ import net.civmc.kitpvp.arena.data.SqlArenaDao;
 import net.civmc.kitpvp.command.ClearCommand;
 import net.civmc.kitpvp.command.KitCommand;
 import net.civmc.kitpvp.ranked.RankedCommand;
+import net.civmc.kitpvp.ranked.RankedPlaceholders;
 import net.civmc.kitpvp.ranked.RankedQueueListener;
 import net.civmc.kitpvp.ranked.RankedQueueManager;
 import net.civmc.kitpvp.ranked.SqlRankedDao;
@@ -82,6 +84,7 @@ public class KitPvpPlugin extends ACivMod {
             getCommand("ranked").setExecutor(new RankedCommand(queueManager));
             getCommand("unranked").setExecutor(new UnrankedCommand(queueManager));
             getServer().getPluginManager().registerEvents(new RankedQueueListener(queueManager), this);
+            new RankedPlaceholders(ranked).register();
 
             PrivateArenaListener privateArenaListener = new PrivateArenaListener(spawnProvider, manager);
             getServer().getPluginManager().registerEvents(privateArenaListener, this);

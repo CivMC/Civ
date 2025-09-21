@@ -16,4 +16,5 @@ dependencies {
 
     compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.4.10.jar"))
     compileOnly(libs.aswm.api)
+    compileOnly("me.clip:placeholderapi:2.11.6")
 }

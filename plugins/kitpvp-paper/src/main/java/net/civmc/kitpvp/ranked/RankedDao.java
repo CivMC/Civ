@@ -1,6 +1,7 @@
 package net.civmc.kitpvp.ranked;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface RankedDao {
@@ -9,6 +10,8 @@ public interface RankedDao {
     double getElo(UUID player);
     void updateElo(UUID player, UUID opponent, UUID winner);
     List<Rank> getTop(int n);
+
+    Map<UUID, Double> getAll();
 
     record Rank(UUID player, double elo) {}
 }

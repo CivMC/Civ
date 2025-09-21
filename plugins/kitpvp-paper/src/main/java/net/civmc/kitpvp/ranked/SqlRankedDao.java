@@ -166,4 +166,21 @@ public class SqlRankedDao implements RankedDao {
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public Map<UUID, Double> getAll() {
+        try (Connection connection = source.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT player, elo FROM ranked_elo");
+
+            ResultSet resultSet = statement.executeQuery();
+            Map<UUID, Double> players = new HashMap<>();
+            while (resultSet.next()) {
+                players.put(UUID.fromString(resultSet.getString("player")), resultSet.getDouble("elo"));
+            }
+            return players;
+        } catch (SQLException ex) {
+            JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Error getting top players", ex);
+            return Collections.emptyMap();
+        }
+    }
 }
