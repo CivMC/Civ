@@ -1,6 +1,9 @@
 package net.civmc.kitpvp.ranked;
 
+import com.dre.brewery.Brew;
+import com.dre.brewery.recipe.BRecipe;
 import net.civmc.kitpvp.kit.KitCustomItem;
+import net.civmc.kitpvp.kit.KitDrugs;
 import net.civmc.kitpvp.kit.KitItem;
 import net.civmc.kitpvp.kit.KitPotion;
 import net.kyori.adventure.text.Component;
@@ -87,6 +90,16 @@ public class KitCost {
             for (KitPotion potion : KitPotion.values()) {
                 if (meta.getBasePotionType() == potion.getType()) {
                     cost += potion.getCost();
+                }
+            }
+        }
+
+        Brew brew = Brew.get(item);
+        if (brew != null) {
+            for (KitDrugs drugs : KitDrugs.values()) {
+                BRecipe recipe = BRecipe.getMatching(drugs.getBrew());
+                if (recipe != null && recipe.getRecipeName().equals(brew.getCurrentRecipe().getRecipeName())) {
+                    cost += drugs.getCost();
                 }
             }
         }
