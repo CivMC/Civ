@@ -133,7 +133,8 @@ public class ArenaGui {
         queueArenaMeta.lore(List.of(
             Component.empty().append(Component.text("Your elo: ", darkishBlue).append(Component.text(Math.round(elo), NamedTextColor.AQUA)).decoration(TextDecoration.ITALIC, false)),
             Component.empty().append(Component.text("Maximum kit cost: ", darkishBlue).append(Component.text(KitCost.MAX_POINTS + " points", NamedTextColor.AQUA)).decoration(TextDecoration.ITALIC, false)),
-            Component.empty().append(Component.text("Or type /ranked to join or leave the queue", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+            Component.empty().append(Component.text("Or type /ranked to join or leave the queue", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)),
+            Component.empty().append(Component.text("Change your selected kit by clicking the diamond sword in the /kit editor", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
         ));
         queueArena.setItemMeta(queueArenaMeta);
 
@@ -142,7 +143,8 @@ public class ArenaGui {
         queueUnrankedArenaMeta.itemName(Component.text("Queue for unranked 1v1", NamedTextColor.GOLD));
         queueUnrankedArenaMeta.lore(List.of(
             Component.empty().append(Component.text("Maximum kit cost: ", darkishBlue).append(Component.text(KitCost.MAX_POINTS + " points", NamedTextColor.AQUA)).decoration(TextDecoration.ITALIC, false)),
-            Component.empty().append(Component.text("Or type /unranked to join or leave the queue", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+            Component.empty().append(Component.text("Or type /unranked to join or leave the queue", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)),
+            Component.empty().append(Component.text("Change your selected kit by clicking the diamond sword in the /kit editor", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
         ));
         queueUnrankedArena.setItemMeta(queueUnrankedArenaMeta);
 
