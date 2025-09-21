@@ -391,6 +391,8 @@ public class RankedQueueManager {
                     border.setCenter(72, 72);
                     border.setSize(143);
                     border.setSize(5, 8 * 60);
+                    border.setDamageBuffer(0);
+                    border.setDamageAmount(3);
 
                     player.teleport(new Location(world, 42.5, 72, 33.5, -45, 0));
                     opponent.teleport(new Location(world, 96.5, 72, 89.5, 135, 0));
