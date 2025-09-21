@@ -140,7 +140,11 @@ public class ArenaManager {
         }
 
         Bukkit.getScheduler().runTask(plugin, () -> {
-            int rankedId = this.rankedArenas.size();
+            int rankedId = 0;
+            for (LoadedArena loaded : rankedArenas) {
+                rankedId = Math.max(rankedId, loaded.rankedId());
+            }
+            rankedId += 1;
             String worldName = "rankedarena." + rankedId;
             api.loadWorld(slimeWorld.clone(worldName), true);
             World world = Bukkit.getWorld(worldName);
