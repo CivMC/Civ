@@ -2,7 +2,9 @@ package net.civmc.kitpvp.ranked;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -33,5 +35,19 @@ public class RankedQueueListener implements Listener {
             return;
         }
         rankedQueueManager.loseMatch(event.getPlayer());
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void on(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        RankedMatch match = rankedQueueManager.getMatch(player);
+        if (match.opponent().equals(player)) {
+            match.addPlayerDamageDealt(event.getFinalDamage());
+        } else {
+            match.addOpponentDamageDealt(event.getFinalDamage());
+        }
     }
 }

@@ -34,6 +34,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -111,36 +112,25 @@ public class RankedQueueManager {
         }, 20 * 60, 20 * 60);
     }
 
+    public RankedMatch getMatch(Player player) {
+        for (RankedMatch match : matches) {
+            if (match.player().equals(player) || match.opponent().equals(player)) {
+                return match;
+            }
+        }
+        return null;
+    }
+
     private void mostPotsWinsOrDraw(RankedMatch match) {
         Player player = match.player();
-
-        int playerPots = 0;
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null && item.getType() == Material.SPLASH_POTION) {
-                PotionMeta meta = (PotionMeta) item.getItemMeta();
-                if (meta.getBasePotionType() == PotionType.STRONG_HEALING) {
-                    playerPots++;
-                }
-            }
-        }
-
         Player opponent = match.opponent();
-        int opponentPots = 0;
-        for (ItemStack item : opponent.getInventory().getContents()) {
-            if (item != null && item.getType() == Material.SPLASH_POTION) {
-                PotionMeta meta = (PotionMeta) item.getItemMeta();
-                if (meta.getBasePotionType() == PotionType.STRONG_HEALING) {
-                    opponentPots++;
-                }
-            }
-        }
 
-        player.sendMessage(Component.text("The match has timed out! The player with the most health potions will win.", NamedTextColor.YELLOW));
-        opponent.sendMessage(Component.text("The match has timed out! The player with the most health potions will win.", NamedTextColor.YELLOW));
+        player.sendMessage(Component.text("The match has timed out! The player who dealt the most damage will win.", NamedTextColor.YELLOW));
+        opponent.sendMessage(Component.text("The match has timed out! The player who dealt the most damage will win.", NamedTextColor.YELLOW));
 
-        if (opponentPots > playerPots) {
+        if (match.getOpponentDamageDealt() > match.getPlayerDamageDealt()) {
             endMatch(match, match.opponent().getUniqueId());
-        } else if (opponentPots < playerPots) {
+        } else if (match.getOpponentDamageDealt() < match.getPlayerDamageDealt()) {
             endMatch(match, match.player().getUniqueId());
         } else {
             endMatch(match, null);
@@ -396,6 +386,11 @@ public class RankedQueueManager {
                         arenaManager.deleteLoadedArena(loaded);
                         return;
                     }
+
+                    WorldBorder border = world.getWorldBorder();
+                    border.setCenter(72, 72);
+                    border.setSize(143);
+                    border.setSize(5, 8 * 60);
 
                     player.teleport(new Location(world, 42.5, 72, 33.5, -45, 0));
                     opponent.teleport(new Location(world, 96.5, 72, 89.5, 135, 0));
