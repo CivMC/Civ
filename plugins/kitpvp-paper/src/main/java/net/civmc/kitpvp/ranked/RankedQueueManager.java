@@ -1,5 +1,7 @@
 package net.civmc.kitpvp.ranked;
 
+import com.github.maxopoly.finale.Finale;
+import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
 import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -13,8 +15,6 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import com.github.maxopoly.finale.Finale;
-import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
 import net.civmc.kitpvp.KitApplier;
 import net.civmc.kitpvp.KitPvpPlugin;
 import net.civmc.kitpvp.arena.ArenaManager;
@@ -31,15 +31,11 @@ import net.luckperms.api.node.types.PermissionNode;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionType;
 
 public class RankedQueueManager {
 
