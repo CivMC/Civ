@@ -1,13 +1,11 @@
 package net.civmc.kitpvp.kit;
 
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import org.bukkit.Material;
 
 public enum KitItem {
     LEATHER_HELMET(Material.LEATHER_HELMET, KitCategory.ARMOUR, 0),
@@ -117,7 +115,7 @@ public enum KitItem {
     NETHERITE_HOE(Material.NETHERITE_HOE, KitCategory.TOOL, 6),
 
     SHIELD(Material.SHIELD, KitCategory.TOOL, 0),
-    TRIDENT(Material.TRIDENT, KitCategory.TOOL, 0),
+    TRIDENT(Material.TRIDENT, KitCategory.TOOL, 4),
     FLINT_AND_STEEL(Material.FLINT_AND_STEEL, KitCategory.TOOL, 0),
 
     SHEARS(Material.SHEARS, KitCategory.TOOL, 1),
