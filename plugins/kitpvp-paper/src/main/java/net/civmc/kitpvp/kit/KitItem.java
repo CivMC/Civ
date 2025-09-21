@@ -141,16 +141,16 @@ public enum KitItem {
     ELYTRA(Material.ELYTRA, KitCategory.ARMOUR, 100),
     TURTLE_HELMET(Material.TURTLE_HELMET, KitCategory.ARMOUR, 2),
 
-    COOKED_PORKCHOP(Material.COOKED_PORKCHOP, KitCategory.FOOD, 1),
+    COOKED_PORKCHOP(Material.COOKED_PORKCHOP, KitCategory.FOOD, 0),
     GOLDEN_APPLE(Material.GOLDEN_APPLE, KitCategory.FOOD, 5),
-    BAKED_POTATO(Material.BAKED_POTATO, KitCategory.FOOD, 1),
-    COOKED_BEEF(Material.COOKED_BEEF, KitCategory.FOOD, 2),
-    GOLDEN_CARROT(Material.GOLDEN_CARROT, KitCategory.FOOD, 3),
+    BAKED_POTATO(Material.BAKED_POTATO, KitCategory.FOOD, 0),
+    COOKED_BEEF(Material.COOKED_BEEF, KitCategory.FOOD, 0),
+    GOLDEN_CARROT(Material.GOLDEN_CARROT, KitCategory.FOOD, 0),
     SWEET_BERRIES(Material.SWEET_BERRIES, KitCategory.FOOD, 0),
-    PUMPKIN_PIE(Material.PUMPKIN_PIE, KitCategory.FOOD, 1),
-    BREAD(Material.BREAD, KitCategory.FOOD, 1),
-    COOKED_CHICKEN(Material.COOKED_CHICKEN, KitCategory.FOOD, 1),
-    CHORUS_FRUIT(Material.CHORUS_FRUIT, KitCategory.FOOD, 1),
+    PUMPKIN_PIE(Material.PUMPKIN_PIE, KitCategory.FOOD, 0),
+    BREAD(Material.BREAD, KitCategory.FOOD, 0),
+    COOKED_CHICKEN(Material.COOKED_CHICKEN, KitCategory.FOOD, 0),
+    CHORUS_FRUIT(Material.CHORUS_FRUIT, KitCategory.FOOD, 0),
     ;
 
     private static final Map<KitCategory, List<KitItem>> itemsByCategory = new EnumMap<>(KitCategory.class);
