@@ -164,7 +164,7 @@ public class CivProxyPlugin {
             }
             user.data().add(
                 PermissionNode.builder()
-                    .permission("ajqueue.serverpriority." + server + ".1")
+                    .permission("ajqueue.serverpriority." + server + ".10")
                     .expiry(5, TimeUnit.MINUTES)
                     .build(),
                 TemporaryNodeMergeStrategy.REPLACE_EXISTING_IF_DURATION_LONGER);

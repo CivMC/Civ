@@ -22,11 +22,8 @@ public class DatabaseManager {
     public DatabaseManager(KitPvpPlugin plugin, ManagedDatasource dataSource) {
         this.plugin = plugin;
         this.dataSource = dataSource;
-        this.plugin.info("Initialised a database connection");
-
 
         initialiseTables();
-        dataSource.updateDatabase();
     }
 
     private void initialiseTables() {

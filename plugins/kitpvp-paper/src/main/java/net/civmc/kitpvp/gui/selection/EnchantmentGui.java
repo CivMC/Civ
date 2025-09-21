@@ -8,9 +8,10 @@ import java.util.logging.Level;
 import net.civmc.kitpvp.KitPvpPlugin;
 import net.civmc.kitpvp.anvil.AnvilGui;
 import net.civmc.kitpvp.anvil.AnvilGuiListener;
-import net.civmc.kitpvp.data.Kit;
-import net.civmc.kitpvp.data.KitPvpDao;
+import net.civmc.kitpvp.kit.Kit;
+import net.civmc.kitpvp.kit.KitPvpDao;
 import net.civmc.kitpvp.gui.EditKitGui;
+import net.civmc.kitpvp.ranked.KitCost;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.core.component.DataComponents;
@@ -23,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.checkerframework.checker.units.qual.K;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
@@ -47,12 +49,19 @@ public class EnchantmentGui extends ItemSelectionGui {
             List<Enchantment> enchants = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).stream()
                 .sorted(Comparator.comparingInt(Enchantment::getMaxLevel).reversed())
                 .toList();
+            OUTER:
             for (Enchantment enchantment : enchants) {
                 if (enchantment.canEnchantItem(kitItem)
                     && !enchantment.isCursed()
                     && enchantment != Enchantment.BANE_OF_ARTHROPODS
                     && enchantment != Enchantment.SMITE
                     && enchantment != Enchantment.MENDING) {
+                    for (Enchantment currentEnchantment : kitItem.getEnchantments().keySet()) {
+                        if (currentEnchantment.conflictsWith(enchantment) && currentEnchantment != enchantment) {
+                            slot++;
+                            continue OUTER;
+                        }
+                    }
                     int pos = ENCHANT_START_SLOTS[slot++];
                     for (int level = 1; level <= enchantment.getMaxLevel(); level++) {
                         ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
@@ -62,7 +71,12 @@ public class EnchantmentGui extends ItemSelectionGui {
 
                         ItemStack enchantedKitItem = kitItem.clone();
                         enchantedKitItem.addEnchantment(enchantment, level);
-                        inventory.setSlot(toClickable(book, enchantedKitItem), pos++);
+                        int cost = KitCost.ENCHANTMENT_COST_PER_LEVEL.getOrDefault(enchantment, 0) * level;
+                        if (cost > 0) {
+                            inventory.setSlot(toClickable(KitCost.setPoints(book, cost), enchantedKitItem), pos++);
+                        } else {
+                            inventory.setSlot(toClickable(book, enchantedKitItem), pos++);
+                        }
                     }
                 }
             }
@@ -92,7 +106,7 @@ public class EnchantmentGui extends ItemSelectionGui {
                 ItemMeta breakableItemMeta = breakableItem.getItemMeta();
                 breakableItemMeta.setUnbreakable(false);
                 breakableItem.setItemMeta(breakableItemMeta);
-                inventory.setSlot(toClickable(breakable, breakableItem), 52);
+                inventory.setSlot(toClickable(KitCost.setPoints(breakable, -100), breakableItem), 52);
             } else {
                 ItemStack unbreakable = new ItemStack(Material.BEDROCK);
                 ItemMeta unbreakableMeta = unbreakable.getItemMeta();
@@ -103,7 +117,7 @@ public class EnchantmentGui extends ItemSelectionGui {
                 ItemMeta unbreakableItemMeta = unbreakableItem.getItemMeta();
                 unbreakableItemMeta.setUnbreakable(true);
                 unbreakableItem.setItemMeta(unbreakableItemMeta);
-                inventory.setSlot(toClickable(unbreakable, unbreakableItem), 52);
+                inventory.setSlot(toClickable(KitCost.setPoints(unbreakable, 100), unbreakableItem), 52);
             }
         }
 

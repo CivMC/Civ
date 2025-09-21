@@ -1,4 +1,4 @@
-package net.civmc.kitpvp.data;
+package net.civmc.kitpvp.kit;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

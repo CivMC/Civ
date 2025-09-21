@@ -21,7 +21,7 @@ public class RespawnListener implements Listener {
         String worldName = world.getName();
         if (manager.isArena(worldName)) {
             for (LoadedArena arena : manager.getArenas()) {
-                if (manager.getArenaName(arena.arena().name(), arena.owner()).equals(worldName)) {
+                if (manager.getArenaName(arena).equals(worldName)) {
                     Location spawn = arena.arena().spawn().clone();
                     spawn.setWorld(world);
                     event.setRespawnLocation(spawn);

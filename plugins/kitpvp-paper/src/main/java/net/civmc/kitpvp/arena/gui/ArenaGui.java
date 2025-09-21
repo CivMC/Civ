@@ -7,8 +7,11 @@ import net.civmc.kitpvp.arena.ArenaManager;
 import net.civmc.kitpvp.arena.LoadedArena;
 import net.civmc.kitpvp.arena.data.Arena;
 import net.civmc.kitpvp.arena.data.ArenaDao;
+import net.civmc.kitpvp.ranked.KitCost;
+import net.civmc.kitpvp.ranked.RankedQueueManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -25,10 +28,14 @@ import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
 public class ArenaGui {
 
     private final ArenaDao dao;
+    private final RankedQueueManager rankedQueueManager;
+    private final double elo;
     private final ArenaManager manager;
 
-    public ArenaGui(ArenaDao dao, ArenaManager manager) {
+    public ArenaGui(ArenaDao dao, RankedQueueManager rankedQueueManager, double elo, ArenaManager manager) {
         this.dao = dao;
+        this.rankedQueueManager = rankedQueueManager;
+        this.elo = elo;
         this.manager = manager;
     }
 
@@ -37,7 +44,7 @@ public class ArenaGui {
 
         List<LoadedArena> loadedArenas = manager.getArenas();
         loadedArenas.sort(Comparator.comparingInt(s -> {
-            World world = Bukkit.getWorld(manager.getArenaName(s.arena().name(), s.owner()));
+            World world = Bukkit.getWorld(manager.getArenaName(s));
             if (world == null) {
                 return -1;
             } else {
@@ -45,6 +52,9 @@ public class ArenaGui {
             }
         }));
         for (LoadedArena loadedArena : loadedArenas) {
+            if (loadedArena.ranked()) {
+                continue;
+            }
             Arena arena = loadedArena.arena();
             if (!player.hasPermission("kitpvp.admin")
                 && loadedArena.invitedPlayers() != null
@@ -72,11 +82,13 @@ public class ArenaGui {
             if (hasAccess) {
                 lore.add(Component.text("Shift right click to delete", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false));
             }
-            World world = Bukkit.getWorld(manager.getArenaName(arena.name(), loadedArena.owner()));
+            World world = Bukkit.getWorld(manager.getArenaName(loadedArena));
             if (world != null && world.getPlayerCount() > 0) {
                 lore.add(Component.text("Currently playing:", NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false));
                 for (Player worldPlayer : world.getPlayers()) {
-                    lore.add(Component.text("- " + worldPlayer.getName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
+                    if (worldPlayer.getGameMode() == GameMode.SURVIVAL) {
+                        lore.add(Component.text("- " + worldPlayer.getName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
+                    }
                 }
             }
             meta.lore(lore);
@@ -113,6 +125,16 @@ public class ArenaGui {
             });
         }
 
+        ItemStack queueArena = new ItemStack(Material.BEACON);
+        ItemMeta queueArenaMeta = queueArena.getItemMeta();
+        TextColor darkishBlue = TextColor.color(55, 159, 163);
+        queueArenaMeta.itemName(Component.text("Queue for ranked 1v1", NamedTextColor.GOLD));
+        queueArenaMeta.lore(List.of(
+            Component.empty().append(Component.text("Your elo: ", darkishBlue).append(Component.text(Math.round(elo), NamedTextColor.AQUA)).decoration(TextDecoration.ITALIC, false)),
+            Component.empty().append(Component.text("Maximum kit cost: ", darkishBlue).append(Component.text(KitCost.MAX_POINTS + " points", NamedTextColor.AQUA)).decoration(TextDecoration.ITALIC, false))
+        ));
+        queueArena.setItemMeta(queueArenaMeta);
+
         ItemStack createArena = new ItemStack(Material.PAPER);
         ItemMeta createArenaMeta = createArena.getItemMeta();
         createArenaMeta.itemName(Component.text("Create new arena", NamedTextColor.GREEN));
@@ -124,8 +146,9 @@ public class ArenaGui {
         createPrivateArena.setItemMeta(createPrivateArenaMeta);
 
         MultiPageView view = new MultiPageView(player, arenas, "Arenas", true);
-        view.setMenuSlot(new ArenaClickable(createArena, true), 0);
-        view.setMenuSlot(new ArenaClickable(createPrivateArena, false), 1);
+        view.setMenuSlot(new QueueClickable(queueArena), 0);
+        view.setMenuSlot(new ArenaClickable(createArena, true), 2);
+        view.setMenuSlot(new ArenaClickable(createPrivateArena, false), 3);
 
         view.showScreen();
     }
@@ -147,6 +170,21 @@ public class ArenaGui {
             }
 
             new ArenaCategorySelectionGui(dao, manager, isPublic).open(clicker);
+        }
+    }
+
+    class QueueClickable extends Clickable {
+
+        public QueueClickable(ItemStack item) {
+            super(item);
+        }
+
+        @Override
+        protected void clicked(@NotNull Player clicker) {
+            if (!rankedQueueManager.isInQueue(clicker)) {
+                rankedQueueManager.joinQueue(clicker);
+                clicker.closeInventory();
+            }
         }
     }
 

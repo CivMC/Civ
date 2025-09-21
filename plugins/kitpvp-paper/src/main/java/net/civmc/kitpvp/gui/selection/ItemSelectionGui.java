@@ -2,8 +2,8 @@ package net.civmc.kitpvp.gui.selection;
 
 import com.github.maxopoly.finale.Finale;
 import net.civmc.kitpvp.KitPvpPlugin;
-import net.civmc.kitpvp.data.Kit;
-import net.civmc.kitpvp.data.KitPvpDao;
+import net.civmc.kitpvp.kit.Kit;
+import net.civmc.kitpvp.kit.KitPvpDao;
 import net.civmc.kitpvp.gui.EditKitGui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

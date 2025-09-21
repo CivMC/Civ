@@ -65,7 +65,7 @@ public class SqlSpawnProvider implements SpawnProvider {
             statement.setDouble(4, location.getZ());
             statement.setFloat(5, location.getYaw());
 
-            boolean success = statement.executeUpdate() == 1;
+            boolean success = statement.executeUpdate() > 0;
             if (success) {
                 this.spawn = location;
             }

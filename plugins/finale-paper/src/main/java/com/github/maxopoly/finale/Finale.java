@@ -52,6 +52,8 @@ public class Finale extends ACivMod {
     private EnchantmentDisableListener enchantmentDisableListener;
     private WeaponModificationListener weaponModificationListener;
 
+    private PearlCoolDownListener pearlCoolDownListener;
+
     public CombatTagPlusManager getCombatTagPlusManager() {
         return ctpManager;
     }
@@ -103,7 +105,7 @@ public class Finale extends ACivMod {
         // are enabled.
         if (config.isPearlEnabled()) {
             Bukkit.getPluginManager()
-                .registerEvents(new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(),
+                .registerEvents(pearlCoolDownListener = new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(),
                     ctpManager), this);
         }
         Bukkit.getPluginManager().registerEvents(weaponModificationListener = new WeaponModificationListener(), this);
@@ -128,6 +130,10 @@ public class Finale extends ACivMod {
         }
         Bukkit.getPluginManager().registerEvents(new CrossbowListener(config.isFireworkExplosions()), this);
         Bukkit.getPluginManager().registerEvents(new GappleListener(), this);
+    }
+
+    public PearlCoolDownListener getPearlCoolDownListener() {
+        return pearlCoolDownListener;
     }
 
     private void registerCommands() {

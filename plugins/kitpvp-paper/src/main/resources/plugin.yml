@@ -4,7 +4,7 @@ main: net.civmc.kitpvp.KitPvpPlugin
 author: Okx
 description: KitPvP for CivMC
 api-version: 1.21.3
-depend: [CivModCore, Finale]
+depend: [CivModCore, Finale, LuckPerms]
 softdepend: [BreweryX]
 
 commands:
@@ -31,6 +31,7 @@ commands:
   clear: {}
   viewinventorysnapshot:
     usage: /<command> <player>
+  ranked: {}
   warp:
     description: Warp to a location
     permission: warps.use

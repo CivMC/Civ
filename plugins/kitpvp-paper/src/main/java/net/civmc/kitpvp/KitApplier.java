@@ -2,7 +2,7 @@ package net.civmc.kitpvp;
 
 import com.dre.brewery.api.BreweryApi;
 import com.github.maxopoly.finale.Finale;
-import net.civmc.kitpvp.data.Kit;
+import net.civmc.kitpvp.kit.Kit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;

@@ -214,7 +214,8 @@ enable-priority-messages: true
 # The format is <priority>:<message>
 # Example: 1:You have a priority of 1!
 priority-messages:
-  - "1:<green>You have priority because you just left the server!"
+  - "8:<green>You have priority because you are a top 10 PvPer!"
+  - "10:<green>You have priority because you just left the server!"
 
 
 # Should the plugin send a title to the player?

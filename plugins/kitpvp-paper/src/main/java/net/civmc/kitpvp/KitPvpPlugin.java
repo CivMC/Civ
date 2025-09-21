@@ -1,6 +1,7 @@
 package net.civmc.kitpvp;
 
 import java.sql.SQLException;
+import java.util.List;
 import net.civmc.kitpvp.anvil.AnvilGui;
 import net.civmc.kitpvp.arena.ArenaCleaner;
 import net.civmc.kitpvp.arena.ArenaCommand;
@@ -8,9 +9,14 @@ import net.civmc.kitpvp.arena.ArenaManager;
 import net.civmc.kitpvp.arena.MysqlLoader;
 import net.civmc.kitpvp.arena.PrivateArenaListener;
 import net.civmc.kitpvp.arena.RespawnListener;
+import net.civmc.kitpvp.arena.data.Arena;
 import net.civmc.kitpvp.arena.data.SqlArenaDao;
 import net.civmc.kitpvp.command.ClearCommand;
 import net.civmc.kitpvp.command.KitCommand;
+import net.civmc.kitpvp.ranked.RankedCommand;
+import net.civmc.kitpvp.ranked.RankedQueueListener;
+import net.civmc.kitpvp.ranked.RankedQueueManager;
+import net.civmc.kitpvp.ranked.SqlRankedDao;
 import net.civmc.kitpvp.snapshot.DeathListener;
 import net.civmc.kitpvp.snapshot.InventorySnapshotManager;
 import net.civmc.kitpvp.snapshot.ViewInventorySnapshotCommand;
@@ -38,7 +44,9 @@ public class KitPvpPlugin extends ACivMod {
         saveDefaultConfig();
         DatabaseCredentials credentials = (DatabaseCredentials) getConfig().get("database");
         source = ManagedDatasource.construct(this, credentials);
-        getCommand("kit").setExecutor(new KitCommand(new SqlKitPvpDao(source), anvilGui));
+        SqlKitPvpDao dao = new SqlKitPvpDao(source);
+        SqlRankedDao ranked = new SqlRankedDao(source);
+        getCommand("kit").setExecutor(new KitCommand(dao, ranked, anvilGui));
         new WarpMain(this, source);
         getCommand("clear").setExecutor(new ClearCommand());
 
@@ -58,16 +66,29 @@ public class KitPvpPlugin extends ACivMod {
         int maxArenas = getConfig().getInt("max_arenas");
         try {
             ArenaManager manager = new ArenaManager(maxArenas, this, spawnProvider, new MysqlLoader(source));
+            SqlArenaDao arenaDao = new SqlArenaDao(source);
+            source.updateDatabase();
+
+            List<Arena> arenas = arenaDao.getArenas();
+            Arena rankedArena = null;
+            for (Arena arena : arenas) {
+                if (arena.name().equals(getConfig().getString("ranked_arena"))) {
+                    rankedArena = arena;
+                }
+            }
+
+            RankedQueueManager queueManager = new RankedQueueManager(dao, ranked, manager, rankedArena);
+            getCommand("ranked").setExecutor(new RankedCommand(queueManager));
+            getServer().getPluginManager().registerEvents(new RankedQueueListener(queueManager), this);
+
             PrivateArenaListener privateArenaListener = new PrivateArenaListener(spawnProvider, manager);
             getServer().getPluginManager().registerEvents(privateArenaListener, this);
-            getCommand("arena").setExecutor(new ArenaCommand(this, new SqlArenaDao(source), manager, privateArenaListener));
+            getCommand("arena").setExecutor(new ArenaCommand(this, arenaDao, ranked, queueManager, manager, privateArenaListener));
             getServer().getPluginManager().registerEvents(new RespawnListener(manager), this);
             Bukkit.getScheduler().runTaskTimer(this, new ArenaCleaner(manager), 20 * 60, 20 * 60);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        source.updateDatabase();
     }
 
     @Override
