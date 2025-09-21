@@ -74,9 +74,11 @@ public class RankedQueueManager {
                 for (RankedMatch match : matches) {
                     if (match.opponent().getY() > 90) {
                         match.opponent().addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 50, 1, false, false));
+                        match.opponent().sendMessage(Component.text("You are too high!", NamedTextColor.RED));
                     }
                     if (match.player().getY() > 90) {
                         match.player().addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 50, 1, false, false));
+                        match.player().sendMessage(Component.text("You are too high!", NamedTextColor.RED));
                     }
                 }
             } catch (RuntimeException ex) {
