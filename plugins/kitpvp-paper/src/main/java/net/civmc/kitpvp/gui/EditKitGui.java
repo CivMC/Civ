@@ -82,7 +82,7 @@ public class EditKitGui {
         ItemMeta rankedKitMeta = rankedKit.getItemMeta();
         rankedKitMeta.itemName(Component.text("Select as ranked kit", NamedTextColor.GOLD));
         List<TextComponent> lore = new ArrayList<>();
-        if (kit.name().equals(this.rankedKit)) {
+        if (kit.id() == this.rankedKit) {
             rankedKitMeta.setEnchantmentGlintOverride(true);
             lore.add(Component.text("Currently selected", NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
         }
