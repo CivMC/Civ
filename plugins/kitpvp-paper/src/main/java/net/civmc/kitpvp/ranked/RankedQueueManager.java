@@ -87,11 +87,15 @@ public class RankedQueueManager {
         }, 20, 20);
         Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
             try {
-                for (Player player : queued.keySet()) {
-                    player.sendMessage(Component.text("You are queued for ranked. Type /ranked to leave the queue", NamedTextColor.YELLOW));
+                for (Map.Entry<Player, QueuedPlayer> player : queued.entrySet()) {
+                    if (player.getValue().valid()) {
+                        player.getKey().sendMessage(Component.text("You are queued for ranked. Type /ranked to leave the queue", NamedTextColor.YELLOW));
+                    }
                 }
-                for (Player player : unrankedQueued.keySet()) {
-                    player.sendMessage(Component.text("You are queued for unranked. Type /unranked to leave the queue", NamedTextColor.YELLOW));
+                for (Map.Entry<Player, QueuedPlayer> player : unrankedQueued.entrySet()) {
+                    if (player.getValue().valid()) {
+                        player.getKey().sendMessage(Component.text("You are queued for unranked. Type /unranked to leave the queue", NamedTextColor.YELLOW));
+                    }
                 }
             } catch (RuntimeException ex) {
                 JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Ticking queued players", ex);
@@ -278,7 +282,7 @@ public class RankedQueueManager {
         });
     }
 
-    public void joinQueue(Player player) {
+    public void joinQueue(Player player, boolean auto) {
         JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             int kitId = dao.getKit(player.getUniqueId());
@@ -302,17 +306,21 @@ public class RankedQueueManager {
                 }
 
                 if (player.isOnline()) {
-                    queued.put(player, new QueuedPlayer(elo, Instant.now()));
+                    queued.put(player, new QueuedPlayer(elo, Instant.now(), auto));
                     scanQueue();
 
                     JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s joined the ranked queue".formatted(player.getName()));
                 }
-                player.sendMessage(Component.text("You have joined the ranked queue", NamedTextColor.YELLOW));
+                if (auto) {
+                    player.sendMessage(Component.text("You have joined the ranked queue", NamedTextColor.YELLOW));
+                } else {
+                    player.sendMessage(Component.text("You will rejoin the ranked queue in 10 seconds. Type /ranked to leave.", NamedTextColor.YELLOW));
+                }
             });
         });
     }
 
-    public void joinUnrankedQueue(Player player) {
+    public void joinUnrankedQueue(Player player, boolean auto) {
         JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             int kitId = dao.getKit(player.getUniqueId());
@@ -335,12 +343,16 @@ public class RankedQueueManager {
                 }
 
                 if (player.isOnline()) {
-                    unrankedQueued.put(player, new QueuedPlayer(0, Instant.now()));
+                    unrankedQueued.put(player, new QueuedPlayer(0, Instant.now(), auto));
                     scanQueueUnranked();
 
                     JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s joined the unranked queue".formatted(player.getName()));
                 }
-                player.sendMessage(Component.text("You have joined the unranked queue", NamedTextColor.YELLOW));
+                if (!auto) {
+                    player.sendMessage(Component.text("You have joined the unranked queue", NamedTextColor.YELLOW));
+                } else {
+                    player.sendMessage(Component.text("You will rejoin the ranked queue in 10 seconds. Type /ranked to leave.", NamedTextColor.YELLOW));
+                }
             });
         });
     }
@@ -349,9 +361,15 @@ public class RankedQueueManager {
         // TODO make this algorithm better at preferring earlier players
         List<Map.Entry<Player, QueuedPlayer>> entries = new ArrayList<>(queued.sequencedEntrySet());
         for (int i = 0; i < entries.size(); i++) {
+            Map.Entry<Player, QueuedPlayer> playerEntry = entries.get(i);
+            if (!playerEntry.getValue().valid()) {
+                continue;
+            }
             for (int j = i + 1; j < entries.size(); j++) {
-                Map.Entry<Player, QueuedPlayer> playerEntry = entries.get(i);
                 Map.Entry<Player, QueuedPlayer> opponentEntry = entries.get(j);
+                if (!opponentEntry.getValue().valid()) {
+                    continue;
+                }
 
                 int maxGap = 200;
                 Instant earlier = playerEntry.getValue().joined();
@@ -383,9 +401,15 @@ public class RankedQueueManager {
     private void scanQueueUnranked() {
         List<Map.Entry<Player, QueuedPlayer>> entries = new ArrayList<>(unrankedQueued.sequencedEntrySet());
         for (int i = 0; i < entries.size(); i++) {
+            Map.Entry<Player, QueuedPlayer> playerEntry = entries.get(i);
+            if (!playerEntry.getValue().valid()) {
+                continue;
+            }
             for (int j = i + 1; j < entries.size(); j++) {
-                Map.Entry<Player, QueuedPlayer> playerEntry = entries.get(i);
                 Map.Entry<Player, QueuedPlayer> opponentEntry = entries.get(j);
+                if (!opponentEntry.getValue().valid()) {
+                    continue;
+                }
 
                 if (ThreadLocalRandom.current().nextBoolean()) {
                     var temp = playerEntry;
@@ -477,7 +501,13 @@ public class RankedQueueManager {
         }
     }
 
-    record QueuedPlayer(double elo, Instant joined) {
-
+    record QueuedPlayer(double elo, Instant joined, boolean auto) {
+        public boolean valid() {
+            if (!auto) {
+                return true;
+            } else {
+                return joined.until(Instant.now(), ChronoUnit.SECONDS) >= 10;
+            }
+        }
     }
 }
