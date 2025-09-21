@@ -484,7 +484,7 @@ public class RankedQueueManager {
                     }
 
                     WorldBorder border = world.getWorldBorder();
-                    border.setCenter(72, 72);
+                    border.setCenter(72.50, 72.50);
                     border.setSize(143);
                     border.setSize(5, 8 * 60);
                     border.setDamageBuffer(0);
