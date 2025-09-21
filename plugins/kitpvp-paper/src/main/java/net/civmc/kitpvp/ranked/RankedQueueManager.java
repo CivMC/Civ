@@ -326,7 +326,7 @@ public class RankedQueueManager {
                 if (!auto) {
                     player.sendMessage(Component.text("You have joined the ranked queue", NamedTextColor.YELLOW));
                 } else {
-                    player.sendMessage(Component.text("You will rejoin the ranked queue in 10 seconds. Type /ranked to leave.", NamedTextColor.YELLOW));
+                    player.sendMessage(Component.text("You will rejoin the ranked queue in 15 seconds. Type /ranked to leave.", NamedTextColor.YELLOW));
                 }
             });
         });
@@ -541,7 +541,7 @@ public class RankedQueueManager {
             if (!auto) {
                 return true;
             } else {
-                return joined.until(Instant.now(), ChronoUnit.SECONDS) >= 10;
+                return joined.until(Instant.now(), ChronoUnit.SECONDS) >= 15;
             }
         }
     }
