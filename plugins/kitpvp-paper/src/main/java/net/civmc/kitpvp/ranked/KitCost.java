@@ -9,6 +9,7 @@ import net.civmc.kitpvp.kit.KitPotion;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -94,12 +95,14 @@ public class KitCost {
             }
         }
 
-        Brew brew = Brew.get(item);
-        if (brew != null) {
-            for (KitDrugs drugs : KitDrugs.values()) {
-                BRecipe recipe = BRecipe.getMatching(drugs.getBrew());
-                if (recipe != null && recipe.getRecipeName().equals(brew.getCurrentRecipe().getRecipeName())) {
-                    cost += drugs.getCost();
+        if (Bukkit.getPluginManager().isPluginEnabled("BreweryX")) {
+            Brew brew = Brew.get(item);
+            if (brew != null) {
+                for (KitDrugs drugs : KitDrugs.values()) {
+                    BRecipe recipe = BRecipe.getMatching(drugs.getBrew());
+                    if (recipe != null && recipe.getRecipeName().equals(brew.getCurrentRecipe().getRecipeName())) {
+                        cost += drugs.getCost();
+                    }
                 }
             }
         }
