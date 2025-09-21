@@ -73,9 +73,9 @@
     - { file: '../../files/paper-config', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''paper'' in servers' }
     - { file: '../../files/proxy-config', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''proxy'' in servers' }
     - { file: '../../files/gamma-config', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''gamma'' in servers' }
+    - { file: '../../files/pvp-config', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''pvp'' in servers' }
     - { file: '../../build/paper-plugins', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''paper'' in servers' }
     - { file: '../../build/proxy-plugins', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''proxy'' in servers' }
-    - { file: '../../build/pvp-config', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''pvp'' in servers' }
     - { file: '../../build/pvp-plugins', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''pvp'' in servers' }
     - { file: '../../build/gamma-plugins', target: 'minecraft', enabled: 'setting.minecraft.enabled and ''gamma'' in servers' }
 
