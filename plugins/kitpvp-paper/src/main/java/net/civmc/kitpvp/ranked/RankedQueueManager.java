@@ -74,6 +74,7 @@ public class RankedQueueManager {
                     }
                 }
                 scanQueue();
+                scanQueueUnranked();
                 for (RankedMatch match : matches) {
                     if (match.opponent().getY() > 90) {
                         match.opponent().addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 50, 1, false, false));
@@ -417,7 +418,7 @@ public class RankedQueueManager {
                         opponentEntry = temp;
                     }
                     startMatch(playerEntry.getKey(), playerEntry.getValue().elo(), opponentEntry.getKey(), opponentEntry.getValue().elo(), false);
-                    break;
+                    return;
                 }
             }
         }
@@ -452,7 +453,7 @@ public class RankedQueueManager {
                     opponentEntry = temp;
                 }
                 startMatch(playerEntry.getKey(), playerEntry.getValue().elo(), opponentEntry.getKey(), opponentEntry.getValue().elo(), true);
-                break;
+                return;
             }
         }
     }
