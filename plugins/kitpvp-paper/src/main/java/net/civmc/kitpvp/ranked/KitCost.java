@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class KitCost {
 
-    public static final int MAX_POINTS = 300;
+    public static final int MAX_POINTS = 200;
 
     public static final Map<Enchantment, Integer> ENCHANTMENT_COST_PER_LEVEL = new HashMap<>();
 
