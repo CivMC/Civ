@@ -406,7 +406,7 @@ public class RankedQueueManager {
                 }
 
                 RecentMatch recent2 = recentMatches.get(opponentEntry.getKey().getUniqueId());
-                if (recent2 != null && recent.other().equals(playerEntry.getKey().getUniqueId()) && recent2.time().until(Instant.now(), ChronoUnit.SECONDS) < 30) {
+                if (recent2 != null && recent2.other().equals(playerEntry.getKey().getUniqueId()) && recent2.time().until(Instant.now(), ChronoUnit.SECONDS) < 30) {
                     continue;
                 }
 
