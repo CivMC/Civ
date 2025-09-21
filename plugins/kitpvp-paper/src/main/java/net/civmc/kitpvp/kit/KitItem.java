@@ -35,10 +35,10 @@ public enum KitItem {
     DIAMOND_LEGGINGS(Material.DIAMOND_LEGGINGS, KitCategory.ARMOUR, 8),
     DIAMOND_BOOTS(Material.DIAMOND_BOOTS, KitCategory.ARMOUR, 8),
 
-    NETHERITE_HELMET(Material.NETHERITE_HELMET, KitCategory.ARMOUR, 20),
-    NETHERITE_CHESTPLATE(Material.NETHERITE_CHESTPLATE, KitCategory.ARMOUR, 20),
-    NETHERITE_LEGGINGS(Material.NETHERITE_LEGGINGS, KitCategory.ARMOUR, 20),
-    NETHERITE_BOOTS(Material.NETHERITE_BOOTS, KitCategory.ARMOUR, 20),
+    NETHERITE_HELMET(Material.NETHERITE_HELMET, KitCategory.ARMOUR, 25),
+    NETHERITE_CHESTPLATE(Material.NETHERITE_CHESTPLATE, KitCategory.ARMOUR, 25),
+    NETHERITE_LEGGINGS(Material.NETHERITE_LEGGINGS, KitCategory.ARMOUR, 25),
+    NETHERITE_BOOTS(Material.NETHERITE_BOOTS, KitCategory.ARMOUR, 25),
 
     OBSIDIAN(Material.OBSIDIAN, KitCategory.BLOCK, 5),
     COBBLESTONE(Material.COBBLESTONE, KitCategory.BLOCK, 1),
@@ -110,11 +110,11 @@ public enum KitItem {
     DIAMOND_SHOVEL(Material.DIAMOND_SHOVEL, KitCategory.TOOL, 6),
     DIAMOND_HOE(Material.DIAMOND_HOE, KitCategory.TOOL, 6),
 
-    NETHERITE_SWORD(Material.NETHERITE_SWORD, KitCategory.TOOL, 15),
-    NETHERITE_AXE(Material.NETHERITE_AXE, KitCategory.TOOL, 15),
-    NETHERITE_PICKAXE(Material.NETHERITE_PICKAXE, KitCategory.TOOL, 15),
-    NETHERITE_SHOVEL(Material.NETHERITE_SHOVEL, KitCategory.TOOL, 15),
-    NETHERITE_HOE(Material.NETHERITE_HOE, KitCategory.TOOL, 15),
+    NETHERITE_SWORD(Material.NETHERITE_SWORD, KitCategory.TOOL, 17),
+    NETHERITE_AXE(Material.NETHERITE_AXE, KitCategory.TOOL, 17),
+    NETHERITE_PICKAXE(Material.NETHERITE_PICKAXE, KitCategory.TOOL, 17),
+    NETHERITE_SHOVEL(Material.NETHERITE_SHOVEL, KitCategory.TOOL, 17),
+    NETHERITE_HOE(Material.NETHERITE_HOE, KitCategory.TOOL, 17),
 
     SHIELD(Material.SHIELD, KitCategory.TOOL, 2),
     TRIDENT(Material.TRIDENT, KitCategory.TOOL, 5),
@@ -140,6 +140,17 @@ public enum KitItem {
 
     ELYTRA(Material.ELYTRA, KitCategory.ARMOUR, 100),
     TURTLE_HELMET(Material.TURTLE_HELMET, KitCategory.ARMOUR, 2),
+
+    COOKED_PORKCHOP(Material.COOKED_PORKCHOP, KitCategory.FOOD, 1),
+    GOLDEN_APPLE(Material.GOLDEN_APPLE, KitCategory.FOOD, 5),
+    BAKED_POTATO(Material.BAKED_POTATO, KitCategory.FOOD, 1),
+    COOKED_BEEF(Material.COOKED_BEEF, KitCategory.FOOD, 2),
+    GOLDEN_CARROT(Material.GOLDEN_CARROT, KitCategory.FOOD, 3),
+    SWEET_BERRIES(Material.SWEET_BERRIES, KitCategory.FOOD, 0),
+    PUMPKIN_PIE(Material.PUMPKIN_PIE, KitCategory.FOOD, 1),
+    BREAD(Material.BREAD, KitCategory.FOOD, 1),
+    COOKED_CHICKEN(Material.COOKED_CHICKEN, KitCategory.FOOD, 1),
+    CHORUS_FRUIT(Material.CHORUS_FRUIT, KitCategory.FOOD, 1),
     ;
 
     private static final Map<KitCategory, List<KitItem>> itemsByCategory = new EnumMap<>(KitCategory.class);

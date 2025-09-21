@@ -22,7 +22,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
+import vg.civcraft.mc.civmodcore.inventory.gui.LClickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.MultiPageView;
 
 public class ArenaGui {
@@ -135,6 +137,14 @@ public class ArenaGui {
         ));
         queueArena.setItemMeta(queueArenaMeta);
 
+        ItemStack queueUnrankedArena = new ItemStack(Material.BEDROCK);
+        ItemMeta queueUnrankedArenaMeta = queueUnrankedArena.getItemMeta();
+        queueUnrankedArenaMeta.itemName(Component.text("Queue for unranked 1v1", NamedTextColor.GOLD));
+        queueUnrankedArenaMeta.lore(List.of(
+            Component.empty().append(Component.text("Maximum kit cost: ", darkishBlue).append(Component.text(KitCost.MAX_POINTS + " points", NamedTextColor.AQUA)).decoration(TextDecoration.ITALIC, false))
+        ));
+        queueUnrankedArena.setItemMeta(queueUnrankedArenaMeta);
+
         ItemStack createArena = new ItemStack(Material.PAPER);
         ItemMeta createArenaMeta = createArena.getItemMeta();
         createArenaMeta.itemName(Component.text("Create new arena", NamedTextColor.GREEN));
@@ -147,8 +157,10 @@ public class ArenaGui {
 
         MultiPageView view = new MultiPageView(player, arenas, "Arenas", true);
         view.setMenuSlot(new QueueClickable(queueArena), 0);
-        view.setMenuSlot(new ArenaClickable(createArena, true), 2);
-        view.setMenuSlot(new ArenaClickable(createPrivateArena, false), 3);
+        view.setMenuSlot(new QueueUnrankedClickable(queueUnrankedArena), 1);
+        view.setMenuSlot(new DecorationStack(new ItemStack(Material.AIR)), 2);
+        view.setMenuSlot(new ArenaClickable(createArena, true), 3);
+        view.setMenuSlot(new ArenaClickable(createPrivateArena, false), 4);
 
         view.showScreen();
     }
@@ -187,5 +199,22 @@ public class ArenaGui {
             }
         }
     }
+
+
+    class QueueUnrankedClickable extends Clickable {
+
+        public QueueUnrankedClickable(ItemStack item) {
+            super(item);
+        }
+
+        @Override
+        protected void clicked(@NotNull Player clicker) {
+            if (!rankedQueueManager.isInUnrankedQueue(clicker)) {
+                rankedQueueManager.joinUnrankedQueue(clicker);
+                clicker.closeInventory();
+            }
+        }
+    }
+
 
 }

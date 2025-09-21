@@ -17,6 +17,7 @@ import net.civmc.kitpvp.ranked.RankedCommand;
 import net.civmc.kitpvp.ranked.RankedQueueListener;
 import net.civmc.kitpvp.ranked.RankedQueueManager;
 import net.civmc.kitpvp.ranked.SqlRankedDao;
+import net.civmc.kitpvp.ranked.UnrankedCommand;
 import net.civmc.kitpvp.snapshot.DeathListener;
 import net.civmc.kitpvp.snapshot.InventorySnapshotManager;
 import net.civmc.kitpvp.snapshot.ViewInventorySnapshotCommand;
@@ -77,8 +78,9 @@ public class KitPvpPlugin extends ACivMod {
                 }
             }
 
-            RankedQueueManager queueManager = new RankedQueueManager(dao, ranked, manager, rankedArena);
+            RankedQueueManager queueManager = new RankedQueueManager(dao, ranked, manager, spawnProvider, rankedArena);
             getCommand("ranked").setExecutor(new RankedCommand(queueManager));
+            getCommand("unranked").setExecutor(new UnrankedCommand(queueManager));
             getServer().getPluginManager().registerEvents(new RankedQueueListener(queueManager), this);
 
             PrivateArenaListener privateArenaListener = new PrivateArenaListener(spawnProvider, manager);

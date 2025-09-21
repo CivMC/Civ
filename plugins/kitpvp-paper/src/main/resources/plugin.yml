@@ -32,6 +32,7 @@ commands:
   viewinventorysnapshot:
     usage: /<command> <player>
   ranked: {}
+  unranked: {}
   warp:
     description: Warp to a location
     permission: warps.use

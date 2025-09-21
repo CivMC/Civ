@@ -75,7 +75,7 @@ hacks:
     # Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
     roundPlayerListPing: true
   AutoRespawn:
-    enabled: true
+    enabled: false
     # Delay in MS
     # Default: 300000 (five minutes)
     respawnDelay: 10000
