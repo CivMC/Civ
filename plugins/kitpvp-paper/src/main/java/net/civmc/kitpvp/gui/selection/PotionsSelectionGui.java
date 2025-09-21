@@ -38,7 +38,7 @@ public class PotionsSelectionGui extends ItemSelectionGui {
             PotionMeta meta = (PotionMeta) potion.getItemMeta();
             meta.setBasePotionType(potionType.getType());
             potion.setItemMeta(meta);
-            inventory.setSlot(toClickable(KitCost.setPoints(potion, potionType.getCost()), potion), slot++);
+            inventory.setSlot(toClickable(KitCost.setPoints(potion, potionType.getCost() + (base == Material.TIPPED_ARROW ? 3 : 0)), potion), slot++);
         }
         Runnable redraw = () -> Bukkit.getScheduler().runTask(JavaPlugin.getProvidingPlugin(KitPvpPlugin.class), () -> {
             inventory.setOnClose(null);

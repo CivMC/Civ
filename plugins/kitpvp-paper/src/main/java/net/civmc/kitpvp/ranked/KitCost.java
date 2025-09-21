@@ -80,8 +80,10 @@ public class KitCost {
             }
         }
 
-        if (item.getType() == Material.POTION) {
-            PotionMeta meta = (PotionMeta) item.getItemMeta();
+        if (item.hasItemMeta() && item.getItemMeta() instanceof PotionMeta meta) {
+            if (item.getType() == Material.TIPPED_ARROW) {
+                cost += 3;
+            }
             for (KitPotion potion : KitPotion.values()) {
                 if (meta.getBasePotionType() == potion.getType()) {
                     cost += potion.getCost();

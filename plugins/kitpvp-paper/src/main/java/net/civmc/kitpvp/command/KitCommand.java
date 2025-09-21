@@ -39,7 +39,7 @@ public class KitCommand implements CommandExecutor {
 
         if (player.getWorld().getName().startsWith("rankedarena.")) {
             player.sendMessage(Component.text("Kit command is deactivated in ranked arenas.", NamedTextColor.RED));
-            return false;
+            return true;
         }
 
         KitPvpPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);

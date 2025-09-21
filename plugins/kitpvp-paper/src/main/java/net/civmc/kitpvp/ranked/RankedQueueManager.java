@@ -116,7 +116,7 @@ public class RankedQueueManager {
 
         int playerPots = 0;
         for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null && item.getType() == Material.POTION) {
+            if (item != null && item.getType() == Material.SPLASH_POTION) {
                 PotionMeta meta = (PotionMeta) item.getItemMeta();
                 if (meta.getBasePotionType() == PotionType.STRONG_HEALING) {
                     playerPots++;
@@ -127,7 +127,7 @@ public class RankedQueueManager {
         Player opponent = match.opponent();
         int opponentPots = 0;
         for (ItemStack item : opponent.getInventory().getContents()) {
-            if (item != null && item.getType() == Material.POTION) {
+            if (item != null && item.getType() == Material.SPLASH_POTION) {
                 PotionMeta meta = (PotionMeta) item.getItemMeta();
                 if (meta.getBasePotionType() == PotionType.STRONG_HEALING) {
                     opponentPots++;
