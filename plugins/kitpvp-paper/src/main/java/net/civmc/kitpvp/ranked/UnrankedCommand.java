@@ -26,7 +26,7 @@ public class UnrankedCommand implements CommandExecutor {
             player.sendMessage(Component.text("You have left the unranked queue", NamedTextColor.YELLOW));
             this.rankedQueueManager.leaveUnrankedQueue(player);
         } else {
-            this.rankedQueueManager.joinUnrankedQueue(player);
+            this.rankedQueueManager.joinUnrankedQueue(player, false);
         }
 
         return true;

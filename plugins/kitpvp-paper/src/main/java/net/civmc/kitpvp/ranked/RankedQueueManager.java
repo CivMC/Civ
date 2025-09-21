@@ -279,6 +279,9 @@ public class RankedQueueManager {
             }
 
             arenaManager.deleteLoadedArena(match.arena());
+
+            joinQueue(player, true);
+            joinQueue(opponent, true);
         });
     }
 
