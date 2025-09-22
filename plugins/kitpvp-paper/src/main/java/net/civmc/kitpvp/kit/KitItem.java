@@ -122,12 +122,12 @@ public enum KitItem {
     ENDER_PEARL(Material.ENDER_PEARL, KitCategory.TOOL, 2),
     FIREWORK_ROCKET(Material.FIREWORK_ROCKET, KitCategory.TOOL, 1),
 
-    BUCKET(Material.BUCKET, KitCategory.TOOL, 1),
-    WATER_BUCKET(Material.WATER_BUCKET, KitCategory.TOOL, 1),
-    LAVA_BUCKET(Material.LAVA_BUCKET, KitCategory.TOOL, 1),
+    BUCKET(Material.BUCKET, KitCategory.TOOL, 0),
+    WATER_BUCKET(Material.WATER_BUCKET, KitCategory.TOOL, 0),
+    LAVA_BUCKET(Material.LAVA_BUCKET, KitCategory.TOOL, 0),
 
-    MILK_BUCKET(Material.MILK_BUCKET, KitCategory.TOOL, 1),
-    POWDER_SNOW_BUCKET(Material.POWDER_SNOW_BUCKET, KitCategory.TOOL, 1),
+    MILK_BUCKET(Material.MILK_BUCKET, KitCategory.TOOL, 0),
+    POWDER_SNOW_BUCKET(Material.POWDER_SNOW_BUCKET, KitCategory.TOOL, 0),
     ARROW(Material.ARROW, KitCategory.TOOL, 0),
 
     BOW(Material.BOW, KitCategory.TOOL, 1),
