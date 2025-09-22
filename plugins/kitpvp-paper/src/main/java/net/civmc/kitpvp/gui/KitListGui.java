@@ -127,7 +127,7 @@ public class KitListGui {
                 this.kits.addAll(playerKits.stream().sorted(
                         Comparator
                             .comparing(Kit::isPublic).reversed()
-                            .thenComparing(Kit::name))
+                            .thenComparing(k -> k.name().toLowerCase()))
                     .toList());
                 this.rankedKit = rankedKit;
                 this.ready = true;

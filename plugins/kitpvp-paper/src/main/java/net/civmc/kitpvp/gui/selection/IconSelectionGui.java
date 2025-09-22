@@ -62,7 +62,11 @@ public class IconSelectionGui {
             Material.SUGAR,
             Material.SPLASH_POTION,
             Material.POTION,
-            Material.GOLDEN_APPLE
+            Material.GOLDEN_APPLE,
+            Material.ENDER_PEARL,
+            Material.SHIELD,
+            Material.CHORUS_FRUIT,
+            Material.WATER_BUCKET,
         }) {
             inventory.setSlot(getSlot(inventory, m), slot++);
         }
