@@ -57,6 +57,11 @@ public class IconSelectionGui {
             Material.ELYTRA,
             Material.CROSSBOW,
             Material.BOW,
+            Material.COBWEB,
+            Material.TNT_MINECART,
+            Material.SUGAR,
+            Material.SPLASH_POTION,
+            Material.POTION,
         }) {
             inventory.setSlot(getSlot(inventory, m), slot++);
         }
