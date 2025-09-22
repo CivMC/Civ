@@ -40,8 +40,9 @@ public class RankedQueueListener implements Listener {
         if (event.getTo().getWorld().getName().startsWith("rankedarena.")) {
             return;
         }
-        JavaPlugin.getPlugin(KitPvpPlugin.class).info(event.getPlayer().getName() + " forfeited match by teleporting");
-        rankedQueueManager.loseMatch(event.getPlayer());
+        if (rankedQueueManager.loseMatch(event.getPlayer())) {
+            JavaPlugin.getPlugin(KitPvpPlugin.class).info(event.getPlayer().getName() + " forfeited match by teleporting");
+        }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

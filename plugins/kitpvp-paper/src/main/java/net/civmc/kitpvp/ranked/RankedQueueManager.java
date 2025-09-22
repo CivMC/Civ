@@ -176,7 +176,7 @@ public class RankedQueueManager {
         }
     }
 
-    public void loseMatch(Player player) {
+    public boolean loseMatch(Player player) {
         RankedMatch match = null;
         UUID winner = null;
         for (Iterator<RankedMatch> iterator = matches.iterator(); iterator.hasNext(); ) {
@@ -194,10 +194,11 @@ public class RankedQueueManager {
             }
         }
         if (match == null) {
-            return;
+            return false;
         }
 
         endMatch(match, winner);
+        return true;
     }
 
     private String formatChange(double change) {
