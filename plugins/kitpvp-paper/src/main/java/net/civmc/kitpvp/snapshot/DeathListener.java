@@ -24,13 +24,16 @@ public class DeathListener implements Listener {
             return;
         }
 
-        Player player = event.getPlayer();
+        die(event.getPlayer());
+        event.getDrops().clear();
+    }
 
+    public void die(Player player) {
+        Player killer = player.getKiller();
         snapshotManager.putSnapshot(killer.getUniqueId(), new InventorySnapshot(killer.getInventory().getContents(), false, player.getPlayerProfile(), killer.getHealth()));
         snapshotManager.putSnapshot(player.getUniqueId(), new InventorySnapshot(player.getInventory().getContents(), true, killer.getPlayerProfile(), 0));
 
         player.getInventory();
-        event.getDrops().clear();
         Bukkit.broadcast(
             Component.empty().append(createComponent(player).color(NamedTextColor.GOLD))
                 .append(Component.text(" was killed by ", NamedTextColor.YELLOW)

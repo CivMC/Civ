@@ -157,23 +157,29 @@ public class RankedQueueManager {
     }
 
     public boolean isInQueue(Player player) {
-        return this.queued.containsKey(player);
+        QueuedPlayer queued = this.queued.get(player);
+        return queued == null || !queued.valid();
     }
 
-    public void leaveQueue(Player player) {
+    public boolean leaveQueue(Player player) {
         if (this.queued.remove(player) != null) {
             JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s left the ranked queue".formatted(player.getName()));
+            return true;
         }
+        return false;
     }
 
     public boolean isInUnrankedQueue(Player player) {
-        return this.unrankedQueued.containsKey(player);
+        QueuedPlayer queued = this.unrankedQueued.get(player);
+        return queued == null || !queued.valid();
     }
 
-    public void leaveUnrankedQueue(Player player) {
+    public boolean leaveUnrankedQueue(Player player) {
         if (this.unrankedQueued.remove(player) != null) {
             JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s left the unranked queue".formatted(player.getName()));
+            return true;
         }
+        return false;
     }
 
     public boolean loseMatch(Player player) {
@@ -299,6 +305,11 @@ public class RankedQueueManager {
         if (getMatch(player) != null) {
             return;
         }
+        QueuedPlayer queue = this.queued.get(player);
+        if (!queue.valid()) {
+            this.queued.put(player, new QueuedPlayer(queue.elo(), queue.joined(), false));
+            return;
+        }
         JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             int kitId = dao.getKit(player.getUniqueId());
@@ -341,6 +352,11 @@ public class RankedQueueManager {
 
     public void joinUnrankedQueue(Player player, boolean auto) {
         if (getMatch(player) != null) {
+            return;
+        }
+        QueuedPlayer queue = this.unrankedQueued.get(player);
+        if (!queue.valid()) {
+            this.unrankedQueued.put(player, new QueuedPlayer(queue.elo(), queue.joined(), false));
             return;
         }
         JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);

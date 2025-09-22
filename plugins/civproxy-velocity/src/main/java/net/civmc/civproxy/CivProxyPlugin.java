@@ -6,6 +6,7 @@ import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
+import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.Player;
@@ -13,12 +14,10 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import java.time.Instant;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.data.TemporaryNodeMergeStrategy;
 import net.luckperms.api.model.user.UserManager;
@@ -44,6 +43,15 @@ public class CivProxyPlugin {
 
     record QueueRecord(Instant instant, String server) {
 
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    @Subscribe
+    public void onProxyInitialization(ProxyInitializeEvent event) {
+        new PlayerCount(this, server).start();
     }
 
     @Subscribe
@@ -95,7 +103,7 @@ public class CivProxyPlugin {
 //            if (mini != null && mini.getPlayersConnected().size() < 110) {
 //                event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("mini").get()));
 //            } else {
-                event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("pvp").get()));
+            event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("pvp").get()));
 //            }
 
             players.put(event.getPlayer(), new QueueRecord(Instant.now(), name));

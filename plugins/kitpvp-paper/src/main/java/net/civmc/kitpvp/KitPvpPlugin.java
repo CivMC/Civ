@@ -2,7 +2,6 @@ package net.civmc.kitpvp;
 
 import java.sql.SQLException;
 import java.util.List;
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.civmc.kitpvp.anvil.AnvilGui;
 import net.civmc.kitpvp.arena.ArenaCleaner;
 import net.civmc.kitpvp.arena.ArenaCommand;
@@ -54,7 +53,8 @@ public class KitPvpPlugin extends ACivMod {
         getCommand("clear").setExecutor(new ClearCommand());
 
         InventorySnapshotManager inventorySnapshotManager = new InventorySnapshotManager();
-        getServer().getPluginManager().registerEvents(new DeathListener(inventorySnapshotManager), this);
+        DeathListener deathListener = new DeathListener(inventorySnapshotManager);
+        getServer().getPluginManager().registerEvents(deathListener, this);
         getCommand("viewinventorysnapshot").setExecutor(new ViewInventorySnapshotCommand(inventorySnapshotManager));
 
         if (Bukkit.getPluginManager().isPluginEnabled("BreweryX")) {
@@ -83,7 +83,7 @@ public class KitPvpPlugin extends ACivMod {
             RankedQueueManager queueManager = new RankedQueueManager(dao, ranked, manager, spawnProvider, rankedArena);
             getCommand("ranked").setExecutor(new RankedCommand(queueManager));
             getCommand("unranked").setExecutor(new UnrankedCommand(queueManager));
-            getServer().getPluginManager().registerEvents(new RankedQueueListener(queueManager), this);
+            getServer().getPluginManager().registerEvents(new RankedQueueListener(queueManager, deathListener), this);
             new RankedPlaceholders(ranked).register();
 
             PrivateArenaListener privateArenaListener = new PrivateArenaListener(spawnProvider, manager);

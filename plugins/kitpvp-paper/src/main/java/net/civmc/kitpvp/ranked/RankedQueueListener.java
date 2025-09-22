@@ -1,6 +1,7 @@
 package net.civmc.kitpvp.ranked;
 
 import net.civmc.kitpvp.KitPvpPlugin;
+import net.civmc.kitpvp.snapshot.DeathListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,9 +15,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class RankedQueueListener implements Listener {
 
     private final RankedQueueManager rankedQueueManager;
+    private final DeathListener deathListener;
 
-    public RankedQueueListener(RankedQueueManager rankedQueueManager) {
+    public RankedQueueListener(RankedQueueManager rankedQueueManager, DeathListener deathListener) {
         this.rankedQueueManager = rankedQueueManager;
+        this.deathListener = deathListener;
     }
 
     @EventHandler
@@ -59,6 +62,11 @@ public class RankedQueueListener implements Listener {
             match.addPlayerDamageDealt(event.getFinalDamage());
         } else {
             match.addOpponentDamageDealt(event.getFinalDamage());
+        }
+
+        if (player.getHealth() - event.getFinalDamage() < 0) {
+            deathListener.die(player);
+            rankedQueueManager.loseMatch(player);
         }
     }
 }

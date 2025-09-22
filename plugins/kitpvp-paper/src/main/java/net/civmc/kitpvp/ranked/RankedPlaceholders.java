@@ -1,6 +1,5 @@
 package net.civmc.kitpvp.ranked;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;

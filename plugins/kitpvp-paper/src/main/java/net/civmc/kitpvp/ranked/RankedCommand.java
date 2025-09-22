@@ -22,10 +22,13 @@ public class RankedCommand implements CommandExecutor {
             return false;
         }
 
-        if (this.rankedQueueManager.isInQueue(player)) {
-            player.sendMessage(Component.text("You have left the ranked queue", NamedTextColor.YELLOW));
-            this.rankedQueueManager.leaveQueue(player);
-        } else if (!(args.length > 0 && args[0].equals("leave"))) {
+        if (this.rankedQueueManager.isInQueue(player) || (args.length > 0 && args[0].equals("leave"))) {
+            if (this.rankedQueueManager.leaveQueue(player)) {
+                player.sendMessage(Component.text("You have left the ranked queue", NamedTextColor.YELLOW));
+            } else {
+                player.sendMessage(Component.text("You are not in the ranked queue", NamedTextColor.GRAY));
+            }
+        } else {
             this.rankedQueueManager.joinQueue(player, false);
         }
 

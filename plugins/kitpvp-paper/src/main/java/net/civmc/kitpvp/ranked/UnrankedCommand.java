@@ -22,9 +22,12 @@ public class UnrankedCommand implements CommandExecutor {
             return false;
         }
 
-        if (this.rankedQueueManager.isInUnrankedQueue(player)) {
-            player.sendMessage(Component.text("You have left the unranked queue", NamedTextColor.YELLOW));
-            this.rankedQueueManager.leaveUnrankedQueue(player);
+        if (this.rankedQueueManager.isInUnrankedQueue(player) || (args.length > 0 && args[0].equals("leave"))) {
+            if (this.rankedQueueManager.leaveUnrankedQueue(player)) {
+                player.sendMessage(Component.text("You have left the unranked queue", NamedTextColor.YELLOW));
+            } else {
+                player.sendMessage(Component.text("You are not in the unranked queue", NamedTextColor.GRAY));
+            }
         } else {
             this.rankedQueueManager.joinUnrankedQueue(player, false);
         }
