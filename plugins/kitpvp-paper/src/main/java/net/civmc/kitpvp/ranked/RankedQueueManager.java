@@ -158,7 +158,7 @@ public class RankedQueueManager {
 
     public boolean isInQueue(Player player) {
         QueuedPlayer queued = this.queued.get(player);
-        return queued == null || !queued.valid();
+        return queued != null && queued.valid();
     }
 
     public boolean leaveQueue(Player player) {
@@ -171,7 +171,7 @@ public class RankedQueueManager {
 
     public boolean isInUnrankedQueue(Player player) {
         QueuedPlayer queued = this.unrankedQueued.get(player);
-        return queued == null || !queued.valid();
+        return queued != null && queued.valid();
     }
 
     public boolean leaveUnrankedQueue(Player player) {
@@ -306,7 +306,7 @@ public class RankedQueueManager {
             return;
         }
         QueuedPlayer queue = this.queued.get(player);
-        if (queue != null && !queue.valid()) {
+        if (queue != null && !queue.valid() && !auto) {
             this.queued.put(player, new QueuedPlayer(queue.elo(), queue.joined(), false));
             return;
         }
@@ -355,7 +355,7 @@ public class RankedQueueManager {
             return;
         }
         QueuedPlayer queue = this.unrankedQueued.get(player);
-        if (queue != null && !queue.valid()) {
+        if (queue != null && !queue.valid() && !auto) {
             this.unrankedQueued.put(player, new QueuedPlayer(queue.elo(), queue.joined(), false));
             return;
         }
