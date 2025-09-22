@@ -5,7 +5,7 @@ header-footer:
     - disabledworld
   header:
     - '&6&kAAAA&r&6&l Welcome to CivMC &x&3&e&c&0&d&1Mini&6&l!&r&6&kAAAA'
-    - "&2&lMain: &f%playercount_main% &4&lPvP: &f%playercount_pvp% &3&lMini: &f%online%"
+    - "&2&lMain: &6%playercount_main% &4&lPvP: &6%playercount_pvp% &3&lMini: &6%online%"
   footer:
     - '&9Modmail at &6reddit.com/r/civmc'
     - '&a%tps% TPS &r&6discord.gg/nDnsU6vJqg'

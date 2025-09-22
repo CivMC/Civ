@@ -66,6 +66,7 @@ public class RankedQueueListener implements Listener {
 
         if (player.getHealth() - event.getFinalDamage() < 0) {
             deathListener.die(player);
+            event.setCancelled(true);
             rankedQueueManager.loseMatch(player);
         }
     }
