@@ -25,6 +25,7 @@ import net.civmc.kitpvp.kit.KitPvpDao;
 import net.civmc.kitpvp.spawn.SpawnProvider;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.luckperms.api.LuckPermsProvider;
@@ -330,7 +331,7 @@ public class RankedQueueManager {
                 } else {
                     player.sendMessage(Component.text("You will rejoin the ranked queue in 15 seconds. Type /ranked to leave.", NamedTextColor.YELLOW));
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        player.sendMessage(Component.text("Click to leave the ranked queue", NamedTextColor.RED, TextDecoration.BOLD, TextDecoration.UNDERLINED).clickEvent(ClickEvent.runCommand("/ranked leave")));
+                        player.sendMessage(Component.text("Click to leave the ranked queue", NamedTextColor.RED, TextDecoration.BOLD, TextDecoration.UNDERLINED).hoverEvent(HoverEvent.showText(Component.text("Leave ranked queue"))).clickEvent(ClickEvent.runCommand("/ranked leave")));
                     }, 20);
                 }
             });
