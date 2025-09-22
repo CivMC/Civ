@@ -225,7 +225,7 @@ public class RankedQueueManager {
             playerElo += playerChange.draw();
             opponentElo += opponentChange.draw();
             if (match.unranked()) {
-                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s drew against %s".formatted(player.getName(), opponent.name()));
+                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s drew against %s".formatted(player.getName(), opponent.getName()));
             } else {
                 JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s (elo: %s, change: %s) drew against %s (elo: %s, change: %s)"
                     .formatted(player.getName(), Math.round(playerElo), formatChange(playerChange.draw()),
@@ -237,7 +237,7 @@ public class RankedQueueManager {
             playerElo += playerChange.win();
             opponentElo += opponentChange.loss();
             if (match.unranked()) {
-                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s drew won %s".formatted(player.getName(), opponent.name()));
+                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s won against %s".formatted(player.getName(), opponent.getName()));
             } else {
                 JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s (elo: %s, change: %s) won against %s (elo: %s, change: %s)"
                     .formatted(player.getName(), Math.round(playerElo), formatChange(playerChange.win()),
@@ -249,7 +249,7 @@ public class RankedQueueManager {
             playerElo += playerChange.loss();
             opponentElo += opponentChange.win();
             if (match.unranked()) {
-                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s lost against %s".formatted(player.getName(), opponent.name()));
+                JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s lost against %s".formatted(player.getName(), opponent.getName()));
             } else {
                 JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("%s (elo: %s, change: %s) lost against %s (elo: %s, change: %s)"
                     .formatted(player.getName(), Math.round(playerElo), formatChange(playerChange.loss()),
