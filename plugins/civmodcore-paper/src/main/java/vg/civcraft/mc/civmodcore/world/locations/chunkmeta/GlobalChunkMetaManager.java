@@ -125,6 +125,9 @@ public class GlobalChunkMetaManager {
     }
 
     void loadChunkData(Chunk chunk) {
+        if (isExempt(chunk.getWorld())) {
+            return;
+        }
         WorldChunkMetaManager worldManager = worldToManager.get(chunk.getWorld().getUID());
         if (worldManager == null) {
             throw new IllegalStateException("No world manager for chunk at " + chunk.toString());
@@ -133,6 +136,9 @@ public class GlobalChunkMetaManager {
     }
 
     void unloadChunkData(Chunk chunk) {
+        if (isExempt(chunk.getWorld())) {
+            return;
+        }
         WorldChunkMetaManager worldManager = worldToManager.get(chunk.getWorld().getUID());
         if (worldManager == null) {
             throw new IllegalStateException("No world manager for chunk at " + chunk.toString());
@@ -141,6 +147,9 @@ public class GlobalChunkMetaManager {
     }
 
     public void registerWorld(short id, World world) {
+        if (isExempt(world)) {
+            return;
+        }
         WorldChunkMetaManager manager = new WorldChunkMetaManager(world, id, this.chunkLoadingThreadCount, this.logger);
         worldToManager.put(world.getUID(), manager);
     }
@@ -149,5 +158,9 @@ public class GlobalChunkMetaManager {
         for (WorldChunkMetaManager manager : worldToManager.values()) {
             manager.disable();
         }
+    }
+
+    private boolean isExempt(World world) {
+        return world.getName().startsWith("rankedarena.") || world.getName().startsWith("dynamicarena.");
     }
 }
