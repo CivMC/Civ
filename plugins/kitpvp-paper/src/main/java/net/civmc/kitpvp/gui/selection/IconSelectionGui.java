@@ -62,6 +62,7 @@ public class IconSelectionGui {
             Material.SUGAR,
             Material.SPLASH_POTION,
             Material.POTION,
+            Material.GOLDEN_APPLE
         }) {
             inventory.setSlot(getSlot(inventory, m), slot++);
         }
