@@ -330,7 +330,7 @@ public class RankedQueueManager {
                 } else {
                     player.sendMessage(Component.text("You will rejoin the ranked queue in 15 seconds. Type /ranked to leave.", NamedTextColor.YELLOW));
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        player.sendMessage(Component.text("Click to leave the queue.", NamedTextColor.RED, TextDecoration.BOLD, TextDecoration.UNDERLINED).clickEvent(ClickEvent.runCommand("/ranked leave")));
+                        player.sendMessage(Component.text("Click to leave the ranked queue", NamedTextColor.RED, TextDecoration.BOLD, TextDecoration.UNDERLINED).clickEvent(ClickEvent.runCommand("/ranked leave")));
                     }, 20);
                 }
             });
