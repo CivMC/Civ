@@ -294,8 +294,13 @@ public class RankedQueueManager {
                 recentMatches.put(player.getUniqueId(), new RecentMatch(opponent.getUniqueId(), Instant.now()));
                 recentMatches.put(opponent.getUniqueId(), new RecentMatch(player.getUniqueId(), Instant.now()));
 
-                joinQueue(player, true);
-                joinQueue(opponent, true);
+                if (match.unranked()) {
+                    joinUnrankedQueue(player, true);
+                    joinUnrankedQueue(opponent, true);
+                } else {
+                    joinQueue(player, true);
+                    joinQueue(opponent, true);
+                }
             });
         });
     }
@@ -308,6 +313,10 @@ public class RankedQueueManager {
         if (queue != null && !queue.valid() && !auto) {
             this.queued.put(player, new QueuedPlayer(queue.elo(), queue.joined(), false));
             player.sendMessage(Component.text("You have joined the ranked queue", NamedTextColor.YELLOW));
+            return;
+        }
+        Integer value = setting.getValue(player);
+        if (auto && (value == null || value <= 0)) {
             return;
         }
         JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
@@ -332,12 +341,11 @@ public class RankedQueueManager {
                     return;
                 }
 
-                Integer value = setting.getValue(player);
                 if (player.isOnline()) {
-                    if (value != null && value > 0 && auto) {
-                        queued.put(player, new QueuedPlayer(elo, Instant.now().plusSeconds(value), auto));
+                    if (auto) {
+                        queued.put(player, new QueuedPlayer(elo, Instant.now().plusSeconds(value), true));
                     } else {
-                        queued.put(player, new QueuedPlayer(elo, Instant.now(), auto));
+                        queued.put(player, new QueuedPlayer(elo, Instant.now(), false));
                     }
                     scanQueue();
 
@@ -345,7 +353,7 @@ public class RankedQueueManager {
                 }
                 if (!auto) {
                     player.sendMessage(Component.text("You have joined the ranked queue", NamedTextColor.YELLOW));
-                } else if (value != null && value > 0) {
+                } else {
                     player.sendMessage(Component.text("You will rejoin the ranked queue in " + value + " seconds. Type /ranked to leave.", NamedTextColor.YELLOW));
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         player.sendMessage(Component.text("Click to leave the ranked queue", NamedTextColor.RED, TextDecoration.BOLD, TextDecoration.UNDERLINED).hoverEvent(HoverEvent.showText(Component.text("Leave ranked queue"))).clickEvent(ClickEvent.runCommand("/ranked leave")));
@@ -363,6 +371,10 @@ public class RankedQueueManager {
         if (queue != null && !queue.valid() && !auto) {
             this.unrankedQueued.put(player, new QueuedPlayer(queue.elo(), queue.joined(), false));
             player.sendMessage(Component.text("You have joined the unranked queue", NamedTextColor.YELLOW));
+            return;
+        }
+        Integer value = setting.getValue(player);
+        if (auto && (value == null || value <= 0)) {
             return;
         }
         JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
@@ -386,12 +398,11 @@ public class RankedQueueManager {
                     return;
                 }
 
-                Integer value = setting.getValue(player);
                 if (player.isOnline()) {
-                    if (value != null && value > 0 && auto) {
-                        unrankedQueued.put(player, new QueuedPlayer(0, Instant.now().plusSeconds(value), auto));
+                    if (auto) {
+                        unrankedQueued.put(player, new QueuedPlayer(0, Instant.now().plusSeconds(value), true));
                     } else {
-                        unrankedQueued.put(player, new QueuedPlayer(0, Instant.now(), auto));
+                        unrankedQueued.put(player, new QueuedPlayer(0, Instant.now(), false));
                     }
                     scanQueueUnranked();
 
@@ -399,7 +410,7 @@ public class RankedQueueManager {
                 }
                 if (!auto) {
                     player.sendMessage(Component.text("You have joined the unranked queue", NamedTextColor.YELLOW));
-                } else if (value != null && value > 0) {
+                } else {
                     player.sendMessage(Component.text("You will rejoin the ranked queue in " + value + " seconds. Type /ranked to leave.", NamedTextColor.YELLOW));
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         player.sendMessage(Component.text("Click to leave the unranked queue", NamedTextColor.RED, TextDecoration.BOLD, TextDecoration.UNDERLINED).hoverEvent(HoverEvent.showText(Component.text("Leave unranked queue"))).clickEvent(ClickEvent.runCommand("/unranked leave")));
@@ -581,7 +592,7 @@ public class RankedQueueManager {
             if (!auto) {
                 return true;
             } else {
-                return !joined.isBefore(Instant.now());
+                return !Instant.now().isBefore(joined);
             }
         }
     }

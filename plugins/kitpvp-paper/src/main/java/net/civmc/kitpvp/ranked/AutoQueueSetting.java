@@ -9,7 +9,7 @@ public final class AutoQueueSetting extends IntegerSetting {
 
     public AutoQueueSetting(JavaPlugin plugin) {
         super(plugin, 15, "Auto queue", "autoqueue", new ItemStack(Material.NETHER_STAR),
-            "The time it takes for you to be auto requed. Set to 0 to disable.", true);
+            "The time it takes for you to be auto requed. Set to 0 to disable.", false);
     }
 
     @Override
