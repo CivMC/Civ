@@ -94,6 +94,7 @@ public class ArenaManager {
                     worldPlayer.kick(Component.text("The arena you were in was deleted"));
                 }
             }
+            Bukkit.unloadWorld(world, false);
         }
         for (Iterator<LoadedArena> iterator = rankedArenas.iterator(); iterator.hasNext(); ) {
             LoadedArena rankedArena = iterator.next();
@@ -102,7 +103,6 @@ public class ArenaManager {
                 break;
             }
         }
-        Bukkit.unloadWorld(worldName, false);
     }
 
     public String getArenaName(LoadedArena arena) {
