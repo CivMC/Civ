@@ -213,7 +213,7 @@ public class ArenaGui {
         @Override
         protected void clicked(@NotNull Player clicker) {
             if (!rankedQueueManager.isInUnrankedQueue(clicker)) {
-            rankedQueueManager.joinUnrankedQueue(clicker, false);
+                rankedQueueManager.joinUnrankedQueue(clicker, false);
                 clicker.closeInventory();
             }
         }

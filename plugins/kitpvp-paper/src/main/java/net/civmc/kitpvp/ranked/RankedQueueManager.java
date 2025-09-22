@@ -306,7 +306,7 @@ public class RankedQueueManager {
             return;
         }
         QueuedPlayer queue = this.queued.get(player);
-        if (!queue.valid()) {
+        if (queue != null && !queue.valid()) {
             this.queued.put(player, new QueuedPlayer(queue.elo(), queue.joined(), false));
             return;
         }
@@ -355,7 +355,7 @@ public class RankedQueueManager {
             return;
         }
         QueuedPlayer queue = this.unrankedQueued.get(player);
-        if (!queue.valid()) {
+        if (queue != null && !queue.valid()) {
             this.unrankedQueued.put(player, new QueuedPlayer(queue.elo(), queue.joined(), false));
             return;
         }
