@@ -60,7 +60,7 @@ public enum KitItem {
     DIRT(Material.DIRT, KitCategory.BLOCK, 0),
     SAND(Material.SAND, KitCategory.BLOCK, 0),
     STONE(Material.STONE, KitCategory.BLOCK, 0),
-    TNT(Material.TNT, KitCategory.BLOCK, 00),
+    TNT(Material.TNT, KitCategory.BLOCK, 10),
     SCAFFOLDING(Material.SCAFFOLDING, KitCategory.BLOCK, 0),
     SLIME_BLOCK(Material.SLIME_BLOCK, KitCategory.BLOCK, 0),
     HONEY_BLOCK(Material.HONEY_BLOCK, KitCategory.BLOCK, 0),
