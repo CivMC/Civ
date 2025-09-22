@@ -67,6 +67,7 @@ public class IconSelectionGui {
             Material.SHIELD,
             Material.CHORUS_FRUIT,
             Material.WATER_BUCKET,
+            Material.OBSIDIAN,
         }) {
             inventory.setSlot(getSlot(inventory, m), slot++);
         }
