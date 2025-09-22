@@ -121,7 +121,7 @@ public class KitListGui {
         KitPvpPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             List<Kit> playerKits = this.dao.getKits(player.getUniqueId());
-
+            int rankedKit = this.rankedDao.getKit(player.getUniqueId());
             Bukkit.getScheduler().runTask(plugin, () -> {
                 this.kits.clear();
                 this.kits.addAll(playerKits.stream().sorted(
@@ -129,7 +129,7 @@ public class KitListGui {
                             .comparing(Kit::isPublic).reversed()
                             .thenComparing(Kit::name))
                     .toList());
-                this.rankedKit = rankedDao.getKit(player.getUniqueId());
+                this.rankedKit = rankedKit;
                 this.ready = true;
                 if (this.openWhenReady) {
                     this.openWhenReady = false;
