@@ -25,7 +25,7 @@ public class RankedCommand implements CommandExecutor {
         if (this.rankedQueueManager.isInQueue(player)) {
             player.sendMessage(Component.text("You have left the ranked queue", NamedTextColor.YELLOW));
             this.rankedQueueManager.leaveQueue(player);
-        } else {
+        } else if (!(args.length > 0 && args[0].equals("leave"))) {
             this.rankedQueueManager.joinQueue(player, false);
         }
 
