@@ -19,17 +19,15 @@ public class DeathListener implements Listener {
 
     @EventHandler
     public void on(PlayerDeathEvent event) {
-        Player killer = event.getEntity().getKiller();
-        if (killer == null) {
-            return;
-        }
-
         die(event.getPlayer());
         event.getDrops().clear();
     }
 
     public void die(Player player) {
         Player killer = player.getKiller();
+        if (killer != null) {
+            return;
+        }
         snapshotManager.putSnapshot(killer.getUniqueId(), new InventorySnapshot(killer.getInventory().getContents(), false, player.getPlayerProfile(), killer.getHealth()));
         snapshotManager.putSnapshot(player.getUniqueId(), new InventorySnapshot(player.getInventory().getContents(), true, killer.getPlayerProfile(), 0));
 
