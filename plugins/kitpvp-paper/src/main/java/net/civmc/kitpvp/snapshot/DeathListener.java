@@ -25,7 +25,7 @@ public class DeathListener implements Listener {
 
     public void die(Player player) {
         Player killer = player.getKiller();
-        if (killer != null) {
+        if (killer == null) {
             return;
         }
         snapshotManager.putSnapshot(killer.getUniqueId(), new InventorySnapshot(killer.getInventory().getContents(), false, player.getPlayerProfile(), killer.getHealth()));
