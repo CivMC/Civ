@@ -233,8 +233,10 @@ public class RankedQueueManager {
         Elo.EloChange opponentChange = Elo.getChange(match.opponentElo(), match.playerElo());
 
         KitApplier.reset(player);
+        player.setFallDistance(0);
         player.teleport(spawnProvider.getSpawn());
         KitApplier.reset(opponent);
+        opponent.setFallDistance(0);
         opponent.teleport(spawnProvider.getSpawn());
 
         if (winner == null) {
@@ -540,7 +542,9 @@ public class RankedQueueManager {
 
                     player.closeInventory();
                     opponent.closeInventory();
+                    player.setFallDistance(0);
                     player.teleport(new Location(world, 42.5, 72, 33.5, -45, 0));
+                    opponent.setFallDistance(0);
                     opponent.teleport(new Location(world, 96.5, 72, 89.5, 135, 0));
                     player.setGameMode(GameMode.SURVIVAL);
                     opponent.setGameMode(GameMode.SURVIVAL);
