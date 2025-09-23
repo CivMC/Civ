@@ -232,13 +232,6 @@ public class RankedQueueManager {
         Elo.EloChange playerChange = Elo.getChange(match.playerElo(), match.opponentElo());
         Elo.EloChange opponentChange = Elo.getChange(match.opponentElo(), match.playerElo());
 
-        KitApplier.reset(player);
-        player.setFallDistance(0);
-        player.teleport(spawnProvider.getSpawn());
-        KitApplier.reset(opponent);
-        opponent.setFallDistance(0);
-        opponent.teleport(spawnProvider.getSpawn());
-
         if (winner == null) {
             player.sendMessage(Component.text("The match has ended in a draw because it timed out! (10 minutes)", NamedTextColor.GRAY));
             opponent.sendMessage(Component.text("The match has ended in a draw because it timed out! (10 minutes)", NamedTextColor.GRAY));
@@ -291,6 +284,12 @@ public class RankedQueueManager {
                 dao.updateElo(matchPlayer, matchOpponent, winner);
             }
             Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
+                KitApplier.reset(player);
+                player.setFallDistance(0);
+                player.teleport(spawnProvider.getSpawn());
+                KitApplier.reset(opponent);
+                opponent.setFallDistance(0);
+                opponent.teleport(spawnProvider.getSpawn());
                 arenaManager.deleteLoadedArena(match.arena());
 
                 recentMatches.put(player.getUniqueId(), new RecentMatch(opponent.getUniqueId(), Instant.now()));
