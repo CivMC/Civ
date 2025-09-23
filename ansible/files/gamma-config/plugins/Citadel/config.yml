@@ -335,6 +335,7 @@ non_reinforceables:
  - COBWEB
  - GLOW_LICHEN
  - REINFORCED_DEEPSLATE
+ - SCULK_VEIN
 
 # Determines whether hanging entities (such as Item Frames) can be protected by their host block
 hangers_inherit_reinforcement: true
