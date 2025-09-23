@@ -592,7 +592,7 @@ public class RankedQueueManager {
             if (!auto) {
                 return true;
             } else {
-                return !Instant.now().isAfter(joined);
+                return !Instant.now().isBefore(joined);
             }
         }
     }
