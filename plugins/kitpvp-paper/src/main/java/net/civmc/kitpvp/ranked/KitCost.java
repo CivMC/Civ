@@ -34,7 +34,6 @@ public class KitCost {
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.POWER, 1);
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.THORNS, 1);
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.SWIFT_SNEAK, 100);
-        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.QUICK_CHARGE, 1);
     }
 
     public static ItemStack setPoints(ItemStack item, int points) {
