@@ -1,7 +1,11 @@
 package vg.civcraft.mc.civchat2;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import java.awt.Color;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,19 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
-import java.nio.file.Files;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.List;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,8 +28,8 @@ import vg.civcraft.mc.civchat2.event.PrivateMessageEvent;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.utility.ScoreboardHUD;
-import vg.civcraft.mc.civmodcore.players.settings.impl.LongSetting;
 import vg.civcraft.mc.civmodcore.chat.ChatUtils;
+import vg.civcraft.mc.civmodcore.players.settings.impl.LongSetting;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -80,7 +73,7 @@ public class CivChat2Manager {
     private String filterRelayGroup;
 
     private int muteTimeSeconds;
-    
+
     private Group modsGroup;
 
     public CivChat2Manager(CivChat2 pluginInstance, ServerBroadcaster broadcaster) {
@@ -103,9 +96,9 @@ public class CivChat2Manager {
         filterRelayGroup = config.getFilterRelayGroup();
     }
 
-    
 
-    
+
+
 
     /**
      * Gets the channel for player to player chat
@@ -208,7 +201,7 @@ public class CivChat2Manager {
      */
     public void broadcastMessage(Player sender, String chatMessage, String messageFormat, Set<Player> recipients) {
 
-        
+
 
         Preconditions.checkNotNull(sender, "sender");
         Preconditions.checkNotNull(chatMessage, "chatMessage");
@@ -222,7 +215,7 @@ public class CivChat2Manager {
             return;
         }
 
-        
+
         long mutedUntil = instance.getCivChat2SettingsManager().getGlobalChatMuteSetting().getValue(sender);
         Group targetChatGroup = groupChatChannels.get(sender.getUniqueId());
         if (mutedUntil > System.currentTimeMillis()) {
@@ -232,7 +225,7 @@ public class CivChat2Manager {
             }
         }
         // Chat filter check - block message if it contains banned words
-        if (containsBannedWord(chatMessage)) {
+        if (containsBannedWord(chatMessage) && !sender.hasPermission("civchat2.globalmute")) {
             flagMessage(sender, chatMessage);
             return;
         }
@@ -302,7 +295,7 @@ public class CivChat2Manager {
             instance.getLogger().warning(sender.getName() + " sent a filtered message: " + chatMessage + " No filter relay group set, if this is unintentional please set filterRelayGroup in the config.yml");
             return;
         }
-        
+
 
         // Log the filtered message to console and mods
         String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId())
@@ -414,12 +407,12 @@ public class CivChat2Manager {
         scoreboardHUD.updateScoreboardHUD(player);
     }
 
-    
+
     // Load banned words once when CivChat2Manager is created
     private final Set<String> bannedWords;
 
     private Set<String> loadBannedWords() {
-        
+
         Set<String> words = new HashSet<>();
         try {
             File file = new File(instance.getDataFolder(), "banned-words.txt");
@@ -468,7 +461,7 @@ public class CivChat2Manager {
                 sender.sendMessage(String.format(ChatStrings.globalMuted, TextUtil.formatDuration(mutedUntil - System.currentTimeMillis())));
                 return;
             }
-            if (containsBannedWord(message)) {
+            if (containsBannedWord(message) && !sender.hasPermission("civchat2.globalmute")) {
                 flagMessage(sender, message);
                 return;
             }
