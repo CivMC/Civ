@@ -5,7 +5,7 @@ import net.civmc.kitpvp.kit.KitCustomItem;
 import net.civmc.kitpvp.kit.KitItem;
 import net.civmc.kitpvp.kit.KitPvpDao;
 import net.civmc.kitpvp.gui.EditKitGui;
-import net.civmc.kitpvp.ranked.KitCost;
+import net.civmc.kitpvp.kit.KitCost;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;

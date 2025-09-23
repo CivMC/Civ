@@ -1,4 +1,4 @@
-package net.civmc.kitpvp.ranked;
+package net.civmc.kitpvp.kit;
 
 import com.dre.brewery.Brew;
 import com.dre.brewery.recipe.BRecipe;
@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.civmc.kitpvp.kit.KitCustomItem;
-import net.civmc.kitpvp.kit.KitDrugs;
-import net.civmc.kitpvp.kit.KitItem;
-import net.civmc.kitpvp.kit.KitPotion;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -34,6 +30,7 @@ public class KitCost {
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.POWER, 1);
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.THORNS, 1);
         ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.SWIFT_SNEAK, 100);
+        ENCHANTMENT_COST_PER_LEVEL.put(Enchantment.PIERCING, 1);
     }
 
     public static ItemStack setPoints(ItemStack item, int points) {

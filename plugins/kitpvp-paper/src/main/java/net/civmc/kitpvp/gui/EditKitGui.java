@@ -14,7 +14,7 @@ import net.civmc.kitpvp.gui.selection.IconSelectionGui;
 import net.civmc.kitpvp.gui.selection.ItemCategorySelectionGui;
 import net.civmc.kitpvp.kit.Kit;
 import net.civmc.kitpvp.kit.KitPvpDao;
-import net.civmc.kitpvp.ranked.KitCost;
+import net.civmc.kitpvp.kit.KitCost;
 import net.civmc.kitpvp.ranked.RankedDao;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;

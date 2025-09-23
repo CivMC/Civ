@@ -7,7 +7,7 @@ import net.civmc.kitpvp.arena.ArenaManager;
 import net.civmc.kitpvp.arena.LoadedArena;
 import net.civmc.kitpvp.arena.data.Arena;
 import net.civmc.kitpvp.arena.data.ArenaDao;
-import net.civmc.kitpvp.ranked.KitCost;
+import net.civmc.kitpvp.kit.KitCost;
 import net.civmc.kitpvp.ranked.RankedQueueManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

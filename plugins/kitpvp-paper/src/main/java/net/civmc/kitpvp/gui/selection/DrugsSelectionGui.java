@@ -6,12 +6,9 @@ import net.civmc.kitpvp.kit.Kit;
 import net.civmc.kitpvp.kit.KitDrugs;
 import net.civmc.kitpvp.kit.KitPvpDao;
 import net.civmc.kitpvp.gui.EditKitGui;
-import net.civmc.kitpvp.ranked.KitCost;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.civmc.kitpvp.kit.KitCost;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 
 public class DrugsSelectionGui extends ItemSelectionGui {

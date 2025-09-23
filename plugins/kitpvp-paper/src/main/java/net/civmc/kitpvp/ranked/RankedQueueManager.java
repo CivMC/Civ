@@ -21,6 +21,7 @@ import net.civmc.kitpvp.KitPvpPlugin;
 import net.civmc.kitpvp.arena.ArenaManager;
 import net.civmc.kitpvp.arena.data.Arena;
 import net.civmc.kitpvp.kit.Kit;
+import net.civmc.kitpvp.kit.KitCost;
 import net.civmc.kitpvp.kit.KitPvpDao;
 import net.civmc.kitpvp.spawn.SpawnProvider;
 import net.kyori.adventure.text.Component;
