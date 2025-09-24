@@ -108,11 +108,11 @@ public enum KitItem {
     DIAMOND_SHOVEL(Material.DIAMOND_SHOVEL, KitCategory.TOOL, 1),
     DIAMOND_HOE(Material.DIAMOND_HOE, KitCategory.TOOL, 1),
 
-    NETHERITE_SWORD(Material.NETHERITE_SWORD, KitCategory.TOOL, 6),
+    NETHERITE_SWORD(Material.NETHERITE_SWORD, KitCategory.TOOL, 5),
     NETHERITE_AXE(Material.NETHERITE_AXE, KitCategory.TOOL, 6),
-    NETHERITE_PICKAXE(Material.NETHERITE_PICKAXE, KitCategory.TOOL, 6),
-    NETHERITE_SHOVEL(Material.NETHERITE_SHOVEL, KitCategory.TOOL, 6),
-    NETHERITE_HOE(Material.NETHERITE_HOE, KitCategory.TOOL, 6),
+    NETHERITE_PICKAXE(Material.NETHERITE_PICKAXE, KitCategory.TOOL, 5),
+    NETHERITE_SHOVEL(Material.NETHERITE_SHOVEL, KitCategory.TOOL, 5),
+    NETHERITE_HOE(Material.NETHERITE_HOE, KitCategory.TOOL, 5),
 
     SHIELD(Material.SHIELD, KitCategory.TOOL, 0),
     TRIDENT(Material.TRIDENT, KitCategory.TOOL, 4),
