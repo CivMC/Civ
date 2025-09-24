@@ -40,6 +40,8 @@ services:
             CIV_PVP_HOSTNAME: '{{setting.minecraft.pvp_hostname}}'
             CIV_GAMMA_HOSTNAME: '{{setting.minecraft.gamma_hostname}}'
             CIV_HOSTNAME: '{{setting.minecraft.hostname}}'
+
+            TZ: "UTC"
         deploy:
             placement:
                 constraints: [node.role == manager]
@@ -111,6 +113,7 @@ services:
             CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
 
             JVM_OPTS: -agentpath:./libti.so -XX:+UseGraalJIT -Djdk.graal.CompilerConfiguration=enterprise -Djdk.graal.TuneInlinerExploration=1
+            TZ: "UTC"
         volumes:
             # Persistence
             - /opt/stacks/minecraft/paper-data:/data
@@ -295,6 +298,8 @@ services:
 
             CIV_WATCHDOG_TIMEOUT_TIME: 60
             CIV_FORWARDING_SECRET: '{{secret.minecraft.forwarding_secret}}'
+
+            TZ: "UTC"
 
         volumes:
             # Persistence
