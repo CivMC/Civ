@@ -94,7 +94,7 @@ weaponModification:
   netheriteAxe:
     material: NETHERITE_AXE
     damage: 6
-    armourDamageMultiplier: 1.8
+    armourDamageMultiplier: 1.78
   diamondAxe:
     material: DIAMOND_AXE
     damage: 5
