@@ -27,7 +27,7 @@ public class EloCommand implements CommandExecutor {
 
         player.sendMessage(Component.empty().append(Component.text("Elo: ", NamedTextColor.GOLD)).append(Component.text(elo, NamedTextColor.YELLOW)));
 
-        String rankPlace = rank < 0 ? "unknown" : "#" + rank;
+        String rankPlace = rank < 0 ? "unknown" : "#" + (rank + 1);
         player.sendMessage(Component.empty().append(Component.text("Rank: ", NamedTextColor.GOLD)).append(Component.text(rankPlace, NamedTextColor.YELLOW)));
         return true;
     }
