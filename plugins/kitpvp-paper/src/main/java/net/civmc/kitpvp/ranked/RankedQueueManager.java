@@ -247,8 +247,10 @@ public class RankedQueueManager {
             player.sendMessage(Component.text("The match has ended in a draw because it timed out! (10 minutes)", NamedTextColor.GRAY));
             opponent.sendMessage(Component.text("The match has ended in a draw because it timed out! (10 minutes)", NamedTextColor.GRAY));
 
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1, 1);
-            opponent.playSound(opponent.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1, 1);
+            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1, 1);
+                opponent.playSound(opponent.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1, 1);
+            }, 10);
             playerElo += playerChange.draw();
             opponentElo += opponentChange.draw();
             if (match.unranked()) {
@@ -260,9 +262,11 @@ public class RankedQueueManager {
             }
         } else if (winner.equals(player.getUniqueId())) {
             player.sendMessage(Component.text("You have won!", NamedTextColor.GREEN));
-            player.playSound(player.getLocation(), Sound.ITEM_GOAT_HORN_SOUND_1, 1, 1);
             opponent.sendMessage(Component.text("You lost", NamedTextColor.RED));
-            opponent.playSound(opponent.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1, 1);
+            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
+                player.playSound(player.getLocation(), Sound.ITEM_GOAT_HORN_SOUND_1, 1, 1);
+                opponent.playSound(opponent.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1, 1);
+            }, 10);
             playerElo += playerChange.win();
             opponentElo += opponentChange.loss();
             if (match.unranked()) {
@@ -274,9 +278,11 @@ public class RankedQueueManager {
             }
         } else {
             opponent.sendMessage(Component.text("You have won!", NamedTextColor.GREEN));
-            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1, 1);
             player.sendMessage(Component.text("You lost", NamedTextColor.RED));
-            opponent.playSound(opponent.getLocation(), Sound.ITEM_GOAT_HORN_SOUND_1, 1, 1);
+            Bukkit.getScheduler().runTaskLater(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1, 1);
+                opponent.playSound(opponent.getLocation(), Sound.ITEM_GOAT_HORN_SOUND_1, 1, 1);
+            }, 10);
             playerElo += playerChange.loss();
             opponentElo += opponentChange.win();
             if (match.unranked()) {
