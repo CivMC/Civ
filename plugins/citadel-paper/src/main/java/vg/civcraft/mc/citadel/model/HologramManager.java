@@ -185,8 +185,9 @@ public class HologramManager {
 
         private Component createHoloContent() {
             Component component = Component.empty();
-            component = component.append(ModeListener.formatHealthRgb(reinforcement)).append(Component.newline());
+            component = component.append(ModeListener.formatHealthRgb(reinforcement));
             if (hasPermission) {
+                component = component.append(Component.newline());
                 component = component.append(Component.text(reinforcement.getGroup().getName(), NamedTextColor.LIGHT_PURPLE)).append(Component.newline());
                 component = component.append(Component.text(reinforcement.getType().getName(), NamedTextColor.AQUA));
                 if (!reinforcement.isMature()) {
