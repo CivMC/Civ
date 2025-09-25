@@ -1,7 +1,6 @@
 package net.civmc.kitpvp.ranked;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,11 @@ public class RankedPlayers {
     }
 
     public int getRank(UUID player) {
-        int index = Collections.binarySearch(eloList, player);
-        return index < 0 ? -1 : index;
+        for (int i = 0; i < eloList.size(); i++) {
+            if (eloList.get(i).equals(player)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
