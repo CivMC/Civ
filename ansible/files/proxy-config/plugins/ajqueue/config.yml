@@ -194,7 +194,10 @@ enable-server-command: true
 #  For example, if you have a server called lobby, and you want people to be able to use /hub, you can use this:
 #   - "hub:lobby"
 #  If you have the free version, you can only put the server name, no aliases.
-slash-servers: []
+slash-servers:
+  - "main"
+  - "pvp"
+  - "mini"
 
 # Should we enable /send as an alias for /ajQueue send?
 # If on bungeecord, this requires extra setup (same as replacing the server command but with send instead)

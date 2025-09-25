@@ -1,28 +1,16 @@
 package net.civmc.kitpvp.ranked;
 
-import java.util.Map;
-import java.util.UUID;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import net.civmc.kitpvp.KitPvpPlugin;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class RankedPlaceholders extends PlaceholderExpansion {
 
-    private Map<UUID, Double> elo;
+    private RankedPlayers players;
 
-    public RankedPlaceholders(RankedDao dao) {
-        this.elo = dao.getAll();
-        Bukkit.getScheduler().runTaskTimerAsynchronously(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
-            Map<UUID, Double> all = dao.getAll();
-            Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
-                this.elo = all;
-            });
-            this.elo = all;
-        }, 20 * 60 * 5, 20 * 60 * 5);
+    public RankedPlaceholders(RankedPlayers players) {
+        this.players = players;
     }
 
     @Override
@@ -30,7 +18,7 @@ public class RankedPlaceholders extends PlaceholderExpansion {
         params = params.toLowerCase();
 
         if (params.equalsIgnoreCase("elo")) {
-            return Long.toString(Math.round(elo.getOrDefault(player.getUniqueId(), 1000D)));
+            return Long.toString(Math.round(players.getElo(player.getUniqueId())));
         } else {
             return null;
         }

@@ -62,13 +62,16 @@ public class RankedQueueManager {
 
     private final AutoQueueSetting setting;
 
-    public RankedQueueManager(KitPvpDao kitDao, RankedDao dao, ArenaManager arenaManager, SpawnProvider spawnProvider, Arena arena) {
+    private final RankedPlayers players;
+
+    public RankedQueueManager(KitPvpDao kitDao, RankedDao dao, ArenaManager arenaManager, SpawnProvider spawnProvider, Arena arena, RankedPlayers players) {
         this.kitDao = kitDao;
         this.dao = dao;
         this.arenaManager = arenaManager;
         this.spawnProvider = spawnProvider;
 
         this.arena = arena;
+        this.players = players;
 
         KitPvpMenu menu = new KitPvpMenu();
         this.setting = new AutoQueueSetting(JavaPlugin.getPlugin(KitPvpPlugin.class));
@@ -80,8 +83,8 @@ public class RankedQueueManager {
                 for (Iterator<RankedMatch> iterator = matches.iterator(); iterator.hasNext(); ) {
                     RankedMatch match = iterator.next();
                     if (Instant.now().isAfter(match.started().plus(10, ChronoUnit.MINUTES))) {
-                        mostPotsWinsOrDraw(match);
                         iterator.remove();
+                        mostPotsWinsOrDraw(match);
                     }
                 }
                 scanQueue();
@@ -227,6 +230,13 @@ public class RankedQueueManager {
         UUID matchPlayer = player.getUniqueId();
         UUID matchOpponent = opponent.getUniqueId();
 
+        KitApplier.reset(player);
+        player.setFallDistance(0);
+        player.teleport(spawnProvider.getSpawn());
+        KitApplier.reset(opponent);
+        opponent.setFallDistance(0);
+        opponent.teleport(spawnProvider.getSpawn());
+
         double playerElo = match.playerElo();
         double opponentElo = match.opponentElo();
 
@@ -236,6 +246,9 @@ public class RankedQueueManager {
         if (winner == null) {
             player.sendMessage(Component.text("The match has ended in a draw because it timed out! (10 minutes)", NamedTextColor.GRAY));
             opponent.sendMessage(Component.text("The match has ended in a draw because it timed out! (10 minutes)", NamedTextColor.GRAY));
+
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1, 1);
+            opponent.playSound(opponent.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1, 1);
             playerElo += playerChange.draw();
             opponentElo += opponentChange.draw();
             if (match.unranked()) {
@@ -247,7 +260,9 @@ public class RankedQueueManager {
             }
         } else if (winner.equals(player.getUniqueId())) {
             player.sendMessage(Component.text("You have won!", NamedTextColor.GREEN));
+            player.playSound(player.getLocation(), Sound.ITEM_GOAT_HORN_SOUND_1, 1, 1);
             opponent.sendMessage(Component.text("You lost", NamedTextColor.RED));
+            opponent.playSound(opponent.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1, 1);
             playerElo += playerChange.win();
             opponentElo += opponentChange.loss();
             if (match.unranked()) {
@@ -259,7 +274,9 @@ public class RankedQueueManager {
             }
         } else {
             opponent.sendMessage(Component.text("You have won!", NamedTextColor.GREEN));
+            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_TELEPORT, 1, 1);
             player.sendMessage(Component.text("You lost", NamedTextColor.RED));
+            opponent.playSound(opponent.getLocation(), Sound.ITEM_GOAT_HORN_SOUND_1, 1, 1);
             playerElo += playerChange.loss();
             opponentElo += opponentChange.win();
             if (match.unranked()) {
@@ -278,6 +295,8 @@ public class RankedQueueManager {
             opponent.sendMessage(Component.text("Your elo is now ", NamedTextColor.GRAY)
                 .append(Component.text(Math.round(opponentElo), NamedTextColor.WHITE))
                 .append(Component.text(" (change: " + formatChange(opponentElo - match.opponentElo()) + ")", NamedTextColor.GRAY)));
+            players.setElo(player.getUniqueId(), playerElo);
+            players.setElo(opponent.getUniqueId(), opponentElo);
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
@@ -285,12 +304,6 @@ public class RankedQueueManager {
                 dao.updateElo(matchPlayer, matchOpponent, winner);
             }
             Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
-                KitApplier.reset(player);
-                player.setFallDistance(0);
-                player.teleport(spawnProvider.getSpawn());
-                KitApplier.reset(opponent);
-                opponent.setFallDistance(0);
-                opponent.teleport(spawnProvider.getSpawn());
                 arenaManager.deleteLoadedArena(match.arena());
 
                 recentMatches.put(player.getUniqueId(), new RecentMatch(opponent.getUniqueId(), Instant.now()));
@@ -356,7 +369,7 @@ public class RankedQueueManager {
                 if (!auto) {
                     player.sendMessage(Component.text("You have joined the ranked queue", NamedTextColor.YELLOW));
                 } else {
-                    player.sendMessage(Component.text("You will rejoin the ranked queue in " + value + " seconds. Type /ranked to leave.", NamedTextColor.YELLOW));
+                    player.sendMessage(Component.text("You will rejoin the ranked queue in " + value + " seconds. Type /ranked leave to leave.", NamedTextColor.YELLOW));
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         player.sendMessage(Component.text("Click to leave the ranked queue", NamedTextColor.RED, TextDecoration.BOLD, TextDecoration.UNDERLINED).hoverEvent(HoverEvent.showText(Component.text("Leave ranked queue"))).clickEvent(ClickEvent.runCommand("/ranked leave")));
                     }, 20);

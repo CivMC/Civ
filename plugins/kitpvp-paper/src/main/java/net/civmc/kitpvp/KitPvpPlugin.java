@@ -13,8 +13,10 @@ import net.civmc.kitpvp.arena.data.Arena;
 import net.civmc.kitpvp.arena.data.SqlArenaDao;
 import net.civmc.kitpvp.command.ClearCommand;
 import net.civmc.kitpvp.command.KitCommand;
+import net.civmc.kitpvp.ranked.EloCommand;
 import net.civmc.kitpvp.ranked.RankedCommand;
 import net.civmc.kitpvp.ranked.RankedPlaceholders;
+import net.civmc.kitpvp.ranked.RankedPlayers;
 import net.civmc.kitpvp.ranked.RankedQueueListener;
 import net.civmc.kitpvp.ranked.RankedQueueManager;
 import net.civmc.kitpvp.ranked.SqlRankedDao;
@@ -80,11 +82,13 @@ public class KitPvpPlugin extends ACivMod {
                 }
             }
 
-            RankedQueueManager queueManager = new RankedQueueManager(dao, ranked, manager, spawnProvider, rankedArena);
+            RankedPlayers players = new RankedPlayers(ranked);
+            RankedQueueManager queueManager = new RankedQueueManager(dao, ranked, manager, spawnProvider, rankedArena, players);
             getCommand("ranked").setExecutor(new RankedCommand(queueManager));
             getCommand("unranked").setExecutor(new UnrankedCommand(queueManager));
+            getCommand("elo").setExecutor(new EloCommand(players));
             getServer().getPluginManager().registerEvents(new RankedQueueListener(queueManager, deathListener), this);
-            new RankedPlaceholders(ranked).register();
+            new RankedPlaceholders(players).register();
 
             PrivateArenaListener privateArenaListener = new PrivateArenaListener(spawnProvider, manager);
             getServer().getPluginManager().registerEvents(privateArenaListener, this);

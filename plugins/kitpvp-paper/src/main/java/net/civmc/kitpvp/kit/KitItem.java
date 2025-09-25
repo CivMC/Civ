@@ -173,10 +173,6 @@ public enum KitItem {
         return item;
     }
 
-    public KitCategory getCategory() {
-        return category;
-    }
-
     public int getCost() {
         return cost;
     }

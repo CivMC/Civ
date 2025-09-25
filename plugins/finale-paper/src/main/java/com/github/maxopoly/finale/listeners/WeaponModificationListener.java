@@ -138,7 +138,7 @@ public class WeaponModificationListener implements Listener {
             potionMeta.setColor(tippedArrowConfig.getColor());
 
             for (PotionEffect effect : effects) {
-                potionMeta.addCustomEffect(effect.withDuration(duration), true);
+                potionMeta.addCustomEffect(effect.withDuration(duration * 8), true);
             }
 
             potionMeta.itemName(Component.text(tippedArrowConfig.getName()));

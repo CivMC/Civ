@@ -29,6 +29,7 @@ commands:
   setspawn:
     permission: kitpvp.admin
   clear: {}
+  elo: {}
   viewinventorysnapshot:
     usage: /<command> <player>
   ranked: {}
