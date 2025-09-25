@@ -116,6 +116,7 @@ hacks:
     announcements:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Join the Official Discord at https://discord.gg/zp63BaX3Uf","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/zp63BaX3Uf"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Stuck in queue? Type /server mini to go to CivMC Mini (and you''ll remain in the queue!)","color":"green"}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Join the ranked PvP queue with /ranked!","color":"green"}]'
 
   ElytraFeatures:
     enabled: false
