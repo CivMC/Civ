@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.Arrays;
+import java.util.regex.Matcher;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.nio.file.Files;
@@ -296,6 +297,8 @@ public class CivChat2Manager {
         if (muteTimeSeconds > 0) {
             banSetting.setValue(sender, System.currentTimeMillis() + TimeUnit.SECONDS.toMillis((long)muteTimeSeconds)); // mute player automatically
         }
+        
+        webhook.send(sender.getName(), chatMessage); // send to discord webhook
 
         Group modsGroup = GroupManager.getGroup(filterRelayGroup);
         if (modsGroup == null) {
@@ -435,17 +438,21 @@ public class CivChat2Manager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return words;
+        return words; 
     }
 
     private boolean containsBannedWord(String message) {
         String lowerMessage = message.toLowerCase();
         for (String bannedWord : bannedWords) {
-            if (lowerMessage.contains(bannedWord)) {
+            // Create regex pattern with word boundaries
+            String pattern = "(?<![a-zA-Z])" + Pattern.quote(bannedWord.toLowerCase()) + "(?![a-zA-Z])";
+            Pattern regex = Pattern.compile(pattern);
+            Matcher matcher = regex.matcher(lowerMessage);
+            if (matcher.find()) {
                 return true;
             }
         }
-        return false;
+    return false;
     }
 
 
