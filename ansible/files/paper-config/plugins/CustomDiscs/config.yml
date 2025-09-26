@@ -1,0 +1,61 @@
+# [General CustomDiscs Config]
+
+# The maximum download size in megabytes.
+max-download-size: 50
+
+# The maximum length the file name (including the file extension) should be when downloaded. Using a too high value could crash the server.
+filename-maximum-length: 100
+
+# The master volume of music discs from 0-1. (You can set values like 0.5 for 50% volume).
+music-disc-volume: 1
+
+# Debug Mode - To display some more logging information and Stack Trace informations
+debugMode: false
+
+# [Music Discs Config]
+
+# Enable custom music discs.
+music-disc-enable: true
+
+# Enable "Now playing" message for custom music discs.
+music-disc-playing-enable: true
+
+# The distance from which music discs can be heard in blocks.
+music-disc-distance: 16
+
+# The max distance from which music discs can be heard in blocks.
+music-disc-max-distance: 256
+
+# [Goat Horns Config]
+
+# Enable custom goat horns.
+custom-horn-enable: false
+
+# Enable "Now playing" message for custom horns.
+custom-horn-playing-enable: false
+
+# The distance from which custom horns can be heard in blocks.
+custom-horn-distance: 16
+
+# The max distance from which custom horns can be heard in blocks.
+custom-horn-max-distance: 256
+
+# The default cooldown time for horns in ticks from 1 to the max value of horn-max-cooldown (1 second is 20 ticks).
+horn-cooldown: 140
+
+# The default max cooldown time for horns in ticks (1 second is 20 ticks).
+horn-max-cooldown: 6000
+
+# [Player Heads Config]
+
+# Enable custom player heads.
+custom-head-enable: false
+
+# Enable "Now playing" message for player heads.
+custom-head-playing-enable: false
+
+# The distance from which music discs can be heard in blocks.
+custom-head-distance: 16
+
+# The max distance from which music discs can be heard in blocks.
+custom-head-max-distance: 256
