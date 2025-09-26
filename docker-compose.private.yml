@@ -32,7 +32,10 @@ services:
       - ./PrivateConfig/paper/config/DiscordSRV/config.yml:/privateconfig/plugins/DiscordSRV/config.yml
       - ./PrivateConfig/paper/config/DiscordSRV/alerts.yml:/privateconfig/plugins/DiscordSRV/alerts.yml
       - ./PrivateConfig/paper/config/MythicMobs:/privateconfig/plugins/MythicMobs
-      - ./PrivateConfig/paper/config/EvenMoreFish:/privateconfig/plugins/EvenMoreFish
+      - ./PrivateConfig/paper/config/EvenMoreFish/baits:/privateconfig/plugins/EvenMoreFish/baits
+      - ./PrivateConfig/paper/config/EvenMoreFish/competitions:/privateconfig/plugins/EvenMoreFish/competitions
+      - ./PrivateConfig/paper/config/EvenMoreFish/rarities:/privateconfig/plugins/EvenMoreFish/rarities
+      - ./PrivateConfig/paper/config/EvenMoreFish/rods:/privateconfig/plugins/EvenMoreFish/rods
       - ./PrivateConfig/paper/config/RandomSpawn/worlds.yml:/privateconfig/plugins/RandomSpawn/worlds.yml
       - ./PrivateConfig/paper/config/Heliodor/config.yml:/privateconfig/plugins/Heliodor/config.yml
 
@@ -57,10 +60,6 @@ services:
       - ./PrivateConfig/paper/config/Votifier/config.yml:/privateconfig/plugins/Votifier/config.yml
       - ./PrivateConfig/paper/config/Votifier/rsa/public.key:/privateconfig/plugins/Votifier/rsa/public.key
       - ./PrivateConfig/paper/config/Votifier/rsa/private.key:/privateconfig/plugins/Votifier/rsa/private.key
-      - ./PrivateConfig/paper/config/EvenMoreFish/baits.yml:/privateconfig/plugins/EvenMoreFish/baits.yml
-      - ./PrivateConfig/paper/config/EvenMoreFish/fish.yml:/privateconfig/plugins/EvenMoreFish/fish.yml
-      - ./PrivateConfig/paper/config/EvenMoreFish/rarities.yml:/privateconfig/plugins/EvenMoreFish/rarities.yml
-      - ./PrivateConfig/paper/config/EvenMoreFish/competitions.yml:/privateconfig/plugins/EvenMoreFish/competitions.yml
 
   pvp:
     environment:
