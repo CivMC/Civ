@@ -351,6 +351,9 @@ public class RankedQueueManager {
                 kit = kitDao.getKit(kitId);
             }
             Bukkit.getScheduler().runTask(plugin, () -> {
+                if (getMatch(player) != null) {
+                    return;
+                }
                 if (kit == null) {
                     player.sendMessage(Component.text("You cannot join the ranked queue because you do not have a kit selected!", NamedTextColor.RED));
                     player.sendMessage(Component.text("Open a kit in /kit and click on the diamond sword to select it", NamedTextColor.RED));
@@ -545,10 +548,11 @@ public class RankedQueueManager {
                     opponentKit = kitDao.getKit(opponentKitId);
                 }
                 Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
-                    if (!player.isOnline() || !opponent.isOnline() || playerKit == null || opponentKit == null || KitCost.getCost(playerKit.items()) > KitCost.MAX_POINTS || KitCost.getCost(opponentKit.items()) > KitCost.MAX_POINTS) {
+                    if (!player.isOnline() || !opponent.isOnline() || playerKit == null || opponentKit == null || KitCost.getCost(playerKit.items()) > KitCost.MAX_POINTS || KitCost.getCost(opponentKit.items()) > KitCost.MAX_POINTS || player.isDead() || opponent.isDead()) {
                         // TODO better error handling
                         player.sendMessage(Component.text("An error occurred, please requeue.", NamedTextColor.RED));
                         arenaManager.deleteLoadedArena(loaded);
+                        JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().info("Error occurred between " + player.getName() + " and " + opponent.getName());
                         return;
                     }
 
