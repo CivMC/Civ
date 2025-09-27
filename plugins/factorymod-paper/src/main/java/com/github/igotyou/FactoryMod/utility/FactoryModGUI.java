@@ -102,18 +102,12 @@ public class FactoryModGUI {
             lore.add("");
             lore.add(ChatColor.GOLD + String.valueOf(fccEgg.getRecipes().size() + " recipes:"));
             for (IRecipe rec : fccEgg.getRecipes()) {
-                if (rec instanceof Upgraderecipe) {
-                    lore.add(ChatColor.GRAY + " - " + ChatColor.GREEN + rec.getName());
-                } else {
-                    lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + rec.getName());
-                }
+                lore.add(ChatColor.GRAY + " - " + (rec instanceof Upgraderecipe ? ChatColor.GREEN : ChatColor.AQUA) + rec.getName());
             }
             ItemUtils.addLore(is, lore);
-            clicks.add(new LClickable(is, p -> {
-                showForFactory(fccEgg);
-            }));
+            clicks.add(new LClickable(is, p -> showForFactory(fccEgg)));
         }
-        Scrollbar middleBar = new Scrollbar(clicks, 45, 5, ContentAligners.getCenteredInOrder(clicks.size(), 45, 9));
+        Scrollbar middleBar = new Scrollbar(clicks, 45, 45, 9, ContentAligners.getCenteredInOrder(clicks.size(), 45, 9));
         inventory.addComponent(middleBar, SlotPredicates.rows(5));
         StaticDisplaySection bottomLine = new StaticDisplaySection(9);
         if (history.hasPrevious()) {
