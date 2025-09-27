@@ -43,9 +43,10 @@ public class PrintBookRecipe extends PrintingPressRecipe {
         int productionTime,
         ItemMap input,
         ItemMap printingPlate,
-        int outputAmount
+        int outputAmount,
+        int damagePerRun
     ) {
-        super(identifier, name, productionTime, input);
+        super(identifier, name, productionTime, input, damagePerRun);
         this.printingPlate = printingPlate;
         this.outputAmount = outputAmount;
     }
@@ -57,6 +58,7 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 
     @Override
     public boolean applyEffect(Inventory inputInv, Inventory outputInv, FurnCraftChestFactory fccf) {
+        super.applyEffect(inputInv, outputInv, fccf);
         MultiInventoryWrapper combo = new MultiInventoryWrapper(inputInv, outputInv);
         logBeforeRecipeRun(combo, fccf);
 
