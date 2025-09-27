@@ -9789,7 +9789,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ROTTEN_FLESH
-        amount: 16
+        amount: 8
     output:
       exp:
         v: 3839
@@ -9863,7 +9863,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: STRING
-        amount: 16
+        amount: 8
     output:
       exp:
         v: 3839
@@ -9937,7 +9937,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BONE
-        amount: 16
+        amount: 8
     output:
       exp:
         v: 3839
