@@ -44,7 +44,7 @@ services:
       - ./ansible/build/proxy-plugins:/plugins
 
   paper:
-    image: itzg/minecraft-server:stable-java24-graalvm
+    image: itzg/minecraft-server:stable-java24
     restart: unless-stopped
     tty: true
     stdin_open: true
@@ -209,6 +209,61 @@ services:
       - ./ansible/files/paper-config:/paper-config
       - ./ansible/files/pvp-config:/config
       - ./ansible/build/pvp-plugins:/plugins
+
+  queue:
+#     image: itzg/minecraft-server:stable-java24-graalvm
+    build: .
+#    image: queue-server-test
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+#    depends_on:
+#      mariadb:
+#        condition: service_healthy
+#      postgres:
+#        condition: service_healthy
+#      rabbitmq:
+#        condition: service_healthy
+#    environment:
+#      TYPE: 'paper'
+#      VERSION: '1.21.8'
+#      EULA: 'TRUE'
+#      PAPER_CUSTOM_JAR: 'asp-server.jar'
+#
+#      REMOVE_OLD_MODS: 'TRUE'
+#      COPY_CONFIG_DEST: '/data'
+#      SYNC_SKIP_NEWER_IN_DESTINATION: 'false'
+#      REPLACE_ENV_DURING_SYNC: 'TRUE'
+#      REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
+#
+#      INIT_MEMORY: 1G
+#      MAX_MEMORY: 3G
+#
+#      CIV_SERVER_NAME: local
+#
+#      CIV_WORDBANK_SEED: wordbank
+#
+#      CIV_MYSQL_HOST: mariadb
+#      CIV_MYSQL_USERNAME: mariadb
+#      CIV_MYSQL_PASSWORD: mariadb
+#
+#      CIV_POSTGRES_HOST: postgres
+#      CIV_POSTGRES_USERNAME: postgres
+#      CIV_POSTGRES_PASSWORD: postgres
+#
+#      CIV_DATABASE_PREFIX: 'pvp_'
+#
+#      CIV_RABBITMQ_HOST: rabbitmq
+#      CIV_RABBITMQ_USERNAME: rabbitmq
+#      CIV_RABBITMQ_PASSWORD: rabbitmq
+#
+#      JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006
+#      CIV_WATCHDOG_TIMEOUT_TIME: 6000
+#      CIV_FORWARDING_SECRET: '1234'
+#    ports:
+#      - "5006:5006"
+    volumes:
+      - ./containers/data/queue:/data
 
   #################
   ### Databases ###
