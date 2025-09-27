@@ -13,6 +13,7 @@ plugins {
 
 include(":ansible")
 
+include(":plugins:announcements-velocity")
 include(":plugins:banstick-paper")
 include(":plugins:bastion-paper")
 include(":plugins:castlegates-paper")
@@ -42,3 +43,4 @@ include(":plugins:kitpvp-paper")
 include(":plugins:voidworld-paper")
 include(":plugins:heliodor-paper")
 include(":plugins:civproxy-velocity")
+include(":plugins:kiragateway-velocity")

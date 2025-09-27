@@ -1,6 +1,6 @@
 plugins {
-    id("io.papermc.paperweight.userdev")
-    id("xyz.jpenilla.run-paper")
+    alias(libs.plugins.paper.userdev)
+    alias(libs.plugins.runpaper)
 }
 
 version = "2.0.1"
