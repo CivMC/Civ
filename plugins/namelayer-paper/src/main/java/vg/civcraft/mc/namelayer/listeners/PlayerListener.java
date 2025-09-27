@@ -6,13 +6,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.MojangNames;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.RunnableOnGroup;
@@ -49,6 +52,24 @@ public class PlayerListener implements Listener {
         x = x.substring(0, x.length() - 2);
         x += ".";
         p.sendMessage(ChatColor.YELLOW + x);
+    }
+
+    @EventHandler
+    public void onCommand(PlayerCommandPreprocessEvent event) {
+        String[] args = event.getMessage().split(" ");
+
+        // Handle tp commands using nicknames
+        if (args.length >= 2 && args[0].equalsIgnoreCase("/tp")) {
+            String targetArg = args[1];
+            var targetUserID = NameAPI.getUUID(targetArg);
+
+            var mojangName = MojangNames.getMojangName(targetUserID);
+            if (mojangName != null) {
+                // Replace nickname with mojang username
+                args[1] = mojangName;
+                event.setMessage(String.join(" ", args));
+            }
+        }
     }
 
     public static void addNotification(UUID u, Group g) {
