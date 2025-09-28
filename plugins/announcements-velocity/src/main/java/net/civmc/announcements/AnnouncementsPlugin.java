@@ -16,10 +16,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -40,10 +40,10 @@ public class AnnouncementsPlugin {
     private final Logger logger;
     private final Path dataDirectory;
 
-    private record Announcement(Component message, Boolean showTitle) {}
+    private record Announcement(Component message, boolean title) {}
 
-    private final Map<Cron, Announcement> scheduledAnnouncements = new ConcurrentHashMap<>();
-    private final Map<Cron, ZonedDateTime> lastExecutionTimes = new ConcurrentHashMap<>();
+    private final Map<Cron, Announcement> scheduledAnnouncements = new HashMap<>();
+    private final Map<Cron, ZonedDateTime> lastExecutionTimes = new HashMap<>();
     private @Nullable CommentedConfigurationNode config;
 
     @Inject
@@ -55,8 +55,6 @@ public class AnnouncementsPlugin {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        logger.info("Initializing Announcements plugin");
-
         loadConfig();
         scheduleTasks();
 
@@ -67,19 +65,13 @@ public class AnnouncementsPlugin {
     private void scheduleTasks() {
         var minimessageSerializer = MiniMessage.miniMessage();
 
-        // ensure config exists
-        if (config == null) {
-            logger.info("Config is null");
-            return;
-        }
-
         // read scheduled announcements from config
         List<? extends ConfigurationNode> announcements = config.node("scheduledAnnouncements").childrenList();
         for (ConfigurationNode announcement : announcements) {
             Cron cron = cronParser.parse(Objects.requireNonNull(announcement.node("cron").getString()));
             // convert message to Component
             Component formatedMsg = minimessageSerializer.deserialize(Objects.requireNonNull(announcement.node("message").getString()));
-            Boolean showTitle = announcement.node("showTitle").getBoolean();
+            boolean showTitle = announcement.node("title").getBoolean(false);
             scheduledAnnouncements.put(cron, new Announcement(formatedMsg, showTitle));
         }
     }
@@ -91,22 +83,21 @@ public class AnnouncementsPlugin {
         ZonedDateTime now = ZonedDateTime.now().withNano(0);
 
         for (Cron cron : scheduledAnnouncements.keySet()) {
-            var executionTime = ExecutionTime.forCron(cron);
+            ExecutionTime executionTime = ExecutionTime.forCron(cron);
 
             // get last time a cron *should* have run
             executionTime.lastExecution(now).ifPresent(lastExecution -> {
                 // Check if we should execute, and if con already executed at that time
                 if (executionTime.isMatch(now) && !lastExecution.equals(lastExecutionTimes.get(cron))) {
                     // Execute and update the last execution time
-                    var announcement = scheduledAnnouncements.get(cron);
-                    server.sendMessage(announcement.message);
+                    Announcement announcement = scheduledAnnouncements.get(cron);
                     lastExecutionTimes.put(cron, lastExecution);
-                    if (announcement.showTitle) {
+                    if (announcement.title) {
                         // send title to all players
-                        var title = Title.title(announcement.message, Component.empty());
-                        server.getAllPlayers().parallelStream().forEach(player ->
-                            player.showTitle(title)
-                        );
+                        Title title = Title.title(announcement.message, Component.empty());
+                        server.showTitle(title);
+                    } else {
+                        server.sendMessage(announcement.message);
                     }
 
                     logger.info("Announcement sent: {}", announcement.message);
