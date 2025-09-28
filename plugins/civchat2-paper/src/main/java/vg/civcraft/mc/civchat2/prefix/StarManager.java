@@ -60,7 +60,7 @@ public class StarManager {
         }
 
         long firstPlayed = player.getFirstPlayed();
-        int yellowStars = firstPlayed == 0 ? 0 : (int) LocalDateTime.ofInstant(Instant.ofEpochMilli(firstPlayed), ZoneId.systemDefault()).until(Instant.now(), ChronoUnit.YEARS);
+        int yellowStars = firstPlayed == 0 ? 0 : (int) LocalDateTime.ofInstant(Instant.ofEpochMilli(firstPlayed), ZoneId.systemDefault()).until(LocalDateTime.now(), ChronoUnit.YEARS);
 
         yellowStars = Math.max(0, yellowStars - greenStars);
 
