@@ -21,6 +21,7 @@ chat:
       range: 800
       color: GRAY
   globalGroup: '!'
+  playtimeStars: false
 info:
   ##FilterRelayGroup: Namelayer to send filtered messages from ! and local to for moderation - set to null to disable
   filterRelayGroup: "Mods"

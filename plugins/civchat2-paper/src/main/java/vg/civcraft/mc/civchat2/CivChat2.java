@@ -59,7 +59,7 @@ public class CivChat2 extends ACivMod {
             broadcaster = new NoopServerBroadcaster();
         }
 
-        StarManager starManager = new StarManager();
+        StarManager starManager = new StarManager(getConfig().getBoolean("chat.playtimeStars"));
 
         chatMan = new CivChat2Manager(instance, broadcaster, starManager);
         log.debug("Debug Enabled");

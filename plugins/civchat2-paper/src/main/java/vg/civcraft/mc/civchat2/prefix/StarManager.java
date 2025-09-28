@@ -17,6 +17,12 @@ public class StarManager {
     private static final String STAR = "⋆";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("d MMM uuuu");
 
+    private final boolean playtimeStars;
+
+    public StarManager(boolean playtimeStars) {
+        this.playtimeStars = playtimeStars;
+    }
+
     public HoverEventSource<?> hover(Player player) {
         long firstPlayed = player.getFirstPlayed();
         String joined = firstPlayed == 0 ? "unknown" : FORMATTER.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(firstPlayed), ZoneId.systemDefault()));
@@ -59,16 +65,16 @@ public class StarManager {
             greenStars = 1;
         }
 
-        long firstPlayed = player.getFirstPlayed();
-        int yellowStars = firstPlayed == 0 ? 0 : (int) LocalDateTime.ofInstant(Instant.ofEpochMilli(firstPlayed), ZoneId.systemDefault()).until(LocalDateTime.now(), ChronoUnit.YEARS);
-
-        yellowStars = Math.max(0, yellowStars - greenStars);
-
         StringBuilder stars = new StringBuilder();
-        if (yellowStars > 0) {
-            stars.append(ChatColor.YELLOW);
+        if (playtimeStars) {
+            long firstPlayed = player.getFirstPlayed();
+            int yellowStars = firstPlayed == 0 ? 0 : (int) LocalDateTime.ofInstant(Instant.ofEpochMilli(firstPlayed), ZoneId.systemDefault()).until(LocalDateTime.now(), ChronoUnit.YEARS);
+            yellowStars = Math.max(0, yellowStars - greenStars);
+            if (yellowStars > 0) {
+                stars.append(ChatColor.YELLOW);
+            }
+            stars.append(STAR.repeat(yellowStars));
         }
-        stars.append(STAR.repeat(yellowStars));
         if (greenStars > 0) {
             stars.append(ChatColor.GREEN);
         }
