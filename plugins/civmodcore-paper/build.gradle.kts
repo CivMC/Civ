@@ -1,7 +1,7 @@
 plugins {
-    id("io.papermc.paperweight.userdev")
-    id("com.gradleup.shadow")
-    id("xyz.jpenilla.run-paper")
+    alias(libs.plugins.paper.userdev)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.runpaper)
 }
 
 version = "3.0.6"
