@@ -8,7 +8,6 @@ import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
 import isaac.bastion.event.BastionCreateEvent;
-import isaac.bastion.manager.EnderPearlManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -338,10 +337,8 @@ public class BastionBlockStorage {
      */
     //@SuppressWarnings("deprecation")
     public void loadBastions() {
-        int enderSearchRadius = EnderPearlManager.MAX_TELEPORT + 100;
         for (World world : Bukkit.getWorlds()) {
-            RTree<BastionBlock, Rectangle> tree = RTree.create();
-            blocks.put(world, tree);
+            blocks.put(world, RTree.create());
             try (Connection conn = db.getConnection();
                  PreparedStatement ps = conn.prepareStatement("select * from bastion_blocks where loc_world=?;")) {
                 ps.setString(1, world.getName());
@@ -359,7 +356,7 @@ public class BastionBlockStorage {
                     if (died) {
                         dead.put(loc, block.getType().getName());
                     } else {
-                        addBastion(block, tree);
+                        addBastion(block);
                     }
                 }
             } catch (SQLException e) {
@@ -455,12 +452,8 @@ public class BastionBlockStorage {
     }
 
     private void addBastion(BastionBlock bastion) {
-        addBastion(bastion, blocks.get(bastion.getLocation().getWorld()));
-    }
-
-    private void addBastion(BastionBlock bastion, RTree<BastionBlock, Rectangle> bastionsForWorld) {
         bastions.add(bastion);
-        bastionsForWorld.add(bastion, bastion.asRectangle());
+        blocks.put(bastion.getLocation().getWorld(), blocks.get(bastion.getLocation().getWorld()).add(bastion, bastion.asRectangle()));
 
         if (bastion.getListGroupId() != null) {
             synchronized (groups) {
@@ -487,7 +480,7 @@ public class BastionBlockStorage {
         }
 
         bastions.remove(bastion);
-        blocks.get(bastion.getLocation().getWorld()).delete(bastion, bastion.asRectangle());
+        blocks.put(bastion.getLocation().getWorld(), blocks.get(bastion.getLocation().getWorld()).delete(bastion, bastion.asRectangle()));
     }
 
     /**
