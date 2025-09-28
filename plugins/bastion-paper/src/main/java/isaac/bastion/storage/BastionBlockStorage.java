@@ -277,7 +277,7 @@ public class BastionBlockStorage {
         double maxBoxDistanceSquared = maxDistanceSquared * 2.0;
 
         for (Location loc : locs) {
-            Iterable<Entry<BastionBlock, Rectangle>> search = blocks.get(loc.getWorld()).search(PointDouble.create(loc.getBlockX(), loc.getBlockY()), maxDistance);
+            Iterable<Entry<BastionBlock, Rectangle>> search = blocks.get(loc.getWorld()).search(PointDouble.create(loc.getBlockX(), loc.getBlockZ()), maxDistance);
             Location yLoc = loc.clone();
 
             for (Entry<BastionBlock, Rectangle> entry : search) {
