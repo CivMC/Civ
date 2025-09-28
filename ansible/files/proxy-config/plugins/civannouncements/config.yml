@@ -2,15 +2,15 @@
 # messages must be in minimessage format
 # https://webui.advntr.dev/
 scheduledAnnouncements:
-  - cron: "30 5 * * *"
+  - cron: "30 9 * * *"
     message: "<gold>[CivMC] <green>Restart in 30 minutes"
-  - cron: "45 5 * * *"
+  - cron: "45 9 * * *"
     message: "<gold>[CivMC] <green>Restart in 15 minutes"
-  - cron: "55 5 * * *"
+  - cron: "55 9 * * *"
     message: "<gold>[CivMC] <green>Restart in 5 minutes"
-  - cron: "59 5 * * *"
+  - cron: "59 9 * * *"
     message: "<gold>[CivMC] <green>Restart in 1 minute"
-  - cron: "30 5 * * *"
+  - cron: "30 9 * * *"
     message: "<green>Scheduled daily restart in % minute$"
     bossbar_seconds: 1800
 
