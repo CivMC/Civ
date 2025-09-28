@@ -95,7 +95,7 @@ public final class SecureBootPlugin extends JavaPlugin implements Listener {
             var pluginName = entry.getKey();
             foundError |= switch (entry.getValue()) {
                 case ENABLED -> {
-                    getSLF4JLogger().info("{} loaded successfully!", pluginName);
+                    getSLF4JLogger().debug("{} loaded successfully!", pluginName);
                     yield false;
                 }
                 case LOADED -> {
