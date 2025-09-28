@@ -81,7 +81,7 @@ public class StarManager {
 
         StringBuilder stars = new StringBuilder();
         if (playtimeStars) {
-            long firstPlayed = player.getFirstPlayed();
+            long firstPlayed = getJoined(player);
             int yellowStars = firstPlayed == 0 ? 0 : (int) LocalDateTime.ofInstant(Instant.ofEpochMilli(firstPlayed), ZoneId.systemDefault()).until(LocalDateTime.now(), ChronoUnit.YEARS);
             yellowStars = Math.max(0, yellowStars - greenStars);
             if (yellowStars > 0) {
