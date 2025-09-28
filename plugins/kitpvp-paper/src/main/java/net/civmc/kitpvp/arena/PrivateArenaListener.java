@@ -35,7 +35,7 @@ public class PrivateArenaListener implements Listener {
         return arena.invitedPlayers() != null
             && !arena.invitedPlayers().contains(player.getPlayerProfile())
             && !player.hasPermission("kitpvp.admin")
-            && manager.getArenaName(arena.arena().name(), arena.owner()).equals(player.getWorld().getName());
+            && manager.getArenaName(arena).equals(player.getWorld().getName());
     }
 
     public void remove(LoadedArena arena, Player player) {

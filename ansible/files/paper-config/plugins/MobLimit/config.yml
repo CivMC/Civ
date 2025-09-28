@@ -42,7 +42,7 @@ reasons:
       count: 5
       radius: 32
     turtle:
-      count: 3
+      count: 5
       radius: 32
   spawn_egg:
     sniffer:
@@ -53,7 +53,7 @@ reasons:
       radius: 32
   natural:
     turtle:
-      count: 3
+      count: 5
       radius: 32
     dolphin:
       count: 1

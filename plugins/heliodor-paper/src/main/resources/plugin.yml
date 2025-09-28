@@ -4,7 +4,7 @@ main: net.civmc.heliodor.HeliodorPlugin
 author: Okx
 api-version: 1.21
 description: Implements various mechanics relating to custom ores, separately from HiddenOre
-depend: [CivModCore]
+depend: [CivModCore, CombatTagPlus]
 commands:
   heliodor:
     permission: helidor.admin

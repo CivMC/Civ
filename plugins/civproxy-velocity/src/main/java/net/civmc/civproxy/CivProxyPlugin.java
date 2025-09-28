@@ -6,6 +6,7 @@ import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
+import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.Player;
@@ -16,7 +17,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.text.Component;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.data.TemporaryNodeMergeStrategy;
 import net.luckperms.api.model.user.UserManager;
@@ -44,6 +45,15 @@ public class CivProxyPlugin {
 
     }
 
+    public Logger getLogger() {
+        return logger;
+    }
+
+    @Subscribe
+    public void onProxyInitialization(ProxyInitializeEvent event) {
+        new PlayerCount(this, server).start();
+    }
+
     @Subscribe
     public void onToMain(KickedFromServerEvent event) {
         // Other than banned players, kicked servers should go to the queue on the PvP server
@@ -55,13 +65,23 @@ public class CivProxyPlugin {
         if (event.getPlayer().getCurrentServer().isPresent()) {
             return;
         }
-        String reason = event.getServerKickReason().map(s -> PlainTextComponentSerializer.plainText().serialize(s)).orElse("");
-        if (reason.toLowerCase().contains("ban") || reason.toLowerCase().contains("multiaccounting")) {
-            return;
-        }
         event.setResult(KickedFromServerEvent.RedirectPlayer.create(server.getServer("pvp").get()));
 
         players.put(event.getPlayer(), new QueueRecord(Instant.now(), name));
+    }
+
+    @Subscribe
+    public void onFromPvP(KickedFromServerEvent event) {
+        String name = event.getServer().getServerInfo().getName();
+        if (!name.equals("pvp")) {
+            return;
+        }
+
+        if (!(event.getResult() instanceof KickedFromServerEvent.RedirectPlayer)) {
+            return;
+        }
+
+        event.setResult(KickedFromServerEvent.DisconnectPlayer.create(event.getServerKickReason().orElse(Component.text("Disconnected"))));
     }
 
     @Subscribe
@@ -83,7 +103,7 @@ public class CivProxyPlugin {
 //            if (mini != null && mini.getPlayersConnected().size() < 110) {
 //                event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("mini").get()));
 //            } else {
-                event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("pvp").get()));
+            event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("pvp").get()));
 //            }
 
             players.put(event.getPlayer(), new QueueRecord(Instant.now(), name));
@@ -152,7 +172,7 @@ public class CivProxyPlugin {
             }
             user.data().add(
                 PermissionNode.builder()
-                    .permission("ajqueue.serverpriority." + server + ".1")
+                    .permission("ajqueue.serverpriority." + server + ".10")
                     .expiry(5, TimeUnit.MINUTES)
                     .build(),
                 TemporaryNodeMergeStrategy.REPLACE_EXISTING_IF_DURATION_LONGER);

@@ -183,7 +183,7 @@ public class TreeGrower extends AgeableGrower {
         }
         if (!block.getLocation().getWorld().generateTree(block.getLocation(), new Random(), type, new TreeDelegate())) {
             //failed, so restore sapling
-            if (canBeBig) {
+            if (canBeBig && northwest != null) {
                 Block northeast = northwest.getRelative(BlockFace.EAST);
                 Block southwest = northwest.getRelative(BlockFace.SOUTH);
                 Block southeast = northeast.getRelative(BlockFace.SOUTH);

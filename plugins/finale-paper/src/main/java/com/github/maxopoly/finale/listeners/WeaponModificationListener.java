@@ -6,10 +6,7 @@ import com.github.maxopoly.finale.misc.ItemUtil;
 import com.github.maxopoly.finale.misc.TippedArrowModifier;
 import com.github.maxopoly.finale.misc.WeaponModifier;
 import java.util.List;
-import java.util.Map;
-import io.papermc.paper.potion.PotionMix;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -22,9 +19,7 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 public class WeaponModificationListener implements Listener {

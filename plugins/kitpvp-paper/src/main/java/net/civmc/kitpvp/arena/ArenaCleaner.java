@@ -24,9 +24,12 @@ public class ArenaCleaner implements Runnable {
     public void run() {
         try {
             for (LoadedArena loadedArena : this.arenaManager.getArenas()) {
-                String arenaName = this.arenaManager.getArenaName(loadedArena.arena().name(), loadedArena.owner());
+                String arenaName = this.arenaManager.getArenaName(loadedArena);
                 World world = Bukkit.getWorld(arenaName);
                 if (world == null) {
+                    continue;
+                }
+                if (loadedArena.owner() == null) {
                     continue;
                 }
 

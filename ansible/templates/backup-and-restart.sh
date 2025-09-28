@@ -24,7 +24,6 @@ echo "$(date) Starting services after backup..."
 docker service scale minecraft_paper=1
 docker service scale minecraft_gamma=1
 docker service scale minecraft_pvp=1
-sleep 5m
 docker service scale minecraft_waterfall=1
 
 echo "$(date) Copying backup to longterm..."

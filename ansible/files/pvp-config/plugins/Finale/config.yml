@@ -94,7 +94,7 @@ weaponModification:
   netheriteAxe:
     material: NETHERITE_AXE
     damage: 6
-    armourDamageMultiplier: 2
+    armourDamageMultiplier: 1.78
   diamondAxe:
     material: DIAMOND_AXE
     damage: 5
@@ -296,7 +296,7 @@ damageModifiers:
     multiplier: 1.0
   CRIT:
     mode: DIRECT
-    multiplier: 0.82
+    multiplier: 0.825
   STRENGTH_EFFECT:
     mode: DIRECT
     multiplier: 0.86
@@ -315,6 +315,9 @@ damageModifiers:
   FIREWORK:
     mode: DIRECT
     multiplier: 1.0
+  CART:
+    mode: DIRECT
+    multiplier: 0.75
 
 invulTicksEnabled: false
 invulnerableTicks:
@@ -486,7 +489,7 @@ tippedArrows:
   slow: &slow
     name: Arrow of Slowness
     type: slowness
-    duration: 220
+    duration: 74
     color:
       r: 89
       g: 103
@@ -494,11 +497,11 @@ tippedArrows:
   long_slow:
     <<: *slow
     type: long_slowness
-    duration: 600
+    duration: 200
   strong_slow:
     <<: *slow
     type: strong_slowness
-    duration: 40
+    duration: 20
   turtle_master: &turtle_master
     name: Arrow of Turtle Master
     type: turtle_master
@@ -530,7 +533,7 @@ tippedArrows:
   poison: &poison
     name: Arrow of Poison
     type: poison
-    duration: 100
+    duration: 34
     color:
       r: 94
       g: 129
@@ -538,11 +541,11 @@ tippedArrows:
   long_poison:
     <<: *poison
     type: long_poison
-    duration: 220
+    duration: 74
   strong_poison:
     <<: *poison
     type: strong_poison
-    duration: 40
+    duration: 20
   regen: &regen
     name: Arrow of Regeneration
     type: regeneration
@@ -578,7 +581,7 @@ tippedArrows:
   weakness: &weakness
     name: Arrow of Weakness
     type: weakness
-    duration: 220
+    duration: 74
     color:
       r: 110
       g: 28
@@ -586,7 +589,7 @@ tippedArrows:
   long_weakness:
     <<: *weakness
     type: long_weakness
-    duration: 600
+    duration: 200
   luck:
     name: Arrow of Luck
     type: luck

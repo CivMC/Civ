@@ -16,6 +16,10 @@ public class ClearCommand implements CommandExecutor {
         if (!(sender instanceof Player player)) {
             return false;
         }
+        if (player.getWorld().getName().startsWith("rankedarena.")) {
+            player.sendMessage(Component.text("Clear command is deactivated in ranked arenas.", NamedTextColor.RED));
+            return true;
+        }
         KitApplier.reset(player);
         player.sendMessage(Component.text("Your inventory has been cleared", NamedTextColor.GREEN));
         return true;

@@ -16,10 +16,10 @@ settings:
       resources: &default_minecraft_resources
         memory: 39G
         memory_limit: 48G
-        pvp_memory: 9G
-        pvp_memory_limit: 12G
-        gamma_memory: 23G
-        gamma_memory_limit: 26G
+        pvp_memory: 11G
+        pvp_memory_limit: 14G
+        gamma_memory: 21G
+        gamma_memory_limit: 24G
     # Optional Stacks
     auth:
       enabled: false

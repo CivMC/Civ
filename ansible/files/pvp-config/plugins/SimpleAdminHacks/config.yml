@@ -75,7 +75,7 @@ hacks:
     # Limit player ping in the tablist to the same 6 values vanilla clients can discern visually
     roundPlayerListPing: true
   AutoRespawn:
-    enabled: true
+    enabled: false
     # Delay in MS
     # Default: 300000 (five minutes)
     respawnDelay: 10000
@@ -112,21 +112,11 @@ hacks:
     enabled: true
   DogFacts:
     enabled: true
-    intervalTime: 7m
+    intervalTime: 5m
     announcements:
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Join the Official Discord at https://discord.gg/zp63BaX3Uf","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/zp63BaX3Uf"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit the community wiki at civwiki.org","color":"green","clickEvent":{"action":"open_url","value":"https://civwiki.org/wiki/Main_Page"}}]'
       - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Stuck in queue? Type /server mini to go to CivMC Mini (and you''ll remain in the queue!)","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Visit our wiki at wiki.civmc.net","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player made map at map.civinfo.net","color":"green","clickEvent":{"action":"open_url","value":"https://map.civinfo.net/"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player made map at civmap.com","color":"green","clickEvent":{"action":"open_url","value":"https://civmap.com/"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Stuck in queue? Type /server mini to go to CivMC Mini (and you''ll remain in the queue!)","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Consider donating to the server at patreon.com/civ_mc! And get some unique perks!","color":"blue","clickEvent":{"action":"open_url","value":"https://www.patreon.com/civ_mc"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Please review the server rules at reddit.com/r/civmc/wiki/index","color":"green","clickEvent":{"action":"open_url","value":"https://www.reddit.com/r/civmc/wiki/index/"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"The use of VPNs or multiple accounts is not allowed, Logging in from the same place as a friend will result in an automatic ban. Accidental use of either may be resolved via a ticket on the official CivMC Discord","color":"green","clickEvent":{"action":"open_url","value":"https://discord.gg/zp63BaX3Uf"}}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Stuck in queue? Type /server mini to go to CivMC Mini (and you''ll remain in the queue!)","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the player run newsletter at https://civwiki.news/ to see whats been going on!","color":"green"}]'
-      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Check out the starter guide at wiki.civmc.net/pages/getting-started","color":"green","clickEvent":{"action":"open_url","value":"https://wiki.civmc.net/pages/getting-started"}}]'
+      - '["",{"text":"[CivMC] ","color":"gold"},{"text":"Join the ranked PvP queue with /ranked!","color":"green"}]'
 
   ElytraFeatures:
     enabled: false
@@ -592,4 +582,8 @@ hacks:
   TooHappyGhasts:
     enabled: true
   PlayerCap:
+    enabled: true
+  FairPlay:
+    enabled: true
+  PlayerCount:
     enabled: true

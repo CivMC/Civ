@@ -94,7 +94,7 @@ weaponModification:
   netheriteAxe:
     material: NETHERITE_AXE
     damage: 6
-    armourDamageMultiplier: 2
+    armourDamageMultiplier: 1.78
   diamondAxe:
     material: DIAMOND_AXE
     damage: 5
@@ -296,7 +296,7 @@ damageModifiers:
     multiplier: 1.0
   CRIT:
     mode: DIRECT
-    multiplier: 0.82
+    multiplier: 0.825
   STRENGTH_EFFECT:
     mode: DIRECT
     multiplier: 0.86
@@ -315,6 +315,9 @@ damageModifiers:
   FIREWORK:
     mode: DIRECT
     multiplier: 1.0
+  CART:
+    mode: DIRECT
+    multiplier: 0.75
 
 invulTicksEnabled: false
 invulnerableTicks:

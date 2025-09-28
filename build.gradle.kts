@@ -21,6 +21,7 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://oss.sonatype.org/content/repositories/snapshots")
         maven("https://repo.aikar.co/content/groups/aikar/")

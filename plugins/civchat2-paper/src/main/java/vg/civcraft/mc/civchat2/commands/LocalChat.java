@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import java.util.HashSet;
 import java.util.Set;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -28,6 +29,6 @@ public class LocalChat extends BaseCommand {
             player.sendMessage(ChatStrings.chatMovedToGlobal);
             return;
         }
-        chatMan.broadcastMessage(player, chatMessage, localChatFormat, players);
+        chatMan.broadcastMessage(player, Component.text(chatMessage), localChatFormat, players);
     }
 }

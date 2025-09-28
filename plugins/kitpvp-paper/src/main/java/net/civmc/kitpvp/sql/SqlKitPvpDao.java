@@ -7,8 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import net.civmc.kitpvp.data.Kit;
-import net.civmc.kitpvp.data.KitPvpDao;
+import net.civmc.kitpvp.kit.Kit;
+import net.civmc.kitpvp.kit.KitPvpDao;
+import net.civmc.kitpvp.ranked.RankedDao;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
@@ -61,6 +62,21 @@ public class SqlKitPvpDao implements KitPvpDao {
             statement.setString(1, player == null ? null : player.toString());
             statement.setString(2, player == null ? null : player.toString());
             statement.setString(3, name);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return getKit(resultSet);
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Kit getKit(int id) {
+        try (Connection connection = source.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT id, name, public, icon, inventory FROM kits WHERE id = ?");
+            statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return getKit(resultSet);

@@ -2,6 +2,7 @@ name: CivChat2
 main: vg.civcraft.mc.civchat2.CivChat2
 version: ${version}
 api-version: 1.21.3
+softdepend: [PlaceholderAPI, BanStick]
 authors:
   - jjj5311
   - Maxopoly
