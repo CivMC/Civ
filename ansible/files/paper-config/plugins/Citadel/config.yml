@@ -352,7 +352,7 @@ world-border-buffers:
     shape: CIRCLE
     #Radius from border center you want the no reinforcement zone to kick in
     starting_radius: 9900
-    decay: false
+    decay: true
     #Center of the border
     center:
       x: 0.0
@@ -362,7 +362,7 @@ world-border-buffers:
     shape: CIRCLE
     #Radius from border center you want the no reinforcement zone to kick in
     starting_radius: 9900
-    decay: false
+    decay: true
     #Center of the border
     center:
       x: 0.0

@@ -1,8 +1,7 @@
 package vg.civcraft.mc.civchat2;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import java.awt.*;
+import io.papermc.paper.chat.ChatRenderer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,7 +14,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -25,6 +26,7 @@ import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
 import vg.civcraft.mc.civchat2.event.GroupChatEvent;
 import vg.civcraft.mc.civchat2.event.PrivateMessageEvent;
+import vg.civcraft.mc.civchat2.prefix.StarManager;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.utility.ScoreboardHUD;
@@ -76,11 +78,14 @@ public class CivChat2Manager {
 
     private Group modsGroup;
 
-    public CivChat2Manager(CivChat2 pluginInstance, ServerBroadcaster broadcaster) {
+    private final StarManager starManager;
+
+    public CivChat2Manager(CivChat2 pluginInstance, ServerBroadcaster broadcaster, StarManager starManager) {
 
 
         instance = pluginInstance;
         this.broadcaster = broadcaster;
+        this.starManager = starManager;
         config = instance.getPluginConfig();
         chatLog = instance.getCivChat2FileLogger();
         DBM = instance.getDatabaseManager();
@@ -153,7 +158,7 @@ public class CivChat2Manager {
      * @param receiver    Player Receiving the message
      * @param chatMessage Message to send from sender to receive
      */
-    public void sendPrivateMsg(Player sender, Player receiver, String chatMessage) {
+    public void sendPrivateMsg(Player sender, Player receiver, Component chatMessage) {
 
         PrivateMessageEvent event = new PrivateMessageEvent(sender, receiver, chatMessage);
         Bukkit.getPluginManager().callEvent(event);
@@ -161,17 +166,14 @@ public class CivChat2Manager {
         if (event.isCancelled()) {
             return;
         }
-        StringBuilder sb = new StringBuilder();
-        String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId())
-            : sender.getDisplayName();
-        String receiverName = customNames.containsKey(receiver.getUniqueId()) ? customNames.get(receiver.getUniqueId())
-            : receiver.getDisplayName();
+        Component senderName = getCustomName(sender);
+        Component receiverName = getCustomName(receiver);
 
-        String senderMessage = sb.append(ChatColor.LIGHT_PURPLE).append("To ").append(receiverName)
-            .append(ChatColor.LIGHT_PURPLE).append(": ").append(chatMessage).toString();
-        sb = new StringBuilder();
-        String receiverMessage = sb.append(ChatColor.LIGHT_PURPLE).append("From ").append(senderName)
-            .append(ChatColor.LIGHT_PURPLE).append(": ").append(chatMessage).toString();
+        Component receiverMessage = Component.empty().color(NamedTextColor.LIGHT_PURPLE)
+            .append(Component.text("From "))
+            .append(senderName)
+            .append(Component.text(": "))
+            .append(chatMessage);
 
         if (isPlayerAfk(receiver)) {
             receiver.sendMessage(receiverMessage);
@@ -185,10 +187,15 @@ public class CivChat2Manager {
             sender.sendMessage(parse(ChatStrings.chatNeedToUnignore, receiverName));
             return;
         }
-        chatLog.logPrivateMessage(sender, chatMessage, receiver.getName());
+        chatLog.logPrivateMessage(sender, PlainTextComponentSerializer.plainText().serialize(chatMessage), receiver.getName());
         replyList.put(receiver.getUniqueId(), sender.getUniqueId());
         replyList.put(sender.getUniqueId(), receiver.getUniqueId());
-        sender.sendMessage(senderMessage);
+        sender.sendMessage(Component.empty().color(NamedTextColor.LIGHT_PURPLE)
+            .append(Component.text("To "))
+            .append(receiverName)
+            .append(Component.text(": "))
+            .append(chatMessage)
+        );
         receiver.sendMessage(receiverMessage);
     }
 
@@ -199,16 +206,15 @@ public class CivChat2Manager {
      * @param chatMessage Message to send
      * @param recipients  Players in range to receive the message
      */
-    public void broadcastMessage(Player sender, String chatMessage, String messageFormat, Set<Player> recipients) {
+    public void broadcastMessage(Player sender, Component chatMessage, ChatRenderer messageFormat, Set<Player> recipients) {
 
 
 
         Preconditions.checkNotNull(sender, "sender");
         Preconditions.checkNotNull(chatMessage, "chatMessage");
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(messageFormat), "messageFormat");
         Preconditions.checkNotNull(recipients, "recipients");
 
-        GlobalChatEvent event = new GlobalChatEvent(sender, chatMessage, messageFormat);
+        GlobalChatEvent event = new GlobalChatEvent(sender, chatMessage);
         Bukkit.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
@@ -225,7 +231,7 @@ public class CivChat2Manager {
             }
         }
         // Chat filter check - block message if it contains banned words
-        if (containsBannedWord(chatMessage) && !sender.hasPermission("civchat2.globalmute")) {
+        if (containsBannedWord(PlainTextComponentSerializer.plainText().serialize(chatMessage)) && !sender.hasPermission("civchat2.globalmute")) {
             flagMessage(sender, chatMessage);
             return;
         }
@@ -251,29 +257,29 @@ public class CivChat2Manager {
                 if (range <= 0 || receiver.getWorld().equals(sender.getWorld())) {
                     double receiverDistance = range <= 0 ? 0 : location.distance(receiver.getLocation());
                     if (receiverDistance <= range) {
-                        net.md_5.bungee.api.ChatColor newColor;
+                        TextColor newColor;
                         if (config.useDynamicRangeColoring()) {
                             int comp = (int) (255 - (128.0 * receiverDistance) / range);
-                            newColor = net.md_5.bungee.api.ChatColor.of(new Color(comp, comp, comp));
+                            newColor = TextColor.color(comp, comp, comp);
                         } else {
-                            newColor = net.md_5.bungee.api.ChatColor.of(config.getColorAtDistance(receiverDistance));
+                            newColor = NamedTextColor.NAMES.valueOrThrow(config.getColorAtDistance(receiverDistance).toLowerCase());
                         }
-                        newColor = newColor != null ? newColor : net.md_5.bungee.api.ChatColor.of(defaultColor);
 
-                        String senderName = customNames.containsKey(sender.getUniqueId())
-                            ? customNames.get(sender.getUniqueId())
-                            : sender.getDisplayName();
-                        TextComponent text = new TextComponent(String.format(messageFormat, senderName + ChatColor.RESET, ""));
-                        TextComponent msgPart = new TextComponent(chatMessage);
-                        msgPart.setColor(newColor);
-                        receiver.spigot().sendMessage(text, msgPart);
+                        receiver.sendMessage(messageFormat.render(sender, getCustomName(sender), Component.empty().color(newColor).append(chatMessage), receiver));
                         receivers.add(receiver.getName());
                     }
                 }
             }
         }
         receivers.remove(sender.getName());
-        chatLog.logGlobalMessage(sender, chatMessage, receivers);
+        chatLog.logGlobalMessage(sender, PlainTextComponentSerializer.plainText().serialize(chatMessage), receivers);
+    }
+
+    private Component getCustomName(Player sender) {
+        return Component.empty()
+            .append(Component.text(starManager.getPrefix(sender)))
+            .append(Component.text(customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId()) : sender.getDisplayName()))
+            .hoverEvent(starManager.hover(sender));
     }
 
 
@@ -283,29 +289,30 @@ public class CivChat2Manager {
      * @param sender     The player who sent the message
      * @param chatMessage The message content
      */
-    public void flagMessage(Player sender, String chatMessage) {
+    public void flagMessage(Player sender, Component chatMessage) {
         //Flag inappropriate message, mute sender for X seconds (defined in config)
         sender.sendMessage(ChatColor.RED + "Your message has been flagged for inappropriate content.");
         if (muteTimeSeconds > 0) {
             banSetting.setValue(sender, System.currentTimeMillis() + TimeUnit.SECONDS.toMillis((long)muteTimeSeconds)); // mute player automatically
         }
 
+        String plain = PlainTextComponentSerializer.plainText().serialize(chatMessage);
         Group modsGroup = GroupManager.getGroup(filterRelayGroup);
         if (modsGroup == null) {
-            instance.getLogger().warning(sender.getName() + " sent a filtered message: " + chatMessage + " No filter relay group set, if this is unintentional please set filterRelayGroup in the config.yml");
+            instance.getLogger().warning(sender.getName() + " sent a filtered message: " + plain + " No filter relay group set, if this is unintentional please set filterRelayGroup in the config.yml");
             return;
         }
 
 
         // Log the filtered message to console and mods
-        String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId())
-            : sender.getDisplayName();
+        Component senderName = getCustomName(sender);
 
-        Set<String> modPlayers = doSendGroupMsg(sender.getUniqueId(), senderName, modsGroup, ChatColor.RED + "[Filtered]: " + chatMessage);
+        Component filtered = Component.text("[Filtered]: " + plain, NamedTextColor.RED);
+        Set<String> modPlayers = doSendGroupMsg(sender.getUniqueId(), senderName, modsGroup, filtered);
 
-        broadcaster.broadcastGroup(sender.getUniqueId(), senderName, sender.getDisplayName(), modsGroup.getName(), chatMessage);
+        broadcaster.broadcastGroup(sender.getUniqueId(), sender.getDisplayName(), senderName, modsGroup.getName(), filtered);
 
-        chatLog.logGroupMessage(sender, chatMessage, modsGroup.getName(), modPlayers);
+        chatLog.logGroupMessage(sender, plain, modsGroup.getName(), modPlayers);
     }
 
     /**
@@ -449,11 +456,12 @@ public class CivChat2Manager {
      * @param group   Group to send the message too
      * @param message Message to send to the group
      */
-    public void sendGroupMsg(Player sender, Group group, String message) {
+    public void sendGroupMsg(Player sender, Group group, Component message) {
 
         Preconditions.checkNotNull(sender, "sender");
         Preconditions.checkNotNull(group, "group");
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(message), "message");
+
+        String plainMessage = PlainTextComponentSerializer.plainText().serialize(message);
 
         if (group.getName().equals(config.getGlobalChatGroupName())) {
             long mutedUntil = instance.getCivChat2SettingsManager().getGlobalChatMuteSetting().getValue(sender);
@@ -461,36 +469,35 @@ public class CivChat2Manager {
                 sender.sendMessage(String.format(ChatStrings.globalMuted, TextUtil.formatDuration(mutedUntil - System.currentTimeMillis())));
                 return;
             }
-            if (containsBannedWord(message) && !sender.hasPermission("civchat2.globalmute")) {
+            if (containsBannedWord(plainMessage) && !sender.hasPermission("civchat2.globalmute")) {
                 flagMessage(sender, message);
                 return;
             }
         }
 
-        GroupChatEvent event = new GroupChatEvent(sender, group.getName(), message);
+        GroupChatEvent event = new GroupChatEvent(sender, group.getName(), plainMessage);
         Bukkit.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
             return;
         }
 
-        String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId())
-            : sender.getDisplayName();
+        Component senderName = getCustomName(sender);
         Set<String> players = doSendGroupMsg(sender.getUniqueId(), senderName, group, message);
-        chatLog.logGroupMessage(sender, message, group.getName(), players);
+        chatLog.logGroupMessage(sender, plainMessage, group.getName(), players);
         broadcaster.broadcastGroup(sender.getUniqueId(), sender.getName(), senderName, group.getName(), message);
     }
 
-    public void sendRemoteGroupMsg(UUID senderId, String senderName, String senderDisplayName, String groupName, String message) {
+    public void sendRemoteGroupMsg(UUID senderId, String senderName, Component senderDisplayName, String groupName, Component message) {
         Group group = GroupManager.getGroup(groupName);
         if (group == null) {
             return;
         }
         Set<String> players = doSendGroupMsg(senderId, senderDisplayName, group, message);
-        chatLog.logRemoteGroupMessage(senderName, message, group.getName(), players);
+        chatLog.logRemoteGroupMessage(senderName, PlainTextComponentSerializer.plainText().serialize(message), group.getName(), players);
     }
 
-    private Set<String> doSendGroupMsg(UUID senderId, String senderName, Group group, String message) {
+    private Set<String> doSendGroupMsg(UUID senderId, Component senderName, Group group, Component message) {
         List<Player> members = new ArrayList<>();
         List<UUID> membersUUID = group.getAllMembers();
         for (UUID uuid : membersUUID) {
@@ -502,7 +509,11 @@ public class CivChat2Manager {
             }
         }
 
-        String formatted = parse(ChatStrings.chatGroupMessage, group.getName(), senderName, message);
+
+        Component compMessage = Component.text("[" + group.getName() + "] ", NamedTextColor.GRAY)
+            .append(senderName)
+            .append(Component.text(": ", NamedTextColor.GRAY))
+            .append(Component.empty().color(NamedTextColor.WHITE).append(message));
 
         for (Player receiver : members) {
             if (DBM.isIgnoringGroup(receiver.getUniqueId(), group.getName())) {
@@ -511,14 +522,15 @@ public class CivChat2Manager {
             if (DBM.isIgnoringPlayer(receiver.getUniqueId(), senderId)) {
                 continue;
             }
-            receiver.sendMessage(formatted);
+            receiver.sendMessage(compMessage);
         }
 
         Set<String> players = new HashSet<>();
         for (Player player : members) {
-            players.add(NameAPI.getCurrentName(player.getUniqueId()));
+            if (!senderId.equals(player.getUniqueId())) {
+                players.add(NameAPI.getCurrentName(player.getUniqueId()));
+            }
         }
-        players.remove(senderName);
         return players;
     }
 

@@ -1,5 +1,10 @@
 package vg.civcraft.mc.civchat2.listeners;
 
+import io.papermc.paper.event.player.AsyncChatEvent;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -9,7 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -24,10 +28,6 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 /*
  * @author jjj5311
@@ -119,7 +119,7 @@ public class CivChat2Listener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPlayerChatEvent(final AsyncPlayerChatEvent asyncPlayerChatEvent) {
+    public void onPlayerChatEvent(final AsyncChatEvent asyncPlayerChatEvent) {
 
         asyncPlayerChatEvent.setCancelled(true);
         // This needs to be done sync to avoid a rare deadlock due to minecraft
@@ -129,7 +129,7 @@ public class CivChat2Listener implements Listener {
             @Override
             public void run() {
 
-                String chatMessage = asyncPlayerChatEvent.getMessage();
+                Component chatMessage = asyncPlayerChatEvent.message();
                 Player sender = asyncPlayerChatEvent.getPlayer();
                 UUID chatChannel = chatman.getChannel(sender);
                 Group groupChat = chatman.getGroupChatting(sender);
@@ -164,8 +164,13 @@ public class CivChat2Listener implements Listener {
                             + "You have been removed from groupchat because you were removed from the group or lost the permission required to groupchat");
                     }
                 }
-                chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getFormat(),
-                    asyncPlayerChatEvent.getRecipients());
+                Set<Player> playerViewers = new HashSet<>();
+                for (Audience viewer : asyncPlayerChatEvent.viewers()) {
+                    if (viewer instanceof Player playerViewer) {
+                        playerViewers.add(playerViewer);
+                    }
+                }
+                chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.renderer(), playerViewers);
             }
         }.runTask(CivChat2.getInstance());
     }

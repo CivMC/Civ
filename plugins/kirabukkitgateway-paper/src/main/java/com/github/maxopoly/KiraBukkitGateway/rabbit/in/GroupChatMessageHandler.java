@@ -5,6 +5,7 @@ import com.github.maxopoly.KiraBukkitGateway.impersonation.PseudoPlayer;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitInput;
 import com.google.gson.JsonObject;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -37,7 +38,7 @@ public class GroupChatMessageHandler extends RabbitInput {
         }
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(KiraBukkitGatewayPlugin.getInstance(), () -> {
-            CivChat2.getInstance().getCivChat2Manager().sendGroupMsg(fakeSender, foundGroup, message);
+            CivChat2.getInstance().getCivChat2Manager().sendGroupMsg(fakeSender, foundGroup, Component.text(message));
         });
     }
 

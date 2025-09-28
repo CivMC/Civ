@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
@@ -38,7 +39,7 @@ public class Reply extends BaseCommand {
         }
 
         if (!(chatMessage == null)) {
-            chatMan.sendPrivateMsg(player, receiver, chatMessage);
+            chatMan.sendPrivateMsg(player, receiver, Component.text(chatMessage));
             return;
         }
         // Player to chat with reply user

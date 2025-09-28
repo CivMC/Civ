@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civchat2.event;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -9,14 +10,14 @@ public class PrivateMessageEvent extends PlayerEvent implements Cancellable {
 
     private final Player receiver;
 
-    private final String message;
+    private final Component message;
 
     private boolean cancelled;
 
     // Handler list for spigot events
     private static final HandlerList handlers = new HandlerList();
 
-    public PrivateMessageEvent(final Player player, final Player receiver, final String message) {
+    public PrivateMessageEvent(final Player player, final Player receiver, final Component message) {
         super(player);
 
         this.receiver = receiver;
@@ -38,7 +39,7 @@ public class PrivateMessageEvent extends PlayerEvent implements Cancellable {
      *
      * @return The chat message
      */
-    public String getMessage() {
+    public Component getMessage() {
 
         return message;
     }
