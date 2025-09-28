@@ -44,10 +44,10 @@ public class StarManager {
         String rank;
         if (player.hasPermission("civchat.admin")) {
             rank = "Admin";
-        } else if (player.hasPermission("civchat.mod")) {
-            rank = "Moderator";
         } else if (player.hasPermission("civchat.superfriend")) {
             rank = "Superfriend";
+        } else if (player.hasPermission("civchat.mod")) {
+            rank = "Moderator";
         } else if (player.hasPermission("civchat.bigdonator")) {
             rank = "Big Donator";
         } else if (player.hasPermission("civchat.donator")) {
