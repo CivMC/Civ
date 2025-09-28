@@ -46,10 +46,10 @@ public class StarManager {
 
         if (player.hasPermission("civchat.admin")) {
             return ChatColor.DARK_RED + STAR;
-        } else if (player.hasPermission("civchat.mod")) {
-            return ChatColor.RED + STAR;
         } else if (player.hasPermission("civchat.superfriend")) {
             return ChatColor.RED + STAR + STAR;
+        } else if (player.hasPermission("civchat.mod")) {
+            return ChatColor.RED + STAR;
         }
 
         int greenStars = 0;
