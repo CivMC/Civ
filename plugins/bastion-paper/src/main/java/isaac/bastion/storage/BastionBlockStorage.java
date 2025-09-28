@@ -4,7 +4,6 @@ import com.github.davidmoten.rtree2.Entry;
 import com.github.davidmoten.rtree2.RTree;
 import com.github.davidmoten.rtree2.geometry.Rectangle;
 import com.github.davidmoten.rtree2.geometry.internal.PointDouble;
-import com.github.davidmoten.rtree2.geometry.internal.PointFloat;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
@@ -226,7 +225,7 @@ public class BastionBlockStorage {
      * @return A set of QTBoxes (bastions) that overlap with the location
      */
     public Set<BastionBlock> forLocation(Location loc) {
-        Iterable<Entry<BastionBlock, Rectangle>> search = blocks.get(loc.getWorld()).search(PointFloat.create(loc.getBlockX(), loc.getBlockZ()));
+        Iterable<Entry<BastionBlock, Rectangle>> search = blocks.get(loc.getWorld()).search(PointDouble.create(loc.getBlockX(), loc.getBlockZ()));
         Set<BastionBlock> result = new HashSet<>();
         for (Entry<BastionBlock, Rectangle> qt : search) {
             if (qt.value().inField(loc)) {
