@@ -7,11 +7,11 @@ import org.bukkit.ChatColor;
 
 public class ChatStrings {
 
-    public final static ChatRenderer localChatFormat = ChatRenderer.viewerUnaware((source, sourceDisplayName, message) -> Component.empty()
+    public final static ChatRenderer localChatFormat = (source, sourceDisplayName, message, viewer) -> Component.empty()
         .append(Component.text("<"))
         .append(sourceDisplayName)
         .append(Component.text("> "))
-        .append(message));
+        .append(message);
 
     public final static String chatPlayerIsOffline = ChatColor.YELLOW + "That player is offline.";
 

@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
@@ -170,7 +171,7 @@ public class CivChat2Listener implements Listener {
                         playerViewers.add(playerViewer);
                     }
                 }
-                chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.renderer(), playerViewers);
+                chatman.broadcastMessage(sender, chatMessage, ChatStrings.localChatFormat, playerViewers);
             }
         }.runTask(CivChat2.getInstance());
     }
