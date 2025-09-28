@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civchat2.prefix;
 
+import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -8,6 +9,7 @@ import java.time.temporal.ChronoUnit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.event.HoverEventSource;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -23,8 +25,20 @@ public class StarManager {
         this.playtimeStars = playtimeStars;
     }
 
+    private long getJoined(Player player) {
+        if (!Bukkit.getPluginManager().isPluginEnabled("BanStick")) {
+            return player.getFirstPlayed();
+        }
+
+        BSPlayer bsPlayer = BSPlayer.byUUID(player.getUniqueId());
+        if (bsPlayer == null) {
+            return 0;
+        }
+        return bsPlayer.getFirstAdd().toInstant().toEpochMilli();
+    }
+
     public HoverEventSource<?> hover(Player player) {
-        long firstPlayed = player.getFirstPlayed();
+        long firstPlayed = getJoined(player);
         String joined = firstPlayed == 0 ? "unknown" : FORMATTER.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(firstPlayed), ZoneId.systemDefault()));
 
         String rank;
