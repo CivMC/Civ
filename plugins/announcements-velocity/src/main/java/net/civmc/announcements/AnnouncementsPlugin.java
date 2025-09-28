@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 public class AnnouncementsPlugin {
 
     private final CronParser cronParser = new CronParser(CronDefinitionBuilder.instanceDefinitionFor(CronType.UNIX));
+    private final PlainTextComponentSerializer plainText = PlainTextComponentSerializer.plainText();
 
     private final ProxyServer server;
     private final Logger logger;
@@ -104,12 +106,12 @@ public class AnnouncementsPlugin {
                     if (announcement.showTitle) {
                         // send title to all players
                         var title = Title.title(announcement.message, Component.empty());
-                        server.getAllPlayers().parallelStream().forEach(player ->
+                        server.getAllPlayers().forEach(player ->
                             player.showTitle(title)
                         );
                     }
 
-                    logger.info("Announcement sent: {}", announcement.message);
+                    logger.info("Announcement sent: {}", plainText.serialize(announcement.message));
                 }
             });
         }
