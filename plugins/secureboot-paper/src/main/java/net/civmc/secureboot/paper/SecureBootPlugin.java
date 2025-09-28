@@ -38,7 +38,7 @@ public final class SecureBootPlugin extends JavaPlugin implements Listener {
         saveDefaultConfig();
         // ensure required plugins have a status
         getConfig().getStringList("required_plugins").forEach((plugin) -> this.pluginState.put(plugin, PluginStatus.AWAITING_STATUS));
-        getSLF4JLogger().info("Awaiting status for: {}", String.join(", ", this.pluginState.keySet()));
+        getSLF4JLogger().debug("Awaiting status for: {}", String.join(", ", this.pluginState.keySet()));
 
         // set kick message from config
         String rawKickMessage = getConfig().getString("kick_message", "Server is in maintenance mode.");
