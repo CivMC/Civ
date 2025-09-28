@@ -367,7 +367,7 @@ tick-rates:
       validatenearbypoi: -1
   container-update: 3
   dry-farmland: 3
-  grass-spread: 2
+  grass-spread: 4
   mob-spawner: 2
   sensor:
     villager:
