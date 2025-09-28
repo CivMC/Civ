@@ -51,7 +51,7 @@ public class RabbitHandler {
                 DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                     try {
                         String message = new String(delivery.getBody(), "UTF-8");
-                        logger.info(" [x] Received '" + message + "'"); // Is there a reason this was a println??
+                        logger.info(" [x] Received '" + message + "'");
                         inputProcessor.handle(message);
                     } catch (Exception e) {
                         logger.severe("Exception in rabbit handling: " + e.toString());
