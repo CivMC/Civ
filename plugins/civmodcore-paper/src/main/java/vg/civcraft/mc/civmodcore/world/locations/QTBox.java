@@ -18,6 +18,6 @@ public interface QTBox {
     int qtZMax();
 
     default Rectangle asRectangle() {
-        return RectangleDouble.create(qtXMin(), qtXMax(), qtZMin(), qtZMax());
+        return RectangleDouble.create(qtXMin(), qtZMin(), qtXMax(), qtZMax());
     }
 }
