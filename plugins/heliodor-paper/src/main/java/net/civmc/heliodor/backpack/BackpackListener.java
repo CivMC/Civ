@@ -2,7 +2,7 @@ package net.civmc.heliodor.backpack;
 
 import net.civmc.heliodor.HeliodorPlugin;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.minelink.ctplus.CombatTagPlus;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -22,7 +22,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import java.util.List;
 
 public class BackpackListener implements Listener {
 
@@ -125,6 +124,10 @@ public class BackpackListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(PlayerDeathEvent event) {
+        if (!JavaPlugin.getPlugin(CombatTagPlus.class).getTagManager().isTagged(event.getPlayer().getUniqueId())) {
+            return;
+        }
+
         Inventory enderChest = event.getPlayer().getEnderChest();
         for (ItemStack item : enderChest.getStorageContents()) {
             if (item != null && !item.isEmpty()) {
