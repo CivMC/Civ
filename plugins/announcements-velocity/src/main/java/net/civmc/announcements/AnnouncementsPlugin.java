@@ -16,10 +16,10 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -42,8 +42,8 @@ public class AnnouncementsPlugin {
 
     private record Announcement(Component message, boolean title) {}
 
-    private final Map<Cron, Announcement> scheduledAnnouncements = new HashMap<>();
-    private final Map<Cron, ZonedDateTime> lastExecutionTimes = new HashMap<>();
+    private final Map<Cron, Announcement> scheduledAnnouncements = new ConcurrentHashMap<>();
+    private final Map<Cron, ZonedDateTime> lastExecutionTimes = new ConcurrentHashMap<>();
     private @Nullable CommentedConfigurationNode config;
 
     @Inject
