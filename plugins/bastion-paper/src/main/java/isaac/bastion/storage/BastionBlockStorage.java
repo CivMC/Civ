@@ -242,7 +242,7 @@ public class BastionBlockStorage {
      * @return A set of bastions a pearl could collide with
      */
     public Set<BastionBlock> getPossibleTeleportBlocking(Location loc, double maxDistance) {
-        Iterable<Entry<BastionBlock, Rectangle>> search = blocks.get(loc.getWorld()).search(PointDouble.create(loc.getBlockX(), loc.getBlockY()), maxDistance);
+        Iterable<Entry<BastionBlock, Rectangle>> search = blocks.get(loc.getWorld()).search(PointDouble.create(loc.getBlockX(), loc.getBlockZ()), maxDistance);
 
         double maxDistanceSquared = maxDistance * maxDistance;
         double maxBoxDistanceSquared = maxDistanceSquared * 2.0;
