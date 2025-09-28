@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.SequencedMap;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import net.civmc.kitpvp.KitApplier;
 import net.civmc.kitpvp.KitPvpPlugin;
@@ -29,10 +28,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.luckperms.api.LuckPermsProvider;
-import net.luckperms.api.model.data.TemporaryNodeMergeStrategy;
-import net.luckperms.api.model.user.UserManager;
-import net.luckperms.api.node.types.PermissionNode;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -119,7 +114,7 @@ public class RankedQueueManager {
                 JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Ticking queued players", ex);
             }
         }, 300, 300);
-        Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
+        /*Bukkit.getScheduler().runTaskTimer(JavaPlugin.getPlugin(KitPvpPlugin.class), () -> {
             try {
                 for (RankedDao.Rank rank : dao.getTop(10)) {
                     UserManager userManager = LuckPermsProvider.get().getUserManager();
@@ -139,7 +134,7 @@ public class RankedQueueManager {
             } catch (RuntimeException ex) {
                 JavaPlugin.getPlugin(KitPvpPlugin.class).getLogger().log(Level.WARNING, "Ticking queue priority", ex);
             }
-        }, 20 * 60, 20 * 60);
+        }, 20 * 60, 20 * 60);*/
     }
 
     public RankedMatch getMatch(Player player) {
