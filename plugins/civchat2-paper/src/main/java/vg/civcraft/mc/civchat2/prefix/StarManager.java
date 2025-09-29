@@ -48,10 +48,14 @@ public class StarManager {
             rank = "Superfriend";
         } else if (player.hasPermission("civchat.mod")) {
             rank = "Moderator";
+        } else if (player.hasPermission("civchat.powerplayer")) {
+            rank = "Civ Power Player";
+        } else if (player.hasPermission("civchat.grinder")) {
+            rank = "Civ Grinder";
         } else if (player.hasPermission("civchat.bigdonator")) {
-            rank = "Big Donator";
+            rank = "Loyal Patron";
         } else if (player.hasPermission("civchat.donator")) {
-            rank = "Donator";
+            rank = "Namecolor Patron";
         } else {
             rank = "None";
         }
@@ -73,7 +77,11 @@ public class StarManager {
         }
 
         int greenStars = 0;
-        if (player.hasPermission("civchat.bigdonator")) {
+        if (player.hasPermission("civchat.powerplayer")) {
+            greenStars = 4;
+        } else if (player.hasPermission("civchat.grinder")) {
+            greenStars = 3;
+        } else if (player.hasPermission("civchat.bigdonator")) {
             greenStars = 2;
         } else if (player.hasPermission("civchat.donator")) {
             greenStars = 1;
