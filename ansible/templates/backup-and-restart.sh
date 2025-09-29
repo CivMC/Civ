@@ -2,11 +2,11 @@
 
 echo "$(date) Stopping services for backup..."
 docker service scale minecraft_waterfall=0
-sleep 1m
+sleep 30s
 docker service scale minecraft_paper=0
 docker service scale minecraft_gamma=0
 docker service scale minecraft_pvp=0
-sleep 10m
+sleep 5m
 
 echo "$(date) Starting backup..."
 export AWS_ACCESS_KEY_ID={{secret.backup.s3_access_key_id}}
