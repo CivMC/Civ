@@ -63,7 +63,7 @@ public class UpdateListener {
 
     @Subscribe
     public void on(LoginEvent event) {
-        if (restart == null) {
+        if (restart == null || !block) {
             return;
         }
         Duration duration = Duration.between(Instant.now(), restart);
