@@ -63,7 +63,7 @@ public class UpdateListener {
 
     @Subscribe
     public void on(LoginEvent event) {
-        if (restart == null || !block) {
+        if (restart == null) {
             return;
         }
         Duration duration = Duration.between(Instant.now(), restart);
@@ -73,7 +73,7 @@ public class UpdateListener {
                 .delay(Duration.ofSeconds(3)).schedule();
             return;
         }
-        if (!event.getPlayer().hasPermission("civannouncements.bypass")) {
+        if (block && !event.getPlayer().hasPermission("civannouncements.bypass")) {
             event.setResult(ResultedEvent.ComponentResult.denied(kick));
         }
     }
