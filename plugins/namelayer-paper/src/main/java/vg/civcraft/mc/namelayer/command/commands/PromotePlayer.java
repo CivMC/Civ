@@ -60,6 +60,7 @@ public class PromotePlayer extends BaseCommandMiddle {
             return;
         }
 
+        boolean allowed = false;
         if (!isAdmin) {
             PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 
@@ -67,33 +68,8 @@ public class PromotePlayer extends BaseCommandMiddle {
                 sender.sendMessage(ChatColor.RED + "You are not on that group.");
                 return;
             }
-        }
 
-        boolean allowed = false;
-        switch (promoteeType) { // depending on the type the executor wants to add the player to
-            case MEMBERS:
-                allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MEMBERS"));
-                break;
-            case MODS:
-                allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MODS"));
-                break;
-            case ADMINS:
-                allowed = gm.hasAccess(group, executor, PermissionType.getPermission("ADMINS"));
-                break;
-            case OWNER:
-                allowed = gm.hasAccess(group, executor, PermissionType.getPermission("OWNER"));
-                break;
-            default:
-                allowed = false;
-                break;
-        }
-
-        if (!allowed) {
-            sender.sendMessage(ChatColor.RED + "You do not have permissions to promote to this rank");
-            return;
-        }
-        if (promoteecurrentType != null) {
-            switch (promoteecurrentType) { // depending on the type the executor wants to add the player to
+            switch (promoteeType) { // depending on the type the executor wants to add the player to
                 case MEMBERS:
                     allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MEMBERS"));
                     break;
@@ -110,8 +86,35 @@ public class PromotePlayer extends BaseCommandMiddle {
                     allowed = false;
                     break;
             }
+
+            if (!allowed) {
+                sender.sendMessage(ChatColor.RED + "You do not have permissions to promote to this rank");
+                return;
+            }
+
+            if (promoteecurrentType != null) {
+                switch (promoteecurrentType) { // depending on the type the executor wants to add the player to
+                    case MEMBERS:
+                        allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MEMBERS"));
+                        break;
+                    case MODS:
+                        allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MODS"));
+                        break;
+                    case ADMINS:
+                        allowed = gm.hasAccess(group, executor, PermissionType.getPermission("ADMINS"));
+                        break;
+                    case OWNER:
+                        allowed = gm.hasAccess(group, executor, PermissionType.getPermission("OWNER"));
+                        break;
+                    default:
+                        allowed = false;
+                        break;
+                }
+            } else {
+                allowed = false;
+            }
         } else {
-            allowed = false;
+            allowed = true;
         }
 
         if (!allowed || !group.isMember(promotee)) { //can't edit a player who isn't in the group
