@@ -17,8 +17,15 @@ public class KiraLuckPermsWrapper {
         api = LuckPermsProvider.get();
     }
 
-    public boolean hasPermission(UUID uuid, String permission) {
+    public User loadUser(UUID uuid) {
         User user = api.getUserManager().getUser(uuid);
+        if (user != null) {
+            return user;
+        }
+        return api.getUserManager().loadUser(uuid).join();
+    }
+
+    public boolean hasPermission(User user, String permission) {
         if (user == null) {
             return false;
         }

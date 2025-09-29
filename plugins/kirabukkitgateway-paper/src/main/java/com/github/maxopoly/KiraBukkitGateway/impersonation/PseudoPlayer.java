@@ -12,6 +12,7 @@ import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.identity.Identity;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
@@ -74,14 +75,17 @@ public class PseudoPlayer extends CraftPlayer {
     private PseudoSpigotPlayer spigotPlayer;
     private Consumer <? super Component> feedback;
 
+    private final User user;
+
     public PseudoPlayer(UUID uuid, long channelId, Consumer <? super Component> feedback) {
         super((CraftServer) Bukkit.getServer(), PseudoPlayerIdentity.generate(uuid, ""));
         if (uuid == null) {
             throw new IllegalArgumentException("No null uuid allowed");
         }
         offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        user = KiraBukkitGatewayPlugin.getInstance().getPermsWrapper().loadUser(uuid);
         if (offlinePlayer == null) {
-            throw new IllegalArgumentException("No such player known: " + uuid.toString());
+            throw new IllegalArgumentException("No such player known: " + uuid);
         }
         name = offlinePlayer.getName();
         this.discordChannelId = channelId;
@@ -653,12 +657,12 @@ public class PseudoPlayer extends CraftPlayer {
 
 
     public boolean hasPermission(String arg0) {
-        return KiraBukkitGatewayPlugin.getInstance().getPermsWrapper().hasPermission(uuid, arg0);
+        return KiraBukkitGatewayPlugin.getInstance().getPermsWrapper().hasPermission(user, arg0);
     }
 
 
     public boolean hasPermission(Permission arg0) {
-        return KiraBukkitGatewayPlugin.getInstance().getPermsWrapper().hasPermission(uuid, arg0.getName());
+        return KiraBukkitGatewayPlugin.getInstance().getPermsWrapper().hasPermission(user, arg0.getName());
     }
 
 
