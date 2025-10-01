@@ -14,16 +14,8 @@ virtual_cap: 64
 
 rewards:
   essence:
-    v: 3839
-    ==: org.bukkit.inventory.ItemStack
-    type: ENDER_EYE
-    amount: 1
-    meta:
-      meta-type: UNSPECIFIC
-      ==: ItemMeta
-      display-name: Player Essence
-      lore:
-        - Activity reward used to fuel pearls
+    # use registered custom item
+    custom-key: player_essence
 
 login_reward: 4
 voting_reward: 1
