@@ -1,18 +1,17 @@
 package vg.civcraft.mc.civmodcore.inventory;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.CustomModelData;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 public class CustomItem {
 
@@ -27,6 +26,8 @@ public class CustomItem {
         ItemMeta meta = item.getItemMeta();
         meta.getPersistentDataContainer().set(CUSTOM_ITEM, PersistentDataType.STRING, key);
         item.setItemMeta(meta);
+        item.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData().addString("civ:" + key).build());
+
         if (!customItems.containsKey(key)) {
             customItems.put(key, item.clone());
         }
