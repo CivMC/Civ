@@ -1,5 +1,6 @@
 package net.civmc.heliodor.heliodor;
 
+import java.util.List;
 import net.civmc.heliodor.HeliodorPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -10,13 +11,24 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import java.util.List;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 public interface HeliodorGem {
 
     NamespacedKey FINISHED_KEY = new NamespacedKey(JavaPlugin.getPlugin(HeliodorPlugin.class), "finished");
     NamespacedKey CHARGE_KEY = new NamespacedKey(JavaPlugin.getPlugin(HeliodorPlugin.class), "charge");
     NamespacedKey MAX_CHARGE_KEY = new NamespacedKey(JavaPlugin.getPlugin(HeliodorPlugin.class), "max_charge");
+
+    private static ItemStack createBaseRoughHeliodorGem() {
+        ItemStack item = new ItemStack(Material.GOLD_BLOCK);
+        ItemMeta meta = item.getItemMeta();
+        meta.setEnchantmentGlintOverride(true);
+        meta.setFireResistant(true);
+        item.setItemMeta(meta);
+        CustomItem.registerCustomItem("rough_heliodor_gem", item);
+
+        return item;
+    }
 
     static ItemStack createHeliodorGem(int charge, int maxCharge) {
         if (charge < 0 || charge > 100) {
@@ -26,11 +38,9 @@ public interface HeliodorGem {
         } else if (maxCharge < charge) {
             throw new IllegalArgumentException("maxCharge >= charge for: " + maxCharge + " >= " + charge);
         }
-        ItemStack item = new ItemStack(Material.GOLD_BLOCK);
+        ItemStack item = createBaseRoughHeliodorGem();
         ItemMeta meta = item.getItemMeta();
         meta.itemName(Component.text("Rough Heliodor Gem (" + charge + "% infused)", NamedTextColor.AQUA));
-        meta.setEnchantmentGlintOverride(true);
-        meta.setFireResistant(true);
         meta.lore(List.of(
             Component.text("Can be infused " + (maxCharge - charge) + "% more before needing to be refilled", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false),
             Component.text("Place above a cauldron filled with lava to infuse", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)
@@ -54,6 +64,7 @@ public interface HeliodorGem {
         meta.setFireResistant(true);
         meta.getPersistentDataContainer().set(FINISHED_KEY, PersistentDataType.BOOLEAN, true);
         item.setItemMeta(meta);
+        CustomItem.registerCustomItem("helidor_gem", item);
 
         return item;
     }

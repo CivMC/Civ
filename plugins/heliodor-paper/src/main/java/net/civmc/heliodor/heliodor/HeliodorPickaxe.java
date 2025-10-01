@@ -19,6 +19,7 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.civmodcore.inventory.CustomItem;
 
 public interface HeliodorPickaxe {
 
@@ -49,6 +50,8 @@ public interface HeliodorPickaxe {
         AnvilRepairListener.setNoCombine(meta);
         meta.getPersistentDataContainer().set(PICKAXE_KEY, PersistentDataType.BOOLEAN, true);
         pickaxe.setItemMeta(meta);
+        CustomItem.registerCustomItem("heliodor_pickaxe", pickaxe);
+
         return pickaxe;
     }
 
