@@ -98,7 +98,7 @@ public class CivProxyPlugin {
             return;
         }
 
-        if (mainServer.getPlayersConnected().size() >= 110 && !event.getPlayer().hasPermission("joinbypass.use")) {
+        if (mainServer.getPlayersConnected().size() >= 130 && !event.getPlayer().hasPermission("joinbypass.use")) {
 //            RegisteredServer mini = server.getServer("mini").orElse(null);
 //            if (mini != null && mini.getPlayersConnected().size() < 110) {
 //                event.setResult(ServerPreConnectEvent.ServerResult.allowed(server.getServer("mini").get()));
