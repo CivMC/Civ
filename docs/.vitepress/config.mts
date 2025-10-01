@@ -296,6 +296,10 @@ export default defineConfig({
                                     text: "Permissions",
                                     link: "/dev/plugin-standards/permissions",
                                 },
+                                {
+                                    text: "Textures",
+                                    link: "/dev/plugin-standards/textures",
+                                },
                             ],
                         },
                     ],
