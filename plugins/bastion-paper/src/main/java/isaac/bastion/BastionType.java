@@ -2,25 +2,29 @@ package isaac.bastion;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 
 public class BastionType {
 
     private static LinkedHashMap<String, BastionType> types = new LinkedHashMap<>();
+    /**
+     * Used to determine the default bastion in legacy migration
+     * and item used to signify the bastion config menu
+     */
     private static String defaultType;
     private static int maxRadius = 0;
 
-    private String name;
-    private String itemName;
-    private List<String> lore;
-    private String shortName;
+    private final String name;
+    private final ItemStack item;
     private boolean square;
     private int effectRadius;
     private int radiusSquared;
@@ -49,7 +53,6 @@ public class BastionType {
     private int regenTime;
     private boolean allowPearlingOut;
     private boolean blockReinforcements;
-    private Material material;
     private boolean destroyOnRemoveWhileImmature;
     private int proximityDamageRange;
     private double proximityDamageFactor;
@@ -58,10 +61,7 @@ public class BastionType {
 
     public BastionType(
         String name,
-        String itemName,
-        Material material,
-        List<String> lore,
-        String shortName,
+        ItemStack item,
         boolean square,
         int effectRadius,
         boolean includeY,
@@ -95,10 +95,7 @@ public class BastionType {
         String overLayName
     ) {
         this.name = name;
-        this.material = material;
-        this.itemName = itemName;
-        this.lore = lore;
-        this.shortName = shortName;
+        this.item = item;
         this.square = square;
         this.effectRadius = effectRadius;
         this.radiusSquared = effectRadius * effectRadius;
@@ -136,24 +133,10 @@ public class BastionType {
     }
 
     /**
-     * @return The lore for this bastion type
-     */
-    public List<String> getLore() {
-        return lore;
-    }
-
-    /**
      * @return The item / display name for this Bastion type
      */
-    public String getItemName() {
-        return itemName;
-    }
-
-    /**
-     * @return Short name for this Bastion type. Used by /bsl command
-     */
-    public String getShortName() {
-        return shortName;
+    public @NotNull Component getItemName() {
+        return this.item.effectiveName();
     }
 
     /**
@@ -354,7 +337,7 @@ public class BastionType {
     }
 
     public Material getMaterial() {
-        return material;
+        return item.getType();
     }
 
     /**
@@ -387,39 +370,23 @@ public class BastionType {
     }
 
     /**
-     * Creates an item representation of the bastion type
+     * Get bastion item
      *
      * @return The bastion item
      */
-    public ItemStack getItemRepresentation() {
-        ItemStack is = new ItemStack(material);
-        if ((lore == null || lore.size() == 0) && itemName == null) return is;
-
-        ItemMeta im = is.hasItemMeta() ? is.getItemMeta() : Bukkit.getItemFactory().getItemMeta(material);
-        if (im == null) {
-            Bastion.getPlugin().getLogger().log(Level.WARNING, "Invalid Bastion configuration, unable to represent as an item for {0}", name);
-            return is;
-        }
-        if (lore != null) {
-            im.setLore(lore);
-        }
-        if (itemName != null) {
-            im.displayName(Component.text(itemName));
-        }
-        is.setItemMeta(im);
-        //Bastion.getPlugin().getLogger().log(Level.INFO, "Bastion {0} represented as {1}", new Object[] {name, is.toString()});
-        return is;
+    public ItemStack getItem() {
+        return item;
     }
 
     public static void loadBastionTypes(ConfigurationSection config) {
         for (String key : config.getKeys(false)) {
             Bastion.getPlugin().getLogger().log(Level.INFO, "Loading Bastion type {0}", key);
-            BastionType type = getBastionType(config.getConfigurationSection(key));
-            if (type != null) {
-                if (defaultType == null) defaultType = key;
-                types.put(key, type);
-                Bastion.getPlugin().getLogger().log(Level.INFO, "Bastion type {0} loaded: {1}", new Object[]{key, type});
-            }
+            BastionType type = getBastionType(key, Objects.requireNonNull(config.getConfigurationSection(key)));
+
+            if (defaultType == null) defaultType = key;
+            types.put(key, type);
+            Bastion.getPlugin().getLogger().log(Level.INFO, "Bastion type {0} loaded: {1}", new Object[]{key, type});
+
         }
     }
 
@@ -461,17 +428,18 @@ public class BastionType {
         return types.get(name);
     }
 
-    public static BastionType getBastionType(Material mat, String itemName, List<String> lore) {
+    public static BastionType getBastionType(Material mat, Component itemName, List<Component> lore) {
         if (lore != null && lore.size() == 0) lore = null;
         for (BastionType type : types.values()) {
-            //StringBuilder sb = new StringBuilder();
-            boolean test = type.material.equals(mat);
-            //sb.append(type.getName()).append(" is").append(test ? " " : "n't ").append(mat);
-            test &= ((itemName == null && type.itemName == null) || (type.itemName != null && type.itemName.equals(itemName)));
-            //sb.append(" name is ").append(itemName).append(test ? " = " : " not ").append(type.itemName);
-            test &= ((lore == null && (type.lore == null || type.lore.size() == 0)) || (type.lore != null && type.lore.equals(lore)));
-            //sb.append(" lore is ").append(lore).append(test ? " = " : " not ").append(type.lore);
-            //Bastion.getPlugin().getLogger().log(Level.INFO, "BastionType check {0}", sb);
+            // StringBuilder sb = new StringBuilder();
+            boolean test = type.getMaterial().equals(mat);
+            // sb.append(type.getName()).append(" is").append(test ? " " : "n't ").append(mat);
+            test &= (itemName == null || type.getItemName().equals(itemName));
+            // sb.append(" name is ").append(itemName).append(test ? " = " : " not ").append(type.itemName);
+            var typeLore = type.item.lore();
+            test &= ((lore == null && (typeLore == null || typeLore.isEmpty())) || (typeLore != null && typeLore.equals(lore)));
+            // sb.append(" lore is ").append(lore).append(test ? " = " : " not ").append(type.lore);
+            // Bastion.getPlugin().getLogger().log(Level.INFO, "BastionType check {0}", sb);
             if (test) return type;
         }
         return null;
@@ -503,15 +471,8 @@ public class BastionType {
         return proximityDamageFactor;
     }
 
-    public static BastionType getBastionType(ConfigurationSection config) {
-        String name = config.getName();
-        Material material = Material.getMaterial(config.getString("block.material"));
-        if (!material.isBlock()) {
-            return null;
-        }
-        String itemName = config.getString("block.name");
-        List<String> lore = config.getStringList("block.lore");
-        String shortName = config.getString("shortName");
+    public static @NotNull BastionType getBastionType(String name, ConfigurationSection config) {
+        ItemStack item = Objects.requireNonNull(ConfigHelper.parseItemStackAt(config, "block"));
         boolean square = config.getBoolean("squarefield");
         int effectRadius = config.getInt("effectRadius");
         boolean includeY = config.getBoolean("includeY");
@@ -553,7 +514,7 @@ public class BastionType {
         double explodeOnBlockStrength = config.getDouble("elytra.explodeOnBlockStrength");
         boolean destroyOnRemoveWhileImmature = config.getBoolean("destroyOnRemoveWhileImmature", true);
         String overlayName = config.getString("overlay_name");
-        return new BastionType(name, itemName, material, lore, shortName, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
+        return new BastionType(name, item, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
             erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock,
             blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlock,
             explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy, allowPearlingOut, blockReinforcements, destroyOnRemoveWhileImmature,
@@ -563,9 +524,10 @@ public class BastionType {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(this.name);
-        sb.append(": ").append(material)
-            .append(" name:").append(itemName)
-            .append(" lore[").append(lore != null ? lore.size() : 0).append("]: ").append(lore)
+        var lore = this.item.lore();
+        sb.append(": ").append(item.getType())
+            .append(" name:").append(PlainTextComponentSerializer.plainText().serialize(this.getItemName()))
+            .append(" lore[").append(lore == null ? 0 : lore.size()).append("]: ").append(lore)
             .append(" scale[").append(this.startScaleFactor).append("->").append(this.finalScaleFactor)
             .append(" ").append(this.effectRadius).append(this.square ? "cb" : "r")
             .append(" wm").append(this.warmupTime).append(" cd").append(this.placementCooldown)

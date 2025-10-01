@@ -20,11 +20,12 @@ bastions:
   #All bastions in the db will be flagged as, in this instance, citybastion
   citybastion:
     block:
-      material: NETHER_WART_BLOCK
-      durability: 0
-      name: City Bastion
-      lore:
-        - This bastion will protect your plot
+      custom-key: city_bastion
+#      material: NETHER_WART_BLOCK
+#      durability: 0
+#      name: City Bastion
+#      lore:
+#        - This bastion will protect your plot
     shortName: City
     squarefield: true
     effectRadius: 50
