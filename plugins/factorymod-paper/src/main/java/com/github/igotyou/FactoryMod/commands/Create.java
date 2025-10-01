@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import com.github.igotyou.FactoryMod.FactoryMod;
@@ -27,9 +28,10 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
 
+@CommandAlias("fmc")
 public class Create extends BaseCommand {
 
-    @CommandAlias("fmc")
+    @Default
     @CommandPermission("fm.op")
     @Syntax("<factory>")
     @Description("Creates a factory at the blocks you are looking at")
