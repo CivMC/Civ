@@ -84,8 +84,8 @@ public final class CustomItem {
         if (ItemUtils.isEmptyItem(item)) {
             return null;
         }
-        final String key = item.getPersistentDataContainer().get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
-        if (!customItems.containsKey(key)) {
+        final @Nullable String key = item.getPersistentDataContainer().get(CUSTOM_ITEM_KEY, PersistentDataType.STRING);
+        if (key == null || !customItems.containsKey(key)) {
             return null;
         }
         return key;
