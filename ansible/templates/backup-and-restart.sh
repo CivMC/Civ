@@ -14,7 +14,6 @@ rsync -av --exclude postgres-data --exclude orebfuscator_cache /opt/stacks/minec
 rm /opt/backups/old/*
 mv /opt/backups/compressed/* /opt/backups/old
 backupname="/opt/backups/compressed/$(date +"%Y_%m_%d")-backup.tar.zstd"
-tar -c --exclude orebfuscator_cache --exclude civmodcore_cache --exclude postgres-data /opt/backups/sync | zstd -T0 -8 -o $backupname
 
 echo "$(date) Starting services after backup..."
 docker service scale minecraft_paper=1
@@ -23,6 +22,7 @@ docker service scale minecraft_pvp=1
 docker service scale minecraft_waterfall=1
 
 echo "$(date) Copying backup to longterm..."
+tar -c --exclude orebfuscator_cache --exclude civmodcore_cache --exclude postgresdata /opt/backups/sync | zstd -T0 -8 -o $backupname
 sshpass -p "{{secret.backup.archive_password}}" rsync -a $backup {{secret.backup.archive_name}}
 
 echo "$(date) Backup finished!"
