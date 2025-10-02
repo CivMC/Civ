@@ -743,7 +743,7 @@ public class ConfigParser {
                         if (keySec != null) {
                             double chance = keySec.getDouble("chance");
                             totalChance += chance;
-                            ItemMap im = ConfigHelper.parseItemMap(keySec);
+                            ItemMap im = ConfigHelper.parseItemMap(keySec.getConfigurationSection(key));
                             outputs.put(im, chance);
                             if (key.equals(displayMap)) {
                                 displayThis = im;
