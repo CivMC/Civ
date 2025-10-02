@@ -9,16 +9,12 @@ docker service scale minecraft_pvp=0
 sleep 5m
 
 echo "$(date) Starting backup..."
-export AWS_ACCESS_KEY_ID={{secret.backup.s3_access_key_id}}
-export AWS_SECRET_ACCESS_KEY={{secret.backup.s3_access_key}}
-export RESTIC_PASSWORD={{secret.backup.restic_password}}
-export RESTIC_PASSWORD2={{secret.backup.restic_password}}
-restic \
-  -r {{secret.backup.restic_shortterm_repo}} backup \
-  /opt/stacks/minecraft/ \
-  --exclude '**orebfuscator_cache'\
-  --exclude '**civmodcore_cache'\
-  --exclude '**postgres-data'\
+
+rsync -av --exclude postgres-data --exclude orebfuscator_cache /opt/stacks/minecraft/ /opt/backups/sync/
+rm /opt/backups/old/*
+mv /opt/backups/compressed/* /opt/backups/old
+backupname="/opt/backups/compressed/$(date +"%Y_%m_%d")-backup.tar.zstd"
+tar -c --exclude orebfuscator_cache --exclude civmodcore_cache --exclude postgres-data /opt/backups/sync | zstd -T0 -8 -o $backupname
 
 echo "$(date) Starting services after backup..."
 docker service scale minecraft_paper=1
@@ -27,15 +23,6 @@ docker service scale minecraft_pvp=1
 docker service scale minecraft_waterfall=1
 
 echo "$(date) Copying backup to longterm..."
-restic \
-  -r {{secret.backup.restic_shortterm_repo}} copy \
-  --repo2 {{secret.backup.restic_repo}} \
-  latest
-
-echo "$(date) Pruning shortterm backups..."
-restic \
-  -r {{secret.backup.restic_shortterm_repo}} forget \
-  --keep-last 1 \
-  --prune
+sshpass -p {{secret.backup.archive_password}} rsync -a $backup pca@gateways.storage.us-east-va.cloud.ovh.us:civmc-pufferfish-backups
 
 echo "$(date) Backup finished!"
