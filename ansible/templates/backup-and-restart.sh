@@ -21,8 +21,9 @@ docker service scale minecraft_gamma=1
 docker service scale minecraft_pvp=1
 docker service scale minecraft_waterfall=1
 
-echo "$(date) Copying backup to longterm..."
+echo "$(date) Creating achive..."
 tar -c --exclude orebfuscator_cache --exclude civmodcore_cache --exclude postgresdata /opt/backups/sync | zstd -T0 -8 -o $backupname
+echo "$(date) Copying backup to longterm..."
 sshpass -p "{{secret.backup.archive_password}}" rsync -a $backup {{secret.backup.archive_name}}
 
 echo "$(date) Backup finished!"
