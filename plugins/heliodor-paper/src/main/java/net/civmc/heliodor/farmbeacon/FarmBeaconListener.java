@@ -2,7 +2,6 @@ package net.civmc.heliodor.farmbeacon;
 
 import net.civmc.heliodor.BlockProtector;
 import net.civmc.heliodor.HeliodorPlugin;
-import net.civmc.heliodor.backpack.Backpack;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Beacon;
@@ -55,7 +54,7 @@ public class FarmBeaconListener implements Listener {
         }
 
         event.setDropItems(false);
-        block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), FarmBeacon.createFarmBeacon());
+        block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), FarmBeacon.FARM_BEACON.createItem());
     }
 
     @EventHandler

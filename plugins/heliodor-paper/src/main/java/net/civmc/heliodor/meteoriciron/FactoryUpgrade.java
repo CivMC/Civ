@@ -1,7 +1,6 @@
 package net.civmc.heliodor.meteoriciron;
 
 import net.civmc.heliodor.AnvilRepairListener;
-import net.civmc.heliodor.HeliodorPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -11,19 +10,16 @@ import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemRarity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
 import java.util.List;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItemFactory;
 
 public interface FactoryUpgrade {
-
-    static ItemStack createUpgrade() {
-        ItemStack upgrade = new ItemStack(Material.REDSTONE_TORCH);
-        Damageable meta = (Damageable) upgrade.getItemMeta();
-
+    CustomItemFactory FACTORY_UPGRADE = CustomItem.registerCustomItem("factory_upgrade", () -> {
+        final ItemStack upgrade = ItemStack.of(Material.REDSTONE_TORCH);
+        final ItemMeta meta = upgrade.getItemMeta();
         meta.displayName(Component.text("Factory Upgrade", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
         meta.lore(List.of(
@@ -35,18 +31,16 @@ public interface FactoryUpgrade {
         meta.setEnchantmentGlintOverride(true);
         AnvilRepairListener.setNoCombine(meta);
         upgrade.setItemMeta(meta);
-        CustomItem.registerCustomItem("factory_upgrade", upgrade);
         return upgrade;
-    }
-
+    });
 
     static List<CraftingRecipe> getRecipes(Plugin plugin) {
-        ItemStack upgrade = FactoryUpgrade.createUpgrade();
+        ItemStack upgrade = FACTORY_UPGRADE.createItem();
         upgrade.setAmount(6);
         return List.of(
             new ShapedRecipe(new NamespacedKey(plugin, "factory_upgrade"), upgrade)
                 .shape("#c#", "#r#", "#f#")
-                .setIngredient('#', MeteoricIron.createIngot())
+                .setIngredient('#', MeteoricIron.INGOT.createItem())
                 .setIngredient('c', Material.CHEST)
                 .setIngredient('r', Material.CRAFTING_TABLE)
                 .setIngredient('f', Material.FURNACE)

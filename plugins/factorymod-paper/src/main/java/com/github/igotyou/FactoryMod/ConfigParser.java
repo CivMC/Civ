@@ -48,7 +48,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.civmodcore.config.ConfigHelper;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 
 import java.io.File;

@@ -24,7 +24,7 @@ import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
 
 @SuppressWarnings("UnstableApiUsage")
 public interface MeteoricIronArmour {
@@ -146,16 +146,16 @@ public interface MeteoricIronArmour {
         return List.of(
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_helmet"), MeteoricIronArmour.createHelmet(false))
                 .shape("xxx", "x x")
-                .setIngredient('x', MeteoricIron.createIngot())),
+                .setIngredient('x', MeteoricIron.INGOT.createItem())),
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_chestplate"), MeteoricIronArmour.createChestplate(false))
                 .shape("x x", "xxx", "xxx")
-                .setIngredient('x', MeteoricIron.createIngot())),
+                .setIngredient('x', MeteoricIron.INGOT.createItem())),
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_leggings"), MeteoricIronArmour.createLeggings(false))
                 .shape("xxx", "x x", "x x")
-                .setIngredient('x', MeteoricIron.createIngot())),
+                .setIngredient('x', MeteoricIron.INGOT.createItem())),
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_boots"), MeteoricIronArmour.createBoots(false))
                 .shape("x x", "x x")
-                .setIngredient('x', MeteoricIron.createIngot())));
+                .setIngredient('x', MeteoricIron.INGOT.createItem())));
     }
 
     private static ShapedRecipe categoryEquipment(ShapedRecipe recipe) {

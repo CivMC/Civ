@@ -15,7 +15,9 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItemFactory;
+import java.util.List;
 
 public final class EssenceGluePlugin extends ACivMod {
 
@@ -30,17 +32,23 @@ public final class EssenceGluePlugin extends ACivMod {
         return instance;
     }
 
+    CustomItemFactory ESSENCE_ITEM = CustomItem.registerCustomItem("player_essence", () -> {
+        ItemStack essence = ItemStack.of(Material.ENDER_EYE);
+        essence.setData(DataComponentTypes.ITEM_NAME, MiniMessage.miniMessage().deserialize("<i>Player Essence</i>"));
+        essence.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("Activity reward used to fuel pearls")
+        )));
+        essence.setAmount(1);
+        return essence;
+    });
+
     @Override
     public void onEnable() {
         super.onEnable();
         instance = this;
 
-        // create essence item
-        ItemStack essence = ItemStack.of(Material.ENDER_EYE);
-        essence.setData(DataComponentTypes.ITEM_NAME, MiniMessage.miniMessage().deserialize("<i>Player Essence</i>"));
-        essence.setData(DataComponentTypes.LORE, ItemLore.lore().addLine(Component.text("Activity reward used to fuel pearls")).build());
-        essence.setAmount(1);
-        CustomItem.registerCustomItem("player_essence", essence);
+        // ensure custom item is registered by creating one
+        ESSENCE_ITEM.createItem();
 
         configMan = new EssenceConfigManager(this);
         if (!configMan.parse()) {

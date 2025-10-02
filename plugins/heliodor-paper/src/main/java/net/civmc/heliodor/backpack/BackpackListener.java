@@ -54,7 +54,7 @@ public class BackpackListener implements Listener {
         }
 
         event.setDropItems(false);
-        block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), Backpack.createBackpack());
+        block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), Backpack.BACKPACK.createItem());
     }
 
     @EventHandler

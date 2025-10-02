@@ -8,7 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +41,7 @@ public class FMCommandManager extends CommandManager {
             for (Material m : Material.values()) {
                 allCompletions.add(m.name().toLowerCase());
             }
-            allCompletions.addAll(CustomItem.getKeys());
+            allCompletions.addAll(CustomItem.getRegisteredKeys());
             return allCompletions;
         });
     }

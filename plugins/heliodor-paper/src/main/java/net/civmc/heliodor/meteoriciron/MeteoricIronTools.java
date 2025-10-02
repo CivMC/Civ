@@ -17,7 +17,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.plugin.Plugin;
-import vg.civcraft.mc.civmodcore.inventory.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
 
 @SuppressWarnings("UnstableApiUsage")
 public interface MeteoricIronTools {
@@ -238,35 +238,35 @@ public interface MeteoricIronTools {
         return List.of(
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_pickaxe_silk_touch"), MeteoricIronTools.createPickaxe(true))
                 .shape("xxx", "asa", " s ")
-                .setIngredient('x', MeteoricIron.createIngot())
+                .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('a', Material.AMETHYST_SHARD)
                 .setIngredient('s', Material.STICK)),
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_pickaxe_fortune"), MeteoricIronTools.createPickaxe(false))
                 .shape("xxx", " s ", " s ")
-                .setIngredient('x', MeteoricIron.createIngot())
+                .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('s', Material.STICK)),
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_axe_silk_touch"), MeteoricIronTools.createAxe(true))
                 .shape("xxa", "xs ", "as ")
-                .setIngredient('x', MeteoricIron.createIngot())
+                .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('a', Material.AMETHYST_SHARD)
                 .setIngredient('s', Material.STICK)),
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_axe_fortune"), MeteoricIronTools.createAxe(false))
                 .shape("xx ", "xs ", " s ")
-                .setIngredient('x', MeteoricIron.createIngot())
+                .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('s', Material.STICK)),
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_knockback"), MeteoricIronTools.createSword(2))
                 .shape("axa", " x ", " s ")
-                .setIngredient('x', MeteoricIron.createIngot())
+                .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('a', Material.AMETHYST_SHARD)
                 .setIngredient('s', Material.STICK)),
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_knockback1"), MeteoricIronTools.createSword(1))
                 .shape("ax ", " x ", " s ")
-                .setIngredient('x', MeteoricIron.createIngot())
+                .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('a', Material.AMETHYST_SHARD)
                 .setIngredient('s', Material.STICK)),
             categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_sharpness"), MeteoricIronTools.createSword(0))
                 .shape(" x ", " x ", " s ")
-                .setIngredient('x', MeteoricIron.createIngot())
+                .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('s', Material.STICK))
         );
     }
