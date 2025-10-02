@@ -13,7 +13,7 @@ echo "$(date) Starting backup..."
 rsync -av --exclude postgres-data --exclude orebfuscator_cache /opt/stacks/minecraft/ /opt/backups/sync/
 rm /opt/backups/old/*
 mv /opt/backups/compressed/* /opt/backups/old
-backupname="/opt/backups/compressed/$(date +"%Y_%m_%d")-backup.tar.zstd"
+backupname="/opt/backups/compressed/$(date +"%Y_%m_%d_%H")-backup.tar.zstd"
 
 echo "$(date) Starting services after backup..."
 docker service scale minecraft_paper=1
