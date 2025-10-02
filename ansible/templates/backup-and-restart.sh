@@ -23,6 +23,6 @@ docker service scale minecraft_pvp=1
 docker service scale minecraft_waterfall=1
 
 echo "$(date) Copying backup to longterm..."
-sshpass -p {{secret.backup.archive_password}} rsync -a $backup pca@gateways.storage.us-east-va.cloud.ovh.us:civmc-pufferfish-backups
+sshpass -p "{{secret.backup.archive_password}}" rsync -a $backup {{secret.backup.archive_name}}
 
 echo "$(date) Backup finished!"
