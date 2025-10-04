@@ -498,7 +498,7 @@ plants:
     biomes:
       forests: 0.5
       birch_forests: 1.0
-      flatland: 0.25
+      flatlands: 0.25
       meadows: 0.25
 
   SPRUCE_SAPLING:
