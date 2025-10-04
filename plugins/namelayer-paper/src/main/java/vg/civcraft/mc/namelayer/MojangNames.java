@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitTask;
+import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 import vg.civcraft.mc.civmodcore.nbt.NbtUtils;
 import vg.civcraft.mc.civmodcore.utilities.MoreMapUtils;
@@ -98,7 +99,7 @@ public final class MojangNames {
      * @param uuid The player's uuid.
      * @return Returns the player's Mojang name, or null.
      */
-    public static String getMojangName(final UUID uuid) {
+    public static @Nullable String getMojangName(final UUID uuid) {
         if (uuid == null) {
             return null;
         }
