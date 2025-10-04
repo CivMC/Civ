@@ -13,7 +13,7 @@ import vg.civcraft.mc.civmodcore.world.WorldUtils;
 
 public class FruitGrower extends IArtificialGrower {
 
-    private List<Material> validSoil = Arrays.asList(Material.DIRT, Material.GRASS_BLOCK, Material.FARMLAND);
+    private List<Material> validSoil = Arrays.asList(Material.DIRT, Material.GRASS_BLOCK, Material.FARMLAND, Material.MOSS_BLOCK, Material.COARSE_DIRT, Material.PODZOL, Material.PALE_MOSS_BLOCK);
     private Material attachedStem;
     private Material nonAttachedStem;
     private Material fruitMaterial;
