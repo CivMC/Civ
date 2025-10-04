@@ -1,4 +1,4 @@
-package com.github.maxopoly.KiraBukkitGateway.auth;
+package xyz.huskydog.kiragatewayVelocity.auth;
 
 import java.security.SecureRandom;
 import java.util.HashSet;
