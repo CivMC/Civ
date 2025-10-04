@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemStash;
 
 public class SuccessfulPurchaseEvent extends Event {
 
@@ -13,10 +13,10 @@ public class SuccessfulPurchaseEvent extends Event {
 
     private final Player player;
     private final TradeRule trade;
-    private final ItemStack[] input;
-    private final ItemStack[] output;
+    private final ItemStash input;
+    private final ItemStash output;
 
-    private SuccessfulPurchaseEvent(Player player, TradeRule trade, ItemStack[] input, ItemStack[] output) {
+    private SuccessfulPurchaseEvent(Player player, TradeRule trade, ItemStash input, ItemStash output) {
         this.player = player;
         this.trade = trade;
         this.input = input;
@@ -31,11 +31,11 @@ public class SuccessfulPurchaseEvent extends Event {
         return this.trade;
     }
 
-    public ItemStack[] getPaymentItems() {
+    public ItemStash getPaymentItems() {
         return this.input;
     }
 
-    public ItemStack[] getPurchasedItems() {
+    public ItemStash getPurchasedItems() {
         return this.output;
     }
 
@@ -48,7 +48,7 @@ public class SuccessfulPurchaseEvent extends Event {
         return handlers;
     }
 
-    public static SuccessfulPurchaseEvent emit(Player player, TradeRule trade, ItemStack[] input, ItemStack[] output) {
+    public static SuccessfulPurchaseEvent emit(Player player, TradeRule trade, ItemStash input, ItemStash output) {
         SuccessfulPurchaseEvent event = new SuccessfulPurchaseEvent(player, trade, input, output);
         Bukkit.getPluginManager().callEvent(event);
         return event;

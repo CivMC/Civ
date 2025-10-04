@@ -79,15 +79,6 @@ public final class TradeRule implements Validation {
     }
 
     /**
-     * Checks whether the trade has an output.
-     *
-     * @return Returns true if the trade has an output rule.
-     */
-    public boolean hasOutput() {
-        return this.output != null;
-    }
-
-    /**
      * Gets the trade's output rule.
      *
      * @return The trade's output rule.

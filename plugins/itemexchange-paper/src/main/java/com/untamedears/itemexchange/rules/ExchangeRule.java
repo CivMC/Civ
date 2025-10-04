@@ -25,7 +25,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import vg.civcraft.mc.civmodcore.inventory.InventoryAccessor;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemKey;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemStash;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemTally;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
@@ -391,16 +396,15 @@ public final class ExchangeRule implements ExchangeData {
     /**
      * Determines the stock items themselves from a given inventory, which can then be used for trade purposes.
      *
-     * @param inventory The inventory to determine the stock within.
+     * @param accessor The inventory to determine the stock within.
      * @return An array of cloned items that can then be used within trade APIs.
      */
-    public ItemStack[] getStock(Inventory inventory) {
-        ArrayList<ItemStack> stock = new ArrayList<>();
-        if (!InventoryUtils.isValidInventory(inventory)) {
-            return new ItemStack[0];
-        }
+    public @Nullable ItemStash getStock(
+        final @NotNull InventoryAccessor accessor
+    ) {
+        final var stash = new ItemTally();
         int requiredAmount = getAmount();
-        for (ItemStack item : inventory.getContents()) {
+        for (final ItemStack item : accessor.getContents()) {
             if (requiredAmount <= 0) {
                 break;
             }
@@ -410,20 +414,19 @@ public final class ExchangeRule implements ExchangeData {
             if (!conforms(item)) {
                 continue;
             }
-            if (item.getAmount() <= requiredAmount) {
-                stock.add(item.clone());
+            final int amount = item.getAmount();
+            if (amount <= requiredAmount) {
+                stash.add(new ItemKey(item), amount);
                 requiredAmount -= item.getAmount();
             } else {
-                ItemStack clone = item.clone();
-                clone.setAmount(requiredAmount);
-                stock.add(clone);
+                stash.add(new ItemKey(item), requiredAmount);
                 requiredAmount = 0;
             }
         }
-        if (requiredAmount > 0) {
-            return new ItemStack[0];
+        if (requiredAmount != 0) {
+            return null;
         }
-        return stock.toArray(new ItemStack[0]);
+        return stash.toItemStash();
     }
 
     /**

@@ -21,6 +21,21 @@ import vg.civcraft.mc.civmodcore.chat.ChatUtils;
  * Class of static APIs for Items. Replaces ISUtils.
  */
 public final class ItemUtils {
+    @Contract("null -> fail")
+    public static @NotNull ItemStack requireNotEmpty(
+        final ItemStack item
+    ) {
+        if (isEmptyItem(item)) {
+            throw new IllegalArgumentException("item was null or empty!");
+        }
+        return item;
+    }
+
+    public static @Nullable ItemStack nullIfEmpty(
+        final ItemStack item
+    ) {
+        return isEmptyItem(item) ? null : item;
+    }
 
     /**
      * Gets the name of an item based off a material, e.g: POLISHED_GRANITE to Polished Granite
@@ -54,6 +69,7 @@ public final class ItemUtils {
      * @param item The item to check.
      * @return Returns true if the item can be interpreted as an empty slot.
      */
+    @Contract("null -> true")
     public static boolean isEmptyItem(final ItemStack item) {
         return item == null || item.getType() == Material.AIR;
     }
@@ -66,6 +82,7 @@ public final class ItemUtils {
      * @param item The item to validate.
      * @return Returns true if the item is valid.
      */
+    @Contract("null -> false")
     public static boolean isValidItem(@Nullable final ItemStack item) {
         return !isEmptyItem(item)
             && isValidItemMaterial(item.getType())
@@ -81,6 +98,7 @@ public final class ItemUtils {
      * @param item The item to validate.
      * @return Returns true if the item is valid.
      */
+    @Contract("null -> false")
     public static boolean isValidItemIgnoringAmount(@Nullable final ItemStack item) {
         return item != null
             && isValidItemMaterial(item.getType())
@@ -93,6 +111,7 @@ public final class ItemUtils {
      * @param item The item to validate.
      * @return Returns true if the item has a valid amount.
      */
+    @Contract("null -> false")
     public static boolean isValidItemAmount(@Nullable final ItemStack item) {
         return item != null
             && item.getAmount() > 0
@@ -105,6 +124,7 @@ public final class ItemUtils {
      * @param material The material to check.
      * @return Returns true if the material would be considered a valid item.
      */
+    @Contract("null -> false")
     public static boolean isValidItemMaterial(@Nullable final Material material) {
         return material != null
             /** Add any null-returns in {@link CraftItemFactory#getItemMeta(Material, org.bukkit.craftbukkit.inventory.CraftMetaItem)} */

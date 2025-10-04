@@ -1,19 +1,17 @@
 package vg.civcraft.mc.civmodcore.inventory;
 
-import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 public final class InventoryUtils {
 
@@ -53,52 +51,36 @@ public final class InventoryUtils {
             .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    /**
-     * <p>Attempts to find the first safe place to put an item.</p>
-     *
-     * @param inventory The inventory to attempt to find a slot in.
-     * @param item      The item to find a place for.
-     * @return Returns an index of a slot that it's safe to add to. A return value of -1 means no safe place. Even if
-     * the return value is -1 it may still be <i>possible</i> to add the item stack to the inventory, as this
-     * function attempts to find the first slot that the given item stack can fit into wholly; that if it can
-     * technically fit but has to be distributed then there's no "first empty".
-     */
-    public static int firstEmpty(@Nullable final Inventory inventory, final ItemStack item) {
-        if (inventory == null) {
-            return -1;
+    @Contract("!null -> !null")
+    public static @Nullable ItemStack @Nullable [] clone(
+        @Nullable ItemStack [] contents
+    ) {
+        if (contents == null) {
+            return null;
         }
-        // If there's a slot free, then just return that. Otherwise, if
-        // the item is invalid, just return whatever slot was returned.
-        final int index = inventory.firstEmpty();
-        if (index >= 0 || !ItemUtils.isValidItem(item)) {
-            return index;
+        contents = contents.clone();
+        for (int i = 0; i < contents.length; i++) {
+            contents[i] = switch (contents[i]) {
+                case final ItemStack item when item.getType() != Material.AIR -> item.clone();
+                case null, default -> null;
+            };
         }
-        // If gets here, then we're certain that there's no stacks free.
-        // If the amount of the item to add is larger than a stack, then
-        // it can't be merged with another stack. So just back out.
-        final int remainder = item.getMaxStackSize() - item.getAmount();
-        if (remainder <= 0) {
-            return -1;
-        }
-        // Find all items that match with the given item to see if there's
-        // a stack that can be merged with. If none can be found, back out.
-        for (final Map.Entry<Integer, ? extends ItemStack> entry : inventory.all(item).entrySet()) {
-            if (entry.getValue().getAmount() <= remainder) {
-                return entry.getKey();
-            }
-        }
-        return -1;
+        return contents;
     }
 
-    /**
-     * Clears an inventory of items.
-     *
-     * @param inventory The inventory to clear of items.
-     */
-    public static void clearInventory(@NotNull final Inventory inventory) {
-        final ItemStack[] contents = inventory.getContents();
-        Arrays.fill(contents, new ItemStack(Material.AIR));
-        inventory.setContents(contents);
+    public static void clearContents(
+        final @Nullable ItemStack @NotNull [] contents
+    ) {
+        Arrays.fill(contents, null);
+    }
+
+    public static void fillContents(
+        final @Nullable ItemStack @NotNull [] contents,
+        final @NotNull Supplier<@NotNull ItemStack> itemSupplier
+    ) {
+        for (int i = 0; i < contents.length; i++) {
+            contents[i] = itemSupplier.get();
+        }
     }
 
     /**
@@ -122,117 +104,4 @@ public final class InventoryUtils {
             && slots <= 54
             && (slots % 9) == 0;
     }
-
-    /**
-     * Will safely add a set of items to an inventory. If not all items are added, it's not committed to the inventory.
-     *
-     * @param inventory The inventory to add the items to.
-     * @param items     The items to add to the inventory.
-     * @return Returns true if the items were safely added.
-     */
-    public static boolean safelyAddItemsToInventory(final Inventory inventory, final ItemStack[] items) {
-        Preconditions.checkArgument(isValidInventory(inventory));
-        if (ArrayUtils.isEmpty(items)) {
-            return true;
-        }
-        final Inventory clone = ClonedInventory.cloneInventory(inventory);
-        for (final ItemStack itemToAdd : items) {
-            if (firstEmpty(clone, itemToAdd) < 0) {
-                return false;
-            }
-            if (!clone.addItem(itemToAdd).isEmpty()) {
-                return false;
-            }
-        }
-        inventory.setContents(clone.getContents());
-        return true;
-    }
-
-    /**
-     * Will safely remove a set of items from an inventory. If not all items are removed, it's not committed to the
-     * inventory.
-     *
-     * @param inventory The inventory to remove the items from.
-     * @param items     The items to remove to the inventory.
-     * @return Returns true if the items were safely removed.
-     */
-    public static boolean safelyRemoveItemsFromInventory(final Inventory inventory, final ItemStack[] items) {
-        Preconditions.checkArgument(isValidInventory(inventory));
-        if (ArrayUtils.isEmpty(items)) {
-            return true;
-        }
-        final Inventory clone = ClonedInventory.cloneInventory(inventory);
-        for (final ItemStack itemToRemove : items) {
-            if (!clone.removeItem(itemToRemove).isEmpty()) {
-                return false;
-            }
-        }
-        inventory.setContents(clone.getContents());
-        return true;
-    }
-
-    /**
-     * Will safely transact a set of items from one inventory to another inventory. If not all items are transacted, the
-     * transaction is not committed.
-     *
-     * @param from  The inventory to move the given items from.
-     * @param to    The inventory to move the given items to.
-     * @param items The items to transact.
-     * @return Returns true if the items were successfully transacted.
-     */
-    public static boolean safelyTransactBetweenInventories(final Inventory from,
-                                                           final Inventory to,
-                                                           final ItemStack[] items) {
-        Preconditions.checkArgument(isValidInventory(from));
-        Preconditions.checkArgument(isValidInventory(to));
-        if (ArrayUtils.isEmpty(items)) {
-            return true;
-        }
-        final Inventory fromClone = ClonedInventory.cloneInventory(from);
-        final Inventory toClone = ClonedInventory.cloneInventory(to);
-        if (!safelyRemoveItemsFromInventory(fromClone, items)) {
-            return false;
-        }
-        if (!safelyAddItemsToInventory(toClone, items)) {
-            return false;
-        }
-        from.setContents(fromClone.getContents());
-        to.setContents(toClone.getContents());
-        return true;
-    }
-
-    /**
-     * Will safely trade items between inventories. If not all items are traded, the trade is cancelled.
-     *
-     * @param formerInventory The first inventory.
-     * @param formerItems     The items to trade from the first inventory to give to the second inventory.
-     * @param latterInventory The second inventory.
-     * @param latterItems     The items to trade from the second inventory to give to the first inventory.
-     * @return Returns true if the trade succeeded.
-     */
-    public static boolean safelyTradeBetweenInventories(final Inventory formerInventory,
-                                                        final Inventory latterInventory,
-                                                        final ItemStack[] formerItems,
-                                                        final ItemStack[] latterItems) {
-        Preconditions.checkArgument(isValidInventory(formerInventory));
-        Preconditions.checkArgument(isValidInventory(latterInventory));
-        final Inventory formerClone = ClonedInventory.cloneInventory(formerInventory);
-        final Inventory latterClone = ClonedInventory.cloneInventory(latterInventory);
-        if (!safelyRemoveItemsFromInventory(formerClone, formerItems)) {
-            return false;
-        }
-        if (!safelyRemoveItemsFromInventory(latterClone, latterItems)) {
-            return false;
-        }
-        if (!safelyAddItemsToInventory(formerClone, latterItems)) {
-            return false;
-        }
-        if (!safelyAddItemsToInventory(latterClone, formerItems)) {
-            return false;
-        }
-        formerInventory.setContents(formerClone.getContents());
-        latterInventory.setContents(latterClone.getContents());
-        return true;
-    }
-
 }

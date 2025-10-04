@@ -1,6 +1,5 @@
 package com.untamedears.itemexchange.utility;
 
-import co.aikar.commands.InvalidCommandArgument;
 import com.google.common.base.Preconditions;
 import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.ItemExchangePlugin;
@@ -8,6 +7,7 @@ import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
@@ -21,13 +21,13 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.Switch;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemStash;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
@@ -49,22 +49,6 @@ public final class Utilities {
         }
         return ExchangeRule.fromItem(item) != null
             || BulkExchangeRule.fromItem(item) != null;
-    }
-
-    /**
-     * Attempts to give a player an exchange rule.
-     *
-     * @param player The player to give the exchange rule to.
-     * @param rule   The exchange rule to give the player.
-     */
-    public static void givePlayerExchangeRule(final Player player, final ExchangeRule rule) {
-        RuntimeException error = new InvalidCommandArgument("Could not create that rule.");
-        if (player == null || rule == null) {
-            throw error;
-        }
-        if (!InventoryUtils.safelyAddItemsToInventory(player.getInventory(), new ItemStack[]{rule.toItem()})) {
-            throw error;
-        }
     }
 
     /**
@@ -212,4 +196,52 @@ public final class Utilities {
             "]";
     }
 
+    public static boolean addedAllItems(
+        final @NotNull Inventory inventory,
+        final @NotNull ItemStash items
+    ) {
+        Objects.requireNonNull(inventory);
+        Objects.requireNonNull(items);
+        for (final ItemStack itemToAdd : items) {
+            if (!inventory.addItem(itemToAdd.clone()).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean removedAllItems(
+        final @NotNull Inventory inventory,
+        final @NotNull ItemStash items
+    ) {
+        Objects.requireNonNull(inventory);
+        Objects.requireNonNull(items);
+        for (final ItemStack itemToRemove : items) {
+            if (!inventory.removeItem(itemToRemove.clone()).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean movedAllItems(
+        final @NotNull Inventory sourceInventory,
+        final @NotNull Inventory destInventory,
+        final @NotNull ItemStash items
+    ) {
+        return removedAllItems(sourceInventory, items)
+            && addedAllItems(destInventory, items);
+    }
+
+    public static boolean tradedAllItems(
+        final @NotNull Inventory inventoryA,
+        final @NotNull Inventory inventoryB,
+        final @NotNull ItemStash itemsA,
+        final @NotNull ItemStash itemsB
+    ) {
+        return removedAllItems(inventoryA, itemsA)
+            && removedAllItems(inventoryB, itemsB)
+            && addedAllItems(inventoryA, itemsB)
+            && addedAllItems(inventoryB, itemsA);
+    }
 }

@@ -13,6 +13,7 @@ import com.untamedears.itemexchange.events.BlockInventoryRequestEvent;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule.Type;
 import com.untamedears.itemexchange.utility.Utilities;
+import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -121,7 +122,7 @@ public final class CreateCommand extends BaseCommand {
         if (Utilities.isExchangeRule(held)) {
             throw new InvalidCommandArgument("You cannot create a rule from a rule.", false);
         }
-        Utilities.givePlayerExchangeRule(player, new ExchangeRule(type, held));
+        player.give(List.of(new ExchangeRule(type, held).toItem()), true);
         player.sendMessage(CREATION_SUCCESS);
     }
 
@@ -159,7 +160,7 @@ public final class CreateCommand extends BaseCommand {
             throw new InvalidCommandArgument("You must enter a valid amount.");
         }
         rule.setAmount(amount);
-        Utilities.givePlayerExchangeRule(player, rule);
+        player.give(List.of(rule.toItem()), true);
         player.sendMessage(CREATION_SUCCESS);
     }
 
