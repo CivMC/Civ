@@ -25,13 +25,14 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItemFactory;
 
 @SuppressWarnings("UnstableApiUsage")
 public interface MeteoricIronArmour {
 
     int CHESPLATE_DURABILITY = 9648;
 
-    static ItemStack createHelmet(boolean bind) {
+    CustomItemFactory METEORIC_IRON_HELMET = CustomItem.registerCustomItem("meteoric_iron_helmet", () -> {
         ItemStack item = new ItemStack(Material.IRON_HELMET);
         Damageable meta = (Damageable) item.getItemMeta();
 
@@ -46,18 +47,13 @@ public interface MeteoricIronArmour {
         meta.setFireResistant(true);
         setAttributes(meta, 3, 2, 0.03, "helmet", EquipmentSlotGroup.HEAD);
         AnvilRepairListener.setNoCombine(meta);
-        if (!bind) {
-            meta.getPersistentDataContainer().set(new NamespacedKey("simpleadminhacks", "no_bind"), PersistentDataType.BOOLEAN, true);
-            meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
-        }
+        meta.getPersistentDataContainer().set(new NamespacedKey("simpleadminhacks", "no_bind"), PersistentDataType.BOOLEAN, true);
+        meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
         item.setItemMeta(meta);
-        if (!bind) {
-            CustomItem.registerCustomItem("meteoric_iron_helmet", item);
-        }
         return item;
-    }
+    });
 
-    static ItemStack createChestplate(boolean bind) {
+    CustomItemFactory METEORIC_IRON_CHESTPLATE = CustomItem.registerCustomItem("meteoric_iron_chestplate", () -> {
         ItemStack item = new ItemStack(Material.IRON_CHESTPLATE);
         Damageable meta = (Damageable) item.getItemMeta();
 
@@ -70,18 +66,13 @@ public interface MeteoricIronArmour {
         meta.setFireResistant(true);
         setAttributes(meta, 8, 2, 0.03, "chestplate", EquipmentSlotGroup.CHEST);
         AnvilRepairListener.setNoCombine(meta);
-        if (!bind) {
-            meta.getPersistentDataContainer().set(new NamespacedKey("simpleadminhacks", "no_bind"), PersistentDataType.BOOLEAN, true);
-            meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
-        }
+        meta.getPersistentDataContainer().set(new NamespacedKey("simpleadminhacks", "no_bind"), PersistentDataType.BOOLEAN, true);
+        meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
         item.setItemMeta(meta);
-        if (!bind) {
-        CustomItem.registerCustomItem("meteoric_iron_chestplate", item);
-        }
         return item;
-    }
+    });
 
-    static ItemStack createLeggings(boolean bind) {
+    CustomItemFactory METEORIC_IRON_LEGGINGS = CustomItem.registerCustomItem("meteoric_iron_leggings", () -> {
         ItemStack item = new ItemStack(Material.IRON_LEGGINGS);
         Damageable meta = (Damageable) item.getItemMeta();
 
@@ -95,18 +86,13 @@ public interface MeteoricIronArmour {
         meta.setFireResistant(true);
         setAttributes(meta, 6, 2, 0.03, "leggings", EquipmentSlotGroup.LEGS);
         AnvilRepairListener.setNoCombine(meta);
-        if (!bind) {
-            meta.getPersistentDataContainer().set(new NamespacedKey("simpleadminhacks", "no_bind"), PersistentDataType.BOOLEAN, true);
-            meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
-        }
+        meta.getPersistentDataContainer().set(new NamespacedKey("simpleadminhacks", "no_bind"), PersistentDataType.BOOLEAN, true);
+        meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
         item.setItemMeta(meta);
-        if (!bind) {
-            CustomItem.registerCustomItem("meteoric_iron_leggings", item);
-        }
         return item;
-    }
+    });
 
-    static ItemStack createBoots(boolean bind) {
+    CustomItemFactory METEORIC_IRON_BOOTS = CustomItem.registerCustomItem("meteoric_iron_boots", () -> {
         ItemStack item = new ItemStack(Material.IRON_BOOTS);
         Damageable meta = (Damageable) item.getItemMeta();
 
@@ -121,17 +107,21 @@ public interface MeteoricIronArmour {
         meta.setFireResistant(true);
         setAttributes(meta, 3, 2, 0.03, "boots", EquipmentSlotGroup.FEET);
         AnvilRepairListener.setNoCombine(meta);
-        if (!bind) {
-            meta.getPersistentDataContainer().set(new NamespacedKey("simpleadminhacks", "no_bind"), PersistentDataType.BOOLEAN, true);
-            meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
-        }
+        meta.getPersistentDataContainer().set(new NamespacedKey("simpleadminhacks", "no_bind"), PersistentDataType.BOOLEAN, true);
+        meta.getPersistentDataContainer().set(new NamespacedKey("heliodor", "meteoric_bindable"), PersistentDataType.BOOLEAN, true);
         item.setItemMeta(meta);
-        if (!bind) {
-            CustomItem.registerCustomItem("meteoric_iron_boots", item);
-        }
         return item;
-    }
+    });
 
+    /**
+     * Set meteoric armour attributes
+     * @param meta armour item's meta
+     * @param armour
+     * @param toughness
+     * @param speed
+     * @param name name of the armour piece
+     * @param group which armour slot to use
+     */
     private static void setAttributes(ItemMeta meta, int armour, int toughness, double speed, String name, EquipmentSlotGroup group) {
         String prefix = "meteoric_iron_" + name;
         Multimap<Attribute, AttributeModifier> ams = HashMultimap.create();
@@ -144,16 +134,16 @@ public interface MeteoricIronArmour {
 
     static List<CraftingRecipe> getRecipes(Plugin plugin) {
         return List.of(
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_helmet"), MeteoricIronArmour.createHelmet(false))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_helmet"), METEORIC_IRON_HELMET.createItem())
                 .shape("xxx", "x x")
                 .setIngredient('x', MeteoricIron.INGOT.createItem())),
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_chestplate"), MeteoricIronArmour.createChestplate(false))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_chestplate"), METEORIC_IRON_CHESTPLATE.createItem())
                 .shape("x x", "xxx", "xxx")
                 .setIngredient('x', MeteoricIron.INGOT.createItem())),
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_leggings"), MeteoricIronArmour.createLeggings(false))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_leggings"), METEORIC_IRON_LEGGINGS.createItem())
                 .shape("xxx", "x x", "x x")
                 .setIngredient('x', MeteoricIron.INGOT.createItem())),
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_boots"), MeteoricIronArmour.createBoots(false))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_boots"), METEORIC_IRON_BOOTS.createItem())
                 .shape("x x", "x x")
                 .setIngredient('x', MeteoricIron.INGOT.createItem())));
     }

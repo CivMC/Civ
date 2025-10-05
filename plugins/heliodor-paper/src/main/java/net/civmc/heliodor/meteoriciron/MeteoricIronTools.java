@@ -18,14 +18,15 @@ import org.bukkit.inventory.meta.components.ToolComponent;
 import org.bukkit.inventory.recipe.CraftingBookCategory;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItemFactory;
 
 @SuppressWarnings("UnstableApiUsage")
 public interface MeteoricIronTools {
 
-    static ItemStack createPickaxe(boolean silk) {
+    ///  Base meteoric pickaxe item used for both variants
+    private static ItemStack basePickaxe() {
         ItemStack pickaxe = new ItemStack(Material.IRON_PICKAXE);
         Damageable meta = (Damageable) pickaxe.getItemMeta();
-
         meta.displayName(Component.text("Meteoric Iron Pickaxe", NamedTextColor.LIGHT_PURPLE).decoration(TextDecoration.ITALIC, false));
         meta.setRarity(ItemRarity.EPIC);
         meta.lore(List.of(
@@ -117,23 +118,29 @@ public interface MeteoricIronTools {
         meta.setTool(tool);
         meta.setMaxDamage(78_200);
         meta.addEnchant(Enchantment.EFFICIENCY, 5, false);
-        if (silk) {
-            meta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
-        } else {
-            meta.addEnchant(Enchantment.FORTUNE, 3, false);
-        }
         meta.setFireResistant(true);
         AnvilRepairListener.setNoCombine(meta);
         pickaxe.setItemMeta(meta);
-        if (silk) {
-            CustomItem.registerCustomItem("meteoric_iron_pickaxe_silk", pickaxe);
-        } else {
-            CustomItem.registerCustomItem("meteoric_iron_pickaxe", pickaxe);
-        }
         return pickaxe;
     }
 
-    static ItemStack createAxe(boolean silk) {
+    CustomItemFactory METEORIC_IRON_PICKAXE_SILK_TOUCH = CustomItem.registerCustomItem("meteoric_iron_pickaxe_silk_touch", () -> {
+        ItemStack pickaxe = basePickaxe();
+        Damageable meta = (Damageable) pickaxe.getItemMeta();
+        meta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
+        pickaxe.setItemMeta(meta);
+        return pickaxe;
+    });
+
+    CustomItemFactory METEORIC_IRON_PICKAXE_FORTUNE = CustomItem.registerCustomItem("meteoric_iron_pickaxe_fortune", () -> {
+        ItemStack pickaxe = basePickaxe();
+        Damageable meta = (Damageable) pickaxe.getItemMeta();
+        meta.addEnchant(Enchantment.FORTUNE, 3, false);
+        pickaxe.setItemMeta(meta);
+        return pickaxe;
+    });
+
+    private static ItemStack baseAxe() {
         ItemStack axe = new ItemStack(Material.IRON_AXE);
         Damageable meta = (Damageable) axe.getItemMeta();
 
@@ -185,23 +192,29 @@ public interface MeteoricIronTools {
         meta.setTool(tool);
         meta.setMaxDamage(48_600);
         meta.addEnchant(Enchantment.EFFICIENCY, 5, false);
-        if (silk) {
-            meta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
-        } else {
-            meta.addEnchant(Enchantment.FORTUNE, 3, false);
-        }
         meta.setFireResistant(true);
         AnvilRepairListener.setNoCombine(meta);
         axe.setItemMeta(meta);
-        if (silk) {
-            CustomItem.registerCustomItem("meteoric_iron_axe_silk", axe);
-        } else {
-            CustomItem.registerCustomItem("meteoric_iron_axe", axe);
-        }
         return axe;
     }
 
-    static ItemStack createSword(int knocback) {
+    CustomItemFactory METEORIC_IRON_AXE_SILK_TOUCH = CustomItem.registerCustomItem("meteoric_iron_axe_silk_touch", () -> {
+        ItemStack axe = baseAxe();
+        Damageable meta = (Damageable) axe.getItemMeta();
+        meta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
+        axe.setItemMeta(meta);
+        return axe;
+    });
+
+    CustomItemFactory METEORIC_IRON_AXE_FORTUNE = CustomItem.registerCustomItem("meteoric_iron_axe_fortune", () -> {
+        ItemStack axe = baseAxe();
+        Damageable meta = (Damageable) axe.getItemMeta();
+        meta.addEnchant(Enchantment.FORTUNE, 3, false);
+        axe.setItemMeta(meta);
+        return axe;
+    });
+
+    private static ItemStack baseSword() {
         ItemStack sword = new ItemStack(Material.IRON_SWORD);
         Damageable meta = (Damageable) sword.getItemMeta();
 
@@ -218,53 +231,61 @@ public interface MeteoricIronTools {
         meta.addEnchant(Enchantment.FIRE_ASPECT, 2, false);
         meta.addEnchant(Enchantment.SHARPNESS, 5, false);
         meta.addEnchant(Enchantment.LOOTING, 3, false);
-        if (knocback > 0) {
-            meta.addEnchant(Enchantment.KNOCKBACK, knocback, false);
-        }
         meta.setFireResistant(true);
         AnvilRepairListener.setNoCombine(meta);
         sword.setItemMeta(meta);
-        if (knocback == 2) {
-            CustomItem.registerCustomItem("meteoric_iron_sword_knockback", sword);
-        } else if (knocback == 1) {
-            CustomItem.registerCustomItem("meteoric_iron_sword_knockback1", sword);
-        } else {
-            CustomItem.registerCustomItem("meteoric_iron_sword", sword);
-        }
         return sword;
     }
 
+    CustomItemFactory METEORIC_IRON_SWORD_KNOCKBACK2 = CustomItem.registerCustomItem("meteoric_iron_sword_knockback2", () -> {
+        ItemStack sword = baseSword();
+        Damageable meta = (Damageable) sword.getItemMeta();
+        meta.addEnchant(Enchantment.KNOCKBACK, 2, false);
+        sword.setItemMeta(meta);
+        return sword;
+    });
+
+    CustomItemFactory METEORIC_IRON_SWORD_KNOCKBACK1 = CustomItem.registerCustomItem("meteoric_iron_sword_knockback1", () -> {
+        ItemStack sword = baseSword();
+        Damageable meta = (Damageable) sword.getItemMeta();
+        meta.addEnchant(Enchantment.KNOCKBACK, 1, false);
+        sword.setItemMeta(meta);
+        return sword;
+    });
+
+    CustomItemFactory METEORIC_IRON_SWORD = CustomItem.registerCustomItem("meteoric_iron_sword", MeteoricIronTools::baseSword);
+
     static List<CraftingRecipe> getRecipes(Plugin plugin) {
         return List.of(
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_pickaxe_silk_touch"), MeteoricIronTools.createPickaxe(true))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_pickaxe_silk_touch"), METEORIC_IRON_PICKAXE_SILK_TOUCH.createItem())
                 .shape("xxx", "asa", " s ")
                 .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('a', Material.AMETHYST_SHARD)
                 .setIngredient('s', Material.STICK)),
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_pickaxe_fortune"), MeteoricIronTools.createPickaxe(false))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_pickaxe_fortune"), METEORIC_IRON_PICKAXE_FORTUNE.createItem())
                 .shape("xxx", " s ", " s ")
                 .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('s', Material.STICK)),
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_axe_silk_touch"), MeteoricIronTools.createAxe(true))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_axe_silk_touch"), METEORIC_IRON_AXE_SILK_TOUCH.createItem())
                 .shape("xxa", "xs ", "as ")
                 .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('a', Material.AMETHYST_SHARD)
                 .setIngredient('s', Material.STICK)),
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_axe_fortune"), MeteoricIronTools.createAxe(false))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_axe_fortune"), METEORIC_IRON_AXE_FORTUNE.createItem())
                 .shape("xx ", "xs ", " s ")
                 .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('s', Material.STICK)),
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_knockback"), MeteoricIronTools.createSword(2))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_knockback2"), METEORIC_IRON_SWORD_KNOCKBACK2.createItem())
                 .shape("axa", " x ", " s ")
                 .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('a', Material.AMETHYST_SHARD)
                 .setIngredient('s', Material.STICK)),
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_knockback1"), MeteoricIronTools.createSword(1))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_knockback1"), METEORIC_IRON_SWORD_KNOCKBACK1.createItem())
                 .shape("ax ", " x ", " s ")
                 .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('a', Material.AMETHYST_SHARD)
                 .setIngredient('s', Material.STICK)),
-            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_sharpness"), MeteoricIronTools.createSword(0))
+            categoryEquipment(new ShapedRecipe(new NamespacedKey(plugin, "meteoric_iron_sword_sharpness"), METEORIC_IRON_SWORD.createItem())
                 .shape(" x ", " x ", " s ")
                 .setIngredient('x', MeteoricIron.INGOT.createItem())
                 .setIngredient('s', Material.STICK))

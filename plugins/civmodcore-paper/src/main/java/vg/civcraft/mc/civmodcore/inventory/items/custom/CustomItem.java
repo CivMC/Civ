@@ -2,8 +2,11 @@ package vg.civcraft.mc.civmodcore.inventory.items.custom;
 
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.CustomModelData;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -14,9 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 
 /// Since Minecraft doesn't \[yet] offer a means of registering custom item materials, this is the intended means of
@@ -24,32 +24,25 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 /// custom-item keys should be treated like item materials. Do NOT use custom-item keys as custom-item categories, such
 /// as compacted items. You must always be able to receive the same item from the same key.
 public final class CustomItem {
+
     public static NamespacedKey CUSTOM_ITEM_KEY = new NamespacedKey(JavaPlugin.getPlugin(CivModCorePlugin.class), "custom_item");
 
     private static final Map<String, CustomItemFactory> customItems = new ConcurrentHashMap<>();
 
+    // TODO: need a way to define variants of a custom item, eg kb1 meteoric iron sword vs kb2 meteoric iron sword. Also should account for rough heliodor gem which can have various charge levels. The solution should also account for pearls on some level
     public static @NotNull CustomItemFactory registerCustomItem(
-        final @NotNull String customKey,
+        final @NotNull String itemKey,
         final @NotNull CustomItemFactory factory
     ) {
-        Objects.requireNonNull(customKey);
+        Objects.requireNonNull(itemKey);
         final ItemStack template = Objects.requireNonNull(factory.createItem());
-        setCustomItemKey(template, customKey);
-        setCustomItemModel(template, customKey);
+        setCustomItemKey(template, itemKey);
+        setCustomItemModel(template, itemKey);
         customItems.putIfAbsent(
-            Objects.requireNonNull(customKey),
+            Objects.requireNonNull(itemKey),
             template::clone
         );
         return template::clone;
-    }
-
-    /// @deprecated Please use [#registerCustomItem(String, CustomItemFactory)] instead!
-    @Deprecated(forRemoval = true)
-    public static @NotNull CustomItemFactory registerCustomItem(
-        final @NotNull String customKey,
-        final @NotNull ItemStack template
-    ) {
-        return registerCustomItem(customKey, template::clone);
     }
 
     public static @Nullable ItemStack getCustomItem(
@@ -95,16 +88,16 @@ public final class CustomItem {
     @ApiStatus.Internal
     public static void setCustomItemKey(
         final @NotNull ItemStack item,
-        final @NotNull String customKey
+        final @NotNull String itemKey
     ) {
-        Objects.requireNonNull(customKey);
-        item.editPersistentDataContainer((pdc) -> pdc.set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, customKey));
+        Objects.requireNonNull(itemKey);
+        item.editPersistentDataContainer((pdc) -> pdc.set(CUSTOM_ITEM_KEY, PersistentDataType.STRING, itemKey));
     }
 
     /// Adds a "civ:"-prefixed version of the given key to the item's custom model data string set.
     @ApiStatus.Internal
     @SuppressWarnings("UnstableApiUsage")
-	public static void setCustomItemModel(
+    public static void setCustomItemModel(
         final @NotNull ItemStack item,
         @NotNull String customKey
     ) {
@@ -121,8 +114,7 @@ public final class CustomItem {
                 .addFlags(existing.flags())
                 .addStrings(existing.strings())
                 .addColors(existing.colors());
-        }
-        else {
+        } else {
             builder = CustomModelData.customModelData();
         }
         builder.addString(customKey);
