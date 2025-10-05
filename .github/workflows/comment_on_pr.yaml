@@ -50,13 +50,6 @@ jobs:
           echo "Head SHA: $HEAD_SHA"
           echo "HEAD_SHA=$HEAD_SHA" >> "$GITHUB_ENV"
 
-      - name: Delete old comments
-        uses: izhangzhihao/delete-comment@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          delete_user_name: github-actions[bot]
-          issue_number: ${{ env.PR_NUMBER }}
-
       - name: Update Comment
         env:
           JOB_PATH: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ env.PREVIOUS_JOB_ID }}"

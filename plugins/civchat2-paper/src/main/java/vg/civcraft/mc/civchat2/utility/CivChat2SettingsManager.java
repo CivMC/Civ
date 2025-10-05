@@ -23,6 +23,7 @@ public class CivChat2SettingsManager {
     private LongSetting chatUnmuteTimer;
     private EnumSetting<KillMessageFormat> killMessageFormat;
     private BooleanSetting showAFKStatus;
+    private BooleanSetting showPrefix;
     private DisplayLocationSetting afkStatusLocation;
 
     public CivChat2SettingsManager() {
@@ -71,6 +72,10 @@ public class CivChat2SettingsManager {
         afkStatusLocation = new DisplayLocationSetting(CivChat2.getInstance(), DisplayLocationSetting.DisplayLocation.SIDEBAR,
             "AFK Status Location", "afkStatusLocation", new ItemStack(Material.ARROW), "the AFK status");
         PlayerSettingAPI.registerSetting(afkStatusLocation, menu);
+
+        showPrefix = new BooleanSetting(CivChat2.getInstance(), true, "Show vanity prefix", "showPrefix",
+            "Should the star prefix be shown?");
+        PlayerSettingAPI.registerSetting(showPrefix, menu);
     }
 
     public LongSetting getGlobalChatMuteSetting() {
@@ -110,6 +115,10 @@ public class CivChat2SettingsManager {
     }
 
     public boolean getShowAFKStatus(UUID uuid) {return showAFKStatus.getValue(uuid); }
+
+    public boolean isShowPrefix(UUID uuid) {
+        return showPrefix.getValue(uuid);
+    }
 
     public DisplayLocationSetting getAfkStatusLocation() { return afkStatusLocation; }
 

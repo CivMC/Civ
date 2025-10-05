@@ -7,10 +7,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.antlr.runtime.tree.Tree;
 import org.bukkit.ExplosionResult;
 import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Ageable;
@@ -76,6 +74,14 @@ public class BreakListener implements Listener {
         }
 
         event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPumpkinMelon(BlockPlaceEvent event) {
+        Material type = event.getBlock().getType();
+        if (type == Material.PUMPKIN || type == Material.MELON) {
+            event.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

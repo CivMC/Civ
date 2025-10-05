@@ -179,7 +179,7 @@ hacks:
     disableEnderCrystalDamage: true
     disableMiningFatigue: true
     canEquipBanners: true
-    disableLavaCobbleMountains: true
+    disableLavaCobbleMountains: false
     disableWanderingTrader: false
     preventPearlGlitching: true
     preventUsingEyeOfEnder: false
@@ -611,4 +611,8 @@ hacks:
   TooHappyGhasts:
     enabled: true
   PlayerCap:
+    enabled: true
+  FairPlay:
+    enabled: true
+  PlayerCount:
     enabled: true

@@ -2002,6 +2002,13 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: CACTUS
         amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
     output:
       green dye:
         v: 3839
@@ -2018,6 +2025,13 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: KELP
         amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
     output:
       dried kelp:
         v: 3839
@@ -2035,6 +2049,13 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: WHEAT
         amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
     output:
       bread:
         v: 3839
@@ -2052,6 +2073,13 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: POTATO
         amount: 32
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
     output:
       baked_potato:
         v: 3839
@@ -9761,7 +9789,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: ROTTEN_FLESH
-        amount: 16
+        amount: 8
     output:
       exp:
         v: 3839
@@ -9835,7 +9863,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: STRING
-        amount: 16
+        amount: 8
     output:
       exp:
         v: 3839
@@ -9909,7 +9937,7 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: BONE
-        amount: 16
+        amount: 8
     output:
       exp:
         v: 3839
@@ -10897,11 +10925,25 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: WHEAT
         amount: 128
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
       cocoa:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: COCOA_BEANS
         amount: 64
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
     output:
       cookie:
         v: 3839
@@ -10930,6 +10972,13 @@ recipes:
         ==: org.bukkit.inventory.ItemStack
         type: PUMPKIN
         amount: 192
+        meta:
+          meta-type: UNSPECIFIC
+          ==: ItemMeta
+          lore:
+            - Hand picked
+            - Unbruised and suitable for use in XP production
+          PublicBukkitValues: '{"realisticbiomes:hand_picked": 1b}'
     output:
       pie:
         v: 3839

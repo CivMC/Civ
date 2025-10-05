@@ -608,3 +608,9 @@ hacks:
     world: world
   TooHappyGhasts:
     enabled: true
+  PlayerCap:
+    enabled: true
+  FairPlay:
+    enabled: true
+  PlayerCount:
+    enabled: true

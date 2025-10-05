@@ -3,6 +3,7 @@ package vg.civcraft.mc.civchat2;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.bukkit.Bukkit;
 import vg.civcraft.mc.civchat2.broadcaster.BungeeServerBroadcaster;
 import vg.civcraft.mc.civchat2.broadcaster.BungeeServerListener;
 import vg.civcraft.mc.civchat2.broadcaster.NoopServerBroadcaster;
@@ -12,6 +13,7 @@ import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
 import vg.civcraft.mc.civchat2.listeners.KillListener;
 import vg.civcraft.mc.civchat2.listeners.NewPlayerListener;
+import vg.civcraft.mc.civchat2.prefix.StarManager;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
@@ -57,11 +59,17 @@ public class CivChat2 extends ACivMod {
             broadcaster = new NoopServerBroadcaster();
         }
 
-        chatMan = new CivChat2Manager(instance, broadcaster);
+        StarManager starManager = new StarManager(getConfig().getBoolean("chat.playtimeStars"));
+
+        chatMan = new CivChat2Manager(instance, broadcaster, starManager);
         log.debug("Debug Enabled");
         commandManager = new CivChatCommandManager(this);
         registerNameLayerPermissions();
         registerCivChatEvents();
+
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new CivChatPlaceholders(starManager).register();
+        }
     }
 
     @Override
@@ -79,10 +87,11 @@ public class CivChat2 extends ACivMod {
     public boolean debugEnabled() {
         return config.getDebug();
     }
-
     public CivChat2Log getCivChat2Log() {
         return log;
     }
+
+
 
     private void registerCivChatEvents() {
         getServer().getPluginManager().registerEvents(new CivChat2Listener(chatMan), this);

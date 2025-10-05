@@ -1,5 +1,5 @@
 plugins {
-    id("io.papermc.paperweight.userdev")
+    alias(libs.plugins.paper.userdev)
 }
 
 version = "1.0.0"
@@ -10,4 +10,5 @@ dependencies {
     }
 
     compileOnly(project(":plugins:civmodcore-paper"))
+    compileOnly(project(":plugins:combattagplus-paper"))
 }

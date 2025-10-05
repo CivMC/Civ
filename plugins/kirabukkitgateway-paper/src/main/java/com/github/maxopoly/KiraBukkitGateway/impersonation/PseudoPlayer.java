@@ -2,13 +2,17 @@ package com.github.maxopoly.KiraBukkitGateway.impersonation;
 
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import java.net.InetSocketAddress;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
+import net.kyori.adventure.audience.MessageType;
+import net.kyori.adventure.identity.Identity;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.luckperms.api.model.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
@@ -67,34 +71,45 @@ public class PseudoPlayer extends CraftPlayer {
     private String name;
     private UUID uuid;
     private OfflinePlayer offlinePlayer;
-    private List<String> replies;
     private long discordChannelId;
     private PseudoSpigotPlayer spigotPlayer;
+    private Consumer <? super Component> feedback;
 
-    public PseudoPlayer(UUID uuid, long channelId) {
+    private final User user;
+
+    public PseudoPlayer(UUID uuid, long channelId, Consumer <? super Component> feedback) {
         super((CraftServer) Bukkit.getServer(), PseudoPlayerIdentity.generate(uuid, ""));
         if (uuid == null) {
             throw new IllegalArgumentException("No null uuid allowed");
         }
         offlinePlayer = Bukkit.getOfflinePlayer(uuid);
+        user = KiraBukkitGatewayPlugin.getInstance().getPermsWrapper().loadUser(uuid);
         if (offlinePlayer == null) {
-            throw new IllegalArgumentException("No such player known: " + uuid.toString());
+            throw new IllegalArgumentException("No such player known: " + uuid);
         }
         name = offlinePlayer.getName();
         this.discordChannelId = channelId;
         this.uuid = uuid;
         this.spigotPlayer = new PseudoSpigotPlayer(this);
-        replies = new LinkedList<>();
-    }
-
-    public synchronized List<String> collectReplies() {
-        List<String> replyCopy = replies;
-        replies = null;
-        return replyCopy;
+        this.feedback = feedback;
     }
 
     public OfflinePlayer getOfflinePlayer() {
         return offlinePlayer;
+    }
+
+    public void sendMessage(String message) {
+        this.sendMessage(LegacyComponentSerializer.legacySection().deserialize(message));
+    }
+
+    public void sendMessage(String... messages) {
+        for (String message : messages) {
+            this.sendMessage(message);
+        }
+    }
+
+    public void sendMessage(Identity identity, Component message, MessageType type) {
+        this.feedback.accept(message);
     }
 
     public void closeInventory() {
@@ -616,23 +631,6 @@ public class PseudoPlayer extends CraftPlayer {
         throw new InvalidCommandAttemptException();
     }
 
-
-    public synchronized void sendMessage(String msg) {
-        if (replies == null) {
-            KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(uuid, msg, discordChannelId);
-        } else {
-            replies.add(msg);
-        }
-    }
-
-
-    public void sendMessage(String[] arg0) {
-        StringBuilder sb = new StringBuilder();
-        Arrays.stream(arg0).forEach(s -> sb.append(s + '\n'));
-        sendMessage(sb.toString());
-    }
-
-
     public PermissionAttachment addAttachment(Plugin arg0) {
         throw new InvalidCommandAttemptException();
     }
@@ -659,12 +657,12 @@ public class PseudoPlayer extends CraftPlayer {
 
 
     public boolean hasPermission(String arg0) {
-        return KiraBukkitGatewayPlugin.getInstance().getPermsWrapper().hasPermission(uuid, arg0);
+        return KiraBukkitGatewayPlugin.getInstance().getPermsWrapper().hasPermission(user, arg0);
     }
 
 
     public boolean hasPermission(Permission arg0) {
-        return KiraBukkitGatewayPlugin.getInstance().getPermsWrapper().hasPermission(uuid, arg0.getName());
+        return KiraBukkitGatewayPlugin.getInstance().getPermsWrapper().hasPermission(user, arg0.getName());
     }
 
 
@@ -1154,11 +1152,6 @@ public class PseudoPlayer extends CraftPlayer {
 
 
     public void sendBlockChange(Location arg0, Material arg1, byte arg2) {
-        throw new InvalidCommandAttemptException();
-    }
-
-
-    public boolean sendChunkChange(Location arg0, int arg1, int arg2, int arg3, byte[] arg4) {
         throw new InvalidCommandAttemptException();
     }
 

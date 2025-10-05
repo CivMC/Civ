@@ -1,0 +1,9 @@
+
+# messages must be in minimessage format
+# https://webui.advntr.dev/
+scheduledAnnouncements: []
+
+restart:
+  bar: "<dark_green>Update restart in % minute$"
+  message: "<gold>[CivMC] <dark_green>Server is restarting for an update in % minute$"
+  kick: "Server is restarting for an update"

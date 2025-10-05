@@ -15,7 +15,7 @@ example_group:
 
  # default settings for all groups, all groups will take properties from this section unless player's primary group overrides a specific setting
 _DEFAULT_:
-  tabprefix: "%vault-prefix%"
+  tabprefix: "%vault-prefix%%civchat_prefix%"
   tagprefix: "%vault-prefix%"
   customtabname: "%essentials_nickname%"
   customtagname: "%essentials_nickname%" # don't forget to enable unlimited nametag mode to make this one work

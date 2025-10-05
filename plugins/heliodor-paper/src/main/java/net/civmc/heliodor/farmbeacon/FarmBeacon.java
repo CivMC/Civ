@@ -21,7 +21,7 @@ public interface FarmBeacon {
         ItemMeta meta = item.getItemMeta();
         meta.itemName(Component.text("Farm Beacon", NamedTextColor.LIGHT_PURPLE));
         meta.lore(List.of(Component.text("Allows crops to grow larger and more bountiful", NamedTextColor.WHITE),
-            Component.text("Increases soil fertility +5%", NamedTextColor.WHITE),
+            Component.text("Increases soil fertility +6%", NamedTextColor.WHITE),
             Component.text("within a 20 block radius.", NamedTextColor.WHITE),
             Component.text("Takes 6 days to become effective.", NamedTextColor.WHITE),
             Component.text("Requires a beacon base and sky exposure", NamedTextColor.WHITE)));
@@ -39,10 +39,8 @@ public interface FarmBeacon {
 
     static List<CraftingRecipe> getRecipes(Plugin plugin) {
         ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, "meteoric_farm_beacon"), FarmBeacon.createFarmBeacon())
-            .shape("ene", "xbx", "exe")
+            .shape("nnn", "nbn", "nnn")
             .setIngredient('n', Material.NETHERITE_INGOT)
-            .setIngredient('x', MeteoricIron.createIngot())
-            .setIngredient('e', Material.END_CRYSTAL)
             .setIngredient('b', Material.BEACON);
         recipe.setCategory(CraftingBookCategory.MISC);
         return List.of(recipe);

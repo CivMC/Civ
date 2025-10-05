@@ -1,5 +1,6 @@
 package com.untamedears.realisticbiomes.noise;
 
+import com.untamedears.realisticbiomes.RealisticBiomes;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -65,6 +66,7 @@ public class MeasureListener implements Listener {
                 .append(Component.text("Temperature: "))
                 .append(Component.text(temperature + "°T", NamedTextColor.RED)));
             event.setUseItemInHand(Event.Result.DENY);
+            RealisticBiomes.getInstance().getLogger().info(player.getName() + " found " + lt + " temperature at " + block.getX() + " " + block.getY() + " " + block.getZ());
         } else if (type == this.humidityMeasure) {
             double lh = biomes.getHumidity(block) + biomeClimate.humidity();
             // rescale humidity between 0% and 100% because it makes more sense that way
@@ -76,12 +78,15 @@ public class MeasureListener implements Listener {
                 .append(Component.text("Humidity: "))
                 .append(Component.text(humidity + "%", NamedTextColor.AQUA)));
             event.setUseItemInHand(Event.Result.DENY);
+            RealisticBiomes.getInstance().getLogger().info(player.getName() + " found " + lh + " humidity at " + block.getX() + " " + block.getY() + " " + block.getZ());
         } else if (type == this.fertilityMeasure) {
-            int fertility = (int) Math.round(biomes.getFertility(block) * 100);
+            double lf = biomes.getFertility(block);
+            int fertility = (int) Math.round(lf * 100);
             player.sendMessage(Component.empty().color(NamedTextColor.GOLD)
                 .append(Component.text("Soil fertility: "))
                 .append(Component.text(fertility + "%", NamedTextColor.YELLOW)));
             event.setUseItemInHand(Event.Result.DENY);
+            RealisticBiomes.getInstance().getLogger().info(player.getName() + " found " + lf + " humidity at " + block.getX() + " " + block.getY() + " " + block.getZ());
         }
     }
 }
