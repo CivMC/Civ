@@ -11,4 +11,5 @@ dependencies {
 
     implementation(libs.ipaddress)
     implementation(libs.jsoup)
+    implementation(project(":libraries:banstick-core"))
 }
