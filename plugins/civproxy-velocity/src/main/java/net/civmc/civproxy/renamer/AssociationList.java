@@ -1,4 +1,4 @@
-package vg.civcraft.mc.namelayer.database;
+package net.civmc.civproxy.renamer;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,13 +7,13 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
+import javax.sql.DataSource;
+import net.civmc.civproxy.database.Migrator;
+import org.slf4j.Logger;
 
 public class AssociationList {
 
-    private ManagedDatasource db;
+    private DataSource db;
     private Logger logger;
 
     private static final String addPlayer = "call addplayertotable(?, ?)"; // order player name, uuid
@@ -22,15 +22,16 @@ public class AssociationList {
     private static final String changePlayerName = "update Name_player set player=? where uuid=?";
     private static final String getAllPlayerInfo = "select * from Name_player";
 
-    public AssociationList(Logger logger, ManagedDatasource db) {
+    public AssociationList(Logger logger, DataSource db) {
         this.db = db;
         this.logger = logger;
     }
 
-    public void registerMigrations() {
+    public void migrate() {
+        Migrator migrator = new Migrator();
         // creates the player table
         // Where uuid and host names will be stored
-        db.registerMigration(-1, false,
+        migrator.registerMigration("renamer", 0,
             "CREATE TABLE IF NOT EXISTS `Name_player` (" +
                 "`uuid` varchar(40) NOT NULL," +
                 "`player` varchar(40) NOT NULL,"
@@ -41,7 +42,7 @@ public class AssociationList {
                 + "amount int(10) not null,"
                 + "primary key (player));");
 
-        db.registerMigration(0, false,
+        migrator.registerMigration("renamer", 1,
             "drop procedure if exists addplayertotable",
             "create definer=current_user procedure addplayertotable("
                 + "in pl varchar(40), in uu varchar(40)) sql security invoker begin "
@@ -83,8 +84,12 @@ public class AssociationList {
                 + "END LOOP setName;"
                 + "end if;"
                 + "end");
-        // For future migrations, check the max migrations that is combination of here and
-        // GroupManagerDao!
+
+      try {
+        migrator.migrate(db.getConnection());
+      } catch (SQLException e) {
+        throw new RuntimeException(e);
+      }
     }
 
     /**
@@ -102,10 +107,10 @@ public class AssociationList {
                 String uuid = set.getString("uuid");
                 return UUID.fromString(uuid);
             } catch (SQLException se) {
-                logger.log(Level.WARNING, "Failed to get UUID for playername " + playername, se);
+                logger.warn("Failed to get UUID for playername " + playername, se);
             }
         } catch (SQLException e) {
-            logger.log(Level.WARNING, "Failed to set up query to get UUID for playername " + playername, e);
+            logger.warn("Failed to set up query to get UUID for playername " + playername, e);
         }
         return null;
     }
@@ -125,10 +130,10 @@ public class AssociationList {
                 String playername = set.getString("player");
                 return playername;
             } catch (SQLException se) {
-                logger.log(Level.WARNING, "Failed to get current player name for UUID " + uuid, se);
+                logger.warn("Failed to get current player name for UUID " + uuid, se);
             }
         } catch (SQLException e) {
-            logger.log(Level.WARNING, "Failed to set up query to get current player name for UUID " + uuid, e);
+            logger.warn("Failed to set up query to get current player name for UUID " + uuid, e);
         }
         return null;
     }
@@ -140,9 +145,9 @@ public class AssociationList {
             addPlayer.setString(2, uuid.toString());
             addPlayer.execute();
         } catch (SQLException e) {
-            logger.log(Level.WARNING, "Failed to add new player mapping {0} <==> {1}, due to {2}",
+            logger.warn("Failed to add new player mapping {0} <==> {1}, due to {2}",
                 new Object[]{playername, uuid, e.getMessage()});
-            logger.log(Level.WARNING, "Add new player failure: ", e);
+            logger.warn("Add new player failure: ", e);
         }
     }
 
@@ -153,9 +158,9 @@ public class AssociationList {
             changePlayerName.setString(2, uuid.toString());
             changePlayerName.execute();
         } catch (SQLException e) {
-            logger.log(Level.WARNING, "Failed to change player name mapping {0} <==> {1}, due to {2}",
+            logger.warn("Failed to change player name mapping {0} <==> {1}, due to {2}",
                 new Object[]{newName, uuid, e.getMessage()});
-            logger.log(Level.WARNING, "Change player failure: ", e);
+            logger.warn("Change player failure: ", e);
             return; // don't add on failure
         }
     }
@@ -181,7 +186,7 @@ public class AssociationList {
                 uuidMapping.put(uuid, playername);
             }
         } catch (SQLException e) {
-            logger.log(Level.WARNING, "Failed to get all player info", e);
+            logger.warn("Failed to get all player info", e);
         }
         return new PlayerMappingInfo(nameMapping, uuidMapping);
     }

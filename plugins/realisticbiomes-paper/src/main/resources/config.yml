@@ -1057,7 +1057,7 @@ plants:
       cold_forest: 1.0
       freshwater: 1.0
 database:
-  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  ==: net.civmc.civcommon.DatabaseCredentials
   plugin: RealisticBiomes
   user: 'root'
   password: 'root'

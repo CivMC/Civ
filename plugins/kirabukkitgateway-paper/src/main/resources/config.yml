@@ -2,7 +2,7 @@
 # KEEP THIS COMMENTED OUT IN THIS DEFAULT CONFIG OTHERWISE BAD THINGS!
 # Do NOT change the ==: value.
 #database:
-#  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
+#  ==: net.civmc.civcommon.ManagedDatasource
 #  plugin: KiraBukkitGateway
 #  user: username
 #  password: password

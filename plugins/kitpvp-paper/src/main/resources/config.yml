@@ -1,5 +1,5 @@
 database:
-  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  ==: net.civmc.civcommon.DatabaseCredentials
   username: username
   password: password
   host: localhost

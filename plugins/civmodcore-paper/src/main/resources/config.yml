@@ -1,7 +1,7 @@
 # Database connection details, should you want to have a database connection.
 # Do NOT change the ==: value.
 database:
-  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  ==: net.civmc.civcommon.DatabaseCredentials
   username: username
   password: password
   host: localhost
