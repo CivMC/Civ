@@ -11,4 +11,8 @@ dependencies {
     implementation(libs.jsoup)
     implementation(libs.mariadb.java.client)
     implementation(libs.configurate.yaml)
+    implementation(libs.slf4j.api)
+    implementation(libs.commons.lang3)
+    implementation(libs.commons.collections4)
+    implementation(libs.google.guava)
 }

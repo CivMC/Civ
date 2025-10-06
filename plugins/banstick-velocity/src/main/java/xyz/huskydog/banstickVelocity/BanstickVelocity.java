@@ -6,9 +6,11 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import xyz.huskydog.banstickCore.BanstickCore;
 import xyz.huskydog.banstickCore.BanstickPlugin;
+import xyz.huskydog.banstickCore.Config;
 import java.nio.file.Path;
 
 @Plugin(id = "banstick-velocity",
@@ -19,12 +21,14 @@ public class BanstickVelocity implements BanstickPlugin {
     private final ProxyServer server;
     private final Logger logger;
     private final Path dataDirectory;
+    private final Config config;
 
     @Inject
     public BanstickVelocity(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         this.server = server;
         this.logger = logger;
         this.dataDirectory = dataDirectory;
+        this.config = new Config(this);
     }
 
     @Subscribe
@@ -35,18 +39,31 @@ public class BanstickVelocity implements BanstickPlugin {
         BanstickCore banstickCore = new BanstickCore(this);
 
         // Example usage: Log a config value
-        var config = banstickCore.getConfig().getRawConfig();
-        String exampleValue = config.node("database").node("host").getString();
+        String exampleValue = config.getRawConfig().node("database").node("host").getString();
         logger.info("Config value for 'database.host': {}", exampleValue);
     }
 
     @Override
-    public Logger getLogger() {
-        return logger;
+    public @NotNull Logger getLogger() {
+        return this.logger;
     }
 
     @Override
-    public Path getDataDirectory() {
-        return dataDirectory;
+    public @NotNull Path getDataDirectory() {
+        return this.dataDirectory;
+    }
+
+    @Override
+    public @NotNull Config getConfig() {
+        return this.config;
+    }
+
+    public @NotNull String getPluginId() {
+        Plugin annotation = this.getClass().getAnnotation(Plugin.class);
+        if (annotation == null) {
+            throw new IllegalStateException("Plugin annotation is missing, cannot determine plugin ID.");
+        }
+
+        return annotation.id();
     }
 }
