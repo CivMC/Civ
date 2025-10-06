@@ -14,7 +14,7 @@ dependencies {
     compileOnly(project(":plugins:finale-paper"))
     compileOnly("net.luckperms:api:5.4")
 
-    compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.4.10.jar"))
+    compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.6.0.jar"))
     compileOnly(libs.aswm.api)
     compileOnly("me.clip:placeholderapi:2.11.6")
 }
