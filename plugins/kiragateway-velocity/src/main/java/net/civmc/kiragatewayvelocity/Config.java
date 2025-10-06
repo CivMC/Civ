@@ -1,4 +1,4 @@
-package xyz.huskydog.kiragatewayVelocity;
+package net.civmc.kiragatewayvelocity;
 
 import com.rabbitmq.client.ConnectionFactory;
 import org.jetbrains.annotations.Nullable;

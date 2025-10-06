@@ -1,4 +1,4 @@
-package xyz.huskydog.kiragatewayVelocity.auth;
+package net.civmc.kiragatewayvelocity.auth;
 
 import java.security.SecureRandom;
 import java.util.HashSet;
@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class AuthcodeManager {
 
-    private static final String validCharacters = "abcdefghijklmnopqrstuvwxyz0123456789";
+    private static final String validCharacters = "abcdefghjkmnpqrstuvwxyz123456789";
     private static final int maxRecursionDepth = 20;
 
     private Set<String> currentCodes;

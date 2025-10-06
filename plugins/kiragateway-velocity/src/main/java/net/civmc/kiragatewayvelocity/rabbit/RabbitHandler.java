@@ -1,4 +1,4 @@
-package xyz.huskydog.kiragatewayVelocity.rabbit;
+package net.civmc.kiragatewayvelocity.rabbit;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;

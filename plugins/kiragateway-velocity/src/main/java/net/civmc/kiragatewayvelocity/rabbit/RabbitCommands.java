@@ -1,4 +1,4 @@
-package xyz.huskydog.kiragatewayVelocity.rabbit;
+package net.civmc.kiragatewayvelocity.rabbit;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;

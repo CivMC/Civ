@@ -1,9 +1,8 @@
-package xyz.huskydog.kiragatewayVelocity;
+package net.civmc.kiragatewayvelocity;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.command.CommandMeta;
-import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
@@ -14,15 +13,15 @@ import java.nio.file.Path;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
-import xyz.huskydog.kiragatewayVelocity.auth.AuthcodeManager;
-import xyz.huskydog.kiragatewayVelocity.commands.DiscordAuth;
-import xyz.huskydog.kiragatewayVelocity.rabbit.RabbitCommands;
-import xyz.huskydog.kiragatewayVelocity.rabbit.RabbitHandler;
+import net.civmc.kiragatewayvelocity.auth.AuthcodeManager;
+import net.civmc.kiragatewayvelocity.commands.DiscordAuth;
+import net.civmc.kiragatewayvelocity.rabbit.RabbitCommands;
+import net.civmc.kiragatewayvelocity.rabbit.RabbitHandler;
 
 @Plugin(
-    id = "kiragateway-velocity",
-    name = "kiragateway-velocity",
-    version = BuildConstants.VERSION,
+    id = "kiragateway",
+    name = "kiragateway",
+    version = "1.0",
     url = "https://civmc.net",
     authors = {"Huskydog9988"}
 )
@@ -51,8 +50,7 @@ public class KiragatewayVelocity {
 
         config = Config.loadConfig();
         if (config == null) {
-            logger.error("Failed to load configuration, shutting down");
-            proxy.shutdown();
+            logger.error("Failed to load configuration");
             return;
         }
 
@@ -64,8 +62,7 @@ public class KiragatewayVelocity {
             logger
         );
         if (!rabbitHandler.setup()) {
-            logger.error("Failed to setup rabbitmq, shutting down");
-            proxy.shutdown();
+            logger.error("Failed to setup rabbitmq");
             return;
         }
         rabbitCommands = new RabbitCommands(rabbitHandler);
