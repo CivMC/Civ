@@ -1,5 +1,5 @@
 database:
-  ==: net.civmc.civcommon.DatabaseCredentials
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
   plugin: JukeAlert
   user: username
   password: squidLover69

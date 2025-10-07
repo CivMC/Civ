@@ -872,7 +872,7 @@ plants:
       max_yield: 64
 
 database:
-  ==: net.civmc.civcommon.DatabaseCredentials
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
   plugin: RealisticBiomes
   user: 'root'
   password: 'root'

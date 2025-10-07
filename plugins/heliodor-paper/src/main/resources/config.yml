@@ -2,7 +2,7 @@
 enable_heliodor: true
 
 database:
-  ==: net.civmc.civcommon.DatabaseCredentials
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
   user: 'root'
   password: 'root'
   host: 'localhost'

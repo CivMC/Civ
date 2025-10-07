@@ -27,7 +27,7 @@ multiply_pearl_cost: true
 # KEEP THIS COMMENTED OUT IN THIS DEFAULT CONFIG OTHERWISE SOME CONFIG PARSING WILL CAUSE ISSUES!
 # Remember also to change the plugin value to match your plugin name. Do NOT change the ==: value.
 database:
-  ==: net.civmc.civcommon.DatabaseCredentials
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
   plugin: EssenceGlue
   user: username
   password: password
