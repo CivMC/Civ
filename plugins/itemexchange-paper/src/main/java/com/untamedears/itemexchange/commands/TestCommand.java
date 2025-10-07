@@ -34,7 +34,7 @@ public final class TestCommand extends BaseCommand {
 			final InventoryAccessor shopAccessor = getShop(player);
 			if (shopAccessor == null) return;
 			shopAccessor.editContents((contents) -> {
-				InventoryUtils.fillContents(contents, () -> new ItemStack(Material.DIRT));
+				InventoryUtils.fillContents(contents, (i) -> new ItemStack(Material.DIRT));
 				{ // Input rule
 					final Material material = Material.DIAMOND;
 					final var rule = new ExchangeRule(ExchangeRule.Type.INPUT, new ItemStack(material));
@@ -90,7 +90,49 @@ public final class TestCommand extends BaseCommand {
 		{ // Set up player inventory
 			final PlayerInventory playerInventory = player.getInventory();
 			InventoryAccessor.playerStorage(playerInventory).editContents((contents) -> {
-				InventoryUtils.fillContents(contents, () -> new ItemStack(Material.DIRT));
+				InventoryUtils.fillContents(contents, (i) -> new ItemStack(Material.DIRT));
+				contents[0] = new ItemStack(Material.DIAMOND);
+				return true;
+			});
+			playerInventory.setHeldItemSlot(0);
+		}
+	}
+
+	@Subcommand("shop-setup-3")
+	@Description("Spreads the shop's stock across multiple small-ish stacks, with a full player inventory.")
+	public void shopSetup3(
+		final @NotNull Player player
+	) {
+		{ // Set up shop chest inventory
+			final InventoryAccessor shopAccessor = getShop(player);
+			if (shopAccessor == null) return;
+			shopAccessor.editContents((contents) -> {
+				InventoryUtils.clearContents(contents);
+				{ // Input rule
+					final var rule = new ExchangeRule(ExchangeRule.Type.INPUT, new ItemStack(Material.DIAMOND));
+					contents[0] = rule.toItem();
+				}
+				{ // Output rule
+					final var rule = new ExchangeRule(ExchangeRule.Type.OUTPUT, new ItemStack(Material.IRON_INGOT));
+					rule.setAmount(70);
+					contents[1] = rule.toItem();
+				}
+				contents[2] = new ItemStack(Material.IRON_INGOT, 7);
+				contents[3] = new ItemStack(Material.IRON_INGOT, 3);
+				contents[4] = new ItemStack(Material.IRON_INGOT, 9);
+				contents[5] = new ItemStack(Material.IRON_INGOT, 20);
+				contents[6] = new ItemStack(Material.IRON_INGOT, 15);
+				contents[7] = new ItemStack(Material.IRON_INGOT, 2);
+				contents[8] = new ItemStack(Material.IRON_INGOT, 7);
+				contents[9] = new ItemStack(Material.IRON_INGOT, 11);
+				contents[10] = new ItemStack(Material.IRON_INGOT, 20);
+				return true;
+			});
+		}
+		{ // Set up player inventory
+			final PlayerInventory playerInventory = player.getInventory();
+			InventoryAccessor.playerStorage(playerInventory).editContents((contents) -> {
+				InventoryUtils.fillContents(contents, (i) -> new ItemStack(Material.DIRT));
 				contents[0] = new ItemStack(Material.DIAMOND);
 				return true;
 			});

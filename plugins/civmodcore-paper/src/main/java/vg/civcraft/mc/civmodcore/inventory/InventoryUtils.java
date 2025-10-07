@@ -3,9 +3,8 @@ package vg.civcraft.mc.civmodcore.inventory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -60,10 +59,10 @@ public final class InventoryUtils {
         }
         contents = contents.clone();
         for (int i = 0; i < contents.length; i++) {
-            contents[i] = switch (contents[i]) {
-                case final ItemStack item when item.getType() != Material.AIR -> item.clone();
-                case null, default -> null;
-            };
+            final ItemStack item = contents[i];
+            if (item != null) { /// Oh, how I yearn for optional chaining
+                contents[i] = item.clone();
+            }
         }
         return contents;
     }
@@ -76,10 +75,10 @@ public final class InventoryUtils {
 
     public static void fillContents(
         final @Nullable ItemStack @NotNull [] contents,
-        final @NotNull Supplier<@NotNull ItemStack> itemSupplier
+        final @NotNull IntFunction<@NotNull ItemStack> itemSupplier
     ) {
         for (int i = 0; i < contents.length; i++) {
-            contents[i] = itemSupplier.get();
+            contents[i] = itemSupplier.apply(i);
         }
     }
 

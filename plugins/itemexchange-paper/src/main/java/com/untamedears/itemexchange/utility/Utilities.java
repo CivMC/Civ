@@ -7,7 +7,6 @@ import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
@@ -27,7 +26,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemStash;
 import vg.civcraft.mc.civmodcore.utilities.KeyedUtils;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 import vg.civcraft.mc.civmodcore.world.WorldUtils;
@@ -196,52 +194,4 @@ public final class Utilities {
             "]";
     }
 
-    public static boolean addedAllItems(
-        final @NotNull Inventory inventory,
-        final @NotNull ItemStash items
-    ) {
-        Objects.requireNonNull(inventory);
-        Objects.requireNonNull(items);
-        for (final ItemStack itemToAdd : items) {
-            if (!inventory.addItem(itemToAdd.clone()).isEmpty()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean removedAllItems(
-        final @NotNull Inventory inventory,
-        final @NotNull ItemStash items
-    ) {
-        Objects.requireNonNull(inventory);
-        Objects.requireNonNull(items);
-        for (final ItemStack itemToRemove : items) {
-            if (!inventory.removeItem(itemToRemove.clone()).isEmpty()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean movedAllItems(
-        final @NotNull Inventory sourceInventory,
-        final @NotNull Inventory destInventory,
-        final @NotNull ItemStash items
-    ) {
-        return removedAllItems(sourceInventory, items)
-            && addedAllItems(destInventory, items);
-    }
-
-    public static boolean tradedAllItems(
-        final @NotNull Inventory inventoryA,
-        final @NotNull Inventory inventoryB,
-        final @NotNull ItemStash itemsA,
-        final @NotNull ItemStash itemsB
-    ) {
-        return removedAllItems(inventoryA, itemsA)
-            && removedAllItems(inventoryB, itemsB)
-            && addedAllItems(inventoryA, itemsB)
-            && addedAllItems(inventoryB, itemsA);
-    }
 }

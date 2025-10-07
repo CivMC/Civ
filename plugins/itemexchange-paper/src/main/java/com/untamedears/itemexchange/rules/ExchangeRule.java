@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.component.CustomData;
@@ -26,11 +27,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import vg.civcraft.mc.civmodcore.inventory.InventoryAccessor;
+import org.jetbrains.annotations.Unmodifiable;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemKey;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemStash;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemTally;
+import vg.civcraft.mc.civmodcore.inventory.TransactionInventory;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
 import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
@@ -393,40 +392,43 @@ public final class ExchangeRule implements ExchangeData {
         return Math.max(stock / getAmount(), 0);
     }
 
-    /**
-     * Determines the stock items themselves from a given inventory, which can then be used for trade purposes.
-     *
-     * @param accessor The inventory to determine the stock within.
-     * @return An array of cloned items that can then be used within trade APIs.
-     */
-    public @Nullable ItemStash getStock(
-        final @NotNull InventoryAccessor accessor
+    /// @return Will return null if this inventory doesn't contain the items (or enough of them) to satisfy this rule.
+    ///         If it's not-null, it can be presumed to be not-empty, and whose items are likewise not-null, not-empty,
+    ///         and have valid amounts.
+    public @Nullable @Unmodifiable List<@NotNull ItemStack> extractStock(
+        final @NotNull TransactionInventory inventory
     ) {
-        final var stash = new ItemTally();
-        int requiredAmount = getAmount();
-        for (final ItemStack item : accessor.getContents()) {
-            if (requiredAmount <= 0) {
-                break;
-            }
-            if (!ItemUtils.isValidItem(item) || Utilities.isExchangeRule(item)) {
-                continue;
-            }
-            if (!conforms(item)) {
-                continue;
-            }
-            final int amount = item.getAmount();
-            if (amount <= requiredAmount) {
-                stash.add(new ItemKey(item), amount);
-                requiredAmount -= item.getAmount();
-            } else {
-                stash.add(new ItemKey(item), requiredAmount);
-                requiredAmount = 0;
-            }
-        }
-        if (requiredAmount != 0) {
+        final int ruleAmount = getAmount();
+        if (ruleAmount < 1) {
             return null;
         }
-        return stash.toItemStash();
+        int remainingAmount = ruleAmount;
+        final var extracted = new ArrayList<ItemStack>();
+        for (final ListIterator<ItemStack> iter = inventory.iterator(); iter.hasNext() && remainingAmount > 0;) {
+            final ItemStack slot = iter.next();
+            if (!ItemUtils.isValidItem(slot) || Utilities.isExchangeRule(slot)) {
+                continue;
+            }
+            if (!conforms(slot)) {
+                continue;
+            }
+            final int itemAmount = slot.getAmount();
+            if (itemAmount <= remainingAmount) {
+                extracted.add(slot.clone());
+                iter.set(null);
+                remainingAmount -= itemAmount;
+                continue;
+            }
+            // The stack is more than we need, so we need to split it
+            extracted.add(slot.asQuantity(remainingAmount));
+            slot.setAmount(itemAmount - remainingAmount);
+            iter.set(slot); // Just in case
+            remainingAmount = 0;
+        }
+        if (remainingAmount > 0 || extracted.isEmpty()) {
+            return null;
+        }
+        return Collections.unmodifiableList(extracted);
     }
 
     /**

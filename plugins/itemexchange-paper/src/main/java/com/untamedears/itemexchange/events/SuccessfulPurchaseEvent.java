@@ -1,11 +1,14 @@
 package com.untamedears.itemexchange.events;
 
 import com.untamedears.itemexchange.rules.TradeRule;
+import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemStash;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class SuccessfulPurchaseEvent extends Event {
 
@@ -13,10 +16,10 @@ public class SuccessfulPurchaseEvent extends Event {
 
     private final Player player;
     private final TradeRule trade;
-    private final ItemStash input;
-    private final ItemStash output;
+    private final List<ItemStack> input;
+    private final List<ItemStack> output;
 
-    private SuccessfulPurchaseEvent(Player player, TradeRule trade, ItemStash input, ItemStash output) {
+    private SuccessfulPurchaseEvent(Player player, TradeRule trade, List<ItemStack> input, List<ItemStack> output) {
         this.player = player;
         this.trade = trade;
         this.input = input;
@@ -31,11 +34,11 @@ public class SuccessfulPurchaseEvent extends Event {
         return this.trade;
     }
 
-    public ItemStash getPaymentItems() {
+    public @NotNull List<@NotNull ItemStack> getPaymentItems() {
         return this.input;
     }
 
-    public ItemStash getPurchasedItems() {
+    public @Nullable List<@NotNull ItemStack> getPurchasedItems() {
         return this.output;
     }
 
@@ -48,7 +51,7 @@ public class SuccessfulPurchaseEvent extends Event {
         return handlers;
     }
 
-    public static SuccessfulPurchaseEvent emit(Player player, TradeRule trade, ItemStash input, ItemStash output) {
+    public static SuccessfulPurchaseEvent emit(Player player, TradeRule trade, List<ItemStack> input, List<ItemStack> output) {
         SuccessfulPurchaseEvent event = new SuccessfulPurchaseEvent(player, trade, input, output);
         Bukkit.getPluginManager().callEvent(event);
         return event;

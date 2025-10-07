@@ -6,16 +6,18 @@ import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ShopRule;
 import com.untamedears.itemexchange.rules.TradeRule;
-import com.untamedears.itemexchange.utility.TransactionInventory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import vg.civcraft.mc.civmodcore.inventory.TransactionInventory;
 import com.untamedears.itemexchange.utility.Utilities;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -40,7 +42,6 @@ import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.inventory.InventoryAccessor;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.RecipeManager;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemStash;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 import vg.civcraft.mc.civmodcore.utilities.Validation;
@@ -167,59 +168,60 @@ public final class ItemExchangeListener implements Listener {
             return;
         }
         LOGGER.debug("Attempting transaction.");
-        // Check that the buyer has enough of the inputs
-        final InventoryAccessor playerInventory = InventoryAccessor.playerStorage(player);
-        final ItemStash inputItems = inputRule.getStock(playerInventory);
-        if (inputItems == null) {
-            LOGGER.debug("Cancelling, buyer doesn't have enough of the input.");
-            player.sendMessage(ChatColor.RED + "You don't have enough of the input.");
-            return;
-        }
-        // Check that the shop has enough of the outputs if needed
-        final InventoryAccessor tradeInventory = InventoryAccessor.fullContents(trade.getInventory());
-        ItemStash outputItems = null;
-        if (outputRule != null) {
-            outputItems = outputRule.getStock(tradeInventory);
-            if (outputItems == null) {
-                LOGGER.debug("Cancelling, shop doesn't have enough of the output.");
-                player.sendMessage(ChatColor.RED + "Shop does not have enough in stock.");
+        final List<ItemStack> inputItems, outputItems; {
+            final var playerInventoryClone = new TransactionInventory(InventoryAccessor.playerStorage(player));
+            inputItems = inputRule.extractStock(playerInventoryClone);
+            if (inputItems == null) {
+                LOGGER.debug("Cancelling, buyer doesn't have enough of the input.");
+                player.sendMessage(Component.text(
+                    "You don't have enough of the input.",
+                    NamedTextColor.RED
+                ));
                 return;
             }
-        }
-        // Attempt to transfer the items between the shop and the buyer
-        boolean successfulTransfer; {
-            final var transactionPlayerInventory = new TransactionInventory(playerInventory);
-            final var transactionTradeInventory = new TransactionInventory(tradeInventory);
+            final var tradeInventoryClone = new TransactionInventory(InventoryAccessor.fullContents(trade.getInventory()));
             if (outputRule != null) {
-                successfulTransfer = Utilities.tradedAllItems(
-                    transactionPlayerInventory,
-                    transactionTradeInventory,
-                    inputItems,
-                    outputItems
-                );
+                outputItems = outputRule.extractStock(tradeInventoryClone);
+                if (outputItems == null) {
+                    LOGGER.debug("Cancelling, shop doesn't have enough of the output.");
+                    player.sendMessage(Component.text(
+                        "Shop does not have enough in stock.",
+                        NamedTextColor.RED
+                    ));
+                    return;
+                }
+                if (!playerInventoryClone.addedAllItems(outputItems)) {
+                    LOGGER.debug("Cancelling, player does not have enough space for the outputs!");
+                    player.sendMessage(Component.text(
+                        "You do not have enough space in your inventory for those items!",
+                        NamedTextColor.RED
+                    ));
+                    return;
+                }
             }
             else {
-                successfulTransfer = Utilities.movedAllItems(
-                    transactionPlayerInventory,
-                    transactionTradeInventory,
-                    inputItems
-                );
+                outputItems = null;
             }
-            if (!successfulTransfer) {
-                LOGGER.debug("Could not complete that transaction.");
-                player.sendMessage(ChatColor.RED + "Could not complete that transaction!");
+            if (!tradeInventoryClone.addedAllItems(inputItems)) {
+                LOGGER.debug("Cancelling, shop doesn't have enough space for the inputs!");
+                player.sendMessage(Component.text(
+                    "Shop does not have enough space for your items!",
+                    NamedTextColor.RED
+                ));
                 return;
             }
-            transactionPlayerInventory.commit();
-            transactionTradeInventory.commit();
+            LOGGER.debug("All good! Committing transaction!");
+            playerInventoryClone.commit();
+            tradeInventoryClone.commit();
         }
+        LOGGER.debug("Pressing successful-transaction buttons");
         Stream.of(clicked, trade.getBlock()).distinct().forEach(Utilities::successfulTransactionButton);
+        LOGGER.debug("Emitting SuccessfulPurchaseEvent");
         SuccessfulPurchaseEvent.emit(player, trade, inputItems, outputItems);
-        if (outputRule != null) {
-            player.sendMessage(ChatColor.GREEN + "Successful exchange!");
-        } else {
-            player.sendMessage(ChatColor.GREEN + "Successful donation!");
-        }
+        player.sendMessage(Component.text(
+            outputRule == null ? "Successful donation!" : "Successful exchange!",
+            NamedTextColor.GREEN
+        ));
     }
 
     /**
