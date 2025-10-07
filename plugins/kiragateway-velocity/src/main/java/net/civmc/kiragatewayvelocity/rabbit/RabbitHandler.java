@@ -54,6 +54,7 @@ public class RabbitHandler {
                 }
             };
             try {
+                logger.info("Starting listen");
                 String queue = incomingChannel.queueDeclare().getQueue();
                 incomingChannel.queueBind(queue, incomingQueue, KiraGateway.PROXY_SERVER_NAME);
                 incomingChannel.basicConsume(queue, true, deliverCallback, consumerTag -> {
