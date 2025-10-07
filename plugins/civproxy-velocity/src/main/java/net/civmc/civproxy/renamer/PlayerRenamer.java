@@ -35,6 +35,7 @@ public class PlayerRenamer {
     }
 
     public void start() {
+        associations.migrate();
         server.getEventManager().register(plugin, this);
         server.getCommandManager().register(server.getCommandManager().metaBuilder("changeplayername").aliases("nlcpn").plugin(plugin).build(),
             new ChangePlayerNameCommand(server, associations));
