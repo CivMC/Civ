@@ -4,7 +4,7 @@ layout: home
 
 hero:
     name: "CivMC"
-    tagline: "A Minecraft server focused on civilization building \n1.21.3 Play.CivMC.net"
+    tagline: "A Minecraft server focused on civilization building \n1.21.8 Play.CivMC.net"
     image:
         src: /logo.png
         alt: CivMC Logo

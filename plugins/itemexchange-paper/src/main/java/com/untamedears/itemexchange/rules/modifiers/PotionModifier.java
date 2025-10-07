@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -21,7 +21,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 @CommandAlias(SetCommand.ALIAS)
@@ -77,21 +77,21 @@ public final class PotionModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@NotNull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NbtCompound nbt) {
         nbt.setCompound(BASE_KEY, NBTEncodings.encodePotionData(this.base));
         nbt.setCompoundArray(EFFECTS_KEY, getEffects().stream()
             .map(NBTEncodings::encodePotionEffect)
-            .toArray(NBTCompound[]::new));
+            .toArray(NbtCompound[]::new));
     }
 
-    public static PotionModifier fromNBT(@NotNull final NBTCompound nbt) {
+    public static PotionModifier fromNBT(@NotNull final NbtCompound nbt) {
         final var modifier = new PotionModifier();
-        PotionType type = NBTEncodings.decodePotionData(nbt.getCompound(BASE_KEY));
+        PotionType type = NBTEncodings.decodePotionData(nbt.getCompound(BASE_KEY, true));
         if (type == null) {
             return null; // "UNCRAFTABLE" potion which is removed in 1.21
         }
         modifier.setPotionData(type);
-        modifier.setEffects(Arrays.stream(nbt.getCompoundArray(EFFECTS_KEY))
+        modifier.setEffects(Arrays.stream(nbt.getCompoundArray(EFFECTS_KEY, true))
             .map(NBTEncodings::decodePotionEffect)
             .collect(Collectors.toCollection(ArrayList::new)));
         return modifier;

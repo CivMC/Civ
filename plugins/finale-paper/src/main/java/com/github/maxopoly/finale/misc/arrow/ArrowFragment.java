@@ -92,7 +92,12 @@ public class ArrowFragment {
 
                     if (localDamage > 0) {
                         nearby.damage(localDamage, arrow);
-                        nearby.addPotionEffects(effects);
+
+                        List<PotionEffect> reducedDuration = new ArrayList<>();
+                        for (PotionEffect effect : effects) {
+                            reducedDuration.add(new PotionEffect(effect.getType(), effect.getDuration() / 8, effect.getAmplifier()));
+                        }
+                        nearby.addPotionEffects(reducedDuration);
                     }
                 }
             }

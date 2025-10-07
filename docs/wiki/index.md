@@ -28,7 +28,7 @@ While CivMC can be quite the grind sometimes, there are also many things to do t
 ## Helpful Links
 [New Player Guide](./new-player-guide) - A handy guide for those starting out on their journey through the world of CivMC.
 
-[Word Map](https://civmc-map.github.io/) - A player made and maintained map of the world, featuring a map of nations.
+[Word Map](https://map.civinfo.net/) - A player made and maintained map of the world, featuring a map of nations.
 
 ## Server Plugins
 Below are explanations on the plugins CivMC uses, and detailed information about them.
@@ -64,4 +64,6 @@ Below are explanations on the plugins CivMC uses, and detailed information about
 * [Arthropod Egg](./plugins/fun/arthropodegg) - Killing animals to put them in eggs. 
 
 #### Other pages
-[Change log](./changelog) - A list of all server updates. 
+[Change log](./changelog) - A list of all server updates.
+[CivMini](./CivMini) - All things different or new on CivMini.
+

@@ -35,7 +35,7 @@ public final class CitadelGlue extends DependencyGlue {
                 return;
             }
             final Group group = reinforcement.getGroup();
-            if (!PermissionsGlue.CHESTS.testPermission(group, requester)) {
+            if (PermissionsGlue.CHESTS.testPermission(group, requester)) {
                 return;
             }
             event.setCancelled(true);

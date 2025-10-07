@@ -94,7 +94,7 @@ weaponModification:
   netheriteAxe:
     material: NETHERITE_AXE
     damage: 6
-    armourDamageMultiplier: 2
+    armourDamageMultiplier: 1.78
   diamondAxe:
     material: DIAMOND_AXE
     damage: 5
@@ -112,7 +112,7 @@ weaponModification:
     damage: 1
   netheriteSword:
     material: NETHERITE_SWORD
-    damage: 9
+    damage: 8
   diamondSword:
     material: DIAMOND_SWORD
     damage: 7
@@ -144,6 +144,7 @@ weaponModification:
 armourModification:
   diamondHelmet:
     material: DIAMOND_HELMET
+    armour: 3
     toughness: 2
     extraDurabilityHits: 1 # how many extra hits a player needs to take for the durability of the piece to fall
   diamondChestplate:
@@ -284,11 +285,9 @@ velocity:
 #The order in which modifiers are applied is: ALL, ARROW, POWER_ENCHANT, STRENGTH_EFFECT, SWORD, SHARPNESS_ENCHANT, CRIT
 #Note that these effects are applied after vanilla damage additions and before vanilla damage reductions
 damageModifiers:
-  #Decrease all damage by 20 %
   ALL:
     multiplier: 0.8
     mode: DIRECT
-  #Increase sword damage by 25 %
   SHARPNESS_ENCHANT:
     multiplier: 1.23
     mode: DIRECT
@@ -297,7 +296,7 @@ damageModifiers:
     multiplier: 1.0
   CRIT:
     mode: DIRECT
-    multiplier: 0.82
+    multiplier: 0.825
   STRENGTH_EFFECT:
     mode: DIRECT
     multiplier: 0.86
@@ -316,6 +315,9 @@ damageModifiers:
   FIREWORK:
     mode: DIRECT
     multiplier: 1.0
+  CART:
+    mode: DIRECT
+    multiplier: 0.75
 
 invulTicksEnabled: false
 invulnerableTicks:
@@ -348,12 +350,12 @@ shield:
     power:
       fromGround:
         x: 1.5
-        y: 1
+        y: 0.7
         z: 1.5
       inAir:
-        x: 1
-        y: 0.5
-        z: 1
+        x: 0.75
+        y: 0.35
+        z: 0.75
     targetDistance: 3
     damage: 1
     cooldown: 5s
@@ -487,7 +489,7 @@ tippedArrows:
   slow: &slow
     name: Arrow of Slowness
     type: slowness
-    duration: 220
+    duration: 74
     color:
       r: 89
       g: 103
@@ -495,11 +497,11 @@ tippedArrows:
   long_slow:
     <<: *slow
     type: long_slowness
-    duration: 600
+    duration: 200
   strong_slow:
     <<: *slow
     type: strong_slowness
-    duration: 40
+    duration: 20
   turtle_master: &turtle_master
     name: Arrow of Turtle Master
     type: turtle_master
@@ -531,7 +533,7 @@ tippedArrows:
   poison: &poison
     name: Arrow of Poison
     type: poison
-    duration: 100
+    duration: 34
     color:
       r: 94
       g: 129
@@ -539,11 +541,11 @@ tippedArrows:
   long_poison:
     <<: *poison
     type: long_poison
-    duration: 220
+    duration: 74
   strong_poison:
     <<: *poison
     type: strong_poison
-    duration: 40
+    duration: 20
   regen: &regen
     name: Arrow of Regeneration
     type: regeneration
@@ -579,7 +581,7 @@ tippedArrows:
   weakness: &weakness
     name: Arrow of Weakness
     type: weakness
-    duration: 220
+    duration: 74
     color:
       r: 110
       g: 28
@@ -587,7 +589,7 @@ tippedArrows:
   long_weakness:
     <<: *weakness
     type: long_weakness
-    duration: 600
+    duration: 200
   luck:
     name: Arrow of Luck
     type: luck

@@ -10,7 +10,7 @@ motd = "<#3bad4c>Building with more than just blocks.<reset>"
 
 # What should we display for the maximum number of players? (Velocity does not support a cap
 # on the number of players online.)
-show-max-players = 125
+show-max-players = 110
 
 # Should we authenticate players with Mojang? By default, this is on.
 online-mode = true
@@ -74,6 +74,7 @@ enable-player-address-logging = true
 # represents the IP address of the server to connect to.
 main = "paper:25565"
 pvp = "pvp:25565"
+mini = "gamma:25565"
 
 # In what order we should try servers when a player logs in or is kicked from a server.
 try = ["main"]
@@ -85,6 +86,9 @@ try = ["main"]
 ]
 "${CIV_PVP_HOSTNAME}" = [
     "pvp"
+]
+"${CIV_GAMMA_HOSTNAME}" = [
+    "mini"
 ]
 
 [advanced]

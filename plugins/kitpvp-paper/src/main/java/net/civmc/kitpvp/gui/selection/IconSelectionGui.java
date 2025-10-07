@@ -1,8 +1,8 @@
 package net.civmc.kitpvp.gui.selection;
 
 import net.civmc.kitpvp.KitPvpPlugin;
-import net.civmc.kitpvp.data.Kit;
-import net.civmc.kitpvp.data.KitPvpDao;
+import net.civmc.kitpvp.kit.Kit;
+import net.civmc.kitpvp.kit.KitPvpDao;
 import net.civmc.kitpvp.gui.EditKitGui;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -57,6 +57,17 @@ public class IconSelectionGui {
             Material.ELYTRA,
             Material.CROSSBOW,
             Material.BOW,
+            Material.COBWEB,
+            Material.TNT_MINECART,
+            Material.SUGAR,
+            Material.SPLASH_POTION,
+            Material.POTION,
+            Material.GOLDEN_APPLE,
+            Material.ENDER_PEARL,
+            Material.SHIELD,
+            Material.CHORUS_FRUIT,
+            Material.WATER_BUCKET,
+            Material.OBSIDIAN,
         }) {
             inventory.setSlot(getSlot(inventory, m), slot++);
         }

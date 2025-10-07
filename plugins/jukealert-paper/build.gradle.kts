@@ -1,5 +1,6 @@
 plugins {
-    id("io.papermc.paperweight.userdev")
+    alias(libs.plugins.paper.userdev)
+    alias(libs.plugins.shadow)
 }
 
 version = "3.0.8"

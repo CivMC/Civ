@@ -34,13 +34,17 @@ public class ChunkMetaListener implements Listener {
         this.viewTracker = viewTracker;
         this.unloadQueue = new LinkedBlockingQueue<>();
         unloadConsumer = new Thread(() -> {
-            while (true) {
-                try {
-                    Chunk chunk = unloadQueue.take();
-                    manager.unloadChunkData(chunk);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            try {
+                while (true) {
+                    try {
+                        Chunk chunk = unloadQueue.take();
+                        manager.unloadChunkData(chunk);
+                    } catch (RuntimeException e) {
+                        CHUNK_META_LOGGER.warn("Handling chunk unloads", e);
+                    }
                 }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }, "CivModCore chunk unload handler");
         unloadConsumer.start();

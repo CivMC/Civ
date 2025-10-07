@@ -43,7 +43,7 @@ public class SpawnListener implements Listener {
 
     @EventHandler
     public void on(PlayerRespawnEvent event) {
-        if (event.getPlayer().getWorld().getName().equals("world")) {
+        if (event.getPlayer().getWorld().getName().equals("world") || event.getPlayer().getWorld().getName().startsWith("rankedarena.")) {
             Location spawn = this.provider.getSpawn();
             if (spawn != null) {
                 event.setRespawnLocation(spawn);

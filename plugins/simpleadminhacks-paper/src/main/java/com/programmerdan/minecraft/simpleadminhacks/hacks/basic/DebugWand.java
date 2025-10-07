@@ -8,7 +8,8 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import java.util.Objects;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueOutput;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -118,10 +119,10 @@ public final class DebugWand extends BasicHack {
         player.sendMessage(ChatColor.AQUA + "Rotation: "
             + ChatColor.YELLOW + "p:" + entityLocation.getPitch() + ", "
             + ChatColor.GOLD + "y:" + entityLocation.getYaw());
-        final CompoundTag nbt = new CompoundTag();
+        final TagValueOutput nbt = TagValueOutput.createWithoutContext(ProblemReporter.DISCARDING);
         ((CraftEntity) entity).getHandle().save(nbt);
-        nbt.remove("Pos"); // Remove redundant position
-        nbt.remove("Rotation"); // Remove redundant rotation
+        nbt.discard("Pos"); // Remove redundant position
+        nbt.discard("Rotation"); // Remove redundant rotation
         player.sendMessage(nbt.toString());
         player.sendMessage(ChatColor.RED + "Data end.");
         event.setCancelled(true);

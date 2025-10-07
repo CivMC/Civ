@@ -11,3 +11,4 @@ database:
   max_lifetime: 7200000
 
 max_arenas: -1
+ranked_arena: Plains

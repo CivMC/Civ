@@ -11,7 +11,6 @@ import com.devotedmc.ExilePearl.listener.CivChatListener;
 import com.devotedmc.ExilePearl.listener.ExileListener;
 import com.devotedmc.ExilePearl.listener.JukeAlertListener;
 import com.devotedmc.ExilePearl.listener.PlayerListener;
-import com.devotedmc.ExilePearl.listener.RandomSpawnListener;
 import com.devotedmc.ExilePearl.storage.CoreStorageProvider;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.util.BastionWrapper;
@@ -72,8 +71,7 @@ final class ExilePearlCore implements ExilePearlApi {
     private final PearlManager pearlManager;
     private final LoreProvider loreGenerator;
     private final ExilePearlRunnable pearlDecayWorker;
-    ;
-    private final BorderHandler borderHandler;
+
     private final SuicideHandler suicideHandler;
     private final DamageLogger damageLogger;
     private BrewHandler brewHandler;
@@ -84,7 +82,6 @@ final class ExilePearlCore implements ExilePearlApi {
     private final CivChatListener chatListener;
     private final BastionListener bastionListener;
     private final JukeAlertListener jukeAlertListener;
-    private final RandomSpawnListener randomSpawnListener;
     private final BanStickListener banStickListener;
 
     private final HashSet<BaseCommand<?>> commands;
@@ -105,7 +102,6 @@ final class ExilePearlCore implements ExilePearlApi {
         pearlManager = pearlFactory.createPearlManager();
         loreGenerator = pearlFactory.createLoreGenerator();
         pearlDecayWorker = pearlFactory.createPearlDecayWorker();
-        borderHandler = pearlFactory.createPearlBorderHandler();
         suicideHandler = pearlFactory.createSuicideHandler();
         damageLogger = pearlFactory.createDamageLogger();
 
@@ -115,7 +111,6 @@ final class ExilePearlCore implements ExilePearlApi {
         chatListener = new CivChatListener(this);
         bastionListener = new BastionListener(this);
         jukeAlertListener = new JukeAlertListener(this);
-        randomSpawnListener = new RandomSpawnListener(this);
         banStickListener = new BanStickListener(this);
 
         commands = new HashSet<>();
@@ -138,7 +133,6 @@ final class ExilePearlCore implements ExilePearlApi {
         pearlConfig.addConfigurable(playerListener);
         pearlConfig.addConfigurable(exileListener);
         pearlConfig.addConfigurable(pearlDecayWorker);
-        pearlConfig.addConfigurable(borderHandler);
         pearlConfig.addConfigurable(suicideHandler);
         pearlConfig.addConfigurable(damageLogger);
 
@@ -163,7 +157,6 @@ final class ExilePearlCore implements ExilePearlApi {
         // Register events
         getServer().getPluginManager().registerEvents(playerListener, this);
         getServer().getPluginManager().registerEvents(suicideHandler, this);
-        getServer().getPluginManager().registerEvents(borderHandler, this);
         getServer().getPluginManager().registerEvents(exileListener, this);
         if (isCitadelEnabled()) {
             this.getServer().getPluginManager().registerEvents(citadelListener, this);
@@ -189,11 +182,6 @@ final class ExilePearlCore implements ExilePearlApi {
         } else {
             logIgnoringHooks("JukeAlert");
         }
-        if (isRandomSpawnEnabled()) {
-            this.getServer().getPluginManager().registerEvents(randomSpawnListener, this);
-        } else {
-            logIgnoringHooks("RandomSpawn");
-        }
         if (isBanStickEnabled()) {
             this.getServer().getPluginManager().registerEvents(banStickListener, this);
         }
@@ -201,7 +189,6 @@ final class ExilePearlCore implements ExilePearlApi {
 
         // Start tasks
         pearlDecayWorker.start();
-        borderHandler.start();
         suicideHandler.start();
         if (pearlConfig.getDamageLogEnabled()) {
             damageLogger.start();
@@ -250,7 +237,6 @@ final class ExilePearlCore implements ExilePearlApi {
     public void onDisable() {
         HandlerList.unregisterAll(this);
         pearlDecayWorker.stop();
-        borderHandler.stop();
         suicideHandler.stop();
         storage.disconnect();
     }
@@ -498,12 +484,6 @@ final class ExilePearlCore implements ExilePearlApi {
     }
 
     @Override
-    public boolean isRandomSpawnEnabled() {
-        return Bukkit.getPluginManager().isPluginEnabled("RandomSpawn");
-    }
-
-
-    @Override
     public boolean isBanStickEnabled() {
         return Bukkit.getPluginManager().isPluginEnabled("BanStick");
     }
@@ -707,5 +687,10 @@ final class ExilePearlCore implements ExilePearlApi {
     @Override
     public ExilePearl getPrimaryPearl(UUID player) {
         return pearlManager.getPrimaryPearl(player);
+    }
+
+    @Override
+    public @NotNull String namespace() {
+        return plugin.namespace();
     }
 }

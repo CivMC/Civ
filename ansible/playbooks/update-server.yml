@@ -6,6 +6,7 @@
     servers:
       - pvp
       - paper
+      - gamma
       - proxy
 
   tasks:

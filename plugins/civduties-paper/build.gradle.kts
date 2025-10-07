@@ -1,5 +1,5 @@
 plugins {
-    id("io.papermc.paperweight.userdev")
+    alias(libs.plugins.paper.userdev)
 }
 
 version = "1.5.0-SNAPSHOT"
@@ -12,5 +12,7 @@ dependencies {
     compileOnly(project(":plugins:civmodcore-paper"))
     compileOnly(project(":plugins:combattagplus-paper"))
 
-    compileOnly(libs.vault.api)
+    compileOnly(libs.vault.api) {
+        exclude(group = "org.bukkit")
+    }
 }

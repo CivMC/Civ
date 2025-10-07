@@ -13,7 +13,7 @@
 settings:
   debug: false
   sample-count: 12
-  player-shuffle: 0
+  player-shuffle: 100
   user-cache-size: 1000
   save-user-cache-on-stop-only: false
   moved-wrongly-threshold: 1.0625
@@ -21,7 +21,7 @@ settings:
   timeout-time: ${CIV_WATCHDOG_TIMEOUT_TIME}
   restart-on-crash: false
   restart-script: ./start.sh
-  netty-threads: 4
+  netty-threads: 6
   attribute:
     maxHealth:
       max: 2048.0
@@ -74,12 +74,12 @@ world-settings:
       cavevines-modifier: 100
       glowberry-modifier: 100
     entity-activation-range:
-      animals: 8
-      monsters: 8
-      raiders: 8
-      misc: 8
-      water: 8
-      villagers: 8
+      animals: 16
+      monsters: 16
+      raiders: 16
+      misc: 16
+      water: 16
+      villagers: 16
       flying-monsters: 32
       wake-up-inactive:
         animals-max-per-tick: 4

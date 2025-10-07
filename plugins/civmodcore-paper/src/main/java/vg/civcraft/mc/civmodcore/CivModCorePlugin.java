@@ -1,12 +1,8 @@
 package vg.civcraft.mc.civmodcore;
 
-import java.io.File;
-import java.sql.SQLException;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPluginLoader;
 import vg.civcraft.mc.civmodcore.chat.dialog.DialogManager;
 import vg.civcraft.mc.civmodcore.commands.ChunkMetaCommand;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
@@ -31,18 +27,8 @@ import vg.civcraft.mc.civmodcore.world.locations.global.WorldIDManager;
 
 public class CivModCorePlugin extends ACivMod {
 
-    /**
-     * Primary constructor used by the real server
-     */
     public CivModCorePlugin() {
         super();
-    }
-
-    /**
-     * Secondary constructor used for testing
-     */
-    protected CivModCorePlugin(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-        super(loader, description, dataFolder, file);
     }
 
     private static CivModCorePlugin instance;
@@ -86,7 +72,7 @@ public class CivModCorePlugin extends ACivMod {
         registerListener(new ClickableInventoryListener());
         registerListener(DialogManager.INSTANCE);
         registerListener(new ScoreBoardListener());
-        registerListener(new PlayerNames());
+        registerListener(new PlayerNames(this));
         // Register commands
         this.commands = new CommandManager(this);
         this.commands.init();

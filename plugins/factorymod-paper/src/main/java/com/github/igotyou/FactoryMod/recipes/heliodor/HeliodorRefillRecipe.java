@@ -32,10 +32,10 @@ public class HeliodorRefillRecipe extends InputRecipe {
         logBeforeRecipeRun(combo, fccf);
 
         GemInput gemInput = getGemsToRemove(inputInv.getStorageContents());
-        if (gemInput == null) {
+        if (gemInput == null || gemInput.amount < this.count) {
             return false;
         }
-        int amount = gemInput.amount;
+        int amount = this.count;
 
         ItemMap toRemove = input.clone();
         ItemStack gem = HeliodorGem.createHeliodorGem(gemInput.charge, Math.min(100, gemInput.charge + this.addMaxCharge));

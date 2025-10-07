@@ -45,9 +45,6 @@ public final class AttrHider extends BasicHack {
     private Set<Object> customPackets = new HashSet<>();
 
     @AutoLoad
-    private boolean hideItemMeta;
-
-    @AutoLoad
     private boolean hideEffects;
 
     @AutoLoad
@@ -63,54 +60,6 @@ public final class AttrHider extends BasicHack {
     @Override
     public void onEnable() {
         super.onEnable();
-        if (!this.hideItemMeta) {
-            this.packets.addAdapter(new PacketAdapter(this.plugin, PacketType.Play.Server.ENTITY_EQUIPMENT) {
-                @Override
-                public void onPacketSending(final PacketEvent event) {
-                    final PacketContainer packet = event.getPacket();
-                    if (event.getPlayer().hasPermission(BYPASS_PERMISSION)) {
-                        return;
-                    }
-                    final var slots = packet.getSlotStackPairLists();
-                    final var slotItemPairs = slots.read(0);
-                    for (final Pair<EnumWrappers.ItemSlot, ItemStack> slotItemPair : slotItemPairs) {
-                        final ItemStack item = slotItemPair.getSecond();
-                        if (item == null || !shouldBeObfuscated(item.getType())) {
-                            continue;
-                        }
-                        final ItemMeta meta = item.getItemMeta();
-                        final ItemStack fakeItem = item.clone();
-                        if (meta != null) {
-                            final ItemMeta fakeMeta = fakeItem.getItemMeta();
-                            if (meta instanceof LeatherArmorMeta) {
-                                final LeatherArmorMeta baseLeatherMeta = (LeatherArmorMeta) meta;
-                                final LeatherArmorMeta fakeLeatherMeta = (LeatherArmorMeta) fakeMeta;
-                                fakeLeatherMeta.setColor(baseLeatherMeta.getColor());
-                            }
-                            if (meta instanceof PotionMeta basePotionMeta) {
-                                final PotionMeta fakePotionMeta = (PotionMeta) fakeMeta;
-                                final PotionType basePotion = basePotionMeta.getBasePotionType();
-                                final PotionType fakePotion = basePotion;
-                                fakePotionMeta.setBasePotionType(fakePotion);
-                            }
-                            if (meta instanceof Damageable) {
-                                final Damageable fakeDamageable = (Damageable) fakeMeta;
-                                fakeDamageable.setDamage(0);
-                            }
-                            if (meta.hasEnchants()) {
-                                for (Enchantment enchantment : fakeMeta.getEnchants().keySet()) {
-                                    fakeMeta.removeEnchant(enchantment);
-                                }
-                                fakeMeta.addEnchant(Enchantment.UNBREAKING, 1, true);
-                            }
-                            fakeItem.setItemMeta(fakeMeta);
-                            slotItemPair.setSecond(fakeItem); // Set item
-                        }
-                    }
-                    slots.write(0, slotItemPairs);
-                }
-            });
-        }
         if (this.hideEffects) {
             this.packets.addAdapter(new PacketAdapter(this.plugin, PacketType.Play.Server.ENTITY_EFFECT) {
                 @Override

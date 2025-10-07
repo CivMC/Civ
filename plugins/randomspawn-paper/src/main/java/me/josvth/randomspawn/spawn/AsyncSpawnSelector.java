@@ -36,7 +36,7 @@ public class AsyncSpawnSelector implements SpawnSelector, Listener {
         for (String world : worlds) {
             this.worlds.put(world, null);
         }
-        Bukkit.getScheduler().runTaskTimer(plugin, this::cycleLocations, 20 * 60, 20 * 60);
+        Bukkit.getScheduler().runTaskTimer(plugin, this::cycleLocations, 20 * 40, 20 * 40);
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         for (World world : Bukkit.getWorlds()) {
             on(new WorldLoadEvent(world));
@@ -46,6 +46,8 @@ public class AsyncSpawnSelector implements SpawnSelector, Listener {
     private void cycleLocations() {
         for (Map.Entry<String, ArrayBlockingQueue<Location>> entry : this.randomSpawnLocations.entrySet()) {
             queueRandomSpawn(entry.getKey(), entry.getValue());
+        }
+        for (Map.Entry<String, ArrayBlockingQueue<Location>> entry : this.spawnPointLocations.entrySet()) {
             queueSpawnPoint(entry.getKey(), entry.getValue());
         }
     }
@@ -75,7 +77,7 @@ public class AsyncSpawnSelector implements SpawnSelector, Listener {
                     location.getChunk().addPluginChunkTicket(plugin);
                     queue.offer(location);
                     if (queue.remainingCapacity() > 0) {
-                        queueSpawnPoint(worldName, queue);
+                        queue(worldName, queue, function);
                     }
                 });
         });

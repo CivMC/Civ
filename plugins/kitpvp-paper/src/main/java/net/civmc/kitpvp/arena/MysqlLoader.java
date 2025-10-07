@@ -1,7 +1,5 @@
 package net.civmc.kitpvp.arena;
 
-import com.infernalsuite.aswm.api.exceptions.UnknownWorldException;
-import com.infernalsuite.aswm.api.loaders.SlimeLoader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import com.infernalsuite.asp.api.exceptions.UnknownWorldException;
+import com.infernalsuite.asp.api.loaders.SlimeLoader;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
 public class MysqlLoader implements SlimeLoader {

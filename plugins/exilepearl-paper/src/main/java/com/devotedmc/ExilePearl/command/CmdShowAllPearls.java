@@ -44,7 +44,7 @@ public class CmdShowAllPearls extends PearlCommand {
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd MMM yyyy");
     private static final Map<UUID, Long> COOLDOWNS = new HashMap<>();
-    private static final long COOLDOWN = 10_000; // 10 seconds
+    private static final long COOLDOWN = 2_000;
     private static final Set<UUID> TOGGLES = new HashSet<>();
 
     public CmdShowAllPearls(final ExilePearlApi pearlApi) {

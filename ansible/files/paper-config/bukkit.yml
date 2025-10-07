@@ -1,5 +1,5 @@
 settings:
-  allow-end: true
+  allow-end: false
   warn-on-overload: true
   permissions-file: permissions.yml
   update-folder: update
@@ -11,11 +11,11 @@ settings:
   minimum-api: none
 spawn-limits:
   axolotls: 1
-  monsters: 16
-  animals: 8
-  water-animals: 6
-  water-ambient: 4
-  water-underground-creature: 4
+  monsters: 12
+  animals: 7
+  water-animals: 5
+  water-ambient: 3
+  water-underground-creature: 3
   ambient: 0
 chunk-gc:
   period-in-ticks: 400
