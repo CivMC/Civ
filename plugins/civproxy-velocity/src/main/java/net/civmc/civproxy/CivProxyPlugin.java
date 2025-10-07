@@ -64,7 +64,7 @@ public class CivProxyPlugin {
         config.setIdleTimeout(database.node("idle_timeout").getInt(600_000));
         config.setMaxLifetime(database.node("max_lifetime").getInt(7_200_000));
         config.setMaximumPoolSize(database.node("poolsize").getInt(10));
-        config.setUsername(database.node("username").getString("root"));
+        config.setUsername(database.node("user").getString("root"));
         String password = database.node("password").getString();
         if (password != null && !password.isBlank()) {
             config.setPassword(password);
