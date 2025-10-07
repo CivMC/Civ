@@ -8,7 +8,7 @@ dependencies {
     compileOnly("us.ajg0702.queue.api:api:2.8.0")
     api(libs.hikaricp)
     api(libs.configurate.yaml)
-    api("org.mariadb.jdbc:mariadb-java-client:3.4.1")
+    api("mysql:mysql-connector-java:5.1.13")
     compileOnly(libs.luckperms.api)
     annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
 }
