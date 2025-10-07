@@ -6,6 +6,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import com.rabbitmq.client.DeliverCallback;
+import net.civmc.kiragatewayvelocity.KiraGateway;
 import org.slf4j.Logger;
 
 public class RabbitHandler {
@@ -42,23 +43,25 @@ public class RabbitHandler {
     }
 
     public void beginAsyncListen() {
-        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+        KiraGateway.getInstance().getProxy().getScheduler().buildTask(KiraGateway.getInstance(), () -> {
+            DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+                try {
+                    String message = new String(delivery.getBody(), "UTF-8");
+                    logger.info(" [x] Received '" + message + "'");
+                    inputProcessor.handle(message);
+                } catch (Exception e) {
+                    logger.error("Exception in rabbit handling", e);
+                }
+            };
             try {
-                String message = new String(delivery.getBody(), "UTF-8");
-                logger.info(" [x] Received '" + message + "'");
-                inputProcessor.handle(message);
-            } catch (Exception e) {
-                logger.error("Exception in rabbit handling", e);
+                String queue = incomingChannel.queueDeclare().getQueue();
+                incomingChannel.queueBind(queue, incomingQueue, KiraGateway.PROXY_SERVER_NAME);
+                incomingChannel.basicConsume(queue, true, deliverCallback, consumerTag -> {
+                });
+            } catch (IOException e) {
+                logger.error("Error in rabbit listener", e);
             }
-        };
-        try {
-            String queue = incomingChannel.queueDeclare().getQueue();
-            incomingChannel.queueBind(queue, incomingQueue, "proxy");
-            incomingChannel.basicConsume(queue, true, deliverCallback, consumerTag -> {
-            });
-        } catch (IOException e) {
-            logger.error("Error in rabbit listener", e);
-        }
+        }).schedule();
     }
 
     public void shutdown() {

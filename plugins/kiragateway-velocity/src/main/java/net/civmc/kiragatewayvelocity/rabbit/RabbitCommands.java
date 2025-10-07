@@ -3,6 +3,7 @@ package net.civmc.kiragatewayvelocity.rabbit;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.UUID;
+import net.civmc.kiragatewayvelocity.KiraGateway;
 import net.civmc.kiragatewayvelocity.KiraUtil;
 
 public class RabbitCommands {
@@ -23,7 +24,7 @@ public class RabbitCommands {
     }
 
     private void sendInternal(String id, JsonObject json) {
-        json.addProperty("server", "proxy");
+        json.addProperty("server", KiraGateway.PROXY_SERVER_NAME);
         json.addProperty("timestamp", System.currentTimeMillis());
         json.addProperty("packettype", id);
         Gson gson = new Gson();

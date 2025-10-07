@@ -27,6 +27,8 @@ import net.civmc.kiragatewayvelocity.rabbit.RabbitHandler;
 )
 public class KiraGateway {
 
+    public static final String PROXY_SERVER_NAME = "proxy";
+
     private final ProxyServer proxy;
     public final Logger logger;
     public final Path dataDirectory;
