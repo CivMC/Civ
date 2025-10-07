@@ -35,7 +35,6 @@ public class CivProxyPlugin {
         this.logger = logger;
 
         loadConfig(dataDirectory);
-        loadConnection();
     }
 
     public Logger getLogger() {
@@ -44,6 +43,7 @@ public class CivProxyPlugin {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
+        loadConnection();
         new PlayerCount(this, server).start();
         new PlayerRenamer(this, server, source).start();
         new QueueListener(this, server).start();

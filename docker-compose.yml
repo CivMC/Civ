@@ -42,6 +42,10 @@ services:
       CIV_HOSTNAME: 'main.localhost'
 
       CIV_FORWARDING_SECRET: '1234'
+
+      CIV_MYSQL_HOST: mariadb
+      CIV_MYSQL_USERNAME: mariadb
+      CIV_MYSQL_PASSWORD: mariadb
     ports:
       - "25565:25577"
     volumes:
