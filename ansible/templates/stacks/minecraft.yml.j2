@@ -332,7 +332,7 @@ services:
                     memory: '{{setting.minecraft.resources.pvp_memory_limit}}'
 
     kira:
-        image: ghcr.io/civmc/kira:latest
+        image: ghcr.io/civmc/kira:latest@sha256:1a3dc44acc50065bb19dbd94bd7376f81db8d655307b9e85a4dd822c0d767e92
         restart: unless-stopped
         tty: true
         stdin_open: true
