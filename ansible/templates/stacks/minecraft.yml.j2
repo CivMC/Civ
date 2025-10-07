@@ -40,6 +40,14 @@ services:
             CIV_PVP_HOSTNAME: '{{setting.minecraft.pvp_hostname}}'
             CIV_GAMMA_HOSTNAME: '{{setting.minecraft.gamma_hostname}}'
             CIV_HOSTNAME: '{{setting.minecraft.hostname}}'
+
+            CIV_RABBITMQ_HOST: minecraft_rabbitmq
+            CIV_RABBITMQ_USERNAME: rabbitmq
+            CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
+
+            CIV_MYSQL_HOST: minecraft_mariadb
+            CIV_MYSQL_USERNAME: '{{secret.minecraft.mysql.username}}'
+            CIV_MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
         deploy:
             placement:
                 constraints: [node.role == manager]
