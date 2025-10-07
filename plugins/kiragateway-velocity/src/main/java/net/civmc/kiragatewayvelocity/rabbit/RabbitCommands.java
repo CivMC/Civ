@@ -23,6 +23,7 @@ public class RabbitCommands {
     }
 
     private void sendInternal(String id, JsonObject json) {
+        json.addProperty("server", "proxy");
         json.addProperty("timestamp", System.currentTimeMillis());
         json.addProperty("packettype", id);
         Gson gson = new Gson();
