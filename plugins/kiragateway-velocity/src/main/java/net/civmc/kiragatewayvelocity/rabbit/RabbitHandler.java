@@ -53,7 +53,7 @@ public class RabbitHandler {
         };
         try {
             String queue = incomingChannel.queueDeclare().getQueue();
-            incomingChannel.exchangeBind(queue, incomingQueue, "proxy");
+            incomingChannel.queueBind(queue, incomingQueue, "proxy");
             incomingChannel.basicConsume(queue, true, deliverCallback, consumerTag -> {
             });
         } catch (IOException e) {
