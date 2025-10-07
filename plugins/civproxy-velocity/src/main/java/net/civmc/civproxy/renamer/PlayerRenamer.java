@@ -36,7 +36,7 @@ public class PlayerRenamer {
 
     public void start() {
         server.getEventManager().register(plugin, this);
-        server.getCommandManager().register(server.getCommandManager().metaBuilder("changeplayername").aliases("nlcpn").plugin(this).build(),
+        server.getCommandManager().register(server.getCommandManager().metaBuilder("changeplayername").aliases("nlcpn").plugin(plugin).build(),
             new ChangePlayerNameCommand(server, associations));
     }
 }
