@@ -2,6 +2,9 @@ package com.github.maxopoly.KiraBukkitGateway.rabbit.request;
 
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import com.google.gson.JsonObject;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.CraftServer;
 
 public abstract class AbstractRequestHandler {
 
@@ -27,4 +30,8 @@ public abstract class AbstractRequestHandler {
         KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToRequestSession(json);
     }
 
+    protected boolean dispatchCommand(CommandSender rawSender, String commandLine) {
+        CraftServer server = (CraftServer) Bukkit.getServer();
+        return server.getCommandMap().dispatch(rawSender, commandLine);
+    }
 }

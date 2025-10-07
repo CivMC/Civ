@@ -334,6 +334,8 @@ non_reinforceables:
  - SCAFFOLDING
  - COBWEB
  - GLOW_LICHEN
+ - SCULK_VEIN
+ - RESIN_CLUMP
 
 # Determines whether hanging entities (such as Item Frames) can be protected by their host block
 hangers_inherit_reinforcement: true
@@ -350,7 +352,7 @@ world-border-buffers:
     shape: CIRCLE
     #Radius from border center you want the no reinforcement zone to kick in
     starting_radius: 9900
-    decay: false
+    decay: true
     #Center of the border
     center:
       x: 0.0
@@ -360,7 +362,7 @@ world-border-buffers:
     shape: CIRCLE
     #Radius from border center you want the no reinforcement zone to kick in
     starting_radius: 9900
-    decay: false
+    decay: true
     #Center of the border
     center:
       x: 0.0

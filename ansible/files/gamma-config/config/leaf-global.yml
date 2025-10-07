@@ -181,6 +181,7 @@ performance:
     - piglin_brute
     - silverfish
     - stray
+    - sniffer
     - villager
     - witch
     - wither_skeleton

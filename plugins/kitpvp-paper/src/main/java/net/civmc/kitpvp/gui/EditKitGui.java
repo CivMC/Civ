@@ -7,14 +7,17 @@ import java.util.logging.Level;
 import net.civmc.kitpvp.KitPvpPlugin;
 import net.civmc.kitpvp.anvil.AnvilGui;
 import net.civmc.kitpvp.anvil.AnvilGuiListener;
-import net.civmc.kitpvp.data.Kit;
-import net.civmc.kitpvp.data.KitPvpDao;
 import net.civmc.kitpvp.gui.selection.ArmourSlotSelectionGui;
 import net.civmc.kitpvp.gui.selection.CountSelectionGui;
 import net.civmc.kitpvp.gui.selection.EnchantmentGui;
 import net.civmc.kitpvp.gui.selection.IconSelectionGui;
 import net.civmc.kitpvp.gui.selection.ItemCategorySelectionGui;
+import net.civmc.kitpvp.kit.Kit;
+import net.civmc.kitpvp.kit.KitPvpDao;
+import net.civmc.kitpvp.kit.KitCost;
+import net.civmc.kitpvp.ranked.RankedDao;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -31,6 +34,8 @@ import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 public class EditKitGui {
 
     private final KitPvpDao dao;
+    private final RankedDao rankedDao;
+    private int rankedKit;
     private final AnvilGui anvilGui;
     private final Player player;
     private Kit kit;
@@ -38,8 +43,10 @@ public class EditKitGui {
     private final KitListGui gui;
     private final boolean canEdit;
 
-    public EditKitGui(KitPvpDao dao, AnvilGui anvilGui, Player player, Kit kit, KitListGui gui) {
+    public EditKitGui(KitPvpDao dao, RankedDao rankedDao, int rankedKit, AnvilGui anvilGui, Player player, Kit kit, KitListGui gui) {
         this.dao = dao;
+        this.rankedDao = rankedDao;
+        this.rankedKit = rankedKit;
         this.anvilGui = anvilGui;
         this.player = player;
         this.kit = kit;
@@ -70,6 +77,39 @@ public class EditKitGui {
             Component.text("/kit copy " + (kit.isPublic() ? "public" : player.getName()) + " " + kit.name(), NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, false)));
         copy.setItemMeta(copyMeta);
         inventory.setItem(copy, 0);
+
+        ItemStack rankedKit = new ItemStack(Material.DIAMOND_SWORD);
+        ItemMeta rankedKitMeta = rankedKit.getItemMeta();
+        rankedKitMeta.itemName(Component.text("Select as ranked kit", NamedTextColor.GOLD));
+        List<TextComponent> lore = new ArrayList<>();
+        if (kit.id() == this.rankedKit) {
+            rankedKitMeta.setEnchantmentGlintOverride(true);
+            lore.add(Component.text("Currently selected", NamedTextColor.GOLD, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, false));
+        }
+        lore.add(Component.empty().append(Component.text("Maximum " + KitCost.MAX_POINTS + " points", NamedTextColor.GOLD)).decoration(TextDecoration.ITALIC, false));
+        int cost = KitCost.getCost(kit.items());
+        lore.add(Component.empty().append(Component.text("Current cost: ", NamedTextColor.GOLD).append(Component.text(cost + " points", NamedTextColor.YELLOW))).decoration(TextDecoration.ITALIC, false));
+        if (cost > KitCost.MAX_POINTS) {
+            lore.add(Component.text("Kit is too expensive for ranked!", NamedTextColor.RED));
+        }
+        rankedKitMeta.lore(lore);
+        rankedKit.setItemMeta(rankedKitMeta);
+        inventory.setSlot(new Clickable(rankedKit) {
+            @Override
+            protected void clicked(@NotNull Player clicker) {
+                if (!kit.name().equals(EditKitGui.this.rankedKit)) {
+                    JavaPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
+                    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                        rankedDao.setKit(player.getUniqueId(), kit.id());
+                        Bukkit.getScheduler().runTask(plugin, () -> {
+                            EditKitGui.this.rankedKit = kit.id();
+                            inventory.setOnClose(null);
+                            open();
+                        });
+                    });
+                }
+            }
+        }, 1);
 
         if (player.hasPermission("kitpvp.admin")) {
             ItemStack isPublic = new ItemStack(kit.isPublic() ? Material.OAK_FENCE : Material.OAK_FENCE_GATE);

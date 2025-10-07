@@ -3,7 +3,7 @@ package com.github.maxopoly.finale.misc;
 public class DamageModificationConfig {
 
     public enum Type {
-        ALL, SWORD, SHARPNESS_ENCHANT, STRENGTH_EFFECT, ARROW, POWER_ENCHANT, CRIT, TRIDENT, IMPALE_ENCHANT, FIREWORK
+        ALL, SWORD, SHARPNESS_ENCHANT, STRENGTH_EFFECT, ARROW, POWER_ENCHANT, CRIT, TRIDENT, IMPALE_ENCHANT, FIREWORK, CART
     }
 
     private double multiplier;

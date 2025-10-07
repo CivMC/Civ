@@ -161,15 +161,15 @@ performance:
     dont-enable-if-in-water: true
     # This value determines how far away an entity has to be
     # from the player to start being effected by DEAR.
-    start-distance: 12
+    start-distance: 10
     # This value defines how often in ticks, the furthest entity
     # will get their pathfinders and behaviors ticked. 20 = 1s
-    max-tick-freq: 25
+    max-tick-freq: 35
     # This value defines how much distance modifies an entity's
     # tick frequency. freq = (distanceToPlayer^2) / (2^value)",
     # If you want further away entities to tick less often, use 7.
     # If you want further away entities to tick more often, try 9.
-    activation-dist-mod: 7
+    activation-dist-mod: 6
     # A list of entities to ignore for activation
     blacklisted-entities:
     - blaze
@@ -181,6 +181,7 @@ performance:
     - piglin_brute
     - silverfish
     - stray
+    - sniffer
     - villager
     - witch
     - wither_skeleton

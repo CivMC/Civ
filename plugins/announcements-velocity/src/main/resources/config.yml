@@ -1,15 +1,9 @@
 
 # messages must be in minimessage format
 # https://webui.advntr.dev/
-scheduledAnnouncements:
-  - cron: "0 1 * * *"
-    message: "<gold>Restart in 1 hour</gold>"
-  - cron: "45 1 * * *"
-    message: "<gold>Restart in 15 minutes</gold>"
-    showTitle: false
-  - cron: "55 1 * * *"
-    message: "<gold>Restart in 5 minutes</gold>"
-    showTitle: true
-  - cron: "59 1 * * *"
-    message: "<gold>Restart in 1 minute</gold>"
-    showTitle: true
+scheduledAnnouncements: []
+
+restart:
+  bar: "<dark_green>Update restart in % minute$"
+  message: "<gold>[CivMC] <dark_green>Server is restarting for an update in % minute$"
+  kick: "Server is restarting for an update"

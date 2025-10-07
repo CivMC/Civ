@@ -4,9 +4,10 @@ import java.util.logging.Level;
 import net.civmc.kitpvp.KitApplier;
 import net.civmc.kitpvp.KitPvpPlugin;
 import net.civmc.kitpvp.anvil.AnvilGui;
-import net.civmc.kitpvp.data.Kit;
-import net.civmc.kitpvp.data.KitPvpDao;
+import net.civmc.kitpvp.kit.Kit;
+import net.civmc.kitpvp.kit.KitPvpDao;
 import net.civmc.kitpvp.gui.KitListGui;
+import net.civmc.kitpvp.ranked.RankedDao;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -21,10 +22,12 @@ import org.jetbrains.annotations.NotNull;
 public class KitCommand implements CommandExecutor {
 
     private final KitPvpDao dao;
+    private final RankedDao rankedDao;
     private final AnvilGui anvilGui;
 
-    public KitCommand(KitPvpDao dao, AnvilGui anvilGui) {
+    public KitCommand(KitPvpDao dao, RankedDao rankedDao, AnvilGui anvilGui) {
         this.dao = dao;
+        this.rankedDao = rankedDao;
         this.anvilGui = anvilGui;
     }
 
@@ -32,6 +35,11 @@ public class KitCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
             return false;
+        }
+
+        if (player.getWorld().getName().startsWith("rankedarena.")) {
+            player.sendMessage(Component.text("Kit command is deactivated in ranked arenas.", NamedTextColor.RED));
+            return true;
         }
 
         KitPvpPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
@@ -113,7 +121,7 @@ public class KitCommand implements CommandExecutor {
             });
             return true;
         } else if (args.length == 0) {
-            new KitListGui(dao, anvilGui, player);
+            new KitListGui(dao, rankedDao, anvilGui, player);
             return true;
         }
         return false;

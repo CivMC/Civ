@@ -51,7 +51,7 @@ world-settings:
     verbose: false
     merge-radius:
       exp: 3.0
-      item: 4.0
+      item: 2.5
     growth:
       cactus-modifier: 100
       cane-modifier: 100
@@ -151,7 +151,7 @@ world-settings:
     zombie-aggressive-towards-villager: true
     max-entity-collisions: 1
     nerf-spawner-mobs: true
-    mob-spawn-range: 3
+    mob-spawn-range: 5
     end-portal-sound-radius: 0
   worldeditregentempworld:
     verbose: false

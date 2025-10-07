@@ -2,6 +2,7 @@ package vg.civcraft.mc.civchat2.broadcaster;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +41,7 @@ public class BungeeServerListener implements PluginMessageListener {
                 if (System.currentTimeMillis() - timestamp > 5000) {
                     return;
                 }
-                manager.sendRemoteGroupMsg(UUID.fromString(msgIn.readUTF()), msgIn.readUTF(), msgIn.readUTF(), msgIn.readUTF(), msgIn.readUTF());
+                manager.sendRemoteGroupMsg(UUID.fromString(msgIn.readUTF()), msgIn.readUTF(), GsonComponentSerializer.gson().deserialize(msgIn.readUTF()), msgIn.readUTF(), GsonComponentSerializer.gson().deserialize(msgIn.readUTF()));
             } else {
                 CivChat2.getInstance().getLogger().log(Level.WARNING, "Unknown type '" + type + "' in CivChat2 plugin message");
             }

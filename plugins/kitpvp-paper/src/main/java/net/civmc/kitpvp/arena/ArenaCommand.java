@@ -4,6 +4,8 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import net.civmc.kitpvp.arena.data.Arena;
 import net.civmc.kitpvp.arena.data.ArenaDao;
 import net.civmc.kitpvp.arena.gui.ArenaGui;
+import net.civmc.kitpvp.ranked.RankedDao;
+import net.civmc.kitpvp.ranked.RankedQueueManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,12 +28,16 @@ public class ArenaCommand implements CommandExecutor {
 
     private final JavaPlugin plugin;
     private final ArenaDao dao;
+    private final RankedDao rankedDao;
+    private final RankedQueueManager rankedQueueManager;
     private final ArenaManager manager;
     private final PrivateArenaListener privateArenaListener;
 
-    public ArenaCommand(JavaPlugin plugin, ArenaDao dao, ArenaManager manager, PrivateArenaListener privateArenaListener) {
+    public ArenaCommand(JavaPlugin plugin, ArenaDao dao, RankedDao rankedDao, RankedQueueManager rankedQueueManager, ArenaManager manager, PrivateArenaListener privateArenaListener) {
         this.plugin = plugin;
         this.dao = dao;
+        this.rankedDao = rankedDao;
+        this.rankedQueueManager = rankedQueueManager;
         this.manager = manager;
         this.privateArenaListener = privateArenaListener;
     }
@@ -172,7 +178,7 @@ public class ArenaCommand implements CommandExecutor {
 
             LoadedArena playerArena = null;
             for (LoadedArena arena : manager.getArenas()) {
-                if (arena.owner().equals(player.getPlayerProfile())) {
+                if (!arena.ranked() && arena.owner().equals(player.getPlayerProfile())) {
                     playerArena = arena;
                     break;
                 }
@@ -215,7 +221,7 @@ public class ArenaCommand implements CommandExecutor {
 
             LoadedArena playerArena = null;
             for (LoadedArena arena : manager.getArenas()) {
-                if (arena.owner().equals(player.getPlayerProfile())) {
+                if (!arena.ranked() && arena.owner().equals(player.getPlayerProfile())) {
                     playerArena = arena;
                     break;
                 }
@@ -254,7 +260,12 @@ public class ArenaCommand implements CommandExecutor {
             }
             return true;
         } else if (args.length == 0) {
-            new ArenaGui(dao, manager).open(player);
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                double elo = rankedDao.getElo(player.getUniqueId());
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    new ArenaGui(dao, rankedQueueManager, elo, manager).open(player);
+                });
+            });
             return true;
         }
         return false;

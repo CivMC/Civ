@@ -67,6 +67,9 @@ public class DamageListener implements Listener {
             if (e.getDamager().getType() == EntityType.TRIDENT) {
                 handleTrident(e);
             }
+            if (e.getDamager().getType() == EntityType.TNT_MINECART) {
+                handleMinecart(e);
+            }
             if (e.getDamager().getType() == EntityType.FIREWORK_ROCKET) {
                 DamageModificationConfig fireworkModifier = modifiers.get(DamageModificationConfig.Type.FIREWORK);
                 if (fireworkModifier != null) {
@@ -125,6 +128,13 @@ public class DamageListener implements Listener {
         double damage = impaleModifier.modify(e.getDamage(), impaleLevel);
 
         e.setDamage(damage);
+    }
+
+    private void handleMinecart(EntityDamageByEntityEvent e) {
+        DamageModificationConfig modifier = modifiers.get(DamageModificationConfig.Type.CART);
+        if (modifier != null) {
+            e.setDamage(modifier.modify(e.getDamage()));
+        }
     }
 
     private void handleArrow(EntityDamageByEntityEvent e) {

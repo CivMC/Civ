@@ -1,12 +1,17 @@
 package vg.civcraft.mc.civchat2;
 
+import io.papermc.paper.chat.ChatRenderer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.ChatColor;
 
 public class ChatStrings {
 
-    public final static String localChatFormat = "<%1$s> %2$s";
+    public final static ChatRenderer localChatFormat = (source, sourceDisplayName, message, viewer) -> Component.empty()
+        .append(Component.text("<"))
+        .append(sourceDisplayName)
+        .append(Component.text("> "))
+        .append(message);
 
     public final static String chatPlayerIsOffline = ChatColor.YELLOW + "That player is offline.";
 
@@ -51,8 +56,6 @@ public class ChatStrings {
     public final static String chatNotAfk = ChatColor.BLUE + "You are no longer AFK.";
 
     public final static Component chatPlayerAfk = Component.text("That player is currently AFK.", NamedTextColor.AQUA);
-
-    public final static String chatGroupMessage = ChatColor.GRAY + "[%s] %s: " + ChatColor.WHITE + "%s";
 
     public final static String globalMuted = ChatColor.RED + "You are muted from global and local chat for %s";
 }

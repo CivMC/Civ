@@ -10,4 +10,5 @@ dependencies {
     }
 
     compileOnly(project(":plugins:civmodcore-paper"))
+    compileOnly(project(":plugins:combattagplus-paper"))
 }

@@ -51,7 +51,7 @@ public class RabbitHandler {
                 DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                     try {
                         String message = new String(delivery.getBody(), "UTF-8");
-                        System.out.println(" [x] Received '" + message + "'");
+                        logger.info(" [x] Received '" + message + "'");
                         inputProcessor.handle(message);
                     } catch (Exception e) {
                         logger.severe("Exception in rabbit handling: " + e.toString());

@@ -9,8 +9,9 @@ import net.civmc.kitpvp.KitApplier;
 import net.civmc.kitpvp.KitPvpPlugin;
 import net.civmc.kitpvp.anvil.AnvilGui;
 import net.civmc.kitpvp.anvil.AnvilGuiListener;
-import net.civmc.kitpvp.data.Kit;
-import net.civmc.kitpvp.data.KitPvpDao;
+import net.civmc.kitpvp.kit.Kit;
+import net.civmc.kitpvp.kit.KitPvpDao;
+import net.civmc.kitpvp.ranked.RankedDao;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -37,6 +38,8 @@ public class KitListGui {
     }
 
     private final KitPvpDao dao;
+    private final RankedDao rankedDao;
+    private int rankedKit;
     private final AnvilGui anvilGui;
     private final Player player;
     private final List<Kit> kits = new ArrayList<>();
@@ -45,8 +48,9 @@ public class KitListGui {
     private boolean ready = false;
     private boolean openWhenReady = true;
 
-    public KitListGui(KitPvpDao dao, AnvilGui anvilGui, Player player) {
+    public KitListGui(KitPvpDao dao, RankedDao rankedDao, AnvilGui anvilGui, Player player) {
         this.dao = dao;
+        this.rankedDao = rankedDao;
         this.anvilGui = anvilGui;
         this.player = player;
         this.view = new FastMultiPageView(player, this::kitSupplier, "Kits", 6);
@@ -95,9 +99,12 @@ public class KitListGui {
                                 player.sendMessage(Component.text("A kit with that name already exists", NamedTextColor.RED));
                                 return;
                             }
+
+                            int rankedKit = rankedDao.getKit(player.getUniqueId());
+
                             Bukkit.getScheduler().runTask(plugin, () -> {
                                 invalidate();
-                                new EditKitGui(KitListGui.this.dao, anvilGui, clicker, createdKit, KitListGui.this);
+                                new EditKitGui(KitListGui.this.dao, rankedDao, rankedKit, anvilGui, clicker, createdKit, KitListGui.this);
                             });
                         });
                         return true;
@@ -114,14 +121,15 @@ public class KitListGui {
         KitPvpPlugin plugin = JavaPlugin.getPlugin(KitPvpPlugin.class);
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             List<Kit> playerKits = this.dao.getKits(player.getUniqueId());
-
+            int rankedKit = this.rankedDao.getKit(player.getUniqueId());
             Bukkit.getScheduler().runTask(plugin, () -> {
                 this.kits.clear();
                 this.kits.addAll(playerKits.stream().sorted(
                         Comparator
                             .comparing(Kit::isPublic).reversed()
-                            .thenComparing(Kit::name))
+                            .thenComparing(k -> k.name().toLowerCase()))
                     .toList());
+                this.rankedKit = rankedKit;
                 this.ready = true;
                 if (this.openWhenReady) {
                     this.openWhenReady = false;
@@ -155,7 +163,8 @@ public class KitListGui {
             }
             if (kit.isPublic() && !player.hasPermission("kitpvp.admin")) {
                 iconMeta.lore(List.of(
-                    Component.text("Left click to load", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)
+                    Component.text("Left click to load", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false),
+                    Component.text("Right click to view", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)
                 ));
                 icon.setItemMeta(iconMeta);
                 clickables.add(new Clickable(icon) {
@@ -163,6 +172,11 @@ public class KitListGui {
                     protected void clicked(@NotNull Player clicker) {
                         clicker.closeInventory();
                         KitApplier.applyKit(kit, clicker);
+                    }
+
+                    @Override
+                    protected void onRightClick(@NotNull Player clicker) {
+                        new EditKitGui(KitListGui.this.dao, KitListGui.this.rankedDao, rankedKit, KitListGui.this.anvilGui, clicker, kit, KitListGui.this);
                     }
                 });
             } else {
@@ -181,7 +195,7 @@ public class KitListGui {
 
                     @Override
                     protected void onRightClick(@NotNull Player clicker) {
-                        new EditKitGui(KitListGui.this.dao, KitListGui.this.anvilGui, clicker, kit, KitListGui.this);
+                        new EditKitGui(KitListGui.this.dao, KitListGui.this.rankedDao, rankedKit, KitListGui.this.anvilGui, clicker, kit, KitListGui.this);
                     }
 
                     @Override

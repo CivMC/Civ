@@ -122,7 +122,7 @@ ExternalInvisibility:
 
   ServerList:
     # Should this plugin adjust the amount of players in the serverlist? (-1 per invisible player)
-    AdjustAmountOfOnlinePlayers: true
+    AdjustAmountOfOnlinePlayers: false
     # Should this plugin hide invisible players in the list of logged in players?
     # You can view this list when your mouse hovers over the amount of online players.
     AdjustListOfLoggedInPlayers: true

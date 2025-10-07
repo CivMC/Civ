@@ -2,10 +2,10 @@ package vg.civcraft.mc.civchat2.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -60,12 +60,12 @@ public class GlobalChat extends BaseCommand {
             }
         } else { // Send message to global group
             if (currentGroup != null) {
-                chatMan.sendGroupMsg(player, globalGroup, chatMessage);
+                chatMan.sendGroupMsg(player, globalGroup, Component.text(chatMessage));
             } else {
                 if (chatMan.getChannel(player) != null) {
                     chatMan.removeChannel(player);
                 }
-                chatMan.sendGroupMsg(player, globalGroup, chatMessage);
+                chatMan.sendGroupMsg(player, globalGroup, Component.text(chatMessage));
             }
         }
     }
