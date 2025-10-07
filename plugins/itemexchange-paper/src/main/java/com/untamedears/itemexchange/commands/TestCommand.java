@@ -2,6 +2,7 @@ package com.untamedears.itemexchange.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import com.untamedears.itemexchange.ItemExchangeConfig;
@@ -22,8 +23,10 @@ import vg.civcraft.mc.civmodcore.inventory.InventoryAccessor;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 
 @CommandAlias(TestCommand.ALIAS)
+@CommandPermission(TestCommand.PERMISSION)
 public final class TestCommand extends BaseCommand {
 	public static final String ALIAS = "ietest";
+	public static final String PERMISSION = "itemexchange.test";
 
 	@Subcommand("shop-setup-1")
 	@Description("Sets up your and the shop's inventories where the shop cannot accept more items.")

@@ -8,3 +8,5 @@ softdepend: [ NameLayer, Citadel, JukeAlert ]
 permissions:
   itemexchange.reload:
     default: op
+  itemexchange.test:
+    default: op
