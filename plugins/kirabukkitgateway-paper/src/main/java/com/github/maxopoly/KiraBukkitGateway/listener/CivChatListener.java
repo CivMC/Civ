@@ -7,10 +7,10 @@ import vg.civcraft.mc.civchat2.event.GroupChatEvent;
 
 public class CivChatListener implements Listener {
 
-	@EventHandler
-	public void chat(GroupChatEvent e) {
-		KiraBukkitGatewayPlugin.getInstance().getRabbit().sendGroupChatMessage(e.getGroup(), e.getPlayer(),
-				e.getMessage());
-	}
+    @EventHandler
+    public void chat(GroupChatEvent e) {
+        KiraBukkitGatewayPlugin.getInstance().getRabbit().sendGroupChatMessage(e.getGroup(), e.getPlayer(),
+            e.getMessage());
+    }
 
 }
