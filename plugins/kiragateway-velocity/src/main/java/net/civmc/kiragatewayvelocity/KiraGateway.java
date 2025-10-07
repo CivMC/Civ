@@ -59,8 +59,8 @@ public class KiraGateway {
         authcodeManager = new AuthcodeManager(12);
         rabbitHandler = new RabbitHandler(
             Config.getRabbitConfig(config),
-            config.getString("rabbitmq.incomingQueue"),
-            config.getString("rabbitmq.outgoingQueue"), // Outgoing queue name
+            config.node("rabbitmq", "incomingQueue").getString(),
+            config.node("rabbitmq", "outgoingQueue").getString(),
             logger
         );
         if (!rabbitHandler.setup()) {
