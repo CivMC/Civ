@@ -89,4 +89,7 @@ public class ConfigParser {
         return result;
     }
 
+    public String getServerName() {
+        return config.getString("server-name");
+    }
 }

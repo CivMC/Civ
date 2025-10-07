@@ -15,7 +15,7 @@ public class Config {
      * Loads the config from disk, and creates it if necessary
      */
     public static @Nullable CommentedConfigurationNode loadConfig() {
-        KiragatewayVelocity plugin = KiragatewayVelocity.getInstance();
+        KiraGateway plugin = KiraGateway.getInstance();
 
         try {
             // ensure data directory exists

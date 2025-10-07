@@ -25,20 +25,20 @@ import net.civmc.kiragatewayvelocity.rabbit.RabbitHandler;
     url = "https://civmc.net",
     authors = {"Huskydog9988"}
 )
-public class KiragatewayVelocity {
+public class KiraGateway {
 
-    public final ProxyServer proxy;
+    private final ProxyServer proxy;
     public final Logger logger;
     public final Path dataDirectory;
 
-    private static KiragatewayVelocity instance;
+    private static KiraGateway instance;
     private AuthcodeManager authcodeManager;
     private RabbitHandler rabbitHandler;
     private RabbitCommands rabbitCommands;
     private @Nullable CommentedConfigurationNode config;
 
     @Inject
-    public KiragatewayVelocity(ProxyServer proxy, Logger logger, @DataDirectory Path dataDirectory) {
+    public KiraGateway(ProxyServer proxy, Logger logger, @DataDirectory Path dataDirectory) {
         this.proxy = proxy;
         this.logger = logger;
         this.dataDirectory = dataDirectory;
@@ -65,6 +65,7 @@ public class KiragatewayVelocity {
             logger.error("Failed to setup rabbitmq");
             return;
         }
+        rabbitHandler.beginAsyncListen();
         rabbitCommands = new RabbitCommands(rabbitHandler);
 
         registerCommands();
@@ -94,7 +95,15 @@ public class KiragatewayVelocity {
         return rabbitCommands;
     }
 
-    public static KiragatewayVelocity getInstance() {
+    public static KiraGateway getInstance() {
         return instance;
+    }
+
+    public ProxyServer getProxy() {
+        return proxy;
+    }
+
+    public CommentedConfigurationNode getConfig() {
+        return config;
     }
 }

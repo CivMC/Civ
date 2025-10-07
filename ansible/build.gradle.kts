@@ -52,6 +52,7 @@ dependencies {
     gammaPlugin(project(path = ":plugins:realisticbiomes2-paper"))
     gammaPlugin(project(path = ":plugins:simpleadminhacks-paper"))
     gammaPlugin(project(path = ":plugins:heliodor-paper"))
+    gammaPlugin(project(path = ":plugins:kirabukkitgateway-paper", configuration = "shadow"))
 
     pvpPlugin(project(path = ":plugins:banstick-paper", configuration = "shadow"))
     pvpPlugin(project(path = ":plugins:civduties-paper"))

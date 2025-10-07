@@ -6,3 +6,5 @@ rabbitmq:
   port: 5672
   incomingQueue: kira-to-gateway
   outgoingQueue: gateway-to-kira
+
+ops: []

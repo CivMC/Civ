@@ -3,6 +3,7 @@ package net.civmc.kiragatewayvelocity.rabbit;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.UUID;
+import net.civmc.kiragatewayvelocity.KiraUtil;
 
 public class RabbitCommands {
 
@@ -37,4 +38,17 @@ public class RabbitCommands {
         }
     }
 
+    public void replyToUser(UUID user, String msg, long channelId) {
+        nonNullArgs(user, msg);
+        JsonObject json = new JsonObject();
+        json.addProperty("user", user.toString());
+        json.addProperty("msg", KiraUtil.cleanUp(msg));
+        json.addProperty("channel", channelId);
+        sendInternal("replytouser", json);
+    }
+
+    public void replyToRequestSession(JsonObject json) {
+        nonNullArgs(json);
+        sendInternal("requestsession", json);
+    }
 }

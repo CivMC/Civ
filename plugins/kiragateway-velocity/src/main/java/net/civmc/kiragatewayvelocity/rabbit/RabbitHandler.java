@@ -5,6 +5,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
+import com.rabbitmq.client.DeliverCallback;
 import org.slf4j.Logger;
 
 public class RabbitHandler {
@@ -16,12 +17,14 @@ public class RabbitHandler {
     private Connection conn;
     private Channel incomingChannel;
     private Channel outgoingChannel;
+    private final RabbitInputHandler inputProcessor;
 
     public RabbitHandler(ConnectionFactory connFac, String incomingQueue, String outgoingQueue, Logger logger) {
         this.connectionFactory = connFac;
         this.incomingQueue = incomingQueue;
         this.outgoingQueue = outgoingQueue;
         this.logger = logger;
+        this.inputProcessor = new RabbitInputHandler(logger);
     }
 
     public boolean setup() {
@@ -29,12 +32,32 @@ public class RabbitHandler {
             conn = connectionFactory.newConnection();
             incomingChannel = conn.createChannel();
             outgoingChannel = conn.createChannel();
-            incomingChannel.queueDeclare(incomingQueue, false, false, false, null);
+            incomingChannel.exchangeDeclare(incomingQueue, "direct", false, false, null);
             outgoingChannel.queueDeclare(outgoingQueue, false, false, false, null);
             return true;
         } catch (IOException | TimeoutException e) {
             logger.error("Failed to setup rabbit connection", e);
             return false;
+        }
+    }
+
+    public void beginAsyncListen() {
+        DeliverCallback deliverCallback = (consumerTag, delivery) -> {
+            try {
+                String message = new String(delivery.getBody(), "UTF-8");
+                logger.info(" [x] Received '" + message + "'");
+                inputProcessor.handle(message);
+            } catch (Exception e) {
+                logger.error("Exception in rabbit handling", e);
+            }
+        };
+        try {
+            String queue = incomingChannel.queueDeclare().getQueue();
+            incomingChannel.exchangeBind(queue, incomingQueue, "proxy");
+            incomingChannel.basicConsume(queue, true, deliverCallback, consumerTag -> {
+            });
+        } catch (IOException e) {
+            logger.error("Error in rabbit listener", e);
         }
     }
 

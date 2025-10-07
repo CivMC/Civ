@@ -60,13 +60,13 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
             rabbit.shutdown();
         }
         rabbit = new RabbitHandler(config.getRabbitConfig(), config.getIncomingQueueName(),
-            config.getOutgoingQueueName(), getLogger());
+            config.getOutgoingQueueName(), config.getServerName(), getLogger());
         if (!rabbit.setup()) {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
         rabbit.beginAsyncListen();
-        rabbitCommands = new RabbitCommands(rabbit);
+        rabbitCommands = new RabbitCommands(rabbit, config.getServerName());
         Logger logger = (Logger) LogManager.getRootLogger();
         if (logAppenders != null) {
             for (KiraLogAppender appender : logAppenders) {
