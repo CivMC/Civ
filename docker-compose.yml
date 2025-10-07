@@ -78,7 +78,7 @@ services:
       REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
 
       INIT_MEMORY: 1G
-      MAX_MEMORY: 5G
+      MAX_MEMORY: 3G
 
       CIV_SERVER_NAME: local
 
