@@ -52,13 +52,8 @@ public class CivProxyPlugin {
     private void loadConnection() {
         CommentedConfigurationNode database = config.node("database");
 
-        try {
-            Class.forName("org.mariadb.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:" + database.node("driver").getString("mysql") + "://" + database.node("host").getString("localhost") + ":" +
+        config.setJdbcUrl("jdbc:" + database.node("driver").getString("mariadb") + "://" + database.node("host").getString("localhost") + ":" +
             database.node("port").getInt(3306) + "/" + database.node("database").getString("minecraft"));
         config.setConnectionTimeout(database.node("connection_timeout").getInt(10_000));
         config.setIdleTimeout(database.node("idle_timeout").getInt(600_000));
