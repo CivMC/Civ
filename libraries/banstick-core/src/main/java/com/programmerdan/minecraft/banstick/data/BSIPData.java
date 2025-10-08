@@ -1,7 +1,5 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import inet.ipaddr.IPAddress;
 import java.lang.ref.WeakReference;
 import java.sql.Connection;
@@ -16,8 +14,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import net.md_5.bungee.api.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.jetbrains.annotations.NotNull;
+import xyz.huskydog.banstickCore.BanstickCore;
 
 /**
  * Static storage and management of Proxy data as BSIPData.
@@ -26,6 +30,7 @@ import net.md_5.bungee.api.ChatColor;
  */
 public final class BSIPData {
 
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
     private static Map<Long, BSIPData> allIPDataID = new HashMap<>();
     private static ConcurrentLinkedQueue<WeakReference<BSIPData>> dirtyIPData = new ConcurrentLinkedQueue<>();
     private boolean dirty;
@@ -186,7 +191,7 @@ public final class BSIPData {
         if (allIPDataID.containsKey(idid)) {
             return allIPDataID.get(idid);
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getId = connection.prepareStatement(
                  "SELECT * FROM bs_ip_data WHERE idid = ?");) {
             getId.setLong(1, idid);
@@ -196,11 +201,11 @@ public final class BSIPData {
                     allIPDataID.put(idid, data);
                     return data;
                 } else {
-                    BanStick.getPlugin().warning("Failed to retrieve IP Data by id: " + idid + " - not found");
+                    CORE.getLogger().warn("Failed to retrieve IP Data by id: {} - not found", idid);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Retrieval of IP Data by ID failed: " + idid, se);
+            CORE.getLogger().error("Retrieval of IP Data by ID failed: " + idid, se);
         }
         return null;
     }
@@ -216,7 +221,7 @@ public final class BSIPData {
         BSIPData data = new BSIPData();
         data.idid = rs.getLong(1);
         data.deferIid = rs.getLong(2);
-        //data.iid = BSIP.byId(rs.getLong(2));
+        // data.iid = BSIP.byId(rs.getLong(2));
         data.createTime = rs.getTimestamp(3);
         data.valid = rs.getBoolean(4);
         data.continent = rs.getString(5);
@@ -252,7 +257,7 @@ public final class BSIPData {
      */
     public static List<BSIPData> bySameCity(BSIPData source) {
         List<BSIPData> found = new ArrayList<>();
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getSame = connection.prepareStatement(
                  "SELECT * FROM bs_ip_data WHERE country = ? and region = ? and city = ? and idid != ? and valid = true ORDER BY create_time");) {
             getSame.setString(1, source.getCountry());
@@ -269,11 +274,11 @@ public final class BSIPData {
                     found.add(data);
                 }
                 if (found.isEmpty()) {
-                    BanStick.getPlugin().debug("Found no other IP Data in same city as {0}", source);
+                    CORE.getLogger().debug("Found no other IP Data in same city as {}", source);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Retrieval of same-city IP Data by IP Data failed: " + source, se);
+            CORE.getLogger().error("Retrieval of same-city IP Data by IP Data failed: " + source, se);
         }
         return found;
     }
@@ -284,12 +289,12 @@ public final class BSIPData {
      * @param ip The BSIP record to use for IPData retrieval
      * @return the matching BSIPData or null if no match
      */
-    public static BSIPData byExactIP(BSIP ip) {
+    public static BSIPData byExactIP(@NotNull BSIP ip) {
         if (ip == null) {
-            BanStick.getPlugin().warning("Weird failure, byExactIP with null IP");
+            CORE.getLogger().warn("Weird failure, byExactIP with null IP");
             return null;
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getId = connection.prepareStatement(
                  "SELECT * FROM bs_ip_data WHERE iid = ? and valid = true ORDER BY create_time DESC LIMIT 1");) {
             getId.setLong(1, ip.getId());
@@ -302,11 +307,11 @@ public final class BSIPData {
                     allIPDataID.put(data.idid, data);
                     return data;
                 } else {
-                    BanStick.getPlugin().warning("Failed to retrieve IP Data by exact IP: {0} - not found", ip);
+                    CORE.getLogger().warn("Failed to retrieve IP Data by exact IP: {} - not found", ip);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Retrieval of IP Data by exact IP failed: " + ip, se);
+            CORE.getLogger().error("Retrieval of IP Data by exact IP failed: " + ip, se);
         }
         return null;
     }
@@ -318,16 +323,16 @@ public final class BSIPData {
         if (this.registeredAs == null) {
             return 0;
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getSame = connection.prepareStatement(
                  "SELECT avg(proxy) FROM bs_ip_data WHERE registered_as = ?");) {
             getSame.setString(1, this.registeredAs);
             try (ResultSet rs = getSame.executeQuery();) {
                 rs.next();
-                return rs.getDouble(1); //returns 0 for no matches
+                return rs.getDouble(1); // returns 0 for no matches
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to load average proxy score for registrar "
+            CORE.getLogger().error("Failed to load average proxy score for registrar "
                 + this.registeredAs, se);
             return 0;
         }
@@ -342,12 +347,12 @@ public final class BSIPData {
     public static BSIPData byContainsIP(BSIP ip) {
         try {
             if (ip == null) {
-                BanStick.getPlugin().warning("Weird failure, byContainsIP with null IP");
+                CORE.getLogger().warn("Weird failure, byContainsIP with null IP");
                 return null;
             }
             IPAddress address = ip.getIPAddress();
             if (address == null) {
-                BanStick.getPlugin().warning("Weird failure, no ip _in_ {0}", ip.toString());
+                CORE.getLogger().warn("Weird failure, no ip _in_ {}", ip);
                 return null;
             }
             Integer cidr = address.getNetworkPrefixLength();
@@ -356,17 +361,16 @@ public final class BSIPData {
             }
             List<BSIP> knownContains = BSIP.allMatching(address, cidr);
 
-            if (knownContains != null) {
-                for (BSIP maybe : knownContains) {
-                    BSIPData data = byExactIP(maybe);
-                    if (data != null) {
-                        return data;
-                    }
+            for (BSIP maybe : knownContains) {
+                BSIPData data = byExactIP(maybe);
+                if (data != null) {
+                    return data;
                 }
             }
-            BanStick.getPlugin().warning("No IPData records contain IP {0}", ip);
+
+            CORE.getLogger().warn("No IPData records contain IP {}", ip);
         } catch (Exception e) {
-            BanStick.getPlugin().warning("Failure during IPData retrieval", e);
+            CORE.getLogger().warn("Failure during IPData retrieval", e);
         }
         return null;
     }
@@ -381,12 +385,12 @@ public final class BSIPData {
         List<BSIPData> returns = new ArrayList<>();
         try {
             if (ip == null) {
-                BanStick.getPlugin().warning("Weird failure, allByIP with null IP");
+                CORE.getLogger().warn("Weird failure, allByIP with null IP");
                 return returns;
             }
             IPAddress address = ip.getIPAddress();
             if (address == null) {
-                BanStick.getPlugin().warning("Weird failure, no ip _in_ {0}", ip.toString());
+                CORE.getLogger().warn("Weird failure, no ip _in_ {}", ip);
                 return returns;
             }
             Integer cidr = address.getNetworkPrefixLength();
@@ -395,19 +399,18 @@ public final class BSIPData {
             }
             List<BSIP> knownContains = BSIP.allMatching(address, cidr);
 
-            if (knownContains != null) {
-                for (BSIP maybe : knownContains) {
-                    BSIPData data = byExactIP(maybe);
-                    if (data != null) {
-                        returns.add(data);
-                    }
+            for (BSIP maybe : knownContains) {
+                BSIPData data = byExactIP(maybe);
+                if (data != null) {
+                    returns.add(data);
                 }
             }
+
             if (returns.isEmpty()) {
-                BanStick.getPlugin().warning("No IPData records contain IP {0}", ip);
+                CORE.getLogger().warn("No IPData records contain IP {}", ip);
             }
         } catch (Exception e) {
-            BanStick.getPlugin().warning("Failure during IPData retrieval", e);
+            CORE.getLogger().warn("Failure during IPData retrieval", e);
         }
         return returns;
     }
@@ -436,7 +439,7 @@ public final class BSIPData {
     public static BSIPData create(BSIP ip, String continent, String country, String region,
                                   String city, String postal, Double lat, Double lon, String domain, String provider,
                                   String registeredAs, String connectionSource, float proxy, String source, String comment) {
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection()) {
             BSIPData newData = new BSIPData();
             newData.valid = true;
             newData.dirty = false;
@@ -532,7 +535,7 @@ public final class BSIPData {
                     if (rs.next()) {
                         newData.idid = rs.getLong(1);
                     } else {
-                        BanStick.getPlugin().severe("No IDID returned on IP Data insert?!");
+                        CORE.getLogger().error("No IDID returned on IP Data insert?!");
                         return null; // no bid? error.
                     }
                 }
@@ -541,7 +544,7 @@ public final class BSIPData {
             allIPDataID.put(newData.idid, newData);
             return newData;
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to create a new ip data record: ", se);
+            CORE.getLogger().error("Failed to create a new ip data record: ", se);
         }
         return null;
     }
@@ -554,16 +557,16 @@ public final class BSIPData {
             return;
         }
         this.dirty = false; // don't let anyone else in!
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement save = connection.prepareStatement(
                  "UPDATE bs_ip_data SET valid = ?, proxy = ?, source = ?, comment = ? WHERE idid = ?");) {
             saveToStatement(save);
             int effects = save.executeUpdate();
             if (effects == 0) {
-                BanStick.getPlugin().severe("Failed to save BSIPData or no update? " + this.idid);
+                CORE.getLogger().error("Failed to save BSIPData or no update? {}", this.idid);
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Save of BSIPData failed!: ", se);
+            CORE.getLogger().error("Save of BSIPData failed!: ", se);
         }
     }
 
@@ -609,7 +612,7 @@ public final class BSIPData {
      */
     public static void saveDirty() {
         int batchSize = 0;
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement save = connection.prepareStatement(
                  "UPDATE bs_ip_data SET valid = ?, proxy = ?, source = ?, comment = ? WHERE idid = ?");) {
             while (!dirtyIPData.isEmpty()) {
@@ -624,10 +627,9 @@ public final class BSIPData {
                 if (batchSize > 0 && batchSize % 100 == 0) {
                     int[] batchRun = save.executeBatch();
                     if (batchRun.length != batchSize) {
-                        BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? "
-                            + batchSize + " vs " + batchRun.length);
+                        CORE.getLogger().error("Some elements of the dirty batch didn't save? {} vs {}", batchSize, batchRun.length);
                     } else {
-                        BanStick.getPlugin().debug("IP Data batch: {0} saves", batchRun.length);
+                        CORE.getLogger().debug("IP Data batch: {} saves", batchRun.length);
                     }
                     batchSize = 0;
                 }
@@ -635,14 +637,13 @@ public final class BSIPData {
             if (batchSize > 0 && batchSize % 100 > 0) {
                 int[] batchRun = save.executeBatch();
                 if (batchRun.length != batchSize) {
-                    BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? "
-                        + batchSize + " vs " + batchRun.length);
+                    CORE.getLogger().error("Some elements of the dirty batch didn't save? {} vs {}", batchSize, batchRun.length);
                 } else {
-                    BanStick.getPlugin().debug("IP Data batch: {0} saves", batchRun.length);
+                    CORE.getLogger().debug("IP Data batch: {} saves", batchRun.length);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Save of BSIPData dirty batch failed!: ", se);
+            CORE.getLogger().error("Save of BSIPData dirty batch failed!: ", se);
         }
     }
 
@@ -656,7 +657,7 @@ public final class BSIPData {
      */
     public static long preload(long offset, int limit) {
         long maxId = -1;
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement loadData = connection.prepareStatement(
                  "SELECT * FROM bs_ip_data WHERE valid = true AND idid > ? ORDER BY idid LIMIT ?");) {
             loadData.setLong(1, offset);
@@ -673,8 +674,7 @@ public final class BSIPData {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed during IPData preload, offset " + offset
-                + " limit " + limit, se);
+            CORE.getLogger().error("Failed during IPData preload, offset {} limit {}", offset, limit, se);
         }
         return maxId;
 
@@ -682,108 +682,122 @@ public final class BSIPData {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.WHITE).append(getIP().toString()).append(" - ");
+        return PlainTextComponentSerializer.plainText().serialize(getComponentMessage());
+    }
+
+    public Component getComponentMessage() {
+        TextComponent.Builder sb = Component.text();
+
+        sb.append(Component.text(getIP().toString(), NamedTextColor.WHITE))
+            .append(Component.text(" - "));
+
         if (!valid) {
-            sb.append(ChatColor.RED).append("[Invalid] ").append(ChatColor.WHITE);
+            sb.append(Component.text("[Invalid] ", NamedTextColor.RED))
+                .append(Component.text("", NamedTextColor.WHITE));
         }
         if (continent != null || country != null || region != null || city != null
             || postal != null || lat != null || lon != null) {
-            sb.append(ChatColor.AQUA).append("Location: ").append(ChatColor.WHITE);
+            sb.append(Component.text("Location: ", NamedTextColor.AQUA))
+                .append(Component.text("", NamedTextColor.WHITE));
         }
         if (continent != null) {
-            sb.append(continent).append(", ");
+            sb.append(Component.text(continent + ", ", NamedTextColor.WHITE));
         }
         if (country != null) {
-            sb.append(country).append(", ");
+            sb.append(Component.text(country + ", ", NamedTextColor.WHITE));
         }
         if (region != null) {
-            sb.append(region).append(", ");
+            sb.append(Component.text(region + ", ", NamedTextColor.WHITE));
         }
         if (city != null) {
-            sb.append(city).append(", ");
+            sb.append(Component.text(city + ", ", NamedTextColor.WHITE));
         }
         if (postal != null) {
-            sb.append(postal).append(", ");
+            sb.append(Component.text(postal + ", ", NamedTextColor.WHITE));
         }
         if (lat != null || lon != null) {
-            sb.append(ChatColor.GRAY).append("[").append(ChatColor.WHITE).append(lat)
-                .append(ChatColor.GRAY).append(',').append(ChatColor.WHITE).append(lon)
-                .append(ChatColor.GRAY).append("] ").append(ChatColor.WHITE);
+            sb.append(Component.text("[", NamedTextColor.GRAY))
+                .append(Component.text(String.valueOf(lat), NamedTextColor.WHITE))
+                .append(Component.text(",", NamedTextColor.GRAY))
+                .append(Component.text(String.valueOf(lon), NamedTextColor.WHITE))
+                .append(Component.text("] ", NamedTextColor.GRAY))
+                .append(Component.text("", NamedTextColor.WHITE));
         }
         if (connection != null) {
-            sb.append(ChatColor.GRAY).append("Connection: ").append(ChatColor.WHITE)
-                .append(connection).append(" ");
+            sb.append(Component.text("Connection: ", NamedTextColor.GRAY))
+                .append(Component.text(connection + " ", NamedTextColor.WHITE));
         }
         if (domain != null) {
-            sb.append("(").append(domain).append(") ");
+            sb.append(Component.text("(" + domain + ") ", NamedTextColor.WHITE));
         }
         if (provider != null) {
-            sb.append(ChatColor.GRAY).append("Provider: ").append(ChatColor.WHITE)
-                .append(provider).append(" ");
+            sb.append(Component.text("Provider: ", NamedTextColor.GRAY))
+                .append(Component.text(provider + " ", NamedTextColor.WHITE));
         }
         if (registeredAs != null) {
-            sb.append(ChatColor.GRAY).append("Reg. As: ").append(ChatColor.WHITE)
-                .append(registeredAs).append(" ");
+            sb.append(Component.text("Reg. As: ", NamedTextColor.GRAY))
+                .append(Component.text(registeredAs + " ", NamedTextColor.WHITE));
         }
         if (source != null) {
-            sb.append(ChatColor.DARK_PURPLE).append("from ").append(ChatColor.WHITE)
-                .append(source).append(" ");
+            sb.append(Component.text("from ", NamedTextColor.DARK_PURPLE))
+                .append(Component.text(source + " ", NamedTextColor.WHITE));
         }
         if (comment != null) {
-            sb.append(ChatColor.GRAY).append("Comments:").append(ChatColor.WHITE)
-                .append(comment).append(" ");
+            sb.append(Component.text("Comments:", NamedTextColor.GRAY))
+                .append(Component.text(comment + " ", NamedTextColor.WHITE));
         }
-        sb.append(ChatColor.DARK_AQUA).append("[pli: ");
-        if (proxy < 1.0) {
-            sb.append(ChatColor.GREEN);
-        } else if (proxy < 2.0) {
-            sb.append(ChatColor.GOLD);
-        } else if (proxy < 3.0) {
-            sb.append(ChatColor.YELLOW);
-        } else {
-            sb.append(ChatColor.RED);
-        }
-        sb.append(proxy).append(ChatColor.DARK_AQUA).append("]").append(ChatColor.RESET);
+        sb.append(Component.text("[pli: ", NamedTextColor.DARK_AQUA));
 
-        return sb.toString();
+        NamedTextColor proxyColor;
+        if (proxy < 1.0) {
+            proxyColor = NamedTextColor.GREEN;
+        } else if (proxy < 2.0) {
+            proxyColor = NamedTextColor.GOLD;
+        } else if (proxy < 3.0) {
+            proxyColor = NamedTextColor.YELLOW;
+        } else {
+            proxyColor = NamedTextColor.RED;
+        }
+        sb.append(Component.text(String.valueOf(proxy), proxyColor))
+            .append(Component.text("]", NamedTextColor.DARK_AQUA));
+        return sb.build();
     }
 
-    /**
-     * Generates a larger string of full details for this proxy
-     *
-     * @param showIPs indicate if IPs should be shown
-     * @return the String
-     */
-    public String toFullString(boolean showIPs) {
-        if (showIPs) {
-            return toString();
-        }
-        StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.WHITE).append(getIP().toFullString(showIPs)).append(" - ");
-        if (!valid) {
-            sb.append(ChatColor.RED).append("[Invalid] ").append(ChatColor.WHITE);
-        }
-        sb.append("Proxy #").append(this.idid).append(" ");
-        if (source != null) {
-            sb.append(ChatColor.DARK_PURPLE).append("from ").append(ChatColor.WHITE).append(source).append(" ");
-        }
-        if (comment != null) {
-            sb.append(ChatColor.GRAY).append("Comments:").append(ChatColor.WHITE).append(comment).append(" ");
-        }
-        sb.append(ChatColor.DARK_AQUA).append("[pli: ");
-        if (proxy < 1.0) {
-            sb.append(ChatColor.GREEN);
-        } else if (proxy < 2.0) {
-            sb.append(ChatColor.GOLD);
-        } else if (proxy < 3.0) {
-            sb.append(ChatColor.YELLOW);
-        } else {
-            sb.append(ChatColor.RED);
-        }
-        sb.append(proxy).append(ChatColor.DARK_AQUA).append("]").append(ChatColor.RESET);
-
-        return sb.toString();
-    }
+    // /**
+    //  * Generates a larger string of full details for this proxy
+    //  *
+    //  * @param showIPs indicate if IPs should be shown
+    //  * @return the String
+    //  */
+    // public String toFullString(boolean showIPs) {
+    //     if (showIPs) {
+    //         return toString();
+    //     }
+    //     StringBuilder sb = new StringBuilder();
+    //     sb.append(ChatColor.WHITE).append(getIP().toFullString(showIPs)).append(" - ");
+    //     if (!valid) {
+    //         sb.append(ChatColor.RED).append("[Invalid] ").append(ChatColor.WHITE);
+    //     }
+    //     sb.append("Proxy #").append(this.idid).append(" ");
+    //     if (source != null) {
+    //         sb.append(ChatColor.DARK_PURPLE).append("from ").append(ChatColor.WHITE).append(source).append(" ");
+    //     }
+    //     if (comment != null) {
+    //         sb.append(ChatColor.GRAY).append("Comments:").append(ChatColor.WHITE).append(comment).append(" ");
+    //     }
+    //     sb.append(ChatColor.DARK_AQUA).append("[pli: ");
+    //     if (proxy < 1.0) {
+    //         sb.append(ChatColor.GREEN);
+    //     } else if (proxy < 2.0) {
+    //         sb.append(ChatColor.GOLD);
+    //     } else if (proxy < 3.0) {
+    //         sb.append(ChatColor.YELLOW);
+    //     } else {
+    //         sb.append(ChatColor.RED);
+    //     }
+    //     sb.append(proxy).append(ChatColor.DARK_AQUA).append("]").append(ChatColor.RESET);
+    //
+    //     return sb.toString();
+    // }
 
 }

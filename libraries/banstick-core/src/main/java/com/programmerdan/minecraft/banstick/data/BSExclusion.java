@@ -1,7 +1,5 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,7 +10,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.bukkit.ChatColor;
+import java.util.Objects;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import xyz.huskydog.banstickCore.BanstickCore;
 
 /**
  * Represents an exclusion of association between two players.
@@ -34,7 +36,8 @@ import org.bukkit.ChatColor;
  */
 public final class BSExclusion {
 
-    private static Map<Long, BSExclusion> allExclussionsID = new HashMap<>();
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
+    private static final Map<Long, BSExclusion> allExclusionsID = new HashMap<>();
 
     private long eid;
 
@@ -44,6 +47,7 @@ public final class BSExclusion {
     private BSPlayer secondPlayer;
 
     private Timestamp createTime;
+
 
     /**
      * Creation only possible over the static methods
@@ -71,7 +75,7 @@ public final class BSExclusion {
      */
     public BSPlayer getFirstPlayer() {
         if (firstPlayer == null) {
-            firstPlayer = BSPlayer.byId(deferFirstPlayer);
+            firstPlayer = BSPlayer.getById(deferFirstPlayer);
         }
         return firstPlayer;
     }
@@ -95,7 +99,7 @@ public final class BSExclusion {
      */
     public BSPlayer getSecondPlayer() {
         if (secondPlayer == null) {
-            secondPlayer = BSPlayer.byId(deferSecondPlayer);
+            secondPlayer = BSPlayer.getById(deferSecondPlayer);
         }
         return secondPlayer;
     }
@@ -104,13 +108,13 @@ public final class BSExclusion {
      * Deletes this exclusion completly from both the cache and the database
      */
     public void delete() {
-        allExclussionsID.remove(this.eid);
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        allExclusionsID.remove(this.eid);
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement ps = connection.prepareStatement("DELETE FROM bs_exclusion WHERE eid = ?");) {
             ps.setLong(1, eid);
             ps.execute();
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Removal of Exclusion failed: " + eid, se);
+            CORE.getLogger().error("Removal of Exclusion failed: " + eid, se);
         }
         getFirstPlayer().removeExclusion(this);
         getSecondPlayer().removeExclusion(this);
@@ -126,23 +130,23 @@ public final class BSExclusion {
      * found
      */
     public static BSExclusion byId(long eid) {
-        if (allExclussionsID.containsKey(eid)) {
-            return allExclussionsID.get(eid);
+        if (allExclusionsID.containsKey(eid)) {
+            return allExclusionsID.get(eid);
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_exclusion WHERE eid = ?");) {
             getId.setLong(1, eid);
             try (ResultSet rs = getId.executeQuery();) {
                 if (rs.next()) {
                     BSExclusion excl = internalGetExclusion(rs);
-                    allExclussionsID.put(eid, excl);
+                    allExclusionsID.put(eid, excl);
                     return excl;
                 } else {
-                    BanStick.getPlugin().warning("Failed to retrieve exclusion by id: " + eid + " - not found");
+                    CORE.getLogger().warn("Failed to retrieve exclusion by id: {} - not found", eid);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Retrieval of Exclusion by ID failed: " + eid, se);
+            CORE.getLogger().error("Retrieval of Exclusion by ID failed: " + eid, se);
         }
 
         return null;
@@ -161,15 +165,15 @@ public final class BSExclusion {
      */
     static Map<Long, BSExclusion> byPlayer(BSPlayer player) {
         Map<Long, BSExclusion> exclusions = new HashMap<>();
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getId = connection
                  .prepareStatement("SELECT * FROM bs_exclusion WHERE first_pid = ? OR second_pid = ?");) {
             getId.setLong(1, player.getId());
             getId.setLong(2, player.getId());
             try (ResultSet rs = getId.executeQuery();) {
                 while (rs.next()) {
-                    if (allExclussionsID.containsKey(rs.getLong(1))) {
-                        BSExclusion existingExcl = allExclussionsID.get(rs.getLong(1));
+                    if (allExclusionsID.containsKey(rs.getLong(1))) {
+                        BSExclusion existingExcl = allExclusionsID.get(rs.getLong(1));
                         long otherID = existingExcl.deferFirstPlayer == player.getId() ? existingExcl.deferSecondPlayer
                             : existingExcl.deferFirstPlayer;
                         exclusions.put(otherID, existingExcl);
@@ -178,12 +182,12 @@ public final class BSExclusion {
                     BSExclusion loadedExcl = internalGetExclusion(rs);
                     long otherID = loadedExcl.deferFirstPlayer == player.getId() ? loadedExcl.deferSecondPlayer
                         : loadedExcl.deferFirstPlayer;
-                    allExclussionsID.put(rs.getLong(1), loadedExcl);
+                    allExclusionsID.put(rs.getLong(1), loadedExcl);
                     exclusions.put(otherID, loadedExcl);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Retrieval of Exclusions by Player failed: " + player.toString(), se);
+            CORE.getLogger().error("Retrieval of Exclusions by Player failed: " + player.toString(), se);
         }
         return exclusions;
     }
@@ -214,7 +218,7 @@ public final class BSExclusion {
      */
     public static long preload(long offset, int limit) {
         long maxId = -1;
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement loadExclusions = connection
                  .prepareStatement("SELECT * FROM bs_exclusion WHERE eid > ? ORDER BY eid LIMIT ?");) {
             loadExclusions.setLong(1, offset);
@@ -224,38 +228,27 @@ public final class BSExclusion {
                     if (rs.getLong(1) > maxId) {
                         maxId = rs.getLong(1);
                     }
-                    if (allExclussionsID.containsKey(rs.getLong(1))) {
+                    if (allExclusionsID.containsKey(rs.getLong(1))) {
                         continue;
                     }
 
                     BSExclusion excl = internalGetExclusion(rs);
-                    allExclussionsID.put(excl.eid, excl);
+                    allExclusionsID.put(excl.eid, excl);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed during Exclusion preload, offset " + offset + " limit " + limit, se);
+            CORE.getLogger().error("Failed during Exclusion preload, offset " + offset + " limit " + limit, se);
         }
         return maxId;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.DARK_PURPLE).append("Exclusion between ").append(ChatColor.WHITE)
-            .append(getFirstPlayer().getName()).append(ChatColor.DARK_PURPLE).append(" and ")
-            .append(ChatColor.WHITE).append(getSecondPlayer().getName());
-        return sb.toString();
+        return PlainTextComponentSerializer.plainText().serialize(getComponentMessage());
     }
 
-    /**
-     * @return Complete details toString
-     */
-    public String toFullString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(ChatColor.DARK_PURPLE).append("Exclusion between ").append(ChatColor.WHITE)
-            .append(getFirstPlayer().getName()).append(ChatColor.DARK_PURPLE).append(" and ")
-            .append(ChatColor.WHITE).append(getSecondPlayer().getName()).append(ChatColor.DARK_PURPLE);
-        return sb.toString();
+    public Component getComponentMessage() {
+        return MiniMessage.miniMessage().deserialize("<dark_purple>Exclusion between <white>" + getFirstPlayer().getName() + " <dark_purple>AND <white>" + getSecondPlayer().getName());
     }
 
     /**
@@ -270,7 +263,7 @@ public final class BSExclusion {
         if (first == null || second == null) {
             throw new IllegalArgumentException("Can not create exclusion based on player null");
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement ps = connection.prepareStatement(
                  "INSERT INTO bs_exclusion(create_time, first_pid, second_pid) VALUES (?, ?, ?)",
                  Statement.RETURN_GENERATED_KEYS);) {
@@ -286,23 +279,22 @@ public final class BSExclusion {
             ps.setLong(3, exclusion.secondPlayer.getId());
             int ins = ps.executeUpdate();
             if (ins < 1) {
-                BanStick.getPlugin().warning("Insert reported no exclusion inserted? " + exclusion.getId());
+                CORE.getLogger().warn("Insert reported no exclusion inserted? {}", exclusion.getId());
             }
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     long eid = rs.getLong(1);
                     exclusion.eid = eid;
-                    allExclussionsID.put(eid, exclusion);
+                    allExclusionsID.put(eid, exclusion);
                     return exclusion;
                 } else {
-                    BanStick.getPlugin().severe(
-                        "Failed to get ID from inserted exclusion!? " + first.getId() + " - " + second.getId());
+                    CORE.getLogger().error("Failed to get ID from inserted exclusion!? {} - {}", first.getId(), second.getId());
                     return null;
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to insert new exclusion for sessions!", se);
+            CORE.getLogger().error("Failed to insert new exclusion for sessions!", se);
         }
         return null;
     }

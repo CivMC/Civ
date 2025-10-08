@@ -1,7 +1,5 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.lang.ref.WeakReference;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,8 +14,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.NotNull;
+import xyz.huskydog.banstickCore.BanstickCore;
+import xyz.huskydog.banstickCore.cmc.utils.DateUtils;
 
 /**
  * BSBan object, wraps an actual ban.
@@ -28,10 +33,10 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class BSBan {
 
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
     private static final String NO_BID_RETURNED = "No BID returned on ban insert?!";
-    private static Map<Long, BSBan> allBanID = new HashMap<Long, BSBan>();
-    private static ConcurrentLinkedQueue<WeakReference<BSBan>> dirtyBans =
-        new ConcurrentLinkedQueue<WeakReference<BSBan>>();
+    private static final Map<Long, BSBan> allBanID = new HashMap<Long, BSBan>();
+    private static final ConcurrentLinkedQueue<WeakReference<BSBan>> dirtyBans = new ConcurrentLinkedQueue<WeakReference<BSBan>>();
     private boolean dirty;
 
     private long bid;
@@ -43,8 +48,8 @@ public final class BSBan {
     private Long deferShareBan;
     private BSShare shareBan;
     private boolean isAdminBan;
-    private String message; //mutable
-    private Timestamp banEnd; //mutable
+    private String message; // mutable
+    private Timestamp banEnd; // mutable
 
     private BSBan() {
     }
@@ -104,6 +109,7 @@ public final class BSBan {
 
     /**
      * Sets the message for this ban. Marks this ban as dirty (for commit).
+     * TODO: convert message to Component?
      *
      * @param message Ban message.
      */
@@ -184,7 +190,7 @@ public final class BSBan {
      */
     public static void saveDirty() {
         int batchSize = 0;
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement save = connection.prepareStatement(
                  "UPDATE bs_ban SET admin_ban = ?, message = ?, ban_end = ? WHERE bid = ?");) {
             while (!dirtyBans.isEmpty()) {
@@ -199,10 +205,9 @@ public final class BSBan {
                 if (batchSize > 0 && batchSize % 100 == 0) {
                     int[] batchRun = save.executeBatch();
                     if (batchRun.length != batchSize) {
-                        BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? "
-                            + batchSize + " vs " + batchRun.length);
+                        CORE.getLogger().error("Some elements of the dirty batch didn't save? {} vs {}", batchSize, batchRun.length);
                     } else {
-                        BanStick.getPlugin().debug("Ban batch: {0} saves", batchRun.length);
+                        CORE.getLogger().debug("Ban batch: {} saves", batchRun.length);
                     }
                     batchSize = 0;
                 }
@@ -210,14 +215,13 @@ public final class BSBan {
             if (batchSize > 0 && batchSize % 100 > 0) {
                 int[] batchRun = save.executeBatch();
                 if (batchRun.length != batchSize) {
-                    BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? "
-                        + batchSize + " vs " + batchRun.length);
+                    CORE.getLogger().error("Some elements of the dirty batch didn't save? {} vs {}", batchSize, batchRun.length);
                 } else {
-                    BanStick.getPlugin().debug("Ban batch: {0} saves", batchRun.length);
+                    CORE.getLogger().debug("Ban batch: {} saves", batchRun.length);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Save of BSBan dirty batch failed!: ", se);
+            CORE.getLogger().error("Save of BSBan dirty batch failed!: ", se);
         }
     }
 
@@ -229,16 +233,16 @@ public final class BSBan {
             return;
         }
         this.dirty = false; // don't let anyone else in!
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement save = connection.prepareStatement(
                  "UPDATE bs_ban SET admin_ban = ?, message = ?, ban_end = ? WHERE bid = ?");) {
             saveToStatement(save);
             int effects = save.executeUpdate();
             if (effects == 0) {
-                BanStick.getPlugin().severe("Failed to save BSBan or no update? " + this.bid);
+                CORE.getLogger().error("Failed to save BSBan or no update? {}", this.bid);
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Save of BSBan failed!: ", se);
+            CORE.getLogger().error("Save of BSBan failed!: ", se);
         }
     }
 
@@ -283,7 +287,7 @@ public final class BSBan {
         if (allBanID.containsKey(bid)) {
             return allBanID.get(bid);
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getId = connection.prepareStatement(
                  "SELECT * FROM bs_ban WHERE bid = ?");) {
             getId.setLong(1, bid);
@@ -293,11 +297,11 @@ public final class BSBan {
                     allBanID.put(bid, ban);
                     return ban;
                 } else {
-                    BanStick.getPlugin().warning("Failed to retrieve Ban by id: " + bid + " - not found");
+                    CORE.getLogger().warn("Failed to retrieve Ban by id: {} - not found", bid);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Retrieval of ban by ID failed: " + bid, se);
+            CORE.getLogger().error("Retrieval of ban by ID failed: " + bid, se);
         }
         return null;
     }
@@ -311,7 +315,7 @@ public final class BSBan {
      */
     public static List<BSBan> byIP(BSIP exactIP, boolean includeExpired) {
         List<BSBan> results = new ArrayList<>();
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement findBans = connection.prepareStatement(
                  includeExpired ? "SELECT * FROM bs_ban WHERE ip_ban = ? ORDER BY ban_time" :
                      "SELECT * FROM bs_ban WHERE ip_ban = ? AND (ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP) ORDER BY ban_time");) {
@@ -328,7 +332,7 @@ public final class BSBan {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to lookup bans by IP: " + exactIP, se);
+            CORE.getLogger().error("Failed to lookup bans by IP: " + exactIP, se);
         }
         return results;
     }
@@ -342,7 +346,7 @@ public final class BSBan {
      */
     public static List<BSBan> byProxy(BSIPData data, boolean includeExpired) {
         List<BSBan> results = new ArrayList<>();
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement findBans = connection.prepareStatement(
                  includeExpired ? "SELECT * FROM bs_ban WHERE proxy_ban = ? ORDER BY ban_time" :
                      "SELECT * FROM bs_ban WHERE proxy_ban = ? AND (ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP) ORDER BY ban_time");) {
@@ -359,7 +363,7 @@ public final class BSBan {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to lookup bans by IP Data: " + data, se);
+            CORE.getLogger().error("Failed to lookup bans by IP Data: " + data, se);
         }
         return results;
     }
@@ -373,7 +377,7 @@ public final class BSBan {
      */
     public static List<BSBan> byShare(BSShare data, boolean includeExpired) {
         List<BSBan> results = new ArrayList<>();
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement findBans = connection.prepareStatement(
                  includeExpired ? "SELECT * FROM bs_ban WHERE share_ban = ? ORDER BY ban_time" :
                      "SELECT * FROM bs_ban WHERE share_ban = ? AND (ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP) ORDER BY ban_time");) {
@@ -390,7 +394,7 @@ public final class BSBan {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to lookup bans by Share: " + data, se);
+            CORE.getLogger().error("Failed to lookup bans by Share: " + data, se);
         }
         return results;
     }
@@ -404,7 +408,7 @@ public final class BSBan {
      * @return the newly created ban, or null if something went wrong.
      */
     public static BSBan create(String message, Date banEnd, boolean adminBan) {
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection()) {
             BSBan newBan = new BSBan();
             newBan.dirty = false;
             newBan.banTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
@@ -432,7 +436,7 @@ public final class BSBan {
                     if (rs.next()) {
                         newBan.bid = rs.getLong(1);
                     } else {
-                        BanStick.getPlugin().severe(NO_BID_RETURNED);
+                        CORE.getLogger().error(NO_BID_RETURNED);
                         return null; // no bid? error.
                     }
                 }
@@ -441,7 +445,7 @@ public final class BSBan {
             allBanID.put(newBan.bid, newBan);
             return newBan;
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to create a new ban record: ", se);
+            CORE.getLogger().error("Failed to create a new ban record: ", se);
         }
         return null;
     }
@@ -457,7 +461,7 @@ public final class BSBan {
      */
     public static BSBan create(BSIP exactIP, String message, Date banEnd, boolean adminBan) {
         // TODO: Check if this IP is already actively banned!
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection()) {
             BSBan newBan = new BSBan();
             newBan.dirty = false;
             newBan.deferIpBan = exactIP.getId();
@@ -488,7 +492,7 @@ public final class BSBan {
                     if (rs.next()) {
                         newBan.bid = rs.getLong(1);
                     } else {
-                        BanStick.getPlugin().severe(NO_BID_RETURNED);
+                        CORE.getLogger().error(NO_BID_RETURNED);
                         return null; // no bid? error.
                     }
                 }
@@ -497,7 +501,7 @@ public final class BSBan {
             allBanID.put(newBan.bid, newBan);
             return newBan;
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to create a new ip ban record: ", se);
+            CORE.getLogger().error("Failed to create a new ip ban record: ", se);
         }
         return null;
     }
@@ -513,7 +517,7 @@ public final class BSBan {
      */
     public static BSBan create(BSIPData proxy, String message, Date banEnd, boolean adminBan) {
         // TODO: Check if this IP is already actively banned!
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection()) {
             BSBan newBan = new BSBan();
             newBan.dirty = false;
             newBan.deferProxyBan = proxy.getId();
@@ -544,7 +548,7 @@ public final class BSBan {
                     if (rs.next()) {
                         newBan.bid = rs.getLong(1);
                     } else {
-                        BanStick.getPlugin().severe(NO_BID_RETURNED);
+                        CORE.getLogger().error(NO_BID_RETURNED);
                         return null; // no bid? error.
                     }
                 }
@@ -553,7 +557,7 @@ public final class BSBan {
             allBanID.put(newBan.bid, newBan);
             return newBan;
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to create a new proxy ban record: ", se);
+            CORE.getLogger().error("Failed to create a new proxy ban record: ", se);
         }
         return null;
     }
@@ -569,7 +573,7 @@ public final class BSBan {
      */
     public static BSBan create(BSShare share, String message, Date banEnd, boolean adminBan) {
         // TODO: Check if this share is already actively banned!
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection()) {
             BSBan newBan = new BSBan();
             newBan.dirty = false;
             newBan.deferShareBan = share.getId();
@@ -600,7 +604,7 @@ public final class BSBan {
                     if (rs.next()) {
                         newBan.bid = rs.getLong(1);
                     } else {
-                        BanStick.getPlugin().severe(NO_BID_RETURNED);
+                        CORE.getLogger().error(NO_BID_RETURNED);
                         return null; // no bid? error.
                     }
                 }
@@ -609,7 +613,7 @@ public final class BSBan {
             allBanID.put(newBan.bid, newBan);
             return newBan;
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to create a new share ban record: ", se);
+            CORE.getLogger().error("Failed to create a new share ban record: ", se);
         }
         return null;
     }
@@ -658,7 +662,7 @@ public final class BSBan {
      */
     public static long preload(long offset, int limit, boolean includeExpired) {
         long maxId = -1;
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement loadBans = connection.prepareStatement(
                  includeExpired ? "SELECT * FROM bs_ban WHERE bid > ? ORDER BY bid LIMIT ?" :
                      "SELECT * FROM bs_ban WHERE bid > ? AND (ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP ) ORDER BY bid LIMIT ? ");) {
@@ -676,7 +680,7 @@ public final class BSBan {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed during Ban preload, offset " + offset
+            CORE.getLogger().error("Failed during Ban preload, offset " + offset
                 + " limit " + limit, se);
         }
         return maxId;
@@ -684,80 +688,44 @@ public final class BSBan {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        if (getIPBan() != null) {
-            sb.append("IP Ban: ").append(ipBan.toString());
-        } else if (getProxyBan() != null) {
-            sb.append("Proxy Ban: ").append(proxyBan.toString());
-        } else if (getShareBan() != null) {
-            sb.append("Share Ban: ").append(shareBan.toString());
-        } else {
-            sb.append("Player Ban");
-        }
-
-        if (isAdminBan()) {
-            sb.append(" (administrative)");
-        }
-
-        if (getBanEndTime() != null) {
-            if ((new Date()).after(getBanEndTime())) { // passed
-                sb.append(" - Expired");
-            } else {
-                sb.append(" - Until ").append(getBanEndTime());
-            }
-        } else {
-            sb.append(" - Forever");
-        }
-
-        sb.append(" with message \"").append(message).append("\"");
-        return sb.toString();
+        return PlainTextComponentSerializer.plainText().serialize(getComponentMessage());
     }
 
-    /**
-     * Custom toString including full details.
-     *
-     * @param showIPs True to include IP addresses
-     * @return a String
-     */
-    public String toFullString(boolean showIPs) {
-        StringBuilder sb = new StringBuilder();
-        if (showIPs) {
-            if (getIPBan() != null) {
-                sb.append("IP Ban: ").append(ipBan.toString());
-            } else if (getProxyBan() != null) {
-                sb.append("Proxy Ban: ").append(proxyBan.toString());
-            } else if (getShareBan() != null) {
-                sb.append("Share Ban: ").append(shareBan.toString());
-            } else {
-                sb.append("Player Ban");
-            }
+    public Component getComponentMessage() {
+        TextComponent.Builder builder = Component.text();
+
+        if (getIPBan() != null) {
+            builder.append(Component.text("IP Ban: ", NamedTextColor.RED))
+                .append(Component.text(ipBan.toString(), NamedTextColor.WHITE));
+        } else if (getProxyBan() != null) {
+            builder.append(Component.text("Proxy Ban: ", NamedTextColor.GOLD))
+                .append(Component.text(proxyBan.toString(), NamedTextColor.WHITE));
+        } else if (getShareBan() != null) {
+            builder.append(Component.text("Share Ban: ", NamedTextColor.AQUA))
+                .append(Component.text(shareBan.toString(), NamedTextColor.WHITE));
         } else {
-            if (getIPBan() != null) {
-                sb.append("IP Ban: ").append(ipBan.getId());
-            } else if (getProxyBan() != null) {
-                sb.append("Proxy Ban: ").append(proxyBan.getId());
-            } else if (getShareBan() != null) {
-                sb.append("Share Ban: ").append(shareBan.toFullString(showIPs));
-            } else {
-                sb.append("Player Ban");
-            }
+            builder.append(Component.text("Player Ban", NamedTextColor.GRAY));
         }
 
         if (isAdminBan()) {
-            sb.append(" (administrative)");
+            builder.append(Component.text(" (administrative)", NamedTextColor.DARK_PURPLE));
         }
 
         if (getBanEndTime() != null) {
-            if ((new Date()).after(getBanEndTime())) { // passed
-                sb.append(" - Expired");
+            if ((new Date()).after(getBanEndTime())) {
+                builder.append(Component.text(" - Expired", NamedTextColor.GREEN));
             } else {
-                sb.append(" - Until ").append(getBanEndTime());
+                builder.append(Component.text(" - Until ", NamedTextColor.YELLOW))
+                    .append(Component.text(DateUtils.getDateTimeFormat().format(getBanEndTime()), NamedTextColor.WHITE));
             }
         } else {
-            sb.append(" - Forever");
+            builder.append(Component.text(" - Forever", NamedTextColor.RED));
         }
 
-        sb.append(" with message \"").append(message).append("\"");
-        return sb.toString();
+        builder.append(Component.text(" with message \"", NamedTextColor.GRAY))
+            .append(Component.text(message, NamedTextColor.WHITE))
+            .append(Component.text("\"", NamedTextColor.GRAY));
+
+        return builder.build();
     }
 }

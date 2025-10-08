@@ -1,9 +1,11 @@
 package com.programmerdan.minecraft.banstick.data;
 
+import xyz.huskydog.banstickCore.BanstickCore;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -13,6 +15,7 @@ import java.util.Set;
  */
 public final class BSExclusions {
 
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
     private BSPlayer forPlayer;
     private List<BSExclusion> exclusionList;
 

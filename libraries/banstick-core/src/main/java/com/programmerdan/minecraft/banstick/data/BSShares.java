@@ -1,7 +1,6 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
+import static com.programmerdan.minecraft.banstick.handler.BanHandler.getActivePlayerBanOrTransitive;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,10 +8,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-
-import static com.programmerdan.minecraft.banstick.handler.BanHandler.getActivePlayerBanOrTransitive;
-import static com.programmerdan.minecraft.banstick.handler.BanStickEventHandler.doKickWithCheckup;
+import xyz.huskydog.banstickCore.BanstickCore;
 
 /**
  * BSShares DAO management object.
@@ -20,6 +18,8 @@ import static com.programmerdan.minecraft.banstick.handler.BanStickEventHandler.
  * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  */
 public final class BSShares {
+
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
 
     private BSPlayer forPlayer;
     private List<Long> shareList;
@@ -118,7 +118,7 @@ public final class BSShares {
         List<BSPlayer> players = new ArrayList<>();
         if (overlaps != null && !overlaps.isEmpty()) {
             for (Long pid : overlaps) {
-                players.add(BSPlayer.byId(pid));
+                players.add(BSPlayer.getById(pid));
             }
         }
 
@@ -166,7 +166,7 @@ public final class BSShares {
         if (shareList != null) {
             return;
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getIDs = connection.prepareStatement(// Get all ids only, order by create time.
                  "SELECT sid, first_pid, second_pid, pardon FROM bs_share WHERE first_pid = ? OR second_pid = ? ORDER BY create_time;");) {
             getIDs.setLong(1, forPlayer.getId());
@@ -190,12 +190,12 @@ public final class BSShares {
                     }
                 }
                 if (localShareList.isEmpty()) {
-                    BanStick.getPlugin().info("No Shares for {0}", forPlayer.getName());
+                    CORE.getLogger().info("No Shares for {}", forPlayer.getName());
                 }
                 shareList = localShareList;
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to get list of Share ids", se);
+            CORE.getLogger().error("Failed to get list of Share ids", se);
         }
     }
 
@@ -226,7 +226,7 @@ public final class BSShares {
                     addNew(newOverlap, session.getPlayer());
                     session.getPlayer().addShare(newOverlap, forPlayer);
                 } else {
-                    BanStick.getPlugin().debug("Failed while generating share/overlap?");
+                    CORE.getLogger().debug("Failed while generating share/overlap?");
                 }
             }
         }
@@ -248,15 +248,16 @@ public final class BSShares {
         this.unpardonedList.add(share.getId());
         // be sure it gets promoted to the opposing record
 
-        BanStick.getPlugin().info("Found new overlap between {0} and {1}", forPlayer.getName(), player.getName());
+        CORE.getLogger().info("Found new overlap between {} and {}", forPlayer.getName(), player.getName());
 
+        // TODO: handle this on velocity
         // this happens after the player has already logged in
         // if the player has been associated with a banned share, kick them
         BSBan ban1 = getActivePlayerBanOrTransitive(share.getFirstPlayer().getUUID());
         BSBan ban = ban1 != null ? ban1 : getActivePlayerBanOrTransitive(share.getSecondPlayer().getUUID());
         if (ban != null) {
-            BanStick.getPlugin().info("New overlap between {0} and {1} resulting in at least one ban; kicking...", forPlayer.getName(), player.getName());
-            doKickWithCheckup(player.getUUID(), ban);
+            CORE.getLogger().info("New overlap between {} and {} resulting in at least one ban; kicking...", forPlayer.getName(), player.getName());
+            CORE.kickPlayer(player.getUUID(), ban);
         }
     }
 

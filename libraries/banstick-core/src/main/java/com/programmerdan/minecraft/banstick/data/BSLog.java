@@ -1,14 +1,13 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Date;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import xyz.huskydog.banstickCore.BanstickCore;
+import xyz.huskydog.banstickCore.Config;
 
 /**
  * TODO: Make accessors
@@ -20,25 +19,27 @@ import org.bukkit.scheduler.BukkitRunnable;
  *
  * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  */
-public class BSLog extends BukkitRunnable {
+public class BSLog implements Runnable {
 
-    private static ConcurrentLinkedQueue<LogEntry> toSave = new ConcurrentLinkedQueue<>();
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
+    private static final ConcurrentLinkedQueue<LogEntry> toSave = new ConcurrentLinkedQueue<>();
 
     private int maxBatch = 100;
     private long delay = 100L;
     private long period = 1200L;
 
-    public BSLog(FileConfiguration config) {
-        config(config.getConfigurationSection("log"));
+    public BSLog(Config configClass) {
+        config(configClass.getRawConfig().node("log"));
     }
 
-    private void config(ConfigurationSection config) {
-        if (config == null) {
+    private void config(CommentedConfigurationNode config) {
+        if (config.empty()) {
+            CORE.getLogger().info("Log configuration missing, using defaults");
             return;
         }
-        maxBatch = config.getInt("maxBatch", maxBatch);
-        delay = config.getLong("delay", delay);
-        period = config.getLong("period", period);
+        maxBatch = config.node("maxBatch").getInt(maxBatch);
+        delay = config.node("delay").getLong(delay);
+        period = config.node("period").getLong(period);
     }
 
     public long getDelay() {
@@ -55,7 +56,7 @@ public class BSLog extends BukkitRunnable {
         if (toSave.isEmpty()) {
             return;
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement saveEm = connection.prepareStatement(
                  "INSERT INTO bs_ban_log (pid, bid, action) VALUES (?, ?, ?);");) {
             int curBatch = 0;
@@ -72,14 +73,13 @@ public class BSLog extends BukkitRunnable {
             }
             int[] batchRun = saveEm.executeBatch();
             if (batchRun.length != curBatch) {
-                BanStick.getPlugin().severe("Some elements of the log batch didn't save? "
-                    + curBatch + " vs " + batchRun.length);
+                CORE.getLogger().error("Some elements of the log batch didn't save? {} vs {}", curBatch, batchRun.length);
             } else {
-                BanStick.getPlugin().debug("Log batch: {0} saves", batchRun.length);
+                CORE.getLogger().debug("Log batch: {} saves", batchRun.length);
             }
 
         } catch (Exception e) {
-            BanStick.getPlugin().severe("Warning, lost elements, some log entries failed to save!", e);
+            CORE.getLogger().error("Warning, lost elements, some log entries failed to save!", e);
         }
     }
 
@@ -124,7 +124,7 @@ public class BSLog extends BukkitRunnable {
     /**
      * Internal enum for type of ban.
      */
-    enum Action {
+    public enum Action {
         BAN,
         UNBAN,
         CHANGE

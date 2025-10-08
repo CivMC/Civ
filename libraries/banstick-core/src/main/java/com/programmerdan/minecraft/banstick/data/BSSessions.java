@@ -1,7 +1,6 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
+import xyz.huskydog.banstickCore.BanstickCore;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * BSSessions management DAO for BSSession.
@@ -17,6 +17,7 @@ import java.util.List;
  */
 public final class BSSessions {
 
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
     private BSPlayer forPlayer;
     private List<Long> sessionList;
 
@@ -80,7 +81,7 @@ public final class BSSessions {
     }
 
     private void fill() {
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getIDs = connection.prepareStatement(// Get all ids only, order by join time.
                  "SELECT sid FROM bs_session WHERE pid = ? ORDER BY join_time;");) {
             // TODO: replace statement w/ view.
@@ -91,11 +92,11 @@ public final class BSSessions {
                     sessionList.add(rs.getLong(1));
                 }
                 if (sessionList.isEmpty()) {
-                    BanStick.getPlugin().warning("No Sessions for " + forPlayer.getName());
+                    CORE.getLogger().warn("No Sessions for {}", forPlayer.getName());
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to get list of Session ids", se);
+            CORE.getLogger().error("Failed to get list of Session ids", se);
         }
     }
 
@@ -124,7 +125,7 @@ public final class BSSessions {
         if (session != null) {
             session.setLeaveTime(sessionEnd);
         } else {
-            BanStick.getPlugin().warning("Call to end a session, but no active session: " + forPlayer.getId());
+            CORE.getLogger().warn("Call to end a session, but no active session: {}", forPlayer.getId());
         }
     }
 }

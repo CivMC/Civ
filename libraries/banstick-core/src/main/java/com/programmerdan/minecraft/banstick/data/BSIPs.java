@@ -1,7 +1,6 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
+import xyz.huskydog.banstickCore.BanstickCore;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -18,6 +18,7 @@ import java.util.Set;
  */
 public final class BSIPs {
 
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
     private BSPlayer forPlayer;
 
     private List<Long> ipList;
@@ -118,12 +119,12 @@ public final class BSIPs {
             ipSet = new HashSet<>();
         }
 
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getIDs = connection.prepareStatement(// Get all ids only, order by join time.
                  "SELECT DISTINCT i.iid FROM bs_ip i JOIN bs_session s ON i.iid = s.iid WHERE s.pid = ? ORDER BY s.join_time;");) {
             // TODO: replace statement w/ view.
             getIDs.setLong(1, forPlayer.getId());
-            BanStick.getPlugin().debug("Filling IPs for {0}", forPlayer.getUUID());
+            CORE.getLogger().debug("Filling IPs for {}", forPlayer.getUUID());
             try (ResultSet rs = getIDs.executeQuery()) {
                 while (rs.next()) {
                     Long id = rs.getLong(1);
@@ -132,11 +133,11 @@ public final class BSIPs {
                     }
                 }
                 if (ipList.isEmpty() || ipSet.isEmpty()) {
-                    BanStick.getPlugin().warning("No IPs for " + forPlayer.getName());
+                    CORE.getLogger().warn("No IPs for {}", forPlayer.getName());
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to get list of IP ids", se);
+            CORE.getLogger().error("Failed to get list of IP ids", se);
         }
     }
 

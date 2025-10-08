@@ -15,14 +15,14 @@ database:
   maxLifetime: 7200000
   # Do we want to preload all data into memory (recommended) or if enabled: false, wait for on-demand?
   #  Batch: Size of batch (usually limited by DB software)
-  #  Period: in ticks, how long inbetween batches, shared evenly across all data types
-  #  Delay: in ticks, how long to wait until first batch, shared evenly across all data types
+  #  Period: in seconds, how long inbetween batches, shared evenly across all data types
+  #  Delay: in seconds, how long to wait until first batch, shared evenly across all data types
   preload:
     enabled: true
     batch: 100
     period: 50
     delay: 100
-  # This is always enabled. Updates to data are done batch-wise; period and delay are in ticks and define how long to wait inbetween update saves
+  # This is always enabled. Updates to data are done batch-wise; period and delay are in seconds and define how long to wait inbetween update saves
   dirtysave:
     period: 12000
     delay: 6000

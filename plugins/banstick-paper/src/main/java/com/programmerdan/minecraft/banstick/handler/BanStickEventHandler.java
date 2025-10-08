@@ -522,6 +522,8 @@ public class BanStickEventHandler implements Listener {
      * @param picked The ban being applied
      */
     public static void doKickWithCheckup(final UUID puuid, final BSBan picked) {
+        // TODO: use new banstickcore kick method
+
         // now schedule a task to kick out the trash.
         Bukkit.getScheduler().runTask(BanStick.getPlugin(), new Runnable() {
 

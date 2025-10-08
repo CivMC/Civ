@@ -1,16 +1,13 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanHandler;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import xyz.huskydog.banstickCore.BanstickCore;
 
 /**
  * Represents a set of banned registrars
@@ -19,11 +16,13 @@ import org.bukkit.entity.Player;
  */
 public class BSRegistrars {
 
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
     private Set<String> registrars;
+    private BanstickCore core = Objects.requireNonNull(BanstickCore.getInstance());
 
     public BSRegistrars() {
         registrars = loadRegistrarsFromDB();
-        BanStick.getPlugin().getLogger().info("Loaded " + registrars + " banned registrars from database");
+        core.getLogger().info("Loaded {} banned registrars from database", registrars);
     }
 
     /**
@@ -52,13 +51,13 @@ public class BSRegistrars {
             return;
         }
         registrars.add(data.getRegisteredAs());
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = core.getDatabaseHandler().getData().getConnection();
              PreparedStatement insertRegistrar = connection
                  .prepareStatement("insert into bs_banned_registrars (registered_as) values(?);");) {
             insertRegistrar.setString(1, data.getRegisteredAs());
             insertRegistrar.execute();
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Insertion of banned registrar failed", se);
+            core.getLogger().error("Insertion of banned registrar failed", se);
         }
     }
 
@@ -72,13 +71,13 @@ public class BSRegistrars {
             return;
         }
         registrars.remove(data.getRegisteredAs());
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = core.getDatabaseHandler().getData().getConnection();
              PreparedStatement insertRegistrar = connection
                  .prepareStatement("delete from bs_banned_registrars where registered_as = ?");) {
             insertRegistrar.setString(1, data.getRegisteredAs());
             insertRegistrar.execute();
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Deletion of banned registrar failed", se);
+            core.getLogger().error("Deletion of banned registrar failed", se);
         }
     }
 
@@ -96,27 +95,28 @@ public class BSRegistrars {
         if (!registrars.contains(data.getRegisteredAs())) {
             return;
         }
-        for (BSSession session : BSSession.byIP(data.getIP())) {
-            if (!session.isEnded()) {
-                //dont always reban people who logged in on a vpn once in the past
-                Player player = Bukkit.getPlayer(session.getPlayer().getUUID());
-                if (player == null) {
-                    BanStick.getPlugin().info("Session " + session.toFullString(true) + " was active, "
-                        + "but did not have an active player");
-                    continue;
-                }
-                BanHandler.doUUIDBan(player.getUniqueId(), true);
-                BanStick.getPlugin().info("Banning " + player.getName() + " for "
-                    + "blacklisted provider " + data.getRegisteredAs());
-                BanStick.getPlugin().getEventHandler().doKickWithCheckup(player.getUniqueId(),
-                    session.getPlayer().getBan());
-            }
-        }
+        // TODO: move to proxy
+        // for (BSSession session : BSSession.byIP(data.getIP())) {
+        //     if (!session.isEnded()) {
+        //         //dont always reban people who logged in on a vpn once in the past
+        //         Player player = Bukkit.getPlayer(session.getPlayer().getUUID());
+        //         if (player == null) {
+        //             BanStick.getPlugin().info("Session " + session.toFullString(true) + " was active, "
+        //                 + "but did not have an active player");
+        //             continue;
+        //         }
+        //         BanHandler.doUUIDBan(player.getUniqueId(), true);
+        //         BanStick.getPlugin().info("Banning " + player.getName() + " for "
+        //             + "blacklisted provider " + data.getRegisteredAs());
+        //         BanStick.getPlugin().getEventHandler().doKickWithCheckup(player.getUniqueId(),
+        //             session.getPlayer().getBan());
+        //     }
+        // }
     }
 
     private Set<String> loadRegistrarsFromDB() {
         Set<String> result = new HashSet<>();
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = core.getDatabaseHandler().getData().getConnection();
              PreparedStatement loadSet = connection
                  .prepareStatement("SELECT registered_as FROM bs_banned_registrars;");) {
             try (ResultSet rs = loadSet.executeQuery();) {
@@ -125,7 +125,7 @@ public class BSRegistrars {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Retrieval of banned registrars failed", se);
+            core.getLogger().error("Retrieval of banned registrars failed", se);
         }
         return result;
     }

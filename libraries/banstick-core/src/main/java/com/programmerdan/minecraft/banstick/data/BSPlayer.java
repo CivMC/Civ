@@ -1,7 +1,5 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -22,7 +20,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.bukkit.entity.Player;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import xyz.huskydog.banstickCore.BanstickCore;
+import xyz.huskydog.banstickCore.cmc.utils.BukkitPlayer;
+import xyz.huskydog.banstickCore.cmc.utils.DateUtils;
 
 /**
  * Represents player DAO logic.
@@ -31,16 +37,17 @@ import org.bukkit.entity.Player;
  */
 public final class BSPlayer {
 
-    private static Map<Long, BSPlayer> allPlayersID = new HashMap<>();
-    private static Map<UUID, BSPlayer> allPlayersUUID = new HashMap<>();
-    private static ConcurrentLinkedQueue<WeakReference<BSPlayer>> dirtyPlayers = new ConcurrentLinkedQueue<>();
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
+    private static final Map<Long, BSPlayer> allPlayersID = new HashMap<>();
+    private static final Map<UUID, BSPlayer> allPlayersUUID = new HashMap<>();
+    private static final ConcurrentLinkedQueue<WeakReference<BSPlayer>> dirtyPlayers = new ConcurrentLinkedQueue<>();
 
     private long pid;
     private String name;
     private UUID uuid;
     private Timestamp firstAdd;
     private Long deferBid;
-    private BSBan bid;
+    private @Nullable BSBan bid;
     private Timestamp ipPardonTime;
     private Timestamp proxyPardonTime;
     private Timestamp sharedPardonTime;
@@ -131,7 +138,7 @@ public final class BSPlayer {
      *
      * @return Current active BSBan, if any.
      */
-    public BSBan getBan() {
+    public @Nullable BSBan getBan() {
         if (this.bid == null && this.deferBid != null) {
             this.bid = BSBan.byId(this.deferBid);
         }
@@ -168,7 +175,7 @@ public final class BSPlayer {
      * @param player       The player whose session to start
      * @param sessionStart The Date that the session began
      */
-    public void startSession(final Player player, Date sessionStart) {
+    public void startSession(@NotNull final BukkitPlayer player, @NotNull Date sessionStart) {
         BSSession latest = this.allSessions.getLatest();
         if (latest != null && !latest.isEnded()) {
             latest.setLeaveTime(sessionStart);
@@ -176,12 +183,12 @@ public final class BSPlayer {
         InetSocketAddress isa = player.getAddress();
         InetAddress ina = isa != null ? isa.getAddress() : null;
         if (ina != null) {
-            BSIP ip = BanStickDatabaseHandler.getInstance().getOrCreateIP(ina);
+            BSIP ip = CORE.getDatabaseHandler().getOrCreateIP(ina);
             this.allIPs.setLatest(ip);
             latest = this.allSessions.startNew(ip, sessionStart);
             this.allShares.check(latest);
         } else {
-            BanStick.getPlugin().severe("Start session of BSPlayer failed, no IP retrievable! Player: " + player);
+            CORE.getLogger().error("Start session of BSPlayer failed, no IP retrievable! Player: {}", player);
         }
     }
 
@@ -236,7 +243,7 @@ public final class BSPlayer {
      */
     public static void saveDirty() {
         int batchSize = 0;
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement savePlayer = connection.prepareStatement(
                  "UPDATE bs_player SET ip_pardon_time = ?, proxy_pardon_time = ?, shared_pardon_time = ?, bid = ?, name = ? WHERE pid = ?");) {
             while (!dirtyPlayers.isEmpty()) {
@@ -251,10 +258,9 @@ public final class BSPlayer {
                 if (batchSize > 0 && batchSize % 100 == 0) {
                     int[] batchRun = savePlayer.executeBatch();
                     if (batchRun.length != batchSize) {
-                        BanStick.getPlugin().severe("Some elements of the dirt batch didn't save? "
-                            + batchSize + " vs " + batchRun.length);
+                        CORE.getLogger().error("Some elements of the dirt batch didn't save? {} vs {}", batchSize, batchRun.length);
                     } else {
-                        BanStick.getPlugin().debug("Player batch: {0} saves", batchRun.length);
+                        CORE.getLogger().debug("Player batch: {} saves", batchRun.length);
                     }
                     batchSize = 0;
                 }
@@ -262,14 +268,14 @@ public final class BSPlayer {
             if (batchSize > 0 && batchSize % 100 > 0) {
                 int[] batchRun = savePlayer.executeBatch();
                 if (batchRun.length != batchSize) {
-                    BanStick.getPlugin().severe("Some elements of the dirt batch didn't save? "
+                    CORE.getLogger().error("Some elements of the dirt batch didn't save? "
                         + batchSize + " vs " + batchRun.length);
                 } else {
-                    BanStick.getPlugin().debug("Player batch: {0} saves", batchRun.length);
+                    CORE.getLogger().debug("Player batch: {} saves", batchRun.length);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Save of BSPlayer dirty batch failed!: ", se);
+            CORE.getLogger().error("Save of BSPlayer dirty batch failed!: ", se);
         }
     }
 
@@ -281,16 +287,16 @@ public final class BSPlayer {
             return;
         }
         this.dirty = false; // don't let anyone else in!
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement savePlayer = connection.prepareStatement(
                  "UPDATE bs_player SET ip_pardon_time = ?, proxy_pardon_time = ?, shared_pardon_time = ?, bid = ?, name = ? WHERE pid = ?");) {
             saveToStatement(savePlayer);
             int effects = savePlayer.executeUpdate();
             if (effects == 0) {
-                BanStick.getPlugin().severe("Failed to save BSPlayer or no update? " + this.pid);
+                CORE.getLogger().error("Failed to save BSPlayer or no update? {}", this.pid);
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Save of BSPlayer failed!: ", se);
+            CORE.getLogger().error("Save of BSPlayer failed!: ", se);
         }
     }
 
@@ -345,12 +351,12 @@ public final class BSPlayer {
      * @param uuid Gets a BSPlayer record by uuid.
      * @return BSPlayer matching the uuid or null if not found
      */
-    public static BSPlayer byUUID(final UUID uuid) {
+    public static @Nullable BSPlayer byUUID(final UUID uuid) {
         if (allPlayersUUID.containsKey(uuid)) {
             return allPlayersUUID.get(uuid);
         }
 
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getPlayer = connection.prepareStatement("SELECT * FROM bs_player WHERE uuid = ?");) {
             getPlayer.setString(1, uuid.toString());
             try (ResultSet rs = getPlayer.executeQuery();) {
@@ -378,7 +384,7 @@ public final class BSPlayer {
                         player.deferBid = bid;
                         player.bid = null;
                     }
-                    //player.bid = rs.wasNull() ? null : BSBan.byId(bid);
+                    // player.bid = rs.wasNull() ? null : BSBan.byId(bid);
                     try {
                         player.ipPardonTime = rs.getTimestamp(6);
                     } catch (SQLException te) {
@@ -403,9 +409,9 @@ public final class BSPlayer {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to execute query to get player: " + uuid.toString(), se);
+            CORE.getLogger().error("Failed to execute query to get player " + uuid.toString(), se);
         }
-        return null; //TODO: exception
+        return null; // TODO: exception
     }
 
     /**
@@ -414,12 +420,12 @@ public final class BSPlayer {
      * @param pid The Player ID to use in the lookup
      * @return The Player found, or null if not found
      */
-    public static BSPlayer byId(final long pid) {
+    public static BSPlayer getById(final long pid) {
         if (allPlayersID.containsKey(pid)) {
             return allPlayersID.get(pid);
         }
 
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getPlayer = connection.prepareStatement("SELECT * FROM bs_player WHERE pid = ?");) {
             getPlayer.setLong(1, pid);
             try (ResultSet rs = getPlayer.executeQuery();) {
@@ -441,7 +447,7 @@ public final class BSPlayer {
                         player.deferBid = bid;
                         player.bid = null;
                     }
-                    //player.bid = rs.wasNull() ? null : BSBan.byId(bid);
+                    // player.bid = rs.wasNull() ? null : BSBan.byId(bid);
                     try {
                         player.ipPardonTime = rs.getTimestamp(6);
                     } catch (SQLException te) {
@@ -466,7 +472,7 @@ public final class BSPlayer {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to execute query to get player: " + pid, se);
+            CORE.getLogger().error("Failed to execute query to get player: " + pid, se);
         }
         return null; // TODO: exception
     }
@@ -477,57 +483,58 @@ public final class BSPlayer {
      * @param player The player object to use
      * @return the BSPlayer created from the player, or null
      */
-    public static BSPlayer create(final Player player) {
-        if (allPlayersUUID.containsKey(player.getUniqueId())) {
-            return allPlayersUUID.get(player.getUniqueId());
-        }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
-            BSPlayer newPlayer = new BSPlayer();
-            newPlayer.dirty = false;
-            newPlayer.name = player.getDisplayName();
-            newPlayer.uuid = player.getUniqueId();
-            newPlayer.firstAdd = new Timestamp(Calendar.getInstance().getTimeInMillis());
-
-            try (PreparedStatement insertPlayer = connection.prepareStatement(
-                "INSERT INTO bs_player(name, uuid, first_add) VALUES (?, ?, ?);",
-                Statement.RETURN_GENERATED_KEYS)) {
-                insertPlayer.setString(1, newPlayer.name);
-                insertPlayer.setString(2, newPlayer.uuid.toString());
-                insertPlayer.setTimestamp(3, newPlayer.firstAdd);
-                insertPlayer.execute();
-                try (ResultSet rs = insertPlayer.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        newPlayer.pid = rs.getLong(1);
-                    } else {
-                        BanStick.getPlugin().severe("No PID returned on player insert?!");
-                        return null; // no pid? error.
-                    }
-                }
-            }
-
-            newPlayer.allSessions = BSSessions.onlyFor(newPlayer);
-            newPlayer.allIPs = BSIPs.onlyFor(newPlayer);
-            newPlayer.allShares = BSShares.onlyFor(newPlayer);
-            newPlayer.allExclusions = BSExclusions.onlyFor(newPlayer);
-
-            allPlayersID.put(newPlayer.pid, newPlayer);
-            allPlayersUUID.put(newPlayer.uuid, newPlayer);
-            return newPlayer;
-        } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to create a new player record: ", se);
-            return null;
-        }
+    public static @Nullable BSPlayer create(final BukkitPlayer player) {
+        return create(player.getUniqueId(), player.getDisplayName());
+        // if (allPlayersUUID.containsKey(player.getUniqueId())) {
+        //     return allPlayersUUID.get(player.getUniqueId());
+        // }
+        // try (Connection connection = core.getDatabaseHandler().getData().getConnection()) {
+        //     BSPlayer newPlayer = new BSPlayer();
+        //     newPlayer.dirty = false;
+        //     newPlayer.name = player.getDisplayName();
+        //     newPlayer.uuid = player.getUniqueId();
+        //     newPlayer.firstAdd = new Timestamp(Calendar.getInstance().getTimeInMillis());
+        //
+        //     try (PreparedStatement insertPlayer = connection.prepareStatement(
+        //         "INSERT INTO bs_player(name, uuid, first_add) VALUES (?, ?, ?);",
+        //         Statement.RETURN_GENERATED_KEYS)) {
+        //         insertPlayer.setString(1, newPlayer.name);
+        //         insertPlayer.setString(2, newPlayer.uuid.toString());
+        //         insertPlayer.setTimestamp(3, newPlayer.firstAdd);
+        //         insertPlayer.execute();
+        //         try (ResultSet rs = insertPlayer.getGeneratedKeys()) {
+        //             if (rs.next()) {
+        //                 newPlayer.pid = rs.getLong(1);
+        //             } else {
+        //                 core.getLogger().error("No PID returned on player insert?!");
+        //                 return null; // no pid? error.
+        //             }
+        //         }
+        //     }
+        //
+        //     newPlayer.allSessions = BSSessions.onlyFor(newPlayer);
+        //     newPlayer.allIPs = BSIPs.onlyFor(newPlayer);
+        //     newPlayer.allShares = BSShares.onlyFor(newPlayer);
+        //     newPlayer.allExclusions = BSExclusions.onlyFor(newPlayer);
+        //
+        //     allPlayersID.put(newPlayer.pid, newPlayer);
+        //     allPlayersUUID.put(newPlayer.uuid, newPlayer);
+        //     return newPlayer;
+        // } catch (SQLException se) {
+        //     core.getLogger().error("Failed to create a new player record: ", se);
+        //     return null;
+        // }
     }
 
-    /**
-     * TODO: this is empty.
-     *
-     * @param playerId The player's UUID to create.
-     * @return null; this is a NO-OP. Use different method, providing player name.
-     */
-    public static BSPlayer create(UUID playerId) {
-        return null;
-    }
+    // /**
+    //  * TODO: this is empty.
+    //  *
+    //  * @param playerId The player's UUID to create.
+    //  * @return null; this is a NO-OP. Use different method, providing player name.
+    //  */
+    // public static BSPlayer create(UUID playerId) {
+    //     return null;
+    // }
 
     /**
      * Creates, if needed, a new BSPlayer and inserts it into the database. Sets up related DAOs.
@@ -536,11 +543,11 @@ public final class BSPlayer {
      * @param name     the Player's Name to create
      * @return the new BSPlayer, or an existing player if they already exist, or null if failure.
      */
-    public static BSPlayer create(UUID playerId, String name) {
+    public static @Nullable BSPlayer create(@NotNull UUID playerId, @Nullable String name) {
         if (allPlayersUUID.containsKey(playerId)) {
             return allPlayersUUID.get(playerId);
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection()) {
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection()) {
             BSPlayer newPlayer = new BSPlayer();
             newPlayer.dirty = false;
             newPlayer.name = name;
@@ -562,7 +569,7 @@ public final class BSPlayer {
                     if (rs.next()) {
                         newPlayer.pid = rs.getLong(1);
                     } else {
-                        BanStick.getPlugin().severe("No PID returned on player insert?!");
+                        CORE.getLogger().error("No PID returned on player insert?!");
                         return null; // no pid? error.
                     }
                 }
@@ -577,7 +584,7 @@ public final class BSPlayer {
             allPlayersUUID.put(newPlayer.uuid, newPlayer);
             return newPlayer;
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to create a new player record: ", se);
+            CORE.getLogger().error("Failed to create a new player record: ", se);
             return null;
         }
     }
@@ -592,7 +599,7 @@ public final class BSPlayer {
      */
     public static long preload(long offset, int limit) {
         long maxId = -1;
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement loadPlayers = connection.prepareStatement(
                  "SELECT * FROM bs_player WHERE pid > ? ORDER BY pid LIMIT ?");) {
             loadPlayers.setLong(1, offset);
@@ -620,7 +627,7 @@ public final class BSPlayer {
                         player.deferBid = bid;
                         player.bid = null;
                     }
-                    //player.bid = rs.wasNull() ? null : BSBan.byId(bid);
+                    // player.bid = rs.wasNull() ? null : BSBan.byId(bid);
                     try {
                         player.ipPardonTime = rs.getTimestamp(6);
                     } catch (SQLException te) {
@@ -651,28 +658,39 @@ public final class BSPlayer {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed during Player preload, offset " + offset + " limit " + limit, se);
+            CORE.getLogger().error("Failed during Player preload, offset " + offset + " limit " + limit, se);
         }
         return maxId;
     }
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append(this.name);
-        if (this.getBan() != null) {
-            sb.append(" [Banned]");
+        return PlainTextComponentSerializer.plainText().serialize(getComponentMessage());
+    }
+
+    public Component getComponentMessage() {
+        TextComponent.Builder builder = Component.text();
+
+        builder.append(Component.text(this.name, NamedTextColor.WHITE));
+
+        BSBan ban = this.getBan();
+        if (ban != null) {
+            builder.append(Component.text(" [Banned]", NamedTextColor.RED));
         }
         if (this.ipPardonTime != null) {
-            sb.append(" [IP Pardoned]");
+            builder.append(Component.text(" [IP Pardoned] ", NamedTextColor.GREEN))
+                .append(Component.text(DateUtils.getDateTimeFormat().format(this.ipPardonTime), NamedTextColor.WHITE));
         }
         if (this.proxyPardonTime != null) {
-            sb.append(" [Proxy Pardoned]");
+            builder.append(Component.text(" [Proxy Pardoned] ", NamedTextColor.AQUA))
+                .append(Component.text(DateUtils.getDateTimeFormat().format(this.proxyPardonTime), NamedTextColor.WHITE));
         }
         if (this.sharedPardonTime != null) {
-            sb.append(" [Share Pardoned]");
+            builder.append(Component.text(" [Share Pardoned] ", NamedTextColor.YELLOW))
+                .append(Component.text(DateUtils.getDateTimeFormat().format(this.sharedPardonTime), NamedTextColor.WHITE));
         }
-        return sb.toString();
+
+        return builder.build();
     }
 
     public void pardonShare(BSShare share) {

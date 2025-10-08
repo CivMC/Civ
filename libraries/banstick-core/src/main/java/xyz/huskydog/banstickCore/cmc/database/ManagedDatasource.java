@@ -176,13 +176,12 @@ public class ManagedDatasource {
      * @param credentials The credentials to connect to the database with.
      * @return Returns
      */
-    @Nullable
-    public static ManagedDatasource construct(@NotNull final BanstickPlugin plugin,
+    public static @NotNull ManagedDatasource construct(@NotNull final BanstickPlugin plugin,
                                               @Nullable final DatabaseCredentials credentials) {
         final var logger = plugin.getLogger();
         if (credentials == null) {
-            logger.warn("You must pass in a set of credentials");
-            return null;
+            logger.error("You must pass in a set of credentials");
+            throw new IllegalArgumentException("Credentials cannot be null");
         }
         final var connections = new ConnectionPool(credentials);
         logger.info("Connecting to {}@{}:{} using {}", credentials.database(), credentials.host(), credentials.port(), credentials.username());
@@ -198,7 +197,7 @@ public class ManagedDatasource {
             logger.error("Assuming you provided proper database credentials this is most likely " +
                 "happening, because your mysql install is outdated. We recommend using MariaDB or at least the " +
                 "latest mysql version.", exception);
-            return null;
+            throw new RuntimeException("Unable to prepare migrations table or register this plugin to it.", exception);
         }
         return new ManagedDatasource(logger, plugin, connections);
     }

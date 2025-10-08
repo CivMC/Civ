@@ -1,7 +1,5 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.lang.ref.WeakReference;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,8 +13,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.NotNull;
+import xyz.huskydog.banstickCore.BanstickCore;
+import xyz.huskydog.banstickCore.cmc.utils.DateUtils;
 
 /**
  * Represents a single playtime of a player.
@@ -33,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class BSSession {
 
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
     private static Map<Long, BSSession> allSessionID = new HashMap<>();
     private static ConcurrentLinkedQueue<WeakReference<BSSession>> dirtySessions = new ConcurrentLinkedQueue<>();
     private boolean dirty;
@@ -94,7 +100,7 @@ public final class BSSession {
      */
     public BSPlayer getPlayer() {
         if (pid == null && deferPid != null) {
-            pid = BSPlayer.byId(deferPid);
+            pid = BSPlayer.getById(deferPid);
         }
         return pid;
     }
@@ -120,7 +126,7 @@ public final class BSSession {
      */
     public static void saveDirty() {
         int batchSize = 0;
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement save = connection.prepareStatement(
                  "UPDATE bs_session SET leave_time = ? WHERE sid = ?");) {
             while (!dirtySessions.isEmpty()) {
@@ -135,10 +141,9 @@ public final class BSSession {
                 if (batchSize > 0 && batchSize % 100 == 0) {
                     int[] batchRun = save.executeBatch();
                     if (batchRun.length != batchSize) {
-                        BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? "
-                            + batchSize + " vs " + batchRun.length);
+                        CORE.getLogger().error("Some elements of the dirty batch didn't save? {} vs {}", batchSize, batchRun.length);
                     } else {
-                        BanStick.getPlugin().debug("Session batch: {0} saves", batchRun.length);
+                        CORE.getLogger().debug("Session batch: {} saves", batchRun.length);
                     }
                     batchSize = 0;
                 }
@@ -146,14 +151,13 @@ public final class BSSession {
             if (batchSize > 0 && batchSize % 100 > 0) {
                 int[] batchRun = save.executeBatch();
                 if (batchRun.length != batchSize) {
-                    BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? "
-                        + batchSize + " vs " + batchRun.length);
+                    CORE.getLogger().error("Some elements of the dirty batch didn't save? {} vs {}", batchSize, batchRun.length);
                 } else {
-                    BanStick.getPlugin().debug("Session batch: {0} saves", batchRun.length);
+                    CORE.getLogger().debug("Session batch: {} saves", batchRun.length);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Save of BSSession dirty batch failed!: ", se);
+            CORE.getLogger().error("Save of BSSession dirty batch failed!: ", se);
         }
     }
 
@@ -165,16 +169,16 @@ public final class BSSession {
             return;
         }
         this.dirty = false; // don't let anyone else in!
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement save = connection.prepareStatement(
                  "UPDATE bs_session SET leave_time = ? WHERE sid = ?");) {
             saveToStatement(save);
             int effects = save.executeUpdate();
             if (effects == 0) {
-                BanStick.getPlugin().severe("Failed to save BSSession or no update? " + this.sid);
+                CORE.getLogger().error("Failed to save BSSession or no update? {}", this.sid);
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Save of BSSession failed!: ", se);
+            CORE.getLogger().error("Save of BSSession failed!: ", se);
         }
     }
 
@@ -211,7 +215,7 @@ public final class BSSession {
         if (allSessionID.containsKey(sid)) {
             return allSessionID.get(sid);
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_session WHERE sid = ?");) {
             getId.setLong(1, sid);
             try (ResultSet rs = getId.executeQuery();) {
@@ -220,11 +224,11 @@ public final class BSSession {
                     allSessionID.put(sid, newS);
                     return newS;
                 } else {
-                    BanStick.getPlugin().warning("Failed to retrieve Session by id: " + sid + " - not found");
+                    CORE.getLogger().warn("Failed to retrieve Session by id: {} - not found", sid);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Retrieval of session by ID failed: " + sid, se);
+            CORE.getLogger().error("Retrieval of session by ID failed: " + sid, se);
         }
         return null;
     }
@@ -254,7 +258,7 @@ public final class BSSession {
      */
     public static List<BSSession> byIP(BSIP iid) {
         ArrayList<BSSession> sessions = new ArrayList<>();
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getIds = connection.prepareStatement("SELECT * FROM bs_session WHERE iid = ?");) {
             getIds.setLong(1, iid.getId());
             try (ResultSet rs = getIds.executeQuery();) {
@@ -271,7 +275,7 @@ public final class BSSession {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Retrieval of sessions by IP failed: " + iid.toString(), se);
+            CORE.getLogger().error("Retrieval of sessions by IP failed: " + iid.toString(), se);
         }
         return sessions;
     }
@@ -285,7 +289,7 @@ public final class BSSession {
      * @return the newly created BSSession
      */
     public static BSSession create(BSPlayer pid, Date sessionStart, BSIP iid) {
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement newSession = connection.prepareStatement(
                  "INSERT INTO bs_session(pid, join_time, iid) VALUES (?, ?, ?)",
                  Statement.RETURN_GENERATED_KEYS);) {
@@ -301,7 +305,7 @@ public final class BSSession {
             newSession.setLong(3, iid.getId());
             int ins = newSession.executeUpdate();
             if (ins < 1) {
-                BanStick.getPlugin().warning("Insert reported no session inserted?" + pid.getName());
+                CORE.getLogger().warn("Insert reported no session inserted?" + pid.getName());
             }
 
             try (ResultSet rs = newSession.getGeneratedKeys()) {
@@ -312,12 +316,12 @@ public final class BSSession {
                     allSessionID.put(sid, session);
                     return session;
                 } else {
-                    BanStick.getPlugin().severe("Failed to get ID from inserted session!? " + pid.getName());
+                    CORE.getLogger().error("Failed to get ID from inserted session!? {}", pid.getName());
                     return null;
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to insert new session for " + pid.getName(), se);
+            CORE.getLogger().error("Failed to insert new session for " + pid.getName(), se);
         }
         return null;
     }
@@ -331,7 +335,7 @@ public final class BSSession {
      */
     public static long preload(long offset, int limit) {
         long maxId = -1;
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement loadSessions = connection.prepareStatement(
                  "SELECT * FROM bs_session WHERE sid > ? ORDER BY sid LIMIT ?");) {
             loadSessions.setLong(1, offset);
@@ -362,35 +366,37 @@ public final class BSSession {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed during Session preload, offset " + offset + " limit " + limit, se);
+            CORE.getLogger().error("Failed during Session preload, offset {} limit {}", offset, limit, se);
         }
         return maxId;
     }
 
     @Override
     public String toString() {
-        return toFullString(true);
+        return PlainTextComponentSerializer.plainText().serialize(getComponentMessage(true));
     }
 
     /**
-     * Shows Session details (player / start / stop / IP if set)
+     * Shows Session details (player / start / stop / IP if set) as a Component for chat
      *
      * @param showIP determines if to show IP or not
-     * @return the display string
+     * @return the display component
      */
-    public String toFullString(boolean showIP) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getPlayer().getName()).append(" [");
+    public Component getComponentMessage(boolean showIP) {
+        TextComponent.Builder builder = Component.text();
+        builder.append(Component.text(getPlayer().getName(), NamedTextColor.WHITE))
+            .append(Component.text(" [", NamedTextColor.GRAY));
         if (showIP) {
-            sb.append(getIP().toString());
+            builder.append(Component.text(getIP().toString(), NamedTextColor.YELLOW));
         } else {
-            sb.append(getIP().getId());
+            builder.append(Component.text(String.valueOf(getIP().getId()), NamedTextColor.YELLOW));
         }
-        sb.append("]: ");
-        sb.append(getJoinTime().toString());
+        builder.append(Component.text("]: ", NamedTextColor.GRAY))
+            .append(Component.text(DateUtils.getDateTimeFormat().format(getJoinTime()), NamedTextColor.GREEN));
         if (isEnded()) {
-            sb.append(" - ").append(getLeaveTime());
+            builder.append(Component.text(" - ", NamedTextColor.GRAY))
+                .append(Component.text(DateUtils.getDateTimeFormat().format(getLeaveTime()), NamedTextColor.GREEN));
         }
-        return sb.toString();
+        return builder.build();
     }
 }

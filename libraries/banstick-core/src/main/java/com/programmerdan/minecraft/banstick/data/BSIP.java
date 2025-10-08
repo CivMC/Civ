@@ -1,11 +1,10 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import inet.ipaddr.ipv4.IPv4Address;
 import inet.ipaddr.ipv6.IPv6Address;
+import xyz.huskydog.banstickCore.BanstickCore;
 import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Internal IP address representation and lookups, can be a v4 or v6 IP.
@@ -28,8 +28,9 @@ import java.util.Map;
  */
 public final class BSIP {
 
-    private static Map<IPAddress, BSIP> allIPNA = new HashMap<>();
-    private static Map<Long, BSIP> allIPId = new HashMap<>();
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
+    private static final Map<IPAddress, BSIP> allIPNA = new HashMap<>();
+    private static final Map<Long, BSIP> allIPId = new HashMap<>();
 
     private long iid;
     private Timestamp createTime;
@@ -135,7 +136,7 @@ public final class BSIP {
         } else {
             newBase.getNetworkSection(cidr).getStartsWithSQLClause(sb, "ip6");
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getIP = connection.prepareStatement(sb.toString());
              ResultSet rs = getIP.executeQuery();) {
             while (rs.next()) {
@@ -167,8 +168,7 @@ public final class BSIP {
                             BSIP.allIPNA.put(bsip.basev4, bsip);
                         }
                     } else {
-                        BanStick.getPlugin().warning("Conversion of ipv4 address to ipv4 failed??: "
-                            + bsip.iid + " - " + ipv4);
+                        CORE.getLogger().warn("Conversion of ipv4 address to ipv4 failed??: {} - {}", bsip.iid, ipv4);
                         continue;
                         // TODO: exception
                     }
@@ -180,13 +180,12 @@ public final class BSIP {
                             BSIP.allIPNA.put(bsip.basev6, bsip);
                         }
                     } else {
-                        BanStick.getPlugin().warning("Conversion of ipv6 address to ipv6 failed??: "
-                            + bsip.iid + " - " + ipv6);
+                        CORE.getLogger().warn("Conversion of ipv6 address to ipv6 failed??: {} - {}", bsip.iid, ipv6);
                         continue;
                         // TODO: exception
                     }
                 } else {
-                    BanStick.getPlugin().warning("Empty ip entry?!: " + bsip.iid);
+                    CORE.getLogger().warn("Empty ip entry?!: {}", bsip.iid);
                     continue;
                     // TODO: exception
                 }
@@ -198,7 +197,7 @@ public final class BSIP {
             }
 
         } catch (SQLException e) {
-            BanStick.getPlugin().severe("Failed during search for IPs contained by "
+            CORE.getLogger().error("Failed during search for IPs contained by "
                 + newBase.toCanonicalString(), e);
         }
         return returns;
@@ -251,14 +250,14 @@ public final class BSIP {
         if (allIPNA.containsKey(lookup)) {
             return allIPNA.get(lookup);
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();) {
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();) {
             PreparedStatement getIP = null;
             if (lookup.isIPv4()) {
                 getIP = connection.prepareStatement("SELECT * FROM bs_ip WHERE ip4 = ? and ip4cidr = ?");
             } else if (lookup.isIPv6()) {
                 getIP = connection.prepareStatement("SELECT * FROM bs_ip WHERE ip6 = ? and ip6cidr = ?");
             } else {
-                BanStick.getPlugin().severe("Unknown Inet address type: " + netAddress.toString());
+                CORE.getLogger().error("Unknown Inet address type: {}", netAddress);
                 return null;
             }
             getIP.setString(1, lookup.toSubnet(cidr).getLower().toString());
@@ -271,7 +270,7 @@ public final class BSIP {
             getIP.close();
             return bsip;
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Unable to retrieve BPID: " + netAddress + "/" + cidr, se);
+            CORE.getLogger().error("Unable to retrieve BPID: " + netAddress + "/" + cidr, se);
         }
         return null;
     }
@@ -298,7 +297,7 @@ public final class BSIP {
         if (allIPNA.containsKey(lookup)) {
             return allIPNA.get(lookup);
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();) {
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();) {
             PreparedStatement getIP = null;
             if (lookup.isIPv4()) {
                 getIP = connection.prepareStatement("SELECT * FROM bs_ip WHERE ip4 = ? and ip4cidr = 32");
@@ -307,7 +306,7 @@ public final class BSIP {
                 getIP = connection.prepareStatement("SELECT * FROM bs_ip WHERE ip6 = ? and ip6cidr = 128");
                 getIP.setString(1, lookup.toString());
             } else {
-                BanStick.getPlugin().severe("Unknown Inet address type: " + lookup.toString());
+                CORE.getLogger().error("Unknown Inet address type: {}", lookup);
                 return null;
             }
             BSIP bsip = null;
@@ -317,7 +316,7 @@ public final class BSIP {
             getIP.close();
             return bsip;
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to execute query to get IP: " + lookup.toString(), se);
+            CORE.getLogger().error("Failed to execute query to get IP: " + lookup.toString(), se);
         }
 
         return null;
@@ -333,14 +332,14 @@ public final class BSIP {
         if (allIPId.containsKey(iid)) {
             return allIPId.get(iid);
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getIP = connection.prepareStatement("SELECT * FROM bs_ip WHERE iid = ?");) {
             getIP.setLong(1, iid);
             try (ResultSet rs = getIP.executeQuery();) {
                 return internalGetResult(rs);
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Unable to retrieve BPID: " + iid, se);
+            CORE.getLogger().error("Unable to retrieve BPID: " + iid, se);
         }
         return null; // TODO: exception
     }
@@ -379,8 +378,7 @@ public final class BSIP {
                     bsip.basev4 = ips.getAddress().toIPv4();
                     BSIP.allIPNA.put(bsip.basev4, bsip);
                 } else {
-                    BanStick.getPlugin().warning("Conversion of ipv4 address to ipv4 failed??: "
-                        + bsip.iid + " - " + ipv4);
+                    CORE.getLogger().warn("Conversion of ipv4 address to ipv4 failed??: {} - {}", bsip.iid, ipv4);
                     return null; // TODO: exception
                 }
             } else if (ipv6 != null) { //ipv6 specific entry.
@@ -389,12 +387,11 @@ public final class BSIP {
                     bsip.basev6 = ips.getAddress().toIPv6();
                     BSIP.allIPNA.put(bsip.basev6, bsip);
                 } else {
-                    BanStick.getPlugin().warning("Conversion of ipv6 address to ipv6 failed??: "
-                        + bsip.iid + " - " + ipv6);
+                    CORE.getLogger().warn("Conversion of ipv6 address to ipv6 failed??: {} - {}", bsip.iid, ipv6);
                     return null; // TODO: exception
                 }
             } else {
-                BanStick.getPlugin().warning("Empty ip entry?!: " + bsip.iid);
+                CORE.getLogger().warn("Empty ip entry?!: " + bsip.iid);
                 return null; // TODO: exception
             }
 
@@ -428,7 +425,7 @@ public final class BSIP {
         if (allIPNA.containsKey(lookup)) {
             return allIPNA.get(lookup);
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement statement = connection.prepareStatement(
                  "INSERT INTO bs_ip(ip4, ip4cidr, ip6, ip6cidr, create_time) VALUES (?, ?, ?, ?, ?);",
                  Statement.RETURN_GENERATED_KEYS);) {
@@ -451,7 +448,7 @@ public final class BSIP {
 
             int ins = statement.executeUpdate();
             if (ins < 1) {
-                BanStick.getPlugin().warning("Insert reported nothing inserted? " + lookup.toString());
+                CORE.getLogger().warn("Insert reported nothing inserted? " + lookup.toString());
             }
 
             try (ResultSet rs = statement.getGeneratedKeys()) {
@@ -460,17 +457,18 @@ public final class BSIP {
                     newIP.iid = iid;
                     BSIP.allIPId.put(iid, newIP);
                     BSIP.allIPNA.put((newIP.basev4 == null ? newIP.basev6 : newIP.basev4), newIP);
-                    if (BanStick.getPlugin().getIPDataHandler() != null) {
-                        BanStick.getPlugin().getIPDataHandler().offer(newIP);
-                    }
+                    // TODO: handle this in velocity
+                    // if (BanStick.getPlugin().getIPDataHandler() != null) {
+                    //     BanStick.getPlugin().getIPDataHandler().offer(newIP);
+                    // }
                     return newIP;
                 } else {
-                    BanStick.getPlugin().severe("Failed to get ID from inserted record!? " + lookup.toString());
+                    CORE.getLogger().error("Failed to get ID from inserted record!? " + lookup.toString());
                     return null;
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to create IP from " + lookup.toString(), se);
+            CORE.getLogger().error("Failed to create IP from " + lookup.toString(), se);
         }
         return null;
     }
@@ -500,7 +498,7 @@ public final class BSIP {
         if (allIPNA.containsKey(lookup)) {
             return allIPNA.get(lookup);
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement statement = connection.prepareStatement(
                  "INSERT INTO bs_ip(ip4, ip4cidr, ip6, ip6cidr, create_time) VALUES (?, ?, ?, ?, ?);",
                  Statement.RETURN_GENERATED_KEYS);) {
@@ -523,8 +521,7 @@ public final class BSIP {
 
             int ins = statement.executeUpdate();
             if (ins < 1) {
-                BanStick.getPlugin().warning("Insert reported nothing inserted? "
-                    + lookup.toString() + "/" + cidr);
+                CORE.getLogger().warn("Insert reported nothing inserted? {}/{}", lookup.toString(), cidr);
             }
 
             try (ResultSet rs = statement.getGeneratedKeys()) {
@@ -533,19 +530,19 @@ public final class BSIP {
                     newIP.iid = iid;
                     BSIP.allIPId.put(iid, newIP);
                     BSIP.allIPNA.put((newIP.basev4 == null ? newIP.basev6 : newIP.basev4), newIP);
-                    if (BanStick.getPlugin().getIPDataHandler() != null
-                        && (newIP.basev4 == null ? cidr == 128 : cidr == 32)) {
-                        BanStick.getPlugin().getIPDataHandler().offer(newIP);
-                    }
+                    // TODO: handle in velocity
+                    // if (BanStick.getPlugin().getIPDataHandler() != null
+                    //     && (newIP.basev4 == null ? cidr == 128 : cidr == 32)) {
+                    //     BanStick.getPlugin().getIPDataHandler().offer(newIP);
+                    // }
                     return newIP;
                 } else {
-                    BanStick.getPlugin().severe("Failed to get ID from inserted record!? "
-                        + lookup.toString() + "/" + cidr);
+                    CORE.getLogger().error("Failed to get ID from inserted record!? {}/{}", lookup.toString(), cidr);
                     return null;
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to create IP from " + lookup.toString() + "/" + cidr, se);
+            CORE.getLogger().error("Failed to create IP from " + lookup.toString() + "/" + cidr, se);
         }
         return null;
     }
@@ -559,7 +556,7 @@ public final class BSIP {
      */
     public static long preload(long offset, int limit) {
         long maxId = -1;
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement loadIPs = connection.prepareStatement(
                  "SELECT * FROM bs_ip WHERE iid > ? ORDER BY iid LIMIT ?");) {
             loadIPs.setLong(1, offset);
@@ -595,8 +592,7 @@ public final class BSIP {
                                 BSIP.allIPNA.put(bsip.basev4, bsip);
                             }
                         } else {
-                            BanStick.getPlugin().warning("Conversion of ipv4 address to ipv4 failed??: "
-                                + bsip.iid + " - " + ipv4);
+                            CORE.getLogger().warn("Conversion of ipv4 address to ipv4 failed??: {} - {}", bsip.iid, ipv4);
                             continue;
                             // TODO: exception
                         }
@@ -608,13 +604,12 @@ public final class BSIP {
                                 BSIP.allIPNA.put(bsip.basev6, bsip);
                             }
                         } else {
-                            BanStick.getPlugin().warning("Conversion of ipv6 address to ipv6 failed??: "
-                                + bsip.iid + " - " + ipv6);
+                            CORE.getLogger().warn("Conversion of ipv6 address to ipv6 failed??: {} - {}", bsip.iid, ipv6);
                             continue;
                             // TODO: exception
                         }
                     } else {
-                        BanStick.getPlugin().warning("Empty ip entry?!: " + bsip.iid);
+                        CORE.getLogger().warn("Empty ip entry?!: {}", bsip.iid);
                         continue;
                         // TODO: exception
                     }
@@ -625,7 +620,7 @@ public final class BSIP {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed during IP preload, offset " + offset
+            CORE.getLogger().error("Failed during IP preload, offset " + offset
                 + " limit " + limit, se);
         }
         return maxId;
@@ -640,13 +635,13 @@ public final class BSIP {
         }
     }
 
-    /**
-     * Full details of IP
-     *
-     * @param showIPs do we show the IP?
-     * @return a String
-     */
-    public String toFullString(boolean showIPs) {
-        return showIPs ? toString() : String.valueOf(this.iid);
-    }
+    // /**
+    //  * Full details of IP
+    //  *
+    //  * @param showIPs do we show the IP?
+    //  * @return a String
+    //  */
+    // public String toFullString(boolean showIPs) {
+    //     return showIPs ? toString() : String.valueOf(this.iid);
+    // }
 }

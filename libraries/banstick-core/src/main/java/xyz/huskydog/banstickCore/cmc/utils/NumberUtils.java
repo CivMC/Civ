@@ -1,17 +1,22 @@
 package xyz.huskydog.banstickCore.cmc.utils;
 
-import org.apache.commons.collections4.MapUtils;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility class to replace Bukkit's NumberConversions
  *
- * @implNote The methods in this class are meant to fail fast and hard if the input is invalid
  * @author Huskydog9988
+ * @implNote The methods in this class are meant to fail fast and hard if the input is invalid
  */
-public class NumberUtils {
+public interface NumberUtils {
 
-    public static int toInt(@Nullable Object object) {
+    /**
+     * Convert an object to an int
+     * @param object to convert
+     * @return int value or 0 if null
+     * @throws NumberFormatException if the object cannot be converted to an int
+     */
+    static int toInt(@Nullable Object object) {
         if (object == null) {
             return 0;
         } else if (object instanceof Number) {
@@ -21,7 +26,13 @@ public class NumberUtils {
         return Integer.parseInt(object.toString());
     }
 
-    public static long toLong(@Nullable Object object) {
+    /**
+     * Convert an object to a long
+     * @param object to convert
+     * @return long value or 0 if null
+     * @throws NumberFormatException if the object cannot be converted to a long
+     */
+    static long toLong(@Nullable Object object) {
         if (object == null) {
             return 0;
         } else if (object instanceof Number) {

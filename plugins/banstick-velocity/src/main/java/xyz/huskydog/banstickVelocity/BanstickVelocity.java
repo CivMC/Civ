@@ -5,13 +5,18 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import xyz.huskydog.banstickCore.BanstickCore;
 import xyz.huskydog.banstickCore.BanstickPlugin;
 import xyz.huskydog.banstickCore.Config;
 import java.nio.file.Path;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Plugin(id = "banstick-velocity",
     name = "banstick-velocity", version = "1.0.0",
@@ -65,5 +70,37 @@ public class BanstickVelocity implements BanstickPlugin {
         }
 
         return annotation.id();
+    }
+
+    @Override
+    public void scheduleAsyncTask(@NotNull Runnable task, long delay, long period) {
+        server.getScheduler().buildTask(this, task)
+            .delay(delay, TimeUnit.SECONDS)
+            .repeat(period, TimeUnit.SECONDS)
+            .schedule();
+    }
+
+    @Override
+    public void scheduleAsyncTask(@NotNull Runnable task, long delay) {
+        server.getScheduler().buildTask(this, task)
+            .delay(delay, TimeUnit.SECONDS)
+            .schedule();
+    }
+
+    @Override
+    public boolean kickPlayer(@NotNull UUID uuid, @NotNull Component reason) {
+        Optional<Player> player = server.getPlayer(uuid);
+        if (player.isPresent()) {
+            player.get().disconnect(reason);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void broadcastMessage(@NotNull Component message, @NotNull String permission) {
+        server.getAllPlayers().stream()
+            .filter(p -> p.hasPermission(permission))
+            .forEach(p -> p.sendMessage(message));
     }
 }

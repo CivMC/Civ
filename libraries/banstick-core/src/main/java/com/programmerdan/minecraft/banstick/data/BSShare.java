@@ -1,7 +1,5 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.lang.ref.WeakReference;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,9 +14,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.NotNull;
+import xyz.huskydog.banstickCore.BanstickCore;
 
 /**
  * Defines an explicit 1 to 1 relationship between two players
@@ -27,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class BSShare {
 
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
     private static Map<Long, BSShare> allShareID = new HashMap<>();
     private static ConcurrentLinkedQueue<WeakReference<BSShare>> dirtyShares = new ConcurrentLinkedQueue<>();
     private boolean dirty;
@@ -107,7 +111,7 @@ public final class BSShare {
      */
     public BSPlayer getFirstPlayer() {
         if (firstPlayer == null && deferFirstPlayer != null) {
-            firstPlayer = BSPlayer.byId(deferFirstPlayer);
+            firstPlayer = BSPlayer.getById(deferFirstPlayer);
         }
         return firstPlayer;
     }
@@ -117,7 +121,7 @@ public final class BSShare {
      */
     public BSPlayer getSecondPlayer() {
         if (secondPlayer == null && deferSecondPlayer != null) {
-            secondPlayer = BSPlayer.byId(deferSecondPlayer);
+            secondPlayer = BSPlayer.getById(deferSecondPlayer);
         }
         return secondPlayer;
     }
@@ -152,7 +156,7 @@ public final class BSShare {
         if (allShareID.containsKey(sid)) {
             return allShareID.get(sid);
         }
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_share WHERE sid = ?");) {
             getId.setLong(1, sid);
             try (ResultSet rs = getId.executeQuery();) {
@@ -161,11 +165,11 @@ public final class BSShare {
                     allShareID.put(sid, internal);
                     return internal;
                 } else {
-                    BanStick.getPlugin().warning("Failed to retrieve Share by id: " + sid + " - not found");
+                    CORE.getLogger().warn("Failed to retrieve Share by id: {} - not found", sid);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Retrieval of Share by ID failed: " + sid, se);
+            CORE.getLogger().error("Retrieval of Share by ID failed: " + sid, se);
         }
 
         return null;
@@ -179,7 +183,7 @@ public final class BSShare {
      */
     public static List<BSShare> byPlayer(BSPlayer player) {
         List<BSShare> shares = new ArrayList<>();
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getId = connection.prepareStatement(
                  "SELECT * FROM bs_share WHERE first_pid = ? OR second_pid = ?");) {
             getId.setLong(1, player.getId());
@@ -196,7 +200,7 @@ public final class BSShare {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Retrieval of Shares by Player failed: " + player.toString(), se);
+            CORE.getLogger().error("Retrieval of Shares by Player failed: " + player.toString(), se);
         }
         return shares;
     }
@@ -210,7 +214,7 @@ public final class BSShare {
      */
     public static List<BSShare> bySession(BSSession session) {
         List<BSShare> shares = new ArrayList<>();
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement getId = connection.prepareStatement(
                  "SELECT * FROM bs_share WHERE first_sid = ? OR second_sid = ?");) {
             getId.setLong(1, session.getId());
@@ -227,7 +231,7 @@ public final class BSShare {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Retrieval of Shares by Session failed: " + session.toString(), se);
+            CORE.getLogger().error("Retrieval of Shares by Session failed: " + session.toString(), se);
         }
         return shares;
     }
@@ -238,13 +242,13 @@ public final class BSShare {
         internal.dirty = false;
         internal.createTime = rs.getTimestamp(2);
         internal.deferFirstPlayer = rs.getLong(3);
-        //nS.firstPlayer = BSPlayer.byId(rs.getLong(3));
+        // nS.firstPlayer = BSPlayer.byId(rs.getLong(3));
         internal.deferSecondPlayer = rs.getLong(4);
-        //nS.secondPlayer = BSPlayer.byId(rs.getLong(4));
+        // nS.secondPlayer = BSPlayer.byId(rs.getLong(4));
         internal.deferFirstSession = rs.getLong(5);
-        //nS.firstSession = BSSession.byId(rs.getLong(5));
+        // nS.firstSession = BSSession.byId(rs.getLong(5));
         internal.deferSecondSession = rs.getLong(6);
-        //nS.secondSession = BSSession.byId(rs.getLong(6));
+        // nS.secondSession = BSSession.byId(rs.getLong(6));
         if (rs.getBoolean(7)) {
             try {
                 internal.pardonTime = rs.getTimestamp(8);
@@ -264,7 +268,7 @@ public final class BSShare {
      */
     public static void saveDirty() {
         int batchSize = 0;
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement save = connection.prepareStatement(
                  "UPDATE bs_share SET pardon = ?, pardon_time = ? WHERE sid = ?");) {
             while (!dirtyShares.isEmpty()) {
@@ -279,10 +283,9 @@ public final class BSShare {
                 if (batchSize > 0 && batchSize % 100 == 0) {
                     int[] batchRun = save.executeBatch();
                     if (batchRun.length != batchSize) {
-                        BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? "
-                            + batchSize + " vs " + batchRun.length);
+                        CORE.getLogger().error("Some elements of the dirty batch didn't save? {} vs {}", batchSize, batchRun.length);
                     } else {
-                        BanStick.getPlugin().debug("Share batch: {0} saves", batchRun.length);
+                        CORE.getLogger().debug("Share batch: {} saves", batchRun.length);
                     }
                     batchSize = 0;
                 }
@@ -290,14 +293,13 @@ public final class BSShare {
             if (batchSize > 0 && batchSize % 100 > 0) {
                 int[] batchRun = save.executeBatch();
                 if (batchRun.length != batchSize) {
-                    BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? "
-                        + batchSize + " vs " + batchRun.length);
+                    CORE.getLogger().error("Some elements of the dirty batch didn't save? {} vs {}", batchSize, batchRun.length);
                 } else {
-                    BanStick.getPlugin().debug("Share batch: {0} saves", batchRun.length);
+                    CORE.getLogger().debug("Share batch: {} saves", batchRun.length);
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Save of BSShare dirty batch failed!: ", se);
+            CORE.getLogger().error("Save of BSShare dirty batch failed!: ", se);
         }
     }
 
@@ -309,16 +311,16 @@ public final class BSShare {
             return;
         }
         this.dirty = false; // don't let anyone else in!
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement save = connection.prepareStatement(
                  "UPDATE bs_share SET pardon = ?, pardon_time = ? WHERE sid = ?");) {
             saveToStatement(save);
             int effects = save.executeUpdate();
             if (effects == 0) {
-                BanStick.getPlugin().severe("Failed to save BSShare or no update? " + this.sid);
+                CORE.getLogger().error("Failed to save BSShare or no update? " + this.sid);
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Save of BSShare failed!: ", se);
+            CORE.getLogger().error("Save of BSShare failed!: ", se);
         }
     }
 
@@ -361,7 +363,7 @@ public final class BSShare {
      */
     public static long preload(long offset, int limit) {
         long maxId = -1;
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement loadShares = connection.prepareStatement(
                  "SELECT * FROM bs_share WHERE sid > ? ORDER BY sid LIMIT ?");) {
             loadShares.setLong(1, offset);
@@ -380,49 +382,37 @@ public final class BSShare {
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed during Share preload, offset " + offset + " limit " + limit, se);
+            CORE.getLogger().error("Failed during Share preload, offset " + offset + " limit " + limit, se);
         }
         return maxId;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if (this.isPardoned()) {
-            sb.append(ChatColor.GREEN).append("[Pardoned] ");
-        }
-        sb.append(ChatColor.DARK_PURPLE).append("Share by ")
-            .append(ChatColor.WHITE).append(getFirstPlayer().getName()).append(ChatColor.DARK_PURPLE).append(" and ")
-            .append(ChatColor.WHITE).append(getSecondPlayer().getName()).append(ChatColor.DARK_PURPLE).append(" via ")
-            .append(ChatColor.WHITE).append(getFirstSession().toString()).append(ChatColor.DARK_PURPLE).append(" with ")
-            .append(ChatColor.WHITE).append(getSecondSession().toString());
-        return sb.toString();
+        return PlainTextComponentSerializer.plainText().serialize(getComponentMessage(true));
     }
 
     /**
-     * Print the full Share, and optionally show IPs
+     * Print the full Share as a Component, and optionally show IPs
      *
      * @param showIPs true to show the IPs
-     * @return a Stirng with all the data.
+     * @return a Component with all the data.
      */
-    public String toFullString(boolean showIPs) {
-        if (showIPs) {
-            return toString();
-        } else {
-            StringBuilder sb = new StringBuilder();
-            if (this.isPardoned()) {
-                sb.append(ChatColor.GREEN).append("[Pardoned] ");
-            }
-            sb.append(ChatColor.DARK_PURPLE).append("Share by ")
-                .append(ChatColor.WHITE).append(getFirstPlayer().getName())
-                .append(ChatColor.DARK_PURPLE).append(" and ")
-                .append(ChatColor.WHITE).append(getSecondPlayer().getName())
-                .append(ChatColor.DARK_PURPLE).append(" via ")
-                .append(ChatColor.WHITE).append(getFirstSession().toFullString(showIPs))
-                .append(ChatColor.DARK_PURPLE).append(" with ")
-                .append(ChatColor.WHITE).append(getSecondSession().toFullString(showIPs));
-            return sb.toString();
+    public Component getComponentMessage(boolean showIPs) {
+        TextComponent.Builder builder = Component.text();
+        if (this.isPardoned()) {
+            builder.append(Component.text("[Pardoned] ", NamedTextColor.GREEN));
         }
+
+        builder.append(Component.text("Share by ", NamedTextColor.DARK_PURPLE))
+            .append(Component.text(getFirstPlayer().getName(), NamedTextColor.WHITE))
+            .append(Component.text(" and ", NamedTextColor.DARK_PURPLE))
+            .append(Component.text(getSecondPlayer().getName(), NamedTextColor.WHITE))
+            .append(Component.text(" via ", NamedTextColor.DARK_PURPLE))
+            .append(getFirstSession().getComponentMessage(showIPs).color(NamedTextColor.WHITE))
+            .append(Component.text(" with ", NamedTextColor.DARK_PURPLE))
+            .append(getSecondSession().getComponentMessage(showIPs).color(NamedTextColor.WHITE));
+        return builder.build();
     }
 
     /**
@@ -433,7 +423,7 @@ public final class BSShare {
      * @return a new BSShare linking these sessions
      */
     public static BSShare create(BSSession overlap, BSSession session) {
-        try (Connection connection = BanStickDatabaseHandler.getInstanceData().getConnection();
+        try (Connection connection = CORE.getDatabaseHandler().getData().getConnection();
              PreparedStatement newShare = connection.prepareStatement(
                  "INSERT INTO bs_share(create_time, first_pid, second_pid, first_sid, second_sid, pardon, pardon_time) VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);) {
             BSShare share = new BSShare();
@@ -458,7 +448,7 @@ public final class BSShare {
 
             int ins = newShare.executeUpdate();
             if (ins < 1) {
-                BanStick.getPlugin().warning("Insert reported no share inserted? " + share.getId());
+                CORE.getLogger().warn("Insert reported no share inserted? {}", share.getId());
             }
 
             try (ResultSet rs = newShare.getGeneratedKeys()) {
@@ -469,13 +459,12 @@ public final class BSShare {
                     allShareID.put(sid, share);
                     return share;
                 } else {
-                    BanStick.getPlugin().severe("Failed to get ID from inserted share!? "
-                        + overlap.getId() + " - " + session.getId());
+                    CORE.getLogger().error("Failed to get ID from inserted share!? {} - {}", overlap.getId(), session.getId());
                     return null;
                 }
             }
         } catch (SQLException se) {
-            BanStick.getPlugin().severe("Failed to insert new share for sessions!", se);
+            CORE.getLogger().error("Failed to insert new share for sessions!", se);
         }
         return null;
     }

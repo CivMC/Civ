@@ -15,4 +15,7 @@ dependencies {
     implementation(libs.commons.lang3)
     implementation(libs.commons.collections4)
     implementation(libs.google.guava)
+    implementation(libs.adventure.api)
+    implementation(libs.adventure.text.minimessage)
+    implementation(libs.adventure.text.serializer.plain)
 }
