@@ -400,7 +400,7 @@ public final class ExchangeRule implements ExchangeData {
             return new ItemStack[0];
         }
         int requiredAmount = getAmount();
-        for (ItemStack item : inventory.getContents()) {
+        for (ItemStack item : inventory.getStorageContents()) {
             if (requiredAmount <= 0) {
                 break;
             }
