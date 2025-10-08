@@ -13,10 +13,13 @@ public class Config {
     private final BanstickPlugin plugin;
 
     private final @NotNull CommentedConfigurationNode config;
+    private final boolean transitiveBans;
 
     public Config(@NotNull BanstickPlugin plugin) {
         this.plugin = plugin;
         config = loadConfig();
+
+        this.transitiveBans = config.node("banSettings").node("transitiveBans").getBoolean(true);
     }
 
     /**
@@ -64,5 +67,9 @@ public class Config {
 
     public @NotNull CommentedConfigurationNode getRawConfig() {
         return config;
+    }
+
+    public boolean areTransitiveBansEnabled() {
+        return this.transitiveBans;
     }
 }

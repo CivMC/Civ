@@ -16,7 +16,7 @@ import xyz.huskydog.banstickCore.BanstickCore;
 import xyz.huskydog.banstickCore.Config;
 import xyz.huskydog.banstickCore.cmc.database.DatabaseCredentials;
 import xyz.huskydog.banstickCore.cmc.database.ManagedDatasource;
-import xyz.huskydog.banstickCore.cmc.utils.BukkitPlayer;
+import xyz.huskydog.banstickCore.cmc.utils.PluginPlayer;
 
 /**
  * Ties into the managed datasource processes of the CivMod core plugin.
@@ -25,7 +25,7 @@ import xyz.huskydog.banstickCore.cmc.utils.BukkitPlayer;
  */
 public class BanStickDatabaseHandler {
 
-    private BanstickCore core;
+    private static final BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
     private ManagedDatasource data;
 
     /**
@@ -35,7 +35,6 @@ public class BanStickDatabaseHandler {
      * @throws RuntimeException if database config is missing or invalid.
      */
     public BanStickDatabaseHandler(Config config) {
-        this.core = Objects.requireNonNull(BanstickCore.getInstance());
         CommentedConfigurationNode internal = config.getRawConfig().node("database");
         if (!configureData(internal)) {
             throw new RuntimeException("Failed to configure Database for BanStick!");
@@ -48,7 +47,7 @@ public class BanStickDatabaseHandler {
 
     private boolean configureData(CommentedConfigurationNode config) {
         if (config.empty()) {
-            core.getLogger().error("Database configuration missing, cannot continue.");
+            CORE.getLogger().error("Database configuration missing, cannot continue.");
             return false;
         }
 
@@ -62,11 +61,11 @@ public class BanStickDatabaseHandler {
         long idleTimeout = config.node("idle_timeout").getLong(600000L);
         long maxLifetime = config.node("max_lifetime").getLong(7200000L);
         try {
-            data = ManagedDatasource.construct(core.getPlugin(), new DatabaseCredentials(username, password, host, port, "mysql", dbname,
+            data = ManagedDatasource.construct(CORE.getPlugin(), new DatabaseCredentials(username, password, host, port, "mysql", dbname,
                 poolsize, connectionTimeout, idleTimeout, maxLifetime));
             data.getConnection().close();
         } catch (Exception e) {
-            core.getLogger().error("Failed to initialize Database connection", e);
+            CORE.getLogger().error("Failed to initialize Database connection", e);
             return false;
         }
 
@@ -75,17 +74,17 @@ public class BanStickDatabaseHandler {
         long beginTime = System.currentTimeMillis();
 
         try {
-            core.getLogger().info("Update prepared, starting database update.");
+            CORE.getLogger().info("Update prepared, starting database update.");
             if (!data.updateDatabase()) {
-                core.getLogger().info("Update failed, disabling plugin.");
+                CORE.getLogger().info("Update failed, disabling plugin.");
                 return false;
             }
         } catch (Exception e) {
-            core.getLogger().error("Update failed, disabling plugin. Cause:", e);
+            CORE.getLogger().error("Update failed, disabling plugin. Cause:", e);
             return false;
         }
 
-        core.getLogger().info("Database update took {} seconds", (System.currentTimeMillis() - beginTime) / 1000);
+        CORE.getLogger().info("Database update took {} seconds", (System.currentTimeMillis() - beginTime) / 1000);
 
         activatePreload(config.node("preload"));
         // TODO: add way to disable dirty save for paper plugin as only the velocity version is modifying data
@@ -100,39 +99,39 @@ public class BanStickDatabaseHandler {
             period = config.node("period").getLong(period);
             delay = config.node("delay").getLong(delay);
         }
-        core.getLogger().debug("DirtySave Period {} Delay {}", period, delay);
+        CORE.getLogger().debug("DirtySave Period {} Delay {}", period, delay);
 
-        core.getPlugin().scheduleAsyncTask(() -> {
-            core.getLogger().debug("Player dirty save");
+        CORE.getPlugin().scheduleAsyncTask(() -> {
+            CORE.getLogger().debug("Player dirty save");
             BSPlayer.saveDirty();
         }, delay, period);
 
-        core.getPlugin().scheduleAsyncTask(() -> {
-            core.getLogger().debug("Ban dirty save");
+        CORE.getPlugin().scheduleAsyncTask(() -> {
+            CORE.getLogger().debug("Ban dirty save");
             BSBan.saveDirty();
         }, delay + (period / 5), period);
 
-        core.getPlugin().scheduleAsyncTask(() -> {
-            core.getLogger().debug("Session dirty save");
+        CORE.getPlugin().scheduleAsyncTask(() -> {
+            CORE.getLogger().debug("Session dirty save");
             BSSession.saveDirty();
         }, delay + ((period * 2) / 5), period);
 
-        core.getPlugin().scheduleAsyncTask(() -> {
-            core.getLogger().debug("Share dirty save");
+        CORE.getPlugin().scheduleAsyncTask(() -> {
+            CORE.getLogger().debug("Share dirty save");
             BSShare.saveDirty();
         }, delay + ((period * 3) / 5), period);
 
-        core.getPlugin().scheduleAsyncTask(() -> {
-            core.getLogger().debug("Proxy dirty save");
+        CORE.getPlugin().scheduleAsyncTask(() -> {
+            CORE.getLogger().debug("Proxy dirty save");
             BSIPData.saveDirty();
         }, delay + ((period * 4) / 5), period);
 
-        core.getLogger().info("Dirty save tasks started.");
+        CORE.getLogger().info("Dirty save tasks started.");
     }
 
     private void activatePreload(@NotNull CommentedConfigurationNode config) {
         if (!config.empty() && !config.node("enabled").getBoolean(false)) {
-            core.getLogger().debug("Preloading is disabled");
+            CORE.getLogger().debug("Preloading is disabled");
             return;
         }
 
@@ -142,7 +141,7 @@ public class BanStickDatabaseHandler {
         delay = config.node("delay").getLong(delay);
         final int batchsize = config.node("batch").getInt(100);
 
-        core.getLogger().debug("Preload Period {} Delay {} batch {}", period, delay, batchsize);
+        CORE.getLogger().debug("Preload Period {} Delay {} batch {}", period, delay, batchsize);
 
         // TODO: rewrite using core scheduler
         // core.getPlugin().scheduleAsyncTask(new Runnable() {
@@ -380,23 +379,23 @@ public class BanStickDatabaseHandler {
      */
     public void doShutdown() {
 
-        core.getLogger().info("Player dirty save");
+        CORE.getLogger().info("Player dirty save");
         BSPlayer.saveDirty();
 
-        core.getLogger().info("Ban dirty save");
+        CORE.getLogger().info("Ban dirty save");
         BSBan.saveDirty();
 
-        core.getLogger().info("Session dirty save");
+        CORE.getLogger().info("Session dirty save");
         BSSession.saveDirty();
 
-        core.getLogger().info("Share dirty save");
+        CORE.getLogger().info("Share dirty save");
         BSShare.saveDirty();
 
-        core.getLogger().info("Proxy dirty save");
+        CORE.getLogger().info("Proxy dirty save");
         BSIPData.saveDirty();
 
-        core.getLogger().info("Ban Log save");
-        core.getLogHandler().disable();
+        CORE.getLogger().info("Ban Log save");
+        CORE.getLogHandler().disable();
     }
 
     // ============ QUERIES =============
@@ -407,7 +406,7 @@ public class BanStickDatabaseHandler {
      * @param player the player
      * @return the BSPlayer created or retrieved. Null on failure only.
      */
-    public BSPlayer getOrCreatePlayer(final BukkitPlayer player) {
+    public BSPlayer getOrCreatePlayer(final PluginPlayer player) {
         // TODO: use exception
         BSPlayer bsPlayer = getPlayer(player.getUniqueId());
         if (bsPlayer == null) {
@@ -430,10 +429,10 @@ public class BanStickDatabaseHandler {
     public BSIP getOrCreateIP(final InetAddress netAddress) {
         BSIP bsIP = getIP(netAddress);
         if (bsIP == null) {
-            core.getLogger().debug("Creating IP address: {}", netAddress);
+            CORE.getLogger().debug("Creating IP address: {}", netAddress);
             bsIP = BSIP.create(netAddress);
         } else {
-            core.getLogger().info("Registering future retrieval of IPData for {}", bsIP);
+            CORE.getLogger().info("Registering future retrieval of IPData for {}", bsIP);
             // TODO: handle this in velocity
             // BanStick.getPlugin().getIPDataHandler().offer(bsIP);
         }

@@ -98,9 +98,11 @@ public final class BSSession {
     /**
      * @return the BSPlayer related to this session.
      */
-    public BSPlayer getPlayer() {
+    public @NotNull BSPlayer getPlayer() {
         if (pid == null && deferPid != null) {
             pid = BSPlayer.getById(deferPid);
+        } else if (pid == null) {
+            throw new IllegalStateException("Session " + this.sid + " has no associated player.");
         }
         return pid;
     }

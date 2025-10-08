@@ -1,6 +1,5 @@
 package com.programmerdan.minecraft.banstick.handler;
 
-import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.containers.BanResult;
 import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
@@ -10,10 +9,14 @@ import com.programmerdan.minecraft.banstick.data.BSShare;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import net.kyori.adventure.text.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import xyz.huskydog.banstickCore.BanstickCore;
+import xyz.huskydog.banstickCore.cmc.utils.DateUtils;
+import xyz.huskydog.banstickCore.cmc.utils.PluginPlayer;
 
 /**
  * A series of static utility classes to facilitate issuing bans.
@@ -22,14 +25,11 @@ import vg.civcraft.mc.namelayer.NameAPI;
  */
 public final class BanHandler {
 
+    private static final @NotNull BanstickCore CORE = Objects.requireNonNull(BanstickCore.getInstance());
     private static final String AUTO_BAN = "Automatic Ban";
     private static final String ADMIN_BAN = "Administrative Ban";
 
     private BanHandler() {
-    }
-
-    private static SimpleDateFormat getEndTimeFormat() {
-        return new SimpleDateFormat("MM/dd/yyyy HH:mms:ss");
     }
 
     /**
@@ -89,27 +89,27 @@ public final class BanHandler {
      * <p>This uses a custom message and end time.
      *
      * @param playerId The UUID of the player to ban.
-     * @param message  The message to display when a player attempts to rejoin.
+     * @param rawMsg   The message to display when a player attempts to rejoin.
      * @param banEnd   The time the ban should end.
      * @param adminBan Was this admin ban or automatic?
      * @return A summary of who was banned.
      */
-    public static BanResult doUUIDBan(UUID playerId, String message, Date banEnd, boolean adminBan) {
+    public static BanResult doUUIDBan(UUID playerId, String rawMsg, Date banEnd, boolean adminBan) {
         try {
-            if (message == null || message.trim().equals("")) {
-                message = adminBan ? ADMIN_BAN : AUTO_BAN; // TODO: config!
-            }
-            Player spigotPlayer = Bukkit.getPlayer(playerId);
+            final String message = processMessage(adminBan, rawMsg);
+            PluginPlayer pluginPlayer = CORE.getPlugin().getPlayer(playerId);
             BSPlayer player = BSPlayer.byUUID(playerId);
             if (player == null) {
-                if (spigotPlayer != null) {
-                    player = BSPlayer.create(spigotPlayer);
+                if (pluginPlayer != null) {
+                    player = BSPlayer.create(pluginPlayer);
                 } else {
                     String playerName = null;
-                    try {
-                        playerName = NameAPI.getCurrentName(playerId);
-                    } catch (NoClassDefFoundError ncde) {
-                    }
+
+                    // TODO: use NameAPI
+                    // try {
+                    //     playerName = NameAPI.getCurrentName(playerId);
+                    // } catch (NoClassDefFoundError ncde) {
+                    // }
 
                     player = BSPlayer.create(playerId, playerName);
                 }
@@ -117,19 +117,15 @@ public final class BanHandler {
             BSBan ban = BSBan.create(message, banEnd, adminBan); // general ban.
             player.setBan(ban);
 
-            if (spigotPlayer != null) {
-                if (banEnd != null) {
-                    spigotPlayer.kickPlayer(message + ". Ends " + BanHandler.getEndTimeFormat().format(banEnd));
-                } else {
-                    spigotPlayer.kickPlayer(message);
-                }
+            if (pluginPlayer != null) {
+                CORE.getPlugin().kickPlayer(playerId, generateKickMessage(message, banEnd));
             }
 
             BanResult result = new BanResult();
             result.addPlayer(player);
             return result;
         } catch (Exception e) {
-            BanStick.getPlugin().warning("Failed to issue UUID ban: ", e);
+            CORE.getLogger().error("Failed to issue UUID ban: ", e);
             return new BanResult();
         }
     }
@@ -140,41 +136,35 @@ public final class BanHandler {
      * already banned or pardoned.
      *
      * @param exactIP         The IP address to ban.
-     * @param message         The message to use as a ban message; is also sent to all players who are
+     * @param rawMsg          The message to use as a ban message; is also sent to all players who are
      *                        online and caught in the ban.
      * @param banEnd          When does the ban end?
      * @param adminBan        Was this an administrative ban?
      * @param includeHistoric Ban everyone who has ever used this IP address?
      * @return A BanResult object describing who was banned.
      */
-    public static BanResult doIPBan(BSIP exactIP, String message, Date banEnd,
+    public static BanResult doIPBan(BSIP exactIP, @Nullable String rawMsg, Date banEnd,
                                     boolean adminBan, boolean includeHistoric) {
         try {
-            if (message == null || message.trim().equals("")) {
-                message = adminBan ? ADMIN_BAN : AUTO_BAN; // TODO: config!
-            }
+            final String message = processMessage(adminBan, rawMsg);
             // TODO: match with existing ban for this IP.
             BSBan ban = BSBan.create(exactIP, message, banEnd, adminBan); // general ban.
             BanResult result = new BanResult();
             result.addBan(ban);
 
-            for (Player player : Bukkit.getOnlinePlayers()) {
+            CORE.getPlugin().getOnlinePlayers().forEach(player -> {
                 BSPlayer banPlayer = BSPlayer.byUUID(player.getUniqueId());
                 if (banPlayer.getIPPardonTime() != null) {
-                    continue; // pardoned from IP match bans.
+                    return; // pardoned from IP match bans.
                 }
                 BSSession active = banPlayer.getLatestSession();
                 if (active.getIP().getId() == exactIP.getId() && banPlayer.getBan() == null) {
                     // TODO replace with equality check.
                     banPlayer.setBan(ban);
                     result.addPlayer(banPlayer);
-                    if (banEnd != null) {
-                        player.kickPlayer(message + ". Ends " + BanHandler.getEndTimeFormat().format(banEnd));
-                    } else {
-                        player.kickPlayer(message);
-                    }
+                    CORE.getPlugin().kickPlayer(player.getUniqueId(), generateKickMessage(message, banEnd));
                 }
-            }
+            });
 
             if (includeHistoric) {
                 List<BSSession> sessions = BSSession.byIP(exactIP);
@@ -192,7 +182,7 @@ public final class BanHandler {
 
             return result;
         } catch (Exception e) {
-            BanStick.getPlugin().warning("Failed to issue IP ban: ", e);
+            CORE.getLogger().warn("Failed to issue IP ban: ", e);
             return new BanResult();
         }
     }
@@ -201,29 +191,27 @@ public final class BanHandler {
      * Does a ban against a CIDR range.
      *
      * @param cidrIP          cidr IP range to ban
-     * @param message         Message to record as ban reason
+     * @param rawMsg          Message to record as ban reason
      * @param banEnd          The time to end the ban
      * @param adminBan        Is this an administrative ban?
      * @param includeHistoric Should we include all historic occurrences of this IP in the ban?
      * @return A BanResult with the bans issued, if any
      */
-    public static BanResult doCIDRBan(BSIP cidrIP, String message, Date banEnd,
+    public static BanResult doCIDRBan(BSIP cidrIP, String rawMsg, Date banEnd,
                                       boolean adminBan, boolean includeHistoric) {
         try {
-            if (message == null || message.trim().equals("")) {
-                message = adminBan ? ADMIN_BAN : AUTO_BAN; // TODO: config!
-            }
+            final String message = processMessage(adminBan, rawMsg);
             BSBan ban = BSBan.create(cidrIP, message, banEnd, adminBan); // general ban.
             BanResult result = new BanResult();
             result.addBan(ban);
 
-            for (Player player : Bukkit.getOnlinePlayers()) {
+            CORE.getPlugin().getOnlinePlayers().forEach(player -> {
                 BSPlayer banPlayer = BSPlayer.byUUID(player.getUniqueId());
                 if (banPlayer.getBan() != null) {
-                    continue; // already banned.
+                    return; // already banned.
                 }
                 if (banPlayer.getIPPardonTime() != null) {
-                    continue; // pardoned from IP match bans.
+                    return; // pardoned from IP match bans.
                 }
 
                 BSSession active = banPlayer.getLatestSession();
@@ -243,13 +231,9 @@ public final class BanHandler {
                 if (doBan) {
                     banPlayer.setBan(ban);
                     result.addPlayer(banPlayer);
-                    if (banEnd != null) {
-                        player.kickPlayer(message + ". Ends " + BanHandler.getEndTimeFormat().format(banEnd));
-                    } else {
-                        player.kickPlayer(message);
-                    }
+                    CORE.getPlugin().kickPlayer(player.getUniqueId(), generateKickMessage(message, banEnd));
                 }
-            }
+            });
 
             if (includeHistoric) {
                 List<BSIP> ipsIn = BSIP.allContained(cidrIP.getIPAddress().getLower(),
@@ -271,7 +255,7 @@ public final class BanHandler {
 
             return result;
         } catch (Exception e) {
-            BanStick.getPlugin().warning("Failed to issue CIDR ban: ", e);
+            CORE.getLogger().warn("Failed to issue CIDR ban: ", e);
             return new BanResult();
         }
     }
@@ -281,17 +265,18 @@ public final class BanHandler {
      *
      * @param share      The share to ban
      * @param limitBanTo optional player to limit to
-     * @param message    the ban message
+     * @param rawMsg     the ban message
      * @param banEnd     the end of the ban
      * @param adminBan   is this an admin ban?
      * @return the result of the ban as a BanResult
      */
-    public static BanResult doShareBan(BSShare share, BSPlayer limitBanTo, String message,
+    public static BanResult doShareBan(BSShare share, BSPlayer limitBanTo, String rawMsg,
                                        Date banEnd, boolean adminBan) {
+        // TODO: figure out if this actually works.
+        // does this actually kick anyone who is online?
+        // also this doesn't seem to actually ban anyone?
         try {
-            if (message == null || message.trim().equals("")) {
-                message = adminBan ? ADMIN_BAN : AUTO_BAN; // TODO: config!
-            }
+            final String message = processMessage(adminBan, rawMsg);
             BSBan ban = BSBan.create(share, message, banEnd, adminBan); // share ban
             BanResult result = new BanResult();
             result.addBan(ban);
@@ -320,7 +305,7 @@ public final class BanHandler {
             }
             return result;
         } catch (Exception e) {
-            BanStick.getPlugin().warning("Failed to issue Share ban: ", e);
+            CORE.getLogger().warn("Failed to issue Share ban: ", e);
             return new BanResult();
         }
     }
@@ -331,7 +316,7 @@ public final class BanHandler {
      * @param player The player to check if banned.
      * @return Returns true if the player is banned.
      */
-    public static boolean isPlayerBanned(final Player player) {
+    public static boolean isPlayerBanned(final PluginPlayer player) {
         return isPlayerBanned(player.getUniqueId());
     }
 
@@ -361,7 +346,7 @@ public final class BanHandler {
         if (bsBan != null && !bsBan.hasBanExpired()) {
             return bsBan;
         }
-        if (BanStick.getPlugin().getEventHandler().areTransitiveBansEnabled()) {
+        if (CORE.getPlugin().getConfig().areTransitiveBansEnabled()) {
             for (final BSPlayer alt : bsPlayer.getTransitiveSharedPlayers(true)) {
                 final BSBan bsAltBan = alt.getBan();
                 if (bsAltBan != null && !bsAltBan.hasBanExpired()) {
@@ -370,5 +355,37 @@ public final class BanHandler {
             }
         }
         return null;
+    }
+
+    /**
+     * Ensures a message is present, defaulting to either the admin or auto ban message.
+     *
+     * @param adminBan Was this an admin ban?
+     * @param rawMsg   The raw message to process.
+     * @return The processed message.
+     */
+    private static String processMessage(boolean adminBan, @Nullable String rawMsg) {
+        final String message;
+        if (rawMsg == null || rawMsg.trim().equals("")) {
+            message = adminBan ? ADMIN_BAN : AUTO_BAN; // TODO: config!
+        } else {
+            message = rawMsg.trim();
+        }
+        return message;
+    }
+
+    /**
+     * Generates a kick message component from a message and the ban's end time if present.
+     *
+     * @param message The base message.
+     * @param banEnd  The optional end time.
+     * @return A Component representing the kick message.
+     */
+    private static Component generateKickMessage(@NotNull String message, @Nullable Date banEnd) {
+        if (banEnd != null) {
+            return Component.text(message + ". Ends " + DateUtils.getDateTimeFormat().format(banEnd));
+        } else {
+            return Component.text(message);
+        }
     }
 }

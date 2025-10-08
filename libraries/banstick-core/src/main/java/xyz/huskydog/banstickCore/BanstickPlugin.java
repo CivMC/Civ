@@ -2,9 +2,12 @@ package xyz.huskydog.banstickCore;
 
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+import xyz.huskydog.banstickCore.cmc.utils.PluginPlayer;
 import java.nio.file.Path;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * Represents a platform-specific Banstick implementation
@@ -43,4 +46,7 @@ public interface BanstickPlugin {
      * @param permission the permission required to receive the message
      */
     void broadcastMessage(@NotNull Component message, @NotNull String permission);
+
+    Stream<PluginPlayer> getOnlinePlayers();
+    @Nullable PluginPlayer getPlayer(@NotNull UUID uuid);
 }

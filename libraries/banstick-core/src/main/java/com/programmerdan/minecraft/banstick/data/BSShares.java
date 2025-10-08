@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import xyz.huskydog.banstickCore.BanstickCore;
 
 /**
@@ -257,7 +259,16 @@ public final class BSShares {
         BSBan ban = ban1 != null ? ban1 : getActivePlayerBanOrTransitive(share.getSecondPlayer().getUUID());
         if (ban != null) {
             CORE.getLogger().info("New overlap between {} and {} resulting in at least one ban; kicking...", forPlayer.getName(), player.getName());
-            CORE.kickPlayer(player.getUUID(), ban);
+            CORE.getPlugin().kickPlayer(player.getUUID(), Component.text(ban.getMessage()));
+
+            TextComponent.Builder msg = Component.text();
+            if (player.getName() != null) {
+                msg.append(Component.text("Banning " + player.getName() + " due to "));
+            } else {
+                msg.append(Component.text("Banning " + player.getUUID() + " due to "));
+            }
+            msg.append(ban.getComponentMessage());
+            CORE.getPlugin().broadcastMessage(msg.build(), "banstick.ips");
         }
     }
 

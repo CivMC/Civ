@@ -38,19 +38,19 @@ public class BanstickCore {
         // this.logHandler.runTaskTimerAsynchronously(this, this.logHandler.getDelay(), this.logHandler.getPeriod());
     }
 
-    /**
-     * Kick a player by UUID and notify moderators
-     *
-     * @param uuid player id
-     * @param ban  ban information
-     * @return if the kick player was successful
-     */
-    public boolean kickPlayer(@NotNull UUID uuid, @NotNull BSBan ban) {
-        plugin.kickPlayer(uuid, Component.text(ban.getMessage()));
-        plugin.broadcastMessage(Component.text().append(Component.text("On return, banning " + uuid + " due to "))
-            .append(ban.getComponentMessage()).build(), "banstick.ips");
-        return false;
-    }
+    // /**
+    //  * Kick a player by UUID and notify moderators
+    //  *
+    //  * @param uuid player id
+    //  * @param ban  ban information
+    //  * @return if the kick player was successful
+    //  */
+    // public boolean kickPlayer(@NotNull UUID uuid) {
+    //     plugin.kickPlayer(uuid, Component.text(ban.getMessage()));
+    //     plugin.broadcastMessage(Component.text().append(Component.text("Banning " + uuid + " due to "))
+    //         .append(ban.getComponentMessage()).build(), "banstick.ips");
+    //     return true;
+    // }
 
     public @NotNull BSLog getLogHandler() {
         return logHandler;

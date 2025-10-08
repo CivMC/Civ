@@ -1,3 +1,8 @@
+
+banSettings:
+  # If banstick should apply bans transitive across IPs
+  transitiveBans: true
+
 # Define here the database connection primitives.
 #  poolsize: How many connections to maintain at maximum
 #  connectionTimeout: In milliseconds, how long to wait for replies before timing out
@@ -83,7 +88,9 @@ events:
     proxyBans: true
     newProxyBans: true
     shareBans: true
-    transitiveBans: true
+#    transitiveBans: true
+
+
 # Configure the data source for VPS / VPN proxy list grabs.
 # For cloud9:
 #  ban.length is in millisecond

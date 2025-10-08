@@ -9,14 +9,17 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import xyz.huskydog.banstickCore.BanstickCore;
 import xyz.huskydog.banstickCore.BanstickPlugin;
 import xyz.huskydog.banstickCore.Config;
+import xyz.huskydog.banstickCore.cmc.utils.PluginPlayer;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 @Plugin(id = "banstick-velocity",
     name = "banstick-velocity", version = "1.0.0",
@@ -102,5 +105,27 @@ public class BanstickVelocity implements BanstickPlugin {
         server.getAllPlayers().stream()
             .filter(p -> p.hasPermission(permission))
             .forEach(p -> p.sendMessage(message));
+    }
+
+    @Override
+    public Stream<PluginPlayer> getOnlinePlayers() {
+        return server.getAllPlayers().stream()
+            .map(this::convertPlayerToWrapper);
+    }
+
+    @Override
+    public @Nullable PluginPlayer getPlayer(@NotNull UUID uuid) {
+        Optional<Player> player = server.getPlayer(uuid);
+        return player.map(this::convertPlayerToWrapper)
+                     .orElse(null);
+    }
+
+    /**
+     * Convert Velocity Player to ProxyPlayerWrapper
+     * @param p the player to convert
+     * @return the converted player wrapper
+     */
+    private ProxyPlayerWrapper convertPlayerToWrapper(@NotNull Player p) {
+        return new ProxyPlayerWrapper(p.getUniqueId(), p.getUsername(), p.getRemoteAddress());
     }
 }

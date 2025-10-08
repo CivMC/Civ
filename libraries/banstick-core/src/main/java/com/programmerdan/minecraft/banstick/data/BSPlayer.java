@@ -27,7 +27,7 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.huskydog.banstickCore.BanstickCore;
-import xyz.huskydog.banstickCore.cmc.utils.BukkitPlayer;
+import xyz.huskydog.banstickCore.cmc.utils.PluginPlayer;
 import xyz.huskydog.banstickCore.cmc.utils.DateUtils;
 
 /**
@@ -43,7 +43,7 @@ public final class BSPlayer {
     private static final ConcurrentLinkedQueue<WeakReference<BSPlayer>> dirtyPlayers = new ConcurrentLinkedQueue<>();
 
     private long pid;
-    private String name;
+    private @Nullable String name;
     private UUID uuid;
     private Timestamp firstAdd;
     private Long deferBid;
@@ -58,6 +58,7 @@ public final class BSPlayer {
     private transient BSShares allShares;
     private transient BSExclusions allExclusions;
 
+    // TODO: set in constructor to avoid dumb issues with @NotNull
     private BSPlayer() {
     }
 
@@ -65,7 +66,7 @@ public final class BSPlayer {
         return pid;
     }
 
-    public String getName() {
+    public @Nullable String getName() {
         return name;
     }
 
@@ -175,7 +176,7 @@ public final class BSPlayer {
      * @param player       The player whose session to start
      * @param sessionStart The Date that the session began
      */
-    public void startSession(@NotNull final BukkitPlayer player, @NotNull Date sessionStart) {
+    public void startSession(@NotNull final PluginPlayer player, @NotNull Date sessionStart) {
         BSSession latest = this.allSessions.getLatest();
         if (latest != null && !latest.isEnded()) {
             latest.setLeaveTime(sessionStart);
@@ -351,7 +352,7 @@ public final class BSPlayer {
      * @param uuid Gets a BSPlayer record by uuid.
      * @return BSPlayer matching the uuid or null if not found
      */
-    public static @Nullable BSPlayer byUUID(final UUID uuid) {
+    public static @NotNull BSPlayer byUUID(final UUID uuid) {
         if (allPlayersUUID.containsKey(uuid)) {
             return allPlayersUUID.get(uuid);
         }
@@ -405,13 +406,13 @@ public final class BSPlayer {
                     return player;
                 } else {
                     // not found
-                    return null; // TODO: exception
+                    throw new IllegalArgumentException("No player found with uuid " + uuid);
                 }
             }
         } catch (SQLException se) {
-            CORE.getLogger().error("Failed to execute query to get player " + uuid.toString(), se);
+            CORE.getLogger().error("Failed to execute query to get player " + uuid, se);
         }
-        return null; // TODO: exception
+        throw new IllegalArgumentException("No player found with uuid " + uuid);
     }
 
     /**
@@ -420,7 +421,7 @@ public final class BSPlayer {
      * @param pid The Player ID to use in the lookup
      * @return The Player found, or null if not found
      */
-    public static BSPlayer getById(final long pid) {
+    public static @NotNull BSPlayer getById(final long pid) {
         if (allPlayersID.containsKey(pid)) {
             return allPlayersID.get(pid);
         }
@@ -468,13 +469,13 @@ public final class BSPlayer {
                     return player;
                 } else {
                     // not found
-                    return null; // TODO: exception
+                    throw new IllegalArgumentException("No player found with id " + pid);
                 }
             }
         } catch (SQLException se) {
             CORE.getLogger().error("Failed to execute query to get player: " + pid, se);
         }
-        return null; // TODO: exception
+        throw new IllegalArgumentException("No player found with id " + pid);
     }
 
     /**
@@ -483,58 +484,9 @@ public final class BSPlayer {
      * @param player The player object to use
      * @return the BSPlayer created from the player, or null
      */
-    public static @Nullable BSPlayer create(final BukkitPlayer player) {
+    public static @Nullable BSPlayer create(final PluginPlayer player) {
         return create(player.getUniqueId(), player.getDisplayName());
-        // if (allPlayersUUID.containsKey(player.getUniqueId())) {
-        //     return allPlayersUUID.get(player.getUniqueId());
-        // }
-        // try (Connection connection = core.getDatabaseHandler().getData().getConnection()) {
-        //     BSPlayer newPlayer = new BSPlayer();
-        //     newPlayer.dirty = false;
-        //     newPlayer.name = player.getDisplayName();
-        //     newPlayer.uuid = player.getUniqueId();
-        //     newPlayer.firstAdd = new Timestamp(Calendar.getInstance().getTimeInMillis());
-        //
-        //     try (PreparedStatement insertPlayer = connection.prepareStatement(
-        //         "INSERT INTO bs_player(name, uuid, first_add) VALUES (?, ?, ?);",
-        //         Statement.RETURN_GENERATED_KEYS)) {
-        //         insertPlayer.setString(1, newPlayer.name);
-        //         insertPlayer.setString(2, newPlayer.uuid.toString());
-        //         insertPlayer.setTimestamp(3, newPlayer.firstAdd);
-        //         insertPlayer.execute();
-        //         try (ResultSet rs = insertPlayer.getGeneratedKeys()) {
-        //             if (rs.next()) {
-        //                 newPlayer.pid = rs.getLong(1);
-        //             } else {
-        //                 core.getLogger().error("No PID returned on player insert?!");
-        //                 return null; // no pid? error.
-        //             }
-        //         }
-        //     }
-        //
-        //     newPlayer.allSessions = BSSessions.onlyFor(newPlayer);
-        //     newPlayer.allIPs = BSIPs.onlyFor(newPlayer);
-        //     newPlayer.allShares = BSShares.onlyFor(newPlayer);
-        //     newPlayer.allExclusions = BSExclusions.onlyFor(newPlayer);
-        //
-        //     allPlayersID.put(newPlayer.pid, newPlayer);
-        //     allPlayersUUID.put(newPlayer.uuid, newPlayer);
-        //     return newPlayer;
-        // } catch (SQLException se) {
-        //     core.getLogger().error("Failed to create a new player record: ", se);
-        //     return null;
-        // }
     }
-
-    // /**
-    //  * TODO: this is empty.
-    //  *
-    //  * @param playerId The player's UUID to create.
-    //  * @return null; this is a NO-OP. Use different method, providing player name.
-    //  */
-    // public static BSPlayer create(UUID playerId) {
-    //     return null;
-    // }
 
     /**
      * Creates, if needed, a new BSPlayer and inserts it into the database. Sets up related DAOs.
