@@ -11850,6 +11850,12 @@ recipes:
           lore:
             - Crack it open for a surprise!
     outputs:
+      display:
+        display:
+          v: 3839
+          ==: org.bukkit.inventory.ItemStack
+          type: EGG
+          amount: 1
       #Food--- 60%
       egg:
         chance: 0.15
@@ -13053,6 +13059,12 @@ recipes:
           lore:
             - Crack me in a factory for a prize!
     outputs:
+      display:
+        display:
+          v: 3839
+          ==: org.bukkit.inventory.ItemStack
+          type: PRISMARINE_SHARD
+          amount: 1
       # Trash - 70% of total (0.175 each)
       cobblestone:
         chance: 0.175
