@@ -76,6 +76,7 @@ public class ArthropodEggHack extends BasicHack {
         if (randomNum < targetPercentage) {
             final Material spawnEggMaterial = Bukkit.getItemFactory().getSpawnEgg(event.getEntityType());
             if (spawnEggMaterial == null) {
+                this.logger.warning("Could not get the spawn-egg type for [" + event.getEntityType() + "]!");
                 return;
             }
             ItemStack item = ItemStack.of(spawnEggMaterial, 1);
