@@ -6,13 +6,14 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import java.util.List;
 import java.util.Map;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.inventory.items.SpawnEggUtils;
 
 public class ArthropodEggHack extends BasicHack {
 
@@ -73,7 +74,12 @@ public class ArthropodEggHack extends BasicHack {
 
         // Check if egg should be spawned
         if (randomNum < targetPercentage) {
-            ItemStack item = new ItemStack(SpawnEggUtils.getSpawnEgg(event.getEntityType()), 1);
+            final Material spawnEggMaterial = Bukkit.getItemFactory().getSpawnEgg(event.getEntityType());
+            if (spawnEggMaterial == null) {
+                this.logger.warning("Could not get the spawn-egg type for [" + event.getEntityType() + "]!");
+                return;
+            }
+            ItemStack item = ItemStack.of(spawnEggMaterial, 1);
             if (removeDrops) {
                 event.getDrops().clear();
                 event.setDroppedExp(0);
