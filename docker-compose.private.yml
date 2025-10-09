@@ -20,7 +20,7 @@ services:
       - ./PrivateConfig/paper/plugins/packetevents-spigot-2.9.4.jar:/privateconfig/plugins/packetevents-spgiot-2.9.4.jar
       - ./PrivateConfig/paper/config/Vulcan/config.yml:/privateconfig/plugins/Vulcan/config.yml
       - ./PrivateConfig/paper/config/HiddenOre/config.yml:/privateconfig/plugins/HiddenOre/config.yml
-      - ./PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/privateconfig/plugins/KirraBukkitGateway/config.yml
+      - ./PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/privateconfig/plugins/KiraBukkitGateway/config.yml
       - ./PrivateConfig/paper/config/BreweryX/config.yml:/privateconfig/plugins/BreweryX/config.yml
       - ./PrivateConfig/paper/config/BreweryX/cauldron.yml:/privateconfig/plugins/BreweryX/cauldron.yml
       - ./PrivateConfig/paper/config/BreweryX/custom-items.yml:/privateconfig/plugins/BreweryX/custom-items.yml
