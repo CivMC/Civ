@@ -13,8 +13,11 @@ plugins {
 
 include(":ansible")
 
+include(":libraries:banstick-core")
+
 include(":plugins:announcements-velocity")
 include(":plugins:banstick-paper")
+include(":plugins:banstick-velocity")
 include(":plugins:bastion-paper")
 include(":plugins:castlegates-paper")
 include(":plugins:citadel-paper")

@@ -35,9 +35,11 @@ services:
       CIV_GAMMA_HOSTNAME: 'mini.localhost'
       CIV_HOSTNAME: 'main.localhost'
 
+      JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
       CIV_FORWARDING_SECRET: '1234'
     ports:
       - "25565:25577"
+      - "5008:5008"
     volumes:
       - ./containers/data/proxy:/server
       - ./ansible/files/proxy-config:/config
