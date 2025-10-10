@@ -15,7 +15,7 @@ import vg.civcraft.mc.citadel.events.ReinforcementGroupChangeEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class ReinforcingState extends AbstractPlayerState {
@@ -80,7 +80,7 @@ public class ReinforcingState extends AbstractPlayerState {
             return;
         }
         // does the player have permission to reinforce on that group
-        if (!NameAPI.getGroupManager().hasAccess(group, e.getPlayer().getUniqueId(),
+        if (!NameLayerAPI.getGroupManager().hasAccess(group, e.getPlayer().getUniqueId(),
             CitadelPermissionHandler.getReinforce())) {
             CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
                 "You seem to have lost permission to reinforce on " + group.getName(),

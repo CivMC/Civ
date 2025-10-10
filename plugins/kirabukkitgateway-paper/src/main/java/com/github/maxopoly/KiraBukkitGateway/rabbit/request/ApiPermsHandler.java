@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class ApiPermsHandler extends AbstractRequestHandler {
@@ -31,7 +31,7 @@ public class ApiPermsHandler extends AbstractRequestHandler {
 
     private static Set<String> getGroupsWithPermission(UUID uuid, String permission) {
         Set<String> result = new HashSet<>();
-        GroupManager gm = NameAPI.getGroupManager();
+        GroupManager gm = NameLayerAPI.getGroupManager();
         PermissionType perm = PermissionType.getPermission(permission);
         for (String groupName : gm.getAllGroupNames(uuid)) {
             if (gm.hasAccess(groupName, uuid, perm)) {

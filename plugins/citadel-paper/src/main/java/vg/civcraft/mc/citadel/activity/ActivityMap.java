@@ -32,7 +32,7 @@ import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.world.locations.global.WorldIDManager;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class ActivityMap {
@@ -229,7 +229,7 @@ public class ActivityMap {
     }
 
     private Map<RegionCoord, Set<Integer>> getUpdatedRegions() {
-        GroupManager groupManager = NameAPI.getGroupManager();
+        GroupManager groupManager = NameLayerAPI.getGroupManager();
         Map<RegionCoord, Set<Integer>> regions = null;
 
         PlayerUpdate playerUpdate;

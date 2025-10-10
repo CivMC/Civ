@@ -45,7 +45,7 @@ public class NameLayerPlugin extends ACivMod {
         instance = this;
         loadDatabases();
         ClassHandler.Initialize(Bukkit.getServer());
-        new NameAPI(new GroupManager());
+        new NameLayerAPI(new GroupManager());
         registerListeners();
         if (loadGroups) {
             PermissionType.initialize();

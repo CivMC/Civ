@@ -12,7 +12,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.commands.TabComplete;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -30,7 +30,7 @@ public class AcceptInvite extends BaseCommandMiddle {
         if (groupIsNull(sender, groupName, group)) {
             return;
         }
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameLayerAPI.getUUID(p.getName());
         PlayerType type = group.getInvite(uuid);
         if (type == null) {
             p.sendMessage(Component.text("You were not invited to that group.").color(NamedTextColor.RED));

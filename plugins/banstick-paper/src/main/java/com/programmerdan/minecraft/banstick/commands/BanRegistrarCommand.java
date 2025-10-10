@@ -13,7 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 public class BanRegistrarCommand implements CommandExecutor {
 
@@ -25,7 +25,7 @@ public class BanRegistrarCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "You must specify a player whose last provider will be banned");
             return true;
         }
-        UUID uuid = NameAPI.getUUID(args[0]);
+        UUID uuid = NameLayerAPI.getUUID(args[0]);
         if (uuid == null) {
             sender.sendMessage(ChatColor.RED + "No player " + args[0] + " is known");
             return true;

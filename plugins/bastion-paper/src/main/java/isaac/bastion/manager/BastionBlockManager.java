@@ -29,7 +29,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -198,7 +198,7 @@ public class BastionBlockManager {
 
     public Set<BastionBlock> getBlockingBastionsWithoutPermission(Location loc, UUID player,
                                                                   PermissionType permission) {
-        return getBlockingBastions(loc, b -> !NameAPI.getGroupManager().hasAccess(b.getGroup(), player, permission));
+        return getBlockingBastions(loc, b -> !NameLayerAPI.getGroupManager().hasAccess(b.getGroup(), player, permission));
     }
 
     public Set<BastionBlock> getBlockingBastions(Location loc, Predicate<BastionBlock> filter) {
@@ -228,7 +228,7 @@ public class BastionBlockManager {
             return false;
         }
         PermissionType permission = PermissionType.getPermission(Permissions.BASTION_LIST);
-        return NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(), permission);
+        return NameLayerAPI.getGroupManager().hasAccess(group, player.getUniqueId(), permission);
     }
 
     public TextComponent bastionDeletedMessageComponent(BastionBlock bastion) {
@@ -286,7 +286,7 @@ public class BastionBlockManager {
             Set<BastionType> alliedBastions = new HashSet<>();
             Set<BastionType> enemyBastions = new HashSet<>();
             for (BastionBlock bas : bastions) {
-                if (NameAPI.getGroupManager().hasAccess(bas.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
+                if (NameLayerAPI.getGroupManager().hasAccess(bas.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
                     alliedBastions.add(bas.getType());
                 } else {
                     enemyBastions.add(bas.getType());
@@ -324,9 +324,9 @@ public class BastionBlockManager {
 
         Reinforcement oldReinf = bastion.getReinforcement();
 
-        if (NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(),
+        if (NameLayerAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(),
             PermissionType.getPermission(Permissions.BASTION_PLACE))
-            && NameAPI.getGroupManager().hasAccess(oldReinf.getGroup(), player.getUniqueId(),
+            && NameLayerAPI.getGroupManager().hasAccess(oldReinf.getGroup(), player.getUniqueId(),
             PermissionType.getPermission(Permissions.BASTION_PLACE))) {
             storage.changeBastionGroup(bastion);
             return Boolean.TRUE;

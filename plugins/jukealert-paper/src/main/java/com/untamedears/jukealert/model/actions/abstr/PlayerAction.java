@@ -6,7 +6,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 public abstract class PlayerAction extends SnitchAction {
 
@@ -36,7 +36,7 @@ public abstract class PlayerAction extends SnitchAction {
     }
 
     public String getPlayerName() {
-        return NameAPI.getCurrentName(player);
+        return NameLayerAPI.getCurrentName(player);
     }
 
 }

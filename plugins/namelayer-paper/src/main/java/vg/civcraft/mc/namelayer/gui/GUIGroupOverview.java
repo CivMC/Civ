@@ -24,7 +24,7 @@ import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.RunnableOnGroup;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -40,7 +40,7 @@ public class GUIGroupOverview {
 
     public GUIGroupOverview(Player p) {
         if (gm == null) {
-            gm = NameAPI.getGroupManager();
+            gm = NameLayerAPI.getGroupManager();
         }
         autoAccept = NameLayerPlugin.getAutoAcceptHandler().getAutoAccept(p.getUniqueId());
         this.p = p;

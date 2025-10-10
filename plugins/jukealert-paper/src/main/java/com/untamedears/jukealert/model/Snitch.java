@@ -22,7 +22,7 @@ import vg.civcraft.mc.civmodcore.utilities.CivLogger;
 import vg.civcraft.mc.civmodcore.world.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.world.locations.global.LocationTrackable;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -112,7 +112,7 @@ public class Snitch extends LocationTrackable {
      * false otherwise
      */
     public boolean hasPermission(UUID uuid, PermissionType permission) {
-        return NameAPI.getGroupManager().hasAccess(getGroup(), uuid, permission);
+        return NameLayerAPI.getGroupManager().hasAccess(getGroup(), uuid, permission);
     }
 
     /**

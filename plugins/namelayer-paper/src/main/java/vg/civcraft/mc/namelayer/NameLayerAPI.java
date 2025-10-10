@@ -6,14 +6,16 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-public class NameAPI {
+public class NameLayerAPI {
 
     private static GroupManager groupManager;
     private static final Map<UUID, String> uuidToPlayer = new HashMap<>();
     private static final Map<String, UUID> playerToUuid = new HashMap<>();
 
-    public NameAPI(GroupManager man) {
+    public NameLayerAPI(GroupManager man) {
         groupManager = man;
+
+        // TODO: hookup to new NameAPI
         Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), () -> {
             Map<UUID, String> uuidToPlayer = new HashMap<>();
             Map<String, UUID> playerToUuid = new HashMap<>();

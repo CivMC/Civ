@@ -30,7 +30,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.civmodcore.players.settings.AltRequestEvent;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 /**
  * Base handler for setting up event captures. Like people logging in who are
@@ -121,7 +121,7 @@ public class BanStickEventHandler implements Listener {
         if (player == null) { // create and attempt to name -- review if this is safe.
             String name = null;
             try {
-                name = NameAPI.getCurrentName(preJoinUUID);
+                name = NameLayerAPI.getCurrentName(preJoinUUID);
             } catch (NoClassDefFoundError ncde) {
             } // no namelayer
             if (name == null) {
@@ -260,7 +260,7 @@ public class BanStickEventHandler implements Listener {
 
                 String nowName = null;
                 try {
-                    nowName = NameAPI.getCurrentName(player.getUniqueId());
+                    nowName = NameLayerAPI.getCurrentName(player.getUniqueId());
                 } catch (NoClassDefFoundError cnfe) {
                 } // no namelayer
 
