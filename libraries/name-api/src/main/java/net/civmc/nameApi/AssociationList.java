@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import javax.sql.DataSource;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
 public class AssociationList {
@@ -92,12 +93,12 @@ public class AssociationList {
     }
 
     /**
-     * returns null if no uuid was found
+     * Get player's UUID based on their name
      *
      * @param playername the player's name
      * @return the UUID of the player, or null
      */
-    public UUID getUUID(String playername) {
+    public @Nullable UUID getUUID(String playername) {
         try (Connection connection = db.getConnection();
              PreparedStatement getUUIDfromPlayer = connection.prepareStatement(AssociationList.getUUIDfromPlayer);) {
             getUUIDfromPlayer.setString(1, playername);
@@ -115,12 +116,12 @@ public class AssociationList {
     }
 
     /**
-     * returns null if no playername was found
+     * Get player's current name based on UUID
      *
      * @param uuid get the current server's name for this UUId
      * @return the player's name if found
      */
-    public String getCurrentName(UUID uuid) {
+    public @Nullable String getCurrentName(UUID uuid) {
         try (Connection connection = db.getConnection();
              PreparedStatement getPlayerfromUUID = connection.prepareStatement(AssociationList.getPlayerfromUUID);) {
             getPlayerfromUUID.setString(1, uuid.toString());
@@ -137,6 +138,12 @@ public class AssociationList {
         return null;
     }
 
+    /**
+     * Adds a player to the database.  If the player already exists, does nothing.
+     *
+     * @param playername the player's name
+     * @param uuid       the player's UUID
+     */
     public void addPlayer(String playername, UUID uuid) {
         try (Connection connection = db.getConnection();
              PreparedStatement addPlayer = connection.prepareStatement(AssociationList.addPlayer);) {
@@ -150,6 +157,12 @@ public class AssociationList {
         }
     }
 
+    /**
+     * Changes player's name in the database
+     *
+     * @param newName the player's new name
+     * @param uuid    the player's UUID
+     */
     public void changePlayer(String newName, UUID uuid) {
         try (Connection connection = db.getConnection();
              PreparedStatement changePlayerName = connection.prepareStatement(AssociationList.changePlayerName);) {
