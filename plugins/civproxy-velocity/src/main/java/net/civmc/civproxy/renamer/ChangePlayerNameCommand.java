@@ -5,6 +5,7 @@ import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.civmc.nameApi.NameAPI;
 import net.kyori.adventure.text.Component;
+import java.util.List;
 import java.util.UUID;
 
 public class ChangePlayerNameCommand implements SimpleCommand {
@@ -42,5 +43,17 @@ public class ChangePlayerNameCommand implements SimpleCommand {
     @Override
     public boolean hasPermission(Invocation invocation) {
         return invocation.source().hasPermission("civproxy.changeplayername");
+    }
+
+    @Override
+    public List<String> suggest(final Invocation invocation) {
+        List<String> suggestions = new java.util.ArrayList<>();
+        if (invocation.arguments().length > 1) {
+            return suggestions; // No suggestions for the second argument
+        }
+
+        // Suggest online player names for the first argument
+        server.getAllPlayers().forEach(player -> suggestions.add(player.getUsername()));
+        return suggestions;
     }
 }
