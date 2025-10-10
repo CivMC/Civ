@@ -34,6 +34,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
+import org.bukkit.block.Barrel;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.FurnaceInventory;
@@ -106,6 +107,7 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
      * should be
      */
     public Inventory getInventory() {
+        // do not need to check for barrels because they are not included in the getChest() function, which is used for double chest detection/force loading
         if (getChest().getType() != Material.CHEST && getChest().getType() != Material.TRAPPED_CHEST) {
             return null;
         }
@@ -145,12 +147,18 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
             if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
                 combinedInvList.add(((Chest) relBlock.getState()).getInventory());
             }
+            if (relBlock.getType() == Material.BARREL) {
+                combinedInvList.add(((Barrel) relBlock.getState()).getInventory());
+            }
         }
         Block tblock = fccs.getCraftingTable();
         for (BlockFace relativeFace : ioTypeFunc.apply(getTableIOSelector()).apply(facing)) {
             Block relBlock = tblock.getRelative(relativeFace);
             if (relBlock.getType() == Material.CHEST || relBlock.getType() == Material.TRAPPED_CHEST) {
                 combinedInvList.add(((Chest) relBlock.getState()).getInventory());
+            }
+            if (relBlock.getType() == Material.BARREL) {
+                combinedInvList.add(((Barrel) relBlock.getState()).getInventory());
             }
         }
     }
@@ -349,6 +357,12 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
             return;
         }
 
+        // Check that there is an output selected at all
+        if (furnaceIoSelector.getOutputCount() == 0 && tableIoSelector.getOutputCount() == 0) {
+            p.sendMessage(String.format("%sFailed to activate factory, it has no IO Outputs configured", ChatColor.RED));
+            return;
+        }
+
         if (!onStartUp && currentRecipe instanceof Upgraderecipe && FactoryMod.getInstance().getManager().isCitadelEnabled()) {
             // only allow permitted members to upgrade the factory
             Reinforcement rein = ReinforcementLogic.getReinforcementAt(mbs.getCenter());
@@ -538,6 +552,14 @@ public class FurnCraftChestFactory extends Factory implements IIOFInventoryProvi
                 // if the production timer has reached the recipes production
                 // time remove input from chest, and add output material
                 else {
+                    // check that there is an output to place the item
+                    // check is put here instead of on fuel tick for performance reasons, but will waste charcoal
+                    if (getOutputInventory().getSize() == 0) {
+                        sendActivatorMessage(ChatColor.RED + currentRecipe.getName() + " in " + name + " deactivated because it has no output inventory");
+                        deactivate();
+                        return;
+                    }
+
                     LoggingUtils.log("Executing recipe " + currentRecipe.getName() + " for " + getLogData());
                     if (currentRecipe instanceof InputRecipe) {
                         RecipeExecuteEvent ree = new RecipeExecuteEvent(this, (InputRecipe) currentRecipe);

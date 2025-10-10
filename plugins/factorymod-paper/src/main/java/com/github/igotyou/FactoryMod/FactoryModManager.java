@@ -26,7 +26,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
+import org.bukkit.block.Container;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Dropper;
 import org.bukkit.entity.Player;
@@ -94,6 +94,7 @@ public class FactoryModManager {
         possibleInteractionBlock.add(Material.CRAFTING_TABLE);
         possibleInteractionBlock.add(Material.FURNACE);
         possibleInteractionBlock.add(Material.CHEST);
+        possibleInteractionBlock.add(Material.BARREL);
         possibleInteractionBlock.add(Material.TRAPPED_CHEST);
 
         // sorter
@@ -267,7 +268,7 @@ public class FactoryModManager {
                         IFactoryEgg egg = null;
                         for (Entry<ItemMap, IFactoryEgg> entry : eggs.entrySet()) {
                             if (entry.getKey()
-                                .containedExactlyIn(((Chest) (fccs.getChest().getState())).getInventory())) {
+                                .containedExactlyIn(((Container) (fccs.getChest().getState())).getInventory())) {
                                 egg = entry.getValue();
                                 break;
                             }
@@ -277,7 +278,7 @@ public class FactoryModManager {
                             if (f != null) {
                                 // Trigger lazy-initialize default crafting table IOSelector
                                 ((FurnCraftChestFactory) f).getTableIOSelector();
-                                ((Chest) (fccs.getChest().getState())).getInventory().clear();
+                                ((Container) (fccs.getChest().getState())).getInventory().clear();
                                 addFactory(f);
                                 p.sendMessage(ChatColor.GREEN + "Successfully created " + f.getName());
                                 LoggingUtils.log(f.getLogData() + " was created by " + p.getName());
