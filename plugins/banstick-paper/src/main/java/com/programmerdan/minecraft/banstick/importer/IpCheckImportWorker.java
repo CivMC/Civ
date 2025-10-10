@@ -19,7 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 /**
  * Worker for IpCheck plugin's import.
@@ -188,7 +188,7 @@ public class IpCheckImportWorker extends ImportWorker {
 
                         UUID uuid = null;
                         try {
-                            uuid = NameAPI.getUUID(username);
+                            uuid = NameLayerAPI.getUUID(username);
                         } catch (NoClassDefFoundError ncde) {
                         }
 
@@ -279,7 +279,7 @@ public class IpCheckImportWorker extends ImportWorker {
                         try {
                             UUID uuid = null;
                             try {
-                                uuid = NameAPI.getUUID(username);
+                                uuid = NameLayerAPI.getUUID(username);
                             } catch (NoClassDefFoundError ncde) {
                             }
 

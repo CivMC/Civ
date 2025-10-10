@@ -16,7 +16,7 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.utilities.TextUtil;
 import vg.civcraft.mc.civmodcore.world.locations.QTBox;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -137,7 +137,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
         Reinforcement reinforcement = getReinforcement();
 
         if (reinforcement != null) {
-            return NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PEARL));
+            return NameLayerAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PEARL));
         }
         return true;
     }
@@ -154,7 +154,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
         if (reinforcement == null) return true;
         if (player == null) return false;
 
-        return NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
+        return NameLayerAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
     }
 
     /**
@@ -169,7 +169,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
         if (rein == null) {
             return true;
         }
-        return NameAPI.getGroupManager().hasAccess(rein.getGroup(), player.getUniqueId(), perm);
+        return NameLayerAPI.getGroupManager().hasAccess(rein.getGroup(), player.getUniqueId(), perm);
     }
 
     /**
@@ -188,7 +188,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 
         for (UUID player : players) {
             if (player != null)
-                if (NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player, PermissionType.getPermission(Permissions.BASTION_PLACE)))
+                if (NameLayerAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player, PermissionType.getPermission(Permissions.BASTION_PLACE)))
                     return true;
         }
 

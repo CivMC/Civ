@@ -12,7 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.events.PromotePlayerEvent;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -27,8 +27,8 @@ public class PromotePlayer extends BaseCommandMiddle {
     public void execute(CommandSender sender, String groupName, String playerName, String playerType) {
         final boolean isAdmin = sender instanceof ConsoleCommandSender || sender.hasPermission("namelayer.admin");
 
-        UUID executor = sender instanceof Player p ? NameAPI.getUUID(p.getName()) : null;
-        UUID promotee = NameAPI.getUUID(playerName);
+        UUID executor = sender instanceof Player p ? NameLayerAPI.getUUID(p.getName()) : null;
+        UUID promotee = NameLayerAPI.getUUID(playerName);
 
         if (promotee == null) {
             sender.sendMessage(ChatColor.RED + "That player does not exist");
@@ -118,7 +118,7 @@ public class PromotePlayer extends BaseCommandMiddle {
         }
 
         if (!allowed || !group.isMember(promotee)) { //can't edit a player who isn't in the group
-            sender.sendMessage(ChatColor.RED + NameAPI.getCurrentName(promotee) + " is not a member of this group or you do not have permission to edit their rank");
+            sender.sendMessage(ChatColor.RED + NameLayerAPI.getCurrentName(promotee) + " is not a member of this group or you do not have permission to edit their rank");
             return;
         }
 
@@ -138,7 +138,7 @@ public class PromotePlayer extends BaseCommandMiddle {
             }
             group.removeMember(promotee);
             group.addMember(promotee, promoteeType);
-            sender.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
+            sender.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
                 promoteeType.toString() + " in (Group) " + group.getName());
             oProm.sendMessage(ChatColor.GREEN + "You have been promoted to (PlayerType) " +
                 promoteeType.toString() + " in (Group) " + group.getName());
@@ -146,7 +146,7 @@ public class PromotePlayer extends BaseCommandMiddle {
             //player is offline change their perms
             group.removeMember(promotee);
             group.addMember(promotee, promoteeType);
-            sender.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
+            sender.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(promotee) + " has been added as (PlayerType) " +
                 promoteeType.toString() + " in (Group) " + group.getName());
         }
     }

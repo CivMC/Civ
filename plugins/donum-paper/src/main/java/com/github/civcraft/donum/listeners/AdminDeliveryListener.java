@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 public class AdminDeliveryListener implements Listener {
 
@@ -25,11 +25,11 @@ public class AdminDeliveryListener implements Listener {
                     continue;
                 }
                 im.addItemStack(is);
-                Donum.getInstance().info(e.getPlayer().getName() + " added " + is + " to delivery inventory of " + NameAPI.getCurrentName(beingViewed));
+                Donum.getInstance().info(e.getPlayer().getName() + " added " + is + " to delivery inventory of " + NameLayerAPI.getCurrentName(beingViewed));
             }
             AdminDeliveryGUI.closedInventory(e.getPlayer().getUniqueId());
             DonumAPI.deliverItem(beingViewed, im);
-            e.getPlayer().sendMessage(ChatColor.GREEN + "Successfully added " + im.getTotalItemAmount() + " items to delivery inventory of " + NameAPI.getCurrentName(beingViewed));
+            e.getPlayer().sendMessage(ChatColor.GREEN + "Successfully added " + im.getTotalItemAmount() + " items to delivery inventory of " + NameLayerAPI.getCurrentName(beingViewed));
         }
     }
 }

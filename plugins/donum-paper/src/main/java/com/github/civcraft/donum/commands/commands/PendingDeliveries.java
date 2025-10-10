@@ -7,14 +7,13 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Syntax;
 import com.github.civcraft.donum.Donum;
-import com.github.civcraft.donum.gui.AdminDeliveryGUI;
 import com.github.civcraft.donum.inventories.DeliveryInventory;
 import java.util.UUID;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 public class PendingDeliveries extends BaseCommand {
 
@@ -24,7 +23,7 @@ public class PendingDeliveries extends BaseCommand {
     @CommandCompletion("@players")
     @CommandPermission("donum.op")
     public void execute(Player player, String targetPlayer) {
-        UUID delUUID = NameAPI.getUUID(targetPlayer);
+        UUID delUUID = NameLayerAPI.getUUID(targetPlayer);
         if (delUUID == null) {
             player.sendMessage(ChatColor.RED + "This player has never logged into the server");
             return;
@@ -36,7 +35,7 @@ public class PendingDeliveries extends BaseCommand {
             return;
         }
 
-        Inventory inventory = Bukkit.createInventory(null, 54, NameAPI.getCurrentName(delUUID));
+        Inventory inventory = Bukkit.createInventory(null, 54, NameLayerAPI.getCurrentName(delUUID));
         // add items to ui
         delInv.getInventory().getItemStackRepresentation().forEach(inventory::addItem);
         player.openInventory(inventory);

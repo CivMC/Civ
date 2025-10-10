@@ -10,7 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 
@@ -26,9 +26,9 @@ public class ListGroups extends BaseCommandMiddle {
 
         if ((sender.isOp() || sender.hasPermission("namelayer.admin"))) {
             if (pageNumber == null) {
-                uuid = NameAPI.getUUID(sender.getName());
+                uuid = NameLayerAPI.getUUID(sender.getName());
             } else if (pageNumber != null) {
-                uuid = NameAPI.getUUID(sender.getName());
+                uuid = NameLayerAPI.getUUID(sender.getName());
             }
 
             if (uuid == null) {
@@ -38,7 +38,7 @@ public class ListGroups extends BaseCommandMiddle {
             autopages = true;
         } else {
             p = (Player) sender;
-            uuid = NameAPI.getUUID(p.getName());
+            uuid = NameLayerAPI.getUUID(p.getName());
         }
 
         List<String> groups = gm.getAllGroupNames(uuid);

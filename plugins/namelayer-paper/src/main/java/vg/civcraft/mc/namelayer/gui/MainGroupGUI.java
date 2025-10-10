@@ -25,7 +25,7 @@ import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.events.PromotePlayerEvent;
 import vg.civcraft.mc.namelayer.group.BlackList;
@@ -183,12 +183,12 @@ public class MainGroupGUI extends AbstractGroupGUI {
                 meta.setColor(Color.BLACK);
                 meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                 is.setItemMeta(meta);
-                ItemUtils.setDisplayName(is, NameAPI.getCurrentName(uuid));
+                ItemUtils.setDisplayName(is, NameLayerAPI.getCurrentName(uuid));
                 Clickable c;
                 if (gm.hasAccess(g, p.getUniqueId(),
                     PermissionType.getPermission("BLACKLIST"))) {
                     ItemUtils.addLore(is, ChatColor.GREEN + "Click to remove "
-                        + NameAPI.getCurrentName(uuid), ChatColor.GREEN
+                        + NameLayerAPI.getCurrentName(uuid), ChatColor.GREEN
                         + "from the blacklist");
                     c = new Clickable(is) {
 
@@ -199,12 +199,12 @@ public class MainGroupGUI extends AbstractGroupGUI {
                                 NameLayerPlugin.log(
                                     Level.INFO,
                                     arg0.getName() + " removed "
-                                        + NameAPI.getCurrentName(uuid)
+                                        + NameLayerAPI.getCurrentName(uuid)
                                         + " from the blacklist of "
                                         + g.getName() + " via the gui");
                                 black.removeBlacklistMember(g, uuid, true);
                                 p.sendMessage(ChatColor.GREEN + "You removed "
-                                    + NameAPI.getCurrentName(uuid)
+                                    + NameLayerAPI.getCurrentName(uuid)
                                     + " from the blacklist");
                             } else {
                                 p.sendMessage(ChatColor.RED
@@ -216,7 +216,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                 } else {
                     ItemUtils.addLore(is, ChatColor.RED
                             + "You don't have permission to remove",
-                        ChatColor.RED + NameAPI.getCurrentName(uuid)
+                        ChatColor.RED + NameLayerAPI.getCurrentName(uuid)
                             + "from the blacklist");
                     c = new DecorationStack(is);
                 }
@@ -232,7 +232,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                 ItemMeta im = is.getItemMeta();
                 im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
                 is.setItemMeta(im);
-                final String playerName = NameAPI
+                final String playerName = NameLayerAPI
                     .getCurrentName(entry.getKey());
                 ItemUtils.setDisplayName(is, ChatColor.GOLD + playerName);
                 boolean canRevoke = false;
@@ -276,7 +276,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
                         @Override
                         public void clicked(Player arg0) {
-                            UUID invitedUUID = NameAPI.getUUID(playerName);
+                            UUID invitedUUID = NameLayerAPI.getUUID(playerName);
                             PlayerType pType = g.getInvite(invitedUUID);
                             if (pType == null) {
                                 p.sendMessage(ChatColor.RED
@@ -314,7 +314,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                                     + "You don't have permission to revoke this invite");
                             } else {
                                 NameLayerPlugin.log(Level.INFO, arg0.getName()
-                                    + " revoked an invite for " + NameAPI.getCurrentName(invitedUUID)
+                                    + " revoked an invite for " + NameLayerAPI.getCurrentName(invitedUUID)
                                     + " for group " + g.getName() + " via the gui");
                                 g.removeInvite(invitedUUID, true);
                                 PlayerListener.removeNotification(invitedUUID, g);
@@ -337,7 +337,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
         }
         List<UUID> allMembers = g.getAllMembers();
         allMembers.sort(Comparator.comparing(g::isOwner).thenComparing(g::getPlayerType).reversed()
-            .thenComparing(NameAPI::getCurrentName, String.CASE_INSENSITIVE_ORDER));
+            .thenComparing(NameLayerAPI::getCurrentName, String.CASE_INSENSITIVE_ORDER));
         for (UUID uuid : allMembers) {
             Clickable c = null;
             switch (g.getPlayerType(uuid)) {
@@ -431,7 +431,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
         ItemMeta im = is.getItemMeta();
         im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         is.setItemMeta(im);
-        ItemUtils.setDisplayName(is, ChatColor.GOLD + NameAPI.getCurrentName(toDisplay));
+        ItemUtils.setDisplayName(is, ChatColor.GOLD + NameLayerAPI.getCurrentName(toDisplay));
         if (g.isOwner(toDisplay)) { // special case for primary owner
             is.editMeta(itemMeta -> itemMeta.setEnchantmentGlintOverride(true));
             ItemUtils.addLore(is, ChatColor.AQUA + "Rank: Primary Owner");
@@ -476,7 +476,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
             return;
         }
         ClickableInventory ci = new ClickableInventory(27, g.getName());
-        String playerName = NameAPI.getCurrentName(uuid);
+        String playerName = NameLayerAPI.getCurrentName(uuid);
 
         ItemStack info = new ItemStack(Material.PAPER);
         ItemUtils.setDisplayName(info, ChatColor.GOLD + playerName);
@@ -523,7 +523,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
         Clickable modClick;
         if (rank == pType) {
             ItemUtils.setDisplayName(mod, ChatColor.GOLD + "Remove this player");
-            mod.lore(List.of(Component.text("/nlrm " + g.getName() + " " + NameAPI.getCurrentName(toChange))
+            mod.lore(List.of(Component.text("/nlrm " + g.getName() + " " + NameLayerAPI.getCurrentName(toChange))
                 .color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)));
             if (!gm.hasAccess(g, p.getUniqueId(), getAccordingPermission(pType))) {
                 ItemUtils.addLore(mod, ChatColor.RED
@@ -550,7 +550,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                     + demoteOrPromote(g.getPlayerType(toChange), pType,
                     true) + " this player to "
                     + PlayerType.getNiceRankName(pType));
-            mod.lore(List.of(Component.text("/nlpp " + g.getName() + " " + NameAPI.getCurrentName(toChange) + " " + pType)
+            mod.lore(List.of(Component.text("/nlpp " + g.getName() + " " + NameLayerAPI.getCurrentName(toChange) + " " + pType)
                 .color(NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false)));
             if (!gm.hasAccess(g, p.getUniqueId(), getAccordingPermission(pType))) {
                 ItemUtils.addLore(mod, ChatColor.RED
@@ -583,10 +583,10 @@ public class MainGroupGUI extends AbstractGroupGUI {
                     + "This player owns the group and can't be removed");
             }
             NameLayerPlugin.log(Level.INFO,
-                p.getName() + " kicked " + NameAPI.getCurrentName(toRemove)
+                p.getName() + " kicked " + NameLayerAPI.getCurrentName(toRemove)
                     + " from " + g.getName() + " via the gui");
             g.removeMember(toRemove);
-            p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(toRemove)
+            p.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(toRemove)
                 + " has been removed from the group");
         } else {
             p.sendMessage(ChatColor.RED
@@ -612,7 +612,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
             NameLayerPlugin.log(
                 Level.INFO,
                 p.getName() + " changed player rank for "
-                    + NameAPI.getCurrentName(toChange) + " from "
+                    + NameLayerAPI.getCurrentName(toChange) + " from "
                     + g.getCurrentRank(toChange).toString() + " to "
                     + newRank.toString() + " for group " + g.getName()
                     + " via the gui");
@@ -637,7 +637,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                 g.addMember(toChange, newRank);
             }
             p.sendMessage(ChatColor.GREEN
-                + NameAPI.getCurrentName(toChange)
+                + NameLayerAPI.getCurrentName(toChange)
                 + " has been "
                 + demoteOrPromote(g.getCurrentRank(toChange), newRank,
                 false) + "d to " + getRankName(toChange));
@@ -761,7 +761,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                             if (gm.hasAccess(g, p.getUniqueId(),
                                 PermissionType.getPermission("BLACKLIST"))) {
                                 for (String playerName : message) {
-                                    UUID blackUUID = NameAPI
+                                    UUID blackUUID = NameLayerAPI
                                         .getUUID(playerName);
                                     if (blackUUID == null) {
                                         p.sendMessage(ChatColor.RED
@@ -770,7 +770,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                                     }
                                     if (g.isMember(blackUUID)) {
                                         p.sendMessage(ChatColor.RED
-                                            + NameAPI.getCurrentName(blackUUID)
+                                            + NameLayerAPI.getCurrentName(blackUUID)
                                             + " is currently a member of this group and can't be blacklisted");
                                         continue;
                                     }
@@ -778,7 +778,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                                         .getBlackList();
                                     if (bl.isBlacklisted(g, blackUUID)) {
                                         p.sendMessage(ChatColor.RED
-                                            + NameAPI.getCurrentName(blackUUID)
+                                            + NameLayerAPI.getCurrentName(blackUUID)
                                             + " is already blacklisted");
                                         continue;
                                     }
@@ -786,13 +786,13 @@ public class MainGroupGUI extends AbstractGroupGUI {
                                         .log(Level.INFO,
                                             p.getName()
                                                 + " blacklisted "
-                                                + NameAPI.getCurrentName(blackUUID)
+                                                + NameLayerAPI.getCurrentName(blackUUID)
                                                 + " for group "
                                                 + g.getName()
                                                 + " via the gui");
                                     bl.addBlacklistMember(g, blackUUID, true);
                                     p.sendMessage(ChatColor.GREEN
-                                        + NameAPI.getCurrentName(blackUUID)
+                                        + NameLayerAPI.getCurrentName(blackUUID)
                                         + " was successfully blacklisted");
                                 }
                             } else {
@@ -1123,7 +1123,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                     + String.valueOf(g.getAllMembers().size())
                     + " total group members");
             ItemUtils.addLore(is, ChatColor.DARK_AQUA + "Group owner: "
-                + ChatColor.YELLOW + NameAPI.getCurrentName(g.getOwner()));
+                + ChatColor.YELLOW + NameLayerAPI.getCurrentName(g.getOwner()));
         }
         c = new DecorationStack(is);
         return c;
@@ -1206,7 +1206,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
                 default:
                     continue;
             }
-            ItemUtils.setDisplayName(is, NameAPI.getCurrentName(uuid));
+            ItemUtils.setDisplayName(is, NameLayerAPI.getCurrentName(uuid));
             ItemUtils.addLore(is, ChatColor.AQUA + "Inherited "
                 + getRankName(uuid) + " from " + g.getName());
             clicks.add(new DecorationStack(is));

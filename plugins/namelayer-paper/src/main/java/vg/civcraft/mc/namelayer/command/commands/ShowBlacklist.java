@@ -9,7 +9,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -47,7 +47,7 @@ public class ShowBlacklist extends BaseCommandMiddle {
         StringBuilder sb = new StringBuilder();
         sb.append(ChatColor.GOLD + "Blacklisted players for group " + g.getName() + " are: ");
         for (UUID id : ids) {
-            sb.append(NameAPI.getCurrentName(id));
+            sb.append(NameLayerAPI.getCurrentName(id));
             sb.append(", ");
         }
         String reply = sb.toString();

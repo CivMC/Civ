@@ -1,4 +1,4 @@
-package net.civmc.civproxy.renamer;
+package net.civmc.nameApi;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,10 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import javax.sql.DataSource;
-import net.civmc.civproxy.database.Migrator;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-public class AssociationList {
+public class NameAPI {
 
     private DataSource db;
     private Logger logger;
@@ -22,9 +24,15 @@ public class AssociationList {
     private static final String changePlayerName = "update Name_player set player=? where uuid=?";
     private static final String getAllPlayerInfo = "select * from Name_player";
 
-    public AssociationList(Logger logger, DataSource db) {
-        this.db = db;
+    public NameAPI(Logger logger, HikariConfig dbConfig) {
         this.logger = logger;
+
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        this.db = new HikariDataSource(dbConfig);
     }
 
     public void migrate() {
@@ -93,14 +101,14 @@ public class AssociationList {
     }
 
     /**
-     * returns null if no uuid was found
+     * Get player's UUID based on their name
      *
      * @param playername the player's name
      * @return the UUID of the player, or null
      */
-    public UUID getUUID(String playername) {
+    public @Nullable UUID getUUID(String playername) {
         try (Connection connection = db.getConnection();
-             PreparedStatement getUUIDfromPlayer = connection.prepareStatement(AssociationList.getUUIDfromPlayer);) {
+             PreparedStatement getUUIDfromPlayer = connection.prepareStatement(NameAPI.getUUIDfromPlayer);) {
             getUUIDfromPlayer.setString(1, playername);
             try (ResultSet set = getUUIDfromPlayer.executeQuery();) {
                 if (!set.next() || set.wasNull()) return null;
@@ -116,14 +124,14 @@ public class AssociationList {
     }
 
     /**
-     * returns null if no playername was found
+     * Get player's current name based on UUID
      *
      * @param uuid get the current server's name for this UUId
      * @return the player's name if found
      */
-    public String getCurrentName(UUID uuid) {
+    public @Nullable String getCurrentName(UUID uuid) {
         try (Connection connection = db.getConnection();
-             PreparedStatement getPlayerfromUUID = connection.prepareStatement(AssociationList.getPlayerfromUUID);) {
+             PreparedStatement getPlayerfromUUID = connection.prepareStatement(NameAPI.getPlayerfromUUID);) {
             getPlayerfromUUID.setString(1, uuid.toString());
             try (ResultSet set = getPlayerfromUUID.executeQuery();) {
                 if (!set.next()) return null;
@@ -138,9 +146,15 @@ public class AssociationList {
         return null;
     }
 
+    /**
+     * Adds a player to the database.  If the player already exists, does nothing.
+     *
+     * @param playername the player's name
+     * @param uuid       the player's UUID
+     */
     public void addPlayer(String playername, UUID uuid) {
         try (Connection connection = db.getConnection();
-             PreparedStatement addPlayer = connection.prepareStatement(AssociationList.addPlayer);) {
+             PreparedStatement addPlayer = connection.prepareStatement(NameAPI.addPlayer);) {
             addPlayer.setString(1, playername);
             addPlayer.setString(2, uuid.toString());
             addPlayer.execute();
@@ -151,9 +165,15 @@ public class AssociationList {
         }
     }
 
+    /**
+     * Changes player's name in the database
+     *
+     * @param newName the player's new name
+     * @param uuid    the player's UUID
+     */
     public void changePlayer(String newName, UUID uuid) {
         try (Connection connection = db.getConnection();
-             PreparedStatement changePlayerName = connection.prepareStatement(AssociationList.changePlayerName);) {
+             PreparedStatement changePlayerName = connection.prepareStatement(NameAPI.changePlayerName);) {
             changePlayerName.setString(1, newName);
             changePlayerName.setString(2, uuid.toString());
             changePlayerName.execute();
@@ -177,7 +197,7 @@ public class AssociationList {
         Map<String, UUID> nameMapping = new HashMap<String, UUID>();
         Map<UUID, String> uuidMapping = new HashMap<UUID, String>();
         try (Connection connection = db.getConnection();
-             PreparedStatement getAllPlayerInfo = connection.prepareStatement(AssociationList.getAllPlayerInfo);
+             PreparedStatement getAllPlayerInfo = connection.prepareStatement(NameAPI.getAllPlayerInfo);
              ResultSet set = getAllPlayerInfo.executeQuery();) {
             while (set.next()) {
                 UUID uuid = UUID.fromString(set.getString("uuid"));

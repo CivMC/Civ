@@ -48,13 +48,13 @@ import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
 import vg.civcraft.mc.civmodcore.players.settings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.players.settings.impl.BooleanSetting;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 
 public class EntityListener implements Listener {
 
-    protected GroupManager gm = NameAPI.getGroupManager();
+    protected GroupManager gm = NameLayerAPI.getGroupManager();
 
     // prevent zombies from breaking reinforced doors
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -185,7 +185,7 @@ public class EntityListener implements Listener {
             public void run() {
                 GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
                 for (String groupName : db.getGroupNames(uuid)) {
-                    if (NameAPI.getGroupManager().hasAccess(groupName, uuid,
+                    if (NameLayerAPI.getGroupManager().hasAccess(groupName, uuid,
                         CitadelPermissionHandler.getBypass())) {
                         GroupManager.getGroup(groupName).updateActivityTimeStamp();
                     }

@@ -15,7 +15,7 @@ import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 public class DeathInventoryGUI {
 
@@ -94,7 +94,7 @@ public class DeathInventoryGUI {
 
     private Clickable createInventoryClickable(final DeathInventory i) {
         ItemStack is = new ItemStack(Material.BOOK);
-        ItemUtils.addLore(is, ChatColor.GREEN + "Owner: " + NameAPI.getCurrentName(i.getOwner()));
+        ItemUtils.addLore(is, ChatColor.GREEN + "Owner: " + NameLayerAPI.getCurrentName(i.getOwner()));
         ItemUtils.addLore(is, ChatColor.GOLD + "Died at " + dateFormat.format(i.getDeathTime()));
         ItemUtils.addLore(is, ChatColor.LIGHT_PURPLE + "Unique ID: " + i.getID());
         if (i.wasReturned()) {
@@ -133,7 +133,7 @@ public class DeathInventoryGUI {
                     @Override
                     public void clicked(Player p) {
                         Donum.getManager().returnDeathInventory(i);
-                        Donum.getInstance().info(p.getName() + " returned inventory " + i.getID() + " to delivery inventory of " + NameAPI.getCurrentName(viewer));
+                        Donum.getInstance().info(p.getName() + " returned inventory " + i.getID() + " to delivery inventory of " + NameLayerAPI.getCurrentName(viewer));
                         p.sendMessage(ChatColor.GREEN + "Successfully returned inventory with id " + i.getID()
                             + " with a total of " + i.getInventory().getTotalItemAmount() + " items");
                         showScreen();

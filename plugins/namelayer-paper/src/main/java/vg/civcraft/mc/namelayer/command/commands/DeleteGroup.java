@@ -13,7 +13,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -28,7 +28,7 @@ public class DeleteGroup extends BaseCommandMiddle {
     @CommandCompletion("@NL_Groups")
     public void execute(Player sender, String groupName) {
         Player p = (Player) sender;
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameLayerAPI.getUUID(p.getName());
         String x = groupName;
         String confirm = "CONFIRM DELETION";
         if (x.toLowerCase().contains(confirm.toLowerCase())) {
@@ -41,7 +41,7 @@ public class DeleteGroup extends BaseCommandMiddle {
                 if (x.equalsIgnoreCase("%s %s".formatted(confirm, gD.getName()))) {
 
                     //player could have lost delete permission in the mean time
-                    if (!NameAPI.getGroupManager().hasAccess(gD, uuid, PermissionType.getPermission("DELETE"))) {
+                    if (!NameLayerAPI.getGroupManager().hasAccess(gD, uuid, PermissionType.getPermission("DELETE"))) {
                         p.sendMessage(Component.text("You do not have permission to run that command.").color(NamedTextColor.RED));
                         return;
                     }
@@ -70,7 +70,7 @@ public class DeleteGroup extends BaseCommandMiddle {
         if (groupIsNull(sender, x, g)) {
             return;
         }
-        if (!NameAPI.getGroupManager().hasAccess(g, uuid, PermissionType.getPermission("DELETE"))) {
+        if (!NameLayerAPI.getGroupManager().hasAccess(g, uuid, PermissionType.getPermission("DELETE"))) {
             p.sendMessage(Component.text("You do not have permission to run that command.").color(NamedTextColor.RED));
             return;
         }

@@ -16,7 +16,7 @@ import vg.civcraft.mc.civmodcore.inventory.gui.Clickable;
 import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -155,13 +155,13 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                     showScreen();
                     return;
                 }
-                final UUID transferUUID = NameAPI.getUUID(arg0[0]);
+                final UUID transferUUID = NameLayerAPI.getUUID(arg0[0]);
                 if (transferUUID == null) {
                     p.sendMessage(ChatColor.RED + "This player doesn't exist");
                     showScreen();
                     return;
                 }
-                final String playerName = NameAPI.getCurrentName(transferUUID);
+                final String playerName = NameLayerAPI.getCurrentName(transferUUID);
                 ClickableInventory confirmInv = new ClickableInventory(27,
                     g.getName());
                 ItemStack info = new ItemStack(Material.PAPER);
@@ -186,7 +186,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
                                 Level.INFO,
                                 p.getName()
                                     + " transferred group to "
-                                    + NameAPI
+                                    + NameLayerAPI
                                     .getCurrentName(transferUUID)
                                     + " for group " + g.getName()
                                     + " via the gui");

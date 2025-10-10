@@ -10,7 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -25,7 +25,7 @@ public class ListInvites extends BaseCommandMiddle {
     @Description("List the invitees of a group")
     @CommandCompletion("@NL_Groups @NL_Ranks")
     public void execute(Player sender, String groupName, @Optional String playerType, @Optional String playerName) {
-        UUID uuid = NameAPI.getUUID(sender.getName());
+        UUID uuid = NameLayerAPI.getUUID(sender.getName());
 
         Group group = GroupManager.getGroup(groupName);
         if (groupIsNull(sender, groupName, group)) {
@@ -51,7 +51,7 @@ public class ListInvites extends BaseCommandMiddle {
             uuids = Lists.newArrayList();
 
             for (UUID invitee : invitees) {
-                String name = NameAPI.getCurrentName(invitee);
+                String name = NameLayerAPI.getCurrentName(invitee);
                 if (name.compareToIgnoreCase(playerType) >= 0
                     && name.compareToIgnoreCase(playerName) <= 0) {
                     uuids.add(invitee);
@@ -76,7 +76,7 @@ public class ListInvites extends BaseCommandMiddle {
         if (!uuids.isEmpty()) {
             sb.append("Invites are as follows:\n");
             for (UUID uu : uuids) {
-                sb.append(NameAPI.getCurrentName(uu));
+                sb.append(NameLayerAPI.getCurrentName(uu));
                 sb.append(" (");
                 sb.append(group.getPlayerInviteType(uu));
                 sb.append(")\n");

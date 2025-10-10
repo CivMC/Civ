@@ -7,7 +7,7 @@ import com.devotedmc.ExilePearl.broadcast.NLGroupBroadcastListener;
 import com.devotedmc.ExilePearl.util.NameLayerPermissions;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -39,7 +39,7 @@ public class CmdPearlBroadcast extends PearlCommand {
 
         // First check for a group
         if (plugin.isNameLayerEnabled()) {
-            GroupManager gm = NameAPI.getGroupManager();
+            GroupManager gm = NameLayerAPI.getGroupManager();
             // First look for a matching group
             Group g = GroupManager.getGroup(argAsString(0));
 

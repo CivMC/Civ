@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
@@ -32,7 +32,7 @@ public class ModifyPermissions extends BaseCommandMiddle {
         if (groupIsNull(sender, groupName, g)) {
             return;
         }
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameLayerAPI.getUUID(p.getName());
         PlayerType type = g.getPlayerType(uuid);
         if (type == null) {
             p.sendMessage(ChatColor.RED + "You are not on this group.");

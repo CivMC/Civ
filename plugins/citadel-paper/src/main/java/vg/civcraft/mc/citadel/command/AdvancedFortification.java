@@ -18,7 +18,7 @@ import vg.civcraft.mc.citadel.playerstate.AdvancedFortificationState;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class AdvancedFortification extends BaseCommand {
@@ -61,7 +61,7 @@ public class AdvancedFortification extends BaseCommand {
         }
         String groupName = null;
         if (targetGroup == null || targetGroup.isEmpty()) {
-            groupName = NameAPI.getGroupManager().getDefaultGroup(player.getUniqueId());
+            groupName = NameLayerAPI.getGroupManager().getDefaultGroup(player.getUniqueId());
             if (groupName == null) {
                 CitadelUtility.sendAndLog(player, ChatColor.RED,
                     "You don't have a default group and can thus not use this command without specifying a group");
@@ -76,7 +76,7 @@ public class AdvancedFortification extends BaseCommand {
             CitadelUtility.sendAndLog(player, ChatColor.RED, "The group " + groupName + " does not exist.");
             return;
         }
-        boolean hasAccess = NameAPI.getGroupManager().hasAccess(group.getName(), player.getUniqueId(),
+        boolean hasAccess = NameLayerAPI.getGroupManager().hasAccess(group.getName(), player.getUniqueId(),
             CitadelPermissionHandler.getReinforce());
         if (!hasAccess) {
             CitadelUtility

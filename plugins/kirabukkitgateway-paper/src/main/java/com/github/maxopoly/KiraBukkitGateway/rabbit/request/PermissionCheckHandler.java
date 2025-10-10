@@ -3,7 +3,7 @@ package com.github.maxopoly.KiraBukkitGateway.rabbit.request;
 import com.google.gson.JsonObject;
 import java.util.UUID;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -31,7 +31,7 @@ public class PermissionCheckHandler extends AbstractRequestHandler {
         if (perm == null) {
             return false;
         }
-        return NameAPI.getGroupManager().hasAccess(g, player, perm);
+        return NameLayerAPI.getGroupManager().hasAccess(g, player, perm);
     }
 
 }

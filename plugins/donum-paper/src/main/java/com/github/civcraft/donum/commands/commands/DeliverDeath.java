@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 public class DeliverDeath extends BaseCommand {
 
@@ -24,7 +24,7 @@ public class DeliverDeath extends BaseCommand {
     @CommandCompletion("@players")
     @CommandPermission("donum.op")
     public void execute(Player player, String targetPlayer, @Optional String inventoriesToGet) {
-        UUID delUUID = NameAPI.getUUID(targetPlayer);
+        UUID delUUID = NameLayerAPI.getUUID(targetPlayer);
         if (delUUID == null) {
             player.sendMessage(ChatColor.RED + "This player has never logged into civcraft");
             return;

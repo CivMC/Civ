@@ -7,7 +7,7 @@ import com.google.common.base.Strings;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 public class WhoAmI extends BaseCommand {
 
@@ -17,7 +17,7 @@ public class WhoAmI extends BaseCommand {
         final String response = ChatColor.YELLOW + "You are: " + ChatColor.RESET;
         if (sender instanceof Player) {
             final Player player = (Player) sender;
-            final String name = NameAPI.getCurrentName(player.getUniqueId());
+            final String name = NameLayerAPI.getCurrentName(player.getUniqueId());
             if (!Strings.isNullOrEmpty(name)) {
                 player.sendMessage(response + name);
                 return;

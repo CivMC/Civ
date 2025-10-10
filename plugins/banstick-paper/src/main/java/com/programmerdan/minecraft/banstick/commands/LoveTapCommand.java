@@ -26,7 +26,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 /**
  * Sometimes you need some love, so lovetap
@@ -241,7 +241,7 @@ public class LoveTapCommand implements CommandExecutor {
                 try {
                     playerId = null;
                     try {
-                        playerId = NameAPI.getUUID(toTap);
+                        playerId = NameLayerAPI.getUUID(toTap);
                     } catch (NoClassDefFoundError ncde) {
                     }
 

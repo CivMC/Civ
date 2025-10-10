@@ -18,7 +18,7 @@ import vg.civcraft.mc.civmodcore.inventory.gui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 public abstract class LoggablePlayerAction extends PlayerAction implements LoggableAction {
 
@@ -69,7 +69,7 @@ public abstract class LoggablePlayerAction extends PlayerAction implements Logga
         String referenceLocText = censor ? "[*** *** ***]" : JAUtility.formatLocation(referenceLoc, !sameWorld);
 
         TextComponent comp = new TextComponent(
-            String.format("%s%s  %s%s  ", ChatColor.GOLD, getChatRepresentationIdentifier(), ChatColor.GREEN, NameAPI.getCurrentName(getPlayer())));
+            String.format("%s%s  %s%s  ", ChatColor.GOLD, getChatRepresentationIdentifier(), ChatColor.GREEN, NameLayerAPI.getCurrentName(getPlayer())));
         if (live) {
             comp.addExtra(JAUtility.genTextComponent(snitch));
             comp.addExtra(String.format("  %s%s", ChatColor.YELLOW, referenceLocText));

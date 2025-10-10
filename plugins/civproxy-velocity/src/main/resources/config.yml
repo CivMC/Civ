@@ -1,0 +1,11 @@
+# Database configuration for NameAPI
+database:
+  user: "user"
+  password: "password"
+  host: "host"
+  port: 3306
+  database: nameapi
+  poolsize: 10
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000

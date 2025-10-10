@@ -11,7 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
@@ -27,7 +27,7 @@ public class GroupStats extends BaseCommandMiddle {
     public void execute(Player sender, String groupName) {
         Player p = (Player) sender;
         Group g = gm.getGroup(groupName);
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameLayerAPI.getUUID(p.getName());
 
         if (groupIsNull(sender, groupName, g)) {
             return;
@@ -37,7 +37,7 @@ public class GroupStats extends BaseCommandMiddle {
             p.sendMessage(ChatColor.RED + "You are not on this group.");
             return;
         }
-        boolean hasPerm = NameAPI.getGroupManager().hasAccess(g, uuid, PermissionType.getPermission("GROUPSTATS"));
+        boolean hasPerm = NameLayerAPI.getGroupManager().hasAccess(g, uuid, PermissionType.getPermission("GROUPSTATS"));
         if (!(p.isOp() || p.hasPermission("namelayer.admin")) && !hasPerm) {
             p.sendMessage(ChatColor.RED + "You do not have permission to run that command.");
             return;
@@ -73,7 +73,7 @@ public class GroupStats extends BaseCommandMiddle {
             for (PlayerType type : PlayerType.values()) {
                 String names = "";
                 for (UUID uu : g.getAllMembers(type))
-                    names += NameAPI.getCurrentName(uu) + ", ";
+                    names += NameLayerAPI.getCurrentName(uu) + ", ";
                 if (!names.equals("")) {
                     names = names.substring(0, names.length() - 2);
                     names += ".";

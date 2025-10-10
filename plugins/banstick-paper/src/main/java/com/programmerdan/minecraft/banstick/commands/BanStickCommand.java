@@ -20,7 +20,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 /**
  * BanStick! BanStick! Ban all the nerds by name, CIDR, IP, or some combo.
@@ -122,7 +122,7 @@ public class BanStickCommand implements CommandExecutor {
                 try {
                     playerId = null;
                     try {
-                        playerId = NameAPI.getUUID(toBan);
+                        playerId = NameLayerAPI.getUUID(toBan);
                     } catch (NoClassDefFoundError ncde) {
                     }
 

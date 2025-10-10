@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 public final class IgnoreList extends BaseCommand {
 
@@ -34,7 +34,7 @@ public final class IgnoreList extends BaseCommand {
                 .append(
                     db.getIgnoredPlayers(sender.getUniqueId())
                         .stream()
-                        .map(NameAPI::getCurrentName)
+                        .map(NameLayerAPI::getCurrentName)
                         .filter(Objects::nonNull)
                         .flatMap(commaSeparatedClickableNames("/ignore %s"))
                         .toList()

@@ -12,7 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -25,7 +25,7 @@ public class ListMembers extends BaseCommandMiddle {
     @CommandCompletion("@NL_Groups @NL_Ranks")
     public void execute(Player sender, String groupName, @Optional String playerType, @Optional String playerName) {
         Player p = (Player) sender;
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameLayerAPI.getUUID(p.getName());
         String groupname = groupName;
 
         Group group = GroupManager.getGroup(groupname);
@@ -54,7 +54,7 @@ public class ListMembers extends BaseCommandMiddle {
             uuids = Lists.newArrayList();
 
             for (UUID member : members) {
-                String name = NameAPI.getCurrentName(member);
+                String name = NameLayerAPI.getCurrentName(member);
                 if (name.compareToIgnoreCase(nameMin) >= 0
                     && name.compareToIgnoreCase(nameMax) <= 0) {
                     uuids.add(member);
@@ -79,7 +79,7 @@ public class ListMembers extends BaseCommandMiddle {
         sb.append(ChatColor.GREEN);
         sb.append("Members are as follows:\n");
         for (UUID uu : uuids) {
-            sb.append(NameAPI.getCurrentName(uu));
+            sb.append(NameLayerAPI.getCurrentName(uu));
             sb.append(" (");
             sb.append(group.getPlayerType(uu));
             sb.append(")\n");

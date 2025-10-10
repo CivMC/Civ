@@ -8,7 +8,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -41,7 +41,7 @@ public class LinkGroups extends BaseCommandMiddle {
 
         // check if groups are accessible
 
-        UUID uuid = NameAPI.getUUID(p.getName());
+        UUID uuid = NameLayerAPI.getUUID(p.getName());
 
         if (!supergroup.isMember(uuid) || !subgroup.isMember(uuid)) {
             p.sendMessage(ChatColor.RED + "You're not on one of the groups.");

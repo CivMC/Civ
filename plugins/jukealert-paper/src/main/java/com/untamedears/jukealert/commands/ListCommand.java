@@ -23,7 +23,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 
@@ -39,7 +39,7 @@ public class ListCommand extends BaseCommand {
             groupNames = new ArrayList<String>(Arrays.asList(targetGroups));
             playerProvidedGroups = true;
         } else {
-            groupNames = NameAPI.getGroupManager().getAllGroupNames(player.getUniqueId());
+            groupNames = NameLayerAPI.getGroupManager().getAllGroupNames(player.getUniqueId());
         }
         final var groupIds = new IntArrayList();
         for (final String groupName : groupNames) {
@@ -50,7 +50,7 @@ public class ListCommand extends BaseCommand {
                 }
                 continue;
             }
-            if (!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
+            if (!NameLayerAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
                 JukeAlertPermissionHandler.getListSnitches())) {
                 if (playerProvidedGroups) {
                     player.sendMessage(ChatColor.RED + "You do not have permission to list snitches "

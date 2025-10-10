@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 /**
  * A series of static utility classes to facilitate issuing bans.
@@ -107,7 +107,7 @@ public final class BanHandler {
                 } else {
                     String playerName = null;
                     try {
-                        playerName = NameAPI.getCurrentName(playerId);
+                        playerName = NameLayerAPI.getCurrentName(playerId);
                     } catch (NoClassDefFoundError ncde) {
                     }
 

@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventory.gui.IClickable;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 import java.util.UUID;
 
@@ -20,7 +20,7 @@ public class KillPlayerAction extends LoggablePlayerVictimAction {
     }
 
     public String getVictimName() {
-        return NameAPI.getCurrentName(getVictimUUID());
+        return NameLayerAPI.getCurrentName(getVictimUUID());
     }
 
     public UUID getVictimUUID() {

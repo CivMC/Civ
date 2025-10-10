@@ -9,7 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -31,7 +31,7 @@ public class TransferGroup extends BaseCommandMiddle {
             return;
         }
 
-        UUID oPlayer = NameAPI.getUUID(playerName); // uuid of the second player
+        UUID oPlayer = NameLayerAPI.getUUID(playerName); // uuid of the second player
 
         if (oPlayer == null) {
             p.sendMessage(ChatColor.RED + "This player has never played before and cannot be given the group.");
@@ -42,7 +42,7 @@ public class TransferGroup extends BaseCommandMiddle {
     }
 
     public static boolean attemptTransfer(Group g, Player owner, UUID futureOwner) {
-        GroupManager gm = NameAPI.getGroupManager();
+        GroupManager gm = NameLayerAPI.getGroupManager();
         if (!g.isOwner(owner.getUniqueId()) && !(owner.isOp() || owner.hasPermission("namelayer.admin"))) {
             owner.sendMessage(ChatColor.RED
                 + "You don't own this group");
@@ -56,20 +56,20 @@ public class TransferGroup extends BaseCommandMiddle {
         if (NameLayerPlugin.getInstance().getGroupLimit() < gm
             .countGroups(futureOwner) + 1) {
             owner.sendMessage(ChatColor.RED
-                + NameAPI.getCurrentName(futureOwner)
+                + NameLayerAPI.getCurrentName(futureOwner)
                 + " cannot receive the group! This player has already reached the group limit count.");
             return false;
         }
         if (!g.isMember(futureOwner)) {
             owner.sendMessage(ChatColor.RED
-                + NameAPI.getCurrentName(futureOwner)
+                + NameLayerAPI.getCurrentName(futureOwner)
                 + " is not a member of the group and can't be made primary owner!");
             return false;
         }
         g.removeMember(futureOwner);
         g.addMember(futureOwner, GroupManager.PlayerType.OWNER);
         g.setOwner(futureOwner);
-        owner.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(futureOwner)
+        owner.sendMessage(ChatColor.GREEN + NameLayerAPI.getCurrentName(futureOwner)
             + " has been given ownership of the group and promoted to OWNER role.");
         return true;
     }

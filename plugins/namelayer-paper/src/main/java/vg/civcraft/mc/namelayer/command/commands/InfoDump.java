@@ -10,7 +10,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
@@ -24,7 +24,7 @@ public class InfoDump extends BaseCommandMiddle {
     @Description("This command dumps group info for CitadelGUI.")
     public void execute(Player sender, @Optional String groupID) {
         Player player = (Player) sender;
-        UUID playerUUID = NameAPI.getUUID(player.getName());
+        UUID playerUUID = NameLayerAPI.getUUID(player.getName());
 
         List<String> groupNames = gm.getAllGroupNames(player.getUniqueId());
 
@@ -61,7 +61,7 @@ public class InfoDump extends BaseCommandMiddle {
             outputBuilder.append(" : [OWNERS]");
             if (gm.hasAccess(group, playerUUID, PermissionType.getPermission("OWNER"))) {
                 for (UUID ownerUUID : group.getAllMembers(PlayerType.OWNER)) {
-                    outputBuilder.append(" " + NameAPI.getCurrentName(ownerUUID));
+                    outputBuilder.append(" " + NameLayerAPI.getCurrentName(ownerUUID));
                 }
             } else {
                 outputBuilder.append(" accounts-");
@@ -71,7 +71,7 @@ public class InfoDump extends BaseCommandMiddle {
             outputBuilder.append(" : [ADMINS]");
             if (gm.hasAccess(group, playerUUID, PermissionType.getPermission("ADMINS"))) {
                 for (UUID adminUUID : group.getAllMembers(PlayerType.ADMINS)) {
-                    outputBuilder.append(" " + NameAPI.getCurrentName(adminUUID));
+                    outputBuilder.append(" " + NameLayerAPI.getCurrentName(adminUUID));
                 }
             } else {
                 outputBuilder.append(" accounts-");
@@ -81,7 +81,7 @@ public class InfoDump extends BaseCommandMiddle {
             outputBuilder.append(" : [MODS]");
             if (gm.hasAccess(group, playerUUID, PermissionType.getPermission("MODS"))) {
                 for (UUID modUUID : group.getAllMembers(PlayerType.MODS)) {
-                    outputBuilder.append(" " + NameAPI.getCurrentName(modUUID));
+                    outputBuilder.append(" " + NameLayerAPI.getCurrentName(modUUID));
                 }
             } else {
                 outputBuilder.append(" accounts-");
@@ -91,7 +91,7 @@ public class InfoDump extends BaseCommandMiddle {
             outputBuilder.append(" : [MEMBERS]");
             if (gm.hasAccess(group, playerUUID, PermissionType.getPermission("MEMBERS"))) {
                 for (UUID memberUUID : group.getAllMembers(PlayerType.MEMBERS)) {
-                    outputBuilder.append(" " + NameAPI.getCurrentName(memberUUID));
+                    outputBuilder.append(" " + NameLayerAPI.getCurrentName(memberUUID));
                 }
             } else {
                 outputBuilder.append(" accounts-");

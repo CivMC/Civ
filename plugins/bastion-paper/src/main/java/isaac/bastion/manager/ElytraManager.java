@@ -28,7 +28,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class ElytraManager {
@@ -209,7 +209,7 @@ public class ElytraManager {
             loc.setY(0);
 
             //check player flight permission.
-            if (NameAPI.getGroupManager().hasAccess(bastion.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_ELYTRA))) {
+            if (NameLayerAPI.getGroupManager().hasAccess(bastion.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_ELYTRA))) {
                 continue;
             }
             if (bastion.getType().isSquare()) {

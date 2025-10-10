@@ -8,7 +8,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 
@@ -18,7 +18,7 @@ import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 public class InviteTabCompleter {
 
     public static List<String> complete(String lastArg, Player sender) {
-        UUID uuid = NameAPI.getUUID(sender.getName());
+        UUID uuid = NameLayerAPI.getUUID(sender.getName());
         Set<Group> groups = PlayerListener.getNotifications(uuid);
         if (groups == null) {
             return Collections.emptyList();

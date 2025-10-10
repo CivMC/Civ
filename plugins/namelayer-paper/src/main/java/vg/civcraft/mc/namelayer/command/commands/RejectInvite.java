@@ -11,7 +11,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.commands.TabComplete;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.command.BaseCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -30,7 +30,7 @@ public class RejectInvite extends BaseCommandMiddle {
         if (groupIsNull(sender, groupName, group)) {
             return;
         }
-        UUID uuid = NameAPI.getUUID(player.getName());
+        UUID uuid = NameLayerAPI.getUUID(player.getName());
         // The IDE is highlighting this as a potention NullReferenceException
         // but this is checked for in the above groupIsNull() call.
         GroupManager.PlayerType type = group.getInvite(uuid);

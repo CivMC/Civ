@@ -12,7 +12,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 
 /**
  * TakeItBackCommand, for when you pardoned someone but regretted it
@@ -53,7 +53,7 @@ public class TakeItBackCommand implements CommandExecutor {
             try {
                 playerId = null;
                 try {
-                    playerId = NameAPI.getUUID(toRevoke);
+                    playerId = NameLayerAPI.getUUID(toRevoke);
                 } catch (NoClassDefFoundError ncde) {
                 }
 
@@ -84,7 +84,7 @@ public class TakeItBackCommand implements CommandExecutor {
             try {
                 secondPlayerId = null;
                 try {
-                    secondPlayerId = NameAPI.getUUID(secRevoke);
+                    secondPlayerId = NameLayerAPI.getUUID(secRevoke);
                 } catch (NoClassDefFoundError ncde) {
                 }
 

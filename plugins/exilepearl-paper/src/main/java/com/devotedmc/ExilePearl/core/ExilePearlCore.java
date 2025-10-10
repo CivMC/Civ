@@ -43,7 +43,7 @@ import org.bukkit.plugin.PluginLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import java.io.File;
@@ -435,7 +435,7 @@ final class ExilePearlCore implements ExilePearlApi {
     @Override
     public String getRealPlayerName(UUID uid) {
         if (isNameLayerEnabled()) {
-            return NameAPI.getCurrentName(uid);
+            return NameLayerAPI.getCurrentName(uid);
         }
         OfflinePlayer player = Bukkit.getOfflinePlayer(uid);
         if (player == null) {
@@ -449,7 +449,7 @@ final class ExilePearlCore implements ExilePearlApi {
     @Override
     public UUID getUniqueId(String name) {
         if (isNameLayerEnabled()) {
-            return NameAPI.getUUID(name);
+            return NameLayerAPI.getUUID(name);
         }
         OfflinePlayer offline = Bukkit.getOfflinePlayer(name);
         if (offline != null) {

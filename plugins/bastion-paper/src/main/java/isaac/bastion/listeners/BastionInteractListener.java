@@ -32,7 +32,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionInteractListener implements Listener {
@@ -109,7 +109,7 @@ public class BastionInteractListener implements Listener {
             if (type == null) return; //if it wasnt stored it cant have been a bastion
             Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(block.getLocation());
 
-            if (NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
+            if (NameLayerAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
                 final Location loc = block.getLocation().clone();
                 new BukkitRunnable() {
                     @Override
@@ -152,7 +152,7 @@ public class BastionInteractListener implements Listener {
             // Check Permissions.BASTION_PLACE; Citadel handles the canBypass() check...
             Reinforcement reinforcement = event.getReinforcement();
             final Player player = event.getPlayer();
-            if (!NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
+            if (!NameLayerAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(ChatColor.RED + "You lack permission to create a Bastion on this group");
                 return;
