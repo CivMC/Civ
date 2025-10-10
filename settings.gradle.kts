@@ -13,6 +13,8 @@ plugins {
 
 include(":ansible")
 
+include(":libraries:name-api")
+
 include(":plugins:announcements-velocity")
 include(":plugins:banstick-paper")
 include(":plugins:bastion-paper")
@@ -44,3 +46,7 @@ include(":plugins:voidworld-paper")
 include(":plugins:heliodor-paper")
 include(":plugins:civproxy-velocity")
 include(":plugins:kiragateway-velocity")
+
+include("libraries:name-api")
+include("libraries:name-api")
+include("libraries:name-api")

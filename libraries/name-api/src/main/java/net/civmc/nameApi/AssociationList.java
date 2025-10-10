@@ -1,4 +1,4 @@
-package net.civmc.civproxy.renamer;
+package net.civmc.nameApi;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import javax.sql.DataSource;
-import net.civmc.civproxy.database.Migrator;
 import org.slf4j.Logger;
 
 public class AssociationList {

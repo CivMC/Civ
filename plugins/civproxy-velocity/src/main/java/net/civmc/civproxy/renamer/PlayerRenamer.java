@@ -6,6 +6,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.util.GameProfile;
 import javax.sql.DataSource;
 import net.civmc.civproxy.CivProxyPlugin;
+import net.civmc.nameApi.AssociationList;
 
 public class PlayerRenamer {
 
