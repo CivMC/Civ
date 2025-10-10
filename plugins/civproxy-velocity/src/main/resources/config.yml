@@ -1,9 +1,8 @@
-
 # Database configuration for NameAPI
 database:
-  user: ${CIV_MYSQL_USERNAME}
-  password: ${CIV_MYSQL_PASSWORD}
-  host: ${CIV_MYSQL_HOST}
+  user: "user"
+  password: "password"
+  host: "host"
   port: 3306
   database: nameapi
   poolsize: 10
