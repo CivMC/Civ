@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import javax.sql.DataSource;
 import net.civmc.civproxy.renamer.PlayerRenamer;
 import org.slf4j.Logger;
 import org.spongepowered.configurate.CommentedConfigurationNode;
@@ -27,7 +26,7 @@ public class CivProxyPlugin {
 
     private CommentedConfigurationNode config;
 
-    private DataSource source;
+    private HikariConfig nameAPIConfig;
 
     @Inject
     public CivProxyPlugin(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
@@ -43,20 +42,15 @@ public class CivProxyPlugin {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        loadConnection();
+        loadNameAPIConfig();
         new PlayerCount(this, server).start();
-        new PlayerRenamer(this, server, source).start();
+        new PlayerRenamer(this, server, nameAPIConfig).start();
         new QueueListener(this, server).start();
     }
 
-    private void loadConnection() {
+    private void loadNameAPIConfig() {
         CommentedConfigurationNode database = config.node("database");
 
-        try {
-            Class.forName("org.mariadb.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:" + database.node("driver").getString("mariadb") + "://" + database.node("host").getString("localhost") + ":" +
             database.node("port").getInt(3306) + "/" + database.node("database").getString("minecraft"));
@@ -69,7 +63,7 @@ public class CivProxyPlugin {
         if (password != null && !password.isBlank()) {
             config.setPassword(password);
         }
-        this.source = new HikariDataSource(config);
+        this.nameAPIConfig = config;
     }
 
     /**

@@ -5,40 +5,42 @@ import com.velocitypowered.api.event.player.GameProfileRequestEvent;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.util.GameProfile;
 import javax.sql.DataSource;
+import com.zaxxer.hikari.HikariConfig;
 import net.civmc.civproxy.CivProxyPlugin;
-import net.civmc.nameApi.AssociationList;
+import net.civmc.nameApi.NameAPI;
 
 public class PlayerRenamer {
 
     private final CivProxyPlugin plugin;
     private final ProxyServer server;
 
-    private final AssociationList associations;
+    private final NameAPI nameAPI;
 
-    public PlayerRenamer(CivProxyPlugin plugin, ProxyServer server, DataSource source) {
+    public PlayerRenamer(CivProxyPlugin plugin, ProxyServer server, HikariConfig nameAPIConfig) {
         this.plugin = plugin;
         this.server = server;
-        this.associations = new AssociationList(plugin.getLogger(), source);
+        this.nameAPI = new NameAPI(plugin.getLogger(), nameAPIConfig);
     }
 
     @Subscribe
     public void on(GameProfileRequestEvent requestEvent) {
         GameProfile profile = requestEvent.getGameProfile();
-        associations.addPlayer(profile.getName(), profile.getId());
+        nameAPI.addPlayer(profile.getName(), profile.getId());
 
-        String name = associations.getCurrentName(profile.getId());
+        String name = nameAPI.getCurrentName(profile.getId());
         if (name == null) {
-            associations.addPlayer(profile.getName(), profile.getId());
-            name = associations.getCurrentName(profile.getId());
+            // shouldn't the above call have added them?
+            nameAPI.addPlayer(profile.getName(), profile.getId());
+            name = nameAPI.getCurrentName(profile.getId());
         }
 
         requestEvent.setGameProfile(requestEvent.getGameProfile().withName(name));
     }
 
     public void start() {
-        associations.migrate();
+        nameAPI.migrate();
         server.getEventManager().register(plugin, this);
         server.getCommandManager().register(server.getCommandManager().metaBuilder("changeplayername").aliases("nlcpn").plugin(plugin).build(),
-            new ChangePlayerNameCommand(server, associations));
+            new ChangePlayerNameCommand(server, nameAPI));
     }
 }
