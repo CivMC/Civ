@@ -27,8 +27,6 @@ public class PlayerListener implements Listener {
         Player p = event.getPlayer();
         UUID uuid = p.getUniqueId();
 
-        NameLayerAPI.associate(p.getName(), p.getUniqueId());
-
         if (!p.hasPlayedBefore()) {
             handleFirstJoin(p);
         }

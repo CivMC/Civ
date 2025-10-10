@@ -1,38 +1,18 @@
 package vg.civcraft.mc.namelayer;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.zaxxer.hikari.HikariConfig;
 import java.util.UUID;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
+import net.civmc.nameApi.NameAPI;
+import org.jetbrains.annotations.Nullable;
 
 public class NameLayerAPI {
 
     private static GroupManager groupManager;
-    private static final Map<UUID, String> uuidToPlayer = new HashMap<>();
-    private static final Map<String, UUID> playerToUuid = new HashMap<>();
+    private static NameAPI nameAPI;
 
-    public NameLayerAPI(GroupManager man) {
+    public NameLayerAPI(GroupManager man, HikariConfig nameAPIConfig) {
         groupManager = man;
-
-        // TODO: hookup to new NameAPI
-        Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), () -> {
-            Map<UUID, String> uuidToPlayer = new HashMap<>();
-            Map<String, UUID> playerToUuid = new HashMap<>();
-            for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-                playerToUuid.put(offlinePlayer.getName(), offlinePlayer.getUniqueId());
-                uuidToPlayer.put(offlinePlayer.getUniqueId(), offlinePlayer.getName());
-            }
-            Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), () -> {
-                this.uuidToPlayer.putAll(uuidToPlayer);
-                this.playerToUuid.putAll(playerToUuid);
-            });
-        });
-    }
-
-    public static void associate(String playerName, UUID uuid) {
-        uuidToPlayer.put(uuid, playerName);
-        playerToUuid.put(playerName, uuid);
+        nameAPI = new NameAPI(NameLayerPlugin.getInstance().getSLF4JLogger(), nameAPIConfig);
     }
 
     /**
@@ -42,11 +22,11 @@ public class NameLayerAPI {
         return groupManager;
     }
 
-    public static UUID getUUID(String s) {
-        return playerToUuid.get(s);
+    public static @Nullable UUID getUUID(String s) {
+        return nameAPI.getUUID(s);
     }
 
-    public static String getCurrentName(UUID uuid) {
-        return uuidToPlayer.get(uuid);
+    public static @Nullable String getCurrentName(UUID uuid) {
+        return nameAPI.getCurrentName(uuid);
     }
 }
