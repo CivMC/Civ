@@ -357,7 +357,7 @@ public class FactoryModGUI {
     private Scrollbar constructRecipeScrollbar(FurnCraftChestEgg factory) {
         List<IClickable> recipeClicks = factory.getRecipes().stream().map(i -> (InputRecipe) i)
             .map(this::produceRecipeClickable).collect(Collectors.toList());
-        return new Scrollbar(recipeClicks, 9);
+        return new Scrollbar(recipeClicks, 9, 9, ContentAligners.getLeftAligned());
     }
 
     private FurnCraftChestEgg getParent(FurnCraftChestEgg factory) {
