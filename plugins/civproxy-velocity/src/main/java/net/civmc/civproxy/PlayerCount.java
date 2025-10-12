@@ -20,7 +20,6 @@ public class PlayerCount {
     }
 
     public void start() {
-        server.getEventManager().register(plugin, this);
         server.getScheduler().buildTask(plugin, () -> {
             try {
                 Map<String, Integer> count = new HashMap<>();
