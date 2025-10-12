@@ -20,13 +20,14 @@ public class RabbitCommands {
         this.serverName = serverName;
     }
 
-    public void sendGroupChatMessage(String group, String sender, String msg) {
+    public void sendGroupChatMessage(String group, Player sender, String msg) {
         if (group == null || sender == null || msg == null) {
             throw new IllegalArgumentException("Arguments cant be null");
         }
         JsonObject json = new JsonObject();
         json.addProperty("group", group);
-        json.addProperty("sender", sender);
+        json.addProperty("senderUUID", sender.getUniqueId().toString());
+        json.addProperty("sender", sender.getName());
         json.addProperty("msg", msg);
         sendInternal("groupchatmessage", json);
     }
@@ -44,17 +45,19 @@ public class RabbitCommands {
         sendInternal("requestsession", json);
     }
 
-    public void playerLoginFirstTime(String player) {
+    public void playerLoginFirstTime(Player player) {
         nonNullArgs(player);
         JsonObject json = new JsonObject();
-        json.addProperty("player", player);
+        json.addProperty("player", player.getName());
+        json.addProperty("playerUUID", player.getUniqueId().toString());
         sendInternal("newplayer", json);
     }
 
-    public void playerLoginOut(String player, String action) {
+    public void playerLoginOut(Player player, String action) {
         nonNullArgs(player, action);
         JsonObject json = new JsonObject();
-        json.addProperty("player", player);
+        json.addProperty("player", player.getName());
+        json.addProperty("playerUUID", player.getUniqueId().toString());
         json.addProperty("action", action);
         sendInternal("skynet", json);
     }
