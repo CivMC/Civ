@@ -66,10 +66,11 @@ public class Scrollbar extends InventoryComponent {
         // modulo scroll offset - 2, because a normal page has forward and backwards
         // buttons
         int modOffset = contentAmount % (scrollOffset);
+        // divide remaining contentAmount (after subtracting first page's content) by scroll offset
         int basicRowCalc = contentAmount / (scrollOffset);
-        if (modOffset <= 1) {
-            // there would be one leftover element in a new page, but we can just put that
-            // in the previous page instead of a next button
+        if (modOffset == 0) {
+            // scroll offsets fit cleanly into pages (would fill entirely), so we can just put
+            // an item in the last slot of the last page instead of a next button for 1 item
             return basicRowCalc + 1;
         }
         return basicRowCalc + 2;
