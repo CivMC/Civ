@@ -313,6 +313,7 @@ factories:
       - charcoal_from_dark_oak_log
       - charcoal_from_cherry_log
       - charcoal_from_mangrove_log
+      - charcoal_from_pale_oak_log
       - charcoal_from_crimson_stem
       - charcoal_from_warped_stem
       - charcoal_from_coal
@@ -1175,6 +1176,12 @@ factories:
       - make_mangrove_hanging_signs
       - make_mangrove_trapdoors
       - make_mangrove_doors
+      - make_pale_oak_fences
+      - make_pale_oak_fence_gates
+      - make_pale_oak_signs
+      - make_pale_oak_hanging_signs
+      - make_pale_oak_trapdoors
+      - make_pale_oak_doors
       - make_crimson_fences
       - make_crimson_fence_gates
       - make_crimson_signs
@@ -2981,6 +2988,22 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MANGROVE_LOG
+        amount: 64
+    output:
+      charcoal:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: CHARCOAL
+        amount: 128
+  charcoal_from_pale_oak_log:
+    production_time: 4s
+    name: Make Charcoal from Pale Oak Logs
+    type: PRODUCTION
+    input:
+      log:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_LOG
         amount: 64
     output:
       charcoal:
@@ -7595,6 +7618,107 @@ recipes:
         v: 3839
         ==: org.bukkit.inventory.ItemStack
         type: MANGROVE_FENCE_GATE
+        amount: 128
+  make_pale_oak_fences:
+    production_time: 4s
+    name: Make Fences
+    type: PRODUCTION
+    input:
+      PALE_OAK_LOG:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_FENCE
+        amount: 16
+    output:
+      fence:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_FENCE
+        amount: 128
+  make_pale_oak_signs:
+    production_time: 4s
+    name: Make Signs
+    type: PRODUCTION
+    input:
+      PALE_OAK_LOG:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_LOG
+        amount: 24
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_SIGN
+        amount: 128
+  make_pale_oak_hanging_signs:
+    production_time: 4s
+    name: Make Spruce Hanging Signs
+    type: PRODUCTION
+    input:
+      chest:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_LOG
+        amount: 24
+      iron_ingot:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: IRON_INGOT
+        amount: 4
+    output:
+      sign:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_HANGING_SIGN
+        amount: 128
+  make_pale_oak_trapdoors:
+    production_time: 4s
+    name: Make Trap Doors
+    type: PRODUCTION
+    input:
+      PALE_OAK_LOG:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_LOG
+        amount: 32
+    output:
+      trapdoor:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_TRAPDOOR
+        amount: 128
+  make_pale_oak_doors:
+    production_time: 4s
+    name: Make Doors
+    type: PRODUCTION
+    input:
+      PALE_OAK_LOG:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_LOG
+        amount: 24
+    output:
+      door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_DOOR
+        amount: 128
+  make_pale_oak_fence_gates:
+    production_time: 4s
+    name: Make Fence Gates
+    type: PRODUCTION
+    input:
+      PALE_OAK_LOG:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_LOG
+        amount: 16
+    output:
+      door:
+        v: 3839
+        ==: org.bukkit.inventory.ItemStack
+        type: PALE_OAK_FENCE_GATE
         amount: 128
   make_crimson_fences:
     production_time: 4s
