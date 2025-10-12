@@ -89,6 +89,8 @@ services:
       CIV_RABBITMQ_USERNAME: rabbitmq
       CIV_RABBITMQ_PASSWORD: rabbitmq
 
+      CIV_SECUREBOOT_ENABLE: 'false'
+
       JVM_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       CIV_WATCHDOG_TIMEOUT_TIME: 6000
       CIV_FORWARDING_SECRET: '1234'

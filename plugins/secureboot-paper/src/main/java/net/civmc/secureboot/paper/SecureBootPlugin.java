@@ -28,6 +28,8 @@ enum PluginStatus {
 
 @SuppressWarnings("UnstableApiUsage")
 public final class SecureBootPlugin extends JavaPlugin implements Listener {
+    private boolean enabled = true;
+
     private final Map<String, PluginStatus> pluginState = Collections.synchronizedMap(new TreeMap<>(String.CASE_INSENSITIVE_ORDER));
     private final MiniMessage mm = MiniMessage.miniMessage();
     private @NotNull Component kickMessage = Component.text("Server is in maintenance mode.");
@@ -36,6 +38,13 @@ public final class SecureBootPlugin extends JavaPlugin implements Listener {
     @Override
     public void onLoad() {
         saveDefaultConfig();
+
+        enabled = getConfig().getBoolean("enable", true);
+        if (!enabled) {
+            getSLF4JLogger().info("SecureBoot is disabled in config, skipping checks.");
+            return;
+        }
+
         // ensure required plugins have a status
         getConfig().getStringList("required_plugins").forEach((plugin) -> this.pluginState.put(plugin, PluginStatus.AWAITING_STATUS));
         getSLF4JLogger().debug("Awaiting status for: {}", String.join(", ", this.pluginState.keySet()));
@@ -47,6 +56,10 @@ public final class SecureBootPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+        if (!enabled) {
+            return;
+        }
+
         Bukkit.getPluginManager().registerEvents(this, this);
 
         // add all plugins loaded by the server
