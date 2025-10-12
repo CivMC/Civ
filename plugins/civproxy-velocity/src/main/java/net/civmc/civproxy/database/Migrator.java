@@ -21,7 +21,7 @@ public class Migrator {
             throw new IllegalArgumentException("namespace must not be longer than 64 characters");
         }
         if (id < 0) {
-            throw new IllegalArgumentException("migation id must be at least 0");
+            throw new IllegalArgumentException("migration id must be at least 0");
         }
         boolean present = this.migrations.computeIfAbsent(namespace, k -> new TreeMap<>()).putIfAbsent(id, sql) != null;
         if (present) {
