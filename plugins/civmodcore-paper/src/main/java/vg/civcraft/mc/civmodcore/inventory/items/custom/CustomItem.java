@@ -35,16 +35,29 @@ public final class CustomItem {
         final @NotNull CustomItemFactory factory
     ) {
         Objects.requireNonNull(itemKey);
+        // ensure no duplicate or blank keys are registered
+        if (itemKey.isBlank()) {
+            throw new IllegalArgumentException("Custom item key cannot be blank");
+        } else if (customItems.containsKey(itemKey)) {
+            throw new IllegalArgumentException("Custom item key '" + itemKey + "' is already registered");
+        }
+
+        // build final item with additional metadata
         final ItemStack template = Objects.requireNonNull(factory.createItem());
         setCustomItemKey(template, itemKey);
         setCustomItemModel(template, itemKey);
-        customItems.putIfAbsent(
+        customItems.put(
             Objects.requireNonNull(itemKey),
             template::clone
         );
         return template::clone;
     }
 
+    /**
+     * Get a custom item by its key
+     * @param customKey The custom item key
+     * @return The custom item, or null if not found
+     */
     public static @Nullable ItemStack getCustomItem(
         final @NotNull String customKey
     ) {
