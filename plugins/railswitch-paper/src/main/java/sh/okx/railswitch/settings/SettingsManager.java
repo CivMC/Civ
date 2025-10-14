@@ -115,7 +115,7 @@ public final class SettingsManager {
                 destScoreBoard.set(p, ChatColor.GOLD + "Dest: " + ChatColor.AQUA + dest);
             }
             if (destDisplayLocation.showOnActionbar(p.getUniqueId())) {
-                destBottomLine.updatePlayer(p, ChatColor.YELLOW + "Dest: " + ChatColor.AQUA + dest);
+                destBottomLine.updatePlayer(p, ChatColor.GOLD + "Dest: " + ChatColor.AQUA + dest);
             }
         }
     }
