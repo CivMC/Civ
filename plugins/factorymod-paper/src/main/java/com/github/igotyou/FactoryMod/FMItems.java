@@ -72,6 +72,16 @@ public interface FMItems {
         return bioComponent;
     });
 
+    CustomItemFactory CRATE = CustomItem.registerCustomItem("crate", () -> {
+        final ItemStack crate = ItemStack.of(Material.CHEST);
+        crate.setData(DataComponentTypes.ITEM_NAME, MiniMessage.miniMessage().deserialize("<i>Crate</i>"));
+        crate.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("Used to compact items")
+        )));
+        crate.setAmount(1);
+        return crate;
+    });
+
     /**
      * Register custom items for use in the config
      */
@@ -83,5 +93,6 @@ public interface FMItems {
         BASTION_ENERGIZER.createItem();
         BASTION_REFRACTOR.createItem();
         BASTION_BIO_COMPONENT.createItem();
+        CRATE.createItem();
     }
 }

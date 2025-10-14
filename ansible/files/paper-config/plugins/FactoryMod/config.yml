@@ -1198,15 +1198,8 @@ factories:
         type: PISTON
         amount: 64
       crate:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: CHEST
+        custom-key: crate
         amount: 32
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Crate
     recipes:
       - compact
       - decompact
@@ -9908,14 +9901,8 @@ recipes:
     type: COMPACT
     input:
       crate:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: CHEST
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Crate
+        custom-key: crate
+        amount: 1
     compact_lore: Compacted Item
     excluded_materials:
       - BOOK
@@ -9947,15 +9934,8 @@ recipes:
         type: PISTON
         amount: 6
       crate:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: CHEST
+        custom-key: crate
         amount: 3
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Crate
     health_gained: 10000
   repair_compactor_kit:
     production_time: 4s
@@ -9995,15 +9975,8 @@ recipes:
         type: PISTON
         amount: 6
       crate:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: CHEST
+        custom-key: crate
         amount: 3
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Crate
     output:
       kit:
         v: 3839
@@ -10033,15 +10006,8 @@ recipes:
         amount: 3
     output:
       crate:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: CHEST
+        custom-key: crate
         amount: 128
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          lore:
-            - Crate
   bake_cookies:
     forceInclude: true
     type: PRODUCTION
