@@ -3404,17 +3404,7 @@ recipes:
         amount: 64
     output:
       bastion:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: SPONGE
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Bastion
-          lore:
-            - This bastion will protect you from grief
-            - It will also block pearls when they land
-            - As well as stop elytra
+        custom-key: vault_bastion
         amount: 16
   make_city_bastion:
     forceInclude: true
@@ -3445,15 +3435,7 @@ recipes:
         amount: 4
     output:
       city_bastion:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BONE_BLOCK
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: City Bastion
-          lore:
-            - City bastions block reinforcements and elytra
+        custom-key: city_bastion
         amount: 4
   make_tall_snitch:
     forceInclude: true
@@ -13004,30 +12986,12 @@ recipes:
       city_bastion:
         chance: 0.00005
         city_bastion:
-          v: 3839
-          ==: org.bukkit.inventory.ItemStack
-          type: BONE_BLOCK
-          meta:
-            meta-type: UNSPECIFIC
-            ==: ItemMeta
-            display-name: City Bastion
-            lore:
-              - City bastions block reinforcements and elytra
+          custom-key: city_bastion
           amount: 1
       bastion:
         chance: 0.0000125
         bastion:
-          v: 3839
-          ==: org.bukkit.inventory.ItemStack
-          type: SPONGE
-          meta:
-            meta-type: UNSPECIFIC
-            ==: ItemMeta
-            display-name: Bastion
-            lore:
-              - This bastion will protect you from grief
-              - It will also block pearls when they land
-              - As well as stop elytra
+          custom-key: vault_bastion
           amount: 1
       beacon:
         chance: 0.00001
