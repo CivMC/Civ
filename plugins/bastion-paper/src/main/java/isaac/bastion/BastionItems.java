@@ -34,6 +34,9 @@ public interface BastionItems {
         return cityBastion;
     });
 
+    /**
+     * Register custom items for use in the config
+     */
     static void registerCustomItems() {
         // not sure if this is necessary, but just in case the above registration doesn't happen
         VAULT_BASTION.createItem();
