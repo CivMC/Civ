@@ -15486,8 +15486,8 @@ recipes:
         type: AMETHYST_SHARD
         amount: 10
     output:
-      meteoric_iron_sword_kb:
-        custom-key: meteoric_iron_sword_knockback
+      meteoric_iron_sword_kb2:
+        custom-key: meteoric_iron_sword_knockback2
         amount: 5
   make_meteoric_iron_sword_kb1:
     production_time: 4s
@@ -15532,8 +15532,8 @@ recipes:
         custom-key: meteoric_iron_ingot
         amount: 10
     output:
-      meteoric_iron_pickaxe:
-        custom-key: meteoric_iron_pickaxe
+      meteoric_iron_pickaxe_fortune:
+        custom-key: meteoric_iron_pickaxe_fortune
         amount: 5
   make_meteoric_iron_pickaxe_silk:
     production_time: 4s
@@ -15550,7 +15550,7 @@ recipes:
         amount: 10
     output:
       meteoric_iron_pickaxe_silk:
-        custom-key: meteoric_iron_pickaxe_silk
+        custom-key: meteoric_iron_pickaxe_silk_touch
         amount: 5
   repair_meteoric_iron_pickaxe_factory:
     production_time: 4s
@@ -15579,7 +15579,7 @@ recipes:
         amount: 9
     output:
       meteoric_iron_axe:
-        custom-key: meteoric_iron_axe
+        custom-key: meteoric_iron_axe_fortune
         amount: 5
   make_meteoric_iron_axe_silk:
     production_time: 4s
@@ -15596,7 +15596,7 @@ recipes:
         amount: 10
     output:
       meteoric_iron_axe:
-        custom-key: meteoric_iron_axe_silk
+        custom-key: meteoric_iron_axe_silk_touch
         amount: 5
   repair_meteoric_iron_axe_factory:
     production_time: 4s
