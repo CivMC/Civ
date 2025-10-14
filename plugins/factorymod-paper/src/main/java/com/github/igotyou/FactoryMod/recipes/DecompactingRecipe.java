@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CompactedItem;
 
 /**
  * Used to decompact itemstacks, which means a single item with compacted lore
@@ -160,13 +161,7 @@ public class DecompactingRecipe extends InputRecipe {
     }
 
     private void removeCompactLore(ItemStack is) {
-        List<String> lore = is.getItemMeta().getLore();
-        if (lore != null) {
-            lore.remove(compactedLore);
-        }
-        ItemMeta im = is.getItemMeta();
-        im.setLore(lore);
-        is.setItemMeta(im);
+        CompactedItem.removeCompactedItemMark(is);
     }
 
     @Override

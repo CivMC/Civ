@@ -2,16 +2,16 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-
-import java.util.*;
-
 import com.github.igotyou.FactoryMod.utility.MultiInventoryWrapper;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.inventory.items.MetaUtils;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CompactedItem;
 
 /**
  * Used to compact items, which means whole or multiple stacks of an item are reduced to a single lored item, which is stackable to the same stacksize
@@ -39,7 +39,7 @@ public class CompactingRecipe extends InputRecipe {
         ItemMap im = new ItemMap(inputInv);
         for (ItemStack is : inputInv.getContents()) {
             if (is != null) {
-                if (compactable(is, im)) {
+                if (isCompactable(is, im)) {
                     return true;
                 }
             }
@@ -63,12 +63,12 @@ public class CompactingRecipe extends InputRecipe {
         logBeforeRecipeRun(combo, fccf);
         if (input.isContainedIn(inputInv)) {
             ItemMap im = new ItemMap(inputInv);
-            //technically we could just directly work with the ItemMap here to iterate over the items so we dont check identical items multiple times,
-            //but using the iterator of the inventory preserves the order of the inventory, which is more important here to guarantee one behavior
-            //to the player
+            // technically we could just directly work with the ItemMap here to iterate over the items so we dont check identical items multiple times,
+            // but using the iterator of the inventory preserves the order of the inventory, which is more important here to guarantee one behavior
+            // to the player
             for (ItemStack is : inputInv.getContents()) {
                 if (is != null) {
-                    if (compactable(is, im)) {
+                    if (isCompactable(is, im)) {
                         if (input.removeSafelyFrom(inputInv)) {
                             compact(is, inputInv, outputInv);
                         }
@@ -93,7 +93,7 @@ public class CompactingRecipe extends InputRecipe {
         ItemMap im = new ItemMap(i);
         for (ItemStack is : i.getContents()) {
             if (is != null) {
-                if (compactable(is, im)) {
+                if (isCompactable(is, im)) {
                     ItemStack compactedStack = is.clone();
                     result.add(compactedStack);
                     break;
@@ -115,7 +115,7 @@ public class CompactingRecipe extends InputRecipe {
         ItemMap im = new ItemMap(i);
         for (ItemStack is : i.getContents()) {
             if (is != null) {
-                if (compactable(is, im)) {
+                if (isCompactable(is, im)) {
                     ItemStack decompactedStack = is.clone();
                     compactStack(decompactedStack);
                     result.add(decompactedStack);
@@ -149,9 +149,11 @@ public class CompactingRecipe extends InputRecipe {
 
     /**
      * Applies the lore and set the amount to 1. Dont call this directly if you want to compact items for players
+     * @implNote Mutates the given ItemStack into a compacted item
+     * @param is ItemStack to compact
      */
     private void compactStack(ItemStack is) {
-        ItemUtils.addLore(is, compactedLore);
+        CompactedItem.markCompactedItem(is);
         is.setAmount(1);
     }
 
@@ -166,7 +168,7 @@ public class CompactingRecipe extends InputRecipe {
             default:
                 FactoryMod.getInstance().warning("Unknown max stacksize for type " + m.toString());
         }
-        return 999_999; //prevents compacting in error case, because never enough will fit in a chest
+        return 999_999; // prevents compacting in error case, because never enough will fit in a chest
     }
 
     /**
@@ -176,9 +178,8 @@ public class CompactingRecipe extends InputRecipe {
      * @param im ItemMap representing the inventory from which is compacted
      * @return True if compacting the stack is allowed, false if not
      */
-    private boolean compactable(ItemStack is, ItemMap im) {
-        if (is == null || excludedMaterials.contains(is.getType()) || (input.getAmount(is) != 0) || (is.getItemMeta().getLore() != null &&
-            is.getItemMeta().getLore().contains(compactedLore))) {
+    private boolean isCompactable(ItemStack is, ItemMap im) {
+        if (is == null || excludedMaterials.contains(is.getType()) || (input.getAmount(is) != 0) || (CompactedItem.isCompactedItem(is))) {
             return false;
         }
         return im.getAmount(is) >= getCompactStackSize(is.getType());
