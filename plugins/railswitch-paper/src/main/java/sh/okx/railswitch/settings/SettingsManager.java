@@ -45,8 +45,8 @@ public final class SettingsManager {
         menu.registerSetting(destSetting);
         menu.registerSetting(resetSetting);
 
-        destScoreBoard = ScoreBoardAPI.createBoard("CivChatAFKDisplay");
-        destBottomLine = BottomLineAPI.createBottomLine("CivChatAFKDisplay", 4);
+        destScoreBoard = ScoreBoardAPI.createBoard("RailSwitchDestDisplay");
+        destBottomLine = BottomLineAPI.createBottomLine("RailSwitchDestDisplay", 4);
     }
 
     /**
