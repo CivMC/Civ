@@ -155,7 +155,7 @@ public final class ConfigHelper {
         }
         final ItemStack customItem = CustomItem.getCustomItem(customKey);
         if (customItem == null) {
-            throw new IllegalArgumentException("Unknown custom-item key at [" + itemSection.getCurrentPath() + ".custom-key]!");
+            throw new IllegalArgumentException("Unknown custom-item key '" + customKey + "' at [" + itemSection.getCurrentPath() + ".custom-key]!");
         }
         final int amount = itemSection.getInt("amount", 1);
         if (amount < 1) {
