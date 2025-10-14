@@ -4,6 +4,7 @@ import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.CommandCompletions;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -35,6 +36,7 @@ import vg.civcraft.mc.namelayer.command.commands.RemoveBlacklist;
 import vg.civcraft.mc.namelayer.command.commands.RemoveMember;
 import vg.civcraft.mc.namelayer.command.commands.RevokeInvite;
 import vg.civcraft.mc.namelayer.command.commands.SetDefaultGroup;
+import vg.civcraft.mc.namelayer.command.commands.SetGroupColor;
 import vg.civcraft.mc.namelayer.command.commands.SetPassword;
 import vg.civcraft.mc.namelayer.command.commands.ShowBlacklist;
 import vg.civcraft.mc.namelayer.command.commands.ToggleAutoAcceptInvites;
@@ -83,6 +85,7 @@ public class CommandHandler extends CommandManager {
         registerCommand(new RemoveBlacklist());
         registerCommand(new ShowBlacklist());
         registerCommand(new NameLayerGroupGui());
+        registerCommand(new SetGroupColor());
     }
 
     @Override
@@ -93,5 +96,6 @@ public class CommandHandler extends CommandManager {
             Arrays.asList(GroupManager.PlayerType.getStringOfTypes().split(" ")));
         completions.registerCompletion("NL_Perms", (context) ->
             PermissionType.getAllPermissions().stream().map(PermissionType::getName).collect(Collectors.toList()));
+        completions.registerCompletion("ADV_Colors", (context) -> NamedTextColor.NAMES.keys());
     }
 }
