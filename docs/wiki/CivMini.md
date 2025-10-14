@@ -7,7 +7,6 @@ There are many things changed or different on CivMini Below is a detailed list o
 
 ## Minor changes
 - **The use of bots is not allowed on CivMini**, all actions have to be done by a real player. Automated farming, mining or other automation of gameplay elements that gives an advantage through use of macros or other non human input can result in a ban. Small exceptions exist such as holding down a button or sprint jumping.
-- Civmini has implemented the **new combat features** tested previously on the PvP server, for more information on these new features check out the Finale wiki page.
 - **Reinforcement Decay doubles every 6 weeks** instead of every 2 months and **localised decay is changed to a 384 blocks** range instead of 512 blocks.
 - **Reinforcement strength is lowered by 10-20%** on CivMini.
 

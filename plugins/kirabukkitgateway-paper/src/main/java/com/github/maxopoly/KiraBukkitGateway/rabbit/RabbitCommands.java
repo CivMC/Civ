@@ -12,19 +12,12 @@ import org.bukkit.entity.Player;
 
 public class RabbitCommands {
 
-    private RabbitHandler internal;
+    private final RabbitHandler internal;
+    private final String serverName;
 
-    public RabbitCommands(RabbitHandler internalRabbit) {
+    public RabbitCommands(RabbitHandler internalRabbit, String serverName) {
         this.internal = internalRabbit;
-    }
-
-    public void sendAuthCode(String code, String playerName, UUID playerUUID) {
-        nonNullArgs(code, playerName, playerUUID);
-        JsonObject json = new JsonObject();
-        json.addProperty("uuid", playerUUID.toString());
-        json.addProperty("name", playerName);
-        json.addProperty("code", code);
-        sendInternal("addauth", json);
+        this.serverName = serverName;
     }
 
     public void sendGroupChatMessage(String group, String sender, String msg) {
@@ -85,6 +78,7 @@ public class RabbitCommands {
         json.addProperty("creator", creator.toString());
         json.addProperty("guildID", guildID);
         json.addProperty("channelID", channelID);
+        json.addProperty("server", serverName);
         JsonArray array = new JsonArray();
         members.forEach(uuid -> array.add(uuid.toString()));
         json.add("members", array);
@@ -97,22 +91,6 @@ public class RabbitCommands {
         json.addProperty("group", group);
         json.addProperty("sender", sender.toString());
         sendInternal("deletegroupchat", json);
-    }
-
-    public void removeGroupMember(String group, UUID member) {
-        nonNullArgs(group, member);
-        JsonObject json = new JsonObject();
-        json.addProperty("group", group);
-        json.addProperty("member", member.toString());
-        sendInternal("removegroupmember", json);
-    }
-
-    public void addGroupMember(String group, UUID member) {
-        nonNullArgs(group, member);
-        JsonObject json = new JsonObject();
-        json.addProperty("group", group);
-        json.addProperty("member", member.toString());
-        sendInternal("addgroupmember", json);
     }
 
     public void replyToUser(UUID user, String msg, long channelId) {
@@ -147,6 +125,7 @@ public class RabbitCommands {
     private void sendInternal(String id, JsonObject json) {
         json.addProperty("timestamp", System.currentTimeMillis());
         json.addProperty("packettype", id);
+        json.addProperty("server", serverName);
         Gson gson = new Gson();
         String payload = gson.toJson(json);
         internal.sendMessage(payload);

@@ -2,6 +2,8 @@ package vg.civcraft.mc.namelayer.command;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.CommandCompletions;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.commands.CommandManager;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -9,7 +11,6 @@ import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.command.commands.AcceptInvite;
 import vg.civcraft.mc.namelayer.command.commands.AddBlacklist;
-import vg.civcraft.mc.namelayer.command.commands.ChangePlayerName;
 import vg.civcraft.mc.namelayer.command.commands.CreateGroup;
 import vg.civcraft.mc.namelayer.command.commands.DeleteGroup;
 import vg.civcraft.mc.namelayer.command.commands.DisciplineGroup;
@@ -40,9 +41,6 @@ import vg.civcraft.mc.namelayer.command.commands.ToggleAutoAcceptInvites;
 import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
 import vg.civcraft.mc.namelayer.command.commands.UpdateName;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class CommandHandler extends CommandManager {
 
@@ -78,7 +76,6 @@ public class CommandHandler extends CommandManager {
         registerCommand(new PromotePlayer());
         registerCommand(new RejectInvite());
         registerCommand(new RevokeInvite());
-        registerCommand(new ChangePlayerName());
         registerCommand(new SetDefaultGroup());
         registerCommand(new GetDefaultGroup());
         registerCommand(new UpdateName());

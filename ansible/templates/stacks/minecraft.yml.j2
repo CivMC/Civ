@@ -25,7 +25,7 @@ services:
               mode: host
         environment:
             TYPE: 'CUSTOM'
-            BUNGEE_JAR_FILE: 'velocity-528.jar'
+            BUNGEE_JAR_FILE: 'velocity.jar'
 
             REPLACE_ENV_VARIABLES: 'true'
             REPLACE_ENV_VARIABLE_PREFIX: 'CIV'
@@ -40,6 +40,14 @@ services:
             CIV_PVP_HOSTNAME: '{{setting.minecraft.pvp_hostname}}'
             CIV_GAMMA_HOSTNAME: '{{setting.minecraft.gamma_hostname}}'
             CIV_HOSTNAME: '{{setting.minecraft.hostname}}'
+
+            CIV_RABBITMQ_HOST: minecraft_rabbitmq
+            CIV_RABBITMQ_USERNAME: rabbitmq
+            CIV_RABBITMQ_PASSWORD: '{{secret.minecraft.rabbitmq.password}}'
+
+            CIV_MYSQL_HOST: minecraft_mariadb
+            CIV_MYSQL_USERNAME: '{{secret.minecraft.mysql.username}}'
+            CIV_MYSQL_PASSWORD: '{{secret.minecraft.mysql.password}}'
         deploy:
             placement:
                 constraints: [node.role == manager]
@@ -123,7 +131,7 @@ services:
             - /opt/PrivateConfig/paper/plugins/packetevents-spigot-2.9.4.jar:/config/plugins/packetevents-spgiot-2.9.4.jar
             - /opt/PrivateConfig/paper/config/Vulcan/config.yml:/config/plugins/Vulcan/config.yml
             - /opt/PrivateConfig/paper/config/HiddenOre/config.yml:/config/plugins/HiddenOre/config.yml
-            - /opt/PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/config/plugins/KirraBukkitGateway/config.yml
+            - /opt/PrivateConfig/paper/config/KiraBukkitGateway/config.yml:/config/plugins/KiraBukkitGateway/config.yml
             - /opt/PrivateConfig/paper/config/BreweryX/config.yml:/config/plugins/BreweryX/config.yml
             - /opt/PrivateConfig/paper/config/BreweryX/cauldron.yml:/config/plugins/BreweryX/cauldron.yml
             - /opt/PrivateConfig/paper/config/BreweryX/custom-items.yml:/config/plugins/BreweryX/custom-items.yml
@@ -324,7 +332,7 @@ services:
                     memory: '{{setting.minecraft.resources.pvp_memory_limit}}'
 
     kira:
-        image: ghcr.io/civmc/kira:2.1.1
+        image: ghcr.io/civmc/kira:latest
         restart: unless-stopped
         tty: true
         stdin_open: true

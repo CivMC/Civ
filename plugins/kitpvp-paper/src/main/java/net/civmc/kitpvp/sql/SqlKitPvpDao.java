@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.UUID;
 import net.civmc.kitpvp.kit.Kit;
 import net.civmc.kitpvp.kit.KitPvpDao;
-import net.civmc.kitpvp.ranked.RankedDao;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;

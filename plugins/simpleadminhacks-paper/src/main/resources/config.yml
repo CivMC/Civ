@@ -126,7 +126,7 @@ hacks:
     disableEnderCrystalDamage: true
     disableMiningFatigue: true
     canEquipBanners: true
-    disableLavaCobbleMountains: true
+    disableLavaCobbleMountains: false
     disableWanderingTrader: true
     preventPearlGlitching: true
     preventUsingEyeOfEnder: true
@@ -555,3 +555,5 @@ hacks:
     enabled: true
   PlayerCount:
     enabled: false
+  Trowel:
+    enabled: true

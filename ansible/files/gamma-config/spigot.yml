@@ -51,7 +51,7 @@ world-settings:
     verbose: false
     merge-radius:
       exp: 3.0
-      item: 4.0
+      item: 2.5
     growth:
       cactus-modifier: 100
       cane-modifier: 100

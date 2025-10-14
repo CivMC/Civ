@@ -3,6 +3,7 @@ package net.civmc.heliodor.backpack;
 import net.civmc.heliodor.HeliodorPlugin;
 import net.kyori.adventure.text.Component;
 import net.minelink.ctplus.CombatTagPlus;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -124,7 +125,7 @@ public class BackpackListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void on(PlayerDeathEvent event) {
-        if (!JavaPlugin.getPlugin(CombatTagPlus.class).getTagManager().isTagged(event.getPlayer().getUniqueId())) {
+        if (Bukkit.getPluginManager().isPluginEnabled("CombatTagPlus") && !JavaPlugin.getPlugin(CombatTagPlus.class).getTagManager().isTagged(event.getPlayer().getUniqueId())) {
             return;
         }
 

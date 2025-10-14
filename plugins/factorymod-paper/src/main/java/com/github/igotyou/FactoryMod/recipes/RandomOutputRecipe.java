@@ -21,6 +21,7 @@ public class RandomOutputRecipe extends InputRecipe {
     private Map<ItemMap, Double> outputs;
     private static Random rng;
     private ItemMap lowestChanceMap;
+    private ItemMap displayOutput;
 
     public RandomOutputRecipe(String identifier, String name, int productionTime, ItemMap input,
                               Map<ItemMap, Double> outputs, ItemMap displayOutput) {
@@ -42,8 +43,10 @@ public class RandomOutputRecipe extends InputRecipe {
             if (lowestChanceMap == null) {
                 lowestChanceMap = new ItemMap(new ItemStack(Material.STONE));
             }
+            this.displayOutput = lowestChanceMap;
         } else {
             lowestChanceMap = displayOutput;
+            this.displayOutput = displayOutput;
         }
     }
 
@@ -96,7 +99,7 @@ public class RandomOutputRecipe extends InputRecipe {
 
     @Override
     public Material getRecipeRepresentationMaterial() {
-        return input.getItemStackRepresentation().get(0).getType();
+        return displayOutput.getItemStackRepresentation().get(0).getType();
     }
 
     @Override

@@ -11,20 +11,16 @@ import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.dao.DatabaseCredentials;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.command.CommandHandler;
-import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.AutoAcceptHandler;
 import vg.civcraft.mc.namelayer.group.BlackList;
 import vg.civcraft.mc.namelayer.group.DefaultGroupHandler;
-import vg.civcraft.mc.namelayer.listeners.AssociationListener;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.misc.ClassHandler;
-import vg.civcraft.mc.namelayer.misc.NameCleanser;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class NameLayerPlugin extends ACivMod {
 
-    private static AssociationList associations;
     private static BlackList blackList;
     private static GroupManagerDao groupManagerDao;
     private static DefaultGroupHandler defaultGroupHandler;
@@ -49,9 +45,7 @@ public class NameLayerPlugin extends ACivMod {
         instance = this;
         loadDatabases();
         ClassHandler.Initialize(Bukkit.getServer());
-        new NameAPI(new GroupManager(), associations);
-        NameCleanser.load(config.getConfigurationSection("name_cleanser"));
-        MojangNames.init(this);
+        new NameAPI(new GroupManager());
         registerListeners();
         if (loadGroups) {
             PermissionType.initialize();
@@ -66,13 +60,11 @@ public class NameLayerPlugin extends ACivMod {
     }
 
     public void registerListeners() {
-        registerListener(new AssociationListener());
         registerListener(new PlayerListener());
     }
 
     @Override
     public void onDisable() {
-        MojangNames.reset(this);
         super.onDisable();
     }
 
@@ -142,9 +134,6 @@ public class NameLayerPlugin extends ACivMod {
         }
 
 
-        associations = new AssociationList(getLogger(), db);
-        associations.registerMigrations();
-
         if (loadGroups) {
             groupManagerDao = new GroupManagerDao(getLogger(), db);
             groupManagerDao.registerMigrations();
@@ -168,13 +157,6 @@ public class NameLayerPlugin extends ACivMod {
         getLogger()
             .log(Level.INFO, "Database update took {0} seconds", (System.currentTimeMillis() - begin_time) / 1000);
 
-    }
-
-    /**
-     * @return Returns the AssocationList.
-     */
-    public static AssociationList getAssociationList() {
-        return associations;
     }
 
     /**
