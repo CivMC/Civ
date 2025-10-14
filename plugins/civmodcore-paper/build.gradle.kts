@@ -1,7 +1,7 @@
 plugins {
-    id("io.papermc.paperweight.userdev")
-    id("com.github.johnrengelman.shadow")
-    id("xyz.jpenilla.run-paper")
+    alias(libs.plugins.paper.userdev)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.runpaper)
 }
 
 version = "3.0.6"
@@ -11,6 +11,7 @@ dependencies {
         paperDevBundle(libs.versions.paper)
     }
 
+    api("com.github.davidmoten:rtree2:0.9.3")
     api(libs.aikar.acf)
     api(libs.aikar.taskchain)
     api(libs.hikaricp)

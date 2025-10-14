@@ -66,6 +66,7 @@ chunks:
   flush-regions-on-save: false
   max-auto-save-chunks-per-tick: 6
   prevent-moving-into-unloaded-chunks: true
+  random-tick-scale: 10
 collisions:
   allow-player-cramming-damage: false
   allow-vehicle-collisions: true
@@ -134,6 +135,16 @@ entities:
     hatch-time: default
   spawning:
     all-chunks-are-slime-chunks: false
+    despawn-time:
+      llama_spit: 1200
+      snowball: 1200
+      fireball: 1200
+      dragon_fireball: 1200
+      small_fireball: 1200
+      arrow: 3000
+      shulker_bullet: 3000
+      wither_skull: 3000
+      trident: 3000
     alt-item-despawn-rate:
       enabled: true
       items:
@@ -261,12 +272,12 @@ entities:
       maximum: default
       minimum: default
   tracking-range-y:
+    enabled: true
     animal: default
-    display: default
-    enabled: false
+    display: 64
     misc: default
-    monster: default
-    other: default
+    monster: 64
+    other: 64
     player: default
 environment:
   disable-explosion-knockback: false
@@ -338,7 +349,7 @@ misc:
   disable-sprint-interruption-on-attack: false
   light-queue-size: 20
   max-leash-distance: 10.0
-  redstone-implementation: EIGENCRAFT
+  redstone-implementation: ALTERNATE_CURRENT
   shield-blocking-delay: 5
   show-sign-click-command-failure-msgs-to-player: false
   update-pathfinding-on-block-update: false
@@ -355,13 +366,13 @@ tick-rates:
     villager:
       validatenearbypoi: -1
   container-update: 3
-  dry-farmland: 1
-  grass-spread: 2
+  dry-farmland: 3
+  grass-spread: 4
   mob-spawner: 2
   sensor:
     villager:
       secondarypoisensor: 40
-  wet-farmland: 1
+  wet-farmland: 3
 unsupported-settings:
   disable-world-ticking-when-empty: false
   fix-invulnerable-end-crystal-exploit: true

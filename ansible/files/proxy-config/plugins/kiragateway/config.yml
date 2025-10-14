@@ -1,0 +1,10 @@
+# Your RabbitMQ credentials
+rabbitmq:
+  user: ${CIV_RABBITMQ_USERNAME}
+  password: ${CIV_RABBITMQ_PASSWORD}
+  host: ${CIV_RABBITMQ_HOST}
+  port: 5672
+  incomingQueue: kira-to-gateway
+  outgoingQueue: gateway-to-kira
+
+ops: ["771e81cd-2f11-43b4-bd86-731fe468f131", "82569b12-c44c-4864-8a73-85a9192ee8f9", "2c7c20f7-8472-4780-9b35-4cd4fae460c6", "7d4af441-a721-4e4c-9848-4e92a679f182"]

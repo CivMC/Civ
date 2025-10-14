@@ -13,7 +13,7 @@
 settings:
   debug: false
   sample-count: 12
-  player-shuffle: 0
+  player-shuffle: 100
   user-cache-size: 1000
   save-user-cache-on-stop-only: false
   moved-wrongly-threshold: 1.0625
@@ -21,7 +21,7 @@ settings:
   timeout-time: ${CIV_WATCHDOG_TIMEOUT_TIME}
   restart-on-crash: false
   restart-script: ./start.sh
-  netty-threads: 4
+  netty-threads: 6
   attribute:
     maxHealth:
       max: 2048.0

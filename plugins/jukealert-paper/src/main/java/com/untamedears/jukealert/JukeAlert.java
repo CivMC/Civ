@@ -115,7 +115,9 @@ public class JukeAlert extends ACivMod {
 
     private void registerJukeAlertEvents() {
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvents(new LoggableActionListener(snitchManager), this);
+        LoggableActionListener loggableActionListener = new LoggableActionListener(snitchManager);
+        pm.registerEvents(loggableActionListener, this);
+        loggableActionListener.setupScheduler(this);
         pm.registerEvents(new SnitchLifeCycleListener(snitchManager, snitchConfigManager, getLogger()), this);
     }
 }

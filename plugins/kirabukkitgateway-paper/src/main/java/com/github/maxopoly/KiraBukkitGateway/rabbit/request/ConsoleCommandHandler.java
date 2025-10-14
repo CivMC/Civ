@@ -21,12 +21,6 @@ public class ConsoleCommandHandler extends AbstractRequestHandler {
         String command = input.get("command").getAsString();
         OfflinePlayer player = Bukkit.getOfflinePlayer(sender);
         Logger logger = KiraBukkitGatewayPlugin.getInstance().getLogger();
-        if (player == null) {
-            logger.warning("Console player with uuid " + sender + " does not exist");
-            output.addProperty("replymsg", "You are not a known player on the server");
-            sendRequestSessionReply(output);
-            return;
-        }
         if (!player.isOp()) {
             logger.warning("Non op player " + sender + " tried to run console command");
             output.addProperty("replymsg", "You are not op");
@@ -35,7 +29,7 @@ public class ConsoleCommandHandler extends AbstractRequestHandler {
         }
         PseudoConsoleSender console = new PseudoConsoleSender(sender, Bukkit.getConsoleSender(), channelId);
         Bukkit.getScheduler().runTask(KiraBukkitGatewayPlugin.getInstance(), () -> {
-            Bukkit.getServer().dispatchCommand(console, command);
+            dispatchCommand(console, command);
             StringBuilder sb = new StringBuilder();
             for (String s : console.getRepliesAndFinish()) {
                 sb.append(KiraUtil.cleanUp(s));

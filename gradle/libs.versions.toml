@@ -1,15 +1,18 @@
 [versions]
-paper = "1.21.4-R0.1-SNAPSHOT"
+paper = "1.21.8-R0.1-SNAPSHOT"
 junit = "5.8.2"
 nuotifier = "2.7.2"
+velocity = "3.4.0-SNAPSHOT"
+configurate = "4.2.0"
 
 [plugins]
-paper-userdev = { id = "io.papermc.paperweight.userdev", version = "2.0.0-beta.11" }
-shadow = {  id = "com.github.johnrengelman.shadow", version = "8.1.1" }
+paper-userdev = { id = "io.papermc.paperweight.userdev", version = "2.0.0-beta.17" }
+shadow = {  id = "com.gradleup.shadow", version = "8.3.8" }
 runpaper = { id = "xyz.jpenilla.run-paper", version = "2.3.1" }
 
 [libraries]
 paper-api = { group = "io.papermc.paper", name = "paper-api", version.ref = "paper" }
+velocity-api = { group = "com.velocitypowered", name = "velocity-api", version.ref = "velocity"}
 
 aikar-acf = { group = "co.aikar", name = "acf-paper", version = "0.5.1-SNAPSHOT" }
 aikar-taskchain = { group = "co.aikar", name = "taskchain-bukkit", version = "3.7.2" }
@@ -18,13 +21,17 @@ commons-lang3 = { group = "org.apache.commons", name = "commons-lang3", version 
 commons-collections4 = { group = "org.apache.commons", name = "commons-collections4", version = "4.4" }
 commons-math3 = { group = "org.apache.commons", name = "commons-math3", version = "3.6.1" }
 
-rabbitmq-client = { group = "com.rabbitmq", name = "amqp-client", version = "5.17.1" }
+cron-utils = { group = "com.cronutils", name = "cron-utils", version = "9.2.1" }
+
+configurate-yaml = { group = "org.spongepowered", name = "configurate-yaml", version.ref = "configurate" }
+
+rabbitmq-client = { group = "com.rabbitmq", name = "amqp-client", version = "5.26.0" }
 
 nuvotifier-api = { group = "com.github.NuVotifier.NuVotifier", name = "nuvotifier-api", version.ref = "nuotifier" }
 nuvotifier-bukkit = { group = "com.github.NuVotifier.NuVotifier", name = "nuvotifier-bukkit", version.ref = "nuotifier" }
 
 vault-api = { group = "com.github.MilkBowl", name = "VaultAPI", version = "1.7" }
-luckperms-api = { group = "net.luckperms", name = "api", version = "5.0" }
+luckperms-api = { group = "net.luckperms", name = "api", version = "5.4" }
 
 aswm-api = { group = "com.infernalsuite.asp", name = "api", version = "4.0.0-SNAPSHOT"}
 

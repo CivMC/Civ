@@ -1,6 +1,6 @@
 package vg.civcraft.mc.citadel.model;
 
-public record WorldBorderBuffers(double centerX, double centerZ, Shape borderShape, double bufferSize) {
+public record WorldBorderBuffers(double centerX, double centerZ, Shape borderShape, double bufferSize, boolean decay) {
 
     public enum Shape {
         CIRCLE,

@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Syntax;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
@@ -69,21 +70,19 @@ public class GroupChat extends BaseCommand {
                 chatMan.addGroupChat(player, group);
             }
         } else {
-            StringBuilder chatMsg = new StringBuilder();
-            chatMsg.append(chatMessage);
             if (isGroupChatting) {
                 // Player already groupchatting check if it's this group
                 Group curGroup = chatMan.getGroupChatting(player);
                 if (curGroup == group) {
-                    chatMan.sendGroupMsg(player, group, chatMsg.toString());
+                    chatMan.sendGroupMsg(player, group, Component.text(chatMessage));
                 } else {
-                    chatMan.sendGroupMsg(player, group, chatMsg.toString());
+                    chatMan.sendGroupMsg(player, group, Component.text(chatMessage));
                 }
             } else {
                 if (chatMan.getChannel(player) != null) {
                     chatMan.removeChannel(player);
                 }
-                chatMan.sendGroupMsg(player, group, chatMsg.toString());
+                chatMan.sendGroupMsg(player, group, Component.text(chatMessage));
             }
         }
     }

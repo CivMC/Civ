@@ -1,0 +1,885 @@
+# Set to true if you want tapping a plant with bonemeal to double it.
+allow_tallplant_replication: true
+
+#Enable auto replant?
+auto_replant_enabled: true
+# true for right click auto replant, false for left click
+auto_replant_right_click: true
+
+no_bonemeal_blocks:
+  - SEA_PICKLE
+  - KELP
+  - TWISTING_VINES
+  - WEEPING_VINES
+  - CAVE_VINES
+  - BAMBOO
+  - KELP_PLANT
+  - TWISTING_VINES_PLANT
+  - WEEPING_VINES_PLANT
+  - CAVE_VINES_PLANT
+  - BAMBOO_SAPLING
+  - SWEET_BERRY_BUSH
+  - BIG_DRIPLEAF
+  - BIG_DRIPLEAF_STEM
+  - RED_MUSHROOM
+  - BROWN_MUSHROOM
+  - WHEAT
+  - CARROTS
+  - POTATOES
+  - BEETROOTS
+  - NETHER_WART
+  - COCOA
+  - MELON_STEM
+  - PUMPKIN_STEM
+  - CACTUS
+  - SUGAR_CANE
+  - OAK_SAPLING
+  - BIRCH_SAPLING
+  - SPRUCE_SAPLING
+  - JUNGLE_SAPLING
+  - DARK_OAK_SAPLING
+  - ACACIA_SAPLING
+  - FLOWERING_AZALEA
+
+  # categories of biomes
+biome_aliases:
+  water:
+    - DEEP_OCEAN
+    - OCEAN
+    - STONE_SHORE
+  freshwater:
+    - RIVER
+    - BEACH
+  cold_water:
+    - SNOWY_BEACH
+    - FROZEN_OCEAN
+    - FROZEN_RIVER
+  temperate:
+    - PLAINS
+    - SUNFLOWER_PLAINS
+    - SAVANNA
+    - SAVANNA_PLATEAU
+    - SHATTERED_SAVANNA
+    - SHATTERED_SAVANNA_PLATEAU
+  foresty:
+    - BIRCH_FOREST
+    - BIRCH_FOREST_HILLS
+    - DARK_FOREST
+    - DARK_FOREST_HILLS
+    - FLOWER_FOREST
+    - FOREST
+    - TALL_BIRCH_FOREST
+    - TALL_BIRCH_HILLS
+    - WOODED_HILLS
+  cold:
+    - ICE_SPIKES
+    - GIANT_SPRUCE_TAIGA
+    - GIANT_SPRUCE_TAIGA_HILLS
+    - GIANT_TREE_TAIGA
+    - GIANT_TREE_TAIGA_HILLS
+    - TAIGA
+    - TAIGA_HILLS
+    - TAIGA_MOUNTAINS
+    - SNOWY_TUNDRA
+    - SNOWY_MOUNTAINS
+    - SNOWY_TAIGA
+    - SNOWY_TAIGA_HILLS
+    - SNOWY_TAIGA_MOUNTAINS
+  cold_forest:
+    - GIANT_SPRUCE_TAIGA
+    - GIANT_SPRUCE_TAIGA_HILLS
+    - GIANT_TREE_TAIGA
+    - GIANT_TREE_TAIGA_HILLS
+    - TAIGA
+    - TAIGA_HILLS
+    - TAIGA_MOUNTAINS
+  hot_dry:
+    - DESERT
+    - DESERT_HILLS
+    - DESERT_LAKES
+    - BADLANDS
+    - BADLANDS_PLATEAU
+    - ERODED_BADLANDS
+    - WOODED_BADLANDS_PLATEAU
+  hot_rainy:
+    - JUNGLE
+    - JUNGLE_EDGE
+    - JUNGLE_HILLS
+    - MODIFIED_JUNGLE
+    - MODIFIED_JUNGLE_EDGE
+  mountain:
+    - MOUNTAINS
+    - MOUNTAIN_EDGE
+    - GRAVELLY_MOUNTAINS
+    - MODIFIED_GRAVELLY_MOUNTAINS
+    - WOODED_MOUNTAINS
+  mesa:
+    - BADLANDS
+    - BADLANDS_PLATEAU
+    - ERODED_BADLANDS
+    - WOODED_BADLANDS_PLATEAU
+    - MODIFIED_BADLANDS_PLATEAU
+    - MODIFIED_WOODED_BADLANDS_PLATEAU
+  mushroom:
+    - MUSHROOM_FIELDS
+    - MUSHROOM_FIELD_SHORE
+  swampy:
+    - SWAMP
+    - SWAMP_HILLS
+  nether:
+    - NETHER_WASTES
+    - SOUL_SAND_VALLEY
+    - CRIMSON_FOREST
+    - WARPED_FOREST
+    - BASALT_DELTAS
+  end:
+    - END_BARRENS
+    - END_HIGHLANDS
+    - END_MIDLANDS
+    - THE_VOID
+    - THE_END
+
+temperature:
+  octaves: 3
+  frequency: 0.5
+  amplitude: 1
+  lacunarity: 2
+  persistence: 0.5
+  scale: 0.5
+  seed: 1
+
+humidity:
+  octaves: 3
+  frequency: 1
+  amplitude: 1
+  lacunarity: 2
+  persistence: 0.5
+  scale: 0.5
+  seed: 2
+
+fertility_seed: 3
+fertility_power: 1
+fertility_scale: 1
+
+temperature_measure: CLOCK
+humidity_measure: LIGHTNING_ROD
+fertility_measure: BRUSH
+
+yield_power_factor: 3
+
+climate:
+  - biomes:
+      - temperate
+      - foresty
+    temperature: 0.5
+    humidity: 0.5
+  - biomes:
+      - hot_dry
+      - mesa
+    temperature: 0.75
+    humidity: 0.25
+  - biomes:
+      - mountain
+      - cold
+    temperature: 0.25
+    humidity: 0.25
+
+farm_beacon_key: "heliodor:farm_beacon"
+farm_beacon_range: 20
+farm_beacon_fertility: 0.05
+farm_beacon_growth_multiplier: 1
+farm_beacon_warmup: 518400000
+
+plants:
+
+  # formerly inheriting CROP properties
+  WHEAT:
+    persistent_growth_period: 3d
+    name: Wheat
+    id: 1
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: WHEAT_SEEDS
+      v: 1
+    grower:
+      type: ageable
+      material: WHEAT
+      max_stage: 7
+      increment: 1
+    vanilla_materials:
+      - WHEAT
+    soil_max_layers: 8
+    max_soil_bonus: 2
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: WHEAT
+      max_yield: 64
+    soil_boni:
+      CLAY: 0.5
+      DIRT: 0.1
+
+  CARROT:
+    persistent_growth_period: 3d
+    name: Carrots
+    id: 2
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: CARROT
+      v: 1
+    grower:
+      type: ageable
+      material: CARROTS
+      max_stage: 7
+      increment: 3
+    vanilla_materials:
+      - CARROTS
+    soil_max_layers: 4
+    soil_boni:
+      CLAY: 0.5
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: CARROT
+      max_yield: 64
+
+  POTATO:
+    persistent_growth_period: 3d
+    name: Potatoes
+    id: 3
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: POTATO
+      v: 1
+    grower:
+      type: ageable
+      material: POTATOES
+      max_stage: 7
+      increment: 3
+    vanilla_materials:
+      - POTATOES
+    soil_max_layers: 4
+    soil_boni:
+      CLAY: 0.5
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: POTATO
+      max_yield: 64
+
+  BEETROOT:
+    persistent_growth_period: 3d
+    name: Beetroots
+    id: 4
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: BEETROOT_SEEDS
+      v: 1
+    grower:
+      type: ageable
+      material: BEETROOTS
+      max_stage: 3
+      increment: 1
+    vanilla_materials:
+      - BEETROOTS
+    soil_max_layers: 4
+    soil_boni:
+      CLAY: 0.5
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: BEETROOT
+      max_yield: 64
+
+  NETHER_WART:
+    persistent_growth_period: 16d
+    name: Nether wart
+    id: 5
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: NETHER_WART
+      v: 1
+    grower:
+      type: ageable
+      material: NETHER_WART
+      max_stage: 3
+      increment: 1
+    vanilla_materials:
+      - NETHER_WART
+    needs_sun_light: false
+    soil_max_layers: 4
+    soil_boni:
+      SOUL_SAND: 0.5
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: NETHER_WART
+      max_yield: 64
+
+  COCOA:
+    persistent_growth_period: 24d
+    name: Cocoa
+    id: 6
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: COCOA_BEANS
+      v: 1
+    grower:
+      type: ageable
+      material: COCOA
+      max_stage: 2
+      increment: 1
+    vanilla_materials:
+      - COCOA
+    soil_max_layers: 25
+    soil_boni:
+      VINE: 0.3
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: COCOA
+      max_yield: 64
+
+  MELON:
+    persistent_growth_period: 0
+    name: Melon
+    id: 7
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: MELON
+      v: 2584
+    can_be_planted: false
+    soil_max_layers: 4
+    soil_boni:
+      CLAY: 0.5
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: MELON
+      max_yield: 64
+    grower:
+      type: fruit
+      material: MELON
+      stem_type: MELON_STEM
+      attached_stem_type: ATTACHED_MELON_STEM
+    vanilla_materials:
+      - ATTACHED_MELON_STEM
+      - MELON_STEM
+
+  MELON_STEM:
+    persistent_growth_period: 0
+    name: Melon stem
+    id: 8
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: MELON_SEEDS
+      v: 1
+    grower:
+      type: stem
+      material: MELON_STEM
+      fruit_config: Melon
+    soil_max_layers: 4
+    soil_boni:
+      CLAY: 0.5
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+
+  PUMPKIN:
+    persistent_growth_period: 0
+    name: Pumpkin
+    id: 9
+    can_be_planted: false
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: PUMPKIN
+      v: 1
+    grower:
+      type: fruit
+      material: PUMPKIN
+      stem_type: PUMPKIN_STEM
+      attached_stem_type: ATTACHED_PUMPKIN_STEM
+    vanilla_materials:
+      - ATTACHED_PUMPKIN_STEM
+      - PUMPKIN_STEM
+    soil_max_layers: 4
+    soil_boni:
+      CLAY: 0.5
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    max_yield: 64
+
+  PUMPKIN_STEM:
+    persistent_growth_period: 0
+    name: Pumpkin stem
+    grower:
+      type: stem
+      material: PUMPKIN_STEM
+      fruit_config: Pumpkin
+    id: 10
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: PUMPKIN_SEEDS
+      v: 1
+    soil_max_layers: 4
+    soil_boni:
+      CLAY: 0.5
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+
+  # formerly inheriting Column properties
+
+  CACTUS:
+    persistent_growth_period: 6h
+    name: Cactus
+    grower:
+      type: column
+      material: CACTUS
+      max_height: 3
+      insta_break_touching: false
+    vanilla_materials:
+      - CACTUS
+    id: 11
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: CACTUS
+      v: 1
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: CACTUS
+      max_yield: 64
+
+  SUGAR_CANE:
+    persistent_growth_period: 6d
+    name: Sugar cane
+    id: 12
+    grower:
+      type: column
+      material: SUGAR_CANE
+      max_height: 3
+    vanilla_materials:
+      - SUGAR_CANE
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: SUGAR_CANE
+      v: 1
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: SUGAR_CANE
+      max_yield: 64
+
+  # formerly inheriting "basetree" properties
+
+  OAK_SAPLING:
+    persistent_growth_period: 6d
+    name: Oak Tree
+    id: 13
+    grower:
+      type: tree
+      material: OAK_SAPLING
+    vanilla_materials:
+      - OAK_SAPLING
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: OAK_SAPLING
+      v: 1
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: OAK_LEAVES
+      max_yield: 64
+
+  BIRCH_SAPLING:
+    persistent_growth_period: 6d
+    name: Birch Tree
+    id: 14
+    grower:
+      type: tree
+      material: BIRCH_SAPLING
+    vanilla_materials:
+      - BIRCH_SAPLING
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: BIRCH_SAPLING
+      v: 1
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: BIRCH_LEAVES
+      max_yield: 64
+
+  SPRUCE_SAPLING:
+    persistent_growth_period: 6d
+    name: Spruce Tree
+    id: 15
+    grower:
+      type: tree
+      material: SPRUCE_SAPLING
+    vanilla_materials:
+      - SPRUCE_SAPLING
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: SPRUCE_SAPLING
+      v: 1
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: SPRUCE_LEAVES
+      max_yield: 64
+
+  JUNGLE_SAPLING:
+    persistent_growth_period: 6d
+    name: Jungle Tree
+    id: 16
+    grower:
+      type: tree
+      material: JUNGLE_SAPLING
+    vanilla_materials:
+      - JUNGLE_SAPLING
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: JUNGLE_SAPLING
+      v: 1
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: JUNGLE_LEAVES
+      max_yield: 128
+
+  ACACIA_SAPLING:
+    persistent_growth_period: 6d
+    name: Acacia Tree
+    grower:
+      type: tree
+      material: ACACIA_SAPLING
+    vanilla_materials:
+      - ACACIA_SAPLING
+    id: 17
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: ACACIA_SAPLING
+      v: 1
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: ACACIA_LEAVES
+      max_yield: 128
+
+  DARK_OAK_SAPLING:
+    persistent_growth_period: 6d
+    name: Dark Oak Tree
+    grower:
+      type: tree
+      material: DARK_OAK_SAPLING
+    vanilla_materials:
+      - DARK_OAK_SAPLING
+    id: 18
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: DARK_OAK_SAPLING
+      v: 1
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: DARK_OAK_LEAVES
+      max_yield: 192
+
+  PALE_OAK_SAPLING:
+    persistent_growth_period: 6d
+    name: Pale Oak Tree
+    grower:
+      type: tree
+      material: PALE_OAK_SAPLING
+    vanilla_materials:
+      - PALE_OAK_SAPLING
+    id: 19
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: PALE_OAK_SAPLING
+      v: 1
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: PALE_OAK_LEAVES
+      max_yield: 64
+
+  CHERRY_SAPLING:
+    persistent_growth_period: 0h
+    name: Cherry Tree
+    grower:
+      type: tree
+      material: CHERRY_SAPLING
+    vanilla_materials:
+    - CHERRY_SAPLING
+    id: 20
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: CHERRY_SAPLING
+      v: 1
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: CHERRY_LEAVES
+      max_yield: 64
+
+  MANGROVE_PROPAGULE:
+    persistent_growth_period: 0h
+    name: Mangrove Tree
+    grower:
+      type: tree
+      material: MANGROVE_PROPAGULE
+    vanilla_materials:
+    - MANGROVE_PROPAGULE
+    id: 21
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: MANGROVE_PROPAGULE
+      v: 1
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: MANGROVE_LEAVES
+      max_yield: 64
+
+  GLOW_BERRIES:
+    persistent_growth_period: 6d
+    name: Glow Berries
+    grower:
+      type: tip
+      material: CAVE_VINES
+      stem_material: CAVE_VINES_PLANT
+      growth_direction: DOWN
+      max_height: 25
+    id: 22
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: GLOW_BERRIES
+      v: 2730
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: GLOW_BERRIES
+      max_yield: 64
+
+  TWISTING_VINES:
+    persistent_growth_period: 6d
+    name: Twisting Vines
+    grower:
+      type: tip
+      material: TWISTING_VINES
+      stem_material: TWISTING_VINES_PLANT
+      growth_direction: UP
+      max_height: 25
+    id: 23
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: TWISTING_VINES
+      v: 2730
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: TWISTING_VINES
+      max_yield: 64
+
+  WEEPING_VINES:
+    persistent_growth_period: 6d
+    name: Weeping Vines
+    grower:
+      type: tip
+      material: WEEPING_VINES
+      stem_material: WEEPING_VINES_PLANT
+      growth_direction: DOWN
+      max_height: 25
+    id: 24
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: WEEPING_VINES
+      v: 2730
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: WEEPING_VINES
+      max_yield: 64
+
+  KELP:
+    persistent_growth_period: 6d
+    name: Kelp
+    grower:
+      type: kelp
+      max_height: 25
+    id: 25
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: KELP
+      v: 2730
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: KELP
+      max_yield: 64
+
+  RED_MUSHROOM:
+    persistent_growth_period: 12d
+    name: Red Mushroom
+    grower:
+      type: horizontalspread
+      max_amount: 81
+      max_range: 9
+      replaceable_blocks:
+        - AIR
+        - CAVE_AIR
+        - VOID_AIR
+      valid_soil:
+        - STONE
+        - MYCELIUM
+        - PODZOL
+    id: 26
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: RED_MUSHROOM
+      v: 2730
+    needs_sun_light: false
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: RED_MUSHROOM
+      max_yield: 64
+
+  BROWN_MUSHROOM:
+    persistent_growth_period: 12d
+    name: Brown Mushroom
+    grower:
+      type: horizontalspread
+      max_amount: 81
+      max_range: 9
+      replaceable_blocks:
+        - AIR
+        - CAVE_AIR
+        - VOID_AIR
+      valid_soil:
+        - STONE
+        - MYCELIUM
+        - PODZOL
+    id: 27
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: BROWN_MUSHROOM
+      v: 2730
+    needs_sun_light: false
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: BROWN_MUSHROOM
+      max_yield: 64
+
+  CRIMSON_FUNGUS:
+    persistent_growth_period: 12d
+    name: Crimson Fungus
+    grower:
+      type: fungus
+      material: CRIMSON_FUNGUS
+    vanilla_materials:
+      - CRIMSON_FUNGUS
+    id: 28
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: CRIMSON_FUNGUS
+      v: 2730
+    needs_sun_light: false
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: CRIMSON_FUNGUS
+      max_yield: 64
+
+  WARPED_FUNGUS:
+    persistent_growth_period: 12d
+    name: Warped Fungus
+    grower:
+      type: fungus
+      material: WARPED_FUNGUS
+    vanilla_materials:
+      - WARPED_FUNGUS
+    id: 29
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: WARPED_FUNGUS
+      v: 2730
+    needs_sun_light: false
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: WARPED_FUNGUS
+      max_yield: 64
+
+  BAMBOO:
+    persistent_growth_period: 12d
+    name: Bamboo
+    grower:
+      type: bamboo
+      max_height: 12
+    id: 30
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: BAMBOO
+      v: 2730
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: BAMBOO
+      max_yield: 64
+
+  SWEET_BERRY:
+    persistent_growth_period: 12d
+    name: Sweet Berry
+    id: 31
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: SWEET_BERRIES
+      v: 2730
+    grower:
+      type: ageable
+      material: SWEET_BERRY_BUSH
+      max_stage: 3
+      increment: 1
+    vanilla_materials:
+      - SWEET_BERRIES
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: SWEET_BERRY_BUSH
+      max_yield: 64
+
+  BIG_DRIPLEAF:
+    persistent_growth_period: 12d
+    name: Big Dripleaf
+    grower:
+      type: tip
+      material: BIG_DRIPLEAF
+      stem_material: BIG_DRIPLEAF_STEM
+      growth_direction: UP
+      max_height: 25
+    id: 32
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: BIG_DRIPLEAF
+      v: 2730
+    ideal_temperature: 0.5
+    ideal_humidity: 0.5
+    breaker:
+      type: BIG_DRIPLEAF
+      max_yield: 64
+
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.DatabaseCredentials
+  plugin: RealisticBiomes
+  user: 'root'
+  password: 'root'
+  host: 'localhost'
+  port: 3306
+  database: 'database'
+  poolsize: 5
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000

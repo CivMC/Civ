@@ -13,6 +13,14 @@
     - setting.minecraft.enabled
   command: docker service scale minecraft_paper=0
 
+- name: Stop Server | Stop Gamma
+  when:
+    - "'swarm_manager' in group_names"
+    - "'gamma' in servers"
+    - setting.minecraft.enabled
+  ignore_errors: true
+  command: docker service scale minecraft_gamma=0
+
 - name: Stop Server | Stop PvP
   when:
     - "'swarm_manager' in group_names"

@@ -255,20 +255,15 @@ public final class ClonedInventory implements Inventory {
         if (!forceClone && inventory instanceof ClonedInventory) {
             return (ClonedInventory) inventory;
         }
-        Inventory clone;
-        if (inventory.getType() == InventoryType.CHEST) {
-            clone = Bukkit.createInventory(inventory.getHolder(), inventory.getSize());
-        } else {
-            clone = Bukkit.createInventory(inventory.getHolder(), inventory.getType());
-        }
-        final ItemStack[] contents = inventory.getContents().clone();
+        final ItemStack[] contents = inventory.getStorageContents().clone();
+        Inventory clone = Bukkit.createInventory(inventory.getHolder(), contents.length);
         for (int i = 0; i < contents.length; i++) {
             final ItemStack item = contents[i];
             if (item != null) {
                 contents[i] = item.clone();
             }
         }
-        clone.setContents(contents);
+        clone.setStorageContents(contents);
         return new ClonedInventory(clone);
     }
 

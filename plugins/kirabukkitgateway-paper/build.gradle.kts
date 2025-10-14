@@ -1,6 +1,6 @@
 plugins {
-    id("io.papermc.paperweight.userdev")
-    id("com.github.johnrengelman.shadow")
+    alias(libs.plugins.paper.userdev)
+    alias(libs.plugins.shadow)
 }
 
 version = "2.0.3"

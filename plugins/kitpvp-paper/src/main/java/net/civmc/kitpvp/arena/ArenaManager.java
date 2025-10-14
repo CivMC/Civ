@@ -3,10 +3,12 @@ package net.civmc.kitpvp.arena;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.SequencedMap;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import com.infernalsuite.asp.api.AdvancedSlimePaperAPI;
 import com.infernalsuite.asp.api.exceptions.CorruptedWorldException;
@@ -43,6 +45,7 @@ public class ArenaManager {
     private final SpawnProvider spawn;
     private final MysqlLoader templateLoader;
     private final SequencedMap<UUID, LoadedArena> arenas = new LinkedHashMap<>();
+    private final List<LoadedArena> rankedArenas = new ArrayList<>();
 
     public ArenaManager(int maxArenas, JavaPlugin plugin, SpawnProvider spawn, MysqlLoader templateLoader) {
         this.maxArenas = maxArenas;
@@ -72,8 +75,11 @@ public class ArenaManager {
         if (removedArena == null) {
             return;
         }
-        Arena arena = removedArena.arena();
-        String worldName = getArenaName(arena.name(), owner);
+        deleteLoadedArena(removedArena);
+    }
+
+    public void deleteLoadedArena(LoadedArena removedArena) {
+        String worldName = getArenaName(removedArena);
         World world = Bukkit.getWorld(worldName);
         if (world != null) {
             Location spawn = this.spawn.getSpawn();
@@ -88,16 +94,83 @@ public class ArenaManager {
                     worldPlayer.kick(Component.text("The arena you were in was deleted"));
                 }
             }
+            Bukkit.unloadWorld(world, false);
         }
-        Bukkit.unloadWorld(worldName, false);
+        for (Iterator<LoadedArena> iterator = rankedArenas.iterator(); iterator.hasNext(); ) {
+            LoadedArena rankedArena = iterator.next();
+            if (rankedArena.equals(removedArena)) {
+                iterator.remove();
+                break;
+            }
+        }
     }
 
-    public String getArenaName(String arena, PlayerProfile owner) {
+    public String getArenaName(LoadedArena arena) {
+        if (arena.ranked()) {
+            return "rankedarena." + arena.rankedId();
+        } else {
+            return getArenaName(arena.arena().name(), arena.owner());
+        }
+    }
+
+    private String getArenaName(String arena, PlayerProfile owner) {
         return "dynamicarena." + owner.getName() + "." + arena;
     }
 
     public boolean isArena(String worldName) {
         return worldName.startsWith("dynamicarena.");
+    }
+
+    private void setupWorld(World world) {
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        world.setGameRule(GameRule.DO_FIRE_TICK, false);
+        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+        world.setGameRule(GameRule.DO_VINES_SPREAD, false);
+        world.setGameRule(GameRule.KEEP_INVENTORY, false);
+        world.setGameRule(GameRule.LOCATOR_BAR, false);
+        world.setGameRule(GameRule.DO_INSOMNIA, false);
+        world.setFullTime(6000);
+    }
+
+    public boolean createRankedArena(Arena arena, Consumer<LoadedArena> callback) {
+        AdvancedSlimePaperAPI api = AdvancedSlimePaperAPI.instance();
+        SlimeWorld slimeWorld;
+        try {
+            slimeWorld = api.readWorld(templateLoader, arena.name(), true, SLIME_PROPERTIES);
+        } catch (UnknownWorldException e) {
+            throw new RuntimeException(e);
+        } catch (IOException | NewerFormatException | CorruptedWorldException e) {
+            plugin.getLogger().log(Level.WARNING, "Unable to load arena", e);
+            return false;
+        }
+
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            int rankedId = 0;
+            boolean increased = true;
+            while (increased) {
+                increased = false;
+                for (LoadedArena loaded : rankedArenas) {
+                    if (loaded.rankedId() == rankedId) {
+                        rankedId++;
+                        increased = true;
+                    }
+                }
+            }
+            String worldName = "rankedarena." + rankedId;
+            api.loadWorld(slimeWorld.clone(worldName), true);
+            World world = Bukkit.getWorld(worldName);
+            if (world == null) {
+                return;
+            }
+            this.setupWorld(world);
+            LoadedArena loaded = new LoadedArena(null, arena, null, rankedId);
+            rankedArenas.add(loaded);
+            callback.accept(loaded);
+        });
+        return true;
     }
 
     public void createArena(Player player, Arena arena, boolean isPublic) {
@@ -125,18 +198,8 @@ public class ArenaManager {
             if (world == null) {
                 return;
             }
-
-            world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-            world.setGameRule(GameRule.DO_FIRE_TICK, false);
-            world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-            world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-            world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-            world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
-            world.setGameRule(GameRule.DO_VINES_SPREAD, false);
-            world.setGameRule(GameRule.KEEP_INVENTORY, false);
-            world.setFullTime(6000);
-
-            arenas.put(player.getUniqueId(), new LoadedArena(player.getPlayerProfile(), arena, isPublic ? null : new ArrayList<>()));
+            this.setupWorld(world);
+            arenas.put(player.getUniqueId(), new LoadedArena(player.getPlayerProfile(), arena, isPublic ? null : new ArrayList<>(), -1));
 
             player.sendMessage(Component.text("Your world is ready. Open ", NamedTextColor.GOLD)
                 .append(Component.text("/arena", NamedTextColor.YELLOW))

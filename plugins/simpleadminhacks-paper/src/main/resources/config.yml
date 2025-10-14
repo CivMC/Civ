@@ -126,7 +126,7 @@ hacks:
     disableEnderCrystalDamage: true
     disableMiningFatigue: true
     canEquipBanners: true
-    disableLavaCobbleMountains: true
+    disableLavaCobbleMountains: false
     disableWanderingTrader: true
     preventPearlGlitching: true
     preventUsingEyeOfEnder: true
@@ -274,14 +274,6 @@ hacks:
     delay: 10000
     message: '%Victim% was combat tagged by %Attacker%'
     broadcast: [ OP, CONSOLE ]
-  DisableAI:
-    enabled: true
-    # Specify below the living entities and their spawning circumstances you want to disable the AI for.
-    # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/entity/EntityType.html
-    # NOTE: See https://papermc.io/javadocs/paper/1.16/org/bukkit/event/entity/CreatureSpawnEvent.SpawnReason.html
-    # Note: You can also just state "ALL" for all spawn circumstances
-    VILLAGER: ALL
-    ENDERMITE: [ DISPENSE_EGG, EGG, SPAWNER_EGG ]
   ElytraFeatures:
     enabled: true
     # Whether Elytra flight should be outright disabled
@@ -438,8 +430,6 @@ hacks:
         - "   &lBrewery&r:\n Custom brewing of booze and more.\n&lMore Info:&r &oBukkit Page:&r tinyurl.com/bukkitbrewp"
         - "   &oFurther Info&r\nVisit our subreddit at: &oreddit.com/r/Devoted&r"
         - "We extend our appreciation to the devs, admins, and players at: &oreddit.com/r/Civcraft"
-  InvControl:
-    enabled: true
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'
@@ -557,3 +547,13 @@ hacks:
     enabled: false
     server: main
     world: world
+  TooHappyGhasts:
+    enabled: true
+  PlayerCap:
+    enabled: true
+  FairPlay:
+    enabled: true
+  PlayerCount:
+    enabled: false
+  Trowel:
+    enabled: true

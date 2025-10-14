@@ -1,0 +1,392 @@
+
+# Leaf Config
+# GitHub Repo: https://github.com/Winds-Studio/Leaf
+# Discord: https://discord.com/invite/gfgAwdSEuM
+config-version: '3.0'
+
+###########
+#  ASYNC  #
+###########
+async:
+  # **Experimental feature**
+  # Enables parallel world ticking to improve performance on multi-core systems.
+  parallel-world-ticking:
+    enabled: false
+    threads: 8
+    log-container-creation-stacktraces: false
+    disable-hard-throw: false
+    async-unsafe-read-handling: BUFFERED
+  # ** Experimental Feature **
+  # Make entity tracking asynchronously, can improve performance significantly,
+  # especially in some massive entities in small area situations.
+  async-entity-tracker:
+    enabled: true
+    threads: 0
+  # Make PlayerData saving asynchronously.
+  async-playerdata-save:
+    enabled: false
+  async-pathfinding:
+    enabled: true
+    max-threads: 12
+    keepalive: 60
+    queue-size: 0
+    # The policy to use when the queue is full and a new task is submitted.
+    # FLUSH_ALL: All pending tasks will be run on server thread.
+    # CALLER_RUNS: Newly submitted task will be run on server thread.
+    # DISCARD: Newly submitted task will be dropped directly.
+    reject-policy: DISCARD
+  # Whether or not asynchronous mob spawning should be enabled.
+  # On servers with many entities, this can improve performance by up to 15%. You must have
+  # paper's per-player-mob-spawns setting set to true for this to work.
+  # One quick note - this does not actually spawn mobs async (that would be very unsafe).
+  # This just offloads some expensive calculations that are required for mob spawning.
+  async-mob-spawning:
+    enabled: true
+  # Whether or not asynchronous locator should be enabled.
+  # This offloads structure locating to other threads.
+  # Only for locate command, dolphin treasure finding and eye of ender currently.
+  async-locator:
+    enabled: false
+    threads: 0
+    keepalive: 60
+  # Makes chunk packet preparation and sending asynchronous to improve server performance.
+  # This can significantly reduce main thread load when many players are loading chunks.
+  async-chunk-send:
+    enabled: true
+
+##########
+#  PERF  #
+##########
+performance:
+  # Use the new Virtual Thread introduced in JDK 21 for User Authenticator.
+  use-virtual-thread-for-user-authenticator: true
+  # Use the new Virtual Thread introduced in JDK 21 for profile lookup executor.
+  use-virtual-thread-for-profile-executor: true
+  # Use the new Virtual Thread introduced in JDK 21 for Async Chat Executor.
+  use-virtual-thread-for-async-chat-executor: true
+  # Use the new Virtual Thread introduced in JDK 21 for CraftAsyncScheduler.
+  use-virtual-thread-for-async-scheduler: true
+  create-snapshot-on-retrieving-blockstate: true
+  # Skip mob spawning for chunks with repeated failures exceeding `min-failed`.
+  # Randomly skip 1-`spawn-chance`% of these chunks from spawning attempts.
+  # Failure counter does not increment when spawn limits are reached.
+  throttle-mob-spawning:
+    enabled: false
+    monster:
+      min-failed: 8
+      spawn-chance: 25.0
+    creature:
+      min-failed: 8
+      spawn-chance: 25.0
+    ambient:
+      min-failed: 8
+      spawn-chance: 25.0
+    axolotls:
+      min-failed: 8
+      spawn-chance: 25.0
+    underground_water_creature:
+      min-failed: 8
+      spawn-chance: 25.0
+    water_creature:
+      min-failed: 8
+      spawn-chance: 25.0
+    water_ambient:
+      min-failed: 8
+      spawn-chance: 25.0
+    misc:
+      min-failed: 8
+      spawn-chance: 25.0
+  throttle-hopper-when-full:
+    # Throttles the hopper if target container is full.
+    enabled: false
+    # How many ticks to throttle when the Hopper is throttled.
+    skip-ticks: 8
+  skip-map-item-data-updates-if-map-does-not-have-craftmaprenderer: true
+  datapack:
+    # Skip selecting inactive entities when using execute command.
+    # Will improve performance on servers with massive datapack functions.
+    skip-inactive-entity-for-execute-command: false
+  skip-ai-for-non-aware-mob: true
+  reduce-packets:
+    reduce-entity-move-packets: false
+  optimized-powered-rails: false
+  optimize-waypoint: false
+  optimize-random-tick: true
+  # Whether to optimize player movement processing by skipping unnecessary edge checks and avoiding redundant view distance updates.
+  optimize-player-movement: true
+  optimize-no-action-time:
+    disable-light-check: false
+  # Whether to only tick / update items in main hand and offhand instead of the entire inventory.
+  only-tick-items-in-hand: false
+  optimize-mob-despawn: true
+  optimize-block-entities: true
+  cache-biome:
+    enabled: false
+    mob-spawning: false
+    advancements: false
+  # May cause the inconsistent order of future compose tasks.
+  faster-structure-gen-future-sequencing: true
+  # Use faster random generator?
+  # Requires a JVM that supports RandomGenerator.
+  # Some JREs don't support this.
+  faster-random-generator:
+    enabled: false
+    # Which random generator will be used?
+    # See https://openjdk.org/jeps/356
+    random-generator: Xoroshiro128PlusPlus
+    # Enable faster random generator for world generation.
+    # WARNING: This will affect world generation!!!
+    enable-for-worldgen: false
+    # Warn if you are not using legacy random source for slime chunk generation.
+    warn-for-slime-chunk: true
+    # Use legacy random source for slime chunk generation,
+    # to follow vanilla behavior.
+    use-legacy-random-for-slime-chunk: false
+    # Use direct random implementation instead of delegating to Java's RandomGenerator.
+    # This may improve performance but potentially changes RNG behavior.
+    use-direct-implementation: false
+  fast-biome-manager-seed-obfuscation:
+    # Replace vanilla SHA-256 seed obfuscation in BiomeManager with XXHash.
+    enabled: false
+    # Seed obfuscation key for XXHash.
+    seed-obfuscation-key: -2185297566474745118
+  # Whether to cache expensive CraftEntityType#minecraftToBukkit call.
+  enable-cached-minecraft-to-bukkit-entitytype-convert: true
+  # Optimizes entity brains when
+  # they're far away from the player
+  dab:
+    enabled: true
+    # After enabling this, non-aquatic entities in the water will not be affected by DAB.
+    # This could fix entities suffocate in the water.
+    dont-enable-if-in-water: true
+    # This value determines how far away an entity has to be
+    # from the player to start being effected by DEAR.
+    start-distance: 10
+    # This value defines how often in ticks, the furthest entity
+    # will get their pathfinders and behaviors ticked. 20 = 1s
+    max-tick-freq: 35
+    # This value defines how much distance modifies an entity's
+    # tick frequency. freq = (distanceToPlayer^2) / (2^value)",
+    # If you want further away entities to tick less often, use 7.
+    # If you want further away entities to tick more often, try 9.
+    activation-dist-mod: 6
+    # A list of entities to ignore for activation
+    blacklisted-entities:
+    - blaze
+    - cave_spider
+    - ghast
+    - goat
+    - hoglin
+    - husk
+    - piglin_brute
+    - silverfish
+    - stray
+    - sniffer
+    - villager
+    - witch
+    - wither_skeleton
+    - zombified_piglin
+  dont-save-entity:
+    # Disable save primed tnt on chunk unloads.
+    # Useful for redstone/technical servers, can prevent machines from being exploded by TNT,
+    # when player disconnected caused by Internet issue.
+    dont-save-primed-tnt: false
+    dont-save-falling-block: false
+  check-survival-before-growth:
+    # Check if a cactus can survive before growing.
+    cactus-check-survival: false
+
+###########
+#  FIXES  #
+###########
+fixes:
+  fix-mc298464: false
+  # Don't let player join server if the server is full.
+  # If enable this, you should use 'purpur.joinfullserver' permission instead of
+  # PlayerLoginEvent#allow to let player join full server.
+  dont-place-player-if-server-full: false
+
+##############
+#  GAMEPLAY  #
+##############
+gameplay-mechanisms:
+  use-spigot-item-merging-mechanism: false
+  # This section contains settings for mob spawner blocks.
+  spawner-settings:
+    # Enable custom spawner settings. Set to true to enable all features below.
+    enabled: false
+    # Various checks that can be enabled or disabled for spawner blocks.
+    checks:
+      # Check if there is the required light level to spawn the mob
+      light-level-check: false
+      # Check if there are the max amount of nearby mobs to spawn the mob
+      spawner-max-nearby-check: true
+      # Check if any players are in a radius to spawn the mob
+      check-for-nearby-players: true
+      # Check if there are physical blocks obstructing the spawn location, or if custom spawn rules (isValidPosition) fail due to block conditions.
+      spawner-block-checks: false
+      # Checks if there is water around that prevents spawning
+      water-prevent-spawn-check: false
+      # Ignore mob-specific spawn rules, like animals needing grass or specific biomes/blocks (does not affect light level or physical obstruction checks).
+      ignore-spawn-rules: false
+    # Minimum delay (in ticks) between spawner spawns. Higher values slow down spawners.
+    min-spawn-delay: 200
+    # Maximum delay (in ticks) between spawner spawns. Higher values slow down spawners.
+    max-spawn-delay: 800
+  # Enable to make only player pushable
+  only-player-pushable: false
+  knockback:
+    # Make snowball can knockback players.
+    snowball-knockback-players: false
+    # Make egg can knockback players.
+    egg-knockback-players: false
+    # Make players can knockback zombie.
+    can-player-knockback-zombie: true
+    flush-location-while-knockback-player: false
+    old-blast-protection-explosion-knockback: false
+  # Controls whether specified component information would be sent to clients.
+  # It may break resource packs and mods that rely on the information.
+  # Also, it can avoid some frequent client animations.
+  # Attention: This is not same as Paper's item-obfuscation, we only hide specified component information from player's inventory.
+  hide-item-component:
+    # Which type of components will be hidden from clients.
+    # It needs a component type list, incorrect things will not work.
+    hidden-types: []
+    # If enabled, specified item component information from player's inventory will be hided.
+    enabled: false
+  death-item-drop-knockback:
+    # If true, items will drop randomly around the player on death.
+    drop-around: true
+    # Base speed for horizontal velocity when randomly dropping items.
+    horizontal-force: 0.5
+    # Upward motion for randomly dropped items.
+    vertical-force: 0.2
+  allow-tripwire-dupe: false
+  player:
+    # The max distance of UseItem for players.
+    # Set to -1 to disable max-distance-check.
+    # NOTE: if set to -1 to disable the check,
+    # players are able to use some packet modules of hack clients,
+    # and NoCom Exploit!!
+    max-use-item-distance: 1.0000001
+  inventory-overflow-event:
+    # The event called when used plugin to Inventory#addItem
+    # into player's inventory, and the inventory is full.
+    # This is not recommended to use, please re-design to use the
+    # returned map of Inventory#addItem method as soon as possible!
+    enabled: false
+    # The full class name of the listener which listens to this inventory overflow event.
+    listener-class: com.example.package.PlayerInventoryOverflowEvent
+  afk-command:
+    # The AFK command based on Minecraft built-in idle-timeout mechanism
+    # Rest of AFK settings are in the Purpur config
+    enabled: false
+
+#############
+#  NETWORK  #
+#############
+network:
+  protocol-support:
+    jade-protocol: false
+    appleskin-protocol: false
+    appleskin-protocol-sync-tick-interval: 20
+    asteorbar-protocol: false
+    chatimage-protocol: false
+    xaero-map-protocol: false
+    xaero-map-server-id: -1381689667
+    syncmatica-protocol: false
+    syncmatica-quota: false
+    syncmatica-quota-limit: 40000000
+    do-a-barrel-roll-protocol: false
+    do-a-barrel-roll-allow-thrusting: false
+    do-a-barrel-roll-force-enabled: false
+    do-a-barrel-roll-force-installed: false
+    do-a-barrel-roll-installed-timeout: 0
+  # WARNING: This option is NOT compatible with ProtocolLib and may cause
+  # issues with other plugins that modify packet handling.
+  #
+  # Optimizes non-flush packet sending by using Netty's lazyExecute method to avoid
+  # expensive thread wakeup calls when scheduling packet operations.
+  #
+  # Requires server restart to take effect.
+  OptimizeNonFlushPacketSending: false
+  # Whether or not enable chat message signature,
+  # disable will prevent players to report chat messages.
+  # And also disables the popup when joining a server without
+  # 'secure chat', such as offline-mode servers.
+  chat-message-signature: true
+  # Async switch connection state.
+  async-switch-state: false
+
+##########
+#  MISC  #
+##########
+misc:
+  message:
+    # Unknown command message, using MiniMessage format, set to "default" to use vanilla message,
+    # placeholder:
+    # <message>, show message of the command exception.
+    # <detail>, shows detail of the command exception.
+    unknown-command: default
+  rebrand:
+    server-mod-name: Leaf
+    server-gui-name: Leaf Console
+  sentry:
+    # Sentry DSN for improved error logging, leave blank to disable,
+    # Obtain from https://sentry.io/
+    dsn: ''
+    # Logs with a level higher than or equal to this level will be recorded.
+    log-level: WARN
+    # Only log with a Throwable will be recorded after enabling this.
+    only-log-thrown: true
+  # Once you enable secure seed, all ores and structures are generated with 1024-bit seed
+  # instead of using 64-bit seed in vanilla, made seed cracker become impossible.
+  secure-seed:
+    enabled: false
+  # Remove Vanilla username check,
+  # allowing all characters as username.
+  remove-vanilla-username-check: false
+  # Enable player enter backend server through proxy
+  # without backend server enabling its bungee mode.
+  remove-spigot-check-bungee-config: false
+  # Enable to prevent console spam.
+  remove-change-non-editable-sign-warning: false
+  # When enabled, prevents plugins from programmatically changing player operator status.
+  # This helps maintain server security by blocking unauthorized op modifications.
+  # Server administrators can still manually manage ops through console/commands.
+  op-system-protection:
+    prevent-op-changes: false
+  # This section contains lag compensation features,
+  # which could ensure basic playing experience during a lag.
+  lag-compensation:
+    enabled: false
+    enable-for-water: false
+    enable-for-lava: false
+  including-5s-in-get-tps: true
+  # Connection message, using MiniMessage format, set to "default" to use vanilla join message.
+  # available placeholders:
+  # %player_name% - player name
+  # %player_displayname% - player display name
+  connection-message:
+    join:
+      enabled: true
+      # Join message of player
+      message: default
+    quit:
+      enabled: true
+      # Quit message of player
+      message: default
+  cache:
+    profile-lookup:
+      # Cache profile data lookups (skins, textures, etc.) to reduce API calls to Mojang.
+      enabled: false
+      # The timeout for profile lookup cache. Unit: Minutes.
+      timeout: 1440
+      # Maximum number of profiles to cache. Higher values use more memory (not that much).
+      max-size: 8192
+  # !!! WARNING !!!
+  # Disabling this is NOT recommended and can lead to severe server instability.
+  # Only disable this if you are an advanced user or debugging a specific issue
+  # and understand the risks involved.
+  async-catcher:
+    enabled: true

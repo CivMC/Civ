@@ -13,7 +13,7 @@
 settings:
   debug: false
   sample-count: 12
-  player-shuffle: 0
+  player-shuffle: 100
   user-cache-size: 1000
   save-user-cache-on-stop-only: false
   moved-wrongly-threshold: 1.0625
@@ -21,7 +21,7 @@ settings:
   timeout-time: ${CIV_WATCHDOG_TIMEOUT_TIME}
   restart-on-crash: false
   restart-script: ./start.sh
-  netty-threads: 4
+  netty-threads: 6
   attribute:
     maxHealth:
       max: 2048.0
@@ -77,21 +77,21 @@ world-settings:
       animals: 16
       monsters: 16
       raiders: 16
-      misc: 16
-      water: 16
+      misc: 12
+      water: 12
       villagers: 16
       flying-monsters: 32
       wake-up-inactive:
-        animals-max-per-tick: 4
+        animals-max-per-tick: 2
         animals-every: 1200
-        animals-for: 100
+        animals-for: 40
         monsters-max-per-tick: 8
         monsters-every: 400
         monsters-for: 100
         villagers-max-per-tick: 1
         villagers-every: 600
         villagers-for: 10
-        flying-monsters-max-per-tick: 8
+        flying-monsters-max-per-tick: 1
         flying-monsters-every: 200
         flying-monsters-for: 100
       villagers-work-immunity-after: 200
@@ -101,7 +101,7 @@ world-settings:
       ignore-spectators: false
     entity-tracking-range:
       players: 160
-      animals: 32
+      animals: 64
       monsters: 32
       misc: 96
       other: 96

@@ -1,0 +1,207 @@
+status:
+    offline:
+        base: '&c{SERVER} is {STATUS}. &7You are in position &f{POS}&7 of &f{LEN}&7.'
+        offline: offline
+        restarting: restarting
+        full: full
+        restricted: restricted
+        paused: paused
+        whitelisted: whitelisted
+    online:
+        base: '&7You are in position &f{POS}&7 of &f{LEN}&7'
+    left-last-queue: '&aYou left the last queue you were in.'
+    now-in-queue: |-
+        &aYou are now queued for {SERVER}! &7You are in position &f{POS}&7 of &f{LEN}&7.
+        &7Type &f/leavequeue&7 or &f<click:run_command:/leavequeue {SERVERNAME}>click here</click>&7 to leave the queue!
+    now-in-empty-queue: ''
+    sending-now: '&aSending you to &f{SERVER} &anow..'
+    making-room: <gold>Making room for you..
+    priority-increased: <gold>You now have higher priority! <green>Moving you up in
+        the queue..
+    skipping-queue-server: ''
+errors:
+    server-not-exist: '&cThe server {SERVER} does not exist!'
+    already-queued: '&cYou are already queued for that server!'
+    player-only: '&cThis command can only be executed as a player!'
+    already-connected: '&cYou are already connected to this server!'
+    cant-join-paused: '&cYou cannot join the queue for {SERVER} because it is paused.'
+    deny-joining-from-server: '&cYou are not allowed to join queues from this server!'
+    wrong-version:
+        base: <red>You must be on {VERSIONS} to join this server!
+        or: ' or '
+        comma: ', '
+    too-fast-queue: <red>You're queueing too fast!
+    kicked-to-make-room: <red>You were moved to the lobby to make room for another
+        player.
+    make-room-failed:
+        player: <red>Failed to make room for you in that server.
+        admin: <red>Failed to make room for you in that server. Check the console
+            for more information.
+commands:
+    leave-queue: '&aYou left the queue for {SERVER}!'
+    reload: '&aConfig and messages reloaded successfully!'
+    joinqueue:
+        usage: '&cUsage: /joinqueue <server>'
+    kick:
+        usage: '<red>Usage: /ajqueue kick <player> [queue]'
+        no-player: '&cCould not find {PLAYER}! Make sure they are in a queue!'
+        unknown-server: '&cCould not find queue {QUEUE}. Make sure you spelled it
+            correctly!'
+        success: <green>Kicked <white>{PLAYER} <green>from {NUM} queue{s}!
+    kickall:
+        usage: '<red>Usage: /ajqueue kickall <queue>'
+        success: <green>Kicked <white>{NUM} <green>player{s} from <white>{SERVER}<green>!
+    pausequeueserver:
+        unpaused: <green>You are no longer paused! <gray>You can now use queue-servers
+            normally.
+        paused: <green>You are now paused! <gray>You will no longer be sent using
+            queue-servers.
+        reminder: '<gold>Reminder: <yellow>You are currently paused for queue-servers,
+            so you will not be sent using them!<gray> Use <white>/ajQueue pausequeueserver</white>
+            to un-pause and return to normal behaviour'
+    leave:
+        more-args: '&cPlease specify which queue you want to leave! &7You are in these
+            queues: {QUEUES}'
+        queues-list-format: '&f{NAME}&7, '
+        not-queued: '&cYou are not queued for that server! &7You are in these queues:
+            {QUEUES}'
+        no-queues: '&cYou are not queued!'
+    pause:
+        more-args: '&cUsage: /ajqueue pause <server> [on/off]'
+        no-server: '&cThat server does not exist!'
+        success: '&aThe queue for &f{SERVER} &ais now {PAUSED}'
+        paused:
+            'true': '&epaused'
+            'false': '&aun-paused'
+    send:
+        player-not-found: '&cThat player could not be found. Make sure they are online!'
+        usage: '<red>Usage: /ajqueue send <player> <server>'
+    listqueues:
+        header: '&9Queues:'
+        format: '<hover:show_text:''&7Status: {STATUS}''>{COLOR}{NAME}&7: {COUNT}
+            queued</hover>'
+noperm: '&cYou do not have permission to do this!'
+format:
+    time:
+        mins: '{m}m {s}s'
+        secs: '{s} seconds'
+list:
+    format: '&b{SERVER} &7({COUNT}): {LIST}'
+    playerlist: '&9{NAME}&7, '
+    total: '&7Total players in queues: &f{TOTAL}'
+    none: '&7None'
+spigot:
+    actionbar:
+        online: '&7You are queued for &f{SERVER}&7. You are in position &f{POS}&7
+            of &f{LEN}&7'
+        offline: '&7You are queued for &f{SERVER}&7. &7You are in position &f{POS}&7
+            of &f{LEN}&7'
+send: '&aAdded &f{PLAYER}&a to the queue for &f{SERVER}'
+remove: '&aRemoved &f{PLAYER} from all queues they were in.'
+placeholders:
+    queued:
+        none: None
+    position:
+        none: None
+    estimated_time:
+        none: None
+    status:
+        online: '&aOnline'
+        offline: '&cOffline'
+        restarting: '&cRestarting'
+        full: '&eFull'
+        restricted: '&eRestricted'
+        paused: '&ePaused'
+        whitelisted: '&eWhitelisted'
+title:
+    title: ''
+    subtitle: <gold>You are <green>#{POS} <gold>in the queue!
+    sending-now:
+        title: ''
+        subtitle: <green>Sending you to <white>{SERVER} <green>now..
+max-tries-reached: '&cUnable to connect to {SERVER}. Max retries reached.'
+auto-queued: '&aYou''ve been auto-queued for {SERVER} because you were kicked.'
+velocity-kick-message: '<red>You were kicked while trying to join {SERVER}: <white>{REASON}'
+updater:
+    update-available: |-
+        <gray><strikethrough>                                                         <reset>
+          <green>An update is available for ajQueue!
+          <dark_green>You can download it by <click:run_command:/ajqueue update><bold>clicking here</bold>
+            or running <gray>/ajQueue update</click>
+        <gray><strikethrough>                                                         <reset>
+    no-update: <red>There is not an update available
+    success: <green>The update has been downloaded! Now just restart the server
+    already-downloaded: '&aYou have already downloaded an update! &7Restart the server
+        to apply it'
+    slow-feedback: '&7Checking for update and downloading...'
+    disabled: '&cThe updater is disabled! &7Please enable it in the config to download
+        updates.'
+    warnings:
+        could-not-delete-old-jar: '&aUpdate downloaded&e but the old jar could not
+            be deleted. &7Please delete the old jar before restarting the server.'
+    errors:
+        while-checking: '&eAn error occurred while checking for an update. &7See the
+            console for more info.'
+        unknown: '&eAn unknown error occurred: {ERROR}'
+        could-not-find-jar: '&cCould not find the old jar!&7 Make sure it is named
+            similar to ajQueue-x.x.x.jar'
+        while-downloading: '&eAn error occurred while downloading an update. &7See
+            the console for more info.'
+        missing-update-token: '&cMissing update token! &7See the&f updater-config.yml&f
+            file for more info.'
+        invalid-update-token: '&cInvalid update token! &7See the&f updater-config.yml&f
+            file for more info. If you are lost, please contact support.'
+        uncaught: '&cAn error occurred while executing this command. &7See the console.'
+velocity-built-in-kick-messages:
+    already-connecting: Already connecting
+    already-connected: Already connected
+    success: Success
+    cancelled: Connection canceled
+    disconnected: Connection failed with unknown reason
+protocol-names:
+    '5': 1.7.10
+    '47': 1.8.9
+    '107': '1.9'
+    '108': 1.9.1
+    '109': 1.9.2
+    '110': 1.9.4
+    '210': 1.10.2
+    '315': '1.11'
+    '316': 1.11.2
+    '335': '1.12'
+    '338': 1.12.1
+    '340': 1.12.2
+    '393': '1.13'
+    '401': 1.13.1
+    '404': 1.13.2
+    '477': '1.14'
+    '480': 1.14.1
+    '485': 1.14.2
+    '490': 1.14.3
+    '498': 1.14.4
+    '573': '1.15'
+    '575': 1.15.1
+    '578': 1.15.2
+    '735': '1.16'
+    '736': 1.16.1
+    '751': 1.16.2
+    '753': 1.16.3
+    '754': 1.16.5
+    '755': '1.17'
+    '756': 1.17.1
+    '757': 1.18.1
+    '758': 1.18.2
+    '759': '1.19'
+    '760': 1.19.2
+    '761': 1.19.3
+    '762': 1.19.4
+    '763': 1.20.1
+    '764': 1.20.2
+    '765': 1.20.4
+    '766': 1.20.6
+    '767': 1.21.1
+    '768': 1.21.3
+    '769': 1.21.4
+    '770': 1.21.5
+    '771': 1.21.6
+    '772': 1.21.8

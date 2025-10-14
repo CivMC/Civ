@@ -9,14 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
 import org.jetbrains.annotations.NotNull;
-import vg.civcraft.mc.civmodcore.nbt.NBTType;
-import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "BOOK", order = 1000)
@@ -89,7 +87,7 @@ public final class BookModifier extends ModifierData {
     }
 
     @Override
-    public void toNBT(@NotNull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NbtCompound nbt) {
         if (hasTitle()) {
             nbt.setString(TITLE_KEY, this.title);
         }
@@ -97,7 +95,7 @@ public final class BookModifier extends ModifierData {
             nbt.setString(AUTHOR_KEY, this.author);
         }
         if (hasGeneration()) {
-            nbt.setString(GENERATION_KEY, this.generation.name());
+            nbt.setEnum(GENERATION_KEY, this.generation);
         }
         nbt.setBoolean(HAS_PAGES_KEY, this.hasPages);
         if (hasPages()) {
@@ -106,20 +104,20 @@ public final class BookModifier extends ModifierData {
     }
 
     @NotNull
-    public static BookModifier fromNBT(@NotNull final NBTCompound nbt) {
+    public static BookModifier fromNBT(@NotNull final NbtCompound nbt) {
         final var modifier = new BookModifier();
-        if (nbt.hasKeyOfType(TITLE_KEY, NBTType.STRING)) {
-            modifier.setTitle(nbt.getString(TITLE_KEY));
+        if (nbt.getString(TITLE_KEY, null) instanceof final String title) {
+            modifier.setTitle(title);
         }
-        if (nbt.hasKeyOfType(AUTHOR_KEY, NBTType.STRING)) {
-            modifier.setAuthor(nbt.getString(AUTHOR_KEY));
+        if (nbt.getString(AUTHOR_KEY, null) instanceof final String author) {
+            modifier.setAuthor(author);
         }
-        if (nbt.hasKeyOfType(GENERATION_KEY, NBTType.STRING)) {
-            modifier.setGeneration(EnumUtils.getEnum(Generation.class, nbt.getString(GENERATION_KEY)));
+        if (nbt.getEnum(GENERATION_KEY, BookMeta.Generation.class, null) instanceof final BookMeta.Generation generation) {
+            modifier.setGeneration(generation);
         }
-        if (nbt.getBoolean(HAS_PAGES_KEY)) {
+        if (nbt.getBoolean(HAS_PAGES_KEY, false)) {
             modifier.setHasPages(true);
-            modifier.setBookHash(nbt.getInt(BOOK_HASH_KEY));
+            modifier.setBookHash(nbt.getInt(BOOK_HASH_KEY, 0));
         }
         return modifier;
     }

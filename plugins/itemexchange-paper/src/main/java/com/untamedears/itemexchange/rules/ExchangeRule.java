@@ -9,26 +9,26 @@ import com.untamedears.itemexchange.rules.modifiers.DisplayNameModifier;
 import com.untamedears.itemexchange.rules.modifiers.LoreModifier;
 import com.untamedears.itemexchange.utility.ModifierStorage;
 import com.untamedears.itemexchange.utility.Utilities;
+import com.untamedears.itemexchange.utility.nbt.NBTSerialization;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.component.CustomData;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.EnumUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.inventory.InventoryUtils;
 import vg.civcraft.mc.civmodcore.inventory.items.ItemUtils;
-import vg.civcraft.mc.civmodcore.nbt.NBTSerialization;
-import vg.civcraft.mc.civmodcore.nbt.wrappers.NBTCompound;
+import vg.civcraft.mc.civmodcore.inventory.items.MaterialUtils;
+import vg.civcraft.mc.civmodcore.nbt.NbtCompound;
 import vg.civcraft.mc.civmodcore.utilities.NullUtils;
 
 /**
@@ -208,32 +208,32 @@ public final class ExchangeRule implements ExchangeData {
     }
 
     @Override
-    public void toNBT(@NotNull final NBTCompound nbt) {
+    public void toNBT(@NotNull final NbtCompound nbt) {
         nbt.setInt(VERSION_KEY, 4);
         nbt.setString(TYPE_KEY, this.type.name());
         nbt.setString(MATERIAL_KEY, this.material.name());
         nbt.setInt(AMOUNT_KEY, this.amount);
         nbt.setCompoundArray(MODIFIERS_KEY, this.modifiers.stream()
             .map((modifier) -> {
-                final var modifierNBT = new NBTCompound();
+                final var modifierNBT = new NbtCompound();
                 modifier.toNBT(modifierNBT);
                 modifierNBT.setString(CLASS_KEY, modifier.getSlug());
                 return modifierNBT;
             })
-            .toArray(NBTCompound[]::new));
+            .toArray(NbtCompound[]::new));
     }
 
     @NotNull
-    public static ExchangeRule fromNBT(@NotNull final NBTCompound nbt) {
+    public static ExchangeRule fromNBT(@NotNull final NbtCompound nbt) {
         final var rule = new ExchangeRule();
-        rule.type = EnumUtils.getEnum(Type.class, nbt.getString(TYPE_KEY));
-        rule.material = EnumUtils.getEnum(Material.class, nbt.getString(MATERIAL_KEY));
-        rule.amount = nbt.getInt(AMOUNT_KEY);
+        rule.type = nbt.getEnum(TYPE_KEY, Type.class, null);
+        rule.material = MaterialUtils.getMaterial(nbt.getString(MATERIAL_KEY, null));
+        rule.amount = nbt.getInt(AMOUNT_KEY, 0);
         rule.modifiers.clear();
         final var modifierRegistrar = ItemExchangePlugin.modifierRegistrar();
-        Arrays.stream(nbt.getCompoundArray(MODIFIERS_KEY))
+        Arrays.stream(nbt.getCompoundArray(MODIFIERS_KEY, true))
             .map((modifierNBT) -> {
-                final var template = modifierRegistrar.getModifier(modifierNBT.getString(CLASS_KEY));
+                final var template = modifierRegistrar.getModifier(modifierNBT.getString(CLASS_KEY, null));
                 if (template == null) {
                     return null;
                 }
@@ -242,23 +242,22 @@ public final class ExchangeRule implements ExchangeData {
             .filter(Objects::nonNull)
             .forEachOrdered(rule.modifiers::put);
         // Legacy Support
-        if (nbt.hasKeyOfType(LEGACY_DISPLAY_NAME_KEY, 8) && !nbt.getBoolean(LEGACY_IGNORE_DISPLAY_NAME_KEY)) {
-            DisplayNameModifier displayName = rule.modifiers.get(DisplayNameModifier.class);
-            if (displayName == null) {
-                displayName = (DisplayNameModifier) DisplayNameModifier.TEMPLATE.construct();
-                displayName.setDisplayName(nbt.getString(LEGACY_DISPLAY_NAME_KEY));
-                rule.modifiers.put(displayName);
+        if (nbt.getString(LEGACY_DISPLAY_NAME_KEY, null) instanceof final String displayName
+            && Boolean.FALSE.equals(nbt.getBoolean(LEGACY_IGNORE_DISPLAY_NAME_KEY, null))
+        ) {
+            DisplayNameModifier modifier = rule.modifiers.get(DisplayNameModifier.class);
+            if (modifier == null) {
+                modifier = (DisplayNameModifier) DisplayNameModifier.TEMPLATE.construct();
+                modifier.setDisplayName(displayName);
+                rule.modifiers.put(modifier);
             }
         }
-        if (nbt.hasKeyOfType(LEGACY_LORE_KEY, 9)) {
-            LoreModifier lore = rule.modifiers.get(LoreModifier.class);
-            if (lore == null) {
-                lore = (LoreModifier) LoreModifier.TEMPLATE.construct();
-                lore.setLore(switch (nbt.getStringArray(LEGACY_LORE_KEY)) {
-                    case final String[] lines -> Arrays.asList(lines);
-                    case null -> Collections.emptyList();
-                });
-                rule.modifiers.put(lore);
+        if (nbt.getStringArray(LEGACY_LORE_KEY, false) instanceof final String[] lore) {
+            LoreModifier modifier = rule.modifiers.get(LoreModifier.class);
+            if (modifier == null) {
+                modifier = (LoreModifier) LoreModifier.TEMPLATE.construct();
+                modifier.setLore(Arrays.asList(lore));
+                rule.modifiers.put(modifier);
             }
         }
         return rule;
@@ -401,7 +400,7 @@ public final class ExchangeRule implements ExchangeData {
             return new ItemStack[0];
         }
         int requiredAmount = getAmount();
-        for (ItemStack item : inventory.getContents()) {
+        for (ItemStack item : inventory.getStorageContents()) {
             if (requiredAmount <= 0) {
                 break;
             }
@@ -434,14 +433,14 @@ public final class ExchangeRule implements ExchangeData {
      */
     public ItemStack toItem() {
         ItemStack item = ItemExchangeConfig.getRuleItem();
-		final var itemNBT = new NBTCompound();
+		final var itemNBT = new NbtCompound();
 		toNBT(itemNBT);
 
-		CustomData customData = CustomData.EMPTY.update(nbt -> nbt.put(RULE_KEY, itemNBT.getRAW()));
-
-		net.minecraft.world.item.ItemStack nmsItem = ItemUtils.getNMSItemStack(item);
-		nmsItem.set(DataComponents.CUSTOM_DATA, customData);
-		item = nmsItem.getBukkitStack();
+        CustomData.update(
+            DataComponents.CUSTOM_DATA,
+            CraftItemStack.unwrap(item),
+            (nbt) -> nbt.put(RULE_KEY, itemNBT.internal())
+        );
 
         ItemUtils.handleItemMeta(item, (ItemMeta meta) -> {
             meta.setDisplayName(getRuleTitle());
@@ -458,15 +457,18 @@ public final class ExchangeRule implements ExchangeData {
      * @return Returns an exchange rule if found, or null.
      */
     public static ExchangeRule fromItem(ItemStack item) {
-        if (!ItemUtils.isValidItem(item)
-            || item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
+        if (item == null || item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
             return null;
         }
-        final CustomData itemNBT = ItemUtils.getNMSItemStack(item).get(DataComponents.CUSTOM_DATA);
-        if (itemNBT != null && itemNBT.copyTag().contains(RULE_KEY)) {
-            return fromNBT(new NBTCompound((CompoundTag) itemNBT.copyTag().get(RULE_KEY)));
+        final CustomData customData = CraftItemStack.unwrap(item).get(DataComponents.CUSTOM_DATA);
+        if (customData == null) {
+            return null;
         }
-        return null;
+        final var itemNBT = new NbtCompound(customData.copyTag());
+        final NbtCompound ruleNBT = itemNBT.getCompound(RULE_KEY, false);
+        if (ruleNBT == null) {
+            return null;
+        }
+        return fromNBT(ruleNBT);
     }
-
 }

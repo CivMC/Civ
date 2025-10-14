@@ -1,10 +1,13 @@
 package isaac.bastion.storage;
 
+import com.github.davidmoten.rtree2.Entry;
+import com.github.davidmoten.rtree2.RTree;
+import com.github.davidmoten.rtree2.geometry.Rectangle;
+import com.github.davidmoten.rtree2.geometry.internal.PointDouble;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
 import isaac.bastion.event.BastionCreateEvent;
-import isaac.bastion.manager.EnderPearlManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,14 +31,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.world.locations.QTBox;
-import vg.civcraft.mc.civmodcore.world.locations.SparseQuadTree;
 
 public class BastionBlockStorage {
 
     private ManagedDatasource db;
     private Logger log;
 
-    private Map<World, SparseQuadTree<BastionBlock>> blocks;
+    private Map<World, RTree<BastionBlock, Rectangle>> blocks;
     private Set<BastionBlock> changed;
     private Set<BastionBlock> bastions;
     private Map<Integer, List<BastionBlock>> groups;
@@ -222,7 +224,14 @@ public class BastionBlockStorage {
      * @return A set of QTBoxes (bastions) that overlap with the location
      */
     public Set<BastionBlock> forLocation(Location loc) {
-        return blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ());
+        Iterable<Entry<BastionBlock, Rectangle>> search = blocks.get(loc.getWorld()).search(PointDouble.create(loc.getBlockX(), loc.getBlockZ()));
+        Set<BastionBlock> result = new HashSet<>();
+        for (Entry<BastionBlock, Rectangle> qt : search) {
+            if (qt.value().inField(loc)) {
+                result.add(qt.value());
+            }
+        }
+        return result;
     }
 
     /**
@@ -233,25 +242,23 @@ public class BastionBlockStorage {
      * @return A set of bastions a pearl could collide with
      */
     public Set<BastionBlock> getPossibleTeleportBlocking(Location loc, double maxDistance) {
-        Set<BastionBlock> boxes = blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockY(), true);
+        Iterable<Entry<BastionBlock, Rectangle>> search = blocks.get(loc.getWorld()).search(PointDouble.create(loc.getBlockX(), loc.getBlockZ()), maxDistance);
 
         double maxDistanceSquared = maxDistance * maxDistance;
         double maxBoxDistanceSquared = maxDistanceSquared * 2.0;
 
         Set<BastionBlock> result = new TreeSet<>();
 
-        for (QTBox box : boxes) {
-            if (box instanceof BastionBlock) {
-                BastionBlock bastion = (BastionBlock) box;
-                BastionType type = bastion.getType();
-                // Skip bastions who don't do midair blocking.
-                if (!type.isBlockPearls() || !type.isBlockMidair()) continue;
-                // Check on other conditions.
-                if (((type.isSquare() && bastion.getLocation().distanceSquared(loc) <= maxBoxDistanceSquared) ||
-                    (!type.isSquare() && bastion.getLocation().distanceSquared(loc) <= maxDistanceSquared)) &&
-                    (!type.isRequireMaturity() || bastion.isMature())) {
-                    result.add(bastion);
-                }
+        for (Entry<BastionBlock, Rectangle> entry : search) {
+            BastionBlock bastion = entry.value();
+            BastionType type = bastion.getType();
+            // Skip bastions who don't do midair blocking.
+            if (!type.isBlockPearls() || !type.isBlockMidair()) continue;
+            // Check on other conditions.
+            if (((type.isSquare() && bastion.getLocation().distanceSquared(loc) <= maxBoxDistanceSquared) ||
+                (!type.isSquare() && bastion.getLocation().distanceSquared(loc) <= maxDistanceSquared)) &&
+                (!type.isRequireMaturity() || bastion.isMature())) {
+                result.add(bastion);
             }
         }
         return result;
@@ -265,28 +272,25 @@ public class BastionBlockStorage {
      * @return A set of bastions a flying player could collide with
      */
     public Set<BastionBlock> getPossibleFlightBlocking(double maxDistance, Location... locs) {
-        Set<BastionBlock> boxes = null;
         Set<BastionBlock> result = new TreeSet<>();
         double maxDistanceSquared = maxDistance * maxDistance;
         double maxBoxDistanceSquared = maxDistanceSquared * 2.0;
 
         for (Location loc : locs) {
-            boxes = blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ(), true);
+            Iterable<Entry<BastionBlock, Rectangle>> search = blocks.get(loc.getWorld()).search(PointDouble.create(loc.getBlockX(), loc.getBlockZ()), maxDistance);
             Location yLoc = loc.clone();
 
-            for (QTBox box : boxes) {
-                if (box instanceof BastionBlock) {
-                    BastionBlock bastion = (BastionBlock) box;
-                    BastionType type = bastion.getType();
-                    // Don't add bastions that don't block flight
-                    if (!type.isBlockElytra()) continue;
-                    yLoc.setY(bastion.getLocation().getY());
-                    // Fixed for square field nearness, using diagonal distance as max -- (radius * sqrt(2)) ^ 2
-                    if (((type.isSquare() && bastion.getLocation().distanceSquared(yLoc) <= maxBoxDistanceSquared) ||
-                        (!type.isSquare() && bastion.getLocation().distanceSquared(yLoc) <= maxDistanceSquared)) &&
-                        (!type.isElytraRequireMature() || bastion.isMature())) {
-                        result.add(bastion);
-                    }
+            for (Entry<BastionBlock, Rectangle> entry : search) {
+                BastionBlock bastion = entry.value();
+                BastionType type = bastion.getType();
+                // Don't add bastions that don't block flight
+                if (!type.isBlockElytra()) continue;
+                yLoc.setY(bastion.getLocation().getY());
+                // Fixed for square field nearness, using diagonal distance as max -- (radius * sqrt(2)) ^ 2
+                if (((type.isSquare() && bastion.getLocation().distanceSquared(yLoc) <= maxBoxDistanceSquared) ||
+                    (!type.isSquare() && bastion.getLocation().distanceSquared(yLoc) <= maxDistanceSquared)) &&
+                    (!type.isElytraRequireMature() || bastion.isMature())) {
+                    result.add(bastion);
                 }
             }
         }
@@ -333,10 +337,8 @@ public class BastionBlockStorage {
      */
     //@SuppressWarnings("deprecation")
     public void loadBastions() {
-        int enderSearchRadius = EnderPearlManager.MAX_TELEPORT + 100;
         for (World world : Bukkit.getWorlds()) {
-            SparseQuadTree<BastionBlock> bastionsForWorld = new SparseQuadTree<>(enderSearchRadius);
-            blocks.put(world, bastionsForWorld);
+            blocks.put(world, RTree.create());
             try (Connection conn = db.getConnection();
                  PreparedStatement ps = conn.prepareStatement("select * from bastion_blocks where loc_world=?;")) {
                 ps.setString(1, world.getName());
@@ -354,7 +356,7 @@ public class BastionBlockStorage {
                     if (died) {
                         dead.put(loc, block.getType().getName());
                     } else {
-                        addBastion(block, bastionsForWorld);
+                        addBastion(block);
                     }
                 }
             } catch (SQLException e) {
@@ -450,12 +452,8 @@ public class BastionBlockStorage {
     }
 
     private void addBastion(BastionBlock bastion) {
-        addBastion(bastion, blocks.get(bastion.getLocation().getWorld()));
-    }
-
-    private void addBastion(BastionBlock bastion, SparseQuadTree<BastionBlock> bastionsForWorld) {
         bastions.add(bastion);
-        bastionsForWorld.add(bastion);
+        blocks.put(bastion.getLocation().getWorld(), blocks.get(bastion.getLocation().getWorld()).add(bastion, bastion.asRectangle()));
 
         if (bastion.getListGroupId() != null) {
             synchronized (groups) {
@@ -482,7 +480,7 @@ public class BastionBlockStorage {
         }
 
         bastions.remove(bastion);
-        blocks.get(bastion.getLocation().getWorld()).remove(bastion);
+        blocks.put(bastion.getLocation().getWorld(), blocks.get(bastion.getLocation().getWorld()).delete(bastion, bastion.asRectangle()));
     }
 
     /**

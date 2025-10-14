@@ -1,0 +1,10 @@
+# Your RabbitMQ credentials
+rabbitmq:
+  user: username
+  password: password
+  host: localhost
+  port: 5672
+  incomingQueue: kira-to-gateway
+  outgoingQueue: gateway-to-kira
+
+ops: []

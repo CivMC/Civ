@@ -178,7 +178,6 @@ public class PlayerListener implements Listener, Configurable {
         Inventory inv = e.getInventory();
         HashMap<Integer, ItemStack> potentialPearls = new HashMap<>();
         potentialPearls.putAll(inv.all(Material.ENDER_PEARL));
-        potentialPearls.putAll(inv.all(Material.PLAYER_HEAD));
         for (Entry<Integer, ? extends ItemStack> entry : potentialPearls.entrySet()) {
             ItemStack newitem = validatePearl(entry.getValue());
             if (newitem != null) {
@@ -199,7 +198,7 @@ public class PlayerListener implements Listener, Configurable {
             return null;
         }
 
-        if ((item.getType() == Material.PLAYER_HEAD || item.getType() == Material.ENDER_PEARL)
+        if ((item.getType() == Material.ENDER_PEARL)
             && item.getEnchantmentLevel(Enchantment.UNBREAKING) != 0) {
             ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
             if (pearl == null || pearl.getFreedOffline()) {

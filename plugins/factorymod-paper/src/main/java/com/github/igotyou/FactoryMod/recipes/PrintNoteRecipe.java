@@ -114,7 +114,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 
         if (this.secureNote) {
             net.minecraft.world.item.ItemStack bookItem = CraftItemStack.asNMSCopy(printingPlateStack);
-            String bookSN = bookItem.get(DataComponents.CUSTOM_DATA).copyTag().getString("SN");
+            String bookSN = bookItem.get(DataComponents.CUSTOM_DATA).copyTag().getString("SN").get();
             info.lines.add(bookSN);
         }
 

@@ -1,9 +1,7 @@
 package com.github.maxopoly.KiraBukkitGateway;
 
-import com.github.maxopoly.KiraBukkitGateway.auth.AuthcodeManager;
 import com.github.maxopoly.KiraBukkitGateway.command.CreateDiscordGroupChatCommand;
 import com.github.maxopoly.KiraBukkitGateway.command.DeleteDiscordGroupChatCommand;
-import com.github.maxopoly.KiraBukkitGateway.command.GenerateDiscordAuthCodeCommand;
 import com.github.maxopoly.KiraBukkitGateway.command.ReloadKiraCommand;
 import com.github.maxopoly.KiraBukkitGateway.command.SyncDiscordChannelAccessCommand;
 import com.github.maxopoly.KiraBukkitGateway.impersonation.KiraLuckPermsWrapper;
@@ -29,7 +27,6 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 
     private RabbitHandler rabbit;
     private RabbitCommands rabbitCommands;
-    private AuthcodeManager authcodeManager;
     private KiraLuckPermsWrapper permsWrapper;
     private ConfigParser config;
     private List<KiraLogAppender> logAppenders;
@@ -38,7 +35,6 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
     public void onEnable() {
         super.onEnable();
         instance = this;
-        authcodeManager = new AuthcodeManager(12);
         reload();
         setupPermissions();
         this.permsWrapper = new KiraLuckPermsWrapper();
@@ -54,7 +50,6 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
     private void registerCommands() {
         commandManager.registerCommand(new CreateDiscordGroupChatCommand());
         commandManager.registerCommand(new DeleteDiscordGroupChatCommand());
-        commandManager.registerCommand(new GenerateDiscordAuthCodeCommand());
         commandManager.registerCommand(new ReloadKiraCommand());
         commandManager.registerCommand(new SyncDiscordChannelAccessCommand());
     }
@@ -65,13 +60,13 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
             rabbit.shutdown();
         }
         rabbit = new RabbitHandler(config.getRabbitConfig(), config.getIncomingQueueName(),
-            config.getOutgoingQueueName(), getLogger());
+            config.getOutgoingQueueName(), config.getServerName(), getLogger());
         if (!rabbit.setup()) {
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
         rabbit.beginAsyncListen();
-        rabbitCommands = new RabbitCommands(rabbit);
+        rabbitCommands = new RabbitCommands(rabbit, config.getServerName());
         Logger logger = (Logger) LogManager.getRootLogger();
         if (logAppenders != null) {
             for (KiraLogAppender appender : logAppenders) {
@@ -100,10 +95,6 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 
     public static KiraBukkitGatewayPlugin getInstance() {
         return instance;
-    }
-
-    public AuthcodeManager getAuthcodeManager() {
-        return authcodeManager;
     }
 
     public RabbitCommands getRabbit() {

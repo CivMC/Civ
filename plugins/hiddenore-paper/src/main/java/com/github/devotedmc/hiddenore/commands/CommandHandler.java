@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.github.devotedmc.hiddenore.listeners.WorldGenerationListener;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -25,10 +26,12 @@ import com.github.devotedmc.hiddenore.HiddenOre;
  */
 public class CommandHandler implements CommandExecutor {
 
-    final HiddenOre plugin;
+    private final HiddenOre plugin;
+    private final List<WorldGenerationListener> worldGenerationListeners;
 
-    public CommandHandler(HiddenOre instance) {
-        plugin = instance;
+    public CommandHandler(HiddenOre instance, List<WorldGenerationListener> worldGenerationListeners) {
+        this.plugin = instance;
+        this.worldGenerationListeners = worldGenerationListeners;
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -63,35 +66,53 @@ public class CommandHandler implements CommandExecutor {
 
                         sender.sendMessage("Generating all drops, this could cause lag");
 
-                        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                long delay = 0l;
-                                Map<NamespacedKey, List<BlockConfig>> worldBlockConfigs = Config.instance.blockConfigs.getOrDefault(world, Config.instance.blockConfigs.get(null));
-                                if (worldBlockConfigs == null) {
-                                    sender.sendMessage("No drops configured for blocks in this world.");
-                                    return;
-                                }
-                                for (NamespacedKey blockConf : worldBlockConfigs.keySet()) {
-                                    for (BlockConfig block : worldBlockConfigs.get(blockConf)) {
-                                        for (String dropConf : block.getDrops()) {
-                                            DropConfig drop = block.getDropConfig(dropConf);
-                                            for (DropItemConfig item : drop.drops) {
-                                                Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        sender.sendMessage(String.format("Block: %s, drop: %s", blockConf.toString(), dropConf));
-                                                        Item dropped = player.getWorld().dropItem(player.getLocation().add(0, 1.0, 0), item.render(vmult));
-                                                        dropped.setPickupDelay(20);
-                                                    }
-                                                }, delay++);
-                                            }
+                        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                            long delay = 0l;
+                            Map<NamespacedKey, List<BlockConfig>> worldBlockConfigs = Config.instance.blockConfigs.getOrDefault(world, Config.instance.blockConfigs.get(null));
+                            if (worldBlockConfigs == null) {
+                                sender.sendMessage("No drops configured for blocks in this world.");
+                                return;
+                            }
+                            for (NamespacedKey blockConf : worldBlockConfigs.keySet()) {
+                                for (BlockConfig block : worldBlockConfigs.get(blockConf)) {
+                                    for (String dropConf : block.getDrops()) {
+                                        DropConfig drop = block.getDropConfig(dropConf);
+                                        for (DropItemConfig item : drop.drops) {
+                                            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                                                sender.sendMessage(String.format("Block: %s, drop: %s", blockConf.toString(), dropConf));
+                                                Item dropped = player.getWorld().dropItem(player.getLocation().add(0, 1.0, 0), item.render(vmult));
+                                                dropped.setPickupDelay(20);
+                                            }, delay++);
                                         }
                                     }
                                 }
                             }
                         });
 
+                        return true;
+                    } else if ("clearores".equals(args[0])) {
+                        if (!(sender instanceof Player player)) {
+                            return false;
+                        }
+                        for (WorldGenerationListener worldGenerationListener : worldGenerationListeners) {
+                            if (worldGenerationListener.getWorldName().equals(player.getWorld().getName())) {
+                                worldGenerationListener.clearManually(sender, Integer.parseInt(args[1]));
+                                return true;
+                            }
+                        }
+                        sender.sendMessage("No world generation listener found");
+                        return true;
+                    } else if ("isprocessed".equals(args[0])) {
+                        if (!(sender instanceof Player player)) {
+                            return false;
+                        }
+                        for (WorldGenerationListener worldGenerationListener : worldGenerationListeners) {
+                            if (worldGenerationListener.getWorldName().equals(player.getWorld().getName())) {
+                                sender.sendMessage("Chunk processed: " + worldGenerationListener.isProcessed(player.getChunk()));
+                                return true;
+                            }
+                        }
+                        sender.sendMessage("No world generation listener found");
                         return true;
                     }
                 } else {

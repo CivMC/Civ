@@ -17,6 +17,7 @@ snitchConfigs:
       ==: org.bukkit.inventory.ItemStack
       type: NOTE_BLOCK
       amount: 1
+      v: 3839
     id: 0
     name: Snitch
     range:
@@ -38,6 +39,7 @@ snitchConfigs:
       ==: org.bukkit.inventory.ItemStack
       type: JUKEBOX
       amount: 1
+      v: 3839
     id: 1
     name: Logsnitch
     range: 11

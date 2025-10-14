@@ -2,9 +2,8 @@ package com.devotedmc.ExilePearl.core;
 
 import com.devotedmc.ExilePearl.util.Clock;
 import com.google.common.base.Preconditions;
+import java.util.Objects;
 import java.util.UUID;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Tracks damage dealt from a player.
@@ -108,11 +107,7 @@ final class DamageRecord {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 31)
-            .append(damager)
-            .append(amount)
-            .append(time)
-            .toHashCode();
+        return Objects.hash(damager, amount, time);
     }
 
     @Override
@@ -126,10 +121,6 @@ final class DamageRecord {
 
         DamageRecord other = (DamageRecord) o;
 
-        return new EqualsBuilder()
-            .append(damager, other.damager)
-            .append(amount, other.amount)
-            .append(time, other.time)
-            .isEquals();
+        return Objects.equals(damager, other.damager) && Objects.equals(amount, other.amount) && Objects.equals(time, other.time);
     }
 }

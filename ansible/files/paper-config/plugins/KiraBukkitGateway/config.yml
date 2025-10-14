@@ -33,3 +33,5 @@ console:
   bar:
     key: ip
     regex: '.*is brand new!.*'
+
+server-name: "main"

@@ -19,12 +19,14 @@ public class RabbitHandler {
     private Connection conn;
     private Channel incomingChannel;
     private Channel outgoingChannel;
+    private final String serverName;
     private RabbitInputHandler inputProcessor;
 
-    public RabbitHandler(ConnectionFactory connFac, String incomingQueue, String outgoingQueue, Logger logger) {
+    public RabbitHandler(ConnectionFactory connFac, String incomingQueue, String outgoingQueue, String serverName, Logger logger) {
         this.connectionFactory = connFac;
         this.incomingQueue = incomingQueue;
         this.outgoingQueue = outgoingQueue;
+        this.serverName = serverName;
         this.logger = logger;
         inputProcessor = new RabbitInputHandler(logger);
     }
@@ -34,7 +36,7 @@ public class RabbitHandler {
             conn = connectionFactory.newConnection();
             incomingChannel = conn.createChannel();
             outgoingChannel = conn.createChannel();
-            incomingChannel.queueDeclare(incomingQueue, false, false, false, null);
+            incomingChannel.exchangeDeclare(incomingQueue, "direct", false, false, null);
             outgoingChannel.queueDeclare(outgoingQueue, false, false, false, null);
             return true;
         } catch (IOException | TimeoutException e) {
@@ -51,7 +53,7 @@ public class RabbitHandler {
                 DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                     try {
                         String message = new String(delivery.getBody(), "UTF-8");
-                        System.out.println(" [x] Received '" + message + "'");
+                        logger.info(" [x] Received '" + message + "'");
                         inputProcessor.handle(message);
                     } catch (Exception e) {
                         logger.severe("Exception in rabbit handling: " + e.toString());
@@ -59,7 +61,9 @@ public class RabbitHandler {
                     }
                 };
                 try {
-                    incomingChannel.basicConsume(incomingQueue, true, deliverCallback, consumerTag -> {
+                    String queue = incomingChannel.queueDeclare().getQueue();
+                    incomingChannel.queueBind(queue, incomingQueue, serverName);
+                    incomingChannel.basicConsume(queue, true, deliverCallback, consumerTag -> {
                     });
                 } catch (IOException e) {
                     logger.severe("Error in rabbit listener: " + e.toString());

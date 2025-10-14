@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.events.GroupCreateEvent;
@@ -587,7 +588,7 @@ public class GroupManager {
             return ranks.toString();
         }
 
-        public static void displayPlayerTypes(Player p) {
+        public static void displayPlayerTypes(CommandSender p) {
             p.sendMessage(ChatColor.RED
                 + "That PlayerType does not exist.\n"
                 + "The current types are: " + getStringOfTypes());

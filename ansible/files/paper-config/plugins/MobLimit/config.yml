@@ -9,18 +9,68 @@ reasons:
     mooshroom:
       dumb: true
     sheep:
-      dumb: true
+      count: 6
+      radius: 32
     chicken:
       dumb: true
+      count: 5
+      radius: 32
+    frog:
+      dumb: true
+      count: 5
+      radius: 32
+    axolotl:
+      count: 2
+      radius: 32
+    rabbit:
+      dumb: true
+      count: 3
+      radius: 32
+    wolf:
+      count: 5
+      radius: 32
+  bucket:
+    axolotl:
+      count: 2
+      radius: 32
   egg:
     chicken:
       dumb: true
+      count: 5
+      radius: 32
+    sniffer:
+      count: 5
+      radius: 32
+    turtle:
+      count: 5
+      radius: 32
+  spawn_egg:
+    sniffer:
+      count: 5
+      radius: 32
+    axolotl:
+      count: 2
+      radius: 32
   natural:
     turtle:
-      count: 8
-      # The radius to check for
+      count: 5
       radius: 32
     dolphin:
       count: 1
-      # The radius to check for
       radius: 128
+    chicken:
+      count: 5
+      radius: 32
+    rabbit:
+      count: 3
+      radius: 32
+    wolf:
+      count: 5
+      radius: 32
+  place:
+    hopper_minecart:
+      count: 8
+      radius: 32
+    chest_minecart:
+      count: 5
+      radius: 32

@@ -200,6 +200,7 @@ public final class ChatUtils {
      * @return Returns true if the component is null or has no visible content.
      * @deprecated Has been deprecated due to Paper's move to Kyori's Adventure.
      */
+    @Deprecated
     public static boolean isNullOrEmpty(@Nullable final Component component) {
         if (component == null || component == Component.empty()) {
             return true;

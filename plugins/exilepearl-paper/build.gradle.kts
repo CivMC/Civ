@@ -1,5 +1,5 @@
 plugins {
-    id("io.papermc.paperweight.userdev")
+    alias(libs.plugins.paper.userdev)
 }
 
 version = "2.1.6"
@@ -18,5 +18,5 @@ dependencies {
     compileOnly(project(":plugins:banstick-paper"))
     compileOnly(project(":plugins:randomspawn-paper"))
 
-    compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.4.10.jar"))
+    compileOnly(files("../../ansible/src/paper-plugins/BreweryX-3.6.0.jar"))
 }

@@ -1,8 +1,8 @@
 package net.civmc.kitpvp.gui;
 
 import net.civmc.kitpvp.KitPvpPlugin;
-import net.civmc.kitpvp.data.Kit;
-import net.civmc.kitpvp.data.KitPvpDao;
+import net.civmc.kitpvp.kit.Kit;
+import net.civmc.kitpvp.kit.KitPvpDao;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
