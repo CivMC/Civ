@@ -37,20 +37,6 @@ import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.FactoryGarbageCollector;
 import com.github.igotyou.FactoryMod.utility.FactoryModGUI;
-import org.apache.commons.lang3.text.WordUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import vg.civcraft.mc.civmodcore.config.ConfigHelper;
-import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
-import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -63,9 +49,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-
+import org.apache.commons.lang3.text.WordUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.Nullable;
+import vg.civcraft.mc.civmodcore.config.ConfigHelper;
 import static vg.civcraft.mc.civmodcore.config.ConfigHelper.parseTime;
 import static vg.civcraft.mc.civmodcore.config.ConfigHelper.parseTimeAsTicks;
+import vg.civcraft.mc.civmodcore.inventory.items.ItemMap;
+import vg.civcraft.mc.civmodcore.inventory.items.custom.CustomItem;
 
 public class ConfigParser {
 
@@ -743,7 +742,14 @@ public class ConfigParser {
                         if (keySec != null) {
                             double chance = keySec.getDouble("chance");
                             totalChance += chance;
-                            ItemMap im = ConfigHelper.parseItemMap(keySec.getConfigurationSection(key));
+
+                            ItemMap im = new ItemMap();
+                            @Nullable ItemStack stack = ConfigHelper.parseItemStackAt(keySec, key);
+                            if (stack == null) {
+                                throw new IllegalArgumentException("Could not parse itemstack for random recipe at " + keySec.getCurrentPath() + "." + key);
+                            }
+                            im.addItemAmount(stack, 1);
+
                             outputs.put(im, chance);
                             if (key.equals(displayMap)) {
                                 displayThis = im;
