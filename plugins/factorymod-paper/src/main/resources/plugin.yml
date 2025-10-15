@@ -3,7 +3,7 @@ main: com.github.igotyou.FactoryMod.FactoryMod
 author: Maxopoly, igotyou
 version: ${version}
 depend: [ CivModCore ]
-softdepend: [ CivMenu, NameLayer, Citadel, Heliodor, EssenceGlue, Bastion ]
+softdepend: [ CivMenu, NameLayer, Citadel, Heliodor, EssenceGlue, Bastion, HiddenOre ]
 permissions:
   fm.public:
     default: true

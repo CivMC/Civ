@@ -12176,16 +12176,8 @@ recipes:
     fuel_consumption_intervall: 4s
     input:
       fossil:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: PRISMARINE_SHARD
+        custom-key: fossil
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: §3Fossil
-          lore:
-            - Crack me in a factory for a prize!
     outputs:
       display:
         display:
