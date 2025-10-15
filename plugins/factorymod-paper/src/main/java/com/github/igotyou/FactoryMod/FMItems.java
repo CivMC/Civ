@@ -82,6 +82,66 @@ public interface FMItems {
         return crate;
     });
 
+    CustomItemFactory GEM_FACTORY_REPAIR_KIT = CustomItem.registerCustomItem("gem_factory_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Gem Factory Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair a Gem Factory to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory CONCRETE_MIXER_REPAIR_KIT = CustomItem.registerCustomItem("concrete_mixer_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Concrete Mixer Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair a Concrete Mixer to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory GRILL_FACTORY_REPAIR_KIT = CustomItem.registerCustomItem("grill_factory_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Grill Factory Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair a Grill Factory to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory ORE_SMELTER_REPAIR_KIT = CustomItem.registerCustomItem("ore_smelter_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Ore Smelter Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair an Ore Smelter to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory ADVANCED_ORE_SMELTER_REPAIR_KIT = CustomItem.registerCustomItem("advanced_ore_smelter_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Advanced Ore Smelter Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair an Advanced Ore Smelter to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory ELITE_ORE_SMELTER_REPAIR_KIT = CustomItem.registerCustomItem("elite_ore_smelter_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Elite Ore Smelter Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair an Elite Ore Smelter to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
     /**
      * Register custom items for use in the config
      */
@@ -94,5 +154,11 @@ public interface FMItems {
         BASTION_REFRACTOR.createItem();
         BASTION_BIO_COMPONENT.createItem();
         CRATE.createItem();
+        GEM_FACTORY_REPAIR_KIT.createItem();
+        CONCRETE_MIXER_REPAIR_KIT.createItem();
+        GRILL_FACTORY_REPAIR_KIT.createItem();
+        ORE_SMELTER_REPAIR_KIT.createItem();
+        ADVANCED_ORE_SMELTER_REPAIR_KIT.createItem();
+        ELITE_ORE_SMELTER_REPAIR_KIT.createItem();
     }
 }
