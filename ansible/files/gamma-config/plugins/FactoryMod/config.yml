@@ -5630,16 +5630,8 @@ recipes:
         amount: 8
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: gem_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Gem Factory Repair Kit
-          lore:
-            - One kit will repair a Gem Factory to full health.
   repair_gem_factory:
     production_time: 4s
     name: Repair Factory
@@ -5670,16 +5662,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: gem_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Gem Factory Repair Kit
-          lore:
-            - One kit will repair a Gem Factory to full health.
     health_gained: 10000
   repair_stone_smelter:
     production_time: 4s
@@ -5775,16 +5759,8 @@ recipes:
         amount: 24
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: concrete_mixer_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Concrete Mixer Repair Kit
-          lore:
-            - One kit will repair a Concrete Mixer to full health.
   repair_mixer:
     production_time: 4s
     name: Repair Factory
@@ -5807,16 +5783,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: concrete_mixer_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Concrete Mixer Repair Kit
-          lore:
-            - One kit will repair a Concrete Mixer to full health.
     health_gained: 10000
   make_grill_kit:
     production_time: 4s
@@ -5835,16 +5803,8 @@ recipes:
         amount: 8
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: grill_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Grill Factory Repair Kit
-          lore:
-            - One kit will repair a Grill Factory to full health.
   repair_grill:
     production_time: 4s
     name: Repair Factory
@@ -5867,16 +5827,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: grill_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Grill Factory Repair Kit
-          lore:
-            - One kit will repair a Grill Factory to full health.
     health_gained: 10000
   repair_bakery:
     production_time: 4s
@@ -5914,16 +5866,8 @@ recipes:
         amount: 8
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: ore_smelter_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Ore Smelter Repair Kit
-          lore:
-            - One kit will repair an Ore Smelter to full health.
   repair_ore_smelter:
     production_time: 4s
     name: Repair Factory
@@ -5954,16 +5898,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: ore_smelter_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Ore Smelter Repair Kit
-          lore:
-            - One kit will repair an Ore Smelter to full health.
     health_gained: 10000
   make_adv_ore_smelter_kit:
     production_time: 4s
@@ -5990,16 +5926,8 @@ recipes:
         amount: 4
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: advanced_ore_smelter_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Advanced Ore Smelter Repair Kit
-          lore:
-            - One kit will repair an Advanced Ore Smelter to full health.
   repair_adv_ore_smelter:
     production_time: 4s
     name: Repair Factory
@@ -6030,16 +5958,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: advanced_ore_smelter_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Advanced Ore Smelter Repair Kit
-          lore:
-            - One kit will repair an Advanced Ore Smelter to full health.
     health_gained: 10000
   make_elite_ore_smelter_kit:
     production_time: 4s
@@ -6064,16 +5984,8 @@ recipes:
         amount: 8
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: elite_ore_smelter_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Elite Ore Smelter Repair Kit
-          lore:
-            - One kit will repair an Elite Ore Smelter to full health.
   repair_elite_ore_smelter:
     production_time: 4s
     name: Repair Factory
@@ -6102,16 +6014,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: elite_ore_smelter_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Elite Ore Smelter Repair Kit
-          lore:
-            - One kit will repair an Elite Ore Smelter to full health.
     health_gained: 10000
   make_fences:
     production_time: 4s
@@ -7474,16 +7378,8 @@ recipes:
         amount: 1
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: rail_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Rail Factory Repair Kit
-          lore:
-            - One kit will repair a Rail Factory to full health.
   repair_rails:
     production_time: 4s
     name: Repair Factory
@@ -7506,16 +7402,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: rail_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Rail Factory Repair Kit
-          lore:
-            - One kit will repair a Rail Factory to full health.
     health_gained: 10000
   make_saddle:
     production_time: 4s
@@ -7701,16 +7589,8 @@ recipes:
         amount: 3
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: redstone_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Redstone Factory Repair Kit
-          lore:
-            - One kit will repair a Redstone Factory to full health.
   repair_redstone:
     production_time: 4s
     name: Repair Factory
@@ -7738,16 +7618,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: redstone_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Redstone Factory Repair Kit
-          lore:
-            - One kit will repair a Redstone Factory to full health.
     health_gained: 10000
   make_iron_helm:
     production_time: 4s
@@ -8193,16 +8065,8 @@ recipes:
         amount: 16
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: bastion_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Bastion Factory Repair Kit
-          lore:
-            - One kit will repair a Bastion Factory to full health.
   repair_bastion:
     production_time: 4s
     name: Repair Factory
@@ -8236,16 +8100,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: bastion_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Bastion Factory Repair Kit
-          lore:
-            - One kit will repair a Bastion Factory to full health.
     health_gained: 10000
   make_iron_fence:
     production_time: 4s
@@ -8508,16 +8364,8 @@ recipes:
         amount: 1
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: iron_forge_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Iron Forge Repair Kit
-          lore:
-            - One kit will repair an Iron Forge to full health.
   repair_forge:
     production_time: 4s
     name: Repair Factory
@@ -8540,16 +8388,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: iron_forge_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Iron Forge Repair Kit
-          lore:
-            - One kit will repair an Iron Forge to full health.
     health_gained: 10000
   make_lead:
     production_time: 4s
@@ -8594,16 +8434,8 @@ recipes:
         amount: 3
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: animal_husbandry_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Animal Husbandry Repair Kit
-          lore:
-            - One kit will repair an Animal Husbandry to full health.
   repair_husbandry:
     production_time: 4s
     name: Repair Factory
@@ -8631,16 +8463,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: animal_husbandry_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Animal Husbandry Repair Kit
-          lore:
-            - One kit will repair an Animal Husbandry to full health.
     health_gained: 10000
   smelt_bricks:
     production_time: 4s
@@ -9216,16 +9040,8 @@ recipes:
         amount: 5
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: basic_cauldron_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Basic Cauldron Repair Kit
-          lore:
-            - One kit will repair a Basic Cauldron to full health.
   repair_basic_cauldron:
     production_time: 4s
     name: Repair Factory
@@ -9251,16 +9067,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: basic_cauldron_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Basic Cauldron Repair Kit
-          lore:
-            - One kit will repair a Basic Cauldron to full health.
     health_gained: 10000
   adv_xp_1:
     production_time: 4s
@@ -9902,16 +9710,8 @@ recipes:
         amount: 16
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: advanced_cauldron_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Advanced Cauldron Repair Kit
-          lore:
-            - One kit will repair a Advanced Cauldron to full health.
   repair_advanced_cauldron:
     production_time: 4s
     name: Repair Factory
@@ -9932,16 +9732,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: advanced_cauldron_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Advanced Cauldron Repair Kit
-          lore:
-            - One kit will repair a Advanced Cauldron to full health.
     health_gained: 10000
   compact:
     production_time: 1s
@@ -9992,16 +9784,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: compact_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Compact Repair Kit
-          lore:
-            - One kit will repair a compactor to full health.
     health_gained: 10000
   make_compact_repair_kit:
     production_time: 4s
@@ -10028,16 +9812,8 @@ recipes:
         amount: 3
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: compact_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Compact Repair Kit
-          lore:
-            - One kit will repair a compactor to full health.
   make_crates:
     production_time: 4s
     name: Make Crates
@@ -11470,16 +11246,8 @@ recipes:
         amount: 6
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: printer_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Printer Factory Repair Kit
-          lore:
-            - One kit will repair a Printer Factory to full health.
   repair_printer:
     forceInclude: true
     type: REPAIR
@@ -11503,16 +11271,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: printer_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Printer Factory Repair Kit
-          lore:
-            - One kit will repair a Printer Factory to full health.
     health_gained: 10000
   make_station_kit:
     production_time: 4s
@@ -11534,16 +11294,8 @@ recipes:
         amount: 2
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: research_station_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Research Station Repair Kit
-          lore:
-            - One kit will repair a Research Station to full health.
   repair_station:
     forceInclude: true
     type: REPAIR
@@ -11571,16 +11323,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: research_station_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Research Station Repair Kit
-          lore:
-            - One kit will repair a Research Station to full health.
     health_gained: 10000
   wax_copper_block:
     production_time: 4s
@@ -12126,16 +11870,8 @@ recipes:
         amount: 16
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: copper_workshop_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Copper Workshop Repair Kit
-          lore:
-            - One kit will repair a Copper Workshop to full health.
   repair_copper_workshop:
     production_time: 4s
     name: Repair Factory
@@ -12158,16 +11894,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: copper_workshop_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Copper Workshop Repair Kit
-          lore:
-            - One kit will repair a Copper Workshop to full health.
     health_gained: 10000
   crack_fossil:
     type: RANDOM
@@ -13132,16 +12860,8 @@ recipes:
         amount: 16
     output:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: bio_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Bio Factory Repair Kit
-          lore:
-            - One kit will repair a Bio Factory to full health.
   repair_bio:
     production_time: 4s
     fuel_consumption_intervall: 1s
@@ -13165,16 +12885,8 @@ recipes:
     type: REPAIR
     input:
       kit:
-        v: 3839
-        ==: org.bukkit.inventory.ItemStack
-        type: BARREL
+        custom-key: bio_factory_repair_kit
         amount: 1
-        meta:
-          meta-type: UNSPECIFIC
-          ==: ItemMeta
-          display-name: Bio Factory Repair Kit
-          lore:
-            - One kit will repair a Bio Factory to full health.
     health_gained: 10000
   repair_gold_forge:
     production_time: 4s
