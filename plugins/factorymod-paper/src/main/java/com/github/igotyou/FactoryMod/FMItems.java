@@ -142,6 +142,126 @@ public interface FMItems {
         return repairKit;
     });
 
+    CustomItemFactory RAIL_FACTORY_REPAIR_KIT = CustomItem.registerCustomItem("rail_factory_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Rail Factory Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair a Rail Factory to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory REDSTONE_FACTORY_REPAIR_KIT = CustomItem.registerCustomItem("redstone_factory_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Redstone Factory Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair a Redstone Factory to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory BASTION_FACTORY_REPAIR_KIT = CustomItem.registerCustomItem("bastion_factory_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Bastion Factory Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair a Bastion Factory to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory IRON_FORGE_REPAIR_KIT = CustomItem.registerCustomItem("iron_forge_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Iron Forge Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair an Iron Forge to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory ANIMAL_HUSBANDRY_REPAIR_KIT = CustomItem.registerCustomItem("animal_husbandry_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Animal Husbandry Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair an Animal Husbandry to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory BASIC_CAULDRON_REPAIR_KIT = CustomItem.registerCustomItem("basic_cauldron_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Basic Cauldron Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair a Basic Cauldron to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory ADVANCED_CAULDRON_REPAIR_KIT = CustomItem.registerCustomItem("advanced_cauldron_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Advanced Cauldron Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair a Advanced Cauldron to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory COMPACT_REPAIR_KIT = CustomItem.registerCustomItem("compact_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Compact Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair a compactor to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory PRINTER_FACTORY_REPAIR_KIT = CustomItem.registerCustomItem("printer_factory_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Printer Factory Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair a Printer Factory to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory RESEARCH_STATION_REPAIR_KIT = CustomItem.registerCustomItem("research_station_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Research Station Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair a Research Station to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory COPPER_WORKSHOP_REPAIR_KIT = CustomItem.registerCustomItem("copper_workshop_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Copper Workshop Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair a Copper Workshop to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
+    CustomItemFactory BIO_FACTORY_REPAIR_KIT = CustomItem.registerCustomItem("bio_factory_repair_kit", () -> {
+        final ItemStack repairKit = ItemStack.of(Material.BARREL);
+        repairKit.setData(DataComponentTypes.ITEM_NAME, Component.text("Bio Factory Repair Kit"));
+        repairKit.setData(DataComponentTypes.LORE, ItemLore.lore(List.of(
+            Component.text("One kit will repair a Bio Factory to full health.")
+        )));
+        repairKit.setAmount(1);
+        return repairKit;
+    });
+
     /**
      * Register custom items for use in the config
      */
@@ -154,11 +274,24 @@ public interface FMItems {
         BASTION_REFRACTOR.createItem();
         BASTION_BIO_COMPONENT.createItem();
         CRATE.createItem();
+
         GEM_FACTORY_REPAIR_KIT.createItem();
         CONCRETE_MIXER_REPAIR_KIT.createItem();
         GRILL_FACTORY_REPAIR_KIT.createItem();
         ORE_SMELTER_REPAIR_KIT.createItem();
         ADVANCED_ORE_SMELTER_REPAIR_KIT.createItem();
         ELITE_ORE_SMELTER_REPAIR_KIT.createItem();
+        RAIL_FACTORY_REPAIR_KIT.createItem();
+        REDSTONE_FACTORY_REPAIR_KIT.createItem();
+        BASTION_FACTORY_REPAIR_KIT.createItem();
+        IRON_FORGE_REPAIR_KIT.createItem();
+        ANIMAL_HUSBANDRY_REPAIR_KIT.createItem();
+        BASIC_CAULDRON_REPAIR_KIT.createItem();
+        ADVANCED_CAULDRON_REPAIR_KIT.createItem();
+        COMPACT_REPAIR_KIT.createItem();
+        PRINTER_FACTORY_REPAIR_KIT.createItem();
+        RESEARCH_STATION_REPAIR_KIT.createItem();
+        COPPER_WORKSHOP_REPAIR_KIT.createItem();
+        BIO_FACTORY_REPAIR_KIT.createItem();
     }
 }
