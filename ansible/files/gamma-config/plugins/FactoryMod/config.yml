@@ -11211,7 +11211,7 @@ recipes:
               - Salt
               - Vanilla Extract
               - Vodka
-      rabbitpunch:
+      rabbitkick:
         chance: 0.01
         rabbitkick:
           v: 3839
@@ -12666,35 +12666,35 @@ recipes:
           amount: 1
       record_precipice:
         chance: 0.000476
-        record_5:
+        record_precipice:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_PRECIPICE
           amount: 1
       record_creator:
         chance: 0.000476
-        record_5:
+        record_creator:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_CREATOR
           amount: 1
       record_creator_music_box:
         chance: 0.000476
-        record_5:
+        record_creator_music_box:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_CREATOR_MUSIC_BOX
           amount: 1
       record_tears:
         chance: 0.000476
-        record_5:
+        record_tears:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_TEARS
           amount: 1
       record_lava_chicken:
         chance: 0.000476
-        record_5:
+        record_lava_chicken:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: MUSIC_DISC_LAVA_CHICKEN
@@ -12707,9 +12707,9 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: IRON_INGOT
           amount: 1
-      Gold_ingot:
+      gold_ingot:
         chance: 0.0125
-        iron_ingot:
+        gold_ingot:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GOLD_INGOT
@@ -12763,9 +12763,9 @@ recipes:
           ==: org.bukkit.inventory.ItemStack
           type: IRON_BLOCK
           amount: 1
-      Gold_block:
+      gold_block:
         chance: 0.0125
-        iron_block:
+        gold_block:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GOLD_BLOCK
@@ -12878,7 +12878,7 @@ recipes:
           amount: 1
       unbreaking_3_book:
         chance: 0.0005
-        power_5_book:
+        unbreaking_3_book:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: ENCHANTED_BOOK
@@ -14279,7 +14279,7 @@ recipes:
               smite: 4
       ub3_fa3:
         chance: 0.1000000000000000
-        ub3_smi4:
+        ub3_fa3:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GOLDEN_SWORD
@@ -14590,7 +14590,7 @@ recipes:
               projectile_protection: 4
       ub3_proj4_prot4:
         chance: 0.0750000000000000
-        ub3_proj4:
+        ub3_proj4_prot4:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GOLDEN_CHESTPLATE
@@ -14617,7 +14617,7 @@ recipes:
               fire_protection: 4
       ub3_fire4_prot4:
         chance: 0.0750000000000000
-        ub3_fire4:
+        ub3_fire4_prot4:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GOLDEN_CHESTPLATE
@@ -14644,7 +14644,7 @@ recipes:
               blast_protection: 4
       ub3_blast4_prot4:
         chance: 0.0750000000000000
-        ub3_blast4:
+        ub3_blast4_prot4:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GOLDEN_CHESTPLATE
@@ -14671,7 +14671,7 @@ recipes:
               THORNS: 3
       ub3_tho3_prot4:
         chance: 0.0750000000000000
-        ub3_tho3:
+        ub3_tho3_prot4:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GOLDEN_CHESTPLATE
@@ -14727,7 +14727,7 @@ recipes:
               projectile_protection: 4
       ub3_proj4_prot4:
         chance: 0.0750000000000000
-        ub3_proj4:
+        ub3_proj4_prot4:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GOLDEN_LEGGINGS
@@ -14754,7 +14754,7 @@ recipes:
               fire_protection: 4
       ub3_fire4_prot4:
         chance: 0.0750000000000000
-        ub3_fire4:
+        ub3_fire4_prot4:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GOLDEN_LEGGINGS
@@ -14781,7 +14781,7 @@ recipes:
               blast_protection: 4
       ub3_blast4_prot4:
         chance: 0.0750000000000000
-        ub3_blast4:
+        ub3_blast4_prot4:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GOLDEN_LEGGINGS
@@ -14808,7 +14808,7 @@ recipes:
               THORNS: 3
       ub3_tho3_prot4:
         chance: 0.0750000000000000
-        ub3_tho3:
+        ub3_tho3_prot4:
           v: 3839
           ==: org.bukkit.inventory.ItemStack
           type: GOLDEN_LEGGINGS
