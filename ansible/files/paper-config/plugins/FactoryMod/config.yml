@@ -10913,40 +10913,6 @@ recipes:
               - Rabbit Kick!
             enchants:
               knockback: 2
-
-      # java.lang.IllegalArgumentException: Could not parse itemstack for random recipe at recipes.crack_easter_egg.outputs.rabbitpunch.rabbitpunch
-      #
-      #	at factorymod-paper-3.1.0.jar/com.github.igotyou.FactoryMod.ConfigParser.parseRecipe(ConfigParser.java:749) ~[factorymod-paper-3.1.0.jar:?]
-      #
-      #	at factorymod-paper-3.1.0.jar/com.github.igotyou.FactoryMod.ConfigParser.parseRecipes(ConfigParser.java:251) ~[factorymod-paper-3.1.0.jar:?]
-      #
-      #	at factorymod-paper-3.1.0.jar/com.github.igotyou.FactoryMod.ConfigParser.parse(ConfigParser.java:166) ~[factorymod-paper-3.1.0.jar:?]
-      #
-      #	at factorymod-paper-3.1.0.jar/com.github.igotyou.FactoryMod.FactoryMod.onEnable(FactoryMod.java:23) ~[factorymod-paper-3.1.0.jar:?]
-      #
-      #	at org.bukkit.plugin.java.JavaPlugin.setEnabled(JavaPlugin.java:280) ~[leaf-api-1.21.8-R0.1-SNAPSHOT.jar:?]
-      #
-      #	at io.papermc.paper.plugin.manager.PaperPluginInstanceManager.enablePlugin(PaperPluginInstanceManager.java:202) ~[leaf-1.21.8.jar:1.21.8-132-54acfa1]
-      #
-      #	at io.papermc.paper.plugin.manager.PaperPluginManagerImpl.enablePlugin(PaperPluginManagerImpl.java:109) ~[leaf-1.21.8.jar:1.21.8-132-54acfa1]
-      #
-      #	at org.bukkit.plugin.SimplePluginManager.enablePlugin(SimplePluginManager.java:519) ~[leaf-api-1.21.8-R0.1-SNAPSHOT.jar:?]
-      #
-      #	at org.bukkit.craftbukkit.CraftServer.enablePlugin(CraftServer.java:671) ~[leaf-1.21.8.jar:1.21.8-132-54acfa1]
-      #
-      #	at org.bukkit.craftbukkit.CraftServer.enablePlugins(CraftServer.java:627) ~[leaf-1.21.8.jar:1.21.8-132-54acfa1]
-      #
-      #	at net.minecraft.server.MinecraftServer.loadWorld0(MinecraftServer.java:744) ~[leaf-1.21.8.jar:1.21.8-132-54acfa1]
-      #
-      #	at net.minecraft.server.MinecraftServer.loadLevel(MinecraftServer.java:489) ~[leaf-1.21.8.jar:1.21.8-132-54acfa1]
-      #
-      #	at net.minecraft.server.dedicated.DedicatedServer.initServer(DedicatedServer.java:332) ~[leaf-1.21.8.jar:1.21.8-132-54acfa1]
-      #
-      #	at net.minecraft.server.MinecraftServer.runServer(MinecraftServer.java:1186) ~[leaf-1.21.8.jar:1.21.8-132-54acfa1]
-      #
-      #	at net.minecraft.server.MinecraftServer.lambda$spin$0(MinecraftServer.java:298) ~[leaf-1.21.8.jar:1.21.8-132-54acfa1]
-      #
-      #	at java.base/java.lang.Thread.run(Thread.java:1447) ~[?:?]
       diamond:
         chance: 0.01
         diamond:
